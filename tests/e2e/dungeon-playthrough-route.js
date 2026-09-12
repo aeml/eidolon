@@ -117,9 +117,11 @@ export async function playDungeonThroughInputs(page, {
                     return { classAbility: player.abilityName, isCharging: player.isCharging, dead: player.state === 'DEAD',
                         distance: enemy.position.distanceTo(player.position), attackRange: game.getBasicAttackRangeForEntity(enemy),
                         mana: player.stats.mana, manaCostReduction: player.stats.manaCostReduction,
-                        hotbar: player.hotbar, cooldowns: player.cooldowns };
+                        hotbar: player.hotbar, cooldowns: player.cooldowns,
+                        skillCosts: Object.fromEntries(['Iron Fortress', 'Guardian Roar', 'Shield Slam', 'Whirlwind']
+                            .map(skill => [skill, game.abilityController.getConfiguredManaCost(skill)])) };
                 }, target.id);
-                const skillAction = skillState && selectFighterDungeonSkill(skillState, fullRun);
+                const skillAction = skillState && selectFighterDungeonSkill(skillState, fullRun, { partyTank: partyTarget });
                 if (skillAction && Date.now() >= nextSkillAttemptAt &&
                     (!partyTarget || await page.evaluate(id => window.game.hoveredEntity?.id === id, target.id))) {
                     await page.keyboard.press(skillAction.key);
@@ -242,9 +244,10 @@ export async function playDungeonThroughInputs(page, {
                     const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
                     if (distance < 3) break;
                     const scale = Math.min(1, 14 / distance);
-                    await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
-                        (destination.z - player.z) * scale, { allowJumpFallback: false }));
-                    if (afterGroundStep) await afterGroundStep(page);
+                    await timing.measure('leaderInput', () => tryDungeonGroundStep(() => moveByGroundClick(page,
+                        (destination.x - player.x) * scale, (destination.z - player.z) * scale,
+                        { allowJumpFallback: false })));
+                    if (afterGroundStep) await timing.measure('formation', () => afterGroundStep(page));
                     timing.count('leaderGroundSteps');
                 }
             }

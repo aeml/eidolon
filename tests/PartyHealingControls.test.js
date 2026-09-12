@@ -3,6 +3,22 @@ import { partyAuraFollowSpacing, selectPartyHealTarget } from './partyHealingCon
 const member = (id, hp, x, extra = {}) => ({ id, hp, maxHP: 855, x, z: 0, instance: 'party-dungeon', dead: false, ...extra });
 const healer = member('healer', 845, 0, { maxHP: 845 });
 
+test('approach a nearby critical Rogue before spending the heal on a safely injured tank', () => {
+    // The final Warden trace spent the heal on674/855 tank HP; the312/855
+    // Rogue was just outside the14unit planning range, then died during its CD.
+    const tank = member('tank', 674, 6.2173), rogue = member('rogue', 312, 14.1501);
+    expect(selectPartyHealTarget([tank, healer, rogue], healer, 14)).toBe(rogue);
+    expect(selectPartyHealTarget([tank, healer, rogue], healer, 14, { allowApproach: false })).toBe(tank);
+});
+test('bounded critical approach does not abandon an urgent reachable ally or chase across the room', () => {
+    const tank = member('tank', 674, 6), rogue = member('rogue', 100, 16);
+    expect(selectPartyHealTarget([tank, healer, rogue], healer, 14)).toBe(rogue);
+    expect(selectPartyHealTarget([tank, healer, { ...rogue, x: 16.01 }], healer, 14)).toBe(tank);
+    const urgentTank = { ...tank, hp: 400 };
+    expect(selectPartyHealTarget([urgentTank, healer, rogue], healer, 14)).toBe(urgentTank);
+    expect(selectPartyHealTarget([tank, healer, { ...rogue, hp: 400 }], healer, 14)).toBe(tank);
+});
+
 test('heal the injured reachable tank instead of chasing a lower-health distant Rogue', () => {
     // Reproduces the selection defect, not a replay of an entire native tick:
     // the failed Matron trace had a distant critical Rogue and ready healing.
@@ -48,6 +64,15 @@ test.each([-1, NaN, Infinity])('invalid range fails explicitly: %s', range => {
 });
 
 const activeAura = { allowMovement: true, cooldown: 2.6367, auraActive: true, auraRadius: 10 };
+test('recorded idle aura cooldown gap approaches for an affordable aura while reserving a direct heal', () => {
+    const readyAura = { ...activeAura, cooldown: 2.8867, auraActive: false, aura: 1, auraCooldown: 0, mana: 102 };
+    const tank = member('tank', 493, 13.736243);
+    expect(partyAuraFollowSpacing(healer, tank, readyAura)).toBe(7);
+    for (const override of [{ aura: -1 }, { auraCooldown: 1 }, { mana: 64 }, { mana: NaN },
+        { allowMovement: false }, { cooldown: .5 }]) {
+        expect(partyAuraFollowSpacing(healer, tank, { ...readyAura, ...override })).toBeNull();
+    }
+});
 test('recorded Warden cooldown gap moves the healer back inside the active aura', () => {
     const tank = member('tank', 322, 11.558409295);
     expect(partyAuraFollowSpacing(healer, tank, activeAura)).toBe(7);

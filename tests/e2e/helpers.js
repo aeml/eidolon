@@ -335,7 +335,14 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         options.onTiming({ phase, elapsedMs: at - startedAt, durationMs: at - previousPhaseAt });
         previousPhaseAt = at;
     };
-    const before = await observeEntranceClick(page);
+    const batchPreparation = options.batchPreparation === true && options.requireClearPath === true &&
+        options.allowAlternatePaths === false;
+    const prepared = batchPreparation ? await page.evaluate(async delta => {
+        const { prepareGroundInputInPage } = await import('/tests/groundInputPreparation.js');
+        return prepareGroundInputInPage(delta);
+    }, { deltaX, deltaZ }) : null;
+    if (prepared) mark('batch-preparation');
+    const before = prepared ? prepared.before : await observeEntranceClick(page);
     mark('initial-observation');
     expect(before).not.toBeNull();
     const attempts = [];
@@ -354,7 +361,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
 
     for (const [candidateX, candidateZ] of candidates) {
         if (options.requireClearPath) {
-            const clear = await page.evaluate(async ({ x, z }) => {
+            const clear = prepared ? prepared.clear : await page.evaluate(async ({ x, z }) => {
                 const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                 const game = window.game;
                 return isEarnedRetreatPathClear(game.collisionManager, game.player.position,
@@ -363,8 +370,14 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             mark(clear ? 'path-clear' : 'path-blocked');
             if (!clear) continue;
         }
-        let target = null;
-        try {
+        let target = prepared?.target || null;
+        if (prepared) {
+            if (!target?.canvas) {
+                mark('projection-unavailable');
+                continue;
+            }
+            mark('project-ground');
+        } else try {
             await expect.poll(async () => {
                 target = await projectGroundOffset(page, candidateX, candidateZ,
                     { allowScaling: !options.requireClearPath });

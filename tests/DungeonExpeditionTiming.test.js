@@ -30,8 +30,37 @@ test('reports use the existing polling loop, without timers or saved character i
     time = 29_999; clock.assertActive(); expect(reports).toHaveLength(0);
     time = 30_000; clock.assertActive(); expect(reports).toHaveLength(1);
     clock.assertActive(); expect(reports).toHaveLength(1);
-    expect(Object.keys(reports[0]).sort()).toEqual(['budgetMs', 'counters', 'elapsedMs', 'phase', 'phaseElapsedMs', 'profile', 'reason', 'totalsMs'].sort());
+    expect(Object.keys(reports[0]).sort()).toEqual(['activitiesMs', 'budgetMs', 'counters', 'elapsedMs', 'phase', 'phaseElapsedMs', 'profile', 'reason', 'totalsMs'].sort());
     expect(() => clock.enter('teleport-ahead')).toThrow(); expect(() => clock.count('kills')).toThrow();
+});
+
+test('input and formation timings distinguish harness work without removing it from the deadline', async () => {
+    let time = 0;
+    const clock = createDungeonExpeditionTiming({ profile: 'party', now: () => time });
+    clock.enter('traversal');
+    expect(await clock.measure('leaderInput', async () => { time += 150; return 'arrived'; })).toBe('arrived');
+    await clock.measure('formation', async () => { time += 350; });
+    time += 40; // Other path planning and observations remain in traversal.
+    const state = clock.snapshot();
+    expect(state.activitiesMs).toEqual({ leaderInput: 150, formation: 350 });
+    expect(state.totalsMs.traversal).toBe(540);
+    expect(state.elapsedMs).toBe(540);
+    state.activitiesMs.formation = 0;
+    expect(clock.snapshot().activitiesMs.formation).toBe(350);
+    await expect(clock.measure('formation', async () => {
+        time = dungeonExpeditionBudget('party'); clock.assertActive();
+    })).rejects.toThrow('exceeded120 minutes');
+});
+
+test('failed measured actions retain their timing and original failure without retrying', async () => {
+    let time = 0, calls = 0;
+    const clock = createDungeonExpeditionTiming({ now: () => time });
+    const failure = new Error('Follower could not reach the waypoint');
+    await expect(clock.measure('formation', async () => { calls++; time += 420; throw failure; })).rejects.toBe(failure);
+    expect(calls).toBe(1);
+    expect(clock.snapshot().activitiesMs).toEqual({ leaderInput: 0, formation: 420 });
+    await expect(clock.measure('invented', () => { calls++; })).rejects.toThrow('Unknown expedition activity');
+    expect(calls).toBe(1);
 });
 
 test('party selects its own allowance without changing encounter, damage-stall, formation or claim checks', () => {

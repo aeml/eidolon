@@ -1,6 +1,6 @@
 // Ordinary party-test input planning only; this never heals, moves or edits a
 // character. The real roster/hotbar dispatch retains server admission checks.
-export function selectPartyHealTarget(states, healer, range) {
+export function selectPartyHealTarget(states, healer, range, { allowApproach = true } = {}) {
     if (![healer?.x, healer?.z, range].every(Number.isFinite) || range < 0) {
         throw new Error('Party healing requires finite position and nonnegative range');
     }
@@ -9,17 +9,28 @@ export function selectPartyHealTarget(states, healer, range) {
         [state.hp, state.maxHP, state.x, state.z].every(Number.isFinite) &&
         state.hp > 0 && state.maxHP > 0 && state.hp / state.maxHP < .85)
         .sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP);
-    // Spend a useful heal now before chasing an even more injured ally. If
-    // nobody in range needs healing, retain that distant ally as an approach
-    // target; warning policy still decides whether movement is currently safe.
-    return injured.find(state => Math.hypot(state.x - healer.x, state.z - healer.z) <= range)
-        || injured[0] || null;
+    const distance = state => Math.hypot(state.x - healer.x, state.z - healer.z);
+    const reachable = injured.find(state => distance(state) <= range);
+    // Preserve immediate aid for urgent reachable allies. But do not spend a
+    // full heal cooldown on someone above60% while a below40% ally is only a
+    // short approach away. This selects a walking target, never extends range.
+    if (allowApproach && reachable && reachable.hp / reachable.maxHP > .6) {
+        const criticalNearby = injured.find(state => state.hp / state.maxHP < .4 && distance(state) <= range + 2);
+        if (criticalNearby) return criticalNearby;
+    }
+    // If nobody reachable needs aid, retain the distant target for approach;
+    // the caller still enforces warning, collision and actual cast-range rules.
+    return reachable || injured[0] || null;
 }
 
-// Spend direct-heal cooldown time maintaining the already-active aura. This
-// plans normal follow input only; ready heals and telegraph safety come first.
-export function partyAuraFollowSpacing(healer, target, { allowMovement, cooldown, auraActive, auraRadius }) {
-    if (!allowMovement || !auraActive || !Number.isFinite(cooldown) || cooldown < 1 ||
+// Spend direct-heal cooldown time maintaining an active aura or approaching
+// for an affordable ready aura. Reserve40mana for the aura plus25 for the next
+// direct heal; ready heals and telegraph safety still come first.
+export function partyAuraFollowSpacing(healer, target, { allowMovement, cooldown, auraActive, auraRadius,
+    aura = -1, auraCooldown = Infinity, mana = 0 }) {
+    const auraReady = Number.isInteger(aura) && aura >= 0 && Number.isFinite(auraCooldown) && auraCooldown <= 0 &&
+        Number.isFinite(mana) && mana >= 65;
+    if (!allowMovement || (!auraActive && !auraReady) || !Number.isFinite(cooldown) || cooldown < 1 ||
         !Number.isFinite(auraRadius) || auraRadius <= 3 || healer?.dead || target?.dead ||
         healer?.instance !== target?.instance || healer?.hp <= 0 || target?.hp <= 0 ||
         ![healer?.hp, target?.hp, healer?.x, healer?.z, target?.x, target?.z].every(Number.isFinite)) return null;

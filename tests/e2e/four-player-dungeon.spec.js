@@ -1,11 +1,14 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
+import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
+import { observePartyCombatHealth } from '../partyCombatHealth.js';
+import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
@@ -23,6 +26,9 @@ const snapshot = page => page.evaluate(() => {
     return { id: p.id, instance: g.currentInstanceId, seed: g.currentDungeonLayout?.generationSeed,
         x: p.position.x, z: p.position.z, hp: p.stats.hp, maxHP: p.stats.maxHp,
         mana: p.stats.mana, maxMana: p.stats.maxMana, dead: p.state === 'DEAD',
+        render: { quality: g.renderSystem.graphicsQuality,
+            fps: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.fps : null,
+            frameTime: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.frameTime : null },
         gold: p.gold, xp: p.xp, level: p.level, stats: p.baseStats, hotbar: p.hotbar,
         quest: p.quests?.find(q => q.id === 'chronicle_03_roots_remember'),
         rooms: g.currentDungeonRoomState?.rooms, evidence: window.__partyClearEvidence };
@@ -31,13 +37,16 @@ const snapshot = page => page.evaluate(() => {
 async function observeRole(page) {
     await page.evaluate(async () => {
         const { observePartyWarning } = await import('/tests/partyDamageRoleControls.js');
+        const { recordPartyOutgoingDamage } = await import('/tests/partyEngagementControls.js');
+        const { recordPartyCombatReceipt } = await import('/tests/partyCombatReceipts.js');
         const game = window.game, original = game.handleServerMessage.bind(game);
-        const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
-            casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
-            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], lastAcceptedCastAt: -Infinity,
+        const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0,
+            casts: {}, rejected: {}, sawDeath: false, combatReceipts: [], warningMoves: 0, warningEscapes: 0,
+            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], recentRangedSpacing: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
+            recordPartyCombatReceipt(e.combatReceipts, message, game.player.id, Date.now());
             const p = message.payload;
             if (p && message.type === 'telegraph' && [p.x, p.z, p.radius, p.duration].every(Number.isFinite)) {
                 window.__partyClearWarnings.push(observePartyWarning({ x: p.x, z: p.z, radius: p.radius,
@@ -46,12 +55,15 @@ async function observeRole(page) {
             }
             if (message.type === 'state' || message.type === 'delta') e.lastUpdate = performance.now();
             if (p && message.type === 'damage') {
-                if (p.sourceId === game.player.id) e.damageDone += Math.max(0, p.amount || 0);
+                recordPartyOutgoingDamage(e, p, game.player.id);
                 if (p.targetId === game.player.id) {
                     e.damageTaken += Math.max(0, p.amount || 0);
                     const position = game.player.position, now = performance.now();
                     const source = game.remotePlayers.get(p.sourceId);
                     e.recentDamage.push({ amount: p.amount, kind: p.kind, x: position.x, z: position.z,
+                        render: { quality: game.renderSystem.graphicsQuality,
+                            fps: game.renderSystem.perfOverlay ? game.renderSystem.perfStats.fps : null,
+                            frameTime: game.renderSystem.perfOverlay ? game.renderSystem.perfStats.frameTime : null },
                         source: source ? { type: source.subType || source.constructor.name,
                             x: source.position?.x, z: source.position?.z,
                             distance: source.position ? Math.hypot(source.position.x - position.x, source.position.z - position.z) : null,
@@ -90,12 +102,14 @@ async function observeRole(page) {
 }
 
 async function seedActor(page, credentials, character) {
+    console.log(`[party-clear] prepare ${character.class}: load registration screen`);
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
     await page.locator('#auth-password').fill(credentials.password);
     await page.locator('#auth-email').fill(`${credentials.username}@example.invalid`);
     await page.locator('#btn-register').click();
     await expect(page.locator('#auth-status')).toContainText('Registration successful');
+    console.log(`[party-clear] prepare ${character.class}: seed disposable character`);
     const script = `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
         const result = db.getSiblingDB('eidolon').users.updateOne(
@@ -108,9 +122,20 @@ async function seedActor(page, credentials, character) {
             '--quiet', '--port', process.env.EIDOLON_E2E_BUILD_MONGO_PORT, '--file', '/dev/stdin'],
         { input: script, stdio: ['pipe', 'pipe', 'pipe'], timeout: 20_000 });
     } catch { throw new Error('Disposable party fixture initialization failed'); }
+    console.log(`[party-clear] prepare ${character.class}: login and enter world`);
     await loginAndEnterWorld(page, credentials);
+    console.log(`[party-clear] prepare ${character.class}: verify replicated build`);
     await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
+    const equipped = await page.evaluate(async () => {
+        const { partyEquippedItemSnapshot } = await import('/tests/partyDungeonFixture.js');
+        return Object.fromEntries(Object.entries(window.game.player.equipment)
+            .map(([slot, item]) => [slot, partyEquippedItemSnapshot(item)]));
+    });
+    for (const [slot, item] of Object.entries(character.equipment)) {
+        expect(equipped[slot], `${character.class} must actually wear its prepared ${slot}`).toEqual({
+            name: item.name, level: item.level, rarity: item.rarity, stats: item.stats });
+    }
     const skills = character.unlocked_skills.slice(1);
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar)).toEqual(expect.arrayContaining(skills));
     await observeRole(page);
@@ -120,6 +145,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     test.skip(process.env.EIDOLON_E2E_PARTY_DUNGEON !== '1', 'Explicit disposable four-player diagnostic only');
     test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture(process.env);
+    const graphicsQuality = partyGraphicsQuality(process.env);
+    const gearProfile = partyGearProfile(process.env);
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1' }, encoding: 'utf8', timeout: 120_000
     });
@@ -127,7 +154,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     const quests = JSON.parse(readFileSync('tests/fixtures/earned-wizard-31.json', 'utf8')).quests;
     const credentials = credentialsFromEnvironment(), ownedBrowsers = [], actors = [];
     const playthrough = dungeonPlaythroughOptions({});
-    let entered = false;
+    let entered = false, combatWorkers = null, routeFailure = null;
     const healerDecisions = [];
     try {
         for (const [index, className] of PARTY_ROLES.entries()) {
@@ -139,10 +166,27 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }
             const login = { ...credentials, username: `${credentials.username}-${className.toLowerCase()}`, characterClass: className };
+            // Standalone contexts do not inherit Playwright test fixtures.
+            // A hidden login/control must not consume the two-hour expedition
+            // allowance. Explicit loading/recovery expectations retain theirs.
+            actorPage.setDefaultTimeout(30_000);
+            actorPage.setDefaultNavigationTimeout(30_000);
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
-            await seedActor(actorPage, login, partyDungeonCharacter(catalog, quests, className, login.username));
-            console.log(`[party-clear] prepared ${className}: level30 common gear, rank5 primary mastery, seeded Earth story gate`);
+            const character = partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
+            await seedActor(actorPage, login, character);
+            if (graphicsQuality !== 'high') {
+                await actorPage.keyboard.press('Escape');
+                await actorPage.locator('#btn-settings').click();
+                await actorPage.locator('#graphics-quality').selectOption(graphicsQuality);
+                await actorPage.locator('#btn-close-settings').click();
+                if (await actorPage.locator('#esc-menu').isVisible()) await actorPage.locator('#btn-resume').click();
+            }
+            await expect.poll(() => actorPage.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe(graphicsQuality);
+            console.log(`[party-clear] ${className} graphics: ${graphicsQuality}`);
+            console.log(`[party-clear] prepared ${className}: level30 ${gearProfile} gear, rank5 primary mastery, seeded Earth story gate`);
+            console.log('[party-loadout]', JSON.stringify({ class: className, profile: gearProfile,
+                items: Object.entries(character.equipment).map(([slot, item]) => ({ slot, name: item.name, rarity: item.rarity })) }));
         }
         const [tank, healer, ...damage] = actors;
         let formationAnchor = null;
@@ -194,7 +238,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
                 const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                     other.isActive && other.stats && other.state !== 'DEAD' && other.position)
-                    .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
                 const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(origin, warnings, delta =>
                     retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta), bodies);
@@ -212,7 +256,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             if (observation.step) {
                 const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page,
                     observation.step.x, observation.step.z, { ...PARTY_FOLLOW_INPUT_OPTIONS,
-                        allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        allowAlternatePaths: false, requireClearPath: true, batchPreparation: true, timeout: 1500,
                         onTiming: phase => observation.inputTiming.push(phase) }));
                 if (moved) observation.safe = await actor.page.evaluate(warnings => {
                     const p = window.game.player.position, e = window.__partyClearEvidence;
@@ -252,11 +296,14 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
             const healDistance = Math.min(14, available.healRange - .5);
-            const hurt = selectPartyHealTarget(states, states[1], healDistance);
+            const hurt = selectPartyHealTarget(states, states[1], healDistance, { allowApproach: allowMovement });
             if (!hurt) { if (allowMovement && !states[1].dead) await follow(healer, states[0], 9); return; }
             const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
             const record = async reason => {
                 const pointer = await healer.page.evaluate(id => ({
+                    observedAtMs: Date.now(),
+                    selectedSupportTargetId: window.game.uiManager.social.selectedSupportTargetId,
+                    resolvedSupportTargetId: window.game.getDesktopSupportTarget()?.id || null,
                     targetLoaded: window.game.remotePlayers.has(id),
                     hoveredType: window.game.hoveredEntity?.constructor?.name || null,
                     hoveringAlly: window.game.hoveredEntity?.id === id,
@@ -277,7 +324,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             }
             const auraSpacing = partyAuraFollowSpacing(states[1], hurt, { ...available, allowMovement });
             if (auraSpacing !== null) {
-                await record('maintain-active-aura');
+                await record(available.auraActive ? 'maintain-active-aura' : 'approach-ready-aura');
                 await follow(healer, hurt, auraSpacing);
                 return;
             }
@@ -301,6 +348,121 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             await expect(targetButton).toHaveAttribute('aria-pressed', 'true');
             await record('heal-key');
             await healer.page.keyboard.press(String(available.index + 1));
+        }
+
+        async function spaceRangedRole(actor, target) {
+            const support = await healer.page.evaluate(() => ({ id: window.game.player.id,
+                range: Math.min(14, window.game.abilityController.getAbilityCastRange('Healing Light') - .5) }));
+            const plan = await actor.page.evaluate(async ({ id, encounter, support }) => {
+                const { planPartyRangedSpacing } = await import('/tests/partyRangedSpacing.js');
+                const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
+                const g = window.game, p = g.player, enemy = g.remotePlayers.get(id), healer = g.remotePlayers.get(support.id);
+                const live = entity => entity?.isActive && entity.stats && entity.state !== 'DEAD' && entity.position;
+                // A new warning may arrive since the role's earlier safety read.
+                if (p.state === 'DEAD' || !live(enemy) || !live(healer) ||
+                    window.__partyClearWarnings.some(w => w.expires > performance.now() && w.instance === g.currentInstanceId)) return null;
+                const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
+                const target = { x: enemy.position.x, z: enemy.position.z, range: g.getBasicAttackRangeForEntity(enemy) };
+                const healing = { x: healer.position.x, z: healer.position.z, range: support.range };
+                const bodies = [...g.remotePlayers.values()].filter(live)
+                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                const step = planPartyRangedSpacing(origin, target, healing, delta =>
+                    retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
+                    isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
+                return step && { origin, target, healing, step, bodies, actorState: p.state, instanceId: g.currentInstanceId };
+            }, { id: target.id, encounter: target.encounter, support });
+            if (!plan) return false;
+            let moved = false, failure = null;
+            try {
+                moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
+                    { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
+            } catch (error) {
+                failure = error;
+                throw error; // An issued input failure remains fatal, never a successful retreat.
+            } finally {
+                // Earlier evidence retained only successful moves, losing the
+                // actual failed plan and body geometry at the point of failure.
+                const capture = actor.page.evaluate(({ plan, moved, failure }) => {
+                    const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
+                    const bodiesAfter = [...g.remotePlayers.values()].filter(other => other.isActive && other.position &&
+                        Math.hypot(other.position.x - p.position.x, other.position.z - p.position.z) < 30)
+                        .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    records.push({ ...plan, moved, failure, bodiesAfter, at: Date.now(),
+                        after: { x: p.position.x, z: p.position.z, state: p.state, dead: p.state === 'DEAD' } });
+                    if (records.length > 20) records.shift();
+                }, { plan, moved, failure: failure?.message?.slice(0, 1500) || null });
+                // If the page itself closed, preserve the original movement
+                // exception rather than replacing it with a diagnostic error.
+                if (failure) await capture.catch(() => {});
+                else await capture;
+            }
+            return moved; // The next serial role step rereads warnings/range before attacking.
+        }
+
+        async function actCombatRole(actor, policy, target) {
+            if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
+            const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
+                damageByTarget: window.__partyClearEvidence.damageByTarget
+            })), target.id);
+            if (!tankEngaged) return; // Wait for a real tank hit, not just movement.
+            if (policy.allowApproach && await spaceRangedRole(actor, target)) return;
+            const enemy = await actor.page.evaluate(id => {
+                const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
+                    range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                    dead: p.state === 'DEAD', mana: p.stats.mana, healthRatio: p.stats.hp / p.stats.maxHp,
+                    hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
+                    shieldActive: p.arcaneShieldActive, poisonActive: p.poisonCoatingActive,
+                    sinceCastMs: performance.now() - window.__partyClearEvidence.lastAcceptedCastAt,
+                    costs: Object.fromEntries(['Arcane Shield', 'Poison Coating'].map(skill =>
+                        [skill, g.abilityController.getConfiguredManaCost(skill)])) } : null;
+            }, target.id);
+            if (!enemy) return;
+            const buff = selectPartyDamageBuff({ ...enemy, className: actor.className });
+            if (buff) {
+                const self = await projectGroundOffset(actor.page, 0, 0);
+                if (self?.canvas) {
+                    await actor.page.mouse.move(self.x, self.y);
+                    await actor.page.keyboard.press(buff.key);
+                    return;
+                }
+            }
+            const point = await projectEntity(actor.page, target.id);
+            if (!point?.visible) {
+                if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
+                return;
+            }
+            const clicks = await attackPartyDamageTarget({
+                project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
+                move: (x, y) => actor.page.mouse.move(x, y),
+                settle: () => actor.page.waitForTimeout(60),
+                hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
+                read: id => actor.page.evaluate(id => {
+                    const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                    const warnings = window.__partyClearWarnings.filter(w =>
+                        w.expires > performance.now() && w.instance === g.currentInstanceId);
+                    return { alive: p.state !== 'DEAD' && Boolean(e?.isActive && e.state !== 'DEAD'),
+                        distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                        range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                        allowApproach: warnings.length === 0,
+                        allowCasts: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
+                }, id),
+                click: async button => {
+                    await actor.page.mouse.down({ button });
+                    await actor.page.mouse.up({ button });
+                }
+            }, target.id);
+            await actor.page.evaluate(({ id, clicks }) => {
+                const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                const records = window.__partyClearEvidence.recentAttackInputs;
+                records.push({ clicks, hovered: g.hoveredEntity?.id === id,
+                    distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                    basicRange: e ? g.getBasicAttackRangeForEntity(e) : null,
+                    pendingTarget: g.pendingInteraction?.id === id,
+                    moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
+                if (records.length > 12) records.shift();
+            }, { id: target.id, clicks });
         }
 
         let currentTarget, bossStart;
@@ -416,91 +578,49 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 return true; // Existing driver rewalks the real cleared route.
             },
             beforeCombat: async (_page, target) => {
-                // Let the Fighter engage first, then maintain real ally inputs.
+                // Start the Fighter's ordinary driver first; movement alone
+                // is not an opener, so DPS also waits for a damage receipt.
                 if (currentTarget !== target.id) {
+                    if (combatWorkers) await combatWorkers.stop();
                     currentTarget = target.id;
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
+                    combatWorkers = startPartyCombatWorkers(actors.slice(1),
+                        actor => runPartyRoleInputs([actor],
+                            role => avoidWarnings(role, target.encounter),
+                            (role, policy) => actCombatRole(role, policy, target)),
+                        actor => actor.page.waitForTimeout(60));
                     return false;
                 }
-                // Every role reacts to its own safety decision immediately;
-                // a slow escape on another browser must not postpone healing.
-                const [tankPolicy] = await runPartyRoleInputs(actors,
-                    actor => avoidWarnings(actor, target.encounter), async (actor, policy) => {
-                    if (actor === tank) return; // The ordinary leader driver owns Fighter combat.
-                    if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
-                    const enemy = await actor.page.evaluate(id => {
-                        const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                        return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
-                            range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
-                            dead: p.state === 'DEAD', mana: p.stats.mana, healthRatio: p.stats.hp / p.stats.maxHp,
-                            hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
-                            shieldActive: p.arcaneShieldActive, poisonActive: p.poisonCoatingActive,
-                            sinceCastMs: performance.now() - window.__partyClearEvidence.lastAcceptedCastAt,
-                            costs: Object.fromEntries(['Arcane Shield', 'Poison Coating'].map(skill =>
-                                [skill, g.abilityController.getConfiguredManaCost(skill)])) } : null;
-                    }, target.id);
-                    if (!enemy) return;
-                    const buff = selectPartyDamageBuff({ ...enemy, className: actor.className });
-                    if (buff) {
-                        const self = await projectGroundOffset(actor.page, 0, 0);
-                        if (self?.canvas) {
-                            await actor.page.mouse.move(self.x, self.y);
-                            await actor.page.keyboard.press(buff.key);
-                            return;
-                        }
-                    }
-                    const point = await projectEntity(actor.page, target.id);
-                    if (!point?.visible) {
-                        if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
-                        return;
-                    }
-                    const clicks = await attackPartyDamageTarget({
-                        project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
-                        move: (x, y) => actor.page.mouse.move(x, y),
-                        settle: () => actor.page.waitForTimeout(60),
-                        hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
-                        read: id => actor.page.evaluate(id => {
-                            const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                            const warnings = window.__partyClearWarnings.filter(w =>
-                                w.expires > performance.now() && w.instance === g.currentInstanceId);
-                            return { alive: p.state !== 'DEAD' && Boolean(e?.isActive && e.state !== 'DEAD'),
-                                distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
-                                range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
-                                allowApproach: warnings.length === 0,
-                                allowCasts: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
-                        }, id),
-                        click: async button => {
-                            await actor.page.mouse.down({ button });
-                            await actor.page.mouse.up({ button });
-                        }
-                    }, target.id);
-                    await actor.page.evaluate(({ id, clicks }) => {
-                        const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                        const records = window.__partyClearEvidence.recentAttackInputs;
-                        records.push({ clicks, hovered: g.hoveredEntity?.id === id,
-                            distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
-                            basicRange: e ? g.getBasicAttackRangeForEntity(e) : null,
-                            pendingTarget: g.pendingInteraction?.id === id,
-                            moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
-                        if (records.length > 12) records.shift();
-                    }, { id: target.id, clicks });
-                });
-                for (const actor of actors) {
-                    const state = await snapshot(actor.page);
-                    if (state.dead) {
+                combatWorkers.check();
+                // The Fighter remains owned by the leader driver; other roles
+                // observe and act independently, with one input loop per browser.
+                const health = await observePartyCombatHealth(actors, actor => actor.page.evaluate(async () => {
+                    const { partyCombatHealthSnapshot } = await import('/tests/partyCombatHealth.js');
+                    return partyCombatHealthSnapshot(window.game, window.__partyClearEvidence, performance.now());
+                }));
+                for (const [index, actor] of actors.entries()) {
+                    const status = health[index];
+                    if (status.dead || status.sawDeath) {
+                        const state = await snapshot(actor.page);
                         const cleric = await snapshot(healer.page);
                         console.log('[party-clear-death]', JSON.stringify({ role: actor.className, boss: target.type,
                             healerDistance: Math.hypot(state.x - cleric.x, state.z - cleric.z),
                             healerMana: cleric.mana, healerCasts: cleric.evidence.casts,
                             bossAllyHealing: bossStart ? cleric.evidence.allyHealing - bossStart[1].evidence.allyHealing : null }));
                     }
-                    expect(state.dead, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
-                    expect(await actor.page.evaluate(() => performance.now() - window.__partyClearEvidence.lastUpdate)).toBeLessThan(10_000);
+                    expect(status.dead || status.sawDeath, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
+                    expect(status.updateAge).toBeGreaterThanOrEqual(0);
+                    expect(status.updateAge).toBeLessThan(10_000);
                 }
+                // Check current warnings after observation, immediately before
+                // returning control to the sole Fighter input owner.
+                const tankPolicy = await avoidWarnings(tank, target.encounter);
                 if (tankPolicy.holdMelee) await tank.page.waitForTimeout(60);
                 return tankPolicy.holdMelee;
             },
             afterEncounter: async (_page, target) => {
+                await combatWorkers?.stop();
+                combatWorkers = null;
                 if (playthrough.bosses.includes(target.type)) {
                     const end = await Promise.all(actors.map(actor => snapshot(actor.page)));
                     console.log('[party-clear-boss]', JSON.stringify({ boss: target.type,
@@ -546,15 +666,20 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and Water offer persisted`);
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
+    } catch (error) {
+        routeFailure = error;
     } finally {
+        try { await combatWorkers?.stop(); } catch (error) { routeFailure ||= error; }
         console.log('[party-healer-decisions]', JSON.stringify(healerDecisions));
         for (const actor of actors) {
             try {
                 const s = await snapshot(actor.page);
                 console.log('[party-clear-result]', JSON.stringify({ class: actor.className, entered, level: s.level,
-                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
+                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, render: s.render,
+                    quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
             } catch { /* Browser may already have closed on interruption. */ }
         }
         await Promise.all(ownedBrowsers.map(extra => extra.close()));
     }
+    if (routeFailure) throw routeFailure;
 });

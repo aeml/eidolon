@@ -15,6 +15,11 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
     return {
         evaluate: jest.fn(async (callback, args) => {
             const code = callback.toString();
+            if (code.includes('/tests/groundInputPreparation.js')) {
+                ground = { x: x + args.deltaX, y: 0, z: args.deltaZ };
+                return { before: { x, z: 0, state: 'IDLE', health: 100, instanceType: 'dungeon', instanceId: 'dungeon-test' },
+                    clear: true, target: { canvas: true, x: 100, y: 100, world: ground } };
+            }
             if (args?.deltaX !== undefined) {
                 ground = { x: x + args.deltaX, y: 0, z: args.deltaZ };
                 return { canvas: true, x: 100, y: 100, world: ground };
@@ -35,6 +40,27 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
         waitForTimeout: jest.fn()
     };
 }
+
+test.each([0, .4])('strict batched preparation retains real ray and issued-input guards, drift%s', async drift => {
+    const page = movementPage(true, false, drift), phases = [];
+    const action = moveByGroundClick(page, 9, 0, { batchPreparation: true, moveOnly: true,
+        requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false, onTiming: p => phases.push(p.phase) });
+    if (drift) await expect(action).rejects.toMatchObject({ name: 'GroundInputUnavailableError' });
+    else expect((await action).x).toBe(10);
+    const batches = page.evaluate.mock.calls.filter(([fn]) => fn.toString().includes('/tests/groundInputPreparation.js'));
+    expect(batches).toHaveLength(1);
+    expect(page.evaluate.mock.calls.some(([fn]) => fn.toString().includes('/tests/wizardHuntControls.js'))).toBe(false);
+    expect(page.evaluate.mock.calls.filter(([fn, args]) => args?.deltaX !== undefined && !fn.toString().includes('/tests/groundInputPreparation.js'))).toHaveLength(0);
+    expect(page.mouse.click).toHaveBeenCalledTimes(drift ? 0 : 1);
+    expect(phases).toContain('batch-preparation');
+});
+
+test('batched preparation cannot count an issued but unmoving click as a successful dodge', async () => {
+    const page = movementPage(true, false, 0, 0);
+    await expect(moveByGroundClick(page, 9, 0, { batchPreparation: true, moveOnly: true, requireClearPath: true,
+        allowAlternatePaths: false, allowJumpFallback: false })).rejects.toMatchObject({ name: 'Error' });
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
 
 test('covered ground can use the existing real Control-click fallback', async () => {
     const page = movementPage(true);
