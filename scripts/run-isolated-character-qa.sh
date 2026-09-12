@@ -142,6 +142,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-roar-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-fortress-mastery"
+qa_allowlist+=",${QA_USERNAME_BASE}-earthshaker-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-spin-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
@@ -245,6 +246,11 @@ run_whirlwind() {
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
     npx playwright test tests/e2e/dungeon-whirlwind-gameplay.spec.js
+}
+
+run_earthshaker_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-earthshaker-area" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test --retries=0 tests/e2e/earthshaker-area-gameplay.spec.js
 }
 
 run_phone() {
@@ -579,6 +585,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage cleric-area run_cleric_area &&
     run_qa_stage spirit-area run_spirit_area &&
     run_qa_stage whirlwind run_whirlwind &&
+    run_qa_stage earthshaker-area run_earthshaker_area &&
     run_qa_stage phone run_phone &&
     run_qa_stage phone-combat run_phone_combat &&
     run_qa_stage phone-party run_party_support &&
@@ -902,6 +909,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   whirlwind)
     run_whirlwind
+    ;;
+  earthshaker-area)
+    run_earthshaker_area
     ;;
   phone)
     run_phone
