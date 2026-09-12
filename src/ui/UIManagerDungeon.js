@@ -415,6 +415,18 @@ class UIManagerDungeonMethods {
         diffInfoBox.style.textAlign = 'left';
         dungeonPanel.appendChild(diffInfoBox);
 
+        const preparation = document.createElement('details');
+        preparation.id = 'dungeon-preparation';
+        preparation.className = 'phone-adventure-details';
+        preparation.style.cssText = 'margin: 10px 0; padding: 10px; border: 1px solid #353c47; border-radius: 6px; font-size: 14px; line-height: 1.5;';
+        const preparationTitle = document.createElement('summary');
+        preparationTitle.textContent = 'Prepare for the Bastion';
+        preparationTitle.tabIndex = 0;
+        const preparationText = document.createElement('p');
+        preparationText.textContent = 'Recommended group: a tank, a healer and damage dealers. Bring level-appropriate Uncommon/Rare gear: Strength for Fighters, Dexterity for Rogues, Intelligence for Wizards and Wisdom for Clerics. Vitality helps everyone survive. Recover health and mana in Lanternhold between encounters, then continue your active run with the Dungeon Guide.';
+        preparation.append(preparationTitle, preparationText);
+        dungeonPanel.appendChild(preparation);
+
         const rewardLadderBox = document.createElement('div');
         rewardLadderBox.id = 'dungeon-reward-ladder-box';
         rewardLadderBox.style.backgroundColor = '#15181d';
@@ -449,6 +461,7 @@ class UIManagerDungeonMethods {
             const diff = difficultyInfo[selectedDifficulty];
             const selectedRunLevel = Number(runLevelSelect.value) || null;
             const restriction = entryRestriction();
+            preparation.hidden = dungeonKey !== 'verdant_bastion_catacombs' || selectedDifficulty !== 'normal';
             enterBtn.disabled = Boolean(restriction);
             enterBtn.title = restriction;
             enterBtn.style.backgroundColor = restriction ? '#25303b' : '#29483d';
