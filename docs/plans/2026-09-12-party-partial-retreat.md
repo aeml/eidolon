@@ -56,7 +56,7 @@ the original movement error with a diagnostic error. Actual replay remains due.
 The route reached and fought the Warden; Fighter died with boss last2606HP.
 At death the healer was12.5143units away with60mana,17HealingLight casts,
 5GuardianEmbrace casts and3972boss ally healing. A real heal at Fighter132HP
-raised him to313; repeated ordinary182hits while the direct heal cooled down
+raised him to313; repeated ordinary183hits while the direct heal cooled down
 then killed him. Mana was still available; this is not a proven targeting or
 resource-exhaustion failure. The earlier blocked movement did not reproduce.
 Archive `/tmp/eidolon-party-spacing-diagnostic-failure-hy0s1A`; native log
@@ -75,3 +75,21 @@ and safe in combat; this is not the full explanation or encounter acceptance.
 Two focused suites49testsPASS0.758s plus changed-file lint/diff. Before-body
 diagnostics now include IDs/state as well as coordinates, matching after-bodies.
 Logs `/tmp/eidolon-party-ready-aura-{red,tests,lint}-20260912.log`.
+
+## Ready-aura replay — encounter still fails
+
+Native89748 on c9ef1164 FAILED16.2minutes (route921.106seconds), actual seed
+-5560940123775574701/gen2/attempt0/no fallback. Early trash, two four-player
+town recoveries and reentries preserved seed/rooms/gold/inventory/quests.
+The long layout required126ground steps and5room traversals before the Warden;
+the elapsed time alone was not a stuck-job diagnosis. Rogue died with Warden
+last3202/15000HP. Healer was10.77636units away with7mana,18HealingLight casts,
+8GuardianEmbrace casts and4990boss ally healing. Fighter last855HP/20mana.
+This does not establish encounter viability or close the tank/armor/resource
+budget. Diagnose actual healing receipts, threat and intended attainable party
+preparation before another driver change; retain requested .01outside regen.
+
+Archive `/tmp/eidolon-party-ready-aura-failure-KiywKO`; log
+`/tmp/eidolon-party-ready-aura-native-20260912.log`. Credential scan sanitized0;
+owned containers/image/ports cleared before the QA-resource native started.
+No full clear, individual completion credit or Water handoff has passed here.
