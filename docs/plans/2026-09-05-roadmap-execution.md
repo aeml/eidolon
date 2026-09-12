@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:58 UTC
+## Current checkpoint — September 12, 04:04 UTC
+
+Previous turn was PROGRESS. This continuation is PROGRESS: accepted the frozen
+integrated rehearsal, retained its complete evidence and started the combined
+follow-up on verified source. Active native64 was polled without interruption.
+
+- **Integrated rehearsal34670988965 TERMINAL SUCCESS**, e2cd42f2. Client367/
+  5465tests100.597s, full lint/audit/benchmark; server coverage86.6%/97.027s,
+  full game race301.947s and backup/restore/bench/build PASS. Browser shards
+  **40/50/26=116cases PASS**. Native/deploy/live were intentionally skipped
+  for manual dispatch, not passed. Do not keep polling this terminal run.
+- All logs`/tmp/eidolon-integrated-1-1-{client,server,browser1,browser2,browser3}
+  -34670988965.log`; all browser artifacts retained:
+  `/tmp/eidolon-integrated-1-1-shard1-JaX63B`,
+  `/tmp/eidolon-integrated-1-1-shard2-49pR9L`,
+  `/tmp/eidolon-integrated-1-1-shard3-XLnDMH`. Inspected broken/restored crystal
+  captures: distinct phase coloring. Mocked presentation does not prove earned
+  raid repair, native performance or complete visual-quality acceptance.
+- After terminal completion, rehearsal branch fast-forwarded through5ab1b96e
+  Charge recovery and9bb79ab6 phone port, then documented acceptance as
+  **8f2c82a47467dc0d071949b95172b588706ec833**. Primary and
+  `/tmp/eidolon-1-1-integrated-regression-20260912` are clean/identical8f2c82a4.
+  Pushed ONLY`work/1-1-integrated-regression`; no production/version bump.
+  Session46769 terminal. GitHub ref verified exact8f2c82a4 before dispatch.
+- **Combined follow-up34671975379 ACTIVE**, created04:03:04, exact8f2c82a4
+  runheadSha confirmed. Poll SAME run. Previouse2cd42f2 acceptance cannot be
+  attributed to later5ab/9bb changes. No redundant run was canceled or started.
+- **Production64 CI34668112188 ACTIVE**, final live103493209801 still running
+  four-class/remote-animation QA (step start03:55:17). Anonymous/persistent
+  live checks passed. Public64/6d5e82cb last independently verified healthy
+  at03:49; final acceptance remains unproven. No65 master push or competing
+  native session. Native65 candidate1de18e03 remains prepared/clean and hosted
+  accepted, awaiting this final native job's terminal result.
+- No new soak or schedule change. All native65, instrumented Briar four-role,
+  full earned/all-dungeon/first-hour/balance/campaign/reconnect and later
+ 1.2–1.10 gates remain. Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:58 UTC
 
 Previous turn was PROGRESS; this turn made PROGRESS by preparing native65's
 missing runtime, collecting integrated browser evidence, and preventing a
