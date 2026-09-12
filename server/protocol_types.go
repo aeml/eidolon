@@ -67,6 +67,9 @@ type EntitySnapshot struct {
 	WeakPointDuration          float64
 	MarkWeakness               bool
 	MarkWeaknessDuration       float64
+	MarkWeaknessFactor         float64
+	BlessingResolvePower       float64
+	ZealPower                  float64
 	SpiritDuration             float64
 	BlessingResolveDuration    float64
 	TimeWarpDuration           float64

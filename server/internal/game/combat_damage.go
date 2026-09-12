@@ -118,10 +118,7 @@ func calculateFinalDamageWithCritical(attacker, target *Entity, baseDamage int, 
 
 	// Set Bonus: Shadow's Embrace 4pc (backstabAnyAngle) is handled in Backstab ability itself
 	if target != nil && target.MarkWeakness {
-		factor := target.MarkWeaknessFactor
-		if factor <= 0 {
-			factor = 0.20
-		}
+		factor := target.ActiveMarkWeaknessFactor()
 		finalDamage = int(float64(finalDamage) * (1.0 + factor))
 	}
 

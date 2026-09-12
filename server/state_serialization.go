@@ -316,6 +316,9 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SpellFocusMultiplier:       spellFocusMultiplier,
+		BlessingResolvePower:       e.ActiveBlessingResolvePower(),
+		ZealPower:                  e.ActiveZealPower(),
+		MarkWeaknessFactor:         e.ActiveMarkWeaknessFactor(),
 		SwiftDuration:              swiftDuration,
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,
@@ -375,6 +378,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cguardianEmbraceActive := current.GuardianEmbraceActive
 	cguardianEmbraceRadius := current.GuardianEmbraceAreaRadius()
 	cblessingResolveActive := current.BlessingResolveActive
+	cblessingResolvePower := current.ActiveBlessingResolvePower()
+	czealPower := current.ActiveZealPower()
+	cmarkWeaknessFactor := current.ActiveMarkWeaknessFactor()
 	cdivineInterventionActive := current.DivineInterventionActive
 	carcaneShieldActive := current.ArcaneShieldActive
 	carcaneShieldHP := current.ArcaneShieldHP
@@ -667,6 +673,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cblessingResolveActive != last.BlessingResolveActive {
+		return true
+	}
+	if math.Abs(cblessingResolvePower-last.BlessingResolvePower) > .0001 || math.Abs(czealPower-last.ZealPower) > .0001 || math.Abs(cmarkWeaknessFactor-last.MarkWeaknessFactor) > .0001 {
 		return true
 	}
 	if cdivineInterventionActive != last.DivineInterventionActive {
@@ -1291,6 +1300,9 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SpellFocusMultiplier:       spellFocusMultiplier,
+		BlessingResolvePower:       float32(e.ActiveBlessingResolvePower()),
+		ZealPower:                  float32(e.ActiveZealPower()),
+		MarkWeaknessFactor:         float32(e.ActiveMarkWeaknessFactor()),
 		SwiftDuration:              swiftDuration,
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,

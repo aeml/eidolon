@@ -93,7 +93,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'blessing_resolve',
                 name: 'Blessing of Resolve',
                 icon: '✝️',
-                detail: '25% damage reduction',
+                detail: '+20% defense',
                 durationSeconds: 6.2,
                 isDebuff: false
             }),
@@ -141,7 +141,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'blessing_zeal',
                 name: 'Blessing of Zeal',
                 icon: '✨',
-                detail: '+35% damage and healing',
+                detail: '+20% movement, +30% attack speed',
                 durationSeconds: 11.4,
                 isDebuff: false
             }),
