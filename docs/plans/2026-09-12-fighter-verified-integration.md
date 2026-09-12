@@ -26,3 +26,11 @@ passed. Logs `/tmp/eidolon-fighter-verified-integration-{tests,lint,assets}-2026
 Combined full CI is still required before moving primary. Native evidence above
 is from the frozen component candidates, not a new combined native run.
 No master push, version bump, production deployment or broad milestone closure.
+
+Combined CI34696773008 on92afea0a SUCCEEDED:402suites6309tests115.96s,
+game86.9%/101.572s, race354.803s and browser40+53+26=119actual checks.
+Logs `/tmp/eidolon-fighter-verified-ci-{client,server,browser1,browser2,browser3}-34696773008.log`.
+Native/deployment jobs were skipped, as expected for the development dispatch.
+This combined candidate is accepted for primary integration using that full
+regression run and the frozen component native evidence above. No full1.1
+or production acceptance is implied.
