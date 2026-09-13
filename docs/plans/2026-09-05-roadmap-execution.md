@@ -17,7 +17,44 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 1.8 pushed / 1.9 opened
+## Current checkpoint — September 13, 1.8 CI correction / 1.9 event core
+
+User's feature-first / focused-check policy above remains authoritative. No broad
+test reruns or new architecture work merely for reassurance.
+
+1.8 has NOT deployed; 1.7 e84f6219 remains last verified live. CI34744510043
+failed a legacy-only dispatcher assertion. Commit254d07ae fixes the test to
+also validate the actual messageHandlers registry; focused admission tests PASS.
+Pushed from /tmp/eidolon-1-8-social-20260913, now clean at254d07ae.
+Replacement CI34744672300 also TERMINAL FAILURE: normal coverage passed, but
+race run TestGuildPersistenceLifecycle could not connect to localhost Mongo
+within10sec. No DATA RACE reported; game race package passed. Do not blindly
+rerun. CI does configure a healthy mongo:7.0 service on27017; newFriendshipDB
+calls New(MONGO_URI), failing rather than skipping when configured. Root cause
+not established. Inspect connection setup and service logs next.
+
+Continuation = PROGRESS. Mongo logs show ongoing accepted connections/no crash;
+exact isolated timeout cause unknown. Retried ONLY failed jobs ONCE on same
+CI34744672300, now server tests IN_PROGRESS/client prior PASS reused. Monitor
+same handle; don't blindly repeat or weaken tests. No deployment verified yet.
+
+Active1.9WT /tmp/eidolon-1-9-world-20260913 clean HEAD803d0901 includes merged
+254d07ae. Four rotating cooperative elemental events, contested ward mechanics,
+three waves/champion, owned enemy cleanup and five-minute hazard calm NOW bound
+to live server loop/login/resume/broadcast and client nearby collapsible objective,
+world rings and map marker. Corrected champion BaseStats vitality so recalculation
+preserves enlarged health; existing hazard reconciliation now passes CALMED and
+restores visuals without rebuilding. Focused TestPublicEvent PASS0.013s, build-all
+PASS; four JS suites26tests PASS3.647s; changedJS lint/client prepare/diffPASS.
+Single390px rendered event fixture PASS6.1s; screenshot
+/tmp/eidolon-public-event-phone-20260913.png inspected. Prepared view/kill states,
+NOT earned party clear or actual site clearance. Before release: inspect actual
+region approach/geometry and one connected shared encounter. Read full1.9plan
+in activeWT. Full casino venue/slots/poker/VIP and final integration remain open;
+VIP currency question unanswered. No local QA servers/Mongo left running.
+ROOT LEDGER ONLY, NEVER PUSH. Goal active.
+
+## Previous checkpoint — September 13, 1.8 pushed / 1.9 opened
 
 Previous/current goal turns = PROGRESS.1.8 packaged and PUSHED as
 595c07ff4c543c4bae48907627ff3a72ae25d33f from clean frozen worktree
