@@ -334,7 +334,14 @@ describe('WorldGenerator shadow setup', () => {
 
         expect(loadModelSpy).not.toHaveBeenCalled();
         expect(generator.scene.add).toHaveBeenCalledTimes(4);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(22);
+        // The shared-zone entrance has a closed physical door in addition to
+        // the existing 22 town colliders; entry now uses its dialogue.
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23);
+        const doorCollider = generator.collisionManager.addCollider.mock.calls[0][0];
+        expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
+        expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);
+        expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -21.65))).toBe(true);
+        expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -19))).toBe(false);
         expect(generator.collisionManager.addOrientedCollider).not.toHaveBeenCalled();
         const structures = generator.scene.add.mock.calls.map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
