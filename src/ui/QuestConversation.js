@@ -1,5 +1,6 @@
 import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 import { chronicleHunts } from '../data/chronicleHunts.generated.js';
+import { CHRONICLE_AFTERMATH, hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 
 const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
 const huntHandoffs = new Map(chronicleHunts.map(hunt => [hunt.previousQuestId, hunt.handoff]));
@@ -58,6 +59,9 @@ export function getIlyraCompletionReply(quest) {
 
 export function renderQuestConversation(ui, quests) {
     const story = ui.questKind === 'story';
+    const aftermathOpen = new Set([...ui.questList.querySelectorAll('details[data-aftermath-topic][open]')].map(node => node.dataset.aftermathTopic));
+    const aftermathFocus = document.activeElement?.matches('summary')
+        ? document.activeElement.closest('[data-aftermath-topic]')?.dataset.aftermathTopic : null;
     const speaker = story ? 'Archmage Ilyra' : 'Quest Giver';
     ui.questWindow?.classList.toggle('is-story', story);
     const heading = ui.questWindow?.querySelector('.window-header > span');
@@ -77,6 +81,23 @@ export function renderQuestConversation(ui, quests) {
         return element;
     };
     const redraw = () => { ui.questWindowSignature = ''; ui.updateQuestWindow(quests); };
+    const appendAftermath = () => {
+        if (!story || !hasCompletedDarkKing(quests)) return;
+        const section = text('details', '', 'quest-dialogue__lore quest-aftermath');
+        section.dataset.aftermathTopic = 'letter'; section.open = aftermathOpen.has('letter');
+        section.append(text('summary', `${CHRONICLE_AFTERMATH.title} · After the Chronicle`));
+        section.append(text('p', 'Optional conversation · Your completed Chronicle and earned rewards are unchanged.', 'quest-dialogue__status'));
+        for (const paragraph of CHRONICLE_AFTERMATH.introduction.split('\n\n')) section.append(text('p', paragraph, 'quest-dialogue__speech'));
+        for (const topic of CHRONICLE_AFTERMATH.topics) {
+            const detail = text('details', '', 'quest-dialogue__lore');
+            detail.dataset.aftermathTopic = topic.id; detail.open = aftermathOpen.has(topic.id);
+            detail.append(text('summary', topic.question));
+            for (const paragraph of topic.answer.split('\n\n')) detail.append(text('p', paragraph, 'quest-dialogue__speech'));
+            section.append(detail);
+        }
+        ui.questList.append(section);
+        if (aftermathFocus) [...section.querySelectorAll('summary')].find(node => node.parentElement.dataset.aftermathTopic === aftermathFocus)?.focus({ preventScroll: true });
+    };
     const intro = text('p', story
         ? ilyraGreeting(quests)
         : '“Lanternhold needs steady hands. Choose your contracts, then return to me when the work is done.”', 'quest-conversation__intro');
@@ -123,6 +144,7 @@ export function renderQuestConversation(ui, quests) {
             row.append(text('span', status, 'quest-contract__marker'), text('span', ui.getQuestTitle(quest)), text('small', ready ? 'Ready to complete' : quest.accepted ? `${quest.count} / ${quest.maxCount}` : 'Available'));
             ui.questList.appendChild(row);
         });
+        appendAftermath();
         return;
     }
     const ready = selected.accepted && selected.maxCount > 0 && selected.count >= selected.maxCount;
@@ -164,4 +186,5 @@ export function renderQuestConversation(ui, quests) {
     if (!story) detail.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
     if (story && selected.legacyOptional && current) detail.append(button('Return to main story', () => { ui.selectedQuestId = null; redraw(); }));
     ui.questList.appendChild(detail);
+    appendAftermath();
 }

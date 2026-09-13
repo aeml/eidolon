@@ -1,14 +1,17 @@
 import { CHRONICLE_WITNESSES } from '../data/chronicleWitnesses.js';
 import { getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
 import { hasChronicleRestoration } from '../core/ChronicleRestoration.js';
+import { AFTERMATH_WITNESS_TOPICS, hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 
 export function getWitnessConversation(id, quests = []) {
     const witness = CHRONICLE_WITNESSES.find(value => value.id === id);
     if (!witness) return null;
     const recorded = new Set(quests.flatMap(getRecordedChronicleDiscoveries).map(site => site.id));
     const restored = hasChronicleRestoration(quests, witness.realm);
-    return { ...witness, topics: witness.topics.filter(topic =>
-        (!topic.requiresDiscovery || recorded.has(topic.requiresDiscovery)) && (!topic.restored || restored)) };
+    const defeatedKing = hasCompletedDarkKing(quests);
+    return { ...witness, topics: [...witness.topics, ...(AFTERMATH_WITNESS_TOPICS[id] || [])].filter(topic =>
+        (!topic.requiresDiscovery || recorded.has(topic.requiresDiscovery)) && (!topic.restored || restored)
+        && (!topic.requiresDarkKing || defeatedKing)) };
 }
 
 export function renderWitnessConversation(ui, quests) {

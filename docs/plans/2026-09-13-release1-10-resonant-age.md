@@ -32,9 +32,38 @@ bump alone does not complete the goal; every earlier promised feature remains.
 
 ## Reusable 1.9 evidence and remaining integration
 
+## September 13 — story and content cadence implemented locally
+
+`src/data/chronicleAftermath.js` adds **A Letter Without a Throne**: an optional
+Ilyra conversation after the saved, manually completed Dark King quest, plus
+linked Mara/Selen topics. Malachar remains dead; all four crystals and the
+existing finale remain intact. No new quest, reward, save schema or reset.
+The existing completion speech appears first, and old completed characters can
+read the hook without replaying the campaign. Open topics/focus survive unrelated
+quest updates. This is a small mystery hook, not an additional campaign chapter.
+
+Help now contains **Your Next Adventure** in place of the outdated daily-reward
+optimization loop. It explains optional permanent story, the ten-minute event
+rotation, midnight Eastern daily contracts, Monday 00:00 UTC personal raid cache,
+quarterly UTC seasons and player-organized activities. Corrected the obsolete
+blanket party-bonus claim. `docs/CONTENT_CADENCE.md` grounds the operating/release
+rhythm in existing authoritative systems without adding scheduler/reward code.
+
+Focused verification: aftermath + existing manual conversations/witnesses,
+43 tests PASS in 3.623s; changed JavaScript ESLint PASS; changed Help cadence
+assertion PASS in 1.164s (247 unrelated presentation checks intentionally skipped);
+`git diff --check` PASS. Broad browser/device/integration remains consolidated
+after all features. Neither local story nor Help content is deployed yet.
+
+Next feature dependency is the previously requested VIP currency name and
+acquisition policy. It remains unresolved; do not invent or omit this scope.
+
+## 1.9 release evidence
+
 1.9 release/worktree is frozen at e86e29a0f808e7547678c77485b8441c06ee067c in
-/tmp/eidolon-1-9-world-20260913, pushed master. ExactCI34749377284 was queued at
-handoff; monitor the SAME run.1.8 remains last verified live until1.9 confirms.
+/tmp/eidolon-1-9-world-20260913, pushed master. ExactCI34749377284 currently has
+server/client and browser shard3 passed; shards1/2 still running. Monitor the
+SAME run.1.8 remains last verified live until1.9 confirms.
 Release corrections belong in the frozen release WT, then merge forward here.
 
 See 1.9 release, elemental-slot and Fourfold-poker handoffs. Implemented: rotating

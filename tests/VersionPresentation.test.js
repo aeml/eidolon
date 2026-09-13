@@ -1018,14 +1018,19 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Journal (J)');
     });
 
-    test('includes a daily return loop quick-reference in the help screen', () => {
-        expect(indexHtml).toContain('id="help-daily-return-guide"');
-        expect(indexHtml).toContain('Daily Return Loop');
-        expect(indexHtml).toContain('Repeatable Ladder');
-        expect(indexHtml).toContain('ET reset clock');
-        expect(indexHtml).toContain('+10% rewards per nearby member');
-        expect(indexHtml).toContain('Trading House');
-        expect(indexHtml).toContain('After reset, reopen the Journal');
+    test('includes an optional adventure cadence guide with actual reset rules', () => {
+        // Scope to the current guide, not preserved historical patch notes.
+        const guide = indexHtml.split('id="help-daily-return-guide"')[1].split('support-window__footer')[0];
+        expect(guide).toContain('Your Next Adventure');
+        expect(guide).toContain('every 10 minutes');
+        expect(guide).toContain('midnight Eastern Time');
+        expect(guide).toContain('Monday at 00:00 UTC');
+        expect(guide).toContain('January, April, July and October');
+        expect(guide).toContain('Story progress does not reset');
+        expect(guide).toContain('A Letter Without a Throne');
+        expect(guide).toContain('You do not need to finish every activity each day');
+        expect(guide).not.toContain('+10% rewards per nearby member');
+        expect(guide).not.toContain('strongest paying route');
     });
 
     test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
