@@ -1655,10 +1655,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						e.LastAttackTime = time.Now() // put normal attack on cooldown too
 						e.State = "ATTACKING"
 
-						slamX := e.X
-						slamZ := e.Z
-						slamRadius := 8.0 + (e.Scale-1.0)*1.5 // ~12.5 for Scale 4
-						slamDelay := 2.0                      // seconds
+						circles, movementHint := dungeonBossImpactPattern(e, targetX, targetZ)
+						slamDelay := 2.0 // seconds
 						bossID := e.ID
 						bossDamage := e.Damage
 						instanceID := e.InstanceID
@@ -1666,21 +1664,25 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						// Emit telegraph event so clients show a warning circle
 						if w.OnEvent != nil {
-							w.OnEvent("telegraph", TelegraphEvent{
-								SourceID:   bossID,
-								X:          slamX,
-								Z:          slamZ,
-								Radius:     slamRadius,
-								Duration:   slamDelay,
-								Theme:      presentation.Theme,
-								Attack:     presentation.Attack,
-								ThreatTier: "boss",
-								Label:      presentation.Label,
-							})
+							for index, circle := range circles {
+								w.OnEvent("telegraph", TelegraphEvent{
+									SourceID:   bossID,
+									X:          circle.X,
+									Z:          circle.Z,
+									Radius:     circle.Radius,
+									Hint:       movementHint,
+									Silent:     index > 0,
+									Duration:   slamDelay,
+									Theme:      presentation.Theme,
+									Attack:     presentation.Attack,
+									ThreatTier: "boss",
+									Label:      presentation.Label,
+								})
+							}
 						}
 
 						// Schedule AoE damage after the telegraph delay
-						x, z, radius, delay, dmg, instID, srcID := slamX, slamZ, slamRadius, time.Duration(slamDelay*float64(time.Second)), bossDamage, instanceID, bossID
+						delay, dmg, instID, srcID := time.Duration(slamDelay*float64(time.Second)), bossDamage, instanceID, bossID
 						w.runBackground(func() {
 							if !w.waitBackground(delay) {
 								return
@@ -1712,9 +1714,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									p.Mu.Unlock()
 									continue
 								}
-								dx := p.X - x
-								dz := p.Z - z
-								if math.Sqrt(dx*dx+dz*dz) <= radius {
+								if insideBossImpactPattern(p.X, p.Z, circles) {
 									damage := dmg - p.Defense/2
 									if damage < 1 {
 										damage = 1

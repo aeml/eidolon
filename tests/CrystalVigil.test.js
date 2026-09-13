@@ -1,5 +1,7 @@
 import { createProceduralCrystalSanctum, disposeCrystalSanctum } from '../src/art/ProceduralCrystalSanctums.js';
 import { QuestUI } from '../src/ui/QuestUI.js';
+import { jest } from '@jest/globals';
+import { installGameEngineNetworkMessages } from '../src/core/GameEngineNetworkMessages.js';
 
 const crystal = {
     stage: 'repairing', raidType: 'air_crystal_raid', name: 'Skyglass Crystal', wave: 2,
@@ -13,6 +15,21 @@ const crystal = {
         ]
     }
 };
+
+test('multi-circle boss pattern shows every footprint with only one movement callout', () => {
+    class Harness {}
+    installGameEngineNetworkMessages(Harness);
+    const engine = new Harness();
+    engine.player = { id: 'prepared-party-member' };
+    engine.spawnTransientEffect = jest.fn();
+    engine.uiManager = { showCombatCallout: jest.fn() };
+    for (let index = 0; index < 3; index++) {
+        engine.handleServerMessage({ type: 'telegraph', payload: { x: index * 10, z: 0, radius: 6, duration: 2, label: 'ROOT QUAKE', hint: 'Step sideways.', silent: index > 0 } });
+    }
+    expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
+    expect(engine.uiManager.showCombatCallout).toHaveBeenCalledTimes(1);
+    expect(engine.uiManager.showCombatCallout.mock.calls[0][0].subtitle).toBe('Step sideways.');
+});
 
 test('ritual remains the tracked objective after the boss dies, including recovery', () => {
     const summary = { rooms: [{ type: 'boss', cleared: true }], objectiveRoomIndex: -1, crystal: JSON.parse(JSON.stringify(crystal)) };

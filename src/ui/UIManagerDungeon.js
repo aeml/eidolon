@@ -5,6 +5,7 @@ import {
 } from '../data/dungeonProgression.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
+import { appendDungeonPreparation, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from './DungeonPreparation.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -175,6 +176,7 @@ class UIManagerDungeonMethods {
             `;
         }
         scroll.append(partyStateBox, dungeonPanel, raidPanel);
+        appendDungeonPreparation(partyStateBox);
 
         // Dungeon Selection
         const dungeonInfo = {
@@ -551,7 +553,7 @@ class UIManagerDungeonMethods {
         raidNote.className = 'adventure-raid-note';
         raidNote.textContent = data.isLeader
             ? 'Gather 5–10 players. Clear each elemental raid, then defend Maelin while she restores its crystal.'
-            : 'Only your party leader can form or enter raids. Gather 5–10 players and choose your next crystal together.';
+            : 'Your leader forms and starts raids. Members may continue their existing run individually. Gather 5–10 players and complete a ready check in the Party panel.';
         raidPanel.appendChild(raidNote);
         elementalRaids.forEach((raid) => {
             const unlocked = Boolean(data.elementalRaidAccess?.[raid.type]);
@@ -582,6 +584,12 @@ class UIManagerDungeonMethods {
                 removeMenu();
             };
             raidBox.append(formRaid, enterRaid);
+            if (unlocked) {
+                const preparation = document.createElement('p');
+                preparation.className = 'adventure-raid-note';
+                preparation.textContent = CRYSTAL_VIGIL_PREPARATION[raid.element] + ' Complete this task AND defeat every attacker in all three waves, then return to Ilyra.';
+                raidBox.append(preparation);
+            }
             raidPanel.appendChild(raidBox);
         });
         if (!raidPanel.querySelector('.elemental-raid-card') && playerLevel < 100) {
@@ -624,6 +632,14 @@ class UIManagerDungeonMethods {
                 removeMenu();
             };
             raidBox.append(formRaid, enterRaid);
+            const rewards = document.createElement('p');
+            rewards.className = 'adventure-raid-note';
+            rewards.dataset.weeklyRaidReward = data.weeklyRaidReward?.status || 'unknown';
+            rewards.textContent = weeklyRaidRewardText(data.weeklyRaidReward);
+            const phases = document.createElement('p');
+            phases.className = 'adventure-raid-note';
+            phases.textContent = 'Four phases: Orun weakens the King’s attacks; Neris restores the living raid; Pyralis opens a damage window; Aeral restores mana for the final assault. Keep the tank supported and save cooldowns for the Eidolons’ callouts.';
+            raidBox.append(rewards, phases);
             raidPanel.appendChild(raidBox);
         }
 
@@ -650,6 +666,23 @@ class UIManagerDungeonMethods {
                 removeMenu();
             };
             actions.appendChild(resetBtn);
+            if (!this.isMobile && data.hasInstance) {
+                const sendReset = resetBtn.onclick;
+                const confirmation = document.createElement('div');
+                confirmation.id = 'dungeon-reset-confirm';
+                confirmation.hidden = true;
+                const warning = document.createElement('p');
+                warning.textContent = 'Discard this run’s progress? Everyone must return to Lanternhold first. Quest rewards and weekly cache limits are not reset.';
+                const cancel = document.createElement('button');
+                cancel.type = 'button'; cancel.className = 'menu-btn'; cancel.textContent = 'Keep run';
+                const confirm = document.createElement('button');
+                confirm.type = 'button'; confirm.className = 'menu-btn'; confirm.textContent = 'Reset run';
+                cancel.onclick = () => { confirmation.hidden = true; resetBtn.hidden = false; resetBtn.focus(); };
+                confirm.onclick = sendReset;
+                resetBtn.onclick = () => { confirmation.hidden = false; resetBtn.hidden = true; cancel.focus(); };
+                confirmation.append(warning, cancel, confirm);
+                actions.append(confirmation);
+            }
         }
 
         const footerCloseBtn = document.createElement('button');

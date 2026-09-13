@@ -82,6 +82,11 @@
 .adventure-raids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .adventure-raids[hidden] { display: none; }
 .adventure-raid-note { grid-column: 1 / -1; margin: 0 0 4px; color: var(--color-text-muted); font-size: 0.8rem; line-height: 1.5; }
+.adventure-preparation { margin-top: 10px; border-top: 1px solid var(--border-light); line-height: 1.6; }
+.adventure-preparation summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--color-gold); }
+.adventure-preparation p { margin: 0 0 10px; color: var(--color-text-muted); font-size: 0.82rem; }
+#dungeon-reset-confirm { flex-basis: 100%; padding: 12px; border: 1px solid #bd7868; border-radius: 8px; line-height: 1.5; }
+#dungeon-reset-confirm[hidden] { display: none; }
 .dungeon-raid-card strong { font-size: 0.9rem; line-height: 1.45; font-weight: 500; color: var(--raid-accent, var(--color-gold)); }
 .dungeon-raid-card[data-element="earth"] { --raid-accent: #a5b88c; }
 .dungeon-raid-card[data-element="water"] { --raid-accent: #8cb8cf; }

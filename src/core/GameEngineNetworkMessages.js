@@ -811,12 +811,12 @@ class GameEngineNetworkMessageMethods {
                     theme: data.theme || '',
                     attack: data.attack || ''
                 });
-                if (this.uiManager?.showCombatCallout) {
+                if (this.uiManager?.showCombatCallout && !data.silent) {
                     this.uiManager.showCombatCallout({
                         title: label,
                         tone: threatTier,
                         duration: Number(data.duration || 2.0),
-                        subtitle: threatTier === 'boss' ? 'Brace for impact' : 'Incoming attack'
+                        subtitle: data.hint || (threatTier === 'boss' ? 'Brace for impact' : 'Incoming attack')
                     });
                 }
             }

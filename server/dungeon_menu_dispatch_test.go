@@ -4,9 +4,46 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/game"
 )
+
+func TestDungeonMenuDoesNotPromiseCacheWhenRewardStoreUnavailable(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	previousDB := db
+	db = nil
+	defer func() { db = previousDB }()
+	client := addChatTestClient("raid-cache-reader", "")
+	actor := world.GetEntity(client.playerID)
+	actor.Mu.Lock()
+	actor.Level = game.MaxPlayerLevel
+	actor.Mu.Unlock()
+	world.CreateParty(client.playerID)
+	client.dispatchMessage(Message{Type: MsgGetDungeonStatus})
+	select {
+	case raw := <-client.send:
+		var message Message
+		if err := json.Unmarshal(raw, &message); err != nil {
+			t.Fatal(err)
+		}
+		var payload struct {
+			WeeklyRaidReward struct {
+				Status   string
+				ResetsAt time.Time
+			}
+		}
+		if err := json.Unmarshal(message.Payload, &payload); err != nil {
+			t.Fatal(err)
+		}
+		if message.Type != MsgGetDungeonStatus || payload.WeeklyRaidReward.Status != "unknown" || payload.WeeklyRaidReward.ResetsAt.Weekday() != time.Monday {
+			t.Fatalf("menu invented available rewards: %s", message.Payload)
+		}
+	default:
+		t.Fatal("missing cache status response")
+	}
+}
 
 func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 	restore := installChatTestState(t)

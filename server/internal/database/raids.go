@@ -36,6 +36,9 @@ func (db *DB) ClaimWeeklyRaidReward(playerID string, at time.Time) (bool, error)
 }
 
 func (db *DB) HasWeeklyRaidReward(playerID string, at time.Time) (bool, error) {
+	if db == nil || db.raidLockouts == nil || playerID == "" {
+		return false, fmt.Errorf("raid lockout service unavailable")
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	err := db.raidLockouts.FindOne(ctx, bson.M{"player_id": playerID, "week": CurrentRaidWeek(at)}).Err()
@@ -43,4 +46,13 @@ func (db *DB) HasWeeklyRaidReward(playerID string, at time.Time) (bool, error) {
 		return false, nil
 	}
 	return err == nil, err
+}
+
+func NextRaidWeekReset(at time.Time) time.Time {
+	utc := at.UTC()
+	days := (int(time.Monday) - int(utc.Weekday()) + 7) % 7
+	if days == 0 {
+		days = 7
+	}
+	return time.Date(utc.Year(), utc.Month(), utc.Day()+days, 0, 0, 0, 0, time.UTC)
 }

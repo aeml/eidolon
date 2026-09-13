@@ -32,6 +32,37 @@ prepared fixture. Reuse unchanged passing evidence and do not start another soak
 
 ## Implementation checkpoint — September 13
 
+03:29: encounter/preparation batch complete locally. Existing realm bosses now
+use genuinely different, locked-at-windup footprints in the same damage pipeline:
+Earth three-circle directed fissure, Water target-position surge, Fire three
+eruption pockets, Air six-circle perimeter with safe center. Dark/unknown bosses
+retain their existing slam and Dark King phase gates. Exact same circle data
+drives warnings and impact; overlapping circles cause one hit, one group callout
+includes movement advice, defenses/shields remain honored. Existing10s special
+cadence/2s reaction window and ordinary damage budgets retained, not inflated.
+
+Guide includes collapsible four-role/gear/rest/ready-check preparation and exact
+per-realm ritual assignments; explains five-minute empty expiry, personal re-entry,
+wave recovery and destructive resets. Desktop reset now confirms/cancels explicitly
+like the existing phone route. Dark King card distinguishes weekly reward lockout
+from raid entry, reads actual DB claim status, and shows next Monday00:00UTC reset.
+Unavailable DB is explicitly unknown, never advertised as an available cache.
+
+Focused menu/phone/preparation21 PASS2.464s; DB boundary/unavailable tests PASS;
+existing occupied-reset dispatch PASS and new unknown-cache dispatch PASS0.087s.
+Actual AI delayed fissure observed with four role-appropriate characters wearing
+14 legal level30 items (5Rare/9Uncommon via existing real role-affix generator):
+tank survives one overlap hit, healer/Wizard/Rogue move clear and take no damage.
+Focused pattern/defense run PASS4.193s, final single-hit group check PASS2.098s.
+Client multi-marker/single-callout test plus vigil tests4 PASS0.785s; changed lint
+PASS. This is a short functional group check, not an earned dungeon/raid clear.
+
+Next: merge1.5 phone correctiond8323180, package1.6 notes/version and relevant
+build checks. Wait for1.5 exact deployment verification before publishing1.6.
+1.5 CI34734694245 terminalFAIL only568×320 bag/recovery layout; fixed in1.5WT,
+exact landscape cases2PASS12.5s, pushedd83231809994317aac31dcf1c901ae5e22791e2d.
+ReplacementCI34735541628 is running; do not restart old terminal runs.
+
 All four repair events now have server-owned objectives alongside their existing
 6/8/10 attackers: Earth holds a central ward for eight defended seconds; Water
 carries two memories from the eastern font back to Maelin; Fire channels three

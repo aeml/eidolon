@@ -704,6 +704,17 @@ func (c *Client) dispatchMessage(msg Message) {
 		resp["darkRealmOpen"] = darkRealmOpen
 		resp["darkKingDefeated"] = darkKingDefeated
 		resp["elementalRaidAccess"] = game.ElementalRaidAccessForPlayer(player)
+		if player.Level >= game.MaxPlayerLevel {
+			now := time.Now().UTC()
+			status := "unknown"
+			if claimed, err := db.HasWeeklyRaidReward(c.playerID, now); err == nil {
+				status = "available"
+				if claimed {
+					status = "claimed"
+				}
+			}
+			resp["weeklyRaidReward"] = map[string]interface{}{"status": status, "resetsAt": database.NextRaidWeekReset(now)}
+		}
 		if statusReq.DungeonType != "" {
 			resp["dungeonType"] = statusReq.DungeonType
 		}
