@@ -17,7 +17,27 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 06:17 UTC
+## Current checkpoint — September 13, 06:29 UTC
+
+1.8WT /tmp/eidolon-1-8-social-20260913 clean HEADc9af2697, NOT PUSHED/runtime1.7.
+55a9437a commits actual connected/restart check; c9af2697 adds shared server-owned
+table preparation phases and opaque roster-revision readiness. Poker minimum2real
+players, blackjack/slots1. Join/leave/reconnect resets consent; delayed ready
+requests reject. No wagers/Gold mutation/deal engine. Focused casino game checks
+PASS0.081s, CasinoController3PASS8.652s, changedJS lint/client prep/Go build-all/diff
+PASS. Connected test updated with revision but not rerun after protocol change;
+previous real network/restart evidence below remains accurately scoped. No
+geometry/camera change, no repeated broad browser matrix or soak.
+
+Still required1.8: synchronized round lifecycle integration before claiming
+casino infrastructure closed; readiness is NOT a played round. Then package1.8
+with cumulative notes after exact1.7 release verification. Full games/location
+and functional VIP remain required subsequent stages; currency undecided.
+
+1.7replacementCI34742314831 still IN_PROGRESS: clientPASS/serverRUNNING. No new
+deployment claim or retry.1.6cf2a028d is last verified live. NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 06:17 UTC
 
 Actual two-socket casino seat/resume/restart check PASS1.806s on1.8 binary92380189.
 It verifies occupied-seat rejection, private-session ownership/nonleakage,
