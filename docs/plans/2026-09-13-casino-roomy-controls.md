@@ -63,3 +63,28 @@ This batch does not implement the EP wallet, exchange, allowance or vendor.
 
 Temporary screenshots: `/tmp/eidolon-casino-roomy-desktop.png` and
 `/tmp/eidolon-casino-roomy-phone.png` (not durable repository assets).
+
+## Release gate correction — late scene snapshots
+
+Initial release f9b27f00 / CI34776355124 passed client, server (including race)
+and all three browser shards, but predeploy Recall failed: town position,
+collision, scenery and cleared layout were correct; currentInstanceId was not
+cleared. Deployments were skipped, so production was not changed by this run.
+
+NetworkManager queue compaction prioritizes control messages before queued state.
+The full-state handler treated an empty overworld ID as uninitialized and could
+restore a late dungeon ID after enter_instance. Delta updates could also apply
+old health/state across the same boundary. Added a self-snapshot scene check
+before processing either full or delta batches once a scene type is established;
+bootstrap adoption remains available only before an explicit transition.
+
+Regression tests failed in four cases before the correction (full/delta late
+dungeon state after Recall and late overworld state after new-scene entry).
+Initial snapshot bootstrap passed. All five pass after the fix, including valid
+town updates after rejecting old state; focused recovery/movement/hazard/version
+suites pass340tests2.815s and lint/diff pass. Original Recall assertions unchanged.
+Only the affected authenticated gameplay route was rerun locally with disposable
+services, runID recall192fix: combat, loot, dungeon entry/exit and persistence
+PASS1test35.3s. Credential scan passed; script cleaned its owned containers/data.
+No broad local matrix or soak. Follow-up release retains Alpha1.9.2 and includes
+the Recall fix in cumulative patch notes; its exact CI still must verify release.

@@ -427,6 +427,16 @@ class GameEngineNetworkMessageMethods {
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
+        // Queue compaction prioritizes control messages, so enter_instance can
+        // precede a snapshot captured in the old scene. Reject that whole batch
+        // before it can restore an old instance ID, health or remote entities.
+        // Empty string is the authoritative overworld ID, not an unknown scene.
+        if (this.currentInstanceType && (msg.type === 'state' || msg.type === 'delta')) {
+            const updates = msg.type === 'state' ? msg.payload : msg.payload?.u;
+            const self = updates?.[this.player.id] || Object.values(updates || {}).find(entity => entity.id === this.player.id);
+            if (typeof self?.instanceId === 'string' && self.instanceId !== (this.currentInstanceId || '')) return;
+        }
+
         if (msg.type === 'chat') {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
@@ -940,8 +950,8 @@ class GameEngineNetworkMessageMethods {
                 if (pData.id === this.player.id) {
                     // Update local player stats from server
                     if (this.player) {
-                        // Initialize currentInstanceId if null (first connection)
-                        if (!this.currentInstanceId && pData.instanceId) {
+                        // Bootstrap only before an explicit scene transition.
+                        if (!this.currentInstanceType && !this.currentInstanceId && pData.instanceId) {
                             this.currentInstanceId = pData.instanceId;
                         }
 

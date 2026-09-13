@@ -16,6 +16,45 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
+test.each(['state', 'delta'])('a late dungeon %s cannot undo authoritative town recall', type => {
+    const engine = createEngineHarness();
+    engine.currentInstanceId = ''; engine.currentInstanceType = 'overworld';
+    engine.player.state = 'IDLE'; engine.player.stats.hp = 100;
+    engine.player.position.set(-1.25, 0, 200);
+    const actor = { id: 'player-1', instanceId: 'old-dungeon', state: 'DEAD', health: 0, x: 20000, z: 20000 };
+    engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+        : { u: { 'player-1': actor }, r: [] } });
+    expect(engine.currentInstanceId).toBe('');
+    expect(engine.player.state).toBe('IDLE'); expect(engine.player.stats.hp).toBe(100);
+    expect(engine.player.position.toArray()).toEqual([-1.25, 0, 200]);
+    // The next valid town snapshot must still be applied, not freeze self sync.
+    const current = { id: 'player-1', instanceId: '', state: 'IDLE', health: 90 };
+    engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': current }
+        : { u: { 'player-1': current }, r: [] } });
+    expect(engine.player.stats.hp).toBe(90);
+});
+
+test.each(['state', 'delta'])('late overworld %s cannot replace a newly entered scene', type => {
+    const engine = createEngineHarness();
+    engine.currentInstanceId = 'lanternhold-casino'; engine.currentInstanceType = 'casino';
+    engine.player.state = 'IDLE'; engine.player.stats.hp = 100;
+    const actor = { id: 'player-1', instanceId: '', state: 'DEAD', health: 0 };
+    engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+        : { u: { 'player-1': actor }, r: [] } });
+    expect(engine.currentInstanceId).toBe('lanternhold-casino');
+    expect(engine.player.state).toBe('IDLE'); expect(engine.player.stats.hp).toBe(100);
+});
+
+test('the first self snapshot can still initialize the scene before an explicit transition', () => {
+    const engine = createEngineHarness();
+    engine.currentInstanceId = null; engine.currentInstanceType = null;
+    engine.handleServerMessage({ type: 'state', payload: { 'player-1': {
+        id: 'player-1', instanceId: 'saved-dungeon', state: 'IDLE', health: 100
+    } } });
+    expect(engine.currentInstanceId).toBe('saved-dungeon');
+    expect(engine.player.stats.hp).toBe(100);
+});
+
 test.each(['state', 'delta'])('a late basic-attack %s cannot strand a ground-click destination', type => {
     const engine = createEngineHarness();
     engine.player.state = 'MOVING';
