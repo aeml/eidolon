@@ -13,7 +13,7 @@ import (
 
 const CasinoReconnectGrace = time.Minute
 
-// Coordinates are the future public gaming floor inside the existing town hall.
+// Coordinates belong exclusively to the permanent shared casino scene.
 // The venue renderer consumes this catalog; clients never supply seat transforms.
 type CasinoSeatPosition struct {
 	X        float64 `json:"x"`
@@ -36,8 +36,12 @@ type CasinoTable struct {
 
 func CasinoTables() []CasinoTable {
 	tables := []CasinoTable{
-		{ID: "public-blackjack", Name: "Lanternhold Blackjack", Game: "blackjack", Floor: "public", X: -4.3, Z: 171, MinimumPlayers: 1},
-		{ID: "public-poker", Name: "Fourfold Hold'em", Game: "poker", Floor: "public", X: 4.3, Z: 171, MinimumPlayers: 2},
+		{ID: "public-blackjack", Name: "Lanternhold Blackjack", Game: "blackjack", Floor: "public", X: -18, Z: 176, MinimumPlayers: 1},
+		{ID: "public-poker", Name: "Fourfold Hold'em", Game: "poker", Floor: "public", X: 18, Z: 176, MinimumPlayers: 2},
+		{ID: "public-blackjack-earth", Name: "Orun's Stone Table", Game: "blackjack", Floor: "public", X: -18, Z: 155, MinimumPlayers: 1},
+		{ID: "public-blackjack-air", Name: "Aeral's High Table", Game: "blackjack", Floor: "public", X: 18, Z: 155, MinimumPlayers: 1},
+		{ID: "public-blackjack-fire", Name: "Pyralis's Hearth Table", Game: "blackjack", Floor: "public", X: -18, Z: 194, MinimumPlayers: 1},
+		{ID: "public-blackjack-water", Name: "Neris's Pearl Table", Game: "blackjack", Floor: "public", X: 18, Z: 194, MinimumPlayers: 1},
 	}
 	for i := range tables {
 		for seat := 0; seat < 6; seat++ {
@@ -47,11 +51,20 @@ func CasinoTables() []CasinoTable {
 		}
 	}
 	for i, machine := range SlotMachines() {
-		theme, x := machine.Theme, -6+float64(i)*4
-		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", X: x, Z: 164, MinimumPlayers: 1,
-			Seats: []CasinoSeatPosition{{X: x, Z: 166, Rotation: math.Pi, ExitX: x, ExitZ: 167.2}}})
+		theme, x := machine.Theme, []float64{-26, -17, 17, 26}[i]
+		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", X: x, Z: 135, MinimumPlayers: 1,
+			Seats: []CasinoSeatPosition{{X: x, Z: 137, Rotation: math.Pi, ExitX: x, ExitZ: 138.2}}})
 	}
 	return tables
+}
+
+func IsCasinoBlackjackTable(id string) bool {
+	for _, table := range CasinoTables() {
+		if table.ID == id {
+			return table.Game == "blackjack"
+		}
+	}
+	return false
 }
 
 // Seat claims live on the character, not in a second ownership map. World.Mu
@@ -171,7 +184,7 @@ func (w *World) releaseCasinoSeatLocked(player *Entity) {
 		return
 	}
 	player.CasinoSeat = nil
-	if player.InstanceID != "" || player.State == "DEAD" || player.Health <= 0 {
+	if player.InstanceID != CasinoInstanceID || player.State == "DEAD" || player.Health <= 0 {
 		return
 	}
 	oldX, oldZ := player.X, player.Z
@@ -192,7 +205,7 @@ func (w *World) pruneCasinoSeatsLocked(now time.Time) {
 			continue
 		}
 		player.Mu.Lock()
-		if player.CasinoSeat != nil && (player.InstanceID != "" || player.Health <= 0 || player.State == "DEAD" ||
+		if player.CasinoSeat != nil && (player.InstanceID != CasinoInstanceID || player.Health <= 0 || player.State == "DEAD" ||
 			(player.Disconnected && !now.Before(player.DisconnectedAt.Add(CasinoReconnectGrace)))) {
 			w.releaseCasinoSeatLocked(player)
 		}
@@ -248,7 +261,7 @@ func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time
 		}
 		return nil, errors.New("leave your current seat first")
 	}
-	if player.Type != TypePlayer || player.Disconnected || player.Health <= 0 || player.InstanceID != "" || !w.inSafeZone(player) ||
+	if player.Type != TypePlayer || player.Disconnected || player.Health <= 0 || player.InstanceID != CasinoInstanceID || !w.inSafeZone(player) ||
 		(player.State != "IDLE" && player.State != "MOVING") || player.IsCharging || player.Stunned || player.Rooted || player.WhirlwindActive || now.Before(player.MoveLockUntil) {
 		return nil, errors.New("finish your current action before sitting in the casino")
 	}

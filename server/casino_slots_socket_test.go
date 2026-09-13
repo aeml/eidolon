@@ -67,13 +67,13 @@ func TestSlotsActualSocketSpinResumeAndRestart(t *testing.T) {
 	defer cleanup.Database("eidolon").Collection("users").DeleteOne(context.Background(), bson.M{"username": name})
 	defer cleanup.Database("eidolon").Collection("pvp_profiles").DeleteOne(context.Background(), bson.M{"player_id": owner})
 	defer cleanup.Database("eidolon").Collection("casino_blackjack_tables").DeleteOne(context.Background(), bson.M{"_id": slotRecordKey(owner, "earth")})
-	table := game.CasinoTables()[2]
+	table := game.CasinoTables()[6]
 	point := table.Seats[0]
 	if err := repo.CreateUser(name, name+"@example.invalid", name+"-local-only"); err != nil {
 		t.Fatal(err)
 	}
 	fixture := &database.Character{Name: name, Class: "Fighter", Level: 1, ProgressionVersion: game.CurrentProgressionVersion,
-		X: point.ExitX, Z: point.ExitZ, Gold: 500, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
+		InstanceID: game.CasinoInstanceID, X: point.ExitX, Z: point.ExitZ, Gold: 500, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 	if err := repo.SetFirstCharacter(name, fixture); err != nil {
 		t.Fatal(err)
 	}

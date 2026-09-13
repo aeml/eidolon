@@ -11,7 +11,7 @@ const seat = { tableId: table.id, seat: 0, sessionId: 'private-token', exitX: -4
 function setup() {
     const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 500);
     camera.position.set(10, 15, 190);
-    const engine = { network: { send: jest.fn() }, collisionManager: new CollisionManager(),
+    const engine = { currentInstanceId: 'lanternhold-casino', network: { send: jest.fn() }, collisionManager: new CollisionManager(),
         renderSystem: { camera, cameraTarget: new THREE.Vector3(0, 0, 185), scene: new THREE.Scene(), setCameraTarget: jest.fn() },
         inputManager: { clearInputState: jest.fn() }, cameraLocked: true,
         player: { position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', resetTransformInterpolation: jest.fn() } };

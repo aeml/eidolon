@@ -223,9 +223,10 @@ export class WorldGenerator {
         };
 
         const casino = createCasinoShell(cx, cz - 30);
-        this.collisionManager.casinoNavigation = true;
         casino.traverse(part => { if (part.isMesh) MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true }); });
         this.scene.add(casino);
+        // The town building is a facade; its clickable door leads to a shared scene.
+        this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(cx, 2.4, cz - 21.65), new THREE.Vector3(5, 4.8, .5)));
         for (const wall of casino.userData.casinoWalls) {
             this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
                 new THREE.Vector3(cx + wall.position[0], wall.position[1], cz - 30 + wall.position[2]),

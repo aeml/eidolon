@@ -28,7 +28,7 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
         const player = { id: 'fighter', mesh, position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', move(point) { this.position.copy(point); } };
         const other = { mesh: otherMesh, state: 'SEATED' };
         const sent = [];
-        const engine = { player, cameraLocked: true, network: { send(type, payload) { sent.push({ type, payload }); } },
+        const engine = { currentInstanceId: 'lanternhold-casino', player, cameraLocked: true, network: { send(type, payload) { sent.push({ type, payload }); } },
             renderSystem: { renderer, scene, camera, cameraTarget: new THREE.Vector3(0, 0, 171), setCameraTarget(target) { camera.lookAt(target); } },
             inputManager: { clearInputState() {} }, uiManager: { addChatMessage() {} } };
         const controller = new CasinoController(engine);

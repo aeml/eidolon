@@ -1,5 +1,17 @@
 # 1.10 — The Resonant Age
 
+## Latest user direction — September 13
+
+VIP currency name is **EP (Eidolon Points)**. Acquisition is still undefined,
+but the current request explicitly gates upstairs with a guard saying **“You
+must be a VIP to enter”**. Do not block this delivery on EP acquisition or invent
+wallet grants/purchases. The town casino door should open a dialogue with
+**Enter Casino**, transporting all players to the SAME large two-storey social
+zone with multiple public Gold tables/machines. See the updated casino roadmap.
+Earlier blocked-currency checkpoints below are historical, not a reason to stop
+this revised implementation. Full1.10 acceptance still requires its remaining
+integration work; a guarded lounge is not a claim of functioning EP games.
+
 Active development branched from packaged1.9 e86e29a0. Runtime stays1.9 until
 the complete1.10 milestone is ready. Full scope remains the September5 roadmap,
 its completion criteria and the September9 two-floor casino checklist. A version

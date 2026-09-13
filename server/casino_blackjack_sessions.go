@@ -19,6 +19,32 @@ const publicBlackjackTable = "public-blackjack"
 var blackjackMu sync.Mutex
 var blackjackCached *database.BlackjackTableRecord
 var blackjackAvailable bool
+var extraBlackjack = map[string]*database.BlackjackTableRecord{}
+var extraBlackjackAvailable = map[string]bool{}
+
+func blackjackTableID(ids []string) string {
+	if len(ids) > 0 {
+		return ids[0]
+	}
+	return publicBlackjackTable
+}
+func setBlackjackCache(id string, record *database.BlackjackTableRecord, available bool) {
+	// An unavailable read must not erase an unresolved pending-owner fence.
+	if record == nil {
+		record, _ = getBlackjackCache(id)
+	}
+	if id == publicBlackjackTable {
+		blackjackCached, blackjackAvailable = record, available
+	} else {
+		extraBlackjack[id], extraBlackjackAvailable[id] = record, available
+	}
+}
+func getBlackjackCache(id string) (*database.BlackjackTableRecord, bool) {
+	if id == publicBlackjackTable {
+		return blackjackCached, blackjackAvailable
+	}
+	return extraBlackjack[id], extraBlackjackAvailable[id]
+}
 
 type blackjackParticipant struct {
 	PlayerID string `json:"playerId"`
@@ -98,22 +124,23 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 
 // All helpers ending Locked require blackjackMu. Only currency callers also
 // hold the recipient account lock, always acquired BEFORE blackjackMu.
-func loadBlackjackLocked() (*database.BlackjackTableRecord, *blackjackTableState, error) {
-	r, err := db.GetBlackjackTable(publicBlackjackTable)
+func loadBlackjackLocked(ids ...string) (*database.BlackjackTableRecord, *blackjackTableState, error) {
+	id := blackjackTableID(ids)
+	r, err := db.GetBlackjackTable(id)
 	if err != nil {
-		blackjackAvailable = false
+		setBlackjackCache(id, nil, false)
 		return nil, nil, err
 	}
 	s, err := decodeBlackjackState(r)
 	if err != nil {
-		blackjackAvailable = false
+		setBlackjackCache(id, nil, false)
 		return nil, nil, err
 	}
-	blackjackCached, blackjackAvailable = r, true
+	setBlackjackCache(id, r, true)
 	return r, s, nil
 }
 
-func refreshBlackjackLocked() { _, _, _ = loadBlackjackLocked() }
+func refreshBlackjackLocked(ids ...string) { _, _, _ = loadBlackjackLocked(ids...) }
 
 func advanceBlackjackLocked(record *database.BlackjackTableRecord, state *blackjackTableState) error {
 	encoded, err := json.Marshal(state)
@@ -122,19 +149,24 @@ func advanceBlackjackLocked(record *database.BlackjackTableRecord, state *blackj
 	}
 	next, err := db.AdvanceBlackjackTable(record.TableID, record.Version, encoded)
 	if err == nil {
-		blackjackCached = next
+		setBlackjackCache(record.TableID, next, true)
 	}
 	return err
 }
 
 func initializeBlackjack() error {
-	lobby, err := newBlackjackLobby()
-	if err != nil {
-		return err
-	}
-	encoded, _ := json.Marshal(lobby)
-	if _, err := db.CreateBlackjackTable(publicBlackjackTable, encoded); err != nil {
-		return err
+	for _, table := range game.CasinoTables() {
+		if table.Game != "blackjack" {
+			continue
+		}
+		lobby, err := newBlackjackLobby()
+		if err != nil {
+			return err
+		}
+		encoded, _ := json.Marshal(lobby)
+		if _, err := db.CreateBlackjackTable(table.ID, encoded); err != nil {
+			return err
+		}
 	}
 	// Existing character journals have already replayed. Resolve the one pending
 	// transfer before accepting logins; old rounds otherwise retain their shoe.
@@ -143,7 +175,7 @@ func initializeBlackjack() error {
 
 func requireBlackjackSeat(client *Client, sessionID string) (*game.Entity, error) {
 	player := world.GetEntityCopy(client.playerID)
-	if player == nil || player.Disconnected || player.CasinoSeat == nil || player.CasinoSeat.TableID != publicBlackjackTable || player.CasinoSeat.SessionID != sessionID || player.InstanceID != "" || player.Health <= 0 {
+	if player == nil || player.Disconnected || player.CasinoSeat == nil || !game.IsCasinoBlackjackTable(player.CasinoSeat.TableID) || player.CasinoSeat.SessionID != sessionID || player.InstanceID != game.CasinoInstanceID || player.Health <= 0 {
 		return nil, errors.New("sit at the blackjack table before playing")
 	}
 	return player, nil
@@ -159,7 +191,7 @@ func transferBlackjackLocked(record *database.BlackjackTableRecord, state *black
 	if err != nil {
 		return err
 	}
-	blackjackCached = pending
+	setBlackjackCache(record.TableID, pending, true)
 	_, err = recoverBlackjackTransferLocked(*pending)
 	return err
 }
@@ -175,26 +207,32 @@ func recoverAccountBlackjackLocked(username string) error {
 	}
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
-	if blackjackCached == nil || blackjackCached.Pending == nil || blackjackCached.Pending.PlayerID != "player-"+username {
-		return nil
+	for _, table := range game.CasinoTables() {
+		if table.Game != "blackjack" {
+			continue
+		}
+		record, _ := getBlackjackCache(table.ID)
+		if record == nil || record.Pending == nil || record.Pending.PlayerID != "player-"+username {
+			continue
+		}
+		_, err := recoverBlackjackTransferLocked(*record)
+		refreshBlackjackLocked(table.ID)
+		if err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+			return err
+		}
 	}
-	defer refreshBlackjackLocked()
-	_, err := recoverBlackjackTransferLocked(*blackjackCached)
-	if errors.Is(err, database.ErrInsufficientGold) {
-		return nil
-	}
-	return err
+	return nil
 }
 
 func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now time.Time) error {
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
-	defer refreshBlackjackLocked()
 	player, err := requireBlackjackSeat(client, sessionID)
 	if err != nil {
 		return err
 	}
-	r, state, err := loadBlackjackLocked()
+	defer refreshBlackjackLocked(player.CasinoSeat.TableID)
+	r, state, err := loadBlackjackLocked(player.CasinoSeat.TableID)
 	if err != nil {
 		return err
 	}
@@ -228,11 +266,12 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 func handleBlackjackPlay(client *Client, sessionID, roundID, action string, revision uint64, now time.Time) error {
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
-	defer refreshBlackjackLocked()
-	if _, err := requireBlackjackSeat(client, sessionID); err != nil {
+	player, err := requireBlackjackSeat(client, sessionID)
+	if err != nil {
 		return err
 	}
-	r, state, err := loadBlackjackLocked()
+	defer refreshBlackjackLocked(player.CasinoSeat.TableID)
+	r, state, err := loadBlackjackLocked(player.CasinoSeat.TableID)
 	if err != nil {
 		return err
 	}
@@ -258,9 +297,19 @@ func handleBlackjackPlay(client *Client, sessionID, roundID, action string, revi
 
 // One bounded tick: pure round transitions under table lock; currency recovery
 // separately under recipient-account THEN table lock. No cross-account locking.
-func tickBlackjack(now time.Time) error {
+func tickBlackjack(now time.Time, ids ...string) error {
+	if len(ids) == 0 {
+		var result error
+		for _, table := range game.CasinoTables() {
+			if table.Game == "blackjack" {
+				result = errors.Join(result, tickBlackjack(now, table.ID))
+			}
+		}
+		return result
+	}
+	id := ids[0]
 	blackjackMu.Lock()
-	r, state, err := loadBlackjackLocked()
+	r, state, err := loadBlackjackLocked(id)
 	if err != nil {
 		blackjackMu.Unlock()
 		return err
@@ -319,8 +368,8 @@ func tickBlackjack(now time.Time) error {
 	defer unlock()
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
-	defer refreshBlackjackLocked()
-	r, state, err = loadBlackjackLocked()
+	defer refreshBlackjackLocked(id)
+	r, state, err = loadBlackjackLocked(id)
 	if err != nil {
 		return err
 	}
@@ -379,6 +428,11 @@ type blackjackTableView struct {
 func blackjackViewFor(playerID string) blackjackTableView {
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
+	id := publicBlackjackTable
+	if p := world.GetEntityCopy(playerID); p != nil && p.CasinoSeat != nil {
+		id = p.CasinoSeat.TableID
+	}
+	blackjackCached, blackjackAvailable := getBlackjackCache(id)
 	view := blackjackTableView{Available: blackjackAvailable, Players: []blackjackParticipant{}}
 	if !blackjackAvailable || blackjackCached == nil {
 		return view

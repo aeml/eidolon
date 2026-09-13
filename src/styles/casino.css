@@ -25,3 +25,30 @@
 .casino-stair-action[hidden] { display: none; }
 @media (max-width: 600px) { .casino-session { bottom: max(8px, env(safe-area-inset-bottom)); right: 8px; width: calc(100vw - 16px); padding: 10px; max-height: 40dvh; overflow-y: auto; font-size: 13px; } .casino-session ul { max-height: 65px; } }
 @media (max-width: 600px) { .casino-session.has-blackjack { max-height: 65dvh; } .blackjack-hands { max-height: 23dvh; } }
+.casino-entry-dialogue {
+    box-sizing: border-box;
+    width: min(480px, calc(100vw - 24px));
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    border: 1px solid #b99a58;
+    border-radius: 14px;
+    padding: 24px;
+    color: #f2e5d0;
+    background: linear-gradient(145deg, #253140, #141b26);
+    box-shadow: 0 20px 80px #000b;
+    font: 16px/1.55 system-ui, sans-serif;
+}
+.casino-entry-dialogue::backdrop { background: #050b14b8; }
+.casino-entry-dialogue h2 { margin: 0 0 12px; color: #e9c886; }
+.casino-entry-dialogue button {
+    min-height: 48px;
+    padding: 10px 18px;
+    margin: 8px 8px 0 0;
+    border: 1px solid #a98c54;
+    border-radius: 8px;
+    background: #344451;
+    color: #fff0d6;
+    cursor: pointer;
+    font: inherit;
+}
+.casino-entry-dialogue button:focus-visible { outline: 3px solid #f8d481; outline-offset: 3px; }

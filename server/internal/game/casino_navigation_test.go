@@ -36,14 +36,15 @@ func TestCasinoStairsRoundTripAndFloorBoundaries(t *testing.T) {
 
 func TestCasinoMovementOwnsFloorAndCannotSeatThroughCeiling(t *testing.T) {
 	w, p, _, table := casinoSeatWorld()
-	p.X, p.Y, p.Z = 10.5, 0, 176.4
-	if !w.UpdatePlayerMovement(p.ID, 10.5, 999, 163.5, 0, "MOVING", 1) || p.Y != 6 {
-		t.Fatal("server did not derive upstairs height")
+	p.X, p.Y, p.Z = 0, 0, 149
+	if !w.UpdatePlayerMovement(p.ID, 0, 999, 147, 0, "MOVING", 1) || p.Y != 0 || p.Z < 148 {
+		t.Fatal("client bypassed guarded stairs or forged upstairs height")
 	}
 	if w.StartPlayerJump(p.ID, 0, 0, 190) {
 		t.Fatal("jump escaped upper floor")
 	}
 	p.X, p.Z = table.Seats[0].ExitX, table.Seats[0].ExitZ
+	p.Y = 8 // A forged upper-floor actor must not claim a ground-floor chair.
 	if _, err := w.TakeCasinoSeat(p.ID, table.ID, 0, time.Now()); err == nil {
 		t.Fatal("claimed downstairs seat from VIP lounge")
 	}

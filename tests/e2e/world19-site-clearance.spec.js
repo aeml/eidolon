@@ -11,7 +11,6 @@ test('1.9 town approaches and event spawn/rune sites clear the generated world s
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
         const { CollisionManager } = await import('/src/core/CollisionManager.js');
         const { createProceduralLanternholdStructure, getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
-        const { CasinoController } = await import('/src/core/CasinoController.js');
         document.getElementById('start-screen').style.display = 'none';
         document.querySelectorAll('canvas').forEach(canvas => { canvas.hidden = true; });
         const scene = new THREE.Scene(), collision = new CollisionManager();
@@ -23,20 +22,15 @@ test('1.9 town approaches and event spawn/rune sites clear the generated world s
             const mesh = createProceduralLanternholdStructure(kind, { optimized: true }); mesh.position.set(x, .5, z); mesh.rotation.y = rotation;
             scene.add(mesh); collision.addOrientedCollider(getLanternholdWalkCollider(mesh));
         }
-        const tables = [{ id: 'public-blackjack', game: 'blackjack', x: -4.3, z: 171, seats: [] }, { id: 'public-poker', game: 'poker', x: 4.3, z: 171, seats: [] },
-            ...['earth', 'fire', 'water', 'air'].map((theme, i) => ({ id: `public-slots-${theme}`, game: 'slots', x: -6 + 4 * i, z: 164, seats: [] }))];
-        const engine = { collisionManager: collision, currentInstanceId: '', network: { send() {} } };
-        const controller = new CasinoController(engine); controller.updateState({ tables });
-        scene.add(controller.furniture); collision.colliders.push(...controller.furnitureColliders);
         const blocked = [], inspect = (label, x, z, radius = 1.25) => {
             const point = new THREE.Vector3(x, 0, z), corrected = collision.checkCollision(point, radius, point);
             if (corrected && corrected.distanceTo(point) > .01) blocked.push({ label, x, z, correction: corrected.toArray() });
         };
         let samples = 0;
         const routes = [
-            [[0, 200], [0, 176.4], [7.5, 176.4]],
+            [[0, 200], [0, 181], [0, 180]],
             [[0, 200], [-4, 193], [-4, 185]], [[-4, 193], [-14, 193]],
-            [[0, 176.4], [0, 167.2], [-6, 167.2]], [[0, 167.2], [6, 167.2]]
+            [[0, 181], [-4, 193]], [[0, 181], [10, 190]]
         ];
         for (const [index, route] of routes.entries()) for (let i = 1; i < route.length; i++) {
             const a = route[i - 1], b = route[i], steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) * 2);
@@ -57,7 +51,7 @@ test('1.9 town approaches and event spawn/rune sites clear the generated world s
         const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 500); camera.position.set(35, 48, 232); camera.lookAt(-5, 0, 182);
         const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(innerWidth, innerHeight); renderer.domElement.style.cssText = 'position:fixed;inset:0';
         document.body.append(renderer.domElement); renderer.render(scene, camera);
-        window.__world19Clearance = { controller, renderer, scene };
+        window.__world19Clearance = { renderer, scene };
         return { blocked, samples, sceneryColliders: collision.colliders.length, foliageGroups: scene.children.filter(c => c.userData.proceduralFoliage).length };
     });
     await page.screenshot({ path: '/tmp/eidolon-world19-town-20260913.png' });

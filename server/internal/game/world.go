@@ -1475,8 +1475,9 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 	}
 
 	oldX, oldZ := e.X, e.Z
-	if e.Type == TypePlayer && e.InstanceID == "" && (inCasinoVenue(e.X, e.Z) || inCasinoVenue(x, z)) {
-		x, y, z = constrainCasinoWalk(e.X, e.Y, e.Z, x, z)
+	if e.Type == TypePlayer && e.InstanceID == CasinoInstanceID {
+		x, z = constrainCasinoInterior(x, z)
+		y = 0
 	}
 	e.X = x
 	e.Y = y
@@ -1522,7 +1523,7 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 		return false
 	}
 	// The enclosed stacked venue is walking-only; jumping cannot bypass stairs.
-	if e.InstanceID == "" && (inCasinoVenue(e.X, e.Z) || inCasinoVenue(x, z)) {
+	if e.InstanceID == CasinoInstanceID {
 		return false
 	}
 

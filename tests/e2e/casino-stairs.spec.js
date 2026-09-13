@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Real Actor locomotion/collisions in a prepared venue; not a connected wager.
-test('walk upstairs and back using the physical landing control', async ({ page }) => {
+test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -10,7 +10,7 @@ test('walk upstairs and back using the physical landing control', async ({ page 
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { CasinoController } = await import('/src/core/CasinoController.js');
         const { CollisionManager } = await import('/src/core/CollisionManager.js');
-        const { createCasinoShell } = await import('/src/art/ProceduralCasino.js');
+        const { createCasinoInterior } = await import('/src/art/ProceduralCasino.js');
         const { createProceduralFighter } = await import('/src/art/ProceduralHumanoid.js');
         document.getElementById('start-screen').style.display = 'none';
         document.querySelectorAll('canvas').forEach(canvas => { canvas.hidden = true; });
@@ -21,12 +21,10 @@ test('walk upstairs and back using the physical landing control', async ({ page 
         scene.add(new THREE.HemisphereLight(0xffe4bc, 0x394968, 3));
         const sun = new THREE.DirectionalLight(0xffefd7, 3); sun.position.set(-10, 30, 190); scene.add(sun);
         const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, .1, 300);
-        const shell = createCasinoShell(); scene.add(shell);
-        const collision = new CollisionManager(); collision.casinoNavigation = true;
-        for (const wall of shell.userData.casinoWalls) collision.addCollider(new THREE.Box3().setFromCenterAndSize(
-            new THREE.Vector3(wall.position[0], wall.position[1], 170 + wall.position[2]), new THREE.Vector3(...wall.size)));
-        const player = new Fighter('stairs-fighter'); player.position.set(7.5, 0, 176.4); player.mesh = createProceduralFighter(); scene.add(player.mesh);
-        const engine = { player, renderSystem: { scene, renderer, camera }, collisionManager: collision, network: { send() {} }, uiManager: { addChatMessage() {} } };
+        const collision = new CollisionManager();
+        const shell = createCasinoInterior(scene, collision);
+        const player = new Fighter('stairs-fighter'); player.position.set(0, 0, 154); player.mesh = createProceduralFighter(); scene.add(player.mesh);
+        const engine = { currentInstanceId: 'lanternhold-casino', player, renderSystem: { scene, renderer, camera }, collisionManager: collision, network: { send() {} }, uiManager: { addChatMessage() {} } };
         const controller = new CasinoController(engine);
         window.__stairsQA = { player, controller, shell };
         let previous = performance.now();
@@ -34,21 +32,22 @@ test('walk upstairs and back using the physical landing control', async ({ page 
             const dt = Math.min(.05, (now - previous) / 1000); previous = now;
             controller.beforeUpdate(dt); player.update(dt, collision, null, null);
             player.mesh.position.copy(player.position);
-            camera.position.set(16, player.position.y + 24, 199); camera.lookAt(2, player.position.y, 170);
+            camera.position.set(16, 24, 184); camera.lookAt(0, 2, 150);
             renderer.render(scene, camera);
         });
     });
-    const upstairs = page.getByRole('button', { name: 'Walk upstairs · VIP lounge', exact: true });
-    await expect(upstairs).toBeVisible();
-    expect((await upstairs.boundingBox()).height).toBeGreaterThanOrEqual(44);
-    await upstairs.click();
-    await expect.poll(() => page.evaluate(() => window.__stairsQA.player.position.y), { timeout: 15000 }).toBe(6);
-    const downstairs = page.getByRole('button', { name: 'Walk downstairs · Public casino', exact: true });
-    await expect(downstairs).toBeVisible();
-    expect(await page.evaluate(() => window.__stairsQA.shell.userData.casinoUpstairs.visible)).toBe(true);
-    await page.screenshot({ path: '/tmp/eidolon-casino-vip-stairs-20260913.png' });
-    await downstairs.click();
-    await expect(upstairs).toBeVisible({ timeout: 15000 });
+    const guard = page.getByRole('button', { name: 'Talk to VIP Guard', exact: true });
+    await expect(guard).toBeVisible();
+    expect((await guard.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    await guard.click();
+    await expect(page.locator('.casino-entry-dialogue')).toContainText('You must be a VIP to enter');
+    await page.screenshot({ path: '/tmp/eidolon-casino-vip-guard-phone-20260913.png' });
+    await page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Close', exact: true }).click();
+    await page.evaluate(() => {
+        const { player } = window.__stairsQA;
+        const point = player.position.clone(); point.z = 130; player.move(point);
+    });
+    await expect.poll(() => page.evaluate(() => window.__stairsQA.player.position.z)).toBeLessThan(153);
+    expect(await page.evaluate(() => window.__stairsQA.player.position.z)).toBeGreaterThanOrEqual(148);
     expect(await page.evaluate(() => window.__stairsQA.player.position.y)).toBe(0);
-    expect(await page.evaluate(() => window.__stairsQA.shell.userData.casinoUpstairs.visible)).toBe(false);
 });

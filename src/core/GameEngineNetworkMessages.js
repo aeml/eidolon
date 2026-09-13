@@ -11,6 +11,7 @@ import {
 } from '../utils/dungeonRoomMetadata.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { applyLoadoutState } from './LoadoutState.js';
+import { createCasinoInterior } from '../art/ProceduralCasino.js';
 
 class GameEngineNetworkMessageMethods {
     async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
@@ -134,7 +135,9 @@ class GameEngineNetworkMessageMethods {
             instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality
         });
         this.activeWorldGenerator = worldGen;
-        if (type === 'pvp_arena') {
+        if (type === 'casino') {
+            createCasinoInterior(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        } else if (type === 'pvp_arena') {
             worldGen.createPvPArena(layout);
         } else if (type === 'crypt') {
             await worldGen.createDungeon(0, 0, 100, { shouldAttach: isCurrentTransition });

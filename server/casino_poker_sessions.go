@@ -258,7 +258,7 @@ func initializePoker() error {
 
 func requirePokerSeat(client *Client, sessionID string) (*game.Entity, error) {
 	p := world.GetEntityCopy(client.playerID)
-	if p == nil || p.Disconnected || p.CasinoSeat == nil || p.CasinoSeat.TableID != publicPokerTable || p.CasinoSeat.SessionID != sessionID || p.InstanceID != "" || p.Health <= 0 {
+	if p == nil || p.Disconnected || p.CasinoSeat == nil || p.CasinoSeat.TableID != publicPokerTable || p.CasinoSeat.SessionID != sessionID || p.InstanceID != game.CasinoInstanceID || p.Health <= 0 {
 		return nil, errors.New("sit at the poker table before playing")
 	}
 	return p, nil
@@ -342,7 +342,7 @@ func handlePokerPlay(client *Client, sessionID, roundID, action string, amount i
 
 func pokerPresence(p pokerParticipant) (seated, connected bool) {
 	e := world.GetEntityCopy(p.PlayerID)
-	if e == nil || e.CasinoSeat == nil || e.CasinoSeat.TableID != publicPokerTable || e.CasinoSeat.SessionID != p.SessionID || e.CasinoSeat.Seat != p.Seat || e.Health <= 0 || e.InstanceID != "" {
+	if e == nil || e.CasinoSeat == nil || e.CasinoSeat.TableID != publicPokerTable || e.CasinoSeat.SessionID != p.SessionID || e.CasinoSeat.Seat != p.Seat || e.Health <= 0 || e.InstanceID != game.CasinoInstanceID {
 		return false, false
 	}
 	if e.Disconnected && !time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)) {
@@ -355,7 +355,7 @@ func pokerPresence(p pokerParticipant) (seated, connected bool) {
 // connection token. The incoming action still requires the NEW live seat token.
 func pokerHandSeated(p pokerParticipant) bool {
 	e := world.GetEntityCopy(p.PlayerID)
-	return e != nil && e.CasinoSeat != nil && e.CasinoSeat.TableID == publicPokerTable && e.CasinoSeat.Seat == p.Seat && e.Health > 0 && e.InstanceID == "" && (!e.Disconnected || time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)))
+	return e != nil && e.CasinoSeat != nil && e.CasinoSeat.TableID == publicPokerTable && e.CasinoSeat.Seat == p.Seat && e.Health > 0 && e.InstanceID == game.CasinoInstanceID && (!e.Disconnected || time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)))
 }
 
 func validatePokerSeatClaim(owner string, seat int) error {

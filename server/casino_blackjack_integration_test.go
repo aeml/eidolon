@@ -115,7 +115,7 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 		if err := repo.CreateUser(name, name+"@example.invalid", name+"-local-only"); err != nil {
 			t.Fatal(err)
 		}
-		character := &database.Character{Name: name, Class: "Fighter", Level: 1, Gold: 1000, X: table.Seats[i].ExitX, Z: table.Seats[i].ExitZ,
+		character := &database.Character{Name: name, Class: "Fighter", Level: 1, Gold: 1000, InstanceID: game.CasinoInstanceID, X: table.Seats[i].ExitX, Z: table.Seats[i].ExitZ,
 			ProgressionVersion: game.CurrentProgressionVersion, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 		if err := repo.SetFirstCharacter(name, character); err != nil {
 			t.Fatal(err)

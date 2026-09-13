@@ -26,6 +26,20 @@ func handleMsgCasino(client *Client, message Message) {
 	}
 	var err error
 	switch request.Action {
+	case "enter":
+		if err = world.EnterCasino(client.playerID); err != nil {
+			client.sendError(err.Error())
+			return
+		}
+		sendMovementContext(client)
+		payload, _ := json.Marshal(map[string]interface{}{"instanceId": game.CasinoInstanceID, "type": game.CasinoInstanceType,
+			"spawn": map[string]float64{"x": 0, "z": 200}})
+		client.sendSafe(createMessage(MsgEnterInstance, payload))
+		sendCasinoState(client)
+		return
+	case "vip":
+		client.sendError("You must be a VIP to enter")
+		return
 	case "get":
 		if err := prepareSeatedSlotLocked(client); err != nil {
 			client.sendError(err.Error())
@@ -80,7 +94,7 @@ func handleMsgCasino(client *Client, message Message) {
 	sessionsMu.Unlock()
 	for _, observer := range clients {
 		player := world.GetEntityCopy(observer.playerID)
-		if observer == client || (player != nil && player.InstanceID == "" && world.SafeZoneAt("", player.X, player.Z) != "") {
+		if observer == client || (player != nil && player.InstanceID == game.CasinoInstanceID) {
 			sendCasinoState(observer)
 		}
 	}

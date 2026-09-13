@@ -42,7 +42,7 @@ func setupPokerMongo(t *testing.T) ([]*Client, []string) {
 	clients, tokens := []*Client{}, []string{}
 	for i, name := range []string{a, b} {
 		point := game.CasinoTables()[1].Seats[i]
-		p := &game.Entity{ID: "player-" + name, Name: name, Type: game.TypePlayer, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 300, X: point.ExitX, Z: point.ExitZ}
+		p := &game.Entity{ID: "player-" + name, Name: name, Type: game.TypePlayer, InstanceID: game.CasinoInstanceID, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 300, X: point.ExitX, Z: point.ExitZ}
 		world.AddEntity(p)
 		seat, err := world.TakeCasinoSeat(p.ID, publicPokerTable, i, time.Now())
 		if err != nil {

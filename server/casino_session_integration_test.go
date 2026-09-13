@@ -65,7 +65,7 @@ func TestCasinoActualSocketsResumeAndRestart(t *testing.T) {
 			t.Fatal(err)
 		}
 		fixture := &database.Character{Name: name, Class: "Fighter", Level: 1, ProgressionVersion: game.CurrentProgressionVersion,
-			X: position.ExitX, Z: position.ExitZ, Gold: 1234, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
+			InstanceID: game.CasinoInstanceID, X: position.ExitX, Z: position.ExitZ, Gold: 1234, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 		if err := repo.SetFirstCharacter(name, fixture); err != nil {
 			t.Fatal(err)
 		}

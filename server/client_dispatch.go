@@ -190,8 +190,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		spawnY := char.Y
 		spawnZ := char.Z
 		instanceID := char.InstanceID
+		spawnX, spawnY, spawnZ = game.RestoreCasinoPosition(instanceID, spawnX, spawnY, spawnZ)
 
-		if instanceID != "" {
+		if instanceID != "" && instanceID != game.CasinoInstanceID {
 			// Player was in a dungeon instance
 			timeSinceLogout := time.Since(char.LastLogout)
 			if timeSinceLogout > 15*time.Minute {

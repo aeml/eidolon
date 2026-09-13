@@ -518,6 +518,9 @@ export class RenderSystem {
     }
 
     setEnvironmentContext(context = null, position = null, immediate = true) {
+        // The casino supplies its own floor. Do not draw the town paving/water
+        // or outdoor particles through it; restore them on the next scene.
+        if (this.staticEnvironmentGroup) this.staticEnvironmentGroup.visible = context !== 'casino';
         // Remote raid coordinates are allocation slots, not overworld realm
         // coordinates. Preserve each raid's authored lighting and atmosphere.
         const sceneTheme = RAID_ENVIRONMENT_THEMES[context] || context;

@@ -423,11 +423,16 @@ export class Minimap {
     }
 
     _drawTownServiceMarkers(ctx, toMap, player, half) {
+        const casino = this.gameEngine?.currentInstanceType === 'casino';
         if (getRealmForPosition(player.position.x, player.position.z) !== 'town') {
             return;
         }
 
-        TOWN_SERVICE_MARKERS.forEach((marker) => {
+        const markers = casino ? [
+            { x: 0, z: 150, label: 'VIP Guard', color: '#e8c980', ring: true },
+            { x: 0, z: 202, label: 'Exit', color: '#78e08f', ring: true }
+        ] : TOWN_SERVICE_MARKERS;
+        markers.forEach((marker) => {
             const pos = toMap(marker.x, marker.z);
             const dx = pos.x - half;
             const dy = pos.y - half;

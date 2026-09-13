@@ -1,6 +1,25 @@
 # Two-floor town casino — required for Eidolon 1.10
 
 Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
+
+## September 13 user revision — current delivery
+
+The separate currency is now named **EP — Eidolon Points**. Acquisition,
+purchase/conversion rules and VIP entitlement policy are not defined yet.
+Do not invent them or substitute Gold/Resonance upstairs.
+
+The town building is now an entrance facade: click its door, read the dialogue,
+then choose **Enter Casino**. Travel to one permanent, large, shared casino zone;
+all players enter the same scene, not a party-owned dungeon copy. Build a generous
+two-storey gaming hall with multiple functioning public tables and machines.
+At the stairs, a physical guard offers **“You must be a VIP to enter”** and blocks
+upstairs access for now. This explicit interim gate supersedes the earlier
+walk-straight-upstairs interaction for the current delivery. The user has not
+authorized EP grants or VIP purchases merely by naming the currency.
+
+The EP acquisition question no longer blocks this shared-zone/guard delivery.
+Future VIP currency games/entitlements remain separate follow-on work; do not
+describe the guarded floor as already offering premium wagering.
 This extends the existing full 1.1–1.10 goal; it does not replace earlier work
 or interrupt immediate bug fixes. Implement at the stages below, not now.
 Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).

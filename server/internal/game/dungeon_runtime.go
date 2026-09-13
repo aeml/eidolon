@@ -135,6 +135,9 @@ func (w *World) GetDungeonStatus(partyID string) (bool, float64) {
 }
 
 func (w *World) GetInstanceLayout(instanceID string) (DungeonLayout, bool) {
+	if instanceID == CasinoInstanceID {
+		return DungeonLayout{}, true
+	}
 	if layout, ok := w.pvpArenaLayout(instanceID); ok {
 		return layout, true
 	}
@@ -160,6 +163,9 @@ func (w *World) GetInstanceDifficulty(instanceID string) DungeonDifficulty {
 
 // GetInstanceType returns the dungeon type of an instance
 func (w *World) GetInstanceType(instanceID string) string {
+	if instanceID == CasinoInstanceID {
+		return CasinoInstanceType
+	}
 	if _, ok := w.pvpArenaLayout(instanceID); ok {
 		return "pvp_arena"
 	}

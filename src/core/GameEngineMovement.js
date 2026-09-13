@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
-import { inCasinoVenue } from './casinoNavigation.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { Actor } from '../entities/Actor.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
@@ -127,7 +126,7 @@ class GameEngineMovementMethods {
     requestPlayerJump(destination) {
         if (this.casino?.active) return false;
         if (!this.player || !destination) return false;
-        if (!this.currentInstanceId && (inCasinoVenue(this.player.position.x, this.player.position.z) || inCasinoVenue(destination.x, destination.z))) return false;
+        if (this.currentInstanceId === 'lanternhold-casino') return false;
 
         const end = destination.clone();
         end.y = this.player.position.y;

@@ -13,6 +13,7 @@ type SafeZone struct {
 }
 
 var initialSafeZones = []SafeZone{
+	{ID: "casino", Name: "Lanternhold Casino", InstanceID: CasinoInstanceID, MinX: -34, MaxX: 34, MinZ: 129, MaxZ: 204},
 	{ID: "lanternhold", Name: "Lanternhold", MinX: -100, MaxX: 100, MinZ: 100, MaxZ: 300},
 }
 

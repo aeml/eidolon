@@ -48,6 +48,8 @@ export class CollisionManager {
     }
 
     clear() {
+        this.casinoInterior = false;
+        this.casinoNavigation = false;
         this.colliders = [];
         this.orientedColliders = [];
         this.circularColliders = [];
@@ -234,6 +236,12 @@ export class CollisionManager {
         let collided = false;
         // Reuse temp vector instead of cloning
         TEMP_VEC3.copy(position);
+        if (this.casinoInterior) {
+            TEMP_VEC3.x = Math.max(-33, Math.min(33, TEMP_VEC3.x));
+            TEMP_VEC3.z = Math.max(130, Math.min(203, TEMP_VEC3.z));
+            if (Math.abs(TEMP_VEC3.x) < 6 && TEMP_VEC3.z < 148) TEMP_VEC3.z = 148;
+            TEMP_VEC3.y = 0; collided = true;
+        }
         const casinoWalk = this.casinoNavigation && !this.dungeonWalkableRects.length && oldPosition
             && (inCasinoVenue(oldPosition.x, oldPosition.z) || inCasinoVenue(position.x, position.z));
         if (casinoWalk) { TEMP_VEC3.copy(constrainCasinoWalk(oldPosition, TEMP_VEC3)); collided = true; }

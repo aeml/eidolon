@@ -129,6 +129,7 @@ fi
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
+qa_allowlist+=",${QA_USERNAME_BASE}-casino-guest"
 qa_allowlist+=",${QA_USERNAME_BASE}-auth-recovery"
 qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
@@ -843,6 +844,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   portal)
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
+    ;;
+  casino-zone)
+    npx playwright test tests/e2e/casino-zone.spec.js --retries=0
     ;;
   water-recall)
     # Focus the reported travel failure without replaying unrelated dungeon combat.

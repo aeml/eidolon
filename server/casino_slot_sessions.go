@@ -224,7 +224,7 @@ func initializeSlots() error {
 
 func requireSlotSeat(client *Client, sessionID string) (*game.Entity, string, error) {
 	player := world.GetEntityCopy(client.playerID)
-	if player == nil || player.Disconnected || player.Health <= 0 || player.InstanceID != "" || player.CasinoSeat == nil || player.CasinoSeat.SessionID != sessionID || !strings.HasPrefix(player.CasinoSeat.TableID, "public-slots-") {
+	if player == nil || player.Disconnected || player.Health <= 0 || player.InstanceID != game.CasinoInstanceID || player.CasinoSeat == nil || player.CasinoSeat.SessionID != sessionID || !strings.HasPrefix(player.CasinoSeat.TableID, "public-slots-") {
 		return nil, "", errors.New("sit at an elemental machine before playing")
 	}
 	theme := strings.TrimPrefix(player.CasinoSeat.TableID, "public-slots-")

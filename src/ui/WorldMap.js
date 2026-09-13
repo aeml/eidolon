@@ -525,6 +525,29 @@ export class WorldMap {
         const ctx = this.ctx;
         const w = this.canvas.width;
         const h = this.canvas.height;
+        if (this.gameEngine?.currentInstanceType === 'casino') {
+            const scale = Math.min(w / 84, h / 96);
+            const point = (x, z) => [w / 2 + x * scale, h / 2 + (z - 166) * scale];
+            ctx.fillStyle = '#101923'; ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#263644'; ctx.fillRect(w / 2 - 34 * scale, h / 2 - 38 * scale, 68 * scale, 76 * scale);
+            ctx.strokeStyle = '#c6a366'; ctx.lineWidth = 2;
+            ctx.strokeRect(w / 2 - 34 * scale, h / 2 - 38 * scale, 68 * scale, 76 * scale);
+            ctx.font = '14px system-ui'; ctx.textAlign = 'center';
+            const marker = (x, z, label, color, radius = 4) => {
+                const [px, py] = point(x, z); ctx.fillStyle = color;
+                ctx.beginPath(); ctx.arc(px, py, radius, 0, Math.PI * 2); ctx.fill();
+                if (label) ctx.fillText(label, px, py - 9);
+            };
+            for (const table of this.gameEngine.casino?.data.tables || []) {
+                marker(table.x, table.z, table.game === 'slots' ? 'Slots' : table.game === 'poker' ? 'Poker' : 'Blackjack', '#d8b875');
+            }
+            marker(0, 148, 'VIP Guard · Locked', '#e8c980');
+            marker(0, 202, 'Exit to Lanternhold', '#78e08f');
+            for (const guest of this.gameEngine.remotePlayers?.values() || []) marker(guest.position.x, guest.position.z, '', '#65d7e8', 3);
+            marker(player.position.x, player.position.z, 'You', '#fff4d8', 5);
+            ctx.fillStyle = '#efd399'; ctx.fillText('The Fourfold Casino · Public Floor', w / 2, 20);
+            return;
+        }
         const cx = w / 2;
         const cy = h / 2;
         const w2s = this._makeWorldToScreen(cx, cy);

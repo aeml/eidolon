@@ -12,8 +12,8 @@ func casinoSeatWorld() (*World, *Entity, *Entity, CasinoTable) {
 	table := CasinoTables()[0]
 	position := table.Seats[0]
 	w := &World{Entities: map[string]*Entity{}, Grid: NewSpatialMap(50)}
-	a := &Entity{ID: "alice", Name: "Alice", Type: TypePlayer, State: "IDLE", Health: 100, MaxHealth: 100, Mana: 50, MaxMana: 50, X: position.ExitX, Z: position.ExitZ}
-	b := &Entity{ID: "bob", Name: "Bob", Type: TypePlayer, State: "IDLE", Health: 100, MaxHealth: 100, X: position.ExitX, Z: position.ExitZ}
+	a := &Entity{ID: "alice", Name: "Alice", Type: TypePlayer, InstanceID: CasinoInstanceID, State: "IDLE", Health: 100, MaxHealth: 100, Mana: 50, MaxMana: 50, X: position.ExitX, Z: position.ExitZ}
+	b := &Entity{ID: "bob", Name: "Bob", Type: TypePlayer, InstanceID: CasinoInstanceID, State: "IDLE", Health: 100, MaxHealth: 100, X: position.ExitX, Z: position.ExitZ}
 	w.AddEntity(a)
 	w.AddEntity(b)
 	return w, a, b, table
@@ -155,7 +155,7 @@ func TestCasinoSeatPhysicalRangeCombatAndReconnect(t *testing.T) {
 	if _, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now); err == nil {
 		t.Fatal("cross-scene seating")
 	}
-	a.InstanceID = ""
+	a.InstanceID = CasinoInstanceID
 	seat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
 	if err != nil {
 		t.Fatal(err)
