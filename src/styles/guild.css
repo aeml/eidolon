@@ -44,7 +44,9 @@
 }
 
 .guild-form-row input,
-.guild-form-row select {
+.guild-form-row select,
+.guild-events input,
+.guild-events select {
     min-width: 0;
     flex: 1;
     padding: 7px 9px;
@@ -66,7 +68,8 @@
 }
 
 .guild-btn,
-.guild-form-row button {
+.guild-form-row button,
+.guild-events button {
     padding: 5px 9px;
     border: 1px solid rgba(255, 215, 106, 0.3);
     border-radius: 6px;
@@ -142,3 +145,12 @@
         grid-column: 2;
     }
 }
+.guild-events__form, .guild-events__controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.guild-events__form label, .guild-events__controls label { display: flex; flex-direction: column; gap: 4px; flex: 1 1 130px; min-width: 0; }
+.guild-events input, .guild-events select, .guild-events button, .guild-events summary { min-height: 44px; box-sizing: border-box; max-width: 100%; }
+.guild-events input, .guild-events select { width: 100%; min-width: 0; }
+.guild-events button { white-space: normal; }
+.guild-events__event { border-top: 1px solid #756243; margin-top: 12px; padding-top: 8px; overflow-wrap: anywhere; }
+.guild-events__event h4 { margin: 4px 0; color: #eed3a1; }
+.guild-events__event p { line-height: 1.5; }
+.guild-events button[aria-pressed="true"] { outline: 2px solid #e6bd73; }

@@ -9,6 +9,42 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Guild calendar checkpoint
+
+Implemented saved guild events through the existing guild document, membership
+permissions, guild mutex and version-checked writes. Leaders/officers can schedule,
+edit and explicitly cancel; members sign up as tank/healer/damage/flexible with
+Going/Tentative status or withdraw only themselves. Concurrent confirmed sign-ups
+cannot exceed capacity. Rescheduling makes existing commitments tentative and
+old-calendar sign-ups are rejected until the player reviews the new revision.
+Calendar is bounded to20 events,2–100 sign-ups per event,30–360 minutes and starts
+within90 days. Completed/cancelled history expires from views after seven days;
+leaving/kicked members lose sign-ups. Server validates the canonical activity;
+none of this bypasses dungeon/raid entry rules or automatically forms a party.
+
+Guild window includes a persistent draft editor, local-time dates converted to
+UTC for storage, save feedback, collapsible sign-up rosters, online/class context,
+explicit normal party invitations and current-party ready checks. Guild updates
+preserve drafts. Text remains plain, controls44px, forms wrap on narrow screens.
+No physical-device or earned multiplayer campaign claim for this batch.
+
+Schema11 marker prevents older full-guild replacement writers from silently
+discarding the calendar. No backfill is required. Do not roll production back to
+a schema10 binary after this migration or delete the compatibility marker; use a
+compatible forward fix. Production has not been migrated by local calendar QA.
+
+Focused DB checks including isolated Mongo persistence/concurrent capacity PASS
+0.057s (owned loopback container, unique records cleaned by tests). Existing guild
+management writes preserve the new calendar. GuildUI/GuildEventsUI/UIBindings
+12 tests PASS1.256s; final changed calendar UI3 PASS1.267s. Go build, changed JS
+lint, prepare-client and diff checks PASS. Initial title-control validation failed
+because trimming hid a trailing newline; corrected to reject controls before trim.
+No broad suite or soak added. Runtime remains1.7 pending full1.8 packaging.
+
+Still required: remaining readiness/moderation improvements and physical casino
+seating/presence/session-reconnect/camera-input foundation. Guild calendar does
+not close the milestone on its own.
+
 ## Recruitment board checkpoint
 
 Groups tab implemented end-to-end through character-only, bounded/rate-limited

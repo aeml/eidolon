@@ -35,6 +35,8 @@ type guildView struct {
 	Audit       []database.GuildAuditEntry `json:"audit,omitempty"`
 	Permissions map[string]bool            `json:"permissions"`
 	CreatedAt   time.Time                  `json:"createdAt"`
+	Events      []database.GuildEvent      `json:"events"`
+	Activities  []game.GroupActivity       `json:"activities"`
 }
 
 type guildStatePayload struct {
@@ -44,6 +46,34 @@ type guildStatePayload struct {
 
 func handleMsgGuildGet(client *Client, _ Message) {
 	sendGuildState(client)
+}
+
+func handleMsgGuildEvent(client *Client, message Message) {
+	var request database.GuildEventRequest
+	if json.Unmarshal(message.Payload, &request) != nil {
+		client.sendError("invalid guild event request")
+		return
+	}
+	if request.Action == "create" || request.Action == "edit" {
+		valid := false
+		for _, activity := range game.GroupActivities() {
+			if activity.ID == request.Activity {
+				valid = true
+				break
+			}
+		}
+		if !valid {
+			client.sendError("unknown guild event activity")
+			return
+		}
+	}
+	guild, err := db.ChangeGuildEvent(client.playerID, request, time.Now().UTC())
+	if err != nil {
+		client.sendError(err.Error())
+		sendGuildState(client)
+		return
+	}
+	broadcastGuildUpdate(guild.ID)
 }
 
 func handleMsgGuildLeaderboard(client *Client, message Message) {
@@ -412,6 +442,7 @@ func buildGuildView(guild *database.Guild, viewerID string) *guildView {
 		ID: guild.ID, Name: guild.Name, Tag: guild.Tag, MOTD: guild.MOTD, LeaderID: guild.LeaderID,
 		Members: make([]guildMemberView, 0, len(guild.Members)), Bank: guild.Bank,
 		Permissions: map[string]bool{}, CreatedAt: guild.CreatedAt,
+		Events: database.VisibleGuildEvents(guild, time.Now().UTC()), Activities: game.GroupActivities(),
 	}
 	viewerRank := database.GuildRankMember
 	for _, member := range guild.Members {
@@ -432,6 +463,7 @@ func buildGuildView(guild *database.Guild, viewerID string) *guildView {
 		view.Permissions[permission] = database.GuildRankCan(viewerRank, permission)
 	}
 	view.Permissions["disband"] = guild.LeaderID == viewerID
+	view.Permissions[database.GuildPermissionManageEvents] = database.GuildRankCan(viewerRank, database.GuildPermissionManageEvents)
 	if viewerRank == database.GuildRankOfficer {
 		for _, member := range guild.Members {
 			if member.PlayerID == guild.LeaderID && !member.LastOnline.IsZero() && time.Since(member.LastOnline) >= database.GuildInactiveLeaderAfter {

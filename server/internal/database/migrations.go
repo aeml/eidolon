@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 10
+const CurrentSchemaVersion = 11
 
 type schemaMigration struct {
 	Version int
@@ -67,6 +67,8 @@ var schemaMigrations = []schemaMigration{
 	// An older unconditional PvP profile writer could erase result revisions.
 	// No backfill: legacy profiles start at revision0; block unsafe old binaries.
 	{Version: 10, Name: "revisioned_arena_results", Apply: func(context.Context, *DB) error { return nil }},
+	// Old full-guild replacement writers would discard the saved calendar.
+	{Version: 11, Name: "guild_event_calendar", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

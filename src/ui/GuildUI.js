@@ -1,3 +1,5 @@
+import { GuildEventsUI } from './GuildEventsUI.js';
+
 export class GuildUI {
     constructor({ container, getLastPlayer, addChatMessage }) {
         this.container = container;
@@ -19,6 +21,8 @@ export class GuildUI {
         this.onBankWithdraw = null;
         this.onLeaderboard = null;
         this.leaderboard = { season: '', runs: [] };
+		this.events = new GuildEventsUI({ action: payload => this.onEvent?.(payload),
+			invite: name => this.onPartyInvite?.(name), ready: () => this.onPartyReadyCheck?.(), getPlayer: getLastPlayer });
 
         this.render();
     }
@@ -172,6 +176,8 @@ export class GuildUI {
             roster.appendChild(row);
         }
         this.container.appendChild(roster);
+		this.events.update(guild);
+		this.container.appendChild(this.events.element);
         this.renderBank(guild);
         this.renderLeaderboard();
         this.renderAudit(guild);

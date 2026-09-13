@@ -37,6 +37,7 @@ var messageHandlers = map[string]messageHandler{
 	MsgFriendRemove:  handleMsgFriendRemove,
 
 	MsgGuildGet:          handleMsgGuildGet,
+	MsgGuildEvent:        handleMsgGuildEvent,
 	MsgGuildCreate:       handleMsgGuildCreate,
 	MsgGuildInvite:       handleMsgGuildInvite,
 	MsgGuildRespond:      handleMsgGuildRespond,

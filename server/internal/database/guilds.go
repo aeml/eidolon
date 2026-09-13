@@ -26,6 +26,7 @@ const (
 	GuildPermissionWithdrawBank = "withdraw_bank"
 	GuildPermissionViewAudit    = "view_audit"
 	GuildPermissionManageMOTD   = "manage_motd"
+	GuildPermissionManageEvents = "manage_events"
 
 	GuildMemberLimit   = 100
 	GuildBankItemLimit = 80
@@ -69,6 +70,7 @@ type Guild struct {
 	Members   []GuildMember     `bson:"members" json:"members"`
 	Bank      GuildBank         `bson:"bank" json:"bank"`
 	Audit     []GuildAuditEntry `bson:"audit" json:"audit"`
+	Events    []GuildEvent      `bson:"events,omitempty" json:"events"`
 	CreatedAt time.Time         `bson:"created_at" json:"createdAt"`
 	UpdatedAt time.Time         `bson:"updated_at" json:"updatedAt"`
 	Version   int               `bson:"version" json:"-"`
@@ -101,7 +103,7 @@ func GuildRankCan(rank, permission string) bool {
 	case GuildRankLeader:
 		return true
 	case GuildRankOfficer:
-		return permission == GuildPermissionInvite || permission == GuildPermissionKick || permission == GuildPermissionWithdrawBank || permission == GuildPermissionViewAudit || permission == GuildPermissionManageMOTD
+		return permission == GuildPermissionInvite || permission == GuildPermissionKick || permission == GuildPermissionWithdrawBank || permission == GuildPermissionViewAudit || permission == GuildPermissionManageMOTD || permission == GuildPermissionManageEvents
 	default:
 		return false
 	}
@@ -356,6 +358,7 @@ func (db *DB) LeaveGuild(playerID string) (*Guild, bool, error) {
 		}
 	}
 	guild.Members = filtered
+	guild.Events = VisibleGuildEvents(guild, now)
 	guild.LeaderID = newLeaderID
 	guild.UpdatedAt = now
 	guild.Version++
@@ -390,6 +393,7 @@ func (db *DB) KickGuildMember(actorID, targetID string) (*Guild, error) {
 			}
 		}
 		guild.Members = filtered
+		guild.Events = VisibleGuildEvents(guild, time.Now().UTC())
 		return nil
 	})
 }

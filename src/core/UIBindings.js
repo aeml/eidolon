@@ -136,6 +136,9 @@ export class UIBindings {
         };
         const guild = ui.social.guild;
         if (guild) {
+			guild.onEvent = payload => engine.network.send('guild_event', payload);
+			guild.onPartyInvite = username => ui.social.onPartyInvite?.(username);
+			guild.onPartyReadyCheck = () => ui.social.onPartyReadyCheck?.();
             guild.onCreate = (name, tag) => engine.network.send('guild_create', { name, tag });
             guild.onInvite = (username) => engine.network.send('guild_invite', { username });
             guild.onRespond = (guildId, accept) => engine.network.send('guild_respond', { guildId, accept });
