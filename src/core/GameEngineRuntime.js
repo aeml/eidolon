@@ -10,6 +10,7 @@ import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { ChronicleWitness } from '../entities/ChronicleWitness.js';
 import { requestChronicleInspection } from './ChronicleInspection.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
 import { Stash } from '../entities/Stash.js';
@@ -628,6 +629,12 @@ class GameEngineRuntimeMethods {
                             this.uiManager.toggleShop();
                             this.pendingInteraction = null;
 
+                        } else if (this.pendingInteraction instanceof ChronicleWitness) {
+                            this.player.targetPosition = null;
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+                            this.pendingInteraction.interact(this);
+                            this.pendingInteraction = null;
                         } else if (this.pendingInteraction instanceof ChronicleSite) {
                             this.player.targetPosition = null;
                             this.player.state = 'IDLE';

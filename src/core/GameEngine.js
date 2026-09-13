@@ -7,6 +7,7 @@ import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { ChronicleWitness } from '../entities/ChronicleWitness.js';
 import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
@@ -1461,6 +1462,7 @@ export class GameEngine {
         const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         return entity instanceof DwarfSalesman
             || entity instanceof ChronicleSite
+            || entity instanceof ChronicleWitness
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
             || entity instanceof DungeonNPC
@@ -1469,6 +1471,7 @@ export class GameEngine {
             || entity instanceof TradingHouse
             || type === 'DwarfSalesman'
             || type === 'ChronicleSite'
+            || type === 'ChronicleWitness'
             || type === 'QuestNPC'
             || type === 'RespecNPC'
             || type === 'DungeonNPC'
@@ -1632,6 +1635,8 @@ export class GameEngine {
                     ? 'Click to open the dungeon portal.'
                     : 'Move closer to interact with this dungeon portal.';
             }
+        } else if (interactableType === 'ChronicleWitness') {
+            promptLabel = inRange ? `Click to speak with ${entity.name}. Optional Chronicle conversations.` : 'Move closer to speak with this witness.';
         } else if (interactableType === 'ChronicleSite') {
             promptLabel = inRange
                 ? 'Click or press E to inspect this discovery. Recovered evidence is saved in your journal.'
@@ -2152,6 +2157,8 @@ export class GameEngine {
         if (type === 'NPC') {
             if (subType === 'ChronicleSite') {
                 p = new ChronicleSite(id);
+            } else if (subType === 'ChronicleWitness') {
+                p = new ChronicleWitness(id);
             } else if (subType === 'DwarfSalesman') {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {

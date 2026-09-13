@@ -57,7 +57,29 @@ instruction; source catalogs alone do not prove those playthroughs passed.
   refined after that first look, then visually rechecked. This is an isolated
   scenery check, not a complete earned raid run or phone performance claim.
 
-Next: optional conversations with the people behind the diaries. Keep Ilyra the
-story quest giver; reuse readable conversation/journal surfaces and gate spoilers
-on the player's existing recorded discoveries/restoration receipts. The eight
-investigations and full progression sequence must remain unchanged.
+## Witness conversations
+
+- Mara Fen, Dain, Hessa and Selen are now server-spawned non-combat residents in
+  the open southern plaza (x=-24/-8/8/24, z=235), facing town. Their four existing
+  town-actor silhouettes retain idle animations, with distinct names and no quest
+  markers. Normal click/phone USE interaction approaches them and opens dialogue;
+  it rejects dead, distant, removed and wrong-instance interactions.
+- Sixteen authored topics deepen the four witnesses' beliefs and decisions.
+  Each initially offers one topic; two more depend on that player's specific
+  recorded field evidence and the final one on the realm's completed raid receipt.
+  Counts alone and ready-but-unclaimed raids do not reveal later dialogue.
+- Uses the existing responsive quest conversation window, but offers no accept,
+  complete, buy or reward action. Quest updates retain the open topic and scroll;
+  changing character closes the reading. Speaking to Ilyra restores ordinary quest
+  mode. Ilyra remains the sole main-story quest giver.
+-33 focused witness/journal tests pass and the targeted Go resident-spawn check
+  passes. Changed-file lint/diff pass. Actual390px Chrome dialogue inspected at
+  `/tmp/eidolon-1-4-witness-phone.png`:16px text and44px topic targets. Four actual
+  NPC models/idle poses inspected at `/tmp/eidolon-1-4-witness-models.png`; the
+  temporary gallery initially omitted entity render positioning, corrected before
+  that inspection. These fixtures do not claim a complete live-town playthrough.
+
+Next: package1.4, synchronize login/runtime versions, publish with patch notes and
+check its deployment. Broader earned progression and physical-device matrices
+remain final stabilization.1.3 is deployed on both domains atfb7554ad; final live
+QA in CI34730497493 is still running, so its final result remains unclaimed.

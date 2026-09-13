@@ -1,4 +1,5 @@
 import { renderQuestConversation } from './QuestConversation.js';
+import { renderWitnessConversation } from './ChronicleWitnessConversation.js';
 import { formatQuestRewards } from './questRewards.js';
 import { MAX_PLAYER_LEVEL } from '../data/dungeonProgression.js';
 import { CHRONICLE_CHAPTER_COUNT, getCurrentChronicleQuest, getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
@@ -75,6 +76,8 @@ export class QuestUI {
 
     /** Toggle the quest NPC window. */
     toggleQuestWindow(kind) {
+        if (kind && this.witnessId) this.closeQuestWindow();
+        this.witnessId = null;
         if (kind && kind !== this.questKind) {
             this.closeQuestWindow();
             this.questKind = kind;
@@ -139,7 +142,22 @@ export class QuestUI {
 
     /** Close the quest NPC window if open. */
     closeQuestWindow() {
+        this.witnessId = null;
         if (this.questWindow) this.questWindow.style.display = 'none';
+    }
+
+    openWitnessConversation(id) {
+        if (!this.questWindow) return false;
+        if (!this.isQuestWindowOpen) {
+            if (this.ctx.toggleManagedWindow) this.ctx.toggleManagedWindow('quest');
+            else this.questWindow.style.display = 'flex';
+        }
+        this.witnessId = id;
+        this.witnessPlayerId = this.ctx.getLastPlayer?.()?.id;
+        this.witnessSignature = null;
+        this.questList.replaceChildren();
+        renderWitnessConversation(this, this.ctx.getLastPlayer?.()?.quests || []);
+        return Boolean(this.witnessId);
     }
 
     /** Close the quest journal if open. */
@@ -878,6 +896,10 @@ export class QuestUI {
         if (acknowledged) {
             if (pending.complete && (pending.quest.category === 'chronicle') === (this.questKind === 'story')) this.completedDialogue = { ...pending.quest, ...acknowledged };
             this.pendingQuestAction = null;
+        }
+        if (this.witnessId) {
+            renderWitnessConversation(this, quests);
+            return;
         }
         const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
         if (signature === this.questWindowSignature) return;

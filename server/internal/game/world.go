@@ -301,6 +301,7 @@ func NewWorld(db *database.DB) *World {
 func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
+	w.spawnChronicleWitnesses()
 	w.spawnRespecNPC()
 	w.spawnDungeonNPC()
 	w.spawnStash()
