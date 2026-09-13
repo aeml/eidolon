@@ -1,14 +1,20 @@
 # 1.10 — The Resonant Age
 
-## Pending interim release — Alpha 1.9.3
+## Latest interim release — Alpha 1.9.3 verified live
 
 User requested pushing the completed casino hand feedback, win/bonus celebrations
 and 100,000 Gold limits live. Packaged with aligned version defaults and cumulative
 patch notes. EP-only wagering policy is recorded, but its wallet and games remain
-follow-on work. Exact deployment verification is pending; see
+follow-on work. September13 21:18UTC: exact commit
+**03373b0f3df9d03e0bca76d3f3b95b6b8d142423** verified on both domains,
+database ready. CI34781528097 deployed successfully but remains FAILURE because
+the final aura test recorded Chrome ERR_NETWORK_CHANGED during host Docker link
+creation. Predeploy4PASS; live gameplay8PASS; recovery2PASS. One unchanged,
+targeted live two-player recheck passed1test1.1m with zero retries. Do not rerun
+the full pipeline or claim all-green CI; see
 [release evidence and rollback compatibility](2026-09-13-casino-celebrations-and-stakes.md).
 
-## Latest interim release — Alpha 1.9.2 verified live
+## Previous interim release — Alpha 1.9.2 verified live
 
 September13 20:08UTC: **3651c4c9773ea75c449889192ad0cfd80e75ef45** live on both
 public domains, database ready; exact CI34778003801 SUCCESS all ten jobs. Roomy

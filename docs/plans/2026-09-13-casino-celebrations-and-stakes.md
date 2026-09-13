@@ -2,7 +2,30 @@
 
 Packaged at the user's request as Alpha1.9.3, following deployed Alpha1.9.2
 (`3651c4c9`). Login, runtime defaults and cumulative patch notes are aligned.
-Deployment verification is pending; the evidence below is local unless stated.
+Verified live September13 21:18UTC: exact commit
+**03373b0f3df9d03e0bca76d3f3b95b6b8d142423** on client release/login/runtime
+and backend health, database ready. Origin/master matches; public casino modules
+and cumulative patch notes verified. This is not full1.10 or EP implementation.
+
+## Deployment evidence and CI caveat
+
+CI **34781528097** completed with nine successful jobs, including all predeploy
+gates and both deployments. Predeploy4PASS1.4m; live gameplay8PASS6.9m; town
+recovery/expiry/reconnect2PASS1.3m. The final two-player aura test completed its
+gameplay assertions but failed its console-error assertion on two Chrome
+`ERR_NETWORK_CHANGED` messages. The workflow therefore remains **FAILURE**;
+do not describe this as an all-green CI run or restart the completed pipeline.
+
+Host network logs show unrelated Docker veth links created at21:15:02 during
+the21:14:59–21:15:55 failed test, consistent with a runner network interruption.
+No network/service change or assertion suppression was made. One targeted
+rerun of the unchanged `well-rested-party-gameplay.spec.js` against the exact
+live release, fresh ordinary registrations, system Chrome/hardware WebGL and
+`--retries=0` passed **1test1.1m**, including empty console-error lists, High/Low/
+High aura budgets, phone layouts, joystick movement and reconnect. Artifact
+credential scan passed. Output: `test-results/live-rest-party-release193`.
+This separate passing recheck does not change the original GitHub conclusion.
+No additional broad suite, redeploy or soak was started; no owned QA remains.
 
 ## Player-facing patch notes
 
