@@ -17,7 +17,45 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 02:18 UTC
+## Current checkpoint — September 13, 02:28 UTC
+
+PROGRESS: Saved builds and reconnect bar restoration committed locally as4edfe72f
+in `/tmp/eidolon-1-5-loot-loadouts-20260913`, atop first loadout slicec4780dcf.
+Presets capture branch/talent ranks/runes. One atomic staged apply validates class,
+level, canonical ranks/point budget, earned runes, hotbar and owned gear before
+mutating or charging. Server quote uses the existing shared respec price formula;
+explicit UI confirmation passes exact confirmedGold. Replay does not charge twice.
+Existing direct branch/rune/reset paths unchanged. Skill points/cooldowns retained,
+resource deficits preserved; Gold recorded in respec economy sink.
+
+SavedHotbar is private/persisted/copied, set on save/apply. Initial join/resume
+publishes owner loadout snapshot with current build and filtered last saved/applied
+bar, preserving empty slots; legacy nil leaves default hotbar alone. Client applies
+build before bar, does not override current bar on ordinary list/save responses.
+No runtime1.5 version bump or push yet. Full1.5 remains incomplete.
+
+Focused Go loadout/core/persistence/initial-state checks PASS; additional all-four-
+class legal-rune/payment check PASS.9 UI/state checks PASS, changed JS lint/diff
+PASS. Actual Chrome390px paid confirmation inspected at
+`/tmp/eidolon-1-5-builds-phone.png`,54px button. All local sessions terminal.
+No full suite/soak. Read updated stage plan in1.5WT.
+
+Next: earned appearance collection/selection with authoritative ownership and
+multiplayer visibility separate from combat stats. Existing sources:
+`src/art/ProceduralEquipment.js` descriptors/resolve211/signature711/apply748;
+`src/entities/Actor.js` syncEquipmentVisuals970; `proto/state.proto` equipment148;
+server Item struct325 in internal/game/items.go; persistence and state serialization.
+Then Forge/comparison, economy tune, casino Gold safeguards/future undefined VIP
+currency boundary; package/publish full1.5 with notes and synchronized versions.
+
+1.4 deployed and independently verified LIVE: both HTTPS endpoints report
+Alpha1.4.0 /9f4b9dc8c96507fee1646ec4bfa0105d62b7a404; backend database ready.
+SameCI34731798665 all through both deployments SUCCESS, final Live Release and
+Character QA IN_PROGRESS. Frozen1.4WT unchanged. Continue same run, no restart.
+Previous/current goal turns made implementation progress. Full1.1–1.10 goal active.
+Root ledger-only master MUST NOT be pushed.
+
+### Previous detail — September 13, 02:18 UTC
 
 PROGRESS: 1.5 first loadout slice committed locally as c4780dcf in
 `/tmp/eidolon-1-5-loot-loadouts-20260913` (branch work/1-5-loot-loadouts-20260913).
