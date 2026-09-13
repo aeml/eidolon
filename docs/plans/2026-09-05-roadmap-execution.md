@@ -17,7 +17,36 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 04:27 UTC
+## Current checkpoint — September 13, 04:34 UTC
+
+PROGRESS:1.7 seasons/rewards committed6fe8c2b9 in cleanWT
+`/tmp/eidolon-1-7-arena-20260913`. Eligible normal rankedwins separatelytracked;
+forfeit/practice/restrictedopponents don'tqualify. Bronze10wins250Honor;
+Silver25wins+1200rating600Honor; Gold50wins+1500rating1200Honor, highestonly.
+Qualification starts1.7, olderW/Lretainednotretroactivelyinventedaseligible.
+
+Nextarenaopen/entryafterUTCquarterend atomicallyarchivespriorseason/WL/rating/
+eligiblewins/medal/award/time, creditsHonor, resetsladder1000/currentcounters via
+conditionalprofileRevision+1. Concurrentconflictsreread; no doubleclaim/transfer.
+Allfuturematchreceiptsincludehistory. Hydrationdoesn'talteractivePvPprofiles;
+replayspendingresultjournalBEFORErollover so settlementdoesn'tconsumepending
+matchrevision. UIclearlyseparatesprojectednot-awardedmedal/enddatefromsettledhistory.
+Noactualearnedseason/longmatrixclaim. Remaining1.7: process-lossPvEsaveprojection,
+roundstatus/cooldowncleanup, thennotes/version/packageafter1.6delivery.
+
+Focused tier/yearboundaryPASS0.004s; actualMongo8concurrentsettlers/singleaward/
+history/stalereplay/quietnextseason+receiptreplayPASS0.119s; eligible/forfeit/
+restrictedgamePASS0.010s; mainPvPduelPASS0.241s; UI9PASS0.777s; JSlintand
+gobuild-trimpath-allPASS. TestMongo eidolon-isolated-qa-mongo-arena171309
+rediscoveredloopback32915forthisrun, nowSTOPPEDandretained. Noactive tool sessions.
+
+1.6oldCI34737205195 TERMINALFAILURE(onlyoldTabtest). Correction34c1c0d84a52e90144ca1bc34f1c549e7c3c1218
+PUSHED fromclean1.6WT. ReplacementCI34738051311 IN_PROGRESS04:34,
+clientPASS/serverRUNNING. Poll SAMErun; verifyexactclient/serverreleasecommit
+andDBreadyAFTERdeployment. No1.6liveclaim; lastverified1.5d8323180.
+Remainingfullroadmap1.8/1.9/1.10unchanged. Goalactive; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 04:27 UTC
 
 PROGRESS:1.7 rated-results batch3b06ac60 committed in
 `/tmp/eidolon-1-7-arena-20260913`, then merged1.6 correction34c1c0d8 cleanly.
