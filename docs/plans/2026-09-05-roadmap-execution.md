@@ -17,7 +17,39 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 03:32 UTC
+## Current checkpoint — September 13, 03:44 UTC
+
+PROGRESS:1.7 first arena batch committedb9436c57, cleanWT
+`/tmp/eidolon-1-7-arena-20260913` (runtime remains1.6). Separate practice1v1/2v2
+flag propagated through protocol/queues/matches/results/UI. Practice2v2 is real
+two-player-party first-to-two elimination with no ranked rewards or practice
+deserter penalty. Rated queue matches average team rating, oldest compatible team
+then closest opponent;±100,+50per30s,cap±500,bothwaitwindows must allow gap.
+One-second queue tick can start actual scene without another join. Actor reads
+precedePvP.mu; dead/offline/instanced/changedparty entries pruned;1v1partyallies
+notmatched. Both teammates can cancel wholequeue. Unique same-tick matchIDs.
+UI shows elapsed/rating/window and polls openqueued window5s; explicitly preserves
+existing gear/level/build-sensitive65%-damage/35%-maxHPcap policy, no new scaling.
+Tiedtimeout nowcancels without awarding arbitraryteamA victory.
+
+Focused priorgamePvP/duel/arena PASS13.356s; newqueue/practice/revalidation/tie
+PASS0.045s; mainPvP/scene/lifecycle PASS0.102s; sixUIinclpractice/pollcancel
+PASS0.746s; changedJSlint/diffPASS. No new broadmatrix/soak. All local sessions
+terminal. Read updated docs/plans/2026-09-13-release1-7-arena.md in1.7WT.
+Next: ratedresultdeltas, anti-farm/loss/disconnect safeguards, explicitteamresults,
+seasonrewards and durable replay-safe persistence. Current mainpersistPvPMatchResult
+stillflat+25/-20 andblindasyncDBReplace; hydratePvPProfile canoverwrite pending
+localresults. Resolve replay/concurrency/storagefailure/quarterrollover before1.7
+shipping. Review directduel versusqueued/sharedparty admission. Do not call1.7done.
+
+Publishing unchanged:1.5d83231809994317aac31dcf1c901ae5e22791e2d pushed, exact
+CI34735541628 confirmedIN_PROGRESS03:44. ServerGo+clientPASS; browser3PASS,
+browser1/2RUNNING. Poll SAME run, do not restart priorfailedruns. Stillno1.5live
+claim. Verify client/server exact1.5version+commit+DBready, then push frozen1.6
+564487aeec83de8d9e6822e63879a88f41a1df92 fromclean1.6WT and verifydeployment.
+Keep1.5→1.6→1.7 releaseorder. Full1.1–1.10 goalactive; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 03:32 UTC
 
 PROGRESS:1.6 implemented and PACKAGED locally564487aeec83de8d9e6822e63879a88f41a1df92,
 NOT PUSHED. Frozen cleanWT `/tmp/eidolon-1-6-encounters-20260913`. Eight notes and
