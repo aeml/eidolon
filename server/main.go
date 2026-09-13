@@ -414,6 +414,13 @@ func main() {
 	if err := retryPendingCharacterSaves(); err != nil {
 		log.Fatalf("Cannot recover pending character saves; refusing stale logins: %v", err)
 	}
+	arenaResultJournal, err = database.OpenPvPResultJournal(filepath.Join(*characterJournalDir, "arena-results"))
+	if err != nil {
+		log.Fatalf("Arena result journal unavailable: %v", err)
+	}
+	if err := retryPendingPvPResults(); err != nil {
+		log.Fatalf("Cannot recover ranked results; refusing stale logins: %v", err)
+	}
 
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
@@ -878,6 +885,7 @@ func main() {
 	world.OnPvPMatchComplete = func(result game.PvPMatchResult) {
 		scheduleCharacterWork(func() { persistPvPMatchResult(result) })
 	}
+	world.OnPvPResultRecord = recordPvPResult
 	world.OnPvPMatchUpdate = func(match *game.PvPMatch) {
 		go sendPvPMatchState(match)
 	}
@@ -914,6 +922,11 @@ func main() {
 	// Independent bounded retry passes: an outage must not multiply timeouts
 	// across a large outbox or queue redundant workers behind one delivery.
 	loops.Every(game.RefundRetryInterval, world.Trading.ScheduleRefundDelivery)
+	loops.Every(5*time.Second, func() {
+		if err := retryPendingPvPResults(); err != nil {
+			log.Printf("Arena result sync remains pending: %v", err)
+		}
+	})
 	loops.Every(game.RefundRetryInterval, func() {
 		if err := recoverPendingAuctionBids(); err != nil {
 			log.Printf("Auction bid recovery remains pending: %v", err)

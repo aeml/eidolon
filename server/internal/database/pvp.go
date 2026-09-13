@@ -11,6 +11,8 @@ import (
 )
 
 type PvPProfile struct {
+	Revision     int64     `bson:"revision" json:"revision"`
+	LastMatchID  string    `bson:"last_match_id" json:"lastMatchId"`
 	PlayerID     string    `bson:"player_id" json:"playerId"`
 	Rating       int       `bson:"rating" json:"rating"`
 	Wins         int       `bson:"wins" json:"wins"`
@@ -27,6 +29,9 @@ func CurrentArenaSeason(at time.Time) string {
 }
 
 func (db *DB) GetPvPProfile(playerID string) (*PvPProfile, error) {
+	if db == nil || db.pvpProfiles == nil || playerID == "" {
+		return nil, fmt.Errorf("arena profile service unavailable")
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var profile PvPProfile
@@ -36,24 +41,52 @@ func (db *DB) GetPvPProfile(playerID string) (*PvPProfile, error) {
 	}
 	if err == nil && profile.Season != CurrentArenaSeason(time.Now()) {
 		// Seasonal ladders reset competitive results when the quarter changes.
-		return &PvPProfile{PlayerID: playerID, Rating: 1000, Season: CurrentArenaSeason(time.Now()), UpdatedAt: time.Now().UTC()}, nil
+		return &PvPProfile{PlayerID: playerID, Rating: 1000, Honor: profile.Honor, Revision: profile.Revision, LastMatchID: profile.LastMatchID, Season: CurrentArenaSeason(time.Now()), UpdatedAt: time.Now().UTC()}, nil
 	}
 	return &profile, err
 }
 
 func (db *DB) SavePvPProfile(profile PvPProfile) error {
-	if profile.PlayerID == "" {
-		return fmt.Errorf("player ID is required")
+	if db == nil || db.pvpProfiles == nil {
+		return fmt.Errorf("arena profile service unavailable")
+	}
+	if profile.PlayerID == "" || profile.Revision <= 0 || profile.LastMatchID == "" || profile.UpdatedAt.IsZero() {
+		return fmt.Errorf("player ID, match ID and positive arena revision are required")
 	}
 	if profile.Rating < 0 {
 		profile.Rating = 1000
 	}
-	profile.Season = CurrentArenaSeason(time.Now())
-	profile.UpdatedAt = time.Now().UTC()
+	if profile.Season == "" {
+		profile.Season = CurrentArenaSeason(profile.UpdatedAt)
+	}
+	profile.UpdatedAt = profile.UpdatedAt.UTC().Truncate(time.Millisecond)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := db.pvpProfiles.ReplaceOne(ctx, bson.M{"player_id": profile.PlayerID}, profile, options.Replace().SetUpsert(true))
-	return err
+	// The unique player_id index turns a stale conditional upsert into a
+	// duplicate-key result. Never fall back to an unconditional replacement.
+	filter := bson.M{"player_id": profile.PlayerID, "$or": bson.A{
+		bson.M{"revision": bson.M{"$lt": profile.Revision}}, bson.M{"revision": bson.M{"$exists": false}},
+	}}
+	_, err := db.pvpProfiles.UpdateOne(ctx, filter, bson.M{"$set": profile}, options.Update().SetUpsert(true))
+	if err == nil {
+		return nil
+	}
+	if !mongo.IsDuplicateKeyError(err) {
+		return err
+	}
+	var current PvPProfile
+	if err := db.pvpProfiles.FindOne(ctx, bson.M{"player_id": profile.PlayerID}).Decode(&current); err != nil {
+		return err
+	}
+	if current.Revision > profile.Revision {
+		return nil
+	}
+	if current.Revision == profile.Revision && current.LastMatchID == profile.LastMatchID &&
+		current.Rating == profile.Rating && current.Wins == profile.Wins && current.Losses == profile.Losses &&
+		current.Honor == profile.Honor && current.SeasonPoints == profile.SeasonPoints && current.Season == profile.Season {
+		return nil
+	}
+	return fmt.Errorf("conflicting arena result at revision %d", profile.Revision)
 }
 
 func (db *DB) PvPLeaderboard(limit int) ([]PvPProfile, error) {

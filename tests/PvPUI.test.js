@@ -65,6 +65,14 @@ describe('PvPUI', () => {
         expect(ui.window.textContent).toContain('Bob · 1200');
     });
 
+    test('does not promise a return or rewards while durable recording is pending', () => {
+        const ui = createUI();
+        ui.update({ match: { mode: 'arena_2v2', round: 2, scoreA: 2, scoreB: 0, status: 'complete', settlementPending: true } });
+        expect(ui.window.textContent).toContain('Saving the ranked result');
+        expect(ui.window.textContent).not.toContain('Returning you');
+        expect(ui.window.querySelector('.pvp-card--match').textContent).not.toContain('Forfeit');
+    });
+
     test('shows remaining teammates, intermission, and clears finished snapshot state', () => {
         const ui = createUI();
         const match = { mode: 'arena_2v2', status: 'active', round: 1, scoreA: 0, scoreB: 0,

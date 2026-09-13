@@ -42,25 +42,31 @@ type PvPOrigin struct {
 }
 
 type PvPMatch struct {
-	Practice     bool                 `json:"practice"`
-	ID           string               `json:"id"`
-	Mode         string               `json:"mode"`
-	TeamA        []string             `json:"teamA"`
-	TeamB        []string             `json:"teamB"`
-	ScoreA       int                  `json:"scoreA"`
-	ScoreB       int                  `json:"scoreB"`
-	FirstTo      int                  `json:"firstTo"`
-	Round        int                  `json:"round"`
-	Status       string               `json:"status"`
-	StartedAt    time.Time            `json:"startedAt"`
-	EndsAt       time.Time            `json:"endsAt"`
-	Origins      map[string]PvPOrigin `json:"-"`
-	WinnerIDs    []string             `json:"winnerIds,omitempty"`
-	Eliminated   []string             `json:"eliminated,omitempty"`
-	RoundPending bool                 `json:"roundPending"`
+	Practice          bool                 `json:"practice"`
+	ID                string               `json:"id"`
+	Mode              string               `json:"mode"`
+	TeamA             []string             `json:"teamA"`
+	TeamB             []string             `json:"teamB"`
+	ScoreA            int                  `json:"scoreA"`
+	ScoreB            int                  `json:"scoreB"`
+	FirstTo           int                  `json:"firstTo"`
+	Round             int                  `json:"round"`
+	Status            string               `json:"status"`
+	StartedAt         time.Time            `json:"startedAt"`
+	EndsAt            time.Time            `json:"endsAt"`
+	Origins           map[string]PvPOrigin `json:"-"`
+	WinnerIDs         []string             `json:"winnerIds,omitempty"`
+	Eliminated        []string             `json:"eliminated,omitempty"`
+	RoundPending      bool                 `json:"roundPending"`
+	ResultRetryAt     time.Time            `json:"-"`
+	SettlementPending bool                 `json:"settlementPending"`
+	pendingResult     *PvPMatchResult
 }
 
 type PvPProfile struct {
+	Revision     int64     `json:"revision"`
+	LastMatchID  string    `json:"lastMatchId"`
+	Season       string    `json:"season"`
 	PlayerID     string    `json:"playerId"`
 	Rating       int       `json:"rating"`
 	Wins         int       `json:"wins"`
@@ -387,6 +393,7 @@ func copyPvPMatch(match *PvPMatch) *PvPMatch {
 		return nil
 	}
 	copyMatch := *match
+	copyMatch.pendingResult = nil
 	copyMatch.TeamA = append([]string(nil), match.TeamA...)
 	copyMatch.TeamB = append([]string(nil), match.TeamB...)
 	copyMatch.WinnerIDs = append([]string(nil), match.WinnerIDs...)
@@ -650,14 +657,37 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 			profile.SeasonPoints++
 		}
 		profile.UpdatedAt = time.Now().UTC()
-		w.PvP.Profiles[playerID] = profile
+		profile.Revision++
+		profile.LastMatchID = match.ID
 		profiles = append(profiles, profile)
+	}
+	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, Practice: match.Practice, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
+	if match.pendingResult != nil {
+		result = *match.pendingResult
+		profiles = result.Profiles
+	} else {
+		match.pendingResult = &result
+	}
+	if len(profiles) > 0 && w.OnPvPResultRecord != nil {
+		if err := w.OnPvPResultRecord(result); err != nil {
+			match.SettlementPending = true
+			match.ResultRetryAt = w.PvP.now().Add(5 * time.Second)
+			updated := copyPvPMatch(match)
+			w.PvP.mu.Unlock()
+			w.Mu.Unlock()
+			if w.OnPvPMatchUpdate != nil {
+				w.OnPvPMatchUpdate(updated)
+			}
+			return
+		}
+	}
+	for _, profile := range profiles {
+		w.PvP.Profiles[profile.PlayerID] = profile
 	}
 	for _, playerID := range participants {
 		delete(w.PvP.MatchByPlayer, playerID)
 	}
 	delete(w.PvP.Matches, matchID)
-	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, Practice: match.Practice, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
 	w.PvP.mu.Unlock()
 	for _, playerID := range participants {
 		if player := w.Entities[playerID]; player != nil {
@@ -692,6 +722,9 @@ func (w *World) UpdatePvP(now time.Time) {
 	}
 	expiredMatches := make([]string, 0)
 	for matchID, match := range w.PvP.Matches {
+		if match.Status == PvPMatchComplete && !match.ResultRetryAt.IsZero() && !now.Before(match.ResultRetryAt) {
+			expiredMatches = append(expiredMatches, matchID)
+		}
 		if match.Status == PvPMatchActive && now.After(match.EndsAt) {
 			match.Status = PvPMatchComplete
 			if match.ScoreA > match.ScoreB {
@@ -770,8 +803,19 @@ func (w *World) SetPvPProfile(profile PvPProfile) {
 		return
 	}
 	w.PvP.mu.Lock()
+	if current, exists := w.PvP.Profiles[profile.PlayerID]; exists &&
+		(current.Revision > profile.Revision || (current.Revision == profile.Revision && current.UpdatedAt.After(profile.UpdatedAt))) {
+		w.PvP.mu.Unlock()
+		return
+	}
 	w.PvP.Profiles[profile.PlayerID] = profile
 	w.PvP.mu.Unlock()
+}
+
+func (w *World) PvPProfileRevision(playerID string) int64 {
+	w.PvP.mu.RLock()
+	defer w.PvP.mu.RUnlock()
+	return w.PvP.Profiles[playerID].Revision
 }
 
 func (w *World) constrainPvPPoint(instanceID string, x, z float64) (float64, float64, bool) {

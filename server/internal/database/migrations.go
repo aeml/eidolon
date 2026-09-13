@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 9
+const CurrentSchemaVersion = 10
 
 type schemaMigration struct {
 	Version int
@@ -64,6 +64,9 @@ var schemaMigrations = []schemaMigration{
 	// No backfill: a legacy character begins with zero rest and earns it online.
 	// The marker prevents a schema8 full-character writer from dropping new rest.
 	{Version: 9, Name: "well_rested_character_state", Apply: func(context.Context, *DB) error { return nil }},
+	// An older unconditional PvP profile writer could erase result revisions.
+	// No backfill: legacy profiles start at revision0; block unsafe old binaries.
+	{Version: 10, Name: "revisioned_arena_results", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

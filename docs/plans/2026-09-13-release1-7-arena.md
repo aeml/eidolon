@@ -18,6 +18,51 @@ Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
 
 ## Implementation checkpoint — September 13, 03:43 UTC
 
+04:08 durable-results batch: ranked profiles carry monotonic revisions and stable
+match IDs. Mongo conditional upserts reject conflicting same-revision writes and
+ignore old/replayed snapshots without overwriting newer outcomes. Hydration cannot
+replace newer local revisions; ranked entry is refused if DB profiles are missing
+or still behind a recorded result. Quarter reset retains revision and earned Honor.
+
+Before applying ranked profiles or returning participants, the game synchronously
+records a frozen, checksummed receipt in `<character-journal-dir>/arena-results`.
+Atomic temporary write/fsync/rename/directory-sync,0600 files and hashed filenames
+protect immutable receipts. This hook performs only filesystem IO, never Mongo
+under gameplay locks. Record failure keeps the completed match reserved with a
+visible Saving state; a five-second retry uses the identical decided outcome.
+Practice/ties with no ranked rewards do not create receipts.
+
+Normal persistence applies every receipt profile via revision checks, then removes
+only that receipt. Mongo failure retains the journal and reports syncing instead
+of an unverified reward. A five-second retry and pre-login startup replay recover
+partial team writes; corruption or unrecoverable receipts block stale logins.
+Schema10 marker blocks old schema9 unconditional PvP writers from destroying those
+revisions. No backfill is needed. Once1.7 migrates production, rollback requires a
+schema10-compatible server; NEVER delete the marker or pending receipts to force
+an older binary to start. No production schema change has been made yet.
+
+Focused actual Mongo tests PASS1.086s: reverse/concurrent revisions, duplicate
+replay, conflicting same-revision rejection, partial two-player commit replay.
+Journal reopen/detachment,0600/path/checksum/conflict/ack checks PASS. Frozen disk-
+failure retry and stale hydration checks PASS0.070s. MainPvP/scene/lifecycle
+PASS0.211s; focused gamearena/duel/zero-rating PASS13.473s; UI7PASS3.445s including
+save-pending feedback; build-trimpath-all and diff checks PASS. Dedicated Mongo
+`eidolon-isolated-qa-mongo-arena171309` (mongo7.0.14, loopback32913) is now STOPPED,
+data retained for later focused tests. Explicit test URI env is
+EIDOLON_ARENA_TEST_MONGO_URI; do not point those tests at production.
+
+Still required: replace flat+25/-20 with rated-result calculations; anti-farming,
+intentional-loss/disconnect safeguards; explicit personal/team result presentation;
+earned seasonal rewards/history. Review direct-duel queued/shared-party admission,
+entry HP/MP restoration (current PvP return still fills both), and round-status
+cleanup. Current persistence work does not close those requirements or prove a
+full live season/restart matrix. Runtime remains1.6 until1.7 packaging.
+
+Publishing:1.5d8323180 now verified at BOTH public endpoints,Alpha1.5.0 and exact
+commit; backenddatabase ready. CI34735541628 has passed all build/browser/predeploy
+and deploy jobs, with finalLiveRelease/CharacterQA stillrunning04:05. Await its
+terminal result before pushing frozen1.6; no1.6production claim yet.
+
 First arena batch implemented locally. Existing1v1/2v2 modes now carry an explicit
 practice flag through protocol, queue, match, result and UI. Practice2v2 retains
 actual two-player teams and first-to-two elimination, without ranked profile
@@ -44,14 +89,9 @@ practice/revalidation/tie cases PASS0.045s; mainPvP/scene/lifecycle checks PASS0
 sixUI cases inclpractice and polling cancellation PASS0.746s; changed JS lint PASS.
 No broad matrix, live matches, season completion or earned PvP rewards claimed.
 
-Next required work: rating-aware result deltas, anti-farming/intentional-loss and
-disconnect safeguards, explicit team results, seasonal rewards and durable replay-
-safe settlement. Inspect existing main `persistPvPMatchResult`/`hydratePvPProfile`
-and database/pvp.go: current results still use flat+25/-20 and blindly replace
-profiles asynchronously; hydration can overwrite newer in-memory state while a
-save is pending. Resolve that, quarter rollover and unavailable-storage behavior
-before shipping1.7. Practice/queue implementation does not prove reward safety.
-Also review direct-duel admission versus queued/shared-party state before release.
+The original persistence risks found here are addressed by the later04:08 batch
+above. Rated calculations, anti-farming, seasonal rewards and admission review
+remain open; practice/queue implementation alone is not release completion.
 
 ## Initial inspection guidance
 

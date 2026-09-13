@@ -106,7 +106,9 @@ export class PvPUI {
             const progress = document.createElement('p');
             const eliminated = new Set(match.eliminated || []);
             const standing = team => (team || []).filter(id => !eliminated.has(id)).length;
-            progress.textContent = match.status === 'complete'
+            progress.textContent = match.settlementPending
+                ? 'Saving the ranked result. Combat is finished; please wait while the server secures it.'
+                : match.status === 'complete'
                 ? 'Match complete. Returning you to your departure point…'
                 : match.roundPending
                     ? 'Team eliminated. The next round starts shortly.'

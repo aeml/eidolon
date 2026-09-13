@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -59,14 +60,20 @@ func handleMsgArenaQueue(client *Client, message Message) {
 		client.sendError("invalid arena queue request")
 		return
 	}
-	hydratePvPProfile(client.playerID)
+	if err := hydratePvPProfile(client.playerID); err != nil && !payload.Practice {
+		client.sendError(err.Error())
+		return
+	}
 	if payload.TeamSize == 2 {
 		if player := world.GetEntityCopy(client.playerID); player != nil {
 			if party := world.GetParty(player.PartyID); party != nil {
 				_, _, members := party.GetSnapshot()
 				for _, id := range members {
 					if id != client.playerID {
-						hydratePvPProfile(id)
+						if err := hydratePvPProfile(id); err != nil && !payload.Practice {
+							client.sendError("Team member's arena profile is unavailable or still syncing.")
+							return
+						}
 					}
 				}
 			}
@@ -131,18 +138,23 @@ func handleMsgPvPFlag(client *Client, message Message) {
 
 func worldTime() time.Time { return time.Now().UTC() }
 
-func hydratePvPProfile(playerID string) {
+func hydratePvPProfile(playerID string) error {
 	if db == nil || playerID == "" {
-		return
+		return fmt.Errorf("arena profile service unavailable")
 	}
 	profile, err := db.GetPvPProfile(playerID)
 	if err != nil || profile == nil {
-		return
+		return fmt.Errorf("arena profile service unavailable")
+	}
+	if world.PvPProfileRevision(playerID) > profile.Revision {
+		return fmt.Errorf("your last arena result is still syncing; try again shortly")
 	}
 	world.SetPvPProfile(game.PvPProfile{
+		Revision: profile.Revision, LastMatchID: profile.LastMatchID, Season: profile.Season,
 		PlayerID: profile.PlayerID, Rating: profile.Rating, Wins: profile.Wins, Losses: profile.Losses,
 		Honor: profile.Honor, SeasonPoints: profile.SeasonPoints, UpdatedAt: profile.UpdatedAt,
 	})
+	return nil
 }
 
 func sendPvPState(client *Client) {
@@ -192,14 +204,9 @@ func sendPvPScene(client *Client, player *game.Entity, sceneType string, layout 
 }
 
 func persistPvPMatchResult(result game.PvPMatchResult) {
-	for _, profile := range result.Profiles {
-		err := db.SavePvPProfile(database.PvPProfile{
-			PlayerID: profile.PlayerID, Rating: profile.Rating, Wins: profile.Wins, Losses: profile.Losses,
-			Honor: profile.Honor, SeasonPoints: profile.SeasonPoints, UpdatedAt: profile.UpdatedAt,
-		})
-		if err != nil {
-			log.Printf("save PvP profile %s: %v", profile.PlayerID, err)
-		}
+	commitErr := commitPvPResult(result)
+	if commitErr != nil {
+		log.Printf("Arena result %s remains journaled for retry: %v", result.MatchID, commitErr)
 	}
 	// Practice results have no profiles to persist, but every participant still
 	// needs the cleared match state and a result message.
@@ -210,7 +217,9 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 			if player := world.GetEntityCopy(playerID); player != nil && player.InstanceID == "" && !world.HasPvPMatch(playerID) {
 				sendPvPScene(client, player, "overworld", nil)
 			}
-			if len(result.WinnerIDs) == 0 {
+			if commitErr != nil {
+				client.sendSystemChat("Arena result recorded safely. Rating and rewards are syncing; ranked queue will reopen when synchronization finishes.")
+			} else if len(result.WinnerIDs) == 0 {
 				client.sendSystemChat("PvP match cancelled. No ranked rewards or rating changes.")
 			} else if result.Mode == game.PvPModeDuel || result.Practice {
 				label := "Practice arena"

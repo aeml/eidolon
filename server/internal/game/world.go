@@ -150,6 +150,8 @@ type World struct {
 	OnPvPMatchComplete func(result PvPMatchResult)
 	OnPvPMatchUpdate   func(match *PvPMatch)
 	OnPvPMatchStart    func(match *PvPMatch)
+	// Synchronous durable record only; must not acquire world/entity/PvP locks.
+	OnPvPResultRecord func(result PvPMatchResult) error
 }
 
 type DamageEvent struct {
