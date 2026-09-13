@@ -120,6 +120,7 @@ type World struct {
 	backgroundStop     chan struct{}
 	Entities           map[string]*Entity
 	Parties            map[string]*Party
+	partyInvitations   map[string]PartyInvitation // World.Mu; one outstanding invitation per target.
 	Trading            *TradingSystem
 	Grid               *SpatialMap
 	InstanceLayouts    map[string]*DungeonInstance

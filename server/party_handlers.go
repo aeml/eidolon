@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"time"
+)
 
 // handleMsgPartyInvite invites a player to the caller's party, creating one if needed.
 func handleMsgPartyInvite(c *Client, msg Message) {
@@ -28,7 +31,7 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 		return
 	}
 
-	inviter := world.GetEntity(c.playerID)
+	inviter := world.GetEntityCopy(c.playerID)
 	if inviter == nil {
 		return
 	}
@@ -56,26 +59,37 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 		// Check if leader
 		party := world.GetParty(inviter.PartyID)
 		if party == nil {
-			// Inconsistent state
-			inviter.PartyID = ""
+			c.sendError("Party no longer exists")
 			return
 		}
-		if party.LeaderID != c.playerID {
+		_, leaderID, members := party.GetSnapshot()
+		party.Mu.RLock()
+		maxSize := party.MaxSize
+		party.Mu.RUnlock()
+		if leaderID != c.playerID {
 			c.sendError("Only party leader can invite")
 			return
 		}
-		if len(party.Members) >= party.MaxSize {
+		if len(members) >= maxSize {
 			c.sendError("Party is full")
 			return
 		}
 	}
 
 	// Send invite to target
+	if _, err := world.IssuePartyInvitation(c.playerID, targetClient.playerID, time.Now()); err != nil {
+		c.sendError(err.Error())
+		return
+	}
 	reqPayload := PartyRequestPayload{
 		TargetName: c.username, // The name of the person inviting
 	}
 	reqBytes, _ := json.Marshal(reqPayload)
-	targetClient.sendSafe(createMessage(MsgPartyRequest, reqBytes))
+	if !targetClient.sendSafe(createMessage(MsgPartyRequest, reqBytes)) {
+		_, _ = world.RespondPartyInvitation(targetClient.playerID, c.playerID, false, time.Now())
+		c.sendError("Invitation could not be delivered; try again when the player reconnects")
+		return
+	}
 	// A successfully delivered invite is informational, not a protocol error.
 	// Keep it in the existing system-chat surface so the player still receives
 	// visible confirmation without emitting a false console error in browsers.
@@ -92,31 +106,26 @@ func handleMsgPartyResponse(c *Client, msg Message) {
 		return
 	}
 
-	if !payload.Accepted {
-		// Notify inviter?
-		return
-	}
-
 	inviterClient := getClientByUsername(payload.InviterName)
 	if inviterClient == nil {
 		c.sendError("Inviter is no longer online")
 		return
 	}
 
-	inviter := world.GetEntity(inviterClient.playerID)
-	if inviter == nil || inviter.PartyID == "" {
-		c.sendError("Party no longer exists")
+	if chatService.shouldFilter(inviterClient.username, c.username) || chatService.shouldFilter(c.username, inviterClient.username) {
+		c.sendError("Player is not available for party invitations")
 		return
 	}
 
-	err := world.JoinParty(inviter.PartyID, c.playerID)
+	party, err := world.RespondPartyInvitation(c.playerID, inviterClient.playerID, payload.Accepted, time.Now())
 	if err != nil {
 		c.sendError("Failed to join party: " + err.Error())
 		return
 	}
 
-	party := world.GetParty(inviter.PartyID)
-	broadcastPartyUpdate(party)
+	if party != nil {
+		broadcastPartyUpdate(party)
+	}
 }
 
 // handleMsgPartyLeave removes the caller from their current party.

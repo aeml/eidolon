@@ -59,7 +59,10 @@ func (w *World) CreateParty(leaderID string) *Party {
 func (w *World) JoinParty(partyID, playerID string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	return w.joinPartyLocked(partyID, playerID)
+}
 
+func (w *World) joinPartyLocked(partyID, playerID string) error {
 	party, exists := w.Parties[partyID]
 	if !exists {
 		return fmt.Errorf("party not found")
