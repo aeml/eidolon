@@ -17,7 +17,44 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 02:59 UTC
+## Current checkpoint — September 13, 03:16 UTC
+
+PROGRESS:1.6 crystal mechanics implemented and locally committed154970a9 in
+`/tmp/eidolon-1-6-encounters-20260913`; branchwork/1-6-encounters-20260913.
+Earth defended ward8s, Water two actual carry/return trips, Fire three ordered
+2s interruptible vent channels, Air four alternating-player relay anchors.
+Each wave still requires all6/8/10 attackers defeated AND ritual objective done.
+Only living connected original participants in the chamber contribute; all-dead/
+unattended resets current objective, preserves cleared waves, never advances.
+Realm-specific Maelin lore, per-player Water/Air instructions, reconnect/live
+objective snapshot, exact low-quality-visible floor markers, and tracker that
+does not instruct players to exit before finishing repair. No currency/inventory
+tokens or client-authored ritual awards. Existing Ilyra/manual rewards retained.
+
+Focused Crystal Go PASS2.377s; existing crystal art/consumer16 PASS; new marker/
+tracker3 PASS1.304s; changed JS lint/diff PASS. Two fixture errors corrected (missing
+living worker participant and jsdom structuredClone). Actual Low four-realm markers
+inspected `/tmp/eidolon-1-6-vigils.png`. All local sessions terminal; no broad soak.
+Prepared fixture evidence is not earned campaign/raid proof. Read updated
+docs/plans/2026-09-13-release1-6-encounters.md in1.6WT. Next: party preparation,
+lockout/retry explanations and remaining encounter/pacing review; appropriate
+focused prepared group checks, then notes/version/build/publish1.6. Dungeons use
+four roles; elemental raids retain5–10 admission and need fifth prepared member.
+Full earned group campaign/raid progression remains consolidated final validation.
+
+1.5 publishing:originalCI34734291355 terminalFAIL, ONLY two world_test starter
+daily assertions expected old100Gold instead of new200. Verified authored level10
+×100kills/5 and missing-quote repair; updated exact expectations, preserved quote/
+XP/count assertions. Focused daily/quote/GoldPASS1.225s. Correction96000be3ecfb6651747de5b8ac7ef9288b8b7249
+PUSHEDmaster from1.5WT (clean); runtime/version unchanged1.5. Merged into1.6 ancestry,
+not a new version. Replacement
+CI34734694245 confirmedIN_PROGRESS at03:15:clientPASS, ServerGo active race-detector
+step. Poll SAME run. Old failed run must not be restarted. No1.5live claim yet.
+1.4 prior terminalgreen/live evidence remains valid historically.
+
+Root remains ledger-only; NEVER PUSH ROOT. Full1.1–1.10 goal active.
+
+## Previous checkpoint — September 13, 02:59 UTC
 
 PROGRESS: Alpha1.5.0 packaged and PUSHED9c61d0d56fdf12612f22ba54c7348f489f4c5103.
 Frozen1.5 WT `/tmp/eidolon-1-5-loot-loadouts-20260913` clean. Seven player-facing
