@@ -224,3 +224,20 @@ at every patch. Keep reports short and feature-focused.
 CI34735541628 currently running. Verify1.5 exact client/server live identities,
 then push prepared1.6 HEAD564487ae from its worktree and verify that deployment.
 Do not push this branch while those milestones remain unpublished/unverified.
+# Pre-publication restart correction — September 13
+
+1.8's focused connected seating/restart check exposed a1.7 startup defect:
+opening the arena journal creates `arena-results` beneath the character journal,
+but the character PendingUsers reader previously rejected every directory on the
+next startup. This was reproduced with an actual server restart, not inferred
+from a synthetic mock. CI34741198072 for5fd16d75 was deliberately cancelled before
+deployment (terminalcancelled); not cancelled merely for slowness. Production
+remains the verified1.6cf2a028d release.
+
+The character reader now delegates only the known real `arena-results` directory
+to its existing arena reader. Files/symlinks using that name and unknown
+directories still fail closed; corrupt arena entries remain rejected by their
+own reader. No receipts are moved, removed or silently discarded. Focused
+character/arena journal tests PASS0.158s. The1.7 durable-outcomes patch note now
+explicitly covers independent restart recovery. Final connected restart check
+and replacement CI must pass before publication is claimed.

@@ -62,6 +62,64 @@ func TestCharacterJournalDurableDetachedLatestAndAcknowledgement(t *testing.T) {
 	}
 }
 
+func TestCharacterAndArenaJournalsShareVolumeAcrossRestart(t *testing.T) {
+	dir := t.TempDir()
+	journal, err := OpenCharacterSaveJournal(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := journal.Write("hero", &Character{Name: "hero", Gold: 1234}); err != nil {
+		t.Fatal(err)
+	}
+	arena, err := OpenPvPResultJournal(filepath.Join(dir, "arena-results"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Reopen in the same order as server startup after the arena directory exists.
+	reopened, err := OpenCharacterSaveJournal(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if users, err := reopened.PendingUsers(); err != nil || !reflect.DeepEqual(users, []string{"hero"}) {
+		t.Fatal("character restart rejected its sibling journal", users, err)
+	}
+	if pending, err := arena.Pending(); err != nil || len(pending) != 0 {
+		t.Fatal("arena journal did not remain independently readable", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "arena-results", "bad.json"), []byte("corrupt"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := arena.Pending(); err == nil {
+		t.Fatal("delegated arena corruption was ignored")
+	}
+}
+
+func TestCharacterJournalRejectsImpostorArenaEntries(t *testing.T) {
+	for _, kind := range []string{"file", "symlink", "unknown-directory"} {
+		t.Run(kind, func(t *testing.T) {
+			dir := t.TempDir()
+			journal, err := OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch kind {
+			case "file":
+				err = os.WriteFile(filepath.Join(dir, "arena-results"), []byte("not a directory"), 0600)
+			case "symlink":
+				err = os.Symlink(t.TempDir(), filepath.Join(dir, "arena-results"))
+			case "unknown-directory":
+				err = os.Mkdir(filepath.Join(dir, "other-journal"), 0700)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := journal.PendingUsers(); err == nil {
+				t.Fatal("unexpected journal entry admitted")
+			}
+		})
+	}
+}
+
 func TestCharacterJournalCorruptionFailsClosedWithoutRemovingEvidence(t *testing.T) {
 	for _, kind := range []string{"truncated", "checksum", "future", "identity"} {
 		t.Run(kind, func(t *testing.T) {

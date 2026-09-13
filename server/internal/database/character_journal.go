@@ -163,6 +163,12 @@ func (journal *CharacterSaveJournal) PendingUsers() ([]string, error) {
 	}
 	var users []string
 	for _, entry := range entries {
+		// Ranked receipts share this durable volume but have their own reader.
+		// Only its real directory is delegated; files, links and unknown entries
+		// must still fail closed. Startup validates/replays the arena reader next.
+		if entry.Name() == "arena-results" && entry.IsDir() {
+			continue
+		}
 		if strings.HasPrefix(entry.Name(), ".pending-") {
 			continue
 		}
