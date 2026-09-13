@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 02:00 UTC
+## Delivery priority — user direction
+
+Complete all planned features without spending excessive usage on repeated tests
+or speculative architecture. For each feature batch, use focused checks of changed
+behavior, the relevant build, and a basic deployment/live smoke check. Retain
+targeted safeguards for persistence, item ownership, currency, security and
+progression. Reuse passing evidence for unchanged code; do not repeat broad
+device, equipment, playthrough or soak matrices at every version. Defer those
+cross-feature checks to a consolidated stabilization phase after feature completion,
+with targeted reruns only where fixes require them. Keep progress reports brief and
+feature-focused. Do not weaken assertions merely to obtain a passing release.
+
+## Current checkpoint — September 13, 02:18 UTC
+
+PROGRESS: 1.5 first loadout slice committed locally as c4780dcf in
+`/tmp/eidolon-1-5-loot-loadouts-20260913` (branch work/1-5-loot-loadouts-20260913).
+Three named gear/skill-bar presets now persist through the character save/journal
+and login hydration. Atomic safe-town swaps reference owned item IDs, reject
+missing/stashed/ambiguous/invalid gear and full-bag removals without partial changes,
+support full-bag replacement/ring exchanges, and preserve depleted resources.
+New owner-only rate-limited get/save/apply messages acknowledge durable saves;
+pending database saves retain live state and report it rather than claiming rollback.
+Bag panel has named slots and explicit overwrite confirmation; phone expansion
+uses bag content space. Actual Chrome390px inspected after correcting cramped
+initial layout: `/tmp/eidolon-1-5-loadouts-phone.png`. No runtime version bump yet.
+
+Focused Go loadout core, persistence/handler and protocol checks PASS.15 UI/stash
+checks PASS, final loading-state guard4 UI checks PASS, changed JS lint/diff PASS.
+No broad suite/soak added. All local test/preview sessions terminal.
+
+Next: automatically restore the applied skill bar on reconnect (presets already
+persist; client bar currently changes on acknowledged apply only), then saved build
+choices respecting existing paid respec/unlock rules. Continue full1.5 appearance
+collection, Forge/comparison, economy and future VIP currency boundary. Read
+`docs/plans/2026-09-13-release1-5-loot.md` in1.5WT. Do not call1.5 complete or push
+the unfinished milestone. Existing runtime remains1.4 until packaging.
+
+Same1.4CI34731798665 confirmed still IN_PROGRESS: client/server and browser3/3
+SUCCESS; browser1/3 and2/3 running. Frozen9f4b9dc8 release unchanged; no live1.4
+claim yet.1.3 terminal green and exact-live evidence remain established.
+Previous goal turn made policy-ledger progress; this turn made implementation
+progress. Full1.1–1.10 goal active. Root is ledger-only and MUST NOT be pushed.
+
+### Previous detail — September 13, 02:00 UTC
 
 PROGRESS: Alpha1.4.0 packaged and PUSHED9f4b9dc8c96507fee1646ec4bfa0105d62b7a404.
 Frozen1.4 WT `/tmp/eidolon-1-4-chronicle-20260913` clean. Five player-facing notes;
