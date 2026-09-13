@@ -24,6 +24,14 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
 
 ## Packaging checkpoint — September 13, 02:56 UTC
 
+Second publishing correction:CI34734694245 terminalFAIL only568×320 recovery
+layout; Go including race and client tests and other browser shards passed. The
+new collapsed loadout panel left37.5px for the bag. Short landscape with legacy
+recovery now puts the two closed disclosures side by side, retaining a minimum
+76px bag row. Expanded reading surfaces are unchanged. The exact568×320 and
+844×390 browser recovery cases both PASS12.5s with real buttons and chat hit tests.
+Publish this CSS correction without restarting the old run; no new version.
+
 Publishing correction: CI34734291355 stopped on two old starter-daily assertions
 expecting100 Gold. The authored Skeleton content level10 and100 kills now quote
 200 Gold; catalog repair fills genuinely missing Gold from that same offer while
