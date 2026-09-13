@@ -1,7 +1,9 @@
-# Casino seated layout and flexible stakes — unreleased
+# Casino seated layout and flexible stakes — Alpha 1.9.2
 
-Implemented locally after Alpha 1.9.1; no version bump, push or deployment in
-this batch. Include these notes in the next release's cumulative patch notes.
+User requested publication after implementation. Packaged as Alpha 1.9.2 with
+aligned login/runtime/server/deploy versions and cumulative in-game patch notes.
+Deployment must be verified against the exact release commit before claiming live.
+The implementation evidence below predates release packaging.
 
 ## Player-facing patch notes
 
