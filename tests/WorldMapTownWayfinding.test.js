@@ -66,6 +66,45 @@ describe('WorldMap town wayfinding', () => {
         ]));
     });
 
+    test('touch pan and pinch preserve the location beneath the gesture and stop on cancellation', () => {
+        const map = new WorldMap({ player: null });
+        map.canvas.getBoundingClientRect = () => ({ left: 0, top: 0, width: 640, height: 440 });
+        const touch = (type, points) => {
+            const event = new Event(type, { bubbles: true, cancelable: true });
+            Object.defineProperty(event, 'touches', { value: points.map(([clientX, clientY]) => ({ clientX, clientY })) });
+            map.canvas.dispatchEvent(event);
+        };
+        touch('touchstart', [[320, 220]]);
+        touch('touchmove', [[340, 230]]);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+        touch('touchstart', [[290, 230], [390, 230]]);
+        touch('touchmove', [[240, 230], [440, 230]]);
+        expect(map.scale).toBe(4);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+        expect(map.zoomLabel.textContent).toBe('200%');
+        touch('touchcancel', []);
+        touch('touchmove', [[600, 400]]);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+    });
+
+    test('map buttons zoom within limits and recenter without resetting zoom', () => {
+        const engine = { player: null };
+        const map = new WorldMap(engine);
+        document.querySelector('[data-map-zoom="in"]').click();
+        expect(map.scale).toBe(2.5);
+        document.querySelector('[data-map-zoom="out"]').click();
+        expect(map.scale).toBe(2);
+        map.setMapScale(100); expect(map.scale).toBe(10);
+        map.setMapScale(.01); expect(map.scale).toBe(.5);
+        map.setMapScale(NaN); expect(map.scale).toBe(.5);
+        engine.player = { position: { x: 70, z: 210 } };
+        map._redrawIfVisible = () => {};
+        map.mapOffsetX = 99; map.mapOffsetY = 90;
+        document.querySelector('[data-map-center]').click();
+        expect([map.cameraX, map.cameraZ, map.mapOffsetX, map.mapOffsetY]).toEqual([70, 210, 0, 0]);
+        expect(map.scale).toBe(.5);
+    });
+
     test('renders named town POIs for new-player wayfinding', () => {
         const worldMap = new WorldMap({
             player: { position: { x: 0, z: 200 }, id: 'player-1' },

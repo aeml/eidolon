@@ -221,6 +221,7 @@ function classifyEntity(entity) {
 export class WorldMap {
     constructor(gameEngine) {
         this.gameEngine = gameEngine;
+        this.isMobile = Boolean(gameEngine.isMobile || document.body.classList.contains('mobile-mode'));
         this.container = document.getElementById('world-map');
         this.canvas = document.getElementById('world-map-canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -252,13 +253,27 @@ export class WorldMap {
     // -----------------------------------------------------------------------
 
     setupInteraction() {
+        const controls = document.createElement('div');
+        controls.className = 'world-map-controls';
+        controls.setAttribute('aria-label', 'Map controls');
+        controls.innerHTML = `<button type="button" data-map-zoom="out" aria-label="Zoom map out">−</button>
+            <output aria-label="Map zoom">100%</output>
+            <button type="button" data-map-zoom="in" aria-label="Zoom map in">+</button>
+            <button type="button" data-map-center>Find me</button>
+            <span>Drag to explore · Pinch to zoom</span>`;
+        this.container.querySelector('.world-map-controls')?.remove();
+        this.container.append(controls);
+        this.zoomLabel = controls.querySelector('output');
+        controls.querySelector('[data-map-zoom="out"]').onclick = () => this.setMapScale(this.scale / 1.25);
+        controls.querySelector('[data-map-zoom="in"]').onclick = () => this.setMapScale(this.scale * 1.25);
+        controls.querySelector('[data-map-center]').onclick = () => this.centerOnPlayer();
+        for (const event of ['pointerdown', 'touchstart', 'click']) controls.addEventListener(event, e => e.stopPropagation());
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const zoomSpeed = 0.1;
             const delta = -Math.sign(e.deltaY);
-            this.scale = Math.max(0.5, Math.min(10.0, this.scale + delta * zoomSpeed * this.scale));
-            this._redrawIfVisible();
+            this.setMapScale(this.scale + delta * zoomSpeed * this.scale);
         }, { passive: false });
 
         this.canvas.addEventListener('mousedown', (e) => {
@@ -287,6 +302,65 @@ export class WorldMap {
         };
         this.canvas.addEventListener('mouseup', stopDrag);
         this.canvas.addEventListener('mouseleave', stopDrag);
+
+        const gesture = touches => {
+            if (!touches.length || touches.length > 2) return null;
+            const first = touches[0], second = touches[1] || first;
+            const rect = this.canvas.getBoundingClientRect();
+            return { count: touches.length,
+                x: (first.clientX + second.clientX) / 2 - rect.left - rect.width / 2,
+                y: (first.clientY + second.clientY) / 2 - rect.top - rect.height / 2,
+                distance: Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY) };
+        };
+        const begin = e => {
+            e.preventDefault(); e.stopPropagation(); stopDrag();
+            this.touchGesture = gesture(e.touches);
+        };
+        this.canvas.addEventListener('touchstart', begin, { passive: false });
+        this.canvas.addEventListener('touchmove', e => {
+            e.preventDefault(); e.stopPropagation();
+            const next = gesture(e.touches), previous = this.touchGesture;
+            if (next && previous && next.count === previous.count) {
+                const oldScale = this.scale;
+                const zoom = next.count === 2 && previous.distance > 0 ? next.distance / previous.distance : 1;
+                this.scale = Math.max(.5, Math.min(10, this.scale * zoom));
+                const ratio = this.scale / oldScale;
+                // Preserve the map location beneath the moving pinch midpoint.
+                this.mapOffsetX = next.x + (this.mapOffsetX - previous.x) * ratio;
+                this.mapOffsetY = next.y + (this.mapOffsetY - previous.y) * ratio;
+                this.updateZoomLabel();
+                this._redrawIfVisible();
+            }
+            this.touchGesture = next;
+        }, { passive: false });
+        this.canvas.addEventListener('touchend', begin, { passive: false });
+        this.canvas.addEventListener('touchcancel', e => {
+            e.stopPropagation(); this.touchGesture = null; stopDrag();
+        });
+    }
+
+    updateZoomLabel() {
+        if (this.zoomLabel) this.zoomLabel.textContent = `${Math.round(this.scale / 2 * 100)}%`;
+    }
+
+    setMapScale(value) {
+        if (!Number.isFinite(value)) return;
+        const previous = this.scale;
+        this.scale = Math.max(.5, Math.min(10, value));
+        this.mapOffsetX *= this.scale / previous;
+        this.mapOffsetY *= this.scale / previous;
+        this.updateZoomLabel();
+        this._redrawIfVisible();
+    }
+
+    centerOnPlayer() {
+        const player = this.gameEngine.player;
+        if (!player) return;
+        this.cameraX = player.position.x;
+        this.cameraZ = player.position.z;
+        this.mapOffsetX = 0; this.mapOffsetY = 0;
+        this.touchGesture = null; this.isDragging = false;
+        this._redrawIfVisible();
     }
 
     // -----------------------------------------------------------------------
@@ -301,12 +375,15 @@ export class WorldMap {
 
     resize() {
         if (!this.container || this.container.clientWidth === 0 || this.container.clientHeight === 0) return;
-        this.canvas.width = this.container.clientWidth;
-        this.canvas.height = Math.max(0, this.container.clientHeight - 40);
+        this.canvas.width = this.canvas.clientWidth || this.container.clientWidth;
+        this.canvas.height = this.canvas.clientHeight || Math.max(0, this.container.clientHeight -
+            (document.getElementById('world-map-header')?.offsetHeight || 40) -
+            (this.container.querySelector('.world-map-controls')?.offsetHeight || 0));
         this._redrawIfVisible();
     }
 
     toggle() {
+        this.touchGesture = null; this.isDragging = false;
         if (this.gameEngine?.uiManager?.windowLayouts) {
             const opened = this.gameEngine.uiManager.toggleManagedWindow('map');
             if (opened && this.gameEngine.player) {
@@ -395,9 +472,15 @@ export class WorldMap {
     _drawLabel(ctx, w2s, wx, wz, text, color, fontSize, offsetY) {
         const pos = w2s(wx, wz);
         ctx.fillStyle = color;
-        ctx.font = `${fontSize * (this.scale / 2)}px Arial`;
+        ctx.font = `${this.mapFontSize(fontSize)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText(text, pos.x, pos.y + (offsetY || 0) * this.scale);
+        if (this.isMobile) ctx.fillText(text, pos.x, pos.y + (offsetY || 0) * this.scale, Math.max(1, this.canvas.width - 24));
+        else ctx.fillText(text, pos.x, pos.y + (offsetY || 0) * this.scale);
+    }
+
+    mapFontSize(base) {
+        const scaled = base * this.scale / 2;
+        return this.isMobile ? Math.max(14, Math.min(base >= 36 ? 20 : 16, scaled)) : scaled;
     }
 
     _buildDungeonBeatPreview() {
@@ -505,7 +588,7 @@ export class WorldMap {
             ctx.stroke();
             // Label
             ctx.fillStyle = '#ffd700';
-            ctx.font = `${28 * (this.scale / 2)}px Arial`;
+            ctx.font = `${this.mapFontSize(28)}px Arial`;
             ctx.textAlign = 'center';
             ctx.fillText(
                 isActiveDungeon
@@ -524,7 +607,7 @@ export class WorldMap {
                 ctx.stroke();
                 if (dungeonBeatPreview.nextLabel) {
                     ctx.fillStyle = dungeonBeatPreview.previewColor;
-                    ctx.font = `${18 * (this.scale / 2)}px Arial`;
+                    ctx.font = `${this.mapFontSize(18)}px Arial`;
                     ctx.fillText(`Next: ${dungeonBeatPreview.nextLabel}`, pos.x, pos.y + ((dg.labelOffsetY || 18) * this.scale));
                 }
             }
@@ -546,7 +629,7 @@ export class WorldMap {
                 ctx.stroke();
             }
             ctx.fillStyle = '#f2f2f2';
-            ctx.font = `${18 * (this.scale / 2)}px Arial`;
+            ctx.font = `${this.mapFontSize(18)}px Arial`;
             ctx.textAlign = 'center';
             ctx.fillText(poi.name, pos.x, pos.y + ((poi.labelOffsetY || -16) * this.scale));
         }

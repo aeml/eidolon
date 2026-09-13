@@ -1,7 +1,8 @@
-# Alpha 1.2.0 — working release notes
+# Alpha 1.2.0 — release candidate
 
-Local implementation in progress, not published. Keep the full 1.2 roadmap scope;
-these entries describe implemented changes, not milestone completion.
+Implementation consolidated for publication; deployment not yet verified. Login,
+package and backend versions and player-facing patch notes now identify1.2.0.
+This milestone does not complete the1.1–1.10 goal.
 
 ## Player-facing changes prepared
 
@@ -25,6 +26,9 @@ these entries describe implemented changes, not milestone completion.
 - All four heroes lean forward rather than backward when running. Smoothed
   locomotion and animated ankle attachments give default/equipped boots a more
   natural stride, without changing attack timing or gameplay movement speed.
+- World map supports single-finger pan, focal-point pinch zoom and explicit zoom/
+  Find me controls. Portrait/landscape canvas sizing and phone label caps keep
+  town wayfinding readable without oversized labels.
 
 ## Focused evidence
 
@@ -45,6 +49,9 @@ these entries describe implemented changes, not milestone completion.
 - Locomotion: existing model/equipment222 tests pass; four new targeted equipped
   stride checks pass. Side-view before/after rendered poses inspected. This is
   focused presentation evidence, not a comprehensive animation collision audit.
+- Map:8 focused tests pass. Actual Chrome touch pan moved30×20 pixels; pinch
+  changed scale2→3; Find me and zoom buttons operated in portrait and landscape.
+  Rendered canvas366×682 matched CSS dimensions, and labels were visually checked.
 
 ## Predecessor live-check correction
 
@@ -56,12 +63,16 @@ pass, including actual callback execution for blocked/clear paths. Carry this
 test-only repair with1.2; do not claim the failed1.1 dungeon or skipped town-rest
 live checks passed. No extra runtime hotfix or exhaustive rerun was started.
 
-## Remaining milestone work
+## Scope carried forward and deferred verification
 
-Continue four-class anatomy/hair/silhouette/movement and equipped animation fit,
-remaining phone menus and actual gameplay-scale composition/readability.
-Source inspection identifies the world map's mouse-only pan/wheel zoom as the
-next concrete phone gap (WorldMap.js around its constructor input handlers).
-Then consolidate player-facing patch notes into login/release metadata, publish
-1.2 after 1.1, and run basic deployment/live smoke. Do not publish this worktree
-before the predecessor's deployment is confirmed.
+The four existing class-specific rigs, hair/hood/helmet silhouettes and equipment
+mounts are retained and refined by the face/grip/stride changes above. The earlier
+phone bag/vendor detail route, stash, quest/skill sheets, party support and dungeon/
+raid-preparation menu remain implemented; Forge, trading, social/guild/PvP and map
+complete this milestone's remaining menu treatment. Earlier phone framing and the
+player's positive core-menu feedback remain relevant but are not new-device proof.
+
+Full animation/equipment matrices, physical-device ergonomics across iOS/Android,
+tablet/full desktop comparisons and long sessions remain final stabilization work
+under the explicit feature-first policy. Do not mark those checks passed. Retain
+basic live release checks now; deepen combat feedback and touch aiming in1.3.
