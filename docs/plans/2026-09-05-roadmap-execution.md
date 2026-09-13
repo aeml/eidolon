@@ -17,7 +17,45 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 04:44 UTC
+## Current checkpoint — September 13, 04:52 UTC
+
+PROGRESS: new1.8WT `/tmp/eidolon-1-8-social-20260913`, branch
+work/1-8-social-20260913 fromfrozen1.7f3adf398. CurrentcleanHEADc6f07213.
+Runtime remains1.7pending1.8packaging. Node_modules symlinkpoints1.7WT existing
+shared dependencies; don't npmci locally. New stageplanrelease1-8-social.md.
+
+Invitationbatchimplementedbeforegroupfinder: World.partyInvitations storesone
+pendingper target,60sexpiry, originalPartyobject identity (partyIDsreuse), leader
+andtarget. Response requiresactualconsent; forged/replayed/expired/declined/
+replacedparty/changedleader/offline/busy/full/alreadygroupedreject. Consumeonce;
+validation+joinunderWorldMu preventsconcurrentoverfill. ExistingJoinPartyfactored
+into joinPartyLocked foratomicuse, internalcallersretainlegacyAPI. Handler uses
+GetEntityCopy/lockedpartyreads, rechecksmutualblockfiltersonaccept, withdrawsif
+sendSafedeliveryfails. Existingwire/acceptmodal retainedwith60sexpiryexplanation.
+
+FocusedauthoritytestsPASS0.025s; existingparty/invitegamePASS2.498s;
+existingmainbusy/deliveryPASS0.585s; JSlint+gobuild-trimpath-all/diffPASS.
+Noactualgroupfinderimplementedyet: nextworkactivity/recruitmentboard+roles,
+requests→leaderapprovedexistinginvites (neverautosendasanotherplayer), then
+persistentguildevents/readiness/moderation, physicalcasino seats/presence/
+sessions/reconnect/viewinput. ThisbatchdoesNOTclose1.8. Readcasino specification
+andstageplan. VIPcurrencyunresolveduserdecisionbeforeintegration; noGoldor
+Resonancefallback, no inaccessibleplaceholderascompletion.
+
+Usefulintegrationpaths: server/party_handlers.go+party_helpers.go;
+server/internal/game/party.go+party_invitations.go; protocol_types.go,
+protocol_policy.go,message_handlers.go; src/ui/SocialUI.js (tabsat565/682),
+src/core/UIBindings.js andSocialPresenceController.js, UIManager.js.
+Existing resourceFormParty integrationtest alreadyusesactualinvite/responseflow,
+so preservedwire requiresno artificialconsentexception.
+
+Publishing:1.6replacementCI34738051311 active04:50: server/client/browser2/3PASS,
+browser1RUNNING. Pollsame run andverifyexact34c1c0d8client/server+DBreadyafter
+deployment. Thenpushfrozen1.7f3adf398from1.7WT andverifybefore1.8publish.
+Lastverifiedlive1.5d8323180. No1.6/1.7liveclaimyet. Noactive localtool sessions.
+Goalactive/fullscopeunchanged; NEVER PUSH ROOT. Rootledgeronly.
+
+## Previous checkpoint — September 13, 04:44 UTC
 
 PROGRESS:1.7 state cleanup+packaging committedf3adf398 in clean/frozenWT
 `/tmp/eidolon-1-7-arena-20260913`. Runtime/package/login/server/deploy/CI/QA/current
