@@ -17,7 +17,41 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13 20:08 UTC, Alpha 1.9.2 verified LIVE
+## Current checkpoint — September 13, casino celebrations/high stakes LOCAL
+
+Latest user requested blackjack totals, poker current best hand, clear card-game
+win panels, slot tiered wins/bonus overlays and100,000Gold/100EP limits. Also
+asked whether timeouts eject seats and blackjack exposes others' cards. Verified:
+all blackjack player cards visible, dealer hole hidden; timeouts do NOT eject
+(stand/check/fold); disconnected seat grace60s. No new ejection policy requested
+or implemented. Shared rounds/30s turns/3:2naturals preserved.
+
+User clarified EP casino wagers ARE authorized, with EP-only payouts, cosmetic-
+only reward utility and NO direct/indirect Gold or power conversion. Prior blanket
+EP-wager prohibition was our over-restrictive interpretation and is superseded.
+Recorded100EPcap,100EP/monthVIP,1mGold→1EP; eventual real-money EP sources intended,
+payments still excluded. Policy commit **856e52c5**. No open EP rate/use question.
+
+Implementation **e19b635a** LOCAL ONLY in active WT
+`/tmp/eidolon-1-10-resonant-age-20260913` (clean): visible blackjack totals, private
+server-calculated current poker labels, saved win panels with net/return clarity,
+slotWIN/BIG10×/HUGE50×/GIGANTIC100× pauses and themed bonus overlays. Manual/auto
+spins lock through presentation/settlement; leaving cleans timers. Gold limits
+100,000 validated through save/payout paths; rollback must retain expanded bounds.
+EP wallet/exchange/allowance/vendor/games still NOT implemented;100EP recorded for
+the follow-on VIP stage, not offered by publicGoldgames. Guard remains locked.
+
+Focused client50PASS1.988s/five suites; focused Go game/database/serverPASS;
+newreceipt-familyboundsPASS. Browser4PASS25.5s plus affected3PASS28.4s with explicit
+GIGANTIC/disabled-spin assertion; desktop/phone screenshot reviewPASS. Later
+pending-settlement deferral covered by unit regression. Lint/diffPASS. No Mongo,
+soak or release launched, no owned QA processes remain. Unreleased patch notes,
+evidence and limits in candidate `2026-09-13-casino-celebrations-and-stakes.md`.
+
+Not pushed/deployed. Live remains3651c4c9/Alpha1.9.2, priorCI34778003801 completed
+SUCCESS; not repolled. Full1.10 unfinished. ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13 20:08 UTC, Alpha 1.9.2 verified LIVE
 
 User's push-live request completed. Exact deployed commit
 **3651c4c9773ea75c449889192ad0cfd80e75ef45**, Alpha1.9.2, independently confirmed
