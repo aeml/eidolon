@@ -1,5 +1,13 @@
 # 1.10 — The Resonant Age
 
+## Interim release — Alpha 1.9.1
+
+User requested publishing the completed shared casino/quick-play changes now.
+Package these plus the already completed aftermath/Help content as **1.9.1**, with
+matching login/runtime identities and cumulative patch notes. This is not final
+1.10 acceptance. Earlier local-only checkpoints below describe implementation
+history; deployment success must be verified against this release's exact commit.
+
 ## Latest user direction — September 13
 
 VIP currency is **EP (Eidolon Points)**, planned from a monthly VIP allowance
