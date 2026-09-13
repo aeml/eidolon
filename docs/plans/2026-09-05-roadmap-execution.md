@@ -17,7 +17,38 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, connected seated blackjack
+## Current checkpoint — September 13, 1.8 pushed / 1.9 opened
+
+Previous/current goal turns = PROGRESS.1.8 packaged and PUSHED as
+595c07ff4c543c4bae48907627ff3a72ae25d33f from clean frozen worktree
+/tmp/eidolon-1-8-social-20260913. New CI34744510043 IN_PROGRESS: client/server
+running. Monitor SAME run, then verify both exact public identities/database ready
+before publishing1.9.1.7e84f6219 remains last verified live; its CI fully green.
+
+1.8 adds all milestone notes through1.8, synchronized login/runtime/container/
+compose/deploy/CI/QA/package/lock/release metadata. Economy counters now separate
+casino_wagers from inclusive casino_returns without replay duplication (live and
+offline paths). Focused interrupted-save/receipt/telemetryPASS0.194s; version+UI
+250testsPASS12.728s; changedJS lint/build-all/diffPASS. Reused prior connected/UI
+evidence, no broad local matrix or soak. Published rules disclose approximate
+0.41% rule-based house edge and chosen split/double total commitment<=4000Gold.
+Primary calculator inputs/results/exposure bounds are in the blackjack rules doc;
+this is not a live-server measured edge or independent enumeration.
+
+NEW ACTIVE CODE WT /tmp/eidolon-1-9-world-20260913, branchwork/1-9-world-20260913,
+clean HEAD3d265e4f (scope handoff only so far), based on frozen1.8. node_modules
+symlinks the existing canonical dependencies; do NOT npm ci. Read its
+docs/plans/2026-09-13-release1-9-world.md: start cooperative elemental public events,
+then full two-floor casino/stash layout, themed slots and real-player poker.
+Retain current blackjack/seat/currency authority. Conditional PvP battleground
+only if population justifies another queue. Full1.10 final integration still open.
+
+Asked user ASYNCHRONOUSLY for VIP currency name/acquisition rules. Await response;
+do not define it or substituteGold/Resonance. Public work can continue meanwhile.
+No subagents; no local QA servers/Mongo left running. ROOT LEDGER ONLY, NEVER PUSH.
+Goal active; next available action is1.9 feature implementation plus1.8 monitoring.
+
+## Previous checkpoint — connected seated blackjack
 
 Previous/current goal turns = PROGRESS.1.8WT /tmp/eidolon-1-8-social-20260913 clean
 HEADac1be419, NOT PUSHED/runtime1.7. Now actual physical-seat wagers,15sec lobby,
