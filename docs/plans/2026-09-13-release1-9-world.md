@@ -90,6 +90,16 @@ Next content: differentiated lore-themed public slots and real-player poker usin
 the existing seated/wager lifecycle; functioning VIP games await approved currency.
 Retain events' actual-world/connected check and final1.10 integration scope.
 
+## Slot rules candidate
+
+Four differentiated elemental rule engines now implemented; see
+[slot rules and next integration](2026-09-13-elemental-slots.md). Ten paylines,
+secure weighted outcomes, fixed jackpot, Earth sticky wilds, Fire free-spin
+multiplier, Water cascades, Air expanding reel and sealed narrative bonus choice.
+Revisioned saveable free-spin/bonus state validates payouts and redacts offers.
+Focused rules tests PASS0.006s/build-allPASS. NOT Gold-wired, client-enabled or
+economically signed off yet; next durable owner-bound session integration, then UI.
+
 ## Release dependency
 
 1.8 CI34744510043 failed legacy dispatcher assertion;254d07ae updates that check
