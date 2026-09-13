@@ -17,7 +17,23 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, shared casino revision implemented locally
+## Current checkpoint — September 13, EP economy policy recorded
+
+User defined planned EP sources: monthly VIP allowance and fixed-rate Gold → EP
+exchange. Spending is restricted to casino content and a future cosmetic VIP
+Vendor (armor/weapon/shield skins). Suggested ~$5/month is illustrative; price,
+allowance, exchange rate and other bonuses are not finalized. Payment/purchase
+integration is explicitly excluded. No reverse exchange, cash-out or EP-owned
+VIP access inferred. Current guard remains unchanged.
+
+Recorded in the active 1.10 worktree casino roadmap, release/zone handoffs and
+content cadence. Documentation only: no wallet, billing, exchange or cosmetics
+implemented by this update; no runtime tests or deployment needed. Diff check
+passed. Earlier acquisition-undefined checkpoints below are historical. Active
+worktree remains `/tmp/eidolon-1-10-resonant-age-20260913`; local feature work is
+not deployed. Live remains Alpha1.9.0 e86e29a0. ROOT LEDGER ONLY; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, shared casino revision implemented locally
 
 Latest user direction names **EP — Eidolon Points** and explicitly requests a
 town-door dialogue → **Enter Casino** → one large SHARED two-storey casino zone.
