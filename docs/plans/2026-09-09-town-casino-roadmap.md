@@ -32,16 +32,22 @@ Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).
 - The user suggested approximately **$5/month** for VIP with several bonuses;
   this is illustrative, not an approved final price. Other VIP bonuses remain
   undecided and must respect the user's explicit **no pay-to-win** direction.
-- Spending is **cosmetics only**, including the future VIP Vendor's armor,
+- EP wagers are authorized, capped at **100 EP**, and can win **only EP**.
+  Public Gold stakes are capped at **100,000 Gold**. Keep separate wallets,
+  tables/machines, receipts and payouts; never choose or convert currency silently.
+- EP's in-game reward utility is **cosmetics only**, including the VIP Vendor's armor,
   weapon and shield skins. No stats, stronger equipment, XP/Resonance boosts,
   crafting materials, progression skips or other gameplay advantages from EP.
 - **No EP → Gold conversion**, including indirect routes: EP purchases cannot
   be sold, salvaged or traded for Gold/resources or pay out Gold. Implement
   cosmetic purchases as appearance unlocks, separate from combat equipment.
   Any reversal of an EP cosmetic purchase must not produce Gold.
-- This latest cosmetic-only spending restriction supersedes the earlier broad
-  EP casino-wagering plan. Do not enable EP wagers or assume a new casino reward
-  scheme; the prestigious lounge/guard remains, and public Gold games continue.
+- The user clarified that cosmetic-only does NOT prohibit EP casino wagers:
+  winnings stay EP and cannot reach Gold/auction-house purchasing power. This
+  supersedes the earlier interpretation that barred all EP wagering. Implement
+  EP games only with the separate EP wallet and VIP floor, not the Gold ledger.
+- Future real-money EP purchases and VIP subscriptions are intended sources;
+  no direct EP purchase price has been set and payment integration is excluded.
 - **Do not implement the purchase/payment method in this scope.** Record the
   future subscription benefit without adding checkout, billing or recurring
   charges. Payment exclusion does not remove the planned Gold exchange.
@@ -78,7 +84,7 @@ location, not a collection of minigames launched from a menu.
 | 1.10 — completion | Finish public and VIP content, game rules/payout tuning, visual/audio polish, multiplayer/phone/accessibility and persistence tests, then deploy with accurate patch notes and live verification. Both floors are required, not an optional stretch goal. |
 
 The EP policy above supersedes the original unnamed-currency dependency and
-historical milestone wording, including earlier EP wagering requirements. The
+historical milestone wording, including the superseded prohibition on EP wagers. The
 allowance and exchange rate are resolved; VIP entitlement details still need
 implementation without adding payments. The CP comparison describes separation from Gold,
 not a specification to copy CP. Do not substitute Gold/Resonance or describe the

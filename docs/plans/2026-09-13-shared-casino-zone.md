@@ -7,7 +7,8 @@ history, not current deployment status. Full1.10 acceptance remains separate.
 
 User revision: **EP means Eidolon Points**. Planned sources are a monthly VIP
 allowance of **100 EP monthly** and **1,000,000 Gold → 1 EP** exchange. Latest
-spending rule is **cosmetics only**, superseding earlier EP wagering plans.
+reward utility is **cosmetics only**. EP casino wagers up to100EP are authorized
+with EP-only winnings; this supersedes the earlier no-EP-wager interpretation.
 No reverse exchange, indirect Gold payouts or gameplay power; payment integration
 is excluded. See [approved EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
 This is roadmap policy, not delivered wallet/exchange/cosmetic functionality.

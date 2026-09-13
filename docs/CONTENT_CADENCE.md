@@ -42,6 +42,7 @@ attendance and casino wagering are not prerequisites for its completion.
 EP (Eidolon Points) has approved sources: **100 EP per VIP month** and a fixed
 **1,000,000 Gold → 1 EP** exchange. Spending is **cosmetics only**, with no
 reverse exchange, indirect Gold payouts or gameplay-power benefits. This latest
-restriction supersedes EP casino wagering. See [EP policy](plans/2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+clarification allows EP casino wagers up to100EP with EP-only winnings and
+cosmetic-only reward utility. Public Gold caps are100,000. See [EP policy](plans/2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
 Payment integration remains excluded. This cadence does not authorize new VIP
 bonuses or treating the guarded lounge as finished EP content.

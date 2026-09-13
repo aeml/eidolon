@@ -41,9 +41,11 @@ history; deployment success must be verified against this release's exact commit
 **1,000,000 Gold for 1 EP**; VIP allowance **100 EP monthly**. EP spending is
 **cosmetics only, never pay-to-win**. No reverse exchange or indirect Gold/
 resource payouts, power boosts or progression advantages. Cosmetic purchases
-are appearance unlocks, not stat gear. Earlier EP casino-wagering requirements
-are superseded by this restriction; do not enable EP wagers or invent alternate
-VIP casino rewards. Preserve the current guard and normal Gold public games.
+are appearance unlocks, not stat gear. **Follow-up clarification:** EP wagers up
+to100EP ARE authorized and pay ONLY EP, whose reward utility stays cosmetic-only.
+This replaces the earlier interpretation that prohibited EP wagers. Public Gold
+stakes may reach100,000Gold. EP wallet/games remain follow-on VIP work; preserve
+the current guard and Gold games until that currency system is implemented.
 Payment integration stays excluded. The quantity blocker is resolved; proceed
 with the one-way exchange/cosmetic economy, retaining durable receipts and saves.
 See the authoritative [EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
@@ -78,8 +80,8 @@ bump alone does not complete the goal; every earlier promised feature remains.
 2. Implement the approved one-way Gold → EP exchange and cosmetic VIP Vendor,
    with 1,000,000 Gold per EP and 100 EP per VIP month. Cosmetic prices/content
    must obey the no-power/no-indirect-Gold policy; do not add payment integration
-   or invent new VIP entitlement benefits. No EP casino wagers are authorized
-   under the latest cosmetic-only restriction. The
+   or invent new VIP entitlement benefits. Implement separate EP casino wagers
+   capped at100EP with EP-only winnings and no indirect Gold/power conversion. The
    current guarded-floor delivery remains authorized and is not functioning EP
    wagering. Continue independent content/integration work without reopening the
    now-resolved currency name/source question.
