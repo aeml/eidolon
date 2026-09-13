@@ -27,6 +27,21 @@ function makeEngine() {
 }
 
 describe('authoritative combat feedback visuals', () => {
+    test('remote decorative hits are compact and rate-limited, but local hits and hazards retain full feedback', () => {
+        const engine = makeEngine();
+        const source = actor('ally', 'Wizard'), target = actor('enemy', 'Skeleton');
+        engine.remotePlayers.set(source.id, source); engine.remotePlayers.set(target.id, target);
+        const hit = { sourceId: source.id, targetId: target.id, amount: 30, kind: 'arcane' };
+        expect(engine.renderCombatFeedback(hit)).toBe(true);
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('compact');
+        expect(engine.renderCombatFeedback(hit)).toBe(false);
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, sourceId: engine.player.id });
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('full');
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, sourceId: 'hazard-lava', kind: 'lava_pool' });
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('full');
+    });
     test.each([
         ['physical', 'Fighter', 'fighter_strike'],
         ['physical', 'Rogue', 'rogue_strike'],

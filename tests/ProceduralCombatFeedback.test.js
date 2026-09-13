@@ -22,6 +22,15 @@ function meshes(root) {
 }
 
 describe('procedural combat feedback', () => {
+    test('compact party feedback uses fewer meshes and smaller intensity without changing its identity', () => {
+        const scene = new THREE.Group(), position = new THREE.Vector3();
+        const options = { feedbackKind: 'wizard_strike', amount: 100, quality: 'high' };
+        const full = createProceduralCombatFeedbackEffect(scene, position, options);
+        const compact = createProceduralCombatFeedbackEffect(scene, position, { ...options, feedbackDensity: 'compact' });
+        expect(meshes(compact.root).filter(mesh => mesh.visible).length).toBeLessThan(meshes(full.root).filter(mesh => mesh.visible).length);
+        expect(compact.root.userData.intensity).toBeCloseTo(full.root.userData.intensity * .7);
+        expect(compact.root.userData.feedbackKind).toBe(full.root.userData.feedbackKind);
+    });
     test('the manifest gives every damage, affliction, hazard, and restoration family a unique identity', () => {
         expect(Object.keys(PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS).sort()).toEqual([...KINDS].sort());
         const motifs = new Set();

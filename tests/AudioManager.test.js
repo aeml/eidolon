@@ -26,7 +26,7 @@ function createMockContext() {
         createOscillator: jest.fn(() => {
             const oscillator = {
                 type: '',
-                frequency: { setValueAtTime: jest.fn() },
+                frequency: { setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn() },
                 connect: jest.fn(),
                 start: jest.fn(),
                 stop: jest.fn(),
@@ -42,6 +42,21 @@ function createMockContext() {
 }
 
 describe('AudioManager', () => {
+    test('class cast sounds have distinct envelopes, no missing asset requests, and bounded repeats', () => {
+        let now = 1000;
+        const context = createMockContext();
+        const mediaFactory = jest.fn();
+        const audio = new AudioManager({ context, now: () => now, mediaFactory });
+        const cues = [AUDIO_CUES.fighterCast, AUDIO_CUES.rogueCast, AUDIO_CUES.wizardCast, AUDIO_CUES.clericCast];
+        expect(new Set(cues.map(cue => JSON.stringify(audio.createCue(cue)))).size).toBe(4);
+        expect(audio.play(AUDIO_CUES.wizardCast)).toBe(true);
+        expect(context.createdOscillators[0].frequency.exponentialRampToValueAtTime).toHaveBeenCalledWith(820, 2.17);
+        expect(mediaFactory).not.toHaveBeenCalled();
+        now += 80; expect(audio.play(AUDIO_CUES.wizardCast)).toBe(false);
+        now += 50; expect(audio.play(AUDIO_CUES.wizardCast)).toBe(true);
+        audio.setEnabled(false);
+        expect(audio.play(AUDIO_CUES.clericCast)).toBe(false);
+    });
     beforeEach(() => {
         localStorage.clear();
     });

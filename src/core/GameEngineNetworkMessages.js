@@ -379,13 +379,15 @@ class GameEngineNetworkMessageMethods {
         if (!this.combatFeedbackCueTimestamps) this.combatFeedbackCueTimestamps = new Map();
         const cueKey = `${eventType}:${feedbackKind}:${data.targetId || 'unknown'}`;
         const now = Date.now();
-        const minimumInterval = eventType === 'heal' ? 140 : 80;
+        const compact = !isLocalInvolvement && !isHazard;
+        const minimumInterval = compact ? 220 : eventType === 'heal' ? 140 : 80;
         if (now - (this.combatFeedbackCueTimestamps.get(cueKey) || 0) < minimumInterval) return false;
 
         const position = target.position.clone();
         position.y = Math.max(0.08, Number(position.y) || 0.08);
         const spawned = this.spawnTransientEffect?.('combat_feedback', position, 0xffffff, {
             feedbackKind,
+            feedbackDensity: compact ? 'compact' : 'full',
             amount: Math.max(1, Number(data.amount) || 1),
             sourceId: data.sourceId || '',
             targetId: data.targetId || '',

@@ -15,6 +15,10 @@ export const AUDIO_CUES = Object.freeze({
     lootBlocked: 'loot.blocked',
     combatHit: 'combat.hit',
     combatMiss: 'combat.miss',
+    fighterCast: 'ability.fighter',
+    rogueCast: 'ability.rogue',
+    wizardCast: 'ability.wizard',
+    clericCast: 'ability.cleric',
     jumpStart: 'movement.jump.start',
     jumpLand: 'movement.jump.land',
 });
@@ -28,6 +32,16 @@ const createCueAsset = (category, slug) => Object.freeze({
     ]),
 });
 
+const generatedCombatCue = Object.freeze({ category: 'combat', fallback: 'generated', sources: Object.freeze([]) });
+const CLASS_CAST_CUES = Object.freeze({ Fighter: AUDIO_CUES.fighterCast, Rogue: AUDIO_CUES.rogueCast,
+    Wizard: AUDIO_CUES.wizardCast, Cleric: AUDIO_CUES.clericCast });
+
+export function playLocalAbilityCue(engine, actor) {
+    if (!actor || actor !== engine?.player) return false;
+    const cue = CLASS_CAST_CUES[actor.meshType || actor.subType || actor.constructor.name];
+    return cue ? engine.playAudioCue?.(cue) || false : false;
+}
+
 export const AUDIO_CUE_ASSETS = Object.freeze({
     [AUDIO_CUES.uiClick]: createCueAsset('ui', 'ui-click'),
     [AUDIO_CUES.uiOpen]: createCueAsset('ui', 'ui-open'),
@@ -36,6 +50,10 @@ export const AUDIO_CUE_ASSETS = Object.freeze({
     [AUDIO_CUES.lootBlocked]: createCueAsset('loot', 'loot-blocked'),
     [AUDIO_CUES.combatHit]: createCueAsset('combat', 'combat-hit'),
     [AUDIO_CUES.combatMiss]: createCueAsset('combat', 'combat-miss'),
+    [AUDIO_CUES.fighterCast]: generatedCombatCue,
+    [AUDIO_CUES.rogueCast]: generatedCombatCue,
+    [AUDIO_CUES.wizardCast]: generatedCombatCue,
+    [AUDIO_CUES.clericCast]: generatedCombatCue,
     [AUDIO_CUES.jumpStart]: createCueAsset('movement', 'jump-start'),
     [AUDIO_CUES.jumpLand]: createCueAsset('movement', 'jump-land'),
 });
@@ -180,7 +198,8 @@ export class AudioManager {
         if (!this.isCueAllowedForDetailLevel(cueName)) return false;
         const lastPlayedAt = this.lastCueTimes.get(cueName) || 0;
         const now = this.now();
-        if (now - lastPlayedAt < CUE_COOLDOWN_MS) return false;
+        const cooldown = typeof cueName === 'string' && cueName.startsWith('ability.') ? 120 : CUE_COOLDOWN_MS;
+        if (now - lastPlayedAt < cooldown) return false;
         this.lastCueTimes.set(cueName, now);
         return true;
     }
@@ -275,6 +294,25 @@ export class AudioManager {
                 ];
             case AUDIO_CUES.combatMiss:
                 return [{ frequency: 240 * pitch, duration: 0.06, type: 'triangle', gain: 0.045 }];
+            case AUDIO_CUES.fighterCast:
+                return [
+                    { frequency: 190, endFrequency: 85, duration: .13, type: 'triangle', gain: .09 },
+                    { frequency: 680, endFrequency: 360, delay: .025, duration: .055, type: 'sawtooth', gain: .025 }
+                ];
+            case AUDIO_CUES.rogueCast:
+                return [
+                    { frequency: 1050, endFrequency: 180, duration: .12, type: 'triangle', gain: .055 },
+                    { frequency: 1450, delay: .035, duration: .04, type: 'sine', gain: .025 }
+                ];
+            case AUDIO_CUES.wizardCast:
+                return [
+                    { frequency: 280, endFrequency: 820, duration: .17, type: 'sine', gain: .075 },
+                    { frequency: 560, endFrequency: 1120, delay: .04, duration: .13, type: 'triangle', gain: .035 }
+                ];
+            case AUDIO_CUES.clericCast:
+                return [523, 659, 784].map((frequency, index) => ({
+                    frequency, delay: index * .025, duration: .18, type: 'sine', gain: .04
+                }));
             case AUDIO_CUES.jumpStart:
                 return [{ frequency: 300 * pitch, duration: 0.09, type: 'triangle', gain: 0.075 }];
             case AUDIO_CUES.jumpLand:
@@ -297,6 +335,7 @@ export class AudioManager {
         oscillator.type = tone.type;
         if (oscillator.frequency?.setValueAtTime) {
             oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+            if (tone.endFrequency > 0) oscillator.frequency.exponentialRampToValueAtTime?.(tone.endFrequency, toneEnd);
         } else if (oscillator.frequency) {
             oscillator.frequency.value = tone.frequency;
         }

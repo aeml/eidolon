@@ -5,6 +5,7 @@ import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { advanceFighterDamageBuffs, applyOfflineFighterDamageBuffStats, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { advanceClericUtilityBuffs, applyOfflineClericUtilityStats } from '../skills/clericUtilityPower.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
+import { playLocalAbilityCue } from '../audio/AudioManager.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
 import { getBasicAttackDamage } from '../core/BasicAttackDamage.js';
@@ -581,6 +582,7 @@ export class Actor extends Entity {
     spawnAbilityPresentation(gameEngine, skillName, targetVector) {
         if (skillName === 'Earthshaker') {
             const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
+            if (spawned) playLocalAbilityCue(gameEngine, this);
             if (spawned) this.lastAbilityPresentation = { skillName, requestedSkillName: skillName, layerCount: 1,
                 timestamp: globalThis.performance?.now?.() ?? Date.now() };
             return spawned;
@@ -588,6 +590,7 @@ export class Actor extends Entity {
         const className = this.meshType || this.subType || this.constructor.name;
         const presentation = getAbilityPresentation(className, skillName);
         if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;
+        playLocalAbilityCue(gameEngine, this);
 
         const sourcePosition = this.position?.clone?.() || this.position;
         let targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;

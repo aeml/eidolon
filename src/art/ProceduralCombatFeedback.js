@@ -230,9 +230,10 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
     const kind = options.feedbackKind;
     const definition = PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS[kind];
     if (!definition) throw new Error(`Unknown procedural combat feedback: ${kind}`);
-    const quality = options.quality === 'low' ? 'low' : 'high';
+    const compact = options.feedbackDensity === 'compact';
+    const quality = compact || options.quality === 'low' ? 'low' : 'high';
     const amount = Math.max(1, Number(options.amount) || 1);
-    const intensity = Math.max(0.72, Math.min(1.4, 0.72 + Math.log10(amount + 1) * 0.24));
+    const intensity = Math.max(0.72, Math.min(1.4, 0.72 + Math.log10(amount + 1) * 0.24)) * (compact ? .7 : 1);
     const root = new THREE.Group();
     root.name = `ProceduralCombatFeedback:${kind}`;
     root.position.copy(position);
@@ -245,6 +246,7 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
         artStyle: definition.artStyle,
         restorative: definition.restorative,
         quality,
+        feedbackDensity: compact ? 'compact' : 'full',
         amount,
         intensity,
         sourceId: options.sourceId || '',
