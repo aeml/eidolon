@@ -1,5 +1,17 @@
 # 1.10 — The Resonant Age
 
+## Latest interim release — Alpha 1.9.2 verified live
+
+September13 20:08UTC: **3651c4c9773ea75c449889192ad0cfd80e75ef45** live on both
+public domains, database ready; exact CI34778003801 SUCCESS all ten jobs. Roomy
+seated casino controls, between-round 20–500 Gold slot bets, half/double shortcuts
+and a stale-scene Recall correction are deployed, with cumulative patch notes and
+aligned version defaults. Predeploy4PASS; live gameplay8PASS; recovery2+1PASS.
+See [release evidence and rollback caveat](2026-09-13-casino-roomy-controls.md).
+EP quantities/policy are recorded below, but wallet/exchange/allowance/vendor
+remain unimplemented. Full1.10 is not complete. Do not repeat the completed CI
+or start a documentation-only release. Older live/local statuses are historical.
+
 ## Interim release — Alpha 1.9.1
 
 **Verified live September13 18:00UTC:** c87412881f689684be94248e951d632994eef68e,

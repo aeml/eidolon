@@ -1,5 +1,16 @@
 # Casino seated layout and flexible stakes — Alpha 1.9.2
 
+**Verified LIVE September 13, 20:08 UTC:**
+`3651c4c9773ea75c449889192ad0cfd80e75ef45`, Alpha 1.9.2, on both
+play.eidolonrealms.com and server.eidolonrealms.com; database ready. Exact
+CI34778003801 completed SUCCESS across all ten jobs. Predeploy4passed1.8m;
+live gameplay8passed6.6m; town recovery/Well Rested2passed1.5m +1passed1.1m.
+No reported flaky result. Independent public checks confirm release manifest,
+login version, runtime commit, patch notes, new casino JS/CSS and Recall guard.
+Both public identities and origin/master were checked again after CI completed.
+No need to poll/restart this completed run or publish this documentation alone.
+The failed initial run and pre-release checkpoints below are historical.
+
 User requested publication after implementation. Packaged as Alpha 1.9.2 with
 aligned login/runtime/server/deploy versions and cumulative in-game patch notes.
 Deployment must be verified against the exact release commit before claiming live.
