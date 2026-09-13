@@ -107,8 +107,12 @@ to validate the actual registry too, already merged into this WT as5dc982e0.
 Replacement CI34744672300 failed one GuildPersistenceLifecycle Mongo connection
 timeout in race pass; regular coverage passed and Mongo continued accepting
 connections, no DATA RACE or server crash reported. Exact transient cause unknown.
-Failed jobs retried ONCE on the same run; server tests and all three browser shards
-now PASS, Predeploy Character QA IN_PROGRESS, client prior PASS reused. Monitor
-same run, do not blindly repeat.1.7e84f6219
-remains last verified live. Release corrections belong in frozen1.8WT, then merge
-here. No1.9 publication/version bump until1.8 passes and is verified live.
+Failed jobs retried ONCE on the same run; server/client/all browser shards passed,
+but predeploy then failed on actual mixed indexed/non-indexed casino geometry:
+table cylinders/boxes and slot octahedron gems could not share a material batch.
+6acb6c4e normalizes batch inputs to non-indexed triangles and adds a real mixed
+catalog regression (CasinoController4testsPASS1.365s/lint/diffPASS). Pushed from
+frozen1.8, including an accurate1.8 patch-note bullet; merged here. New exact
+CI34746925219 for6acb6c4e4260565233bf6999bd102be36b830838 IN_PROGRESS. Monitor
+that run; don't rerun old failed34744672300.1.7e84f6219 remains last verified live.
+No1.9 publication/version bump until1.8 passes and is verified live.
