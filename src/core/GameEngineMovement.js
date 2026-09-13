@@ -20,6 +20,7 @@ import { installPrototypeMethods } from './PrototypeInstaller.js';
 class GameEngineMovementMethods {
     handlePrimaryClick(event = null) {
         if (!this.player) return false;
+        if (this.casino?.handlePrimaryClick(event)) return true;
         if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return false;
 
         this.performRaycast();
@@ -123,6 +124,7 @@ class GameEngineMovementMethods {
     }
 
     requestPlayerJump(destination) {
+        if (this.casino?.active) return false;
         if (!this.player || !destination) return false;
 
         const end = destination.clone();
@@ -1079,6 +1081,7 @@ class GameEngineMovementMethods {
     }
 
     moveToAndInteract(entity) {
+        if (this.casino?.active) return;
         if (!entity) return;
         this.pendingInteraction = entity;
         this.abilityController.pendingAbilityTarget = null;

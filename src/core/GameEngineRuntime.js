@@ -67,6 +67,7 @@ class GameEngineRuntimeMethods {
     destroy() {
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
+        this.casino?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -95,6 +96,7 @@ class GameEngineRuntimeMethods {
 
 
     update(dt) {
+        this.casino?.beforeUpdate(dt);
         this.frameCount++;
         this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
@@ -903,6 +905,7 @@ class GameEngineRuntimeMethods {
 
         this.renderSystem.setSceneryFocus?.(this.player && this.player.isActive !== false
             ? this.player.mesh?.position || this.player.position : null);
+        this.casino?.render(activeEntities);
         this.nameplatePresentation ||= new NameplatePresentation();
         this.nameplatePresentation.update(activeEntities, {
             camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,

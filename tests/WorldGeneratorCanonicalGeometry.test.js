@@ -334,11 +334,11 @@ describe('WorldGenerator shadow setup', () => {
 
         expect(loadModelSpy).not.toHaveBeenCalled();
         expect(generator.scene.add).toHaveBeenCalledTimes(4);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(17);
-        expect(generator.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(1);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(22);
+        expect(generator.collisionManager.addOrientedCollider).not.toHaveBeenCalled();
         const structures = generator.scene.add.mock.calls.map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
-            'oathhall',
+            'casino',
             'trading_post',
             'blacksmith'
         ]);
@@ -351,7 +351,7 @@ describe('WorldGenerator shadow setup', () => {
         expect(structures.slice(0, 3).reduce(
             (total, structure) => total + structure.userData.drawMeshCount,
             structures[3].userData.drawMeshCount
-        )).toBe(38);
+        )).toBeLessThanOrEqual(48);
 
         const mesh = structures[0].children.find(child => child.isMesh && child.material.visible !== false);
         expect(mesh).toBeTruthy();

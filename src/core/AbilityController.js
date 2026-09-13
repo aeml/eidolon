@@ -288,6 +288,7 @@ export class AbilityController {
      * @param {number} slotIndex
      */
     performHotbarAbility(slotIndex) {
+        if (this.engine.casino?.active) return;
         const player = this.engine.player;
         if (!player || !player.hotbar) {
             console.warn("Player or hotbar not initialized.");
@@ -343,6 +344,7 @@ export class AbilityController {
      * @param {object|null} targetEntityOverride Captured hotbar actor intent.
      */
     performAbility(targetVectorOverride = null, skillNameOverride = null, targetEntityOverride = null) {
+        if (this.engine.casino?.active) return;
         const engine = this.engine;
         const player = engine.player;
         if (!player) return;

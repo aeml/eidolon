@@ -9,7 +9,55 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
-## Casino seat authority checkpoint — not playable yet
+## Physical casino client checkpoint — seating, not wagering
+
+The former solid Oathhall is replaced in the town generator with a walkable
+casino ground floor, a five-unit entrance and five wall segments instead of the
+old whole-building collider. An interior cutaway hides tall walls/upper shell
+while inside, preserving low wall edges for navigation. Upper-storey exterior
+retains a two-floor silhouette; walkable upstairs/stairs and the stash/layout
+adjustments remain venue-stage work, not completed VIP content.
+
+Client casino_update routing now draws real tables, machines and individual
+pickable chairs from the authoritative catalog. Chair interaction requires entry
+into the building and approaches the server-defined exit/use position, then asks
+the server to sit. Shared occupants/readiness appear in the table panel. Owner
+and remote SEATED actors use existing hip/leg/arm rig pivots; leaving restores
+the rig. Server confirmation owns leaving and the safe exit, not an optimistic
+client-only menu close. Scene changes do not teleport a player back into town.
+
+Table view smoothly blends camera position/zoom, restores prior camera settings,
+blocks normal combat/jump/movement intent, hides thumb combat controls/hotbar
+(not chat), and provides explicit Leave/Escape. Three-second presence refresh is
+limited to nearby overworld players. Controller/furniture/colliders/listeners and
+temporary poses are cleaned on teardown. No remote minigame menu replaces chairs.
+
+Shell geometry is batched by material separately for the cutaway; furniture is
+batched while individual non-rendering pick proxies preserve seat interaction.
+Existing town draw-call budget remains bounded. Furniture has separate collision
+boxes; scene-clear reattachment does not duplicate those colliders.
+
+Focused CasinoController3 + existingWorldGenerator20 initially PASS except the
+old town collider count: the Oathhall previously used one oriented collider, so
+its replacement adds5 boxes and removes that oriented collider (22 boxes total,
+not21). Corrected town geometry/shadow case PASS0.888s; unrelated passed cases not
+rerun. Focused SystemChrome casino-seating.spec.js PASS4.3s (6s total): real mesh
+chair picking, server-response fixture, two seated class models, 390px panel/44px
+Leave and exit restoration. Screenshot inspected at
+`/tmp/eidolon-casino-seat-view-20260913.png`. This is a controlled rendering fixture,
+NOT a live two-client server session, actual phone test, game round or wager test.
+ChangedJS lint, prepare-client and diff checks PASS.
+
+Still required for1.8 closure: verify the actual connected seating/resume path
+and complete table membership/round-state integration without claiming that
+readiness constitutes a played game. Full games/payouts/VIP remain the subsequent
+casino stages. Do not publish this as a completed functional casino.
+
+Releasequeue:1.6cf2a028d completed CI34739522914 SUCCESS, exact frontend/backend
+identity rechecked and database ready. Frozen1.7 HEAD5fd16d751cbdb50cac576bf02e86cec64111875b
+PUSHED master; CI34741198072 confirmed running (clientPASS/serverRUNNING).
+
+## Casino seat authority checkpoint — previous server-only stage
 
 Server foundation implemented: canonical public-table/seat/approach coordinates
 inside the current town-hall footprint, server-only seat transforms, one private

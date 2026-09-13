@@ -27,6 +27,9 @@ export class SocialPresenceController {
      */
     handleMessage(msg) {
         switch (msg.type) {
+            case 'casino_update':
+                this.uiManager.casino?.updateState(msg.payload);
+                return true;
             case 'group_finder_update':
                 this.uiManager.social?.groupFinder?.update(msg.payload);
                 return true;

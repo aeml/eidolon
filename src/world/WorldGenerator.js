@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createCasinoShell } from '../art/ProceduralCasino.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralPvPArena } from '../art/ProceduralPvPArena.js';
 import { buildDungeonSurfaceUnion } from './dungeonSurfaceUnion.js';
@@ -221,12 +222,14 @@ export class WorldGenerator {
             return true;
         };
 
-        setupBuilding(
-            createProceduralLanternholdStructure('oathhall', { optimized: true }),
-            cx,
-            cz - 30,
-            0
-        );
+        const casino = createCasinoShell(cx, cz - 30);
+        casino.traverse(part => { if (part.isMesh) MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true }); });
+        this.scene.add(casino);
+        for (const wall of casino.userData.casinoWalls) {
+            this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
+                new THREE.Vector3(cx + wall.position[0], wall.position[1], cz - 30 + wall.position[2]),
+                new THREE.Vector3(...wall.size)));
+        }
         setupBuilding(
             createProceduralLanternholdStructure('trading_post', { optimized: true }),
             cx + 30,

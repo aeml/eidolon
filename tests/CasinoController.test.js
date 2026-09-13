@@ -1,0 +1,69 @@
+import { jest } from '@jest/globals';
+import * as THREE from 'three';
+import { CasinoController } from '../src/core/CasinoController.js';
+import { CollisionManager } from '../src/core/CollisionManager.js';
+import { createCasinoShell, createCasinoFurniture, updateCasinoCutaway, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
+
+const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'blackjack', x: -4.3, z: 171,
+    seats: [{ x: -4.3, z: 173.2, rotation: Math.PI, exitX: -4.3, exitZ: 174.4 }], minimumPlayers: 1 };
+const seat = { tableId: table.id, seat: 0, sessionId: 'private-token', exitX: -4.3, exitZ: 174.4, ready: false };
+
+function setup() {
+    const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 500);
+    camera.position.set(10, 15, 190);
+    const engine = { network: { send: jest.fn() }, collisionManager: new CollisionManager(),
+        renderSystem: { camera, cameraTarget: new THREE.Vector3(0, 0, 185), scene: new THREE.Scene(), setCameraTarget: jest.fn() },
+        inputManager: { clearInputState: jest.fn() }, cameraLocked: true,
+        player: { position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', resetTransformInterpolation: jest.fn() } };
+    const controller = new CasinoController(engine);
+    return { engine, controller };
+}
+
+test('server-owned seat controls camera/input, readiness and exit without altering camera preferences', () => {
+    const { engine, controller } = setup();
+    const zoom = engine.renderSystem.camera.zoom;
+    controller.updateState({ tables: [table], occupants: [{ playerId: 'p', name: '<b>Alice</b>', tableId: table.id, seat: 0, connected: true }], yourSeat: seat });
+    controller.beforeUpdate(.4); controller.render([]);
+    expect(controller.active).toBe(true); expect(controller.panel.hidden).toBe(false);
+    expect(controller.roster.querySelector('b')).toBeNull();
+    expect(engine.player.position.z).toBe(173.2);
+    expect(engine.inputManager.clearInputState).toHaveBeenCalled();
+    expect(engine.renderSystem.camera.zoom).not.toBe(zoom);
+    controller.ready.click();
+    expect(engine.network.send).toHaveBeenCalledWith('casino', { action: 'ready', ready: true, sessionId: 'private-token' });
+    controller.leave.click(); expect(controller.active).toBe(true);
+    controller.updateState({ tables: [table], occupants: [], yourSeat: null });
+    expect(engine.cameraLocked).toBe(true); expect(engine.renderSystem.camera.zoom).toBe(zoom);
+    expect(engine.player.position.z).toBe(174.4); expect(engine.player.state).toBe('IDLE');
+    controller.dispose(); expect(engine.collisionManager.colliders).toHaveLength(0);
+});
+
+test('scene changes restore controls without teleporting back and pose cleanup restores rig', () => {
+    const { engine, controller } = setup();
+    const mesh = new THREE.Group(), hips = new THREE.Group(), thigh = new THREE.Group();
+    hips.name = 'Rig_Hips'; hips.position.y = 1.8; thigh.name = 'Rig_ThighLeft'; mesh.add(hips, thigh);
+    const actor = { mesh, state: 'SEATED' };
+    controller.render([actor]); expect(hips.position.y).toBe(1.12); expect(thigh.rotation.x).toBe(-Math.PI / 2);
+    actor.state = 'IDLE'; controller.render([actor]); expect(hips.position.y).toBe(1.8); expect(thigh.rotation.x).toBe(0);
+    controller.updateState({ tables: [table], yourSeat: seat });
+    engine.currentInstanceId = 'dungeon-x'; engine.player.position.set(50, 0, 70);
+    controller.beforeUpdate(.1);
+    expect(controller.active).toBe(false); expect(engine.player.position.z).toBe(70);
+    controller.dispose();
+});
+
+test('walkable shell retains walls, opens a real doorway and batches the cutaway/furniture', () => {
+    const shell = createCasinoShell(); const collision = new CollisionManager();
+    for (const wall of shell.userData.casinoWalls) collision.addCollider(new THREE.Box3().setFromCenterAndSize(
+        new THREE.Vector3(wall.position[0], wall.position[1], 170 + wall.position[2]), new THREE.Vector3(...wall.size)));
+    expect(collision.checkCollision(new THREE.Vector3(0, 0, 178), 1.25, new THREE.Vector3(0, 0, 180))).toBeNull();
+    expect(collision.checkCollision(new THREE.Vector3(6, 0, 178), 1.25, new THREE.Vector3(6, 0, 180))).not.toBeNull();
+    updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 170)); expect(shell.userData.casinoCutaway.visible).toBe(false);
+    updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 190)); expect(shell.userData.casinoCutaway.visible).toBe(true);
+    expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(12);
+    const furniture = createCasinoFurniture([table]); let visibleMeshes = 0;
+    furniture.traverse(mesh => { if (mesh.isMesh && mesh.material.visible) visibleMeshes++; });
+    expect(visibleMeshes).toBeLessThanOrEqual(6);
+    expect(furniture.userData.seats[0].userData.casinoSeat).toEqual({ tableId: table.id, seat: 0 });
+    disposeCasinoObject(shell); disposeCasinoObject(furniture);
+});

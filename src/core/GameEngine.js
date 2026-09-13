@@ -363,6 +363,7 @@ import { RespecNPC } from '../entities/RespecNPC.js';
 import { DungeonNPC } from '../entities/DungeonNPC.js';
 import { CrystalKeeper } from '../entities/CrystalKeeper.js';
 import { Stash } from '../entities/Stash.js';
+import { CasinoController } from './CasinoController.js';
 import { Forge } from '../entities/Forge.js';
 import { RootboundWarden } from '../entities/RootboundWarden.js';
 import { BriarMatron } from '../entities/BriarMatron.js';
@@ -510,6 +511,8 @@ export class GameEngine {
         this.enemies = [];
         this.lootDrops = [];
         this.cameraLocked = true;
+        this.casino = new CasinoController(this);
+        this.uiManager.casino = this.casino;
         this.pendingInteraction = null;
 
         this.lastTime = 0;

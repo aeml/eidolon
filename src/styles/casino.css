@@ -1,0 +1,9 @@
+.casino-session { position: fixed; z-index: 950; right: 16px; bottom: 16px; width: min(420px, calc(100vw - 32px)); box-sizing: border-box; padding: 16px; color: #f3e5c4; background: rgba(13, 22, 32, .97); border: 1px solid #b99a58; border-radius: 12px; box-shadow: 0 8px 35px #0009; font: 14px/1.5 system-ui, sans-serif; }
+.casino-session[hidden] { display: none; }
+.casino-session h2 { margin: 0; font-size: 19px; color: #efca80; }
+.casino-session p { margin: 8px 0; }
+.casino-session ul { padding-left: 20px; max-height: 100px; overflow: auto; }
+.casino-session button { min-height: 44px; margin: 4px 8px 0 0; border-radius: 6px; border: 1px solid #b99a58; padding: 8px 14px; background: #28384b; color: #ffedbe; font: inherit; cursor: pointer; }
+.casino-session button[aria-pressed="true"] { background: #155453; }
+.casino-seated #hotbar-container, .casino-seated #joystick-zone, .casino-seated #mobile-actions { visibility: hidden; pointer-events: none; }
+@media (max-width: 600px) { .casino-session { bottom: max(8px, env(safe-area-inset-bottom)); right: 8px; width: calc(100vw - 16px); padding: 10px; max-height: 40dvh; overflow-y: auto; font-size: 13px; } .casino-session ul { max-height: 65px; } }
