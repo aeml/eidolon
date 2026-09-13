@@ -1,7 +1,8 @@
-# Casino hand feedback, celebrations and stakes — unreleased
+# Casino hand feedback, celebrations and stakes — Alpha 1.9.3
 
-Local follow-up to deployed Alpha1.9.2 (`3651c4c9`). No runtime version bump,
-push or deployment in this batch. Include these notes in the next release.
+Packaged at the user's request as Alpha1.9.3, following deployed Alpha1.9.2
+(`3651c4c9`). Login, runtime defaults and cumulative patch notes are aligned.
+Deployment verification is pending; the evidence below is local unless stated.
 
 ## Player-facing patch notes
 
