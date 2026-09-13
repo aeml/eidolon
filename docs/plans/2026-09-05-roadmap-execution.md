@@ -17,7 +17,44 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 02:28 UTC
+## Current checkpoint — September 13, 02:42 UTC
+
+PROGRESS: Earned wardrobe collection/selection committed locally as73ce705b in
+`/tmp/eidolon-1-5-loot-loadouts-20260913`, atop4edfe72f saved builds. Explicitly
+learn supported base-style/rarity looks from owned bag/stash/equipment; no consumed
+items or stats/Gold changes. Collection survives selling source gear. Selection
+requires earned compatible look and equipped item; reset restores original look.
+Safe-town/out-of-combat checks, owner-only rate limits and durable save journal.
+
+Character has private AppearanceCollection and public Appearances maps, persisted
+separately. Proto EquipmentAppearance message + Entity field127; generated Go/JS
+bindings updated with cached `/tmp/eidolon-protoc/bin/protoc` and
+`/home/aeml/go/bin/protoc-gen-go`. EquipmentRevision triggers cosmetic-only deltas.
+World copies preserve public look and hide collection. Local/remote actor paths
+and character preview compose render-only copies via EquipmentAppearance.js.
+Combat stats, item IDs, sockets/potency/level retain original equipment truth.
+Character-sheet WardrobeUI learns, filters owned slot-compatible styles and applies
+or resets through server messages, with character-change clearing.
+
+Focused Go wardrobe/core/persistence/protocol/admission checks PASS.9 JS wardrobe,
+preview and protocol-contract checks PASS. Changed JS lint/diff PASS. Actual Chrome
+phone controls and before/after model comparison inspected:
+`/tmp/eidolon-1-5-wardrobe-phone.png`, `...-wardrobe-models.png`. Initial phone
+nested-scroll clipping fixed by natural wardrobe height in character scroll panel.
+All local sessions terminal; no full matrix/soak. Runtime remains1.4, no1.5push yet.
+
+Next: finish1.5 Forge/comparison improvements, quest/raid Gold and Resonance versus
+sinks balancing, casino Gold transaction safeguards and future undefined VIP
+currency boundary. Read updated1.5 stage plan. Existing UI sources ForgeUI.js,
+MobileItemDetails.js; server economy_telemetry.go records source/sink reasons.
+Then package full1.5 with notes/version synchronization, publish and verify.
+
+1.4CI34731798665 now TERMINAL SUCCESS, including final Live Release/Character QA.
+Both exact live domain readbacks Alpha1.4.0/9f4b9dc8 and database ready previously
+recorded. Frozen1.4WT unchanged; do not rerun. Previous/current goal turns made
+implementation progress. Full1.1–1.10 goal active. Root ledger MUST NOT be pushed.
+
+### Previous detail — September 13, 02:28 UTC
 
 PROGRESS: Saved builds and reconnect bar restoration committed locally as4edfe72f
 in `/tmp/eidolon-1-5-loot-loadouts-20260913`, atop first loadout slicec4780dcf.
