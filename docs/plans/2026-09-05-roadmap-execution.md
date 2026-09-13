@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:04 UTC
+## Current checkpoint — September 13, 00:19 UTC
+
+PROGRESS: completed local 1.2 hero grip/face refinements and touch-readable
+Trading House, on top of the Forge feature. Full goal active; NEVER PUSH ROOT.
+
+- Publishing CI34727002679 for master377bdf21: client and server SUCCESS;
+  three browser smoke shards IN_PROGRESS. No new run started. Deployment/live
+  verification still pending; predecessor34726736512 terminal FAILED.
+- 1.2 WT `/tmp/eidolon-1-2-forge-phone-20260913` clean at42a8a1cc, NOT pushed.
+  ade084e3 adds smoother exposed faces and shared visible hand meshes for all
+  classes; equipment replacement retains grips. Focused models/equipment222PASS.
+  927c42d9 adds named trading inventory/quantity/selection, stacked phone sell
+  form, 44px buttons and expandable auction details; focused82PASS. Short actual
+  HTML/CSS/TradingUI Chrome render caught/fixed cramped form and text contrast.
+  Images `/tmp/eidolon-1-2-trading-{phone,browse-phone}.png`; local fixture, not
+  production economic proof. Preview script `/tmp/eidolon-trading-preview-20260913.mjs`.
+  All browser sessions closed. Release correction377bdf21 cherry-picked as
+  d12f5c99. Draft notes/remaining scope in
+  `docs/plans/2026-09-13-release1-2-visuals.md` in that worktree.
+- Next: watch exact publishing run to deployment/live checks; continue remaining
+  1.2 phone ergonomics/menus and equipped hero animation refinement. Keep focused
+  checks, defer exhaustive stabilization. Do not call the whole milestone done.
+
+## Previous checkpoint — September 13, 00:04 UTC
 
 PROGRESS: publishing failure repaired with focused tests; first1.2 Forge phone
 feature implemented separately. Full goal active. NEVER PUSH ROOT.
