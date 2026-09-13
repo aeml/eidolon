@@ -674,8 +674,10 @@ class UIManagerDungeonMethods {
                 const warning = document.createElement('p');
                 warning.textContent = 'Discard this run’s progress? Everyone must return to Lanternhold first. Quest rewards and weekly cache limits are not reset.';
                 const cancel = document.createElement('button');
+                cancel.id = 'btn-cancel-dungeon-reset';
                 cancel.type = 'button'; cancel.className = 'menu-btn'; cancel.textContent = 'Keep run';
                 const confirm = document.createElement('button');
+                confirm.id = 'btn-confirm-dungeon-reset';
                 confirm.type = 'button'; confirm.className = 'menu-btn'; confirm.textContent = 'Reset run';
                 cancel.onclick = () => { confirmation.hidden = true; resetBtn.hidden = false; resetBtn.focus(); };
                 confirm.onclick = sendReset;

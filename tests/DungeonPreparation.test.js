@@ -38,6 +38,8 @@ test('desktop reset is deliberate and cancellation keeps the existing run', () =
     expect(window.game.socket.send).not.toHaveBeenCalled();
     const confirmation = document.getElementById('dungeon-reset-confirm');
     const [cancel, confirm] = confirmation.querySelectorAll('button');
+    expect(cancel.id).toBe('btn-cancel-dungeon-reset');
+    expect(confirm.id).toBe('btn-confirm-dungeon-reset');
     cancel.click();
     expect(confirmation.hidden).toBe(true);
     expect(document.activeElement).toBe(reset);
