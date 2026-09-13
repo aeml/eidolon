@@ -17,7 +17,37 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, walkable casino venue
+## Current checkpoint — September 13, slot rules / render release fix
+
+Previous/current goal turns = PROGRESS. Active1.9WT
+/tmp/eidolon-1-9-world-20260913 clean HEAD4a8598bf. Coreb2a0fc51 adds four
+elemental slot rule engines and revisioned saveable bonus/free-spin state. Earth
+sticky middle-reel wilds, Fire free-spin multiplier, Water two extra cascades,
+Air expanding wild reel; ten paylines, secure weighted draws, fixed jackpot,
+sealed lore bonus choices. Saved grids/payouts revalidated; hidden offers redacted.
+Focused TestSlotPASS0.006s/build-allPASS. NOT Gold-wired/UI-enabled/economically
+approved. Read docs/plans/2026-09-13-elemental-slots.md in activeWT before next
+integration; it gives actual rules, existing persistence/Gold APIs and remaining
+receipt/recovery work. Next durable OWNER-bound sessions, then seated UI/animations/
+audio and exact exposure/return review before release. Full poker/VIP still open.
+
+CI34744672300 retry TERMINAL FAILURE: server/client/all3browserPASS, predeploy
+failed actual full-catalog rendering. Indexed table/cabinet geometries mixed with
+non-indexed slot octahedra; mergeGeometries returned null, breaking casino_update.
+Fixed batch inputs to consistent non-indexed triangles in frozen1.8WT, added
+mixed real-Three-geometry test and1.8 patch-note bullet.4testsPASS1.365s/lint/diff
+PASS.6acb6c4e4260565233bf6999bd102be36b830838 PUSHED master from1.8WT (clean).
+New exactCI34746925219 IN_PROGRESS; monitor THIS run, not old failures. Correction
+merged into1.9 asc4d5ba95; merged controller/navigation5testsPASS1.154s.1.9 runtime
+remains1.8, NOT pushed.1.7e84f6219 remains last verified live until both1.8 public
+identities/databaseREADY and CI live QA pass. No new soak/local broad matrix.
+
+Prior event/venue commits803d0901/27ebe444 retained. Actual event region/connected
+encounter, full-town placement and connected floor transitions still need release
+checks. VIP currency question unanswered; no invention/fallbackGold. Goal active.
+No QA server/Mongo left running. ROOT LEDGER ONLY, NEVER PUSH.
+
+## Previous checkpoint — September 13, walkable casino venue
 
 Previous/current goal turns = PROGRESS. Active1.9WT
 /tmp/eidolon-1-9-world-20260913 clean HEAD27ebe444 (not pushed/runtime remains1.8).
