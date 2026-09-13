@@ -92,8 +92,10 @@
 
 .guild-roster-row {
     display: grid;
-    grid-template-columns: 8px minmax(80px, 1fr) minmax(90px, auto) auto repeat(3, auto);
+    grid-template-columns: 8px minmax(80px, 1fr) minmax(90px, auto) auto auto;
 }
+.guild-member-actions summary { cursor: pointer; color: #fff0b0; padding: 6px; }
+.guild-member-actions[open] { display: flex; flex-direction: column; gap: 6px; }
 
 .guild-presence {
     width: 8px;

@@ -18,6 +18,10 @@ these entries describe implemented changes, not milestone completion.
   control sizing independently of menu text. The camera's unobstructed region
   follows those controls, and very short landscape uses standard size to preserve
   viewing space. Phone and desktop camera zoom save independently across sessions.
+- Phone social/friend/guild lists use readable cards and touch-sized actions.
+  Guild roster management is tucked into a named Manage disclosure while retaining
+  permission checks and callbacks. PvP challenges, scores and leaderboard entries
+  use readable text and scroll within the screen.
 
 ## Focused evidence
 
@@ -32,6 +36,9 @@ these entries describe implemented changes, not milestone completion.
   (overlapping suites, not 49 unique tests). Short Chrome checks at 390×844,
   844×390 and 568×320 cover both hands at the largest selected size: all movement,
   action and hotbar targets are in bounds, at least 44px and hit-test reachable.
+- Community: existing guild/friends/PvP 49 tests pass, plus the focused guild
+  rerun (5) checks the new disclosure. Actual SocialUI/GuildUI/PvPUI previews at
+  390×844 inspected, with no horizontal guild/PvP window overflow.
 
 ## Remaining milestone work
 

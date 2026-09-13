@@ -44,6 +44,11 @@ describe('GuildUI', () => {
         }});
         expect(container.textContent).toContain('[WARD] Wardens');
         expect(container.textContent).toContain('Bob');
+        const management = container.querySelector('.guild-member-actions');
+        expect(management.open).toBe(false);
+        expect(management.querySelector('summary').getAttribute('aria-label')).toBe('Manage Bob');
+        expect(container.querySelectorAll('.guild-member-actions')).toHaveLength(1);
+        management.open = true;
         Array.from(container.querySelectorAll('button')).find(button => button.textContent === 'Promote').click();
         expect(ui.onSetRank).toHaveBeenCalledWith('player-Bob', 'officer');
         Array.from(container.querySelectorAll('button')).find(button => button.textContent === 'Deposit Item').click();

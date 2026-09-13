@@ -1,0 +1,53 @@
+/* Community screens use readable cards, not compressed desktop tables. */
+.mobile-mode :is(.social-window, .pvp-window) {
+    width: min(720px, calc(100vw - 24px)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top, 0px)) - max(12px, env(safe-area-inset-bottom, 0px))) !important;
+    min-height: 0; padding: 12px; overflow-y: auto; overscroll-behavior: contain;
+    font-size: var(--phone-menu-text-size, 16px); line-height: 1.45;
+}
+.mobile-mode :is(.social-window, .pvp-window) .window-header {
+    position: sticky; top: -12px; z-index: 2; background: var(--bg-panel);
+    margin: -12px -12px 12px; padding: 10px 12px; min-height: 44px;
+}
+.mobile-mode :is(.social-window, .pvp-window) :is(button, input, select, summary) {
+    font: inherit; font-size: max(16px, var(--phone-menu-text-size, 16px));
+    min-height: 44px; min-width: 44px; box-sizing: border-box;
+}
+.mobile-mode :is(.social-window, .pvp-window) :is(button, summary):focus-visible {
+    outline: 2px solid var(--color-gold); outline-offset: -2px;
+}
+.mobile-mode .social-window__columns { display: none; }
+.mobile-mode .social-window__tabs { display: flex; gap: 4px; }
+.mobile-mode .social-window__tab { flex: 1; padding: 8px 4px; }
+.mobile-mode .social-window__status-control { flex-wrap: wrap; gap: 8px; }
+.mobile-mode .social-window__status-select { flex: 1; min-width: 0; }
+.mobile-mode .social-window__row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.mobile-mode .social-window__name { grid-column: 1 / -1; white-space: normal; overflow-wrap: anywhere; }
+.mobile-mode .social-window__level::before { content: 'Level '; }
+.mobile-mode .social-window__status { grid-column: 1 / -1; }
+.mobile-mode .social-window__action { grid-column: 1 / -1; display: flex; gap: 8px; }
+.mobile-mode .social-window__action button { flex: 1; }
+.mobile-mode .social-window :is(.social-window__status, .social-window__status-label, .friends-section-header, .friends-name, .friends-status, .friends-empty, .guild-card h3, .guild-member-combat, .guild-rank, .guild-audit-row, .guild-empty) {
+    font-size: inherit; overflow-wrap: anywhere;
+}
+.mobile-mode .friends-add-row { flex-wrap: wrap; }
+.mobile-mode .friends-add-input { min-width: 0; width: 100%; flex: 1 1 140px; }
+.mobile-mode .friends-row { display: grid; grid-template-columns: 8px minmax(0, 1fr); }
+.mobile-mode .friends-name { white-space: normal; }
+.mobile-mode :is(.friends-status, .friends-actions) { grid-column: 2; white-space: normal; }
+.mobile-mode .friends-actions { margin: 0; flex-wrap: wrap; }
+.mobile-mode :is(.friends-list, .friends-pending-list, #tab-panel-guild, .guild-bank-items) { max-height: none; overflow: visible; }
+.mobile-mode :is(.guild-form-row, .guild-row) { flex-wrap: wrap; }
+.mobile-mode .guild-form-row { width: 100%; }
+.mobile-mode .guild-form-row :is(input, select) { flex: 1 1 140px; min-width: 0; }
+.mobile-mode .guild-row > :first-child:not(button) { min-width: 0; overflow-wrap: anywhere; }
+.mobile-mode .guild-roster-row { grid-template-columns: 12px minmax(0, 1fr); gap: 8px; padding: 12px; }
+.mobile-mode .guild-roster-row :is(.guild-member-combat, .guild-rank, .guild-member-actions) { grid-column: 2; }
+.mobile-mode .guild-member-actions[open] button { display: block; width: 100%; margin: 6px 0; }
+.mobile-mode .guild-identity { min-width: 0; overflow-wrap: anywhere; }
+.mobile-mode .pvp-window__body { padding: 0; overflow: visible; }
+.mobile-mode .pvp-card { overflow-wrap: anywhere; }
+.mobile-mode .pvp-card--challenge { flex-wrap: wrap; }
+.mobile-mode .pvp-card--challenge strong { flex: 1 1 100%; }
+.mobile-mode .pvp-btn { margin: 4px 4px 4px 0; }
+.mobile-mode .pvp-leader-row { padding: 12px 0; border-bottom: 1px solid #ffffff18; overflow-wrap: anywhere; }

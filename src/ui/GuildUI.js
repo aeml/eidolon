@@ -154,14 +154,21 @@ export class GuildUI {
             rank.textContent = member.rank;
             row.append(dot, details, combat, rank);
             const isSelf = member.username === selfName;
+            const actions = document.createElement('details');
+            actions.className = 'guild-member-actions';
+            const summary = document.createElement('summary');
+            summary.textContent = 'Manage';
+            summary.setAttribute('aria-label', `Manage ${member.username}`);
+            actions.append(summary);
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.set_rank) {
                 const nextRank = member.rank === 'officer' ? 'member' : 'officer';
-                row.appendChild(this.button(nextRank === 'officer' ? 'Promote' : 'Demote', '', () => this.onSetRank?.(member.playerId, nextRank)));
-                row.appendChild(this.button('Transfer', '', () => this.onTransfer?.(member.playerId)));
+                actions.appendChild(this.button(nextRank === 'officer' ? 'Promote' : 'Demote', '', () => this.onSetRank?.(member.playerId, nextRank)));
+                actions.appendChild(this.button('Transfer', '', () => this.onTransfer?.(member.playerId)));
             }
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.kick) {
-                row.appendChild(this.button('Kick', 'guild-btn--danger', () => this.onKick?.(member.username)));
+                actions.appendChild(this.button('Kick', 'guild-btn--danger', () => this.onKick?.(member.username)));
             }
+            if (actions.children.length > 1) row.append(actions);
             roster.appendChild(row);
         }
         this.container.appendChild(roster);
