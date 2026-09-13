@@ -57,6 +57,18 @@ func TestInboundMessagePoliciesCoverDispatcher(t *testing.T) {
 	if len(dispatched) == 0 {
 		t.Fatal("no dispatch cases found")
 	}
+	// handleMessage checks the module registry before the legacy switch. New
+	// module-only messages need no dead duplicate case in client_dispatch.go.
+	for messageType, handler := range messageHandlers {
+		if handler == nil {
+			t.Errorf("registered message %q has no handler", messageType)
+			continue
+		}
+		dispatched[messageType] = true
+		if _, ok := inboundMessagePolicies[messageType]; !ok {
+			t.Errorf("registered message %q has no inbound policy", messageType)
+		}
+	}
 	for messageType := range inboundMessagePolicies {
 		if !dispatched[messageType] {
 			t.Errorf("inbound policy %q has no dispatcher case", messageType)
