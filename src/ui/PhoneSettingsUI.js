@@ -45,7 +45,41 @@ export class PhoneSettingsUI {
         if (label) label.textContent = 'Menu text size';
         const hint = scale?.closest('.support-field')?.querySelector('.support-field__hint');
         if (hint) hint.textContent = 'Enlarge phone menu text without changing camera framing. Phone and desktop preferences save separately and apply immediately.';
+        this.addTouchPreferences();
         this.show('screen');
+    }
+
+    addTouchPreferences() {
+        const section = this.sections.get('play');
+        const field = document.createElement('div');
+        field.className = 'support-field';
+        field.innerHTML = `<label for="phone-control-hand">Touch layout</label>
+            <select id="phone-control-hand"><option value="right">Actions on right</option><option value="left">Actions on left</option></select>
+            <p class="support-field__hint">Swap the movement stick and combat controls to suit your hands.</p>`;
+        const sizeField = document.createElement('div');
+        sizeField.className = 'support-field';
+        sizeField.innerHTML = `<label for="phone-control-size">Touch control size <output id="phone-control-size-value" for="phone-control-size"></output></label>
+            <input id="phone-control-size" type="range" min="100" max="120" step="5">
+            <p class="support-field__hint">Enlarge buttons independently of menu text and camera zoom. Very short landscape screens use standard size to keep combat visible. Saved for this device.</p>`;
+        section.prepend(field, sizeField);
+        const hand = field.querySelector('select');
+        const size = sizeField.querySelector('input');
+        hand.value = localStorage.getItem('eidolon.phoneControlHand') === 'left' ? 'left' : 'right';
+        const stored = Number(localStorage.getItem('eidolon.phoneControlSize'));
+        size.value = String(Number.isFinite(stored) ? Math.max(100, Math.min(120, stored)) : 100);
+        const apply = (save = false) => {
+            window.game?.inputManager?.clearInputState?.();
+            document.documentElement.dataset.phoneControlHand = hand.value;
+            document.documentElement.style.setProperty('--phone-control-scale', String(Number(size.value) / 100));
+            sizeField.querySelector('output').textContent = `${size.value}%`;
+            if (save) {
+                localStorage.setItem('eidolon.phoneControlHand', hand.value);
+                localStorage.setItem('eidolon.phoneControlSize', size.value);
+            }
+        };
+        hand.onchange = () => apply(true);
+        size.oninput = () => apply(true);
+        apply();
     }
 
     show(key) {

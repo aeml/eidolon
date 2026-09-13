@@ -40,6 +40,13 @@ export class RenderSystem {
 
         // Camera Setup (Isometric Orthographic)
         this.currentZoom = CONSTANTS.CAMERA.ZOOM;
+        try {
+            const saved = localStorage.getItem(this.isMobile ? 'eidolon.phoneCameraZoom' : 'eidolon.cameraZoom');
+            const zoom = Number(saved);
+            if (saved !== null && Number.isFinite(zoom)) {
+                this.currentZoom = Math.max(CONSTANTS.CAMERA.MIN_ZOOM, Math.min(CONSTANTS.CAMERA.MAX_ZOOM, zoom));
+            }
+        } catch { /* Camera remains usable when browser storage is unavailable. */ }
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
         this.updateCameraProjection();
         
@@ -877,6 +884,9 @@ export class RenderSystem {
     setZoom(zoomLevel) {
         if (!Number.isFinite(zoomLevel)) return;
         this.currentZoom = Math.max(CONSTANTS.CAMERA.MIN_ZOOM, Math.min(CONSTANTS.CAMERA.MAX_ZOOM, zoomLevel));
+        try {
+            localStorage.setItem(this.isMobile ? 'eidolon.phoneCameraZoom' : 'eidolon.cameraZoom', String(this.currentZoom));
+        } catch { /* Keep the session preference even if persistence is blocked. */ }
         // Zoom changes the projection, not the drawing-buffer dimensions.
         this.updateCameraProjection();
     }

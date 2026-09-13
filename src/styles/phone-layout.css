@@ -1,6 +1,7 @@
 /* Phone HUD owns distinct status, navigation and thumb-control regions.
    Kept after legacy responsive overrides while the full phone redesign proceeds. */
 .chat-mobile-toggle { display: none; }
+:root { --phone-control-scale: 1; }
 .phone-menu-action { display: none; }
 .mobile-mode .phone-menu-action { display: block; }
 
@@ -91,20 +92,20 @@
 .mobile-mode #joystick-zone {
     left: max(18px, env(safe-area-inset-left, 0px)) !important;
     bottom: calc(var(--phone-bottom) + 72px) !important;
-    width: 112px !important;
-    height: 112px !important;
+    width: calc(112px * var(--phone-control-scale)) !important;
+    height: calc(112px * var(--phone-control-scale)) !important;
     transform: none !important;
 }
 .mobile-mode #mobile-actions {
     right: max(12px, env(safe-area-inset-right, 0px)) !important;
-    bottom: calc(var(--phone-bottom) + 196px) !important;
-    width: 196px !important;
-    height: 64px !important;
+    bottom: calc(var(--phone-bottom) + 60px + 136px * var(--phone-control-scale)) !important;
+    width: calc(196px * var(--phone-control-scale)) !important;
+    height: calc(64px * var(--phone-control-scale)) !important;
     transform: none !important;
 }
-.mobile-mode #btn-mobile-attack { width: 64px !important; height: 64px !important; right: 0; bottom: 0; font-size: 13px !important; background: linear-gradient(#542a25, #251719); border-color: #c58b70; }
-.mobile-mode #btn-mobile-ability { width: 56px !important; height: 56px !important; right: 76px !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2c3b50, #171e2d); border-color: #8fa9c2; }
-.mobile-mode #btn-mobile-interact { width: 48px !important; height: 48px !important; right: 144px !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2a4339, #14251f); border-color: #8bb5a0; }
+.mobile-mode #btn-mobile-attack { width: calc(64px * var(--phone-control-scale)) !important; height: calc(64px * var(--phone-control-scale)) !important; right: 0; bottom: 0; font-size: 13px !important; background: linear-gradient(#542a25, #251719); border-color: #c58b70; }
+.mobile-mode #btn-mobile-ability { width: calc(56px * var(--phone-control-scale)) !important; height: calc(56px * var(--phone-control-scale)) !important; right: calc(76px * var(--phone-control-scale)) !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2c3b50, #171e2d); border-color: #8fa9c2; }
+.mobile-mode #btn-mobile-interact { width: calc(48px * var(--phone-control-scale)) !important; height: calc(48px * var(--phone-control-scale)) !important; right: calc(144px * var(--phone-control-scale)) !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2a4339, #14251f); border-color: #8bb5a0; }
 .mobile-mode #mobile-actions .mobile-btn:active { filter: brightness(1.35); }
 .mobile-mode .mobile-btn:focus-visible, .mobile-mode .chat-mobile-toggle:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
 .mobile-mode #hotbar-container {
@@ -112,11 +113,11 @@
     right: max(12px, env(safe-area-inset-right, 0px));
     bottom: calc(var(--phone-bottom) + 60px);
     transform: none;
-    width: 130px;
+    width: calc(130px * var(--phone-control-scale));
     flex-wrap: wrap;
-    gap: 10px;
+    gap: calc(10px * var(--phone-control-scale));
 }
-.mobile-mode .hotbar-slot { width: 60px; height: 60px; box-sizing: border-box; }
+.mobile-mode .hotbar-slot { width: calc(60px * var(--phone-control-scale)); height: calc(60px * var(--phone-control-scale)); box-sizing: border-box; }
 .mobile-mode .hotbar-key { font-size: 12px; }
 .mobile-mode #xp-bar-container { left: 12px; bottom: calc(var(--phone-bottom) + 50px); width: calc(100vw - 24px); height: 4px; border-top-width: 1px; }
 .mobile-mode .close-btn { min-width: 44px; width: 44px; height: 44px; }
@@ -130,16 +131,38 @@
     .mobile-mode #minimap-canvas { width: 88px !important; height: 88px !important; }
     .mobile-mode #combat-intent-panel, .mobile-mode #dungeon-entrance-hint { top: 66px !important; right: 120px !important; width: 230px !important; }
     .mobile-mode #dungeon-entrance-hint { top: 150px !important; }
-    .mobile-mode #joystick-zone { width: 104px !important; height: 104px !important; bottom: calc(var(--phone-bottom) + 60px) !important; }
+    .mobile-mode #joystick-zone { width: calc(104px * var(--phone-control-scale)) !important; height: calc(104px * var(--phone-control-scale)) !important; bottom: calc(var(--phone-bottom) + 60px) !important; }
     /* A dungeon creates a party even for a solo player. Keep its populated
        roster between the thumb regions rather than over the movement stick. */
     .mobile-mode #party-panel {
-        left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px);
-        width: min(220px, calc(100vw - max(18px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px)) - 360px));
+        left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px * var(--phone-control-scale));
+        width: min(220px, calc(100vw - max(18px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px)) - 360px * var(--phone-control-scale)));
     }
-    .mobile-mode #hotbar-container { width: 232px; gap: 8px; }
-    .mobile-mode .hotbar-slot { width: 52px; height: 52px; }
-    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 126px) !important; }
+    .mobile-mode #hotbar-container { width: calc(232px * var(--phone-control-scale)); gap: calc(8px * var(--phone-control-scale)); }
+    .mobile-mode .hotbar-slot { width: calc(52px * var(--phone-control-scale)); height: calc(52px * var(--phone-control-scale)); }
+    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 60px + 66px * var(--phone-control-scale)) !important; }
+}
+
+/* Mirror positions, never the DOM or glyphs: existing touch identities and
+   hotbar order stay intact, and safe-area offsets follow the new screen edge. */
+:root[data-phone-control-hand="left"] .mobile-mode #joystick-zone,
+:root.mobile-mode[data-phone-control-hand="left"] #joystick-zone {
+    left: auto !important; right: max(18px, env(safe-area-inset-right, 0px)) !important;
+}
+:root[data-phone-control-hand="left"] .mobile-mode :is(#mobile-actions, #hotbar-container),
+:root.mobile-mode[data-phone-control-hand="left"] :is(#mobile-actions, #hotbar-container) {
+    right: auto !important; left: max(12px, env(safe-area-inset-left, 0px)) !important;
+}
+:root[data-phone-control-hand="left"] .mobile-mode #mobile-actions .mobile-btn,
+:root.mobile-mode[data-phone-control-hand="left"] #mobile-actions .mobile-btn { right: auto !important; }
+:root[data-phone-control-hand="left"] #btn-mobile-attack { left: 0; }
+:root[data-phone-control-hand="left"] #btn-mobile-ability { left: calc(76px * var(--phone-control-scale)); }
+:root[data-phone-control-hand="left"] #btn-mobile-interact { left: calc(144px * var(--phone-control-scale)); }
+@media (orientation: landscape) and (max-height: 600px) {
+    :root[data-phone-control-hand="left"] .mobile-mode #party-panel,
+    :root.mobile-mode[data-phone-control-hand="left"] #party-panel {
+        left: auto; right: calc(max(18px, env(safe-area-inset-right, 0px)) + 116px * var(--phone-control-scale));
+    }
 }
 
 /* One navigation launcher leaves status and the world readable. The existing

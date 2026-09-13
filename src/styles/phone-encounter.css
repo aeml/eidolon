@@ -33,7 +33,7 @@
 .phone-party-launcher:focus-visible, .phone-party-panel :focus-visible { outline: 2px solid var(--color-gold); outline-offset: -3px; }
 .mobile-mode {
     --phone-encounter-top: calc(var(--phone-top) + 204px);
-    --phone-encounter-bottom: calc(var(--phone-bottom) + 272px);
+    --phone-encounter-bottom: calc(var(--phone-bottom) + 60px + 212px * var(--phone-control-scale));
     --phone-encounter-left: max(12px, env(safe-area-inset-left, 0px));
     --phone-encounter-right: max(12px, env(safe-area-inset-right, 0px));
 }
@@ -60,12 +60,12 @@
     .mobile-mode {
         --phone-encounter-top: calc(var(--phone-top) + 60px);
         --phone-encounter-bottom: calc(var(--phone-bottom) + 60px);
-        --phone-encounter-left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px);
-        --phone-encounter-right: calc(max(12px, env(safe-area-inset-right, 0px)) + 208px);
+        --phone-encounter-left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px * var(--phone-control-scale));
+        --phone-encounter-right: calc(max(12px, env(safe-area-inset-right, 0px)) + 208px * var(--phone-control-scale));
     }
     /* Four skills use the right thumb column, not a row across the world. */
-    .mobile-mode #hotbar-container { width: 112px; gap: 8px; }
-    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 180px) !important; }
+    .mobile-mode #hotbar-container { width: calc(112px * var(--phone-control-scale)); gap: calc(8px * var(--phone-control-scale)); }
+    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 60px + 120px * var(--phone-control-scale)) !important; }
     /* The full map stays in Menu. Keep status reachable without laying a tiny
        decorative radar over the upper action buttons on a 320px-high phone. */
     .mobile-mode #minimap-canvas { display: none !important; }
@@ -74,4 +74,16 @@
         left: max(12px, env(safe-area-inset-left, 0px)) !important;
         right: auto !important;
     }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+    :root[data-phone-control-hand="left"] .mobile-mode,
+    :root.mobile-mode[data-phone-control-hand="left"] {
+        --phone-encounter-left: calc(max(12px, env(safe-area-inset-left, 0px)) + 208px * var(--phone-control-scale));
+        --phone-encounter-right: calc(max(18px, env(safe-area-inset-right, 0px)) + 116px * var(--phone-control-scale));
+    }
+}
+/* Preserve minimum encounter height on especially short landscape displays;
+   the saved larger preference resumes when there is space for it. */
+@media (orientation: landscape) and (max-height: 360px) {
+    .mobile-mode { --phone-control-scale: 1; }
 }

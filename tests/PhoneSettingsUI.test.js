@@ -4,6 +4,8 @@ import { PhoneSettingsUI } from '../src/ui/PhoneSettingsUI.js';
 describe('phone settings routes', () => {
     let root, body, input, ui;
     beforeEach(() => {
+        localStorage.clear();
+        delete window.game;
         document.body.innerHTML = `<div id="settings-screen"><div class="window-header">Settings</div><div class="support-window__body--settings">
             <div class="support-field"><label for="graphics-quality">Quality</label><select id="graphics-quality"></select></div>
             <div class="support-field"><label for="ui-scale">UI Scale</label><input id="ui-scale"><div class="support-field__hint"></div></div>
@@ -34,5 +36,28 @@ describe('phone settings routes', () => {
         expect(root.querySelector('label[for="ui-scale"]').textContent).toBe('Menu text size');
         expect(root.textContent).toContain('without changing camera framing');
         expect(ui.current).toBe('screen');
+    });
+    test('touch handedness and sizing apply immediately and restore independently of menu text', () => {
+        window.game = { inputManager: { clearInputState: jest.fn() } };
+        localStorage.setItem('eidolon.phoneMenuTextScale', '115');
+        const hand = root.querySelector('#phone-control-hand');
+        const size = root.querySelector('#phone-control-size');
+        hand.value = 'left'; hand.dispatchEvent(new Event('change'));
+        size.value = '120'; size.dispatchEvent(new Event('input'));
+        expect(document.documentElement.dataset.phoneControlHand).toBe('left');
+        expect(document.documentElement.style.getPropertyValue('--phone-control-scale')).toBe('1.2');
+        expect(localStorage.getItem('eidolon.phoneMenuTextScale')).toBe('115');
+        expect(window.game.inputManager.clearInputState).toHaveBeenCalledTimes(2);
+        new PhoneSettingsUI(root);
+        expect(root.querySelector('#phone-control-hand').value).toBe('left');
+        expect(root.querySelector('#phone-control-size').value).toBe('120');
+        expect(root.querySelectorAll('#phone-control-size')).toHaveLength(1);
+    });
+    test('invalid saved touch preferences fall back to safe defaults', () => {
+        localStorage.setItem('eidolon.phoneControlHand', 'invalid');
+        localStorage.setItem('eidolon.phoneControlSize', 'bad');
+        new PhoneSettingsUI(root);
+        expect(document.documentElement.dataset.phoneControlHand).toBe('right');
+        expect(root.querySelector('#phone-control-size').value).toBe('100');
     });
 });

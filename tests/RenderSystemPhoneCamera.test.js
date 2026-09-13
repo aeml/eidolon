@@ -22,6 +22,7 @@ function cameraOnly(isMobile) {
 }
 
 describe('phone camera composition', () => {
+    beforeEach(() => localStorage.clear());
     afterEach(() => { viewport(1024, 768); document.body.innerHTML = ''; });
 
     test('observes layout changes and releases both layout and viewport listeners on disposal', () => {
@@ -90,6 +91,19 @@ describe('phone camera composition', () => {
         render.onWindowResize();
         expect(390 / (render.camera.top - render.camera.bottom)).toBeCloseTo(pixelsPerUnit);
         expect(render.currentZoom).toBe(20);
+    });
+
+    test('phone zoom restores separately from desktop and menu preferences', () => {
+        viewport(390, 844);
+        const render = cameraOnly(true);
+        localStorage.setItem('eidolon.cameraZoom', '18');
+        localStorage.setItem('eidolon.phoneMenuTextScale', '115');
+        render.setZoom(20);
+        expect(localStorage.getItem('eidolon.phoneCameraZoom')).toBe('20');
+        expect(localStorage.getItem('eidolon.cameraZoom')).toBe('18');
+        expect(localStorage.getItem('eidolon.phoneMenuTextScale')).toBe('115');
+        const restored = new RenderSystem(true);
+        try { expect(restored.currentZoom).toBe(20); } finally { restored.dispose(); }
     });
 
     test('centers the hero in the shared encounter region, with correct ground raycasts', () => {
