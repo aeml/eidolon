@@ -13,7 +13,7 @@ COPY . .
 # Release identity changes on every deployment. Keep it out of dependency-layer
 # cache keys, while still relinking the executable with the exact release values.
 ARG BUILD_COMMIT=development
-ARG BUILD_VERSION="Alpha 1.4.0"
+ARG BUILD_VERSION="Alpha 1.5.0"
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
     -ldflags="-s -w -X 'main.buildCommit=${BUILD_COMMIT}' -X 'main.buildVersion=${BUILD_VERSION}'" \
