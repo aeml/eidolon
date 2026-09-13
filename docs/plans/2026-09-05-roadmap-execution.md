@@ -17,7 +17,32 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 1.9 live / intermittent recall follow-up
+## Current checkpoint — September 13, awaiting VIP currency direction
+
+This goal turn = PROGRESS. One focused disposable Water route PASS withoutretry:
+33.6s test/38.4s Playwright, exact entry/eastward movement/reconnect/town recall/
+re-entry/final recall. Standard isolated runner now has `water-recall` route;
+local releaseWT f14507b0 includes it and prior152026d8 diagnostic assertions.
+No production gameplay changed; prior live flake remains unresolved, not “fixed”.
+Retain for final integration; do not repeat unchanged checks fishing for a cause.
+Artifact credential scan PASS; all owned waterrecall0913a containers/data/image
+removed by existing cleanup; inspection confirms no matching containers remain.
+
+Active1.10 WT clean3ea85481, both diagnostic commits merged, story/cadence local;
+not pushed. Frozen1.9 WT local f14507b0, not pushed. Publicmaster/live remain
+e86e29a0 Alpha1.9.0, exactCI34749377284 terminalSUCCESS. No live processes/jobs
+remain to monitor from this work. Root remains LEDGER ONLY; NEVER PUSH ROOT.
+
+Goal BLOCKED, NOT COMPLETE: separateVIP currency name/acquisition policy remains
+unanswered across more than three consecutive goal turns. Independent story,
+cadence,1.9deployment and targeted recall follow-up are now finished. Further
+feature work requires this user decision; do not invent it or substituteGold/
+Resonance. FullVIP and ONE consolidated final integration/recovery/performance/
+campaign/device pass, any necessary fixes, full1.10notes/version/deploy/live
+verification remain required. Resume there when the user supplies direction.
+No broad test/soak or speculative architecture started to fill this wait.
+
+## Previous checkpoint — September 13, 1.9 live / intermittent recall follow-up
 
 This turn = PROGRESS plus verified wait. Exact CI34749377284 TERMINAL SUCCESS,
 including predeploy, both deployments and live town/Well Rested checks. Public
