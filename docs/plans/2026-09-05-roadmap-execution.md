@@ -17,7 +17,55 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 05:12 UTC
+## Current checkpoint — September 13, 05:28 UTC
+
+Progress:1.8 now has two more committed feature batches in
+`/tmp/eidolon-1-8-social-20260913`; clean HEAD70f04c85. No1.8 push or version
+packaging yet; runtime remains1.7. Prior turn only acknowledged delivery policy
+(no implementation); this turn made concrete feature progress.
+
+de3e2783: saved guild calendar using existing Guild.Events, guildMu, permissions,
+CAS guild version and bounded audit. Leader/officer create/edit/cancel; members
+own Going/Tentative role RSVP/withdraw. Atomic capacity, stale schedule-consent
+rejection, edits reset promises to tentative.20 events,2–100 capacity,30–360min,
+90-day horizon; seven-day completed/cancelled history, departed sign-ups removed.
+Local-time UI/UTC storage, draft survival, save feedback, role/online rosters,
+explicit ordinary party invitations and current-party ready check. No auto-party
+or activity-entry bypass. New schema11 no-backfill marker protects saved calendar
+from old schema10 full-guild writers. DO NOT rollback to schema10 after1.8 migration.
+
+70f04c85: contextual Player safety in online/group/applicant/guild rows, confirmed
+block/ignore through existing persisted commands; unblock/unignore controls and
+clear limits. Contextual Player Report opens existing report form, retains draft,
+requires explicit submission, uses existing durable moderation queue. Not trusted
+evidence or automatic sanctions. No parallel relationship/moderation service.
+
+Focused calendar DB+isolatedMongo persistence/concurrent capacity PASS0.057s;
+calendar/guild/binding UI12PASS1.256s, final calendar3PASS1.267s. Safety/social/group/
+guild/binding55PASS2.518s, final binding5PASS0.882s; report validation0.010s. Build,
+changedJS lint, prepare-client, diffPASS. Initial calendar newline validation caught
+trim masking control chars, fixed before trim. Report-type negative fixture now
+uses Unsupported Report with dedicated Player Report acceptance. No broad campaign,
+device matrix or soak added. Owned isolated Mongo container
+eidolon-isolated-qa-mongo-arena171309 is STOPPED again; ephemeral port32916 was used
+only for this turn's unique-record checks (records cleaned by tests). It now has
+schema11; rediscover port after restart. No production DB touched by local QA.
+
+Releasequeue unchanged:1.6cf2a028d CI34739522914 still confirmedIN_PROGRESS at05:27,
+client/server andbrowser2/3+3/3PASS; browser1/3 running anonymous real-browser smoke.
+Poll SAMErun; no restart/cancellation on slow observation. After terminal success,
+verify exactcf2a028d frontend/server+DBready, then push frozen1.7WT5fd16d75. 1.7
+stillNOTPUSHED. Last verified public1.6 remains34c1c0d8, not cf2 yet.
+
+NEXT: physical casino seating/tablepresence/session/reconnect/camera-input1.8.
+Read entire casino roadmap and economy boundary before implementation; both were
+inspected this turn. Paths docs/plans/2026-09-09-town-casino-roadmap.md and
+2026-09-13-economy-casino-boundary.md. Full walkable two-floor venue/games/layout1.9;
+VIP currency remains user decision before integration, no Gold/Resonancefallback
+or inaccessibleplaceholder-as-complete. Detailed1.8 plan updated. Goalactive,
+fullscope unchanged. NEVER PUSH ROOT (ledger-onlymaster).
+
+## Previous checkpoint — September 13, 05:12 UTC
 
 PROGRESS:1.8 recruitmentboard committed31417aa4, then mergedupdated1.7;
 cleanHEAD4e34f200 in `/tmp/eidolon-1-8-social-20260913`. Runtime remains1.7.
