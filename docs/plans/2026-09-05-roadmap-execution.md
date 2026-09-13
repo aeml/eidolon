@@ -17,7 +17,44 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 02:42 UTC
+## Current checkpoint — September 13, 02:59 UTC
+
+PROGRESS: Alpha1.5.0 packaged and PUSHED9c61d0d56fdf12612f22ba54c7348f489f4c5103.
+Frozen1.5 WT `/tmp/eidolon-1-5-loot-loadouts-20260913` clean. Seven player-facing
+patch notes; login/package/lock/release/server/deploy versions synchronized.244
+version/history checks PASS, changed lint/diff PASS. CI34734291355 confirmed
+IN_PROGRESS for this exact commit. Poll the same run; no1.5live claim yet.
+
+Final1.5 feature commit641aad1e: Forge decision tables with exact stat deltas and
+material balances, socket-inclusive comparison with set/proc loss warnings, and
+desktop paired-slot comparison aligned with actual equip target. Existing live
+Forge refresh checks PASS; potency explanation restored after one test failure,
+targeted Forge/decision rerun PASS. Mobile inventory PASS. Actual phone comparison
+and Forge table inspected `/tmp/eidolon-1-5-{comparison,forge-decision}-phone.png`.
+The preview placeholder icon URL was broken; production icon resolver unchanged.
+
+Economy: ordinary Gold10..(2×level+9), elite2×ordinary, boss original range retained.
+New100-kill hunt Gold doubles, existing quest quotes/balances preserved. Focused
+Gold/quote/weekly checks PASS. Existing5m Resonance curve/weekly1m award reviewed
+and retained. Concrete arithmetic and later casino reservation/settlement/currency
+isolation contract in docs/plans/2026-09-13-economy-casino-boundary.md. No unused
+wallet framework or defined VIP currency. No broad suite/soak added.
+
+Prepared1.6 WT `/tmp/eidolon-1-6-encounters-20260913`, branch
+work/1-6-encounters-20260913, based9c61d0d5. Shared node_modules symlink and
+prepare:client PASS. Only initial stage plan committed; no runtime1.6 changes yet.
+Read docs/plans/2026-09-13-release1-6-encounters.md. Next: read active crystal_repair,
+elemental_raids, raid_phases and crystal_sanctum_snapshot server implementations,
+then improve encounter identity/four repair events, preparation/recovery/lockout UI.
+Full real-group campaign validation remains final consolidated stabilization under
+the user's latest lean-testing direction, not waived or claimed from small checks.
+
+All local sessions terminal.1.4 remains established exact-live and terminalgreen.
+Full1.1–1.10 goal active. Previous/current goal turns made implementation progress.
+Root ledger MUST NOT be pushed. Use stored versionLineTemplate (base1.3) for later
+grouped version changes; retain historical notes and dependency versions.
+
+### Previous detail — September 13, 02:42 UTC
 
 PROGRESS: Earned wardrobe collection/selection committed locally as73ce705b in
 `/tmp/eidolon-1-5-loot-loadouts-20260913`, atop4edfe72f saved builds. Explicitly
