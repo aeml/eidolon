@@ -210,6 +210,10 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 
 		// Check each hazard
 		for hazardID, hazard := range w.Hazards {
+			if time.Now().Before(hazard.SuppressedUntil) {
+				delete(w.PlayerHazardTicks[playerID], hazardID)
+				continue
+			}
 			// Calculate distance from player to hazard center
 			dx := px - hazard.X
 			dz := pz - hazard.Z

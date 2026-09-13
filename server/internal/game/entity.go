@@ -74,6 +74,7 @@ type Entity struct {
 	InstanceID           string             `json:"instanceId"`
 	PvPReturn            *PvPOrigin         `json:"-"` // Immutable pre-match save projection.
 	CasinoSeat           *CasinoSeatSession `json:"-"` // Session-local; saves project its safe exit.
+	WorldEventID         string             `json:"-"` // Temporary event enemies never become normal respawns.
 	Name                 string             `json:"name"`
 	Type                 EntityType         `json:"type"`
 	SubType              string             `json:"subType"` // e.g., "Fighter", "Skeleton"

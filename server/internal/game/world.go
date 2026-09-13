@@ -122,6 +122,7 @@ type World struct {
 	Parties            map[string]*Party
 	partyInvitations   map[string]PartyInvitation // World.Mu; one outstanding invitation per target.
 	groupListings      map[string]*GroupListing   // World.Mu; online, expiring recruitment only.
+	publicEvent        *publicEventState          // World.Mu; bounded, transient overworld encounter.
 	Trading            *TradingSystem
 	Grid               *SpatialMap
 	InstanceLayouts    map[string]*DungeonInstance
@@ -242,13 +243,14 @@ const (
 
 // Hazard represents an environmental hazard zone that deals % max health damage
 type Hazard struct {
-	ID           string     `json:"id"`
-	HazardType   HazardType `json:"hazardType"`
-	X            float64    `json:"x"`
-	Z            float64    `json:"z"`
-	Radius       float64    `json:"radius"`
-	DamagePct    float64    `json:"damagePct"`    // % of max health per tick (0.05 = 5%)
-	TickInterval float64    `json:"tickInterval"` // Seconds between damage ticks
+	ID              string     `json:"id"`
+	HazardType      HazardType `json:"hazardType"`
+	X               float64    `json:"x"`
+	Z               float64    `json:"z"`
+	Radius          float64    `json:"radius"`
+	DamagePct       float64    `json:"damagePct"`    // % of max health per tick (0.05 = 5%)
+	TickInterval    float64    `json:"tickInterval"` // Seconds between damage ticks
+	SuppressedUntil time.Time  `json:"suppressedUntil,omitempty"`
 }
 
 // HazardDamageEvent is emitted when a player takes hazard damage
@@ -1244,6 +1246,10 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 }
 
 func (w *World) spawnOverworldEnemyAt(id, subType string, x, z float64, level int) {
+	w.AddEntity(newOverworldEnemy(id, subType, x, z, level))
+}
+
+func newOverworldEnemy(id, subType string, x, z float64, level int) *Entity {
 	profile := overworldEnemyCombatProfile(subType, level, false)
 
 	enemy := &Entity{
@@ -1269,7 +1275,7 @@ func (w *World) spawnOverworldEnemyAt(id, subType string, x, z float64, level in
 		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.0,
 	}
-	w.AddEntity(enemy)
+	return enemy
 }
 
 func (w *World) AddEntity(e *Entity) {

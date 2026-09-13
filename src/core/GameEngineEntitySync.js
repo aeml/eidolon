@@ -96,6 +96,7 @@ class GameEngineEntitySyncMethods {
         const snapshot = this.getEnvironmentalHazardSnapshot(pData);
         const existing = this.hazards.get(snapshot.id);
         if (this.environmentalHazardMatchesSnapshot(existing, snapshot)) {
+            existing.state = pData.state || 'IDLE';
             return false;
         }
         if (existing) {

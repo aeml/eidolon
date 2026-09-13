@@ -1,0 +1,18 @@
+.public-event {
+    position: fixed; top: max(100px, calc(env(safe-area-inset-top) + 84px));
+    left: 50%; transform: translateX(-50%); width: min(370px, 85vw);
+    box-sizing: border-box; z-index: 35; color: #eef3ed;
+    background: linear-gradient(145deg, #14272bf2, #151c27f2);
+    border: 1px solid #8aaf9d; border-radius: 10px; padding: 10px 12px;
+    box-shadow: 0 4px 18px #0008; font: 13px/1.45 sans-serif;
+    max-height: 40dvh; overflow: auto;
+}
+.public-event[hidden] { display: none; }
+.public-event summary { cursor: pointer; min-height: 28px; align-content: center; font-weight: 600; }
+.public-event p { margin: 8px 0; }
+.public-event progress { width: 100%; accent-color: #a5db83; }
+.public-event-lore { color: #bed0ca; font-style: italic; }
+@media (max-width: 600px) {
+    .public-event { top: max(116px, calc(env(safe-area-inset-top) + 100px)); font-size: 12px; padding: 5px 10px; }
+    .public-event summary { min-height: 38px; }
+}

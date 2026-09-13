@@ -605,6 +605,11 @@ export class EnvironmentalHazard extends Entity {
     // UPDATE - Called every frame
     // ========================================================================
     update(dt) {
+        // Calmed roads retain a faint boundary, without threatening particles.
+        const calmed = this.state === 'CALMED';
+        for (const mesh of this.meshes) mesh.visible = !calmed || mesh === this.boundaryMesh;
+        if (this.boundaryMesh) this.boundaryMesh.scale.setScalar(calmed ? 0.25 : 1);
+        if (calmed) return;
         this.time += dt;
         this.elapsedTime += dt;
 

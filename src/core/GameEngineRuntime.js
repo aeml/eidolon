@@ -68,6 +68,7 @@ class GameEngineRuntimeMethods {
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
         this.casino?.dispose();
+        this.publicEvents?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -97,6 +98,7 @@ class GameEngineRuntimeMethods {
 
     update(dt) {
         this.casino?.beforeUpdate(dt);
+        this.publicEvents?.update(dt);
         this.frameCount++;
         this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
@@ -304,6 +306,8 @@ class GameEngineRuntimeMethods {
                         radius,
                         quality: this.renderSystem.graphicsQuality
                     });
+                    hazard.state = pData.state || 'IDLE';
+                    hazard.update(0);
                     hazard.addToScene(this.getInstanceEnvironmentGroup());
                     this.hazards.set(pData.id, hazard);
 

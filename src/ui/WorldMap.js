@@ -545,6 +545,17 @@ export class WorldMap {
             this._drawRect(ctx, w2s, bg.x, bg.z, bg.w, bg.d, bg.fill, bg.stroke || null, bg.lineWidth || 1);
         }
 
+        const event = this.gameEngine.publicEvents?.data;
+        if (event && event.phase !== 'expired' && !this.gameEngine.currentInstanceId) {
+            const point = w2s(event.site.x, event.site.z);
+            ctx.save();
+            ctx.strokeStyle = '#d5f5ad'; ctx.fillStyle = '#d5f5ad'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(point.x, point.y, 8, 0, Math.PI * 2); ctx.stroke();
+            ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(event.phase === 'complete' ? 'Road restored' : event.site.title, point.x, point.y - 13);
+            ctx.restore();
+        }
+
         // 4. Zone rectangles + labels (zoom-culled)
         for (const zone of ZONE_CONFIGS) {
             const visible = this._tierVisible(zone.tier);

@@ -364,6 +364,7 @@ import { DungeonNPC } from '../entities/DungeonNPC.js';
 import { CrystalKeeper } from '../entities/CrystalKeeper.js';
 import { Stash } from '../entities/Stash.js';
 import { CasinoController } from './CasinoController.js';
+import { PublicEventController } from './PublicEventController.js';
 import { Forge } from '../entities/Forge.js';
 import { RootboundWarden } from '../entities/RootboundWarden.js';
 import { BriarMatron } from '../entities/BriarMatron.js';
@@ -513,6 +514,8 @@ export class GameEngine {
         this.cameraLocked = true;
         this.casino = new CasinoController(this);
         this.uiManager.casino = this.casino;
+        this.publicEvents = new PublicEventController(this);
+        this.uiManager.publicEvents = this.publicEvents;
         this.pendingInteraction = null;
 
         this.lastTime = 0;

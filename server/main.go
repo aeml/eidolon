@@ -913,6 +913,8 @@ func main() {
 
 	// Time Sync Loop (Every 1 second)
 	loops.Every(time.Second, broadcastTime)
+	world.UpdatePublicEvent(time.Now())
+	loops.Every(time.Second, broadcastPublicEvent)
 	loops.Every(time.Second, func() {
 		if err := tickBlackjack(time.Now()); err != nil {
 			log.Printf("Blackjack table recovery remains pending: %v", err)

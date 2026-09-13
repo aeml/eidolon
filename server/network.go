@@ -47,7 +47,7 @@ func runHub() {
 					}
 				}
 
-				if message.Type == MsgState || message.Type == "time" {
+				if message.Type == MsgState || message.Type == "time" || message.Type == "public_event" {
 					// Non-blocking send for state/time updates
 					// If channel is full, drop the message instead of disconnecting
 					client.sendState(message.Data)
@@ -72,6 +72,9 @@ func runHub() {
 func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	sendMovementContext(c)
 	sendCasinoState(c)
+	eventPayload, _ := json.Marshal(world.PublicEventSnapshot())
+	eventMessage, _ := json.Marshal(Message{Type: "public_event", Payload: eventPayload})
+	c.sendSafe(eventMessage)
 	// Cooldowns are server-owned and survive the session-resume window. Send a
 	// complete snapshot so reconnecting clients do not show abilities as ready
 	// only to have the server reject their first cast.

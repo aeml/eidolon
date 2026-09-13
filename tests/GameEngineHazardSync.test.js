@@ -51,6 +51,22 @@ function createHarness() {
 }
 
 describe('GameEngine authoritative environmental-hazard reconciliation', () => {
+    test('calm and recovery snapshots update the existing visual without recreating it', () => {
+        const engine = createHarness();
+        const payload = hazardPayload();
+        const hazard = new EnvironmentalHazard(payload.id, payload.subType, payload, { radius: payload.scale });
+        engine.hazards.set(payload.id, hazard);
+        expect(engine.syncEnvironmentalHazardSnapshot({ ...payload, state: 'CALMED' })).toBe(false);
+        hazard.update(.1);
+        expect(hazard.state).toBe('CALMED');
+        expect(hazard.meshes.filter(mesh => mesh !== hazard.boundaryMesh).every(mesh => !mesh.visible)).toBe(true);
+        expect(engine.syncEnvironmentalHazardSnapshot(payload)).toBe(false);
+        hazard.update(.1);
+        expect(hazard.state).toBe('IDLE'); expect(hazard.boundaryMesh.scale.x).toBe(1);
+        expect(engine.hazards.get(payload.id)).toBe(hazard);
+        hazard.dispose();
+    });
+
     test('repeated full snapshots retain exactly one matching visual instance', () => {
         const engine = createHarness();
         const payload = hazardPayload();

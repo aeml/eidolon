@@ -22,6 +22,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	if e.Type == TypeEnemy || e.Type == TypeNPC {
 		e.Mu.Lock()
 		if e.State == "DEAD" {
+			if e.WorldEventID != "" {
+				if time.Since(e.LastAttackTime) > 5*time.Second {
+					deferred.addRemoval(e.ID)
+				}
+				e.Mu.Unlock()
+				return
+			}
 			if e.SubType == "AvengingSeraph" {
 				deferred.addRemoval(e.ID)
 				e.Mu.Unlock()

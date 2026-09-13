@@ -10,6 +10,13 @@ import (
 	"eidolon-server/internal/game"
 )
 
+func broadcastPublicEvent() {
+	world.UpdatePublicEvent(time.Now())
+	payload, _ := json.Marshal(world.PublicEventSnapshot())
+	data, _ := json.Marshal(Message{Type: "public_event", Payload: payload})
+	broadcast <- BroadcastMessage{Type: "public_event", Data: data}
+}
+
 func broadcastTime() {
 	// For game timer, maybe just send seconds elapsed since server start or a specific game time
 	// Let's send current Unix timestamp
