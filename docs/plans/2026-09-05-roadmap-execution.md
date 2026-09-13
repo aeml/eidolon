@@ -17,7 +17,52 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 05:39 UTC
+## Current checkpoint — September 13, 05:58 UTC
+
+Progress:1.8 physical casino client batch COMMITTED41dbef56 in
+`/tmp/eidolon-1-8-social-20260913` (clean; runtime remains1.7). No1.8 push/package.
+src/art/ProceduralCasino.js replaces currenttownOathhall with walkablegroundfloor,
+5unitdoor/5wallsegments andcutawayupper/tallwalls; lowwallsremainnavigationedges.
+UpperstoreyEXTERIORonly, upstairs/stairs+stashlayout/fullartremain1.9. Model batches
+by material(opaque/cutawayseparate); furniturebatchedwithnonrenderingchairpickboxes.
+Table/machine/chaircoordinatesconsume serverCasinoTables,notduplicatedclientdata.
+
+CasinoController.js wiredinGameEngine/SocialPresenceController casino_update and
+fixedupdate/render/destroy. Actualchairclick(Mouse andmobileclientX verified at
+InputManager→GameEngine.handlePrimaryClick) approachescanonicalexit thenasksserver
+tos it; owner+remoteSEATEDactorsposeexistinghips/thighs/shins/arms. Sharedroster/
+readinesspanel, explicitLeave/Escape waitsserverack. Smoothcamera/zoomoverride,
+restorepriorcamera, clearcombat/jump/movement, hidecorrecthotbar/thumbcontrolsNOT
+chat. Near-town3srefresh; scenechange/teardownrestorepose/input/camera andremove
+ownedcolliders/listeners. Actualnewscenepositionneveroverwrittenwithtownexit.
+No games/wagers/settlement/VIPcurrencyimplemented by this batch.
+
+FocusedCasinoController3PASS andexistingWorldGenerator20PASS,1initialfailureold
+collidercount: replacedorientedOathhall with5boxes, total22boxes/0oriented not21/1.
+Correctedtowngeometry/shadowcasePASS0.888s. Existingtownrenderbudget<=48drawmeshes;
+newcasinoshell<=12/furniture<=6materialbatcheschecked. ChangedJSlint/prepareclient/
+diffPASS. FocusedSystemChromecasino-seating.spec.js PASS4.3s(6stotal) includes real
+chairraycast, controlledserver-responsefixture, twoactualclassmeshesseated,390px
+panel/44pxLeave andexitrestore. Screenshot manuallyinspected at
+`/tmp/eidolon-casino-seat-view-20260913.png` (Fighter/Wizardvisiblearoundtable).
+This DOESNOTproveactual2-clientserverresume, realphone, playedroundsorwagers.
+No broadcampaign/soak added. Detailed1.8planupdatedwithhonestremaininglimits.
+
+RELEASEQUEUE ADVANCED:1.6cf2a028d CI34739522914 TERMINALSUCCESS (ALLjobsinclfinal
+liveQA). Publicfrontend/backendrecheckedEXACTcf2a028d/Alpha1.6.0/databaseREADY.
+Frozen1.7HEAD5fd16d751cbdb50cac576bf02e86cec64111875b PUSHEDoriginmaster fromclean
+`/tmp/eidolon-1-7-arena-20260913`. NewCI34741198072 confirmedIN_PROGRESS; latest
+clientPASS/serverRUNNING. Poll SAMErun, thenverifyexact5fd16d75 public+DBready
+afterterminalsuccess. 1.7notyetverifiedlive. DO NOTpush1.8overrunning1.7release.
+
+NEXT1.8: verifyactualconnectedseat/resumepath(usingexistingtargetedlocalQAhelpers,
+notbroadmatrix), complete table membership/round-state integration withoutclaiming
+readyflagsareplayedgames. Thenpackageall1.8withcumulativepatchnotes/versionand
+publishafter1.7gate. Fullcasino games/economy/2walkablefloors1.9–1.10andVIPcurrency
+userdecisionremainrequired. Existingrenderfixtureisnotfullcasinoacceptance. Goal
+active; fullscopeunchanged; NEVER PUSH ROOT (ledger-onlymaster).
+
+## Previous checkpoint — September 13, 05:39 UTC
 
 Progress:1.8 authoritative casino seat foundation committedb3c19fe3 in
 `/tmp/eidolon-1-8-social-20260913` (clean; runtime still1.7). This is SERVERONLY:
