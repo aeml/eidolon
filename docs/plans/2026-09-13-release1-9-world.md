@@ -1,7 +1,10 @@
 # Alpha 1.9.0 — a world that stays interesting
 
 Candidate branched from packaged1.8 release595c07ff and includes its corrections.
-Packaged asAlpha1.9.0; its own CI/deployment/live verification remain required.
+Deployed asAlpha1.9.0 at e86e29a0f808e7547678c77485b8441c06ee067c. Exact
+CI34749377284 terminalSUCCESS; public client/server identities match and database
+is ready. Live Water recall passed only on retry; preserve this unresolved caveat
+and the focused diagnostic follow-up in the1.10 handoff, not a claim of a fix.
 Parent scope: [full roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md) and
 [two-floor casino](2026-09-09-town-casino-roadmap.md). Both remain required.
 

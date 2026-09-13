@@ -30,8 +30,6 @@ bump alone does not complete the goal; every earlier promised feature remains.
    release behavior. Audit requirements against concrete evidence before marking
    the overall goal complete. Missing VIP authority is not permission to omit it.
 
-## Reusable 1.9 evidence and remaining integration
-
 ## September 13 — story and content cadence implemented locally
 
 `src/data/chronicleAftermath.js` adds **A Letter Without a Throne**: an optional
@@ -60,11 +58,24 @@ acquisition policy. It remains unresolved; do not invent or omit this scope.
 
 ## 1.9 release evidence
 
-1.9 release/worktree is frozen at e86e29a0f808e7547678c77485b8441c06ee067c in
-/tmp/eidolon-1-9-world-20260913, pushed master. ExactCI34749377284 currently has
-server/client and browser shard3 passed; shards1/2 still running. Monitor the
-SAME run.1.8 remains last verified live until1.9 confirms.
-Release corrections belong in the frozen release WT, then merge forward here.
+1.9 is deployed at e86e29a0f808e7547678c77485b8441c06ee067c. ExactCI34749377284
+is TERMINAL SUCCESS, including both deployments and live town/Well Rested checks.
+Public release.json and healthz independently returned this exact Alpha1.9.0
+commit with database ready. Do not poll/restart the completed run.
+
+Live caveat: Water's final recall after re-entry (`regional-dungeon-gameplay`,
+line61) failed its 30s town-recovery predicate once, then passed CI's configured
+retry. Seven other live tests passed; full workflow success does not diagnose
+that intermittent failure. Its original Boolean assertion concealed whether
+position, layout, collision or scenery failed. Local diagnostic-only152026d8
+in `/tmp/eidolon-1-9-world-20260913` now reports the same required conditions
+separately, with unchanged timeout/acceptance. Syntax/diff checks pass. Merged
+forward here; no new deployment or duplicate suite launched for a test-only edit.
+
+Next safe diagnostic work: use the focused Water recall/re-entry route with the
+improved assertion to identify the failing condition; no broad campaign rerun or
+production balance changes. Avoid sharing live QA account sessions concurrently.
+Fix only a demonstrated cause, retaining the original return-to-town requirement.
 
 See 1.9 release, elemental-slot and Fourfold-poker handoffs. Implemented: rotating
 four-realm defended events and hazard calming; repositioned stash/full walkable
