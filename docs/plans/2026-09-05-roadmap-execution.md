@@ -17,7 +17,38 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, next feature authority boundary
+## Current checkpoint — September 13, EP decision and roomy casino controls
+
+User supplied 1,000,000 Gold → 1 EP and 100 EP per VIP month, no reverse
+conversion and cosmetic-only spending. The former quantity blocker is resolved.
+Policy recorded in active WT commit **7aa1226b**; no EP wallet/exchange/allowance/
+vendor implementation claimed. Payment integration excluded, upstairs locked.
+Newest cosmetic-only wording takes precedence over earlier EP wagering scope;
+this interpretation was explicitly stated to the user. No invented payouts.
+
+Latest user requested Stake.us-style seated UI and changing stakes between rounds.
+Implemented **74cf188a** in `/tmp/eidolon-1-10-resonant-age-20260913` (clean):
+larger desktop panel/sticky exit, responsive reels/sidebar, Manual/Auto slots,
+numeric 20–500 Gold stake/step20, half/double shortcuts including card buy-ins.
+Bonus/free-spin stakes pinned; submitted wagers remain locked. Server advertises
+and validates limits. Only slot receipt return cap rises to100,000; card limits
+unchanged. Rollback must retain expanded saved-stake/receipt decoding after bets
+above40 are enabled. See candidate `2026-09-13-casino-roomy-controls.md` for
+unreleased patch notes, reference links and exact evidence limitations.
+
+Focused client33PASS4.557s; game/database/server focused testsPASS; ESLint/diffPASS.
+Browser seating/poker/slots3PASS26.5s. Screenshot review found Manual showing Auto
+controls due CSS specificity; fixed and added computed-visibility assertions,
+affected slot browser rerunPASS12.5s. Desktop and phone fixtures, not live QA.
+No broad matrix, soak, Mongo or release started; no owned QA process remains.
+
+These two commits are LOCAL ONLY, not pushed/deployed. Runtime still1.9.1;
+last verified livec8741288/CI34771598671SUCCESS is unchanged, not repolled.
+Full1.10 feature/integration scope remains unfinished. Historical goal tool
+BLOCKED status was for now-resolved quantities; do not call complete or recreate
+the objective. ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, next feature authority boundary
 
 Previous goal turn=PROGRESS (verified1.9.1 deployment). Revalidated clean active
 WT bff002b0 and current roadmap/source, without polling completed CI. Reviewed
