@@ -175,6 +175,10 @@ func (c *Client) handleMessage(msg Message) {
 		return
 	}
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
+		if err := recoverAccountBlackjackLocked(c.username); err != nil {
+			c.sendInboundRejection(msg, "Your table funds are awaiting recovery. Please try again shortly.")
+			return
+		}
 		if err := recoverAccountAuctionBidsLocked(c.username); err != nil {
 			c.sendInboundRejection(msg, "Your pending auction bid is awaiting recovery. Please try again shortly.")
 			return

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createCasinoFurniture, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
+import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 
 export class CasinoController {
     constructor(engine) {
@@ -16,7 +17,8 @@ export class CasinoController {
         this.ready = this.button('Ready at table', () => this.send({ action: 'ready', ready: !this.data.yourSeat?.ready,
             revision: this.data.preparation?.[this.data.yourSeat?.tableId]?.revision }));
         this.leave = this.button('Leave table', () => this.requestLeave());
-        this.panel.append(this.heading, this.status, this.roster, this.ready, this.leave);
+        this.blackjack = new BlackjackTableUI(payload => this.send(payload));
+        this.panel.append(this.heading, this.status, this.roster, this.ready, this.blackjack.root, this.leave);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
         this.keyHandler = event => {
@@ -54,6 +56,10 @@ export class CasinoController {
             preparation: payload.preparation || {},
             yourSeat: this.engine.currentInstanceId ? null : payload.yourSeat || null };
         const seat = this.data.yourSeat;
+        const isBlackjack = seat?.tableId === 'public-blackjack' && Boolean(payload.blackjack);
+        this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id);
+        this.panel.classList.toggle('has-blackjack', isBlackjack);
+        this.ready.hidden = isBlackjack;
         if (seat) this.lastSeat = seat;
         if (seat && !this.active) this.enterView();
         else if (!seat && this.active) this.exitView();
@@ -70,6 +76,7 @@ export class CasinoController {
         this.ready.disabled = !preparation?.revision;
         this.ready.textContent = seat.ready ? 'Not ready' : 'Ready at table';
         this.ready.setAttribute('aria-pressed', String(Boolean(seat.ready)));
+        if (isBlackjack) this.status.textContent = 'Public floor · Gold blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.';
         this.roster.replaceChildren();
         for (const occupant of occupants.sort((a, b) => a.seat - b.seat)) {
             const row = document.createElement('li');

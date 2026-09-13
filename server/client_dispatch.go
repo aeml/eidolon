@@ -113,6 +113,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
+		if err := recoverAccountBlackjackLocked(c.username); err != nil {
+			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
+			return
+		}
 		// A full login can follow a transport loss before its DB save completes.
 		// Keep the authoritative live entity, including resources/cooldowns/death,
 		// rather than replacing it with an older persisted snapshot.
@@ -787,6 +791,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Clear the disconnected flag; this also returns the live entity pointer.
+		if err := recoverAccountBlackjackLocked(username); err != nil {
+			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
+			return
+		}
 		if err := recoverAccountAuctionBidsLocked(username); err != nil {
 			c.sendError("Your pending auction bid is awaiting recovery. Please log in again shortly.")
 			return

@@ -432,6 +432,9 @@ func main() {
 	if err := recoverPendingAuctionBids(); err != nil {
 		log.Fatalf("Cannot recover durable auction bids; refusing stale balances: %v", err)
 	}
+	if err := initializeBlackjack(); err != nil {
+		log.Fatalf("Cannot recover durable blackjack table; refusing stale balances: %v", err)
+	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
 		log.Printf("Startup auction refunds remain pending: %v", err)
@@ -910,6 +913,11 @@ func main() {
 
 	// Time Sync Loop (Every 1 second)
 	loops.Every(time.Second, broadcastTime)
+	loops.Every(time.Second, func() {
+		if err := tickBlackjack(time.Now()); err != nil {
+			log.Printf("Blackjack table recovery remains pending: %v", err)
+		}
+	})
 
 	// Hub
 	go runHub()

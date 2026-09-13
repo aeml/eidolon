@@ -5,5 +5,21 @@
 .casino-session ul { padding-left: 20px; max-height: 100px; overflow: auto; }
 .casino-session button { min-height: 44px; margin: 4px 8px 0 0; border-radius: 6px; border: 1px solid #b99a58; padding: 8px 14px; background: #28384b; color: #ffedbe; font: inherit; cursor: pointer; }
 .casino-session button[aria-pressed="true"] { background: #155453; }
+.casino-session button:disabled { opacity: .5; cursor: default; }
+.casino-session.has-blackjack { max-height: 85dvh; overflow-y: auto; }
+.blackjack-game[hidden], .blackjack-bet[hidden], .blackjack-confirm[hidden] { display: none; }
+.blackjack-game details { border-block: 1px solid #b99a5855; padding-block: 6px; }
+.blackjack-game summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.blackjack-bet { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.blackjack-bet input { width: 90px; min-height: 44px; box-sizing: border-box; color: #fff1cc; background: #172535; border: 1px solid #b99a58; border-radius: 6px; padding: 8px; font: inherit; }
+.blackjack-hands { max-height: 300px; overflow: auto; margin-block: 8px; }
+.blackjack-hand { border-radius: 6px; padding: 6px; margin-block: 6px; background: #123b32; }
+.blackjack-hand.current { outline: 2px solid #efca80; outline-offset: -2px; }
+.blackjack-hand p { font-size: 12px; margin: 0 0 6px; }
+.blackjack-card { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 46px; padding-inline: 3px; margin: 2px; border-radius: 4px; background: #f8f0db; color: #142131; font: 700 17px/1 system-ui, sans-serif; box-shadow: 0 2px 3px #0006; }
+.blackjack-card.red { color: #a51d35; }
+.blackjack-card.back { background: #293c63; color: #e9c881; border: 1px solid #d3b16d; }
+.blackjack-confirm { padding: 8px; margin-block: 8px; border: 1px solid #efca80; border-radius: 6px; background: #322919; }
 .casino-seated #hotbar-container, .casino-seated #joystick-zone, .casino-seated #mobile-actions { visibility: hidden; pointer-events: none; }
 @media (max-width: 600px) { .casino-session { bottom: max(8px, env(safe-area-inset-bottom)); right: 8px; width: calc(100vw - 16px); padding: 10px; max-height: 40dvh; overflow-y: auto; font-size: 13px; } .casino-session ul { max-height: 65px; } }
+@media (max-width: 600px) { .casino-session.has-blackjack { max-height: 65dvh; } .blackjack-hands { max-height: 23dvh; } }

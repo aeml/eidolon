@@ -330,3 +330,72 @@ func (r *BlackjackRound) View(playerID string) BlackjackView {
 	}
 	return v
 }
+
+// Validate persisted production shoes before resuming. A corrupt record must
+// stop the table, not become an indexing panic or a different set of payouts.
+func (r *BlackjackRound) Validate() error {
+	bad := errors.New("invalid persisted blackjack round")
+	if r == nil || r.ID == "" || r.Rules != BlackjackRulesVersion || r.Revision == 0 || len(r.Players) < 1 || len(r.Players) > 6 || len(r.Dealer) < 2 || len(r.Dealer) > 22 || len(r.Deck) > 312 {
+		return bad
+	}
+	counts := [52]int{}
+	count := func(cards []int) bool {
+		for _, c := range cards {
+			if c < 0 || c >= 52 {
+				return false
+			}
+			counts[c]++
+		}
+		return true
+	}
+	if !count(r.Deck) || !count(r.Dealer) {
+		return bad
+	}
+	ids, seats := map[string]bool{}, map[int]bool{}
+	for _, p := range r.Players {
+		if p.PlayerID == "" || ids[p.PlayerID] || p.Seat < 0 || p.Seat >= 6 || seats[p.Seat] || len(p.Hands) < 1 || len(p.Hands) > 4 {
+			return bad
+		}
+		ids[p.PlayerID], seats[p.Seat] = true, true
+		for _, h := range p.Hands {
+			if len(h.Cards) < 2 || len(h.Cards) > 22 || !count(h.Cards) || h.Bet < 20 || h.Bet > 1000 || h.Bet%20 != 0 || h.Payout < 0 || h.Payout > 2000 {
+				return bad
+			}
+		}
+	}
+	for _, n := range counts {
+		if n != 6 {
+			return bad
+		}
+	}
+	switch r.Phase {
+	case "playing":
+		if r.TurnPlayer < 0 || r.TurnPlayer >= len(r.Players) || r.TurnHand < 0 || r.TurnHand >= len(r.Players[r.TurnPlayer].Hands) || r.Players[r.TurnPlayer].Hands[r.TurnHand].Done || r.Deadline.IsZero() {
+			return bad
+		}
+		for _, p := range r.Players {
+			for _, h := range p.Hands {
+				if h.Payout != 0 || h.Outcome != "" {
+					return bad
+				}
+			}
+		}
+	case "complete":
+		if !r.Deadline.IsZero() || r.TurnPlayer != -1 || r.TurnHand != -1 {
+			return bad
+		}
+		resolved := r.clone()
+		resolved.settle()
+		for i, p := range r.Players {
+			for j, h := range p.Hands {
+				expected := resolved.Players[i].Hands[j]
+				if !h.Done || h.Payout != expected.Payout || h.Outcome != expected.Outcome {
+					return bad
+				}
+			}
+		}
+	default:
+		return bad
+	}
+	return nil
+}

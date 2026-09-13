@@ -1,6 +1,6 @@
 # Lanternhold Blackjack — round and integration rules
 
-Implementation candidate, not enabled wagering. Rules version `lanternhold-s17-v1`.
+Implementation candidate with connected local wagering, NOT deployed. Rules version `lanternhold-s17-v1`.
 This is the first concrete consumer of casino round/session infrastructure, not
 a replacement for required slots, real-player poker, both floors or VIP content.
 
@@ -37,7 +37,55 @@ actions, timeout after serialization, public-view redaction, stake bounds and
 six-deck card conservation. No claim of mathematically measured house advantage
 or real-player wagering follows from those checks.
 
-## Required next integration
+## Connected integration checkpoint
+
+`casino_blackjack_sessions.go` now binds actual physical seats to a durable15-second
+betting lobby, real multi-player/solo dealer rounds, legal actions,30-second turn
+timeouts and per-player saved settlement. Confirmed bets continue after leaving;
+timeouts stand and receipts preserve payouts. A completed table shows results for
+12seconds, then opens a new round. The shutdown-aware server loop advances/retries
+once per second; startup replays pending funds before accepting logins. Loaded
+production rounds validate card conservation, turn shape and settled return math.
+
+Network requests use current seat session, round identity and round revision.
+Public payloads expose only the explicit redacted game view; the private shoe is
+never serialized to clients. The cached table view avoids per-observer database
+reads. Pending-account admission recovery fences commands/login/resume for that
+recipient only; ordinary movement has no table database query.
+
+The seated UI displays both players' hands, dealer upcard/hole-card back, current
+turn, balance, stakes, outcomes and saved-return state. Bet/split/double each
+require explicit confirmation of Gold cost. New round/turn updates invalidate
+stale confirmations. Rules explain the payout convention, extra wagers and the
+leave/timeout behavior. Existing physical chairs, poses, camera, controls and
+explicit Leave are retained. Other casino games remain future content.
+
+Focused evidence: actual two authenticated sockets with real15-second betting
+window, shared turns, normal Gold, saved payouts and post-settlement server restart
+PASS29.562s. Logs `/tmp/eidolon-compat-session-2450009085/server.log` and
+`/tmp/eidolon-compat-session-4072011933/server.log`. This is NOT an actual mid-hand
+process-restart test; prior persistable-shoe and transfer-recovery checks cover
+those lower-level boundaries. Owned loopback Mongo32919 stopped afterward.
+
+Rendered chair/card/stake/split-cancel/390px/Leave fixture PASS27.6s total; screenshot
+`/tmp/eidolon-casino-seat-view-20260913.png` inspected. This is a rendering fixture,
+not the authenticated socket route or an actual phone. BlackjackUI+CasinoController
+6testsPASS2.953s, persisted shoe validationPASS0.044s, changedJS lint/client prep/
+Go build-all/diffPASS. The pending-account admission gate has its focused test.
+
+Initial network attempts exposed fixture issues, not changed game rules: inactive
+socket world updates were not continuously drained, then the reused login helper's
+10-second read deadline outlived its purpose. Both readers now drain continuously
+with that deadline cleared. Browser fixture's prior last-message assertion raced
+the ordinary get refresh; it now asserts the exact emitted Leave request instead.
+No server assertion was weakened and no broad campaign/soak was run.
+
+Before1.8 publication: finish casino source/sink telemetry and review/publish house
+advantage/exposure, then synchronize login/server/package versions and cumulative
+1.8 notes. Full slots/poker/town relocation/two-floor/VIP content remains required
+in the following stages. VIP currency remains undecided, with no Gold fallback.
+
+## Durability handoff (implemented)
 
 Durable transaction slice now implemented: `casino_blackjack_tables` stores one
 private game-state document per physical table with a compare-and-swap version.

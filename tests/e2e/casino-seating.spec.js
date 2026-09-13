@@ -25,7 +25,7 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
             seats: Array.from({ length: 6 }, (_, index) => { const angle = index * Math.PI / 3; return { x: -4.3 + Math.sin(angle) * 2.2, z: 171 + Math.cos(angle) * 2.2, rotation: angle + Math.PI, exitX: -4.3 + Math.sin(angle) * 3.4, exitZ: 171 + Math.cos(angle) * 3.4 }; }) };
         const mesh = createProceduralFighter(); scene.add(mesh);
         const otherMesh = createProceduralWizard(); otherMesh.position.set(table.seats[3].x, 0, table.seats[3].z); otherMesh.rotation.y = table.seats[3].rotation; scene.add(otherMesh);
-        const player = { mesh, position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', move(point) { this.position.copy(point); } };
+        const player = { id: 'fighter', mesh, position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', move(point) { this.position.copy(point); } };
         const other = { mesh: otherMesh, state: 'SEATED' };
         const sent = [];
         const engine = { player, cameraLocked: true, network: { send(type, payload) { sent.push({ type, payload }); } },
@@ -53,9 +53,23 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     await page.evaluate(() => {
         const { controller, table } = window.__casino;
         controller.updateState({ tables: [table], occupants: [{ tableId: table.id, seat: 0, name: 'Fighter', connected: true }, { tableId: table.id, seat: 3, name: 'Wizard', connected: true }],
+            blackjack: { available: true, roundId: 'round-fixture', phase: 'betting', gold: 1000, players: [] },
             yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 } });
     });
     await expect(page.getByRole('button', { name: 'Leave table', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Review wager', exact: true }).click();
+    expect(await page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'bet'))).toBe(false);
+    await page.getByRole('button', { name: 'Confirm Gold wager', exact: true }).click();
+    expect(await page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'bet' && message.payload.bet === 100 && message.payload.sessionId === 'fixture-seat'))).toBe(true);
+    await page.evaluate(() => {
+        const { controller, table } = window.__casino;
+        controller.updateState({ tables: [table], yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 },
+            blackjack: { available: true, roundId: 'round-fixture', phase: 'playing', gold: 900,
+                players: [{ playerId: 'fighter', name: 'Fighter', seat: 0, bet: 100 }, { playerId: 'wizard', name: 'Wizard', seat: 3, bet: 100 }],
+                round: { revision: 1, dealer: [9], dealerHidden: true, turnPlayerId: 'fighter', turnHand: 0, deadline: new Date(Date.now() + 30000).toISOString(), actions: ['hit', 'stand', 'double', 'split'],
+                    players: [{ playerId: 'fighter', seat: 0, hands: [{ cards: [7, 20], bet: 100 }] }, { playerId: 'wizard', seat: 3, hands: [{ cards: [9, 5], bet: 100 }] }] } } });
+    });
+    await expect(page.getByLabel('Dealer hidden card', { exact: true })).toBeVisible();
     await expect.poll(() => page.evaluate(() => window.__casino.controller.blend)).toBe(1);
     await page.screenshot({ path: '/tmp/eidolon-casino-seat-view-20260913.png' });
     await page.setViewportSize({ width: 390, height: 844 });
@@ -63,8 +77,11 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     await expect(panel).toBeVisible();
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     expect((await page.getByRole('button', { name: 'Leave table', exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(44);
+    await page.getByRole('button', { name: 'Split', exact: true }).click();
+    await expect(page.locator('.blackjack-confirm')).toContainText('100 Gold');
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
     await page.getByRole('button', { name: 'Leave table', exact: true }).click();
-    expect(await page.evaluate(() => window.__casino.sent.at(-1).payload)).toEqual({ action: 'leave', sessionId: 'fixture-seat' });
+    expect(await page.evaluate(() => window.__casino.sent.filter(message => message.payload.action === 'leave').map(message => message.payload))).toEqual([{ action: 'leave', sessionId: 'fixture-seat' }]);
     await page.evaluate(() => { const { controller, table } = window.__casino; controller.updateState({ tables: [table], occupants: [], yourSeat: null }); });
     await expect(panel).toBeHidden();
     expect(await page.evaluate(() => ({ locked: window.__casino.engine.cameraLocked, z: window.__casino.engine.player.position.z }))).toEqual({ locked: true, z: 174.4 });

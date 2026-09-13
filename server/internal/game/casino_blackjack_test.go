@@ -163,6 +163,14 @@ func TestBlackjackShoeAndOpeningBounds(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if err := r.Validate(); err != nil {
+		t.Fatal("valid production round rejected", err)
+	}
+	corrupt := r.clone()
+	corrupt.Deck[0] = 99
+	if corrupt.Validate() == nil {
+		t.Fatal("corrupt persisted shoe accepted")
+	}
 	counts := [52]int{}
 	for _, card := range r.Deck {
 		counts[card]++

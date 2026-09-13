@@ -9,6 +9,34 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Connected blackjack and release checkpoint
+
+Seated normal-Gold blackjack is now connected in the LOCAL candidate: individually
+confirmed15-second betting lobby, shared dealer round/turns, extra split/double
+debits,30sec timeout stands, durable per-player returns and new-round cycling.
+Startup/background recovery uses the existing shutdown-aware server loops.
+Pending-account command/login/resume gates recover only the recipient's intent;
+ordinary movement does not query table storage. Persisted shoes/turns/payouts are
+validated before resuming. Public views never include private shoe/hole card.
+
+Card/rule/stake/action/confirmation/results UI is integrated with the physical
+seat view and explicit Leave. The two-player actual-socket route PASS29.562s,
+including real betting timer, accepted wager replay, shared stands, saved Gold
+and post-settlement restart. Screenshot-inspected physical-chair/card/phone-width
+rendered fixture PASS27.6s; six UI/controller testsPASS2.953s; shoe corruption
+validationPASS0.044s; lint/client prep/Go build-all/diffPASS. Detailed evidence and
+honest fixture/restart limits: [blackjack handoff](2026-09-13-casino-blackjack-rules.md).
+Owned Mongo32919 stopped. No broad campaign/device matrix or soak added.
+
+Before packaging/pushing1.8: finish casino economy telemetry and house-advantage/
+exposure review, then cumulative1.8 patch notes and synchronized version metadata.
+Actual1.9 slots/poker/full venue and functional future-currency VIP remain required.
+
+1.7e84f6219253b6f936ac66da81684b1dd0a1bb286 is now VERIFIED LIVE on BOTH public
+endpoints (Alpha1.7.0/database ready). CI34742314831 TERMINAL SUCCESS, every job
+including final Live Release and Character QA. Ordered1.8 publication may proceed
+after its own remaining work; no need to rerun or republish1.7.
+
 ## Durable blackjack Gold checkpoint
 
 Added private versioned blackjack table documents and immutable pending Gold
