@@ -1,7 +1,7 @@
 # Alpha 1.9.0 — a world that stays interesting
 
-Active candidate branched from the packaged1.8 release595c07ff. Runtime stays1.8
-until packaging; do not publish1.9 before1.8 CI/live verification completes.
+Candidate branched from packaged1.8 release595c07ff and includes its corrections.
+Packaged asAlpha1.9.0; its own CI/deployment/live verification remain required.
 Parent scope: [full roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md) and
 [two-floor casino](2026-09-09-town-casino-roadmap.md). Both remain required.
 
@@ -30,6 +30,51 @@ concurrency/recovery/mobile/performance, cadence and post-Malachar hook remain.
 Use focused changed-path checks and essential save/currency/ownership safeguards,
 builds and deployment smoke. Reuse passing unchanged evidence; consolidate broad
 campaign/device/endurance checks in final stabilization. No subagents or new soak.
+
+## Packaging and combined release checks — September13
+
+Public event/casino feature batch implemented. No additional PvP queue was added:
+the conditional population prerequisite has not been demonstrated. Functional VIP
+still awaits the user-approved separate currency and remains required for1.10.
+
+Slot paytables are now explicitly tuned per theme, keeping bonuses/free spins/
+jackpots intact. Full-cycle samples, limits and uncertainty are recorded in the
+slot handoff: tuned sampled returns Earth96.16%, Fire96.85%, Water91.77%, Air96.89%.
+This is initial economy tuning, not a theoretical RTP guarantee. Final changed-
+Water sample plus all slot rules PASS0.803s; unchanged themes' results reused.
+
+Combined production-scenery check builds the actual world generator's town,
+foliage and dungeon landmarks plus current stash/Trading House/furniture positions.
+PASS5.6s:323 sampled town approaches, ward/rune and wave-spawn positions,542 scenery
+colliders,9 foliage groups, zero blocked samples. Screenshot
+/tmp/eidolon-world19-town-20260913.png inspected. This is actual placement/spatial
+evidence, not a connected character traversal or final production lighting audit.
+
+Actual two-player poker sockets PASS40.210s: ordinary authenticated seats/buy-ins,
+solo waiting, real15-second deal, private cards, full server stop/start DURING the
+hand, new seat tokens/original cards, rejected stale action, check/call through
+river/showdown, exactly-once cash-outs and saved totalGold1000. Initial fixture
+polled too quickly and hit the existing rate limit; corrected to normal three-
+second polling without weakening production limits. No game fix was needed.
+Server evidence /tmp/eidolon-compat-session-1196209317 and1493643058.
+
+Actual shared event sockets PASS1.409s during the real active window: both clients
+saw disturbance-2982151 in Air, participants2/wave1/remaining8, identical schedule,
+no joining Gold grant. Evidence /tmp/eidolon-compat-session-2606226907. Prepared
+approach characters and presence/activation only; NOT an earned wave/boss clear.
+The opt-in check skips outside a usable event window rather than altering time.
+
+Per the user's feature-first policy, remaining combined connected floor/camera,
+earned full-event play and broad multiplayer/device/performance checks carry into
+the consolidated1.10 integration phase alongside VIP. Their scope remains intact;
+they are not marked passed by these narrower release checks. Existing1.8 seated
+camera/blackjack and1.9 navigation/slot/poker focused evidence is reused.
+
+Synchronized login, package/lock, release manifest, server/container/compose/deploy/
+CI and isolated-QA defaults toAlpha1.9.0. Added cumulative1.9 notes covering the
+actual features and explicit unfinished VIP boundary; preserved all earlier
+versions. VersionPresentation248testsPASS2.765s, changedJS lint, Go build-all and
+diffPASS. No broad local matrix/soak. Disposable Mongo and QA servers stopped.
 
 ## Implemented candidate — elemental public events
 

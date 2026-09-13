@@ -41,13 +41,18 @@ func SlotMachines() []SlotMachine {
 	}
 	for i := range machines {
 		machines[i].Weights = [8]int{24, 20, 16, 12, 10, 8, 5, 5}
-		machines[i].Pays = [6][3]int{{6, 16, 28}, {8, 20, 32}, {10, 24, 36}, {12, 28, 40}, {14, 32, 44}, {18, 36, 50}}
-		if machines[i].Theme == "water" || machines[i].Theme == "air" {
-			for symbol := range machines[i].Pays {
-				for count := range machines[i].Pays[symbol] {
-					machines[i].Pays[symbol][count] = machines[i].Pays[symbol][count] * 3 / 4
-				}
-			}
+		// Explicit public tables price each mechanic, including its free spins.
+		// One-off full-feature sampling is documented in the slot handoff; these
+		// are not a promised return for a player or an exact RTP certification.
+		switch machines[i].Theme {
+		case "earth":
+			machines[i].Pays = [6][3]int{{5, 14, 26}, {7, 18, 30}, {9, 22, 34}, {11, 26, 38}, {13, 30, 42}, {17, 34, 48}}
+		case "fire":
+			machines[i].Pays = [6][3]int{{5, 16, 28}, {7, 20, 32}, {9, 24, 36}, {12, 28, 40}, {14, 32, 44}, {18, 36, 50}}
+		case "water":
+			machines[i].Pays = [6][3]int{{6, 12, 21}, {7, 15, 24}, {7, 18, 27}, {9, 21, 30}, {10, 24, 33}, {13, 27, 37}}
+		case "air":
+			machines[i].Pays = [6][3]int{{4, 12, 21}, {5, 15, 24}, {6, 18, 27}, {9, 21, 30}, {10, 24, 33}, {13, 27, 37}}
 		}
 	}
 	return machines

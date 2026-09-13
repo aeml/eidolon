@@ -13,7 +13,7 @@ func TestSlotPaylinesWildSubstitutionAndJackpot(t *testing.T) {
 	machine, _ := slotMachine("earth")
 	grid := SlotGrid{}
 	stage, _ := evaluateSlotGrid(grid, machine, 20, 1)
-	if len(stage.Wins) != 10 || stage.Payout != 560 {
+	if len(stage.Wins) != 10 || stage.Payout != 520 {
 		t.Fatal("ten fixed line stakes are not paid correctly", stage)
 	}
 	for reel := range grid {
@@ -31,7 +31,7 @@ func TestSlotPaylinesWildSubstitutionAndJackpot(t *testing.T) {
 	found := false
 	for _, win := range stage.Wins {
 		if win.Line == 0 {
-			found = win.Symbol == 5 && win.Count == 3 && win.Payout == 36
+			found = win.Symbol == 5 && win.Count == 3 && win.Payout == 34
 		}
 	}
 	if !found {

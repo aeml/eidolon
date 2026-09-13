@@ -1,8 +1,9 @@
 # Elemental slots — implementation handoff
 
 Part of full1.9/1.10 casino scope. Connected public Gold slots and seated UI are
-implemented in the local1.9 candidate, NOT deployed or economically approved yet.
-Keep runtime1.8 until the whole1.9 is ready.
+implemented in the local1.9 candidate, NOT deployed. Initial payout tuning is
+recorded below; this is not an exact RTP certification or a player return promise.
+Now packaged asAlpha1.9.0; its own deployment/live verification remains required.
 
 ## Implemented rules
 
@@ -31,9 +32,8 @@ Three+scatters in the original landed grid trigger the theme's narrative pick-on
 bonus and free spins. The hidden rewards1×/2×/5×stake are securely shuffled BEFORE
 selection. Only the chosen offer pays. Retriggers bank at most12 free spins,
 retaining the original stake; free spins cannot silently become paid spins.
-Water/Air use their own public paytables (three-quarter integer multiples of the
-base table) because their mechanics add wins. These are candidate values; no
-overall RTP/house-edge claim or economy sign-off yet. Review before enabling.
+Every theme now uses its own explicit public paytable, tuned for its mechanics.
+Keep those published values consistent with saved-result validation and the UI.
 
 SlotSession includes revision, original bet, free bank, sticky rows, sealed offers
 and last result. Validate re-evaluates saved line/stage/jackpot payouts and totals,
@@ -66,12 +66,43 @@ Changed JS suites20tests PASS2.951s. One390px rendered component check PASS8.3s;
 /tmp/eidolon-slot-phone-20260913.png inspected. It tests the actual UI with
 controlled responses, NOT the connected physical machine/camera scene.
 
-Opt-in payout sampling completed in4s (not part of normal CI). Only the final Air
-sample was retained after output loss: 50,000 paid cycles including free features,
-sampled return0.9995, approximate95% interval[0.9810,1.0181]. This is not exact RTP
-or economic approval; all themes still need a recorded tuning decision before
-release. No broad matrix/soak required here. Connected full-town machine/camera
-check, payout review, real-player poker and approved-currency VIP remain.
+Initial sampling was repeated once because three themes' terminal output was
+lost, revealing an inflationary Earth candidate. Final tuning/evidence follows.
+Connected full-town machine/camera and approved-currency VIP remain. Real-player
+poker is implemented locally; see the separate poker handoff for remaining checks.
+
+## Initial release economy decision — September13
+
+Keep all bonus mechanics, secure symbol weights, manual free spins and fixed
+jackpots. Tune only explicit line paytables: reduce the Earth/Fire/Air return and
+improve Water's relatively harsh return. These are unshipped slot rules; no live
+player entitlements are repriced. Existing payout/debit bounds remain unchanged.
+
+Opt-in deterministic samples use50,000 COMPLETE paid cycles per theme, including
+all free-spin retriggers and bonus payouts. Each theme has its own fixed seed.
+Production continues crypto/rand; no forced test outcomes or win-rate adjustment.
+
+| Theme | Original sampled return | Tuned sampled return | Approximate95% interval |
+|---|---:|---:|---:|
+| Earth |105.72%|96.16%|94.06–98.25%|
+| Fire |101.36%|96.85%|94.91–98.79%|
+| Water |85.20%|91.77%|90.26–93.28%|
+| Air |99.95%|96.89%|95.07–98.71%|
+
+Accepted as initial non-inflationary public-casino tuning, with meaningful theme
+variation. These are sample estimates, NOT exact theoretical RTP or guarantees;
+rare jackpots limit tail precision. Future live economy observations can motivate
+further tuning, but no extra repeated broad simulation is a release requirement.
+20Gold cycles cover40Gold too: same draws/features, all line/bonus/jackpot returns
+scale exactly2×. Per-result Gold bounds: Earth<=4000, Fire<=8000, Air<=4000,
+Water<=6960 (two1480-bound line stages plus a4000 jackpot), within existing8000
+credit validation. A bonus pays at most200 separately. No progressive liabilities.
+
+Original full sample PASS3.557s; initial tuned full sample finished3.21s, exposing
+an obsolete exact Earth unit expectation (560→520; best three-wild payout36→34).
+Updated those payout assertions to the chosen table, without weakening checks.
+Final changed-Water-only sample plus all slot rules PASS0.803s. The review accepts
+EIDOLON_SLOT_ECONOMY_THEME to rerun only a changed theme; opt-in remains off in CI.
 
 ## Persistence design constraints retained
 

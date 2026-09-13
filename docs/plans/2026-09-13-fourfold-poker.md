@@ -1,8 +1,8 @@
 # Fourfold Hold’em — local 1.9 implementation
 
-Implemented in active1.9 candidate, NOT deployed. Existing physical table/seats/
+Implemented and packaged in1.9 candidate, NOT verified deployed. Physical table/seats/
 camera now connect to poker_buy_in, poker_play and a dedicated seated UI.
-Runtime remains1.8 until the entire1.9 feature batch is ready.
+Runtime metadata is now1.9; its own CI/deployment/live verification remains.
 
 ## Chosen table rules
 
@@ -68,8 +68,14 @@ Existing controller owns camera/seat/input/leave; no minigame menu bypass.
   /tmp/eidolon-poker-phone-20260913.png inspected. Actual UI with prepared
   responses, NOT a connected multiplayer table/camera scene. No broad matrix.
 
-Before1.9 publication, combine actual multiplayer table/leave/reconnect and
-physical casino camera checks with the shared release review. Reuse passing
-unchanged suites. Slot economic tuning, event-site/shared encounter checks and
-other1.9 integration remain. Separate-currency VIP and final cross-game work
-remain required for1.10; currency question still awaits the user.
+Actual two-player socket hand now PASS40.210s, including the normal15-second
+joining window, private cards, process stop/start DURING the hand, new seat tokens,
+unchanged cards, stale-turn rejection, full check/call showdown, cash-outs and
+saved Gold conservation. Logs /tmp/eidolon-compat-session-1196209317 and1493643058.
+The first fixture over-polled and hit the normal casino limit; fixed fixture
+cadence, NOT the production limit. No repeat of unchanged rule/UI/Mongo suites.
+
+Slot tuning and event-site/shared-presence checks also completed for packaging;
+see the1.9 release plan. Final connected floor/camera, earned encounter and broad
+cross-game checks remain consolidated1.10 work, along with separate-currency VIP.
+The currency question still awaits the user; full goal remains active.

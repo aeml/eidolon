@@ -15,7 +15,12 @@ func TestSlotEconomyReview(t *testing.T) {
 		t.Skip("one-off slot payout review")
 	}
 	const cycles = 50000
+	matched := false
 	for i, machine := range SlotMachines() {
+		if theme := os.Getenv("EIDOLON_SLOT_ECONOMY_THEME"); theme != "" && theme != machine.Theme {
+			continue
+		}
+		matched = true
 		rng := mathrand.New(mathrand.NewSource(190013 + int64(i)))
 		draw := func(limit int) (int, error) { return rng.Intn(limit), nil }
 		session, _ := NewSlotSession(machine.Theme)
@@ -63,5 +68,8 @@ func TestSlotEconomyReview(t *testing.T) {
 		variance := (squares - sum*sum/cycles) / (cycles - 1)
 		margin := 1.96 * math.Sqrt(variance/cycles)
 		t.Logf("theme=%s paid_cycles=%d total_spins=%d sampled_return=%.4f approximate_95CI=[%.4f,%.4f] jackpots=%d maximum_observed_cycle_return=%dGold", machine.Theme, cycles, spins, mean, mean-margin, mean+margin, jackpots, maximum)
+	}
+	if !matched {
+		t.Fatal("unknown slot economy review theme")
 	}
 }
