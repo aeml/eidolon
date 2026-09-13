@@ -656,7 +656,7 @@ class GameEngineMovementMethods {
             impact,
             className
         });
-        this.renderSystem?.applyCameraPunch?.({
+        if (entity === this.player) this.renderSystem?.applyCameraPunch?.({
             intensity: 0.9 * impact,
             duration: 0.18,
             vertical: 1.1,

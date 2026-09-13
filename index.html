@@ -516,8 +516,13 @@
                         <input id="camera-shake-enabled" type="checkbox" />
                     </div>
                     <div class="support-field__hint">
-                        Off by default. Enable it if you want jump landings and impacts to punch the camera.
+                        Off by default. Adds brief motion to your landings and direct combat hits. Respects your device's reduced-motion preference.
                     </div>
+                </div>
+                <div class="support-field">
+                    <label for="camera-shake-strength" class="support-field__label">Camera impact strength <output id="camera-shake-strength-value" for="camera-shake-strength">50%</output></label>
+                    <input id="camera-shake-strength" type="range" min="0" max="100" step="10" value="50" />
+                    <div class="support-field__hint">Adjust motion without dimming enemy warnings. Zero keeps the camera steady; your preference is saved on this device.</div>
                 </div>
                 <div class="support-field">
                     <div class="support-field__row">

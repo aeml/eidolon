@@ -22,6 +22,29 @@ function cameraOnly(isMobile) {
 }
 
 describe('phone camera composition', () => {
+    test('camera impact strength clamps, scales punches and can keep the camera still', () => {
+        const render = cameraOnly(true);
+        render.setCameraShakeEnabled(true);
+        render.setCameraShakeStrength(50);
+        render.applyCameraPunch({ intensity: 1 });
+        expect(render.cameraPunch.intensity).toBeCloseTo(0.175);
+        render.setCameraShakeStrength(999);
+        expect(render.cameraShakeStrength).toBe(1);
+        render.setCameraShakeStrength(0);
+        render.applyCameraPunch();
+        expect(render.cameraPunch).toBeNull();
+    });
+
+    test('device reduced motion suppresses an otherwise enabled camera punch', () => {
+        const previous = window.matchMedia;
+        window.matchMedia = () => ({ matches: true });
+        try {
+            const render = cameraOnly(false);
+            render.setCameraShakeEnabled(true);
+            render.applyCameraPunch();
+            expect(render.cameraPunch).toBeNull();
+        } finally { window.matchMedia = previous; }
+    });
     beforeEach(() => localStorage.clear());
     afterEach(() => { viewport(1024, 768); document.body.innerHTML = ''; });
 

@@ -127,7 +127,7 @@ describe('RenderSystem shadow coverage', () => {
         renderSystem.applyCameraPunch({ intensity: 1, duration: 0.25, vertical: 1, horizontal: 1 });
 
         expect(renderSystem.cameraPunch).toEqual(expect.objectContaining({
-            intensity: 0.35,
+            intensity: 0.175,
             duration: 0.14,
             vertical: 0.55,
             horizontal: 0.3

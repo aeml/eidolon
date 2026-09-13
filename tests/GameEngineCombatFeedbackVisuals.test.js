@@ -27,6 +27,23 @@ function makeEngine() {
 }
 
 describe('authoritative combat feedback visuals', () => {
+    test('only local direct hits punch the camera, once per burst', () => {
+        const engine = makeEngine();
+        engine.renderSystem = { applyCameraPunch: jest.fn() };
+        const enemy = actor('enemy', 'Skeleton');
+        engine.remotePlayers.set(enemy.id, enemy);
+        const hit = { sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' };
+        engine.renderCombatFeedback(hit);
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback(hit);
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.lastLocalImpactAt = -Infinity;
+        engine.renderCombatFeedback({ ...hit, kind: 'poison' });
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.renderCombatFeedback({ ...hit, sourceId: enemy.id, targetId: engine.player.id });
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(2);
+    });
     test('remote decorative hits are compact and rate-limited, but local hits and hazards retain full feedback', () => {
         const engine = makeEngine();
         const source = actor('ally', 'Wizard'), target = actor('enemy', 'Skeleton');

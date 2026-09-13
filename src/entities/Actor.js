@@ -671,8 +671,11 @@ export class Actor extends Entity {
 
         this.clearAnimationFinishedHandler();
 
+        // Short actions must reach full weight during anticipation, not after
+        // the release pose. This changes blending only, never attack timing.
+        const fadeDuration = !loop && name !== 'Death' ? 0.06 : 0.16;
         if (this.currentAction && this.currentAction !== action) {
-            this.currentAction.fadeOut?.(0.16);
+            this.currentAction.fadeOut?.(fadeDuration);
         }
 
         if (force && this.currentAction === action) {
@@ -681,7 +684,7 @@ export class Actor extends Entity {
 
         action.enabled = true;
         action.reset?.();
-        action.fadeIn?.(0.16);
+        action.fadeIn?.(fadeDuration);
         action.play?.();
         action.setEffectiveTimeScale?.(1.0);
         action.setLoop?.(loop ? THREE.LoopRepeat : THREE.LoopOnce);

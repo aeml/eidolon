@@ -36,6 +36,16 @@ function animatedActor() {
 }
 
 describe('Actor animation state machine', () => {
+    test('a short attack reaches full weight during windup, not halfway through release', () => {
+        const actor = animatedActor();
+        actor.playAnimation('Run');
+        actor.mixer.update(0.2);
+        actor.playAnimation('Attack', false, true);
+        actor.mixer.update(0.07);
+        expect(actor.currentAction.getEffectiveWeight()).toBeCloseTo(1);
+        expect(actor.currentAction.getClip().duration).toBe(0.2);
+        actor.dispose();
+    });
     test('non-looping cast restores idle when stationary', () => {
         const actor = animatedActor();
 

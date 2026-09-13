@@ -93,6 +93,13 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click jump', () => {
+    test('another player landing has world feedback without moving our camera', () => {
+        const engine = createEngineHarness();
+        engine.spawnTransientEffect = jest.fn();
+        engine.applyJumpImpactEffect({ position: new THREE.Vector3(2, 0, 2) });
+        expect(engine.spawnTransientEffect).toHaveBeenCalled();
+        expect(engine.renderSystem.applyCameraPunch).not.toHaveBeenCalled();
+    });
     test('ctrl-left-click starts a jump from the click event coordinates instead of normal click-to-move', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent.mockReturnValue(new THREE.Vector3(-6, 0, 14));

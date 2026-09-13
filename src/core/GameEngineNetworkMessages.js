@@ -290,7 +290,6 @@ class GameEngineNetworkMessageMethods {
             skillName: data.skillName || ''
         });
         if (!spawned) return false;
-
         this.projectileImpactCueKeys.set(cueKey, now);
         if (projectile) projectile.hasResolvedImpact = true;
         this.lastProjectileImpactPresentation = {
@@ -394,6 +393,16 @@ class GameEngineNetworkMessageMethods {
             instanceId: eventInstance
         });
         if (!spawned) return false;
+        // Only confirmed direct hits involving this hero move their camera.
+        // One area hit/party burst must not restart the punch for every victim.
+        if (eventType === 'damage' && isLocalInvolvement && Number(data.amount) > 0
+            && feedbackKind.endsWith('_strike') && now - (this.lastLocalImpactAt ?? -Infinity) >= 250) {
+            this.lastLocalImpactAt = now;
+            this.renderSystem?.applyCameraPunch?.({
+                intensity: data.targetId === this.player.id ? 0.65 : 0.4,
+                duration: 0.16, vertical: 0.6, horizontal: 0.45
+            });
+        }
         if (this.combatFeedbackCueTimestamps.size >= 256
             && !this.combatFeedbackCueTimestamps.has(cueKey)) {
             const oldestCue = this.combatFeedbackCueTimestamps.keys().next().value;

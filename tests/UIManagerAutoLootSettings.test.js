@@ -67,6 +67,8 @@ function buildDom() {
         <div id="audio-volume-value"></div>
         <select id="audio-detail-level"><option value="full">Full cues</option><option value="reduced">Reduced UI cues</option></select>
         <input id="camera-shake-enabled" type="checkbox" />
+        <input id="camera-shake-strength" type="range" min="0" max="100" />
+        <output id="camera-shake-strength-value"></output>
         <input id="fullscreen-enabled" type="checkbox" />
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
@@ -261,6 +263,22 @@ describe('UIManager settings', () => {
 
         expect(chatBox.style.display).toBe('flex');
         expect(ui.social.isOpen).toBe(false);
+    });
+
+    test('camera impact strength persists, clamps and updates its binding', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        expect(ui.getCameraShakeStrength()).toBe(50);
+        ui.onCameraShakeStrengthChange = jest.fn();
+        document.getElementById('camera-shake-strength').value = '30';
+        document.getElementById('camera-shake-strength').dispatchEvent(new Event('input'));
+        expect(localStorage.getItem('eidolon.cameraShakeStrength')).toBe('30');
+        expect(document.getElementById('camera-shake-strength-value').textContent).toBe('30%');
+        expect(ui.onCameraShakeStrengthChange).toHaveBeenCalledWith(30);
+        ui.setCameraShakeStrength(-1);
+        expect(ui.getCameraShakeStrength()).toBe(0);
+        ui.setCameraShakeStrength(NaN);
+        expect(ui.getCameraShakeStrength()).toBe(50);
     });
 
     test('camera shake defaults off when no setting is stored', () => {

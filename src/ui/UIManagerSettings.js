@@ -235,6 +235,18 @@ class UIManagerSettingsMethods {
         return Boolean(this.cameraShakeEnabled);
     }
 
+    setCameraShakeStrength(value) {
+        this.cameraShakeStrength = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 50;
+        try { localStorage.setItem('eidolon.cameraShakeStrength', String(this.cameraShakeStrength)); } catch { /* Session setting still works. */ }
+        if (this.cameraShakeStrengthSlider) this.cameraShakeStrengthSlider.value = String(this.cameraShakeStrength);
+        if (this.cameraShakeStrengthLabel) this.cameraShakeStrengthLabel.textContent = `${this.cameraShakeStrength}%`;
+        this.onCameraShakeStrengthChange?.(this.cameraShakeStrength);
+    }
+
+    getCameraShakeStrength() {
+        return this.cameraShakeStrength ?? 50;
+    }
+
     setFullscreenEnabled(enabled) {
         const nextValue = Boolean(enabled);
         this.fullscreenEnabled = nextValue;

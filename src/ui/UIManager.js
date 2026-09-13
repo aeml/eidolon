@@ -317,6 +317,15 @@ export class UIManager {
             });
         }
 
+        this.cameraShakeStrengthSlider = document.getElementById('camera-shake-strength');
+        this.cameraShakeStrengthLabel = document.getElementById('camera-shake-strength-value');
+        let storedCameraStrength = null;
+        try { storedCameraStrength = localStorage.getItem('eidolon.cameraShakeStrength'); } catch { /* Use default. */ }
+        this.setCameraShakeStrength(storedCameraStrength === null ? 50 : Number(storedCameraStrength));
+        this.cameraShakeStrengthSlider?.addEventListener('input', () => {
+            this.setCameraShakeStrength(Number(this.cameraShakeStrengthSlider.value));
+        });
+
         // Friend-online toast setting (0.38.3) — defaults to enabled.
         const storedFriendToast = localStorage.getItem('eidolon.friendOnlineToast');
         this.friendOnlineToastEnabled = storedFriendToast === null ? true : storedFriendToast === 'true';

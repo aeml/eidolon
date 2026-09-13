@@ -976,6 +976,8 @@ function createHumanoidAnimationClips() {
 
     const attackTimes = [0, 0.17, 0.34, 0.5, 0.72];
     const attack = [
+        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [0, -0.14, -0.1, 0.22, 0]),
+        numberTrack('Rig_Head', 'rotation[x]', attackTimes, [0, 0.08, 0.06, -0.12, 0]),
         numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.34, -0.2, 0.48, 0]),
         numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.5, -0.22, 0.65, 0]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [0.08, -1.75, -1.35, 1.05, 0.08]),
@@ -1045,6 +1047,7 @@ function createRogueAnimationClips() {
 
     const attackTimes = [0, 0.12, 0.26, 0.4, 0.56, 0.72];
     const attack = [
+        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [-0.1, -0.24, 0.06, -0.18, 0.04, -0.1]),
         numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.42, 0.56, 0.28, -0.5, 0]),
         numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.62, 0.76, 0.36, -0.68, 0]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [-0.05, -1.6, 0.9, 0.38, -0.18, -0.05]),
@@ -1120,7 +1123,7 @@ function createWizardAnimationClips() {
     const attackTimes = [0, 0.18, 0.4, 0.62, 0.86, 1.08];
     const attack = [
         numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.12, 0.08, 0.18, -0.08, 0]),
-        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [0, 0.1, -0.18, -0.28, -0.08, 0]),
+        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [0, -0.12, -0.08, 0.2, 0.08, 0]),
         numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.24, 0.18, 0.32, -0.12, 0]),
         numberTrack('Rig_UpperArmLeft', 'rotation[x]', attackTimes, [0, -0.5, -1.28, -1.52, -0.42, 0]),
         numberTrack('Rig_UpperArmLeft', 'rotation[z]', attackTimes, [-0.16, -0.55, -0.76, -0.42, -0.24, -0.16]),
@@ -1198,6 +1201,7 @@ function createClericAnimationClips() {
 
     const attackTimes = [0, 0.18, 0.38, 0.58, 0.78, 0.98];
     const attack = [
+        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [0.01, -0.12, -0.18, 0.2, 0.1, 0.01]),
         numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.28, -0.18, 0.4, 0.22, 0]),
         numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.46, -0.3, 0.62, 0.34, 0]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [0.06, -1.4, -1.72, 0.86, 0.42, 0.06]),

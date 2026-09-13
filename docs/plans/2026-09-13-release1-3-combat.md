@@ -24,6 +24,16 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
   them. Only the owning touch can commit; canceled touches, input reset, death,
   menu interruption and changed skill assignment cancel. Preview tracks current
   player position/camera and preserves realm elevation. No server rules changed.
+- Combat camera motion now responds to confirmed direct hits involving the local
+  hero, with250ms burst suppression; periodic damage and other players' landings
+  do not shake your view. It stays off by default. A saved0–100% strength slider
+  defaults to50%, is available in phone Play settings and desktop settings, and
+  leaves all hazard warnings intact. Device reduced motion suppresses punches.
+- Short attack/cast animations reach full weight in60ms instead of160ms, retaining
+  their authored duration and gameplay timing. Fighter and Cleric have a chest
+  windup/follow-through, Rogue counterbalances successive cuts, and Wizard leans
+  into release instead of away. Existing locomotion blending and boot articulation
+  remain; damage, cooldowns, movement speed and class stats are unchanged.
 
 ## Focused checks
 
@@ -42,6 +52,10 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
   while held and exactly one on release. Screenshot inspected at
   `/tmp/eidolon-1-3-aim-phone.png` (isolated presentation fixture, not live combat).
   No broad playthrough or soak was run for this feature.
+- Camera/settings/feedback/phone routes:75focused tests pass. Animation state and
+  four-class procedural models:36tests pass. Actual Chrome four-class release
+  pose inspected at `/tmp/eidolon-1-3-attack-release.png`; this is a key-pose check,
+  not a full equipment/animation matrix or a physical-phone performance claim.
 
 ## Next
 
@@ -50,5 +64,11 @@ movement transitions and existing class tuning. Retain dungeon ability guards,
 touch target selection and dangerous telegraph readability. Consolidate this
 milestone with player-facing notes and live smoke after1.2 deploys.
 
-Next concrete work: anticipation/impact presentation and camera options, then
-remaining class tuning. Existing tap-to-select/overlap cycling is retained.
+Next concrete work: telegraph readability at low/high effects quality and remaining
+class tuning, then milestone packaging. Existing tap-to-select/overlap cycling is
+retained. Physical-device sustained-performance and full equipment/group matrices
+remain final-stabilization work under the user's feature-first instruction.
+
+Predecessor1.2: both live endpoints now reportAlpha1.2.0/999dfbf0; backend database
+ready. CI34728771304 deployed successfully and is in its final Live Release and
+Character QA job. Do not claim that final job passed until it actually completes.

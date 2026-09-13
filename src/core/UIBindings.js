@@ -27,10 +27,14 @@ export class UIBindings {
         ui.onCameraShakeChange = (enabled) => {
             engine.renderSystem.setCameraShakeEnabled(enabled);
         };
+        ui.onCameraShakeStrengthChange = (strength) => {
+            engine.renderSystem.setCameraShakeStrength(strength);
+        };
 
         engine.renderSystem.setGraphicsQuality(ui.getGraphicsQuality());
         engine.renderSystem.setBrightnessLevel(ui.getBrightnessLevel());
         engine.renderSystem.setCameraShakeEnabled(ui.getCameraShakeEnabled());
+        engine.renderSystem.setCameraShakeStrength?.(ui.getCameraShakeStrength?.() ?? 50);
 
         ui.inventory.onBuyGamble = (slot) => {
             engine.network.send('buy_gamble', { slot });

@@ -128,6 +128,7 @@ export class RenderSystem {
         this.shadowCoverageRadius = 280;
         this.shadowTexelSnap = true;
         this.cameraShakeEnabled = false;
+        this.cameraShakeStrength = 0.5;
         this.cameraPunch = null;
         this.currentLighting = {
             ambientIntensity: 2.25,
@@ -939,13 +940,21 @@ export class RenderSystem {
         }
     }
 
+    setCameraShakeStrength(percent) {
+        this.cameraShakeStrength = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) / 100 : 0.5;
+        this.cameraPunch = null;
+        this.updateCamera();
+    }
+
     applyCameraPunch({ intensity = 0.8, duration = 0.16, vertical = 1.0, horizontal = 0.45 } = {}) {
-        if (!this.cameraShakeEnabled) {
+        const strength = this.cameraShakeStrength ?? 0.5;
+        if (!this.cameraShakeEnabled || strength === 0 || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
             this.cameraPunch = null;
+            this.updateCamera();
             return;
         }
 
-        const scaledIntensity = Math.max(0, intensity) * 0.35;
+        const scaledIntensity = Math.max(0, intensity) * 0.35 * strength;
         const scaledDuration = Math.max(0.05, duration * 0.56);
         const scaledVertical = vertical * 0.55;
         const scaledHorizontal = horizontal * 0.3;
