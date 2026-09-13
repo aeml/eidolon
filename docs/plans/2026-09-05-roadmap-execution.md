@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:36 UTC
+## Current checkpoint — September 13, 00:45 UTC
+
+PROGRESS: **Alpha1.2.0 pushed to origin/master**,999dfbf009646028e24e35e074211392910b315e.
+Publishing CI **34728771304 IN_PROGRESS**. Existing1.2 WT clean/frozen at999dfbf0.
+Includes all bundled hero/menu/touch improvements, new map pan/pinch/zoom/Find me,
+phone label caps, synchronized versions and8player-facing patch-note bullets.
+37files838insertions/93deletions vs377bdf21; clean ancestry merge preserved1.1.
+Map8tests PASS; actualChrome touch30×20pan/2→3pinch and portrait/landscape controls
+checked, screenshots `/tmp/eidolon-map-{phone,landscape}.png`. Version241PASS,
+including note ordering/history/defaults (updated old1.1 expectations). No full
+local suite/soak started. CI is the normal single publishing workflow.
+
+1.2 source scope/evidence/deferred matrix limits are in its release document.
+The world map was the final concrete phone-menu gap. Existing bag/vendor/stash,
+quests/skills/party/raid-preparation routes retained. Full device/animation matrices
+remain final stabilization work peruserpolicy, not claimed passed.
+
+Next: poll34728771304 and fix concrete publication failures. Start1.3 combat
+feedback/feel in a NEW worktree from999dfbf0 while this frozen release runs;
+do not mutate the publishing worktree or push root ledger.1.1livefinalfailure was
+test-only missing module; self-contained correction is included in1.2. Actual
+1.2 live identity/gameplay verification remains pending. Full goal stays active.
+
+### Previous detail — September 13, 00:36 UTC
 
 PROGRESS: 1.2 WT clean at715703d6, NOT published.684f3a4f corrects all four
 backward running leans, smooths walk/run keys, adds ankle tracks shared by default
