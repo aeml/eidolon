@@ -1,5 +1,13 @@
 # 1.10 — The Resonant Age
 
+## Local follow-up — persistent tables and town entrance
+
+After1.9.3, user requested stable seated multiplayer card layouts and continuous
+clocks, plus casino roof/door/stash fixes. Implemented with focused client/server,
+disposable currency-persistence and desktop/phone visual checks; not pushed or
+deployed. See [unreleased notes and evidence](2026-09-13-persistent-card-tables-and-town-entrance.md).
+Live remains03373b0f/Alpha1.9.3. EP and full1.10 completion remain follow-on work.
+
 ## Latest interim release — Alpha 1.9.3 verified live
 
 User requested pushing the completed casino hand feedback, win/bonus celebrations

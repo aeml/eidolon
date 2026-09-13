@@ -98,3 +98,70 @@ body .casino-session .blackjack-card { min-width: 48px; height: 68px; font-size:
     body .casino-session .blackjack-card { min-width: 28px; height: 44px; font-size: 17px; }
     body .casino-session .blackjack-hand { padding: 8px; }
 }
+
+/* Persistent six-seat card room. Physical seat order rotates around your seat;
+   the table, dealer and controls remain in place through every round phase. */
+body .casino-session .card-table-scene {
+    position: relative; display: block; height: 660px; min-height: 660px;
+    max-height: none; margin: 12px 0; padding: 0; overflow: visible;
+    border: 1px solid #435752; border-radius: 24px;
+    background: radial-gradient(ellipse at center, #1f554a 0, #103b35 48%, #102327 66%, #0b1722 67%);
+    box-shadow: inset 0 0 0 8px #0d1c27, inset 0 0 0 10px #bda16b44;
+}
+.card-table-scene::before { content: ''; position: absolute; inset: 18% 6%; border: 2px solid #d9ba762b; border-radius: 50%; pointer-events: none; }
+.card-table-seat { position: absolute; width: 25%; max-width: 250px; min-height: 96px; box-sizing: border-box; transform: translate(-50%, -50%); padding: 10px; text-align: center; border: 1px solid #536370; border-radius: 15px; background: linear-gradient(150deg, #263947, #111e2a); box-shadow: 0 7px 16px #0005; overflow-wrap: anywhere; }
+.card-table-seat[data-position="0"] { left: 33%; top: 86%; }
+.card-table-seat[data-position="1"] { left: 15%; top: 56%; }
+.card-table-seat[data-position="2"] { left: 15%; top: 20%; }
+.card-table-seat[data-position="3"] { left: 85%; top: 20%; }
+.card-table-seat[data-position="4"] { left: 85%; top: 56%; }
+.card-table-seat[data-position="5"] { left: 67%; top: 86%; }
+.card-table-seat.own { border-color: #e9c87c; background: linear-gradient(150deg, #37413f, #19242d); }
+.card-table-seat.current { outline: 2px solid #f5d997; box-shadow: 0 0 24px #dfbd6755; }
+.card-table-seat.empty { border-style: dashed; border-color: #53637088; background: #10222b88; box-shadow: none; color: #9bacba; }
+.card-table-avatar { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #446b68; color: #fff0bf; border: 1px solid #b5c1a777; font-weight: 750; }
+.card-table-seat.empty .card-table-avatar { background: transparent; }
+.card-table-seat-name, .card-table-seat-status { display: block; }
+.card-table-seat { height: 185px; display: flex; flex-direction: column; align-items: center; }
+.card-table-seat-hands { width: 100%; flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.card-table-avatar, .card-table-seat-name, .card-table-seat-status { flex-shrink: 0; }
+.card-table-seat-name { font-size: 13px; margin-top: 3px; }
+.card-table-seat-status { color: #c4d1d5; font-size: 11px; }
+.card-table-dealer { position: absolute; left: 50%; top: 19%; transform: translate(-50%, -50%); width: 36%; text-align: center; }
+.card-table-dealer > strong { display: block; font-size: 12px; color: #d9c694; letter-spacing: .06em; }
+.card-table-dealer-portrait { display: inline-grid; place-items: center; width: 42px; height: 46px; border-radius: 45% 45% 18% 18%; border: 1px solid #bea777; background: radial-gradient(circle at 50% 27%, #ddbd8e 0 16%, transparent 17%), linear-gradient(65deg, #203043 45%, #eef0dc 46% 54%, #203043 55%); color: #c49b54; font-size: 24px; }
+.card-table-center { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); width: 42%; min-height: 70px; text-align: center; }
+.card-table-clock { position: absolute; left: 50%; top: 66%; transform: translate(-50%, -50%); width: 30%; min-width: 105px; padding: 7px 8px; border-radius: 10px; text-align: center; background: #0b1d24e6; border: 1px solid #77988a88; overflow: hidden; }
+.card-table-clock::after { content: ''; position: absolute; bottom: 0; left: 0; width: calc(var(--time-left, 0) * 100%); height: 3px; background: #e3c77d; transition: width .1s linear; }
+.card-table-clock span { display: block; color: #c3d4d7; font-size: 11px; }
+.card-table-clock strong { font: 750 24px/1.2 system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #fff0bb; }
+.card-table-clock.urgent strong { color: #ffac88; }
+body .casino-session .card-table-scene .blackjack-hand { padding: 0; margin: 3px 0; background: none; text-align: center; }
+body .casino-session .card-table-scene .blackjack-hand.current { outline: none; }
+body .casino-session .card-table-scene .blackjack-hand p { font-size: 10px; margin: 2px 0; }
+body .casino-session .card-table-scene .blackjack-card { min-width: 28px; height: 42px; padding-inline: 2px; margin: 2px 1px; font-size: 17px; }
+.card-table-scene .casino-hand-value { margin-top: 3px; font-size: 13px; }
+.card-table-scene .poker-player { border: 0; border-radius: 0; background: none; padding: 3px 0; }
+.card-table-scene .poker-player p, .card-table-scene .poker-player small { font-size: 10px; }
+.card-table-board-placeholder { display: inline-grid; place-items: center; width: 32px; height: 42px; margin: 2px; border: 1px dashed #b7c8bc55; border-radius: 4px; color: #a9bba266; }
+.card-table-center .casino-celebration { inset: auto 0; top: 50%; transform: translateY(-50%); box-sizing: border-box; max-height: 128px; overflow-y: auto; padding: 12px; border-radius: 12px; animation: none; background: radial-gradient(ellipse, #71532df5, #142433f5 80%); }
+.card-table-center .casino-celebration h3 { margin: 2px; font-size: clamp(20px, 2.5vw, 34px); }
+.card-table-center .casino-celebration strong { font-size: clamp(18px, 2.3vw, 30px); }
+.card-table-center .casino-celebration p { margin: 4px 0; font-size: 12px; }
+.blackjack-actions, .poker-actions { min-height: 54px; }
+@media (max-width: 700px) {
+    body .casino-session .card-table-scene { height: 540px; min-height: 540px; }
+    .card-table-seat { width: 29%; height: 158px; padding: 7px 4px; border-radius: 10px; }
+    .card-table-seat-name { font-size: 11px; }
+    .card-table-seat-status { font-size: 10px; }
+    .card-table-avatar { width: 24px; height: 24px; }
+    body .casino-session .card-table-scene .blackjack-card { min-width: 21px; height: 33px; font-size: 14px; }
+    .card-table-scene .casino-hand-value { font-size: 11px; }
+    .card-table-dealer { width: 38%; }
+    .card-table-center { width: 40%; }
+    .card-table-clock { width: 31%; padding: 5px 2px; }
+    .card-table-center .casino-celebration { padding: 7px; max-height: 144px; }
+    .card-table-center .casino-celebration strong { font-size: 16px; }
+    .card-table-center .casino-celebration p { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .card-table-clock::after { transition: none; } }

@@ -81,7 +81,7 @@ func TestBlackjackMongoIndependentTablesAndDebits(t *testing.T) {
 	if err != nil || saved.Gold != 240 || ids[0] == ids[1] {
 		t.Fatal("debits replayed or rounds shared", err)
 	}
-	if err := tickBlackjack(now.Add(16*time.Second), tables[0].ID); err != nil {
+	if err := tickBlackjack(now.Add(31*time.Second), tables[0].ID); err != nil {
 		t.Fatal(err)
 	}
 	blackjackMu.Lock()

@@ -67,7 +67,7 @@ test('poker renders only provided cards, escapes names and preserves focus on un
 
 test('poker waiting state never offers house opponents or a second buy-in', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update({ ...lobby(), players: [{ playerId: 'A', buyIn: 100 }] }, 'A');
-    expect(ui.summary.textContent).toContain('Waiting for another real player'); expect(ui.lobby.hidden).toBe(true); ui.buyIn();
+    expect(ui.summary.textContent).toContain('Waiting for another real player'); expect(ui.lobby.hidden).toBe(false); expect(ui.buy.disabled).toBe(true); ui.buyIn();
     ui.update({ ...lobby(), available: false }, 'A'); ui.buyIn(); expect(send).not.toHaveBeenCalled();
 });
 

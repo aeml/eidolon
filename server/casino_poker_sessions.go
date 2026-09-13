@@ -45,7 +45,7 @@ func newPokerLobby(previousButton int) (*pokerTableState, error) {
 	if _, err := rand.Read(nonce[:]); err != nil {
 		return nil, err
 	}
-	return &pokerTableState{RoundID: hex.EncodeToString(nonce[:]), Phase: "betting", ButtonSeat: previousButton, Players: []pokerParticipant{}}, nil
+	return &pokerTableState{RoundID: hex.EncodeToString(nonce[:]), Phase: "betting", DealAt: time.Now().Add(casinoBettingWindow), ButtonSeat: previousButton, Players: []pokerParticipant{}}, nil
 }
 
 func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, error) {
@@ -297,8 +297,8 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 		return database.ErrInsufficientGold
 	}
 	s.Players = append(s.Players, pokerParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, SessionID: sessionID, BuyIn: amount})
-	if len(s.Players) == 2 {
-		s.DealAt = now.Add(15 * time.Second)
+	if s.DealAt.IsZero() {
+		s.DealAt = now.Add(casinoBettingWindow)
 	}
 	return transferPokerLocked(r, s, client.playerID, -amount, "buy-in")
 }
@@ -482,6 +482,9 @@ func tickPoker(now time.Time) error {
 					s.Phase = "playing"
 					err = advancePokerLocked(r, s)
 				}
+			} else if owner == "" && (s.DealAt.IsZero() || !now.Before(s.DealAt)) {
+				s.DealAt = nextCasinoBettingDeadline(s.DealAt, now)
+				err = advancePokerLocked(r, s)
 			}
 		case "playing":
 			changed := false
@@ -511,9 +514,10 @@ func tickPoker(now time.Time) error {
 				}
 			}
 		case "complete":
-			if !now.Before(s.FinishedAt.Add(12 * time.Second)) {
+			if !now.Before(s.FinishedAt.Add(casinoResultPause)) {
 				s, err = newPokerLobby(s.Round.Players[s.Round.Button].Seat)
 				if err == nil {
+					s.DealAt = now.Add(casinoBettingWindow)
 					err = advancePokerLocked(r, s)
 				}
 			}
@@ -551,9 +555,6 @@ func tickPoker(now time.Time) error {
 				return nil
 			}
 			s.Players = append(s.Players[:i], s.Players[i+1:]...)
-			if len(s.Players) < 2 {
-				s.DealAt = time.Time{}
-			}
 			return transferPokerLocked(r, s, owner, p.BuyIn, "cancelled-buy-in")
 		}
 		if s.Phase == "settling" && !p.Paid {
@@ -577,21 +578,23 @@ type pokerParticipantView struct {
 	Paid     bool   `json:"paid"`
 }
 type pokerTableView struct {
-	MaxBuyIn   int                    `json:"maxBuyIn"`
-	Available  bool                   `json:"available"`
-	Processing bool                   `json:"processing"`
-	RoundID    string                 `json:"roundId"`
-	Phase      string                 `json:"phase"`
-	Players    []pokerParticipantView `json:"players"`
-	DealAt     time.Time              `json:"dealAt"`
-	Round      *game.PokerView        `json:"round,omitempty"`
-	Gold       int                    `json:"gold"`
+	ServerNow   time.Time              `json:"serverNow"`
+	NextRoundAt time.Time              `json:"nextRoundAt"`
+	MaxBuyIn    int                    `json:"maxBuyIn"`
+	Available   bool                   `json:"available"`
+	Processing  bool                   `json:"processing"`
+	RoundID     string                 `json:"roundId"`
+	Phase       string                 `json:"phase"`
+	Players     []pokerParticipantView `json:"players"`
+	DealAt      time.Time              `json:"dealAt"`
+	Round       *game.PokerView        `json:"round,omitempty"`
+	Gold        int                    `json:"gold"`
 }
 
 func pokerViewFor(owner string) pokerTableView {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
-	v := pokerTableView{Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
+	v := pokerTableView{ServerNow: time.Now(), Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
 	if !pokerAvailable || pokerCached == nil {
 		return v
 	}
@@ -601,6 +604,9 @@ func pokerViewFor(owner string) pokerTableView {
 		return v
 	}
 	v.RoundID, v.Phase, v.DealAt, v.Processing = s.RoundID, s.Phase, s.DealAt, pokerPendingOwner != ""
+	if s.Phase == "complete" {
+		v.NextRoundAt = s.FinishedAt.Add(casinoResultPause)
+	}
 	for _, p := range s.Players {
 		v.Players = append(v.Players, pokerParticipantView{PlayerID: p.PlayerID, Name: p.Name, Seat: p.Seat, BuyIn: p.BuyIn, Paid: p.Paid})
 	}

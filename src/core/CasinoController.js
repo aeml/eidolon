@@ -82,14 +82,15 @@ export class CasinoController {
         const isBlackjack = tables.find(table => table.id === seat?.tableId)?.game === 'blackjack' && Boolean(payload.blackjack);
         const isSlots = seat?.tableId?.startsWith('public-slots-') && Boolean(payload.slots);
         const isPoker = seat?.tableId === 'public-poker' && Boolean(payload.poker);
-        this.poker.update(isPoker ? payload.poker : null, this.engine.player?.id);
+        const tablePresence = { yourSeat: seat, occupants: this.data.occupants.filter(p => p.tableId === seat?.tableId) };
+        this.poker.update(isPoker ? payload.poker : null, this.engine.player?.id, tablePresence);
         this.panel.classList.toggle('has-poker', isPoker);
         this.slots.update(isSlots ? payload.slots : null);
         this.panel.classList.toggle('has-slots', Boolean(isSlots));
-        this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id);
+        this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id, tablePresence);
         this.panel.classList.toggle('has-blackjack', isBlackjack);
         this.ready.hidden = isBlackjack || isSlots || isPoker;
-        this.roster.hidden = Boolean(isSlots);
+        this.roster.hidden = Boolean(isSlots || isBlackjack || isPoker);
         if (seat) this.lastSeat = seat;
         if (seat && !this.active) this.enterView();
         else if (!seat && this.active) this.exitView();
@@ -167,6 +168,24 @@ export class CasinoController {
         }));
         this.dialogue.append(this.button('Close', () => this.dialogue.close()));
         if (!this.dialogue.open) this.dialogue.showModal();
+    }
+
+    updateDoorHover() {
+        const engine = this.engine;
+        this.hoverHint = null;
+        if (this.hoveredDoor) this.hoveredDoor.material.emissive.setHex(0x000000);
+        this.hoveredDoor = null;
+        if (this.active || this.dialogue.open || engine.currentInstanceId || !engine.player) return null;
+        const door = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell')?.userData.casinoDoor;
+        if (!door || !engine.inputManager?.mouse) return null;
+        this.raycaster.setFromCamera(engine.inputManager.mouse, engine.renderSystem.camera);
+        if (!this.raycaster.intersectObject(door, true).length) return null;
+        this.hoveredDoor = door; door.material.emissive.setHex(0x72501c);
+        const distance = engine.player.position.distanceTo(new THREE.Vector3(0, 0, 181));
+        this.hoverHint = { dungeonType: '', dungeonName: 'Casino', distance, inRange: distance < 7,
+            statusLabel: distance < 7 ? 'Entrance · Click to interact' : 'Entrance · Walk to enter',
+            promptLabel: distance < 7 ? 'Click to open the Casino entrance, then choose Enter Casino.' : 'Click to walk to the Casino entrance.' };
+        return this.hoverHint;
     }
 
     handlePrimaryClick(event) {

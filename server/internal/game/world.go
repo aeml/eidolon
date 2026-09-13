@@ -1060,9 +1060,9 @@ func (w *World) spawnStash() {
 		ID:        "stash-1",
 		Type:      TypeStash,
 		SubType:   "Stash",
-		X:         -8,
+		X:         -14,
 		Y:         0.5, // Slightly above ground
-		Z:         185, // Between Trading House and the clear casino approach.
+		Z:         193, // Beside the Trading House, west of the casino door approach.
 		Rotation:  0,
 		State:     "IDLE",
 		Health:    100000,

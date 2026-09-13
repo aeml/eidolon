@@ -1257,6 +1257,7 @@ class GameEngineMovementMethods {
             document.body.style.cursor = 'default';
         }
 
+        if (this.casino?.updateDoorHover?.()) document.body.style.cursor = 'pointer';
         this.refreshDungeonEntranceHint();
         this.refreshCombatIntentState();
     }

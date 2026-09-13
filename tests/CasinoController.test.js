@@ -102,3 +102,36 @@ test('walkable shell retains walls, opens a real doorway and batches the cutaway
     expect(furniture.userData.seats[0].userData.casinoSeat).toEqual({ tableId: table.id, seat: 0 });
     disposeCasinoObject(shell); disposeCasinoObject(furniture);
 });
+
+test('casino roof is one axis-aligned canopy covering the upper cornice', () => {
+    const shell = createCasinoShell(); shell.updateMatrixWorld(true);
+    const bounds = new THREE.Box3();
+    shell.userData.casinoCutaway.traverse(mesh => {
+        if (!mesh.isMesh) return;
+        const vertices = mesh.geometry.getAttribute('position');
+        for (let i = 0; i < vertices.count; i++) {
+            const p = new THREE.Vector3().fromBufferAttribute(vertices, i).applyMatrix4(mesh.matrixWorld);
+            if (p.y >= 10.79) bounds.expandByPoint(p);
+        }
+    });
+    expect(bounds.min.x).toBeCloseTo(-14); expect(bounds.max.x).toBeCloseTo(14);
+    expect(bounds.min.z).toBeCloseTo(161); expect(bounds.max.z).toBeCloseTo(179);
+    expect(bounds.max.y).toBeCloseTo(14.3);
+    disposeCasinoObject(shell);
+});
+
+test('town casino door raycast provides Casino label, click prompt and isolated hover tint', () => {
+    const { engine, controller } = setup(); engine.currentInstanceId = '';
+    const shell = createCasinoShell(); engine.renderSystem.scene.add(shell); shell.updateMatrixWorld(true);
+    engine.player.position.set(0, 0, 181);
+    const camera = engine.renderSystem.camera; camera.position.set(0, 8, 200); camera.lookAt(0, 2.4, 178.35); camera.updateMatrixWorld(true);
+    const pointer = new THREE.Vector3(0, 2.4, 178.35).project(camera);
+    engine.inputManager.mouse = new THREE.Vector2(pointer.x, pointer.y);
+    expect(controller.updateDoorHover()).toEqual(expect.objectContaining({ dungeonName: 'Casino', inRange: true,
+        promptLabel: 'Click to open the Casino entrance, then choose Enter Casino.' }));
+    expect(shell.userData.casinoDoor.material.emissive.getHex()).not.toBe(0);
+    engine.inputManager.mouse.set(99, 99); expect(controller.updateDoorHover()).toBeNull();
+    expect(shell.userData.casinoDoor.material.emissive.getHex()).toBe(0);
+    engine.currentInstanceId = 'dungeon'; expect(controller.updateDoorHover()).toBeNull();
+    controller.dispose(); disposeCasinoObject(shell);
+});

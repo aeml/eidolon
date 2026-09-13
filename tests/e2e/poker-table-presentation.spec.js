@@ -24,7 +24,7 @@ test('phone poker presents private cards, clear reserved-stack raises and safe l
                 players: [{ playerId: 'A', seat: 0, stack: 90, streetBet: 10, committed: 10, cards: [13, 14] }, { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }] }
         }, 'A');
     });
-    await expect(page.locator('.poker-players [aria-label="Hidden card"]')).toHaveCount(2);
+    await expect(page.locator('.card-table-seat [aria-label="Hidden card"]')).toHaveCount(2);
     expect(await page.locator('.casino-session').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     await page.getByLabel('Total Gold bet on this street').fill('50');
     await page.getByRole('button', { name: 'Raise to selected Gold', exact: true }).click();

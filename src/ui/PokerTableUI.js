@@ -1,4 +1,5 @@
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
+import { CardTableScene } from './CardTableScene.js';
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const suits = ['♣', '♦', '♥', '♠'];
@@ -26,10 +27,11 @@ export class PokerTableUI {
             this.stake.onchange();
         }));
         this.lobby.insertBefore(adjustments, this.buy); this.buy.className = 'casino-primary';
-        this.felt = element('div', '', 'poker-felt');
+        this.table = new CardTableScene('poker'); this.felt = this.table.root; this.felt.classList.add('poker-felt');
+        this.table.onExpire = () => this.setDisabled(true);
         this.board = element('div', '', 'poker-board'); this.board.setAttribute('aria-label', 'Community cards');
-        this.pots = element('div', '', 'poker-pots'); this.players = element('div', '', 'poker-players');
-        this.felt.append(this.board, this.pots, this.players);
+        this.pots = element('div', '', 'poker-pots'); this.players = this.table.root;
+        this.table.center.append(this.board, this.pots);
         this.actions = element('div', '', 'poker-actions');
         const rules = element('details'); rules.append(element('summary', 'Hold’em rules · Gold and leaving'));
         this.stakeRules = element('p'); rules.append(this.stakeRules);
@@ -37,7 +39,7 @@ export class PokerTableUI {
         rules.append(element('p', 'Raise to means your total bet on this street, not extra Gold from your bag. The minimum raise increases the current bet by at least the last full raise (initially 10). A smaller all-in is allowed; it only reopens earlier players’ raises when the combined increase reaches their required full raise. A short call remains eligible only for its covered pots.'));
         rules.append(element('p', 'Turns last 30 seconds. A timeout checks for free or folds to a bet. Leaving after the deal folds a remaining stack; an all-in hand stays eligible. Disconnections reserve the seat for 60 seconds, but the turn timer keeps running. No bots take over.'));
         rules.append(element('p', 'Main and side pots settle separately. Uncalled Gold returns to its owner. Ties split each pot; odd Gold goes clockwise from the seat left of the dealer. All unspent stack and winnings return to your Gold balance after the hand, even if you leave or disconnect. Folded cards remain private.'));
-        this.root.append(this.summary, this.lobby, this.felt, this.actions, rules);
+        this.root.append(this.summary, this.felt, this.lobby, this.actions, rules);
     }
 
     button(text, action) { const b = element('button', text); b.type = 'button'; b.onclick = action; return b; }
@@ -48,15 +50,18 @@ export class PokerTableUI {
         card.setAttribute('aria-label', label); return card;
     }
 
-    update(view, playerID) {
+    update(view, playerID, presence = {}) {
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.signature = null; this.pending = false; this.celebration?.clear(); return; }
-        if (!this.celebration) this.celebration = new CasinoCelebration(this.root);
+        if (!view) { this.signature = null; this.controlsKey = null; this.pending = false; this.table.clear(); this.celebration?.clear(); return; }
+        this.presence = presence; this.table.update(view, playerID, presence);
+        if (!this.celebration) this.celebration = new CasinoCelebration(this.table.center);
         this.stake.max = String(view.maxBuyIn || 500);
-        this.stakeRules.textContent = `Two to six real players; no house opponents or rake. Buy in reserves 100–${goldText(this.stake.max)} Gold in steps of 100 for one hand. Two funded players start a 15-second joining window. Leaving before the deal refunds your buy-in. Each new hand requires a buy-in click; raises and all-ins use your reserved stack.`;
+        this.stakeRules.textContent = `Two to six real players; no house opponents or rake. Buy in reserves 100–${goldText(this.stake.max)} Gold in steps of 100 for one hand. Betting windows run for 30 seconds and reopen automatically after saved results. At least two connected, funded players are needed to deal; otherwise the window repeats and reserved buy-ins stay available. Leaving before the deal refunds your buy-in. Each new hand requires a buy-in click; raises and all-ins use your reserved stack.`;
         if (this.celebrationRound !== view.roundId) this.celebration.clear();
-        const signature = JSON.stringify([view.roundId, view.phase, view.round?.revision, view.processing, view.available, view.gold, view.players, playerID]);
+        const signature = JSON.stringify([view.roundId, view.phase, view.round?.revision, view.available, view.players, playerID, presence]);
         const changed = signature !== this.signature; this.signature = signature;
+        const controlsKey = JSON.stringify([view.roundId, view.phase, view.available, view.round?.revision, view.round?.actions, playerID]);
+        const controlsChanged = controlsKey !== this.controlsKey; this.controlsKey = controlsKey;
         const actionKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, view.players?.find(p => p.playerId === playerID), playerID]);
         if (actionKey !== this.actionKey) this.pending = false;
         this.actionKey = actionKey;
@@ -65,9 +70,9 @@ export class PokerTableUI {
             this.setDisabled(true); return;
         }
         const funded = view.players?.find(p => p.playerId === playerID);
-        this.lobby.hidden = view.phase !== 'betting' || Boolean(funded);
+        this.lobby.hidden = view.phase !== 'betting';
         const round = view.round;
-        this.felt.hidden = !round;
+        this.felt.hidden = false;
         const count = view.players?.length || 0;
         const waiting = count < 2 ? `Waiting for another real player · ${count}/2 minimum.` : 'Funded players are joining; waiting for the server to deal.';
         this.summary.textContent = view.processing ? 'Saving table Gold… please wait.' : view.phase === 'betting'
@@ -76,22 +81,25 @@ export class PokerTableUI {
                 : view.phase === 'settling' ? 'Hand complete · saving each player’s unspent Gold and winnings…'
                     : `${round?.street || 'Dealing'} · ${view.gold} Gold in your bag. ${round?.turnPlayerId === playerID ? 'Your turn.' : `${this.name(round?.turnPlayerId)} to act.`}`;
         if (changed) {
-            this.board.replaceChildren(); this.players.replaceChildren(); this.pots.replaceChildren(); this.actions.replaceChildren();
+            this.board.replaceChildren(); this.pots.replaceChildren();
+            if (controlsChanged) this.actions.replaceChildren();
+            for (const seat of this.table.seats) seat.hands.replaceChildren();
+            for (let i = 0; i < 5; i++) {
+                if (round) this.board.append(this.card(round.board?.[i]));
+                else this.board.append(element('span', '◇', 'card-table-board-placeholder'));
+            }
             if (round) {
-                for (let i = 0; i < 5; i++) this.board.append(this.card(round.board?.[i]));
                 for (const [index, pot] of (round.pots || []).entries()) {
                     this.pots.append(element('p', `${pot.uncalled ? 'Uncalled return' : index === 0 ? 'Main pot' : `Side pot ${index}`}: ${pot.amount} Gold${pot.winners?.length ? ` → ${pot.winners.map(id => this.name(id)).join(', ')}` : ''}`));
                 }
                 for (const p of round.players || []) {
                     const row = element('div', '', `poker-player${p.playerId === round.turnPlayerId ? ' current' : ''}${p.folded ? ' folded' : ''}`);
-                    const status = p.folded ? 'Folded' : p.stack === 0 ? 'All-in' : `${p.stack} Gold stack`;
-                    row.append(element('p', `${this.name(p.playerId)}${p.playerId === playerID ? ' · You' : ''}${p.seat === round.buttonSeat ? ' · Dealer' : ''} · ${status}`));
                     const cards = element('div'); for (const value of p.cards || []) cards.append(this.card(value)); row.append(cards);
                     if (p.bestHand || p.hand) row.append(element('strong', p.bestHand || p.hand, 'casino-hand-value'));
-                    row.append(element('small', round.phase === 'complete' ? `${p.hand ? `${p.hand} · ` : ''}${p.payout} Gold returned` : `${p.streetBet} on this street · ${p.committed} committed`));
-                    this.players.append(row);
+                    row.append(element('small', round.phase === 'complete' ? `${p.payout} Gold returned` : `${p.streetBet} bet · ${p.committed} total`));
+                    this.table.seats[p.seat]?.hands.append(row);
                 }
-                for (const action of round.actions || []) {
+                for (const action of controlsChanged ? round.actions || [] : []) {
                     if (action === 'raise') {
                         const label = element('label', 'Raise to '); this.raise = element('input'); this.raise.type = 'number'; this.raise.step = '1';
                         this.raise.min = String(round.minimumRaiseTo); this.raise.max = String(round.maximumRaiseTo); this.raise.value = String(round.minimumRaiseTo);
@@ -101,10 +109,9 @@ export class PokerTableUI {
                     const label = { fold: 'Fold', check: 'Check', call: `Call ${round.callAmount} Gold`, raise: 'Raise to selected Gold', all_in: `All-in · ${stack} Gold` }[action];
                     if (label) this.actions.append(this.button(label, () => this.choose(action)));
                 }
-                if (round.phase === 'playing') this.actions.append(element('small', `30-second turns · deadline ${new Date(round.deadline).toLocaleTimeString()}`));
             }
         }
-        this.setDisabled(Boolean(view.processing || this.pending));
+        this.setDisabled(Boolean(view.processing || this.pending || this.table.expired));
         if (view.available && !view.processing && view.phase === 'complete' && this.celebrationRound !== view.roundId) {
             this.celebrationRound = view.roundId;
             const own = round?.players.find(p => p.playerId === playerID);
@@ -117,11 +124,12 @@ export class PokerTableUI {
         }
     }
 
-    name(id) { return this.view?.players?.find(p => p.playerId === id)?.name || 'Player'; }
+    name(id) { return this.presence?.occupants?.find(p => p.playerId === id)?.name || this.view?.players?.find(p => p.playerId === id)?.name || 'Player'; }
     setDisabled(disabled) {
         for (const control of this.root.querySelectorAll('button, input, select')) control.disabled = disabled;
+        for (const control of this.lobby.querySelectorAll('button, input')) control.disabled = disabled || this.view?.phase !== 'betting' || Boolean(this.view?.players?.some(p => p.playerId === this.playerID));
     }
-    canAct() { return Boolean(this.view?.available && !this.view.processing && !this.pending); }
+    canAct() { return Boolean(this.view?.available && !this.view.processing && !this.pending && !this.table.expired); }
     buyIn() {
         if (!this.canAct() || this.view.phase !== 'betting' || this.view.players?.some(p => p.playerId === this.playerID)) return;
         const bet = Number(this.stake.value);
@@ -144,7 +152,7 @@ export class PokerTableUI {
         const p = this.pendingAction;
         if (!this.pending || !p || error.action !== p.action || error.roundId !== p.roundId || error.roundRevision !== (p.roundRevision || 0)) return;
         this.pending = false; this.pendingAction = null;
-        this.update(this.view, this.playerID); this.summary.textContent = error.error;
+        this.update(this.view, this.playerID, this.presence); this.summary.textContent = error.error;
     }
     dispose() { this.update(null); this.root.remove(); }
 }

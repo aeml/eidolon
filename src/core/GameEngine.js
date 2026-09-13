@@ -1416,9 +1416,9 @@ export class GameEngine {
         storyWizard.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
         this.addEntity(storyWizard);
 
-        // Stash (In front of Two Story Building)
+        // Stash beside the Trading House, west of the casino entrance approach.
         const stash = new Stash('stash-local');
-        stash.position.set(-8, 0, 185);
+        stash.position.set(-14, 0, 193);
         stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
         this.addEntity(stash);
     }
@@ -1573,6 +1573,7 @@ export class GameEngine {
     }
 
     buildDungeonEntranceHint(entity = this.hoveredEntity) {
+        if (entity === this.hoveredEntity && this.casino?.hoverHint) return this.casino.hoverHint;
         if (!entity || !entity.position || !this.player?.position) {
             return null;
         }

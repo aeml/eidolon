@@ -173,8 +173,13 @@ export function createCasinoShell(x = 0, z = 170) {
         box(cutaway, 'casino-upper-window', m.felt, [1.4, 2.4, 0.23], [px, 8.15, 7.82]);
     }
     for (const y of [5.9, 10.7]) box(cutaway, 'casino-gold-cornice', m.gold, [26.6, 0.3, 16.6], [0, y, 0]);
-    const roof = new THREE.Mesh(new THREE.ConeGeometry(18.8, 3.5, 4), m.dark);
-    roof.name = 'casino-roof'; roof.rotation.y = Math.PI / 4; roof.scale.z = 0.63; roof.position.y = 12.55;
+    // Bake the rotation BEFORE the rectangular scale. Scaling the mesh's local Z
+    // first skewed the roof across the facade and exposed the gold ceiling slab
+    // like a second, differently sized roof.
+    const roofGeometry = new THREE.ConeGeometry(14 * Math.SQRT2, 3.5, 4);
+    roofGeometry.rotateY(Math.PI / 4); roofGeometry.scale(1, 1, 18 / 28);
+    const roof = new THREE.Mesh(roofGeometry, m.dark);
+    roof.name = 'casino-roof'; roof.position.y = 12.55;
     roof.castShadow = true; cutaway.add(roof);
     root.userData.casinoCutaway = cutaway;
     root.userData.casinoUpstairs = upstairs;
@@ -193,6 +198,8 @@ export function createCasinoShell(x = 0, z = 170) {
     }
     root.userData.casinoStairMarkers = stairMarkers;
     const door = box(root, 'casino-town-door', m.wood, [4.8, 4.8, .3], [0, 2.4, 8.35]);
+    door.material = door.material.clone(); // Hover tint belongs only to the door.
+    door.material.emissiveIntensity = .7;
     box(door, 'casino-door-handle', m.gold, [.15, .7, .2], [.7, 0, .3]);
     root.userData.casinoDoor = door;
     return root;

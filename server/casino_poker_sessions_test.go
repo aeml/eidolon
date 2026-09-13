@@ -78,7 +78,8 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 		t.Fatal("solo hand started")
 	}
 	buy(1, 200)
-	if err := tickPoker(now.Add(16 * time.Second)); err != nil {
+	dealAt := pokerViewFor(clients[0].playerID).DealAt
+	if err := tickPoker(dealAt); err != nil {
 		t.Fatal(err)
 	}
 	view := pokerViewFor(clients[0].playerID)
@@ -112,7 +113,7 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 		turn = 1
 	}
 	unlock := lockCharacterWork(clients[turn].username)
-	err := handlePokerPlay(clients[turn], tokens[turn], roundID, "fold", 0, view.Round.Revision, now.Add(17*time.Second))
+	err := handlePokerPlay(clients[turn], tokens[turn], roundID, "fold", 0, view.Round.Revision, dealAt.Add(time.Second))
 	unlock()
 	if err != nil {
 		t.Fatal(err)
@@ -142,7 +143,7 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 		t.Fatal(err)
 	}
 	for i := 0; i < 3; i++ {
-		if err := tickPoker(now.Add(18 * time.Second)); err != nil {
+		if err := tickPoker(dealAt.Add(2 * time.Second)); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -172,6 +173,24 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 		if len(saved.GoldCreditReceipts) != 2 {
 			t.Fatal("cash-out replay changed receipts")
 		}
+	}
+	// Results count down into a new empty betting window, without any buy-in.
+	nextAt := view.NextRoundAt
+	if nextAt.IsZero() {
+		t.Fatal("result countdown missing")
+	}
+	if err := tickPoker(nextAt); err != nil {
+		t.Fatal(err)
+	}
+	view = pokerViewFor(clients[0].playerID)
+	if view.Phase != "betting" || len(view.Players) != 0 || !view.DealAt.Equal(nextAt.Add(casinoBettingWindow)) {
+		t.Fatal("next window waited for a wager", view)
+	}
+	if err := tickPoker(view.DealAt); err != nil {
+		t.Fatal(err)
+	}
+	if next := pokerViewFor(clients[0].playerID); next.Phase != "betting" || !next.DealAt.After(view.DealAt) {
+		t.Fatal("empty window stopped or invented a hand", next)
 	}
 }
 

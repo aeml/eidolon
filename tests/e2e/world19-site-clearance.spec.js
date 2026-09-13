@@ -18,7 +18,7 @@ test('1.9 town approaches and event spawn/rune sites clear the generated world s
         await generator.createTown(0, 200, 100);
         await generator.createOverworldStructures();
         // These two buildings are server entities, not static generator props.
-        for (const [kind, x, z, rotation] of [['stash', -8, 185, 0], ['trading_house', -22, 185, Math.PI / 4]]) {
+        for (const [kind, x, z, rotation] of [['stash', -14, 193, 0], ['trading_house', -22, 185, Math.PI / 4]]) {
             const mesh = createProceduralLanternholdStructure(kind, { optimized: true }); mesh.position.set(x, .5, z); mesh.rotation.y = rotation;
             scene.add(mesh); collision.addOrientedCollider(getLanternholdWalkCollider(mesh));
         }
@@ -29,7 +29,7 @@ test('1.9 town approaches and event spawn/rune sites clear the generated world s
         let samples = 0;
         const routes = [
             [[0, 200], [0, 181], [0, 180]],
-            [[0, 200], [-4, 193], [-4, 185]], [[-4, 193], [-14, 193]],
+            [[0, 200], [-4, 193], [-4, 185]], [[-4, 193], [-10, 193]],
             [[0, 181], [-4, 193]], [[0, 181], [10, 190]]
         ];
         for (const [index, route] of routes.entries()) for (let i = 1; i < route.length; i++) {

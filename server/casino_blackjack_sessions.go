@@ -68,7 +68,7 @@ func newBlackjackLobby() (*blackjackTableState, error) {
 	if _, err := rand.Read(nonce[:]); err != nil {
 		return nil, err
 	}
-	return &blackjackTableState{RoundID: hex.EncodeToString(nonce[:]), Phase: "betting", Players: []blackjackParticipant{}}, nil
+	return &blackjackTableState{RoundID: hex.EncodeToString(nonce[:]), Phase: "betting", DealAt: time.Now().Add(casinoBettingWindow), Players: []blackjackParticipant{}}, nil
 }
 
 func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTableState, error) {
@@ -258,7 +258,7 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	}
 	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, Bet: bet})
 	if state.DealAt.IsZero() {
-		state.DealAt = now.Add(15 * time.Second)
+		state.DealAt = now.Add(casinoBettingWindow)
 	}
 	return transferBlackjackLocked(r, state, client.playerID, -bet, "bet")
 }
@@ -320,7 +320,10 @@ func tickBlackjack(now time.Time, ids ...string) error {
 	} else {
 		switch state.Phase {
 		case "betting":
-			if len(state.Players) > 0 && !now.Before(state.DealAt) {
+			if state.DealAt.IsZero() || (len(state.Players) == 0 && !now.Before(state.DealAt)) {
+				state.DealAt = nextCasinoBettingDeadline(state.DealAt, now)
+				err = advanceBlackjackLocked(r, state)
+			} else if len(state.Players) > 0 && !now.Before(state.DealAt) {
 				entries := make([]game.BlackjackEntry, 0, len(state.Players))
 				for _, p := range state.Players {
 					entries = append(entries, game.BlackjackEntry{PlayerID: p.PlayerID, Seat: p.Seat, Bet: p.Bet})
@@ -352,9 +355,10 @@ func tickBlackjack(now time.Time, ids ...string) error {
 				}
 			}
 		case "complete":
-			if !now.Before(state.FinishedAt.Add(12 * time.Second)) {
+			if !now.Before(state.FinishedAt.Add(casinoResultPause)) {
 				state, err = newBlackjackLobby()
 				if err == nil {
+					state.DealAt = now.Add(casinoBettingWindow)
 					err = advanceBlackjackLocked(r, state)
 				}
 			}
@@ -415,15 +419,17 @@ func tickBlackjack(now time.Time, ids ...string) error {
 }
 
 type blackjackTableView struct {
-	MaxBet     int                    `json:"maxBet"`
-	Available  bool                   `json:"available"`
-	RoundID    string                 `json:"roundId,omitempty"`
-	Phase      string                 `json:"phase,omitempty"`
-	Processing bool                   `json:"processing"`
-	Players    []blackjackParticipant `json:"players"`
-	DealAt     time.Time              `json:"dealAt"`
-	Round      *game.BlackjackView    `json:"round,omitempty"`
-	Gold       int                    `json:"gold"`
+	ServerNow   time.Time              `json:"serverNow"`
+	NextRoundAt time.Time              `json:"nextRoundAt"`
+	MaxBet      int                    `json:"maxBet"`
+	Available   bool                   `json:"available"`
+	RoundID     string                 `json:"roundId,omitempty"`
+	Phase       string                 `json:"phase,omitempty"`
+	Processing  bool                   `json:"processing"`
+	Players     []blackjackParticipant `json:"players"`
+	DealAt      time.Time              `json:"dealAt"`
+	Round       *game.BlackjackView    `json:"round,omitempty"`
+	Gold        int                    `json:"gold"`
 }
 
 func blackjackViewFor(playerID string) blackjackTableView {
@@ -434,7 +440,7 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		id = p.CasinoSeat.TableID
 	}
 	blackjackCached, blackjackAvailable := getBlackjackCache(id)
-	view := blackjackTableView{Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
+	view := blackjackTableView{ServerNow: time.Now(), Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
 	if !blackjackAvailable || blackjackCached == nil {
 		return view
 	}
@@ -444,6 +450,9 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		return view
 	}
 	view.RoundID, view.Phase, view.Processing, view.Players, view.DealAt = state.RoundID, state.Phase, blackjackCached.Pending != nil, state.Players, state.DealAt
+	if state.Phase == "complete" {
+		view.NextRoundAt = state.FinishedAt.Add(casinoResultPause)
+	}
 	if state.Round != nil {
 		round := state.Round.View(playerID)
 		view.Round = &round
