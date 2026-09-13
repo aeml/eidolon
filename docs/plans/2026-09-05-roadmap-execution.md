@@ -5,7 +5,24 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:45 UTC
+## Current checkpoint — September 13, 00:53 UTC
+
+PROGRESS: new1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913`, branch
+`work/1-3-combat-feel-20260913`, clean8310c093, NOT pushed. Based999dfbf0;
+node_modules linked to1.2 WT and prepare:client completed. Local class ability
+sounds with120ms repeat guard, mute/volume retained, no remote cast noise or
+missing assets. Nearby party decorative impacts compact (70%intensity/low mesh
+count/220ms interval); local and hazard feedback full, attack boundaries untouched.
+16audio/wiring tests PASS;47feedback PASS +1compactgeometry check. Chrome native
+audio renders finite/nonzero/nonclipping. All short sessions closed. Scope/notes
+in `docs/plans/2026-09-13-release1-3-combat.md`. Next1.3: casting/aim feedback,
+anticipation/impacts, camera options and movement transitions; not more broad QA.
+
+1.2 publishing34728771304 is still live: clientSUCCESS, serverIN_PROGRESS at
+Go race detector. Keep same run/frozen1.2 WT999dfbf0. No1.2 deployment yet verified.
+Root ledger stays local and MUST NOT be pushed; full goal remains active.
+
+### Previous detail — September 13, 00:45 UTC
 
 PROGRESS: **Alpha1.2.0 pushed to origin/master**,999dfbf009646028e24e35e074211392910b315e.
 Publishing CI **34728771304 IN_PROGRESS**. Existing1.2 WT clean/frozen at999dfbf0.
