@@ -5,7 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 01:54 UTC
+## Current checkpoint — September 13, 02:00 UTC
+
+PROGRESS: Alpha1.4.0 packaged and PUSHED9f4b9dc8c96507fee1646ec4bfa0105d62b7a404.
+Frozen1.4 WT `/tmp/eidolon-1-4-chronicle-20260913` clean. Five player-facing notes;
+login/package/lock/release/server/deploy versions synchronized. Final254 version/
+witness checks PASS, targeted Go resident-spawn check PASS, changed lint/diff PASS.
+CI34731798665 confirmed IN_PROGRESS with client/server running. Poll same run;
+no1.4live claim yet. Runtime code must remain frozen while it publishes.
+
+1.3CI34730497493 now TERMINAL SUCCESS including final Live Release/Character QA.
+Exact both-domain1.3/fb7554ad readbacks and backend database ready already recorded.
+
+Prepared1.5 WT `/tmp/eidolon-1-5-loot-loadouts-20260913`, branch
+work/1-5-loot-loadouts-20260913, based9f4b9dc8. Shared node_modules symlink,
+prepare:client PASS. Only stage plan committed at
+`docs/plans/2026-09-13-release1-5-loot.md`; no runtime1.5 implementation yet.
+Next: owned-item saved loadouts with authoritative switching, then appearance
+collection/Forge/comparison/economy/casino currency boundary. Actual starting
+sources: inventory_actions.go PerformEquip122/PerformUnequip310, equipment_slots.go,
+entity.go inventory/equipment/hotbar/talents, items.go Item.ID, character_persistence.go
+and internal/database/character_repository.go. No loadout/wardrobe source existed.
+Preserve respec costs, missing items, bag capacity, ownership, resource maxima and
+persistence; don't substitute a client-only preset. VIP currency remains undefined.
+
+All local sessions terminal; root ledger NEVER push; full1.1–1.10 goal active.
+Tool-store `versionLineTemplate` contains per-file version lines (base1.3.0) for
+future grouped apply_patch bumps; retain historical patch notes/dependency versions.
+
+### Previous detail — September 13, 01:54 UTC
 
 PROGRESS: 1.4 worktree `/tmp/eidolon-1-4-chronicle-20260913` is clean at9a45cdfa,
 not pushed. Added server-spawned Mara/Dain/Hessa/Selen at southern plaza x=-24/-8/
