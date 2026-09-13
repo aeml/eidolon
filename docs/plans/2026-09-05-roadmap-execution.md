@@ -17,7 +17,25 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, persistent casino tables/town fixes LOCAL
+## Current checkpoint — September 13 23:29 UTC, Alpha 1.9.4 verified LIVE
+
+Latest user push/deploy completed. Exact commit
+**7b370f2576153d9beac37d3e65735c51d990ec7e**, Alpha1.9.4 verified on both public
+domains, backend/databaseREADY; origin/master matches. Login/runtime query,
+cumulative patch notes and served table/clock/roof/door/stash code verified.
+CI **34788160140 TERMINAL SUCCESS**, all release jobs, no rerun or reported flaky
+result. Predeploy4PASS1.2m; live gameplay8PASS5.9m; recovery2PASS1.2m; two-player
+aura/phone1PASS35.3s. Do NOT repoll/restart completed run or make docs-only release.
+
+Stable six-seat card tables, smooth clocks/automatic betting windows and town
+roof/door/stash fixes below are now deployed, not local-only. Packaging252PASS;
+reused focused evidence, no additional local broad suite/soak. Active WT remains
+`/tmp/eidolon-1-10-resonant-age-20260913`; handoff
+`docs/plans/2026-09-13-persistent-card-tables-and-town-entrance.md` has exact proof.
+No owned QA process remains. EP/full1.10 scope still unfinished.
+ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, persistent casino tables/town fixes LOCAL
 
 User reported disappearing card-table layout, jerky countdowns, no automatic
 between-hand betting clock, skewed casino roof, missing door hover cue and stash
