@@ -34,8 +34,10 @@ PASS; one changed Help presentation assertion PASS1.164s; diffcheckPASS. Session
 was rerun once as39513 and observed to successful completion. No new broad matrix.
 Browser reading/layout remains part of final integration, not claimed from JSDOM.
 
-Exact1.9 CI34749377284 remains IN_PROGRESS: Go/Jest and browser shard3 PASS,
-browser shards1/2 running at latest observation. Monitor SAME run; no new trigger.
+Follow-up goal turn = VERIFIED WAIT on exact1.9 CI34749377284 (head rechecked as
+e86e29a0). Go/Jest and ALL three browser shards now PASS. Predeploy Character QA
+is IN_PROGRESS on `Run focused disposable release smoke`; full stabilization
+steps are correctly skipped. Monitor SAME run; no new trigger.
 No1.9 live claim yet. Frozen1.9 WT and root restrictions below still apply.
 
 NEXT: VIP name/acquisition policy is now the feature dependency needing user
