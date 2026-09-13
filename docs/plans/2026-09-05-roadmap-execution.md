@@ -17,7 +17,27 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13 18:00 UTC, Alpha 1.9.1 verified LIVE
+## Current checkpoint — September 13, next feature authority boundary
+
+Previous goal turn=PROGRESS (verified1.9.1 deployment). Revalidated clean active
+WT bff002b0 and current roadmap/source, without polling completed CI. Reviewed
+saved builds (loadout_builds.go includes specialization/talents/runes and existing
+respec pricing), earned wardrobe, party preparation/lockouts, casino currency
+receipts/telemetry and full1.10 acceptance. These reviewed feature paths already
+exist; no reason to recreate them. Fullcampaign/groupraid/concurrency/physicalphone
+acceptance remains explicitly required and unproven, not erased by this review.
+
+Next feature boundary: enabling EP exchange/monthly allowance requires the
+user's Gold-per-EP and monthlyEP quantities, already asked asynchronously. No
+reply yet. Payment integration excluded; upstairs guarded fornow. Do not invent
+economic quantities, VIP entitlement rules, purchase flow or completion claims.
+Do not start another long campaign/soak while the user's feature-first policy
+defers broad verification until features are in place. No new code/tests/processes
+launched this turn. This is the FIRST genuine post-release authority-blocker
+audit; do not mark goalblocked before its threshold. Goal remains unfinished.
+Active WT unchanged, live remains verified1.9.1c8741288; ROOT LEDGER ONLY.
+
+## Previous checkpoint — September 13 18:00 UTC, Alpha 1.9.1 verified LIVE
 
 Previous goal turn=VERIFIED WAIT. This turn=PROGRESS/verified release acceptance:
 followed the SAME exact CI **34771598671** through completion. All TEN jobs
