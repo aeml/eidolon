@@ -17,7 +17,53 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, real-player poker implemented
+## Current checkpoint — September 13, 1.9 pushed / final milestone opened
+
+Previous/current goal turns = PROGRESS.1.9 PACKAGED/PUSHED master exact
+e86e29a0f808e7547678c77485b8441c06ee067c from frozen clean
+/tmp/eidolon-1-9-world-20260913. Includes all events/venue/slots/poker work,
+initial slot payout tuning, cumulative1.9 notes and synchronized login/server/
+package/container/CI/deploy metadata. Preserves all prior milestone history.
+Exact CI34749377284 IN_PROGRESS: server/client jobs running. Monitor THIS handle;
+do not rerun/cancel on observation timeout.1.8 exact6acb6c4e remains last verified
+live until1.9 deployment and public identities are confirmed.1.8CI is terminal
+success; no need to poll it. Frozen release corrections must merge forward.
+
+ACTIVE DEVELOPMENT now /tmp/eidolon-1-10-resonant-age-20260913, clean HEADdf051969
+(local only, not pushed). Branched from1.9; shared canonical node_modules symlink.
+Read docs/plans/2026-09-13-release1-10-resonant-age.md there. Runtime stays1.9 until
+the FULL1.10 is ready. NEXT implement the small post-Malachar story hook and
+sustainable existing-system content cadence; inspect current campaign code first.
+VIP currency name/acquisition remains an unanswered user choice, no invention or
+Gold/Resonance substitute. Working higher-stakes/premium upstairs content remains
+required. Finish features before ONE consolidated cross-game acceptance phase.
+
+Reusable new evidence: tuned sampled slot returns Earth96.16%, Fire96.85%,
+Water91.77%, Air96.89%, each50kcompletepaidcycles; approximate intervals and limits
+recorded in slot handoff. Not exact RTP guarantees. Original Earth sample105.72%
+motivated explicit per-theme paytables. Final changedWater-only sample plus core
+slotrules PASS0.803s; unchanged themes reused. No repeated broad simulations.
+World-generator scenery clearance PASS5.6s:323actual-site/approach samples,
+542colliders,9foliagegroups,0blocked. /tmp/eidolon-world19-town-20260913.png viewed.
+
+Actual two-player poker socket/full-midhand-process-restart/check-call-showdown/
+cash-outs PASS40.210s. Original hole cards/newseat tokens preserved; stale action
+rejected; final savedGoldtotal1000. First fixture failed its own excessive polling;
+fixed fixture to normal3second poll cadence, no weakened production rate limit.
+Logs /tmp/eidolon-compat-session-1196209317 and1493643058. Actual shared Air event
+sockets PASS1.409s: disturbance-2982151,2participants,wave1,8enemies,nojoinGold;
+log /tmp/eidolon-compat-session-2606226907. Presence/activation ONLY, not earnedclear.
+VersionPresentation248PASS2.765s, changedJS lint/Go build-all/diffPASS. No QA
+server/browser or disposable Mongo left running; owned container STOPPED.
+
+Explicit user-policy deferrals to1.10 final integration: connected full-world
+walk/stairs/seat/camera/game/leave as one scene, earned complete public events,
+populated-floor performance and remaining cross-feature/device/concurrency/
+recovery/backup/rollback acceptance. Retain all scope; do not mark fixtures as
+earned evidence or goal complete from versions. No new long soak or subagents.
+Goal active/not blocked. ROOT LEDGER ONLY, NEVER PUSH.
+
+## Previous checkpoint — September 13, real-player poker implemented
 
 Previous/current goal turns = PROGRESS. Active1.9WT
 /tmp/eidolon-1-9-world-20260913 clean HEADc1f299e0, NOT pushed/runtime remains1.8.
