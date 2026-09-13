@@ -22,6 +22,9 @@ these entries describe implemented changes, not milestone completion.
   Guild roster management is tucked into a named Manage disclosure while retaining
   permission checks and callbacks. PvP challenges, scores and leaderboard entries
   use readable text and scroll within the screen.
+- All four heroes lean forward rather than backward when running. Smoothed
+  locomotion and animated ankle attachments give default/equipped boots a more
+  natural stride, without changing attack timing or gameplay movement speed.
 
 ## Focused evidence
 
@@ -39,11 +42,26 @@ these entries describe implemented changes, not milestone completion.
 - Community: existing guild/friends/PvP 49 tests pass, plus the focused guild
   rerun (5) checks the new disclosure. Actual SocialUI/GuildUI/PvPUI previews at
   390×844 inspected, with no horizontal guild/PvP window overflow.
+- Locomotion: existing model/equipment222 tests pass; four new targeted equipped
+  stride checks pass. Side-view before/after rendered poses inspected. This is
+  focused presentation evidence, not a comprehensive animation collision audit.
+
+## Predecessor live-check correction
+
+Alpha1.1 is live on both domains at377bdf21. CI34727002679 deployed successfully
+but its final live job failed after7 passing checks because the dungeon harness
+imported `/tests/wizardHuntControls.js` from a production site that omits tests.
+The ordinary clear-path observation is now self-contained;26 focused input tests
+pass, including actual callback execution for blocked/clear paths. Carry this
+test-only repair with1.2; do not claim the failed1.1 dungeon or skipped town-rest
+live checks passed. No extra runtime hotfix or exhaustive rerun was started.
 
 ## Remaining milestone work
 
 Continue four-class anatomy/hair/silhouette/movement and equipped animation fit,
 remaining phone menus and actual gameplay-scale composition/readability.
+Source inspection identifies the world map's mouse-only pan/wheel zoom as the
+next concrete phone gap (WorldMap.js around its constructor input handlers).
 Then consolidate player-facing patch notes into login/release metadata, publish
 1.2 after 1.1, and run basic deployment/live smoke. Do not publish this worktree
 before the predecessor's deployment is confirmed.

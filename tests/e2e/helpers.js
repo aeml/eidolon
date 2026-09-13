@@ -361,11 +361,22 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
 
     for (const [candidateX, candidateZ] of candidates) {
         if (options.requireClearPath) {
-            const clear = prepared ? prepared.clear : await page.evaluate(async ({ x, z }) => {
-                const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+            const clear = prepared ? prepared.clear : await page.evaluate(({ x, z }) => {
+                // Live deployments intentionally omit /tests. Keep this small
+                // collision observation self-contained in the browser callback.
                 const game = window.game;
-                return isEarnedRetreatPathClear(game.collisionManager, game.player.position,
-                    game.player.radius || 1.25, { x, z });
+                const start = game.player.position;
+                const steps = Math.ceil(Math.hypot(x, z) / .25);
+                let previous = start.clone();
+                for (let step = 1; step <= steps; step++) {
+                    const point = start.clone();
+                    point.x += x * step / steps;
+                    point.z += z * step / steps;
+                    const corrected = game.collisionManager.checkCollision(point, game.player.radius || 1.25, previous);
+                    if (corrected && corrected.distanceTo(point) > .00001) return false;
+                    previous = point;
+                }
+                return true;
             }, { x: candidateX, z: candidateZ });
             mark(clear ? 'path-clear' : 'path-blocked');
             if (!clear) continue;

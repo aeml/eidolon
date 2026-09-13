@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import * as THREE from 'three';
 
 const assertions = value => expect(value);
 assertions.poll = callback => ({
@@ -40,6 +41,28 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
         waitForTimeout: jest.fn()
     };
 }
+
+test.each([false, true])('live path observation needs no published test modules and preserves walls: %s', async blocked => {
+    const page = movementPage(false);
+    const original = page.evaluate.getMockImplementation();
+    const position = new THREE.Vector3();
+    window.game = { player: { position, radius: 1.25 }, collisionManager: {
+        checkCollision: jest.fn(point => blocked && point.x > .5 ? point.clone().addScalar(1) : point)
+    } };
+    page.evaluate.mockImplementation((callback, args) => {
+        if (callback.toString().includes('collisionManager.checkCollision')) {
+            expect(callback.toString()).not.toContain('import(');
+            return callback(args);
+        }
+        return original(callback, args);
+    });
+    try {
+        const action = moveByGroundClick(page, 9, 0, { requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false });
+        if (blocked) { await expect(action).rejects.toThrow(); expect(page.mouse.click).not.toHaveBeenCalled(); }
+        else { expect((await action).x).toBe(10); expect(window.game.collisionManager.checkCollision).toHaveBeenCalledTimes(36); }
+        expect(position.length()).toBe(0);
+    } finally { delete window.game; }
+});
 
 test.each([0, .4])('strict batched preparation retains real ray and issued-input guards, drift%s', async drift => {
     const page = movementPage(true, false, drift), phases = [];
