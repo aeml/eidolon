@@ -17,7 +17,24 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, Alpha 1.9.1 pushed; deployment pending
+## Current checkpoint — September 13, 1.9.1 CI geometry correction pushed
+
+Previous goal turn = PROGRESS (release packaging/push). This turn = PROGRESS:
+verified exact CI34770886185 terminalFAILURE, diagnosed/fixed its sole client
+failure and pushed **c87412881f689684be94248e951d632994eef68e**. Initial server job
+passed; client had6762passing/1failed. WorldGeneratorCanonicalGeometry expected
+22colliders; the new closed facade door correctly adds the23rd. Updated count
+AND explicit door center/size/inside/outside assertions; no gameplay/geometry
+weakened. All21focusedgeometrytestsPASS2.053s; diffPASS. Active WT clean.
+
+New exact CI **34771598671** confirmed **IN PROGRESS**, client/server jobs running
+after45second observation. This run supersedes failed34770886185; do not restart
+either without new evidence. Runtime remainsAlpha1.9.1; no additional version bump
+for the test-only fix. Release/deployment not yet verified. Next: follow this
+exact run and verify both public identities match c8741288 after deploy. Full1.10
+still unfinished; goal remains active. ROOT LEDGER ONLY; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, Alpha 1.9.1 pushed; deployment pending
 
 User explicitly requested push. Active release WT
 `/tmp/eidolon-1-10-resonant-age-20260913` packaged **aa940fcbaa144a160fc9209692fa033c1f00e83e**
