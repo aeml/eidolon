@@ -4,16 +4,17 @@ package game
 // callout. It travels in the existing room summary on entry, reconnect and live
 // updates so missing a one-shot ritual event cannot strand a fractured visual.
 type CrystalSanctumSnapshot struct {
-	InstanceID string  `json:"instanceId"`
-	RaidType   string  `json:"raidType"`
-	Element    string  `json:"element"`
-	Name       string  `json:"name"`
-	Stage      string  `json:"stage"`
-	Wave       int     `json:"wave"`
-	TotalWaves int     `json:"totalWaves"`
-	Progress   int     `json:"progress"`
-	X          float64 `json:"x"`
-	Z          float64 `json:"z"`
+	InstanceID string                `json:"instanceId"`
+	RaidType   string                `json:"raidType"`
+	Element    string                `json:"element"`
+	Name       string                `json:"name"`
+	Stage      string                `json:"stage"`
+	Wave       int                   `json:"wave"`
+	TotalWaves int                   `json:"totalWaves"`
+	Progress   int                   `json:"progress"`
+	X          float64               `json:"x"`
+	Z          float64               `json:"z"`
+	Objective  *CrystalVigilSnapshot `json:"objective,omitempty"`
 }
 
 func (w *World) crystalSanctumSnapshot(instanceID, playerID string) *CrystalSanctumSnapshot {
@@ -42,6 +43,14 @@ func (w *World) crystalSanctumSnapshot(instanceID, playerID string) *CrystalSanc
 	w.RepairMu.RLock()
 	repair := w.CrystalRepairs[instanceID]
 	if repair != nil {
+		snapshot.Objective = repair.vigilSnapshot()
+		if snapshot.Objective != nil && !snapshot.Objective.Paused && !snapshot.Objective.Complete {
+			if repair.Vigil.Carriers[playerID] {
+				snapshot.Objective.Hint = "You carry a memory. Return to Maelin's central circle to deliver it."
+			} else if repair.Element == "Air" && repair.Vigil.LastRelay == playerID {
+				snapshot.Objective.Hint = "You passed the wind. Let another raider touch the next bright anchor; defend them while they move."
+			}
+		}
 		snapshot.Stage = "repairing"
 		snapshot.Wave = min(3, max(0, repair.Wave))
 		snapshot.Progress = min(99, max(0, repair.ClearedWaves*33))

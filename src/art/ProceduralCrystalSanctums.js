@@ -137,6 +137,41 @@ export function createProceduralCrystalSanctum(raidType) {
     const transform = new THREE.Object3D();
     let progress = 0;
     let stage = 'fractured';
+    const objectiveMarkers = [];
+    const updateObjectiveMarkers = snapshot => {
+        const points = snapshot.stage === 'repairing' ? snapshot.objective?.points || [] : [];
+        for (let index = 0; index < Math.min(4, points.length); index++) {
+            const point = points[index];
+            let marker = objectiveMarkers[index];
+            if (!marker) {
+                marker = new THREE.Group();
+                marker.name = `VigilMarker:${index + 1}`;
+                const ink = new THREE.MeshBasicMaterial({ color: definition.color, transparent: true, opacity: 0.8, depthWrite: false });
+                const ring = addMesh(marker, 'VigilFootprint', new THREE.RingGeometry(0.95, 1, 48), ink);
+                ring.rotation.x = -Math.PI / 2;
+                // Numbered pips make the ordered vents/anchors readable without
+                // textures, canvas labels, new colliders or a quality dependency.
+                for (let pip = 0; pip <= index; pip++) {
+                    addMesh(marker, `StepPip:${pip}`, new THREE.OctahedronGeometry(0.55), ink, [(pip - index / 2) * 1.5, 2.4, 0]);
+                }
+                root.add(marker);
+                objectiveMarkers.push(marker);
+            }
+            const valid = [point.x, point.z, point.radius, snapshot.x, snapshot.z].every(Number.isFinite) && point.radius > 0;
+            marker.visible = valid;
+            if (!valid) continue;
+            marker.position.set(point.x - snapshot.x, 0.24 + index * 0.01, point.z - snapshot.z);
+            marker.userData.label = point.label;
+            marker.userData.state = point.state;
+            marker.getObjectByName('VigilFootprint').scale.setScalar(point.radius);
+            const active = point.state === 'active';
+            const ink = marker.children[0].material;
+            ink.color.set(point.state === 'complete' ? 0x83d7a0 : point.state === 'boundary' ? 0xeb9971 : definition.color);
+            ink.opacity = snapshot.objective?.paused ? 0.25 : active ? 0.9 : 0.35;
+            for (const child of marker.children.slice(1)) child.visible = active;
+        }
+        for (let index = points.length; index < objectiveMarkers.length; index++) objectiveMarkers[index].visible = false;
+    };
 
     root.applySnapshot = snapshot => {
         if (!snapshot || !['fractured', 'repairing', 'restored'].includes(snapshot.stage)) return false;
@@ -148,6 +183,7 @@ export function createProceduralCrystalSanctum(raidType) {
         crystalMaterial.emissive.copy(crystalMaterial.color);
         crystalMaterial.emissiveIntensity = 0.1 + progress * 0.2;
         ritual.visible = stage === 'repairing';
+        updateObjectiveMarkers(snapshot);
         return true;
     };
     root.animate = (elapsed, quality = 'high') => {

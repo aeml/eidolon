@@ -538,6 +538,23 @@ export class QuestUI {
         }
 
         const instanceType = this.ctx.getCurrentInstanceType?.() || 'dungeon';
+        const crystal = summary.crystal;
+        if (crystal?.stage === 'repairing') {
+            const ritual = crystal.objective;
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: ritual?.title || `Defend ${crystal.name || 'the crystal'}`,
+                progressLabel: `Wave ${crystal.wave || 1}/3 · ${ritual?.current || 0}/${ritual?.total || 1}`,
+                progressPct: Math.min(99, Number(crystal.progress) || 0),
+                rewardXP: 0,
+                completed: false,
+                badge: ritual?.paused ? 'Regroup' : 'Crystal Vigil',
+                badgeClass: 'is-objective',
+                routeTone: 'support',
+                hint: ritual?.hint || 'Stay with Maelin and defeat the three repair waves.',
+                sequenceHint: 'Finish the ritual task AND defeat every attacker. Return to Ilyra after all three waves.'
+            };
+        }
         const objectiveRoom = typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0
             ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
             : null;

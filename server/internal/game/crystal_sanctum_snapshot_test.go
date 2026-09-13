@@ -116,6 +116,7 @@ func TestCrystalSanctumSnapshotTracksActualWaveWorker(t *testing.T) {
 	w := NewWorld(nil)
 	t.Cleanup(w.StopBackground)
 	id := w.CreateDungeon("party-hero", "earth_crystal_raid", DifficultyNormal, 30)
+	w.AddEntity(&Entity{ID: "hero", Type: TypePlayer, InstanceID: id, Health: 100, State: "IDLE"})
 	events := make(chan CrystalRepairEvent, 16)
 	w.OnEvent = func(kind string, value interface{}) {
 		if kind == "crystal_repair" {
@@ -145,6 +146,11 @@ func TestCrystalSanctumSnapshotTracksActualWaveWorker(t *testing.T) {
 				w.RepairMu.RLock()
 				ids := append([]string(nil), w.CrystalRepairs[id].WaveEnemyIDs...)
 				w.RepairMu.RUnlock()
+				// Lifecycle fixture only: the deterministic objective tests cover
+				// all eight defended seconds. Leave the final tick to the worker.
+				w.RepairMu.Lock()
+				w.CrystalRepairs[id].Vigil.Channel = 7.9
+				w.RepairMu.Unlock()
 				if len(ids) != 4+event.Wave*2 {
 					t.Fatal("worker did not create every expected attacker")
 				}

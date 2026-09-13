@@ -21,29 +21,35 @@ type CrystalRepairState struct {
 	CenterZ      float64
 	Completed    bool
 	StartedAt    time.Time
+	Vigil        *CrystalVigil
 }
 
 type CrystalRepairEvent struct {
-	InstanceID string `json:"instanceId"`
-	RaidType   string `json:"raidType"`
-	Element    string `json:"element"`
-	Crystal    string `json:"crystal"`
-	Stage      string `json:"stage"`
-	Wave       int    `json:"wave"`
-	TotalWaves int    `json:"totalWaves"`
-	Progress   int    `json:"progress"`
-	Title      string `json:"title"`
-	Dialogue   string `json:"dialogue"`
-	Hint       string `json:"hint"`
+	InstanceID string                `json:"instanceId"`
+	RaidType   string                `json:"raidType"`
+	Element    string                `json:"element"`
+	Crystal    string                `json:"crystal"`
+	Stage      string                `json:"stage"`
+	Wave       int                   `json:"wave"`
+	TotalWaves int                   `json:"totalWaves"`
+	Progress   int                   `json:"progress"`
+	Title      string                `json:"title"`
+	Dialogue   string                `json:"dialogue"`
+	Hint       string                `json:"hint"`
+	Objective  *CrystalVigilSnapshot `json:"objective,omitempty"`
 }
 
 func (w *World) emitCrystalRepair(state *CrystalRepairState, stage string, wave, progress int, title, dialogue, hint string) {
 	if w.OnEvent == nil || state == nil {
 		return
 	}
+	w.RepairMu.RLock()
+	objective := state.vigilSnapshot()
+	w.RepairMu.RUnlock()
 	w.OnEvent("crystal_repair", CrystalRepairEvent{
 		InstanceID: state.InstanceID, RaidType: state.RaidType, Element: state.Element, Crystal: state.Crystal,
 		Stage: stage, Wave: wave, TotalWaves: 3, Progress: progress, Title: title, Dialogue: dialogue, Hint: hint,
+		Objective: objective,
 	})
 }
 
@@ -76,7 +82,7 @@ func (w *World) StartCrystalRepair(instanceID, raidType string, participants []s
 	w.AddEntity(artificer)
 	w.emitCrystalRepair(state, "ritual_start", 0, 0, definition.Crystal+" Repair Vigil",
 		"Maelin: The raid opened the chamber. I can restore the crystal, but Malachar's corruption will answer in three waves.",
-		"Defend Maelin and clear every attacker. The ritual pauses until each wave is defeated.")
+		"Defend Maelin, follow the chamber's ritual markers, and clear every attacker. Both the ritual task and the wave must be finished.")
 	w.runBackground(func() { w.runCrystalRepair(state) })
 	return true
 }
@@ -95,12 +101,14 @@ func (w *World) runCrystalRepair(state *CrystalRepairState) {
 		w.RepairMu.Lock()
 		state.Wave = wave
 		state.WaveEnemyIDs = append([]string(nil), enemyIDs...)
+		state.Vigil = &CrystalVigil{}
+		objective := state.vigilSnapshot()
 		w.RepairMu.Unlock()
 		w.emitCrystalRepair(state, "wave_start", wave, (wave-1)*33,
 			fmt.Sprintf("Repair Wave %d of 3", wave),
-			fmt.Sprintf("Maelin: Facet %d is aligning. Hold the circle!", wave),
-			fmt.Sprintf("Defeat %d attackers before the repair can continue.", len(enemyIDs)))
-		if !w.waitForCrystalRepairWave(state.InstanceID, enemyIDs) {
+			state.vigilDialogue(wave),
+			objective.Hint)
+		if !w.waitForCrystalRepairWave(state, enemyIDs) {
 			return
 		}
 		w.RepairMu.Lock()
@@ -151,28 +159,29 @@ func (w *World) spawnCrystalRepairWave(state *CrystalRepairState, wave int) []st
 	return ids
 }
 
-func (w *World) waitForCrystalRepairWave(instanceID string, enemyIDs []string) bool {
+func (w *World) waitForCrystalRepairWave(state *CrystalRepairState, enemyIDs []string) bool {
 	ticker := time.NewTicker(350 * time.Millisecond)
 	defer ticker.Stop()
+	previous := time.Now()
 	for {
-		if _, exists := w.getDungeonInstance(instanceID); !exists {
+		if _, exists := w.getDungeonInstance(state.InstanceID); !exists {
 			return false
 		}
-		allDefeated := true
-		for _, enemyID := range enemyIDs {
-			enemy := w.GetEntity(enemyID)
-			if enemy == nil {
-				continue
-			}
-			enemy.Mu.RLock()
-			living := enemy.InstanceID == instanceID && enemy.State != "DEAD" && enemy.Health > 0
-			enemy.Mu.RUnlock()
-			if living {
-				allDefeated = false
-				break
-			}
+		players, allDefeated, enemyAtWard := w.observeCrystalVigil(state, enemyIDs)
+		now := time.Now()
+		w.RepairMu.Lock()
+		wasPaused := state.Vigil.Paused
+		state.advanceVigil(players, enemyAtWard, now.Sub(previous).Seconds())
+		ready := len(players) > 0 && allDefeated && state.vigilComplete()
+		paused := state.Vigil.Paused
+		objective := state.vigilSnapshot()
+		w.RepairMu.Unlock()
+		previous = now
+		if paused != wasPaused {
+			w.emitCrystalRepair(state, "ritual_recovery", state.Wave, state.ClearedWaves*33,
+				objective.Title, "", objective.Hint)
 		}
-		if allDefeated {
+		if ready {
 			return true
 		}
 		select {

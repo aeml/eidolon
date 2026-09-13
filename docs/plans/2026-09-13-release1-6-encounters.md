@@ -30,10 +30,38 @@ cross-device/endurance matrices remain required for consolidated final stabiliza
 after all features are added; do not claim those complete from unit checks or a
 prepared fixture. Reuse unchanged passing evidence and do not start another soak.
 
-## First action
+## Implementation checkpoint — September 13
 
-Read the active mechanics in `server/internal/game/crystal_repair.go`,
-`elemental_raids.go`, `raid_phases.go` and `crystal_sanctum_snapshot.go` before
-editing. Their current implementations, not stale planning claims, determine what
-needs improving. Review corresponding client presentation and recovery state paths
-as needed. No1.6 runtime implementation exists at this checkpoint.
+All four repair events now have server-owned objectives alongside their existing
+6/8/10 attackers: Earth holds a central ward for eight defended seconds; Water
+carries two memories from the eastern font back to Maelin; Fire channels three
+ordered vents for two uninterrupted seconds each; Air passes four ordered anchors
+between different participants. No client credit requests or inventory tokens.
+Each wave requires both its objective and all attackers defeated. Only living,
+connected original participants near the chamber contribute. An unattended/wiped
+ritual resets its current objective, preserves cleared waves and cannot advance.
+Existing restart recovery, saved quest receipts and manual Ilyra turn-ins remain.
+
+Realm-specific Maelin dialogue links those jobs to the keepers' mistakes and the
+Eidolons' covenant. The room snapshot carries current objectives, personal carrier/
+relay instructions and exact floor-marker footprints through reconnect. Markers
+remain visible at Low quality without adding collisions or hit targets. The quest
+tracker now shows the active repair instead of telling players to leave as soon
+as the guardian dies. Completion still returns the player to Ilyra.
+
+Focused Crystal Go checks PASS; existing crystal art/consumer tests16 PASS; new
+marker/tracker tests3 PASS; changed JS lint PASS. Actual four-realm Low-quality
+marker rendering inspected in `/tmp/eidolon-1-6-vigils.png`. The lifecycle fixture
+uses explicit attacker/near-finished-channel setup; this is not earned raid proof.
+No broad matrix or soak. Runtime remains1.5 pending remaining1.6 work/package.
+
+Next: party preparation and lockout/retry guidance, encounter/pacing review,
+targeted prepared group checks, then1.6 notes/version/build/publication. Dungeons
+use the requested four role-appropriate Uncommon/Rare characters. Elemental raids
+require5–10 actual members: retain that admission rule and add a fifth prepared
+participant for raid checks, rather than weakening admission to fit a fixture.
+Full earned campaign/raid group progression remains final consolidated validation.
+
+Publishing dependency:1.5 original CI34734291355 failed only two obsolete daily
+Gold assertions. Correction96000be3 is pushed and merged here; replacement
+CI34734694245 is running. Do not rerun the old terminal job or call1.5 live yet.
