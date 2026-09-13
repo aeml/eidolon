@@ -19,6 +19,20 @@ feature-focused. Do not weaken assertions merely to obtain a passing release.
 
 ## Current checkpoint — September 13, 04:08 UTC
 
+04:19 follow-up in1.7WT: arena clean exits now restore captured entry HP/MP
+(clamped to current maxima); rounds still refill. Duel request/acceptance checks
+online/living/nearby overworld state, rejects shared-party allies and either
+player's queued arena entry, actor-before-PvP locks. UI explains recovery policy.
+Focused admission/resources/frozen-record PASS0.011s; arena/duel/maintenance/
+relationship selection PASS13.349s; UI7PASS0.877s; WellRested expiry/clamp PASS0.009s.
+Old full-refill shutdown assertion corrected to actual empty entry mana; rest
+expiry test explicitly starts full to exercise clamping. No broad matrix started.
+Abnormal process-loss save projection and round status/cooldown cleanup remain
+open alongside rated calculations, anti-farming, personal results and seasons.
+1.6CI34737205195 still running (client PASS, server in progress) at04:19.
+Separate scheduled Nightly Multiplayer Soak34735602173 is running; this batch
+neither started nor cancelled it. No1.6live claim yet. Next work remains1.7.
+
 PROGRESS:1.7 durable-ranked-results batch committedbeb75b0b in cleanWT
 `/tmp/eidolon-1-7-arena-20260913`. Monotonic profile revisions+stablematchIDs guard
 Mongo conditional upserts; old/replayed results cannot overwrite new, conflicting
@@ -50,10 +64,11 @@ roundstatuscleanup. Readupdatedrelease1-7plan; these remainopen, not1.7complete.
 
 1.5LIVE exactd83231809994317aac31dcf1c901ae5e22791e2d/Alpha1.5.0 verifiedat
 play.eidolonrealms.com/release.json AND server.eidolonrealms.com/healthz; backend
-databaseREADY. CI34735541628 allbuild/browser/predeploy/deployPASS; FINALliveQA
-stillrunning atlastpoll04:08. Poll SAMErun; do not restart it. Afterterminalgreen,
-push frozen1.6 564487aeec83de8d9e6822e63879a88f41a1df92 fromclean1.6WT andverify.
-No1.6push yet. Keep1.5→1.6→1.7 releaseorder. Goalactive; NEVER PUSH ROOT.
+databaseREADY. CI34735541628 TERMINAL SUCCESS including final live QA at04:08.
+Frozen1.6 564487aeec83de8d9e6822e63879a88f41a1df92 was PUSHED from its cleanWT.
+CI34737205195 is IN_PROGRESS; poll the same run and verify exact client/server
+identities plus database readiness after deployment. No1.6live claim yet.
+Keep1.5→1.6→1.7 releaseorder. Goalactive; NEVER PUSH ROOT.
 
 ## Previous checkpoint — September 13, 03:44 UTC
 
