@@ -11,11 +11,15 @@
 .slot-cell span { display: block; font-size: 10px; line-height: 1.1; min-height: 22px; overflow-wrap: anywhere; color: #e8e4d5; }
 .slot-cell.win { border-color: #ffe6a1; box-shadow: 0 0 9px #ebc376aa; }
 .slot-cell.wild span, .slot-cell.scatter span { color: var(--slot-accent); font-weight: 700; }
-.slot-grid.spinning img { animation: slot-reel-turn .18s ease-in-out infinite alternate; }
-@keyframes slot-reel-turn { from { transform: translateY(-4px); filter: blur(2px); opacity: .45; } to { transform: translateY(4px); filter: blur(0); opacity: 1; } }
+.slot-cell { overflow: hidden; }
+.slot-cell.rolling img { animation: slot-reel-turn .09s linear infinite; }
+@keyframes slot-reel-turn { from { transform: translateY(-45%); filter: blur(2px); opacity: .55; } to { transform: translateY(45%); filter: blur(2px); opacity: .9; } }
 .slot-result { min-height: 36px; padding: 8px; color: #ffebae; background: #27302a; border-radius: 6px; }
 .slot-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.slot-controls select { min-height: 44px; background: #17212d; color: #fff1c2; border: 1px solid var(--slot-accent); border-radius: 5px; padding: 6px; font: inherit; }
+.slot-controls select, .slot-controls input { min-height: 44px; background: #17212d; color: #fff1c2; border: 1px solid var(--slot-accent); border-radius: 5px; padding: 6px; font: inherit; }
+.slot-controls { margin-block: 8px; }
+.slot-controls input { width: 80px; }
+.slot-auto-status { font-size: 12px; color: #d3dccb; }
 .slot-confirm, .slot-bonus { border: 1px solid var(--slot-accent); border-radius: 8px; padding: 10px; margin-block: 10px; }
 .slot-bonus button { display: block; width: 100%; margin-block: 6px; }
 .slot-game details { margin-top: 10px; font-size: 12px; }
@@ -23,5 +27,5 @@
 .slot-game table { width: 100%; border-collapse: collapse; font-size: 11px; }
 .slot-game td, .slot-game th { padding: 5px 3px; text-align: left; border-bottom: 1px solid #79857344; }
 .slot-game ol { columns: 2; padding-left: 20px; }
-@media (prefers-reduced-motion: reduce) { .slot-grid.spinning img { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .slot-cell.rolling img { animation: none; } }
 @media (max-width: 600px) { .slot-grid { gap: 2px; padding: 4px; } .slot-cell { padding: 1px; } .slot-cell span { font-size: 9px; } }

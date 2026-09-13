@@ -9,6 +9,10 @@ Current upstairs gate is explicitly **You must be a VIP to enter**.
 
 ## Delivered code (not yet deployed)
 
+Follow-on [quick-play changes](2026-09-13-casino-quick-play.md) remove redundant
+wager confirmations and add animated reels and bounded auto-spin queues. These
+also remain local, along with the shared-door/zone delivery below.
+
 - Town door opens a native, keyboard/touch accessible dialogue with **Enter
   Casino**. A nearby entrance button provides a touch-friendly alternative.
   The old town shell is a closed facade; the stash/Trading House remain outside.

@@ -22,30 +22,28 @@ export class BlackjackTableUI {
         const label = node('label', 'Wager (Gold) ');
         this.stake = node('input'); this.stake.type = 'number'; this.stake.min = '20'; this.stake.max = '500'; this.stake.step = '20'; this.stake.value = '100';
         label.append(this.stake);
-        this.bet = this.button('Review wager', () => this.quoteBet()); this.betBox.append(label, this.bet);
+        this.bet = this.button('Bet · 100 Gold', () => this.placeBet()); this.betBox.append(label, this.bet);
+        this.stake.oninput = () => { this.bet.textContent = `Bet · ${this.stake.value || '…'} Gold`; };
         this.cards = node('div', '', 'blackjack-hands'); this.cards.setAttribute('aria-label', 'Cards at the table');
         this.actions = node('div', '', 'blackjack-actions');
-        this.confirmation = node('div', '', 'blackjack-confirm'); this.confirmation.hidden = true;
-        this.quoteText = node('p');
-        this.confirm = this.button('Confirm Gold wager', () => this.confirmQuote());
-        this.cancel = this.button('Cancel', () => { this.quote = null; this.confirmation.hidden = true; });
-        this.confirmation.append(this.quoteText, this.confirm, this.cancel);
-        this.root.append(this.summary, this.rules, this.betBox, this.cards, this.actions, this.confirmation);
+        this.root.append(this.summary, this.rules, this.betBox, this.cards, this.actions);
     }
 
     button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
 
     update(view, playerID) {
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.quote = null; this.confirmation.hidden = true; return; }
+        if (!view) { this.pendingKey = null; return; }
         const own = view.players?.find(player => player.playerId === playerID);
+        this.stateKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, own, playerID]);
+        if (this.pendingKey !== this.stateKey) this.pendingKey = null;
         this.summary.textContent = !view.available ? 'Blackjack is temporarily unavailable; saved wagers are retained.' :
             view.processing ? `Saving table funds… · ${view.gold} Gold available` :
             `${view.gold} Gold available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
                 view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' : 'Round in progress.'}`;
         if (view.phase === 'betting' && view.dealAt && Date.parse(view.dealAt) > 0) this.summary.textContent += ` Dealing in ${Math.max(0, Math.ceil((Date.parse(view.dealAt) - Date.now()) / 1000))}s.`;
         this.betBox.hidden = !view.available || view.phase !== 'betting' || Boolean(own);
-        this.bet.disabled = Boolean(view.processing);
+        this.bet.disabled = !this.canAct(); this.stake.disabled = !this.canAct();
         this.cards.replaceChildren(); this.actions.replaceChildren();
         if (view.round) {
             const round = view.round;
@@ -62,15 +60,13 @@ export class BlackjackTableUI {
             if (view.phase === 'playing' && round.turnPlayerId === playerID) {
                 this.actions.append(node('p', `Your turn · ${Math.max(0, Math.ceil((Date.parse(round.deadline) - Date.now()) / 1000))}s`));
                 for (const action of round.actions || []) {
-                    const button = this.button(action[0].toUpperCase() + action.slice(1), () => this.choose(action));
-                    button.disabled = Boolean(view.processing); this.actions.append(button);
+                    const cost = ['double', 'split'].includes(action) ? ` · +${round.players.find(p => p.playerId === playerID)?.hands[round.turnHand]?.bet} Gold` : '';
+                    const button = this.button(action[0].toUpperCase() + action.slice(1) + cost, () => this.choose(action));
+                    button.disabled = !this.canAct(); this.actions.append(button);
                 }
             }
         } else {
             for (const player of view.players || []) this.cards.append(node('p', `${player.name || 'Player'} · ${player.bet} Gold confirmed`));
-        }
-        if (this.quote && (this.quote.roundId !== view.roundId || view.processing || (this.quote.action === 'bet' ? view.phase !== 'betting' || own : this.quote.roundRevision !== view.round?.revision))) {
-            this.quote = null; this.confirmation.hidden = true;
         }
     }
 
@@ -84,33 +80,38 @@ export class BlackjackTableUI {
         this.cards.append(row);
     }
 
-    quoteBet() {
+    canAct() { return Boolean(this.view?.available && !this.view.processing && !this.pendingKey); }
+    placeBet() {
+        if (!this.canAct() || this.view.phase !== 'betting' || this.view.players?.some(p => p.playerId === this.playerID)) return;
         const bet = Number(this.stake.value);
         if (!Number.isInteger(bet) || bet < 20 || bet > 500 || bet % 20 || bet > this.view.gold) {
             this.summary.textContent = 'Choose 20–500 Gold in steps of 20, within your available balance.'; return;
         }
-        this.showQuote({ action: 'bet', roundId: this.view.roundId, bet }, bet);
+        this.submit({ action: 'bet', roundId: this.view.roundId, bet });
     }
 
     choose(action) {
-        const round = this.view.round;
+        const round = this.view?.round;
+        if (!this.canAct() || this.view.phase !== 'playing' || round?.turnPlayerId !== this.playerID || !round.actions?.includes(action)) return;
         const payload = { action: 'play', roundId: this.view.roundId, roundRevision: round.revision, gameAction: action };
         if (action === 'split' || action === 'double') {
             const hand = round.players.find(player => player.playerId === this.playerID)?.hands[round.turnHand];
             if (!hand || hand.bet > this.view.gold) { this.summary.textContent = 'Not enough Gold for that additional wager.'; return; }
-            this.showQuote(payload, hand.bet);
-        } else this.send(payload);
+        }
+        this.submit(payload);
     }
 
-    showQuote(payload, cost) {
-        this.quote = payload;
-        this.quoteText.textContent = `${payload.gameAction || 'Bet'}: spend ${cost} Gold? Confirmed wagers continue if you leave the table.`;
-        this.confirmation.hidden = false; this.confirm.focus({ preventScroll: true });
-    }
-
-    confirmQuote() {
-        if (!this.quote || !this.view?.available || this.view.processing) return;
-        const payload = this.quote; this.quote = null; this.confirmation.hidden = true;
+    submit(payload) {
+        this.pendingAction = payload;
+        this.pendingKey = this.stateKey; this.bet.disabled = true; this.stake.disabled = true;
+        this.actions.querySelectorAll('button').forEach(button => { button.disabled = true; });
         this.send(payload);
+    }
+
+    rejectAction(error) {
+        const p = this.pendingAction;
+        if (!this.pendingKey || !p || error.action !== p.action || error.roundId !== p.roundId || error.roundRevision !== (p.roundRevision || 0)) return;
+        this.pendingKey = null; this.pendingAction = null;
+        this.update(this.view, this.playerID); this.summary.textContent = error.error;
     }
 }

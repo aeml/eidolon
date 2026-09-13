@@ -17,11 +17,11 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
         const view = { available: true, processing: false, gold: 500, machine, lines: Array.from({ length: 10 }, () => [1, 1, 1, 1, 1]), session: { revision: 1, bet: 20, freeSpins: 0, bonus: false } };
         ui.update(view); window.__slotQA = { ui, view, sent };
     });
-    await page.getByRole('button', { name: 'Review Gold spin', exact: true }).click();
-    expect(await page.evaluate(() => window.__slotQA.sent.length)).toBe(0);
-    await expect(page.locator('.slot-confirm')).toContainText('Spend 20 Gold');
-    await page.getByRole('button', { name: 'Confirm Gold spin', exact: true }).click();
+    await page.getByRole('button', { name: 'Spin · 20 Gold', exact: true }).click();
     expect(await page.evaluate(() => window.__slotQA.sent[0])).toEqual({ action: 'slot_spin', bet: 20, roundRevision: 1 });
+    await expect(page.locator('.slot-cell.rolling')).toHaveCount(15);
+    const symbols = await page.locator('.slot-grid').textContent();
+    await expect.poll(() => page.locator('.slot-grid').textContent()).not.toBe(symbols);
     await page.evaluate(() => {
         const { ui, view } = window.__slotQA;
         const grid = [[7, 0, 1], [2, 7, 3], [6, 4, 7], [1, 0, 2], [3, 5, 4]];
@@ -34,6 +34,15 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     await page.screenshot({ path: '/tmp/eidolon-slot-phone-20260913.png' });
     await page.getByRole('button', { name: 'Read the stone tablet', exact: true }).click();
     expect(await page.evaluate(() => window.__slotQA.sent[1])).toEqual({ action: 'slot_bonus', choice: 1, roundRevision: 2 });
+    await page.evaluate(() => {
+        const { ui, view } = window.__slotQA;
+        ui.update({ ...view, session: { ...view.session, revision: 3, freeSpins: 5 } });
+    });
+    await page.getByRole('button', { name: '100', exact: true }).click();
+    await page.getByRole('button', { name: 'Start 100 auto spins', exact: true }).click();
+    await expect(page.locator('.slot-auto-status')).toContainText('99 spins left');
+    await page.getByRole('button', { name: 'Stop auto spins', exact: true }).click();
+    await expect(page.locator('.slot-auto-status')).toContainText('stopped');
     await page.getByRole('button', { name: 'Leave machine', exact: true }).click();
     await expect(page.locator('.slot-game')).toBeHidden();
 });

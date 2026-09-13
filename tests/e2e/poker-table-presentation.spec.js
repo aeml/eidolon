@@ -14,10 +14,7 @@ test('phone poker presents private cards, clear reserved-stack raises and safe l
         ui.update({ available: true, processing: false, roundId: 'phone-hand', phase: 'betting', gold: 300, players: [] }, 'A');
         window.__pokerQA = { ui, sent };
     });
-    await page.getByRole('button', { name: 'Review buy-in', exact: true }).click();
-    await expect(page.locator('.poker-confirm')).toContainText('Reserve 100 Gold');
-    expect(await page.evaluate(() => window.__pokerQA.sent.length)).toBe(0);
-    await page.getByRole('button', { name: 'Confirm', exact: true }).click();
+    await page.getByRole('button', { name: 'Buy in · 100 Gold', exact: true }).click();
     expect(await page.evaluate(() => window.__pokerQA.sent[0])).toEqual({ action: 'poker_buy_in', roundId: 'phone-hand', bet: 100 });
     await page.evaluate(() => {
         window.__pokerQA.ui.update({ available: true, processing: false, roundId: 'phone-hand', phase: 'playing', gold: 200,
@@ -30,10 +27,8 @@ test('phone poker presents private cards, clear reserved-stack raises and safe l
     await expect(page.locator('.poker-players [aria-label="Hidden card"]')).toHaveCount(2);
     expect(await page.locator('.casino-session').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     await page.getByLabel('Total Gold bet on this street').fill('50');
-    await page.getByRole('button', { name: 'Review raise', exact: true }).click();
-    await expect(page.locator('.poker-confirm')).toContainText('50 Gold from your reserved stack');
+    await page.getByRole('button', { name: 'Raise to selected Gold', exact: true }).click();
     await page.screenshot({ path: '/tmp/eidolon-poker-phone-20260913.png' });
-    await page.getByRole('button', { name: 'Confirm', exact: true }).click();
     expect(await page.evaluate(() => window.__pokerQA.sent[1])).toEqual({ action: 'poker_play', roundId: 'phone-hand', roundRevision: 4, gameAction: 'raise', bet: 50 });
     await page.getByRole('button', { name: 'Leave table', exact: true }).click();
     await expect(page.locator('.poker-game')).toBeHidden();

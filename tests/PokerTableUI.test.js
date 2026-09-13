@@ -9,20 +9,19 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
-test('poker requires confirmed affordable buy-in and suppresses double clicks', () => {
+test('poker offers one-click affordable buy-in and suppresses double clicks across polls', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update(lobby(), 'A'); ui.buy.click();
-    expect(send).not.toHaveBeenCalled(); expect(ui.quoteText.textContent).toContain('Reserve 100 Gold'); ui.confirm.click(); ui.confirm.click(); ui.buy.click();
+    ui.update(lobby(), 'A'); ui.buy.click();
     expect(send).toHaveBeenCalledTimes(1); expect(send).toHaveBeenCalledWith({ action: 'poker_buy_in', roundId: 'hand-1', bet: 100 });
-    ui.update(lobby(), 'A'); ui.stake.value = '500'; ui.buy.click(); expect(ui.summary.textContent).toContain('available balance');
-    ui.stake.value = '100'; ui.buy.click(); ui.update({ ...lobby(), roundId: 'hand-2' }, 'A'); ui.confirm.click(); expect(send).toHaveBeenCalledTimes(1);
+    ui.update({ ...lobby(), roundId: 'hand-2' }, 'A'); ui.stake.value = '500'; ui.buy.click(); expect(ui.summary.textContent).toContain('available balance');
+    expect(send).toHaveBeenCalledTimes(1);
 });
 
-test('poker raise/all-in quotes use reserved stack and expire when the turn changes', () => {
+test('poker raise/all-in act directly on the reserved stack and reject stale turns', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update(playing(), 'A'); ui.raise.value = '50'; ui.choose('raise');
-    expect(ui.quoteText.textContent).toContain('total street bet to 50 Gold'); expect(send).not.toHaveBeenCalled(); ui.confirm.click();
     expect(send).toHaveBeenCalledWith({ action: 'poker_play', roundId: 'hand-1', roundRevision: 1, gameAction: 'raise', bet: 50 });
-    ui.update(playing(), 'A'); ui.choose('all_in'); expect(ui.quoteText.textContent).toContain('No additional Gold');
-    const next = playing(); next.round.revision = 2; next.round.actions = []; ui.update(next, 'A'); ui.confirm.click(); expect(send).toHaveBeenCalledTimes(1);
+    ui.update(playing(), 'A'); ui.choose('all_in');
+    const next = playing(); next.round.revision = 2; next.round.actions = []; ui.update(next, 'A'); expect(send).toHaveBeenCalledTimes(1);
     ui.choose('call'); expect(send).toHaveBeenCalledTimes(1);
 });
 
@@ -32,11 +31,18 @@ test('poker renders only provided cards, escapes names and preserves focus on un
     expect(ui.root.querySelectorAll('[aria-label="Hidden card"]')).toHaveLength(4);
     const input = ui.raise; input.focus(); input.value = '65'; ui.update(view, 'A'); expect(ui.raise).toBe(input); expect(document.activeElement).toBe(input); expect(input.value).toBe('65');
     ui.update({ ...view, processing: true }, 'A'); expect([...ui.root.querySelectorAll('button')].every(b => b.disabled)).toBe(true);
-    ui.update(view, 'A'); ui.choose('all_in'); ui.update(null, 'A'); expect(ui.root.hidden).toBe(true); expect(ui.quote).toBeNull(); ui.dispose();
+    ui.update(view, 'A'); ui.choose('all_in'); ui.update(null, 'A'); expect(ui.root.hidden).toBe(true); expect(ui.pending).toBe(false); ui.dispose();
 });
 
 test('poker waiting state never offers house opponents or a second buy-in', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update({ ...lobby(), players: [{ playerId: 'A', buyIn: 100 }] }, 'A');
-    expect(ui.summary.textContent).toContain('Waiting for another real player'); expect(ui.lobby.hidden).toBe(true); ui.reviewBuyIn(); expect(ui.quote).toBeFalsy();
-    ui.update({ ...lobby(), available: false }, 'A'); ui.reviewBuyIn(); expect(send).not.toHaveBeenCalled();
+    expect(ui.summary.textContent).toContain('Waiting for another real player'); expect(ui.lobby.hidden).toBe(true); ui.buyIn();
+    ui.update({ ...lobby(), available: false }, 'A'); ui.buyIn(); expect(send).not.toHaveBeenCalled();
+});
+
+test('matching rejection releases controls without rebuying; stale errors do not', () => {
+    const send = jest.fn(), ui = new PokerTableUI(send); ui.update(lobby(), 'A'); ui.buy.click();
+    ui.rejectAction({ action: 'poker_buy_in', roundId: 'old-hand', roundRevision: 0, error: 'old' }); expect(ui.buy.disabled).toBe(true);
+    ui.rejectAction({ action: 'poker_buy_in', roundId: 'hand-1', roundRevision: 0, error: 'Not enough Gold' });
+    expect(ui.buy.disabled).toBe(false); expect(send).toHaveBeenCalledTimes(1); ui.dispose();
 });

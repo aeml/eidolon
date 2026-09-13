@@ -47,6 +47,10 @@ still apply. Explicit leaving/reseating cannot undo a saved fold or refund.
 
 ## UI and reusable focused evidence
 
+The [local 1.10 quick-play revision](2026-09-13-casino-quick-play.md) replaces
+Review/Confirm with direct cost-labelled actions. Each hand still requires an
+explicit buy-in click; existing table rules and persistence are unchanged.
+
 Phone-sized felt, community/private cards, active player and dealer markers,
 stack/street/committed Gold, main/side pots and authoritative cash-out display.
 Review/Confirm buy-ins, raises and all-ins; explicit call cost. Legal server

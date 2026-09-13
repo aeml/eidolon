@@ -54,6 +54,22 @@ test('scene changes restore controls without teleporting back and pose cleanup r
     controller.dispose();
 });
 
+test('leave, disconnect and seat changes cancel auto spins; errors require the current seat', () => {
+    const { engine, controller } = setup();
+    controller.updateState({ tables: [table], yourSeat: seat });
+    controller.slots.autoRemaining = 50; controller.requestLeave(); expect(controller.slots.autoRemaining).toBe(0);
+    controller.slots.autoRemaining = 50; controller.beforeUpdate(.1); expect(controller.slots.autoRemaining).toBe(0);
+    controller.slots.autoRemaining = 50; controller.updateState({ tables: [table], yourSeat: { ...seat, sessionId: 'new-seat' } });
+    expect(controller.slots.autoRemaining).toBe(0);
+    const reject = jest.spyOn(controller.slots, 'rejectAction');
+    controller.handleActionError({ sessionId: 'old-seat' }); expect(reject).not.toHaveBeenCalled();
+    controller.handleActionError({ sessionId: 'new-seat' }); expect(reject).toHaveBeenCalledTimes(1);
+    expect(controller.send({ action: 'slot_spin' })).toBe(false);
+    engine.network.socket = { readyState: WebSocket.OPEN }; controller.send({ action: 'slot_spin' });
+    expect(engine.network.send).toHaveBeenLastCalledWith('casino', { action: 'slot_spin', sessionId: 'new-seat' });
+    controller.dispose();
+});
+
 test('mixed slot gems and table furniture share valid triangle batches', () => {
     const report = jest.spyOn(console, 'error').mockImplementation(() => {});
     let furniture;

@@ -81,6 +81,16 @@ func handleMsgCasino(client *Client, message Message) {
 	}
 	if err != nil {
 		client.sendError(err.Error())
+		// Explicit rejection acknowledgement: polling unchanged state alone cannot
+		// distinguish a rejected wager from one still in flight.
+		rejected, _ := json.Marshal(struct {
+			SessionID     string `json:"sessionId"`
+			Action        string `json:"action"`
+			RoundID       string `json:"roundId"`
+			RoundRevision uint64 `json:"roundRevision"`
+			Error         string `json:"error"`
+		}{request.SessionID, request.Action, request.RoundID, request.RoundRevision, err.Error()})
+		client.sendSafe(createMessage("casino_action_error", rejected))
 		sendCasinoState(client)
 		return
 	}

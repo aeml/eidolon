@@ -57,9 +57,7 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
             yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 } });
     });
     await expect(page.getByRole('button', { name: 'Leave table', exact: true })).toBeVisible();
-    await page.getByRole('button', { name: 'Review wager', exact: true }).click();
-    expect(await page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'bet'))).toBe(false);
-    await page.getByRole('button', { name: 'Confirm Gold wager', exact: true }).click();
+    await page.getByRole('button', { name: 'Bet · 100 Gold', exact: true }).click();
     expect(await page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'bet' && message.payload.bet === 100 && message.payload.sessionId === 'fixture-seat'))).toBe(true);
     await page.evaluate(() => {
         const { controller, table } = window.__casino;
@@ -77,9 +75,10 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     await expect(panel).toBeVisible();
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     expect((await page.getByRole('button', { name: 'Leave table', exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(44);
-    await page.getByRole('button', { name: 'Split', exact: true }).click();
-    await expect(page.locator('.blackjack-confirm')).toContainText('100 Gold');
-    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await page.getByRole('button', { name: 'Split · +100 Gold', exact: true }).click();
+    expect(await page.evaluate(() => window.__casino.sent.filter(message => message.payload.action === 'play').map(message => message.payload))).toEqual([
+        { action: 'play', gameAction: 'split', roundId: 'round-fixture', roundRevision: 1, sessionId: 'fixture-seat' }
+    ]);
     await page.getByRole('button', { name: 'Leave table', exact: true }).click();
     expect(await page.evaluate(() => window.__casino.sent.filter(message => message.payload.action === 'leave').map(message => message.payload))).toEqual([{ action: 'leave', sessionId: 'fixture-seat' }]);
     await page.evaluate(() => { const { controller, table } = window.__casino; controller.updateState({ tables: [table], occupants: [], yourSeat: null }); });

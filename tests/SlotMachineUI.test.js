@@ -10,14 +10,11 @@ const view = { available: true, gold: 300, processing: false, machine, lines: Ar
     session: { revision: 1, bet: 20, freeSpins: 0, bonus: false } };
 const grid = Array.from({ length: 5 }, () => [0, 1, 2]);
 
-test('paid spins require explicit current-revision Gold confirmation and prevent duplicate clicks', () => {
+test('one click spins at the selected stake; unchanged polls cannot unlock duplicate spending', () => {
     const send = jest.fn(), ui = new SlotMachineUI(send); ui.update(view);
-    ui.spin.click(); expect(send).not.toHaveBeenCalled(); expect(ui.quoteText.textContent).toContain('20 Gold');
-    ui.confirm.click(); ui.confirm.click(); ui.spin.click();
+    ui.spin.click(); ui.update(view); ui.spin.click();
     expect(send).toHaveBeenCalledTimes(1);
     expect(send).toHaveBeenCalledWith({ action: 'slot_spin', bet: 20, roundRevision: 1 });
-    ui.update(view); ui.spin.click(); ui.update({ ...view, session: { ...view.session, revision: 2 } });
-    ui.confirm.click(); expect(send).toHaveBeenCalledTimes(1); expect(ui.confirmation.hidden).toBe(true);
     ui.dispose();
 });
 
@@ -41,12 +38,78 @@ test('server outcomes animate once, show winning cells, and stop cleanly when le
         const next = { ...view, session: { ...view.session, revision: 2, last: { landed: grid, payout: 28, freeAwarded: 0,
             bonusPicked: -1, stages: [{ grid, wins: [{ line: 0, count: 5 }], payout: 28 }] } } };
         ui.update(next); expect(ui.spin.disabled).toBe(true); ui.update(next);
-        expect(sound).toHaveBeenCalledTimes(1); jest.runOnlyPendingTimers();
+        expect(sound).not.toHaveBeenCalled(); jest.advanceTimersByTime(2000);
+        expect(sound.mock.calls.filter(([cue]) => cue === 'win')).toHaveLength(1);
         expect(ui.grid.querySelectorAll('.win')).toHaveLength(5); expect(ui.result.textContent).toContain('28 Gold returned');
         expect(ui.spin.disabled).toBe(false);
         ui.update({ ...next, session: { ...next.session, revision: 3 } }); ui.update(null);
         jest.runOnlyPendingTimers(); expect(ui.root.hidden).toBe(true); expect(ui.animating).toBe(false);
     } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+const resultView = (revision, extras = {}) => ({ ...view, ...extras, session: { ...view.session, revision,
+    last: { landed: grid, payout: 0, bonusPicked: -1, stages: [{ grid, wins: [], payout: 0 }] }, ...extras.session } });
+
+test('queued spins wait for settlement and animation, use fresh revisions and end at the selected count', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view); ui.count.value = '2'; ui.auto.click();
+        expect(send).toHaveBeenCalledTimes(1);
+        const before = ui.cells[0][0].label.textContent; jest.advanceTimersByTime(90);
+        expect(ui.cells[0][0].label.textContent).not.toBe(before);
+        ui.update(view); jest.advanceTimersByTime(1000); expect(send).toHaveBeenCalledTimes(1);
+        ui.update(resultView(2, { processing: true })); jest.advanceTimersByTime(2300);
+        expect(send).toHaveBeenCalledTimes(1);
+        ui.update(resultView(2)); jest.advanceTimersByTime(500);
+        expect(send).toHaveBeenLastCalledWith({ action: 'slot_spin', bet: 20, roundRevision: 2 });
+        ui.update(resultView(3)); jest.advanceTimersByTime(5000);
+        expect(send).toHaveBeenCalledTimes(2); expect(ui.autoRemaining).toBe(0);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test.each(['stop', 'leave', 'unavailable', 'bonus', 'funds', 'hidden', 'timeout'])('auto spins stop safely on %s', reason => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view); ui.count.value = '50'; ui.auto.click();
+        if (reason === 'stop') ui.stop.click();
+        if (reason === 'leave') ui.update(null);
+        if (reason === 'unavailable') ui.update({ ...view, available: false });
+        if (reason === 'hidden') {
+            jest.spyOn(document, 'hidden', 'get').mockReturnValue(true);
+            document.dispatchEvent(new Event('visibilitychange'));
+        }
+        if (reason === 'timeout') jest.advanceTimersByTime(10000);
+        if (reason !== 'leave') ui.update(resultView(2, { gold: reason === 'funds' ? 0 : 300, session: { bonus: reason === 'bonus' } }));
+        jest.advanceTimersByTime(6000);
+        expect(send).toHaveBeenCalledTimes(1); expect(ui.autoRemaining).toBe(0);
+    } finally { ui.dispose(); jest.restoreAllMocks(); jest.useRealTimers(); }
+});
+
+test('queue rejects invalid counts and consumes saved free spins without changing their stake', () => {
+    const send = jest.fn(), ui = new SlotMachineUI(send);
+    ui.update({ ...view, gold: 0, session: { ...view.session, bet: 40, freeSpins: 5 } });
+    for (const count of ['0', '1001', '1.5', '']) { ui.count.value = count; ui.auto.click(); }
+    expect(send).not.toHaveBeenCalled(); ui.count.value = '100'; ui.auto.click();
+    expect(send).toHaveBeenCalledWith({ action: 'slot_spin', bet: 40, roundRevision: 1 });
+    expect(ui.autoRemaining).toBe(99); ui.dispose();
+});
+
+test('only matching rejections release pending controls and never restart queued spins', () => {
+    const send = jest.fn(), ui = new SlotMachineUI(send); ui.update(view); ui.auto.click();
+    ui.rejectAction({ action: 'slot_spin', roundRevision: 0, error: 'old error' }); expect(ui.pending).toBeTruthy();
+    ui.rejectAction({ action: 'slot_spin', roundRevision: 1, error: 'Not enough Gold' });
+    expect(ui.pending).toBeNull(); expect(ui.autoRemaining).toBe(0); expect(ui.spin.disabled).toBe(false);
+    expect(send).toHaveBeenCalledTimes(1); ui.dispose();
+});
+
+test('reduced motion settles without rolling symbols and disposal cancels timers', () => {
+    jest.useFakeTimers(); const original = window.matchMedia;
+    window.matchMedia = () => ({ matches: true }); const ui = new SlotMachineUI(jest.fn());
+    try {
+        ui.update(view); ui.spin.click(); expect(ui.grid.querySelectorAll('.rolling')).toHaveLength(0);
+        ui.update(resultView(2)); jest.advanceTimersByTime(150);
+        expect(ui.animating).toBe(false); expect(ui.result.textContent).toContain('0 Gold returned');
+    } finally { ui.dispose(); window.matchMedia = original; jest.useRealTimers(); }
 });
 
 test('all elemental symbols have deterministic code-native icons', () => {

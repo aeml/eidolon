@@ -82,6 +82,9 @@ never serialized to clients. The cached table view avoids per-observer database
 reads. Pending-account admission recovery fences commands/login/resume for that
 recipient only; ordinary movement has no table database query.
 
+The [local 1.10 quick-play revision](2026-09-13-casino-quick-play.md) supersedes
+the review/confirm flow below with direct cost-labelled actions and pending locks.
+
 The seated UI displays both players' hands, dealer upcard/hole-card back, current
 turn, balance, stakes, outcomes and saved-return state. Bet/split/double each
 require explicit confirmation of Gold cost. New round/turn updates invalidate

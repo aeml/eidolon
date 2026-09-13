@@ -52,6 +52,10 @@ creation of payout intent. Saved free spins and sealed bonuses survive leaving
 the physical machine. Actual seat/session and revision checks gate every action.
 Four physical cabinets now expose slot_spin/slot_bonus through casino messages.
 
+The following describes the original 1.9 UI; the local
+[1.10 quick-play revision](2026-09-13-casino-quick-play.md) supersedes its
+Review/Confirm and manual-only spin flow without changing payouts or entitlements.
+
 The seated UI uses 32 procedural symbol icons, winning-line highlights, cascades,
 bonus choices, saved free spins, jackpot feedback and generated audio. Paid spins
 require Review/Confirm; free spins retain their original stake. Public rules show

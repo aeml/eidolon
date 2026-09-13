@@ -824,6 +824,7 @@ class GameEngineNetworkMessageMethods {
                 }
             }
         } else if (msg.type === 'error') {
+            if (this.uiManager?.casino?.slots?.autoRemaining) this.uiManager.casino.slots.stopAuto('Server error; auto spins stopped.');
             if (msg.payload === 'use Respawn to recover in Lanternhold before recalling') {
                 this.showReadabilityFeedback?.('recall-needs-respawn', {
                     title: 'Respawn to recover', tone: 'warning', metaText: 'Return to Lanternhold',

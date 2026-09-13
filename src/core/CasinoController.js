@@ -45,16 +45,24 @@ export class CasinoController {
     }
 
     send(payload) {
+        if (payload.action.startsWith('slot_') && this.engine.network.socket?.readyState !== WebSocket.OPEN) return false;
         this.engine.network.send('casino', { sessionId: this.data.yourSeat?.sessionId, ...payload });
     }
 
     requestLeave() {
         if (!this.active) return;
+        this.slots.stopAuto('Leaving machine; auto spins stopped.');
         this.status.textContent = 'Leaving table… waiting for the server.';
         this.send({ action: 'leave' });
     }
 
+    handleActionError(error) {
+        if (!error || error.sessionId !== this.data.yourSeat?.sessionId) return;
+        this.slots.rejectAction(error); this.blackjack.rejectAction(error); this.poker.rejectAction(error);
+    }
+
     updateState(payload = {}) {
+        if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) this.slots.update(null);
         const tables = Array.isArray(payload.tables) ? payload.tables : [];
         const signature = JSON.stringify(tables);
         if (signature !== this.catalogSignature) {
@@ -117,6 +125,7 @@ export class CasinoController {
     }
 
     exitView() {
+        this.slots.update(null);
         this.active = false; this.panel.hidden = true; this.pendingSeat = null;
         document.body.classList.remove('casino-seated');
         const engine = this.engine, render = engine.renderSystem;
@@ -209,6 +218,7 @@ export class CasinoController {
 
     beforeUpdate(dt) {
         const engine = this.engine, player = engine.player;
+        if (engine.network.socket?.readyState !== WebSocket.OPEN && this.slots.autoRemaining) this.slots.stopAuto('Connection lost; auto spins stopped.');
         if (!player) return;
         if (engine.currentInstanceId !== CASINO_INSTANCE && this.active) { this.data.yourSeat = null; this.exitView(); }
         const overworld = engine.currentInstanceId === CASINO_INSTANCE;
