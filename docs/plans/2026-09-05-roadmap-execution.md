@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 01:16 UTC
+## Current checkpoint — September 13, 01:28 UTC
+
+PROGRESS:Alpha1.3.0 packaged and PUSHED fb7554ad723e9863b4066c003b4eca0152930404.
+Frozen WT `/tmp/eidolon-1-3-combat-feel-20260913` clean; CI34730497493 IN_PROGRESS
+with client/serverjobsrunning. Poll same run; no1.3liveclaimyet. Sevenpatchnotes,
+login/package/lock/release/server/deployment versions synchronized. Final release
+checks257PASS (VersionPresentation+PendingCast), changed-file lint/diffPASS.
+
+Finalfeaturebatch: dark contrast backing inside exact warningradius on hazards/
+boss telegraphs, atlow/highquality.35boundary/touchtestsPASS; actual390pxChrome
+Wind/Fire onpale/darkground screenshot inspected `/tmp/eidolon-1-3-danger-phone.png`.
+Selfbuffs/caster-centered effects now bypass hostilechase/cursorrotation acrossfour
+classes; aimedCharge/allyheals retained, no numericalstats/economybuffs.36focused
+casting/range/touchtestsPASS plusfinal257above afterrotationguard. No broad soak.
+
+1.2CI34728771304 TERMINALSUCCESS including finalLiveReleaseandCharacterQA.
+Bothliveendpointreadbacks1.2/999dfbf0 anddatabase ready alreadyrecorded below.
+
+Next1.4WT `/tmp/eidolon-1-4-chronicle-20260913`, branchwork/1-4-chronicle-20260913,
+createdfromfb7554ad. Sharednode_modules symlink andprepare:clientdone; no npmci.
+Only initialstageplancommitted `docs/plans/2026-09-13-release1-4-chronicle.md`.
+AUTHORITATIVE:quests.go already expands all8investigations/hunts intoactivecatalog;
+don'treimplementdueoldstaledocs. Nextreadcurrentchapterlore thenadd supportingNPC
+conversations/optional lore/visible restorationconsequences using raidreceipts10–13.
+PreservemanualIlyra, dungeon→raid→crystaldefense→portal→DarkKing. Runtime1.3 until
+1.4packaging. Alllocal sessionsclosed; rootledgerNEVERpush; fullgoalremainsactive.
+
+### Previous detail — September 13, 01:16 UTC
 
 PROGRESS:1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913` clean334727bb, NOT pushed.
 Added saved0–100% camera-impact strength (default50%, motion stilloff), phonePlay
