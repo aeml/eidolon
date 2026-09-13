@@ -1,0 +1,248 @@
+package game
+
+import (
+	"crypto/rand"
+	"encoding/hex"
+	"errors"
+	"math"
+	"time"
+)
+
+const CasinoReconnectGrace = time.Minute
+
+// Coordinates are the future public gaming floor inside the existing town hall.
+// The venue renderer consumes this catalog; clients never supply seat transforms.
+type CasinoSeatPosition struct {
+	X        float64 `json:"x"`
+	Z        float64 `json:"z"`
+	Rotation float64 `json:"rotation"`
+	ExitX    float64 `json:"exitX"`
+	ExitZ    float64 `json:"exitZ"`
+}
+
+type CasinoTable struct {
+	ID             string               `json:"id"`
+	Name           string               `json:"name"`
+	Game           string               `json:"game"`
+	Floor          string               `json:"floor"`
+	X              float64              `json:"x"`
+	Z              float64              `json:"z"`
+	Seats          []CasinoSeatPosition `json:"seats"`
+	MinimumPlayers int                  `json:"minimumPlayers"`
+}
+
+func CasinoTables() []CasinoTable {
+	tables := []CasinoTable{
+		{ID: "public-blackjack", Name: "Lanternhold Blackjack", Game: "blackjack", Floor: "public", X: -4.3, Z: 171, MinimumPlayers: 1},
+		{ID: "public-poker", Name: "Fourfold Hold'em", Game: "poker", Floor: "public", X: 4.3, Z: 171, MinimumPlayers: 2},
+	}
+	for i := range tables {
+		for seat := 0; seat < 6; seat++ {
+			angle := float64(seat) * math.Pi / 3
+			dx, dz := math.Sin(angle), math.Cos(angle)
+			tables[i].Seats = append(tables[i].Seats, CasinoSeatPosition{X: tables[i].X + dx*2.2, Z: tables[i].Z + dz*2.2, Rotation: angle + math.Pi, ExitX: tables[i].X + dx*3.4, ExitZ: tables[i].Z + dz*3.4})
+		}
+	}
+	for i, theme := range []string{"earth", "fire", "water"} {
+		x := -5 + float64(i)*5
+		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: theme + " realm slots", Game: "slots", Floor: "public", X: x, Z: 164, MinimumPlayers: 1,
+			Seats: []CasinoSeatPosition{{X: x, Z: 166, Rotation: math.Pi, ExitX: x, ExitZ: 167.2}}})
+	}
+	return tables
+}
+
+// Seat claims live on the character, not in a second ownership map. World.Mu
+// serializes claims; the normal entity removal/scene lifecycle releases them.
+// Private session IDs fence delayed actions after leaving and taking another seat.
+type CasinoSeatSession struct {
+	TableID   string  `json:"tableId"`
+	Seat      int     `json:"seat"`
+	SessionID string  `json:"sessionId"`
+	ExitX     float64 `json:"exitX"`
+	ExitZ     float64 `json:"exitZ"`
+	Ready     bool    `json:"ready"`
+}
+
+func cloneCasinoSeat(seat *CasinoSeatSession) *CasinoSeatSession {
+	if seat == nil {
+		return nil
+	}
+	copy := *seat
+	return &copy
+}
+
+type CasinoOccupant struct {
+	PlayerID      string    `json:"playerId"`
+	Name          string    `json:"name"`
+	TableID       string    `json:"tableId"`
+	Seat          int       `json:"seat"`
+	Connected     bool      `json:"connected"`
+	Ready         bool      `json:"ready"`
+	ReservedUntil time.Time `json:"reservedUntil,omitempty"`
+}
+
+type CasinoPresence struct {
+	Tables    []CasinoTable      `json:"tables"`
+	Occupants []CasinoOccupant   `json:"occupants"`
+	YourSeat  *CasinoSeatSession `json:"yourSeat"`
+}
+
+// Caller holds both World.Mu and player.Mu. Never restore an old town coordinate
+// over an already completed scene transition or death.
+func (w *World) releaseCasinoSeatLocked(player *Entity) {
+	seat := player.CasinoSeat
+	if seat == nil {
+		return
+	}
+	player.CasinoSeat = nil
+	if player.InstanceID != "" || player.State == "DEAD" || player.Health <= 0 {
+		return
+	}
+	oldX, oldZ := player.X, player.Z
+	player.X, player.Y, player.Z = seat.ExitX, 0, seat.ExitZ
+	player.State = "IDLE"
+	player.TargetX, player.TargetZ = player.X, player.Z
+	player.TargetID = ""
+	player.VelX, player.VelZ = 0, 0
+	setRecoveryMovementContextLocked(player, "casino-exit:"+seat.SessionID)
+	if w.Grid != nil {
+		w.Grid.Update(player, oldX, oldZ)
+	}
+}
+
+func (w *World) pruneCasinoSeatsLocked(now time.Time) {
+	for _, player := range w.Entities {
+		if player.Type != TypePlayer {
+			continue
+		}
+		player.Mu.Lock()
+		if player.CasinoSeat != nil && (player.InstanceID != "" || player.Health <= 0 || player.State == "DEAD" ||
+			(player.Disconnected && !now.Before(player.DisconnectedAt.Add(CasinoReconnectGrace)))) {
+			w.releaseCasinoSeatLocked(player)
+		}
+		player.Mu.Unlock()
+	}
+}
+
+func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time.Time) (*CasinoSeatSession, error) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	w.pruneCasinoSeatsLocked(now)
+	var table *CasinoTable
+	for _, candidate := range CasinoTables() {
+		if candidate.ID == tableID {
+			copy := candidate
+			table = &copy
+			break
+		}
+	}
+	if table == nil || seatIndex < 0 || seatIndex >= len(table.Seats) {
+		return nil, errors.New("choose an existing casino seat")
+	}
+	player := w.Entities[playerID]
+	if player == nil {
+		return nil, errors.New("player not found")
+	}
+	if w.TradeByPlayer[playerID] != "" {
+		return nil, errors.New("finish your trade before sitting")
+	}
+	// Check every live/reserved owner under the same world lock as acquisition.
+	for _, other := range w.Entities {
+		if other.Type != TypePlayer {
+			continue
+		}
+		other.Mu.RLock()
+		occupied := other.ID != playerID && other.CasinoSeat != nil && other.CasinoSeat.TableID == tableID && other.CasinoSeat.Seat == seatIndex
+		other.Mu.RUnlock()
+		if occupied {
+			return nil, errors.New("that seat is occupied or reserved for a reconnect")
+		}
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.Disconnected {
+		return nil, errors.New("player is disconnected")
+	}
+	if player.CasinoSeat != nil {
+		if player.CasinoSeat.TableID == tableID && player.CasinoSeat.Seat == seatIndex {
+			return cloneCasinoSeat(player.CasinoSeat), nil
+		}
+		return nil, errors.New("leave your current seat first")
+	}
+	if player.Type != TypePlayer || player.Disconnected || player.Health <= 0 || player.InstanceID != "" || !w.inSafeZone(player) ||
+		(player.State != "IDLE" && player.State != "MOVING") || player.IsCharging || player.Stunned || player.Rooted || player.WhirlwindActive || now.Before(player.MoveLockUntil) {
+		return nil, errors.New("finish your current action before sitting in the casino")
+	}
+	position := table.Seats[seatIndex]
+	dx, dz := player.X-position.ExitX, player.Z-position.ExitZ
+	if !finiteCoordinate(player.X) || !finiteCoordinate(player.Z) || dx*dx+dz*dz > 2.2*2.2 {
+		return nil, errors.New("walk up to the seat first")
+	}
+	var nonce [16]byte
+	if _, err := rand.Read(nonce[:]); err != nil {
+		return nil, err
+	}
+	session := &CasinoSeatSession{TableID: tableID, Seat: seatIndex, SessionID: hex.EncodeToString(nonce[:]), ExitX: position.ExitX, ExitZ: position.ExitZ}
+	oldX, oldZ := player.X, player.Z
+	player.CasinoSeat = session
+	player.X, player.Y, player.Z = position.X, 0, position.Z
+	player.Rotation = position.Rotation
+	player.State = "SEATED"
+	player.TargetX, player.TargetZ = player.X, player.Z
+	player.TargetID = ""
+	player.VelX, player.VelZ = 0, 0
+	setRecoveryMovementContextLocked(player, "casino-seat:"+session.SessionID)
+	if w.Grid != nil {
+		w.Grid.Update(player, oldX, oldZ)
+	}
+	return cloneCasinoSeat(session), nil
+}
+
+func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool, now time.Time) error {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	w.pruneCasinoSeatsLocked(now)
+	player := w.Entities[playerID]
+	if player == nil {
+		return errors.New("player not found")
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.CasinoSeat == nil || player.CasinoSeat.SessionID != sessionID || player.Disconnected {
+		return errors.New("seat session changed; refresh the table")
+	}
+	switch action {
+	case "leave":
+		w.releaseCasinoSeatLocked(player)
+	case "ready":
+		player.CasinoSeat.Ready = ready
+	default:
+		return errors.New("unsupported seated action")
+	}
+	return nil
+}
+
+func (w *World) CasinoPresenceFor(playerID string, now time.Time) CasinoPresence {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	w.pruneCasinoSeatsLocked(now)
+	presence := CasinoPresence{Tables: CasinoTables(), Occupants: []CasinoOccupant{}}
+	for _, player := range w.Entities {
+		if player.Type != TypePlayer {
+			continue
+		}
+		player.Mu.RLock()
+		if seat := player.CasinoSeat; seat != nil {
+			occupant := CasinoOccupant{PlayerID: player.ID, Name: player.Name, TableID: seat.TableID, Seat: seat.Seat, Connected: !player.Disconnected, Ready: seat.Ready}
+			if player.Disconnected {
+				occupant.ReservedUntil = player.DisconnectedAt.Add(CasinoReconnectGrace)
+			}
+			presence.Occupants = append(presence.Occupants, occupant)
+			if player.ID == playerID {
+				presence.YourSeat = cloneCasinoSeat(seat)
+			}
+		}
+		player.Mu.RUnlock()
+	}
+	return presence
+}

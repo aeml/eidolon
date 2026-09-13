@@ -38,6 +38,7 @@ var messageHandlers = map[string]messageHandler{
 
 	MsgGuildGet:          handleMsgGuildGet,
 	MsgGuildEvent:        handleMsgGuildEvent,
+	MsgCasino:            handleMsgCasino,
 	MsgGuildCreate:       handleMsgGuildCreate,
 	MsgGuildInvite:       handleMsgGuildInvite,
 	MsgGuildRespond:      handleMsgGuildRespond,

@@ -48,6 +48,9 @@ func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, er
 	if requester.InstanceID != target.InstanceID {
 		return nil, fmt.Errorf("trade players must be in the same instance")
 	}
+	if requester.CasinoSeat != nil || target.CasinoSeat != nil {
+		return nil, fmt.Errorf("leave the casino seat before trading")
+	}
 	dx, dz := requester.X-target.X, requester.Z-target.Z
 	if math.Hypot(dx, dz) > 8 {
 		return nil, fmt.Errorf("trade player is too far away")

@@ -383,6 +383,10 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 			w.Grid.Remove(player)
 			match.Origins[playerID] = PvPOrigin{InstanceID: player.InstanceID, X: player.X, Y: player.Y, Z: player.Z, Health: player.Health, Mana: player.Mana}
 			origin := match.Origins[playerID]
+			if seat := player.CasinoSeat; seat != nil {
+				origin.X, origin.Y, origin.Z = seat.ExitX, 0, seat.ExitZ
+				match.Origins[playerID] = origin
+			}
 			player.PvPReturn = &origin
 			match.entryCooldowns[playerID] = capturePvPCooldowns(player)
 			clearPvPCombatStateLocked(player)

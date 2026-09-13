@@ -9,6 +9,39 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Casino seat authority checkpoint — not playable yet
+
+Server foundation implemented: canonical public-table/seat/approach coordinates
+inside the current town-hall footprint, server-only seat transforms, one private
+session token per seated character and exclusive seat acquisition under World.Mu.
+Ownership lives on the entity, not a competing table reservation map. Public
+presence includes real names, seat, connected/readiness state; private session
+tokens go only to their owner. Blackjack minimum1, poker minimum2 real players;
+three elemental machine positions. These are seat definitions, not game rules,
+synchronized card/slot rounds or implemented content variants.
+
+Must physically approach in the correct scene, alive/available/not trading.
+Movement/jump/attack/casts and direct-trade entry reject seated actors. Sit/leave
+change movement context to reject delayed departed inputs. Leave uses a canonical
+exit position. Disconnect resets readiness and reserves the seat60s; resume keeps
+the session before expiry, otherwise releases it. Scene resets/entity removal
+release ownership; unexpected new-scene cleanup cannot teleport a player back.
+Arena entry snapshots the chair's exit, not its seated coordinate. Character saves
+project the exit while preserving actual resources/rest, so restart cannot strand
+a character in a chair. No wagering, settlement, VIP currency or money movement.
+
+Character-only casino protocol is bounded/rate-limited; actions bind to the caller
+and seat token. Presence is sent on login/resume and successful seat actions; get
+supports the later seated-client refresh. The browser does not consume it yet.
+No1.8 publication until the real visual/input/session path is implemented.
+
+Focused seat ownership/private-session/range/combat/reconnect/scene checks PASS
+0.012s; actual save-projection check PASS0.011s. Client scene/pose/camera/UI,
+table membership-to-round integration and final targeted rendered interaction
+remain required. Current building is still solid old geometry; coordinates are
+not proof that players can enter it. Build the reachable venue/interactions before
+claiming this milestone complete, carrying venue art/game depth into1.9 as planned.
+
 ## Player-safety checkpoint
 
 Online-player rows, recruitment posts/applicants and guild rosters now expose

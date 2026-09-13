@@ -71,6 +71,7 @@ func runHub() {
 // called both on a fresh MsgJoin and on a successful MsgResumeSession.
 func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	sendMovementContext(c)
+	sendCasinoState(c)
 	// Cooldowns are server-owned and survive the session-resume window. Send a
 	// complete snapshot so reconnecting clients do not show abilities as ready
 	// only to have the server reject their first cast.

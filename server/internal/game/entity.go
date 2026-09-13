@@ -69,34 +69,35 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
-	Mu                   sync.RWMutex      // Protects concurrent access
-	ID                   string            `json:"id"`
-	InstanceID           string            `json:"instanceId"`
-	PvPReturn            *PvPOrigin        `json:"-"` // Immutable pre-match save projection.
-	Name                 string            `json:"name"`
-	Type                 EntityType        `json:"type"`
-	SubType              string            `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X                    float64           `json:"x"`
-	Y                    float64           `json:"y"`
-	Z                    float64           `json:"z"`
-	Rotation             float64           `json:"rotation"` // Y-axis rotation in radians
-	Health               int               `json:"health"`
-	MaxHealth            int               `json:"maxHealth"`
-	Mana                 int               `json:"mana"`
-	MaxMana              int               `json:"maxMana"`
-	Level                int               `json:"level"`
-	Experience           int               `json:"experience"`
-	MaxExperience        int               `json:"maxExperience"`
-	ResonanceLevel       int               `json:"resonanceLevel,omitempty"`
-	ResonanceXP          int               `json:"resonanceXp,omitempty"`
-	ResonancePoints      int               `json:"resonancePoints,omitempty"`
-	ResonanceRanks       map[string]int    `json:"resonanceRanks,omitempty"`
-	Gold                 int               `json:"gold"`
-	WellRestedSeconds    float64           `json:"wellRestedSeconds"`
-	SafeZoneID           string            `json:"safeZoneId"`
-	restTickAt           time.Time         // Process-local monotonic clock, never persisted or replicated.
-	GoldCreditReceipts   map[string]int    `json:"-"`
-	ItemDeliveryReceipts map[string]string `json:"-"`
+	Mu                   sync.RWMutex       // Protects concurrent access
+	ID                   string             `json:"id"`
+	InstanceID           string             `json:"instanceId"`
+	PvPReturn            *PvPOrigin         `json:"-"` // Immutable pre-match save projection.
+	CasinoSeat           *CasinoSeatSession `json:"-"` // Session-local; saves project its safe exit.
+	Name                 string             `json:"name"`
+	Type                 EntityType         `json:"type"`
+	SubType              string             `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X                    float64            `json:"x"`
+	Y                    float64            `json:"y"`
+	Z                    float64            `json:"z"`
+	Rotation             float64            `json:"rotation"` // Y-axis rotation in radians
+	Health               int                `json:"health"`
+	MaxHealth            int                `json:"maxHealth"`
+	Mana                 int                `json:"mana"`
+	MaxMana              int                `json:"maxMana"`
+	Level                int                `json:"level"`
+	Experience           int                `json:"experience"`
+	MaxExperience        int                `json:"maxExperience"`
+	ResonanceLevel       int                `json:"resonanceLevel,omitempty"`
+	ResonanceXP          int                `json:"resonanceXp,omitempty"`
+	ResonancePoints      int                `json:"resonancePoints,omitempty"`
+	ResonanceRanks       map[string]int     `json:"resonanceRanks,omitempty"`
+	Gold                 int                `json:"gold"`
+	WellRestedSeconds    float64            `json:"wellRestedSeconds"`
+	SafeZoneID           string             `json:"safeZoneId"`
+	restTickAt           time.Time          // Process-local monotonic clock, never persisted or replicated.
+	GoldCreditReceipts   map[string]int     `json:"-"`
+	ItemDeliveryReceipts map[string]string  `json:"-"`
 
 	// Inventory
 	Inventory            []Item                         `json:"-"`
@@ -896,6 +897,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ID:                       e.ID,
 		InstanceID:               e.InstanceID,
 		PvPReturn:                clonePvPOrigin(e.PvPReturn),
+		CasinoSeat:               cloneCasinoSeat(e.CasinoSeat),
 		Name:                     e.Name,
 		PartyID:                  e.PartyID,
 		SocialStatus:             e.SocialStatus,

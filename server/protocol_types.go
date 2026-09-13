@@ -238,6 +238,7 @@ const (
 	// Guilds
 	MsgGuildGet          = "guild_get"
 	MsgGuildEvent        = "guild_event"
+	MsgCasino            = "casino"
 	MsgGuildCreate       = "guild_create"
 	MsgGuildInvite       = "guild_invite"
 	MsgGuildRespond      = "guild_respond"

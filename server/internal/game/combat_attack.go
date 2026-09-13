@@ -35,7 +35,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 	attacker.Mu.RLock()
-	attackerBlocked := attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned
+	attackerBlocked := attacker.CasinoSeat != nil || attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned
 	attackerInstanceID := attacker.InstanceID
 	attackerType := attacker.Type
 	attackerSubType := attacker.SubType

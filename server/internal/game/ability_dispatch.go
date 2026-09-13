@@ -41,7 +41,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		result.Reason = "dead"
 		return result
 	}
-	if player.State == "JUMPING" || player.IsCharging {
+	if player.CasinoSeat != nil || player.State == "JUMPING" || player.IsCharging {
 		result.Reason = "action_locked"
 		return result
 	}

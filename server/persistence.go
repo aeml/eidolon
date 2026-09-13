@@ -199,6 +199,9 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 	}
 	sort.Strings(unlockedTalents)
 	x, y, z, instanceID := entity.X, entity.Y, entity.Z, entity.InstanceID
+	if seat := entity.CasinoSeat; seat != nil && instanceID == "" {
+		x, y, z = seat.ExitX, 0, seat.ExitZ
+	}
 	if origin := entity.PvPReturn; origin != nil {
 		x, y, z, instanceID = origin.X, origin.Y, origin.Z, origin.InstanceID
 	}

@@ -1325,8 +1325,13 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	e.Disconnected = true
 	e.restTickAt = time.Time{}
 	e.DisconnectedAt = at
+	if e.CasinoSeat != nil {
+		e.CasinoSeat.Ready = false
+	}
 	if e.State == "DEAD" || e.Health <= 0 {
 		e.State = "DEAD"
+	} else if e.CasinoSeat != nil {
+		e.State = "SEATED"
 	} else {
 		e.State = "IDLE"
 	}
@@ -1356,6 +1361,9 @@ func (w *World) ClearEntityDisconnected(id string) (*Entity, bool) {
 	defer e.Mu.Unlock()
 	if !e.Disconnected {
 		return nil, false
+	}
+	if e.CasinoSeat != nil && !time.Now().Before(e.DisconnectedAt.Add(CasinoReconnectGrace)) {
+		w.releaseCasinoSeatLocked(e)
 	}
 	e.Disconnected = false
 	e.restTickAt = time.Now()
@@ -1440,7 +1448,7 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 			return false
 		}
 	}
-	if e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
+	if e.CasinoSeat != nil || e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false
 	}
 
@@ -1500,7 +1508,7 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	if context != nil && (*context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second)) {
 		return false
 	}
-	if e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
+	if e.CasinoSeat != nil || e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false
 	}
 
