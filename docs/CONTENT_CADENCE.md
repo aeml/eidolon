@@ -39,9 +39,9 @@ attendance and casino wagering are not prerequisites for its completion.
   already runs in existing server code and does not require a separate release,
   cron service or new reward framework.
 
-EP (Eidolon Points) now has approved planned sources: a monthly VIP allowance
-and fixed-rate Gold → EP exchange. Spending is restricted to casino content and
-a future cosmetic VIP Vendor. See [EP policy](plans/2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
-Exact amounts remain undecided and payment integration is excluded. This cadence
-does not authorize inventing quantities or treating the guarded VIP lounge as
-finished EP content.
+EP (Eidolon Points) has approved sources: **100 EP per VIP month** and a fixed
+**1,000,000 Gold → 1 EP** exchange. Spending is **cosmetics only**, with no
+reverse exchange, indirect Gold payouts or gameplay-power benefits. This latest
+restriction supersedes EP casino wagering. See [EP policy](plans/2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+Payment integration remains excluded. This cadence does not authorize new VIP
+bonuses or treating the guarded lounge as finished EP content.

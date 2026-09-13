@@ -5,7 +5,7 @@ Requested September 9, 2026. Status: **implementation underway; full casino not 
 ## September 13 user revision — current delivery
 
 The separate currency is **EP — Eidolon Points**. Its approved sources and uses
-are recorded below; exact quantities remain undecided. Do not substitute
+are recorded below, including the user's fixed quantities and cosmetic-only rule. Do not substitute
 Gold/Resonance upstairs.
 
 The town building is now an entrance facade: click its door, read the dialogue,
@@ -26,19 +26,27 @@ Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).
 
 ## EP economy — approved direction, not implemented
 
-- Sources: a fixed monthly EP allowance as one benefit of a future VIP
-  subscription, and an explicit fixed-rate **Gold → EP** exchange.
+- Sources: **100 EP per VIP month**, and an explicit fixed-rate exchange of
+  **1,000,000 Gold → 1 EP**. Use whole EP and checked integer arithmetic;
+  show the exact Gold cost before accepting an exchange.
 - The user suggested approximately **$5/month** for VIP with several bonuses;
-  this is illustrative, not an approved final price. The monthly EP allowance,
-  Gold-to-EP rate and other VIP bonuses remain undecided. Do not invent values.
-- Spending is restricted to casino content and a future **VIP Vendor** selling
-  cosmetics, including armor, weapon and shield skins. Those cosmetics are not
-  implemented yet; EP is not a general gameplay/gear-power currency.
+  this is illustrative, not an approved final price. Other VIP bonuses remain
+  undecided and must respect the user's explicit **no pay-to-win** direction.
+- Spending is **cosmetics only**, including the future VIP Vendor's armor,
+  weapon and shield skins. No stats, stronger equipment, XP/Resonance boosts,
+  crafting materials, progression skips or other gameplay advantages from EP.
+- **No EP → Gold conversion**, including indirect routes: EP purchases cannot
+  be sold, salvaged or traded for Gold/resources or pay out Gold. Implement
+  cosmetic purchases as appearance unlocks, separate from combat equipment.
+  Any reversal of an EP cosmetic purchase must not produce Gold.
+- This latest cosmetic-only spending restriction supersedes the earlier broad
+  EP casino-wagering plan. Do not enable EP wagers or assume a new casino reward
+  scheme; the prestigious lounge/guard remains, and public Gold games continue.
 - **Do not implement the purchase/payment method in this scope.** Record the
   future subscription benefit without adding checkout, billing or recurring
   charges. Payment exclusion does not remove the planned Gold exchange.
-- Keep public downstairs games on regular Gold and future VIP games on EP.
-  Exchange must be explicit, not an automatic wager fallback. Future exchange
+- Keep public downstairs games on regular Gold. EP must never fund those wagers,
+  directly or indirectly. Exchange must be explicit, not an automatic fallback. Future exchange
   and allowance delivery must be server-authoritative, durable and replay-safe.
 - EP ownership alone does not grant VIP access. Reverse conversion, cash-out,
   player-to-player EP transfers and additional EP sources/uses are not authorized
@@ -70,9 +78,9 @@ location, not a collection of minigames launched from a menu.
 | 1.10 — completion | Finish public and VIP content, game rules/payout tuning, visual/audio polish, multiplayer/phone/accessibility and persistence tests, then deploy with accurate patch notes and live verification. Both floors are required, not an optional stretch goal. |
 
 The EP policy above supersedes the original unnamed-currency dependency and
-historical milestone wording. Resolve the remaining allowance, exchange rate
-and VIP entitlement details before enabling those economic operations; payment
-integration remains excluded. The CP comparison describes separation from Gold,
+historical milestone wording, including earlier EP wagering requirements. The
+allowance and exchange rate are resolved; VIP entitlement details still need
+implementation without adding payments. The CP comparison describes separation from Gold,
 not a specification to copy CP. Do not substitute Gold/Resonance or describe the
 currently guarded lounge as functioning EP games.
 

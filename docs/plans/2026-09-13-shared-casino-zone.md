@@ -6,9 +6,10 @@ verified September13. Local-only descriptions below preserve implementation
 history, not current deployment status. Full1.10 acceptance remains separate.
 
 User revision: **EP means Eidolon Points**. Planned sources are a monthly VIP
-allowance and fixed-rate Gold → EP exchange; spending is casino-only plus a
-future cosmetic VIP Vendor. Amounts remain undecided and payment integration is
-excluded. See [approved EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+allowance of **100 EP monthly** and **1,000,000 Gold → 1 EP** exchange. Latest
+spending rule is **cosmetics only**, superseding earlier EP wagering plans.
+No reverse exchange, indirect Gold payouts or gameplay power; payment integration
+is excluded. See [approved EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
 This is roadmap policy, not delivered wallet/exchange/cosmetic functionality.
 Current upstairs gate is explicitly **You must be a VIP to enter**.
 

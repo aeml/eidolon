@@ -12,9 +12,9 @@ exact bounds. No runtime behavior was changed to satisfy that test.
 
 The shared casino, direct wagers/animated auto-spin and aftermath/Help content
 below are now shipped. Their earlier local-only checkpoints are historical.
-The guarded VIP floor is intentional for now; EP exchange/allowance quantities
-were requested asynchronously and remain undecided, with payment integration
-excluded. Continue remaining1.10 scope and consolidated integration without
+The guarded VIP floor is intentional for now; the user has since specified EP
+exchange/allowance quantities and cosmetic-only spending below. Payment
+integration remains excluded. Continue remaining1.10 scope and integration without
 repeating successful1.9.1 release checks or claiming the full roadmap complete.
 
 User requested publishing the completed shared casino/quick-play changes now.
@@ -25,7 +25,19 @@ history; deployment success must be verified against this release's exact commit
 
 ## Latest user direction — September 13
 
-VIP currency is **EP (Eidolon Points)**, planned from a monthly VIP allowance
+**Latest answer supersedes the older policy below:** exchange exactly
+**1,000,000 Gold for 1 EP**; VIP allowance **100 EP monthly**. EP spending is
+**cosmetics only, never pay-to-win**. No reverse exchange or indirect Gold/
+resource payouts, power boosts or progression advantages. Cosmetic purchases
+are appearance unlocks, not stat gear. Earlier EP casino-wagering requirements
+are superseded by this restriction; do not enable EP wagers or invent alternate
+VIP casino rewards. Preserve the current guard and normal Gold public games.
+Payment integration stays excluded. The quantity blocker is resolved; proceed
+with the one-way exchange/cosmetic economy, retaining durable receipts and saves.
+See the authoritative [EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+
+**Historical direction, superseded above where conflicting:** VIP currency is
+**EP (Eidolon Points)**, planned from a monthly VIP allowance
 and fixed-rate Gold → EP exchange. Uses are limited to casino content and a
 future cosmetic VIP Vendor (armor/weapon/shield skins). Approximately $5/month
 is a suggested subscription price, not final; allowance, exchange rate and other
@@ -51,10 +63,11 @@ bump alone does not complete the goal; every earlier promised feature remains.
    systems. Inspect existing implementations before adding anything; preserve
    Ilyra's story, earned progress and optional-daily philosophy. No fifth class,
    large continent, additional reward framework or speculative architecture.
-2. Follow the approved EP economy policy for future VIP games/higher stakes/
-   premium variations and the cosmetic VIP Vendor. Resolve the remaining monthly
-   allowance, exchange rate and access details before enabling them; do not add
-   payment integration, invent quantities or use Gold/Resonance fallback. The
+2. Implement the approved one-way Gold → EP exchange and cosmetic VIP Vendor,
+   with 1,000,000 Gold per EP and 100 EP per VIP month. Cosmetic prices/content
+   must obey the no-power/no-indirect-Gold policy; do not add payment integration
+   or invent new VIP entitlement benefits. No EP casino wagers are authorized
+   under the latest cosmetic-only restriction. The
    current guarded-floor delivery remains authorized and is not functioning EP
    wagering. Continue independent content/integration work without reopening the
    now-resolved currency name/source question.
