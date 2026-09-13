@@ -5,7 +5,25 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:31 UTC
+## Current checkpoint — September 13, 00:36 UTC
+
+PROGRESS: 1.2 WT clean at715703d6, NOT published.684f3a4f corrects all four
+backward running leans, smooths walk/run keys, adds ankle tracks shared by default
+and equipped boots. Existing222 model/equipment tests PASS +4new targeted stride
+checks PASS. Viewed `/tmp/eidolon-1-2-gait-{before,after}.png`. No speed/attack
+timing changes. Next concrete1.2 feature: WorldMap.js mouse-only pan/wheel zoom
+needs touch gestures and readable phone controls; constructor around232–304.
+
+CI34727002679 TERMINAL FAILURE at Live Release QA; deployments SUCCESS and both
+live identities remainAlpha1.1.0/377bdf21.7live checks passed, Verdant failed because
+test harness imported unpublished `/tests/wizardHuntControls.js`; not a proven
+gameplay failure. Log `/tmp/eidolon-1-1-live-failure.log`.715703d6 carries a
+self-contained page collision observation and26PASS focused tests, including
+executing clear/blocked callbacks without imports. No new publishing/run started:
+bundle test-only fix with1.2, not another runtime hotfix. Failed dungeon/skipped
+town-rest live checks are NOT passed. All short sessions closed. Draft notes updated.
+
+### Previous detail — September 13, 00:31 UTC
 
 PROGRESS: 1.2 community-menu feature committed **e4292f2c** in existing1.2 WT,
 clean/not published. Social/friends/guild card layouts, larger controls, named
