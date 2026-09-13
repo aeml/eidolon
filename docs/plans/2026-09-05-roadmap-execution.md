@@ -5,7 +5,25 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:58 UTC
+## Current checkpoint — September 13, 01:09 UTC
+
+PROGRESS:1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913` clean73fb0ba4, NOT pushed.
+Phone primary skill/hotbar now have thumb-relative drag aiming with world range
+ring, endpoint/direction preview and distance feedback. Release casts through
+existing AbilityController; slide back cancels. Taps preserve selected/self/ally
+targeting. Touch ownership/cancel/reset/death/menu/skill-reassignment guards retain
+deliberate input. Preview follows player/camera and realm elevation. No server
+rules changed.21focused aim/world-tap/joystick tests PASS, changed-file lint/diff
+PASS. Actual390px Chrome touch fixture: held preview0casts, release1cast;
+`/tmp/eidolon-1-3-aim-phone.png` inspected. Not live combat proof. Temporary preview
+script supports PREVIEW_AIM=1; sessions closed. Next: anticipation/impacts and
+camera options, then remaining class tuning. Avoid broad repeated playthroughs.
+
+1.2 CI34728771304 nowclient/server/all3browser shardsSUCCESS; Predeploy Character
+QA IN_PROGRESS. Keep same run and frozen1.2 WT999dfbf0; no1.2live claim yet.
+Root ledger stays local, NEVER push. Full roadmap goal remains active.
+
+### Previous detail — September 13, 00:58 UTC
 
 PROGRESS:1.3 WT clean9d31d49f, NOT pushed. Existing target card now shows primary
 skill cooldown/mana shortage, preserving higher-priority range/safe-zone messages.
