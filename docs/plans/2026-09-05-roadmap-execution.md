@@ -17,7 +17,24 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 06:29 UTC
+## Current checkpoint — September 13, blackjack round rules
+
+Previous goal turn = PROGRESS (shared table readiness committed, restart fix
+pushed). This turn = PROGRESS:1.8 clean HEADb380b283 in
+/tmp/eidolon-1-8-social-20260913 adds concrete blackjack rules and private views.
+Six-deck secure shuffle, physical seat turn order,30sec timeouts, hit/stand/double/
+split, dealer peek/S17, natural3:2, exact returns, immutable extra-debit proposals.
+Serialization retains shoe/deadline; public views redact deck/hole card. Focused
+rules PASS0.016s, Go build-all/diffPASS. No money or live round UI wired yet.
+Read docs/plans/2026-09-13-casino-blackjack-rules.md in that WT for exact rules and
+next durable Gold/seat/network/UI integration. Do not mistake engine tests for
+played rounds or1.8 completion. Full slots/poker/two floors/VIP still required.
+
+1.7e84f6219 CI34742314831 now client/serverPASS,3browser shardsRUNNING. Monitor
+same run and verify both exact public identities before publishing1.8.1.6cf2a028d
+remains last verified live. Root is ledger-only: NEVER PUSH ROOT.
+
+## Previous checkpoint — shared table preparation
 
 1.8WT /tmp/eidolon-1-8-social-20260913 clean HEADc9af2697, NOT PUSHED/runtime1.7.
 55a9437a commits actual connected/restart check; c9af2697 adds shared server-owned
