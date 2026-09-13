@@ -17,7 +17,27 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, Recall correction pushed for Alpha 1.9.2
+## Current checkpoint — September 13 20:08 UTC, Alpha 1.9.2 verified LIVE
+
+User's push-live request completed. Exact deployed commit
+**3651c4c9773ea75c449889192ad0cfd80e75ef45**, Alpha1.9.2, independently confirmed
+on client release/login/runtime and backend health/databaseREADY. Public casino
+JS/CSS, patch notes and Recall guard also checked. Origin/master matches.
+Exact CI **34778003801 TERMINAL SUCCESS all TEN jobs**: client/server inclrace,
+3browser shards, predeploy4PASS1.8m, inputs, both deployments, live gameplay
+8PASS6.6m and town recovery/Well Rested2PASS1.5m+1PASS1.1m. No reported flaky
+result. Do NOT poll/restart completed run or launch another broad verification.
+
+Roomy seated casino and flexible between-round wagers now LIVE, not local-only.
+Initial release failed before deployment; actual late-scene Recall regression
+was reproduced/fixed, original assertion retained, then replacement CI passed.
+Active WT `/tmp/eidolon-1-10-resonant-age-20260913` has a documentation-only
+verification commit after deployed3651c4c9; no reason for docs-only release.
+No owned QA processes remain. Full1.10 scope unfinished; EP policy amounts
+resolved, wallet/exchange/allowance/vendor not yet implemented. ROOT LEDGER ONLY,
+NEVER PUSH ROOT. Do not mark the overall goal complete from this release.
+
+## Previous checkpoint — September 13, Recall correction pushed for Alpha 1.9.2
 
 First CI34776355124 TERMINAL FAILED at predeploy town Recall: instanceId
 remained nonempty, while position/layout/collision/scenery recovered. Other
