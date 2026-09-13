@@ -1835,6 +1835,7 @@ export async function enterDungeon(page, { resetRun = false,
         }
         if (pendingReset) {
             await page.locator('#btn-reset-dungeon').click();
+            await page.locator('#btn-confirm-dungeon-reset').click();
             await expect(menu).toBeHidden();
             pendingReset = false;
             verifyReset = true;
