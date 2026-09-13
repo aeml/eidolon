@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 01:38 UTC
+## Current checkpoint — September 13, 01:54 UTC
+
+PROGRESS: 1.4 worktree `/tmp/eidolon-1-4-chronicle-20260913` is clean at9a45cdfa,
+not pushed. Added server-spawned Mara/Dain/Hessa/Selen at southern plaza x=-24/-8/
+8/24,z=235, facing north; NPCs are non-combat, no quest markers/rewards. New
+ChronicleWitness Entity uses existing four town models and idle mixer. Normal
+interaction path opens existing quest window in read-only witness mode. Sixteen
+authored topics, base one each, two gated by specific recorded evidence and one by
+realm raid completion. No count-only/ready-only spoilers. Quest refresh preserves
+reading; character change closes it; Ilyra restores quest mode.33 focused witness/
+journal tests and targeted Go spawn test PASS; changed lint/diff PASS. Actual
+390px Chrome UI inspected `/tmp/eidolon-1-4-witness-phone.png` (44px topics); four
+native NPC models inspected `/tmp/eidolon-1-4-witness-models.png` after fixing the
+temporary gallery's omitted entity positioning. All short sessions are closed.
+
+Next: PACKAGE/PUBLISH1.4 with login/runtime version synchronization and patch
+notes. Core new milestone features now implemented (restoration scenery, optional
+epilogues and physical witness conversations); inherited eight investigations
+remain unchanged. Read `docs/plans/2026-09-13-release1-4-chronicle.md`. Broad earned
+progression/device matrices remain final stabilization; don't rerun them now.
+
+1.3 deployed: both HTTPS live readbacks Alpha1.3.0/fb7554ad723e9863b4066c003b4eca0152930404;
+backend database ready. CI34730497493 all through both deploy jobs SUCCESS, final
+Live Release and Character QA IN_PROGRESS. Keep same run/frozen1.3 worktree.1.2
+terminal SUCCESS remains established. Root ledger NEVER push; full goal active.
+
+### Previous detail — September 13, 01:38 UTC
 
 PROGRESS:1.4WT `/tmp/eidolon-1-4-chronicle-20260913` clean d2817a21, NOT pushed.
 Read entire279-line activeinvestigationcatalog and183-line siteModel. Implemented
