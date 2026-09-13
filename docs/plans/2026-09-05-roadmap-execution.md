@@ -5,7 +5,23 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:53 UTC
+## Current checkpoint — September 13, 00:58 UTC
+
+PROGRESS:1.3 WT clean9d31d49f, NOT pushed. Existing target card now shows primary
+skill cooldown/mana shortage, preserving higher-priority range/safe-zone messages.
+Desktop preview includes readiness; failed casts explain exact wait/MP deficit.
+18focused controller/HUD tests PASS +6HUD rerun afterwarningpriority; actual390px
+Chrome card inspected `/tmp/eidolon-1-3-readiness-phone.png`. No new panel or
+gameplay gating/cost changes. Source/next tasks in1.3 release document.
+
+Next concrete1.3 feature: drag-to-aim preview/cancel on existing thumb skill/hotbar
+controls. Existing mobile tap selection/overlap cycling alreadyimplemented in
+GameEngineMovement. Preserve self/ally skills and real server targeting; don't
+replace deliberate input with auto attacks. Continue camera/impact options later.
+1.2 CI34728771304 currentlyclient/serverSUCCESS, all3browser shardsIN_PROGRESS.
+Keep exactrun/frozen1.2 WT999dfbf0. All short local sessions terminal; rootnotpush.
+
+### Previous detail — September 13, 00:53 UTC
 
 PROGRESS: new1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913`, branch
 `work/1-3-combat-feel-20260913`, clean8310c093, NOT pushed. Based999dfbf0;
