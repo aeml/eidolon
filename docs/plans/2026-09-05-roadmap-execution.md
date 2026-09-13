@@ -17,7 +17,41 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, connected slots / 1.8 live
+## Current checkpoint — September 13, real-player poker implemented
+
+Previous/current goal turns = PROGRESS. Active1.9WT
+/tmp/eidolon-1-9-world-20260913 clean HEADc1f299e0, NOT pushed/runtime remains1.8.
+Public real-player Hold'em now implemented:2–6funded players,5/10Gold blinds,
+explicit100–500Gold per-hand buy-in, secure52-card deck, private hands, all streets,
+raises/short-all-in reopening, side pots/uncalled returns/ties/odd chips, turn
+timeouts, pre-deal refunds, mid-hand folds and inclusive cash-outs. No house bots
+or rake. Uses existing opaque casino records, signedGold receipts and account-
+before-table locking. Actual casino handlers/main recovery loops and seated UI
+wired; not merely a rule engine. New connection tokens can resume a funded hand
+at its reserved original seat. Explicit leave saves refund/fold before release.
+
+Read activeWT docs/plans/2026-09-13-fourfold-poker.md for exact rules/evidence.
+Focused corePokerPASS0.041s; realMongo handler/receipt testsPASS0.723s, added
+interrupted-payout casePASS0.514s.8UI/controller testsPASS1.593s, changedJS lint,
+Go build-all/diffPASS.390px actual UI/prepared-response fixturePASS8.6s, screenshot
+/tmp/eidolon-poker-phone-20260913.png inspected. These are NOT actual network
+multiplayer/full-process restart/full-town camera evidence. Combine those checks
+with shared1.9 release integration; reuse unchanged passing suites. No broad soak.
+DisposableMongo eidolon-isolated-qa-mongo-arena171309 STOPPED; no QA server left.
+
+1.8 CI34746925219 now TERMINAL SUCCESS, including final Live Release and Character
+QA. Both public identities already verified Alpha1.8.0 exact6acb6c4e4260565233bf
+6999bd102be36b830838/databaseREADY. No further polling/rerunning terminal jobs.
+
+Next: slot payout tuning/recorded economics (previous sample output loss means
+only Air estimate retained), actual event-site/shared encounter check, full-town
+floor/machine/camera and real multiplayer poker session as a consolidated1.9
+release review. Then package1.9 version/patch notes, push/deploy/verify as authorized.
+VIP separate currency still awaits user direction; no invention or Gold fallback.
+Full VIP/final1.10 integration/cadence/post-Malachar hook still required. Goal
+active/not blocked. ROOT LEDGER ONLY, NEVER PUSH.
+
+## Previous checkpoint — September 13, connected slots / 1.8 live
 
 User reaffirmed feature-first delivery: preserve ALL features, avoid excessive
 test/token use and speculative architecture, consolidate broad checks at the end.
