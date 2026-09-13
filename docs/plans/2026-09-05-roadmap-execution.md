@@ -5,7 +5,29 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 01:09 UTC
+## Current checkpoint — September 13, 01:16 UTC
+
+PROGRESS:1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913` clean334727bb, NOT pushed.
+Added saved0–100% camera-impact strength (default50%, motion stilloff), phonePlay
+anddesktopcontrols, device reduced-motion suppression, confirmedlocaldirect-hit
+camera feedback with250ms burstguard; otherplayers' landings no longershake view.
+Shortattack/cast fade-in60ms instead160ms exposes windup without gameplay timing
+changes. Four-class chestanticipation/follow-through tuned; Wizard castsforward.
+75camera/settings/feedback/phone testsPASS,36animation/model testsPASS,44camera/
+jump/settings wiring checksPASS (overlap, not155unique), changed-file lint/diff
+PASS. ActualChrome four-class attack releasekeypose inspected at
+`/tmp/eidolon-1-3-attack-release.png`. Alllocal sessionsclosed. No broad soak/device
+matrix run. Next: low/high-quality telegraph readability and remainingclass tuning,
+then1.3packaging. Full equipment/group/physical-device matrices finalstabilization.
+
+1.2 IS DEPLOYED: directHTTPS readbacks atplay.eidolonrealms.com/release.json and
+server.eidolonrealms.com/healthz bothAlpha1.2.0/999dfbf009646028e24e35e074211392910b315e;
+backend database ready. CI34728771304 client/server/all3browser/predeploy/input
+validation/bothdeployjobsSUCCESS; finalLiveReleaseandCharacterQA IN_PROGRESS.
+Poll same run; no finalQA successclaimyet. Frozen1.2WTunchanged. RootledgerNEVERpush.
+Full1.1–1.10goal remains active; this continuation is concreteprogress.
+
+### Previous detail — September 13, 01:09 UTC
 
 PROGRESS:1.3 WT `/tmp/eidolon-1-3-combat-feel-20260913` clean73fb0ba4, NOT pushed.
 Phone primary skill/hotbar now have thumb-relative drag aiming with world range
