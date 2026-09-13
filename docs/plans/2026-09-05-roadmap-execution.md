@@ -17,7 +17,30 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, Alpha 1.9.2 pushed, release running
+## Current checkpoint — September 13, Recall correction pushed for Alpha 1.9.2
+
+First CI34776355124 TERMINAL FAILED at predeploy town Recall: instanceId
+remained nonempty, while position/layout/collision/scenery recovered. Other
+three predeploy tests passed; client/server inclrace and all3browser shards
+passed. Deployments skipped, live not changed. Do not restart that failed run.
+
+Reproduced with4failing full/delta scene-boundary regression cases. Network queue
+compaction prioritizes enter_instance controls; full snapshot bootstrap then
+treated empty overworld ID as uninitialized and restored a stale dungeon ID.
+Added batch rejection for self snapshots from the wrong established scene and
+restricted bootstrap to before explicit scene initialization. Valid current scene
+updates and initial snapshot adoption still pass. Original Recall assertion kept.
+Focused340testsPASS2.815s, lint/diffPASS. Only failed gameplay route rerun locally,
+runIDrecall192fix:1PASS35.3s, scanPASS; owned containers/data removed and exact
+container absence checked. No broad matrix or soak, unrelated services untouched.
+
+Pushed **3651c4c9773ea75c449889192ad0cfd80e75ef45**, sameAlpha1.9.2, updated patch
+notes and candidate handoff. Active WT clean `/tmp/eidolon-1-10-resonant-age-20260913`.
+NEW exact CI **34778003801 IN PROGRESS**. Follow this run only to all required
+jobs and independent exact client/backend identity verification. No live1.9.2
+claim yet. ROOT LEDGER ONLY, NEVER PUSH ROOT. Full1.10 remains unfinished.
+
+## Previous checkpoint — September 13, Alpha 1.9.2 pushed, release running
 
 User explicitly requested push live. Packaged roomy casino controls as1.9.2,
 updated login/package/manifest/server/container/deploy/QA version defaults and
