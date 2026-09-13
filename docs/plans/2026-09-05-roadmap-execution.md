@@ -5,7 +5,24 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:25 UTC
+## Current checkpoint — September 13, 00:31 UTC
+
+PROGRESS: 1.2 community-menu feature committed **e4292f2c** in existing1.2 WT,
+clean/not published. Social/friends/guild card layouts, larger controls, named
+guild management disclosure, readable PvP screens.49focused tests PASS; final
+guild5PASS. Short390px actual-module preview inspected: guild/PvP no horizontal
+overflow. `/tmp/eidolon-community-{online,guild,pvp}.png`; preview via
+`PREVIEW_COMMUNITY=1 node /tmp/eidolon-touch-preview-20260913.mjs`. Sessions closed.
+Draft1.2 notes updated. Next: equipped hero locomotion/animation polish and
+remaining1.2 scope consolidation; don't repeat broad QA matrices.
+
+**1.1 is now deployed on BOTH public domains:** direct release.json and healthz
+readbacks report Alpha1.1.0, commit377bdf21a11ffe91e2c6cf8b61a0a59581749a65;
+backend database ready. CI34727002679 client/server/all3browser/predeploy SUCCESS,
+deployment steps were live at last poll; final live gameplay QA still unproven.
+Keep watching same run. No1.2 push before confirming predecessor final state.
+
+### Previous detail — September 13, 00:25 UTC
 
 Latest progress: 1.2 worktree now clean at **a51f8479**, NOT published. Runtime
 8cab4ade adds saved touch handedness,100–120% sizing, independently persisted
