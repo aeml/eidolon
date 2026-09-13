@@ -17,7 +17,28 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 1.9.1 CI geometry correction pushed
+## Current checkpoint — September 13 18:00 UTC, Alpha 1.9.1 verified LIVE
+
+Previous goal turn=VERIFIED WAIT. This turn=PROGRESS/verified release acceptance:
+followed the SAME exact CI **34771598671** through completion. All TEN jobs
+TERMINAL SUCCESS: client/server inclrace,3browser shards, focusedpredeploy,
+inputs, bothdeployments and liveQA. Public client release.json, login/runtime and
+server health independently match **c87412881f689684be94248e951d632994eef68e,
+Alpha1.9.1**, databaseREADY. Live gameplay8passed(6.9m), townrecovery/WellRested
+2passed(1.4m)+1passed(50.8s); no reported flaky result. Do NOT poll/restart this
+completed run. No duplicate browser suite/soak was launched during the wait.
+
+Casino door→sharedgrandhall/guard, directwagers/animatedauto-spin and aftermath/
+Help now LIVE, not merelylocal. Active WT `/tmp/eidolon-1-10-resonant-age-20260913`
+has a local documentation-only verification commit after c8741288; runtime1.9.1.
+No need to publish docs-only verification as another release. Full1.10 remains
+unfinished: remainingfeature/integration scope, measuredconcurrency/recovery and
+consolidatedfinalacceptance. EP rate/monthlyallowance were asked asynchronously;
+no answer yet, no inventedamounts or payments. Guard remains explicitlylocked
+fornow. Earlier unresolved-name blockers are obsolete; no goalcompletion claim.
+ROOT LEDGER ONLY, NEVER PUSH ROOT. No subagents or owned QA processes launched.
+
+## Previous checkpoint — September 13, 1.9.1 CI geometry correction pushed
 
 Previous goal turn = PROGRESS (release packaging/push). This turn = PROGRESS:
 verified exact CI34770886185 terminalFAILURE, diagnosed/fixed its sole client
