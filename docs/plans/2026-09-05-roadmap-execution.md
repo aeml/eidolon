@@ -17,7 +17,52 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 05:28 UTC
+## Current checkpoint — September 13, 05:39 UTC
+
+Progress:1.8 authoritative casino seat foundation committedb3c19fe3 in
+`/tmp/eidolon-1-8-social-20260913` (clean; runtime still1.7). This is SERVERONLY:
+no usable casino UI/pose/camera/venue yet, no1.8 publication/completion claim.
+
+server/internal/game/casino_seats.go defines public blackjack6/poker6 and3realm
+machine seat/approach/exit positions inside existing Oathhall(0,170) footprint.
+Client must consume catalog; don't duplicate authoritative coordinates. Physical
+approach/range/safe-scene/health/action/trade admission; exclusive seatclaimunder
+World.Mu. Private CasinoSeatSession lives on Entity, detachedGetEntityCopy; no
+secondownershipmap. Presence publicoccupants+owner-onlytoken. Staleleave/ready
+tokensreject, same-seat acquisitionidempotent. Seated movement/jump/attack/ability
+anddirecttradereject. Movementcontextrotatesonsit/leave. DisconnectclearsReady,
+retainsSEATED/token60s; expiry/resumeprunesandrestorescanonicalexit. Scene-reset
+clearsseat;newscene/deathcleanupneverteleportsback. Entityremovalfreesseatnaturally.
+
+Saves projectexitXYwithouttouchingactualHPMP/rest; restartthereforeloadsstanding
+atwalkableexitnotchair. PvPoriginscaptureseatExitbeforeclearingonteleport. No
+newcurrency,wagers,settlementsorVIPdefinition. No synchronizedactualroundsyet;
+ready/presence only. Character-only bounded/rate-limited casino protocolget/sit/
+leave/ready, sendinitial/resume/changes; currentbrowserignoresnewmessage. Tables
+insidecurrentSOLIDoldbuilding: stillneedreachablevenueandrealinteractionbefore
+1.8ships. Full2floorart/games/economyremain1.9/1.10,notremoved.
+
+Focusedseat checksPASS0.012s; saveprojectionPASS0.011s. Finalchangedseat+movement/
+town-recoveryselectionPASS0.335s, casino+PvPsave0.140s,Goallbuild/diffPASS. No
+broadbrowsercampaignornewsoak. Detailed1.8stageplanrecordsremainingwork.
+
+Release: bothPUBLICendpoints nowverifiedEXACTcf2a028d02f26f81b7f30f191da47761aec6fbdc
+/Alpha1.6.0 andbackenddatabaseREADY. CI34739522914stillconfirmedIN_PROGRESS05:38;
+allbuild/browser/predeploy/deployjobsPASS, finalLiveReleaseandCharacterQArunning.
+Do NOTpushfrozen1.7WT5fd16d75untilterminalfinalsuccess. Poll SAMErun,notrestart.
+Aftergreenrecheckpublicidentityandpush1.7fromitsWT.1.7stillNOTPUSHED.
+
+NEXT1.8: realphysicalvenueaccess/tablemeshes/seatedpose/local+remotecharacters,
+casino_updatebrowserrouting,actualtableinteraction,table-focusedsmoothcamera,
+UI/input/HUDownershipandrestoreonleave/resume/scenechange,table-to-roundstate.
+Usefulsrc/world/WorldGenerator.js182–245currentlyspawnsSOLIDOathhallatcx,cz-30;
+src/art/ProceduralHumanoid.js Rig_ThighL/R andRig_ShinL/Rpivots; RenderSystem.js
+updateCamera900,setCameraTarget925; GameEngineRuntime.jsnormalcamerafollow/pan
+around780–845mustnotfightcasinooverride. Readsourcebeforeedits. Existingcasino
+roadmapandeconomyboundarybothreadagainthisturn. Keepgoldpublic/futureVIPcurrency
+userdecisionunresolved; nofallbackorplaceholder-as-complete. Goalactive;NEVERPUSHROOT.
+
+## Previous checkpoint — September 13, 05:28 UTC
 
 Progress:1.8 now has two more committed feature batches in
 `/tmp/eidolon-1-8-social-20260913`; clean HEAD70f04c85. No1.8 push or version
