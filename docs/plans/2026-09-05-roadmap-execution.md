@@ -17,7 +17,34 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, blackjack round rules
+## Current checkpoint — September 13, durable casino Gold
+
+Previous and current goal turns = PROGRESS.1.8WT clean HEADa85237da in
+/tmp/eidolon-1-8-social-20260913, NOT PUSHED/runtime1.7. Adds private versioned
+blackjack-table records, majority+journal-acknowledged pending transfers, CAS
+turn fencing, existing character Gold receipts/full-save recovery, bounded Gold
+only (no VIP fallback). Interrupted acknowledgement cannot debit/pay twice;
+insufficient debit funds retain old game state. Detailed API/lock-order/next-step
+handoff is docs/plans/2026-09-13-casino-blackjack-rules.md in that WT.
+
+Focused actual Mongo intent/replay/concurrent-CAS/currency checks PASS0.352s;
+actual character+table reopen/recovery PASS0.278s; interrupted live-save checks
+PASS1.327s; competing account spends PASS0.059s; Go build-all/diffPASS. An initial
+legacy TestApplyGold pattern matched no tests and is NOT coverage evidence.
+Owned Mongo eidolon-isolated-qa-mongo-arena171309 stopped (last port32918).
+
+Next: bind individually confirmed betting lobby, shared round/timeout/settlement
+lifecycle, startup recovery and seated card/rules/stake UI. Protocol already holds
+caller account lock; table lock comes INSIDE. Background must acquire recipient
+account before table, reread record, never lock another account under table lock.
+Existing serverLoops.Every is shutdown-aware. No live wager UI enabled yet.
+
+1.7e84f6219 CI34742314831: client/server/all3browserPASS; predeploy characterQA
+RUNNING. Verify same run and both live identities before publishing1.8.1.6cf2a028d
+is last verified live. Root ledger-only; NEVER PUSH ROOT. Full1.9/1.10 casino and
+remaining roadmap scope intact; VIP currency undecided, goal not complete.
+
+## Previous checkpoint — blackjack round rules
 
 Previous goal turn = PROGRESS (shared table readiness committed, restart fix
 pushed). This turn = PROGRESS:1.8 clean HEADb380b283 in
