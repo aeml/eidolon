@@ -17,7 +17,23 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, EP decision and roomy casino controls
+## Current checkpoint — September 13, Alpha 1.9.2 pushed, release running
+
+User explicitly requested push live. Packaged roomy casino controls as1.9.2,
+updated login/package/manifest/server/container/deploy/QA version defaults and
+prepended cumulative patch notes without removing history. Version checks250PASS
+3.659s, changed-test lint and diffPASS; reused passing feature evidence below.
+Pushed active WT HEAD **f9b27f00b3e658c15654c362ba2ccc6242453a8a** to origin/master
+as a fast-forward fromc8741288. ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+Exact CI **34776355124 IN PROGRESS**, client and server coverage tests running
+at last check, no failure reported. Continue this run; no duplicate workflow,
+local broad suite or soak. Deployment and live QA not yet established. Await
+all required jobs and independently verify client release/login/runtime plus
+backend health matchf9b27f00/Alpha1.9.2. Previous livec8741288/1.9.1 is the last
+verified deployment. Do not claim final1.10 completion or EP implementation.
+
+## Previous checkpoint — September 13, EP decision and roomy casino controls
 
 User supplied 1,000,000 Gold → 1 EP and 100 EP per VIP month, no reverse
 conversion and cosmetic-only spending. The former quantity blocker is resolved.
