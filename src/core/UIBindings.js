@@ -61,6 +61,7 @@ export class UIBindings {
         ui.social.onSocialOpen = () => {
             engine.network.send('social', {});
         };
+        ui.social.onGroupFinder = payload => engine.network.send('group_finder', payload);
         ui.social.onSocialStatusChange = (status) => {
             engine.network.send('social_status', { status });
             engine.network.send('social', {});

@@ -9,6 +9,49 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Recruitment board checkpoint
+
+Groups tab implemented end-to-end through character-only, bounded/rate-limited
+group_finder protocol. Post Looking/Recruits listings with canonical activity
+catalog, role offered/needed, actual entry-level floors, minimum level and160-char
+plain-text note. One listing/player,20min online availability, global250 bound;
+actual leader/capacity revalidated and unavailable/busy/full/grouped-looking
+listings removed. No fictitious teammates or activity-gate bypass.
+
+Ungrouped eligible players request a role; only owner sees applicant details,
+others see their own pending flag. Requests expire5min, capped20/listing; caller
+can cancel, owner can decline or explicitly invite through the existing consent
+flow. No request autojoins or sends an invitation as another player. Block/ignore
+filtering applies to boards and requests. Listings and invitations exclude active
+PvP matches so party changes cannot turn arena opponents into allies.
+
+UI uses existing Social window with activity filter, collapsible editor, real
+counts/roles/expiry, owner requests and live15s refresh only while Groups is open.
+Close/tab switching stops refresh; hidden managed windows are not polled. Safe
+textContent and44px controls, wrapping four-tab header and responsive cards.
+Listings/requests are deliberately session-local, not durable guild schedules.
+
+Focused gameboard/invitation checks PASS0.046s; maincaller-ownership/private
+requests/blocked visibility plus existinginvite tests PASS1.003s; JS48tests over
+GroupFinderUI/SocialUIFriends/UIBindings PASS7.656s; changedJS lint/build/diffPASS.
+The first attempted SocialUI.test.js name did not exist; actualSocialUIFriends
+suite used in the passing selection. Focused SystemChrome Groups phone-width
+390/320 action/layout case PASS12.2s; standalone group-finder.spec.js remains
+available for targeted runs, not a repeated whole-device matrix. No real earned
+multiplayer campaign or actual physical-phone check claimed.
+
+Still required1.8: persistent guild events, readiness/moderation improvements,
+physical casino seating/table presence/session-reconnect/camera-input foundation.
+Runtime remains1.7 until1.8 packaging.
+
+Releaseupdate:1.6cf2a028d correction pushed; CI34739522914 RUNNING. Prior1.6
+34c1c0d8 verified BOTH live endpoints, database ready, but finalCI34738051311
+failed regional/ Verdant legacy reset helpers that did not confirm the new
+desktop dialog. New correction gives desktop the same confirm/cancel IDs as
+phone and explicitly confirms resets in regional/common/party QA routes;
+5focused preparation/reset tests PASS1.614s. Do not bypass final gate. Original
+1.7 candidate has merged the correction and waits for verified1.6 completion.
+
 Full games/location/town relocation are1.9; both functioning floors and final
 integration are1.10. The VIP currency remains an unresolved user decision:
 never name it, substitute Gold/Resonance, or count an inaccessible placeholder

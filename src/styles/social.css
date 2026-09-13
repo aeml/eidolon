@@ -2,6 +2,21 @@
    Social Window
    ============================================================ */
 
+.group-finder { line-height: 1.5; }
+.group-finder__controls { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 12px 0; }
+.group-finder label { display: flex; flex-direction: column; gap: 4px; flex: 1 1 140px; min-width: 0; }
+.group-finder select, .group-finder input, .group-finder button {
+    min-height: 44px; max-width: 100%; box-sizing: border-box; border-radius: 6px;
+    padding: 8px; color: #ece8db; background: #1c2935; border: 1px solid #61788e; font: inherit;
+}
+.group-finder button { cursor: pointer; margin: 6px 4px 0 0; }
+.group-finder button:disabled { opacity: .6; cursor: default; }
+.group-finder summary { cursor: pointer; padding: 10px 0; }
+.group-finder__card { border: 1px solid #53677b; border-radius: 8px; background: #111c28; padding: 12px; margin-top: 12px; overflow-wrap: anywhere; }
+.group-finder__card h3 { margin: 0; font-size: 1rem; }
+.group-finder__card p { margin: 6px 0; }
+.group-finder__card small { display: block; color: #b5c3d2; }
+
 .social-window {
     width: min(560px, calc(100vw - 40px));
     height: fit-content;
@@ -205,6 +220,7 @@
 
 .social-window__tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
     margin-bottom: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -212,6 +228,8 @@
 }
 
 .social-window__tab {
+    flex: 1 1 auto;
+    min-height: 44px;
     padding: 7px 16px;
     border: 1px solid transparent;
     border-bottom: none;

@@ -1,4 +1,5 @@
 import { GuildUI } from './GuildUI.js';
+import { GroupFinderUI } from './GroupFinderUI.js';
 import { PhonePartyUI } from './PhonePartyUI.js';
 import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidance.js';
 
@@ -156,11 +157,13 @@ export class SocialUI {
 
         if (show) {
             if (this.onSocialOpen) this.onSocialOpen();
+            this.groupFinder?.setActive(this._activeTab === 'groups');
             document.getElementById('close-social')?.focus();
             if (this.partyPanel) {
                 this.setPartyPanelVisible(true);
             }
         } else {
+            this.groupFinder?.setActive(false);
             if (this.partyPanel && !this.inParty) {
                 this.setPartyPanelVisible(false);
             }
@@ -604,6 +607,7 @@ export class SocialUI {
                         id="tab-btn-guild" role="tab"
                         aria-selected="false" aria-controls="tab-panel-guild"
                         type="button">Guild</button>
+                <button class="social-window__tab" id="tab-btn-groups" role="tab" aria-selected="false" aria-controls="tab-panel-groups" type="button">Groups</button>
             </div>
             <div id="tab-panel-online" role="tabpanel" aria-labelledby="tab-btn-online">
                 <div class="social-window__columns">
@@ -631,6 +635,7 @@ export class SocialUI {
                 <div id="friends-list" class="friends-list"></div>
             </div>
             <div id="tab-panel-guild" role="tabpanel" aria-labelledby="tab-btn-guild" style="display:none"></div>
+            <div id="tab-panel-groups" role="tabpanel" aria-labelledby="tab-btn-groups" style="display:none"></div>
         `;
 
         if (!div.parentElement) {
@@ -646,6 +651,7 @@ export class SocialUI {
             this._renderFriendsPanel();
         });
         div.querySelector('#tab-btn-guild')?.addEventListener('click', () => this._switchTab('guild'));
+        div.querySelector('#tab-btn-groups')?.addEventListener('click', () => this._switchTab('groups'));
 
         // Add friend button
         const addBtn = div.querySelector('#btn-add-friend');
@@ -665,6 +671,9 @@ export class SocialUI {
         }
 
         this.socialWindow = div;
+        this.groupFinder = new GroupFinderUI(div.querySelector('#tab-panel-groups'), {
+            action: payload => this.onGroupFinder?.(payload), invite: name => this.onPartyInvite?.(name)
+        });
         this.socialList = div.querySelector('#social-list');
         this._friendsPanel = div.querySelector('#tab-panel-friends');
         this._friendsList = div.querySelector('#friends-list');
@@ -681,15 +690,18 @@ export class SocialUI {
     /** Switch between 'online' and 'friends' tabs. */
     _switchTab(tab) {
         this._activeTab = tab;
+        this.groupFinder?.setActive(tab === 'groups');
         const onlinePanel = this.socialWindow.querySelector('#tab-panel-online');
         const friendsPanel = this.socialWindow.querySelector('#tab-panel-friends');
         const guildPanel = this.socialWindow.querySelector('#tab-panel-guild');
         const onlineBtn = this.socialWindow.querySelector('#tab-btn-online');
         const friendsBtn = this.socialWindow.querySelector('#tab-btn-friends');
         const guildBtn = this.socialWindow.querySelector('#tab-btn-guild');
+        const groupsPanel = this.socialWindow.querySelector('#tab-panel-groups');
+        const groupsBtn = this.socialWindow.querySelector('#tab-btn-groups');
 
-        for (const panel of [onlinePanel, friendsPanel, guildPanel]) panel.style.display = 'none';
-        for (const button of [onlineBtn, friendsBtn, guildBtn]) {
+        for (const panel of [onlinePanel, friendsPanel, guildPanel, groupsPanel]) panel.style.display = 'none';
+        for (const button of [onlineBtn, friendsBtn, guildBtn, groupsBtn]) {
             button?.classList.remove('social-window__tab--active');
             button?.setAttribute('aria-selected', 'false');
         }
@@ -702,6 +714,10 @@ export class SocialUI {
             if (friendsPanel) friendsPanel.style.display = '';
             friendsBtn?.classList.add('social-window__tab--active');
             friendsBtn?.setAttribute('aria-selected', 'true');
+        } else if (tab === 'groups') {
+            groupsPanel.style.display = '';
+            groupsBtn.classList.add('social-window__tab--active');
+            groupsBtn.setAttribute('aria-selected', 'true');
         } else {
             if (guildPanel) guildPanel.style.display = '';
             guildBtn?.classList.add('social-window__tab--active');

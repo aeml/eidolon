@@ -153,6 +153,7 @@ const (
 	MsgBuyGamble          = "buy_gamble"
 	MsgSell               = "sell"
 	MsgSocial             = "social"
+	MsgGroupFinder        = "group_finder"
 	MsgRespawn            = "respawn"
 	MsgRecall             = "recall"
 	MsgReport             = "report"

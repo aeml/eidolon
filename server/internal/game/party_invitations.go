@@ -32,6 +32,9 @@ func (w *World) IssuePartyInvitation(inviterID, targetID string, now time.Time) 
 	if !inviterAvailable || !targetAvailable || party == nil {
 		return PartyInvitation{}, fmt.Errorf("player is unavailable or already grouped")
 	}
+	if w.HasPvPMatch(inviterID) || w.HasPvPMatch(targetID) {
+		return PartyInvitation{}, fmt.Errorf("finish the current arena match before changing parties")
+	}
 	party.Mu.RLock()
 	canInvite := party.LeaderID == inviterID && len(party.Members) < party.MaxSize
 	party.Mu.RUnlock()
@@ -83,6 +86,9 @@ func (w *World) RespondPartyInvitation(targetID, inviterID string, accepted bool
 	party.Mu.RUnlock()
 	if !available {
 		return nil, fmt.Errorf("party invitation is no longer available")
+	}
+	if w.HasPvPMatch(inviterID) || w.HasPvPMatch(targetID) {
+		return nil, fmt.Errorf("finish the current arena match before changing parties")
 	}
 	if err := w.joinPartyLocked(invite.PartyID, targetID); err != nil {
 		return nil, err

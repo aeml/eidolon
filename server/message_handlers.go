@@ -27,6 +27,7 @@ var messageHandlers = map[string]messageHandler{
 	MsgPartyReady:      handleMsgPartyReady,
 	MsgPartyLootRule:   handleMsgPartyLootRule,
 	MsgSocial:          handleMsgSocial,
+	MsgGroupFinder:     handleMsgGroupFinder,
 	MsgSocialStatus:    handleMsgSocialStatus,
 
 	MsgFriendList:    handleMsgFriendList,

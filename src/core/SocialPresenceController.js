@@ -27,6 +27,9 @@ export class SocialPresenceController {
      */
     handleMessage(msg) {
         switch (msg.type) {
+            case 'group_finder_update':
+                this.uiManager.social?.groupFinder?.update(msg.payload);
+                return true;
             case 'party_update':
                 this.uiManager.updateParty(msg.payload);
                 return true;

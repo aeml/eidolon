@@ -99,6 +99,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgPartyReady:        policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgPartyLootRule:     policy(accessCharacter, 2<<10, 5, 10*time.Second),
 	MsgSocial:            policy(accessCharacter, 1<<10, 10, 10*time.Second),
+	MsgGroupFinder:       policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgSocialStatus:      policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgFriendList:        policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgFriendRequest:     policy(accessCharacter, 2<<10, 10, 10*time.Second),

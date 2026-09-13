@@ -121,6 +121,7 @@ type World struct {
 	Entities           map[string]*Entity
 	Parties            map[string]*Party
 	partyInvitations   map[string]PartyInvitation // World.Mu; one outstanding invitation per target.
+	groupListings      map[string]*GroupListing   // World.Mu; online, expiring recruitment only.
 	Trading            *TradingSystem
 	Grid               *SpatialMap
 	InstanceLayouts    map[string]*DungeonInstance

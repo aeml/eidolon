@@ -90,3 +90,17 @@ func TestConcurrentPartyInvitationAcceptancesCannotOverfill(t *testing.T) {
 		t.Fatal("concurrent invitations overfilled the party", members)
 	}
 }
+
+func TestPartyInvitationsCannotChangeAlliancesDuringAnArenaMatch(t *testing.T) {
+	w, _, now := invitationFixture()
+	if _, err := w.IssuePartyInvitation("leader", "target", now); err != nil {
+		t.Fatal(err)
+	}
+	startTestPvPMatch(w, PvPModeDuel, []string{"leader"}, []string{"target"})
+	if _, err := w.RespondPartyInvitation("target", "leader", true, now); err == nil {
+		t.Fatal("pending invite changed arena opponents into allies")
+	}
+	if _, err := w.IssuePartyInvitation("leader", "target", now); err == nil {
+		t.Fatal("arena opponent received a new party invite")
+	}
+}
