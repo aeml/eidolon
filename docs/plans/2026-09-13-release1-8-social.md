@@ -9,6 +9,28 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Shared preparation checkpoint
+
+Server presence now includes a shared preparation phase per table: waiting for
+real players, waiting for a reserved seat to reconnect, preparing, or everyone
+ready. Blackjack/slots require one connected player; poker requires two real
+players. An opaque roster revision binds ready requests to the actual seats and
+connection generation without exposing other players' private session IDs.
+Join/leave/reconnect invalidates readiness, including a join/leave between polls;
+delayed requests against a previous roster reject and refresh. Client shows the
+server phase and sends the viewed revision. No automatic deal, wager or debit.
+
+Focused game casino selection PASS0.081s including solo/multiplayer minimums,
+stale consent and reconnect. CasinoController3tests PASS8.652s; changedJS lint,
+client preparation, Go build-all and diff checks PASS. The connected test's
+ready payload was updated for the revision field; its prior actual socket/restart
+evidence predates this protocol addition and has not been rerun. No geometry or
+camera changes; reuse the previous rendered seat/phone evidence.
+
+Still required before claiming complete1.8 casino infrastructure: connect shared
+membership/preparation to synchronized round lifecycle. Readiness alone is NOT a
+played round. Full game content, money settlement and both floors remain later.
+
 ## Connected seating checkpoint — September 13, 06:17 UTC
 
 Actual two authenticated sockets now verify exclusive seats, public presence

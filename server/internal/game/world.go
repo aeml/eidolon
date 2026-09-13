@@ -1327,6 +1327,7 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	e.DisconnectedAt = at
 	if e.CasinoSeat != nil {
 		e.CasinoSeat.Ready = false
+		e.CasinoSeat.connectionEpoch++
 	}
 	if e.State == "DEAD" || e.Health <= 0 {
 		e.State = "DEAD"

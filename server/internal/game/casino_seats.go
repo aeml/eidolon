@@ -2,9 +2,12 @@ package game
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"math"
+	"sort"
 	"time"
 )
 
@@ -55,12 +58,14 @@ func CasinoTables() []CasinoTable {
 // serializes claims; the normal entity removal/scene lifecycle releases them.
 // Private session IDs fence delayed actions after leaving and taking another seat.
 type CasinoSeatSession struct {
-	TableID   string  `json:"tableId"`
-	Seat      int     `json:"seat"`
-	SessionID string  `json:"sessionId"`
-	ExitX     float64 `json:"exitX"`
-	ExitZ     float64 `json:"exitZ"`
-	Ready     bool    `json:"ready"`
+	TableID         string  `json:"tableId"`
+	Seat            int     `json:"seat"`
+	SessionID       string  `json:"sessionId"`
+	ExitX           float64 `json:"exitX"`
+	ExitZ           float64 `json:"exitZ"`
+	Ready           bool    `json:"ready"`
+	readyRevision   string
+	connectionEpoch uint64
 }
 
 func cloneCasinoSeat(seat *CasinoSeatSession) *CasinoSeatSession {
@@ -82,9 +87,80 @@ type CasinoOccupant struct {
 }
 
 type CasinoPresence struct {
-	Tables    []CasinoTable      `json:"tables"`
-	Occupants []CasinoOccupant   `json:"occupants"`
-	YourSeat  *CasinoSeatSession `json:"yourSeat"`
+	Tables      []CasinoTable                `json:"tables"`
+	Occupants   []CasinoOccupant             `json:"occupants"`
+	YourSeat    *CasinoSeatSession           `json:"yourSeat"`
+	Preparation map[string]CasinoPreparation `json:"preparation"`
+}
+
+// Preparation is not a wager or a running game. Consent belongs to the exact
+// connected roster; a later round engine must still validate its own stakes.
+type CasinoPreparation struct {
+	Revision       string `json:"revision"`
+	Phase          string `json:"phase"`
+	Connected      int    `json:"connected"`
+	Ready          int    `json:"ready"`
+	MinimumPlayers int    `json:"minimumPlayers"`
+}
+
+// Caller holds World.Mu, but no entity locks. Hashing the private seat identities
+// gives clients an opaque roster revision without disclosing anyone else's token.
+func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
+	type member struct {
+		Seat      int
+		Session   string
+		Epoch     uint64
+		Connected bool
+	}
+	rosters := map[string][]member{}
+	for _, player := range w.Entities {
+		player.Mu.RLock()
+		if s := player.CasinoSeat; s != nil {
+			rosters[s.TableID] = append(rosters[s.TableID], member{s.Seat, s.SessionID, s.connectionEpoch, !player.Disconnected})
+		}
+		player.Mu.RUnlock()
+	}
+	result := map[string]CasinoPreparation{}
+	for _, table := range CasinoTables() {
+		members := rosters[table.ID]
+		sort.Slice(members, func(i, j int) bool { return members[i].Seat < members[j].Seat })
+		encoded, _ := json.Marshal(members)
+		digest := sha256.Sum256(append([]byte(table.ID+":"), encoded...))
+		p := CasinoPreparation{Revision: hex.EncodeToString(digest[:]), Phase: "preparing", MinimumPlayers: table.MinimumPlayers}
+		for _, m := range members {
+			if m.Connected {
+				p.Connected++
+			}
+		}
+		if p.Connected < table.MinimumPlayers {
+			p.Phase = "waiting_players"
+		}
+		if p.Connected < len(members) {
+			p.Phase = "waiting_reconnect"
+		}
+		result[table.ID] = p
+	}
+	for _, player := range w.Entities {
+		player.Mu.Lock()
+		if s := player.CasinoSeat; s != nil {
+			p := result[s.TableID]
+			if player.Disconnected || s.readyRevision != p.Revision {
+				s.Ready = false
+			}
+			if s.Ready {
+				p.Ready++
+			}
+			result[s.TableID] = p
+		}
+		player.Mu.Unlock()
+	}
+	for id, p := range result {
+		if p.Phase == "preparing" && p.Ready == p.Connected {
+			p.Phase = "ready"
+		}
+		result[id] = p
+	}
+	return result
 }
 
 // Caller holds both World.Mu and player.Mu. Never restore an old town coordinate
@@ -127,6 +203,9 @@ func (w *World) pruneCasinoSeatsLocked(now time.Time) {
 func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time.Time) (*CasinoSeatSession, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	// Run after the player lock is released, even when nobody polls between a
+	// join and leave. Old readiness must not revive when the roster shrinks back.
+	defer w.casinoPreparationLocked()
 	w.pruneCasinoSeatsLocked(now)
 	var table *CasinoTable
 	for _, candidate := range CasinoTables() {
@@ -198,10 +277,11 @@ func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time
 	return cloneCasinoSeat(session), nil
 }
 
-func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool, now time.Time) error {
+func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool, now time.Time, revision string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	w.pruneCasinoSeatsLocked(now)
+	preparation := w.casinoPreparationLocked()
 	player := w.Entities[playerID]
 	if player == nil {
 		return errors.New("player not found")
@@ -215,7 +295,12 @@ func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool,
 	case "leave":
 		w.releaseCasinoSeatLocked(player)
 	case "ready":
+		p := preparation[player.CasinoSeat.TableID]
+		if revision == "" || revision != p.Revision {
+			return errors.New("table membership changed; review the table before readying")
+		}
 		player.CasinoSeat.Ready = ready
+		player.CasinoSeat.readyRevision = revision
 	default:
 		return errors.New("unsupported seated action")
 	}
@@ -226,7 +311,7 @@ func (w *World) CasinoPresenceFor(playerID string, now time.Time) CasinoPresence
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	w.pruneCasinoSeatsLocked(now)
-	presence := CasinoPresence{Tables: CasinoTables(), Occupants: []CasinoOccupant{}}
+	presence := CasinoPresence{Tables: CasinoTables(), Occupants: []CasinoOccupant{}, Preparation: w.casinoPreparationLocked()}
 	for _, player := range w.Entities {
 		if player.Type != TypePlayer {
 			continue

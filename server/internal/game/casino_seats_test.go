@@ -55,10 +55,10 @@ func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	if _, err := w.TakeCasinoSeat(owner, table.ID, 1, now); err == nil {
 		t.Fatal("double seat")
 	}
-	if err := w.ChangeCasinoSeat(owner, "wrong", "leave", false, now); err == nil {
+	if err := w.ChangeCasinoSeat(owner, "wrong", "leave", false, now, ""); err == nil {
 		t.Fatal("stale command")
 	}
-	if err := w.ChangeCasinoSeat(owner, seat.SessionID, "ready", true, now); err != nil {
+	if err := w.ChangeCasinoSeat(owner, seat.SessionID, "ready", true, now, public.Preparation[table.ID].Revision); err != nil {
 		t.Fatal(err)
 	}
 	if !w.CasinoPresenceFor(owner, now).YourSeat.Ready {
@@ -69,7 +69,7 @@ func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	if !w.GetEntityCopy(owner).CasinoSeat.Ready {
 		t.Fatal("snapshot aliases seat")
 	}
-	if err := w.ChangeCasinoSeat(owner, seat.SessionID, "leave", false, now); err != nil {
+	if err := w.ChangeCasinoSeat(owner, seat.SessionID, "leave", false, now, ""); err != nil {
 		t.Fatal(err)
 	}
 	player := w.GetEntityCopy(owner)
@@ -78,6 +78,68 @@ func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	}
 	if w.UpdatePlayerMovementWithContext(owner, 0, 0, 200, 0, "MOVING", 1, "casino-seat:"+seat.SessionID) {
 		t.Fatal("departed seat movement context accepted")
+	}
+}
+
+func TestCasinoPreparationRosterConsentAndRealPlayerMinimum(t *testing.T) {
+	for _, table := range CasinoTables()[:2] {
+		t.Run(table.Game, func(t *testing.T) {
+			w, a, b, _ := casinoSeatWorld()
+			now := time.Now()
+			a.X, a.Z = table.Seats[0].ExitX, table.Seats[0].ExitZ
+			b.X, b.Z = table.Seats[1].ExitX, table.Seats[1].ExitZ
+			seatA, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+			if err != nil {
+				t.Fatal(err)
+			}
+			ready := func(id, session string) {
+				t.Helper()
+				revision := w.CasinoPresenceFor(id, now).Preparation[table.ID].Revision
+				if err := w.ChangeCasinoSeat(id, session, "ready", true, now, revision); err != nil {
+					t.Fatal(err)
+				}
+			}
+			ready(a.ID, seatA.SessionID)
+			solo := w.CasinoPresenceFor(a.ID, now).Preparation[table.ID]
+			if table.Game == "poker" && solo.Phase != "waiting_players" {
+				t.Fatal("solo poker allowed", solo)
+			}
+			if table.Game == "blackjack" && solo.Phase != "ready" {
+				t.Fatal("solo blackjack blocked", solo)
+			}
+			seatB, err := w.TakeCasinoSeat(b.ID, table.ID, 1, now)
+			if err != nil {
+				t.Fatal(err)
+			}
+			joined := w.CasinoPresenceFor(a.ID, now)
+			if joined.YourSeat.Ready || joined.Preparation[table.ID].Phase != "preparing" {
+				t.Fatal("join retained old consent", joined)
+			}
+			if err := w.ChangeCasinoSeat(a.ID, seatA.SessionID, "ready", true, now, solo.Revision); err == nil {
+				t.Fatal("delayed readiness accepted")
+			}
+			ready(a.ID, seatA.SessionID)
+			ready(b.ID, seatB.SessionID)
+			both := w.CasinoPresenceFor(a.ID, now).Preparation[table.ID]
+			if both.Phase != "ready" || both.Ready != 2 {
+				t.Fatal("shared readiness missing", both)
+			}
+			w.SetEntityDisconnected(b.ID, now)
+			if p := w.CasinoPresenceFor(a.ID, now).Preparation[table.ID]; p.Phase != "waiting_reconnect" || p.Ready != 0 {
+				t.Fatal("disconnected roster still ready", p)
+			}
+			w.ClearEntityDisconnected(b.ID)
+			if err := w.ChangeCasinoSeat(a.ID, seatA.SessionID, "ready", true, now, both.Revision); err == nil {
+				t.Fatal("reconnect revived old revision")
+			}
+			ready(a.ID, seatA.SessionID)
+			if err := w.ChangeCasinoSeat(b.ID, seatB.SessionID, "leave", false, now, ""); err != nil {
+				t.Fatal(err)
+			}
+			if w.CasinoPresenceFor(a.ID, now).YourSeat.Ready {
+				t.Fatal("departure retained readiness")
+			}
+		})
 	}
 }
 

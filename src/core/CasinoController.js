@@ -13,7 +13,8 @@ export class CasinoController {
         this.heading = document.createElement('h2');
         this.status = document.createElement('p'); this.status.setAttribute('role', 'status');
         this.roster = document.createElement('ul');
-        this.ready = this.button('Ready at table', () => this.send({ action: 'ready', ready: !this.data.yourSeat?.ready }));
+        this.ready = this.button('Ready at table', () => this.send({ action: 'ready', ready: !this.data.yourSeat?.ready,
+            revision: this.data.preparation?.[this.data.yourSeat?.tableId]?.revision }));
         this.leave = this.button('Leave table', () => this.requestLeave());
         this.panel.append(this.heading, this.status, this.roster, this.ready, this.leave);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
@@ -50,6 +51,7 @@ export class CasinoController {
                 new THREE.Vector3(table.x, 1, table.z), new THREE.Vector3(table.game === 'slots' ? 1.55 : 2.8, 2, table.game === 'slots' ? 0.95 : 2.8)));
         }
         this.data = { tables, occupants: Array.isArray(payload.occupants) ? payload.occupants : [],
+            preparation: payload.preparation || {},
             yourSeat: this.engine.currentInstanceId ? null : payload.yourSeat || null };
         const seat = this.data.yourSeat;
         if (seat) this.lastSeat = seat;
@@ -60,7 +62,12 @@ export class CasinoController {
         this.heading.textContent = table?.name || 'Casino table';
         const occupants = this.data.occupants.filter(occupant => occupant.tableId === seat.tableId);
         const ready = occupants.filter(occupant => occupant.connected && occupant.ready).length;
-        this.status.textContent = `${ready} ready · ${occupants.length}/${table?.seats.length || 0} seats occupied. Table preparation is available; wagering and full games arrive in the next casino content stage. Reconnect reservations last 60 seconds. No Gold is spent here.`;
+        const preparation = this.data.preparation[seat.tableId];
+        const phase = { waiting_players: `Waiting for players (minimum ${preparation?.minimumPlayers || table?.minimumPlayers || 1}).`,
+            waiting_reconnect: 'Waiting for a seated player to reconnect.', preparing: 'Players are preparing.',
+            ready: 'Everyone is ready.' }[preparation?.phase] || 'Synchronizing table…';
+        this.status.textContent = `${phase} ${ready} ready · ${occupants.length}/${table?.seats.length || 0} seats occupied. Roster changes reset readiness. Games and wagering arrive in the next casino stage; no Gold is spent here. Reconnect reservations last 60 seconds.`;
+        this.ready.disabled = !preparation?.revision;
         this.ready.textContent = seat.ready ? 'Not ready' : 'Ready at table';
         this.ready.setAttribute('aria-pressed', String(Boolean(seat.ready)));
         this.roster.replaceChildren();

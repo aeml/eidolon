@@ -97,7 +97,7 @@ func TestCasinoActualSocketsResumeAndRestart(t *testing.T) {
 	if !strings.Contains(rejection, "session changed") {
 		t.Fatal("wrong-session ready accepted", rejection)
 	}
-	resourceSend(t, a, MsgCasino, map[string]any{"action": "ready", "ready": true, "sessionId": first.YourSeat.SessionID})
+	resourceSend(t, a, MsgCasino, map[string]any{"action": "ready", "ready": true, "sessionId": first.YourSeat.SessionID, "revision": second.Preparation[table.ID].Revision})
 	casinoReadPresence(t, a, func(p game.CasinoPresence) bool { return p.YourSeat != nil && p.YourSeat.Ready })
 	saved := resourceCloseAndWait(t, repo, a, names[0])
 	if saved.X != table.Seats[0].ExitX || saved.Z != table.Seats[0].ExitZ || saved.Gold != 1234 {

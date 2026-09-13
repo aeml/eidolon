@@ -12,6 +12,7 @@ func handleMsgCasino(client *Client, message Message) {
 		Seat      int    `json:"seat"`
 		SessionID string `json:"sessionId"`
 		Ready     bool   `json:"ready"`
+		Revision  string `json:"revision"`
 	}
 	if json.Unmarshal(message.Payload, &request) != nil {
 		client.sendError("invalid casino interaction")
@@ -25,7 +26,7 @@ func handleMsgCasino(client *Client, message Message) {
 	case "sit":
 		_, err = world.TakeCasinoSeat(client.playerID, request.TableID, request.Seat, time.Now())
 	case "leave", "ready":
-		err = world.ChangeCasinoSeat(client.playerID, request.SessionID, request.Action, request.Ready, time.Now())
+		err = world.ChangeCasinoSeat(client.playerID, request.SessionID, request.Action, request.Ready, time.Now(), request.Revision)
 	default:
 		client.sendError("unsupported casino action")
 		return

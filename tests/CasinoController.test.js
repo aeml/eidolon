@@ -22,7 +22,7 @@ function setup() {
 test('server-owned seat controls camera/input, readiness and exit without altering camera preferences', () => {
     const { engine, controller } = setup();
     const zoom = engine.renderSystem.camera.zoom;
-    controller.updateState({ tables: [table], occupants: [{ playerId: 'p', name: '<b>Alice</b>', tableId: table.id, seat: 0, connected: true }], yourSeat: seat });
+    controller.updateState({ tables: [table], preparation: { [table.id]: { revision: 'roster-1', phase: 'preparing', minimumPlayers: 1 } }, occupants: [{ playerId: 'p', name: '<b>Alice</b>', tableId: table.id, seat: 0, connected: true }], yourSeat: seat });
     controller.beforeUpdate(.4); controller.render([]);
     expect(controller.active).toBe(true); expect(controller.panel.hidden).toBe(false);
     expect(controller.roster.querySelector('b')).toBeNull();
@@ -30,7 +30,9 @@ test('server-owned seat controls camera/input, readiness and exit without alteri
     expect(engine.inputManager.clearInputState).toHaveBeenCalled();
     expect(engine.renderSystem.camera.zoom).not.toBe(zoom);
     controller.ready.click();
-    expect(engine.network.send).toHaveBeenCalledWith('casino', { action: 'ready', ready: true, sessionId: 'private-token' });
+    expect(engine.network.send).toHaveBeenCalledWith('casino', { action: 'ready', ready: true, sessionId: 'private-token', revision: 'roster-1' });
+    controller.updateState({ tables: [table], preparation: { [table.id]: { revision: 'roster-2', phase: 'waiting_reconnect' } }, yourSeat: seat });
+    expect(controller.status.textContent).toContain('Waiting for a seated player to reconnect');
     controller.leave.click(); expect(controller.active).toBe(true);
     controller.updateState({ tables: [table], occupants: [], yourSeat: null });
     expect(engine.cameraLocked).toBe(true); expect(engine.renderSystem.camera.zoom).toBe(zoom);
