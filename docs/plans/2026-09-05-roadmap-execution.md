@@ -17,7 +17,37 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 1.8 CI correction / 1.9 event core
+## Current checkpoint — September 13, walkable casino venue
+
+Previous/current goal turns = PROGRESS. Active1.9WT
+/tmp/eidolon-1-9-world-20260913 clean HEAD27ebe444 (not pushed/runtime remains1.8).
+Adds stash(-8,185), matching server/offline/map/minimap and current Trading House/
+stash footprint tests; widened26-unit casino, actualY6 VIP lounge/upper floor,
+24-step east staircase, ground/upper/exterior cutaways. Server/client swept venue
+navigation prevents stair side entry/upper rail or balcony exits; no jump bypass.
+Height-aware picking/separation, public seat height check, nearby44px landing
+button and physical markers start normal Actor walking up/down; no floor teleport.
+Stair-flight players may pass to avoid separation pushes off the narrow ramp.
+VIP has lounge furnishings but NO currency or games yet; not casino completion.
+
+Focused TestCasinoPASS0.014s/build-allPASS; navigation/controller/map27PASS1.561s;
+updated stash/town/controller/map31PASS1.985s; final changed collision suites6PASS
+1.170s. ChangedJS lint/diffPASS. One390px rendered real Fighter/Actor climb/descent
+fixturePASS14.8s; /tmp/eidolon-casino-vip-stairs-20260913.png inspected. Prepared
+venue, NOT actual town placement/connected floor or wager/reconnect evidence.
+Those remain release work; no broad matrix/soak. Existing public events committed
+803d0901 still need actual region/connected encounter check before publication.
+
+CI34744672300 SAME retry now server/client/all3browserPASS; Predeploy Character QA
+IN_PROGRESS.1.8 has NOT been verified deployed;1.7e84f6219 last verified live.
+Do not rerun/cancel because observation takes time. Frozen1.8WT remains254d07ae.
+NEXT build differentiated public slots and real-player poker via current casino
+seat/currency lifecycle, then pending integration checks. VIP currency question
+still unanswered; don't invent/fallbackGold. Full1.9/1.10 scope remains active.
+Read activeWT docs/plans/2026-09-13-release1-9-world.md for concrete detail.
+No QA server/Mongo left running. ROOT LEDGER ONLY, NEVER PUSH.
+
+## Previous checkpoint — September 13, 1.8 CI correction / 1.9 event core
 
 User's feature-first / focused-check policy above remains authoritative. No broad
 test reruns or new architecture work merely for reassurance.
