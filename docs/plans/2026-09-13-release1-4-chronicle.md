@@ -1,7 +1,8 @@
 # Alpha 1.4.0 — the Fourfold Chronicle
 
-Development starts from1.3 candidatefb7554ad in a separate worktree while that
-release publishes. Runtime version stays1.3 until this milestone is packaged.
+Candidate from1.3 releasefb7554ad, now packaged asAlpha1.4.0 with five player-facing
+patch notes and synchronized login/package/runtime/deployment versions. Publication
+and exact live identity must still be checked; packaging alone does not prove them.
 
 ## Authoritative starting point
 
@@ -79,7 +80,10 @@ instruction; source catalogs alone do not prove those playthroughs passed.
   temporary gallery initially omitted entity render positioning, corrected before
   that inspection. These fixtures do not claim a complete live-town playthrough.
 
-Next: package1.4, synchronize login/runtime versions, publish with patch notes and
-check its deployment. Broader earned progression and physical-device matrices
+Final packaging checks:254 version/witness tests PASS, changed-file lint/diff PASS,
+and the targeted Go witness-spawn check PASS after its final north-facing rotation.
+No additional soak or comprehensive playthrough was started.
+
+Next: publish1.4 and check its deployment. Broader earned progression and physical-device matrices
 remain final stabilization.1.3 is deployed on both domains atfb7554ad; final live
 QA in CI34730497493 is still running, so its final result remains unclaimed.
