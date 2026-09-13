@@ -1,7 +1,8 @@
 # Alpha 1.6.0 — dungeons and raids worth repeating
 
-Develop separately from the frozen1.5 release9c61d0d5. Runtime stays1.5 until
-this milestone is packaged. The full1.1–1.10 goal remains active.
+Develop separately from1.5; latest publishing correctiond8323180 is merged here.
+Runtime/package now1.6.0, prepared but not yet published. The full1.1–1.10 goal
+remains active; this milestone does not claim the final consolidated playthroughs.
 
 ## Scope
 
@@ -31,6 +32,14 @@ after all features are added; do not claim those complete from unit checks or a
 prepared fixture. Reuse unchanged passing evidence and do not start another soak.
 
 ## Implementation checkpoint — September 13
+
+03:32 packaging: eight new player-facing notes preserve every older entry. Login,
+package/lock, release manifest, server defaults, deploy/CI and isolated QA version
+strings synchronized toAlpha1.6.0.245 version/history checks PASS2.762s; client
+dependency preparation PASS; `go build -trimpath ./...` PASS; diff check PASS.
+Ready to publish after1.5 d8323180 is verified live. Current1.5 CI34735541628:
+clientPASS, ServerGo stillrunning. Do not skip1.5 delivery or push another milestone
+over its running deployment. Poll same run, then verify both exact live identities.
 
 03:29: encounter/preparation batch complete locally. Existing realm bosses now
 use genuinely different, locked-at-windup footprints in the same damage pipeline:
