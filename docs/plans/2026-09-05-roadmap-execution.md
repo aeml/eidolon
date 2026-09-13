@@ -17,7 +17,41 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 04:08 UTC
+## Current checkpoint — September 13, 04:27 UTC
+
+PROGRESS:1.7 rated-results batch3b06ac60 committed in
+`/tmp/eidolon-1-7-arena-20260913`, then merged1.6 correction34c1c0d8 cleanly.
+Game uses team-mean K32Elo, equalteam±16, floor0. Eligible wins50Honor+3season;
+lossesandforfeits noHonor/seasonpoints (forfeitsstillrating). First3meetings per
+opponent/UTCday allowrating/rewards; anyparticipantcapwithholdsforbothteams,
+W/Lstillrecords. Counterhistorybounded256, noevictionbypass. Immutable result
+receipts persistcountersandactualleaver5minpenalty, hydrationrestoresboth and
+preservesinnocentteammate. Dayrolloverkeepspenalty. Profile/statuscopiesdetached;
+leaderboardprojectionomitsopponentcounters. Exactlastresultteamselfscore/opponent,
+ratingbefore/delta/Honor/seasonaward/reasondurableanddisplayedinUI+chat.
+
+Focusedreward/Elo/repeat/hydration/bounds/frozenretry PASS0.010s; existinggamePvP/
+arena/maintenance PASS13.345s; realdisposableMongo replay/counters/penalty/result
+PASS0.172s; UI8PASS0.759s; JSlint+gobuild-trimpath-all PASS. MainPvP/scene initially
+failedoldzeroHPsocialfixtures; explicitlyliving100HPsetup PASS0.206s. Original
+MongoURI32913refusedaftercontainerrestartchangedephemeralport; authoritative
+dockerport32914usedforthepassingcheck. Container eidolon-isolated-qa-mongo-arena171309
+is now STOPPED, retained; rediscoverportonnextstart. Noactive localtool sessions.
+
+1.6CI34737205195 STILLIN_PROGRESS04:27: server/clientPASS, browser2PASS,
+browser3FAILED, browser1RUNNING. Specificfailure: oldraidmenuTabtest expectedForm
+Raid instead of newpreparationSummary. Scopedtestcorrection34c1c0d8 COMMITTEDin
+`/tmp/eidolon-1-6-encounters-20260913` clean, NOTPUSHED: explicitlykeyboard
+focus/Enter/openpreparationthentabtoForm/Enterraid. ExactSystemChromePASS8.3s.
+Afteroriginalrunterminal, pushCORRECTIONfrom1.6WT, tracksameresultrunandverify
+exactnewliveclient/server+DBready. 1.5 remainslastverifiedlive. No1.6liveclaim.
+
+Next1.7: earnedseasonrewards/history, process-lossPvEsaveprojection,
+roundstatus/cooldowncleanup; thenversion/notes/packageafter1.6delivery.
+Fullrealplayerseason/endurancecampaigns remainfinalconsolidatedstabilization.
+Remaining1.8/1.9/1.10 scope unchanged. Goalactive; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 04:08 UTC
 
 04:19 follow-up in1.7WT: arena clean exits now restore captured entry HP/MP
 (clamped to current maxima); rounds still refill. Duel request/acceptance checks
