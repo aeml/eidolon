@@ -17,7 +17,32 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, EP economy policy recorded
+## Current checkpoint — September 13, casino quick play implemented locally
+
+Active WT `/tmp/eidolon-1-10-resonant-age-20260913` now **1e522cdf**, local only.
+User requested direct online-casino-style wagers, visible reel motion and queued
+50/100/custom spins. Slots/blackjack/poker no longer require Review/Confirm;
+cost-labelled buttons act directly with pending locks across unchanged polls.
+Slots cycle symbols and stop reels sequentially; reduced-motion alternative.
+50/100 presets and custom1–1000 queue, maximum total stakes preview, pinned stake,
+one saved/animated spin at a time. Free spins retain stake/count toward total.
+Stop, departure/session changes, hidden tab, disconnect, unavailable/timeout,
+insufficient Gold and bonus choice cancel remaining spins; no auto-resume/retries.
+Server scoped rejection acknowledgement unlocks only matching pending commands;
+existing processing fences, odds, receipts and recovery are unchanged.
+
+29focusedJS/controller testsPASS7.18s; changedlint/diffPASS. Selected existing Go
+slot/cache/save testsPASS0.132s; new rejection identity testPASS0.067s. Phonepoker
+PASS15.9s, phoneslotsPASS19.7s (reel motion, bonus,100preset/Stop);390px screenshot
+inspected. Blackjackphone/camera/leavePASS20s after obsolete Split/Cancel test
+locator initiallytimedout120s; reran onlythatfixture. No broadsoak or newMongo run.
+Evidence and scope: `docs/plans/2026-09-13-casino-quick-play.md` in active WT.
+All owned test commands finished. Both live endpoints were independently checked
+earlier this turn: still **e86e29a0 Alpha1.9.0**. Neither shared casino hall nor
+quick-play changes are pushed/deployed. Full1.10 work remains; do not mark goal
+complete or describe this as live. ROOT LEDGER ONLY; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, EP economy policy recorded
 
 User defined planned EP sources: monthly VIP allowance and fixed-rate Gold → EP
 exchange. Spending is restricted to casino content and a future cosmetic VIP
