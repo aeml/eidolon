@@ -17,7 +17,43 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 04:34 UTC
+## Current checkpoint — September 13, 04:44 UTC
+
+PROGRESS:1.7 state cleanup+packaging committedf3adf398 in clean/frozenWT
+`/tmp/eidolon-1-7-arena-20260913`. Runtime/package/login/server/deploy/CI/QA/current
+roadmap label nowAlpha1.7.0, eight cumulative patchnotes preserve1.6 and earlier.
+NOTPUSHED; publishONLYafter1.6verifiedlive. All1.7plannedfeaturebatchesimplemented,
+but finalCI/live verification remainsrequired. Do notclaim1.7delivered yet.
+
+ActorPvPReturn immutableorigin copiedinGetEntityCopy. Character/resource snapshots
+projectentryXYZ/instance/HPMP fromsamecopy evenaftermatchremoved, notarenadeath/
+refill. ActualWellRestedbank retained. Liveexit restoresentryresourcesandoriginal
+absolute skill/attack/abilitycooldowns. Entry/roundclearscombatbuffs/shields/DoTs/
+CC/HoTs/summon/channel/combo/runes/cooldowns and recalculatesaffectedstats;
+round/exit removesonlyexactmatchnonplayercombatentities. Otherinstancesand
+gear/build/progression/Gold/rest untouched. UIrulescollapsibleforclearqueueactions.
+
+Focusedgamearena/PvP/duel/WellRested/shutdownPASS13.346s; mainrealcharacter-save
+JSONroundtripaftermatchremoval/scene/recoveryPASS0.196s. Newcleanupfixtureinitially
+had0Intandtherefore0manacapacity, correctedto10Intthenpassed. Nofullcrashmatrix
+claim. prepareclientPASS; version/history+UI255testsPASS1.507s; finaldisclosureUI9
+PASS0.733s; changedJSlintandversionedgobuild-trimpath-allPASS; diffclean.
+
+1.6replacementCI34738051311 STILLRUNNING: server/clientPASS, browser3shardsactive.
+Candidate34c1c0d84a52e90144ca1bc34f1c549e7c3c1218 alreadypushedfrom1.6WT.
+Pollsame run; afterdeploymentverifyexactclient/serveridentityandDBready. Last
+verifiedlive1.5d8323180; no1.6liveclaim yet. Thenpushfrozen1.7f3adf398fromitsWT.
+
+Usefulnextlocalworkwhileorderedreleasesrun: start1.8separateWTfromfrozen1.7,
+readroadmap1.8andcasino spec, inspectexistingparty/guild/invite/readiness/
+moderation beforeaddingactivitygroupfinder/recruitmentroles/guildevents and
+authoritativephysicalcasino seating/tablepresence/sessionreconnect foundations.
+No1.8WTcreatedyet. 1.9buildsphysicalcasino/publicevents;1.10finalintegration/
+VIPseparatefuturecurrency/finalconsolidatedtests. Fullscopeunchanged, goalactive.
+Noactive localtool sessions. NEVER PUSH ROOT. Schema10rollbackguard/receipt
+preservationrequirementsremainin1.7plan;1.6still schema9 until1.7deploy.
+
+## Previous checkpoint — September 13, 04:34 UTC
 
 PROGRESS:1.7 seasons/rewards committed6fe8c2b9 in cleanWT
 `/tmp/eidolon-1-7-arena-20260913`. Eligible normal rankedwins separatelytracked;
