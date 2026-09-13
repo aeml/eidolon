@@ -2,10 +2,14 @@
 
 ## Latest user direction — September 13
 
-VIP currency name is **EP (Eidolon Points)**. Acquisition is still undefined,
-but the current request explicitly gates upstairs with a guard saying **“You
-must be a VIP to enter”**. Do not block this delivery on EP acquisition or invent
-wallet grants/purchases. The town casino door should open a dialogue with
+VIP currency is **EP (Eidolon Points)**, planned from a monthly VIP allowance
+and fixed-rate Gold → EP exchange. Uses are limited to casino content and a
+future cosmetic VIP Vendor (armor/weapon/shield skins). Approximately $5/month
+is a suggested subscription price, not final; allowance, exchange rate and other
+VIP bonuses remain undecided. Payment/purchase integration is explicitly excluded.
+See [approved EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+The current request still gates upstairs with a guard saying **“You must be a
+VIP to enter”**. Do not invent wallet amounts or purchases. The town casino door should open a dialogue with
 **Enter Casino**, transporting all players to the SAME large two-storey social
 zone with multiple public Gold tables/machines. See the updated casino roadmap.
 Earlier blocked-currency checkpoints below are historical, not a reason to stop
@@ -24,11 +28,13 @@ bump alone does not complete the goal; every earlier promised feature remains.
    systems. Inspect existing implementations before adding anything; preserve
    Ilyra's story, earned progress and optional-daily philosophy. No fifth class,
    large continent, additional reward framework or speculative architecture.
-2. Finish working VIP games/higher stakes/premium variations on the actual upper
-   floor, using the separate currency once the user supplies its name/acquisition
-   policy. This question is already open. Do NOT invent currency, grants, purchase
-   rules, exchange rates or Gold/Resonance fallback. A lounge facade is not done.
-   Continue independent content work while awaiting the answer.
+2. Follow the approved EP economy policy for future VIP games/higher stakes/
+   premium variations and the cosmetic VIP Vendor. Resolve the remaining monthly
+   allowance, exchange rate and access details before enabling them; do not add
+   payment integration, invent quantities or use Gold/Resonance fallback. The
+   current guarded-floor delivery remains authorized and is not functioning EP
+   wagering. Continue independent content/integration work without reopening the
+   now-resolved currency name/source question.
 3. After features, perform ONE consolidated acceptance pass using retained valid
    evidence and filling actual gaps. Cover fresh campaign and real group raid,
    saved progress/reward economy, full public/VIP casino loops and multiplayer,
@@ -65,8 +71,8 @@ assertion PASS in 1.164s (247 unrelated presentation checks intentionally skippe
 `git diff --check` PASS. Broad browser/device/integration remains consolidated
 after all features. Neither local story nor Help content is deployed yet.
 
-Next feature dependency is the previously requested VIP currency name and
-acquisition policy. It remains unresolved; do not invent or omit this scope.
+At this historical checkpoint, currency name/acquisition were unresolved. The
+latest user direction above now resolves those; quantities remain undecided.
 
 ## 1.9 release evidence
 

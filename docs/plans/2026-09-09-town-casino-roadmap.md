@@ -4,9 +4,9 @@ Requested September 9, 2026. Status: **implementation underway; full casino not 
 
 ## September 13 user revision — current delivery
 
-The separate currency is now named **EP — Eidolon Points**. Acquisition,
-purchase/conversion rules and VIP entitlement policy are not defined yet.
-Do not invent them or substitute Gold/Resonance upstairs.
+The separate currency is **EP — Eidolon Points**. Its approved sources and uses
+are recorded below; exact quantities remain undecided. Do not substitute
+Gold/Resonance upstairs.
 
 The town building is now an entrance facade: click its door, read the dialogue,
 then choose **Enter Casino**. Travel to one permanent, large, shared casino zone;
@@ -14,8 +14,8 @@ all players enter the same scene, not a party-owned dungeon copy. Build a genero
 two-storey gaming hall with multiple functioning public tables and machines.
 At the stairs, a physical guard offers **“You must be a VIP to enter”** and blocks
 upstairs access for now. This explicit interim gate supersedes the earlier
-walk-straight-upstairs interaction for the current delivery. The user has not
-authorized EP grants or VIP purchases merely by naming the currency.
+walk-straight-upstairs interaction for the current delivery. The planned EP
+economy below does not change this interim gate or authorize payment integration.
 
 The EP acquisition question no longer blocks this shared-zone/guard delivery.
 Future VIP currency games/entitlements remain separate follow-on work; do not
@@ -23,6 +23,26 @@ describe the guarded floor as already offering premium wagering.
 This extends the existing full 1.1–1.10 goal; it does not replace earlier work
 or interrupt immediate bug fixes. Implement at the stages below, not now.
 Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).
+
+## EP economy — approved direction, not implemented
+
+- Sources: a fixed monthly EP allowance as one benefit of a future VIP
+  subscription, and an explicit fixed-rate **Gold → EP** exchange.
+- The user suggested approximately **$5/month** for VIP with several bonuses;
+  this is illustrative, not an approved final price. The monthly EP allowance,
+  Gold-to-EP rate and other VIP bonuses remain undecided. Do not invent values.
+- Spending is restricted to casino content and a future **VIP Vendor** selling
+  cosmetics, including armor, weapon and shield skins. Those cosmetics are not
+  implemented yet; EP is not a general gameplay/gear-power currency.
+- **Do not implement the purchase/payment method in this scope.** Record the
+  future subscription benefit without adding checkout, billing or recurring
+  charges. Payment exclusion does not remove the planned Gold exchange.
+- Keep public downstairs games on regular Gold and future VIP games on EP.
+  Exchange must be explicit, not an automatic wager fallback. Future exchange
+  and allowance delivery must be server-authoritative, durable and replay-safe.
+- EP ownership alone does not grant VIP access. Reverse conversion, cash-out,
+  player-to-player EP transfers and additional EP sources/uses are not authorized
+  by this direction. Retain the requested guard until VIP access is implemented.
 
 September13 checkpoint:1.8 supplies shared seat/camera/blackjack infrastructure;
 the1.9 candidate now contains the moved stash and actual walkable two-floor venue.
@@ -49,14 +69,12 @@ location, not a collection of minigames launched from a menu.
 | 1.9 — world/location | Reposition the stash/casino, build both walkable floors and their distinct art, and implement/playtest the full games and in-world interactions. Integrate the separate currency system once its design has been approved and implemented. |
 | 1.10 — completion | Finish public and VIP content, game rules/payout tuning, visual/audio polish, multiplayer/phone/accessibility and persistence tests, then deploy with accurate patch notes and live verification. Both floors are required, not an optional stretch goal. |
 
-The VIP currency system is an explicit unresolved upstream dependency. Its design
-must be resolved with the user during the relevant economy work, early enough
-for implementation and integration before final casino acceptance. Until then,
-the plan may describe a currency capability/interface, but must not permanently
-assign a name, token, exchange rate, purchase method or economic policy. The CP
-comparison describes separation from Gold, not a specification to copy CP.
-Do not substitute Gold, assume Resonance is this currency, or claim an inaccessible
-VIP placeholder completes the second floor.
+The EP policy above supersedes the original unnamed-currency dependency and
+historical milestone wording. Resolve the remaining allowance, exchange rate
+and VIP entitlement details before enabling those economic operations; payment
+integration remains excluded. The CP comparison describes separation from Gold,
+not a specification to copy CP. Do not substitute Gold/Resonance or describe the
+currently guarded lounge as functioning EP games.
 
 ## Town layout and building
 
@@ -136,9 +154,9 @@ casino token. Show bet cost, available balance and authoritative settlement.
   No normal-Gold debit, payout fallback or implied automatic conversion upstairs.
 - [ ] Include higher-stakes tables and machines and premium content variations,
   with a more exclusive visual and audio atmosphere than the public floor.
-- [ ] Clearly identify the upstairs currency once it is defined, its supported
-  stakes and insufficient-funds behavior. Do not invent an access entitlement or
-  monetization model in this roadmap; resolve those decisions with currency design.
+- [ ] Clearly identify EP, supported stakes and insufficient-funds behavior.
+  Follow the approved EP policy above; resolve remaining quantities and access
+  entitlement details without implementing the excluded payment method.
 - [ ] Reserve usable physical space and extensible content/service boundaries for
   future VIP-specific games, rewards, services or mechanics. These future additions
   need not all ship by 1.10, but the specified functioning VIP casino must.

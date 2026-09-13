@@ -39,6 +39,9 @@ attendance and casino wagering are not prerequisites for its completion.
   already runs in existing server code and does not require a separate release,
   cron service or new reward framework.
 
-VIP currency name and acquisition policy remain a user decision. This cadence
-does not authorize inventing that economy or treating an unfunded VIP lounge as
-finished content.
+EP (Eidolon Points) now has approved planned sources: a monthly VIP allowance
+and fixed-rate Gold → EP exchange. Spending is restricted to casino content and
+a future cosmetic VIP Vendor. See [EP policy](plans/2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+Exact amounts remain undecided and payment integration is excluded. This cadence
+does not authorize inventing quantities or treating the guarded VIP lounge as
+finished EP content.

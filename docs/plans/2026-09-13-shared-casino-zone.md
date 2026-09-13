@@ -1,6 +1,10 @@
 # Shared casino zone — implementation handoff
 
-User revision: **EP means Eidolon Points**; no acquisition or exchange rules yet.
+User revision: **EP means Eidolon Points**. Planned sources are a monthly VIP
+allowance and fixed-rate Gold → EP exchange; spending is casino-only plus a
+future cosmetic VIP Vendor. Amounts remain undecided and payment integration is
+excluded. See [approved EP policy](2026-09-09-town-casino-roadmap.md#ep-economy--approved-direction-not-implemented).
+This is roadmap policy, not delivered wallet/exchange/cosmetic functionality.
 Current upstairs gate is explicitly **You must be a VIP to enter**.
 
 ## Delivered code (not yet deployed)
