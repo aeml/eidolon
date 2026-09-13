@@ -478,3 +478,11 @@
     opacity: 1;
     transform: translateY(0);
 }
+.social-safety { min-width: 0; font-size: 12px; }
+.social-safety summary { cursor: pointer; padding: 10px 6px; min-height: 44px; box-sizing: border-box; color: #dbc99e; }
+.social-safety button, .social-safety input, .social-safety select { min-height: 44px; max-width: 100%; box-sizing: border-box; border: 1px solid #756243; border-radius: 6px; background: #141923; color: #f3e4c3; padding: 6px 9px; }
+.social-safety button { cursor: pointer; white-space: normal; margin: 3px; }
+.social-safety--settings { margin: 6px 12px 10px; }
+.social-safety--settings p { line-height: 1.5; }
+.social-safety--settings form { display: flex; flex-wrap: wrap; align-items: end; gap: 6px; }
+.social-safety--settings label { display: flex; flex-direction: column; flex: 1 1 120px; min-width: 0; }

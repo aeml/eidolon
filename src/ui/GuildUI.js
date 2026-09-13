@@ -1,4 +1,5 @@
 import { GuildEventsUI } from './GuildEventsUI.js';
+import { socialSafetyActions } from './SocialSafetyUI.js';
 
 export class GuildUI {
     constructor({ container, getLastPlayer, addChatMessage }) {
@@ -172,6 +173,7 @@ export class GuildUI {
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.kick) {
                 actions.appendChild(this.button('Kick', 'guild-btn--danger', () => this.onKick?.(member.username)));
             }
+            if (!isSelf) actions.append(socialSafetyActions(member.username, `Guild roster: ${guild.name} (${guild.id})`, (...args) => this.onSafety?.(...args)));
             if (actions.children.length > 1) row.append(actions);
             roster.appendChild(row);
         }

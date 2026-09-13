@@ -23,7 +23,7 @@ func TestNewReportValidatesAndNormalizesInput(t *testing.T) {
 		text       string
 	}{
 		{name: "username", reportType: "Bug Report", text: "text"},
-		{name: "type", username: "player", reportType: "Player Report", text: "text"},
+		{name: "type", username: "player", reportType: "Unsupported Report", text: "text"},
 		{name: "text", username: "player", reportType: "Bug Report"},
 		{name: "length", username: "player", reportType: "Bug Report", text: strings.Repeat("x", maximumReportLength+1)},
 	}
@@ -33,6 +33,13 @@ func TestNewReportValidatesAndNormalizesInput(t *testing.T) {
 				t.Fatal("expected validation error")
 			}
 		})
+	}
+}
+
+func TestPlayerReportUsesExistingModerationQueue(t *testing.T) {
+	report, err := NewReport("reporter", "Player Report", "Player: Bob\nContext: group listing\nRepeated harassment", time.Now())
+	if err != nil || report.ReportType != "Player Report" || report.Status != ReportStatusOpen || report.Username != "reporter" {
+		t.Fatal("player report was not queued as an allegation for review", report, err)
 	}
 }
 

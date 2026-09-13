@@ -1,8 +1,11 @@
+import { socialSafetyActions } from './SocialSafetyUI.js';
+
 export class GroupFinderUI {
-    constructor(container, { action, invite }) {
+    constructor(container, { action, invite, safety }) {
         this.container = container;
         this.action = action;
         this.invite = invite;
+        this.safety = safety;
         this.data = { activities: [], listings: [] };
         container.classList.add('group-finder');
         const guidance = document.createElement('p');
@@ -111,6 +114,7 @@ export class GroupFinderUI {
                     row.textContent = `${applicant.name} · ${applicant.class} ${applicant.level} · ${applicant.role} `;
                     row.append(this.button(`Invite ${applicant.name}`, () => this.invite(applicant.name)));
                     row.append(this.button(`Decline ${applicant.name}`, () => this.action({ action: 'decline', applicantId: applicant.playerId })));
+                    row.append(socialSafetyActions(applicant.name, `Group application: ${listing.activity}`, (...args) => this.safety?.(...args)));
                     card.append(row);
                 }
             } else if (listing.mode === 'looking') {
@@ -119,6 +123,8 @@ export class GroupFinderUI {
                 const request = this.button(listing.requested ? 'Cancel join request' : 'Ask to join', () => this.action({ action: listing.requested ? 'cancel' : 'request', ownerId: listing.ownerId, role: this.joinRole.value }));
                 card.append(request);
             }
+            if (listing.ownerId !== this.data.viewerId) card.append(socialSafetyActions(listing.name,
+                `Group listing (${listing.ownerId}): ${listing.activity}\nListing note: ${listing.note || ''}`, (...args) => this.safety?.(...args)));
             this.list.append(card);
         }
         if (!this.list.children.length) {

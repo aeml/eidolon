@@ -91,6 +91,22 @@ export class UIBindings {
         ui.onReportSubmit = (type, text) => {
             engine.network.send('report', { reportType: type, text });
         };
+        ui.social.onSafety = (action, username, context = '') => {
+            if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;
+            if (action === 'report') {
+                if (!ui.reportText || !ui.reportType) return;
+                const contextText = `Player: ${username}\nContext: ${context}\nWhat happened (include approximate time):\n`;
+                // Preserve an unfinished report; contextual actions must not erase a draft.
+                ui.reportText.value = ui.reportText.value.trim() ? `${ui.reportText.value}\n\n${contextText}` : contextText;
+                ui.reportType.value = 'Player Report';
+                if (!ui.isElementVisible?.(ui.reportScreen)) ui.toggleReport?.();
+                ui.reportText.focus();
+                return;
+            }
+            if (['block', 'ignore', 'unblock', 'unignore'].includes(action)) {
+                engine.network.send('chat', { message: `/${action} ${username}` });
+            }
+        };
         ui.onResonanceSpend = (trait) => engine.network.send('endgame_spend', { trait });
         ui.social.onPartyInvite = (targetName) => {
             engine.socialController.sendPartyMessage('party_invite', { targetName });

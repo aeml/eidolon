@@ -1,5 +1,6 @@
 import { GuildUI } from './GuildUI.js';
 import { GroupFinderUI } from './GroupFinderUI.js';
+import { socialSafetyActions, socialSafetySettings } from './SocialSafetyUI.js';
 import { PhonePartyUI } from './PhonePartyUI.js';
 import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidance.js';
 
@@ -228,6 +229,7 @@ export class SocialUI {
                 duelButton.setAttribute('aria-label', `Challenge ${p.name} to a duel`);
                 duelButton.addEventListener('click', () => this.onDuelRequest?.(p.name));
                 action.appendChild(duelButton);
+                action.appendChild(socialSafetyActions(p.name, 'Online player list', (...args) => this.onSafety?.(...args)));
             } else {
                 const selfBadge = document.createElement('span');
                 selfBadge.className = 'social-window__self-badge';
@@ -671,8 +673,10 @@ export class SocialUI {
         }
 
         this.socialWindow = div;
+        div.append(socialSafetySettings((...args) => this.onSafety?.(...args)));
         this.groupFinder = new GroupFinderUI(div.querySelector('#tab-panel-groups'), {
-            action: payload => this.onGroupFinder?.(payload), invite: name => this.onPartyInvite?.(name)
+            action: payload => this.onGroupFinder?.(payload), invite: name => this.onPartyInvite?.(name),
+            safety: (...args) => this.onSafety?.(...args)
         });
         this.socialList = div.querySelector('#social-list');
         this._friendsPanel = div.querySelector('#tab-panel-friends');
@@ -685,6 +689,7 @@ export class SocialUI {
             getLastPlayer: this.ctx.getLastPlayer,
             addChatMessage: this.ctx.addChatMessage,
         });
+        this.guild.onSafety = (...args) => this.onSafety?.(...args);
     }
 
     /** Switch between 'online' and 'friends' tabs. */

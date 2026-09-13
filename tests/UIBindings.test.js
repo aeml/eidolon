@@ -164,6 +164,30 @@ describe('UIBindings', () => {
         ].sort());
     });
 
+    test('social safety uses persisted commands and reports require explicit submission', () => {
+        const engine = createEngine();
+        const ui = engine.uiManager;
+        ui.reportText = document.createElement('textarea');
+        ui.reportText.value = 'Existing draft';
+        ui.reportType = document.createElement('select');
+        ui.reportType.add(new Option('Player Report', 'Player Report'));
+        ui.toggleReport = jest.fn();
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.network.send.mockClear();
+        ui.social.onSafety('block', 'Bob');
+        expect(engine.network.send).toHaveBeenCalledWith('chat', { message: '/block Bob' });
+        engine.network.send.mockClear();
+        ui.social.onSafety('block', 'Bob\n/other');
+        ui.social.onSafety('report', 'Bob', 'Group listing');
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(ui.reportText.value).toContain('Existing draft');
+        expect(ui.reportText.value).toContain('Player: Bob');
+        expect(ui.reportType.value).toBe('Player Report');
+        expect(ui.toggleReport).toHaveBeenCalledTimes(1);
+        ui.onReportSubmit(ui.reportType.value, ui.reportText.value);
+        expect(engine.network.send).toHaveBeenCalledWith('report', expect.objectContaining({ reportType: 'Player Report' }));
+    });
+
     test('bindSessionCallbacks wires chat, respawn, and hotbar actions', () => {
         const engine = createEngine();
         const bindings = new UIBindings(engine);

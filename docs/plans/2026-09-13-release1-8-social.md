@@ -9,6 +9,27 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Player-safety checkpoint
+
+Online-player rows, recruitment posts/applicants and guild rosters now expose
+contextual Player safety actions. Block/ignore require an explicit second click
+and use the existing persisted slash-command relationship handlers. A shared
+Safety disclosure explains their limits and provides unblock/unignore by name.
+No optimistic success claim: existing server chat confirms the operation.
+
+Report player opens the existing report form with the player and listing/guild
+context prefilled; it preserves an unfinished draft and still requires explicit
+submission. Player Report is a supported category in the existing durable report
+queue. These are player allegations for review, not automatic sanctions or trusted
+server evidence. No parallel moderation service or account-wide punishment added.
+
+Focused social/group/guild/binding UI55 tests PASS2.518s; final safety binding5
+PASS0.882s verifies command-injection rejection, retained draft and no report
+submission before consent. Existing/new report validation PASS0.010s; build/lint
+PASS. The former unsupported-type fixture now uses an actually unsupported type;
+Player Report has its own acceptance assertion. Physical casino infrastructure
+remains the substantive unfinished1.8 feature batch.
+
 ## Guild calendar checkpoint
 
 Implemented saved guild events through the existing guild document, membership
