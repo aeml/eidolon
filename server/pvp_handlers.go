@@ -150,6 +150,7 @@ func hydratePvPProfile(playerID string) error {
 		return fmt.Errorf("your last arena result is still syncing; try again shortly")
 	}
 	world.SetPvPProfile(game.PvPProfile{
+		LastResult: profile.LastResult, RewardState: profile.RewardState,
 		Revision: profile.Revision, LastMatchID: profile.LastMatchID, Season: profile.Season,
 		PlayerID: profile.PlayerID, Rating: profile.Rating, Wins: profile.Wins, Losses: profile.Losses,
 		Honor: profile.Honor, SeasonPoints: profile.SeasonPoints, UpdatedAt: profile.UpdatedAt,
@@ -231,10 +232,14 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 				} else {
 					client.sendSystemChat(label + " complete. Your ranked record is unchanged.")
 				}
-			} else if containsString(result.WinnerIDs, playerID) {
-				client.sendSystemChat("PvP victory! +50 honor, rating increased.")
 			} else {
-				client.sendSystemChat("PvP match complete. +15 honor.")
+				for _, profile := range result.Profiles {
+					if profile.PlayerID == playerID {
+						summary := profile.LastResult
+						client.sendSystemChat(fmt.Sprintf("Arena result: rating %+d → %d, +%d Honor, +%d season points. %s", summary.RatingChange, profile.Rating, summary.HonorAwarded, summary.SeasonAwarded, summary.Reason))
+						break
+					}
+				}
 			}
 			sendPvPState(client)
 		}

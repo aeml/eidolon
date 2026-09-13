@@ -69,6 +69,23 @@ export class PvPUI {
         stats.textContent = `Rating ${profile.rating ?? 1000} · ${profile.wins || 0}W / ${profile.losses || 0}L · ${profile.honor || 0} honor`;
         body.appendChild(stats);
 
+        const result = profile.lastResult;
+        if (!this.state.match && result?.matchId) {
+            const card = document.createElement('section');
+            card.className = 'pvp-card pvp-card--result';
+            const title = document.createElement('h3');
+            title.textContent = `Last ranked result · ${result.won ? 'Victory' : 'Defeat'}${result.forfeit ? ' by forfeit' : ''}`;
+            const score = document.createElement('p');
+            score.textContent = `Your team ${result.teamScore} — ${result.opponentScore} opponents`;
+            const rewards = document.createElement('p');
+            const delta = Number(result.ratingChange) || 0;
+            rewards.textContent = `Rating ${result.ratingBefore} → ${result.ratingBefore + delta} (${delta >= 0 ? '+' : ''}${delta}) · +${result.honorAwarded} Honor · +${result.seasonAwarded} season points`;
+            const reason = document.createElement('p');
+            reason.textContent = result.reason || '';
+            card.append(title, score, rewards, reason);
+            body.appendChild(card);
+        }
+
 		const flagRow = document.createElement('div');
 		flagRow.className = 'pvp-actions';
 		const flagged = Boolean(this.state.openWorldFlagged);
@@ -136,6 +153,9 @@ export class PvPUI {
                 queue.appendChild(this.button('Practice 1v1', () => this.onQueue?.(1, true), ''));
                 queue.appendChild(this.button('Practice 2v2 Party', () => this.onQueue?.(2, true), ''));
             }
+            const rewardRules = document.createElement('p');
+            rewardRules.textContent = 'Ranked ratings use team-strength Elo (K=32). Eligible wins award 50 Honor and 3 season points; losses award neither. Forfeits change rating but award neither team currency or season points. Only the first three meetings with each opponent per UTC day change rating or award rewards, even when teams change. Later matches still record wins and losses. Daily history is capped at 256 opponents.';
+            queue.appendChild(rewardRules);
             body.appendChild(queue);
         }
 

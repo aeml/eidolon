@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"eidolon-server/internal/arena"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -96,6 +98,8 @@ func TestArenaReceiptMongoReplayAndOutOfOrderWrites(t *testing.T) {
 	t.Cleanup(func() { db.pvpProfiles.DeleteOne(context.Background(), bson.M{"player_id": id}) })
 	first := arenaReceiptFixture(id, 1)
 	second := arenaReceiptFixture(id, 2)
+	second.Profiles[0].RewardState = arena.RewardState{Day: time.Now().UTC().Format("2006-01-02"), Opponents: map[string]int{"opponent": 3}, DeserterUntil: time.Now().Add(5 * time.Minute).Unix()}
+	second.Profiles[0].LastResult = arena.ResultSummary{MatchID: second.MatchID, Won: true, RatingChange: 16, Reason: "verified result"}
 	if err = db.SavePvPProfile(second.Profiles[0]); err != nil {
 		t.Fatal(err)
 	}
@@ -104,6 +108,10 @@ func TestArenaReceiptMongoReplayAndOutOfOrderWrites(t *testing.T) {
 	}
 	if err = db.SavePvPProfile(second.Profiles[0]); err != nil {
 		t.Fatal("same result replay", err)
+	}
+	stored, err := db.GetPvPProfile(id)
+	if err != nil || stored.RewardState.Opponents["opponent"] != 3 || stored.RewardState.DeserterUntil != second.Profiles[0].RewardState.DeserterUntil || stored.LastResult != second.Profiles[0].LastResult {
+		t.Fatal("durable reward counters, penalty or result lost", stored, err)
 	}
 	conflict := second.Profiles[0]
 	conflict.Honor++

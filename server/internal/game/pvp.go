@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/arena"
 	"errors"
 	"fmt"
 	"math"
@@ -66,16 +67,18 @@ type PvPMatch struct {
 }
 
 type PvPProfile struct {
-	Revision     int64     `json:"revision"`
-	LastMatchID  string    `json:"lastMatchId"`
-	Season       string    `json:"season"`
-	PlayerID     string    `json:"playerId"`
-	Rating       int       `json:"rating"`
-	Wins         int       `json:"wins"`
-	Losses       int       `json:"losses"`
-	Honor        int       `json:"honor"`
-	SeasonPoints int       `json:"seasonPoints"`
-	UpdatedAt    time.Time `json:"updatedAt"`
+	LastResult   arena.ResultSummary `json:"lastResult"`
+	RewardState  arena.RewardState   `json:"-"`
+	Revision     int64               `json:"revision"`
+	LastMatchID  string              `json:"lastMatchId"`
+	Season       string              `json:"season"`
+	PlayerID     string              `json:"playerId"`
+	Rating       int                 `json:"rating"`
+	Wins         int                 `json:"wins"`
+	Losses       int                 `json:"losses"`
+	Honor        int                 `json:"honor"`
+	SeasonPoints int                 `json:"seasonPoints"`
+	UpdatedAt    time.Time           `json:"updatedAt"`
 }
 
 type PvPMatchResult struct {
@@ -637,35 +640,9 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 			losers = append([]string(nil), match.TeamB...)
 		}
 	}
-	profiles := make([]PvPProfile, 0, len(winners)+len(losers))
-	for _, playerID := range participants {
-		// Practice duels (including forfeits) and cancelled matches never create
-		// or change ranked records. Only the two ranked arena modes award points.
-		if len(winners) == 0 || match.Practice || (match.Mode != PvPModeArena1v1 && match.Mode != PvPModeArena2v2) {
-			continue
-		}
-		profile, exists := w.PvP.Profiles[playerID]
-		if !exists {
-			profile = PvPProfile{PlayerID: playerID, Rating: 1000}
-		}
-		if containsPlayer(winners, playerID) {
-			profile.Wins++
-			profile.Rating += 25
-			profile.Honor += 50
-			profile.SeasonPoints += 3
-		} else {
-			profile.Losses++
-			profile.Rating -= 20
-			if profile.Rating < 0 {
-				profile.Rating = 0
-			}
-			profile.Honor += 15
-			profile.SeasonPoints++
-		}
-		profile.UpdatedAt = time.Now().UTC()
-		profile.Revision++
-		profile.LastMatchID = match.ID
-		profiles = append(profiles, profile)
+	var profiles []PvPProfile
+	if match.pendingResult == nil {
+		profiles = w.PvP.rankedArenaProfilesLocked(match, forfeit, w.PvP.now())
 	}
 	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, Practice: match.Practice, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
 	if match.pendingResult != nil {
@@ -688,7 +665,7 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 		}
 	}
 	for _, profile := range profiles {
-		w.PvP.Profiles[profile.PlayerID] = profile
+		w.PvP.Profiles[profile.PlayerID] = clonePvPProfile(profile)
 	}
 	for _, playerID := range participants {
 		delete(w.PvP.MatchByPlayer, playerID)
@@ -765,7 +742,7 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 	if !exists {
 		profile = PvPProfile{PlayerID: playerID, Rating: 1000}
 	}
-	status["profile"] = profile
+	status["profile"] = clonePvPProfile(profile)
 	status["openWorldFlagged"] = w.PvP.OpenWorldFlag[playerID]
 	if playerSnapshot != nil {
 		status["inSafeZone"] = w.inSafeZone(playerSnapshot)
@@ -817,7 +794,10 @@ func (w *World) SetPvPProfile(profile PvPProfile) {
 		w.PvP.mu.Unlock()
 		return
 	}
-	w.PvP.Profiles[profile.PlayerID] = profile
+	w.PvP.Profiles[profile.PlayerID] = clonePvPProfile(profile)
+	if until := time.Unix(profile.RewardState.DeserterUntil, 0); profile.RewardState.DeserterUntil > 0 && until.After(w.PvP.DeserterUntil[profile.PlayerID]) {
+		w.PvP.DeserterUntil[profile.PlayerID] = until
+	}
 	w.PvP.mu.Unlock()
 }
 

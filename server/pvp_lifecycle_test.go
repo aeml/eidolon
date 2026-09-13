@@ -15,6 +15,8 @@ func TestPvPRecoveryDispatchRejectsTownSceneTransition(t *testing.T) {
 	client := newAutoStatusClient("pvp-first")
 	first := newAutoStatusPlayer(client.playerID, "First", "available")
 	second := newAutoStatusPlayer("pvp-second", "Second", "available")
+	first.MaxHealth, first.Health = 100, 100
+	second.MaxHealth, second.Health = 100, 100
 	world.AddEntity(first)
 	world.AddEntity(second)
 	_, err := world.RequestDuel(first.ID, second.ID)

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"reflect"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -81,7 +82,7 @@ func TestDuelCompletionRestoresPlayersWithoutRankedRewards(t *testing.T) {
 	if first.InstanceID != "" || second.InstanceID != "" || first.X != 1 || second.X != 3 {
 		t.Fatalf("players were not restored: %+v %+v", first, second)
 	}
-	if profile := world.PvP.Profiles[first.ID]; profile != before {
+	if profile := world.PvP.Profiles[first.ID]; !reflect.DeepEqual(profile, before) {
 		t.Fatalf("practice duel changed ranked profile: %+v", profile)
 	}
 	if _, exists := world.PvP.Profiles[second.ID]; exists {
@@ -216,10 +217,10 @@ func TestArenaThreeRoundsAwardsBothTeamsOnce(t *testing.T) {
 	for _, id := range []string{"a", "b", "c", "d"} {
 		profile := w.PvP.Profiles[id]
 		if id == "c" || id == "d" {
-			if profile.Wins != 1 || profile.Rating != 1025 || profile.Honor != 50 || profile.SeasonPoints != 3 {
+			if profile.Wins != 1 || profile.Rating != 1016 || profile.Honor != 50 || profile.SeasonPoints != 3 {
 				t.Fatalf("winner rewards: %+v", profile)
 			}
-		} else if profile.Losses != 1 || profile.Rating != 980 || profile.Honor != 15 || profile.SeasonPoints != 1 {
+		} else if profile.Losses != 1 || profile.Rating != 984 || profile.Honor != 0 || profile.SeasonPoints != 0 {
 			t.Fatalf("loser rewards: %+v", profile)
 		}
 	}

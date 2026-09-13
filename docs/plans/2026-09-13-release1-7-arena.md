@@ -18,6 +18,41 @@ Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
 
 ## Implementation checkpoint — September 13, 03:43 UTC
 
+04:26 rated-results batch: replaced flat+25/-20 with team-mean K32 Elo (equal
+teams ±16, lower gains for beating weaker opponents, rating floor0). Eligible
+normal wins award50 Honor+3 season points. Losses and forfeits award no Honor or
+season points to either losing players or forfeiture winners; forfeits still
+affect rating. No hidden equipment/level normalization added.
+
+Only the first3 meetings with each opposing player per UTC day change rating or
+award rewards. If any participant hits the limit, that match records W/L but
+neither team gains/loses rating or receives rewards. Team swaps do not reset it.
+Bounded256-opponent history fails closed until midnight rather than evicting old
+opponents and reopening farming. Counts and the actual leaver's5-minute penalty
+are in the same immutable, revisioned result receipt; hydration restores them,
+without treating the innocent teammate as a deserter. Daily rollover preserves
+any unexpired penalty. Counter snapshots are detached; leaderboards omit them.
+
+Durable last ranked result shows victory/defeat, team scores, exact rating delta,
+Honor/season awards and the reason for withheld rewards. Chat uses those exact
+values instead of the old unconditional+50/+15 text. Queue UI explains policies.
+These safeguards do not claim perfect protection against multiple-account abuse
+or earned season completion. Seasonal rewards/history are still required.
+
+Focused reward/Elo/repeat/hydration/bounds/frozen-retry PASS0.010s; existing
+arena/duel/maintenance/relationship selection PASS13.345s; actual disposableMongo
+replay/counter/penalty/result persistence PASS0.172s; UI8PASS0.759s; changedJS lint
+and go build-trimpath-all PASS. Main PvP/scene tests initially rejected their old
+zero-HP social fixtures; explicitly living100HP fixtures PASS0.206s. The restored
+Mongo container received loopback32914 (not32913); it is now STOPPED, retained.
+
+1.6CI34737205195 remains active with one completed browser failure: old keyboard
+test skipped the newly focusable preparation disclosure. Correction34c1c0d8 in
+the1.6WT explicitly exercises summary focus/Enter/open then raid buttons; exact
+SystemChrome case PASS8.3s. Await originalrun terminal before pushing correction.
+No1.6live claim, no1.7publication. Remaining1.7: seasons/rewards/history, process-
+loss PvE save projection, round status/cooldown cleanup, then package/deploy.
+
 04:16 admission/resources batch: duels revalidate online/living/nearby overworld
 actors at acceptance, reject shared-party allies and either player's queued arena
 entry, and observe actor-before-PvP locking. Clean win, forfeit, maintenance and

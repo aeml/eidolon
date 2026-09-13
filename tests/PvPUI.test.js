@@ -7,6 +7,17 @@ function createUI() {
 }
 
 describe('PvPUI', () => {
+    test('shows durable personal and team outcome with exact withheld rewards', () => {
+        const ui = createUI();
+        ui.update({ profile: { rating: 1016, lastResult: { matchId: 'finished', won: true, forfeit: true,
+            teamScore: 1, opponentScore: 0, ratingBefore: 1000, ratingChange: 16, honorAwarded: 0, seasonAwarded: 0,
+            reason: 'Forfeit: no Honor or season points.' } } });
+        const card = ui.window.querySelector('.pvp-card--result');
+        expect(card.textContent).toContain('Victory by forfeit');
+        expect(card.textContent).toContain('Your team 1 — 0 opponents');
+        expect(card.textContent).toContain('Rating 1000 → 1016 (+16) · +0 Honor · +0 season points');
+        expect(card.textContent).toContain('Forfeit: no Honor');
+    });
     test('renders duel challenge and responds with canonical requester ID', () => {
         const ui = createUI();
         ui.onDuelRespond = jest.fn();

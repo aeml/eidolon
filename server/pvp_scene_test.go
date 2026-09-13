@@ -24,6 +24,7 @@ func TestDuelSceneEntryAndReturnUseAuthoritativePositions(t *testing.T) {
 	world.OnPvPMatchComplete = persistPvPMatchResult
 	for i, client := range []*Client{first, second} {
 		player := newAutoStatusPlayer(client.playerID, client.username, "available")
+		player.MaxHealth, player.Health = 100, 100 // A living scene-transition fixture.
 		player.X, player.Z = 10+float64(i)*2, 205
 		world.AddEntity(player)
 	}
