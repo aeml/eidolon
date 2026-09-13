@@ -29,6 +29,24 @@ function createForge(player, showRespecMenu = jest.fn()) {
 }
 
 describe('ForgeUI resource detection', () => {
+    test('item rows expose safe readable labels, refresh in place and support keyboard selection', () => {
+        buildForgeDom();
+        const forge = createForge({ inventory: [] });
+        const element = document.createElement('div');
+        element.dataset.slot = 'mainHand';
+        const item = { name: '<Rare> Oathblade', level: 30, potency: 2 };
+        forge._setItemIcon(element, item);
+        const label = element.querySelector('.forge-item-label');
+        expect(label.textContent).toContain('<Rare> Oathblade');
+        expect(label.querySelector('rare')).toBeNull();
+        expect(element.getAttribute('aria-label')).toContain('main Hand · Level 30 · Potency +2');
+        const click = jest.fn(); element.onclick = click;
+        element.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        expect(click).toHaveBeenCalledTimes(1);
+        forge._setItemIcon(element, { ...item, level: 31, potency: 3 });
+        expect(element.querySelector('.forge-item-label')).toBe(label);
+        expect(label.textContent).toContain('Level 31 · Potency +3');
+    });
     test('counts stacked hearts for potency upgrades', () => {
         buildForgeDom();
 

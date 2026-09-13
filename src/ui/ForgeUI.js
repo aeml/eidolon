@@ -296,6 +296,32 @@ export class ForgeUI {
     _setItemIcon(element, item) {
         const path = this.ctx.getItemIconPath(item);
         element.style.backgroundImage = path ? `url('${path}')` : 'none';
+        element.classList.add('forge-item-choice');
+        element.setAttribute('role', 'button');
+        element.tabIndex = 0;
+        const slot = (element.dataset.slot || item.slot || item.type || 'Equipment')
+            .replace(/([a-z])([A-Z])/g, '$1 $2');
+        const details = `${slot} · Level ${item.level || 1} · Potency +${item.potency || 0}`;
+        element.setAttribute('aria-label', `${item.name}. ${details}`);
+        let label = element.querySelector('.forge-item-label');
+        if (!label) {
+            label = document.createElement('span');
+            label.className = 'forge-item-label';
+            const name = document.createElement('span');
+            name.className = 'forge-item-label__name';
+            const meta = document.createElement('span');
+            meta.className = 'forge-item-label__meta';
+            label.append(name, meta);
+            element.appendChild(label);
+        }
+        label.children[0].textContent = item.name;
+        label.children[1].textContent = details;
+        element.onkeydown = event => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            event.stopPropagation();
+            element.click();
+        };
     }
 
     _getInventoryStackCount(item) {
@@ -461,8 +487,9 @@ export class ForgeUI {
 
         if (this.forgeUpgradeStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
-            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Upgrade is the cheapest forge step. Spend Shards first while a piece is still proving it deserves later Heart and socket investment.</div>';
+            statsHtml += '<details class="forge-preview-help"><summary>How upgrade gains work</summary><div style="color: #8fb7d9; margin-bottom: 6px;">Upgrade is the cheapest forge step. Spend Shards first while a piece is still proving it deserves later Heart and socket investment.</div>';
             statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Small stat gains carry forward to later upgrades. Buying levels separately or together gives the same result.</div>';
+            statsHtml += '</details>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel1} / ${targetLevel10}</span></div>`;
             if (item.stats) {
                 const preview1 = forgePreview(item, targetLevel1);
