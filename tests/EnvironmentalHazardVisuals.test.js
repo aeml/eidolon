@@ -52,6 +52,12 @@ describe('dark-fantasy environmental hazard visuals', () => {
         expect(low.quality).toBe('low');
         expect(high.boundaryMesh.geometry.boundingSphere.radius).toBeCloseTo(9, 5);
         expect(low.boundaryMesh.geometry.boundingSphere.radius).toBeCloseTo(9, 5);
+        for (const hazard of [high, low]) {
+            const backing = hazard.boundaryMesh.getObjectByName('DangerContrastUnderlay');
+            expect(backing.geometry.parameters.outerRadius).toBe(9);
+            expect(backing.material.blending).toBe(THREE.NormalBlending);
+            expect(backing.material.opacity).toBe(0.85);
+        }
         expect(low.boundaryMesh.geometry.attributes.position.count)
             .toBeLessThan(high.boundaryMesh.geometry.attributes.position.count);
         expect(low.particles.geometry.attributes.position.count)

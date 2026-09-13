@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { disposeSceneMesh } from './EffectSceneFallback.js';
 import { getHazardTheme } from '../art/darkFantasyTheme.js';
+import { addDangerContrastUnderlay } from '../art/DangerBoundary.js';
 
 /**
  * EnvironmentalHazard - Visual effects for world hazards
@@ -222,6 +223,7 @@ export class EnvironmentalHazard extends Entity {
         this.boundaryMesh.userData.gameplayRadius = this.radius;
         this.boundaryMesh.userData.themeName = this.theme.name;
         this.boundaryMesh.userData.graphicsQuality = this.quality;
+        addDangerContrastUnderlay(this.boundaryMesh, this.radius, this.detailCount(64, 32));
         this.meshes.push(this.boundaryMesh);
     }
     

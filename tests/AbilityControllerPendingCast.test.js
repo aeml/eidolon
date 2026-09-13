@@ -3,6 +3,33 @@ import { jest } from '@jest/globals';
 import { AbilityController } from '../src/core/AbilityController.js';
 
 describe('AbilityController pending target casting', () => {
+    test.each([
+        ['Fighter', 'Iron Fortress'], ['Fighter', 'Guardian Roar'],
+        ['Rogue', 'Poison Coating'], ['Rogue', 'Smoke Bomb'],
+        ['Wizard', 'Arcane Shield'], ['Wizard', 'Time Warp'],
+        ['Cleric', 'Guardian Embrace'], ['Cleric', 'Purifying Wave']
+    ])('%s %s casts at self even with a distant enemy selected on phone or desktop', (className, skillName) => {
+        for (const isMobile of [true, false]) {
+            const player = createPlayer();
+            player.constructor = { name: className };
+            player.stats = { mana: 500 };
+            player.hotbar = [skillName];
+            const enemy = { id: 'distant', position: new THREE.Vector3(100, 0, 0), state: 'IDLE' };
+            const engine = { player, isMobile, isMultiplayer: true,
+                network: { send: jest.fn() }, hoveredEntity: enemy,
+                getMobileCombatTarget: jest.fn(() => enemy),
+                uiManager: { reportScreen: { style: { display: 'none' } } } };
+            const controller = new AbilityController(engine);
+            controller.performHotbarAbility(0);
+            expect(engine.network.send).toHaveBeenCalledWith('ability', {
+                skillName, targetX: 0, targetZ: 0, targetId: ''
+            });
+            expect(controller.pendingAbilityTarget).toBeNull();
+            expect(engine.getMobileCombatTarget).not.toHaveBeenCalled();
+            expect(player.rotation.equals(new THREE.Quaternion())).toBe(true);
+            expect(player.useSkill).toHaveBeenCalledWith(skillName, player.position, engine);
+        }
+    });
     test('the normal input path sends a spell with exactly its discounted mana cost', () => {
         const player = createPlayer();
         player.subType = 'Wizard';

@@ -29,6 +29,7 @@ describe('phone skill drag aiming', () => {
             abilityController: {
                 performAbility: jest.fn(), performHotbarAbility: jest.fn(),
                 getAbilityCastRange: () => 12,
+                isSelfCast: AbilityController.prototype.isSelfCast,
                 canGroundAim: AbilityController.prototype.canGroundAim
             }
         };
@@ -107,5 +108,11 @@ describe('phone skill drag aiming', () => {
         expect(engine.abilityController.performHotbarAbility).toHaveBeenCalledTimes(1);
         expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
         expect(engine.abilityController.canGroundAim('Spirit Guardians')).toBe(false);
+        for (const skill of ['Whirlwind', 'Guardian Roar', 'Smoke Bomb', 'Time Warp', 'Purifying Wave']) {
+            expect(engine.abilityController.canGroundAim(skill)).toBe(false);
+        }
+        expect(engine.abilityController.canGroundAim('Juggernaut Charge')).toBe(true);
+        engine.abilityController.getAbilityCastRange = () => 0;
+        expect(engine.abilityController.canGroundAim('Iron Fortress')).toBe(false);
     });
 });

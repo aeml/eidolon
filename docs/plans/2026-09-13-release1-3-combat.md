@@ -1,7 +1,8 @@
 # Alpha 1.3.0 — combat feedback work
 
-Local development from the frozen1.2 candidate999dfbf0; not published and still
-labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap.
+Candidate from1.2 release999dfbf0, packaged asAlpha1.3.0 with login, runtime and
+deployment versions synchronized and seven player-facing patch notes. Publication
+and exact live readback are still required; do not infer them from packaging.
 
 ## Implemented so far
 
@@ -34,6 +35,13 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
   windup/follow-through, Rogue counterbalances successive cuts, and Wizard leans
   into release instead of away. Existing locomotion blending and boot articulation
   remain; damage, cooldowns, movement speed and class stats are unchanged.
+- World hazards and transient boss warnings have a normal-blended dark backing
+  inside the authoritative outer radius, retaining contrast on bright terrain at
+  either graphics quality. Decoration can reduce without removing the boundary.
+- All four classes' personal buffs and caster-centered effects bypass hostile
+  target chasing and cursor rotation on phone/desktop. Charge remains directional,
+  ally-targeted heals retain their path, and zero-range buffs do not offer a fake
+  drag target. This is class-control tuning, not speculative damage/economy buffs.
 
 ## Focused checks
 
@@ -56,19 +64,22 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
   four-class procedural models:36tests pass. Actual Chrome four-class release
   pose inspected at `/tmp/eidolon-1-3-attack-release.png`; this is a key-pose check,
   not a full equipment/animation matrix or a physical-phone performance claim.
+- Camera/jump/settings wiring:44tests pass (overlap with the75 above).
+- Warning boundaries and touch aim:35tests pass. Actual390px Chrome shows low/high
+  Wind/Fire warnings on pale/dark terrain with exact2.6-unit boundaries; screenshot
+  inspected `/tmp/eidolon-1-3-danger-phone.png`. A missing addon import-map alias in
+  the temporary fixture was corrected before the successful render (no game fix).
+- Class casting/ranges/touch:36tests pass, including eight self-skill examples
+  across all four classes and both input modes. Existing cast-cost/range safeguards
+  remain. Final release-version/self-cast checks include the cursor-rotation guard.
 
 ## Next
 
-Continue casting/aim feedback, anticipation/impact presentation, camera options,
-movement transitions and existing class tuning. Retain dungeon ability guards,
-touch target selection and dangerous telegraph readability. Consolidate this
-milestone with player-facing notes and live smoke after1.2 deploys.
+Publish this milestone, check its pipeline and exact live identity, then develop
+1.4's expanded Chronicle. Physical-device sustained-performance, class balance
+under full earned progression, and full equipment/group matrices remain open
+final-stabilization work under the user's feature-first instruction; they are not
+claimed complete by these focused presentation/control checks.
 
-Next concrete work: telegraph readability at low/high effects quality and remaining
-class tuning, then milestone packaging. Existing tap-to-select/overlap cycling is
-retained. Physical-device sustained-performance and full equipment/group matrices
-remain final-stabilization work under the user's feature-first instruction.
-
-Predecessor1.2: both live endpoints now reportAlpha1.2.0/999dfbf0; backend database
-ready. CI34728771304 deployed successfully and is in its final Live Release and
-Character QA job. Do not claim that final job passed until it actually completes.
+Predecessor1.2: both live endpoints reportAlpha1.2.0/999dfbf0; backend database
+ready. CI34728771304 is terminalSUCCESS, including finalLiveReleaseandCharacterQA.

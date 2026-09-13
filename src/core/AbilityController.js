@@ -81,8 +81,14 @@ export class AbilityController {
         return 12.0;
     }
 
+    isSelfCast(skillName) {
+        // Charge has a self-centered impact shape but still needs a direction.
+        const selfCentered = SELF_CENTERED_SHAPE_ABILITIES.has(skillName) && skillName !== 'Juggernaut Charge';
+        return selfCentered || SELF_CAST_ABILITIES.has(skillName) || this.getAbilityCastRange(skillName) === 0;
+    }
+
     canGroundAim(skillName) {
-        return !SELF_CAST_ABILITIES.has(skillName) && !PARTY_TARGET_ABILITIES.has(skillName);
+        return !this.isSelfCast(skillName) && !PARTY_TARGET_ABILITIES.has(skillName);
     }
 
     getAbilityIntentSkillName(skillNameOverride = null) {
@@ -295,7 +301,7 @@ export class AbilityController {
 
         // Self-centered spells do not require a cursor hit, even when the
         // pointer remains over the menu that selected or trained the spell.
-        if (SELF_CAST_ABILITIES.has(skillName)) {
+        if (this.isSelfCast(skillName)) {
             this.performAbility(null, skillName);
             return;
         }
@@ -344,7 +350,7 @@ export class AbilityController {
         if (player.state === 'JUMPING' || engine.playerJumpState) {
             return;
         }
-        if (!SELF_CAST_ABILITIES.has(skillNameOverride || player.abilityName) && targetEntityOverride &&
+        if (!this.isSelfCast(skillNameOverride || player.abilityName) && targetEntityOverride &&
             (targetEntityOverride.isActive === false || targetEntityOverride.state === 'DEAD')) {
             engine.showReadabilityFeedback?.('ability-target-unavailable', {
                 title: 'Target unavailable', tone: 'warning',
@@ -354,7 +360,7 @@ export class AbilityController {
         }
 
         // Rotate to face cursor/target immediately (even if on cooldown)
-        if (!engine.isMobile) {
+        if (!engine.isMobile && !this.isSelfCast(skillNameOverride || player.abilityName)) {
             let lookAtPos = null;
             if (targetVectorOverride) {
                 lookAtPos = targetVectorOverride;
@@ -432,7 +438,7 @@ export class AbilityController {
             return;
         }
 
-        if (SELF_CAST_ABILITIES.has(castSkillName)) {
+        if (this.isSelfCast(castSkillName)) {
             const castPosition = player.position.clone();
             this.pendingAbilityTarget = null;
             this.pendingAbilitySkill = null;

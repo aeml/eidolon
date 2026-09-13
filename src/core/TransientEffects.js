@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts.js';
 import { createProceduralCombatFeedbackEffect } from '../art/ProceduralCombatFeedback.js';
 import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
+import { addDangerContrastUnderlay } from '../art/DangerBoundary.js';
 
 class TransientEffect {
     constructor(scene, meshes, duration, updateFn = null) {
@@ -901,6 +902,7 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.userData.isGameplayBoundary = true;
         ring.userData.gameplayRadius = radius;
+        addDangerContrastUnderlay(ring, radius);
         ring.rotation.x = -Math.PI / 2;
         ring.position.copy(position);
         ring.position.y += 0.06;

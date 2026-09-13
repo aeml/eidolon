@@ -39,6 +39,10 @@ describe('Transient telegraph readability', () => {
             radius: 12, telegraphDuration: 2, threatTier
         });
         const [ring] = effect.meshes;
+        const backing = ring.getObjectByName('DangerContrastUnderlay');
+        expect(backing.geometry.parameters.outerRadius).toBe(12);
+        expect(backing.material.blending).toBe(THREE.NormalBlending);
+        const disposeBacking = jest.spyOn(backing.geometry, 'dispose');
         expect(ring.userData.isGameplayBoundary).toBe(true);
         expect(ring.userData.gameplayRadius).toBe(12);
         for (let sample = 0; sample < 100; sample += 1) {
@@ -54,6 +58,7 @@ describe('Transient telegraph readability', () => {
         effect.update(0.2);
         expect(effect.isActive).toBe(false);
         expect(ring.parent).toBeNull();
+        expect(disposeBacking).toHaveBeenCalledTimes(1);
     });
 
     test('creates stronger boss telegraphs with danger-tier visuals and label sprite', () => {
