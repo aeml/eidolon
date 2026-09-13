@@ -17,7 +17,33 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, casino celebrations/high stakes LOCAL
+## Current checkpoint — September 13 21:18 UTC, Alpha 1.9.3 LIVE
+
+User requested push-live; completed with exact commit
+**03373b0f3df9d03e0bca76d3f3b95b6b8d142423**, independently verified on
+client release/login/runtime and backend health/databaseREADY. Origin/master
+matches. Casino totals, private poker labels, win/bonus presentations and100kGold
+limits are deployed, with cumulative patch notes and aligned1.9.3 defaults.
+EP wallet/exchange/allowance/vendor/games remain unimplemented; guard locked.
+
+CI **34781528097 TERMINAL FAILURE**, despite nine successful jobs including
+both deployments: final aura test failed console-error assertion with two Chrome
+ERR_NETWORK_CHANGED messages. Predeploy4PASS1.4m, live gameplay8PASS6.9m,
+recovery2PASS1.3m. Host network logs show unrelated Docker link creation during
+the failing test, consistent with transient runner network change; gameplay
+assertions completed. No assertion weakening, unrelated service mutation or
+automatic pipeline rerun. One targeted unchanged live two-player aura test with
+fresh ordinary registrations/SystemChrome/hardwareWebGL/retries0 passed1test1.1m,
+including phone controls, High/Low/High auras and reconnect. Credential scanPASS.
+Original GitHub run remains red; do not misreport all-green CI or repoll/restart it.
+
+Active WT `/tmp/eidolon-1-10-resonant-age-20260913`; release handoff
+`docs/plans/2026-09-13-casino-celebrations-and-stakes.md` records full evidence
+and rollback compatibility (retain high-stake receipt decoders). No owned QA
+process remains. No broad local suite/soak repeated. Full1.10 unfinished.
+ROOT LEDGER ONLY, NEVER PUSH ROOT. Earlier LOCAL statuses below are historical.
+
+## Previous checkpoint — September 13, casino celebrations/high stakes LOCAL
 
 Latest user requested blackjack totals, poker current best hand, clear card-game
 win panels, slot tiered wins/bonus overlays and100,000Gold/100EP limits. Also
