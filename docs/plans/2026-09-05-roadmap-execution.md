@@ -17,7 +17,23 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, casino quick play implemented locally
+## Current checkpoint — September 13, Alpha 1.9.1 pushed; deployment pending
+
+User explicitly requested push. Active release WT
+`/tmp/eidolon-1-10-resonant-age-20260913` packaged **aa940fcbaa144a160fc9209692fa033c1f00e83e**
+as **Alpha1.9.1**, not final1.10: shared door/hall/guard, quick-play/auto-spin and
+completed aftermath/Help content. Updated cumulative patch notes, login version,
+package/lock, client/server/container/deploy/isolated defaults and CI identities.
+249versionpresentation testsPASS4.59s; changedlint/diffPASS. Existing feature
+evidence retained. Fast-forward pushed exact commit to origin/master successfully.
+
+CI **34770886185** started, not yet complete. Release remains pending the existing
+workflow gates/deployments. Do not claim new casino live before both public
+release.json/healthz match aa940fcb and Alpha1.9.1. Earlier live was e86e29a0/1.9.0.
+Next release verification should inspect this exact run, not restart or create a
+duplicate. Full1.10 acceptance remains unfinished. ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, casino quick play implemented locally
 
 Active WT `/tmp/eidolon-1-10-resonant-age-20260913` now **1e522cdf**, local only.
 User requested direct online-casino-style wagers, visible reel motion and queued
