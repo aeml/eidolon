@@ -9,6 +9,23 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Connected seating checkpoint — September 13, 06:17 UTC
+
+Actual two authenticated sockets now verify exclusive seats, public presence
+without private token leakage, rejected cross-player readiness, safe disconnect
+save coordinates, real token resume with readiness cleared, and ordinary login
+after a server restart. Gold remains unchanged. Focused test PASS in 1.806s
+against binary92380189 and the disposable loopback Mongo; the owned Mongo was
+then stopped. Evidence: `/tmp/eidolon-compat-session-511798144/server.log` and
+`/tmp/eidolon-compat-session-4145311672/server.log`. This is real network/restart
+coverage, not a rendered multiplayer game or wager/settlement check.
+
+The first restart exposed the1.7 character reader rejecting its new arena-results
+journal directory. Correctione84f6219 was merged as92380189 and the connected
+restart now passes. Original1.7 CI34741198072 was cancelled before deployment
+for that real blocker. Correctede84f6219 is pushed; replacement CI34742314831 is
+running. Production remains verified1.6 until the replacement gate completes.
+
 ## Physical casino client checkpoint — seating, not wagering
 
 The former solid Oathhall is replaced in the town generator with a walkable
