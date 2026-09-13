@@ -223,6 +223,7 @@ export class WorldGenerator {
         };
 
         const casino = createCasinoShell(cx, cz - 30);
+        this.collisionManager.casinoNavigation = true;
         casino.traverse(part => { if (part.isMesh) MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true }); });
         this.scene.add(casino);
         for (const wall of casino.userData.casinoWalls) {

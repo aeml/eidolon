@@ -3,6 +3,7 @@ import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { Forge } from '../src/entities/Forge.js';
 import { installGameEngineMovement } from '../src/core/GameEngineMovement.js';
+import { createCasinoShell, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
 class InteractionFixture {}
 installGameEngineMovement(InteractionFixture);
@@ -47,15 +48,20 @@ describe('current town building footprints', () => {
 
     test('stash building approach is clear while masonry and coffer still block walking', () => {
         const manager = new CollisionManager();
-        const hall = createProceduralLanternholdStructure('oathhall');
-        hall.position.set(0, -0.5, 170);
-        manager.addOrientedCollider(getLanternholdWalkCollider(hall));
+        const hall = createCasinoShell();
+        for (const wall of hall.userData.casinoWalls) manager.addCollider(new THREE.Box3().setFromCenterAndSize(
+            new THREE.Vector3(wall.position[0], wall.position[1], 170 + wall.position[2]), new THREE.Vector3(...wall.size)));
         const stash = createProceduralLanternholdStructure('stash');
-        stash.position.set(0, 0.5, 185);
+        stash.position.set(-8, 0.5, 185);
         manager.addOrientedCollider(getLanternholdWalkCollider(stash));
+        const trading = createProceduralLanternholdStructure('trading_house');
+        trading.position.set(-22, .5, 185); trading.rotation.y = Math.PI / 4;
+        manager.addOrientedCollider(getLanternholdWalkCollider(trading));
+        expect(manager.checkCollision(new THREE.Vector3(-12, 0, 185), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(0, 0, 180.5), 0.5)).toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(0, 0, 177.5), 0.5)).not.toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(0, 0, 185), 0.5)).not.toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(2.5, 0, 185), 0.5)).toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(0, 0, 177.5), 1.25)).toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-8, 0, 185), 1.25)).not.toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-4, 0, 185), 1.25)).toBeNull();
+        disposeCasinoObject(hall);
     });
 });

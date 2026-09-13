@@ -254,7 +254,7 @@ func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time
 	}
 	position := table.Seats[seatIndex]
 	dx, dz := player.X-position.ExitX, player.Z-position.ExitZ
-	if !finiteCoordinate(player.X) || !finiteCoordinate(player.Z) || dx*dx+dz*dz > 2.2*2.2 {
+	if !finiteCoordinate(player.X) || !finiteCoordinate(player.Y) || !finiteCoordinate(player.Z) || math.Abs(player.Y) > 0.8 || dx*dx+dz*dz > 2.2*2.2 {
 		return nil, errors.New("walk up to the seat first")
 	}
 	var nonce [16]byte

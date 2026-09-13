@@ -21,5 +21,7 @@
 .blackjack-card.back { background: #293c63; color: #e9c881; border: 1px solid #d3b16d; }
 .blackjack-confirm { padding: 8px; margin-block: 8px; border: 1px solid #efca80; border-radius: 6px; background: #322919; }
 .casino-seated #hotbar-container, .casino-seated #joystick-zone, .casino-seated #mobile-actions { visibility: hidden; pointer-events: none; }
+.casino-stair-action { position: fixed; bottom: max(145px, calc(env(safe-area-inset-bottom) + 130px)); left: 50%; transform: translateX(-50%); z-index: 40; max-width: 80vw; min-height: 44px; padding: 9px 16px; border: 1px solid #d3b16d; border-radius: 8px; background: #17212df2; color: #ffedbe; font: 14px/1.4 system-ui, sans-serif; cursor: pointer; }
+.casino-stair-action[hidden] { display: none; }
 @media (max-width: 600px) { .casino-session { bottom: max(8px, env(safe-area-inset-bottom)); right: 8px; width: calc(100vw - 16px); padding: 10px; max-height: 40dvh; overflow-y: auto; font-size: 13px; } .casino-session ul { max-height: 65px; } }
 @media (max-width: 600px) { .casino-session.has-blackjack { max-height: 65dvh; } .blackjack-hands { max-height: 23dvh; } }

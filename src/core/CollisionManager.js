@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
+import { constrainCasinoWalk, inCasinoVenue } from './casinoNavigation.js';
 
 // Optimization: Reusable temp objects to avoid GC pressure
 const TEMP_VEC3 = new THREE.Vector3();
@@ -159,6 +160,9 @@ export class CollisionManager {
         // interpolated presentation state and can intentionally lag one fixed
         // tick; feeding them back into collision creates a correction loop.
         const position = entity.position;
+        // Let opposite-direction players pass on the narrow stair flight;
+        // horizontal separation here could push a walker off its ramp surface.
+        if (this.casinoNavigation && inCasinoVenue(position.x, position.z) && position.y > 0 && position.y < 6) return null;
         const radius = entity.radius || 1.0;
         TEMP_ENTITY_PUSH.set(0, 0, 0);
         let count = 0;
@@ -184,6 +188,7 @@ export class CollisionManager {
                         if (!other.stats) continue;
 
                         const otherPos = other.position;
+                        if (Math.abs(position.y - otherPos.y) > 3) continue;
 
                         // Calculate distance
                         const dx = position.x - otherPos.x;
@@ -229,6 +234,9 @@ export class CollisionManager {
         let collided = false;
         // Reuse temp vector instead of cloning
         TEMP_VEC3.copy(position);
+        const casinoWalk = this.casinoNavigation && !this.dungeonWalkableRects.length && oldPosition
+            && (inCasinoVenue(oldPosition.x, oldPosition.z) || inCasinoVenue(position.x, position.z));
+        if (casinoWalk) { TEMP_VEC3.copy(constrainCasinoWalk(oldPosition, TEMP_VEC3)); collided = true; }
         
         // Canonical instances own their coordinate space. The legacy scene
         // envelope ends at x=50000, where Water starts; Dark Realm and crystal
@@ -383,6 +391,8 @@ export class CollisionManager {
             }
         }
 
+        // Collision pushes must not move a stair walker through its side rail.
+        if (casinoWalk) TEMP_VEC3.copy(constrainCasinoWalk(oldPosition, TEMP_VEC3));
         if (this.constrainToDungeonWalkableArea(TEMP_VEC3, radius)) {
             collided = true;
         }

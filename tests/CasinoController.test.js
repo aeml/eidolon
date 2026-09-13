@@ -62,7 +62,7 @@ test('walkable shell retains walls, opens a real doorway and batches the cutaway
     expect(collision.checkCollision(new THREE.Vector3(6, 0, 178), 1.25, new THREE.Vector3(6, 0, 180))).not.toBeNull();
     updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 170)); expect(shell.userData.casinoCutaway.visible).toBe(false);
     updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 190)); expect(shell.userData.casinoCutaway.visible).toBe(true);
-    expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(12);
+    expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(18);
     const furniture = createCasinoFurniture([table]); let visibleMeshes = 0;
     furniture.traverse(mesh => { if (mesh.isMesh && mesh.material.visible) visibleMeshes++; });
     expect(visibleMeshes).toBeLessThanOrEqual(6);

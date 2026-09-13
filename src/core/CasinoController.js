@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createCasinoFurniture, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
+import { inCasinoVenue } from './casinoNavigation.js';
 
 export class CasinoController {
     constructor(engine) {
@@ -21,6 +22,10 @@ export class CasinoController {
         this.panel.append(this.heading, this.status, this.roster, this.ready, this.blackjack.root, this.leave);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
+        this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());
+        this.stairButton.className = 'casino-stair-action'; this.stairButton.hidden = true;
+        for (const event of ['pointerdown', 'pointerup', 'click']) this.stairButton.addEventListener(event, e => e.stopPropagation());
+        document.body.append(this.stairButton);
         this.keyHandler = event => {
             if (!this.active || event.key !== 'Escape') return;
             event.preventDefault(); event.stopImmediatePropagation(); this.requestLeave();
@@ -122,6 +127,13 @@ export class CasinoController {
         const rect = engine.renderSystem.renderer.domElement.getBoundingClientRect();
         this.pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
         this.raycaster.setFromCamera(this.pointer, engine.renderSystem.camera);
+        const shell = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell');
+        const stairHit = this.raycaster.intersectObjects((shell?.userData.casinoStairMarkers || []).filter(marker => marker.visible), false)[0];
+        if (stairHit) {
+            this.walkStairs(); return true;
+        }
+        this.stairRoute = null;
+        if (engine.player.position.y > 1) return false;
         const hits = this.raycaster.intersectObjects(this.furniture.userData.seats, true);
         if (!hits.length) { this.pendingSeat = null; return false; }
         let chair = hits[0].object;
@@ -134,7 +146,7 @@ export class CasinoController {
         if (this.data.occupants.some(occupant => occupant.tableId === selection.tableId && occupant.seat === selection.seat)) {
             engine.uiManager.addChatMessage?.('System', 'That chair is occupied or reserved for a reconnect.'); return true;
         }
-        if (Math.abs(engine.player.position.x) > 9 || engine.player.position.z > 178 || engine.player.position.z < 162) {
+        if (Math.abs(engine.player.position.x) > 12 || engine.player.position.z > 178 || engine.player.position.z < 162) {
             engine.uiManager.addChatMessage?.('System', 'Walk through the casino entrance before choosing a chair.'); return true;
         }
         engine.clearCombatIntentState?.();
@@ -143,11 +155,31 @@ export class CasinoController {
         return true;
     }
 
+    walkStairs() {
+        const engine = this.engine, p = engine.player?.position;
+        if (!p || engine.currentInstanceId || this.active) return;
+        const upstairs = p.y >= 5.99;
+        if ((!upstairs && p.y > .05) || Math.hypot(p.x - 10.5, p.z - (upstairs ? 163.5 : 176.4)) > 5) {
+            engine.uiManager.addChatMessage?.('System', 'Approach the illuminated stair landing first.'); return;
+        }
+        this.pendingSeat = null; engine.clearCombatIntentState?.();
+        this.stairRoute = (upstairs ? [[10.5, 6, 163.5], [10.5, 0, 176.4], [7.5, 0, 176.4]]
+            : [[7.5, 0, 176.4], [10.5, 0, 176.4], [10.5, 6, 163.5], [7.5, 6, 163.5]])
+            .map(point => new THREE.Vector3(...point));
+        engine.player.move(this.stairRoute[0]);
+    }
+
     beforeUpdate(dt) {
         const engine = this.engine, player = engine.player;
         if (!player) return;
         if (engine.currentInstanceId && this.active) { this.data.yourSeat = null; this.exitView(); }
         const overworld = !engine.currentInstanceId;
+        const upstairs = player.position.y >= 5.99;
+        this.stairButton.hidden = !overworld || this.active || Boolean(this.stairRoute?.length)
+            || (!upstairs && player.position.y > .05)
+            || Math.hypot(player.position.x - 10.5, player.position.z - (upstairs ? 163.5 : 176.4)) > 5;
+        this.stairButton.textContent = upstairs ? 'Walk downstairs · Public casino' : 'Walk upstairs · VIP lounge';
+        if (engine.inputManager?.groundPlane) engine.inputManager.groundPlane.constant = overworld && inCasinoVenue(player.position.x, player.position.z) ? -player.position.y : 0;
         const near = overworld && Math.hypot(player.position.x, player.position.z - 170) < 50;
         if (near && performance.now() >= this.nextPoll) { this.nextPoll = performance.now() + 3000; this.send({ action: 'get' }); }
         if (this.furniture) {
@@ -161,6 +193,14 @@ export class CasinoController {
         }
         const shell = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell');
         updateCasinoCutaway(shell, overworld ? player.position : null);
+        if (this.stairRoute?.length) {
+            if (!overworld || player.state === 'DEAD' || this.active) this.stairRoute = null;
+            else if (player.position.distanceTo(this.stairRoute[0]) < .35) {
+                this.stairRoute.shift();
+                if (this.stairRoute.length) player.move(this.stairRoute[0]);
+            }
+        }
+        if (player.position.y > 1) this.pendingSeat = null;
         if (this.pendingSeat) {
             if (!overworld || performance.now() > this.pendingSeat.expiresAt) this.pendingSeat = null;
             else if (Math.hypot(player.position.x - this.pendingSeat.exitX, player.position.z - this.pendingSeat.exitZ) <= 1.7) {
@@ -232,6 +272,7 @@ export class CasinoController {
         if (this.active) this.exitView();
         for (const pose of this.poses.values()) this.restorePose(pose);
         this.poses.clear(); disposeCasinoObject(this.furniture); this.panel.remove();
+        this.stairButton.remove();
         this.removeFurnitureColliders();
         document.removeEventListener('keydown', this.keyHandler, true);
     }

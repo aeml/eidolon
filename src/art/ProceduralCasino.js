@@ -43,8 +43,9 @@ export function createCasinoShell(x = 0, z = 170) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-shell'; root.position.set(x, 0, z);
     const m = materials();
     const cutaway = new THREE.Group(); cutaway.name = 'casino-cutaway'; root.add(cutaway);
-    box(root, 'casino-floor', m.dark, [19, 0.2, 16], [0, -0.1, 0]);
-    for (let ix = -4; ix <= 4; ix++) for (let iz = -3; iz <= 3; iz++) {
+    const upstairs = new THREE.Group(); upstairs.name = 'casino-vip-lounge'; root.add(upstairs);
+    box(root, 'casino-floor', m.dark, [26, 0.2, 16], [0, -0.1, 0]);
+    for (let ix = -6; ix <= 6; ix++) for (let iz = -3; iz <= 3; iz++) {
         box(root, 'casino-floor-inlay', (ix + iz) % 2 ? m.stone : m.wood, [1.88, 0.015, 1.88], [ix * 2, 0.008, iz * 2]);
     }
     cylinder(root, 'fourfold-floor-medallion', m.gold, 1.3, 0.025, [0, 0.026, 3]);
@@ -56,11 +57,11 @@ export function createCasinoShell(x = 0, z = 170) {
     // Front opening is five units wide. These are wall segments, never a full
     // building bounding box: entering the room must remain physically possible.
     const walls = [
-        { size: [0.5, 5.8, 16.5], position: [-9.5, 2.9, 0] },
-        { size: [0.5, 5.8, 16.5], position: [9.5, 2.9, 0] },
-        { size: [19.5, 5.8, 0.5], position: [0, 2.9, -8] },
-        { size: [7, 5.8, 0.5], position: [-6, 2.9, 8] },
-        { size: [7, 5.8, 0.5], position: [6, 2.9, 8] }
+        { size: [0.5, 10.8, 16.5], position: [-13, 5.4, 0] },
+        { size: [0.5, 10.8, 16.5], position: [13, 5.4, 0] },
+        { size: [26.5, 10.8, 0.5], position: [0, 5.4, -8] },
+        { size: [10.5, 10.8, 0.5], position: [-7.75, 5.4, 8] },
+        { size: [10.5, 10.8, 0.5], position: [7.75, 5.4, 8] }
     ];
     root.userData.casinoWalls = walls;
     for (const [i, wall] of walls.entries()) {
@@ -76,30 +77,59 @@ export function createCasinoShell(x = 0, z = 170) {
         box(cutaway, 'casino-lantern-cage', m.dark, [0.65, 1.25, 0.55], [px, 3.4, 8.6]);
         box(cutaway, 'casino-lantern', m.light, [0.38, 0.8, 0.6], [px, 3.4, 8.64]);
     }
-    // Exterior upper storey retains the two-floor silhouette. Its walkable VIP
-    // interior and connecting stair remain part of the next venue/content stage.
-    box(cutaway, 'casino-upper-storey', m.dark, [18.4, 4.8, 15.4], [0, 8.2, 0]);
+    // Actual second floor leaves a stairwell along the east side. Navigation
+    // follows the same six-unit rise and north/south landings, not a teleport.
+    box(upstairs, 'vip-floor', m.dark, [21.5, .2, 15.5], [-2.25, 5.9, 0]);
+    box(upstairs, 'vip-north-landing', m.dark, [4.5, .2, 2], [10.75, 5.9, -7]);
+    box(upstairs, 'vip-velvet-carpet', m.velvet, [16, .025, 11], [-2.25, 6.02, 0]);
+    for (const px of [-10.4, 5.9]) box(upstairs, 'vip-carpet-border', m.gold, [.12, .03, 11.3], [px, 6.04, 0]);
+    for (const pz of [-5.6, 5.6]) box(upstairs, 'vip-carpet-border', m.gold, [16.4, .03, .12], [-2.25, 6.04, pz]);
+    for (const pz of [-4, 0, 4]) {
+        box(upstairs, 'vip-lounge-sofa', m.velvet, [1.5, .65, 2.5], [-10.7, 6.45, pz]);
+        box(upstairs, 'vip-lounge-back', m.wood, [.3, 1.3, 2.6], [-11.4, 6.8, pz]);
+        cylinder(upstairs, 'vip-side-table', m.gold, .55, .75, [-8.6, 6.375, pz]);
+        cylinder(upstairs, 'vip-candle', m.light, .09, .4, [-8.6, 6.95, pz]);
+    }
+    for (let step = 0; step < 24; step++) {
+        const rise = (step + 1) * .25;
+        box(root, 'casino-stair-tread', step % 2 ? m.stone : m.dark, [2.6, rise, .5], [10.5, rise / 2, 5.75 - step * .5]);
+        box(root, 'casino-stair-nosing', m.gold, [2.6, .03, .07], [10.5, rise + .01, 5.98 - step * .5]);
+    }
+    box(upstairs, 'vip-stairwell-rail', m.gold, [.12, .12, 12.5], [8.7, 7.05, .25]);
+    for (let pz = -5.5; pz <= 6; pz += 1.5) box(upstairs, 'vip-stairwell-baluster', m.gold, [.1, 1.05, .1], [8.7, 6.525, pz]);
     for (const px of [-7, -3.5, 0, 3.5, 7]) {
         box(cutaway, 'casino-upper-window-frame', m.gold, [1.7, 2.75, 0.2], [px, 8.15, 7.8]);
         box(cutaway, 'casino-upper-window', m.felt, [1.4, 2.4, 0.23], [px, 8.15, 7.82]);
     }
-    for (const y of [5.9, 10.7]) box(cutaway, 'casino-gold-cornice', m.gold, [19.6, 0.3, 16.6], [0, y, 0]);
-    const roof = new THREE.Mesh(new THREE.ConeGeometry(13.9, 3.5, 4), m.dark);
-    roof.name = 'casino-roof'; roof.rotation.y = Math.PI / 4; roof.scale.z = 0.87; roof.position.y = 12.55;
+    for (const y of [5.9, 10.7]) box(cutaway, 'casino-gold-cornice', m.gold, [26.6, 0.3, 16.6], [0, y, 0]);
+    const roof = new THREE.Mesh(new THREE.ConeGeometry(18.8, 3.5, 4), m.dark);
+    roof.name = 'casino-roof'; roof.rotation.y = Math.PI / 4; roof.scale.z = 0.63; roof.position.y = 12.55;
     roof.castShadow = true; cutaway.add(roof);
     root.userData.casinoCutaway = cutaway;
+    root.userData.casinoUpstairs = upstairs;
     // Batch the opaque exterior separately so its interior cutaway remains cheap.
-    cutaway.removeFromParent();
+    cutaway.removeFromParent(); upstairs.removeFromParent();
     root.userData.structureId = 'casino';
-    root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(cutaway);
-    root.add(cutaway);
+    root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(cutaway) + batchMeshes(upstairs);
+    root.add(cutaway, upstairs);
+    const stairMarkers = [];
+    for (const [floor, y, markerZ] of [['public', .08, 6.4], ['vip', 6.08, -6.5]]) {
+        const marker = new THREE.Mesh(new THREE.CircleGeometry(1.05, 24), new THREE.MeshBasicMaterial({ color: 0xe8c980,
+            transparent: true, opacity: .65, side: THREE.DoubleSide, depthWrite: false }));
+        marker.name = `casino-stairs-${floor}`; marker.rotation.x = -Math.PI / 2;
+        marker.position.set(10.5, y, markerZ); marker.userData.casinoStairFloor = floor;
+        root.add(marker); stairMarkers.push(marker);
+    }
+    root.userData.casinoStairMarkers = stairMarkers;
     return root;
 }
 
 export function updateCasinoCutaway(shell, position) {
     if (!shell?.userData.casinoCutaway) return;
-    const inside = position && Math.abs(position.x - shell.position.x) < 10 && Math.abs(position.z - shell.position.z) < 9;
+    const inside = position && Math.abs(position.x - shell.position.x) < 14 && Math.abs(position.z - shell.position.z) < 9;
     shell.userData.casinoCutaway.visible = !inside;
+    shell.userData.casinoUpstairs.visible = !inside || position.y >= 3;
+    for (const marker of shell.userData.casinoStairMarkers || []) marker.visible = inside && (marker.userData.casinoStairFloor === 'vip' ? position.y >= 3 : position.y < 3);
 }
 
 export function createCasinoFurniture(tables) {

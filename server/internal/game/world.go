@@ -1060,9 +1060,9 @@ func (w *World) spawnStash() {
 		ID:        "stash-1",
 		Type:      TypeStash,
 		SubType:   "Stash",
-		X:         0,
+		X:         -8,
 		Y:         0.5, // Slightly above ground
-		Z:         185, // In front of Two Story Building (which is at 170)
+		Z:         185, // Between Trading House and the clear casino approach.
 		Rotation:  0,
 		State:     "IDLE",
 		Health:    100000,
@@ -1475,6 +1475,9 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 	}
 
 	oldX, oldZ := e.X, e.Z
+	if e.Type == TypePlayer && e.InstanceID == "" && (inCasinoVenue(e.X, e.Z) || inCasinoVenue(x, z)) {
+		x, y, z = constrainCasinoWalk(e.X, e.Y, e.Z, x, z)
+	}
 	e.X = x
 	e.Y = y
 	e.Z = z
@@ -1516,6 +1519,10 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 		return false
 	}
 	if e.CasinoSeat != nil || e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
+		return false
+	}
+	// The enclosed stacked venue is walking-only; jumping cannot bypass stairs.
+	if e.InstanceID == "" && (inCasinoVenue(e.X, e.Z) || inCasinoVenue(x, z)) {
 		return false
 	}
 

@@ -1418,7 +1418,7 @@ export class GameEngine {
 
         // Stash (In front of Two Story Building)
         const stash = new Stash('stash-local');
-        stash.position.set(0, 0, 185);
+        stash.position.set(-8, 0, 185);
         stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
         this.addEntity(stash);
     }

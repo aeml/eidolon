@@ -57,6 +57,39 @@ This is a prepared scene, NOT an earned combat clear or actual-site clearance
 proof. Next event checks: actual region geometry/approach and one connected shared
 encounter before release. No broad campaign/device/soak repeated.
 
+## Implemented candidate — physical two-floor venue
+
+Stash moved from(0,185) to(-8,185), between the rotated Trading House and casino
+approach. Server entity, offline spawn/recovery, map/minimap and current footprint
+tests agree. Expanded casino width to26 units to preserve gaming-floor circulation
+and a separate east stairwell. Existing public table coordinates remain unchanged.
+Actual upper floor atY6, velvet carpet/gold inlay, lounge seating, side tables,
+candles and stairwell balustrade replace the solid upper-storey placeholder.
+Three separately batched groups allow outside silhouette / ground-floor cutaway /
+visible VIP interior without hiding the staircase. No VIP currency or wagers added.
+
+Venue-specific swept navigation derives stair height from movement on both server
+and client. Ground-side stair entry, upper rail crossings and balcony exits are
+bounded; jumps cannot bypass the enclosed venue. Ground-plane picking follows the
+walker's height. Different-floor actors no longer push each other horizontally,
+and opposite-direction walkers can pass on the narrow stair flight. Public seat
+claims reject upstairs players, and upstairs clicking cannot select hidden public
+chairs. Nearby physical landing button (44px minimum) and illuminated stair markers
+start a normal walk up/down the steps, restoring ordinary control afterward.
+
+Evidence: focused TestCasino PASS0.014s and Go build-all PASS. Initial navigation/
+controller/map27tests PASS1.561s; updated stash/town/controller/map31tests PASS1.985s.
+Final collision-push/passing/Trading House clearance checks use only the two changed
+suites. Single390px rendered fixture uses real Fighter/Actor walking and full-size
+collisions, climbs and descends via the actual landing button: PASS14.8s. Screenshot
+/tmp/eidolon-casino-vip-stairs-20260913.png inspected. This is a prepared local venue,
+not connected multiplayer/reconnect evidence or a completed VIP casino. Full actual
+town placement, connected floor transitions and games remain release work.
+
+Next content: differentiated lore-themed public slots and real-player poker using
+the existing seated/wager lifecycle; functioning VIP games await approved currency.
+Retain events' actual-world/connected check and final1.10 integration scope.
+
 ## Release dependency
 
 1.8 CI34744510043 failed legacy dispatcher assertion;254d07ae updates that check
@@ -64,7 +97,8 @@ to validate the actual registry too, already merged into this WT as5dc982e0.
 Replacement CI34744672300 failed one GuildPersistenceLifecycle Mongo connection
 timeout in race pass; regular coverage passed and Mongo continued accepting
 connections, no DATA RACE or server crash reported. Exact transient cause unknown.
-Failed jobs retried ONCE on the same run; currently server tests IN_PROGRESS,
-client prior PASS reused. Monitor same run, do not blindly repeat.1.7e84f6219
+Failed jobs retried ONCE on the same run; server tests and all three browser shards
+now PASS, Predeploy Character QA IN_PROGRESS, client prior PASS reused. Monitor
+same run, do not blindly repeat.1.7e84f6219
 remains last verified live. Release corrections belong in frozen1.8WT, then merge
 here. No1.9 publication/version bump until1.8 passes and is verified live.

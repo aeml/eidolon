@@ -135,8 +135,8 @@ class GameEngineRuntimeMethods {
                              console.warn(`Removing duplicate stash-local`);
                              this.chunkManager.removeEntity(entity);
                         } else if (entity.position.lengthSq() < 1) {
-                             console.warn(`Fixing stash-local position from 0,0,0 to 0,0,185`);
-                             entity.position.set(0, 0, 185);
+                             console.warn(`Restoring stash-local town position`);
+                             entity.position.set(-8, 0, 185);
                              this.chunkManager.updateEntityChunk(entity);
                         }
                     }

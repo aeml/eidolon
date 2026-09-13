@@ -1,9 +1,16 @@
 # Two-floor town casino — required for Eidolon 1.10
 
-Requested September 9, 2026. Status: **planned, not implemented or deployed**.
+Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
 This extends the existing full 1.1–1.10 goal; it does not replace earlier work
 or interrupt immediate bug fixes. Implement at the stages below, not now.
 Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).
+
+September13 checkpoint:1.8 supplies shared seat/camera/blackjack infrastructure;
+the1.9 candidate now contains the moved stash and actual walkable two-floor venue.
+See [1.9 evidence and remaining scope](2026-09-13-release1-9-world.md). Public slots,
+real-player poker and functioning separate-currency VIP games remain required.
+The checks below are full acceptance requirements, not a claim that an isolated
+floor-navigation or blackjack test completes the whole casino.
 
 ## Intended experience
 
