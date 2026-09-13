@@ -17,7 +17,32 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13 21:18 UTC, Alpha 1.9.3 LIVE
+## Current checkpoint — September 13, persistent casino tables/town fixes LOCAL
+
+User reported disappearing card-table layout, jerky countdowns, no automatic
+between-hand betting clock, skewed casino roof, missing door hover cue and stash
+blocking the entrance. Implemented **b4555f72** in clean active WT
+`/tmp/eidolon-1-10-resonant-age-20260913`. Persistent six physical seats/dealer,
+unfunded and reconnect presence, local monotonic server-synced clocks,12sresults
+then automatic30sbetting windows (including empty ones). No auto-wagers or poker
+bots; two connected funded players still required. Center win panel; hand actions
+visible on desktop/phone. Roof rotation-before-scale fixes exposed ceiling slab;
+door shows Casino/click cue/pointer/gold tint. Stash now(-14,193), server/local/map
+aligned and301generated-world clearance samples unblocked.
+
+Focused client63PASS then expanded47PASS, latest affected26PASS3.438s. Focused
+server compile/testsPASS; targeted disposable Mongo casino persistence/clock tests
+PASS1.993s. Existing4browserPASS30.7s; full-six-seat layouts caught actual overlaps,
+fixed and final2PASS17.3s including action visibility/no overlap/smooth countdown.
+Lint/diffPASS. No owned QA processes/container remain. No production writes,
+soak, version bump, push or deployment requested/performed in this batch.
+Unreleased patch notes/evidence in active
+`docs/plans/2026-09-13-persistent-card-tables-and-town-entrance.md`.
+Live remains03373b0f/Alpha1.9.3; prior CI34781528097 terminal red with targeted
+network recheckPASS as documented below. Do not repoll/restart that run.
+EP/full1.10 unfinished. ROOT LEDGER ONLY, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13 21:18 UTC, Alpha 1.9.3 LIVE
 
 User requested push-live; completed with exact commit
 **03373b0f3df9d03e0bca76d3f3b95b6b8d142423**, independently verified on
