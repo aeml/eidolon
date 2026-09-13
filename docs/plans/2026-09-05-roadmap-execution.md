@@ -27,8 +27,13 @@ passed; client had6762passing/1failed. WorldGeneratorCanonicalGeometry expected
 AND explicit door center/size/inside/outside assertions; no gameplay/geometry
 weakened. All21focusedgeometrytestsPASS2.053s; diffPASS. Active WT clean.
 
-New exact CI **34771598671** confirmed **IN PROGRESS**, client/server jobs running
-after45second observation. This run supersedes failed34770886185; do not restart
+New exact CI **34771598671** confirmed **IN PROGRESS**. Latest continuation is a
+VERIFIED WAIT: full Client Tests job nowSUCCESS; Server Tests stillIN PROGRESS.
+Public frontend independently remains e86e29a0/Alpha1.9.0. No new run or duplicate
+local suite launched. Asked asynchronously for Gold-per-EP rate and monthly VIP
+EP allowance; quantities remain user decisions, with payments excluded and the
+guard retained. This question does not block public-casino deployment.
+This run supersedes failed34770886185; do not restart
 either without new evidence. Runtime remainsAlpha1.9.1; no additional version bump
 for the test-only fix. Release/deployment not yet verified. Next: follow this
 exact run and verify both public identities match c8741288 after deploy. Full1.10
