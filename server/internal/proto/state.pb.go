@@ -21,6 +21,66 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type EquipmentAppearance struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BaseName      string                 `protobuf:"bytes,1,opt,name=base_name,json=baseName,proto3" json:"base_name,omitempty"`
+	Rarity        string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	Slot          string                 `protobuf:"bytes,3,opt,name=slot,proto3" json:"slot,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EquipmentAppearance) Reset() {
+	*x = EquipmentAppearance{}
+	mi := &file_state_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EquipmentAppearance) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EquipmentAppearance) ProtoMessage() {}
+
+func (x *EquipmentAppearance) ProtoReflect() protoreflect.Message {
+	mi := &file_state_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EquipmentAppearance.ProtoReflect.Descriptor instead.
+func (*EquipmentAppearance) Descriptor() ([]byte, []int) {
+	return file_state_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *EquipmentAppearance) GetBaseName() string {
+	if x != nil {
+		return x.BaseName
+	}
+	return ""
+}
+
+func (x *EquipmentAppearance) GetRarity() string {
+	if x != nil {
+		return x.Rarity
+	}
+	return ""
+}
+
+func (x *EquipmentAppearance) GetSlot() string {
+	if x != nil {
+		return x.Slot
+	}
+	return ""
+}
+
 type StateEnvelope struct {
 	state   protoimpl.MessageState `protogen:"open.v1"`
 	Version uint32                 `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty"` // protocol version, start at 1
@@ -38,7 +98,7 @@ type StateEnvelope struct {
 
 func (x *StateEnvelope) Reset() {
 	*x = StateEnvelope{}
-	mi := &file_state_proto_msgTypes[0]
+	mi := &file_state_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -50,7 +110,7 @@ func (x *StateEnvelope) String() string {
 func (*StateEnvelope) ProtoMessage() {}
 
 func (x *StateEnvelope) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[0]
+	mi := &file_state_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -63,7 +123,7 @@ func (x *StateEnvelope) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StateEnvelope.ProtoReflect.Descriptor instead.
 func (*StateEnvelope) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{0}
+	return file_state_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *StateEnvelope) GetVersion() uint32 {
@@ -130,7 +190,7 @@ type StateFull struct {
 
 func (x *StateFull) Reset() {
 	*x = StateFull{}
-	mi := &file_state_proto_msgTypes[1]
+	mi := &file_state_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -142,7 +202,7 @@ func (x *StateFull) String() string {
 func (*StateFull) ProtoMessage() {}
 
 func (x *StateFull) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[1]
+	mi := &file_state_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -155,7 +215,7 @@ func (x *StateFull) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StateFull.ProtoReflect.Descriptor instead.
 func (*StateFull) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{1}
+	return file_state_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StateFull) GetEntities() []*Entity {
@@ -175,7 +235,7 @@ type StateDelta struct {
 
 func (x *StateDelta) Reset() {
 	*x = StateDelta{}
-	mi := &file_state_proto_msgTypes[2]
+	mi := &file_state_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -187,7 +247,7 @@ func (x *StateDelta) String() string {
 func (*StateDelta) ProtoMessage() {}
 
 func (x *StateDelta) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[2]
+	mi := &file_state_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -200,7 +260,7 @@ func (x *StateDelta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StateDelta.ProtoReflect.Descriptor instead.
 func (*StateDelta) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{2}
+	return file_state_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StateDelta) GetEntities() []*Entity {
@@ -230,7 +290,7 @@ type Stats struct {
 
 func (x *Stats) Reset() {
 	*x = Stats{}
-	mi := &file_state_proto_msgTypes[3]
+	mi := &file_state_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -242,7 +302,7 @@ func (x *Stats) String() string {
 func (*Stats) ProtoMessage() {}
 
 func (x *Stats) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[3]
+	mi := &file_state_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +315,7 @@ func (x *Stats) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Stats.ProtoReflect.Descriptor instead.
 func (*Stats) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{3}
+	return file_state_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Stats) GetStrength() int32 {
@@ -321,7 +381,7 @@ type Quest struct {
 
 func (x *Quest) Reset() {
 	*x = Quest{}
-	mi := &file_state_proto_msgTypes[4]
+	mi := &file_state_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -333,7 +393,7 @@ func (x *Quest) String() string {
 func (*Quest) ProtoMessage() {}
 
 func (x *Quest) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[4]
+	mi := &file_state_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -346,7 +406,7 @@ func (x *Quest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Quest.ProtoReflect.Descriptor instead.
 func (*Quest) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{4}
+	return file_state_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Quest) GetId() string {
@@ -500,7 +560,7 @@ type SocketedGem struct {
 
 func (x *SocketedGem) Reset() {
 	*x = SocketedGem{}
-	mi := &file_state_proto_msgTypes[5]
+	mi := &file_state_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -512,7 +572,7 @@ func (x *SocketedGem) String() string {
 func (*SocketedGem) ProtoMessage() {}
 
 func (x *SocketedGem) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[5]
+	mi := &file_state_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -525,7 +585,7 @@ func (x *SocketedGem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SocketedGem.ProtoReflect.Descriptor instead.
 func (*SocketedGem) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{5}
+	return file_state_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SocketedGem) GetType() string {
@@ -561,7 +621,7 @@ type ForgeBasis struct {
 
 func (x *ForgeBasis) Reset() {
 	*x = ForgeBasis{}
-	mi := &file_state_proto_msgTypes[6]
+	mi := &file_state_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -573,7 +633,7 @@ func (x *ForgeBasis) String() string {
 func (*ForgeBasis) ProtoMessage() {}
 
 func (x *ForgeBasis) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[6]
+	mi := &file_state_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -586,7 +646,7 @@ func (x *ForgeBasis) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ForgeBasis.ProtoReflect.Descriptor instead.
 func (*ForgeBasis) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{6}
+	return file_state_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ForgeBasis) GetLevel() int32 {
@@ -646,7 +706,7 @@ type Item struct {
 
 func (x *Item) Reset() {
 	*x = Item{}
-	mi := &file_state_proto_msgTypes[7]
+	mi := &file_state_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -658,7 +718,7 @@ func (x *Item) String() string {
 func (*Item) ProtoMessage() {}
 
 func (x *Item) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[7]
+	mi := &file_state_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -671,7 +731,7 @@ func (x *Item) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Item.ProtoReflect.Descriptor instead.
 func (*Item) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{7}
+	return file_state_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Item) GetId() string {
@@ -969,6 +1029,8 @@ type Entity struct {
 	BlessingResolvePower float32 `protobuf:"fixed32,124,opt,name=blessing_resolve_power,json=blessingResolvePower,proto3" json:"blessing_resolve_power,omitempty"`
 	ZealPower            float32 `protobuf:"fixed32,125,opt,name=zeal_power,json=zealPower,proto3" json:"zeal_power,omitempty"`
 	MarkWeaknessFactor   float32 `protobuf:"fixed32,126,opt,name=mark_weakness_factor,json=markWeaknessFactor,proto3" json:"mark_weakness_factor,omitempty"`
+	// Cosmetic choices are separate from equipped items and their combat stats.
+	Appearances map[string]*EquipmentAppearance `protobuf:"bytes,127,rep,name=appearances,proto3" json:"appearances,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -985,7 +1047,7 @@ type Entity struct {
 
 func (x *Entity) Reset() {
 	*x = Entity{}
-	mi := &file_state_proto_msgTypes[8]
+	mi := &file_state_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -997,7 +1059,7 @@ func (x *Entity) String() string {
 func (*Entity) ProtoMessage() {}
 
 func (x *Entity) ProtoReflect() protoreflect.Message {
-	mi := &file_state_proto_msgTypes[8]
+	mi := &file_state_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1010,7 +1072,7 @@ func (x *Entity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Entity.ProtoReflect.Descriptor instead.
 func (*Entity) Descriptor() ([]byte, []int) {
-	return file_state_proto_rawDescGZIP(), []int{8}
+	return file_state_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Entity) GetId() string {
@@ -1832,6 +1894,13 @@ func (x *Entity) GetMarkWeaknessFactor() float32 {
 	return 0
 }
 
+func (x *Entity) GetAppearances() map[string]*EquipmentAppearance {
+	if x != nil {
+		return x.Appearances
+	}
+	return nil
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1899,7 +1968,11 @@ var File_state_proto protoreflect.FileDescriptor
 
 const file_state_proto_rawDesc = "" +
 	"\n" +
-	"\vstate.proto\x12\reidolon.state\"\xbd\x01\n" +
+	"\vstate.proto\x12\reidolon.state\"^\n" +
+	"\x13EquipmentAppearance\x12\x1b\n" +
+	"\tbase_name\x18\x01 \x01(\tR\bbaseName\x12\x16\n" +
+	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12\x12\n" +
+	"\x04slot\x18\x03 \x01(\tR\x04slot\"\xbd\x01\n" +
 	"\rStateEnvelope\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\rR\aversion\x12.\n" +
 	"\x04full\x18\x02 \x01(\v2\x18.eidolon.state.StateFullH\x00R\x04full\x121\n" +
@@ -1989,7 +2062,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xb3(\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xe1)\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2123,7 +2196,8 @@ const file_state_proto_rawDesc = "" +
 	"\x16blessing_resolve_power\x18| \x01(\x02R\x14blessingResolvePower\x12\x1d\n" +
 	"\n" +
 	"zeal_power\x18} \x01(\x02R\tzealPower\x120\n" +
-	"\x14mark_weakness_factor\x18~ \x01(\x02R\x12markWeaknessFactor\x12 \n" +
+	"\x14mark_weakness_factor\x18~ \x01(\x02R\x12markWeaknessFactor\x12H\n" +
+	"\vappearances\x18\x7f \x03(\v2&.eidolon.state.Entity.AppearancesEntryR\vappearances\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +
@@ -2145,7 +2219,10 @@ const file_state_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\x1a=\n" +
 	"\x0fSkillRunesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B%Z#eidolon-server/internal/proto;protob\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1ab\n" +
+	"\x10AppearancesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x128\n" +
+	"\x05value\x18\x02 \x01(\v2\".eidolon.state.EquipmentAppearanceR\x05value:\x028\x01B%Z#eidolon-server/internal/proto;protob\x06proto3"
 
 var (
 	file_state_proto_rawDescOnce sync.Once
@@ -2159,47 +2236,51 @@ func file_state_proto_rawDescGZIP() []byte {
 	return file_state_proto_rawDescData
 }
 
-var file_state_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_state_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_state_proto_goTypes = []any{
-	(*StateEnvelope)(nil), // 0: eidolon.state.StateEnvelope
-	(*StateFull)(nil),     // 1: eidolon.state.StateFull
-	(*StateDelta)(nil),    // 2: eidolon.state.StateDelta
-	(*Stats)(nil),         // 3: eidolon.state.Stats
-	(*Quest)(nil),         // 4: eidolon.state.Quest
-	(*SocketedGem)(nil),   // 5: eidolon.state.SocketedGem
-	(*ForgeBasis)(nil),    // 6: eidolon.state.ForgeBasis
-	(*Item)(nil),          // 7: eidolon.state.Item
-	(*Entity)(nil),        // 8: eidolon.state.Entity
-	nil,                   // 9: eidolon.state.SocketedGem.StatsEntry
-	nil,                   // 10: eidolon.state.ForgeBasis.StatsEntry
-	nil,                   // 11: eidolon.state.Item.StatsEntry
-	nil,                   // 12: eidolon.state.Entity.EquipmentEntry
-	nil,                   // 13: eidolon.state.Entity.TalentRanksEntry
-	nil,                   // 14: eidolon.state.Entity.SkillRunesEntry
+	(*EquipmentAppearance)(nil), // 0: eidolon.state.EquipmentAppearance
+	(*StateEnvelope)(nil),       // 1: eidolon.state.StateEnvelope
+	(*StateFull)(nil),           // 2: eidolon.state.StateFull
+	(*StateDelta)(nil),          // 3: eidolon.state.StateDelta
+	(*Stats)(nil),               // 4: eidolon.state.Stats
+	(*Quest)(nil),               // 5: eidolon.state.Quest
+	(*SocketedGem)(nil),         // 6: eidolon.state.SocketedGem
+	(*ForgeBasis)(nil),          // 7: eidolon.state.ForgeBasis
+	(*Item)(nil),                // 8: eidolon.state.Item
+	(*Entity)(nil),              // 9: eidolon.state.Entity
+	nil,                         // 10: eidolon.state.SocketedGem.StatsEntry
+	nil,                         // 11: eidolon.state.ForgeBasis.StatsEntry
+	nil,                         // 12: eidolon.state.Item.StatsEntry
+	nil,                         // 13: eidolon.state.Entity.EquipmentEntry
+	nil,                         // 14: eidolon.state.Entity.TalentRanksEntry
+	nil,                         // 15: eidolon.state.Entity.SkillRunesEntry
+	nil,                         // 16: eidolon.state.Entity.AppearancesEntry
 }
 var file_state_proto_depIdxs = []int32{
-	1,  // 0: eidolon.state.StateEnvelope.full:type_name -> eidolon.state.StateFull
-	2,  // 1: eidolon.state.StateEnvelope.delta:type_name -> eidolon.state.StateDelta
-	8,  // 2: eidolon.state.StateFull.entities:type_name -> eidolon.state.Entity
-	8,  // 3: eidolon.state.StateDelta.entities:type_name -> eidolon.state.Entity
-	9,  // 4: eidolon.state.SocketedGem.stats:type_name -> eidolon.state.SocketedGem.StatsEntry
-	10, // 5: eidolon.state.ForgeBasis.stats:type_name -> eidolon.state.ForgeBasis.StatsEntry
-	11, // 6: eidolon.state.Item.stats:type_name -> eidolon.state.Item.StatsEntry
-	5,  // 7: eidolon.state.Item.gems:type_name -> eidolon.state.SocketedGem
-	6,  // 8: eidolon.state.Item.forge_basis:type_name -> eidolon.state.ForgeBasis
-	3,  // 9: eidolon.state.Entity.base_stats:type_name -> eidolon.state.Stats
-	3,  // 10: eidolon.state.Entity.stats:type_name -> eidolon.state.Stats
-	12, // 11: eidolon.state.Entity.equipment:type_name -> eidolon.state.Entity.EquipmentEntry
-	4,  // 12: eidolon.state.Entity.quests:type_name -> eidolon.state.Quest
-	7,  // 13: eidolon.state.Entity.loot_item:type_name -> eidolon.state.Item
-	13, // 14: eidolon.state.Entity.talent_ranks:type_name -> eidolon.state.Entity.TalentRanksEntry
-	14, // 15: eidolon.state.Entity.skill_runes:type_name -> eidolon.state.Entity.SkillRunesEntry
-	7,  // 16: eidolon.state.Entity.EquipmentEntry.value:type_name -> eidolon.state.Item
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	2,  // 0: eidolon.state.StateEnvelope.full:type_name -> eidolon.state.StateFull
+	3,  // 1: eidolon.state.StateEnvelope.delta:type_name -> eidolon.state.StateDelta
+	9,  // 2: eidolon.state.StateFull.entities:type_name -> eidolon.state.Entity
+	9,  // 3: eidolon.state.StateDelta.entities:type_name -> eidolon.state.Entity
+	10, // 4: eidolon.state.SocketedGem.stats:type_name -> eidolon.state.SocketedGem.StatsEntry
+	11, // 5: eidolon.state.ForgeBasis.stats:type_name -> eidolon.state.ForgeBasis.StatsEntry
+	12, // 6: eidolon.state.Item.stats:type_name -> eidolon.state.Item.StatsEntry
+	6,  // 7: eidolon.state.Item.gems:type_name -> eidolon.state.SocketedGem
+	7,  // 8: eidolon.state.Item.forge_basis:type_name -> eidolon.state.ForgeBasis
+	4,  // 9: eidolon.state.Entity.base_stats:type_name -> eidolon.state.Stats
+	4,  // 10: eidolon.state.Entity.stats:type_name -> eidolon.state.Stats
+	13, // 11: eidolon.state.Entity.equipment:type_name -> eidolon.state.Entity.EquipmentEntry
+	5,  // 12: eidolon.state.Entity.quests:type_name -> eidolon.state.Quest
+	8,  // 13: eidolon.state.Entity.loot_item:type_name -> eidolon.state.Item
+	14, // 14: eidolon.state.Entity.talent_ranks:type_name -> eidolon.state.Entity.TalentRanksEntry
+	15, // 15: eidolon.state.Entity.skill_runes:type_name -> eidolon.state.Entity.SkillRunesEntry
+	16, // 16: eidolon.state.Entity.appearances:type_name -> eidolon.state.Entity.AppearancesEntry
+	8,  // 17: eidolon.state.Entity.EquipmentEntry.value:type_name -> eidolon.state.Item
+	0,  // 18: eidolon.state.Entity.AppearancesEntry.value:type_name -> eidolon.state.EquipmentAppearance
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_state_proto_init() }
@@ -2207,7 +2288,7 @@ func file_state_proto_init() {
 	if File_state_proto != nil {
 		return
 	}
-	file_state_proto_msgTypes[0].OneofWrappers = []any{
+	file_state_proto_msgTypes[1].OneofWrappers = []any{
 		(*StateEnvelope_Full)(nil),
 		(*StateEnvelope_Delta)(nil),
 	}
@@ -2217,7 +2298,7 @@ func file_state_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_state_proto_rawDesc), len(file_state_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

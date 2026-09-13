@@ -9,6 +9,8 @@
 .equipment-loadouts-body button:disabled { opacity: .5; cursor: default; }
 .loadout-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .loadout-status { color: #e4c98d; }
+.wardrobe-panel { width: auto; grid-column: 1 / -1; }
+#character-sheet .wardrobe-panel, #character-sheet .wardrobe-panel[open] { max-height: none; flex: 0 0 auto; overflow: visible; }
 .mobile-mode .equipment-loadouts { max-height: 45%; touch-action: pan-y; overscroll-behavior: contain; }
 .mobile-mode #inventory-screen:has(.equipment-loadouts[open]) :is(#inventory-grid, .inventory-guidance) { display: none; }
 .mobile-mode .equipment-loadouts[open] { flex: 1 1 auto; max-height: none; }

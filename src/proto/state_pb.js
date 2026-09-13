@@ -7,7 +7,7 @@ if (!$protobuf) {
 
 // Common aliases
 const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
-const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $TypeError = $util.global.TypeError, $Number = $util.global.Number, $parseInt = $util.global.parseInt, $String = $util.global.String, $BigInt = $util.global.BigInt, $Array = $util.global.Array, $Boolean = $util.global.Boolean, $isFinite = $util.global.isFinite;
+const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $TypeError = $util.global.TypeError, $String = $util.global.String, $Number = $util.global.Number, $parseInt = $util.global.parseInt, $BigInt = $util.global.BigInt, $Array = $util.global.Array, $Boolean = $util.global.Boolean, $isFinite = $util.global.isFinite;
 
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
@@ -29,6 +29,325 @@ export const eidolon = $root.eidolon = (() => {
          * @namespace
          */
         const state = {};
+
+        state.EquipmentAppearance = (function() {
+
+            /**
+             * Properties of an EquipmentAppearance.
+             * @typedef {Object} eidolon.state.EquipmentAppearance.$Properties
+             * @property {string|null} [baseName] EquipmentAppearance baseName
+             * @property {string|null} [rarity] EquipmentAppearance rarity
+             * @property {string|null} [slot] EquipmentAppearance slot
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of an EquipmentAppearance.
+             * @memberof eidolon.state
+             * @interface IEquipmentAppearance
+             * @augments eidolon.state.EquipmentAppearance.$Properties
+             * @deprecated Use eidolon.state.EquipmentAppearance.$Properties instead.
+             */
+
+            /**
+             * Shape of an EquipmentAppearance.
+             * @typedef {eidolon.state.EquipmentAppearance.$Properties} eidolon.state.EquipmentAppearance.$Shape
+             */
+
+            /**
+             * Constructs a new EquipmentAppearance.
+             * @memberof eidolon.state
+             * @classdesc Represents an EquipmentAppearance.
+             * @constructor
+             * @param {eidolon.state.EquipmentAppearance.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const EquipmentAppearance = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * EquipmentAppearance baseName.
+             * @member {string} baseName
+             * @memberof eidolon.state.EquipmentAppearance
+             * @instance
+             */
+            EquipmentAppearance.prototype.baseName = "";
+
+            /**
+             * EquipmentAppearance rarity.
+             * @member {string} rarity
+             * @memberof eidolon.state.EquipmentAppearance
+             * @instance
+             */
+            EquipmentAppearance.prototype.rarity = "";
+
+            /**
+             * EquipmentAppearance slot.
+             * @member {string} slot
+             * @memberof eidolon.state.EquipmentAppearance
+             * @instance
+             */
+            EquipmentAppearance.prototype.slot = "";
+
+            /**
+             * Creates a new EquipmentAppearance instance using the specified properties.
+             * @function create
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {eidolon.state.EquipmentAppearance.$Properties=} [properties] Properties to set
+             * @returns {eidolon.state.EquipmentAppearance} EquipmentAppearance instance
+             * @type {{
+             *   (properties: eidolon.state.EquipmentAppearance.$Shape): eidolon.state.EquipmentAppearance & eidolon.state.EquipmentAppearance.$Shape;
+             *   (properties?: eidolon.state.EquipmentAppearance.$Properties): eidolon.state.EquipmentAppearance;
+             * }}
+             */
+            EquipmentAppearance.create = function(properties) {
+                return new EquipmentAppearance(properties);
+            };
+
+            /**
+             * Encodes the specified EquipmentAppearance message. Does not implicitly {@link eidolon.state.EquipmentAppearance.verify|verify} messages.
+             * @function encode
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {eidolon.state.EquipmentAppearance.$Properties} message EquipmentAppearance message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            EquipmentAppearance.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.baseName != null && $Object.hasOwnProperty.call(message, "baseName") && message.baseName !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.baseName);
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity") && message.rarity !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.rarity);
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot") && message.slot !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.slot);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified EquipmentAppearance message, length delimited. Does not implicitly {@link eidolon.state.EquipmentAppearance.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {eidolon.state.EquipmentAppearance.$Properties} message EquipmentAppearance message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            EquipmentAppearance.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes an EquipmentAppearance message from the specified reader or buffer.
+             * @function decode
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {eidolon.state.EquipmentAppearance & eidolon.state.EquipmentAppearance.$Shape} EquipmentAppearance
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EquipmentAppearance.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.EquipmentAppearance(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.baseName = value;
+                            else
+                                delete message.baseName;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.rarity = value;
+                            else
+                                delete message.rarity;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.slot = value;
+                            else
+                                delete message.slot;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes an EquipmentAppearance message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {eidolon.state.EquipmentAppearance & eidolon.state.EquipmentAppearance.$Shape} EquipmentAppearance
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EquipmentAppearance.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an EquipmentAppearance message.
+             * @function verify
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            EquipmentAppearance.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.baseName != null && $Object.hasOwnProperty.call(message, "baseName"))
+                    if (!$util.isString(message.baseName))
+                        return "baseName: string expected";
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity"))
+                    if (!$util.isString(message.rarity))
+                        return "rarity: string expected";
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot"))
+                    if (!$util.isString(message.slot))
+                        return "slot: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an EquipmentAppearance message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {eidolon.state.EquipmentAppearance} EquipmentAppearance
+             */
+            EquipmentAppearance.fromObject = function (object, _depth) {
+                if (object instanceof $root.eidolon.state.EquipmentAppearance)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.EquipmentAppearance: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.eidolon.state.EquipmentAppearance();
+                if (object.baseName != null)
+                    if (typeof object.baseName !== "string" || object.baseName.length)
+                        message.baseName = $String(object.baseName);
+                if (object.rarity != null)
+                    if (typeof object.rarity !== "string" || object.rarity.length)
+                        message.rarity = $String(object.rarity);
+                if (object.slot != null)
+                    if (typeof object.slot !== "string" || object.slot.length)
+                        message.slot = $String(object.slot);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an EquipmentAppearance message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {eidolon.state.EquipmentAppearance} message EquipmentAppearance
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            EquipmentAppearance.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.baseName = "";
+                    object.rarity = "";
+                    object.slot = "";
+                }
+                if (message.baseName != null && $Object.hasOwnProperty.call(message, "baseName"))
+                    object.baseName = message.baseName;
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity"))
+                    object.rarity = message.rarity;
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot"))
+                    object.slot = message.slot;
+                return object;
+            };
+
+            /**
+             * Converts this EquipmentAppearance to JSON.
+             * @function toJSON
+             * @memberof eidolon.state.EquipmentAppearance
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            EquipmentAppearance.prototype.toJSON = function() {
+                return EquipmentAppearance.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for EquipmentAppearance
+             * @function getTypeUrl
+             * @memberof eidolon.state.EquipmentAppearance
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            EquipmentAppearance.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.EquipmentAppearance";
+            };
+
+            return EquipmentAppearance;
+        })();
 
         state.StateEnvelope = (function() {
 
@@ -3997,6 +4316,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [blessingResolvePower] Entity blessingResolvePower
              * @property {number|null} [zealPower] Entity zealPower
              * @property {number|null} [markWeaknessFactor] Entity markWeaknessFactor
+             * @property {Object.<string,eidolon.state.EquipmentAppearance.$Properties>|null} [appearances] Entity appearances
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4037,6 +4357,7 @@ export const eidolon = $root.eidolon = (() => {
                 this.unlockedTalents = [];
                 this.talentRanks = {};
                 this.skillRunes = {};
+                this.appearances = {};
                 if (properties)
                     for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -4980,6 +5301,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.markWeaknessFactor = 0;
 
             /**
+             * Entity appearances.
+             * @member {Object.<string,eidolon.state.EquipmentAppearance.$Properties>} appearances
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.appearances = $util.emptyObject;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5343,6 +5672,11 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 125, wireType 5 =*/1005).float(message.zealPower);
                 if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor") && !$Object.is(message.markWeaknessFactor, 0))
                     writer.uint32(/* id 126, wireType 5 =*/1013).float(message.markWeaknessFactor);
+                if (message.appearances != null && $Object.hasOwnProperty.call(message, "appearances"))
+                    for (let keys = $Object.keys(message.appearances), i = 0; i < keys.length; ++i) {
+                        writer.uint32(/* id 127, wireType 2 =*/1018).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
+                        $root.eidolon.state.EquipmentAppearance.encode(message.appearances[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork(), _depth + 1).ldelim().ldelim();
+                    }
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6494,6 +6828,36 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.markWeaknessFactor;
                             continue;
                         }
+                    case 127: {
+                            if (wireType !== 2)
+                                break;
+                            if (message.appearances === $util.emptyObject)
+                                message.appearances = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = null;
+                            while (reader.pos < end2) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
+                                case 1:
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
+                                case 2:
+                                    if (wireType !== 2)
+                                        break;
+                                    value = $root.eidolon.state.EquipmentAppearance.decode(reader, reader.uint32(), $undefined, _depth + 1, value);
+                                    continue;
+                                }
+                                reader.skipType(wireType, _depth, tag2);
+                            }
+                            if (key === "__proto__")
+                                $util.makeProp(message.appearances, key);
+                            message.appearances[key] = value || new $root.eidolon.state.EquipmentAppearance();
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -7006,6 +7370,16 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor"))
                     if (typeof message.markWeaknessFactor !== "number")
                         return "markWeaknessFactor: number expected";
+                if (message.appearances != null && $Object.hasOwnProperty.call(message, "appearances")) {
+                    if (!$util.isObject(message.appearances))
+                        return "appearances: object expected";
+                    let key = $Object.keys(message.appearances);
+                    for (let i = 0; i < key.length; ++i) {
+                        let error = $root.eidolon.state.EquipmentAppearance.verify(message.appearances[key[i]], _depth + 1);
+                        if (error)
+                            return "appearances." + error;
+                    }
+                }
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7470,6 +7844,18 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.markWeaknessFactor != null)
                     if (!$Object.is($Number(object.markWeaknessFactor), 0))
                         message.markWeaknessFactor = $Number(object.markWeaknessFactor);
+                if (object.appearances) {
+                    if (!$util.isObject(object.appearances))
+                        throw $TypeError(".eidolon.state.Entity.appearances: object expected");
+                    message.appearances = {};
+                    for (let keys = $Object.keys(object.appearances), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.appearances, keys[i]);
+                        if (!$util.isObject(object.appearances[keys[i]]))
+                            throw $TypeError(".eidolon.state.Entity.appearances: object expected");
+                        message.appearances[keys[i]] = $root.eidolon.state.EquipmentAppearance.fromObject(object.appearances[keys[i]], _depth + 1);
+                    }
+                }
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7526,6 +7912,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.equipment = {};
                     object.talentRanks = {};
                     object.skillRunes = {};
+                    object.appearances = {};
                 }
                 if (options.defaults) {
                     object.id = "";
@@ -7956,6 +8343,14 @@ export const eidolon = $root.eidolon = (() => {
                     object.zealPower = options.json && !$isFinite(message.zealPower) ? $String(message.zealPower) : message.zealPower;
                 if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor"))
                     object.markWeaknessFactor = options.json && !$isFinite(message.markWeaknessFactor) ? $String(message.markWeaknessFactor) : message.markWeaknessFactor;
+                if (message.appearances && (keys2 = $Object.keys(message.appearances)).length) {
+                    object.appearances = {};
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.appearances, keys2[j]);
+                        object.appearances[keys2[j]] = $root.eidolon.state.EquipmentAppearance.toObject(message.appearances[keys2[j]], options, _depth + 1);
+                    }
+                }
                 return object;
             };
 

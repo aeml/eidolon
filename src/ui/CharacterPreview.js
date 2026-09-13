@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../art/ProceduralHumanoid.js';
 import { applyProceduralEquipment, equipmentVisualSignature } from '../art/ProceduralEquipment.js';
+import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 
 const FACTORIES = Object.freeze({ Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric });
@@ -65,7 +66,8 @@ export class CharacterPreview {
         if (!Object.hasOwn(FACTORIES, type)) return;
         this.initialize();
         if (!this.renderer) return;
-        const signature = `${type}|${equipmentVisualSignature(player.equipment)}`;
+        const equipment = equipmentWithAppearances(player.equipment, player.appearances);
+        const signature = `${type}|${equipmentVisualSignature(equipment)}`;
         this.host.querySelector('.character-preview-label').textContent = `${type} · Level ${player.level}`;
         if (signature === this.signature) return;
         this.signature = signature;
@@ -77,7 +79,7 @@ export class CharacterPreview {
             this.type = type;
             this.yaw = INITIAL_YAW;
         }
-        applyProceduralEquipment(this.model, player.equipment);
+        applyProceduralEquipment(this.model, equipment);
         this.render();
     }
 

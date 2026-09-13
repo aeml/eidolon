@@ -428,6 +428,11 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+        } else if (msg.type === 'wardrobe_result') {
+            this.player.appearances = msg.payload?.appearances || {};
+            this.player.syncEquipmentVisuals?.();
+            this.uiManager?.wardrobe?.handleResult(msg.payload);
+            this.uiManager?.updateCharacterSheet?.(this.player);
         } else if (msg.type === 'loadout_result') {
             this.uiManager?.inventory?.loadouts?.handleResult(msg.payload);
             applyLoadoutState(this, msg.payload);
@@ -1145,6 +1150,7 @@ class GameEngineNetworkMessageMethods {
                         }
 
                         // Sync Equipment
+                        if (pData.appearances !== undefined) this.player.appearances = pData.appearances || {};
                         if (pData.equipment) {
                             this.player.equipment = pData.equipment;
                             // Hydrate Rarity for UI
@@ -1468,6 +1474,7 @@ class GameEngineNetworkMessageMethods {
                     }
 
                     // Sync Equipment
+                    if (pData.appearances !== undefined) this.player.appearances = pData.appearances || {};
                     if (pData.equipment) {
                         this.player.equipment = pData.equipment;
                         for (const key in this.player.equipment) {

@@ -149,8 +149,9 @@ class GameEngineEntitySyncMethods {
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
-        if (Object.prototype.hasOwnProperty.call(pData, 'equipment')) {
-            remoteEntity.syncEquipmentVisuals?.(pData.equipment || {});
+        if (pData.appearances !== undefined) remoteEntity.appearances = pData.appearances || {};
+        if (Object.prototype.hasOwnProperty.call(pData, 'equipment') || pData.appearances !== undefined) {
+            remoteEntity.syncEquipmentVisuals?.(pData.equipment ?? remoteEntity.equipment ?? {});
         }
         if (pData.skillRunes !== undefined) {
             remoteEntity.skillRunes = { ...(pData.skillRunes || {}) };

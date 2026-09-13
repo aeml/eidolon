@@ -7,6 +7,12 @@ option go_package = "eidolon-server/internal/proto;proto";
 // Keep this as a "hot path" schema: state + delta snapshots.
 // Low-frequency messages (auth/chat/trading/etc) can remain JSON.
 
+message EquipmentAppearance {
+  string base_name = 1;
+  string rarity = 2;
+  string slot = 3;
+}
+
 message StateEnvelope {
   uint32 version = 1; // protocol version, start at 1
 
@@ -259,6 +265,8 @@ message Entity {
   float blessing_resolve_power = 124;
   float zeal_power = 125;
   float mark_weakness_factor = 126;
+  // Cosmetic choices are separate from equipped items and their combat stats.
+  map<string, EquipmentAppearance> appearances = 127;
 
   // Authoritative jump replication
   float jump_start_x = 81;

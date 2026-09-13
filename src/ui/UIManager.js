@@ -9,6 +9,7 @@ import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
+import { WardrobeUI } from './WardrobeUI.js';
 import { CharacterPreview } from './CharacterPreview.js';
 import { ChatUI } from './ChatUI.js';
 import { DirectTradeUI } from './DirectTradeUI.js';
@@ -403,6 +404,9 @@ export class UIManager {
 			addGameMessage: (sender, message) => this.addGameMessage(sender, message),
 		});
 
+        this.wardrobe = new WardrobeUI({ host: document.querySelector('#character-sheet .char-sheet-body'),
+            getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
+
         // Inventory UI (extracted module) — handles inventory grid, equip slots,
         // shop/gamble, stash, item tooltips, drag-and-drop, split-stack, buyback, sell
         this.inventory = new InventoryUI({
@@ -618,6 +622,7 @@ export class UIManager {
     updatePlayerStats(player) {
         if (!player) return;
         this.lastPlayerRef = player;
+        this.wardrobe?.refreshPlayer();
         const signature = this.serializePlayerStats(player);
         if (signature === this.lastPlayerStatsSignature) {
             return;

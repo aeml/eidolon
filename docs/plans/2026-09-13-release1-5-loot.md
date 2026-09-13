@@ -22,7 +22,35 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
   a separate future VIP currency. Do not name or permanently define that currency.
 - Package, publish and verify1.5 with patch notes and a synchronized login version.
 
-## Implementation checkpoint — September 13, 02:30 UTC
+## Implementation checkpoint — September 13, 02:42 UTC
+
+Earned wardrobe collection and appearance selection are now implemented locally.
+An explicit Learn owned looks action captures supported base styles/rarity colours
+from server-owned bag/stash/equipment items without consuming or changing gear.
+The collection survives selling its source item. Selection requires an earned,
+slot-compatible look and actual equipped gear; original appearance can be restored.
+Changes require safe town/out-of-combat access and use ordinary durable saves.
+
+Private collection and public per-slot appearance maps persist separately from
+combat items. Additive protobuf field127 carries only selected looks; equipment
+revision triggers appearance-only deltas and resets. Local/remote actors and the
+character preview compose render-only item copies, keeping actual stats, sockets,
+potency and level untouched. The character-sheet wardrobe has phone-sized controls.
+
+Focused Go wardrobe ownership/stat-preservation/snapshot/persistence/protocol tests
+PASS; nine wardrobe/preview/client-contract checks PASS, changed JS lint/diff PASS.
+Actual Chrome phone panel and two-model original/earned-look comparison inspected
+at `/tmp/eidolon-1-5-wardrobe-{phone,models}.png`. Initial nested-scroll clipping
+was corrected by giving the wardrobe natural height within the character scroll
+container. No broad suite/soak. Generator reused cached protoc at
+`/tmp/eidolon-protoc/bin/protoc` with `/home/aeml/go/bin` on PATH; generated Go/JS
+bindings are included. Runtime remains1.4; do not publish partial1.5 yet.
+
+Next: Forge/comparison improvements, quest/raid Gold and Resonance balance against
+sinks, and casino Gold transaction safeguards plus the future undefined VIP
+currency boundary. Then package/publish/verify full1.5 with patch notes.
+
+### Previous detail — September 13, 02:28 UTC
 
 Saved build switching and last saved/applied skill-bar restoration are now also
 implemented locally. Presets capture specialization, canonical talent ranks and

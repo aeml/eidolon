@@ -1016,6 +1016,10 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 	quests := append([]game.Quest(nil), e.Quests...)
 
 	equipment := make(map[string]*statepb.Item, len(e.Equipment))
+	appearances := make(map[string]*statepb.EquipmentAppearance, len(e.Appearances))
+	for slot, look := range e.Appearances {
+		appearances[slot] = &statepb.EquipmentAppearance{BaseName: look.BaseName, Rarity: string(look.Rarity), Slot: look.Slot}
+	}
 	for slot, it := range e.Equipment {
 		itemCopy := it
 		equipment[slot] = itemToProto(&itemCopy)
@@ -1246,6 +1250,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ImpactRadius:               float32(e.ReplicatedImpactRadius()),
 		State:                      e.State,
 		Equipment:                  equipment,
+		Appearances:                appearances,
 		Quests:                     questsToProto(quests),
 		LootItem:                   itemToProto(lootItem),
 		OwnerId:                    e.OwnerID,

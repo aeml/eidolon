@@ -258,11 +258,13 @@ func (c *Client) dispatchMessage(msg Message) {
 				Wisdom:       char.Stats.Wisdom,
 				Vitality:     char.Stats.Vitality,
 			},
-			SkillPoints:       max(0, char.SkillPoints),
-			EquipmentLoadouts: gameLoadouts(char.EquipmentLoadouts),
-			SavedHotbar:       append([]string(nil), char.SavedHotbar...),
-			SelectedBranch:    char.SelectedBranch,
-			UnlockedSkills:    []string{},
+			SkillPoints:          max(0, char.SkillPoints),
+			EquipmentLoadouts:    gameLoadouts(char.EquipmentLoadouts),
+			AppearanceCollection: gameAppearances(char.AppearanceCollection),
+			Appearances:          gameAppearances(char.Appearances),
+			SavedHotbar:          append([]string(nil), char.SavedHotbar...),
+			SelectedBranch:       char.SelectedBranch,
+			UnlockedSkills:       []string{},
 		}
 		entity.NormalizeResonanceProgress()
 		entity.ApplySavedProgression(progression)
@@ -927,6 +929,8 @@ func (c *Client) dispatchMessage(msg Message) {
 
 	case MsgGetLoadouts, MsgSaveLoadout, MsgApplyLoadout:
 		c.handleEquipmentLoadout(msg)
+	case MsgGetWardrobe, MsgCollectAppearances, MsgSelectAppearance:
+		c.handleWardrobe(msg)
 
 	case MsgEquip:
 		if c.playerID == "" {

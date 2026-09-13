@@ -39,10 +39,13 @@ func policy(access messageAccess, maxPayloadBytes, burst int, window time.Durati
 // unreachable by design, so authentication, payload size, and rate limits
 // cannot be accidentally omitted.
 var inboundMessagePolicies = map[string]messagePolicy{
-	MsgRegister:      policy(accessPublic, 8<<10, 5, time.Minute),
-	MsgLogin:         policy(accessPublic, 8<<10, 5, time.Minute),
-	MsgResumeSession: policy(accessPublic, 4<<10, 10, time.Minute),
-	MsgJoin:          policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
+	MsgGetWardrobe:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgCollectAppearances: policy(accessCharacter, 1<<10, 3, 10*time.Second),
+	MsgSelectAppearance:   policy(accessCharacter, 1<<10, 10, 10*time.Second),
+	MsgRegister:           policy(accessPublic, 8<<10, 5, time.Minute),
+	MsgLogin:              policy(accessPublic, 8<<10, 5, time.Minute),
+	MsgResumeSession:      policy(accessPublic, 4<<10, 10, time.Minute),
+	MsgJoin:               policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
 
 	MsgMove:    policy(accessCharacter, 2<<10, 90, time.Second),
 	MsgJump:    policy(accessCharacter, 2<<10, 12, time.Second),

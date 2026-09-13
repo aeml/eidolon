@@ -35,6 +35,7 @@ import { getWhirlwindCastDuration } from '../skills/whirlwindPresentation.js';
 import { spawnEarthshakerPresentation } from '../skills/earthshakerPresentation.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
+import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -969,7 +970,7 @@ export class Actor extends Entity {
 
     syncEquipmentVisuals(equipment = this.equipment, options = {}) {
         if (equipment && equipment !== this.equipment) this.equipment = equipment;
-        return applyProceduralEquipment(this.mesh, this.equipment || {}, options);
+        return applyProceduralEquipment(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
     }
 
     update(dt, collisionManager, player, activeEntities) {
