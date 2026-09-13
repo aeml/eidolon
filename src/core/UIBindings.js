@@ -152,7 +152,7 @@ export class UIBindings {
         if (ui.pvp) {
             ui.pvp.onRefresh = () => engine.network.send('pvp_get', {});
             ui.pvp.onDuelRespond = (requesterId, accept) => engine.network.send('duel_respond', { requesterId, accept });
-            ui.pvp.onQueue = (teamSize) => engine.network.send('arena_queue', { teamSize });
+            ui.pvp.onQueue = (teamSize, practice = false) => engine.network.send('arena_queue', { teamSize, practice });
             ui.pvp.onLeave = () => engine.network.send('arena_leave', {});
             ui.pvp.onLeaderboard = () => engine.network.send('pvp_leaderboard', {});
             ui.pvp.onFlag = (enabled) => engine.network.send('pvp_flag', { enabled });

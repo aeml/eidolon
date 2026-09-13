@@ -24,6 +24,38 @@ describe('PvPUI', () => {
         expect(ui.onQueue.mock.calls).toEqual([[1], [2]]);
     });
 
+    test('practice buttons explicitly opt out of ranked play and queue status stays honest', () => {
+        const ui = createUI();
+        ui.onQueue = jest.fn();
+        for (const label of ['Practice 1v1', 'Practice 2v2 Party']) {
+            Array.from(ui.window.querySelectorAll('button')).find(button => button.textContent === label).click();
+        }
+        expect(ui.onQueue.mock.calls).toEqual([[1, true], [2, true]]);
+        ui.update({ queued: 2, queuePractice: false, teamRating: 1450, ratingWindow: 250, queuedSeconds: 95 });
+        expect(ui.window.textContent).toContain('Ranked 2v2 · waiting 95s');
+        expect(ui.window.textContent).toContain('Team rating 1450 · current search ±250');
+        ui.update({ queued: 2, queuePractice: true });
+        expect(ui.window.textContent).toContain('Waiting for another real practice team');
+        ui.update({ queued: 0 });
+        expect(ui.state.queuePractice).toBe(false);
+        expect(ui.state.ratingWindow).toBeNull();
+    });
+
+    test('queue refresh runs only while its window is open and stops on close', () => {
+        jest.useFakeTimers();
+        const ui = createUI();
+        ui.onRefresh = jest.fn();
+        ui.toggle(true);
+        ui.update({ queued: 1 });
+        jest.advanceTimersByTime(5000);
+        expect(ui.onRefresh).toHaveBeenCalledTimes(2);
+        ui.update({ queued: 1 });
+        ui.toggle(false);
+        jest.advanceTimersByTime(5000);
+        expect(ui.onRefresh).toHaveBeenCalledTimes(2);
+        jest.useRealTimers();
+    });
+
     test('renders match score and leaderboard', () => {
         const ui = createUI();
         ui.update({ match: { mode: 'arena_1v1', round: 2, scoreA: 1, scoreB: 0 }, opponents: ['player-Bob'] });

@@ -60,7 +60,19 @@ func handleMsgArenaQueue(client *Client, message Message) {
 		return
 	}
 	hydratePvPProfile(client.playerID)
-	match, err := world.JoinArenaQueue(client.playerID, payload.TeamSize)
+	if payload.TeamSize == 2 {
+		if player := world.GetEntityCopy(client.playerID); player != nil {
+			if party := world.GetParty(player.PartyID); party != nil {
+				_, _, members := party.GetSnapshot()
+				for _, id := range members {
+					if id != client.playerID {
+						hydratePvPProfile(id)
+					}
+				}
+			}
+		}
+	}
+	match, err := world.JoinArenaQueueWithMode(client.playerID, payload.TeamSize, payload.Practice)
 	if err != nil {
 		client.sendError(err.Error())
 		return
@@ -72,6 +84,11 @@ func handleMsgArenaQueue(client *Client, message Message) {
 	}
 	sendPvPEntry(match)
 	sendPvPMatchState(match)
+	if !containsString(match.TeamA, client.playerID) && !containsString(match.TeamB, client.playerID) {
+		// This join may have unlocked a match between two older queued teams.
+		// The caller still needs its own authoritative waiting snapshot.
+		sendPvPState(client)
+	}
 }
 
 func handleMsgArenaLeave(client *Client, _ Message) {
@@ -195,11 +212,15 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 			}
 			if len(result.WinnerIDs) == 0 {
 				client.sendSystemChat("PvP match cancelled. No ranked rewards or rating changes.")
-			} else if result.Mode == game.PvPModeDuel {
+			} else if result.Mode == game.PvPModeDuel || result.Practice {
+				label := "Practice arena"
+				if result.Mode == game.PvPModeDuel {
+					label = "Practice duel"
+				}
 				if containsString(result.WinnerIDs, playerID) {
-					client.sendSystemChat("Practice duel victory! No rating, honor, or season points awarded.")
+					client.sendSystemChat(label + " victory! No rating, honor, or season points awarded.")
 				} else {
-					client.sendSystemChat("Practice duel complete. Your ranked record is unchanged.")
+					client.sendSystemChat(label + " complete. Your ranked record is unchanged.")
 				}
 			} else if containsString(result.WinnerIDs, playerID) {
 				client.sendSystemChat("PvP victory! +50 honor, rating increased.")

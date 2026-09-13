@@ -149,6 +149,7 @@ type World struct {
 	OnQuestUpdate      func(playerID string, quests []Quest)
 	OnPvPMatchComplete func(result PvPMatchResult)
 	OnPvPMatchUpdate   func(match *PvPMatch)
+	OnPvPMatchStart    func(match *PvPMatch)
 }
 
 type DamageEvent struct {

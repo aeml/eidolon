@@ -379,7 +379,8 @@ type DuelRespondPayload struct {
 }
 
 type ArenaQueuePayload struct {
-	TeamSize int `json:"teamSize"`
+	Practice bool `json:"practice"`
+	TeamSize int  `json:"teamSize"`
 }
 
 type PvPFlagPayload struct {

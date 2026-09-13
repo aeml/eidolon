@@ -881,6 +881,10 @@ func main() {
 	world.OnPvPMatchUpdate = func(match *game.PvPMatch) {
 		go sendPvPMatchState(match)
 	}
+	world.OnPvPMatchStart = func(match *game.PvPMatch) {
+		sendPvPEntry(match)
+		sendPvPMatchState(match)
+	}
 
 	// Game Loop
 	loops.Every(33*time.Millisecond, func() {

@@ -29,6 +29,8 @@ export class PvPUI {
 
     toggle(show) {
         const opening = show ?? this.window.style.display === 'none';
+        this.isOpen = opening;
+        clearTimeout(this.queueRefresh);
         if (opening) {
             if (this.openManagedWindow) this.openManagedWindow('pvp');
             else this.window.style.display = 'block';
@@ -44,9 +46,11 @@ export class PvPUI {
     update(payload = {}) {
         // Server updates are complete snapshots; absent transient fields mean
         // the challenge/match ended, not that the previous one should survive.
-        this.state = { ...this.state, queued: 0, match: null, challenge: null, deserterUntil: null,
+        this.state = { ...this.state, queued: 0, queuePractice: false, queuedAt: null, ratingWindow: null, queuedSeconds: 0, match: null, challenge: null, deserterUntil: null,
             ...payload, opponents: Array.isArray(payload.opponents) ? payload.opponents : [] };
         this.render();
+        clearTimeout(this.queueRefresh);
+        if (this.isOpen && this.state.queued) this.queueRefresh = setTimeout(() => this.onRefresh?.(), 5000);
     }
 
     updateLeaderboard(payload = {}) {
@@ -95,6 +99,7 @@ export class PvPUI {
             matchCard.className = 'pvp-card pvp-card--match';
             const title = document.createElement('h3');
             title.textContent = `${String(match.mode).replaceAll('_', ' ').toUpperCase()} · Round ${match.round}`;
+            if (match.practice) title.textContent = `PRACTICE · ${title.textContent}`;
             const score = document.createElement('div');
             score.className = 'pvp-score';
             score.textContent = `${match.scoreA} — ${match.scoreB}`;
@@ -105,7 +110,7 @@ export class PvPUI {
                 ? 'Match complete. Returning you to your departure point…'
                 : match.roundPending
                     ? 'Team eliminated. The next round starts shortly.'
-                    : `Standing: ${standing(match.teamA)} vs ${standing(match.teamB)}. ${match.mode === 'duel' ? 'Practice duel — no ranked rewards.' : 'Eliminate the whole opposing team to win a round. First to two rounds wins.'}`;
+                    : `Standing: ${standing(match.teamA)} vs ${standing(match.teamB)}. ${match.mode === 'duel' ? 'Practice duel — no ranked rewards.' : 'Eliminate the whole opposing team to win a round. First to two rounds wins.'}${match.practice ? ' Practice: no rating, honor or season rewards.' : ''}`;
             matchCard.append(title, score, progress);
             if (match.status !== 'complete') {
                 matchCard.appendChild(this.button('Forfeit', () => this.onLeave?.(), 'pvp-btn--danger'));
@@ -114,14 +119,20 @@ export class PvPUI {
         } else {
             const queue = document.createElement('section');
             queue.className = 'pvp-card';
-            queue.innerHTML = '<h3>Ranked Arena</h3><p>Best-of-three team elimination. PvP damage is reduced and burst-capped; equipment still matters. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Practice duels use player challenges and never change rating, honor, season points, or ranked wins and losses.</p>';
+            queue.innerHTML = '<h3>Arena · ranked or practice</h3><p>Best-of-three team elimination. Current combat rules: your level, equipment and build still matter—there is no hidden stat normalization. Player damage is reduced to 65% and each hit is capped at 35% of the target’s maximum health. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Ranked searches start within ±100 average team rating and widen by 50 every 30 seconds, to ±500. Both teams must allow the rating gap. Practice queues are separate, ignore rating gaps, and never award rating, honor, season points or ranked records. Practice duels also remain available through player challenges.</p>';
             if (this.state.queued) {
                 const queued = document.createElement('strong');
-                queued.textContent = `Queued for ${this.state.queued}v${this.state.queued}`;
+                queued.textContent = `${this.state.queuePractice ? 'Practice' : 'Ranked'} ${this.state.queued}v${this.state.queued} · waiting ${Math.max(0, Math.floor(this.state.queuedSeconds || 0))}s`;
                 queue.append(queued, this.button('Leave Queue', () => this.onLeave?.(), 'pvp-btn--danger'));
+                const search = document.createElement('p');
+                search.textContent = this.state.queuePractice ? 'Waiting for another real practice team. No bots or ranked rewards.'
+                    : `Team rating ${this.state.teamRating ?? 1000} · current search ±${this.state.ratingWindow ?? 100}. No estimated match time is promised.`;
+                queue.append(search);
             } else {
                 queue.append(this.button('Queue 1v1', () => this.onQueue?.(1), 'pvp-btn--success'));
                 queue.appendChild(this.button('Queue 2v2 Party', () => this.onQueue?.(2), ''));
+                queue.appendChild(this.button('Practice 1v1', () => this.onQueue?.(1, true), ''));
+                queue.appendChild(this.button('Practice 2v2 Party', () => this.onQueue?.(2, true), ''));
             }
             body.appendChild(queue);
         }

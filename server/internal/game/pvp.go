@@ -42,6 +42,7 @@ type PvPOrigin struct {
 }
 
 type PvPMatch struct {
+	Practice     bool                 `json:"practice"`
 	ID           string               `json:"id"`
 	Mode         string               `json:"mode"`
 	TeamA        []string             `json:"teamA"`
@@ -70,6 +71,7 @@ type PvPProfile struct {
 }
 
 type PvPMatchResult struct {
+	Practice  bool         `json:"practice"`
 	MatchID   string       `json:"matchId"`
 	Mode      string       `json:"mode"`
 	WinnerIDs []string     `json:"winnerIds"`
@@ -81,18 +83,23 @@ type PvPMatchResult struct {
 type arenaQueueEntry struct {
 	Players  []string
 	QueuedAt time.Time
+	Practice bool
+	PartyID  string
+	LeaderID string
 }
 
 type PvPSystem struct {
-	mu            sync.RWMutex
-	Challenges    map[string]DuelChallenge
-	Queues        map[int][]arenaQueueEntry
-	Matches       map[string]*PvPMatch
-	MatchByPlayer map[string]string
-	Profiles      map[string]PvPProfile
-	DeserterUntil map[string]time.Time
-	OpenWorldFlag map[string]bool
-	now           func() time.Time
+	mu              sync.RWMutex
+	Challenges      map[string]DuelChallenge
+	Queues          map[int][]arenaQueueEntry
+	Matches         map[string]*PvPMatch
+	MatchByPlayer   map[string]string
+	Profiles        map[string]PvPProfile
+	DeserterUntil   map[string]time.Time
+	OpenWorldFlag   map[string]bool
+	now             func() time.Time
+	nextMatchmaking time.Time
+	matchSequence   uint64
 }
 
 func NewPvPSystem() *PvPSystem {
@@ -267,6 +274,10 @@ func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMa
 }
 
 func (w *World) JoinArenaQueue(playerID string, teamSize int) (*PvPMatch, error) {
+	return w.JoinArenaQueueWithMode(playerID, teamSize, false)
+}
+
+func (w *World) JoinArenaQueueWithMode(playerID string, teamSize int, practice bool) (*PvPMatch, error) {
 	if teamSize != 1 && teamSize != 2 {
 		return nil, errors.New("arena size must be 1 or 2")
 	}
@@ -292,12 +303,12 @@ func (w *World) JoinArenaQueue(playerID string, teamSize int) (*PvPMatch, error)
 		players = append([]string(nil), members...)
 		sort.Strings(players)
 	}
+	availability := w.arenaAvailabilityLocked()
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	now := w.PvP.now()
 	for _, queuedID := range players {
-		queuedPlayer := w.Entities[queuedID]
-		if queuedPlayer == nil || queuedPlayer.Disconnected || queuedPlayer.InstanceID != "" || w.PvP.MatchByPlayer[queuedID] != "" {
+		if !availability[queuedID].Available || w.PvP.MatchByPlayer[queuedID] != "" {
 			return nil, errors.New("team member is unavailable")
 		}
 		if now.Before(w.PvP.DeserterUntil[queuedID]) {
@@ -307,18 +318,12 @@ func (w *World) JoinArenaQueue(playerID string, teamSize int) (*PvPMatch, error)
 			return nil, errors.New("player is already queued")
 		}
 	}
-	queue := append(w.PvP.Queues[teamSize], arenaQueueEntry{Players: players, QueuedAt: now})
-	if len(queue) < 2 {
-		w.PvP.Queues[teamSize] = queue
-		return nil, nil
-	}
-	first, second := queue[0], queue[1]
-	w.PvP.Queues[teamSize] = queue[2:]
-	mode := PvPModeArena1v1
+	entry := arenaQueueEntry{Players: players, QueuedAt: now, Practice: practice, LeaderID: playerID}
 	if teamSize == 2 {
-		mode = PvPModeArena2v2
+		entry.PartyID = player.PartyID
 	}
-	return w.startPvPMatchLocked(mode, first.Players, second.Players), nil
+	w.PvP.Queues[teamSize] = append(w.PvP.Queues[teamSize], entry)
+	return w.matchArenaQueueLocked(teamSize, now, availability), nil
 }
 
 func (system *PvPSystem) playerQueuedLocked(playerID string) bool {
@@ -334,8 +339,9 @@ func (system *PvPSystem) playerQueuedLocked(playerID string) bool {
 
 func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatch {
 	now := w.PvP.now()
+	w.PvP.matchSequence++
 	match := &PvPMatch{
-		ID: fmt.Sprintf("pvp-%d", now.UnixNano()), Mode: mode,
+		ID: fmt.Sprintf("pvp-%d-%d", now.UnixNano(), w.PvP.matchSequence), Mode: mode,
 		TeamA: append([]string(nil), teamA...), TeamB: append([]string(nil), teamB...),
 		FirstTo: 1, Round: 1, Status: PvPMatchPreparing, StartedAt: now, EndsAt: now.Add(10 * time.Minute), Origins: make(map[string]PvPOrigin),
 	}
@@ -559,7 +565,7 @@ func (w *World) ForfeitPvP(playerID string) {
 		match.WinnerIDs = append([]string(nil), match.TeamA...)
 	}
 	match.Status = PvPMatchComplete
-	if match.Mode != PvPModeDuel {
+	if match.Mode != PvPModeDuel && !match.Practice {
 		w.PvP.DeserterUntil[playerID] = w.PvP.now().Add(5 * time.Minute)
 	}
 	matchID := match.ID
@@ -622,7 +628,7 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 	for _, playerID := range participants {
 		// Practice duels (including forfeits) and cancelled matches never create
 		// or change ranked records. Only the two ranked arena modes award points.
-		if len(winners) == 0 || (match.Mode != PvPModeArena1v1 && match.Mode != PvPModeArena2v2) {
+		if len(winners) == 0 || match.Practice || (match.Mode != PvPModeArena1v1 && match.Mode != PvPModeArena2v2) {
 			continue
 		}
 		profile, exists := w.PvP.Profiles[playerID]
@@ -651,7 +657,7 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 		delete(w.PvP.MatchByPlayer, playerID)
 	}
 	delete(w.PvP.Matches, matchID)
-	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
+	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, Practice: match.Practice, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
 	w.PvP.mu.Unlock()
 	for _, playerID := range participants {
 		if player := w.Entities[playerID]; player != nil {
@@ -688,10 +694,12 @@ func (w *World) UpdatePvP(now time.Time) {
 	for matchID, match := range w.PvP.Matches {
 		if match.Status == PvPMatchActive && now.After(match.EndsAt) {
 			match.Status = PvPMatchComplete
-			if match.ScoreA >= match.ScoreB {
+			if match.ScoreA > match.ScoreB {
 				match.WinnerIDs = append([]string(nil), match.TeamA...)
-			} else {
+			} else if match.ScoreB > match.ScoreA {
 				match.WinnerIDs = append([]string(nil), match.TeamB...)
+			} else {
+				match.WinnerIDs = nil
 			}
 			expiredMatches = append(expiredMatches, matchID)
 		}
@@ -700,6 +708,7 @@ func (w *World) UpdatePvP(now time.Time) {
 	for _, matchID := range expiredMatches {
 		w.completePvPMatch(matchID, false)
 	}
+	w.updateArenaQueues(now)
 }
 
 func (w *World) PvPStatus(playerID string) map[string]interface{} {
@@ -742,6 +751,11 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 		for _, entry := range queue {
 			if containsPlayer(entry.Players, playerID) {
 				status["queued"] = size
+				status["queuePractice"] = entry.Practice
+				status["queuedAt"] = entry.QueuedAt
+				status["queuedSeconds"] = max(0, int(w.PvP.now().Sub(entry.QueuedAt).Seconds()))
+				status["ratingWindow"] = arenaRatingWindow(entry.QueuedAt, w.PvP.now())
+				status["teamRating"] = w.PvP.arenaTeamRatingLocked(entry.Players)
 			}
 		}
 	}
