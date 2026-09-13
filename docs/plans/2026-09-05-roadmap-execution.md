@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 01:28 UTC
+## Current checkpoint — September 13, 01:38 UTC
+
+PROGRESS:1.4WT `/tmp/eidolon-1-4-chronicle-20260913` clean d2817a21, NOT pushed.
+Read entire279-line activeinvestigationcatalog and183-line siteModel. Implemented
+personalrestoration scenery atallrealmlandmarks aftercompleted raidreceipt10–13:
+Earthgrowth, Watercloths/ripples, Firekilnwarmth/pots/shoots, Airpennants/redthread.
+Preservedhistoricalruins/evidencemasks/beacons/sharedhazards/colliders/openapproach.
+FouroptionalAftertheVigil journalentries fromsame receiptgate, retainedopenrecords
+acrossupdates; readybutunclaimeddoesnotunlock, othercharactersdonotinheritstate.
+Noquest/reward/servermutation.55site/journaltestsPASS; changed-filelint/diffPASS.
+Chromeactualfour-housebeforeafterrenderinspected `/tmp/eidolon-1-4-restoration-scenes.png`;
+Waterclothcontrast/placementimprovedthenrechecked. Temphelper PREVIEW_RESTORATION=1
+supportsrender; allsessionsclosed. This isnotearnedraid/deviceperformanceproof.
+
+Next: optionalphysicalwitness conversations (Mara/Dain/Hessa/Selen) buildingon
+diaries, preservingIlyra'squestrole andgatingspoilersbyrecordeddiscovery/raidreceipt.
+Sourceplan `docs/plans/2026-09-13-release1-4-chronicle.md` updated. Existing8quests
+mustnotberecreated. Runtime1.3 until1.4packaging. Fullgoalremainsactive.
+
+1.3CI34730497493 confirmedlive nowclient/serverSUCCESS, all3browsersIN_PROGRESS.
+Keepfrozen1.3WTfb7554ad/samerun; no1.3liveclaimyet.1.2terminalgreen/live999dfbf0.
+RootledgerNEVERpush. Previousgoalturn classifiedconcreteprogress.
+
+### Previous detail — September 13, 01:28 UTC
 
 PROGRESS:Alpha1.3.0 packaged and PUSHED fb7554ad723e9863b4066c003b4eca0152930404.
 Frozen WT `/tmp/eidolon-1-3-combat-feel-20260913` clean; CI34730497493 IN_PROGRESS
