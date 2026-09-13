@@ -260,6 +260,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			},
 			SkillPoints:       max(0, char.SkillPoints),
 			EquipmentLoadouts: gameLoadouts(char.EquipmentLoadouts),
+			SavedHotbar:       append([]string(nil), char.SavedHotbar...),
 			SelectedBranch:    char.SelectedBranch,
 			UnlockedSkills:    []string{},
 		}

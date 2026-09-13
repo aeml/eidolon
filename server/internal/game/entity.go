@@ -104,6 +104,7 @@ type Entity struct {
 	Equipment         map[string]Item    `json:"equipment"`
 	EquipmentRevision uint64             `json:"-"`
 	EquipmentLoadouts []EquipmentLoadout `json:"-"`
+	SavedHotbar       []string           `json:"-"`
 	Quests            []Quest            `json:"quests"`
 	LastDailyQuest    time.Time          `json:"-"`
 
@@ -1032,6 +1033,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		newE.Inventory = cloneItems(e.Inventory)
 	}
 	newE.EquipmentLoadouts = CloneEquipmentLoadouts(e.EquipmentLoadouts)
+	newE.SavedHotbar = append([]string(nil), e.SavedHotbar...)
 	if e.Stash != nil {
 		newE.Stash = cloneItems(e.Stash)
 	}

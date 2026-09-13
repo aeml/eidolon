@@ -233,6 +233,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		},
 		SkillPoints:       entity.SkillPoints,
 		EquipmentLoadouts: databaseLoadouts(entity.EquipmentLoadouts),
+		SavedHotbar:       append([]string(nil), entity.SavedHotbar...),
 		SelectedBranch:    entity.SelectedBranch,
 		UnlockedSkills:    entity.UnlockedSkills,
 		SkillRunes:        entity.SkillRunes,

@@ -22,7 +22,41 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
   a separate future VIP currency. Do not name or permanently define that currency.
 - Package, publish and verify1.5 with patch notes and a synchronized login version.
 
-## Implementation checkpoint — September 13, 02:16 UTC
+## Implementation checkpoint — September 13, 02:30 UTC
+
+Saved build switching and last saved/applied skill-bar restoration are now also
+implemented locally. Presets capture specialization, canonical talent ranks and
+earned class rune selections, not copied combat stats. Apply stages and validates
+the whole build and gear operation before charging or mutating anything. Current
+level determines unlocks and talent budget. Existing skill points and cooldowns
+are not reset, and depleted HP/MP are preserved.
+
+Changing specialization/talent allocation through a loadout requires explicit
+confirmation of a server quote using the existing skills/talents/both respec price
+formula. Unchanged builds and rune-only changes cost nothing. Existing direct
+specialization/rune/reset controls are unchanged. Replay of an already-applied
+build does not charge again. Missing gear or invalid points/runes reject the whole
+operation without spending Gold. Gold spent is recorded in the respec sink.
+
+The ordinary join/resume snapshot now sends owner-only presets, current build and
+the persisted bar; obsolete skills are filtered without moving other slots or
+filling intentional empty slots. Client applies the authoritative build before
+the bar so subsequent unchanged state snapshots retain it. Listing/saving presets
+does not overwrite a manually arranged current bar.
+
+Focused Go core/persistence/initial-state checks PASS; all four classes restore
+their legal build and earned base-skill rune with one exact payment. Nine focused
+UI/state tests PASS. Changed JS lint and diff checks PASS. Actual 390px Chrome
+paid confirmation inspected at `/tmp/eidolon-1-5-builds-phone.png` (54px button).
+No broad test matrix or soak. Runtime remains 1.4 until full 1.5 packaging.
+
+Next: earned appearance collection/selection with visible multiplayer equipment
+presentation and separate combat stats; then Forge/comparison, economy tuning and
+casino currency boundary. Start with `src/art/ProceduralEquipment.js` descriptors,
+`Actor.syncEquipmentVisuals`, `proto/state.proto`, item persistence and owner state.
+Do not substitute a client-only wardrobe or claim the whole milestone complete.
+
+### Previous detail — September 13, 02:16 UTC
 
 The first loadout slice is implemented locally, not released:
 

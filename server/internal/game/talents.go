@@ -629,18 +629,8 @@ func (w *World) PerformRespec(playerID string, respecType string) (*Entity, bool
 	defer player.Mu.Unlock()
 
 	// Calculate cost based on respec type and player level
-	baseCost := 1000
-	levelMultiplier := 1 + (player.Level / 20) // 1x at level 1-19, 2x at 20-39, etc.
-	var cost int
-
-	switch respecType {
-	case "talents":
-		cost = baseCost * levelMultiplier
-	case "skills":
-		cost = baseCost * levelMultiplier
-	case "both":
-		cost = baseCost * levelMultiplier * 3 / 2 // 50% discount for both
-	default:
+	cost := respecGoldCost(player.Level, respecType)
+	if cost == 0 {
 		return nil, false, "respec: invalid respec type"
 	}
 
@@ -710,8 +700,12 @@ func (w *World) GetRespecCost(playerID string, respecType string) int {
 		return 0
 	}
 
+	return respecGoldCost(player.Level, respecType)
+}
+
+func respecGoldCost(level int, respecType string) int {
 	baseCost := 1000
-	levelMultiplier := 1 + (player.Level / 20)
+	levelMultiplier := 1 + (level / 20)
 
 	switch respecType {
 	case "talents":

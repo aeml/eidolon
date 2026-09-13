@@ -34,7 +34,7 @@ test('equipping requests the selected server slot and leaves the local character
     ui.handleResult({ profiles: [profile] });
     const before = JSON.stringify(player);
     ui.applyButton.click();
-    expect(send).toHaveBeenCalledWith('apply_loadout', { index: 0 });
+    expect(send).toHaveBeenCalledWith('apply_loadout', { index: 0, confirmedGold: 0 });
     expect(JSON.stringify(player)).toBe(before);
     ui.handleResult({ success: false, profiles: [profile], message: 'Retrieve missing gear from your stash.' });
     expect(ui.status.textContent).toContain('stash');
@@ -49,4 +49,17 @@ test('new characters cannot see old presets and saved names are plain text', () 
     expect(ui.applyButton.disabled).toBe(true);
     expect(ui.saveButton.disabled).toBe(true);
     expect(ui.select.options[0].textContent).toBe('1 — Empty');
+});
+
+test('a paid build swap requires confirmation of the exact server quote', () => {
+    ui.handleResult({ profiles: [profile], costs: [3000] });
+    ui.applyButton.click();
+    expect(send).not.toHaveBeenCalled();
+    expect(ui.applyButton.textContent).toContain('3,000 Gold');
+    ui.applyButton.click();
+    expect(send).toHaveBeenCalledWith('apply_loadout', { index: 0, confirmedGold: 3000 });
+    send.mockClear();
+    ui.handleResult({ profiles: [profile], costs: [4000], success: false, message: 'Review the new cost' });
+    ui.applyButton.click();
+    expect(send).not.toHaveBeenCalled();
 });

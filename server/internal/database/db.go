@@ -87,6 +87,7 @@ type Character struct {
 	Buyback              []Item               `bson:"buyback"`
 	Equipment            map[string]Item      `bson:"equipment"`
 	EquipmentLoadouts    []EquipmentLoadout   `bson:"equipment_loadouts,omitempty"`
+	SavedHotbar          []string             `bson:"saved_hotbar,omitempty"`
 	Quests               []Quest              `bson:"quests"`
 	LastDailyQuest       time.Time            `bson:"last_daily_quest"`
 	SkillPoints          int                  `bson:"skill_points"`
@@ -106,6 +107,13 @@ type EquipmentLoadout struct {
 	Class     string            `bson:"class"`
 	Equipment map[string]string `bson:"equipment"`
 	Hotbar    []string          `bson:"hotbar"`
+	Build     *LoadoutBuild     `bson:"build,omitempty"`
+}
+
+type LoadoutBuild struct {
+	Branch      string            `bson:"branch"`
+	TalentRanks map[string]int    `bson:"talent_ranks"`
+	SkillRunes  map[string]string `bson:"skill_runes"`
 }
 
 type CharacterWellRested struct {

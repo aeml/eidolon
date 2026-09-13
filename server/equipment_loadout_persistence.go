@@ -11,7 +11,11 @@ func databaseLoadouts(profiles []game.EquipmentLoadout) []database.EquipmentLoad
 	}
 	result := make([]database.EquipmentLoadout, 0, len(profiles))
 	for _, profile := range game.CloneEquipmentLoadouts(profiles) {
-		result = append(result, database.EquipmentLoadout{Name: profile.Name, Class: profile.Class, Equipment: profile.Equipment, Hotbar: profile.Hotbar})
+		entry := database.EquipmentLoadout{Name: profile.Name, Class: profile.Class, Equipment: profile.Equipment, Hotbar: profile.Hotbar}
+		if profile.Build != nil {
+			entry.Build = &database.LoadoutBuild{Branch: profile.Build.Branch, TalentRanks: profile.Build.TalentRanks, SkillRunes: profile.Build.SkillRunes}
+		}
+		result = append(result, entry)
 	}
 	return result
 }
@@ -22,7 +26,11 @@ func gameLoadouts(profiles []database.EquipmentLoadout) []game.EquipmentLoadout 
 	}
 	result := make([]game.EquipmentLoadout, 0, min(len(profiles), game.MaxEquipmentLoadouts))
 	for _, profile := range profiles[:min(len(profiles), game.MaxEquipmentLoadouts)] {
-		result = append(result, game.EquipmentLoadout{Name: profile.Name, Class: profile.Class, Equipment: profile.Equipment, Hotbar: profile.Hotbar})
+		entry := game.EquipmentLoadout{Name: profile.Name, Class: profile.Class, Equipment: profile.Equipment, Hotbar: profile.Hotbar}
+		if profile.Build != nil {
+			entry.Build = &game.LoadoutBuild{Branch: profile.Build.Branch, TalentRanks: profile.Build.TalentRanks, SkillRunes: profile.Build.SkillRunes}
+		}
+		result = append(result, entry)
 	}
 	return game.CloneEquipmentLoadouts(result)
 }

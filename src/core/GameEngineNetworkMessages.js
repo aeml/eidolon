@@ -10,6 +10,7 @@ import {
     decorateDungeonRoomState
 } from '../utils/dungeonRoomMetadata.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { applyLoadoutState } from './LoadoutState.js';
 
 class GameEngineNetworkMessageMethods {
     async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
@@ -429,10 +430,7 @@ class GameEngineNetworkMessageMethods {
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
         } else if (msg.type === 'loadout_result') {
             this.uiManager?.inventory?.loadouts?.handleResult(msg.payload);
-            if (msg.payload?.applied && Array.isArray(msg.payload.hotbar)) {
-                this.player.customHotbar = true;
-                msg.payload.hotbar.slice(0, 4).forEach((skill, index) => this.uiManager.assignSkillToSlot(index, skill || null));
-            }
+            applyLoadoutState(this, msg.payload);
             if (!msg.payload?.success && msg.payload?.message) this.uiManager?.addChatMessage?.('System', msg.payload.message);
         } else if (msg.type === 'equipment_result') {
             this.uiManager?.inventory?.handleEquipmentActionResult?.(msg.payload);

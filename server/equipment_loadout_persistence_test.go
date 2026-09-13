@@ -13,6 +13,8 @@ import (
 
 func TestLoadoutPersistenceRoundTripOwnsItsReferences(t *testing.T) {
 	p := &game.Entity{EquipmentLoadouts: []game.EquipmentLoadout{{Name: "Tank", Class: "Fighter", Equipment: map[string]string{"mainHand": "earned-sword"}, Hotbar: []string{"Charge", "", "", ""}}}}
+	p.EquipmentLoadouts[0].Build = &game.LoadoutBuild{Branch: "A", TalentRanks: map[string]int{"FTR_01": 1}, SkillRunes: map[string]string{"Charge": "charge_momentum"}}
+	p.SavedHotbar = []string{"", "Charge", "", ""}
 	snapshot := characterSnapshot("hero", p, time.Now())
 	bytes, err := bson.Marshal(snapshot)
 	if err != nil {
@@ -22,16 +24,54 @@ func TestLoadoutPersistenceRoundTripOwnsItsReferences(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded := gameLoadouts(snapshot.EquipmentLoadouts)
+	if !reflect.DeepEqual(snapshot.SavedHotbar, p.SavedHotbar) {
+		t.Fatal("saved skill bar lost")
+	}
 	if !reflect.DeepEqual(loaded, p.EquipmentLoadouts) {
 		t.Fatal("character save lost loadouts")
 	}
 	loaded[0].Equipment["mainHand"] = "mutated"
+	loaded[0].Build.TalentRanks["FTR_01"] = 9
+	if p.EquipmentLoadouts[0].Build.TalentRanks["FTR_01"] != 1 {
+		t.Fatal("build snapshot aliases live ranks")
+	}
 	snapshot.EquipmentLoadouts[0].Hotbar[0] = "mutated"
 	if p.EquipmentLoadouts[0].Equipment["mainHand"] != "earned-sword" || p.EquipmentLoadouts[0].Hotbar[0] != "Charge" {
 		t.Fatal("save aliases live preset")
 	}
 	if gameLoadouts(nil) != nil {
 		t.Fatal("legacy save invented presets")
+	}
+}
+
+func TestLoadoutInitialJoinAndResumePublishesSavedBar(t *testing.T) {
+	_, _ = setupCharacterJournalTest(t)
+	world = game.NewWorld(nil)
+	c := newLevelCommandClient()
+	p := newLevelCommandPlayer(c.playerID)
+	p.SubType, p.SelectedBranch = "Fighter", "A"
+	p.UnlockedSkills = []string{"Charge", "Whirlwind"}
+	p.SavedHotbar = []string{"", "Whirlwind", "", "Charge"}
+	world.AddEntity(p)
+	for i := 0; i < 2; i++ {
+		sendInitialPlayerState(c, p, "")
+		found := false
+		for _, message := range drainSentMessages(c.send) {
+			if message.Type != MsgLoadoutResult {
+				continue
+			}
+			var response loadoutResponse
+			if err := json.Unmarshal(message.Payload, &response); err != nil {
+				t.Fatal(err)
+			}
+			if !response.Restored || response.Build.Branch != "A" || !reflect.DeepEqual(response.Hotbar, p.SavedHotbar) {
+				t.Fatal("initial snapshot did not restore bar and build")
+			}
+			found = true
+		}
+		if !found {
+			t.Fatal("join/resume omitted loadout snapshot")
+		}
 	}
 }
 

@@ -16,6 +16,7 @@ type EquipmentLoadout struct {
 	Class     string            `json:"class" bson:"class"`
 	Equipment map[string]string `json:"equipment" bson:"equipment"`
 	Hotbar    []string          `json:"hotbar" bson:"hotbar"`
+	Build     *LoadoutBuild     `json:"build,omitempty" bson:"build,omitempty"`
 }
 
 func CloneEquipmentLoadouts(source []EquipmentLoadout) []EquipmentLoadout {
@@ -30,6 +31,7 @@ func CloneEquipmentLoadouts(source []EquipmentLoadout) []EquipmentLoadout {
 			result[i].Equipment[slot] = id
 		}
 		result[i].Hotbar = append([]string(nil), profile.Hotbar...)
+		result[i].Build = CloneLoadoutBuild(profile.Build)
 	}
 	return result
 }
@@ -94,6 +96,10 @@ func (w *World) SaveEquipmentLoadout(playerID string, index int, name string, ho
 	}
 	profile := EquipmentLoadout{Name: name, Class: player.SubType, Equipment: make(map[string]string), Hotbar: make([]string, 4)}
 	copy(profile.Hotbar, hotbar)
+	profile.Build = CaptureLoadoutBuild(player)
+	if _, err := w.stageLoadoutBuild(player, profile); err != nil {
+		return err
+	}
 	seen := make(map[string]bool)
 	for slot, item := range player.Equipment {
 		if item.ID == "" || !isEquipmentSlot(slot) {
@@ -111,10 +117,11 @@ func (w *World) SaveEquipmentLoadout(playerID string, index int, name string, ho
 	}
 	profiles[index] = profile
 	player.EquipmentLoadouts = profiles
+	player.SavedHotbar = append([]string(nil), profile.Hotbar...)
 	return nil
 }
 
-func (w *World) ApplyEquipmentLoadout(playerID string, index int) (EquipmentLoadout, error) {
+func (w *World) ApplyEquipmentLoadout(playerID string, index int, confirmedGold ...int) (EquipmentLoadout, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	player := w.Entities[playerID]
@@ -133,8 +140,19 @@ func (w *World) ApplyEquipmentLoadout(playerID string, index int) (EquipmentLoad
 	if profile.Class != player.SubType {
 		return EquipmentLoadout{}, errors.New("That loadout belongs to another class")
 	}
-	if err := w.validateLoadoutHotbar(player, profile.Hotbar); err != nil {
+	stagedBuild, err := w.stageLoadoutBuild(player, profile)
+	if err != nil {
 		return EquipmentLoadout{}, err
+	}
+	if err := w.validateLoadoutHotbar(stagedBuild, profile.Hotbar); err != nil {
+		return EquipmentLoadout{}, err
+	}
+	cost := LoadoutBuildCost(player, profile)
+	if cost > 0 && (len(confirmedGold) != 1 || confirmedGold[0] != cost) {
+		return EquipmentLoadout{}, errors.New("Review and confirm the current Gold cost for this build switch")
+	}
+	if player.Gold < cost {
+		return EquipmentLoadout{}, errors.New("Not enough Gold for this build switch")
 	}
 
 	selected := make(map[string]bool)
@@ -206,6 +224,16 @@ func (w *World) ApplyEquipmentLoadout(playerID string, index int) (EquipmentLoad
 	}
 	player.Inventory = inventory
 	player.Equipment = equipment
+	player.SelectedBranch = stagedBuild.SelectedBranch
+	player.UnlockedSkills = stagedBuild.UnlockedSkills
+	player.TalentRanks = stagedBuild.TalentRanks
+	player.SkillRunes = stagedBuild.SkillRunes
+	player.recomputeTalentPoints()
+	player.SavedHotbar = append([]string(nil), profile.Hotbar...)
+	player.Gold -= cost
+	if cost > 0 {
+		w.Economy.RecordSink("respec", cost)
+	}
 	player.EquipmentRevision++
 	player.RecalculateStats() // Clamps excess resources, never heals a deficit.
 	return CloneEquipmentLoadouts([]EquipmentLoadout{profile})[0], nil

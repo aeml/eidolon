@@ -126,6 +126,9 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 		c.sendSafe(b)
 	}
 
+	// Owner-only presets and skill bar on both login and resume.
+	c.sendLoadoutSnapshot(loadoutResponse{Action: MsgGetLoadouts, Success: true, Restored: true})
+
 	// Dungeon instance layout (reconnect / session-resume)
 	if instanceID != "" {
 		layout, hasLayout := world.GetInstanceLayout(instanceID)
