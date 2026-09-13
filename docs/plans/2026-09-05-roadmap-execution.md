@@ -17,7 +17,48 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, awaiting VIP currency direction
+## Current checkpoint — September 13, shared casino revision implemented locally
+
+Latest user direction names **EP — Eidolon Points** and explicitly requests a
+town-door dialogue → **Enter Casino** → one large SHARED two-storey casino zone.
+VIP stairs are guarded FOR NOW with **You must be a VIP to enter**. This overrides
+the prior immediate walk-upstairs interaction. EP acquisition/purchases remain
+undefined; do not invent them. That question no longer blocks this revised task.
+
+Active WT `/tmp/eidolon-1-10-resonant-age-20260913` clean **c7e62461** (localonly,
+not pushed). Implements permanent shared scene `lanternhold-casino`, door range/
+state validation,68×76hall, five independent Gold blackjack tables plus real
+poker and four elemental machines (36table seats+4machines), humanoidguard/native
+dialogue/server stair-height/jump gate, indoor map/radar and terrain isolation,
+safezonehealing, return/reconnect, old facade-save relocation and no dungeon
+timeout for this permanent scene. Preserves primary IDs/wallet receipts and
+owner-theme slot bonuses. No EP wallet or functioning upstairs wagers claimed.
+See new `docs/plans/2026-09-13-shared-casino-zone.md` and updated casino roadmap.
+
+Focused evidence: Go casino/seat/guard/legacyrestore testsPASS0.017s; account
+fences/saveprojection/cache isolationPASS0.010s. Actual disposableMongo multitable
+PASS0.219s:20/40Gold distinct rounds/replay-safe300→240, independent ticks/views.
+OwnedMongo STOPPED.4CasinoControllerJS PASS2.986s; changedJS lint/build/syntax/diff
+PASS.3browserfixtures PASS19.9s: seatedUI/phoneguard/309spatial samples0blocked.
+Connected2player realdoor/sharedvisibility/guard/leave initiallyPASS46.5s;
+visual inspection found town paving overlay, fixed. FinalPASS44.9s additionally
+includes actual guest reconnect and staticterrain restoration onexit. Newtest
+fixtures needed baseURL, camera-scaled walking steps and exactsecondaryQA allowlist;
+no gameplay assertions weakened. Phone and actualworld screenshots inspected.
+Not a performance/concurrency or fullcasino gameplay benchmark. Added active-tab
+focus for future runs; final screenshot had background throttling, not FPSproof.
+Allownedcasinozone0913testcontainers/data/images cleaned; no liveaccountsused.
+
+Publicmaster/live remain **e86e29a0 Alpha1.9.0**, exactCI34749377284 terminalSUCCESS;
+do not poll/restart it. This newfeature and prioraftermath/cadence are LOCAL, not
+deployed; runtime metadata remains1.9 pending full1.10 packaging. Latest explicit
+task implemented/committed; fullroadmap notcomplete. Remaining full1.10 acceptance
+and publication remain. Reconcile user's interimVIP gate with release scope;
+do not revive old currency blocker to stall this user-approved guarded delivery.
+Goal tool remains historicalblocked; no tool operation supports statusactive.
+ROOT LEDGER ONLY, NEVER PUSH ROOT. No subagents, no broadsoak started.
+
+## Previous checkpoint — September 13, awaiting VIP currency direction
 
 This goal turn = PROGRESS. One focused disposable Water route PASS withoutretry:
 33.6s test/38.4s Playwright, exact entry/eastward movement/reconnect/town recall/
