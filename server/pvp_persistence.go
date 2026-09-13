@@ -21,6 +21,7 @@ func arenaResultReceipt(result game.PvPMatchResult) database.PvPResultReceipt {
 			season = database.CurrentArenaSeason(p.UpdatedAt)
 		}
 		receipt.Profiles = append(receipt.Profiles, database.PvPProfile{PlayerID: p.PlayerID,
+			SeasonVictories: p.SeasonVictories, SeasonHistory: append([]arena.SeasonRecord(nil), p.SeasonHistory...),
 			LastResult: p.LastResult, RewardState: arena.CloneRewardState(p.RewardState),
 			Revision: p.Revision, LastMatchID: result.MatchID, Season: season, Rating: p.Rating, Wins: p.Wins,
 			Losses: p.Losses, Honor: p.Honor, SeasonPoints: p.SeasonPoints, UpdatedAt: p.UpdatedAt})

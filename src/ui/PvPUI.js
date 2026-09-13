@@ -69,6 +69,33 @@ export class PvPUI {
         stats.textContent = `Rating ${profile.rating ?? 1000} · ${profile.wins || 0}W / ${profile.losses || 0}L · ${profile.honor || 0} honor`;
         body.appendChild(stats);
 
+        const season = document.createElement('details');
+        season.className = 'pvp-card pvp-card--season';
+        const seasonTitle = document.createElement('summary');
+        seasonTitle.textContent = `${profile.season || 'Current season'} · ${profile.seasonVictories || 0} eligible ranked wins`;
+        const seasonRules = document.createElement('p');
+        seasonRules.textContent = 'Season-end medals: Bronze requires 10 eligible wins (250 Honor); Silver requires 25 wins and 1200 finishing rating (600 Honor); Gold requires 50 wins and 1500 rating (1200 Honor). Only the highest earned tier pays. Forfeits and repeated-opponent restricted matches do not qualify. Rewards settle once when you next open or join the arena after the UTC quarter ends; your rating resets to 1000 and earned Honor stays. Eligible-win tracking starts with Alpha 1.7; older W/L records are preserved but do not grant retroactive qualification.';
+        season.append(seasonTitle, seasonRules);
+        const projected = this.state.seasonReward;
+        if (projected) {
+            const preview = document.createElement('p');
+            const ends = new Date(projected.endsAt);
+            preview.textContent = `Current projection: ${projected.medal} · ${projected.honor} Honor (not awarded yet).${Number.isNaN(ends.getTime()) ? '' : ` Season ends ${ends.toISOString().slice(0, 10)} at 00:00 UTC.`}`;
+            season.appendChild(preview);
+        }
+        const history = Array.isArray(profile.seasonHistory) ? profile.seasonHistory : [];
+        for (const record of [...history].reverse()) {
+            const row = document.createElement('p');
+            row.textContent = `${record.season} · ${record.medal} · rating ${record.rating} · ${record.wins}W/${record.losses}L · ${record.eligibleWins} eligible wins · ${record.honorAwarded} Honor settled`;
+            season.appendChild(row);
+        }
+        if (!history.length) {
+            const empty = document.createElement('p');
+            empty.textContent = 'No completed seasons recorded yet.';
+            season.appendChild(empty);
+        }
+        body.appendChild(season);
+
         const result = profile.lastResult;
         if (!this.state.match && result?.matchId) {
             const card = document.createElement('section');

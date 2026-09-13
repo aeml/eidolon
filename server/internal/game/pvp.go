@@ -67,18 +67,20 @@ type PvPMatch struct {
 }
 
 type PvPProfile struct {
-	LastResult   arena.ResultSummary `json:"lastResult"`
-	RewardState  arena.RewardState   `json:"-"`
-	Revision     int64               `json:"revision"`
-	LastMatchID  string              `json:"lastMatchId"`
-	Season       string              `json:"season"`
-	PlayerID     string              `json:"playerId"`
-	Rating       int                 `json:"rating"`
-	Wins         int                 `json:"wins"`
-	Losses       int                 `json:"losses"`
-	Honor        int                 `json:"honor"`
-	SeasonPoints int                 `json:"seasonPoints"`
-	UpdatedAt    time.Time           `json:"updatedAt"`
+	SeasonVictories int                  `json:"seasonVictories"`
+	SeasonHistory   []arena.SeasonRecord `json:"seasonHistory,omitempty"`
+	LastResult      arena.ResultSummary  `json:"lastResult"`
+	RewardState     arena.RewardState    `json:"-"`
+	Revision        int64                `json:"revision"`
+	LastMatchID     string               `json:"lastMatchId"`
+	Season          string               `json:"season"`
+	PlayerID        string               `json:"playerId"`
+	Rating          int                  `json:"rating"`
+	Wins            int                  `json:"wins"`
+	Losses          int                  `json:"losses"`
+	Honor           int                  `json:"honor"`
+	SeasonPoints    int                  `json:"seasonPoints"`
+	UpdatedAt       time.Time            `json:"updatedAt"`
 }
 
 type PvPMatchResult struct {
@@ -743,6 +745,8 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 		profile = PvPProfile{PlayerID: playerID, Rating: 1000}
 	}
 	status["profile"] = clonePvPProfile(profile)
+	medal, honor := arena.SeasonPrize(profile.Rating, profile.SeasonVictories)
+	status["seasonReward"] = map[string]interface{}{"medal": medal, "honor": honor, "endsAt": arena.SeasonEnd(w.PvP.now())}
 	status["openWorldFlagged"] = w.PvP.OpenWorldFlag[playerID]
 	if playerSnapshot != nil {
 		status["inSafeZone"] = w.inSafeZone(playerSnapshot)

@@ -18,6 +18,38 @@ Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
 
 ## Implementation checkpoint — September 13, 03:43 UTC
 
+04:33 seasons batch: eligible ranked victories now track separately from W/L
+and old season points. Only unrestricted, non-forfeit ranked wins qualify. End-
+quarter medals: Bronze10wins/250Honor; Silver25wins+1200rating/600Honor;
+Gold50wins+1500rating/1200Honor. Highest tier only. Qualification begins1.7;
+old W/L is retained but not invented as eligible wins retroactively.
+
+On next arena open/entry after UTC quarter end, the DB archives actual prior
+season/rating/W/L/eligiblewins/medal/award/settledtime, adds the prize to retained
+Honor and resets rating1000/currentseason counters in ONE conditional revisioned
+profile write. Concurrent settlement conflicts reread the winning revision;
+old snapshots cannot overwrite the settled profile. History persists with all
+later match receipts. No separate wallet transfer or claim that could pay twice.
+Even unqualified seasons retain their actual record without a fabricated prize.
+
+Hydration avoids altering an active match's season/profile; before any rollover
+it drains pending result receipts so a still-journaled match's revision is not
+consumed by settlement. Existing profile-unavailable guards remain. UI separates
+projected/unawarded medal with UTC end date from permanently settled history.
+
+Focused tier/year-boundary PASS0.004s, real isolatedMongo concurrent8readers/
+singleaward/history/stalereplay/quietnextseason plus receipt replay PASS0.119s;
+game eligible/restricted/forfeit selection PASS0.010s; mainPvP/duel0.241s;
+UI9PASS0.777s; changedJS lint+build-trimpath-all PASS. DisposableMongo ran on
+rediscoveredloopback32915 and is now STOPPED, retained. No real earned season
+or full cross-feature matrix claimed. Remaining1.7: process-loss PvE resource
+save projection, round status/cooldown cleanup, then version/notes/package.
+
+1.6 originalCI34737205195 TERMINAL FAILURE, only old keyboard-test assertion.
+Correction34c1c0d84a52e90144ca1bc34f1c549e7c3c1218 PUSHED from clean1.6WT.
+ReplacementCI34738051311 confirmedIN_PROGRESS. Poll same run, then verify exact
+client/server identity+DBready after deployment. No1.6live claim yet.
+
 04:26 rated-results batch: replaced flat+25/-20 with team-mean K32 Elo (equal
 teams ±16, lower gains for beating weaker opponents, rating floor0). Eligible
 normal wins award50 Honor+3 season points. Losses and forfeits award no Honor or

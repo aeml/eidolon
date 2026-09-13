@@ -7,6 +7,17 @@ function createUI() {
 }
 
 describe('PvPUI', () => {
+    test('distinguishes projected seasonal prize from settled history', () => {
+        const ui = createUI();
+        ui.update({ profile: { season: '2026-Q4', seasonVictories: 12,
+            seasonHistory: [{ season: '2026-Q3', medal: 'Silver', rating: 1250, wins: 30, losses: 10, eligibleWins: 25, honorAwarded: 600 }] },
+            seasonReward: { medal: 'Bronze', honor: 250, endsAt: '2027-01-01T00:00:00Z' } });
+        const text = ui.window.querySelector('.pvp-card--season').textContent;
+        expect(text).toContain('2026-Q4 · 12 eligible ranked wins');
+        expect(text).toContain('Bronze · 250 Honor (not awarded yet)');
+        expect(text).toContain('2027-01-01 at 00:00 UTC');
+        expect(text).toContain('2026-Q3 · Silver · rating 1250 · 30W/10L · 25 eligible wins · 600 Honor settled');
+    });
     test('shows durable personal and team outcome with exact withheld rewards', () => {
         const ui = createUI();
         ui.update({ profile: { rating: 1016, lastResult: { matchId: 'finished', won: true, forfeit: true,

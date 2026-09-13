@@ -19,6 +19,7 @@ func arenaRatingChange(own, opponent int, won bool) int {
 }
 
 func clonePvPProfile(profile PvPProfile) PvPProfile {
+	profile.SeasonHistory = append([]arena.SeasonRecord(nil), profile.SeasonHistory...)
 	profile.RewardState = arena.CloneRewardState(profile.RewardState)
 	return profile
 }
@@ -93,6 +94,7 @@ func (system *PvPSystem) rankedArenaProfilesLocked(match *PvPMatch, forfeit bool
 			case forfeit:
 				summary.Reason = "Forfeit: rating reflects the result; neither team receives Honor or season points. Only the player who left receives a queue penalty."
 			case won:
+				profile.SeasonVictories++
 				summary.HonorAwarded, summary.SeasonAwarded = 50, 3
 				summary.Reason = "Ranked victory: rating reflects opposing team strength."
 			default:

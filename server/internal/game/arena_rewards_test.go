@@ -39,7 +39,7 @@ func TestArenaRepeatedOpponentRewardsSurviveHydrationAndResetAtUTCMidnight(t *te
 		finishRewardFixture(w, false)
 	}
 	before := w.PvP.Profiles["a"]
-	if before.Honor != 150 || before.SeasonPoints != 9 || before.LastResult.TeamScore != 2 || before.LastResult.OpponentScore != 1 {
+	if before.Honor != 150 || before.SeasonPoints != 9 || before.SeasonVictories != 3 || before.LastResult.TeamScore != 2 || before.LastResult.OpponentScore != 1 {
 		t.Fatal("victory rewards or team scores missing", before)
 	}
 	fresh, _ := arenaQueueFixture("a", "b", "c", "d")
@@ -49,7 +49,7 @@ func TestArenaRepeatedOpponentRewardsSurviveHydrationAndResetAtUTCMidnight(t *te
 	}
 	finishRewardFixture(fresh, false)
 	after := fresh.PvP.Profiles["a"]
-	if after.Rating != before.Rating || after.Honor != before.Honor || after.SeasonPoints != before.SeasonPoints || !strings.Contains(after.LastResult.Reason, "Repeated opponent") {
+	if after.Rating != before.Rating || after.Honor != before.Honor || after.SeasonPoints != before.SeasonPoints || after.SeasonVictories != 3 || !strings.Contains(after.LastResult.Reason, "Repeated opponent") {
 		t.Fatal("rehydration reset reward cap", after)
 	}
 	if fresh.PvP.Profiles["c"].Honor != 0 || fresh.PvP.Profiles["c"].SeasonPoints != 0 {
@@ -68,7 +68,7 @@ func TestArenaForfeitNeverPaysEitherTeamAndOnlyLeaverPenaltySurvivesHydration(t 
 	fresh, _ := arenaQueueFixture("a", "b", "c", "d")
 	fresh.PvP.now = func() time.Time { return *now }
 	for _, profile := range w.PvP.Profiles {
-		if profile.Honor != 0 || profile.SeasonPoints != 0 || !profile.LastResult.Forfeit {
+		if profile.Honor != 0 || profile.SeasonPoints != 0 || profile.SeasonVictories != 0 || !profile.LastResult.Forfeit {
 			t.Fatal("forfeit paid rewards or lacked explanation", profile)
 		}
 		fresh.SetPvPProfile(profile)

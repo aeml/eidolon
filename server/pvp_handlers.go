@@ -139,8 +139,17 @@ func handleMsgPvPFlag(client *Client, message Message) {
 func worldTime() time.Time { return time.Now().UTC() }
 
 func hydratePvPProfile(playerID string) error {
+	// Keep an admitted match's season/profile stable through settlement. A UI
+	// refresh at midnight must not roll the DB ahead of its pending result.
+	if world != nil && world.HasPvPMatch(playerID) {
+		return nil
+	}
 	if db == nil || playerID == "" {
 		return fmt.Errorf("arena profile service unavailable")
+	}
+	// A rollover must not consume the revision of a still-journaled match.
+	if err := retryPendingPvPResults(); err != nil {
+		return fmt.Errorf("arena results are still syncing; try again shortly")
 	}
 	profile, err := db.GetPvPProfile(playerID)
 	if err != nil || profile == nil {
@@ -150,6 +159,7 @@ func hydratePvPProfile(playerID string) error {
 		return fmt.Errorf("your last arena result is still syncing; try again shortly")
 	}
 	world.SetPvPProfile(game.PvPProfile{
+		SeasonVictories: profile.SeasonVictories, SeasonHistory: profile.SeasonHistory,
 		LastResult: profile.LastResult, RewardState: profile.RewardState,
 		Revision: profile.Revision, LastMatchID: profile.LastMatchID, Season: profile.Season,
 		PlayerID: profile.PlayerID, Rating: profile.Rating, Wins: profile.Wins, Losses: profile.Losses,

@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 	"time"
@@ -13,42 +14,31 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var ErrPvPRevisionConflict = errors.New("conflicting arena revision")
+
 type PvPProfile struct {
-	LastResult   arena.ResultSummary `bson:"last_result" json:"lastResult"`
-	RewardState  arena.RewardState   `bson:"reward_state" json:"rewardState"`
-	Revision     int64               `bson:"revision" json:"revision"`
-	LastMatchID  string              `bson:"last_match_id" json:"lastMatchId"`
-	PlayerID     string              `bson:"player_id" json:"playerId"`
-	Rating       int                 `bson:"rating" json:"rating"`
-	Wins         int                 `bson:"wins" json:"wins"`
-	Losses       int                 `bson:"losses" json:"losses"`
-	Honor        int                 `bson:"honor" json:"honor"`
-	SeasonPoints int                 `bson:"season_points" json:"seasonPoints"`
-	Season       string              `bson:"season" json:"season"`
-	UpdatedAt    time.Time           `bson:"updated_at" json:"updatedAt"`
+	SeasonVictories int                  `bson:"season_victories" json:"seasonVictories"`
+	SeasonHistory   []arena.SeasonRecord `bson:"season_history,omitempty" json:"seasonHistory,omitempty"`
+	LastResult      arena.ResultSummary  `bson:"last_result" json:"lastResult"`
+	RewardState     arena.RewardState    `bson:"reward_state" json:"rewardState"`
+	Revision        int64                `bson:"revision" json:"revision"`
+	LastMatchID     string               `bson:"last_match_id" json:"lastMatchId"`
+	PlayerID        string               `bson:"player_id" json:"playerId"`
+	Rating          int                  `bson:"rating" json:"rating"`
+	Wins            int                  `bson:"wins" json:"wins"`
+	Losses          int                  `bson:"losses" json:"losses"`
+	Honor           int                  `bson:"honor" json:"honor"`
+	SeasonPoints    int                  `bson:"season_points" json:"seasonPoints"`
+	Season          string               `bson:"season" json:"season"`
+	UpdatedAt       time.Time            `bson:"updated_at" json:"updatedAt"`
 }
 
 func CurrentArenaSeason(at time.Time) string {
-	quarter := (int(at.UTC().Month())-1)/3 + 1
-	return fmt.Sprintf("%d-Q%d", at.UTC().Year(), quarter)
+	return arena.CurrentSeason(at)
 }
 
 func (db *DB) GetPvPProfile(playerID string) (*PvPProfile, error) {
-	if db == nil || db.pvpProfiles == nil || playerID == "" {
-		return nil, fmt.Errorf("arena profile service unavailable")
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	var profile PvPProfile
-	err := db.pvpProfiles.FindOne(ctx, bson.M{"player_id": playerID}).Decode(&profile)
-	if err == mongo.ErrNoDocuments {
-		return &PvPProfile{PlayerID: playerID, Rating: 1000, Season: CurrentArenaSeason(time.Now()), UpdatedAt: time.Now().UTC()}, nil
-	}
-	if err == nil && profile.Season != CurrentArenaSeason(time.Now()) {
-		// Seasonal ladders reset competitive results when the quarter changes.
-		return &PvPProfile{PlayerID: playerID, Rating: 1000, Honor: profile.Honor, Revision: profile.Revision, LastMatchID: profile.LastMatchID, Season: CurrentArenaSeason(time.Now()), UpdatedAt: time.Now().UTC(), RewardState: profile.RewardState, LastResult: profile.LastResult}, nil
-	}
-	return &profile, err
+	return db.getPvPProfileAt(playerID, time.Now())
 }
 
 func (db *DB) SavePvPProfile(profile PvPProfile) error {
@@ -90,9 +80,12 @@ func (db *DB) SavePvPProfile(profile PvPProfile) error {
 		current.Rating == profile.Rating && current.Wins == profile.Wins && current.Losses == profile.Losses &&
 		current.Honor == profile.Honor && current.SeasonPoints == profile.SeasonPoints && current.Season == profile.Season &&
 		current.LastResult == profile.LastResult && reflect.DeepEqual(current.RewardState, profile.RewardState) {
+		if current.SeasonVictories != profile.SeasonVictories || !reflect.DeepEqual(current.SeasonHistory, profile.SeasonHistory) {
+			return fmt.Errorf("%w: season at %d", ErrPvPRevisionConflict, profile.Revision)
+		}
 		return nil
 	}
-	return fmt.Errorf("conflicting arena result at revision %d", profile.Revision)
+	return fmt.Errorf("%w: result at %d", ErrPvPRevisionConflict, profile.Revision)
 }
 
 func (db *DB) PvPLeaderboard(limit int) ([]PvPProfile, error) {
