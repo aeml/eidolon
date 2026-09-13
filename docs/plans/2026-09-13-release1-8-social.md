@@ -11,6 +11,14 @@ desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
 ## Packaging checkpoint — September 13
 
+Initial CI34744510043 failed its legacy AST dispatcher-coverage check: it counted
+only client_dispatch.go switch cases, not module handlers already dispatched by
+handleMessage. Group finder, guild events and casino correctly use the registry.
+The check now validates the union of real switch cases and non-nil registered
+handlers, requiring admission policies for both. No dead runtime cases or weakened
+admission were added. Focused dispatcher/registry checks passed; publish this
+test correction as1.8, not a new player-facing patch version.
+
 Synchronized Alpha1.8.0 across login, release manifest, package/lock metadata,
 server/container/compose/deploy/CI/isolated-QA defaults and current alpha display.
 Added a cumulative1.8 patch-note entry covering Groups, consent, guild calendar,
