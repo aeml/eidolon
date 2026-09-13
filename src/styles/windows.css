@@ -841,7 +841,7 @@
 #trading-house-screen input,
 #trading-house-screen select {
     background: var(--bg-input);
-    color: var(--color-text-white);
+    color: var(--color-white);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
     min-height: 32px;
@@ -858,8 +858,44 @@
     #trading-panel-bid .window-data-header { display: none; }
     .auction-browse-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: 10px; }
     .auction-browse-price::before { content: 'Bid / Buyout: '; color: var(--color-text-muted); }
-    .auction-browse-actions { justify-content: flex-end; }
+.auction-browse-actions { justify-content: flex-end; }
 }
+
+.trading-item-name, .trading-item-meta { display: none; }
+.trading-item-choice[aria-pressed="true"] { outline: 2px solid var(--color-gold); outline-offset: -2px; }
+#trading-selected-name { max-width: 240px; overflow-wrap: anywhere; text-align: center; }
+.auction-item-info { min-width: 0; overflow-wrap: anywhere; }
+.auction-item-details { margin-top: 6px; color: var(--color-text-muted); font-size: 14px; line-height: 1.5; }
+.auction-item-details summary { cursor: pointer; color: var(--color-white); }
+.mobile-mode #trading-house-screen :is(button, input, select, summary) { min-height: 44px; font-size: 16px !important; }
+.mobile-mode #trading-house-screen button { min-width: 44px; }
+.mobile-mode #trading-house-screen :is(p, label, .auction-browse-row, .auction-owned-row) { font-size: 16px !important; line-height: 1.45; }
+.mobile-mode #trading-house-screen :is(.window-header, .window-tabs, #trading-house-guidance) { flex-shrink: 0; }
+.mobile-mode #trading-house-screen .window-body { overflow-y: auto; min-height: 0; }
+.mobile-mode #trading-house-screen .window-panel { flex-shrink: 0; }
+.mobile-mode #trading-house-screen .window-data-header { display: none; }
+.mobile-mode #trading-panel-bid .window-action-row { flex-wrap: wrap; }
+.mobile-mode #trading-panel-bid :is(input, select) { min-width: 0; flex: 1 1 40%; width: 40%; }
+.mobile-mode #trading-house-screen :is(.auction-browse-row, .auction-owned-row) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 10px; padding: 12px !important;
+}
+.mobile-mode #trading-house-screen .auction-item-info { grid-column: 1 / -1; }
+.mobile-mode #trading-house-screen .auction-browse-actions { grid-column: 1 / -1; }
+.mobile-mode #trading-panel-list .window-split-row { flex-direction: column; gap: 12px; }
+.mobile-mode #trading-panel-list .window-form-column { min-width: 0; }
+.mobile-mode #trading-panel-list .window-form-row { gap: 10px; }
+.mobile-mode #trading-panel-list .window-form-row :is(input, select) { flex: 0 1 140px; min-width: 0; }
+.mobile-mode #trading-inventory-list { grid-template-columns: minmax(0, 1fr) !important; max-height: 36dvh; padding: 3px; }
+.mobile-mode #trading-inventory-list .trading-item-empty { display: none; }
+.mobile-mode #trading-inventory-list .trading-item-choice {
+    display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+    width: 100% !important; height: auto !important; min-height: 72px; aspect-ratio: auto;
+    padding: 10px 10px 10px 68px; text-align: left; gap: 4px;
+    background-size: 48px 48px !important; background-position: 10px center !important;
+}
+.mobile-mode #trading-house-screen .trading-item-name { display: block; font-size: 16px; color: var(--color-white); overflow-wrap: anywhere; }
+.mobile-mode #trading-house-screen .trading-item-meta { display: block; font-size: 14px; color: var(--color-text-muted); overflow-wrap: anywhere; }
 
 /* ---- Service / Quest Windows ---- */
 #shop-screen,

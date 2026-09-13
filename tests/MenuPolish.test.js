@@ -1057,7 +1057,7 @@ describe('menu polish regressions', () => {
         expect(browseRow.textContent).toContain('Stormblade');
         expect(browseRow.textContent).toContain('Alice');
         expect(browseRow.textContent).toContain('45m left');
-        expect(browseRow.querySelector('span').title).toContain('High bid: Rob');
+        expect(browseRow.querySelector('.auction-item-info').title).toContain('High bid: Rob');
 
         ui.renderMyAuctions([
             {

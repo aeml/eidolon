@@ -73,6 +73,24 @@ export class TradingUI {
         element?.replaceChildren();
     }
 
+    itemLabel(item) {
+        return [item.rarity, item.slot, item.level && `Level ${item.level}`,
+            item.potency > 0 && `Potency +${item.potency}`, `Quantity ${item.stack || 1}`].filter(Boolean).join(' · ');
+    }
+
+    appendItemDetails(container, item) {
+        const details = document.createElement('details');
+        details.className = 'auction-item-details';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Item details';
+        details.append(summary);
+        const lines = [this.itemLabel(item), item.description,
+            ...Object.entries(item.stats || {}).map(([stat, value]) => `${stat}: ${value}`),
+            item.sockets > 0 && `Sockets: ${(item.gems || []).filter(Boolean).length} / ${item.sockets}`];
+        for (const text of lines.filter(Boolean)) details.append(this.createMessage(text));
+        container.append(details);
+    }
+
     createMessage(text, styles = {}) {
         const message = document.createElement('div');
         Object.assign(message.style, styles);
@@ -249,6 +267,9 @@ export class TradingUI {
         this.tradingSellSlot.replaceChildren(addIcon);
         this.tradingSellSlot.style.backgroundImage = 'none';
         this.tradingSellSlot.style.border = '';
+        const caption = document.getElementById('trading-selected-name');
+        if (caption) caption.textContent = 'Choose an item below';
+        this.tradingInventoryList?.querySelectorAll('[aria-pressed]').forEach(row => row.setAttribute('aria-pressed', 'false'));
     }
 
     validateSelection(player) {
@@ -274,12 +295,21 @@ export class TradingUI {
         this.tradingInventoryList.innerHTML = '';
 
         player.inventory.forEach((item, index) => {
-            const el = document.createElement('div');
-            el.className = 'inv-slot';
+            const el = document.createElement(item?.id ? 'button' : 'div');
+            el.className = item?.id ? 'inv-slot trading-item-choice' : 'inv-slot trading-item-empty';
             el.style.width = '40px';
             el.style.height = '40px';
 
             if (item && item.id) {
+                el.type = 'button';
+                el.dataset.itemId = item.id;
+                el.setAttribute('aria-pressed', String(this.selectedTradingItem?.id === item.id));
+                el.setAttribute('aria-label', `${item.name} · ${this.itemLabel(item)}`);
+                const label = this.createMessage(item.name, {});
+                label.className = 'trading-item-name';
+                const meta = this.createMessage(this.itemLabel(item));
+                meta.className = 'trading-item-meta';
+                el.append(label, meta);
                 const iconPath = this.ctx.getItemIconPath(item);
                 el.style.backgroundImage = `url('${iconPath}')`;
                 el.style.backgroundSize = 'contain';
@@ -305,6 +335,10 @@ export class TradingUI {
 
     selectItem(item, slotIndex) {
         this.selectedTradingItem = { ...item, slot: slotIndex };
+        this.tradingInventoryList?.querySelectorAll('[aria-pressed]').forEach(row =>
+            row.setAttribute('aria-pressed', String(row.dataset.itemId === item.id)));
+        const caption = document.getElementById('trading-selected-name');
+        if (caption) caption.textContent = `${item.name} · Quantity ${item.stack || 1}`;
 
         const iconPath = this.ctx.getItemIconPath(item);
         this.tradingSellSlot.innerHTML = '';
@@ -347,8 +381,10 @@ export class TradingUI {
             row.style.fontSize = '12px';
 
             // Item Name (with color)
-            const nameSpan = document.createElement('span');
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'auction-item-info';
             nameSpan.textContent = auction.item.name;
+            this.appendItemDetails(nameSpan, auction.item);
             nameSpan.style.color = this.ctx.getRarityColor(auction.item.rarity);
             nameSpan.style.cursor = 'pointer';
             nameSpan.onmouseenter = (e) => {
@@ -433,6 +469,7 @@ export class TradingUI {
 
         auctions.forEach(auction => {
             const row = document.createElement('div');
+            row.className = 'auction-owned-row';
             row.style.display = 'grid';
             row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
             row.style.padding = '5px';
@@ -441,8 +478,10 @@ export class TradingUI {
             row.style.fontSize = '12px';
 
             // Item Name
-            const nameSpan = document.createElement('span');
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'auction-item-info';
             nameSpan.textContent = auction.item.name;
+            this.appendItemDetails(nameSpan, auction.item);
             nameSpan.style.color = this.ctx.getRarityColor(auction.item.rarity);
             row.appendChild(nameSpan);
 
