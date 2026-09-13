@@ -17,7 +17,31 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 05:58 UTC
+## Current checkpoint — September 13, 06:17 UTC
+
+Actual two-socket casino seat/resume/restart check PASS1.806s on1.8 binary92380189.
+It verifies occupied-seat rejection, private-session ownership/nonleakage,
+shared presence, disconnect reservation/readiness reset, real token resume,
+canonical exit persistence and unchanged Gold after restart. Not a played game.
+Owned disposable Mongo eidolon-isolated-qa-mongo-arena171309 was stopped afterward.
+Logs: /tmp/eidolon-compat-session-{511798144,4145311672}/server.log.
+
+This check exposed a REAL1.7 restart blocker: CharacterSaveJournal rejected the
+arena-results directory created by PvPResultJournal. Cancelled original1.7
+CI34741198072 BEFORE deployment (terminal cancelled), not for slowness. Fix
+e84f6219253b6f936ac66da81684b1dd0a1bb286 delegates only the known real directory;
+files/symlinks/unknown directories and corrupt arena receipts still fail closed.
+Focused journals PASS0.158s; actual restart passes after1.8 merge92380189.
+Corrected1.7 e84f6219 PUSHED from /tmp/eidolon-1-7-arena-20260913; replacement
+CI34742314831 running. Monitor that exact run, then verify both public identities
+and database ready before advancing publication.1.6cf2a028d remains last verified
+live and its CI34739522914 is fully successful. NEVER PUSH ROOT ledger worktree.
+
+Continue1.8 shared table preparation/session integration, then version/notes and
+ordered publication. Full casino games/wagers/two-floor content still later;
+VIP currency remains undecided. No soak or broad test matrix started.
+
+## Previous checkpoint — September 13, 05:58 UTC
 
 Progress:1.8 physical casino client batch COMMITTED41dbef56 in
 `/tmp/eidolon-1-8-social-20260913` (clean; runtime remains1.7). No1.8 push/package.
