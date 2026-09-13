@@ -2,6 +2,7 @@ import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_T
 import { MobileItemDetails } from './MobileItemDetails.js';
 import { PhoneStashUI } from './PhoneStashUI.js';
 import { EquipmentLoadoutUI } from './EquipmentLoadoutUI.js';
+import { renderEquipmentComparison } from './EquipmentComparison.js';
 import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 /**
@@ -1399,7 +1400,8 @@ export class InventoryUI {
         this.compareTooltip.style.display = 'none';
 
         if (this.compareMode && player) {
-            const equippedItem = player.equipment[item.slot];
+            const comparison = this._getComparisonTarget(player, item);
+            const equippedItem = comparison?.equippedItem;
 
             if (equippedItem && equippedItem !== item) {
                 const compareGemQuality = this._isGemItem(equippedItem) ? this._getGemQualityInfo(equippedItem) : null;
@@ -1440,6 +1442,9 @@ export class InventoryUI {
                 }
 
                 this.compareTooltipDesc.innerHTML = compDesc;
+                const changes = document.createElement('div');
+                renderEquipmentComparison(changes, item, comparison, player, stat => this._formatStatName(stat), SET_DEFINITIONS);
+                this.compareTooltipDesc.prepend(changes);
                 this.compareTooltip.style.display = 'block';
 
                 const mainRect = this.statTooltip.getBoundingClientRect();

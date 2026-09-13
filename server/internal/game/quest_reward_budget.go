@@ -55,7 +55,9 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 	if level, found := dailyHuntContentLevels[target]; found {
 		// Two percent of a level per objective: a 20% bonus before individual
 		// kill rounding. Daily hunts remain optional hundred-kill tasks.
-		return questRewardBudget{contentExperiencePercent(level, 2*count), max(100, level*count/10)}
+		// New contracts add roughly a 20% Gold bonus to the leaner ordinary
+		// kill purse. Accepted contracts retain their already-displayed quote.
+		return questRewardBudget{contentExperiencePercent(level, 2*count), max(100, level*count/5)}
 	}
 	level, multiplier := 0, 1
 	switch target {

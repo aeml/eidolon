@@ -22,7 +22,32 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
   a separate future VIP currency. Do not name or permanently define that currency.
 - Package, publish and verify1.5 with patch notes and a synchronized login version.
 
-## Implementation checkpoint — September 13, 02:42 UTC
+## Packaging checkpoint — September 13, 02:56 UTC
+
+The remaining1.5 implementation is now complete locally. Forge decisions show a
+current/+1/bulk stat table, exact gain and material balance, using the existing
+server-matched scaling. Potency uses the same readable preview. Comparisons include
+socket stats and flag lost/gained set thresholds and special effects, without a
+made-up DPS score. Desktop ring/trinket comparison now uses the actual replacement
+slot selection. The existing live-refresh path still updates the new table.
+
+Ordinary kill Gold is now10..(2×level+9); elites double that range and bosses keep
+the prior10..(10×level+9). New hunt contract Gold doubles; accepted quotes and earned
+balances remain unchanged. Weekly/story/boss/room and Resonance budgets were
+reviewed against sinks and retained; see the concrete purchasing-power arithmetic
+and casino settlement/currency handoff in
+[the economy boundary](2026-09-13-economy-casino-boundary.md). No speculative wallet
+framework or premature premium-currency definition was introduced.
+
+Focused Gold/quest-quote/weekly economy checks PASS. Forge live refresh and mobile
+inventory checks PASS; a missing plain-language potency explanation was restored,
+then Forge/decision tests PASS. Changed JS lint/diff PASS. Actual phone comparison
+and Forge table inspected in `/tmp/eidolon-1-5-{comparison,forge-decision}-phone.png`.
+The preview's broken item icon is from its placeholder icon URL, not a changed
+production icon resolver. No broad suite/soak. Next: notes/version packaging,
+publish the completed milestone and verify the live commit/version/health.
+
+### Previous detail — September 13, 02:42 UTC
 
 Earned wardrobe collection and appearance selection are now implemented locally.
 An explicit Learn owned looks action captures supported base styles/rarity colours

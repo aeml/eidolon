@@ -1,4 +1,5 @@
 import { SET_DEFINITIONS, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
+import { renderEquipmentComparison } from './EquipmentComparison.js';
 
 // A touch-first detail route. Item identity is revalidated at every action;
 // acknowledgements and inventory mutations remain owned by the game/server.
@@ -144,6 +145,7 @@ export class MobileItemDetails {
                 const heading = document.createElement('h3');
                 heading.textContent = `${comparison.slotLabel}: ${comparison.equippedItem?.name || 'Empty'}`;
                 section.append(heading);
+                renderEquipmentComparison(section, item, comparison, player, stat => ui._formatStatName(stat), SET_DEFINITIONS);
                 if (comparison.equippedItem) { const contents = document.createElement('div'); section.append(contents); this.describe(contents, comparison.equippedItem); }
                 section.scrollIntoView?.({ block: 'start' });
             }

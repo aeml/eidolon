@@ -1,0 +1,12 @@
+.equipment-change-summary { padding: 10px 0; line-height: 1.5; border-bottom: 1px solid #485369; }
+.equipment-change-summary ul { margin: 8px 0; padding-left: 22px; }
+.equipment-change-summary p { margin: 8px 0; color: #c6d1df; }
+.item-gain { color: #83dfab; }
+.item-loss { color: #ffaaaa; }
+.forge-decision { overflow-x: auto; margin: 12px 0; }
+.forge-decision table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.forge-decision caption { text-align: left; color: #e6c783; font-weight: bold; padding-bottom: 8px; }
+.forge-decision :is(th, td) { text-align: left; padding: 8px 5px; border-bottom: 1px solid #394455; }
+.forge-decision th { font-weight: normal; color: #cbd7e5; }
+.forge-decision p { color: #aebfd2; line-height: 1.5; }
+.mobile-mode .forge-decision table { font-size: 16px; min-width: 280px; }

@@ -89,7 +89,8 @@ describe('open forge authoritative refresh', () => {
         expect(forge.isOpen).toBe(true);
         expect(forge.selectedForgeSlot).toBe('mainHand');
         expect(document.querySelector('.level-indicator').textContent).toBe('Lvl 40');
-        expect(document.getElementById('forge-upgrade-stats').textContent).toContain('damage: 45');
+        const row = [...document.querySelectorAll('#forge-upgrade-stats tbody tr')].find(row => row.querySelector('th')?.textContent === 'damage');
+        expect(row.querySelector('td').textContent).toBe('45');
         expect(document.getElementById('forge-potency-cost-value').textContent).toBe('2');
         expect(document.getElementById('btn-forge-upgrade-1').disabled).toBe(true);
         expect(document.getElementById('btn-forge-potency').disabled).toBe(false);

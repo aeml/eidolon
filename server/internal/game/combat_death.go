@@ -190,12 +190,6 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 			}
 			_, _, lootMult, xpMult := DifficultyMultipliers(instanceDifficulty)
 
-			// Gold
-			baseGold := 0
-			if tLevel > 0 {
-				baseGold = rand.Intn(tLevel*10) + 10
-			}
-
 			// Boss Check
 			isBoss := false
 			weeklyRaidBoss := tSubType == "UmbraPrime"
@@ -243,6 +237,11 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 			// Loot
 			// Check if Elite
 			isElite := strings.HasPrefix(tID, "elite-")
+			minimumGold, maximumGold := combatGoldBounds(tLevel, isBoss, isElite)
+			baseGold := 0
+			if maximumGold > 0 {
+				baseGold = minimumGold + rand.Intn(maximumGold-minimumGold+1)
+			}
 			baseXpReward := combatExperienceBudget(tLevel, runLevel, isBoss, isElite)
 
 			// 1. Mixed-pool candidates. Equipment is bounded separately below;

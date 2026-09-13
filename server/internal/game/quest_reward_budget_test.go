@@ -27,7 +27,7 @@ func TestCoordinatedQuestBudgetsUseContentLevelAndIndependentGold(t *testing.T) 
 		target          string
 		count, xp, gold int
 	}{
-		{"Skeleton", 100, 4250, 100}, {"Imp", 100, 18250, 200}, {"AquaGolem", 100, 146000, 550},
+		{"Skeleton", 100, 4250, 200}, {"Imp", 100, 18250, 400}, {"AquaGolem", 100, 146000, 1100},
 		{"VerdantBastionBoss", 4, 3380, 480}, {"AbyssalWellBoss", 5, 17425, 1200},
 		{"MoltenCoreBoss", 5, 23825, 1400}, {"TempestSpireBoss", 5, 23825, 1400},
 		{"DungeonBossHeroic", 4, 78440, 3200}, {"DungeonBossMythic", 4, 156880, 6400},

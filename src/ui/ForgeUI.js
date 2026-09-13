@@ -1,5 +1,6 @@
 import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
-import { forgePreview, forgeUpgradeCost } from '../core/ForgeProgression.js';
+import { forgeUpgradeCost } from '../core/ForgeProgression.js';
+import { renderForgeDecision } from './ForgeDecisionPreview.js';
 
 /**
  * Forge UI module — handles upgrade, potency, socket, and gem sub-systems.
@@ -486,24 +487,11 @@ export class ForgeUI {
         }
 
         if (this.forgeUpgradeStats) {
-            let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
-            statsHtml += '<details class="forge-preview-help"><summary>How upgrade gains work</summary><div style="color: #8fb7d9; margin-bottom: 6px;">Upgrade is the cheapest forge step. Spend Shards first while a piece is still proving it deserves later Heart and socket investment.</div>';
-            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Small stat gains carry forward to later upgrades. Buying levels separately or together gives the same result.</div>';
-            statsHtml += '</details>';
-            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel1} / ${targetLevel10}</span></div>`;
-            if (item.stats) {
-                const preview1 = forgePreview(item, targetLevel1);
-                const preview10 = forgePreview(item, targetLevel10);
-                for (const [stat, value] of Object.entries(item.stats)) {
-                    const nextValue1 = preview1.stats[stat];
-                    const nextValue10 = preview10.stats[stat];
-                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue1} / ${nextValue10}</span></div>`;
-                }
-            }
-            statsHtml += `<div style="color: ${hasEnoughShards1 ? '#00ff88' : '#ff6666'}; margin-top: 8px;">Shards Available: ${availableShards} / ${cost1} for +1</div>`;
-            statsHtml += `<div style="color: ${hasEnoughShards10 ? '#00ff88' : '#ffdd66'};">Shards Available: ${availableShards} / ${cost10} for +${actualLevelGain10}</div>`;
-            statsHtml += '</div>';
-            this.forgeUpgradeStats.innerHTML = statsHtml;
+            this.forgeUpgradeStats.replaceChildren();
+            renderForgeDecision(this.forgeUpgradeStats, item, [
+                { label: `Lv ${targetLevel1}`, level: targetLevel1, cost: cost1 },
+                { label: `Lv ${targetLevel10}`, level: targetLevel10, cost: cost10 }
+            ], stat => this.ctx.formatStatName?.(stat) || stat, 'Shards', availableShards);
         }
     }
 
@@ -634,20 +622,10 @@ export class ForgeUI {
         }
 
         if (this.forgePotencyStats) {
-            let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
-            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Potency permanently boosts this item. Hearts are the fuel for each rank.</div>';
-            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Potency: +${currentPotency} <span style="color: #0f0;">-> +${currentPotency + 1}</span></div>`;
-            if (item.stats) {
-                const preview = forgePreview(item, item.level, currentPotency + 1);
-                for (const [stat, value] of Object.entries(item.stats)) {
-                    const nextValue = preview.stats[stat];
-                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
-                }
-            }
-            const resourceColor = hasEnoughHearts ? '#00ff88' : '#ff6666';
-            statsHtml += `<div style="color: ${resourceColor}; margin-top: 8px;">Hearts Available: ${availableHearts} / ${cost}</div>`;
-            statsHtml += '</div>';
-            this.forgePotencyStats.innerHTML = statsHtml;
+            this.forgePotencyStats.replaceChildren();
+            renderForgeDecision(this.forgePotencyStats, item,
+                [{ label: `Potency +${currentPotency + 1}`, potency: currentPotency + 1, cost }],
+                stat => this.ctx.formatStatName?.(stat) || stat, 'Hearts', availableHearts);
         }
     }
 
