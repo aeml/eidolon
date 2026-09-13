@@ -4,9 +4,22 @@ Follow-up to deployed Alpha1.9.3 (`03373b0f`). User requested a stable multiplay
 table UI, smoothly ticking timers and automatically recurring betting windows,
 then reported the casino roof, missing door hover cue and obstructive stash.
 Packaged as Alpha1.9.4 at the user's push/deploy request, with aligned login,
-runtime defaults and cumulative patch notes. Deployment verification pending.
+runtime defaults and cumulative patch notes. **Verified live September13 23:29UTC**:
+exact commit **7b370f2576153d9beac37d3e65735c51d990ec7e** on both public domains,
+backend/database ready; origin/master matches. Login, runtime release query,
+patch notes and served table/clock, roof, door and stash modules verified.
 
-## Next release patch notes
+## Deployment evidence
+
+Exact CI **34788160140 TERMINAL SUCCESS** across all release jobs, no rerun.
+Predeploy4PASS1.2m; live gameplay8PASS5.9m; town recovery/Well Rested2PASS1.2m;
+two-player aura/phone check1PASS35.3s. No reported flaky result. Both frontend and
+backend deployed this exact SHA. Version packaging252PASS; existing focused
+feature evidence below reused without another broad local suite or soak.
+Do not repoll/restart this completed workflow or push a documentation-only release.
+This ships the table/town fixes, not the unfinished EP or full1.10 milestone.
+
+## Shipped Alpha1.9.4 patch notes
 
 - Blackjack and Hold’em retain one six-seat felt, dealer and physical seat layout
   through betting, playing, saved results and the next hand. Unfunded seated
@@ -38,7 +51,7 @@ runtime defaults and cumulative patch notes. Deployment verification pending.
   House and away from the casino approach. Server spawn, local fallback/recovery
   and town/minimap wayfinding agree. Collision follows the moved coffer.
 
-## Evidence and scope
+## Prior focused local evidence and scope
 
 - Initial focused client63PASS/eight suites for cards, controller, town collision,
   maps and raycast priority. Expanded geometry/controller coverage47PASS/five

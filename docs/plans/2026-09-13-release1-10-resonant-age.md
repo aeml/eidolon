@@ -1,15 +1,19 @@
 # 1.10 — The Resonant Age
 
-## Pending interim release — Alpha 1.9.4
+## Latest interim release — Alpha 1.9.4 verified live
 
 After1.9.3, user requested stable seated multiplayer card layouts and continuous
 clocks, plus casino roof/door/stash fixes. Implemented with focused client/server,
 disposable currency-persistence and desktop/phone visual checks. User now requested
-push/deploy; packaged as1.9.4, deployment verification pending. See
+push/deploy; **verified live September13 23:29UTC**, exact commit
+**7b370f2576153d9beac37d3e65735c51d990ec7e** on both public domains with database
+ready. CI34788160140 TERMINAL SUCCESS, no rerun: predeploy4PASS1.2m; live gameplay
+8PASS5.9m; recovery2PASS1.2m; two-player aura1PASS35.3s. Do not repeat the completed
+workflow. See
 [release notes and evidence](2026-09-13-persistent-card-tables-and-town-entrance.md).
-Live remains03373b0f/Alpha1.9.3. EP and full1.10 completion remain follow-on work.
+EP and full1.10 completion remain follow-on work. Earlier statuses are historical.
 
-## Latest interim release — Alpha 1.9.3 verified live
+## Previous interim release — Alpha 1.9.3 verified live
 
 User requested pushing the completed casino hand feedback, win/bonus celebrations
 and 100,000 Gold limits live. Packaged with aligned version defaults and cumulative
