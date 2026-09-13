@@ -1,9 +1,10 @@
-# Persistent card tables and town entrance — local, unreleased
+# Persistent card tables and town entrance — Alpha 1.9.4
 
 Follow-up to deployed Alpha1.9.3 (`03373b0f`). User requested a stable multiplayer
 table UI, smoothly ticking timers and automatically recurring betting windows,
 then reported the casino roof, missing door hover cue and obstructive stash.
-Implemented locally; no version bump, push or deployment in this batch.
+Packaged as Alpha1.9.4 at the user's push/deploy request, with aligned login,
+runtime defaults and cumulative patch notes. Deployment verification pending.
 
 ## Next release patch notes
 
