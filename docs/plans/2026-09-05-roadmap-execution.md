@@ -17,7 +17,48 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 04:52 UTC
+## Current checkpoint — September 13, 05:12 UTC
+
+PROGRESS:1.8 recruitmentboard committed31417aa4, then mergedupdated1.7;
+cleanHEAD4e34f200 in `/tmp/eidolon-1-8-social-20260913`. Runtime remains1.7.
+NewGroups tab: Looking/Recruits, canonicalactivity/minlevels, offered/neededrole,
+160charplainnote, onepostperplayer/20min/250global. Liveownerleader/capacity,
+online/busy/full/grouped-looking invalidation. Requests5min/20cap, owner-only
+applicantdetails, callerpendingstate, cancel/decline/explicitnormalinvitation.
+Noautojoinorimpersonatedleaderactions. Block/ignorefiltering, char-onlybounded
+protocol+ratelimit. PvPinvitations/requestslistingscan'tchangealliancesmidmatch.
+UIactivityfilter, editor disclosure,15srefreshonlyvisibleGroups,44pxcontrols,
+wrappingSocialtabs/cardcontent; session-localboardnotdurableguildevents.
+
+Focusedgameboard/invitePASS0.046s; finalPvPparty-alliancegate+boardPASS0.020s;
+mainownership/privateapplicants/blocks+invitePASS1.003s; JS48(3suites)PASS7.656s;
+JSlint/gobuild-trimpath-all/diffPASS. TargetedSystemChromeGroups390/320phonewidth
+UI/action/layout PASS12.2s. New tests/e2e/group-finder.spec.js availablefortargeted
+runs (notaddedtoeveryversionanonymousmatrix). prepareclientPASS. Aninitialwrong
+SocialUI.test.jsfilenamefoundno tests; correctSocialUIFriends suitepassedabove.
+Noactive localtool sessions. New1.8plan documents feature andevidence.
+
+IMPORTANTreleasequeue:1.6 34c1c0d84a52e90144ca1bc34f1c549e7c3c1218 WASverified
+atBOTHliveendpointswithAlpha1.6.0/databaseREADY. But finalCI34738051311 TERMINAL
+FAILED: regional/ Verdant liveQA resethelpersclickResetwithoutconfirmingnewdesktop
+dialog (6otherlivecharacterchecksPASS). Scopedcorrectioncf2a028d02f26f81b7f30f191da47761aec6fbdc
+COMMITTED/PUSHED fromclean1.6WT: desktopusesphone-equivalentconfirm/cancelIDs;
+regional/common/partyroutesexplicitlyclickconfirm. 5focusedpreparation/resetchecks
+PASS1.614s; noassertionsweakened. ReplacementCI34739522914 confirmedRUNNING.
+Poll SAMErun, thenverifyEXACTcf2a028dclient/server+DBready andterminalfinalQA.
+Do NOTrestartoldfailedruns. No cf2a028d liveverificationyet.
+
+1.7candidate hasmergedthisfix: clean/frozenHEAD5fd16d75 in1.7WT, stillAlpha1.7.0
+with8notes. NOTPUSHED; after1.6finalsuccesspush1.7fromitsWTthenverify. 1.8already
+mergedupdated1.7HEAD. Lastverifiedpublic1.6at34c1c0d8 isnot afinal-green release.
+
+NEXT1.8: persistentguildevent scheduling, readiness/moderation improvements,
+authoritativephysicalcasino seats/tablepresence/session/reconnect/camera-input
+foundations. Existingguild DB/handlers/UIneedinspectionbeforeimplementation.
+Casino fullgames/location1.9, finalVIPseparateuser-definedcurrency+integration1.10;
+fullscopeunchanged. Goalactive; NEVER PUSH ROOT (ledger-onlymaster).
+
+## Previous checkpoint — September 13, 04:52 UTC
 
 PROGRESS: new1.8WT `/tmp/eidolon-1-8-social-20260913`, branch
 work/1-8-social-20260913 fromfrozen1.7f3adf398. CurrentcleanHEADc6f07213.
