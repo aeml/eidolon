@@ -344,7 +344,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.6.0</span>
+                <span class="start-version-row__label">Alpha 1.7.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -677,6 +677,19 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.7.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.7.0 (the proving grounds)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Real practice and ranked teams:</strong> Choose separate practice or ranked 1v1 and two-player-party 2v2 queues. Eliminate the whole opposing team to win a round; arenas are first to two. Practice never changes ranked records or grants rewards. No fabricated opponents fill a queue.</li>
+                        <li><strong>Fairer matching:</strong> Ranked teams seek nearby average ratings, starting within 100 and widening by 50 every thirty seconds, up to 500. Both teams must allow the gap. Queue status shows elapsed time and the actual search window; invalid or changed parties cannot quietly enter, and cancelling either teammate removes the queued team.</li>
+                        <li><strong>Builds remain yours:</strong> Level, class, equipment and talents still matter. Existing player damage is 65% with a 35%-maximum-health single-hit cap, not hidden stat normalization. Duels recheck nearby living players and reject shared-party opponents or players already in an arena queue.</li>
+                        <li><strong>Results with reasons:</strong> Team-strength Elo replaces flat rating changes. See your team's score, victory or defeat, exact rating change, Honor and season points, plus any reason rewards were withheld. A tied timeout cancels without selecting an arbitrary winner.</li>
+                        <li><strong>Rewards for real competition:</strong> Eligible ranked wins award 50 Honor and three season points; losses and forfeits award neither. Only the first three meetings with each opposing player per UTC day change rating or pay rewards, even after team swaps or reconnects. Later matches still record wins and losses. A ranked leaver receives a five-minute queue penalty; their innocent teammate does not.</li>
+                        <li><strong>Seasons remembered:</strong> Eligible-win tracking begins in 1.7. At quarter end, earn Bronze for ten wins (250 Honor), Silver for twenty-five wins and 1200 rating (600), or Gold for fifty wins and 1500 rating (1200). Only the highest tier pays. Opening or joining the arena settles the completed season once, preserves its record and your Honor, and resets rating to 1000. The panel separates projected medals from settled history.</li>
+                        <li><strong>Fresh rounds, safe returns:</strong> Rounds begin with fresh combat effects, cooldowns, health and mana. Lingering shields, damage-over-time, summons and projectiles do not carry between rounds or back into the world. Leaving restores pre-match health, mana, position and original cooldown deadlines. Saves during a match retain the original return state, not an arena death or free refill. Well Rested keeps counting down normally.</li>
+                        <li><strong>Durable outcomes:</strong> Ranked results are recorded before releasing participants, then synchronized to their profiles. Interrupted writes retry the same outcome without paying twice or overwriting a newer result. A pending save is shown honestly; ranked entry waits for synchronization. Season records and opponent limits survive reconnects.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.6.0">
                     <h3 class="patch-note-entry__title">Alpha 1.6.0 (the living sanctums)</h3>
                     <ul class="patch-note-entry__list">

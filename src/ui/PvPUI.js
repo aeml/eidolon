@@ -166,6 +166,11 @@ export class PvPUI {
             const queue = document.createElement('section');
             queue.className = 'pvp-card';
             queue.innerHTML = '<h3>Arena · ranked or practice</h3><p>Best-of-three team elimination. Current combat rules: your level, equipment and build still matter—there is no hidden stat normalization. Player damage is reduced to 65% and each hit is capped at 35% of the target’s maximum health. Each round starts with full health and mana; leaving restores your pre-match amounts, so the arena is not a recovery service. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Ranked searches start within ±100 average team rating and widen by 50 every 30 seconds, to ±500. Both teams must allow the rating gap. Practice queues are separate, ignore rating gaps, and never award rating, honor, season points or ranked records. Practice duels also remain available through player challenges; leave your arena queue and any shared party before challenging each other.</p>';
+            const rules = document.createElement('details');
+            const rulesTitle = document.createElement('summary');
+            rulesTitle.textContent = 'Combat, matchmaking and reward rules';
+            rules.appendChild(rulesTitle);
+            for (const paragraph of [...queue.querySelectorAll('p')]) rules.appendChild(paragraph);
             if (this.state.queued) {
                 const queued = document.createElement('strong');
                 queued.textContent = `${this.state.queuePractice ? 'Practice' : 'Ranked'} ${this.state.queued}v${this.state.queued} · waiting ${Math.max(0, Math.floor(this.state.queuedSeconds || 0))}s`;
@@ -182,7 +187,11 @@ export class PvPUI {
             }
             const rewardRules = document.createElement('p');
             rewardRules.textContent = 'Ranked ratings use team-strength Elo (K=32). Eligible wins award 50 Honor and 3 season points; losses award neither. Forfeits change rating but award neither team currency or season points. Only the first three meetings with each opponent per UTC day change rating or award rewards, even when teams change. Later matches still record wins and losses. Daily history is capped at 256 opponents.';
-            queue.appendChild(rewardRules);
+            rules.appendChild(rewardRules);
+            const roundRules = document.createElement('p');
+            roundRules.textContent = 'Combat effects and cooldowns start fresh on entry and each round. Temporary shields, buffs, damage-over-time and summons do not carry between rounds or back into the world. Your original skill cooldown deadlines are restored on exit; Well Rested continues counting down normally inside the arena.';
+            rules.appendChild(roundRules);
+            queue.appendChild(rules);
             body.appendChild(queue);
         }
 

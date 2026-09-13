@@ -35,6 +35,10 @@ func restoreCharacterWellRested(entity *game.Entity, saved *database.CharacterWe
 // The caller supplies the same detached entity copy used for the rest of the
 // character save. Do not read HP and mana independently from a live actor.
 func resourceSnapshot(entity *game.Entity) *database.CharacterResources {
+	if origin := entity.PvPReturn; origin != nil {
+		return &database.CharacterResources{Version: characterResourcesVersion,
+			Health: min(max(1, entity.MaxHealth), max(1, origin.Health)), Mana: min(max(0, entity.MaxMana), max(0, origin.Mana))}
+	}
 	return &database.CharacterResources{Version: characterResourcesVersion,
 		Health: max(0, entity.Health), Mana: max(0, entity.Mana),
 		Dead: entity.State == "DEAD" || entity.Health <= 0}

@@ -198,6 +198,10 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		unlockedTalents = append(unlockedTalents, cid)
 	}
 	sort.Strings(unlockedTalents)
+	x, y, z, instanceID := entity.X, entity.Y, entity.Z, entity.InstanceID
+	if origin := entity.PvPReturn; origin != nil {
+		x, y, z, instanceID = origin.X, origin.Y, origin.Z, origin.InstanceID
+	}
 	resonanceRanks := make(map[string]int, len(entity.ResonanceRanks))
 	for trait, rank := range entity.ResonanceRanks {
 		resonanceRanks[trait] = rank
@@ -219,10 +223,10 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		ResonancePoints:      entity.ResonancePoints,
 		ResonanceRanks:       resonanceRanks,
 		Gold:                 entity.Gold,
-		X:                    entity.X,
-		Y:                    entity.Y,
-		Z:                    entity.Z,
-		InstanceID:           entity.InstanceID,
+		X:                    x,
+		Y:                    y,
+		Z:                    z,
+		InstanceID:           instanceID,
 		LastLogout:           savedAt,
 		Stats: database.Stats{
 			Vitality:     entity.BaseStats.Vitality,

@@ -64,6 +64,7 @@ type PvPMatch struct {
 	ResultRetryAt     time.Time            `json:"-"`
 	SettlementPending bool                 `json:"settlementPending"`
 	pendingResult     *PvPMatchResult
+	entryCooldowns    map[string]pvpCooldownState
 }
 
 type PvPProfile struct {
@@ -361,6 +362,7 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 		ID: fmt.Sprintf("pvp-%d-%d", now.UnixNano(), w.PvP.matchSequence), Mode: mode,
 		TeamA: append([]string(nil), teamA...), TeamB: append([]string(nil), teamB...),
 		FirstTo: 1, Round: 1, Status: PvPMatchPreparing, StartedAt: now, EndsAt: now.Add(10 * time.Minute), Origins: make(map[string]PvPOrigin),
+		entryCooldowns: make(map[string]pvpCooldownState),
 	}
 	if mode != PvPModeDuel {
 		match.FirstTo = 2
@@ -380,6 +382,10 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 			player.Mu.Lock()
 			w.Grid.Remove(player)
 			match.Origins[playerID] = PvPOrigin{InstanceID: player.InstanceID, X: player.X, Y: player.Y, Z: player.Z, Health: player.Health, Mana: player.Mana}
+			origin := match.Origins[playerID]
+			player.PvPReturn = &origin
+			match.entryCooldowns[playerID] = capturePvPCooldowns(player)
+			clearPvPCombatStateLocked(player)
 			player.InstanceID = match.ID
 			player.X = -8 + float64(teamIndex)*16
 			player.Z = -3 + float64(memberIndex)*6
@@ -405,6 +411,7 @@ func copyPvPMatch(match *PvPMatch) *PvPMatch {
 	}
 	copyMatch := *match
 	copyMatch.pendingResult = nil
+	copyMatch.entryCooldowns = nil
 	copyMatch.TeamA = append([]string(nil), match.TeamA...)
 	copyMatch.TeamB = append([]string(nil), match.TeamB...)
 	copyMatch.WinnerIDs = append([]string(nil), match.WinnerIDs...)
@@ -517,6 +524,7 @@ func (w *World) resetPvPRound(matchID string, expectedRound int) {
 	teamA := append([]string(nil), match.TeamA...)
 	teamB := append([]string(nil), match.TeamB...)
 	w.PvP.mu.RUnlock()
+	w.clearPvPEphemeraLocked(matchID)
 	now := time.Now()
 	for teamIndex, team := range [][]string{teamA, teamB} {
 		for memberIndex, playerID := range team {
@@ -528,6 +536,7 @@ func (w *World) resetPvPRound(matchID string, expectedRound int) {
 			w.Grid.Remove(player)
 			player.X = -8 + float64(teamIndex)*16
 			player.Z = -3 + float64(memberIndex)*6
+			clearPvPCombatStateLocked(player)
 			player.Health = player.MaxHealth
 			player.Mana = player.MaxMana
 			player.State = "IDLE"
@@ -674,11 +683,15 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 	}
 	delete(w.PvP.Matches, matchID)
 	w.PvP.mu.Unlock()
+	w.clearPvPEphemeraLocked(matchID)
 	for _, playerID := range participants {
 		if player := w.Entities[playerID]; player != nil {
 			player.Mu.Lock()
 			w.Grid.Remove(player)
 			origin := match.Origins[playerID]
+			clearPvPCombatStateLocked(player)
+			restorePvPCooldowns(player, match.entryCooldowns[playerID])
+			player.PvPReturn = nil
 			player.InstanceID, player.X, player.Y, player.Z = origin.InstanceID, origin.X, origin.Y, origin.Z
 			// Arena refills belong only to the match, not to overworld recovery.
 			player.Health = min(player.MaxHealth, max(1, origin.Health))

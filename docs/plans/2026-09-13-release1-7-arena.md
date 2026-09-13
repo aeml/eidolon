@@ -1,7 +1,7 @@
 # Alpha 1.7.0 — a competitive arena
 
-Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
-1.7 packaging. This stage does not authorize skipping1.5 or1.6 live delivery.
+Separate worktree based on1.6 with correction34c1c0d8 merged. Runtime and package
+are now1.7.0, staged for publication AFTER verified1.6 delivery. No1.7live claim.
 
 ## Required scope
 
@@ -17,6 +17,37 @@ Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
   the exact live release. No invented completed matches or reward receipts.
 
 ## Implementation checkpoint — September 13, 03:43 UTC
+
+04:43 state cleanup and packaging: each actor carries an immutable pre-match
+return snapshot, copied with GetEntityCopy. Character saves project entry HP/MP
+and XYZ/instance from that same detached snapshot, even after live match removal;
+arena deaths/refills/temporary instance IDs cannot replace the PvE save. Well
+Rested remains its actual bank. Live exit clears the projection and restores entry
+resources. Original absolute skill/attack/ability cooldown deadlines return on exit.
+
+Entry and each new round clear transient combat buffs, shields, DoTs, CC, HoTs,
+summon/channel state, combo/rune effects and cooldowns, recalculating affected
+stats. Round/exit removes only that match's nonplayer combat entities, including
+projectiles; unrelated scenes remain. Gear/build/progression/Gold/rest unchanged.
+UI explains the policy, with long rules collapsed behind a disclosure so queue
+actions remain easy to find. Main/game targeted save/combat/WellRested/arena
+checks PASS13.346s+0.196s; the new fixture initially had zero Intelligence/mana
+capacity and was corrected to a valid10Int before that pass. New save test round-
+trips the real character serialization after removal of its match; no full crash
+matrix claimed. Existing build-trimpath-all PASS, UI9PASS0.878s before packaging.
+
+Alpha1.7.0 version synchronized across login/package/lock/release/server/deploy/
+CI/QA and current roadmap label, with eight cumulative in-game patch notes.
+Version/history checks and final relevant build/lint are being finished. All
+required1.7 feature batches now implemented; final live release verification is
+still REQUIRED. Full earned season/campaign/recovery matrices remain consolidated
+1.10 stabilization. Schema10 compatibility/receipt preservation warning below
+still applies; do not roll back to a schema9 writer after1.7 deployment.
+
+Packaging checks now PASS: prepare:client, version/history+UI255tests1.507s,
+final disclosure UI9tests0.733s, changedJS lint, versionedGo build-trimpath-all and
+diff-check. Candidate may be frozen for ordered publication. 1.6replacement
+CI34738051311 is still active, now server/clientPASS and browser shardsrunning.
 
 04:33 seasons batch: eligible ranked victories now track separately from W/L
 and old season points. Only unrestricted, non-forfeit ranked wins qualify. End-

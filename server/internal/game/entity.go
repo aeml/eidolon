@@ -72,6 +72,7 @@ type Entity struct {
 	Mu                   sync.RWMutex      // Protects concurrent access
 	ID                   string            `json:"id"`
 	InstanceID           string            `json:"instanceId"`
+	PvPReturn            *PvPOrigin        `json:"-"` // Immutable pre-match save projection.
 	Name                 string            `json:"name"`
 	Type                 EntityType        `json:"type"`
 	SubType              string            `json:"subType"` // e.g., "Fighter", "Skeleton"
@@ -894,6 +895,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	newE := &Entity{
 		ID:                       e.ID,
 		InstanceID:               e.InstanceID,
+		PvPReturn:                clonePvPOrigin(e.PvPReturn),
 		Name:                     e.Name,
 		PartyID:                  e.PartyID,
 		SocialStatus:             e.SocialStatus,
