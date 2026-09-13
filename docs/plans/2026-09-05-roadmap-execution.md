@@ -17,7 +17,34 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, aftermath and cadence delivered locally
+## Current checkpoint — September 13, 1.9 live / intermittent recall follow-up
+
+This turn = PROGRESS plus verified wait. Exact CI34749377284 TERMINAL SUCCESS,
+including predeploy, both deployments and live town/Well Rested checks. Public
+play release.json and server healthz independently match Alpha1.9.0 exact
+e86e29a0f808e7547678c77485b8441c06ee067c; database READY. Do not poll/restart this
+terminal run. No new test/deployment triggered during observation.
+
+IMPORTANT CAVEAT: Live Water final recall after re-entry failed30s recovery once,
+then passed CI retry. Exact failing call `regional-dungeon-gameplay.spec.js:61`;
+helper1922 Boolean hid whether position/layout/collision/scenery was missing.
+CI reports1flaky/7passed (8min), not a diagnosis or fix. Existing error evidence
+in runner workdir test-results/regional-dungeon-gameplay--5c458-ct-town-recall-and-re-entry/error-context.md
+and retained CI log. Read-only code inspection found no demonstrated cause yet.
+
+Frozen1.9 WT now has LOCAL diagnostic-only152026d8 (not pushed): returnToTown
+reports each SAME required predicate separately. No timeout/acceptance weakened;
+node --check/diffPASS. Merged into active1.10 WT, now clean4052f36e (localonly).
+Handoffs record live success and caveat. Runtime1.9; story/cadence remain local.
+
+NEXT safe work: narrow Water recall/re-entry reproduction with these diagnostics,
+not wholeCI/campaign reruns. Use approved/disposableQA accounts and avoid concurrent
+live-account sessions. Fix only a demonstrated cause. VIP name/acquisition still
+unanswered, but this focused regression follow-up is independent work; goal stays
+active, not blocked/complete. No owned QA processes or containers started here.
+ROOT LEDGER ONLY, NEVER PUSH. FullVIP and final integration remain required.
+
+## Previous checkpoint — September 13, aftermath and cadence delivered locally
 
 Previous preference-only turn = NO PROGRESS; revalidated current work and took
 the next implementation action. This goal turn = PROGRESS. Active clean feature
