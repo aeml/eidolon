@@ -240,7 +240,7 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 		return errors.New("table funds are being saved; please wait")
 	}
 	if state.RoundID != roundID || state.Phase != "betting" || !game.ValidBlackjackBet(bet) {
-		return errors.New("review the current round and choose 20–500 Gold in steps of20")
+		return errors.New("review the current round and choose 20–100,000 Gold in steps of 20")
 	}
 	for _, p := range state.Players {
 		if p.PlayerID == client.playerID && p.Bet == bet {
@@ -415,6 +415,7 @@ func tickBlackjack(now time.Time, ids ...string) error {
 }
 
 type blackjackTableView struct {
+	MaxBet     int                    `json:"maxBet"`
 	Available  bool                   `json:"available"`
 	RoundID    string                 `json:"roundId,omitempty"`
 	Phase      string                 `json:"phase,omitempty"`
@@ -433,7 +434,7 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		id = p.CasinoSeat.TableID
 	}
 	blackjackCached, blackjackAvailable := getBlackjackCache(id)
-	view := blackjackTableView{Available: blackjackAvailable, Players: []blackjackParticipant{}}
+	view := blackjackTableView{Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
 	if !blackjackAvailable || blackjackCached == nil {
 		return view
 	}

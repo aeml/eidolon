@@ -129,6 +129,7 @@ export class CasinoController {
 
     exitView() {
         this.slots.update(null);
+        this.blackjack.update(null); this.poker.update(null);
         this.active = false; this.panel.hidden = true; this.pendingSeat = null;
         document.body.classList.remove('casino-seated');
         const engine = this.engine, render = engine.renderSystem;
@@ -331,6 +332,7 @@ export class CasinoController {
         for (const pose of this.poses.values()) this.restorePose(pose);
         this.poses.clear(); disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
         this.slots.dispose();
+        this.blackjack.dispose();
         this.poker.dispose();
         this.stairButton.remove();
         this.removeFurnitureColliders();

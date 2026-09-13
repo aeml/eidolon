@@ -67,6 +67,16 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     await panel.evaluate(node => { node.scrollTop = 0; });
     await page.screenshot({ path: '/tmp/eidolon-casino-roomy-desktop.png' });
+    await page.evaluate(() => {
+        const { ui, view } = window.__slotQA;
+        const grid = Array.from({ length: 5 }, () => [5,5,5]);
+        ui.update({ ...view, session: { ...view.session, bet: 200, revision: 6,
+            last: { landed: grid, payout: 20000, bonusPicked: -1, stages: [{ grid, wins: [], payout: 20000, jackpot: true }] } } });
+    });
+    await expect(page.locator('.slot-stage .casino-celebration')).toContainText('GIGANTIC WIN');
+    await expect(page.locator('.slot-stage .casino-celebration')).toHaveCSS('opacity', '1');
+    await expect(page.getByRole('button', { name: 'Spin · 200 Gold', exact: true })).toBeDisabled();
+    await page.screenshot({ path: '/tmp/eidolon-slot-gigantic-win.png' });
     await page.getByRole('button', { name: 'Leave machine', exact: true }).click();
     await expect(page.locator('.slot-game')).toBeHidden();
 });

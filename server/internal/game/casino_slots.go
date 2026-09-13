@@ -9,7 +9,7 @@ import (
 const SlotRulesVersion = "fourfold-slots-v1"
 
 const SlotMinBet = 20
-const SlotMaxBet = 500
+const SlotMaxBet = 100000
 const SlotBetStep = 20
 const SlotMaxPayout = SlotMaxBet * 200 // Fire free-spin jackpot; other themes stay below this bound.
 const slotWild, slotScatter = 6, 7

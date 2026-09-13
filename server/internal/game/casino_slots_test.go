@@ -10,7 +10,7 @@ import (
 func slotConstantDraw(int) (int, error) { return 0, nil }
 
 func TestSlotFlexibleStakesRetainBonusStakeAndBoundPayout(t *testing.T) {
-	for _, bet := range []int{20, 40, 60, 100, 260, 500} {
+	for _, bet := range []int{20, 40, 60, 100, 260, 500, 100000} {
 		s, _ := NewSlotSession("earth")
 		next, debit, err := proposeSlotSpin(*s, bet, slotConstantDraw)
 		if err != nil || debit != bet || next.Bet != bet || next.Last.Payout != 26*bet {
@@ -20,15 +20,15 @@ func TestSlotFlexibleStakesRetainBonusStakeAndBoundPayout(t *testing.T) {
 			t.Fatal("next paid round cannot change stake", err)
 		}
 	}
-	for _, bet := range []int{-20, 0, 19, 21, 30, 501, 520, int(^uint(0) >> 1)} {
+	for _, bet := range []int{-20, 0, 19, 21, 30, 501, 100020, int(^uint(0) >> 1)} {
 		if ValidSlotBet(bet) {
 			t.Fatal("invalid stake", bet)
 		}
 	}
 	fire, _ := NewSlotSession("fire")
-	fire.Bet, fire.FreeSpins = 500, 1
+	fire.Bet, fire.FreeSpins = SlotMaxBet, 1
 	// Draw a natural Eidolon on every cell; Fire doubles the free-spin jackpot.
-	next, debit, err := proposeSlotSpin(*fire, 500, func(int) (int, error) { return 85, nil })
+	next, debit, err := proposeSlotSpin(*fire, SlotMaxBet, func(int) (int, error) { return 85, nil })
 	if err != nil || debit != 0 || next.Last.Payout != SlotMaxPayout {
 		t.Fatal("maximum saved return rejected", next, err)
 	}

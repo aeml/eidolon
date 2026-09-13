@@ -41,7 +41,8 @@ test('server outcomes animate once, show winning cells, and stop cleanly when le
         expect(sound).not.toHaveBeenCalled(); jest.advanceTimersByTime(2000);
         expect(sound.mock.calls.filter(([cue]) => cue === 'win')).toHaveLength(1);
         expect(ui.grid.querySelectorAll('.win')).toHaveLength(5); expect(ui.result.textContent).toContain('28 Gold returned');
-        expect(ui.spin.disabled).toBe(false);
+        expect(ui.spin.disabled).toBe(true); expect(ui.celebration.root.hidden).toBe(false);
+        jest.advanceTimersByTime(2500); expect(ui.spin.disabled).toBe(false);
         ui.update({ ...next, session: { ...next.session, revision: 3 } }); ui.update(null);
         jest.runOnlyPendingTimers(); expect(ui.root.hidden).toBe(true); expect(ui.animating).toBe(false);
     } finally { ui.dispose(); jest.useRealTimers(); }
@@ -49,6 +50,39 @@ test('server outcomes animate once, show winning cells, and stop cleanly when le
 
 const resultView = (revision, extras = {}) => ({ ...view, ...extras, session: { ...view.session, revision,
     last: { landed: grid, payout: 0, bonusPicked: -1, stages: [{ grid, wins: [], payout: 0 }] }, ...extras.session } });
+
+test('big win celebration pauses the next automatic wager and cannot be bypassed manually', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view); ui.count.value = '2'; ui.auto.click();
+        const next = resultView(2); next.session.last.payout = 200; ui.update(next);
+        jest.advanceTimersByTime(1700); expect(ui.celebration.title.textContent).toBe('BIG WIN'); expect(ui.spin.disabled).toBe(true);
+        ui.spinOnce(); ui.act({ action: 'slot_spin', bet: 20, roundRevision: 2 }); ui.update(next);
+        jest.advanceTimersByTime(2499); expect(send).toHaveBeenCalledTimes(1);
+        jest.advanceTimersByTime(501); expect(send).toHaveBeenCalledTimes(2);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('bonus overlay waits for reels and wins, then exposes themed choices once', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view); const next = resultView(2, { session: { bonus: true, freeSpins: 5 } });
+        next.session.last.payout = 200; ui.update(next); expect(ui.bonus.hidden).toBe(true);
+        jest.advanceTimersByTime(1700); expect(ui.celebration.active).toBe(true); expect(ui.bonus.hidden).toBe(true);
+        jest.advanceTimersByTime(2500); expect(ui.bonus.hidden).toBe(false); expect(ui.bonus.textContent).toContain('BONUS ROUND'); expect(ui.bonus.textContent).toContain('5 FREE SPINS');
+        ui.bonus.querySelector('button').click(); ui.bonus.querySelector('button').click(); expect(send).toHaveBeenCalledTimes(1);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('a pending payout waits for saved settlement before celebrating', () => {
+    jest.useFakeTimers(); const ui = new SlotMachineUI(jest.fn());
+    try {
+        ui.update(view); const next = resultView(2, { processing: true }); next.session.last.payout = 200;
+        ui.update(next); jest.advanceTimersByTime(2000); expect(ui.celebration.active).toBe(false); expect(ui.spin.disabled).toBe(true);
+        ui.update({ ...next, processing: false }); expect(ui.celebration.active).toBe(true); expect(ui.spin.disabled).toBe(true);
+        jest.advanceTimersByTime(2500); ui.update({ ...next, processing: false }); expect(ui.celebration.active).toBe(false);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
 
 test('queued spins wait for settlement and animation, use fresh revisions and end at the selected count', () => {
     jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);

@@ -9,6 +9,26 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
+test('current best hand and settled winner popup do not reveal hidden opponents', () => {
+    jest.useFakeTimers(); const ui = new PokerTableUI(jest.fn());
+    try {
+        const view = playing(); view.round.players[0].bestHand = 'Pair of 2s'; ui.update(view, 'A');
+        expect(ui.players.textContent).toContain('Pair of 2s'); expect(ui.root.querySelectorAll('[aria-label="Hidden card"]')).toHaveLength(4);
+        const complete = { ...view, phase: 'complete', round: { ...view.round, revision: 2, phase: 'complete', showdown: true,
+            pots: [{ amount: 200, winners: ['A'] }], players: [{ ...view.round.players[0], bestHand: 'Full house — 2s full of 3s', payout: 200 }] } };
+        ui.update({ ...complete, processing: true }, 'A'); expect(ui.celebration.active).toBe(false);
+        ui.update(complete, 'A'); expect(ui.celebration.root.textContent).toContain('200 Gold returned'); expect(ui.celebration.root.textContent).toContain('Net +100 Gold');
+        expect(ui.celebration.root.textContent).toContain('Full house');
+        jest.advanceTimersByTime(5000); ui.update(complete, 'A'); expect(ui.celebration.active).toBe(false);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('high poker buy-ins use advertised limits with integer increments', () => {
+    const send = jest.fn(), ui = new PokerTableUI(send); ui.update({ ...lobby(), maxBuyIn: 100000, gold: 100000 }, 'A');
+    ui.stake.value = '100100'; ui.buy.click(); expect(send).not.toHaveBeenCalled();
+    ui.stake.value = '100000'; ui.buy.click(); expect(send).toHaveBeenCalledWith({ action: 'poker_buy_in', roundId: 'hand-1', bet: 100000 }); ui.dispose();
+});
+
 test('buy-in shortcuts change the next hand amount and lock while pending', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update(lobby(), 'A');
     const [half, double] = ui.lobby.querySelectorAll('.casino-bet-adjustments button');

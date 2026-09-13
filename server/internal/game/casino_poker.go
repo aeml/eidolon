@@ -3,6 +3,7 @@ package game
 import (
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"math/big"
 	"sort"
 	"time"
@@ -12,10 +13,13 @@ const PokerRulesVersion = "fourfold-holdem-5-10-v1"
 const PokerTurnTime = 30 * time.Second
 const PokerSmallBlind = 5
 const PokerBigBlind = 10
+const PokerMaxBuyIn = 100000
 
-// Each hand escrows 100–500 normal Gold per consenting real player. All remaining
+// Each hand escrows 100–100,000 normal Gold per consenting real player. All remaining
 // stack and winnings cash out after that hand; there is no rake or house player.
-func ValidPokerBuyIn(amount int) bool { return amount >= 100 && amount <= 500 && amount%100 == 0 }
+func ValidPokerBuyIn(amount int) bool {
+	return amount >= 100 && amount <= PokerMaxBuyIn && amount%100 == 0
+}
 
 type PokerEntry struct {
 	PlayerID string
@@ -481,6 +485,49 @@ func pokerFive(cards [5]int) uint32 {
 	return encode(0, ranks)
 }
 
+// Describes only cards already visible to the recipient. Uses the authoritative
+// evaluator's category/kickers; it never evaluates an opponent's hidden cards.
+func PokerHandDescription(cards []int) string {
+	names := []string{"", "", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}
+	if len(cards) == 2 {
+		if cards[0] < 0 || cards[0] >= 52 || cards[1] < 0 || cards[1] >= 52 || cards[0] == cards[1] {
+			return ""
+		}
+		a, b := cards[0]%13+1, cards[1]%13+1
+		if a == 1 {
+			a = 14
+		}
+		if b == 1 {
+			b = 14
+		}
+		if a == b {
+			return fmt.Sprintf("Pair of %ss", names[a])
+		}
+		return names[max(a, b)] + " high"
+	}
+	score, category := PokerHandValue(cards)
+	if category == "" {
+		return ""
+	}
+	a, b := names[(score>>16)&15], names[(score>>12)&15]
+	switch score >> 20 {
+	case 0:
+		return a + " high"
+	case 1:
+		return fmt.Sprintf("Pair of %ss", a)
+	case 2:
+		return fmt.Sprintf("Two pair — %ss and %ss", a, b)
+	case 3:
+		return fmt.Sprintf("Three of a kind — %ss", a)
+	case 6:
+		return fmt.Sprintf("Full house — %ss full of %ss", a, b)
+	case 7:
+		return fmt.Sprintf("Four of a kind — %ss", a)
+	default:
+		return category + " — " + a + " high"
+	}
+}
+
 type PokerPlayerView struct {
 	PlayerID  string `json:"playerId"`
 	Seat      int    `json:"seat"`
@@ -491,8 +538,10 @@ type PokerPlayerView struct {
 	Folded    bool   `json:"folded"`
 	Payout    int    `json:"payout"`
 	Hand      string `json:"hand,omitempty"`
+	BestHand  string `json:"bestHand,omitempty"`
 }
 type PokerView struct {
+	Showdown       bool              `json:"showdown"`
 	ID             string            `json:"id"`
 	Rules          string            `json:"rules"`
 	Revision       uint64            `json:"revision"`
@@ -512,11 +561,13 @@ type PokerView struct {
 
 func (r *PokerRound) View(playerID string) PokerView {
 	v := PokerView{ID: r.ID, Rules: r.Rules, Revision: r.Revision, Phase: r.Phase, Street: r.Street, Board: append([]int{}, r.Board...), ButtonSeat: r.Players[r.Button].Seat, Deadline: r.Deadline, Actions: []string{}, Players: []PokerPlayerView{}}
+	v.Showdown = r.Showdown
 	v.Pots, _ = r.pots(r.Phase == "complete")
 	for _, p := range r.Players {
 		pv := PokerPlayerView{PlayerID: p.PlayerID, Seat: p.Seat, Stack: p.Stack, Committed: p.Committed, StreetBet: p.StreetBet, Folded: p.Folded, Payout: p.Payout, Cards: []int{-1, -1}}
 		if p.PlayerID == playerID || (r.Showdown && !p.Folded) {
 			pv.Cards = append([]int(nil), p.Cards...)
+			pv.BestHand = PokerHandDescription(append(append([]int(nil), p.Cards...), r.Board...))
 		}
 		if r.Showdown && !p.Folded {
 			_, pv.Hand = PokerHandValue(append(append([]int(nil), p.Cards...), r.Board...))
@@ -549,7 +600,7 @@ func (r *PokerRound) View(playerID string) PokerView {
 
 func (r *PokerRound) Validate() error {
 	bad := func() error { return errors.New("invalid saved poker round") }
-	if r.ID == "" || r.Rules != PokerRulesVersion || r.Revision == 0 || len(r.Players) < 2 || len(r.Players) > 6 || r.Button < 0 || r.Button >= len(r.Players) || r.CurrentBet < 0 || r.CurrentBet > 500 || r.LastRaise < 10 || r.LastRaise > 500 {
+	if r.ID == "" || r.Rules != PokerRulesVersion || r.Revision == 0 || len(r.Players) < 2 || len(r.Players) > 6 || r.Button < 0 || r.Button >= len(r.Players) || r.CurrentBet < 0 || r.CurrentBet > PokerMaxBuyIn || r.LastRaise < 10 || r.LastRaise > PokerMaxBuyIn {
 		return bad()
 	}
 	expectedBoard, ok := map[string]int{"preflop": 0, "flop": 3, "turn": 4, "river": 5}[r.Street]
@@ -561,7 +612,7 @@ func (r *PokerRound) Validate() error {
 	totalBuyIn, totalPayout, alive := 0, 0, 0
 	lastSeat := -1
 	for _, p := range r.Players {
-		if p.PlayerID == "" || ids[p.PlayerID] || p.Seat <= lastSeat || p.Seat > 5 || !ValidPokerBuyIn(p.BuyIn) || p.Stack < 0 || p.Committed < 0 || p.Stack+p.Committed != p.BuyIn || p.StreetBet < 0 || p.StreetBet > p.Committed || p.StreetBet > r.CurrentBet || p.ReopenAt < 0 || p.ReopenAt > 1000 || p.Payout < 0 || p.Payout > 3000 || len(p.Cards) != 2 {
+		if p.PlayerID == "" || ids[p.PlayerID] || p.Seat <= lastSeat || p.Seat > 5 || !ValidPokerBuyIn(p.BuyIn) || p.Stack < 0 || p.Committed < 0 || p.Stack+p.Committed != p.BuyIn || p.StreetBet < 0 || p.StreetBet > p.Committed || p.StreetBet > r.CurrentBet || p.ReopenAt < 0 || p.ReopenAt > PokerMaxBuyIn*2 || p.Payout < 0 || p.Payout > PokerMaxBuyIn*6 || len(p.Cards) != 2 {
 			return bad()
 		}
 		ids[p.PlayerID], lastSeat = true, p.Seat

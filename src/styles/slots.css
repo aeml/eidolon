@@ -34,6 +34,17 @@
 .slot-game[hidden], .slot-game [hidden], .slot-game .slot-controls[hidden] { display: none; }
 .slot-sidebar { padding: 16px; min-width: 0; background: #1b2b39; border-radius: 10px; align-self: start; }
 .slot-stage { min-width: 0; padding: 12px; background: radial-gradient(ellipse at top, #203a37, #0c1821); border-radius: 12px; }
+.slot-stage .slot-bonus {
+    position: absolute; inset: 8px; z-index: 4; margin: 0; box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: center; text-align: center;
+    overflow-y: auto; background: radial-gradient(ellipse at top, #455940fa, #111f2bfc 75%);
+    border: 2px solid var(--slot-accent); box-shadow: 0 0 30px #abd68b44; padding: 20px;
+    animation: casino-reveal .6s ease-out;
+}
+.slot-stage .slot-bonus[hidden] { display: none; }
+.slot-bonus h3 { font-size: clamp(20px, 2.5vw, 34px); margin: 8px 0; color: #ffdfa0; }
+.slot-bonus-kicker { letter-spacing: .15em; font-weight: bold; color: var(--slot-accent); }
+@media (max-width: 700px) { .slot-stage:has(.slot-bonus:not([hidden])) { min-height: 440px; } .slot-stage .slot-bonus { padding: 12px; } }
 .slot-game > details { grid-column: 1 / -1; }
 .slot-sidebar .slot-controls { display: grid; grid-template-columns: 1fr; }
 .slot-sidebar label { display: grid; gap: 6px; font-size: 13px; color: #d2dfeb; }

@@ -25,7 +25,7 @@ func TestBlackjackTransferBoundsAndCurrency(t *testing.T) {
 			t.Fatal("wrong currency accepted", currency)
 		}
 	}
-	for _, amount := range []int{-501, 0, 8001, -int(^uint(0)>>1) - 1} {
+	for _, amount := range []int{-100001, 0, 1600001, -int(^uint(0)>>1) - 1} {
 		bad := op
 		bad.Amount = amount
 		if bad.Validate() == nil {
@@ -34,8 +34,8 @@ func TestBlackjackTransferBoundsAndCurrency(t *testing.T) {
 	}
 }
 
-func TestSlotReturnLimitDoesNotRaiseCardTableExposure(t *testing.T) {
-	op := BlackjackTransfer{ID: "casino:slots:owner:fire:2:spin-return", PlayerID: "player-alice", Currency: "gold", Amount: 100000, NextState: []byte(`{"session":{}}`)}
+func TestSlotReturnLimitRemainsSeparateFromCardTables(t *testing.T) {
+	op := BlackjackTransfer{ID: "casino:slots:owner:fire:2:spin-return", PlayerID: "player-alice", Currency: "gold", Amount: 20000000, NextState: []byte(`{"session":{}}`)}
 	if err := op.Validate(); err != nil {
 		t.Fatal(err)
 	}
@@ -43,13 +43,41 @@ func TestSlotReturnLimitDoesNotRaiseCardTableExposure(t *testing.T) {
 	if op.Validate() == nil {
 		t.Fatal("oversized slot return")
 	}
-	op.Amount, op.Currency = 100000, "ep"
+	op.Amount, op.Currency = 20000000, "ep"
 	if op.Validate() == nil {
 		t.Fatal("EP return admitted into Gold ledger")
 	}
 	op.Currency, op.ID = "gold", "casino:round:payout"
 	if op.Validate() == nil {
 		t.Fatal("card table exposure increased")
+	}
+}
+
+func TestCasinoHighGoldReceiptFamilyLimits(t *testing.T) {
+	for _, tc := range []struct {
+		id      string
+		maximum int
+	}{
+		{"casino:round:payout", 1600000},
+		{"casino:poker:round:payout", 600000},
+		{"casino:slots:owner:fire:payout", 20000000},
+	} {
+		op := BlackjackTransfer{ID: tc.id, PlayerID: "player-alice", Currency: "gold", Amount: tc.maximum, NextState: []byte(`{"phase":"complete"}`)}
+		if op.Validate() != nil {
+			t.Fatal("maximum return rejected", tc)
+		}
+		op.Amount++
+		if op.Validate() == nil {
+			t.Fatal("oversized return accepted", tc)
+		}
+		op.Amount = -100000
+		if op.Validate() != nil {
+			t.Fatal("maximum stake rejected", tc)
+		}
+		op.Amount--
+		if op.Validate() == nil {
+			t.Fatal("oversized debit accepted", tc)
+		}
 	}
 }
 

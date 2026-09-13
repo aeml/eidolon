@@ -280,7 +280,7 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 		return errors.New("poker funds are being saved; please wait")
 	}
 	if s.Phase != "betting" || s.RoundID != roundID || !game.ValidPokerBuyIn(amount) {
-		return errors.New("review the hand and choose 100–500 Gold in steps of 100")
+		return errors.New("review the hand and choose 100–100,000 Gold in steps of 100")
 	}
 	for _, p := range s.Players {
 		if p.PlayerID == client.playerID && p.BuyIn == amount && p.SessionID == sessionID {
@@ -577,6 +577,7 @@ type pokerParticipantView struct {
 	Paid     bool   `json:"paid"`
 }
 type pokerTableView struct {
+	MaxBuyIn   int                    `json:"maxBuyIn"`
 	Available  bool                   `json:"available"`
 	Processing bool                   `json:"processing"`
 	RoundID    string                 `json:"roundId"`
@@ -590,7 +591,7 @@ type pokerTableView struct {
 func pokerViewFor(owner string) pokerTableView {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
-	v := pokerTableView{Available: pokerAvailable, Players: []pokerParticipantView{}}
+	v := pokerTableView{Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
 	if !pokerAvailable || pokerCached == nil {
 		return v
 	}

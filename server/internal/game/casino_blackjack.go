@@ -10,6 +10,7 @@ import (
 
 const BlackjackRulesVersion = "lanternhold-s17-v1"
 const BlackjackTurnTime = 30 * time.Second
+const BlackjackMaxBet = 100000
 
 // This is the server's persistable round, never a network response. Call View
 // to redact the shoe and the dealer's hole card. Currency acceptance/persistence
@@ -50,7 +51,7 @@ type BlackjackEntry struct {
 
 // Public floor opening stakes are deliberately bounded and even, so natural
 // blackjack's 3:2 profit is always an integer. No client selects a currency.
-func ValidBlackjackBet(bet int) bool { return bet >= 20 && bet <= 500 && bet%20 == 0 }
+func ValidBlackjackBet(bet int) bool { return bet >= 20 && bet <= BlackjackMaxBet && bet%20 == 0 }
 
 func NewBlackjackRound(id string, entries []BlackjackEntry, now time.Time) (*BlackjackRound, error) {
 	deck := make([]int, 6*52)
@@ -358,7 +359,7 @@ func (r *BlackjackRound) Validate() error {
 		}
 		ids[p.PlayerID], seats[p.Seat] = true, true
 		for _, h := range p.Hands {
-			if len(h.Cards) < 2 || len(h.Cards) > 22 || !count(h.Cards) || h.Bet < 20 || h.Bet > 1000 || h.Bet%20 != 0 || h.Payout < 0 || h.Payout > 2000 {
+			if len(h.Cards) < 2 || len(h.Cards) > 22 || !count(h.Cards) || h.Bet < 20 || h.Bet > BlackjackMaxBet*2 || h.Bet%20 != 0 || h.Payout < 0 || h.Payout > BlackjackMaxBet*4 {
 				return bad
 			}
 		}

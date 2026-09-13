@@ -1,3 +1,5 @@
+import { CasinoCelebration, goldText } from './CasinoCelebration.js';
+
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const suits = ['♣', '♦', '♥', '♠'];
 const element = (tag, text = '', className = '') => {
@@ -11,15 +13,16 @@ export class PokerTableUI {
         this.summary = element('p'); this.summary.setAttribute('role', 'status');
         this.lobby = element('div', '', 'poker-buy-in');
         const stakeLabel = element('label', 'Gold buy-in for this hand ');
-        this.stake = element('select'); this.stake.setAttribute('aria-label', 'Poker Gold buy-in');
-        for (const amount of [100, 200, 300, 400, 500]) { const option = element('option', String(amount)); option.value = String(amount); this.stake.append(option); }
+        this.stake = element('input'); this.stake.type = 'number'; this.stake.inputMode = 'numeric';
+        this.stake.min = '100'; this.stake.max = '500'; this.stake.step = '100'; this.stake.value = '100'; this.stake.setAttribute('aria-label', 'Poker Gold buy-in');
         stakeLabel.append(this.stake);
         this.buy = this.button('Buy in · 100 Gold', () => this.buyIn()); this.lobby.append(stakeLabel, this.buy);
         this.stake.onchange = () => { this.buy.textContent = `Buy in · ${this.stake.value} Gold`; };
+        this.stake.oninput = this.stake.onchange;
         const adjustments = element('div', '', 'casino-bet-adjustments');
         for (const [label, factor] of [['½', .5], ['2×', 2]]) adjustments.append(this.button(label, () => {
             if (!this.canAct()) return;
-            this.stake.value = String(Math.max(100, Math.min(500, Math.floor(Number(this.stake.value) * factor / 100) * 100)));
+            this.stake.value = String(Math.max(100, Math.min(this.view?.maxBuyIn || 500, Math.floor(Number(this.stake.value) * factor / 100) * 100)));
             this.stake.onchange();
         }));
         this.lobby.insertBefore(adjustments, this.buy); this.buy.className = 'casino-primary';
@@ -29,7 +32,7 @@ export class PokerTableUI {
         this.felt.append(this.board, this.pots, this.players);
         this.actions = element('div', '', 'poker-actions');
         const rules = element('details'); rules.append(element('summary', 'Hold’em rules · Gold and leaving'));
-        rules.append(element('p', 'Two to six real players; no house opponents or rake. Buy in immediately reserves the selected 100–500 Gold for one hand. Two funded, connected players start a 15-second joining window. Leaving before the deal returns your buy-in. Every new hand requires a new buy-in click. Raise and All-in act immediately using your reserved stack.'));
+        this.stakeRules = element('p'); rules.append(this.stakeRules);
         rules.append(element('p', 'No-limit Texas Hold’em: two private cards, five community cards, best five-card hand wins. Small/big blinds are 5/10 Gold. The dealer button rotates between funded seats. Heads-up, the button posts the small blind and acts first before the flop, last afterward.'));
         rules.append(element('p', 'Raise to means your total bet on this street, not extra Gold from your bag. The minimum raise increases the current bet by at least the last full raise (initially 10). A smaller all-in is allowed; it only reopens earlier players’ raises when the combined increase reaches their required full raise. A short call remains eligible only for its covered pots.'));
         rules.append(element('p', 'Turns last 30 seconds. A timeout checks for free or folds to a bet. Leaving after the deal folds a remaining stack; an all-in hand stays eligible. Disconnections reserve the seat for 60 seconds, but the turn timer keeps running. No bots take over.'));
@@ -47,7 +50,11 @@ export class PokerTableUI {
 
     update(view, playerID) {
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.signature = null; this.pending = false; return; }
+        if (!view) { this.signature = null; this.pending = false; this.celebration?.clear(); return; }
+        if (!this.celebration) this.celebration = new CasinoCelebration(this.root);
+        this.stake.max = String(view.maxBuyIn || 500);
+        this.stakeRules.textContent = `Two to six real players; no house opponents or rake. Buy in reserves 100–${goldText(this.stake.max)} Gold in steps of 100 for one hand. Two funded players start a 15-second joining window. Leaving before the deal refunds your buy-in. Each new hand requires a buy-in click; raises and all-ins use your reserved stack.`;
+        if (this.celebrationRound !== view.roundId) this.celebration.clear();
         const signature = JSON.stringify([view.roundId, view.phase, view.round?.revision, view.processing, view.available, view.gold, view.players, playerID]);
         const changed = signature !== this.signature; this.signature = signature;
         const actionKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, view.players?.find(p => p.playerId === playerID), playerID]);
@@ -80,6 +87,7 @@ export class PokerTableUI {
                     const status = p.folded ? 'Folded' : p.stack === 0 ? 'All-in' : `${p.stack} Gold stack`;
                     row.append(element('p', `${this.name(p.playerId)}${p.playerId === playerID ? ' · You' : ''}${p.seat === round.buttonSeat ? ' · Dealer' : ''} · ${status}`));
                     const cards = element('div'); for (const value of p.cards || []) cards.append(this.card(value)); row.append(cards);
+                    if (p.bestHand || p.hand) row.append(element('strong', p.bestHand || p.hand, 'casino-hand-value'));
                     row.append(element('small', round.phase === 'complete' ? `${p.hand ? `${p.hand} · ` : ''}${p.payout} Gold returned` : `${p.streetBet} on this street · ${p.committed} committed`));
                     this.players.append(row);
                 }
@@ -97,6 +105,16 @@ export class PokerTableUI {
             }
         }
         this.setDisabled(Boolean(view.processing || this.pending));
+        if (view.available && !view.processing && view.phase === 'complete' && this.celebrationRound !== view.roundId) {
+            this.celebrationRound = view.roundId;
+            const own = round?.players.find(p => p.playerId === playerID);
+            const won = round?.pots.some(p => !p.uncalled && p.winners?.includes(playerID));
+            if (own && won) {
+                const net = own.payout - (funded?.buyIn || 0);
+                this.celebration.show('YOU WON', `${goldText(own.payout)} Gold returned`,
+                    `${round.showdown === false ? 'Everyone else folded' : own.bestHand || own.hand || 'Winning hand'}. Net ${net >= 0 ? '+' : '−'}${goldText(Math.abs(net))} Gold after your buy-in.`, null, 5000);
+            }
+        }
     }
 
     name(id) { return this.view?.players?.find(p => p.playerId === id)?.name || 'Player'; }
@@ -107,7 +125,7 @@ export class PokerTableUI {
     buyIn() {
         if (!this.canAct() || this.view.phase !== 'betting' || this.view.players?.some(p => p.playerId === this.playerID)) return;
         const bet = Number(this.stake.value);
-        if (![100, 200, 300, 400, 500].includes(bet) || bet > this.view.gold) { this.summary.textContent = 'Choose a 100–500 Gold buy-in within your available balance.'; return; }
+        if (!Number.isInteger(bet) || bet < 100 || bet > (this.view.maxBuyIn || 500) || bet % 100 || bet > this.view.gold) { this.summary.textContent = `Choose a 100–${goldText(this.view.maxBuyIn || 500)} Gold buy-in in steps of 100 within your available balance.`; return; }
         this.submit({ action: 'poker_buy_in', roundId: this.view.roundId, bet });
     }
     choose(action) {

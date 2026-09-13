@@ -1,4 +1,5 @@
 import { getSlotSymbolIcon } from '../art/ProceduralSlotIcons.js';
+import { CasinoCelebration, goldText, slotWinTier } from './CasinoCelebration.js';
 
 function node(tag, text = '', className = '') { const n = document.createElement(tag); n.textContent = text; n.className = className; return n; }
 
@@ -53,6 +54,7 @@ export class SlotMachineUI {
         this.betHelp = node('p', '', 'slot-bet-help');
         this.sidebar.append(this.summary, this.modes, this.controls, this.betHelp, this.autoControls, this.autoStatus, this.risk);
         this.stage.append(this.lore, this.grid, this.result, this.bonus);
+        this.celebration = new CasinoCelebration(this.stage);
         this.root.append(this.sidebar, this.stage, this.rules);
         this.setMode(false);
     }
@@ -90,7 +92,7 @@ export class SlotMachineUI {
 
     update(view) {
         const previous = this.view; this.view = view; this.root.hidden = !view;
-        if (!view) { this.clearAnimation(); clearTimeout(this.pendingTimer); this.pending = null; this.stopAuto(); return; }
+        if (!view) { this.clearAnimation(); this.celebration.clear(); this.waitingCelebration = null; clearTimeout(this.pendingTimer); this.pending = null; this.stopAuto(); return; }
         const s = view.session, machine = view.machine;
         const limits = this.betLimits();
         this.stake.min = String(limits.min); this.stake.max = String(limits.max); this.stake.step = String(limits.step);
@@ -105,6 +107,8 @@ export class SlotMachineUI {
         const changed = previous?.session?.revision !== s.revision || previous?.machine?.theme !== machine.theme;
         if (changed) {
             this.clearAnimation();
+            this.celebration.clear();
+            this.waitingCelebration = null;
             const last = s.last;
             if (last && previous?.available && previous.machine.theme === machine.theme && last.bonusPicked < 0) {
                 this.startReels(last.landed);
@@ -112,18 +116,22 @@ export class SlotMachineUI {
                 const delay = reduced ? 150 : 1700;
                 last.stages.forEach((stage, index) => this.timers.push(setTimeout(() => {
                     this.grid.classList.remove('spinning'); this.showStage(stage, index, last.stages.length);
-                    if (index === last.stages.length - 1) { this.clearAnimation(); this.showResult(last); this.resultSound(last); this.refreshControls(); this.scheduleAuto(); }
+                    if (index === last.stages.length - 1) { this.clearAnimation(); this.showResult(last); this.resultSound(last); this.celebrateResult(last); this.refreshControls(); this.scheduleAuto(); }
                 }, delay + index * (reduced ? 0 : 650))));
             } else if (last) { this.showStage(last.stages.at(-1), last.stages.length - 1, last.stages.length); this.showResult(last); }
             else { this.showGrid(Array.from({ length: 5 }, (_, reel) => [reel % 6, (reel + 1) % 6, (reel + 2) % 6])); this.result.textContent = 'Choose a stake, then Spin.'; }
-            if (last && !this.animating && previous?.available && previous.session.revision !== s.revision) this.resultSound(last);
+            if (last && !this.animating && previous?.available && previous.session.revision !== s.revision) { this.resultSound(last); this.celebrateResult(last); }
         }
         this.bonus.hidden = !s.bonus;
         if (s.bonus && this.autoRemaining) this.stopAuto('Auto spins stopped for your bonus choice. Free spins remain saved.');
         if (changed) this.bonus.replaceChildren();
         if (s.bonus && changed) {
-            this.bonus.append(node('h3', machine.bonusTitle), node('p', 'Choose one sealed reward. Its Gold and your free spins are already saved; leaving does not forfeit them.'));
+            this.bonus.append(node('p', '✦ BONUS ROUND ✦', 'slot-bonus-kicker'), node('h3', machine.bonusTitle),
+                node('p', `${s.freeSpins} FREE SPINS · ${machine.mechanic}`), node('p', 'Choose one sealed reward. Your bonus and free spins are saved; leaving does not forfeit them.'));
             machine.bonusChoices.forEach((label, choice) => this.bonus.append(this.button(label, () => this.act({ action: 'slot_bonus', choice, roundRevision: s.revision }))));
+        }
+        if (this.waitingCelebration && !view.processing && !this.animating) {
+            const last = this.waitingCelebration; this.waitingCelebration = null; this.celebrateResult(last);
         }
         this.refreshControls();
         if (!this.animating) this.scheduleAuto();
@@ -131,7 +139,8 @@ export class SlotMachineUI {
 
     refreshControls() {
         const v = this.view, s = v?.session;
-        const busy = !v?.available || v.processing || this.pending || this.animating;
+        const busy = !v?.available || v.processing || this.pending || this.animating || this.celebration.active;
+        this.bonus.hidden = !s?.bonus || Boolean(this.animating || this.celebration.active);
         this.spin.disabled = busy || Boolean(s?.bonus || this.autoRemaining);
         this.stake.disabled = busy || Boolean(s?.freeSpins || s?.bonus || this.autoRemaining);
         this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });
@@ -187,7 +196,20 @@ export class SlotMachineUI {
 
     resultSound(last) { this.sound(last.stages.some(stage => stage.jackpot) ? 'jackpot' : this.view.session.bonus ? 'bonus' : last.payout || last.bonusPayout ? 'win' : 'stop'); }
 
-    canSpin() { const v = this.view; return Boolean(v?.available && !v.processing && !this.pending && !this.animating && !v.session.bonus); }
+    celebrateResult(last) {
+        if (!this.view?.available || this.view.processing) { this.waitingCelebration = last; return; }
+        const bonusPicked = last.bonusPicked >= 0;
+        const payout = bonusPicked ? last.bonusPayout || 0 : last.payout || 0;
+        const free = bonusPicked ? this.view.session.freeSpins : last.freeAwarded || 0;
+        if (!payout && !free) return;
+        const bet = this.view.session.bet;
+        const title = bonusPicked ? 'BONUS REVEALED' : payout ? slotWinTier(payout, bet) : 'FREE SPINS';
+        const detail = `${free ? `${free} free spins · ` : ''}${bonusPicked ? this.view.machine.bonusTitle : last.free ? 'Free spin · no Gold charged' : `${goldText(bet)} Gold staked · total return, not net profit`}`;
+        this.celebration.show(title, payout ? `${goldText(payout)} Gold returned` : `${free} free spins awarded`, detail,
+            () => { this.refreshControls(); this.scheduleAuto(); }, payout >= bet * 50 ? 4000 : 2500);
+    }
+
+    canSpin() { const v = this.view; return Boolean(v?.available && !v.processing && !this.pending && !this.animating && !this.celebration.active && !v.session.bonus); }
     spinOnce(automatic = false) {
         if (!this.canSpin() || (automatic && (!this.autoRemaining || document.hidden)) || (!automatic && this.autoRemaining)) return;
         const v = this.view, bet = v.session.freeSpins ? v.session.bet : automatic ? this.autoBet : Number(this.stake.value);
@@ -198,7 +220,7 @@ export class SlotMachineUI {
         if (automatic && !this.autoRemaining) this.autoStatus.textContent = 'Final queued spin. No further spins will start.';
     }
     act(payload) {
-        if (!this.view?.available || this.pending || this.animating || this.view.processing) return;
+        if (!this.view?.available || this.pending || this.animating || this.celebration.active || this.view.processing) return;
         this.pending = { revision: payload.roundRevision, action: payload.action };
         if (payload.action === 'slot_spin') { this.startReels(); this.sound('spin'); }
         this.refreshControls();

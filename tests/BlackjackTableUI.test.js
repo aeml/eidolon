@@ -7,6 +7,24 @@ const playing = () => ({ ...betting(), phase: 'playing', players: [{ playerId: '
     actions: ['hit', 'stand', 'double', 'split'], players: [{ playerId: 'alice', seat: 0, hands: [{ cards: [7, 20], bet: 100 }] }]
 } });
 
+test('visible hand counts and saved blackjack win popup show profit without replay', () => {
+    jest.useFakeTimers(); const ui = new BlackjackTableUI(jest.fn());
+    try {
+        const view = playing(); view.round.players[0].hands[0].cards = [10, 3]; ui.update(view, 'alice');
+        expect(ui.cards.textContent).toContain('Total: 14'); expect(ui.cards.textContent).toContain('Showing: 10');
+        const complete = { ...view, phase: 'complete', round: { ...view.round, phase: 'complete', players: [{ playerId: 'alice', hands: [{ cards: [0,12], bet: 100, payout: 250, outcome: 'blackjack' }] }] } };
+        ui.update({ ...complete, processing: true }, 'alice'); expect(ui.celebration.active).toBe(false);
+        ui.update(complete, 'alice'); expect(ui.celebration.root.textContent).toContain('+150 Gold'); expect(ui.celebration.root.textContent).toContain('Blackjack');
+        jest.advanceTimersByTime(5000); ui.update(complete, 'alice'); expect(ui.celebration.active).toBe(false);
+    } finally { ui.update(null); jest.useRealTimers(); }
+});
+
+test('advertised high Gold bets remain bounded and require enough Gold', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send); ui.update({ ...betting(), maxBet: 100000, gold: 100000 }, 'alice');
+    ui.stake.value = '100020'; ui.bet.click(); expect(send).not.toHaveBeenCalled();
+    ui.stake.value = '100000'; ui.bet.click(); expect(send).toHaveBeenCalledWith({ action: 'bet', roundId: 'round-one', bet: 100000 });
+});
+
 test('bet shortcuts change the next round stake, not a pending wager', () => {
     const send = jest.fn(), ui = new BlackjackTableUI(send); ui.update(betting(), 'alice');
     const [half, double] = ui.adjustments.querySelectorAll('button');

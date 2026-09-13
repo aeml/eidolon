@@ -41,15 +41,16 @@ func validBlackjackState(state []byte) bool {
 }
 
 func (op BlackjackTransfer) Validate() error {
-	maxReturn := 8000
-	// Only slot receipts have the 200×500 Gold maximum. Keep card-table
-	// exposure unchanged; slot intent validation also recomputes the outcome.
+	maxReturn := 1600000 // Four doubled 100,000 Gold hands, each returning 2×.
+	// Receipt families have separate limits; game intent validation recomputes outcomes.
 	if strings.HasPrefix(op.ID, "casino:slots:") {
-		maxReturn = 100000
+		maxReturn = 20000000 // Fire free-spin jackpot: 200×100,000.
+	} else if strings.HasPrefix(op.ID, "casino:poker:") {
+		maxReturn = 600000 // Six fully committed buy-ins.
 	}
 	if !strings.HasPrefix(op.ID, "casino:") || len(op.ID) > 240 || len(op.ID) < 12 ||
 		!strings.HasPrefix(op.PlayerID, "player-") || len(op.PlayerID) <= 7 || len(op.PlayerID) > 128 ||
-		op.Currency != "gold" || op.Amount == 0 || op.Amount < -500 || op.Amount > maxReturn || !validBlackjackState(op.NextState) {
+		op.Currency != "gold" || op.Amount == 0 || op.Amount < -100000 || op.Amount > maxReturn || !validBlackjackState(op.NextState) {
 		return errors.New("invalid public blackjack Gold transfer")
 	}
 	return nil
