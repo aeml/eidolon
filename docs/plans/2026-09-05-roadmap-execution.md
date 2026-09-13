@@ -17,7 +17,45 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 03:44 UTC
+## Current checkpoint — September 13, 04:08 UTC
+
+PROGRESS:1.7 durable-ranked-results batch committedbeb75b0b in cleanWT
+`/tmp/eidolon-1-7-arena-20260913`. Monotonic profile revisions+stablematchIDs guard
+Mongo conditional upserts; old/replayed results cannot overwrite new, conflicting
+same-revision writes fail. Hydration rejects stale localreplacement; rankedqueue
+refuses unavailable/behind DBprofiles. Quarterreset now retains Honor+revision.
+
+Game records frozen checksummedreceipt BEFORE updating rankedprofiles/returning
+participants. Atomicfsync+rename+directorysync in `<character-journal-dir>/arena-results`,
+hashedpaths/0600files. Hookisfilesystem-onlyunderexistingWorld/PvPlocks, noMongo.
+Failedrecord keepscompletedmatch reserved, UI Savingstate;5sretryusesidentical
+outcome. Mongoappliesallreceiptprofiles viarevisions thenACKremovesonlyreceipt.
+DBfailure retainssyncpending;5sreplay+startuprecoverybeforelogins. Corruptorunrecoverable
+receiptsrefusestaleLogin. Schema10 markerblocksolderunconditionalwriters; no
+backfill. Future1.7rollbackneedscompatible schema10build, neverdeletemarker/receipts.
+No production schemachange made. Current1.7runtime still1.6 pendingpackaging.
+
+Focused actualMongo reverse/concurrent/duplicate/conflicting writes and partial
+two-player replay PASS1.086s; journalreopen/detach/permissions/hash/ACK checksPASS;
+gamefrozenfail/retryandstalehydratePASS0.070s. MainPvP/scene/lifecyclePASS0.211s;
+gamearena/duel/zeroratingPASS13.473s;UI7PASS3.445s;gobuild-trimpath-all/diffPASS.
+OwnedtestMongo `eidolon-isolated-qa-mongo-arena171309` mongo7.0.14 loopback32913
+STOPPED, dataretained. Futuretest envEIDOLON_ARENA_TEST_MONGO_URI mustpointonlyto
+disposableloopback. Alllocalexecsessions terminal; no broadmatrix/soak.
+
+Next1.7: replaceflat+25/-20withratedcalculations;anti-farm/intentional-loss/
+disconnects;personal/teamresults;seasonalrewards/history. Also directduel admission
+versusqueued/sharedparty, restoreentryHP/MP (currentlyPvPreturnfillsboth), and
+roundstatuscleanup. Readupdatedrelease1-7plan; these remainopen, not1.7complete.
+
+1.5LIVE exactd83231809994317aac31dcf1c901ae5e22791e2d/Alpha1.5.0 verifiedat
+play.eidolonrealms.com/release.json AND server.eidolonrealms.com/healthz; backend
+databaseREADY. CI34735541628 allbuild/browser/predeploy/deployPASS; FINALliveQA
+stillrunning atlastpoll04:08. Poll SAMErun; do not restart it. Afterterminalgreen,
+push frozen1.6 564487aeec83de8d9e6822e63879a88f41a1df92 fromclean1.6WT andverify.
+No1.6push yet. Keep1.5→1.6→1.7 releaseorder. Goalactive; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 03:44 UTC
 
 PROGRESS:1.7 first arena batch committedb9436c57, cleanWT
 `/tmp/eidolon-1-7-arena-20260913` (runtime remains1.6). Separate practice1v1/2v2
