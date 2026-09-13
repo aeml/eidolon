@@ -8,8 +8,33 @@ import { LootDrop } from '../src/entities/LootDrop.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { requestChronicleInspection } from '../src/core/ChronicleInspection.js';
+import { CHRONICLE_RESTORATIONS } from '../src/core/ChronicleRestoration.js';
 
 const cases = chronicleInvestigations.flatMap(chapter => chapter.sites.filter(site => site.kind === 'inspect').map(site => ({ site, realm: chapter.realm })));
+
+test.each(Object.keys(CHRONICLE_RESTORATIONS))('%s restoration follows only that player’s completed raid receipt without changing walls', realm => {
+    const definition = cases.find(entry => entry.realm === realm);
+    const receipt = { id: CHRONICLE_RESTORATIONS[realm].questId, accepted: true, completed: false, count: 1, maxCount: 1 };
+    const entity = new ChronicleSite(definition.site.entityId);
+    entity.gameEngine = { player: { quests: [receipt] } };
+    entity.siteModel = createChronicleSiteModel(definition.site, realm);
+    const walls = entity.siteModel.walls.map(wall => wall.clone());
+    entity.update();
+    expect(entity.siteModel.restoration.visible).toBe(false); // Ready is not handed in.
+    receipt.completed = true;
+    entity.update(0.1);
+    expect(entity.siteModel.restoration.visible).toBe(true);
+    expect(entity.siteModel.restoration.children.length).toBeGreaterThan(0);
+    expect(entity.siteModel.walls.every((wall, index) => wall.equals(walls[index]))).toBe(true);
+    const reloaded = createChronicleSiteModel(definition.site, realm);
+    entity.siteModel.dispose(); entity.siteModel = reloaded;
+    entity.update();
+    expect(reloaded.restoration.visible).toBe(true);
+    entity.gameEngine.player = { quests: [] }; // No other character's progress leaks.
+    entity.update();
+    expect(reloaded.restoration.visible).toBe(false);
+    reloaded.dispose();
+});
 
 test('the ember changes only after that player records the anchor, including reload and sparse masks', () => {
     const definition = cases.find(entry => entry.site.id === 'released_ember');

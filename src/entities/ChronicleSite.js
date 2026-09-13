@@ -1,6 +1,7 @@
 import { Entity } from './Entity.js';
 import { chronicleInvestigations } from '../data/chronicleInvestigations.generated.js';
 import { getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
+import { hasChronicleRestoration } from '../core/ChronicleRestoration.js';
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../art/ChronicleSiteModels.js';
 
 const sites = new Map(chronicleInvestigations.flatMap(chapter => chapter.sites
@@ -30,8 +31,10 @@ export class ChronicleSite extends Entity {
         this.update();
     }
 
-    update() {
+    update(dt = 0) {
         if (!this.siteModel) return;
+        this.siteModel.restoration.visible = hasChronicleRestoration(this.gameEngine?.player?.quests, this.discovery.chapter.realm);
+        this.siteModel.updateRestoration(dt);
         const quest = this.gameEngine?.player?.quests?.find(value => value.id === this.discovery.chapter.id);
         const recorded = getRecordedChronicleDiscoveries(quest);
         const prerequisiteRecorded = Boolean(this.discovery.site.requires &&

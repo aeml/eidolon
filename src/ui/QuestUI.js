@@ -2,6 +2,7 @@ import { renderQuestConversation } from './QuestConversation.js';
 import { formatQuestRewards } from './questRewards.js';
 import { MAX_PLAYER_LEVEL } from '../data/dungeonProgression.js';
 import { CHRONICLE_CHAPTER_COUNT, getCurrentChronicleQuest, getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
+import { CHRONICLE_RESTORATIONS, hasChronicleRestoration } from '../core/ChronicleRestoration.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonCadenceLabel,
@@ -1045,6 +1046,19 @@ export class QuestUI {
                 records.append(record);
             }
             section.append(records);
+        }
+        for (const [realm, restoration] of Object.entries(CHRONICLE_RESTORATIONS)) {
+            if (!hasChronicleRestoration(chronicle, realm)) continue;
+            const id = `restoration-${realm}`;
+            const record = existingRecords.get(id) || document.createElement('details');
+            if (!record.dataset.discoveryId) {
+                record.dataset.discoveryId = id;
+                const heading = document.createElement('summary');
+                heading.textContent = `After the Vigil · ${restoration.title}`;
+                record.append(heading);
+                for (const paragraph of restoration.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+            }
+            section.append(record);
         }
         this.journalList.appendChild(section);
         return Boolean(current);

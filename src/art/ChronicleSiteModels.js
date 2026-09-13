@@ -166,12 +166,75 @@ export function createChronicleSiteModel(site, realm) {
             throw new Error(`Missing Chronicle model: ${site.model}`);
         }
     }
+    // Personal signs of ordinary life. Preserve the historical ruin, evidence
+    // and collision footprints rather than rewriting the shared world.
+    const restoration = new THREE.Group();
+    restoration.name = `Restored:${realm}`;
+    restoration.visible = false;
+    root.add(restoration);
+    const movingCloth = [];
+    const edge = house ? 2.45 : 1.3;
+    const front = house ? 1.65 : 0.6;
+    if (realm === 'earth') {
+        const leaf = material(0x6d9c47);
+        for (const side of [-1, 1]) {
+            restoration.add(cylinder(0.035, 0.07, 0.75, wood, side * edge, 0.4, front));
+            for (let i = 0; i < 4; i++) {
+                const bud = mesh(new THREE.IcosahedronGeometry(0.24, 0), leaf,
+                    side * edge + Math.sin(i * 2.4) * 0.24, 0.65 + i * 0.12, front + Math.cos(i * 2.4) * 0.22);
+                bud.scale.set(1.35, 0.6, 0.8);
+                restoration.add(bud);
+            }
+        }
+    } else if (realm === 'water') {
+        const cloth = material(0xd8e0c8, { side: THREE.DoubleSide });
+        for (const side of [-1, 1]) {
+            if (!house) restoration.add(cylinder(0.045, 0.06, 1.65, wood, side * edge, 0.85, front));
+            const flag = box(0.65, 0.7, 0.025, cloth, side * edge + 0.32, 1.55, front + 0.22);
+            movingCloth.push(flag); restoration.add(flag);
+        }
+        for (let i = 0; i < 3; i++) {
+            const ripple = ring(0.32 + i * 0.18, glow, 0.27);
+            ripple.position.z = house ? 2 : 1;
+            restoration.add(ripple);
+        }
+    } else if (realm === 'fire') {
+        const terracotta = material(0xb47751);
+        for (let i = 0; i < 3; i++) restoration.add(cylinder(0.25, 0.18, 0.4, terracotta, edge, 0.23, front - i * 0.58));
+        if (house) {
+            const flame = mesh(new THREE.OctahedronGeometry(0.3, 0), glow, -1.7, 0.72, -0.55);
+            flame.scale.set(0.65, 1.2, 0.5); restoration.add(flame);
+        } else {
+            const leaf = material(0x8f9f56);
+            restoration.add(cylinder(0.03, 0.055, 0.5, leaf, -edge, 0.4, front));
+            const bud = mesh(new THREE.IcosahedronGeometry(0.25, 0), leaf, -edge, 0.72, front);
+            bud.scale.set(1.25, 0.55, 0.7); restoration.add(bud);
+        }
+    } else if (realm === 'air') {
+        const cloth = material(0x969ad1, { side: THREE.DoubleSide });
+        const thread = material(0xb74f55);
+        for (const side of [-1, 1]) {
+            restoration.add(cylinder(0.035, 0.07, 2.1, brass, side * edge, 1.05, front));
+            const flag = mesh(new THREE.PlaneGeometry(0.75, 0.48, 3, 1), cloth, side * edge + 0.32, 1.83, front);
+            movingCloth.push(flag); restoration.add(flag);
+        }
+        restoration.add(box(0.035, 0.55, 0.035, thread, -edge, 1.65, front + 0.04));
+    }
+    let restorationTime = 0;
+    const updateRestoration = (dt = 0) => {
+        if (!restoration.visible || !Number.isFinite(dt) || dt <= 0) return;
+        restorationTime += Math.min(dt, 0.1);
+        movingCloth.forEach((cloth, i) => {
+            cloth.rotation.y = Math.sin(restorationTime * 1.3 + i * 1.1) * 0.24;
+            cloth.rotation.z = Math.sin(restorationTime * 1.8 + i) * 0.07;
+        });
+    };
     const beacon = mesh(new THREE.OctahedronGeometry(0.24, 0), material(0xffd56a, { emissive: 0xffd56a, emissiveIntensity: 0.9 }), 0, house ? 3.9 : 3.6);
     beacon.name = 'DiscoveryBeacon';
     beacon.visible = false;
     root.userData.bounds = { radius: house ? 4.8 : 2.2, height: house ? 4.1 : 3.9 };
     root.traverse(object => { object.userData.entityId = site.entityId; });
-    return { mesh: root, walls, beacon, boundEmber, releasedEmber, dispose: () => {
+    return { mesh: root, walls, beacon, boundEmber, releasedEmber, restoration, updateRestoration, dispose: () => {
         geometries.forEach(value => value.dispose());
         materials.forEach(value => value.dispose());
     } };

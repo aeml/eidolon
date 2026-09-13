@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { QuestUI } from '../src/ui/QuestUI.js';
 import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
+import { CHRONICLE_RESTORATIONS } from '../src/core/ChronicleRestoration.js';
 
 function buildDom() {
     document.body.innerHTML = `
@@ -21,6 +22,26 @@ function chronicleQuest(overrides = {}) {
         ...overrides
     };
 }
+
+test.each(Object.entries(CHRONICLE_RESTORATIONS))('%s restoration lore unlocks only after turn-in and retains the open page', (realm, lore) => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 70 }) });
+    const receipt = chronicleQuest({ id: lore.questId, count: 1, maxCount: 1, completed: false });
+    ui.updateJournal([receipt]);
+    expect(document.querySelector(`[data-discovery-id="restoration-${realm}"]`)).toBeNull();
+    receipt.completed = true;
+    ui.updateJournal([receipt]);
+    const page = document.querySelector(`[data-discovery-id="restoration-${realm}"]`);
+    expect(page.textContent).toContain(lore.title);
+    expect(page.textContent).toContain(lore.text.split('\n\n')[0]);
+    page.open = true;
+    ui.updateJournal([{ ...receipt }]);
+    expect(document.querySelector(`[data-discovery-id="restoration-${realm}"]`)).toBe(page);
+    expect(page.open).toBe(true);
+    expect(document.querySelectorAll('[data-discovery-id^="restoration-"]')).toHaveLength(1);
+    ui.updateJournal([chronicleQuest()]);
+    expect(document.querySelector('[data-discovery-id^="restoration-"]')).toBeNull();
+});
 
 test('optional earlier lore does not replace the current chapter and tracks independently', () => {
     buildDom();

@@ -35,3 +35,29 @@ quests, require repeating a restored crystal, or grant extra currency accidental
 Use focused changed-behavior checks. Full earned progression, physical-device,
 equipment and party matrices remain final stabilization under the feature-first
 instruction; source catalogs alone do not prove those playthroughs passed.
+
+## Implemented locally
+
+- Read all eight active investigation narratives and the existing site model,
+  inspection and journal paths. Their core story is coercion disguised as safety:
+  Mara's shared shelter, Dain/Tovin's freely kept promise, Hessa's release of
+  controlled fire, and Selen's refusal of an unchanging horizon.
+- Each realm's investigation landmarks gain distinct personal restoration
+  scenery only after its completed raid receipt: new Earth growth, Water crossing
+  cloths/ripples, Fire kiln warmth/pots/new growth, and Air moving pennants/red
+  thread. Historical ruins, investigation masks, beacons, collisions and open
+  approaches remain. This does not remove shared hazards or alter other players.
+- Four optional “After the Vigil” journal records explain the restored covenant
+  through those witnesses. Existing collapsible record controls retain open state
+  across updates. Ready-but-unclaimed quests reveal neither scenery nor prose;
+  a different character does not inherit either. No new reward or completion path.
+-55 focused ChronicleSite/QuestUIChronicle tests pass; changed-file lint/diff pass.
+  Actual Chrome four-house before/after scene inspected at
+  `/tmp/eidolon-1-4-restoration-scenes.png`. Water cloth contrast/position was
+  refined after that first look, then visually rechecked. This is an isolated
+  scenery check, not a complete earned raid run or phone performance claim.
+
+Next: optional conversations with the people behind the diaries. Keep Ilyra the
+story quest giver; reuse readable conversation/journal surfaces and gate spoilers
+on the player's existing recorded discoveries/restoration receipts. The eight
+investigations and full progression sequence must remain unchanged.
