@@ -189,6 +189,11 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await expect(raids).toBeFocused();
     const earth = page.locator('[data-raid-type="earth_crystal_raid"]');
     await page.keyboard.press('Tab');
+    const preparation = page.locator('.adventure-preparation');
+    await expect(preparation.locator('summary')).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(preparation).toHaveAttribute('open', '');
+    await page.keyboard.press('Tab');
     await expect(earth.getByRole('button', { name: 'Form Elemental Raid' })).toBeFocused();
     await page.keyboard.press('Enter');
     await page.keyboard.press('Tab');
