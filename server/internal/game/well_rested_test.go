@@ -23,6 +23,9 @@ func TestWellRestedPvPExitUsesCurrentStatsAfterExpiry(t *testing.T) {
 			a.WellRestedSeconds, b.WellRestedSeconds = 2, 10
 			a.RecalculateStats()
 			b.RecalculateStats()
+			// Enter fully recovered: expiry must clamp the saved entry amount,
+			// while the other player's still-active maximum remains valid.
+			a.Health, b.Health = a.MaxHealth, b.MaxHealth
 			w := newPvPTestWorld(a, b)
 			match := startTestPvPMatch(w, PvPModeArena1v1, []string{a.ID}, []string{b.ID})
 			if a.InstanceID != match.ID || w.SafeZoneAt(a.InstanceID, a.X, a.Z) != "" {

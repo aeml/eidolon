@@ -36,6 +36,8 @@ type DuelChallenge struct {
 
 type PvPOrigin struct {
 	InstanceID string  `json:"instanceId"`
+	Health     int     `json:"-"`
+	Mana       int     `json:"-"`
 	X          float64 `json:"x"`
 	Y          float64 `json:"y"`
 	Z          float64 `json:"z"`
@@ -237,20 +239,17 @@ func containsPlayer(players []string, playerID string) bool {
 
 func (w *World) RequestDuel(requesterID, targetID string) (DuelChallenge, error) {
 	w.Mu.RLock()
-	requester, target := w.Entities[requesterID], w.Entities[targetID]
-	if requester == nil || target == nil || requester.Type != TypePlayer || target.Type != TypePlayer || requester.Disconnected || target.Disconnected {
-		w.Mu.RUnlock()
-		return DuelChallenge{}, errors.New("duel player is unavailable")
-	}
-	valid := requester.InstanceID == "" && target.InstanceID == "" && requester.State != "DEAD" && target.State != "DEAD" && math.Hypot(requester.X-target.X, requester.Z-target.Z) <= 15
-	w.Mu.RUnlock()
-	if requesterID == targetID || !valid {
-		return DuelChallenge{}, errors.New("duels require two nearby players in the town safe zone")
+	defer w.Mu.RUnlock()
+	if err := w.validateDuelActorsLocked(requesterID, targetID); err != nil {
+		return DuelChallenge{}, err
 	}
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	if w.PvP.MatchByPlayer[requesterID] != "" || w.PvP.MatchByPlayer[targetID] != "" {
 		return DuelChallenge{}, errors.New("a player is already in PvP")
+	}
+	if w.PvP.playerQueuedLocked(requesterID) || w.PvP.playerQueuedLocked(targetID) {
+		return DuelChallenge{}, errors.New("leave the arena queue before starting a duel")
 	}
 	challenge := DuelChallenge{RequesterID: requesterID, TargetID: targetID, ExpiresAt: w.PvP.now().Add(30 * time.Second)}
 	w.PvP.Challenges[targetID] = challenge
@@ -260,6 +259,11 @@ func (w *World) RequestDuel(requesterID, targetID string) (DuelChallenge, error)
 func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMatch, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	// Read actors before acquiring PvP.mu, following combat's lock order.
+	var actorError error
+	if accepted {
+		actorError = w.validateDuelActorsLocked(requesterID, targetID)
+	}
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	challenge, ok := w.PvP.Challenges[targetID]
@@ -270,9 +274,11 @@ func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMa
 	if !accepted {
 		return nil, nil
 	}
+	if actorError != nil {
+		return nil, actorError
+	}
 	for _, playerID := range []string{requesterID, targetID} {
-		player := w.Entities[playerID]
-		if player == nil || player.Disconnected || player.InstanceID != "" || player.State == "DEAD" || w.PvP.MatchByPlayer[playerID] != "" {
+		if w.PvP.MatchByPlayer[playerID] != "" || w.PvP.playerQueuedLocked(playerID) {
 			return nil, errors.New("duel player is no longer available")
 		}
 	}
@@ -368,7 +374,7 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 			player := w.Entities[playerID]
 			player.Mu.Lock()
 			w.Grid.Remove(player)
-			match.Origins[playerID] = PvPOrigin{InstanceID: player.InstanceID, X: player.X, Y: player.Y, Z: player.Z}
+			match.Origins[playerID] = PvPOrigin{InstanceID: player.InstanceID, X: player.X, Y: player.Y, Z: player.Z, Health: player.Health, Mana: player.Mana}
 			player.InstanceID = match.ID
 			player.X = -8 + float64(teamIndex)*16
 			player.Z = -3 + float64(memberIndex)*6
@@ -695,7 +701,10 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 			w.Grid.Remove(player)
 			origin := match.Origins[playerID]
 			player.InstanceID, player.X, player.Y, player.Z = origin.InstanceID, origin.X, origin.Y, origin.Z
-			player.Health, player.Mana, player.State = player.MaxHealth, player.MaxMana, "IDLE"
+			// Arena refills belong only to the match, not to overworld recovery.
+			player.Health = min(player.MaxHealth, max(1, origin.Health))
+			player.Mana = min(player.MaxMana, max(0, origin.Mana))
+			player.State = "IDLE"
 			resetSceneMovementLocked(player)
 			player.Y = origin.Y
 			player.TargetX, player.TargetZ = player.X, player.Z

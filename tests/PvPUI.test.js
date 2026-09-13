@@ -18,6 +18,7 @@ describe('PvPUI', () => {
 
     test('queues both supported arena sizes', () => {
         const ui = createUI();
+        expect(ui.window.textContent).toContain('leaving restores your pre-match amounts');
         ui.onQueue = jest.fn();
         Array.from(ui.window.querySelectorAll('button')).find(button => button.textContent === 'Queue 1v1').click();
         Array.from(ui.window.querySelectorAll('button')).find(button => button.textContent === 'Queue 2v2 Party').click();

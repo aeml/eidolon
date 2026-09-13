@@ -93,7 +93,7 @@ func TestShutdownPvPCancelsUnfinishedButPreservesDecidedMatch(t *testing.T) {
 			}
 			w.StopBackground()
 			w.FinishPvPForShutdown()
-			if w.HasPvPMatch(a.ID) || a.InstanceID != "" || b.InstanceID != "" || a.X != 12 || b.X != 15 || a.Mana != 100 {
+			if w.HasPvPMatch(a.ID) || a.InstanceID != "" || b.InstanceID != "" || a.X != 12 || b.X != 15 || a.Mana != 0 {
 				t.Fatal("shutdown did not use the existing PvP exit/restoration path")
 			}
 			if len(w.PvP.DeserterUntil) != 0 {

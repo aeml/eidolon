@@ -18,6 +18,21 @@ Separate worktree based on prepared1.6 commit564487ae. Runtime stays1.6 until
 
 ## Implementation checkpoint — September 13, 03:43 UTC
 
+04:16 admission/resources batch: duels revalidate online/living/nearby overworld
+actors at acceptance, reject shared-party allies and either player's queued arena
+entry, and observe actor-before-PvP locking. Clean win, forfeit, maintenance and
+timeout return the actual entry HP/MP (clamped to current maxima), not a free refill.
+Round refills remain; UI explains this recovery policy. Abnormal process-loss
+save projection and round status/cooldown cleanup still need review.
+
+Focused admission/entry-resource/frozen-result cases PASS0.011s; arena/duel/
+maintenance/relationship regression selection PASS13.349s; UI7PASS0.877s.
+
+Publishing update:1.5 CI34735541628 is terminal green. Frozen1.6 commit564487ae
+has been pushed; CI34737205195 is in progress. Await that run and exact live
+identity/readiness checks before1.7 publication. The separately scheduled nightly
+soak34735602173 was not started or cancelled by this batch.
+
 04:08 durable-results batch: ranked profiles carry monotonic revisions and stable
 match IDs. Mongo conditional upserts reject conflicting same-revision writes and
 ignore old/replayed snapshots without overwriting newer outcomes. Hydration cannot
