@@ -14,6 +14,10 @@ these entries describe implemented changes, not milestone completion.
   Selling uses a stacked form; auction controls have at least 44px touch targets.
   Auction item stats and descriptions can be expanded without hovering. Listing
   identity/quantity validation and existing transaction callbacks are retained.
+- Touch settings now save left/right-handed action placement and 100–120%
+  control sizing independently of menu text. The camera's unobstructed region
+  follows those controls, and very short landscape uses standard size to preserve
+  viewing space. Phone and desktop camera zoom save independently across sessions.
 
 ## Focused evidence
 
@@ -24,11 +28,15 @@ these entries describe implemented changes, not milestone completion.
   Rows are 318px wide, 72–94px high, without horizontal content overflow.
 - These previews use fixtures, not production economic transactions or physical
   phone sign-off. Exhaustive matrices remain deferred under the delivery policy.
+- Touch/settings: 29 focused settings tests and 20 camera/settings tests pass
+  (overlapping suites, not 49 unique tests). Short Chrome checks at 390×844,
+  844×390 and 568×320 cover both hands at the largest selected size: all movement,
+  action and hotbar targets are in bounds, at least 44px and hit-test reachable.
 
 ## Remaining milestone work
 
 Continue four-class anatomy/hair/silhouette/movement and equipped animation fit,
-remaining phone menus, saved thumb/control preferences and camera composition.
+remaining phone menus and actual gameplay-scale composition/readability.
 Then consolidate player-facing patch notes into login/release metadata, publish
 1.2 after 1.1, and run basic deployment/live smoke. Do not publish this worktree
 before the predecessor's deployment is confirmed.
