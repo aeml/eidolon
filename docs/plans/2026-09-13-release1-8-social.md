@@ -11,6 +11,17 @@ desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
 ## Packaging checkpoint — September 13
 
+CI34744672300 failed its first race pass on one Mongo connection timeout; regular
+coverage passed and Mongo kept accepting connections. Failed jobs retried once:
+server/client/all3browser shards passed, but predeploy caught an actual full-catalog
+render fault. Slot octahedron gems are non-indexed while tables/cabinets are indexed;
+merging both under one material returned null and broke casino_update rendering.
+Normalize cloned batch inputs to non-indexed triangles. Added mixed table+slot
+regression against the real Three geometry implementation, not mocked rendering.
+CasinoController4tests PASS1.365s, changedJS lint/diffPASS.1.8 notes mention the fix.
+No new version bump, no full local matrix; push the correction and monitor its CI.
+Production remains last verified1.7 until both1.8 public identities are verified.
+
 Initial CI34744510043 failed its legacy AST dispatcher-coverage check: it counted
 only client_dispatch.go switch cases, not module handlers already dispatched by
 handleMessage. Group finder, guild events and casino correctly use the registry.

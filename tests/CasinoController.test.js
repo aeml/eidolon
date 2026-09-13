@@ -54,6 +54,23 @@ test('scene changes restore controls without teleporting back and pose cleanup r
     controller.dispose();
 });
 
+test('mixed slot gems and table furniture share valid triangle batches', () => {
+    const report = jest.spyOn(console, 'error').mockImplementation(() => {});
+    let furniture;
+    try {
+        furniture = createCasinoFurniture([table, { id: 'public-slots-earth', game: 'slots', x: -5, z: 164,
+            seats: [{ x: -5, z: 166, rotation: Math.PI }] }]);
+        expect(report).not.toHaveBeenCalled();
+        const batches = furniture.children.filter(child => child.isMesh);
+        expect(batches.length).toBeGreaterThan(0);
+        for (const mesh of batches) {
+            expect(mesh.geometry.index).toBeNull();
+            expect(mesh.geometry.getAttribute('position').count % 3).toBe(0);
+        }
+        expect(furniture.userData.seats).toHaveLength(2);
+    } finally { disposeCasinoObject(furniture); report.mockRestore(); }
+});
+
 test('walkable shell retains walls, opens a real doorway and batches the cutaway/furniture', () => {
     const shell = createCasinoShell(); const collision = new CollisionManager();
     for (const wall of shell.userData.casinoWalls) collision.addCollider(new THREE.Box3().setFromCenterAndSize(

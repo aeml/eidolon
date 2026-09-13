@@ -27,7 +27,10 @@ function batchMeshes(root) {
     root.traverse(mesh => {
         if (!mesh.isMesh || mesh.userData.casinoPickOnly) return;
         const geometries = groups.get(mesh.material) || [];
-        geometries.push(mesh.geometry.clone().applyMatrix4(inverse.clone().multiply(mesh.matrixWorld)));
+        // Boxes/cylinders are indexed, but slot gems are non-indexed polyhedra.
+        // A shared material batch must use one consistent attribute layout.
+        const geometry = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
+        geometries.push(geometry.applyMatrix4(inverse.clone().multiply(mesh.matrixWorld)));
         groups.set(mesh.material, geometries); originals.push(mesh);
     });
     for (const mesh of originals) { mesh.removeFromParent(); mesh.geometry.dispose(); }
