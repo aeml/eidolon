@@ -105,7 +105,7 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 			continue
 		}
 		foundStarter = true
-		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 4250 || quest.RewardGold != 100 {
+		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 4250 || quest.RewardGold != 200 {
 			t.Fatalf("unexpected starter daily: %+v", quest)
 		}
 		if quest.Accepted || quest.Completed || quest.Count != 0 {
@@ -151,7 +151,7 @@ func TestGenerateDailyQuestsRepairsPartialSameDayCatalogWithoutResettingProgress
 			}
 			// Repair metadata and genuinely missing gold, not the accepted
 			// kill requirement or XP promise. Fresh offers still use the catalog.
-			if quest.Type != "KILL" || quest.Category != QuestCategoryDaily || quest.RewardGold != 100 || quest.MaxCount != 10 || quest.RewardXP != 1 {
+			if quest.Type != "KILL" || quest.Category != QuestCategoryDaily || quest.RewardGold != 200 || quest.MaxCount != 10 || quest.RewardXP != 1 {
 				t.Fatalf("catalog repair changed accepted terms or failed to restore metadata: %+v", quest)
 			}
 			return
