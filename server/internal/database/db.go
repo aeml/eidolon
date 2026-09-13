@@ -14,20 +14,21 @@ import (
 )
 
 type DB struct {
-	client       *mongo.Client
-	users        *mongo.Collection
-	auctions     *mongo.Collection
-	auctionBids  *mongo.Collection
-	friendships  *mongo.Collection
-	migrations   *mongo.Collection
-	characters   CharacterRepository
-	reports      *mongo.Collection
-	guilds       *mongo.Collection
-	guildInvites *mongo.Collection
-	pvpProfiles  *mongo.Collection
-	raidLockouts *mongo.Collection
-	guildRuns    *mongo.Collection
-	guildMu      sync.Mutex
+	client          *mongo.Client
+	users           *mongo.Collection
+	auctions        *mongo.Collection
+	auctionBids     *mongo.Collection
+	friendships     *mongo.Collection
+	migrations      *mongo.Collection
+	characters      CharacterRepository
+	reports         *mongo.Collection
+	guilds          *mongo.Collection
+	guildInvites    *mongo.Collection
+	pvpProfiles     *mongo.Collection
+	blackjackTables *mongo.Collection
+	raidLockouts    *mongo.Collection
+	guildRuns       *mongo.Collection
+	guildMu         sync.Mutex
 }
 
 type User struct {
@@ -293,18 +294,19 @@ func New(uri string) (*DB, error) {
 
 	db := client.Database("eidolon")
 	database := &DB{
-		client:       client,
-		users:        db.Collection("users"),
-		auctions:     db.Collection("auctions"),
-		auctionBids:  db.Collection("auction_bid_operations"),
-		friendships:  db.Collection("friendships"),
-		migrations:   db.Collection("schema_migrations"),
-		reports:      db.Collection("reports"),
-		guilds:       db.Collection("guilds"),
-		guildInvites: db.Collection("guild_invites"),
-		pvpProfiles:  db.Collection("pvp_profiles"),
-		raidLockouts: db.Collection("raid_lockouts"),
-		guildRuns:    db.Collection("guild_dungeon_runs"),
+		client:          client,
+		users:           db.Collection("users"),
+		auctions:        db.Collection("auctions"),
+		auctionBids:     db.Collection("auction_bid_operations"),
+		friendships:     db.Collection("friendships"),
+		migrations:      db.Collection("schema_migrations"),
+		reports:         db.Collection("reports"),
+		guilds:          db.Collection("guilds"),
+		guildInvites:    db.Collection("guild_invites"),
+		pvpProfiles:     db.Collection("pvp_profiles"),
+		blackjackTables: db.Collection("casino_blackjack_tables"),
+		raidLockouts:    db.Collection("raid_lockouts"),
+		guildRuns:       db.Collection("guild_dungeon_runs"),
 	}
 	database.characters = newMongoCharacterRepository(database.users)
 	if err := database.RunMigrations(ctx); err != nil {

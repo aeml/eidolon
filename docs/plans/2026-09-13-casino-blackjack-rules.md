@@ -39,6 +39,39 @@ or real-player wagering follows from those checks.
 
 ## Required next integration
 
+Durable transaction slice now implemented: `casino_blackjack_tables` stores one
+private game-state document per physical table with a compare-and-swap version.
+A pending transfer records its immutable Gold amount/recipient and proposed next
+state with majority+journal acknowledgement BEFORE any character debit. Pending
+funds block all other table advances. Existing signed Gold receipts and complete
+character-save journaling apply the change, then the table accepts the candidate.
+Only a confirmed insufficient-funds debit may reject its candidate; save failures
+retain the intent and earned payouts cannot be discarded. Recovery rereads the
+current record, so stale work cannot debit an already resolved operation.
+
+`server/casino_gold.go` reuses the existing credit path and signed debit receipts;
+it does not create a casino wallet. The account lock must precede the table lock.
+Background work must release the table lock before acquiring any account lock;
+never hold one player's account lock while acquiring another's. Public transfers
+accept only Gold and bounded amounts (debits up to500, inclusive payouts up to8000).
+The database document is private and is never sent directly to a browser.
+
+Focused evidence: database intent/replay/concurrent-CAS/currency checks PASS0.352s
+on explicit disposable Mongo; actual character+table recovery with reopened journal
+and repository PASS0.278s, including interruption after a stake/payout full save
+but before table acknowledgement. Live-character interrupted-save/receipt checks
+PASS1.327s; competing account spends PASS0.059s. Go build-all/diffPASS. The initial
+legacy TestApplyGold selection matched no tests and is not counted as evidence.
+Owned Mongo was stopped after these focused checks. This is not a live wager UI.
+
+Next concrete integration: server-owned betting lobby with individually confirmed
+stakes, immutable participants at deal, shared rounds/views, turn deadlines and
+per-player payout completion. Reuse the serverLoops shutdown-aware scheduler.
+The protocol already holds the caller's account-work lock; take table locking
+inside it. Background recovery/payouts take recipient account lock first, then
+table lock and reread pending state. Recover intents before exposing playable
+state. Add the seated rules/stakes/card/action/result UI only after this binding.
+
 Wire the engine to authoritative table membership and seated UI through durable
 round operations. Reuse existing account-work serialization, Gold debit/credit
 receipts and character-save durability; do not invent a parallel wallet. Record

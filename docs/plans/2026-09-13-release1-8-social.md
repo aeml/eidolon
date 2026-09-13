@@ -9,6 +9,26 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Durable blackjack Gold checkpoint
+
+Added private versioned blackjack table documents and immutable pending Gold
+transfers. Intent is durably journal-acknowledged by Mongo before character money
+changes; existing full-save and signed receipt paths make retry idempotent.
+Pending transfers fence turns; insufficient debit funds keep the old state, while
+IO errors retain recovery intent and earned payouts cannot be silently discarded.
+Public-floor currency fails closed for VIP/Resonance; no separate wallet added.
+
+Focused actual Mongo CAS/replay/currency checks PASS0.352s; real character+table
+reopen/recovery PASS0.278s; interrupted live-save checks PASS1.327s; competing
+account spends PASS0.059s. Go build-all/diffPASS. Owned loopback Mongo32918 stopped.
+The initial legacy TestApplyGold pattern matched no tests, not a coverage claim.
+
+Not yet wired to seated wagers/round UI or startup/background scheduling. Next
+binds the betting/playing/settling lifecycle to these primitives. Exact handoff
+and lock ordering: [blackjack rules/integration](2026-09-13-casino-blackjack-rules.md).
+1.7CI34742314831 now all client/server/browser jobsPASS; predeploy character QA
+RUNNING. Monitor the same job;1.6 remains last verified live. No new soak run.
+
 ## Concrete blackjack round engine checkpoint
 
 Added `server/internal/game/casino_blackjack.go` as the first concrete consumer
