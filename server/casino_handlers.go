@@ -33,11 +33,21 @@ func handleMsgCasino(client *Client, message Message) {
 		sendCasinoState(client)
 		return
 	case "sit":
-		_, err = world.TakeCasinoSeat(client.playerID, request.TableID, request.Seat, time.Now())
+		if request.TableID == publicPokerTable {
+			err = validatePokerSeatClaim(client.playerID, request.Seat)
+		}
+		if err == nil {
+			_, err = world.TakeCasinoSeat(client.playerID, request.TableID, request.Seat, time.Now())
+		}
 		if err == nil {
 			err = prepareSeatedSlotLocked(client)
 		}
-	case "leave", "ready":
+	case "leave":
+		err = handlePokerLeave(client, request.SessionID, time.Now())
+		if err == nil {
+			err = world.ChangeCasinoSeat(client.playerID, request.SessionID, request.Action, request.Ready, time.Now(), request.Revision)
+		}
+	case "ready":
 		err = world.ChangeCasinoSeat(client.playerID, request.SessionID, request.Action, request.Ready, time.Now(), request.Revision)
 	case "bet":
 		err = handleBlackjackBet(client, request.SessionID, request.RoundID, request.Bet, time.Now())
@@ -47,6 +57,10 @@ func handleMsgCasino(client *Client, message Message) {
 		err = handleSlotAction(client, request.SessionID, request.RoundRevision, "spin", request.Bet, 0)
 	case "slot_bonus":
 		err = handleSlotAction(client, request.SessionID, request.RoundRevision, "bonus", 0, request.Choice)
+	case "poker_buy_in":
+		err = handlePokerBuyIn(client, request.SessionID, request.RoundID, request.Bet, time.Now())
+	case "poker_play":
+		err = handlePokerPlay(client, request.SessionID, request.RoundID, request.GameAction, request.Bet, request.RoundRevision, time.Now())
 	default:
 		client.sendError("unsupported casino action")
 		return
@@ -80,6 +94,7 @@ func sendCasinoState(client *Client) {
 		game.CasinoPresence
 		Blackjack blackjackTableView `json:"blackjack"`
 		Slots     *slotMachineView   `json:"slots,omitempty"`
-	}{world.CasinoPresenceFor(client.playerID, time.Now()), blackjackViewFor(client.playerID), slotViewFor(client.playerID)})
+		Poker     pokerTableView     `json:"poker"`
+	}{world.CasinoPresenceFor(client.playerID, time.Now()), blackjackViewFor(client.playerID), slotViewFor(client.playerID), pokerViewFor(client.playerID)})
 	client.sendSafe(createMessage("casino_update", encoded))
 }

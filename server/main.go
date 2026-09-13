@@ -438,6 +438,9 @@ func main() {
 	if err := initializeSlots(); err != nil {
 		log.Fatalf("Cannot recover durable slot entitlements: %v", err)
 	}
+	if err := initializePoker(); err != nil {
+		log.Fatalf("Cannot recover durable poker table: %v", err)
+	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
 		log.Printf("Startup auction refunds remain pending: %v", err)
@@ -926,6 +929,11 @@ func main() {
 	loops.Every(time.Second, func() {
 		if err := tickBlackjack(time.Now()); err != nil {
 			log.Printf("Blackjack table recovery remains pending: %v", err)
+		}
+	})
+	loops.Every(time.Second, func() {
+		if err := tickPoker(time.Now()); err != nil {
+			log.Printf("Poker table recovery remains pending: %v", err)
 		}
 	})
 

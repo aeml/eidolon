@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createCasinoFurniture, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 import { SlotMachineUI } from '../ui/SlotMachineUI.js';
+import { PokerTableUI } from '../ui/PokerTableUI.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { inCasinoVenue } from './casinoNavigation.js';
 
@@ -21,8 +22,9 @@ export class CasinoController {
             revision: this.data.preparation?.[this.data.yourSeat?.tableId]?.revision }));
         this.leave = this.button('Leave table', () => this.requestLeave());
         this.blackjack = new BlackjackTableUI(payload => this.send(payload));
+        this.poker = new PokerTableUI(payload => this.send(payload));
         this.slots = new SlotMachineUI(payload => this.send(payload), sound => this.engine.playAudioCue?.({ spin: AUDIO_CUES.casinoSpin, stop: AUDIO_CUES.uiClick, win: AUDIO_CUES.casinoWin, bonus: AUDIO_CUES.casinoBonus, jackpot: AUDIO_CUES.casinoJackpot }[sound]));
-        this.panel.append(this.heading, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.leave);
+        this.panel.append(this.heading, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.leave);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
         this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());
@@ -66,11 +68,14 @@ export class CasinoController {
         const seat = this.data.yourSeat;
         const isBlackjack = seat?.tableId === 'public-blackjack' && Boolean(payload.blackjack);
         const isSlots = seat?.tableId?.startsWith('public-slots-') && Boolean(payload.slots);
+        const isPoker = seat?.tableId === 'public-poker' && Boolean(payload.poker);
+        this.poker.update(isPoker ? payload.poker : null, this.engine.player?.id);
+        this.panel.classList.toggle('has-poker', isPoker);
         this.slots.update(isSlots ? payload.slots : null);
         this.panel.classList.toggle('has-slots', Boolean(isSlots));
         this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id);
         this.panel.classList.toggle('has-blackjack', isBlackjack);
-        this.ready.hidden = isBlackjack || isSlots;
+        this.ready.hidden = isBlackjack || isSlots || isPoker;
         this.roster.hidden = Boolean(isSlots);
         if (seat) this.lastSeat = seat;
         if (seat && !this.active) this.enterView();
@@ -90,6 +95,7 @@ export class CasinoController {
         this.ready.setAttribute('aria-pressed', String(Boolean(seat.ready)));
         if (isBlackjack) this.status.textContent = 'Public floor · Gold blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.';
         if (isSlots) this.status.textContent = 'Public floor · Gold slots. Free spins and bonus choices belong to you and remain saved when you leave.';
+        if (isPoker) this.status.textContent = 'Public floor · Real-player Hold’em. Leaving folds a remaining stack; all-in hands stay eligible. Unspent Gold and winnings return after the hand.';
         this.roster.replaceChildren();
         for (const occupant of occupants.sort((a, b) => a.seat - b.seat)) {
             const row = document.createElement('li');
@@ -281,6 +287,7 @@ export class CasinoController {
         for (const pose of this.poses.values()) this.restorePose(pose);
         this.poses.clear(); disposeCasinoObject(this.furniture); this.panel.remove();
         this.slots.dispose();
+        this.poker.dispose();
         this.stairButton.remove();
         this.removeFurnitureColliders();
         document.removeEventListener('keydown', this.keyHandler, true);

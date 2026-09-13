@@ -1,0 +1,75 @@
+# Fourfold Hold’em — local 1.9 implementation
+
+Implemented in active1.9 candidate, NOT deployed. Existing physical table/seats/
+camera now connect to poker_buy_in, poker_play and a dedicated seated UI.
+Runtime remains1.8 until the entire1.9 feature batch is ready.
+
+## Chosen table rules
+
+- Two to six real funded players; no solo deal, bots, rake or house opponents.
+- No-limit Texas Hold’em, securely shuffled52-card deck, two private cards,
+  burned flop/turn/river and best five of seven. Folded cards stay private, as do
+  uncontested winners' cards. Button rotates to the next funded seat. Heads-up
+  button posts small blind, acts first preflop and last on later streets.
+- Fixed5/10Gold blinds; explicit100–500Gold buy-in in steps100 for EACH hand.
+  Two funded players begin a15-second joining window; all funded players must
+  be connected to deal. Lone players wait for real opponents and can refund by
+  leaving. No repeat-hand consent inferred from a previous buy-in.
+- All betting uses the reserved stack, not additional wallet debits. Raise-to
+  means total bet on this street. Minimum increment is the last full raise,
+  initially10. Short all-ins reopen earlier raises only when the accumulated
+  increase reaches that player's full-raise threshold. Short calls remain
+  eligible only for covered pots. Derived side pots, uncalled excess returns,
+  ties and odd Gold clockwise left of the button. Maximum funded total3000Gold.
+- Thirty-second turns: timeout checks if free, otherwise folds. No automated
+  extra bets. Disconnect seat grace60seconds does not stop the turn timer.
+- Leaving before deal durably refunds buy-in BEFORE releasing the physical seat.
+  Explicit mid-hand leave durably folds a remaining stack; all-ins retain their
+  eligibility. Unspent stack AND winnings cash out after the hand, even offline.
+  Results remain12seconds before a new lobby; every hand needs new confirmation.
+
+## Persistence, privacy and reconnection
+
+Reuses legacy-named casino_blackjack_tables opaque private JSON/version/pending
+intent, signed Gold receipts and full-save journal. No new wallet, transfer-cap
+change or VIP currency choice. Pending writes fence their own account even on
+ambiguous acknowledgement. Validate recovered intents against exactly one lobby
+buy-in/refund or the recomputed completed-hand payout. One account lock BEFORE
+poker table lock; no cross-account locking. One recovery recipient per tick.
+
+Saved round validation checks cards/conservation and recomputes winners/payouts.
+Public views omit deck, burns and private seat tokens. Only recipient hole cards
+or non-folded showdown cards are exposed. Actions require current authenticated
+seat token, round ID and revision. In-progress hands reserve funded non-folded
+seats; their original accounts can use new connection tokens at the original seat
+after restart. Missing entities get60-second restart seat grace; turn deadlines
+still apply. Explicit leaving/reseating cannot undo a saved fold or refund.
+
+## UI and reusable focused evidence
+
+Phone-sized felt, community/private cards, active player and dealer markers,
+stack/street/committed Gold, main/side pots and authoritative cash-out display.
+Review/Confirm buy-ins, raises and all-ins; explicit call cost. Legal server
+actions only, duplicate-click lock, stale quote invalidation and unchanged-poll
+input/focus preservation. Rules explain Gold custody, waiting and leaving.
+Existing controller owns camera/seat/input/leave; no minigame menu bypass.
+
+- Poker rules PASS0.041s: hand categories/kickers/wheel/best-of-seven, minimum
+  real players, blinds/turns, side pots/uncalled returns, ties/odd chips, privacy,
+  short all-ins, stale actions, leave/timeouts and100 small seeded legal hands
+  checking conservation. Rule evidence, not earned play or an endurance run.
+- Actual disposable Mongo handler/storage checks PASS0.723s: funded live seat
+  entities, idempotent buy-in, solo waiting, deal/private view, cache reload/new
+  seat token, cash-outs, pre-deal refund and saved debit-intent recovery. Added
+  payout-receipt-before-intent-resolution case PASS0.514s. NOT network-client or
+  full-process restart evidence; the tests call the real service handlers.
+- Poker UI/controller8tests PASS1.593s; changedJS lint and Go build-all PASS.
+- One390px rendered component PASS8.6s; screenshot
+  /tmp/eidolon-poker-phone-20260913.png inspected. Actual UI with prepared
+  responses, NOT a connected multiplayer table/camera scene. No broad matrix.
+
+Before1.9 publication, combine actual multiplayer table/leave/reconnect and
+physical casino camera checks with the shared release review. Reuse passing
+unchanged suites. Slot economic tuning, event-site/shared encounter checks and
+other1.9 integration remain. Separate-currency VIP and final cross-game work
+remain required for1.10; currency question still awaits the user.

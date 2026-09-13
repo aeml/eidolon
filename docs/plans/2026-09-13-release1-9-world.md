@@ -86,8 +86,8 @@ collisions, climbs and descends via the actual landing button: PASS14.8s. Screen
 not connected multiplayer/reconnect evidence or a completed VIP casino. Full actual
 town placement, connected floor transitions and games remain release work.
 
-Next content: differentiated lore-themed public slots and real-player poker using
-the existing seated/wager lifecycle; functioning VIP games await approved currency.
+Public slots and real-player poker now use the existing seated/wager lifecycle
+in this local candidate; functioning VIP games await approved currency.
 Retain events' actual-world/connected check and final1.10 integration scope.
 
 ## Slot rules candidate
@@ -104,6 +104,16 @@ recovery, authenticated socket spin/resume/restart and phone component checks pa
 see [slot handoff](2026-09-13-elemental-slots.md) for reusable evidence. Economic
 sign-off and the connected full-town presentation check remain before release.
 
+## Poker candidate
+
+Two-to-six-real-player no-limit Hold’em with5/10Gold blinds, explicit per-hand
+100–500Gold buy-in, private cards, complete streets/actions, side pots/uncalled
+returns/ties, timers, folds, seat recovery and durable cash-outs. Connected
+handlers and phone-sized seated UI implemented. See
+[poker rules and evidence](2026-09-13-fourfold-poker.md) for passing focused checks.
+Actual multiplayer network/full-town camera checks remain in the shared1.9
+release review; do not repeat unchanged broad suites.
+
 ## Release dependency
 
 1.8 CI34744510043 failed legacy dispatcher assertion;254d07ae updates that check
@@ -118,7 +128,7 @@ table cylinders/boxes and slot octahedron gems could not share a material batch.
 catalog regression (CasinoController4testsPASS1.365s/lint/diffPASS). Pushed from
 frozen1.8, including an accurate1.8 patch-note bullet; merged here. New exact
 CI34746925219 for6acb6c4e4260565233bf6999bd102be36b830838 has passed server/client,
-all browser shards, predeploy and both deploy jobs; final live QA is IN_PROGRESS.
+all browser shards, predeploy, both deploy jobs and final live QA. Run is SUCCESS.
 Both public release.json and healthz independently report this exact Alpha1.8.0
-commit, with database ready. Monitor that run; don't rerun old failed34744672300.
+commit, with database ready. No further polling/rerun of these terminal jobs.
 No1.9 publication/version bump until its complete feature batch is ready.
