@@ -54,6 +54,26 @@ describe('rigid equipment batching', () => {
     test.each([
         ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
         ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
+    ])('%s keeps shared wrist grips visible when gloves are replaced', (type, factory) => {
+        const root = factory();
+        const second = factory();
+        const hands = ['Left', 'Right'].map(side => root.getObjectByName(`${type}_Hand${side}`));
+        for (const hand of hands) {
+            expect(hand.isMesh).toBe(true);
+            expect(hand.geometry).toBe(second.getObjectByName(hand.name).geometry);
+            expect(hand.userData.equipmentBodyBase).toBe(true);
+        }
+        for (const baseName of ['Leather Gloves', 'Iron Gauntlets', 'Silk Gloves']) {
+            applyProceduralEquipment(root, { gloves: item(baseName, 'gloves') });
+            for (const hand of hands) expect(hand.visible).toBe(true);
+        }
+        clearProceduralEquipment(root);
+        for (const hand of hands) expect(hand.visible).toBe(true);
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
+        ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
     ])('%s keeps a physical neck between fitted torso and head when a necklace replaces the collar', (type, factory) => {
         const root = factory();
         const neck = root.getObjectByName(`${type}_Neck`);

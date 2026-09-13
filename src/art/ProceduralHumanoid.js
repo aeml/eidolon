@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
@@ -96,7 +97,7 @@ function material(key, color, options = {}) {
             metalness: options.metalness ?? 0,
             emissive: options.emissive ?? 0x000000,
             emissiveIntensity: options.emissiveIntensity ?? 0,
-            flatShading: true,
+            flatShading: options.flatShading ?? true,
             side: options.side ?? THREE.FrontSide
         }));
     }
@@ -146,6 +147,33 @@ function addRivet(parent, name, position, size = 0.055) {
     );
 }
 
+// A shared rigid grip follows the existing wrist, so both default weapons and
+// equipped replacements sit inside a visible hand rather than an empty cuff.
+// Merge the palm, curled fingers and thumb once per handedness, not per actor.
+function addGrippingHand(parent, name, handMaterial, sign, pitch, size = 1) {
+    const shape = geometry(`humanoid-grip-${sign}`, () => {
+        const parts = [];
+        const part = (shape, position, scale, rotation = 0) => {
+            shape.scale(...scale);
+            shape.rotateZ(rotation);
+            shape.translate(...position);
+            parts.push(shape);
+        };
+        part(new THREE.SphereGeometry(1, 8, 6), [0, 0, -.015], [.10, .13, .07]);
+        for (let finger = 0; finger < 4; finger++) {
+            part(new THREE.CapsuleGeometry(.027, .10, 2, 6), [0, .072 - finger * .048, .055], [1, 1, 1], Math.PI / 2);
+        }
+        part(new THREE.CapsuleGeometry(.033, .08, 2, 6), [sign * .077, .035, .055], [1, 1, 1], sign * .65);
+        const merged = mergeGeometries(parts);
+        parts.forEach(value => value.dispose());
+        return merged;
+    });
+    const hand = addMesh(parent, name, shape, handMaterial, {
+        position: [0, -.08, .015], rotation: [pitch, 0, sign * .07], scale: [size, size, size]
+    });
+    hand.userData.equipmentBodyBase = true;
+}
+
 function addArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
     const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.81, 0.72, 0], [0.08, 0, -sign * 0.08]);
@@ -192,6 +220,7 @@ function addArm(parent, side, materials) {
     );
 
     const ringName = side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight';
+    addGrippingHand(gloveAnchor, `Fighter_Hand${side}`, materials.leather, sign, side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 1.1);
     addAnchor(gloveAnchor, ringName, [sign * 0.12, -0.02, 0.05]);
     const handName = side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand';
     return addAnchor(gloveAnchor, handName, [0, -0.04, 0],
@@ -425,6 +454,7 @@ function addRogueArm(parent, side, materials) {
     );
 
     addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.1, -0.03, 0.04]);
+    addGrippingHand(glove, `Rogue_Hand${side}`, materials.skin, sign, side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, .9);
     return addAnchor(
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
@@ -541,6 +571,7 @@ function addWizardArm(parent, side, materials) {
     );
 
     addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.1, -0.04, 0.04]);
+    addGrippingHand(glove, `Wizard_Hand${side}`, materials.skin, sign, side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0);
     return addAnchor(
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
@@ -725,6 +756,7 @@ function addClericArm(parent, side, materials) {
     );
 
     addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.11, -0.04, 0.04]);
+    addGrippingHand(glove, `Cleric_Hand${side}`, materials.skin, sign, side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, .95);
     return addAnchor(
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
@@ -1432,7 +1464,7 @@ export function createProceduralRogue() {
             emissiveIntensity: 1.15,
             roughness: 0.24
         }),
-        skin: material('rogue-skin', ROGUE_PALETTE.skin, { roughness: 0.9 }),
+        skin: material('rogue-skin', ROGUE_PALETTE.skin, { roughness: 0.9, flatShading: false }),
         hair: material('rogue-hair', ROGUE_PALETTE.hair, { roughness: 0.94 }),
         hairLight: material('rogue-hair-light', ROGUE_PALETTE.hairLight, { roughness: 0.88 }),
         lips: material('rogue-lips', ROGUE_PALETTE.lips, { roughness: 0.76 }),
@@ -1575,7 +1607,7 @@ export function createProceduralRogue() {
     const face = addMesh(
         headAnchor,
         'Rogue_Head',
-        geometry('rogue-head', () => new THREE.DodecahedronGeometry(0.285, 1)),
+        geometry('rogue-head-v2', () => new THREE.SphereGeometry(0.285, 12, 10)),
         materials.skin,
         { position: [0, 0.1, 0], scale: [0.76, 1.08, 0.8] }
     );
@@ -1728,7 +1760,7 @@ export function createProceduralWizard() {
         slate: material('wizard-slate', WIZARD_PALETTE.slate, { metalness: 0.28, roughness: 0.66 }),
         silver: material('wizard-silver', WIZARD_PALETTE.silver, { metalness: 0.86, roughness: 0.28 }),
         leather: material('wizard-leather', WIZARD_PALETTE.leather, { roughness: 0.9 }),
-        skin: material('wizard-skin', WIZARD_PALETTE.skin, { roughness: 0.9 }),
+        skin: material('wizard-skin', WIZARD_PALETTE.skin, { roughness: 0.9, flatShading: false }),
         arcane: material('wizard-arcane', WIZARD_PALETTE.arcane, {
             emissive: WIZARD_PALETTE.arcane,
             emissiveIntensity: 1.35,
@@ -1881,7 +1913,7 @@ export function createProceduralWizard() {
     const face = addMesh(
         headAnchor,
         'Wizard_Head',
-        geometry('wizard-head', () => new THREE.DodecahedronGeometry(0.29, 1)),
+        geometry('wizard-head-v2', () => new THREE.SphereGeometry(0.29, 12, 10)),
         materials.skin,
         { position: [0, 0.11, 0], scale: [0.82, 1.08, 0.82] }
     );
@@ -1966,7 +1998,7 @@ export function createProceduralCleric() {
         gold: material('cleric-gold', CLERIC_PALETTE.gold, { metalness: 0.72, roughness: 0.36 }),
         iron: material('cleric-iron', CLERIC_PALETTE.iron, { metalness: 0.68, roughness: 0.46 }),
         leather: material('cleric-leather', CLERIC_PALETTE.leather, { roughness: 0.9 }),
-        skin: material('cleric-skin', CLERIC_PALETTE.skin, { roughness: 0.9 }),
+        skin: material('cleric-skin', CLERIC_PALETTE.skin, { roughness: 0.9, flatShading: false }),
         hair: material('cleric-hair', CLERIC_PALETTE.hair, { roughness: 0.92 }),
         hairLight: material('cleric-hair-light', CLERIC_PALETTE.hairLight, { roughness: 0.84 }),
         lips: material('cleric-lips', CLERIC_PALETTE.lips, { roughness: 0.74 }),
@@ -2182,7 +2214,7 @@ export function createProceduralCleric() {
     const face = addMesh(
         headAnchor,
         'Cleric_Head',
-        geometry('cleric-head', () => new THREE.DodecahedronGeometry(0.3, 1)),
+        geometry('cleric-head-v2', () => new THREE.SphereGeometry(0.3, 12, 10)),
         materials.skin,
         { position: [0, 0.1, 0], scale: [0.78, 1.1, 0.81] }
     );
