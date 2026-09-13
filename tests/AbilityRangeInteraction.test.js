@@ -123,6 +123,16 @@ describe('Ability range interaction', () => {
         expect(controller.buildCombatActionPreview().manaCost).toBe(0);
     });
 
+    test('readiness preview reports cooldown and exact discounted mana shortage without mutating state', () => {
+        const player = { constructor: { name: 'Wizard' }, abilityName: 'Fireball',
+            stats: { damage: 5, mana: 12, manaCostReduction: .1 }, cooldowns: { Fireball: 1.21 }, abilityCooldown: 1.2 };
+        const controller = new AbilityController({ player });
+        expect(controller.buildCombatActionPreview()).toMatchObject({ cooldownRemaining: 1.3, manaCost: 27, manaShortfall: 15 });
+        player.cooldowns.Fireball = 0; player.abilityCooldown = 0; player.stats.mana = 30;
+        expect(controller.buildCombatActionPreview()).toMatchObject({ cooldownRemaining: 0, manaShortfall: 0 });
+        expect(player.stats.mana).toBe(30);
+    });
+
     test('basic attacks play miss cue and do not send when the target is out of range', () => {
         const player = {
             position: new THREE.Vector3(0, 0, 0),

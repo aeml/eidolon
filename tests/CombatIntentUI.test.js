@@ -136,6 +136,24 @@ function buildDom() {
 }
 
 describe('Combat intent HUD', () => {
+    test('phone target card updates skill readiness when cooldown or mana changes on the same target', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.isMobile = true;
+        const intent = { entityId: 'same', name: 'Imp', distance: 4, status: 'in_range',
+            preview: { manaCost: 30, abilityName: 'Fireball', cooldownRemaining: 1.2, manaShortfall: 8 } };
+        ui.updateCombatIntent(intent);
+        expect(ui.combatIntentStatus.textContent).toBe('Fireball: 1.2s cooldown');
+        ui.updateCombatIntent({ ...intent, preview: { ...intent.preview, cooldownRemaining: 0 } });
+        expect(ui.combatIntentStatus.textContent).toBe('Fireball: need 8 MP');
+        ui.updateCombatIntent({ ...intent, preview: { ...intent.preview, cooldownRemaining: 0, manaShortfall: 0 } });
+        expect(ui.combatIntentStatus.textContent).toBe(ui.formatCombatIntentStatus('in_range'));
+        ui.updateCombatIntent({ ...intent, status: 'leave_safe_zone' });
+        expect(ui.combatIntentStatus.textContent).toBe('Leave the safe zone');
+        ui.updateCombatIntent({ ...intent, status: 'move_into_range' });
+        expect(ui.combatIntentStatus.textContent).toBe('Move Into Range');
+        ui.clearCombatIntent();
+    });
     test('mana and power changes refresh an unchanged target; missing costs are not zero', () => {
         buildDom();
         const ui = new UIManager(false);

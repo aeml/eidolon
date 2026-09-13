@@ -123,12 +123,17 @@ export class AbilityController {
         const abilityName = this.getAbilityIntentSkillName(skillNameOverride);
         const power = player?.stats?.damage;
         const cost = abilityName ? this.getConfiguredManaCost(abilityName) : NaN;
+        const remaining = Math.max(0, Number(player?.cooldowns?.[abilityName]) || 0,
+            abilityName === player?.abilityName ? Number(player?.abilityCooldown) || 0 : 0);
         // Attack power is a character stat, not a target-adjusted hit estimate.
         // Spell costs share the real cast path; damage still resolves on server.
         return {
             targetId: target?.id || null,
             attackPower: Number.isFinite(power) ? Math.max(0, Math.round(power)) : null,
             manaCost: Number.isFinite(cost) ? cost : null,
+            cooldownRemaining: Math.ceil(remaining * 10) / 10,
+            manaShortfall: Number.isFinite(cost) && Number.isFinite(player?.stats?.mana)
+                ? Math.max(0, Math.ceil(cost - player.stats.mana)) : null,
             abilityName: abilityName || 'Ability'
         };
     }
@@ -380,6 +385,7 @@ export class AbilityController {
         }
 
         if (onCooldown) {
+            const remaining = skillNameOverride ? player.cooldowns[skillNameOverride] : player.abilityCooldown;
             // Buffer the input
             const existing = this.inputBuffer.find(b => b.skillName === skillNameOverride);
             if (!existing) {
@@ -398,7 +404,7 @@ export class AbilityController {
                     title: 'Ability cooling down',
                     tone: 'warning',
                     metaText: 'Cooldown',
-                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} is not ready yet.`
+                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} is ready in ${Math.max(.1, remaining).toFixed(1)}s.`
                 },
                 700
             );
@@ -415,7 +421,7 @@ export class AbilityController {
                     title: 'Not enough mana',
                     tone: 'warning',
                     metaText: 'Spell blocked',
-                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} needs more mana before you can cast it.`
+                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} costs ${cost} MP. You need ${Math.ceil(cost - player.stats.mana)} more MP.`
                 },
                 900
             );
