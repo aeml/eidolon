@@ -17,7 +17,43 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, durable casino Gold
+## Current checkpoint — September 13, connected seated blackjack
+
+Previous/current goal turns = PROGRESS.1.8WT /tmp/eidolon-1-8-social-20260913 clean
+HEADac1be419, NOT PUSHED/runtime1.7. Now actual physical-seat wagers,15sec lobby,
+shared dealer/turns, split/double confirmations,30sec timeout stands, durable
+per-player payouts,12sec result display/new-round cycling. Startup/background
+recovery uses serverLoops; private cached views expose no shoe/hole card. Added
+pending-account command/login/resume gates (account lock→table lock) so unrelated
+movement never queries the DB. Client cards/rules/stakes/Gold/confirmation/results
+integrated with CasinoController camera/input/Leave.
+
+Actual2authenticatedSocket normalGold/real timer/shared turns/payout/POST-settlement
+restart PASS29.562s. Logs /tmp/eidolon-compat-session-{2450009085,4072011933}/server.log.
+No actual mid-hand process-restart claim. Fixture fixes: drain BOTH socket world
+streams continuously and clear inherited10sec read deadline. Rendered physical
+seat/card/390px/split-cancel/Leave fixturePASS27.6s; screenshot inspected at
+/tmp/eidolon-casino-seat-view-20260913.png. Corrected last-message-vs-get-poll race
+by asserting exact emitted Leave request. UI/controller6PASS2.953s; shoevalidation
+PASS0.044s; admissiongatePASS0.023s; changedJS lint/client prep/Go build-all/diffPASS.
+Final admission gate was added after the socket binary; focused gate test passed,
+do not imply socket route included that later hook. No broad matrix/soak.
+Owned Mongo eidolon-isolated-qa-mongo-arena171309 STOPPED, lastport32919.
+
+1.7e84f6219253b6f936ac66da81684b1dd0a1bb286 VERIFIED both public endpoints as
+Alpha1.7.0/databaseREADY. CI34742314831 TERMINAL SUCCESS ALL JOBS inclfinalLiveQA.
+Ordered1.8 publishing now unblocked by1.7; no1.7 rerun/repush needed.
+
+NEXT before1.8 package/push: casino source/sink telemetry and house-advantage/
+exposure review, then cumulative1.8notes/synchronizedversions. Read concrete
+handoff docs/plans/2026-09-13-casino-blackjack-rules.md in1.8WT, don't reconstruct
+all context. Version locations index.html/login+notes, package.json+first2lock
+versions, release.json, server/main.go:buildVersion, server/Dockerfile,
+scripts/run-isolated-character-qa.sh, tests/VersionPresentation.test.js and alpha
+roadmap displayed version. Full1.9/1.10 content remains, VIP currency undecided.
+Root ledger-only; NEVER PUSH ROOT. Goal remains active.
+
+## Previous checkpoint — durable casino Gold
 
 Previous and current goal turns = PROGRESS.1.8WT clean HEADa85237da in
 /tmp/eidolon-1-8-social-20260913, NOT PUSHED/runtime1.7. Adds private versioned
