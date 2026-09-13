@@ -16,6 +16,13 @@ export class PokerTableUI {
         stakeLabel.append(this.stake);
         this.buy = this.button('Buy in · 100 Gold', () => this.buyIn()); this.lobby.append(stakeLabel, this.buy);
         this.stake.onchange = () => { this.buy.textContent = `Buy in · ${this.stake.value} Gold`; };
+        const adjustments = element('div', '', 'casino-bet-adjustments');
+        for (const [label, factor] of [['½', .5], ['2×', 2]]) adjustments.append(this.button(label, () => {
+            if (!this.canAct()) return;
+            this.stake.value = String(Math.max(100, Math.min(500, Math.floor(Number(this.stake.value) * factor / 100) * 100)));
+            this.stake.onchange();
+        }));
+        this.lobby.insertBefore(adjustments, this.buy); this.buy.className = 'casino-primary';
         this.felt = element('div', '', 'poker-felt');
         this.board = element('div', '', 'poker-board'); this.board.setAttribute('aria-label', 'Community cards');
         this.pots = element('div', '', 'poker-pots'); this.players = element('div', '', 'poker-players');

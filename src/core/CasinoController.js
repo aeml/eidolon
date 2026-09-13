@@ -24,7 +24,10 @@ export class CasinoController {
         this.blackjack = new BlackjackTableUI(payload => this.send(payload));
         this.poker = new PokerTableUI(payload => this.send(payload));
         this.slots = new SlotMachineUI(payload => this.send(payload), sound => this.engine.playAudioCue?.({ spin: AUDIO_CUES.casinoSpin, stop: AUDIO_CUES.uiClick, win: AUDIO_CUES.casinoWin, bonus: AUDIO_CUES.casinoBonus, jackpot: AUDIO_CUES.casinoJackpot }[sound]));
-        this.panel.append(this.heading, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.leave);
+        this.header = document.createElement('header'); this.header.className = 'casino-session-header';
+        this.header.append(this.heading, this.leave);
+        this.status.className = 'casino-session-status'; this.roster.className = 'casino-session-roster';
+        this.panel.append(this.header, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
         this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());

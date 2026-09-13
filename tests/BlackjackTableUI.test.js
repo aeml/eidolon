@@ -7,6 +7,17 @@ const playing = () => ({ ...betting(), phase: 'playing', players: [{ playerId: '
     actions: ['hit', 'stand', 'double', 'split'], players: [{ playerId: 'alice', seat: 0, hands: [{ cards: [7, 20], bet: 100 }] }]
 } });
 
+test('bet shortcuts change the next round stake, not a pending wager', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send); ui.update(betting(), 'alice');
+    const [half, double] = ui.adjustments.querySelectorAll('button');
+    double.click(); expect(ui.stake.value).toBe('200');
+    half.click(); expect(ui.stake.value).toBe('100');
+    ui.bet.click(); double.click(); expect(ui.stake.value).toBe('100');
+    expect(double.disabled).toBe(true);
+    ui.update({ ...betting(), roundId: 'round-two' }, 'alice'); double.click(); ui.bet.click();
+    expect(send).toHaveBeenLastCalledWith({ action: 'bet', roundId: 'round-two', bet: 200 });
+});
+
 test('one-click wagers respect balance and stay locked across unchanged polls', () => {
     const send = jest.fn(), ui = new BlackjackTableUI(send);
     ui.update(betting(), 'alice'); ui.bet.click(); ui.update(betting(), 'alice'); ui.bet.click();

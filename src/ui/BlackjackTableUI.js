@@ -24,6 +24,13 @@ export class BlackjackTableUI {
         label.append(this.stake);
         this.bet = this.button('Bet · 100 Gold', () => this.placeBet()); this.betBox.append(label, this.bet);
         this.stake.oninput = () => { this.bet.textContent = `Bet · ${this.stake.value || '…'} Gold`; };
+        this.adjustments = node('div', '', 'casino-bet-adjustments');
+        for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
+            if (this.stake.disabled) return;
+            this.stake.value = String(Math.max(20, Math.min(500, Math.floor(Number(this.stake.value) * factor / 20) * 20 || 20)));
+            this.stake.oninput();
+        }));
+        this.betBox.insertBefore(this.adjustments, this.bet); this.bet.className = 'casino-primary';
         this.cards = node('div', '', 'blackjack-hands'); this.cards.setAttribute('aria-label', 'Cards at the table');
         this.actions = node('div', '', 'blackjack-actions');
         this.root.append(this.summary, this.rules, this.betBox, this.cards, this.actions);
@@ -44,6 +51,7 @@ export class BlackjackTableUI {
         if (view.phase === 'betting' && view.dealAt && Date.parse(view.dealAt) > 0) this.summary.textContent += ` Dealing in ${Math.max(0, Math.ceil((Date.parse(view.dealAt) - Date.now()) / 1000))}s.`;
         this.betBox.hidden = !view.available || view.phase !== 'betting' || Boolean(own);
         this.bet.disabled = !this.canAct(); this.stake.disabled = !this.canAct();
+        this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });
         this.cards.replaceChildren(); this.actions.replaceChildren();
         if (view.round) {
             const round = view.round;
@@ -104,6 +112,7 @@ export class BlackjackTableUI {
     submit(payload) {
         this.pendingAction = payload;
         this.pendingKey = this.stateKey; this.bet.disabled = true; this.stake.disabled = true;
+        this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = true; });
         this.actions.querySelectorAll('button').forEach(button => { button.disabled = true; });
         this.send(payload);
     }

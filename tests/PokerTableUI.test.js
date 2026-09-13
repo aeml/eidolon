@@ -9,6 +9,17 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
+test('buy-in shortcuts change the next hand amount and lock while pending', () => {
+    const send = jest.fn(), ui = new PokerTableUI(send); ui.update(lobby(), 'A');
+    const [half, double] = ui.lobby.querySelectorAll('.casino-bet-adjustments button');
+    double.click(); expect(ui.stake.value).toBe('200');
+    half.click(); expect(ui.stake.value).toBe('100');
+    ui.buy.click(); double.click(); expect(ui.stake.value).toBe('100');
+    ui.update({ ...lobby(), roundId: 'hand-2' }, 'A'); double.click(); ui.buy.click();
+    expect(send).toHaveBeenLastCalledWith({ action: 'poker_buy_in', roundId: 'hand-2', bet: 200 });
+    ui.dispose();
+});
+
 test('poker offers one-click affordable buy-in and suppresses double clicks across polls', () => {
     const send = jest.fn(), ui = new PokerTableUI(send); ui.update(lobby(), 'A'); ui.buy.click();
     ui.update(lobby(), 'A'); ui.buy.click();

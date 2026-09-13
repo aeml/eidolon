@@ -9,6 +9,39 @@ import (
 
 func slotConstantDraw(int) (int, error) { return 0, nil }
 
+func TestSlotFlexibleStakesRetainBonusStakeAndBoundPayout(t *testing.T) {
+	for _, bet := range []int{20, 40, 60, 100, 260, 500} {
+		s, _ := NewSlotSession("earth")
+		next, debit, err := proposeSlotSpin(*s, bet, slotConstantDraw)
+		if err != nil || debit != bet || next.Bet != bet || next.Last.Payout != 26*bet {
+			t.Fatal("stake did not scale line payouts", bet, next, err)
+		}
+		if _, debit, err := proposeSlotSpin(*next, 40, slotConstantDraw); err != nil || debit != 40 {
+			t.Fatal("next paid round cannot change stake", err)
+		}
+	}
+	for _, bet := range []int{-20, 0, 19, 21, 30, 501, 520, int(^uint(0) >> 1)} {
+		if ValidSlotBet(bet) {
+			t.Fatal("invalid stake", bet)
+		}
+	}
+	fire, _ := NewSlotSession("fire")
+	fire.Bet, fire.FreeSpins = 500, 1
+	// Draw a natural Eidolon on every cell; Fire doubles the free-spin jackpot.
+	next, debit, err := proposeSlotSpin(*fire, 500, func(int) (int, error) { return 85, nil })
+	if err != nil || debit != 0 || next.Last.Payout != SlotMaxPayout {
+		t.Fatal("maximum saved return rejected", next, err)
+	}
+	encoded, _ := json.Marshal(next)
+	var restored SlotSession
+	if json.Unmarshal(encoded, &restored) != nil || restored.Validate() != nil {
+		t.Fatal("maximum result did not survive save")
+	}
+	if _, _, err := proposeSlotSpin(*fire, 20, slotConstantDraw); err == nil {
+		t.Fatal("changed a saved free-spin stake")
+	}
+}
+
 func TestSlotPaylinesWildSubstitutionAndJackpot(t *testing.T) {
 	machine, _ := slotMachine("earth")
 	grid := SlotGrid{}

@@ -16,18 +16,30 @@ export class SlotMachineUI {
         }
         this.result = node('p', '', 'slot-result');
         this.controls = node('div', '', 'slot-controls');
-        const stakeLabel = node('label', 'Total Gold stake '); this.stake = node('select');
-        for (const bet of [20, 40]) { const option = node('option', String(bet)); option.value = bet; this.stake.append(option); }
+        const stakeLabel = node('label', 'Bet amount · Gold'); this.stake = node('input');
+        this.stake.type = 'number'; this.stake.inputMode = 'numeric'; this.stake.min = '20'; this.stake.max = '40'; this.stake.step = '20'; this.stake.value = '20';
         stakeLabel.append(this.stake);
         this.stake.onchange = () => this.refreshControls();
-        this.spin = this.button('Spin · 20 Gold', () => this.spinOnce()); this.controls.append(stakeLabel, this.spin);
-        this.autoControls = node('div', '', 'slot-controls');
+        this.stake.oninput = () => this.refreshControls();
+        this.adjustments = node('div', '', 'casino-bet-adjustments');
+        for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
+            if (this.stake.disabled) return;
+            const { min, max, step } = this.betLimits();
+            this.stake.value = String(Math.max(min, Math.min(max, Math.floor(Number(this.stake.value) * factor / step) * step || min)));
+            this.refreshControls();
+        }));
+        this.spin = this.button('Spin · 20 Gold', () => this.spinOnce()); this.spin.className = 'casino-primary'; this.controls.append(stakeLabel, this.adjustments, this.spin);
+        this.modes = node('div', '', 'casino-play-modes');
+        this.manualMode = this.button('Manual', () => this.setMode(false)); this.autoMode = this.button('Auto', () => this.setMode(true));
+        this.modes.append(this.manualMode, this.autoMode);
+        this.autoControls = node('div', '', 'slot-controls slot-auto-controls');
         const countLabel = node('label', 'Auto spins '); this.count = node('input');
         this.count.type = 'number'; this.count.min = '1'; this.count.max = '1000'; this.count.step = '1'; this.count.value = '50';
         countLabel.append(this.count); this.autoControls.append(countLabel);
         for (const count of [50, 100]) this.autoControls.append(this.button(String(count), () => { this.count.value = String(count); this.refreshControls(); }));
         this.count.oninput = () => this.refreshControls();
         this.auto = this.button('Start auto spins', () => this.startAuto());
+        this.auto.className = 'casino-primary';
         this.stop = this.button('Stop auto spins', () => this.stopAuto('Auto spins stopped. Any current spin still settles.'));
         this.autoControls.append(this.auto, this.stop);
         this.autoStatus = node('p', '', 'slot-auto-status'); this.autoStatus.setAttribute('role', 'status');
@@ -37,10 +49,21 @@ export class SlotMachineUI {
         this.bonus = node('div', '', 'slot-bonus'); this.bonus.hidden = true;
         this.rules = node('details'); this.rules.append(node('summary', 'Paylines, rewards & rules'));
         this.rulesBody = node('div'); this.rules.append(this.rulesBody);
-        this.root.append(this.summary, this.lore, this.grid, this.result, this.controls, this.autoControls, this.autoStatus, this.risk, this.bonus, this.rules);
+        this.sidebar = node('div', '', 'slot-sidebar'); this.stage = node('div', '', 'slot-stage');
+        this.betHelp = node('p', '', 'slot-bet-help');
+        this.sidebar.append(this.summary, this.modes, this.controls, this.betHelp, this.autoControls, this.autoStatus, this.risk);
+        this.stage.append(this.lore, this.grid, this.result, this.bonus);
+        this.root.append(this.sidebar, this.stage, this.rules);
+        this.setMode(false);
     }
 
     button(text, action) { const n = node('button', text); n.type = 'button'; n.onclick = action; return n; }
+    setMode(automatic) {
+        if (!automatic && this.autoRemaining) this.stopAuto('Auto spins stopped. Any current spin still settles.');
+        this.automaticMode = automatic; this.autoControls.hidden = !automatic; this.autoStatus.hidden = !automatic; this.spin.hidden = automatic;
+        this.manualMode.setAttribute('aria-pressed', String(!automatic)); this.autoMode.setAttribute('aria-pressed', String(automatic));
+    }
+    betLimits() { return { min: this.view?.minBet || 20, max: this.view?.maxBet || 40, step: this.view?.betStep || 20 }; }
     clearAnimation() {
         this.timers.forEach(clearTimeout); this.timers = []; clearInterval(this.reelTimer);
         this.animating = false; this.grid.classList.remove('spinning');
@@ -69,6 +92,8 @@ export class SlotMachineUI {
         const previous = this.view; this.view = view; this.root.hidden = !view;
         if (!view) { this.clearAnimation(); clearTimeout(this.pendingTimer); this.pending = null; this.stopAuto(); return; }
         const s = view.session, machine = view.machine;
+        const limits = this.betLimits();
+        this.stake.min = String(limits.min); this.stake.max = String(limits.max); this.stake.step = String(limits.step);
         if (previous && previous.machine?.theme !== machine.theme) { this.clearAnimation(); clearTimeout(this.pendingTimer); this.pending = null; this.stopAuto('Machine changed; auto spins stopped.'); }
         this.root.dataset.theme = machine.theme;
         if (!view.available) { this.stopAuto('Auto spins stopped while synchronizing.'); this.summary.textContent = 'Synchronizing saved machine progress…'; this.refreshControls(); return; }
@@ -109,6 +134,9 @@ export class SlotMachineUI {
         const busy = !v?.available || v.processing || this.pending || this.animating;
         this.spin.disabled = busy || Boolean(s?.bonus || this.autoRemaining);
         this.stake.disabled = busy || Boolean(s?.freeSpins || s?.bonus || this.autoRemaining);
+        this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });
+        const limits = this.betLimits();
+        this.betHelp.textContent = s?.freeSpins || s?.bonus ? `Bonus stake locked at ${s.bet} Gold until saved bonus/free spins finish.` : `10 paylines · ${limits.min}–${limits.max} Gold in steps of ${limits.step}. Change your next bet between spins.`;
         this.spin.textContent = s?.freeSpins ? `Use free spin · ${s.freeSpins} left` : `Spin · ${this.stake.value} Gold`;
         this.autoControls.querySelectorAll('input, button').forEach(control => { control.disabled = busy || Boolean(s?.bonus || this.autoRemaining); });
         this.stop.disabled = !this.autoRemaining;
@@ -163,7 +191,8 @@ export class SlotMachineUI {
     spinOnce(automatic = false) {
         if (!this.canSpin() || (automatic && (!this.autoRemaining || document.hidden)) || (!automatic && this.autoRemaining)) return;
         const v = this.view, bet = v.session.freeSpins ? v.session.bet : automatic ? this.autoBet : Number(this.stake.value);
-        if (![20, 40].includes(bet) || (!v.session.freeSpins && bet > v.gold)) { this.stopAuto('Not enough Gold for the selected stake.'); this.summary.textContent = 'Choose an affordable stake of 20 or 40 Gold.'; return; }
+        const { min, max, step } = this.betLimits();
+        if (!Number.isInteger(bet) || bet < min || bet > max || bet % step || (!v.session.freeSpins && bet > v.gold)) { this.stopAuto('Choose a valid stake within your Gold balance.'); this.summary.textContent = `Choose ${min}–${max} Gold in steps of ${step}, within your balance.`; return; }
         if (automatic) this.autoRemaining--;
         this.act({ action: 'slot_spin', bet, roundRevision: v.session.revision });
         if (automatic && !this.autoRemaining) this.autoStatus.textContent = 'Final queued spin. No further spins will start.';
@@ -188,7 +217,7 @@ export class SlotMachineUI {
 
     buildRules(machine, lines) {
         this.rulesBody.replaceChildren();
-        for (const text of [machine.mechanic, '20 or 40 Gold buys all ten paylines equally. Each line pays its best left-to-right match of 3, 4 or 5 symbols. Wilds substitute except for scatters and the jackpot. Returns below include any returned stake.',
+        for (const text of [machine.mechanic, 'The displayed total Gold stake buys all ten paylines equally. Each line pays its best left-to-right match of 3, 4 or 5 symbols. Wilds substitute except for scatters and the jackpot. Returns below include any returned stake.',
             'Five natural Eidolon symbols on the center line pay 100×total stake instead of that stage’s line wins. Three or more scatters on the original landed grid award a pick-one bonus (1×, 2× or 5×stake) and free spins. Cascades do not retrigger scatters.',
             `${machine.freeSpins} free spins per trigger; at most 12 can be banked. Their original stake is retained. Bonus choices and free spins survive leaving and reconnecting. Auto spins run one at a time at the selected stake; free spins count toward the selected total. Stop cancels unstarted spins, not the current wager. Leaving, hiding the game, connection trouble, insufficient Gold or a bonus choice stops the queue. Queues are never restored on reconnect.`]) this.rulesBody.append(node('p', text));
         const table = node('table'); const header = node('tr');

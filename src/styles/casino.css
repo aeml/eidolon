@@ -52,3 +52,33 @@
     font: inherit;
 }
 .casino-entry-dialogue button:focus-visible { outline: 3px solid #f8d481; outline-offset: 3px; }
+
+/* Seated games are a primary activity, with a persistent exit and room to play. */
+body .casino-session:is(.has-slots, .has-blackjack, .has-poker) {
+    left: 50%; right: auto; bottom: 5dvh; transform: translateX(-50%);
+    width: min(1180px, calc(100vw - 48px)); max-height: 90dvh;
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: 20px; background: #101e2a; box-shadow: 0 20px 80px #000a;
+}
+.casino-session-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; position: sticky; top: -20px; z-index: 2; background: #101e2a; padding-block: 10px; }
+.casino-session-header button { flex-shrink: 0; margin: 0; }
+.casino-session .casino-session-status { color: #aabaca; font-size: 12px; }
+.casino-session .casino-session-roster { display: flex; gap: 8px 20px; flex-wrap: wrap; list-style: none; padding: 0; max-height: 56px; font-size: 12px; color: #bdcbd6; }
+.casino-session .casino-session-roster[hidden] { display: none; }
+.casino-session .casino-primary { background: #d6b86b; color: #12202b; border-color: #edcd85; font-weight: 750; }
+.casino-bet-adjustments, .casino-play-modes { display: flex; gap: 4px; }
+.casino-session .casino-bet-adjustments button { flex: 1; margin: 0; }
+.casino-play-modes { padding: 4px; background: #0d1720; border-radius: 8px; }
+.casino-session .casino-play-modes button { flex: 1; margin: 0; border: 0; }
+.casino-session :is(button, input, select):focus-visible { outline: 3px solid #f8d481; outline-offset: 2px; }
+body .casino-session .blackjack-hands { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: none; gap: 12px; }
+body .casino-session .blackjack-hand:first-child { grid-column: 1 / -1; text-align: center; }
+body .casino-session .blackjack-hand { padding: 18px; background: radial-gradient(ellipse at top, #1e554a, #102c2b); }
+body .casino-session .blackjack-card { min-width: 48px; height: 68px; font-size: 24px; }
+@media (max-width: 700px), (max-height: 500px) {
+    body .casino-session:is(.has-slots, .has-blackjack, .has-poker) { width: calc(100vw - 16px); max-height: calc(100dvh - 82px - env(safe-area-inset-top)); bottom: max(66px, calc(env(safe-area-inset-bottom) + 58px)); padding: 10px; }
+    .casino-session-header { top: -10px; gap: 8px; }
+    .casino-session-header h2 { font-size: 16px; }
+    body .casino-session .blackjack-card { min-width: 28px; height: 44px; font-size: 17px; }
+    body .casino-session .blackjack-hand { padding: 8px; }
+}

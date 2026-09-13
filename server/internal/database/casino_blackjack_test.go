@@ -34,6 +34,25 @@ func TestBlackjackTransferBoundsAndCurrency(t *testing.T) {
 	}
 }
 
+func TestSlotReturnLimitDoesNotRaiseCardTableExposure(t *testing.T) {
+	op := BlackjackTransfer{ID: "casino:slots:owner:fire:2:spin-return", PlayerID: "player-alice", Currency: "gold", Amount: 100000, NextState: []byte(`{"session":{}}`)}
+	if err := op.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	op.Amount++
+	if op.Validate() == nil {
+		t.Fatal("oversized slot return")
+	}
+	op.Amount, op.Currency = 100000, "ep"
+	if op.Validate() == nil {
+		t.Fatal("EP return admitted into Gold ledger")
+	}
+	op.Currency, op.ID = "gold", "casino:round:payout"
+	if op.Validate() == nil {
+		t.Fatal("card table exposure increased")
+	}
+}
+
 func TestBlackjackMongoIntentReplayAndConcurrentTransitions(t *testing.T) {
 	uri := os.Getenv("EIDOLON_CASINO_TEST_MONGO_URI")
 	if uri == "" {

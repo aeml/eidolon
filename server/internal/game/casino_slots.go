@@ -7,6 +7,11 @@ import (
 )
 
 const SlotRulesVersion = "fourfold-slots-v1"
+
+const SlotMinBet = 20
+const SlotMaxBet = 500
+const SlotBetStep = 20
+const SlotMaxPayout = SlotMaxBet * 200 // Fire free-spin jackpot; other themes stay below this bound.
 const slotWild, slotScatter = 6, 7
 
 // Five reels, three rows, ten fixed left-to-right paylines. Each landed cell is
@@ -120,7 +125,9 @@ type SlotView struct {
 func (s SlotSession) View() SlotView {
 	return SlotView{s.Theme, s.Revision, s.Bet, s.FreeSpins, s.StickyRows, s.Bonus, s.Last}
 }
-func ValidSlotBet(bet int) bool { return bet == 20 || bet == 40 }
+func ValidSlotBet(bet int) bool {
+	return bet >= SlotMinBet && bet <= SlotMaxBet && bet%SlotBetStep == 0
+}
 func NewSlotSession(theme string) (*SlotSession, error) {
 	if _, ok := slotMachine(theme); !ok {
 		return nil, errors.New("unknown elemental machine")
@@ -151,7 +158,7 @@ func (s SlotSession) Validate() error {
 		return errors.New("invalid machine sticky wilds")
 	}
 	if s.Last != nil {
-		if len(s.Last.Stages) < 1 || len(s.Last.Stages) > 3 || s.Last.Payout < 0 || s.Last.Payout > 8000 || s.Last.BonusPayout < 0 || s.Last.BonusPayout > s.Bet*5 {
+		if len(s.Last.Stages) < 1 || len(s.Last.Stages) > 3 || s.Last.Payout < 0 || s.Last.Payout > s.Bet*200 || s.Last.BonusPayout < 0 || s.Last.BonusPayout > s.Bet*5 {
 			return errors.New("invalid saved slot result")
 		}
 		for _, grid := range append([]SlotGrid{s.Last.Landed}, slotResultGrids(s.Last.Stages)...) {

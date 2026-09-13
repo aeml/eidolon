@@ -50,7 +50,7 @@ func decodeSlotState(key string, encoded []byte) (*slotSavedState, error) {
 	if err := state.Session.Validate(); err != nil {
 		return nil, err
 	}
-	if state.Owed < 0 || state.Owed > 8000 {
+	if state.Owed < 0 || state.Owed > game.SlotMaxPayout {
 		return nil, errors.New("invalid saved slot return")
 	}
 	switch state.Payment {
@@ -343,6 +343,9 @@ func prepareSeatedSlotLocked(client *Client) error {
 }
 
 type slotMachineView struct {
+	MinBet     int              `json:"minBet"`
+	MaxBet     int              `json:"maxBet"`
+	BetStep    int              `json:"betStep"`
 	Available  bool             `json:"available"`
 	Processing bool             `json:"processing"`
 	Gold       int              `json:"gold"`
@@ -362,6 +365,7 @@ func slotViewFor(playerID string) *slotMachineView {
 	cached, exists := slotsCache[slotRecordKey(playerID, theme)]
 	slotsMu.RUnlock()
 	view := &slotMachineView{Available: exists && cached.State.Owner == playerID, Processing: cached.Processing, Gold: player.Gold, Rules: game.SlotRulesVersion, Lines: game.SlotPaylines()}
+	view.MinBet, view.MaxBet, view.BetStep = game.SlotMinBet, game.SlotMaxBet, game.SlotBetStep
 	for _, machine := range game.SlotMachines() {
 		if machine.Theme == theme {
 			view.Machine = machine

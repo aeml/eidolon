@@ -6,7 +6,7 @@ const machine = { theme: 'earth', lore: 'Orun remembers.', mechanic: 'Sticky mid
     symbols: ['Seed', 'Fern', 'Amber', 'Roadward', 'Rootheart', 'Orun', 'Living root', 'Vault key'],
     bonusTitle: 'The archive', bonusChoices: ['Open the chest', 'Read the tablet', '<b>Follow the root</b>'],
     weights: [24, 20, 16, 12, 10, 8, 5, 5], pays: Array.from({ length: 6 }, () => [6, 16, 28]) };
-const view = { available: true, gold: 300, processing: false, machine, lines: Array.from({ length: 10 }, () => [1, 1, 1, 1, 1]),
+const view = { available: true, gold: 300, processing: false, minBet: 20, maxBet: 500, betStep: 20, machine, lines: Array.from({ length: 10 }, () => [1, 1, 1, 1, 1]),
     session: { revision: 1, bet: 20, freeSpins: 0, bonus: false } };
 const grid = Array.from({ length: 5 }, () => [0, 1, 2]);
 
@@ -119,4 +119,24 @@ test('all elemental symbols have deterministic code-native icons', () => {
         expect(getSlotSymbolIcon(theme, symbol)).toBe(icon); icons.add(icon);
     }
     expect(icons.size).toBe(32);
+});
+
+test('amount field and half/double controls change the next paid stake but not a pending spin', () => {
+    const send = jest.fn(), ui = new SlotMachineUI(send); ui.update(view);
+    ui.stake.value = '100'; ui.stake.oninput(); expect(ui.spin.textContent).toContain('100 Gold');
+    ui.adjustments.lastChild.click(); expect(ui.stake.value).toBe('200');
+    ui.adjustments.firstChild.click(); expect(ui.stake.value).toBe('100'); ui.spin.click();
+    expect(send).toHaveBeenLastCalledWith({ action: 'slot_spin', bet: 100, roundRevision: 1 });
+    ui.adjustments.lastChild.click(); expect(ui.stake.value).toBe('100');
+    ui.update({ ...view, session: { ...view.session, bet: 100, revision: 2 } });
+    ui.stake.value = '60'; ui.spin.click(); expect(send).toHaveBeenLastCalledWith({ action: 'slot_spin', bet: 60, roundRevision: 2 });
+    ui.dispose();
+});
+
+test('Manual/Auto changes visibility and switching to Manual cancels future queued spins', () => {
+    const ui = new SlotMachineUI(jest.fn()); ui.update(view);
+    expect(ui.autoControls.hidden).toBe(true); ui.autoMode.click();
+    expect(ui.spin.hidden).toBe(true); expect(ui.autoControls.hidden).toBe(false);
+    ui.auto.click(); expect(ui.autoRemaining).toBe(49); ui.manualMode.click();
+    expect(ui.autoRemaining).toBe(0); expect(ui.spin.hidden).toBe(false); expect(ui.pending).toBeTruthy(); ui.dispose();
 });
