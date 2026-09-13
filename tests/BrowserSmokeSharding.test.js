@@ -31,7 +31,8 @@ test('all three hosted browser shards require coverage verification and independ
 
 test('production character QA still waits on the complete browser matrix', () => {
     expect(predeploy).toContain('needs: [browser-smoke]');
-    expect(predeploy).toContain("if: github.event_name == 'push'");
+    expect(predeploy).toContain("if: (github.event_name == 'push'");
+    expect(predeploy).toContain('|| inputs.full_stabilization == true');
     expect(predeploy).not.toContain('always()');
     const config = readFileSync('playwright.config.js', 'utf8');
     expect(config).toContain('fullyParallel: false');

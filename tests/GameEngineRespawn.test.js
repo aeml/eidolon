@@ -1088,7 +1088,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         });
 
         expect(engine.player.markWeaknessTimer).toBe(0.1);
-        expect(engine.player.markWeaknessFactor).toBe(0);
+        expect(engine.player.markWeaknessFactor).toBe(0.2);
     });
 
     test('delta self sync applies authoritative mark weakness duration detail', () => {
@@ -1112,7 +1112,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         });
 
         expect(engine.player.markWeaknessTimer).toBe(4.25);
-        expect(engine.player.markWeaknessFactor).toBe(0);
+        expect(engine.player.markWeaknessFactor).toBe(0.2);
     });
 
     test('delta self sync applies authoritative spirit duration detail', () => {

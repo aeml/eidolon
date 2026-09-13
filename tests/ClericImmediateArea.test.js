@@ -11,7 +11,10 @@ const cases=JSON.parse(fs.readFileSync('server/internal/game/testdata/cleric_imm
 describe.each(cases)('$skill rank $rank',tc=>{
     test.each([false,true])('actual offline body-padded effect: outside=%s',outside=>{
         const p=new Cleric('caster');p.unlockedSkills.push(tc.skill);p.talentRanks={CLR_34:tc.rank};p.stats.wisdom=10;
-        p.stats.mana=200;p.stats.maxMana=200;
+        // Blessings rebuild recipient stats, including the caster. Derive a
+        // sufficient real maximum instead of assigning impossible current mana.
+        p.baseStats.intelligence=100;p.recalculateStats();p.stats.wisdom=10;
+        p.stats.mana=200;
         p.position.set(60000,40,60000);
         const trumpet=tc.skill==="Heaven's Trumpet";
         const target=trumpet?new Actor('target',{}):new Wizard('target'); target.radius=5;

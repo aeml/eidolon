@@ -304,7 +304,7 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         payloadKey: 'markWeakness',
         durationKey: 'markWeaknessDuration',
         timerProperty: 'markWeaknessTimer',
-        fallbackDuration: 10,
+        fallbackDuration: 0.1,
         extraPayloadKeys: ['markWeaknessFactor'],
         onActivate: (entity, payload) => {
             entity.markWeaknessFactor = readClericUtilityScalar(payload, 'markWeaknessFactor', entity.markWeaknessFactor, .2, .5);
