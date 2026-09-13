@@ -5,7 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 13, 00:19 UTC
+## Current checkpoint — September 13, 00:25 UTC
+
+Latest progress: 1.2 worktree now clean at **a51f8479**, NOT published. Runtime
+8cab4ade adds saved touch handedness,100–120% sizing, independently persisted
+phone/desktop camera zoom, and scaled/mirrored encounter reservation. Short
+landscape <=360px uses standard control size without overwriting preference.
+Focused settings29PASS and overlapping camera/settings20PASS. Short Chrome
+390×844/844×390/568×320 both-hands max-size hit/44px/in-bounds checks PASS; script
+`/tmp/eidolon-touch-preview-20260913.mjs`, screenshot `/tmp/eidolon-touch-left-844.png`.
+All short tool sessions terminal; no long tests started. Draft1.2 notes updated.
+Publishing34727002679 remains live: client/server/browser3 SUCCESS, browser1/2
+IN_PROGRESS. Continue same run; do not restart. Next1.2 work: remaining menus and
+hero equipped animation/readability, not another full QA matrix.
+
+### Previous detail — September 13, 00:19 UTC
 
 PROGRESS: completed local 1.2 hero grip/face refinements and touch-readable
 Trading House, on top of the Forge feature. Full goal active; NEVER PUSH ROOT.
