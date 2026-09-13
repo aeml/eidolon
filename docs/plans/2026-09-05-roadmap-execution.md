@@ -17,7 +17,48 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 03:16 UTC
+## Current checkpoint — September 13, 03:32 UTC
+
+PROGRESS:1.6 implemented and PACKAGED locally564487aeec83de8d9e6822e63879a88f41a1df92,
+NOT PUSHED. Frozen cleanWT `/tmp/eidolon-1-6-encounters-20260913`. Eight notes and
+login/package/lock/release/server/deploy/CI versionsAlpha1.6.0 synchronized.245
+version/history tests PASS2.762s, prepare:client PASS, Go build-trimpath-all PASS.
+Publish ONLY after corrected1.5 exactlive verification; then verify1.6 normally.
+
+Feature2c0200ec extends154970a9 crystal mechanics: realm boss actual patterns
+(Earth directed3-circle fissure, Water target-locked pool, Fire3 pockets,
+Air6-circle ring with safe center); same immutable circles warn and resolve,
+one impact per overlapping attack, one movement callout, existing defenses and
+10s cadence/2s warning retained. Dark King phases unchanged. Guide role/gear/rest/
+ready/recovery/5-minute-empty/reset explanations, perraid mechanics preview,
+desktop reset confirmation, actual private weekly cache availability and next
+ISO MondayUTC reset. DBunavailable =>unknown, never available; no entry lockout.
+Focused menu/phone21PASS2.464s; DB boundary/error tests and occupied-reset dispatch
+PASS; actual unknown-cache menu dispatch PASS0.087s. Prepared FOUR-role AI impact
+check uses14 legitimate class-affixed items each,5Rare/9Uncommon: tank survives
+one overlapping hit, Cleric/Wizard/Rogue leave and avoid hit. Pattern/defense
+PASS4.193s, tightened one-hit groupPASS2.098s. Four clientmarker/callout testsPASS
+0.785s. Changed lint/diffPASS. No claimed earned dungeon/raidclear, no broad soak.
+
+1.5 publishing:CI34734694245 terminalFAIL only568×320 recovery bag shrank37.5px;
+server inclrace/client/otherbrowser shards PASS. CSSfix shares collapsed recovery/
+loadouts side-by-side on shortlandscape, preserves76px bagrow; expanded controls
+unchanged. Actual exact568×320/844×390 browser cases2PASS12.5s. Patchnote expanded.
+Correctiond83231809994317aac31dcf1c901ae5e22791e2d PUSHEDmaster from clean1.5WT;
+merged into1.6. ReplacementCI34735541628 confirmedRUNNING03:32:clientPASS,
+ServerGoIN_PROGRESS. Poll SAME run; do not restart terminal predecessors. No1.5
+live claim yet. Live endpoints play.eidolonrealms.com/release.json and
+server.eidolonrealms.com/healthz must report exactd8323180/Alpha1.5.0 before1.6push.
+
+Preparednext1.7WT `/tmp/eidolon-1-7-arena-20260913`, branchwork/1-7-arena-20260913,
+HEAD29b8edaf initialplan atop564487ae. Shared node_modules symlink; no runtime1.7
+implementation yet. Read docs/plans/2026-09-13-release1-7-arena.md and inspect
+existing serverPvP/client queue/rating/season authority; nextfeatures2v2practice/
+ranked separation, wideningmatchmaking, normalization, results/rewards/anti-farm.
+Keep1.5→1.6→1.7 publication order while developing independently. All local tools/
+processes fromthisturn terminal. Full1.1–1.10 goal active; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 13, 03:16 UTC
 
 PROGRESS:1.6 crystal mechanics implemented and locally committed154970a9 in
 `/tmp/eidolon-1-6-encounters-20260913`; branchwork/1-6-encounters-20260913.
