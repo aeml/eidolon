@@ -24,6 +24,13 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
 
 ## Packaging checkpoint — September 13, 02:56 UTC
 
+Publishing correction: CI34734291355 stopped on two old starter-daily assertions
+expecting100 Gold. The authored Skeleton content level10 and100 kills now quote
+200 Gold; catalog repair fills genuinely missing Gold from that same offer while
+preserving accepted XP and kill counts. Updated those exact expectations; focused
+daily generation, quote and Gold checks PASS. No runtime change or extra version.
+The original run is terminal; publish this correction normally, without rerunning it.
+
 The remaining1.5 implementation is now complete locally. Forge decisions show a
 current/+1/bulk stat table, exact gain and material balance, using the existing
 server-matched scaling. Potency uses the same readable preview. Comparisons include
