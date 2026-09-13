@@ -17,7 +17,41 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, slot rules / render release fix
+## Current checkpoint — September 13, connected slots / 1.8 live
+
+User reaffirmed feature-first delivery: preserve ALL features, avoid excessive
+test/token use and speculative architecture, consolidate broad checks at the end.
+Continue focused changed-path and essential wallet/save/security checks only.
+
+Active1.9WT /tmp/eidolon-1-9-world-20260913 now committed60b5635a, NOT pushed;
+runtime remains1.8 until the complete1.9 batch is ready. Adds durable owner/theme
+Gold sessions on existing receipt/save infrastructure, startup/pending recovery,
+actual seat/session/revision authority, four physical cabinets, full seated slot
+UI,32 procedural symbols, generated audio and explicit paid-spin confirmation.
+Saved bonuses/free spins survive leaving/reconnect/restart. Read activeWT
+docs/plans/2026-09-13-elemental-slots.md for implementation and remaining work.
+
+Reuse existing evidence: Go build PASS; focused Mongo interruption/account tests
+PASS0.711s, bonus/free entitlement PASS0.204s; actual authenticated socket
+spin/replay rejection/resume/leave/restart PASS1.108s.20JS testsPASS2.951s;
+390px rendered componentPASS8.3s, screenshot inspected. Prepared recovery states
+and component responses are NOT earned outcomes or connected full-town camera
+proof. Opt-in economy sample finishedPASS4s; output loss retained only Air's
+0.9995 sampled return over50,000 paid cycles (approx95%[0.9810,1.0181]).
+Do not claim economic sign-off; record all-theme tuning decision before release.
+Do not rerun broad suites. No QA servers or disposable Mongo left running.
+
+Alpha1.8.0 now independently verified at BOTH public endpoints, exact
+6acb6c4e4260565233bf6999bd102be36b830838; database ready. CI34746925219 server,
+client, all3browser, predeploy and both deploy jobs PASS; final Live Release and
+Character QA still IN_PROGRESS. Monitor this same run, no redundant rerun.
+
+Next: public slot payout review, real-player poker, actual event-site/shared
+encounter and connected full-town/floor/machine checks. VIP currency question
+still unanswered; no invention or Gold fallback. Full VIP/final integration
+remain1.10 work. Goal active, not blocked. ROOT LEDGER ONLY, NEVER PUSH.
+
+## Previous checkpoint — September 13, slot rules / render release fix
 
 Previous/current goal turns = PROGRESS. Active1.9WT
 /tmp/eidolon-1-9-world-20260913 clean HEAD4a8598bf. Coreb2a0fc51 adds four
