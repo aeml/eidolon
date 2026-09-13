@@ -54,6 +54,31 @@ describe('rigid equipment batching', () => {
     test.each([
         ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
         ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
+    ])('%s has a forward run lean and articulates equipped boots without changing clip timing', (type, factory) => {
+        const root = factory();
+        applyProceduralEquipment(root, { feet: item('Iron Boots', 'feet') });
+        const clip = root.userData.animations.find(clip => clip.name === 'Run');
+        const chest = clip.tracks.find(track => track.name === 'Rig_Chest.rotation[x]');
+        expect([...chest.values].every(value => value > 0)).toBe(true);
+        expect(chest.getInterpolation()).toBe(THREE.InterpolateSmooth);
+        for (const side of ['Left', 'Right']) {
+            const track = clip.tracks.find(track => track.name === `Equipment_Foot${side}.rotation[x]`);
+            expect(track.times.at(-1)).toBeCloseTo(clip.duration);
+            expect(track.values[0]).toBeCloseTo(track.values.at(-1));
+            expect(root.getObjectByName(`Equipment_Foot${side}`).children.some(child => child.userData.equipmentVisual)).toBe(true);
+        }
+        const mixer = new THREE.AnimationMixer(root);
+        mixer.clipAction(clip).play();
+        mixer.update(clip.duration * .28);
+        expect(root.getObjectByName('Rig_Chest').rotation.x).toBeGreaterThan(0);
+        expect(Math.abs(root.getObjectByName('Equipment_FootLeft').rotation.x)).toBeGreaterThan(.01);
+        mixer.stopAllAction();
+        mixer.uncacheRoot(root);
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
+        ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
     ])('%s keeps shared wrist grips visible when gloves are replaced', (type, factory) => {
         const root = factory();
         const second = factory();

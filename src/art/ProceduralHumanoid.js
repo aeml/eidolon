@@ -922,6 +922,22 @@ function numberTrack(name, property, times, values) {
     return new THREE.NumberKeyframeTrack(`${name}.${property}`, times, values);
 }
 
+function locomotionClip(name, duration, tracks) {
+    // Boots need an ankle articulation rather than inheriting the entire shin
+    // pitch. Animate the attachment itself so equipped and default boots agree.
+    for (const side of ['Left', 'Right']) {
+        const thigh = tracks.find(track => track.name === `Rig_Thigh${side}.rotation[x]`);
+        const shin = tracks.find(track => track.name === `Rig_Shin${side}.rotation[x]`);
+        const pitch = Array.from(thigh.values, (angle, index) =>
+            THREE.MathUtils.clamp(-0.75 * (angle + shin.values[index]), -0.55, 0.45));
+        tracks.push(numberTrack(`Equipment_Foot${side}`, 'rotation[x]', thigh.times, pitch));
+    }
+    // Smooth the repeated gait instead of snapping velocity at each authored
+    // key. Attack timing stays untouched and still uses its original tracks.
+    tracks.forEach(track => track.setInterpolation(THREE.InterpolateSmooth));
+    return new THREE.AnimationClip(name, duration, tracks);
+}
+
 function createHumanoidAnimationClips() {
     const idle = [
         numberTrack('Rig_Chest', 'position[y]', [0, 0.9, 1.8], [0.42, 0.46, 0.42]),
@@ -953,7 +969,7 @@ function createHumanoidAnimationClips() {
         numberTrack('Rig_ShinRight', 'rotation[x]', runTimes, [0.02, 0.62, 0.72, 0.08, 0.02]),
         numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.66, 0, -0.66, 0, 0.66]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.66, 0, 0.66, 0, -0.66]),
-        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.16, -0.2, -0.16, -0.2, -0.16]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [0.16, 0.2, 0.16, 0.2, 0.16]),
         numberTrack('Rig_Hips', 'position[y]', runTimes, [1.76, 1.88, 1.76, 1.88, 1.76]),
         numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.2, 0.42, 0.2, 0.42, 0.2])
     ];
@@ -982,8 +998,8 @@ function createHumanoidAnimationClips() {
 
     return [
         new THREE.AnimationClip('Idle', 1.8, idle),
-        new THREE.AnimationClip('Walk', 1, walk),
-        new THREE.AnimationClip('Run', 0.6, run),
+        locomotionClip('Walk', 1, walk),
+        locomotionClip('Run', 0.6, run),
         new THREE.AnimationClip('Attack', 0.72, attack),
         new THREE.AnimationClip('Death', 1.05, death)
     ];
@@ -1023,7 +1039,7 @@ function createRogueAnimationClips() {
         numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.78, 0.08, -0.66, 0.08, 0.78]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.66, 0.08, 0.78, 0.08, -0.66]),
         numberTrack('Rig_Hips', 'position[y]', runTimes, [1.62, 1.76, 1.62, 1.76, 1.62]),
-        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.28, -0.34, -0.28, -0.34, -0.28]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [0.28, 0.34, 0.28, 0.34, 0.28]),
         numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.38, 0.62, 0.38, 0.62, 0.38])
     ];
 
@@ -1052,8 +1068,8 @@ function createRogueAnimationClips() {
 
     return [
         new THREE.AnimationClip('Idle', 2.1, idle),
-        new THREE.AnimationClip('Walk', 0.96, walk),
-        new THREE.AnimationClip('Run', 0.56, run),
+        locomotionClip('Walk', 0.96, walk),
+        locomotionClip('Run', 0.56, run),
         new THREE.AnimationClip('Attack', 0.72, attack),
         new THREE.AnimationClip('Death', 1.08, death)
     ];
@@ -1096,7 +1112,7 @@ function createWizardAnimationClips() {
         numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.55, 0.04, -0.48, 0.04, 0.55]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.28, -0.04, 0.28, -0.04, -0.28]),
         numberTrack('Rig_Hips', 'position[y]', runTimes, [1.7, 1.84, 1.7, 1.84, 1.7]),
-        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.18, -0.23, -0.18, -0.23, -0.18]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [0.18, 0.23, 0.18, 0.23, 0.18]),
         numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.34, 0.58, 0.34, 0.58, 0.34]),
         numberTrack('Rig_Focus', 'position[y]', runTimes, [0.52, 0.68, 0.52, 0.68, 0.52])
     ];
@@ -1133,8 +1149,8 @@ function createWizardAnimationClips() {
 
     return [
         new THREE.AnimationClip('Idle', 3, idle),
-        new THREE.AnimationClip('Walk', 1.12, walk),
-        new THREE.AnimationClip('Run', 0.68, run),
+        locomotionClip('Walk', 1.12, walk),
+        locomotionClip('Run', 0.68, run),
         new THREE.AnimationClip('Attack', 1.08, attack),
         new THREE.AnimationClip('Death', 1.28, death)
     ];
@@ -1175,7 +1191,7 @@ function createClericAnimationClips() {
         numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.54, 0.02, -0.52, 0.02, 0.54]),
         numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.56, 0.02, 0.56, 0.02, -0.56]),
         numberTrack('Rig_Hips', 'position[y]', runTimes, [1.69, 1.84, 1.69, 1.84, 1.69]),
-        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.16, -0.22, -0.16, -0.22, -0.16]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [0.16, 0.22, 0.16, 0.22, 0.16]),
         numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.32, 0.54, 0.32, 0.54, 0.32]),
         numberTrack('Rig_Censer', 'rotation[z]', runTimes, [0.58, 0, -0.58, 0, 0.58])
     ];
@@ -1208,8 +1224,8 @@ function createClericAnimationClips() {
 
     return [
         new THREE.AnimationClip('Idle', 2.7, idle),
-        new THREE.AnimationClip('Walk', 1.08, walk),
-        new THREE.AnimationClip('Run', 0.64, run),
+        locomotionClip('Walk', 1.08, walk),
+        locomotionClip('Run', 0.64, run),
         new THREE.AnimationClip('Attack', 0.98, attack),
         new THREE.AnimationClip('Death', 1.46, death)
     ];
