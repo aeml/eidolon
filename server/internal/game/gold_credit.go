@@ -1,6 +1,9 @@
 package game
 
-import "eidolon-server/internal/database"
+import (
+	"eidolon-server/internal/database"
+	"strings"
+)
 
 func (w *World) ApplyDurablePlayerGoldDebit(playerID, operationID string, amount int) (bool, error) {
 	w.Mu.Lock()
@@ -11,8 +14,12 @@ func (w *World) ApplyDurablePlayerGoldDebit(playerID, operationID string, amount
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
+	_, replay := player.GoldCreditReceipts[operationID]
 	if err := database.ApplyGoldDebit(&player.Gold, &player.GoldCreditReceipts, operationID, amount); err != nil {
 		return true, err
+	}
+	if !replay && strings.HasPrefix(operationID, "casino:") {
+		w.Economy.RecordSink("casino_wagers", amount)
 	}
 	player.UnjournaledSave = true
 	return true, nil
@@ -30,8 +37,12 @@ func (w *World) ApplyDurablePlayerGoldCredit(playerID, creditID string, amount i
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
+	_, replay := player.GoldCreditReceipts[creditID]
 	if err := database.ApplyGoldCredit(&player.Gold, &player.GoldCreditReceipts, creditID, amount); err != nil {
 		return true, err
+	}
+	if !replay && strings.HasPrefix(creditID, "casino:") {
+		w.Economy.RecordSource("casino_returns", amount)
 	}
 	player.UnjournaledSave = true
 	return true, nil

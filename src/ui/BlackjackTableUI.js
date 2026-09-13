@@ -17,6 +17,7 @@ export class BlackjackTableUI {
         this.rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
         this.rules.append(node('p', 'Bet 20–500 Gold in steps of 20. Double on two cards, including after splitting. Split equal-value pairs into at most four hands; split aces receive one card each. No insurance or surrender.'));
         this.rules.append(node('p', 'You have 30 seconds per decision. Timeouts stand. Confirmed wagers continue if you leave or disconnect, and payouts are saved automatically. The dealer starts 15 seconds after the first confirmed wager.'));
+        this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase Gold losses; individual rounds vary. Choosing all splits and doubles can commit up to 4,000 Gold in one round.'));
         this.betBox = node('div', '', 'blackjack-bet');
         const label = node('label', 'Wager (Gold) ');
         this.stake = node('input'); this.stake.type = 'number'; this.stake.min = '20'; this.stake.max = '500'; this.stake.step = '20'; this.stake.value = '100';

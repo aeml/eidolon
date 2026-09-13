@@ -4,6 +4,7 @@ import (
 	"errors"
 	"sync"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
@@ -12,6 +13,7 @@ import (
 func TestCasinoGoldReceiptsAndInterruptedCharacterSave(t *testing.T) {
 	_, committer := setupCharacterJournalTest(t)
 	world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}
+	world.Economy = game.NewEconomyTelemetry(time.Now())
 	player := &game.Entity{ID: "player-hero", Name: "hero", Type: game.TypePlayer, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 300}
 	world.AddEntity(player)
 	debit := database.BlackjackTransfer{ID: "casino:round-one:bet", PlayerID: player.ID, Currency: "gold", Amount: -100, NextState: []byte(`{"phase":"betting"}`)}
@@ -66,6 +68,10 @@ func TestCasinoGoldReceiptsAndInterruptedCharacterSave(t *testing.T) {
 	wrongCurrency.Currency = "vip"
 	if err := applyCasinoGoldTransferLocked(wrongCurrency); err == nil || player.Gold != 253 {
 		t.Fatal("VIP fell back to Gold")
+	}
+	summary := world.Economy.Drain(time.Now())
+	if summary.Sinks["casino_wagers"] != 100 || summary.Sources["casino_returns"] != 250 {
+		t.Fatal("casino telemetry duplicated replay or mixed other sources", summary)
 	}
 }
 

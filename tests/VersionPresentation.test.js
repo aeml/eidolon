@@ -21,6 +21,14 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.8 records social play and the actual casino boundary before preserved 1.7 history', () => {
+        expect(indexHtml.match(/data-version="1\.8\.0"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.8.0"')).toBeLessThan(indexHtml.indexOf('data-version="1.7.0"'));
+        const entry = indexHtml.split('data-version="1.8.0"')[1].split('data-version="1.7.0"')[0];
+        for (const feature of ['Find an adventuring party', 'Invitations mean consent', 'A calendar for your guild', 'Safer social tools',
+            'Take a real seat', 'Lanternhold Blackjack', 'Wagers that survive interruptions', 'The casino is still growing']) expect(entry).toContain(feature);
+        for (let minor = 0; minor <= 8; minor++) expect(indexHtml).toContain(`data-version="1.${minor}.0"`);
+    });
     test('1.7 records competitive arena and seasons before preserved 1.6 history', () => {
         expect(indexHtml.match(/data-version="1\.7\.0"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.7.0"')).toBeLessThan(indexHtml.indexOf('data-version="1.6.0"'));
@@ -503,11 +511,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.7.0');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.8.0');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.7.0</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.8.0</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -918,7 +926,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.7.0';
+        const expectedVersion = 'Alpha 1.8.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -1040,7 +1048,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.7.0`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.8.0`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

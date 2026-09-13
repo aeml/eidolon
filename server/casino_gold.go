@@ -42,8 +42,12 @@ func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) error {
 	if err != nil {
 		return err
 	}
+	_, replay := character.GoldCreditReceipts[op.ID]
 	if err := database.ApplyGoldDebit(&character.Gold, &character.GoldCreditReceipts, op.ID, -op.Amount); err != nil {
 		return err
+	}
+	if !replay && world != nil {
+		world.Economy.RecordSink("casino_wagers", -op.Amount)
 	}
 	return persistCharacterSnapshot(username, character)
 }

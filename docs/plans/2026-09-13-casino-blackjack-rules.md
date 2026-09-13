@@ -37,6 +37,35 @@ actions, timeout after serialization, public-view redaction, stake bounds and
 six-deck card conservation. No claim of mathematically measured house advantage
 or real-player wagering follows from those checks.
 
+## Economy release review — September 13
+
+The [Wizard of Odds rules calculator](https://wizardofodds.com/games/blackjack/calculator/)
+was evaluated with six decks, S17, double any two including after split, four
+hands, no resplit/hit split aces, original wager only against dealer blackjack,
+no surrender and3:2 naturals. It reports0.40312% composition-dependent optimal,
+0.42622% basic strategy with a cut card, and0.40622% basic strategy with reshuffling
+each hand. Our fresh-shoe rule matches the last model, so the UI publishes an
+approximate0.41% rule-based estimate, NOT a measured house edge from our server or
+a guarantee about any round. Poor choices, insufficient funds for recommended
+doubles/splits and timeouts can increase player losses. This is a source-backed
+rules comparison, not an independently enumerated engine proof.
+
+Exposure arithmetic: opening stake<=500, at most4hands and one double per hand
+means<=4,000 Gold committed per player and<=8,000 inclusive return. Six seats bound
+the table's inclusive return at48,000 and net house loss at24,000 per round. These
+are conservative ceilings, not probabilities or promises of attainable payouts.
+At500 opening Gold, the source-based basic-strategy expected loss is about2.03
+Gold; six500-Gold openings about12.19. No jackpot, uncapped bonus or new currency
+is introduced. The 15-second betting and12-second results windows bound cadence;
+the final1.10 economy pass still reviews observed sources/sinks and playability.
+
+Existing economy telemetry now records `casino_wagers` separately from
+`casino_returns` (inclusive of returned stakes), on first receipt application only.
+Live and offline transfers use the same categories; retries/conflicts/insufficient
+funds cannot count another wager. Like the existing combat telemetry these are
+operational counters, not a crash-proof financial ledger: durable character
+receipts/table records remain authoritative. No generic wallet framework added.
+
 ## Connected integration checkpoint
 
 `casino_blackjack_sessions.go` now binds actual physical seats to a durable15-second

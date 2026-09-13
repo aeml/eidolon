@@ -59,8 +59,12 @@ func deliverAuctionRefundLocked(refund database.AuctionRefund) error {
 	if err != nil {
 		return err
 	}
+	_, replay := character.GoldCreditReceipts[refund.ID]
 	if err := database.ApplyGoldCredit(&character.Gold, &character.GoldCreditReceipts, refund.ID, refund.Amount); err != nil {
 		return err
+	}
+	if !replay && world != nil && strings.HasPrefix(refund.ID, "casino:") {
+		world.Economy.RecordSource("casino_returns", refund.Amount)
 	}
 	return persistCharacterSnapshot(username, character)
 }

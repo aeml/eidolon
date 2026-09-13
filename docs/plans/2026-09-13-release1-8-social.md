@@ -1,13 +1,38 @@
 # Alpha 1.8.0 — find your people
 
-Developed separately from frozen1.7f3adf398. Runtime remains1.7 until packaging.
-Preserve ordered1.6→1.7→1.8 publication and live identity verification.
+Developed separately from1.7. Packaged asAlpha1.8.0; publication/live verification
+remain required.1.7e84f6219 is fully successful and verified live on both endpoints.
 
 Required: activity group finding, recruitment and role listings; persistent guild
 event scheduling; better invitations/readiness; moderation workflows built on
 existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
+
+## Packaging checkpoint — September 13
+
+Synchronized Alpha1.8.0 across login, release manifest, package/lock metadata,
+server/container/compose/deploy/CI/isolated-QA defaults and current alpha display.
+Added a cumulative1.8 patch-note entry covering Groups, consent, guild calendar,
+player safety, real seats, normal-Gold blackjack and saved interrupted wagers.
+Notes explicitly leave full slots/poker, revised town layout and walkable VIP
+content for following stages. Preserved every1.0–1.7 milestone and older history.
+
+Casino source/sink telemetry now separates wagers from inclusive returns and
+does not recount receipt replay; focused interrupted-save/replay/counter test
+PASS0.194s. Rule-based house-edge/exposure comparison and its primary source are
+recorded in the blackjack handoff; UI discloses approximate0.41% under correct
+basic strategy plus possible4,000-Gold total commitment from chosen splits/doubles.
+This is not an independently measured live-Eidolon return or a winnings promise.
+
+Focused version/BlackjackUI checks PASS250tests in12.728s; changedJS lint,
+Go build-all and diff checks PASS. Reused prior connected/rendered evidence for
+unchanged behavior. No broad local matrix/soak. Ready to commit/push after1.7;
+do not claim1.8 live until its own CI and both public identities confirm it.
+
+Asked the user asynchronously for the future VIP currency's name and acquisition
+rules before1.9 integration. It remains undecided, with no Gold/Resonance fallback;
+public casino/world events can proceed while that answer is pending.
 
 ## Connected blackjack and release checkpoint
 
