@@ -187,6 +187,7 @@ export class UIBindings {
         ui.inventory.onSortInventory = () => {
             engine.network.send('inventory_sort', {});
         };
+        ui.inventory.onLoadoutRequest = (type, payload) => engine.network.send(type, payload);
 
         ui.forge.onForgeUpgrade = (slot, amount) => {
             engine.network.send('forge_upgrade', { slot, amount });

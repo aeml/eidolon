@@ -1,6 +1,7 @@
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
 import { MobileItemDetails } from './MobileItemDetails.js';
 import { PhoneStashUI } from './PhoneStashUI.js';
+import { EquipmentLoadoutUI } from './EquipmentLoadoutUI.js';
 import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 /**
@@ -16,6 +17,8 @@ export class InventoryUI {
 
         // --- DOM refs ---
         this.inventoryScreen = document.getElementById('inventory-screen');
+        this.loadouts = new EquipmentLoadoutUI({ host: this.inventoryScreen, getPlayer: () => this._getLastPlayer(),
+            send: (type, payload) => this.onLoadoutRequest?.(type, payload) });
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.inventoryGuidance = document.getElementById('inventory-guidance');
         this.goldDisplay = document.getElementById('gold-display');
@@ -811,6 +814,7 @@ export class InventoryUI {
 
     updateInventory(player) {
         if (!player) return;
+        this.loadouts.refreshPlayer();
         this.updateEquipmentRecovery(player);
 
         if (this.goldDisplay) {

@@ -427,6 +427,13 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+        } else if (msg.type === 'loadout_result') {
+            this.uiManager?.inventory?.loadouts?.handleResult(msg.payload);
+            if (msg.payload?.applied && Array.isArray(msg.payload.hotbar)) {
+                this.player.customHotbar = true;
+                msg.payload.hotbar.slice(0, 4).forEach((skill, index) => this.uiManager.assignSkillToSlot(index, skill || null));
+            }
+            if (!msg.payload?.success && msg.payload?.message) this.uiManager?.addChatMessage?.('System', msg.payload.message);
         } else if (msg.type === 'equipment_result') {
             this.uiManager?.inventory?.handleEquipmentActionResult?.(msg.payload);
             if (!msg.payload?.success && msg.payload?.message) this.uiManager?.addChatMessage?.('System', msg.payload.message);
@@ -1113,7 +1120,7 @@ class GameEngineNetworkMessageMethods {
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
                         // Update Hotbar if skills changed or if we have skills but hotbar is empty
-                        const isHotbarEmpty = !this.player.hotbar || this.player.hotbar.every(s => !s);
+                        const isHotbarEmpty = !this.player.customHotbar && (!this.player.hotbar || this.player.hotbar.every(s => !s));
                         if (prevUnlocked !== currUnlocked || prevBranch !== this.player.selectedBranch || (currUnlocked > 0 && isHotbarEmpty)) {
                             console.log(`Updating Hotbar: Skills=${currUnlocked}, Branch=${this.player.selectedBranch}, Empty=${isHotbarEmpty}`);
                             this.uiManager.updateHotbar(this.player);
@@ -1352,7 +1359,7 @@ class GameEngineNetworkMessageMethods {
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
                         // Update Hotbar if skills changed
-                        const isHotbarEmpty = !this.player.hotbar || this.player.hotbar.every(s => !s);
+                        const isHotbarEmpty = !this.player.customHotbar && (!this.player.hotbar || this.player.hotbar.every(s => !s));
                         if (prevUnlocked !== currUnlocked || prevBranch !== this.player.selectedBranch || (currUnlocked > 0 && isHotbarEmpty)) {
                             console.log(`[Delta] Updating Hotbar: Skills=${currUnlocked}, Branch=${this.player.selectedBranch}`);
                             this.uiManager.updateHotbar(this.player);

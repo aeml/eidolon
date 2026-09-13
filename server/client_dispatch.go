@@ -258,9 +258,10 @@ func (c *Client) dispatchMessage(msg Message) {
 				Wisdom:       char.Stats.Wisdom,
 				Vitality:     char.Stats.Vitality,
 			},
-			SkillPoints:    max(0, char.SkillPoints),
-			SelectedBranch: char.SelectedBranch,
-			UnlockedSkills: []string{},
+			SkillPoints:       max(0, char.SkillPoints),
+			EquipmentLoadouts: gameLoadouts(char.EquipmentLoadouts),
+			SelectedBranch:    char.SelectedBranch,
+			UnlockedSkills:    []string{},
 		}
 		entity.NormalizeResonanceProgress()
 		entity.ApplySavedProgression(progression)
@@ -922,6 +923,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		if err := chatService.Send(c, payload); err != nil {
 			c.sendError(err.Error())
 		}
+
+	case MsgGetLoadouts, MsgSaveLoadout, MsgApplyLoadout:
+		c.handleEquipmentLoadout(msg)
 
 	case MsgEquip:
 		if c.playerID == "" {

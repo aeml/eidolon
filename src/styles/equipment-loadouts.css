@@ -1,0 +1,15 @@
+.equipment-loadouts { margin: 8px 12px; border: 1px solid #66573c; border-radius: 6px; background: #161a22; color: #ddd7c7; min-height: 44px; flex: 0 1 auto; overflow: auto; }
+.equipment-loadouts > summary { padding: 12px; cursor: pointer; color: #e4c98d; min-height: 44px; box-sizing: border-box; }
+.equipment-loadouts-body { padding: 0 12px 12px; display: grid; gap: 10px; }
+.equipment-loadouts-body p { margin: 0; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.equipment-loadouts-body label { display: grid; gap: 5px; }
+.equipment-loadouts-body :is(input, select, button) { min-height: 44px; min-width: 0; width: 100%; box-sizing: border-box; padding: 8px; font: inherit; border: 1px solid #66573c; border-radius: 4px; color: #ede5d5; background: #252b36; }
+.equipment-loadouts-body :is(input, select, button):focus-visible { outline: 2px solid #e4c98d; outline-offset: 2px; }
+.equipment-loadouts-body button { cursor: pointer; }
+.equipment-loadouts-body button:disabled { opacity: .5; cursor: default; }
+.loadout-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.loadout-status { color: #e4c98d; }
+.mobile-mode .equipment-loadouts { max-height: 45%; touch-action: pan-y; overscroll-behavior: contain; }
+.mobile-mode #inventory-screen:has(.equipment-loadouts[open]) :is(#inventory-grid, .inventory-guidance) { display: none; }
+.mobile-mode .equipment-loadouts[open] { flex: 1 1 auto; max-height: none; }
+.mobile-mode .equipment-loadouts-body, .mobile-mode .equipment-loadouts-body p { font-size: 16px; }

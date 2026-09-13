@@ -56,6 +56,9 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgResetDungeon:     policy(accessCharacter, 1<<10, 3, 10*time.Second),
 
 	MsgEquip:             policy(accessCharacter, 2<<10, 20, time.Second),
+	MsgGetLoadouts:       policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgSaveLoadout:       policy(accessCharacter, 2<<10, 3, 10*time.Second),
+	MsgApplyLoadout:      policy(accessCharacter, 1<<10, 3, 10*time.Second),
 	MsgUnequip:           policy(accessCharacter, 2<<10, 20, time.Second),
 	MsgInventoryMove:     policy(accessCharacter, 2<<10, 30, time.Second),
 	MsgInventoryDrop:     policy(accessCharacter, 2<<10, 10, time.Second),

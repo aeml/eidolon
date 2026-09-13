@@ -22,7 +22,36 @@ milestone is packaged. Feature-first work; focused safety checks, no new soak.
   a separate future VIP currency. Do not name or permanently define that currency.
 - Package, publish and verify1.5 with patch notes and a synchronized login version.
 
-## Starting evidence / next action
+## Implementation checkpoint — September 13, 02:16 UTC
+
+The first loadout slice is implemented locally, not released:
+
+- Three named server-owned gear/skill-bar presets, persisted in character saves
+  and hydrated on login. Presets reference existing item IDs, never stat copies.
+- Atomic equipment swaps support full-bag replacements and exchanging rings.
+  Missing/stashed/sold, duplicated, invalid-slot, stacked or level-gated gear is
+  rejected before mutation. Unsupported legacy slots remain recoverable and
+  cannot be copied into an active slot. Swaps do not refill depleted HP/MP.
+- Save/apply require a living character in safe town, outside instances and
+  active/recent combat. Skills are revalidated against current unlocks.
+- Rate-limited owner messages use existing per-account serialization and durable
+  save journal. Database failure reports the live applied state honestly and
+  retains the pending save for ordinary recovery.
+- Bag panel supports named slots, explicit overwrite confirmation and server
+  error feedback. Phone expansion uses the bag's content space; 44px controls
+  and overwrite confirmation were inspected in actual Chrome at 390px.
+- Focused Go loadout/core + persistence/handler/protocol checks passed. Fifteen
+  loadout/phone-stash UI checks passed; final loading-state guard has a targeted
+  loadout-only rerun. Changed JS lint and diff whitespace checks passed.
+
+Next: persist/restore the applied skill-bar selection automatically on reconnect
+(saved preset contents already survive); integrate build choices with existing
+paid-respec/unlock rules. Then appearance collection, Forge/comparison and economy
+scope below. No claim that the entire loadout/build feature or 1.5 is complete.
+Current frontend bar changes only on a server-confirmed apply; intentionally
+empty bars are not immediately overwritten by unchanged network snapshots.
+
+## Starting evidence
 
 No existing loadout or wardrobe implementation was found in current source.
 `Item.ID` is persisted in game/database items. Entity holds inventory/stash arrays,

@@ -86,6 +86,7 @@ type Character struct {
 	Stash                []Item               `bson:"stash"`
 	Buyback              []Item               `bson:"buyback"`
 	Equipment            map[string]Item      `bson:"equipment"`
+	EquipmentLoadouts    []EquipmentLoadout   `bson:"equipment_loadouts,omitempty"`
 	Quests               []Quest              `bson:"quests"`
 	LastDailyQuest       time.Time            `bson:"last_daily_quest"`
 	SkillPoints          int                  `bson:"skill_points"`
@@ -98,6 +99,13 @@ type Character struct {
 	// Social
 	PartyID         string                  `bson:"party_id,omitempty"`
 	DungeonProgress *CharacterDungeonResume `bson:"dungeon_progress,omitempty"`
+}
+
+type EquipmentLoadout struct {
+	Name      string            `bson:"name"`
+	Class     string            `bson:"class"`
+	Equipment map[string]string `bson:"equipment"`
+	Hotbar    []string          `bson:"hotbar"`
 }
 
 type CharacterWellRested struct {
