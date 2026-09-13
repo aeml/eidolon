@@ -17,6 +17,13 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
   shortage; phone range/safe-zone warnings retain priority. Desktop skill preview
   includes the same readiness detail. Cooldown/mana rejection messages give exact
   remaining time or missing MP. Uses resolved cast costs; no economy/input changes.
+- Phone primary skill and hotbar support thumb-relative drag aiming, with a world
+  range ring, direction/endpoint preview and numeric range feedback. Release casts
+  through AbilityController; sliding back cancels. Taps retain selected-target,
+  self and ally behavior; dragging self/ally skills cancels instead of redirecting
+  them. Only the owning touch can commit; canceled touches, input reset, death,
+  menu interruption and changed skill assignment cancel. Preview tracks current
+  player position/camera and preserves realm elevation. No server rules changed.
 
 ## Focused checks
 
@@ -30,6 +37,11 @@ labelled1.2 until milestone packaging. Full1.3 scope remains in the main roadmap
 - Readiness:18 controller/HUD tests pass, followed by6 HUD tests after adding
   warning-priority coverage. Actual390px Chrome card screenshot inspected at
   `/tmp/eidolon-1-3-readiness-phone.png`; no extra panel was introduced.
+- Touch aim/world tap/joystick ownership:21 tests pass, plus changed-file lint.
+  Actual390px Chrome touch input showed a range-clamped preview with zero casts
+  while held and exactly one on release. Screenshot inspected at
+  `/tmp/eidolon-1-3-aim-phone.png` (isolated presentation fixture, not live combat).
+  No broad playthrough or soak was run for this feature.
 
 ## Next
 
@@ -38,8 +50,5 @@ movement transitions and existing class tuning. Retain dungeon ability guards,
 touch target selection and dangerous telegraph readability. Consolidate this
 milestone with player-facing notes and live smoke after1.2 deploys.
 
-Next concrete feature is the roadmap's drag-to-aim preview and cancellation:
-existing mobile tap-to-select/overlap cycling already works (GameEngineMovement),
-but AbilityController currently casts toward the selected enemy/facing without
-an explicit drag aim. Extend existing thumb buttons, preserving self/ally casts,
-real server targeting and cancellation without accidental movement or autoplay.
+Next concrete work: anticipation/impact presentation and camera options, then
+remaining class tuning. Existing tap-to-select/overlap cycling is retained.

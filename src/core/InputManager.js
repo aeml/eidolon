@@ -454,6 +454,7 @@ export class InputManager {
     }
 
     clearInputState() {
+        this.touchAbilityAim?.cancel();
         this.resetJoystick?.();
         this.pinchState = null;
         this.worldTapState = null;
@@ -480,6 +481,7 @@ export class InputManager {
     }
 
     dispose() {
+        this.touchAbilityAim?.dispose();
         this.resetJoystick?.();
         this.pinchState = null;
         this.worldTapState = null;

@@ -95,6 +95,7 @@ class GameEngineRuntimeMethods {
 
     update(dt) {
         this.frameCount++;
+        this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
 
         // Manual movement owns this tick before buffered casts, actor movement

@@ -81,6 +81,10 @@ export class AbilityController {
         return 12.0;
     }
 
+    canGroundAim(skillName) {
+        return !SELF_CAST_ABILITIES.has(skillName) && !PARTY_TARGET_ABILITIES.has(skillName);
+    }
+
     getAbilityIntentSkillName(skillNameOverride = null) {
         const player = this.engine.player;
         return skillNameOverride || this.pendingAbilitySkill || player?.abilityName || null;

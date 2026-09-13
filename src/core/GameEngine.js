@@ -10,6 +10,7 @@ import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
+import { TouchAbilityAim } from './TouchAbilityAim.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { getAbilityRange } from './AbilityRange.js';
@@ -475,6 +476,7 @@ export class GameEngine {
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
+        if (this.isMobile) new TouchAbilityAim(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
         this.currentInstanceType = null;
         this.currentDungeonRoomState = null;
