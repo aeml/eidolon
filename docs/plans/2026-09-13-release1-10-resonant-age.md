@@ -72,10 +72,23 @@ in `/tmp/eidolon-1-9-world-20260913` now reports the same required conditions
 separately, with unchanged timeout/acceptance. Syntax/diff checks pass. Merged
 forward here; no new deployment or duplicate suite launched for a test-only edit.
 
-Next safe diagnostic work: use the focused Water recall/re-entry route with the
-improved assertion to identify the failing condition; no broad campaign rerun or
-production balance changes. Avoid sharing live QA account sessions concurrently.
-Fix only a demonstrated cause, retaining the original return-to-town requirement.
+Focused follow-up completed: `EIDOLON_ISOLATED_QA_ROUTE=water-recall` now runs ONLY
+the existing Water route, with retries disabled, on the standard disposable
+server/database. Run waterrecall0913a PASS (33.6s test,38.4s Playwright total),
+including entry/eastward movement/reconnect/recall/re-entry/final recall and all
+diagnostic predicates. Production gameplay unchanged. This does not diagnose or
+erase the earlier intermittent live failure; retain it for final integration,
+and do not repeat unchanged routes hoping to manufacture a diagnosis. The route
+is local f14507b0, merged here. Syntax/diff checks PASS; credential artifact scan
+PASS. Its temporary containers/database/image were removed by the existing trap;
+post-run container inspection confirmed no waterrecall0913a containers remain.
+
+Implementation is now awaiting the user's separate VIP currency name/acquisition
+policy. This same unresolved authority has persisted across more than three goal
+turns; 1.9 deployment and the independent targeted follow-up are finished. No
+currency fallback or invented monetization. Resume VIP work when supplied, then
+the ONE consolidated final acceptance pass and full1.10 release. Goal blocked
+on that choice, NOT complete. No further unchanged test polling/restarts needed.
 
 See 1.9 release, elemental-slot and Fourfold-poker handoffs. Implemented: rotating
 four-realm defended events and hazard calming; repositioned stash/full walkable
