@@ -13,6 +13,7 @@ export async function exercisePartyDungeonResume(leader, member) {
     await openDungeonGuide(leader);
     if (!(await leader.locator('#dungeon-party-state-box').innerText()).includes('No active party instance')) {
         await leader.locator('#btn-reset-dungeon').click();
+        await leader.locator('#btn-confirm-dungeon-reset').click();
         await expect(leader.locator('#dungeon-menu')).toBeHidden();
         await openDungeonGuide(leader);
     }

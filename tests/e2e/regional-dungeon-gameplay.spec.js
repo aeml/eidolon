@@ -21,6 +21,7 @@ test('Water dungeon accepts eastward movement, reconnect, town recall and re-ent
         // Use the normal leader-only reset control on this dedicated solo QA run.
         await expect(page.locator('#btn-reset-dungeon')).toBeVisible();
         await page.locator('#btn-reset-dungeon').click();
+        await page.locator('#btn-confirm-dungeon-reset').click();
         await expect(page.locator('#dungeon-menu')).toBeHidden();
         await openDungeonGuide(page);
         await expect(page.locator('#dungeon-party-state-box')).toContainText('No active party instance');
