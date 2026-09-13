@@ -17,7 +17,34 @@ cross-feature checks to a consolidated stabilization phase after feature complet
 with targeted reruns only where fixes require them. Keep progress reports brief and
 feature-focused. Do not weaken assertions merely to obtain a passing release.
 
-## Current checkpoint — September 13, 1.9 pushed / final milestone opened
+## Current checkpoint — September 13, aftermath and cadence delivered locally
+
+Previous preference-only turn = NO PROGRESS; revalidated current work and took
+the next implementation action. This goal turn = PROGRESS. Active clean feature
+worktree `/tmp/eidolon-1-10-resonant-age-20260913` now commits **b39a151d** locally
+(not pushed). Runtime remains1.9. Adds Ilyra's optional **A Letter Without a
+Throne** after the saved/manual Dark King completion, with Mara/Selen follow-up
+topics. Preserves the finale and existing saves; no new quest/reward authority.
+Replaces obsolete daily optimization Help with an optional activity guide and
+documents sustainable cadence in `docs/CONTENT_CADENCE.md` using existing resets.
+
+Focused checks:43 conversation/witness/aftermath tests PASS3.623s; changedJS lint
+PASS; one changed Help presentation assertion PASS1.164s; diffcheckPASS. Session
+49816 from the earlier handoff was authoritatively missing, so that small check
+was rerun once as39513 and observed to successful completion. No new broad matrix.
+Browser reading/layout remains part of final integration, not claimed from JSDOM.
+
+Exact1.9 CI34749377284 remains IN_PROGRESS: Go/Jest and browser shard3 PASS,
+browser shards1/2 running at latest observation. Monitor SAME run; no new trigger.
+No1.9 live claim yet. Frozen1.9 WT and root restrictions below still apply.
+
+NEXT: VIP name/acquisition policy is now the feature dependency needing user
+direction; asked again at the actual implementation boundary. Do not invent
+currency, acquisition, conversion or spending policy. Both functional VIP games
+and consolidated final integration remain required. Goal active, not complete;
+no blocked audit threshold met. No QA server/browser/container started this turn.
+
+## Previous checkpoint — September 13, 1.9 pushed / final milestone opened
 
 Previous/current goal turns = PROGRESS.1.9 PACKAGED/PUSHED master exact
 e86e29a0f808e7547678c77485b8441c06ee067c from frozen clean
