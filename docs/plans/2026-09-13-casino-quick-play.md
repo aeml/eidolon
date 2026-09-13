@@ -1,5 +1,9 @@
 # Casino quick play — local 1.10 changes
 
+Release status: this feature batch shipped early in **Alpha1.9.1 c8741288** at the
+user's request. CI34771598671 all ten jobs SUCCESS; client/backend public release
+identities verified September13. Earlier local-only notes below are historical.
+
 User requested fewer wager clicks, visible spinning reels and selectable queues
 such as 50 or 100 spins. This supersedes the original review/confirm UI decisions
 in the blackjack, poker and elemental-slot handoffs. Not deployed yet.

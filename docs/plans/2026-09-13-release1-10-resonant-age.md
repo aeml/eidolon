@@ -2,6 +2,21 @@
 
 ## Interim release — Alpha 1.9.1
 
+**Verified live September13 18:00UTC:** c87412881f689684be94248e951d632994eef68e,
+Alpha1.9.1 on public client/runtime and backend, database ready. Exact workflow
+34771598671 completed SUCCESS across all ten jobs. Live gameplay8passed(6.9m),
+town recovery/Well Rested2passed(1.4m)+1passed(50.8s), no reported flaky result.
+This run is terminal; do not poll/restart it. The earlier aa940fcb run failed one
+obsolete22-collider assertion; the correction checks23 plus the physical door's
+exact bounds. No runtime behavior was changed to satisfy that test.
+
+The shared casino, direct wagers/animated auto-spin and aftermath/Help content
+below are now shipped. Their earlier local-only checkpoints are historical.
+The guarded VIP floor is intentional for now; EP exchange/allowance quantities
+were requested asynchronously and remain undecided, with payment integration
+excluded. Continue remaining1.10 scope and consolidated integration without
+repeating successful1.9.1 release checks or claiming the full roadmap complete.
+
 User requested publishing the completed shared casino/quick-play changes now.
 Package these plus the already completed aftermath/Help content as **1.9.1**, with
 matching login/runtime identities and cumulative patch notes. This is not final

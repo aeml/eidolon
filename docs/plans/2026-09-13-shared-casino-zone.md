@@ -1,5 +1,10 @@
 # Shared casino zone — implementation handoff
 
+Release status: shipped in **Alpha1.9.1 c8741288**, exactCI34771598671 all ten jobs
+SUCCESS; public client/backend identities and database readiness independently
+verified September13. Local-only descriptions below preserve implementation
+history, not current deployment status. Full1.10 acceptance remains separate.
+
 User revision: **EP means Eidolon Points**. Planned sources are a monthly VIP
 allowance and fixed-rate Gold → EP exchange; spending is casino-only plus a
 future cosmetic VIP Vendor. Amounts remain undecided and payment integration is
