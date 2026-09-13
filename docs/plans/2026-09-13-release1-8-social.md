@@ -9,6 +9,26 @@ existing block/report/guild authority. Add authoritative physical casino seats,
 table presence, session/reconnect handling and camera/input ownership for both
 desktop and phones. No remote menu-only casino or pretend multiplayer seats.
 
+## Concrete blackjack round engine checkpoint
+
+Added `server/internal/game/casino_blackjack.go` as the first concrete consumer
+of shared-round infrastructure. Six-deck secure shuffle, canonical seat turns,
+30-second deadlines, hit/stand/double/split, dealer peek/S17, natural3:2 and exact
+integer returns are implemented. Immutable proposals report additional stakes
+without mutating the original round; detached public views hide the shoe/hole
+card. Serialized rounds retain the same shoe/deadline and do not redeal on resume.
+Rules and remaining money/network integration are in
+[the blackjack handoff](2026-09-13-casino-blackjack-rules.md).
+
+Focused blackjack rules selection PASS0.016s; Go build-all and diff checks PASS.
+This is not yet connected to Gold, live table messages, or a playable seated UI.
+Do not enable wagers or claim1.8 closure from standalone rules tests. Next is
+durable account-serialized stake/settlement integration, then the shared UI.
+Required full slots/poker/two-floor/VIP content remains in subsequent stages.
+
+1.7correctede84f6219 CI34742314831: client/serverPASS, three browser shards running.
+No deployment success claimed, no job restarted, no broad local soak run.
+
 ## Shared preparation checkpoint
 
 Server presence now includes a shared preparation phase per table: waiting for
