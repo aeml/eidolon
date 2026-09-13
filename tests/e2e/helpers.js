@@ -1915,11 +1915,18 @@ export async function returnToTown(page, { allowRespawn = true } = {}) {
     // Do not accept that alone as proof recall reached the starting city.
     await expect.poll(() => page.evaluate(() => {
         const game = window.game;
-        return Boolean(game?.player && !game.currentInstanceId && !game.currentDungeonLayout
-            && Math.hypot(game.player.position.x + 1.25, game.player.position.z - 200) < 3
-            && game.collisionManager.dungeonWalkableRects.length === 0
-            && game.renderSystem.instanceEnvironmentGroup.children.some(child => child.name === 'DungeonEntrance'));
-    }), { timeout: 30_000, message: 'recall must finish town scenery, collision and authoritative-position recovery' }).toBe(true);
+        return {
+            playerReady: Boolean(game?.player),
+            instanceCleared: !game?.currentInstanceId,
+            layoutCleared: !game?.currentDungeonLayout,
+            positionRecovered: Boolean(game?.player && Math.hypot(game.player.position.x + 1.25, game.player.position.z - 200) < 3),
+            collisionRecovered: game?.collisionManager?.dungeonWalkableRects.length === 0,
+            sceneryRecovered: Boolean(game?.renderSystem?.instanceEnvironmentGroup.children.some(child => child.name === 'DungeonEntrance'))
+        };
+    }), { timeout: 30_000, message: 'recall must finish town scenery, collision and authoritative-position recovery' }).toEqual({
+        playerReady: true, instanceCleared: true, layoutCleared: true,
+        positionRecovered: true, collisionRecovered: true, sceneryRecovered: true
+    });
     // A stale charge/jump can move the player away on the tick after arrival.
     await page.waitForTimeout(1_100);
     const recovered = await readPlayerState(page);
