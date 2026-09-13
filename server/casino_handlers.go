@@ -18,6 +18,7 @@ func handleMsgCasino(client *Client, message Message) {
 		RoundRevision uint64 `json:"roundRevision"`
 		GameAction    string `json:"gameAction"`
 		Bet           int    `json:"bet"`
+		Choice        int    `json:"choice"`
 	}
 	if json.Unmarshal(message.Payload, &request) != nil {
 		client.sendError("invalid casino interaction")
@@ -26,16 +27,26 @@ func handleMsgCasino(client *Client, message Message) {
 	var err error
 	switch request.Action {
 	case "get":
+		if err := prepareSeatedSlotLocked(client); err != nil {
+			client.sendError(err.Error())
+		}
 		sendCasinoState(client)
 		return
 	case "sit":
 		_, err = world.TakeCasinoSeat(client.playerID, request.TableID, request.Seat, time.Now())
+		if err == nil {
+			err = prepareSeatedSlotLocked(client)
+		}
 	case "leave", "ready":
 		err = world.ChangeCasinoSeat(client.playerID, request.SessionID, request.Action, request.Ready, time.Now(), request.Revision)
 	case "bet":
 		err = handleBlackjackBet(client, request.SessionID, request.RoundID, request.Bet, time.Now())
 	case "play":
 		err = handleBlackjackPlay(client, request.SessionID, request.RoundID, request.GameAction, request.RoundRevision, time.Now())
+	case "slot_spin":
+		err = handleSlotAction(client, request.SessionID, request.RoundRevision, "spin", request.Bet, 0)
+	case "slot_bonus":
+		err = handleSlotAction(client, request.SessionID, request.RoundRevision, "bonus", 0, request.Choice)
 	default:
 		client.sendError("unsupported casino action")
 		return
@@ -68,6 +79,7 @@ func sendCasinoState(client *Client) {
 	encoded, _ := json.Marshal(struct {
 		game.CasinoPresence
 		Blackjack blackjackTableView `json:"blackjack"`
-	}{world.CasinoPresenceFor(client.playerID, time.Now()), blackjackViewFor(client.playerID)})
+		Slots     *slotMachineView   `json:"slots,omitempty"`
+	}{world.CasinoPresenceFor(client.playerID, time.Now()), blackjackViewFor(client.playerID), slotViewFor(client.playerID)})
 	client.sendSafe(createMessage("casino_update", encoded))
 }

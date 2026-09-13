@@ -97,8 +97,12 @@ Four differentiated elemental rule engines now implemented; see
 secure weighted outcomes, fixed jackpot, Earth sticky wilds, Fire free-spin
 multiplier, Water cascades, Air expanding reel and sealed narrative bonus choice.
 Revisioned saveable free-spin/bonus state validates payouts and redacts offers.
-Focused rules tests PASS0.006s/build-allPASS. NOT Gold-wired, client-enabled or
-economically signed off yet; next durable owner-bound session integration, then UI.
+Focused rules tests PASS0.006s/build-allPASS. Now Gold-wired with durable owner-bound
+sessions, four physical cabinets and seated reel/bonus/free-spin UI, procedural
+symbols, animations/audio and explicit paid-spin confirmation. Focused Mongo
+recovery, authenticated socket spin/resume/restart and phone component checks pass;
+see [slot handoff](2026-09-13-elemental-slots.md) for reusable evidence. Economic
+sign-off and the connected full-town presentation check remain before release.
 
 ## Release dependency
 
@@ -113,6 +117,8 @@ table cylinders/boxes and slot octahedron gems could not share a material batch.
 6acb6c4e normalizes batch inputs to non-indexed triangles and adds a real mixed
 catalog regression (CasinoController4testsPASS1.365s/lint/diffPASS). Pushed from
 frozen1.8, including an accurate1.8 patch-note bullet; merged here. New exact
-CI34746925219 for6acb6c4e4260565233bf6999bd102be36b830838 IN_PROGRESS. Monitor
-that run; don't rerun old failed34744672300.1.7e84f6219 remains last verified live.
-No1.9 publication/version bump until1.8 passes and is verified live.
+CI34746925219 for6acb6c4e4260565233bf6999bd102be36b830838 has passed server/client,
+all browser shards, predeploy and both deploy jobs; final live QA is IN_PROGRESS.
+Both public release.json and healthz independently report this exact Alpha1.8.0
+commit, with database ready. Monitor that run; don't rerun old failed34744672300.
+No1.9 publication/version bump until its complete feature batch is ready.

@@ -167,6 +167,9 @@ func transferBlackjackLocked(record *database.BlackjackTableRecord, state *black
 // The command/login admission path already owns this account lock. Consult the
 // cached intent first so normal movement does not perform a database query.
 func recoverAccountBlackjackLocked(username string) error {
+	if err := recoverAccountSlotsLocked(username); err != nil {
+		return err
+	}
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
 	if blackjackCached == nil || blackjackCached.Pending == nil || blackjackCached.Pending.PlayerID != "player-"+username {

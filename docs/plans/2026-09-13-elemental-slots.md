@@ -1,8 +1,8 @@
 # Elemental slots — implementation handoff
 
-Part of full1.9/1.10 casino scope, NOT playable/enabled or economically approved
-yet. Core rules/proposals exist in server/internal/game/casino_slots.go. No Gold
-mutations or client outcome claims. Keep runtime1.8 until the whole1.9 is ready.
+Part of full1.9/1.10 casino scope. Connected public Gold slots and seated UI are
+implemented in the local1.9 candidate, NOT deployed or economically approved yet.
+Keep runtime1.8 until the whole1.9 is ready.
 
 ## Implemented rules
 
@@ -43,7 +43,37 @@ Core tests PASS0.006s and Go build-all PASS: distinct mechanics, jackpot/wild ru
 bonus JSON save/reopen/redaction, stale choice rejection and corrupt payout checks.
 This is NOT an actual database/server-restart/wager/UI session.
 
-## Next: durable owner-bound sessions, then seated game UI
+## Implemented: durable owner-bound sessions and seated game UI
+
+Owner/theme-bound records reuse the existing private casino JSON, signed Gold
+receipts, save journal and account locks. Pending debits/payouts fence only their
+owner; startup/background recovery includes the gap between settled debit and
+creation of payout intent. Saved free spins and sealed bonuses survive leaving
+the physical machine. Actual seat/session and revision checks gate every action.
+Four physical cabinets now expose slot_spin/slot_bonus through casino messages.
+
+The seated UI uses 32 procedural symbol icons, winning-line highlights, cascades,
+bonus choices, saved free spins, jackpot feedback and generated audio. Paid spins
+require Review/Confirm; free spins retain their original stake. Public rules show
+weights/paytables/paylines and feature rules. Reduced motion, duplicate-click
+locking and cleanup reuse the existing chair/camera/leave lifecycle.
+
+Focused evidence (reuse unless changed): build-all PASS; Mongo recovery/account
+tests PASS0.711s and bonus/free entitlement test PASS0.204s. Real authenticated
+socket spin/replay rejection/resume/leave/server restart PASS1.108s. Prepared
+winning states isolate interruption recovery, not earned spins or payout odds.
+Changed JS suites20tests PASS2.951s. One390px rendered component check PASS8.3s;
+/tmp/eidolon-slot-phone-20260913.png inspected. It tests the actual UI with
+controlled responses, NOT the connected physical machine/camera scene.
+
+Opt-in payout sampling completed in4s (not part of normal CI). Only the final Air
+sample was retained after output loss: 50,000 paid cycles including free features,
+sampled return0.9995, approximate95% interval[0.9810,1.0181]. This is not exact RTP
+or economic approval; all themes still need a recorded tuning decision before
+release. No broad matrix/soak required here. Connected full-town machine/camera
+check, payout review, real-player poker and approved-currency VIP remain.
+
+## Persistence design constraints retained
 
 Use existing casino seat/session authority, account-work locks and Gold receipts.
 Relevant current paths: server/casino_handlers.go, casino_blackjack_sessions.go,
@@ -61,9 +91,5 @@ opaque session and expected revision. No client-selected currency or outcome.
 Account admission must fence its own unresolved transfer without querying the DB
 on every unrelated movement. Recovery locks recipient account before any game lock.
 
-Only after integration, add the fourth Air cabinet and catalog-appropriate physical
-machine positions, full reel/payline/bonus/free-spin/jackpot UI, animations/audio,
-clear stakes/rules and explicit paid-spin confirmation. Reuse CasinoController
-camera/leave/seat lifecycle. Preserve entitlements through leave/reconnect/restart.
-Finish a focused connected session and economics review before release; broad
-final integration stays in1.10. Poker and approved-currency VIP are still required.
+Broad final integration stays in1.10; do not repeat the passing connected session
+and recovery checks without a relevant change.

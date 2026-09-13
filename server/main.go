@@ -435,6 +435,9 @@ func main() {
 	if err := initializeBlackjack(); err != nil {
 		log.Fatalf("Cannot recover durable blackjack table; refusing stale balances: %v", err)
 	}
+	if err := initializeSlots(); err != nil {
+		log.Fatalf("Cannot recover durable slot entitlements: %v", err)
+	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
 		log.Printf("Startup auction refunds remain pending: %v", err)
@@ -915,6 +918,11 @@ func main() {
 	loops.Every(time.Second, broadcastTime)
 	world.UpdatePublicEvent(time.Now())
 	loops.Every(time.Second, broadcastPublicEvent)
+	loops.Every(time.Second, func() {
+		if err := tickSlotRecovery(); err != nil {
+			log.Printf("Slot settlement remains pending: %v", err)
+		}
+	})
 	loops.Every(time.Second, func() {
 		if err := tickBlackjack(time.Now()); err != nil {
 			log.Printf("Blackjack table recovery remains pending: %v", err)

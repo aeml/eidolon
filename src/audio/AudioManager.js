@@ -21,6 +21,10 @@ export const AUDIO_CUES = Object.freeze({
     clericCast: 'ability.cleric',
     jumpStart: 'movement.jump.start',
     jumpLand: 'movement.jump.land',
+    casinoSpin: 'casino.spin',
+    casinoWin: 'casino.win',
+    casinoBonus: 'casino.bonus',
+    casinoJackpot: 'casino.jackpot',
 });
 
 const createCueAsset = (category, slug) => Object.freeze({
@@ -43,6 +47,10 @@ export function playLocalAbilityCue(engine, actor) {
 }
 
 export const AUDIO_CUE_ASSETS = Object.freeze({
+    [AUDIO_CUES.casinoSpin]: Object.freeze({ category: 'ui', fallback: 'generated', sources: Object.freeze([]) }),
+    [AUDIO_CUES.casinoWin]: Object.freeze({ category: 'ui', fallback: 'generated', sources: Object.freeze([]) }),
+    [AUDIO_CUES.casinoBonus]: Object.freeze({ category: 'ui', fallback: 'generated', sources: Object.freeze([]) }),
+    [AUDIO_CUES.casinoJackpot]: Object.freeze({ category: 'ui', fallback: 'generated', sources: Object.freeze([]) }),
     [AUDIO_CUES.uiClick]: createCueAsset('ui', 'ui-click'),
     [AUDIO_CUES.uiOpen]: createCueAsset('ui', 'ui-open'),
     [AUDIO_CUES.uiClose]: createCueAsset('ui', 'ui-close'),
@@ -277,6 +285,14 @@ export class AudioManager {
                 ];
             case AUDIO_CUES.uiClose:
                 return [{ frequency: 360 * pitch, duration: 0.055, type: 'triangle', gain: 0.07 }];
+            case AUDIO_CUES.casinoSpin:
+                return [160, 220, 280, 350, 440].map((frequency, index) => ({ frequency, delay: index * .06, duration: .065, type: 'triangle', gain: .035 }));
+            case AUDIO_CUES.casinoWin:
+                return [523, 659, 784].map((frequency, index) => ({ frequency, delay: index * .09, duration: .15, type: 'sine', gain: .045 }));
+            case AUDIO_CUES.casinoBonus:
+                return [392, 523, 659, 784].map((frequency, index) => ({ frequency, delay: index * .1, duration: .22, type: 'triangle', gain: .04 }));
+            case AUDIO_CUES.casinoJackpot:
+                return [523, 659, 784, 1046, 1318, 1568].map((frequency, index) => ({ frequency, delay: index * .11, duration: .25, type: 'sine', gain: .04 }));
             case AUDIO_CUES.lootPickup:
                 return [
                     { frequency: 880 * pitch, duration: 0.055, type: 'sine', gain: 0.08 },

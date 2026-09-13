@@ -1,0 +1,27 @@
+.slot-game[hidden], .slot-confirm[hidden], .slot-bonus[hidden] { display: none; }
+.casino-session.has-slots { max-height: 82dvh; overflow-y: auto; width: min(470px, calc(100vw - 16px)); }
+.slot-game { --slot-accent: #abd68b; }
+.slot-game[data-theme="fire"] { --slot-accent: #ffad6e; }
+.slot-game[data-theme="water"] { --slot-accent: #90d9ef; }
+.slot-game[data-theme="air"] { --slot-accent: #c4b7ff; }
+.slot-lore { color: #c5c7c5; font-style: italic; font-size: 12px; }
+.slot-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; padding: 8px; border: 2px solid var(--slot-accent); border-radius: 12px; background: #0e1520; box-shadow: inset 0 0 18px #000; }
+.slot-cell { min-width: 0; text-align: center; padding: 3px; border: 1px solid transparent; border-radius: 8px; }
+.slot-cell img { display: block; width: 100%; aspect-ratio: 1; }
+.slot-cell span { display: block; font-size: 10px; line-height: 1.1; min-height: 22px; overflow-wrap: anywhere; color: #e8e4d5; }
+.slot-cell.win { border-color: #ffe6a1; box-shadow: 0 0 9px #ebc376aa; }
+.slot-cell.wild span, .slot-cell.scatter span { color: var(--slot-accent); font-weight: 700; }
+.slot-grid.spinning img { animation: slot-reel-turn .18s ease-in-out infinite alternate; }
+@keyframes slot-reel-turn { from { transform: translateY(-4px); filter: blur(2px); opacity: .45; } to { transform: translateY(4px); filter: blur(0); opacity: 1; } }
+.slot-result { min-height: 36px; padding: 8px; color: #ffebae; background: #27302a; border-radius: 6px; }
+.slot-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.slot-controls select { min-height: 44px; background: #17212d; color: #fff1c2; border: 1px solid var(--slot-accent); border-radius: 5px; padding: 6px; font: inherit; }
+.slot-confirm, .slot-bonus { border: 1px solid var(--slot-accent); border-radius: 8px; padding: 10px; margin-block: 10px; }
+.slot-bonus button { display: block; width: 100%; margin-block: 6px; }
+.slot-game details { margin-top: 10px; font-size: 12px; }
+.slot-game summary { cursor: pointer; min-height: 44px; align-content: center; }
+.slot-game table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.slot-game td, .slot-game th { padding: 5px 3px; text-align: left; border-bottom: 1px solid #79857344; }
+.slot-game ol { columns: 2; padding-left: 20px; }
+@media (prefers-reduced-motion: reduce) { .slot-grid.spinning img { animation: none; } }
+@media (max-width: 600px) { .slot-grid { gap: 2px; padding: 4px; } .slot-cell { padding: 1px; } .slot-cell span { font-size: 9px; } }

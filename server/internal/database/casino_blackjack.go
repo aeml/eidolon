@@ -178,3 +178,25 @@ func (db *DB) updateBlackjackTable(filter, update bson.M) (*BlackjackTableRecord
 	}
 	return &next, nil
 }
+
+// The legacy-named collection is the existing private casino intent ledger.
+// Slot records are owner/theme scoped. Scan on startup (not on player movement)
+// so the debit-resolved / payout-not-yet-started gap is recoverable as well.
+func (db *DB) CasinoSlotRecords() ([]BlackjackTableRecord, error) {
+	collection, err := db.blackjackCollection()
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	cursor, err := collection.Find(ctx, bson.M{"_id": bson.M{"$regex": "^slots:"}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var records []BlackjackTableRecord
+	if err := cursor.All(ctx, &records); err != nil {
+		return nil, err
+	}
+	return records, nil
+}

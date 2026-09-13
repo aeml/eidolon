@@ -46,9 +46,9 @@ func CasinoTables() []CasinoTable {
 			tables[i].Seats = append(tables[i].Seats, CasinoSeatPosition{X: tables[i].X + dx*2.2, Z: tables[i].Z + dz*2.2, Rotation: angle + math.Pi, ExitX: tables[i].X + dx*3.4, ExitZ: tables[i].Z + dz*3.4})
 		}
 	}
-	for i, theme := range []string{"earth", "fire", "water"} {
-		x := -5 + float64(i)*5
-		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: theme + " realm slots", Game: "slots", Floor: "public", X: x, Z: 164, MinimumPlayers: 1,
+	for i, machine := range SlotMachines() {
+		theme, x := machine.Theme, -6+float64(i)*4
+		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", X: x, Z: 164, MinimumPlayers: 1,
 			Seats: []CasinoSeatPosition{{X: x, Z: 166, Rotation: math.Pi, ExitX: x, ExitZ: 167.2}}})
 	}
 	return tables
