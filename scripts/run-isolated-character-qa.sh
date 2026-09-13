@@ -844,6 +844,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   portal)
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
+  water-recall)
+    # Focus the reported travel failure without replaying unrelated dungeon combat.
+    npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js --retries=0
+    ;;
   dungeons)
     npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
