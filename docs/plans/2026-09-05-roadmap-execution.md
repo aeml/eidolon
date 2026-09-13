@@ -5,7 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:57 UTC
+## Current checkpoint — September 13, 00:04 UTC
+
+PROGRESS: publishing failure repaired with focused tests; first1.2 Forge phone
+feature implemented separately. Full goal active. NEVER PUSH ROOT.
+
+- Publishing377bdf21a11ffe91e2c6cf8b61a0a59581749a65 nowmaster. **34727002679
+  PENDING**, behind34726736512 (still running server, clientFAILED). Client job
+  103642053275:427 suites/6590tests passed,3suites/15assertions failed. Resolved:
+  keep Mark's legacy0.1s unknown-duration fallback, expect actual20% potency,
+  derive adequate real caster mana maximum in Cleric area fixture, update old
+  workflow predicate expectation for opt-in full stabilization. Affected4suites/
+  115tests PASS2.92s (`/tmp/eidolon-1-1-ci-correction-focused.log`). No version
+  increment; still1.1.0. Release WT clean at377bdf21. Next watch publishing and
+  fix concrete blockers; live delivery remains unproven. Full failed client log
+  `/tmp/eidolon-1-1-client-job.log`. Do not restart tests just to observe status.
+- New1.2 WT `/tmp/eidolon-1-2-forge-phone-20260913`, clean local **ea070c10**
+  (not deployed/pushed), based1de13c53. Phone Forge equipment uses48px icon space,
+  named rows/level/potency,16px stats,44px controls, collapsed build help and
+  keyboard selection. Existing DOM nodes/live item refresh retained; desktop
+  icon grid unchanged.2focused suites14tests PASS1.63s, changed lint/diff pass.
+  Short real-Chrome DOM/style/ForgeUI render initially exposed inherited square
+  aspect-ratio overlap; fixed with aspect-ratio:auto. Subsequent real click
+  succeeds, rows311px wide/87px and68px high. Inspected screenshot
+  `/tmp/eidolon-1-2-forge-phone-390.png` (fixture has no icons, not model proof).
+  Then collapsed lengthy preview advice. Short browser/server sessions closed.
+  Continue1.2 visual/model/phone work while publication runs; this is not the
+  complete1.2 scope or physical-device acceptance.
+
+## Historical checkpoint — September 12, 23:57 UTC
 
 PROGRESS under the player's feature-first policy. **1.1.0 pushed to master** from
 clean release WT `/tmp/eidolon-release-1-1-assembly-20260912`, exact
