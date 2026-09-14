@@ -15,7 +15,10 @@ passed and exposed table clipping, now repaired and verified at four screen
 sizes plus the actual two-player flow. See
 [connected casino and layout evidence](2026-09-14-connected-casino-acceptance.md).
 This does not close earned campaign, remaining dungeons, actual group raids,
-connected EP blackjack/slots/busy-floor or physical-phone acceptance. Connected
+busy-floor or physical-phone acceptance. Connected EP blackjack and paid slots
+now pass their bounded routes; [saved bonus/free-spin interactions](2026-09-14-connected-slots-acceptance.md)
+also pass for both Gold and EP. These are prepared socket fixtures, not rendered
+venue or earned-currency evidence. Connected
 EP poker separately passed and exposed the packaged1.9.13 walk-back correction;
 see [EP hand and restart evidence](2026-09-14-vip-poker-connected-recovery.md).
 
