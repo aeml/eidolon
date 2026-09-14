@@ -1,5 +1,12 @@
 # 1.10 final integration — evidence and remaining work
 
+Normal70 Molten now **accepted**: native49494 terminalexit0/54.1m, all five bosses,
+four geared roles, zero deaths, four town recoveries, each manual Fire handoff
+and re-login saved rewards. Exact f2fdea9b; cleanup/checkpoint verified. See
+[Molten acceptance](2026-09-14-molten-party-acceptance.md). Do not repeat it for
+the local raid-driver extraction. Five-player full-raid driver is prepared, not
+yet accepted; remaining family/earned-campaign/raid/phone scope remains open.
+
 Alpha1.9.12 is publicly delivered on both domains at38847b2f, database ready;
 login/notes and eight served HTML/JS/CSS files exactly match the release source.
 CI34840066682 is **terminal success, all ten jobs passed**, including live
