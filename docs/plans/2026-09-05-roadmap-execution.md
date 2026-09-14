@@ -5,6 +5,31 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — measured host contention; preserve current run, use Low for later functional parties
+
+Same **20006 ACTIVE**, current High run unchanged on042fd742. At3087.69s:
+two bosses cleared,22room traversals (including retracing),464leadersteps,
+four successful town recoveries; no new failure. Continue same handle/log.
+
+Brief read-only host sample explains a likely contributor to slow automation,
+not proof of a game regression: recent vmstat CPU80–81% user+13–14%system,
+4%idle,21–46runnable tasks; AMD GPU busy97%, VRAM528416768bytes. Host still
+had~11.4GiB available RAM; swap was mostly full but recent si/so0/0 and4/0,
+not sustained measured swapping. Four Chrome renderers~267–316MiB RSS each.
+Owned QA API108.2MiB/container,76.28%CPU; actual healthzDBready,33goroutines,
+heap56198008bytes, exact042fd742/Alpha1.9.9. No process was stopped or changed;
+do not call this a memory leak, a dedicated-host benchmark or single-player FPS.
+
+For the NEXT multi-browser functional dungeon/raid route, use existing
+`EIDOLON_E2E_PARTY_QUALITY=low` to reduce this shared-host rendering burden.
+Keep current20006High untouched; no restart, no raised deadlines, no gear/stat/
+difficulty/kill/credit/turn-in relaxation. Retain independent accepted High/Low
+visual-performance evidence and remaining visual scope; Low functional gameplay
+alone does not close that scope. No new framework/parallel GPU test is needed.
+Previous turn was verified wait; this turn measured a relevant constraint and
+changes the next run's existing configuration choice. Fullgoal remains active.
+Pending55ae1d45 remains separate/unpublished; merge only after20006 terminal.
+
 ## September 14 — second Abyssal boss defeated; same full run active
 
 Fresh45s handle poll confirms **20006 ACTIVE**, same frozen042fd742 source and
