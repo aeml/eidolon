@@ -5,6 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — regional party route extended; Abyssal check active
+
+Previous reply only acknowledged already-recorded phone feedback (no new goal
+progress). This continuation makes concrete progress: active development tree
+`/tmp/eidolon-1-10-resonant-age-20260913` clean commit
+**62fca4f9ba91090311835395b3d53287adae1425** extends the existing four-role route
+to all five dungeon families, matching actual generated levels/gear and personal
+story targets. No runtime changes, global scaling, raid-gate weakening or new
+version. See `docs/plans/2026-09-14-regional-party-dungeons.md` in that tree.
+35 focused JS checks/three suites PASS1.634s, generated gear stat budgets for
+all four roles at30/60/70/100 Go PASS0.034s, lint/diff and actual level60 Go→JS
+catalog/quest round-trip PASS. Preserve accepted Verdant; do not rerun by default.
+
+Native **73535 ACTIVE** at last handle poll: Normal level60 Abyssal Well,
+four separate High-quality System Chrome clients, no retries. Owned runID
+`abyssalparty0914v2`, API18285/Mongo18286/web4187. Build and database readiness
+passed; Fighter prepared and replicated, Cleric preparation ongoing. Log:
+`/tmp/eidolon-abyssal-party-20260914-v2vOO4/run.log`.
+Continue same handle; do not restart on an observation timeout or run another
+native GPU job concurrently. Keep source frozen while running. Wrapper owns
+cleanup. This is prepared-party encounter evidence, not earned Water campaign
+or crystal-raid acceptance; no native clear result yet.
+
+Live remains accepted1.9.9/3481f89a, CI34804655770 terminal success; no repoll.
+Full goal active, remaining campaign/raids/cross-feature/physical-phone scope
+unchanged. User Brave/Chrome general mobile feedback accepted; party/dungeon
+not tried. Root remains ledger-only, NEVER PUSH ROOT.
+
 ## September 14 — complete earned Earth readiness accepted; no active QA remains
 
 **10782 TERMINAL SUCCESS**,59.1m,one test,zero retries/deaths. Frozen source
