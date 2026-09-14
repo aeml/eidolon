@@ -7,6 +7,18 @@ the whole goal. Started September 5, 2026.
 
 ## September 14 — Alpha1.9.5 live;1.9.6 vendor/membership batch pushed
 
+Latest continuation: previous turn was a verified wait on CI34797469252 plus
+confirmation that the reported NPC fix is live. This turn made implementation
+progress in active worktree `/tmp/eidolon-1-10-resonant-age-20260913`, local commit
+**1b1860af**: separate durable EP casino ledger/wallet routing and currency-aware
+blackjack/poker/slot engines. Focused money/save/real offline Mongo recovery and
+game rules/build pass. Owned disposable EP QA container removed. Not pushed or
+version-bumped; deliver with functioning VIP floor and session/UI wiring still
+remaining. Exact next steps/evidence: active
+`docs/plans/2026-09-14-vip-casino-games.md`. Current1.9.6 CI34797469252 still live:
+server/client and browser3/3 passed; browser1/3 and2/3 in progress. Continue same
+handle, no restart. Full1.10 goal active; root remains ledger-only, never push it.
+
 Previous turn made progress by implementing/committing the cosmetic outfitter.
 This continuation completed1.9.5 verification: both public endpoints match
 5d024b3b987ce74917491cff5fcb93548fe4308a, Alpha1.9.5, database ready. Its exact
