@@ -5,6 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Molten49494 still ACTIVE: first boss and recovery passed
+
+Fresh native polls confirm49494 remains running; do not restart. Current source
+still cleanf2fdea9b, mainFROZEN. Seed **1571291222270430445**, generator2/attempt0,
+no fallback. **Cindermaw defeated**: Fighter10438damage/518taken, Cleric496allyheal,
+Wizard14064damage, Rogue14524damage. **First all-four town recovery/re-entry passed**
+afterroom2, same seed/rooms/Gold/inventory/quests. Later50%restpolicy now applies;
+do not claim fullclear or efficiency result yet. Atlatesttiming393seconds,
+combatphase,130leadersteps/5roomtraversals/1townreturn; subsequentlogscontinue
+MagmaGolem/ScorchedWraith combat withno reportedfailure. Last45spollconfirmedlive.
+Opening `test-results/four-player-dungeon-four-g-ee1e7-d-receive-individual-credit/desktop-party-healing.png`
+was inspected: trackeraboveroster/visiblehealertarget/classes/aura. Townopening
+only, notdungeonboss/phone/wholevisualscope. Previousgoalturnstartedrun; thisturn
+yieldednewboss/recoveryevidence and verified waits. Fullobjectiveunchanged.
+
 ## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
 
 Previous goal turn made progress (slots/publicdelivery). This turn acceptedall
