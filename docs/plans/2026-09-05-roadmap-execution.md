@@ -5,6 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Alpha 1.9.10 prepared separately; current native run continues
+
+Separate tree `/tmp/eidolon-raid-guide-copy-20260914`, branch
+`work/raid-guide-copy-20260914`, is clean at
+**d411da5c91dfcb3e6f89860314171e50a98489ff**. This packages pending55ae1d45
+Chronicle guide text with cumulative Alpha1.9.10 patch notes and synchronized
+login/package/server/CI version labels. Five focused suites passed **282 tests
+in10.087s**, focused ESLint and diff checks passed. NOT pushed or deployed;
+live remains verified1.9.9/3481f89a. After20006 is terminal, integrate both
+pending commits into the development branch before sequential publication.
+Do not push root or start overlapping GPU deployment gates.
+
+Fresh native handle check: **20006 ACTIVE**, mainQA tree042fd742 unchanged.
+Last log4802.34s (~80min),30traversals including retracing,621leadersteps,
+five townreturns; three of five bosses confirmed earlier. No new clear or
+handoff claim. Continue same run and retained log below, no restart. Existing
+private checkpoint remains two-boss state. Next multi-browser functional run
+should use existing Low quality option because of measured shared GPU pressure;
+keep this run's High settings and all current gameplay gates unchanged.
+
+User phone feedback remains Brave/Chrome, general UI positive, dungeon/party
+not yet tried; no device model or physical party acceptance inferred. This turn
+made release-preparation progress; full goal remains active and incomplete.
+
 ## September 14 — third Abyssal boss defeated; same run continues
 
 Fresh45s poll: **20006 ACTIVE**,042fd742 unchanged. AbyssalGoliath confirmed
