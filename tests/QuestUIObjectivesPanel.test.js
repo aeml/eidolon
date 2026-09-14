@@ -14,6 +14,44 @@ function buildQuestDom() {
 }
 
 describe('QuestUI objectives panel', () => {
+    test('party tracking retains every selected quest, readable tooltips and keyboard access', () => {
+        buildQuestDom();
+        document.body.classList.add('party-roster-visible');
+        try {
+            const ui = new QuestUI({ getLastPlayer: () => ({}) });
+            const summary = Array.from({ length: 8 }, (_, index) => ({
+                id: `daily_party_${index}`, badge: 'Daily', title: `A long quest title ${index}`,
+                progressLabel: `${index} / 10`, hint: 'Return to the town quest giver', progressPct: index * 10
+            }));
+            ui.loadTrackingPreferences();
+            ui.trackedQuestKeys = new Set(summary.map(quest => quest.id));
+            ui.renderObjectivesPanel(summary);
+            const list = document.getElementById('objectives-list');
+            expect(list.children).toHaveLength(8);
+            expect(list.getAttribute('role')).toBe('region');
+            expect(list.getAttribute('aria-label')).toBe('Tracked quests');
+            list.focus();
+            expect(document.activeElement).toBe(list);
+            expect(list.lastElementChild.title).toBe('A long quest title 7 · 7 / 10 · Return to the town quest giver');
+            ui.toggleJournal = jest.fn();
+            document.querySelector('.objectives-panel__more').click();
+            expect(ui.toggleJournal).toHaveBeenCalledTimes(1);
+            ui.renderObjectivesPanel([]);
+            expect(document.getElementById('objectives-panel').style.display).toBe('none');
+        } finally {
+            document.body.classList.remove('party-roster-visible');
+        }
+    });
+
+    test('phone tracker keeps button navigation without adding a scroll-region tab stop', () => {
+        buildQuestDom();
+        const ui = new QuestUI({ isMobile: true, getLastPlayer: () => ({}) });
+        ui.renderObjectivesPanel([{ id: 'daily_phone', badge: 'Daily', title: 'Phone quest', progressLabel: '1 / 3' }]);
+        expect(document.getElementById('objectives-list').hasAttribute('tabindex')).toBe(false);
+        expect(document.querySelector('.objective-entry').tagName).toBe('BUTTON');
+        expect(document.querySelector('.objective-entry').getAttribute('aria-label')).toContain('Open journal: Phone quest');
+    });
+
     test('daily summary puts ready and accepted work before larger unaccepted payouts', () => {
         buildQuestDom();
         const ui = new QuestUI({ getLastPlayer: () => ({ level: 2 }) });
@@ -169,7 +207,7 @@ describe('QuestUI objectives panel', () => {
         ui.setQuestTracked(quest, false);
         ui.updateJournal([quest]);
         expect(document.getElementById('objectives-list').children).toHaveLength(0);
-        expect(document.getElementById('objectives-panel').textContent).toContain('Choose tracked quests');
+        expect(document.getElementById('objectives-panel').textContent).toContain('Track quests');
     });
     test('renders active quest progress and ready-to-turn-in state in objectives panel', () => {
         buildQuestDom();
@@ -280,7 +318,7 @@ describe('QuestUI objectives panel', () => {
         expect(panel.style.display).toBe('flex');
         expect(guidance).toBeNull();
         expect(panel.textContent).toContain('Kill Dungeon Bosses');
-        expect(panel.textContent).toContain('Open Journal (J)');
+        expect(panel.textContent).toContain('Journal (J)');
     });
 
     test('renders a starter town objective when the player has no active quests in town', () => {

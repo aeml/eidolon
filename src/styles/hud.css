@@ -428,9 +428,50 @@
 .objectives-panel__more { flex-shrink: 0; margin-top: 6px; border: 1px solid #b99b6240; border-radius: 5px; background: #111923ee; color: var(--color-gold); padding: 8px; cursor: pointer; font: inherit; font-size: 11px; }
 .objectives-panel__more:focus-visible { outline: 2px solid var(--color-gold); outline-offset: -2px; }
 .objectives-panel__more { pointer-events: auto; }
-/* Keep the Journal shortcut above the roster, not a stack of cards over its
-   controls. Restoring the solo HUD restores the complete tracker shortlist. */
-.party-roster-visible #objectives-list { display: none; }
+/* Keep every selected quest reachable in a compact scroll strip above the
+   roster. Solo cards and the phone carousel retain their existing layouts. */
+.party-roster-visible:not(.mobile-mode) #objectives-panel {
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 4px;
+    max-height: 66px;
+}
+.party-roster-visible:not(.mobile-mode) .objectives-panel__header {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+}
+.party-roster-visible:not(.mobile-mode) .objectives-panel__more {
+    margin: 0;
+    padding: 3px 6px;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list {
+    order: 1;
+    flex: 0 0 100%;
+    max-height: 36px;
+    margin: 0;
+    gap: 3px;
+}
+.objectives-panel__list:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry {
+    padding: 4px 6px;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry > :not(.objective-entry__header),
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry__badge {
+    display: none;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry__title-wrap {
+    flex: 1;
+    flex-direction: row;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 #objectives-panel .objective-entry__hint { font-size: 11px; line-height: 1.4; }
 #objectives-panel .objective-entry__status { flex-shrink: 0; }
 #objectives-panel .objective-entry { flex-shrink: 0; }

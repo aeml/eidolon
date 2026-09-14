@@ -39,6 +39,11 @@ export class QuestUI {
         this.journalList = document.getElementById('journal-list');
         this.objectivesPanel = document.getElementById('objectives-panel');
         this.objectivesList = document.getElementById('objectives-list');
+        if (this.objectivesList && !ctx.isMobile) {
+            this.objectivesList.tabIndex = 0;
+            this.objectivesList.setAttribute('role', 'region');
+            this.objectivesList.setAttribute('aria-label', 'Tracked quests');
+        }
         this.btnCloseQuest = document.getElementById('btn-close-quest');
         this.btnCloseJournal = document.getElementById('btn-close-journal');
         if (ctx.isMobile && this.questWindow) {
@@ -831,6 +836,7 @@ export class QuestUI {
         visibleObjectives.forEach((objective, index) => {
             const item = document.createElement(this.ctx.isMobile ? 'button' : 'div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
+            item.title = [objective.title, objective.completed ? 'Ready' : objective.progressLabel, objective.hint].filter(Boolean).join(' · ');
             if (this.ctx.isMobile) {
                 item.type = 'button';
                 item.setAttribute('aria-label', `Open journal: ${objective.title} · ${objective.completed ? 'Ready' : objective.progressLabel || ''}`);
@@ -882,7 +888,7 @@ export class QuestUI {
         const more = document.createElement('button');
         more.type = 'button';
         more.className = 'objectives-panel__more';
-        more.textContent = this.ctx.isMobile ? 'Journal' : 'Choose tracked quests · Open Journal (J)';
+        more.textContent = this.ctx.isMobile ? 'Journal' : 'Track quests · Journal (J)';
         more.addEventListener('click', () => this.toggleJournal());
         if (this.activeQuestSummary.length && this.ctx.isMobile) {
             const controls = document.createElement('div'); controls.className = 'phone-objectives-controls';
