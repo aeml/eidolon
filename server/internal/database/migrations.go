@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 11
+const CurrentSchemaVersion = 12
 
 type schemaMigration struct {
 	Version int
@@ -69,6 +69,11 @@ var schemaMigrations = []schemaMigration{
 	{Version: 10, Name: "revisioned_arena_results", Apply: func(context.Context, *DB) error { return nil }},
 	// Old full-guild replacement writers would discard the saved calendar.
 	{Version: 11, Name: "guild_event_calendar", Apply: func(context.Context, *DB) error { return nil }},
+	// Schema11 spans releases before EP existed. Those full-character writers
+	// drop wallet/allowance/exchange/casino receipts and cosmetic ownership.
+	// Preserve already-issued EP exactly; this is a writer fence, not a grant or
+	// backfill. Deployment backs up schema11 before admitting this writer.
+	{Version: 12, Name: "ep_wallet_and_casino_receipts", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

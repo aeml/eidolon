@@ -27,6 +27,15 @@ func TestSchemaMigrationCatalogIsContiguous(t *testing.T) {
 	}
 }
 
+func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
+	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
+	// writers must not be admitted after any of those values have been saved.
+	if CurrentSchemaVersion < 12 || len(schemaMigrations) < 12 ||
+		schemaMigrations[11].Name != "ep_wallet_and_casino_receipts" {
+		t.Fatal("EP state is writable by pre-EP schema11 servers")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {

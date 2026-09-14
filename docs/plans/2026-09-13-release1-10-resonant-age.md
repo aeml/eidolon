@@ -1,5 +1,14 @@
 # 1.10 — The Resonant Age
 
+## Pending safety correction — EP schema12
+
+Final recovery review found schema11 still admitted pre-EP full-character
+writers. [Implemented schema12 fence and recovery checks](2026-09-14-ep-schema-recovery.md)
+preserve existing balances/receipts, reject old binaries and trigger the existing
+consistent pre-upgrade backup. Actual old-binary refusal and authenticated
+EP/membership/cosmetic/pending-wager backup/restore passed. Local only; publish
+with corrective patch notes AFTER exact1.9.7 delivery, not over its running CI.
+
 ## Final integration audit — September 14
 
 Use [the current evidence and remaining-work audit](2026-09-14-final-integration-audit.md)

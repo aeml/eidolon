@@ -26,6 +26,14 @@ scope; do not count prepared characters as earned progression.
 
 ## Evidence recovered — retain instead of repeating
 
+**EP rollback defect repaired locally:** schema11 did not fence pre-EP writers.
+[Schema12 and current recovery evidence](2026-09-14-ep-schema-recovery.md) now
+proves actual old-binary startup/preflight refusal with saved BSON unchanged,
+and authenticated backup/restore of EP, membership, cosmetics, receipts and a
+pending wager. These focused checks passed; corrective publication follows the
+running1.9.7 release. Do not repeat this backup matrix for documentation-only
+changes, or confuse the writer stand-in with actual post-restore gameplay.
+
 **Four-player Verdant already passed.** The authoritative result is in
 [role-appropriate dungeon equipment](2026-09-12-party-progressed-gear.md), not the
 earlier failed Common-gear attempts. Native 15051 on `9b6745d7` passed in 58.8

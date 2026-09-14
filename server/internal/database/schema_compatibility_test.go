@@ -90,7 +90,10 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 	}
 	protected := bson.M{"username": "future-owner", "characters": bson.A{bson.M{
 		"name": "future-character", "gold": 1209, "resources": bson.M{"version": 1, "mana": 0, "health": 17},
-		"gold_credit_receipts": bson.M{"listing:operation": -25}, "unknown_future_field": bson.M{"preserve": true}}}}
+		"ep": 83, "vip_allowance_receipts": bson.M{"month-one": 100},
+		"ep_exchange_receipts": bson.M{"exchange-one": 1}, "ep_casino_receipts": bson.M{"casino:bet": -18},
+		"appearance_collection": bson.M{"cosmetic:earth-armor": bson.M{"cosmetic_id": "earth-armor"}},
+		"gold_credit_receipts":  bson.M{"listing:operation": -25}, "unknown_future_field": bson.M{"preserve": true}}}}
 	if _, err := raw.Collection("users").InsertOne(ctx, protected); err != nil {
 		t.Fatal(err)
 	}
@@ -145,4 +148,33 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 		t.Fatal("compatible repeated startup refused", err)
 	}
 	checkPreflight(CurrentSchemaVersion, true)
+	// Optional actual previously built schema11 executable: prove both operator
+	// preflight and ordinary startup refuse our REAL migrated schema12, not only
+	// a synthetic future marker. No old process is allowed to remain alive.
+	if previous := os.Getenv("EIDOLON_SCHEMA_PRE_EP_BINARY"); previous != "" {
+		if !filepath.IsAbs(previous) {
+			t.Fatal("requires absolute owned pre-EP binary path")
+		}
+		for _, preflight := range []bool{true, false} {
+			args := []string{"--mongo-uri", uri, "--addr", "127.0.0.1:0", "--log-file", "", "--suspicious-log-file", "", "--economy-metrics-file", ""}
+			if preflight {
+				args = append(args, "--check-schema")
+			}
+			processCtx, stop := context.WithTimeout(ctx, 5*time.Second)
+			command := exec.CommandContext(processCtx, previous, args...)
+			command.Dir = t.TempDir()
+			output, runErr := command.CombinedOutput()
+			stop()
+			exitErr, exited := runErr.(*exec.ExitError)
+			if !exited || exitErr.ExitCode() != 1 || !strings.Contains(string(output), "supports (11)") ||
+				!strings.Contains(string(output), "refusing startup before writes") {
+				t.Fatalf("pre-EP writer was not fenced: %v\n%s", runErr, output)
+			}
+			t.Logf("schema11 rollback refused (preflight=%t), EP state retained", preflight)
+		}
+	}
+	var retained bson.Raw
+	if err := raw.Collection("users").FindOne(ctx, bson.M{"username": "future-owner"}).Decode(&retained); err != nil || !reflect.DeepEqual(before, retained) {
+		t.Fatal("migration or refused rollback changed saved wallet/receipts/ownership", err)
+	}
 }

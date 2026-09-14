@@ -18,6 +18,8 @@ import (
 // This opts into an owned Compose project, never the production project. The
 // API is a small writer stand-in: this proves backup/restore and failure ordering,
 // not game shutdown or journal replay (covered by actual resource-session tests).
+// All fixture traffic uses docker exec, so none of its services needs a network;
+// avoid bridge/veth changes that can interrupt unrelated live-browser QA.
 func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing.T) {
 	if os.Getenv("EIDOLON_DEPLOY_BACKUP_DISPOSABLE") != "1" {
 		t.Skip("requires explicitly disposable Docker backup/restore verification")
@@ -42,7 +44,7 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 			t.Fatal(err)
 		}
 	}
-	journal := []byte("private pending snapshot fixture: health=17 mana=0 gold=1184\n")
+	journal := []byte("private pending snapshot fixture: health=17 mana=0 gold=1184 ep=83 casino:bet=-18 allowance=100\n")
 	files := map[string][]byte{
 		"deploy/backup_before_upgrade.sh":   script,
 		"deploy/pin_previous_image.sh":      pinScript,
@@ -51,6 +53,7 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 services:
   mongo:
     image: mongo:7.0.14
+    network_mode: none
     environment:
       MONGO_INITDB_ROOT_USERNAME: backup_fixture
       MONGO_INITDB_ROOT_PASSWORD: disposable_backup_fixture
@@ -62,6 +65,7 @@ services:
       retries: 40
   restore:
     image: mongo:7.0.14
+    network_mode: none
     environment:
       MONGO_INITDB_ROOT_USERNAME: backup_fixture
       MONGO_INITDB_ROOT_PASSWORD: disposable_backup_fixture
@@ -73,6 +77,7 @@ services:
       retries: 40
   api:
     image: %s:current
+    network_mode: none
     volumes: [./logs:/app/logs]
     command: [sh, -c, "trap 'exit 0' TERM; chown 65532:65532 /app/logs/character-saves/pending.json; while :; do sleep 1 & wait $$!; done"]
 volumes:
@@ -152,7 +157,17 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 		t.Fatal("private journal fixture is unexpectedly readable by the host user")
 	}
 	const authJS = `mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval `
-	run(nil, "compose", "exec", "-T", "mongo", "sh", "-c", authJS+`'const d=db.getSiblingDB("eidolon"); d.users.insertOne({_id:"backup-player",gold:1184,resources:{health:17,mana:0},receipts:{listing:-25}}); d.schema_migrations.insertOne({version:8,name:"auction_bid_operations"}); d.auction_bid_operations.insertOne({_id:"pending-listing",kind:"listing",amount:25}); d.users.createIndex({gold:1},{name:"backup_fixture_index"})'`)
+	run(nil, "compose", "exec", "-T", "mongo", "sh", "-c", authJS+`'
+const d=db.getSiblingDB("eidolon");
+d.users.insertOne({_id:"backup-player",gold:1184,resources:{health:17,mana:0},receipts:{listing:-25},
+  vip_periods:[{id:"paid-month",starts_at:new Date("2026-09-01"),ends_at:new Date("2026-10-01")}],
+  characters:[{name:"backup-player",ep:83,vip_allowance_receipts:{"paid-month":100},
+    ep_exchange_receipts:{"exchange-one":1},ep_casino_receipts:{"casino:bet":-18},
+    appearance_collection:{"cosmetic:earth-armor":{cosmetic_id:"earth-armor"}}}]});
+d.schema_migrations.insertOne({version:12,name:"ep_wallet_and_casino_receipts"});
+d.auction_bid_operations.insertOne({_id:"pending-listing",kind:"listing",amount:25});
+d.casino_blackjack_tables.insertOne({_id:"vip-blackjack",pending:{currency:"ep",amount:18,operation_id:"casino:bet"}});
+d.users.createIndex({gold:1},{name:"backup_fixture_index"});'`)
 	backup := func(reject bool) ([]byte, error) {
 		command := exec.CommandContext(ctx, "bash", filepath.Join(root, "deploy/backup_before_upgrade.sh"))
 		command.Dir = root
@@ -234,7 +249,15 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 	}
 	defer dump.Close()
 	run(dump, "compose", "exec", "-T", "restore", "sh", "-c", `exec mongorestore --archive --gzip --nsInclude='eidolon.*' --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin`)
-	query := authJS + `'const d=db.getSiblingDB("eidolon"); const c=d.users.findOne({_id:"backup-player"}); if(!c||c.gold!==1184||c.resources.health!==17||c.resources.mana!==0||c.receipts.listing!==-25) quit(2); if(d.schema_migrations.countDocuments({version:8})!==1||d.auction_bid_operations.countDocuments({_id:"pending-listing",amount:25})!==1||!d.users.getIndexes().some(i=>i.name==="backup_fixture_index")) quit(3); print("owned restored resources, receipts, schema and indexes match")'`
+	query := authJS + `'
+const d=db.getSiblingDB("eidolon"); const c=d.users.findOne({_id:"backup-player"});
+if(!c||c.gold!==1184||c.resources.health!==17||c.resources.mana!==0||c.receipts.listing!==-25) quit(2);
+if(d.schema_migrations.countDocuments({version:12})!==1||d.auction_bid_operations.countDocuments({_id:"pending-listing",amount:25})!==1||!d.users.getIndexes().some(i=>i.name==="backup_fixture_index")) quit(3);
+const p=c.characters[0];
+if(p.ep!==83||p.vip_allowance_receipts["paid-month"]!==100||p.ep_exchange_receipts["exchange-one"]!==1||p.ep_casino_receipts["casino:bet"]!==-18||p.appearance_collection["cosmetic:earth-armor"].cosmetic_id!=="earth-armor") quit(4);
+if(c.vip_periods[0].id!=="paid-month"||c.vip_periods[0].ends_at.toISOString()!=="2026-10-01T00:00:00.000Z") quit(5);
+if(d.casino_blackjack_tables.countDocuments({_id:"vip-blackjack","pending.currency":"ep","pending.amount":18,"pending.operation_id":"casino:bet"})!==1) quit(6);
+print("owned restored resources, EP, membership, cosmetics, receipts, pending wager, schema and indexes match");'`
 	run(nil, "compose", "exec", "-T", "restore", "sh", "-c", query)
 	run(nil, "compose", "exec", "-T", "mongo", "sh", "-c", query)
 	// Also exercise an installation with data but no previous API container.
@@ -261,7 +284,7 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 	if !foundNoAPI {
 		t.Fatal("missing explicit no-previous-image identity")
 	}
-	t.Log("owned backup restored zero mana, health, gold and receipts; private journal retained; failed dump restarted the exact previous API")
+	t.Log("owned backup restored resources, EP, membership, cosmetics and pending wagers; private journal retained; failed dump restarted the exact previous API")
 }
 
 func TestDeployBuildContextExcludesPrivateRecoveryFiles(t *testing.T) {
