@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — cosmetic outfitter implemented for next release batch
+## September 14 — Alpha1.9.5 live;1.9.6 vendor/membership batch pushed
+
+Previous turn made progress by implementing/committing the cosmetic outfitter.
+This continuation completed1.9.5 verification: both public endpoints match
+5d024b3b987ce74917491cff5fcb93548fe4308a, Alpha1.9.5, database ready. Its exact
+CI34795245270 is TERMINAL SUCCESS/all ten jobs. Do not repoll/restart that run.
+
+Implemented trusted account VIP membership periods and exactly100EP per month,
+including offline catch-up, atomic receipt/balance saves, failed-save recovery,
+expiry/revocation and owner-only status. No client-provided grants, power perks,
+checkout, billing or real-account VIP provision. Administrative cmd/vip-period
+defaults to no-write/no-connection preview; actual provisioning requires --apply
+and private DB credentials. Atomic Mongo non-overlap prevents duplicate months.
+
+Focused VIP/calendar/overflow/receipt/source-failure/reopened-journal and existing
+affected server tests pass; Go build passes. Eight-concurrent-provision disposable
+loopback Mongo testPASS0.684s; owned container removed. No production data changed.
+Client wallet/vendor/version268PASS2.054s; wallet390/1440browser2PASS8.1s. Retain
+previous vendor212client/2browser evidence instead of repeating it. Lint/diff pass.
+
+Combined vendor7c679a24 and membership into release **f99bc61e4c78b844d6f4c673960df961021b4b14**,
+Alpha1.9.6, pushed from /tmp/eidolon-1-10-resonant-age-20260913. Exact new CI
+**34797469252** authoritatively IN_PROGRESS. Continue THIS handle; no1.9.6live claim
+yet. Source/docs/patch notes/login defaults aligned. Root stays ledger-only;
+never push this divergent root branch. Full1.10 goal remains active.
+
+Next: complete EP-only games(up to100EP) AND actual VIP-floor access together in a
+meaningful feature batch, followed by remaining consolidated acceptance. Membership
+metadata/guard lock is not functioning VIP gameplay. Entrypoints/rollback caveats:
+active docs/plans/2026-09-14-vip-membership.md. Current large balconyY8, not legacy
+small-town Y6 geometry. Preserve EP/allowance/exchange/cosmetic receipts in every
+save/rollback, and settle funded hands on membership expiry/disconnect.
+
+## September 14 — cosmetic outfitter implemented for next release batch (earlier)
 
 Previous continuation made progress (wallet and witness fix pushed as1.9.5).
 This continuation implements the next feature: physical Veyra · VIP Outfitter
