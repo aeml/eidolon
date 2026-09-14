@@ -33,6 +33,9 @@ export class SocialPresenceController {
             case 'casino_update':
                 this.uiManager.casino?.updateState(msg.payload);
                 return true;
+            case 'casino_floor':
+                this.uiManager.casino?.setFloor(msg.payload);
+                return true;
             case 'casino_action_error':
                 this.uiManager.casino?.handleActionError(msg.payload);
                 return true;

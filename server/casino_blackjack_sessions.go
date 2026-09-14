@@ -72,6 +72,10 @@ func newBlackjackLobby() (*blackjackTableState, error) {
 }
 
 func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTableState, error) {
+	currency, err := database.CasinoCurrencyForRecord(record.TableID)
+	if err != nil {
+		return nil, err
+	}
 	var state blackjackTableState
 	if err := json.Unmarshal(record.State, &state); err != nil {
 		return nil, err
@@ -81,7 +85,7 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 	}
 	players, seats := map[string]bool{}, map[int]bool{}
 	for _, p := range state.Players {
-		if !strings.HasPrefix(p.PlayerID, "player-") || len(p.PlayerID) <= 7 || players[p.PlayerID] || p.Seat < 0 || p.Seat >= 6 || seats[p.Seat] || !game.ValidBlackjackBet(p.Bet) {
+		if !strings.HasPrefix(p.PlayerID, "player-") || len(p.PlayerID) <= 7 || players[p.PlayerID] || p.Seat < 0 || p.Seat >= 6 || seats[p.Seat] || !game.ValidCasinoBet("blackjack", currency, p.Bet) {
 			return nil, errors.New("invalid funded blackjack participant")
 		}
 		players[p.PlayerID], seats[p.Seat] = true, true
@@ -92,7 +96,7 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 			return nil, errors.New("invalid blackjack betting state")
 		}
 	case "playing", "settling", "complete":
-		if state.Round == nil || state.Round.ID != state.RoundID || len(state.Round.Players) != len(state.Players) {
+		if state.Round == nil || !casinoCurrencyMatches(state.Round.Currency, currency) || state.Round.ID != state.RoundID || len(state.Round.Players) != len(state.Players) {
 			return nil, errors.New("invalid saved blackjack round")
 		}
 		if err := state.Round.Validate(); err != nil {
@@ -186,7 +190,11 @@ func transferBlackjackLocked(record *database.BlackjackTableRecord, state *black
 	if err != nil {
 		return err
 	}
-	op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:%s", state.RoundID, record.Version, purpose), PlayerID: playerID, Currency: "gold", Amount: amount, NextState: encoded}
+	currency, err := database.CasinoCurrencyForRecord(record.TableID)
+	if err != nil {
+		return err
+	}
+	op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:%s", state.RoundID, record.Version, purpose), PlayerID: playerID, Currency: currency, Amount: amount, NextState: encoded}
 	pending, err := db.BeginBlackjackTransfer(record.TableID, record.Version, op)
 	if err != nil {
 		return err
@@ -217,7 +225,7 @@ func recoverAccountBlackjackLocked(username string) error {
 		}
 		_, err := recoverBlackjackTransferLocked(*record)
 		refreshBlackjackLocked(table.ID)
-		if err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+		if err != nil && !casinoInsufficientFunds(err) {
 			return err
 		}
 	}
@@ -239,8 +247,13 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	if r.Pending != nil {
 		return errors.New("table funds are being saved; please wait")
 	}
-	if state.RoundID != roundID || state.Phase != "betting" || !game.ValidBlackjackBet(bet) {
-		return errors.New("review the current round and choose 20–100,000 Gold in steps of 20")
+	currency, err := database.CasinoCurrencyForRecord(r.TableID)
+	if err != nil {
+		return err
+	}
+	if state.RoundID != roundID || state.Phase != "betting" || !game.ValidCasinoBet("blackjack", currency, bet) {
+		minimum, maximum, step := game.CasinoBetLimits("blackjack", currency)
+		return fmt.Errorf("review the current round and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
 	}
 	for _, p := range state.Players {
 		if p.PlayerID == client.playerID && p.Bet == bet {
@@ -255,6 +268,9 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	}
 	if len(state.Players) >= 6 {
 		return errors.New("this blackjack round is full")
+	}
+	if err := requireCasinoFundingLocked(client, currency, bet, now); err != nil {
+		return err
 	}
 	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, Bet: bet})
 	if state.DealAt.IsZero() {
@@ -290,6 +306,13 @@ func handleBlackjackPlay(client *Client, sessionID, roundID, action string, revi
 		state.Phase = "settling"
 	}
 	if extra > 0 {
+		currency, err := database.CasinoCurrencyForRecord(r.TableID)
+		if err != nil {
+			return err
+		}
+		if err := requireCasinoFundingLocked(client, currency, extra, now); err != nil {
+			return err
+		}
 		return transferBlackjackLocked(r, state, client.playerID, -extra, action)
 	}
 	return advanceBlackjackLocked(r, state)
@@ -328,7 +351,12 @@ func tickBlackjack(now time.Time, ids ...string) error {
 				for _, p := range state.Players {
 					entries = append(entries, game.BlackjackEntry{PlayerID: p.PlayerID, Seat: p.Seat, Bet: p.Bet})
 				}
-				state.Round, err = game.NewBlackjackRound(state.RoundID, entries, now)
+				currency, currencyErr := database.CasinoCurrencyForRecord(r.TableID)
+				if currencyErr != nil {
+					err = currencyErr
+				} else {
+					state.Round, err = game.NewBlackjackRoundForCurrency(state.RoundID, entries, now, currency)
+				}
 				if err == nil {
 					state.Phase = "playing"
 					if state.Round.Phase == "complete" {
@@ -382,7 +410,7 @@ func tickBlackjack(now time.Time, ids ...string) error {
 			return nil
 		}
 		_, err = recoverBlackjackTransferLocked(*r)
-		if errors.Is(err, database.ErrInsufficientGold) {
+		if casinoInsufficientFunds(err) {
 			return nil
 		}
 		return err
@@ -419,6 +447,10 @@ func tickBlackjack(now time.Time, ids ...string) error {
 }
 
 type blackjackTableView struct {
+	Currency    string                 `json:"currency"`
+	Balance     int                    `json:"balance"`
+	MinBet      int                    `json:"minBet"`
+	BetStep     int                    `json:"betStep"`
 	ServerNow   time.Time              `json:"serverNow"`
 	NextRoundAt time.Time              `json:"nextRoundAt"`
 	MaxBet      int                    `json:"maxBet"`
@@ -441,6 +473,8 @@ func blackjackViewFor(playerID string) blackjackTableView {
 	}
 	blackjackCached, blackjackAvailable := getBlackjackCache(id)
 	view := blackjackTableView{ServerNow: time.Now(), Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
+	view.Currency, _ = database.CasinoCurrencyForRecord(id)
+	view.MinBet, view.MaxBet, view.BetStep = game.CasinoBetLimits("blackjack", view.Currency)
 	if !blackjackAvailable || blackjackCached == nil {
 		return view
 	}
@@ -462,6 +496,7 @@ func blackjackViewFor(playerID string) blackjackTableView {
 	}
 	if player := world.GetEntityCopy(playerID); player != nil {
 		view.Gold = player.Gold
+		view.Balance = casinoBalance(player, view.Currency)
 	}
 	return view
 }

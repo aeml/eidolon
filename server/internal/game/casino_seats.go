@@ -16,6 +16,7 @@ const CasinoReconnectGrace = time.Minute
 // Coordinates belong exclusively to the permanent shared casino scene.
 // The venue renderer consumes this catalog; clients never supply seat transforms.
 type CasinoSeatPosition struct {
+	Y        float64 `json:"y"`
 	X        float64 `json:"x"`
 	Z        float64 `json:"z"`
 	Rotation float64 `json:"rotation"`
@@ -24,6 +25,8 @@ type CasinoSeatPosition struct {
 }
 
 type CasinoTable struct {
+	Y              float64              `json:"y"`
+	Currency       string               `json:"currency"`
 	ID             string               `json:"id"`
 	Name           string               `json:"name"`
 	Game           string               `json:"game"`
@@ -42,20 +45,44 @@ func CasinoTables() []CasinoTable {
 		{ID: "public-blackjack-air", Name: "Aeral's High Table", Game: "blackjack", Floor: "public", X: 18, Z: 155, MinimumPlayers: 1},
 		{ID: "public-blackjack-fire", Name: "Pyralis's Hearth Table", Game: "blackjack", Floor: "public", X: -18, Z: 194, MinimumPlayers: 1},
 		{ID: "public-blackjack-water", Name: "Neris's Pearl Table", Game: "blackjack", Floor: "public", X: 18, Z: 194, MinimumPlayers: 1},
+		{ID: "vip-blackjack", Name: "The Crownless Court", Game: "blackjack", Floor: "vip", Currency: "ep", X: -14, Y: 8, Z: 137, MinimumPlayers: 1},
+		{ID: "vip-poker", Name: "The Sovereigns' Covenant", Game: "poker", Floor: "vip", Currency: "ep", X: 14, Y: 8, Z: 137, MinimumPlayers: 2},
 	}
 	for i := range tables {
+		if tables[i].Currency == "" {
+			tables[i].Currency = "gold"
+		}
 		for seat := 0; seat < 6; seat++ {
 			angle := float64(seat) * math.Pi / 3
 			dx, dz := math.Sin(angle), math.Cos(angle)
-			tables[i].Seats = append(tables[i].Seats, CasinoSeatPosition{X: tables[i].X + dx*2.2, Z: tables[i].Z + dz*2.2, Rotation: angle + math.Pi, ExitX: tables[i].X + dx*3.4, ExitZ: tables[i].Z + dz*3.4})
+			tables[i].Seats = append(tables[i].Seats, CasinoSeatPosition{Y: tables[i].Y, X: tables[i].X + dx*2.2, Z: tables[i].Z + dz*2.2, Rotation: angle + math.Pi, ExitX: tables[i].X + dx*3.4, ExitZ: tables[i].Z + dz*3.4})
 		}
 	}
 	for i, machine := range SlotMachines() {
 		theme, x := machine.Theme, []float64{-26, -17, 17, 26}[i]
-		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", X: x, Z: 135, MinimumPlayers: 1,
+		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", Currency: "gold", X: x, Z: 135, MinimumPlayers: 1,
 			Seats: []CasinoSeatPosition{{X: x, Z: 137, Rotation: math.Pi, ExitX: x, ExitZ: 138.2}}})
+		vipX, vipZ := []float64{-29, -29, 29, 29}[i], []float64{158, 181, 158, 181}[i]
+		tables = append(tables, CasinoTable{ID: "vip-slots-" + theme, Name: machine.Name + " · Sovereign Edition", Game: "slots", Floor: "vip", Currency: "ep", X: vipX, Y: 8, Z: vipZ, MinimumPlayers: 1,
+			Seats: []CasinoSeatPosition{{X: vipX, Y: 8, Z: vipZ + 2, Rotation: math.Pi, ExitX: vipX, ExitZ: vipZ + 3.2}}})
 	}
+	// Preserve the public catalog's ordering for existing clients and fixtures.
+	sort.SliceStable(tables, func(i, j int) bool { return tables[i].Floor == "public" && tables[j].Floor != "public" })
 	return tables
+}
+
+func CasinoTableByID(id string) (CasinoTable, bool) {
+	for _, table := range CasinoTables() {
+		if table.ID == id {
+			return table, true
+		}
+	}
+	return CasinoTable{}, false
+}
+
+func IsCasinoPokerTable(id string) bool {
+	table, ok := CasinoTableByID(id)
+	return ok && table.Game == "poker"
 }
 
 func IsCasinoBlackjackTable(id string) bool {
@@ -71,6 +98,7 @@ func IsCasinoBlackjackTable(id string) bool {
 // serializes claims; the normal entity removal/scene lifecycle releases them.
 // Private session IDs fence delayed actions after leaving and taking another seat.
 type CasinoSeatSession struct {
+	ExitY           float64 `json:"exitY"`
 	TableID         string  `json:"tableId"`
 	Seat            int     `json:"seat"`
 	SessionID       string  `json:"sessionId"`
@@ -188,7 +216,7 @@ func (w *World) releaseCasinoSeatLocked(player *Entity) {
 		return
 	}
 	oldX, oldZ := player.X, player.Z
-	player.X, player.Y, player.Z = seat.ExitX, 0, seat.ExitZ
+	player.X, player.Y, player.Z = seat.ExitX, seat.ExitY, seat.ExitZ
 	player.State = "IDLE"
 	player.TargetX, player.TargetZ = player.X, player.Z
 	player.TargetID = ""
@@ -266,18 +294,24 @@ func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time
 		return nil, errors.New("finish your current action before sitting in the casino")
 	}
 	position := table.Seats[seatIndex]
+	if (table.Floor == "vip") != player.CasinoVIPFloor {
+		return nil, errors.New("go to that casino floor before sitting")
+	}
+	if table.Floor == "vip" && !now.Before(player.VIPUntil) {
+		return nil, errors.New("You must be a VIP to enter")
+	}
 	dx, dz := player.X-position.ExitX, player.Z-position.ExitZ
-	if !finiteCoordinate(player.X) || !finiteCoordinate(player.Y) || !finiteCoordinate(player.Z) || math.Abs(player.Y) > 0.8 || dx*dx+dz*dz > 2.2*2.2 {
+	if !finiteCoordinate(player.X) || !finiteCoordinate(player.Y) || !finiteCoordinate(player.Z) || math.Abs(player.Y-position.Y) > 0.8 || dx*dx+dz*dz > 2.2*2.2 {
 		return nil, errors.New("walk up to the seat first")
 	}
 	var nonce [16]byte
 	if _, err := rand.Read(nonce[:]); err != nil {
 		return nil, err
 	}
-	session := &CasinoSeatSession{TableID: tableID, Seat: seatIndex, SessionID: hex.EncodeToString(nonce[:]), ExitX: position.ExitX, ExitZ: position.ExitZ}
+	session := &CasinoSeatSession{TableID: tableID, Seat: seatIndex, SessionID: hex.EncodeToString(nonce[:]), ExitX: position.ExitX, ExitY: position.Y, ExitZ: position.ExitZ}
 	oldX, oldZ := player.X, player.Z
 	player.CasinoSeat = session
-	player.X, player.Y, player.Z = position.X, 0, position.Z
+	player.X, player.Y, player.Z = position.X, position.Y, position.Z
 	player.Rotation = position.Rotation
 	player.State = "SEATED"
 	player.TargetX, player.TargetZ = player.X, player.Z

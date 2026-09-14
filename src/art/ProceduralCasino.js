@@ -41,7 +41,7 @@ export function createCasinoInterior(scene, collision) {
     box(balcony, 'vip-rear-floor', m.dark, [66, .4, 15], [0, 7.8, 136]);
     for (const x of [-29, 29]) box(balcony, 'vip-gallery-floor', m.dark, [8, .4, 60], [x, 7.8, 173]);
     box(balcony, 'vip-velvet-runner', m.velvet, [58, .03, 10], [0, 8.02, 135]);
-    for (const x of [-23, -14, 14, 23]) {
+    for (const x of [-23, 23]) {
         box(balcony, 'vip-sofa', m.velvet, [5, .7, 1.7], [x, 8.5, 132]);
         box(balcony, 'vip-sofa-back', m.wood, [5.2, 1.5, .3], [x, 8.8, 131.2]);
         cylinder(balcony, 'vip-marble-table', m.gold, 1, .7, [x, 8.35, 136]);
@@ -215,9 +215,12 @@ export function updateCasinoCutaway(shell, position) {
 
 export function createCasinoFurniture(tables) {
     const root = new THREE.Group(); root.name = 'casino-furniture';
+    const publicFloor = new THREE.Group(), vipFloor = new THREE.Group();
+    root.add(publicFloor, vipFloor); root.userData.vipFloor = vipFloor;
     const m = materials(); const seats = [];
     for (const table of tables) {
-        const unit = new THREE.Group(); unit.name = table.id; root.add(unit);
+        const unit = new THREE.Group(); unit.name = table.id; unit.position.y = table.y || 0;
+        (table.floor === 'vip' ? vipFloor : publicFloor).add(unit);
         if (table.game === 'slots') {
             box(unit, 'slot-plinth', m.wood, [1.4, 1, 0.85], [table.x, 0.5, table.z]);
             box(unit, 'slot-cabinet', m.gold, [1.55, 1.9, 0.95], [table.x, 1.95, table.z]);
@@ -235,7 +238,7 @@ export function createCasinoFurniture(tables) {
         }
         table.seats.forEach((seat, index) => {
             const chair = new THREE.Group(); chair.position.set(seat.x, 0, seat.z); chair.rotation.y = seat.rotation;
-            chair.name = `${table.id}-seat-${index}`; chair.userData.casinoSeat = { tableId: table.id, seat: index };
+            chair.name = `${table.id}-seat-${index}`; chair.userData.casinoSeat = { tableId: table.id, seat: index, floor: table.floor || 'public' };
             box(chair, 'chair-cushion', m.velvet, [0.9, 0.2, 0.8], [0, 0.94, 0]);
             box(chair, 'chair-back', m.wood, [0.96, 1.15, 0.14], [0, 1.45, -0.43]);
             box(chair, 'chair-back-inset', m.velvet, [0.76, 0.8, 0.16], [0, 1.5, -0.42]);
@@ -244,7 +247,7 @@ export function createCasinoFurniture(tables) {
         });
     }
     root.userData.seats = seats;
-    batchMeshes(root);
+    batchMeshes(publicFloor); batchMeshes(vipFloor);
     // Picking proxies retain individual seats after visible geometry is batched.
     const pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
     for (const chair of seats) {

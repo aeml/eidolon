@@ -37,9 +37,18 @@ func handleMsgCasino(client *Client, message Message) {
 		client.sendSafe(createMessage(MsgEnterInstance, payload))
 		sendCasinoState(client)
 		return
-	case "vip":
-		client.sendError("You must be a VIP to enter")
-		return
+	case "vip", "downstairs":
+		if request.Action == "vip" {
+			err = requireCasinoVIPLocked(client, time.Now())
+		}
+		if err == nil {
+			err = world.ChangeCasinoFloor(client.playerID, request.Action == "vip", time.Now())
+		}
+		if err == nil {
+			p := world.GetEntityCopy(client.playerID)
+			payload, _ := json.Marshal(map[string]interface{}{"upstairs": p.CasinoVIPFloor, "x": p.X, "y": p.Y, "z": p.Z})
+			client.sendSafe(createMessage("casino_floor", payload))
+		}
 	case "get":
 		if err := prepareSeatedSlotLocked(client); err != nil {
 			client.sendError(err.Error())
@@ -47,8 +56,12 @@ func handleMsgCasino(client *Client, message Message) {
 		sendCasinoState(client)
 		return
 	case "sit":
-		if request.TableID == publicPokerTable {
-			err = validatePokerSeatClaim(client.playerID, request.Seat)
+		p := world.GetEntityCopy(client.playerID)
+		if table, ok := game.CasinoTableByID(request.TableID); ok && table.Floor == "vip" && (p == nil || p.CasinoSeat == nil || p.CasinoSeat.TableID != request.TableID || p.CasinoSeat.Seat != request.Seat) {
+			err = requireCasinoVIPLocked(client, time.Now())
+		}
+		if err == nil && game.IsCasinoPokerTable(request.TableID) {
+			err = validatePokerSeatClaim(client.playerID, request.Seat, request.TableID)
 		}
 		if err == nil {
 			_, err = world.TakeCasinoSeat(client.playerID, request.TableID, request.Seat, time.Now())
@@ -116,9 +129,22 @@ func sendCasinoState(client *Client) {
 	}
 	encoded, _ := json.Marshal(struct {
 		game.CasinoPresence
+		Floor     string             `json:"floor"`
+		VIP       bool               `json:"vip"`
 		Blackjack blackjackTableView `json:"blackjack"`
 		Slots     *slotMachineView   `json:"slots,omitempty"`
 		Poker     pokerTableView     `json:"poker"`
-	}{world.CasinoPresenceFor(client.playerID, time.Now()), blackjackViewFor(client.playerID), slotViewFor(client.playerID), pokerViewFor(client.playerID)})
+	}{CasinoPresence: world.CasinoPresenceFor(client.playerID, time.Now()), Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjackViewFor(client.playerID), Slots: slotViewFor(client.playerID), Poker: pokerViewFor(client.playerID)})
 	client.sendSafe(createMessage("casino_update", encoded))
+}
+
+func casinoFloorFor(playerID string) string {
+	if p := world.GetEntityCopy(playerID); p != nil && p.CasinoVIPFloor && p.InstanceID == game.CasinoInstanceID {
+		return "vip"
+	}
+	return "public"
+}
+func casinoVIPFor(playerID string) bool {
+	p := world.GetEntityCopy(playerID)
+	return p != nil && time.Now().Before(p.VIPUntil)
 }

@@ -77,7 +77,7 @@ test('mixed slot gems and table furniture share valid triangle batches', () => {
         furniture = createCasinoFurniture([table, { id: 'public-slots-earth', game: 'slots', x: -5, z: 164,
             seats: [{ x: -5, z: 166, rotation: Math.PI }] }]);
         expect(report).not.toHaveBeenCalled();
-        const batches = furniture.children.filter(child => child.isMesh);
+        const batches = []; furniture.traverse(child => { if (child.isMesh && !child.userData.casinoPickOnly) batches.push(child); });
         expect(batches.length).toBeGreaterThan(0);
         for (const mesh of batches) {
             expect(mesh.geometry.index).toBeNull();
@@ -99,7 +99,7 @@ test('walkable shell retains walls, opens a real doorway and batches the cutaway
     const furniture = createCasinoFurniture([table]); let visibleMeshes = 0;
     furniture.traverse(mesh => { if (mesh.isMesh && mesh.material.visible) visibleMeshes++; });
     expect(visibleMeshes).toBeLessThanOrEqual(6);
-    expect(furniture.userData.seats[0].userData.casinoSeat).toEqual({ tableId: table.id, seat: 0 });
+    expect(furniture.userData.seats[0].userData.casinoSeat).toEqual({ tableId: table.id, seat: 0, floor: 'public' });
     disposeCasinoObject(shell); disposeCasinoObject(furniture);
 });
 

@@ -13,24 +13,24 @@ function node(tag, text, className) {
 
 export class BlackjackTableUI {
     constructor(send) {
-        this.send = send;
+        this.send = send; this.currency = 'Gold';
         this.root = node('div', '', 'blackjack-game'); this.root.hidden = true;
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
-        this.rules = node('details'); this.rules.append(node('summary', 'Rules & Gold stakes'));
+        this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes'));
         this.rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
         this.stakeRules = node('p'); this.rules.append(this.stakeRules);
         this.rules.append(node('p', 'You have 30 seconds per decision. Timeouts stand. Confirmed wagers continue if you leave or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
-        this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase Gold losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
+        this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
         this.betBox = node('div', '', 'blackjack-bet');
-        const label = node('label', 'Wager (Gold) ');
+        const label = node('label', 'Wager (Gold) '); this.stakeLabel = label;
         this.stake = node('input'); this.stake.type = 'number'; this.stake.min = '20'; this.stake.max = '500'; this.stake.step = '20'; this.stake.value = '100';
         label.append(this.stake);
         this.bet = this.button('Bet · 100 Gold', () => this.placeBet()); this.betBox.append(label, this.bet);
-        this.stake.oninput = () => { this.bet.textContent = `Bet · ${this.stake.value || '…'} Gold`; };
+        this.stake.oninput = () => { this.bet.textContent = `Bet · ${this.stake.value || '…'} ${this.currency}`; };
         this.adjustments = node('div', '', 'casino-bet-adjustments');
         for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
             if (this.stake.disabled) return;
-            this.stake.value = String(Math.max(20, Math.min(this.view?.maxBet || 500, Math.floor(Number(this.stake.value) * factor / 20) * 20 || 20)));
+            this.stake.value = String(Math.max(Number(this.stake.min), Math.min(Number(this.stake.max), Math.floor(Number(this.stake.value) * factor / Number(this.stake.step)) * Number(this.stake.step) || Number(this.stake.min))));
             this.stake.oninput();
         }));
         this.betBox.insertBefore(this.adjustments, this.bet); this.bet.className = 'casino-primary';
@@ -47,15 +47,20 @@ export class BlackjackTableUI {
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) { this.pendingKey = null; this.renderKey = null; this.table.clear(); this.celebration.clear(); return; }
         this.presence = presence; this.table.update(view, playerID, presence);
+        const changedCurrency = this.currency !== (view.currency === 'ep' ? 'EP' : 'Gold');
+        this.currency = view.currency === 'ep' ? 'EP' : 'Gold'; this.balance = view.balance ?? view.gold;
+        this.stake.min = String(view.minBet || 20); this.stake.step = String(view.betStep || 20);
         this.stake.max = String(view.maxBet || 500);
-        this.stakeRules.textContent = `Bet 20–${goldText(this.stake.max)} Gold in steps of 20. Double on two cards, including after splitting. Split equal-value pairs into at most four hands; split aces receive one card each. No insurance or surrender.`;
+        if (changedCurrency) this.stake.value = this.stake.min;
+        this.stakeLabel.firstChild.nodeValue = `Wager (${this.currency}) `; this.stake.oninput();
+        this.stakeRules.textContent = `Bet ${this.stake.min}–${goldText(this.stake.max)} ${this.currency} in steps of ${this.stake.step}. Double on two cards, including after splitting. Split equal-value pairs into at most four hands; split aces receive one card each. No insurance or surrender.`;
         if (this.celebrationRound !== view.roundId) this.celebration.clear();
         const own = view.players?.find(player => player.playerId === playerID);
         this.stateKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, own, playerID]);
         if (this.pendingKey !== this.stateKey) this.pendingKey = null;
         this.summary.textContent = !view.available ? 'Blackjack is temporarily unavailable; saved wagers are retained.' :
-            view.processing ? `Saving table funds… · ${view.gold} Gold available` :
-            `${view.gold} Gold available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
+            view.processing ? `Saving table funds… · ${this.balance} ${this.currency} available` :
+            `${this.balance} ${this.currency} available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
                 view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' : 'Round in progress.'}`;
         this.betBox.hidden = view.phase !== 'betting';
         this.bet.disabled = !this.canAct() || view.phase !== 'betting' || Boolean(own); this.stake.disabled = this.bet.disabled;
@@ -75,14 +80,14 @@ export class BlackjackTableUI {
                     const participant = view.players.find(p => p.playerId === player.playerId);
                     for (const [index, hand] of player.hands.entries()) {
                         const active = view.phase === 'playing' && round.turnPlayerId === player.playerId && round.turnHand === index;
-                        const result = hand.outcome ? ` · ${hand.outcome} · ${hand.payout} Gold returned` : '';
+                        const result = hand.outcome ? ` · ${hand.outcome} · ${hand.payout} ${this.currency} returned` : '';
                         const seat = player.seat ?? participant?.seat;
-                        this.hand(`${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${hand.bet} Gold${result}`, hand.cards, false, active, this.table.seats[seat]?.hands);
+                        this.hand(`${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${hand.bet} ${this.currency}${result}`, hand.cards, false, active, this.table.seats[seat]?.hands);
                     }
                 }
                 if (view.phase === 'playing' && round.turnPlayerId === playerID) {
                     for (const action of round.actions || []) {
-                        const cost = ['double', 'split'].includes(action) ? ` · +${round.players.find(p => p.playerId === playerID)?.hands[round.turnHand]?.bet} Gold` : '';
+                        const cost = ['double', 'split'].includes(action) ? ` · +${round.players.find(p => p.playerId === playerID)?.hands[round.turnHand]?.bet} ${this.currency}` : '';
                         const button = this.button(action[0].toUpperCase() + action.slice(1) + cost, () => this.choose(action));
                         button.disabled = !this.canAct(); this.actions.append(button);
                     }
@@ -92,7 +97,7 @@ export class BlackjackTableUI {
                 this.celebrationRound = view.roundId;
                 const hands = round.players.find(p => p.playerId === playerID)?.hands || [];
                 const returned = hands.reduce((sum, h) => sum + h.payout, 0), staked = hands.reduce((sum, h) => sum + h.bet, 0);
-                if (returned > staked) this.celebration.show('YOU WON', `+${goldText(returned - staked)} Gold`,
+                if (returned > staked) this.celebration.show('YOU WON', `+${goldText(returned - staked)} ${this.currency}`,
                     `${hands.map(h => h.outcome === 'blackjack' ? 'Blackjack' : `${blackjackCount(h.cards)} (${h.outcome})`).join(' · ')}. ${goldText(returned)} returned, ${goldText(staked)} staked.`, null, 5000);
             }
         }
@@ -114,8 +119,8 @@ export class BlackjackTableUI {
     placeBet() {
         if (!this.canAct() || this.view.phase !== 'betting' || this.view.players?.some(p => p.playerId === this.playerID)) return;
         const bet = Number(this.stake.value);
-        if (!Number.isInteger(bet) || bet < 20 || bet > (this.view.maxBet || 500) || bet % 20 || bet > this.view.gold) {
-            this.summary.textContent = `Choose 20–${goldText(this.view.maxBet || 500)} Gold in steps of 20, within your available balance.`; return;
+        if (!Number.isInteger(bet) || bet < Number(this.stake.min) || bet > Number(this.stake.max) || bet % Number(this.stake.step) || bet > this.balance) {
+            this.summary.textContent = `Choose ${this.stake.min}–${goldText(this.stake.max)} ${this.currency} in steps of ${this.stake.step}, within your available balance.`; return;
         }
         this.submit({ action: 'bet', roundId: this.view.roundId, bet });
     }
@@ -126,7 +131,7 @@ export class BlackjackTableUI {
         const payload = { action: 'play', roundId: this.view.roundId, roundRevision: round.revision, gameAction: action };
         if (action === 'split' || action === 'double') {
             const hand = round.players.find(player => player.playerId === this.playerID)?.hands[round.turnHand];
-            if (!hand || hand.bet > this.view.gold) { this.summary.textContent = 'Not enough Gold for that additional wager.'; return; }
+            if (!hand || hand.bet > this.balance) { this.summary.textContent = `Not enough ${this.currency} for that additional wager.`; return; }
         }
         this.submit(payload);
     }

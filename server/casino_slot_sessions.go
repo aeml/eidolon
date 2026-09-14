@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
@@ -34,9 +35,13 @@ var slotsMu sync.RWMutex
 var slotsCache = map[string]slotCacheEntry{}
 var slotsPending = map[string]string{} // record key -> account username
 
-func slotRecordKey(owner, theme string) string {
+func slotRecordKey(owner, theme string, currencies ...string) string {
 	hash := sha256.Sum256([]byte(owner))
-	return "slots:" + hex.EncodeToString(hash[:]) + ":" + theme
+	prefix := "slots:"
+	if len(currencies) > 0 && currencies[0] == "ep" {
+		prefix = "slots:ep:"
+	}
+	return prefix + hex.EncodeToString(hash[:]) + ":" + theme
 }
 
 func decodeSlotState(key string, encoded []byte) (*slotSavedState, error) {
@@ -44,8 +49,12 @@ func decodeSlotState(key string, encoded []byte) (*slotSavedState, error) {
 	if err := json.Unmarshal(encoded, &state); err != nil {
 		return nil, err
 	}
-	if !strings.HasPrefix(state.Owner, "player-") || len(state.Owner) <= 7 || len(state.Owner) > 128 || slotRecordKey(state.Owner, state.Session.Theme) != key {
+	if !strings.HasPrefix(state.Owner, "player-") || len(state.Owner) <= 7 || len(state.Owner) > 128 || slotRecordKey(state.Owner, state.Session.Theme, state.Session.Currency) != key {
 		return nil, errors.New("saved slot owner/theme mismatch")
+	}
+	currency, err := database.CasinoCurrencyForRecord(key)
+	if err != nil || !casinoCurrencyMatches(state.Session.Currency, currency) {
+		return nil, errors.New("saved slot currency mismatch")
 	}
 	if err := state.Session.Validate(); err != nil {
 		return nil, err
@@ -93,7 +102,7 @@ func validateSlotIntent(record *database.BlackjackTableRecord, state *slotSavedS
 	if op == nil {
 		return errors.New("missing slot transfer intent")
 	}
-	if err := op.Validate(); err != nil {
+	if err := op.ValidateForTable(record.TableID); err != nil {
 		return err
 	}
 	next, err := decodeSlotState(record.TableID, op.NextState)
@@ -120,7 +129,7 @@ func validateSlotIntent(record *database.BlackjackTableRecord, state *slotSavedS
 // Caller holds the owner's account lock. Also handles a crash AFTER debit
 // resolution but BEFORE the positive payout intent was written.
 func recoverSlotRecordLocked(key, username string) error {
-	declined := false
+	var declined error
 	for step := 0; step < 3; step++ {
 		r, err := db.GetBlackjackTable(key)
 		if err != nil {
@@ -138,8 +147,10 @@ func recoverSlotRecordLocked(key, username string) error {
 				return err
 			}
 			r, err = recoverBlackjackTransferLocked(*r)
-			declined = errors.Is(err, database.ErrInsufficientGold)
-			if err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+			if casinoInsufficientFunds(err) {
+				declined = err
+			}
+			if err != nil && !casinoInsufficientFunds(err) {
 				return err
 			}
 			if r == nil {
@@ -152,15 +163,15 @@ func recoverSlotRecordLocked(key, username string) error {
 		}
 		if state.Owed == 0 {
 			cacheSettledSlot(key, *state)
-			if declined {
-				return database.ErrInsufficientGold
+			if declined != nil {
+				return declined
 			}
 			return nil
 		}
 		amount, purpose := state.Owed, state.Payment
 		state.Owed, state.Payment = 0, ""
 		encoded, _ := json.Marshal(state)
-		op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:%s-return", key, r.Version, purpose), PlayerID: state.Owner, Currency: "gold", Amount: amount, NextState: encoded}
+		op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:%s-return", key, r.Version, purpose), PlayerID: state.Owner, Currency: slotCurrency(state.Session.Currency), Amount: amount, NextState: encoded}
 		markSlotPending(key, state.Owner)
 		if _, err := db.BeginBlackjackTransfer(key, r.Version, op); err != nil {
 			return err
@@ -179,7 +190,7 @@ func recoverAccountSlotsLocked(username string) error {
 	}
 	slotsMu.RUnlock()
 	for _, key := range keys {
-		if err := recoverSlotRecordLocked(key, username); err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+		if err := recoverSlotRecordLocked(key, username); err != nil && !casinoInsufficientFunds(err) {
 			return err
 		}
 	}
@@ -222,24 +233,44 @@ func initializeSlots() error {
 	return tickSlotRecovery()
 }
 
+func slotCurrency(currency string) string {
+	if currency == "" {
+		return "gold"
+	}
+	return currency
+}
+func slotSeatDetails(p *game.Entity) (theme, currency string, ok bool) {
+	if p == nil || p.CasinoSeat == nil {
+		return "", "", false
+	}
+	table, found := game.CasinoTableByID(p.CasinoSeat.TableID)
+	if !found || table.Game != "slots" {
+		return "", "", false
+	}
+	return strings.TrimPrefix(table.ID, table.Floor+"-slots-"), table.Currency, true
+}
 func requireSlotSeat(client *Client, sessionID string) (*game.Entity, string, error) {
 	player := world.GetEntityCopy(client.playerID)
-	if player == nil || player.Disconnected || player.Health <= 0 || player.InstanceID != game.CasinoInstanceID || player.CasinoSeat == nil || player.CasinoSeat.SessionID != sessionID || !strings.HasPrefix(player.CasinoSeat.TableID, "public-slots-") {
+	theme, currency, seated := slotSeatDetails(player)
+	if !seated || player.Disconnected || player.Health <= 0 || player.InstanceID != game.CasinoInstanceID || player.CasinoSeat.SessionID != sessionID {
 		return nil, "", errors.New("sit at an elemental machine before playing")
 	}
-	theme := strings.TrimPrefix(player.CasinoSeat.TableID, "public-slots-")
-	if _, err := game.NewSlotSession(theme); err != nil {
+	if _, err := game.NewSlotSessionForCurrency(theme, currency); err != nil {
 		return nil, "", err
 	}
 	return player, theme, nil
 }
 
-func loadSlotSessionLocked(owner, theme string) (*database.BlackjackTableRecord, *slotSavedState, error) {
+func loadSlotSessionLocked(owner, theme string, currencies ...string) (*database.BlackjackTableRecord, *slotSavedState, error) {
 	if !strings.HasPrefix(owner, "player-") || len(owner) <= 7 {
 		return nil, nil, errors.New("invalid slot owner")
 	}
-	key := slotRecordKey(owner, theme)
-	session, err := game.NewSlotSession(theme)
+	currency := "gold"
+	if len(currencies) > 0 {
+		currency = currencies[0]
+	}
+	key := slotRecordKey(owner, theme, currency)
+	session, err := game.NewSlotSessionForCurrency(theme, currency)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -257,7 +288,7 @@ func loadSlotSessionLocked(owner, theme string) (*database.BlackjackTableRecord,
 	}
 	if r.Pending != nil || state.Owed > 0 {
 		markSlotPending(key, owner)
-		if err := recoverSlotRecordLocked(key, strings.TrimPrefix(owner, "player-")); err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+		if err := recoverSlotRecordLocked(key, strings.TrimPrefix(owner, "player-")); err != nil && !casinoInsufficientFunds(err) {
 			return nil, nil, err
 		}
 		r, err = db.GetBlackjackTable(key)
@@ -279,7 +310,8 @@ func handleSlotAction(client *Client, sessionID string, revision uint64, action 
 	if err != nil {
 		return err
 	}
-	r, state, err := loadSlotSessionLocked(player.ID, theme)
+	_, currency, _ := slotSeatDetails(player)
+	r, state, err := loadSlotSessionLocked(player.ID, theme, currency)
 	if err != nil {
 		return err
 	}
@@ -290,8 +322,10 @@ func handleSlotAction(client *Client, sessionID string, revision uint64, action 
 	debit, owed := 0, 0
 	switch action {
 	case "spin":
-		if state.Session.FreeSpins == 0 && bet > player.Gold {
-			return database.ErrInsufficientGold
+		if state.Session.FreeSpins == 0 {
+			if err := requireCasinoFundingLocked(client, currency, bet, time.Now()); err != nil {
+				return err
+			}
 		}
 		next, debit, err = game.ProposeSlotSpin(state.Session, bet)
 		if err == nil {
@@ -314,7 +348,7 @@ func handleSlotAction(client *Client, sessionID string, revision uint64, action 
 	encoded, _ := json.Marshal(state)
 	markSlotPending(r.TableID, player.ID) // Fence even an ambiguous write acknowledgement.
 	if debit > 0 {
-		op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:spin", r.TableID, r.Version), PlayerID: player.ID, Currency: "gold", Amount: -debit, NextState: encoded}
+		op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:%s:%d:spin", r.TableID, r.Version), PlayerID: player.ID, Currency: currency, Amount: -debit, NextState: encoded}
 		_, err = db.BeginBlackjackTransfer(r.TableID, r.Version, op)
 	} else {
 		_, err = db.AdvanceBlackjackTable(r.TableID, r.Version, encoded)
@@ -327,22 +361,24 @@ func handleSlotAction(client *Client, sessionID string, revision uint64, action 
 
 func prepareSeatedSlotLocked(client *Client) error {
 	player := world.GetEntityCopy(client.playerID)
-	if player == nil || player.CasinoSeat == nil || !strings.HasPrefix(player.CasinoSeat.TableID, "public-slots-") {
+	theme, currency, seated := slotSeatDetails(player)
+	if !seated {
 		return nil
 	}
-	theme := strings.TrimPrefix(player.CasinoSeat.TableID, "public-slots-")
-	key := slotRecordKey(player.ID, theme)
+	key := slotRecordKey(player.ID, theme, currency)
 	slotsMu.RLock()
 	cached, exists := slotsCache[key]
 	slotsMu.RUnlock()
 	if exists && cached.State.Owner == player.ID {
 		return nil
 	}
-	_, _, err := loadSlotSessionLocked(player.ID, theme)
+	_, _, err := loadSlotSessionLocked(player.ID, theme, currency)
 	return err
 }
 
 type slotMachineView struct {
+	Currency   string           `json:"currency"`
+	Balance    int              `json:"balance"`
 	MinBet     int              `json:"minBet"`
 	MaxBet     int              `json:"maxBet"`
 	BetStep    int              `json:"betStep"`
@@ -357,15 +393,15 @@ type slotMachineView struct {
 
 func slotViewFor(playerID string) *slotMachineView {
 	player := world.GetEntityCopy(playerID)
-	if player == nil || player.CasinoSeat == nil || !strings.HasPrefix(player.CasinoSeat.TableID, "public-slots-") {
+	theme, currency, seated := slotSeatDetails(player)
+	if !seated {
 		return nil
 	}
-	theme := strings.TrimPrefix(player.CasinoSeat.TableID, "public-slots-")
 	slotsMu.RLock()
-	cached, exists := slotsCache[slotRecordKey(playerID, theme)]
+	cached, exists := slotsCache[slotRecordKey(playerID, theme, currency)]
 	slotsMu.RUnlock()
-	view := &slotMachineView{Available: exists && cached.State.Owner == playerID, Processing: cached.Processing, Gold: player.Gold, Rules: game.SlotRulesVersion, Lines: game.SlotPaylines()}
-	view.MinBet, view.MaxBet, view.BetStep = game.SlotMinBet, game.SlotMaxBet, game.SlotBetStep
+	view := &slotMachineView{Currency: currency, Balance: casinoBalance(player, currency), Available: exists && cached.State.Owner == playerID, Processing: cached.Processing, Gold: player.Gold, Rules: game.SlotRulesVersion, Lines: game.SlotPaylines()}
+	view.MinBet, view.MaxBet, view.BetStep = game.CasinoBetLimits("slots", currency)
 	for _, machine := range game.SlotMachines() {
 		if machine.Theme == theme {
 			view.Machine = machine

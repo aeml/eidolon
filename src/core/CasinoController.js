@@ -64,7 +64,21 @@ export class CasinoController {
         this.slots.rejectAction(error); this.blackjack.rejectAction(error); this.poker.rejectAction(error);
     }
 
+    setFloor(payload = {}) {
+        if (this.engine.currentInstanceId !== CASINO_INSTANCE || !this.engine.player
+            || ![payload.x, payload.y, payload.z].every(Number.isFinite)) return;
+        this.floor = payload.upstairs ? 'vip' : 'public';
+        this.engine.collisionManager.casinoVIPFloor = payload.upstairs === true;
+        const player = this.engine.player;
+        player.position.set(payload.x, payload.y, payload.z); player.state = 'IDLE';
+        player.targetPosition = null; player.velocity?.set(0, 0, 0); player.resetTransformInterpolation?.();
+        this.pendingDoor = null; this.pendingSeat = null; this.engine.inputManager?.clearInputState?.();
+        this.engine.renderSystem.setCameraTarget(player.position);
+    }
+
     updateState(payload = {}) {
+        this.floor = payload.floor || 'public'; this.vipActive = payload.vip === true;
+        if (this.engine.collisionManager) this.engine.collisionManager.casinoVIPFloor = this.floor === 'vip';
         if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) this.slots.update(null);
         const tables = Array.isArray(payload.tables) ? payload.tables : [];
         const signature = JSON.stringify(tables);
@@ -73,15 +87,15 @@ export class CasinoController {
             disposeCasinoObject(this.furniture);
             this.furniture = createCasinoFurniture(tables); this.catalogSignature = signature;
             this.furnitureColliders = tables.map(table => new THREE.Box3().setFromCenterAndSize(
-                new THREE.Vector3(table.x, 1, table.z), new THREE.Vector3(table.game === 'slots' ? 1.55 : 2.8, 2, table.game === 'slots' ? 0.95 : 2.8)));
+                new THREE.Vector3(table.x, (table.y || 0) + 1, table.z), new THREE.Vector3(table.game === 'slots' ? 1.55 : 2.8, 2, table.game === 'slots' ? 0.95 : 2.8)));
         }
         this.data = { tables, occupants: Array.isArray(payload.occupants) ? payload.occupants : [],
             preparation: payload.preparation || {},
             yourSeat: this.engine.currentInstanceId === CASINO_INSTANCE ? payload.yourSeat || null : null };
         const seat = this.data.yourSeat;
         const isBlackjack = tables.find(table => table.id === seat?.tableId)?.game === 'blackjack' && Boolean(payload.blackjack);
-        const isSlots = seat?.tableId?.startsWith('public-slots-') && Boolean(payload.slots);
-        const isPoker = seat?.tableId === 'public-poker' && Boolean(payload.poker);
+        const isSlots = tables.find(table => table.id === seat?.tableId)?.game === 'slots' && Boolean(payload.slots);
+        const isPoker = tables.find(table => table.id === seat?.tableId)?.game === 'poker' && Boolean(payload.poker);
         const tablePresence = { yourSeat: seat, occupants: this.data.occupants.filter(p => p.tableId === seat?.tableId) };
         this.poker.update(isPoker ? payload.poker : null, this.engine.player?.id, tablePresence);
         this.panel.classList.toggle('has-poker', isPoker);
@@ -107,9 +121,9 @@ export class CasinoController {
         this.ready.disabled = !preparation?.revision;
         this.ready.textContent = seat.ready ? 'Not ready' : 'Ready at table';
         this.ready.setAttribute('aria-pressed', String(Boolean(seat.ready)));
-        if (isBlackjack) this.status.textContent = 'Public floor · Gold blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.';
-        if (isSlots) this.status.textContent = 'Public floor · Gold slots. Free spins and bonus choices belong to you and remain saved when you leave.';
-        if (isPoker) this.status.textContent = 'Public floor · Real-player Hold’em. Leaving folds a remaining stack; all-in hands stay eligible. Unspent Gold and winnings return after the hand.';
+        if (isBlackjack) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.`;
+        if (isSlots) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} slots. Free spins and bonus choices belong to you and remain saved when you leave.`;
+        if (isPoker) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} Hold’em. Leaving folds a remaining stack; all-in hands stay eligible. Unspent stake and winnings return after the hand.`;
         this.roster.replaceChildren();
         for (const occupant of occupants.sort((a, b) => a.seat - b.seat)) {
             const row = document.createElement('li');
@@ -143,7 +157,7 @@ export class CasinoController {
         if (engine.player) {
             engine.player.targetPosition = null; engine.player.casinoSeated = false;
             if (engine.currentInstanceId === CASINO_INSTANCE && this.lastSeat && engine.player.state !== 'DEAD') {
-                engine.player.position.set(this.lastSeat.exitX, 0, this.lastSeat.exitZ);
+                engine.player.position.set(this.lastSeat.exitX, this.lastSeat.exitY || 0, this.lastSeat.exitZ);
                 engine.player.state = 'IDLE'; engine.player.resetTransformInterpolation?.();
             }
         }
@@ -151,17 +165,21 @@ export class CasinoController {
     }
 
     showDoorDialogue(kind) {
-        const guard = kind === 'guard', exit = kind === 'exit';
+        const guard = kind === 'guard', exit = kind === 'exit', downstairs = kind === 'downstairs';
         this.engine.clearCombatIntentState?.();
         this.engine.inputManager?.clearInputState?.();
         if (this.engine.player) this.engine.player.targetPosition = null;
         const heading = document.createElement('h2'); heading.textContent = guard ? 'VIP Guard' : 'The Fourfold Casino';
         const copy = document.createElement('p');
-        copy.textContent = guard ? 'You must be a VIP to enter'
+        copy.textContent = guard ? (this.vipActive ? 'Welcome to the Sovereign Lounge. Upstairs games wager and return only EP, usable for cosmetics—not Gold or combat power.' : 'You must be a VIP to enter')
+            : downstairs ? 'Return to the main Gold gaming floor? Your saved outcomes and bonus features remain yours.'
             : exit ? 'Return to Lanternhold? Your saved casino outcomes remain yours.'
                 : 'Step into Lanternhold’s grand gaming hall. Meet other adventurers at Gold tables and elemental machines. The upstairs lounge is reserved for VIP guests.';
         this.dialogue.replaceChildren(heading, copy);
-        if (!guard) this.dialogue.append(this.button(exit ? 'Return to Lanternhold' : 'Enter Casino', () => {
+        if (guard || downstairs) this.dialogue.append(this.button(downstairs ? 'Return downstairs' : 'Enter VIP lounge', () => {
+            this.dialogue.close(); this.pendingDoor = null; this.send({ action: downstairs ? 'downstairs' : 'vip' });
+        }));
+        if (!guard && !downstairs) this.dialogue.append(this.button(exit ? 'Return to Lanternhold' : 'Enter Casino', () => {
             this.dialogue.close(); this.pendingDoor = null;
             if (exit) this.engine.requestTownRecall();
             else this.send({ action: 'enter' });
@@ -197,7 +215,7 @@ export class CasinoController {
         this.raycaster.setFromCamera(this.pointer, engine.renderSystem.camera);
         const inside = engine.currentInstanceId === CASINO_INSTANCE;
         const shell = engine.renderSystem.scene.getObjectByName(inside ? 'lanternhold-casino-interior' : 'lanternhold-casino-shell');
-        const targets = inside ? [shell?.userData.casinoGuard, shell?.userData.casinoExit] : !engine.currentInstanceId ? [shell?.userData.casinoDoor] : [];
+        const targets = inside ? (this.floor === 'vip' ? [] : [shell?.userData.casinoGuard, shell?.userData.casinoExit]) : !engine.currentInstanceId ? [shell?.userData.casinoDoor] : [];
         const hit = this.raycaster.intersectObjects(targets.filter(Boolean), true)[0];
         if (hit) {
             let kind = 'entry';
@@ -209,8 +227,7 @@ export class CasinoController {
         }
         if (!inside || !this.furniture?.parent) return false;
         this.stairRoute = null;
-        if (engine.player.position.y > 1) return false;
-        const hits = this.raycaster.intersectObjects(this.furniture.userData.seats, true);
+        const hits = this.raycaster.intersectObjects(this.furniture.userData.seats.filter(chair => chair.userData.casinoSeat.floor === (this.floor || 'public')), true);
         if (!hits.length) { this.pendingSeat = null; return false; }
         let chair = hits[0].object;
         while (chair && !chair.userData.casinoSeat) chair = chair.parent;
@@ -227,7 +244,7 @@ export class CasinoController {
         }
         engine.clearCombatIntentState?.();
         this.pendingSeat = { ...selection, ...seat, expiresAt: performance.now() + 15000 };
-        engine.player.move(new THREE.Vector3(seat.exitX, 0, seat.exitZ));
+        engine.player.move(new THREE.Vector3(seat.exitX, seat.y || 0, seat.exitZ));
         return true;
     }
 
@@ -235,7 +252,7 @@ export class CasinoController {
         const p = this.engine.player?.position;
         if (!p || this.active) return;
         const inside = this.engine.currentInstanceId === CASINO_INSTANCE;
-        if (inside) this.showDoorDialogue(p.z < 160 ? 'guard' : 'exit');
+        if (inside) this.showDoorDialogue(this.floor === 'vip' ? 'downstairs' : p.z < 160 ? 'guard' : 'exit');
         else if (!this.engine.currentInstanceId) this.showDoorDialogue('entry');
     }
 
@@ -245,12 +262,14 @@ export class CasinoController {
         if (!player) return;
         if (engine.currentInstanceId !== CASINO_INSTANCE && this.active) { this.data.yourSeat = null; this.exitView(); }
         const overworld = engine.currentInstanceId === CASINO_INSTANCE;
-        const nearGuard = overworld && Math.hypot(player.position.x, player.position.z - 150) < 7;
-        const nearExit = overworld && Math.hypot(player.position.x, player.position.z - 201) < 7;
+        const upstairs = overworld && this.floor === 'vip';
+        if (engine.collisionManager) engine.collisionManager.casinoVIPFloor = upstairs;
+        const nearGuard = overworld && Math.hypot(player.position.x, player.position.z - (upstairs ? 140 : 150)) < 7;
+        const nearExit = overworld && !upstairs && Math.hypot(player.position.x, player.position.z - 201) < 7;
         const nearDoor = !engine.currentInstanceId && Math.hypot(player.position.x, player.position.z - 181) < 7;
         this.stairButton.hidden = this.active || !(nearGuard || nearExit || nearDoor);
-        this.stairButton.textContent = nearGuard ? 'Talk to VIP Guard' : nearExit ? 'Leave Casino' : 'Casino Entrance';
-        if (engine.inputManager?.groundPlane) engine.inputManager.groundPlane.constant = 0;
+        this.stairButton.textContent = nearGuard ? upstairs ? 'Return downstairs' : 'Talk to VIP Guard' : nearExit ? 'Leave Casino' : 'Casino Entrance';
+        if (engine.inputManager?.groundPlane) engine.inputManager.groundPlane.constant = upstairs ? -8 : 0;
         if (this.pendingDoor) {
             const { kind, destination } = this.pendingDoor;
             if (player.position.distanceTo(destination) < 6) { this.pendingDoor = null; player.targetPosition = null; this.showDoorDialogue(kind); }
@@ -270,7 +289,8 @@ export class CasinoController {
         const shell = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell');
         updateCasinoCutaway(shell, null);
         const balcony = engine.renderSystem.scene.getObjectByName('casino-vip-balcony');
-        if (balcony) balcony.visible = player.position.z > 149 && Math.abs(player.position.x) < 23;
+        if (balcony) balcony.visible = upstairs || (player.position.z > 149 && Math.abs(player.position.x) < 23);
+        if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = Boolean(balcony?.visible);
         if (this.stairRoute?.length) {
             if (!overworld || player.state === 'DEAD' || this.active) this.stairRoute = null;
             else if (player.position.distanceTo(this.stairRoute[0]) < .35) {
@@ -278,9 +298,8 @@ export class CasinoController {
                 if (this.stairRoute.length) player.move(this.stairRoute[0]);
             }
         }
-        if (player.position.y > 1) this.pendingSeat = null;
         if (this.pendingSeat) {
-            if (!overworld || performance.now() > this.pendingSeat.expiresAt) this.pendingSeat = null;
+            if (!overworld || Math.abs(player.position.y - (this.pendingSeat.y || 0)) > 1 || performance.now() > this.pendingSeat.expiresAt) this.pendingSeat = null;
             else if (Math.hypot(player.position.x - this.pendingSeat.exitX, player.position.z - this.pendingSeat.exitZ) <= 1.7) {
                 const pending = this.pendingSeat; this.pendingSeat = null;
                 player.targetPosition = null; engine.inputManager?.clearInputState?.();
@@ -294,7 +313,7 @@ export class CasinoController {
         const table = this.data.tables.find(table => table.id === this.data.yourSeat.tableId);
         const position = table?.seats[this.data.yourSeat.seat];
         if (position) {
-            player.position.set(position.x, 0, position.z); player.state = 'SEATED';
+            player.position.set(position.x, position.y || 0, position.z); player.state = 'SEATED';
             player.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), position.rotation);
             player.velocity?.set(0, 0, 0); player.resetTransformInterpolation?.();
         }
@@ -326,7 +345,7 @@ export class CasinoController {
         const table = this.data.tables.find(table => table.id === this.data.yourSeat.tableId);
         if (!table) return;
         const camera = this.engine.renderSystem.camera;
-        const focus = new THREE.Vector3(table.x, 1, table.z + (this.engine.isMobile ? 1 : 0));
+        const focus = new THREE.Vector3(table.x, (table.y || 0) + 1, table.z + (this.engine.isMobile ? 1 : 0));
         const destination = focus.clone().add(new THREE.Vector3(5, 10, 8));
         const t = this.blend * this.blend * (3 - 2 * this.blend);
         camera.position.lerpVectors(this.savedView.position, destination, t);

@@ -103,6 +103,7 @@ type Entity struct {
 	EPCasinoReceipts     map[string]int     `json:"-"`
 	VIPAllowanceReceipts map[string]int     `json:"-"`
 	VIPUntil             time.Time          `json:"-"` // Refreshed from trusted account membership, never client save data.
+	CasinoVIPFloor       bool               `json:"-"` // Server-owned scene state; client height never grants access.
 	ItemDeliveryReceipts map[string]string  `json:"-"`
 
 	// Inventory
@@ -934,6 +935,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		EPCasinoReceipts:         maps.Clone(e.EPCasinoReceipts),
 		VIPAllowanceReceipts:     maps.Clone(e.VIPAllowanceReceipts),
 		VIPUntil:                 e.VIPUntil,
+		CasinoVIPFloor:           e.CasinoVIPFloor,
 		ItemDeliveryReceipts:     maps.Clone(e.ItemDeliveryReceipts),
 		LastDailyQuest:           e.LastDailyQuest,
 		BaseStats:                e.BaseStats,

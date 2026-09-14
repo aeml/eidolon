@@ -1477,8 +1477,13 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 
 	oldX, oldZ := e.X, e.Z
 	if e.Type == TypePlayer && e.InstanceID == CasinoInstanceID {
-		x, z = constrainCasinoInterior(x, z)
-		y = 0
+		if e.CasinoVIPFloor {
+			x, z = constrainCasinoVIPInterior(x, z, e.X, e.Z)
+			y = 8
+		} else {
+			x, z = constrainCasinoInterior(x, z)
+			y = 0
+		}
 	}
 	e.X = x
 	e.Y = y

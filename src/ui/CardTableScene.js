@@ -45,11 +45,11 @@ export class CardTableScene {
             slot.name.textContent = occupant ? `${occupant.name || 'Player'}${occupant.playerId === playerID && occupant.name !== 'You' ? ' · You' : ''}` : `Seat ${seat + 1}`;
             slot.avatar.textContent = occupant ? (occupant.name || 'You').slice(0, 1).toUpperCase() : '◇';
             slot.status.textContent = !occupant ? 'Open seat' : occupant.connected === false ? 'Reconnecting' :
-                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn} Gold confirmed` : 'In this hand' :
+                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'In this hand' :
                     view.phase === 'betting' ? 'Choosing wager' : 'Waiting for next hand';
             const handPlayer = view.round?.players?.find(p => p.playerId === occupant?.playerId);
             if (handPlayer?.stack !== undefined && occupant?.connected !== false) slot.status.textContent = handPlayer.folded ? 'Folded' :
-                view.phase === 'complete' ? 'Hand complete' : handPlayer.stack === 0 ? 'All-in' : `${handPlayer.stack} Gold stack`;
+                view.phase === 'complete' ? 'Hand complete' : handPlayer.stack === 0 ? 'All-in' : `${handPlayer.stack} ${view.currency === 'ep' ? 'EP' : 'Gold'} stack`;
             if (view.round?.buttonSeat === seat && funded) slot.status.textContent += ' · D';
         }
         this.syncClock(view, playerID);

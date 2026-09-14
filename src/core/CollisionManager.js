@@ -49,6 +49,7 @@ export class CollisionManager {
 
     clear() {
         this.casinoInterior = false;
+        this.casinoVIPFloor = false;
         this.casinoNavigation = false;
         this.colliders = [];
         this.orientedColliders = [];
@@ -237,10 +238,7 @@ export class CollisionManager {
         // Reuse temp vector instead of cloning
         TEMP_VEC3.copy(position);
         if (this.casinoInterior) {
-            TEMP_VEC3.x = Math.max(-33, Math.min(33, TEMP_VEC3.x));
-            TEMP_VEC3.z = Math.max(130, Math.min(203, TEMP_VEC3.z));
-            if (Math.abs(TEMP_VEC3.x) < 6 && TEMP_VEC3.z < 148) TEMP_VEC3.z = 148;
-            TEMP_VEC3.y = 0; collided = true;
+            this.constrainCasinoFloor(TEMP_VEC3, oldPosition); collided = true;
         }
         const casinoWalk = this.casinoNavigation && !this.dungeonWalkableRects.length && oldPosition
             && (inCasinoVenue(oldPosition.x, oldPosition.z) || inCasinoVenue(position.x, position.z));
@@ -379,6 +377,7 @@ export class CollisionManager {
         // 3. Circular Colliders
         const circularLen = this.circularColliders.length;
         for (let i = 0; i < circularLen; i++) {
+            if (this.casinoInterior && this.casinoVIPFloor) continue; // Ground-floor guard.
             const circle = this.circularColliders[i];
             const dx = TEMP_VEC3.x - circle.x;
             const dz = TEMP_VEC3.z - circle.z;
@@ -401,10 +400,28 @@ export class CollisionManager {
 
         // Collision pushes must not move a stair walker through its side rail.
         if (casinoWalk) TEMP_VEC3.copy(constrainCasinoWalk(oldPosition, TEMP_VEC3));
+        if (this.casinoInterior) this.constrainCasinoFloor(TEMP_VEC3, oldPosition);
         if (this.constrainToDungeonWalkableArea(TEMP_VEC3, radius)) {
             collided = true;
         }
 
         return collided ? TEMP_VEC3.clone() : null;
+    }
+
+    constrainCasinoFloor(position, previous = position) {
+        if (this.casinoVIPFloor) {
+            position.x = Math.max(-32, Math.min(32, position.x));
+            position.z = Math.max(130, Math.min(201, position.z));
+            if (position.z > 141 && Math.abs(position.x) < 26) {
+                if ((previous?.z ?? position.z) > 141) position.x = (previous?.x < 0 ? -1 : 1) * 26;
+                else position.z = 141;
+            }
+            position.y = 8;
+        } else {
+            position.x = Math.max(-33, Math.min(33, position.x));
+            position.z = Math.max(130, Math.min(203, position.z));
+            if (Math.abs(position.x) < 6 && position.z < 148) position.z = 148;
+            position.y = 0;
+        }
     }
 }

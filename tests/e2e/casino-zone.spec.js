@@ -43,7 +43,7 @@ test('casino door enters one shared safe hall, keeps tables distinct, and guards
     };
     await loginAndEnterWorld(page, credentials);
     await enter(page);
-    await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.length)).toBe(10);
+    await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.filter(table => table.floor === 'public').length)).toBe(10);
     const initial = await readPlayerState(page);
     const other = await context.newPage();
     await loginAndEnterWorld(other, { ...credentials, username: `${credentials.username}-casino-guest` });

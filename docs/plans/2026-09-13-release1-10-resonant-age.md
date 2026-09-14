@@ -1,5 +1,21 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.7 — functional VIP casino batch prepared
+
+The EP settlement/rules work is now connected to trusted VIP-floor entry,
+independent multiplayer tables, four owner-scoped EP machines and currency-aware
+desktop/phone UI. Versions/login/cumulative patch notes match1.9.7. See
+[implementation and focused verification](2026-09-14-vip-casino-games.md).
+Pending push/CI; full1.10 completion still requires the remaining roadmap audit
+and consolidated acceptance. No payment flow or production VIP grants.
+
+## Alpha1.9.6 — verified live; CI complete
+
+Both live endpoints report f99bc61e4c78b844d6f4c673960df961021b4b14, Alpha1.9.6,
+backend database ready. Exact CI34797469252 TERMINAL SUCCESS across all ten jobs,
+including final live release/character QA. Do not poll or restart this run.
+Previous running1.9.6/last-live1.9.5 statements below are historical.
+
 ## VIP games — EP settlement and game rules implemented locally
 
 September14: durable EP-only casino transfers and currency-aware blackjack,

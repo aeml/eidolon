@@ -20,9 +20,12 @@ func setupPokerMongo(t *testing.T) ([]*Client, []string) {
 	uri, a, _ := setupSlotMongo(t)
 	_, b, _ := setupSlotMongo(t)
 	oldCache, oldAvailable, oldOwner, oldGrace := pokerCached, pokerAvailable, pokerPendingOwner, pokerRecoveryUntil
+	oldExtra := extraPoker
+	extraPoker = map[string]pokerCacheEntry{}
 	pokerCached, pokerAvailable, pokerPendingOwner, pokerRecoveryUntil = nil, false, "", time.Time{}
 	t.Cleanup(func() {
 		pokerCached, pokerAvailable, pokerPendingOwner, pokerRecoveryUntil = oldCache, oldAvailable, oldOwner, oldGrace
+		extraPoker = oldExtra
 	})
 	if _, err := db.GetBlackjackTable(publicPokerTable); !errors.Is(err, mongo.ErrNoDocuments) {
 		t.Fatal("disposable poker table already exists", err)
@@ -33,6 +36,7 @@ func setupPokerMongo(t *testing.T) ([]*Client, []string) {
 	}
 	t.Cleanup(func() {
 		cleanup.Database("eidolon").Collection("casino_blackjack_tables").DeleteOne(context.Background(), bson.M{"_id": publicPokerTable})
+		cleanup.Database("eidolon").Collection("casino_blackjack_tables").DeleteOne(context.Background(), bson.M{"_id": "vip-poker"})
 		cleanup.Disconnect(context.Background())
 	})
 	world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}

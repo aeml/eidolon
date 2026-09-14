@@ -22,6 +22,38 @@ var pokerAvailable bool
 var pokerPendingOwner string // Fence even an ambiguous intent acknowledgement.
 var pokerRecoveryUntil time.Time
 
+type pokerCacheEntry struct {
+	record       *database.BlackjackTableRecord
+	available    bool
+	pendingOwner string
+}
+
+var extraPoker = map[string]pokerCacheEntry{}
+
+func pokerTableID(ids []string) string {
+	if len(ids) > 0 {
+		return ids[0]
+	}
+	return publicPokerTable
+}
+func getPokerCache(id string) (*database.BlackjackTableRecord, bool, string) {
+	if id == publicPokerTable {
+		return pokerCached, pokerAvailable, pokerPendingOwner
+	}
+	c := extraPoker[id]
+	return c.record, c.available, c.pendingOwner
+}
+func setPokerCache(id string, r *database.BlackjackTableRecord, available bool, owner string) {
+	if r == nil {
+		r, _, _ = getPokerCache(id)
+	}
+	if id == publicPokerTable {
+		pokerCached, pokerAvailable, pokerPendingOwner = r, available, owner
+	} else {
+		extraPoker[id] = pokerCacheEntry{r, available, owner}
+	}
+}
+
 type pokerParticipant struct {
 	PlayerID  string `json:"playerId"`
 	Name      string `json:"name"`
@@ -49,6 +81,10 @@ func newPokerLobby(previousButton int) (*pokerTableState, error) {
 }
 
 func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, error) {
+	currency, err := database.CasinoCurrencyForRecord(record.TableID)
+	if err != nil {
+		return nil, err
+	}
 	var s pokerTableState
 	if err := json.Unmarshal(record.State, &s); err != nil {
 		return nil, err
@@ -59,7 +95,7 @@ func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, 
 	}
 	ids, seats := map[string]bool{}, map[int]bool{}
 	for _, p := range s.Players {
-		if !strings.HasPrefix(p.PlayerID, "player-") || len(p.PlayerID) <= 7 || len(p.PlayerID) > 128 || ids[p.PlayerID] || p.Seat < 0 || p.Seat > 5 || seats[p.Seat] || p.SessionID == "" || !game.ValidPokerBuyIn(p.BuyIn) {
+		if !strings.HasPrefix(p.PlayerID, "player-") || len(p.PlayerID) <= 7 || len(p.PlayerID) > 128 || ids[p.PlayerID] || p.Seat < 0 || p.Seat > 5 || seats[p.Seat] || p.SessionID == "" || !game.ValidCasinoBet("poker", currency, p.BuyIn) {
 			return bad()
 		}
 		ids[p.PlayerID], seats[p.Seat] = true, true
@@ -75,7 +111,7 @@ func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, 
 			}
 		}
 	case "playing", "settling", "complete":
-		if s.Round == nil || s.Round.ID != s.RoundID || s.Round.Validate() != nil || len(s.Round.Players) != len(s.Players) || (s.Phase == "playing") != (s.Round.Phase == "playing") {
+		if s.Round == nil || !casinoCurrencyMatches(s.Round.Currency, currency) || s.Round.ID != s.RoundID || s.Round.Validate() != nil || len(s.Round.Players) != len(s.Players) || (s.Phase == "playing") != (s.Round.Phase == "playing") {
 			return bad()
 		}
 		for _, rp := range s.Round.Players {
@@ -105,30 +141,32 @@ func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, 
 
 // All table helpers hold pokerMu; currency work additionally holds ONLY the
 // recipient account lock, acquired first. We reuse the existing receipt ledger.
-func loadPokerLocked() (*database.BlackjackTableRecord, *pokerTableState, error) {
-	r, err := db.GetBlackjackTable(publicPokerTable)
+func loadPokerLocked(ids ...string) (*database.BlackjackTableRecord, *pokerTableState, error) {
+	id := pokerTableID(ids)
+	_, _, pendingOwner := getPokerCache(id)
+	r, err := db.GetBlackjackTable(id)
 	if err != nil {
-		pokerAvailable = false
+		setPokerCache(id, nil, false, pendingOwner)
 		return nil, nil, err
 	}
 	s, err := decodePokerState(r)
 	if err != nil {
-		pokerAvailable = false
+		setPokerCache(id, nil, false, pendingOwner)
 		return nil, nil, err
 	}
 	if r.Pending != nil {
 		if err := validatePokerTransfer(r, s); err != nil {
-			pokerAvailable = false
+			setPokerCache(id, nil, false, pendingOwner)
 			return nil, nil, err
 		}
-		pokerPendingOwner = r.Pending.PlayerID
+		pendingOwner = r.Pending.PlayerID
 	} else {
-		pokerPendingOwner = ""
+		pendingOwner = ""
 	}
-	pokerCached, pokerAvailable = r, true
+	setPokerCache(id, r, true, pendingOwner)
 	return r, s, nil
 }
-func refreshPokerLocked() { _, _, _ = loadPokerLocked() }
+func refreshPokerLocked(ids ...string) { _, _, _ = loadPokerLocked(ids...) }
 func advancePokerLocked(r *database.BlackjackTableRecord, s *pokerTableState) error {
 	encoded, err := json.Marshal(s)
 	if err != nil {
@@ -136,7 +174,7 @@ func advancePokerLocked(r *database.BlackjackTableRecord, s *pokerTableState) er
 	}
 	next, err := db.AdvanceBlackjackTable(r.TableID, r.Version, encoded)
 	if err == nil {
-		pokerCached = next
+		setPokerCache(r.TableID, next, true, "")
 	}
 	return err
 }
@@ -148,10 +186,10 @@ func validatePokerTransfer(r *database.BlackjackTableRecord, s *pokerTableState)
 	if op == nil {
 		return errors.New("missing poker transfer")
 	}
-	if err := op.Validate(); err != nil {
+	if err := op.ValidateForTable(r.TableID); err != nil {
 		return err
 	}
-	next, err := decodePokerState(&database.BlackjackTableRecord{State: op.NextState})
+	next, err := decodePokerState(&database.BlackjackTableRecord{TableID: r.TableID, State: op.NextState})
 	if err != nil {
 		return err
 	}
@@ -199,7 +237,11 @@ func transferPokerLocked(r *database.BlackjackTableRecord, s *pokerTableState, o
 	if err != nil {
 		return err
 	}
-	op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:poker:%s:%d:%s", s.RoundID, r.Version, purpose), PlayerID: owner, Currency: "gold", Amount: amount, NextState: encoded}
+	currency, err := database.CasinoCurrencyForRecord(r.TableID)
+	if err != nil {
+		return err
+	}
+	op := database.BlackjackTransfer{ID: fmt.Sprintf("casino:poker:%s:%d:%s", s.RoundID, r.Version, purpose), PlayerID: owner, Currency: currency, Amount: amount, NextState: encoded}
 	old, err := decodePokerState(r)
 	if err != nil {
 		return err
@@ -209,12 +251,12 @@ func transferPokerLocked(r *database.BlackjackTableRecord, s *pokerTableState, o
 	if err := validatePokerTransfer(&candidate, old); err != nil {
 		return err
 	}
-	pokerPendingOwner = owner
+	setPokerCache(r.TableID, r, true, owner)
 	pending, err := db.BeginBlackjackTransfer(r.TableID, r.Version, op)
 	if err != nil {
 		return err
 	}
-	pokerCached = pending
+	setPokerCache(r.TableID, pending, true, owner)
 	_, err = recoverBlackjackTransferLocked(*pending)
 	return err
 }
@@ -222,65 +264,82 @@ func transferPokerLocked(r *database.BlackjackTableRecord, s *pokerTableState, o
 func recoverAccountPokerLocked(username string) error {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
-	if pokerPendingOwner != "player-"+username {
-		return nil
+	for _, table := range game.CasinoTables() {
+		if table.Game != "poker" {
+			continue
+		}
+		_, _, owner := getPokerCache(table.ID)
+		if owner != "player-"+username {
+			continue
+		}
+		r, _, err := loadPokerLocked(table.ID)
+		if err != nil {
+			return err
+		}
+		if r.Pending == nil {
+			continue
+		}
+		if r.Pending.PlayerID != "player-"+username {
+			return errors.New("poker recovery recipient changed")
+		}
+		_, err = recoverBlackjackTransferLocked(*r)
+		refreshPokerLocked(table.ID)
+		if err != nil && !casinoInsufficientFunds(err) {
+			return err
+		}
 	}
-	defer refreshPokerLocked()
-	r, _, err := loadPokerLocked()
-	if err != nil {
-		return err
-	}
-	if r.Pending == nil {
-		return nil
-	}
-	if r.Pending.PlayerID != "player-"+username {
-		return errors.New("poker recovery recipient changed")
-	}
-	_, err = recoverBlackjackTransferLocked(*r)
-	if errors.Is(err, database.ErrInsufficientGold) {
-		return nil
-	}
-	return err
+	return nil
 }
 
 func initializePoker() error {
 	pokerRecoveryUntil = time.Now().Add(game.CasinoReconnectGrace)
-	s, err := newPokerLobby(-1)
-	if err != nil {
-		return err
-	}
-	encoded, _ := json.Marshal(s)
-	if _, err := db.CreateBlackjackTable(publicPokerTable, encoded); err != nil {
-		return err
+	for _, table := range game.CasinoTables() {
+		if table.Game != "poker" {
+			continue
+		}
+		s, err := newPokerLobby(-1)
+		if err != nil {
+			return err
+		}
+		encoded, _ := json.Marshal(s)
+		if _, err := db.CreateBlackjackTable(table.ID, encoded); err != nil {
+			return err
+		}
 	}
 	return tickPoker(time.Now())
 }
 
 func requirePokerSeat(client *Client, sessionID string) (*game.Entity, error) {
 	p := world.GetEntityCopy(client.playerID)
-	if p == nil || p.Disconnected || p.CasinoSeat == nil || p.CasinoSeat.TableID != publicPokerTable || p.CasinoSeat.SessionID != sessionID || p.InstanceID != game.CasinoInstanceID || p.Health <= 0 {
+	if p == nil || p.Disconnected || p.CasinoSeat == nil || !game.IsCasinoPokerTable(p.CasinoSeat.TableID) || p.CasinoSeat.SessionID != sessionID || p.InstanceID != game.CasinoInstanceID || p.Health <= 0 {
 		return nil, errors.New("sit at the poker table before playing")
 	}
 	return p, nil
 }
 
 func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now time.Time) error {
-	pokerMu.Lock()
-	defer pokerMu.Unlock()
-	defer refreshPokerLocked()
 	player, err := requirePokerSeat(client, sessionID)
 	if err != nil {
 		return err
 	}
-	r, s, err := loadPokerLocked()
+	id := player.CasinoSeat.TableID
+	pokerMu.Lock()
+	defer pokerMu.Unlock()
+	defer refreshPokerLocked(id)
+	r, s, err := loadPokerLocked(id)
 	if err != nil {
 		return err
 	}
 	if r.Pending != nil {
 		return errors.New("poker funds are being saved; please wait")
 	}
-	if s.Phase != "betting" || s.RoundID != roundID || !game.ValidPokerBuyIn(amount) {
-		return errors.New("review the hand and choose 100–100,000 Gold in steps of 100")
+	currency, err := database.CasinoCurrencyForRecord(id)
+	if err != nil {
+		return err
+	}
+	if s.Phase != "betting" || s.RoundID != roundID || !game.ValidCasinoBet("poker", currency, amount) {
+		minimum, maximum, step := game.CasinoBetLimits("poker", currency)
+		return fmt.Errorf("review the hand and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
 	}
 	for _, p := range s.Players {
 		if p.PlayerID == client.playerID && p.BuyIn == amount && p.SessionID == sessionID {
@@ -293,8 +352,8 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 	if len(s.Players) >= 6 || (!s.DealAt.IsZero() && !now.Before(s.DealAt)) {
 		return errors.New("this hand is closed to new buy-ins")
 	}
-	if amount > player.Gold {
-		return database.ErrInsufficientGold
+	if err := requireCasinoFundingLocked(client, currency, amount, now); err != nil {
+		return err
 	}
 	s.Players = append(s.Players, pokerParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, SessionID: sessionID, BuyIn: amount})
 	if s.DealAt.IsZero() {
@@ -304,13 +363,15 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 }
 
 func handlePokerPlay(client *Client, sessionID, roundID, action string, amount int, revision uint64, now time.Time) error {
-	pokerMu.Lock()
-	defer pokerMu.Unlock()
-	defer refreshPokerLocked()
-	if _, err := requirePokerSeat(client, sessionID); err != nil {
+	player, err := requirePokerSeat(client, sessionID)
+	if err != nil {
 		return err
 	}
-	r, s, err := loadPokerLocked()
+	id := player.CasinoSeat.TableID
+	pokerMu.Lock()
+	defer pokerMu.Unlock()
+	defer refreshPokerLocked(id)
+	r, s, err := loadPokerLocked(id)
 	if err != nil {
 		return err
 	}
@@ -322,7 +383,7 @@ func handlePokerPlay(client *Client, sessionID, roundID, action string, amount i
 	}
 	member := false
 	for _, p := range s.Players {
-		if p.PlayerID == client.playerID && pokerHandSeated(p) {
+		if p.PlayerID == client.playerID && pokerHandSeated(p, id) {
 			member = true
 		}
 	}
@@ -340,9 +401,9 @@ func handlePokerPlay(client *Client, sessionID, roundID, action string, amount i
 	return advancePokerLocked(r, s)
 }
 
-func pokerPresence(p pokerParticipant) (seated, connected bool) {
+func pokerPresence(p pokerParticipant, ids ...string) (seated, connected bool) {
 	e := world.GetEntityCopy(p.PlayerID)
-	if e == nil || e.CasinoSeat == nil || e.CasinoSeat.TableID != publicPokerTable || e.CasinoSeat.SessionID != p.SessionID || e.CasinoSeat.Seat != p.Seat || e.Health <= 0 || e.InstanceID != game.CasinoInstanceID {
+	if e == nil || e.CasinoSeat == nil || e.CasinoSeat.TableID != pokerTableID(ids) || e.CasinoSeat.SessionID != p.SessionID || e.CasinoSeat.Seat != p.Seat || e.Health <= 0 || e.InstanceID != game.CasinoInstanceID {
 		return false, false
 	}
 	if e.Disconnected && !time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)) {
@@ -353,14 +414,15 @@ func pokerPresence(p pokerParticipant) (seated, connected bool) {
 
 // Persisted hand ownership is account+seat, not a dead process's ephemeral
 // connection token. The incoming action still requires the NEW live seat token.
-func pokerHandSeated(p pokerParticipant) bool {
+func pokerHandSeated(p pokerParticipant, ids ...string) bool {
 	e := world.GetEntityCopy(p.PlayerID)
-	return e != nil && e.CasinoSeat != nil && e.CasinoSeat.TableID == publicPokerTable && e.CasinoSeat.Seat == p.Seat && e.Health > 0 && e.InstanceID == game.CasinoInstanceID && (!e.Disconnected || time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)))
+	return e != nil && e.CasinoSeat != nil && e.CasinoSeat.TableID == pokerTableID(ids) && e.CasinoSeat.Seat == p.Seat && e.Health > 0 && e.InstanceID == game.CasinoInstanceID && (!e.Disconnected || time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)))
 }
 
-func validatePokerSeatClaim(owner string, seat int) error {
+func validatePokerSeatClaim(owner string, seat int, ids ...string) error {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
+	pokerCached, pokerAvailable, _ := getPokerCache(pokerTableID(ids))
 	if !pokerAvailable || pokerCached == nil {
 		return errors.New("poker is recovering; please wait")
 	}
@@ -389,16 +451,17 @@ func validatePokerSeatClaim(owner string, seat int) error {
 // cannot evade a fold or replay a refunded lobby entry.
 func handlePokerLeave(client *Client, sessionID string, now time.Time) error {
 	e := world.GetEntityCopy(client.playerID)
-	if e == nil || e.CasinoSeat == nil || e.CasinoSeat.TableID != publicPokerTable {
+	if e == nil || e.CasinoSeat == nil || !game.IsCasinoPokerTable(e.CasinoSeat.TableID) {
 		return nil
 	}
 	if e.CasinoSeat.SessionID != sessionID {
 		return errors.New("poker seat changed")
 	}
+	id := e.CasinoSeat.TableID
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
-	defer refreshPokerLocked()
-	r, s, err := loadPokerLocked()
+	defer refreshPokerLocked(id)
+	r, s, err := loadPokerLocked(id)
 	if err != nil {
 		return err
 	}
@@ -450,9 +513,19 @@ func markPokerComplete(s *pokerTableState, now time.Time) {
 
 // Bounded background transition. Release table lock BEFORE taking one account
 // lock for a refund/payout; never wait on another account while holding it.
-func tickPoker(now time.Time) error {
+func tickPoker(now time.Time, ids ...string) error {
+	if len(ids) == 0 {
+		var result error
+		for _, table := range game.CasinoTables() {
+			if table.Game == "poker" {
+				result = errors.Join(result, tickPoker(now, table.ID))
+			}
+		}
+		return result
+	}
+	id := ids[0]
 	pokerMu.Lock()
-	r, s, err := loadPokerLocked()
+	r, s, err := loadPokerLocked(id)
 	if err != nil {
 		pokerMu.Unlock()
 		return err
@@ -465,7 +538,7 @@ func tickPoker(now time.Time) error {
 		case "betting":
 			allConnected := true
 			for _, p := range s.Players {
-				seated, connected := pokerPresence(p)
+				seated, connected := pokerPresence(p, id)
 				allConnected = allConnected && connected
 				if !seated {
 					owner = p.PlayerID
@@ -477,7 +550,12 @@ func tickPoker(now time.Time) error {
 				for _, p := range s.Players {
 					entries = append(entries, game.PokerEntry{PlayerID: p.PlayerID, Seat: p.Seat, BuyIn: p.BuyIn})
 				}
-				s.Round, err = game.NewPokerRound(s.RoundID, entries, s.ButtonSeat, now)
+				currency, currencyErr := database.CasinoCurrencyForRecord(id)
+				if currencyErr != nil {
+					err = currencyErr
+				} else {
+					s.Round, err = game.NewPokerRoundForCurrency(s.RoundID, entries, s.ButtonSeat, now, currency)
+				}
 				if err == nil {
 					s.Phase = "playing"
 					err = advancePokerLocked(r, s)
@@ -489,7 +567,7 @@ func tickPoker(now time.Time) error {
 		case "playing":
 			changed := false
 			for _, p := range s.Players {
-				if !pokerHandSeated(p) && !(now.Before(pokerRecoveryUntil) && world.GetEntityCopy(p.PlayerID) == nil) {
+				if !pokerHandSeated(p, id) && !(now.Before(pokerRecoveryUntil) && world.GetEntityCopy(p.PlayerID) == nil) {
 					s.Round, changed = s.Round.Withdraw(p.PlayerID, now)
 					if changed {
 						break
@@ -531,8 +609,8 @@ func tickPoker(now time.Time) error {
 	defer unlock()
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
-	defer refreshPokerLocked()
-	r, s, err = loadPokerLocked()
+	defer refreshPokerLocked(id)
+	r, s, err = loadPokerLocked(id)
 	if err != nil {
 		return err
 	}
@@ -541,7 +619,7 @@ func tickPoker(now time.Time) error {
 			return nil
 		}
 		_, err = recoverBlackjackTransferLocked(*r)
-		if errors.Is(err, database.ErrInsufficientGold) {
+		if casinoInsufficientFunds(err) {
 			return nil
 		}
 		return err
@@ -551,7 +629,7 @@ func tickPoker(now time.Time) error {
 			continue
 		}
 		if s.Phase == "betting" {
-			if seated, _ := pokerPresence(p); seated {
+			if seated, _ := pokerPresence(p, id); seated {
 				return nil
 			}
 			s.Players = append(s.Players[:i], s.Players[i+1:]...)
@@ -578,6 +656,12 @@ type pokerParticipantView struct {
 	Paid     bool   `json:"paid"`
 }
 type pokerTableView struct {
+	Currency    string                 `json:"currency"`
+	Balance     int                    `json:"balance"`
+	MinBuyIn    int                    `json:"minBuyIn"`
+	BuyInStep   int                    `json:"buyInStep"`
+	SmallBlind  int                    `json:"smallBlind"`
+	BigBlind    int                    `json:"bigBlind"`
 	ServerNow   time.Time              `json:"serverNow"`
 	NextRoundAt time.Time              `json:"nextRoundAt"`
 	MaxBuyIn    int                    `json:"maxBuyIn"`
@@ -594,7 +678,16 @@ type pokerTableView struct {
 func pokerViewFor(owner string) pokerTableView {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
+	id := publicPokerTable
+	player := world.GetEntityCopy(owner)
+	if player != nil && player.CasinoSeat != nil && game.IsCasinoPokerTable(player.CasinoSeat.TableID) {
+		id = player.CasinoSeat.TableID
+	}
+	pokerCached, pokerAvailable, pokerPendingOwner := getPokerCache(id)
 	v := pokerTableView{ServerNow: time.Now(), Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
+	v.Currency, _ = database.CasinoCurrencyForRecord(id)
+	v.MinBuyIn, v.MaxBuyIn, v.BuyInStep = game.CasinoBetLimits("poker", v.Currency)
+	v.SmallBlind, v.BigBlind = game.PokerBlinds(v.Currency)
 	if !pokerAvailable || pokerCached == nil {
 		return v
 	}
@@ -619,6 +712,7 @@ func pokerViewFor(owner string) pokerTableView {
 	}
 	if p := world.GetEntityCopy(owner); p != nil {
 		v.Gold = p.Gold
+		v.Balance = casinoBalance(p, v.Currency)
 	}
 	return v
 }
