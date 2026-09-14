@@ -5,6 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 —1.9.12 fully accepted live;1.9.13 pushed, CI34843057369 active
+
+This goal turn completed1.9.12 public verification and all gates, then pushed
+prepared1.9.13 after ordinary remote/ancestry/clean-tree checks. Concrete progress,
+not blocked. **1.9.12/38847b2f497f57f693952f2d49c5c869422247d6 LIVE ACCEPTED**.
+**CI34840066682 TERMINAL SUCCESS/all ten jobs**, watch42418 terminal exit0.
+Actual saved-character/live gameplay and town recovery/Well Rested passed;
+optional full-animation step intentionally skipped under feature-first policy.
+Do not poll/restart that finished workflow or repeat accepted local card checks.
+Receipts `/tmp/eidolon-1-9-12-ci-final-20260914.json` and
+`/tmp/eidolon-1-9-12-public-delivery-20260914.json`: exact manifest/backend DBready,
+served login HTML/notes/main.js/CasinoController/BlackjackTableUI/PokerTableUI/
+CardTableScene/index.css/casino.css match transformed committed source byte-for-byte.
+
+**Alpha1.9.13 PUSHED f2fdea9bf116f49a5cea7a42a852d8e08dc511a8** from integration;
+**new exact CI34843057369 ACTIVE**, **native watch51003 ACTIVE**,
+`/tmp/eidolon-1-9-13-ci-watch.log`. Initial metadata
+`/tmp/eidolon-1-9-13-ci-start-20260914.json`. Follow this exact run through delivery
+and live gates; don't supersede it. Do not claim1.9.13live yet. Push13404 terminal0.
+Main `/tmp/eidolon-1-10-resonant-age-20260913` fast-forwarded clean to samef2fdea9b;
+independent `/tmp/eidolon-pvp-queue-integration-20260914` also cleanf2fdea9b.
+Root remains ledger-only; NEVER PUSH ROOT. No local owned GPU/QA containers active.
+
+1.9.13 includes accepted poker restart walk-back fix4a78346f plus261 passing
+version/history checks, aligned login/build labels and cumulative patch notes.
+Connected EP native69600 already passed62.432s; don't repeat for packaging/docs.
+Remaining full campaign, regional dungeons, real5–10-player raids/repair/finale,
+cross-feature/EP blackjack/slots/vendor/busy-floor and physical-phone scope stays
+open. Next regional run uses committed reduced repeated-rest policy, not the
+stopped80%rest-heavy run. No competing GPU while CI browser/live gates run.
+
 ## September 14 — Alpha1.9.13 packaged;1.9.12 now in native predeploy
 
 Previous goal turn made progress (accepted actual EP poker regression and fix).
