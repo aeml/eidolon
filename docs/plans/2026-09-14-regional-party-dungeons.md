@@ -1,5 +1,24 @@
 # Remaining regional four-player dungeon acceptance
 
+## Molten71836 — first regional attempt active
+
+After1.9.11 CI34829019013 completed all ten jobs successfully, started one
+four-player Normal70 Molten run on exactreleasedbd566893/clean source, Low
+graphics. StrongFighter/WiseCleric/BrilliantWizard/AgileRogue, fourteen legal
+items each (5Rare/9Uncommon), same120minute expedition budget/no retries or
+mid-run grants. This is prepared-party encounter coverage, not earned campaign
+progress. Allfour builds replicated, actual invitation/support-target UI passed,
+allentered sameinstance. Seed-2324354694934653089, generator2/attempt0/no fallback.
+Opening trash includingMagmaGolem defeated by101.35s; no boss/fullclearclaim yet.
+
+Native71836 is the onlyownedGPU job. MainQA tree muststayfrozenbd566893 while
+it runs. Log`/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`;
+ownedAPI/Mongo suffixmoltenparty0914a, loopback18285/18286/web4187. Wrapper owns
+cleanup. Continue samehandle, not a second instance or a replay of oldAbyssal.
+Openingparty screenshot inspected from the already-running test: current story
+tracker visible above allfour healer selection rows without overlap. This is
+an actual isolated connected party image, not a new public-live/phone claim.
+
 ## Saved-run continuation policy — awaiting user preference
 
 Read-only review after11985 interruption found two existing rules: login after
