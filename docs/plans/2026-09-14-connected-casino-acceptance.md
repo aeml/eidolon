@@ -9,7 +9,15 @@ results, clear win/clock separation for both games, community-card containment
 and Leave hiding the panel. Screenshots were inspected; shorter-screen control
 scrolling no longer hides the table. Artifacts:
 `/tmp/eidolon-card-table-layout-20260914-ugAo9y/`.
-The release candidate still needs its affected connected check and deployment.
+**Release candidate native62628 passed in1.5minutes on clean6b0abea1.** The actual
+result image was inspected: dealer, all six seats, both hand totals and the next
+betting countdown remain visible. Round34b9c8ec1ea8cd0d95cb5946a1aa1e07 produced
+an ordinary loss/push, ending900/1000Gold from1000each; these were real random
+cards, not forced winning results. All shared-flow, camera/leave, saved balance,
+reconnect and guard checks passed. Artifacts:
+`/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/`.
+Credential scan passed0changed; owned services and ports cleaned.62628 is terminal,
+not a pending check. Publication and exact live verification are still next.
 
 Native70277 passed in1.4minutes on clean da260121 (Alpha1.9.11 runtime plus QA
 changes). Two newly registered disposable accounts were initialized with1000Gold

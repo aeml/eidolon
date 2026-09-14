@@ -1,5 +1,12 @@
 # 1.10 final integration — evidence and remaining work
 
+Alpha1.9.12 is locally accepted for publication: the connected casino route
+passed and exposed table clipping, now repaired and verified at four screen
+sizes plus the actual two-player flow. See
+[connected casino and layout evidence](2026-09-14-connected-casino-acceptance.md).
+This does not close earned campaign, remaining dungeons, actual group raids,
+connected EP/slots/busy-floor or physical-phone acceptance. Publication still pending.
+
 Latest checkpoint:1.9.11 public delivery is verified at
 `bd56689384f737c18c78a84607bc4683e7fb11bd`: frontend manifest, backend health
 (database ready), login label/patch notes, actual runtime script/versioned
