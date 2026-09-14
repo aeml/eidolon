@@ -51,7 +51,8 @@ Native proof still pending; no new run launched yet. See activeWT
 
 Session **31615** revalidated live repeatedly, not restarted. Strict sourceee038504
 route now passes opening/diary104.098s and Earth-watch605.076s.40/40 credit,
-zero deaths,19 normal town-rest stops,nine earned gear slots. Manual Ilyra claim
+zero deaths,19 normal town-rest stops,nine occupied inventory slots (not equipped
+gear; corrected against the snapshot implementation). Manual Ilyra claim
 checked unpaid/uncompleted first, then100Gold/1593XP; level6→8,Gold695→795.
 Exact character/quest snapshots persisted across reconnect; next quest not
 autoaccepted. Log `/tmp/eidolon-earned-earth-20260914-i96Zm2/run.log`.
