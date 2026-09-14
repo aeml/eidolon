@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Alpha 1.9.5 pushed; exact CI in progress
+## September 14 — cosmetic outfitter implemented for next release batch
+
+Previous continuation made progress (wallet and witness fix pushed as1.9.5).
+This continuation implements the next feature: physical Veyra · VIP Outfitter
+(12,.5,185), twelve realm-themed EP cosmetics, real character preview/compare,
+confirmed price-checked purchases, wardrobe apply, private durable EP/unlock
+save and replay recovery. No inventory/stat/Gold/progression rewards. Everyone
+with EP can visit the town vendor; the upstairs VIP guard remains locked.
+
+Active worktree /tmp/eidolon-1-10-resonant-age-20260913 now has local commit
+**7c679a24** (not pushed). Pending patch notes and implementation evidence are in
+docs/plans/2026-09-14-vip-cosmetic-vendor.md. Keep this feature for the next release
+batch; do not overwrite the still-running1.9.5 release or prematurely bump live.
+
+212 client catalogue/UI/procedural-equipment tests passed; server access/economy,
+handler save/reopened-journal/wardrobe/protobuf/protocol checks and Go build pass.
+Browser390/1440 real WebGL preview/purchase/apply fixtures2PASS11.7s; screenshots
+reviewed. Phone catalogue rows and sticky Close checked. Focused lint/diff clean.
+No owned QA sessions remain; no broad local suite/soak started.
+
+Exact CI **34795245270** for **5d024b3b987ce74917491cff5fcb93548fe4308a** is still
+authoritatively IN_PROGRESS: client/server and browser shards2/3,3/3 succeeded;
+browser shard1/3 running at last check. Continue THIS handle, not a replacement.
+Not yet verified live. Last verified public release remains1.9.4. Next meaningful
+feature work: trusted VIP entitlement,100EPmonthlyallowance, separateEP-only games
+up to100EP and usable VIP floor. Payments excluded; full1.10 goal stays active.
+
+## September 14 — Alpha 1.9.5 pushed; exact CI in progress (earlier)
 
 Concrete progress: reproduced all four named residents selecting stale service
 IDs through pooled-model hitboxes; Entity.setMesh now rebinds descendant targets.
