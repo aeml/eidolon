@@ -2,9 +2,10 @@
 
 Alpha1.9.12 is publicly delivered on both domains at38847b2f, database ready;
 login/notes and eight served HTML/JS/CSS files exactly match the release source.
-Both deployment jobs passed; final Live Release and Character QA is still
-running in CI34840066682. Alpha1.9.13 poker recovery is packaged locally at
-23a04b3e, not pushed while that gate runs. The connected casino route
+CI34840066682 is **terminal success, all ten jobs passed**, including live
+saved-character play and town healing/Well Rested. Watch42418 exited0; do not
+repeat this accepted release. Alpha1.9.13 poker recovery is packaged locally
+for the next publication. The connected casino route
 passed and exposed table clipping, now repaired and verified at four screen
 sizes plus the actual two-player flow. See
 [connected casino and layout evidence](2026-09-14-connected-casino-acceptance.md).
