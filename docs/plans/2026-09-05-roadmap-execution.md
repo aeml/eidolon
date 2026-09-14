@@ -5,6 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — final integration evidence reconciled
+
+Previous user-facing NPC confirmation did not add implementation progress. This
+goal continuation completed a bounded acceptance audit and two missing current
+evidence checks. Active worktree remains
+`/tmp/eidolon-1-10-resonant-age-20260913`, clean local commit **49e6509a**.
+Authoritative next-work index:
+`docs/plans/2026-09-14-final-integration-audit.md`. Root is ledger-only; never push.
+
+Important recovered evidence: properly geared four-player Verdant **already
+passed** native15051 on9b6745d7,58.8m, all bosses/rooms, individual Ilyra claims,
+Water offers and saved handoffs. Exact archive exists at
+`/tmp/eidolon-geared-party-pass-KVzr6y`; source doc
+`2026-09-12-party-progressed-gear.md`. Do not repeat earlier failed Common-gear
+attempts or call the first prepared-party clear missing. Full earned campaign,
+other families/raids and relevant1.6 encounter delta are still separate open gates.
+
+Final1.9.7 public/VIP lobby identity assertion plus both VIP multiplayer Mongo
+tests PASS1.520s; current catalog/collection production audit PASS0.185s, log
+`/tmp/eidolon-final-progression-budget-20260914.log`.31 chapters,8investigations;
+collection mean20.08eligiblekills/p90 26 for8items. This is source-budget evidence,
+not earned pacing. Owned `eidolon-final-ep-qa-20260914` stopped and removed;
+no owned test process remains. No soak/native browser/replacement deployment.
+
+ExactCI **34800160671** still **IN_PROGRESS**: server/client SUCCESS, three
+browser shards running at latest check. Continue SAME handle, then verify
+frontend/backend exact release3460ccfb/Alpha1.9.7 and DBready. Last confirmed
+live stillf99bc61e/Alpha1.9.6. Do not repoll completed1.9.6CI. Audit docs committed
+locally only, not pushed over the running release. Next missing gameplay gate:
+existing fresh-story-ready current-curve earned Earth route when shared GPU is
+free; it is Earth-only, not complete campaign. Reuse passing geared Verdant proof.
+
 ## September 14 — Alpha1.9.5 live;1.9.6 vendor/membership batch pushed
 
 LATEST: previous goal turn made progress with1b1860af EP wallet/game engines.
