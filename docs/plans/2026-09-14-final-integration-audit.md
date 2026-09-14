@@ -189,6 +189,12 @@ This is **setup, not a raid clear or earned campaign**. Next work must connect t
 five players, form/ready/enter through normal controls, complete assault rooms and
 guardian, defend all repair waves/objectives and manually claim each saved reward.
 Do not run an entry-only GPU test just to repeat entry during the full clear.
+`tests/e2e/raid-party-entry.js` now provides that five-player invitation, explicit
+acceptance, guide conversion, individual ready-check and shared-instance UI flow.
+It uses normal controls and read-only observations; conversion is confirmed by
+the server's chat receipt (party updates do not transmit MaxSize). Syntax/lint
+checks pass. **Not run against five browsers yet**; wire it into the complete
+combat/repair route before using GPU time. No live runtime change.
 
 ### Bounded concurrency trial contract (before execution)
 
