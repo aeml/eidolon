@@ -1,5 +1,21 @@
 # Remaining regional four-player dungeon acceptance
 
+## Saved-run continuation policy — awaiting user preference
+
+Read-only review after11985 interruption found two existing rules: login after
+15minutes offline returns to town before `RestoreDungeon` (`client_dispatch.go`),
+and party entry/runtime consider a run expired after5minutes empty. A subsequent
+town character save has no DungeonProgress (`characterSnapshotForSave`). Thus an
+old archive is not automatically an ordinary, still-valid resume point. Do not
+rewrite LastLogout or the game rules just to count a resumed QA run as passed.
+
+Asked asynchronously whether unfinished progress should persist until explicit
+reset, or retain the current15-minute rule. No answer yet; no runtime change.
+If persistence is requested, preserve saved room/reward receipts, reconcile
+empty-instance expiry with reconnect, and preserve authoritative party ownership
+and explicit reset semantics. Keeping a private backup is not itself proof of
+playable resumption. This decision does not block the1.9.11 tracker deployment.
+
 ## Low Abyssal attempt11985 — terminated externally, three bosses cleared
 
 Native11985 returned **exit143**, after1306.99s (~21.8min) route elapsed on clean
