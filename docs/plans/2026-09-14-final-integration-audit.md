@@ -3,8 +3,8 @@
 Latest checkpoint:1.9.10 public delivery is verified at
 `4bab14fad67db14c26c93d9bacb0410f57187626`: frontend manifest, backend health
 (database ready), login label/patch notes and actual runtime script/versioned
-imports match. CI34822657032 has passed nine jobs; its final live character
-run is still active. Continue that exact job without superseding it. Earlier
+imports match. **CI34822657032 is terminal success, all ten jobs passed**,
+including final live character QA. Do not poll or restart that completed run. Earlier
 1.9.9 CI34804655770 is terminal success, not pending work.
 The corrected strict earned Earth route
 now passes all eight phases on clean89c2ad5d, native10782 terminal success;
@@ -52,8 +52,8 @@ passed. No browser run or previously accepted load/backup suite was repeated
 for this text-only game change. The full 1.10 acceptance scope remains open.
 
 - Verified public delivery: Alpha1.9.10, `4bab14fad67db14c26c93d9bacb0410f57187626`.
-  Exact CI **34822657032** is in its final Live Release and Character QA job;
-  release identity checking within that job passed. No full CI success claim yet.
+  Exact CI **34822657032** passed all ten jobs, including live character QA.
+  Retained terminal metadata: `/tmp/eidolon-1-9-10-ci-final-20260914.json`.
 - Earlier Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`, passed all
   ten CI34804655770 jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
   CI34800160671 are also terminal successes, not pending work.
@@ -188,7 +188,8 @@ targets before claiming capacity. No second load-testing framework was added.
    four-boss saved-progress copy are retained; full clear/claims remain open.
    See [regional result](2026-09-14-regional-party-dungeons.md). Do not poll or
    restart that handle.1.9.10 is now deployed with exact public identities;
-   finish its active final CI34822657032 job, with no overlapping GPU jobs.
+   all ten CI34822657032 jobs passed. Retain that release evidence, then continue
+   the missing encounter and cross-feature checks without overlapping GPU jobs.
 2. Retain the accepted earned Earth route10782 and prepared Verdant route15051;
    neither proves the other realms or full earned campaign. Continue remaining
    dungeon families using the existing prepared-party options, with Low graphics
