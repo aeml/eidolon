@@ -5,6 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — local VIP poker restart fix; same1.9.12 CI still active
+
+Previous phone-feedback reply was acknowledgement only (no goal progress).
+This goal turn made concrete progress: independent tree
+`/tmp/eidolon-pvp-queue-integration-20260914` is clean at **4a78346f**, a local
+runtime fix plus actual connected EP regression and evidence. **Not pushed**;
+do not supersede the running1.9.12 pipeline. Main stays38847b2f; root stays a
+ledger-only branch and must never be pushed.
+
+Real EP poker exposed restart grace ending on login before players could walk
+back upstairs. Existing grace now includes alive/unseated casino participants;
+original deadline, live turn timers, explicit-leave fold, different-table and
+outside-casino rejection remain. Unit regression passed0.004s; selected poker
+tests passed0.007s (Mongo tests skip without fixture; not broad integration proof).
+
+**80718 TERMINALFAIL65.72s** on old runtime: actual VIP guard, movement, shared
+funded hand passed; first post-restart re-seat failed after login triggered fold.
+**69600 TERMINALPASS62.432s** on corrected runtime: two real clients, real clocks
+and cards, ordinary100EP membership allowance each;20/40EP buy-ins, private cards,
+actual server restart, guard/walk/re-seat/new tokens, same hand/revision/cards,
+stale-action rejection, check/call showdown, leave/save. TotalEP200 conserved;
+each Gold500 unchanged/zero Gold receipts/two EP casino receipts/one allowance.
+Both owned server processes and Mongo0914a/0914b cleaned; no native GPU launched.
+Logs `/tmp/eidolon-vip-poker-sockets-20260914-a142XI/run.log` and `run-r2.log`.
+Binary label38847b2f is helper compatibility, NOT unmodified-build evidence;
+doc records base+local runtime SHA256. See integration doc
+`docs/plans/2026-09-14-vip-poker-connected-recovery.md`. Do not repeat passed path
+for docs only. Connected EP blackjack/vendor/slots/rendered poker remain open.
+
+**CI34840066682 / SHA38847b2f497f57f693952f2d49c5c869422247d6 remains ACTIVE**,
+freshly verified: Client/Server/Browser3 passed; Browser1/2 running. **42418 ACTIVE**
+confirmed by native poll; continue exact handle and public delivery checks.
+1.9.12 is not yet accepted live. Do not start competing native GPU while its CI
+browser/predeploy/live checks run. Local build handles1031/13810/78260 terminal.
+Next package this accepted poker fix with cumulative notes/version after existing
+release finishes, then continue remaining regional/campaign/raid scope. Whole
+1.10 remains open; phone Brave/Chrome general UI positive, dungeon/party untried.
+
 ## September 14 — Alpha1.9.12 pushed; CI34840066682 and watch42418 active
 
 **PUSHED38847b2f497f57f693952f2d49c5c869422247d6**, Alpha1.9.12.
