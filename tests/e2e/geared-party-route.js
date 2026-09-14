@@ -637,6 +637,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     if (combatWorkers) await combatWorkers.stop();
                     currentTarget = target.id;
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
+                    if (bossStart) await tank.page.screenshot({ path: testInfo.outputPath(`party-boss-${target.type}.png`) });
                     combatWorkers = startPartyCombatWorkers(actors.slice(1),
                         actor => runPartyRoleInputs([actor],
                             role => avoidWarnings(role, target.encounter),
