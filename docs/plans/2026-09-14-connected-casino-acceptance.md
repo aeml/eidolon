@@ -1,8 +1,14 @@
 # Connected casino: shared blackjack flow and Alpha1.9.12 layout correction
 
 Alpha1.9.12 was pushed as38847b2f497f57f693952f2d49c5c869422247d6. Exact CI
-34840066682 is in progress; watch42418 is active. Deployment/public identities
-are not yet accepted. Version labels, server/build
+34840066682 is in progress; watch42418 is active. Both deploy jobs passed and
+public delivery was verified at12:15:38UTC: frontend manifest and backend
+health match38847b2f/Alpha1.9.12, database ready. Exact served source matches the
+release-transformed committed login HTML (including cumulative notes), main.js,
+CasinoController, both card UIs, CardTableScene, index.css and casino.css.
+Receipt: `/tmp/eidolon-1-9-12-public-delivery-20260914.json`.
+Final Live Release and Character QA remains running; do not claim all gates
+passed yet or supersede this run with1.9.13. Version labels, server/build
 defaults and cumulative login patch notes match.286 tests across five UI/version
 suites passed in1.361s; scoped lint, shell syntax and diff checks passed.
 Final anonymous browser fixture: four screen sizes passed in11.4s, including
@@ -19,7 +25,8 @@ cards, not forced winning results. All shared-flow, camera/leave, saved balance,
 reconnect and guard checks passed. Artifacts:
 `/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/`.
 Credential scan passed0changed; owned services and ports cleaned.62628 is terminal,
-not a pending check. Publication and exact live verification are still next.
+not a pending check. Publication/public-source delivery passed; final live
+gameplay acceptance remains pending as described above.
 
 Native70277 passed in1.4minutes on clean da260121 (Alpha1.9.11 runtime plus QA
 changes). Two newly registered disposable accounts were initialized with1000Gold
