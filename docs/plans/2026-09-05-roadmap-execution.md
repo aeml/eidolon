@@ -5,20 +5,32 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten49494 still ACTIVE: first boss and recovery passed
+## September 14 — Molten49494 ACTIVE: three bosses; slot features accepted
 
 Fresh native polls confirm49494 remains running; do not restart. Current source
 still cleanf2fdea9b, mainFROZEN. Seed **1571291222270430445**, generator2/attempt0,
-no fallback. **Cindermaw defeated**: Fighter10438damage/518taken, Cleric496allyheal,
-Wizard14064damage, Rogue14524damage. **First all-four town recovery/re-entry passed**
-afterroom2, same seed/rooms/Gold/inventory/quests. Later50%restpolicy now applies;
-do not claim fullclear or efficiency result yet. Atlatesttiming393seconds,
-combatphase,130leadersteps/5roomtraversals/1townreturn; subsequentlogscontinue
-MagmaGolem/ScorchedWraith combat withno reportedfailure. Last45spollconfirmedlive.
+no fallback. **Cindermaw, ScorchedTwins and ForgemasterPyrax defeated**. Pyrax:
+Fighter19610damage/1794taken, Cleric1729allyheal, Wizard20656damage,
+Rogue16878damage. **Three all-four town recoveries/re-entries passed**, after
+rooms2/5/7, preserving seed/rooms/Gold/inventory/quests. Later rests began with
+Fighter519/1240 and514/1240mana, below the new50%threshold. Do not claim fullclear
+or efficiency result yet. Latest timing1183seconds, traversal,
+329leadersteps/16roomtraversals/3townreturns. Actual native poll confirmed live.
 Opening `test-results/four-player-dungeon-four-g-ee1e7-d-receive-individual-credit/desktop-party-healing.png`
 was inspected: trackeraboveroster/visiblehealertarget/classes/aura. Townopening
-only, notdungeonboss/phone/wholevisualscope. Previousgoalturnstartedrun; thisturn
-yieldednewboss/recoveryevidence and verified waits. Fullobjectiveunchanged.
+only, notdungeonboss/phone/wholevisualscope. Previous feedback turn was no goal
+progress; this continuation yielded new boss/recovery evidence and verified waits.
+Full objective unchanged.
+
+Independent QA tree now adds prepared Gold/EP slot bonus/free-spin acceptance:
+native74186 terminalPASS47.000s, exact f2fdea9b runtime. Choice paid40 exactly once;
+free spin charged nothing; token resume/leave/restart/reseat preserved revision4,
+four remaining spins and balances584Gold/0EP or140EP/500Gold. Prepared entitlement,
+not earned trigger or rendered reel proof. Log
+`/tmp/eidolon-group-sockets-20260914-WJG4y2/slot-features-r2.log`.
+Initial51793 exited before tests on an inappropriate vendor flag; readonly-module
+retry passed. Both owned Mongo containers cleaned. No runtime edit/new deployment;
+QA/docs stay local for the next appropriate publication. Main remains frozen.
 
 ## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
 
