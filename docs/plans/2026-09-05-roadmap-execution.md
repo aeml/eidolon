@@ -5,6 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — obsolete raid-guide chapter references fixed locally
+
+Concrete runtime polish in a separate tree while native20006 stays frozen:
+`/tmp/eidolon-raid-guide-copy-20260914`, branch
+`work/raid-guide-copy-20260914`, clean commit
+**55ae1d45fea099898dfb424fe45ec6cd56b4fa4b** (based on042fd742).
+Locked raid/portal UI still referenced pre-expansion chapter3/5/7/9/13/14;
+actual native Water quest snapshot is chapter15, not5. Replaced those pointers
+with correct named quests and explicit manual Ilyra turn-in instructions for
+four elemental raids, Umbral Nexus, and Dark Realm. No gate/level/save/reward
+change. Focused current-menu and preparation tests15PASS/two suites4.887s,
+lint/diff PASS. Regression compares quest names with actual server catalog.
+
+**NOT deployed.** Pending patch-note wording is in that tree's final integration
+audit. After the current native run is terminal, merge/cherry-pick55ae1d45 into
+the main active development branch before the next appropriate release. Do not
+forget the separate branch or edit/merge into currently frozen test source.
+No version bump or new browser job merely for this copy correction.
+
+Same native **20006 ACTIVE** at fresh handle poll,042fd742. Two actual Frost
+Guardians defeated, three room traversals. First whole-party town rest/re-entry
+passed atroom2: all four recovered, same seed/rooms/Gold/inventory/quests. At
+367.55s:76leadersteps/three rooms/one return,27.82s combat. No full boss/dungeon
+clear yet. Continue exact handle/log already below; no restart/parallel GPU.
+Prior turn was progress + verified wait; current turn implements/tests an actual
+guide defect and adds native recovery evidence. Fullgoal active, live1.9.9
+unchanged. Rootledgeronly; NEVER PUSH ROOT.
+
 ## September 14 — Abyssal entry correction verified; first room cleared
 
 Same native **20006 remains ACTIVE**, freshly polled (50s). Source042fd742
