@@ -12,11 +12,14 @@ export function dungeonRestReason(resources, { cleared, nearbyHostiles }) {
     return null;
 }
 
-// Four-role parties have a healer. Prove the ordinary town round trip early,
+// Geared parties have a healer. Prove the ordinary town round trip early,
 // then avoid repeatedly retracing every cleared room for a lightly spent pool.
 // This changes only the QA party's decisions, not recovery rates or difficulty.
-export function partyDungeonRestNeeded(states, { cleared, nearbyHostiles, townRests }) {
-    if (!Number.isInteger(townRests) || townRests < 0 || states.length !== 4) throw new Error('Invalid party recovery observation');
+export function partyDungeonRestNeeded(states, { cleared, nearbyHostiles, townRests, expectedMembers = 4 }) {
+    if (!Number.isInteger(townRests) || townRests < 0 || !Number.isInteger(expectedMembers) ||
+        expectedMembers < 4 || expectedMembers > 10 || !Array.isArray(states) || states.length !== expectedMembers) {
+        throw new Error('Invalid party recovery observation');
+    }
     for (const state of states) {
         if (state.dead) throw new Error('A party rest cannot hide a death');
         collectionRestReason({ ...state, castCost: 0 }); // Validate actual observed pools.

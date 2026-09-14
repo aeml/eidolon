@@ -596,7 +596,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             },
             recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {
                 const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
-                if (!partyDungeonRestNeeded(states, { nearbyHostiles, townRests,
+                if (!partyDungeonRestNeeded(states, { nearbyHostiles, townRests, expectedMembers: roles.length,
                     cleared: states[0].rooms.find(room => room.index === roomIndex)?.cleared })) return false;
                 const progress = actorPage => actorPage.evaluate(async () => {
                     const { dungeonRestSnapshot } = await import('/tests/dungeonRestSnapshot.js');
@@ -626,7 +626,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 const resumed = await snapshot(tank.page);
                 formationAnchor = { x: resumed.x, z: resumed.z };
                 console.log('[party-clear-rest]', JSON.stringify({ roomIndex, townRests,
-                    spent: states.map(s => ({ hp: s.hp, mana: s.mana })), allFourRecovered: true,
+                    spent: states.map(s => ({ hp: s.hp, mana: s.mana })), allMembersRecovered: roles.length,
                     sameSeedRoomsGoldInventoryAndQuests: true }));
                 return true; // Existing driver rewalks the real cleared route.
             },

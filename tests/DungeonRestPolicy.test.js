@@ -45,3 +45,19 @@ describe('four-role party recovery avoids redundant early town trips', () => {
         expect(() => partyDungeonRestNeeded(party({}), { ...boundary, townRests: -1 })).toThrow('Invalid party');
     });
 });
+
+test.each([5, 10])('raid recovery validates all %i declared members without changing thresholds', expectedMembers => {
+    const states = Array.from({ length: expectedMembers }, () => ({ ...resources }));
+    const observation = { ...boundary, townRests: 1, expectedMembers };
+    expect(partyDungeonRestNeeded(states, observation)).toBe(false);
+    states.at(-1).mana = 499;
+    expect(partyDungeonRestNeeded(states, observation)).toBe(true);
+    expect(() => partyDungeonRestNeeded(states.slice(0, -1), observation)).toThrow('Invalid party');
+    expect(() => partyDungeonRestNeeded(states, { ...observation, expectedMembers: undefined })).toThrow('Invalid party');
+    states.at(-1).dead = true;
+    expect(() => partyDungeonRestNeeded(states, observation)).toThrow('hide a death');
+});
+
+test.each([3, 11, NaN])('invalid declared member count fails closed: %s', expectedMembers => {
+    expect(() => partyDungeonRestNeeded([], { ...boundary, townRests: 0, expectedMembers })).toThrow('Invalid party');
+});

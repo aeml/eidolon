@@ -1,5 +1,18 @@
 # 1.10 final integration — evidence and remaining work
 
+Raid8535 is terminalexit1 after2.4m: five-member UI formation/readiness/entry and
+first assault-room combat passed, each player alive with165Gold, but the shared
+QA rest validator required exactly four observations. Correction declares the
+expected group size (default4, explicit raid5–10), checks every observed member,
+and retains80%first/50%later rest thresholds and death/stale-pool rejection.
+21focused rest tests pass0.498s (6334exit0); lint/diff pass. Searched shared party
+helpers for remaining four-member count/index assumptions; the other matches
+were unrelated numeric limits. No production or encounter changes.
+Log `/tmp/eidolon-earth-raid-r3-20260914-2iB769/run.log`; sanitized0/owned cleanup
+passed. Private checkpoint `/tmp/eidolon-party-checkpoint-earthraid0914c-FIykh8/save.archive.gz`,
+SHA256`b18abbc59c046b7dddee9c8ba3c99187a7d0a264ded1bdc09c8992f838702ca5`.
+Not a raid clear; no repair credit was claimed.
+
 First five-player raid invocation29311 stopped before formation: the new helper
 expected raw `currentInstanceType === 'overworld'`, but initial town state is
 null. All five legal builds loaded/replicated; no raid entered or combat credit.
