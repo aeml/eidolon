@@ -13,6 +13,7 @@ import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
+import { partyDungeonRestNeeded } from '../dungeonRestPolicy.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter } from './chronicle-earth-route.js';
@@ -563,9 +564,8 @@ test('four geared roles clear the selected dungeon through real party inputs and
             },
             recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {
                 const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
-                if (nearbyHostiles || !states[0].rooms.find(room => room.index === roomIndex)?.cleared ||
-                    !states.some(s => s.hp < s.maxHP * .8 || s.mana < s.maxMana * .8)) return false;
-                for (const s of states) expect(s.dead, 'a party rest cannot hide a death').toBe(false);
+                if (!partyDungeonRestNeeded(states, { nearbyHostiles, townRests,
+                    cleared: states[0].rooms.find(room => room.index === roomIndex)?.cleared })) return false;
                 const progress = actorPage => actorPage.evaluate(async () => {
                     const { dungeonRestSnapshot } = await import('/tests/dungeonRestSnapshot.js');
                     return dungeonRestSnapshot(window.game);

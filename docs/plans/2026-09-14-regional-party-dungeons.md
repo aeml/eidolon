@@ -4,11 +4,25 @@
 
 Sourcef8b9c7ac/clean, Normal70, Low, same legal four-role equipment and120minute
 budget, no mid-run grants or automatic retries. Seed6417675202245662372/gen2/
-attempt0/no fallback. Cindermaw defeated; all-member first town recovery and
-same-run re-entry passed by163seconds. Remaining bosses/full clear unaccepted.
+attempt0/no fallback. Cindermaw and Scorched Twins defeated; three all-member
+town recoveries and same-run re-entries passed. Twins role receipts: Fighter
+18680damage/2255taken, Cleric3098allyhealing, Wizard15886damage/692taken,
+Rogue14896damage/491taken. Pyrax and remaining bosses/full clear unaccepted.
 Only owned GPU run, main QA tree frozen. Log
 `/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`, owned suffixmoltenparty0914b,
 ports18285/18286/4187. Continue26730 rather than launching another browser route.
+
+### Later-party efficiency correction (not applied to26730)
+
+The existing party policy returns everyone to town whenever any pool is below
+80%, repeatedly retracing all cleared rooms. Keep the first80% recovery proof;
+afterward use50% for the four-role party. Solo policy is unchanged. No resource
+grant, easier enemy, budget extension, hidden death, interrupted live room or
+mid-run source change.16 focused policy tests passed in0.789s; scoped lint and
+diff checks passed. Actual next-party performance and completion remain unproven.
+Connected casino extension (947c7b74/206e01e3) is committed separately and still
+awaits its first native run after26730; countdown checks observe the displayed
+seconds. Do not count authored/linted cases as browser acceptance.
 
 ## Molten71836 — terminal short-step failure; helper correction pending native check
 
