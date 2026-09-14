@@ -7,6 +7,24 @@ the whole goal. Started September 5, 2026.
 
 ## September 14 — Alpha1.9.5 live;1.9.6 vendor/membership batch pushed
 
+LATEST: previous goal turn made progress with1b1860af EP wallet/game engines.
+This continuation connected all VIP games, independent poker tables, trusted
+membership entry/funding, server-ownedY8 balcony/seat exits and currency-aware
+client controls. Focused public compatibility and real Mongo multiplayer expiry
+settlement passed; frontend266testsPASS; actualWebGL phone/desktop VIP2PASS11.9s,
+screenshots reviewed. No broad local soak. Disposable VIP tables container removed.
+
+**1.9.6 verified LIVE** at f99bc61e4c78b844d6f4c673960df961021b4b14 on both domains,
+DBready. ExactCI34797469252 TERMINAL SUCCESS/all ten jobs; never repoll/restart.
+**1.9.7 pushed** from active worktree, release
+**3460ccfb824359bbb48df1acfe7cb61587444663**, matching login/version/patch notes.
+New exactCI **34800160671 IN_PROGRESS**. Continue samehandle, verify liveSHAafter
+success. Do not claim1.9.7live yet. Root stays ledger-only/never push. Current
+implementation/evidence in active `docs/plans/2026-09-14-vip-casino-games.md`;
+active worktree `/tmp/eidolon-1-10-resonant-age-20260913`. Full1.10 still active:
+remaining roadmap audit and consolidated acceptance next, not another casino-only
+completion claim. No real VIP grants, billing, player wagers or productionQAdata.
+
 Latest continuation: previous turn was a verified wait on CI34797469252 plus
 confirmation that the reported NPC fix is live. This turn made implementation
 progress in active worktree `/tmp/eidolon-1-10-resonant-age-20260913`, local commit
