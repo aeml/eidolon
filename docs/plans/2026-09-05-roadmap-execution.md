@@ -5,6 +5,23 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — third Abyssal boss defeated; same run continues
+
+Fresh45s poll: **20006 ACTIVE**,042fd742 unchanged. AbyssalGoliath confirmed
+defeated, three of five bosses cleared, all four survive. Fight totals: Fighter
+11460damage/8213taken, Cleric15098allyhealing/4472taken, Wizard15062damage/
+1390taken, Rogue21363damage/6409taken. At3751.79s route elapsed:24traversals
+(including retracing),517leadersteps/four townreturns;482.58s total combat.
+Continue same native/log, no restart or concurrent GPU job. Fullclear, last two
+bosses and personal manual quest handoffs remain unproven.
+
+Private archive below remains the verified **two-boss/room7** checkpoint; do not
+relabel it as this newer third-boss state or overwrite its recorded checksum.
+Validation namespace is separate and still inside owned ephemeral QA Mongo.
+Previous turn was a verified wait; this turn preserves/verifies
+actual partial progress and confirms third-boss combat. Fullgoal active,
+pending55ae1d45 unpublished and separate, rootneverpush.
+
 ## September 14 — private actual party checkpoint preserved and restored separately
 
 Native **20006 remains ACTIVE** at fresh poll,042fd742 frozen, no restart or
