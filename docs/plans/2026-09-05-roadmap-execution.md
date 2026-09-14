@@ -5,6 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — active earned Earth route passes opening and first hunt
+
+Session **31615** revalidated live repeatedly, not restarted. Strict sourceee038504
+route now passes opening/diary104.098s and Earth-watch605.076s.40/40 credit,
+zero deaths,19 normal town-rest stops,nine earned gear slots. Manual Ilyra claim
+checked unpaid/uncompleted first, then100Gold/1593XP; level6→8,Gold695→795.
+Exact character/quest snapshots persisted across reconnect; next quest not
+autoaccepted. Log `/tmp/eidolon-earned-earth-20260914-i96Zm2/run.log`.
+**Seeds phase active; full route outcome unknown.** Do not restart on observation
+timeout, modify loaded runtime/route code, or call Earth readiness completed.
+New activeWT `docs/plans/2026-09-14-earned-earth-acceptance.md` retains partial
+evidence and remaining scope. Native CI34804655770 is already terminal success;
+do not repoll. Previous feedback turn PROGRESS; this turn gains actual phase
+evidence while preserving the same running process. Root remains ledger-only.
+
 ## September 14 — actual-phone feedback clarified
 
 User replied to the pending final-mobile question: uses **Brave or Chrome**;
