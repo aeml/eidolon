@@ -5,6 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — complete earned Earth readiness accepted; no active QA remains
+
+**10782 TERMINAL SUCCESS**,59.1m,one test,zero retries/deaths. Frozen source
+89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927 (runtime1.9.9/3481f89a). Eight phases
+PASS: opening120.456s,watch481.919,seeds211.398,imps1811.608,scars31.713,
+orcs878.255,handoff7.631,readiness0.713. No grants/acceptedcompleted dailies/global
+stat scaling. Sevenmanualchapters; dungeonaccepted/uncleared/count0. Final31,
+12463XP toward22600,9065Gold,1320HP/alive; actual guideNormal30entryenabled and
+Earthcrystalraidsealed. Orc manual300Gold/15843XP/exactdialogue/savecheck passed,
+zero deaths/15reststops/onelevel30trainingstop. Readinessproblems[]; not full
+dungeon/campaign/raid/physicalphone acceptance or a universalhuman-hour benchmark.
+
+Artifacts `/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/` now include complete
+log, sanitizedHTMLreport and screenshots. Wrapper removed its own
+earthready0914r2 API/Mongo;18285/18286/4187 listenersabsent. Do not poll/restart
+10782,81622,31615. No new native QA running. All earlieraccepted load/render/
+backup/gearedVerdant evidence staysaccepted; no repeatforlabels/docs.
+
+Preserved private actualBSON checkpoints BEFOREcleanup (mode0600):
+`earned-earth-r2-level30.archive.gz` SHA256
+be0c40ad5c8ff6cc42cb2dbb42e23bb07ad721814959f3f8e518b21ecaeb765c
+withinartifactroot. Actually restored into separateeidolon_checkpoint_level30
+database in OWNEDQA Mongo, neverreplacingrunningeidolon. Oneuser/character:
+level30/7170XP/8539Gold,prior6chapterscomplete,Orc46/50incomplete. ValidationDB
+was removed bywrappercleanup. Checkpoint isNOTfinal31/50clear; futurecontinuation
+must genuinely earn remaining4credits/hand-off, never fabricatefrompassinglog.
+Archivecontainsdisposableaccountdata,keepprivate. Earlierreadonlydump
+`earned-earth-r2-20260914T055833Z.archive.gz` also retained; itsSHA
+bfbf291b227d90aa61fe5afc07cecaa00f8686e33451d78c6295bc1962818bde.
+Finalhandoffdumpattemptfoundcontaineralreadyremoved, so NOhandoffarchivecreated.
+
+ActiveWT `/tmp/eidolon-1-10-resonant-age-20260913` HEAD **ecd8a036**, docscommit
+acceptsresult/checkpoint andupdates finalaudit/releaseplan. SourceQAcorrection
+a8f3d235 + shortnativeproof9723dd21 remainlocal, no gameruntimechange ornewversion.
+Live1.9.9/3481f89a CI34804655770 alreadyallSUCCESS; no repoll/restart.
+Next fullgoal: remaining realm/dungeon/groupraid andcross-featureacceptance;
+reuse earned checkpoint/acceptedproof instead ofrerunning firsthour or prepared
+Verdant bydefault. Elementalraids need5–10participants andall4fullraids/repairjobs,
+notweaker4-personentry. UserphoneBrave/Chrome UIpositive,party/dungeonuntested.
+This turn PROGRESS. Rootledgeronly, NEVERPUSHROOT. Fullgoal NOTcomplete.
+
 ## September 14 — full Imp chapter and second investigation accepted; Orc phase active
 
 SAME **10782 remains ACTIVE**. Full60Imp chapter passed~1812s,zero deaths,
