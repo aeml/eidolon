@@ -5,6 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — party quest tracker fixed locally; Abyssal second boss passed
+
+User's phone feedback remains recorded: Brave/Chrome, general UI positive,
+no actual phone dungeon/party attempted. Do not repeat the browser question or
+claim those two gameplay checks are accepted.
+
+Concrete runtime correction **031e43eb** committed ONLY in independent
+`/tmp/eidolon-pvp-queue-integration-20260914`, branch work/pvp-queue-integration-20260914.
+Its base is1d62befa. The old party CSS hid the entire tracked list; the screenshot
+from the previous High party run confirmed the missing quest content. New desktop
+party-only compact scroll strip retains all chosen quests above healing controls,
+full text on hover, keyboard scroll focus and shortened Journal shortcut. Solo
+and phone layouts retained. **81 tests/3 suites PASS3.175s**, targeted ESLint and
+diff check pass. Added rendered fixture **not yet run**; see
+`docs/plans/2026-09-14-party-quest-tracker.md` and
+`tests/e2e/party-quest-tracker-layout.spec.js`. Run that short check and inspect
+screenshots AFTER11985 releases GPU, then package appropriate version/patch notes.
+**Not pushed/live. No version bumped yet.** Main native tree remains frozen1d62befa.
+
+**11985 remains ACTIVE**, same owned run/log/ports below, do not start another
+GPU browser or edit main source. Current source1d62befa/Low/new seed unchanged.
+Actual first boss Tiderend Leviathan defeated by125.52s route elapsed; second
+Drowned Choir defeated by661.45s. Second encounter Fighter11687damage/1566taken,
+Cleric1349allyhealing, Wizard15995damage/289taken, Rogue13690damage. Three town
+recovery/re-entries passed. Last heartbeat846.79s (~14.1min), traversal216leader
+steps/13room traversals. **No full-clear/final-boss/manual-claim acceptance yet.**
+Continue samehandle11985, wrapper owns cleanup; no new retry or deadline changes.
+
+Live1.9.10/4bab14fa and CI34822657032 all-ten-success remain accepted. Don't
+repoll CI or repeat accepted PvP socket/EP restore/load/render checks for this
+HUD fix. Root is ledger-only, never push. Goal remains active/full scope intact.
+
 ## September 14 — 1.9.10 fully accepted; new Low Abyssal party attempt active
 
 Previous turn madeprogress(publicdelivery+disconnectpolicy); this turn closed
