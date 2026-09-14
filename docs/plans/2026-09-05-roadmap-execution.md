@@ -5,6 +5,22 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — corrected1.9.11 published; new exact CI34829019013 active
+
+Previous turn fixedtheassertion; thisturn waitedforoldrunterminal thenpublished
+**bd56689384f737c18c78a84607bc4683e7fb11bd**, Alpha1.9.11, toorigin/master.
+Push51360terminalsuccess. **NewCI34829019013 IN_PROGRESS**, exactSHAconfirmed.
+Follow thisrun andverifyactualfrontend/backend/login/module identities after
+delivery. Lastverifiedlive remains1.9.10/4bab14fa; no1.9.11liveclaimyet.
+
+**Old34827963234 TERMINALFAILURE**: serverpassedcoverage/race/backup/bench/build,
+clientsolehistoricalcommandassertionfailed; allbrowser/deployjobs skipped.
+Oldwatch79441terminalexit1; donotpoll/restartit. Correctedwatchstartedwith30s
+interval, **watch59106ACTIVE**, log`/tmp/eidolon-1-9-11-corrected-ci-watch.log`.
+MainandindependentPVPtrees nowboth cleanbd566893. No furthercodechange/newnative
+test; do notsupersedeactiveCI or repeatacceptedchecks. Native11985remainsclosed143
+withprivateprogressbackupandcleanupbelow. Fullgoal staysactive. RootNEVERPUSH.
+
 ## September 14 — 1.9.11 CI caught exact-command assertion; correction ready
 
 This turn madeprogress: exactCI clientfailure diagnosed and corrected, not a
