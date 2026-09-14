@@ -37,7 +37,9 @@ export class BlackjackTableUI {
         this.table = new CardTableScene('blackjack'); this.cards = this.table.root; this.cards.classList.add('blackjack-hands');
         this.table.onExpire = () => this.root.querySelectorAll('button, input').forEach(control => { control.disabled = true; });
         this.actions = node('div', '', 'blackjack-actions');
-        this.root.append(this.summary, this.cards, this.betBox, this.actions, this.rules);
+        this.controls = node('div', '', 'card-table-controls');
+        this.controls.append(this.summary, this.betBox, this.actions, this.rules);
+        this.root.append(this.cards, this.controls);
         this.celebration = new CasinoCelebration(this.table.center);
     }
 
@@ -105,7 +107,8 @@ export class BlackjackTableUI {
     }
 
     hand(title, cards, hidden, active = false, target) {
-        const row = node('div', '', `blackjack-hand${active ? ' current' : ''}`); row.append(node('p', title));
+        const row = node('div', '', `blackjack-hand${active ? ' current' : ''}`);
+        const caption = node('p', title); caption.title = title; row.append(caption);
         for (const card of cards || []) {
             const suit = Math.floor(card / 13);
             row.append(node('span', `${labels[card % 13]}${suits[suit]}`, `blackjack-card${suit === 1 || suit === 2 ? ' red' : ''}`));

@@ -43,6 +43,7 @@ export class CardTableScene {
             slot.root.classList.toggle('empty', !occupant);
             slot.root.classList.toggle('current', view.phase === 'playing' && view.round?.turnPlayerId === occupant?.playerId && Boolean(occupant));
             slot.name.textContent = occupant ? `${occupant.name || 'Player'}${occupant.playerId === playerID && occupant.name !== 'You' ? ' · You' : ''}` : `Seat ${seat + 1}`;
+            slot.name.title = slot.name.textContent;
             slot.avatar.textContent = occupant ? (occupant.name || 'You').slice(0, 1).toUpperCase() : '◇';
             slot.status.textContent = !occupant ? 'Open seat' : occupant.connected === false ? 'Reconnecting' :
                 funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'In this hand' :

@@ -124,6 +124,7 @@ export class CasinoController {
         if (isBlackjack) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.`;
         if (isSlots) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} slots. Free spins and bonus choices belong to you and remain saved when you leave.`;
         if (isPoker) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} Hold’em. Leaving folds a remaining stack; all-in hands stay eligible. Unspent stake and winnings return after the hand.`;
+        this.status.title = this.status.textContent;
         this.roster.replaceChildren();
         for (const occupant of occupants.sort((a, b) => a.seat - b.seat)) {
             const row = document.createElement('li');

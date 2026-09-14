@@ -39,7 +39,9 @@ export class PokerTableUI {
         rules.append(element('p', 'Raise to means your total bet on this street, not extra funds from your wallet. The minimum raise increases the current bet by at least the last full raise. A smaller all-in is allowed; it only reopens earlier players’ raises when the combined increase reaches their required full raise. A short call remains eligible only for its covered pots.'));
         rules.append(element('p', 'Turns last 30 seconds. A timeout checks for free or folds to a bet. Leaving after the deal folds a remaining stack; an all-in hand stays eligible. Disconnections reserve the seat for 60 seconds, but the turn timer keeps running. No bots take over.'));
         rules.append(element('p', 'Main and side pots settle separately. Uncalled stakes return to their owner. Ties split each pot; odd units go clockwise from the seat left of the dealer. All unspent stack and winnings return to your table-currency balance after the hand, even if you leave or disconnect. Folded cards remain private.'));
-        this.root.append(this.summary, this.felt, this.lobby, this.actions, rules);
+        this.controls = element('div', '', 'card-table-controls');
+        this.controls.append(this.summary, this.lobby, this.actions, rules);
+        this.root.append(this.felt, this.controls);
     }
 
     button(text, action) { const b = element('button', text); b.type = 'button'; b.onclick = action; return b; }

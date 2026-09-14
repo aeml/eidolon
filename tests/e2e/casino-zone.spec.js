@@ -183,6 +183,13 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     for (const [index, target] of players.entries()) {
         await expect.poll(() => readGold(target)).toBe(expectedBalances[index]);
         await expect(target.locator('.blackjack-scene .card-table-seat:not(.empty)')).toHaveCount(2);
+        expect(await target.locator('.blackjack-scene .card-table-seat, .blackjack-scene .card-table-dealer').evaluateAll(elements => {
+            const header = document.querySelector('.casino-session-header').getBoundingClientRect();
+            return elements.length === 7 && elements.every(element => {
+                const r = element.getBoundingClientRect();
+                return r.top >= header.bottom - 1 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth;
+            });
+        })).toBe(true);
     }
     expect(await tableNode.evaluate(node => node === document.querySelector('.blackjack-scene'))).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('connected-blackjack-result.png') });
