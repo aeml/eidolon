@@ -59,6 +59,9 @@ showed a working entrance dialogue. Selector620f102e and initial-bankroll fixtur
 da260121 corrected setup; no game interaction was bypassed. Its artifacts remain
 in `/tmp/eidolon-connected-casino-20260914-nNqKZI/`. That run is terminal, not active.
 
-This does not cover connected EP wagering/vendor purchases, connected slots,
+Connected EP poker and its restart walk-back correction now pass separately;
+see [actual EP hand and recovery evidence](2026-09-14-vip-poker-connected-recovery.md).
+That follow-up correction remains local while1.9.12 CI runs.
+This does not cover connected EP blackjack/vendor purchases, connected slots,
 busy-floor load, a real phone, or the full1.10 campaign/raid scope. Retain the
 earlier poker socket/restart and EP save-recovery evidence separately.

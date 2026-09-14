@@ -419,6 +419,18 @@ func pokerHandSeated(p pokerParticipant, ids ...string) bool {
 	return e != nil && e.CasinoSeat != nil && e.CasinoSeat.TableID == pokerTableID(ids) && e.CasinoSeat.Seat == p.Seat && e.Health > 0 && e.InstanceID == game.CasinoInstanceID && (!e.Disconnected || time.Now().Before(e.DisconnectedAt.Add(game.CasinoReconnectGrace)))
 }
 
+// Login restores VIP players beside the downstairs guard. During the existing
+// process-restart grace, let funded participants walk back to their seat rather
+// than folding them on the first tick that sees their newly logged-in entity.
+// Explicit leave still withdraws immediately, and turn deadlines still run.
+func pokerHandRecovering(p pokerParticipant, now time.Time) bool {
+	if !now.Before(pokerRecoveryUntil) {
+		return false
+	}
+	e := world.GetEntityCopy(p.PlayerID)
+	return e == nil || (e.CasinoSeat == nil && e.Health > 0 && e.InstanceID == game.CasinoInstanceID)
+}
+
 func validatePokerSeatClaim(owner string, seat int, ids ...string) error {
 	pokerMu.Lock()
 	defer pokerMu.Unlock()
@@ -567,7 +579,7 @@ func tickPoker(now time.Time, ids ...string) error {
 		case "playing":
 			changed := false
 			for _, p := range s.Players {
-				if !pokerHandSeated(p, id) && !(now.Before(pokerRecoveryUntil) && world.GetEntityCopy(p.PlayerID) == nil) {
+				if !pokerHandSeated(p, id) && !pokerHandRecovering(p, now) {
 					s.Round, changed = s.Round.Withdraw(p.PlayerID, now)
 					if changed {
 						break

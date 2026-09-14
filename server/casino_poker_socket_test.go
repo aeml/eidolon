@@ -79,6 +79,45 @@ func readPokerSocket(t *testing.T, conn *websocket.Conn, match func(pokerSocketP
 }
 
 func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
+	testPokerActualSocketsHandAcrossRestart(t, false)
+}
+
+func TestVIPPokerActualSocketsHandAcrossRestart(t *testing.T) {
+	testPokerActualSocketsHandAcrossRestart(t, true)
+}
+
+// Use the ordinary guard and movement protocol on every login. Saved upstairs
+// coordinates deliberately restore downstairs; they are not an access grant.
+func approachVIPPokerSocket(t *testing.T, conn *websocket.Conn, seat int) {
+	t.Helper()
+	resourceSend(t, conn, MsgCasino, map[string]any{"action": "vip"})
+	var floor struct {
+		Upstairs bool `json:"upstairs"`
+	}
+	resourceReadMessage(t, conn, "casino_floor", &floor)
+	if !floor.Upstairs {
+		t.Fatal("valid membership did not authorize upstairs access")
+	}
+	var movement struct {
+		Context string `json:"movementContext"`
+	}
+	resourceReadMessage(t, conn, MsgMovementContext, &movement)
+	if movement.Context == "" {
+		t.Fatal("stairs omitted movement context")
+	}
+	table, _ := game.CasinoTableByID("vip-poker")
+	point := table.Seats[seat]
+	for step := 1; step <= 20; step++ {
+		time.Sleep(350 * time.Millisecond)
+		fraction := float64(step) / 20
+		resourceSend(t, conn, MsgMove, MovePayload{MovementContext: movement.Context,
+			X: point.ExitX * fraction, Y: 8, Z: 140 + (point.ExitZ-140)*fraction,
+			State: "RUNNING", Sequence: uint64(step)})
+	}
+}
+
+func testPokerActualSocketsHandAcrossRestart(t *testing.T, vip bool) {
+	t.Helper()
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
 		t.Skip("explicit disposable Mongo and built server required")
 	}
@@ -91,7 +130,15 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer repo.Close(context.Background())
-	if _, err := repo.GetBlackjackTable(publicPokerTable); !errors.Is(err, mongo.ErrNoDocuments) {
+	tableID, currency, buyInStep, initialTotal := publicPokerTable, "gold", 100, 1000
+	if vip {
+		tableID, currency, buyInStep, initialTotal = "vip-poker", "ep", 20, 200
+	}
+	table, ok := game.CasinoTableByID(tableID)
+	if !ok {
+		t.Fatal("missing poker table", tableID)
+	}
+	if _, err := repo.GetBlackjackTable(tableID); !errors.Is(err, mongo.ErrNoDocuments) {
 		t.Fatal("disposable poker table must be unused", err)
 	}
 	cleanup, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
@@ -99,7 +146,7 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer cleanup.Disconnect(context.Background())
-	defer cleanup.Database("eidolon").Collection("casino_blackjack_tables").DeleteOne(context.Background(), bson.M{"_id": publicPokerTable})
+	defer cleanup.Database("eidolon").Collection("casino_blackjack_tables").DeleteOne(context.Background(), bson.M{"_id": tableID})
 	names := []string{fmt.Sprintf("poker-a-%d", time.Now().UnixNano()), fmt.Sprintf("poker-b-%d", time.Now().UnixNano())}
 	for i, name := range names {
 		defer cleanup.Database("eidolon").Collection("users").DeleteOne(context.Background(), bson.M{"username": name})
@@ -107,8 +154,19 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		if err := repo.CreateUser(name, name+"@example.invalid", name+"-local-only"); err != nil {
 			t.Fatal(err)
 		}
-		point := game.CasinoTables()[1].Seats[i]
+		point := table.Seats[i]
 		fixture := &database.Character{Name: name, Class: "Fighter", Level: 1, ProgressionVersion: game.CurrentProgressionVersion, InstanceID: game.CasinoInstanceID, X: point.ExitX, Z: point.ExitZ, Gold: 500, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
+		if vip {
+			fixture.X, fixture.Z = 0, 153
+			period, err := database.NewVIPPeriod(time.Now().Add(-time.Hour), time.Now().AddDate(0, 1, 0))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if added, err := repo.ProvisionVIPPeriod(name, period); err != nil || !added {
+				t.Fatal("fixture membership provisioning failed", err)
+			}
+			// No EP grant: the real membership refresh must award exactly 100.
+		}
 		if err := repo.SetFirstCharacter(name, fixture); err != nil {
 			t.Fatal(err)
 		}
@@ -122,10 +180,16 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		conn, _ := resourceLoginCharacter(t, address, name, name+"-local-only", "Fighter")
 		conns[i] = conn
 		defer conn.Close()
-		resourceSend(t, conn, MsgCasino, map[string]any{"action": "sit", "tableId": publicPokerTable, "seat": i})
+		if vip {
+			approachVIPPokerSocket(t, conn, i)
+		}
+		resourceSend(t, conn, MsgCasino, map[string]any{"action": "sit", "tableId": tableID, "seat": i})
 		v := readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return v.YourSeat != nil && v.Poker.Available })
+		if v.Poker.Currency != currency || (vip && (v.Poker.Balance != 100 || v.Poker.MaxBuyIn != 100)) {
+			t.Fatal("incorrect floor currency, allowance or limit", v.Poker.Currency, v.Poker.Balance, v.Poker.MaxBuyIn)
+		}
 		seats[i] = v.YourSeat.SessionID
-		resourceSend(t, conn, MsgCasino, map[string]any{"action": "poker_buy_in", "sessionId": seats[i], "roundId": v.Poker.RoundID, "bet": 100 * (i + 1)})
+		resourceSend(t, conn, MsgCasino, map[string]any{"action": "poker_buy_in", "sessionId": seats[i], "roundId": v.Poker.RoundID, "bet": buyInStep * (i + 1)})
 		readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return len(v.Poker.Players) == i+1 && !v.Poker.Processing })
 		if i == 0 {
 			v = readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return v.Poker.Phase == "betting" })
@@ -150,7 +214,10 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		conn, _ := resourceLoginCharacter(t, address, name, name+"-local-only", "Fighter")
 		conns[i] = conn
 		defer conn.Close()
-		resourceSend(t, conn, MsgCasino, map[string]any{"action": "sit", "tableId": publicPokerTable, "seat": i})
+		if vip {
+			approachVIPPokerSocket(t, conn, i)
+		}
+		resourceSend(t, conn, MsgCasino, map[string]any{"action": "sit", "tableId": tableID, "seat": i})
 		v := readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return v.YourSeat != nil && v.Poker.Phase == "playing" })
 		if v.YourSeat.SessionID == seats[i] || v.Poker.Round.ID != first.Poker.Round.ID || v.Poker.Round.Revision != first.Poker.Round.Revision {
 			t.Fatal("restart lost hand or reused obsolete seat token")
@@ -200,14 +267,22 @@ func TestPokerActualSocketsHandAcrossRestart(t *testing.T) {
 		resourceSend(t, conn, MsgCasino, map[string]any{"action": "leave", "sessionId": seats[i]})
 		readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return v.YourSeat == nil })
 		saved := resourceCloseAndWait(t, repo, conn, names[i])
+		if vip {
+			total += saved.EP
+			if saved.Gold != 500 || len(saved.GoldCreditReceipts) != 0 || len(saved.EPCasinoReceipts) != 2 || len(saved.VIPAllowanceReceipts) != 1 {
+				t.Fatal("EP poker changed Gold, lost casino receipts or repeated membership allowance")
+			}
+			continue
+		}
 		total += saved.Gold
 		if len(saved.GoldCreditReceipts) != 2 {
 			t.Fatal("buy-in/cash-out receipt count changed")
 		}
 	}
-	if total != 1000 {
-		t.Fatal("two-player socket poker created or lost Gold", total)
+	if total != initialTotal {
+		t.Fatal("two-player socket poker created or lost currency", currency, total)
 	}
+	t.Logf("two-player %s poker: shared deal, private cards, guard/restart/reseat, replay rejection, showdown, cash-out and conserved total=%d", currency, total)
 }
 
 // Release-only shared presence check using the real clock and event scheduler.
