@@ -163,7 +163,7 @@ responsive-layout and desktop hardware-rendering results.
 | 1.6 encounters | Distinct boss footprints, four different repair jobs, party preparation/recovery and lockout copy | Actual group raid completion, all repair waves/objectives, wipe/re-entry/reconnect and individual saved receipts; targeted recheck of changed 1.6 mechanics |
 | 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming; [four connected clients pass ranked2v2 rounds, saved results, and actual disconnect/resume/restart penalty ownership](2026-09-14-connected-arena-acceptance.md) | Rendered team-round/result review in final cross-feature scope; retain prior financial/idempotency tests rather than recreating a season |
 | 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating; [connected recruitment/consent/readiness/token-resume roster](2026-09-14-connected-group-finder-acceptance.md) and [connected guild invites/calendar permissions/reschedule consent/actual restart persistence](2026-09-14-connected-guild-calendar-acceptance.md) pass | Integrated rendered group/raid/casino experience; retain accepted connected social evidence |
-| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [VIP blackjack](2026-09-14-connected-vip-blackjack-acceptance.md), [EP cosmetic purchase/apply/replay/restart](2026-09-14-connected-cosmetic-vendor-acceptance.md), and [Gold/EP Earth-slot spin/resume/restart](2026-09-14-connected-slots-acceptance.md) pass; prior membership/recovery evidence | Earned full public event, connected bonus-choice/free-spin interaction, integrated rendered venue experience and busy-floor rendering |
+| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [VIP blackjack](2026-09-14-connected-vip-blackjack-acceptance.md), [EP cosmetic purchase/apply/replay/restart](2026-09-14-connected-cosmetic-vendor-acceptance.md), and [Gold/EP Earth-slot paid spins, prepared bonus/free spins, resume/restart](2026-09-14-connected-slots-acceptance.md) pass; prior membership/recovery evidence | Earned full public event, integrated rendered venue experience and busy-floor rendering |
 | 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence shipped in 1.9.1; bounded 50/100-client concurrency, controlled High/Low rendering and schema12 recovery accepted | Final cross-feature acceptance, cumulative notes and exact live 1.10 identities; retain the accepted performance/recovery evidence and its limits |
 
 This table organizes work; it does not check off the parent roadmap's detailed
@@ -176,6 +176,19 @@ the newest EP tests. The population-dependent second PvP queue remains
 conditional; a fifth class/new continent and payment integration remain excluded.
 
 ## Execution order
+
+Raid preparation now reuses the legal progressed-gear catalog through
+`tests/raidPartyFixture.js`: five distinct level70 characters, Fighter tank,
+two Wise Clerics, Brilliant Wizard and Agile Rogue; each has five Rare and nine
+Uncommon pieces. The server's test-only catalog exports actual raid definitions.
+Native36884 passed preparation against all four definitions and their current
+Chronicle order. Three focused fixture tests pass (0.469s); lint/diff checks pass.
+Only prerequisite chapters are prepared: the selected Vigil remains accepted,
+zero-count and incomplete, with no later chapter or cleared-instance receipt.
+This is **setup, not a raid clear or earned campaign**. Next work must connect the
+five players, form/ready/enter through normal controls, complete assault rooms and
+guardian, defend all repair waves/objectives and manually claim each saved reward.
+Do not run an entry-only GPU test just to repeat entry during the full clear.
 
 ### Bounded concurrency trial contract (before execution)
 

@@ -124,7 +124,8 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 		items[base.Name] = item
 	}
 	data, err := json.Marshal(map[string]interface{}{"stats": p.BaseStats, "items": items,
-		"level": level, "quests": chronicleQuestCatalog(), "gearProfile": profile, "roleItems": roleItems})
+		"level": level, "quests": chronicleQuestCatalog(), "gearProfile": profile, "roleItems": roleItems,
+		"raids": elementalRaidDefinitions})
 	if err != nil {
 		t.Fatal(err)
 	}
