@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten stopped for redundant retravel; connected casino17777 active
+## September 14 — Alpha1.9.12 committed; connected release check62628 active
+
+**62628 ACTIVE**, only owned GPU run, on clean **6b0abea1** in frozen main tree
+`/tmp/eidolon-1-10-resonant-age-20260913`. Alpha1.9.12 fixes actual connected
+blackjack/poker table clipping: separate control scroller, responsive table,
+visible totals, contained community cards and clear win/timer spacing. Matching
+version/build labels and cumulative login patch notes committed, NOT pushed yet.
+286 UI/version tests PASS1.361s, scoped lint/Bash/diff PASS. Final four anonymous
+layout cases PASS11.4s; desktop/portrait/landscape images inspected. Intermediate
+portrait failures led to actual spacing/caption fixes, not weaker assertions.
+Artifacts`/tmp/eidolon-card-table-layout-20260914-ugAo9y/`.
+New native log`/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/run.log`,
+owned suffixcasinorelease0914c, ports18285/18286/4187. Continue62628, then retain
+result and inspect actual result image. If accepted, push integration branch to
+origin/master and follow exact CI; do not push root. No active CI at fresh gh
+check; remote master remainsbd566893. Do not launch another browser meanwhile.
+
+**70277 TERMINAL PASS1.4m** on da260121: two prepared1000Gold accounts, actual
+enter/sit/shared cards/turns/clock/settlement/next wager edit/leave/reconnect/guard/
+Recall flow. Final1150/1100Gold; actual blackjack returned250on100staked (3:2).
+Its result PNG revealed the table/dealer/total clipping now fixed by1.9.12.
+Artifacts`/tmp/eidolon-connected-casino-r2-20260914-nfZpXb/`, scanPASS0changed;
+owned services/ports cleaned. This proves connected flow, not old visual quality.
+**17777 TERMINAL FAIL6.7s**: entrance selector matched open casino plus hidden
+Veyra wardrobe sharing a class; screenshot proved entry worked. Corrected620f102e;
+da260121 initializes only fresh empty disposable accounts before first login.
+Neither handle is active. Never poll/restart them. Full evidence in integration
+`docs/plans/2026-09-14-connected-casino-acceptance.md`.
+
+### Retained dungeon work and earlier setup
 
 Previous phone-feedback turn made a documentation change; the browser question
 is answered (Brave/Chrome), actual phone dungeon/party play remains untested.
@@ -44,10 +73,8 @@ credential-scan PASS0changed using orphan static server's retained credential en
 Independent tree`/tmp/eidolon-pvp-queue-integration-20260914` prepares an extension
 of existing casino-zone route: two physical chairs, actual shared blackjack
 wagers/cards/payouts, persistent table, next-round wager adjustment, clean camera
-exit/reconnect/guard. **Native17777 ACTIVE**, only owned GPU run, main QA tree
-`/tmp/eidolon-1-10-resonant-age-20260913` now FROZEN clean98cac4a9.
-Log`/tmp/eidolon-connected-casino-20260914-nNqKZI/run.log`; owned suffix
-casinoconnected0914a, ports18285/18286/4187. Continue17777; no native result yet.
+exit/reconnect/guard. Earlier17777 log
+`/tmp/eidolon-connected-casino-20260914-nNqKZI/run.log`; now terminal as above.
 Committed947c7b74/206e01e3; adds actual displayed per-second countdown observation.
 It also corrects the older casino check's undefined-equals-undefined Gold assertion:
 readPlayerState has no gold field; observe actual player.gold and require integers.
