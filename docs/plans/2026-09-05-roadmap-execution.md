@@ -5,6 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 —1.9.7 live;1.9.8 pushed;concurrency results
+
+Previous turn PROGRESS (EP schema fence/backup/package). This turn verified
+**1.9.7 LIVE** exact3460ccfb824359bbb48df1acfe7cb61587444663 on frontend/backend,
+DBready. **CI34800160671 TERMINAL SUCCESS/all ten jobs**, including actual live
+gameplay and town healing/WellRested. Do not poll/restart this completed run.
+
+Corrected existing loadtester: count actual own Player snapshots, not sent join
+requests; no repeated admissions, no printed generated usernames, decoder errors
+counted and missing admissions/errors fail exit. Focused testsPASS0.013s/build.
+Commit08f020bcba55a187f83bc8ddf5a20980fde88b15 **PUSHED to master as1.9.8** after
+verified1.9.7. New exact **CI34802207933 IN_PROGRESS** (clientPASS/serverrunning
+at last check). Continue SAME handle; verify exactpublic1.9.8 afterdeployment.
+No1.9.8live claim. ActiveWT `/tmp/eidolon-1-10-resonant-age-20260913` is clean at
+**90a218cf** documentation follow-up, NOT pushed. Neverpushroot/docs-onlyCI.
+
+Ran real bounded mixed-script concurrency against owned loopback server/Mongo,
+exactcompiled08f020bc/1.9.8, Ryzen7 5700G/31GB sharedhost. Targets documented
+before execution. 10clients30s baseline:10admitted/9033frames/noerrors.50clients
+120s:50admitted/103053frames/noerrors,26healthsamples allDBready/maxheap164028432.
+**100-client stage failed fixed heap budget and was stopped early**, not passed:
+100admitted/68055frames/noerrors but maxheap380255080 >4×both originalhealthy
+80229568 and thatstagefirst91344448. No threshold change. Heap returned75997472
+afterdisconnect; does NOT establish a leak. Counters prove admission/replication,
+not completed combat/quests, per-clientlatency, Internet/GPUcapacity or soak.
+
+Evidence `/tmp/eidolon-final-load-20260914-cIztvJ/{ten-clients.log,fifty-clients.log,
+fifty-health.jsonl,hundred-clients.log,hundred-health.jsonl}`. OwnedAPI96218 now
+TERMINAL, allload/samplerhandlesTERMINAL, Mongo `eidolon-final-load-mongo-20260914`
+removed,38761/38762listenersabsent. Privatejournal directoryretained, notuploaded.
+No productionQAaccounts/currency/wagers/grants/schemawrites from localtests.
+
+Existing snapshot benchmarkPASS2.507s:999884ns/op,1643452B/op,556allocs/op;
+allocprofile92.27% `World.copyEntity`. Actualserverbroadcast independentlycopies
+nearby fullEntity for eachobserver. Files `/tmp/eidolon-state-benchmark-20260914.log`,
+`/tmp/eidolon-state-allocations-20260914.pprof`, benchmarkbinarysameprefix.test.
+**Next concrete work:** reduce measured per-observer snapshot allocation;
+inspect owner-only privacy, serializer mutation and instance-transition locking
+before immutable per-broadcast sharing. No stalecross-tickcache or protocol-field
+loss. Verify affectedreplication/privacy/raceandbenchmark, then affectedloadstages.
+Full details active`docs/plans/2026-09-14-concurrency-trials.md`; consolidatedaudit
+andreleasehandoff updated. Earnedcampaign/groupraids/device scope remainsopen.
+
 ## September 14 — EP schema rollback defect fixed;1.9.8 packaged locally
 
 Previous turn PROGRESS (acceptance evidence audit). This turn implemented a
