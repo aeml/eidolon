@@ -1,7 +1,12 @@
 # 1.10 final integration — evidence and remaining work
 
-Latest checkpoint:1.9.9 is verified live at3481f89a with CI34804655770 terminal
-success and exact public identities. The corrected strict earned Earth route
+Latest checkpoint:1.9.10 public delivery is verified at
+`4bab14fad67db14c26c93d9bacb0410f57187626`: frontend manifest, backend health
+(database ready), login label/patch notes and actual runtime script/versioned
+imports match. CI34822657032 has passed nine jobs; its final live character
+run is still active. Continue that exact job without superseding it. Earlier
+1.9.9 CI34804655770 is terminal success, not pending work.
+The corrected strict earned Earth route
 now passes all eight phases on clean89c2ad5d, native10782 terminal success;
 [accepted result and earned checkpoint](2026-09-14-earned-earth-acceptance.md).
 The old31615 attempt failed travel; do not treat it as active or rerun the
@@ -30,16 +35,15 @@ scope; do not count prepared characters as earned progression.
 
 ## Current release boundary
 
-Prepared Alpha 1.9.10 integration patch (not yet pushed or published): locked elemental-raid and
+Live Alpha 1.9.10 integration patch: locked elemental-raid and
 portal cards now name the required Chronicle quests and explicitly tell players
 to turn them in to Archmage Ilyra. The old chapter3/5/7/9/13/14 labels predated
 the expanded story and sent players to the wrong journal chapters. Entry gates,
 levels, rewards and saved progress are unchanged. Focused menu checks compare
-these names with the actual server quest catalog. Work is isolated from the
-running Abyssal party source. Cumulative login patch notes and package/server/CI
-version labels now name this corrective patch. Keep publication queued until
-the native party run is terminal; it has now ended on its traversal deadline,
-with artifacts retained. Live remains Alpha 1.9.9 until exact publication checks.
+these names with the actual server quest catalog. Cumulative login patch notes
+and package/server/CI version labels match. The Abyssal run ended on its
+original traversal deadline before publication, with artifacts retained; this
+guide correction does not claim a completed Abyssal clear.
 
 Prepared-release checks: version presentation, Pages runtime versioning, asset
 versioning, dungeon progression menu and dungeon preparation **282 tests across
@@ -47,12 +51,11 @@ five suites passed in 10.087 seconds**. Focused ESLint and `git diff --check`
 passed. No browser run or previously accepted load/backup suite was repeated
 for this text-only game change. The full 1.10 acceptance scope remains open.
 
-- Prepared, unpublished candidate: Alpha1.9.10, release packaging `d411da5c`.
-  Its guide correction is `55ae1d45`; both remain in the separate worktree
-  with native party session20006 now terminal against frozen042fd742.
-- Verified live: Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`,
-  matching public frontend/backend, database ready. CI **34804655770** passed
-  all ten jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
+- Verified public delivery: Alpha1.9.10, `4bab14fad67db14c26c93d9bacb0410f57187626`.
+  Exact CI **34822657032** is in its final Live Release and Character QA job;
+  release identity checking within that job passed. No full CI success claim yet.
+- Earlier Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`, passed all
+  ten CI34804655770 jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
   CI34800160671 are also terminal successes, not pending work.
 - 1.9.7 implements actual VIP-floor access and EP games, not payments. Keep
   Gold→EP at 1,000,000:1, monthly entitlement at 100 EP, no EP→Gold conversion,
@@ -184,8 +187,8 @@ targets before claiming capacity. No second load-testing framework was added.
    120-minute traversal/recovery deadline. Artifacts and a verified private
    four-boss saved-progress copy are retained; full clear/claims remain open.
    See [regional result](2026-09-14-regional-party-dungeons.md). Do not poll or
-   restart that handle. Integrate the separately prepared1.9.10 correction and
-   publish sequentially with exact CI/live verification, no overlapping GPU jobs.
+   restart that handle.1.9.10 is now deployed with exact public identities;
+   finish its active final CI34822657032 job, with no overlapping GPU jobs.
 2. Retain the accepted earned Earth route10782 and prepared Verdant route15051;
    neither proves the other realms or full earned campaign. Continue remaining
    dungeon families using the existing prepared-party options, with Low graphics
