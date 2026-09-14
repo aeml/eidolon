@@ -1,6 +1,13 @@
 # 1.10 — The Resonant Age
 
-## Alpha 1.9.5 — implemented, release pending (September 14)
+## Alpha 1.9.5 — pushed, deployment in progress (September 14)
+
+Pushed **5d024b3b987ce74917491cff5fcb93548fe4308a** to origin/master.
+Exact workflow **34795245270** was authoritatively observed IN_PROGRESS:
+https://github.com/aeml/eidolon/actions/runs/34795245270 . Continue watching this
+same run; do not restart it or rerun passed local tests. Not yet verified live.
+After success, check both public version/commit endpoints against this SHA.
+Full1.10 goal remains active; EP follow-on features below are not implemented.
 
 The named-resident regression below is now reproduced and fixed. Four real
 procedural service models were pooled and rebound to witnesses; all four raycasts
