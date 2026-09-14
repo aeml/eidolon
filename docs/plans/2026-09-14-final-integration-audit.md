@@ -1,5 +1,19 @@
 # 1.10 final integration — evidence and remaining work
 
+Raid36074 terminalexit1: first assault room/recovery-size validation passed,
+then a moving DemonOrc remained at1719HP for60seconds in the next encounter.
+All five survived with218Gold; both Clerics healed (3627/1337). Repeated fallback
+ground inputs were unavailable while the target moved from5.38 to17.88units away.
+Inspection found the QA fallback still approached its initial target coordinates.
+It now rereads the live enemy position per approach, retains the12-unit movement
+bound and60-second damage-stall watchdog, and records latest approach diagnostics
+if the stall recurs. This is a specific QA correction, not yet proof that the
+encounter stall is resolved.12focused approach/timing tests pass0.659s
+(10821exit0); lint/diff pass. No production change or forced combat result.
+Log `/tmp/eidolon-earth-raid-r4-20260914-LKHD3v/run.log`; sanitized0/owned cleanup
+passed; private `/tmp/eidolon-party-checkpoint-earthraid0914d-HJBXQU/save.archive.gz`,
+SHA256`2d95e3cc00dca95464fc6044770d96a9d016b03852478c91e895f778699aaf94`.
+
 Raid8535 is terminalexit1 after2.4m: five-member UI formation/readiness/entry and
 first assault-room combat passed, each player alive with165Gold, but the shared
 QA rest validator required exactly four observations. Correction declares the

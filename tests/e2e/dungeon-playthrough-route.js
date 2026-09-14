@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
+import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
@@ -71,7 +72,17 @@ export async function playDungeonThroughInputs(page, {
                 lowestHealth = state.health;
                 lastDamageAt = Date.now();
             }
-            if (Date.now() - lastDamageAt > 60_000) throw new Error(`No damage progress against ${target.type} for 60 seconds`);
+            if (Date.now() - lastDamageAt > 60_000) {
+                console.log(`${logPrefix} stalled approach ${JSON.stringify(await page.evaluate(id => {
+                    const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                    return { player: { x: p.position.x, z: p.position.z, state: p.state },
+                        target: e ? { x: e.position.x, z: e.position.z, state: e.state } : null,
+                        hovered: g.hoveredEntity?.id === id, pending: g.pendingInteraction?.id === id,
+                        moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
+                        approach: window.__dungeonLatestTargetApproach || null };
+                }, target.id))}`);
+                throw new Error(`No damage progress against ${target.type} for 60 seconds`);
+            }
             if (Date.now() >= nextReport) {
                 const diagnostic = await page.evaluate(id => {
                     const game = window.game;
@@ -139,11 +150,15 @@ export async function playDungeonThroughInputs(page, {
                     if (records.length > 12) records.shift();
                 }, target.id);
             } else {
-                const player = await readPlayerState(page);
-                const distance = Math.hypot(target.x - player.x, target.z - player.z);
-                const scale = Math.min(1, 12 / distance);
-                await tryDungeonGroundStep(() => moveByGroundClick(page, (target.x - player.x) * scale, (target.z - player.z) * scale,
-                    { allowJumpFallback: false }));
+                const live = await page.evaluate(id => {
+                    const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                    return { player: { x: p.position.x, z: p.position.z },
+                        target: e?.isActive && e.state !== 'DEAD' ? { x: e.position.x, z: e.position.z } : null };
+                }, target.id);
+                const step = dungeonTargetApproach(live.player, live.target);
+                const moved = step ? await tryDungeonGroundStep(() => moveByGroundClick(page, step.dx, step.dz,
+                    { allowJumpFallback: false })) : false;
+                await page.evaluate(observation => { window.__dungeonLatestTargetApproach = observation; }, { ...live, step, moved });
             }
             await page.waitForTimeout(350);
             const playerState = await readPlayerState(page);
