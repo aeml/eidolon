@@ -5,7 +5,25 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Maelin targeting fixed; 1.9.14 delivery needs CI correction
+## September 14 — Corrected 1.9.14 pushed; replacement CI active
+
+Previous goal turn was a verified wait, not a blocker. This turn confirmed
+CI34856694692 terminal failure: all server checks passed10m58s, including race,
+backup/restore and build. Only the already-corrected stale client callback
+assertion failed; all deployment jobs skipped. Native57501 terminalexit1; do not
+poll it again. No new gameplay failure or production deployment from that run.
+
+Pushed corrected **f5d47f10996f76e6b190c1cc6c08063cdcf47de3** from the clean
+independent tree to master (push55536 terminalexit0). Replacement
+**CI34857944815 is in progress** for that exact commit; native watch **85349**.
+No local GPU test started.
+Keep Alpha1.9.14 numbering and existing notes: this is the same unreleased fix,
+not another player-facing version. Next: follow this CI, inspect any real failure,
+verify both public release identities and served GameEngine/login/notes, then
+retry the full five-player Earth raid with the corrected driver. Whole1.10 scope
+remains unchanged/open;1.9.13 is still the last accepted live release.
+
+## Historical checkpoint — Maelin fix awaiting the now-completed failed CI
 
 Follow-up goal turn is a **verified wait**: repeated45s polls of native57501
 confirmed it live, and a fresh GitHub job query still reports CI34856694692
