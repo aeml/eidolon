@@ -5,6 +5,26 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — earned seeds passed; travel helper corrected after stopped attempt
+
+Session **31615 TERMINAL FAILURE**,16.1m,zero retries. Seeds passed186.042s:
+8/8fragments,20observed target deaths,no player deaths,exact consumption/manual
+claim. Next chapter level9/465XP/1077Gold. Imps failed71.280s after one credit:
+`No reachable Imp level20+ after bounded ordinary travel`; alive/full374HP253mana
+atx=-189.54/z185.37 aftertownrecovery. Not full Earth readiness. Owned API/Mongo/
+Web listeners18285/18286/4187 absent; wrapperremoved itscontainers. Do not poll31615.
+All logs/screenshots/sanitized HTML copied under
+`/tmp/eidolon-earned-earth-20260914-i96Zm2/` before any replacement run.
+
+Corrected QA-only `earned-expedition-target.js`: its12unit clicks previously
+returned after1unit observed movement, exhausting100steps before reaching western
+territory. Wait for up to8units of each stride, bounded2.5s; SAME100steps/deadline,
+level filter and real move-only gesture. Focused modeled partial-stride regression
+reproduces old failure, passes correction; death/deadline guards retained.
+32tests/3suites PASS0.682s, lint/diffPASS. No runtime balance/quest/world edits.
+Native proof still pending; no new run launched yet. See activeWT
+`2026-09-14-earned-earth-acceptance.md`. This turn PROGRESS, not an impasse.
+
 ## September 14 — active earned Earth route passes opening and first hunt
 
 Session **31615** revalidated live repeatedly, not restarted. Strict sourceee038504
