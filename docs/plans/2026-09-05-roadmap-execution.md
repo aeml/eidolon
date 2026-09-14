@@ -5,6 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Gold/EP slots accepted;1.9.13 public delivery verified, live QA running
+
+Previous goal turn progressedVIPblackjack. This turn accepted connected slots
+and verified exact1.9.13public delivery. Independent clean **f59debca**, QA-only
+notpushed; mainclean **f2fdea9b**. Root ledger-only, NEVER PUSH ROOT.
+
+**66171 TERMINALPASS46.913s**, pairedactualsocket Earthslot routes onexactf2fdea9b.
+GoldPASS1.30s: prepared500, paid20, randompayout72, saved552Gold/0EP.
+VIPPASS45.60s: prepared500Gold/entitlement/zeroEP, normalallowance100EP; actualguard
+and ordinarymovement aroundbackbalcony/sidegallery toslot, paid20/lost/80EP,
+Gold500unchanged. Bothcurrencyviews/EPmax100 correct, duplicateoldrevisionrejected,
+real tokenresume keepsseat/revision2, explicitLeave, actualserverrestart/freshlogin/
+reseat retainbalance/entitlements. VIPoneallowancereceipt/zeroGoldcreditreceipts.
+BothzeroFreeSpins/Bonusfalse: NOTconnectedbonuschoice/free-spin interactionproof.
+Retainpriorunit/browserbonusfixture scope; no rerolluntilbonus or forcedoutcomes.
+No runtimechange; gofmt/diffcheckPASS. Log
+`/tmp/eidolon-group-sockets-20260914-WJG4y2/slots.log`; serverevidence
+2330353844/2373727477(Gold),4111927831/2073156458(EP), eachunder
+`/tmp/eidolon-compat-session-<id>`. Allfourserverprocessesnormalshutdown, owned
+`eidolon-slots-sockets-0914a` removed. No localGPU/ownedQAcontainers. Evidence doc
+`docs/plans/2026-09-14-connected-slots-acceptance.md` inintegration.
+
+**1.9.13/f2fdea9b publicly serving both domains, DBready**, exactsource delivery
+verified12:46:27UTC. LoginHTML/notes/main.js/CasinoController/bothcardUIs/
+CardTableScene/index.css/casino.css matchrelease-transformedcommit byte-for-byte.
+Receipt `/tmp/eidolon-1-9-13-public-delivery-20260914.json`. **Not allgatesyet**:
+CI34843057369 allnineprecedingjobsSUCCESS, finalLiveRelease/CharacterQA103979433547
+ACTIVE. **Watch51003 ACTIVE** fresh45snativepoll; same log. Followit, don'trestart
+or supersede. Lastallgatesaccepted1.9.12; itsfinishedworkflowmustnotberepolled.
+
+NextregionalMolten confirmedmainclean/vendorready/ports18285,18286,4187free.
+Do NOTlaunchuntilfinalCI nativeGPUjobterminal. Useexistingwrapper routeparty-dungeon,
+EIDOLON_E2E_DUNGEON=molten_core, PARTY_QUALITY=low, PARTY_GEAR=progressed,
+isolatedQAport18285 (Mongoautomatically18286), WEB_PORT4187, systemChrome/render
+group; cleanf2fdea9b includesaccepted50%subsequentrestpolicy. No newrunstarted.
+Full1.10 campaign/regionaldungeon/actual5–10playerraid/repair/finale/fullpublicevent/
+connectedbonus/intergratedvisual/busyfloor/phone remainsopen.
+
 ## September 14 — connected VIP blackjack accepted; same1.9.13 CI active
 
 Previous goal turn progressed connected cosmetic acceptance. This turn closed
