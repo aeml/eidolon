@@ -5,6 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — full Imp chapter and second investigation accepted; Orc phase active
+
+SAME **10782 remains ACTIVE**. Full60Imp chapter passed~1812s,zero deaths,
+22normalreststops,twoearnedtrainingstops(level10/20). No grants/dailies; level20
+equippedoneearneditem/upgradedtwoslots/trainedArcaneShield. BeforeIlyraclaim:
+level22/572XP/3266Gold; manual200Gold+6843XP/exactdialogue yields22/7415XP/3466Gold,
+exactcharactersnapshot/questreceipt persisted acrossreconnect.17occupiedbag slots
+and600unsoldvendorvalue areNOTequippedslotcount/income. Returning-scarinvestigation
+also passed31.713s. **Orcs phase active**,notfullEarthreadiness/wholecampaign.
+Source89c2ad5d remainsfrozen; log
+`/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/run.log`,runIDearthready0914r2.
+Continue10782; no restart/parallelGPU/runtimecodeedits. FullImp proof supersedes
+old1-credittravel failure; retainallotheraccepted evidence. ActiveWT
+`2026-09-14-earned-earth-acceptance.md` updated. This turn PROGRESS. Rootledgeronly.
+
 ## September 14 — corrected campaign advances beyond prior travel failure
 
 Previous turn gained opening proof; this turn revalidated SAME **10782 ACTIVE**
