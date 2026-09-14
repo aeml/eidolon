@@ -484,6 +484,9 @@ test('four geared roles clear the selected dungeon through real party inputs and
         let currentTarget, bossStart;
         let townRests = 0;
         await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party',
+            // Every member and this party were just created. There is no prior
+            // instance to discard (and no active-run confirmation dialog).
+            resetRun: false,
             // Walk the short return from a12.5-unit quake instead of spending
             //20mana on Charge every cycle; retain it for real opening gaps.
             minimumChargeDistance: 18,

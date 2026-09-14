@@ -13,7 +13,7 @@ import { createDungeonExpeditionTiming } from '../dungeonExpeditionTiming.js';
 // default enters through the town guide, without grants. Only the legacy prepared
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
-    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
+    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, resetRun = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
     afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0, expeditionProfile = 'solo',
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
@@ -197,7 +197,7 @@ export async function playDungeonThroughInputs(page, {
         };
     });
     let completedRun;
-    await enterAndExitDungeon(page, { ...playthrough, useTownGuide, resetRun: true, beforeExit: async () => {
+    await enterAndExitDungeon(page, { ...playthrough, useTownGuide, resetRun, beforeExit: async () => {
         if (afterEntry) await afterEntry(page);
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
         // Preserve replay identity without logging instance IDs/QA usernames.

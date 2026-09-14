@@ -31,6 +31,17 @@ test.each([undefined, true, false])('shared dungeon traversal forwards safe town
     });
 });
 
+test('fresh isolated party entry does not request a nonexistent prior-run reset', async () => {
+    const stopped = new Error('fresh entry reached');
+    enterAndExitDungeon.mockRejectedValueOnce(stopped);
+    const page = { evaluate: jest.fn() };
+    const playthrough = { dungeonType: 'abyssal_well', runLevel: 60, difficulty: 'normal' };
+    await expect(playDungeonThroughInputs(page, { playthrough, resetRun: false })).rejects.toBe(stopped);
+    expect(enterAndExitDungeon).toHaveBeenCalledWith(page, {
+        ...playthrough, useTownGuide: true, resetRun: false, beforeExit: expect.any(Function)
+    });
+});
+
 test.each([true, false])('completed-run re-entry preserves guide choice %s', async (useTownGuide) => {
     // Skip the actual combat callback here; only exercise option propagation.
     enterAndExitDungeon.mockResolvedValue(undefined);

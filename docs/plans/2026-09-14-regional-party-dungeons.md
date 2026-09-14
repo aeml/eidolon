@@ -28,3 +28,16 @@ chapter active, next offer `chronicle_fire_cold_kiln`.
 
 Next native target: Normal level-60 Abyssal Well, one fresh seed, four System
 Chrome clients, no retries. Full native result is not yet established.
+
+First attempt73535 on62fca4f9 is terminal failed before entry (1.4m). All four
+builds replicated and invitation/support-roster UI passed, but the shared route
+always requested a reset, then waited for the existing-run confirmation. This
+new party has no instance; the actual UI only confirms discarding an existing
+one. No combat, boss or seed evidence was produced. Archive:
+`/tmp/eidolon-abyssal-party-20260914-v2vOO4/` (log, report, roster screenshot).
+Owned services removed and ports released by wrapper.
+
+Correction: preserve the shared route's existing reset default for reusable
+actors, but explicitly disable the reset for this guarded newly-created party.
+An entry-boundary regression checks that choice; no gameplay reset behavior,
+party state, entry gate or combat assertion is changed.
