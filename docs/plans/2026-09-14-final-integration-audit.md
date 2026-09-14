@@ -46,12 +46,13 @@ five suites passed in 10.087 seconds**. Focused ESLint and `git diff --check`
 passed. No browser run or previously accepted load/backup suite was repeated
 for this text-only game change. The full 1.10 acceptance scope remains open.
 
-- Candidate: Alpha1.9.8, `08f020bcba55a187f83bc8ddf5a20980fde88b15`.
-  Exact CI **34802207933** is running; client passed, server in progress.
-  Continue that run without superseding it for documentation.
-- Verified live: Alpha1.9.7, `3460ccfb824359bbb48df1acfe7cb61587444663`,
-  matching public frontend/backend, database ready. CI **34800160671** passed
-  all ten jobs; do not poll/restart the completed run.
+- Prepared, unpublished candidate: Alpha1.9.10, release packaging `d411da5c`.
+  Its guide correction is `55ae1d45`; both remain in the separate worktree
+  while native party session20006 runs against frozen042fd742.
+- Verified live: Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`,
+  matching public frontend/backend, database ready. CI **34804655770** passed
+  all ten jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
+  CI34800160671 are also terminal successes, not pending work.
 - 1.9.7 implements actual VIP-floor access and EP games, not payments. Keep
   Gold→EP at 1,000,000:1, monthly entitlement at 100 EP, no EP→Gold conversion,
   and EP rewards cosmetic-only outside EP wagering. Paid membership provisioning
@@ -132,8 +133,8 @@ responsive-layout and desktop hardware-rendering results.
 | 1.6 encounters | Distinct boss footprints, four different repair jobs, party preparation/recovery and lockout copy | Actual group raid completion, all repair waves/objectives, wipe/re-entry/reconnect and individual saved receipts; targeted recheck of changed 1.6 mechanics |
 | 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming | Combined real-player queue/round/result/reconnect flow; retain prior financial/idempotency tests rather than recreating a season |
 | 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating | Exercise connected group formation and recovery as part of the same party/raid/casino sessions |
-| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; EP vendor/membership; earlier public poker restart proof | Earned full public event, complete connected enter/seat/play/leave/stairs flow, busy-floor rendering; exact 1.9.7 live delivery |
-| 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence already shipped in 1.9.1 | Measured concurrency, current-state backup/restore and compatible rollback, final cross-feature acceptance, cumulative notes and exact live 1.10 identities |
+| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; EP vendor/membership; earlier public poker restart proof; exact 1.9.7 delivery accepted and retained through live 1.9.9 | Earned full public event, complete connected enter/seat/play/leave/stairs flow, busy-floor rendering |
+| 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence shipped in 1.9.1; bounded 50/100-client concurrency, controlled High/Low rendering and schema12 recovery accepted | Final cross-feature acceptance, cumulative notes and exact live 1.10 identities; retain the accepted performance/recovery evidence and its limits |
 
 This table organizes work; it does not check off the parent roadmap's detailed
 requirements. In particular, preserve all five dungeon families (Verdant,
@@ -178,23 +179,26 @@ loadtest checks pass0.013s and the executable builds. This is not a measured
 concurrency run; run the existing tool against disposable services with explicit
 targets before claiming capacity. No second load-testing framework was added.
 
-1. Finish exact 1.9.8 CI/live verification. Do not rerun or supersede a live job
-   because observation takes time. Avoid competing native Chrome on the shared
-   GPU while the predeploy/live character gate owns it.
-2. Use the existing fresh-story-ready route for the missing earned Earth gate,
-   recording its actual class/seed/items/rewards/deaths and saved handoff. It only
-   covers Earth; the driver explicitly rejects other realms. Do not call it a
-   complete campaign or restart the already-passing prepared Verdant route.
+1. Continue the existing Abyssal party session20006 to its terminal result,
+   preserving frozen042fd742 and any failure artifacts. Three bosses were
+   confirmed at the latest recorded checkpoint; full completion is still open.
+   Do not overlap native GPU jobs or restart because a polling window expires.
+   After it closes, integrate the separately prepared1.9.10 correction and
+   publish sequentially with exact CI/live verification.
+2. Retain the accepted earned Earth route10782 and prepared Verdant route15051;
+   neither proves the other realms or full earned campaign. Continue remaining
+   dungeon families using the existing prepared-party options, with Low graphics
+   for the next multi-browser functional run to reduce shared GPU contention.
+   Keep legal class gear, difficulty, actual inputs and completion gates intact.
 3. Continue earned realm/raid progression and cross-feature sessions; fix
    demonstrated game defects, distinguish controller failures, and rerun only
    affected paths. No debug kills, fabricated repair receipts or in-run gear grants.
-4. Before the single performance/concurrency acceptance pass, document the exact
-   host/GPU/build, workload, retained comparable baseline and numeric targets.
-   Existing loadtest/scene-performance/backup scripts are starting points, not
-   evidence that the new run happened. Do not build a second QA framework.
-5. Inspect current snapshot/EP receipts and rollback writer compatibility before
-   disposable backup/recovery testing. Never point destructive recovery tests at
-   production or roll back to a writer that drops EP/allowance/cosmetic fields.
+4. Retain the accepted bounded concurrency and controlled High/Low rendering
+   reports linked above. Do not rerun them for copy or documentation changes;
+   they do not replace actual group raids, campaign or physical-phone evidence.
+5. Retain the accepted schema12 backup/restore, old-writer refusal and actual
+   production upgrade-backup evidence. Revisit only for relevant storage changes.
+   Never run destructive recovery on production or restore an incompatible writer.
 6. Publish 1.10 only after the parent requirements have matching evidence, with
    accurate cumulative patch notes and verified frontend/backend commit identity.
 
