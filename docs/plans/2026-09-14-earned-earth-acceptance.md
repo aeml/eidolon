@@ -1,6 +1,22 @@
-# Earned Earth acceptance — first attempt stopped; travel correction pending native verification
+# Earned Earth acceptance — first attempt stopped; travel correction verified
 
-Latest checkpoint: session31615 is **TERMINAL FAILURE**,16.1minutes, zero retries.
+## Corrected travel — native pass
+
+Short existing-wrapper route `expedition-travel` on clean9723dd21 passed in2.2m,
+zero retries, native81622 terminal success. Ordinary fresh character, real
+move-only input from the eastern town departure to a visible level20Imp twice,
+with actual Recall between and after trips. Respawn forbidden; no enemy/player
+mutation, grants, quest credit or combat substitutes. Trips took46.043s and
+43.730s; reachedx=-234.73/z282.43 andx=-236.15/z281.57 fromx130.87 and123.74.
+No browser errors. Artifacts preserved in
+`/tmp/eidolon-imp-travel-20260914-iohhag/`; owned runIDimptravel0914ioh and
+ports18285/18286/4187 cleaned up. No new runtime release is required for this
+QA-only correction. Next: one corrected strict campaign attempt, not another
+render/load/party rerun. This short result proves traversal, not quest completion.
+
+## Original failed attempt
+
+Session31615 is **TERMINAL FAILURE**,16.1minutes, zero retries.
 Opening/watch/seeds passed; Imps stopped after71.280s and one earned kill with
 `No reachable Imp level20+ after bounded ordinary travel`. The character was
 alive, level9, full374HP/253mana, x=-189.54/z185.37 after a normal town recovery.
@@ -23,7 +39,7 @@ expired deadline/death rejection and existing target input/eligibility coverage;
 changed-file lint and whitespace checks pass. The initial test adapter needed
 its Playwright assertion signature corrected before the meaningful red/green
 comparison. This modeled movement regression is not native proof of the repair.
-Next action: verify corrected travel in native gameplay before accepting readiness.
+The subsequent native traversal proof is recorded above. Full readiness remains open.
 
 ## Original attempt contract
 
