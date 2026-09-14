@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten accepted; full five-player Earth raid29311 ACTIVE
+## September 14 — Molten accepted; full five-player Earth raid8535 ACTIVE
 
 **Molten49494 terminalexit0/PASS54.1m** on cleanf2fdea9b/Alpha1.9.13. All five
 Normal70 bosses cleared without death, four town recoveries and completed-run
@@ -19,12 +19,14 @@ containers and4187listener gone. Private39688byte0600/0700checkpoint:
 `05e223a8b981a9ed28d9fe988c06473faabe0d28ca50562cf73e3d783ad9964e`.
 Archive is not a verified playable resume. Do not poll/restart49494.
 
-**Native29311 ACTIVE**, actual20s nativepoll confirmed running; owned API/Mongo
-up, initial Fighter/Cleric prepared and replicated. Full `party-raid` route at
-clean **ccfda896**, in `/tmp/eidolon-pvp-queue-integration-20260914`, now **FROZEN**.
-Log `/tmp/eidolon-earth-raid-20260914-tRhG1L/run.log`; runIDearthraid0914a;
+**Native8535 ACTIVE**, fresh45s and10s nativepolls confirm running. All five builds
+replicated, UI invitation/acceptance, raid conversion and individual readiness
+passed; all five entered the same Normal Rootheart Sanctum. Seed906801298949159171,
+generator2/attempt0/no fallback. Full `party-raid` route at clean **2a6dd269**,
+in `/tmp/eidolon-pvp-queue-integration-20260914`, now **FROZEN**.
+Log `/tmp/eidolon-earth-raid-r3-20260914-2iB769/run.log`; runIDearthraid0914c;
 API18315/Mongo18316/Web4189. Only owned GPU run; no CI active/new release pushed.
-Normal Rootheart Sanctum, five preparedlevel70 roles (tank/two healers/two DPS),
+Normal Rootheart's unchanged level30 encounters, five preparedlevel70 roles (tank/two healers/two DPS),
 Low,5Rare/9Uncommon each, no runtime changes/grants/retries. Prepared
 prerequisites are not earned campaign. Must prove assault, guardian, three
 defended repair waves, all personal manual rewards and saved re-login.
@@ -40,6 +42,18 @@ Root remains ledger-only NEVERPUSH. Whole1.10 stays open: other dungeon families
 seeds, full earned Chronicle, actual raids/repair/finale, full event, integrated
 visuals/busy-floor/phone. This turn progressed full driver, accepted Molten and
 started the next actual raid; previous turn progressed ritual controls.
+
+Earlier29311 terminalexit1 before formation: raw initial town instance is null;
+7df341ae uses existing normalized readPlayerState. Earlier5471 terminalexit1
+after five-member party formed: guide opened its Dungeons tab; hidden raid card
+attribute passed but Form button lookup timed out.2a6dd269 selects the Raids tab
+and asserts card visibility. Both were QA navigation errors, not raid combat
+failures. Both sanitized0/owned cleanup passed; private checkpoints/logs recorded
+in independent final-integration audit. Do not poll/restart either handle.
+Current opening `test-results/five-player-raid-five-gear-a3cba--three-crystal-repair-waves/desktop-party-healing.png`
+inspected: readable tracked Vigil above party; tank selection/Ready labels and
+town models visible; four roster rows visible, fifth requires list scrolling.
+Low60fps/16.6ms town frame, not actual raid-combat/phone acceptance.
 
 ## Historical active checkpoint — Molten49494 (now passed above)
 
