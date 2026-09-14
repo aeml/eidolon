@@ -1,5 +1,34 @@
 # Remaining regional four-player dungeon acceptance
 
+## Low Abyssal attempt11985 — terminated externally, three bosses cleared
+
+Native11985 returned **exit143**, after1306.99s (~21.8min) route elapsed on clean
+1d62befa, Alpha1.9.10, Low graphics. The gameplay driver/browser processes were
+gone, while its isolated API/Mongo and static server remained. The signal's
+source is unknown; there was no gameplay assertion or expedition-budget failure
+in the retained log. **Do not poll/restart11985 or count this as a full clear.**
+
+Four properly geared roles entered Normal60 Abyssal, seed-4487501684200463604,
+generator2/no fallback. Tiderend Leviathan, Drowned Choir and Abyssal Goliath were
+actually defeated; three town recovery/re-entry checks passed. Final Goliath:
+Fighter14338damage/2148taken, Cleric2730allyhealing/452taken,
+Wizard14821damage, Rogue19330damage/888taken. Remaining bosses and individual
+manual claims are not accepted. Low/new seed versus High/old seed is not a
+controlled graphics comparison.
+
+Before cleanup, gracefully stopped the exact isolated writer and made a private
+Mongo archive (24documents including4users). Read-back all four characters L61,
+1651Gold,47381XP, with dungeon progress. Archive gzip integrity and SHA256 passed:
+`/tmp/eidolon-abyssal-party-low-20260914-qlTkOo/party-three-boss-checkpoint.archive.gz`
+SHA256 `73ab71f645d352c0c5b5f62697b7cdb604df23aaa388318b83c573aaa9538e6a`.
+Archive0600/directory0700; log and interrupted test-results retained privately.
+No complete report or credential-scan claim, no archive-restore/resume claim.
+
+Removed only validated owned API/Mongo containers and anonymous volumes, QA image,
+and orphan static-server process group3044420. Ports18285/18286/4187 free and
+owned containers absent. Saved progress is recoverable from the private archive;
+no production service or unrelated browser was touched. No new expedition started.
+
 ## Abyssal attempt20006 — terminal traversal deadline, four bosses cleared
 
 Native20006 is terminal failed against frozen042fd742, Alpha1.9.9, High graphics,

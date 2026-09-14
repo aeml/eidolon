@@ -44,5 +44,6 @@ initial packaging and were updated; historical1.9.10 notes remain unchanged.
 Corrected packaging checks pass268tests/3suites/2.8s; the added CPU-only tracker
 fixture is included in the existing CI interface stage, whose plan/runner/coverage
 checks pass39tests/4suites/7.477s. Changed-file ESLint and diff checks pass.
-Publish after11985 releases the GPU, so CI's native character gates do not
-compete with the four-player expedition. No extra campaign rerun for this HUD fix.
+11985 has now terminated with signal143 and its owned services have been cleaned
+up after a private saved-progress archive; see regional dungeon evidence. GPU is
+free for publication/CI. No extra campaign rerun for this HUD fix.
