@@ -5,6 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — fresh-party reset setup corrected; Abyssal retry active
+
+73535 is TERMINAL FAILED1.4m before entry: shared route requested an unnecessary
+reset for a newly-created party, then timed out waiting30s for the confirmation
+that exists only when discarding an active run. All four level60 builds,
+invitation UI and desktop healer support selection passed; no dungeon seed,
+combat or boss result. Not a production boss failure. Full log/report/roster PNG
+archived `/tmp/eidolon-abyssal-party-20260914-v2vOO4/`; PNG inspected. Wrapper
+removed exact owned containers and18285/18286/4187 listeners disappeared.
+Do not poll/restart73535.
+
+Correction **042fd742c279c37616d3a3cbe310817d7fb99119** in same active tree:
+shared route retains reset default for reused actors, fresh isolated party
+explicitly passes `resetRun:false`. Entry-boundary regression plus real reset
+menu tests14PASS/two suites2.5s, scoped lint/diff PASS. No runtime edits.
+
+Native **20006 ACTIVE**, source042fd742 frozen/clean. Same full Normal60 Abyssal
+route, four High System Chrome clients, no retries; owned runID
+`abyssalparty0914r2`, API18285/Mongo18286/web4187. Log:
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/run.log`.
+Poll same handle, do not run another native GPU job or edit frozen source.
+No native clear result yet. Current turn PROGRESS; full goal remains active,
+live1.9.9 unchanged, root ledger only/NEVER PUSH ROOT.
+
 ## September 14 — regional party route extended; Abyssal check active
 
 Previous reply only acknowledged already-recorded phone feedback (no new goal
