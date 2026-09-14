@@ -1,6 +1,9 @@
 # 1.10 final integration — evidence and remaining work
 
-Latest checkpoint:1.9.8 is verified live with all CI gates passed and actual
+Latest checkpoint:1.9.9 is verified live at3481f89a with CI34804655770 terminal
+success and exact public identities. The strict earned Earth route is running
+on clean sourceee038504, native31615; outcome remains open.1.9.8 previously passed
+all CI gates with actual
 schema-upgrade backup confirmed. Snapshot sharing now passes the original
 50/100-client bounded criteria; see [accepted rerun evidence](2026-09-14-broadcast-snapshot-sharing.md).
 The earlier100-client failure below is retained baseline evidence, not the

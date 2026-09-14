@@ -1,6 +1,28 @@
 # 1.10 — The Resonant Age
 
-## Alpha1.9.9 pushed — exact CI in progress
+## Alpha1.9.9 verified live — all deployment gates passed
+
+September14: exact **CI34804655770 TERMINAL SUCCESS**, including native predeploy,
+live saved-character gameplay, town recovery and Well Rested. Public frontend
+and backend, runtime query, login version and cumulative patch entry match
+**3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4 / Alpha1.9.9**, database ready.
+Do not repoll or restart this completed release. The controlled High/Low
+rendering result also passed; see [retained evidence](2026-09-14-final-render-workload.md).
+
+After all native CI finished, the existing strict earned Earth readiness route
+started from clean ee03850487b34d6241365494b49260092e635a85, with ordinary fresh
+Wizard creation, town rest and earned rewards; no daily/grant substitutions.
+Native session31615 is active, log `/tmp/eidolon-earned-earth-20260914-i96Zm2/run.log`.
+Owned runID earthready0914i96, loopback API18285/Mongo18286/Web4187. Actual API
+reports that source SHA/Alpha1.9.9/DBready; first browser baseline confirms level1,
+all base stats10, no allocated points and rested regeneration0.11. Opening phase
+has started, not completed. Continue this same run, not a replacement.
+It covers Earth readiness, not all realms/raids or uninterrupted-resource pacing.
+Full1.10 acceptance remains open; do not repeat previously accepted party/load/
+backup/rendering checks. Documentation commits following the release stay local
+until the next appropriate publication, not a separate deployment of their own.
+
+## Alpha1.9.9 pushed — historical publishing checkpoint
 
 Release **3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4** pushed to master after
 accepted bounded load and packaging checks. New exact CI **34804655770** is
