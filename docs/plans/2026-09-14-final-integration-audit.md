@@ -95,6 +95,15 @@ conditional; a fifth class/new continent and payment integration remain excluded
 
 ## Execution order
 
+Concurrency preparation found an evidence bug in the existing load tester: it
+incremented `joined` after sending a request, without server admission. The tool
+now counts each own authoritative Player snapshot once, reports decoder errors,
+and exits unsuccessfully for missing admissions or transport/decode errors.
+Generated usernames are no longer printed as successful join receipts. Focused
+loadtest checks pass0.013s and the executable builds. This is not a measured
+concurrency run; run the existing tool against disposable services with explicit
+targets before claiming capacity. No second load-testing framework was added.
+
 1. Finish exact 1.9.7 CI/live verification. Do not rerun or supersede a live job
    because observation takes time. Avoid competing native Chrome on the shared
    GPU while the predeploy/live character gate owns it.

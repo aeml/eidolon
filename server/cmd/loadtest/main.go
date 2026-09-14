@@ -35,11 +35,12 @@ var (
 )
 
 type loadMetrics struct {
-	connected   atomic.Int64
-	joined      atomic.Int64
-	stateFrames atomic.Int64
-	readErrors  atomic.Int64
-	writeErrors atomic.Int64
+	connected    atomic.Int64
+	joined       atomic.Int64
+	stateFrames  atomic.Int64
+	readErrors   atomic.Int64
+	writeErrors  atomic.Int64
+	decodeErrors atomic.Int64
 }
 
 var metrics loadMetrics
@@ -177,13 +178,28 @@ func main() {
 	close(stop)
 	wg.Wait()
 	log.Printf(
-		"Load summary: connected=%d joined=%d state_frames=%d read_errors=%d write_errors=%d",
+		"Load summary: connected=%d joined=%d state_frames=%d read_errors=%d write_errors=%d decode_errors=%d",
 		metrics.connected.Load(),
 		metrics.joined.Load(),
 		metrics.stateFrames.Load(),
 		metrics.readErrors.Load(),
 		metrics.writeErrors.Load(),
+		metrics.decodeErrors.Load(),
 	)
+	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
+		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 {
+		os.Exit(1)
+	}
+}
+
+// A sent join request is not admission. Count only the first authoritative
+// snapshot containing this player's own entity; other actors prove nothing.
+func observeOwnAdmission(state map[string]Entity, playerID string, joined *bool) bool {
+	if *joined || state[playerID].Type != "Player" {
+		return false
+	}
+	*joined = true
+	return true
 }
 
 func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}) {
@@ -243,6 +259,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
+		joined := false
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
@@ -270,11 +287,16 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 
 			if update, recognized, err := decodeStateFrame(message); recognized {
 				if err != nil {
+					metrics.decodeErrors.Add(1)
 					log.Printf("Bot %d state frame error: %v", id, err)
 					continue
 				}
 				stateMu.Lock()
 				applyStateUpdate(worldState, update)
+				if observeOwnAdmission(worldState, myID, &joined) {
+					metrics.joined.Add(1)
+					log.Printf("Bot %d admitted by server.", id)
+				}
 				stateMu.Unlock()
 				metrics.stateFrames.Add(1)
 				continue
@@ -290,6 +312,10 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				if err := json.Unmarshal(msg.Payload, &entities); err == nil {
 					stateMu.Lock()
 					worldState = entities
+					if observeOwnAdmission(worldState, myID, &joined) {
+						metrics.joined.Add(1)
+						log.Printf("Bot %d admitted by server.", id)
+					}
 					stateMu.Unlock()
 				}
 			} else if msg.Type == "inventory" {
@@ -368,8 +394,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 		return
 	}
 
-	log.Printf("Bot %s joined as %s.", cred.Username, randomArchetype)
-	metrics.joined.Add(1)
+	log.Printf("Bot %d requested %s admission.", id, randomArchetype)
 
 	// Cooldowns
 	var abilityCooldown time.Duration
