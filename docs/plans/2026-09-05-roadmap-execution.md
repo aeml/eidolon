@@ -5,6 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — controlled High/Low rendering accepted
+
+Previous user-response turn verified the named-resident fix is already live in
+1.9.8 (ancestor5d024b3b); no new implementation was needed for that report.
+This goal turn PROGRESS: recovered and reviewed the completed native rendering
+workload, inspected both screenshots, compared actual values to predeclared
+limits, and committed evidence as **ee038504** in the active worktree
+`/tmp/eidolon-1-10-resonant-age-20260913`. Root remains ledger-only; NEVER PUSH ROOT.
+
+Native session48057 is absent/terminal. The embedded Playwright report proves
+one test PASS27.157s, zero retries, started2026-09-14T04:20:34.318Z. Report preserved
+at `/tmp/eidolon-final-raid-render-20260914-bub31O/render-report.html`; original
+High/Low PNGs also retained there in the test subdirectory. Redirected stdout
+was lost to Playwright output cleanup; recovered report includes exact original
+timing attachment, so no repeat was needed. Hardware AMD RADV RENOIR Vulkan1.4.318.
+High busy/repeat median16.7ms, p9521.3/19.1ms; Low median16.7ms,p9516.9/17.0ms.
+Both repeat geometry/texture counts289/28 match; clear calls fall2740→22 High,
+1431→7 Low. All predefined targets pass. Inspected class/gear silhouettes and
+warning rings/labels remain distinguishable on Low; not detailed gear/phone or
+earned full-raid proof. See committed `2026-09-14-final-render-workload.md`.
+
+**CI34804655770 still authoritatively IN_PROGRESS**: server/client and browser
+shards2/3,3/3 success; shard1/3 job103855848635 is running its anonymous browser
+step. Do not restart or supersede it. Public endpoints still match Alpha1.9.8
+08f020bcba55a187f83bc8ddf5a20980fde88b15/DBready. Local evidence commit NOT PUSHED.
+Next: finish existing1.9.9 deployment/native gates, then existing strict
+fresh-story-ready earned Earth route. No new long route was started this turn;
+avoid competing with impending native predeploy QA on this shared GPU. Retain
+accepted geared4-playerVerdant/load/backup/rendering evidence; fullcampaign,
+groupraids and remaining cross-feature requirements stay open. Existing narrow
+phone/browser/party feedback question remains pending; do not re-ask broadly.
+
 ## September 14 —1.9.8 live;100-player rerun accepted;1.9.9 pushed
 
 Previous turn PROGRESS(snapshotsharing). This turn completed exact1.9.8 delivery:
