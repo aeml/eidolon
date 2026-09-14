@@ -5,6 +5,29 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Alpha1.9.13 packaged;1.9.12 now in native predeploy
+
+Previous goal turn made progress (accepted actual EP poker regression and fix).
+This turn packaged the accepted fix as **Alpha1.9.13**, clean local integration
+commit **23a04b3e** in `/tmp/eidolon-pvp-queue-integration-20260914`.
+**NOT PUSHED**, waiting for the prior release's complete pipeline. Cumulative
+login notes preserve1.9.12/history; current label/package/manifest/server/container/
+deploy/CI/QA defaults aligned.261 version tests passed0.889s (8654terminal), scoped
+ESLint/Bash syntax/diff passed. No repeat of accepted connected69600/runtime.
+Blackjack adjacent source inspected: turn-deadline transitions, no poker-style
+seat-loss withdrawal, so no speculative blackjack change. Dungeon follower
+movement already batches disjoint paths concurrently; keep checks and the
+existing reduced subsequent-rest policy instead of another unmeasured rewrite.
+
+**Exact CI34840066682/SHA38847b2f remains ACTIVE**: Client, Server, all three
+Browser jobs SUCCESS; **Predeploy Character QA(System Chrome) IN_PROGRESS**.
+**Watch42418 ACTIVE** from a fresh45s native poll, log unchanged location. Follow
+the same run; no restart/new push/local GPU competition. Public endpoint check
+still1.9.11/bd566893, both identities agree and DBready; no1.9.12live claim yet.
+After all gates/public delivery are accepted, publish already-prepared23a04b3e
+with its1.9.13notes, following ordinary fast-forward checks. Root NEVER pushed.
+Main remains38847b2f; no local QA containers/GPU running. Full1.10 open.
+
 ## September 14 — local VIP poker restart fix; same1.9.12 CI still active
 
 Previous phone-feedback reply was acknowledgement only (no goal progress).
