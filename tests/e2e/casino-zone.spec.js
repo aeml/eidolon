@@ -32,7 +32,9 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
             return { x: rect.left + (point.x + 1) * rect.width / 2, y: rect.top + (1 - point.y) * rect.height / 2 };
         });
         await target.mouse.click(door.x, door.y);
-        const dialogue = target.locator('.casino-entry-dialogue');
+        // Veyra's wardrobe shares the presentation class but is a different,
+        // closed dialog. Select the entrance controller, not both components.
+        const dialogue = target.locator('.casino-entry-dialogue:not(.cosmetic-vendor)');
         await expect(dialogue).toBeVisible().catch(async error => {
             await target.screenshot({ path: '/tmp/eidolon-casino-door-diagnostic.png' });
             const detail = await target.evaluate(point => ({ position: window.game.player.position.toArray(),
@@ -173,9 +175,10 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     await walkTo(page, 154);
     await expect(page.getByRole('button', { name: 'Talk to VIP Guard', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Talk to VIP Guard', exact: true }).click();
-    await expect(page.locator('.casino-entry-dialogue')).toContainText('You must be a VIP to enter');
+    const guardDialogue = page.locator('.casino-entry-dialogue:not(.cosmetic-vendor)');
+    await expect(guardDialogue).toContainText('You must be a VIP to enter');
     await page.screenshot({ path: '/tmp/eidolon-casino-guard-20260913.png' });
-    await page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Close', exact: true }).click();
+    await guardDialogue.getByRole('button', { name: 'Close', exact: true }).click();
     await page.screenshot({ path: '/tmp/eidolon-casino-interior-20260913.png' });
     expect(await readGold(page)).toBe(expectedBalances[0]);
     expect(initialGold).toBe(balances[0]);
