@@ -5,22 +5,31 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Alpha1.9.12 committed; connected release check62628 active
+## September 14 — Alpha1.9.12 pushed; CI34840066682 and watch42418 active
 
-**62628 ACTIVE**, only owned GPU run, on clean **6b0abea1** in frozen main tree
-`/tmp/eidolon-1-10-resonant-age-20260913`. Alpha1.9.12 fixes actual connected
+**PUSHED38847b2f497f57f693952f2d49c5c869422247d6**, Alpha1.9.12.
+**CI34840066682 IN_PROGRESS**, exact head verified; Client/Server tests running.
+**Watch42418 ACTIVE**, `/tmp/eidolon-1-9-12-ci-watch.log`; continue that watch,
+not a second workflow. Do not claim live until deployment and exact public
+manifest/backend/runtime/login/notes identities plus all CI gates are accepted.
+Last verified live remains1.9.11/bd566893. Do not repeat its passed checks.
+No local GPU run active; avoid competing with CI's browser/live QA.
+Main and independent trees are at38847b2f (main no longer frozen).
+
+**62628 TERMINAL PASS1.5m** on clean **6b0abea1**. Alpha1.9.12 fixes actual connected
 blackjack/poker table clipping: separate control scroller, responsive table,
 visible totals, contained community cards and clear win/timer spacing. Matching
-version/build labels and cumulative login patch notes committed, NOT pushed yet.
+version/build labels and cumulative login patch notes are included in the push.
 286 UI/version tests PASS1.361s, scoped lint/Bash/diff PASS. Final four anonymous
 layout cases PASS11.4s; desktop/portrait/landscape images inspected. Intermediate
 portrait failures led to actual spacing/caption fixes, not weaker assertions.
 Artifacts`/tmp/eidolon-card-table-layout-20260914-ugAo9y/`.
-New native log`/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/run.log`,
-owned suffixcasinorelease0914c, ports18285/18286/4187. Continue62628, then retain
-result and inspect actual result image. If accepted, push integration branch to
-origin/master and follow exact CI; do not push root. No active CI at fresh gh
-check; remote master remainsbd566893. Do not launch another browser meanwhile.
+Native artifacts`/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/` retain
+log/results/report/guard/interior captures. Actual result PNG inspected: dealer,
+all six seats, both totals and11s next-window clock fully visible. Loss/push
+ended900/1000Gold, unchanged saved-wallet/controls/reconnect/guard/Recall checks
+passed. ScanPASS0changed; owned suffixcasinorelease0914c services and ports
+18285/18286/4187 cleaned. Do not poll62628 or repeat this accepted route for docs.
 
 **70277 TERMINAL PASS1.4m** on da260121: two prepared1000Gold accounts, actual
 enter/sit/shared cards/turns/clock/settlement/next wager edit/leave/reconnect/guard/
