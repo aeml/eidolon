@@ -25,8 +25,10 @@ Local commit **f8b9c7ac979d1595ac011ea3b92d4a41a2c5c0d1** is frozen in main QA t
 write_stdin, is the only owned GPU job: affected Molten retry, Normal70/Low,
 same StrongFighter/WiseCleric/BrilliantWizard/AgileRogue with5Rare9Uncommon each,
 no scaling/midrun grants/retries, original120minute expedition budget.
-Seed6417675202245662372/gen2/attempt0/no fallback. Cindermaw defeated and first
-all-member town recovery/re-entry passed by163s. Not yet full dungeon acceptance.
+Seed6417675202245662372/gen2/attempt0/no fallback. Cindermaw and Scorched Twins
+defeated; three all-member town recoveries/re-entries passed. Twins: Fighter
+18680damage/2255taken, Cleric3098allyhealing, Wizard15886damage/692taken,
+Rogue14896damage/491taken. Pyrax onward and full dungeon acceptance still open.
 Log`/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`; owned suffix
 moltenparty0914b, ports18285/18286/4187. Continue this handle, do not restart it.
 
@@ -34,8 +36,15 @@ Independent tree`/tmp/eidolon-pvp-queue-integration-20260914` prepares an extens
 of existing casino-zone route: two physical chairs, actual shared blackjack
 wagers/cards/payouts, persistent table, next-round wager adjustment, clean camera
 exit/reconnect/guard. Lint/discovery only so far; run after26730, not concurrently.
+Committed947c7b74/206e01e3; adds actual displayed per-second countdown observation.
 It also corrects the older casino check's undefined-equals-undefined Gold assertion:
 readPlayerState has no gold field; observe actual player.gold and require integers.
+Later-party efficiency change keeps the first80% town recovery proof, then rests
+only below50%, avoiding repeated full-route travel with lightly spent pools.
+Solo policy, gear, enemies, budget and26730 source remain unchanged.16 focused
+tests passed0.789s, lint/diff passed; no native performance claim yet. Previous
+goal turn made committed test/doc progress; this turn also verified the same
+active26730, added countdown observation and this bounded recovery policy.
 No runtime change/version bump/push for test-only work. Full1.10 scope stays open;
 asynchronous dungeon persistence preference still unanswered. Root NEVER PUSH.
 
