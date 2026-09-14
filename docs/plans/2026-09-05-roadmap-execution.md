@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten accepted; full five-player Earth raid36074 ACTIVE
+## September 14 — Molten accepted; full five-player Earth raid49954 ACTIVE
 
 **Molten49494 terminalexit0/PASS54.1m** on cleanf2fdea9b/Alpha1.9.13. All five
 Normal70 bosses cleared without death, four town recoveries and completed-run
@@ -19,12 +19,12 @@ containers and4187listener gone. Private39688byte0600/0700checkpoint:
 `05e223a8b981a9ed28d9fe988c06473faabe0d28ca50562cf73e3d783ad9964e`.
 Archive is not a verified playable resume. Do not poll/restart49494.
 
-**Native36074 ACTIVE**, fresh45s nativepoll confirms running. All five builds
+**Native49954 ACTIVE**, fresh45s nativepoll confirms running. All five builds
 replicated, UI invitation/acceptance, raid conversion and individual readiness
-passed; all five entered the same Normal Rootheart Sanctum. Seed4198150920626128355,
-generator2/attempt0/no fallback. Full `party-raid` route at clean **d547a5b5**,
+passed; all five entered the same Normal Rootheart Sanctum. Seed-4337316011686820343,
+generator2/attempt0/no fallback. Full `party-raid` route at clean **631030ab**,
 in `/tmp/eidolon-pvp-queue-integration-20260914`, now **FROZEN**.
-Log `/tmp/eidolon-earth-raid-r4-20260914-LKHD3v/run.log`; runIDearthraid0914d;
+Log `/tmp/eidolon-earth-raid-r5-20260914-vwNevs/run.log`; runIDearthraid0914e;
 API18315/Mongo18316/Web4189. Only owned GPU run; no CI active/new release pushed.
 Normal Rootheart's unchanged level30 encounters, five preparedlevel70 roles (tank/two healers/two DPS),
 Low,5Rare/9Uncommon each, no runtime changes/grants/retries. Prepared
@@ -68,7 +68,22 @@ recovery validation after normal DemonOrc combat; latest162seconds/traversal,
 24leadersteps/1room traversal/0townrests. Do not claim town recovery or boss clear.
 Previous goal turn progressed full raid wiring/Molten acceptance; this turn
 fixed the raid-size assumption and obtained actual passing boundary evidence.
-Follow36074;8535/5471/29311 are all terminal. Independent tree stays FROZEN.
+That was the prior checkpoint;36074 is now terminal as detailed below.
+
+36074 terminalexit1 after a60s no-damage stall on moving DemonOrc1719HP in the
+second encounter. All five alive/218Gold; two Clerics healed3627/1337. Repeated
+GroundInputUnavailable at fixed player position; enemy distance changed5.38→17.88.
+Source inspection found fallback movement used initial target x/z.631030ab now
+rereads live target coordinates, preserves12unitstep/60sstall bounds, records
+bounded current approach/pointer/pending state if it recurs.12approach/timing
+tests pass0.659s (10821exit0), lint/diff pass. Not yet proof the stall is resolved.
+Sanitized0/owned cleanup passed. Private checkpoint
+`/tmp/eidolon-party-checkpoint-earthraid0914d-HJBXQU/save.archive.gz`, SHA256
+`2d95e3cc00dca95464fc6044770d96a9d016b03852478c91e895f778699aaf94`.
+Current49954 at35seconds/traversal/6leadersteps/0rooms/0townrests. No raid boss or
+ritual acceptance. Follow49954;36074/8535/5471/29311 are terminal. Independent
+tree FROZEN631030ab. Prior goal turn fixed five-member rest validation; this turn
+diagnosed/corrected stale target approach and started the affected full rerun.
 
 ## Historical active checkpoint — Molten49494 (now passed above)
 
