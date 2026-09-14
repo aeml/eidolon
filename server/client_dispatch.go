@@ -250,6 +250,8 @@ func (c *Client) dispatchMessage(msg Message) {
 			ResonanceRanks:       char.ResonanceRanks,
 			Gold:                 char.Gold,
 			GoldCreditReceipts:   cloneGoldCreditReceipts(char.GoldCreditReceipts),
+			EP:                   char.EP,
+			EPExchangeReceipts:   cloneGoldCreditReceipts(char.EPExchangeReceipts),
 			ItemDeliveryReceipts: cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
 			State:                "IDLE",
 			Damage:               char.Stats.Strength * 2,
@@ -951,6 +953,8 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.handleEquipmentLoadout(msg)
 	case MsgGetWardrobe, MsgCollectAppearances, MsgSelectAppearance:
 		c.handleWardrobe(msg)
+	case MsgGetEPWallet, MsgExchangeGoldForEP:
+		c.handleEPWallet(msg)
 
 	case MsgEquip:
 		if c.playerID == "" {

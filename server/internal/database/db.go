@@ -62,6 +62,8 @@ type Auction struct {
 }
 
 type Character struct {
+	EP                   int                            `bson:"ep,omitempty"`
+	EPExchangeReceipts   map[string]int                 `bson:"ep_exchange_receipts,omitempty"`
 	AppearanceCollection map[string]EquipmentAppearance `bson:"appearance_collection,omitempty"`
 	Appearances          map[string]EquipmentAppearance `bson:"appearances,omitempty"`
 	WellRested           *CharacterWellRested           `bson:"well_rested,omitempty"`

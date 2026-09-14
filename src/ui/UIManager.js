@@ -10,6 +10,7 @@ import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { WardrobeUI } from './WardrobeUI.js';
+import { EPWalletUI } from './EPWalletUI.js';
 import { CharacterPreview } from './CharacterPreview.js';
 import { ChatUI } from './ChatUI.js';
 import { DirectTradeUI } from './DirectTradeUI.js';
@@ -405,6 +406,8 @@ export class UIManager {
 		});
 
         this.wardrobe = new WardrobeUI({ host: document.querySelector('#character-sheet .char-sheet-body'),
+            getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
+        this.epWallet = new EPWalletUI({ host: document.querySelector('#character-sheet .char-sheet-body'),
             getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
 
         // Inventory UI (extracted module) — handles inventory grid, equip slots,

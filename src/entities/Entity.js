@@ -90,6 +90,12 @@ export class Entity {
         this.nameTag = null;
         this.resetTransformInterpolation();
         this.mesh.userData.entityId = this.id;
+        // Pooled models can cross entity classes (service Actor -> Chronicle
+        // witness). Rebind descendant pick targets as well as the root; a
+        // retained ActorInteractionHitbox must never select its former owner.
+        this.mesh.traverse(part => {
+            if (part.userData.entityId !== undefined) part.userData.entityId = this.id;
+        });
         
         if (!this.mesh.userData.baseScale) {
             this.mesh.userData.baseScale = this.mesh.scale.clone();

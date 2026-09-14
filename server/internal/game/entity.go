@@ -98,6 +98,8 @@ type Entity struct {
 	SafeZoneID           string             `json:"safeZoneId"`
 	restTickAt           time.Time          // Process-local monotonic clock, never persisted or replicated.
 	GoldCreditReceipts   map[string]int     `json:"-"`
+	EP                   int                `json:"-"`
+	EPExchangeReceipts   map[string]int     `json:"-"`
 	ItemDeliveryReceipts map[string]string  `json:"-"`
 
 	// Inventory
@@ -924,6 +926,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ResonancePoints:          e.ResonancePoints,
 		Gold:                     e.Gold,
 		GoldCreditReceipts:       maps.Clone(e.GoldCreditReceipts),
+		EP:                       e.EP,
+		EPExchangeReceipts:       maps.Clone(e.EPExchangeReceipts),
 		ItemDeliveryReceipts:     maps.Clone(e.ItemDeliveryReceipts),
 		LastDailyQuest:           e.LastDailyQuest,
 		BaseStats:                e.BaseStats,

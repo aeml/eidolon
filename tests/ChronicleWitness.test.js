@@ -9,6 +9,65 @@ import { ChronicleWitness } from '../src/entities/ChronicleWitness.js';
 import { Actor } from '../src/entities/Actor.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { QuestUI } from '../src/ui/QuestUI.js';
+import { MeshFactory } from '../src/utils/MeshFactory.js';
+import { Entity } from '../src/entities/Entity.js';
+
+test.each(CHRONICLE_WITNESSES)('$name clicks its own conversation after borrowing a pooled service model', async witness => {
+    const previousPool = MeshFactory.pool[witness.model];
+    // Canvas text rendering is outside this geometry/interaction regression.
+    const nameTags = jest.spyOn(Entity.prototype, 'updateNameTag').mockImplementation(() => {});
+    MeshFactory.pool[witness.model] = [];
+    const engine = Object.create(GameEngine.prototype);
+    engine.player = { position: new THREE.Vector3(), state: 'IDLE' };
+    engine.uiManager = { quest: { openWitnessConversation: jest.fn(() => true) } };
+    engine.inputManager = { raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2() };
+    const camera = new THREE.PerspectiveCamera(60, 1, .1, 100);
+    camera.position.set(0, 1, 12); camera.lookAt(0, 1, 0); camera.updateMatrixWorld(true);
+    engine.renderSystem = { camera, environmentGroup: new THREE.Group() };
+    engine.refreshDungeonEntranceHint = jest.fn(); engine.refreshCombatIntentState = jest.fn();
+    const residents = [];
+    try {
+        const original = engine.createRemotePlayer('NPC', `service-${witness.model}`, witness.model);
+        residents.push(original);
+        await original.ensureMesh();
+        const reusedMesh = original.mesh;
+        expect(reusedMesh.getObjectByName('ActorInteractionHitbox').userData.entityId).toBe(original.id);
+        original.dispose();
+
+        const npc = new ChronicleWitness(witness.id);
+        residents.push(npc);
+        await npc.ensureMesh();
+        expect(npc.mesh).toBe(reusedMesh);
+        npc.mesh.updateMatrixWorld(true);
+
+        // The real service is present elsewhere in town, so a stale ID would
+        // route the witness's hitbox to that service rather than just miss.
+        const service = engine.createRemotePlayer('NPC', original.id, witness.model);
+        residents.push(service);
+        await service.ensureMesh();
+        service.mesh.position.x = 20; service.mesh.updateMatrixWorld(true);
+        engine.activeEntitiesCache = [service, npc];
+        engine.performRaycast();
+        expect(engine.hoveredEntity?.id).toBe(npc.id);
+        expect(engine.hoveredEntity.interact(engine)).toBe(true);
+        expect(engine.uiManager.quest.openWitnessConversation).toHaveBeenCalledWith(witness.id);
+
+        // Re-entering town can return the same mesh to a service NPC again.
+        npc.dispose();
+        const returningService = engine.createRemotePlayer('NPC', 'returning-service', witness.model);
+        residents.push(returningService);
+        await returningService.ensureMesh();
+        expect(returningService.mesh).toBe(reusedMesh);
+        returningService.mesh.updateMatrixWorld(true);
+        engine.activeEntitiesCache = [service, returningService];
+        engine.performRaycast();
+        expect(engine.hoveredEntity?.id).toBe(returningService.id);
+    } finally {
+        for (const resident of residents) if (resident.mesh) resident.dispose();
+        MeshFactory.pool[witness.model] = previousPool;
+        nameTags.mockRestore();
+    }
+});
 
 test.each(CHRONICLE_WITNESSES)('$name has a shared neutral identity and spoiler-gated dialogue without changing quests', witness => {
     const server = fs.readFileSync('server/internal/game/chronicle_witnesses.go', 'utf8');

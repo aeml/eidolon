@@ -220,6 +220,8 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 	// Update DB character
 	char := &database.Character{
 		GoldCreditReceipts:   cloneGoldCreditReceipts(entity.GoldCreditReceipts),
+		EP:                   entity.EP,
+		EPExchangeReceipts:   cloneGoldCreditReceipts(entity.EPExchangeReceipts),
 		ItemDeliveryReceipts: cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
 		Resources:            resourceSnapshot(entity),
 		WellRested:           wellRestedSnapshot(entity),

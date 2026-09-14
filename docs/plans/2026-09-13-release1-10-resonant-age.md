@@ -1,6 +1,40 @@
 # 1.10 — The Resonant Age
 
-## Open regression — named town residents (September 14)
+## Alpha 1.9.5 — implemented, release pending (September 14)
+
+The named-resident regression below is now reproduced and fixed. Four real
+procedural service models were pooled and rebound to witnesses; all four raycasts
+selected their previous service owner before the correction. Entity.setMesh now
+rebinds descendant click-target IDs too. Focused tests cover model reuse in both
+directions, correct witness conversations, and original service targeting.
+
+Implemented the first approved EP economy feature end to end: private wallet in
+the character sheet, exact 1,000,000 Gold/EP one-way exchange, explicit cost review
+and confirmation, server town/alive/out-of-combat checks, whole-number/overflow
+validation, and one full durable character snapshot containing both balances and
+idempotency receipt. The client preserves pending receipt IDs across tab reloads
+and retries without creating new spending operations. Database failure/reopened
+journal recovery is covered. EP is neither public replication nor a Gold item.
+
+Next requirements remain: cosmetic VIP Vendor, trusted VIP entitlement and 100 EP
+monthly allowance, separate EP-only games (up to 100 EP) and functioning VIP
+floor. No payments or power rewards. Wallet UI and 1.9.5 patch notes explicitly
+warn that spending is not yet available; this is not VIP/1.10 completion.
+
+Evidence: 288 client tests across witness/raycast/wallet/version suites; EP
+database arithmetic, world access/private snapshot and handler/save-recovery
+checks; two desktop/phone browser confirmation fixtures (8s), reviewed screenshot
+/tmp/eidolon-ep-confirmation-390.png. Focused lint/whitespace checks pass.
+The browser fixture uses the actual character-sheet display mode and asserts a
+readable panel width, not merely lack of overflow. No soak or broad local matrix.
+
+Persistence/rollback: EP fields live in the existing single-character-per-account
+snapshot, beside the Gold they spend. Any future multi-character feature must
+migrate wallet/allowance ownership before enabling extra characters. Once EP is
+issued, do not roll back to a server predating these fields; it could overwrite
+them on a full save. Preserve the new fields/receipts in any compatibility build.
+
+## Original report — named town residents (September 14)
 
 User reports that clicking Mara Fen, Dain, Hessa, and Selen opens the Talent
 Master, merchant, daily quest giver, or dungeon guide respectively. Resolve this
@@ -12,8 +46,8 @@ Inspection: witness definitions deliberately reuse those four service models,
 but have separate entity classes and conversation handlers. Check pooled meshes
 and descendant hitbox ownership: Entity.setMesh changes only the root entityId,
 Actor hitboxes carry their own entityId, and MeshFactory reuses meshes without
-clearing those IDs. This is a suspected routing cause, not yet a reproduced or
-fixed bug. Add a focused regression that reuses each service model for a witness,
+clearing those IDs. This was initially a suspected routing cause, subsequently
+reproduced and fixed above. The focused regression reuses each service model for a witness,
 clicks the actual geometry/hitbox, and checks the named conversation, including
 after leaving/re-entering town. Confirm the original services still work and
 remove any genuinely redundant spawns found, not the distinct story residents.
