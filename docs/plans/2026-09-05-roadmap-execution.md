@@ -5,17 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten49494 ACTIVE: three bosses; slot features accepted
+## September 14 — Molten49494 ACTIVE: four bosses; raid entry helper prepared
 
 Fresh native polls confirm49494 remains running; do not restart. Current source
 still cleanf2fdea9b, mainFROZEN. Seed **1571291222270430445**, generator2/attempt0,
-no fallback. **Cindermaw, ScorchedTwins and ForgemasterPyrax defeated**. Pyrax:
+no fallback. **Cindermaw, ScorchedTwins, ForgemasterPyrax and ObsidianGuardian defeated**. Pyrax:
 Fighter19610damage/1794taken, Cleric1729allyheal, Wizard20656damage,
-Rogue16878damage. **Three all-four town recoveries/re-entries passed**, after
-rooms2/5/7, preserving seed/rooms/Gold/inventory/quests. Later rests began with
+Rogue16878damage. ObsidianGuardian: Fighter21167damage/4347taken,
+Cleric6848allyheal/402taken, Wizard21854damage/575taken,
+Rogue25250damage/2470taken. **Four all-four town recoveries/re-entries passed**, after
+rooms2/5/7/9, preserving seed/rooms/Gold/inventory/quests. Later rests began with
 Fighter519/1240 and514/1240mana, below the new50%threshold. Do not claim fullclear
-or efficiency result yet. Latest timing1565seconds, traversal,
-421leadersteps/22roomtraversals/3townreturns. Fresh45s native poll confirmed live.
+or efficiency result yet. Latest timing1958seconds, traversal,
+484leadersteps/25roomtraversals/4townreturns. Fresh45s native poll confirmed live.
+Fourth rest started at Fighter2697HP/278mana; LordInfernax remains undefeated.
 Opening `test-results/four-player-dungeon-four-g-ee1e7-d-receive-individual-credit/desktop-party-healing.png`
 was inspected: trackeraboveroster/visiblehealertarget/classes/aura. Townopening
 only, notdungeonboss/phone/wholevisualscope. Previous feedback turn was no goal
@@ -41,6 +44,13 @@ raids. This is preparation only; full connected raid/repair driver and actual
 clear remain required. No entry-only GPU run, runtime edit or new deployment.
 Prior goal turn made progress on connected slot features; this turn made raid
 setup progress and verified the same Molten run still alive. No repeated gates.
+
+Independent742a4fc4 adds `tests/e2e/raid-party-entry.js`: actual UI invite/accept,
+guide raid conversion, five individual ready confirmations and shared-instance
+entry. Syntax/lint pass, **not yet exercised with five browsers**. Conversion
+uses server chat receipt because party updates omit MaxSize. Must be wired into
+full assault/repair driver; do not launch an entry-only GPU check. This goal turn
+made helper progress plus fourth-boss/recovery evidence and verified waits.
 
 ## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
 
