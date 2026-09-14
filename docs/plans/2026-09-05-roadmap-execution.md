@@ -5,6 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — private actual party checkpoint preserved and restored separately
+
+Native **20006 remains ACTIVE** at fresh poll,042fd742 frozen, no restart or
+runtime/progress mutation. Saved an observed disposable-database archive at
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/party-progress-checkpoint.archive.gz`
+(mode0600, private QA account data; never commit/publish it). SHA256:
+**3078859cbe3a7ca304136bd01c58277f0d2ab119712a28c2e3f715d196088825**.
+gzip integrity passed. This is an in-flight saved-progress copy, NOT an atomic
+production backup or a replacement for the already accepted backup matrix.
+
+Actually restored into previously empty **eidolon_party_checkpoint_validation**
+namespace in OWNED `eidolon-isolated-qa-mongo-abyssalparty0914r2`, never replacing
+running `eidolon`. Restore35185 terminal success:24documents/0failures. Read-back
+verified four roles, each **level61/2034Gold/savedroom7**, exact seed
+-5297765868375752807,13total layout rooms. Boss rooms3/5 cleared,8/10/12 NOT
+cleared. Thus this retains actual two-boss progress, not a full clear. Current
+automation's room-traversal counter includes retracing, not unique room count.
+Validation namespace remains disposable and will leave with wrapper cleanup.
+
+This creates a recoverable data point if a later check fails; it does NOT prove
+gameplay resumed from the archive. Fresh-only fixture guards remain unchanged;
+never manufacture future boss/quest receipts from logs. A later saved-state
+route must preserve actual progress and use normal re-entry; isolated QA auth
+may need resetting because plaintext player credentials were not retained.
+No production change. Previous turn verified wait; this turn saved and verified
+actual progress plus continued the same native wait. Full goal remains active.
+Pending55ae1d45 guide copy stays separate until20006 is terminal.
+
 ## September 14 — measured host contention; preserve current run, use Low for later functional parties
 
 Same **20006 ACTIVE**, current High run unchanged on042fd742. At3087.69s:
