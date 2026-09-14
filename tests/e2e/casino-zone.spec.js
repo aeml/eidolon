@@ -1,8 +1,42 @@
 import { test, expect } from '@playwright/test';
-import { credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, readPlayerState, collectBrowserFailures, exerciseReconnect } from './helpers.js';
+import { execFileSync } from 'node:child_process';
+import { credentialsFromEnvironment, loginAndEnterWorld, openGame, moveByGroundClick, readPlayerState, collectBrowserFailures, exerciseReconnect } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+
+async function prepareCasinoAccount(page, login) {
+    const container = process.env.EIDOLON_E2E_CASINO_MONGO_CONTAINER;
+    const port = process.env.EIDOLON_E2E_CASINO_MONGO_PORT;
+    if (!/^eidolon-isolated-qa-mongo-[a-z0-9_.-]+$/.test(container || '') || !/^\d+$/.test(port || '') ||
+        process.env.EIDOLON_E2E_REGISTER !== '1' || !/^ws:\/\/127\.0\.0\.1:\d+\/ws$/.test(process.env.EIDOLON_E2E_WS_URL || '')) {
+        throw new Error('Casino wagering QA requires an explicitly owned disposable loopback database');
+    }
+    await openGame(page);
+    await page.locator('#auth-username').fill(login.username);
+    await page.locator('#auth-password').fill(login.password);
+    await page.locator('#auth-email').fill(`${login.username}@example.invalid`);
+    await page.locator('#btn-register').click();
+    await expect(page.locator('#auth-status')).toContainText('Registration successful');
+    // Prepared bankroll, not earned progression. Initialize only a newly
+    // registered account BEFORE it has a live character; never top up a hand.
+    const character = { name: login.username, class: 'Fighter', level: 1, progression_version: 2,
+        xp: 0, gold: 1000, x: -1.25, y: 0, z: 200,
+        stats: { strength: 10, dexterity: 10, intelligence: 10, wisdom: 10, vitality: 10 } };
+    const script = `
+        if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
+        const r = db.getSiblingDB('eidolon').users.updateOne(
+            { username: ${JSON.stringify(login.username)}, 'characters.0': { $exists: false } },
+            { $set: { characters: [${JSON.stringify(character)}] } });
+        if (r.matchedCount !== 1 || r.modifiedCount !== 1) throw Error('Requires one newly registered empty account');
+    `;
+    try {
+        execFileSync('docker', ['exec', '-i', container, 'mongosh', '--quiet', '--port', port, '--file', '/dev/stdin'],
+            { input: script, stdio: ['pipe', 'pipe', 'pipe'], timeout: 20000 });
+    } catch { throw new Error('Could not initialize disposable casino bankroll'); }
+    await loginAndEnterWorld(page, login);
+    await expect.poll(() => page.evaluate(() => window.game.player.gold)).toBe(1000);
+}
 
 test('shared casino entry, physical blackjack seats, paid hand, clean exit and VIP guard', async ({ page, context, baseURL }, testInfo) => {
     test.skip(!credentials.username, 'Requires disposable character QA');
@@ -46,13 +80,13 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
         await expect.poll(() => target.evaluate(() => Boolean(window.game?.renderSystem.scene.getObjectByName('casino-vip-guard')))).toBe(true);
         await expect.poll(() => target.evaluate(() => window.game.renderSystem.staticEnvironmentGroup.visible)).toBe(false);
     };
-    await loginAndEnterWorld(page, credentials);
+    await prepareCasinoAccount(page, credentials);
     await enter(page);
     await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.filter(table => table.floor === 'public').length)).toBe(10);
     const initialGold = await readGold(page);
     const other = await context.newPage();
     const otherFailures = collectBrowserFailures(other, baseURL);
-    await loginAndEnterWorld(other, { ...credentials, username: `${credentials.username}-casino-guest` });
+    await prepareCasinoAccount(other, { ...credentials, username: `${credentials.username}-casino-guest` });
     await enter(other);
     await expect.poll(() => page.evaluate(() => window.game.remotePlayers.size)).toBeGreaterThan(0);
     expect(await other.evaluate(() => window.game.currentInstanceId)).toBe(await page.evaluate(() => window.game.currentInstanceId));
@@ -60,7 +94,7 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     await expect.poll(() => other.evaluate(() => window.game.currentInstanceId)).toBe('lanternhold-casino');
 
     // Extend this connected route, not the mocked seating fixture: actual chair
-    // clicks, server wagers/deal/settlement, and ordinary Gold with no grants.
+    // clicks, server wagers/deal/settlement, and ordinary Gold with no top-ups.
     const players = [page, other];
     const balances = await Promise.all(players.map(readGold));
     for (const balance of balances) {

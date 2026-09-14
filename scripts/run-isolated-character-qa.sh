@@ -874,7 +874,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
   casino-zone)
-    npx playwright test tests/e2e/casino-zone.spec.js --retries=0
+    EIDOLON_E2E_CASINO_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_CASINO_MONGO_PORT="${mongo_port}" \
+      npx playwright test tests/e2e/casino-zone.spec.js --retries=0
     ;;
   water-recall)
     # Focus the reported travel failure without replaying unrelated dungeon combat.
