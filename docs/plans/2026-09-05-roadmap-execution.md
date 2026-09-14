@@ -17,6 +17,14 @@ Pushed corrected **f5d47f10996f76e6b190c1cc6c08063cdcf47de3** from the clean
 independent tree to master (push55536 terminalexit0). Replacement
 **CI34857944815 is in progress** for that exact commit; native watch **85349**.
 No local GPU test started.
+Latest follow-up: native85349 remains live after45s polls; GitHub confirms
+Client Tests104022267595 **success**, including the corrected callback assertion.
+Server Tests104022267346 now **success11m8s**, including race, backup/restore,
+benchmarks and build. Native85349 remains live; all three Browser Smoke jobs
+are now running:104026434016 (2/3),104026434069 (3/3),104026434105 (1/3).
+This follow-up was a verified wait; no duplicate run or deployment. Read-only
+public-event review confirms existing socket coverage proves shared wave1
+presence, not a full clear; that remaining requirement is unchanged.
 Keep Alpha1.9.14 numbering and existing notes: this is the same unreleased fix,
 not another player-facing version. Next: follow this CI, inspect any real failure,
 verify both public release identities and served GameEngine/login/notes, then
