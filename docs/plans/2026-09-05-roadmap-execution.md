@@ -5,6 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — 1.9.10 fully accepted; new Low Abyssal party attempt active
+
+Previous turn madeprogress(publicdelivery+disconnectpolicy); this turn closed
+exactCI **34822657032 TERMINAL SUCCESS, ALL TEN JOBS PASS**, including live
+characterQA. Verifiedterminalmetadata retained
+`/tmp/eidolon-1-9-10-ci-final-20260914.json`; monitor84981andfetch95217 also
+terminalsuccess. **Do not repoll/restart them.** Alpha1.9.10 live4bab14fa exact
+frontend/backend/login/runtime/notes/DBready identities below remain accepted.
+AdditionallyfetchedactualdeployedUIManagerDungeon.js?release=4bab14fa, HTTP200,
+all6correctChroniclequestnamesandArchmageIlyraguidancepresent.
+
+MainQA `/tmp/eidolon-1-10-resonant-age-20260913` fast-forwardedto clean
+**1d62befa3594a161146eef179903b20b92dc56da**, including acceptedlocalPVP tests/
+evidence andterminalCIdocs. Samehead onPVPworktree/branch. **NOT PUSHED**;
+test/docs changes do not need another deployment now. MainQA MUSTSTAYFROZEN
+while newnative11985usesit. Secondarybranches may host independent work.
+
+**Native11985 ACTIVE**, fresh preparedfour-player Normal60 Abyssal attempt,
+existing **EIDOLON_E2E_PARTY_QUALITY=low**; same5Rare/9Uncommon/14legalitems,
+StrongFighter/WiseCleric/BrilliantWizard/AgileRogue, same actualcontrols and
+120min expeditionbudget, no retries/statbonuses/midrungrants. NOTarchive-resume,
+NOTearnedcampaign, NOTreplacementfornative/physicalphonevisualscope.
+All4buildsreplicated/Lowconfirmed, partyformedbyactualinvitationUI, roster
+selection/clearpassed, all4entered sameNormalAbyssal. **Seed-4487501684200463604**,
+generator2,attempt0,nofallback, source1d62befa/dirtyfalse. Entry7.374s; now
+traversing. No boss/fullclearclaim yet. Continue SAMEhandle, no secondGPUjob.
+
+Log `/tmp/eidolon-abyssal-party-low-20260914-qlTkOo/run.log`.
+RunIDabyssallow0914a; ownedcontainers
+`eidolon-isolated-qa-api-abyssallow0914a` / `eidolon-isolated-qa-mongo-abyssallow0914a`,
+ports18285/18286/web4187 checkedfree beforelaunch. Existingwrapper owns cleanup.
+Fullcommand sameearlierpartyroute withnewrunID andLow qualityexplicitlyset.
+Old20006 is TERMINAL deadlinefailure, four-bossactualprivatearchive retained;
+do notpoll/restartoldhandlesoroverwriteoldartifacts. Comparingnewseed/Low
+againstoldseed/High is not a controlledgraphicsbenchmark. Fullgoalactive.
+
 ## September 14 — public1.9.10 verified; disconnect/resume/restart policy accepted
 
 This turn actual progress. **Alpha1.9.10 public delivery verified** at
