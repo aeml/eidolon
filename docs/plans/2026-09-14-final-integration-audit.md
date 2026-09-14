@@ -9,6 +9,14 @@ exit1, sanitized0, owned containers removed. Log
 `/tmp/eidolon-party-checkpoint-earthraid0914a-T1yGnX/save.archive.gz`, SHA256
 `5dae8157b36b3af5b6683fdf83642eb0eb7769e6e8d979c066fbd5f651be2d54`.
 This is a QA assumption failure, not a demonstrated gameplay defect or raid clear.
+Retry5471 also exited1 before raid entry: all five builds and accepted party
+invitations passed, but the helper had not selected the guide's **Raids** tab.
+The card existed in the hidden panel, so its attribute assertion passed while
+accessible button lookup correctly timed out. Add the ordinary tab click and
+visible-card assertion. Log `/tmp/eidolon-earth-raid-r2-20260914-2CemVT/run.log`;
+sanitized0/owned cleanup passed. Private checkpoint
+`/tmp/eidolon-party-checkpoint-earthraid0914b-Z8od1W/save.archive.gz`, SHA256
+`eeeaa127059ca1cfd3281698a67d8623af661981e6105b78e495f783d81c254c`.
 
 Normal70 Molten now **accepted**: native49494 terminalexit0/54.1m, all five bosses,
 four geared roles, zero deaths, four town recoveries, each manual Fire handoff

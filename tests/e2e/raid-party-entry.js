@@ -16,7 +16,9 @@ async function closeParty(page) {
 
 async function raidCard(page, raidType) {
     await openDungeonGuide(page);
+    await page.getByRole('tab', { name: 'Raids', exact: true }).click();
     const card = page.locator(`.elemental-raid-card[data-raid-type="${raidType}"]`);
+    await expect(card).toBeVisible();
     await expect(card).toHaveAttribute('data-access', 'open');
     return card;
 }
