@@ -29,9 +29,39 @@ Intelligence points. This is not earned leveling or four-class dungeon proof.
   match. PvE level30, Gold1000, XP0 and the same prepared weapon remain intact.
 
 This is authoritative connected queue/combat/result/relogin evidence, not
-rendered team combat, physical-phone testing, an active-match outage/rejoin,
-or a simulated season. Retain earlier practice, result-idempotency and UI
+rendered team combat, physical-phone testing, or a simulated season. Retain
+earlier practice, result-idempotency and UI
 evidence; do not claim this one test closes the whole1.7/1.8/1.10 scope.
+
+## Active-match connection loss and restart
+
+The complementary `TestArenaActualDisconnectPenaltySurvivesResumeAndRestart`
+passed **2.13 seconds** against the same4bab14fa runtime. Four fresh actual socket
+clients formed two parties and entered ranked2v2. Closing one connection—not
+sending a forfeit command—settled the match through production cleanup.
+
+Both members of the disconnected player's team recorded one loss/rating984;
+both opponents recorded one win/rating1016. **Only the disconnected player**
+received the normal five-minute queue penalty. The innocent teammate still
+shares the match loss, but receives no deserter flag or queue ban. No participant
+received Honor or season points for a forfeit; every profile had revision1 and
+the same exact match receipt.
+
+The leaver resumed through the actual rotating token protocol. The completed
+match stayed completed and a new ranked-queue request was rejected with the
+existing deserter explanation. After closing clients and restarting the actual
+server against the same database/journal, fresh logins retained exact per-player
+results, revisions and penalty ownership. Repeated cleanup/relogin did not
+duplicate a result or extend the saved penalty. This verifies the existing
+immediate-forfeit policy; it does not promise a grace period or continued match
+after a lost connection.
+
+Log: `/tmp/eidolon-pvp-sockets-20260914-KJXVlY/disconnect-r1.log`.
+Owned server logs: `/tmp/eidolon-compat-session-1927539015/server.log` and
+`/tmp/eidolon-compat-session-3901816579/server.log`. Both shut down gracefully.
+Owned disposable Mongo `eidolon-pvp-sockets-0914b` was stopped with `--rm` after
+the test. No production requests or browser workload were introduced, and the
+already-passing full combat test was not repeated for this separate scenario.
 
 ## Retained evidence and setup correction
 
