@@ -34,7 +34,8 @@ visibility radius, tick frequency, rewards or movement rules are changed.
   bytes in this workload. This is not a universal FPS or live capacity estimate.
   `/tmp/eidolon-batch-state-benchmark-20260914.log`.
 
-Before publication: complete build, repeat only affected50/100-client bounded
+Implemented at **22a56525746f5ed25026db0d29da5caf854aa9b5**; full Go build passed.
+Before publication: repeat only affected50/100-client bounded
 stages on a frozen compiled commit with unchanged health/heap/error targets,
 record the result and exact cleanup, then package accurate cumulative patch notes.
 Wait for exact1.9.8 delivery (CI34802207933); do not supersede its running job.

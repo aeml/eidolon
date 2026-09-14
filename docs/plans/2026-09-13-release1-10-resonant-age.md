@@ -1,5 +1,16 @@
 # 1.10 — The Resonant Age
 
+## Local performance correction — awaiting affected load acceptance
+
+[Per-broadcast immutable snapshot sharing](2026-09-14-broadcast-snapshot-sharing.md)
+implemented at22a56525 after the100-client memory-budget failure. Dense
+100-observer benchmark allocated204.1MB→5.84MB per batch; affected game race,
+parallel protobuf encoding/race, existing replication and full Go build pass.
+This is NOT yet an accepted100-client capacity improvement or deployed change.
+Repeat affected50/100boundedload when the shared host's deployment/native QA is
+clear; retain original targets and privacy/instance/field parity. No ongoing
+local QA process. Fullcampaign/raid/device scope remains open.
+
 ## Alpha1.9.7 verified live;1.9.8 pushed
 
 Exact1.9.7 CI **34800160671 TERMINAL SUCCESS**, including all ten jobs and final
