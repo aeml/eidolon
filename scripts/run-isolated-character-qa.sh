@@ -41,7 +41,7 @@ image_created=false
 party_checkpoint_attempted=false
 
 capture_party_qa_checkpoint() {
-  if [[ "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-dungeon || "${api_created}" != true || "${party_checkpoint_attempted}" == true ]]; then
+  if [[ ( "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-dungeon && "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-raid ) || "${api_created}" != true || "${party_checkpoint_attempted}" == true ]]; then
     return 0
   fi
   party_checkpoint_attempted=true
@@ -899,6 +899,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PARTY_DUNGEON=1 EIDOLON_E2E_CLASS=Fighter \
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
       npx playwright test --retries=0 tests/e2e/four-player-dungeon.spec.js
+    ;;
+  party-raid)
+    EIDOLON_E2E_PARTY_RAID=1 EIDOLON_E2E_CLASS=Fighter \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/five-player-raid.spec.js
     ;;
   party-guide-reentry)
     EIDOLON_E2E_PARTY_GUIDE=1 EIDOLON_E2E_CLASS=Fighter \

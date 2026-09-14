@@ -205,6 +205,21 @@ Only ground clicks are issued; no quest/wave/clock mutations. Nine planner tests
 pass0.469s; lint/diff pass (native29605 exited0). **Still not an actual defended
 raid or browser acceptance**; complete the shared combat/ritual driver next.
 
+The complete driver is now wired as `tests/e2e/five-player-raid.spec.js` using
+`geared-party-route.js` (the four-player spec remains a wrapper for its existing
+route). It combines five legal prepared roles, UI formation/readiness/entry,
+assault traversal and actual boss combat, live ritual movement during attacks,
+all three defended wave receipts on every client, restored scene screenshot,
+town recall/re-entry, individual manual Ilyra turn-ins and saved reward re-login.
+No runtime change, stat/HP adjustment, wave or quest mutation. The original
+120-minute expedition ceiling remains; the remaining ritual loop also has a
+15-minute bound and current-update/death checks. `party-raid` isolated route uses
+zero retries and retains a private checkpoint during owned cleanup.
+64 focused tests in five suites pass1.035s (native41198 exit0); Bash/lint/diff
+pass. Native51235 lists both browser specs successfully without launching GPU.
+**Not yet run as a full connected raid**. Run after Molten49494 releases the GPU;
+do not repeat accepted dungeon/slot routes for this QA-only extraction.
+
 ### Bounded concurrency trial contract (before execution)
 
 Run on Ryzen7 5700G (8 cores/16 threads), 31,456MiB RAM, Linux, while no owned

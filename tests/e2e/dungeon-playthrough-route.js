@@ -16,6 +16,7 @@ export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, resetRun = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
     afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0, expeditionProfile = 'solo',
+    runInstance = enterAndExitDungeon,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -197,7 +198,7 @@ export async function playDungeonThroughInputs(page, {
         };
     });
     let completedRun;
-    await enterAndExitDungeon(page, { ...playthrough, useTownGuide, resetRun, beforeExit: async () => {
+    await runInstance(page, { ...playthrough, useTownGuide, resetRun, beforeExit: async () => {
         if (afterEntry) await afterEntry(page);
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
         // Preserve replay identity without logging instance IDs/QA usernames.
@@ -286,10 +287,18 @@ export async function playDungeonThroughInputs(page, {
         // Inspection boundary after actual combat/room/reward assertions, before
         // ordinary Recall. Recovery diagnostics must observe spent pools here,
         // not infer them from already-restored town state.
-        if (afterClearedRoute) await afterClearedRoute(page);
+        if (afterClearedRoute) await afterClearedRoute(page, {
+            assertActive: () => timing.assertActive(),
+            fight: async target => {
+                timing.assertActive();
+                await defeatByMouse(page, target);
+                if (afterEncounter) await afterEncounter(page, target);
+            }
+        });
+        if (completedRun) completedRun.gold = await page.evaluate(() => window.game.player.gold);
     } }).finally(() => timing.report('route-exit'));
     if (fullRun) {
-        await enterAndExitDungeon(page, { ...playthrough, useTownGuide, beforeExit: async () => {
+        await runInstance(page, { ...playthrough, useTownGuide, beforeExit: async () => {
             expect(await page.evaluate(() => window.game.currentDungeonLayout.generationSeed)).toBe(completedRun.seed);
             expect(await page.evaluate(() => window.game.currentDungeonLayout.generatorVersion)).toBe(completedRun.generator);
             const summary = await page.evaluate(() => window.game.currentDungeonRoomState);

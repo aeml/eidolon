@@ -65,7 +65,8 @@ test('failed measured actions retain their timing and original failure without r
 
 test('party selects its own allowance without changing encounter, damage-stall, formation or claim checks', () => {
     const route = fs.readFileSync('tests/e2e/dungeon-playthrough-route.js', 'utf8');
-    const party = fs.readFileSync('tests/e2e/four-player-dungeon.spec.js', 'utf8');
+    const party = fs.readFileSync('tests/e2e/geared-party-route.js', 'utf8');
+    expect(fs.readFileSync('tests/e2e/four-player-dungeon.spec.js', 'utf8')).toContain('runGearedPartyRoute');
     expect(route).toContain("expeditionProfile = 'solo'");
     expect(party).toContain("expeditionProfile: 'party'");
     expect(party).toContain("test.setTimeout(dungeonExpeditionBudget('party') + 300_000)");

@@ -24,7 +24,7 @@ async function raidCard(page, raidType) {
 // helper performs normal UI consent and entry, never server messages or grants.
 // Its caller must continue through the full raid and ritual, not count entry as
 // acceptance of the raid or re-run entry as a separate GPU diagnostic.
-export async function formAndEnterElementalRaid(actors, raidType) {
+export async function formAndEnterElementalRaid(actors, raidType, { enter = true } = {}) {
     if (!/^(earth|water|fire|air)_crystal_raid$/.test(raidType) || actors.length !== 5 ||
         new Set(actors.map(actor => actor.login.username)).size !== 5) {
         throw new Error('Elemental raid route requires five distinct actors and a known raid');
@@ -63,16 +63,24 @@ export async function formAndEnterElementalRaid(actors, raidType) {
         await expect.poll(async () => (await party(actor.page))?.allReady).toBe(true);
         await closeParty(actor.page);
     }
-    const entry = (await raidCard(leader.page, raidType)).getByRole('button', { name: /^Enter / });
-    await expect(entry).toBeEnabled();
-    await entry.click();
-    await expect.poll(() => leader.page.evaluate(() => window.game.currentInstanceType)).toBe(raidType);
-    const instance = await leader.page.evaluate(() => window.game.currentInstanceId);
-    expect(instance).toBeTruthy();
+    if (!enter) return null;
+    const instance = await enterElementalRaid(leader.page, raidType);
     for (const actor of actors) {
         await expect.poll(() => actor.page.evaluate(() => ({ type: window.game.currentInstanceType,
             id: window.game.currentInstanceId }))).toEqual({ type: raidType, id: instance });
         await expect.poll(() => actor.page.evaluate(() => window.game.currentDungeonLayout?.rooms?.length || 0)).toBeGreaterThan(0);
     }
+    return instance;
+}
+
+export async function enterElementalRaid(page, raidType) {
+    if (!/^(earth|water|fire|air)_crystal_raid$/.test(raidType)) throw new Error('Unknown elemental raid');
+    const entry = (await raidCard(page, raidType)).getByRole('button', { name: /^(Enter|Continue) / });
+    await expect(entry).toBeEnabled();
+    await entry.click();
+    await expect.poll(() => page.evaluate(() => window.game.currentInstanceType)).toBe(raidType);
+    const instance = await page.evaluate(() => window.game.currentInstanceId);
+    expect(instance).toBeTruthy();
+    await expect.poll(() => page.evaluate(() => window.game.currentDungeonLayout?.rooms?.length || 0)).toBeGreaterThan(0);
     return instance;
 }
