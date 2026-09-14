@@ -7,6 +7,13 @@ the whole goal. Started September 5, 2026.
 
 ## September 14 — Maelin targeting fixed; 1.9.14 delivery needs CI correction
 
+Follow-up goal turn is a **verified wait**: repeated45s polls of native57501
+confirmed it live, and a fresh GitHub job query still reports CI34856694692
+in progress specifically in `Run Go race detector`. Client failure is unchanged.
+Independent tree remains clean f5d47f10, correction ready; no additional tests,
+GPU job, superseding push or deployment started. Next action remains push the
+correction only after this run is terminal, then follow replacement delivery.
+
 Previous turn yielded new terminal raid evidence and changed the next action
 (progress). This goal turn reproduced a real runtime bug: non-interactive
 CrystalKeeper fell through `isHostileActorTarget` as an enemy. Server Maelin is
