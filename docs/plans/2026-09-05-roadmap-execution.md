@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten49494 ACTIVE: four bosses; raid entry helper prepared
+## September 14 — Molten accepted; full five-player Earth raid29311 ACTIVE
+
+**Molten49494 terminalexit0/PASS54.1m** on cleanf2fdea9b/Alpha1.9.13. All five
+Normal70 bosses cleared without death, four town recoveries and completed-run
+recall/re-entry passed. All four manually claimed Fire's chapter700Gold/59562XP,
+received unaccepted `chronicle_air_weatherkeeper`, and re-logged with rewards
+preserved. Final everyoneL73/3471Gold/alive. Infernax: Fighter23954damage,
+Wizard30938/Rogue38886, Cleric21707allyheal (46430whole run).
+Log `/tmp/eidolon-molten-party-r3-20260914-vRxBlS/run.log`; sanitized0. Both owned
+containers and4187listener gone. Private39688byte0600/0700checkpoint:
+`/tmp/eidolon-party-checkpoint-moltenparty0914c-U0umId/save.archive.gz`, SHA256
+`05e223a8b981a9ed28d9fe988c06473faabe0d28ca50562cf73e3d783ad9964e`.
+Archive is not a verified playable resume. Do not poll/restart49494.
+
+**Native29311 ACTIVE**, actual20s nativepoll confirmed running; owned API/Mongo
+up, initial Fighter/Cleric prepared and replicated. Full `party-raid` route at
+clean **ccfda896**, in `/tmp/eidolon-pvp-queue-integration-20260914`, now **FROZEN**.
+Log `/tmp/eidolon-earth-raid-20260914-tRhG1L/run.log`; runIDearthraid0914a;
+API18315/Mongo18316/Web4189. Only owned GPU run; no CI active/new release pushed.
+Normal Rootheart Sanctum, five preparedlevel70 roles (tank/two healers/two DPS),
+Low,5Rare/9Uncommon each, no runtime changes/grants/retries. Prepared
+prerequisites are not earned campaign. Must prove assault, guardian, three
+defended repair waves, all personal manual rewards and saved re-login.
+
+Full driver wired in d8362871;397861c2 captures actual boss screenshots;
+ccfda896 documents Molten acceptance. Shared `geared-party-route.js` retains
+four-player wrapper and adds five-player spec; normal guide lifecycle, live
+ritual movement, all clients' wave receipts, original120min expedition deadline
+and15min remaining ritual bound.64focusedtests/5suites passed1.035s (41198exit0),
+syntax/Bash/lint/diff pass;51235 lists both specs, no GPU. No raid acceptance yet.
+Main `/tmp/eidolon-1-10-resonant-age-20260913` is now unfrozen/cleanf2fdea9b.
+Root remains ledger-only NEVERPUSH. Whole1.10 stays open: other dungeon families/
+seeds, full earned Chronicle, actual raids/repair/finale, full event, integrated
+visuals/busy-floor/phone. This turn progressed full driver, accepted Molten and
+started the next actual raid; previous turn progressed ritual controls.
+
+## Historical active checkpoint — Molten49494 (now passed above)
 
 Fresh native polls confirm49494 remains running; do not restart. Current source
 still cleanf2fdea9b, mainFROZEN. Seed **1571291222270430445**, generator2/attempt0,
