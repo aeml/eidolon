@@ -52,10 +52,11 @@ rollback over post-upgrade player transactions.
 
 ## Delivery
 
-Implementation is local pending the next corrective release. Add cumulative
-player-facing notes: “Protected EP balances, VIP allowances, cosmetic ownership
-and casino receipts against incompatible server rollback; the upgrade retains
-a consistent recovery backup.” Keep login/runtime/release versions synchronized.
+Packaged locally as **Alpha1.9.8**, with cumulative player-facing notes protecting
+EP progress and explaining safe upgrades. Login, package/lock, release manifest,
+server/container/deploy/CI and isolated-QA defaults are synchronized. Version and
+patch-history checks **256PASS2.479s**, full Go build, focused ESLint and whitespace
+checks pass. Implementation commit `a881b4a3`; not pushed or deployed yet.
 
 Do not supersede the active Alpha1.9.7 CI34800160671. Finish its exact delivery,
 then publish this safety correction with its own patch notes. The earned campaign,
