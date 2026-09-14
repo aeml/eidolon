@@ -11,11 +11,28 @@ The watch's manual100Gold/1593XP reward/dialogue/save checks passed; seeds reach
 is now **5/60,level11,no deaths,290seconds** at the last credited checkpoint,
 past the first attempt's1-credit travel failure. Normal level10talent preparation
 and repeated ordinary town recovery/return succeeded; no grant/daily shortcuts.
-The phase is still active, not a complete Imp chapter or Earth-readiness pass. Follow this
+That5-kill observation is superseded by the completed chapter below. Follow this
 same handle and leave runtime/loaded route modules unchanged. Full outcome is
 unknown; no new run should be started alongside it. Root ledger has ownership
 and ports. The completed first-attempt and short-travel evidence below remains
 separate, not substituted for this attempt's remaining chapters.
+
+### Corrected attempt: Imp chapter and returning scar passed
+
+The full60Imp chapter passed in approximately1812seconds, zero deaths,22ordinary
+town-rest stops and two earned training stops (levels10and20). Level20preparation
+equipped one earned item, upgraded two slots and trained Arcane Shield; no grants
+or mid-encounter rewrites. Before manual turn-in: level22,572XP toward11125,
+3266Gold. Ilyra's exact completion dialogue and200Gold/6843XP reward passed;
+after claim: level22,7415XP,3466Gold. The full character/quest snapshots persisted
+across reconnect; no automatic completion/next acceptance.17occupied bag slots
+and600Gold unsold equipment value are inventory, not equipped slots or income.
+
+The returning-scar investigation also passed,31.713s. **Orc phase is now active**
+on the same10782 attempt; Orc hunt, handoff and level30 readiness remain open.
+These durations include automation and town trips, not human pacing estimates.
+The original traversal failure is superseded by this actual full Imp-chapter
+pass, not merely the short travel check. Continue the same process, not a rerun.
 
 ## Corrected travel — native pass
 
