@@ -3,7 +3,23 @@ import { AvengingSeraph } from '../src/entities/AvengingSeraph.js';
 import { QuestNPC } from '../src/entities/QuestNPC.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { CrystalKeeper } from '../src/entities/CrystalKeeper.js';
+import { Skeleton } from '../src/entities/Skeleton.js';
 import * as THREE from 'three';
+
+test.each(['IDLE', 'CHANNELING'])('living Maelin is not a hostile target while %s', state => {
+    const engine = Object.create(GameEngine.prototype);
+    const keeper = engine.createRemotePlayer('NPC', 'crystal-artificer-raid', 'CrystalKeeper');
+    keeper.state = state;
+    keeper.isActive = true;
+    const enemy = new Skeleton('repair-wave-enemy');
+    enemy.isActive = true;
+    expect(engine.isInteractableEntity(keeper)).toBe(false);
+    expect(engine.isHostileActorTarget(keeper)).toBe(false);
+    expect(engine.isHostileActorTarget(enemy)).toBe(true);
+    engine.abilityController = { pendingAbilityTarget: keeper };
+    engine.hoveredEntity = keeper;
+    expect(engine.getEffectiveCombatTarget()).toBeNull();
+});
 
 test('Maelin is a clothed adult artificer, not a summoned guardian or quest giver', async () => {
     const engine = Object.create(GameEngine.prototype);

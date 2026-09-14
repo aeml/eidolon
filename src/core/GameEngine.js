@@ -1525,6 +1525,9 @@ export class GameEngine {
         if (!entity || !(entity instanceof Actor)) return false;
         if (entity === this.player) return false;
         if (!entity.isActive || entity.state === 'DEAD') return false;
+        // Maelin channels the repair automatically: she is friendly even though
+        // she has no click interaction or service window.
+        if (entity instanceof CrystalKeeper) return false;
         if (this.isInteractableEntity(entity)) return false;
         if (this.isPlayerClassEntity(entity)) return Boolean(this.socialController?.isPvPHostile?.(entity.id));
         return true;

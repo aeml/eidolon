@@ -1,5 +1,34 @@
 # 1.10 final integration — evidence and remaining work
 
+## Alpha 1.9.14 — friendly repair artificer targeting
+
+Raid49954 is terminal exit1 after15.0m on631030ab. Five-member town recovery
+and re-entry passed; clients observed ritual start and wave1. The driver then
+selected CrystalKeeper, whose1,000,000HP did not change for60seconds. Full repair,
+personal rewards and full raid acceptance remain unproven. Log:
+`/tmp/eidolon-earth-raid-r5-20260914-vwNevs/run.log`. Sanitized0; owned API/Mongo
+containers absent after cleanup. Private checkpoint:
+`/tmp/eidolon-party-checkpoint-earthraid0914e-FNrE47/save.archive.gz`, SHA256
+`62030983f3e74c8e51de5f7086301e3453fe24ad1090187750aa77aa95c08beb`.
+Not a verified playable resume. Do not poll/restart49954.
+
+This exposed a production targeting omission, not just a driver mistake:
+`GameEngine.isHostileActorTarget` treated non-interactive Maelin as an enemy.
+Server creates her as TypeNPC; the client creates CrystalKeeper but its generic
+Actor fallback returned hostile. Exclude CrystalKeeper without adding a service
+interaction or changing server ritual rules. Two regressions failed on the old
+predicate, then passed for IDLE and CHANNELING. Normal enemies remain targetable;
+hovered and buffered Maelin cannot become an effective combat target.
+295 tests across five focused targeting/presentation suites passed2.015s;
+ESLint, Bash syntax and diff checks passed. Login, runtime defaults and cumulative
+patch notes advance to1.9.14. Deployment and full raid retry are pending, not
+accepted by these unit checks. Avoid overlapping the retry with CI browser QA.
+
+Physical-phone feedback remains Brave/Chrome with positive general UI feedback;
+user has not tried dungeon or party play. Those checks remain open.
+
+## Earlier evidence
+
 Raid36074 terminalexit1: first assault room/recovery-size validation passed,
 then a moving DemonOrc remained at1719HP for60seconds in the next encounter.
 All five survived with218Gold; both Clerics healed (3627/1337). Repeated fallback
