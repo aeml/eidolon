@@ -202,8 +202,13 @@ export function planPartyTelegraphEscape(state, warnings, canStep = () => true, 
     const candidates = [0, .25, -.25, .5, -.5, 1, -1, Math.PI].map(offset => {
         const x = danger.x + Math.cos(angle + offset) * (danger.radius + 2) - state.x;
         const z = danger.z + Math.sin(angle + offset) * (danger.radius + 2) - state.z;
-        return { x, z };
-    }).filter(delta => Math.hypot(delta.x, delta.z) >= 1 && Math.hypot(delta.x, delta.z) <= 18)
+        // Near the warning edge, a one-unit nudge has too little room for
+        // movement already in flight while the real click is projected. Keep
+        // the ordinary >1-unit movement proof; issue a deliberate escape step
+        // instead. Revalidate the entire extended path below, not just its end.
+        const length = Math.hypot(x, z), scale = length > 0 ? Math.max(1, 3 / length) : 1;
+        return { x: x * scale, z: z * scale };
+    }).filter(delta => Math.hypot(delta.x, delta.z) >= 3 - 1e-9 && Math.hypot(delta.x, delta.z) <= 18)
         .filter(delta => circles.every(w => Math.hypot(state.x + delta.x - w.x, state.z + delta.z - w.z) >= w.radius + 1.5))
         .filter(delta => partyPathAvoidsActors(state, { dx: delta.x, dz: delta.z }, actors, state.radius || 1.25))
         .filter(delta => canStep(delta))

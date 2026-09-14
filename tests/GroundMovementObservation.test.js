@@ -20,3 +20,11 @@ test.each([null, { ...arrival, radius: 0 }, { ...arrival, radius: NaN }, { ...ar
 test('ordinary larger displacement retains its existing behavior', () => {
     expect(groundMovementObserved(before, { ...after, x: before.x + 2 }, 1)).toBe(true);
 });
+test('recorded Pyrax short step remains failed, not reclassified as arrival', () => {
+    const start = { x: 29983.39111383558, z: 18623.309917471095, instanceType: 'molten_core', instanceId: 'pyrax-diagnostic' };
+    const stopped = { ...start, x: 29983.2178828706, z: 18622.734513238163, state: 'IDLE', health: 3050 };
+    const destination = { x: 29983.20366734718, z: 18621.949458051866, radius: .25, instanceId: start.instanceId };
+    expect(Math.hypot(stopped.x - start.x, stopped.z - start.z)).toBeCloseTo(.6009151341946743);
+    expect(groundMovementObserved(start, stopped, 1)).toBe(false);
+    expect(groundMovementObserved(start, stopped, 1, destination)).toBe(false);
+});

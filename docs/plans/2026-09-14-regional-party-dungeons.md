@@ -1,6 +1,25 @@
 # Remaining regional four-player dungeon acceptance
 
-## Molten71836 — first regional attempt active
+## Molten71836 — terminal short-step failure; helper correction pending native check
+
+The first attempt ended with exit1 after21.6minutes, during Forgemaster Pyrax.
+Two bosses and two all-member town recoveries/re-entries passed; the full clear
+and manual claims did not. All four characters remained alive at level71.
+An escape requested1.37units but moved only0.600915units, still0.785units from
+its destination. This remains a failed movement, not accepted arrival or proof
+of a production movement defect. The helper now chooses at least3units and
+revalidates the full path against floors, actors and all telegraphs. No gameplay
+movement, combat, gear or health rules changed.103 affected unit tests passed.
+
+The wrapper removed the owned API/Mongo/image and released18285/18286/4187;
+there is no saved Molten database. Sanitized logs/results/report remain in
+`/tmp/eidolon-molten-party-20260914-ZW8DKK/`. Do not poll71836 or call this a clear.
+A cleanup safeguard now archives future party saves privately outside uploaded
+artifacts before removing owned services.27 focused tests passed (including
+mocked Docker success/failure/once-only cases), plus shell syntax/scoped lint.
+An actual native archive and the larger escape still need verification.
+
+### Historical start and partial receipts
 
 After1.9.11 CI34829019013 completed all ten jobs successfully, started one
 four-player Normal70 Molten run on exactreleasedbd566893/clean source, Low
@@ -13,13 +32,13 @@ Cindermaw defeated by172.63s: Fighter13208damage/731taken, Cleric719allyhealing,
 Wizard9794damage, Rogue16056damage. Firsttownrecovery/re-entry passedallfour,
 preservingseed/rooms/Gold/inventory/quests. ScorchedTwins defeated by580.66s:
 Fighter15290damage/452taken, Wizard15260damage, Rogue18282damage; Clericneededno
-healinginthatfight. Secondtownrecovery is underway; threebosses andfullclear/
+healinginthatfight. Secondtownrecovery subsequently passed; threebosses andfullclear/
 manualclaims remainunaccepted. Do not treat two bosses as a complete dungeon.
 
-Native71836 is the onlyownedGPU job. MainQA tree muststayfrozenbd566893 while
-it runs. Log`/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`;
+Native71836 is terminal; its source freeze is released.
+Log`/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`;
 ownedAPI/Mongo suffixmoltenparty0914a, loopback18285/18286/web4187. Wrapper owns
-cleanup. Continue samehandle, not a second instance or a replay of oldAbyssal.
+cleanup (now finished).
 Openingparty screenshot inspected from the already-running test: current story
 tracker visible above allfour healer selection rows without overlap. This is
 an actual isolated connected party image, not a new public-live/phone claim.

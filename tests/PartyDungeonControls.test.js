@@ -311,6 +311,22 @@ test('a melee tank walks beyond the full visible quake with a safety margin', ()
 test('already-safe players hold position instead of issuing unnecessary movement', () => {
     expect(planPartyTelegraphEscape({ x: 16, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }])).toBeNull();
 });
+test('near-edge telegraph escape leaves room for real click movement to settle', () => {
+    // Pyrax's failed diagnostic chose a1.37-unit step and observed only0.60.
+    // Do not accept that failed movement; choose a longer verified input.
+    const canStep = jest.fn(() => true);
+    const step = planPartyTelegraphEscape({ x: 13.13, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep);
+    expect(step.x).toBeCloseTo(3);
+    expect(step.z).toBeCloseTo(0);
+    expect(canStep).toHaveBeenCalledWith(step);
+    expect(13.13 + step.x).toBeGreaterThan(14);
+});
+test('extended escape still requires the whole path to be clear', () => {
+    const canStep = jest.fn(step => Math.hypot(step.x, step.z) < 2);
+    expect(planPartyTelegraphEscape({ x: 13.13, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep)).toBeNull();
+    expect(canStep).toHaveBeenCalled();
+    for (const [step] of canStep.mock.calls) expect(Math.hypot(step.x, step.z)).toBeGreaterThanOrEqual(3 - 1e-9);
+});
 test('blocked radial routes use only a fully validated alternative', () => {
     const canStep = jest.fn(step => step.z > 1);
     const step = planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep);

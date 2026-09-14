@@ -38,8 +38,36 @@ network_created=false
 mongo_created=false
 api_created=false
 image_created=false
+party_checkpoint_attempted=false
+
+capture_party_qa_checkpoint() {
+  if [[ "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-dungeon || "${api_created}" != true || "${party_checkpoint_attempted}" == true ]]; then
+    return 0
+  fi
+  party_checkpoint_attempted=true
+  local checkpoint_dir
+  # Outside the workspace/upload roots: this contains private disposable account
+  # data, not a public Playwright artifact. mktemp creates a0700 directory.
+  checkpoint_dir="$(mktemp -d "/tmp/eidolon-party-checkpoint-${QA_RUN_ID}-XXXXXX")" || return 1
+  # Stop only this wrapper's writer before copying saved progress. This is an
+  # archive, not a restored/accepted run and not permission to alter logout time.
+  if docker stop --timeout 20 "${API_CONTAINER}" >/dev/null &&
+    docker exec "${MONGO_CONTAINER}" sh -c \
+      'exec mongodump --port "$1" --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --db eidolon --archive=/tmp/party-checkpoint.archive.gz --gzip' sh "${mongo_port}" &&
+    docker cp "${MONGO_CONTAINER}:/tmp/party-checkpoint.archive.gz" "${checkpoint_dir}/save.archive.gz" &&
+    chmod 600 "${checkpoint_dir}/save.archive.gz" &&
+    gzip -t "${checkpoint_dir}/save.archive.gz"; then
+    echo "Private party save retained outside uploaded artifacts: ${checkpoint_dir}/save.archive.gz"
+    sha256sum "${checkpoint_dir}/save.archive.gz"
+  else
+    return 1
+  fi
+}
 
 cleanup_isolated_qa() {
+  if ! capture_party_qa_checkpoint; then
+    echo "Could not retain the private party save; normal isolated cleanup continues." >&2
+  fi
   if [ "${api_created}" = true ]; then
     docker container rm --force "${API_CONTAINER}" >/dev/null 2>&1 || true
   fi
