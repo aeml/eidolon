@@ -5,6 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — connected cosmetic purchase accepted; same1.9.13 CI active
+
+Previous goal turn made progress (connected guild-calendar restart acceptance).
+This turn closed connected Veyra purchase/apply/persistence/replay acceptance.
+Independent tree clean **adaaba36**, QA-only, NOT PUSHED; no gameplay source
+change or separate release. Main cleanf2fdea9b. Root ledger-only, NEVER PUSH ROOT.
+
+**65012 TERMINALPASS1.088s**, exactf2fdea9b/Alpha1.9.13 binary, ownedMongo+actual
+WebSocket and actualserverrestart. Beforefirstlogin preparedL1Fighter byVeyra,
+100EP/1234Gold, one game-generatedL1chestitem (randomRobes), noVIPmembership.
+No midrun grants/world mutation/productionwrites. ActualcatalogueGrovekeeperPlate
+25EP: unconfirmed/stalequote rejected → confirmedunlock debitedonce/noautoapply →
+immediateduplicate free → wardrobeapplyoverunchangedRobes → saveddisconnect/
+newserver/freshlogin keepscollection+selection → repeatpurchase free. Bothsaved
+checkpoints75EP/1234Gold, identicalbasestats+fullgear,L1XP0,noinventory/stashitems,
+zeroGoldcredit/monthlyallowancereceipts. This is not earnedEP or renderedlookproof.
+No runtime fix needed; gofmt/diffcheck passed. Do not repeat accepted route.
+
+Evidence `/tmp/eidolon-group-sockets-20260914-WJG4y2/cosmetic-vendor.log`;
+serverlogs `/tmp/eidolon-compat-session-761270472/server.log` and748784237.
+Bothserverprocessesnormalshutdown; owned `eidolon-cosmetic-socket-0914a` removed.
+No localGPU/ownedQAcontainers. Integrationdoc
+`docs/plans/2026-09-14-connected-cosmetic-vendor-acceptance.md`; finalaudit updated
+to retain this evidence, not keep connectedvendor asmissing.
+
+**Exact CI34843057369/f2fdea9b ACTIVE**, Client/Serverpassed, threeBrowserjobs
+running at latestquery. **Watch51003 ACTIVE**, freshly nativepolled; unchangedlog.
+Follow sameworkflow, no supersession or competingnativeGPU. Last fullyaccepted
+live1.9.12/38847b2f. Full1.10 remainsopen: campaign/regionaldungeons/actual5–10player
+raids+repair+finale, connectedEPblackjack/slots, fullpublicevent, integratedvisuals/
+busyfloor/phone. Next regionalnative uses reducedrestpolicy afterCI nativegates.
+
 ## September 14 — connected guild calendar accepted;1.9.13 browser jobs active
 
 Previous goal turn made progress (connected Groups/recovery). This turn completed
