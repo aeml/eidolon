@@ -5,6 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
+
+Previous goal turn made progress (slots/publicdelivery). This turn acceptedall
+1.9.13gates and startednextregionaldungeon afterCI GPUfinished. **LIVE1.9.13 exact
+f2fdea9bf116f49a5cea7a42a852d8e08dc511a8 accepted**: CI34843057369 terminalSUCCESS,
+alltenjobsPASS; watch51003 terminalexit0. Finalsavedcharacter/liveplay+townrecovery/
+WellRested passed. Receipts `/tmp/eidolon-1-9-13-ci-final-20260914.json` and
+`/tmp/eidolon-1-9-13-public-delivery-20260914.json`. Do not poll/restart completed
+CI or repeatacceptedpublicsource checks. No next release pushed forQA/docs.
+
+**Native49494 ACTIVE**, freshlypolled afteractual four-memberUIpartyformation and
+allfour entering sameNormalMolteninstance. Main
+`/tmp/eidolon-1-10-resonant-age-20260913` **FROZEN cleanaf2fdea9b** duringrun.
+Log `/tmp/eidolon-molten-party-r3-20260914-vRxBlS/run.log`.
+OwnedrunID moltenparty0914c; API18285/Mongo18286/Web4187; actualisolatedhealth
+reportsf2fdea9b/Alpha1.9.13/DBready. Twoownedcontainersconfirmedrunning. This is
+the ONLY localGPUrun; no editsmain/newdeploy/otherGPUuntilterminal.
+
+Normal70Molten,Low, progressed legalrolegear5Rare/9Uncommoneach:
+StrongFightertank,WiseClerichealer,BrilliantWizard/AgileRogueDPS. Allreplicated
+loadoutsverified, UIinvitepartyanddesktoprosterselection/clearpassed. Prepared
+questgate/levelgear, NOTearnedcampaign. No retries/midrungrants/scaling/source
+changes. Original120minuteexpeditionbudget. Firsttownrest80%, subsequent50%
+alreadycommittedbeforestart (firstnativeuse). No fullclear/questhandoffclaim yet.
+Follow49494, neverrestartold26730/71836. Wrapperretainsprivatecheckpointoncleanup;
+do not changeexpiry/forgeLastLogout/claimprivatearchiveisplayableresume.
+
+Independent `/tmp/eidolon-pvp-queue-integration-20260914` clean **1f41b20e**, local
+QA/docsnotpushed. Group/calendar/cosmetic/VIPblackjack/slotsacceptance retained.
+Root ledger-only NEVERPUSH. Whole1.10 remainsopen: regionaldungeons, full earned
+campaign, actual5–10playerraids/repair/finale, publicevent/connectedbonus/fullvisual/
+busyfloor/phone. Do not usecurrententrysuccessasproof ofthose outcomes.
+
 ## September 14 — Gold/EP slots accepted;1.9.13 public delivery verified, live QA running
 
 Previous goal turn progressedVIPblackjack. This turn accepted connected slots
