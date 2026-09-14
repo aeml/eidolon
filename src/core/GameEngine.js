@@ -8,6 +8,7 @@ import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
+import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
@@ -1469,6 +1470,7 @@ export class GameEngine {
         return entity instanceof DwarfSalesman
             || entity instanceof ChronicleSite
             || entity instanceof ChronicleWitness
+            || entity instanceof CosmeticVendor
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
             || entity instanceof DungeonNPC
@@ -1478,6 +1480,7 @@ export class GameEngine {
             || type === 'DwarfSalesman'
             || type === 'ChronicleSite'
             || type === 'ChronicleWitness'
+            || type === 'CosmeticVendor'
             || type === 'QuestNPC'
             || type === 'RespecNPC'
             || type === 'DungeonNPC'
@@ -1642,6 +1645,8 @@ export class GameEngine {
                     ? 'Click to open the dungeon portal.'
                     : 'Move closer to interact with this dungeon portal.';
             }
+        } else if (interactableType === 'CosmeticVendor') {
+            promptLabel = inRange ? 'Click to browse EP cosmetic looks. No stats, no Gold resale.' : 'Move closer to browse Veyra’s cosmetic wardrobe.';
         } else if (interactableType === 'ChronicleWitness') {
             promptLabel = inRange ? `Click to speak with ${entity.name}. Optional Chronicle conversations.` : 'Move closer to speak with this witness.';
         } else if (interactableType === 'ChronicleSite') {
@@ -2166,6 +2171,8 @@ export class GameEngine {
                 p = new ChronicleSite(id);
             } else if (subType === 'ChronicleWitness') {
                 p = new ChronicleWitness(id);
+            } else if (subType === 'CosmeticVendor') {
+                p = new CosmeticVendor(id);
             } else if (subType === 'DwarfSalesman') {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {

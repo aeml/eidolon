@@ -443,11 +443,15 @@ class GameEngineNetworkMessageMethods {
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
         } else if (msg.type === 'ep_wallet_result') {
             this.uiManager?.epWallet?.handleResult(msg.payload);
+        } else if (msg.type === 'cosmetic_vendor_result') {
+            this.uiManager?.cosmeticVendor?.handleResult(msg.payload);
+            this.uiManager?.wardrobe?.handleResult(msg.payload);
         } else if (msg.type === 'wardrobe_result') {
             this.player.appearances = msg.payload?.appearances || {};
             this.player.syncEquipmentVisuals?.();
             this.uiManager?.wardrobe?.handleResult(msg.payload);
             this.uiManager?.updateCharacterSheet?.(this.player);
+            this.uiManager?.cosmeticVendor?.handleAppearanceResult(msg.payload);
         } else if (msg.type === 'loadout_result') {
             this.uiManager?.inventory?.loadouts?.handleResult(msg.payload);
             applyLoadoutState(this, msg.payload);

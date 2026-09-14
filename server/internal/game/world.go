@@ -311,6 +311,7 @@ func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
 	w.spawnChronicleWitnesses()
+	w.spawnCosmeticVendor()
 	w.spawnRespecNPC()
 	w.spawnDungeonNPC()
 	w.spawnStash()

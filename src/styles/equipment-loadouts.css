@@ -9,6 +9,27 @@
 .equipment-loadouts-body button:disabled { opacity: .5; cursor: default; }
 .loadout-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .loadout-status { color: #e4c98d; }
+.cosmetic-vendor { width: min(1000px, calc(100vw - 24px)); }
+.cosmetic-vendor > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 2; background: #253140; }
+.cosmetic-vendor-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr); gap: 20px; }
+.cosmetic-catalogue { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: max-content; gap: 8px; align-content: start; }
+.cosmetic-catalogue button { margin: 0; padding: 12px; text-align: left; overflow-wrap: anywhere; }
+.cosmetic-catalogue button[aria-pressed="true"] { outline: 2px solid #ebc778; background: #405160; }
+.cosmetic-swatch { display: block; border-left: 8px solid; padding-left: 8px; margin-bottom: 8px; text-transform: capitalize; font-size: 13px; color: #c6d5de; }
+.cosmetic-preview { height: 300px; grid-column: auto; grid-row: auto; }
+.cosmetic-preview .character-preview-controls button { min-width: 44px; min-height: 44px; margin: 0; }
+.cosmetic-detail { min-width: 0; }
+.cosmetic-detail h3 { color: #edcf91; margin-top: 0; }
+.cosmetic-detail > button { width: 100%; margin-right: 0; }
+.cosmetic-vendor button:disabled { opacity: .55; cursor: default; }
+.cosmetic-confirmation { margin-top: 12px; border: 1px solid #d7b876; padding: 12px; border-radius: 8px; }
+.cosmetic-status { color: #ecd19d; }
+@media (max-width: 650px) {
+    .cosmetic-vendor { padding: 16px; }
+    .cosmetic-vendor-body { grid-template-columns: minmax(0, 1fr); }
+    .cosmetic-catalogue { max-height: 230px; overflow-y: auto; padding: 3px; overscroll-behavior: contain; }
+    .cosmetic-preview { height: 280px; }
+}
 .wardrobe-panel, .ep-wallet-panel { width: auto; grid-column: 1 / -1; }
 #character-sheet :is(.wardrobe-panel, .ep-wallet-panel), #character-sheet :is(.wardrobe-panel, .ep-wallet-panel)[open] { max-height: none; flex: 0 0 auto; overflow: visible; }
 .mobile-mode .equipment-loadouts { max-height: 45%; touch-action: pan-y; overscroll-behavior: contain; }

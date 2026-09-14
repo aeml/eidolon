@@ -7,7 +7,7 @@ export class EPWalletUI {
         this.root.className = 'equipment-loadouts ep-wallet-panel';
         this.root.innerHTML = `<summary>Eidolon Points · EP</summary><div class="equipment-loadouts-body">
             <p data-balance>Open to load your balance.</p>
-            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. EP is reserved for cosmetic unlocks and EP-only casino play. Those spending features are still being built; exchanging now does not unlock them or grant VIP access.</p>
+            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance. EP-only casino games and VIP allowance are still being built; owning EP does not grant VIP access.</p>
             <label>EP to receive<input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="EP to receive"></label>
             <button type="button" data-review disabled>Review exchange</button>
             <div data-confirmation hidden><p data-cost></p><button type="button" data-confirm>Confirm permanent exchange</button> <button type="button" data-cancel>Cancel</button></div>

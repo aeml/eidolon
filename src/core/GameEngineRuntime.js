@@ -11,6 +11,7 @@ import { Projectile } from '../entities/Projectile.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
+import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestChronicleInspection } from './ChronicleInspection.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
 import { Stash } from '../entities/Stash.js';
@@ -68,6 +69,7 @@ class GameEngineRuntimeMethods {
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
         this.casino?.dispose();
+        this.uiManager?.cosmeticVendor?.dispose();
         this.publicEvents?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {
@@ -635,7 +637,7 @@ class GameEngineRuntimeMethods {
                             this.uiManager.toggleShop();
                             this.pendingInteraction = null;
 
-                        } else if (this.pendingInteraction instanceof ChronicleWitness) {
+                        } else if (this.pendingInteraction instanceof ChronicleWitness || this.pendingInteraction instanceof CosmeticVendor) {
                             this.player.targetPosition = null;
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');

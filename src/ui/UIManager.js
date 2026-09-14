@@ -11,6 +11,7 @@ import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { WardrobeUI } from './WardrobeUI.js';
 import { EPWalletUI } from './EPWalletUI.js';
+import { CosmeticVendorUI } from './CosmeticVendorUI.js';
 import { CharacterPreview } from './CharacterPreview.js';
 import { ChatUI } from './ChatUI.js';
 import { DirectTradeUI } from './DirectTradeUI.js';
@@ -409,6 +410,8 @@ export class UIManager {
             getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
         this.epWallet = new EPWalletUI({ host: document.querySelector('#character-sheet .char-sheet-body'),
             getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
+        this.cosmeticVendor = new CosmeticVendorUI({ getPlayer: () => this.lastPlayerRef,
+            send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
 
         // Inventory UI (extracted module) — handles inventory grid, equip slots,
         // shop/gamble, stash, item tooltips, drag-and-drop, split-stack, buyback, sell
@@ -626,6 +629,7 @@ export class UIManager {
         if (!player) return;
         this.lastPlayerRef = player;
         this.wardrobe?.refreshPlayer();
+        this.cosmeticVendor?.refreshPlayer();
         const signature = this.serializePlayerStats(player);
         if (signature === this.lastPlayerStatsSignature) {
             return;

@@ -8,6 +8,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Cosmetic vendor requests are separate from ordinary Gold item commerce.
+const (
+	MsgGetCosmeticVendor    = "get_cosmetic_vendor"
+	MsgBuyCosmetic          = "buy_cosmetic"
+	MsgCosmeticVendorResult = "cosmetic_vendor_result"
+)
+
 // EntitySnapshot stores minimal state for delta comparison
 // We only track fields that change frequently
 type EntitySnapshot struct {

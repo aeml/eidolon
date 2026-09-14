@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
+import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -114,8 +115,16 @@ export const EQUIPMENT_VISUAL_DESCRIPTORS = Object.freeze({
     'Orb of Mana': descriptor('trinket', 'trinket', 'orb', 0x3b4b76, 0x668fe2)
 });
 
+// Cosmetic render descriptors are NOT entries in the equippable item manifest.
+const RENDER_VISUAL_DESCRIPTORS = Object.freeze({
+    ...EQUIPMENT_VISUAL_DESCRIPTORS,
+    ...Object.fromEntries(COSMETIC_CATALOGUE.map(look => [look.name, Object.freeze({
+        ...EQUIPMENT_VISUAL_DESCRIPTORS[look.base], primary: look.primary, secondary: look.secondary
+    })]))
+});
+
 const EQUIPMENT_BASE_NAMES_BY_LENGTH = Object.freeze(
-    Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).sort((a, b) => b.length - a.length)
+    Object.keys(RENDER_VISUAL_DESCRIPTORS).sort((a, b) => b.length - a.length)
 );
 
 function geometry(key, create) {
@@ -203,7 +212,7 @@ function createMaterials(item, visual) {
 
 function baseItemName(item) {
     if (!item) return null;
-    if (item.baseName && EQUIPMENT_VISUAL_DESCRIPTORS[item.baseName]) return item.baseName;
+    if (item.baseName && RENDER_VISUAL_DESCRIPTORS[item.baseName]) return item.baseName;
     const fullName = String(item.name || '');
     return EQUIPMENT_BASE_NAMES_BY_LENGTH.find((name) => fullName.includes(name)) || null;
 }
@@ -211,7 +220,7 @@ function baseItemName(item) {
 export function resolveEquipmentVisualDescriptor(item) {
     const name = baseItemName(item);
     if (!name) return null;
-    return Object.freeze({ baseName: name, ...EQUIPMENT_VISUAL_DESCRIPTORS[name] });
+    return Object.freeze({ baseName: name, ...RENDER_VISUAL_DESCRIPTORS[name] });
 }
 
 function buildBlade(group, visual, mats) {

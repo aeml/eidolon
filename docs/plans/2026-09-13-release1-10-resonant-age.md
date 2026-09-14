@@ -1,5 +1,15 @@
 # 1.10 — The Resonant Age
 
+## Next feature batch — cosmetic vendor implemented locally
+
+September14: Veyra’s physical VIP Outfitter, twelve EP-only realm-themed cosmetics,
+real character preview/compare, confirmed durable purchases and wardrobe apply are
+implemented and focused-tested. Not yet deployed or version-packaged. See
+[vendor scope, evidence and pending patch notes](2026-09-14-vip-cosmetic-vendor.md).
+The existing1.9.5 CI34795245270 remains IN_PROGRESS (client/server and browser
+shards2/3,3/3 passed; shard1/3 running at last observation). Do not supersede it.
+Continue trusted VIP allowance/EP games while waiting; keep the full goal active.
+
 ## Alpha 1.9.5 — pushed, deployment in progress (September 14)
 
 Pushed **5d024b3b987ce74917491cff5fcb93548fe4308a** to origin/master.

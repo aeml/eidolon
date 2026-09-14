@@ -955,6 +955,8 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.handleWardrobe(msg)
 	case MsgGetEPWallet, MsgExchangeGoldForEP:
 		c.handleEPWallet(msg)
+	case MsgGetCosmeticVendor, MsgBuyCosmetic:
+		c.handleCosmeticVendor(msg)
 
 	case MsgEquip:
 		if c.playerID == "" {
