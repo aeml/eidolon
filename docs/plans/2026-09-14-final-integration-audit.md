@@ -5,7 +5,10 @@ login/notes and eight served HTML/JS/CSS files exactly match the release source.
 CI34840066682 is **terminal success, all ten jobs passed**, including live
 saved-character play and town healing/Well Rested. Watch42418 exited0; do not
 repeat this accepted release. Alpha1.9.13 poker recovery is pushed asf2fdea9b,
-CI34843057369 active, not yet verified live. The connected casino route
+CI34843057369 active. Exact public delivery for1.9.13 passed at12:46:27UTC:
+both domains matchf2fdea9b/Alpha1.9.13, DBready, and eight served HTML/JS/CSS files
+match transformed committed source. Final Live Release and Character QA still
+runs; this is not yet an all-gates acceptance. The connected casino route
 passed and exposed table clipping, now repaired and verified at four screen
 sizes plus the actual two-player flow. See
 [connected casino and layout evidence](2026-09-14-connected-casino-acceptance.md).
@@ -155,7 +158,7 @@ responsive-layout and desktop hardware-rendering results.
 | 1.6 encounters | Distinct boss footprints, four different repair jobs, party preparation/recovery and lockout copy | Actual group raid completion, all repair waves/objectives, wipe/re-entry/reconnect and individual saved receipts; targeted recheck of changed 1.6 mechanics |
 | 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming; [four connected clients pass ranked2v2 rounds, saved results, and actual disconnect/resume/restart penalty ownership](2026-09-14-connected-arena-acceptance.md) | Rendered team-round/result review in final cross-feature scope; retain prior financial/idempotency tests rather than recreating a season |
 | 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating; [connected recruitment/consent/readiness/token-resume roster](2026-09-14-connected-group-finder-acceptance.md) and [connected guild invites/calendar permissions/reschedule consent/actual restart persistence](2026-09-14-connected-guild-calendar-acceptance.md) pass | Integrated rendered group/raid/casino experience; retain accepted connected social evidence |
-| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [connected VIP blackjack shared hand/loss settlement/restart](2026-09-14-connected-vip-blackjack-acceptance.md); [connected EP cosmetic purchase/apply/replay/restart with unchanged Gold and gear](2026-09-14-connected-cosmetic-vendor-acceptance.md); prior membership/recovery evidence | Earned full public event, connected slots, integrated stairs/venue experience and busy-floor rendering |
+| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [VIP blackjack](2026-09-14-connected-vip-blackjack-acceptance.md), [EP cosmetic purchase/apply/replay/restart](2026-09-14-connected-cosmetic-vendor-acceptance.md), and [Gold/EP Earth-slot spin/resume/restart](2026-09-14-connected-slots-acceptance.md) pass; prior membership/recovery evidence | Earned full public event, connected bonus-choice/free-spin interaction, integrated rendered venue experience and busy-floor rendering |
 | 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence shipped in 1.9.1; bounded 50/100-client concurrency, controlled High/Low rendering and schema12 recovery accepted | Final cross-feature acceptance, cumulative notes and exact live 1.10 identities; retain the accepted performance/recovery evidence and its limits |
 
 This table organizes work; it does not check off the parent roadmap's detailed
