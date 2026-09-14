@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten correction retry26730; connected casino extension prepared
+## September 14 — Molten stopped for redundant retravel; connected casino17777 active
 
 Previous phone-feedback turn made a documentation change; the browser question
 is answered (Brave/Chrome), actual phone dungeon/party play remains untested.
@@ -20,22 +20,34 @@ assertion intact.103 movement tests and27 cleanup/preflight tests passed; scoped
 lint and Bash syntax passed. Future party cleanup now retains a private archive
 outside uploaded artifacts, without modifying expiry or claiming playable resume.
 
-Local commit **f8b9c7ac979d1595ac011ea3b92d4a41a2c5c0d1** is frozen in main QA tree
-`/tmp/eidolon-1-10-resonant-age-20260913`. **Native26730 ACTIVE**, confirmed by
-write_stdin, is the only owned GPU job: affected Molten retry, Normal70/Low,
+**Native26730 TERMINAL143**, deliberately stopped by the agent at about30minutes
+on f8b9c7ac: validated Playwright PID3891236 received SIGTERM. Not a gameplay
+failure, lost handle or observation timeout. This was Normal70/Low Molten,
 same StrongFighter/WiseCleric/BrilliantWizard/AgileRogue with5Rare9Uncommon each,
 no scaling/midrun grants/retries, original120minute expedition budget.
 Seed6417675202245662372/gen2/attempt0/no fallback. Cindermaw and Scorched Twins
-defeated; three all-member town recoveries/re-entries passed. Twins: Fighter
+defeated; four all-member town recoveries/re-entries passed. Twins: Fighter
 18680damage/2255taken, Cleric3098allyhealing, Wizard15886damage/692taken,
 Rogue14896damage/491taken. Pyrax onward and full dungeon acceptance still open.
 Log`/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`; owned suffix
-moltenparty0914b, ports18285/18286/4187. Continue this handle, do not restart it.
+moltenparty0914b. Fourth trip began with tank2869/3050HP and882/1240mana, causing
+another seven-room retrace; stopped this inefficient test strategy instead.
+Do not poll/restart26730. Wrapper removed API/Mongo/image; orphan static server
+3891321 separately validated/stopped. Ports18285/18286/4187 released.
+Actual new private checkpoint cleanup passed: four users dumped, file0600/dir0700,
+45581bytes/gzipPASS. Archive
+`/tmp/eidolon-party-checkpoint-moltenparty0914b-mU6lLQ/save.archive.gz`, SHA256
+`14a53fa38f5beffd63f5f77b812e83b727c9409f187c8989ba53911d90e1d228`.
+Not an accepted restored playable session. Retained log/copied test-results
+credential-scan PASS0changed using orphan static server's retained credential env.
 
 Independent tree`/tmp/eidolon-pvp-queue-integration-20260914` prepares an extension
 of existing casino-zone route: two physical chairs, actual shared blackjack
 wagers/cards/payouts, persistent table, next-round wager adjustment, clean camera
-exit/reconnect/guard. Lint/discovery only so far; run after26730, not concurrently.
+exit/reconnect/guard. **Native17777 ACTIVE**, only owned GPU run, main QA tree
+`/tmp/eidolon-1-10-resonant-age-20260913` now FROZEN clean98cac4a9.
+Log`/tmp/eidolon-connected-casino-20260914-nNqKZI/run.log`; owned suffix
+casinoconnected0914a, ports18285/18286/4187. Continue17777; no native result yet.
 Committed947c7b74/206e01e3; adds actual displayed per-second countdown observation.
 It also corrects the older casino check's undefined-equals-undefined Gold assertion:
 readPlayerState has no gold field; observe actual player.gold and require integers.
@@ -43,8 +55,9 @@ Later-party efficiency change keeps the first80% town recovery proof, then rests
 only below50%, avoiding repeated full-route travel with lightly spent pools.
 Solo policy, gear, enemies, budget and26730 source remain unchanged.16 focused
 tests passed0.789s, lint/diff passed; no native performance claim yet. Previous
-goal turn made committed test/doc progress; this turn also verified the same
-active26730, added countdown observation and this bounded recovery policy.
+goal turn made committed test/doc progress. This turn identified excessive
+retravel, intentionally stopped it with save retained, and started the shorter
+connected casino route. No Molten retry with the50% follow-up policy yet.
 No runtime change/version bump/push for test-only work. Full1.10 scope stays open;
 asynchronous dungeon persistence preference still unanswered. Root NEVER PUSH.
 
