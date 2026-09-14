@@ -1236,7 +1236,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		e.Gold = v.Gold
 		e.SkillPoints = v.SkillPoints
 		e.SelectedBranch = v.SelectedBranch
-		e.UnlockedSkills = v.UnlockedSkills
+		e.UnlockedSkills = append([]string(nil), v.UnlockedSkills...)
 		e.TalentPoints = v.TalentPoints
 		if v.TalentRanks != nil {
 			newRanks := make(map[string]int, len(v.TalentRanks))
@@ -1269,7 +1269,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		if len(v.Equipment) > 0 {
 			newEquip := make(map[string]Item, len(v.Equipment))
 			for slot, item := range v.Equipment {
-				newItem := item
+				newItem := cloneItem(item)
 				newItem.Description = "" // Strip description to save bandwidth
 				newEquip[slot] = newItem
 			}
@@ -1290,7 +1290,10 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		e.Radius = v.Radius
 	case TypeLoot:
 		// Loot needs item info
-		e.LootItem = v.LootItem
+		if v.LootItem != nil {
+			item := cloneItem(*v.LootItem)
+			e.LootItem = &item
+		}
 	}
 
 	return &e

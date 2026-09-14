@@ -127,15 +127,40 @@ func (w *World) GetState() map[string]*Entity {
 func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[string]*Entity {
 	w.Mu.RLock()
 	defer w.Mu.RUnlock()
+	return w.stateForPlayerLocked(playerID, viewDistance, w.copyEntity)
+}
+
+// GetStatesForPlayers shares detached, read-only actor snapshots only within one
+// broadcast. Callers must not mutate them. Nothing is cached across broadcasts;
+// entity membership stays locked while recipient views are assembled.
+func (w *World) GetStatesForPlayers(playerIDs []string, viewDistance float64) map[string]map[string]*Entity {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	copies := make(map[string]*Entity)
+	copyOnce := func(entity *Entity) *Entity {
+		if snapshot, ok := copies[entity.ID]; ok {
+			return snapshot
+		}
+		snapshot := w.copyEntity(entity)
+		copies[entity.ID] = snapshot
+		return snapshot
+	}
+	states := make(map[string]map[string]*Entity, len(playerIDs))
+	for _, playerID := range playerIDs {
+		states[playerID] = w.stateForPlayerLocked(playerID, viewDistance, copyOnce)
+	}
+	return states
+}
+
+func (w *World) stateForPlayerLocked(playerID string, viewDistance float64, copyActor func(*Entity) *Entity) map[string]*Entity {
 
 	player, ok := w.Entities[playerID]
 	if !ok {
 		return make(map[string]*Entity)
 	}
 
-	player.Mu.RLock()
-	playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
-	player.Mu.RUnlock()
+	self := copyActor(player)
+	playerX, playerZ, playerInstanceID := self.X, self.Z, self.InstanceID
 
 	// Query Grid
 	nearby := w.Grid.Nearby(playerX, playerZ, viewDistance, playerInstanceID)
@@ -145,7 +170,7 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 	state := make(map[string]*Entity, len(nearby)+10)
 
 	// Always include self
-	state[playerID] = w.copyEntity(player)
+	state[playerID] = self
 
 	// Pre-compute squared view distance to avoid sqrt in loop
 	viewDistSq := viewDistance * viewDistance
@@ -167,7 +192,13 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 		distSq := dx*dx + dz*dz
 
 		if distSq <= viewDistSq {
-			state[vID] = w.copyEntity(v)
+			snapshot := copyActor(v)
+			// Recheck the detached position/instance, not just the live candidate.
+			// A shared snapshot must never cross a recipient's instance or radius.
+			dx, dz := snapshot.X-playerX, snapshot.Z-playerZ
+			if snapshot.InstanceID == playerInstanceID && dx*dx+dz*dz <= viewDistSq {
+				state[vID] = snapshot
+			}
 		}
 	}
 	return state

@@ -741,6 +741,14 @@ func broadcastState() {
 	}
 	sessionsMu.Unlock()
 
+	playerIDs := make([]string, 0, len(clients))
+	for _, client := range clients {
+		playerIDs = append(playerIDs, client.playerID)
+	}
+	// Recipient maps share immutable actor copies for this broadcast only. Wire
+	// encoding and per-client change tracking below do not mutate those copies.
+	states := world.GetStatesForPlayers(playerIDs, stateBroadcastRadius)
+
 	// 2. Process in parallel
 	var wg sync.WaitGroup
 
@@ -758,7 +766,11 @@ func broadcastState() {
 
 			// Keep actors known well outside the camera so jump visuals can start
 			// before a remote jumper enters the local player's visible area.
-			currentState := world.GetStateForPlayer(c.playerID, stateBroadcastRadius)
+			currentState := states[c.playerID]
+			if currentState == nil {
+				// Session changed characters after the recipient list was captured.
+				return
+			}
 			playerEntity := world.GetEntityCopy(c.playerID)
 			if playerEntity != nil && playerEntity.InstanceID != "" {
 				world.UpdateDungeonRoomProgress(c.playerID, playerEntity.X, playerEntity.Z)
