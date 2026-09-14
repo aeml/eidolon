@@ -52,6 +52,16 @@ rollback over post-upgrade player transactions.
 
 ## Delivery
 
+September14 03:45UTC: both public release endpoints report exact
+`08f020bcba55a187f83bc8ddf5a20980fde88b15`, Alpha1.9.8, database ready.
+Deploy Server job103851077143 confirms read-only preflight `database=11 supported=12`,
+then a consistent recovery point at
+`/home/aeml/eidolon/server/backups/save-upgrade-20260914T034515Z-ZFFYBe`.
+Mongo/journal archive checks passed; the old API remained stopped until target
+admission. Final live character QA in CI34802207933 subsequently passed; the
+entire run is TERMINAL SUCCESS. This is actual production upgrade-backup
+evidence, separate from the earlier disposable restore proof.
+
 Packaged locally as **Alpha1.9.8**, with cumulative player-facing notes protecting
 EP progress and explaining safe upgrades. Login, package/lock, release manifest,
 server/container/deploy/CI and isolated-QA defaults are synchronized. Version and

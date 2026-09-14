@@ -1,5 +1,13 @@
 # 1.10 final integration — evidence and remaining work
 
+Latest checkpoint:1.9.8 is verified live with all CI gates passed and actual
+schema-upgrade backup confirmed. Snapshot sharing now passes the original
+50/100-client bounded criteria; see [accepted rerun evidence](2026-09-14-broadcast-snapshot-sharing.md).
+The earlier100-client failure below is retained baseline evidence, not the
+current optimization outcome.1.9.9 packages that accepted change for publication;
+full earned campaign/raid/phone/visual acceptance remains open. Do not repeat
+the completed concurrency or EP backup checks for documentation changes.
+
 September 14, 2026. This is an **open acceptance audit**, not a declaration of
 1.10 completion. Preserve the full [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md),
 [progression requirements](2026-09-07-progression-balance-and-investigations.md),

@@ -1,5 +1,26 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.9 prepared — accepted snapshot-sharing correction
+
+Same-target50/100-player bounded reruns **PASS** on frozen9d3f4e1c after1.9.8
+completed all gates.100actual admissions,237702stateframes, no transport/decode
+errors, all sampledDBready/maxheap182125088bytes. Exact cleanup completed;
+[full evidence and limits](2026-09-14-broadcast-snapshot-sharing.md). Do not rerun
+the accepted workload for labels/docs. Version/login/notes synchronized1.9.9,
+257historychecksPASS4.413s, Go build/changedlint/diffPASS. Ready to publish and
+verify exact live identity; not yet a1.9.9live claim. Campaign/raid/device scope
+remains open, not replaced by these bounded concurrency results.
+
+## Alpha1.9.8 verified live — all gates passed
+
+CI **34802207933 TERMINAL SUCCESS**. Both public endpoints match
+**08f020bcba55a187f83bc8ddf5a20980fde88b15**, Alpha1.9.8, database ready; live
+login HTML includes the1.9.8 label and cumulative patch-note entry. Actual
+schema11→12 preflight/consistent backup verified in Deploy Server job103851077143:
+`/home/aeml/eidolon/server/backups/save-upgrade-20260914T034515Z-ZFFYBe`.
+Do not poll/restart completed1.9.8 CI again. Performance work below is still
+local until its affected bounded load acceptance and separate publication.
+
 ## Local performance correction — awaiting affected load acceptance
 
 [Per-broadcast immutable snapshot sharing](2026-09-14-broadcast-snapshot-sharing.md)

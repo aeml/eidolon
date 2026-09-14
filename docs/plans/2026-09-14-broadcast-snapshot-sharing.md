@@ -3,6 +3,37 @@
 Follows the measured [100-player memory-budget failure](2026-09-14-concurrency-trials.md).
 Local implementation, not yet a deployed performance claim.
 
+## Accepted bounded load rerun — September14
+
+After1.9.8 finished all CI/live checks, tested frozen source
+`9d3f4e1c67b5cfe656e650b285396ba1c4dc6465` (runtime22a56525 plus docs), on the
+same Ryzen7 5700G/31GB shared host, isolated loopback API/Mongo7.0.16 and existing
+mixed-script loadtester. Original error, frame-rate, DB readiness and memory
+limits retained. No parallel native Chrome/deployment gate or new soak.
+
+| Players | Duration | Actual admissions / state frames | Read/write/decode errors | Sampled heap maximum |
+| --- | --- | --- | --- | --- |
+| 50 |120s|50 /175,715|0/0/0|124,514,240bytes,26samples|
+|100 |120s|100 /237,702|0/0/0|182,125,088bytes,28samples|
+
+Both stages **PASS**: aggregate frames exceed5per configured client-second,
+all health samples DBready, heap below512MiB and four times BOTH the original
+healthy baseline82,548,176bytes and each stage's first sample(84,619,568 /65,671,368).
+After100clients disconnected, final sampled heap80,831,096bytes. These prove
+bounded admission/replication/memory behavior, not Internet latency, browser FPS,
+actual raid clears or long-duration retention. The old stopped100-player result
+remains a failed baseline; it is not retroactively a pass.
+
+Evidence: `/tmp/eidolon-shared-load-20260914-AfsRLL/` with `fifty-clients.log`,
+`fifty-health.jsonl`, `hundred-clients.log`, `hundred-health.jsonl`.
+All client/sampler processes ended. API24227 exited normally BEFORE Mongo
+`eidolon-shared-load-mongo-20260914` was stopped/removed. Ports38761/38762 absent.
+No production accounts/currency/schema/data modified by these load tests.
+Do not repeat these accepted stages for version-label/documentation changes.
+
+Packaging asAlpha1.9.9 with synchronized login/runtime and cumulative notes;
+publish after final packaging checks. Actual1.9.8 delivery is already verified.
+
 `World.GetStatesForPlayers` assembles recipient views under the existing world
 membership read lock and copies each relevant actor once per broadcast. Recipient
 maps share those detached snapshots; no cross-tick/global cache or new wire format
@@ -35,10 +66,8 @@ visibility radius, tick frequency, rewards or movement rules are changed.
   `/tmp/eidolon-batch-state-benchmark-20260914.log`.
 
 Implemented at **22a56525746f5ed25026db0d29da5caf854aa9b5**; full Go build passed.
-Before publication: repeat only affected50/100-client bounded
-stages on a frozen compiled commit with unchanged health/heap/error targets,
-record the result and exact cleanup, then package accurate cumulative patch notes.
-Wait for exact1.9.8 delivery (CI34802207933); do not supersede its running job.
+The affected bounded stages and1.9.8 delivery are now complete above. Finish
+packaging checks, publish and verify the exact1.9.9 deployment.
 Suggested player-facing note: reduced repeated actor-state allocations in crowded
 areas while preserving visible equipment, effects and instance boundaries.
 
