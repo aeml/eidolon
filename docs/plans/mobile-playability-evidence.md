@@ -1,14 +1,18 @@
 # Phone playability — baseline evidence
 
-## Current user feedback — September 12, 2026
+## Current user feedback — September 14, 2026
 
 The user responded **“yes everything looks good”** to a request to try
 `play.eidolonrealms.com` on their actual phone and assess combat readability and
 the bag, quest and skill menus. Record this as positive user-reported acceptance
 of those areas on the live site, not as an agent-operated physical-device test.
 
-Phone model, browser, orientation, session length and exact tested build were
-not supplied. This does not prove every supported device, sustained performance,
+On September 14, the user clarified that they use **Brave or Chrome** and have
+**not tried a dungeon or party session on their phone**. General mobile-UI
+feedback remains positive; physical-phone dungeon and party checks remain open.
+
+Phone model, operating system, orientation, session length and exact tested build
+were not supplied. This does not prove every supported device, sustained performance,
 all touch targeting/encounter cases or the later 1.2–1.3 ergonomic refinements.
 The current interface now has positive user feedback; compatibility/performance
 and remaining scope gates stay separate.

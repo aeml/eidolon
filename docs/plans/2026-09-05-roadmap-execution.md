@@ -5,7 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — 1.9.11 all ten jobs accepted; Molten71836 active
+## September 14 — Molten correction retry26730; connected casino extension prepared
+
+Previous phone-feedback turn made a documentation change; the browser question
+is answered (Brave/Chrome), actual phone dungeon/party play remains untested.
+Live remains accepted1.9.11/bd566893, all10CI34829019013 jobs terminal success.
+
+**71836 is TERMINAL exit1**, not active:21.6minutes, Cindermaw/Scorched Twins and
+two town recoveries passed, but Pyrax escape moved0.600915 of1.37requested units.
+No full clear or claim. Logs/results retained at
+`/tmp/eidolon-molten-party-20260914-ZW8DKK/`; owned services removed, no Molten save
+archive. Larger fully checked3unit escape keeps the old failing displacement
+assertion intact.103 movement tests and27 cleanup/preflight tests passed; scoped
+lint and Bash syntax passed. Future party cleanup now retains a private archive
+outside uploaded artifacts, without modifying expiry or claiming playable resume.
+
+Local commit **f8b9c7ac979d1595ac011ea3b92d4a41a2c5c0d1** is frozen in main QA tree
+`/tmp/eidolon-1-10-resonant-age-20260913`. **Native26730 ACTIVE**, confirmed by
+write_stdin, is the only owned GPU job: affected Molten retry, Normal70/Low,
+same StrongFighter/WiseCleric/BrilliantWizard/AgileRogue with5Rare9Uncommon each,
+no scaling/midrun grants/retries, original120minute expedition budget.
+Seed6417675202245662372/gen2/attempt0/no fallback. Cindermaw defeated and first
+all-member town recovery/re-entry passed by163s. Not yet full dungeon acceptance.
+Log`/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`; owned suffix
+moltenparty0914b, ports18285/18286/4187. Continue this handle, do not restart it.
+
+Independent tree`/tmp/eidolon-pvp-queue-integration-20260914` prepares an extension
+of existing casino-zone route: two physical chairs, actual shared blackjack
+wagers/cards/payouts, persistent table, next-round wager adjustment, clean camera
+exit/reconnect/guard. Lint/discovery only so far; run after26730, not concurrently.
+It also corrects the older casino check's undefined-equals-undefined Gold assertion:
+readPlayerState has no gold field; observe actual player.gold and require integers.
+No runtime change/version bump/push for test-only work. Full1.10 scope stays open;
+asynchronous dungeon persistence preference still unanswered. Root NEVER PUSH.
+
+## Historical September 14 — 1.9.11 accepted; initial Molten71836 start
 
 This turn closedexact **CI34829019013 TERMINALSUCCESS/all10jobsPASS** including
 livecharacter/townhealing/WellRested. Watch59106terminalexit0, do notrepoll/restart.
