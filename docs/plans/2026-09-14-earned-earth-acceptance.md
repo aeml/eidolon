@@ -1,5 +1,16 @@
 # Earned Earth acceptance — first attempt stopped; travel correction verified
 
+## Corrected campaign attempt — active
+
+Native **10782**, clean source89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927,
+same strict fresh-Wizard/no-daily/no-grant route and ordinary town recovery.
+RunIDearthready0914r2; log `/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/run.log`.
+Opening/diary has passed without deaths; watch phase is active. Follow this
+same handle and leave runtime/loaded route modules unchanged. Full outcome is
+unknown; no new run should be started alongside it. Root ledger has ownership
+and ports. The completed first-attempt and short-travel evidence below remains
+separate, not substituted for this attempt's remaining chapters.
+
 ## Corrected travel — native pass
 
 Short existing-wrapper route `expedition-travel` on clean9723dd21 passed in2.2m,
@@ -60,7 +71,8 @@ disposable services. No runtime or route module changed during the attempt.
   and rested regeneration0.11 verified. Opening manually pays100Gold/100XP;
   diary pays25Gold/200XP. Diary completion persists across reconnect, level3.
 - Earth watch: **605.076s**,40/40 server-credited kills, no deaths,19 ordinary
-  town-rest stops. No training stop; nine gear slots filled with earned drops.
+  town-rest stops. No training stop; nine inventory slots occupied by earned
+  items (the logged `occupiedSlots` field counts bag slots, not equipped gear).
   Immediately before claim: level6,372XP toward725,695Gold. Explicitly asserted
   quest was not completed and paid nothing before clicking **Complete Quest**.
   Manual Ilyra turn-in then grants100Gold/1593XP, shows exact authored completion
