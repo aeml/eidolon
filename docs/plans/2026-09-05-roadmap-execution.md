@@ -5,6 +5,19 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — second Abyssal boss defeated; same full run active
+
+Fresh45s handle poll confirms **20006 ACTIVE**, same frozen042fd742 source and
+seed. DrownedChoir confirmed defeated; all four alive. Boss totals: Fighter
+11940damage/1234taken, Cleric2140allyhealing/592taken, Wizard11342damage,
+Rogue18468damage/1104taken. At1232.96s routeelapsed:two of five bosses cleared,
+nine room traversals/212leadersteps/two townreturns,192.21s total combat.
+No fullclear/quest-handoff or new deployment claim. Continue same handle/log;
+no restart, no second GPU job, no edits to frozen native source.
+Previous turn verified wait; this turn verified waits plus actual second-boss
+evidence. Pending55ae1d45 guide correction remains on its separate branch for
+merge after this run terminates; fullgoal remains active, rootneverpush.
+
 ## September 14 — first Abyssal boss defeated; same full run continues
 
 Native **20006 ACTIVE** at another45s handle poll; source042fd742 clean/frozen,
