@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { openDungeonGuide } from './dungeon-guide.js';
+import { readPlayerState } from './helpers.js';
 
 const party = page => page.evaluate(() => window.game.uiManager.social.partyData);
 
@@ -31,7 +32,7 @@ export async function formAndEnterElementalRaid(actors, raidType, { enter = true
     }
     const leader = actors[0];
     for (const actor of actors) {
-        expect(await actor.page.evaluate(() => window.game.currentInstanceType)).toBe('overworld');
+        expect((await readPlayerState(actor.page)).instanceType).toBe('overworld');
         expect((await party(actor.page))?.members?.length || 0).toBe(0);
     }
     await openParty(leader.page);

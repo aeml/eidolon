@@ -1,5 +1,15 @@
 # 1.10 final integration — evidence and remaining work
 
+First five-player raid invocation29311 stopped before formation: the new helper
+expected raw `currentInstanceType === 'overworld'`, but initial town state is
+null. All five legal builds loaded/replicated; no raid entered or combat credit.
+Use existing `readPlayerState` normalization, as the dungeon route does. Native
+exit1, sanitized0, owned containers removed. Log
+`/tmp/eidolon-earth-raid-20260914-tRhG1L/run.log`; private checkpoint
+`/tmp/eidolon-party-checkpoint-earthraid0914a-T1yGnX/save.archive.gz`, SHA256
+`5dae8157b36b3af5b6683fdf83642eb0eb7769e6e8d979c066fbd5f651be2d54`.
+This is a QA assumption failure, not a demonstrated gameplay defect or raid clear.
+
 Normal70 Molten now **accepted**: native49494 terminalexit0/54.1m, all five bosses,
 four geared roles, zero deaths, four town recoveries, each manual Fire handoff
 and re-login saved rewards. Exact f2fdea9b; cleanup/checkpoint verified. See
