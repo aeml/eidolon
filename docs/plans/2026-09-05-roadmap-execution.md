@@ -5,6 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — 1.9.11 CI caught exact-command assertion; correction ready
+
+This turn madeprogress: exactCI clientfailure diagnosed and corrected, not a
+blindrerun. **34827963234 still IN_PROGRESS** atlastghcheck: ServerTestsrunning,
+ClientTestscompletedfailure. ServerordinaryGotests passed, racedetector running
+inlastwatchoutput. No deploymentstarted; live remainsaccepted1.9.10/4bab14fa.
+**Watch79441 ACTIVE**, `/tmp/eidolon-1-9-11-ci-watch.log`, interval30s,
+`gh run watch34827963234 --exit-status`. Continue samewatch untilterminal;
+do notsupersede CI or treattheobservationtimeasyield failure.
+
+Clientjob103924362824 log retained `/tmp/eidolon-1-9-11-client-ci.log`.
+Fullrun passed6849tests/455suites; solefailure VersionPresentation historical1.0.59
+assertion expectedtheexactoldthree-file interfacecommand. Appendingnewtracker
+fixture changedthatcommand. Earlierlocalversionchecks precededthatfinalcommand
+edit; CIcorrectlycaughtmissedcombination. Not a runtime/questbug.
+
+**bd566893** committedlocally in independentPVPtree/branch, clean/notpushed.
+Replacesexactcommandwithrequiredoldfile retention; preservesexistingplan/command
+parity andaddsassertionnewtrackerfixture reallyreachesCIinterfacestage.
+No coverage removed, no runtime/versionchange. **298tests/5suitesPASS4.476s**,
+native80208terminalsuccess, lint/diffPASS; log
+`/tmp/eidolon-1-9-11-ci-correction-tests.log`. Preserve same1.9.11 version since
+notdelivered. Next: waitold34827963234terminal, pushbd566893HEAD:master from
+independentworktree, captureexactnewCI andverifydeployment. RootNEVERPUSH.
+
+Main `/tmp/eidolon-1-10-resonant-age-20260913` nowfast-forwardedcleanf9e47fbd
+(notbd566893yet). No localGPUgameplay jobs orownedQAcontainers remain.
+11985terminal143/threebosssavedarchive/cleanup remain asbelow; don'trestart.
+Othercompletedtest/CIhandles remainclosed, don'trepeatacceptedcampaign/backup/
+performance/sockettests forthisassertion-onlycorrection. Full1.10goal staysactive.
+
 ## September 14 — Alpha1.9.11 pushed; Abyssal11985 signal termination preserved
 
 Previous turn madeprogress(tracker implementation). This turn completed targeted
