@@ -5,6 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — EP schema rollback defect fixed;1.9.8 packaged locally
+
+Previous turn PROGRESS (acceptance evidence audit). This turn implemented a
+real recovery defect found while1.9.7 CI runs: schema11 predates EP, so old full-
+character writers could silently discard wallets/receipts. New no-op schema12
+marker `ep_wallet_and_casino_receipts` fences old binaries and triggers the
+existing pre-upgrade backup. No backfill, grants, conversions or balance changes.
+
+Active worktree `/tmp/eidolon-1-10-resonant-age-20260913`, clean HEAD **982f8383**,
+Alpha1.9.8 packaged with synchronized runtime/login and cumulative patch notes.
+Implementation **a881b4a3**. LOCAL ONLY, NOT PUSHED. Authoritative implementation,
+proof and delivery caveats: `docs/plans/2026-09-14-ep-schema-recovery.md`.
+
+Focused fence RED on11, GREEN on12. Actual owned oldschema11 executable refuses
+preflight AND normal startup after real migration to12; account raw BSON with
+EP/receipts/ownership stays exact, PASS1.026s. Log
+`/tmp/eidolon-ep-schema-guard-20260914.log`. An initial mistyped test selector ran
+zero tests; corrected named run above actually executed and passed. Owned
+Mongo `eidolon-ep-schema-qa-20260914` stopped/removed, no current QA process.
+
+Actual backup/restore **PASS21.826s**, exact owned project
+`eidolon-backup-proof-1789354961807565073`, no remaining containers/images.
+Restores EP83/monthly100/exchange1/wager-18, VIP dates, cosmetics, pending EP
+table operation, resources/Gold/auction receipts/indexes/schema/private journal.
+Failure restarts prior image, successful backup fences writer, absent-API case
+passes. This uses a writer stand-in, not actual post-restore gameplay.
+Fixture services network_mode:none avoids disturbing native Chrome. Log
+`/tmp/eidolon-ep-backup-restore-20260914.log`. Existing deploy testsPASS0.333s.
+256version/historyPASS2.479s, Go build-all/changedlint/diff pass. No production
+data, wager, VIP grant, schema marker or backup changed by these local checks.
+
+**NEXT:** exact1.9.7 **CI34800160671 still IN_PROGRESS**, server/client/all3browser
+shards SUCCESS; **Predeploy Character QA now IN_PROGRESS** (shared GPU owned).
+Continue SAME handle, finish all jobs and verify both live endpoints3460ccfb/
+Alpha1.9.7. Then push prepared **982f8383 HEAD:master from ACTIVE worktree only**,
+track its newCI and exact1.9.8 delivery. Do not supersede1.9.7 or claim1.9.8live.
+Last verified live remainsf99bc61e/1.9.6. Root ledger-only, NEVER PUSH ROOT.
+Earned current-curve campaign/raids and remaining1.10 integration remain open;
+retain prior geared Verdant clear instead of repeating it. No new soak launched.
+
 ## September 14 — final integration evidence reconciled
 
 Previous user-facing NPC confirmation did not add implementation progress. This
