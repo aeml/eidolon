@@ -5,6 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Alpha1.9.11 pushed; Abyssal11985 signal termination preserved
+
+Previous turn madeprogress(tracker implementation). This turn completed targeted
+rendered acceptance, fixed keyboard/scroll clipping, synchronized version/notes,
+and pushed **f9e47fbd520289c02ed947fc077516c7a7c802c0** to origin/master.
+**CI34827963234 IN_PROGRESS**, exactSHA confirmed by gh. Follow this run; do not
+supersede/restart it. Last verified live remains1.9.10/4bab14fa/all-ten-success.
+Push16114 terminalsuccess. No1.9.11 live claim yet. Root stays ledger-only/neverpush.
+
+Independent `/tmp/eidolon-pvp-queue-integration-20260914` cleanHEADf9e47fbd, branch
+work/pvp-queue-integration-20260914. Includes031e43ebtracker,8d962ed4polish/version,
+f9e47fbdregional interruption docs. Main tree still1d62befa, no longer frozen for
+a native run but not yet fast-forwarded. Avoid new GPU gameplay while CI runs.
+
+Tracker final: one complete24px snap-scroll row, everyselectedquest reachable,
+fullhovertext, Journalshortcut, nativekeyboardscroll withoutSpace-cast bubbling;
+desktopsolo andphone unchanged. **82unit tests/3suites PASS3.364s** (48879terminal),
+**2rendered viewports PASS13.7s** (30204terminal), screenshots1280×720/1440×900
+both inspected. Initial3947pass13.3s exposedpartialrow oninspection; final snap
+alignment assertion coversfix. CPU-onlyHTML/CSS fixture suppressesgameboot and
+disablesGPU/WebGL/software rasterizer, verifiesnogame/noWebGL. Ran safely beside
+native11985, not anotherGPUgameclient. Nowincluded existingCIinterface stage;
+39smokeplan/runner/coverage checksPASS7.477s(15216terminal). Packaging268testsPASS
+2.8s(96505terminal), targetedlint/diffPASS. Initial3617 failedthree staleversion
+assertions, corrected; historical1.9.10notes preserved. Do notrepeatforCI/docs.
+Retained screenshots/report/testlogs `/tmp/eidolon-party-tracker-20260914-3AQBD8/`.
+Temporary CPUlayout server4199closed. NoownedlocalGPU job remains.
+
+**11985 TERMINAL EXIT143** after1306.99s(~21.8min), source1d62befa/Low/newseed.
+Driver andbrowser processes gone; orphanAPI/Mongo/staticserver remained. Signal
+sourceunknown, not a loggedtestassertion/deadlinefailure. **Do not poll/restart.**
+Threeactualbosses defeated: Tiderend,Choir,Goliath. GoliathF14338damage/2148taken,
+C2730allyheal/452taken,W14821damage,R19330damage/888taken. Threetownreturns passed.
+No fullclear/finalboss/manualclaim accepted. Originalfullgoal remains open.
+
+Stopped exactQA writergracefully, privateMongo dump24docs/4users; all4readback
+L61/1651Gold/47381XP/dungeonprogress. Archive0600/directory0700:
+`/tmp/eidolon-abyssal-party-low-20260914-qlTkOo/party-three-boss-checkpoint.archive.gz`
+SHA256 **73ab71f645d352c0c5b5f62697b7cdb604df23aaa388318b83c573aaa9538e6a**,
+gzipintegrityPASS. Privateinterruptedtest-results/log retained; no credentialscan,
+fullreport, restoreorresumeresult claim. **Ownedservicescleaned**: API/Mongo with
+anonymousvolumes, exactQAimage, validatedorphanstaticservergroup3044420 removed;
+ports18285/18286/4187released andcontainersabsent. Progressrecoverablefromarchive.
+No production/unrelatedservices touched. See publishedregionaldungeondoc.
+
+Next: followexact1.9.11CI and verifyfrontend/backend/login/module identity after
+delivery, then remainingcampaign/group/casino/raid acceptance. Do not automatically
+throwaway savedregionalprogress and replay the whole route due to interrupted
+observation. Physicalphoneparty/dungeon still untried; Brave/Chromealreadyrecorded.
+
 ## September 14 — party quest tracker fixed locally; Abyssal second boss passed
 
 User's phone feedback remains recorded: Brave/Chrome, general UI positive,
