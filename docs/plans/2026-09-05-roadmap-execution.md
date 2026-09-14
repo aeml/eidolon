@@ -5,6 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 —1.9.9 verified live; strict earned Earth run started
+
+Previous turn VERIFIED WAIT on CI34804655770. This turn completed delivery:
+**34804655770 TERMINAL SUCCESS**, all ten jobs including live saved-character
+gameplay and town recovery/Well Rested. Do not repoll/restart it. Both public
+endpoints, login label, cumulative1.9.9 entry and runtime query match
+**3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4 / Alpha1.9.9**, database ready.
+
+After terminal native CI, started ONE existing `fresh-story-ready` route from
+clean **ee03850487b34d6241365494b49260092e635a85** (runtime3481f89a) in activeWT
+`/tmp/eidolon-1-10-resonant-age-20260913`. Native session **31615**, log outside
+Playwright's cleared output at `/tmp/eidolon-earned-earth-20260914-i96Zm2/run.log`.
+RunID `earthready0914i96`, API18285/Mongo18286/Web4187, host network/loopback,
+fresh Wizard, normal town-rest recovery enabled. No grants/daily shortcuts,
+legacy comparison flags explicitly unset; local Playwright zero-retry default.
+Wrapper owns disposable API/Mongo/image and cleanup. No production accounts
+or stale September12 containers modified. Await same session; do not restart
+because an observation expires. Initial process started; outcome not yet known.
+
+This checks seven earned Earth chapters and level30 dungeon readiness, NOT a
+full campaign or an uninterrupted-resource route (it has persistence reconnects).
+Its185-minute outer watchdog is an automation limit, not a human pacing target.
+Retain accepted four-player Verdant, load, backup and rendering evidence.
+All other family/raid/campaign/cross-feature requirements remain open. Actual
+elemental raid runs need at least five prepared participants, not weakened entry
+rules to reuse the four-player dungeon fixture. Root remains ledger-only.
+
 ## September 14 — controlled High/Low rendering accepted
 
 Previous user-response turn verified the named-resident fix is already live in
