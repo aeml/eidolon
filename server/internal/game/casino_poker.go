@@ -18,7 +18,7 @@ const PokerMaxBuyIn = 100000
 // Each hand escrows 100–100,000 normal Gold per consenting real player. All remaining
 // stack and winnings cash out after that hand; there is no rake or house player.
 func ValidPokerBuyIn(amount int) bool {
-	return amount >= 100 && amount <= PokerMaxBuyIn && amount%100 == 0
+	return ValidCasinoBet("poker", "gold", amount)
 }
 
 type PokerEntry struct {
@@ -46,6 +46,7 @@ type PokerPlayer struct {
 type PokerRound struct {
 	ID         string        `json:"id"`
 	Rules      string        `json:"rules"`
+	Currency   string        `json:"currency,omitempty"`
 	Revision   uint64        `json:"revision"`
 	Phase      string        `json:"phase"`
 	Street     string        `json:"street"`
@@ -62,6 +63,10 @@ type PokerRound struct {
 }
 
 func NewPokerRound(id string, entries []PokerEntry, previousButtonSeat int, now time.Time) (*PokerRound, error) {
+	return NewPokerRoundForCurrency(id, entries, previousButtonSeat, now, "")
+}
+
+func NewPokerRoundForCurrency(id string, entries []PokerEntry, previousButtonSeat int, now time.Time, currency string) (*PokerRound, error) {
 	deck := make([]int, 52)
 	for i := range deck {
 		deck[i] = i
@@ -74,10 +79,14 @@ func NewPokerRound(id string, entries []PokerEntry, previousButtonSeat int, now 
 		j := int(n.Int64())
 		deck[i], deck[j] = deck[j], deck[i]
 	}
-	return newPokerRound(id, entries, previousButtonSeat, now, deck)
+	return newPokerRoundForCurrency(id, entries, previousButtonSeat, now, deck, currency)
 }
 
 func newPokerRound(id string, entries []PokerEntry, previousButtonSeat int, now time.Time, deck []int) (*PokerRound, error) {
+	return newPokerRoundForCurrency(id, entries, previousButtonSeat, now, deck, "")
+}
+
+func newPokerRoundForCurrency(id string, entries []PokerEntry, previousButtonSeat int, now time.Time, deck []int, currency string) (*PokerRound, error) {
 	if id == "" || len(entries) < 2 || len(entries) > 6 || previousButtonSeat < -1 || previousButtonSeat > 5 {
 		return nil, errors.New("poker requires two to six real funded players")
 	}
@@ -91,10 +100,11 @@ func newPokerRound(id string, entries []PokerEntry, previousButtonSeat int, now 
 		}
 		seenCards[card] = true
 	}
-	r := &PokerRound{ID: id, Rules: PokerRulesVersion, Revision: 1, Phase: "playing", Street: "preflop", Deck: append([]int(nil), deck...), LastRaise: PokerBigBlind, CurrentBet: PokerBigBlind}
+	smallBlind, bigBlind := PokerBlinds(currency)
+	r := &PokerRound{ID: id, Rules: PokerRulesVersion, Currency: currency, Revision: 1, Phase: "playing", Street: "preflop", Deck: append([]int(nil), deck...), LastRaise: bigBlind, CurrentBet: bigBlind}
 	players, seats := map[string]bool{}, map[int]bool{}
 	for _, e := range entries {
-		if e.PlayerID == "" || players[e.PlayerID] || e.Seat < 0 || e.Seat > 5 || seats[e.Seat] || !ValidPokerBuyIn(e.BuyIn) {
+		if e.PlayerID == "" || players[e.PlayerID] || e.Seat < 0 || e.Seat > 5 || seats[e.Seat] || !ValidCasinoBet("poker", currency, e.BuyIn) {
 			return nil, errors.New("invalid funded poker seat")
 		}
 		players[e.PlayerID], seats[e.Seat] = true, true
@@ -119,8 +129,8 @@ func newPokerRound(id string, entries []PokerEntry, previousButtonSeat int, now 
 		small = r.Button
 	}
 	big := (small + 1) % n
-	r.commit(small, PokerSmallBlind)
-	r.commit(big, PokerBigBlind)
+	r.commit(small, smallBlind)
+	r.commit(big, bigBlind)
 	r.advance(big, now)
 	return r, nil
 }
@@ -303,7 +313,8 @@ func (r *PokerRound) advance(previous int, now time.Time) {
 		for i := 0; i < count; i++ {
 			r.Board = append(r.Board, r.takeCard())
 		}
-		r.CurrentBet, r.LastRaise = 0, PokerBigBlind
+		_, bigBlind := PokerBlinds(r.Currency)
+		r.CurrentBet, r.LastRaise = 0, bigBlind
 		for i := range r.Players {
 			r.Players[i].StreetBet, r.Players[i].Acted, r.Players[i].ReopenAt = 0, false, 0
 		}
@@ -600,7 +611,12 @@ func (r *PokerRound) View(playerID string) PokerView {
 
 func (r *PokerRound) Validate() error {
 	bad := func() error { return errors.New("invalid saved poker round") }
-	if r.ID == "" || r.Rules != PokerRulesVersion || r.Revision == 0 || len(r.Players) < 2 || len(r.Players) > 6 || r.Button < 0 || r.Button >= len(r.Players) || r.CurrentBet < 0 || r.CurrentBet > PokerMaxBuyIn || r.LastRaise < 10 || r.LastRaise > PokerMaxBuyIn {
+	if r == nil {
+		return bad()
+	}
+	_, maximum, step := CasinoBetLimits("poker", r.Currency)
+	_, bigBlind := PokerBlinds(r.Currency)
+	if step == 0 || r.ID == "" || r.Rules != PokerRulesVersion || r.Revision == 0 || len(r.Players) < 2 || len(r.Players) > 6 || r.Button < 0 || r.Button >= len(r.Players) || r.CurrentBet < 0 || r.CurrentBet > maximum || r.LastRaise < bigBlind || r.LastRaise > maximum {
 		return bad()
 	}
 	expectedBoard, ok := map[string]int{"preflop": 0, "flop": 3, "turn": 4, "river": 5}[r.Street]
@@ -612,7 +628,7 @@ func (r *PokerRound) Validate() error {
 	totalBuyIn, totalPayout, alive := 0, 0, 0
 	lastSeat := -1
 	for _, p := range r.Players {
-		if p.PlayerID == "" || ids[p.PlayerID] || p.Seat <= lastSeat || p.Seat > 5 || !ValidPokerBuyIn(p.BuyIn) || p.Stack < 0 || p.Committed < 0 || p.Stack+p.Committed != p.BuyIn || p.StreetBet < 0 || p.StreetBet > p.Committed || p.StreetBet > r.CurrentBet || p.ReopenAt < 0 || p.ReopenAt > PokerMaxBuyIn*2 || p.Payout < 0 || p.Payout > PokerMaxBuyIn*6 || len(p.Cards) != 2 {
+		if p.PlayerID == "" || ids[p.PlayerID] || p.Seat <= lastSeat || p.Seat > 5 || !ValidCasinoBet("poker", r.Currency, p.BuyIn) || p.Stack < 0 || p.Committed < 0 || p.Stack+p.Committed != p.BuyIn || p.StreetBet < 0 || p.StreetBet > p.Committed || p.StreetBet > r.CurrentBet || p.ReopenAt < 0 || p.ReopenAt > maximum*2 || p.Payout < 0 || p.Payout > maximum*6 || len(p.Cards) != 2 {
 			return bad()
 		}
 		ids[p.PlayerID], lastSeat = true, p.Seat

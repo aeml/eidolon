@@ -1,5 +1,15 @@
 # 1.10 — The Resonant Age
 
+## VIP games — EP settlement and game rules implemented locally
+
+September14: durable EP-only casino transfers and currency-aware blackjack,
+Hold'em and all four slot engines implemented and focused-tested, including real
+offline Mongo recovery. No version bump/push: floor access, session/handler and
+UI integration still need completion as ONE meaningful VIP batch. See
+[implementation, evidence and exact next steps](2026-09-14-vip-casino-games.md).
+Continue1.9.6 CI34797469252: server/client and browser3/3 passed; browser1/3 and2/3
+still running at last authoritative check. Do not restart. Full1.10 remains active.
+
 ## Alpha 1.9.6 — pushed, exact CI in progress
 
 Pushed **f99bc61e4c78b844d6f4c673960df961021b4b14** to origin/master.

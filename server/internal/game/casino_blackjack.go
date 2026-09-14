@@ -18,6 +18,7 @@ const BlackjackMaxBet = 100000
 type BlackjackRound struct {
 	ID         string            `json:"id"`
 	Rules      string            `json:"rules"`
+	Currency   string            `json:"currency,omitempty"`
 	Revision   uint64            `json:"revision"`
 	Phase      string            `json:"phase"`
 	Players    []BlackjackPlayer `json:"players"`
@@ -51,9 +52,13 @@ type BlackjackEntry struct {
 
 // Public floor opening stakes are deliberately bounded and even, so natural
 // blackjack's 3:2 profit is always an integer. No client selects a currency.
-func ValidBlackjackBet(bet int) bool { return bet >= 20 && bet <= BlackjackMaxBet && bet%20 == 0 }
+func ValidBlackjackBet(bet int) bool { return ValidCasinoBet("blackjack", "gold", bet) }
 
 func NewBlackjackRound(id string, entries []BlackjackEntry, now time.Time) (*BlackjackRound, error) {
+	return NewBlackjackRoundForCurrency(id, entries, now, "")
+}
+
+func NewBlackjackRoundForCurrency(id string, entries []BlackjackEntry, now time.Time, currency string) (*BlackjackRound, error) {
 	deck := make([]int, 6*52)
 	for i := range deck {
 		deck[i] = i % 52
@@ -66,18 +71,22 @@ func NewBlackjackRound(id string, entries []BlackjackEntry, now time.Time) (*Bla
 		j := int(n.Int64())
 		deck[i], deck[j] = deck[j], deck[i]
 	}
-	return newBlackjackRound(id, entries, now, deck)
+	return newBlackjackRoundForCurrency(id, entries, now, deck, currency)
 }
 
 // Only same-package rule tests supply an ordered shoe; production always shuffles.
 func newBlackjackRound(id string, entries []BlackjackEntry, now time.Time, deck []int) (*BlackjackRound, error) {
+	return newBlackjackRoundForCurrency(id, entries, now, deck, "")
+}
+
+func newBlackjackRoundForCurrency(id string, entries []BlackjackEntry, now time.Time, deck []int, currency string) (*BlackjackRound, error) {
 	if id == "" || len(entries) < 1 || len(entries) > 6 {
 		return nil, errors.New("blackjack needs one to six funded players")
 	}
-	r := &BlackjackRound{ID: id, Rules: BlackjackRulesVersion, Revision: 1, Phase: "playing", Deck: append([]int(nil), deck...)}
+	r := &BlackjackRound{ID: id, Rules: BlackjackRulesVersion, Currency: currency, Revision: 1, Phase: "playing", Deck: append([]int(nil), deck...)}
 	players, seats := map[string]bool{}, map[int]bool{}
 	for _, entry := range entries {
-		if entry.PlayerID == "" || players[entry.PlayerID] || entry.Seat < 0 || entry.Seat >= 6 || seats[entry.Seat] || !ValidBlackjackBet(entry.Bet) {
+		if entry.PlayerID == "" || players[entry.PlayerID] || entry.Seat < 0 || entry.Seat >= 6 || seats[entry.Seat] || !ValidCasinoBet("blackjack", currency, entry.Bet) {
 			return nil, errors.New("invalid or duplicate funded blackjack seat")
 		}
 		players[entry.PlayerID], seats[entry.Seat] = true, true
@@ -339,6 +348,10 @@ func (r *BlackjackRound) Validate() error {
 	if r == nil || r.ID == "" || r.Rules != BlackjackRulesVersion || r.Revision == 0 || len(r.Players) < 1 || len(r.Players) > 6 || len(r.Dealer) < 2 || len(r.Dealer) > 22 || len(r.Deck) > 312 {
 		return bad
 	}
+	minimum, maximum, step := CasinoBetLimits("blackjack", r.Currency)
+	if step == 0 {
+		return bad
+	}
 	counts := [52]int{}
 	count := func(cards []int) bool {
 		for _, c := range cards {
@@ -359,7 +372,7 @@ func (r *BlackjackRound) Validate() error {
 		}
 		ids[p.PlayerID], seats[p.Seat] = true, true
 		for _, h := range p.Hands {
-			if len(h.Cards) < 2 || len(h.Cards) > 22 || !count(h.Cards) || h.Bet < 20 || h.Bet > BlackjackMaxBet*2 || h.Bet%20 != 0 || h.Payout < 0 || h.Payout > BlackjackMaxBet*4 {
+			if len(h.Cards) < 2 || len(h.Cards) > 22 || !count(h.Cards) || h.Bet < minimum || h.Bet > maximum*2 || h.Bet%step != 0 || h.Payout < 0 || h.Payout > maximum*4 {
 				return bad
 			}
 		}

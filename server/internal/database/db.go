@@ -66,6 +66,7 @@ type Character struct {
 	VIPAllowanceReceipts map[string]int                 `bson:"vip_allowance_receipts,omitempty"`
 	EP                   int                            `bson:"ep,omitempty"`
 	EPExchangeReceipts   map[string]int                 `bson:"ep_exchange_receipts,omitempty"`
+	EPCasinoReceipts     map[string]int                 `bson:"ep_casino_receipts,omitempty"`
 	AppearanceCollection map[string]EquipmentAppearance `bson:"appearance_collection,omitempty"`
 	Appearances          map[string]EquipmentAppearance `bson:"appearances,omitempty"`
 	WellRested           *CharacterWellRested           `bson:"well_rested,omitempty"`

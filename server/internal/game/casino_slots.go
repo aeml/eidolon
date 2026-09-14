@@ -102,6 +102,7 @@ type SlotResult struct {
 // committed BEFORE the player chooses and remain hidden until that choice.
 type SlotSession struct {
 	Rules       string      `json:"rules"`
+	Currency    string      `json:"currency,omitempty"`
 	Theme       string      `json:"theme"`
 	Revision    uint64      `json:"revision"`
 	Bet         int         `json:"bet"`
@@ -126,18 +127,26 @@ func (s SlotSession) View() SlotView {
 	return SlotView{s.Theme, s.Revision, s.Bet, s.FreeSpins, s.StickyRows, s.Bonus, s.Last}
 }
 func ValidSlotBet(bet int) bool {
-	return bet >= SlotMinBet && bet <= SlotMaxBet && bet%SlotBetStep == 0
+	return ValidCasinoBet("slots", "gold", bet)
 }
 func NewSlotSession(theme string) (*SlotSession, error) {
+	return NewSlotSessionForCurrency(theme, "")
+}
+
+func NewSlotSessionForCurrency(theme, currency string) (*SlotSession, error) {
 	if _, ok := slotMachine(theme); !ok {
 		return nil, errors.New("unknown elemental machine")
 	}
-	return &SlotSession{Rules: SlotRulesVersion, Theme: theme, Revision: 1, Bet: 20}, nil
+	minimum, _, step := CasinoBetLimits("slots", currency)
+	if step == 0 {
+		return nil, errors.New("unknown slot currency")
+	}
+	return &SlotSession{Rules: SlotRulesVersion, Currency: currency, Theme: theme, Revision: 1, Bet: minimum}, nil
 }
 
 func (s SlotSession) Validate() error {
 	machine, known := slotMachine(s.Theme)
-	if !known || s.Rules != SlotRulesVersion || s.Revision == 0 || !ValidSlotBet(s.Bet) || s.FreeSpins < 0 || s.FreeSpins > 12 {
+	if !known || s.Rules != SlotRulesVersion || s.Revision == 0 || !ValidCasinoBet("slots", s.Currency, s.Bet) || s.FreeSpins < 0 || s.FreeSpins > 12 {
 		return errors.New("invalid saved slot session")
 	}
 	if s.Bonus {
@@ -243,7 +252,7 @@ func proposeSlotSpin(s SlotSession, bet int, draw func(int) (int, error)) (*Slot
 	if err := s.Validate(); err != nil {
 		return nil, 0, err
 	}
-	if s.Bonus || !ValidSlotBet(bet) || (s.FreeSpins > 0 && bet != s.Bet) {
+	if s.Bonus || !ValidCasinoBet("slots", s.Currency, bet) || (s.FreeSpins > 0 && bet != s.Bet) {
 		return nil, 0, errors.New("resolve the bonus and keep its original stake for free spins")
 	}
 	machine, _ := slotMachine(s.Theme)

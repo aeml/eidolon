@@ -100,6 +100,7 @@ type Entity struct {
 	GoldCreditReceipts   map[string]int     `json:"-"`
 	EP                   int                `json:"-"`
 	EPExchangeReceipts   map[string]int     `json:"-"`
+	EPCasinoReceipts     map[string]int     `json:"-"`
 	VIPAllowanceReceipts map[string]int     `json:"-"`
 	VIPUntil             time.Time          `json:"-"` // Refreshed from trusted account membership, never client save data.
 	ItemDeliveryReceipts map[string]string  `json:"-"`
@@ -930,6 +931,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		GoldCreditReceipts:       maps.Clone(e.GoldCreditReceipts),
 		EP:                       e.EP,
 		EPExchangeReceipts:       maps.Clone(e.EPExchangeReceipts),
+		EPCasinoReceipts:         maps.Clone(e.EPCasinoReceipts),
 		VIPAllowanceReceipts:     maps.Clone(e.VIPAllowanceReceipts),
 		VIPUntil:                 e.VIPUntil,
 		ItemDeliveryReceipts:     maps.Clone(e.ItemDeliveryReceipts),

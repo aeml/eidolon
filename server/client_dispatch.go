@@ -252,6 +252,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			GoldCreditReceipts:   cloneGoldCreditReceipts(char.GoldCreditReceipts),
 			EP:                   char.EP,
 			EPExchangeReceipts:   cloneGoldCreditReceipts(char.EPExchangeReceipts),
+			EPCasinoReceipts:     cloneGoldCreditReceipts(char.EPCasinoReceipts),
 			VIPAllowanceReceipts: cloneGoldCreditReceipts(char.VIPAllowanceReceipts),
 			ItemDeliveryReceipts: cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
 			State:                "IDLE",

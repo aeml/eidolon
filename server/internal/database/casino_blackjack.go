@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"regexp"
 	"strings"
 	"time"
 
@@ -18,7 +19,7 @@ var ErrBlackjackTableConflict = errors.New("blackjack table changed; refresh bef
 
 // One durable document per physical blackjack table. The game-owned JSON is
 // private server state. Pending transfers fence ALL subsequent table changes
-// until the same account's durable Gold receipt has been confirmed.
+// until the same account's durable currency receipt has been confirmed.
 type BlackjackTableRecord struct {
 	TableID        string             `bson:"_id"`
 	Version        int64              `bson:"version"`
@@ -41,6 +42,7 @@ func validBlackjackState(state []byte) bool {
 }
 
 func (op BlackjackTransfer) Validate() error {
+	maxDebit := 100000
 	maxReturn := 1600000 // Four doubled 100,000 Gold hands, each returning 2×.
 	// Receipt families have separate limits; game intent validation recomputes outcomes.
 	if strings.HasPrefix(op.ID, "casino:slots:") {
@@ -48,10 +50,42 @@ func (op BlackjackTransfer) Validate() error {
 	} else if strings.HasPrefix(op.ID, "casino:poker:") {
 		maxReturn = 600000 // Six fully committed buy-ins.
 	}
+	if op.Currency == "ep" {
+		maxDebit, maxReturn = 100, maxReturn/1000
+	}
 	if !strings.HasPrefix(op.ID, "casino:") || len(op.ID) > 240 || len(op.ID) < 12 ||
 		!strings.HasPrefix(op.PlayerID, "player-") || len(op.PlayerID) <= 7 || len(op.PlayerID) > 128 ||
-		op.Currency != "gold" || op.Amount == 0 || op.Amount < -100000 || op.Amount > maxReturn || !validBlackjackState(op.NextState) {
-		return errors.New("invalid public blackjack Gold transfer")
+		(op.Currency != "gold" && op.Currency != "ep") || op.Amount == 0 || op.Amount < -maxDebit || op.Amount > maxReturn || !validBlackjackState(op.NextState) {
+		return errors.New("invalid casino currency transfer")
+	}
+	return nil
+}
+
+var vipSlotRecordID = regexp.MustCompile(`^slots:ep:[0-9a-f]{64}:(earth|air|fire|water)$`)
+
+// Currency is selected by the immutable server record identity, not by a wager
+// request or mutable JSON state. Legacy public records remain Gold; malformed
+// VIP identities fail closed instead of falling back to that economy.
+func CasinoCurrencyForRecord(tableID string) (string, error) {
+	if tableID == "vip-blackjack" || tableID == "vip-poker" || vipSlotRecordID.MatchString(tableID) {
+		return "ep", nil
+	}
+	if tableID == "" || strings.HasPrefix(tableID, "vip") || strings.HasPrefix(tableID, "slots:ep") {
+		return "", errors.New("unknown casino currency record")
+	}
+	return "gold", nil
+}
+
+func (op BlackjackTransfer) ValidateForTable(tableID string) error {
+	if err := op.Validate(); err != nil {
+		return err
+	}
+	currency, err := CasinoCurrencyForRecord(tableID)
+	if err != nil {
+		return err
+	}
+	if op.Currency != currency {
+		return errors.New("casino transfer currency does not match its table")
 	}
 	return nil
 }
@@ -100,7 +134,7 @@ func (db *DB) GetBlackjackTable(tableID string) (*BlackjackTableRecord, error) {
 		return nil, errors.New("corrupt blackjack table state")
 	}
 	if record.Pending != nil {
-		if err := record.Pending.Validate(); err != nil {
+		if err := record.Pending.ValidateForTable(tableID); err != nil {
 			return nil, err
 		}
 	}
@@ -117,7 +151,7 @@ func (db *DB) AdvanceBlackjackTable(tableID string, version int64, state []byte)
 }
 
 func (db *DB) BeginBlackjackTransfer(tableID string, version int64, op BlackjackTransfer) (*BlackjackTableRecord, error) {
-	if err := op.Validate(); err != nil {
+	if err := op.ValidateForTable(tableID); err != nil {
 		return nil, err
 	}
 	if version <= 0 {
@@ -146,7 +180,7 @@ func (db *DB) ResolveBlackjackTransfer(record BlackjackTableRecord, accepted boo
 	if record.Pending == nil {
 		return nil, errors.New("no blackjack transfer to resolve")
 	}
-	if err := record.Pending.Validate(); err != nil {
+	if err := record.Pending.ValidateForTable(record.TableID); err != nil {
 		return nil, err
 	}
 	if !accepted && record.Pending.Amount > 0 {
