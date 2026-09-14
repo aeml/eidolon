@@ -195,6 +195,15 @@ It uses normal controls and read-only observations; conversion is confirmed by
 the server's chat receipt (party updates do not transmit MaxSize). Syntax/lint
 checks pass. **Not run against five browsers yet**; wire it into the complete
 combat/repair route before using GPU time. No live runtime change.
+`tests/raidVigilControls.js` and `tests/e2e/raid-vigil-input.js` now provide the
+ritual movement step for that route. They consume the live personal
+`currentDungeonRoomState.crystal` snapshot: Earth ward holding, Water's carried
+memory hint, ordered Fire channel points and alternating Wizard/Rogue Air runners.
+The tank and both Clerics retain combat/support ownership; the runner's sole
+input worker must invoke this after telegraph avoidance, before attack/follow.
+Only ground clicks are issued; no quest/wave/clock mutations. Nine planner tests
+pass0.469s; lint/diff pass (native29605 exited0). **Still not an actual defended
+raid or browser acceptance**; complete the shared combat/ritual driver next.
 
 ### Bounded concurrency trial contract (before execution)
 
