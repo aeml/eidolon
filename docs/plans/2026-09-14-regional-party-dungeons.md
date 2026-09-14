@@ -1,5 +1,21 @@
 # Remaining regional four-player dungeon acceptance
 
+## Molten next run49494 — active after1.9.13 all gates passed
+
+Clean main worktree frozen atf2fdea9bf116f49a5cea7a42a852d8e08dc511a8,
+Alpha1.9.13. CI34843057369 is terminal success/all ten jobs, watch51003 exited0;
+no competing CI native GPU work. Native49494 started the existing party-dungeon
+route, Normal70 Molten, Low, progressed class-appropriate gear (5Rare/9Uncommon
+per role). No automatic retries, source changes or mid-run grants. Original
+120minute expedition budget and full-clear/manual-handoff checks remain.
+This is the first run with the committed50% subsequent-rest policy; first town
+recovery still uses80%. It is not yet a completed clear or accepted performance.
+
+Log `/tmp/eidolon-molten-party-r3-20260914-vRxBlS/run.log`, owned suffix
+moltenparty0914c, loopbackAPI18285/Mongo18286/Web4187. Follow the same native
+handle, not old26730/71836. Do not edit main, start another GPU test or deploy
+over the active run; independent QA/docs may continue locally.
+
 ## Molten retry26730 — deliberately stopped for excessive retravel, exit143
 
 Sourcef8b9c7ac/clean, Normal70, Low, same legal four-role equipment and120minute

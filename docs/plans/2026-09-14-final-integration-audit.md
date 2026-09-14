@@ -5,10 +5,12 @@ login/notes and eight served HTML/JS/CSS files exactly match the release source.
 CI34840066682 is **terminal success, all ten jobs passed**, including live
 saved-character play and town healing/Well Rested. Watch42418 exited0; do not
 repeat this accepted release. Alpha1.9.13 poker recovery is pushed asf2fdea9b,
-CI34843057369 active. Exact public delivery for1.9.13 passed at12:46:27UTC:
+CI34843057369 **terminal success, all ten jobs passed**; watch51003 exited0.
+Live saved-character gameplay and town recovery/Well Rested passed. Do not
+repeat those completed gates. Exact public delivery passed at12:46:27UTC:
 both domains matchf2fdea9b/Alpha1.9.13, DBready, and eight served HTML/JS/CSS files
-match transformed committed source. Final Live Release and Character QA still
-runs; this is not yet an all-gates acceptance. The connected casino route
+match transformed committed source. This accepts1.9.13 delivery, not the remaining
+full1.10 campaign/raid/integrated-visual scope. The connected casino route
 passed and exposed table clipping, now repaired and verified at four screen
 sizes plus the actual two-player flow. See
 [connected casino and layout evidence](2026-09-14-connected-casino-acceptance.md).
