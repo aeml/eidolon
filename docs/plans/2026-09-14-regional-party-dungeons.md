@@ -32,11 +32,13 @@ afterward use50% for the four-role party. Solo policy is unchanged. No resource
 grant, easier enemy, budget extension, hidden death, interrupted live room or
 mid-run source change.16 focused policy tests passed in0.789s; scoped lint and
 diff checks passed. Actual next-party performance and completion remain unproven.
-Connected casino extension (947c7b74/206e01e3) now runs as **native17777** on clean
-98cac4a9, main QA tree frozen. It is the only owned GPU run; suffix
-casinoconnected0914a, ports18285/18286/4187, log
-`/tmp/eidolon-connected-casino-20260914-nNqKZI/run.log`.
-Countdown checks observe displayed seconds. No native result yet; continue17777.
+Connected casino70277 subsequently passed, exposing a separate table-layout
+issue in its screenshot. Alpha1.9.12 corrects that and now has its affected
+connected check62628 running on clean6b0abea1. Main QA tree frozen; only owned
+GPU run, suffixcasinorelease0914c, ports18285/18286/4187, log
+`/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/run.log`.
+Continue62628; full casino evidence is in
+[the connected acceptance record](2026-09-14-connected-casino-acceptance.md).
 
 ## Molten71836 — terminal short-step failure; helper correction pending native check
 
