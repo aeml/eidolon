@@ -5,6 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — corrected campaign advances beyond prior travel failure
+
+Previous turn gained opening proof; this turn revalidated SAME **10782 ACTIVE**
+through fullwatch/seeds and into **Imps5/60,level11,zero deaths,290s**. Opening/
+diary120.456s,watch manual100Gold/1593XP/dialogue/savereceipt passed,8seeds after
+25observed target deaths consumedatmanualclaim. Level10earnedtalentpreparation
+and normal town recovery/returns succeeded; prior1-credittravel failure has not
+recurred. FullImp/Earthreadiness still unproven. Do not restart10782 or change
+loaded runtime/route sources. Log remains
+`/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/run.log`, source89c2ad5d; own
+earthready0914r2/API18285/Mongo18286/Web4187. No additional native QA or production
+deployment launched. Retain all former evidence without counting partialphase
+progress as full1.10completion. ActiveWT acceptance note updated; rootledgeronly.
+
 ## September 14 — corrected traversal passes natively; second campaign attempt started
 
 Previous turn PROGRESS (failed-route diagnosis + scoped correction). Native
