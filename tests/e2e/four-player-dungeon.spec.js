@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
+import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
@@ -14,14 +15,14 @@ import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
-import { claimChapterAndContinue, EARTH_DUNGEON_CHAPTER, readChronicleChapter } from './chronicle-earth-route.js';
+import { claimChapterAndContinue, readChronicleChapter } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
     enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-const snapshot = page => page.evaluate(() => {
+const snapshot = page => page.evaluate(chapterId => {
     const g = window.game, p = g.player;
     return { id: p.id, instance: g.currentInstanceId, seed: g.currentDungeonLayout?.generationSeed,
         x: p.position.x, z: p.position.z, hp: p.stats.hp, maxHP: p.stats.maxHp,
@@ -29,10 +30,19 @@ const snapshot = page => page.evaluate(() => {
         render: { quality: g.renderSystem.graphicsQuality,
             fps: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.fps : null,
             frameTime: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.frameTime : null },
-        gold: p.gold, xp: p.xp, level: p.level, stats: p.baseStats, hotbar: p.hotbar,
-        quest: p.quests?.find(q => q.id === 'chronicle_03_roots_remember'),
+        gold: p.gold, xp: p.xp, resonanceXP: p.resonanceXP ?? 0, resonanceLevel: p.resonanceLevel ?? 0,
+        level: p.level, stats: p.baseStats, hotbar: p.hotbar,
+        quest: p.quests?.find(q => q.id === chapterId),
         rooms: g.currentDungeonRoomState?.rooms, evidence: window.__partyClearEvidence };
-});
+}, PARTY_DUNGEON_CHAPTERS[dungeonPlaythroughOptions(process.env).dungeonType]);
+
+async function verifyNextStoryOffer(page, story) {
+    if (story.chapterId === PARTY_DUNGEON_CHAPTERS.verdant_bastion_catacombs) return verifyFreshWaterHandoff(page);
+    await expect.poll(() => page.evaluate(({ nextChapterId, laterChapterId }) => window.game.player.quests
+        .filter(q => q.id === nextChapterId || q.id === laterChapterId)
+        .map(q => ({ id: q.id, accepted: q.accepted, completed: q.completed, count: q.count })), story))
+        .toEqual([{ id: story.nextChapterId, accepted: false, completed: false, count: 0 }]);
+}
 
 async function observeRole(page) {
     await page.evaluate(async () => {
@@ -125,7 +135,7 @@ async function seedActor(page, credentials, character) {
     console.log(`[party-clear] prepare ${character.class}: login and enter world`);
     await loginAndEnterWorld(page, credentials);
     console.log(`[party-clear] prepare ${character.class}: verify replicated build`);
-    await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
+    await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(character.level);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
     const equipped = await page.evaluate(async () => {
         const { partyEquippedItemSnapshot } = await import('/tests/partyDungeonFixture.js');
@@ -141,19 +151,25 @@ async function seedActor(page, credentials, character) {
     await observeRole(page);
 }
 
-test('four level30 roles clear Normal Verdant through real party inputs and receive individual credit', async ({ page, browser, baseURL }, testInfo) => {
+test('four geared roles clear the selected dungeon through real party inputs and receive individual credit', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_PARTY_DUNGEON !== '1', 'Explicit disposable four-player diagnostic only');
     test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture(process.env);
     const graphicsQuality = partyGraphicsQuality(process.env);
     const gearProfile = partyGearProfile(process.env);
+    const playthrough = dungeonPlaythroughOptions(process.env);
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
-        cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1' }, encoding: 'utf8', timeout: 120_000
+        cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1',
+            EIDOLON_PARTY_FIXTURE_LEVEL: String(playthrough.runLevel) }, encoding: 'utf8', timeout: 120_000
     });
     const catalog = JSON.parse(output.split('\n').find(line => line.startsWith('[party-fixture-catalog]')).slice(23));
-    const quests = JSON.parse(readFileSync('tests/fixtures/earned-wizard-31.json', 'utf8')).quests;
+    expect(catalog.level).toBe(playthrough.runLevel);
+    const story = partyDungeonStory(catalog.quests, playthrough.dungeonType);
+    // Preserve the accepted Verdant fixture. Other families explicitly prepare
+    // their prerequisites; they are encounter checks, not earned campaigns.
+    const quests = playthrough.dungeonType === 'verdant_bastion_catacombs'
+        ? JSON.parse(readFileSync('tests/fixtures/earned-wizard-31.json', 'utf8')).quests : story.quests;
     const credentials = credentialsFromEnvironment(), ownedBrowsers = [], actors = [];
-    const playthrough = dungeonPlaythroughOptions({});
     let entered = false, combatWorkers = null, routeFailure = null;
     const healerDecisions = [];
     try {
@@ -184,7 +200,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             }
             await expect.poll(() => actorPage.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe(graphicsQuality);
             console.log(`[party-clear] ${className} graphics: ${graphicsQuality}`);
-            console.log(`[party-clear] prepared ${className}: level30 ${gearProfile} gear, rank5 primary mastery, seeded Earth story gate`);
+            console.log(`[party-clear] prepared ${className}: level${character.level} ${gearProfile} gear, rank5 primary mastery, seeded ${story.chapterId} gate`);
             console.log('[party-loadout]', JSON.stringify({ class: className, profile: gearProfile,
                 items: Object.entries(character.equipment).map(([slot, item]) => ({ slot, name: item.name, rarity: item.rarity })) }));
         }
@@ -480,7 +496,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     await expect.poll(async () => (await snapshot(actor.page)).instance).toBe(run.instance);
                     await expect.poll(async () => (await snapshot(actor.page)).seed).toBe(run.seed);
                 }
-                console.log('[party-clear] all four entered the same Normal Verdant instance');
+                console.log(`[party-clear] all four entered the same ${playthrough.difficulty} ${playthrough.name} instance`);
             },
             afterGroundStep: async () => {
                 // The base movement helper proves displacement, not arrival.
@@ -636,7 +652,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     const state = await snapshot(actor.page);
                     expect(state.quest.completed, 'manual wizard turn-in must remain unclaimed').toBe(false);
                     expect(state.gold).toBeGreaterThan(actor.initial.gold);
-                    expect(state.level > actor.initial.level || state.xp > actor.initial.xp).toBe(true);
+                    expect(state.level > actor.initial.level || state.xp > actor.initial.xp ||
+                        state.resonanceLevel > actor.initial.resonanceLevel ||
+                        state.resonanceXP > actor.initial.resonanceXP).toBe(true);
                     expect(state.rooms.every(room => room.cleared || room.type === 'start')).toBe(true);
                 }
                 expect((await snapshot(tank.page)).evidence.damageTaken).toBeGreaterThan(0);
@@ -647,23 +665,23 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
         for (const actor of actors.slice(1)) await returnToTown(actor.page, { allowRespawn: false });
         for (const [index, actor] of actors.entries()) {
             actor.combatEvidence = (await snapshot(actor.page)).evidence;
-            await claimChapterAndContinue(actor.page, EARTH_DUNGEON_CHAPTER);
-            await verifyFreshWaterHandoff(actor.page);
+            await claimChapterAndContinue(actor.page, story.chapterId);
+            await verifyNextStoryOffer(actor.page, story);
             await actor.page.locator('#btn-close-quest').click();
-            actor.claimedChapter = await readChronicleChapter(actor.page, EARTH_DUNGEON_CHAPTER);
+            actor.claimedChapter = await readChronicleChapter(actor.page, story.chapterId);
             actor.claimedGold = (await snapshot(actor.page)).gold;
             for (const waiting of actors.slice(index + 1)) {
-                expect((await readChronicleChapter(waiting.page, EARTH_DUNGEON_CHAPTER)).completed,
+                expect((await readChronicleChapter(waiting.page, story.chapterId)).completed,
                     'Another member turning in must not claim this player’s reward').toBe(false);
             }
-            console.log(`[party-clear-turn-in] ${actor.className}: manual reward and Water offer verified`);
+            console.log(`[party-clear-turn-in] ${actor.className}: manual reward and ${story.nextChapterId} offer verified`);
         }
         for (const actor of actors) {
             await loginAndEnterWorld(actor.page, actor.login);
-            expect(await readChronicleChapter(actor.page, EARTH_DUNGEON_CHAPTER)).toEqual(actor.claimedChapter);
+            expect(await readChronicleChapter(actor.page, story.chapterId)).toEqual(actor.claimedChapter);
             expect((await snapshot(actor.page)).gold, 'Relogging must neither lose nor duplicate the reward').toBe(actor.claimedGold);
-            await verifyFreshWaterHandoff(actor.page);
-            console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and Water offer persisted`);
+            await verifyNextStoryOffer(actor.page, story);
+            console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and next offer persisted`);
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
     } catch (error) {

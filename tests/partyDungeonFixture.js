@@ -30,6 +30,8 @@ export function requireIsolatedPartyFixture(env) {
 
 export function partyDungeonCharacter(catalog, quests, className, name, profile = 'progressed') {
     if (!PARTY_ROLES.includes(className)) throw new Error('Unknown party role');
+    const level = catalog.level ?? 30;
+    if (!Number.isInteger(level) || level < 30 || level > 100 || level % 10 !== 0) throw new Error('Invalid party catalog level');
     partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: profile });
     if (catalog.gearProfile && catalog.gearProfile !== profile) throw new Error('Party catalog profile mismatch');
     const tank = className === 'Fighter', rogue = className === 'Rogue';
@@ -49,7 +51,7 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
     const equipment = Object.fromEntries(Object.entries(names).map(([slot, itemName]) => {
         const rarity = profile === 'common' ? 'Common' : RARE_SLOTS.has(slot) ? 'Rare' : 'Uncommon';
         const item = profile === 'common' ? catalog.items?.[itemName] : catalog.roleItems?.[className]?.[rarity]?.[itemName];
-        if (!item || item.level !== 30 || item.rarity !== rarity || (item.potency || 0) !== 0) {
+        if (!item || item.level !== level || item.rarity !== rarity || (item.potency || 0) !== 0) {
             throw new Error(`Invalid catalog item ${itemName}`);
         }
         if (profile === 'progressed' && (!item.name.startsWith(`${PRIMARY[className][1]} `) ||
@@ -67,7 +69,7 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
         Rogue: ['Piercing Throw', 'Smoke Bomb', 'Poison Coating', 'Tripwire']
     }[className];
     const mastery = { Fighter: 'FTR_03', Cleric: 'CLR_03', Wizard: 'WIZ_01', Rogue: 'ROG_01' }[className];
-    return { name, class: className, level: 30, xp: 0, progression_version: 2,
+    return { name, class: className, level, xp: 0, progression_version: 2,
         gold: 0, x: -1.25, y: 0, z: 200, stats: catalog.stats, equipment,
         talent_ranks: { [mastery]: 5 }, selected_branch: tank || className === 'Cleric' ? 'A' : 'C',
         unlocked_skills: skills, inventory: [], stash: [], quests: JSON.parse(JSON.stringify(quests)) };

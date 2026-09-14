@@ -82,3 +82,25 @@ test('unknown roles and missing or inflated catalog gear fail closed', () => {
     const items = new Proxy({}, { get: () => ({ level: 100, rarity: 'Legendary' }) });
     expect(() => partyDungeonCharacter({ items }, [], 'Fighter', 'fixture')).toThrow();
 });
+
+test.each([60, 70, 100])('regional level%i gear preserves real catalog stats and role affixes', level => {
+    for (const [className, stat, prefix] of [['Fighter', 'strength', 'Strong'], ['Rogue', 'dexterity', 'Agile'],
+        ['Wizard', 'intelligence', 'Brilliant'], ['Cleric', 'wisdom', 'Wise']]) {
+        const roleItems = { [className]: Object.fromEntries(['Uncommon', 'Rare'].map(rarity => [rarity,
+            new Proxy({}, { get: (_target, name) => ({ name: `${prefix} ${name}${rarity === 'Rare' ? ' of the Whale' : ''}`,
+                level, rarity, stats: { [stat]: level, ...(rarity === 'Rare' ? { vitality: level } : {}) } }) })])) };
+        const catalog = { level, stats: { [stat]: level * 2 }, roleItems, gearProfile: 'progressed' };
+        const c = partyDungeonCharacter(catalog, [], className, 'fixture');
+        expect(c.level).toBe(level);
+        expect(c.stats).toEqual(catalog.stats);
+        expect(Object.values(c.equipment).every(item => item.level === level && item.stats[stat] === level)).toBe(true);
+        expect(Object.values(c.equipment).filter(item => item.rarity === 'Rare')).toHaveLength(5);
+        expect(Object.values(c.equipment).filter(item => item.rarity === 'Uncommon')).toHaveLength(9);
+        expect(() => partyDungeonCharacter({ ...catalog, level: level === 60 ? 70 : 60 }, [], className, 'fixture'))
+            .toThrow('Invalid catalog item');
+    }
+});
+
+test.each([0, 29, 31, 101, '60', NaN])('invalid regional level %s fails closed', level => {
+    expect(() => partyDungeonCharacter({ level }, [], 'Fighter', 'fixture')).toThrow('Invalid party catalog level');
+});
