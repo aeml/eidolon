@@ -38,7 +38,8 @@ levels, rewards and saved progress are unchanged. Focused menu checks compare
 these names with the actual server quest catalog. Work is isolated from the
 running Abyssal party source. Cumulative login patch notes and package/server/CI
 version labels now name this corrective patch. Keep publication queued until
-the current native party run is terminal; live remains Alpha 1.9.9.
+the native party run is terminal; it has now ended on its traversal deadline,
+with artifacts retained. Live remains Alpha 1.9.9 until exact publication checks.
 
 Prepared-release checks: version presentation, Pages runtime versioning, asset
 versioning, dungeon progression menu and dungeon preparation **282 tests across
@@ -48,7 +49,7 @@ for this text-only game change. The full 1.10 acceptance scope remains open.
 
 - Prepared, unpublished candidate: Alpha1.9.10, release packaging `d411da5c`.
   Its guide correction is `55ae1d45`; both remain in the separate worktree
-  while native party session20006 runs against frozen042fd742.
+  with native party session20006 now terminal against frozen042fd742.
 - Verified live: Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`,
   matching public frontend/backend, database ready. CI **34804655770** passed
   all ten jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
@@ -179,12 +180,12 @@ loadtest checks pass0.013s and the executable builds. This is not a measured
 concurrency run; run the existing tool against disposable services with explicit
 targets before claiming capacity. No second load-testing framework was added.
 
-1. Continue the existing Abyssal party session20006 to its terminal result,
-   preserving frozen042fd742 and any failure artifacts. Four bosses were
-   confirmed at the latest recorded checkpoint; full completion is still open.
-   Do not overlap native GPU jobs or restart because a polling window expires.
-   After it closes, integrate the separately prepared1.9.10 correction and
-   publish sequentially with exact CI/live verification.
+1. Abyssal party20006 is terminal: four bosses cleared, then the original
+   120-minute traversal/recovery deadline. Artifacts and a verified private
+   four-boss saved-progress copy are retained; full clear/claims remain open.
+   See [regional result](2026-09-14-regional-party-dungeons.md). Do not poll or
+   restart that handle. Integrate the separately prepared1.9.10 correction and
+   publish sequentially with exact CI/live verification, no overlapping GPU jobs.
 2. Retain the accepted earned Earth route10782 and prepared Verdant route15051;
    neither proves the other realms or full earned campaign. Continue remaining
    dungeon families using the existing prepared-party options, with Low graphics

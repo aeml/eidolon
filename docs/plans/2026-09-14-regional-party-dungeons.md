@@ -1,8 +1,8 @@
 # Remaining regional four-player dungeon acceptance
 
-## Current Abyssal attempt — four bosses cleared, full result still open
+## Abyssal attempt20006 — terminal traversal deadline, four bosses cleared
 
-Native20006 remains active against frozen042fd742, Alpha1.9.9, High graphics,
+Native20006 is terminal failed against frozen042fd742, Alpha1.9.9, High graphics,
 Normal60 seed `-5297765868375752807`, generator2/no fallback. Tiderend Leviathan,
 Drowned Choir, Abyssal Goliath and now Maelstrom Warden are defeated. Warden
 started at57,750HP; recorded role totals: Fighter14229damage/11321taken,
@@ -12,6 +12,28 @@ At6284.41s (~104.7min), sixth town recovery/re-entry passed all-four recovery
 and same seed/rooms/Gold/bag/quests. Traversal count35 includes retracing;
 it is not35 unique rooms. Thalorath and each player's manual quest claim,
 next offer and final persistence checks remain outstanding.
+
+The original120-minute expedition budget expired during traversal at7205.49s,
+not during a boss fight:100.68min traversal (including84.19min follower
+formation),14.93min combat,4.31min recovery,0.18min entry. Counters806leader
+steps/39traversals including retracing/six townreturns. Final all-four snapshots
+are level61/2563Gold, alive with `sawDeath:false`, Water quest accepted/count0/
+not completed. Total Cleric healing57,755; Fighter74,833, Wizard75,954 and
+Rogue111,320 damage. This is partial combat evidence, NOT full dungeon acceptance.
+
+The game's `enterInstanceLocked` explicitly returns to layout room0 while
+preserving cleared encounters; the saved room is not a teleport checkpoint.
+Do not change that gameplay rule or extend the declared deadline to make this
+test pass. Next affected party run should use the existing Low graphics option
+to reduce observed four-browser host/GPU contention. Actual full clear and
+personal claims still require evidence; no second QA framework was added.
+
+Retained log, sanitized `test-results` and `playwright-report` are under
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/`. Roster/healing screenshot was
+inspected; it is an opening-town support UI image, not a final-boss image.
+Credential scan passed with0files sanitized. Wrapper removed both owned
+containers, their validation databases and ports18285/18286/4187; read-only
+container/socket checks confirmed cleanup. Do not poll/restart20006.
 
 Private actual four-boss progress archive (do not commit/publish account data):
 `/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/party-four-boss-checkpoint.archive.gz`,
