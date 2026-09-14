@@ -5,7 +5,32 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — live recheck and named-resident regression
+## September 14 — Alpha 1.9.5 pushed; exact CI in progress
+
+Concrete progress: reproduced all four named residents selecting stale service
+IDs through pooled-model hitboxes; Entity.setMesh now rebinds descendant targets.
+Added actual-model raycast regressions in both reuse directions.
+
+Implemented private EP wallet + confirmed one-way 1,000,000 Gold/EP exchange,
+durable combined balance/receipt save, replay-safe UI (including tab reload),
+server safety/overflow checks, and matching 1.9.5 login/version/patch notes.
+No EP spending, VIP allowance, entitlement or payments yet. These remain next.
+288 focused client tests; EP arithmetic/world/handler + journal-reopen tests,
+protocol/persistence checks, Go build and focused lint pass. Phone/desktop browser
+fixtures2PASS8s, screenshot reviewed. No soak/broad local suite started.
+
+Active worktree /tmp/eidolon-1-10-resonant-age-20260913 pushed release
+**5d024b3b987ce74917491cff5fcb93548fe4308a** to master. Exact CI **34795245270**
+authoritatively IN_PROGRESS. Continue the SAME run, no restart/duplicate release.
+Not yet verified live; last verified live1.9.4. After deployment check both public
+commit/version endpoints. Do not push this divergent ledger-only root branch.
+
+Persistence caveat: older servers do not retain EP fields on full character saves.
+After issuing EP, any rollback must preserve EP balance/receipts. Single-character
+account storage needs migration before enabling any future extra characters.
+Full1.10 completion remains unproven; continue remaining approved feature scope.
+
+## September 14 — live recheck and named-resident regression (earlier)
 
 User requested live deployment: independently rechecked both public endpoints and
 origin/master; all match Alpha 1.9.4 commit
