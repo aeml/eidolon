@@ -1,5 +1,15 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.7 — pushed; exact CI in progress
+
+Release **3460ccfb824359bbb48df1acfe7cb61587444663** pushed to origin/master.
+Exact CI **34800160671** authoritatively IN_PROGRESS:
+https://github.com/aeml/eidolon/actions/runs/34800160671 . Continue THIS handle;
+do not replace/restart it or rerun successful local checks. After terminal success,
+verify both public version/commit endpoints. Last verified live1.9.6 below.
+Full1.10 remains active; proceed with remaining roadmap audit/consolidated
+acceptance while the release runs.1.9.6 CI34797469252 is terminal success already.
+
 ## Alpha1.9.7 — functional VIP casino batch prepared
 
 The EP settlement/rules work is now connected to trusted VIP-floor entry,
