@@ -544,10 +544,10 @@ class UIManagerDungeonMethods {
         actions.appendChild(enterBtn);
 
         const elementalRaids = [
-            { type: 'earth_crystal_raid', name: 'Rootheart Sanctum', element: 'Earth', level: 30, chapter: 3 },
-            { type: 'water_crystal_raid', name: 'Tidestar Confluence', element: 'Water', level: 60, chapter: 5 },
-            { type: 'fire_crystal_raid', name: 'Ember Crown Crucible', element: 'Fire', level: 70, chapter: 7 },
-            { type: 'air_crystal_raid', name: 'Skyglass Eyrie', element: 'Air', level: 70, chapter: 9 }
+            { type: 'earth_crystal_raid', name: 'Rootheart Sanctum', element: 'Earth', level: 30, quest: 'When the Roots Remember' },
+            { type: 'water_crystal_raid', name: 'Tidestar Confluence', element: 'Water', level: 60, quest: 'The Drowned Name' },
+            { type: 'fire_crystal_raid', name: 'Ember Crown Crucible', element: 'Fire', level: 70, quest: 'The Crown of Embers' },
+            { type: 'air_crystal_raid', name: 'Skyglass Eyrie', element: 'Air', level: 70, quest: 'The Sky Answers' }
         ];
         const raidNote = document.createElement('p');
         raidNote.className = 'adventure-raid-note';
@@ -565,7 +565,7 @@ class UIManagerDungeonMethods {
             raidBox.dataset.access = unlocked ? 'open' : 'sealed';
             raidBox.innerHTML = unlocked
                 ? `<strong>${raid.element} Crystal Raid · ${raid.name}</strong><span>5–10 players · clear the assault, then defend Maelin through 3 repair waves</span>`
-                : `<strong>${raid.element} Crystal Raid · Sealed</strong><span>Complete Chronicle chapter ${raid.chapter} by clearing this realm’s dungeon to reveal ${raid.name}.</span>`;
+                : `<strong>${raid.element} Crystal Raid · Sealed</strong><span>Clear this realm’s dungeon, then turn in “${raid.quest}” to Archmage Ilyra to reveal ${raid.name}.</span>`;
             const formRaid = document.createElement('button');
             formRaid.type = 'button';
             formRaid.className = 'menu-btn';
@@ -602,7 +602,7 @@ class UIManagerDungeonMethods {
         if (playerLevel >= 100 && !data.crystalsRestored) {
             const storyGate = document.createElement('section');
             storyGate.className = 'dungeon-raid-card';
-            storyGate.innerHTML = '<strong>Umbral Nexus · Sealed</strong><span>Complete all four elemental raids and their defended crystal-repair Vigils through Chronicle chapter 13.</span>';
+            storyGate.innerHTML = '<strong>Umbral Nexus · Sealed</strong><span>Restore all four crystals through their raid Vigils, then turn in “The Skyglass Vigil” to Archmage Ilyra.</span>';
             raidPanel.appendChild(storyGate);
         }
 
@@ -613,7 +613,7 @@ class UIManagerDungeonMethods {
             raidBox.dataset.access = data.darkRealmOpen ? 'open' : 'sealed';
             raidBox.innerHTML = data.darkRealmOpen
                 ? '<strong>Dark Realm Raid · Malachar, the Dark King</strong><span>5–10 players · level 100 · Mythic · four Eidolon phases · weekly personal cache</span>'
-                : '<strong>Dark Realm Raid · Portal Dormant</strong><span>After all four crystal raids, defeat the Eidolon Devourer in Chronicle chapter 14 to stabilize the portal.</span>';
+                : '<strong>Dark Realm Raid · Portal Dormant</strong><span>After restoring all four crystals, defeat the Eidolon Devourer in the Umbral Nexus, then turn in “The Fifth Note” to Archmage Ilyra to stabilize the portal.</span>';
             const formRaid = document.createElement('button');
             formRaid.type = 'button';
             formRaid.className = 'menu-btn';

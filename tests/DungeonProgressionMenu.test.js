@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
 import { UIManager } from '../src/ui/UIManager.js';
 
 function buildDom() {
@@ -346,7 +347,7 @@ describe('dungeon progression menu', () => {
         const waterCard = document.querySelector('[data-raid-type="water_crystal_raid"]');
         expect(earthCard.textContent).toContain('Rootheart Sanctum');
         expect(earthCard.textContent).toContain('defend Maelin through 3 repair waves');
-        expect(waterCard.textContent).toContain('Complete Chronicle chapter 5');
+        expect(waterCard.textContent).toContain('turn in “The Drowned Name” to Archmage Ilyra');
 
         const earthButtons = earthCard.querySelectorAll('button');
         expect(earthButtons[0].disabled).toBe(false);
@@ -357,5 +358,26 @@ describe('dungeon progression menu', () => {
 
         expect(window.game.network.send).toHaveBeenNthCalledWith(1, 'raid_convert', { raidType: 'earth_crystal_raid' });
         expect(window.game.network.send).toHaveBeenNthCalledWith(2, 'raid_enter', { raidType: 'earth_crystal_raid' });
+    });
+
+    test('sealed raid and portal guidance names current quests and their manual turn-ins, not obsolete chapter numbers', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ playerLevel: 100, isLeader: true, hasInstance: false,
+            crystalsRestored: false, darkRealmOpen: false, elementalRaidAccess: {} });
+        const serverCatalog = readFileSync('server/internal/game/quests.go', 'utf8');
+        const title = id => serverCatalog.match(new RegExp(`ID: ${id},[\\s\\S]*?Title: "([^"]+)"`))[1];
+        for (const [realm, id] of [['earth', 'ChronicleEarthDungeonID'], ['water', 'ChronicleWaterDungeonID'],
+            ['fire', 'ChronicleFireDungeonID'], ['air', 'ChronicleAirDungeonID']]) {
+            const card = document.querySelector(`[data-raid-type="${realm}_crystal_raid"]`);
+            expect(card.textContent).toContain(`turn in “${title(id)}” to Archmage Ilyra`);
+            expect(card.dataset.access).toBe('sealed');
+            expect([...card.querySelectorAll('button')].every(button => button.disabled)).toBe(true);
+        }
+        const menu = document.getElementById('dungeon-menu');
+        for (const id of ['ChronicleAirRestoredID', 'ChronicleGateOpenedID']) {
+            expect(menu.textContent).toContain(`turn in “${title(id)}” to Archmage Ilyra`);
+        }
+        expect(menu.textContent).not.toMatch(/Chronicle chapter \d+/);
+        expect(window.game.network.send).not.toHaveBeenCalled();
     });
 });

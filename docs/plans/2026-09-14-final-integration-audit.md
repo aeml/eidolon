@@ -30,6 +30,14 @@ scope; do not count prepared characters as earned progression.
 
 ## Current release boundary
 
+Pending integration patch note (not yet published): locked elemental-raid and
+portal cards now name the required Chronicle quests and explicitly tell players
+to turn them in to Archmage Ilyra. The old chapter3/5/7/9/13/14 labels predated
+the expanded story and sent players to the wrong journal chapters. Entry gates,
+levels, rewards and saved progress are unchanged. Focused menu checks compare
+these names with the actual server quest catalog. Work is isolated from the
+running Abyssal party source; include it in the next appropriate release notes.
+
 - Candidate: Alpha1.9.8, `08f020bcba55a187f83bc8ddf5a20980fde88b15`.
   Exact CI **34802207933** is running; client passed, server in progress.
   Continue that run without superseding it for documentation.
