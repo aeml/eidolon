@@ -5,6 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Abyssal terminal deadline; Alpha 1.9.10 pushed, CI active
+
+This turn actual progress:20006 TERMINAL FAILED on unchanged120-minute
+expedition deadline during traversal,7205.49s. Four bosses confirmed, zero
+deaths across all roles, sixth townrecovery passed; Thalorath/individual manual
+claims remain open. Total100.68min traversal (84.19min formation),14.93combat,
+4.31recovery;806steps/39traversals inclretracing/six townreturns. Finalall4
+level61/2563Gold, questcount0/notcompleted. Do NOT poll/restart20006 or call
+it fullclear. Next affected partyfunctional run existingLowquality; no weaker
+gear/gates/deadline, no secondQAframework. Sourceaudit confirmsreturntoroom0
+is explicit gameplay, notlostclearstate; do notchangeitjusttopasstests.
+
+Copied sanitized test-results(864K) and playwright-report(3.5M) beside run.log
+and private checkpoints in `/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/`.
+Opening-town roster/healing PNG inspected. Credentialscanpass0sanitized;
+ownedAPI/Mongo (both validationDBs), ports18285/18286/4187 gone by wrapper,
+confirmedread-only. Four-boss archive/hashbelow remains intact and restored;
+actual resumed gameplay still unproven. Restore83743terminalsuccess,dontrepoll.
+
+Fast-forwarded mainQA worktree `/tmp/eidolon-1-10-resonant-age-20260913` from
+042fd742 to **4bab14fad67db14c26c93d9bacb0410f57187626**, nowclean. This includes
+separatecandidate4213a3a8/825b84cc/d411da5c/55ae1d45 plus terminalevidencedocs.
+**PUSHED originmaster3481f89a→4bab14fa**, push99509terminalsuccess.
+Alpha1.9.10 exact **CI34822657032 IN_PROGRESS**, ClientTests andServerTests
+bothrunning atlatestread. Continue this exactrun, no supersedingpush or other
+nativeGPUjob. Lastverifiedlive still1.9.9/3481f89a; don'tclaim1.9.10liveuntil
+frontend/backend/login/runtimeidentity andfinalCI gatesverify. MainQA nowready
+forfuturework butpreferfreeze while CIpublishes; secondarytree same4bab14fa.
+Rootledgeronlyneverpush. Fullgoalactive; thisturnprogress, notblocked.
+
 ## September 14 — fourth boss defeated, private four-boss checkpoint verified
 
 Previous turn verified wait; this turn actual progress: MaelstromWarden defeated
