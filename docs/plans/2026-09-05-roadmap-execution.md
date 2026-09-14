@@ -5,6 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — measured snapshot allocation correction implemented
+
+Previous turn PROGRESS(release/load evidence). This turn implemented immutable
+per-broadcast snapshot sharing: each nearby actor copied once for overlapping
+viewers, never a cross-tick cache. Same self/radius/instance fields, detached
+instance/range rechecked; changed-character session skips stale recipient.
+Skill slices/equipment nestedstats/gems/basis/loot deepclone viaexistinghelper
+prevents live changes racing shared encoding. No new protocol, stat, reward,
+visibility or tick-frequency change. PrivateEP/receipts/bag/cosmetic ownership
+remain excluded. Core22a56525746f5ed25026db0d29da5caf854aa9b5 LOCAL ONLY.
+
+ActiveWT `/tmp/eidolon-1-10-resonant-age-20260913`, clean documentation follow-up
+after22a56525. Authoritative doc`2026-09-14-broadcast-snapshot-sharing.md`.
+Batch parity/sharing/freshness/removal/privacy/radius checks, concurrentinstance
+moves underracePASS1.921s. Eightconcurrentprotobuf/snapshot/change readers while
+liveitem/skillmutation:racePASS1.358s. Existing main replication/snapshot/proto
+PASS0.784s; fullGo build/diffPASS. No browser/soak or localservicesleft running.
+
+Controlled100observer/250enemy sameworldbenchmark: oldindependentcopies
+127538797ns/op,204079329B/op,65336allocs/op; shared10934950ns/op,5842006B/op,
+16911allocs/op (~97%fewerbytes), benchmarkPASS3.302s. Log
+`/tmp/eidolon-batch-state-benchmark-20260914.log`; race logs
+`/tmp/eidolon-batch-state-final-race-20260914.log`,
+`/tmp/eidolon-batch-encoding-race-20260914.log`,
+`/tmp/eidolon-batch-wire-20260914.log`. Not a livecapacity/FPS claim.
+
+NEXT: affected50/100client boundedload on frozen22a56525(or docdescendant), SAME
+original memory/error targets; no baseline10repeat needed. Wait for sharedhost
+deployment/native QA clear so measurements and livechecks do not compete.
+**CI34802207933 still IN_PROGRESS** at03:38UTC: server/client/3of3browserPASS,
+1of3and2of3running. Continue SAMEhandle; verifypublic08f020bc/Alpha1.9.8 after
+alljobs. Do NOT supersede it to publish performanceearly. Lastverifiedlive
+1.9.7/3460ccfb, its CI34800160671 fullySUCCESS, neverrepoll. Rootledgeronly,
+NEVER PUSH ROOT. After affectedload acceptance packageaccuratecorrectiveversion/
+notesanddeploy; then continue earnedcampaign/raid/device1.10scope, notgoalcomplete.
+
 ## September 14 —1.9.7 live;1.9.8 pushed;concurrency results
 
 Previous turn PROGRESS (EP schema fence/backup/package). This turn verified
