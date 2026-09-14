@@ -1,8 +1,9 @@
 # VIP poker: connected EP hand and restart walk-back
 
-Local correction accepted and packaged as **Alpha1.9.13, not yet published**.
+Correction accepted and **Alpha1.9.13 pushed asf2fdea9bf116f49a5cea7a42a852d8e08dc511a8**.
+Exact CI34843057369 is active; watch51003 follows it. Not yet verified live.
 Alpha1.9.12 CI34840066682 now passed all ten jobs and exact public delivery.
-The follow-up can now publish without superseding that completed pipeline.
+The follow-up was pushed only after that pipeline completed.
 Login label, cumulative patch notes, package/release manifest,
 server, container, deployment and QA defaults are aligned.261 version tests
 passed0.889s; shell syntax and diff checks passed. The accepted actual socket
