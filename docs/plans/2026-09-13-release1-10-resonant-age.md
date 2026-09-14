@@ -1,5 +1,18 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.7 verified live;1.9.8 pushed
+
+Exact1.9.7 CI **34800160671 TERMINAL SUCCESS**, including all ten jobs and final
+live character/recovery checks. Frontend and backend both verified at
+`3460ccfb824359bbb48df1acfe7cb61587444663`, Alpha1.9.7, database ready. Do not
+poll/restart this completed run again.
+
+Prepared1.9.8 safety correction plus accurate loadtest admission counters pushed
+as **08f020bcba55a187f83bc8ddf5a20980fde88b15**. New exact CI **34802207933**
+is IN_PROGRESS: client success, server running at last check. Continue THIS
+handle and verify exact public identities after delivery. No1.9.8live claim yet.
+Only documentation changes follow locally; don't supersede the running release.
+
 ## Pending safety correction — EP schema12
 
 Final recovery review found schema11 still admitted pre-EP full-character

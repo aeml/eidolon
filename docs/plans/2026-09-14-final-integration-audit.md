@@ -13,18 +13,27 @@ scope; do not count prepared characters as earned progression.
 
 ## Current release boundary
 
-- Candidate: Alpha 1.9.7, `3460ccfb824359bbb48df1acfe7cb61587444663`.
-  Exact CI **34800160671** is still running; server/client passed and all three
-  browser shards are running. Continue that run without superseding it for docs.
-- Verified live: Alpha 1.9.6, `f99bc61e4c78b844d6f4c673960df961021b4b14`,
-  matching public frontend/backend, database ready. Its completed CI is not a
-  handle to poll again.
+- Candidate: Alpha1.9.8, `08f020bcba55a187f83bc8ddf5a20980fde88b15`.
+  Exact CI **34802207933** is running; client passed, server in progress.
+  Continue that run without superseding it for documentation.
+- Verified live: Alpha1.9.7, `3460ccfb824359bbb48df1acfe7cb61587444663`,
+  matching public frontend/backend, database ready. CI **34800160671** passed
+  all ten jobs; do not poll/restart the completed run.
 - 1.9.7 implements actual VIP-floor access and EP games, not payments. Keep
   Gold→EP at 1,000,000:1, monthly entitlement at 100 EP, no EP→Gold conversion,
   and EP rewards cosmetic-only outside EP wagering. Paid membership provisioning
   is trusted administration; checkout and billing remain excluded.
 
 ## Evidence recovered — retain instead of repeating
+
+**Bounded concurrency now measured:** [current trial results and allocation profile](2026-09-14-concurrency-trials.md).
+10-client baseline and50-client120s stage passed admission/replication checks;
+50-client sampled memory also passed.100clients were all admitted but exceeded
+the fixed heap budget, so that stage was stopped early and is NOT accepted.
+No transport/decode errors; heap returned near baseline after clients left.
+Existing benchmark identifies repeated Entity snapshots as92.27% of allocation
+bytes. Address that measured cost before rerunning affected load, not a new soak.
+All owned services/listeners are stopped/removed; logs retained locally.
 
 **EP rollback defect repaired locally:** schema11 did not fence pre-EP writers.
 [Schema12 and current recovery evidence](2026-09-14-ep-schema-recovery.md) now
@@ -95,6 +104,29 @@ conditional; a fifth class/new continent and payment integration remain excluded
 
 ## Execution order
 
+### Bounded concurrency trial contract (before execution)
+
+Run on Ryzen7 5700G (8 cores/16 threads), 31,456MiB RAM, Linux, while no owned
+native Chrome gate is active. This is a shared development/production host;
+record that limitation rather than claiming dedicated-host or Internet capacity.
+Use an isolated loopback API/Mongo, exact release `08f020bc`, no production
+credentials, pre-created characters or privileged gameplay grants.
+
+Use the existing mixed combat/town/social loadtester: **10 clients/30 seconds**
+as a measured starting baseline, then **50/120 seconds**, and **100/120 seconds**
+only if the preceding stage passes. Each stage must admit every requested player,
+have zero unexpected read/write/decode errors, keep database-ready health, and
+deliver at least five aggregate state frames per client-second of the configured
+steady duration. This aggregate rate is not per-client latency or frame-time proof.
+API heap must remain below512MiB and below four times its pre-load healthy heap;
+allow normal garbage-collection fluctuations, not an inferred memory leak from
+one sample. Retain measured values. Do not weaken targets after seeing results.
+
+No long soak: stop at the first failure, distinguish test-driver/auth/protocol
+errors from server capacity, and fix only the demonstrated issue before deciding
+what to repeat. These trials do not replace raid gameplay, browser performance,
+long-duration retention, packet-loss or public Cloudflare/TLS checks.
+
 Concurrency preparation found an evidence bug in the existing load tester: it
 incremented `joined` after sending a request, without server admission. The tool
 now counts each own authoritative Player snapshot once, reports decoder errors,
@@ -104,7 +136,7 @@ loadtest checks pass0.013s and the executable builds. This is not a measured
 concurrency run; run the existing tool against disposable services with explicit
 targets before claiming capacity. No second load-testing framework was added.
 
-1. Finish exact 1.9.7 CI/live verification. Do not rerun or supersede a live job
+1. Finish exact 1.9.8 CI/live verification. Do not rerun or supersede a live job
    because observation takes time. Avoid competing native Chrome on the shared
    GPU while the predeploy/live character gate owns it.
 2. Use the existing fresh-story-ready route for the missing earned Earth gate,

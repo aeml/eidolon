@@ -56,9 +56,11 @@ Packaged locally as **Alpha1.9.8**, with cumulative player-facing notes protecti
 EP progress and explaining safe upgrades. Login, package/lock, release manifest,
 server/container/deploy/CI and isolated-QA defaults are synchronized. Version and
 patch-history checks **256PASS2.479s**, full Go build, focused ESLint and whitespace
-checks pass. Implementation commit `a881b4a3`; not pushed or deployed yet.
+checks pass. Implementation commit `a881b4a3`; pushed in
+**08f020bcba55a187f83bc8ddf5a20980fde88b15** after1.9.7 passed all ten CI jobs
+and exact live verification. New CI **34802207933** is in progress; this
+correction is not yet verified live.
 
-Do not supersede the active Alpha1.9.7 CI34800160671. Finish its exact delivery,
-then publish this safety correction with its own patch notes. The earned campaign,
+Do not supersede the active Alpha1.9.8 CI34802207933. The earned campaign,
 group raids and remaining 1.10 integration acceptance are still required; this
 fix closes a specific recovery defect, not the whole roadmap.
