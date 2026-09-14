@@ -1,5 +1,18 @@
 # 1.10 — The Resonant Age
 
+## Final integration audit — September 14
+
+Use [the current evidence and remaining-work audit](2026-09-14-final-integration-audit.md)
+before launching another broad route. In particular, the properly geared
+four-player Verdant clear already passed, including individual claims and saved
+Water handoffs; retain it rather than repeating the earlier failed Common-gear
+attempts. Earned current-curve readiness and the full campaign/raid scope remain
+open. Current EP shared-table Mongo checks pass, including the last distinct
+public/VIP lobby identity correction; disposable services are removed.
+
+CI34800160671 now has server/client success and all three browser shards running.
+No replacement push, full soak or production QA wager was started for this audit.
+
 ## Alpha1.9.7 — pushed; exact CI in progress
 
 Release **3460ccfb824359bbb48df1acfe7cb61587444663** pushed to origin/master.
