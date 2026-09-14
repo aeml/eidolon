@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"strings"
 	"sync"
@@ -28,17 +30,18 @@ type eventSocketActor struct {
 }
 
 type eventSocketProbe struct {
-	mu       sync.Mutex
-	view     game.PublicEventView
-	actors   map[string]eventSocketActor
-	waves    map[int]bool
-	movement string
-	invite   string
-	party    string
-	updated  time.Time
-	hits     int
-	dead     bool
-	err      error
+	mu           sync.Mutex
+	view         game.PublicEventView
+	actors       map[string]eventSocketActor
+	waves        map[int]bool
+	movement     string
+	movementSeen bool
+	invite       string
+	party        string
+	updated      time.Time
+	hits         int
+	dead         bool
+	err          error
 }
 
 func watchPublicEventSocket(conn *websocket.Conn, id string) *eventSocketProbe {
@@ -98,6 +101,7 @@ func watchPublicEventSocket(conn *websocket.Conn, id string) *eventSocketProbe {
 						}
 						if json.Unmarshal(message.Payload, &m) == nil {
 							p.movement = m.Context
+							p.movementSeen = true
 						}
 					case "damage":
 						var hit struct {
@@ -118,6 +122,40 @@ func watchPublicEventSocket(conn *websocket.Conn, id string) *eventSocketProbe {
 		}
 	}()
 	return p
+}
+
+func TestPublicEventProbeRetainsEmptyInitialMovementContext(t *testing.T) {
+	stop := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := (&websocket.Upgrader{}).Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		conn.WriteJSON(map[string]any{"type": MsgMovementContext, "payload": map[string]string{"movementContext": ""}})
+		frame, _ := proto.Marshal(&statepb.StateEnvelope{Payload: &statepb.StateEnvelope_Full{Full: &statepb.StateFull{
+			Entities: []*statepb.Entity{{Id: "player-observer", Type: "Player", Health: 100, State: "IDLE"}},
+		}}})
+		conn.WriteMessage(websocket.BinaryMessage, append([]byte{'E', 'D', 'P', 'B', 1}, frame...))
+		<-stop
+	}))
+	defer func() { close(stop); server.Close() }()
+	conn, _, err := websocket.DefaultDialer.Dial("ws"+strings.TrimPrefix(server.URL, "http"), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+	p := watchPublicEventSocket(conn, "player-observer")
+	arenaAwait(t, time.Second, func() bool {
+		p.mu.Lock()
+		defer p.mu.Unlock()
+		return p.movementSeen && p.actors["player-observer"].id != ""
+	})
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.movement != "" || p.dead || p.err != nil {
+		t.Fatal("initial overworld context or actor was changed")
+	}
 }
 
 // Opt-in connected combat acceptance, not rendered UI or an earned level100
@@ -215,7 +253,7 @@ func TestPublicEventActualPartyFullClear(t *testing.T) {
 			if p.err != nil {
 				t.Fatal(p.err)
 			}
-			return p.actors[ids[i]].id != "" && p.movement != ""
+			return p.actors[ids[i]].id != "" && p.movementSeen
 		})
 	}
 	for i := 1; i < len(conns); i++ {
@@ -240,7 +278,7 @@ func TestPublicEventActualPartyFullClear(t *testing.T) {
 		complete := 0
 		for i, p := range probes {
 			p.mu.Lock()
-			view, self, movement, updated, dead, readErr := p.view, p.actors[ids[i]], p.movement, p.updated, p.dead, p.err
+			view, self, movement, movementSeen, updated, dead, readErr := p.view, p.actors[ids[i]], p.movement, p.movementSeen, p.updated, p.dead, p.err
 			actors := make([]eventSocketActor, 0, len(p.actors))
 			for _, actor := range p.actors {
 				actors = append(actors, actor)
@@ -249,7 +287,7 @@ func TestPublicEventActualPartyFullClear(t *testing.T) {
 			if readErr != nil || dead {
 				t.Fatalf("client%d died/disconnected: %v", i, readErr)
 			}
-			if self.id == "" || movement == "" || view.ID == "" {
+			if self.id == "" || !movementSeen || view.ID == "" {
 				continue
 			}
 			if time.Since(updated) > 10*time.Second {
