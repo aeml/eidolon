@@ -5,6 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — live recheck and named-resident regression
+
+User requested live deployment: independently rechecked both public endpoints and
+origin/master; all match Alpha 1.9.4 commit
+7b370f2576153d9beac37d3e65735c51d990ec7e, database ready. Casino table/clock,
+roof/door and stash fixes are already live; no redundant workflow launched.
+
+User also added a remaining-goal bug: Mara Fen, Dain, Hessa and Selen open service
+menus instead of their named conversations. Recorded in the active worktree's
+docs/plans/2026-09-13-release1-10-resonant-age.md. They are distinct story witnesses,
+not replacement service NPCs. Investigate model-pool descendant hitbox entity IDs
+and test actual clicks after mesh reuse, while preserving the original services.
+Not fixed or deployed yet. Active worktree remains
+/tmp/eidolon-1-10-resonant-age-20260913; never push this ledger-only root branch.
+
 ## Delivery priority — user direction
 
 Complete all planned features without spending excessive usage on repeated tests
