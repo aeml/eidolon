@@ -5,6 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Abyssal entry correction verified; first room cleared
+
+Same native **20006 remains ACTIVE**, freshly polled (50s). Source042fd742
+still clean/frozen. All four entered the same Normal60 Abyssal instance through
+normal guide/party input. Exact seed **-5297765868375752807**, generator2,
+attempt0, no fallback. This verifies the fresh-party reset correction beyond
+the previous failure point. Actual FrostGuardian11550HP was defeated, first
+room traversed; at106s route elapsed:25 leader steps,13.44s combat, no town
+return yet. No full dungeon/boss/quest-handoff claim. Continue20006 and same
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/run.log`; no rerun/parallel GPU.
+Previous goal turn was progress (implemented/tested correction), this turn adds
+native entry/ordinary-combat evidence and a verified wait. Full goal remains
+active; no production change or new deployment.
+
 ## September 14 — fresh-party reset setup corrected; Abyssal retry active
 
 73535 is TERMINAL FAILED1.4m before entry: shared route requested an unnecessary
