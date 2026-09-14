@@ -83,7 +83,9 @@ test.each([true, false])('post-clear inspection runs only after successful room/
         playthrough: { dungeonType: 'test', bosses: [] } });
     if (success) {
         await result;
-        expect(afterClearedRoute).toHaveBeenCalledWith(page);
+        expect(afterClearedRoute).toHaveBeenCalledWith(page, {
+            assertActive: expect.any(Function), fight: expect.any(Function)
+        });
         expect(afterClearedRoute).toHaveBeenCalledTimes(1);
     } else {
         await expect(result).rejects.toThrow();
