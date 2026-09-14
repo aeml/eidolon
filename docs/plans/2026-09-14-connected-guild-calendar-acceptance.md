@@ -7,7 +7,7 @@ Characters were ordinary fresh Fighter/Cleric accounts; no grants or clock edits
 
 The leader created a guild and invited the member, who explicitly accepted.
 Both clients then saw the same membership and a newly scheduled Earth-raid event
-with matching title, activity, UTC time, capacity and revision. Scheduling does
+with matching title, activity, UTC time and revision. Scheduling does
 not prove these level1 characters qualify for the raid or can complete it.
 
 The member signed up as a healer. The leader saw that RSVP. A member cancellation
