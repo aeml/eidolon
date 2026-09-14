@@ -1,6 +1,8 @@
 # Connected casino: shared blackjack flow and Alpha1.9.12 layout correction
 
-Alpha1.9.12 is prepared locally, not published. Version labels, server/build
+Alpha1.9.12 was pushed as38847b2f497f57f693952f2d49c5c869422247d6. Exact CI
+34840066682 is in progress; watch42418 is active. Deployment/public identities
+are not yet accepted. Version labels, server/build
 defaults and cumulative login patch notes match.286 tests across five UI/version
 suites passed in1.361s; scoped lint, shell syntax and diff checks passed.
 Final anonymous browser fixture: four screen sizes passed in11.4s, including

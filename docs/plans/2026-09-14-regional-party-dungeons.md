@@ -33,11 +33,12 @@ grant, easier enemy, budget extension, hidden death, interrupted live room or
 mid-run source change.16 focused policy tests passed in0.789s; scoped lint and
 diff checks passed. Actual next-party performance and completion remain unproven.
 Connected casino70277 subsequently passed, exposing a separate table-layout
-issue in its screenshot. Alpha1.9.12 corrects that and now has its affected
-connected check62628 running on clean6b0abea1. Main QA tree frozen; only owned
-GPU run, suffixcasinorelease0914c, ports18285/18286/4187, log
+issue in its screenshot. Alpha1.9.12 corrects that; affected connected check62628
+passed in1.5minutes on clean6b0abea1, image inspected and services/ports cleaned.
+Pushed38847b2f; CI34840066682/watch42418 active. No local GPU run remains.
+Retained native log
 `/tmp/eidolon-connected-casino-release-20260914-H8Y8yC/run.log`.
-Continue62628; full casino evidence is in
+Do not poll/restart62628; full casino evidence is in
 [the connected acceptance record](2026-09-14-connected-casino-acceptance.md).
 
 ## Molten71836 — terminal short-step failure; helper correction pending native check
