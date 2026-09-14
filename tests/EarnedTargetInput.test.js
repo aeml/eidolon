@@ -75,7 +75,8 @@ test('both uninterrupted story combat loops use ordinary retained-target input',
     const acquisition = readFileSync(new URL('./e2e/earned-expedition-target.js', import.meta.url), 'utf8');
     expect(hunt).toContain("import { findExpeditionTarget } from './earned-expedition-target.js'");
     expect(acquisition).toContain('step < 100 && Date.now() < deadline');
-    expect(acquisition).toContain('await moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true })');
+    expect(acquisition).toContain('await moveByGroundClick(page, dx * scale, dz * scale, {');
+    expect(acquisition).toContain('moveOnly: true, minimumDistance:');
     // A visible distant foe must receive normal click/chase input, not loop
     // back to the search that returned it. Behavioral cases live alongside
     // canEngageExpeditionTarget in ExpeditionCombatTargets.test.js.

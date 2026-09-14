@@ -32,7 +32,13 @@ export async function findExpeditionTarget(page, hunt, deadline = Infinity) {
         // Ordinary travel can cross town while seeking the authored band. Use
         // the real move-only gesture so a newly hovered NPC cannot open a
         // conversation between the ground projection and the actual click.
-        await moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true });
+        // Wait for most of the requested stride, not merely the first unit of
+        // movement. Otherwise a town return can spend all100 observations
+        // retargeting partial strides before even reaching the hunting sector.
+        const stride = Math.hypot(dx * scale, dz * scale);
+        await moveByGroundClick(page, dx * scale, dz * scale, {
+            moveOnly: true, minimumDistance: Math.max(1, Math.min(8, stride * .75)), timeout: 2500
+        });
     }
     throw new Error(`No reachable ${hunt.enemy} level ${hunt.minEnemyLevel}+ after bounded ordinary travel`);
 }
