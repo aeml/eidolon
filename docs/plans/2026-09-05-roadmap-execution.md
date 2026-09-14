@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Corrected 1.9.14 pushed; replacement CI active
+## September 14 — Full public-event driver prepared; CI browser checks active
+
+Previous turn was a verified wait. This turn added a concrete missing full-event
+route at local **e18cedf4** in `/tmp/eidolon-pvp-queue-integration-20260914`
+(clean, NOT PUSHED; runtime still same as f5d47f10). Keep this tree frozen while
+native **29320** owns the pending actual socket run. It waits up to10minutes for
+minute1 of the real event cycle, then creates only its named disposable Mongo
+`eidolon-public-event-qa-0914a` on loopback18308, executes the full test, and
+removes that owned container on exit. No GPU, no extra CI, no clock acceleration.
+Log when the test starts:
+`/tmp/eidolon-public-event-full-20260914-4YFCjO/run.log`.
+Actual server binary is the retained **f2fdea9b/Alpha1.9.13** at
+`/tmp/eidolon-group-sockets-20260914-WJG4y2/f2fdea9bf116f49a5cea7a42a852d8e08dc511a8`;
+public-event runtime is unchanged by the1.9.14 client targeting fix. Do not call
+this exact1.9.14 server coverage or rendered/earned-leveling acceptance.
+
+`server/public_event_socket_test.go` is opt-in via EIDOLON_PUBLIC_EVENT_FULL=1
+plus the existing disposable-loopback guards/empty-account check. Four prepared
+L100 Wizards each have normal generated5Rare/9Uncommon legal caster gear and
+545 total stat points. Ordinary invitation/acceptance, sole per-socket readers
+started before join, actual replicated positions/hostiles/event/rune state,
+small sequenced movement and basic attacks; three defended waves plus champion,
+all four observed waves and actual event damage, survival/update deadlines,
+all personal complete/CalmedUntil receipts and saved max-level kill progression.
+No mid-run grants, forced kills, calendar changes or extra Gold purse. Six-minute
+combat bound and8-minute Go timeout. Default invocation compiled and correctly
+SKIPPED the opt-in test (native65282exit0); initial compile caught/fixed EP field
+name. This is preparation, **not actual event completion yet**. Native29320 is
+currently waiting for the real window; do not duplicate it.
+
+Deployment CI34857944815/native85349 remains active for pushed **f5d47f10**.
+Client/server gates and Browser Smoke3/3 succeeded;1/3 and2/3 still running.
+No deployment accepted yet. Next: follow both owned handles; inspect any actual
+failure; finish delivery/public verification, then full five-player Earth raid.
+Full1.10 scope stays open and unchanged. Root remains ledger-only NEVER PUSH.
+
+## Earlier checkpoint — Corrected 1.9.14 pushed; replacement CI active
 
 Previous goal turn was a verified wait, not a blocker. This turn confirmed
 CI34856694692 terminal failure: all server checks passed10m58s, including race,
