@@ -5,6 +5,25 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — first Abyssal boss defeated; same full run continues
+
+Native **20006 ACTIVE** at another45s handle poll; source042fd742 clean/frozen,
+seed-5297765868375752807/Normal60/gen2/no fallback. Actual TiderendLeviathan
+**33000HP defeated**, confirmed death; accepted Fighter hotbar receipts include
+Iron Fortress/Guardian Roar/Shield Slam/Whirlwind. Boss-role totals: Fighter
+11036damage/2147taken, Cleric1752allyhealing, Wizard9791damage, Rogue12693damage.
+No deaths; post-boss townrest/re-entry preserved run/progress/rewards. At684s
+routeelapsed:five room traversals/125leadersteps/two townreturns; continuing
+toward second boss, NOT a full five-boss clear/quest-handoff acceptance.
+Same log `/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/run.log`; poll20006,
+never restart due to an observation interval or launch a competing native job.
+
+Previous turn implemented/tested raid-guide copy (progress). This turn is native
+first-boss/recovery evidence plus verified waits. Pending55ae1d45 remains clean
+in `/tmp/eidolon-raid-guide-copy-20260914`; do not lose that unpublished fix.
+Merge into main active development only after20006 terminal. No live change;
+full goal remains active and unproven, not blocked. Root ledger only, never push.
+
 ## September 14 — obsolete raid-guide chapter references fixed locally
 
 Concrete runtime polish in a separate tree while native20006 stays frozen:
