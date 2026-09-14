@@ -5,6 +5,22 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — remove superseded acceptance instructions, retain same active run
+
+Previous goal turn was a verified wait on20006. This turn continued the same
+live handle and corrected stale instructions in the separate candidate audit:
+1.9.7/1.9.8/1.9.9 CI, earned Earth, bounded load, controlled High/Low rendering
+and schema12 recovery are accepted, not jobs to start again. Original full
+campaign/remaining dungeons/actual raids/cross-feature/phone scope remains open.
+Separate candidate tree is now clean **825b84cc**, above release packaging
+d411da5c and guide fix55ae1d45. No new runtime changes or repeated test suites;
+documentation diff check passed. Integrate all three after20006 terminal.
+
+Latest poll:20006 ACTIVE,5295.27s (~88.3min),32traversals including retracing,
+672leadersteps,five townreturns. Three bosses confirmed, no fullclear claim.
+No publication/restart/parallel GPU job. MainQA042fd742 still frozen; live1.9.9
+and private two-boss archive identities below remain unchanged. Rootneverpush.
+
 ## September 14 — Alpha 1.9.10 prepared separately; current native run continues
 
 Separate tree `/tmp/eidolon-raid-guide-copy-20260914`, branch
