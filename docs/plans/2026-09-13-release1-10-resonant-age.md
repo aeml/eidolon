@@ -1,5 +1,14 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.9 pushed — exact CI in progress
+
+Release **3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4** pushed to master after
+accepted bounded load and packaging checks. New exact CI **34804655770** is
+IN_PROGRESS. Continue this handle, do not replace/restart it or repeat accepted
+load/backup checks. After completion verify exact frontend/backend identities
+and database readiness. Last verified live is1.9.8/08f020bc below; its CI is
+terminal success and must not be repolled. No local QA services/processes remain.
+
 ## Alpha1.9.9 prepared — accepted snapshot-sharing correction
 
 Same-target50/100-player bounded reruns **PASS** on frozen9d3f4e1c after1.9.8
