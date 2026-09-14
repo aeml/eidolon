@@ -1,10 +1,24 @@
-import { dungeonBossEncounter } from './dungeonCombatEncounter.js';
+import { dungeonBossEncounter, dungeonCombatTargetType } from './dungeonCombatEncounter.js';
 import { planRangedHuntStep, retreatStaysInEncounter } from './wizardHuntControls.js';
 
 const room = { x: 20000, z: 19460, width: 120, height: 120, type: 'boss' };
 const layout = { rooms: [{ x: 20000, z: 19820, width: 100, height: 100, type: 'normal' }, room,
     { x: 20000, z: 18920, width: 120, height: 120, type: 'boss' }] };
 const bosses = ['RootboundWarden', 'BriarMatron'];
+
+test.each([
+    ['GravenColossus', 'HollowSentinel'], ['TideboundTyrant', 'Thalorath'],
+    ['AshenImperator', 'LordInfernax'], ['TempestSovereign', 'Zephyrion']
+])('recognizes %s from its server identity despite the %s rendering class', (boss, model) => {
+    const entity = { id: `${boss}-dungeon-party-instance`, constructor: { name: model } };
+    expect(dungeonCombatTargetType(entity, [boss])).toBe(boss);
+    expect(entity.constructor.name).toBe(model);
+    expect(dungeonCombatTargetType({ ...entity, id: `other-${boss}-instance` }, [boss])).toBe(model);
+});
+
+test('ordinary replicated subtype remains the combat identity', () => {
+    expect(dungeonCombatTargetType({ id: 'ordinary', subType: 'DemonOrc' }, bosses)).toBe('DemonOrc');
+});
 
 test('boss identities map to fixed authored rooms, not current enemy positions', () => {
     const before = JSON.stringify(layout);

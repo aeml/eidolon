@@ -24,16 +24,17 @@ export async function playDungeonThroughInputs(page, {
     const timing = createDungeonExpeditionTiming({ profile: expeditionProfile,
         onReport: report => console.log(`${logPrefix} timing ${JSON.stringify(report)}`) });
     async function hostiles(page) {
-        return page.evaluate(() => {
+        return page.evaluate(async bosses => {
+            const { dungeonCombatTargetType } = await import('/tests/dungeonCombatEncounter.js');
             const game = window.game;
             return [...game.remotePlayers.values()]
                 .filter(entity => game.isHostileActorTarget(entity) && entity.isActive &&
                     entity.state !== 'DEAD' && (entity.health ?? entity.stats?.hp) > 0)
-                .map(entity => ({ id: entity.id, type: entity.subType || entity.constructor.name, x: entity.position.x,
+                .map(entity => ({ id: entity.id, type: dungeonCombatTargetType(entity, bosses), x: entity.position.x,
                     z: entity.position.z, health: entity.health ?? entity.stats?.hp,
                     distance: entity.position.distanceTo(game.player.position) }))
                 .sort((a, b) => a.distance - b.distance);
-        });
+        }, playthrough.bosses);
     }
 
     async function defeatByMouse(page, target) {

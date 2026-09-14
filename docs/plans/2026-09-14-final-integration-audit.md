@@ -27,6 +27,19 @@ accepted by these unit checks. Avoid overlapping the retry with CI browser QA.
 Physical-phone feedback remains Brave/Chrome with positive general UI feedback;
 user has not tried dungeon or party play. Those checks remain open.
 
+Release3fb8d580 pushed to master; CI34856694692 started (watch57501). Do not
+supersede this deployment with QA-only commits. Before retrying, the failed log
+also proves two driver assumptions need correction: Graven Colossus was logged
+as HollowSentinel (its reused rendering class), and the second Cleric provided
+1228 effective ally healing while the first had zero. Resolve known boss identity
+from its server-generated ID prefix so boss-room bounds, screenshots and clear
+assertions use the actual guardian; do not rename or weaken expected bosses.
+Check aggregate effective Cleric healing rather than require the first Cleric
+to heal an already-full ally. Death, damage and reward assertions stay intact;
+four-player behavior still requires its single healer.18 focused encounter and
+timing tests passed0.560s, lint/diff passed. These are local QA-only corrections
+for the next run, not yet connected raid acceptance.
+
 ## Earlier evidence
 
 Raid36074 terminalexit1: first assault room/recovery-size validation passed,

@@ -749,7 +749,12 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     expect(state.rooms.every(room => room.cleared || room.type === 'start')).toBe(true);
                 }
                 expect((await snapshot(tank.page)).evidence.damageTaken).toBeGreaterThan(0);
-                expect((await snapshot(healer.page)).evidence.allyHealing).toBeGreaterThan(0);
+                // A second Cleric can land the first effective heal. Prove real
+                // healing by the support role without requiring overhealing by
+                // whichever healer happened to be first in the fixture.
+                const supportStates = await Promise.all(actors.filter(actor => actor.className === 'Cleric')
+                    .map(actor => snapshot(actor.page)));
+                expect(supportStates.reduce((sum, state) => sum + state.evidence.allyHealing, 0)).toBeGreaterThan(0);
                 for (const actor of damage) expect((await snapshot(actor.page)).evidence.damageDone).toBeGreaterThan(0);
             }
         });
