@@ -5,6 +5,28 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — corrected traversal passes natively; second campaign attempt started
+
+Previous turn PROGRESS (failed-route diagnosis + scoped correction). Native
+**81622 TERMINAL SUCCESS**, one `expedition-travel` test2.2m/zero retries onclean
+9723dd21. Two real town-to-visible-level20Imp trips,46.043/43.730s, including
+Recall between/after and explicitly no respawn/grants/forced movement/credit.
+No browser errors. Existing isolated wrapper reused with one short route; no
+new simulation framework. Artifacts `/tmp/eidolon-imp-travel-20260914-iohhag/`;
+ownimptravel0914ioh containers and18285/18286/4187 listeners removed. Do not repeat.
+
+Committed evidence **89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927** in activeWT
+`/tmp/eidolon-1-10-resonant-age-20260913`; QA/docs only, runtime still live1.9.9.
+Started ONE corrected strict `fresh-story-ready` run from that clean source:
+**native10782**, log `/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/run.log`,
+runID **earthready0914r2**, loopback API18285/Mongo18286/Web4187, freshWizard,
+ordinarytownrest, no grants/dailies/legacy flags,localzero-retrydefault.
+Outcome unknown, follow SAMEhandle; no restart on observation expiry. Original
+31615 remains terminalfailed and allits partial evidence stays archived. Do not
+change runtime or loaded route code during new attempt. Other accepted rendering/
+load/backup/gearedparty evidence remainsaccepted. Full1.10 scope remainsopen.
+Root ledger-only, NEVER PUSH ROOT; no new deployment for QA-only changes.
+
 ## September 14 — earned seeds passed; travel helper corrected after stopped attempt
 
 Session **31615 TERMINAL FAILURE**,16.1m,zero retries. Seeds passed186.042s:
