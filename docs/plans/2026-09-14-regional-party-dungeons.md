@@ -9,7 +9,12 @@ items each (5Rare/9Uncommon), same120minute expedition budget/no retries or
 mid-run grants. This is prepared-party encounter coverage, not earned campaign
 progress. Allfour builds replicated, actual invitation/support-target UI passed,
 allentered sameinstance. Seed-2324354694934653089, generator2/attempt0/no fallback.
-Opening trash includingMagmaGolem defeated by101.35s; no boss/fullclearclaim yet.
+Cindermaw defeated by172.63s: Fighter13208damage/731taken, Cleric719allyhealing,
+Wizard9794damage, Rogue16056damage. Firsttownrecovery/re-entry passedallfour,
+preservingseed/rooms/Gold/inventory/quests. ScorchedTwins defeated by580.66s:
+Fighter15290damage/452taken, Wizard15260damage, Rogue18282damage; Clericneededno
+healinginthatfight. Secondtownrecovery is underway; threebosses andfullclear/
+manualclaims remainunaccepted. Do not treat two bosses as a complete dungeon.
 
 Native71836 is the onlyownedGPU job. MainQA tree muststayfrozenbd566893 while
 it runs. Log`/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`;
