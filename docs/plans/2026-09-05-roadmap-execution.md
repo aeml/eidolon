@@ -5,6 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — Alpha1.9.11 verified public; final live QA still active
+
+This turn verifiedactualdelivery of **Alpha1.9.11/bd56689384f737c18c78a84607bc4683e7fb11bd**:
+publicmanifest,backendversion/commit(database ready),loginlabel,cumulativenotes,
+actualmain.js?release=SHA andimports,QuestUI.js?release=SHA,input/Journalcode and
+hud.css?release=SHA snap-scrollrule,oldlist-hideabsent; allHTTP200/exactchecksPASS.
+**CI34829019013 IN_PROGRESS**, ninejobspassed includingallthreebrowsergroups,
+focusedpredeployrelease-smoke andbothdeployments; finalLiveReleaseandCharacterQA
+stillrunningatfreshghcheck. **Watch59106ACTIVE**, logasbelow. Continue samewatch;
+oncealltenjobscomplete retainterminalmetadata thenclose1.9.11acceptance.
+Do notclaimallgatespassed yet. No newpush/localGPUtest; no repeatedliveHTTPcheck
+neededmerelybecausefinalQA finishesifnoidentitychange. Fullgoal remainsactive.
+
+Browserinterfacejob103930419406 logs retained
+`/tmp/eidolon-1-9-11-browser-interface-ci.log`; bothnew1280/1440trackerfixtures
+explicitlyranandpassed in13-caseinterfacestage. Browsergroups3/2/1passed5m29s,
+8m34s,12m3s. Correctedfullclientjobpassed; server9m54s/coverage/race/backup/build
+passed. Predeploy usesfocusedlogin/combat/travel/bagcheck perexistingfeature-first
+policy, notfullcampaign/gallery. Preserve acceptedold checks, no duplicaterun.
+
+IndependentPVPtree nowclean **54c409b0** (localdoc-onlycommitsafterpublishedbd566893):
+22984bdfrecordsresume-policyfinding;54c409b0recordspublicdelivery/pendingliveQA.
+Do NOTpushthose docsjusttoinvokeCIagain. MainQA tree remainscleanbd566893.
+
+Read-onlyresumeaudit: `client_dispatch.go` sendscharacterstownafter15minoffline
+withoutrestoringinstance; `dungeon_entry.go`/runtimeexpireemptypartyinstanceafter
+5min; `persistence.go` townsavehasnoDungeonProgress. Oldprivatecheckpointisnot
+automaticallyanordinaryvalidresume. **Askeduserasync** whetherunfinisheddungeon
+progressshouldpersistuntilanexplicitreset,orretaincurrent15minrule. **Noanswer
+yet; no runtimepolicychange.** Do notforgeLastLogouttopassanordinaryresumetest.
+Ifuserrequestsretention,handlebothlimits/partyownership/rewardreceipts/reset.
+Thischoice doesnotblock1.9.11delivery.11985remainsclosed143/backup/cleanupbelow;
+no expeditionrestarted. RootledgeronlyNEVERPUSH.
+
 ## September 14 — corrected1.9.11 published; new exact CI34829019013 active
 
 Previous turn fixedtheassertion; thisturn waitedforoldrunterminal thenpublished
