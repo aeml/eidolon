@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strings"
 	"sync"
@@ -83,6 +84,15 @@ func queryBlackjackUntil(t *testing.T, probe *blackjackSocketProbe, match func(b
 }
 
 func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
+	testBlackjackActualSocketsWagersRoundAndPayout(t, false)
+}
+
+func TestVIPBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
+	testBlackjackActualSocketsWagersRoundAndPayout(t, true)
+}
+
+func testBlackjackActualSocketsWagersRoundAndPayout(t *testing.T, vip bool) {
+	t.Helper()
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
 		t.Skip("explicit disposable loopback server required")
 	}
@@ -101,22 +111,40 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 	}
 	defer cleanup.Disconnect(context.Background())
 	collection := cleanup.Database("eidolon").Collection("casino_blackjack_tables")
-	count, err := collection.CountDocuments(context.Background(), bson.M{"_id": publicBlackjackTable})
+	tableID := publicBlackjackTable
+	if vip {
+		tableID = "vip-blackjack"
+	}
+	count, err := collection.CountDocuments(context.Background(), bson.M{"_id": tableID})
 	if err != nil || count != 0 {
 		t.Fatal("fixture requires an unused disposable blackjack table; refusing to overwrite existing rounds", err)
 	}
-	defer collection.DeleteOne(context.Background(), bson.M{"_id": publicBlackjackTable})
+	defer collection.DeleteOne(context.Background(), bson.M{"_id": tableID})
 	names := []string{fmt.Sprintf("bj-socket-%d-a", time.Now().UnixNano()), fmt.Sprintf("bj-socket-%d-b", time.Now().UnixNano())}
 	ids := []string{"player-" + names[0], "player-" + names[1]}
 	defer cleanup.Database("eidolon").Collection("users").DeleteMany(context.Background(), bson.M{"username": bson.M{"$in": names}})
 	defer cleanup.Database("eidolon").Collection("pvp_profiles").DeleteMany(context.Background(), bson.M{"player_id": bson.M{"$in": ids}})
-	table := game.CasinoTables()[0]
+	table, ok := game.CasinoTableByID(tableID)
+	if !ok {
+		t.Fatal("blackjack table missing", tableID)
+	}
 	for i, name := range names {
 		if err := repo.CreateUser(name, name+"@example.invalid", name+"-local-only"); err != nil {
 			t.Fatal(err)
 		}
 		character := &database.Character{Name: name, Class: "Fighter", Level: 1, Gold: 1000, InstanceID: game.CasinoInstanceID, X: table.Seats[i].ExitX, Z: table.Seats[i].ExitZ,
 			ProgressionVersion: game.CurrentProgressionVersion, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
+		if vip {
+			character.X, character.Z = 0, 153
+			period, err := database.NewVIPPeriod(time.Now().Add(-time.Hour), time.Now().AddDate(0, 1, 0))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if added, err := repo.ProvisionVIPPeriod(name, period); err != nil || !added {
+				t.Fatal("fixture VIP provisioning failed", err)
+			}
+			// The live membership refresh supplies the ordinary100EP, not a grant.
+		}
 		if err := repo.SetFirstCharacter(name, character); err != nil {
 			t.Fatal(err)
 		}
@@ -129,6 +157,9 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 	for i, name := range names {
 		connections[i], _ = resourceLoginCharacter(t, address, name, name+"-local-only", "Fighter")
 		defer connections[i].Close()
+		if vip {
+			approachVIPCardSocket(t, connections[i], table.ID, i)
+		}
 		resourceSend(t, connections[i], MsgCasino, map[string]any{"action": "sit", "tableId": table.ID, "seat": i})
 		presence := casinoReadPresence(t, connections[i], func(p game.CasinoPresence) bool { return p.YourSeat != nil })
 		sessions[i] = presence.YourSeat.SessionID
@@ -136,17 +167,32 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 	// Drain BOTH sockets continuously, like real clients; leaving the inactive
 	// player's world stream unread would test backpressure disconnects instead.
 	probes := []*blackjackSocketProbe{watchBlackjackSocket(connections[0]), watchBlackjackSocket(connections[1])}
-	initial := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool { return v.Available && v.Phase == "betting" })
+	initial := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool {
+		return v.Available && v.Phase == "betting" && (!vip || v.DealAt.Sub(v.ServerNow) >= 8*time.Second)
+	})
+	if vip && (initial.Currency != "ep" || initial.Balance != 100 || initial.MaxBet != 100 || initial.Gold != 1000) {
+		t.Fatal("VIP table omitted EP allowance, limit or currency separation")
+	}
 	for i, conn := range connections {
 		resourceSend(t, conn, MsgCasino, map[string]any{"action": "bet", "sessionId": sessions[i], "roundId": initial.RoundID, "bet": 100})
 	}
 	accepted := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool { return len(v.Players) == 2 })
-	if accepted.Gold != 900 {
+	if vip {
+		if accepted.Gold != 1000 || accepted.Balance != 0 || accepted.Currency != "ep" {
+			t.Fatal("VIP wager changed Gold or did not debit EP exactly once")
+		}
+	} else if accepted.Gold != 900 {
 		t.Fatal("wager did not debit normal Gold", accepted.Gold)
 	}
 	// Replay an accepted bet before the real betting deadline: no second debit.
 	resourceSend(t, connections[0], MsgCasino, map[string]any{"action": "bet", "sessionId": sessions[0], "roundId": initial.RoundID, "bet": 100})
 	view := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool { return v.Round != nil })
+	if vip {
+		other := queryBlackjackUntil(t, probes[1], func(v blackjackTableView) bool { return v.Round != nil && v.Round.ID == view.Round.ID })
+		if !reflect.DeepEqual(view.Round.Players, other.Round.Players) || !reflect.DeepEqual(view.Round.Dealer, other.Round.Dealer) {
+			t.Fatal("two VIP players did not see the same public cards/dealer")
+		}
+	}
 	if view.Round.Phase == "playing" && (!view.Round.DealerHidden || len(view.Round.Dealer) != 1) {
 		t.Fatal("dealer hole card exposed")
 	}
@@ -177,14 +223,25 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 			}
 		}
 		saved := resourceCloseAndWait(t, repo, conn, names[i])
-		if saved.Gold != 900+payout || saved.X != table.Seats[i].ExitX || saved.Z != table.Seats[i].ExitZ {
+		balanceOK := saved.Gold == 900+payout
+		if vip {
+			balanceOK = saved.Gold == 1000 && saved.EP == payout && len(saved.GoldCreditReceipts) == 0 && len(saved.VIPAllowanceReceipts) == 1
+		}
+		if !balanceOK || saved.X != table.Seats[i].ExitX || saved.Z != table.Seats[i].ExitZ {
 			t.Fatal("payout/exit not durable", saved.Gold, payout)
+		}
+		if vip {
+			t.Logf("VIP seat%d staked100EP, saved payout=%dEP, Gold=%d", i, payout, saved.Gold)
 		}
 	}
 	stop()
-	_, restartStop := compatStartServer(t, binary, uri, 42, "-save-journal-dir", journal)
+	restartAddress, restartStop := compatStartServer(t, binary, uri, 42, "-save-journal-dir", journal)
 	defer restartStop()
 	for i, name := range names {
+		if vip {
+			resumed, _ := resourceLoginCharacter(t, restartAddress, name, name+"-local-only", "Fighter")
+			resourceCloseAndWait(t, repo, resumed, name)
+		}
 		character, err := repo.GetCharacter(name, name)
 		if err != nil {
 			t.Fatal(err)
@@ -197,7 +254,11 @@ func TestBlackjackActualSocketsWagersRoundAndPayout(t *testing.T) {
 				}
 			}
 		}
-		if character.Gold != 900+payout {
+		balanceOK := character.Gold == 900+payout
+		if vip {
+			balanceOK = character.Gold == 1000 && character.EP == payout && len(character.GoldCreditReceipts) == 0 && len(character.VIPAllowanceReceipts) == 1
+		}
+		if !balanceOK {
 			t.Fatal("restart duplicated settlement", character.Gold)
 		}
 	}

@@ -90,6 +90,11 @@ func TestVIPPokerActualSocketsHandAcrossRestart(t *testing.T) {
 // coordinates deliberately restore downstairs; they are not an access grant.
 func approachVIPPokerSocket(t *testing.T, conn *websocket.Conn, seat int) {
 	t.Helper()
+	approachVIPCardSocket(t, conn, "vip-poker", seat)
+}
+
+func approachVIPCardSocket(t *testing.T, conn *websocket.Conn, tableID string, seat int) {
+	t.Helper()
 	resourceSend(t, conn, MsgCasino, map[string]any{"action": "vip"})
 	var floor struct {
 		Upstairs bool `json:"upstairs"`
@@ -105,7 +110,10 @@ func approachVIPPokerSocket(t *testing.T, conn *websocket.Conn, seat int) {
 	if movement.Context == "" {
 		t.Fatal("stairs omitted movement context")
 	}
-	table, _ := game.CasinoTableByID("vip-poker")
+	table, ok := game.CasinoTableByID(tableID)
+	if !ok || table.Floor != "vip" || (table.Game != "poker" && table.Game != "blackjack") {
+		t.Fatal("VIP approach requires a real upstairs card table")
+	}
 	point := table.Seats[seat]
 	for step := 1; step <= 20; step++ {
 		time.Sleep(350 * time.Millisecond)
