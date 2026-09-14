@@ -99,6 +99,18 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
         return hands.every(hand => hand?.phase === 'betting' && hand.roundId === hands[0].roundId
             && Date.parse(hand.dealAt) - Date.parse(hand.serverNow) > 12000);
     }, { timeout: 40000 }).toBe(true);
+    await page.bringToFront();
+    const countdown = await page.evaluate(async () => {
+        const samples = [], end = performance.now() + 2300;
+        do {
+            const value = Number.parseInt(document.querySelector('.blackjack-scene [role="timer"] strong').textContent, 10);
+            if (samples.at(-1) !== value) samples.push(value);
+            await new Promise(resolve => setTimeout(resolve, 100));
+        } while (performance.now() < end);
+        return samples;
+    });
+    expect(countdown.length).toBeGreaterThanOrEqual(3);
+    for (let index = 1; index < countdown.length; index++) expect(countdown[index - 1] - countdown[index]).toBe(1);
     const roundId = (await readHand(page)).roundId;
     const tableNode = await page.locator('.blackjack-scene').elementHandle();
     for (const target of players) await target.getByRole('button', { name: 'Bet · 100 Gold', exact: true }).click();
