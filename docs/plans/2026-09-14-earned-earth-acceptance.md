@@ -5,7 +5,13 @@
 Native **10782**, clean source89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927,
 same strict fresh-Wizard/no-daily/no-grant route and ordinary town recovery.
 RunIDearthready0914r2; log `/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/run.log`.
-Opening/diary has passed without deaths; watch phase is active. Follow this
+Opening/diary,40-kill watch and8-seed collection have passed without deaths.
+The watch's manual100Gold/1593XP reward/dialogue/save checks passed; seeds reached
+8after25observed target deaths and exact manual consumption passed. The Imp hunt
+is now **5/60,level11,no deaths,290seconds** at the last credited checkpoint,
+past the first attempt's1-credit travel failure. Normal level10talent preparation
+and repeated ordinary town recovery/return succeeded; no grant/daily shortcuts.
+The phase is still active, not a complete Imp chapter or Earth-readiness pass. Follow this
 same handle and leave runtime/loaded route modules unchanged. Full outcome is
 unknown; no new run should be started alongside it. Root ledger has ownership
 and ports. The completed first-attempt and short-travel evidence below remains
