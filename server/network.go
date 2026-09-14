@@ -161,6 +161,7 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	hydratePvPProfile(c.playerID)
 	sendPvPState(c)
 	sendEndgameState(c)
+	sendVIPStatus(c)
 	scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(c.playerID, time.Now()) })
 }
 

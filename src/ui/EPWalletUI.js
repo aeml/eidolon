@@ -7,7 +7,8 @@ export class EPWalletUI {
         this.root.className = 'equipment-loadouts ep-wallet-panel';
         this.root.innerHTML = `<summary>Eidolon Points · EP</summary><div class="equipment-loadouts-body">
             <p data-balance>Open to load your balance.</p>
-            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance. EP-only casino games and VIP allowance are still being built; owning EP does not grant VIP access.</p>
+            <p data-vip-status>VIP membership months grant 100 EP each. Payment integration is not available.</p>
+            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance. EP-only casino games are still being built; owning EP does not grant VIP access.</p>
             <label>EP to receive<input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="EP to receive"></label>
             <button type="button" data-review disabled>Review exchange</button>
             <div data-confirmation hidden><p data-cost></p><button type="button" data-confirm>Confirm permanent exchange</button> <button type="button" data-cancel>Cancel</button></div>
@@ -23,6 +24,7 @@ export class EPWalletUI {
         this.root.addEventListener('toggle', () => {
             if (!this.root.open) return;
             this.refreshPlayer();
+            this.send('get_vip_status', {});
             this.send('get_ep_wallet', {});
         });
         this.amount.addEventListener('input', () => { this.confirmation.hidden = true; });
@@ -56,6 +58,7 @@ export class EPWalletUI {
         this.confirmation.hidden = true;
         this.pending = null;
         this.root.querySelector('[data-balance]').textContent = 'Loading EP wallet…';
+        this.root.querySelector('[data-vip-status]').textContent = 'Loading VIP membership status…';
         try {
             const saved = JSON.parse(sessionStorage.getItem(this.storageKey()) || 'null');
             if (saved && typeof saved.id === 'string' && Number.isSafeInteger(saved.amount) && saved.amount > 0 && saved.confirmed === true) this.pending = saved;
@@ -98,5 +101,15 @@ export class EPWalletUI {
         this.review.disabled = !this.ready || Boolean(this.pending);
         this.retry.hidden = !this.pending;
         this.status.textContent = result.message || 'Wallet updated.';
+    }
+
+    handleVIPStatus(result) {
+        this.handleResult(result);
+        const until = result?.active ? new Date(result.until) : null;
+        const date = until && Number.isFinite(until.getTime()) ? until.toLocaleDateString() : '';
+        this.root.querySelector('[data-vip-status]').textContent = result?.success
+            ? result.active ? `VIP active${date ? ` until ${date}` : ''} · 100 EP per membership month${result.awardedEP ? ` · ${result.awardedEP} EP just credited` : ''}.`
+                : 'No active VIP membership. Existing EP and cosmetic unlocks remain yours.'
+            : result?.message || 'VIP status is unavailable. Please refresh.';
     }
 }

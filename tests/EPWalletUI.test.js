@@ -66,3 +66,15 @@ test('editing an amount cancels its old confirmation', () => {
     ui.root.querySelector('[data-confirm]').click();
     expect(send).not.toHaveBeenCalled();
 });
+
+test('VIP status describes server-owned membership and allowance, not EP ownership', () => {
+    const { ui, send, changePlayer } = fixture();
+    ui.handleVIPStatus({ success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
+        awardedEP: 100, ep: 103, gold: 3000000, goldPerEP: 1000000 });
+    expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('100 EP just credited');
+    ui.handleVIPStatus({ success: true, active: false, ep: 103, gold: 3000000, goldPerEP: 1000000 });
+    expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('No active VIP');
+    expect(send).not.toHaveBeenCalled();
+    changePlayer('player-other'); ui.refreshPlayer();
+    expect(ui.root.querySelector('[data-vip-status]').textContent).toBe('Loading VIP membership status…');
+});

@@ -17,13 +17,16 @@ for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${wid
         window.__epRequests = [];
         const ui = new EPWalletUI({ host, getPlayer: () => ({ id: 'ep-layout-player' }), send: (type, payload) => {
             window.__epRequests.push({ type, payload });
-            if (type === 'get_ep_wallet') ui.handleResult({ success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+            if (type === 'get_vip_status') ui.handleVIPStatus({ success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
+                awardedEP: 0, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+            else if (type === 'get_ep_wallet') ui.handleResult({ success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
             else ui.handleResult({ id: payload.id, success: true, ep: 10, gold: 1000000, goldPerEP: 1000000, message: 'Exchange saved.' });
         } });
         ui.root.open = true;
     }, width === 390);
     const wallet = page.locator('.ep-wallet-panel');
     await expect(wallet.locator('[data-balance]')).toContainText('8 EP');
+    await expect(wallet.locator('[data-vip-status]')).toContainText('100 EP per membership month');
     await wallet.getByLabel('EP to receive').fill('2');
     await wallet.getByRole('button', { name: 'Review exchange' }).click();
     await expect(wallet.locator('[data-confirmation]')).toContainText('2,000,000 Gold');

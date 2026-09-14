@@ -32,6 +32,7 @@ type DB struct {
 }
 
 type User struct {
+	VIPPeriods   []VIPPeriod  `bson:"vip_periods,omitempty"`
 	Username     string       `bson:"username"`
 	Email        string       `bson:"email"`
 	PasswordHash string       `bson:"password_hash"`
@@ -62,6 +63,7 @@ type Auction struct {
 }
 
 type Character struct {
+	VIPAllowanceReceipts map[string]int                 `bson:"vip_allowance_receipts,omitempty"`
 	EP                   int                            `bson:"ep,omitempty"`
 	EPExchangeReceipts   map[string]int                 `bson:"ep_exchange_receipts,omitempty"`
 	AppearanceCollection map[string]EquipmentAppearance `bson:"appearance_collection,omitempty"`

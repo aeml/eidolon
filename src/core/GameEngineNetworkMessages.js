@@ -443,6 +443,9 @@ class GameEngineNetworkMessageMethods {
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
         } else if (msg.type === 'ep_wallet_result') {
             this.uiManager?.epWallet?.handleResult(msg.payload);
+        } else if (msg.type === 'vip_status') {
+            this.player.vip = { active: Boolean(msg.payload?.success && msg.payload?.active), until: msg.payload?.until };
+            this.uiManager?.epWallet?.handleVIPStatus(msg.payload);
         } else if (msg.type === 'cosmetic_vendor_result') {
             this.uiManager?.cosmeticVendor?.handleResult(msg.payload);
             this.uiManager?.wardrobe?.handleResult(msg.payload);

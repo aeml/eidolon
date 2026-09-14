@@ -252,6 +252,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			GoldCreditReceipts:   cloneGoldCreditReceipts(char.GoldCreditReceipts),
 			EP:                   char.EP,
 			EPExchangeReceipts:   cloneGoldCreditReceipts(char.EPExchangeReceipts),
+			VIPAllowanceReceipts: cloneGoldCreditReceipts(char.VIPAllowanceReceipts),
 			ItemDeliveryReceipts: cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
 			State:                "IDLE",
 			Damage:               char.Stats.Strength * 2,
@@ -957,6 +958,8 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.handleEPWallet(msg)
 	case MsgGetCosmeticVendor, MsgBuyCosmetic:
 		c.handleCosmeticVendor(msg)
+	case MsgGetVIPStatus:
+		sendVIPStatus(c)
 
 	case MsgEquip:
 		if c.playerID == "" {

@@ -41,6 +41,7 @@ func policy(access messageAccess, maxPayloadBytes, burst int, window time.Durati
 var inboundMessagePolicies = map[string]messagePolicy{
 	MsgGetWardrobe:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetEPWallet:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgGetVIPStatus:       policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetCosmeticVendor:  policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgBuyCosmetic:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgExchangeGoldForEP:  policy(accessCharacter, 1<<10, 5, 10*time.Second),

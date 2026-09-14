@@ -13,6 +13,8 @@ const (
 	MsgGetCosmeticVendor    = "get_cosmetic_vendor"
 	MsgBuyCosmetic          = "buy_cosmetic"
 	MsgCosmeticVendorResult = "cosmetic_vendor_result"
+	MsgGetVIPStatus         = "get_vip_status"
+	MsgVIPStatus            = "vip_status"
 )
 
 // EntitySnapshot stores minimal state for delta comparison

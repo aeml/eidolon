@@ -1,5 +1,21 @@
 # 1.10 — The Resonant Age
 
+## Alpha 1.9.6 — packaged, pending push/deployment
+
+Veyra's twelve cosmetic EP unlocks/preview/vendor and the trusted100EP membership
+month allowance are implemented and focused-tested. No billing/real VIP grants.
+See [membership policy, operator preview and evidence](2026-09-14-vip-membership.md)
+and [vendor implementation](2026-09-14-vip-cosmetic-vendor.md). Matching1.9.6 version
+defaults, login label and cumulative patch notes are prepared. EP-only games and
+functioning upstairs VIP access remain next, not complete; full1.10 stays active.
+
+## Alpha 1.9.5 — verified live, all CI jobs passed
+
+September14: exact **5d024b3b987ce74917491cff5fcb93548fe4308a**, Alpha1.9.5 verified
+on both public endpoints, backend database ready. CI **34795245270** is TERMINAL
+SUCCESS across all ten jobs, including final live character QA. Do not poll or
+restart this completed workflow. Earlier in-progress statements below are history.
+
 ## Next feature batch — cosmetic vendor implemented locally
 
 September14: Veyra’s physical VIP Outfitter, twelve EP-only realm-themed cosmetics,
