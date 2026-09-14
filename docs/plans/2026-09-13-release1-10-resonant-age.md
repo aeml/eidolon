@@ -1,5 +1,27 @@
 # 1.10 — The Resonant Age
 
+## Open regression — named town residents (September 14)
+
+User reports that clicking Mara Fen, Dain, Hessa, and Selen opens the Talent
+Master, merchant, daily quest giver, or dungeon guide respectively. Resolve this
+during the remaining 1.10 work. These are Chronicle witnesses with their own lore
+conversations, not replacements for the existing service NPCs; preserve the real
+services and make each resident's identity and interaction unambiguous.
+
+Inspection: witness definitions deliberately reuse those four service models,
+but have separate entity classes and conversation handlers. Check pooled meshes
+and descendant hitbox ownership: Entity.setMesh changes only the root entityId,
+Actor hitboxes carry their own entityId, and MeshFactory reuses meshes without
+clearing those IDs. This is a suspected routing cause, not yet a reproduced or
+fixed bug. Add a focused regression that reuses each service model for a witness,
+clicks the actual geometry/hitbox, and checks the named conversation, including
+after leaving/re-entering town. Confirm the original services still work and
+remove any genuinely redundant spawns found, not the distinct story residents.
+
+Production rechecked September 14: frontend release.json and backend healthz
+both report Alpha 1.9.4 at 7b370f2576153d9beac37d3e65735c51d990ec7e;
+backend database ready, origin/master matches. No redundant deployment launched.
+
 ## Latest interim release — Alpha 1.9.4 verified live
 
 After1.9.3, user requested stable seated multiplayer card layouts and continuous
