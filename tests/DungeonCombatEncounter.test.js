@@ -13,6 +13,7 @@ test.each([
     const entity = { id: `${boss}-dungeon-party-instance`, constructor: { name: model } };
     expect(dungeonCombatTargetType(entity, [boss])).toBe(boss);
     expect(entity.constructor.name).toBe(model);
+    expect(dungeonCombatTargetType({ id: entity.id, subType: model }, [boss])).toBe(boss);
     expect(dungeonCombatTargetType({ ...entity, id: `other-${boss}-instance` }, [boss])).toBe(model);
 });
 

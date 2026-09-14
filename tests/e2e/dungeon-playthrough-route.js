@@ -6,7 +6,7 @@ import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
-import { dungeonBossEncounter } from '../dungeonCombatEncounter.js';
+import { dungeonBossEncounter, dungeonCombatTargetType } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 import { createDungeonExpeditionTiming } from '../dungeonExpeditionTiming.js';
 
@@ -24,17 +24,20 @@ export async function playDungeonThroughInputs(page, {
     const timing = createDungeonExpeditionTiming({ profile: expeditionProfile,
         onReport: report => console.log(`${logPrefix} timing ${JSON.stringify(report)}`) });
     async function hostiles(page) {
-        return page.evaluate(async bosses => {
-            const { dungeonCombatTargetType } = await import('/tests/dungeonCombatEncounter.js');
+        const targets = await page.evaluate(() => {
             const game = window.game;
             return [...game.remotePlayers.values()]
                 .filter(entity => game.isHostileActorTarget(entity) && entity.isActive &&
                     entity.state !== 'DEAD' && (entity.health ?? entity.stats?.hp) > 0)
-                .map(entity => ({ id: entity.id, type: dungeonCombatTargetType(entity, bosses), x: entity.position.x,
+                .map(entity => ({ id: entity.id, type: entity.subType || entity.constructor.name, x: entity.position.x,
                     z: entity.position.z, health: entity.health ?? entity.stats?.hp,
                     distance: entity.position.distanceTo(game.player.position) }))
                 .sort((a, b) => a.distance - b.distance);
-        }, playthrough.bosses);
+        });
+        // The public site intentionally does not serve test modules. Resolve
+        // server boss IDs in the runner, using only the observed actor fields.
+        return targets.map(target => ({ ...target,
+            type: dungeonCombatTargetType({ id: target.id, subType: target.type }, playthrough.bosses) }));
     }
 
     async function defeatByMouse(page, target) {
