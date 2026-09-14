@@ -1,5 +1,34 @@
 # Remaining regional four-player dungeon acceptance
 
+## Current Abyssal attempt — four bosses cleared, full result still open
+
+Native20006 remains active against frozen042fd742, Alpha1.9.9, High graphics,
+Normal60 seed `-5297765868375752807`, generator2/no fallback. Tiderend Leviathan,
+Drowned Choir, Abyssal Goliath and now Maelstrom Warden are defeated. Warden
+started at57,750HP; recorded role totals: Fighter14229damage/11321taken,
+Cleric27540allyhealing/4616taken, Wizard18754damage/4579taken,
+Rogue24830damage/13033taken. No death hidden or boss health reduced by a grant.
+At6284.41s (~104.7min), sixth town recovery/re-entry passed all-four recovery
+and same seed/rooms/Gold/bag/quests. Traversal count35 includes retracing;
+it is not35 unique rooms. Thalorath and each player's manual quest claim,
+next offer and final persistence checks remain outstanding.
+
+Private actual four-boss progress archive (do not commit/publish account data):
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/party-four-boss-checkpoint.archive.gz`,
+mode0600,39,684bytes; gzip integrity passed. SHA256
+`b0cb73caec8159e3c7be03add455106e9cd673f09d35e91dafae7e87fe959823`.
+Actual restore83743 succeeded24documents/0failures into previously empty
+`eidolon_party_four_boss_validation` within the owned disposable QA Mongo;
+running `eidolon` was not overwritten. Read-back verifies all four classes
+level61/2563Gold, savedroom10, exact seed,13rooms, bossrooms3/5/8/10 cleared
+and12 uncleared. This is an in-flight saved-progress copy, not an atomic
+production backup or a proven resumed gameplay session. The separate earlier
+two-boss archive remains intact. Validation databases leave with owned wrapper
+cleanup. No automatic continuation tool or permission to fabricate earlier
+completion receipts is implied.
+
+## Existing route and preparation
+
 Continue the existing real-input party route; do not repeat the accepted
 Verdant clear for these test-only extensions. The selected family now determines
 the actual server-generated character/item level, target story chapter, boss
