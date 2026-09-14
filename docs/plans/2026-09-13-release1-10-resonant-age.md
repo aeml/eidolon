@@ -1,6 +1,12 @@
 # 1.10 — The Resonant Age
 
-## Alpha 1.9.6 — packaged, pending push/deployment
+## Alpha 1.9.6 — pushed, exact CI in progress
+
+Pushed **f99bc61e4c78b844d6f4c673960df961021b4b14** to origin/master.
+Exact CI **34797469252** authoritatively IN_PROGRESS:
+https://github.com/aeml/eidolon/actions/runs/34797469252 . Continue this same run;
+do not replace it or rerun passed local checks. Not yet verified live. Last
+verified live release is1.9.5 below, whose CI is complete and must not be repolled.
 
 Veyra's twelve cosmetic EP unlocks/preview/vendor and the trusted100EP membership
 month allowance are implemented and focused-tested. No billing/real VIP grants.
@@ -8,6 +14,8 @@ See [membership policy, operator preview and evidence](2026-09-14-vip-membership
 and [vendor implementation](2026-09-14-vip-cosmetic-vendor.md). Matching1.9.6 version
 defaults, login label and cumulative patch notes are prepared. EP-only games and
 functioning upstairs VIP access remain next, not complete; full1.10 stays active.
+Deliver those remaining VIP games/access together as a meaningful feature batch,
+not a separate release for each small table or staircase edit.
 
 ## Alpha 1.9.5 — verified live, all CI jobs passed
 

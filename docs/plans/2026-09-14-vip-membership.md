@@ -1,5 +1,9 @@
 # Trusted VIP membership and monthly EP — Alpha 1.9.6 batch
 
+Release commit f99bc61e4c78b844d6f4c673960df961021b4b14 pushed; CI34797469252
+IN_PROGRESS at last check. No live1.9.6 claim yet. Previous1.9.5 is verified live
+with all ten CI jobs passing (34795245270 terminal success; do not repoll).
+
 This batch combines Veyra's implemented cosmetic vendor with trusted membership
 records and the approved **100 EP per VIP membership month**. Billing remains
 excluded. No production account was granted VIP or EP during implementation.
@@ -73,3 +77,15 @@ Retain EP, EPExchangeReceipts, VIPAllowanceReceipts and AppearanceCollection in
 every future save/rollback build. Predating servers may overwrite these fields.
 Wallet/receipts currently follow the game's single-character-per-account model;
 migrate account ownership before enabling additional characters or class resets.
+
+Next implementation entry points: casino_handlers.go still rejects action `vip`;
+World movement clamps shared CasinoInstanceID players to Y=0, and
+constrainCasinoInterior blocks the central stairs. Current procedural balcony
+height is8 in src/art/ProceduralCasino.js. Do not reuse the obsolete small-town
+casino_navigation.go height6 footprint for this large shared scene. Casino seat
+poses/furniture, camera ground plane, collision/cutaway and reconnection must all
+agree on the real floor. Refresh trusted membership for entry/new wagers, never
+trust player-supplied height or membership flags. Preserve settlement of existing
+funded hands on expiry, disconnect and rollback. EP transfers need durable own
+receipts/payout recovery, with no Gold fallback for VIP games. Reuse public-game
+engines and retain public Gold/legacy receipt compatibility.
