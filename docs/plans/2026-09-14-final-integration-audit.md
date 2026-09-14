@@ -1,10 +1,14 @@
 # 1.10 final integration — evidence and remaining work
 
-Latest checkpoint:1.9.10 public delivery is verified at
-`4bab14fad67db14c26c93d9bacb0410f57187626`: frontend manifest, backend health
-(database ready), login label/patch notes and actual runtime script/versioned
-imports match. **CI34822657032 is terminal success, all ten jobs passed**,
-including final live character QA. Do not poll or restart that completed run. Earlier
+Latest checkpoint:1.9.11 public delivery is verified at
+`bd56689384f737c18c78a84607bc4683e7fb11bd`: frontend manifest, backend health
+(database ready), login label/patch notes, actual runtime script/versioned
+imports and tracker JS/CSS match. **CI34829019013 is terminal success, all ten
+jobs passed**, including final live character and town recovery QA. See
+[party tracker correction and acceptance](2026-09-14-party-quest-tracker.md).
+Do not poll or restart that completed run. Earlier1.9.10/4bab14fa CI34822657032
+also passed all ten jobs; the superseded1.9.11attempt34827963234 failed a stale
+test assertion before deployment and is terminal. Earlier
 1.9.9 CI34804655770 is terminal success, not pending work.
 The corrected strict earned Earth route
 now passes all eight phases on clean89c2ad5d, native10782 terminal success;

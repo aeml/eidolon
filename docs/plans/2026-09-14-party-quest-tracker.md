@@ -5,9 +5,10 @@ Status: **Alpha1.9.11 public delivery verified** at
 backend database ready. Login label, cumulative patch notes, actualversioned
 main.js imports, QuestUI.js Journal/input handling and hud.css snap-scroll rules
 verified over publicHTTP200. Old list-hiding rule absent. ExactCI34829019013
-has server/client/allthreebrowser/predeploy/inputvalidation/bothdeployment jobs
-passed; **final LiveReleaseandCharacterQA still running**, not yet all-gates
-accepted. Keep the same CI handle and do not supersede it.
+is **terminal success: all ten jobs passed**, including live character and
+town-healing/Well Rested checks. Terminal metadata independently asserted at
+`/tmp/eidolon-1-9-11-ci-final-20260914.json`; watch59106 exited0. Do not poll or
+restart this completed pipeline or repeat the accepted tracker checks.
 
 Earlier f9e47fbd CI34827963234 is terminalfailure, serverpassed/clientassertion
 failed/deployskipped. Correctionbd566893 was pushed only after that terminal

@@ -1,5 +1,20 @@
 # 1.10 — The Resonant Age
 
+## Alpha1.9.11 fully verified live — September14
+
+Releasebd566893, Alpha1.9.11, verified on both domains with database ready,
+matching login/notes/versioned runtime and actual tracker JS/CSS. Exact
+CI34829019013 **terminal success, all ten jobs passed**. The focused party
+tracker fix is accepted; do not repeat it or poll that completed pipeline.
+The earlier1.9.11 attempt34827963234 failed only a stale test assertion before
+deployment; it is terminal, not the current release result.
+
+Remaining full campaign, regional dungeons, actual group raids and cross-feature/
+physical-phone acceptance stay open. Next regional run is four-player Normal70
+Molten on exactlivebd566893/Low, not a repeat of accepted Verdant or an expired
+Abyssal archive. Dungeon persistence beyond existing expiry limits was raised
+with the user; no policy change without their answer.
+
 ## Earned Earth readiness accepted — September14
 
 Corrected native10782 passed all eight phases in59.1m,zero retries/deaths, no
