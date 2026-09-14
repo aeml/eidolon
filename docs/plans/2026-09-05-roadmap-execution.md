@@ -5,6 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — fourth boss defeated, private four-boss checkpoint verified
+
+Previous turn verified wait; this turn actual progress: MaelstromWarden defeated
+at~6187s, four of five bosses now confirmed. Fighter14229damage/11321taken,
+Cleric27540healing/4616taken, Wizard18754damage/4579taken,
+Rogue24830damage/13033taken. Sixth town recovery/re-entry passed all-four
+resources and unchanged seed/rooms/Gold/bag/quests. Latest handle20006 ACTIVE,
+6318.47s,35traversals including retracing,723leadersteps,six townreturns.
+Thalorath/manual personal claims/Fire offers/final persistence still open;
+no full-clear claim. MainQA tree042fd742 frozen. Keep same run, no secondGPUjob.
+
+New PRIVATE actual checkpoint, do not commit/publish account data:
+`/tmp/eidolon-abyssal-party-r2-20260914-qmz7uv/party-four-boss-checkpoint.archive.gz`
+mode0600,39684bytes, gzip integrity passed; SHA256
+**b0cb73caec8159e3c7be03add455106e9cd673f09d35e91dafae7e87fe959823**.
+Restore83743 TERMINAL SUCCESS24docs/0failures into previouslyempty
+`eidolon_party_four_boss_validation` insideOWNED current QA Mongo. Read-back
+all4roles level61/2563Gold/savedroom10/exactseed-5297765868375752807/13rooms,
+bossrooms3/5/8/10cleared,12notcleared. Earlier two-boss archive remains intact.
+Runningeidolon never overwritten; both validation namespaces clean up with
+owned container. Not atomicproductionbackup or proven gameplay-resume;
+no automatic archive-continuation tool or earlier-receipt fabrication allowed.
+
+Separate `/tmp/eidolon-raid-guide-copy-20260914` now clean
+**4213a3a866f67c604b2f66d5f5407258bc1f6cd1**, above825b84cc/d411da5c/55ae1d45.
+Regional evidence and current audit updated, diffcheck passed. Integrate after
+20006 terminal before sequential1.9.10 publication. Fresh ls-remote confirms
+master3481f89a (verifiedlive1.9.9), candidate clean; no push. Rootneverpush.
+Fullgoal active; next multi-browserfunctional run existingLowquality option.
+
 ## September 14 — remove superseded acceptance instructions, retain same active run
 
 Previous goal turn was a verified wait on20006. This turn continued the same
