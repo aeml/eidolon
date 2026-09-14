@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten accepted; full five-player Earth raid8535 ACTIVE
+## September 14 — Molten accepted; full five-player Earth raid36074 ACTIVE
 
 **Molten49494 terminalexit0/PASS54.1m** on cleanf2fdea9b/Alpha1.9.13. All five
 Normal70 bosses cleared without death, four town recoveries and completed-run
@@ -19,12 +19,12 @@ containers and4187listener gone. Private39688byte0600/0700checkpoint:
 `05e223a8b981a9ed28d9fe988c06473faabe0d28ca50562cf73e3d783ad9964e`.
 Archive is not a verified playable resume. Do not poll/restart49494.
 
-**Native8535 ACTIVE**, fresh45s and10s nativepolls confirm running. All five builds
+**Native36074 ACTIVE**, fresh45s nativepoll confirms running. All five builds
 replicated, UI invitation/acceptance, raid conversion and individual readiness
-passed; all five entered the same Normal Rootheart Sanctum. Seed906801298949159171,
-generator2/attempt0/no fallback. Full `party-raid` route at clean **2a6dd269**,
+passed; all five entered the same Normal Rootheart Sanctum. Seed4198150920626128355,
+generator2/attempt0/no fallback. Full `party-raid` route at clean **d547a5b5**,
 in `/tmp/eidolon-pvp-queue-integration-20260914`, now **FROZEN**.
-Log `/tmp/eidolon-earth-raid-r3-20260914-2iB769/run.log`; runIDearthraid0914c;
+Log `/tmp/eidolon-earth-raid-r4-20260914-LKHD3v/run.log`; runIDearthraid0914d;
 API18315/Mongo18316/Web4189. Only owned GPU run; no CI active/new release pushed.
 Normal Rootheart's unchanged level30 encounters, five preparedlevel70 roles (tank/two healers/two DPS),
 Low,5Rare/9Uncommon each, no runtime changes/grants/retries. Prepared
@@ -54,6 +54,21 @@ Current opening `test-results/five-player-raid-five-gear-a3cba--three-crystal-re
 inspected: readable tracked Vigil above party; tank selection/Ready labels and
 town models visible; four roster rows visible, fifth requires list scrolling.
 Low60fps/16.6ms town frame, not actual raid-combat/phone acceptance.
+
+Earlier8535 terminalexit1/2.4m: entered, first room's real combat passed, all five
+alive/165Gold each; QA recovery helper rejected five states because it hardcoded4.
+Sanitized0, owned containers/ports cleaned; private
+`/tmp/eidolon-party-checkpoint-earthraid0914c-FIykh8/save.archive.gz`, SHA256
+`b18abbc59c046b7dddee9c8ba3c99187a7d0a264ded1bdc09c8992f838702ca5`.
+d547a5b5 declares expectedMembers(default4, explicit5–10) and validates every
+member while preserving80%first/50%later thresholds/death/stale rejection.
+21resttests passed0.498s (6334exit0), lint/diff pass. Shared helper count/index
+audit found no other four-member restriction. Native36074 now passed that
+recovery validation after normal DemonOrc combat; latest162seconds/traversal,
+24leadersteps/1room traversal/0townrests. Do not claim town recovery or boss clear.
+Previous goal turn progressed full raid wiring/Molten acceptance; this turn
+fixed the raid-size assumption and obtained actual passing boundary evidence.
+Follow36074;8535/5471/29311 are all terminal. Independent tree stays FROZEN.
 
 ## Historical active checkpoint — Molten49494 (now passed above)
 
