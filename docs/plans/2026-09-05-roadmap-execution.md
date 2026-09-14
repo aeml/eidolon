@@ -14,8 +14,8 @@ Fighter19610damage/1794taken, Cleric1729allyheal, Wizard20656damage,
 Rogue16878damage. **Three all-four town recoveries/re-entries passed**, after
 rooms2/5/7, preserving seed/rooms/Gold/inventory/quests. Later rests began with
 Fighter519/1240 and514/1240mana, below the new50%threshold. Do not claim fullclear
-or efficiency result yet. Latest timing1183seconds, traversal,
-329leadersteps/16roomtraversals/3townreturns. Actual native poll confirmed live.
+or efficiency result yet. Latest timing1565seconds, traversal,
+421leadersteps/22roomtraversals/3townreturns. Fresh45s native poll confirmed live.
 Opening `test-results/four-player-dungeon-four-g-ee1e7-d-receive-individual-credit/desktop-party-healing.png`
 was inspected: trackeraboveroster/visiblehealertarget/classes/aura. Townopening
 only, notdungeonboss/phone/wholevisualscope. Previous feedback turn was no goal
@@ -31,6 +31,16 @@ not earned trigger or rendered reel proof. Log
 Initial51793 exited before tests on an inappropriate vendor flag; readonly-module
 retry passed. Both owned Mongo containers cleaned. No runtime edit/new deployment;
 QA/docs stay local for the next appropriate publication. Main remains frozen.
+
+Next-turn progress: independent93daa8dc prepares five legal level70 raid actors
+(Fighter, Cleric, Wizard, Rogue, second Cleric), each5Rare/9Uncommon with proper
+class affixes. Reads actual server raid definitions and leaves the selected
+Vigil incomplete/no future or instance credit. Three unit tests pass0.469s,
+lint/diff pass; actual catalog preparation native36884 terminalexit0 for all four
+raids. This is preparation only; full connected raid/repair driver and actual
+clear remain required. No entry-only GPU run, runtime edit or new deployment.
+Prior goal turn made progress on connected slot features; this turn made raid
+setup progress and verified the same Molten run still alive. No repeated gates.
 
 ## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
 
