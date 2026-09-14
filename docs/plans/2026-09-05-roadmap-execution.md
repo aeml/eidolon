@@ -5,6 +5,17 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — actual-phone feedback clarified
+
+User replied to the pending final-mobile question: uses **Brave or Chrome**;
+has **not tried party or dungeon play** on the phone. Keep earlier positive
+general mobile-UI feedback accepted, but actual-phone dungeon/party acceptance
+remains unverified. Device model/OS not supplied. Do not repeat the answered
+browser question or treat this feedback as completion of the untested modes.
+Recorded in activeWT `docs/plans/2026-09-14-final-integration-audit.md`.
+No runtime changes or deployment required for this feedback. The existing
+earned Earth session31615 was not interrupted or restarted by this update.
+
 ## September 14 —1.9.9 verified live; strict earned Earth run started
 
 Previous turn VERIFIED WAIT on CI34804655770. This turn completed delivery:
