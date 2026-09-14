@@ -1,5 +1,15 @@
 # Remaining regional four-player dungeon acceptance
 
+## Molten retry26730 — running on committed helper correction
+
+Sourcef8b9c7ac/clean, Normal70, Low, same legal four-role equipment and120minute
+budget, no mid-run grants or automatic retries. Seed6417675202245662372/gen2/
+attempt0/no fallback. Cindermaw defeated; all-member first town recovery and
+same-run re-entry passed by163seconds. Remaining bosses/full clear unaccepted.
+Only owned GPU run, main QA tree frozen. Log
+`/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`, owned suffixmoltenparty0914b,
+ports18285/18286/4187. Continue26730 rather than launching another browser route.
+
 ## Molten71836 — terminal short-step failure; helper correction pending native check
 
 The first attempt ended with exit1 after21.6minutes, during Forgemaster Pyrax.
