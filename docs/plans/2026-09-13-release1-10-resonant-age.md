@@ -1,5 +1,17 @@
 # 1.10 — The Resonant Age
 
+## Earned Earth readiness accepted — September14
+
+Corrected native10782 passed all eight phases in59.1m,zero retries/deaths, no
+grants/dailies. Finallevel31/9065Gold,sevenmanualchapters/dungeonaccepteduncleared,
+Normal30entryenabled/crystalraidsealed. [Exact evidence and checkpoint](2026-09-14-earned-earth-acceptance.md).
+All owned services cleaned up;10782/81622/31615 are terminal, not wait handles.
+Do not rerun accepted Earth/load/render/backup/gearedVerdant evidence. A verified
+actual level30/Orc46checkpoint is retained privately for later continuation;
+it must earn its remaining four credits/handoff, not inherit the final log.
+Current runtime remains verifiedlive1.9.9; no new deployment for QA/docs only.
+Full realm/dungeon/groupraid/cross-feature/physical-phone acceptance remains open.
+
 ## Alpha1.9.9 verified live — all deployment gates passed
 
 September14: exact **CI34804655770 TERMINAL SUCCESS**, including native predeploy,

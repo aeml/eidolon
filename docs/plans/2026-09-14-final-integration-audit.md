@@ -1,8 +1,11 @@
 # 1.10 final integration — evidence and remaining work
 
 Latest checkpoint:1.9.9 is verified live at3481f89a with CI34804655770 terminal
-success and exact public identities. The strict earned Earth route is running
-on clean sourceee038504, native31615; outcome remains open.1.9.8 previously passed
+success and exact public identities. The corrected strict earned Earth route
+now passes all eight phases on clean89c2ad5d, native10782 terminal success;
+[accepted result and earned checkpoint](2026-09-14-earned-earth-acceptance.md).
+The old31615 attempt failed travel; do not treat it as active or rerun the
+subsequently accepted route.1.9.8 previously passed
 all CI gates with actual
 schema-upgrade backup confirmed. Snapshot sharing now passes the original
 50/100-client bounded criteria; see [accepted rerun evidence](2026-09-14-broadcast-snapshot-sharing.md).
@@ -105,7 +108,7 @@ responsive-layout and desktop hardware-rendering results.
 
 | Area | Existing implementation/evidence to retain | Still required |
 | --- | --- | --- |
-| 1.1 first hour and dungeon foundations | Current manual Ilyra chain, town recovery/Well Rested, skill fixes, party credit, passing prepared Verdant route | Earned current-curve Earth readiness without daily/grant substitutions; relevant current encounter delta and remaining dungeon families/seeds |
+| 1.1 first hour and dungeon foundations | Current manual Ilyra chain, town recovery/Well Rested, skill fixes, party credit, passing prepared Verdant route; earned current-curve Earth readiness passes without daily/grant substitutions | Relevant current encounter delta and remaining dungeon families/seeds |
 | 1.2 character/equipment/mobile | Published class/equipment work, inspected galleries, real phone user reports “everything looks good,” responsive menu checks | Integrated High/Low visual review and sustained phone combat/party scope; do not erase the user's positive UI feedback |
 | 1.3 combat feel | Existing cast/impact, movement, aiming, telegraph and sound work with focused native receipts | Inspect/hear these together during the actual group/campaign routes, including other instances and representative runes |
 | 1.4 Chronicle | 31 chapters, eight playable sites, four witness dialogues/restoration consequences; named-NPC click fix is live | Complete earned campaign through all four dungeon handoffs, four full raids and repair defenses, portal and four-Eidolon Dark King finale |

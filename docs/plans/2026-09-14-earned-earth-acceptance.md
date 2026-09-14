@@ -1,6 +1,59 @@
-# Earned Earth acceptance — first attempt stopped; travel correction verified
+# Earned Earth readiness — accepted
 
-## Corrected campaign attempt — active
+## Final result — corrected attempt passed
+
+**Native10782 TERMINAL SUCCESS,59.1minutes,one test,zero retries.** Clean source
+89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927, runtimeAlpha1.9.9/3481f89a, unchanged
+throughout. No player deaths, grants, accepted/completed dailies or global stat
+scaling. Ordinary town recovery, earned gear/training and manual Ilyra claims.
+Final level31,12463XP toward22600,9065Gold,1320HP/alive. All seven prerequisite
+Chronicle chapters manually completed; Earth dungeon accepted/uncleared/count0.
+Guide Normal30 entry enabled, Earth crystal raid still sealed. All readiness
+problems absent. Do not repeat this accepted route for documentation/releases.
+
+| Phase | Elapsed seconds |
+| --- | ---: |
+| Opening and diary | 120.456 |
+| Watch40kills | 481.919 |
+| Seeds8items | 211.398 |
+| Imps60kills | 1811.608 |
+| Returning scar | 31.713 |
+| Orcs50kills | 878.255 |
+| Dungeon handoff | 7.631 |
+| Readiness assertions | 0.713 |
+
+Orcs: zero deaths,15rest stops,one level30training stop. Before manual claim:
+level30/17745XP/8765Gold. Exact dialogue and300Gold/15843XP yield final31/12463XP/
+9065Gold; exact character and quest receipts survive reconnect.3450Gold unsold
+gear remains inventory, not income. Times include automation, movement and
+reconnects; this is not a universal human first-hour or uninterrupted-resource
+claim. Full dungeon/raid/campaign/physical-phone requirements remain separate.
+
+Original log, sanitized HTML report and test screenshots retained in
+`/tmp/eidolon-earned-earth-r2-20260914-1c1qRm/`. Wrapper removed owned
+earthready0914r2 API/Mongo (including the validation database);18285/18286/4187
+listeners absent. Do not poll/restart10782. No production data was changed.
+
+### Actual earned checkpoint retained for later continuation
+
+Before cleanup, copied two gzip Mongo archives from this disposable database,
+mode0600, without changing the live-in-test character. `earned-earth-r2-level30.archive.gz`
+SHA256 `be0c40ad5c8ff6cc42cb2dbb42e23bb07ad721814959f3f8e518b21ecaeb765c`
+was actually restored into separate `eidolon_checkpoint_level30` inside the
+owned QA Mongo: one user/character,level30/7170XP/8539Gold,prior six chapters
+completed,Orc46/50 not yet completed. It is NOT the final31/50-clear snapshot.
+The namespace did not replace or modify `eidolon`; wrapper cleanup removed both.
+Earlier `earned-earth-r2-20260914T055833Z.archive.gz` SHA256
+`bfbf291b227d90aa61fe5afc07cecaa00f8686e33451d78c6295bc1962818bde` also retained.
+Both archives are under the artifact root above and contain disposable account
+data; keep private. A later attempted handoff dump found the container already
+cleaned up and created NO final archive. If resuming from the verified checkpoint,
+finish its remaining four Orc credits and manual handoff through normal inputs;
+never synthesize the missing completion from the separate passing log.
+
+## Historical progress of the corrected attempt
+
+### Initial corrected-campaign checkpoints
 
 Native **10782**, clean source89c2ad5d8cdb5e4a9f5682a289a3a50458e2a927,
 same strict fresh-Wizard/no-daily/no-grant route and ordinary town recovery.
