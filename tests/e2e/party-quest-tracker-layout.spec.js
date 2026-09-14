@@ -1,4 +1,12 @@
 import { expect, test } from '@playwright/test';
+import { existsSync } from 'node:fs';
+
+// This fixture renders HTML/CSS only. Do not compete with an active native
+// dungeon session for the GPU or silently turn it into a second game client.
+test.use({ launchOptions: {
+    executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined),
+    args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer']
+} });
 
 for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900 }]) {
     test(`party quest strip stays reachable above healing controls at ${viewport.width}px`, async ({ page }, testInfo) => {
@@ -7,6 +15,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
         await page.setViewportSize(viewport);
         await page.goto('/', { waitUntil: 'networkidle' });
         await page.evaluate(async () => {
+            if (window.game || document.createElement('canvas').getContext('webgl')) {
+                throw new Error('Tracker layout fixture must not start a game or WebGL renderer');
+            }
             const { QuestUI } = await import('/src/ui/QuestUI.js');
             const { SocialUI } = await import('/src/ui/SocialUI.js');
             document.getElementById('start-screen').style.display = 'none';
@@ -20,7 +31,8 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
             quest.trackedQuestKeys = new Set(summary.map(item => item.id));
             quest.renderObjectivesPanel(summary);
             social.updateParty({ partyId: 'layout-only', members: ['Fighter', 'Cleric', 'Wizard', 'Rogue'].map((name, index) => ({
-                id: index ? `ally-${index}` : 'tracker-layout', name, hp: 100, maxHp: 100, role: index === 1 ? 'healer' : 'damage'
+                id: index ? `ally-${index}` : 'tracker-layout', name, class: name, level: 60,
+                hp: 100, maxHp: 100, role: index === 0 ? 'tank' : index === 1 ? 'healer' : 'damage'
             })) });
             window.__partyTrackerLayout = { quest, social };
         });
@@ -36,6 +48,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
         await page.keyboard.press('End');
         await expect.poll(() => list.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
         await list.locator('.objective-entry').last().hover();
+        const stripBox = await list.boundingBox(), lastBox = await list.locator('.objective-entry').last().boundingBox();
+        expect(Math.abs(lastBox.y - stripBox.y)).toBeLessThanOrEqual(1);
+        expect(lastBox.y + lastBox.height).toBeLessThanOrEqual(stripBox.y + stripBox.height + 1);
         await expect(list.locator('.objective-entry').last()).toHaveAttribute('title', /fragments 7 · 7 \/ 10/);
         await page.getByRole('button', { name: 'Select Cleric for healing', exact: true }).click();
         await expect(page.getByRole('button', { name: 'Select Cleric for healing', exact: true })).toHaveAttribute('aria-pressed', 'true');

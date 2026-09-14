@@ -181,7 +181,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.9.10" \
+  --build-arg "BUILD_VERSION=Alpha 1.9.11" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 

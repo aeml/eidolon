@@ -448,16 +448,23 @@
 .party-roster-visible:not(.mobile-mode) #objectives-list {
     order: 1;
     flex: 0 0 100%;
-    max-height: 36px;
+    max-height: 24px;
     margin: 0;
     gap: 3px;
+    scroll-snap-type: y mandatory;
 }
 .objectives-panel__list:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
 }
 .party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry {
+    box-sizing: border-box;
+    height: 24px;
     padding: 4px 6px;
+    scroll-snap-align: start;
+}
+.party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry__header {
+    line-height: 14px;
 }
 .party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry > :not(.objective-entry__header),
 .party-roster-visible:not(.mobile-mode) #objectives-list .objective-entry__badge {

@@ -43,6 +43,13 @@ export class QuestUI {
             this.objectivesList.tabIndex = 0;
             this.objectivesList.setAttribute('role', 'region');
             this.objectivesList.setAttribute('aria-label', 'Tracked quests');
+            this.objectivesList.addEventListener('keydown', event => {
+                // Keep native scrolling, without bubbling Space to the game's
+                // cast shortcut. Journal and other non-scroll shortcuts still work.
+                if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
+                    event.stopPropagation();
+                }
+            });
         }
         this.btnCloseQuest = document.getElementById('btn-close-quest');
         this.btnCloseJournal = document.getElementById('btn-close-journal');

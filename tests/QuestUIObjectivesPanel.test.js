@@ -52,6 +52,27 @@ describe('QuestUI objectives panel', () => {
         expect(document.querySelector('.objective-entry').getAttribute('aria-label')).toContain('Open journal: Phone quest');
     });
 
+    test('tracker scrolling does not bubble to gameplay shortcuts or prevent native scrolling', () => {
+        buildQuestDom();
+        new QuestUI({ getLastPlayer: () => ({}) });
+        const list = document.getElementById('objectives-list');
+        const gameplay = jest.fn();
+        window.addEventListener('keydown', gameplay);
+        try {
+            list.focus();
+            for (const key of [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End']) {
+                const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+                list.dispatchEvent(event);
+                expect(event.defaultPrevented).toBe(false);
+            }
+            expect(gameplay).not.toHaveBeenCalled();
+            list.dispatchEvent(new KeyboardEvent('keydown', { key: 'j', bubbles: true }));
+            expect(gameplay).toHaveBeenCalledTimes(1);
+        } finally {
+            window.removeEventListener('keydown', gameplay);
+        }
+    });
+
     test('daily summary puts ready and accepted work before larger unaccepted payouts', () => {
         buildQuestDom();
         const ui = new QuestUI({ getLastPlayer: () => ({ level: 2 }) });
