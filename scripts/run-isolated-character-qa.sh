@@ -899,6 +899,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-opening)
     npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  expedition-travel)
+    npx playwright test --retries=0 tests/e2e/expedition-travel.spec.js
+    ;;
   nameplate-world)
     npx playwright test tests/e2e/nameplate-world.spec.js
     ;;
