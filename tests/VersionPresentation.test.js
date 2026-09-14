@@ -26,6 +26,7 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.9.11"')).toBeLessThan(indexHtml.indexOf('data-version="1.9.10"'));
         const entry = indexHtml.split('data-version="1.9.11"')[1].split('data-version="1.9.10"')[0];
         for (const text of ['no longer hides your tracked quests', 'healing controls', 'Rows snap', 'Keyboard scrolling', 'phone navigation are unchanged']) expect(entry).toContain(text);
+        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
     });
     test('1.9.10 explains current quest guidance and preserves performance history', () => {
         expect(indexHtml.match(/data-version="1\.9\.10"/g)).toHaveLength(1);
@@ -222,7 +223,11 @@ describe('version presentation', () => {
             'Know your opponent', 'Honest combat information', 'Readable action labels',
             'does not change quest requirements, rewards, leveling or drop rates']) expect(indexHtml).toContain(text);
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
-        expect(scripts['test:e2e:interface']).toBe('playwright test tests/e2e/journal-daily-presentation.spec.js tests/e2e/combat-action-preview.spec.js tests/e2e/desktop-action-readability.spec.js');
+        expect(scripts['test:e2e:interface'].split(/\s+/).slice(2)).toEqual(expect.arrayContaining([
+            'tests/e2e/journal-daily-presentation.spec.js',
+            'tests/e2e/combat-action-preview.spec.js',
+            'tests/e2e/desktop-action-readability.spec.js'
+        ]));
         expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs');
         expect(browserStages.filter(stage => stage.name === 'interface').map(stage => stage.files))
             .toEqual([scripts['test:e2e:interface'].split(/\s+/).slice(2)]);

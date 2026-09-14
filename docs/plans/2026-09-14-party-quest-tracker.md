@@ -1,7 +1,19 @@
 # Party quest tracker — compact layout correction
 
-Status: implemented and targeted rendered checks passed locally; Alpha1.9.11
-version/notes prepared. Not pushed or deployed yet.
+Status: Alpha1.9.11 pushed asf9e47fbd. CI34827963234 client job failed before
+deployment on a stale exact-command assertion; the correction below is local.
+Last verified live remains1.9.10/4bab14fa.
+
+The full client job passed6849tests and failed only the historical1.0.59 check
+that required exactly three interface fixtures. The newly appended tracker
+fixture made that string differ. Replaced exact equality with required-file
+retention, keeping the existing plan-to-command equality check, and explicitly
+asserted the new tracker fixture is part of the1.9.11 interface stage. This does
+not remove coverage or change runtime behavior. **298tests/5suites PASS4.476s**,
+targeted lint/diff pass. The final package-command change occurred after the
+earlier local version check; this CI result caught that missed combination.
+Retain terminal result of34827963234 before publishing the correction, and keep
+the same1.9.11 number because it has not deployed. No new native gameplay rerun.
 
 The accepted party screenshot exposed a real HUD regression: the body class
 `party-roster-visible` hid `#objectives-list` entirely. Players could see a tracked
