@@ -5,6 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — connected ranked2v2 accepted; exact 1.9.10 CI still active
+
+This turn concrete progress, notblocked: added and actually ran a bounded
+four-real-WebSocket ranked arena integration using existing server helpers,
+no four-browser workload/newQAframework. New separateworktree
+`/tmp/eidolon-pvp-queue-integration-20260914`, branch
+`work/pvp-queue-integration-20260914`, clean **f53478e04fea20f231b7ad3dd487ea4c08ce2154**
+based4bab14fa. Test/docs ONLY, NOT PUSHED. Keep separate until currentpublication
+terminal; carry into next appropriate release without superseding CI for tests.
+
+Actual runtimebinary4bab14fa/Alpha1.9.10, four preparedlevel30Wizards with
+ordinaryRarestaffs/allocatedIntelligence, no midrungrants/clocks/debugkills.
+Ordinaryinvite/accept/queue, same2v2match, teammateintegrity, normalmovement/
+attacks/roundtimers, 2–0first-to-two, all4damage, correctpersonalwinners,
+durablematchedresult andfreshlogin; PvElevel/Gold1000/XP0/weaponunchanged.
+Final **66.03 seconds PASS**, session61837 terminal success. Hit counts
+8/28/8/26; winnersrating1016/Honor50,losers984/Honor0, eachonewinorloss.
+Earlier17072PASS62.06s beforestrengthenedownershipassertions;58228failed6.94s
+onlybecausehelperexpectsbinarybasename==healthcommit. Renaminggeneratedbinary
+fixedprecondition; gamewashealthy. Do notrepoll/repeatthese terminalsessions.
+
+Retained `/tmp/eidolon-pvp-sockets-20260914-KJXVlY/{run.log,run-r2.log,run-r3.log}`
+andactualbinarynamedfull4bab14faSHA. Finalownedserverlog
+`/tmp/eidolon-compat-session-1917589480/server.log`; cleangracefulshutdown.
+OwnedMongo `eidolon-pvp-sockets-0914a` label/IDchecked thenstoppedwith--rm;
+firstlistbrieflyDead, subsequentlistABSENTandport18306released. No ownedPVP
+servicesrunning. No productionwrites. DoesNOTprove rendered2v2, activematch
+disconnect/rejoin, phone, earnedprogression orfullseason; retainpriorchecks.
+Evidence `docs/plans/2026-09-14-connected-arena-acceptance.md` innewtree.
+
+Exactrelease **CI34822657032 stillIN_PROGRESS**, source4bab14fa frozenonmainQA.
+Client/ServerPASS, BrowserSmoke3/3PASS, shards1/3and2/3runningatlatestpoll.
+Don'tsupersede/launchcompetingnativeGPU. Live1.9.10notyetverified; previous
+verifiedlive1.9.9/3481f89a. ContinueexactCIandlivechecks. Fullgoalactive.
+
 ## September 14 — Abyssal terminal deadline; Alpha 1.9.10 pushed, CI active
 
 This turn actual progress:20006 TERMINAL FAILED on unchanged120-minute
