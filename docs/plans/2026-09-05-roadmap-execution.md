@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## September 14 — Molten accepted; full five-player Earth raid49954 ACTIVE
+## September 14 — Maelin targeting fixed; 1.9.14 delivery needs CI correction
+
+Previous turn yielded new terminal raid evidence and changed the next action
+(progress). This goal turn reproduced a real runtime bug: non-interactive
+CrystalKeeper fell through `isHostileActorTarget` as an enemy. Server Maelin is
+TypeNPC. The client now excludes CrystalKeeper without adding a service window
+or changing any repair rules. Two regressions failed before the fix;295 focused
+targeting/version tests passed afterward. Login/runtime versions and cumulative
+notes advance to1.9.14. Commit **3fb8d58069b65ccf35ece0bf98120f4cf9103a32** was
+pushed from the independent tree to master. Root remains ledger-only NEVER PUSH.
+
+**CI34856694692 still in progress; native watch57501 confirmed live by45s poll.**
+Client job104017984198 failed one stale `DungeonPlaythroughEntry` assertion:
+post-clear callback now receives bounded ritual controls as its second argument.
+Other6895 client tests passed; Go unit step passed and race step is still running.
+No deployment occurred;1.9.13 remains the last accepted live version. Do not
+supersede the running CI. Once terminal, push the correction and follow its
+replacement CI through real public delivery; no new version needed for this
+not-yet-deployed1.9.14. No local GPU job active; do not poll49954 again.
+
+Independent `/tmp/eidolon-pvp-queue-integration-20260914` is CLEAN at **f5d47f10**,
+with two local commits not yet pushed:
+- ea106127: guardian QA identifies boss by server-generated ID prefix rather
+  than reused mesh class (failed run logged GravenColossus as HollowSentinel).
+  Preserves expected boss list, fixed encounter bounds and boss screenshots.
+  Check aggregate actual Cleric ally healing: previous run's second Cleric healed
+  1228 while first healed0, so requiring the first specifically was not valid.
+  Single-healer four-player runs retain their requirement. No death/damage/reward
+  guards were weakened.18 focused encounter/timing tests passed0.560s; lint/diff.
+- f5d47f10: stale callback assertion now checks both bounded control functions.
+  27 focused entry/encounter/timing tests passed0.522s; diff check passed.
+
+After delivery, retry the actual five-player Earth raid using this corrected
+driver and normal legal fixtures. Full three-wave repair/claims/re-login remain
+unaccepted; no phase is granted. Full1.10 scope still includes remaining dungeon
+families/seeds, earned Chronicle, raids/finale, full public event and integrated
+visual/physical-phone checks. Phone Brave/Chrome feedback remains general UI only.
+
+## Earlier checkpoint — Mobile feedback confirmed; Earth raid49954 terminal
+
+User confirms Brave or Chrome on their phone and has not tried a dungeon or
+party session. Earlier positive general mobile UI feedback remains recorded;
+physical-phone dungeon and party acceptance remain open. Do not ask the browser
+question again or count desktop automation as phone acceptance.
+
+On resuming observation, native49954 returned exit1. The 15-minute Earth raid
+attempt stopped at `No damage progress against CrystalKeeper for 60 seconds`.
+The log records ritual start and wave 1, but not full repair or manual claims.
+Investigate target selection before any retry; do not weaken damage-stall bounds.
+Credential scan passed with zero sanitized files. The wrapper retained
+`/tmp/eidolon-party-checkpoint-earthraid0914e-FNrE47/save.archive.gz`, SHA256
+`62030983f3e74c8e51de5f7086301e3453fe24ad1090187750aa77aa95c08beb`.
+This is not a verified playable resume. Do not poll/restart49954. The source tree
+is no longer frozen by this run. No replacement test or deployment was started
+during this feedback turn; the whole 1.10 goal remains open.
+
+## Historical checkpoint — Molten accepted; Earth raid49954 then active
 
 **Molten49494 terminalexit0/PASS54.1m** on cleanf2fdea9b/Alpha1.9.13. All five
 Normal70 bosses cleared without death, four town recoveries and completed-run
