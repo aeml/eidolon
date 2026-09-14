@@ -16,8 +16,8 @@ Cleric6848allyheal/402taken, Wizard21854damage/575taken,
 Rogue25250damage/2470taken. **Four all-four town recoveries/re-entries passed**, after
 rooms2/5/7/9, preserving seed/rooms/Gold/inventory/quests. Later rests began with
 Fighter519/1240 and514/1240mana, below the new50%threshold. Do not claim fullclear
-or efficiency result yet. Latest timing1958seconds, traversal,
-484leadersteps/25roomtraversals/4townreturns. Fresh45s native poll confirmed live.
+or efficiency result yet. Latest timing2223seconds, traversal,
+547leadersteps/29roomtraversals/4townreturns. Fresh45s native poll confirmed live.
 Fourth rest started at Fighter2697HP/278mana; LordInfernax remains undefeated.
 Opening `test-results/four-player-dungeon-four-g-ee1e7-d-receive-individual-credit/desktop-party-healing.png`
 was inspected: trackeraboveroster/visiblehealertarget/classes/aura. Townopening
@@ -51,6 +51,16 @@ entry. Syntax/lint pass, **not yet exercised with five browsers**. Conversion
 uses server chat receipt because party updates omit MaxSize. Must be wired into
 full assault/repair driver; do not launch an entry-only GPU check. This goal turn
 made helper progress plus fourth-boss/recovery evidence and verified waits.
+
+Independentfac6ae0b adds live-objective raid runner planning/input: read each
+player's `currentDungeonRoomState.crystal`, hold Earth ward, carry Water memory
+using personal hint, channel ordered Fire points, alternate Wizard/Rogue Air
+runners. Tank/two Clerics retain support/combat. Ground-click-only step must run
+in that actor's sole input worker after warning avoidance. Nine planner tests
+pass0.469s; syntax/lint/diff pass; native29605 terminalexit0. No browser defense
+has run: full shared raid combat/ritual driver is the next necessary work, not
+more entry-only or planner-only acceptance. Prior turn progressed helper/boss;
+this turn progresses ritual controls and verified the same Molten handle live.
 
 ## September 14 —1.9.13 all gates accepted; four-player Molten49494 ACTIVE
 
