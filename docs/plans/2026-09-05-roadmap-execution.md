@@ -80,10 +80,18 @@ tests pass0.659s (10821exit0), lint/diff pass. Not yet proof the stall is resolv
 Sanitized0/owned cleanup passed. Private checkpoint
 `/tmp/eidolon-party-checkpoint-earthraid0914d-HJBXQU/save.archive.gz`, SHA256
 `2d95e3cc00dca95464fc6044770d96a9d016b03852478c91e895f778699aaf94`.
-Current49954 at35seconds/traversal/6leadersteps/0rooms/0townrests. No raid boss or
-ritual acceptance. Follow49954;36074/8535/5471/29311 are terminal. Independent
-tree FROZEN631030ab. Prior goal turn fixed five-member rest validation; this turn
-diagnosed/corrected stale target approach and started the affected full rerun.
+Current49954 at573seconds/traversal/74leadersteps/4room traversals/1townrest.
+The previously stalled assault section cleared on this seed. All five completed
+the room2 town recovery and re-entered the same raid, preserving seed, rooms,
+Gold/inventory/quests; Fighter began at3021HP/692mana. Other spent pools:
+Cleric2965/1225, Wizard3025/3476, Rogue3025/1016, secondCleric2975/1225.
+`allMembersRecovered:5` and unchanged-progress assertions passed. Fresh45s native
+poll confirms alive; retracing cleared rooms toward guardian. This is new
+connected five-member recovery evidence, not a raid boss/ritual acceptance or
+an exact replay of the earlier seed. Follow49954;36074/8535/5471/29311 terminal.
+Independent tree FROZEN631030ab. Prior goal turn fixed five-member rest validation;
+this turn corrected stale target approach, obtained passing assault/recovery
+evidence on the next seed, and verified the same ongoing handle repeatedly.
 
 ## Historical active checkpoint — Molten49494 (now passed above)
 
