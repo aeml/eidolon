@@ -1,16 +1,28 @@
 # Remaining regional four-player dungeon acceptance
 
-## Molten retry26730 — running on committed helper correction
+## Molten retry26730 — deliberately stopped for excessive retravel, exit143
 
 Sourcef8b9c7ac/clean, Normal70, Low, same legal four-role equipment and120minute
 budget, no mid-run grants or automatic retries. Seed6417675202245662372/gen2/
 attempt0/no fallback. Cindermaw and Scorched Twins defeated; three all-member
-town recoveries and same-run re-entries passed. Twins role receipts: Fighter
+town recoveries and same-run re-entries passed initially; a fourth subsequently
+passed after room7 with Fighter2869/3050HP and882/1240mana. Twins role receipts: Fighter
 18680damage/2255taken, Cleric3098allyhealing, Wizard15886damage/692taken,
 Rogue14896damage/491taken. Pyrax and remaining bosses/full clear unaccepted.
-Only owned GPU run, main QA tree frozen. Log
+Stopped the validated owned Playwright PID3891236 with SIGTERM rather than
+spending another full seven-room retrace at those healthy pools. This was an
+agent-initiated efficiency cancellation, not a gameplay failure or expired
+observation. Native26730 terminal143; do not poll/restart. The stricter early
+recovery policy was not changed mid-run. Log and copied test-results retained:
 `/tmp/eidolon-molten-party-r2-20260914-e8LFQc/run.log`, owned suffixmoltenparty0914b,
-ports18285/18286/4187. Continue26730 rather than launching another browser route.
+ports18285/18286/4187 (now released). The wrapper's new checkpoint cleanup actually
+worked: stopped its writer, dumped four users, retained private archive
+`/tmp/eidolon-party-checkpoint-moltenparty0914b-mU6lLQ/save.archive.gz`,45581bytes,
+file0600/dir0700/gzipPASS, SHA256
+`14a53fa38f5beffd63f5f77b812e83b727c9409f187c8989ba53911d90e1d228`.
+This is not a restored playable session. API/Mongo/image removed by wrapper;
+validated orphan static server3891321 stopped separately. Retained artifacts
+credential scan passed (0files changed), using its still-live credential env.
 
 ### Later-party efficiency correction (not applied to26730)
 
@@ -20,9 +32,11 @@ afterward use50% for the four-role party. Solo policy is unchanged. No resource
 grant, easier enemy, budget extension, hidden death, interrupted live room or
 mid-run source change.16 focused policy tests passed in0.789s; scoped lint and
 diff checks passed. Actual next-party performance and completion remain unproven.
-Connected casino extension (947c7b74/206e01e3) is committed separately and still
-awaits its first native run after26730; countdown checks observe the displayed
-seconds. Do not count authored/linted cases as browser acceptance.
+Connected casino extension (947c7b74/206e01e3) now runs as **native17777** on clean
+98cac4a9, main QA tree frozen. It is the only owned GPU run; suffix
+casinoconnected0914a, ports18285/18286/4187, log
+`/tmp/eidolon-connected-casino-20260914-nNqKZI/run.log`.
+Countdown checks observe displayed seconds. No native result yet; continue17777.
 
 ## Molten71836 — terminal short-step failure; helper correction pending native check
 
