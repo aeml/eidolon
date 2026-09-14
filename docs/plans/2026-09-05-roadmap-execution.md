@@ -5,6 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — connected guild calendar accepted;1.9.13 browser jobs active
+
+Previous goal turn made progress (connected Groups/recovery). This turn completed
+the remaining connected guild-calendar slice. Independent tree clean **1ac99700**,
+QA commit **f9175084** plus doc scope correction. No gameplay source changed,
+no new release/push; keep QA/docs for next appropriate publication. Main remains
+cleanf2fdea9b. Root remains ledger-only, NEVER PUSH ROOT.
+
+**59453 TERMINALPASS4.189s**, actualf2fdea9b/Alpha1.9.13 production binary,
+two ordinary fresh Fighter/Cleric accounts, real WebSockets/ownedMongo/realclock.
+Guildcreate/invite/explicitaccept → shared event/title/activity/UTCtime/revision →
+healer RSVP → member cancellation denied → leader reschedule marks prior RSVP
+tentative on both clients → stale revision rejected → renewed consent → actual
+disconnect/saves/serverstop/newprocess/freshlogins retain guild/event/RSVP →
+leader cancellation onboth, revision3. FinalbothL1/XP0/Gold0/EP0, no grants.
+Scheduling a future Earthraid does NOT prove theseL1characters qualify or clear it.
+No runtime fix required; gofmt/diffcheck passed. Do not repeat accepted route.
+
+Log `/tmp/eidolon-group-sockets-20260914-WJG4y2/calendar.log`; owned server logs
+`/tmp/eidolon-compat-session-3196038628/server.log` and `2998218609/server.log`.
+Both processes shut down normally; owned `eidolon-calendar-sockets-0914a` removed.
+No local GPU session/owned QA containers. Evidence doc in integration:
+`docs/plans/2026-09-14-connected-guild-calendar-acceptance.md`.
+This closes connected calendar acceptance, not rendered/phone calendar, raid
+combat, governance/bank matrices. Existing connected Groups evidence retained.
+
+**Exact CI34843057369/f2fdea9b ACTIVE**, latest authoritative query:
+Client and Server jobs SUCCESS; all three Browser Smoke jobs IN_PROGRESS.
+**Watch51003 ACTIVE** fresh native poll; log unchanged. Follow this same run,
+do not restart/supersede or compete with upcoming native predeploy/live GPU.
+Last accepted live1.9.12/38847b2f. Full1.10 campaign/regionaldungeon/actual5–10-player
+raids/repair/finale/crossfeature/EPslots/vendor/phone scope still open. After CI
+native gates finish, resume next regional work using reduced repeated-rest policy.
+
 ## September 14 — connected Groups/reconnect accepted while1.9.13 CI runs
 
 Previous goal turn made concrete progress (accepted1.9.12 and pushed1.9.13).
