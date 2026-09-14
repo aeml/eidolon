@@ -5,6 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — connected VIP blackjack accepted; same1.9.13 CI active
+
+Previous goal turn progressed connected cosmetic acceptance. This turn closed
+the shared VIP blackjack currency path, without another public-Gold run.
+Independent clean **56eeb20a**, QA-only NOT PUSHED; mainclean f2fdea9b.
+Root ledger-only, NEVER PUSH ROOT. No gameplay source/version change.
+
+**69903 TERMINALPASS40.535s**, exactf2fdea9b/Alpha1.9.13 runtime. Two real sockets,
+ownedMongo and server processes. PreparedL1Fighters/1000Goldeach, entitlement
+provisioned before firstlogin, zero seededEP; normalmembership awards100EP.
+Actualguard/walk/2chairs → EPcurrency/max100 → eachbet100, Golduntouched → duplicate
+bet no extra debit → matchingpubliccards/dealerwithholecardhidden/privateshoeabsent
+→ ownturnStand → sharedsettlement → disconnectsaves/actualrestart/freshlogins.
+**Both randomhands lost, final0EP/1000Goldeach**; preservedexactexitpositions,
+zeroGoldcreditreceipts/oneallowancereceipteach. No duplicateallowance/settlement.
+Not a positiveEPwin receipt: retain earlier VIPMongo settlement and publicnatural
+3:2 proof; do not force/keep rerolling until a win. Not rendered/midhandrestart.
+
+ExistingGoldtest reused viaVIPparameter; acceptedpublicrouteNOT rerun. Poker
+approachwrapper delegates samewalk to sameoriginaltableID, now reusablebyVIPbj.
+No productionclock/logic changes. gofmt/diffcheckpassed. Evidence doc
+`docs/plans/2026-09-14-connected-vip-blackjack-acceptance.md` inintegration.
+Log `/tmp/eidolon-group-sockets-20260914-WJG4y2/vip-blackjack.log`;
+serverlogs `/tmp/eidolon-compat-session-2244288857/server.log` and253819127.
+Bothprocessesnormalshutdown, owned `eidolon-vip-blackjack-0914a` removed.
+No localGPU/ownedQAcontainers active. Do not repeatacceptedcheckfordocs.
+
+**CI34843057369 exactf2fdea9b ACTIVE**: Client/Server/Browser3passed;
+Browser1/2running latestquery. **Watch51003 ACTIVE**, freshnativepoll; unchangedlog.
+Continue sameworkflow; don't pushQA/docs alone or supersede it. Last fullyaccepted
+live1.9.12/38847b2f. Full1.10 stillopen: campaign/regionaldungeons/actual5–10player
+raids+repair+finale, connectedslots/fullpublicevent/integratedvisuals/busyfloor/
+physicalphone. Next regionalnative uses reducedrestpolicy afterCI GPUgates finish.
+
 ## September 14 — connected cosmetic purchase accepted; same1.9.13 CI active
 
 Previous goal turn made progress (connected guild-calendar restart acceptance).
