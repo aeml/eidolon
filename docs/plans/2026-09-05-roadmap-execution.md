@@ -22,8 +22,12 @@ Existing120minuteexpedition/125minuteouterbudget retained. This is prepared
 encountercoverage, NOTearnedcampaign orraid. No repeatedVerdant/Abyssalrun.
 All4buildsreplicated,invitationUIformedparty,healingtargetselect/clearpassed,
 all4sameinstance. Seed **-2324354694934653089**,gen2,attempt0,nofallback.
-Openingtrash/MagmaGolemdefeated; last138.97s traversal43leadersteps/2roomtraversals,
-0townreturns. No boss/fullclear/manualclaim acceptedyet. Continue SAMEhandle.
+**Two bosses defeated**: Cindermaw by172.63s(F13208damage/731taken,C719allyheal,
+W9794damage,R16056damage); ScorchedTwins by580.66s(F15290damage/452taken,
+W15260damage,R18282damage,Cleric0healingneededthatfight). **Two townreturnsPASS**,
+all4resourcesrecovered/sameseedroomsGoldinventoryquests preserved. Last610.84s
+(10.2min) traversal154leadersteps/8roomtraversalsincludingretracing. Threebosses,
+fullclear/manualclaim remainunaccepted. Continue SAMEhandle71836; no newretry.
 
 Log `/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`; runIDmoltenparty0914a;
 owned`eidolon-isolated-qa-api-moltenparty0914a`/`...mongo-moltenparty0914a`,
@@ -35,8 +39,9 @@ Opening`test-results/.../desktop-party-healing.png` inspectedfromcurrentrun:
 actualconnected4playerHUD nowshows“TheCrownofEmbers”0/1 cleanlyabovehealerrows;
 nooverlap. Notafinalboss/physicalphone/publicliveimage. Retainwhenrunterminal.
 
-IndependentPVPtree nowclean **e5b21b8f**, doc-onlypostpublicationcommits22984bdf,
-54c409b0,ebc0bdb7(allgatesaccepted),e5b21b8f(Moltenstart). **Notpushed**; do not
+IndependentPVPtree nowclean **e0e38d20**, doc-onlypostpublicationcommits22984bdf,
+54c409b0,ebc0bdb7(allgatesaccepted),e5b21b8f(Moltenstart),e0e38d20(two-bossreceipts).
+**Notpushed**; do not
 triggernewCIforledger/docs. Finalintegrationaudit/release1.10plan nowrecords
 accepted1.9.11. Fullcampaign/remainingfamilies/actual5–10playerraids/casino/
 phone scope remainsopen. Asyncdungeon-persistencechoice remainsunanswered;
