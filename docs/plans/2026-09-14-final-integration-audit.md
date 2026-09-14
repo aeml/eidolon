@@ -94,6 +94,15 @@ not the obsolete million-XP catalog and not proof of satisfying campaign pacing.
 
 ## Remaining acceptance, grouped to avoid repeated matrices
 
+### Actual-phone feedback — September 14 clarification
+
+The user uses **Brave or Chrome** on their phone and has **not tried a party or
+dungeon session**. Preserve their earlier positive general mobile-UI feedback;
+it does not establish mobile dungeon or multiplayer acceptance. Phone model/OS
+were not supplied. The browser question is answered; do not ask it again.
+Actual-phone party/dungeon play remains unverified, separate from automated
+responsive-layout and desktop hardware-rendering results.
+
 | Area | Existing implementation/evidence to retain | Still required |
 | --- | --- | --- |
 | 1.1 first hour and dungeon foundations | Current manual Ilyra chain, town recovery/Well Rested, skill fixes, party credit, passing prepared Verdant route | Earned current-curve Earth readiness without daily/grant substitutions; relevant current encounter delta and remaining dungeon families/seeds |
