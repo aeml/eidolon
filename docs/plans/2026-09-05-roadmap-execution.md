@@ -5,6 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — connected Groups/reconnect accepted while1.9.13 CI runs
+
+Previous goal turn made concrete progress (accepted1.9.12 and pushed1.9.13).
+This turn completed a remaining social integration slice with real sockets.
+Independent tree clean **4fd5288b**, local QA commit **f5e3a57c** plus doc-only
+publication status. **Do not push QA/docs alone or supersede active1.9.13**.
+Main remains cleanf2fdea9b. Root remains ledger-only; NEVER PUSH ROOT.
+
+**96222 TERMINALPASS1.232s**, recruitment/privacy/consent/readiness/leave.
+**43111 TERMINALPASS1.952s**, extended same route adds actual disconnect/save,
+new socket/token rotation and roster recovery without a leader action.
+Both on exactf2fdea9b/Alpha1.9.13 runtime: ordinary fresh Fighter/Cleric/Rogue,
+no grants/equipment changes/world mutation/clock changes. Leader-only applicants,
+caller-owned listing despite spoofedownerId, no autojoin, explicitinvite/accept,
+classroles/2memberroster, readycheck thenallready, removalvisibletoobserver,
+allthree finalL1/Gold0/EP0/XP0. Suspected initial-snapshot omission was NOT a bug:
+production's1second party loop restores roster; no gameplay change was made.
+Existing group ownership/block handler test passed0.059s; gofmt/diffcheck passed.
+No need to repeat this acceptance for docs. It does not prove rendered Groups,
+cross-restart parties, guild-calendar, actual raids, or physical-phone scope.
+
+Evidence `/tmp/eidolon-group-sockets-20260914-WJG4y2/run.log` and
+`resume-before.log` (**PASS despite filename**). Accepted extended server log
+`/tmp/eidolon-compat-session-3224335432/server.log`; first2748430786.
+Both server processes and Mongo `eidolon-group-sockets-0914a`/`0914b` cleaned.
+Build93729/setup75027 terminal. No local GPU activity/owned QA containers.
+Integration doc `docs/plans/2026-09-14-connected-group-finder-acceptance.md`.
+
+**CI34843057369 exactf2fdea9b ACTIVE**: Client Tests SUCCESS, Server Tests running
+at latest actual query. **Watch51003 ACTIVE** freshly native-polled; log
+`/tmp/eidolon-1-9-13-ci-watch.log`. Continue same handle, no restart/supersession.
+Last fully accepted live1.9.12/38847b2f; its CI/watch are terminal, don't repoll.
+Next remaining native regional work uses reduced repeated-rest policy after CI
+GPU gates finish; full1.10 campaign/regional dungeon/actualraid/finale/crossfeature/
+EPslots/vendor/phone acceptance still open. No user decision newly required.
+
 ## September 14 —1.9.12 fully accepted live;1.9.13 pushed, CI34843057369 active
 
 This goal turn completed1.9.12 public verification and all gates, then pushed
