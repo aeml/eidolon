@@ -5,6 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 —1.9.8 live;100-player rerun accepted;1.9.9 pushed
+
+Previous turn PROGRESS(snapshotsharing). This turn completed exact1.9.8 delivery:
+**CI34802207933 TERMINAL SUCCESS/alljobs**; publicfrontend/backend/loginlabel/
+patchentry08f020bcba55a187f83bc8ddf5a20980fde88b15/Alpha1.9.8,DBready.
+Deploy Server job103851077143 log confirms preflight11→12 and actualconsistent
+backup `/home/aeml/eidolon/server/backups/save-upgrade-20260914T034515Z-ZFFYBe`;
+Mongo/journalchecksOK/priorwriterstoppedbeforetarget. Do not repoll/restart1.9.8.
+
+After allnativeCIended, ran affected50/100client stages on frozen9d3f4e1c67b5cfe656e650b285396ba1c4dc6465
+(runtime22a56525) with SAME targets/host/mixedload/Mongo7.0.16. **BOTH PASS**.
+50clients120s:50admitted/175715frames/errors0/26healthsamples/maxheap124514240.
+100clients120s:100admitted/237702frames/errors0/28samples/maxheap182125088.
+AllsamplesDBready,aggregateframes>5perclientsecond,heap<512MiB and<4×both
+initialbaseline82548176 andstageinitial84619568/65671368. Final100sample80831096.
+No weakerlimit/retry/grants/productionQAdata. Logs
+`/tmp/eidolon-shared-load-20260914-AfsRLL/{fifty-clients.log,fifty-health.jsonl,
+hundred-clients.log,hundred-health.jsonl}`. Allload/sampler/API24227sessions
+TERMINAL; APIexited BEFORE Mongo `eidolon-shared-load-mongo-20260914` removed;
+38761/38762listenersabsent. Do not repeat acceptedload for version/docs changes.
+Controlledconcurrency,notInternetlatency/FPS/earnedcampaign/groupraid evidence.
+
+PackagedAlpha1.9.9 synchronizedlogin/runtime/cumulativepatchnotes.257historychecks
+PASS4.413s,Go build/changedlint/diffPASS. **3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4
+PUSHED** from activeWT `/tmp/eidolon-1-10-resonant-age-20260913`; new exact
+**CI34804655770 IN_PROGRESS**. Continue SAMEhandle thenverifyliveexactSHA/version.
+Localdocumentationfollowupafter3481f89a is notpushed; rootledgeronlyNEVERPUSHROOT.
+Authoritative evidence `docs/plans/2026-09-14-broadcast-snapshot-sharing.md` and
+newtop of`2026-09-13-release1-10-resonant-age.md`. No1.9.9liveclaimyet.
+
+Nextfullgoal: finish1.9.9delivery; remainingearnedcurrent-curveEarth readiness/
+fullcampaign/fourgroupraids/physicalphone-visual scopes stayopen. Existing geared
+Verdant fullparty proof remainsaccepted, notmissing. Useexistingfresh-story-ready
+route when sharednativeGPUclear; no new harness/soak or repeatedconcurrencywork.
+
 ## September 14 — measured snapshot allocation correction implemented
 
 Previous turn PROGRESS(release/load evidence). This turn implemented immutable
