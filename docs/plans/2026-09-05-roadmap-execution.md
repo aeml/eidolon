@@ -5,6 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — 1.9.11 all ten jobs accepted; Molten71836 active
+
+This turn closedexact **CI34829019013 TERMINALSUCCESS/all10jobsPASS** including
+livecharacter/townhealing/WellRested. Watch59106terminalexit0, do notrepoll/restart.
+Terminalmetadata`/tmp/eidolon-1-9-11-ci-final-20260914.json` independentlyasserts
+bd566893/statuscompleted/conclusionsuccess/10successfuljobs. Publicexact1.9.11
+manifest/backend/login/runtime/notes/DBready verificationbelow remainsaccepted;
+no redundantHTTPfetchneeded. Old34827963234failurealso terminal/notactive.
+
+**Native71836ACTIVE — onlyownedGPUjob**, firstfour-player Normal70Molten attempt,
+freshpreparedparty, source **bd56689384f737c18c78a84607bc4683e7fb11bd**, dirtyfalse,
+Lowqualityall4confirmed. Same14legalitems/5Rare9Uncommon, StrongFightertank,
+WiseClerichealer,BrilliantWizard/AgileRogueDPS; no scaling/retries/midrungrants.
+Existing120minuteexpedition/125minuteouterbudget retained. This is prepared
+encountercoverage, NOTearnedcampaign orraid. No repeatedVerdant/Abyssalrun.
+All4buildsreplicated,invitationUIformedparty,healingtargetselect/clearpassed,
+all4sameinstance. Seed **-2324354694934653089**,gen2,attempt0,nofallback.
+Openingtrash/MagmaGolemdefeated; last138.97s traversal43leadersteps/2roomtraversals,
+0townreturns. No boss/fullclear/manualclaim acceptedyet. Continue SAMEhandle.
+
+Log `/tmp/eidolon-molten-party-20260914-ZW8DKK/run.log`; runIDmoltenparty0914a;
+owned`eidolon-isolated-qa-api-moltenparty0914a`/`...mongo-moltenparty0914a`,
+loopback18285/18286/web4187 validatedfreebeforelaunch. Existingwrapper owns
+cleanup; launchedviaexecenv toavoidextraoutershell. No source/testmodification.
+**MainQA `/tmp/eidolon-1-10-resonant-age-20260913` MUSTSTAYFROZENbd566893** while
+71836importsitsfiles. No secondGPUbrowsergameplay/deploymentduringthisrun.
+Opening`test-results/.../desktop-party-healing.png` inspectedfromcurrentrun:
+actualconnected4playerHUD nowshows“TheCrownofEmbers”0/1 cleanlyabovehealerrows;
+nooverlap. Notafinalboss/physicalphone/publicliveimage. Retainwhenrunterminal.
+
+IndependentPVPtree nowclean **e5b21b8f**, doc-onlypostpublicationcommits22984bdf,
+54c409b0,ebc0bdb7(allgatesaccepted),e5b21b8f(Moltenstart). **Notpushed**; do not
+triggernewCIforledger/docs. Finalintegrationaudit/release1.10plan nowrecords
+accepted1.9.11. Fullcampaign/remainingfamilies/actual5–10playerraids/casino/
+phone scope remainsopen. Asyncdungeon-persistencechoice remainsunanswered;
+noexpiry/savetimestampchanges.11985/20006 remainterminalwithprivatebackupsbelow.
+RootledgeronlyNEVERPUSH.
+
 ## September 14 — Alpha1.9.11 verified public; final live QA still active
 
 This turn verifiedactualdelivery of **Alpha1.9.11/bd56689384f737c18c78a84607bc4683e7fb11bd**:
