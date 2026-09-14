@@ -5,6 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## September 14 — public1.9.10 verified; disconnect/resume/restart policy accepted
+
+This turn actual progress. **Alpha1.9.10 public delivery verified** at
+**4bab14fad67db14c26c93d9bacb0410f57187626**: play.eidolonrealms.com/release.json,
+server.eidolonrealms.com/healthz(statusok/database ready), loginlabel/patchnotes,
+actualsrc/main.js?release=SHA HTTP200 andversionedimports allmatch. Initial
+ad-hocregex incorrectlyexpected?v=; inspectedactualscriptandverifiedtheexisting
+?release= contract. Not a deploymentdefect. **CI34822657032 stillIN_PROGRESS**,
+ninejobsPASS includingpredeploy/bothdeploys. FinalLiveReleaseandCharacterQA
+running; itsWaitformatchinglivereleases stepPASS. Do notclaimallCIpassed,
+supersedepush, orstartanothernativeGPUjob. MainQAclean/frozen4bab14fa.
+
+Additionalreal-socketcheck **34512 TERMINAL PASS2.13s**: ordinary4-client2v2
+queue, actualconnectionloss(no forfeitcommand), correctonetimeforfeitrecord,
+onlyleaver5-minutequeuepenalty, tokenresume+rotation, queuepenaltyenforced,
+actualserverrestart+all4freshlogins withunchangedprofiles/revision1/receipts.
+LeaverandteammatebothLoss1/rating984, opponentsWin1/rating1016; Honor/season
+awards0forallforfeitparticipants. Innocentteammatesharesnormalmatchloss but
+no deserterflag/queueban. No clocks/kills/statsmutated, no browserworkload.
+Acceptedfullcombat66.03stestwasnotrepeated. Compile24089explicitlySKIPPED
+withoutdisposableenv; do notcountthatskipasactualacceptance.
+
+Artifact `/tmp/eidolon-pvp-sockets-20260914-KJXVlY/disconnect-r1.log`, actual
+ownedserverlogs `/tmp/eidolon-compat-session-{1927539015,3901816579}/server.log`,
+bothgracefulshutdown. Mongo `eidolon-pvp-sockets-0914b` exactID/labelchecked,
+stopped--rm, transientDeadthenconfirmedABSENT; port18306released. No ownedPVP
+servicesrunning, no productiondatawrites. RetainallactualPvPevidence.
+
+SeparatePVPtree `/tmp/eidolon-pvp-queue-integration-20260914` nowclean
+**0dbfbbfae5e56b8d8caf95cd2ec3d2fc33ce9fca** (abovea8c7645c/f53478e0), NOTPUSHED.
+Includes tests+evidence+accurate1.9.10public-deliveryaudit. Carry into next
+appropriatepublication AFTER currentCIterminal; neverpushroot. Fullgoal
+active: native/teamvisualreview, remainingdungeonclear/seeds/earnedcampaign,
+actual5–10-playerraids/repair/finale, publicevents/casino/crossfeature/phone
+scope remains open. Socketproof isnot rendered/physical-phoneacceptance.
+
 ## September 14 — connected ranked2v2 accepted; exact 1.9.10 CI still active
 
 This turn concrete progress, notblocked: added and actually ran a bounded
