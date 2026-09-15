@@ -303,9 +303,11 @@ Notes:
 - Complete migration ledger: [docs/art/PROCEDURAL_MIGRATION_INVENTORY.md](docs/art/PROCEDURAL_MIGRATION_INVENTORY.md)
 - `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent|near-death]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction, and `near-death` clears prior ability protections before a real hostile death/respawn check. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
 
+- Administrator access is a durable account role, separate from QA commands and character level. An exact username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can type `/relevel` to persist the role without changing progression. Future privileged operations follow [the administrator authorization and audit contract](docs/ADMINISTRATION.md).
+
 ## Project Status
 
-- Current in-game displayed version: `Alpha 1.0.1`
+- Current in-game displayed version: `Alpha 1.9.15`
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.0` release-candidate closeout and beta readiness
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid

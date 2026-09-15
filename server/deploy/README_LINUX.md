@@ -22,6 +22,7 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `MONGO_INITDB_ROOT_PASSWORD`
 - `MONGO_URI` (must use `mongo:27017` and `authSource=admin`)
 - `EIDOLON_QA_USERNAMES` (optional; dedicated QA usernames only)
+- `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact usernames allowed to persist the administrator role with `/relevel`; currently only `donveetz`)
 
 Recommended example URI:
 

@@ -4,6 +4,7 @@ import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 const finalCutoverAudit = fs.readFileSync(path.join(repoRoot, 'docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md'), 'utf8');
@@ -21,6 +22,12 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.9.15 records durable account administration without changing progression', () => {
+        expect(indexHtml.match(/data-version="1\.9\.15"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.9.15"')).toBeLessThan(indexHtml.indexOf('data-version="1.9.14"'));
+        const entry = indexHtml.split('data-version="1.9.15"')[1].split('data-version="1.9.14"')[0];
+        for (const text of ['durable administrator role', 'without changing character level', 'authenticated account', 'separate from release-QA access', 'persisted before success']) expect(entry).toContain(text);
+    });
     test('1.9.14 records friendly artificer targeting without claiming a full raid clear', () => {
         expect(indexHtml.match(/data-version="1\.9\.14"/g)).toHaveLength(1);
         const entry = indexHtml.split('data-version="1.9.14"')[1].split('data-version="1.9.13"')[0];
@@ -614,11 +621,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.9.14');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.9.15');
+        const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
+        expect(packageLock.version).toBe('1.9.15');
+        expect(packageLock.packages[''].version).toBe('1.9.15');
+        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.9.15`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.9.14</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.9.15</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1029,12 +1040,18 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.9.14';
+        const expectedVersion = 'Alpha 1.9.15';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
             expect(contents).toContain(expectedVersion);
         });
+    });
+
+    test('keeps the administrator bootstrap exact and explicitly disableable', () => {
+        const compose = fs.readFileSync(path.join(repoRoot, 'server/docker-compose.yml'), 'utf8');
+        expect(compose).toContain('--admin-bootstrap-usernames=${EIDOLON_ADMIN_BOOTSTRAP_USERNAMES-donveetz}');
+        expect(compose).not.toContain('EIDOLON_ADMIN_BOOTSTRAP_USERNAMES:-donveetz');
     });
 
     test('records the final cutover scope and hard production closure rule', () => {
@@ -1156,7 +1173,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.9.14`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.9.15`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

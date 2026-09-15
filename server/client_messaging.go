@@ -24,6 +24,38 @@ func (c *Client) handleChatCommand(raw string) bool {
 	}
 
 	switch fields[0] {
+	case "/relevel":
+		if len(fields) != 1 {
+			c.sendError("Usage: /relevel")
+			return true
+		}
+		if adminRoles == nil {
+			c.sendError("Admin role service unavailable.")
+			return true
+		}
+
+		hasRole, err := adminRoles.HasAdminRole(c.username)
+		if err != nil {
+			log.Printf("Admin role lookup failed for %s: %v", c.username, err)
+			c.sendError("Could not verify admin access.")
+			return true
+		}
+		if hasRole {
+			c.sendSystemChat("Admin access is already enabled. Character level remains unchanged.")
+			return true
+		}
+		if !isAdminBootstrapUsername(c.username) {
+			c.sendError("Admin bootstrap unavailable for this account.")
+			return true
+		}
+		if _, err := adminRoles.GrantAdminRole(c.username, c.username, "bootstrap_chat"); err != nil {
+			log.Printf("Admin role grant failed for %s: %v", c.username, err)
+			c.sendError("Could not enable admin access.")
+			return true
+		}
+
+		c.sendSystemChat("Admin access enabled. Character level remains unchanged.")
+		return true
 	case "/level":
 		if !isQAUsername(c.username) {
 			c.sendError("QA command unavailable for this account.")

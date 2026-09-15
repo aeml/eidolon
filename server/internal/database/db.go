@@ -32,12 +32,13 @@ type DB struct {
 }
 
 type User struct {
-	VIPPeriods   []VIPPeriod  `bson:"vip_periods,omitempty"`
-	Username     string       `bson:"username"`
-	Email        string       `bson:"email"`
-	PasswordHash string       `bson:"password_hash"`
-	CreatedAt    time.Time    `bson:"created_at"`
-	Characters   []*Character `bson:"characters"`
+	VIPPeriods   []VIPPeriod                      `bson:"vip_periods,omitempty"`
+	Roles        map[string]AccountRoleAssignment `bson:"roles,omitempty"`
+	Username     string                           `bson:"username"`
+	Email        string                           `bson:"email"`
+	PasswordHash string                           `bson:"password_hash"`
+	CreatedAt    time.Time                        `bson:"created_at"`
+	Characters   []*Character                     `bson:"characters"`
 }
 
 type Auction struct {

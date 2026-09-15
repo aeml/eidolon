@@ -70,4 +70,8 @@ The server uses MongoDB for user and character persistence.
 
 `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, and `/qa-loot-next` are disabled for normal accounts. Set a comma-separated `EIDOLON_QA_USERNAMES` value (or `--qa-usernames`) to allow dedicated authenticated QA usernames. Combat and Verdant use fixed coordinates; encounter places only the QA character near the live overworld enemy nearest the fixed combat anchor and cannot accept arbitrary coordinates. All ordinary waypoints use a bounded five-minute protection window. The hazard pilgrimage uses fixed canonical centers and a 45-second inspection clock that admits real environmental damage while retaining unrelated hostile protection, then returns through `town`; `/qa-loot-next` forces the next eligible normal kill through the usual loot generator. Do not add normal player accounts.
 
+## Administrator bootstrap
+
+Administrator access is a durable account role and is separate from QA access. An exact authenticated username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can use `/relevel` once to persist the role without changing character level or progression. See `../docs/ADMINISTRATION.md` for the authorization and audit requirements for future administrator operations.
+
 The load-test driver generates cryptographically random, in-memory credentials by default. An explicit `--credentials-file` is read-only; credential files and legacy `bot_data.json` paths are ignored by Git.

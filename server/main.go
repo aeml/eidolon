@@ -61,10 +61,11 @@ var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "M
 var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", "Path to log suspicious/non-client connections (empty disables file logging)")
 var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_metrics.jsonl", "Hourly gold source/sink metrics path (empty disables)")
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
+var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Getenv("EIDOLON_ADMIN_BOOTSTRAP_USERNAMES"), "Comma-separated exact usernames allowed to bootstrap the durable admin role")
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.9.14"
+	buildVersion = "Alpha 1.9.15"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -392,6 +393,7 @@ func main() {
 		return
 	}
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
+	adminBootstrapUsernames = parseAdminBootstrapUsernames(*adminBootstrapUsernamesFlag)
 	closers, err := setupLogging()
 	if err != nil {
 		// Logging isn't ready; fall back to stderr.
@@ -406,6 +408,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	adminRoles = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
 	if err != nil {
