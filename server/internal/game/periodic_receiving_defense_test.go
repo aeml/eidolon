@@ -126,7 +126,7 @@ func TestChargeReflectedDeathSurvivesLandingCleanup(t *testing.T) {
 		t.Fatal("paid charge rejected")
 	}
 	w.updateEntity(source, .2, nil, &deferredActions{})
-	if source.Health != 0 || source.State != "DEAD" || source.IsCharging || defender.Health != 500 || defender.ArcaneShieldAbsorbed != 63 {
+	if source.Health != 0 || source.State != "DEAD" || source.IsCharging || defender.Health != 500 || defender.ArcaneShieldAbsorbed != 126 {
 		t.Fatalf("charge landing overwrote reflection: hp=%d state=%s charging=%v absorbed=%d", source.Health, source.State, source.IsCharging, defender.ArcaneShieldAbsorbed)
 	}
 }

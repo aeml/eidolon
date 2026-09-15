@@ -64,6 +64,7 @@ export function advanceOfflineCharge(source, dt, engine, isFriendlyActor) {
     if (cast.rune === 'charge_momentum') {
         damage = Math.trunc(damage * (1 + Math.min(Math.hypot(landing.x - cast.origin.x, landing.z - cast.origin.z) / 30, 1)));
     }
+    damage *= 2;
     if (cast.rune === 'charge_unstoppable') {
         source.runeArmorBuff = .2; source.runeArmorBuffTimer = cast.armorDuration;
     }

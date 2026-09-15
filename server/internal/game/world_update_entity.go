@@ -931,7 +931,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if impactSkill == "" {
 					impactSkill = "Charge"
 				}
-				// Impact Damage - base calculation with talent bonus
+				// Resolve the existing impact first so canonical Charge deals exactly
+				// twice its previous integer damage. Shattering remains unchanged.
 				damage := int(float64(e.Damage) * 1.5 * 1.3 * e.GetSkillDamageMultiplier(impactSkill))
 
 				// Rune effects
@@ -941,6 +942,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if runeID == "charge_momentum" {
 					distanceBonus := math.Min(chargeDistTraveled/30.0, 1.0) // Max bonus at 30 units
 					damage = int(float64(damage) * (1.0 + distanceBonus))
+				}
+				if impactSkill == "Charge" {
+					damage *= 2
 				}
 
 				// Unstoppable rune: clear CC immunity, grant +20% armor for 5s

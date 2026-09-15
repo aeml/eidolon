@@ -370,7 +370,12 @@ bump alone does not complete the goal; every earlier promised feature remains.
    current guarded-floor delivery remains authorized and is not functioning EP
    wagering. Continue independent content/integration work without reopening the
    now-resolved currency name/source question.
-3. After features, perform ONE consolidated acceptance pass using retained valid
+3. Deliver the full administrator-only operations panel defined by the September5
+   roadmap. Include server-derived role status, bounded online/login/logout/audit
+   views, canonical item creation, Gold grants, approved self/player teleports,
+   strict server authorization, durable idempotency, recoverable persistence and
+   immutable structured audits. Keep administrator and QA authority independent.
+4. After features, perform ONE consolidated acceptance pass using retained valid
    evidence and filling actual gaps. Cover fresh campaign and real group raid,
    saved progress/reward economy, full public/VIP casino loops and multiplayer,
    desktop and phone touch flows, inspected High/Low visuals, documented baseline-
@@ -378,7 +383,7 @@ bump alone does not complete the goal; every earlier promised feature remains.
    fixtures do not establish earned clears. Respect existing physical-phone
    feedback; collect only missing/relevant device evidence. No repeated broad
    matrices or new long soak merely for reassurance; fix and rerun affected paths.
-4. Update cumulative patch notes and ALL version defaults, deploy1.10 only when
+5. Update cumulative patch notes and ALL version defaults, deploy1.10 only when
    the full milestone is actually ready, verify both exact live identities and
    release behavior. Audit requirements against concrete evidence before marking
    the overall goal complete. Missing VIP authority is not permission to omit it.

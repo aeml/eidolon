@@ -44,13 +44,13 @@ test.each([0, 1, 5])('paid Charge uses planar speed, fixed body-edge radius and 
         f.step(.3);
         expect(f.source.position.toArray()).toEqual([50020, 7, 50000]);
         // FTR_21 is Shattering-specific; only generic FTR_38 affects Charge.
-        expect(10000 - edge.stats.hp).toBe(Math.trunc(195 * (1 + .02 * rank)));
+        expect(10000 - edge.stats.hp).toBe(2 * Math.trunc(195 * (1 + .02 * rank)));
         expect(outside.stats.hp).toBe(10000);
-        f.step(.1); expect(10000 - edge.stats.hp).toBe(Math.trunc(195 * (1 + .02 * rank)));
+        f.step(.1); expect(10000 - edge.stats.hp).toBe(2 * Math.trunc(195 * (1 + .02 * rank)));
     } finally { f.dispose(); }
 });
 
-test.each([['', 100, 28, 195], ['charge_momentum', 10, 15, 292], ['charge_momentum', 100, 42, 390]])(
+test.each([['', 100, 28, 390], ['charge_momentum', 10, 15, 584], ['charge_momentum', 100, 42, 780]])(
     'range and traveled-distance damage for rune %s aim %s', (rune, aim, landing, damage) => {
         const f = fixture(rune);
         try { const target = f.add(landing); f.cast(aim); f.step(1);
@@ -114,7 +114,7 @@ test.each(['friendly', 'remote', 'multiplayer', 'engine', 'dead', 'inactive', 'o
 test.each(['ccImmune', 'ironFortressImmovable'])('%s target takes damage but not Shockwave displacement', property => {
     const f = fixture('charge_shockwave');
     try { const target = f.add(21); target[property] = true; f.cast(); f.step(1);
-        expect(target.stats.hp).toBe(9805); expect(target.position.x).toBe(50021);
+        expect(target.stats.hp).toBe(9610); expect(target.position.x).toBe(50021);
     } finally { f.dispose(); }
 });
 
