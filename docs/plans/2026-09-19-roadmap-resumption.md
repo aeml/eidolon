@@ -11,9 +11,13 @@ including all grants and teleport modes, saved state and audits. Alpha1.9.17 is
 packaged with cumulative patch notes and matching versions; CI/deployment and
 read-only live verification remain, not unimplemented buttons or repeated soaks.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
-Alpha1.9.17 candidate `f76b0a601dfd99d9839657b5925a7c1777da86f4` is pushed;
-CI35462943697 is watched by the dedicated read-only Luna agent. Publication is
-not yet accepted; last verified production remains Alpha1.9.16. Session-event capture
+Alpha1.9.17 replacement candidate `441b3ffa83319fdd7e285d21e010dd4b07228a24`
+is pushed; CI35463942707 is watched by the dedicated read-only Luna agent.
+The original CI35462943697 failed an anonymous mobile-menu fixture that tried
+to expose the intentionally hidden admin launcher; every deployment job was
+skipped. The correction explicitly checks that hidden state and preserves all
+ordinary menu checks. Its six-case mobile/admin layout run passed. Publication
+is not yet accepted; last verified production remains Alpha1.9.16. Session-event capture
 passes real two-account/socket/restart acceptance (native83168 exit0); grant
 recovery passes the real built-server startup/runtime/restart test (native40190
 exit0), using trusted test intents. The newer99139 test exercises the actual
@@ -65,7 +69,7 @@ tracked in the final integration audit. Phone Brave/Chrome general UI feedback
 does not prove phone dungeon/party play. Reuse accepted evidence; do not repeat
 whole matrices, accepted releases, or public-event preparation unnecessarily.
 
-## Deployment monitoring policy (user request, September19)
+## Rootheart input correction awaiting connected acceptance
 
 Rootheart input recovery now has a concrete local correction after that release
 candidate. The recorded tank/Orc/Construct positions reproduce an impossible
@@ -81,7 +85,7 @@ Recorded-layout and associated controls109tests pass (native58555 exit0), with
 changed-file lint. This is not yet an actual raid-clear proof. Do not launch a
 five-browser retry alongside the release's live-browser workload on this host.
 
-
+## Deployment monitoring policy (user request, September19)
 For the next and subsequent deployments, delegate watching the exact GitHub
 CI/CD run to one `gpt-5.6-luna` agent with a minimal standalone brief, not a fork
 of the full roadmap conversation. Use a quiet process/watch or bounded polling;
