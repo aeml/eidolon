@@ -215,4 +215,14 @@ retain existing connected public/VIP wagering and persistence evidence.
 Alpha1.9.19 is now [packaged locally](2026-09-19-release1-9-19-casino-cutaway.md)
 with cumulative notes and synchronized version labels.268 version/history tests
 pass; the earlier47 focused checks and inspected crowd render are retained.
-Not pushed or live; finish the existing1.9.18 workflow first. No raid is active.
+Not pushed or live; the existing1.9.18 workflow is now accepted. The aura
+follow-up passes29 focused checks and the updated7.7second native crowd review.
+
+Tidestar `waterraid0919c` is now **active**, detached PID259903, launched after
+1.9.18's native jobs and the short aura review finished. Source was clean
+`90ed375b`; local candidate1.9.19, not a claim that1.9.19 is deployed. Launcher
+and log are in `/tmp/eidolon-water-raid-20260919-r3-adH3Nx/`. Same five legal
+level70 builds, Low graphics, three repair waves and zero retries. Luna
+`/root/watch_tidestar_0919c` owns read-only completion/failure monitoring; root
+must not duplicate polling or rerun this live process. Do not start another
+browser/deployment workload over it. Full clear/claims/relogin remain unproven.
