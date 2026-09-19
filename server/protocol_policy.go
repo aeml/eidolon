@@ -183,6 +183,10 @@ func (c *Client) handleMessage(msg Message) {
 		return
 	}
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
+		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
+			c.sendInboundRejection(msg, "An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if err := recoverAccountBlackjackLocked(c.username); err != nil {
 			c.sendInboundRejection(msg, "Your table funds are awaiting recovery. Please try again shortly.")
 			return

@@ -51,6 +51,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Login activity storage is unavailable. Please retry shortly.")
 			return
 		}
+		if err := recoverAccountAdminOperationsLocked(payload.Username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if c.username == "" {
 			c.username = payload.Username
 		}
@@ -117,6 +121,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
+		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if err := recoverAccountBlackjackLocked(c.username); err != nil {
 			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
 			return
@@ -801,6 +809,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Clear the disconnected flag; this also returns the live entity pointer.
+		if err := recoverAccountAdminOperationsLocked(username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if err := recoverAccountBlackjackLocked(username); err != nil {
 			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
 			return

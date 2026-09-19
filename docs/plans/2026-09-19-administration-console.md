@@ -80,8 +80,14 @@ with accurate release notes and synchronized versions before deploying it.
   and recorded results are permanent deduplication receipts, separate from the
   TTL-controlled browseable history; bulky generated execution plans are removed
   on completion. Structured audit entries now support a bounded operator reason.
-  The executor/store are tested internally, but **not wired to startup/runtime
-  recovery or WebSocket admission yet**. No mutation is reachable in the game.
+  Startup now drains all operations before admission, with bounded50-operation
+  runtime passes every5seconds. The actor/target pending cache blocks affected
+  command/join/resume work until recovery, without querying Mongo for ordinary
+  unaffected movement. Lost insertion/completion replies are resolved without
+  waiting for the player to reconnect. Missing confirmed intents fail closed;
+  failed preparations with no stored intent are safely forgotten. An audit-only
+  denied request cannot block the account it names. Mutation request handlers
+  and buttons are still absent; no new admin action is reachable in the game.
 
 ## Evidence and limits
 
@@ -128,6 +134,18 @@ with accurate release notes and synchronized versions before deploying it.
   timestamp/resources/rest/gear/EP, one audit with its reason, original item IDs,
   and unchanged save ID on completed replay were verified. This is an internal
   executor/persistence test, not authenticated socket or deployed acceptance.
+- Actual built-server recovery passes (native40190 exit0,6.46seconds): a queued
+  Gold intent completes before readiness, a runtime item intent delivers to an
+  ordinarily logged-in character through the5second loop, and disconnect plus
+  process restart preserve both receipts, original item IDs, and one audit each.
+  Logs: `/tmp/eidolon-compat-session-2622442516/server.log` and
+  `/tmp/eidolon-compat-session-4072265764/server.log`. The disposable Mongo
+  container was removed. Intents were inserted as trusted test fixtures, not
+  through unfinished admin message handlers; this does not close mutation
+  authorization/UI acceptance. Focused scheduler race tests also cover73-entry
+  startup drain, runtime batch bounds, ambiguous replies, missing confirmed
+  intents, unrelated accounts, denied-request noninterference and concurrent
+  target commands.
 
 ## Next required implementation
 
@@ -138,11 +156,20 @@ with accurate release notes and synchronized versions before deploying it.
    dispatch so multi-account operations acquire all locks instead of nesting a
    target lock under the sender lock. Recheck ownership and durable role under
    those locks. Finish teleport planning/execution and exact target/current-state/
-   instance/walkability checks. Connect operation recovery at startup and bounded
-   runtime retries, and block target hydration/commands while unresolved. Keep a
-   pending-account cache so ordinary movement never queries Mongo per packet.
+   instance/walkability checks. Startup/runtime recovery and affected-account
+   admission blocking are now connected. Use `prepareAdminOperationLocked` to
+   register intents in the pending cache before effects; completed handlers
+   should clear their cache entry as well as return the stored outcome.
    Wire confirmed controls and server-provided item/destination options only
    after these admission/recovery hooks. Do not bolt grants onto the read handler.
+   Geometry finding: authoritative dungeon floors exist, but much overworld
+   collision still lives client-side. Reuse/share the actual client collision
+   definitions for teleport landing validation instead of assuming realm bounds
+   imply walkability. Relevant sources: `WorldGenerator.loadBuildings/loadTrees`,
+   `ProceduralLanternholdArchitecture.getLanternholdWalkCollider`, deterministic
+   `ProceduralRealmFoliage` placements (only Earth trees block walking), dungeon
+   entrance bounds, and Chronicle-site colliders. Do not silently narrow the
+   required player-target teleport feature to a town-only button.
 2. Remaining full-gate failure/concurrency/restart and disposable two-account
    connected acceptance, backup/restore and safe live read-only smoke.
 3. Package/deploy only when the batch is ready. Use the user-approved Luna watcher

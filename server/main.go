@@ -410,6 +410,7 @@ func main() {
 	}
 	adminRoles = db
 	adminActivities = db
+	adminOperations = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
 	if err != nil {
@@ -451,6 +452,9 @@ func main() {
 	}
 	if err := initializePoker(); err != nil {
 		log.Fatalf("Cannot recover durable poker table: %v", err)
+	}
+	if err := recoverAdminOperationsOnStartup(); err != nil {
+		log.Fatal("Administration operation recovery failed; refusing stale character admission")
 	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
@@ -967,6 +971,11 @@ func main() {
 	loops.Every(5*time.Second, func() {
 		if err := retryPendingAdminActivity(); err != nil {
 			log.Print("Session activity sync remains pending")
+		}
+	})
+	loops.Every(5*time.Second, func() {
+		if err := recoverPendingAdminOperations(); err != nil {
+			log.Print("Administration operation recovery remains pending")
 		}
 	})
 	loops.Every(game.RefundRetryInterval, func() {

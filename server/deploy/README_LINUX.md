@@ -43,8 +43,12 @@ results are permanent deduplication receipts, not TTL history; do not delete the
 to retry a grant. Generated execution plans are removed when completed. Earlier
 schema13 writers cannot safely save these characters because they omit the new
 receipts; reverting across this boundary requires the existing approved matching
-Mongo/journal restore workflow. This batch's operation executor is still local
-work in progress; grant/teleport admission and automatic recovery are not enabled.
+Mongo/journal restore workflow. Startup drains pending operations before becoming
+ready; runtime retries process at most50 durable operations per5second pass and
+stop on the first storage failure. Affected character commands/reconnects wait
+for recovery, without adding Mongo queries to unaffected movement packets.
+This batch is still local work in progress; new grant/teleport request handlers
+and panel controls are not enabled yet.
 
 Retention is applied when records are created. Reads also enforce the current
 retention cutoff, so reducing it immediately hides older records; physical

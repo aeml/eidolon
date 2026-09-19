@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strings"
@@ -15,6 +16,109 @@ import (
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
+
+func TestAdminGrantProductionStartupAndRuntimeRecovery(t *testing.T) {
+	if os.Getenv("EIDOLON_ADMIN_DISPOSABLE_DATABASE") != "1" {
+		t.Skip("requires disposable Mongo and a built server")
+	}
+	uri, binary := os.Getenv("MONGO_URI"), os.Getenv("EIDOLON_RESOURCE_BINARY")
+	if !regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+/?$`).MatchString(uri) || !filepath.IsAbs(binary) {
+		t.Fatal("requires isolated loopback Mongo and an absolute production binary")
+	}
+	repo, err := database.New(uri)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer repo.Close(context.Background())
+	username := fmt.Sprintf("admin-runtime-%d", time.Now().UnixNano())
+	password := username + "-temporary-test-password"
+	if err := repo.CreateUser(username, username+"@example.invalid", password); err != nil {
+		t.Fatal(err)
+	}
+	if err := repo.CreateCharacter(username, &database.Character{Name: username, Class: "Fighter", Level: 30, Gold: 400,
+		X: -1.25, Z: 200, Stats: database.Stats{Strength: 30, Dexterity: 20, Intelligence: 10, Wisdom: 10, Vitality: 30},
+		Resources: &database.CharacterResources{Version: 1, Health: 17, Mana: 0}}); err != nil {
+		t.Fatal(err)
+	}
+	prepare := func(request string, grant game.AdminGrant) database.AdminOperation {
+		t.Helper()
+		payload, err := json.Marshal(grant)
+		if err != nil {
+			t.Fatal(err)
+		}
+		audit, err := database.NewAdminActivity(username, username, grant.Action, request, "success", "Applied recovery fixture.", time.Now(), 90)
+		if err != nil {
+			t.Fatal(err)
+		}
+		op, err := repo.PrepareAdminOperation(database.AdminOperation{Version: 1, ID: database.AdminOperationID(username, request),
+			Fingerprint: strings.Repeat("b", 64), Actor: username, Target: username, Action: grant.Action,
+			RequestID: request, Payload: payload, State: database.AdminOperationPending, Audit: audit})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return *op
+	}
+	// Insert a trusted test intent before startup, not through an unfinished UI.
+	startup := prepare("startup-grant-000001", game.AdminGrant{Action: MsgAdminGrantGold, Amount: 7})
+	journal := t.TempDir()
+	address, stop := compatStartServer(t, binary, uri, 401, "-save-journal-dir", journal)
+	defer stop()
+	op, err := repo.GetAdminOperation(startup.ID)
+	if err != nil || op == nil || op.State != database.AdminOperationComplete {
+		t.Fatal("server became ready before admin startup recovery", err)
+	}
+	stored, err := repo.GetCharacter(username, username)
+	if err != nil || stored.Gold != 407 {
+		t.Fatal("startup grant missing", err)
+	}
+	conn, _ := resourceLoginCharacter(t, address, username, password, "Fighter")
+	defer conn.Close()
+	items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "iron-sword", Rarity: game.RarityRare, Level: 70, Quantity: 2})
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime := prepare("runtime-grant-000001", game.AdminGrant{Action: MsgAdminGrantItem, Items: items})
+	deadline := time.Now().Add(12 * time.Second)
+	for {
+		op, err = repo.GetAdminOperation(runtime.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if op != nil && op.State == database.AdminOperationComplete {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("runtime recovery did not process the pending intent")
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	resourceCloseAndWait(t, repo, conn, username)
+	stop()
+	_, restartStop := compatStartServer(t, binary, uri, 402, "-save-journal-dir", journal)
+	defer restartStop()
+	stored, err = repo.GetCharacter(username, username)
+	if err != nil || stored.Gold != 407 || len(stored.AdminOperationReceipts) != 2 {
+		t.Fatal("restart changed grant results", err)
+	}
+	for _, expected := range items {
+		count := 0
+		for _, item := range stored.Inventory {
+			if item.ID == expected.ID {
+				count++
+			}
+		}
+		if count != 1 {
+			t.Fatal("runtime item was lost or duplicated after process restart")
+		}
+	}
+	for _, action := range []string{MsgAdminGrantGold, MsgAdminGrantItem} {
+		page, err := repo.ReadAdminActivity(database.AdminActivityQuery{Actor: username, Action: action})
+		if err != nil || len(page.Entries) != 1 {
+			t.Fatal("startup/runtime grant audit was lost or repeated", action, err)
+		}
+	}
+	t.Log("actual server: startup drain before readiness, online runtime grant, disconnect save and restart preserved both receipts and one audit each")
+}
 
 type rejectedAdminCommit struct{}
 

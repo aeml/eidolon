@@ -1,11 +1,14 @@
 # September 19 — roadmap resumption
 
-Current local feature stage: `d7eb4be9` adds the role-checked administration
-launcher, online-player pages and structured administration-read history.
+Current local feature stage: the administration batch includes role-checked
+reads/session history, canonical grant validation, durable grant/receipt/audit
+execution and automatic startup/runtime recovery. New mutation handlers, teleport
+execution and panel controls are still unfinished.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
 It is **not deployed**; production remains Alpha1.9.16. Session-event capture
-now passes real two-account/socket/restart acceptance (native83168 exit0);
-safe mutations and their connected acceptance still need implementation.
+passes real two-account/socket/restart acceptance (native83168 exit0); grant
+recovery passes the real built-server startup/runtime/restart test (native40190
+exit0), using trusted test intents, not unfinished administrator endpoints.
 Rootheart retry18833 is terminal failure in assault combat, not an active wait;
 formation now passes, but DemonOrc hover acquisition stalled. Preserve its
 diagnostics and do not repeat the raid without a concrete correction.
