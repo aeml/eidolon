@@ -301,3 +301,11 @@ confirmed free before launch. Four legal prepared level30 Wizards, normal
 party/queue/combat inputs, ten-minute test bound, zero retries. Root monitors
 this short arena check; Luna's current test delegation covers dungeon/raid
 tests. Do not start another browser/deployment workload over it. No result yet.
+
+That arena run subsequently **passed in4.5minutes**, zero retries, all four
+clients dealing damage through two rounds, normal2–0 result, individual
+Victory/Defeat rewards and re-login preservation. Artifacts are copied beside
+the launcher; root reviewed Low combat, round panel and both outcome types.
+The standalone rendered-team check is accepted with its prepared-build/desktop
+limits, not physical-phone or all-class balance proof. Native42990 is terminal0;
+owned QA containers and ports were verified cleaned up. Do not rerun it.

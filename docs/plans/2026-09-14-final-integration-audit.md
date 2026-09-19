@@ -280,6 +280,14 @@ upstairs-patron cutaway, fixed locally for the next release batch. Retain this
 as a new40-client networking, wagering or performance test. The existing
 connected game/settlement evidence remains distinct from this render evidence.
 
+September19 rendered ranked2v2 now passes with four actual prepared clients,
+normal UI invitations/queue/attacks, two rounds, individual results and saved
+re-login. Low-quality combat, round score and Victory/Defeat panels were
+inspected; see [result and scope](2026-09-19-rendered-team-arena-preparation.md).
+This closes the table's standalone rendered team-round/result review; retain
+the prior connected reward/restart evidence rather than rerunning it. It does
+not establish physical-phone or all-class balance acceptance.
+
 This table organizes work; it does not check off the parent roadmap's detailed
 requirements. In particular, preserve all five dungeon families (Verdant,
 Abyssal, Molten, Tempest, Umbral), failing seeds plus the specified seed coverage,

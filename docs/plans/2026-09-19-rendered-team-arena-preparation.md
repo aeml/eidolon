@@ -1,4 +1,28 @@
-# Rendered ranked team check — prepared, not executed
+# Rendered ranked team check — accepted bounded result
+
+## Result
+
+`arenateam0919a` passed in4.5minutes, zero retries, on clean sourcec33b9496
+(local Alpha1.9.19). Native session42990 is terminal0; do not poll or rerun it.
+Deployment CI35474533396 had already completed before this route started.
+All four real clients contributed damage (121/119/117/118 observed hits), saw
+rounds1/2 and the same2–0 outcome, with no forfeit. Winners finished at1016rating,
+50Honor and3season points; losers at984rating and no Honor/season award. Each
+personal result survived normal re-login. These are prepared ordinary builds,
+not earned progression or proof of four-class competitive balance.
+
+Reviewed the actual Low-quality combat screenshot, active round panel, and
+one Victory/one Defeat result panel. Team combat is rendered with equipped
+models and target rings; round score/standing and each personal outcome/reward
+are readable. Other two personal result images are also preserved. This is not
+a High/Low comparison, physical-phone or general performance acceptance.
+
+Artifacts: `/tmp/eidolon-arena-team-20260919-DfsY9c/` contains the run log,
+copied `test-results/` and `playwright-report/`. Credential scan passed with no
+sanitization needed. Owned QA containers and ports18285/18286/4187 were verified
+gone/free afterward. Retain existing connected settlement/restart evidence.
+
+## Original preparation and scope
 
 Remaining scope is the actual client presentation of ranked team rounds and
 personal outcomes. Keep the accepted four-socket combat/results/restart and
