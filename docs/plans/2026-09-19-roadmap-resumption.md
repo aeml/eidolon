@@ -309,3 +309,13 @@ the launcher; root reviewed Low combat, round panel and both outcome types.
 The standalone rendered-team check is accepted with its prepared-build/desktop
 limits, not physical-phone or all-class balance proof. Native42990 is terminal0;
 owned QA containers and ports were verified cleaned up. Do not rerun it.
+
+Next Tidestar run `waterraid0919d` is now **active**, detached launcherPID865015,
+clean source`6425b440d79c2354d450b670ba513781f379a911`, confirmed building its
+isolated API. Launcher/log: `/tmp/eidolon-water-raid-20260919-r4-px8cAd/`.
+Same five legal L70 roles, gear, Low graphics, full guardian/three repair waves,
+individual manual claims/re-login and zero retries. It includes the bounded
+pointer recovery wait/diagnostics and compact console/full receipt attachments.
+Luna `/root/watch_tidestar_0919d` owns completion/failure monitoring. Do not
+duplicate polling or start overlapping browser/deployment work. Preserve its
+attachments before any subsequent Playwright run. No full Tidestar result yet.
