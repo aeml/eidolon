@@ -1231,7 +1231,7 @@ test.describe('deterministic production animation gallery', () => {
                 surfaceTextures: 4,
                 surfaceMaterials: 3,
                 surfaceGeometries: 3,
-                detailGeometries: 8,
+                detailGeometries: 9,
                 detailMaterials: 5
             });
             expect(entry.finite).toBe(true);
