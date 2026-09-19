@@ -1,5 +1,17 @@
 # 1.10 final integration — evidence and remaining work
 
+## September19 checkpoint — administration delivered, Rootheart accepted
+
+Alpha1.9.17 is publicly verified at `b5feba27`, with all ten CI35464162303 jobs
+passing, matching domains/database readiness and a protected schema12→14 backup.
+See [administration delivery](2026-09-19-release1-9-17-administration.md).
+The subsequent [five-player Rootheart raid](2026-09-19-rootheart-party-acceptance.md)
+passed in29.5minutes: full original guardian, all three defended repair waves,
+five personal manual claims and saved re-logins, no deaths or retries. Native69714
+is terminal and cleaned up. Do not repeat it because the historical failures below
+remain in this audit. Remaining three elemental raids, earned full campaign,
+regional/cross-feature/phone checks and final1.10 delivery remain open.
+
 ## Alpha 1.9.14 — friendly repair artificer targeting
 
 Raid49954 is terminal exit1 after15.0m on631030ab. Five-member town recovery

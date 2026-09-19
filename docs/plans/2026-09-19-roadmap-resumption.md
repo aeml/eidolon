@@ -32,15 +32,12 @@ Rootheart retry18833 is terminal failure in assault combat, not an active wait;
 formation now passes, but DemonOrc hover acquisition stalled. Preserve its
 diagnostics and do not repeat the raid without a concrete correction.
 
-Fresh Rootheart retry is now active in native session **69714**, after the
-release's final live-browser job finished. It passed an independent live
-identity/database check before launching the isolated party route. Source
-`4b2067f3e62fc2c6f4fb35bb043655dcfd2549bb` was clean at startup; later edits
-are documentation only. Artifacts:
-`/tmp/eidolon-earth-raid-20260919-r3-18j9Uu/run.log`. Owned runID
-`earthraid0919c`, API18285/Mongo18286/Web4187; five legal level70 role builds,
-Low graphics, zero retries. Preparation is underway, not a raid-clear result.
-Recheck the existing handle; do not start a duplicate or restore expired saves.
+Fresh Rootheart retry **69714 is terminal success: 29.5minutes, zero retries**.
+All five survived the full assault/guardian and three repair waves, individually
+claimed Ilyra's reward and retained completion after re-login. Owned cleanup and
+private checkpoint are verified. See [accepted Rootheart result and limits](2026-09-19-rootheart-party-acceptance.md).
+Do not poll/restart69714 or rerun Rootheart by default. The earlier failures above
+are historical diagnostics; the corrected input route now has actual clear proof.
 
 The interrupted permission-check turn made no progress; access is now restored.
 Reconciled current files and external results before resuming old tests:
@@ -60,11 +57,12 @@ Reconciled current files and external results before resuming old tests:
 - The user explicitly chose to keep the15-minute dungeon logout rule. Source
   `server/client_dispatch.go` still implements it. No runtime change needed.
 
-Next concrete unfinished acceptance is the actual five-player Rootheart raid:
+Next concrete unfinished acceptance is the actual five-player Tidestar raid:
 ordinary formation/readiness, assault/guardian, three repair waves, individual
 manual turn-ins and saved re-login. Use the existing legal5Rare/9Uncommon role
 fixtures; do not increase stats/rarity or grant completion to make the test pass.
-The corrected Maelin hostility and boss-identity driver are already inherited.
+The corrected Maelin hostility, boss identity and occluded-target input driver
+are already inherited. Rootheart is accepted, not the next missing clear.
 
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
