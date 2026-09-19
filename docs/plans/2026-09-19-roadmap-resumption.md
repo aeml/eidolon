@@ -154,20 +154,39 @@ five-browser retry alongside the release's live-browser workload on this host.
 
 ## Deployment monitoring policy (user request, September19)
 
-Prepared CI efficiency change: pushes containing only `README.md` and/or
+CI efficiency change bundled in the pending1.9.18 candidate: pushes containing only `README.md` and/or
 `docs/**/*.md` no longer start the full publishing pipeline. These files are
 not Pages game inputs. Pull requests remain unfiltered to avoid leaving required
 checks pending; manual dispatch and every mixed code/asset/release/HTML-note
 push retain all existing gates. No test job, concurrency rule or deployment
 dependency was removed. The new regression failed before the filter and then
 all14 queue/checkout/browser-sharding checks passed (80870), with YAML parsing,
-changed-file lint and diff checks. This is not yet published; batch it with the
-next suitable change rather than interrupt the active multi-browser raid.
+changed-file lint and diff checks. Publication awaits that candidate's terminal
+deployment result; do not start another release just for documentation.
 For the next and subsequent deployments, delegate watching the exact GitHub
 CI/CD run to one `gpt-5.6-luna` agent with a minimal standalone brief, not a fork
 of the full roadmap conversation. Use a quiet process/watch or bounded polling;
 report terminal completion or a failed job with a concise relevant log excerpt,
 not every unchanged tick. The watcher is read-only: no reruns, cancellation,
 commits or deployment changes. The main agent continues useful feature work
-and handles fixes and final live-release verification. This authorizes Luna
-deployment monitoring, not unrestricted delegation of implementation work.
+and handles fixes and final live-release verification.
+
+The user subsequently explicitly authorized Luna for **both deployments and
+long-running dungeon/raid tests**, reporting only completion or failure. Use a
+minimal standalone brief and low reasoning for each exact run/process; do not
+duplicate its monitoring in the main agent. Test watchers are also read-only:
+no restart, cancellation, fixture edits or acceptance changes. The main agent
+handles fixes, reviews artifacts and decides what the evidence establishes.
+This does not authorize unrestricted delegation of implementation work.
+
+## Bounded crowded-casino visual check
+
+Prepared `tests/e2e/casino-busy-floor.spec.js` uses a read-only Go export of the
+actual16-table/machine,56-seat catalog, the current casino interior/controller,
+and40 fully equipped models across all four classes (28 public,12 VIP). It takes
+four High/Low floor screenshots for review. It is opt-in with
+`EIDOLON_CASINO_FIXTURE_CATALOG=1`; it does not create accounts or wager currency.
+Catalog export, syntax, lint and Playwright discovery pass. **Browser execution
+and image review are pending** until the release's native browser jobs finish.
+Do not call synthetic occupancy connected-player or performance acceptance;
+retain existing connected public/VIP wagering and persistence evidence.
