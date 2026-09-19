@@ -111,8 +111,9 @@ version/runtime/queue checks pass. See [release record](2026-09-19-release1-9-18
 First74bd4b70/CI35471125941 is terminal cancelled before any deployment, after
 Luna confirmed Go was still running. A canonical world-UV integration omission
 is now fixed and verified by67 focused checks and one5second High/Low join test.
-Publish the corrected Alpha1.9.18 candidate and reassign Luna
-`/root/watch_release_1_9_18` to its exact SHA/run. Public delivery is pending.
+Corrected Alpha1.9.18 is pushed at `a709d9826726bb0dc60c7298663388847674fec4`;
+CI35471538108 is in progress and Luna `/root/watch_release_1_9_18` is reassigned
+to watch that exact run until terminal. Public delivery is pending.
 Do not duplicate watcher polling or start another raid over release browser QA;
 the next required raid also supplies the integrated actor/telegraph floor review.
 

@@ -7,6 +7,11 @@ The main agent requested cancellation only after Luna confirmed that stage, to
 include the canonical-floor integration correction below. The replacement keeps
 Alpha1.9.18 and its existing accurate patch notes; delivery remains pending.
 
+Replacement pushed: `a709d9826726bb0dc60c7298663388847674fec4`, exact
+CI35471538108 in progress. Luna `/root/watch_release_1_9_18` is reassigned to this
+run and must remain watching until terminal, reporting failures without duplicate
+main-agent polling. Do not restart the cancelled original or claim this one live.
+
 ## Player-facing scope
 
 - Correct sRGB encoding restores the intended stone palette and visible masonry.
