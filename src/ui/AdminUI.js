@@ -20,7 +20,7 @@ export class AdminUI {
                     <button type="button" data-view="players" aria-pressed="true">Online players</button>
                     <button type="button" data-view="history" aria-pressed="false">Activity history</button></div>
                 <div class="administration-filters" hidden>
-                    <label>Exact account<input data-actor maxlength="64" autocomplete="off" placeholder="All accounts"></label>
+                    <label>Exact account<input data-actor maxlength="71" autocomplete="off" placeholder="All accounts"></label>
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
                         <option value="admin_history">History reads</option><option value="login">Login</option>
@@ -149,6 +149,7 @@ export class AdminUI {
             name.textContent = player.name || player.account;
             const detail = document.createElement('span');
             detail.textContent = `${player.class} · Level ${player.level} · Account: ${player.account}`;
+            if (player.auditAccount) detail.textContent += ` · History key: ${player.auditAccount}`;
             row.append(name, detail);
             this.list.append(row);
         }
@@ -174,7 +175,7 @@ export class AdminUI {
         this.cursor = typeof history?.next === 'string' ? history.next : '';
         this.next.hidden = !this.cursor;
         this.next.disabled = false;
-        this.note.textContent = `Newest first · up to 50 entries per page · retention: ${history?.retentionDays || 'unknown'} days. This preview records administration reads; session activity capture is not connected yet.`;
+        this.note.textContent = `Newest first · up to 50 entries per page · retention: ${history?.retentionDays || 'unknown'} days. Session activity syncs every 5 seconds; pending records recover after a restart.`;
         this.status.textContent = entries.length ? `${entries.length} activity record${entries.length === 1 ? '' : 's'} on this page.` : 'No activity matches these filters.';
     }
 

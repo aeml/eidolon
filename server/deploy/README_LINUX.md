@@ -23,6 +23,25 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `MONGO_URI` (must use `mongo:27017` and `authSource=admin`)
 - `EIDOLON_QA_USERNAMES` (optional; dedicated QA usernames only)
 - `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact usernames allowed to persist the administrator role with `/relevel`; currently only `donveetz`)
+- `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` (optional, defaults to90; whole days7–365)
+
+Structured administration history is stored separately from server logs. Session
+events are journaled under `logs/character-saves/admin-activity/` before normal
+login/resume acknowledgement and synced to Mongo in batches every5seconds.
+The existing consistent upgrade backup includes this private directory. Preserve
+it with the matching Mongo backup; do not delete pending events to clear an error.
+Journal corruption blocks startup rather than silently losing history. A local
+storage failure refuses new logins/resumes; a disconnected socket's event is
+retained for retry, readiness becomes unavailable, and graceful shutdown waits
+until that event is durable. A sudden host loss while local storage itself is
+unwritable cannot guarantee preservation of such an unjournaled event.
+
+Retention is applied when records are created. Reads also enforce the current
+retention cutoff, so reducing it immediately hides older records; physical
+deletion follows each record's original expiry via MongoDB's asynchronous TTL.
+Increasing retention does not recover expired records. Only administrators may
+read this history; it contains bounded identity/action/outcome fields, not raw
+logs, passwords, password hashes, session tokens or full character saves.
 
 Recommended example URI:
 

@@ -124,6 +124,13 @@ func drainServer(loops *serverLoops) {
 	}
 	backgroundCharacterWork.SealWhenIdle()
 	for {
+		if err := persistUnjournaledActivity(); err == nil {
+			break
+		}
+		log.Print("Shutdown waiting for durable session activity storage")
+		time.Sleep(time.Second)
+	}
+	for {
 		if err := saveFinalCharacters(); err == nil {
 			break
 		} else {

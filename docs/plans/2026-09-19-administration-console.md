@@ -21,6 +21,18 @@ with accurate release notes and synchronized versions before deploying it.
   server-derived actor, bounded summary, request ID and UTC time. Each response
   is withheld if its audit append fails. Role/store failures clear the panel's
   data and authorization; disconnects discard pending/stale replies.
+- Login, resume and disconnect events now use a private checksummed disk outbox
+  under the existing save journal directory. Login/resume wait for durable local
+  capture; a database outage retains exact event IDs for replay. Runtime sync
+  uses50-event batches every5seconds; startup drains all batches before admission.
+  Unavoidable disconnects during local-storage failure are retained in memory,
+  make readiness fail and keep graceful shutdown waiting for durable storage.
+  Sudden host loss while disk writes are failing cannot preserve those RAM-only
+  events. No password/token/raw authentication payload enters the outbox.
+- Failed audited resumes restore the original disconnect time, never extending
+  the user's15-minute dungeon logout rule. Legacy oversized/control-character
+  account names get collision-separated SHA-256 history keys, not a new login
+  restriction; the player list exposes the corresponding history key as needed.
 - History has exact-account/activity filters and50-entry timestamp/ObjectID
   keyset pages. Insert-only activity records permit identical recovery replay
   but reject conflicting content for an existing ID.
@@ -48,20 +60,31 @@ with accurate release notes and synchronized versions before deploying it.
 - Three Chrome HTML/CSS-only presentation cases pass at1280x720,390x844,844x390.
   These use synthetic responses: they are **not** authenticated socket or actual
   phone acceptance. Final connected acceptance remains required.
+- Actual two-account production-binary/socket test passes in1.62seconds:
+  admin/non-admin status and roster authorization, ordinary login, token resume,
+  two disconnects, history response privacy and exact saved event counts after
+  a real server restart. Native83168 exited0 and its isolated Mongo container
+  was removed. Evidence logs: `/tmp/eidolon-compat-session-160140207/server.log`
+  and `/tmp/eidolon-compat-session-2290200519/server.log`. This covers read/session
+  behavior, not the still-unimplemented mutations or actual phone input.
+- That test caught and fixed a restart incompatibility: the character journal
+  reader now delegates only the real `admin-activity` directory to its own reader.
+  Impostor files/symlinks still fail closed. Focused tests cover corruption,
+  private file mode, bounded batches, shared-volume recovery, Mongo outages,
+  local-disk failure, more than one startup batch and unchanged resume expiry.
+  Focused session/journal tests also pass under Go's race detector, including
+  concurrent capture and replay; client UI tests8pass and lint/diff checks pass.
 
 ## Next required implementation
 
-1. Durable login/resume/disconnect capture, including database-outage/restart
-   handling. Currently only administration reads produce history records; the
-   UI explicitly states that session capture is not connected yet.
-2. Confirmed canonical item creation, bounded Gold grants and validated teleport
+1. Confirmed canonical item creation, bounded Gold grants and validated teleport
    operations. No mutation buttons or handlers exist yet. Implement account-work
    ownership, stale-session rejection, exact targets, inventory/Gold/instance/
    walkability validation and durable idempotency together with a recoverable
    character/receipt/audit journal. Do not bolt unsafe grants onto the read handler.
-3. Remaining full-gate failure/concurrency/restart and disposable two-account
+2. Remaining full-gate failure/concurrency/restart and disposable two-account
    connected acceptance, backup/restore and safe live read-only smoke.
-4. Package/deploy only when the batch is ready. Use the user-approved Luna watcher
+3. Package/deploy only when the batch is ready. Use the user-approved Luna watcher
    for the exact CI run, then verify actual live client/server identities.
 
 ## Separate Rootheart acceptance result

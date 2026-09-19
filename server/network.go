@@ -188,6 +188,9 @@ func cleanupClientLocked(client *Client) {
 	if !currentCharacterConnection(client) {
 		return
 	}
+	if err := recordSessionDisconnect(client.username); err != nil {
+		log.Print("Session disconnect activity awaits durable local storage")
+	}
 	client.retired.Store(true)
 	if world == nil {
 		return

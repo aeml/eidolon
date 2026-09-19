@@ -2,10 +2,12 @@ package database
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"time"
 	"unicode"
@@ -18,6 +20,23 @@ import (
 )
 
 const AdminActivityPageSize = 50
+
+var activityAccountDigest = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
+
+// Legacy registration did not constrain usernames. Preserve those accounts'
+// ability to log in without putting oversized/control-character names in audit
+// records. The reserved 71-character digest namespace cannot collide with a
+// normal (at most64-byte) readable account key.
+func AdminActivityAccountKey(username string) string {
+	if boundedActivityText(username, 64, false) {
+		return username
+	}
+	return fmt.Sprintf("sha256:%x", sha256.Sum256([]byte(username)))
+}
+
+func validActivityAccountKey(value string, required bool) bool {
+	return boundedActivityText(value, 64, required) || activityAccountDigest.MatchString(value)
+}
 
 // Activity is structured and allowlisted; it never contains raw logs, sockets,
 // authentication payloads, full character snapshots or database errors.
@@ -79,7 +98,7 @@ func validAdminActivityAction(action string) bool {
 
 func ValidateAdminActivity(event AdminActivity) error {
 	if event.ID.IsZero() || event.At.IsZero() || !event.ExpiresAt.After(event.At) ||
-		!boundedActivityText(event.Actor, 64, true) || !boundedActivityText(event.Target, 64, false) ||
+		!validActivityAccountKey(event.Actor, true) || !validActivityAccountKey(event.Target, false) ||
 		!boundedActivityText(event.RequestID, 64, true) || !boundedActivityText(event.Summary, 256, true) ||
 		!validAdminActivityAction(event.Action) {
 		return errors.New("invalid administration activity")
@@ -99,8 +118,8 @@ func NewAdminActivity(actor, target, action, requestID, result, summary string, 
 	// comparison and keyset cursor creation.
 	now = now.UTC().Truncate(time.Millisecond)
 	event := AdminActivity{ID: primitive.NewObjectID(), At: now,
-		ExpiresAt: now.Add(time.Duration(retentionDays) * 24 * time.Hour), Actor: actor,
-		Target: target, Action: action, RequestID: requestID, Result: result, Summary: summary}
+		ExpiresAt: now.Add(time.Duration(retentionDays) * 24 * time.Hour), Actor: AdminActivityAccountKey(actor),
+		Target: AdminActivityAccountKey(target), Action: action, RequestID: requestID, Result: result, Summary: summary}
 	return event, ValidateAdminActivity(event)
 }
 
@@ -142,7 +161,7 @@ func activityCursor(event AdminActivity) string {
 }
 
 func adminActivityFilter(query AdminActivityQuery, now time.Time, retentionDays int) (bson.M, error) {
-	if !boundedActivityText(query.Actor, 64, false) || (query.Action != "" && !validAdminActivityAction(query.Action)) || len(query.Before) > 160 {
+	if !validActivityAccountKey(query.Actor, false) || (query.Action != "" && !validAdminActivityAction(query.Action)) || len(query.Before) > 160 {
 		return nil, errors.New("invalid activity filter")
 	}
 	filter := bson.M{"expires_at": bson.M{"$gt": now}, "at": bson.M{"$gt": now.Add(-time.Duration(retentionDays) * 24 * time.Hour)}}

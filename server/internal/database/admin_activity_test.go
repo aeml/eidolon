@@ -40,6 +40,24 @@ func TestAdminActivityRetentionAndValidation(t *testing.T) {
 	}
 }
 
+func TestAdminActivityLegacyAccountNamesRemainAuditable(t *testing.T) {
+	for _, username := range []string{strings.Repeat("legacy", 20), "legacy\naccount"} {
+		event, err := NewAdminActivity(username, "", "login", "session-request", "success", "Account authenticated.", time.Now(), 90)
+		if err != nil || !strings.HasPrefix(event.Actor, "sha256:") || len(event.Actor) != 71 {
+			t.Fatal(event.Actor, err)
+		}
+		if _, err := adminActivityFilter(AdminActivityQuery{Actor: event.Actor}, time.Now(), 90); err != nil {
+			t.Fatal(err)
+		}
+		if AdminActivityAccountKey(event.Actor) == event.Actor {
+			t.Fatal("a literal digest-shaped username collides with another account's key")
+		}
+	}
+	if got := AdminActivityAccountKey("ordinary-account"); got != "ordinary-account" {
+		t.Fatal(got)
+	}
+}
+
 func TestAdminActivityFilterUsesTimestampAndIDAndExcludesExpiredRows(t *testing.T) {
 	now := time.Now().UTC().Truncate(time.Millisecond)
 	event, _ := NewAdminActivity("operator", "", "login", "session-event", "success", "Authenticated login.", now, 90)

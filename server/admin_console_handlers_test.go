@@ -106,7 +106,7 @@ func TestAdminConsoleRequestsHaveClosedBoundedSchema(t *testing.T) {
 		`{"id":"read-request-000001","after":"\u0000"}`,
 		`{"id":"read-request-000001","after":null}`,
 		`{"id":"` + strings.Repeat("a", 65) + `"}`,
-		`{"id":"read-request-000001","after":"` + strings.Repeat("a", 65) + `"}`,
+		`{"id":"read-request-000001","after":"` + strings.Repeat("a", 72) + `"}`,
 	} {
 		if _, err := decodeAdminRead(Message{Type: MsgAdminPlayers, Payload: json.RawMessage(payload)}); err == nil {
 			t.Fatalf("accepted %s", payload)

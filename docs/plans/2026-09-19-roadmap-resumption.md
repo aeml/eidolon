@@ -3,7 +3,8 @@
 Current local feature stage: `d7eb4be9` adds the role-checked administration
 launcher, online-player pages and structured administration-read history.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
-It is **not deployed**; production remains Alpha1.9.16. Session-event capture,
+It is **not deployed**; production remains Alpha1.9.16. Session-event capture
+now passes real two-account/socket/restart acceptance (native83168 exit0);
 safe mutations and their connected acceptance still need implementation.
 Rootheart retry18833 is terminal failure in assault combat, not an active wait;
 formation now passes, but DemonOrc hover acquisition stalled. Preserve its

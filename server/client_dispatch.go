@@ -47,6 +47,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() {
 			return
 		}
+		if err := recordSessionActivity(payload.Username, "login"); err != nil {
+			c.sendError("Login activity storage is unavailable. Please retry shortly.")
+			return
+		}
 		if c.username == "" {
 			c.username = payload.Username
 		}
@@ -805,10 +809,26 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		playerID := "player-" + username
+		// Public character copies intentionally omit connection metadata.
+		var previousDisconnectedAt time.Time
+		if previous := world.GetEntity(playerID); previous != nil {
+			previous.Mu.RLock()
+			previousDisconnectedAt = previous.DisconnectedAt
+			previous.Mu.RUnlock()
+		}
 		entity, ok := world.ClearEntityDisconnected(playerID)
 		if !ok {
 			// Entity already swept or was never disconnected — fall back to normal login.
 			c.sendError("No resumable session found. Please log in and join normally.")
+			return
+		}
+		if err := recordSessionActivity(username, "resume"); err != nil {
+			// Do not extend the existing session/instance window on an audit
+			// failure. The client has not received a resume acknowledgement.
+			if !previousDisconnectedAt.IsZero() {
+				world.SetEntityDisconnected(playerID, previousDisconnectedAt)
+			}
+			c.sendError("Session activity storage is unavailable. Please log in again shortly.")
 			return
 		}
 

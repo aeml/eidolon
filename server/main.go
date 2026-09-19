@@ -425,6 +425,13 @@ func main() {
 	if err := retryPendingPvPResults(); err != nil {
 		log.Fatalf("Cannot recover ranked results; refusing stale logins: %v", err)
 	}
+	adminActivityJournal, err = database.OpenAdminActivityJournal(filepath.Join(*characterJournalDir, "admin-activity"))
+	if err != nil {
+		log.Fatal("Session activity journal unavailable; refusing unaudited logins")
+	}
+	if err := recoverAdminActivityOnStartup(); err != nil {
+		log.Fatal("Session activity recovery failed; refusing unaudited logins")
+	}
 
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
@@ -957,6 +964,11 @@ func main() {
 			log.Printf("Arena result sync remains pending: %v", err)
 		}
 	})
+	loops.Every(5*time.Second, func() {
+		if err := retryPendingAdminActivity(); err != nil {
+			log.Print("Session activity sync remains pending")
+		}
+	})
 	loops.Every(game.RefundRetryInterval, func() {
 		if err := recoverPendingAuctionBids(); err != nil {
 			log.Printf("Auction bid recovery remains pending: %v", err)
@@ -965,6 +977,9 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
+		if !sessionActivityJournalHealthy() {
+			return errors.New("session activity awaits durable storage")
+		}
 		if serverStopping.Load() {
 			return errors.New("server is shutting down")
 		}

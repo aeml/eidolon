@@ -44,11 +44,12 @@ type adminReadRequest struct {
 }
 
 type adminOnlinePlayer struct {
-	Account  string `json:"account"`
-	PlayerID string `json:"playerId"`
-	Name     string `json:"name"`
-	Class    string `json:"class"`
-	Level    int    `json:"level"`
+	AuditAccount string `json:"auditAccount,omitempty"`
+	Account      string `json:"account"`
+	PlayerID     string `json:"playerId"`
+	Name         string `json:"name"`
+	Class        string `json:"class"`
+	Level        int    `json:"level"`
 }
 
 type adminReadResult struct {
@@ -113,7 +114,7 @@ func decodeAdminRead(msg Message) (adminReadRequest, error) {
 	if _, err = decoder.Token(); err != io.EOF {
 		return request, errors.New("trailing data")
 	}
-	if !adminRequestID.MatchString(request.ID) || len(request.After) > 64 || !utf8.ValidString(request.After) {
+	if !adminRequestID.MatchString(request.ID) || len(request.After) > 71 || !utf8.ValidString(request.After) {
 		return request, errors.New("invalid request identifier or cursor")
 	}
 	for _, char := range request.After {
@@ -217,17 +218,18 @@ func handleAdminRead(c *Client, msg Message) {
 // Pagination is a sorted account keyset. Refresh starts a new live observation;
 // players joining/leaving between pages are not a historical snapshot.
 func adminOnlinePage(after string) ([]adminOnlinePlayer, string) {
-	type binding struct{ account, playerID string }
+	type binding struct{ account, playerID, key string }
 	sessionsMu.Lock()
 	bindings := make([]binding, 0, len(activeSessions))
 	for account, client := range activeSessions {
-		if account > after && client != nil && client.playerID != "" &&
+		key := database.AdminActivityAccountKey(account)
+		if key > after && client != nil && client.playerID != "" &&
 			!client.retired.Load() && !client.transportClosed.Load() {
-			bindings = append(bindings, binding{account, client.playerID})
+			bindings = append(bindings, binding{account, client.playerID, key})
 		}
 	}
 	sessionsMu.Unlock()
-	sort.Slice(bindings, func(i, j int) bool { return bindings[i].account < bindings[j].account })
+	sort.Slice(bindings, func(i, j int) bool { return bindings[i].key < bindings[j].key })
 	players := make([]adminOnlinePlayer, 0, adminPlayerPageSize)
 	for _, bound := range bindings {
 		entity := world.GetEntity(bound.playerID)
@@ -237,13 +239,16 @@ func adminOnlinePage(after string) ([]adminOnlinePlayer, string) {
 		entity.Mu.RLock()
 		entry := adminOnlinePlayer{Account: bound.account, PlayerID: entity.ID,
 			Name: entity.Name, Class: entity.SubType, Level: entity.Level}
+		if bound.key != bound.account {
+			entry.AuditAccount = bound.key
+		}
 		isPlayer := entity.Type == game.TypePlayer
 		entity.Mu.RUnlock()
 		if !isPlayer {
 			continue
 		}
 		if len(players) == adminPlayerPageSize {
-			return players, players[len(players)-1].Account
+			return players, database.AdminActivityAccountKey(players[len(players)-1].Account)
 		}
 		players = append(players, entry)
 	}
