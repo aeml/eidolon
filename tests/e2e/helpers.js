@@ -780,6 +780,12 @@ async function readEntity(page, targetId) {
     }, targetId);
 }
 
+export async function settlePointerRaycast(page) {
+    // Observe the production20Hz raycast budget instead of assuming a50ms
+    // sleep includes its next frame when five rendered clients share the GPU.
+    await page.waitForFunction(() => window.game?.needsRaycast === false, null, { polling: 'raf', timeout: 1000 });
+}
+
 export async function projectEntity(page, targetId, hitboxPoint = null) {
     return page.evaluate(({ id, hitboxPoint }) => {
         const game = window.game;

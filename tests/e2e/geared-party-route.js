@@ -22,7 +22,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
-    enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown } from './helpers.js';
+    enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown, settlePointerRaycast } from './helpers.js';
 
 // Shared input route; each spec owns Playwright recording options.
 
@@ -478,7 +478,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             const clicks = await attackPartyDamageTarget({
                 project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
                 move: (x, y) => actor.page.mouse.move(x, y),
-                settle: () => actor.page.waitForTimeout(60),
+                settle: () => settlePointerRaycast(actor.page),
                 hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
                 read: id => actor.page.evaluate(id => {
                     const g = window.game, p = g.player, e = g.remotePlayers.get(id);

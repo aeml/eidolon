@@ -4,7 +4,7 @@ import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonComba
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
 import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
-import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
+import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState, settlePointerRaycast } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter, dungeonCombatTargetType } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
@@ -104,7 +104,7 @@ export async function playDungeonThroughInputs(page, {
             const point = await aimDungeonCombatTarget({
                 project: (id, hitboxPoint) => projectEntity(page, id, hitboxPoint),
                 move: (x, y) => page.mouse.move(x, y),
-                settle: () => page.waitForTimeout(50),
+                settle: () => settlePointerRaycast(page),
                 hoveredId: () => page.evaluate(() => window.game.hoveredEntity?.id)
             }, target.id, partyTarget);
             if (point?.visible) {
@@ -159,9 +159,23 @@ export async function playDungeonThroughInputs(page, {
                     return { player: { x: p.position.x, z: p.position.z },
                         target: e?.isActive && e.state !== 'DEAD' ? { x: e.position.x, z: e.position.z } : null };
                 }, target.id);
-                const step = dungeonTargetApproach(live.player, live.target);
+                const step = partyTarget ? await page.evaluate(async ({ id, encounter }) => {
+                    const { dungeonOccludedTargetStep } = await import('/tests/dungeonTargetApproach.js');
+                    const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
+                    const g = window.game, p = g.player, enemy = g.remotePlayers.get(id);
+                    if (!enemy?.isActive || enemy.state === 'DEAD' || p.state === 'DEAD') return null;
+                    if (window.__partyClearWarnings?.some(w => w.expires > performance.now() && w.instance === g.currentInstanceId)) return null;
+                    const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
+                    const target = { x: enemy.position.x, z: enemy.position.z, radius: enemy.radius,
+                        range: g.getBasicAttackRangeForEntity(enemy) };
+                    const actors = [...g.remotePlayers.values()].filter(e => e.isActive && e.stats && e.state !== 'DEAD')
+                        .map(e => ({ x: e.position.x, z: e.position.z, radius: e.radius }));
+                    return dungeonOccludedTargetStep(origin, target, delta =>
+                        retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
+                        isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), actors);
+                }, { id: target.id, encounter: target.encounter }) : dungeonTargetApproach(live.player, live.target);
                 const moved = step ? await tryDungeonGroundStep(() => moveByGroundClick(page, step.dx, step.dz,
-                    { allowJumpFallback: false })) : false;
+                    { allowJumpFallback: false, ...(partyTarget ? { moveOnly: true, allowAlternatePaths: false, requireClearPath: true, timeout: 1500 } : {}) })) : false;
                 await page.evaluate(observation => { window.__dungeonLatestTargetApproach = observation; }, { ...live, step, moved });
             }
             await page.waitForTimeout(350);

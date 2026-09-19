@@ -11,7 +11,9 @@ including all grants and teleport modes, saved state and audits. Alpha1.9.17 is
 packaged with cumulative patch notes and matching versions; CI/deployment and
 read-only live verification remain, not unimplemented buttons or repeated soaks.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
-It is **not deployed**; production remains Alpha1.9.16. Session-event capture
+Alpha1.9.17 candidate `f76b0a601dfd99d9839657b5925a7c1777da86f4` is pushed;
+CI35462943697 is watched by the dedicated read-only Luna agent. Publication is
+not yet accepted; last verified production remains Alpha1.9.16. Session-event capture
 passes real two-account/socket/restart acceptance (native83168 exit0); grant
 recovery passes the real built-server startup/runtime/restart test (native40190
 exit0), using trusted test intents. The newer99139 test exercises the actual
@@ -64,6 +66,21 @@ does not prove phone dungeon/party play. Reuse accepted evidence; do not repeat
 whole matrices, accepted releases, or public-event preparation unnecessarily.
 
 ## Deployment monitoring policy (user request, September19)
+
+Rootheart input recovery now has a concrete local correction after that release
+candidate. The recorded tank/Orc/Construct positions reproduce an impossible
+direct approach: the old fallback asks to walk into the target's occupied centre
+while already within attack range. The party driver now tries a short lateral
+or retreat segment checked against live actor capsules, canonical collisions,
+encounter boundaries and current warnings; distant approaches stop at range.
+Pointer acquisition waits for the real pending raycast to finish rather than
+assuming50/60ms includes its next frame with five rendered clients. No target,
+movement state, stat or combat packet is injected. The original target's death,
+60second damage-stall watchdog, boss/repair requirements and legal gear remain.
+Recorded-layout and associated controls109tests pass (native58555 exit0), with
+changed-file lint. This is not yet an actual raid-clear proof. Do not launch a
+five-browser retry alongside the release's live-browser workload on this host.
+
 
 For the next and subsequent deployments, delegate watching the exact GitHub
 CI/CD run to one `gpt-5.6-luna` agent with a minimal standalone brief, not a fork

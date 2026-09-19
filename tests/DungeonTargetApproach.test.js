@@ -1,4 +1,5 @@
-import { dungeonTargetApproach } from './dungeonTargetApproach.js';
+import { dungeonTargetApproach, dungeonOccludedTargetStep } from './dungeonTargetApproach.js';
+import { partyPathAvoidsActors } from './partyDungeonControls.js';
 
 test('an occluded moving enemy is approached at its latest location, not its old encounter position', () => {
     const player = { x: 100, z: 100 };
@@ -12,4 +13,26 @@ test('nearby approaches keep their true distance without overshooting', () => {
 
 test.each([null, { x: NaN, z: 1 }, { x: 1 }])('missing or invalid actor positions do not invent movement: %j', target => {
     expect(dungeonTargetApproach({ x: 0, z: 0 }, target)).toBeNull();
+});
+
+test('recorded Rootheart crowd gets a clear short step instead of walking into the occupied DemonOrc', () => {
+    const player = { x: 80008.26123827884, z: 19588.752586675695, radius: 1.25 };
+    const target = { x: 80005.75, z: 19587.177734375, range: 4, radius: 1.25 };
+    const blockers = [{ x: 80007.109375, z: 19586.04296875, radius: 1.25 },
+        { x: 80006.3359375, z: 19586.474609375, radius: 1.25 }];
+    expect(partyPathAvoidsActors(player, dungeonTargetApproach(player, target), [target, ...blockers])).toBe(false);
+    const step = dungeonOccludedTargetStep(player, target, () => true, blockers);
+    expect(step).not.toBeNull();
+    expect(Math.hypot(step.dx, step.dz)).toBeCloseTo(3.5);
+    expect(partyPathAvoidsActors(player, step, [target, ...blockers])).toBe(true);
+});
+
+test('party approaches stop before the body and reject walls or boxed-in positions', () => {
+    const player = { x: 0, z: 0 }, target = { x: 10, z: 0, range: 4 };
+    expect(dungeonOccludedTargetStep(player, target, () => true)).toEqual({ dx: 6.5, dz: 0 });
+    expect(dungeonOccludedTargetStep(player, target, () => false)).toBeNull();
+    expect(dungeonOccludedTargetStep(player, target, () => true, [
+        { x: 0, z: 2.7 }, { x: 0, z: -2.7 }, { x: -2.7, z: 0 }, { x: 2.7, z: 0 }
+    ])).toBeNull();
+    expect(dungeonOccludedTargetStep(player, target, null)).toBeNull();
 });
