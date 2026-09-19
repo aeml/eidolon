@@ -1,7 +1,11 @@
 # Alpha 1.9.19 — a place for every patron
 
-Status: packaged locally, **not pushed or live**. Alpha1.9.18 run35471538108
-passed and its public identity/source checks match. Keep the full1.10 scope.
+Status: **pushed; deployment pending**, commit
+`e9c75b734ed418944fd793c4161af766475a05f5`, CI run35474533396. Luna
+`/root/watch_release_1_9_19` monitors that exact run without duplicate root
+polling. No live1.9.19 claim until terminal gates and public verification pass.
+Alpha1.9.18 run35471538108 passed and its public identity/source checks match.
+Keep the full1.10 scope.
 
 ## Included
 

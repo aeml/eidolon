@@ -256,3 +256,23 @@ browser execution and acceptance are pending. Do not replace the already accepte
 socket/reward/restart evidence or call the prepared test a successful match.
 Merge after preserving the current raid's terminal artifacts; see the candidate's
 `docs/plans/2026-09-19-rendered-team-arena-preparation.md` for exact scope.
+
+## Current handoff after the raid failure
+
+Alpha1.9.19 is pushed at `e9c75b734ed418944fd793c4161af766475a05f5`;
+CI35474533396 was confirmed queued. Luna `/root/watch_release_1_9_19` owns the
+terminal monitor. No local browser runs alongside its native pre/live QA.
+Main must verify the public identities/readiness/notes/cutaway source after
+success, or fix the specific failed gate. Do not poll older completed runs.
+
+The prepared arena check was cherry-picked as0d1ec494 after preserving Tidestar
+artifacts; it is local only, not part of that pushed release. Execution remains
+pending until deployment's browser work is terminal. Reuse accepted arena
+socket/reward/restart evidence; run this one bounded presentation case without
+automatic retries. Tidestar remains incomplete and is next after this short
+remaining arena review; the pointer-wait change is not clear evidence.
+
+Inspected Tidestar's preserved `party-boss-TideboundTyrant.png`: the Low-quality
+pre-fight view shows the stone floor and equipped party beneath the crystal,
+without the previous glaring floor coloration. This is a pre-fight image,
+not boss/telegraph, High-quality comparison or physical-phone acceptance.
