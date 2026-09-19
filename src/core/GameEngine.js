@@ -1426,6 +1426,7 @@ export class GameEngine {
 
     connectToServer() {
         this.network.connect(this.playerType);
+        this.uiManager?.admin?.connectionState(this.network.socket?.readyState === 1 ? 'connected' : 'closed');
     }
 
     spawnEliteEnemy() {

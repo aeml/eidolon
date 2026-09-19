@@ -10,6 +10,7 @@ class UIManagerSettingsMethods {
             window.game?.inputManager?.clearInputState?.();
         }
         this.escMenu.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) this.admin?.refreshAccess();
         if (this.isMobile) {
             document.getElementById('btn-mobile-menu')?.setAttribute('aria-expanded', String(isHidden));
             (isHidden ? this.btnResume : document.getElementById('btn-mobile-menu'))?.focus({ preventScroll: true });

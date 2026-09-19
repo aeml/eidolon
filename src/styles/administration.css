@@ -1,0 +1,25 @@
+#btn-administration[hidden], .administration-window [hidden] { display: none !important; }
+.administration-window {
+    flex-direction: column;
+    width: min(640px, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    box-sizing: border-box;
+}
+.administration-body { overflow-y: auto; min-height: 0; }
+.administration-body p { line-height: 1.5; }
+.administration-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-block: 8px; }
+.administration-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.administration-filters label { display: grid; gap: 6px; min-width: 0; flex: 1 1 180px; }
+.administration-filters input, .administration-filters select { min-height: 44px; width: 100%; box-sizing: border-box; font: inherit; }
+.administration-actions + .administration-actions { margin-top: 12px; }
+.administration-actions button[aria-pressed="true"] { border-color: #e7c77f; background: #3a3427; }
+.administration-actions button {
+    min-height: 44px; padding: 8px 14px; border: 1px solid #857047;
+    border-radius: 5px; background: #242c38; color: #f0dfb8; font: inherit;
+}
+.administration-actions button:disabled { opacity: .5; }
+.administration-actions button:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
+.administration-players { list-style: none; padding: 0; margin: 12px 0; }
+.administration-players li { display: grid; gap: 5px; padding: 12px; border-bottom: 1px solid #665638; overflow-wrap: anywhere; }
+.administration-players span, .administration-note { color: #c5bca9; font-size: 13px; }
+.administration-window [data-admin-role] { color: #e7c77f; }

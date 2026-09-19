@@ -209,6 +209,7 @@ export class UIBindings {
         };
         ui.inventory.onLoadoutRequest = (type, payload) => engine.network.send(type, payload);
         ui.onWardrobeRequest = (type, payload) => engine.network.send(type, payload);
+        ui.onAdminRequest = (type, payload) => engine.network.send(type, payload);
 
         ui.forge.onForgeUpgrade = (slot, amount) => {
             engine.network.send('forge_upgrade', { slot, amount });

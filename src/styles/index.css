@@ -38,6 +38,7 @@
 @import './equipment-loadouts.css';
 @import './equipment-decisions.css';
 @import './endgame.css';
+@import './administration.css';
 @import './accessibility.css';
 
 /* 4. Responsive overrides (must come last) */

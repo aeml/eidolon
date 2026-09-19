@@ -188,6 +188,7 @@ class UIManagerWindowMethods {
             ['social', { element: this.social?.socialWindow, display: 'block', group: 'primary', placement: 'center' }],
             ['pvp', { element: this.pvp?.window, display: 'block', group: 'primary', placement: 'center' }],
             ['help', { element: this.helpScreen, display: 'block', group: 'modal', placement: 'center' }],
+            ['administration', { element: this.admin?.root, display: 'flex', group: 'modal', placement: 'center' }],
             ['settings', { element: this.settingsScreen, display: this.isMobile ? 'flex' : 'block', group: 'modal', placement: 'center' }],
             ['report', { element: this.reportScreen, display: 'block', group: 'modal', placement: 'center' }],
             ['patchNotes', { element: this.patchNotesScreen, display: 'flex', group: 'modal', placement: 'center' }]
@@ -449,7 +450,7 @@ class UIManagerWindowMethods {
     }
 
     getStaticModalWindows() {
-        return [this.patchNotesScreen, this.settingsScreen, this.reportScreen, this.helpScreen].filter(Boolean);
+        return [this.patchNotesScreen, this.settingsScreen, this.reportScreen, this.helpScreen, this.admin?.root].filter(Boolean);
     }
 
     ensureStaticModalBackdrop() {

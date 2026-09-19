@@ -409,6 +409,7 @@ func main() {
 		log.Fatal(err)
 	}
 	adminRoles = db
+	adminActivities = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
 	if err != nil {

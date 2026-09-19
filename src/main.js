@@ -434,6 +434,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 window.game.network.onConnectionStateChange = (state) => {
                     if (state !== 'connected') window.game?.uiManager?.casino?.slots?.stopAuto('Connection lost; auto spins stopped.');
                     window.game?.uiManager?.setConnectionState(state);
+                    window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                 };
                 window.game.network.onReconnectFailed = () => {

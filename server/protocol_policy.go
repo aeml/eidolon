@@ -39,6 +39,9 @@ func policy(access messageAccess, maxPayloadBytes, burst int, window time.Durati
 // unreachable by design, so authentication, payload size, and rate limits
 // cannot be accidentally omitted.
 var inboundMessagePolicies = map[string]messagePolicy{
+	MsgAdminStatus:        policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminPlayers:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminHistory:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgGetWardrobe:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetEPWallet:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetVIPStatus:       policy(accessCharacter, 1<<10, 5, 10*time.Second),

@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 12
+const CurrentSchemaVersion = 13
 
 type schemaMigration struct {
 	Version int
@@ -74,6 +74,7 @@ var schemaMigrations = []schemaMigration{
 	// Preserve already-issued EP exactly; this is a writer fence, not a grant or
 	// backfill. Deployment backs up schema11 before admitting this writer.
 	{Version: 12, Name: "ep_wallet_and_casino_receipts", Apply: func(context.Context, *DB) error { return nil }},
+	{Version: 13, Name: "administration_activity_history", Apply: applyAdminActivityIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

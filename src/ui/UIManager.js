@@ -11,6 +11,7 @@ import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { WardrobeUI } from './WardrobeUI.js';
 import { EPWalletUI } from './EPWalletUI.js';
+import { AdminUI } from './AdminUI.js';
 import { CosmeticVendorUI } from './CosmeticVendorUI.js';
 import { CharacterPreview } from './CharacterPreview.js';
 import { ChatUI } from './ChatUI.js';
@@ -412,6 +413,10 @@ export class UIManager {
             getPlayer: () => this.lastPlayerRef, send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
         this.cosmeticVendor = new CosmeticVendorUI({ getPlayer: () => this.lastPlayerRef,
             send: (type, payload) => this.onWardrobeRequest?.(type, payload) });
+        this.admin = new AdminUI({ host: this.uiLayer, launcher: document.getElementById('btn-administration'),
+            send: (type, payload) => this.onAdminRequest?.(type, payload),
+            openWindow: element => this.toggleStaticModal(element, 'flex'),
+            closeWindow: element => this.closeStaticModal(element) });
 
         // Inventory UI (extracted module) — handles inventory grid, equip slots,
         // shop/gamble, stash, item tooltips, drag-and-drop, split-stack, buyback, sell

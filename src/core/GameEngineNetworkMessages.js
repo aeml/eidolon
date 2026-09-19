@@ -441,6 +441,8 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+        } else if (msg.type === 'admin_status_result' || msg.type === 'admin_players_result' || msg.type === 'admin_history_result') {
+            this.uiManager?.admin?.handleResult(msg.type, msg.payload);
         } else if (msg.type === 'ep_wallet_result') {
             this.uiManager?.epWallet?.handleResult(msg.payload);
         } else if (msg.type === 'vip_status') {
