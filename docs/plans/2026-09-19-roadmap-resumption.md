@@ -98,15 +98,18 @@ without weakening movement assertions or suppressing retreat from melee danger.
 101 focused spacing/formation/input checks and lint pass. Connected confirmation
 remains pending; finish the isolated floor review before another raid attempt.
 
-Independent visual candidate: `/tmp/eidolon-floor-polish-GTaEiw`, branch
+Integrated visual candidate: `/tmp/eidolon-floor-polish-GTaEiw`, branch
 `work/dungeon-floor-polish-20260919`. Actual Tidestar screenshot review found
 the repeated luminous floor pearls/lines visually noisy; source identifies an
 authored texture pattern, not proven duplicate geometry. Candidate broadens
 floor masonry, smooths sampling and subdues Water floor accents while retaining
-wall identity.39 focused interior/crystal tests and lint pass. Not merged or
-deployed: inspect High/Low and gameplay-camera before/after once the raid releases
-the GPU. See that checkout's `docs/plans/2026-09-19-dungeon-floor-readability.md`.
-No main-checkout runtime or active raid inputs were changed.
+wall identity. A subsequent sRGB correction restores readable stone joints.
+40 focused interior/crystal tests pass; the targeted High/Low gallery passed and
+both screenshots were inspected after raid cleanup. The candidate is now merged
+for Alpha1.9.18, with cumulative notes and synchronized version labels.277
+version/runtime/queue checks pass. See [release record](2026-09-19-release1-9-18-dungeon-surfaces.md).
+Public delivery is pending. Do not start another raid over release browser QA;
+the next required raid also supplies the integrated actor/telegraph floor review.
 
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
