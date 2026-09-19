@@ -12,8 +12,8 @@ deployment; it is terminal, not the current release result.
 Remaining full campaign, regional dungeons, actual group raids and cross-feature/
 physical-phone acceptance stay open. Next regional run is four-player Normal70
 Molten on exactlivebd566893/Low, not a repeat of accepted Verdant or an expired
-Abyssal archive. Dungeon persistence beyond existing expiry limits was raised
-with the user; no policy change without their answer.
+Abyssal archive. The user subsequently chose to retain the existing15-minute
+logout rule (September19); indefinite dungeon persistence is not planned.
 
 ## Earned Earth readiness accepted — September14
 
