@@ -60,7 +60,9 @@ export const DUNGEON_ROOM_IDENTITY_IDS = Object.freeze([
 const clampByte = (value) => Math.max(0, Math.min(255, Math.round(value)));
 
 function colorBytes(hex) {
-    const color = new THREE.Color(hex);
+    // DataTexture below is tagged sRGB. Color stores linear components, so
+    // encode them before writing bytes instead of darkening the palette twice.
+    const color = new THREE.Color(hex).convertLinearToSRGB();
     return [color.r * 255, color.g * 255, color.b * 255];
 }
 
@@ -75,7 +77,8 @@ function mixBytes(a, b, amount) {
 function surfaceSample(dungeonType, surface, x, y, palette) {
     const { shadow, ground, midtone, accent } = palette;
     const wall = surface === 'wall';
-    let color = mixBytes(shadow, wall ? midtone : ground, wall ? 0.48 : 0.72);
+    const baseColor = mixBytes(shadow, wall ? midtone : ground, wall ? 0.48 : 0.72);
+    let color = baseColor;
     let emissive = 0;
 
     if (dungeonType === 'verdant_bastion_catacombs') {
@@ -136,6 +139,10 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         }
     }
 
+    if (!wall) {
+        color = mixBytes(baseColor, color, 0.55);
+        emissive *= 0.3;
+    }
     return { color, emissive };
 }
 
