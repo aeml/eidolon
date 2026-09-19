@@ -36,6 +36,24 @@ Reuse it rather than re-running previously accepted campaign or soak matrices.
 
 ## Publication checks
 
+### First candidate and correction
+
+- Candidate `f76b0a601dfd99d9839657b5925a7c1777da86f4`, CI run
+  `35462943697`, finished failed before deployment. Go, Jest and browser
+  shards 1/3 and 3/3 passed; shard 2/3 failed because the anonymous mobile
+  menu test tried to scroll to the intentionally hidden Administration button.
+  All deployment jobs were skipped; this candidate was not published.
+- The corrected test explicitly requires Administration to stay hidden for an
+  ordinary account and still checks every normal menu button. The dedicated
+  admin layout fixture covers authorized presentation. The focused six-case
+  mobile/admin layout run (local session 2957) completed; its persisted
+  `test-results/.last-run.json` reports `passed` with no failed tests.
+- The replacement candidate also includes QA-only commit `0dca7e84` for
+  walking around an occluded dungeon target. Its focused 109 tests passed;
+  this is not evidence of a completed raid and does not close the raid gate.
+
+### Required live acceptance
+
 - Push the exact candidate to production through CI, not a manual hot replacement.
 - One read-only Luna watcher reports the exact run's terminal result or failure.
 - Check release manifest, login label, backend commit/version/database readiness

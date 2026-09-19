@@ -46,7 +46,11 @@ for (const [width, height] of [[360, 800], [844, 390], [568, 320]]) {
             await page.locator('#btn-mobile-menu').tap();
             await expect(page.locator('#esc-menu')).toBeVisible();
             await page.screenshot({ path: `/tmp/eidolon-phone-hub-menu-top-${width}.png` });
-            for (const button of await page.locator('#esc-menu button').all()) {
+            // This fixture is unauthenticated: the admin launcher must remain
+            // hidden, not become a reachable ordinary menu control. Authorized
+            // presentation is exercised in admin-console-layout.spec.js.
+            await expect(page.locator('#btn-administration')).toBeHidden();
+            for (const button of await page.locator('#esc-menu button:not(#btn-administration)').all()) {
                 await button.scrollIntoViewIfNeeded();
                 await expect(button).toBeInViewport();
                 const rect = await button.boundingBox();
