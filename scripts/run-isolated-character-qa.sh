@@ -905,6 +905,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
       npx playwright test --retries=0 tests/e2e/five-player-raid.spec.js
     ;;
+  arena-team-render)
+    EIDOLON_E2E_ARENA_TEAM_RENDER=1 EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/arena-team-gameplay.spec.js
+    ;;
   party-guide-reentry)
     EIDOLON_E2E_PARTY_GUIDE=1 EIDOLON_E2E_CLASS=Fighter \
       npx playwright test --retries=0 tests/e2e/party-guide-reentry.spec.js

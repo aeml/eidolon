@@ -119,7 +119,7 @@ async function observeRole(page) {
     });
 }
 
-async function seedActor(page, credentials, character) {
+export async function seedActor(page, credentials, character) {
     console.log(`[party-clear] prepare ${character.class}: load registration screen`);
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
