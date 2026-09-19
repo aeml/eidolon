@@ -47,6 +47,28 @@ func TestAdminMutationsActualSocketsAndRestart(t *testing.T) {
 	journal := t.TempDir()
 	address, stop := compatStartServer(t, binary, uri, 501, "-save-journal-dir", journal)
 	defer stop()
+	if os.Getenv("EIDOLON_ADMIN_RENDERED_QA") == "1" {
+		runAdminRenderedControls(t, address, operator, member)
+		stop()
+		saved, err := repo.GetCharacter(member, member)
+		if err != nil || saved.Gold != 523 || len(saved.Inventory) != 2 || saved.Inventory[0].Rarity != "Rare" || saved.Inventory[1].Rarity != "Rare" {
+			t.Fatal("rendered controls did not persist the exact Gold/item grants", err)
+		}
+		history, err := repo.ReadAdminActivity(database.AdminActivityQuery{Actor: operator})
+		if err != nil {
+			t.Fatal(err)
+		}
+		counts := map[string]int{}
+		for _, event := range history.Entries {
+			if isAdminMutation(event.Action) && event.Result == "success" {
+				counts[event.Action]++
+			}
+		}
+		if counts[MsgAdminGrantGold] != 1 || counts[MsgAdminGrantItem] != 1 || counts[MsgAdminTeleport] != 3 {
+			t.Fatal("rendered mutations did not produce exactly one saved audit each", counts)
+		}
+		return
+	}
 	a, _ := resourceLoginCharacter(t, address, operator, operator+"-test-password", "Wizard")
 	b, _ := resourceLoginCharacter(t, address, member, member+"-test-password", "Wizard")
 	request := func(conn *websocket.Conn, action string, fields map[string]any) adminMutationResult {

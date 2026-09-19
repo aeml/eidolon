@@ -1,6 +1,6 @@
 # Administration console — work in progress
 
-This is an **undeployed feature batch**, based on Alpha1.9.16. It does not close
+This is the **Alpha1.9.17 release candidate**, based on Alpha1.9.16. It does not close
 the full administration release gate or the broader1.10 roadmap. Do not publish
 a separate patch for each control; finish the meaningful administration batch
 with accurate release notes and synchronized versions before deploying it.
@@ -208,15 +208,28 @@ with accurate release notes and synchronized versions before deploying it.
   database container was removed after the archive was verified; production
   data and services were not changed. Final endpoint/teleport/build-receipt
   focused race checks pass as well (native51340 exit0).
+- Authenticated rendered acceptance passes (native89594 exit0,29.53seconds;
+  browser26.4seconds) against the actual race-enabled server and disposable Mongo:
+  two browser accounts, role-gated launcher, online-player selection, review and
+  confirmation for Gold and two Rare items, recipient replication, all three
+  teleport modes, fresh movement contexts and visible player scenes. Ordinary
+  account access stays hidden; saved characters and exactly one successful audit
+  per operation were checked after server shutdown. Log:
+  `/tmp/eidolon-compat-session-127141019/server.log`. The first browser attempt
+  used a raw-server rarity string where the hydrated client holds a rarity
+  object; only that observation was corrected. No grant behavior was changed.
+  This covers actual desktop browser controls, not actual-phone dungeon/party QA.
+- Alpha1.9.17 cumulative in-game notes and all runtime versions are synchronized.
+  The three admin layout cases are now part of the regular CI interface stage.
 
 ## Remaining release work
 
-1. Review the complete release gate for missing edges, including authenticated
-   rendered controls/scene transitions. Admission rejection responses preserve
+1. Preserve the completed authenticated rendered controls/scene evidence.
+   Admission rejection responses preserve
    the mutation request ID without inventing a final stored decision.
    Reuse the passing focused/socket/restart evidence instead of rerunning old
    soaks or campaign matrices for this panel.
-2. Package cumulative patch notes and synchronized versions, preserve the
+2. Publish the packaged cumulative patch notes and synchronized versions, preserve the
    consistent pre-upgrade backup including private journals, and verify the
    deployed role panel with a safe read-only smoke. Production mutations are
    not required. The broad1.10 campaign/raid/mobile scope remains open.

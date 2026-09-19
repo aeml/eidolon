@@ -6,8 +6,10 @@ execution and automatic startup/runtime recovery. Confirmed Gold/item/teleport
 handlers and controls are now implemented, with real two-account socket and
 restart acceptance (native99139), race-tested duplicate/cross-account handling,
 three browser layout cases, and schema14 archive restore/older-writer fencing.
-Remaining admin work is release-gate edge review, authenticated rendered checks,
-packaging and deployment/read-only live verification, not unimplemented buttons.
+Authenticated two-account browser controls now pass as well (native89594),
+including all grants and teleport modes, saved state and audits. Alpha1.9.17 is
+packaged with cumulative patch notes and matching versions; CI/deployment and
+read-only live verification remain, not unimplemented buttons or repeated soaks.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
 It is **not deployed**; production remains Alpha1.9.16. Session-event capture
 passes real two-account/socket/restart acceptance (native83168 exit0); grant
