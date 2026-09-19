@@ -204,3 +204,8 @@ images were inspected and preserved. See [finding, fix and evidence limits](2026
 The runtime correction is local for the next release batch, not live1.9.18.
 Do not call synthetic occupancy connected-player or performance acceptance;
 retain existing connected public/VIP wagering and persistence evidence.
+
+Alpha1.9.19 is now [packaged locally](2026-09-19-release1-9-19-casino-cutaway.md)
+with cumulative notes and synchronized version labels.268 version/history tests
+pass; the earlier47 focused checks and inspected crowd render are retained.
+Not pushed or live; finish the existing1.9.18 workflow first. No raid is active.
