@@ -276,3 +276,14 @@ Inspected Tidestar's preserved `party-boss-TideboundTyrant.png`: the Low-quality
 pre-fight view shows the stone floor and equipped party beneath the crystal,
 without the previous glaring floor coloration. This is a pre-fight image,
 not boss/telegraph, High-quality comparison or physical-phone acceptance.
+
+While Luna monitors1.9.19, reduced future party console diagnostics: full healer
+decisions and each member's complete result/receipts are now JSON Playwright
+attachments, with index-qualified names for the two Clerics. Console summaries
+retain health, resources, quest progress, aggregate combat, death and repair
+stages plus the attachment name. The previous five snapshots were255864bytes;
+the equivalent new summaries are1984bytes. This measures log reduction only,
+not model billing. Missing diagnostic capture fails rather than pretending the
+run passed, and owned browser cleanup still executes. Syntax/lint/diff pass;
+no gameplay or acceptance condition changed. This local QA-only change is not
+included in the currently deploying commit.

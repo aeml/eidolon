@@ -796,14 +796,32 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         routeFailure = error;
     } finally {
         try { await combatWorkers?.stop(); } catch (error) { routeFailure ||= error; }
-        console.log('[party-healer-decisions]', JSON.stringify(healerDecisions));
-        for (const actor of actors) {
+        try {
+            await testInfo.attach('party-healer-decisions', { body: JSON.stringify(healerDecisions),
+                contentType: 'application/json' });
+        } catch (error) { routeFailure ||= error; }
+        for (const [index, actor] of actors.entries()) {
             try {
                 const s = await snapshot(actor.page);
-                console.log('[party-clear-result]', JSON.stringify({ class: actor.className, entered, level: s.level,
+                const result = { class: actor.className, entered, level: s.level,
                     hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, render: s.render,
-                    quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
-            } catch { /* Browser may already have closed on interruption. */ }
+                    quest: s.quest, evidence: s.evidence || actor.combatEvidence };
+                // Retain full receipts for inspection without printing hundreds
+                // of combat events per player into every console/log read.
+                const artifact = `party-clear-result-${index}-${actor.className}`;
+                await testInfo.attach(artifact, { body: JSON.stringify(result), contentType: 'application/json' });
+                console.log('[party-clear-result]', JSON.stringify({ ...result, index, artifact,
+                    quest: s.quest && { id: s.quest.id, count: s.quest.count,
+                        maxCount: s.quest.maxCount, completed: s.quest.completed },
+                    evidence: { damageDone: result.evidence?.damageDone,
+                        damageTaken: result.evidence?.damageTaken, allyHealing: result.evidence?.allyHealing,
+                        sawDeath: result.evidence?.sawDeath, repairStages: result.evidence?.repairStages } }));
+            } catch (error) {
+                // The page can already be closed after interruption. Never
+                // imply that a missing snapshot proves successful completion.
+                routeFailure ||= error;
+                console.log('[party-clear-result-unavailable]', JSON.stringify({ index, class: actor.className }));
+            }
         }
         await Promise.all(ownedBrowsers.map(extra => extra.close()));
     }
