@@ -95,6 +95,27 @@ function buildLargeBossApproachLayout() {
 }
 
 describe('WorldGenerator staged overworld startup', () => {
+    test('canonical gameplay floors use the broader24-unit scale continuously across room and corridor partitions', async () => {
+        const generator = createGenerator();
+        const layout = buildCanonicalLayout();
+        await generator.createAbyssalWell(0, 0, layout);
+        const floors = generator.scene.add.mock.calls.map(([mesh]) => mesh)
+            .filter(mesh => mesh.name === 'DungeonUnionFloor');
+        expect(floors.length).toBeGreaterThan(1);
+        expect(new Set(floors.map(floor => floor.material)).size).toBe(1);
+        for (const floor of floors) {
+            expect(floor.material.map.repeat.toArray()).toEqual([1, 1]);
+            expect(floor.material.emissiveMap.repeat.toArray()).toEqual([1, 1]);
+            const vertices = floor.geometry.getAttribute('position');
+            const uv = floor.geometry.getAttribute('uv');
+            for (let index = 0; index < uv.count; index++) {
+                expect(uv.getX(index)).toBeCloseTo((vertices.getX(index) + floor.position.x - layout.rooms[0].x) / 24, 5);
+                expect(uv.getY(index)).toBeCloseTo((vertices.getY(index) - floor.position.z + layout.rooms[0].z) / 24, 5);
+            }
+        }
+        verifyCanonicalSurfaces(generator, layout);
+    });
+
     test('a legacy dungeon preload cannot attach floors after its scene is superseded', async () => {
         const generator = createGenerator();
         let finishPreload;

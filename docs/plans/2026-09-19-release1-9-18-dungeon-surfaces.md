@@ -1,9 +1,11 @@
 # Alpha 1.9.18 — stone beneath the spelllight
 
-Pushed to master at `74bd4b706022949fc612f1bc91d2e54bb3620b8d`.
-Exact CI `35471125941` was queued at handoff to the read-only Luna watcher
-`/root/watch_release_1_9_18`. Publication is not yet accepted. Main must not
-duplicate its polling; await its failure/terminal report and then verify delivery.
+First candidate `74bd4b706022949fc612f1bc91d2e54bb3620b8d`, CI35471125941,
+is terminal cancelled before deployment: client checks passed, Go was running,
+and every deployment job was cancelled. No live acceptance for that candidate.
+The main agent requested cancellation only after Luna confirmed that stage, to
+include the canonical-floor integration correction below. The replacement keeps
+Alpha1.9.18 and its existing accurate patch notes; delivery remains pending.
 
 ## Player-facing scope
 
@@ -28,6 +30,23 @@ duplicate its polling; await its failure/terminal report and then verify deliver
   see [failure and correction](2026-09-19-tidestar-spacing.md).
 - Bundled CI efficiency change skips direct pushes containing only README/docs
   Markdown. PRs, mixed runtime changes and manual dispatch retain their gates.
+
+## Canonical-floor integration correction
+
+Source review found that generated room/corridor union floors set world-space UVs
+at a hardcoded12units, bypassing the kit's broader24-unit scale. Shared
+`DUNGEON_FLOOR_TEXTURE_SPAN` now drives both paths, with one shared material and
+continuous texture coordinates across partitions; non-procedural fallback stays
+unchanged. The actual-generator regression failed on the old UVs and passes now.
+67 canonical geometry, union, interior and crystal checks pass (43152), plus lint
+and diff checks. No room geometry/collision change or new seed sweep.
+
+The single canonical join browser check passes at High/Low in5.0seconds (62666):
+no blocked route samples, exactly one floor per interior sample and one shared
+floor material. Both screenshots inspected; partition patterns stay continuous.
+This foggy synthetic scene is not a claim of actual party readability.
+Artifacts: `/tmp/eidolon-floor-join-20260919-7adh4k/`. Reuse the already-required
+next raid for integrated actor/telegraph review instead of another broad rerun.
 
 ## Delivery gate
 

@@ -4,6 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
 
 const TEXTURE_SIZE = 64;
+export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
 
 const defineInterior = (dungeonType, label, artStyle, surfaceLanguage) => Object.freeze({
     dungeonType,
@@ -679,7 +680,7 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     const surfaceMaterial = (surface, width, height, transparent = false) => {
         // Keep masonry legible at gameplay zoom without adding geometry or
         // increasing texture memory. Walls retain their established scale.
-        const repeatWorldSize = surface === 'floor' ? 24 : 12;
+        const repeatWorldSize = surface === 'floor' ? DUNGEON_FLOOR_TEXTURE_SPAN : 12;
         const repeatX = Math.max(1, Math.round(Math.abs(width) / repeatWorldSize));
         const repeatY = Math.max(1, Math.round(Math.abs(height) / repeatWorldSize));
         const key = `${surface}:${repeatX}:${repeatY}:${transparent ? 'ghost' : 'solid'}`;

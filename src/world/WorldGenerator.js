@@ -22,6 +22,7 @@ import {
     createProceduralDungeonEntrance
 } from '../art/ProceduralDungeonEntrances.js';
 import {
+    DUNGEON_FLOOR_TEXTURE_SPAN,
     animateDungeonRoomStatePresentation,
     applyDungeonRoomStatePresentation,
     createProceduralDungeonInteriorKit
@@ -467,8 +468,9 @@ export class WorldGenerator {
     createCanonicalLayoutDungeon(layout) {
         const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
         const origin = layout.rooms[0];
+        const floorTextureSpan = this.dungeonInteriorKit ? DUNGEON_FLOOR_TEXTURE_SPAN : 12;
         const floorMaterial = this.dungeonInteriorKit
-            ? this.dungeonInteriorKit.floorMaterial(12, 12) : new THREE.MeshStandardMaterial({ map: this.floorTexture });
+            ? this.dungeonInteriorKit.floorMaterial(floorTextureSpan, floorTextureSpan) : new THREE.MeshStandardMaterial({ map: this.floorTexture });
         for (const rect of floors) {
             const width = rect.right - rect.left;
             const depth = rect.bottom - rect.top;
@@ -480,8 +482,8 @@ export class WorldGenerator {
             // One texture scale/origin across every partition: no stretched
             // narrow strips or restarted tile patterns at room/corridor joins.
             for (let i = 0; i < uv.count; i++) {
-                uv.setXY(i, (positions.getX(i) + centerX - origin.x) / 12,
-                    (positions.getY(i) - centerZ + origin.z) / 12);
+                uv.setXY(i, (positions.getX(i) + centerX - origin.x) / floorTextureSpan,
+                    (positions.getY(i) - centerZ + origin.z) / floorTextureSpan);
             }
             const floor = new THREE.Mesh(geometry, floorMaterial);
             floor.name = 'DungeonUnionFloor';
