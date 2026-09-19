@@ -213,6 +213,12 @@ export function updateCasinoCutaway(shell, position) {
     for (const marker of shell.userData.casinoStairMarkers || []) marker.visible = inside && (marker.userData.casinoStairFloor === 'vip' ? position.y >= 3 : position.y < 3);
 }
 
+export function createCasinoFurnitureColliders(tables) {
+    return tables.map(table => new THREE.Box3().setFromCenterAndSize(
+        new THREE.Vector3(table.x, (table.y || 0) + 1, table.z),
+        new THREE.Vector3(table.game === 'slots' ? 1.55 : 2.8, 2, table.game === 'slots' ? 0.95 : 2.8)));
+}
+
 export function createCasinoFurniture(tables) {
     const root = new THREE.Group(); root.name = 'casino-furniture';
     const publicFloor = new THREE.Group(), vipFloor = new THREE.Group();

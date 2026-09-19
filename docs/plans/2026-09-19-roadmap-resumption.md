@@ -2,13 +2,18 @@
 
 Current local feature stage: the administration batch includes role-checked
 reads/session history, canonical grant validation, durable grant/receipt/audit
-execution and automatic startup/runtime recovery. New mutation handlers, teleport
-execution and panel controls are still unfinished.
+execution and automatic startup/runtime recovery. Confirmed Gold/item/teleport
+handlers and controls are now implemented, with real two-account socket and
+restart acceptance (native99139), race-tested duplicate/cross-account handling,
+three browser layout cases, and schema14 archive restore/older-writer fencing.
+Remaining admin work is release-gate edge review, authenticated rendered checks,
+packaging and deployment/read-only live verification, not unimplemented buttons.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
 It is **not deployed**; production remains Alpha1.9.16. Session-event capture
 passes real two-account/socket/restart acceptance (native83168 exit0); grant
 recovery passes the real built-server startup/runtime/restart test (native40190
-exit0), using trusted test intents, not unfinished administrator endpoints.
+exit0), using trusted test intents. The newer99139 test exercises the actual
+administrator endpoints; see the administration evidence record for exact scope.
 Rootheart retry18833 is terminal failure in assault combat, not an active wait;
 formation now passes, but DemonOrc hover acquisition stalled. Preserve its
 diagnostics and do not repeat the raid without a concrete correction.

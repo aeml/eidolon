@@ -39,8 +39,7 @@ func reconcileAdminCharacterLocked(username string) error {
 	return nil
 }
 
-// This primitive is not yet admitted by the WebSocket dispatcher. The caller
-// must hold the target work lock; admission/recovery wiring will prevent target
+// Caller holds the target work lock. Admission/recovery wiring prevents target
 // commands and stale hydration while its operation remains unresolved.
 func completeAdminOperationLocked(op database.AdminOperation) (*database.AdminOperation, error) {
 	if adminOperations == nil {
@@ -65,29 +64,41 @@ func completeAdminOperationLocked(op database.AdminOperation) (*database.AdminOp
 	if op.State == database.AdminOperationAuditing {
 		return adminOperations.FinishAdminOperation(op.ID, op.Fingerprint, op.Audit)
 	}
-	if op.Action != MsgAdminGrantGold && op.Action != MsgAdminGrantItem {
+	if op.Action != MsgAdminGrantGold && op.Action != MsgAdminGrantItem && op.Action != MsgAdminTeleport {
 		return nil, errors.New("administration operation executor unavailable")
-	}
-	var grant game.AdminGrant
-	decoder := json.NewDecoder(bytes.NewReader(op.Payload))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&grant); err != nil || grant.Action != op.Action {
-		return nil, errors.New("invalid stored administration grant plan")
-	}
-	if err := decoder.Decode(new(any)); err != io.EOF {
-		return nil, errors.New("trailing administration grant plan data")
 	}
 	if err := reconcileAdminCharacterLocked(op.Target); err != nil {
 		return nil, err
 	}
-	err = applyAndSaveAdminGrantLocked(op, grant)
-	if err != nil && !errors.Is(err, game.ErrAdminGrantRejected) {
+	var grant game.AdminGrant
+	var teleport game.AdminTeleportPlan
+	var plan any = &grant
+	if op.Action == MsgAdminTeleport {
+		plan = &teleport
+	}
+	decoder := json.NewDecoder(bytes.NewReader(op.Payload))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(plan); err != nil || op.Action != MsgAdminTeleport && grant.Action != op.Action {
+		return nil, errors.New("invalid stored administration execution plan")
+	}
+	if err := decoder.Decode(new(any)); err != io.EOF {
+		return nil, errors.New("trailing administration grant plan data")
+	}
+	if op.Action == MsgAdminTeleport {
+		err = applyAndSaveAdminTeleportLocked(op, teleport)
+	} else {
+		err = applyAndSaveAdminGrantLocked(op, grant)
+	}
+	if err != nil && !errors.Is(err, game.ErrAdminGrantRejected) && !errors.Is(err, game.ErrAdminTeleportRejected) {
 		return nil, err // Storage/unknown-result failures remain pending, not denied.
 	}
 	audit := op.Audit
 	if err != nil {
 		audit.Result = "denied"
 		audit.Summary = "Grant not applied: recipient state, balance or inventory no longer permits this operation."
+		if op.Action == MsgAdminTeleport {
+			audit.Summary = "Teleport not applied: recipient, destination or landing state changed."
+		}
 	}
 	return adminOperations.FinishAdminOperation(op.ID, op.Fingerprint, audit)
 }
@@ -99,14 +110,17 @@ func applyAndSaveAdminGrantLocked(op database.AdminOperation, grant game.AdminGr
 			return err
 		}
 		if found {
-			if !changed {
-				return nil
+			if changed {
+				entity := world.GetEntityCopy("player-" + op.Target)
+				if entity == nil {
+					return errors.New("pinned administration recipient disappeared")
+				}
+				if err := persistCharacterSnapshot(op.Target, characterSnapshotForSave(op.Target, entity)); err != nil {
+					return err
+				}
 			}
-			entity := world.GetEntityCopy("player-" + op.Target)
-			if entity == nil {
-				return errors.New("pinned administration recipient disappeared")
-			}
-			return persistCharacterSnapshot(op.Target, characterSnapshotForSave(op.Target, entity))
+			sendInventoryForPlayer("player-" + op.Target)
+			return nil
 		}
 	}
 	character, err := adminOperations.GetCharacter(op.Target, op.Target)
@@ -116,6 +130,21 @@ func applyAndSaveAdminGrantLocked(op database.AdminOperation, grant game.AdminGr
 	if character == nil || character.Name != op.Target {
 		return errors.New("administration target character unavailable")
 	}
+	entity := adminGrantEntityFromCharacter(character)
+	changed, err := entity.ApplyAdminGrant(op.ID, op.Fingerprint, grant)
+	if err != nil || !changed {
+		return err
+	}
+	character.Gold = entity.Gold
+	if grant.Action == MsgAdminGrantItem {
+		character.Inventory = databaseItems(entity.Inventory, true)
+		character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
+	}
+	character.AdminOperationReceipts = cloneItemDeliveryReceipts(entity.AdminOperationReceipts)
+	return persistCharacterSnapshot(op.Target, character)
+}
+
+func adminGrantEntityFromCharacter(character *database.Character) *game.Entity {
 	entity := &game.Entity{Type: game.TypePlayer, Health: 1, State: "IDLE", Gold: character.Gold,
 		AdminOperationReceipts: cloneItemDeliveryReceipts(character.AdminOperationReceipts),
 		ItemDeliveryReceipts:   cloneItemDeliveryReceipts(character.ItemDeliveryReceipts)}
@@ -128,15 +157,5 @@ func applyAndSaveAdminGrantLocked(op database.AdminOperation, grant game.AdminGr
 	for _, item := range character.Inventory {
 		entity.Inventory = append(entity.Inventory, gameItemFromDatabaseExact(item))
 	}
-	changed, err := entity.ApplyAdminGrant(op.ID, op.Fingerprint, grant)
-	if err != nil || !changed {
-		return err
-	}
-	character.Gold = entity.Gold
-	if grant.Action == MsgAdminGrantItem {
-		character.Inventory = databaseItems(entity.Inventory, true)
-		character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
-	}
-	character.AdminOperationReceipts = cloneItemDeliveryReceipts(entity.AdminOperationReceipts)
-	return persistCharacterSnapshot(op.Target, character)
+	return entity
 }

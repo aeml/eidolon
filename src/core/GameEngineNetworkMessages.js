@@ -175,6 +175,7 @@ class GameEngineNetworkMessageMethods {
 
         // Reset player position and state
         let startX = 0;
+        let startY = 0.5;
         let startZ = 0;
 
         if (layout && layout.rooms && layout.rooms.length > 0) {
@@ -191,13 +192,14 @@ class GameEngineNetworkMessageMethods {
              startZ = 200;
         }
 
-        // PvP carries each team's spawn and the exact departure point on return.
-        // Other instances retain their established first-room/default placement.
+        // Explicit scene transitions carry an authoritative landing, including
+        // elevated floors. Legacy entries retain first-room/default placement.
         if (Number.isFinite(spawn?.x) && Number.isFinite(spawn?.z)) {
             startX = spawn.x;
             startZ = spawn.z;
+            if (Number.isFinite(spawn.y)) startY = spawn.y;
         }
-        this.player.position.set(startX, 0.5, startZ);
+        this.player.position.set(startX, startY, startZ);
         this.player.targetPosition = null; // Clear any pending movement target
 
         // Dungeon coordinates intentionally live far outside the overworld.
@@ -213,10 +215,10 @@ class GameEngineNetworkMessageMethods {
         this.renderSystem.setEnvironmentContext?.(environmentType, this.player.position, true);
 
         if (this.player.mesh) {
-            this.player.mesh.position.set(startX, 0.5, startZ);
+            this.player.mesh.position.set(startX, startY, startZ);
             this.renderSystem.add(this.player.mesh); // Ensure player is in scene
             this.player.mesh.visible = true;
-            console.log(`Player mesh re-added to scene at ${startX},0.5,${startZ}`);
+            console.log(`Player mesh re-added to scene at ${startX},${startY},${startZ}`);
         } else {
             console.error("Player mesh missing during instance entry!");
         }
@@ -441,7 +443,8 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
-        } else if (msg.type === 'admin_status_result' || msg.type === 'admin_players_result' || msg.type === 'admin_history_result') {
+        } else if (['admin_status_result', 'admin_players_result', 'admin_history_result',
+            'admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(msg.type)) {
             this.uiManager?.admin?.handleResult(msg.type, msg.payload);
         } else if (msg.type === 'ep_wallet_result') {
             this.uiManager?.epWallet?.handleResult(msg.payload);

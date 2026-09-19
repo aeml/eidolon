@@ -6,6 +6,16 @@ import "encoding/json"
 // failures. Otherwise a valid rejected purchase leaves touch controls pending
 // indefinitely. Never parse oversized payloads or reflect malformed IDs.
 func (c *Client) sendInboundRejection(msg Message, reason string) {
+	if isAdminMutation(msg.Type) && len(msg.Payload) <= adminMutationPayloadLimit {
+		request, err := decodeAdminMutation(msg)
+		if err == nil {
+			// Rejected admission does not decide whether an earlier identical
+			// request committed. Keep the retry identity until a durable result.
+			payload, _ := json.Marshal(adminMutationResult{ID: request.ID, Message: reason})
+			c.sendSafe(createMessage(msg.Type+"_result", payload))
+			return
+		}
+	}
 	switch msg.Type {
 	case MsgSelectBranch, MsgUnlockTalent, MsgResetTalents, MsgSelectRune:
 		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {

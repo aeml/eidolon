@@ -23,3 +23,15 @@
 .administration-players li { display: grid; gap: 5px; padding: 12px; border-bottom: 1px solid #665638; overflow-wrap: anywhere; }
 .administration-players span, .administration-note { color: #c5bca9; font-size: 13px; }
 .administration-window [data-admin-role] { color: #e7c77f; }
+.administration-operations { border-top: 1px solid #665638; padding-top: 12px; }
+.administration-operations summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; color: #e7c77f; }
+.administration-operations fieldset { min-width: 0; margin: 8px 0; padding: 12px; border: 1px solid #665638; }
+.administration-operations label { display: grid; gap: 6px; margin-block: 10px; min-width: 0; }
+.administration-operations input, .administration-operations select, .administration-operations textarea {
+    width: 100%; min-width: 0; min-height: 44px; box-sizing: border-box; font: inherit;
+    color: #f0dfb8; background: #18212b; border: 1px solid #857047; border-radius: 4px; padding: 8px;
+}
+.administration-operations [data-review] { padding: 12px; border: 1px solid #e7c77f; background: #302b22; }
+.administration-operations [data-summary], .administration-operations [data-result] { overflow-wrap: anywhere; }
+.administration-players button { justify-self: start; min-height: 44px; padding: 8px 12px; color: #f0dfb8; background: #242c38; border: 1px solid #857047; border-radius: 4px; font: inherit; }
+.administration-operations :focus-visible, .administration-players button:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }

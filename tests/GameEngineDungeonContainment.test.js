@@ -206,13 +206,22 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances[0].createPvPArena).toHaveBeenCalledWith(layout);
         expect(worldGeneratorInstances[0].createTown).not.toHaveBeenCalled();
         expect(engine.collisionManager.setDungeonWalkableGeometry).toHaveBeenCalledWith(layout.walkRects);
-        expect(engine.player.position.toArray()).toEqual([8, 0.5, -3]);
+        expect(engine.player.position.toArray()).toEqual([8, 0, -3]);
     });
 
     test('PvP return restores the departure point instead of a guessed town spawn', async () => {
         const engine = createEngineHarness();
         await engine.enterInstance('', 'overworld', null, null, { x: 12, y: 0, z: 205 });
-        expect(engine.player.position.toArray()).toEqual([12, 0.5, 205]);
+        expect(engine.player.position.toArray()).toEqual([12, 0, 205]);
+    });
+
+    test.each([8, 0, undefined, NaN, Infinity])('scene entry preserves finite authoritative floor height %s', async height => {
+        const engine = createEngineHarness();
+        await engine.enterInstance('', 'overworld', null, null, { x: 12, y: height, z: 205 });
+        const expected = [12, Number.isFinite(height) ? height : 0.5, 205];
+        expect(engine.player.position.toArray()).toEqual(expected);
+        expect(engine.player.mesh.position.toArray()).toEqual(expected);
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
     });
 
     test.each([

@@ -51,9 +51,9 @@ with accurate release notes and synchronized versions before deploying it.
   and teleport destination account), strict confirmed request schemas, and
   actor/request-ID identities with separate canonical payload fingerprints.
   Cross-target/action reuse retains the same identity and therefore must conflict
-  in the forthcoming durable operation store. No client actor, raw coordinates,
-  item stats, prices, effects or sockets are accepted. These helpers are not yet
-  registered as reachable mutation endpoints; the existing dispatch is unchanged.
+  in the durable operation store. No client actor, raw coordinates, item stats,
+  prices, effects or sockets are accepted. Mutation endpoints are now registered
+  with separate4KiB payload ceilings and five-request/ten-second rate limits.
 - Canonical item creation uses the existing base-item catalog and normal loot
   stat/rarity formulas: equipment levels1–100, Common through Legendary, quantity
   1–25; Shards/Hearts use their actual Eidolic/level1 definition and1–1000 stack.
@@ -64,9 +64,8 @@ with accurate release notes and synchronized versions before deploying it.
   regenerated on retry. These internal helpers do not themselves authorize grants.
 - Gold request validation caps one administrative grant at100,000,000 and the
   resulting balance at JavaScript's exact-integer ceiling. No ordinary rewards
-  or player economy limits changed. Teleport request targets currently support
-  town or an exact other account; live state, instance and walkability checks
-  remain part of the unimplemented execution handler.
+  or player economy limits changed. Teleport targets support town or an exact
+  other account, with live state, instance and walkability validation.
 - Gold/item execution now has a private Mongo operation-intent and replay store.
   First preparation keeps the exact generated item rolls; actor/request-ID reuse
   with a different fingerprint conflicts. Full-character saves carry the effect
@@ -86,8 +85,34 @@ with accurate release notes and synchronized versions before deploying it.
   unaffected movement. Lost insertion/completion replies are resolved without
   waiting for the player to reconnect. Missing confirmed intents fail closed;
   failed preparations with no stored intent are safely forgotten. An audit-only
-  denied request cannot block the account it names. Mutation request handlers
-  and buttons are still absent; no new admin action is reachable in the game.
+  denied request cannot block the account it names.
+- Gold, item and teleport handlers now acquire actor/recipient/destination work
+  locks in global order, recheck current socket ownership and the durable role,
+  reconcile pending work and save before returning a final success. Exact
+  requests replay the stored outcome; conflicting payloads are rejected. Valid
+  denials are durable/idempotent too. Item delivery refreshes the recipient bag.
+- Teleports support administrator-to-player, player-to-administrator and town;
+  arbitrary third-party-to-third-party moves are not exposed. Both endpoints
+  must be online, alive and available. Party-instance boundaries, PvP/trade/seated
+  state and VIP guard entry remain enforced. A nearby clear landing is selected
+  and revalidated before moving, with a new movement context, saved receipt and
+  authoritative scene notification. Resources, cooldowns and equipment are not
+  reset. Offline recovery acknowledges saved teleports but never starts an
+  unapplied one. Completed replay cannot move, revive or resave a character.
+- Overworld landing collision data is generated from the actual client town,
+  realm structures, blocking trees, entrances and Chronicle-site builders.
+  Stash/Trading House/Forge use live transforms of their canonical footprints;
+  casino interior/table footprints share actual client definitions. A regression
+  test rebuilds and compares the embedded server geometry to catch art drift.
+  Dungeon landings use canonical walk rectangles. Scene entry now honors finite
+  authoritative height, including upstairs, instead of always forcing ground.
+- Panel controls include exact target selection from the online list or account
+  field, self selection, canonical item/material limits, Gold and all three
+  teleport modes. Review freezes the request and requires explicit confirmation
+  and a reason. Pending/uncertain operations retain the exact request ID/payload
+  across in-memory reconnects and retries; new changes stay disabled until a
+  final result. Revoked roles hide controls; changing accounts discards another
+  administrator's local retry. History displays reasons and mutation filters.
 
 ## Evidence and limits
 
@@ -107,7 +132,7 @@ with accurate release notes and synchronized versions before deploying it.
   a real server restart. Native83168 exited0 and its isolated Mongo container
   was removed. Evidence logs: `/tmp/eidolon-compat-session-160140207/server.log`
   and `/tmp/eidolon-compat-session-2290200519/server.log`. This covers read/session
-  behavior, not the still-unimplemented mutations or actual phone input.
+  behavior, not mutations or actual phone input.
 - That test caught and fixed a restart incompatibility: the character journal
   reader now delegates only the real `admin-activity` directory to its own reader.
   Impostor files/symlinks still fail closed. Focused tests cover corruption,
@@ -147,31 +172,54 @@ with accurate release notes and synchronized versions before deploying it.
   intents, unrelated accounts, denied-request noninterference and concurrent
   target commands.
 
-## Next required implementation
+- New endpoint/game tests pass under Go's race detector (native90597 exit0).
+  Additional crossed-account and concurrent duplicate dispatcher checks pass
+  (native25695 exit0): one grant/save/audit for duplicate requests and no nested
+  actor/target deadlock. New teleport tests exercise clear/occupied landings,
+  current town architecture, casino furniture/atrium/guard, private instances,
+  moved anchors, stale movement, save/audit failure and offline restart recovery.
+- Real production-binary two-account mutation test passes (native99139 exit0,
+  7.90seconds): ordinary-account denial, Gold, canonical Rare items, all three
+  teleport modes, recipient inventory notification, complete saved state and
+  exact receipt/audit replay after process restart. Logs:
+  `/tmp/eidolon-compat-session-3255918323/server.log` and
+  `/tmp/eidolon-compat-session-3701933296/server.log`.
+  The first attempt correctly exposed a test-baseline error: shutdown performs
+  its own final save. The corrected test compares replay against the saved
+  post-shutdown identity, not the earlier disconnect identity. No server save
+  behavior was relaxed. This is socket acceptance, not a browser-to-live-server
+  mutation run or a production change.
+- 18 panel/component tests plus24 scene-containment tests pass (native4759 exit0),
+  including frozen confirmation, numeric limits, account-derived endpoints,
+  timeout/reconnect retry identity, role revocation and text-only rendering.
+  Geometry/CasinoController/containment32checks also pass (native35349 exit0).
+  Changed-file lint passes. Three Chrome presentation tests now include actual
+  review/confirm/material controls at1280x720,390x844,844x390 (native58104 exit0,
+  22.3seconds); portrait confirmation screenshot was visually inspected. These
+  remain synthetic responses, not actual-phone or authenticated-browser proof.
+- Isolated Mongo archive restore preserves all14collections, documents and
+  indexes, including schema14,12operation receipts,20audit events and4disposable
+  accounts. Archive: `/tmp/eidolon-admin-endpoints-LVGTQA/admin-endpoints.archive.gz`.
+  Current binary's read-only preflight accepts14. The exact existing production
+  image's read-only preflight rejects14 because it supports12, before writes.
+  This is the intended rollback fence; never deploy that older writer against
+  the upgraded database. The fixture contains both initial and corrected test
+  attempts, hence four accounts and twelve operations. The owned disposable
+  database container was removed after the archive was verified; production
+  data and services were not changed. Final endpoint/teleport/build-receipt
+  focused race checks pass as well (native51340 exit0).
 
-1. Confirmed canonical item creation, bounded Gold grants and validated teleport
-   operations. Schemas, canonical item generation/delivery and ordered lock
-   helpers and durable Gold/item execution are implemented; no mutation buttons
-   or handlers exist yet. Wire
-   dispatch so multi-account operations acquire all locks instead of nesting a
-   target lock under the sender lock. Recheck ownership and durable role under
-   those locks. Finish teleport planning/execution and exact target/current-state/
-   instance/walkability checks. Startup/runtime recovery and affected-account
-   admission blocking are now connected. Use `prepareAdminOperationLocked` to
-   register intents in the pending cache before effects; completed handlers
-   should clear their cache entry as well as return the stored outcome.
-   Wire confirmed controls and server-provided item/destination options only
-   after these admission/recovery hooks. Do not bolt grants onto the read handler.
-   Geometry finding: authoritative dungeon floors exist, but much overworld
-   collision still lives client-side. Reuse/share the actual client collision
-   definitions for teleport landing validation instead of assuming realm bounds
-   imply walkability. Relevant sources: `WorldGenerator.loadBuildings/loadTrees`,
-   `ProceduralLanternholdArchitecture.getLanternholdWalkCollider`, deterministic
-   `ProceduralRealmFoliage` placements (only Earth trees block walking), dungeon
-   entrance bounds, and Chronicle-site colliders. Do not silently narrow the
-   required player-target teleport feature to a town-only button.
-2. Remaining full-gate failure/concurrency/restart and disposable two-account
-   connected acceptance, backup/restore and safe live read-only smoke.
+## Remaining release work
+
+1. Review the complete release gate for missing edges, including authenticated
+   rendered controls/scene transitions. Admission rejection responses preserve
+   the mutation request ID without inventing a final stored decision.
+   Reuse the passing focused/socket/restart evidence instead of rerunning old
+   soaks or campaign matrices for this panel.
+2. Package cumulative patch notes and synchronized versions, preserve the
+   consistent pre-upgrade backup including private journals, and verify the
+   deployed role panel with a safe read-only smoke. Production mutations are
+   not required. The broad1.10 campaign/raid/mobile scope remains open.
 3. Package/deploy only when the batch is ready. Use the user-approved Luna watcher
    for the exact CI run, then verify actual live client/server identities.
 

@@ -60,6 +60,8 @@ type adminReadResult struct {
 	Players    []adminOnlinePlayer         `json:"players,omitempty"`
 	Next       string                      `json:"next,omitempty"`
 	History    *database.AdminActivityPage `json:"history,omitempty"`
+	Account    string                      `json:"account,omitempty"`
+	Items      []game.AdminItemDefinition  `json:"items,omitempty"`
 }
 
 // Read requests have a deliberately small, closed schema. In particular actor,
@@ -188,6 +190,7 @@ func handleAdminRead(c *Client, msg Message) {
 	}
 	if msg.Type == MsgAdminStatus {
 		result.Success, result.Message = true, "Administrator access verified."
+		result.Account, result.Items = c.username, game.AdminItemCatalog()
 		return
 	}
 	if msg.Type == MsgAdminHistory {

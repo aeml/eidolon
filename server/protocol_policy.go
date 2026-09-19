@@ -42,6 +42,9 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgAdminStatus:        policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgAdminPlayers:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgAdminHistory:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminGrantGold:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
+	MsgAdminGrantItem:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
+	MsgAdminTeleport:      policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
 	MsgGetWardrobe:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetEPWallet:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetVIPStatus:       policy(accessCharacter, 1<<10, 5, 10*time.Second),
@@ -166,6 +169,12 @@ func (c *Client) handleMessage(msg Message) {
 	}
 	defer done()
 	if c.transportClosed.Load() {
+		return
+	}
+	// Cross-account operations must acquire all work locks in global order,
+	// never nest another account beneath the ordinary actor-only lock.
+	if isAdminMutation(msg.Type) {
+		messageHandlers[msg.Type](c, msg)
 		return
 	}
 	// Login/resume acquire the authenticated account's lock after credentials

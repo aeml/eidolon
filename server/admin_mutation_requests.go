@@ -26,9 +26,8 @@ const (
 	adminGoldBalanceLimit = database.AdminGoldBalanceLimit
 )
 
-// Kept separate from the read protocol. These types are not registered until
-// their durable mutation/audit recovery handler is ready; defining them alone
-// must not expose an unaudited grant endpoint.
+// Kept separate from the read protocol; mutation admission requires explicit
+// confirmation and the durable operation/audit recovery path.
 type adminMutationRequest struct {
 	ID                string             `json:"id"`
 	Target            string             `json:"target"`

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createCasinoFurniture, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
+import { createCasinoFurniture, createCasinoFurnitureColliders, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 import { SlotMachineUI } from '../ui/SlotMachineUI.js';
 import { PokerTableUI } from '../ui/PokerTableUI.js';
@@ -86,8 +86,7 @@ export class CasinoController {
             this.removeFurnitureColliders();
             disposeCasinoObject(this.furniture);
             this.furniture = createCasinoFurniture(tables); this.catalogSignature = signature;
-            this.furnitureColliders = tables.map(table => new THREE.Box3().setFromCenterAndSize(
-                new THREE.Vector3(table.x, (table.y || 0) + 1, table.z), new THREE.Vector3(table.game === 'slots' ? 1.55 : 2.8, 2, table.game === 'slots' ? 0.95 : 2.8)));
+            this.furnitureColliders = createCasinoFurnitureColliders(tables);
         }
         this.data = { tables, occupants: Array.isArray(payload.occupants) ? payload.occupants : [],
             preparation: payload.preparation || {},

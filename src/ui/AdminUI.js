@@ -1,4 +1,6 @@
-// Visibility is only presentation. Every read (and future operation) must be
+import { AdminOperations } from './AdminOperations.js';
+
+// Visibility is only presentation. Every read and operation must be
 // independently authorized by the server against the current durable role.
 export class AdminUI {
     constructor({ host, launcher, send, openWindow, closeWindow }) {
@@ -15,7 +17,6 @@ export class AdminUI {
             <button type="button" class="close-btn" aria-label="Close administration">×</button></div>
             <div class="support-window__body administration-body">
                 <p data-admin-role>Administrator access has not been verified.</p>
-                <p>Read-only administration. Item grants, Gold grants and teleports are not available yet.</p>
                 <div class="administration-actions" aria-label="Administration views">
                     <button type="button" data-view="players" aria-pressed="true">Online players</button>
                     <button type="button" data-view="history" aria-pressed="false">Activity history</button></div>
@@ -24,7 +25,9 @@ export class AdminUI {
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
                         <option value="admin_history">History reads</option><option value="login">Login</option>
-                        <option value="resume">Resume</option><option value="disconnect">Disconnect</option></select></label>
+                        <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
+                        <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
+                        <option value="admin_teleport">Teleports</option></select></label>
                 </div>
                 <div class="administration-actions"><button type="button" data-refresh>Refresh players</button>
                     <button type="button" data-next hidden>Next page</button></div>
@@ -43,6 +46,7 @@ export class AdminUI {
         this.action = this.root.querySelector('[data-action]');
         this.views = [...this.root.querySelectorAll('[data-view]')];
         this.note = this.root.querySelector('.administration-note');
+        this.operations = new AdminOperations(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
         this.open = () => {
             if (!this.authorized) return;
             this.openWindow(this.root);
@@ -79,6 +83,7 @@ export class AdminUI {
         this.role.textContent = this.authorized ? 'Administrator · verified by server' : 'Administrator access is unavailable.';
         this.refresh.disabled = !this.authorized;
         for (const view of this.views) view.disabled = !this.authorized;
+        this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         if (!this.authorized) {
             this.list.replaceChildren();
             this.next.hidden = true;
@@ -86,9 +91,8 @@ export class AdminUI {
         }
     }
 
-    request(type, payload = {}) {
+    request(type, payload = {}, id = crypto.randomUUID()) {
         clearTimeout(this.timeout);
-        const id = crypto.randomUUID();
         this.pending = { id, type };
         this.refresh.disabled = true;
         this.next.disabled = true;
@@ -96,13 +100,14 @@ export class AdminUI {
         this.actor.disabled = this.action.disabled = true;
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
+        this.operations.setState({ authorized: this.authorized, busy: true });
         this.timeout = setTimeout(() => {
             this.pending = null;
             this.root.setAttribute('aria-busy', 'false');
             this.setAuthorized(false);
             this.status.textContent = 'Administration did not respond. Reopen the game menu to verify access again.';
         }, 10_000);
-        this.send(type, { id, ...payload });
+        this.send(type, { ...payload, id });
     }
 
     refreshAccess() {
@@ -130,12 +135,17 @@ export class AdminUI {
         clearTimeout(this.timeout);
         this.root.setAttribute('aria-busy', 'false');
         this.actor.disabled = this.action.disabled = false;
-        this.setAuthorized(result.success === true && result.authorized === true);
+        const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
+        this.setAuthorized(result.authorized === true && (mutation || result.success === true));
+        if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
             this.status.textContent = result.message || 'Administrator access is unavailable.';
             return;
         }
         this.status.textContent = result.message || 'Access verified.';
+        if (type === 'admin_status_result') {
+            this.operations.setState({ authorized: this.authorized, busy: false, account: result.account, items: result.items });
+        }
         if (type === 'admin_history_result') {
             this.renderHistory(result.history);
             return;
@@ -151,6 +161,10 @@ export class AdminUI {
             detail.textContent = `${player.class} · Level ${player.level} · Account: ${player.account}`;
             if (player.auditAccount) detail.textContent += ` · History key: ${player.auditAccount}`;
             row.append(name, detail);
+            const select = document.createElement('button');
+            select.type = 'button'; select.textContent = 'Select for operation';
+            select.addEventListener('click', () => this.operations.selectAccount(player.account));
+            row.append(select);
             this.list.append(row);
         }
         this.cursor = typeof result.next === 'string' ? result.next : '';
@@ -170,6 +184,9 @@ export class AdminUI {
             const summary = document.createElement('span');
             summary.textContent = entry.summary;
             row.append(title, actor, summary);
+            if (entry.reason) {
+                const reason = document.createElement('span'); reason.textContent = `Reason: ${entry.reason}`; row.append(reason);
+            }
             this.list.append(row);
         }
         this.cursor = typeof history?.next === 'string' ? history.next : '';
