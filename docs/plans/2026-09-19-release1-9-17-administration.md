@@ -1,8 +1,10 @@
 # Alpha1.9.17 — the wardens have a desk
 
-Candidate: cumulative administration batch following Alpha1.9.16. Publication
-is not accepted until the exact GitHub run and live client/server identities
-are verified. This release does not close the entire1.10 roadmap.
+Delivered: cumulative administration batch following Alpha1.9.16. CI
+`35464162303` passed all ten jobs at
+`b5feba27cdf6de984446032aedfefeb286df5a0f`, including live character QA.
+Both public domains independently report that SHA and Alpha1.9.17; the backend
+reports database ready. This release does not close the entire1.10 roadmap.
 
 ## Scope
 
@@ -35,6 +37,27 @@ Reuse it rather than re-running previously accepted campaign or soak matrices.
   against the upgraded database or remove migration markers to bypass refusal.
 
 ## Publication checks
+
+### Verified delivery
+
+- All ten jobs of CI `35464162303` passed, including predeploy and live
+  character checks. No further rerun is needed for documentation changes.
+- Independent public reads confirmed `play.eidolonrealms.com/release.json`
+  and `server.eidolonrealms.com/healthz` at the exact commit/version above,
+  healthy database, and the served login label, cumulative patch-note entry
+  and Administration launcher. The launcher remains server-role-gated.
+- Deployment job `105956951361` reported schema preflight 12 → 14 and a
+  consistent recovery point at
+  `/home/aeml/eidolon/server/backups/save-upgrade-20260919T194926Z-kFOYTa`.
+  Its protected directory and COMPLETE marker were independently checked;
+  the marker names this exact commit and `2026-09-19T19:49:29Z`. The deployment
+  backup verified its database, recovery files and previous-image checksums.
+  No backup contents or production credentials were read for this acceptance.
+- A safe live administrator-account read-only panel check remains requested
+  from the operator. Disposable authenticated mutation/browser proof is
+  already accepted; do not grant production QA accounts administrator rights.
+- Full 1.10 identities, remaining campaign/raid/phone integration and that
+  operator check remain open. Delivery of this patch does not close them.
 
 ### First candidate and correction
 

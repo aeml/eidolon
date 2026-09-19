@@ -8,16 +8,22 @@ restart acceptance (native99139), race-tested duplicate/cross-account handling,
 three browser layout cases, and schema14 archive restore/older-writer fencing.
 Authenticated two-account browser controls now pass as well (native89594),
 including all grants and teleport modes, saved state and audits. Alpha1.9.17 is
-packaged with cumulative patch notes and matching versions; CI/deployment and
-read-only live verification remain, not unimplemented buttons or repeated soaks.
+delivered with cumulative patch notes and matching versions. CI35464162303
+passed all ten jobs at `b5feba27cdf6de984446032aedfefeb286df5a0f`; both public
+domains independently match Alpha1.9.17 and the database is ready. The schema
+12 → 14 upgrade has a verified protected pre-upgrade recovery point. See the
+[release record](2026-09-19-release1-9-17-administration.md). The safe live
+operator panel read check remains requested; the broader 1.10 gate stays open.
 See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
-Alpha1.9.17 replacement candidate `441b3ffa83319fdd7e285d21e010dd4b07228a24`
-is pushed; CI35463942707 is watched by the dedicated read-only Luna agent.
+Earlier Alpha1.9.17 replacement `441b3ffa` / CI35463942707 failed a stale
+dungeon-entry helper mock. Its correction passed 133 focused checks before
+the successful release above. The dedicated read-only Luna watcher reported
+the final CI success; it is no longer an active release wait.
 The original CI35462943697 failed an anonymous mobile-menu fixture that tried
 to expose the intentionally hidden admin launcher; every deployment job was
 skipped. The correction explicitly checks that hidden state and preserves all
 ordinary menu checks. Its six-case mobile/admin layout run passed. Publication
-is not yet accepted; last verified production remains Alpha1.9.16. Session-event capture
+was not accepted for those failed candidates. Session-event capture
 passes real two-account/socket/restart acceptance (native83168 exit0); grant
 recovery passes the real built-server startup/runtime/restart test (native40190
 exit0), using trusted test intents. The newer99139 test exercises the actual
@@ -25,6 +31,16 @@ administrator endpoints; see the administration evidence record for exact scope.
 Rootheart retry18833 is terminal failure in assault combat, not an active wait;
 formation now passes, but DemonOrc hover acquisition stalled. Preserve its
 diagnostics and do not repeat the raid without a concrete correction.
+
+Fresh Rootheart retry is now active in native session **69714**, after the
+release's final live-browser job finished. It passed an independent live
+identity/database check before launching the isolated party route. Source
+`4b2067f3e62fc2c6f4fb35bb043655dcfd2549bb` was clean at startup; later edits
+are documentation only. Artifacts:
+`/tmp/eidolon-earth-raid-20260919-r3-18j9Uu/run.log`. Owned runID
+`earthraid0919c`, API18285/Mongo18286/Web4187; five legal level70 role builds,
+Low graphics, zero retries. Preparation is underway, not a raid-clear result.
+Recheck the existing handle; do not start a duplicate or restore expired saves.
 
 The interrupted permission-check turn made no progress; access is now restored.
 Reconciled current files and external results before resuming old tests:
