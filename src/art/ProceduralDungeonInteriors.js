@@ -115,12 +115,15 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
     } else if (dungeonType === 'abyssal_well') {
         const blockX = (x + (Math.floor(y / 9) % 2) * 6) % 18;
         const joint = blockX < 1 || y % 9 < 1;
-        const tide = Math.abs(y - (32 + Math.sin(x * 0.24) * (wall ? 10 : 7))) < 1.25;
-        const pearl = ((x * 5 + y * 13) % 53) < 2;
+        // Broad, quiet tide marks underfoot; luminous pearls belong on the
+        // walls, where their repeating dots cannot compete with combat cues.
+        const tidePhase = wall ? x * 0.24 : x * Math.PI * 2 / TEXTURE_SIZE;
+        const tide = Math.abs(y - (32 + Math.sin(tidePhase) * (wall ? 10 : 7))) < 1.25;
+        const pearl = wall && ((x * 5 + y * 13) % 53) < 2;
         if (joint) color = mixBytes(color, shadow, 0.7);
         if (tide || pearl) {
-            color = mixBytes(color, accent, tide ? 0.42 : 0.3);
-            emissive = tide ? 0.28 : 0.2;
+            color = mixBytes(color, accent, wall ? (tide ? 0.42 : 0.3) : 0.12);
+            emissive = wall ? (tide ? 0.28 : 0.2) : 0.035;
         }
     } else {
         const fracture = Math.abs(x - (31 + Math.sin(y * 0.31) * 15)) < 1.2;
@@ -168,7 +171,7 @@ function createSurfaceTexture(dungeonType, surface, emissiveOnly = false) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
-    texture.magFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = true;
     if (!emissiveOnly) texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
@@ -667,8 +670,11 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     const detailMaterials = createMaterialSet(dungeonType);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {
-        const repeatX = Math.max(1, Math.round(Math.abs(width) / 12));
-        const repeatY = Math.max(1, Math.round(Math.abs(height) / 12));
+        // Keep masonry legible at gameplay zoom without adding geometry or
+        // increasing texture memory. Walls retain their established scale.
+        const repeatWorldSize = surface === 'floor' ? 24 : 12;
+        const repeatX = Math.max(1, Math.round(Math.abs(width) / repeatWorldSize));
+        const repeatY = Math.max(1, Math.round(Math.abs(height) / repeatWorldSize));
         const key = `${surface}:${repeatX}:${repeatY}:${transparent ? 'ghost' : 'solid'}`;
         if (materials.has(key)) return materials.get(key);
         const map = baseTextures[surface].clone();

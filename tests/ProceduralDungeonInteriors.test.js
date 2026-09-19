@@ -27,6 +27,36 @@ function finiteObject(object) {
 }
 
 describe('Procedural dungeon interior art', () => {
+    test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {
+        const kit = createProceduralDungeonInteriorKit(dungeonType);
+        const floor = kit.floorMaterial(120, 96);
+        const wall = kit.wallMaterial(120, 96, false);
+        expect(floor.map.repeat.toArray()).toEqual([5, 4]);
+        expect(wall.map.repeat.toArray()).toEqual([10, 8]);
+        for (const material of [floor, wall]) {
+            expect(material.emissiveMap.repeat.toArray()).toEqual(material.map.repeat.toArray());
+            for (const texture of [material.map, material.emissiveMap]) {
+                expect(texture.magFilter).toBe(THREE.LinearFilter);
+                expect(texture.minFilter).toBe(THREE.LinearMipmapLinearFilter);
+                expect(texture.generateMipmaps).toBe(true);
+            }
+        }
+    });
+
+    test('drowned floor tide marks stay subdued while wall pearls retain their identity', () => {
+        const kit = createProceduralDungeonInteriorKit('abyssal_well');
+        const floor = kit.floorMaterial(120, 120).emissiveMap.image.data;
+        const wall = kit.wallMaterial(120, 120, false).emissiveMap.image.data;
+        const intensities = (data) => Array.from(data).filter((_, index) => index % 4 === 0);
+        const floorValues = intensities(floor);
+        const wallValues = intensities(wall);
+        expect(Math.max(...floorValues)).toBeGreaterThan(0);
+        expect(Math.max(...floorValues)).toBeLessThanOrEqual(10);
+        expect(Math.max(...wallValues)).toBeGreaterThan(50);
+        expect(floorValues.reduce((sum, value) => sum + value, 0))
+            .toBeLessThan(wallValues.reduce((sum, value) => sum + value, 0) / 3);
+    });
+
     test('defines five distinct interior languages and five distinct generated surface maps', () => {
         expect(DUNGEON_INTERIOR_IDS).toHaveLength(5);
         expect(new Set(DUNGEON_INTERIOR_IDS.map((id) => DUNGEON_INTERIOR_DEFINITIONS[id].artStyle)).size).toBe(5);
