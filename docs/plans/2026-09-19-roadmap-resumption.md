@@ -226,3 +226,14 @@ level70 builds, Low graphics, three repair waves and zero retries. Luna
 `/root/watch_tidestar_0919c` owns read-only completion/failure monitoring; root
 must not duplicate polling or rerun this live process. Do not start another
 browser/deployment workload over it. Full clear/claims/relogin remain unproven.
+
+Independent next-check preparation (no GPU, raid files untouched): worktree
+`/tmp/eidolon-arena-review-20260919-LlO1tu`, branch `work/arena-review-20260919`,
+commit993a3e45 prepares one real four-client ranked2v2 visual route. It reuses the
+ordinary gear/registration helpers and isolated wrapper, normal UI invites/queue
+and pointer attacks, with personal result screenshots and re-login. Ten-minute
+overall/four-minute combat bounds, zero retries. Syntax/lint/shell/discovery pass;
+browser execution and acceptance are pending. Do not replace the already accepted
+socket/reward/restart evidence or call the prepared test a successful match.
+Merge after preserving the current raid's terminal artifacts; see the candidate's
+`docs/plans/2026-09-19-rendered-team-arena-preparation.md` for exact scope.
