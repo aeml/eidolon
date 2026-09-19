@@ -287,3 +287,17 @@ not model billing. Missing diagnostic capture fails rather than pretending the
 run passed, and owned browser cleanup still executes. Syntax/lint/diff pass;
 no gameplay or acceptance condition changed. This local QA-only change is not
 included in the currently deploying commit.
+
+Subsequently Luna reported CI35474533396 **terminal success**, all jobs including
+live QA passing. Root independently confirmed public frontend/backend exact
+`e9c75b734ed418944fd793c4161af766475a05f5`/Alpha1.9.19, database ready, login,
+cumulative notes and served patron/aura cutaway implementation. The release is
+delivered. Do not poll that completed workflow or its watcher.
+
+The prepared ranked-team render is now active as `arenateam0919a`, native
+session42990, clean sourcec33b9496. Launcher/log:
+`/tmp/eidolon-arena-team-20260919-DfsY9c/`; isolated ports18285/18286/4187 were
+confirmed free before launch. Four legal prepared level30 Wizards, normal
+party/queue/combat inputs, ten-minute test bound, zero retries. Root monitors
+this short arena check; Luna's current test delegation covers dungeon/raid
+tests. Do not start another browser/deployment workload over it. No result yet.

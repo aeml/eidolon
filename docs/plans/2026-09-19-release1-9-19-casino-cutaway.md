@@ -1,9 +1,13 @@
 # Alpha 1.9.19 — a place for every patron
 
-Status: **pushed; deployment pending**, commit
+Status: **delivered and publicly verified**, commit
 `e9c75b734ed418944fd793c4161af766475a05f5`, CI run35474533396. Luna
-`/root/watch_release_1_9_19` monitors that exact run without duplicate root
-polling. No live1.9.19 claim until terminal gates and public verification pass.
+`/root/watch_release_1_9_19` reported terminal success, all jobs including Live
+Release and Character QA passing. Main independently verified the public
+frontend manifest and backend health both match that exact SHA/Alpha1.9.19;
+backend status isok and database ready. Public login and cumulative1.9.19/1.9.18
+notes match; served CasinoController and AttachedStatusEffect contain the
+patron/aura cutaway correction. No production character mutation was performed.
 Alpha1.9.18 run35471538108 passed and its public identity/source checks match.
 Keep the full1.10 scope.
 
@@ -43,6 +47,6 @@ full-session verification item complete.
 Tidestar's latest run terminated on a QA pointer-wait timeout; its artifacts are
 preserved and it is not counted as a clear. The bounded wait/diagnostic follow-up
 passes51 focused checks without changing gameplay or completion assertions.
-No raid or other local browser run is active, so publishing can use native QA.
-When published, delegate its exact CI run to Luna and independently verify the
-public frontend/backend identity, readiness, notes and served cutaway code.
+After deployment finished and public verification passed, the bounded local
+ranked2v2 presentation route started; no native deployment jobs overlap it.
+Tidestar full-clear evidence and the other1.10 acceptance items remain open.
