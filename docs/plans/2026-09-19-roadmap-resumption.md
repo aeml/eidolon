@@ -91,6 +91,16 @@ No other CI browser job was active at launch; the independent nightly soak was
 left alone. This is an active attempt, not accepted raid completion. Do not
 publish/start another GPU browser workload over it.
 
+Independent visual candidate: `/tmp/eidolon-floor-polish-GTaEiw`, branch
+`work/dungeon-floor-polish-20260919`. Actual Tidestar screenshot review found
+the repeated luminous floor pearls/lines visually noisy; source identifies an
+authored texture pattern, not proven duplicate geometry. Candidate broadens
+floor masonry, smooths sampling and subdues Water floor accents while retaining
+wall identity.39 focused interior/crystal tests and lint pass. Not merged or
+deployed: inspect High/Low and gameplay-camera before/after once the raid releases
+the GPU. See that checkout's `docs/plans/2026-09-19-dungeon-floor-readability.md`.
+No main-checkout runtime or active raid inputs were changed.
+
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
 `/tmp/eidolon-earth-raid-20260919-xyX7KD/run.log` reproduces a boxed-in second
