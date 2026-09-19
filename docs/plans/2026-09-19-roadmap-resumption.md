@@ -1,5 +1,14 @@
 # September 19 — roadmap resumption
 
+Current local feature stage: `d7eb4be9` adds the role-checked administration
+launcher, online-player pages and structured administration-read history.
+See [implementation, proof and remaining full-panel scope](2026-09-19-administration-console.md).
+It is **not deployed**; production remains Alpha1.9.16. Session-event capture,
+safe mutations and their connected acceptance still need implementation.
+Rootheart retry18833 is terminal failure in assault combat, not an active wait;
+formation now passes, but DemonOrc hover acquisition stalled. Preserve its
+diagnostics and do not repeat the raid without a concrete correction.
+
 The interrupted permission-check turn made no progress; access is now restored.
 Reconciled current files and external results before resuming old tests:
 
@@ -42,3 +51,14 @@ integration, finale and the outstanding cross-feature/mobile checks remain as
 tracked in the final integration audit. Phone Brave/Chrome general UI feedback
 does not prove phone dungeon/party play. Reuse accepted evidence; do not repeat
 whole matrices, accepted releases, or public-event preparation unnecessarily.
+
+## Deployment monitoring policy (user request, September19)
+
+For the next and subsequent deployments, delegate watching the exact GitHub
+CI/CD run to one `gpt-5.6-luna` agent with a minimal standalone brief, not a fork
+of the full roadmap conversation. Use a quiet process/watch or bounded polling;
+report terminal completion or a failed job with a concise relevant log excerpt,
+not every unchanged tick. The watcher is read-only: no reruns, cancellation,
+commits or deployment changes. The main agent continues useful feature work
+and handles fixes and final live-release verification. This authorizes Luna
+deployment monitoring, not unrestricted delegation of implementation work.
