@@ -81,6 +81,16 @@ were preserved before owned cleanup. See the
 Do not poll1809 or the completed Rootheart69714. The next attempt must survive
 chat-turn interruption and retain the same legal gear and ritual requirements.
 
+Replacement `waterraid0919b` is running detached under PID **3804247**, SID3804247,
+with parent1 verified after launch; it is not a native exec session to poll.
+Clean startup source `b8e02767aed79aadf7e9a4c899313749066b5322`. Log and launcher:
+`/tmp/eidolon-water-raid-20260919-r2-z4qo0c/`. Same ports, five role builds, Low
+graphics, normal mechanics and zero retries. Check that exact process and the
+log's terminal `RAID_PROCESS_EXIT` marker before taking any restart action.
+No other CI browser job was active at launch; the independent nightly soak was
+left alone. This is an active attempt, not accepted raid completion. Do not
+publish/start another GPU browser workload over it.
+
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
 `/tmp/eidolon-earth-raid-20260919-xyX7KD/run.log` reproduces a boxed-in second
