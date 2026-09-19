@@ -27,6 +27,14 @@ function finiteObject(object) {
 }
 
 describe('Procedural dungeon interior art', () => {
+    test('sRGB floor bytes preserve the authored basalt palette rather than double-darkening it', () => {
+        const map = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(120, 120).map;
+        // Plain stone at (10,10):72% ground #102b37 over shadow #07131b.
+        const offset = (10 * 64 + 10) * 4;
+        expect(map.colorSpace).toBe(THREE.SRGBColorSpace);
+        expect(Array.from(map.image.data.slice(offset, offset + 4))).toEqual([13, 36, 47, 255]);
+    });
+
     test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {
         const kit = createProceduralDungeonInteriorKit(dungeonType);
         const floor = kit.floorMaterial(120, 96);

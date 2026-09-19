@@ -10,6 +10,8 @@ authored modular pearl samples, not evidence of duplicate floor geometry.
 
 - Floor texture repeats span24 world units instead of12, preserving wall scale.
 - Linear magnification replaces nearest-neighbor sampling; mipmaps remain.
+- Correct sRGB byte encoding prevents the stone palette from being darkened
+  twice. Subdued floor accents preserve the brighter objective and warning cues.
 - Drowned floor pearls are removed, while wall pearls retain their bright theme.
   Floor tide lines become subdued engravings with a periodic horizontal curve.
 - Geometry, collisions, room/raid mechanics, telegraphs, texture dimensions and
@@ -36,3 +38,18 @@ passes for the gallery correction. No rendered check was removed. Only then
 integrate, add accurate cumulative
 patch notes and synchronized release versions, and deploy with the authorized
 Luna watcher. This candidate is not a shipped fix or a full visual acceptance.
+
+## Targeted visual result
+
+After the raid's terminal failure and verified cleanup, the existing High/Low
+interior-gallery check passed (33031,4.3s). Visual inspection revealed that the
+stone was still too dark to read its joints: linear Color components were being
+written into a texture tagged sRGB. Corrected encoding and reduced floor motif
+contrast;40 interior/crystal checks and the same targeted gallery pass afterward
+(49305,4.4s). Both screenshots were inspected: Water masonry is visible, bright
+floor speckles are absent, elemental wall identity and objective rings remain,
+and High/Low retain the same readable floor structure. No added geometry/assets.
+Artifacts remain in this checkout's `test-results/animation-gallery-determin-d9fbe-ity-at-High-and-Low-quality/`.
+This accepts the bounded material change, not full integrated visual or campaign
+acceptance. Inspect actors/telegraphs again in the next already-required raid;
+do not rerun a complete dungeon merely for this material change.
