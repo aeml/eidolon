@@ -11,6 +11,13 @@ export function planPartyRangedSpacing(state, target, healer, canStep = () => tr
     const supportDistance = Math.hypot(state.x - healer.x, state.z - healer.z);
     const desired = target.range - 2;
     if (distance >= desired - 2 && supportDistance < healer.range - .5) return null;
+    // A live healer can cross a short optional spacing step between projection
+    // and click. Keep firing from a useful position until that ally passes;
+    // do not treat the resulting blocked input as a successful retreat. This
+    // hold does not apply in melee danger or outside attack/healing reach.
+    if (distance >= desired - 3 && distance < target.range - .5 && supportDistance < healer.range - .5 &&
+        actors.some(actor => actor.friendly === true && actor.state === 'MOVING' &&
+            Math.hypot(actor.x - state.x, actor.z - state.z) < (state.radius || 1.25) + (actor.radius || 1.25) + 3)) return null;
     const angle = Math.atan2(state.z - target.z, state.x - target.x);
     const candidates = [];
     for (const radius of [desired, desired - 1, desired - 2]) {

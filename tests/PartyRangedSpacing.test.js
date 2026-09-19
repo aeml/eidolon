@@ -8,6 +8,24 @@ const enemy = { x: 0, z: 0, range: 20.5 };
 const healer = { x: 12, z: 4, range: 14 };
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 
+test('Tidestar ranged role keeps firing instead of making a tiny spacing step across a moving healer', () => {
+    const origin = { x: 89977.37636983006, z: 19227.552667064792, radius: 1.25 };
+    const target = { x: 89966.2421875, z: 19222.6796875, range: 16.300000071525574 };
+    const support = { x: 89981.47239637314, z: 19229.365061614484, range: 14 };
+    const crossingHealer = { x: 89974.99550815424, z: 19226.789720440884,
+        radius: 1.25, state: 'MOVING', friendly: true };
+    expect(planPartyRangedSpacing(origin, target, support, () => true, [crossingHealer])).toBeNull();
+    expect(planPartyRangedSpacing(origin, target, support, () => true,
+        [{ ...crossingHealer, state: 'IDLE' }])).not.toBeNull();
+    expect(planPartyRangedSpacing(origin, target, support, () => true,
+        [{ ...crossingHealer, friendly: false }])).not.toBeNull();
+});
+
+test('a moving friendly does not suppress retreat from melee danger', () => {
+    const crossingHealer = { x: 5, z: 0, radius: 1.25, state: 'MOVING', friendly: true };
+    expect(planPartyRangedSpacing(state, enemy, healer, () => true, [crossingHealer])).not.toBeNull();
+});
+
 test('the observed Warden spacing click accepts actual near-destination arrival, not arbitrary short movement', () => {
     const before = { x: 19960.0328721533, z: 19510.395970053178,
         instanceId: 'warden-replay', instanceType: 'verdant_bastion_catacombs' };

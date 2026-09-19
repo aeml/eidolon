@@ -81,15 +81,22 @@ were preserved before owned cleanup. See the
 Do not poll1809 or the completed Rootheart69714. The next attempt must survive
 chat-turn interruption and retain the same legal gear and ritual requirements.
 
-Replacement `waterraid0919b` is running detached under PID **3804247**, SID3804247,
-with parent1 verified after launch; it is not a native exec session to poll.
+Replacement `waterraid0919b` is terminal exit1; detached PID3804247 and read-only
+watch27144 are finished. Do not poll or restart those handles.
 Clean startup source `b8e02767aed79aadf7e9a4c899313749066b5322`. Log and launcher:
 `/tmp/eidolon-water-raid-20260919-r2-z4qo0c/`. Same ports, five role builds, Low
 graphics, normal mechanics and zero retries. Check that exact process and the
 log's terminal `RAID_PROCESS_EXIT` marker before taking any restart action.
 No other CI browser job was active at launch; the independent nightly soak was
-left alone. This is an active attempt, not accepted raid completion. Do not
-publish/start another GPU browser workload over it.
+left alone. The guardian and first repair wave completed on all five clients,
+but a Wizard spacing input hit a crossing healer during wave2. All five remained
+alive. Full repair/manual claims/re-login are not accepted. Artifacts preserved,
+owned services cleaned up; see [failure and correction](2026-09-19-tidestar-spacing.md).
+The recorded-layout regression reproduces the exact old step. The driver now
+holds an already useful firing/healing position while a nearby friendly moves,
+without weakening movement assertions or suppressing retreat from melee danger.
+101 focused spacing/formation/input checks and lint pass. Connected confirmation
+remains pending; finish the isolated floor review before another raid attempt.
 
 Independent visual candidate: `/tmp/eidolon-floor-polish-GTaEiw`, branch
 `work/dungeon-floor-polish-20260919`. Actual Tidestar screenshot review found

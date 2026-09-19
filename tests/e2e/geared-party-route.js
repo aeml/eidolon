@@ -406,7 +406,9 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 const target = { x: enemy.position.x, z: enemy.position.z, range: g.getBasicAttackRangeForEntity(enemy) };
                 const healing = { x: healer.position.x, z: healer.position.z, range: support.range };
                 const bodies = [...g.remotePlayers.values()].filter(live)
-                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z,
+                        radius: other.radius || 1.25,
+                        friendly: g.isPlayerClassEntity(other) && !g.isHostileActorTarget(other) }));
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
