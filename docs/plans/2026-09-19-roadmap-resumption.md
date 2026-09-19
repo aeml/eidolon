@@ -64,6 +64,15 @@ fixtures; do not increase stats/rarity or grant completion to make the test pass
 The corrected Maelin hostility, boss identity and occluded-target input driver
 are already inherited. Rootheart is accepted, not the next missing clear.
 
+Tidestar started in native session **1809**, runID `waterraid0919a`, after
+Rootheart cleanup and an idle live-browser runner were verified. Clean source
+`6ace7407909d1cb234936496d774282e723df01a`; later edits are documentation only.
+Log: `/tmp/eidolon-water-raid-20260919-ZLnP7l/run.log`. The same isolated
+API18285/Mongo18286/Web4187 and five legal level70 role builds are used, Low
+graphics, zero retries. Water's own memory-carrying ritual remains mandatory.
+This is an active attempt, not an accepted result. Recheck session1809 rather
+than launching another group; do not poll the completed Rootheart69714.
+
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
 `/tmp/eidolon-earth-raid-20260919-xyX7KD/run.log` reproduces a boxed-in second
