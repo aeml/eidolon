@@ -116,6 +116,15 @@ CI35471538108 is in progress and Luna `/root/watch_release_1_9_18` is reassigned
 to watch that exact run until terminal. Public delivery is pending.
 Do not duplicate watcher polling or start another raid over release browser QA;
 the next required raid also supplies the integrated actor/telegraph floor review.
+Watcher handoff: the original watcher stopped responding to stage requests and
+is interrupted. `/root/watch_release_1_9_18_fresh` is now the sole Luna monitor
+of the same35471538108 (no new deployment). It confirmed client/Go/smoke3 success
+and smoke1/2 still running, with no native predeploy jobs yet. It is instructed
+to continue until terminal, not end on an interim stage report.
+Next Tidestar launcher is prepared at
+`/tmp/eidolon-water-raid-20260919-r3-adH3Nx/run.sh`, runID `waterraid0919c`;
+**not started**. Keep its five legal builds and corrected spacing input. The
+user now authorizes a read-only Luna watcher for this long run when launched.
 
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at

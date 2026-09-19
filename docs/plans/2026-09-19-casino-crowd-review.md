@@ -34,6 +34,8 @@ seat ownership, wagers, Gold/EP rules, membership or networking.
   when viewed from upstairs. These are controlled overview cameras, not actual
   phone/session-camera or table-hand interaction acceptance.
 - Changed-source lint and diff checks pass.
+-11 existing raycast-priority checks also pass (91779,0.984s); no targeting
+  priority or combat-hitbox change outside the casino cutaway.
 
 Artifacts: `/tmp/eidolon-casino-crowd-20260919-GCETAo/cutaway-results/` and
 `cutaway-report/`. Initial manual-floor screenshots are kept separately as
