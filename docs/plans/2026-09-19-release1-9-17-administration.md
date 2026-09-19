@@ -51,6 +51,12 @@ Reuse it rather than re-running previously accepted campaign or soak matrices.
 - The replacement candidate also includes QA-only commit `0dca7e84` for
   walking around an occluded dungeon target. Its focused 109 tests passed;
   this is not evidence of a completed raid and does not close the raid gate.
+- Replacement `441b3ffa`, CI `35463942707`, stopped at client tests: the
+  dungeon-entry unit fixture mocked the helper module without its new
+  `settlePointerRaycast` export. The other 462 suites / 6,924 tests passed.
+  Updating that mock preserves the entry assertions and runtime behavior;
+  all 133 related tests across six suites now pass (session 93038, exit 0),
+  with changed-file lint and whitespace checks. No release was accepted.
 
 ### Required live acceptance
 
