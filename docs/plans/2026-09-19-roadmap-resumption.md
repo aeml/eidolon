@@ -236,6 +236,16 @@ wrapper's credential scan passed and owned QA containers are no longer running.
 Private save: `/tmp/eidolon-party-checkpoint-waterraid0919c-AOXcJ4/save.archive.gz`,
 SHA256 `a124e7a7c5780efd88eb2d0d7de3bce40a71f711e795061ce5fe6685e412bd5b`.
 
+Follow-up: the QA-only pointer wait now allows up to5seconds for the same
+`needsRaycast === false` predicate. Production explicitly skips simulation
+catch-up after frame gaps over1second; the former1second observation window
+could expire before recovery. This is a bounded scheduling tolerance, not a
+proven explanation of the recorded timeout. Actual target-hover, cast and raid
+completion assertions are unchanged. Failure now preserves the original cause
+and captures whitelisted frame/pointer/socket/visibility diagnostics, including
+when the page is already unavailable.51 focused helper/damage-input checks pass
+in1.302seconds; changed-file lint and diff checks pass. No new raid run yet.
+
 Independent next-check preparation (no GPU, raid files untouched): worktree
 `/tmp/eidolon-arena-review-20260919-LlO1tu`, branch `work/arena-review-20260919`,
 commit993a3e45 prepares one real four-client ranked2v2 visual route. It reuses the

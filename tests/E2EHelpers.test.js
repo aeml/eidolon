@@ -11,7 +11,37 @@ import {
 
 const playwrightExpect = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
-const { collectBrowserFailures, returnToTown, jumpByGroundClick } = await import('./e2e/helpers.js');
+const { collectBrowserFailures, returnToTown, jumpByGroundClick, settlePointerRaycast } = await import('./e2e/helpers.js');
+
+describe('pointer raycast settling', () => {
+    test('waits for actual completion with a bounded frame recovery window', async () => {
+        const page = { waitForFunction: jest.fn(async predicate => {
+            const previous = window.game;
+            try {
+                window.game = undefined;
+                expect(predicate()).toBe(false);
+                window.game = { needsRaycast: true };
+                expect(predicate()).toBe(false);
+                window.game.needsRaycast = false;
+                expect(predicate()).toBe(true);
+            } finally { window.game = previous; }
+        }), evaluate: jest.fn() };
+        await settlePointerRaycast(page);
+        expect(page.waitForFunction).toHaveBeenCalledWith(expect.any(Function), null,
+            { polling: 'raf', timeout: 5000 });
+        expect(page.evaluate).not.toHaveBeenCalled();
+    });
+    test.each([true, false])('a failed wait retains its cause (diagnostics available: %s)', async available => {
+        const cause = new Error('Timeout 5000ms exceeded');
+        const page = { waitForFunction: jest.fn().mockRejectedValue(cause),
+            evaluate: available ? jest.fn().mockResolvedValue({ frameCount: 12, needsRaycast: true })
+                : jest.fn().mockRejectedValue(new Error('page closed')) };
+        const failure = await settlePointerRaycast(page).catch(error => error);
+        expect(failure.cause).toBe(cause);
+        expect(failure.message).toContain(cause.message);
+        expect(failure.message).toContain(available ? '"needsRaycast":true' : '"unavailable":true');
+    });
+});
 
 describe('jump landing failure evidence', () => {
     afterEach(() => playwrightExpect.mockReset());

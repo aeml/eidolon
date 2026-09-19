@@ -783,7 +783,23 @@ async function readEntity(page, targetId) {
 export async function settlePointerRaycast(page) {
     // Observe the production20Hz raycast budget instead of assuming a50ms
     // sleep includes its next frame when five rendered clients share the GPU.
-    await page.waitForFunction(() => window.game?.needsRaycast === false, null, { polling: 'raf', timeout: 1000 });
+    // The game skips simulation catch-up after a >1s frame gap. Allow recovery
+    // from that gap, but still require the real pending raycast to complete;
+    // callers must subsequently check the actual hovered target before input.
+    try {
+        await page.waitForFunction(() => window.game?.needsRaycast === false, null, { polling: 'raf', timeout: 5000 });
+    } catch (cause) {
+        const diagnostic = await page.evaluate(() => {
+            const game = window.game;
+            return { frameCount: game?.frameCount, needsRaycast: game?.needsRaycast,
+                raycastTimer: game?.raycastTimer, destroyed: game?.isDestroyed,
+                pointerOverCanvas: game?.inputManager?.pointerOverCanvas,
+                rightMouseDown: game?.inputManager?.isRightMouseDown,
+                visibility: document.visibilityState, focused: document.hasFocus(),
+                socketState: game?.network?.socket?.readyState };
+        }).catch(() => ({ unavailable: true }));
+        throw new Error(`Pointer raycast did not settle: ${cause.message}; ${JSON.stringify(diagnostic)}`, { cause });
+    }
 }
 
 export async function projectEntity(page, targetId, hitboxPoint = null) {

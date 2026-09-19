@@ -36,7 +36,9 @@ full-session verification item complete.
 
 ## Next
 
-The prepared Tidestar run remains the next missing raid; coordinate this next
-release's native browser jobs with that long run rather than overlapping them.
+Tidestar's latest run terminated on a QA pointer-wait timeout; its artifacts are
+preserved and it is not counted as a clear. The bounded wait/diagnostic follow-up
+passes51 focused checks without changing gameplay or completion assertions.
+No raid or other local browser run is active, so publishing can use native QA.
 When published, delegate its exact CI run to Luna and independently verify the
 public frontend/backend identity, readiness, notes and served cutaway code.
