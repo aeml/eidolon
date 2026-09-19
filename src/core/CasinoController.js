@@ -11,7 +11,7 @@ export class CasinoController {
         this.engine = engine;
         this.data = { tables: [], occupants: [], yourSeat: null };
         this.raycaster = new THREE.Raycaster(); this.pointer = new THREE.Vector2();
-        this.poses = new Map(); this.nextPoll = 0; this.active = false;
+        this.poses = new Map(); this.cutawayActors = new Map(); this.nextPoll = 0; this.active = false;
         this.panel = document.createElement('section');
         this.panel.className = 'casino-session'; this.panel.hidden = true;
         this.panel.setAttribute('aria-label', 'Casino table');
@@ -290,6 +290,7 @@ export class CasinoController {
         updateCasinoCutaway(shell, null);
         const balcony = engine.renderSystem.scene.getObjectByName('casino-vip-balcony');
         if (balcony) balcony.visible = upstairs || (player.position.z > 149 && Math.abs(player.position.x) < 23);
+        this.balconyCutaway = overworld && Boolean(balcony && !balcony.visible);
         if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = Boolean(balcony?.visible);
         if (this.stairRoute?.length) {
             if (!overworld || player.state === 'DEAD' || this.active) this.stairRoute = null;
@@ -319,9 +320,28 @@ export class CasinoController {
         }
     }
 
+    isActorCutAway(entity) {
+        return this.engine.currentInstanceId === CASINO_INSTANCE && entity !== this.engine.player
+            && (entity?.position?.y ?? entity?.mesh?.position?.y ?? 0) >= 7.5
+            && this.balconyCutaway === true;
+    }
+
+    restoreCutawayActors() {
+        for (const [entity, mesh] of this.cutawayActors) {
+            // Never reveal a body that another subsystem has retired.
+            if (entity.state !== 'DEAD' && entity.isActive !== false) mesh.visible = true;
+        }
+        this.cutawayActors.clear();
+    }
+
     render(entities) {
+        this.restoreCutawayActors();
         for (const entity of entities) {
             if (!entity.mesh) continue;
+            if (this.isActorCutAway(entity) && entity.mesh.visible) {
+                this.cutawayActors.set(entity, entity.mesh);
+                entity.mesh.visible = false;
+            }
             const seated = entity.state === 'SEATED' || (entity === this.engine.player && this.active);
             let pose = this.poses.get(entity);
             if (pose && pose.mesh !== entity.mesh) { this.restorePose(pose); this.poses.delete(entity); pose = null; }
@@ -367,6 +387,7 @@ export class CasinoController {
 
     dispose() {
         if (this.active) this.exitView();
+        this.restoreCutawayActors();
         for (const pose of this.poses.values()) this.restorePose(pose);
         this.poses.clear(); disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
         this.slots.dispose();

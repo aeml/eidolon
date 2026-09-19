@@ -272,6 +272,14 @@ responsive-layout and desktop hardware-rendering results.
 | 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [VIP blackjack](2026-09-14-connected-vip-blackjack-acceptance.md), [EP cosmetic purchase/apply/replay/restart](2026-09-14-connected-cosmetic-vendor-acceptance.md), and [Gold/EP Earth-slot paid spins, prepared bonus/free spins, resume/restart](2026-09-14-connected-slots-acceptance.md) pass; prior membership/recovery evidence | Earned full public event, integrated rendered venue experience and busy-floor rendering |
 | 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence shipped in 1.9.1; bounded 50/100-client concurrency, controlled High/Low rendering and schema12 recovery accepted | Final cross-feature acceptance, cumulative notes and exact live 1.10 identities; retain the accepted performance/recovery evidence and its limits |
 
+September19 crowded-floor visual review now has a bounded High/Low result:
+40 equipped models across the canonical public/VIP venue, actual seated poses
+and controller cutaway, with four inspected screenshots. It caught a missing
+upstairs-patron cutaway, fixed locally for the next release batch. Retain this
+[crowd review and its limits](2026-09-19-casino-crowd-review.md); do not rerun it
+as a new40-client networking, wagering or performance test. The existing
+connected game/settlement evidence remains distinct from this render evidence.
+
 This table organizes work; it does not check off the parent roadmap's detailed
 requirements. In particular, preserve all five dungeon families (Verdant,
 Abyssal, Molten, Tempest, Umbral), failing seeds plus the specified seed coverage,

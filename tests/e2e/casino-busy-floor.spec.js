@@ -32,7 +32,9 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(element => { element.style.display = 'none'; });
         const collisionManager = new CollisionManager();
         const interior = createCasinoInterior(render.scene, collisionManager);
-        const controller = new CasinoController({ renderSystem: render, collisionManager, currentInstanceId: 'lanternhold-casino' });
+        const viewer = { position: new THREE.Vector3(26, 0, 160), state: 'IDLE' };
+        const controller = new CasinoController({ renderSystem: render, collisionManager, currentInstanceId: 'lanternhold-casino',
+            player: viewer, network: { socket: { readyState: WebSocket.OPEN }, send() {} } });
         controller.updateState({ tables, floor: 'public' });
         render.scene.add(controller.furniture);
         const models = [];
@@ -50,16 +52,17 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             mesh.position.set(seat.x, seat.y || 0, seat.z);
             mesh.rotation.y = seat.rotation;
             render.scene.add(mesh);
-            models.push({ type, mesh, state: 'SEATED', floor: table.floor });
+            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor });
         }
         controller.render(models);
         window.__casinoCrowd = {
             view(quality, floor) {
                 render.setGraphicsQuality(quality);
                 const upstairs = floor === 'vip';
-                interior.getObjectByName('casino-vip-balcony').visible = upstairs;
-                controller.furniture.userData.vipFloor.visible = upstairs;
-                models.forEach(model => { model.mesh.visible = model.floor === floor; });
+                controller.floor = floor;
+                viewer.position.set(upstairs ? 0 : 26, upstairs ? 8 : 0, upstairs ? 140 : 160);
+                controller.beforeUpdate(1 / 60);
+                controller.render(models);
                 render.setZoom(30);
                 const focus = new THREE.Vector3(0, upstairs ? 8 : 0, upstairs ? 149 : 166);
                 render.camera.position.copy(focus).add(new THREE.Vector3(20, 70, 65));
@@ -81,7 +84,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         for (const quality of ['high', 'low']) for (const floor of ['public', 'vip']) {
             const view = await page.evaluate(({ quality, floor }) => window.__casinoCrowd.view(quality, floor), { quality, floor });
             expect(view.seated).toBe(40);
-            expect(view.visible).toBe(floor === 'public' ? 28 : 12);
+            expect(view.visible).toBe(floor === 'public' ? 28 : 40);
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
         }

@@ -1146,7 +1146,7 @@ class GameEngineMovementMethods {
     }
 
     getRaycastMeshForEntity(entity) {
-        if (!entity?.mesh) return null;
+        if (!entity?.mesh || this.casino?.isActorCutAway(entity)) return null;
         return entity.mesh.getObjectByName?.('ActorInteractionHitbox') || entity.mesh;
     }
 

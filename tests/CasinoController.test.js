@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import * as THREE from 'three';
 import { CasinoController } from '../src/core/CasinoController.js';
+import { GameEngine } from '../src/core/GameEngine.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createCasinoShell, createCasinoFurniture, updateCasinoCutaway, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
@@ -18,6 +19,55 @@ function setup() {
     const controller = new CasinoController(engine);
     return { engine, controller };
 }
+
+test('balcony cutaway hides upstairs patrons and restores them without revealing already hidden actors', () => {
+    const { engine, controller } = setup();
+    const balcony = new THREE.Group(); balcony.name = 'casino-vip-balcony';
+    engine.renderSystem.scene.add(balcony);
+    const patron = y => ({ mesh: new THREE.Group(), position: new THREE.Vector3(0, y, 137), state: 'SEATED' });
+    const upstairs = patron(8), downstairs = patron(0), hidden = patron(8);
+    hidden.mesh.visible = false;
+    engine.player.position.set(26, 0, 160);
+    controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
+    expect(balcony.visible).toBe(false);
+    expect(upstairs.mesh.visible).toBe(false);
+    expect(downstairs.mesh.visible).toBe(true);
+    expect(hidden.mesh.visible).toBe(false);
+    expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, upstairs)).toBeNull();
+    expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, downstairs)).toBe(downstairs.mesh);
+    // Authoritative actor snapshots may restore the base mesh visibility.
+    upstairs.mesh.visible = true;
+    controller.render([upstairs, downstairs, hidden]);
+    expect(upstairs.mesh.visible).toBe(false);
+    controller.floor = 'vip';
+    controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
+    expect(upstairs.mesh.visible).toBe(true);
+    expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, upstairs)).toBe(upstairs.mesh);
+    expect(downstairs.mesh.visible).toBe(true);
+    expect(hidden.mesh.visible).toBe(false);
+    controller.floor = 'public';
+    controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
+    engine.currentInstanceId = '';
+    controller.render([upstairs, downstairs, hidden]);
+    expect(upstairs.mesh.visible).toBe(true);
+    expect(hidden.mesh.visible).toBe(false);
+    controller.dispose();
+});
+
+test('cutaway cleanup restores living patrons but never revives retired bodies', () => {
+    const { engine, controller } = setup();
+    controller.balconyCutaway = true;
+    const living = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 137), state: 'SEATED' };
+    const dead = { ...living, mesh: new THREE.Group() };
+    controller.render([living, dead]);
+    expect(living.mesh.visible).toBe(false);
+    expect(dead.mesh.visible).toBe(false);
+    dead.state = 'DEAD';
+    controller.dispose();
+    expect(living.mesh.visible).toBe(true);
+    expect(dead.mesh.visible).toBe(false);
+    expect(engine.currentInstanceId).toBe('lanternhold-casino');
+});
 
 test('server-owned seat controls camera/input, readiness and exit without altering camera preferences', () => {
     const { engine, controller } = setup();

@@ -186,7 +186,12 @@ actual16-table/machine,56-seat catalog, the current casino interior/controller,
 and40 fully equipped models across all four classes (28 public,12 VIP). It takes
 four High/Low floor screenshots for review. It is opt-in with
 `EIDOLON_CASINO_FIXTURE_CATALOG=1`; it does not create accounts or wager currency.
-Catalog export, syntax, lint and Playwright discovery pass. **Browser execution
-and image review are pending** until the release's native browser jobs finish.
+Catalog export, syntax, lint and Playwright discovery pass. The short native
+render completed while only GitHub-hosted smoke jobs were running and local
+Chrome was idle. Review found and fixed the missing actor cutaway; the corrected
+fixture uses the actual controller and retains downstairs patrons when viewing
+from upstairs.36 focused checks and a5.5second High/Low render pass; all four
+images were inspected and preserved. See [finding, fix and evidence limits](2026-09-19-casino-crowd-review.md).
+The runtime correction is local for the next release batch, not live1.9.18.
 Do not call synthetic occupancy connected-player or performance acceptance;
 retain existing connected public/VIP wagering and persistence evidence.
