@@ -108,7 +108,9 @@ wall identity. A subsequent sRGB correction restores readable stone joints.
 both screenshots were inspected after raid cleanup. The candidate is now merged
 for Alpha1.9.18, with cumulative notes and synchronized version labels.277
 version/runtime/queue checks pass. See [release record](2026-09-19-release1-9-18-dungeon-surfaces.md).
-Public delivery is pending. Do not start another raid over release browser QA;
+Pushed74bd4b70; exact CI35471125941 is assigned to Luna
+`/root/watch_release_1_9_18`, with failure/terminal reports only. Public delivery
+is pending. Do not duplicate watcher polling or start another raid over release browser QA;
 the next required raid also supplies the integrated actor/telegraph floor review.
 
 Rootheart attempt39986 is terminal failure before combat (five leader steps,

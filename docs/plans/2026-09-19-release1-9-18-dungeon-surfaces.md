@@ -1,6 +1,9 @@
 # Alpha 1.9.18 — stone beneath the spelllight
 
-Prepared cumulative patch; publication is not yet accepted.
+Pushed to master at `74bd4b706022949fc612f1bc91d2e54bb3620b8d`.
+Exact CI `35471125941` was queued at handoff to the read-only Luna watcher
+`/root/watch_release_1_9_18`. Publication is not yet accepted. Main must not
+duplicate its polling; await its failure/terminal report and then verify delivery.
 
 ## Player-facing scope
 
