@@ -547,20 +547,30 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                             if (formationTrace.length > 32) formationTrace.shift();
                         },
                         plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot }) => {
-                            const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival } = await import('/tests/partyDungeonControls.js');
+                            const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival,
+                                PartyFormationRouteUnavailable } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const g = window.game, p = g.player;
                             const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                                 other.isActive && other.stats && other.state !== 'DEAD' && other.position)
                                 .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
-                            const step = partyFormationStep(p.position, anchor, previous, (step, from) => {
-                                const origin = p.position.clone();
-                                origin.x = from.x;
-                                origin.z = from.z;
-                                return partyPathAvoidsActors(origin, step, bodies, p.radius || 1.25) &&
-                                    isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
-                                        { x: step.dx, z: step.dz });
-                            }, spacing, slot, bodies);
+                            let step;
+                            try {
+                                step = partyFormationStep(p.position, anchor, previous, (step, from) => {
+                                    const origin = p.position.clone();
+                                    origin.x = from.x;
+                                    origin.z = from.z;
+                                    return partyPathAvoidsActors(origin, step, bodies, p.radius || 1.25) &&
+                                        isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
+                                            { x: step.dx, z: step.dz });
+                                }, spacing, slot, bodies);
+                            } catch (error) {
+                                // Another follower can be blocking this member's only
+                                // exit. Move clear lanes first, then read and replan;
+                                // null never counts as arrival or bypasses the deadline.
+                                if (error instanceof PartyFormationRouteUnavailable) return null;
+                                throw error;
+                            }
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
                                 arrival: partyFormationArrival(p.position, step, anchor.instance) };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,

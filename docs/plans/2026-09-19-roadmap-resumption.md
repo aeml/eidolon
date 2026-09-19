@@ -24,6 +24,19 @@ manual turn-ins and saved re-login. Use the existing legal5Rare/9Uncommon role
 fixtures; do not increase stats/rarity or grant completion to make the test pass.
 The corrected Maelin hostility and boss-identity driver are already inherited.
 
+Rootheart attempt39986 is terminal failure before combat (five leader steps,
+zero rooms cleared). All five entered correctly. The captured formation at
+`/tmp/eidolon-earth-raid-20260919-xyX7KD/run.log` reproduces a boxed-in second
+Cleric while the other three followers have clear paths. Planning all members
+with `Promise.all` aborted on that one unavailable route before anyone moved.
+The browser planner now treats only that specific no-route result as waiting:
+clear followers move, then all positions are read and replanned. Arrival,
+collision checks, the original deadline and unexpected-error failures remain.
+The recorded five-member regression and all60 focused helper tests pass.
+This is QA-only, not a production or balance change and not a full raid pass.
+Owned API/Mongo containers are absent after cleanup; retained save is not used
+to bypass the approved15-minute expiry. Next attempt starts a fresh legal party.
+
 Full1.10 is not complete: remaining regional dungeon/raid and earned-campaign
 integration, finale and the outstanding cross-feature/mobile checks remain as
 tracked in the final integration audit. Phone Brave/Chrome general UI feedback

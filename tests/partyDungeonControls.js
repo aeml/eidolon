@@ -52,6 +52,13 @@ export function partyPathAvoidsActors(state, step, actors, radius = 1.25) {
 // capsules and the walked hallway corner. A legal side step alone is not a
 // route: selecting it then returning to the previous anchor can loop forever.
 // canStep(delta, origin) must check the complete floor/body path from origin.
+export class PartyFormationRouteUnavailable extends Error {
+    constructor() {
+        super('Party formation has no verified walking route');
+        this.name = 'PartyFormationRouteUnavailable';
+    }
+}
+
 export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4, slotOffset = null, actors = []) {
     const direct = partyFollowStep(state, anchor, spacing);
     if (!direct) return null;
@@ -119,7 +126,7 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
             parents[index] = current;
         }
     }
-    throw new Error('Party formation has no verified walking route');
+    throw new PartyFormationRouteUnavailable();
 }
 
 export function partyWarningInputPolicy({ active, safe }) {

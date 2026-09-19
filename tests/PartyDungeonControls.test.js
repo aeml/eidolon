@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, PartyFormationRouteUnavailable, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
@@ -148,6 +148,54 @@ test('arrival between position and planning reads is verified again without a fa
     const move = jest.fn();
     await gatherPartyFormation({ read, plan: async () => null, move });
     expect(read).toHaveBeenCalledTimes(2);
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('recorded five-player entry lets clear followers move before replanning the boxed-in second healer', async () => {
+    const states = [
+        { x: 79999.77670563449, z: 19915.92597951876 },
+        { x: 79995.83365575141, z: 19932.194045444576 },
+        { x: 80003.68159562619, z: 19932.204885161216 },
+        { x: 79999.77202765665, z: 19934.482501527076 },
+        { x: 80002.21313057405, z: 19933.936621815974 }
+    ];
+    const previous = { x: 79999.79653603515, z: 19929.970094412947 };
+    const blocked = [], moved = [];
+    let clock = 0;
+    await gatherPartyFormation({
+        read: async () => { clock += 100; return states.map(state => ({ ...state })); },
+        now: () => clock,
+        plan: async (index, state, anchor, spacing) => {
+            const bodies = states.filter((_, other) => other !== index)
+                .map(body => ({ x: Math.fround(body.x), z: Math.fround(body.z), radius: 1.25 }));
+            try {
+                return partyFormationStep(state, anchor, previous,
+                    (step, from) => partyPathAvoidsActors(from, step, bodies), spacing,
+                    [Math.PI / 3, -Math.PI / 3, 0][index - 1], bodies);
+            } catch (error) {
+                if (!(error instanceof PartyFormationRouteUnavailable)) throw error;
+                blocked.push({ index, moves: moved.length });
+                return null;
+            }
+        },
+        move: async (index, step) => {
+            expect(partyPathAvoidsActors(states[index], step,
+                states.filter((_, other) => other !== index))).toBe(true);
+            moved.push(index);
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+        }
+    });
+    expect(blocked).toContainEqual({ index: 4, moves: 0 });
+    expect(moved).toContain(4);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+});
+
+test('unexpected formation planner errors still stop the run', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 20, z: 0 }],
+        plan: async () => { throw new Error('browser disconnected'); }, move }))
+        .rejects.toThrow('browser disconnected');
     expect(move).not.toHaveBeenCalled();
 });
 
