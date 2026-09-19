@@ -2,7 +2,19 @@
 
 Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
 
-## September 13 user revision — current delivery
+## September 19 status — preserve shipped work and remaining acceptance
+
+The public venue and games, EP wallet and one-way exchange, monthly membership
+allowance, active-membership guard access, upstairs EP games and cosmetic vendor
+are implemented in the 1.9 series. Payment integration remains excluded.
+The guard still rejects nonmembers with “You must be a VIP to enter”; it is no
+longer an unconditional placeholder. EP ownership alone never grants access.
+See the [integration audit](2026-09-14-final-integration-audit.md) for exact
+connected, persistence and rendered evidence and its limits. Integrated
+busy-floor, full visual and physical-phone checks remain open; the historical
+requirements below are not a declaration that the entire casino is accepted.
+
+## September 13 user revision — historical delivery boundary
 
 The separate currency is **EP — Eidolon Points**. Its approved sources and uses
 are recorded below, including the user's fixed quantities and cosmetic-only rule. Do not substitute
