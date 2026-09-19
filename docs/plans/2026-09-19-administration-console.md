@@ -1,11 +1,13 @@
-# Administration console — work in progress
+# Administration console — Alpha 1.9.17 implementation evidence
 
-This is the **Alpha1.9.17 release candidate**, based on Alpha1.9.16. It does not close
-the full administration release gate or the broader1.10 roadmap. Do not publish
-a separate patch for each control; finish the meaningful administration batch
-with accurate release notes and synchronized versions before deploying it.
+The cumulative batch shipped in **Alpha 1.9.17**; see the
+[verified release record](2026-09-19-release1-9-17-administration.md).
+The implementation notes below describe development-time evidence, not current
+deployment status. In particular, schema 14 is now deployed with a verified
+pre-upgrade backup. The safe live operator read-only check and final 1.10 release
+acceptance remain open; this delivery does not close the broader roadmap.
 
-## Implemented locally
+## Implemented in the delivered batch
 
 - Hidden-by-default Administration launcher in the game menu. The authenticated
   server checks the durable MongoDB role on each status, player-list and history
@@ -42,7 +44,7 @@ with accurate release notes and synchronized versions before deploying it.
   reads additionally enforce the current retention cutoff. Reducing the setting
   immediately hides older records, while physical removal follows their recorded
   expiry (MongoDB TTL is asynchronous). Increasing it cannot resurrect expired
-  records. No production schema changes have been made.
+  records. Production subsequently migrated through schema 14 with the release.
 - Desktop and phone portrait/landscape presentation, scrollable records, loading,
   empty/error states, filter-safe pagination and touch-sized controls. Screenshot
   review caught a flex-direction issue; header is now above the content, with

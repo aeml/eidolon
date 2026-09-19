@@ -71,8 +71,15 @@ CI-filter checks only, not runtime, fixture or browser-route changes.
 Log: `/tmp/eidolon-water-raid-20260919-ZLnP7l/run.log`. The same isolated
 API18285/Mongo18286/Web4187 and five legal level70 role builds are used, Low
 graphics, zero retries. Water's own memory-carrying ritual remains mandatory.
-This is an active attempt, not an accepted result. Recheck session1809 rather
-than launching another group; do not poll the completed Rootheart69714.
+Session1809 is now terminal exit143: the process ended during repair combat,
+without a test assertion failure or completion result. The final log records
+28.8minutes, guardian defeated and further repair enemies killed; no full-wave,
+turn-in or re-login acceptance may be inferred. Browser workers are gone; only
+orphaned isolated services remained. Their private save and sanitized screenshots
+were preserved before owned cleanup. See the
+[interrupted Tidestar record](2026-09-19-tidestar-interruption.md).
+Do not poll1809 or the completed Rootheart69714. The next attempt must survive
+chat-turn interruption and retain the same legal gear and ritual requirements.
 
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
