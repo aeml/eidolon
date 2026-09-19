@@ -1,12 +1,79 @@
 package main
 
 import (
+	"slices"
 	"sync"
 	"testing"
 	"time"
 
 	"eidolon-server/internal/game"
 )
+
+func TestCharactersWorkCrossedTargetsAndSelf(t *testing.T) {
+	// Opposite target order must serialize, not deadlock two administrators.
+	accounts := []string{"cross-b", "cross-a", "cross-b", ""}
+	before := slices.Clone(accounts)
+	start, finished := make(chan struct{}), make(chan struct{})
+	count := 0
+	var group sync.WaitGroup
+	for i := 0; i < 40; i++ {
+		group.Add(1)
+		go func(reverse bool) {
+			defer group.Done()
+			<-start
+			var release func()
+			if reverse {
+				release = lockCharactersWork("cross-a", "cross-b")
+			} else {
+				release = lockCharactersWork(accounts...)
+			}
+			defer release()
+			count++
+		}(i%2 == 0)
+	}
+	close(start)
+	go func() { group.Wait(); close(finished) }()
+	select {
+	case <-finished:
+	case <-time.After(3 * time.Second):
+		t.Fatal("crossed administration targets deadlocked")
+	}
+	if count != 40 || !slices.Equal(accounts, before) {
+		t.Fatal("lost updates or mutated caller's account list")
+	}
+	release := lockCharactersWork("self", "self")
+	release()
+	lockCharactersWork()()
+	characterWork.Lock()
+	defer characterWork.Unlock()
+	if len(characterWork.entries) != 0 {
+		t.Fatal("multi-account work leaked locks")
+	}
+}
+
+func TestCharactersWorkSharesSingleAccountSerialization(t *testing.T) {
+	release := lockCharactersWork("admin-a", "target-b", "destination-c")
+	finished := make(chan struct{})
+	go func() { unlock := lockCharacterWork("target-b"); unlock(); close(finished) }()
+	unrelated := make(chan struct{})
+	go func() { unlock := lockCharacterWork("other"); unlock(); close(unrelated) }()
+	select {
+	case <-unrelated:
+	case <-time.After(time.Second):
+		t.Fatal("multi-account operation blocked an unrelated player")
+	}
+	select {
+	case <-finished:
+		t.Fatal("ordinary target work bypassed administration locks")
+	default:
+	}
+	release()
+	select {
+	case <-finished:
+	case <-time.After(time.Second):
+		t.Fatal("ordinary target work did not resume")
+	}
+}
 
 func TestCharacterWorkSerializesOneAccountWithoutBlockingAnother(t *testing.T) {
 	unlock := lockCharacterWork("work-a")

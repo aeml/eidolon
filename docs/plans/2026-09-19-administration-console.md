@@ -47,6 +47,26 @@ with accurate release notes and synchronized versions before deploying it.
   empty/error states, filter-safe pagination and touch-sized controls. Screenshot
   review caught a flex-direction issue; header is now above the content, with
   a regression assertion rather than just screen-bound checks.
+- Mutation preparation now has ordered multi-account work locks (actor, target
+  and teleport destination account), strict confirmed request schemas, and
+  actor/request-ID identities with separate canonical payload fingerprints.
+  Cross-target/action reuse retains the same identity and therefore must conflict
+  in the forthcoming durable operation store. No client actor, raw coordinates,
+  item stats, prices, effects or sockets are accepted. These helpers are not yet
+  registered as reachable mutation endpoints; the existing dispatch is unchanged.
+- Canonical item creation uses the existing base-item catalog and normal loot
+  stat/rarity formulas: equipment levels1–100, Common through Legendary, quantity
+  1–25; Shards/Hearts use their actual Eidolic/level1 definition and1–1000 stack.
+  Inventory delivery plans the complete batch on a detached copy and records a
+  fingerprint receipt, with no partial stacks, stash spill or ground loot.
+  Identical replay cannot recreate consumed items; conflicting contents fail.
+  Generated item IDs/rolls must be recorded once in the operation journal, not
+  regenerated on retry. These internal helpers do not themselves authorize grants.
+- Gold request validation caps one administrative grant at100,000,000 and the
+  resulting balance at JavaScript's exact-integer ceiling. No ordinary rewards
+  or player economy limits changed. Teleport request targets currently support
+  town or an exact other account; live state, instance and walkability checks
+  remain part of the unimplemented execution handler.
 
 ## Evidence and limits
 
@@ -74,14 +94,24 @@ with accurate release notes and synchronized versions before deploying it.
   local-disk failure, more than one startup batch and unchanged resume expiry.
   Focused session/journal tests also pass under Go's race detector, including
   concurrent capture and replay; client UI tests8pass and lint/diff checks pass.
+- Focused mutation-schema, canonical-item, all-or-nothing inventory and account
+  locking tests pass, also with Go's race detector (native28311 exit0). Tests
+  include crossed/self account locks, unrelated-account independence, duplicate
+  and forged JSON fields, numeric bounds, request replay/conflicts, every base
+  item/rarity, full-bag/partial-stack failures and consumed-item retries. This
+  does not prove durable mutation execution, which is still pending.
 
 ## Next required implementation
 
 1. Confirmed canonical item creation, bounded Gold grants and validated teleport
-   operations. No mutation buttons or handlers exist yet. Implement account-work
-   ownership, stale-session rejection, exact targets, inventory/Gold/instance/
-   walkability validation and durable idempotency together with a recoverable
-   character/receipt/audit journal. Do not bolt unsafe grants onto the read handler.
+   operations. Schemas, canonical item generation/delivery and ordered lock
+   helpers are implemented; no mutation buttons or handlers exist yet. Wire
+   dispatch so multi-account operations acquire all locks instead of nesting a
+   target lock under the sender lock. Recheck ownership and durable role under
+   those locks. Implement exact target/current-state/instance/walkability checks
+   and a recoverable character/receipt/audit operation journal before registering
+   endpoints. Preserve full-snapshot saves and block stale hydration/commands
+   while an operation is unresolved. Do not bolt grants onto the read handler.
 2. Remaining full-gate failure/concurrency/restart and disposable two-account
    connected acceptance, backup/restore and safe live read-only smoke.
 3. Package/deploy only when the batch is ready. Use the user-approved Luna watcher

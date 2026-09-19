@@ -2,6 +2,7 @@ package main
 
 import (
 	"eidolon-server/internal/lifecycle"
+	"slices"
 	"sync"
 )
 
@@ -17,6 +18,27 @@ var characterWork = struct {
 	entries map[string]*characterWorkEntry
 }{entries: make(map[string]*characterWorkEntry)}
 var backgroundCharacterWork = &lifecycle.Group{}
+
+// Acquire all accounts in one global order. Call this instead of nesting
+// lockCharacterWork when an operation touches another player (for example an
+// administrator teleport). No character lock may already be held by the caller.
+// Duplicate/self targets take one lock; unrelated accounts remain independent.
+func lockCharactersWork(usernames ...string) func() {
+	accounts := slices.Clone(usernames)
+	slices.Sort(accounts)
+	accounts = slices.Compact(accounts)
+	releases := make([]func(), 0, len(accounts))
+	for _, account := range accounts {
+		if account != "" {
+			releases = append(releases, lockCharacterWork(account))
+		}
+	}
+	return func() {
+		for i := len(releases) - 1; i >= 0; i-- {
+			releases[i]()
+		}
+	}
+}
 
 func lockCharacterWork(username string) func() {
 	characterWork.Lock()
