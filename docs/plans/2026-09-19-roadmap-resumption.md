@@ -218,14 +218,23 @@ pass; the earlier47 focused checks and inspected crowd render are retained.
 Not pushed or live; the existing1.9.18 workflow is now accepted. The aura
 follow-up passes29 focused checks and the updated7.7second native crowd review.
 
-Tidestar `waterraid0919c` is now **active**, detached PID259903, launched after
+Tidestar `waterraid0919c` is now **terminal failure**, formerly detached PID259903, launched after
 1.9.18's native jobs and the short aura review finished. Source was clean
 `90ed375b`; local candidate1.9.19, not a claim that1.9.19 is deployed. Launcher
 and log are in `/tmp/eidolon-water-raid-20260919-r3-adH3Nx/`. Same five legal
 level70 builds, Low graphics, three repair waves and zero retries. Luna
-`/root/watch_tidestar_0919c` owns read-only completion/failure monitoring; root
-must not duplicate polling or rerun this live process. Do not start another
-browser/deployment workload over it. Full clear/claims/relogin remain unproven.
+`/root/watch_tidestar_0919c` reported terminal exit1 after22.7minutes. Do not
+resume this completed watcher or poll its process. The failing assertion was
+`settlePointerRaycast` in `tests/e2e/helpers.js:786`: the browser did not observe
+`needsRaycast === false` within1000ms during damage-role target acquisition.
+All five players remained alive; the last logged guardian health was12539.
+No repair stages were recorded, so full clear/claims/relogin remain unproven.
+This identifies a pointer-wait failure, not yet its root cause or a raid defect.
+No automatic rerun or relaxed assertion was applied. Results and HTML report
+were copied into that run directory before any subsequent browser work; the
+wrapper's credential scan passed and owned QA containers are no longer running.
+Private save: `/tmp/eidolon-party-checkpoint-waterraid0919c-AOXcJ4/save.archive.gz`,
+SHA256 `a124e7a7c5780efd88eb2d0d7de3bce40a71f711e795061ce5fe6685e412bd5b`.
 
 Independent next-check preparation (no GPU, raid files untouched): worktree
 `/tmp/eidolon-arena-review-20260919-LlO1tu`, branch `work/arena-review-20260919`,
