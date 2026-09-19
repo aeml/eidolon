@@ -29,8 +29,10 @@ not subjective visual quality. No GPU workload was launched alongside the raid.
 Inspect the candidate at High and Low after the raid releases the GPU, using the
 existing interior gallery and a representative gameplay camera. Keep a before/
 after comparison; ensure stone joints remain readable and attack warnings retain
-contrast. The old gallery's detail-geometry assertion says8 while the current
-kit unit contract says9; reconcile against actual gallery construction if needed,
-without weakening rendered checks. Only then integrate, add accurate cumulative
+contrast. The old gallery's detail-geometry assertion was8; it is corrected to9.
+`src/repro.js` reads the same kit's metrics directly, and `createShapes()` now
+includes the ninth `vigilInlay` geometry. Existing unit coverage confirms9; lint
+passes for the gallery correction. No rendered check was removed. Only then
+integrate, add accurate cumulative
 patch notes and synchronized release versions, and deploy with the authorized
 Luna watcher. This candidate is not a shipped fix or a full visual acceptance.
