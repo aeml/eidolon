@@ -55,6 +55,9 @@ export class AttachedStatusEffect {
 
     update(dt) {
         if (!this.isActive || this.disposed) return;
+        // Status art lives in the world effect group, not under the actor mesh.
+        // Follow the same floor cutaway without cancelling the underlying buff.
+        this.group.visible = !this.owner.gameEngine?.casino?.isActorCutAway?.(this.owner);
         if (this.group.parent !== this.scene) this.scene.add(this.group);
         const step = Math.max(0, Number(dt) || 0);
         this.elapsed += step;

@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import * as THREE from 'three';
 import { CasinoController } from '../src/core/CasinoController.js';
 import { GameEngine } from '../src/core/GameEngine.js';
+import { AttachedStatusEffect } from '../src/entities/AttachedStatusEffect.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createCasinoShell, createCasinoFurniture, updateCasinoCutaway, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
@@ -29,8 +30,11 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
     hidden.mesh.visible = false;
     engine.player.position.set(26, 0, 160);
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
+    engine.casino = controller; upstairs.gameEngine = engine;
+    const aura = new AttachedStatusEffect(engine.renderSystem.scene, upstairs, 'well_rested');
     expect(balcony.visible).toBe(false);
     expect(upstairs.mesh.visible).toBe(false);
+    expect(aura.group.visible).toBe(false);
     expect(downstairs.mesh.visible).toBe(true);
     expect(hidden.mesh.visible).toBe(false);
     expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, upstairs)).toBeNull();
@@ -41,6 +45,8 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
     expect(upstairs.mesh.visible).toBe(false);
     controller.floor = 'vip';
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
+    aura.update(.1);
+    expect(aura.group.visible).toBe(true);
     expect(upstairs.mesh.visible).toBe(true);
     expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, upstairs)).toBe(upstairs.mesh);
     expect(downstairs.mesh.visible).toBe(true);
@@ -49,9 +55,11 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
     engine.currentInstanceId = '';
     controller.render([upstairs, downstairs, hidden]);
+    aura.update(.1);
+    expect(aura.group.visible).toBe(true);
     expect(upstairs.mesh.visible).toBe(true);
     expect(hidden.mesh.visible).toBe(false);
-    controller.dispose();
+    aura.dispose(); controller.dispose();
 });
 
 test('cutaway cleanup restores living patrons but never revives retired bodies', () => {

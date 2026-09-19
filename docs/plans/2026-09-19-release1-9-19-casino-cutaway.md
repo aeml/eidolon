@@ -1,12 +1,14 @@
 # Alpha 1.9.19 — a place for every patron
 
 Status: packaged locally, **not pushed or live**. Alpha1.9.18 run35471538108
-is still being monitored by Luna; do not supersede it. Keep the full1.10 scope.
+passed and its public identity/source checks match. Keep the full1.10 scope.
 
 ## Included
 
 Upstairs casino patrons now follow the actual balcony cutaway, including pointer
-selection and nameplate visibility. Returning to a visible upper floor restores
+selection, nameplate visibility and independently rendered attached status art.
+Well Rested and other buffs keep their normal state; only their aura visibility
+follows the floor. Returning to a visible upper floor restores
 the patrons; lower-floor players remain visible from upstairs. Already-hidden
 or retired actors are not unconditionally revealed. No changes to seating,
 wagers, currency, membership, rewards or encounter mechanics.
@@ -24,10 +26,16 @@ full-session verification item complete.
   inspected and archived. See [review, artifacts and limits](2026-09-19-casino-crowd-review.md).
 -268 version/history consistency checks pass (4106,2.293s), plus changed-file
   lint, Bash syntax and diff checks. No repeated broad encounter or save matrix.
+- Follow-up: a real attached Well Rested effect exposed the separate world-space
+  aura gap. Its regression failed before correction;29 controller/status-effect
+  checks pass afterward (91575,2.18s). Updated crowded-floor render with40 real
+  status effects passes7.7seconds (5109,10.9s including startup), zero retries.
+  Visible aura counts match visible patrons in all four views. High public and
+  Low VIP screenshots were inspected; artifacts are preserved as `aura-results/`
+  and `aura-report/` beside the earlier crowd artifacts. No buff-state mutation.
 
 ## Next
 
-Accept1.9.18 from its terminal CI result and public exact identities first.
 The prepared Tidestar run remains the next missing raid; coordinate this next
 release's native browser jobs with that long run rather than overlapping them.
 When published, delegate its exact CI run to Luna and independently verify the

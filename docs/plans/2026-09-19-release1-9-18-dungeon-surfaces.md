@@ -1,5 +1,13 @@
 # Alpha 1.9.18 — stone beneath the spelllight
 
+**Delivered and accepted:** Luna reports CI35471538108 terminal success at
+`a709d9826726bb0dc60c7298663388847674fec4`. All jobs passed, including predeploy,
+both deployments and Live Release and Character QA. The latter took8m18s and
+passed anonymous/persistent-character and town recovery/Well Rested checks;
+its four-class/remote-animation step was skipped, not newly accepted here.
+Independent public frontend/backend identity, readiness, notes and source checks
+below match. Earlier pending/cancellation notes retain the release history.
+
 First candidate `74bd4b706022949fc612f1bc91d2e54bb3620b8d`, CI35471125941,
 is terminal cancelled before deployment: client checks passed, Go was running,
 and every deployment job was cancelled. No live acceptance for that candidate.
@@ -54,6 +62,14 @@ Artifacts: `/tmp/eidolon-floor-join-20260919-7adh4k/`. Reuse the already-require
 next raid for integrated actor/telegraph review instead of another broad rerun.
 
 ## Delivery gate
+
+Public delivery now independently verified: frontend `release.json` and backend
+`healthz` both report `a709d9826726bb0dc60c7298663388847674fec4` / Alpha1.9.18,
+with database ready. Served HTML has the1.9.18 login label, its notes and retained
+1.9.17 history. Served dungeon artwork contains corrected sRGB encoding and the
+shared24-unit span; served WorldGenerator imports that span. Final CI/post-deploy
+browser acceptance subsequently passed as recorded above. No native browser job
+from this workflow remains active; its slot is available for the next local run.
 
 Delegate exact-SHA CI/CD monitoring to Luna with a minimal brief and terminal/
 failure reporting. After success, independently verify public frontend/backend

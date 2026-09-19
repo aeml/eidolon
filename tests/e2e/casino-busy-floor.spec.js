@@ -21,6 +21,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
         const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { CasinoController } = await import('/src/core/CasinoController.js');
+        const { AttachedStatusEffect } = await import('/src/entities/AttachedStatusEffect.js');
         const { CollisionManager } = await import('/src/core/CollisionManager.js');
         const { createCasinoInterior, disposeCasinoObject } = await import('/src/art/ProceduralCasino.js');
         const gallery = window.__eidolonAnimationGalleryController;
@@ -35,6 +36,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         const viewer = { position: new THREE.Vector3(26, 0, 160), state: 'IDLE' };
         const controller = new CasinoController({ renderSystem: render, collisionManager, currentInstanceId: 'lanternhold-casino',
             player: viewer, network: { socket: { readyState: WebSocket.OPEN }, send() {} } });
+        controller.engine.casino = controller;
         controller.updateState({ tables, floor: 'public' });
         render.scene.add(controller.furniture);
         const models = [];
@@ -52,9 +54,10 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             mesh.position.set(seat.x, seat.y || 0, seat.z);
             mesh.rotation.y = seat.rotation;
             render.scene.add(mesh);
-            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor });
+            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor, gameEngine: controller.engine });
         }
         controller.render(models);
+        let auras = [];
         window.__casinoCrowd = {
             view(quality, floor) {
                 render.setGraphicsQuality(quality);
@@ -63,16 +66,20 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 viewer.position.set(upstairs ? 0 : 26, upstairs ? 8 : 0, upstairs ? 140 : 160);
                 controller.beforeUpdate(1 / 60);
                 controller.render(models);
+                auras.forEach(aura => aura.dispose());
+                auras = models.map(model => new AttachedStatusEffect(render.effectGroup, model, 'well_rested', { quality }));
                 render.setZoom(30);
                 const focus = new THREE.Vector3(0, upstairs ? 8 : 0, upstairs ? 149 : 166);
                 render.camera.position.copy(focus).add(new THREE.Vector3(20, 70, 65));
                 gallery.controls.target.copy(focus);
                 gallery.controls.update();
                 return { visible: models.filter(model => model.mesh.visible).length,
+                    auras: auras.filter(aura => aura.group.visible).length,
                     seated: models.filter(model => model.mesh.getObjectByName('Rig_Hips')?.position.y === 1.12).length };
             },
             dispose() {
                 controller.dispose();
+                auras.forEach(aura => aura.dispose());
                 models.forEach(({ type, mesh }) => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
                 disposeCasinoObject(interior);
             }
@@ -85,6 +92,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             const view = await page.evaluate(({ quality, floor }) => window.__casinoCrowd.view(quality, floor), { quality, floor });
             expect(view.seated).toBe(40);
             expect(view.visible).toBe(floor === 'public' ? 28 : 40);
+            expect(view.auras).toBe(view.visible);
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
         }

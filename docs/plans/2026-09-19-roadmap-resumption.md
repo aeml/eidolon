@@ -126,6 +126,13 @@ Next Tidestar launcher is prepared at
 **not started**. Keep its five legal builds and corrected spacing input. The
 user now authorizes a read-only Luna watcher for this long run when launched.
 
+Update: fresh Luna watcher reports35471538108 terminal **success** at exact
+`a709d9826726bb0dc60c7298663388847674fec4`. Public frontend/backend independently
+match Alpha1.9.18 and the database is ready; served notes and floor source match.
+Live character/town-recovery QA passed; its four-class/remote-animation step was
+skipped and is not new evidence. Native browser slot is now free. Do not poll
+or restart that completed release. Review the aura follow-up, then start Tidestar.
+
 Rootheart attempt39986 is terminal failure before combat (five leader steps,
 zero rooms cleared). All five entered correctly. The captured formation at
 `/tmp/eidolon-earth-raid-20260919-xyX7KD/run.log` reproduces a boxed-in second

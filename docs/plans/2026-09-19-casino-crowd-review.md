@@ -50,3 +50,10 @@ do not interrupt the current deployment for it.
 Draft player-facing patch note: “Casino upstairs patrons now follow the balcony
 cutaway, so they no longer float over downstairs tables or intercept clicks
 while their floor is hidden. Returning upstairs restores the full crowd.”
+
+Follow-up before publication: attached status effects are world-space objects,
+not children of the hidden mesh. A real Well Rested regression caught the aura
+remaining visible. `AttachedStatusEffect.update` now uses the same cutaway
+predicate without cancelling buffs.29 controller/status checks pass; the native
+four-view check with40 real auras passes7.7seconds (5109). High public and Low VIP
+images inspected. `aura-results/` and `aura-report/` preserve that newer evidence.
