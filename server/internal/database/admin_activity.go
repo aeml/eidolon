@@ -50,6 +50,7 @@ type AdminActivity struct {
 	RequestID string             `bson:"request_id" json:"requestId"`
 	Result    string             `bson:"result" json:"result"`
 	Summary   string             `bson:"summary" json:"summary"`
+	Reason    string             `bson:"reason,omitempty" json:"reason,omitempty"`
 }
 
 type AdminActivityQuery struct {
@@ -100,6 +101,7 @@ func ValidateAdminActivity(event AdminActivity) error {
 	if event.ID.IsZero() || event.At.IsZero() || !event.ExpiresAt.After(event.At) ||
 		!validActivityAccountKey(event.Actor, true) || !validActivityAccountKey(event.Target, false) ||
 		!boundedActivityText(event.RequestID, 64, true) || !boundedActivityText(event.Summary, 256, true) ||
+		!boundedActivityText(event.Reason, 160, false) ||
 		!validAdminActivityAction(event.Action) {
 		return errors.New("invalid administration activity")
 	}
@@ -144,7 +146,7 @@ func (db *DB) AppendAdminActivity(event AdminActivity) error {
 	}
 	if existing.ID != event.ID || !existing.At.Equal(event.At) || !existing.ExpiresAt.Equal(event.ExpiresAt) ||
 		existing.Actor != event.Actor || existing.Target != event.Target || existing.Action != event.Action ||
-		existing.RequestID != event.RequestID || existing.Result != event.Result || existing.Summary != event.Summary {
+		existing.RequestID != event.RequestID || existing.Result != event.Result || existing.Summary != event.Summary || existing.Reason != event.Reason {
 		return errors.New("activity ID conflicts with immutable record")
 	}
 	return nil

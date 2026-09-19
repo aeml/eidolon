@@ -31,6 +31,7 @@ func TestAdminActivityRetentionAndValidation(t *testing.T) {
 		func(e *AdminActivity) { e.Actor = "" }, func(e *AdminActivity) { e.Action = "raw_logs" },
 		func(e *AdminActivity) { e.Summary = strings.Repeat("x", 257) }, func(e *AdminActivity) { e.Summary = "token\nlog" },
 		func(e *AdminActivity) { e.Result = "maybe" }, func(e *AdminActivity) { e.RequestID = "" },
+		func(e *AdminActivity) { e.Reason = strings.Repeat("x", 161) }, func(e *AdminActivity) { e.Reason = "bad\nreason" },
 	} {
 		invalid := event
 		change(&invalid)

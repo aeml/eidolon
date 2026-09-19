@@ -12,6 +12,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
 
@@ -20,9 +21,9 @@ const (
 	MsgAdminGrantItem         = "admin_grant_item"
 	MsgAdminTeleport          = "admin_teleport"
 	adminMutationPayloadLimit = 4 << 10
-	adminGoldGrantLimit       = 100_000_000
+	adminGoldGrantLimit       = database.AdminGoldGrantLimit
 	// All balances must remain exactly representable in the JavaScript client.
-	adminGoldBalanceLimit = 9_007_199_254_740_991
+	adminGoldBalanceLimit = database.AdminGoldBalanceLimit
 )
 
 // Kept separate from the read protocol. These types are not registered until
@@ -182,13 +183,12 @@ func decodeAdminMutation(msg Message) (adminMutationRequest, error) {
 // operation must conflict, including a different target, reason or destination.
 // The actor argument must come from the authenticated connection, never JSON.
 func (request adminMutationRequest) identities(actor, action string) (id, fingerprint string) {
-	identity, _ := json.Marshal([2]string{actor, request.ID})
 	payload, _ := json.Marshal(struct {
 		Action  string               `json:"action"`
 		Request adminMutationRequest `json:"request"`
 	}{action, request})
-	identityHash, payloadHash := sha256.Sum256(identity), sha256.Sum256(payload)
-	return "admin:" + hex.EncodeToString(identityHash[:]), hex.EncodeToString(payloadHash[:])
+	payloadHash := sha256.Sum256(payload)
+	return database.AdminOperationID(actor, request.ID), hex.EncodeToString(payloadHash[:])
 }
 
 // Acquire before the usual single-account dispatch lock, then recheck actor
@@ -199,8 +199,5 @@ func (request adminMutationRequest) lockAccounts(actor string) func() {
 }
 
 func validateAdminGoldBalance(balance, amount int) error {
-	if balance < 0 || amount < 1 || amount > adminGoldGrantLimit || balance > adminGoldBalanceLimit-amount {
-		return errors.New("Gold grant would exceed the permitted amount or balance")
-	}
-	return nil
+	return database.ValidateAdminGoldGrant(balance, amount)
 }

@@ -36,6 +36,12 @@ func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	}
 }
 
+func TestAdminOperationReceiptsRequireNewWriterSchema(t *testing.T) {
+	if CurrentSchemaVersion < 14 || len(schemaMigrations) < 14 || schemaMigrations[13].Name != "administration_operation_receipts" {
+		t.Fatal("administration receipts could be erased by an older full-character writer")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {

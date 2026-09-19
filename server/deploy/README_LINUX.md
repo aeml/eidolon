@@ -36,6 +36,16 @@ retained for retry, readiness becomes unavailable, and graceful shutdown waits
 until that event is durable. A sudden host loss while local storage itself is
 unwritable cannot guarantee preservation of such an unjournaled event.
 
+The administration feature batch adds schema14's private `admin_operations`
+collection and full-character operation receipts. Preserve these with the
+character-save journal in the same consistent backup. Operation IDs and final
+results are permanent deduplication receipts, not TTL history; do not delete them
+to retry a grant. Generated execution plans are removed when completed. Earlier
+schema13 writers cannot safely save these characters because they omit the new
+receipts; reverting across this boundary requires the existing approved matching
+Mongo/journal restore workflow. This batch's operation executor is still local
+work in progress; grant/teleport admission and automatic recovery are not enabled.
+
 Retention is applied when records are created. Reads also enforce the current
 retention cutoff, so reducing it immediately hides older records; physical
 deletion follows each record's original expiry via MongoDB's asynchronous TTL.

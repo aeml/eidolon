@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 13
+const CurrentSchemaVersion = 14
 
 type schemaMigration struct {
 	Version int
@@ -75,6 +75,9 @@ var schemaMigrations = []schemaMigration{
 	// backfill. Deployment backs up schema11 before admitting this writer.
 	{Version: 12, Name: "ep_wallet_and_casino_receipts", Apply: func(context.Context, *DB) error { return nil }},
 	{Version: 13, Name: "administration_activity_history", Apply: applyAdminActivityIndexes},
+	// Earlier full-character writers erase admin operation receipts, allowing a
+	// pending grant to pay twice. Fence those binaries before the first grant.
+	{Version: 14, Name: "administration_operation_receipts", Apply: applyAdminOperationIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

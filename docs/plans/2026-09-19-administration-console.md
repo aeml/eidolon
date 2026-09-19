@@ -67,6 +67,21 @@ with accurate release notes and synchronized versions before deploying it.
   or player economy limits changed. Teleport request targets currently support
   town or an exact other account; live state, instance and walkability checks
   remain part of the unimplemented execution handler.
+- Gold/item execution now has a private Mongo operation-intent and replay store.
+  First preparation keeps the exact generated item rolls; actor/request-ID reuse
+  with a different fingerprint conflicts. Full-character saves carry the effect
+  and a private admin receipt together through the existing disk journal. Recovery
+  prefers newer live state or flushes the offline journal before reading Mongo.
+  Success is acknowledged only after the character commit, immutable outcome,
+  audit append and completion marker. A rejected dead/full/balance-invalid grant
+  saves no character. Completed replay performs neither another save nor audit.
+- Local schema14 adds bounded pending-operation query indexes and fences earlier
+  writers that would erase the new character receipts. Completed operation IDs
+  and recorded results are permanent deduplication receipts, separate from the
+  TTL-controlled browseable history; bulky generated execution plans are removed
+  on completion. Structured audit entries now support a bounded operator reason.
+  The executor/store are tested internally, but **not wired to startup/runtime
+  recovery or WebSocket admission yet**. No mutation is reachable in the game.
 
 ## Evidence and limits
 
@@ -99,19 +114,35 @@ with accurate release notes and synchronized versions before deploying it.
   include crossed/self account locks, unrelated-account independence, duplicate
   and forged JSON fields, numeric bounds, request replay/conflicts, every base
   item/rarity, full-bag/partial-stack failures and consumed-item retries. This
-  does not prove durable mutation execution, which is still pending.
+  does not by itself prove durable mutation execution.
+- The grant executor now passes save/audit-failure and process-state-loss tests,
+  preserving newer live Gold, resources, equipment, rest and item rolls. Focused
+  admin, snapshot and lock tests pass with the race detector (native7854 exit0).
+  Real isolated Mongo intent/outcome tests pass (native89401 exit0): concurrent
+  identical prepares keep one plan, conflicting fingerprints/outcomes fail,
+  audit failure remains recoverable after reopening, completed replay does not
+  recreate an expired audit, and completed operations leave the pending queue.
+- Real Mongo plus the actual full-character disk journal passes both Gold and
+  item recovery (native22481 exit0,0.20seconds), after an injected commit failure
+  and reopening both stores. Exact saved receipts, unchanged dungeon logout
+  timestamp/resources/rest/gear/EP, one audit with its reason, original item IDs,
+  and unchanged save ID on completed replay were verified. This is an internal
+  executor/persistence test, not authenticated socket or deployed acceptance.
 
 ## Next required implementation
 
 1. Confirmed canonical item creation, bounded Gold grants and validated teleport
    operations. Schemas, canonical item generation/delivery and ordered lock
-   helpers are implemented; no mutation buttons or handlers exist yet. Wire
+   helpers and durable Gold/item execution are implemented; no mutation buttons
+   or handlers exist yet. Wire
    dispatch so multi-account operations acquire all locks instead of nesting a
    target lock under the sender lock. Recheck ownership and durable role under
-   those locks. Implement exact target/current-state/instance/walkability checks
-   and a recoverable character/receipt/audit operation journal before registering
-   endpoints. Preserve full-snapshot saves and block stale hydration/commands
-   while an operation is unresolved. Do not bolt grants onto the read handler.
+   those locks. Finish teleport planning/execution and exact target/current-state/
+   instance/walkability checks. Connect operation recovery at startup and bounded
+   runtime retries, and block target hydration/commands while unresolved. Keep a
+   pending-account cache so ordinary movement never queries Mongo per packet.
+   Wire confirmed controls and server-provided item/destination options only
+   after these admission/recovery hooks. Do not bolt grants onto the read handler.
 2. Remaining full-gate failure/concurrency/restart and disposable two-account
    connected acceptance, backup/restore and safe live read-only smoke.
 3. Package/deploy only when the batch is ready. Use the user-approved Luna watcher
