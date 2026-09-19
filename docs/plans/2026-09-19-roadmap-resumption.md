@@ -66,7 +66,8 @@ are already inherited. Rootheart is accepted, not the next missing clear.
 
 Tidestar started in native session **1809**, runID `waterraid0919a`, after
 Rootheart cleanup and an idle live-browser runner were verified. Clean source
-`6ace7407909d1cb234936496d774282e723df01a`; later edits are documentation only.
+`6ace7407909d1cb234936496d774282e723df01a`; later edits are documentation and
+CI-filter checks only, not runtime, fixture or browser-route changes.
 Log: `/tmp/eidolon-water-raid-20260919-ZLnP7l/run.log`. The same isolated
 API18285/Mongo18286/Web4187 and five legal level70 role builds are used, Low
 graphics, zero retries. Water's own memory-carrying ritual remains mandatory.
@@ -109,6 +110,16 @@ changed-file lint. This is not yet an actual raid-clear proof. Do not launch a
 five-browser retry alongside the release's live-browser workload on this host.
 
 ## Deployment monitoring policy (user request, September19)
+
+Prepared CI efficiency change: pushes containing only `README.md` and/or
+`docs/**/*.md` no longer start the full publishing pipeline. These files are
+not Pages game inputs. Pull requests remain unfiltered to avoid leaving required
+checks pending; manual dispatch and every mixed code/asset/release/HTML-note
+push retain all existing gates. No test job, concurrency rule or deployment
+dependency was removed. The new regression failed before the filter and then
+all14 queue/checkout/browser-sharding checks passed (80870), with YAML parsing,
+changed-file lint and diff checks. This is not yet published; batch it with the
+next suitable change rather than interrupt the active multi-browser raid.
 For the next and subsequent deployments, delegate watching the exact GitHub
 CI/CD run to one `gpt-5.6-luna` agent with a minimal standalone brief, not a fork
 of the full roadmap conversation. Use a quiet process/watch or bounded polling;

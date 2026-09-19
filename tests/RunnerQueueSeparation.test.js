@@ -3,6 +3,18 @@ import { readFileSync } from 'node:fs';
 const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
 const soak = readFileSync('.github/workflows/nightly-soak.yml', 'utf8');
 
+test('documentation-only pushes skip publishing without filtering required PR checks', () => {
+    const push = ci.split('\n  push:\n')[1].split('\n  pull_request:')[0];
+    const ignored = [...push.matchAll(/^ {6}- '([^']+)'$/gm)].map(match => match[1]);
+    expect(ignored).toEqual(['README.md', 'docs/**/*.md']);
+    expect(push).toContain('branches: [master, main]');
+    expect(ci.match(/paths-ignore:/g)).toHaveLength(1);
+    const otherTriggers = ci.split('\n  pull_request:\n')[1].split('\npermissions:')[0];
+    expect(otherTriggers).toContain('branches: [master, main]');
+    expect(otherTriggers).toContain('workflow_dispatch:');
+    expect(otherTriggers).not.toMatch(/paths(?:-ignore)?:/);
+});
+
 test('hosted rehearsals do not hold or replace the production Pages queue', () => {
     const production = "github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')";
     const concurrency = ci.split('\nconcurrency:\n')[1].split('\njobs:')[0];

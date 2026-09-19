@@ -3,6 +3,13 @@ name: CI
 on:
   push:
     branches: [master, main]
+    # These documents are not deployed game inputs. Keep PR checks unfiltered
+    # so a documentation PR cannot leave required checks waiting indefinitely.
+    # Any mixed push touching code, assets, notes in index.html or release
+    # metadata still runs the entire existing release gate.
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**/*.md'
   pull_request:
     branches: [master, main]
   workflow_dispatch:
