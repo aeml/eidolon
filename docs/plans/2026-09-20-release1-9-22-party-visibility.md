@@ -1,9 +1,15 @@
 # Alpha1.9.22 — keep your party in sight
 
-Status: packaged and queued for publication, not yet deployed. Fire run
-fireraid0920f is terminal exit1 and its services are gone; deployment can use
-the native runner. Luna will monitor the exact publishing workflow. Do not
-start Water or another native raid run until deployment browser work finishes.
+Status: first publication blocked in CI, not deployed. CI35491700557 on44729c2d
+ended failure after9m57s: one old damage-role assertion still expected six
+targeting probes instead of the ten now including exposed upper corners.
+7,031 client tests passed; that assertion alone failed. Hosted browser and Go
+jobs passed; deployment/native QA were skipped. Production remains1.9.21.
+The assertion now requires all ten attempts, explicitly checks the four corners,
+and still requires zero clicks through a covered target. This is a test-only
+correction within the same1.9.22 candidate, not a gameplay targeting change.
+Luna monitors the corrected publishing workflow. Do not start Water or another
+native raid run until deployment browser work finishes.
 
 The earned Verdant screenshot exposed a four-member roster whose header/tank
 row scrolled offscreen after Ready Check. The real-HTML regression failed before

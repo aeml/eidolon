@@ -59,7 +59,11 @@ test('damage inputs require witnessed hover and fresh range before each ordinary
 test('a visible projected boss covered by another entity never receives a blind click', async () => {
     const input = damageInput({ hoveredId: jest.fn(async () => 'ally') });
     expect(await attackPartyDamageTarget(input, 'boss')).toEqual([]);
-    expect(input.project).toHaveBeenCalledTimes(6);
+    expect(input.project).toHaveBeenCalledTimes(10);
+    expect(input.project.mock.calls.slice(-4).map(([, point]) => point)).toEqual([
+        { x: .15, y: .85, z: .15 }, { x: .15, y: .85, z: .85 },
+        { x: .85, y: .85, z: .15 }, { x: .85, y: .85, z: .85 }
+    ]);
     expect(input.click).not.toHaveBeenCalled();
 });
 test('a side of the actual hitbox can be acquired after its center is covered', async () => {
