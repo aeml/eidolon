@@ -13,18 +13,24 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { setAutoLootThroughSettings } from './helpers.js';
 import { waterChapterContinuation } from '../waterRegionContinuation.js';
+import { earnedRegionRoute } from '../earnedRegionRoutes.js';
 
 // Continues after an actually earned Missing Ferry turn-in. No registration,
 // fixture grants or prerequisite rewriting here; the caller owns its save.
-export async function earnWaterRegionToReadiness(page, credentials, { step = (_name, body) => body(), capture } = {}) {
-    expect(await readChronicleChapter(page, 'chronicle_water_missing_ferry')).toMatchObject({ completed: true, count: 60 });
-    const waypoints = chroniclePhoneRoutes.water;
+export async function earnWaterRegionToReadiness(page, credentials, options = {}) {
+    return earnRegionToReadiness(page, credentials, 'water', options);
+}
+
+export async function earnRegionToReadiness(page, credentials, realm, { step = (_name, body) => body(), capture } = {}) {
+    const route = earnedRegionRoute(realm);
+    expect(await readChronicleChapter(page, route.previous)).toMatchObject({ completed: true });
+    const waypoints = chroniclePhoneRoutes[realm];
     const leaveTown = () => walkInvestigationWaypoints(page, waypoints);
     const chapter = async (id, run) => {
         const saved = await readChronicleChapter(page, id);
-        const state = waterChapterContinuation(saved);
+        const state = waterChapterContinuation(saved, realm);
         if (state === 'completed') {
-            console.log('[earned-water-retained]', JSON.stringify(saved));
+            console.log(`[earned-${realm}-retained]`, JSON.stringify(saved));
             return;
         }
         await run({ resumeAccepted: state === 'accepted' });
@@ -36,48 +42,48 @@ export async function earnWaterRegionToReadiness(page, credentials, { step = (_n
     const hunt = id => chapter(id, options => earnFreshStoryHunt(page, credentials, id, {
         ...options, leaveTown
     }));
-    await step('flood shelter ledger', () => investigate('chronicle_water_flood_shelter'));
-    await step('snow debts', () => hunt('chronicle_water_snow_debts'));
-    await step('moon-tide pearls', () => chapter('chronicle_04_pearls_without_tides', async options => {
-        const hunt = chronicleHunts.find(hunt => hunt.id === 'chronicle_water_snow_debts');
+    await step(route.investigation, () => investigate(route.investigation));
+    await step(route.hunt, () => hunt(route.hunt));
+    await step(route.collection, () => chapter(route.collection, async options => {
+        const hunt = chronicleHunts.find(hunt => hunt.id === route.hunt);
         const result = await earnEarnedCollection(page, credentials, {
             ...options,
-            chapterId: 'chronicle_04_pearls_without_tides', itemName: 'Moon-Tide Pearl', nearbyType: 'MountainTroll',
+            chapterId: route.collection, itemName: route.item, nearbyType: hunt.enemy,
             findTarget: () => findExpeditionTarget(page, hunt), leaveTown,
             prepare: async () => prepareStoryHuntBuild(page, credentials,
                 await page.evaluate(() => ({ level: window.game.player.level, statPoints: window.game.player.statPoints })),
-                'before-moon-tide-pearls')
+                `before-${route.collection}`)
         });
         await setAutoLootThroughSettings(page, result.previousAutoLoot);
     }));
-    await step('true and false reflections', () => investigate('chronicle_water_false_reflection'));
-    await step('unmastered current', () => hunt('chronicle_water_unmastered_current'));
-    await step('Abyssal Well readiness and saved handoff', async () => {
-        const completed = ['chronicle_water_flood_shelter', 'chronicle_water_snow_debts',
-            'chronicle_04_pearls_without_tides', 'chronicle_water_false_reflection', 'chronicle_water_unmastered_current'];
-        const id = 'chronicle_05_drowned_name';
-        const state = waterChapterContinuation(await readChronicleChapter(page, id));
+    await step(route.reflection, () => investigate(route.reflection));
+    if (route.finalHunt) await step(route.finalHunt, () => hunt(route.finalHunt));
+    await step(`${route.dungeonType} readiness and saved handoff`, async () => {
+        const completed = [route.previous, route.investigation, route.hunt, route.collection, route.reflection,
+            ...(route.finalHunt ? [route.finalHunt] : [])];
+        const id = route.dungeon;
+        const state = waterChapterContinuation(await readChronicleChapter(page, id), realm);
         expect(state, 'This route must not replay an already completed dungeon').not.toBe('completed');
         await openIlyra(page);
         if (state === 'offered') await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
         await expect.poll(async () => (await readChronicleChapter(page, id))?.accepted).toBe(true);
         await page.locator('#btn-close-quest').click();
-        await earnedCheckpoint(page, credentials, { label: 'water-region-readiness', final: true });
+        await earnedCheckpoint(page, credentials, { label: `${realm}-region-readiness`, final: true });
         const progress = await page.evaluate(() => {
             const p = window.game.player;
             return { level: p.level, xp: p.xp, gold: p.gold,
                 quests: p.quests.map(q => ({ id: q.id, completed: q.completed, count: q.count })) };
         });
-        console.log('[earned-water-readiness]', JSON.stringify(progress));
+        console.log(`[earned-${realm}-readiness]`, JSON.stringify(progress));
         for (const id of completed) expect(progress.quests.find(q => q.id === id)?.completed).toBe(true);
         // Fail and preserve the actual save if the current curve leaves a gap;
         // do not fill it with daily contracts, XP grants or a lower entry gate.
-        expect(progress.level, 'Water story must support its level60 dungeon gate without mandatory dailies').toBeGreaterThanOrEqual(60);
+        expect(progress.level, `${realm} story must support its level${route.level} dungeon gate without mandatory dailies`).toBeGreaterThanOrEqual(route.level);
         await openDungeonGuide(page);
         await page.getByRole('tab', { name: 'Dungeons', exact: true }).click();
-        await page.locator('#dungeon-type-select').selectOption('abyssal_well');
+        await page.locator('#dungeon-type-select').selectOption(route.dungeonType);
         await page.locator('#diff-btn-normal').click();
-        await page.locator('#dungeon-run-level-select').selectOption('60');
+        await page.locator('#dungeon-run-level-select').selectOption(String(route.level));
         await expect(page.locator('#btn-enter-dungeon')).toBeEnabled();
         await page.locator('#btn-close-dungeon-menu').click();
         await expect.poll(() => {

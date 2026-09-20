@@ -147,12 +147,19 @@ export async function earnEarnedCollection(page, credentials, {
         observedTargetDeaths, deaths, note: 'Observed earned drops and unspent gold; vendor values are not claimed as sale income.' })}`);
     await openIlyra(page);
     if (captureReady) await captureReady();
+    const promised = await page.evaluate(id => {
+        const p = window.game.player, q = p.quests.find(q => q.id === id);
+        return { level: p.level, xp: q.rewardXP };
+    }, collection);
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection)).completed).toBe(true);
     await expect.poll(() => seedsInBag(page)).toBe(seedsBefore - required);
     const reward = await readChronicleChapter(page, collection);
     expect(reward.grantedGold).toBeGreaterThan(0);
-    expect(reward.grantedXP).toBeGreaterThan(0);
+    expect(promised.xp).toBeGreaterThan(0);
+    expect((reward.grantedXP || 0) + (reward.grantedResonanceXP || 0)).toBe(promised.xp);
+    if (promised.level >= 100) expect(reward.grantedXP || 0).toBe(0);
+    if ((await readPlayerState(page)).level < 100) expect(reward.grantedResonanceXP || 0).toBe(0);
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
     return { started, previousAutoLoot, seedsBefore, required, observedTargetDeaths, deaths, reward };

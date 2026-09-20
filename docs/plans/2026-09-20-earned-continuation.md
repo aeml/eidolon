@@ -29,6 +29,18 @@ Normal60, Low graphics, existing two-hour party bound and zero retries; Luna
 monitors terminal-only. No deployment browser job or other native route overlaps.
 This launch is not evidence of a dungeon clear.
 
+Fire/Air continuation preparation reuses the Water route's existing walking,
+investigation, hunt, collection, manual turn-in and saved-handoff helpers with
+authored regional selections. `earned-region` plus `EIDOLON_E2E_STORY_REALM=fire`
+or `air` retains the same isolated archive capture, two-hour ceiling and zero
+retries. It requires an actually completed preceding dungeon; no checkpoint for
+that future success is invented. Collection/hunt receipts now check the full
+XP-plus-Resonance amount and cap-only split instead of incorrectly demanding
+ordinary XP at level100.47 focused JS tests pass3.035s, actual Go quest cap/overflow
+tests pass1.045s, and lint/shell syntax/diff pass. These are QA preparation only,
+not Fire/Air completion or a new player-facing release; active Abyssal stays on
+its original frozen source.
+
 ## Previous retained progress — hunt61/70, bag-policy failure
 
 Native7513 / `earnedwaterregion0920e`, frozenaa71420e, ended exit1 after1.1h.

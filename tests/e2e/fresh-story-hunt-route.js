@@ -203,7 +203,11 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, id)).completed).toBe(true);
     const receipt = await readChronicleChapter(page, id);
-    expect(receipt.grantedXP).toBe(Math.floor((100 + 25 * (hunt.contentLevel - 1) ** 2) * .75));
+    // Level-cap overflow is a real Resonance reward, not missing quest XP.
+    expect((receipt.grantedXP || 0) + (receipt.grantedResonanceXP || 0))
+        .toBe(Math.floor((100 + 25 * (hunt.contentLevel - 1) ** 2) * .75));
+    if (beforeClaim.level >= 100) expect(receipt.grantedXP || 0).toBe(0);
+    if ((await snapshot(page)).level < 100) expect(receipt.grantedResonanceXP || 0).toBe(0);
     expect(receipt.grantedGold).toBe(hunt.contentLevel * 10);
     await expect(page.locator('.quest-dialogue__speech')).toHaveText(hunt.completion.split(/\n\s*\n/));
     expect((await snapshot(page)).gold).toBe(beforeClaim.gold + receipt.grantedGold);
