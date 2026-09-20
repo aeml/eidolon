@@ -278,6 +278,11 @@ not the obsolete million-XP catalog and not proof of satisfying campaign pacing.
 
 ### Actual-phone feedback — September 14 clarification
 
+September 20 user decision: defer the physical-phone dungeon/party check until
+the player has time. Do not repeat the request or pause other roadmap work for
+it. Keep the earlier positive general mobile feedback; this check remains
+pending, not failed or silently marked passed.
+
 The user uses **Brave or Chrome** on their phone and has **not tried a party or
 dungeon session**. Preserve their earlier positive general mobile-UI feedback;
 it does not establish mobile dungeon or multiplayer acceptance. Phone model/OS
