@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { installDungeonObservationInPage, readDungeonTargetStateInPage } from '../dungeonDeathObservation.js';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
@@ -57,10 +58,7 @@ export async function playDungeonThroughInputs(page, {
         while (Date.now() < deadline) {
             await assertWorldUpdatesContinue(page);
             if (beforeCombat && await beforeCombat(page, target)) continue;
-            const state = await page.evaluate(id => {
-                const entity = window.game.remotePlayers.get(id);
-                return entity ? { health: entity.health ?? entity.stats?.hp, state: entity.state } : null;
-            }, target.id);
+            const state = await page.evaluate(readDungeonTargetStateInPage, target.id);
             if (state?.state === 'DEAD' || state?.health <= 0) {
                 console.log(`${logPrefix} defeated ${target.type}`);
                 if (fullRun && target.type === playthrough.bosses[0] && process.env.EIDOLON_E2E_CLASS === 'Fighter') {
@@ -224,32 +222,7 @@ export async function playDungeonThroughInputs(page, {
         expect(age, 'authoritative world updates stalled during dungeon progression').toBeLessThan(10_000);
     }
 
-    await page.evaluate(() => {
-        const game = window.game;
-        const original = game.handleServerMessage.bind(game);
-        window.__verdantLastState = performance.now();
-        window.__dungeonObservedSkills = [];
-        window.__dungeonSurvivalEvents = [];
-        game.handleServerMessage = message => {
-            if (message.type === 'state' || message.type === 'delta') window.__verdantLastState = performance.now();
-            if (['damage', 'heal'].includes(message.type) && message.payload?.targetId === game.player.id) {
-                const data = message.payload;
-                const source = game.remotePlayers.get(data.sourceId);
-                window.__dungeonSurvivalEvents.push({ time: Math.round(performance.now()), event: message.type,
-                    amount: data.amount, kind: data.kind, sourceType: source?.subType || source?.constructor.name ||
-                        (String(data.sourceId || '').startsWith('hazard-') ? 'hazard' : 'unresolved'),
-                    playerPosition: { x: game.player.position.x, z: game.player.position.z },
-                    sourcePosition: source?.position ? { x: source.position.x, z: source.position.z } : null,
-                    hpBeforePresentation: game.player.stats.hp });
-                if (window.__dungeonSurvivalEvents.length > 80) window.__dungeonSurvivalEvents.shift();
-            }
-            if (message.type === 'ability' && message.payload?.sourceId === game.player.id &&
-                !window.__dungeonObservedSkills.includes(message.payload.skillName)) {
-                window.__dungeonObservedSkills.push(message.payload.skillName);
-            }
-            return original(message);
-        };
-    });
+    await page.evaluate(installDungeonObservationInPage);
     let completedRun;
     await runInstance(page, { ...playthrough, useTownGuide, resetRun, beforeExit: async () => {
         if (afterEntry) await afterEntry(page);
