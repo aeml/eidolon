@@ -238,7 +238,12 @@ export function planPartyTelegraphEscape(state, warnings, canStep = () => true, 
 // hoveredEntity or invoke a skill/network command directly.
 export async function acquirePartyAllyPointer(input, targetId) {
     for (const point of [null, { x: .5, y: .85, z: .5 }, { x: .15, y: .5, z: .5 },
-        { x: .85, y: .5, z: .5 }, { x: .5, y: .5, z: .15 }, { x: .5, y: .5, z: .85 }]) {
+        { x: .85, y: .5, z: .5 }, { x: .5, y: .5, z: .15 }, { x: .5, y: .5, z: .85 },
+        // Overlapping isometric silhouettes can cover every axial sample while
+        // leaving a real upper corner exposed. Still require ordinary hover
+        // confirmation; never click through the foreground actor.
+        { x: .15, y: .85, z: .15 }, { x: .15, y: .85, z: .85 },
+        { x: .85, y: .85, z: .15 }, { x: .85, y: .85, z: .85 }]) {
         const projected = await input.project(targetId, point);
         if (!projected?.visible) continue;
         await input.move(projected.x, projected.y);

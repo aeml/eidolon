@@ -27,6 +27,28 @@ The current trace lacks those fields, so crowd occlusion versus cache/proxy
 ownership remains unresolved. The next investigation should reproduce only
 this saved elite-room formation/targeting problem, not rerun accepted raids.
 
+## Bounded targeting reproduction
+
+Using two recorded elite-room positions (target99997.203125/19592.751953125,
+foreground99999.7265625/19594.291015625), the real procedural MagmaGolem
+interaction boxes and the game's isometric camera direction reproduces a
+concrete test-input defect: all six axial aiming samples hit the foreground
+golem, while an upper corner still exposes the requested target. The regression
+failed before the change and passes after adding four upper-corner samples to
+the existing bounded pointer search. Every sample still requires real raycast
+hover confirmation; a completely hidden target still returns no attack point.
+
+Sixty-eight targeting/party-control checks pass in1.089seconds without launching
+a browser, database or GPU workload. This is a two-actor static geometry
+reproduction, not proof of the original complete moving crowd or full raid.
+It does not alter gameplay selection, combat stats, watchdogs or retry policy.
+
+Next: after CI35483868157 and independent public1.9.21 verification finish,
+exercise Fire with this input correction and the already-added failure-scene
+evidence. No native browser overlap with deployment. Rootheart and accepted
+dungeon routes remain retained, not rerun. Do not publish another release just
+for this test-only correction.
+
 Private checkpoint, not uploaded:
 `/tmp/eidolon-party-checkpoint-fireraid0920a-S8ZFB9/save.archive.gz`, SHA256
 `21d9d01f5e40f9bb5ac3ceee02c723095bff736695a6b2cddb9d88c6885b5ed4`.

@@ -1,5 +1,8 @@
 import { jest } from '@jest/globals';
+import * as THREE from 'three';
 import { aimDungeonCombatTarget } from './dungeonTargetInput.js';
+import { createProceduralMagmaGolem } from '../src/art/ProceduralOverworldEnemies.js';
+import { MagmaGolem } from '../src/entities/MagmaGolem.js';
 
 const makeInput = () => ({
     project: jest.fn().mockResolvedValue({ x: 100, y: 200, visible: true }),
@@ -28,7 +31,7 @@ test('completely covered target yields no attack point after bounded hitbox sear
     const input = makeInput();
     input.hoveredId.mockResolvedValue('Cleric');
     expect(await aimDungeonCombatTarget(input, 'boss', true)).toBeNull();
-    expect(input.project).toHaveBeenCalledTimes(6);
+    expect(input.project).toHaveBeenCalledTimes(10);
 });
 test.each([false, true])('offscreen target cannot become an attack point, party=%s', async party => {
     const input = makeInput(); input.project.mockResolvedValue({ visible: false });
@@ -39,4 +42,50 @@ test.each([false, true])('offscreen target cannot become an attack point, party=
 test('projection failures propagate rather than fabricate acquisition', async () => {
     const input = makeInput(); input.project.mockRejectedValue(new Error('projection failed'));
     await expect(aimDungeonCombatTarget(input, 'boss', true)).rejects.toThrow('projection failed');
+});
+
+test('overlapping golems leave an exposed upper corner despite covering all six axial samples', async () => {
+    // Two recorded Fire elite-room positions, actual procedural hitboxes, and
+    // the game's isometric camera direction. This isolates geometry, not live
+    // raid acceptance: other actors, motion and HUD occlusion are not replayed.
+    const positions = [[99999.7265625, 19594.291015625], [99997.203125, 19592.751953125]];
+    const actors = positions.map(([x, z], i) => {
+        const actor = new MagmaGolem(i ? 'target' : 'foreground');
+        actor.updateNameTag = () => {}; // No canvas/font rendering in this geometry test.
+        actor.setMesh(createProceduralMagmaGolem());
+        actor.mesh.position.set(x, 0, z);
+        actor.mesh.updateMatrixWorld(true);
+        return actor;
+    });
+    const hitboxes = actors.map(actor => actor.mesh.getObjectByName('ActorInteractionHitbox'));
+    const target = hitboxes[1];
+    target.geometry.computeBoundingBox();
+    const box = target.geometry.boundingBox;
+    const camera = new THREE.OrthographicCamera(-30, 30, 20, -20, .1, 2000);
+    camera.position.set(100093.999, 100, 19691.154);
+    camera.lookAt(99993.999, 0, 19591.154);
+    camera.updateMatrixWorld(true);
+    const raycaster = new THREE.Raycaster();
+    let hovered;
+    const observations = [];
+    const input = {
+        project: async (_id, fraction = null) => {
+            fraction ||= { x: .5, y: .5, z: .5 };
+            const point = new THREE.Vector3(...['x', 'y', 'z'].map(axis =>
+                box.min[axis] + (box.max[axis] - box.min[axis]) * fraction[axis]));
+            target.localToWorld(point).project(camera);
+            return { x: point.x, y: point.y, visible: Math.abs(point.x) < 1 && Math.abs(point.y) < 1 };
+        },
+        move: async (x, y) => {
+            raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+            hovered = raycaster.intersectObjects(hitboxes)[0]?.object.userData.entityId;
+            observations.push(hovered);
+        },
+        settle: async () => {}, hoveredId: async () => hovered
+    };
+    const point = await aimDungeonCombatTarget(input, 'target', true);
+    expect(observations.slice(0, 6)).toEqual(Array(6).fill('foreground'));
+    expect(point?.visible).toBe(true);
+    expect(hovered).toBe('target');
+    expect(observations.length).toBeLessThanOrEqual(10);
 });

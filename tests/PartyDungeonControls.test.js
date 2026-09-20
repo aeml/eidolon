@@ -367,7 +367,7 @@ test('a completely covered ally does not authorize a misdirected heal', async ()
     const input = { project: jest.fn().mockResolvedValue({ x: 100, y: 100, visible: true }),
         move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn().mockResolvedValue('boss') };
     expect(await acquirePartyAllyPointer(input, 'ally')).toBe(false);
-    expect(input.move).toHaveBeenCalledTimes(6);
+    expect(input.move).toHaveBeenCalledTimes(10);
 });
 
 test('offscreen allies cause no pointer input, and projection errors still fail', async () => {
