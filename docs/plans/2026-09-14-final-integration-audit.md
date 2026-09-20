@@ -2,6 +2,13 @@
 
 ## Current delivery — 1.9.25 verified, earned Molten partial
 
+Active native: corrected Fire `fireraid0920h`, session64215, frozen clean
+39d272a9. Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
+Luna monitors terminal-only. Same legal five-role gear, Low and120minute ceiling;
+includes the verified assault-to-defense handoff and stale-entry-hint fix.
+Previous Dark King cleanup and free ports were confirmed before launch. No other
+native route or deployment overlaps it; full Fire completion is not yet claimed.
+
 Earned Molten native18707 is terminal exit1 after113.5m: four bosses cleared,
 all members alive, but traversal timed out during a cleared-room return before
 the final boss. Independently inspected save retains actual Gold213922 and all
