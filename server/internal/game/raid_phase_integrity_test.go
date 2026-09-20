@@ -8,6 +8,42 @@ import (
 	"time"
 )
 
+func TestDarkKingOpeningWaitsForEncounterApproach(t *testing.T) {
+	w := &World{}
+	boss := &Entity{Type: TypeEnemy, SubType: "UmbraPrime", InstanceID: "raid",
+		State: "IDLE", X: 70000, Z: 19760, Health: 1000, MaxHealth: 1000}
+	player := &Entity{Type: TypePlayer, InstanceID: "raid", State: "IDLE",
+		X: 70000, Z: 20000, Health: 50, MaxHealth: 100}
+	var phases []int
+	w.OnEvent = func(kind string, data interface{}) {
+		if kind == "raid_phase" {
+			phases = append(phases, data.(RaidPhaseEvent).Phase)
+		}
+	}
+	w.updateDarkKingPhase(boss, []*Entity{player})
+	if boss.RaidPhase != 0 || len(phases) != 0 {
+		t.Fatal("opening dialogue was consumed at the entrance, before the King was encountered")
+	}
+	player.Z = boss.Z + EnemySightRange + 1
+	w.updateDarkKingPhase(boss, []*Entity{player})
+	if boss.RaidPhase != 0 {
+		t.Fatal("opening started beyond the encounter's normal sight range")
+	}
+	player.Z = boss.Z + EnemySightRange
+	w.updateDarkKingPhase(boss, []*Entity{player})
+	w.updateDarkKingPhase(boss, []*Entity{player})
+	if boss.RaidPhase != 1 || !reflect.DeepEqual(phases, []int{1}) {
+		t.Fatal("approach must announce Orun exactly once", phases)
+	}
+	// The range gate belongs only to the opening. Later aid still reaches
+	// living raiders who have retreated within this same instance.
+	player.Z, boss.Health = 20000, 750
+	w.updateDarkKingPhase(boss, []*Entity{player})
+	if boss.RaidPhase != 2 || player.Health != 75 || !reflect.DeepEqual(phases, []int{1, 2}) {
+		t.Fatal("opening proximity gate incorrectly restricted later raid aid", phases, player.Health)
+	}
+}
+
 // This regression uses the ordinary outgoing-damage calculation. The fixture
 // controls damage size, not quest credit, timestamps or phase state transitions.
 func TestDarkKingBurstRetainsEveryEidolonIntervention(t *testing.T) {

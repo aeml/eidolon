@@ -26,10 +26,18 @@ class GameEngineNetworkMessageMethods {
         this.currentInstanceType = type;
         this.currentDungeonRoomState = decorateDungeonRoomState(roomState);
         this.currentDungeonLayout = layout || null;
+        // Hovered services and raycast hits belong to the scene being removed.
+        // Clear them before rebuilding hints, including when no pointer moves
+        // after entering a portal or using a phone's released tap.
+        this.hoveredEntity = null;
+        this.raycastHitEntities = [];
+        this.activeEntitiesCache = [];
+        this.pendingInteraction = null;
+        if (this.casino) this.casino.hoverHint = null;
+        document.body.style.cursor = 'default';
         this.clearCombatIntentState();
         this.resetRenderUpdateSignatures();
         this.refreshDungeonEntranceHint();
-        this.pendingInteraction = null;
         this.playerJumpState = null;
         this.playerQueuedJump = false;
         this.playerJumpLandingVisual = null;

@@ -602,6 +602,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     await expect.poll(async () => (await snapshot(actor.page)).seed).toBe(run.seed);
                 }
                 console.log(`[party-clear] all ${roles.length} entered the same ${playthrough.difficulty} ${playthrough.name} instance`);
+                for (const actor of actors) {
+                    await expect(actor.page.locator('#dungeon-entrance-hint-name')).not.toHaveText('Dungeon Guide');
+                }
+                await tank.page.screenshot({ path: testInfo.outputPath('party-instance-entry.png') });
                 await captureFinalePhase();
             },
             afterGroundStep: async () => {

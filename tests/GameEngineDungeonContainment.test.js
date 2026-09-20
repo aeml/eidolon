@@ -198,6 +198,32 @@ beforeEach(() => {
 });
 
 describe('GameEngine dungeon containment wiring', () => {
+    test.each(['verdant_bastion_catacombs', 'overworld'])('%s transition discards prior-scene hover targets and service cards', async type => {
+        const engine = createEngineHarness();
+        const stale = { constructor: { name: 'DungeonNPC' }, position: new THREE.Vector3(10, 0, 0) };
+        engine.hoveredEntity = stale;
+        engine.pendingInteraction = stale;
+        engine.raycastHitEntities = [stale];
+        engine.activeEntitiesCache = [stale];
+        engine.casino = { hoverHint: { dungeonName: 'Lanternhold Casino', inRange: false } };
+        engine.refreshDungeonEntranceHint = GameEngine.prototype.refreshDungeonEntranceHint;
+        engine.uiManager.updateDungeonEntranceHint = jest.fn();
+        engine.refreshDungeonEntranceHint();
+        document.body.style.cursor = 'pointer';
+        const layout = type === 'overworld' ? null : {
+            rooms: [{ x: 12, z: 34, width: 80, height: 80 }], walkRects: []
+        };
+        await engine.enterInstance(type === 'overworld' ? '' : 'new-scene', type, layout);
+        expect(engine.hoveredEntity).toBeNull();
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.raycastHitEntities).toEqual([]);
+        expect(engine.activeEntitiesCache).toEqual([]);
+        expect(engine.casino.hoverHint).toBeNull();
+        expect(engine.dungeonEntranceHint).toBeNull();
+        expect(engine.uiManager.clearDungeonEntranceHint).toHaveBeenCalled();
+        expect(document.body.style.cursor).toBe('default');
+    });
+
     test('PvP entry builds the arena and uses the authoritative team spawn', async () => {
         const engine = createEngineHarness();
         const layout = { rooms: [{ x: 0, z: 0, width: 50.5, height: 34.5 }],

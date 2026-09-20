@@ -1,5 +1,7 @@
 package game
 
+import "math"
+
 // RaidPhaseEvent is the narrative and mechanical handoff between Malachar and
 // one of the four restored Eidolons during the final encounter.
 type RaidPhaseEvent struct {
@@ -81,20 +83,23 @@ func raidPhaseStory(phase int) RaidPhaseEvent {
 }
 
 // updateDarkKingPhase runs without another entity lock held. A phase begins
-// only after at least one living raider is present, so the opening revelation
-// cannot be consumed while the instance is still being assembled.
+// only after at least one living raider is present. The opening additionally
+// waits for normal encounter range, so its revelation is not spent during the
+// long walk from the portal. Later aid still reaches the living raid.
 func (w *World) updateDarkKingPhase(boss *Entity, players []*Entity) {
 	if boss == nil {
 		return
 	}
 	boss.Mu.RLock()
 	instanceID := boss.InstanceID
+	opening, bossX, bossZ := boss.RaidPhase == 0, boss.X, boss.Z
 	boss.Mu.RUnlock()
 	hasRaider := false
 	for _, player := range players {
 		player.Mu.RLock()
 		eligible := player.Type == TypePlayer && player.InstanceID == instanceID &&
-			player.State != "DEAD" && player.Health > 0 && !player.Disconnected
+			player.State != "DEAD" && player.Health > 0 && !player.Disconnected &&
+			(!opening || math.Hypot(player.X-bossX, player.Z-bossZ) <= EnemySightRange)
 		player.Mu.RUnlock()
 		if eligible {
 			hasRaider = true

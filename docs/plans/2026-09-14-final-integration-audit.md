@@ -51,15 +51,52 @@ legal items each and the final quest at0/1.78 focused fixture/story/aftermath/
 phase/entry/ritual tests pass3.848s; scoped lint/diff pass. The browser spec lists
 without launching another GPU workload. Do not count this as a connected finale,
 visual phase review, weekly-cache persistence proof or full earned campaign.
-Fire native33049 is terminal and cleaned up. Prepared finale `darkking0920a`
-now runs in native9356 from frozen clean7d1841fb, launcher/log/source under
-`/tmp/eidolon-dark-king-party-20260920-r1-KgfwBt/`. Luna monitors terminal-only.
-Ports and CI browser availability were checked first. An initial launcher hit
+Prepared finale `darkking0920a`, native9356, frozen7d1841fb is terminal exit1
+after4.7m. Launcher/log/source: `/tmp/eidolon-dark-king-party-20260920-r1-KgfwBt/`.
+All five entered Mythic100; all five received and presented Orun/phase1. Rogue
+died early in the fight; the test stopped its combat workers, and final cleanup
+snapshots then showed the whole party dead. Do not conflate those later deaths
+with the original failure timing. Boss started1824000HP, and phase2 was not
+reached. No final kill, manual claims, epilogue or four-phase acceptance.
+Full artifacts retain actual damage, healing, warning escape and ranged-spacing
+receipts. The first healer was16.1 units from the Rogue at the failure report;
+those records need a combat/control review before another finale run, not an
+unsubstantiated balance change or automatic retry. Owned services are gone.
+Archive `/tmp/eidolon-party-checkpoint-darkking0920a-o2hEMf/save.archive.gz`,
+SHA256`9b2c8af27ad5febf233fb4b5ba190adce3fa217d7c04bb16f1fc67ef72d1ce51`.
+
+An initial launcher hit
 the clean-source guard before worktree checkout had finished and exited1 without
 creating services; that receipt is retained as `source-preparation-race.log`.
 Only after checkout/link completion was confirmed did the actual run start.
-No gameplay attempt was restarted. Do not overlap another native route or claim
-the finale is accepted before its result.
+No gameplay attempt was restarted. An intermediate Luna missing-process report
+was contradicted by native9356 still returning a live handle, the exact launcher/
+Playwright PIDs, both containers and fresh combat output. Monitoring resumed on
+that same handle; only the later exit1/footer establishes its terminal result.
+
+### Next-release presentation fixes (local, not yet deployed)
+
+The inspected phase1 screenshot exposed a stale town Dungeon Guide service card
+covering the raid callout. Instance transitions now clear prior hover/raycast/
+active-entity references, pending service interaction, casino door hint and cursor
+before refreshing the new scene's hints. Both entry/return regressions failed
+before the change;70 focused scene/HUD/hint/phase tests pass1.979s afterward.
+The next already-required party route checks the stale Guide title is gone and
+captures entry presentation; no separate long browser run is needed for it.
+
+The same screenshot showed Orun's opening consumed at the portal, approximately
+240 units from the King, before the long approach. Opening phase0→1 now waits
+for a living connected raider within normal enemy sight range45. Later phases
+and aid retain their existing whole-raid eligibility, damage floors and budgets.
+The new entrance/approach regression failed before correction. Do not call this
+native four-phase acceptance or a change to the failed party's combat balance.
+Focused Dark King/contact Go race checks pass35.647s, including the existing
+phase integrity and damage-path regressions. Scoped lint/gofmt/diff checks pass.
+
+Player-facing notes for the next release batch: service prompts clear on zone
+changes and stay current while approaching; the Dark King's opening Eidolon
+callout waits until the raid approaches his encounter. Together with the held
+range-hint refresh, these are not part of live1.9.25 yet.
 
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
