@@ -33,11 +33,14 @@ died during wave2. The runner had moved beyond healing range. Artifacts and
 private save are retained, owned services gone. The linked Fire record describes
 the bounded proactive healer-escort correction, not yet connected acceptance.
 
-Earned-party run `earnedparty0920a` is now active on cleanb038eb98, native35451,
-under `/tmp/eidolon-earned-party-20260920-2zClmS/`, monitored by Luna. It restores
-the checksum-pinned September14 Wizard save and requires actual saved handoff,
-full four-player Verdant clear and personal claim. The other three roles are
-prepared, not earned. Do not overlap native browser tests or alter loaded files.
+Earned-party run `earnedparty0920a` is terminal exit1 after3.5minutes, before
+dungeon entry. Its Wizard handoff **is saved** at31/12448XP/9047Gold; actual
+isolated Mongo restore confirms it. The verification reader, not gameplay,
+failed on mongosh optional-chain handling. The corrected reader and transfer of
+this newer full archive pass actual Mongo checks plus32 focused tests. See the
+[earned continuation record](2026-09-20-earned-continuation.md). Resume from
+the valid level31 save rather than replaying the four kills. Full party dungeon
+and claim remain open. The other three roles remain prepared, not earned.
 
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database

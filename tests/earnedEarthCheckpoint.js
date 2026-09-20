@@ -4,10 +4,12 @@ import { execFileSync } from 'node:child_process';
 
 export const earnedEarthCheckpointSHA = 'be0c40ad5c8ff6cc42cb2dbb42e23bb07ad721814959f3f8e518b21ecaeb765c';
 export const earnedEarthCheckpoints = Object.freeze([
-    { sha: earnedEarthCheckpointSHA, level: 30, xp: 7170, gold: 8539, count: 46, completed: false }
+    { sha: earnedEarthCheckpointSHA, level: 30, xp: 7170, gold: 8539, count: 46, completed: false },
+    { sha: 'c3cca5c86852d354fc13b3e8f4c48513c5ff083153608866a45c5afdb358c673',
+        level: 31, xp: 12448, gold: 9047, count: 50, completed: true }
 ]);
 
-// This is the complete private September14 save, not the build-only JSON fixture.
+// These are full private earned saves, not build-only JSON fixtures.
 // Import gameplay state into a NEW disposable account, remapping only its name
 // to that account's save key. Never copy credentials,
 // change logout timestamps, fill missing inventory or synthesize later progress.
@@ -16,7 +18,7 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
     if (!earnedEarthCheckpoints.includes(checkpoint)) throw new Error('Known earned checkpoint required');
     return `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Checkpoint auth failed');
-        const users = db.getSiblingDB('earned_checkpoint').users.find({}).limit(2).toArray();
+        const users = db.getSiblingDB('earned_checkpoint').users.find({'characters.class':'Wizard'}).limit(2).toArray();
         if (users.length !== 1 || users[0].characters?.length !== 1) throw Error('Ambiguous checkpoint');
         const character = users[0].characters[0];
         const quest = character.quests.find(q => q.id === 'chronicle_earth_borrowed_oath');
@@ -41,11 +43,14 @@ export function readSavedEarnedHandoff(username, env = process.env) {
         !/^ws:\/\/127\.0\.0\.1:\d+\/ws$/.test(env.EIDOLON_E2E_WS_URL || '')) throw new Error('Isolated earned save read required');
     const script = `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Auth failed');
-        const c = db.getSiblingDB('eidolon').users.findOne({username:${JSON.stringify(username)}})?.characters?.[0];
-        const q = c?.quests?.find(q => q.id === 'chronicle_earth_borrowed_oath');
-        const d = c?.quests?.find(q => q.id === 'chronicle_03_roots_remember');
-        print(JSON.stringify({level:c?.level,xp:c?.xp,gold:c?.gold,correctSaveKey:c?.name===${JSON.stringify(username)},
-            huntCompleted:q?.completed===true,dungeonAccepted:d?.accepted===true,dungeonCount:d?.count,dungeonCompleted:d?.completed===true}));`;
+        // Keep the shell's async database call outside an optional-chain:
+        // the deployed mongosh otherwise throws before emitting the receipt.
+        const user = db.getSiblingDB('eidolon').users.findOne({username:${JSON.stringify(username)}});
+        const c = (user && user.characters && user.characters[0]) || {};
+        const q = (c.quests || []).find(q => q.id === 'chronicle_earth_borrowed_oath') || {};
+        const d = (c.quests || []).find(q => q.id === 'chronicle_03_roots_remember') || {};
+        print(JSON.stringify({level:c.level,xp:c.xp,gold:c.gold,correctSaveKey:c.name===${JSON.stringify(username)},
+            huntCompleted:q.completed===true,dungeonAccepted:d.accepted===true,dungeonCount:d.count,dungeonCompleted:d.completed===true}));`;
     try {
         return JSON.parse(execFileSync('docker', ['exec', '-i', env.EIDOLON_E2E_BUILD_MONGO_CONTAINER,
             'mongosh', '--quiet', '--port', env.EIDOLON_E2E_BUILD_MONGO_PORT, '--file', '/dev/stdin'],

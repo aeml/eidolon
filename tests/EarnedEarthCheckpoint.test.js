@@ -1,7 +1,7 @@
 import { runInNewContext } from 'node:vm';
-import { earnedEarthTransferScript, restoreEarnedEarthCheckpoint } from './earnedEarthCheckpoint.js';
+import { earnedEarthCheckpoints, earnedEarthTransferScript, restoreEarnedEarthCheckpoint } from './earnedEarthCheckpoint.js';
 
-function exercise(change = () => {}, occupied = false) {
+function exercise(change = () => {}, occupied = false, checkpoint = earnedEarthCheckpoints[0]) {
     const character = { name: 'old-account', class: 'Wizard', level: 30, xp: 7170, gold: 8539,
         inventory: [{ id: 'earned-drop', stats: { wisdom: 3 } }], stash: [{ id: 'saved-drop' }],
         resources: { hp: 31, mana: 0 }, last_logout: '2026-09-14T05:58:33Z',
@@ -12,7 +12,10 @@ function exercise(change = () => {}, occupied = false) {
     const context = { process: { env: {} }, print() {}, EJSON: JSON,
         db: { getSiblingDB(name) {
             if (name === 'admin') return { auth: () => true };
-            if (name === 'earned_checkpoint') return { users: { find: () => ({ limit: () => ({ toArray: () => [{ characters: [character] }] }) }) } };
+            if (name === 'earned_checkpoint') return { users: { find: filter => {
+                expect(filter).toEqual({ 'characters.class': 'Wizard' });
+                return { limit: () => ({ toArray: () => [{ characters: [character] }] }) };
+            } } };
             if (name !== 'eidolon') throw new Error('Unexpected database');
             return { users: {
                 updateOne(filter, update) {
@@ -23,12 +26,24 @@ function exercise(change = () => {}, occupied = false) {
                 }, findOne: () => ({ characters: [saved] })
             } };
         } } };
-    const run = () => runInNewContext(earnedEarthTransferScript('codexqaresume'), context);
+    const run = () => runInNewContext(earnedEarthTransferScript('codexqaresume', checkpoint), context);
     return { run, original, result: () => ({ saved, writes }) };
 }
 
 test('copies the entire earned character without reconstructing inventory, resources or logout time', () => {
     const fixture = exercise();
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test('continues the actually saved level31 handoff without reconstructing or repeating its rewards', () => {
+    const checkpoint = earnedEarthCheckpoints[1];
+    const fixture = exercise(character => {
+        Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold });
+        Object.assign(character.quests[0], { count: 50, completed: true });
+        character.quests.push({ id: 'chronicle_03_roots_remember', accepted: true, completed: false, count: 0 });
+    }, false, checkpoint);
     fixture.run();
     expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
     expect(fixture.result().writes).toBe(1);

@@ -1,5 +1,32 @@
 # Earned campaign continuation with a real party
 
+## September20 saved-read correction
+
+`earnedparty0920a` is terminal exit1 after3.5minutes, before dungeon entry.
+Native35451 and `PARTY_PROCESS_EXIT=1` agree. Results/report are preserved in
+`/tmp/eidolon-earned-party-20260920-2zClmS/`; owned services are gone.
+The four remaining kills and manual reward **are saved this time**:
+Wizard31/12448XP/9047Gold, Orc50/50 completed, dungeon accepted at0/1.
+An isolated real Mongo restore confirms these exact fields and the correct
+account save key. This is not the earlier unsaved level31 attempt.
+
+The verification reader threw `TypeError: "this" is null or not defined` in
+mongosh when optional chaining followed the database call. Separating the
+lookup from field access fixes the real reproduction.32 focused isolation,
+transfer and cleanup tests pass in1.057s; lint/diff checks pass. The latest full
+archive contains prepared teammates too, so the transfer now selects exactly
+one Wizard document and still requires its checksum and exact earned fields.
+Actual restore/whole-character copy/readback into a new QA account also passes.
+No gameplay, rewards, inventory or logout timestamp is synthesized.
+
+New valid private continuation archive:
+`/tmp/eidolon-party-checkpoint-earnedparty0920a-JV9eGg/save.archive.gz`, SHA256
+`c3cca5c86852d354fc13b3e8f4c48513c5ff083153608866a45c5afdb358c673`.
+Use this level31 save next; do not repeat the four kills or manual reward.
+Full party dungeon clear and post-claim save remain unproven.
+
+## Earlier continuation record
+
 The September14 Earth readiness result remains accepted. Its private full save
 at level30/7170XP/8539Gold, Orc46/50 is retained with verified SHA256
 `be0c40ad5c8ff6cc42cb2dbb42e23bb07ad721814959f3f8e518b21ecaeb765c`:
@@ -31,8 +58,8 @@ independently earned characters or acceptance of the party leveling curve.
 
 Implementation merged asbd96dfe0/b038eb98 after Fire ended. The53 focused
 fixture/isolation checks pass in3.405s, lint/Bash/diff checks pass.
-`earnedparty0920a` is active on cleanb038eb98, native35451, launcher/log directory
+`earnedparty0920a` ran on cleanb038eb98, native35451, launcher/log directory
 `/tmp/eidolon-earned-party-20260920-2zClmS/`, monitored by Luna. It uses the
 original private archive above, Low graphics and zero retries. The wrapper
 preserves the final full save. Never overlap it with Fire or deployment browser
-QA; no full connected continuation acceptance is claimed yet.
+QA; it ended with the saved-reader failure described above, not a full clear.
