@@ -1,6 +1,13 @@
 # Rejected administration requests — durable outage recovery
 
-Local follow-up after accepted Alpha1.9.22; **not deployed yet**.
+Packaged locally as Alpha1.9.23 after accepted Alpha1.9.22;
+**not pushed or deployed yet**. Login, package/lock, manifest, server defaults,
+isolated QA and CI deployment labels are synchronized. Additive in-game notes
+describe the actual recovery fix and retain all prior release entries.
+277 focused version/history/runtime-versioning checks pass in4.005s; lint,
+shell syntax and diff checks pass. Wait for the active earned Water run to end
+before publication invokes native deployment browser work. Then use Luna for
+the exact CI run and verify public identities and notes before accepting delivery.
 
 The remaining administration audit review found that malformed mutations,
 conflicting request IDs and failed role lookups wrote rejection events directly
