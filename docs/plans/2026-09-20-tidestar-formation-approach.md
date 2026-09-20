@@ -39,3 +39,15 @@ been removed.
 Private save: `/tmp/eidolon-party-checkpoint-waterraid0919d-oeZWOM/save.archive.gz`.
 SHA256: `bb8700d033136c09d6cbb7cc0a40491de9fb1bd2b7fa9ed361654c9c55b03e85`.
 Do not publish this archive, alter its logout times or bypass the15minute rule.
+
+## Next run
+
+`waterraid0920a` is active after the specific reproduced correction, source
+33ada570, detached launcherPID1277137 confirmed live. Same five legal L70
+roles/gear, Low graphics and unchanged full repair/claim/re-login requirements;
+zero retries. Launcher/log `/tmp/eidolon-water-raid-20260920-r1-iiKq4l/`.
+Ports18285/18286/4187 were free before launch. Luna
+`/root/watch_tidestar_0920a` owns read-only completion/failure monitoring.
+Do not overlap browser/deployment work, edit the running route or poll previous
+terminal handles. Preserve report attachments before any new Playwright run.
+No result yet; this does not mark Tidestar complete.
