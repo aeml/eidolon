@@ -36,18 +36,41 @@ export function planEarnedBagSales({ inventory, equipment, level }, targetFree =
     return candidates.slice(0, needed);
 }
 
-// Preserve spare gear in real storage when conservative sales cannot make room.
-// Quest fragments, crafting materials and gems stay carried; this policy never
-// sells higher-rarity or future-level upgrades just to satisfy a test budget.
+// Preserve spare gear first, then bank crafting valuables without selling them.
+// Quest fragments and consumables stay carried. The real stash handles stacks.
 export function planEarnedBagStorage({ inventory, equipment }, targetFree = EARNED_BAG_TARGET_FREE) {
     if (!Number.isInteger(targetFree) || targetFree < 0 || targetFree > inventory.length) throw new Error('Invalid bag space target');
     const needed = Math.max(0, targetFree - earnedBagFreeSlots(inventory));
     const equippedIds = new Set(Object.values(equipment).map(item => item?.id).filter(Boolean));
-    return inventory.filter(item => {
+    const gear = inventory.filter(item => {
         if (!item?.id || item.id.startsWith('chronicle-item-') || equippedIds.has(item.id) ||
             !isEquippableItem(item) || Math.max(1, item.stack || 1) !== 1 || item.maxStack > 1) return false;
         const slots = item.slot === 'ring' ? ['ring1', 'ring2'] :
             item.slot === 'trinket' ? ['trinket1', 'trinket2'] : [item.slot];
         return slots.every(slot => equipment[slot]?.id);
-    }).slice(0, needed).map(item => ({ id: item.id, name: item.name }));
+    });
+    const valuables = inventory.filter(item => item?.id && !item.id.startsWith('chronicle-item-') &&
+        !equippedIds.has(item.id) && ['GEM', 'MATERIAL', 'RELIC'].includes(item.type) &&
+        Number.isInteger(item.stack) && item.stack > 0 && Number.isInteger(item.maxStack) && item.maxStack >= item.stack);
+    return [...gear, ...valuables].slice(0, needed).map(item => ({ id: item.id, name: item.name }));
+}
+
+// Mirror the existing full-stack deposit semantics for read-only conservation
+// assertions. Merged quantities retain the destination ID and metadata; overflow
+// retains the source ID. This predicts evidence, never writes character state.
+export function expectedEarnedStashDeposit(stash, item) {
+    if (!Number.isInteger(item.stack) || item.stack < 1) throw new Error('Invalid deposit quantity');
+    const result = stash.filter(entry => entry?.id).map(entry => ({ ...entry }));
+    let remaining = item.stack;
+    if (item.maxStack > 1) for (const entry of result) {
+        if (entry.name !== item.name) continue;
+        entry.maxStack = Math.max(entry.maxStack || 0, item.maxStack);
+        if (!entry.icon && item.icon) entry.icon = item.icon;
+        const amount = Math.min(remaining, Math.max(0, entry.maxStack - entry.stack));
+        entry.stack += amount;
+        remaining -= amount;
+        if (!remaining) break;
+    }
+    if (remaining) result.push({ ...item, stack: remaining });
+    return result;
 }

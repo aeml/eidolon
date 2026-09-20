@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEarnedBagSales,
-    planEarnedBagStorage } from '../earnedInventoryPolicy.js';
+    planEarnedBagStorage, expectedEarnedStashDeposit } from '../earnedInventoryPolicy.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { upgradeEarnedEquipment } from './earned-equipment-upgrades.js';
 import { ensureEarnedMerchantWindow } from './earned-merchant-window.js';
@@ -94,7 +94,7 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     const afterSales = await snapshot(page);
     const storage = planEarnedBagStorage(afterSales);
     const requiredStorage = Math.max(0, EARNED_BAG_TARGET_FREE - earnedBagFreeSlots(afterSales.inventory));
-    expect(storage.length, 'Spare gear must cover the remaining space without moving quest items or discarding valuables').toBe(requiredStorage);
+    expect(storage.length, 'Storable items must cover the remaining space without moving quest items or discarding valuables').toBe(requiredStorage);
     const stored = await storeEarnedSpareEquipment(page, storage, snapshot);
     if (await page.locator('#inventory-screen').isVisible()) await page.locator('#btn-close-inventory').click();
     const after = await snapshot(page);
@@ -104,7 +104,8 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     expect(after.gold).toBe(before.gold + sales.reduce((sum, sale) => sum + sale.value, 0));
     expect(after.inventory.filter(item => item?.id)).toEqual(prepared.inventory.filter(item => item?.id &&
         !sales.some(sale => sale.id === item.id) && !stored.some(deposit => deposit.id === item.id)));
-    expect(after.stash.filter(item => item?.id)).toEqual([...prepared.stash.filter(item => item?.id), ...stored]);
+    expect(after.stash.filter(item => item?.id)).toEqual(stored.reduce(expectedEarnedStashDeposit,
+        prepared.stash.filter(item => item?.id)));
     expect(earnedBagFreeSlots(after.inventory)).toBeGreaterThanOrEqual(EARNED_BAG_TARGET_FREE);
     await setAutoLootThroughSettings(page, autoLoot);
     await leaveTown();
@@ -112,7 +113,7 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
         before: { level: before.level, gold: before.gold, freeSlots: earnedBagFreeSlots(before.inventory) },
         after: { level: after.level, gold: after.gold, freeSlots: earnedBagFreeSlots(after.inventory) },
         seconds: (Date.now() - started) / 1000, note: stored.length
-            ? 'Verified preserved whole-item stash deposits and any individual merchant proceeds.' : sales.length
+            ? 'Verified exact item/stack conservation in storage and any individual merchant proceeds.' : sales.length
             ? 'Verified merchant proceeds, not vendor estimates or granted gold.'
             : 'Equipped earned items to free space; no merchant sale was needed or verified.' }));
     return true;

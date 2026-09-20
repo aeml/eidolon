@@ -1,4 +1,5 @@
-import { earnedBagFreeSlots, earnedStashFreeSlots, planEarnedBagSales, planEarnedBagStorage } from './earnedInventoryPolicy.js';
+import { earnedBagFreeSlots, earnedStashFreeSlots, planEarnedBagSales, planEarnedBagStorage,
+    expectedEarnedStashDeposit } from './earnedInventoryPolicy.js';
 
 const gear = (id, changes = {}) => ({ id, type: 'ARMOR', slot: 'head', level: 3,
     rarity: { name: 'Common' }, value: 30, ...changes });
@@ -71,11 +72,43 @@ test('a shortage of saleable gear is covered by preserving the remaining rare up
     expect(afterSales[2]).toBe(rare);
 });
 
-test('storage never moves quest fragments, crafting items, worn IDs or gear for empty equipment slots', () => {
+test('storage never moves quest fragments, malformed stacks, worn IDs or gear for empty equipment slots', () => {
     const inventory = [gear('chronicle-item-seed'), gear('gem', { type: 'GEM' }), gear('material', { type: 'MATERIAL' }),
         gear('relic', { type: 'RELIC' }), gear('quest', { type: 'QUEST' }), gear('empty-slot', { slot: 'feet' }),
         gear('ring', { slot: 'ring' }), gear('worn'), gear('stacked', { stack: 2 }), gear('stackable', { maxStack: 10 })];
     expect(planEarnedBagStorage({ inventory, equipment }, 8)).toEqual([]);
+});
+
+test('gem-heavy bags bank intact valuables after spare gear instead of discarding them', () => {
+    const gem = Object.freeze({ id: 'gem-one', name: 'Chipped Diamond', type: 'GEM', stack: 2, maxStack: 99 });
+    const material = Object.freeze({ id: 'shard', name: 'Eidolon Shard', type: 'MATERIAL', stack: 57, maxStack: 1000 });
+    const quest = { ...material, id: 'chronicle-item-seed' };
+    const inventory = Object.freeze([gem, material, quest, gear('spare', { name: 'Spare helm' })]);
+    expect(planEarnedBagStorage({ inventory, equipment }, 3)).toEqual([
+        { id: 'spare', name: 'Spare helm' }, { id: gem.id, name: gem.name }, { id: material.id, name: material.name }
+    ]);
+    expect(planEarnedBagSales({ inventory: [gem, material, quest], equipment, level: 80 }, 3)).toEqual([]);
+    expect(gem.stack).toBe(2);
+    expect(material.stack).toBe(57);
+});
+
+test('stack deposits preserve destination identity and exact overflow without mutating observations', () => {
+    const existing = Object.freeze({ id: 'old', name: 'Shard', type: 'MATERIAL', stack: 8, maxStack: 10,
+        icon: '', stats: { wisdom: 0 } });
+    const item = Object.freeze({ id: 'new', name: 'Shard', type: 'MATERIAL', stack: 5, maxStack: 10, icon: 'shard' });
+    expect(expectedEarnedStashDeposit([existing, null], item)).toEqual([
+        { ...existing, stack: 10, icon: 'shard' }, { ...item, stack: 3 }
+    ]);
+    expect(existing.stack).toBe(8);
+    expect(item.stack).toBe(5);
+});
+
+test('complete merges, legacy capacity refresh and first deposits preserve every unit', () => {
+    const item = { id: 'new', name: 'Gem', type: 'GEM', stack: 2, maxStack: 99 };
+    expect(expectedEarnedStashDeposit([], item)).toEqual([item]);
+    expect(expectedEarnedStashDeposit([{ ...item, id: 'old', stack: 9, maxStack: 10 }], item))
+        .toEqual([{ ...item, id: 'old', stack: 11, maxStack: 99 }]);
+    expect(() => expectedEarnedStashDeposit([], { ...item, stack: 0 })).toThrow('Invalid deposit quantity');
 });
 
 test('storage preserves future-level upgrades and chooses only the needed number without mutation', () => {

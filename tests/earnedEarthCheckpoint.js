@@ -45,6 +45,17 @@ export const earnedEarthCheckpoints = Object.freeze([
             { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
             { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
             { id: 'chronicle_water_unmastered_current', accepted: true, completed: false, count: 31, max_count: 70, granted_gold: 0, granted_xp: 0 }
+        ] },
+    { sha: '1bcc55dbffdd271ce8abd909480dd142e5b754378c6e8dcf5ca95d239a9928c4',
+        level: 80, xp: 87276, gold: 98595, count: 50, completed: true,
+        resources: { version: 1, health: 3415, mana: 2766, dead: false },
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: false, count: 61, max_count: 70, granted_gold: 0, granted_xp: 0 }
         ] }
 ]);
 

@@ -24,7 +24,9 @@ test('normal inventory visits precede combat watchdogs and do not alter no-rest 
         const source = readFileSync(`tests/e2e/${name}.js`, 'utf8');
         const call = source.indexOf('await maintainEarnedInventory(page, { leaveTown })');
         expect(call).toBeGreaterThan(source.indexOf('if (earnedTownRecoveryEnabled())'));
-        expect(call).toBeLessThan(source.indexOf('const deadline = Date.now() + 120_000'));
+        const watchdog = source.search(/(?:const|let) deadline = Date\.now\(\) \+ 120_000/);
+        expect(watchdog).toBeGreaterThan(-1);
+        expect(call).toBeLessThan(watchdog);
     }
 });
 
@@ -71,13 +73,14 @@ test('stash fallback uses real storage clicks and checks complete item conservat
     const stash = readFileSync('tests/e2e/earned-stash-storage.js', 'utf8');
     expect(route).toContain('const storage = planEarnedBagStorage(afterSales)');
     expect(route).toContain('await storeEarnedSpareEquipment(page, storage, snapshot)');
-    expect(route).toContain('...prepared.stash.filter(item => item?.id), ...stored');
+    expect(route).toContain('stored.reduce(expectedEarnedStashDeposit,');
     expect(stash).toContain("projectEntity(page, 'stash-1')");
     expect(stash).toContain('earnedStashFreeSlots(initial.stash, capacity)');
     expect(stash).not.toContain('capacity - initial.stash.length');
     expect(stash).toContain("await expect(page.locator('#shop-screen')).toBeHidden()");
     expect(stash).toContain("nth(index).click({ button: 'right' })");
-    expect(stash).toContain('.stash.find(entry => entry?.id === item.id)).toEqual(item)');
+    expect(stash).toContain('expectedEarnedStashDeposit(before.stash, item)');
+    expect(stash).toContain('.stash.filter(entry => entry?.id)).toEqual(expectedStash)');
     expect(stash).toContain('expect(after.gold).toBe(before.gold)');
     expect(stash).toContain('expect(after.equipment).toEqual(before.equipment)');
     expect(stash).toContain('expect(after.quests).toEqual(before.quests)');

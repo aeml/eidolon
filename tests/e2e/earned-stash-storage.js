@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { earnedStashFreeSlots } from '../earnedInventoryPolicy.js';
+import { earnedStashFreeSlots, expectedEarnedStashDeposit } from '../earnedInventoryPolicy.js';
 import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 
 export async function openEarnedStash(page) {
@@ -70,16 +70,17 @@ export async function storeEarnedSpareEquipment(page, planned, readState) {
         const index = before.inventory.findIndex(item => item?.id === deposit.id);
         expect(index).toBeGreaterThanOrEqual(0);
         const item = before.inventory[index];
+        const expectedStash = expectedEarnedStashDeposit(before.stash, item);
         await expect(page.locator('#shop-screen')).toBeHidden();
         await page.locator('#inventory-grid .inv-slot').nth(index).click({ button: 'right' });
         await expect.poll(async () => (await readState(page)).inventory.some(entry => entry?.id === item.id)).toBe(false);
-        await expect.poll(async () => (await readState(page)).stash.find(entry => entry?.id === item.id)).toEqual(item);
+        await expect.poll(async () => (await readState(page)).stash.filter(entry => entry?.id)).toEqual(expectedStash);
         const after = await readState(page);
         expect(after.gold).toBe(before.gold);
         expect(after.equipment).toEqual(before.equipment);
         expect(after.quests).toEqual(before.quests);
         expect(after.inventory.filter(entry => entry?.id)).toEqual(before.inventory.filter(entry => entry?.id && entry.id !== item.id));
-        expect(after.stash.filter(entry => entry?.id)).toEqual([...before.stash.filter(entry => entry?.id), item]);
+        expect(after.stash.filter(entry => entry?.id)).toEqual(expectedStash);
         stored.push(item);
     }
     await page.locator('#btn-close-stash').click();

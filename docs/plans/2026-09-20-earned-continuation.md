@@ -1,5 +1,32 @@
 # Earned campaign continuation with a real party
 
+## Latest retained progress — hunt61/70, bag-policy failure
+
+Native7513 / `earnedwaterregion0920e`, frozenaa71420e, ended exit1 after1.1h.
+Ordinary dead-save respawn and defended transit worked; no new hunt deaths.
+The failure was an artificial bag policy: after normal sales there were six
+free slots and only one spare gear item, so the gear-only planner could not
+reach its eight-slot buffer. The other carried items were mostly gem stacks,
+57 Eidolon Shards and19 Eidolon Hearts. Gameplay already permits their storage.
+
+The planner now preserves spare gear first, then banks gems/materials/relics
+through normal stash clicks. Quest items and consumables remain carried; these
+valuables are never sold or discarded. Exact stack-merge/overflow predictions
+check source removal, destination identity/metadata/quantity and unchanged
+Gold/equipment/quest state. Existing buffer and capacity bounds remain intact.
+The server's existing stash conservation tests pass0.338s. No gameplay, drop,
+currency or storage-capacity change is introduced.
+
+Independent isolated Mongo restore confirms the actual full private archive:
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920e-MpomTx/save.archive.gz`,
+SHA256`1bcc55dbffdd271ce8abd909480dd142e5b754378c6e8dcf5ca95d239a9928c4`.
+Wizard80/87276XP/98595Gold, Golem61/70 unclaimed, all prior Water rewards retained,
+no Abyssal offer or accepted dailies, saved health3415/mana2766/alive. The full
+inventory/stash is preserved, not reconstructed from a gear fixture. Temporary
+inspection copy removed; original intact. Resume nine remaining kills, not the
+earlier31-kill checkpoint. The route's many incidental defensive kills mean its
+level80 is not a clean story-only pace/balance benchmark.
+
 ## Latest terminal result — undefended transit, saved hunt31/70
 
 Corrected continuation `earnedwaterregion0920e` is launched in native7513,

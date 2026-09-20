@@ -136,6 +136,20 @@ test('a healed replacement cannot masquerade as the pinned dead save', () => {
     expect(fixture.result().writes).toBe(0);
 });
 
+test('retains the actual level80 gem-heavy save with 61 kills and no claimed hunt reward', () => {
+    const checkpoint = earnedEarthCheckpoints[8];
+    const fixture = exercise(character => {
+        partialWaterRegion(character);
+        Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+            resources: { ...checkpoint.resources } });
+        character.quests.at(-1).count = 61;
+        character.inventory.push({ id: 'gem-earned', name: 'Chipped Diamond', type: 'GEM', stack: 2, maxStack: 99 });
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().saved.quests.at(-1)).toMatchObject({ count: 61, completed: false, granted_gold: 0, granted_xp: 0 });
+});
+
 test.each([
     p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
     p => { p.quests.at(-1).granted_gold = 600; }, p => { p.quests[3].granted_xp++; },
