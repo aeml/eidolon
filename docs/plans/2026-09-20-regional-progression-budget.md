@@ -38,6 +38,16 @@ requirement remains open until earned evidence supports it across the campaign.
 
 ## Retained Verdant income narrows the missing-income question
 
+September20 now supplies an exact earned-Wizard sample: the accepted full
+four-player Verdant run starts31/12448XP/9047Gold and ends33/23108XP/10598Gold.
+The actual saved archive confirms the final values. Applying the unchanged
+level31 and32 thresholds gives57,385XP gained, including the10,562XP manual
+chapter reward, hence46,823XP of dungeon combat/room income, and1,551Gold net
+increase. The three teammates were prepared; no party-wide earned-progression
+claim is implied. This exact sample falls inside the earlier bounded omitted
+income estimate below, but still does not measure Water's kill throughput or
+time to level60. Continue from this save rather than replaying Verdant.
+
 The accepted September12 four-player Normal30 run starts at level30/zero XP and
 ends at level32 for all four players, including the personal10,562XP chapter
 claim. Its retained `native.log` in `/tmp/eidolon-geared-party-pass-KVzr6y/`

@@ -2,6 +2,20 @@
 
 ## September20 checkpoint — raid roster delivered, Fire input correction
 
+Earned Wizard Verdant continuation **passes**: native63326/run`earnedparty0920c`
+on3b163421,46.7m, no deaths, full four-player dungeon/four claims/relogin.
+Actual Mongo and independent archive restore confirm Wizard33/23108XP/10598Gold
+and fresh unaccepted Water offer. The other three roles used prepared legal gear.
+See [saved continuation evidence](2026-09-20-earned-continuation.md); do not
+repeat accepted Earth/Verdant work. Water hunts, later regions/raids and the
+remaining full integration scope stay open.
+
+Fire `fireraid0920e` is now active on7fa57f00, native35409, under
+`/tmp/eidolon-fire-raid-20260920-r5-JhyVd6/`, monitored by Luna. Includes the
+proactive runner-healer escort and strict sub-unit formation correction, with
+unchanged full-raid requirements and zero retries. Do not overlap native runs
+or modify loaded test/runtime files. Earlier failures below remain history.
+
 September 20 operator confirmation: the administrator found Activity history
 and reported that everything in the panel appears to work. The requested safe
 live read-only panel/history smoke is accepted. No production grants or teleports

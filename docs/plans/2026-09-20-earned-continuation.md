@@ -1,17 +1,32 @@
 # Earned campaign continuation with a real party
 
-Active: `earnedparty0920c`, clean3b163421, native63326,
-`/tmp/eidolon-earned-party-20260920-r3-2CzUJB/`, Luna-monitored. Same verified
-pre-dungeon level31 archive, Low, zero retries, full dungeon and claim checks.
-Do not overlap native browser runs or alter loaded files while it is active.
+## Earned Wizard Verdant completion accepted
 
-Next-region preparation: detached commit733621eb in
-`/tmp/eidolon-earned-continuation-20260920-0VmRVz/` extends the existing hunt
+`earnedparty0920c`, clean3b163421, native63326 is terminal **exit0/PASS** in46.7m.
+The original full four-player Normal30 route passed: all bosses/rooms, no deaths,
+four ordinary town-rest returns preserving the instance and progression, four
+individual manual claims, fresh Water offers and relogin persistence. Effective
+Cleric ally healing was9,218HP. The Wizard kept its actual earned equipment;
+Fighter/Cleric/Rogue used the approved prepared class-appropriate gear. This is
+earned Wizard progression with prepared support, not four earned characters.
+
+Reports/results and boss screenshots are preserved in
+`/tmp/eidolon-earned-party-20260920-r3-2CzUJB/`; owned services are gone.
+The Wizard's actual saved-Mongo assertion passed before cleanup. Independent
+isolated archive restore confirms level33/23108XP/10598Gold, completed dungeon
+1/1 and Missing Ferry offered but unaccepted at0/60. Entry was31/12448XP/9047Gold.
+The new complete private archive, not a build-only fixture, is:
+`/tmp/eidolon-party-checkpoint-earnedparty0920c-9grSBR/save.archive.gz`, SHA256
+`8b075ebdac1f5fea3b7849927dfd3679b6b2e70d3dfb1dd908961dbc9c31e741`.
+Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
+
+Next-region preparation: commit733621eb merged as7fa57f00 after the run ended.
+It extends the existing hunt
 search to Water's authored Troll/Aqua Golem bands. Missing Ferry still searches
 western Earth; later Water hunts require an explicit ordinary town-departure
 callback, reused for recovery.26 focused target/travel tests pass in1.267s;
-lint/diff pass. No connected Water acceptance is claimed. Merge only after the
-active dungeon ends; checkpoint capture and actual regional travel remain next.
+lint/diff pass. No connected Water acceptance is claimed. Continue from the
+newly captured save through actual regional travel and quest gameplay.
 
 `earnedparty0920b` is terminal exit1 after2.8minutes on cleanee9a1ddd.
 Native52518 and the log footer confirm termination; reports/results are retained

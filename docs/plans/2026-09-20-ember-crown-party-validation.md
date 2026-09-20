@@ -2,6 +2,15 @@
 
 ## Current run
 
+`fireraid0920e` is active on clean7fa57f00, native35409, directory
+`/tmp/eidolon-fire-raid-20260920-r5-JhyVd6/`, Luna-monitored. Includes the
+runner-healer escort below and the precise sub-unit formation correction proven
+in the earned Wizard Verdant pass. Same five level70 roles, approved progressed
+gear, Low, zero retries, original complete guardian/three-wave/manual-claim and
+relogin requirements. Do not overlap native browser runs or alter loaded files.
+
+### Previous run — runner healing range
+
 `fireraid0920d` is terminal exit1 after33.7minutes on clean82472be7.
 Native79539 and `RAID_PROCESS_EXIT=1` confirm Luna's report; artifacts are
 preserved under `/tmp/eidolon-fire-raid-20260920-r4-8FyL2K/`. Owned services are
