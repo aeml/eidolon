@@ -51,8 +51,15 @@ legal items each and the final quest at0/1.78 focused fixture/story/aftermath/
 phase/entry/ritual tests pass3.848s; scoped lint/diff pass. The browser spec lists
 without launching another GPU workload. Do not count this as a connected finale,
 visual phase review, weekly-cache persistence proof or full earned campaign.
-Fire native33049 is now terminal and cleaned up. The prepared finale is the next
-native route; do not overlap it with the corrected Fire continuation.
+Fire native33049 is terminal and cleaned up. Prepared finale `darkking0920a`
+now runs in native9356 from frozen clean7d1841fb, launcher/log/source under
+`/tmp/eidolon-dark-king-party-20260920-r1-KgfwBt/`. Luna monitors terminal-only.
+Ports and CI browser availability were checked first. An initial launcher hit
+the clean-source guard before worktree checkout had finished and exited1 without
+creating services; that receipt is retained as `source-preparation-race.log`.
+Only after checkout/link completion was confirmed did the actual run start.
+No gameplay attempt was restarted. Do not overlap another native route or claim
+the finale is accepted before its result.
 
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
