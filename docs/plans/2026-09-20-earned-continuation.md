@@ -20,6 +20,24 @@ The new complete private archive, not a build-only fixture, is:
 `8b075ebdac1f5fea3b7849927dfd3679b6b2e70d3dfb1dd908961dbc9c31e741`.
 Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
 
+### Next continuation prepared — Missing Ferry
+
+The checksum-pinned level33 archive is now supported by the existing full-save
+transfer. It additionally requires completed Verdant and a fresh, unaccepted
+Missing Ferry offer before copying. Actual isolated Mongo restore, exact whole-
+character transfer and the saved-progress reader pass; no equipment, resources,
+rewards or logout time is synthesized.17 checkpoint tests and15 isolation/cleanup
+checks pass; lint, shell syntax, test discovery and diff checks pass.
+
+`EIDOLON_ISOLATED_QA_ROUTE=earned-water-resume` runs the next bounded story
+chapter from that save:60 ordinary level40+ Construct kills in western Earth,
+normal recovery/training, manual Ilyra turn-in, relogin and actual saved-Mongo
+XP/Gold/quest checks including the fresh flood-shelter investigation offer.
+Its cleanup preserves a complete private archive on success or failure. This
+route is prepared, **not yet run or accepted**. Use the archive path above;
+do not overlap with the current Fire raid or deployment browser work. It is
+not a full Water-region or four-earned-character pacing claim.
+
 Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
 four-player desktop panel has scrolled its header/tank row out of view while
 lower support controls remain visible. The existing HTML-only party layout

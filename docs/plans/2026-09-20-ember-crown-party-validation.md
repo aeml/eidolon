@@ -1,5 +1,15 @@
 # Ember Crown prepared-party validation — September20
 
+## Follow-up launched
+
+`fireraid0920f` launched on clean127e39d6, native34554, with the settled-member
+reservation below. Launcher/log: `/tmp/eidolon-fire-raid-20260920-r6-BnDcKk/`.
+Luna `/root/watch_fire_0920c` owns sparse terminal-only monitoring. Same five
+level70 roles, approved class gear, Low, zero retries and full original
+guardian/three-wave repair/manual-claim/relogin requirements. A live native
+handle was returned at launch; completion is not yet reported. Do not start
+another native browser workload or alter loaded source until it finishes.
+
 ## Latest terminal run — settled teammate collision
 
 `fireraid0920e` ended exit1 after4.1m on clean7fa57f00, native35409.

@@ -17,7 +17,7 @@ export async function leaveEarnedParty(page) {
     }
 }
 
-export async function resumeEarnedEarthToReadiness(page, credentials) {
+export async function restoreEarnedWizard(page, credentials) {
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
     await page.locator('#auth-password').fill(credentials.password);
@@ -29,6 +29,10 @@ export async function resumeEarnedEarthToReadiness(page, credentials) {
     // The exact save still references its original account's solo party leader.
     // Leave through ordinary controls, not a rewritten PartyID or leadership grant.
     await leaveEarnedParty(page);
+}
+
+export async function resumeEarnedEarthToReadiness(page, credentials) {
+    await restoreEarnedWizard(page, credentials);
     const hunt = 'chronicle_earth_borrowed_oath';
     const resumedHunt = await readChronicleChapter(page, hunt);
     expect([46, 50]).toContain(resumedHunt.count);

@@ -49,6 +49,30 @@ test('continues the actually saved level31 handoff without reconstructing or rep
     expect(fixture.result().writes).toBe(1);
 });
 
+function postVerdant(character) {
+    Object.assign(character, { level: 33, xp: 23108, gold: 10598 });
+    Object.assign(character.quests[0], { count: 50, completed: true });
+    character.quests.push({ id: 'chronicle_03_roots_remember', accepted: true, completed: true, count: 1 },
+        { id: 'chronicle_water_missing_ferry', accepted: false, completed: false, count: 0 });
+}
+
+test('continues the full saved post-Verdant character without replaying the accepted dungeon', () => {
+    const fixture = exercise(postVerdant, false, earnedEarthCheckpoints[2]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests[1].completed = false; }, p => { p.quests[1].count = 0; },
+    p => { p.quests[2].accepted = true; }, p => { p.quests[2].completed = true; },
+    p => { p.quests[2].count = 1; }, p => { p.quests.pop(); }
+])('rejects altered post-dungeon/Water progress before copying', change => {
+    const fixture = exercise(character => { postVerdant(character); change(character); }, false, earnedEarthCheckpoints[2]);
+    expect(fixture.run).toThrow('Unexpected earned Water handoff');
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.level = 31; }, p => { p.xp++; }, p => { p.gold++; },
     p => { p.quests[0].count = 50; }, p => { p.quests[0].completed = true; },

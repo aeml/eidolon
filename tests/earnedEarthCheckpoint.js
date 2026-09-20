@@ -6,7 +6,9 @@ export const earnedEarthCheckpointSHA = 'be0c40ad5c8ff6cc42cb2dbb42e23bb07ad7218
 export const earnedEarthCheckpoints = Object.freeze([
     { sha: earnedEarthCheckpointSHA, level: 30, xp: 7170, gold: 8539, count: 46, completed: false },
     { sha: 'c3cca5c86852d354fc13b3e8f4c48513c5ff083153608866a45c5afdb358c673',
-        level: 31, xp: 12448, gold: 9047, count: 50, completed: true }
+        level: 31, xp: 12448, gold: 9047, count: 50, completed: true },
+    { sha: '8b075ebdac1f5fea3b7849927dfd3679b6b2e70d3dfb1dd908961dbc9c31e741',
+        level: 33, xp: 23108, gold: 10598, count: 50, completed: true, waterOffered: true }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
@@ -25,6 +27,12 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
         if (character.class !== 'Wizard' || character.level !== ${checkpoint.level} || character.xp !== ${checkpoint.xp} || character.gold !== ${checkpoint.gold} ||
             !quest?.accepted || Boolean(quest.completed) !== ${checkpoint.completed} || quest.count !== ${checkpoint.count} || quest.max_count !== 50 ||
             character.quests.some(q => q.id.startsWith('daily_') && (q.accepted || q.completed))) throw Error('Unexpected earned progress');
+        if (${checkpoint.waterOffered === true}) {
+            const dungeon = character.quests.find(q => q.id === 'chronicle_03_roots_remember');
+            const water = character.quests.find(q => q.id === 'chronicle_water_missing_ferry');
+            if (!dungeon?.completed || dungeon.count !== 1 || !water || water.accepted || water.completed || water.count !== 0)
+                throw Error('Unexpected earned Water handoff');
+        }
         character.name = ${JSON.stringify(username)};
         const target = db.getSiblingDB('eidolon').users;
         const result = target.updateOne({ username: ${JSON.stringify(username)}, 'characters.0': { $exists: false } },
@@ -36,7 +44,7 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
     `;
 }
 
-export function readSavedEarnedHandoff(username, env = process.env) {
+export function readSavedEarnedHandoff(username, env = process.env, { includeQuests = false } = {}) {
     if (env.EIDOLON_E2E_EARNED_RESUME !== '1' || !/^codexqa[a-z0-9-]+$/.test(username || '') ||
         !/^eidolon-isolated-qa-mongo-[a-z0-9_.-]+$/.test(env.EIDOLON_E2E_BUILD_MONGO_CONTAINER || '') ||
         !/^\d+$/.test(env.EIDOLON_E2E_BUILD_MONGO_PORT || '') ||
@@ -50,7 +58,8 @@ export function readSavedEarnedHandoff(username, env = process.env) {
         const q = (c.quests || []).find(q => q.id === 'chronicle_earth_borrowed_oath') || {};
         const d = (c.quests || []).find(q => q.id === 'chronicle_03_roots_remember') || {};
         print(JSON.stringify({level:c.level,xp:c.xp,gold:c.gold,correctSaveKey:c.name===${JSON.stringify(username)},
-            huntCompleted:q.completed===true,dungeonAccepted:d.accepted===true,dungeonCount:d.count,dungeonCompleted:d.completed===true}));`;
+            huntCompleted:q.completed===true,dungeonAccepted:d.accepted===true,dungeonCount:d.count,dungeonCompleted:d.completed===true
+            ${includeQuests ? ',quests:c.quests' : ''}}));`;
     try {
         return JSON.parse(execFileSync('docker', ['exec', '-i', env.EIDOLON_E2E_BUILD_MONGO_CONTAINER,
             'mongosh', '--quiet', '--port', env.EIDOLON_E2E_BUILD_MONGO_PORT, '--file', '/dev/stdin'],
