@@ -11,13 +11,23 @@ version-rewritten engine assets. Receipt and verifier:
 `/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`. No production account mutations.
 The full1.10 goal remains open; this is delivery acceptance, not raid acceptance.
 
-Fire continuation `fireraid0920j` is running from frozendd7dc31f after exact
-delivery verification. Source/log/launcher:
-`/tmp/eidolon-fire-raid-20260920-r10-gYf6xz/`; root native20683, launcher3722420.
-Five progressed, class-geared roles, Low rendering, original120-minute ceiling,
-zero retries. Luna monitors one read-only launcher wait and the terminal footer.
-No result is accepted yet. No competing Eidolon native/deployment browser job
-was present at launch; unrelated software-rendered browser tests were left alone.
+Fire `fireraid0920j`, frozendd7dc31f, is terminal exit1 after14.2m; native20683
+and launcher3722420 are stopped. Source/log/artifacts:
+`/tmp/eidolon-fire-raid-20260920-r10-gYf6xz/`. Luna confirms all five survived
+and owned containers are gone. The route stopped at another15s formation bound,
+before guardian/repair acceptance. Unlike the previous no-route failure, its
+trace shows seven progressing input batches through15.949s; the final Cleric
+remains outside the five-unit boundary, with nearby Golem/Behemoth bodies and
+three recorded collision stops. Do not infer a geometry defect or increase the
+deadline from this alone. The existing batching change is available for later
+work, not a measured solution to this failure. No immediate unchanged Fire retry.
+The log does independently observe foreground-target substitution followed by
+an actual defeated InfernalBehemoth while approaching a MagmaGolem; this accepts
+that bounded input branch, not the full assault or restored-crystal reward.
+Replay: generator2, seed`311554435171593545`. Private archive:
+`/tmp/eidolon-party-checkpoint-fireraid0920j-o3qd1J/save.archive.gz`, SHA256
+`4b1c09f4b344803887d72d95f05b61ab50656ea9b46c5e9c23573d9218ddacc6`.
+The test ran after verified delivery without overlapping native/deployment jobs.
 
 During that run, source review found the optional waypoint witness accepted any
 displacement over one unit before checking its required destination, living state
