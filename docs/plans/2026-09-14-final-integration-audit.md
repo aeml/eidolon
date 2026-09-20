@@ -1,13 +1,14 @@
 # 1.10 final integration — evidence and remaining work
 
-## September20 checkpoint — earned Water queued, Fire targeting unresolved
+## September20 checkpoint —1.9.22 delivered, Water continuation started
 
-Alpha1.9.22 corrected candidate4f39328b is in CI35492191742. Hosted Jest,
-Go and all three browser shards pass; predeployment character QA is running.
-This is not yet live-release acceptance. Guarded Water parent45531 waits for
-that exact CI success and independent public verification before starting
-`earnedwater0920a` from the saved level33 Wizard. Luna monitors both handles;
-do not overlap native browser work or edit its frozen29ef2862 worktree.
+Alpha1.9.22 at4f39328b is accepted: CI35492191742 passed all jobs in21m44s,
+ending06:00:17UTC; independent public verification confirms matching identities,
+database readiness, login/notes and the shipped four-member party layout.
+Guarded Water parent45531 passed that exact deployment and source verification,
+then started isolated setup for `earnedwater0920a` from the saved level33 Wizard.
+Luna monitors the continuation; no Water quest result is claimed yet.
+Do not overlap native browser work or edit its frozen29ef2862 worktree.
 See [release status](2026-09-20-release1-9-22-party-visibility.md) and
 [earned continuation](2026-09-20-earned-continuation.md).
 

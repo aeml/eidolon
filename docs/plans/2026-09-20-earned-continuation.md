@@ -22,6 +22,14 @@ Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
 
 ### Next continuation prepared — Missing Ferry
 
+Deployment gate cleared at06:00UTC: all CI35492191742 jobs passed, followed by
+the independent `PUBLIC_RELEASE_VERIFIED` receipt for4f39328b/Alpha1.9.22.
+Parent45531 then passed its frozen-source guard and entered isolated setup for
+`earnedwater0920a`. This is an active continuation, not a completed Water quest.
+The build identity carries `-dirty` because of the pre-existing untracked
+`verify-checkpoint.mjs`; tracked source remains clean29ef2862. Do not alter it
+mid-run. The original queued-launch description below records its safeguards.
+
 Guarded continuation queued September20: native45531, run`earnedwater0920a`,
 launcher/log `/tmp/eidolon-earned-water-20260920-MuBmtK/`. The script first
 requires corrected publishing CI35492191742 success, then independently checks
@@ -46,7 +54,7 @@ chapter from that save:60 ordinary level40+ Construct kills in western Earth,
 normal recovery/training, manual Ilyra turn-in, relogin and actual saved-Mongo
 XP/Gold/quest checks including the fresh flood-shelter investigation offer.
 Its cleanup preserves a complete private archive on success or failure. This
-route is prepared, **not yet run or accepted**. Use the archive path above;
+route is now starting, **not yet accepted**. Use the archive path above;
 do not overlap with deployment browser work or a later Fire raid. It is
 not a full Water-region or four-earned-character pacing claim.
 
