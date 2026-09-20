@@ -87,7 +87,10 @@ test('native wiring keeps explicit story-only opt-in and all combat/save/readine
     expect(opening).toContain("await runPhase('readiness', () => verifyStoryOnlyEarthReadiness(page));");
     expect(opening).toContain('runPhase.assertComplete();');
     for (const id of ['seeds', 'imps', 'scars', 'orcs', 'handoff']) expect(collection).toContain(`await runPhase('${id}',`);
-    for (const route of [opening, collection, hunt]) expect(route).toContain('const deadline = Date.now() + 120_000');
+    for (const route of [opening, collection, hunt]) expect(route).toMatch(/(?:const|let) deadline = Date\.now\(\) \+ 120_000/);
+    // The hunt retains spent combat time while excluding successful town
+    // recovery; its encompassing phase/expedition deadline still bounds it.
+    expect(hunt).toContain('onRecovered: elapsed => { deadline += elapsed; }');
     expect(collection).toContain('expect(required).toBe(8)');
     expect(collection).toContain('expect((await equipmentSnapshot(page)).gear,');
     expect(collection).toContain(".toContainText('unlocks at level 30')");

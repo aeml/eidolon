@@ -2,6 +2,17 @@
 
 ## Current delivery — 1.9.25 verified, retained Water continuation
 
+Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
+passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
+failure was an obsolete `const deadline` source assertion in FreshCampaignPhases,
+predating the accepted measured-recovery timer change. It now accepts const/let,
+still requires the120s combat bound and explicitly checks measured recovery.
+That file's9 tests pass3.2s after correction, plus lint/diff. No second complete
+matrix was run. Its existing behavior-level recovery checks passed in the full
+run. The background unit process was lowered to nice19 after observing load65
+on this16-core shared host; no unrelated process or gameplay setting was changed.
+This is not a performance baseline or a new deployment.
+
 Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 is verified live.
 CI35503417369 passed all jobs at10:14:07UTC in23m36s. Public client/server
 identities, ready database, login/cumulative notes and exact stash assets match.
