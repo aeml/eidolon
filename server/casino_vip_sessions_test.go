@@ -33,7 +33,7 @@ func TestVIPCasinoMongoPokerSlotsAndMembershipExpiry(t *testing.T) {
 			t.Fatal(err)
 		}
 		p := world.Entities[c.playerID]
-		p.X, p.Y, p.Z = 0, 0, 153
+		p.X, p.Y, p.Z = 0, 0, 104
 		if err := world.ChangeCasinoFloor(p.ID, true, now); err != nil {
 			t.Fatal(err)
 		}
@@ -169,7 +169,7 @@ func TestVIPCasinoMongoBlackjackSharedHandSettlesAfterExpiry(t *testing.T) {
 			t.Fatal(err)
 		}
 		p := world.Entities[c.playerID]
-		p.X, p.Z = 0, 153
+		p.X, p.Z = 0, 104
 		if err := world.ChangeCasinoFloor(p.ID, true, now); err != nil {
 			t.Fatal(err)
 		}

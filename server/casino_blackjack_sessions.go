@@ -159,7 +159,7 @@ func advanceBlackjackLocked(record *database.BlackjackTableRecord, state *blackj
 }
 
 func initializeBlackjack() error {
-	for _, table := range game.CasinoTables() {
+	for _, table := range game.CasinoBlackjackRecoveryTables() {
 		if table.Game != "blackjack" {
 			continue
 		}
@@ -215,7 +215,7 @@ func recoverAccountBlackjackLocked(username string) error {
 	}
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
-	for _, table := range game.CasinoTables() {
+	for _, table := range game.CasinoBlackjackRecoveryTables() {
 		if table.Game != "blackjack" {
 			continue
 		}
@@ -323,7 +323,7 @@ func handleBlackjackPlay(client *Client, sessionID, roundID, action string, revi
 func tickBlackjack(now time.Time, ids ...string) error {
 	if len(ids) == 0 {
 		var result error
-		for _, table := range game.CasinoTables() {
+		for _, table := range game.CasinoBlackjackRecoveryTables() {
 			if table.Game == "blackjack" {
 				result = errors.Join(result, tickBlackjack(now, table.ID))
 			}

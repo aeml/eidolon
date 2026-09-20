@@ -169,7 +169,7 @@ export class CasinoController {
         this.engine.clearCombatIntentState?.();
         this.engine.inputManager?.clearInputState?.();
         if (this.engine.player) this.engine.player.targetPosition = null;
-        const heading = document.createElement('h2'); heading.textContent = guard ? 'VIP Guard' : 'The Fourfold Casino';
+        const heading = document.createElement('h2'); heading.textContent = guard ? 'VIP Guard' : 'Lanternhold Casino';
         const copy = document.createElement('p');
         copy.textContent = guard ? (this.vipActive ? 'Welcome to the Sovereign Lounge. Upstairs games wager and return only EP, usable for cosmetics—not Gold or combat power.' : 'You must be a VIP to enter')
             : downstairs ? 'Return to the main Gold gaming floor? Your saved outcomes and bonus features remain yours.'
@@ -200,7 +200,7 @@ export class CasinoController {
         if (!this.raycaster.intersectObject(door, true).length) return null;
         this.hoveredDoor = door; door.material.emissive.setHex(0x72501c);
         const distance = engine.player.position.distanceTo(new THREE.Vector3(0, 0, 181));
-        this.hoverHint = { dungeonType: '', dungeonName: 'Casino', distance, inRange: distance < 7,
+        this.hoverHint = { dungeonType: '', dungeonName: 'Lanternhold Casino', distance, inRange: distance < 7,
             statusLabel: distance < 7 ? 'Entrance · Click to interact' : 'Entrance · Walk to enter',
             promptLabel: distance < 7 ? 'Click to open the Casino entrance, then choose Enter Casino.' : 'Click to walk to the Casino entrance.' };
         return this.hoverHint;
@@ -215,12 +215,13 @@ export class CasinoController {
         this.raycaster.setFromCamera(this.pointer, engine.renderSystem.camera);
         const inside = engine.currentInstanceId === CASINO_INSTANCE;
         const shell = engine.renderSystem.scene.getObjectByName(inside ? 'lanternhold-casino-interior' : 'lanternhold-casino-shell');
-        const targets = inside ? (this.floor === 'vip' ? [] : [shell?.userData.casinoGuard, shell?.userData.casinoExit]) : !engine.currentInstanceId ? [shell?.userData.casinoDoor] : [];
+        const targets = inside ? (this.floor === 'vip' ? [shell?.userData.casinoStairs] : [shell?.userData.casinoGuard, shell?.userData.casinoExit]) : !engine.currentInstanceId ? [shell?.userData.casinoDoor] : [];
         const hit = this.raycaster.intersectObjects(targets.filter(Boolean), true)[0];
         if (hit) {
             let kind = 'entry';
-            if (inside) kind = this.raycaster.intersectObject(shell.userData.casinoGuard, true).length ? 'guard' : 'exit';
-            const destination = new THREE.Vector3(0, 0, kind === 'entry' ? 181 : kind === 'guard' ? 152 : 200);
+            if (inside) kind = this.floor === 'vip' ? 'downstairs' : this.raycaster.intersectObject(shell.userData.casinoGuard, true).length ? 'guard' : 'exit';
+            const destination = new THREE.Vector3(0, this.floor === 'vip' && inside ? 8 : 0,
+                kind === 'entry' ? 181 : kind === 'guard' || kind === 'downstairs' ? 104 : 204);
             if (engine.player.position.distanceTo(destination) < 7) this.showDoorDialogue(kind);
             else { this.pendingDoor = { kind, destination }; engine.player.move(destination); }
             return true;
@@ -252,7 +253,7 @@ export class CasinoController {
         const p = this.engine.player?.position;
         if (!p || this.active) return;
         const inside = this.engine.currentInstanceId === CASINO_INSTANCE;
-        if (inside) this.showDoorDialogue(this.floor === 'vip' ? 'downstairs' : p.z < 160 ? 'guard' : 'exit');
+        if (inside) this.showDoorDialogue(this.floor === 'vip' ? 'downstairs' : p.z < 150 ? 'guard' : 'exit');
         else if (!this.engine.currentInstanceId) this.showDoorDialogue('entry');
     }
 
@@ -264,8 +265,8 @@ export class CasinoController {
         const overworld = engine.currentInstanceId === CASINO_INSTANCE;
         const upstairs = overworld && this.floor === 'vip';
         if (engine.collisionManager) engine.collisionManager.casinoVIPFloor = upstairs;
-        const nearGuard = overworld && Math.hypot(player.position.x, player.position.z - (upstairs ? 140 : 150)) < 7;
-        const nearExit = overworld && !upstairs && Math.hypot(player.position.x, player.position.z - 201) < 7;
+        const nearGuard = overworld && Math.hypot(player.position.x, player.position.z - 100) < 7;
+        const nearExit = overworld && !upstairs && Math.hypot(player.position.x, player.position.z - 204) < 7;
         const nearDoor = !engine.currentInstanceId && Math.hypot(player.position.x, player.position.z - 181) < 7;
         this.stairButton.hidden = this.active || !(nearGuard || nearExit || nearDoor);
         this.stairButton.textContent = nearGuard ? upstairs ? 'Return downstairs' : 'Talk to VIP Guard' : nearExit ? 'Leave Casino' : 'Casino Entrance';
@@ -288,10 +289,10 @@ export class CasinoController {
         }
         const shell = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell');
         updateCasinoCutaway(shell, null);
-        const balcony = engine.renderSystem.scene.getObjectByName('casino-vip-balcony');
-        if (balcony) balcony.visible = upstairs || (player.position.z > 149 && Math.abs(player.position.x) < 23);
-        this.balconyCutaway = overworld && Boolean(balcony && !balcony.visible);
-        if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = Boolean(balcony?.visible);
+        const floors = engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior')?.userData.floors;
+        if (floors) { floors.public.visible = !upstairs; floors.vip.visible = upstairs; }
+        if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = upstairs;
+        if (this.furniture?.userData.publicFloor) this.furniture.userData.publicFloor.visible = !upstairs;
         if (this.stairRoute?.length) {
             if (!overworld || player.state === 'DEAD' || this.active) this.stairRoute = null;
             else if (player.position.distanceTo(this.stairRoute[0]) < .35) {
@@ -322,8 +323,7 @@ export class CasinoController {
 
     isActorCutAway(entity) {
         return this.engine.currentInstanceId === CASINO_INSTANCE && entity !== this.engine.player
-            && (entity?.position?.y ?? entity?.mesh?.position?.y ?? 0) >= 7.5
-            && this.balconyCutaway === true;
+            && ((entity?.position?.y ?? entity?.mesh?.position?.y ?? 0) >= 7.5) !== (this.floor === 'vip');
     }
 
     restoreCutawayActors() {

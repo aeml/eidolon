@@ -94,11 +94,7 @@ func (w *World) adminLandingClearLocked(plan AdminTeleportPlan, playerID string)
 			return false
 		}
 	case plan.Instance == CasinoInstanceID:
-		if plan.VIP {
-			if y != 8 || math.Abs(x) > 32-r || z < 130+r || z > 201-r || z > 141-r && math.Abs(x) < 26+r {
-				return false
-			}
-		} else if y != 0 || math.Abs(x) > 33-r || z < 130+r || z > 203-r || math.Abs(x) < 6+r && z < 148+r {
+		if (plan.VIP && y != 8) || (!plan.VIP && y != 0) || math.Abs(x) > 54-r || z < 98+r || z > 206-r {
 			return false
 		}
 		if !adminShapesClear(adminLandingColliders.Casino, x, y, z) {

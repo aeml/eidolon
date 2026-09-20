@@ -5,65 +5,52 @@ import { createProceduralDungeonNPC } from './ProceduralTownActors.js';
 export function createCasinoInterior(scene, collision) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-interior';
     const m = materials();
-    box(root, 'obsidian-gaming-floor', m.dark, [68, .3, 76], [0, -.15, 166]);
-    // Broad circulation lanes separate the tables; inlays never collide.
-    for (let x = -30; x <= 30; x += 6) for (let z = 134; z <= 200; z += 6) {
-        box(root, 'polished-marble-tile', ((x / 6 + (z - 134) / 6) % 2) ? m.stone : m.wood, [5.88, .015, 5.88], [x, .012, z]);
-    }
-    box(root, 'arrival-carpet', m.velvet, [9, .025, 51], [0, .035, 177]);
-    for (const x of [-4.6, 4.6]) box(root, 'carpet-gilt-border', m.gold, [.1, .025, 51], [x, .05, 177]);
-    for (const z of [156, 180, 198]) {
-        cylinder(root, 'fourfold-medallion-border', m.gold, 2.7, .025, [0, .07, z]);
-        cylinder(root, 'fourfold-medallion', m.dark, 2.5, .026, [0, .085, z]);
-        for (let i = 0; i < 4; i++) {
-            const ray = box(root, 'fourfold-inlay', m.gold, [.16, .025, 3.9], [0, .103, z]); ray.rotation.y = i * Math.PI / 4;
+    const floors = {};
+    for (const [floor, y] of [['public', 0], ['vip', 8]]) {
+        const group = new THREE.Group(); group.name = `casino-${floor}-floor`; group.position.y = y;
+        const palette = floor === 'vip' ? { ...m, velvet: new THREE.MeshStandardMaterial({ color: 0x34234e, roughness: .7 }),
+            stone: new THREE.MeshStandardMaterial({ color: 0x667581, roughness: .32, metalness: .15 }) } : m;
+        box(group, 'marble-gaming-floor', palette.dark, [112, .3, 112], [0, -.15, 152]);
+        for (let x = -52; x <= 52; x += 8) for (let z = 100; z <= 204; z += 8) {
+            box(group, 'polished-marble-tile', ((x + z) / 8) % 2 ? palette.stone : palette.wood,
+                [7.88, .015, 7.88], [x, .012, z]);
         }
+        box(group, 'central-velvet-walkway', palette.velvet, [8, .025, 104], [0, .035, 152]);
+        for (const x of [-4.1, 4.1]) box(group, 'carpet-gilt-border', palette.gold, [.1, .025, 104], [x, .05, 152]);
+        for (const z of [110, 132, 154, 176, 198]) {
+            cylinder(group, 'fourfold-medallion-border', palette.gold, 2.7, .025, [0, .07, z]);
+            cylinder(group, 'fourfold-medallion', palette.dark, 2.5, .026, [0, .085, z]);
+            for (let i = 0; i < 4; i++) box(group, 'fourfold-inlay', palette.gold,
+                [.16, .025, 3.9], [0, .103, z]).rotation.y = i * Math.PI / 4;
+        }
+        for (const x of [-56, 56]) box(group, 'perimeter-balustrade', palette.stone, [.7, 1.1, 112], [x, .55, 152]);
+        for (const z of [96, 208]) box(group, 'perimeter-balustrade', palette.stone, [112, 1.1, .7], [0, .55, z]);
+        for (const x of [-54, 54]) for (const z of [101, 126, 152, 178, 203]) {
+            collision.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(x, y+3, z), new THREE.Vector3(1.2, 6, 1.2)));
+            cylinder(group, 'fluted-column', palette.stone, .58, 6, [x, 3, z], 12);
+            cylinder(group, 'column-capital', palette.gold, .9, .35, [x, 5.8, z], 12);
+            box(group, 'amber-sconce', palette.light, [.55, 1, .7], [x, 4, z + .73]);
+        }
+        for (const x of [-32, 32]) {
+            box(group, 'lounge-sofa', palette.velvet, [9, .7, 1.7], [x, .5, 101]);
+            box(group, 'lounge-sofa-back', palette.wood, [9.2, 1.5, .3], [x, .8, 100.2]);
+            cylinder(group, 'lounge-marble-table', palette.gold, 1.1, .7, [x, .35, 104]);
+            collision.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(x, y+.35, 104), new THREE.Vector3(2.2, .7, 2.2)));
+            collision.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(x, y+.7, 101), new THREE.Vector3(9.2, 1.5, 2)));
+        }
+        for (let step = 0; step < 6; step++) box(group, 'grand-stair-tread', palette.stone,
+            [7, (step+1)*.25, .5], [0, (step+1)*.125, 99-step*.5]);
+        group.userData.drawMeshCount = batchMeshes(group);
+        group.visible = floor === 'public'; root.add(group); floors[floor] = group;
     }
-    const colliders = [];
-    const solid = (name, material, size, position) => {
-        box(root, name, material, size, position);
-        const bounds = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(...position), new THREE.Vector3(...size));
-        collision.addCollider(bounds); colliders.push(bounds);
-    };
-    // Low foreground walls keep the gameplay view open. The balcony and far
-    // colonnade provide a genuine second storey without a roof hiding players.
-    for (const x of [-34, 34]) solid('perimeter-balustrade', m.stone, [.7, 1.1, 76], [x, .55, 166]);
-    solid('rear-wall', m.stone, [68, 12, .7], [0, 6, 128]);
-    solid('front-balustrade', m.stone, [68, 1.1, .7], [0, .55, 204]);
-    for (const x of [-31, 31]) for (const z of [136, 158, 180, 200]) {
-        solid('fluted-column-base', m.dark, [2.1, .65, 2.1], [x, .325, z]);
-        cylinder(root, 'fluted-column', m.stone, .58, 10, [x, 5, z], 12);
-        cylinder(root, 'column-capital', m.gold, .9, .35, [x, 9.8, z], 12);
-        box(root, 'amber-sconce-frame', m.gold, [.85, 1.3, .65], [x, 4, z + .7]);
-        box(root, 'amber-sconce', m.light, [.55, 1, .7], [x, 4, z + .73]);
-    }
-    const balcony = new THREE.Group(); balcony.name = 'casino-vip-balcony';
-    box(balcony, 'vip-rear-floor', m.dark, [66, .4, 15], [0, 7.8, 136]);
-    for (const x of [-29, 29]) box(balcony, 'vip-gallery-floor', m.dark, [8, .4, 60], [x, 7.8, 173]);
-    box(balcony, 'vip-velvet-runner', m.velvet, [58, .03, 10], [0, 8.02, 135]);
-    for (const x of [-23, 23]) {
-        box(balcony, 'vip-sofa', m.velvet, [5, .7, 1.7], [x, 8.5, 132]);
-        box(balcony, 'vip-sofa-back', m.wood, [5.2, 1.5, .3], [x, 8.8, 131.2]);
-        cylinder(balcony, 'vip-marble-table', m.gold, 1, .7, [x, 8.35, 136]);
-    }
-    for (const x of [-19, 19]) box(balcony, 'balcony-golden-rail', m.gold, [25, .15, .15], [x, 9.2, 143.6]);
-    for (let x = -32; x <= 32; x += 2) if (Math.abs(x) > 6) cylinder(balcony, 'balcony-baluster', m.gold, .065, 1.2, [x, 8.6, 143.6], 8);
-    for (let step = 0; step < 32; step++) box(root, 'grand-stair-tread', step % 2 ? m.stone : m.dark,
-        [10, (step + 1) / 4, .45], [0, (step + 1) / 8, 147.6 - step * .45]);
-    solid('vip-stair-barrier', m.gold, [12, 1.1, .3], [0, .55, 148]);
-    for (const x of [-5.7, 5.7]) cylinder(root, 'velvet-rope-post', m.gold, .2, 1.5, [x, .75, 148.6]);
-    box(root, 'velvet-rope', m.velvet, [11.4, .13, .13], [0, 1.3, 148.6]);
-    for (const x of [-25, 25]) for (const z of [151, 172, 192]) {
-        solid('lounge-bench', m.velvet, [2, .55, 5], [x, .5, z]);
-        box(root, 'lounge-back', m.wood, [.25, 1.2, 5.2], [x + Math.sign(x), .8, z]);
-    }
-    root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(balcony);
-    root.add(balcony);
     // Reuse the established humanoid rig, with a real body and readable uniform.
-    const guard = createProceduralDungeonNPC(); guard.name = 'casino-vip-guard'; guard.position.set(0, 0, 150);
-    root.add(guard);
-    collision.addCircularCollider(0, 150, .65);
-    const exit = box(root, 'casino-interior-exit', m.gold, [6, 4, .4], [0, 2, 203.3]);
+    const guard = createProceduralDungeonNPC(); guard.name = 'casino-vip-guard'; guard.position.set(0, 0, 100);
+    floors.public.add(guard);
+    collision.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(0, 1.65, 100), new THREE.Vector3(1.3, 3.3, 1.3)));
+    const exit = box(floors.public, 'casino-interior-exit', m.gold, [6, 4, .4], [0, 2, 207.3]);
+    const stairs = box(floors.vip, 'casino-return-stairs', m.gold, [6, 3, .4], [0, 1.5, 98]);
+    root.userData.floors = floors; root.userData.casinoStairs = stairs;
+    root.userData.drawMeshCount = floors.public.userData.drawMeshCount + floors.vip.userData.drawMeshCount;
     root.userData.casinoGuard = guard; root.userData.casinoExit = exit;
     scene.add(root); collision.casinoInterior = true;
     return root;
@@ -202,6 +189,18 @@ export function createCasinoShell(x = 0, z = 170) {
     door.material.emissiveIntensity = .7;
     box(door, 'casino-door-handle', m.gold, [.15, .7, .2], [.7, 0, .3]);
     root.userData.casinoDoor = door;
+    const canvas = document.createElement('canvas'); canvas.width = 768; canvas.height = 112;
+    const context = canvas.getContext('2d');
+    if (context) {
+        context.fillStyle = 'rgba(17, 24, 34, 0.94)'; context.fillRect(0, 0, 768, 112);
+        context.strokeStyle = '#d8b86b'; context.lineWidth = 4; context.strokeRect(3, 3, 762, 106);
+        context.font = 'bold 48px Georgia, serif'; context.textAlign = 'center'; context.textBaseline = 'middle';
+        context.fillStyle = '#f6df9b'; context.fillText('Lanternhold Casino', 384, 56);
+        const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
+        const sign = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false }));
+        sign.name = 'casino-nameplate'; sign.position.set(0, 7, 9); sign.scale.set(14, 2.04, 1);
+        root.add(sign);
+    }
     return root;
 }
 
@@ -222,7 +221,7 @@ export function createCasinoFurnitureColliders(tables) {
 export function createCasinoFurniture(tables) {
     const root = new THREE.Group(); root.name = 'casino-furniture';
     const publicFloor = new THREE.Group(), vipFloor = new THREE.Group();
-    root.add(publicFloor, vipFloor); root.userData.vipFloor = vipFloor;
+    root.add(publicFloor, vipFloor); root.userData.publicFloor = publicFloor; root.userData.vipFloor = vipFloor;
     const m = materials(); const seats = [];
     for (const table of tables) {
         const unit = new THREE.Group(); unit.name = table.id; unit.position.y = table.y || 0;
@@ -240,7 +239,36 @@ export function createCasinoFurniture(tables) {
             cylinder(unit, 'table-base', m.wood, 0.65, 1.05, [table.x, 0.525, table.z]);
             cylinder(unit, 'table-rail', m.gold, 1.75, 0.2, [table.x, 1.2, table.z]);
             cylinder(unit, 'table-felt', m.felt, 1.59, 0.05, [table.x, 1.325, table.z]);
-            cylinder(unit, 'table-sigil', m.gold, 0.34, 0.015, [table.x, 1.36, table.z], 4);
+            if (table.game === 'roulette') {
+                const wx = table.x - .5, wz = table.z - .2;
+                cylinder(unit, 'roulette-brass-rim', m.gold, .79, .1, [wx, 1.42, wz], 48);
+                cylinder(unit, 'roulette-wheel-bed', m.wood, .73, .08, [wx, 1.49, wz], 48);
+                for (let pocket = 0; pocket < 37; pocket++) {
+                    const segment = new THREE.Mesh(new THREE.RingGeometry(.37, .7, 1, 1,
+                        pocket * Math.PI * 2 / 37, Math.PI * 2 / 37 * .92), pocket === 0 ? m.felt : pocket % 2 ? m.velvet : m.dark);
+                    segment.name = 'roulette-pocket'; segment.rotation.x = -Math.PI / 2;
+                    segment.position.set(wx, 1.54, wz); unit.add(segment);
+                }
+                cylinder(unit, 'roulette-spindle', m.gold, .09, .28, [wx, 1.64, wz], 12);
+                for (const rotation of [0, Math.PI / 2]) box(unit, 'roulette-cross', m.gold,
+                    [.045, .035, .5], [wx, 1.78, wz]).rotation.y = rotation;
+                for (let row = 0; row < 6; row++) for (let column = 0; column < 3; column++) {
+                    box(unit, 'roulette-betting-grid', (row+column)%2 ? m.velvet : m.dark,
+                        [.15, .02, .16], [table.x+.66+column*.18, 1.37, table.z-.54+row*.19]);
+                }
+            } else if (table.game === 'baccarat') {
+                for (const side of [-1, 1]) {
+                    box(unit, side < 0 ? 'baccarat-player' : 'baccarat-banker', m.gold,
+                        [.92, .015, 1.12], [table.x+side*.57, 1.36, table.z]);
+                    box(unit, 'baccarat-betting-box', side < 0 ? m.dark : m.velvet,
+                        [.85, .018, 1.05], [table.x+side*.57, 1.38, table.z]);
+                    for (const offset of [-.15,.15]) box(unit, 'baccarat-card', m.light,
+                        [.2, .02, .31], [table.x+side*.57+offset, 1.41, table.z-.22]);
+                }
+                cylinder(unit, 'baccarat-tie', m.gold, .24, .025, [table.x,1.4,table.z+.65], 12);
+            } else {
+                cylinder(unit, 'table-sigil', m.gold, 0.34, 0.015, [table.x, 1.36, table.z], 4);
+            }
         }
         table.seats.forEach((seat, index) => {
             const chair = new THREE.Group(); chair.position.set(seat.x, 0, seat.z); chair.rotation.y = seat.rotation;
@@ -264,10 +292,14 @@ export function createCasinoFurniture(tables) {
 }
 
 export function disposeCasinoObject(root) {
-    const geometries = new Set(), materials = new Set();
+    const geometries = new Set(), materials = new Set(), textures = new Set();
     root?.traverse(object => {
         if (object.geometry) geometries.add(object.geometry);
-        for (const material of Array.isArray(object.material) ? object.material : [object.material]) if (material) materials.add(material);
+        for (const material of Array.isArray(object.material) ? object.material : [object.material]) if (material) {
+            materials.add(material);
+            if (material.map) textures.add(material.map);
+        }
     });
-    geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); root?.removeFromParent();
+    geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());
+    textures.forEach(texture => texture.dispose()); root?.removeFromParent();
 }

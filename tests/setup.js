@@ -3,8 +3,11 @@ import * as protobuf from 'protobufjs/minimal';
 
 globalThis.protobuf = protobuf;
 
-HTMLCanvasElement.prototype.getContext = () => { 
+HTMLCanvasElement.prototype.getContext = () => {
     return {
+        fillRect: () => {},
+        strokeRect: () => {},
+        fillText: () => {},
         getParameter: (param) => {
             // console.log('getParameter', param);
             if (param === 37445) return "WebGL 1.0"; // UNMASKED_VENDOR_WEBGL

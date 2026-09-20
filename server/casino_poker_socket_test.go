@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -115,11 +116,12 @@ func approachVIPCardSocket(t *testing.T, conn *websocket.Conn, tableID string, s
 		t.Fatal("VIP approach requires a real upstairs card table")
 	}
 	point := table.Seats[seat]
-	for step := 1; step <= 20; step++ {
+	steps := int(math.Ceil(math.Hypot(point.ExitX, point.ExitZ-104) / .8))
+	for step := 1; step <= steps; step++ {
 		time.Sleep(350 * time.Millisecond)
-		fraction := float64(step) / 20
+		fraction := float64(step) / float64(steps)
 		resourceSend(t, conn, MsgMove, MovePayload{MovementContext: movement.Context,
-			X: point.ExitX * fraction, Y: 8, Z: 140 + (point.ExitZ-140)*fraction,
+			X: point.ExitX * fraction, Y: 8, Z: 104 + (point.ExitZ-104)*fraction,
 			State: "RUNNING", Sequence: uint64(step)})
 	}
 }
@@ -165,7 +167,7 @@ func testPokerActualSocketsHandAcrossRestart(t *testing.T, vip bool) {
 		point := table.Seats[i]
 		fixture := &database.Character{Name: name, Class: "Fighter", Level: 1, ProgressionVersion: game.CurrentProgressionVersion, InstanceID: game.CasinoInstanceID, X: point.ExitX, Z: point.ExitZ, Gold: 500, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 		if vip {
-			fixture.X, fixture.Z = 0, 153
+			fixture.X, fixture.Z = 0, 104
 			period, err := database.NewVIPPeriod(time.Now().Add(-time.Hour), time.Now().AddDate(0, 1, 0))
 			if err != nil {
 				t.Fatal(err)

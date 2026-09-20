@@ -49,6 +49,10 @@ func (op BlackjackTransfer) Validate() error {
 		maxReturn = 20000000 // Fire free-spin jackpot: 200×100,000.
 	} else if strings.HasPrefix(op.ID, "casino:poker:") {
 		maxReturn = 600000 // Six fully committed buy-ins.
+	} else if strings.HasPrefix(op.ID, "casino:roulette:") {
+		maxReturn = 3600000 // Single-zero straight-up return: 36×100,000.
+	} else if strings.HasPrefix(op.ID, "casino:baccarat:") {
+		maxReturn = 900000 // Tie return: 9×100,000.
 	}
 	if op.Currency == "ep" {
 		maxDebit, maxReturn = 100, maxReturn/1000
@@ -62,12 +66,13 @@ func (op BlackjackTransfer) Validate() error {
 }
 
 var vipSlotRecordID = regexp.MustCompile(`^slots:ep:[0-9a-f]{64}:(earth|air|fire|water)$`)
+var vipCardRecordID = regexp.MustCompile(`^vip-(blackjack|poker|baccarat)(-earth|-air|-fire)?$|^vip-roulette(-earth)?$`)
 
 // Currency is selected by the immutable server record identity, not by a wager
 // request or mutable JSON state. Legacy public records remain Gold; malformed
 // VIP identities fail closed instead of falling back to that economy.
 func CasinoCurrencyForRecord(tableID string) (string, error) {
-	if tableID == "vip-blackjack" || tableID == "vip-poker" || vipSlotRecordID.MatchString(tableID) {
+	if vipCardRecordID.MatchString(tableID) || vipSlotRecordID.MatchString(tableID) {
 		return "ep", nil
 	}
 	if tableID == "" || strings.HasPrefix(tableID, "vip") || strings.HasPrefix(tableID, "slots:ep") {

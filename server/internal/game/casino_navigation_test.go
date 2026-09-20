@@ -37,7 +37,7 @@ func TestCasinoStairsRoundTripAndFloorBoundaries(t *testing.T) {
 func TestCasinoMovementOwnsFloorAndCannotSeatThroughCeiling(t *testing.T) {
 	w, p, _, table := casinoSeatWorld()
 	p.X, p.Y, p.Z = 0, 0, 149
-	if !w.UpdatePlayerMovement(p.ID, 0, 999, 147, 0, "MOVING", 1) || p.Y != 0 || p.Z < 148 {
+	if !w.UpdatePlayerMovement(p.ID, 0, 999, 147, 0, "MOVING", 1) || p.Y != 0 || p.CasinoVIPFloor {
 		t.Fatal("client bypassed guarded stairs or forged upstairs height")
 	}
 	if w.StartPlayerJump(p.ID, 0, 0, 190) {

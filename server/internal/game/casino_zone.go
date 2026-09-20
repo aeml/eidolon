@@ -21,7 +21,7 @@ func RestoreCasinoPosition(instanceID string, x, y, z float64) (float64, float64
 		// Floor access is process-local authorization. A saved upstairs position
 		// restores by the public guard; it cannot grant entry after expiry.
 		if y > 1 {
-			return 0, 0, 153
+			return 0, 0, 104
 		}
 		if !finiteCoordinate(x) || !finiteCoordinate(z) {
 			return 0, 0, 200
@@ -80,19 +80,16 @@ func (w *World) ChangeCasinoFloor(playerID string, upstairs bool, now time.Time)
 	if upstairs == p.CasinoVIPFloor {
 		return nil
 	}
-	approachZ := 150.0
-	if !upstairs {
-		approachZ = 140
-	}
+	approachZ := 100.0
 	if !finiteCoordinate(p.X) || !finiteCoordinate(p.Z) || math.Hypot(p.X, p.Z-approachZ) > 7 {
 		return errors.New("approach the casino stairs first")
 	}
 	oldX, oldZ := p.X, p.Z
 	resetSceneMovementLocked(p)
 	p.CasinoVIPFloor = upstairs
-	p.X, p.Y, p.Z = 0, 0, 153
+	p.X, p.Y, p.Z = 0, 0, 104
 	if upstairs {
-		p.Y, p.Z = 8, 140
+		p.Y = 8
 	}
 	p.State = "IDLE"
 	p.TargetX, p.TargetZ = p.X, p.Z
@@ -103,28 +100,15 @@ func (w *World) ChangeCasinoFloor(playerID string, upstairs bool, now time.Time)
 	return nil
 }
 
-// Upper walkable space matches the rear balcony and two side galleries atY8.
-// Keep a move on its previous edge instead of teleporting across the atrium.
+// Both floors have the same complete footprint. Floor membership remains
+// server-owned; the client displays exactly one floor at a time.
 func constrainCasinoVIPInterior(x, z, oldX, oldZ float64) (float64, float64) {
-	x = math.Max(-32, math.Min(32, x))
-	z = math.Max(130, math.Min(201, z))
-	if z > 141 && math.Abs(x) < 26 {
-		if oldZ > 141 {
-			x = math.Copysign(26, oldX)
-		} else {
-			z = 141
-		}
-	}
-	return x, z
+	return constrainCasinoInterior(x, z)
 }
 
-// Ground-floor bounds include a solid stair barrier. No client-supplied height
-// or jump can grant VIP access while the guard denies entry.
+// Shared footprint only; ChangeCasinoFloor owns authorization and floor height.
 func constrainCasinoInterior(x, z float64) (float64, float64) {
-	x = math.Max(-33, math.Min(33, x))
-	z = math.Max(130, math.Min(203, z))
-	if math.Abs(x) < 6 && z < 148 {
-		z = 148
-	}
+	x = math.Max(-54, math.Min(54, x))
+	z = math.Max(98, math.Min(206, z))
 	return x, z
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestCasinoEPLimitsAndLegacyGold(t *testing.T) {
-	for _, name := range []string{"blackjack", "poker", "slots"} {
+	for _, name := range []string{"blackjack", "poker", "slots", "roulette", "baccarat"} {
 		minimum, maximum, step := CasinoBetLimits(name, "ep")
 		if maximum != 100 || !ValidCasinoBet(name, "ep", minimum) || !ValidCasinoBet(name, "ep", maximum) {
 			t.Fatal(name, minimum, maximum, step)

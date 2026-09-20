@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // Rendered access/seat/UI fixture. Real membership and currency settlement are
 // exercised by the focused disposable-Mongo server tests, not faked as earnings.
-for (const width of [390,1440]) test(`VIP balcony and EP table controls at ${width}px`,async({page})=>{
+for (const width of [390,1440]) test(`Separate VIP floor and EP table controls at ${width}px`,async({page})=>{
     await page.setViewportSize({width,height:width===390?844:1000});
     await page.routeWebSocket(/\/ws(?:\?|$)/,()=>{});
     await page.goto('/',{waitUntil:'networkidle'});
@@ -22,7 +22,7 @@ for (const width of [390,1440]) test(`VIP balcony and EP table controls at ${wid
         const camera=new THREE.OrthographicCamera(-24*innerWidth/innerHeight,24*innerWidth/innerHeight,24,-24,.1,500);
         camera.position.set(18,35,183);camera.lookAt(0,8,140);
         const collisionManager=new CollisionManager();createCasinoInterior(scene,collisionManager);
-        const player={id:'hero',position:new THREE.Vector3(0,0,153),rotation:new THREE.Quaternion(),state:'IDLE',mesh:createProceduralFighter(),move(p){this.position.copy(p);}};
+        const player={id:'hero',position:new THREE.Vector3(0,0,104),rotation:new THREE.Quaternion(),state:'IDLE',mesh:createProceduralFighter(),move(p){this.position.copy(p);}};
         scene.add(player.mesh);
         const sent=[],target=new THREE.Vector3(0,8,140);
         const engine={player,currentInstanceId:'lanternhold-casino',cameraLocked:true,isMobile:innerWidth<600,collisionManager,
@@ -38,9 +38,13 @@ for (const width of [390,1440]) test(`VIP balcony and EP table controls at ${wid
     });
     await page.getByRole('button',{name:'Enter VIP lounge',exact:true}).click();
     expect(await page.evaluate(()=>window.__vip.sent.some(m=>m.payload.action==='vip'))).toBe(true);
-    await page.evaluate(()=>{const f=window.__vip;f.controller.setFloor({upstairs:true,x:0,y:8,z:140});f.controller.updateState({tables:[f.table],floor:'vip',vip:true});});
+    await page.evaluate(()=>{const f=window.__vip;f.controller.setFloor({upstairs:true,x:0,y:8,z:104});f.controller.updateState({tables:[f.table],floor:'vip',vip:true});});
     await expect(page.getByRole('button',{name:'Return downstairs',exact:true})).toBeVisible();
-    await page.screenshot({path:`/tmp/eidolon-vip-balcony-${width}.png`});
+    await expect.poll(()=>page.evaluate(()=>{
+        const floors=window.__vip.engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior').userData.floors;
+        return { public:floors.public.visible, vip:floors.vip.visible };
+    })).toEqual({ public:false, vip:true });
+    await page.screenshot({path:`/tmp/eidolon-vip-floor-${width}.png`});
     await page.evaluate(()=>{
         const f=window.__vip,s=f.table.seats[0];
         f.controller.updateState({tables:[f.table],floor:'vip',vip:true,occupants:[{tableId:f.table.id,playerId:'hero',name:'Thorn',seat:0,connected:true}],

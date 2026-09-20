@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math"
 	"sort"
 	"time"
@@ -30,6 +31,7 @@ type CasinoTable struct {
 	ID             string               `json:"id"`
 	Name           string               `json:"name"`
 	Game           string               `json:"game"`
+	SlotTheme      string               `json:"slotTheme,omitempty"`
 	Floor          string               `json:"floor"`
 	X              float64              `json:"x"`
 	Z              float64              `json:"z"`
@@ -38,19 +40,51 @@ type CasinoTable struct {
 }
 
 func CasinoTables() []CasinoTable {
-	tables := []CasinoTable{
-		{ID: "public-blackjack", Name: "Lanternhold Blackjack", Game: "blackjack", Floor: "public", X: -18, Z: 176, MinimumPlayers: 1},
-		{ID: "public-poker", Name: "Fourfold Hold'em", Game: "poker", Floor: "public", X: 18, Z: 176, MinimumPlayers: 2},
-		{ID: "public-blackjack-earth", Name: "Orun's Stone Table", Game: "blackjack", Floor: "public", X: -18, Z: 155, MinimumPlayers: 1},
-		{ID: "public-blackjack-air", Name: "Aeral's High Table", Game: "blackjack", Floor: "public", X: 18, Z: 155, MinimumPlayers: 1},
-		{ID: "public-blackjack-fire", Name: "Pyralis's Hearth Table", Game: "blackjack", Floor: "public", X: -18, Z: 194, MinimumPlayers: 1},
-		{ID: "public-blackjack-water", Name: "Neris's Pearl Table", Game: "blackjack", Floor: "public", X: 18, Z: 194, MinimumPlayers: 1},
-		{ID: "vip-blackjack", Name: "The Crownless Court", Game: "blackjack", Floor: "vip", Currency: "ep", X: -14, Y: 8, Z: 137, MinimumPlayers: 1},
-		{ID: "vip-poker", Name: "The Sovereigns' Covenant", Game: "poker", Floor: "vip", Currency: "ep", X: 14, Y: 8, Z: 137, MinimumPlayers: 2},
+	var tables []CasinoTable
+	for _, floor := range []string{"public", "vip"} {
+		y, currency := 0.0, "gold"
+		if floor == "vip" {
+			y, currency = 8, "ep"
+		}
+		for row, kind := range []string{"blackjack", "poker", "baccarat", "roulette"} {
+			count := 4
+			if kind == "roulette" {
+				count = 2
+			}
+			for index := 0; index < count; index++ {
+				suffix := []string{"", "-earth", "-air", "-fire"}[index]
+				name := map[string]string{"blackjack": "Blackjack", "poker": "Hold’em", "baccarat": "Baccarat", "roulette": "Roulette"}[kind]
+				x := -30 + float64(index)*20
+				if kind == "roulette" {
+					x = -18 + float64(index)*36
+				}
+				minimum := 1
+				if kind == "poker" {
+					minimum = 2
+				}
+				tables = append(tables, CasinoTable{ID: floor + "-" + kind + suffix,
+					Name: fmt.Sprintf("%s %s · %d", map[string]string{"public": "Lanternhold", "vip": "Sovereign"}[floor], name, index+1),
+					Game: kind, Floor: floor, Currency: currency, X: x, Y: y, Z: 120 + float64(row)*22, MinimumPlayers: minimum})
+			}
+		}
+		// Eight physical cabinets per elemental theme; entitlements remain
+		// owner/theme/currency scoped when moving to another cabinet.
+		for themeIndex, machine := range SlotMachines() {
+			for bank := 0; bank < 8; bank++ {
+				id := floor + "-slots-" + machine.Theme
+				if bank > 0 {
+					id += fmt.Sprintf("-%d", bank+1)
+				}
+				x, z := []float64{-48, -42, 42, 48}[themeIndex], 110+float64(bank)*10
+				tables = append(tables, CasinoTable{ID: id, Name: fmt.Sprintf("%s · %d", machine.Name, bank+1),
+					Game: "slots", SlotTheme: machine.Theme, Floor: floor, Currency: currency, X: x, Y: y, Z: z, MinimumPlayers: 1,
+					Seats: []CasinoSeatPosition{{X: x, Y: y, Z: z + 2, Rotation: math.Pi, ExitX: x, ExitZ: z + 3.2}}})
+			}
+		}
 	}
 	for i := range tables {
-		if tables[i].Currency == "" {
-			tables[i].Currency = "gold"
+		if tables[i].Game == "slots" {
+			continue
 		}
 		for seat := 0; seat < 6; seat++ {
 			angle := float64(seat) * math.Pi / 3
@@ -58,17 +92,30 @@ func CasinoTables() []CasinoTable {
 			tables[i].Seats = append(tables[i].Seats, CasinoSeatPosition{Y: tables[i].Y, X: tables[i].X + dx*2.2, Z: tables[i].Z + dz*2.2, Rotation: angle + math.Pi, ExitX: tables[i].X + dx*3.4, ExitZ: tables[i].Z + dz*3.4})
 		}
 	}
-	for i, machine := range SlotMachines() {
-		theme, x := machine.Theme, []float64{-26, -17, 17, 26}[i]
-		tables = append(tables, CasinoTable{ID: "public-slots-" + theme, Name: machine.Name, Game: "slots", Floor: "public", Currency: "gold", X: x, Z: 135, MinimumPlayers: 1,
-			Seats: []CasinoSeatPosition{{X: x, Z: 137, Rotation: math.Pi, ExitX: x, ExitZ: 138.2}}})
-		vipX, vipZ := []float64{-29, -29, 29, 29}[i], []float64{158, 181, 158, 181}[i]
-		tables = append(tables, CasinoTable{ID: "vip-slots-" + theme, Name: machine.Name + " · Sovereign Edition", Game: "slots", Floor: "vip", Currency: "ep", X: vipX, Y: 8, Z: vipZ, MinimumPlayers: 1,
-			Seats: []CasinoSeatPosition{{X: vipX, Y: 8, Z: vipZ + 2, Rotation: math.Pi, ExitX: vipX, ExitZ: vipZ + 3.2}}})
+	// Keep the two original public table entries first for existing clients.
+	priority := func(t CasinoTable) int {
+		if t.ID == "public-blackjack" {
+			return 0
+		}
+		if t.ID == "public-poker" {
+			return 1
+		}
+		return 2
 	}
-	// Preserve the public catalog's ordering for existing clients and fixtures.
-	sort.SliceStable(tables, func(i, j int) bool { return tables[i].Floor == "public" && tables[j].Floor != "public" })
+	sort.SliceStable(tables, func(i, j int) bool { return priority(tables[i]) < priority(tables[j]) })
 	return tables
+}
+
+// Retired furniture is not a new seat, but any previously funded round still
+// owes its original outcomes. Keep its recovery/timer path after expansion.
+func CasinoBlackjackRecoveryTables() []CasinoTable {
+	var tables []CasinoTable
+	for _, table := range CasinoTables() {
+		if table.Game == "blackjack" {
+			tables = append(tables, table)
+		}
+	}
+	return append(tables, CasinoTable{ID: "public-blackjack-water", Game: "blackjack", Floor: "public", Currency: "gold"})
 }
 
 func CasinoTableByID(id string) (CasinoTable, bool) {

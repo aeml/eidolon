@@ -24,6 +24,8 @@ Implementation is local and incomplete; these changes are **not yet deployed**.
 Do not release a partial venue with placeholder games. The admin allowance policy
 and focused verification are tracked in the
 [admin VIP update](2026-09-20-admin-vip-allowance.md).
+Layout/rules evidence and the remaining shared-game wiring are tracked in the
+[expansion batch](2026-09-20-casino-expansion.md).
 
 ## September 20 status — preserve shipped work and remaining acceptance
 

@@ -21,10 +21,12 @@ function setup() {
     return { engine, controller };
 }
 
-test('balcony cutaway hides upstairs patrons and restores them without revealing already hidden actors', () => {
+test('only the current floor and its patrons are visible, without revealing already hidden actors', () => {
     const { engine, controller } = setup();
-    const balcony = new THREE.Group(); balcony.name = 'casino-vip-balcony';
-    engine.renderSystem.scene.add(balcony);
+    const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';
+    const floors = { public: new THREE.Group(), vip: new THREE.Group() };
+    interior.userData.floors = floors; interior.add(floors.public, floors.vip);
+    engine.renderSystem.scene.add(interior);
     const patron = y => ({ mesh: new THREE.Group(), position: new THREE.Vector3(0, y, 137), state: 'SEATED' });
     const upstairs = patron(8), downstairs = patron(0), hidden = patron(8);
     hidden.mesh.visible = false;
@@ -32,7 +34,8 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
     engine.casino = controller; upstairs.gameEngine = engine;
     const aura = new AttachedStatusEffect(engine.renderSystem.scene, upstairs, 'well_rested');
-    expect(balcony.visible).toBe(false);
+    expect(floors.vip.visible).toBe(false);
+    expect(floors.public.visible).toBe(true);
     expect(upstairs.mesh.visible).toBe(false);
     expect(aura.group.visible).toBe(false);
     expect(downstairs.mesh.visible).toBe(true);
@@ -47,9 +50,11 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
     aura.update(.1);
     expect(aura.group.visible).toBe(true);
+    expect(floors.vip.visible).toBe(true);
+    expect(floors.public.visible).toBe(false);
     expect(upstairs.mesh.visible).toBe(true);
     expect(GameEngine.prototype.getRaycastMeshForEntity.call({ casino: controller }, upstairs)).toBe(upstairs.mesh);
-    expect(downstairs.mesh.visible).toBe(true);
+    expect(downstairs.mesh.visible).toBe(false);
     expect(hidden.mesh.visible).toBe(false);
     controller.floor = 'public';
     controller.beforeUpdate(.1); controller.render([upstairs, downstairs, hidden]);
@@ -64,7 +69,6 @@ test('balcony cutaway hides upstairs patrons and restores them without revealing
 
 test('cutaway cleanup restores living patrons but never revives retired bodies', () => {
     const { engine, controller } = setup();
-    controller.balconyCutaway = true;
     const living = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 137), state: 'SEATED' };
     const dead = { ...living, mesh: new THREE.Group() };
     controller.render([living, dead]);
@@ -133,7 +137,9 @@ test('mixed slot gems and table furniture share valid triangle batches', () => {
     let furniture;
     try {
         furniture = createCasinoFurniture([table, { id: 'public-slots-earth', game: 'slots', x: -5, z: 164,
-            seats: [{ x: -5, z: 166, rotation: Math.PI }] }]);
+            seats: [{ x: -5, z: 166, rotation: Math.PI }] },
+        { ...table, id: 'public-roulette', game: 'roulette', x: 18, z: 186 },
+        { ...table, id: 'vip-baccarat', game: 'baccarat', floor: 'vip', y: 8 }]);
         expect(report).not.toHaveBeenCalled();
         const batches = []; furniture.traverse(child => { if (child.isMesh && !child.userData.casinoPickOnly) batches.push(child); });
         expect(batches.length).toBeGreaterThan(0);
@@ -141,7 +147,7 @@ test('mixed slot gems and table furniture share valid triangle batches', () => {
             expect(mesh.geometry.index).toBeNull();
             expect(mesh.geometry.getAttribute('position').count % 3).toBe(0);
         }
-        expect(furniture.userData.seats).toHaveLength(2);
+        expect(furniture.userData.seats).toHaveLength(4);
     } finally { disposeCasinoObject(furniture); report.mockRestore(); }
 });
 
@@ -185,7 +191,8 @@ test('town casino door raycast provides Casino label, click prompt and isolated 
     const camera = engine.renderSystem.camera; camera.position.set(0, 8, 200); camera.lookAt(0, 2.4, 178.35); camera.updateMatrixWorld(true);
     const pointer = new THREE.Vector3(0, 2.4, 178.35).project(camera);
     engine.inputManager.mouse = new THREE.Vector2(pointer.x, pointer.y);
-    expect(controller.updateDoorHover()).toEqual(expect.objectContaining({ dungeonName: 'Casino', inRange: true,
+    expect(shell.getObjectByName('casino-nameplate')).toBeDefined();
+    expect(controller.updateDoorHover()).toEqual(expect.objectContaining({ dungeonName: 'Lanternhold Casino', inRange: true,
         promptLabel: 'Click to open the Casino entrance, then choose Enter Casino.' }));
     expect(shell.userData.casinoDoor.material.emissive.getHex()).not.toBe(0);
     engine.inputManager.mouse.set(99, 99); expect(controller.updateDoorHover()).toBeNull();

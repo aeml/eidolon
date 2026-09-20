@@ -247,7 +247,7 @@ func slotSeatDetails(p *game.Entity) (theme, currency string, ok bool) {
 	if !found || table.Game != "slots" {
 		return "", "", false
 	}
-	return strings.TrimPrefix(table.ID, table.Floor+"-slots-"), table.Currency, true
+	return table.SlotTheme, table.Currency, true
 }
 func requireSlotSeat(client *Client, sessionID string) (*game.Entity, string, error) {
 	player := world.GetEntityCopy(client.playerID)

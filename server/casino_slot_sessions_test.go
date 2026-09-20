@@ -154,7 +154,7 @@ func TestSlotMongoSeatRevisionAndLeaving(t *testing.T) {
 	_, name, _ := setupSlotMongo(t)
 	owner := "player-" + name
 	world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}
-	table := game.CasinoTables()[6]
+	table, _ := game.CasinoTableByID("public-slots-earth")
 	position := table.Seats[0]
 	p := &game.Entity{ID: owner, Name: name, Type: game.TypePlayer, InstanceID: game.CasinoInstanceID, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 300, X: position.ExitX, Z: position.ExitZ}
 	world.AddEntity(p)
@@ -240,7 +240,7 @@ func TestSlotMongoBonusAndFreeSpinEntitlements(t *testing.T) {
 		t.Fatal("bonus payout lost", err)
 	}
 	world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}
-	table := game.CasinoTables()[6]
+	table, _ := game.CasinoTableByID("public-slots-earth")
 	point := table.Seats[0]
 	player := &game.Entity{ID: owner, Name: name, Type: game.TypePlayer, InstanceID: game.CasinoInstanceID, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 340, GoldCreditReceipts: character.GoldCreditReceipts, X: point.ExitX, Z: point.ExitZ}
 	world.AddEntity(player)

@@ -14,6 +14,10 @@ func CasinoBetLimits(game, currency string) (minimum, maximum, step int) {
 			return 10, 100, 10
 		case "slots":
 			return 10, 100, 10 // Ten paylines each receive a whole EP.
+		case "roulette":
+			return 1, 100, 1
+		case "baccarat":
+			return 20, 100, 20 // Banker profit less 5% commission stays integral.
 		}
 		return 0, 0, 0
 	}
@@ -24,6 +28,8 @@ func CasinoBetLimits(game, currency string) (minimum, maximum, step int) {
 		return 100, PokerMaxBuyIn, 100
 	case "slots":
 		return SlotMinBet, SlotMaxBet, SlotBetStep
+	case "roulette", "baccarat":
+		return 20, 100000, 20
 	}
 	return 0, 0, 0
 }

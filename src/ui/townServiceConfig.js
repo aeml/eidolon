@@ -32,7 +32,7 @@ export const TOWN_SERVICE_POINTS = [
         id: 'stash',
         label: 'Stash',
         shortLabel: 'Stash',
-        x: -14,
+        x: -28,
         z: 193,
         color: '#8fd3ff',
         strokeColor: null,

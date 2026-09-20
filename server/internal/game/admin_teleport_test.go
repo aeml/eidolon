@@ -86,16 +86,16 @@ func TestAdminTeleportCanonicalObstructionsAndNonfiniteLandings(t *testing.T) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	for _, plan := range []AdminTeleportPlan{
-		{X: -14, Z: 193},   // Current stash, not the old asset position.
+		{X: -28, Z: 193},   // Current stash, not the old asset position.
 		{X: -22, Z: 185},   // Rotated Trading House.
 		{X: 0, Z: 178.35},  // Closed casino facade door.
 		{X: 800, Z: 200},   // Dungeon entrance circle.
 		{X: 150, Z: 211.7}, // Chronicle cottage rear wall.
 		{X: math.NaN(), Z: 200}, {X: 0, Z: math.Inf(1)}, {X: 4000, Z: 200},
-		{X: 2000, Z: -1400},                                         // Outside actual four-realm floor envelope.
-		{Instance: CasinoInstanceID, X: -18, Z: 176},                // Blackjack table.
-		{Instance: CasinoInstanceID, X: 0, Z: 140},                  // Guarded staircase.
-		{Instance: CasinoInstanceID, VIP: true, Y: 8, X: 0, Z: 170}, // Atrium void.
+		{X: 2000, Z: -1400},                                          // Outside actual four-realm floor envelope.
+		{Instance: CasinoInstanceID, X: -30, Z: 120},                 // Blackjack table.
+		{Instance: CasinoInstanceID, X: 0, Z: 100},                   // Public guard.
+		{Instance: CasinoInstanceID, VIP: true, Y: 8, X: 55, Z: 170}, // Outside full-floor bounds.
 	} {
 		if w.adminLandingClearLocked(plan, p.ID) {
 			t.Fatalf("blocked/nonfinite landing accepted: %+v", plan)

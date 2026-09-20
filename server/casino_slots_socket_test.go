@@ -78,10 +78,10 @@ func approachVIPSlotSocket(t *testing.T, conn *websocket.Conn, table game.Casino
 	if context.ID == "" {
 		t.Fatal("VIP stairs omitted movement context")
 	}
-	// Walk around the atrium using the back balcony then the side gallery.
-	x, z, sequence := 0.0, 140.0, uint64(0)
+	// Walk from the new full-floor landing to the machine aisle.
+	x, z, sequence := 0.0, 104.0, uint64(0)
 	point := table.Seats[0]
-	for _, target := range [][2]float64{{point.ExitX, 140}, {point.ExitX, point.ExitZ}} {
+	for _, target := range [][2]float64{{point.ExitX, 104}, {point.ExitX, point.ExitZ}} {
 		steps := int(math.Ceil(math.Hypot(target[0]-x, target[1]-z) / .8))
 		for step := 1; step <= steps; step++ {
 			time.Sleep(350 * time.Millisecond)
@@ -138,7 +138,7 @@ func testSlotsActualSocketSpinResumeAndRestart(t *testing.T, vip, preparedBonus 
 	fixture := &database.Character{Name: name, Class: "Fighter", Level: 1, ProgressionVersion: game.CurrentProgressionVersion,
 		InstanceID: game.CasinoInstanceID, X: point.ExitX, Z: point.ExitZ, Gold: 500, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 	if vip {
-		fixture.X, fixture.Z = 0, 153
+		fixture.X, fixture.Z = 0, 104
 		period, err := database.NewVIPPeriod(time.Now().Add(-time.Hour), time.Now().AddDate(0, 1, 0))
 		if err != nil {
 			t.Fatal(err)

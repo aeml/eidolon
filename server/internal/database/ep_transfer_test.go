@@ -38,7 +38,7 @@ func TestEPCasinoTransferReplayAndBounds(t *testing.T) {
 }
 
 func TestCasinoEPRecordCurrencyCannotCrossFloors(t *testing.T) {
-	epTables := []string{"vip-blackjack", "vip-poker", "slots:ep:" + strings.Repeat("a", 64) + ":fire"}
+	epTables := []string{"vip-blackjack", "vip-blackjack-fire", "vip-poker", "vip-poker-earth", "vip-baccarat-air", "vip-roulette-earth", "slots:ep:" + strings.Repeat("a", 64) + ":fire"}
 	for _, table := range epTables {
 		op := BlackjackTransfer{ID: "casino:round:debit", PlayerID: "player-hero", Currency: "ep", Amount: -100, NextState: []byte(`{"phase":"playing"}`)}
 		if err := op.ValidateForTable(table); err != nil {
@@ -58,7 +58,7 @@ func TestCasinoEPRecordCurrencyCannotCrossFloors(t *testing.T) {
 	for _, family := range []struct {
 		id      string
 		maximum int
-	}{{"casino:round:return", 1600}, {"casino:poker:round:return", 600}, {"casino:slots:owner:return", 20000}} {
+	}{{"casino:round:return", 1600}, {"casino:poker:round:return", 600}, {"casino:slots:owner:return", 20000}, {"casino:roulette:round:return", 3600}, {"casino:baccarat:round:return", 900}} {
 		op := BlackjackTransfer{ID: family.id, PlayerID: "player-hero", Currency: "ep", Amount: family.maximum, NextState: []byte(`{}`)}
 		if op.Validate() != nil {
 			t.Fatal("legal EP payout rejected", family)

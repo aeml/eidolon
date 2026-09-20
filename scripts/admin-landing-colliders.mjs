@@ -46,7 +46,7 @@ export async function collectAdminLandingColliders() {
         const collider = getLanternholdWalkCollider(mesh);
         entities[type] = boxShape(collider.box, collider.matrix);
     }
-    const furniture = Object.fromEntries(['slots', 'blackjack', 'poker'].map(game =>
+    const furniture = Object.fromEntries(['slots', 'blackjack', 'poker', 'roulette', 'baccarat'].map(game =>
         [game, boxShape(createCasinoFurnitureColliders([{ game, x: 0, z: 0 }])[0])]));
     return { version: 1, overworld: shapes(collision), casino: shapes(casino), entities, furniture };
 }

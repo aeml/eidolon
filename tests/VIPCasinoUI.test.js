@@ -37,10 +37,10 @@ test('upper furniture, click proxies and containment agree at eight units', () =
         expect(furniture.userData.seats[0].userData.casinoSeat.floor).toBe('vip');
         const collision = new CollisionManager(); collision.casinoInterior = true; collision.casinoVIPFloor = true;
         const rear = collision.checkCollision(new THREE.Vector3(0,100,160),.5,new THREE.Vector3(0,8,140));
-        expect(rear.toArray()).toEqual([0,8,141]);
+        expect(rear.toArray()).toEqual([0,8,160]);
         const gallery = collision.checkCollision(new THREE.Vector3(10,0,180),.5,new THREE.Vector3(29,8,180));
-        expect(gallery.toArray()).toEqual([26,8,180]);
+        expect(gallery.toArray()).toEqual([10,8,180]);
         collision.casinoVIPFloor = false;
-        expect(collision.checkCollision(new THREE.Vector3(0,8,140),.5).toArray()).toEqual([0,0,148]);
+        expect(collision.checkCollision(new THREE.Vector3(0,8,140),.5).toArray()).toEqual([0,0,140]);
     } finally { disposeCasinoObject(furniture); }
 });

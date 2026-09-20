@@ -60,6 +60,8 @@ func TestCasinoHighGoldReceiptFamilyLimits(t *testing.T) {
 	}{
 		{"casino:round:payout", 1600000},
 		{"casino:poker:round:payout", 600000},
+		{"casino:roulette:round:payout", 3600000},
+		{"casino:baccarat:round:payout", 900000},
 		{"casino:slots:owner:fire:payout", 20000000},
 	} {
 		op := BlackjackTransfer{ID: tc.id, PlayerID: "player-alice", Currency: "gold", Amount: tc.maximum, NextState: []byte(`{"phase":"complete"}`)}

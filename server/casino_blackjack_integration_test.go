@@ -135,7 +135,7 @@ func testBlackjackActualSocketsWagersRoundAndPayout(t *testing.T, vip bool) {
 		character := &database.Character{Name: name, Class: "Fighter", Level: 1, Gold: 1000, InstanceID: game.CasinoInstanceID, X: table.Seats[i].ExitX, Z: table.Seats[i].ExitZ,
 			ProgressionVersion: game.CurrentProgressionVersion, LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Vitality: 10, Wisdom: 10}, Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 50}}
 		if vip {
-			character.X, character.Z = 0, 153
+			character.X, character.Z = 0, 104
 			period, err := database.NewVIPPeriod(time.Now().Add(-time.Hour), time.Now().AddDate(0, 1, 0))
 			if err != nil {
 				t.Fatal(err)

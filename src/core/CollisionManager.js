@@ -408,20 +408,9 @@ export class CollisionManager {
         return collided ? TEMP_VEC3.clone() : null;
     }
 
-    constrainCasinoFloor(position, previous = position) {
-        if (this.casinoVIPFloor) {
-            position.x = Math.max(-32, Math.min(32, position.x));
-            position.z = Math.max(130, Math.min(201, position.z));
-            if (position.z > 141 && Math.abs(position.x) < 26) {
-                if ((previous?.z ?? position.z) > 141) position.x = (previous?.x < 0 ? -1 : 1) * 26;
-                else position.z = 141;
-            }
-            position.y = 8;
-        } else {
-            position.x = Math.max(-33, Math.min(33, position.x));
-            position.z = Math.max(130, Math.min(203, position.z));
-            if (Math.abs(position.x) < 6 && position.z < 148) position.z = 148;
-            position.y = 0;
-        }
+    constrainCasinoFloor(position) {
+        position.x = Math.max(-54, Math.min(54, position.x));
+        position.z = Math.max(98, Math.min(206, position.z));
+        position.y = this.casinoVIPFloor ? 8 : 0;
     }
 }

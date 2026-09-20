@@ -7,10 +7,6 @@ import { installPrototypeMethods } from './PrototypeInstaller.js';
 
 class GameEngineEntitySyncMethods {
     applyPositionHacks(pData) {
-        if (pData.id === 'stash-1') {
-            pData.x = 0;
-            pData.z = 185;
-        }
         if (pData.id === 'merchant-1') {
             pData.x = 22.5;
             pData.z = 200;

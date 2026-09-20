@@ -12,7 +12,7 @@ func TestCasinoRestoreDoesNotTrapLegacyGuestsOrGrantVIP(t *testing.T) {
 		t.Fatal("stash visitor moved")
 	}
 	x, y, z = RestoreCasinoPosition(CasinoInstanceID, 0, 8, 140)
-	if x != 0 || y != 0 || z < 148 {
+	if x != 0 || y != 0 || z != 104 {
 		t.Fatal("saved height bypassed guard")
 	}
 }
