@@ -2,7 +2,7 @@
 
 Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
 
-## September 19 status — preserve shipped work and remaining acceptance
+## September 20 status — preserve shipped work and remaining acceptance
 
 The public venue and games, EP wallet and one-way exchange, monthly membership
 allowance, active-membership guard access, upstairs EP games and cosmetic vendor
@@ -10,9 +10,17 @@ are implemented in the 1.9 series. Payment integration remains excluded.
 The guard still rejects nonmembers with “You must be a VIP to enter”; it is no
 longer an unconditional placeholder. EP ownership alone never grants access.
 See the [integration audit](2026-09-14-final-integration-audit.md) for exact
-connected, persistence and rendered evidence and its limits. Integrated
-busy-floor, full visual and physical-phone checks remain open; the historical
-requirements below are not a declaration that the entire casino is accepted.
+connected, persistence and rendered evidence and its limits. The
+[crowded-floor review](2026-09-19-casino-crowd-review.md) covers 40 controlled
+equipped actors on both floors at High/Low, including balcony and aura cutaway;
+it is not a connected 40-player performance result. That correction shipped in
+[Alpha 1.9.19](2026-09-19-release1-9-19-casino-cutaway.md).
+Integrated busy-floor performance and remaining visual checks stay open.
+Physical-phone checks are deferred at the user's request, not passed.
+The current status here supersedes the historical delivery boundaries below;
+do not reimplement the EP wallet, guarded member access or upstairs games.
+Unchecked compound requirements retain their full acceptance scope rather than
+implying that every implementation component is missing.
 
 ## September 13 user revision — historical delivery boundary
 
@@ -36,7 +44,7 @@ This extends the existing full 1.1–1.10 goal; it does not replace earlier work
 or interrupt immediate bug fixes. Implement at the stages below, not now.
 Parent: [1.1–1.10 roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md).
 
-## EP economy — approved direction, not implemented
+## EP economy — approved policy, implemented without payments
 
 - Sources: **100 EP per VIP month**, and an explicit fixed-rate exchange of
   **1,000,000 Gold → 1 EP**. Use whole EP and checked integer arithmetic;
@@ -97,10 +105,11 @@ location, not a collection of minigames launched from a menu.
 
 The EP policy above supersedes the original unnamed-currency dependency and
 historical milestone wording, including the superseded prohibition on EP wagers. The
-allowance and exchange rate are resolved; VIP entitlement details still need
-implementation without adding payments. The CP comparison describes separation from Gold,
-not a specification to copy CP. Do not substitute Gold/Resonance or describe the
-currently guarded lounge as functioning EP games.
+allowance, exchange rate and active-membership guard are implemented without
+payments. The CP comparison describes separation from Gold, not a specification
+to copy CP. Upstairs games function with EP for admitted members; nonmembers
+remain guarded out. Do not substitute Gold/Resonance or reopen resolved currency
+decisions.
 
 ## Town layout and building
 
@@ -173,7 +182,7 @@ casino token. Show bet cost, available balance and authoritative settlement.
   buy-in/cash-out and disconnect/fold rules during implementation. Preserve private
   cards in server/network state; clients cannot inspect opponents' hidden hands.
 
-## Second floor — VIP casino/lounge, separate future currency
+## Second floor — VIP casino/lounge, separate EP currency
 
 - [ ] Integrate the separately implemented premium/special currency through the
   same authoritative wager/settlement system with strict currency isolation.
