@@ -13,7 +13,7 @@ import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
 import { observePartyCombatHealth } from '../partyCombatHealth.js';
 import { partyTankHasEngaged } from '../partyEngagementControls.js';
-import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
+import { partyAuraFollowSpacing, selectPartyHealTarget, selectPartyDamageSupportAnchor } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { GroundMovementFailedError } from '../groundInputFailure.js';
 import { partySpacingActorInterruption } from '../partyRangedSpacing.js';
@@ -378,11 +378,13 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             const tankAnchor = isRaid && support === actors.find(actor => actor.className === 'Cleric') &&
                 actors.filter(actor => actor.className === 'Cleric').length > 1 ? states[0] : null;
             const runnerAnchor = isRaid ? raidVigilSupportAnchor(crystal, healerIndex, states) : null;
-            const supportAnchor = tankAnchor || runnerAnchor;
+            const damageAnchor = isFinale && healerIndex === 4
+                ? selectPartyDamageSupportAnchor([states[3], states[2]], states[healerIndex]) : null;
+            const supportAnchor = tankAnchor || runnerAnchor || damageAnchor;
             const hurt = selectPartyHealTarget(states, states[healerIndex], healDistance,
                 { allowApproach: allowMovement, anchor: supportAnchor });
             if (!hurt) {
-                if (allowMovement && !states[healerIndex].dead) await follow(healer, supportAnchor || states[0], runnerAnchor ? 7 : 9);
+                if (allowMovement && !states[healerIndex].dead) await follow(healer, supportAnchor || states[0], runnerAnchor || damageAnchor ? 7 : 9);
                 return;
             }
             const distance = Math.hypot(hurt.x - states[healerIndex].x, hurt.z - states[healerIndex].z);
@@ -441,7 +443,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         }
 
         async function spaceRangedRole(actor, target) {
-            const support = await healer.page.evaluate(() => ({ id: window.game.player.id,
+            // The finale's second Cleric escorts ranged damage; spacing must
+            // use that same support, not pull both teams toward the tank healer.
+            const rangedHealer = isFinale ? actors[4] : healer;
+            const support = await rangedHealer.page.evaluate(() => ({ id: window.game.player.id,
                 range: Math.min(14, window.game.abilityController.getAbilityCastRange('Healing Light') - .5) }));
             const plan = await actor.page.evaluate(async ({ id, encounter, support }) => {
                 const { planPartyRangedSpacing } = await import('/tests/partyRangedSpacing.js');

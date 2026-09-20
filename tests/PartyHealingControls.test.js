@@ -1,7 +1,35 @@
-import { partyAuraFollowSpacing, selectPartyHealTarget } from './partyHealingControls.js';
+import { partyAuraFollowSpacing, selectPartyHealTarget, selectPartyDamageSupportAnchor } from './partyHealingControls.js';
 
 const member = (id, hp, x, extra = {}) => ({ id, hp, maxHP: 855, x, z: 0, instance: 'party-dungeon', dead: false, ...extra });
 const healer = member('healer', 845, 0, { maxHP: 845 });
+
+test('finale group healer escorts healthy ranged damage before the recorded 32-unit healing gap develops', () => {
+    const rogue = member('rogue', 4255, 32.0143853625165, { maxHP: 4255 });
+    const wizard = member('wizard', 4255, 18.465131947601503, { maxHP: 4255 });
+    const roles = [rogue, wizard];
+    const anchor = selectPartyDamageSupportAnchor(roles, healer);
+    expect(anchor).toBe(rogue);
+    // No fake heal for a healthy actor: the caller uses its ordinary follow.
+    expect(selectPartyHealTarget([healer, ...roles], healer, 14, { anchor })).toBeNull();
+    rogue.hp = 1230;
+    expect(selectPartyHealTarget([healer, ...roles], healer, 14, { anchor })).toBe(rogue);
+    expect(selectPartyHealTarget([healer, ...roles], healer, 14, { anchor, allowApproach: false })).toBeNull();
+    wizard.hp = 500;
+    expect(selectPartyDamageSupportAnchor(roles, healer)).toBe(wizard);
+    expect(roles).toEqual([rogue, wizard]);
+});
+
+test.each([{ dead: true }, { hp: 0 }, { hp: NaN }, { maxHP: 0 }, { x: Infinity }, { instance: 'town' }])(
+    'damage escort excludes unavailable roles: %j', override => {
+        const rogue = member('rogue', 400, 12, override);
+        expect(selectPartyDamageSupportAnchor([rogue], healer)).toBeNull();
+    });
+
+test('dead or missing group healer cannot assign an escort', () => {
+    const rogue = member('rogue', 400, 12);
+    expect(selectPartyDamageSupportAnchor([rogue], { ...healer, dead: true })).toBeNull();
+    expect(selectPartyDamageSupportAnchor([rogue], null)).toBeNull();
+});
 
 test('Tidestar tank healer holds position while group healer approaches the distant repair runner', () => {
     const tank = member('tank', 2809, 2.90453558, { maxHP: 3050 });

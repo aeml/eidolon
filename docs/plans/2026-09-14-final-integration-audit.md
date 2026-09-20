@@ -72,6 +72,23 @@ unsubstantiated balance change or automatic retry. Owned services are gone.
 Archive `/tmp/eidolon-party-checkpoint-darkking0920a-o2hEMf/save.archive.gz`,
 SHA256`9b2c8af27ad5febf233fb4b5ba190adce3fa217d7c04bb16f1fc67ef72d1ce51`.
 
+Finale control review: retained `party-healer-decisions` shows both Clerics
+healing/following the Fighter while the full-health Rogue was already32.014
+units from the second healer. After injury that healer had to approach from
+32.014, then28.391, then17.380 units with the Rogue at1230/4255HP. This establishes
+a preventable support-positioning gap, not a complete explanation of the loss
+(late warning escapes and threat still matter). The finale-only driver now
+assigns the second Cleric to escort the ranged damage group before injury;
+the first Cleric retains the tank, and ranged spacing uses its assigned second
+healer. Ordinary dungeon and elemental ritual assignments are unchanged.
+Only real follow/heal controls are used, with existing warning/range/collision
+and survival checks. No boss stats, gear, rewards or deadlines changed.
+73 focused healing/spacing/ritual tests pass5.688s, plus scoped ESLint/diff.
+This is local driver preparation, not a native finale pass. Do not run another
+finale concurrently with the already-live Fire64215. The root confirmed its
+launcher3202828 and Playwright3213756 live at19:12UTC September20; host load was
+64.75, so no additional browser or full test matrix was started.
+
 An initial launcher hit
 the clean-source guard before worktree checkout had finished and exited1 without
 creating services; that receipt is retained as `source-preparation-race.log`.
