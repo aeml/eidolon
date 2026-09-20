@@ -64,3 +64,21 @@ test('an uncontested investigation does not attack or spend resources', async ()
     expect(defend).not.toHaveBeenCalled();
     expect(page.mouse.click).not.toHaveBeenCalled();
 });
+
+test('transit reuses its existing defense controller without resetting cast observations', async () => {
+    const page = makePage();
+    const targets = ['troll', null];
+    page.evaluate.mockReset().mockImplementation((_fn, site) => site ? targets.shift() : true);
+    await clearFreshInvestigationApproach(page, { id: 'golem-travel', x: 0, z: -650 }, { defend });
+    expect(createDefense).not.toHaveBeenCalled();
+    expect(defend).toHaveBeenCalledWith(page, { id: 'troll' });
+    expect(page.mouse.click).toHaveBeenCalledTimes(2);
+});
+
+test('transit defense retains the caller deadline without issuing input after expiry', async () => {
+    const page = makePage();
+    await expect(clearFreshInvestigationApproach(page, { id: 'golem-travel' },
+        { defend, deadline: Date.now() - 1 })).rejects.toThrow('remains contested');
+    expect(defend).not.toHaveBeenCalled();
+    expect(page.mouse.click).not.toHaveBeenCalled();
+});

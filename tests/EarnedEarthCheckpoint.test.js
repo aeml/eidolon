@@ -117,6 +117,25 @@ test('retains the actual level62 Water save and 28 earned Golem kills after reco
     expect(fixture.result().writes).toBe(1);
 });
 
+test('retains all 31 earned Golem kills and the actual dead resource snapshot', () => {
+    const checkpoint = earnedEarthCheckpoints[7];
+    const fixture = exercise(character => {
+        partialWaterRegion(character);
+        Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+            resources: { ...checkpoint.resources } });
+        character.quests.at(-1).count = 31;
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().saved.resources).toEqual({ version: 1, health: 0, mana: 2005, dead: true });
+});
+
+test('a healed replacement cannot masquerade as the pinned dead save', () => {
+    const fixture = exercise(() => {}, false, earnedEarthCheckpoints[7]);
+    expect(fixture.run).toThrow('Unexpected earned saved resources');
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
     p => { p.quests.at(-1).granted_gold = 600; }, p => { p.quests[3].granted_xp++; },

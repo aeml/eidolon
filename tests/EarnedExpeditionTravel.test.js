@@ -59,6 +59,23 @@ test('an expired encounter deadline still stops travel without issuing another m
     expect(moveByGroundClick).not.toHaveBeenCalled();
 });
 
+test('a regional search defends at the current position before moving again', async () => {
+    const page = expeditionPage(), beforeTravel = jest.fn(async position => {
+        expect(position).toEqual(page.player);
+    });
+    await findExpeditionTarget(page, hunt, Infinity, { beforeTravel });
+    expect(beforeTravel).toHaveBeenCalled();
+    expect(beforeTravel.mock.invocationCallOrder[0]).toBeLessThan(moveByGroundClick.mock.invocationCallOrder[0]);
+    expect(beforeTravel.mock.calls[0][1]).toBe(Infinity);
+});
+
+test('failed transit defense cannot be swallowed or followed by another stride', async () => {
+    const failure = new Error('Transit defense failed');
+    await expect(findExpeditionTarget(expeditionPage(), hunt, Infinity,
+        { beforeTravel: async () => { throw failure; } })).rejects.toBe(failure);
+    expect(moveByGroundClick).not.toHaveBeenCalled();
+});
+
 test('death during ordinary travel still fails rather than granting entry or resurrecting', async () => {
     const page = expeditionPage();
     page.player.state = 'DEAD';

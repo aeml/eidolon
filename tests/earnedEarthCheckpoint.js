@@ -34,6 +34,17 @@ export const earnedEarthCheckpoints = Object.freeze([
             { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
             { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
             { id: 'chronicle_water_unmastered_current', accepted: true, completed: false, count: 28, max_count: 70, granted_gold: 0, granted_xp: 0 }
+        ] },
+    { sha: '24094f09eb741015a20288c3530569349432628ae8ede8e1afe7da2aaafb2624',
+        level: 62, xp: 40713, gold: 53469, count: 50, completed: true,
+        resources: { version: 1, health: 0, mana: 2005, dead: true },
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: false, count: 31, max_count: 70, granted_gold: 0, granted_xp: 0 }
         ] }
 ]);
 
@@ -49,6 +60,9 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
         const users = db.getSiblingDB('earned_checkpoint').users.find({'characters.class':'Wizard'}).limit(2).toArray();
         if (users.length !== 1 || users[0].characters?.length !== 1) throw Error('Ambiguous checkpoint');
         const character = users[0].characters[0];
+        for (const [key, value] of Object.entries(${JSON.stringify(checkpoint.resources || {})})) {
+            if (character.resources?.[key] !== value) throw Error('Unexpected earned saved resources');
+        }
         const quest = character.quests.find(q => q.id === 'chronicle_earth_borrowed_oath');
         if (character.class !== 'Wizard' || character.level !== ${checkpoint.level} || character.xp !== ${checkpoint.xp} || character.gold !== ${checkpoint.gold} ||
             !quest?.accepted || Boolean(quest.completed) !== ${checkpoint.completed} || quest.count !== ${checkpoint.count} || quest.max_count !== 50 ||

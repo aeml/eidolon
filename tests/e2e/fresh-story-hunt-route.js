@@ -9,6 +9,7 @@ import { recoverBetweenHuntEncounters, recoverDuringHuntEncounter } from './earn
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { canEngageExpeditionTarget, chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
+import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { prepareStoryHuntBuild } from './story-hunt-preparation.js';
@@ -73,7 +74,11 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     await setAutoLootThroughSettings(page, true);
     // As in the verified collection route, allow a healthy ranged character to
     // finish ordinary basic attacks; permanent retreat resets starter leashes.
-    let beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
+    let beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8, useCrowdControl: true });
+    const search = deadline => findExpeditionTarget(page, hunt, deadline, {
+        beforeTravel: (player, combatDeadline) => clearFreshInvestigationApproach(page,
+            { id: `${id}-travel`, x: player.x, z: player.z }, { defend: beforeCombat, deadline: combatDeadline })
+    });
     await installStoryHuntCombatObserver(page);
     // Regional waypoints are supplied by the actual route, including every
     // later town recovery. Do not try to reach Water by spending the bounded
@@ -106,14 +111,14 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
             preparedLevel = await prepare(`earned-milestone-${id}`);
             trainingStops++;
             await leaveTown();
-            beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
+            beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8, useCrowdControl: true });
             await installStoryHuntCombatObserver(page);
             expect((await readChronicleChapter(page, id)).count).toBe(credit);
         }
         if (await recoverBetweenHuntEncounters(page, {
             enabled: earnedTownRecoveryEnabled(), creditedKills: credit, leaveTown
         })) restStops++;
-        try { enemy = await findExpeditionTarget(page, hunt); } catch (error) {
+        try { enemy = await search(); } catch (error) {
             if ((await readPlayerState(page)).state !== 'DEAD') throw error;
             await recover();
             continue;
@@ -150,7 +155,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
                 // visible appropriate enemy through ordinary travel, without
                 // resetting the deadline or manufacturing quest credit. A
                 // visible living enemy can be clicked to start normal pursuit.
-                enemy = await findExpeditionTarget(page, hunt, deadline);
+                enemy = await search(deadline);
                 continue;
             }
             if (await beforeCombat(page, combatTarget)) continue;

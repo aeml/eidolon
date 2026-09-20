@@ -1,5 +1,34 @@
 # Earned campaign continuation with a real party
 
+## Latest terminal result — undefended transit, saved hunt31/70
+
+Native46156 / `earnedwaterregion0920d` ended exit1 after23.6m at the third death,
+not a timer failure. All owned services are gone. Its repeated death observations
+show roughly14 Mountain Trolls around the Wizard nearZ-960, with1940–2005 mana
+still available. Local Golem search moved through Troll territory without calling
+the existing defensive combat controller. The regular combat loop did defend,
+but was not reached until a suitable visible Golem was found. No game balance,
+spawn or damage correction is inferred from this automation failure.
+
+Future search now invokes the existing bounded approach-combat routine before
+another transit stride, reusing the current class controller rather than resetting
+cast observations. Wizard crowd control uses already-unlocked/affordable hotbar
+skills. Existing160-cycle local defense,100-step search, combat deadline,
+two-respawn bound and overall two-hour ceiling remain. No character grants or
+enemy changes.119 focused tests pass1.469s, plus lint/diff. Connected confirmation
+is still required; the previous native run was not changed or restarted in place.
+
+Independent isolated Mongo restore confirms the newer full archive
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920d-eLnn4N/save.archive.gz`,
+SHA256`24094f09eb741015a20288c3530569349432628ae8ede8e1afe7da2aaafb2624`:
+Wizard62/40713XP/53469Gold, Golem31/70 unclaimed, prior Water rewards intact,
+no Abyssal offer or accepted dailies, resources version1/health0/mana2005/deadtrue.
+The checksum catalog explicitly preserves that death snapshot. A continuation
+uses the ordinary respawn button after login, not a healed replacement save.
+The temporary inspection copy was removed; the private archive remains intact.
+Next continuation must retain these31 kills, leaving39, and all three recorded
+deaths remain part of the campaign evidence.
+
 ## Latest retained Water save — level62, hunt28/70
 
 Corrected continuation `earnedwaterregion0920d` is launched in native46156,

@@ -4,7 +4,7 @@ import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js'
 
 // Shared ordinary target acquisition for fresh and prepared quest routes.
 // No waypoint, enemy mutation or progression grant is performed here.
-export async function findExpeditionTarget(page, hunt, deadline = Infinity) {
+export async function findExpeditionTarget(page, hunt, deadline = Infinity, { beforeTravel } = {}) {
     // The original Skeleton fallback lay in level-ten territory. Walk back
     // toward the authored starter band if streaming shows no appropriate foe.
     const fallback = expeditionSearchAnchor(hunt);
@@ -26,6 +26,11 @@ export async function findExpeditionTarget(page, hunt, deadline = Infinity) {
             if (point?.visible) return enemy;
         }
         const target = candidates[0] || fallback;
+        // Regional transit can collect pursuers before the requested species
+        // streams in. Let the caller use its existing ordinary combat controls
+        // before taking another stride, rather than walking an undefended train.
+        if (beforeTravel) await beforeTravel(await readPlayerState(page), deadline);
+        if (Date.now() >= deadline) break;
         const player = await readPlayerState(page);
         const dx = target.x - player.x, dz = target.z - player.z;
         const scale = Math.min(1, 12 / Math.max(1, Math.hypot(dx, dz)));

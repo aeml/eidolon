@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { restoreEarnedEarthCheckpoint, readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
+import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { openIlyra, readChronicleChapter, EARTH_DUNGEON_CHAPTER } from './chronicle-earth-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
@@ -26,6 +27,9 @@ export async function restoreEarnedWizard(page, credentials) {
     await expect(page.locator('#auth-status')).toContainText('Registration successful');
     console.log('[earned-resume]', restoreEarnedEarthCheckpoint(credentials.username));
     await loginAndEnterWorld(page, credentials);
+    // A retained failed expedition may legitimately end dead. Preserve that
+    // saved state and use the ordinary respawn button, never edit its resources.
+    if ((await readPlayerState(page)).state === 'DEAD') await recoverEarnedDeath(page);
     // The exact save still references its original account's solo party leader.
     // Leave through ordinary controls, not a rewritten PartyID or leadership grant.
     await leaveEarnedParty(page);
