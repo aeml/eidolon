@@ -34,14 +34,15 @@ const equipmentSnapshot = page => page.evaluate(() => {
 // movement; no level, item, quest, protection or encounter-waypoint commands.
 export async function earnEarnedCollection(page, credentials, {
     findTarget, leaveTown, captureReady, prepare, chapterId = collection,
-    itemName = 'Verdant Memory Seed', nearbyType = 'Skeleton'
+    itemName = 'Verdant Memory Seed', nearbyType = 'Skeleton', resumeAccepted = false
 }) {
     const collection = chapterId;
     const seedsInBag = page => collectionItemsInBag(page, itemName);
     const started = Date.now();
     const economyBefore = await equipmentSnapshot(page);
     await openIlyra(page);
-    await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
+    expect((await readChronicleChapter(page, collection))?.accepted).toBe(resumeAccepted);
+    if (!resumeAccepted) await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection))?.accepted).toBe(true);
     const required = (await readChronicleChapter(page, collection)).maxCount;
     expect(required).toBe(8);
@@ -56,7 +57,7 @@ export async function earnEarnedCollection(page, credentials, {
     }
     const beforeCombat = await createFreshCollectionCombat(page);
     await observeCollectionCombatReceipts(page);
-    await leaveTown();
+    if ((await readChronicleChapter(page, collection)).count < required) await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
         if (earnedTownRecoveryEnabled()) {

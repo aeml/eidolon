@@ -45,11 +45,12 @@ export async function earnEarthInvestigation(page, id, openIlyra, capture, optio
     return earnInvestigation(page, id, openIlyra, capture, options);
 }
 
-export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite, inspectWithKeyboard = false } = {}) {
+export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite, inspectWithKeyboard = false, resumeAccepted = false } = {}) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);
     await openIlyra(page);
     if (selectChapter) await selectChapter(chapter);
-    await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
+    expect(await page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.accepted, id)).toBe(resumeAccepted);
+    if (!resumeAccepted) await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(() => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.accepted, id)).toBe(true);
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);

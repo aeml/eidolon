@@ -1,9 +1,9 @@
 # Earned campaign continuation with a real party
 
-## Remaining Water region queued behind1.9.23 delivery
+## Remaining Water region running after1.9.23 delivery
 
-Parent15946 is live, waiting for CI35494967147 and independent public acceptance
-of1eb18f59/Alpha1.9.23. Launcher/log directory:
+Parent15946 passed CI35494967147 and independent public acceptance
+of1eb18f59/Alpha1.9.23, and its Water gameplay process is live. Launcher/log directory:
 `/tmp/eidolon-water-region-20260920-D2U8te/`. Source is frozen clean1eb18f59 in
 its `source/` worktree; do not edit or overlap native browser work. Luna monitors
 the guarded sequence. `WATER_TERMINAL_PHASE`/`WATER_PROCESS_EXIT` distinguish
@@ -14,7 +14,27 @@ below for the shelter ledger,60 Trolls,8 Pearls, three echo-pool/bell discoverie
 70 Aqua Golems and actual level60 Abyssal readiness. The original two-hour ceiling,
 zero retries, normal recovery/training and manual claims remain. A below-gate
 result must preserve actual progress for pacing review, not fabricate XP or
-mandate dailies. The region is queued, not accepted; do not replay Missing Ferry.
+mandate dailies. The region is running, not accepted; do not replay Missing Ferry.
+
+Current retained log reaches Wizard59 with no deaths and20/70 Aqua Golem credit.
+That hunt's20-kill sample spans1512s and10 town stops, with recent recovery trips
+taking76–87s. This is a conservative automated expedition, not a final human
+pacing baseline: the route uses an80% health retreat threshold. Do not change
+rewards, stats or regeneration from these timings alone. Shared automatic level
+growth explains the observed base stats; this is not a fixture spending Wizard
+points into Strength. No running source or character was modified.
+
+Local QA-only continuation preparation (not part of the queued1.9.24 release):
+the Water route now retains completed chapters and explicitly resumes accepted
+hunts, collections and investigations. Ready objectives still require manual
+Ilyra completion; no count/reward/time rewriting. It can retain an already
+accepted Abyssal offer, but rejects an already-completed dungeon. State checks
+reject inconsistent saves.26 focused continuation/handoff tests pass1.828s;
+focused lint and whitespace checks pass. This is not connected resume evidence.
+The archive allowlist remains unchanged: after the current run ends, inspect
+and checksum-pin its actual saved progress before attempting a continuation.
+Never infer a persisted save from the live log or repeat the whole Water region
+solely because the bounded test did not finish.
 
 ## Missing Ferry accepted — saved level43 investigation handoff
 

@@ -12,6 +12,7 @@ import { earnedCheckpoint } from './earned-checkpoint.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { setAutoLootThroughSettings } from './helpers.js';
+import { waterChapterContinuation } from '../waterRegionContinuation.js';
 
 // Continues after an actually earned Missing Ferry turn-in. No registration,
 // fixture grants or prerequisite rewriting here; the caller owns its save.
@@ -19,14 +20,28 @@ export async function earnWaterRegionToReadiness(page, credentials, { step = (_n
     expect(await readChronicleChapter(page, 'chronicle_water_missing_ferry')).toMatchObject({ completed: true, count: 60 });
     const waypoints = chroniclePhoneRoutes.water;
     const leaveTown = () => walkInvestigationWaypoints(page, waypoints);
-    const investigate = id => earnInvestigation(page, id, openIlyra, capture, {
-        waypoints, beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true
-    });
+    const chapter = async (id, run) => {
+        const saved = await readChronicleChapter(page, id);
+        const state = waterChapterContinuation(saved);
+        if (state === 'completed') {
+            console.log('[earned-water-retained]', JSON.stringify(saved));
+            return;
+        }
+        await run({ resumeAccepted: state === 'accepted' });
+        expect((await readChronicleChapter(page, id))?.completed).toBe(true);
+    };
+    const investigate = id => chapter(id, options => earnInvestigation(page, id, openIlyra, capture, {
+        ...options, waypoints, beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true
+    }));
+    const hunt = id => chapter(id, options => earnFreshStoryHunt(page, credentials, id, {
+        ...options, leaveTown
+    }));
     await step('flood shelter ledger', () => investigate('chronicle_water_flood_shelter'));
-    await step('snow debts', () => earnFreshStoryHunt(page, credentials, 'chronicle_water_snow_debts', { leaveTown }));
-    await step('moon-tide pearls', async () => {
+    await step('snow debts', () => hunt('chronicle_water_snow_debts'));
+    await step('moon-tide pearls', () => chapter('chronicle_04_pearls_without_tides', async options => {
         const hunt = chronicleHunts.find(hunt => hunt.id === 'chronicle_water_snow_debts');
         const result = await earnEarnedCollection(page, credentials, {
+            ...options,
             chapterId: 'chronicle_04_pearls_without_tides', itemName: 'Moon-Tide Pearl', nearbyType: 'MountainTroll',
             findTarget: () => findExpeditionTarget(page, hunt), leaveTown,
             prepare: async () => prepareStoryHuntBuild(page, credentials,
@@ -34,15 +49,17 @@ export async function earnWaterRegionToReadiness(page, credentials, { step = (_n
                 'before-moon-tide-pearls')
         });
         await setAutoLootThroughSettings(page, result.previousAutoLoot);
-    });
+    }));
     await step('true and false reflections', () => investigate('chronicle_water_false_reflection'));
-    await step('unmastered current', () => earnFreshStoryHunt(page, credentials, 'chronicle_water_unmastered_current', { leaveTown }));
+    await step('unmastered current', () => hunt('chronicle_water_unmastered_current'));
     await step('Abyssal Well readiness and saved handoff', async () => {
         const completed = ['chronicle_water_flood_shelter', 'chronicle_water_snow_debts',
             'chronicle_04_pearls_without_tides', 'chronicle_water_false_reflection', 'chronicle_water_unmastered_current'];
         const id = 'chronicle_05_drowned_name';
+        const state = waterChapterContinuation(await readChronicleChapter(page, id));
+        expect(state, 'This route must not replay an already completed dungeon').not.toBe('completed');
         await openIlyra(page);
-        await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
+        if (state === 'offered') await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
         await expect.poll(async () => (await readChronicleChapter(page, id))?.accepted).toBe(true);
         await page.locator('#btn-close-quest').click();
         await earnedCheckpoint(page, credentials, { label: 'water-region-readiness', final: true });
