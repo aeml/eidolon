@@ -5,7 +5,32 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 09:49 UTC
+## Current checkpoint — September 20
+
+- Verified live: **Alpha 1.9.23**, exact commit
+  `1eb18f5910999bd19e2824c34f05693f1cecc85f`. CI35494967147 passed; the Water
+  launch guard independently verified public identities, readiness and notes.
+- Pending publication: **Alpha 1.9.24**, the complete enlarged casino, functional
+  roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
+  Focused money/restart, UI, collision and software-rendered floor checks pass;
+  patch notes/login/runtime versions are aligned. See the
+  [release record](2026-09-20-casino-expansion.md). Publication waits for the
+  existing Water run to release Chrome, then Luna watches the normal CI gate.
+- Water-region continuation is running from the accepted earned level43 save
+  under `/tmp/eidolon-water-region-20260920-D2U8te/`. Its frozen source remains
+  unchanged. Do not replay accepted Earth/Verdant/Missing Ferry progress, cancel
+  this run, or launch overlapping native browser work merely because it is slow.
+- Remaining full-scope work and accepted results are reconciled in the
+  [final integration audit](2026-09-14-final-integration-audit.md): later earned
+  regions, remaining dungeon/raid repairs, portal/Dark King integration, balance
+  and final release acceptance. User-deferred physical-phone checks are not
+  passes. Neither 1.9.24 nor a successful individual test completes the goal.
+
+The September8 entries below are historical evidence, not active processes or
+instructions to publish those old candidates. Preserve accepted evidence and
+follow the player's feature-first, proportionate-testing policy.
+
+## Historical checkpoint — September 8, 09:49 UTC
 
 Previous goal turn was progress: full client closure and observed combat receipts.
 This continuation implements a tested input correction. Full roadmap goal stays

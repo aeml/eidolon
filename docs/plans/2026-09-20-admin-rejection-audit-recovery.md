@@ -1,17 +1,17 @@
 # Rejected administration requests — durable outage recovery
 
-Published candidate: Alpha1.9.23 at1eb18f5910999bd19e2824c34f05693f1cecc85f,
-CI35494967147 running under Luna. **Live delivery not yet accepted**;
-production's last accepted release remains1.9.22. Login, package/lock, manifest, server defaults,
+Verified live: Alpha1.9.23 at1eb18f5910999bd19e2824c34f05693f1cecc85f.
+Luna reports CI35494967147 passed at07:14:35UTC; the Water launch guard records
+matching public client/server identities, readiness and cumulative notes.
+The follow-up below is in pending1.9.24, not yet live. Login, package/lock, manifest, server defaults,
 isolated QA and CI deployment labels are synchronized. Additive in-game notes
 describe the actual recovery fix and retain all prior release entries.
 277 focused version/history/runtime-versioning checks pass in4.005s; lint,
 shell syntax and diff checks pass. The earned Water continuation has now passed
 and its owned services are gone, clearing native browser work for publication.
 The guarded Water-region launcher at
-`/tmp/eidolon-water-region-20260920-D2U8te/` waits for that exact CI success and
-independently verifies public identities, database readiness and notes before
-allowing the next browser run. Do not infer delivery from the push alone.
+`/tmp/eidolon-water-region-20260920-D2U8te/` passed that exact CI/public check
+and is now running. Do not infer later releases' delivery from a push alone.
 
 The remaining administration audit review found that malformed mutations,
 conflicting request IDs and failed role lookups wrote rejection events directly

@@ -2,20 +2,20 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Last refreshed: September 7, 2026
+> Current-status pointers refreshed: September 20, 2026
 
 This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
-- Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
+- Active implementation line: `Alpha 1.9`, progressing toward the full `1.10.0` beta milestone. Verified live: `1.9.23`; the complete `1.9.24` casino/admin-VIP batch is locally checked and queued for publication, not yet live. See the [casino release record](docs/plans/2026-09-20-casino-expansion.md) and [final integration audit](docs/plans/2026-09-14-final-integration-audit.md).
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
 - Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
-- Current architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216
+- Historical Alpha 1.0 architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216 (not current measurements).
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
-- Production deployment remains a separate operator action; Alpha status here means the release candidate is implemented and locally verified, not that an uncommitted tree was deployed
+- The user has authorized ongoing versioned deployment. Implementation, CI delivery and live verification remain separate states; a local candidate is not a deployed release.
 
 ## The Alpha 1.0 Player Promise
 

@@ -27,7 +27,7 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.9.24"')).toBeLessThan(indexHtml.indexOf('data-version="1.9.23"'));
         const entry = indexHtml.split('data-version="1.9.24"')[1].split('data-version="1.9.23"')[0];
         for (const text of ['4 blackjack tables', '4 Hold’em tables', '2 roulette tables', '4 baccarat tables',
-            '32 themed slot machines', '100 EP monthly', 'no EP-to-Gold conversion', 'Lanternhold Casino',
+            '32 themed slot machines', '100 EP monthly', 'sanitized audit entry', 'no EP-to-Gold conversion', 'Lanternhold Casino',
             'not full 1.10 sign-off']) expect(entry).toContain(text);
     });
     test('1.9.23 records rejected-request audit recovery and retains prior releases', () => {
