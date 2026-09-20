@@ -2,6 +2,13 @@
 
 ## Latest retained Water save — level62, hunt28/70
 
+Corrected continuation `earnedwaterregion0920d` is launched in native46156,
+frozen clean1970e75b. Launcher/log/source:
+`/tmp/eidolon-water-region-resume-20260920-r4-sexyuG/`. It starts only after
+accepted1.9.25 delivery and prior owned cleanup; Luna monitors the bounded run.
+93 focused checkpoint/recovery/search tests pass1.632s, plus lint/diff checks.
+This launch is not a connected pass; no repeated deployment or completed quests.
+
 `earnedwaterregion0920c`, frozen0a104720, native47339 ended exit1 after12.7m.
 Stash preparation passed. The failure was target search at the inner encounter
 deadline after a real110.083-second unfinished-hunt town recovery. That trip

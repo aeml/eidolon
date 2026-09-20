@@ -1,6 +1,6 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.25 verified, retained Water continuation starting
+## Current delivery — 1.9.25 verified, retained Water continuation
 
 Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 is verified live.
 CI35503417369 passed all jobs at10:14:07UTC in23m36s. Public client/server
@@ -10,9 +10,13 @@ the bounded administration rejection/outage follow-ups. Desktop, portrait and
 landscape one-click/tap stash approaches passed in23.4s; retained full-town
 collision evidence and screenshots are in the [stash report](2026-09-20-stash-approach.md).
 
-Native47339 passed that exact CI and independent public verification and is
-starting `earnedwaterregion0920c` from the retained level61/25-of-70 Golem
-save. It does not replay completed Water chapters. The
+Native47339 passed that exact CI/public verification, then failed after12.7m:
+a110-second real town recovery consumed the120-second combat window and the
+following search timed out. Stash preparation passed; saved progress is now
+level62/7668XP/51749Gold with28/70Golems. The QA timer excludes only successful
+recovery time while retaining the overall two-hour ceiling. Corrected
+`earnedwaterregion0920d` is launched in native46156 from that pinned full save;
+it does not replay completed Water chapters. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
 archive and bounds. No new Water/Abyssal clear is claimed.
 
