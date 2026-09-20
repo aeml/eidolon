@@ -32,6 +32,17 @@ inventory or logout/instance timestamp is rewritten during continuation.
 Checkpoint transfer coverage passes83 tests in1.747s, including exact retained
 resources and timestamps; scoped lint and whitespace checks pass.
 
+Focused follow-up now has an explicitly prepared `ObsidianGuardian` mode on the
+existing four-role runner. It uses generator2 seed7811600862583822555 and fresh
+Normal70 class-affixed Rare/Uncommon actors staged at the boss-room edge through
+ordinary save restoration. Earlier rooms are fixture setup only; Guardian and
+Infernax remain live/uncleared, no story turn-in occurs, and no full-run acceptance
+is emitted. Earned flags/checkpoints are rejected. Production expiry and all
+earned saves are untouched. The original role combat controls and eight-minute
+combat watchdog are reused inside a15-minute test ceiling, zero retries.
+38 focused fixture/timing checks pass4.38s; production catalog generation passes
+0.331s; scoped lint/diff pass. Native result pending; no gameplay fix claimed.
+
 Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
 launcher4125632. Uses the independently verified latest index15 save below,

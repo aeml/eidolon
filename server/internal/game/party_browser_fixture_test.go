@@ -123,9 +123,21 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 		}
 		items[base.Name] = item
 	}
-	data, err := json.Marshal(map[string]interface{}{"stats": p.BaseStats, "items": items,
+	result := map[string]interface{}{"stats": p.BaseStats, "items": items,
 		"level": level, "quests": chronicleQuestCatalog(), "gearProfile": profile, "roleItems": roleItems,
-		"raids": elementalRaidDefinitions})
+		"raids": elementalRaidDefinitions}
+	if boss := os.Getenv("EIDOLON_E2E_DIAGNOSTIC_BOSS"); boss != "" {
+		if boss != "ObsidianGuardian" || level != 70 {
+			t.Fatal("unsupported isolated boss diagnostic")
+		}
+		layout := w.generateDungeonLayoutWithSeed("dungeon_diagnostic", DifficultyNormal, "molten_core", 7811600862583822555)
+		assignDungeonRoomHooks(&layout)
+		if err := ValidateDungeonLayout(layout); err != nil {
+			t.Fatal(err)
+		}
+		result["diagnosticLayout"] = layout
+	}
+	data, err := json.Marshal(result)
 	if err != nil {
 		t.Fatal(err)
 	}

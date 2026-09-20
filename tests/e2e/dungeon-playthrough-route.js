@@ -18,7 +18,7 @@ export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, resetRun = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom, finishAtFinalBoss = false,
     afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0, expeditionProfile = 'solo',
-    runInstance = enterAndExitDungeon,
+    runInstance = enterAndExitDungeon, diagnosticBoss = null,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -257,6 +257,27 @@ export async function playDungeonThroughInputs(page, {
         }
         expect(layout.generationSeed).toBeTruthy();
         expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
+        if (diagnosticBoss) {
+            if (diagnosticBoss !== 'ObsidianGuardian' || playthrough.dungeonType !== 'molten_core') throw new Error('Unsupported prepared encounter');
+            const encounter = dungeonBossEncounter(layout, playthrough.bosses, diagnosticBoss);
+            for (let approach = 0; approach < 8; approach++) {
+                await assertWorldUpdatesContinue(page);
+                const target = (await hostiles(page)).find(enemy => enemy.type === diagnosticBoss);
+                if (target?.distance < 40) {
+                    const killed = await defeatByMouse(page, { ...target, encounter });
+                    expect(killed.type).toBe(diagnosticBoss);
+                    if (afterEncounter) await afterEncounter(page, killed);
+                    const roomIndex = layout.rooms.map((room, i) => room.type === 'boss' ? i : -1).filter(i => i >= 0)[3];
+                    await expect.poll(() => page.evaluate(index => window.game.currentDungeonRoomState.rooms[index].cleared, roomIndex)).toBe(true);
+                    return; // No full-route verification, handoff, turn-in or re-entry claim.
+                }
+                const state = await readPlayerState(page);
+                const dx = encounter.x - state.x, dz = encounter.z - state.z, length = Math.hypot(dx, dz);
+                await moveByGroundClick(page, dx * Math.min(1, 10 / length), dz * Math.min(1, 10 / length), { moveOnly: true, allowJumpFallback: false });
+                if (afterGroundStep) await afterGroundStep(page);
+            }
+            throw new Error('Prepared boss approach did not reach the live encounter');
+        }
         const routes = buildDungeonTraversalRoutes(layout);
         const bossRooms = layout.rooms.map((room, index) => room.type === 'boss' ? index : -1).filter(index => index >= 0);
         expect(bossRooms).toHaveLength(playthrough.bosses.length);
@@ -364,7 +385,7 @@ export async function playDungeonThroughInputs(page, {
         });
         if (completedRun) completedRun.gold = await page.evaluate(() => window.game.player.gold);
     } }).finally(() => timing.report('route-exit'));
-    if (fullRun) {
+    if (fullRun && !diagnosticBoss) {
         await runInstance(page, { ...playthrough, useTownGuide, beforeExit: async () => {
             expect(await page.evaluate(() => window.game.currentDungeonLayout.generationSeed)).toBe(completedRun.seed);
             expect(await page.evaluate(() => window.game.currentDungeonLayout.generatorVersion)).toBe(completedRun.generator);
@@ -374,5 +395,5 @@ export async function playDungeonThroughInputs(page, {
             console.log(`${logPrefix} completed-run recall/re-entry preserved seed, cleared bosses and gold`);
         } });
     }
-    timing.report('complete');
+    timing.report(diagnosticBoss ? 'prepared-encounter-complete' : 'complete');
 }

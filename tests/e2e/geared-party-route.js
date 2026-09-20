@@ -5,6 +5,7 @@ import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyG
 import { resumeEarnedEarthToReadiness, leaveEarnedParty } from './earned-earth-continuation.js';
 import { restoreEarnedRegionalDungeonReadiness, restoreEarnedRaidReadiness } from './earned-regional-dungeon-entry.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
+import { partyBossDiagnostic, preparePartyBossDiagnostic } from '../partyBossDiagnostic.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
@@ -153,7 +154,7 @@ export async function seedActor(page, credentials, character) {
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
         const result = db.getSiblingDB('eidolon').users.updateOne(
             { username: ${JSON.stringify(credentials.username)}, 'characters.0': { $exists: false } },
-            { $set: { characters: [${JSON.stringify(character)}] } });
+            { $set: { characters: [EJSON.parse(${JSON.stringify(JSON.stringify(character))})] } });
         if (result.matchedCount !== 1 || result.modifiedCount !== 1) throw Error('Requires newly registered empty account');
     `;
     try {
@@ -189,6 +190,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const graphicsQuality = partyGraphicsQuality(process.env);
     const gearProfile = partyGearProfile(process.env);
     let playthrough = isRaid ? null : dungeonPlaythroughOptions(process.env);
+    const diagnosticBoss = partyBossDiagnostic(process.env, playthrough);
+    if (diagnosticBoss) test.setTimeout(15 * 60_000);
     const fixtureLevel = isRaid ? (isFinale ? 100 : 70) : playthrough.runLevel;
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1',
@@ -232,7 +235,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             actorPage.setDefaultNavigationTimeout(30_000);
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
-            const character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
+            let character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
+            if (diagnosticBoss) character = preparePartyBossDiagnostic(character, catalog.diagnosticLayout, credentials.username, index);
             if (earnedWizard && className === 'Wizard') {
                 if (isRaid) await restoreEarnedRaidReadiness(actorPage, login, raid, playthrough.runLevel);
                 else if (playthrough.dungeonType === 'verdant_bastion_catacombs') await resumeEarnedEarthToReadiness(actorPage, login);
@@ -584,7 +588,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 phaseScreenshots.add(phase);
             }
         };
-        await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party', finishAtFinalBoss: isRaid,
+        await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party', finishAtFinalBoss: isRaid, diagnosticBoss,
+            ...(diagnosticBoss ? { runInstance: async (_page, { beforeExit }) => beforeExit() } : {}),
             ...(isRaid ? { runInstance: async (actorPage, { beforeExit }) => {
                 await enterRaid(actorPage, raidType);
                 let failure;
@@ -862,6 +867,19 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 for (const actor of damage) expect((await snapshot(actor.page)).evidence.damageDone).toBeGreaterThan(0);
             }
         });
+        if (diagnosticBoss) {
+            for (const actor of actors) {
+                const state = await snapshot(actor.page);
+                expect(state.dead || state.evidence.sawDeath).toBe(false);
+                expect(state.quest.completed).toBe(false);
+                expect(state.quest.count).toBe(0);
+                if (actor.className === 'Cleric') expect(state.evidence.allyHealing).toBeGreaterThan(0);
+                else expect(state.evidence.damageDone).toBeGreaterThan(0);
+                expect(actor.failures).toEqual([]);
+            }
+            console.log(`[prepared-boss-diagnostic] ${diagnosticBoss} defeated by four prepared roles; NOT a full dungeon clear or earned campaign acceptance`);
+        }
+        if (!diagnosticBoss) {
         for (const actor of actors.slice(1)) await returnToTown(actor.page, { allowRespawn: false });
         for (const [index, actor] of actors.entries()) {
             actor.combatEvidence = (await snapshot(actor.page)).evidence;
@@ -900,6 +918,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 chapter: { accepted: true, completed: true, count: 1 },
                 next: story.nextChapterId ? { accepted: false, completed: false, count: 0 } : undefined });
             console.log('[earned-party] Wizard encounter claim is saved in Mongo; no prepared-party reward is being labeled earned.');
+        }
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
     } catch (error) {
