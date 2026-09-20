@@ -21,6 +21,13 @@ archive retained.88 checkpoint/regional-route tests pass0.841s, plus lint/diff.
 Continue that complete save into Fire; do not repeat Water or Abyssal. Later
 Fire/Air story, remaining dungeons/raids/finale and full1.10 remain open.
 
+Fire story is now launched as `earnedfire0920a`, native46309, frozen clean
+117c0b5a; launcher/log `/tmp/eidolon-earned-fire-20260920-r1-CE2hv7/`.
+It resumes the full85 save through `earned-region`/Fire with the existing
+two-hour bound and zero retries. Luna monitors terminal-only; no other native
+route or deployment browser job overlaps. This is not the separate Fire raid,
+and no Fire story completion is claimed yet.
+
 ## Previous accepted stage — Water readiness
 
 `earnedwaterregion0920f` passed in14.8m, native2051 exit0, frozen clean
