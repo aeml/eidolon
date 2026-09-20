@@ -1,6 +1,26 @@
 # Lanternhold Blackjack — round and integration rules
 
-Implementation candidate with connected local wagering, NOT deployed. Rules version `lanternhold-s17-v1`.
+## Current rules — September20 reconciliation
+
+Blackjack is implemented and delivered; see the
+[connected acceptance and publication record](2026-09-14-connected-casino-acceptance.md).
+The sections below preserve the original implementation/tuning history and are
+not current stake limits or deployment status. Current server-owned limits are
+20–100,000 Gold in steps of20, or2–100 EP in steps of2 upstairs. Naturals still
+pay3:2 profit. One to six real players face the dealer. Betting windows now run
+30seconds independently of wagers, decisions last30seconds, and results remain
+12seconds before the next betting window. A decision timeout stands the current
+hand; it does not eject the chair. Disconnected seats have60seconds of grace.
+The old500-Gold exposure arithmetic below must not be used for current caps;
+final cross-economy balancing remains open.
+
+Sources: `server/internal/game/casino_currency.go`, `casino_blackjack.go`,
+`server/casino_table_clock.go`, `casino_blackjack_sessions.go`, and
+`server/internal/game/casino_seats.go`.
+
+## Original implementation record
+
+Rules version `lanternhold-s17-v1`.
 This is the first concrete consumer of casino round/session infrastructure, not
 a replacement for required slots, real-player poker, both floors or VIP content.
 

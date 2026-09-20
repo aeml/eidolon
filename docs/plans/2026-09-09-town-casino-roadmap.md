@@ -164,10 +164,17 @@ casino token. Show bet cost, available balance and authoritative settlement.
 
 ### Blackjack
 
-- [ ] Support multiple real seated players against the house/dealer with visible
+- [x] Support multiple real seated players against the house/dealer with visible
   turn state, betting, cards, legal actions, rules and settlement.
-- [ ] Also allow a single player to play against the dealer when nobody else is
+  Evidence: the [connected two-browser hand](2026-09-14-connected-casino-acceptance.md)
+  passed with actual shared cards, turns, debits, settlement, camera/leave and
+  saved reconnect. Its retained release-run log confirms the 1.5-minute pass.
+- [x] Also allow a single player to play against the dealer when nobody else is
   present. Multiplayer population must not gate ordinary blackjack access.
+  Evidence: `CasinoTables` declares one-player minimum; `tickBlackjack` deals
+  whenever one or more funded players reach the deadline, and the round engine
+  accepts one through six. Existing single-player rules/settlement tests cover
+  that path; this does not claim a separate solo phone session.
 - [ ] Define complete table rules, action timers and mid-round join/leave behavior
   before implementation; enforce those rules server-side, not only in the UI.
 
@@ -175,9 +182,14 @@ casino token. Show bet cost, available balance and authoritative settlement.
 
 - [ ] Deliver player-versus-player tables with visible seats, betting, turn order,
   pot/side-pot accounting, showdown and settlement appropriate to the chosen rules.
-- [ ] Require enough real players for the selected poker variant to start. Show
+- [x] Require enough real players for the selected poker variant to start. Show
   an understandable waiting state below that minimum; never fill seats with
   house-controlled opponents or silently replace disconnected players with bots.
+  Evidence: `tickPoker` requires two connected funded participants and constructs
+  entries only from those participants; the engine rejects a solo deal.
+  `PokerTableUI` displays “Waiting for another real player” below two.
+  Recorded Mongo solo-waiting and [actual two-player restart/hand evidence](2026-09-14-vip-poker-connected-recovery.md)
+  remain accepted. No new casino run was needed for this checklist reconciliation.
 - [ ] Select and document the poker variant, seat limits, blinds/stakes, timers,
   buy-in/cash-out and disconnect/fold rules during implementation. Preserve private
   cards in server/network state; clients cannot inspect opponents' hidden hands.

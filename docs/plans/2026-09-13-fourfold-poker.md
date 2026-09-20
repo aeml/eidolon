@@ -1,5 +1,24 @@
 # Fourfold Hold’em — local 1.9 implementation
 
+## Current rules — September20 reconciliation
+
+Poker is implemented and delivered, including the
+[connected EP hand and restart correction](2026-09-14-vip-poker-connected-recovery.md).
+The original sections below are historical, not the current stake limits,
+currency decision or deployment status. Public buy-ins are100–100,000 Gold in
+steps of100 with5/10 blinds; VIP buy-ins are10–100 EP in steps of10 with1/2 blinds.
+The30-second betting window repeats without inventing opponents; at least two
+connected, funded real players are required. Every new hand still requires an
+explicit buy-in. Turns last30seconds and results12seconds. The old500-Gold cap,
+3,000-Gold table exposure and15-second joining window below are superseded.
+Payments remain excluded. Busy-floor, integrated visual and broader economy
+acceptance remain open; physical-phone play is user-deferred.
+
+Sources: `server/internal/game/casino_currency.go`, `casino_poker.go`,
+`server/casino_table_clock.go`, `casino_poker_sessions.go`, and `src/ui/PokerTableUI.js`.
+
+## Original implementation record
+
 Implemented and packaged in1.9 candidate, NOT verified deployed. Physical table/seats/
 camera now connect to poker_buy_in, poker_play and a dedicated seated UI.
 Runtime metadata is now1.9; its own CI/deployment/live verification remains.
