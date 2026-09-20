@@ -2,6 +2,29 @@
 
 ## Current run
 
+`fireraid0920c` is terminal exit1 after 8.5 minutes on clean `b62ad5eb`.
+Parent session87777 and `RAID_PROCESS_EXIT=1` confirm Luna's terminal report.
+Reports/results are retained in `/tmp/eidolon-fire-raid-20260920-r3-ad8SIz/`;
+owned API/Mongo containers are gone. All five characters survived. The first
+assault room cleared and combat advanced through several Infernal Behemoths in
+the elite room; the final observed target went from13,650HP to318HP, then was
+absent when the driver's next observation ran. The elite room remained uncleared
+and the final guardian room unexplored. This was an assault creature, not the
+raid guardian; no guardian, repair or full-clear acceptance is claimed.
+
+The existing driver only sampled target life after awaited support/movement
+work. It discarded an intervening death once the client removed the corpse.
+`8c57dd8b` now retains deaths actually observed after normal world-message
+application, scoped to exact actor and instance; a living same-ID actor clears
+the record. Disappearance alone still fails. Four focused regressions plus nine
+existing route checks pass (1.062s), with lint/diff checks. This proves the
+observation correction, not that the lost Behemoth necessarily died or that the
+full raid passes. No stats, combat rules or watchdogs changed. The next Fire run
+must still complete the original full route. Private checkpoint:
+`/tmp/eidolon-party-checkpoint-fireraid0920c-E88KM3/save.archive.gz`.
+
+### Previous run — formation correction
+
 `fireraid0920b` is terminal exit1 after5.3minutes, not accepted. Persistent
 exec33534 returned exit1, matching Luna's final report and `RAID_PROCESS_EXIT=1`.
 Both owned containers are gone; reports/results were copied to the run directory.

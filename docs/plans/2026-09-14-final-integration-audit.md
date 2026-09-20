@@ -2,13 +2,21 @@
 
 ## September20 checkpoint — raid roster delivered, Fire input correction
 
-Fire follow-up `fireraid0920c` started from clean source `b62ad5eb`, with both
-exposed-corner targeting and visible-prefix formation planning. It uses the same
-five legal level-70 role builds and original full-raid assertions, with zero
-retries. Launcher PID 2739241 / native session 87777; run directory
-`/tmp/eidolon-fire-raid-20260920-r3-ad8SIz/`. Luna monitors terminal outcome only.
-This is an active validation, not an accepted clear; do not start a concurrent
-GPU run or infer termination from a missing cross-agent session handle.
+Fire follow-up `fireraid0920c` is terminal exit1 (8.5 minutes); all five survived,
+but an elite-room Infernal Behemoth disappeared between combat observations.
+The final guardian was not reached. Artifacts are preserved, owned services gone;
+the [current Fire record](2026-09-20-ember-crown-party-validation.md) describes the
+bounded observed-death retention correction and its verification limits.
+
+Earned checkpoint continuation `earnedresume0920a` finished the four remaining
+Orc kills and manual reward, reaching level31/12488XP/9011Gold with no deaths or
+dailies. Readiness then failed because transferring the exact character into a
+new disposable account preserved its original solo-party leader identity. The
+follow-up uses ordinary Leave Party controls and the new full saved checkpoint,
+not replayed kills or edited progression. Run `earnedresume0920b`, source201cb328,
+session49969/PID2896413, is active in
+`/tmp/eidolon-earned-resume-20260920-r2-VVa22M/`, monitored by Luna. This is not yet
+dungeon/Water acceptance. Do not run another native GPU route concurrently.
 
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database
