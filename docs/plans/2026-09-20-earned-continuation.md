@@ -9,6 +9,14 @@ accepted1.9.25 delivery and prior owned cleanup; Luna monitors the bounded run.
 93 focused checkpoint/recovery/search tests pass1.632s, plus lint/diff checks.
 This launch is not a connected pass; no repeated deployment or completed quests.
 
+While that frozen run remains active, repeated `ground-pointer-intercepted`
+receipts show its regional waypoint clicks sometimes selecting roaming Skeletons
+instead of ground. The main worktree's future waypoint travel now requests the
+existing move-only Shift-click gesture, preserving collision and the existing
+ordinary jump fallback. No live test/source change or claimed pacing gain.
+55 focused movement/route/reading tests pass6.598s, plus lint/diff. This is a
+QA-input correction, not a player combat change or a reason to restart46156.
+
 `earnedwaterregion0920c`, frozen0a104720, native47339 ended exit1 after12.7m.
 Stash preparation passed. The failure was target search at the inner encounter
 deadline after a real110.083-second unfinished-hunt town recovery. That trip

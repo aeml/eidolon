@@ -12,9 +12,10 @@ async function walkTo(page, x, z, reading = null) {
         const distance = Math.hypot(dx, dz);
         if (distance < 2) return;
         const scale = Math.min(1, 12 / distance);
-        // Ordinary jump input is allowed when roaming enemies cover the path;
-        // this is the same player-controlled fallback as other earned routes.
-        const move = () => moveByGroundClick(page, dx * scale, dz * scale);
+        // Travel owns movement intent: a roaming enemy crossing the cursor
+        // must not turn a waypoint click into an attack. Shift-click keeps
+        // normal collision; the existing ordinary jump fallback is unchanged.
+        const move = () => moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true });
         if (reading) {
             const result = await approachInvestigationReading(reading, move);
             if (result === 'already-open') {

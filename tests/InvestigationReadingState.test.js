@@ -91,6 +91,7 @@ test('entry acknowledgement after successful movement also prevents another worl
 test('the actual route guards resumed travel without dropping lore, credit or manual claim checks', () => {
     const source = readFileSync('tests/e2e/chronicle-investigation-route.js', 'utf8');
     expect(source).toContain('approachInvestigationReading(reading, move)');
+    expect(source).toContain('moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true })');
     expect(source).toContain('walkTo(page, site.x, site.z + 3, evidence)');
     expect(source).toContain("await expect(evidence).toHaveAttribute('open', '')");
     expect(source).toContain('await expect(evidence).toContainText(site.title)');
