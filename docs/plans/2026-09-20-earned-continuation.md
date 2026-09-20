@@ -2,6 +2,15 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+`earnedmolten0920d` is running from frozen0788ca95 with ordinary Recall for a
+preserved-instance restore. Source/log/launcher:
+`/tmp/eidolon-earned-molten-20260920-r4-tqIUo6/`, root native21636, launcher44108.
+Uses latest index16 unchanged, three prepared70 class-geared supports, original
+two-hour limit/zero retries.100 focused readiness/route/checkpoint tests pass2.324s,
+lint/shell/diff pass. Prior owned services and inspection copy were removed; ports
+and the completed deployment queue were checked before launch. Luna monitors one
+read-only launcher wait and actual terminal footer. No new clear accepted yet.
+
 Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
 launcher4125632. Uses the independently verified latest index15 save below,

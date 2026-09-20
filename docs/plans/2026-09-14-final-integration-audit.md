@@ -21,6 +21,13 @@ This open pacing preference does not block earned Molten or other roadmap work.
 
 ### Verified release and retained run evidence
 
+Latest active continuation is `earnedmolten0920d`, frozen0788ca95, root21636/
+launcher44108 under Luna. Source/log `/tmp/eidolon-earned-molten-20260920-r4-tqIUo6/`.
+It uses the actual latest index16 save and normal Recall before town readiness;
+100 focused checks pass2.324s. Prior services/inspection copy were removed and
+ports/deployment queue clear before launch. Original deadlines, normal15-minute
+expiry and full-completion requirements unchanged. No result accepted yet.
+
 `earnedmolten0920c` is terminal exit1/1.8m from8569dcd8, before party formation.
 Root66703/launcher4125632 stopped; source/log:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`. Normal15-minute restoration
