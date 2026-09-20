@@ -43,6 +43,15 @@ combat watchdog are reused inside a15-minute test ceiling, zero retries.
 38 focused fixture/timing checks pass4.38s; production catalog generation passes
 0.331s; scoped lint/diff pass. Native result pending; no gameplay fix claimed.
 
+Prepared `guardiandiagnostic0920a` (655378ea) stopped before combat after2.1m:
+fresh actors restored into the room with the legacy base HP/MP baseline, not
+full equipped pools, and the reused town-readiness assertion timed out. All four
+had zero damage/healing; this was setup, not a dungeon-entry or survival defect.
+Source/log `/tmp/eidolon-guardian-diagnostic-20260920-LnQqZS/`; services cleaned.
+Prepared fixtures now request exact pools from server `Entity.RecalculateStats`
+using their legal gear/talents before first login. No magic oversized resource
+values, altered caps, earned-resource rewriting or gameplay regen adjustment.
+
 Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
 launcher4125632. Uses the independently verified latest index15 save below,

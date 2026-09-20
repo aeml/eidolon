@@ -236,7 +236,14 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
             let character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
-            if (diagnosticBoss) character = preparePartyBossDiagnostic(character, catalog.diagnosticLayout, credentials.username, index);
+            if (diagnosticBoss) {
+                const pools = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserDiagnosticResources$', '-count=1', '-v'], {
+                    cwd: 'server', env: { ...process.env, EIDOLON_DIAGNOSTIC_CHARACTER_JSON: JSON.stringify(character) },
+                    encoding: 'utf8', timeout: 120_000
+                }).split('\n').find(line => line.startsWith('[diagnostic-resources]'));
+                character.resources = JSON.parse(pools.slice('[diagnostic-resources]'.length));
+                character = preparePartyBossDiagnostic(character, catalog.diagnosticLayout, credentials.username, index);
+            }
             if (earnedWizard && className === 'Wizard') {
                 if (isRaid) await restoreEarnedRaidReadiness(actorPage, login, raid, playthrough.runLevel);
                 else if (playthrough.dungeonType === 'verdant_bastion_catacombs') await resumeEarnedEarthToReadiness(actorPage, login);

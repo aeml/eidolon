@@ -14,6 +14,32 @@ var partyFixturePrimaryStats = map[string]string{
 	"Fighter": "strength", "Rogue": "dexterity", "Wizard": "intelligence", "Cleric": "wisdom",
 }
 
+// Fresh prepared actors only: calculate legal equipped pools using the server,
+// rather than waiting for town regeneration in an isolated boss-room fixture.
+func TestPartyBrowserDiagnosticResources(t *testing.T) {
+	raw := os.Getenv("EIDOLON_DIAGNOSTIC_CHARACTER_JSON")
+	if raw == "" {
+		t.Skip("explicit prepared character only")
+	}
+	var c struct {
+		Class       string           `json:"class"`
+		Level       int              `json:"level"`
+		Stats       Stats            `json:"stats"`
+		Equipment   map[string]Item  `json:"equipment"`
+		TalentRanks map[string]int   `json:"talent_ranks"`
+	}
+	if err := json.Unmarshal([]byte(raw), &c); err != nil || c.Level != 70 || partyFixturePrimaryStats[c.Class] == "" || len(c.Equipment) != 14 {
+		t.Fatal("invalid prepared diagnostic character")
+	}
+	p := newTestPlayer("diagnostic-resource-catalog", c.Class)
+	p.Level, p.BaseStats, p.Equipment, p.TalentRanks = c.Level, c.Stats, c.Equipment, c.TalentRanks
+	p.RecalculateStats()
+	if p.MaxHealth <= 0 || p.MaxMana <= 0 {
+		t.Fatal("invalid prepared resource caps")
+	}
+	fmt.Printf("[diagnostic-resources]{\"version\":1,\"health\":%d,\"mana\":%d,\"dead\":false}\n", p.MaxHealth, p.MaxMana)
+}
+
 func TestPartyProgressedGearUsesNormalRoleAffixes(t *testing.T) {
 	for _, level := range []int{30, 60, 70, 100} {
 		for class, primary := range partyFixturePrimaryStats {
