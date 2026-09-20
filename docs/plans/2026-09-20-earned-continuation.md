@@ -22,6 +22,16 @@ Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
 
 ### Next continuation prepared — Missing Ferry
 
+The main-tree continuation now compares initial browser progression with the
+checksum-verified saved Mongo state rather than hardcoding33/23108/10598. It
+can resume an already accepted hunt, perform the remaining ordinary kills and
+manual claim, or verify an already completed handoff without claiming twice.
+The existing30-minute bound and current frozen run are unchanged. This does not
+authorize arbitrary saves: any new partial/completed archive must first be
+inspected and explicitly checksum-pinned with its actual earned fields. The
+catalog currently still permits only the previously verified archives. Changed-
+file lint, discovery and diff checks pass; no continuation has been restarted.
+
 Deployment gate cleared at06:00UTC: all CI35492191742 jobs passed, followed by
 the independent `PUBLIC_RELEASE_VERIFIED` receipt for4f39328b/Alpha1.9.22.
 Parent45531 then passed its frozen-source guard and entered isolated setup for
