@@ -22,6 +22,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.9.27 records saved dungeon landing without changing expiry or claiming full completion', () => {
+        const start = indexHtml.indexOf('data-version="1.9.27"');
+        const previous = indexHtml.indexOf('data-version="1.9.26"');
+        expect(start).toBeGreaterThanOrEqual(0);
+        expect(start).toBeLessThan(previous);
+        const entry = indexHtml.slice(start, previous);
+        for (const text of ['saved landing position', '15-minute logout expiry', 'does not grant dungeon completion',
+            'not the final 1.10 sign-off', 'Earlier patch notes remain available']) expect(entry).toContain(text);
+    });
     test('1.9.26 records current interaction hints and encounter-timed opening without claiming final acceptance', () => {
         const start = indexHtml.indexOf('data-version="1.9.26"');
         const previous = indexHtml.indexOf('data-version="1.9.25"');
@@ -705,15 +714,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.9.26');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.9.27');
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.9.26');
-        expect(packageLock.packages[''].version).toBe('1.9.26');
-        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.9.26`');
+        expect(packageLock.version).toBe('1.9.27');
+        expect(packageLock.packages[''].version).toBe('1.9.27');
+        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.9.27`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.9.26</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.9.27</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1124,7 +1133,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.9.26';
+        const expectedVersion = 'Alpha 1.9.27';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

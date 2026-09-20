@@ -2,6 +2,22 @@
 
 ## Current delivery — 1.9.26 verified, earned Molten partial
 
+### Local 1.9.27 candidate — authoritative dungeon resume landing
+
+Prepared Guardian diagnostic b (0f20c854) restored all four into the same saved
+instance, but Fighter/Rogue appeared at the entrance while Cleric/Wizard retained
+the deep-room landing. The server's initial scene message supplied `spawn` only
+for PvP/casino; asynchronous client scenery creation otherwise resets to room0,
+racing position updates. Seven real dungeon/raid payload regressions fail on the
+old server response and pass after all restored instances carry their authoritative
+landing. Client scene tests retain the supplied position through async loading.
+No expiry, resource, progress, room-clear or boss balance policy changed.
+
+Alpha1.9.27 metadata/login/notes are prepared together; prior history remains.
+Server focused tests pass1.098s,32 client scene/fixture checks pass2.486s. Native
+four-member deep-room resume and focused Guardian combat remain to run before
+delivery; no new release or full-dungeon acceptance is claimed yet.
+
 ### Finale tuning target — approved 5–10 minutes, balance acceptance pending
 
 User confirmed a successful, well-geared five-player Dark King fight should

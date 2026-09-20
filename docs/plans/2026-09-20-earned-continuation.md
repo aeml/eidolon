@@ -52,6 +52,16 @@ Prepared fixtures now request exact pools from server `Entity.RecalculateStats`
 using their legal gear/talents before first login. No magic oversized resource
 values, altered caps, earned-resource rewriting or gameplay regen adjustment.
 
+Prepared `guardiandiagnostic0920b` (0f20c854) stopped after2.7m, all four alive,
+before boss combat. Fighter/Rogue were at the entrance while Cleric/Wizard stayed
+at the staged room edge; a shared instance ID hid the position disagreement.
+Source/log `/tmp/eidolon-guardian-diagnostic-20260920-b-sjSulE/`; services cleaned.
+This reproduced missing authoritative dungeon landing data in initial scene
+messages, now fixed for the1.9.27 candidate. A focused native setup assertion
+also verifies all four actual deep-room positions before starting the encounter.
+Seven server payload regressions fail before the fix and pass afterward. Normal
+15-minute expiry and earned saves are unchanged. See the final integration audit.
+
 Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
 launcher4125632. Uses the independently verified latest index15 save below,

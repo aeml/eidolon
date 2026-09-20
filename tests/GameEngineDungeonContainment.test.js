@@ -27,6 +27,7 @@ jest.unstable_mockModule('../src/world/WorldGenerator.js', () => ({
             this.createMoltenCore = jest.fn().mockResolvedValue();
             this.createTempestSpire = jest.fn().mockResolvedValue();
             this.createAbyssalWell = jest.fn().mockResolvedValue();
+            this.createUmbralNexus = jest.fn().mockResolvedValue();
             this.createPvPArena = jest.fn();
             this.createTown = jest.fn().mockResolvedValue();
             this.createOverworldStructures = jest.fn().mockResolvedValue();
@@ -233,6 +234,15 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances[0].createTown).not.toHaveBeenCalled();
         expect(engine.collisionManager.setDungeonWalkableGeometry).toHaveBeenCalledWith(layout.walkRects);
         expect(engine.player.position.toArray()).toEqual([8, 0, -3]);
+    });
+
+    test.each(['molten_core', 'fire_crystal_raid', 'weekly_raid'])('%s resume retains a deep-room landing after scene generation', async type => {
+        const engine = createEngineHarness();
+        const layout = { rooms: [{ x: 30000, z: 20000 }], walkRects: [] };
+        await engine.enterInstance('dungeon-resume', type, layout, null, { x: 30031.8, y: 0, z: 17860 });
+        expect(engine.player.position.toArray()).toEqual([30031.8, 0, 17860]);
+        expect(engine.player.mesh.position.toArray()).toEqual([30031.8, 0, 17860]);
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
     });
 
     test('PvP return restores the departure point instead of a guessed town spawn', async () => {

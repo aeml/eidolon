@@ -291,6 +291,13 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         }
         for (const actor of actors) {
             await expect.poll(() => actor.page.evaluate(() => window.game.uiManager.social.partyData?.members?.length)).toBe(roles.length);
+            if (diagnosticBoss) {
+                const room = catalog.diagnosticLayout.rooms.filter(room => room.type === 'boss')[3];
+                await expect.poll(async () => {
+                    const state = await snapshot(actor.page);
+                    return Math.hypot(state.x - room.x, state.z - (room.z + 60));
+                }, { message: 'Prepared dungeon resume must retain each authoritative deep-room landing' }).toBeLessThan(10);
+            }
             await expect.poll(() => actor.page.evaluate(() => {
                 const p = window.game.player;
                 return p.stats.hp === p.stats.maxHp && p.stats.mana === p.stats.maxMana;

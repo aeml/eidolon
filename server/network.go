@@ -142,9 +142,10 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 				"instanceId": instanceID,
 				"type":       world.GetInstanceType(instanceID),
 				"layout":     layout,
-			}
-			if world.GetInstanceType(instanceID) == "pvp_arena" || instanceID == game.CasinoInstanceID {
-				resp["spawn"] = map[string]float64{"x": entity.X, "y": entity.Y, "z": entity.Z}
+				// Rebuilding a resumed dungeon must use the saved landing too.
+				// Otherwise scene generation resets to room zero and races the
+				// authoritative position stream, splitting a reconnecting party.
+				"spawn": map[string]float64{"x": entity.X, "y": entity.Y, "z": entity.Z},
 			}
 			if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
 				resp["roomState"] = roomState
