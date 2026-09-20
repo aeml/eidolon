@@ -35,3 +35,22 @@ dungeon acceptance remain retained. Continue the earned Water handoff with
 recorded entry level, carried XP, dungeon/quest/ordinary-kill receipts, actual
 Gold income/spending and equipment improvements. The current no-mandatory-daily
 requirement remains open until earned evidence supports it across the campaign.
+
+## Retained Verdant income narrows the missing-income question
+
+The accepted September12 four-player Normal30 run starts at level30/zero XP and
+ends at level32 for all four players, including the personal10,562XP chapter
+claim. Its retained `native.log` in `/tmp/eidolon-geared-party-pass-KVzr6y/`
+confirms those levels/rewards but does not print remaining XP. With the unchanged
+quadratic progression requirement, its total XP is bounded by43,725–67,849;
+subtracting that already-modeled chapter reward bounds the omitted dungeon
+combat/room income at33,163–57,287XP per character. This does not require a rerun.
+
+Even the top of that historical range is small beside the model's781,397XP Water
+shortfall. Omitted Verdant income alone therefore does not explain the modeled
+party gap. This is still not an actual Water ending level or play-time forecast:
+the current earned Wizard carries XP into Verdant, seeds and incidental combat
+vary, and parties have different kill throughput. Preserve the original rule
+that no daily quest is mandatory; measure ordinary Water combat and additional
+leveling time before changing rewards. No reward, sharing or entry-level change
+is justified by this bound alone.
