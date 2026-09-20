@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
+    test.use({ launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } });
+}
+
 // Real Actor locomotion/collisions in a prepared venue; not a connected wager.
 test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

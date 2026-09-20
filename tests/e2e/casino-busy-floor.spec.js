@@ -2,6 +2,12 @@ import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { collectBrowserFailures } from './helpers.js';
 
+// Optional bounded visual-only review while native GPU gameplay QA owns the
+// renderer. Software screenshots are not native performance evidence.
+if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
+    test.use({ launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } });
+}
+
 // Controlled rendering only. Retain the separate connected wagering evidence;
 // these seated models are not network clients or earned-currency acceptance.
 test('equipped crowd remains readable on both casino floors at High and Low', async ({ page, baseURL }, testInfo) => {
@@ -71,7 +77,12 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 controller.render(models);
                 auras.forEach(aura => aura.dispose());
                 auras = models.map(model => new AttachedStatusEffect(render.effectGroup, model, 'well_rested', { quality }));
-                render.setZoom(58);
+                // A controlled full-hall overview, not the player's zoom limit.
+                // setZoom(58) silently clamps at 30 and crops most of this venue.
+                render.camera.left = -58 * innerWidth / innerHeight;
+                render.camera.right = 58 * innerWidth / innerHeight;
+                render.camera.top = 58; render.camera.bottom = -58;
+                render.camera.updateProjectionMatrix();
                 const focus = new THREE.Vector3(0, upstairs ? 8 : 0, 152);
                 render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85));
                 gallery.controls.target.copy(focus);

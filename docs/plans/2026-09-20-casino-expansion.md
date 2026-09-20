@@ -1,7 +1,8 @@
 # Expanded Lanternhold Casino — next deployment batch
 
-Status: local implementation in progress; **not deployed or fully verified yet**.
-Keep this batch intact until roulette and baccarat have functioning shared games.
+Status: Alpha 1.9.24 batch implemented and locally checked; **not deployed yet**.
+Keep the full batch together. Publication waits for the running Water campaign
+to release native Chrome, avoiding overlap with self-hosted deployment QA.
 Parent: [casino roadmap](2026-09-09-town-casino-roadmap.md).
 
 ## Implemented locally
@@ -90,10 +91,22 @@ payment flow. Receipt maxima: roulette 3.6m Gold/3,600 EP; baccarat 900k Gold/90
   Added to hosted anonymous browser coverage. This is not 3D venue acceptance.
 - Alpha 1.9.24 login, runtime defaults and cumulative patch notes are prepared.
   Version/house-UI/browser-plan suites pass 295 tests/2.535s; full ESLint and
-  whitespace checks pass. Release remains local pending full-floor visual review.
-- Still required: rendered expanded-floor review,
-  deployment and live verification. Updated
-  browser fixtures are not a claim that the new screenshots have been reviewed.
+  whitespace checks pass.
+- Full-hall visual review passes (1.6m): all 92 stations and 232 seats, 40
+  equipped prepared actors/20 visible per floor, matching aura visibility, and
+  exactly one interior floor visible. Inspected all four High/Low public/VIP
+  screenshots under `/tmp/eidolon-casino-1-9-24-full-floor-review/`. Earlier
+  close-up images also passed but cropped the hall because player zoom clamps
+  at 30; the review camera now captures the full footprint without changing
+  player zoom. This used software rendering, not native performance acceptance
+  or 40 connected players.
+- Phone guard dialogue and actual Actor collision check pass (10.3s), including
+  the blocked stair approach. First attempt hit browser `ERR_NETWORK_CHANGED`
+  while importing modules, before the scenario; retained trace shows HTTP 200
+  for Fighter.js. One fresh-browser rerun passes with no gameplay changes.
+  Screenshot inspected; `/tmp/eidolon-casino-1-9-24-stairs-review-r2/`.
+- Remaining for this release: publication, CI/deployment and live verification.
+  Broader native crowded-floor performance/campaign acceptance remains separate.
 - Native Water campaign QA uses a frozen older source checkout and remains
   independent. Do not start competing native browser workloads while it runs.
 
