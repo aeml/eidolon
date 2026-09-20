@@ -8,7 +8,10 @@ test('each required shard separates expensive independent render families from o
     for (const shard of [1, 2, 3]) {
         const plan = buildBrowserSmokePlan(manifest, shard);
         expect(plan.slice(0, 3).map(stage => stage.name)).toEqual(['layout', 'entrances', 'effects']);
-        for (const stage of plan.slice(0, 3)) expect(stage.args).toContain(`--shard=${shard}/3`);
+        const partitions = [shard, shard % 3 + 1, (shard + 1) % 3 + 1];
+        for (const [index, stage] of plan.slice(0, 3).entries()) {
+            expect(stage.args).toContain(`--shard=${partitions[index]}/3`);
+        }
         expect(plan[0].args).not.toContain('--fully-parallel');
         for (const stage of plan.slice(1, 3)) expect(stage.args).toContain('--fully-parallel');
         expect(plan[1].files).toEqual(['tests/e2e/entrance-visibility.spec.js']);
@@ -19,6 +22,14 @@ test('each required shard separates expensive independent render families from o
             expect(stage.env.PLAYWRIGHT_HTML_OUTPUT_DIR).toBe(`playwright-report/browser-${shard}/${stage.name}`);
             expect(stage.args).not.toContain('--pass-with-no-tests');
         }
+    }
+});
+
+test('rotating render families preserves every partition exactly once across the hosted jobs', () => {
+    const plans = [1, 2, 3].map(shard => buildBrowserSmokePlan(manifest, shard));
+    for (const name of ['layout', 'entrances', 'effects']) {
+        const partitions = plans.map(plan => plan.find(stage => stage.name === name).args.find(arg => arg.startsWith('--shard=')));
+        expect(partitions.sort()).toEqual(['--shard=1/3', '--shard=2/3', '--shard=3/3']);
     }
 });
 

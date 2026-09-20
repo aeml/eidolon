@@ -38,18 +38,21 @@ export function buildBrowserSmokePlan(manifest, shard) {
         if (!anonymous.includes(file)) throw new Error(`Missing required rendering coverage: ${file}`);
     }
     const groups = [
-        { name: 'layout', files: anonymous.filter(file => !renderFiles.includes(file)), sharded: true },
+        { name: 'layout', files: anonymous.filter(file => !renderFiles.includes(file)), testShard: shard },
         // These cases use per-test page/scene fixtures and no beforeAll/serial
         // shared state. Split only these reviewed independent rendering cases.
-        { name: 'entrances', files: entrances, sharded: true, independent: true },
-        { name: 'effects', files: effects, sharded: true, independent: true },
+        // Rotate the independent families so one hosted job does not receive
+        // every expensive first partition. Each family still runs shards1–3
+        // exactly once; artifact paths retain the owning workflow job number.
+        { name: 'entrances', files: entrances, testShard: shard % 3 + 1, independent: true },
+        { name: 'effects', files: effects, testShard: (shard + 1) % 3 + 1, independent: true },
         ...supplemental(manifest).filter(stage => stage.shard === shard)
     ];
     return groups.map(group => {
         if (!group.files.length) throw new Error(`Empty browser group: ${group.name}`);
         return { name: group.name, files: [...group.files],
             args: ['test', ...group.files, '--workers=1',
-                ...(group.sharded ? [`--shard=${shard}/3`] : []),
+                ...(group.testShard ? [`--shard=${group.testShard}/3`] : []),
                 ...(group.independent ? ['--fully-parallel'] : []),
                 '--reporter=line,html', `--output=test-results/browser-${shard}/${group.name}`],
             env: { PLAYWRIGHT_HTML_OUTPUT_DIR: `playwright-report/browser-${shard}/${group.name}`,
