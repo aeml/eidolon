@@ -116,14 +116,16 @@ func TestCrystalSanctumSnapshotTracksActualWaveWorker(t *testing.T) {
 	w := NewWorld(nil)
 	t.Cleanup(w.StopBackground)
 	id := w.CreateDungeon("party-hero", "earth_crystal_raid", DifficultyNormal, 30)
-	w.AddEntity(&Entity{ID: "hero", Type: TypePlayer, InstanceID: id, Health: 100, State: "IDLE"})
+	layout, _ := w.GetInstanceLayout(id)
+	chamber := layout.Rooms[len(layout.Rooms)-1]
+	w.AddEntity(&Entity{ID: "hero", Type: TypePlayer, InstanceID: id, Health: 100, State: "IDLE", X: chamber.X, Z: chamber.Z})
 	events := make(chan CrystalRepairEvent, 16)
 	w.OnEvent = func(kind string, value interface{}) {
 		if kind == "crystal_repair" {
 			events <- value.(CrystalRepairEvent)
 		}
 	}
-	if !w.StartCrystalRepair(id, "earth_crystal_raid", []string{"hero"}, 0, 0) {
+	if !w.StartCrystalRepair(id, "earth_crystal_raid", []string{"hero"}, chamber.X, chamber.Z) {
 		t.Fatal("ritual failed to start")
 	}
 	for {

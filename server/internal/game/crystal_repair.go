@@ -61,6 +61,20 @@ func (w *World) StartCrystalRepair(instanceID, raidType string, participants []s
 	if !ok || instanceID == "" {
 		return false
 	}
+	// The crystal is fixed at the chamber center, not at the guardian's
+	// death position. A boss pulled toward a wall must not push ritual
+	// markers or the surrounding attacker ring outside the walkable arena.
+	// Use the same origin as the scene snapshot and resumed repair worker.
+	if instance, exists := w.getDungeonInstance(instanceID); exists {
+		instance.Mu.RLock()
+		if instance.DungeonType == raidType && len(instance.Layout.Rooms) > 0 {
+			chamber := instance.Layout.Rooms[len(instance.Layout.Rooms)-1]
+			if chamber.Type == "boss" {
+				centerX, centerZ = chamber.X, chamber.Z
+			}
+		}
+		instance.Mu.RUnlock()
+	}
 	w.RepairMu.Lock()
 	if existing := w.CrystalRepairs[instanceID]; existing != nil {
 		w.RepairMu.Unlock()
