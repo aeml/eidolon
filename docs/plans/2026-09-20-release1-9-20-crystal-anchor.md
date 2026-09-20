@@ -1,8 +1,9 @@
 # Alpha 1.9.20 — the crystal holds its ground
 
-Status: implementation verified locally; version/login/cumulative patch notes
-prepared. Tidestar0920d has terminated and its artifacts are preserved; ready
-to publish. Not deployed yet. Use Luna for CI monitoring. Keep the full1.10
+Status: pushed to master as `f333c7610f5e5b9ccfb958735e01029a8747fc6f`;
+CI run35481615306 is active, monitored by Luna `/root/watch_release_1_9_20`.
+Server/Jest jobs passed and three browser-smoke shards were running at the last
+authoritative check. Public delivery is not yet verified. Keep the full1.10
 scope and accepted evidence.
 
 ## Player-facing patch notes for the next release
@@ -45,3 +46,19 @@ the no-damage-progress limit on a first-wave AquaGolem. Artifacts are preserved
 in `/tmp/eidolon-water-raid-20260920-r4-noJI9r/`; this is not full acceptance or
 a rendered test of the new origin correction. Next raid runs should use the
 corrected runtime. No active test was restarted merely to include it.
+
+## Next raid coverage
+
+After this deployment and public identity verification, run Ember Crown (Fire)
+with the existing five legal level70 builds, zero retries, normal readiness/
+entry, full guardian combat, three waves/ordered vent channels, manual claims
+and saved re-login. Use the shared tank/group healer assignments and bounded
+approach trace (local follow-up8995b9ee). Do not overlap native deployment QA.
+
+This changes the immediate validation order, not the required scope: Tidestar's
+full repair/claims remain open and must be revisited, and Skyglass/other dungeon
+families/the earned campaign remain required. Exercising the next untested
+realm can reveal shared input or encounter problems without immediately
+repeating the already-observed Water guardian. It does not turn Fire's prepared
+prerequisites into earned Water completion. No gear/stat/damage/watchdog changes
+are made to make the next realm pass.
