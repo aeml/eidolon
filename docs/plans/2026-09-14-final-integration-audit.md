@@ -2,6 +2,21 @@
 
 ## Current delivery — 1.9.25 verified, earned Molten partial
 
+Active native: Fire `fireraid0920i`, session3278, frozenf90581ae, launched only
+after the previous run's processes/containers and ports were confirmed clear.
+Source/log/launcher: `/tmp/eidolon-fire-raid-20260920-r9-z4coHc/`.
+Includes the foreground-pack target correction below, with unchanged legal
+gear, Low quality,120minute ceiling and zero retries. No deployment overlaps it.
+Cross-agent native handles are unavailable to Luna (root confirmed3278 live),
+so it owns one read-only wait on the verified launcher3339156, inspecting the
+terminal footer afterward. A missing cross-agent handle is not a stopped run.
+
+Alpha1.9.26 is being prepared locally as one presentation batch: walking service
+hint refresh, transition cleanup and encounter-timed Dark King opening. Login,
+client/server/container/deploy identities and patch notes advance together;
+prior notes remain intact. Do not call it live or trigger deployment browsers
+while the Fire native is running.1.9.25 remains the last verified production.
+
 Fire `fireraid0920h`, session64215, frozen39d272a9 is terminal exit1 after10.5m.
 Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
 The Rogue died during an assault Magma Golem pull, before guardian/repair stages.
