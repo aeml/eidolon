@@ -163,6 +163,7 @@ export async function playDungeonThroughInputs(page, {
                     const { dungeonOccludedTargetStep } = await import('/tests/dungeonTargetApproach.js');
                     const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
                     const g = window.game, p = g.player, enemy = g.remotePlayers.get(id);
+                    window.__dungeonTargetApproachPlan = null;
                     if (!enemy?.isActive || enemy.state === 'DEAD' || p.state === 'DEAD') return null;
                     if (window.__partyClearWarnings?.some(w => w.expires > performance.now() && w.instance === g.currentInstanceId)) return null;
                     const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
@@ -170,13 +171,25 @@ export async function playDungeonThroughInputs(page, {
                         range: g.getBasicAttackRangeForEntity(enemy) };
                     const actors = [...g.remotePlayers.values()].filter(e => e.isActive && e.stats && e.state !== 'DEAD')
                         .map(e => ({ x: e.position.x, z: e.position.z, radius: e.radius }));
+                    window.__dungeonTargetApproachPlan = { origin, target, actors,
+                        at: performance.now(), instance: g.currentInstanceId };
                     return dungeonOccludedTargetStep(origin, target, delta =>
                         retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                         isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), actors);
                 }, { id: target.id, encounter: target.encounter }) : dungeonTargetApproach(live.player, live.target);
                 const moved = step ? await tryDungeonGroundStep(() => moveByGroundClick(page, step.dx, step.dz,
                     { allowJumpFallback: false, ...(partyTarget ? { moveOnly: true, allowAlternatePaths: false, requireClearPath: true, timeout: 1500 } : {}) })) : false;
-                await page.evaluate(observation => { window.__dungeonLatestTargetApproach = observation; }, { ...live, step, moved });
+                await page.evaluate(observation => {
+                    window.__dungeonLatestTargetApproach = observation;
+                    const records = window.__partyClearEvidence?.recentTargetApproaches;
+                    if (records) {
+                        const g = window.game, p = g.player;
+                        records.push({ ...window.__dungeonTargetApproachPlan, step: observation.step, moved: observation.moved,
+                            after: { x: p.position.x, z: p.position.z, state: p.state,
+                                blockedStops: p.movementMetrics?.blockedStops || 0 }, atEnd: performance.now() });
+                        if (records.length > 20) records.shift();
+                    }
+                }, { ...live, step, moved });
             }
             await page.waitForTimeout(350);
             const playerState = await readPlayerState(page);

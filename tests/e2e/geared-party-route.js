@@ -58,7 +58,8 @@ async function observeRole(page) {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0, repairStages: [],
             casts: {}, rejected: {}, sawDeath: false, combatReceipts: [], warningMoves: 0, warningEscapes: 0,
-            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], recentRangedSpacing: [], lastAcceptedCastAt: -Infinity,
+            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], recentRangedSpacing: [],
+            recentTargetApproaches: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {

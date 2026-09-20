@@ -133,3 +133,17 @@ containers are gone. Private save:
 Session84269 and the Luna watcher are terminal; do not poll or restart them.
 Next immediate action is deploy the independently verified1.9.20 crystal-origin
 correction. Inspect the saved target/movement receipts before another raid run.
+
+Follow-up inspection: the final approach made a valid12unit forward move, but
+the earlier15second samples show distance increasing87.5→89.2→92.7units before
+recovering to roughly66. The old diagnostics preserve only the last approach,
+not its blocker geometry over time. Replaying the earlier0919d frozen formation
+with the current helper converges normally in8steps, so it does not reproduce
+0920d and is not a basis for another speculative movement change.
+
+Future party attachments now retain the last20 target-approach plans, body
+positions, input outcomes and observed endpoints/timing using existing browser
+reads. No extra browser round trips, console receipts, movement behavior,
+deadline or gameplay changes. Lint/diff checks pass. Inspect that bounded trace
+if the issue recurs on the next corrected-runtime raid; no separate long
+diagnostic run is scheduled.
