@@ -12,6 +12,18 @@ is claimed. Diagnose the retained targeting/failure scene before another run;
 do not weaken the damage watchdog or label the stall a balance failure.
 Private save: `/tmp/eidolon-party-checkpoint-fireraid0920f-LxxNAq/save.archive.gz`.
 
+Inspected retained Fighter receipt and failure screenshot: target health stalled
+at1216, remained active/hostile/in the active cache, with visible mesh and correct
+hitbox owner. Final logical distance3.019 was inside reported basic range4.
+Other nearby hostiles were roughly10–12units away. The final pointer hit stack
+was empty, but it was sampled after a ground sidestep, not during acquisition;
+it does not prove a missing proxy. Recorded sidesteps moved successfully. The
+scene shows overlapping party presentation and nearby Behemoth warning rings.
+Do not infer insufficient gear, body collision or a server damage defect.
+Exact acquisition-time hit stacks/rendered transforms were not retained, so
+the cause remains unresolved. No speculative gameplay targeting change or
+blind rerun is justified by the current evidence.
+
 ## Latest terminal run — settled teammate collision
 
 `fireraid0920e` ended exit1 after4.1m on clean7fa57f00, native35409.
