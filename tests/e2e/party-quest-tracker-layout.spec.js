@@ -31,9 +31,11 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
             quest.loadTrackingPreferences();
             quest.trackedQuestKeys = new Set(summary.map(item => item.id));
             quest.renderObjectivesPanel(summary);
-            social.updateParty({ partyId: 'layout-only', members: ['Fighter', 'Cleric', 'Wizard', 'Rogue'].map((name, index) => ({
+            social.updateParty({ partyId: 'layout-only', leaderId: 'tracker-layout', allReady: true,
+                members: ['Fighter', 'Cleric', 'Wizard', 'Rogue'].map((name, index) => ({
                 id: index ? `ally-${index}` : 'tracker-layout', name, class: name, level: 60,
-                hp: 100, maxHp: 100, role: index === 0 ? 'tank' : index === 1 ? 'healer' : 'damage'
+                hp: 100, maxHp: 100, role: index === 0 ? 'tank' : index === 1 ? 'healer' : 'damage',
+                ready: true, isLeader: index === 0
             })) });
             window.__partyTrackerLayout = { quest, social };
         });
@@ -55,6 +57,23 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
         await expect(list.locator('.objective-entry').last()).toHaveAttribute('title', /fragments 7 · 7 \/ 10/);
         await page.getByRole('button', { name: 'Select Cleric for healing', exact: true }).click();
         await expect(page.getByRole('button', { name: 'Select Cleric for healing', exact: true })).toHaveAttribute('aria-pressed', 'true');
+        await page.getByRole('button', { name: 'Ready Check', exact: true }).click();
+        // The earned Verdant screenshot showed the four-member header and tank
+        // row scrolled out after support selection. Visible DOM alone is not
+        // enough: all health bars must remain inside the actual panel bounds.
+        for (const name of ['Rogue', 'Wizard', 'Fighter', 'Cleric']) {
+            await page.getByRole('button', { name: `Select ${name} for healing`, exact: true }).click();
+            const panel = await page.locator('#party-panel').boundingBox();
+            const header = await page.locator('.party-panel__header').boundingBox();
+            expect(header.y).toBeGreaterThanOrEqual(panel.y);
+            for (const bar of await page.locator('#party-list .party-hp-bar').all()) {
+                const box = await bar.boundingBox();
+                expect(box.y).toBeGreaterThanOrEqual(panel.y);
+                expect(box.y + box.height).toBeLessThanOrEqual(panel.y + panel.height);
+            }
+            const chat = await page.locator('#chat-box').boundingBox();
+            expect(panel.y + panel.height).toBeLessThan(chat.y);
+        }
         await page.screenshot({ path: testInfo.outputPath('party-quest-strip.png') });
         for (const count of [5, 10]) {
             await page.evaluate(count => {

@@ -332,7 +332,8 @@ export class SocialUI {
             document.body.classList.remove('party-roster-visible');
             return;
         }
-        this.partyPanel.style.display = visible ? 'block' : 'none';
+        this.partyPanel.style.display = visible
+            ? (this.partyPanel.classList.contains('party-panel--group') ? 'flex' : 'block') : 'none';
         document.body.classList.toggle('party-roster-visible', visible);
     }
 
@@ -359,6 +360,7 @@ export class SocialUI {
         this.inParty = inParty;
         const memberCount = inParty ? (partyData.members?.length || 0) : 0;
         this.partyPanel.classList.toggle('party-panel--raid', memberCount > 4);
+        this.partyPanel.classList.toggle('party-panel--group', memberCount === 4);
         const panelTitle = this.partyPanel.querySelector('.party-panel__title');
         if (panelTitle) panelTitle.textContent = memberCount > 4 ? `RAID · ${memberCount}` : 'PARTY';
 

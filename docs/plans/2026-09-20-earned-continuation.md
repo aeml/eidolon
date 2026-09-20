@@ -24,10 +24,18 @@ Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
 four-player desktop panel has scrolled its header/tank row out of view while
 lower support controls remain visible. The existing HTML-only party layout
 fixture checks all health-bar bounds for5/10 members but not the initial4-member
-party. Reproduce the four-member leader/ready/control state and heal selection,
-then fix roster visibility in a detached worktree while Fire runs. This does
-not invalidate dungeon clear/persistence, but full party-HUD visual acceptance
-must not be inferred from the gameplay pass. No runtime fix is implemented yet.
+party. The real-HTML reproduction now includes Ready Check before healing
+selection: before the fix the header moved to y=-38 above its panel at y=140.
+Four-player desktop parties now use a compact two-column roster with fixed
+header/health bars and independently scrolling, keyboard-focusable options.
+Smaller parties, five-to-ten-member raid layout and the separate phone roster
+retain their existing behavior. Both1280x720 and1440x900 fixtures pass (19.6s),
+including existing raid/ground-projection checks;60 social/healing unit checks,
+lint and diff checks pass. The1280 screenshot was visually inspected. Artifacts:
+`/tmp/eidolon-four-party-roster-20260920-XKGFE3/`. This is a verified local
+runtime fix, not yet deployed. Include in the next runtime release's patch notes:
+“Four-player party health bars stay visible while using ready checks, loot and
+invitation controls.” No additional full dungeon replay is needed for this UI fix.
 
 Next-region preparation: commit733621eb merged as7fa57f00 after the run ended.
 It extends the existing hunt
