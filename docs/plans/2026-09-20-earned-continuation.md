@@ -2,7 +2,7 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-Next continuation `earnedmolten0920b` is staged, **not launched**, at
+Continuation `earnedmolten0920b` is **running**, root native1224/launcher3915852, at
 `/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozencdf71b50. The latest
 Molten archive below was checksum-verified and is used intact, including actual
 earned loot/resources and unchanged logout/run timestamps. After15 minutes the
@@ -12,9 +12,11 @@ expedition and traversal bounds remain. This source includes the reproduced
 short-corner formation correction, strict waypoint witness, existing batched
 ground observation (four rather than six round trips) and pre-recall
 traversal diagnostics absent from the earlier attempt. That does not establish
-the earlier Molten stall's cause or guarantee a clear. Launch only after review
-of Fire `fireraid0920j`'s terminal result and a free native/deployment browser slot;
-no parallel run or automatic retry. Launcher syntax and frozen-source checks pass.
+the earlier Molten stall's cause or guarantee a clear. Fire `fireraid0920j`'s
+terminal result/cleanup were reviewed and the native/deployment browser slot and
+all owned ports were free before launch. Luna monitors one read-only launcher
+wait and the actual terminal footer. No parallel run or automatic retry.
+Launcher syntax and frozen-source checks pass. No Molten completion claimed yet.
 
 `earnedfire0920c`, native26744, frozenb910a268, passed in2.8m with footer exit0:
 `/tmp/eidolon-earned-fire-20260920-r3-QHLeVF/run.log`. The retained ash was not
