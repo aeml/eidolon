@@ -25,10 +25,13 @@ It advanced to saved80/87276XP/98595Gold and61/70kills without new deaths, then
 stopped on a gear-only bag-management assumption. QA storage now preserves
 gem/material/relic stacks with exact merge/overflow conservation;84 focused
 tests and Go stash checks pass. Corrected native2051/`earnedwaterregion0920f`
-is launched from that full save for nine remaining kills and manual handoff.
-It does not replay completed Water chapters. The
+passed in14.8m with no deaths, all70 kills, manual turn-in, relogin and saved
+Abyssal handoff. Independent archive restore confirms83/90198XP/104319Gold,
+all Water rewards retained, accepted Abyssal0/1 and no accepted dailies. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
-archive and bounds. No new Water/Abyssal clear is claimed.
+archive and bounds. Water readiness is accepted; the next stage is the existing
+four-player Normal60 Abyssal route, not another Water replay. Abyssal itself
+and the later campaign/raids remain open.
 
 Next-batch local polish: the short stash screenshots exposed a service card
 remaining “Move closer” after approach, because hint updates depended on pointer

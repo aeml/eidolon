@@ -150,6 +150,34 @@ test('retains the actual level80 gem-heavy save with 61 kills and no claimed hun
     expect(fixture.result().saved.quests.at(-1)).toMatchObject({ count: 61, completed: false, granted_gold: 0, granted_xp: 0 });
 });
 
+function waterDungeonReadiness(character) {
+    partialWaterRegion(character);
+    const checkpoint = earnedEarthCheckpoints[9];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+        resources: { ...checkpoint.resources } });
+    Object.assign(character.quests.at(-1), checkpoint.waterChapters.at(-1));
+    character.quests.push({ ...checkpoint.waterDungeon });
+}
+
+test('retains the completed Water reward and accepted Abyssal handoff without replaying the region', () => {
+    const fixture = exercise(waterDungeonReadiness, false, earnedEarthCheckpoints[9]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-1).count = 1; }, p => { p.quests.at(-1).completed = true; },
+    p => { p.quests.at(-1).accepted = false; }, p => { p.quests.at(-1).granted_gold = 600; },
+    p => { p.quests.at(-1).max_count = 2; }, p => { p.quests.pop(); },
+    p => { p.quests.push({ ...p.quests.at(-1) }); },
+    p => { p.quests.at(-2).granted_xp = 0; }, p => { p.quests.at(-2).completed = false; }
+])('rejects altered Water completion or Abyssal handoff before copying', change => {
+    const fixture = exercise(p => { waterDungeonReadiness(p); change(p); }, false, earnedEarthCheckpoints[9]);
+    expect(fixture.run).toThrow(/earned Water/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
     p => { p.quests.at(-1).granted_gold = 600; }, p => { p.quests[3].granted_xp++; },

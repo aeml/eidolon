@@ -1,12 +1,29 @@
 # Earned campaign continuation with a real party
 
-## Latest retained progress — hunt61/70, bag-policy failure
+## Water readiness accepted — next: earned four-player Abyssal
 
-Corrected `earnedwaterregion0920f` is launched in native2051, frozen clean
+`earnedwaterregion0920f` passed in14.8m, native2051 exit0, frozen clean
 15697bcb, under `/tmp/eidolon-water-region-resume-20260920-r6-oEt2Bn/`.
-84 focused checkpoint/inventory/storage tests pass1.54s, plus lint/diff and the
-Go stash checks below. Prior owned cleanup and idle deployment queue verified;
-Luna monitors the bounded nine-kill/manual-handoff continuation. No pass yet.
+The nine remaining kills reached70/70 with no deaths; manual reward, relogin,
+saved Water completion and accepted Normal60 Abyssal handoff passed. Owned
+gameplay containers are gone. Independent network-isolated Mongo restore confirms
+Wizard83/90198XP/104319Gold, resources3663HP/2816MP/alive, all Water chapters
+completed, hunt reward550Gold/54750XP, Abyssal accepted0/1 with no reward, and
+no accepted/completed dailies. Full private archive:
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920f-uMKyrl/save.archive.gz`,
+SHA256`80ed91fd1520a1dd51aff44f17112c0456f4ef341460ad932721f561d7c38ae5`.
+The temporary inspection copy is removed; original archive is retained.
+
+The existing checkpoint catalog now pins that full save and its exact dungeon
+handoff; earlier partial saves still reject premature dungeon offers.78 focused
+checkpoint/party-fixture tests pass1.505s, plus lint/diff. Next use the existing
+earned-party-dungeon route for Normal60 Abyssal: this earned Wizard plus prepared
+class-appropriate Rare/Uncommon Fighter, Cleric and Rogue. Do not replay accepted
+Water or earlier Earth/Verdant. The Wizard's many incidental defensive kills
+remain a pacing limitation, not evidence of a clean normal story-level curve.
+Full Abyssal, later regions/raids and final1.10 remain unverified.
+
+## Previous retained progress — hunt61/70, bag-policy failure
 
 Native7513 / `earnedwaterregion0920e`, frozenaa71420e, ended exit1 after1.1h.
 Ordinary dead-save respawn and defended transit worked; no new hunt deaths.
