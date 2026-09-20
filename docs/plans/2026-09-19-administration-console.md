@@ -4,8 +4,9 @@ The cumulative batch shipped in **Alpha 1.9.17**; see the
 [verified release record](2026-09-19-release1-9-17-administration.md).
 The implementation notes below describe development-time evidence, not current
 deployment status. In particular, schema 14 is now deployed with a verified
-pre-upgrade backup. The safe live operator read-only check and final 1.10 release
-acceptance remain open; this delivery does not close the broader roadmap.
+pre-upgrade backup. The user found the history views and confirmed the live
+panel works on September20, accepting the operator read-only check. Final1.10
+release acceptance remains open; this does not close the broader roadmap.
 
 ## Implemented in the delivered batch
 
