@@ -2,6 +2,14 @@
 
 ## September20 checkpoint — raid roster delivered, Fire input correction
 
+Fire follow-up `fireraid0920c` started from clean source `b62ad5eb`, with both
+exposed-corner targeting and visible-prefix formation planning. It uses the same
+five legal level-70 role builds and original full-raid assertions, with zero
+retries. Launcher PID 2739241 / native session 87777; run directory
+`/tmp/eidolon-fire-raid-20260920-r3-ad8SIz/`. Luna monitors terminal outcome only.
+This is an active validation, not an accepted clear; do not start a concurrent
+GPU run or infer termination from a missing cross-agent session handle.
+
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database
 is ready. Five-to-ten-member desktop raid rosters fit above default chat; hosted
