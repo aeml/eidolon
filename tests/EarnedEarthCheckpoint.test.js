@@ -2,7 +2,7 @@ import { runInNewContext } from 'node:vm';
 import { earnedEarthTransferScript, restoreEarnedEarthCheckpoint } from './earnedEarthCheckpoint.js';
 
 function exercise(change = () => {}, occupied = false) {
-    const character = { class: 'Wizard', level: 30, xp: 7170, gold: 8539,
+    const character = { name: 'old-account', class: 'Wizard', level: 30, xp: 7170, gold: 8539,
         inventory: [{ id: 'earned-drop', stats: { wisdom: 3 } }], stash: [{ id: 'saved-drop' }],
         resources: { hp: 31, mana: 0 }, last_logout: '2026-09-14T05:58:33Z',
         quests: [{ id: 'chronicle_earth_borrowed_oath', accepted: true, completed: false, count: 46, max_count: 50 }] };
@@ -30,7 +30,7 @@ function exercise(change = () => {}, occupied = false) {
 test('copies the entire earned character without reconstructing inventory, resources or logout time', () => {
     const fixture = exercise();
     fixture.run();
-    expect(JSON.stringify(fixture.result().saved)).toBe(fixture.original);
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
     expect(fixture.result().writes).toBe(1);
 });
 

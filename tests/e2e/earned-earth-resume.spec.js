@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { restoreEarnedEarthCheckpoint } from '../earnedEarthCheckpoint.js';
+import { restoreEarnedEarthCheckpoint, readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { openIlyra, readChronicleChapter, EARTH_DUNGEON_CHAPTER } from './chronicle-earth-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
@@ -55,6 +55,10 @@ test('continue the exact earned Earth save through its remaining four kills and 
     await loginAndEnterWorld(page, credentials);
     expect((await readChronicleChapter(page, hunt)).completed).toBe(true);
     expect(await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER)).toMatchObject({ accepted: true, completed: false, count: 0 });
+    const earned = await page.evaluate(() => ({ level: window.game.player.level, xp: window.game.player.xp, gold: window.game.player.gold }));
+    await expect.poll(() => readSavedEarnedHandoff(credentials.username), { timeout: 30_000, intervals: [2000] })
+        .toEqual({ ...earned, correctSaveKey: true, huntCompleted: true, dungeonAccepted: true, dungeonCount: 0 });
+    console.log('[earned-saved-handoff]', JSON.stringify(earned));
     expect(failures, failures.join('\n')).toEqual([]);
     // Wrapper stops its own writer and retains a private full archive before cleanup.
     // This is readiness continuation, NOT a dungeon clear or Water acceptance.
