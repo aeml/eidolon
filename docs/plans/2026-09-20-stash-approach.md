@@ -1,5 +1,28 @@
 # West-side stash approach correction
 
+## Connected correction accepted — release 1.9.25
+
+Frozen `0a104720cad83d2314534ec042920ee0236207ad`, run
+`stashapproach0920d`, passed all three native desktop/portrait/landscape cases
+in 23.4 seconds, zero retries. One ordinary click/tap approaches and opens the
+stash within the unchanged five-unit range; closing works. No character grants
+or collision overrides. Log and screenshots are retained under
+`/tmp/eidolon-stash-approach-20260920-r4-vhiXBs/`; process 55442 exited zero and
+its owned services are gone. Desktop town and phone screenshots were inspected.
+Automated phone viewports do not replace the user-deferred physical-phone test.
+
+The preceding r3 run passed desktop but parked a separate disconnected character
+in each following approach. The two failures stopped in a chain at actor-width
+intervals, consistent with normal entity collision. Reusing one character and
+recalling normally between layouts passes without another gameplay change.
+That failed evidence remains under the r3 directory; no success is claimed for it.
+Full-town collision/map/stash/version checks (307), focused Go town/admin
+obstruction checks, and changed-file lint also passed. This accepts the storage
+path, not the unfinished earned Water campaign or the whole 1.10 goal.
+
+The immutable release candidate above is ready for publication. Deployment and
+independent public identity checks are not yet accepted.
+
 ## Revised correction — clear the complete town, not a partial scene
 
 The three-case native check onb0236b9e failed: desktop and portrait still stopped
