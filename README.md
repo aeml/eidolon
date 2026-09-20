@@ -39,12 +39,20 @@ This project demonstrates backend and systems engineering work in a realtime int
 
 - Realtime multiplayer action RPG gameplay with four player classes: Fighter, Rogue, Wizard, and Cleric.
 - Server-authoritative movement, combat, abilities, jumping, dungeon entry, and reward flow.
-- Four overworld realms plus town, and four instanced dungeons.
-- Persistent social and progression systems including parties, social statuses, friendships, stash, forge, quests, and trading house features.
+- Four elemental overworld realms and Lanternhold, with five instanced dungeons: Verdant Bastion Catacombs, Abyssal Well, Molten Core, Tempest Spire, and the Umbral Nexus.
+- Ilyra's Fourfold Chronicle uses explicit quest acceptance and reward conversations. The regional dungeons lead to four crystal raids with three-wave repair defenses, followed by the Dark Realm raid and its four-phase Dark King encounter. Daily contracts remain optional and separate.
+- Persistent parties, Group Finder, friendships, guilds and calendars, stash, forge, player trading, and the Trading House.
+- Duels, 1v1 and 2v2 arenas, ranked seasons, and optional overworld PvP.
+- A shared two-floor Lanternhold Casino with physical seating, slots, blackjack, Hold’em, roulette, and baccarat. Each floor has 32 slot machines and 14 tables; stairs switch between separate public and VIP views.
+- Public casino wagers use Gold; VIP wagers use EP and pay only EP. EP can purchase cosmetics, never player power, and cannot be exchanged back to Gold. Payment integration is not implemented.
+- Town health/mana recovery and stored Well Rested time, equipment appearances, configurable quest tracking, and responsive touch controls.
+- Role-gated Administration with online-player views and activity history.
 - Reconnect and session-resume flow with exponential backoff on the client and resume-token handling on the server.
 - Protobuf full/delta state streaming for entity replication.
 - Browser-side asset caching through a service worker.
 - Client and server test coverage in CI, with coverage reports published to GitHub Pages.
+
+These are implemented systems, not a claim that every campaign or raid route has completed final integration QA. See the [current delivery and remaining acceptance record](docs/plans/2026-09-14-final-integration-audit.md) for verified-live releases, outstanding encounter checks, and the deferred actual-phone party/dungeon check. Versioned player-facing patch notes are available from the login screen.
 
 ## Architecture
 
