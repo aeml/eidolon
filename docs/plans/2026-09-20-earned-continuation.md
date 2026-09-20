@@ -22,6 +22,18 @@ Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
 
 ### Next continuation prepared — Missing Ferry
 
+Guarded continuation queued September20: native45531, run`earnedwater0920a`,
+launcher/log `/tmp/eidolon-earned-water-20260920-MuBmtK/`. The script first
+requires corrected publishing CI35492191742 success, then independently checks
+exact public client/server4f39328b/Alpha1.9.22, database readiness, login label,
+cumulative notes and shipped party CSS/JS. Only then may gameplay start from
+frozen detached source29ef2862 in
+`/tmp/eidolon-earned-continuation-20260920-0VmRVz`. Luna watches terminal status;
+`WATER_TERMINAL_PHASE` distinguishes deployment/verification failure from actual
+gameplay, and `WATER_PROCESS_EXIT` confirms termination. Initial handle is live,
+but no deployment verification or Water gameplay result is claimed yet. Do not
+edit that worktree or launch competing native browser work while queued/running.
+
 The checksum-pinned level33 archive is now supported by the existing full-save
 transfer. It additionally requires completed Verdant and a fresh, unaccepted
 Missing Ferry offer before copying. Actual isolated Mongo restore, exact whole-
