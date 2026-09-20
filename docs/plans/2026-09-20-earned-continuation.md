@@ -5,6 +5,14 @@ Active: `earnedparty0920c`, clean3b163421, native63326,
 pre-dungeon level31 archive, Low, zero retries, full dungeon and claim checks.
 Do not overlap native browser runs or alter loaded files while it is active.
 
+Next-region preparation: detached commit733621eb in
+`/tmp/eidolon-earned-continuation-20260920-0VmRVz/` extends the existing hunt
+search to Water's authored Troll/Aqua Golem bands. Missing Ferry still searches
+western Earth; later Water hunts require an explicit ordinary town-departure
+callback, reused for recovery.26 focused target/travel tests pass in1.267s;
+lint/diff pass. No connected Water acceptance is claimed. Merge only after the
+active dungeon ends; checkpoint capture and actual regional travel remain next.
+
 `earnedparty0920b` is terminal exit1 after2.8minutes on cleanee9a1ddd.
 Native52518 and the log footer confirm termination; reports/results are retained
 in `/tmp/eidolon-earned-party-20260920-r2-XoHW0R/`, owned services are gone.
