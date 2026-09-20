@@ -47,5 +47,6 @@ export function raidPartyFixture(catalog, raidType, names) {
         return character;
     });
     return { raidType, chapterId: raid.RestoredQuest, nextChapterId: quests[index + 1]?.id || null,
+        priorChapterIds: quests.slice(0, index).map(quest => quest.id),
         boss: raid.Boss, repairTarget: raid.RepairTarget, characters };
 }

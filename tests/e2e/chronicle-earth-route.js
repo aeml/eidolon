@@ -48,7 +48,7 @@ export async function openIlyra(page) {
     await expect(page.locator('#quest-window')).toBeVisible();
 }
 
-async function acceptOfferedChapter(page, id) {
+export async function acceptOfferedChapter(page, id) {
     const quest = await readChronicleChapter(page, id);
     expect(quest?.accepted, `${id} must still be an unaccepted offer`).toBe(false);
     await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();

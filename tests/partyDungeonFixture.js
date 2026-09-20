@@ -2,12 +2,15 @@ export const PARTY_ROLES = ['Fighter', 'Cleric', 'Wizard', 'Rogue'];
 export function earnedPartyContinuationEnabled(env, playthrough, isRaid = false) {
     const flag = env.EIDOLON_E2E_EARNED_PARTY;
     if (flag === undefined || flag === '0') return false;
-    const level = { verdant_bastion_catacombs: 30, abyssal_well: 60,
+    const raidLevel = { earth_crystal_raid: 30, water_crystal_raid: 60,
+        fire_crystal_raid: 70, air_crystal_raid: 70, weekly_raid: 100 }[playthrough?.dungeonType];
+    const level = isRaid ? raidLevel : { verdant_bastion_catacombs: 30, abyssal_well: 60,
         molten_core: 70, tempest_spire: 70, umbral_nexus: 100 }[playthrough?.dungeonType];
-    if (flag !== '1' || isRaid || !level ||
-        playthrough.runLevel !== level || playthrough.difficulty !== 'normal' ||
+    const difficulty = isRaid && playthrough?.dungeonType === 'weekly_raid' ? 'mythic' : 'normal';
+    if (flag !== '1' || !level ||
+        playthrough.runLevel !== level || playthrough.difficulty !== difficulty ||
         env.EIDOLON_E2E_EARNED_RESUME !== '1' || !env.EIDOLON_E2E_EARNED_CHECKPOINT) {
-        throw new Error('Earned party continuation requires a private earned checkpoint and a Normal regional dungeon at its minimum entry level');
+        throw new Error('Earned party continuation requires a private earned checkpoint and the normal encounter entry selection');
     }
     return true;
 }

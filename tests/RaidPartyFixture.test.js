@@ -26,6 +26,8 @@ test('five independent geared roles start with an unfinished Vigil and no future
     const fixture = raidPartyFixture(catalog, raidType, names);
     expect(fixture.characters.map(c => c.class)).toEqual(RAID_PARTY_ROLES);
     expect(fixture.nextChapterId).toBe('next-vigil');
+    expect(fixture.priorChapterIds).toEqual(catalog.quests.slice(0, -2).map(quest => quest.id));
+    expect(fixture.priorChapterIds).not.toContain(fixture.chapterId);
     const ids = new Set();
     for (const c of fixture.characters) {
         expect(c.level).toBe(70);
@@ -82,6 +84,8 @@ test('finale preparation uses five legal level100 roles but never grants the Kin
     const fixture = raidPartyFixture(finaleCatalog(), 'weekly_raid', names);
     expect(fixture.nextChapterId).toBeNull();
     expect(fixture.boss).toBe('UmbraPrime');
+    expect(fixture.priorChapterIds).toEqual(finaleCatalog().quests.slice(0, -1).map(quest => quest.id));
+    expect(fixture.priorChapterIds).not.toContain(DARK_KING_RAID.RestoredQuest);
     for (const character of fixture.characters) {
         expect(character.level).toBe(100);
         expect(character.quests.at(-1)).toEqual({ id: DARK_KING_RAID.RestoredQuest, accepted: true, completed: false, count: 0 });

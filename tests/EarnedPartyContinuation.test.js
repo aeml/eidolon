@@ -18,6 +18,16 @@ test.each([['abyssal_well', 60], ['molten_core', 70], ['tempest_spire', 70], ['u
     expect(earnedPartyContinuationEnabled(env, { ...route, dungeonType, runLevel })).toBe(true);
 });
 
+test.each([['earth_crystal_raid', 30], ['water_crystal_raid', 60], ['fire_crystal_raid', 70],
+    ['air_crystal_raid', 70], ['weekly_raid', 100]])('earned %s requires its actual raid entry selection', (dungeonType, runLevel) => {
+    const encounter = { dungeonType, runLevel, difficulty: dungeonType === 'weekly_raid' ? 'mythic' : 'normal' };
+    expect(earnedPartyContinuationEnabled(env, encounter, true)).toBe(true);
+    expect(() => earnedPartyContinuationEnabled(env, encounter, false)).toThrow();
+    expect(() => earnedPartyContinuationEnabled(env, { ...encounter, runLevel: runLevel + 1 }, true)).toThrow();
+    expect(() => earnedPartyContinuationEnabled(env, { ...encounter, difficulty: 'heroic' }, true)).toThrow();
+    expect(() => earnedPartyContinuationEnabled({ ...env, EIDOLON_E2E_EARNED_CHECKPOINT: '' }, encounter, true)).toThrow();
+});
+
 test.each([
     [{ ...env, EIDOLON_E2E_EARNED_PARTY: 'yes' }, route, false],
     [{ ...env, EIDOLON_E2E_EARNED_RESUME: undefined }, route, false],

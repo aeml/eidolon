@@ -16,6 +16,24 @@ hint refresh, transition cleanup and encounter-timed Dark King opening. Login,
 client/server/container/deploy identities and patch notes advance together;
 prior notes remain intact. Do not call it live or trigger deployment browsers
 while the Fire native is running.1.9.25 remains the last verified production.
+The release batch is committed at72089aed;275 version/history checks pass11.085s,
+with scoped lint, shell syntax and diff checks. No push/deployment is pending.
+
+The existing five-role route now also accepts isolated `earned-party-raid`.
+It restores the checksum-pinned Wizard save rather than preparing that actor,
+requires every prior chapter from the validated server catalog in both client
+and saved state, and uses the ordinary Ilyra acceptance button for a still-new
+offer. Normal elemental entry levels30/60/70/70 and the Mythic100 finale are
+checked explicitly. Four other roles remain prepared and are labeled as such.
+Existing complete assault/three-wave repair or four-phase finale, individual
+manual reward, re-login and database assertions remain. Terminal finale saving
+correctly expects no next quest; it retains the existing epilogue check.
+The private archive cleanup includes this route. No Wizard resources, stats,
+inventory, earned receipts or logout timestamps are rewritten.57 focused
+continuation/fixture/cleanup/readiness checks pass; the six new readiness cases
+pass1.269s after correcting test-only syntax/environment issues. Scoped lint,
+shell syntax and diff pass. This closes driver plumbing, not earned raid
+acceptance: the latest actual earned checkpoint is still unfinished Molten.
 
 Fire `fireraid0920h`, session64215, frozen39d272a9 is terminal exit1 after10.5m.
 Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
