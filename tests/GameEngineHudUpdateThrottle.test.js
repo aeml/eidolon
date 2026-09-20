@@ -68,6 +68,31 @@ function createEngineHarness() {
 }
 
 describe('GameEngine render-time HUD throttling', () => {
+    test.each([false, true])('service range hint follows movement without another pointer event (mobile=%s)', isMobile => {
+        const engine = createEngineHarness();
+        engine.isMobile = isMobile;
+        engine.uiManager.updateDungeonEntranceHint = jest.fn();
+        engine.uiManager.clearDungeonEntranceHint = jest.fn();
+        engine.isInteractableEntity = jest.fn(() => true);
+        engine.hoveredEntity = { id: 'stash-1', constructor: { name: 'Stash' },
+            position: new THREE.Vector3(10, 0, 0) };
+        engine.refreshDungeonEntranceHint();
+        expect(engine.dungeonEntranceHint.inRange).toBe(false);
+
+        engine.player.position.x = 6;
+        engine.render(1);
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenLastCalledWith(expect.objectContaining({
+            inRange: true, statusLabel: 'Stash • In range'
+        }));
+
+        engine.player.position.x = 0;
+        engine.render(1);
+        expect(engine.dungeonEntranceHint.inRange).toBe(false);
+        engine.hoveredEntity = null;
+        engine.render(1);
+        expect(engine.uiManager.clearDungeonEntranceHint).toHaveBeenCalled();
+    });
+
     test('render does not spam stable stats/xp/world map updates every frame', () => {
         const engine = createEngineHarness();
 

@@ -922,6 +922,11 @@ class GameEngineRuntimeMethods {
         this.renderSystem.render();
 
         if (this.player) {
+            // A stationary pointer (or a released phone tap) does not produce
+            // another raycast when walking into service range. Keep the shown
+            // card current; its UI serializer suppresses unchanged DOM writes.
+            if (this.dungeonEntranceHint) this.refreshDungeonEntranceHint();
+
             // Throttle Minimap updates (every 3 frames)
             if (this.frameCount % 3 === 0) {
                 this.minimap.update(this.player, activeEntities);

@@ -1,6 +1,30 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — Alpha1.9.24 and retained Water continuation
+## Current delivery — 1.9.25 deploying, retained Water continuation queued
+
+Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 was pushed;
+CI35503417369 is running, monitored by Luna. This is not yet accepted live.
+It includes the corrected stash location outside the blacksmith footprint and
+the bounded administration rejection/outage follow-ups. Desktop, portrait and
+landscape one-click/tap stash approaches passed in23.4s; retained full-town
+collision evidence and screenshots are in the [stash report](2026-09-20-stash-approach.md).
+
+Native47339 is waiting for that exact CI and independent public verification,
+then resumes `earnedwaterregion0920c` from the retained level61/25-of-70 Golem
+save. It does not replay completed Water chapters. The
+[earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
+archive and bounds. No new Water/Abyssal clear is claimed.
+
+Next-batch local polish: the short stash screenshots exposed a service card
+remaining “Move closer” after approach, because hint updates depended on pointer
+raycasts. Refresh the already-visible card during rendering; the existing UI
+serializer still suppresses unchanged DOM writes. Both desktop/phone regressions
+failed before the correction; all43 HUD/hint/raycast checks pass after it (2.63s),
+plus lint/whitespace checks. No extra raycast, range change or new browser run.
+This change is not part of the immutable1.9.25 deployment; include its player-facing
+note with the next release batch, rather than creating another tiny hotfix now.
+
+## Last verified delivery — Alpha1.9.24
 
 Exactd1e707e3/Alpha1.9.24 is verified live. CI35500889856 passed all jobs in23m45s,
 ending September20 at09:19:12UTC. Public client/server identities, ready database,
@@ -10,11 +34,10 @@ see [expansion evidence](2026-09-20-casino-expansion.md).
 
 After that guard, native58053/run`earnedwaterregion0920b` ended exit1 after48.8s
 on frozen534da08b while opening storage, before new kills. Its actual saved
-level61/21946XP/51012Gold and25/70 Golem credit are unchanged. The normal stash
-centre approach crosses the relocated Trading House; see the
-[local correction and short-check plan](2026-09-20-stash-approach.md). Owned
-services are gone. Full Water/Abyssal and later campaign/raids remain open. Local
-administration admission/outage follow-ups at2ca90f7d are not deployed.
+level61/21946XP/51012Gold and25/70 Golem credit are unchanged. Full-town diagnosis
+found the former coffer inside the blacksmith footprint; the accepted correction
+and rejected initial approach-only attempt are retained in the stash report.
+Owned services are gone. Full Water/Abyssal and later campaign/raids remain open.
 
 ## Previous September20 checkpoint —1.9.23 and Water partial save
 
