@@ -1,5 +1,21 @@
 # Earned campaign continuation with a real party
 
+## Remaining Water region queued behind1.9.23 delivery
+
+Parent15946 is live, waiting for CI35494967147 and independent public acceptance
+of1eb18f59/Alpha1.9.23. Launcher/log directory:
+`/tmp/eidolon-water-region-20260920-D2U8te/`. Source is frozen clean1eb18f59 in
+its `source/` worktree; do not edit or overlap native browser work. Luna monitors
+the guarded sequence. `WATER_TERMINAL_PHASE`/`WATER_PROCESS_EXIT` distinguish
+deployment/public/source failure from the later `earned_water_region` phase.
+
+After those gates, `earnedwaterregion0920a` uses the accepted level43 full save
+below for the shelter ledger,60 Trolls,8 Pearls, three echo-pool/bell discoveries,
+70 Aqua Golems and actual level60 Abyssal readiness. The original two-hour ceiling,
+zero retries, normal recovery/training and manual claims remain. A below-gate
+result must preserve actual progress for pacing review, not fabricate XP or
+mandate dailies. The region is queued, not accepted; do not replay Missing Ferry.
+
 ## Missing Ferry accepted — saved level43 investigation handoff
 
 `earnedwater0920b`, clean5c42b4dd, native40858 finished **exit0/PASS** in2.2m.

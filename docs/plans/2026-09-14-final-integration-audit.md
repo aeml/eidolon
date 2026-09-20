@@ -2,6 +2,14 @@
 
 ## September20 checkpoint —1.9.22 delivered, Water continuation started
 
+Alpha1.9.23 candidate1eb18f59 is now pushed: CI35494967147 is running, watched
+by Luna. The rejection-audit recovery fix has focused restart/race evidence;
+live delivery is not yet accepted. Water-region parent15946 is queued behind
+that exact release's CI/public verification, from the accepted level43 save.
+Frozen source `/tmp/eidolon-water-region-20260920-D2U8te/source` must remain
+unchanged; do not launch competing native browser work. See the linked earned
+record for guards and full remaining-region scope.
+
 Alpha1.9.22 at4f39328b is accepted: CI35492191742 passed all jobs in21m44s,
 ending06:00:17UTC; independent public verification confirms matching identities,
 database readiness, login/notes and the shipped four-member party layout.
