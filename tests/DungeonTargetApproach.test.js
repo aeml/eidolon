@@ -36,3 +36,23 @@ test('party approaches stop before the body and reject walls or boxed-in positio
     ])).toBeNull();
     expect(dungeonOccludedTargetStep(player, target, null)).toBeNull();
 });
+
+test('recorded Tidestar formation can leave through a clear diagonal without crossing a teammate', () => {
+    const player = { x: 89999.86216551554, z: 19280.427330579685, radius: 1.25 };
+    const target = { x: 90080.87198462577, z: 19276.1464836636, radius: 1.5, range: 4.3 };
+    // Saved positions from waterraid0919d: direct, both lateral and backward
+    // probes are covered, but this is not a physically boxed-in player.
+    const teammates = [
+        { x: 89995.8884127942, z: 19282.60540432817, radius: 1.25 },
+        { x: 90003.69873016831, z: 19282.688122934334, radius: 1.25 },
+        { x: 89999.72884193694, z: 19275.85162674165, radius: 1.25 },
+        { x: 89999.4682351088, z: 19284.420662512977, radius: 1.25 }
+    ];
+    const step = dungeonOccludedTargetStep(player, target, () => true, teammates);
+    expect(step).not.toBeNull();
+    expect(Math.hypot(step.dx, step.dz)).toBeCloseTo(3.5);
+    expect(partyPathAvoidsActors(player, step, [...teammates, target])).toBe(true);
+    expect(Math.hypot(target.x - player.x - step.dx, target.z - player.z - step.dz))
+        .toBeLessThan(Math.hypot(target.x - player.x, target.z - player.z));
+    expect(dungeonOccludedTargetStep(player, target, () => false, teammates)).toBeNull();
+});

@@ -809,7 +809,9 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 // Retain full receipts for inspection without printing hundreds
                 // of combat events per player into every console/log read.
                 const artifact = `party-clear-result-${index}-${actor.className}`;
-                await testInfo.attach(artifact, { body: JSON.stringify(result), contentType: 'application/json' });
+                // Include the whitelisted spatial/room snapshot in the artifact
+                // so a formation stall need not require restoring the private DB.
+                await testInfo.attach(artifact, { body: JSON.stringify({ ...s, ...result }), contentType: 'application/json' });
                 console.log('[party-clear-result]', JSON.stringify({ ...result, index, artifact,
                     quest: s.quest && { id: s.quest.id, count: s.quest.count,
                         maxCount: s.quest.maxCount, completed: s.quest.completed },

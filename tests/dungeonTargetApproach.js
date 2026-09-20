@@ -28,6 +28,13 @@ export function dungeonOccludedTargetStep(player, target, canStep, actors = []) 
     }
     candidates.push({ dx: -nz * 3.5, dz: nx * 3.5 }, { dx: nz * 3.5, dz: -nx * 3.5 },
         { dx: -nx * 3.5, dz: -nz * 3.5 });
+    // Four followers can cover the cardinal probes without enclosing the
+    // leader. Try the remaining short diagonals through the same whole-path
+    // body, wall and encounter checks; never treat a blocked probe as movement.
+    for (const angle of [Math.PI / 4, -Math.PI / 4, 3 * Math.PI / 4, -3 * Math.PI / 4]) {
+        candidates.push({ dx: (nx * Math.cos(angle) - nz * Math.sin(angle)) * 3.5,
+            dz: (nz * Math.cos(angle) + nx * Math.sin(angle)) * 3.5 });
+    }
     const bodies = [...actors, target];
     return candidates.find(step => partyPathAvoidsActors(player, step, bodies, radius) && canStep(step)) || null;
 }

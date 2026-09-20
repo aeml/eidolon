@@ -319,3 +319,15 @@ pointer recovery wait/diagnostics and compact console/full receipt attachments.
 Luna `/root/watch_tidestar_0919d` owns completion/failure monitoring. Do not
 duplicate polling or start overlapping browser/deployment work. Preserve its
 attachments before any subsequent Playwright run. No full Tidestar result yet.
+
+`waterraid0919d` subsequently **failed after26.2minutes**, zero retries: guardian
+defeated, all members alive, repair wave1 started, then the last AquaGolem went
+60seconds without damage. Luna's monitor and launcher are terminal; do not poll
+them. Saved positions reproduced a QA approach-planner blind spot: all four
+cardinal probes were occupied by teammates while a short diagonal remained
+walkable. Added diagonal probes under unchanged body/wall/encounter validation;
+the new regression failed before correction and all68 focused checks pass now.
+Artifacts are preserved; full result attachments now also retain spatial/room
+snapshots to avoid needing another private DB inspection for final coordinates.
+See [failure evidence and bounded correction](2026-09-20-tidestar-formation-approach.md).
+No subsequent browser run or completed Tidestar acceptance yet.
