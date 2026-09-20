@@ -13,6 +13,8 @@ test.each([
     ['earned-party-dungeon', 'true', '', 0, true],
     ['earned-water-resume', 'true', '', 0, true],
     ['earned-water-resume', 'false', '', 0, false],
+    ['earned-water-region', 'true', '', 0, true],
+    ['earned-water-region', 'false', '', 0, false],
     ['earned-earth-resume', 'false', '', 0, false],
     ['party-raid', 'false', '', 0, false],
     ['smoke', 'true', '', 0, false],

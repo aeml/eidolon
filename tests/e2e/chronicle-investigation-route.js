@@ -34,6 +34,10 @@ async function walkTo(page, x, z, reading = null) {
     throw new Error(`Ordinary investigation travel did not reach ${x}, ${z}: ${JSON.stringify(await readPlayerState(page))}`);
 }
 
+export async function walkInvestigationWaypoints(page, waypoints) {
+    for (const [x, z] of waypoints) await walkTo(page, x, z);
+}
+
 // Ordinary ground/jump clicks, prop clicks and explicit Ilyra turn-ins only. No
 // teleport-to-site, quest-state writes, credit messages or invulnerability.
 export async function earnEarthInvestigation(page, id, openIlyra, capture, options) {
@@ -50,7 +54,7 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);
     if (waypoints) {
-        for (const [x, z] of waypoints) await walkTo(page, x, z);
+        await walkInvestigationWaypoints(page, waypoints);
     } else {
         expect(chapter.realm, 'Non-Earth routes require explicit ordinary travel').toBe('earth');
         await walkTo(page, 80, 200);

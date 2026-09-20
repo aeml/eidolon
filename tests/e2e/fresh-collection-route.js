@@ -16,8 +16,9 @@ import { loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHos
 
 const collection = 'chronicle_02_seeds_first_grove';
 const dungeonChapter = 'chronicle_03_roots_remember';
-const seedsInBag = page => page.evaluate(() => window.game.player.inventory.reduce((sum, item) =>
-    sum + (item?.name === 'Verdant Memory Seed' ? item.stack || 1 : 0), 0));
+export const collectionItemsInBag = (page, name) => page.evaluate(name => window.game.player.inventory.reduce((sum, item) =>
+    sum + (item?.name === name ? item.stack || 1 : 0), 0), name);
+const seedsInBag = page => collectionItemsInBag(page, 'Verdant Memory Seed');
 
 const equipmentSnapshot = page => page.evaluate(() => {
     const player = window.game.player;
@@ -31,7 +32,12 @@ const equipmentSnapshot = page => page.evaluate(() => {
 
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
-async function earnFreshSeeds(page, credentials, { findTarget, leaveTown, captureReady, prepare }) {
+export async function earnEarnedCollection(page, credentials, {
+    findTarget, leaveTown, captureReady, prepare, chapterId = collection,
+    itemName = 'Verdant Memory Seed', nearbyType = 'Skeleton'
+}) {
+    const collection = chapterId;
+    const seedsInBag = page => collectionItemsInBag(page, itemName);
     const started = Date.now();
     const economyBefore = await equipmentSnapshot(page);
     await openIlyra(page);
@@ -90,7 +96,7 @@ async function earnFreshSeeds(page, credentials, { findTarget, leaveTown, captur
             expect(afterDefense, 'Target remains observable after defensive input').not.toBeNull();
             if (afterDefense.state === 'DEAD' || afterDefense.hp <= 0) { defeated = afterDefense; break; }
             const nearby = await reacquireDisengagedCollectionTarget(page, target,
-                () => projectNearestHostile(page, 'Skeleton'));
+                () => projectNearestHostile(page, nearbyType));
             const previousAfterReacquisition = await readCollectionTarget(page, target.id);
             expect(previousAfterReacquisition, 'Target remains observable across reacquisition').not.toBeNull();
             if (previousAfterReacquisition.state === 'DEAD' || previousAfterReacquisition.hp <= 0) {
@@ -127,7 +133,7 @@ async function earnFreshSeeds(page, credentials, { findTarget, leaveTown, captur
         }
         await page.waitForTimeout(900);
         console.log(`[fresh-collection] ${JSON.stringify({ observedTargetDeaths, deaths,
-            seeds: (await readChronicleChapter(page, collection)).count,
+            collection, items: (await readChronicleChapter(page, collection)).count,
             level: (await readPlayerState(page)).level })}`);
     }
     expect((await readChronicleChapter(page, collection)).count).toBe(required);
@@ -156,7 +162,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, {
 }) {
     const { leaveTown } = options;
     const { started, previousAutoLoot, seedsBefore, required, observedTargetDeaths, deaths, reward } =
-        await runPhase('seeds', () => earnFreshSeeds(page, credentials, options));
+        await runPhase('seeds', () => earnEarnedCollection(page, credentials, options));
     await runPhase('imps', () => earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink', { leaveTown }));
     await runPhase('scars', () => earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
         { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true }));

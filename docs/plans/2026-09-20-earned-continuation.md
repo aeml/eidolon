@@ -50,6 +50,31 @@ route is prepared, **not yet run or accepted**. Use the archive path above;
 do not overlap with the current Fire raid or deployment browser work. It is
 not a full Water-region or four-earned-character pacing claim.
 
+### Remaining Water region route prepared independently
+
+Main-worktree preparation now adds `earned-water-region`, starting only after
+Missing Ferry is completed in a checksum-pinned earned save. It uses the existing
+ordinary realm waypoints, investigation reading/combat and manual Ilyra replies:
+shelter ledger →60 Trolls →8 Moon-Tide Pearls →three echo-pool/bell discoveries
+→70 Aqua Golems →accepted level60 Abyssal Well chapter. Existing earned equipment
+comparison/training, recovery and inventory management are reused. The collection
+driver now takes explicit quest/item/enemy parameters; Earth defaults, death and
+encounter bounds, server credit and manual item consumption remain unchanged.
+
+The final route checks all five completed chapters after relogin and in actual
+Mongo, plus XP/Gold and an uncompleted dungeon handoff. A below-level60 result
+must retain the actual save and inform pacing review; it is not permission for
+daily substitution, fabricated XP or an easier dungeon gate. Additional ordinary
+leveling time may need measurement before drawing a balance conclusion.
+
+62 focused collection/recovery/cleanup checks pass in1.123s, lint/Bash/diff and
+Playwright discovery pass. A direct Node import/read check confirms exact Pearl
+vs Seed inventory counting without mutation. These are preparation checks, not
+connected Water acceptance. The queued Missing Ferry worktree remains frozen and
+unchanged. After it succeeds, inspect its new full archive, pin the actual SHA
+and saved progress in the checkpoint catalog, then run this continuation; the
+older level33 archive intentionally fails its completed-Ferry precondition.
+
 Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
 four-player desktop panel has scrolled its header/tank row out of view while
 lower support controls remain visible. The existing HTML-only party layout
