@@ -101,6 +101,25 @@ export const earnedEarthCheckpoints = Object.freeze([
         continuationChapters: [
             { id: 'chronicle_fire_cold_kiln', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 250, granted_xp: 5956 },
             { id: 'chronicle_fire_unending_war', accepted: true, completed: false, count: 7, max_count: 35, granted_gold: 0, granted_xp: 0 }
+        ] },
+    { sha: '63be9a1f66da16dede4d38d168021bb989898d6809376c6601a64a53f7a10c7f',
+        level: 100, xp: 245125, gold: 209955, count: 50, completed: true,
+        resources: { version: 1, health: 4645, mana: 3251, dead: false },
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: true, count: 70, max_count: 70, granted_gold: 550, granted_xp: 54750 }
+        ],
+        waterDungeon: { id: 'chronicle_05_drowned_name', accepted: true, completed: true, count: 1,
+            max_count: 1, granted_gold: 600, granted_xp: 43562 },
+        continuationChapters: [
+            { id: 'chronicle_fire_cold_kiln', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 250, granted_xp: 5956 },
+            { id: 'chronicle_fire_unending_war', accepted: true, completed: true, count: 35, max_count: 35, granted_gold: 750, granted_xp: 0, granted_resonance_xp: 102750 },
+            { id: 'chronicle_06_ash_refuses_cool', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 500, granted_xp: 0, granted_resonance_xp: 35738 },
+            { id: 'chronicle_fire_obedient_ember', accepted: true, completed: false, count: 1, max_count: 3, investigation_mask: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);
 
@@ -143,7 +162,8 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
         for (const expected of chapters) {
             const matches = character.quests.filter(q => q.id === expected.id);
             if (matches.length !== 1 || Object.entries(expected).some(([key, value]) =>
-                (key.startsWith('granted_') ? (matches[0][key] || 0) : matches[0][key]) !== value))
+                (key === 'investigation_mask' ? Number(matches[0][key] || 0) :
+                    key.startsWith('granted_') ? (matches[0][key] || 0) : matches[0][key]) !== value))
                 throw Error('Unexpected earned Water continuation');
         }
         if (chapters.length && ${!checkpoint.waterDungeon} && character.quests.some(q => q.id === 'chronicle_05_drowned_name'))

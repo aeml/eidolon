@@ -44,6 +44,14 @@ report. Fixed waypoint travel now invokes the same bounded defensive combat as
 target search.120 focused tests pass; continue the pinned save through normal
 respawn. The earned continuation record above owns this failure and next run.
 
+That defended Fire continuation then completed the35-kill hunt and8-item
+collection with correct level100 Gold/Resonance claims. It stopped at the final
+investigation's missing QA combat callback, not an unsuccessful anchor fight.
+Actual pinned save100/245125XP/209955Gold retains ash evidence1/3 and those
+rewards. The existing anchor helper is now shared by both routes;105 focused
+checks pass. Next finish the retained investigation and Molten handoff, without
+repeating completed content. No Fire dungeon or raid completion is implied.
+
 Next-batch local polish: the short stash screenshots exposed a service card
 remaining “Move closer” after approach, because hint updates depended on pointer
 raycasts. Refresh the already-visible card during rendering; the existing UI

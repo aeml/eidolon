@@ -1,6 +1,33 @@
 # Earned campaign continuation with a real party
 
-## Current Fire continuation — retained kiln and seven hunt kills
+## Current Fire continuation — hunt and collection complete, anchor next
+
+`earnedfire0920b`, native28299, frozen8e120dd4, ended exit1 after1.5h per the
+Playwright footer (the watcher duration estimate was lower). The defended travel
+passed the earlier failure, the remaining hunt35/35 and Cinderheart collection8/8
+were manually claimed, and the cold ash was discovered. It stopped because the
+new regional route had not wired the already-existing command-anchor combat
+helper into `defeatSite`. This is a QA connection omission, not a failed anchor
+fight. Log `/tmp/eidolon-earned-fire-20260920-r2-Th6NPU/run.log` and footer agree.
+
+Independent isolated restore confirms Wizard100/245125XP/209955Gold, alive with
+4645HP/3251MP. Hunt paid750Gold/102750ResonanceXP; ore paid500Gold/35738ResonanceXP,
+both zero normalXP. Ember investigation is accepted1/3, mask1, unclaimed. Full
+archive `/tmp/eidolon-party-checkpoint-earnedfire0920b-xtEySf/save.archive.gz`,
+SHA256`63be9a1f66da16dede4d38d168021bb989898d6809376c6601a64a53f7a10c7f`.
+Owned services and temporary inspection copy removed; original retained. The
+catalog pins cap receipts and the exact BSON evidence mask (conversion checked
+against actual Mongo), without inventing the anchor, ember or Molten handoff.
+
+The prepared investigation's existing240s normal-input anchor helper is extracted
+and reused by both routes. Retained evidence skips already earned sites; new
+anchor input still requires an observed death and ordered mask1→3. If ordinary
+travel defense already earned its server credit, that is explicitly retained,
+not relabeled as a newly observed kill.105 focused tests pass1.509s, lint/diff
+pass. Resume only the unfinished investigation and handoff; do not repeat the
+completed hunt/collection or preceding regions/dungeons.
+
+## Previous Fire continuation — retained kiln and seven hunt kills
 
 `earnedfire0920a`, native46309, frozen117c0b5a, ended exit1 after15.4m:
 `/tmp/eidolon-earned-fire-20260920-r1-CE2hv7/run.log`. The failure was the15s
@@ -27,10 +54,10 @@ stale source assertions were updated for the existing hunt search/deadline and
 new travel wrapper. This is QA input correction, not a gameplay balance change.
 Next resume this seven-kill save, not the completed kiln or prior dungeons.
 
-Corrected continuation `earnedfire0920b` is running in native28299, frozen clean
+Corrected continuation `earnedfire0920b` launched in native28299, frozen clean
 8e120dd4; launcher/log `/tmp/eidolon-earned-fire-20260920-r2-Th6NPU/`.
 Prior owned cleanup and idle deployment browser queue checked; Luna monitors
-terminal-only. No result yet; no gameplay or death snapshot was overwritten.
+terminal-only. Its terminal result is above; no gameplay or death snapshot was overwritten.
 
 ## Earned Abyssal party clear accepted — next: Fire story
 

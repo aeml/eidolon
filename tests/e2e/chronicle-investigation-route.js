@@ -82,7 +82,14 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         await travelTo(125, 200);
         if (chapter.sites[0].z < 100) await travelTo(145, 80);
     }
-    for (const site of chapter.sites) {
+    for (const [siteIndex, site] of chapter.sites.entries()) {
+        const recorded = await page.evaluate(({ id, bit }) =>
+            Boolean((window.game.player.quests.find(q => q.id === id)?.investigationMask || 0) & bit),
+        { id, bit: 1 << siteIndex });
+        if (recorded) {
+            console.log('[investigation-retained]', JSON.stringify({ chapter: id, site: site.id }));
+            continue;
+        }
         if (site.kind === 'combat') {
             expect(defeatSite, 'Combat evidence needs ordinary combat, never inspection credit').toBeTruthy();
             await travelTo(site.x + 18, site.z + 18);

@@ -199,6 +199,31 @@ test('retains the saved Fire kiln reward, seven kills and actual transit death',
     expect(fixture.result().writes).toBe(1);
 });
 
+function fireAnchorReadiness(character) {
+    completedAbyssal(character);
+    const checkpoint = earnedEarthCheckpoints[12];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+        resources: { ...checkpoint.resources } });
+    character.quests.pop();
+    character.quests.push(...checkpoint.continuationChapters.map(q => ({ ...q })));
+}
+
+test('retains completed Fire hunt/collection Resonance rewards and only the discovered ash', () => {
+    const fixture = exercise(fireAnchorReadiness, false, earnedEarthCheckpoints[12]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-1).investigation_mask = 3; }, p => { p.quests.at(-1).count = 2; },
+    p => { p.quests.at(-2).granted_resonance_xp = 0; }, p => { p.quests.at(-3).granted_xp = 102750; }
+])('rejects premature anchor credit or altered cap rewards', change => {
+    const fixture = exercise(p => { fireAnchorReadiness(p); change(p); }, false, earnedEarthCheckpoints[12]);
+    expect(fixture.run).toThrow(/earned/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.resources.health = 4000; }, p => { p.resources.dead = false; },
     p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },

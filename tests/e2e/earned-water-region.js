@@ -14,6 +14,8 @@ import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { setAutoLootThroughSettings } from './helpers.js';
 import { waterChapterContinuation } from '../waterRegionContinuation.js';
 import { earnedRegionRoute } from '../earnedRegionRoutes.js';
+import { defeatCommandAnchor } from './chronicle-command-anchor.js';
+import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 
 // Continues after an actually earned Missing Ferry turn-in. No registration,
 // fixture grants or prerequisite rewriting here; the caller owns its save.
@@ -39,7 +41,12 @@ export async function earnRegionToReadiness(page, credentials, realm, { step = (
     };
     const investigate = id => chapter(id, options => earnInvestigation(page, id, openIlyra, capture, {
         ...options, waypoints, beforeInspect: site => clearFreshInvestigationApproach(page, site),
-        inspectWithKeyboard: true, defendTravel: true
+        inspectWithKeyboard: true, defendTravel: true,
+        defeatSite: async (site, chapter) => {
+            expect(site.id, 'Every authored combat site needs its actual encounter driver').toBe('command_anchor');
+            const defend = await createEarnedWizardDefense(page, { allowJumpFallback: true, useCrowdControl: true });
+            await defeatCommandAnchor(page, site, chapter, defend);
+        }
     }));
     const hunt = id => chapter(id, options => earnFreshStoryHunt(page, credentials, id, {
         ...options, leaveTown
