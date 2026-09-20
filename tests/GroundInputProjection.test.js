@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { planVisibleGroundStepInPage, projectGroundOffsetInPage } from './groundInputProjection.js';
+import { gatherPartyFormation, partyFormationStep, partyPathAvoidsActors } from './partyDungeonControls.js';
 
 beforeEach(() => {
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
@@ -66,4 +67,38 @@ test('hidden ground, invalid vectors and sub-unit steps cannot become movement i
     expect(planVisibleGroundStepInPage(null)).toBeNull();
     document.elementFromPoint = () => ({ tagName: 'BUTTON' });
     expect(planVisibleGroundStepInPage({ dx: 12, dz: 0 })).toBeNull();
+});
+
+test('recorded Verdant gathering boundary permits sub-unit goals with strict arrival verification', async () => {
+    const states = [
+        { x: 19999.897400582067, z: 19779.982520009802 },
+        { x: 19995.950811999388, z: 19783.11167086225 },
+        { x: 20003.646606292834, z: 19783.02929056265 },
+        { x: 19999.86833984285, z: 19785.349676195005 }
+    ];
+    const previous = { x: 19999.83518863292, z: 19792.883932382403 };
+    let clock = 0, moves = 0;
+    await gatherPartyFormation({ now: () => clock, read: async () => {
+        clock += 1000;
+        return states.map(state => ({ ...state }));
+    }, plan: async (index, state, anchor, spacing) => {
+        const bodies = states.filter((_, member) => member !== index);
+        const step = partyFormationStep(state, anchor, previous,
+            (candidate, from) => partyPathAvoidsActors(from, candidate, bodies), spacing,
+            [Math.PI / 3, -Math.PI / 3, 0][index - 1], bodies);
+        window.game.player.position.set(state.x, .5, state.z);
+        const camera = window.game.renderSystem.camera;
+        camera.position.set(state.x, 40, state.z + 40);
+        camera.lookAt(state.x, 0, state.z);
+        camera.updateMatrixWorld(true);
+        return planVisibleGroundStepInPage(step, { minimumDistance: .25 });
+    }, move: async (index, step) => {
+        expect(Math.hypot(step.dx, step.dz)).toBeGreaterThan(.25);
+        expect(Math.hypot(step.dx, step.dz)).toBeLessThan(1);
+        states[index].x += step.dx;
+        states[index].z += step.dz;
+        moves++;
+    } });
+    expect(moves).toBe(2);
+    for (const state of states.slice(1)) expect(Math.hypot(state.x - states[0].x, state.z - states[0].z)).toBeLessThan(5);
 });

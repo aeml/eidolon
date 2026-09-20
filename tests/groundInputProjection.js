@@ -28,9 +28,9 @@ export function projectGroundOffsetInPage({ deltaX, deltaZ, allowScaling = true 
 // Planning only: choose a visible prefix before the caller constructs its
 // strict arrival contract. Execution must still recheck the chosen whole path;
 // never silently shrink a destination after movement has already been planned.
-export function planVisibleGroundStepInPage(step) {
-    if (!step || ![step.dx, step.dz].every(Number.isFinite)) return null;
+export function planVisibleGroundStepInPage(step, { minimumDistance = 1 } = {}) {
+    if (!step || ![step.dx, step.dz, minimumDistance].every(Number.isFinite) || minimumDistance <= 0) return null;
     const point = projectGroundOffsetInPage({ deltaX: step.dx, deltaZ: step.dz });
-    if (!point?.canvas || Math.hypot(step.dx, step.dz) * point.scale < 1) return null;
+    if (!point?.canvas || Math.hypot(step.dx, step.dz) * point.scale < minimumDistance) return null;
     return { dx: step.dx * point.scale, dz: step.dz * point.scale };
 }

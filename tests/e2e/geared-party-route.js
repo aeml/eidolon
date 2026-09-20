@@ -614,7 +614,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                             // HUD-covered ground is not a usable click. Plan a
                             // visible prefix first, then validate that exact
                             // segment and its new arrival through normal input.
-                            step = planVisibleGroundStepInPage(step);
+                            // The arrival contract below verifies small final
+                            // steps too; a one-unit projection cutoff otherwise
+                            // strands followers just outside the five-unit ring.
+                            step = planVisibleGroundStepInPage(step, { minimumDistance: .25 });
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
                                 arrival: partyFormationArrival(p.position, step, anchor.instance) };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,

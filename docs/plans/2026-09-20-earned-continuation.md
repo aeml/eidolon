@@ -1,9 +1,24 @@
 # Earned campaign continuation with a real party
 
-Current run: `earnedparty0920b`, clean sourceee9a1ddd, native52518, directory
-`/tmp/eidolon-earned-party-20260920-r2-XoHW0R/`, monitored by Luna. Uses the
-verified level31 archive below, Low graphics and zero retries. Do not overlap
-native browser work or change loaded files. Full dungeon/claim checks remain.
+`earnedparty0920b` is terminal exit1 after2.8minutes on cleanee9a1ddd.
+Native52518 and the log footer confirm termination; reports/results are retained
+in `/tmp/eidolon-earned-party-20260920-r2-XoHW0R/`, owned services are gone.
+The actual saved-handoff check passed at31/12448XP/9047Gold, and all four entered
+the same dungeon. Initial combat passed with everyone alive; a formation check
+stopped traversal before the next pull. No full clear or claim is accepted.
+
+The recorded Cleric/Rogue positions were just beyond the five-unit gathering
+boundary. The planner offered valid final steps shorter than one unit, but the
+new visible-prefix filter rejected them. A focused reproduction using those
+exact coordinates, actor collision checks and real projection failed before the
+fix. The strict-arrival caller now admits steps down to its0.25unit tolerance;
+ordinary displacement-only callers retain the one-unit minimum. The original
+five-unit gathering limit,15second deadline and precise arrival checks remain.
+The reproduction and81 related tests pass in0.881s; lint/diff pass.
+Use the verified pre-dungeon level31 checkpoint for the corrected route; the
+failed partial dungeon is not claimed as a successful or resumable clear.
+Its private archive is `/tmp/eidolon-party-checkpoint-earnedparty0920b-d4iF9Q/save.archive.gz`,
+SHA256`d2354439975cc985bcc0cf83be239b7888d2cfdef2ccd1a4186392f096c0478b`.
 
 ## September20 saved-read correction
 
