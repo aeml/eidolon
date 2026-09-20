@@ -2,14 +2,15 @@ import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity, readPlayerState } from './helpers.js';
 import { walkChronicleByTouch } from './chronicle-phone-inputs.js';
 
+test.use({ trace: 'off', video: 'off', screenshot: 'off' });
+
 for (const mode of ['desktop', 'portrait', 'landscape']) {
     test.describe(mode, () => {
         const phone = mode !== 'desktop';
         test.use({ viewport: mode === 'portrait' ? { width: 390, height: 844 }
             : mode === 'landscape' ? { width: 844, height: 390 } : { width: 1280, height: 720 },
         hasTouch: phone, isMobile: phone,
-        ...(phone ? { userAgent: devices['Pixel 7'].userAgent } : {}),
-        trace: 'off', video: 'off', screenshot: 'off' });
+        ...(phone ? { userAgent: devices['Pixel 7'].userAgent } : {}) });
         test('one stash interaction walks to its exposed face and opens storage', async ({ page, baseURL }, testInfo) => {
             test.setTimeout(120_000);
             const credentials = credentialsFromEnvironment();

@@ -32,3 +32,17 @@ check is prepared: one actual click/tap from outside interaction range, normal
 automatic approach, visible storage, close, no grants or direct UI toggles.
 This connected check has not passed yet. Phone joystick travel only brings the
 west-side chest on screen; it is not counted as a physical-phone user result.
+
+The initial short-check launcher stopped before gameplay: first its runtime
+preparation guard caught a missing manifest while preparation was still running;
+after preparation completed, Playwright rejected trace/video/screenshot options
+inside a describe group. Both logs are retained under
+`/tmp/eidolon-stash-approach-20260920-IvwZcn/`; owned services are gone. Recording
+options are now file-level and three-case discovery passes. No gameplay result
+or repeated Water hunt is claimed from those setup failures.
+
+Alpha1.9.25 is locally packaged with additive stash/admin-history patch notes
+and synchronized login, package/lock, README, manifest, server/container/deploy
+and CI identities. The release also includes the local bounded administration
+rejection/outage follow-ups. Publication waits for the corrected short native
+check. Live remains verified1.9.24; full1.10 integration is still open.
