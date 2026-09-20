@@ -86,7 +86,7 @@ func TestAdminTeleportCanonicalObstructionsAndNonfiniteLandings(t *testing.T) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	for _, plan := range []AdminTeleportPlan{
-		{X: -28, Z: 193},   // Current stash, not the old asset position.
+		{X: -16, Z: 193},   // Current stash, not the old asset position.
 		{X: -22, Z: 185},   // Rotated Trading House.
 		{X: 0, Z: 178.35},  // Closed casino facade door.
 		{X: 800, Z: 200},   // Dungeon entrance circle.

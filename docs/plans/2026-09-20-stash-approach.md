@@ -1,5 +1,34 @@
 # West-side stash approach correction
 
+## Revised correction — clear the complete town, not a partial scene
+
+The three-case native check onb0236b9e failed: desktop and portrait still stopped
+outside storage range, and landscape could not expose the target at its approach
+position. Reports/log are retained under
+`/tmp/eidolon-stash-approach-20260920-r2-WCMu7v/`, native87856 exit1. No publication
+of1.9.25 occurred. All owned services are gone.
+
+The initial collision test omitted the blacksmith at(-30,200). Its actual
+generated footprint contains both the stash centre(-28,193) and the proposed
+front(-28,196), explaining the connected blocker atX-21.262. The approach-only
+helper is discarded; ordinary interaction/chase behavior is restored.
+
+The chest now sits at(-16,193), in the clear gap beside the Trading House and
+east of the blacksmith, still west of the casino door. Server spawn, local
+fallback/recovery, map markers and administrator obstruction expectations agree.
+The server's generated service-collider templates already use live entity
+transforms, so no geometry snapshot rewrite is necessary for this translation.
+
+The regression now runs the actual town `loadBuildings` builder, including the
+blacksmith, vendor, casino facade and camps, plus the server-owned Trading House
+and coffer. It proves the former centre/front blocked, an enclosing2.2m coffer
+circle clear at the new location, and full-size walking paths from town/phone
+approaches into the unchanged5m interaction range.307 focused collision, map,
+stash-driver and version/history tests pass2.597s. The native follow-up is still
+required; no connected pass is claimed from the unit model.
+
+## Initial approach-only attempt — superseded by the full-scene result
+
 Local correction for the next release; live1.9.24 delivery remains accepted,
 but this connected failure reopens the stash approach path.
 

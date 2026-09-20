@@ -28,7 +28,7 @@ describe('version presentation', () => {
         expect(start).toBeGreaterThanOrEqual(0);
         expect(start).toBeLessThan(previous);
         const entry = indexHtml.slice(start, previous);
-        for (const text of ['exposed front', 'interaction distance are unchanged', 'request exceeded payload or rate limits',
+        for (const text of ['outside the blacksmith', 'interaction distance are unchanged', 'request exceeded payload or rate limits',
             'retained in memory', 'not crash-durable', 'Earlier releases']) expect(entry).toContain(text);
     });
 

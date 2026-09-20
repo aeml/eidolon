@@ -21,7 +21,6 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
-import { interactionApproachPoint } from './interactionApproach.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
 
 class GameEngineRuntimeMethods {
@@ -140,7 +139,7 @@ class GameEngineRuntimeMethods {
                              this.chunkManager.removeEntity(entity);
                         } else if (entity.position.lengthSq() < 1) {
                              console.warn(`Restoring stash-local town position`);
-                             entity.position.set(-28, 0, 193);
+                             entity.position.set(-16, 0, 193);
                              this.chunkManager.updateEntityChunk(entity);
                         }
                     }
@@ -742,7 +741,8 @@ class GameEngineRuntimeMethods {
                     } else {
                         // MOVING: Chase Target
                         // Continuously update target position to handle moving targets
-                        const target = interactionApproachPoint(this.pendingInteraction, this.player.position.y);
+                        const target = this.pendingInteraction.position.clone();
+                        target.y = this.player.position.y;
 
                         // Force move every frame to override any idle states
                         this.player.move(target);

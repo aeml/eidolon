@@ -2,10 +2,8 @@ import * as THREE from 'three';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { Forge } from '../src/entities/Forge.js';
-import { Stash } from '../src/entities/Stash.js';
-import { interactionApproachPoint } from '../src/core/interactionApproach.js';
 import { installGameEngineMovement } from '../src/core/GameEngineMovement.js';
-import { createCasinoShell, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
+import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { installGameEngineEntitySync } from '../src/core/GameEngineEntitySync.js';
 
 class InteractionFixture { isHostileActorTarget() { return false; } }
@@ -14,9 +12,9 @@ installGameEngineEntitySync(InteractionFixture);
 
 describe('current town building footprints', () => {
     test('entity synchronization preserves authoritative stash placement', () => {
-        const stash = { id: 'stash-1', x: -28, y: 0.5, z: 193 };
+        const stash = { id: 'stash-1', x: -16, y: 0.5, z: 193 };
         new InteractionFixture().applyPositionHacks(stash);
-        expect(stash).toEqual({ id: 'stash-1', x: -28, y: 0.5, z: 193 });
+        expect(stash).toEqual({ id: 'stash-1', x: -16, y: 0.5, z: 193 });
     });
     test.each([false, true])('forge hearth blocks walking but leaves its interaction edge reachable by a full-size hero (batched %s)', optimized => {
         const forge = createProceduralLanternholdStructure('forge', { optimized });
@@ -55,53 +53,35 @@ describe('current town building footprints', () => {
         expect(collision.orientedColliders).toHaveLength(0);
     });
 
-    test('stash building approach is clear while masonry and coffer still block walking', () => {
+    test('the full generated town leaves the stash outside buildings with a clear interaction path', async () => {
         const manager = new CollisionManager();
-        const hall = createCasinoShell();
-        for (const wall of hall.userData.casinoWalls) manager.addCollider(new THREE.Box3().setFromCenterAndSize(
-            new THREE.Vector3(wall.position[0], wall.position[1], 170 + wall.position[2]), new THREE.Vector3(...wall.size)));
-        const stash = createProceduralLanternholdStructure('stash');
-        stash.position.set(-28, 0.5, 193);
-        manager.addOrientedCollider(getLanternholdWalkCollider(stash));
+        const scene = new THREE.Scene();
+        await new WorldGenerator(scene, manager).loadBuildings(0, 200);
+        expect(scene.children.some(mesh => mesh.userData.structureId === 'blacksmith')).toBe(true);
+        // The former coffer centre and proposed front were inside the smithy.
+        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 193), 1.25)).not.toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 196), 1.25)).not.toBeNull();
         const trading = createProceduralLanternholdStructure('trading_house');
         trading.position.set(-22, .5, 185); trading.rotation.y = Math.PI / 4;
         manager.addOrientedCollider(getLanternholdWalkCollider(trading));
-        expect(manager.checkCollision(new THREE.Vector3(-12, 0, 185), 1.25)).toBeNull();
+        // A circle enclosing the entire coffer footprint fits between buildings.
+        expect(manager.checkCollision(new THREE.Vector3(-16, 0, 193), 2.2)).toBeNull();
+        const stash = createProceduralLanternholdStructure('stash');
+        stash.position.set(-16, 0.5, 193);
+        manager.addOrientedCollider(getLanternholdWalkCollider(stash));
         expect(manager.checkCollision(new THREE.Vector3(0, 0, 180.5), 0.5)).toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(0, 0, 177.5), 1.25)).toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 193), 1.25)).not.toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 197), 1.25)).toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-16, 0, 193), 1.25)).not.toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-16, 0, 197), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-10, 0, 193), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-8, 0, 185), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-4, 0, 185), 1.25)).toBeNull();
-        // The direct centre click crosses the rotated Trading House. Ordinary
-        // navigation to the coffer's south face stays clear of it and Hessa.
         manager.addCircularCollider(-20, 200, 1.25);
         const path = (from, to) => Array.from({ length: 101 }, (_, i) =>
             new THREE.Vector3(...from).lerp(new THREE.Vector3(...to), i / 100));
-        const spawn = [-1.25, 0, 200];
-        expect(path(spawn, [-28, 0, 193]).some(p => manager.checkCollision(p, 1.25))).toBe(true);
-        const actor = new Stash('stash-1');
-        actor.position.set(-28, .5, 193);
-        const target = interactionApproachPoint(actor, 0);
-        expect(target.toArray()).toEqual([-28, 0, 196]);
-        expect(actor.position.toArray()).toEqual([-28, .5, 193]);
-        for (const p of path(spawn, target.toArray())) {
+        const approach = [-12, 0, 195];
+        expect(Math.hypot(approach[0] + 16, approach[2] - 193)).toBeLessThan(5);
+        for (const start of [[-1.25, 0, 200], [-8, 0, 197]]) for (const p of path(start, approach)) {
             expect(manager.checkCollision(p, 1.25)).toBeNull();
         }
-        expect(target.distanceTo(actor.position)).toBeLessThan(new InteractionFixture().getInteractionRangeForEntity(actor));
-        disposeCasinoObject(hall);
-    });
-
-    test('stash approach follows its facing; unrelated targets keep their existing centre approach', () => {
-        const stash = new Stash('rotated-stash');
-        stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-        const point = interactionApproachPoint(stash, 7);
-        expect(point.x).toBeCloseTo(3);
-        expect(point.z).toBeCloseTo(0);
-        expect(point.y).toBe(7);
-        const other = { position: new THREE.Vector3(5, 2, 9) };
-        expect(interactionApproachPoint(other, 0).toArray()).toEqual([5, 0, 9]);
-        expect(other.position.toArray()).toEqual([5, 2, 9]);
     });
 });

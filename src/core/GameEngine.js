@@ -1419,7 +1419,7 @@ export class GameEngine {
 
         // Stash beside the Trading House, west of the casino entrance approach.
         const stash = new Stash('stash-local');
-        stash.position.set(-28, 0, 193);
+        stash.position.set(-16, 0, 193);
         stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
         this.addEntity(stash);
     }

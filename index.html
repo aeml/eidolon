@@ -685,7 +685,7 @@
                 <div class="patch-note-entry" data-version="1.9.25">
                     <h3 class="patch-note-entry__title">Alpha 1.9.25 (a clear path to storage)</h3>
                     <ul>
-                        <li><strong>Reach the west-side stash:</strong> Clicking or tapping the relocated coffer now approaches its exposed front instead of trying to walk through the Trading House. Its position, building collisions and interaction distance are unchanged.</li>
+                        <li><strong>Reach the west-side stash:</strong> The coffer now sits in the clear gap beside the Trading House, outside the blacksmith and away from the casino door. Normal clicking or tapping can reach it; building collisions and interaction distance are unchanged.</li>
                         <li><strong>Complete rejection history:</strong> Administration history now records requests rejected because another connection replaced the submitting session, or because an authenticated request exceeded payload or rate limits. Unsafe request streams are disconnected; retrying the same operation still cannot duplicate a grant.</li>
                         <li><strong>Explicit outage recovery:</strong> If both activity storage paths fail, changes are refused, the connection closes and health reports pending audit recovery. Rejected events are retained in memory until storage returns; this is not crash-durable storage and never counts as a successful character change.</li>
                         <li><strong>Integration continues:</strong> Remaining earned campaign and group-raid checks are still in progress. Earlier releases and their patch notes remain available.</li>
