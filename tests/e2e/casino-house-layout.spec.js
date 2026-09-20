@@ -2,9 +2,14 @@ import { expect, test } from '@playwright/test';
 
 // Presentation fixture only. Money and restart recovery use disposable Mongo;
 // this fixture does not claim a connected, funded multiplayer session.
-for (const width of [390, 1440]) for (const kind of ['roulette', 'baccarat']) {
+// Do not load the 3D game for a DOM/CSS-only review. This suite also runs without
+// GPU acceleration, independently of the native-rendered venue acceptance.
+test.use({ launchOptions: { args: ['--disable-gpu'] } });
+for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat']) {
     test(`${kind} shared table layout at ${width}px`, async ({ page }) => {
-        await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+        await page.setViewportSize({ width, height: width === 390 ? 844 : width === 844 ? 390 : 1000 });
+        await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.goto('/', { waitUntil: 'networkidle' });
         await page.evaluate(async ({ kind }) => {
@@ -33,6 +38,13 @@ for (const width of [390, 1440]) for (const kind of ['roulette', 'baccarat']) {
         for (const selector of ['.casino-session.has-house', '.house-game', '.card-table-controls']) {
             expect(await page.locator(selector).evaluate(n => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(1);
         }
+        const sceneBeforeScroll = await panel.locator('.card-table-scene').boundingBox();
+        await panel.locator('.card-table-controls').evaluate(n => { n.scrollTop = n.scrollHeight; });
+        expect(await panel.locator('.card-table-scene').boundingBox()).toEqual(sceneBeforeScroll);
+        await panel.locator('.card-table-controls').evaluate(n => { n.scrollTop = 0; });
+        const result = await panel.locator('.house-result').boundingBox();
+        const clock = await panel.locator('.card-table-clock').boundingBox();
+        expect(result.y + result.height).toBeLessThanOrEqual(clock.y);
         await page.screenshot({ path: `/tmp/eidolon-${kind}-betting-${width}.png` });
         await panel.getByRole('button', { name: kind === 'roulette' ? 'Bet on 0' : 'Bet on Player · 1:1', exact: true }).click();
         expect(await page.evaluate(() => window.__houseLayout.sent.length)).toBe(1);
@@ -46,7 +58,7 @@ for (const width of [390, 1440]) for (const kind of ['roulette', 'baccarat']) {
             const f = window.__houseLayout, roulette = f.view.game === 'roulette';
             f.ui.update({ ...f.view, phase: 'complete', number: roulette ? 0 : undefined,
                 baccarat: roulette ? undefined : { player: [2,3], banker: [3,3], playerTotal: 7, bankerTotal: 8, winner: 'banker' },
-                nextRoundAt: new Date(Date.now() + 12000).toISOString(),
+                serverNow: new Date().toISOString(), nextRoundAt: new Date(Date.now() + 12000).toISOString(),
                 players: [{ playerId: 'hero', name: 'You', seat: 0, wagers: [{ spot: roulette ? 'number:0' : 'banker', amount: 20 }], paid: true, payout: roulette ? 720 : 39 }] }, 'hero', f.presence);
         });
         await expect(panel.getByText('YOU WON', { exact: true })).toBeVisible();

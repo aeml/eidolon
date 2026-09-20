@@ -180,14 +180,18 @@ body .casino-session .card-table-center .poker-board .blackjack-card { flex: 0 1
 .roulette-outside-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin-block: 6px; }
 .house-betting-board button.selected { outline: 2px solid #ffe1a0; outline-offset: -3px; }
 .baccarat-bets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
-.house-result { --wheel-size: 180px; --pocket-radius: 77px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.house-game .card-table-center { top: 44%; height: 34%; container-type: size; }
+.house-game .card-table-clock { top: 68%; }
+.house-game .card-table-seat { height: 24%; }
+.house-game .card-table-seat:is([data-position="0"], [data-position="5"]) { top: 86%; }
+.house-result { --wheel-size: min(180px, calc(100cqh - 30px), calc(100cqw - 8px)); --pocket-radius: calc(var(--wheel-size) / 2 - 13px); height: 100%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 4px; }
 .house-result > strong { flex-basis: 100%; }
 .roulette-wheel { position: relative; flex: 0 0 var(--wheel-size); width: var(--wheel-size); height: var(--wheel-size); border-radius: 50%; background: radial-gradient(circle, #bc9854 0 6%, #342c27 7% 48%, #ad8d4c 49% 52%, #183b34 53%); box-shadow: 0 0 0 3px #b99a58, 0 4px 12px #0008; }
 .roulette-pocket { position: absolute; left: calc(50% - 8px); top: calc(50% - 9px); width: 16px; height: 18px; font: 700 9px/18px system-ui; color: #fff3d9; transform: rotate(var(--angle)) translateY(calc(-1 * var(--pocket-radius))); }
 .roulette-pocket.zero { background: #165b41; }
 .roulette-pocket.winner { background: #f6cc66; color: #152232; outline: 2px solid white; }
 .house-result.revealing .roulette-wheel { animation: casino-wheel-spin 1.2s linear infinite; }
-.baccarat-result-hand { display: flex; flex-wrap: wrap; justify-content: center; flex: 1 1 85px; }
+.baccarat-result-hand { display: flex; flex-wrap: wrap; justify-content: center; flex: 1 1 0; min-width: 0; }
 .baccarat-result-hand strong { flex-basis: 100%; text-transform: capitalize; }
 .house-result.revealing .blackjack-card { animation: casino-card-deal .9s ease-in-out infinite alternate; }
 @keyframes casino-wheel-spin { to { transform: rotate(360deg); } }
@@ -196,7 +200,7 @@ body .casino-session .card-table-center .poker-board .blackjack-card { flex: 0 1
 @media (max-width: 850px) {
     body .casino-session.has-house { width: calc(100vw - 16px); height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); padding: 8px; }
     .casino-session > .house-game:not([hidden]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(300px, 1fr) minmax(140px, 38%); gap: 8px; }
-    .house-result { --wheel-size: 130px; --pocket-radius: 54px; }
+    .house-result { --wheel-size: min(130px, calc(100cqh - 30px), calc(100cqw - 8px)); --pocket-radius: calc(var(--wheel-size) / 2 - 11px); }
     .house-game .roulette-pocket { width: 12px; height: 15px; left: calc(50% - 6px); top: calc(50% - 7.5px); font-size: 7px; line-height: 15px; }
     .house-game .card-table-seat-hands { font-size: 10px; }
 }

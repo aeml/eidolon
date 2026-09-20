@@ -82,11 +82,17 @@ payment flow. Receipt maxima: roulette 3.6m Gold/3,600 EP; baccarat 900k Gold/90
 - Updated bounded busy-floor fixture renders all 92 stations with 40 equipped
   actors (20 visible per floor), checking that the other floor stays hidden.
   Stairs and connected blackjack fixtures now use the expanded venue coordinates.
-- Still required: browser review. `casino-house-layout.spec.js` covers both games
-  at 390/1440 widths, but has only been authored/linted, not run or visually
-  accepted yet.
+- DOM/CSS browser review passes: six roulette/baccarat cases at 390×844,
+  844×390 and 1440×1000 (21.6s). Betting/result screenshots were inspected.
+  Corrected the phone result/countdown overlap; controls scroll independently
+  while seats/dealer stay in place. Test blocks game bootstrap and uses CPU-only
+  compositing, so it did not compete for the Water campaign's native renderer.
+  Added to hosted anonymous browser coverage. This is not 3D venue acceptance.
+- Alpha 1.9.24 login, runtime defaults and cumulative patch notes are prepared.
+  Version/house-UI/browser-plan suites pass 295 tests/2.535s; full ESLint and
+  whitespace checks pass. Release remains local pending full-floor visual review.
 - Still required: rendered expanded-floor review,
-  full batch patch notes/version bump, deployment and live verification. Updated
+  deployment and live verification. Updated
   browser fixtures are not a claim that the new screenshots have been reviewed.
 - Native Water campaign QA uses a frozen older source checkout and remains
   independent. Do not start competing native browser workloads while it runs.
