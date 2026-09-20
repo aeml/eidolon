@@ -11,7 +11,10 @@ export const earnedEarthCheckpoints = Object.freeze([
         level: 33, xp: 23108, gold: 10598, count: 50, completed: true, waterOffered: true },
     { sha: 'c65ddaee9a989f47289b9db2fbc98842746871d5fea84df2e1dd1248382b45a1',
         level: 42, xp: 32261, gold: 25427, count: 50, completed: true,
-        waterProgress: { accepted: true, completed: false, count: 58 } }
+        waterProgress: { accepted: true, completed: false, count: 58 } },
+    { sha: 'e6a43eaf1a70cb8e681ef7a14e1a0e0125b91e4b22b294b642c376807887055e',
+        level: 43, xp: 35906, gold: 27416, count: 50, completed: true,
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
@@ -37,10 +40,14 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
             if (!dungeon?.completed || dungeon.count !== 1 || !water || water.accepted !== expected.accepted ||
                 water.completed !== expected.completed || water.count !== expected.count)
                 throw Error('Unexpected earned Water handoff');
-            if (${Boolean(checkpoint.waterProgress)} && (water.max_count !== 60 ||
-                (!expected.completed && ((water.granted_gold || 0) !== 0 || (water.granted_xp || 0) !== 0 ||
-                    character.quests.some(q => q.id === 'chronicle_water_flood_shelter')))))
-                throw Error('Unexpected earned Water reward or next chapter');
+            if (${Boolean(checkpoint.waterProgress)}) {
+                const next = character.quests.find(q => q.id === 'chronicle_water_flood_shelter');
+                if (water.max_count !== 60 || (water.granted_gold || 0) !== (expected.grantedGold || 0) ||
+                    (water.granted_xp || 0) !== (expected.grantedXP || 0) ||
+                    (!expected.completed && next) || (expected.completed &&
+                        (!next || next.accepted || next.completed || next.count !== 0)))
+                    throw Error('Unexpected earned Water reward or next chapter');
+            }
         }
         character.name = ${JSON.stringify(username)};
         const target = db.getSiblingDB('eidolon').users;

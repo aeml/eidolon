@@ -5,8 +5,9 @@ Packaged locally as Alpha1.9.23 after accepted Alpha1.9.22;
 isolated QA and CI deployment labels are synchronized. Additive in-game notes
 describe the actual recovery fix and retain all prior release entries.
 277 focused version/history/runtime-versioning checks pass in4.005s; lint,
-shell syntax and diff checks pass. Wait for the active earned Water run to end
-before publication invokes native deployment browser work. Then use Luna for
+shell syntax and diff checks pass. The earned Water continuation has now passed
+and its owned services are gone, clearing native browser work for publication.
+Use Luna for
 the exact CI run and verify public identities and notes before accepting delivery.
 
 The remaining administration audit review found that malformed mutations,

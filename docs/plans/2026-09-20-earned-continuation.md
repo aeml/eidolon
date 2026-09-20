@@ -1,15 +1,36 @@
 # Earned campaign continuation with a real party
 
+## Missing Ferry accepted — saved level43 investigation handoff
+
+`earnedwater0920b`, clean5c42b4dd, native40858 finished **exit0/PASS** in2.2m.
+It resumed the actual58-kill save, earned only the remaining two kills, manually
+claimed400Gold/28593XP from Ilyra, reconnected and verified the saved next offer.
+Actual Mongo and independent archive restore agree:43/35906XP/27416Gold,
+Ferry60/60 completed and Flood Shelter offered but unaccepted at0/1; no dailies.
+Full-character transfer into a new disposable account also passes exact equality.
+
+The new private full save is
+`/tmp/eidolon-party-checkpoint-earnedwater0920b-pJGXDS/save.archive.gz`, SHA256
+`e6a43eaf1a70cb8e681ef7a14e1a0e0125b91e4b22b294b642c376807887055e`.
+The catalog pins its exact reward and fresh investigation fields.32 focused
+checkpoint checks pass in0.605s, with lint/diff checks. Reports/results and log
+are preserved under `/tmp/eidolon-water-finish-20260920-tWOp4t/`; owned services
+and the disposable verification container are gone.
+
+Use this save for `earned-water-region` after the pending1.9.23 delivery clears.
+Do not repeat Missing Ferry, Earth or Verdant. Remaining Water investigations,
+hunts/collection, level60 readiness and the full Abyssal party clear are open.
+The earlier partial-run and launch descriptions below are historical.
+
 ## Missing Ferry partial save retained —58/60, no repeat required
 
-Follow-up `earnedwater0920b` is now live under native40858, with launcher/log
+Follow-up `earnedwater0920b` launched under native40858, with launcher/log
 `/tmp/eidolon-water-finish-20260920-tWOp4t/run.log`. Its frozen detached source
 is clean5c42b4dd at that directory's `source/`; browser dependencies are prepared.
 It restores the exact58-kill archive below, keeps the30-minute/no-retry bounds,
 and requires the remaining two ordinary kills, manual claim and saved offer.
-Luna watches terminal status. Do not edit the frozen worktree, overlap native
-browser jobs, or publish1.9.23 while it runs. No completed Water chapter is
-claimed yet; the previous terminal run remains the record below.
+Luna reported its terminal success, accepted above. Its frozen-source and
+no-overlapping-browser safeguards applied throughout the run.
 
 `earnedwater0920a` ended exit1 after30.0m on frozen29ef2862. Native45531 and
 `WATER_TERMINAL_PHASE=earned_water`/`WATER_PROCESS_EXIT=1` agree. All owned

@@ -9,11 +9,12 @@ Guarded Water parent45531 passed that exact deployment and source verification,
 then ran `earnedwater0920a` from the saved level33 Wizard. It is now terminal
 exit1 after30.0m, reporting a retreat assertion near the whole-test ceiling.
 Actual archive restore confirms42/32261XP/25427Gold and58/60 unclaimed Ferry kills.
-The saved continuation `earnedwater0920b`, native40858, is active on frozen
-5c42b4dd, monitored by Luna. Only two kills/manual turn-in remain for this chapter;
-the rest of Water is still open. Do not repeat the58 kills or accepted Verdant.
-Do not overlap native browser work or edit its frozen worktree at
-`/tmp/eidolon-water-finish-20260920-tWOp4t/source`.
+The saved continuation `earnedwater0920b`, native40858, passed in2.2m on5c42b4dd:
+remaining two kills, manual reward, relogin and actual saved investigation offer.
+Independent archive restore confirms43/35906XP/27416Gold, Ferry60/60 completed
+and fresh Flood Shelter0/1. All owned services are gone; use its new full save
+for the remaining Water region after pending1.9.23 delivery. Do not repeat
+Missing Ferry, Earth or accepted Verdant. Full Water/Abyssal remains open.
 See [release status](2026-09-20-release1-9-22-party-visibility.md) and
 [earned continuation](2026-09-20-earned-continuation.md).
 

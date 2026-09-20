@@ -76,6 +76,30 @@ test('continues the actual saved 58 Water kills without repeating or claiming th
     expect(fixture.result().writes).toBe(1);
 });
 
+function completedFerry(character) {
+    partialWater(character);
+    Object.assign(character, { level: 43, xp: 35906, gold: 27416 });
+    Object.assign(character.quests[2], { completed: true, count: 60, granted_gold: 400, granted_xp: 28593 });
+    character.quests.push({ id: 'chronicle_water_flood_shelter', accepted: false, completed: false, count: 0 });
+}
+
+test('continues the saved level43 manual reward and fresh investigation without replaying Missing Ferry', () => {
+    const fixture = exercise(completedFerry, false, earnedEarthCheckpoints[4]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests[2].granted_gold = 0; }, p => { p.quests[2].granted_xp++; },
+    p => { p.quests[3].accepted = true; }, p => { p.quests[3].completed = true; },
+    p => { p.quests[3].count = 1; }, p => { p.quests.pop(); }
+])('rejects altered claimed reward or investigation handoff', change => {
+    const fixture = exercise(character => { completedFerry(character); change(character); }, false, earnedEarthCheckpoints[4]);
+    expect(fixture.run).toThrow('Unexpected earned Water reward or next chapter');
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests[2].count = 60; }, p => { p.quests[2].completed = true; },
     p => { p.quests[2].accepted = false; }, p => { p.quests[2].max_count = 58; },
