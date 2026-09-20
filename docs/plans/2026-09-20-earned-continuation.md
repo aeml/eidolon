@@ -2,14 +2,35 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-`earnedmolten0920d` is running from frozen0788ca95 with ordinary Recall for a
+`earnedmolten0920d` is terminal exit1/1.3h from frozen0788ca95 with ordinary Recall for a
 preserved-instance restore. Source/log/launcher:
 `/tmp/eidolon-earned-molten-20260920-r4-tqIUo6/`, root native21636, launcher44108.
 Uses latest index16 unchanged, three prepared70 class-geared supports, original
 two-hour limit/zero retries.100 focused readiness/route/checkpoint tests pass2.324s,
 lint/shell/diff pass. Prior owned services and inspection copy were removed; ports
 and the completed deployment queue were checked before launch. Luna monitors one
-read-only launcher wait and actual terminal footer. No new clear accepted yet.
+read-only launcher wait and actual terminal footer. No full clear accepted.
+
+The four-member party cleared Cindermaw, ScorchedTwins and Forgemaster Pyrax,
+with three normal town recovery/re-entry cycles, before Rogue death during
+Obsidian Guardian at about252 seconds of combat. The healer had1213 mana and
+19027 ally healing during that boss at the death check. Earlier decisions show
+17.74-unit separation, an actual Rogue heal, then an11-second gap around aura
+repositioning. Close healer distance at death does not prove timely support.
+The Rogue's retained trace shows repeated physical hits and missed/late escapes.
+This is not a proven boss-balance defect. Next isolate the encounter with prepared
+actors before repeating the full earned route; no unchanged retry. All owned
+services are stopped; Luna verified exit1 and cleanup.
+
+Independent network-isolated restore confirms latest index17, Wizard100,
+245125XP/217132Gold, actual3783HP/3513MP/alive,19 completed chapters and unchanged
+Fire receipts. Molten remains accepted0/1, with no active dailies. Original save:
+`/tmp/eidolon-party-checkpoint-earnedmolten0920d-04jV3P/save.archive.gz`, SHA256
+`f1205c830e6b7a39003cb2102445242718fe2902385e3854bb7a03911ed108cf`.
+Temporary inspection copy removed, original retained. No health, quest progress,
+inventory or logout/instance timestamp is rewritten during continuation.
+Checkpoint transfer coverage passes83 tests in1.747s, including exact retained
+resources and timestamps; scoped lint and whitespace checks pass.
 
 Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,

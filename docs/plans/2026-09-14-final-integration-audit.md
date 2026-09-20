@@ -34,12 +34,14 @@ Molten run remains on its frozen source, uninterrupted by this future-finale upd
 
 ### Verified release and retained run evidence
 
-Latest active continuation is `earnedmolten0920d`, frozen0788ca95, root21636/
-launcher44108 under Luna. Source/log `/tmp/eidolon-earned-molten-20260920-r4-tqIUo6/`.
-It uses the actual latest index16 save and normal Recall before town readiness;
-100 focused checks pass2.324s. Prior services/inspection copy were removed and
-ports/deployment queue clear before launch. Original deadlines, normal15-minute
-expiry and full-completion requirements unchanged. No result accepted yet.
+Latest continuation `earnedmolten0920d` is terminal exit1/1.3h, frozen0788ca95,
+root21636/launcher44108 stopped. Luna confirms terminal cleanup. It passed normal
+Recall readiness, four-member entry, three bosses and three town recoveries,
+then Rogue died during Obsidian Guardian. No full clear or Air handoff accepted.
+See the [earned record](2026-09-20-earned-continuation.md) for the retained death
+evidence and independently verified latest archive index17. Next isolate that
+encounter/control delay with prepared actors before another full earned expedition;
+do not rerun the80-minute route unchanged or infer a boss nerf from this result.
 
 `earnedmolten0920c` is terminal exit1/1.8m from8569dcd8, before party formation.
 Root66703/launcher4125632 stopped; source/log:

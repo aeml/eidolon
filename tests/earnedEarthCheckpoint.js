@@ -160,7 +160,12 @@ export const earnedEarthCheckpoints = Object.freeze([
     // preparation failed before combat. Keep the latest actual save intact.
     { ...historicalCheckpoints[13],
         sha: '97a5a8616fa85d35cf3588800cf685fb3f957b061211da5c7c15434b65b2487b',
-        gold: 214465, resources: { version: 1, health: 4645, mana: 3665, dead: false } }
+        gold: 214465, resources: { version: 1, health: 4645, mana: 3665, dead: false } },
+    // Three bosses and town recoveries, then Rogue death at Obsidian Guardian.
+    // Wizard survived; preserve actual resources, not a full-heal fixture.
+    { ...historicalCheckpoints[13],
+        sha: 'f1205c830e6b7a39003cb2102445242718fe2902385e3854bb7a03911ed108cf',
+        gold: 217132, resources: { version: 1, health: 3783, mana: 3513, dead: false } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
