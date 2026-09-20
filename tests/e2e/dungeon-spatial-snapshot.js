@@ -8,11 +8,16 @@ export function dungeonSpatialSnapshot({ targetId, game = window.game } = {}) {
         actor.id === targetId || (game.isHostileActorTarget(actor) && actor.position.distanceTo(p.position) < 30));
     return {
         instanceType: game.currentInstanceType,
+        pointer: { hoveredId: game.hoveredEntity?.id || null,
+            hitIds: (game.raycastHitEntities || []).map(entity => entity.id || entity.name),
+            overCanvas: game.inputManager?.pointerOverCanvas ?? null },
         player: { position: position(p), state: p.state, radius: p.radius, scale: p.scale },
         layout: layout ? { seed: layout.generationSeed, version: layout.generatorVersion,
             rooms: layout.rooms?.map(room => ({ x: room.x, z: room.z, width: room.width, height: room.height, type: room.type })),
             walkRects: layout.walkRects?.map(rect => ({ ...rect })) } : null,
         actors: actors.map(actor => ({ target: actor.id === targetId,
+            id: actor.id, meshVisible: actor.mesh?.visible ?? null,
+            hitboxOwner: actor.mesh?.getObjectByName?.('ActorInteractionHitbox')?.userData?.entityId || null,
             type: actor.subType || actor.constructor.name, position: position(actor),
             radius: actor.radius, scale: actor.scale, state: actor.state, active: actor.isActive,
             inActiveCache: active.has(actor), hostile: game.isHostileActorTarget(actor),

@@ -816,6 +816,15 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         for (const [index, actor] of actors.entries()) {
             try {
                 const s = await snapshot(actor.page);
+                if (routeFailure && entered && index === 0) {
+                    try {
+                        const path = testInfo.outputPath('party-failure-scene.png');
+                        await actor.page.screenshot({ path, timeout: 5000 });
+                        await testInfo.attach('party-failure-scene', { path, contentType: 'image/png' });
+                    } catch {
+                        console.log('[party-failure-scene-unavailable] retaining original failure and state evidence');
+                    }
+                }
                 const result = { class: actor.className, entered, level: s.level,
                     hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, render: s.render,
                     quest: s.quest, evidence: s.evidence || actor.combatEvidence };

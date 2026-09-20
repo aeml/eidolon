@@ -1,6 +1,8 @@
 # Alpha 1.9.21 — the whole raid in view
 
-Status: prepared for deployment; public identity verification pending.
+Status: pushed as44061ffe368597dd09373720329ffbaee8240d92; CI35483868157
+is monitored by Luna `/root/watch_release_1_9_21`. Public identity verification
+is pending. No further push is needed for this local status note or diagnostics.
 
 Desktop groups larger than four use a two-column roster. Ten health bars fit
 above default chat at1280×720 without scrolling, with the healing-clear button

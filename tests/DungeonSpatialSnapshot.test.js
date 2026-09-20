@@ -47,3 +47,20 @@ test('missing layout or vanished target remains explicitly absent instead of syn
     expect(snapshot.layout).toBeNull();
     expect(snapshot.actors.some(a => a.target)).toBe(false);
 });
+
+test('distinguishes a foreground hostile from stale hitbox ownership without changing targeting', () => {
+    const game = fixture(), target = game.remotePlayers.get('target'), near = game.remotePlayers.get('near');
+    const hitbox = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
+    hitbox.name = 'ActorInteractionHitbox';
+    hitbox.userData.entityId = 'previous-owner';
+    target.mesh = new THREE.Group();
+    target.mesh.add(hitbox);
+    game.hoveredEntity = near;
+    game.raycastHitEntities = [near, target];
+    game.inputManager = { pointerOverCanvas: true };
+    const snapshot = dungeonSpatialSnapshot({ game, targetId: target.id });
+    expect(snapshot.pointer).toEqual({ hoveredId: 'near', hitIds: ['near', 'target'], overCanvas: true });
+    expect(snapshot.actors[0]).toMatchObject({ id: 'target', meshVisible: true, hitboxOwner: 'previous-owner' });
+    expect(game.hoveredEntity).toBe(near);
+    expect(hitbox.userData.entityId).toBe('previous-owner');
+});

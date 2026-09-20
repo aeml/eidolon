@@ -77,6 +77,13 @@ export async function playDungeonThroughInputs(page, {
                 lastDamageAt = Date.now();
             }
             if (Date.now() - lastDamageAt > 60_000) {
+                // Preserve the real hit stack/cache/mesh state only on failure.
+                // Position-only traces cannot distinguish crowd occlusion from
+                // an actor missing its interaction proxy or active-cache entry.
+                const spatial = await page.evaluate(dungeonSpatialSnapshot, { targetId: target.id });
+                await page.evaluate(spatial => {
+                    if (window.__partyClearEvidence) window.__partyClearEvidence.stalledSpatial = spatial;
+                }, spatial);
                 console.log(`${logPrefix} stalled approach ${JSON.stringify(await page.evaluate(id => {
                     const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                     return { player: { x: p.position.x, z: p.position.z, state: p.state },

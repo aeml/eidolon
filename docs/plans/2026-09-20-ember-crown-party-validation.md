@@ -19,6 +19,14 @@ show successful movement with zero recorded blocked stops, including a final
 or a server damage failure. Do not relax watchdogs or repeat the full run
 without narrowing the targeting cause. No guardian/repair/claim acceptance.
 
+Local diagnostic follow-up captures the existing raycast hit stack, cache
+membership, mesh visibility and hitbox owner only when the damage-stall watchdog
+fires, plus one failure-scene screenshot before closing the leader browser.
+It adds no recurring browser reads, input changes, retries or relaxed deadlines.
+The current trace lacks those fields, so crowd occlusion versus cache/proxy
+ownership remains unresolved. The next investigation should reproduce only
+this saved elite-room formation/targeting problem, not rerun accepted raids.
+
 Private checkpoint, not uploaded:
 `/tmp/eidolon-party-checkpoint-fireraid0920a-S8ZFB9/save.archive.gz`, SHA256
 `21d9d01f5e40f9bb5ac3ceee02c723095bff736695a6b2cddb9d88c6885b5ed4`.
