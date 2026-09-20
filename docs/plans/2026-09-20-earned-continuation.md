@@ -3,13 +3,14 @@
 ## Fire story accepted — next: earned Molten party clear
 
 Next continuation `earnedmolten0920b` is staged, **not launched**, at
-`/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozen3525a966. The latest
+`/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozencdf71b50. The latest
 Molten archive below was checksum-verified and is used intact, including actual
 earned loot/resources and unchanged logout/run timestamps. After15 minutes the
 old dungeon expires normally; no cleared room or boss is fabricated. Three
 Normal70 class-geared supports accompany the earned Wizard. Original two-hour
 expedition and traversal bounds remain. This source includes the reproduced
-short-corner formation correction, strict waypoint witness and pre-recall
+short-corner formation correction, strict waypoint witness, existing batched
+ground observation (four rather than six round trips) and pre-recall
 traversal diagnostics absent from the earlier attempt. That does not establish
 the earlier Molten stall's cause or guarantee a clear. Launch only after review
 of Fire `fireraid0920j`'s terminal result and a free native/deployment browser slot;
