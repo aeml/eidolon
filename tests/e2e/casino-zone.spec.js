@@ -82,7 +82,7 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     };
     await prepareCasinoAccount(page, credentials);
     await enter(page);
-    await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.filter(table => table.floor === 'public').length)).toBe(10);
+    await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.filter(table => table.floor === 'public').length)).toBe(46);
     const initialGold = await readGold(page);
     const other = await context.newPage();
     const otherFailures = collectBrowserFailures(other, baseURL);
@@ -107,10 +107,13 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     const readHand = target => target.evaluate(() => window.game.casino.blackjack.view);
     for (const [seat, target] of players.entries()) {
         await target.bringToFront();
-        await walkTo(target, 183);
-        const approach = await target.evaluate(index => window.game.casino.data.tables
-            .find(table => table.id === 'public-blackjack').seats[index], seat);
-        await walkTo(target, 183, approach.exitX);
+        const approach = await target.evaluate(index => {
+            const table = window.game.casino.data.tables.find(table => table.id === 'public-blackjack');
+            return { ...table.seats[index], aisleZ: table.z + 5 };
+        }, seat);
+        await walkTo(target, approach.aisleZ);
+        await walkTo(target, approach.aisleZ, approach.exitX);
+        await walkTo(target, approach.exitZ, approach.exitX);
         await target.waitForTimeout(350);
         const point = await target.evaluate(index => {
             const game = window.game;
@@ -209,11 +212,13 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     expect(await readGold(other)).toBe(expectedBalances[1]);
     console.log('[casino-connected] shared blackjack settled', JSON.stringify({ roundId, initial: balances, final: expectedBalances }));
     await page.bringToFront();
-    await walkTo(page, 183, -18);
-    await walkTo(page, 183);
+    const aisleZ = await page.evaluate(() => window.game.casino.data.tables.find(table => table.id === 'public-blackjack').z + 5);
+    const exitX = (await readPlayerState(page)).x;
+    await walkTo(page, aisleZ, exitX);
+    await walkTo(page, aisleZ);
     await page.bringToFront(); // Exercise the player's active tab, not background-throttled rendering.
     // Actual movement inputs down the central aisle, not a scene-position teleport.
-    await walkTo(page, 154);
+    await walkTo(page, 104);
     await expect(page.getByRole('button', { name: 'Talk to VIP Guard', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Talk to VIP Guard', exact: true }).click();
     const guardDialogue = page.locator('.casino-entry-dialogue:not(.cosmetic-vendor)');

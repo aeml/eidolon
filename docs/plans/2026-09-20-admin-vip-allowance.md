@@ -39,5 +39,12 @@ go test ./ ./internal/database -run 'Test(AdministratorVIP|VIPMembership|VIPAllo
 
 Result: PASS (`eidolon-server` 0.817s; database 0.029s). Whitespace checks pass.
 
+Connected verification also passes in the expanded casino's disposable-database
+test: a real administrator socket with no paid VIP period receives 100 EP, enters
+through the upstairs guard, wagers EP at baccarat alongside a normal VIP, and
+reconnects after a server restart without a second allowance. The two-game socket
+suite completed in 133.479s; its temporary database was removed afterward. No
+production account was changed.
+
 The complete expanded casino still needs its own game, layout and deployment
 verification. This focused allowance change does not close those requirements.

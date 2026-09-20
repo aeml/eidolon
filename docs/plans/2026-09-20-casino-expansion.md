@@ -64,10 +64,28 @@ payment flow. Receipt maxima: roulette 3.6m Gold/3,600 EP; baccarat 900k Gold/90
 - House/blackjack/poker/controller/clock/VIP UI regression checks: 38 tests pass,
   3.469s. Focused lint and whitespace checks pass. Reuses existing six-seat scene
   and celebration components; no new wallet, purchase flow or auto-wager loop.
-- Still required: actual connected settlement/reconnect evidence and browser
-  review. `casino-house-layout.spec.js` covers both games at 390/1440 widths, but
-  has only been authored/linted, not run or visually accepted yet.
-- Still required: rendered expanded-floor review, reachability of all stations,
+- Actual WebSocket checks PASS 133.479s: two real authenticated sockets share a
+  roulette Gold round and a baccarat EP round, retry identical wagers, settle
+  after one guest disconnects, then reconnect to a fresh server process with
+  unchanged settled wallets/receipts. Upstairs includes one administrator with
+  no paid membership and one normal VIP; each receives exactly 100 EP and passes
+  the guarded stairs. This checks protocol movement, not client collision paths.
+  Binary: `/tmp/eidolon-house-connected-20260920-kjg81m/house-767219a1`;
+  retained server logs: `/tmp/eidolon-compat-session-2791273675`,
+  `2646596758`, `2288127417`, `2776053657` (same prefix). Owned disposable Mongo
+  `eidolon-house-connected-20260920` removed after terminal success; no production
+  accounts, roles or balances were touched.
+- Canonical catalog plus actual client interior/furniture colliders: both floors
+  have collision-free connected walking routes to all 116 seat exits each, with
+  a full 1.25-radius actor. A one-unit flood fill checks edge midpoints and the
+  final sub-unit approach to every chair; this is geometry, not rendered review.
+- Updated bounded busy-floor fixture renders all 92 stations with 40 equipped
+  actors (20 visible per floor), checking that the other floor stays hidden.
+  Stairs and connected blackjack fixtures now use the expanded venue coordinates.
+- Still required: browser review. `casino-house-layout.spec.js` covers both games
+  at 390/1440 widths, but has only been authored/linted, not run or visually
+  accepted yet.
+- Still required: rendered expanded-floor review,
   full batch patch notes/version bump, deployment and live verification. Updated
   browser fixtures are not a claim that the new screenshots have been reviewed.
 - Native Water campaign QA uses a frozen older source checkout and remains

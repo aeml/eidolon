@@ -40,9 +40,12 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         controller.updateState({ tables, floor: 'public' });
         render.scene.add(controller.furniture);
         const models = [];
-        // Four people at every card table, plus one at each slot machine:40.
-        // Use all classes and full equipment, not cheap proxy cubes.
-        for (const table of tables) for (const seat of table.seats.slice(0, 4)) {
+        // Keep the review bounded at 40 equipped actors, 20 per floor. Render
+        // the full 92-station catalog without inventing 176 network clients.
+        const floorModels = { public: 0, vip: 0 };
+        for (const table of tables) for (const seat of table.seats.slice(0, 1)) {
+            if (floorModels[table.floor] >= 20) continue;
+            floorModels[table.floor]++;
             const type = ['Fighter', 'Rogue', 'Wizard', 'Cleric'][models.length % 4];
             const mesh = await MeshFactory.createMeshForType(type);
             const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, index) => {
@@ -63,19 +66,20 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 render.setGraphicsQuality(quality);
                 const upstairs = floor === 'vip';
                 controller.floor = floor;
-                viewer.position.set(upstairs ? 0 : 26, upstairs ? 8 : 0, upstairs ? 140 : 160);
+                viewer.position.set(0, upstairs ? 8 : 0, 152);
                 controller.beforeUpdate(1 / 60);
                 controller.render(models);
                 auras.forEach(aura => aura.dispose());
                 auras = models.map(model => new AttachedStatusEffect(render.effectGroup, model, 'well_rested', { quality }));
-                render.setZoom(30);
-                const focus = new THREE.Vector3(0, upstairs ? 8 : 0, upstairs ? 149 : 166);
-                render.camera.position.copy(focus).add(new THREE.Vector3(20, 70, 65));
+                render.setZoom(58);
+                const focus = new THREE.Vector3(0, upstairs ? 8 : 0, 152);
+                render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85));
                 gallery.controls.target.copy(focus);
                 gallery.controls.update();
                 return { visible: models.filter(model => model.mesh.visible).length,
                     auras: auras.filter(aura => aura.group.visible).length,
-                    seated: models.filter(model => model.mesh.getObjectByName('Rig_Hips')?.position.y === 1.12).length };
+                    seated: models.filter(model => model.mesh.getObjectByName('Rig_Hips')?.position.y === 1.12).length,
+                    floors: { public: interior.userData.floors.public.visible, vip: interior.userData.floors.vip.visible } };
             },
             dispose() {
                 controller.dispose();
@@ -86,13 +90,14 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         };
         return { tables: tables.length, seats: controller.furniture.userData.seats.length, models: models.length };
     }, tables);
-    expect(setup).toEqual({ tables: 16, seats: 56, models: 40 });
+    expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
     try {
         for (const quality of ['high', 'low']) for (const floor of ['public', 'vip']) {
             const view = await page.evaluate(({ quality, floor }) => window.__casinoCrowd.view(quality, floor), { quality, floor });
             expect(view.seated).toBe(40);
-            expect(view.visible).toBe(floor === 'public' ? 28 : 40);
+            expect(view.visible).toBe(20);
             expect(view.auras).toBe(view.visible);
+            expect(view.floors).toEqual({ public: floor === 'public', vip: floor === 'vip' });
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
         }

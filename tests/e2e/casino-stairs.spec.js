@@ -23,7 +23,7 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
         const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, .1, 300);
         const collision = new CollisionManager();
         const shell = createCasinoInterior(scene, collision);
-        const player = new Fighter('stairs-fighter'); player.position.set(0, 0, 154); player.mesh = createProceduralFighter(); scene.add(player.mesh);
+        const player = new Fighter('stairs-fighter'); player.position.set(0, 0, 104); player.mesh = createProceduralFighter(); scene.add(player.mesh);
         const engine = { currentInstanceId: 'lanternhold-casino', player, renderSystem: { scene, renderer, camera }, collisionManager: collision, network: { send() {} }, uiManager: { addChatMessage() {} } };
         const controller = new CasinoController(engine);
         window.__stairsQA = { player, controller, shell };
@@ -32,7 +32,7 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
             const dt = Math.min(.05, (now - previous) / 1000); previous = now;
             controller.beforeUpdate(dt); player.update(dt, collision, null, null);
             player.mesh.position.copy(player.position);
-            camera.position.set(16, 24, 184); camera.lookAt(0, 2, 150);
+            camera.position.set(16, 24, 134); camera.lookAt(0, 2, 100);
             renderer.render(scene, camera);
         });
     });
@@ -45,9 +45,9 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     await page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Close', exact: true }).click();
     await page.evaluate(() => {
         const { player } = window.__stairsQA;
-        const point = player.position.clone(); point.z = 130; player.move(point);
+        const point = player.position.clone(); point.z = 90; player.move(point);
     });
-    await expect.poll(() => page.evaluate(() => window.__stairsQA.player.position.z)).toBeLessThan(153);
-    expect(await page.evaluate(() => window.__stairsQA.player.position.z)).toBeGreaterThanOrEqual(148);
+    await expect.poll(() => page.evaluate(() => window.__stairsQA.player.position.z)).toBeLessThan(103);
+    expect(await page.evaluate(() => window.__stairsQA.player.position.z)).toBeGreaterThanOrEqual(101.8);
     expect(await page.evaluate(() => window.__stairsQA.player.position.y)).toBe(0);
 });
