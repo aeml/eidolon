@@ -28,6 +28,14 @@ two-hour bound and zero retries. Luna monitors terminal-only; no other native
 route or deployment browser job overlaps. This is not the separate Fire raid,
 and no Fire story completion is claimed yet.
 
+The same earned four-role dungeon route now also accepts Normal70 Molten/Tempest
+after a pinned completed regional save. Its shared entry check requires every
+prior Water/Fire/Air chapter as applicable, the current unclaimed dungeon quest,
+the real entry level and matching saved state. It still rejects raids, Umbral,
+unsupported difficulties and missing checkpoint provenance.47 focused tests pass
+1.206s, plus lint/diff. This prepares later continuations without replaying the
+accepted Abyssal route or changing the active Fire run.
+
 ## Previous accepted stage — Water readiness
 
 `earnedwaterregion0920f` passed in14.8m, native2051 exit0, frozen clean

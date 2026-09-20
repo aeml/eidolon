@@ -28,3 +28,14 @@ export function earnedRegionRoute(realm) {
     if (!Object.hasOwn(regions, realm)) throw new Error('Unknown earned story region');
     return { ...regions[realm] };
 }
+
+export function earnedRegionalDungeonRoute(dungeonType) {
+    const prior = ['chronicle_03_roots_remember'];
+    for (const [realm, route] of Object.entries(regions)) {
+        prior.push(route.previous, route.investigation, route.hunt, route.collection, route.reflection);
+        if (route.finalHunt) prior.push(route.finalHunt);
+        if (route.dungeonType === dungeonType) return { ...route, realm, prior: [...new Set(prior)] };
+        prior.push(route.dungeon);
+    }
+    throw new Error('Unknown earned regional dungeon');
+}

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile, earnedPartyContinuationEnabled } from '../partyDungeonFixture.js';
 import { resumeEarnedEarthToReadiness, leaveEarnedParty } from './earned-earth-continuation.js';
-import { restoreEarnedWaterDungeonReadiness } from './earned-water-dungeon-entry.js';
+import { restoreEarnedRegionalDungeonReadiness } from './earned-regional-dungeon-entry.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
@@ -219,8 +219,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             actors.push(actor);
             const character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
             if (earnedWizard && className === 'Wizard') {
-                if (playthrough.dungeonType === 'abyssal_well') await restoreEarnedWaterDungeonReadiness(actorPage, login);
-                else await resumeEarnedEarthToReadiness(actorPage, login);
+                if (playthrough.dungeonType === 'verdant_bastion_catacombs') await resumeEarnedEarthToReadiness(actorPage, login);
+                else await restoreEarnedRegionalDungeonReadiness(actorPage, login, playthrough.dungeonType);
                 await leaveEarnedParty(actorPage);
                 await testInfo.attach('earned-wizard-dungeon-entry', {
                     body: JSON.stringify(await actorPage.evaluate(() => {
