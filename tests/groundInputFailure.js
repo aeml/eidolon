@@ -16,11 +16,19 @@ export class GroundPointerInterceptedError extends Error {
     }
 }
 
-export function movementFailure(message, attemptedPointerInput, attemptedKeyboardInput, pointerAttempts = []) {
+export class GroundMovementFailedError extends Error {
+    constructor(message, observation) {
+        super(message);
+        this.name = 'GroundMovementFailedError';
+        this.observation = observation;
+    }
+}
+
+export function movementFailure(message, attemptedPointerInput, attemptedKeyboardInput, pointerAttempts = [], observation) {
     if (attemptedPointerInput && !attemptedKeyboardInput && pointerAttempts.length > 0 &&
         pointerAttempts.every(attempt => isHostilePointerInterception(attempt.clickProbe))) {
         return new GroundPointerInterceptedError(message);
     }
     return !attemptedPointerInput && !attemptedKeyboardInput
-        ? new GroundInputUnavailableError(message) : new Error(message);
+        ? new GroundInputUnavailableError(message) : new GroundMovementFailedError(message, observation);
 }

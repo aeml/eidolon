@@ -331,3 +331,11 @@ Artifacts are preserved; full result attachments now also retain spatial/room
 snapshots to avoid needing another private DB inspection for final coordinates.
 See [failure evidence and bounded correction](2026-09-20-tidestar-formation-approach.md).
 No subsequent browser run or completed Tidestar acceptance yet.
+
+Latest: `waterraid0920a` ran and failed5.6minutes on an optional Wizard spacing
+step invalidated by a crossing FrostGuardian; all members remained alive.
+Artifacts preserved; launcher1277137 and Luna watcher are terminal. The new
+[witnessed obstruction handling](2026-09-20-raid-spacing-interruption.md) keeps
+movement failure strict but allows this optional role step to replan after
+proving a fresh actor collision.76 focused tests/lint/diff pass. This is local
+QA-only work; no new production version or completed Tidestar claim.

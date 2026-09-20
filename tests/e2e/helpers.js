@@ -513,6 +513,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 level: player.level,
                 health: player.health ?? player.stats?.hp,
                 state: player.state,
+                instanceId: game.currentInstanceId,
                 stunTimer: player.stunTimer, rootTimer: player.rootTimer, frozenTimer: player.frozenTimer,
                 x: player.position?.x,
                 z: player.position?.z,
@@ -527,6 +528,12 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                     ? { x: player.blockedTargetPosition.x, z: player.blockedTargetPosition.z } : null,
                 serverAdjustments: game?.movementTelemetry?.serverAdjustments || 0,
                 hardCorrections: game?.movementTelemetry?.hardCorrections || 0 },
+            actors: [...(game?.remotePlayers?.values?.() || [])]
+                .filter(entity => entity.id !== player?.id && entity.isActive && entity.stats &&
+                    entity.state !== 'DEAD' && entity.position && player?.position &&
+                    entity.position.distanceTo(player.position) < 30)
+                .map(entity => ({ id: entity.id, x: entity.position.x, z: entity.position.z,
+                    radius: entity.radius || 1.25 })),
             skeletons: (game?.activeEntitiesCache || [])
                 .filter((entity) => entity?.isActive &&
                     (entity.subType || entity.constructor?.name) === 'Skeleton')
@@ -549,7 +556,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     throw movementFailure(
         `No real input established ${options.minimumDistance || 1} units toward (${deltaX}, ${deltaZ}): ` +
         JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic }),
-        attempts.length > 0, mobileMovement, attempts
+        attempts.length > 0, mobileMovement, attempts,
+        { before, maximumDisplacement, attempts, ...diagnostic }
     );
 }
 

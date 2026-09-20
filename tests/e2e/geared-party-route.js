@@ -12,6 +12,8 @@ import { observePartyCombatHealth } from '../partyCombatHealth.js';
 import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
+import { GroundMovementFailedError } from '../groundInputFailure.js';
+import { partySpacingActorInterruption } from '../partyRangedSpacing.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { partyDungeonRestNeeded } from '../dungeonRestPolicy.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
@@ -412,35 +414,40 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
-                return step && { origin, target, healing, step, bodies, actorState: p.state, instanceId: g.currentInstanceId };
+                return step && { origin, target, healing, step, bodies, actorState: p.state,
+                    blockedStops: p.movementMetrics?.blockedStops || 0, instanceId: g.currentInstanceId };
             }, { id: target.id, encounter: target.encounter, support });
             if (!plan) return false;
-            let moved = false, failure = null;
+            let moved = false, failure = null, interruptedBy = null;
             try {
                 moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
                     { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
                         arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
             } catch (error) {
                 failure = error;
-                throw error; // An issued input failure remains fatal, never a successful retreat.
+                interruptedBy = error instanceof GroundMovementFailedError
+                    ? partySpacingActorInterruption(plan, error.observation) : null;
+                if (!interruptedBy) throw error;
             } finally {
                 // Earlier evidence retained only successful moves, losing the
                 // actual failed plan and body geometry at the point of failure.
-                const capture = actor.page.evaluate(({ plan, moved, failure }) => {
+                const capture = actor.page.evaluate(({ plan, moved, failure, interruptedBy }) => {
                     const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
                     const bodiesAfter = [...g.remotePlayers.values()].filter(other => other.isActive && other.position &&
                         Math.hypot(other.position.x - p.position.x, other.position.z - p.position.z) < 30)
                         .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
-                    records.push({ ...plan, moved, failure, bodiesAfter, at: Date.now(),
+                    records.push({ ...plan, moved, failure, interruptedBy, bodiesAfter, at: Date.now(),
                         after: { x: p.position.x, z: p.position.z, state: p.state, dead: p.state === 'DEAD' } });
                     if (records.length > 20) records.shift();
-                }, { plan, moved, failure: failure?.message?.slice(0, 1500) || null });
+                }, { plan, moved, interruptedBy, failure: failure?.message?.slice(0, 1500) || null });
                 // If the page itself closed, preserve the original movement
                 // exception rather than replacing it with a diagnostic error.
                 if (failure) await capture.catch(() => {});
                 else await capture;
             }
-            return moved; // The next serial role step rereads warnings/range before attacking.
+            // A proven interruption reserves this role step for replanning;
+            // its record still says moved:false, never a successful retreat.
+            return moved || Boolean(interruptedBy);
         }
 
         async function actCombatRole(actor, policy, target) {

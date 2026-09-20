@@ -51,3 +51,10 @@ Ports18285/18286/4187 were free before launch. Luna
 Do not overlap browser/deployment work, edit the running route or poll previous
 terminal handles. Preserve report attachments before any new Playwright run.
 No result yet; this does not mark Tidestar complete.
+
+Later result: `waterraid0920a` terminated after5.6minutes on a different optional
+spacing failure: a FrostGuardian moved into the Wizard's planned path. This
+does not establish another cardinal-probe failure or a completed raid. Its
+[recorded interruption and narrowly verified replanning change](2026-09-20-raid-spacing-interruption.md)
+retain the original movement and encounter assertions. The previous launcher
+and Luna watcher are terminal; do not resume them.

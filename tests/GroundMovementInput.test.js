@@ -81,7 +81,8 @@ test.each([0, .4])('strict batched preparation retains real ray and issued-input
 test('batched preparation cannot count an issued but unmoving click as a successful dodge', async () => {
     const page = movementPage(true, false, 0, 0);
     await expect(moveByGroundClick(page, 9, 0, { batchPreparation: true, moveOnly: true, requireClearPath: true,
-        allowAlternatePaths: false, allowJumpFallback: false })).rejects.toMatchObject({ name: 'Error' });
+        allowAlternatePaths: false, allowJumpFallback: false })).rejects.toMatchObject({
+        name: 'GroundMovementFailedError', observation: expect.any(Object) });
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
 });
 
@@ -225,7 +226,7 @@ test('an issued strict click that really fails movement remains an error', async
     page.mouse.click.mockImplementation(async () => {});
     await expect(moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
         allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 }))
-        .rejects.toMatchObject({ name: 'Error' });
+        .rejects.toMatchObject({ name: 'GroundMovementFailedError', observation: expect.any(Object) });
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.keyboard.up).toHaveBeenCalledWith('Shift');
 });

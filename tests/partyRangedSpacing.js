@@ -1,5 +1,34 @@
 import { partyPathAvoidsActors } from './partyDungeonControls.js';
 
+// An optional spacing input may be invalidated by a body moving into an
+// initially clear path. This is NOT movement success or a general error waiver:
+// require a fresh collision stop at the requested point and that exact body's
+// observed change from clear to obstructing. The encounter/death watchdogs stay.
+export function partySpacingActorInterruption(plan, observation) {
+    const after = observation?.player, movement = observation?.movement;
+    if (!plan?.instanceId || observation?.before?.instanceId !== plan.instanceId ||
+        after?.instanceId !== plan.instanceId || after.state !== 'IDLE' || !(after.health > 0) ||
+        !Number.isFinite(plan.blockedStops) || !Number.isFinite(movement?.blockedStops) ||
+        movement.blockedStops <= plan.blockedStops || !movement.blockedTarget ||
+        ![plan.origin?.x, plan.origin?.z, plan.step?.dx, plan.step?.dz,
+            observation.before.x, observation.before.z,
+            movement.blockedTarget.x, movement.blockedTarget.z].every(Number.isFinite)) return null;
+    if (Math.hypot(observation.before.x - plan.origin.x, observation.before.z - plan.origin.z) > .25) return null;
+    if (Math.hypot(movement.blockedTarget.x - plan.origin.x - plan.step.dx,
+        movement.blockedTarget.z - plan.origin.z - plan.step.dz) > .25) return null;
+    const attempts = observation.attempts;
+    if (attempts?.length !== 1 || attempts[0].mode !== 'move-only-walk' ||
+        attempts[0].clickProbe?.result !== true || attempts[0].clickProbe?.dom !== 'CANVAS') return null;
+    for (const body of observation.actors || []) {
+        const before = plan.bodies?.find(actor => actor.id === body.id);
+        if (!before || ![before.x, before.z, body.x, body.z].every(Number.isFinite) ||
+            Math.hypot(before.x - body.x, before.z - body.z) < .25) continue;
+        if (partyPathAvoidsActors(plan.origin, plan.step, [before], plan.origin.radius) &&
+            !partyPathAvoidsActors(plan.origin, plan.step, [body], plan.origin.radius)) return body.id;
+    }
+    return null;
+}
+
 // Test-driver input planning, never runtime AI or a stat/position assignment.
 // Use the actual target-padded basic range and available healer range. Hold a
 // useful firing position until the enemy closes or support falls out of reach.
