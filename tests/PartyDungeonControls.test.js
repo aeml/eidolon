@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, PartyFormationRouteUnavailable, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyFormationArrival, PartyFormationRouteUnavailable, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
@@ -87,13 +87,13 @@ test('recorded Tidestar touching bodies can separate before routing around a tea
     const floor = [{ x: 90000, z: 19655, width: 60, height: 70 }];
     const clear = (step, from) => partyPathAvoidsActors(from, step, bodies) &&
         !clipDungeonEffectSegment(floor, from, { x: from.x + step.dx, z: from.z + step.dz }).blocked;
-    // At contact the short polygon vertices alone cannot provide a >=1unit
-    // departure. Do not shrink collision radii or call that failed search arrival.
+    // Short polygon corners may be necessary after departure; explicit arrival
+    // verification supports them without shrinking any collision radii.
     let inputs = 0;
     while (partyFollowStep(follower, anchor) && inputs++ < 12) {
         const step = partyFormationStep(follower, anchor, previous, clear, 4, 0, bodies);
         expect(clear(step, follower)).toBe(true);
-        expect(Math.hypot(step.dx, step.dz)).toBeGreaterThanOrEqual(1);
+        expect(Math.hypot(step.dx, step.dz)).toBeGreaterThanOrEqual(.5);
         follower.x += step.dx;
         follower.z += step.dz;
     }
@@ -159,6 +159,29 @@ test('sub-millimetre replicated spawn offsets use the collision system coinciden
     const body = { x: 19999.908203125, z: 19990.0078125, radius: 1.25 };
     expect(partyPathAvoidsActors(from, { dx: 0, dz: -6 }, [body])).toBe(true);
 });
+test('recorded Fire follower takes a short verified corner around the settled Wizard', () => {
+    let state = { x: 99994.98955206946, z: 19774.44204078348, radius: 1.25 };
+    const anchor = { x: 99999.90731917076, z: 19769.978778746274 };
+    const previous = { x: 99999.92828317474, z: 19780.95989785865 };
+    const bodies = [anchor, { x: 100002.02564952637, z: 19771.567764424588 },
+        { x: 99997.63256365072, z: 19773.865685548888 },
+        { x: 100003.0241874891, z: 19766.764707695962 }];
+    const origin = { ...state };
+    const steps = [];
+    for (let i = 0; i < 8 && Math.hypot(state.x - anchor.x, state.z - anchor.z) >= 5; i++) {
+        const step = partyFormationStep(state, anchor, previous,
+            (delta, from) => partyPathAvoidsActors(from, delta, bodies), 4, 0, bodies);
+        expect(partyPathAvoidsActors(state, step, bodies)).toBe(true);
+        steps.push(step);
+        state = { ...state, x: state.x + step.dx, z: state.z + step.dz };
+    }
+    expect(Math.hypot(steps[0].dx, steps[0].dz)).toBeLessThan(1);
+    expect(Math.hypot(steps[0].dx, steps[0].dz)).toBeGreaterThanOrEqual(.5);
+    expect(Math.hypot(state.x - anchor.x, state.z - anchor.z)).toBeLessThan(5);
+    const arrival = partyFormationArrival(origin, steps[0], 'fire');
+    expect(Math.hypot(origin.x - arrival.x, origin.z - arrival.z)).toBeGreaterThan(arrival.radius);
+});
+
 test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
     const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
     expect(partyFormationStep(follower, anchor, null, () => true)).toEqual({ dx: 10, dz: 0 });
@@ -178,7 +201,7 @@ test('arrival between position and planning reads is verified again without a fa
     expect(move).not.toHaveBeenCalled();
 });
 
-test('recorded five-player entry lets clear followers move before replanning the boxed-in second healer', async () => {
+test('recorded five-player entry gives the second healer a short body-clear departure', async () => {
     const states = [
         { x: 79999.77670563449, z: 19915.92597951876 },
         { x: 79995.83365575141, z: 19932.194045444576 },
@@ -213,7 +236,7 @@ test('recorded five-player entry lets clear followers move before replanning the
             states[index].z += step.dz;
         }
     });
-    expect(blocked).toContainEqual({ index: 4, moves: 0 });
+    expect(blocked).toEqual([]);
     expect(moved).toContain(4);
     expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
 });

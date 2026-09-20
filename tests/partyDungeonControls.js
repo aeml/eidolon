@@ -129,7 +129,10 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
         for (let index = 1; index < nodes.length; index++) {
             if (visited.has(index)) continue;
             const step = delta(nodes[current], nodes[index]), length = Math.hypot(step.dx, step.dz);
-            if (length > 24 || (current === 0 && length < 1 && !nodes[index].goal) || costs[current] + length >= costs[index]) continue;
+            // Formation inputs already verify arrival within .25 units. A
+            // half-unit-or-longer corner therefore proves real displacement;
+            // the old one-unit cutoff could reject the only body-clear route.
+            if (length > 24 || (current === 0 && length < .5 && !nodes[index].goal) || costs[current] + length >= costs[index]) continue;
             if (!canStep(step, nodes[current])) continue;
             costs[index] = costs[current] + length;
             parents[index] = current;

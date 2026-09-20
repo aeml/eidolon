@@ -2,6 +2,11 @@
 
 ## Current delivery — 1.9.25 verified, earned Molten partial
 
+Alpha1.9.26 pushed as`b1c5b06996286fb24ed77efe0fdaa1a89d130032`;
+CI35532592235 is in progress under Luna monitoring. No native browser test
+overlaps it. Exact production identity/readiness verification remains required
+before calling1.9.26 live;1.9.25 is still the last verified public receipt.
+
 Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
 `Party failed to gather before the next pull`, with all five surviving. No
 guardian/repair completion or saved restored-crystal reward is accepted. Source,
@@ -9,7 +14,19 @@ log and launcher: `/tmp/eidolon-fire-raid-20260920-r9-z4coHc/`. Owned containers
 are gone. Archive `/tmp/eidolon-party-checkpoint-fireraid0920i-YYjSTi/save.archive.gz`,
 SHA256`8b7374b2775e78935b91bf3ca00a48a9c9fd10d2d4027a12acd55acee78f899e`.
 The foreground-target change did not receive native acceptance in this run;
-do not repeat Fire unchanged. Its retained formation trace is the next diagnostic.
+do not repeat Fire unchanged.
+The retained formation trace reproduces a planner failure using only the
+observed actor circles: the Rogue remained6.641units from the tank, blocked by
+the settled Wizard. Its legal first detour corner is shorter than one unit,
+which the graph rejected despite the caller already verifying exact arrival
+within0.25units. A regression fails before the correction. Non-goal graph steps
+now permit lengths of at least0.5units, still requiring full floor/body clearance,
+strict arrival, the same five-unit gathering boundary and original deadline.
+86 focused controls, arrival, projection and geometry checks pass11.11s; lint/diff
+pass. The recorded Tidestar and crowded spawn routes also retain collision-safe
+completion. This is a local driver correction after the release push, not a
+native Fire success or part of1.9.26. Do not launch its next native attempt until
+CI releases the deployment browser slot.
 Cross-agent native handles proved unavailable to Luna, so it monitored one
 read-only wait on the verified launcher and inspected the actual terminal footer.
 A missing cross-agent handle was not mistaken for a stopped run.
@@ -20,8 +37,9 @@ client/server/container/deploy identities and patch notes advance together;
 prior notes remain intact. Fire is now terminal, freeing the deployment browser
 queue.1.9.25 remains the last verified production until CI and exact public
 identity/readiness verification confirm the next release.
-The release batch is committed at72089aed;275 version/history checks pass11.085s,
-with scoped lint, shell syntax and diff checks. No push/deployment is pending.
+The release batch was prepared at72089aed;275 version/history checks pass11.085s,
+with scoped lint, shell syntax and diff checks. The exact pushed identity and CI
+are recorded above.
 
 The existing five-role route now also accepts isolated `earned-party-raid`.
 It restores the checksum-pinned Wizard save rather than preparing that actor,
