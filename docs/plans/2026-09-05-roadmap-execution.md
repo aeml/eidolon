@@ -7,15 +7,14 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 20
 
-- Verified live: **Alpha 1.9.26**, exact commit
-  `b1c5b06996286fb24ed77efe0fdaa1a89d130032`. CI35532592235 passed at19:56:33UTC
-  in24m46s; public identities, readiness, notes and three engine assets match.
-  Read-only receipt: `/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`.
-- Pushed candidate: **Alpha1.9.27**, exact
-  `77ba49d486356282914b4b4531d56d536d6aadcc`, CI35542593860. Restored dungeon
+- Verified live: **Alpha1.9.27**, exact
+  `77ba49d486356282914b4b4531d56d536d6aadcc`, CI35542593860 passed September20
+  at23:06:30UTC in21m39s. Public identities, readiness, login, cumulative notes
+  and three exact assets match. Read-only receipt:
+  `/tmp/eidolon-release-1-9-27-20260920-DSHddo/public-verification.log`.
+  Restored dungeon
   scene messages now include authoritative landing positions. Focused server/client
-  regressions and a prepared four-player Guardian encounter pass; publication
-  and public identity verification are still running under Luna. Do not equate
+  regressions and a prepared four-player Guardian encounter pass. Do not equate
   that focused encounter with an earned full dungeon clear.
 - Delivered: the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
@@ -34,8 +33,9 @@ the whole goal. Started September 5, 2026.
 - Next earned continuation is frozen at4e8a0093, reusing normal bag-equipment
   upgrades before entry (39 focused checks pass). It retains the Wizard's own
   archive17, three legal class-geared supports, and ordinary15-minute expiry.
-  Launcher `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/run.sh` is prepared,
-  not started, and refuses to run before CI/public1.9.27 verification succeeds.
+  Launcher `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/run.sh` started only
+  after CI/public1.9.27 verification succeeded, root native5269. No full clear
+  accepted yet; use the earned record for its eventual result.
 - Dark King pacing target is approved:5–10 minutes total across all four phases
   for a well-geared five-player raid. The finale-only watchdog now allows10min;
   no health/damage tuning or successful-finale acceptance is implied.
@@ -46,7 +46,7 @@ the whole goal. Started September 5, 2026.
   [final integration audit](2026-09-14-final-integration-audit.md): later earned
   regions, remaining dungeon/raid repairs, portal/Dark King integration, balance
   and final release acceptance. User-deferred physical-phone checks are not
-  passes. Neither 1.9.26 nor a successful individual test completes the goal.
+  passes. Neither 1.9.27 nor a successful individual test completes the goal.
 
 The September8 entries below are historical evidence, not active processes or
 instructions to publish those old candidates. Preserve accepted evidence and

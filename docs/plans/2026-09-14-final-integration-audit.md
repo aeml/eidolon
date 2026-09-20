@@ -1,8 +1,8 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.26 verified, earned Molten partial
+## Current delivery — 1.9.27 verified, earned Molten partial
 
-### 1.9.27 deploying — authoritative dungeon resume landing
+### 1.9.27 verified — authoritative dungeon resume landing
 
 Prepared Guardian diagnostic b (0f20c854) restored all four into the same saved
 instance, but Fighter/Rogue appeared at the entrance while Cleric/Wizard retained
@@ -18,9 +18,12 @@ Server focused tests pass1.098s,32 client scene/fixture checks pass2.486s. Nativ
 prepared Guardian c passed4.6m on exact77ba49d486356282914b4b4531d56d536d6aadcc:
 all four deep-room positions validated, Guardian defeated and all four survived.
 This is prepared encounter evidence, not full earned Molten acceptance. The exact
-candidate is pushed to master; CI35542593860 is monitored by Luna, with public
-identity verification queued after success. Latest verified public release remains
-1.9.26 until that receipt arrives. No native GPU test overlaps deployment.
+candidate is pushed to master; CI35542593860 passed at23:06:30UTC on September20
+in21m39s, including live character QA. Luna's read-only public verifier confirms
+exact frontend/backend identities, database readiness, login version, cumulative
+notes and three version-rewritten assets. Receipt:
+`/tmp/eidolon-release-1-9-27-20260920-DSHddo/public-verification.log`.
+No production account mutations or overlapping native GPU tests.
 
 Read-only inspection of earned checkpoint17 found a Rare intelligence/vitality
 staff already owned but not equipped. Regional/raid readiness omitted the existing

@@ -2,6 +2,14 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+`earnedmolten0920e` is running from frozen4e8a0093: root native5269,
+launcher1400977, source/log `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/`.
+It started only after1.9.27 CI35542593860 passed and exact public identities,
+readiness, notes and assets were verified. Prior owned services/ports were free.
+Uses unchanged archive17, actual normal bag upgrades, three class-geared70
+supports and existing two-hour/zero-retry limit. Luna monitors the exact launcher
+and terminal footer. No earned full clear or new Air handoff is accepted yet.
+
 Prepared Guardian c passed4.6m on77ba49d4, with all four real deep-room positions
 validated,68250HP Guardian defeated and all four alive. Fighter/Wizard/Rogue
 damage22727/18620/27484; Cleric ally healing8023. Source/log:
@@ -10,8 +18,9 @@ services cleaned. Prepared-only archive:
 `/tmp/eidolon-party-checkpoint-guardiandiagnostic0920c-KNrm8V/save.archive.gz`,
 SHA256`9015653e7161857363452045f1615b6b86a06d57aa717627041b4abddc7db23b`.
 Not an earned continuation or full Molten clear. This supersedes the pending
-diagnostic status in the historical entries below.1.9.27 resume fix is pushed,
-CI35542593860 running under Luna; no overlapping native GPU work.
+diagnostic status in the historical entries below.1.9.27 resume fix is verified
+live; CI35542593860 passed at23:06:30UTC in21m39s, with public receipt in
+`/tmp/eidolon-release-1-9-27-20260920-DSHddo/public-verification.log`.
 
 Next earned attempt uses unchanged checkpoint17 below. Read-only inventory review
 found the actual lvl69 Rare Brilliant staff (intelligence21/vitality21/damage27)
@@ -20,7 +29,8 @@ Regional/raid readiness now reuses existing `upgradeEarnedEquipment` after saved
 chapter/XP/Gold validation, just as the first dungeon already does. Normal bag
 drag/equip only, all original items retained, no grants or resource/time rewrites.
 39 readiness/equipment regressions pass1.34s, scoped lint/diff pass. No native
-earned success is claimed by those checks; wait for deployment before launching.
+earned success is claimed by those checks. The deployment gate passed before
+the continuation was launched, as recorded above.
 
 `earnedmolten0920d` is terminal exit1/1.3h from frozen0788ca95 with ordinary Recall for a
 preserved-instance restore. Source/log/launcher:
