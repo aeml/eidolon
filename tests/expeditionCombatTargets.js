@@ -21,6 +21,10 @@ export function expeditionSearchAnchor(hunt) {
         if (hunt.enemy === 'MountainTroll') return { x: 0, z: -800 };
         if (hunt.enemy === 'AquaGolem') return { x: 0, z: -1200 };
     }
+    // Authored spawnFireWorld/spawnAirWorld bands. Callers first traverse
+    // the real realm gate; this is a local search anchor, never a teleport.
+    if (hunt?.huntingRealm === 'fire' && hunt.enemy === 'MagmaGolem') return { x: -1600, z: 200 };
+    if (hunt?.huntingRealm === 'air' && hunt.enemy === 'ThunderRoc') return { x: 2000, z: 200 };
     throw new Error(`Unsupported expedition search: ${hunt?.huntingRealm}/${hunt?.enemy}`);
 }
 

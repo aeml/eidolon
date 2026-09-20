@@ -5,16 +5,13 @@ import { openIlyra } from './chronicle-earth-route.js';
 import { earnInvestigation } from './chronicle-investigation-route.js';
 import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
+import { chroniclePhoneRoutes } from './chronicle-phone-routes.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 
 const realm = process.env.EIDOLON_E2E_INVESTIGATION_REALM || 'water';
-const realmRoutes = {
-    water: [[0, 230], [55, 230], [80, 200], [125, 200], [145, -200], [145, -550], [0, -575], [0, -625]],
-    fire: [[0, 230], [-55, 230], [-80, 200], [-125, 200], [-500, 200], [-900, 200], [-1030, 200], [-1130, 245]],
-    air: [[0, 230], [55, 230], [80, 200], [125, 200], [500, 200], [900, 200], [1030, 200], [1110, 245]]
-};
-if (!Object.hasOwn(realmRoutes, realm)) throw new Error('Investigation realm must be water, fire or air');
+const realmRoutes = chroniclePhoneRoutes;
+if (!['water', 'fire', 'air'].includes(realm)) throw new Error('Investigation realm must be water, fire or air');
 
 async function clearPursuingHostiles(page, site, beforeCombat) {
     const engaged = new Set();

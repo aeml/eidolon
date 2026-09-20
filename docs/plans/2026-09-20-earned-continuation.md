@@ -104,6 +104,18 @@ Ferry worktree unchanged, finish earned Water pacing first, and use that actual
 save for the four-player Abyssal continuation. Do not replay Verdant or turn a
 prepared support character into claimed earned campaign evidence.
 
+### Later realm travel preparation
+
+The returning-investigation route still had its own outdated Air waypoints,
+crossing the solid Bastion entrance between(500,200) and(900,200). It now reuses
+the existing shared path around that footprint, preserving ordinary gates and
+collision. The earned hunt search also supports the authored Magma Golem
+X-1795..-1405 and Thunder Roc X1805..2195 bands from `world.go`; explicit regional
+town-departure paths remain required. No quest eligibility, rewards or runtime
+movement changed.23 focused target-selection checks pass in0.618s, plus lint,
+diff and investigation test discovery. This prepares later Fire/Air work, not
+earned regional acceptance, and does not alter the active Water worktree.
+
 Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
 four-player desktop panel has scrolled its header/tank row out of view while
 lower support controls remain visible. The existing HTML-only party layout

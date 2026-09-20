@@ -46,7 +46,7 @@ const combatSnapshot = page => page.evaluate(() => {
 
 export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown, resumeAccepted = false } = {}) {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
-    expect(['earth', 'water'], 'Earned hunt must have an authored search region').toContain(hunt?.huntingRealm);
+    expect(['earth', 'water', 'fire', 'air'], 'Earned hunt must have an authored search region').toContain(hunt?.huntingRealm);
     if (hunt.huntingRealm !== 'earth') {
         expect(typeof leaveTown, 'Regional hunts require explicit ordinary travel from town').toBe('function');
     }

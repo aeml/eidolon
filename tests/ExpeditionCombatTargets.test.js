@@ -38,6 +38,20 @@ test.each([null, { huntingRealm: 'water', enemy: 'Construct' }, { huntingRealm: 
         expect(() => expeditionSearchAnchor(hunt)).toThrow('Unsupported expedition search');
     });
 
+test.each([
+    ['chronicle_fire_unending_war', 'MagmaGolem', -1600, -1795, -1405],
+    ['chronicle_air_unstolen_hours', 'ThunderRoc', 2000, 1805, 2195]
+])('%s searches its authored horizontal spawn band without changing the hunt', (id, enemy, x, low, high) => {
+    const hunt = chronicleHunts.find(hunt => hunt.id === id);
+    const before = JSON.stringify(hunt);
+    expect(hunt.enemy).toBe(enemy);
+    const anchor = expeditionSearchAnchor(hunt);
+    expect(anchor).toEqual({ x, z: 200 });
+    expect(anchor.x).toBeGreaterThan(low);
+    expect(anchor.x).toBeLessThan(high);
+    expect(JSON.stringify(hunt)).toBe(before);
+});
+
 test('unsupported realms or enemies never silently search the Demon Orc sector', () => {
     expect(() => earthExpeditionSearchAnchor({ huntingRealm: 'water', enemy: 'MountainTroll' })).toThrow();
     expect(() => earthExpeditionSearchAnchor({ huntingRealm: 'earth', enemy: 'Unknown' })).toThrow();
