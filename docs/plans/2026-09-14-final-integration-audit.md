@@ -62,6 +62,24 @@ the scoped watchdog update above supersedes that earlier open decision.
 No encounter health/damage, party gates or Eidolon phases changed. The active
 Molten run remains on its frozen source, uninterrupted by this future-finale update.
 
+Next-finale measurement now retains a browser-monotonic timestamp for each
+actual phase event and a leader timestamp only after observed boss death. The
+next scheduled fight can therefore report phase intervals and total opening-to-
+death time without another dedicated run. Compare times within the same browser,
+not across separate clients.13 focused evidence tests pass1.514s; scoped lint
+and whitespace checks pass. The running Molten worktree remains unchanged.
+
+An idealized arithmetic cross-check of the existing1824000HP profile,8% phase3
+sear and25%/35% outgoing aid gives about1,497,842 pre-aid damage across the four
+quarters: `H * (.25 + .25 + .17/1.25 + .25/1.35)`. Your5–10-minute target thus
+implies roughly2,496–4,993 aggregate sustained pre-aid DPS in that simplified
+model. This omits rounding, mitigation interactions, movement, misses and input
+overhead; it is not an expected player DPS measurement or a tuning decision.
+The retained46-second failure cannot establish sustained output, and the
+prepared baseline is five Rare/nine Uncommon pieces per actor with primary
+mastery only, not a fully optimized endgame build. Preserve these distinctions
+when evaluating the next survival-corrected run; no boss stats changed.
+
 ### Verified release and retained run evidence
 
 Latest continuation `earnedmolten0920d` is terminal exit1/1.3h, frozen0788ca95,

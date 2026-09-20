@@ -62,6 +62,14 @@ export async function playDungeonThroughInputs(page, {
             if (beforeCombat && await beforeCombat(page, target)) continue;
             const state = await page.evaluate(readDungeonTargetStateInPage, target.id);
             if (state?.state === 'DEAD' || state?.health <= 0) {
+                if (playthrough.dungeonType === 'weekly_raid' && target.type === 'UmbraPrime') {
+                    // Same browser monotonic clock as the actual phase events.
+                    // Record only after confirmed death, never on timeout/exit.
+                    await page.evaluate(() => {
+                        const evidence = window.__partyClearEvidence;
+                        if (evidence) evidence.darkKingDefeatedAtMs = performance.now();
+                    });
+                }
                 console.log(`${logPrefix} defeated ${target.type}`);
                 if (fullRun && target.type === playthrough.bosses[0] && process.env.EIDOLON_E2E_CLASS === 'Fighter') {
                     const observedSkills = await page.evaluate(() => window.__dungeonObservedSkills);

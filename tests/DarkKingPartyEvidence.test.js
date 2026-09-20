@@ -22,6 +22,14 @@ test('requires all four actual events with the correct rendered callout and livi
     expect(() => assertDarkKingPhases(evidence)).not.toThrow();
 });
 
+test('retains observation times for phase durations without changing game state', () => {
+    const { game, phases } = observedPhases();
+    const evidence = {}, before = JSON.parse(JSON.stringify(game));
+    for (const [i, phase] of phases.entries()) recordDarkKingPhase(evidence, game, phase, 1000 + i * 90_000);
+    expect(evidence.darkKingPhases.map(p => p.observedAtMs)).toEqual([1000, 91000, 181000, 271000]);
+    expect(game).toEqual(before);
+});
+
 test.each([
     e => { e.darkKingPhases.splice(1, 1); }, e => { e.darkKingPhases.reverse(); },
     e => { e.darkKingPhases[1].eidolon = 'Orun'; }, e => { e.darkKingPhases[1].alive = false; },

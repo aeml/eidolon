@@ -1,12 +1,12 @@
 // Read-only receipt of actual server events after normal client presentation.
 // No phase, health, mana, quest or clock mutation. Imported by the isolated
 // browser route as well as its focused behavior tests.
-export function recordDarkKingPhase(evidence, game, phase) {
+export function recordDarkKingPhase(evidence, game, phase, observedAtMs = performance.now()) {
     if (!phase || phase.instanceId !== game.currentInstanceId || game.currentInstanceType !== 'weekly_raid') return;
     const phases = evidence.darkKingPhases ||= [];
     if (phases.length >= 8) { evidence.darkKingPhaseOverflow = true; return; }
     const ui = game.uiManager;
-    phases.push({ phase: phase.phase, eidolon: phase.eidolon, element: phase.element,
+    phases.push({ phase: phase.phase, eidolon: phase.eidolon, element: phase.element, observedAtMs,
         title: phase.title, effect: phase.effect, dialogue: phase.dialogue,
         alive: game.player.state !== 'DEAD' && game.player.stats.hp > 0,
         renderedTitle: ui?.combatIntentName?.textContent,
