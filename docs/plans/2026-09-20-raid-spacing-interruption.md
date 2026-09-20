@@ -109,3 +109,9 @@ ports18285/18286/4187 are free. Private archive:
 `/tmp/eidolon-party-checkpoint-waterraid0920c-DPl6sq/save.archive.gz`, SHA256
 `99ba0270e82960eb58a91ae603bd0f194ed7357d6bbf606fe3d68d4e22595021`.
 Do not upload this save or change the15minute logout rule to reuse it.
+
+Current run: `waterraid0920d`, clean source929bbf9a, launcherPID1801420 confirmed
+live. Log/launcher directory: `/tmp/eidolon-water-raid-20260920-r4-noJI9r/`.
+Same five legal builds, full raid/repair/manual claims/re-login, zero retries.
+Luna `/root/watch_tidestar_0920d` owns terminal monitoring. Do not duplicate
+polling or start competing browsers. Preserve reports when it terminates.
