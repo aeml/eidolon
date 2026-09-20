@@ -84,7 +84,9 @@ func TestAdminMutationAdmissionRejectionKeepsCorrelatedRetryIdentity(t *testing.
 }
 
 func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
-	for _, mode := range []string{"malformed", "role-lookup", "operation-lookup", "conflicting-id"} {
+	for _, mode := range []string{"malformed", "role-lookup", "operation-lookup", "conflicting-id",
+		"missing-role-service", "missing-operation-service", "character-persistence", "character-plan",
+		"admin-recovery", "casino-recovery", "trading-recovery", "prepare-failed", "prepare-ambiguous"} {
 		t.Run(mode, func(t *testing.T) {
 			c, roles, operations, committer, player := adminMutationFixture(t)
 			dir, activity := sessionActivityFixture(t)
@@ -96,6 +98,33 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 				roles.lookupErr = errors.New("private role-store error")
 			case "operation-lookup":
 				operations.getErr = errors.New("private operation-store error")
+			case "missing-role-service":
+				adminRoles = nil
+			case "missing-operation-service":
+				adminOperations = nil
+			case "character-persistence":
+				characterSaveCommitter = nil
+			case "character-plan":
+				world.RemoveEntity(player.ID) // Offline lookup fails in this fixture.
+			case "admin-recovery":
+				trackAdminOperation(database.AdminOperation{ID: "previous-intent", Target: "recipient",
+					Audit: database.AdminActivity{Result: "success"}})
+			case "casino-recovery":
+				oldDB, oldCache, oldAvailable := db, blackjackCached, blackjackAvailable
+				t.Cleanup(func() { db, blackjackCached, blackjackAvailable = oldDB, oldCache, oldAvailable })
+				db = nil
+				blackjackCached = &database.BlackjackTableRecord{TableID: publicBlackjackTable, Version: 2,
+					Pending: &database.BlackjackTransfer{ID: "casino:round:bet", PlayerID: player.ID, Currency: "gold", Amount: -10}}
+			case "prepare-failed", "prepare-ambiguous":
+				operations.prepareErr = errors.New("private preparation failure")
+				operations.insertBeforeError = mode == "prepare-ambiguous"
+			case "trading-recovery":
+				world.Trading.Auctions["pending-auction"] = &game.Auction{ID: "pending-auction", SellerID: "player-seller",
+					Status: game.AuctionActive, Bid: 1, EndTime: time.Now().Add(time.Hour)}
+				if _, err := world.Trading.PrepareAuctionBid("pending-auction", player, 10); err != nil {
+					t.Fatal(err)
+				}
+				characterSaveCommitter = nil
 			case "conflicting-id":
 				if result := adminMutationReply(t, c, MsgAdminGrantGold, payload); !result.Success {
 					t.Fatal(result)
@@ -116,6 +145,9 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 				t.Fatal("rejected operation lost its audit during database outage", pending, err)
 			}
 			event := pending[0]
+			if mode == "trading-recovery" && !strings.Contains(event.Summary, "trading funds") {
+				t.Fatal("did not exercise trading recovery rejection", event)
+			}
 			if event.Actor != "operator" || event.Target != "recipient" || event.Action != MsgAdminGrantGold ||
 				event.RequestID != "request-123456789" || event.Result == "success" || event.At.IsZero() ||
 				strings.Contains(event.Summary, "private") || strings.Contains(event.Summary, "forged") {

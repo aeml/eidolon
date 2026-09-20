@@ -44,9 +44,20 @@ exactly once after retry. Related mutation tests pass in0.989s; the focused race
 run passes in2.615s. Formatting and diff checks pass. Batch into the next release
 with an additive patch-note entry; do not supersede the queued Water run.
 
+The same local follow-up now covers missing role/operation services, pending
+admin/casino/trading recovery, character persistence/planning failures and
+failed or ambiguous intent preparation. These use the existing outbox and
+sanitized error summaries, retaining pending/non-final replies and original
+receipts. Thirteen outage cases exercise exact disk reopen/replay, including a
+prepare that inserted before returning an error. Related mutation/replay tests
+pass under the race detector in6.141s. No new schema or logging subsystem.
+Next-release patch-note text: “Administration history now records requests
+deferred by character, trading, casino or operation-storage recovery, without
+duplicating grants when the same request is retried.” This is not live yet.
+
 This does not close the broader “every operation attempt” audit requirement:
-transport admission rejection, unavailable-service and pre-intent preparation
-failure paths still need their bounded-policy review. Do not mistake a working live panel for proof of
+transport admission rejection and completely unavailable activity storage still
+need their bounded-policy review. Do not mistake a working live panel for proof of
 every failure branch. Batch this correction into the next appropriate release
 with patch notes and synchronized identity; do not compete with the current
 earned Water browser run or repeat accepted administration mutation matrices.

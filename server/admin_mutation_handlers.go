@@ -46,6 +46,12 @@ func handleAdminMutation(c *Client, msg Message) {
 		payload, _ := json.Marshal(result)
 		c.sendSafe(createMessage(msg.Type+"_result", payload))
 	}()
+	pendingFailure := func(summary string) {
+		result.Pending = true
+		// Preserve the retry identity and any existing durable intent. This
+		// records an unavailable attempt, not a final decision on its effect.
+		auditAdminRejectedRequest(c, msg.Type, request, "error", summary)
+	}
 	if c.username == "" || c.transportClosed.Load() || !currentCharacterConnection(c) {
 		result.Message = "This connection is no longer active. Reconnect before using administration."
 		return
@@ -58,6 +64,7 @@ func handleAdminMutation(c *Client, msg Message) {
 		return
 	}
 	if adminRoles == nil || adminOperations == nil || adminActivities == nil {
+		auditAdminRejectedRequest(c, msg.Type, request, "error", "Administration services unavailable; no new operation admitted.")
 		return
 	}
 	authorized, err := adminRoles.HasAdminRole(c.username)
@@ -69,10 +76,9 @@ func handleAdminMutation(c *Client, msg Message) {
 	id, fingerprint := request.identities(c.username, msg.Type)
 	stored, err := adminOperations.GetAdminOperation(id)
 	if err != nil {
-		result.Pending = true
 		// The original operation may already exist. Record only this failed
 		// lookup attempt; do not invent a final denial or replace its receipt.
-		auditAdminRejectedRequest(c, msg.Type, request, "error", "Previous operation could not be verified; no new operation admitted. Retry the same request.")
+		pendingFailure("Previous operation could not be verified; no new operation admitted. Retry the same request.")
 		return
 	}
 	if stored != nil && (stored.Fingerprint != fingerprint || stored.Actor != c.username || stored.Target != request.Target || stored.Action != msg.Type) {
@@ -98,26 +104,26 @@ func handleAdminMutation(c *Client, msg Message) {
 					continue
 				}
 				if err := recoverAccountAdminOperationsLocked(account); err != nil {
-					result.Pending = true
+					pendingFailure("Existing administration changes await recovery; no new operation admitted.")
 					return
 				}
 				if err := recoverAccountBlackjackLocked(account); err != nil {
-					result.Pending = true
+					pendingFailure("Existing casino funds await recovery; no new operation admitted.")
 					return
 				}
 				if err := recoverAccountAuctionBidsLocked(account); err != nil {
-					result.Pending = true
+					pendingFailure("Existing trading funds await recovery; no new operation admitted.")
 					return
 				}
 			}
 			if err := reconcileAdminCharacterLocked(request.Target); err != nil {
-				result.Pending = true
+				pendingFailure("Character persistence unavailable; no new operation admitted.")
 				return
 			}
 			plan, summary, err = planAdminMutationLocked(c.username, msg.Type, request, id, fingerprint)
 			if err != nil {
 				if !errors.Is(err, game.ErrAdminGrantRejected) && !errors.Is(err, game.ErrAdminTeleportRejected) {
-					result.Pending = true
+					pendingFailure("Character change could not be planned; no new operation admitted.")
 					return
 				}
 				plan = nil
@@ -127,6 +133,7 @@ func handleAdminMutation(c *Client, msg Message) {
 		}
 		audit, err := database.NewAdminActivity(c.username, request.Target, msg.Type, request.ID, outcome, summary, time.Now(), adminActivities.AdminActivityRetentionDays())
 		if err != nil {
+			auditAdminRejectedRequest(c, msg.Type, request, "error", "Operation audit could not be prepared; no new operation admitted.")
 			return
 		}
 		audit.Reason = request.Reason
@@ -138,7 +145,7 @@ func handleAdminMutation(c *Client, msg Message) {
 		}
 		stored, err = prepareAdminOperationLocked(op)
 		if err != nil {
-			result.Pending = true
+			pendingFailure("Operation preparation could not be confirmed. Retry the same request; its outcome is not yet known.")
 			return
 		}
 	}
@@ -154,7 +161,7 @@ func handleAdminMutation(c *Client, msg Message) {
 	result.Message = completed.Audit.Summary
 }
 
-// Malformed/conflicting requests and role/operation lookup failures use this path.
+// Malformed/conflicting requests and service/preparation failures use this path.
 // Valid decisions (including denied non-admin requests) use permanent operation
 // identities so an identical retry never inserts another audit entry.
 func auditAdminRejectedRequest(c *Client, action string, request adminMutationRequest, outcome, summary string) bool {
