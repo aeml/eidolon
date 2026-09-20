@@ -20,6 +20,30 @@ test('recorded short detour reaches its own waypoint without claiming final form
     expect(groundMovementObserved(before, { ...before, health: 845, state: 'IDLE' }, 1, arrival)).toBe(false);
 });
 
+test.each([
+    { x: before.x + 3, z: before.z },
+    { instanceId: 'other' },
+    { instanceType: 'town' },
+    { state: 'DEAD' },
+    { health: 0 }
+])('long displacement cannot bypass the explicit waypoint contract: %j', changes => {
+    const arrival = partyFormationArrival(before, { dx: 3, dz: 3 }, before.instanceId);
+    const moved = { ...before, x: arrival.x, z: arrival.z, state: 'IDLE', health: 845, ...changes };
+    expect(Math.hypot(moved.x - before.x, moved.z - before.z)).toBeGreaterThan(1);
+    expect(groundMovementObserved(before, moved, 1, arrival)).toBe(false);
+});
+
+test('an unchanged observation inside an arrival region is not a witnessed walking step', () => {
+    expect(groundMovementObserved(before, { ...before, state: 'IDLE', health: 845 }, 1,
+        { x: before.x, z: before.z, radius: .25, instanceId: before.instanceId })).toBe(false);
+});
+
+test('long displacement still succeeds at the required living same-instance waypoint', () => {
+    const arrival = partyFormationArrival(before, { dx: 3, dz: 3 }, before.instanceId);
+    expect(groundMovementObserved(before, { ...before, x: arrival.x, z: arrival.z, state: 'IDLE', health: 845 },
+        1, arrival)).toBe(true);
+});
+
 test.each([{ health: 0 }, { state: 'DEAD' }, { instanceId: 'other' },
     { instanceType: 'town' }, { x: NaN }, { x: before.x, z: before.z }])(
     'detour acceptance retains alive/current-instance/real-motion guards: %j', changes => {

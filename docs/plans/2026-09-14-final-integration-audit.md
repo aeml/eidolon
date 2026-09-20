@@ -19,6 +19,21 @@ zero retries. Luna monitors one read-only launcher wait and the terminal footer.
 No result is accepted yet. No competing Eidolon native/deployment browser job
 was present at launch; unrelated software-rendered browser tests were left alone.
 
+During that run, source review found the optional waypoint witness accepted any
+displacement over one unit before checking its required destination, living state
+or instance. Six new regressions reproduce that bypass (including an unchanged
+observation already inside the arrival region). The local QA helper now requires
+real displacement and the explicit living, same-instance arrival contract for
+both short and long steps; ordinary displacement-only callers are unchanged.
+75 focused movement/waypoint/ranged-spacing checks pass5.507s; lint/diff pass.
+No runtime balance or deadlines changed, and the running frozen Fire source was
+not edited/restarted. This is not evidence that earlier whole-route acceptance
+failed: final group gathering, survival and saved completion have separate checks.
+Air continuation already uses the existing regional route, saved-chapter skip,
+authored travel around the Bastion, four inspection sites and normal70 Tempest
+handoff. No new grants or duplicate driver are needed; earned Molten completion
+is still its prerequisite.
+
 Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
 `Party failed to gather before the next pull`, with all five surviving. No
 guardian/repair completion or saved restored-crystal reward is accepted. Source,
