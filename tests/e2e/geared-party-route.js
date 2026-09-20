@@ -666,7 +666,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                         move: async (index, step) => {
                             await tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
                                 step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,
-                                    requireClearPath: true, arrival: step.arrival }));
+                                    requireClearPath: true, batchPreparation: true, arrival: step.arrival }));
                             await expect.poll(() => actors[index].page.evaluate(() => !window.game.player.targetPosition),
                                 { timeout: 5000 }).toBe(true);
                         } });

@@ -34,6 +34,15 @@ authored travel around the Bastion, four inspection sites and normal70 Tempest
 handoff. No new grants or duplicate driver are needed; earned Molten completion
 is still its prerequisite.
 
+Later party formation inputs now reuse the already-existing batched preparation
+used by telegraph escapes: one synchronous origin/path/projection observation
+instead of three separate browser round trips. The real ray, click receipt,
+strict arrival and group boundary checks remain. Unit observations verify four
+rather than six successful input round trips, including short-waypoint parity;
+58 focused preparation/input/arrival checks pass5.224s, lint/diff pass. This is
+not a measured end-to-end speedup, new native acceptance or a reason to restart
+the running frozen Fire test. No new timeout, gameplay setting or driver layer.
+
 Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
 `Party failed to gather before the next pull`, with all five surviving. No
 guardian/repair completion or saved restored-crystal reward is accepted. Source,

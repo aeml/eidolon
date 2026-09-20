@@ -94,14 +94,24 @@ test('covered ground can use the existing real Control-click fallback', async ()
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
 });
 
-test('strict successful input needs at most six browser observation round trips', async () => {
+test.each([[false, 6], [true, 4]])('strict input batching=%s needs at most %s observation round trips', async (batchPreparation, limit) => {
     const page = movementPage(true);
     const after = await moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
-        allowJumpFallback: false, allowAlternatePaths: false });
+        allowJumpFallback: false, allowAlternatePaths: false, batchPreparation });
     expect(after.x).toBe(10);
-    expect(page.evaluate.mock.calls.length).toBeLessThanOrEqual(6);
+    expect(page.evaluate.mock.calls.length).toBeLessThanOrEqual(limit);
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.waitForTimeout).toHaveBeenCalledWith(75);
+});
+
+test.each([false, true])('strict short-waypoint arrival retains the same contract with batching=%s', async batchPreparation => {
+    const page = movementPage(true, false, 0, .7);
+    const after = await moveByGroundClick(page, .75, 0, { batchPreparation, moveOnly: true,
+        requireClearPath: true, allowJumpFallback: false, allowAlternatePaths: false,
+        arrival: { x: .75, z: 0, radius: .25, instanceId: 'dungeon-test' } });
+    expect(after.x).toBe(.7);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.keyboard.down.mock.calls).toEqual([['Shift']]);
 });
 
 test('batched receipts still reject a foreground hostile that intercepts the real click', async () => {
