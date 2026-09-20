@@ -15,14 +15,22 @@ the [current Fire record](2026-09-20-ember-crown-party-validation.md) describes 
 bounded observed-death retention correction and its verification limits.
 
 Earned checkpoint continuation `earnedresume0920a` finished the four remaining
-Orc kills and manual reward, reaching level31/12488XP/9011Gold with no deaths or
-dailies. Readiness then failed because transferring the exact character into a
-new disposable account preserved its original solo-party leader identity. The
-follow-up uses ordinary Leave Party controls and the new full saved checkpoint,
-not replayed kills or edited progression. Run `earnedresume0920b`, source201cb328,
-session49969/PID2896413, is active in
-`/tmp/eidolon-earned-resume-20260920-r2-VVa22M/`, monitored by Luna. This is not yet
-dungeon/Water acceptance. Do not run another native GPU route concurrently.
+Orc kills and manual reward in memory, reaching level31/12488XP/9011Gold without
+deaths or dailies. These were **not saved**: the fixture copied the old character
+name into a different account, while normal save lookup requires the new account
+name. Its archived database remains at level30/7170XP/8539Gold, Orc46/50.
+`earnedresume0920b` therefore failed its strict restore guard before gameplay;
+session49969 is terminal. Do not treat either archive as earned level31 proof.
+The corrected fixture remaps only the account save-key name, leaves the inherited
+party through normal controls, and requires an actual Mongo saved-handoff match.
+No inventory, rewards, logout times or gameplay rules are rewritten. The known
+September14 level30 archive remains the valid continuation point; four unsaved
+kills must be earned again, not inferred from the prior passing in-memory log.
+
+Fire run `fireraid0920d`, clean source82472be7, is active in
+`/tmp/eidolon-fire-raid-20260920-r4-8FyL2K/`, session79539/PID2926173, monitored by
+Luna. It includes observed-death retention, with the original complete raid
+requirements and no retries. Do not start another native GPU route concurrently.
 
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database
