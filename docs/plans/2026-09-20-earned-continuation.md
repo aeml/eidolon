@@ -2,6 +2,15 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+Corrected continuation `earnedmolten0920c` is running from frozen8569dcd8:
+`/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
+launcher4125632. Uses the independently verified latest index15 save below,
+with three prepared70 class-geared supports and unchanged two-hour/zero-retry
+limits. Prior owned services/inspection copy were gone, ports free and CI terminal
+before launch. Luna monitors one read-only launcher wait and terminal footer.
+This follows the reproduced QA witness correction, not an unchanged retry or
+gameplay nerf. No new completion accepted yet.
+
 Continuation `earnedmolten0920b` is **terminal exit1 after10.5m**, root native1224/launcher3915852 stopped, at
 `/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozencdf71b50. The latest
 Molten archive below was checksum-verified and is used intact, including actual

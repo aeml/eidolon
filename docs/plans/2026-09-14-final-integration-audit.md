@@ -21,6 +21,12 @@ This open pacing preference does not block earned Molten or other roadmap work.
 
 ### Verified release and retained run evidence
 
+`earnedmolten0920c` now runs from8569dcd8 with the corrected input witness and
+latest checksum-pinned earned save. Root66703/launcher4125632, source/log at
+`/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`; Luna monitors terminal-only.
+Ports/native/deployment slot were clear before launch. Original limits and
+normal expiry remain; no completion implied by launch.
+
 Earned Molten `earnedmolten0920b` is terminal exit1/10.5m oncdf71b50, with
 Cindermaw and one town rest/re-entry, all four alive. Root1224/launcher3915852 and
 owned services are stopped. The recently introduced exact-waypoint requirement
