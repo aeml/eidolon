@@ -2,12 +2,31 @@
 
 ## Current delivery — 1.9.25 verified, earned Molten partial
 
-Active native: corrected Fire `fireraid0920h`, session64215, frozen clean
-39d272a9. Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
-Luna monitors terminal-only. Same legal five-role gear, Low and120minute ceiling;
-includes the verified assault-to-defense handoff and stale-entry-hint fix.
-Previous Dark King cleanup and free ports were confirmed before launch. No other
-native route or deployment overlaps it; full Fire completion is not yet claimed.
+Fire `fireraid0920h`, session64215, frozen39d272a9 is terminal exit1 after10.5m.
+Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
+The Rogue died during an assault Magma Golem pull, before guardian/repair stages.
+The two Clerics' later final snapshots are also dead, but do not conflate these
+with the first survival assertion: combat workers stop on that first failure.
+Owned processes and containers are gone. Private save:
+`/tmp/eidolon-party-checkpoint-fireraid0920h-Q8W8gR/save.archive.gz`,
+SHA256`e21404274d03bd0944ff4fa5f39571f78e6e231bb1a4cbfd32c63498cba60cf6`.
+
+This run retains an actionable control failure: the tank's selected Golem stayed
+at6340HP for48seconds while the pointer's actual foreground was an Infernal
+Behemoth. The saved ray hit stack contains two Behemoths ahead of the Golem,
+whose proxy is present/visible. The Fighter circled without landing the opener;
+DPS correctly waited for its real hit while the pack attacked the group. Both
+healers were close to the Rogue, so the separate finale escort change does not
+address this failure. No balance adjustment is justified by that driver stall.
+
+The driver now may select the actual foreground member of the same nearby
+hostile pack after its bounded aim search fails. It re-aims normally and switches
+party input workers before combat; it never substitutes a boss, selects a
+friendly/distant/dead actor, cycles back to an attempted target, extends the
+fight/stall deadline, or credits an untouched enemy as defeated. Only a confirmed
+death returns its actual identity to the full-room route.32 focused aiming,
+entry and tank-engagement checks pass (31 in1.176s plus the new15-test entry
+rerun in0.698s); scoped ESLint/diff pass. Full Fire completion remains open.
 
 During that same run, `source/test-results/five-player-raid-five-gear-73476-four-phase-Dark-King-finale/party-instance-entry.png`
 was inspected: the five-member raid roster and Fire entrance are rendered, with

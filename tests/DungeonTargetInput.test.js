@@ -1,12 +1,30 @@
 import { jest } from '@jest/globals';
 import * as THREE from 'three';
-import { aimDungeonCombatTarget, readDungeonTargetPointerInPage } from './dungeonTargetInput.js';
+import { aimDungeonCombatTarget, readDungeonTargetPointerInPage, selectDungeonForegroundTarget } from './dungeonTargetInput.js';
 import { createProceduralMagmaGolem } from '../src/art/ProceduralOverworldEnemies.js';
 import { MagmaGolem } from '../src/entities/MagmaGolem.js';
 
 const makeInput = () => ({
     project: jest.fn().mockResolvedValue({ x: 100, y: 200, visible: true }),
     move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn().mockResolvedValue('boss')
+});
+
+test('the covered Fire golem can yield to the observed nearby foreground Behemoth', () => {
+    const target = { id: 'golem', type: 'MagmaGolem' };
+    const foreground = { id: 'behemoth', type: 'InfernalBehemoth', distance: 9, health: 6340 };
+    const attempted = new Set([target.id]);
+    expect(selectDungeonForegroundTarget(target, foreground.id, [foreground], ['AshenImperator'], attempted)).toBe(foreground);
+    expect(attempted.size).toBe(1); // Selection does not credit damage/death or mutate observations.
+    for (const override of [{ distance: 40 }, { distance: NaN }, { health: 0 }, { health: NaN }]) {
+        expect(selectDungeonForegroundTarget(target, foreground.id, [{ ...foreground, ...override }], [], attempted)).toBeNull();
+    }
+    expect(selectDungeonForegroundTarget(target, 'Cleric', [foreground], [], attempted)).toBeNull();
+    expect(selectDungeonForegroundTarget(target, foreground.id, [foreground], ['InfernalBehemoth'], attempted)).toBeNull();
+    expect(selectDungeonForegroundTarget({ ...target, encounter: {} }, foreground.id, [foreground], [], attempted)).toBeNull();
+    expect(selectDungeonForegroundTarget(target, foreground.id, [foreground], ['MagmaGolem'], attempted)).toBeNull();
+    attempted.add(foreground.id);
+    expect(selectDungeonForegroundTarget(target, foreground.id, [foreground], [], attempted)).toBeNull();
+    expect(selectDungeonForegroundTarget(target, foreground.id, [foreground], [], new Set(Array.from({ length: 8 }, (_, i) => i)))).toBeNull();
 });
 
 test('failed aim retains the actual ray and proxy transform before a later ground movement', () => {

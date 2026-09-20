@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { installDungeonObservationInPage, readDungeonTargetStateInPage } from '../dungeonDeathObservation.js';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
-import { aimDungeonCombatTarget, readDungeonTargetPointerInPage } from '../dungeonTargetInput.js';
+import { aimDungeonCombatTarget, readDungeonTargetPointerInPage, selectDungeonForegroundTarget } from '../dungeonTargetInput.js';
 import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState, settlePointerRaycast } from './helpers.js';
@@ -55,6 +55,7 @@ export async function playDungeonThroughInputs(page, {
         let lastDamageAt = Date.now();
         let nextReport = 0;
         let nextSkillAttemptAt = 0;
+        const attempted = new Set([target.id]);
         while (Date.now() < deadline) {
             await assertWorldUpdatesContinue(page);
             if (beforeCombat && await beforeCombat(page, target)) continue;
@@ -66,7 +67,7 @@ export async function playDungeonThroughInputs(page, {
                     expect(observedSkills).toEqual(expect.arrayContaining(requiredFighterSkills));
                     console.log(`${logPrefix} accepted hotbar skills ${JSON.stringify(observedSkills)}`);
                 }
-                return;
+                return target;
             }
             if (!state) throw new Error(`Combat target disappeared without a confirmed death: ${target.type}`);
             sawDamage ||= state.health < target.health;
@@ -112,6 +113,22 @@ export async function playDungeonThroughInputs(page, {
                 settle: () => settlePointerRaycast(page),
                 hoveredId: () => page.evaluate(readDungeonTargetPointerInPage, target.id)
             }, target.id, partyTarget);
+            if (!point && partyTarget) {
+                const hoveredId = await page.evaluate(() => window.game.hoveredEntity?.id);
+                const foreground = selectDungeonForegroundTarget(target, hoveredId,
+                    await hostiles(page), playthrough.bosses, attempted);
+                if (foreground) {
+                    console.log(`${logPrefix} foreground target ${target.type} -> ${foreground.type}`);
+                    target = foreground;
+                    attempted.add(target.id);
+                    lowestHealth = target.health;
+                    sawDamage = false;
+                    // No deadline extension or death credit. beforeCombat on
+                    // the next iteration switches the party's input workers;
+                    // aim must independently acquire this new target too.
+                    continue;
+                }
+            }
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
                 const primaryState = await page.evaluate(id => {
@@ -278,13 +295,13 @@ export async function playDungeonThroughInputs(page, {
                     const nearby = (await hostiles(page)).find(entity => entity.distance < 40);
                     if (nearby) {
                         const combatStarted = Date.now();
-                        await defeatByMouse(page, { ...nearby,
+                        const killed = await defeatByMouse(page, { ...nearby,
                             encounter: dungeonBossEncounter(layout, playthrough.bosses, nearby.type) });
                         // Combat has its own deadline; three ordinary encounters
                         // should not consume the independent walking timeout.
                         deadline += Date.now() - combatStarted;
-                        defeated.add(nearby.type);
-                        if (afterEncounter) await afterEncounter(page, nearby);
+                        defeated.add(killed.type);
+                        if (afterEncounter) await afterEncounter(page, killed);
                         timing.enter('traversal');
                         continue;
                     }
@@ -340,8 +357,8 @@ export async function playDungeonThroughInputs(page, {
             assertActive: () => timing.assertActive(),
             fight: async target => {
                 timing.assertActive();
-                await defeatByMouse(page, target);
-                if (afterEncounter) await afterEncounter(page, target);
+                const killed = await defeatByMouse(page, target);
+                if (afterEncounter) await afterEncounter(page, killed);
             }
         });
         if (completedRun) completedRun.gold = await page.evaluate(() => window.game.player.gold);

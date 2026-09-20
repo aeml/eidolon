@@ -1,5 +1,17 @@
 import { acquirePartyAllyPointer } from './partyDungeonControls.js';
 
+// A pack target can be completely covered by another hostile's visible body.
+// Fight that foreground member through normal aim instead of circling an
+// inaccessible silhouette while the rest of the party waits for tank threat.
+// Never substitute for a boss, pull a distant pack, or bounce between targets.
+export function selectDungeonForegroundTarget(target, hoveredId, hostiles, bosses, attempted) {
+    if (target.encounter || bosses.includes(target.type) || attempted.size >= 8 ||
+        !hoveredId || hoveredId === target.id || attempted.has(hoveredId)) return null;
+    return hostiles.find(enemy => enemy.id === hoveredId && !bosses.includes(enemy.type) &&
+        Number.isFinite(enemy.distance) && enemy.distance >= 0 && enemy.distance < 40 &&
+        Number.isFinite(enemy.health) && enemy.health > 0) || null;
+}
+
 // Serialized into the browser in place of the existing hover read: no extra
 // polling or forced raycast. Keep only the latest failed acquisition's sample
 // so a later ground sidestep cannot erase the evidence of what prevented aim.

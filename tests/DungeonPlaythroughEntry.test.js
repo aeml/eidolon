@@ -3,12 +3,13 @@ import { jest } from '@jest/globals';
 const enterAndExitDungeon = jest.fn();
 const moveByGroundClick = jest.fn();
 const readPlayerState = jest.fn();
+const projectEntity = jest.fn();
 jest.unstable_mockModule('./dungeonTraversalRoutes.js', () => ({
     buildDungeonTraversalRoutes: () => [[{ x: 0, z: 0 }]]
 }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({
     enterAndExitDungeon, enterDungeon: jest.fn(), returnToTown: jest.fn(),
-    moveByGroundClick, projectEntity: jest.fn(), readPlayerState,
+    moveByGroundClick, projectEntity, readPlayerState,
     settlePointerRaycast: jest.fn()
 }));
 // This check exercises entry option flow without launching a browser or invoking
@@ -19,6 +20,38 @@ jest.unstable_mockModule('@playwright/test', () => ({ expect: Object.assign(valu
 const { playDungeonThroughInputs } = await import('./e2e/dungeon-playthrough-route.js');
 
 afterEach(() => { jest.clearAllMocks(); jest.restoreAllMocks(); });
+
+test('covered pack retargets party inputs before attacking and never credits the untouched golem', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    const layout = { generationSeed: 'covered-pack', rooms: [{ type: 'start' }, { type: 'boss' }],
+        corridors: [{ toRoomIndex: 1 }] };
+    const golem = { id: 'golem', type: 'MagmaGolem', distance: 6, health: 6340 };
+    const behemoth = { id: 'behemoth', type: 'InfernalBehemoth', distance: 9, health: 9000 };
+    const page = { mouse: { move: jest.fn(), click: jest.fn() }, evaluate: jest.fn(async fn => {
+        if (fn.name === 'readDungeonTargetStateInPage') return { state: 'IDLE', health: golem.health };
+        if (fn.name === 'readDungeonTargetPointerInPage') return behemoth.id;
+        const source = fn.toString();
+        if (source.includes('currentDungeonLayout')) return layout;
+        if (source.includes('remotePlayers.values')) return [golem, behemoth];
+        if (source.includes('hoveredEntity')) return behemoth.id;
+        return 0;
+    }) };
+    projectEntity.mockResolvedValue({ x: 100, y: 200, visible: true });
+    const reachedForeground = new Error('foreground now needs its own real combat');
+    const beforeCombat = jest.fn(async (_page, target) => {
+        if (target.id === behemoth.id) throw reachedForeground;
+        return false;
+    });
+    const afterEncounter = jest.fn();
+    enterAndExitDungeon.mockImplementationOnce(async (_page, { beforeExit }) => beforeExit());
+    await expect(playDungeonThroughInputs(page, { expeditionProfile: 'party', beforeCombat, afterEncounter,
+        playthrough: { dungeonType: 'fire_crystal_raid', bosses: ['AshenImperator'] }
+    })).rejects.toBe(reachedForeground);
+    expect(beforeCombat.mock.calls.map(([, target]) => target.id)).toEqual(['golem', 'behemoth']);
+    expect(afterEncounter).not.toHaveBeenCalled();
+    expect(page.mouse.click).not.toHaveBeenCalled();
+    expect(moveByGroundClick).not.toHaveBeenCalled();
+});
 
 test.each([[true, true], [true, false], [false, true]])(
     'raid hands off to the ritual only after its observed final boss and all cleared rooms: enabled%s cleared%s',
