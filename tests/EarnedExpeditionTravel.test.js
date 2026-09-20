@@ -37,6 +37,23 @@ test('ordinary return from town reaches the western Imp band within the existing
     }
 });
 
+test.each([
+    ['MountainTroll', 50, -625, -800],
+    ['AquaGolem', 55, -1005, -1200]
+])('Water %s search uses bounded ordinary steps after regional departure', async (enemy, minEnemyLevel, startZ, targetZ) => {
+    const page = { player: { x: 0, z: startZ, level: minEnemyLevel, state: 'MOVING' } };
+    page.distance = () => Math.abs(page.player.z - targetZ);
+    page.evaluate = jest.fn(async () => page.distance() < 50
+        ? [{ id: 'water-target', level: minEnemyLevel, x: 0, z: targetZ, distance: page.distance(), rendered: true }] : []);
+    await expect(findExpeditionTarget(page, { huntingRealm: 'water', enemy, minEnemyLevel }))
+        .resolves.toMatchObject({ id: 'water-target', level: minEnemyLevel });
+    expect(moveByGroundClick.mock.calls.length).toBeLessThan(100);
+    for (const [, dx, dz, options] of moveByGroundClick.mock.calls) {
+        expect(Math.hypot(dx, dz)).toBeLessThanOrEqual(12.00001);
+        expect(options.moveOnly).toBe(true);
+    }
+});
+
 test('an expired encounter deadline still stops travel without issuing another movement', async () => {
     await expect(findExpeditionTarget(expeditionPage(), hunt, Date.now() - 1)).rejects.toThrow('No reachable Imp');
     expect(moveByGroundClick).not.toHaveBeenCalled();

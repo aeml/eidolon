@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
+import { expeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 
 // Shared ordinary target acquisition for fresh and prepared quest routes.
@@ -7,7 +7,7 @@ import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js'
 export async function findExpeditionTarget(page, hunt, deadline = Infinity) {
     // The original Skeleton fallback lay in level-ten territory. Walk back
     // toward the authored starter band if streaming shows no appropriate foe.
-    const fallback = earthExpeditionSearchAnchor(hunt);
+    const fallback = expeditionSearchAnchor(hunt);
     for (let step = 0; step < 100 && Date.now() < deadline; step++) {
         expect((await readPlayerState(page)).state, 'Ordinary expedition travel must be survivable').not.toBe('DEAD');
         const observed = await page.evaluate(hunt => {

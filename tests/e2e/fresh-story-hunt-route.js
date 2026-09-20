@@ -46,7 +46,10 @@ const combatSnapshot = page => page.evaluate(() => {
 
 export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown, resumeAccepted = false } = {}) {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
-    expect(hunt?.huntingRealm, 'This earned driver currently covers Earth expeditions only').toBe('earth');
+    expect(['earth', 'water'], 'Earned hunt must have an authored search region').toContain(hunt?.huntingRealm);
+    if (hunt.huntingRealm !== 'earth') {
+        expect(typeof leaveTown, 'Regional hunts require explicit ordinary travel from town').toBe('function');
+    }
     const started = Date.now();
     const before = await snapshot(page);
     const prepare = async label => {
@@ -72,6 +75,10 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     // finish ordinary basic attacks; permanent retreat resets starter leashes.
     let beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
     await installStoryHuntCombatObserver(page);
+    // Regional waypoints are supplied by the actual route, including every
+    // later town recovery. Do not try to reach Water by spending the bounded
+    // local enemy-search loop on a straight walk out of Lanternhold.
+    if (hunt.huntingRealm !== 'earth') await leaveTown();
     console.log(`[story-hunt] start ${JSON.stringify({ id, ...before, combat: await combatSnapshot(page) })}`);
     let deaths = 0, lastReported = 0, restStops = 0, trainingStops = 0;
     const recover = async () => {

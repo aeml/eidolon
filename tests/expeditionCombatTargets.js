@@ -13,6 +13,17 @@ export function earthExpeditionSearchAnchor(hunt) {
     }
 }
 
+export function expeditionSearchAnchor(hunt) {
+    if (hunt?.huntingRealm === 'earth') return earthExpeditionSearchAnchor(hunt);
+    // Authored spawnSnowWorld bands: Trolls Z -1000..-600, Golems
+    // Z -1400..-1000. Chapter realm is not necessarily the hunting realm.
+    if (hunt?.huntingRealm === 'water') {
+        if (hunt.enemy === 'MountainTroll') return { x: 0, z: -800 };
+        if (hunt.enemy === 'AquaGolem') return { x: 0, z: -1200 };
+    }
+    throw new Error(`Unsupported expedition search: ${hunt?.huntingRealm}/${hunt?.enemy}`);
+}
+
 export function levelAppropriateExpeditionTargets(candidates, minimumLevel, playerLevel) {
     const maximumLevel = Math.max(minimumLevel, playerLevel + 1);
     return candidates.filter(enemy => Number.isInteger(enemy.level) &&

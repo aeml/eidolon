@@ -1,4 +1,4 @@
-import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
+import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, expeditionSearchAnchor, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
 import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
 
 test.each([
@@ -16,7 +16,27 @@ test('the missing-ferry chapter searches western Earth, even though it belongs t
     expect(hunt.realm).toBe('water');
     expect(hunt.huntingRealm).toBe('earth');
     expect(earthExpeditionSearchAnchor(hunt)).toEqual({ x: -800, z: 200 });
+    expect(expeditionSearchAnchor(hunt)).toEqual({ x: -800, z: 200 });
 });
+
+test.each([
+    ['chronicle_water_snow_debts', 'MountainTroll', -800, -1000, -600],
+    ['chronicle_water_unmastered_current', 'AquaGolem', -1200, -1400, -1000]
+])('%s searches its actual Water spawn band without changing quest eligibility', (id, enemy, z, low, high) => {
+    const hunt = chronicleHunts.find(hunt => hunt.id === id);
+    const before = JSON.stringify(hunt);
+    expect(hunt.enemy).toBe(enemy);
+    const anchor = expeditionSearchAnchor(hunt);
+    expect(anchor).toEqual({ x: 0, z });
+    expect(anchor.z).toBeGreaterThan(low);
+    expect(anchor.z).toBeLessThan(high);
+    expect(JSON.stringify(hunt)).toBe(before);
+});
+
+test.each([null, { huntingRealm: 'water', enemy: 'Construct' }, { huntingRealm: 'fire', enemy: 'MountainTroll' }])(
+    'unknown realm/enemy pairs cannot silently reuse a Water location: %p', hunt => {
+        expect(() => expeditionSearchAnchor(hunt)).toThrow('Unsupported expedition search');
+    });
 
 test('unsupported realms or enemies never silently search the Demon Orc sector', () => {
     expect(() => earthExpeditionSearchAnchor({ huntingRealm: 'water', enemy: 'MountainTroll' })).toThrow();
