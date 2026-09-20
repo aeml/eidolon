@@ -1,5 +1,10 @@
 # Earned campaign continuation with a real party
 
+Current run: `earnedparty0920b`, clean sourceee9a1ddd, native52518, directory
+`/tmp/eidolon-earned-party-20260920-r2-XoHW0R/`, monitored by Luna. Uses the
+verified level31 archive below, Low graphics and zero retries. Do not overlap
+native browser work or change loaded files. Full dungeon/claim checks remain.
+
 ## September20 saved-read correction
 
 `earnedparty0920a` is terminal exit1 after3.5minutes, before dungeon entry.
