@@ -3,6 +3,34 @@ import { partyAuraFollowSpacing, selectPartyHealTarget } from './partyHealingCon
 const member = (id, hp, x, extra = {}) => ({ id, hp, maxHP: 855, x, z: 0, instance: 'party-dungeon', dead: false, ...extra });
 const healer = member('healer', 845, 0, { maxHP: 845 });
 
+test('Tidestar tank healer holds position while group healer approaches the distant repair runner', () => {
+    const tank = member('tank', 2809, 2.90453558, { maxHP: 3050 });
+    const rogue = member('rogue', 2542, 59.21920658, { maxHP: 3050 });
+    const states = [tank, healer, rogue];
+    expect(selectPartyHealTarget(states, healer, 14)).toBe(rogue);
+    expect(selectPartyHealTarget(states, healer, 14, { anchor: tank })).toBeNull();
+    tank.hp = 2325;
+    expect(selectPartyHealTarget(states, healer, 14, { anchor: tank })).toBe(tank);
+});
+
+test('tank assignment recovers tank range instead of repeatedly healing less injured nearby allies', () => {
+    const tank = member('tank', 1139, 18.54511865, { maxHP: 3050 });
+    const wizard = member('wizard', 2356, 10.04506762, { maxHP: 3050 });
+    expect(selectPartyHealTarget([tank, healer, wizard], healer, 14, { anchor: tank })).toBe(tank);
+    expect(selectPartyHealTarget([tank, healer, wizard], healer, 14,
+        { anchor: tank, allowApproach: false })).toBe(wizard);
+});
+
+test('tank healer can help nearby allies when the tank is healthy, and unassigns unavailable tanks', () => {
+    const tank = member('tank', 855, 5), rogue = member('rogue', 100, 12);
+    expect(selectPartyHealTarget([tank, healer, rogue], healer, 14, { anchor: tank })).toBe(rogue);
+    rogue.x = 40;
+    for (const extra of [{ dead: true }, { hp: 0 }, { instance: 'town' }]) {
+        const unavailable = { ...tank, ...extra };
+        expect(selectPartyHealTarget([unavailable, healer, rogue], healer, 14, { anchor: unavailable })).toBe(rogue);
+    }
+});
+
 test('approach a nearby critical Rogue before spending the heal on a safely injured tank', () => {
     // The final Warden trace spent the heal on674/855 tank HP; the312/855
     // Rogue was just outside the14unit planning range, then died during its CD.

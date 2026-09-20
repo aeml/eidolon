@@ -76,8 +76,36 @@ Private archive `/tmp/eidolon-party-checkpoint-waterraid0920b-RJnkRD/save.archiv
 SHA256`21344e5afd7e5345c5f3dee4cb8f3983e42c7e47c702541f95be9a593f2e454c`.
 Launcher1393220 and its Luna watcher are terminal; do not poll them. No clear.
 
-Current run: `waterraid0920c`, clean source6e6f854d, detachedPID1476048 confirmed
-live, `/tmp/eidolon-water-raid-20260920-r3-tf8GwT/`. Same legal five-role party,
-Low graphics, full encounter/repair/manual claims/relogin and zero retries.
-Luna `/root/watch_tidestar_0920c` owns completion/failure monitoring. No other
-browser/deployment workload; preserve attachments on termination. No result yet.
+## 0920c result and healer assignments
+
+`waterraid0920c`, source6e6f854d, terminated with exit1 after32.8minutes, zero
+retries. The guardian and repair waves1/2 cleared; the Fighter died in wave3.
+No full restoration, manual claims or saved re-login acceptance is claimed.
+Launcher1476048 and Luna `/root/watch_tidestar_0920c` are terminal.
+
+The last healing decisions explain the death: both Clerics independently chose
+the same Rogue doing the repair job54–59units away, while the tank was still
+at2809/3050HP. Both walked out of tank healing range. The tank received no heal
+for42.3seconds (1917525→1959857 in its survival events), taking ordinary
+248/329 FrostGuardian hits every roughly3.5seconds until death. Both healers
+still had mana. This is not evidence that raid damage needs nerfing.
+
+The two-healer QA party now assigns its first Cleric to the tank. That healer
+can assist reachable allies when the tank is healthy, but does not chase the
+distant repair runner or reposition its aura around that runner. The other
+Cleric keeps the existing group-healing policy. Warning holds still prohibit
+approach, actual casting still enforces range/mana/cooldowns, and unavailable
+tanks do not block support for surviving allies. Single-healer dungeon policy,
+gear, game balance, death assertions and completion requirements are unchanged.
+
+Recorded-position/health regressions cover the split and later tank-range
+recovery.53 focused healing/scheduling/worker/health checks pass in0.898seconds;
+changed-file lint and diff checks pass. A full clear with these assignments
+remains unproven.
+
+Log, copied results and full embedded party/healer attachments:
+`/tmp/eidolon-water-raid-20260920-r3-tf8GwT/`. Owned run containers are gone and
+ports18285/18286/4187 are free. Private archive:
+`/tmp/eidolon-party-checkpoint-waterraid0920c-DPl6sq/save.archive.gz`, SHA256
+`99ba0270e82960eb58a91ae603bd0f194ed7357d6bbf606fe3d68d4e22595021`.
+Do not upload this save or change the15minute logout rule to reuse it.

@@ -1,6 +1,6 @@
 // Ordinary party-test input planning only; this never heals, moves or edits a
 // character. The real roster/hotbar dispatch retains server admission checks.
-export function selectPartyHealTarget(states, healer, range, { allowApproach = true } = {}) {
+export function selectPartyHealTarget(states, healer, range, { allowApproach = true, anchor = null } = {}) {
     if (![healer?.x, healer?.z, range].every(Number.isFinite) || range < 0) {
         throw new Error('Party healing requires finite position and nonnegative range');
     }
@@ -10,6 +10,14 @@ export function selectPartyHealTarget(states, healer, range, { allowApproach = t
         state.hp > 0 && state.maxHP > 0 && state.hp / state.maxHP < .85)
         .sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP);
     const distance = state => Math.hypot(state.x - healer.x, state.z - healer.z);
+    // In a two-healer raid, one healer stays with the tank while the other
+    // covers the repair runner. Do not send both across the room after the
+    // same slightly more injured runner and leave incoming tank damage unaided.
+    const anchored = anchor && !anchor.dead && anchor.hp > 0 && anchor.instance === healer.instance;
+    if (anchored) {
+        if (injured.includes(anchor) && (allowApproach || distance(anchor) <= range)) return anchor;
+        return injured.find(state => distance(state) <= range) || null;
+    }
     const reachable = injured.find(state => distance(state) <= range);
     // Preserve immediate aid for urgent reachable allies. But do not spend a
     // full heal cooldown on someone above60% while a below40% ally is only a
