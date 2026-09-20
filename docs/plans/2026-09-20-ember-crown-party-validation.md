@@ -1,13 +1,29 @@
 # Ember Crown prepared-party validation — September20
 
-## Current run
+## Latest terminal run — settled teammate collision
 
-`fireraid0920e` is active on clean7fa57f00, native35409, directory
-`/tmp/eidolon-fire-raid-20260920-r5-JhyVd6/`, Luna-monitored. Includes the
-runner-healer escort below and the precise sub-unit formation correction proven
-in the earned Wizard Verdant pass. Same five level70 roles, approved progressed
-gear, Low, zero retries, original complete guardian/three-wave/manual-claim and
-relogin requirements. Do not overlap native browser runs or alter loaded files.
+`fireraid0920e` ended exit1 after4.1m on clean7fa57f00, native35409.
+`RAID_PROCESS_EXIT=1` and preserved reports/results confirm termination; owned
+containers are gone. Directory: `/tmp/eidolon-fire-raid-20260920-r5-JhyVd6/`.
+The Rogue's accepted move-only click planned a2.04unit segment but stopped after
+0.966units, with one blocked stop. Its destination was inside the first Cleric's
+collision circle. The Cleric had completed the previous movement batch and was
+already in formation, so the concurrent-lane reservation omitted that player.
+The per-browser planner's earlier body snapshot was not retained; replication
+lag explains the unsafe plan but is not directly proven by the trace.
+
+The formation scheduler now checks every proposed segment against the existing
+shared read of each player's own position, including members with no planned
+move. Unsafe proposals replan within the original15second deadline; accepted
+input failures still abort. A regression using these exact Fire coordinates
+fails before the guard and passes after, reaching the unchanged five-unit
+formation bound without issuing the unsafe segment. All62 formation/input
+checks pass in0.635s; lint/diff pass. No gameplay collision, stats, movement
+tolerance or watchdog changes. Full Fire acceptance and connected confirmation
+of the proactive runner-healer escort remain open.
+
+Private failed-run save, not a verified raid resume:
+`/tmp/eidolon-party-checkpoint-fireraid0920e-cskwI5/save.archive.gz`.
 
 ### Previous run — runner healing range
 

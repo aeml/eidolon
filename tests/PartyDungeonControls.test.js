@@ -226,6 +226,48 @@ test('unexpected formation planner errors still stop the run', async () => {
     expect(move).not.toHaveBeenCalled();
 });
 
+test('recorded Fire route cannot walk into a settled teammate missing from its remote planning view', async () => {
+    const states = [
+        { x: 100000.67491701675, z: 19779.387366209627 },
+        { x: 99996.38621340395, z: 19777.920880768615 },
+        { x: 99997.46347481768, z: 19782.120100489166 },
+        { x: 99994.9340341354, z: 19780.6805311197 },
+        { x: 99995.62663934159, z: 19772.732746566802 }
+    ];
+    const badStep = { dx: 1.251757785837981, dz: -1.6058242723956937 };
+    expect(partyPathAvoidsActors(states[3], badStep, [states[1]])).toBe(false);
+    let clock = 0, offeredStale = false;
+    const moved = [];
+    await gatherPartyFormation({
+        read: async () => { clock += 100; return states.map(state => ({ ...state })); },
+        now: () => clock,
+        plan: async (index, state, anchor, spacing) => {
+            if (index === 3 && !offeredStale) { offeredStale = true; return badStep; }
+            const bodies = states.filter((_, other) => other !== index);
+            try {
+                return partyFormationStep(state, anchor, null,
+                    (step, from) => partyPathAvoidsActors(from, step, bodies), spacing,
+                    [Math.PI / 3, -Math.PI / 3, 0][index - 1], bodies);
+            } catch (error) {
+                if (!(error instanceof PartyFormationRouteUnavailable)) throw error;
+                return null;
+            }
+        },
+        move: async (index, step) => {
+            expect(step).not.toBe(badStep);
+            expect(partyPathAvoidsActors(states[index], step,
+                states.filter((_, other) => other !== index))).toBe(true);
+            moved.push(index);
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+        }
+    });
+    expect(offeredStale).toBe(true);
+    expect(moved).toContain(3);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+    expect(clock).toBeLessThan(15_000);
+});
+
 test.each([
     [{ active: false, safe: true }, { holdMelee: false, allowCasts: true, allowApproach: true }],
     [{ active: true, safe: true }, { holdMelee: true, allowCasts: true, allowApproach: false }],
@@ -322,7 +364,7 @@ test('reservations use the actual planning origin rather than an older group sna
     const trace = jest.fn();
     let active = 0, peak = 0;
     await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })), trace,
-        plan: async () => ({ dx: 0, dz: -10, origin: { x: 0, z: 12 } }),
+        plan: async () => ({ dx: 0, dz: -8, origin: { x: 0, z: 12 } }),
         move: async index => {
             peak = Math.max(peak, ++active);
             await Promise.resolve();

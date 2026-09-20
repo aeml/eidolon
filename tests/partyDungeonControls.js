@@ -185,7 +185,14 @@ export async function gatherPartyFormation({ read, move, plan, trace, now = Date
         const origins = steps.map((step, index) => step?.origin || states[index + 1]);
         const batch = [];
         steps.forEach((step, index) => {
-            if (step && batch.every(other => partyFormationPathsDisjoint(origins[index], step,
+            // A follower's remote view can lag behind a teammate's completed
+            // move. Reserve the positions read from every player's own client,
+            // including already-gathered members that have no planned step.
+            // Reject and replan inside the same deadline; never issue a path
+            // through a settled teammate just because lanes are disjoint.
+            const bodies = [states[0], ...origins.filter((_, other) => other !== index)];
+            if (step && partyPathAvoidsActors(origins[index], step, bodies, origins[index].radius || 1.25) &&
+                batch.every(other => partyFormationPathsDisjoint(origins[index], step,
                 origins[other], steps[other]))) batch.push(index);
         });
         // A member can finish moving between the shared snapshot and its own
