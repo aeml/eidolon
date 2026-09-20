@@ -2,6 +2,29 @@
 
 Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
 
+## September 20 expansion — required in the next casino deployment
+
+The latest user request supersedes the old balcony layout and table counts:
+
+- Enlarge the shared casino. Public and VIP floors must be equally large and
+  completely hidden from one another, with stairs switching the displayed floor.
+- Each floor must contain **4 blackjack tables, 4 Hold'em tables, 2 roulette
+  tables, 4 baccarat tables and 32 slot machines**. Roulette and baccarat must be
+  playable, not decorative placeholders; preserve existing funded-game recovery.
+- Move the stash west, toward the Trading House and clear of the casino entrance.
+  Remove the obsolete client-side position override as well as moving its spawn.
+- Show **Lanternhold Casino** above the entrance, with a matching clickable-door
+  hint. Keep the shared-zone entry dialogue and normal exit/control restoration.
+- Administrators automatically receive VIP access **and 100 EP per month**,
+  explicitly confirmed by the user. Use trusted server roles and durable monthly
+  receipts, not a client flag. No duplicate normal-VIP/admin allowance for the
+  same month; no Gold, stats, progression perks or payment integration.
+
+Implementation is local and incomplete; these changes are **not yet deployed**.
+Do not release a partial venue with placeholder games. The admin allowance policy
+and focused verification are tracked in the
+[admin VIP update](2026-09-20-admin-vip-allowance.md).
+
 ## September 20 status — preserve shipped work and remaining acceptance
 
 The public venue and games, EP wallet and one-way exchange, monthly membership

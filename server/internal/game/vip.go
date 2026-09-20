@@ -7,7 +7,7 @@ import (
 )
 
 // Caller owns the account work lock through journal/save confirmation.
-func (w *World) RefreshVIP(playerID string, periods []database.VIPPeriod, now time.Time) (int, error) {
+func (w *World) RefreshVIP(playerID string, periods []database.VIPPeriod, now time.Time, administrator ...bool) (int, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	p := w.Entities[playerID]
@@ -16,13 +16,14 @@ func (w *World) RefreshVIP(playerID string, periods []database.VIPPeriod, now ti
 	}
 	p.Mu.Lock()
 	defer p.Mu.Unlock()
-	amount, until, err := database.ApplyVIPAllowance(&p.EP, &p.VIPAllowanceReceipts, periods, now)
+	receiptCount := len(p.VIPAllowanceReceipts)
+	amount, until, err := database.ApplyVIPAllowance(&p.EP, &p.VIPAllowanceReceipts, periods, now, administrator...)
 	if err != nil {
 		p.VIPUntil = time.Time{}
 		return 0, err
 	}
 	p.VIPUntil = until
-	if amount > 0 {
+	if amount > 0 || len(p.VIPAllowanceReceipts) != receiptCount {
 		p.UnjournaledSave = true
 	}
 	return amount, nil

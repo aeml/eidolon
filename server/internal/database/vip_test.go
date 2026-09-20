@@ -87,3 +87,64 @@ func TestVIPExpiryIsExclusiveAndTimezoneCannotCreateAnotherReceipt(t *testing.T)
 		t.Fatal("year treated as a single paid month")
 	}
 }
+
+func TestAdministratorVIPAllowanceSharesPaidMonthInEitherOrder(t *testing.T) {
+	for _, adminFirst := range []bool{false, true} {
+		t.Run(map[bool]string{false: "paid-first", true: "admin-first"}[adminFirst], func(t *testing.T) {
+			period := vipTestPeriod(t, "2026-09-20T00:00:00Z")
+			ep := 0
+			var receipts map[string]int
+			var initial []VIPPeriod
+			if !adminFirst {
+				initial = []VIPPeriod{period}
+			}
+			if amount, _, err := ApplyVIPAllowance(&ep, &receipts, initial, period.StartsAt, adminFirst); err != nil || amount != 100 {
+				t.Fatal("initial allowance", amount, err)
+			}
+			// Even role removal before a later paid membership must not duplicate EP.
+			if amount, _, err := ApplyVIPAllowance(&ep, &receipts, []VIPPeriod{period}, period.StartsAt, !adminFirst); err != nil || amount != 0 || ep != 100 {
+				t.Fatal("membership sources stacked", amount, ep, err)
+			}
+			if receipts[period.ID] != 100 || receipts["vip-admin-2026-09"] != 100 {
+				t.Fatal("both entitlement receipts must be retained", receipts)
+			}
+			ep = 0
+			if amount, _, err := ApplyVIPAllowance(&ep, &receipts, []VIPPeriod{period}, period.StartsAt, true); err != nil || amount != 0 || ep != 0 {
+				t.Fatal("spending restored allowance", amount, err)
+			}
+		})
+	}
+}
+
+func TestAdministratorVIPFutureOrRevokedMembershipDoesNotBlockAllowance(t *testing.T) {
+	now := time.Date(2026, 9, 20, 0, 0, 0, 0, time.UTC)
+	for _, revoked := range []bool{false, true} {
+		period := vipTestPeriod(t, "2026-09-25T00:00:00Z")
+		if revoked {
+			period = vipTestPeriod(t, "2026-09-10T00:00:00Z")
+			period.Revoked = true
+		}
+		ep := 0
+		var receipts map[string]int
+		amount, until, err := ApplyVIPAllowance(&ep, &receipts, []VIPPeriod{period}, now, true)
+		if err != nil || amount != 100 || ep != 100 || !until.Equal(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)) {
+			t.Fatal("inactive membership blocked admin entitlement", amount, until, err)
+		}
+	}
+}
+
+func TestAdministratorVIPReceiptAndOverflowFailAtomically(t *testing.T) {
+	now := time.Date(2026, 9, 20, 0, 0, 0, 0, time.UTC)
+	for _, invalidReceipt := range []bool{false, true} {
+		ep := int(^uint(0)>>1) - 99
+		receipts := map[string]int{}
+		if invalidReceipt {
+			ep = 10
+			receipts["vip-admin-2026-09"] = 999
+		}
+		before, size := ep, len(receipts)
+		if _, _, err := ApplyVIPAllowance(&ep, &receipts, nil, now, true); err == nil || ep != before || len(receipts) != size {
+			t.Fatal("invalid allowance changed wallet or receipts", err)
+		}
+	}
+}

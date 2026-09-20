@@ -49,6 +49,83 @@ func TestVIPMembershipSavesOnlyNewMonthlyAllowanceAndNeverGoldOrPower(t *testing
 	}
 }
 
+func TestAdministratorVIPMonthlyAllowanceAndRoleRevocation(t *testing.T) {
+	c, committer, _ := vipMembershipFixture(t)
+	loadVIPPeriods = func(string) ([]database.VIPPeriod, error) { return nil, nil }
+	roles := &fakeAdminRoleStore{roles: map[string]bool{c.username: true}}
+	setAdminRoleTestState(t, roles, "bootstrap-only")
+	now := time.Date(2026, 9, 20, 12, 0, 0, 0, time.UTC)
+	before := world.GetEntityCopy(c.playerID)
+	for _, want := range []int{100, 0} {
+		amount, err := refreshVIPMembershipLocked(c, now)
+		if err != nil || amount != want {
+			t.Fatal("admin monthly refresh", amount, err)
+		}
+	}
+	p := world.GetEntityCopy(c.playerID)
+	if p.EP != 100 || committer.saved.EP != 100 || !p.VIPUntil.Equal(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)) ||
+		p.Gold != before.Gold || p.Stats != before.Stats || p.Experience != before.Experience {
+		t.Fatal("admin VIP not saved or changed gameplay power")
+	}
+	delete(roles.roles, c.username)
+	adminBootstrapUsernames[c.username] = struct{}{} // Bootstrap name alone is not authority.
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 0 || !world.GetEntityCopy(c.playerID).VIPUntil.IsZero() {
+		t.Fatal("revoked admin kept VIP access", err)
+	}
+	roles.roles[c.username] = true
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 0 {
+		t.Fatal("role toggle duplicated allowance", err)
+	}
+	if amount, err := refreshVIPMembershipLocked(c, now.AddDate(0, 1, 0)); err != nil || amount != 100 || committer.saved.EP != 200 {
+		t.Fatal("next admin month not saved exactly once", amount, err)
+	}
+	roles.lookupErr = errors.New("role repository unavailable")
+	if _, err := refreshVIPMembershipLocked(c, now.AddDate(0, 1, 0)); err == nil || !world.GetEntityCopy(c.playerID).VIPUntil.IsZero() {
+		t.Fatal("unverified admin retained access")
+	}
+}
+
+func TestAdministratorVIPDoesNotDoubleExistingMembershipAllowance(t *testing.T) {
+	c, _, periods := vipMembershipFixture(t)
+	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{c.username: true}}, "")
+	if amount, err := refreshVIPMembershipLocked(c, periods[0].StartsAt.Add(time.Hour)); err != nil || amount != 100 || world.GetEntityCopy(c.playerID).EP != 100 {
+		t.Fatal("admin and membership allowances stacked", amount, err)
+	}
+}
+
+func TestAdministratorVIPReceiptOnlyChangeIsDurable(t *testing.T) {
+	c, committer, periods := vipMembershipFixture(t)
+	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{}}, "")
+	now := periods[0].StartsAt.Add(time.Hour)
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 100 {
+		t.Fatal("normal membership grant", amount, err)
+	}
+	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{c.username: true}}, "")
+	writes := len(committer.ids)
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 0 || len(committer.ids) <= writes || committer.saved.VIPAllowanceReceipts["vip-admin-"+now.UTC().Format("2006-01")] != 100 {
+		t.Fatal("admin entitlement receipt was not saved", amount, err)
+	}
+	writes = len(committer.ids)
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 0 || len(committer.ids) != writes {
+		t.Fatal("unchanged admin refresh wrote again", amount, err)
+	}
+}
+
+func TestAdministratorVIPPendingGrantMustRecoverBeforeAccess(t *testing.T) {
+	c, committer, _ := vipMembershipFixture(t)
+	loadVIPPeriods = func(string) ([]database.VIPPeriod, error) { return nil, nil }
+	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{c.username: true}}, "")
+	characterSaveCommitter = &epFailAfterPreflight{delegate: committer}
+	now := time.Now()
+	if amount, err := refreshVIPMembershipLocked(c, now); err == nil || amount != 0 || !world.GetEntityCopy(c.playerID).VIPUntil.IsZero() {
+		t.Fatal("pending admin grant acknowledged or access enabled", amount, err)
+	}
+	characterSaveCommitter = committer
+	if amount, err := refreshVIPMembershipLocked(c, now); err != nil || amount != 0 || committer.saved.EP != 100 || !world.GetEntityCopy(c.playerID).VIPUntil.After(now) {
+		t.Fatal("admin grant did not recover exactly once", amount, err)
+	}
+}
+
 func TestVIPMembershipPendingGrantMustRecoverBeforeAcknowledgement(t *testing.T) {
 	c, committer, _ := vipMembershipFixture(t)
 	characterSaveCommitter = &epFailAfterPreflight{delegate: committer}

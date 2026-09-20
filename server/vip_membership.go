@@ -25,12 +25,22 @@ func refreshVIPMembershipLocked(c *Client, now time.Time) (int, error) {
 		world.ClearVIPAccess(c.playerID)
 		return 0, err
 	}
+	administrator := false
+	if adminRoles != nil {
+		var roleErr error
+		administrator, roleErr = adminRoles.HasAdminRole(c.username)
+		if roleErr != nil {
+			world.ClearVIPAccess(c.playerID)
+			return 0, roleErr
+		}
+	}
 	snapshot := world.GetEntityCopy(c.playerID)
 	if snapshot == nil {
 		return 0, errors.New("character unavailable")
 	}
 	// A read-only projection avoids journal writes when there is no new month.
-	due, _, err := database.ApplyVIPAllowance(&snapshot.EP, &snapshot.VIPAllowanceReceipts, periods, now)
+	receiptCount := len(snapshot.VIPAllowanceReceipts)
+	due, _, err := database.ApplyVIPAllowance(&snapshot.EP, &snapshot.VIPAllowanceReceipts, periods, now, administrator)
 	if err != nil {
 		world.ClearVIPAccess(c.playerID)
 		return 0, err
@@ -38,7 +48,7 @@ func refreshVIPMembershipLocked(c *Client, now time.Time) (int, error) {
 	failedCharacterSaves.Lock()
 	pendingSave := failedCharacterSaves.users[c.username]
 	failedCharacterSaves.Unlock()
-	if due > 0 || pendingSave || snapshot.UnjournaledSave {
+	if due > 0 || len(snapshot.VIPAllowanceReceipts) != receiptCount || pendingSave || snapshot.UnjournaledSave {
 		if characterSaveJournal == nil || characterSaveCommitter == nil {
 			world.ClearVIPAccess(c.playerID)
 			return 0, errors.New("character persistence unavailable")
@@ -48,12 +58,16 @@ func refreshVIPMembershipLocked(c *Client, now time.Time) (int, error) {
 			return 0, err
 		}
 	}
-	amount, err := world.RefreshVIP(c.playerID, periods, now)
+	amount, err := world.RefreshVIP(c.playerID, periods, now, administrator)
 	if err != nil {
 		return 0, err
 	}
-	if amount > 0 {
-		if err := saveCharacterDB(c, world.GetEntityCopy(c.playerID)); err != nil {
+	updated := world.GetEntityCopy(c.playerID)
+	if updated == nil {
+		return 0, errors.New("character unavailable")
+	}
+	if amount > 0 || len(updated.VIPAllowanceReceipts) != receiptCount {
+		if err := saveCharacterDB(c, updated); err != nil {
 			world.ClearVIPAccess(c.playerID)
 			return 0, err
 		}

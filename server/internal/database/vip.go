@@ -111,7 +111,11 @@ func (db *DB) RevokeVIPPeriod(username, periodID string) error {
 // Apply every earned, unclaimed month, including months spent offline. Existing
 // receipts survive spending, expiry and revocation. Revocation stops access/new
 // grants; it never converts cosmetics/EP into debt or Gold.
-func ApplyVIPAllowance(ep *int, receipts *map[string]int, periods []VIPPeriod, now time.Time) (int, time.Time, error) {
+// Administrators receive the current UTC calendar month's allowance. A paid
+// membership starting in that month fulfills the same entitlement, in either
+// order. Admin receipts remain after role removal; they cannot be spent/reset.
+// Past admin months are not inferred from today's role (no historical authority).
+func ApplyVIPAllowance(ep *int, receipts *map[string]int, periods []VIPPeriod, now time.Time, administrator ...bool) (int, time.Time, error) {
 	if ep == nil || receipts == nil || *ep < 0 {
 		return 0, time.Time{}, errors.New("invalid EP wallet")
 	}
@@ -120,6 +124,9 @@ func ApplyVIPAllowance(ep *int, receipts *map[string]int, periods []VIPPeriod, n
 	}
 	var until time.Time
 	var due []string
+	grants := 0
+	adminMonth := "vip-admin-" + now.UTC().Format("2006-01")
+	paidThisMonth := false
 	for _, period := range periods {
 		if period.Revoked || now.Before(period.StartsAt) {
 			continue
@@ -127,19 +134,47 @@ func ApplyVIPAllowance(ep *int, receipts *map[string]int, periods []VIPPeriod, n
 		if now.Before(period.EndsAt) {
 			until = period.EndsAt
 		}
+		periodMonth := "vip-admin-" + period.StartsAt.UTC().Format("2006-01")
+		if periodMonth == adminMonth {
+			paidThisMonth = true
+		}
+		adminAmount, adminClaimed := (*receipts)[periodMonth]
+		if adminClaimed && adminAmount != VIPMonthlyEP {
+			return 0, time.Time{}, errors.New("VIP administrator allowance receipt mismatch")
+		}
 		if amount, claimed := (*receipts)[period.ID]; claimed {
 			if amount != VIPMonthlyEP {
 				return 0, time.Time{}, errors.New("VIP allowance receipt mismatch")
 			}
 		} else {
 			due = append(due, period.ID)
+			if !adminClaimed {
+				grants++
+			}
+		}
+	}
+	if len(administrator) > 0 && administrator[0] {
+		utc := now.UTC()
+		end := time.Date(utc.Year(), utc.Month()+1, 1, 0, 0, 0, 0, time.UTC)
+		if end.After(until) {
+			until = end
+		}
+		if amount, claimed := (*receipts)[adminMonth]; claimed {
+			if amount != VIPMonthlyEP {
+				return 0, time.Time{}, errors.New("VIP administrator allowance receipt mismatch")
+			}
+		} else {
+			due = append(due, adminMonth)
+			if !paidThisMonth {
+				grants++
+			}
 		}
 	}
 	maxInt := int(^uint(0) >> 1)
-	if len(due) > (maxInt-*ep)/VIPMonthlyEP {
+	if grants > (maxInt-*ep)/VIPMonthlyEP {
 		return 0, time.Time{}, errors.New("EP balance limit reached")
 	}
-	amount := len(due) * VIPMonthlyEP
+	amount := grants * VIPMonthlyEP
 	if len(due) != 0 {
 		if *receipts == nil {
 			*receipts = make(map[string]int)
