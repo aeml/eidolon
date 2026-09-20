@@ -1,7 +1,7 @@
 # EIDOLON
 
 [![CI](https://github.com/aeml/eidolon/actions/workflows/ci.yml/badge.svg)](https://github.com/aeml/eidolon/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-report-blue)](https://eidolon.mendola.tech/coverage/)
+[![Coverage](https://img.shields.io/badge/coverage-report-blue)](https://play.eidolonrealms.com/coverage/)
 
 > Project by [Robert Mendola](https://mendola.tech)
 
@@ -296,32 +296,32 @@ Notes:
 
 ### Release verification
 
-- Client identity: `https://eidolon.mendola.tech/release.json`
-- Server readiness and identity: `https://eserver.mendola.tech/healthz`
+- Client identity: `https://play.eidolonrealms.com/release.json`
+- Server readiness and identity: `https://server.eidolonrealms.com/healthz`
 - Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
 - Procedural cutover scope and closure gates: [docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md](docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md)
 - Complete migration ledger: [docs/art/PROCEDURAL_MIGRATION_INVENTORY.md](docs/art/PROCEDURAL_MIGRATION_INVENTORY.md)
 - `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent|near-death]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction, and `near-death` clears prior ability protections before a real hostile death/respawn check. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
 
-- Administrator access is a durable account role, separate from QA commands and character level. An exact username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can type `/relevel` to persist the role without changing progression. Future privileged operations follow [the administrator authorization and audit contract](docs/ADMINISTRATION.md).
+- Administrator access is a durable account role, separate from QA commands and character level. An exact username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can type `/relevel` to persist the role without changing progression. The in-game Administration panel and confirmed, audited operations are described in [the administrator guide](docs/ADMINISTRATION.md).
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 1.9.19`
+- Current in-game displayed version: `Alpha 1.9.20`
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active implementation line: `Alpha 1.0` release-candidate closeout and beta readiness
+- Active implementation line: `Alpha 1.10` final integration, following the [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md)
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
-- Main campaign: the automatically started 15-chapter Fourfold Chronicle moves through Earth, Water, Fire, and Air collection arcs and dungeon clears, then four distinct raids with three-wave crystal-repair Vigils, the Umbral Nexus portal gate, and Malachar's four-Eidolon finale
+- Main campaign: the 31-chapter Fourfold Chronicle includes eight investigation sites, Earth/Water/Fire/Air collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the Umbral Nexus portal gate, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
 - Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
 
-Verification state as of September 4, 2026:
+Verification state as of September 20, 2026:
 
-- The Alpha 1.0 candidate adds migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
+- The retained Alpha 1.0 foundation includes migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
 - Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
-- The most recent production evidence predates this uncommitted Alpha 1.0 candidate. No documentation should imply the candidate is live until the exact committed SHA passes deployment and live-character verification.
+- The latest recorded public verification is [Alpha 1.9.19](docs/plans/2026-09-19-release1-9-19-casino-cutaway.md). Alpha 1.9.20 is a local candidate until its exact committed SHA passes deployment and live verification. The [final integration audit](docs/plans/2026-09-14-final-integration-audit.md) preserves accepted results and identifies the remaining campaign, raid and physical-phone checks; the complete 1.10 goal is not yet finished.
 - The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
 
-Current measured hotspots (physical lines, `wc -l`):
+Historical Alpha 1.0 decomposition measurements (physical lines, `wc -l`; not current file sizes):
 
 | File | LOC |
 |---|---:|
@@ -330,7 +330,7 @@ Current measured hotspots (physical lines, `wc -l`):
 | `src/core/GameEngine.js` | 2,310 |
 | `src/ui/UIManager.js` | 1,216 |
 
-These measurements satisfy the Alpha 1.0 decomposition gates. New beta work should preserve the extracted ownership boundaries instead of rebuilding coordinator monoliths.
+These historical measurements satisfied the Alpha 1.0 decomposition gates. New work should preserve the extracted ownership boundaries instead of rebuilding coordinator monoliths.
 
 ## Media TODO
 
