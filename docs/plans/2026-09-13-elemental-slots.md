@@ -1,5 +1,46 @@
 # Elemental slots — implementation handoff
 
+## Current status and exposure — September20 reconciliation
+
+Slots are delivered, including separate Gold/EP wallets and
+[connected paid-spin, prepared-feature and restart evidence](2026-09-14-connected-slots-acceptance.md).
+The original implementation record below is historical: the20/40-Gold-only
+stakes,8,000-Gold transfer ceiling and “not deployed” labels are superseded.
+Current public stakes are20–100,000 Gold in steps of20; VIP stakes are10–100 EP
+in steps of10. Payment integration remains excluded.
+
+At those maximum stakes, current conservative per-spin payout bounds are:
+
+| Theme | Payout multiple | Gold | EP |
+| --- | ---: | ---: | ---: |
+| Earth |100×|10,000,000|10,000|
+| Fire, doubled free-spin jackpot |200×|20,000,000|20,000|
+| Water, two line stages plus final jackpot |174×|17,400,000|17,400|
+| Air |100×|10,000,000|10,000|
+
+Water's bound is `37 + 37 + 100` times stake: each stage pays at most ten
+37-line-stake wins, and a jackpot ends further cascades. This is a conservative
+bound, not a proof that all three maxima can occur in one legal cascade.
+A bonus choice pays separately, at most5×stake (500,000 Gold or500 EP).
+These are **not whole paid-cycle ceilings**: earned free spins can retrigger,
+and the12-spin bank cap bounds the outstanding bank, not the total spins that
+can be earned over a feature. Do not clip owed payouts to a per-cycle budget.
+
+Source review: `casino_slots.go` supplies explicit paytables, ten paylines,
+`bet/10` line stakes, jackpot replacement and multiplier rules;
+`casino_currency.go` supplies legal denominations. The existing saved-result
+and `BlackjackTransfer.Validate` bounds admit the20-million-Gold/20,000-EP
+result. Existing maximum-stake, saved-jackpot and EP-feature tests cover these
+boundaries. No new sampling, payout change or rerun was needed for this review.
+
+Payouts scale linearly at every legal denomination; changing stake does not
+change the symbol weights or per-stake return. Retain the earlier full-cycle
+sample below with its uncertainty, rather than treating it as exact RTP or a
+fresh high-stakes observation. Actual casino sources/sinks versus earned
+campaign income and busy-floor/phone acceptance remain open.
+
+## Original implementation record
+
 Part of full1.9/1.10 casino scope. Connected public Gold slots and seated UI are
 implemented in the local1.9 candidate, NOT deployed. Initial payout tuning is
 recorded below; this is not an exact RTP certification or a player return promise.

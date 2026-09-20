@@ -1,5 +1,39 @@
 # 1.5 economy decisions and casino settlement boundary
 
+## Current casino exposure — September20 reconciliation
+
+The original planning sections below predate the implemented EP wallet and
+casino. Currency is now **EP — Eidolon Points**, with the approved one-way
+1,000,000 Gold→1 EP exchange and100EP monthly VIP allowance. EP games return
+only EP; EP cannot purchase gameplay power or return to Gold. Payments remain
+excluded. The [current casino roadmap](2026-09-09-town-casino-roadmap.md) takes
+precedence over the historical unnamed-currency/future-only wording below.
+
+Source-checked maximum exposure at the approved current stakes:
+
+- Blackjack:100,000Gold opening stake, up to four doubled hands gives800,000
+  committed and1,600,000 inclusive return per player. Six seats conservatively
+  bound inclusive return at9,600,000 and net house loss at4,800,000Gold per round.
+  These are arithmetic ceilings, not observed outcomes or probabilities.
+  EP figures are800 committed/1,600 returned per player and9,600/4,800 per table;
+  the100EP limit applies to each opening/additional debit, not summed exposure.
+- Poker: six100,000Gold buy-ins bound the total funded pot at600,000Gold.
+  Six100EP buy-ins give600EP. This is player-to-player redistribution, not a
+  house-created source; unspent stacks are included in conserved cash-outs.
+- Slots: one Fire free-spin jackpot can return20,000,000Gold or20,000EP.
+  Bonus-choice payments and retriggered free spins are separate obligations;
+  there is no finite whole-cycle cap inferred from that per-result limit.
+  See [theme-specific bounds](2026-09-13-elemental-slots.md).
+
+Reviewed current `CasinoBetLimits`, round rules, slot paytables and durable
+transfer validation; the old500Gold/8,000Gold assumptions no longer describe
+the shipped games. Existing boundary tests already cover maximum returns and
+currency isolation. Do not rerun broad sampling or change the user's wager caps
+solely to update this record. These corrected bounds inform, but do not finish,
+the remaining measured progression/casino sources-and-sinks balance pass.
+
+## Original economy and implementation handoff
+
 This is the concrete economy handoff to the later casino milestones, not a claim
 that the casino games exist. Ordinary Gold stays the public floor's currency.
 The future VIP currency is deliberately unnamed and undefined.
