@@ -47,7 +47,7 @@ normal recovery/training, manual Ilyra turn-in, relogin and actual saved-Mongo
 XP/Gold/quest checks including the fresh flood-shelter investigation offer.
 Its cleanup preserves a complete private archive on success or failure. This
 route is prepared, **not yet run or accepted**. Use the archive path above;
-do not overlap with the current Fire raid or deployment browser work. It is
+do not overlap with deployment browser work or a later Fire raid. It is
 not a full Water-region or four-earned-character pacing claim.
 
 ### Remaining Water region route prepared independently

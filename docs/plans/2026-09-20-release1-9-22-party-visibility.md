@@ -1,6 +1,11 @@
 # Alpha1.9.22 — keep your party in sight
 
-Status: first publication blocked in CI, not deployed. CI35491700557 on44729c2d
+Status: corrected candidate4f39328b is running in CI35492191742. Hosted Jest,
+Go and all three browser shards passed; predeployment character QA is running.
+Exact live delivery is not yet accepted. A guarded Water continuation waits for
+full CI success and public verification; it has not started gameplay yet.
+
+The first publication was blocked in CI, not deployed. CI35491700557 on44729c2d
 ended failure after9m57s: one old damage-role assertion still expected six
 targeting probes instead of the ten now including exposed upper corners.
 7,031 client tests passed; that assertion alone failed. Hosted browser and Go

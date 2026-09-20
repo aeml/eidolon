@@ -1,6 +1,15 @@
 # 1.10 final integration — evidence and remaining work
 
-## September20 checkpoint — raid roster delivered, Fire input correction
+## September20 checkpoint — earned Water queued, Fire targeting unresolved
+
+Alpha1.9.22 corrected candidate4f39328b is in CI35492191742. Hosted Jest,
+Go and all three browser shards pass; predeployment character QA is running.
+This is not yet live-release acceptance. Guarded Water parent45531 waits for
+that exact CI success and independent public verification before starting
+`earnedwater0920a` from the saved level33 Wizard. Luna monitors both handles;
+do not overlap native browser work or edit its frozen29ef2862 worktree.
+See [release status](2026-09-20-release1-9-22-party-visibility.md) and
+[earned continuation](2026-09-20-earned-continuation.md).
 
 Earned Wizard Verdant continuation **passes**: native63326/run`earnedparty0920c`
 on3b163421,46.7m, no deaths, full four-player dungeon/four claims/relogin.
@@ -10,11 +19,15 @@ See [saved continuation evidence](2026-09-20-earned-continuation.md); do not
 repeat accepted Earth/Verdant work. Water hunts, later regions/raids and the
 remaining full integration scope stay open.
 
-Fire `fireraid0920e` is now active on7fa57f00, native35409, under
-`/tmp/eidolon-fire-raid-20260920-r5-JhyVd6/`, monitored by Luna. Includes the
-proactive runner-healer escort and strict sub-unit formation correction, with
-unchanged full-raid requirements and zero retries. Do not overlap native runs
-or modify loaded test/runtime files. Earlier failures below remain history.
+No Fire run is active. Latest `fireraid0920f` ended exit1 after8.0m on127e39d6,
+native34554, at a Magma Golem damage stall; artifacts are retained under
+`/tmp/eidolon-fire-raid-20260920-r6-BnDcKk/`. It passed the earlier settled-member
+formation failure. Acquisition-time diagnostics and the recorded-scene check
+are now retained in main3a866b90 without extra browser polling. They do not
+establish the live stall's cause or prove full repair acceptance. Diagnose that
+specific failure; do not repeat accepted Earth/Verdant work, blindly rerun Fire,
+or weaken survival/damage bounds. The linked Fire record is authoritative over
+older active-run descriptions below.
 
 September 20 operator confirmation: the administrator found Activity history
 and reported that everything in the panel appears to work. The requested safe
