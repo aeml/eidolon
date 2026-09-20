@@ -45,7 +45,7 @@ export function readSavedEarnedHandoff(username, env = process.env) {
         const q = c?.quests?.find(q => q.id === 'chronicle_earth_borrowed_oath');
         const d = c?.quests?.find(q => q.id === 'chronicle_03_roots_remember');
         print(JSON.stringify({level:c?.level,xp:c?.xp,gold:c?.gold,correctSaveKey:c?.name===${JSON.stringify(username)},
-            huntCompleted:q?.completed===true,dungeonAccepted:d?.accepted===true,dungeonCount:d?.count}));`;
+            huntCompleted:q?.completed===true,dungeonAccepted:d?.accepted===true,dungeonCount:d?.count,dungeonCompleted:d?.completed===true}));`;
     try {
         return JSON.parse(execFileSync('docker', ['exec', '-i', env.EIDOLON_E2E_BUILD_MONGO_CONTAINER,
             'mongosh', '--quiet', '--port', env.EIDOLON_E2E_BUILD_MONGO_PORT, '--file', '/dev/stdin'],

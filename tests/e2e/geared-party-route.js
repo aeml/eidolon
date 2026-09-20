@@ -1,7 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from '../partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile, earnedPartyContinuationEnabled } from '../partyDungeonFixture.js';
+import { resumeEarnedEarthToReadiness, leaveEarnedParty } from './earned-earth-continuation.js';
+import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
@@ -170,6 +172,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const graphicsQuality = partyGraphicsQuality(process.env);
     const gearProfile = partyGearProfile(process.env);
     let playthrough = isRaid ? null : dungeonPlaythroughOptions(process.env);
+    const earnedWizard = earnedPartyContinuationEnabled(process.env, playthrough, isRaid);
     const fixtureLevel = isRaid ? 70 : playthrough.runLevel;
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1',
@@ -213,7 +216,18 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
             const character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
-            await seedActor(actorPage, login, character);
+            if (earnedWizard && className === 'Wizard') {
+                await resumeEarnedEarthToReadiness(actorPage, login);
+                await leaveEarnedParty(actorPage);
+                await testInfo.attach('earned-wizard-dungeon-entry', {
+                    body: JSON.stringify(await actorPage.evaluate(() => {
+                        const p = window.game.player;
+                        return { level: p.level, xp: p.xp, gold: p.gold, equipment: p.equipment,
+                            inventory: p.inventory, stash: p.stash, talentRanks: p.talentRanks };
+                    })), contentType: 'application/json'
+                });
+                await observeRole(actorPage);
+            } else await seedActor(actorPage, login, character);
             if (graphicsQuality !== 'high') {
                 await actorPage.keyboard.press('Escape');
                 await actorPage.locator('#btn-settings').click();
@@ -223,8 +237,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             }
             await expect.poll(() => actorPage.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe(graphicsQuality);
             console.log(`[party-clear] ${className} graphics: ${graphicsQuality}`);
-            console.log(`[party-clear] prepared ${className}: level${character.level} ${gearProfile} gear, rank5 primary mastery, seeded ${story.chapterId} gate`);
-            console.log('[party-loadout]', JSON.stringify({ class: className, profile: gearProfile,
+            if (earnedWizard && className === 'Wizard') {
+                console.log('[party-clear] Wizard uses restored earned inventory/training and actual manual story handoff; the three support characters are prepared fixtures, not earned party progression.');
+            } else console.log(`[party-clear] prepared ${className}: level${character.level} ${gearProfile} gear, rank5 primary mastery, seeded ${story.chapterId} gate`);
+            if (!(earnedWizard && className === 'Wizard')) console.log('[party-loadout]', JSON.stringify({ class: className, profile: gearProfile,
                 items: Object.entries(character.equipment).map(([slot, item]) => ({ slot, name: item.name, rarity: item.rarity })) }));
         }
         const [tank, healer] = actors;
@@ -808,6 +824,12 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             expect((await snapshot(actor.page)).gold, 'Relogging must neither lose nor duplicate the reward').toBe(actor.claimedGold);
             await verifyNextStoryOffer(actor.page, story);
             console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and next offer persisted`);
+        }
+        if (earnedWizard) {
+            const wizard = actors.find(actor => actor.className === 'Wizard');
+            await expect.poll(() => readSavedEarnedHandoff(wizard.login.username), { timeout: 30_000, intervals: [2000] })
+                .toMatchObject({ correctSaveKey: true, huntCompleted: true, dungeonAccepted: true, dungeonCount: 1, dungeonCompleted: true });
+            console.log('[earned-party] Wizard dungeon claim is saved in Mongo; no prepared-party reward is being labeled earned.');
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
     } catch (error) {
