@@ -23,6 +23,12 @@ Water or earlier Earth/Verdant. The Wizard's many incidental defensive kills
 remain a pacing limitation, not evidence of a clean normal story-level curve.
 Full Abyssal, later regions/raids and final1.10 remain unverified.
 
+The next stage is now running: `earnedabyssal0920a`, native56558, frozen clean
+47e0adec, launcher/log `/tmp/eidolon-earned-abyssal-20260920-r1-MGXN8s/`.
+Normal60, Low graphics, existing two-hour party bound and zero retries; Luna
+monitors terminal-only. No deployment browser job or other native route overlaps.
+This launch is not evidence of a dungeon clear.
+
 ## Previous retained progress — hunt61/70, bag-policy failure
 
 Native7513 / `earnedwaterregion0920e`, frozenaa71420e, ended exit1 after1.1h.
