@@ -54,6 +54,21 @@ because a response timed out. The UI retains this retry across an in-memory
 reconnect, not across a browser reload; consult history before recreating a
 request after losing the page.
 
+Prepared follow-up (not yet deployed in1.9.24): administration mutation
+payload/rate violations end the offending connection.
+For an authenticated account, its rejection is recorded without creating a new
+operation; oversized bodies are not parsed into history. Reconnect and retry
+the same request ID if its earlier outcome is uncertain. Closing the connection
+bounds audit production from further buffered packets. Unauthenticated packets
+cannot supply an actor identity and never reach character operations.
+
+If both the history database and private activity journal are unavailable, the
+server refuses the change, ends that connection and retains the rejection in the
+existing in-memory recovery buffer. Health readiness fails and clean shutdown
+waits until those events are journaled. This buffer is not crash-durable: forced
+termination before storage recovers can lose these rejection/disconnect events.
+It does not authorize a character change or report a successful operation.
+
 History pages contain at most50 entries. Retention defaults to90days;
 `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` accepts whole numbers7–365. Expired entries
 are excluded from reads, with asynchronous database cleanup. Permanent operation

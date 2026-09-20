@@ -15,9 +15,38 @@ formatting and whitespace checks pass. Existing money/replay behavior is unchang
 
 Batch note for the next release: “Administration history now records requests
 rejected because another connection replaced the submitting session.”
-Transport payload/rate failures remain a separate bounded-policy review: this
-change does not turn unauthenticated packets or rate-limit floods into unbounded
-audit writes. It does not claim durable logging if every storage device fails.
+
+The subsequent bounded admission correction records authenticated payload/rate
+denials through that same outbox and ends the violating connection. The closed
+flag prevents further buffered packets from reaching operations; oversized bodies
+are not decoded and anonymous wire traffic is not assigned a forged account.
+Valid bounded request IDs stay non-final for replay. A close may beat delivery of
+the queued error, so the existing reconnect/retry identity remains authoritative.
+
+If Mongo and disk both fail, the rejected event now enters the existing pending
+activity RAM buffer, the offending connection ends, readiness fails and clean
+shutdown waits for durable storage. Normal replay preserves the exact event once
+storage recovers. This is not a durable acknowledgement: forced termination while
+all storage is unavailable can lose RAM-only rejection/disconnect events. No
+character mutation is allowed based on such an event. No new log/store is added.
+
+Three admission regressions cover authenticated rate/size and anonymous traffic,
+100 subsequent buffered packets, no operation/character mutation, and exact
+journal reopen/replay. A dual-outage regression covers failed readiness/shutdown,
+bounded RAM retention and exact replay after recovery. Related administration,
+session-activity and inbound-policy tests pass under the race detector in9.762s.
+These corrections are not shipped in1.9.24; batch with the next release and notes.
+A real loopback WebSocket check also passes under the race detector in1.355s:
+an exhausted admission bucket closes the actual transport and retains exactly
+one outbox rejection without creating an operation or saving a character. Its
+account/store fixtures are isolated mocks; this is not a new production or
+two-account mutation acceptance claim. Existing connected mutation/replay proof
+remains applicable because the grant/receipt execution path is unchanged.
+
+Additional next-release note: “Administration history retains authenticated
+request-limit rejections. Unsafe request streams are disconnected; storage
+outages refuse changes and report pending audit recovery instead of silently
+losing rejected-operation history.”
 
 Verified live: Alpha1.9.23 at1eb18f5910999bd19e2824c34f05693f1cecc85f.
 Luna reports CI35494967147 passed at07:14:35UTC; the Water launch guard records

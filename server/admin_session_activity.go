@@ -12,8 +12,8 @@ import (
 var adminActivityJournal *database.AdminActivityJournal
 var adminActivityReplayMu sync.Mutex
 
-// A transport can disappear even if local storage has failed. Retain these
-// unavoidable events in RAM, refuse a successful shutdown until journaled,
+// A transport can disappear or an administration request can be rejected even
+// if local storage has failed. Retain these events in RAM, refuse a successful shutdown until journaled,
 // and make readiness fail rather than silently reporting complete history.
 var unjournaledActivity = struct {
 	sync.Mutex

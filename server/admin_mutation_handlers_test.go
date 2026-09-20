@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"strings"
@@ -12,6 +14,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"github.com/gorilla/websocket"
 )
 
 func adminMutationFixture(t *testing.T) (*Client, *fakeAdminRoleStore, *schedulerOperationStore, *testCharacterCommitter, *game.Entity) {
@@ -80,6 +83,119 @@ func TestAdminMutationAdmissionRejectionKeepsCorrelatedRetryIdentity(t *testing.
 	var result adminMutationResult
 	if err := json.Unmarshal(messages[0].Payload, &result); err != nil || result.ID != "request-123456789" || result.Success || result.Authorized || result.Final {
 		t.Fatal("admission rejection invented authority or a final stored decision", result, err)
+	}
+}
+
+func TestAdminMutationAdmissionRejectionIsAuditedAndBoundsFurtherPackets(t *testing.T) {
+	for _, mode := range []string{"rate", "oversized", "anonymous"} {
+		t.Run(mode, func(t *testing.T) {
+			c, _, operations, committer, player := adminMutationFixture(t)
+			dir, activity := sessionActivityFixture(t)
+			activity.appendErr = errors.New("private database outage")
+			payload := adminGoldRequestFixture
+			if mode == "oversized" {
+				payload = strings.Repeat("private", adminMutationPayloadLimit)
+			} else if mode == "anonymous" {
+				c.username = ""
+			} else {
+				c.messageRates = map[string]*messageRateBucket{MsgAdminGrantGold: {tokens: 0, updated: time.Now().Add(time.Hour)}}
+			}
+			msg := Message{Type: MsgAdminGrantGold, Payload: json.RawMessage(payload)}
+			c.handleMessage(msg)
+			if !c.transportClosed.Load() {
+				t.Fatal("audit-producing protocol violation left its connection active")
+			}
+			for i := 0; i < 100; i++ {
+				c.handleMessage(msg)
+			}
+			pending, err := adminActivityJournal.Pending(50)
+			if err != nil || player.Gold != 100 || len(operations.ops) != 0 || len(committer.ids) != 0 {
+				t.Fatal("admission rejection mutated gameplay or failed storage", err)
+			}
+			if mode == "anonymous" {
+				if len(pending) != 0 {
+					t.Fatal("anonymous packet was attributed to an account", pending)
+				}
+				return
+			}
+			if len(pending) != 1 || pending[0].Actor != "operator" || pending[0].Result != "denied" ||
+				strings.Contains(pending[0].Summary, "private") {
+				t.Fatal("admission audit missing, duplicated or unsanitized", pending)
+			}
+			if mode == "rate" && (pending[0].RequestID != "request-123456789" || pending[0].Target != "recipient") {
+				t.Fatal("bounded valid request lost its correlation", pending)
+			}
+			if mode == "oversized" && (pending[0].RequestID != "invalid-request" || pending[0].Target != "" || pending[0].Reason != "") {
+				t.Fatal("oversized body was parsed into activity", pending)
+			}
+			adminActivityJournal, err = database.OpenAdminActivityJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			activity.appendErr = nil
+			if err := retryPendingAdminActivity(); err != nil {
+				t.Fatal(err)
+			}
+			if err := retryPendingAdminActivity(); err != nil {
+				t.Fatal(err)
+			}
+			if len(activity.events) != 1 || !reflect.DeepEqual(activity.events[0], pending[0]) {
+				t.Fatal("admission audit changed across restart/replay", activity.events)
+			}
+		})
+	}
+}
+
+func TestAdminMutationAdmissionClosesRealWebSocket(t *testing.T) {
+	c, _, operations, committer, player := adminMutationFixture(t)
+	_, activity := sessionActivityFixture(t)
+	activity.appendErr = errors.New("database unavailable")
+	c.messageRates = map[string]*messageRateBucket{MsgAdminGrantGold: {tokens: 0, updated: time.Now().Add(time.Hour)}}
+	done := make(chan error, 1)
+	upgrader := websocket.Upgrader{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			done <- err
+			return
+		}
+		defer conn.Close()
+		c.conn = conn
+		_, frame, err := conn.ReadMessage()
+		if err != nil {
+			done <- err
+			return
+		}
+		msg, err := decodeInboundMessage(frame)
+		if err == nil {
+			c.handleMessage(msg)
+		}
+		done <- err
+	}))
+	defer server.Close()
+	conn, _, err := websocket.DefaultDialer.Dial("ws"+strings.TrimPrefix(server.URL, "http"), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+	if err := conn.WriteJSON(Message{Type: MsgAdminGrantGold, Payload: json.RawMessage(adminGoldRequestFixture)}); err != nil {
+		t.Fatal(err)
+	}
+	_ = conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	if _, _, err := conn.ReadMessage(); err == nil || websocket.IsUnexpectedCloseError(err) == false {
+		t.Fatal("violating transport was not actually closed", err)
+	}
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("admission handler did not terminate")
+	}
+	pending, err := adminActivityJournal.Pending(50)
+	if err != nil || len(pending) != 1 || !c.transportClosed.Load() || player.Gold != 100 || len(operations.ops) != 0 || len(committer.ids) != 0 {
+		t.Fatal("socket rejection lost its durable event or changed gameplay", pending, err)
 	}
 }
 
@@ -189,6 +305,33 @@ func TestAdminRejectedMutationFailsClosedWhenBothActivityStoresFail(t *testing.T
 	if result.Success || result.Authorized || result.Final || player.Gold != 100 || len(committer.ids) != 0 ||
 		result.Message != "Administration activity storage is unavailable. Nothing was changed." || len(activity.events) != 0 {
 		t.Fatal("unrecorded rejection acknowledged or changed character", result)
+	}
+	if sessionActivityJournalHealthy() || !c.transportClosed.Load() || len(unjournaledActivity.events) != 1 {
+		t.Fatal("unpersisted rejection was lost, reported healthy or left an audit producer active")
+	}
+	var original database.AdminActivity
+	for _, event := range unjournaledActivity.events {
+		original = event
+	}
+	for i := 0; i < 100; i++ {
+		c.handleMessage(Message{Type: MsgAdminGrantGold, Payload: json.RawMessage(payload)})
+	}
+	if len(unjournaledActivity.events) != 1 || persistUnjournaledActivity() == nil {
+		t.Fatal("failed storage allowed unbounded events or an unsafe clean shutdown")
+	}
+	if err := os.Rename(dir+"-unavailable", dir); err != nil {
+		t.Fatal(err)
+	}
+	activity.appendErr = nil
+	if err := retryPendingAdminActivity(); err != nil {
+		t.Fatal(err)
+	}
+	if err := retryPendingAdminActivity(); err != nil {
+		t.Fatal(err)
+	}
+	if !sessionActivityJournalHealthy() || len(activity.events) != 1 || !reflect.DeepEqual(activity.events[0], original) ||
+		player.Gold != 100 || len(committer.ids) != 0 {
+		t.Fatal("recovered rejection duplicated or changed, or mutated character", activity.events)
 	}
 }
 

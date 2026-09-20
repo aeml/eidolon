@@ -28,7 +28,7 @@ func isAdminMutation(action string) bool {
 // Never call this while holding the ordinary dispatcher's single actor lock.
 func handleAdminMutation(c *Client, msg Message) {
 	if err := c.acceptInboundMessage(msg, time.Now()); err != nil {
-		c.sendInboundRejection(msg, err.Error())
+		c.rejectAdminAdmission(msg, err.Error())
 		return
 	}
 	request, parseErr := decodeAdminMutation(msg)
@@ -195,8 +195,50 @@ func auditAdminRejectedRequest(c *Client, action string, request adminMutationRe
 	// Rejections have no character mutation/operation journal to replay. Keep
 	// their exact sanitized event in the existing durable activity outbox when
 	// Mongo is unavailable; the normal retry/startup drain inserts that same ID.
-	// If both stores fail, report activity storage unavailable as before.
-	return adminActivityJournal != nil && adminActivityJournal.Write(event) == nil
+	if adminActivityJournal != nil && adminActivityJournal.Write(event) == nil {
+		return true
+	}
+	// Both stores failed. Reuse the disconnect-event recovery buffer: readiness
+	// and clean shutdown stay blocked until the exact event becomes durable.
+	// End this connection so repeated rejected requests cannot grow the buffer.
+	// This is explicitly NOT a durable acknowledgement or a final decision on
+	// an existing operation; a process/device failure before recovery can lose RAM.
+	unjournaledActivity.Lock()
+	unjournaledActivity.events[event.ID] = event
+	unjournaledActivity.Unlock()
+	c.transportClosed.Store(true)
+	if c.conn != nil {
+		_ = c.conn.Close()
+	}
+	return false
+}
+
+// A rejected transport must not remain an unlimited audit producer. The first
+// administration admission violation ends that connection; subsequent buffered
+// packets never reach operation handling. Anonymous traffic has no authenticated
+// actor and is not attributed to a client-supplied identity.
+func (c *Client) rejectAdminAdmission(msg Message, reason string) {
+	if !c.transportClosed.CompareAndSwap(false, true) {
+		return
+	}
+	defer func() {
+		if c.conn != nil {
+			_ = c.conn.Close()
+		}
+	}()
+	if c.username != "" {
+		request := adminMutationRequest{}
+		if len(msg.Payload) <= adminMutationPayloadLimit {
+			request, _ = decodeAdminMutation(msg)
+		}
+		if !auditAdminRejectedRequest(c, msg.Type, request, "denied", "Administration admission rejected: "+reason+". Connection closed; no new operation admitted.") {
+			reason = "Administration activity storage is unavailable. Reconnect and retry the same request."
+		}
+	}
+	// Preserve non-final correlation if the queued reply reaches the peer. A
+	// transport close may win the write race; the existing reconnect UI also
+	// retains this same operation identity rather than assuming a final denial.
+	c.sendInboundRejection(msg, reason)
 }
 
 // Exact online binding, not a display name, stale socket or disconnected entity.
