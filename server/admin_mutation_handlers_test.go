@@ -84,7 +84,7 @@ func TestAdminMutationAdmissionRejectionKeepsCorrelatedRetryIdentity(t *testing.
 }
 
 func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
-	for _, mode := range []string{"malformed", "role-lookup", "operation-lookup", "conflicting-id",
+	for _, mode := range []string{"malformed", "replaced-connection", "role-lookup", "operation-lookup", "conflicting-id",
 		"missing-role-service", "missing-operation-service", "character-persistence", "character-plan",
 		"admin-recovery", "casino-recovery", "trading-recovery", "prepare-failed", "prepare-ambiguous"} {
 		t.Run(mode, func(t *testing.T) {
@@ -92,6 +92,8 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 			dir, activity := sessionActivityFixture(t)
 			payload := adminGoldRequestFixture
 			switch mode {
+			case "replaced-connection":
+				activeSessions[c.username] = &Client{username: c.username, send: make(chan []byte, 10)}
 			case "malformed":
 				payload = strings.Replace(payload, `"amount":100`, `"amount":100,"actor":"forged"`, 1)
 			case "role-lookup":
@@ -147,6 +149,10 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 			event := pending[0]
 			if mode == "trading-recovery" && !strings.Contains(event.Summary, "trading funds") {
 				t.Fatal("did not exercise trading recovery rejection", event)
+			}
+			if mode == "replaced-connection" && (event.Result != "denied" ||
+				!strings.Contains(event.Summary, "connection is no longer active") || len(operations.ops) != 0) {
+				t.Fatal("stale connection created an operation or lost its rejection", event)
 			}
 			if event.Actor != "operator" || event.Target != "recipient" || event.Action != MsgAdminGrantGold ||
 				event.RequestID != "request-123456789" || event.Result == "success" || event.At.IsZero() ||

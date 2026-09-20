@@ -2,6 +2,16 @@
 
 ## Water partial save retained — level61, final hunt25/70
 
+The retained-save continuation is queued under native58053, runID
+`earnedwaterregion0920b`, frozen clean534da08b in
+`/tmp/eidolon-water-region-resume-20260920-Azedqr/source`. Launcher/log live in
+its parent directory. It first requires all CI35500889856 jobs to succeed and
+independently verifies exact publicd1e707e3/Alpha1.9.24, readiness and casino
+assets. Only then does it resume the saved45 remaining kills and manual Abyssal
+handoff, with the existing two-hour/no-retry bound and automatic private save
+retention. Luna monitors terminal status. This is queued, not a passing run;
+keep its source frozen and do not start another native browser session.
+
 `earnedwaterregion0920a` ended exit1 after1.7h, with terminal phase
 `earned_water_region`. Its owned API/Mongo containers are gone. Independent
 isolated archive restore confirms level61/21946XP/51012Gold, completed shelter

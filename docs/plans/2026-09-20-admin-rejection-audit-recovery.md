@@ -1,5 +1,24 @@
 # Rejected administration requests — durable outage recovery
 
+## Follow-up after the published1.9.24 batch
+
+The authenticated/rate-limited mutation path could lose its active connection
+while waiting for ordered account locks. It correctly refused the operation,
+but returned without recording that rejection. This branch now uses the existing
+sanitized rejection/outbox path, retaining the authenticated actor and bounded
+request identity without creating or replacing an operation receipt. A focused
+replaced-connection regression passes0.125s, including database outage, disk
+journal reopen and exact one-event replay; no grant or character save occurs.
+This change is local, not part of immutable publishedd1e707e3/Alpha1.9.24.
+Related mutation/rejection checks also pass under the race detector in8.872s;
+formatting and whitespace checks pass. Existing money/replay behavior is unchanged.
+
+Batch note for the next release: “Administration history now records requests
+rejected because another connection replaced the submitting session.”
+Transport payload/rate failures remain a separate bounded-policy review: this
+change does not turn unauthenticated packets or rate-limit floods into unbounded
+audit writes. It does not claim durable logging if every storage device fails.
+
 Verified live: Alpha1.9.23 at1eb18f5910999bd19e2824c34f05693f1cecc85f.
 Luna reports CI35494967147 passed at07:14:35UTC; the Water launch guard records
 matching public client/server identities, readiness and cumulative notes.

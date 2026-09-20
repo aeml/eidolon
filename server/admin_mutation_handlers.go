@@ -54,6 +54,12 @@ func handleAdminMutation(c *Client, msg Message) {
 	}
 	if c.username == "" || c.transportClosed.Load() || !currentCharacterConnection(c) {
 		result.Message = "This connection is no longer active. Reconnect before using administration."
+		// Admission already required an authenticated, rate-limited request.
+		// A replacement connection may win while we wait for account locks;
+		// retain this rejection without touching any earlier operation receipt.
+		if c.username != "" {
+			auditAdminRejectedRequest(c, msg.Type, request, "denied", result.Message)
+		}
 		return
 	}
 	if parseErr != nil {

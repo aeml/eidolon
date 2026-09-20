@@ -20,7 +20,8 @@ The latest user request supersedes the old balcony layout and table counts:
   receipts, not a client flag. No duplicate normal-VIP/admin allowance for the
   same month; no Gold, stats, progression perks or payment integration.
 
-Implementation is local and incomplete; these changes are **not yet deployed**.
+The complete expansion batch is published as1.9.24 atd1e707e3; **live verification
+is pending**. Shared games, floor/layout and admin allowance checks are retained.
 Do not release a partial venue with placeholder games. The admin allowance policy
 and focused verification are tracked in the
 [admin VIP update](2026-09-20-admin-vip-allowance.md).
