@@ -20,6 +20,46 @@ const { playDungeonThroughInputs } = await import('./e2e/dungeon-playthrough-rou
 
 afterEach(() => { jest.clearAllMocks(); jest.restoreAllMocks(); });
 
+test.each([[true, true], [true, false], [false, true]])(
+    'raid hands off to the ritual only after its observed final boss and all cleared rooms: enabled%s cleared%s',
+    async (finishAtFinalBoss, cleared) => {
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        let defeated = false;
+        const layout = { generationSeed: 'raid-handoff', generatorVersion: 2,
+            rooms: [{ type: 'start' }, { type: 'boss', x: 0, z: 0, width: 100, height: 100 }],
+            corridors: [{ toRoomIndex: 1 }] };
+        const rooms = [{ cleared: false }, { cleared }];
+        const enemy = { id: 'guardian', type: 'AshenImperator', distance: 10, health: 100 };
+        const page = { evaluate: jest.fn(async fn => {
+            if (fn.name === 'readDungeonTargetStateInPage') { defeated = true; return { state: 'DEAD', health: 0 }; }
+            const source = fn.toString();
+            if (source.includes('currentDungeonLayout.generationSeed')) return layout.generationSeed;
+            if (source.includes('currentDungeonLayout.generatorVersion')) return layout.generatorVersion;
+            if (source.includes('currentDungeonLayout')) return layout;
+            if (source.includes('currentDungeonRoomState.rooms')) return rooms;
+            if (source.includes('currentDungeonRoomState')) return { rooms };
+            if (source.includes('player.gold')) return defeated ? 10 : 0;
+            if (source.includes('remotePlayers.values')) return defeated ? [] : [enemy];
+            return 0;
+        }) };
+        const centerWalk = new Error('unnecessary formation around repair NPC');
+        moveByGroundClick.mockRejectedValue(centerWalk);
+        readPlayerState.mockResolvedValue({ x: 50, z: 50 });
+        enterAndExitDungeon.mockImplementation(async (_page, { beforeExit }) => beforeExit());
+        const afterClearedRoute = jest.fn();
+        const result = playDungeonThroughInputs(page, { finishAtFinalBoss, afterClearedRoute,
+            playthrough: { dungeonType: 'fire_crystal_raid', bosses: ['AshenImperator'] } });
+        if (finishAtFinalBoss && cleared) {
+            await result;
+            expect(afterClearedRoute).toHaveBeenCalledTimes(1);
+            expect(moveByGroundClick).not.toHaveBeenCalled();
+        } else {
+            await expect(result).rejects.toBe(centerWalk);
+            expect(afterClearedRoute).not.toHaveBeenCalled();
+        }
+    }
+);
+
 test.each([false, true])('traversal timeout retains bounded in-dungeon evidence before recall (observation fails: %s)', async observationFails => {
     let moves = 0;
     jest.spyOn(Date, 'now').mockImplementation(() => moves >= 14 ? 180_001 : moves * 1000);

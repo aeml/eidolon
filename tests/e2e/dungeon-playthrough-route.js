@@ -16,7 +16,7 @@ import { createDungeonExpeditionTiming } from '../dungeonExpeditionTiming.js';
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, resetRun = true, afterClearedRoute,
-    recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
+    recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom, finishAtFinalBoss = false,
     afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0, expeditionProfile = 'solo',
     runInstance = enterAndExitDungeon,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
@@ -247,13 +247,22 @@ export async function playDungeonThroughInputs(page, {
         const goldBefore = await page.evaluate(() => window.game.player.gold);
         // Walk actual joins through the chosen boss rooms. The fallback switch
         // selects geometry only: no inside waypoint, kill or health override.
-        for (let routeIndex = 0; routeIndex < bossRooms[lastBoss]; routeIndex++) {
+        traversal: for (let routeIndex = 0; routeIndex < bossRooms[lastBoss]; routeIndex++) {
             timing.enter('traversal');
             for (const destination of routes[routeIndex]) {
                 let deadline = Date.now() + 180_000;
                 const recentPositions = [];
                 while (true) {
                     await assertWorldUpdatesContinue(page);
+                    if (finishAtFinalBoss && fullRun && defeated.has(playthrough.bosses.at(-1))) {
+                        const rooms = await page.evaluate(() => window.game.currentDungeonRoomState.rooms);
+                        // A raid ritual starts when the assault clears, not when
+                        // everyone walks onto Maelin at the chamber center. Hand
+                        // input ownership to the existing defense route only
+                        // after an observed boss death AND every cleared room.
+                        if (rooms.length === layout.rooms.length && rooms.every((room, index) =>
+                            layout.rooms[index].type === 'start' || room.cleared)) break traversal;
+                    }
                     if (Date.now() > deadline) {
                         // The instance wrapper recalls before rethrowing, so its
                         // final screenshot is already in town. Preserve the

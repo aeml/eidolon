@@ -10,13 +10,28 @@ The [continuation record](2026-09-20-earned-continuation.md) owns its archive,
 exact seed replay and evidence limits. Timeout observations now retain the
 in-dungeon position before automatic recall; existing deadlines are unchanged.
 
-Fire raid continuation `fireraid0920g`, native33049, launched from frozen clean
-567f8e24 in `/tmp/eidolon-fire-raid-20260920-r7-xSUXEP/`. Five legal progressed
-roles, Low, unchanged two-hour bound and zero retries. Existing failed-target
-acquisition observations cover the previous Magma Golem stall; the two-healer
-repair escort also remains in scope. Prior owned services are gone, ports are
-free and deployment browser jobs are terminal. Luna monitors terminal-only.
-This is not yet a completed raid; no simultaneous Molten replay is running.
+Fire raid `fireraid0920g`, native33049, frozen567f8e24 is terminal exit1 after
+38.8m. Log/source/artifacts are under `/tmp/eidolon-fire-raid-20260920-r7-xSUXEP/`
+(the screenshot is in its `source/test-results/`, not the main worktree).
+Guardian and first repair wave cleared; all five were alive, but formation
+failed during wave2. All five receipts show ritual_start, wave1 start/clear and
+wave2 start only. No restored crystal, manual claim or saved reward is accepted.
+The previous Magma Golem targeting stall did not recur in this run; this is not
+proof that every targeting case is fixed. Owned services were cleaned up.
+Private archive `/tmp/eidolon-party-checkpoint-fireraid0920g-KZ5mPq/save.archive.gz`
+is retained, not a completed-raid checkpoint.
+
+The inspected failure screenshot and actual movement trace show the group
+gathering beside Maelin while the chamber defense was already active. The shared
+route was still finishing a center waypoint after the final guardian died;
+that delayed handing input ownership to its existing dedicated ritual driver.
+A regression reproduced this unnecessary movement. Raids now hand off after
+the actual final-boss death AND all authoritative assault rooms are cleared,
+with the common room/reward verification and complete three-wave defense still
+required. Ordinary dungeon traversal, formation tolerances, timeouts and gameplay
+are unchanged. This corrects the driver; connected Fire completion remains open.
+The handoff regression failed before the change;54 focused entry/timing/raid/
+phase/ritual checks pass1.298s after it, with scoped lint/diff clean.
 
 The shared five-role route now also supports `EIDOLON_E2E_RAID=weekly_raid`
 under the existing isolated `party-raid` launcher. This closes a driver gap, not
@@ -36,8 +51,8 @@ legal items each and the final quest at0/1.78 focused fixture/story/aftermath/
 phase/entry/ritual tests pass3.848s; scoped lint/diff pass. The browser spec lists
 without launching another GPU workload. Do not count this as a connected finale,
 visual phase review, weekly-cache persistence proof or full earned campaign.
-Fire native33049 remains the sole native route; run the finale only after its
-terminal result and owned cleanup, not concurrently.
+Fire native33049 is now terminal and cleaned up. The prepared finale is the next
+native route; do not overlap it with the corrected Fire continuation.
 
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole

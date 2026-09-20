@@ -578,7 +578,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 phaseScreenshots.add(phase);
             }
         };
-        await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party',
+        await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party', finishAtFinalBoss: isRaid,
             ...(isRaid ? { runInstance: async (actorPage, { beforeExit }) => {
                 await enterRaid(actorPage, raidType);
                 let failure;
