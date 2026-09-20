@@ -44,7 +44,7 @@ const combatSnapshot = page => page.evaluate(() => {
         })) };
 });
 
-export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown } = {}) {
+export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown, resumeAccepted = false } = {}) {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
     expect(hunt?.huntingRealm, 'This earned driver currently covers Earth expeditions only').toBe('earth');
     const started = Date.now();
@@ -60,8 +60,10 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     let preparedLevel = await prepare(`before-${id}`);
     await openIlyra(page);
     await expect(page.locator('.quest-dialogue h3')).toHaveText(hunt.title);
-    expect((await readChronicleChapter(page, id))?.accepted).toBe(false);
-    await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
+    const offered = await readChronicleChapter(page, id);
+    expect(offered?.accepted).toBe(resumeAccepted);
+    expect(offered?.completed).toBe(false);
+    if (!resumeAccepted) await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, id))?.accepted).toBe(true);
     await page.locator('#btn-close-quest').click();
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);

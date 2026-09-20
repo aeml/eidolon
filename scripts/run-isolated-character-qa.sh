@@ -41,7 +41,7 @@ image_created=false
 party_checkpoint_attempted=false
 
 capture_party_qa_checkpoint() {
-  if [[ ( "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-dungeon && "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-raid ) || "${api_created}" != true || "${party_checkpoint_attempted}" == true ]]; then
+  if [[ ( "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-dungeon && "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != party-raid && "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != earned-earth-resume ) || "${api_created}" != true || "${party_checkpoint_attempted}" == true ]]; then
     return 0
   fi
   party_checkpoint_attempted=true
@@ -913,6 +913,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   party-guide-reentry)
     EIDOLON_E2E_PARTY_GUIDE=1 EIDOLON_E2E_CLASS=Fighter \
       npx playwright test --retries=0 tests/e2e/party-guide-reentry.spec.js
+    ;;
+  earned-earth-resume)
+    EIDOLON_E2E_EARNED_RESUME=1 EIDOLON_E2E_CLASS=Wizard EIDOLON_E2E_REST_RECOVERY=1 \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/earned-earth-resume.spec.js
     ;;
   recorded-build-dungeon)
     EIDOLON_E2E_EARNED_BUILD_DIAGNOSTIC=1 EIDOLON_E2E_CLASS=Wizard \

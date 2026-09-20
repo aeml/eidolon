@@ -9,6 +9,8 @@ const capture = source.slice(source.indexOf('capture_party_qa_checkpoint() {'), 
 test.each([
     ['party-dungeon', 'true', '', 0, true],
     ['party-raid', 'true', '', 0, true],
+    ['earned-earth-resume', 'true', '', 0, true],
+    ['earned-earth-resume', 'false', '', 0, false],
     ['party-raid', 'false', '', 0, false],
     ['smoke', 'true', '', 0, false],
     ['party-dungeon', 'false', '', 0, false],
