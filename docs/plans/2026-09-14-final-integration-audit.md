@@ -20,8 +20,13 @@ saved. The driver searched through Troll territory without invoking defensive
 combat; fourteen pursuers surrounded it with most mana unused. Existing bounded
 approach combat now guards search strides, and move-only waypoint input avoids
 accidental attacks.119 focused tests pass. Corrected `earnedwaterregion0920e`
-is launched in native7513 from the pinned62/40713XP/53469Gold/dead full save;
-it uses ordinary respawn and does not replay completed Water chapters. The
+used native7513 from the pinned dead save and successfully respawned normally.
+It advanced to saved80/87276XP/98595Gold and61/70kills without new deaths, then
+stopped on a gear-only bag-management assumption. QA storage now preserves
+gem/material/relic stacks with exact merge/overflow conservation;84 focused
+tests and Go stash checks pass. Corrected native2051/`earnedwaterregion0920f`
+is launched from that full save for nine remaining kills and manual handoff.
+It does not replay completed Water chapters. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
 archive and bounds. No new Water/Abyssal clear is claimed.
 

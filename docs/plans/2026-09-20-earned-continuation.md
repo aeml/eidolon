@@ -2,6 +2,12 @@
 
 ## Latest retained progress — hunt61/70, bag-policy failure
 
+Corrected `earnedwaterregion0920f` is launched in native2051, frozen clean
+15697bcb, under `/tmp/eidolon-water-region-resume-20260920-r6-oEt2Bn/`.
+84 focused checkpoint/inventory/storage tests pass1.54s, plus lint/diff and the
+Go stash checks below. Prior owned cleanup and idle deployment queue verified;
+Luna monitors the bounded nine-kill/manual-handoff continuation. No pass yet.
+
 Native7513 / `earnedwaterregion0920e`, frozenaa71420e, ended exit1 after1.1h.
 Ordinary dead-save respawn and defended transit worked; no new hunt deaths.
 The failure was an artificial bag policy: after normal sales there were six
