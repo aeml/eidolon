@@ -2,10 +2,11 @@ export const PARTY_ROLES = ['Fighter', 'Cleric', 'Wizard', 'Rogue'];
 export function earnedPartyContinuationEnabled(env, playthrough, isRaid = false) {
     const flag = env.EIDOLON_E2E_EARNED_PARTY;
     if (flag === undefined || flag === '0') return false;
-    if (flag !== '1' || isRaid || playthrough?.dungeonType !== 'verdant_bastion_catacombs' ||
-        playthrough.runLevel !== 30 || playthrough.difficulty !== 'normal' ||
+    const level = { verdant_bastion_catacombs: 30, abyssal_well: 60 }[playthrough?.dungeonType];
+    if (flag !== '1' || isRaid || !level ||
+        playthrough.runLevel !== level || playthrough.difficulty !== 'normal' ||
         env.EIDOLON_E2E_EARNED_RESUME !== '1' || !env.EIDOLON_E2E_EARNED_CHECKPOINT) {
-        throw new Error('Earned party continuation requires the private Earth checkpoint and Normal30 Verdant');
+        throw new Error('Earned party continuation requires a private earned checkpoint and Normal30 Verdant or Normal60 Abyssal');
     }
     return true;
 }

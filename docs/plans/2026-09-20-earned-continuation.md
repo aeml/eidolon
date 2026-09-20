@@ -83,6 +83,27 @@ unchanged. After it succeeds, inspect its new full archive, pin the actual SHA
 and saved progress in the checkpoint catalog, then run this continuation; the
 older level33 archive intentionally fails its completed-Ferry precondition.
 
+### Abyssal party continuation prepared — not yet run
+
+The existing `earned-party-dungeon` route now also accepts explicit
+`EIDOLON_E2E_DUNGEON=abyssal_well` at Normal60. It restores the earned Wizard
+without replacing gear or rewards, requires all seven prior Earth/Water chapters
+complete and the dungeon accepted at0/1 in both client and saved Mongo, then
+checks ordinary guide access. Fighter, Cleric and Rogue remain level60 prepared
+class-appropriate Rare/Uncommon supports. Existing full-room/boss, healing,
+survival, four personal claims and reconnect checks remain unchanged. The final
+earned receipt now matches the selected chapter, its next offer and actual saved
+level/XP/Gold rather than hardcoding Verdant. This does not grant access to raids,
+other families or higher difficulties under the earned option.
+
+59 focused continuation/fixture/catalog/checkpoint tests pass in0.923s; changed-
+file lint and diff checks pass. No native browser run or deployment was started.
+This still requires an actual checksum-pinned post-Water level60-ready archive;
+the current level33 checkpoint must fail entry. Preserve the running Missing
+Ferry worktree unchanged, finish earned Water pacing first, and use that actual
+save for the four-player Abyssal continuation. Do not replay Verdant or turn a
+prepared support character into claimed earned campaign evidence.
+
 Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
 four-player desktop panel has scrolled its header/tank row out of view while
 lower support controls remain visible. The existing HTML-only party layout

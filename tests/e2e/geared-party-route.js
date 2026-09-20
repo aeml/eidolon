@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile, earnedPartyContinuationEnabled } from '../partyDungeonFixture.js';
 import { resumeEarnedEarthToReadiness, leaveEarnedParty } from './earned-earth-continuation.js';
+import { restoreEarnedWaterDungeonReadiness } from './earned-water-dungeon-entry.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
@@ -218,7 +219,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             actors.push(actor);
             const character = raid?.characters[index] || partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
             if (earnedWizard && className === 'Wizard') {
-                await resumeEarnedEarthToReadiness(actorPage, login);
+                if (playthrough.dungeonType === 'abyssal_well') await restoreEarnedWaterDungeonReadiness(actorPage, login);
+                else await resumeEarnedEarthToReadiness(actorPage, login);
                 await leaveEarnedParty(actorPage);
                 await testInfo.attach('earned-wizard-dungeon-entry', {
                     body: JSON.stringify(await actorPage.evaluate(() => {
@@ -838,8 +840,19 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         }
         if (earnedWizard) {
             const wizard = actors.find(actor => actor.className === 'Wizard');
-            await expect.poll(() => readSavedEarnedHandoff(wizard.login.username), { timeout: 30_000, intervals: [2000] })
-                .toMatchObject({ correctSaveKey: true, huntCompleted: true, dungeonAccepted: true, dungeonCount: 1, dungeonCompleted: true });
+            const final = await snapshot(wizard.page);
+            await expect.poll(() => {
+                const saved = readSavedEarnedHandoff(wizard.login.username, process.env, { includeQuests: true });
+                const chapter = saved.quests.find(q => q.id === story.chapterId);
+                const next = saved.quests.find(q => q.id === story.nextChapterId);
+                return { level: saved.level, xp: saved.xp, gold: saved.gold, correctSaveKey: saved.correctSaveKey,
+                    huntCompleted: saved.huntCompleted,
+                    chapter: chapter && { accepted: chapter.accepted, completed: chapter.completed, count: chapter.count },
+                    next: next && { accepted: next.accepted, completed: next.completed, count: next.count } };
+            }, { timeout: 30_000, intervals: [2000] }).toEqual({ level: final.level, xp: final.xp, gold: final.gold,
+                correctSaveKey: true, huntCompleted: true,
+                chapter: { accepted: true, completed: true, count: 1 },
+                next: { accepted: false, completed: false, count: 0 } });
             console.log('[earned-party] Wizard dungeon claim is saved in Mongo; no prepared-party reward is being labeled earned.');
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
