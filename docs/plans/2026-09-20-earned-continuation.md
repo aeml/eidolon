@@ -1,6 +1,27 @@
 # Earned campaign continuation with a real party
 
-## Water readiness accepted — next: earned four-player Abyssal
+## Earned Abyssal party clear accepted — next: Fire story
+
+`earnedabyssal0920a`, native56558, frozen47e0adec, passed in approximately65m:
+`/tmp/eidolon-earned-abyssal-20260920-r1-MGXN8s/run.log`, footer exit0.
+Normal60 Abyssal's five bosses cleared with four distinct roles, four town rests
+and unchanged dungeon re-entry. All four manual rewards, Fire offers and relogin
+receipts passed. Wizard progression was earned; the three supports were prepared
+class-appropriate Rare/Uncommon builds. Low-quality Drowned Choir and Thalorath
+screenshots were inspected for actual party/room presentation; they are not a
+physical-phone, High-quality or sustained-performance acceptance claim.
+
+Independent isolated Mongo restore confirms the Wizard85/4217XP/107425Gold,
+resources3718HP/2849MP/alive, Abyssal1/1 claimed600Gold/43562XP, prior Water
+progress/rewards retained and untouched Fire kiln0/1 offer. No active dailies.
+Full archive `/tmp/eidolon-party-checkpoint-earnedabyssal0920a-r6e0jK/save.archive.gz`,
+SHA256`aba07629adf896bd1a5f2ffd07fba4958c83912869a36be56f50f537657fc55e`.
+Gameplay services and the disposable inspection copy are removed; original
+archive retained.88 checkpoint/regional-route tests pass0.841s, plus lint/diff.
+Continue that complete save into Fire; do not repeat Water or Abyssal. Later
+Fire/Air story, remaining dungeons/raids/finale and full1.10 remain open.
+
+## Previous accepted stage — Water readiness
 
 `earnedwaterregion0920f` passed in14.8m, native2051 exit0, frozen clean
 15697bcb, under `/tmp/eidolon-water-region-resume-20260920-r6-oEt2Bn/`.
@@ -21,13 +42,13 @@ earned-party-dungeon route for Normal60 Abyssal: this earned Wizard plus prepare
 class-appropriate Rare/Uncommon Fighter, Cleric and Rogue. Do not replay accepted
 Water or earlier Earth/Verdant. The Wizard's many incidental defensive kills
 remain a pacing limitation, not evidence of a clean normal story-level curve.
-Full Abyssal, later regions/raids and final1.10 remain unverified.
+At this checkpoint Abyssal and later regions/raids were still unverified.
 
-The next stage is now running: `earnedabyssal0920a`, native56558, frozen clean
+The following stage launched as `earnedabyssal0920a`, native56558, frozen clean
 47e0adec, launcher/log `/tmp/eidolon-earned-abyssal-20260920-r1-MGXN8s/`.
 Normal60, Low graphics, existing two-hour party bound and zero retries; Luna
-monitors terminal-only. No deployment browser job or other native route overlaps.
-This launch is not evidence of a dungeon clear.
+monitored terminal-only. No deployment browser job or other native route overlapped.
+Its accepted terminal result is recorded above.
 
 Fire/Air continuation preparation reuses the Water route's existing walking,
 investigation, hunt, collection, manual turn-in and saved-handoff helpers with
@@ -38,8 +59,8 @@ that future success is invented. Collection/hunt receipts now check the full
 XP-plus-Resonance amount and cap-only split instead of incorrectly demanding
 ordinary XP at level100.47 focused JS tests pass3.035s, actual Go quest cap/overflow
 tests pass1.045s, and lint/shell syntax/diff pass. These are QA preparation only,
-not Fire/Air completion or a new player-facing release; active Abyssal stays on
-its original frozen source.
+not Fire/Air completion or a new player-facing release; Abyssal kept its original
+frozen source throughout that run.
 
 ## Previous retained progress — hunt61/70, bag-policy failure
 

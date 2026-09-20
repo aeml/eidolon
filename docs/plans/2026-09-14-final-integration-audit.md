@@ -29,9 +29,13 @@ passed in14.8m with no deaths, all70 kills, manual turn-in, relogin and saved
 Abyssal handoff. Independent archive restore confirms83/90198XP/104319Gold,
 all Water rewards retained, accepted Abyssal0/1 and no accepted dailies. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
-archive and bounds. Water readiness is accepted; the next stage is the existing
-four-player Normal60 Abyssal route, not another Water replay. Abyssal itself
-and the later campaign/raids remain open.
+archive and bounds. Water readiness is accepted. Its four-player Normal60
+Abyssal continuation also passed: native56558/earnedabyssal0920a on47e0adec,
+approximately65m, all five bosses, four town rests/re-entries, four manual claims
+and relogins. Independent saved Wizard85/4217XP/107425Gold has the claimed
+Abyssal reward and untouched Fire kiln offer. Retain those full checkpoints;
+next is Fire story, not another Water/Abyssal replay. The later campaign/raids
+and full1.10 remain open.
 
 Next-batch local polish: the short stash screenshots exposed a service card
 remaining “Move closer” after approach, because hint updates depended on pointer

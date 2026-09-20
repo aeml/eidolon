@@ -69,7 +69,22 @@ export const earnedEarthCheckpoints = Object.freeze([
             { id: 'chronicle_water_unmastered_current', accepted: true, completed: true, count: 70, max_count: 70, granted_gold: 550, granted_xp: 54750 }
         ],
         waterDungeon: { id: 'chronicle_05_drowned_name', accepted: true, completed: false, count: 0,
-            max_count: 1, granted_gold: 0, granted_xp: 0 } }
+            max_count: 1, granted_gold: 0, granted_xp: 0 } },
+    { sha: 'aba07629adf896bd1a5f2ffd07fba4958c83912869a36be56f50f537657fc55e',
+        level: 85, xp: 4217, gold: 107425, count: 50, completed: true,
+        resources: { version: 1, health: 3718, mana: 2849, dead: false },
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: true, count: 70, max_count: 70, granted_gold: 550, granted_xp: 54750 }
+        ],
+        waterDungeon: { id: 'chronicle_05_drowned_name', accepted: true, completed: true, count: 1,
+            max_count: 1, granted_gold: 600, granted_xp: 43562 },
+        continuationChapters: [{ id: 'chronicle_fire_cold_kiln', accepted: false, completed: false, count: 0,
+            max_count: 1, granted_gold: 0, granted_xp: 0 }] }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
@@ -107,7 +122,7 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
                     throw Error('Unexpected earned Water reward or next chapter');
             }
         }
-        const chapters = ${JSON.stringify([...(checkpoint.waterChapters || []), ...(checkpoint.waterDungeon ? [checkpoint.waterDungeon] : [])])};
+        const chapters = ${JSON.stringify([...(checkpoint.waterChapters || []), ...(checkpoint.waterDungeon ? [checkpoint.waterDungeon] : []), ...(checkpoint.continuationChapters || [])])};
         for (const expected of chapters) {
             const matches = character.quests.filter(q => q.id === expected.id);
             if (matches.length !== 1 || Object.entries(expected).some(([key, value]) =>

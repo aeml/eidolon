@@ -166,6 +166,32 @@ test('retains the completed Water reward and accepted Abyssal handoff without re
     expect(fixture.result().writes).toBe(1);
 });
 
+function completedAbyssal(character) {
+    waterDungeonReadiness(character);
+    const checkpoint = earnedEarthCheckpoints[10];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+        resources: { ...checkpoint.resources } });
+    Object.assign(character.quests.at(-1), checkpoint.waterDungeon);
+    character.quests.push(...checkpoint.continuationChapters.map(q => ({ ...q })));
+}
+
+test('retains the earned four-player Abyssal reward and untouched Fire offer', () => {
+    const fixture = exercise(completedAbyssal, false, earnedEarthCheckpoints[10]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-2).completed = false; }, p => { p.quests.at(-2).granted_xp = 0; },
+    p => { p.quests.at(-1).accepted = true; }, p => { p.quests.at(-1).count = 1; },
+    p => { p.quests.at(-1).granted_gold = 1; }, p => { p.quests.pop(); }
+])('rejects a changed Abyssal receipt or pre-earned Fire progress', change => {
+    const fixture = exercise(p => { completedAbyssal(p); change(p); }, false, earnedEarthCheckpoints[10]);
+    expect(fixture.run).toThrow(/earned Water/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-1).count = 1; }, p => { p.quests.at(-1).completed = true; },
     p => { p.quests.at(-1).accepted = false; }, p => { p.quests.at(-1).granted_gold = 600; },
