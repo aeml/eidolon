@@ -2,6 +2,25 @@
 
 ## Current delivery — 1.9.26 verified, earned Molten partial
 
+### Finale tuning review — decision pending, no balance change
+
+Read-only review while earned Molten runs: `enemy_balance.go` gives UmbraPrime
+an8x boss-health factor, combined with20x boss rank and4x Mythic health at100.
+The retained finale's actual1824000HP agrees with that profile; entry accepts
+5–10 players without a health adjustment by current party size. The shared
+`dungeon-playthrough-route.js` still uses an eight-minute fight bound originally
+documented for ordinary Tempest combat, not a declared finale pacing target.
+The failed finale stopped after46.187s of combat (Rogue death), not that bound;
+its early HP observations and interrupted support cannot prove steady raid DPS
+or a full-fight duration. Do not label it a damage-timeout failure or nerf the
+boss to make the inherited QA timer pass. Previously corrected second-healer
+support remains awaiting native evidence. User was asked asynchronously for a
+five-player, well-geared finale target of5–10,10–15 or20–30 minutes. No encounter
+health/damage, deadlines, party gates or Eidolon phases changed for this review.
+This open pacing preference does not block earned Molten or other roadmap work.
+
+### Verified release and retained run evidence
+
 Alpha1.9.26 is verified live at`b1c5b06996286fb24ed77efe0fdaa1a89d130032`.
 CI35532592235 passed September20 at19:56:33UTC in24m46s, including live
 character QA; Luna supplied the terminal result. No native browser test overlapped
