@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity, readPlayerState } from './helpers.js';
-import { walkChronicleByTouch } from './chronicle-phone-inputs.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity, readPlayerState, returnToTown } from './helpers.js';
+import { recallChronicleByTouch, walkChronicleByTouch } from './chronicle-phone-inputs.js';
 
 test.use({ trace: 'off', video: 'off', screenshot: 'off' });
 
@@ -16,7 +16,11 @@ for (const mode of ['desktop', 'portrait', 'landscape']) {
             const credentials = credentialsFromEnvironment();
             test.skip(!credentials.username || !credentials.password, 'Requires an isolated disposable account');
             const failures = collectBrowserFailures(page, baseURL);
-            await loginAndEnterWorld(page, { ...credentials, username: `${credentials.username}-${mode}` });
+            // Reuse one character: disconnected actors remain in the world for
+            // the reconnect grace period and otherwise block the next approach.
+            await loginAndEnterWorld(page, credentials);
+            if (phone) await recallChronicleByTouch(page);
+            else await returnToTown(page, { allowRespawn: false });
             await expect.poll(() => page.evaluate(() => window.game.remotePlayers.has('stash-1'))).toBe(true);
             // On phones, ordinary joystick travel brings the west-side coffer
             // on screen. Leave enough distance to exercise tap-to-approach.
@@ -52,7 +56,10 @@ for (const mode of ['desktop', 'portrait', 'landscape']) {
                     const g = window.game, p = g.player;
                     return { player: p.position.toArray(), state: p.state, pending: g.pendingInteraction?.id,
                         target: p.targetPosition?.toArray(), blocked: p.blockedTargetPosition,
-                        stash: g.remotePlayers.get('stash-1')?.position.toArray() };
+                        stash: g.remotePlayers.get('stash-1')?.position.toArray(),
+                        nearby: [...g.remotePlayers.values()].filter(other => other.stats &&
+                            p.position.distanceTo(other.position) < 6).map(other => ({ id: other.id,
+                            position: other.position.toArray(), radius: other.radius })) };
                 })));
                 throw error;
             }
