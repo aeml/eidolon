@@ -75,3 +75,9 @@ Run log and copied reports/results are in
 Private archive `/tmp/eidolon-party-checkpoint-waterraid0920b-RJnkRD/save.archive.gz`,
 SHA256`21344e5afd7e5345c5f3dee4cb8f3983e42c7e47c702541f95be9a593f2e454c`.
 Launcher1393220 and its Luna watcher are terminal; do not poll them. No clear.
+
+Current run: `waterraid0920c`, clean source6e6f854d, detachedPID1476048 confirmed
+live, `/tmp/eidolon-water-raid-20260920-r3-tf8GwT/`. Same legal five-role party,
+Low graphics, full encounter/repair/manual claims/relogin and zero retries.
+Luna `/root/watch_tidestar_0920c` owns completion/failure monitoring. No other
+browser/deployment workload; preserve attachments on termination. No result yet.
