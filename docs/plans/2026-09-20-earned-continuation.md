@@ -27,6 +27,11 @@ stale source assertions were updated for the existing hunt search/deadline and
 new travel wrapper. This is QA input correction, not a gameplay balance change.
 Next resume this seven-kill save, not the completed kiln or prior dungeons.
 
+Corrected continuation `earnedfire0920b` is running in native28299, frozen clean
+8e120dd4; launcher/log `/tmp/eidolon-earned-fire-20260920-r2-Th6NPU/`.
+Prior owned cleanup and idle deployment browser queue checked; Luna monitors
+terminal-only. No result yet; no gameplay or death snapshot was overwritten.
+
 ## Earned Abyssal party clear accepted — next: Fire story
 
 `earnedabyssal0920a`, native56558, frozen47e0adec, passed in approximately65m:
