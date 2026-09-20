@@ -14,6 +14,16 @@ saves, accepted results and next work. Automated defensive kills brought the
 Wizard to100 before Molten; this is not a human pacing benchmark or justification
 for another blanket reward reduction.
 
+### Open pacing decision, not a blocker to implementation
+
+September20: asked the user for an approximate total fresh-player campaign
+duration through the Dark King, with appropriate dungeon/raid parties and no
+mandatory daily grind. Await the asynchronous answer; do not repeatedly ask or
+invent a target from browser-run durations. Continue encounter/progression fixes
+meanwhile. The separate final-boss target is already approved:5–10 minutes total
+for a well-geared five-player raid across all four phases. Neither that target
+nor the ten-minute finale test watchdog approves the full campaign XP curve.
+
 ## Historical development evidence — September 7–8
 
 The candidate/unpublished statements below describe their original checkpoints,
