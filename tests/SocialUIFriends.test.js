@@ -61,6 +61,29 @@ test.each([null, { partyId: 'group', leaderId: 'self', members: [{ id: 'self', n
 );
 
 describe('desktop party support selection', () => {
+    test('raid layout follows roster size and resets when leaving', () => {
+        const { ui } = createSocialUI();
+        const title = document.createElement('span');
+        title.className = 'party-panel__title';
+        ui.partyPanel.appendChild(title);
+        const party = { partyId: 'raid', members: Array.from({ length: 10 }, (_, i) => ({
+            id: `ally-${i}`, name: `Raider ${i}`, hp: 100, maxHp: 100
+        })) };
+        ui.updateParty(party);
+        expect(ui.partyPanel.classList.contains('party-panel--raid')).toBe(true);
+        expect(title.textContent).toBe('RAID · 10');
+        party.members.length = 4;
+        ui.updateParty(party);
+        expect(ui.partyPanel.classList.contains('party-panel--raid')).toBe(false);
+        expect(title.textContent).toBe('PARTY');
+        party.members.push({ id: 'fifth', name: 'Fifth', hp: 100, maxHp: 100 });
+        ui.updateParty(party);
+        expect(title.textContent).toBe('RAID · 5');
+        ui.updateParty(null);
+        expect(ui.partyPanel.classList.contains('party-panel--raid')).toBe(false);
+        expect(title.textContent).toBe('PARTY');
+        title.remove();
+    });
     const data = () => ({ partyId: 'group', leaderId: 'self', members: [
         { id: 'self', name: 'Healer', hp: 100, maxHp: 100 },
         { id: 'ally', name: 'Tank', hp: 50, maxHp: 100 }

@@ -357,6 +357,10 @@ export class SocialUI {
 
         const inParty = !!(partyData && partyData.partyId);
         this.inParty = inParty;
+        const memberCount = inParty ? (partyData.members?.length || 0) : 0;
+        this.partyPanel.classList.toggle('party-panel--raid', memberCount > 4);
+        const panelTitle = this.partyPanel.querySelector('.party-panel__title');
+        if (panelTitle) panelTitle.textContent = memberCount > 4 ? `RAID · ${memberCount}` : 'PARTY';
 
         if (!inParty) {
 			if (this.btnPartyReadyCheck) this.btnPartyReadyCheck.hidden = true;

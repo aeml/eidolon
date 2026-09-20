@@ -1,14 +1,27 @@
 # Ember Crown prepared-party validation — September20
 
-Status: **running, no result yet**. Run `fireraid0920a`, clean source4243e2e0,
+Status: **failed, not full raid acceptance**. Run `fireraid0920a`, clean source4243e2e0,
 Alpha1.9.20. Persistent exec session77329 confirmed running after checking owned
 QA containers absent and ports18285/18286/4187 free. Launch only followed complete
 CI35481615306 success and independent public verification of live1.9.20.
 
 Launcher/log: `/tmp/eidolon-fire-raid-20260920-r1-iXo71H/`.
-Luna `/root/watch_ember_0920a` owns terminal monitoring. Do not duplicate polling,
-restart on an observation timeout, or overlap native browsers/deployment.
-Preserve `test-results/` and `playwright-report/` here when the run terminates.
+Luna `/root/watch_ember_0920a` reported terminal exit1 after7.8minutes. Main
+confirmed `RAID_PROCESS_EXIT=1`, copied `test-results/` and `playwright-report/`
+into this run directory, and verified no owned containers remain.
+
+The first chamber cleared; all five remained alive. In the next elite chamber,
+a MagmaGolem stayed at6340HP for60seconds. The tank moved from15.6units away
+to within attack range, but failed to acquire the target under the pointer;
+the final snapshot had no hovered/pending target. Retained approach records
+show successful movement with zero recorded blocked stops, including a final
+1.42/0.73unit step. This does not establish insufficient gear, a collision bug,
+or a server damage failure. Do not relax watchdogs or repeat the full run
+without narrowing the targeting cause. No guardian/repair/claim acceptance.
+
+Private checkpoint, not uploaded:
+`/tmp/eidolon-party-checkpoint-fireraid0920a-S8ZFB9/save.archive.gz`, SHA256
+`21d9d01f5e40f9bb5ac3ceee02c723095bff736695a6b2cddb9d88c6885b5ed4`.
 
 The existing prepared encounter fixture uses five distinct level70 characters:
 Strong Fighter, two Wise Clerics, Brilliant Wizard and Agile Rogue, each with

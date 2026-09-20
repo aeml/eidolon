@@ -45,6 +45,45 @@
     font-weight: bold;
 }
 
+/* Keep the whole raid's health visible before secondary party controls.
+   Phone parties use their own roster; ordinary four-player parties stay narrow. */
+#party-panel.party-panel--raid {
+    width: 380px;
+}
+.party-panel--raid .party-panel__header {
+    min-height: 20px;
+}
+.party-panel--raid .party-panel__title {
+    font-size: 12px;
+}
+.party-panel--raid #party-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 6px;
+    margin-bottom: 6px;
+}
+.party-panel--raid .party-member {
+    margin: 0;
+    min-width: 0;
+}
+.party-panel--raid .party-member--ready {
+    border: 0;
+    box-shadow: inset 0 0 0 1px rgba(92, 222, 139, 0.55);
+}
+.party-panel--raid .party-support-target {
+    padding: 3px 4px;
+}
+.party-panel--raid .party-support-mode {
+    position: absolute;
+    top: 8px;
+    left: 84px;
+    right: 52px;
+    width: auto;
+    min-height: 20px;
+    padding: 2px 4px;
+    font-size: 11px;
+}
+
 .party-panel__guidance {
     margin-bottom: 10px;
     padding: 8px 10px;

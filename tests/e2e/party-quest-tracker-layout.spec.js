@@ -21,6 +21,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
             const { QuestUI } = await import('/src/ui/QuestUI.js');
             const { SocialUI } = await import('/src/ui/SocialUI.js');
             document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('chat-box').style.display = 'flex';
             const ctx = { isMobile: false, getLastPlayer: () => ({ id: 'tracker-layout', quests: [] }) };
             const quest = new QuestUI(ctx), social = new SocialUI(ctx);
             const summary = Array.from({ length: 8 }, (_, index) => ({
@@ -55,6 +56,35 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
         await page.getByRole('button', { name: 'Select Cleric for healing', exact: true }).click();
         await expect(page.getByRole('button', { name: 'Select Cleric for healing', exact: true })).toHaveAttribute('aria-pressed', 'true');
         await page.screenshot({ path: testInfo.outputPath('party-quest-strip.png') });
+        for (const count of [5, 10]) {
+            await page.evaluate(count => {
+                const social = window.__partyTrackerLayout.social;
+                social.updateParty({ partyId: 'layout-only', leaderId: 'tracker-layout',
+                    members: Array.from({ length: count }, (_, index) => ({
+                        id: index ? `ally-${index}` : 'tracker-layout', name: `Raider ${index + 1}`,
+                        class: index % 2 ? 'Cleric' : 'Fighter', level: 70,
+                        hp: 80, maxHp: 100, role: index % 2 ? 'healer' : 'tank', ready: true,
+                        isLeader: index === 0
+                    })) });
+            }, count);
+            await expect(page.locator('.party-panel__title')).toHaveText(`RAID · ${count}`);
+            const panel = await page.locator('#party-panel').boundingBox();
+            const chat = await page.locator('#chat-box').boundingBox();
+            expect(chat).not.toBeNull();
+            expect(panel.y + panel.height).toBeLessThan(chat.y);
+            for (const bar of await page.locator('#party-list .party-hp-bar').all()) {
+                const box = await bar.boundingBox();
+                expect(box.y).toBeGreaterThan(panel.y);
+                expect(box.y + box.height).toBeLessThanOrEqual(panel.y + panel.height - 2);
+            }
+            const last = page.getByRole('button', { name: `Select Raider ${count} for healing`, exact: true });
+            await last.click();
+            await expect(last).toHaveAttribute('aria-pressed', 'true');
+            await expect(page.locator('#party-panel')).toHaveJSProperty('scrollTop', 0);
+            await page.locator('.party-support-mode').click();
+            await expect(last).toHaveAttribute('aria-pressed', 'false');
+            await page.screenshot({ path: testInfo.outputPath(`raid-roster-${count}.png`) });
+        }
         await page.evaluate(() => window.__partyTrackerLayout.social.setPartyPanelVisible(false));
         expect((await page.locator('#objectives-panel').boundingBox()).height).toBeGreaterThan(66);
         await page.evaluate(() => {
