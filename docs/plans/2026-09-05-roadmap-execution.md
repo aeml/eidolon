@@ -11,6 +11,12 @@ the whole goal. Started September 5, 2026.
   `b1c5b06996286fb24ed77efe0fdaa1a89d130032`. CI35532592235 passed at19:56:33UTC
   in24m46s; public identities, readiness, notes and three engine assets match.
   Read-only receipt: `/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`.
+- Pushed candidate: **Alpha1.9.27**, exact
+  `77ba49d486356282914b4b4531d56d536d6aadcc`, CI35542593860. Restored dungeon
+  scene messages now include authoritative landing positions. Focused server/client
+  regressions and a prepared four-player Guardian encounter pass; publication
+  and public identity verification are still running under Luna. Do not equate
+  that focused encounter with an earned full dungeon clear.
 - Delivered: the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
   Focused money/restart, UI, collision and software-rendered floor checks pass;
@@ -18,12 +24,21 @@ the whole goal. Started September 5, 2026.
   [release record](2026-09-20-casino-expansion.md). Publication followed Water
   cleanup; delivery verification is complete.
 - Earned Water, Abyssal and Fire-story continuations have passed. Latest earned
-  Molten run retained four defeated bosses but failed traversal before completion;
-  its private save preserves the accepted, unfinished Molten chapter. See the
+  Molten run cleared three bosses before Rogue death at Obsidian Guardian; an
+  earlier run cleared four before a traversal failure. Latest private archive17
+  preserves actual resources and the accepted, unfinished chapter. See the
   [earned record](2026-09-20-earned-continuation.md) for exact archives and limits.
   Fire raid remains unaccepted: the latest attempt failed regrouping with all five
-  alive. A reproduced short-corner planner fix is staged for the next isolated run,
-  after delivery; it is not yet native acceptance or part of1.9.26.
+  alive. The short-corner planner correction and later formation/input changes
+  do not yet establish a complete Fire raid or repair Vigil.
+- Next earned continuation is frozen at4e8a0093, reusing normal bag-equipment
+  upgrades before entry (39 focused checks pass). It retains the Wizard's own
+  archive17, three legal class-geared supports, and ordinary15-minute expiry.
+  Launcher `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/run.sh` is prepared,
+  not started, and refuses to run before CI/public1.9.27 verification succeeds.
+- Dark King pacing target is approved:5–10 minutes total across all four phases
+  for a well-geared five-player raid. The finale-only watchdog now allows10min;
+  no health/damage tuning or successful-finale acceptance is implied.
 - Bounded administration admission rejection audits and dual-store-failure
   recovery are delivered in1.9.25. Service range-hint refresh, stale instance-hover
   cleanup and encounter-timed Dark King opening are delivered in1.9.26.
