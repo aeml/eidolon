@@ -105,6 +105,18 @@ test('retains the actual level61 Water chapters, rewards and 25 earned Golem kil
     expect(fixture.result().writes).toBe(1);
 });
 
+test('retains the actual level62 Water save and 28 earned Golem kills after recovery', () => {
+    const checkpoint = earnedEarthCheckpoints[6];
+    const fixture = exercise(character => {
+        partialWaterRegion(character);
+        Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold });
+        character.quests.at(-1).count = 28;
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
 test.each([
     p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
     p => { p.quests.at(-1).granted_gold = 600; }, p => { p.quests[3].granted_xp++; },

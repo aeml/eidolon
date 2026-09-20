@@ -11,14 +11,17 @@ export async function recoverBetweenHuntEncounters(page, { enabled, creditedKill
     return recoverBetweenCollectionEncounters(page, leaveTown);
 }
 
-// Unlike between-kill preparation, this retreat is INSIDE the existing absolute
-// encounter deadline. Recall, healing, and departure must all be real gameplay;
-// it neither resets the watchdog nor requires a kill before resources can recover.
-export async function recoverDuringHuntEncounter(page, { enabled, leaveTown }) {
+// Recall, healing and regional departure are real gameplay, but not combat.
+// Report only their actual elapsed time so the caller can preserve its remaining
+// combat budget. The enclosing expedition deadline still includes all travel.
+export async function recoverDuringHuntEncounter(page, { enabled, leaveTown, onRecovered = () => {} }) {
     if (!enabled) return false;
     if (typeof leaveTown !== 'function') throw new Error('Rested hunt requires ordinary town departure');
     const before = await readEarnedRestResources(page);
     const reason = huntDisengageReason(before);
     if (!reason) return false;
-    return restoreEarnedTownResources(page, leaveTown, before, reason, { preserveLevel: false });
+    const started = Date.now();
+    const recovered = await restoreEarnedTownResources(page, leaveTown, before, reason, { preserveLevel: false });
+    if (recovered) onRecovered(Math.max(0, Date.now() - started));
+    return recovered;
 }

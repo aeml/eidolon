@@ -118,14 +118,15 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
             await recover();
             continue;
         }
-        const deadline = Date.now() + 120_000;
+        let deadline = Date.now() + 120_000;
         let respawned = false;
         while (Date.now() < deadline && (await readChronicleChapter(page, id)).count === credit) {
             if ((await readPlayerState(page)).state === 'DEAD') {
                 await recover(); respawned = true; break;
             }
             if (await leaveEarnedCombatSafety(page, leaveTown)) continue;
-            if (await recoverDuringHuntEncounter(page, { enabled: earnedTownRecoveryEnabled(), leaveTown })) {
+            if (await recoverDuringHuntEncounter(page, { enabled: earnedTownRecoveryEnabled(), leaveTown,
+                onRecovered: elapsed => { deadline += elapsed; } })) {
                 restStops++;
                 continue;
             }

@@ -1,5 +1,32 @@
 # Earned campaign continuation with a real party
 
+## Latest retained Water save — level62, hunt28/70
+
+`earnedwaterregion0920c`, frozen0a104720, native47339 ended exit1 after12.7m.
+Stash preparation passed. The failure was target search at the inner encounter
+deadline after a real110.083-second unfinished-hunt town recovery. That trip
+consumed nearly the entire120-second combat window; the subsequent bounded
+search failed before returning to the Golem band. This does not establish a
+missing spawn, broken ability or balance defect. No deaths were reported.
+
+The QA clock now excludes only measured successful Recall/healing/departure
+time from its120-second combat allowance, preserving time already spent fighting.
+It does not reset the combat window, skip recovery, grant progress, change game
+rules or increase the overall two-hour expedition ceiling. This deliberately
+replaces the former wall-clock encounter policy, which conflicted with the
+required town-rest loop. Failed recovery still fails; ordinary target search
+remains bounded. The correction is local and awaits connected confirmation.
+
+Independent network-isolated Mongo restore confirms the actual private archive:
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920c-bVQmMA/save.archive.gz`,
+SHA256`66b9238c0b35b9b10720885664197079eda0418c24971542b112955d39493e2f`.
+Wizard62/7668XP/51749Gold, Golem28/70 unclaimed, all previous Water chapter rewards
+retained, no Abyssal offer or accepted dailies. The checksum-pinned continuation
+catalog now retains this whole save; resume42 kills, not25/70 or earlier chapters.
+The temporary inspection database was removed; the private original is intact.
+Run reports/log remain under `/tmp/eidolon-water-region-resume-20260920-r3-mNBwzz/`;
+owned gameplay containers are gone. Full Water/Abyssal remains unaccepted.
+
 ## Queued retained-save continuation after the stash correction
 
 Native session 47339 waits on CI35503417369 (release1.9.25, immutable
