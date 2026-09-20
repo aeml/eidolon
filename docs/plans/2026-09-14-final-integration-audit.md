@@ -15,8 +15,13 @@ a110-second real town recovery consumed the120-second combat window and the
 following search timed out. Stash preparation passed; saved progress is now
 level62/7668XP/51749Gold with28/70Golems. The QA timer excludes only successful
 recovery time while retaining the overall two-hour ceiling. Corrected
-`earnedwaterregion0920d` is launched in native46156 from that pinned full save;
-it does not replay completed Water chapters. The
+`earnedwaterregion0920d` then ended at its third death after23.6m, with31/70kills
+saved. The driver searched through Troll territory without invoking defensive
+combat; fourteen pursuers surrounded it with most mana unused. Existing bounded
+approach combat now guards search strides, and move-only waypoint input avoids
+accidental attacks.119 focused tests pass. Corrected `earnedwaterregion0920e`
+is launched in native7513 from the pinned62/40713XP/53469Gold/dead full save;
+it uses ordinary respawn and does not replay completed Water chapters. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
 archive and bounds. No new Water/Abyssal clear is claimed.
 

@@ -2,6 +2,11 @@
 
 ## Latest terminal result — undefended transit, saved hunt31/70
 
+Corrected continuation `earnedwaterregion0920e` is launched in native7513,
+frozen clean aa71420e, under
+`/tmp/eidolon-water-region-resume-20260920-r5-pRVHtr/`. Prior owned cleanup and
+idle deployment GPU queue were checked. Luna monitors; no new accepted clear yet.
+
 Native46156 / `earnedwaterregion0920d` ended exit1 after23.6m at the third death,
 not a timer failure. All owned services are gone. Its repeated death observations
 show roughly14 Mountain Trolls around the Wizard nearZ-960, with1940–2005 mana
