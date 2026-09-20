@@ -231,8 +231,8 @@ test('retains all Fire discoveries and the accepted, unclaimed Molten Core hando
     expect(fixture.result().writes).toBe(1);
 });
 
-test('retains partial Molten earnings and expired run timestamps without awarding its unfinished quest', () => {
-    const checkpoint = earnedEarthCheckpoints[14];
+test.each([14, 15])('retains Molten checkpoint %s earnings and expired timestamps without awarding its unfinished quest', index => {
+    const checkpoint = earnedEarthCheckpoints[index];
     const fixture = exercise(character => {
         fireDungeonReadiness(character);
         Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources },

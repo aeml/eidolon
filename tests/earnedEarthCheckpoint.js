@@ -150,7 +150,12 @@ export const earnedEarthCheckpoints = Object.freeze([
     // transferring this save must never refresh its logout or dungeon clock.
     { ...historicalCheckpoints[13],
         sha: '2d0fd77d61aee892a57c563041fa2be5bb6c155f66a6fe3415e9de91e20059a1',
-        gold: 213922, resources: { version: 1, health: 4645, mana: 3665, dead: false } }
+        gold: 213922, resources: { version: 1, health: 4645, mana: 3665, dead: false } },
+    // Cindermaw and one town recovery earned before a QA waypoint rejection.
+    // Same unfinished chapter and unchanged normal dungeon expiry semantics.
+    { ...historicalCheckpoints[13],
+        sha: '3a8b6a8c3bc47bbc8b12801aded2ee1a362f42d1db6815f77d76e196a144df2d',
+        gold: 214465, resources: { version: 1, health: 4645, mana: 3665, dead: false } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

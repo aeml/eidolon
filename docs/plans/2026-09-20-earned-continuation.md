@@ -2,7 +2,7 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-Continuation `earnedmolten0920b` is **running**, root native1224/launcher3915852, at
+Continuation `earnedmolten0920b` is **terminal exit1 after10.5m**, root native1224/launcher3915852 stopped, at
 `/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozencdf71b50. The latest
 Molten archive below was checksum-verified and is used intact, including actual
 earned loot/resources and unchanged logout/run timestamps. After15 minutes the
@@ -16,7 +16,31 @@ the earlier Molten stall's cause or guarantee a clear. Fire `fireraid0920j`'s
 terminal result/cleanup were reviewed and the native/deployment browser slot and
 all owned ports were free before launch. Luna monitors one read-only launcher
 wait and the actual terminal footer. No parallel run or automatic retry.
-Launcher syntax and frozen-source checks pass. No Molten completion claimed yet.
+Launcher syntax and frozen-source checks pass. No Molten completion claimed.
+
+Cindermaw and one full-party town recovery/re-entry passed, all four survived.
+The failure was the new QA exact-waypoint predicate, not absent movement: Rogue
+walked2.492units, stopped0.536units from the projected waypoint, and all four
+actual final positions were within the original five-unit formation boundary.
+The helper should witness input progress; its caller separately waits for movement
+to settle and checks every final party position. The correction retains living,
+same-instance and positive-motion guards, requires net progress toward the target
+for a long step, and still requires the arrival region for a short step. The
+recorded regression proves both actual gathered positions and rejection of an
+ungathered member, without changing geometry or deadlines.142 focused movement,
+formation and ranged-spacing checks pass4.175s. No immediate unchanged retry.
+
+Independent network-isolated archive restore confirms100/245125XP/214465Gold,
+4645HP/3665MP/alive, all earlier Fire/Water receipts unchanged, Molten accepted0/1
+and no active dailies. Archive:
+`/tmp/eidolon-party-checkpoint-earnedmolten0920b-C2jes0/save.archive.gz`, SHA256
+`3a8b6a8c3bc47bbc8b12801aded2ee1a362f42d1db6815f77d76e196a144df2d`.
+Catalog index15 pins that real save; no resources, earned items, progression or
+timestamps are replaced. Owned QA services and the temporary inspection database
+copy are removed; original archive retained. Generator2 seed`2818842721365331582`.
+81 checkpoint transfer checks pass1.721s, including both Molten saves and exact
+timestamp preservation; scoped lint and diff checks pass. The next attempt may
+use this corrected source and latest save, not the old strict-waypoint source.
 
 `earnedfire0920c`, native26744, frozenb910a268, passed in2.8m with footer exit0:
 `/tmp/eidolon-earned-fire-20260920-r3-QHLeVF/run.log`. The retained ash was not

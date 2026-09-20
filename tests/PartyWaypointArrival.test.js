@@ -21,16 +21,40 @@ test('recorded short detour reaches its own waypoint without claiming final form
 });
 
 test.each([
-    { x: before.x + 3, z: before.z },
+    { x: before.x - 3, z: before.z },
     { instanceId: 'other' },
     { instanceType: 'town' },
     { state: 'DEAD' },
     { health: 0 }
-])('long displacement cannot bypass the explicit waypoint contract: %j', changes => {
+])('long displacement cannot bypass directional/living/same-instance guards: %j', changes => {
     const arrival = partyFormationArrival(before, { dx: 3, dz: 3 }, before.instanceId);
     const moved = { ...before, x: arrival.x, z: arrival.z, state: 'IDLE', health: 845, ...changes };
     expect(Math.hypot(moved.x - before.x, moved.z - before.z)).toBeGreaterThan(1);
     expect(groundMovementObserved(before, moved, 1, arrival)).toBe(false);
+});
+
+test('recorded Molten input makes real progress and the separate group check verifies completion', async () => {
+    const origin = { x: 30066.646778653987, z: 19866.18200618761,
+        instanceId: 'molten-recorded', instanceType: 'molten_core' };
+    const arrival = { x: 30066.77768815623, z: 19864.20689388378,
+        radius: .25, instanceId: origin.instanceId };
+    const moved = { ...origin, x: 30066.63615705585, z: 19863.68996559045, health: 3025, state: 'IDLE' };
+    expect(Math.hypot(moved.x - origin.x, moved.z - origin.z)).toBeCloseTo(2.4920632327940346);
+    expect(Math.hypot(moved.x - arrival.x, moved.z - arrival.z)).toBeGreaterThan(.25);
+    expect(groundMovementObserved(origin, moved, 1, arrival)).toBe(true);
+    const positions = [
+        { x: 30066.771334127185, z: 19859.706898369746 },
+        { x: 30062.741072444645, z: 19861.922746587676 },
+        { x: 30070.567444065673, z: 19861.85309248544 }, moved
+    ].map(position => ({ ...position, instance: origin.instanceId, dead: false }));
+    const move = jest.fn();
+    await gatherPartyFormation({ read: async () => positions, move });
+    expect(move).not.toHaveBeenCalled();
+    // A valid individual movement witness must not count as group completion.
+    positions[3] = { ...positions[3], z: positions[0].z + 10 };
+    let clock = 0;
+    await expect(gatherPartyFormation({ read: async () => positions, now: () => clock,
+        timeout: 2000, move: async () => { clock += 1000; } })).rejects.toThrow('failed to gather');
 });
 
 test('an unchanged observation inside an arrival region is not a witnessed walking step', () => {

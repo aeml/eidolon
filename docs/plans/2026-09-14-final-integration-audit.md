@@ -21,6 +21,18 @@ This open pacing preference does not block earned Molten or other roadmap work.
 
 ### Verified release and retained run evidence
 
+Earned Molten `earnedmolten0920b` is terminal exit1/10.5m oncdf71b50, with
+Cindermaw and one town rest/re-entry, all four alive. Root1224/launcher3915852 and
+owned services are stopped. The recently introduced exact-waypoint requirement
+was a QA regression: real movement2.492units and actual complete party formation
+were rejected because the final position was0.536units from the projected point.
+Input witnessing now retains living/same-instance/directional-progress checks
+without pretending to own the separate final group-distance check. Short steps
+still require the arrival region.142 focused checks pass4.175s. This supersedes
+the strict long-step policy described below; no gameplay or deadline adjustment.
+The [earned record](2026-09-20-earned-continuation.md) pins the independently
+inspected latest archive and unchanged unfinished chapter. No full Molten clear.
+
 Alpha1.9.26 is verified live at`b1c5b06996286fb24ed77efe0fdaa1a89d130032`.
 CI35532592235 passed September20 at19:56:33UTC in24m46s, including live
 character QA; Luna supplied the terminal result. No native browser test overlapped
