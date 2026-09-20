@@ -73,6 +73,33 @@ test('a nearby blocking body can be passed using a complete checked detour', () 
     }
     expect(partyFollowStep(follower, tank)).toBeNull();
 });
+
+test('recorded Tidestar touching bodies can separate before routing around a teammate', () => {
+    const follower = { x: 90003.87987528516, z: 19649.26019470357, radius: 1.25 };
+    const anchor = { x: 89999.91506357842, z: 19654.989958102615 };
+    const previous = { x: 90007.9352489816, z: 19655.11411778255 };
+    const bodies = [
+        { x: 90002.078125, z: 19658.943359375, radius: 1.25 },
+        { x: 89999.9140625, z: 19654.990234375, radius: 1.25 },
+        { x: 90002.1953125, z: 19651.107421875, radius: 1.25 },
+        { x: 90003.9609375, z: 19655.724609375, radius: 1.25 }
+    ];
+    const floor = [{ x: 90000, z: 19655, width: 60, height: 70 }];
+    const clear = (step, from) => partyPathAvoidsActors(from, step, bodies) &&
+        !clipDungeonEffectSegment(floor, from, { x: from.x + step.dx, z: from.z + step.dz }).blocked;
+    // At contact the short polygon vertices alone cannot provide a >=1unit
+    // departure. Do not shrink collision radii or call that failed search arrival.
+    let inputs = 0;
+    while (partyFollowStep(follower, anchor) && inputs++ < 12) {
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, 0, bodies);
+        expect(clear(step, follower)).toBe(true);
+        expect(Math.hypot(step.dx, step.dz)).toBeGreaterThanOrEqual(1);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(Math.hypot(follower.x - anchor.x, follower.z - anchor.z)).toBeLessThan(5);
+    expect(inputs).toBeLessThan(12);
+});
 test('already-overlapping actors can separate, but not walk through one another', () => {
     const from = { x: 0, z: 0 }, bodies = [{ x: 1, z: 0, radius: 1.25 }];
     expect(partyPathAvoidsActors(from, { dx: -3, dz: 0 }, bodies)).toBe(true);

@@ -52,3 +52,26 @@ Low quality, unchanged raid/three repair waves/manual claims/re-login, zero
 retries. Luna `/root/watch_tidestar_0920b` owns terminal monitoring; do not
 duplicate it or overlap browsers/deployment. Preserve artifacts before the next
 Playwright run. No result yet; previous0920a launcher/watcher remain terminal.
+
+## 0920b result and formation-contact correction
+
+0920b failed after4.3minutes while gathering after the first room; all members
+were alive. The Rogue stopped at(90003.87987528516,19649.26019470357), exactly
+2.5units from the Wizard's replicated(90002.1953125,19651.107421875). All other
+members were already inside the formation boundary. This was not another
+optional spacing failure: the formation graph had no departure vertex at least
+one input unit away that also led away from the initial contact/safety margin.
+
+The exact logged positions reproduce `PartyFormationRouteUnavailable` without
+browser timing. A regression fails before correction, then reaches the unchanged
+five-unit formation through fully checked walking segments. Nearby contacting
+bodies now contribute a1.5unit outward departure vertex; all body/floor checks,
+minimum segment proof, encounter bounds and the gather deadline remain intact.
+No teleport, collision/stat change or relaxed arrival condition.87 focused
+formation/approach/spacing checks pass in0.83seconds, plus lint/diff checks.
+
+Run log and copied reports/results are in
+`/tmp/eidolon-water-raid-20260920-r2-6ttDXK/`. Owned run containers are gone.
+Private archive `/tmp/eidolon-party-checkpoint-waterraid0920b-RJnkRD/save.archive.gz`,
+SHA256`21344e5afd7e5345c5f3dee4cb8f3983e42c7e47c702541f95be9a593f2e454c`.
+Launcher1393220 and its Luna watcher are terminal; do not poll them. No clear.

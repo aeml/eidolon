@@ -98,6 +98,15 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
             Math.hypot(actor.x - anchor.x, actor.z - anchor.z)) }))
         .filter(entry => entry.distance <= 24).sort((a, b) => a.distance - b.distance).slice(0, 8);
     for (const { actor } of nearby) {
+        const dx = state.x - actor.x, dz = state.z - actor.z, distance = Math.hypot(dx, dz);
+        const clearance = (state.radius || 1.25) + (actor.radius || 1.25) + .1;
+        if (distance > .001 && distance < clearance) {
+            // At contact, every outward polygon vertex can be less than one
+            // input unit away. Offer a real departure away from the overlap;
+            // graph edges still validate the entire path against every body
+            // and the floor before this can become an issued walking step.
+            add(state.x + dx / distance * 1.5, state.z + dz / distance * 1.5);
+        }
         const radius = ((state.radius || 1.25) + (actor.radius || 1.25) + .1) / Math.cos(Math.PI / 12) + .15;
         for (let index = 0; index < 12; index++) {
             const direction = index * Math.PI / 6;
