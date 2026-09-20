@@ -42,3 +42,13 @@ scan passed after sanitizing two files. Owned run containers are gone.
 Private save: `/tmp/eidolon-party-checkpoint-waterraid0920a-TANimV/save.archive.gz`.
 SHA256`e8d9f619f7bf9d2bc0709658277525e81ef06035d19a319bd02cc60f53fe85ec`.
 Keep the archive private and preserve the15minute logout rule.
+
+## Next run
+
+`waterraid0920b` is active, clean sourceb2bf2691, launcherPID1393220 confirmed
+live after verifying local ports free. Launcher/log:
+`/tmp/eidolon-water-raid-20260920-r2-6ttDXK/`. Same legal five-member party,
+Low quality, unchanged raid/three repair waves/manual claims/re-login, zero
+retries. Luna `/root/watch_tidestar_0920b` owns terminal monitoring; do not
+duplicate it or overlap browsers/deployment. Preserve artifacts before the next
+Playwright run. No result yet; previous0920a launcher/watcher remain terminal.
