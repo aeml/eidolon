@@ -1,5 +1,10 @@
 # Earned campaign continuation with a real party
 
+Active: `earnedparty0920c`, clean3b163421, native63326,
+`/tmp/eidolon-earned-party-20260920-r3-2CzUJB/`, Luna-monitored. Same verified
+pre-dungeon level31 archive, Low, zero retries, full dungeon and claim checks.
+Do not overlap native browser runs or alter loaded files while it is active.
+
 `earnedparty0920b` is terminal exit1 after2.8minutes on cleanee9a1ddd.
 Native52518 and the log footer confirm termination; reports/results are retained
 in `/tmp/eidolon-earned-party-20260920-r2-XoHW0R/`, owned services are gone.
