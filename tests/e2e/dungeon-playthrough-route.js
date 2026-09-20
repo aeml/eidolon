@@ -251,9 +251,21 @@ export async function playDungeonThroughInputs(page, {
             timing.enter('traversal');
             for (const destination of routes[routeIndex]) {
                 let deadline = Date.now() + 180_000;
+                const recentPositions = [];
                 while (true) {
                     await assertWorldUpdatesContinue(page);
-                    if (Date.now() > deadline) throw new Error(`Traversal stalled before room ${routeIndex + 1}`);
+                    if (Date.now() > deadline) {
+                        // The instance wrapper recalls before rethrowing, so its
+                        // final screenshot is already in town. Preserve the
+                        // actual stopped location and recent net progress here.
+                        // Observation failure must not replace the route error.
+                        const spatial = await page.evaluate(dungeonSpatialSnapshot).catch(() => null);
+                        console.log(`${logPrefix} traversal failure ${JSON.stringify({
+                            roomIndex: layout.corridors[routeIndex].toRoomIndex,
+                            destination, recentPositions, spatial
+                        })}`);
+                        throw new Error(`Traversal stalled before room ${routeIndex + 1}`);
+                    }
                     const nearby = (await hostiles(page)).find(entity => entity.distance < 40);
                     if (nearby) {
                         const combatStarted = Date.now();
@@ -269,6 +281,8 @@ export async function playDungeonThroughInputs(page, {
                     }
                     const player = await readPlayerState(page);
                     const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
+                    recentPositions.push({ at: Date.now(), x: player.x, z: player.z, distance });
+                    if (recentPositions.length > 12) recentPositions.shift();
                     if (distance < 3) break;
                     const scale = Math.min(1, 14 / distance);
                     await timing.measure('leaderInput', () => tryDungeonGroundStep(() => moveByGroundClick(page,

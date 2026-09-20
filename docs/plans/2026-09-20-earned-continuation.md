@@ -25,11 +25,37 @@ from real but unusually many automated defensive kills, so this continuation
 does not replace the previously accepted equal-level prepared-party balance
 evidence. No Fire raid, Air story or full1.10 completion is implied.
 
-Earned Molten is running as `earnedmolten0920a`, native18707, frozen clean
-d6ac95f5; launcher/log `/tmp/eidolon-earned-molten-20260920-r1-khYSJ8/`.
-Normal70/Low, existing two-hour party ceiling/zero retries. Prior owned cleanup
-and idle deployment browser queue verified; Luna monitors terminal-only.
-No result is claimed for this continuation yet.
+Earned Molten `earnedmolten0920a`, native18707, frozen clean d6ac95f5, ended
+exit1 after approximately113.5m, before the two-hour ceiling. Launcher/log:
+`/tmp/eidolon-earned-molten-20260920-r1-khYSJ8/`. Four bosses cleared, four town
+rests completed, all four members survived. The180s per-destination traversal
+bound expired before room7 during re-traversal; Lord Infernax and the manual
+quest claim remain unfinished. This is not an accepted full clear.
+
+Independent network-isolated archive inspection confirms Wizard100/245125XP/
+213922Gold,4645HP/3665MP/alive, unchanged prior chapter reward receipts, accepted
+Molten0/1 and no active dailies. Three followers retain the same dungeon seed
+and cleared rooms1–11, with12–14 uncleared; their positions are near room7's
+center. The leader was already recalled by the wrapper, so the final screenshot
+cannot identify its stopped dungeon position. Archive retained and SHA pinned:
+`/tmp/eidolon-party-checkpoint-earnedmolten0920a-2L7mNY/save.archive.gz`,
+`2d0fd77d61aee892a57c563041fa2be5bb6c155f66a6fe3415e9de91e20059a1`.
+Owned gameplay services and the temporary inspection database are removed.
+Full-save transfer retains actual loot/resources/logout and dungeon timestamps;
+the normal15-minute expiry still applies, with no invented dungeon completion.
+
+Exact generator2 seed `-9155039264226077565` replays and validates in0.121s.
+That static check does not prove actual movement. Final timing attributes75.5m
+to formation,11.5m to leader input and17.7m to combat; high shared-host load was
+observed, but neither host load nor a geometry defect is established as the
+cause. Before another full run, the route now records its last12 observed
+positions/distances and actual spatial snapshot at traversal timeout, before
+recall destroys that evidence. Original timeouts and inputs are unchanged;
+failed observation cannot replace the original traversal error. No blind rerun
+or gameplay balance change is justified by the retained evidence.
+Focused checkpoint, entry, spatial and timing checks pass102 tests in1.285s;
+scoped lint and whitespace checks pass. This is retained QA evidence, not a new
+player-facing release or accepted Molten clear.
 
 ## Previous Fire continuation — hunt and collection complete, anchor next
 

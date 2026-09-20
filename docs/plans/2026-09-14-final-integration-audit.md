@@ -1,6 +1,14 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.25 verified, retained Water continuation
+## Current delivery — 1.9.25 verified, earned Molten partial
+
+Earned Molten native18707 is terminal exit1 after113.5m: four bosses cleared,
+all members alive, but traversal timed out during a cleared-room return before
+the final boss. Independently inspected save retains actual Gold213922 and all
+prior Fire rewards, with Molten0/1 still uncompleted. No Air handoff is claimed.
+The [continuation record](2026-09-20-earned-continuation.md) owns its archive,
+exact seed replay and evidence limits. Timeout observations now retain the
+in-dungeon position before automatic recall; existing deadlines are unchanged.
 
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole

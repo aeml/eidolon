@@ -3,7 +3,7 @@ import { lstatSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
 export const earnedEarthCheckpointSHA = 'be0c40ad5c8ff6cc42cb2dbb42e23bb07ad721814959f3f8e518b21ecaeb765c';
-export const earnedEarthCheckpoints = Object.freeze([
+const historicalCheckpoints = Object.freeze([
     { sha: earnedEarthCheckpointSHA, level: 30, xp: 7170, gold: 8539, count: 46, completed: false },
     { sha: 'c3cca5c86852d354fc13b3e8f4c48513c5ff083153608866a45c5afdb358c673',
         level: 31, xp: 12448, gold: 9047, count: 50, completed: true },
@@ -141,6 +141,16 @@ export const earnedEarthCheckpoints = Object.freeze([
             { id: 'chronicle_fire_obedient_ember', accepted: true, completed: true, count: 3, max_count: 3, investigation_mask: 7, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
             { id: 'chronicle_07_crown_of_embers', accepted: true, completed: false, count: 0, max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
+]);
+
+export const earnedEarthCheckpoints = Object.freeze([
+    ...historicalCheckpoints,
+    // Failed Molten expedition: actual drops/resources are retained, but the
+    // quest is still uncompleted. Normal login owns the 15-minute run expiry;
+    // transferring this save must never refresh its logout or dungeon clock.
+    { ...historicalCheckpoints[13],
+        sha: '2d0fd77d61aee892a57c563041fa2be5bb6c155f66a6fe3415e9de91e20059a1',
+        gold: 213922, resources: { version: 1, health: 4645, mana: 3665, dead: false } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

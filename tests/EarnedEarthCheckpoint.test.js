@@ -231,6 +231,20 @@ test('retains all Fire discoveries and the accepted, unclaimed Molten Core hando
     expect(fixture.result().writes).toBe(1);
 });
 
+test('retains partial Molten earnings and expired run timestamps without awarding its unfinished quest', () => {
+    const checkpoint = earnedEarthCheckpoints[14];
+    const fixture = exercise(character => {
+        fireDungeonReadiness(character);
+        Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources },
+            dungeon_progress: { dungeon_type: 'molten_core', current_room_index: 7,
+                created_at: '2026-09-20T15:59:00Z', rooms: [{ cleared: true }, { cleared: false }] } });
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().saved.quests.at(-1)).toMatchObject({ count: 0, completed: false, granted_gold: 0 });
+    expect(fixture.result().writes).toBe(1);
+});
+
 test.each([
     p => { p.quests.at(-1).count = 1; }, p => { p.quests.at(-1).accepted = false; },
     p => { p.quests.at(-2).investigation_mask = 3; }, p => { p.quests.at(-2).granted_resonance_xp = 0; }
