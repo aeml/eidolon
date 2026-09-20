@@ -2,6 +2,12 @@
 
 ## September20 checkpoint — raid roster delivered, Fire input correction
 
+September 20 operator confirmation: the administrator found Activity history
+and reported that everything in the panel appears to work. The requested safe
+live read-only panel/history smoke is accepted. No production grants or teleports
+were requested or used as evidence. Final 1.10 identities and broader integration
+remain open; the physical-phone check is deferred at the player's request.
+
 Fire follow-up `fireraid0920c` is terminal exit1 (8.5 minutes); all five survived,
 but an elite-room Infernal Behemoth disappeared between combat observations.
 The final guardian was not reached. Artifacts are preserved, owned services gone;

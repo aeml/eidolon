@@ -53,11 +53,13 @@ Reuse it rather than re-running previously accepted campaign or soak matrices.
   the marker names this exact commit and `2026-09-19T19:49:29Z`. The deployment
   backup verified its database, recovery files and previous-image checksums.
   No backup contents or production credentials were read for this acceptance.
-- A safe live administrator-account read-only panel check remains requested
-  from the operator. Disposable authenticated mutation/browser proof is
-  already accepted; do not grant production QA accounts administrator rights.
-- Full 1.10 identities, remaining campaign/raid/phone integration and that
-  operator check remain open. Delivery of this patch does not close them.
+- September20: the operator opened Administration, found Activity history and
+  confirmed that it all appears to work. The safe live read-only panel/history
+  check is accepted. Disposable authenticated mutation/browser proof remains
+  accepted; no production QA administrator grant or mutation was required.
+- Full 1.10 identities and remaining campaign/raid integration remain open;
+  physical-phone follow-up is deferred at the player's request. Delivery of
+  this patch does not close the broader roadmap.
 
 ### First candidate and correction
 
