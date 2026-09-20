@@ -21,11 +21,15 @@ This open pacing preference does not block earned Molten or other roadmap work.
 
 ### Verified release and retained run evidence
 
-`earnedmolten0920c` now runs from8569dcd8 with the corrected input witness and
-latest checksum-pinned earned save. Root66703/launcher4125632, source/log at
-`/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`; Luna monitors terminal-only.
-Ports/native/deployment slot were clear before launch. Original limits and
-normal expiry remain; no completion implied by launch.
+`earnedmolten0920c` is terminal exit1/1.8m from8569dcd8, before party formation.
+Root66703/launcher4125632 stopped; source/log:
+`/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`. Normal15-minute restoration
+correctly returned the Wizard to Molten, but QA readiness looked for the town
+guide inside it. The shared readiness helper now uses normal Recall first for
+restored instances, failing closed if Recall fails; no expiry/progress rewrite.
+Luna confirms terminal cleanup. Latest independently inspected save is unchanged
+100/245125XP/214465Gold, Molten still0/1; see the earned record for archive index16.
+No new combat or completed dungeon acceptance. Original limits remain.
 
 Earned Molten `earnedmolten0920b` is terminal exit1/10.5m oncdf71b50, with
 Cindermaw and one town rest/re-entry, all four alive. Root1224/launcher3915852 and

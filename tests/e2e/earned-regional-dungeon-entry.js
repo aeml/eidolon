@@ -4,11 +4,18 @@ import { readChronicleChapter, openIlyra, acceptOfferedChapter } from './chronic
 import { openDungeonGuide } from './dungeon-guide.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { earnedRegionalDungeonRoute } from '../earnedRegionRoutes.js';
+import { readPlayerState, returnToTown } from './helpers.js';
 
 // A real completed regional save is required. The existing checksum-pinned archive
 // transfer remains the only source of Wizard progression; never seed this gate.
 async function restoreEarnedEncounterReadiness(page, credentials, route) {
     await restoreEarnedWizard(page, credentials);
+    // An intact save may resume its dungeon under the normal15-minute rule.
+    // Guide/party preparation happens in town, reached by ordinary Recall;
+    // never rewrite the saved instance or its expiry timestamp to get there.
+    if ((await readPlayerState(page)).instanceType !== 'overworld') {
+        await returnToTown(page, { allowRespawn: false });
+    }
     const chapter = route.dungeon, prior = route.prior;
     for (const id of prior) expect((await readChronicleChapter(page, id))?.completed, id).toBe(true);
     const offered = await readChronicleChapter(page, chapter);

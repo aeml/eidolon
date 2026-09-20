@@ -155,6 +155,11 @@ export const earnedEarthCheckpoints = Object.freeze([
     // Same unfinished chapter and unchanged normal dungeon expiry semantics.
     { ...historicalCheckpoints[13],
         sha: '3a8b6a8c3bc47bbc8b12801aded2ee1a362f42d1db6815f77d76e196a144df2d',
+        gold: 214465, resources: { version: 1, health: 4645, mana: 3665, dead: false } },
+    // Immediate continuation resumed inside the preserved run; town guide
+    // preparation failed before combat. Keep the latest actual save intact.
+    { ...historicalCheckpoints[13],
+        sha: '97a5a8616fa85d35cf3588800cf685fb3f957b061211da5c7c15434b65b2487b',
         gold: 214465, resources: { version: 1, health: 4645, mana: 3665, dead: false } }
 ]);
 

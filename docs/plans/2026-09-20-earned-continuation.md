@@ -2,14 +2,29 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-Corrected continuation `earnedmolten0920c` is running from frozen8569dcd8:
+Continuation `earnedmolten0920c` is terminal exit1/1.8m from frozen8569dcd8:
 `/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`, root native66703,
 launcher4125632. Uses the independently verified latest index15 save below,
 with three prepared70 class-geared supports and unchanged two-hour/zero-retry
 limits. Prior owned services/inspection copy were gone, ports free and CI terminal
 before launch. Luna monitors one read-only launcher wait and terminal footer.
-This follows the reproduced QA witness correction, not an unchanged retry or
-gameplay nerf. No new completion accepted yet.
+This followed the reproduced QA witness correction, not an unchanged retry or
+gameplay nerf. It failed before party formation: the normal15-minute rule resumed
+the Wizard inside Molten, while the readiness helper sought the town guide there.
+Diagnostic shows`instance: molten_core`, live updates and no guide. This is not
+an invisible town NPC or a failure to restore the run. The shared earned dungeon/
+raid readiness helper now uses ordinary Recall, without allowing a hidden respawn,
+when the restored actor is in an instance. It then performs the existing personal
+quest/save and guide checks. Overworld restores do not take an extra Recall;
+failed Recall aborts readiness. No timestamp, dungeon-progress or runtime edits.
+
+Independent network-isolated restore confirms unchanged100/245125XP/214465Gold,
+4645HP/3665MP/alive,19 completed Chronicle chapters, Molten accepted0/1 and no
+active dailies. Latest archive and catalog index16:
+`/tmp/eidolon-party-checkpoint-earnedmolten0920c-YCAKdi/save.archive.gz`, SHA256
+`97a5a8616fa85d35cf3588800cf685fb3f957b061211da5c7c15434b65b2487b`.
+Owned run services and temporary inspection copy are gone; original retained.
+No new dungeon combat, earned chapter or corrected-walking acceptance occurred.
 
 Continuation `earnedmolten0920b` is **terminal exit1 after10.5m**, root native1224/launcher3915852 stopped, at
 `/tmp/eidolon-earned-molten-20260920-r2-RHc8G7/`, frozencdf71b50. The latest
