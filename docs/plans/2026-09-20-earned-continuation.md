@@ -2,6 +2,15 @@
 
 ## Missing Ferry partial save retained —58/60, no repeat required
 
+Follow-up `earnedwater0920b` is now live under native40858, with launcher/log
+`/tmp/eidolon-water-finish-20260920-tWOp4t/run.log`. Its frozen detached source
+is clean5c42b4dd at that directory's `source/`; browser dependencies are prepared.
+It restores the exact58-kill archive below, keeps the30-minute/no-retry bounds,
+and requires the remaining two ordinary kills, manual claim and saved offer.
+Luna watches terminal status. Do not edit the frozen worktree, overlap native
+browser jobs, or publish1.9.23 while it runs. No completed Water chapter is
+claimed yet; the previous terminal run remains the record below.
+
 `earnedwater0920a` ended exit1 after30.0m on frozen29ef2862. Native45531 and
 `WATER_TERMINAL_PHASE=earned_water`/`WATER_PROCESS_EXIT=1` agree. All owned
 services are gone; copied reports/results and log are retained under

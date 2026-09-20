@@ -6,9 +6,14 @@ Alpha1.9.22 at4f39328b is accepted: CI35492191742 passed all jobs in21m44s,
 ending06:00:17UTC; independent public verification confirms matching identities,
 database readiness, login/notes and the shipped four-member party layout.
 Guarded Water parent45531 passed that exact deployment and source verification,
-then started isolated setup for `earnedwater0920a` from the saved level33 Wizard.
-Luna monitors the continuation; no Water quest result is claimed yet.
-Do not overlap native browser work or edit its frozen29ef2862 worktree.
+then ran `earnedwater0920a` from the saved level33 Wizard. It is now terminal
+exit1 after30.0m, reporting a retreat assertion near the whole-test ceiling.
+Actual archive restore confirms42/32261XP/25427Gold and58/60 unclaimed Ferry kills.
+The saved continuation `earnedwater0920b`, native40858, is active on frozen
+5c42b4dd, monitored by Luna. Only two kills/manual turn-in remain for this chapter;
+the rest of Water is still open. Do not repeat the58 kills or accepted Verdant.
+Do not overlap native browser work or edit its frozen worktree at
+`/tmp/eidolon-water-finish-20260920-tWOp4t/source`.
 See [release status](2026-09-20-release1-9-22-party-visibility.md) and
 [earned continuation](2026-09-20-earned-continuation.md).
 
