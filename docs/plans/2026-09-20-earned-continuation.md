@@ -27,6 +27,12 @@ not relabeled as a newly observed kill.105 focused tests pass1.509s, lint/diff
 pass. Resume only the unfinished investigation and handoff; do not repeat the
 completed hunt/collection or preceding regions/dungeons.
 
+The bounded investigation-only continuation is now native26744/run
+`earnedfire0920c`, frozen cleanb910a268, under
+`/tmp/eidolon-earned-fire-20260920-r3-QHLeVF/`. Same two-hour ceiling/zero retries,
+prior owned cleanup and idle deployment browser queue verified. Luna monitors
+terminal-only; no completion is claimed yet.
+
 ## Previous Fire continuation — retained kiln and seven hunt kills
 
 `earnedfire0920a`, native46309, frozen117c0b5a, ended exit1 after15.4m:
