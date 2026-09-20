@@ -1,7 +1,16 @@
 import { expect, test } from '@playwright/test';
-import { acquireLootPointer } from './helpers.js';
+import { existsSync } from 'node:fs';
+import { acquireLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
+import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
+
+// Input/geometry only: no rendered game or GPU contention with live QA.
+test.use({ launchOptions: {
+    executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined),
+    args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer']
+} });
 
 test.beforeEach(async ({ page }) => {
+    await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async () => {
         const THREE = await import('three');
@@ -29,6 +38,47 @@ test.beforeEach(async ({ page }) => {
         game.inputManager.subscribe('onMouseMove', () => game.performRaycast());
         window.game = game;
     });
+});
+
+test('ordinary pointer input acquires a golem corner hidden from the six axial samples', async ({ page }) => {
+    await page.evaluate(async () => {
+        const { MagmaGolem } = await import('/src/entities/MagmaGolem.js');
+        const { createProceduralMagmaGolem } = await import('/src/art/ProceduralOverworldEnemies.js');
+        const g = window.game;
+        const positions = [[99999.7265625, 19594.291015625], [99997.203125, 19592.751953125]];
+        const actors = positions.map(([x, z], i) => {
+            const actor = new MagmaGolem(i ? 'target' : 'foreground');
+            actor.setMesh(createProceduralMagmaGolem());
+            actor.position.set(x, 0, z);
+            actor.mesh.position.copy(actor.position);
+            actor.mesh.updateMatrixWorld(true);
+            return actor;
+        });
+        g.activeEntitiesCache = actors;
+        g.remotePlayers = new Map(actors.map(actor => [actor.id, actor]));
+        g.isHostileActorTarget = entity => actors.includes(entity);
+        const camera = g.renderSystem.camera;
+        Object.assign(camera, { left: -30, right: 30, top: 20, bottom: -20, far: 2000 });
+        camera.position.set(100093.999, 100, 19691.154);
+        camera.lookAt(99993.999, 0, 19591.154);
+        camera.updateProjectionMatrix(); camera.updateMatrixWorld(true);
+        if (document.createElement('canvas').getContext('webgl')) throw new Error('Geometry fixture must not use WebGL');
+    });
+    const observed = [];
+    const point = await aimDungeonCombatTarget({
+        project: (id, sample) => projectEntity(page, id, sample),
+        move: (x, y) => page.mouse.move(x, y),
+        settle: () => settlePointerRaycast(page),
+        hoveredId: async () => {
+            const id = await page.evaluate(() => window.game.hoveredEntity?.id);
+            observed.push(id);
+            return id;
+        }
+    }, 'target', true);
+    expect(observed.slice(0, 6)).toEqual(Array(6).fill('foreground'));
+    expect(point?.visible).toBe(true);
+    expect(observed.at(-1)).toBe('target');
+    expect(observed.length).toBeLessThanOrEqual(10);
 });
 
 test('a covered loot center keeps enemy priority while exposed loot edges remain selectable', async ({ page }) => {

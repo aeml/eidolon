@@ -43,6 +43,15 @@ a browser, database or GPU workload. This is a two-actor static geometry
 reproduction, not proof of the original complete moving crowd or full raid.
 It does not alter gameplay selection, combat stats, watchdogs or retry policy.
 
+The existing pointer component browser fixture also now reproduces those two
+positions using actual MagmaGolem meshes, `projectEntity`, `InputManager`,
+`GameEngine.performRaycast` and ordinary Playwright mouse movement. It confirms
+six foreground hits followed by a genuine target hover on the exposed corner.
+All three pointer cases pass in13.0seconds, including both existing loot-priority
+cases. WebGL is disabled and main game boot is intercepted, so this does not
+compete with deployment GPU work. No combat or networking outcome is simulated
+or claimed. Artifacts: `/tmp/eidolon-golem-pointer-20260920-results/`.
+
 Next: after CI35483868157 and independent public1.9.21 verification finish,
 exercise Fire with this input correction and the already-added failure-scene
 evidence. No native browser overlap with deployment. Rootheart and accepted
