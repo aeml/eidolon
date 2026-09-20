@@ -52,6 +52,14 @@ rewards. The existing anchor helper is now shared by both routes;105 focused
 checks pass. Next finish the retained investigation and Molten handoff, without
 repeating completed content. No Fire dungeon or raid completion is implied.
 
+Fire investigation/handoff is now accepted: native26744/earnedfire0920c on
+b910a268 passed2.8m, actual anchor death, freed ember, manual claim/relogin and
+saved Normal70 Molten entry. Independent save100/245125XP/211256Gold preserves
+all prior rewards and Molten0/1 accepted. The field-record screenshot is readable
+and shows the correct cap reward. Next is the earned Molten four-role continuation;
+retain the separate already-passed prepared Molten balance evidence. Full1.10
+and the remaining Air/raid/finale scope stay open.
+
 Next-batch local polish: the short stash screenshots exposed a service card
 remaining “Move closer” after approach, because hint updates depended on pointer
 raycasts. Refresh the already-visible card during rendering; the existing UI

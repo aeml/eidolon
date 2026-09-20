@@ -1,6 +1,31 @@
 # Earned campaign continuation with a real party
 
-## Current Fire continuation — hunt and collection complete, anchor next
+## Fire story accepted — next: earned Molten party clear
+
+`earnedfire0920c`, native26744, frozenb910a268, passed in2.8m with footer exit0:
+`/tmp/eidolon-earned-fire-20260920-r3-QHLeVF/run.log`. The retained ash was not
+repeated. The existing input helper observed the actual anchor death and mask1→3,
+then the freed ember was recorded, manually claimed and relogged. Normal70
+Molten Core handoff is accepted and saved. The released-ember journal screenshot
+was inspected: retained field records, readable lore, ready/manual-turn-in copy
+and correct level100 Gold/Resonance reward are visible.
+
+Independent isolated archive restore confirms100/245125XP/211256Gold,
+resources5109HP/4031MP/alive, Fire investigation3/3/mask7 claimed250Gold and
+5956ResonanceXP, all prior hunt/collection receipts, and accepted unclaimed
+Molten0/1. No active dailies. Full archive:
+`/tmp/eidolon-party-checkpoint-earnedfire0920c-WrChzW/save.archive.gz`, SHA256
+`1a01831ca383c9623cdf88125e7988b7195f3d1ffbfd8c68d1262e72f7d9b2d9`.
+Owned services and temporary inspection copy are gone; archive retained.
+104 checkpoint/regional-entry tests pass1.169s, plus lint/diff.
+
+Next use the established Normal70 Molten four-role route with this earned Wizard
+and prepared70 class-appropriate Rare/Uncommon supports. The Wizard is now100
+from real but unusually many automated defensive kills, so this continuation
+does not replace the previously accepted equal-level prepared-party balance
+evidence. No Fire raid, Air story or full1.10 completion is implied.
+
+## Previous Fire continuation — hunt and collection complete, anchor next
 
 `earnedfire0920b`, native28299, frozen8e120dd4, ended exit1 after1.5h per the
 Playwright footer (the watcher duration estimate was lower). The defended travel
@@ -27,11 +52,11 @@ not relabeled as a newly observed kill.105 focused tests pass1.509s, lint/diff
 pass. Resume only the unfinished investigation and handoff; do not repeat the
 completed hunt/collection or preceding regions/dungeons.
 
-The bounded investigation-only continuation is now native26744/run
+The bounded investigation-only continuation launched as native26744/run
 `earnedfire0920c`, frozen cleanb910a268, under
 `/tmp/eidolon-earned-fire-20260920-r3-QHLeVF/`. Same two-hour ceiling/zero retries,
 prior owned cleanup and idle deployment browser queue verified. Luna monitors
-terminal-only; no completion is claimed yet.
+terminal-only; its accepted terminal result is recorded above.
 
 ## Previous Fire continuation — retained kiln and seven hunt kills
 

@@ -215,6 +215,31 @@ test('retains completed Fire hunt/collection Resonance rewards and only the disc
     expect(fixture.result().writes).toBe(1);
 });
 
+function fireDungeonReadiness(character) {
+    completedAbyssal(character);
+    const checkpoint = earnedEarthCheckpoints[13];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+        resources: { ...checkpoint.resources } });
+    character.quests.pop();
+    character.quests.push(...checkpoint.continuationChapters.map(q => ({ ...q })));
+}
+
+test('retains all Fire discoveries and the accepted, unclaimed Molten Core handoff', () => {
+    const fixture = exercise(fireDungeonReadiness, false, earnedEarthCheckpoints[13]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-1).count = 1; }, p => { p.quests.at(-1).accepted = false; },
+    p => { p.quests.at(-2).investigation_mask = 3; }, p => { p.quests.at(-2).granted_resonance_xp = 0; }
+])('rejects altered Fire completion or premature Molten credit', change => {
+    const fixture = exercise(p => { fireDungeonReadiness(p); change(p); }, false, earnedEarthCheckpoints[13]);
+    expect(fixture.run).toThrow(/earned/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-1).investigation_mask = 3; }, p => { p.quests.at(-1).count = 2; },
     p => { p.quests.at(-2).granted_resonance_xp = 0; }, p => { p.quests.at(-3).granted_xp = 102750; }
