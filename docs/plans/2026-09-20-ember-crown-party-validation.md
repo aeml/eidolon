@@ -1,5 +1,26 @@
 # Ember Crown prepared-party validation — September20
 
+## Current run
+
+`fireraid0920b` is active; no result yet. Persistent exec33534, monitored by
+Luna `/root/watch_ember_0920b`. Log/launcher directory:
+`/tmp/eidolon-fire-raid-20260920-r2-XJQrvW/`. Its exact-release guard observed
+CI35483868157 success before beginning at02:44:44UTC on source
+`a5599c748f5b315b60b354336535e4d5f0c8c430`. Public1.9.21 checks were already
+accepted; no overlapping native deployment QA. Same five level70 legal geared
+roles, tank/group healer split, zero retries, unchanged watchdogs and complete
+assault/guardian/three-wave repair/manual-claim/relogin requirements. The sole
+input correction is the exposed-corner search proven below. Preserve artifacts
+when terminal. Do not restart on observation expiry.
+
+An initial watcher termination report was incorrect: parent re-polled33534 and
+confirmed it live, with launcher PID2589890, both exact owned containers up,
+and the log advancing through second-Cleric preparation. Only the watcher was
+resumed, not the run. Cross-agent handle visibility or a missing log footer is
+not terminal evidence; require the actual exit status/marker.
+
+## First run — retained failure
+
 Status: **failed, not full raid acceptance**. Run `fireraid0920a`, clean source4243e2e0,
 Alpha1.9.20. Persistent exec session77329 confirmed running after checking owned
 QA containers absent and ports18285/18286/4187 free. Launch only followed complete

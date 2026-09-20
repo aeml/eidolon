@@ -1,16 +1,24 @@
 # Alpha 1.9.21 — the whole raid in view
 
-Status: pushed as44061ffe368597dd09373720329ffbaee8240d92; CI35483868157
-is monitored by Luna `/root/watch_release_1_9_21`. Public identity verification
-passes; final live-character QA is still pending. No further push is needed for
-this local status note or diagnostics.
+Status: **delivered and accepted**, exact44061ffe368597dd09373720329ffbaee8240d92.
+Luna `/root/watch_release_1_9_21` confirmed all jobs of CI35483868157 passed,
+including Live Release and Character QA. Independent public verification also
+passed. No further push is needed for this local status note or diagnostics.
 
 Independent public reads confirmed HTTP200 on the frontend release manifest
 and backend health endpoint, both reporting the exact commit above/Alpha1.9.21,
 with backend statusok/database ready. Public HTML contains the updated login
 label, new notes and retained1.9.20 entry. Served party CSS exactly matches the
 committed candidate, and served SocialUI contains its raid layout/title switch.
-This proves publication, not completion of the final workflow job or full1.10.
+The separately confirmed workflow result completes this patch's delivery gate,
+not the remaining full1.10 scope. Do not repeat these accepted public checks.
+
+CI ran02:23:34–02:44:29UTC (20m55s). Hosted browser partitions took9m04s,
+7m26s and8m45s, overlapping the8m20s Go job. Live Release and Character QA took
+8m17s. These are actual measured timings, not the earlier workload estimates.
+The preceding1.9.20 run took32m49s (01:31:36–02:04:25UTC): this run finished
+11m54s sooner. This comparison includes normal build/cache/workload variation;
+it is not a guarantee that every future release saves exactly that duration.
 
 Desktop groups larger than four use a two-column roster. Ten health bars fit
 above default chat at1280×720 without scrolling, with the healing-clear button
