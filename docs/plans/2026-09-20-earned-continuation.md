@@ -25,6 +25,12 @@ from real but unusually many automated defensive kills, so this continuation
 does not replace the previously accepted equal-level prepared-party balance
 evidence. No Fire raid, Air story or full1.10 completion is implied.
 
+Earned Molten is running as `earnedmolten0920a`, native18707, frozen clean
+d6ac95f5; launcher/log `/tmp/eidolon-earned-molten-20260920-r1-khYSJ8/`.
+Normal70/Low, existing two-hour party ceiling/zero retries. Prior owned cleanup
+and idle deployment browser queue verified; Luna monitors terminal-only.
+No result is claimed for this continuation yet.
+
 ## Previous Fire continuation — hunt and collection complete, anchor next
 
 `earnedfire0920b`, native28299, frozen8e120dd4, ended exit1 after1.5h per the
