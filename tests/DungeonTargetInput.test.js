@@ -1,12 +1,46 @@
 import { jest } from '@jest/globals';
 import * as THREE from 'three';
-import { aimDungeonCombatTarget } from './dungeonTargetInput.js';
+import { aimDungeonCombatTarget, readDungeonTargetPointerInPage } from './dungeonTargetInput.js';
 import { createProceduralMagmaGolem } from '../src/art/ProceduralOverworldEnemies.js';
 import { MagmaGolem } from '../src/entities/MagmaGolem.js';
 
 const makeInput = () => ({
     project: jest.fn().mockResolvedValue({ x: 100, y: 200, visible: true }),
     move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn().mockResolvedValue('boss')
+});
+
+test('failed aim retains the actual ray and proxy transform before a later ground movement', () => {
+    const proxy = new THREE.Mesh(new THREE.BoxGeometry(2, 3, 2));
+    proxy.geometry.computeBoundingBox();
+    proxy.userData.entityId = 'target';
+    proxy.position.set(10, 1.5, 20);
+    proxy.updateMatrixWorld(true);
+    const target = { position: new THREE.Vector3(10, 0, 20), mesh: proxy };
+    const raycaster = new THREE.Raycaster(new THREE.Vector3(100, 100, 100), new THREE.Vector3(-1, -1, -1).normalize());
+    window.__partyClearEvidence = {};
+    window.game = { hoveredEntity: { id: 'foreground' }, remotePlayers: new Map([['target', target]]),
+        getRaycastMeshForEntity: () => proxy, raycastHitEntities: [{ id: 'foreground' }],
+        inputManager: { mouse: new THREE.Vector2(.1, .2), pointerOverCanvas: true, raycaster },
+        needsRaycast: false, frameCount: 42 };
+    try {
+        expect(readDungeonTargetPointerInPage('target')).toBe('foreground');
+        const evidence = window.__partyClearEvidence.lastMissedTargetProbe;
+        expect(evidence).toMatchObject({ id: 'target', hovered: 'foreground', hits: ['foreground'],
+            logicalPosition: { x: 10, y: 0, z: 20 }, proxyOwner: 'target', frame: 42,
+            ray: { origin: { x: 100, y: 100, z: 100 } } });
+        expect(evidence.proxyWorld).toEqual(proxy.matrixWorld.elements);
+        proxy.matrixWorld.elements[12] = 999;
+        raycaster.ray.origin.x = 999;
+        expect(evidence.proxyWorld[12]).toBe(10);
+        expect(evidence.ray.origin.x).toBe(100);
+        window.game.hoveredEntity = target;
+        target.id = 'target';
+        expect(readDungeonTargetPointerInPage('target')).toBe('target');
+        expect(window.__partyClearEvidence.lastMissedTargetProbe).toBe(evidence);
+    } finally {
+        delete window.game;
+        delete window.__partyClearEvidence;
+    }
 });
 
 test('solo aiming keeps its existing center projection and settle', async () => {

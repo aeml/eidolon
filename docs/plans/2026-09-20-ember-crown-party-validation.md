@@ -24,6 +24,23 @@ Exact acquisition-time hit stacks/rendered transforms were not retained, so
 the cause remains unresolved. No speculative gameplay targeting change or
 blind rerun is justified by the current evidence.
 
+Bounded follow-up: the four recorded hostile positions, actual procedural
+Magma Golem/Infernal Behemoth interaction boxes and the isometric camera direction
+acquire the intended Golem on the first ray in a31ms geometry check. This rules
+out static overlap for that reconstruction, not moving actors, rendered-transform
+drift, camera motion or the original live scene. The Fighter receipt also has
+successful early target hovers, while later Wizard/Rogue samples frequently
+fail to hover; no death or gear failure is implied.
+
+The existing per-sample hover read now retains its latest failed target ray,
+hit IDs, logical/mesh positions, exact proxy matrix/bounds and frame state in
+the bounded party receipt. It adds no browser round trips, polling, forced raycast
+or input behavior changes. Unlike the final snapshot after a sidestep, this
+captures the acquisition moment. Nine focused targeting/retention/recorded-scene
+tests pass in1.02s; lint/diff pass. This is diagnostic preparation only; keep
+Water continuation next after1.9.22 deployment rather than immediately replaying
+the full Fire raid without a proved gameplay correction.
+
 ## Latest terminal run — settled teammate collision
 
 `fireraid0920e` ended exit1 after4.1m on clean7fa57f00, native35409.

@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { installDungeonObservationInPage, readDungeonTargetStateInPage } from '../dungeonDeathObservation.js';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
-import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
+import { aimDungeonCombatTarget, readDungeonTargetPointerInPage } from '../dungeonTargetInput.js';
 import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState, settlePointerRaycast } from './helpers.js';
@@ -110,7 +110,7 @@ export async function playDungeonThroughInputs(page, {
                 project: (id, hitboxPoint) => projectEntity(page, id, hitboxPoint),
                 move: (x, y) => page.mouse.move(x, y),
                 settle: () => settlePointerRaycast(page),
-                hoveredId: () => page.evaluate(() => window.game.hoveredEntity?.id)
+                hoveredId: () => page.evaluate(readDungeonTargetPointerInPage, target.id)
             }, target.id, partyTarget);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
