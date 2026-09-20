@@ -1,16 +1,17 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.25 deploying, retained Water continuation queued
+## Current delivery — 1.9.25 verified, retained Water continuation starting
 
-Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 was pushed;
-CI35503417369 is running, monitored by Luna. This is not yet accepted live.
+Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 is verified live.
+CI35503417369 passed all jobs at10:14:07UTC in23m36s. Public client/server
+identities, ready database, login/cumulative notes and exact stash assets match.
 It includes the corrected stash location outside the blacksmith footprint and
 the bounded administration rejection/outage follow-ups. Desktop, portrait and
 landscape one-click/tap stash approaches passed in23.4s; retained full-town
 collision evidence and screenshots are in the [stash report](2026-09-20-stash-approach.md).
 
-Native47339 is waiting for that exact CI and independent public verification,
-then resumes `earnedwaterregion0920c` from the retained level61/25-of-70 Golem
+Native47339 passed that exact CI and independent public verification and is
+starting `earnedwaterregion0920c` from the retained level61/25-of-70 Golem
 save. It does not replay completed Water chapters. The
 [earned continuation record](2026-09-20-earned-continuation.md) owns its launcher,
 archive and bounds. No new Water/Abyssal clear is claimed.

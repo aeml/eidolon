@@ -7,9 +7,9 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 20
 
-- Verified live: **Alpha 1.9.24**, exact commit
-  `d1e707e3df87ff2ebe98bf799d04dbd6db208e74`. CI35500889856 passed at09:19:12UTC
-  in23m45s; public identities, readiness, notes and five casino assets match.
+- Verified live: **Alpha 1.9.25**, exact commit
+  `0a104720cad83d2314534ec042920ee0236207ad`. CI35503417369 passed at10:14:07UTC
+  in23m36s; public identities, readiness, notes and three stash assets match.
 - Delivered: the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
   Focused money/restart, UI, collision and software-rendered floor checks pass;
@@ -23,14 +23,17 @@ the whole goal. Started September 5, 2026.
   Continuation `earnedwaterregion0920b` ended exit1 after48.8s during stash
   preparation, before new kills. Actual saved progression is unchanged; owned
   services are gone. The [stash approach correction](2026-09-20-stash-approach.md)
-  requires a short connected check before continuing the retained hunt.
-- Local next-batch administration follow-up at2ca90f7d adds bounded admission
-  rejection audits and dual-store-failure recovery; it is not in the live release.
+  passed desktop/portrait/landscape in23.4s and is live in1.9.25. Guarded
+  `earnedwaterregion0920c` passed CI/public verification and is starting the
+  retained hunt in native47339; no completed chapters replayed.
+- Bounded administration admission rejection audits and dual-store-failure
+  recovery are delivered in1.9.25. Local service range-hint refresh atcac54acd
+  is held for the next batch, with43 focused tests passing.
 - Remaining full-scope work and accepted results are reconciled in the
   [final integration audit](2026-09-14-final-integration-audit.md): later earned
   regions, remaining dungeon/raid repairs, portal/Dark King integration, balance
   and final release acceptance. User-deferred physical-phone checks are not
-  passes. Neither 1.9.24 nor a successful individual test completes the goal.
+  passes. Neither 1.9.25 nor a successful individual test completes the goal.
 
 The September8 entries below are historical evidence, not active processes or
 instructions to publish those old candidates. Preserve accepted evidence and

@@ -54,7 +54,7 @@ because a response timed out. The UI retains this retry across an in-memory
 reconnect, not across a browser reload; consult history before recreating a
 request after losing the page.
 
-Prepared follow-up (not yet deployed in1.9.24): administration mutation
+Delivered follow-up (Alpha1.9.25): administration mutation
 payload/rate violations end the offending connection.
 For an authenticated account, its rejection is recorded without creating a new
 operation; oversized bodies are not parsed into history. Reconnect and retry

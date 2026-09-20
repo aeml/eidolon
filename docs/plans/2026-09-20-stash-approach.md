@@ -20,9 +20,14 @@ Full-town collision/map/stash/version checks (307), focused Go town/admin
 obstruction checks, and changed-file lint also passed. This accepts the storage
 path, not the unfinished earned Water campaign or the whole 1.10 goal.
 
-The immutable release candidate above was pushed to master; CI35503417369 is
-queued/in progress with Luna monitoring. Deployment and independent public
-identity checks are not yet accepted. Live1.9.24 remains the last verified release.
+The immutable release above is verified live. CI35503417369 passed all jobs at
+10:14:07UTC September20 in23m36s. The Water launcher's independent public guard
+and `/tmp/eidolon-release-1-9-25-20260920-GJOH6i/public-verification.log` confirm
+exact client/server commit and Alpha1.9.25, ready database, login/cumulative notes
+and three exact stash assets. No production account was mutated. Luna initially
+did not save its verifier output, then retained a successful read-only rerun;
+the Water launcher receipt was already present. Earned Water has started from
+its retained checkpoint, not yet passed.
 
 ## Revised correction — clear the complete town, not a partial scene
 
