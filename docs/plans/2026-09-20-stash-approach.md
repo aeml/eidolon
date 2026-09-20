@@ -20,8 +20,9 @@ Full-town collision/map/stash/version checks (307), focused Go town/admin
 obstruction checks, and changed-file lint also passed. This accepts the storage
 path, not the unfinished earned Water campaign or the whole 1.10 goal.
 
-The immutable release candidate above is ready for publication. Deployment and
-independent public identity checks are not yet accepted.
+The immutable release candidate above was pushed to master; CI35503417369 is
+queued/in progress with Luna monitoring. Deployment and independent public
+identity checks are not yet accepted. Live1.9.24 remains the last verified release.
 
 ## Revised correction — clear the complete town, not a partial scene
 

@@ -1,5 +1,19 @@
 # Earned campaign continuation with a real party
 
+## Queued retained-save continuation after the stash correction
+
+Native session 47339 waits on CI35503417369 (release1.9.25, immutable
+`0a104720cad83d2314534ec042920ee0236207ad`), then independently verifies public
+delivery before starting `earnedwaterregion0920c`. Launcher/log and frozen source:
+`/tmp/eidolon-water-region-resume-20260920-r3-mNBwzz/`. Luna monitors terminal
+outcomes. No native gameplay overlaps deployment QA. The corrected stash path
+passed desktop/portrait/landscape in23.4s; see the stash approach report.
+
+Resume the checksum-pinned level61 full save below:25/70 Golems, remaining45
+kills and manual handoff. Do not replay completed chapters or manufacture gear,
+XP, rewards or logout times. Existing two-hour limit and zero retries remain.
+This is a queued run, not a completed Water/Abyssal acceptance.
+
 ## Water partial save retained — level61, final hunt25/70
 
 The retained-save continuation ended exit1 under native58053, runID
