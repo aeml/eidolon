@@ -318,7 +318,7 @@ Verification state as of September 20, 2026:
 
 - The retained Alpha 1.0 foundation includes migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
 - Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
-- The latest recorded public verification is [Alpha 1.9.19](docs/plans/2026-09-19-release1-9-19-casino-cutaway.md). Alpha 1.9.20 is a local candidate until its exact committed SHA passes deployment and live verification. The [final integration audit](docs/plans/2026-09-14-final-integration-audit.md) preserves accepted results and identifies the remaining campaign, raid and physical-phone checks; the complete 1.10 goal is not yet finished.
+- The latest recorded public verification is [Alpha 1.9.20](docs/plans/2026-09-20-release1-9-20-crystal-anchor.md), with all CI jobs including live-character QA passing. The [final integration audit](docs/plans/2026-09-14-final-integration-audit.md) preserves accepted results and identifies the remaining campaign, raid and physical-phone checks; the complete 1.10 goal is not yet finished.
 - The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Historical Alpha 1.0 decomposition measurements (physical lines, `wc -l`; not current file sizes):

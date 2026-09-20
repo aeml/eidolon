@@ -1,10 +1,13 @@
 # Alpha 1.9.20 — the crystal holds its ground
 
-Status: pushed to master as `f333c7610f5e5b9ccfb958735e01029a8747fc6f`;
-CI run35481615306 is active, monitored by Luna `/root/watch_release_1_9_20`.
-Server/Jest jobs passed and three browser-smoke shards were running at the last
-authoritative check. Public delivery is not yet verified. Keep the full1.10
-scope and accepted evidence.
+Status: **delivered and publicly verified**, commit
+`f333c7610f5e5b9ccfb958735e01029a8747fc6f`. CI35481615306 completed successfully;
+Luna `/root/watch_release_1_9_20` reported every job passing, including Live
+Release and Character QA. Main independently checked public frontend
+`release.json` and backend `/healthz`: HTTP200, identical exact SHA/Alpha1.9.20,
+backend statusok/database ready. Public login version, current repair notes and
+retained1.9.19 notes also match. No production character mutation was used for
+the public checks. Keep the full1.10 scope and accepted evidence.
 
 ## Player-facing patch notes for the next release
 
