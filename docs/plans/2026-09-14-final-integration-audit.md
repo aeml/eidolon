@@ -9,6 +9,22 @@ includes the verified assault-to-defense handoff and stale-entry-hint fix.
 Previous Dark King cleanup and free ports were confirmed before launch. No other
 native route or deployment overlaps it; full Fire completion is not yet claimed.
 
+During that same run, `source/test-results/five-player-raid-five-gear-73476-four-phase-Dark-King-finale/party-instance-entry.png`
+was inspected: the five-member raid roster and Fire entrance are rendered, with
+no stale Dungeon Guide prompt. The generated artifact directory uses the shared
+spec title; this is Fire, not a Dark King screenshot. This confirms the held
+entry-prompt correction without a separate browser run, not a Fire clear.
+
+Earned continuation now also permits Normal100 Umbral Nexus through the existing
+four-role route and private-save restore. Its pre-entry checks require the four
+prior dungeons, intervening regional chapters, and all four saved crystal
+restorations; the resonance-gate objective itself must still be accepted and0/1.
+The prepared support roles, ordinary guide entry/combat/manual turn-ins and
+saved reward checks are reused. Nothing seeds Wizard progression, restores
+resources or extends the15-minute expiry.34 focused regional/continuation/story
+tests pass1.944s; scoped ESLint/diff pass. No earned Umbral run or archive is
+claimed yet; this removes a known later-route limitation while Fire is running.
+
 Earned Molten native18707 is terminal exit1 after113.5m: four bosses cleared,
 all members alive, but traversal timed out during a cleared-room return before
 the final boss. Independently inspected save retains actual Gold213922 and all

@@ -37,5 +37,10 @@ export function earnedRegionalDungeonRoute(dungeonType) {
         if (route.dungeonType === dungeonType) return { ...route, realm, prior: [...new Set(prior)] };
         prior.push(route.dungeon);
     }
+    if (dungeonType === 'umbral_nexus') return {
+        realm: 'dark', dungeonType, level: 100, dungeon: 'chronicle_14_resonance_gate',
+        prior: [...new Set([...prior, 'chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
+            'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid'])]
+    };
     throw new Error('Unknown earned regional dungeon');
 }

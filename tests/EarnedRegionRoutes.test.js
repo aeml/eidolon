@@ -39,7 +39,21 @@ test('later dungeon entry requires every earlier regional chapter, not only the 
         'chronicle_air_stolen_horizon']));
     expect(air.prior).not.toContain(air.dungeon);
     expect(new Set(air.prior).size).toBe(air.prior.length);
-    expect(() => earnedRegionalDungeonRoute('umbral_nexus')).toThrow('Unknown earned regional dungeon');
+    expect(() => earnedRegionalDungeonRoute('weekly_raid')).toThrow('Unknown earned regional dungeon');
+});
+
+test('earned Umbral entry requires all four dungeon handoffs and all four saved crystal restorations', () => {
+    const air = earnedRegionalDungeonRoute('tempest_spire');
+    const dark = earnedRegionalDungeonRoute('umbral_nexus');
+    expect(dark).toMatchObject({ realm: 'dark', dungeonType: 'umbral_nexus', level: 100,
+        dungeon: 'chronicle_14_resonance_gate' });
+    expect(dark.level).toBe(DUNGEON_PLAYTHROUGHS.umbral_nexus.level);
+    expect(dark.prior).toEqual([...air.prior, air.dungeon, 'chronicle_10_rootheart_raid',
+        'chronicle_11_tidestar_raid', 'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid']);
+    expect(dark.prior).not.toContain(dark.dungeon);
+    expect(dark.prior).not.toContain('chronicle_15_dark_king');
+    dark.prior.pop();
+    expect(earnedRegionalDungeonRoute('umbral_nexus').prior.at(-1)).toBe('chronicle_13_skyglass_raid');
 });
 
 test.each(['earth', 'constructor', undefined])('rejects unsupported region %s', realm => {

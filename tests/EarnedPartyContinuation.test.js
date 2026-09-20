@@ -13,7 +13,7 @@ test('the earned Wizard can join three prepared roles for the actual Earth dunge
     expect(earnedPartyContinuationEnabled(env, route)).toBe(true);
 });
 
-test.each([['abyssal_well', 60], ['molten_core', 70], ['tempest_spire', 70]])(
+test.each([['abyssal_well', 60], ['molten_core', 70], ['tempest_spire', 70], ['umbral_nexus', 100]])(
     'the earned Wizard can continue into Normal %s/%i with the same four-role route', (dungeonType, runLevel) => {
     expect(earnedPartyContinuationEnabled(env, { ...route, dungeonType, runLevel })).toBe(true);
 });
@@ -29,7 +29,8 @@ test.each([
     [env, { ...route, dungeonType: 'abyssal_well', runLevel: 70 }, false],
     [env, { ...route, dungeonType: 'abyssal_well', runLevel: 60, difficulty: 'heroic' }, false],
     [env, { ...route, dungeonType: 'molten_core' }, false],
-    [env, { ...route, dungeonType: 'umbral_nexus', runLevel: 100 }, false]
+    [env, { ...route, dungeonType: 'umbral_nexus', runLevel: 70 }, false],
+    [env, { ...route, dungeonType: 'umbral_nexus', runLevel: 100, difficulty: 'mythic' }, false]
 ])('refuses unrelated encounters or missing earned provenance', (settings, encounter, raid) => {
     expect(() => earnedPartyContinuationEnabled(settings, encounter, raid)).toThrow('private earned checkpoint');
 });

@@ -3,7 +3,7 @@ export function earnedPartyContinuationEnabled(env, playthrough, isRaid = false)
     const flag = env.EIDOLON_E2E_EARNED_PARTY;
     if (flag === undefined || flag === '0') return false;
     const level = { verdant_bastion_catacombs: 30, abyssal_well: 60,
-        molten_core: 70, tempest_spire: 70 }[playthrough?.dungeonType];
+        molten_core: 70, tempest_spire: 70, umbral_nexus: 100 }[playthrough?.dungeonType];
     if (flag !== '1' || isRaid || !level ||
         playthrough.runLevel !== level || playthrough.difficulty !== 'normal' ||
         env.EIDOLON_E2E_EARNED_RESUME !== '1' || !env.EIDOLON_E2E_EARNED_CHECKPOINT) {
