@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -78,6 +80,72 @@ func TestAdminMutationAdmissionRejectionKeepsCorrelatedRetryIdentity(t *testing.
 	var result adminMutationResult
 	if err := json.Unmarshal(messages[0].Payload, &result); err != nil || result.ID != "request-123456789" || result.Success || result.Authorized || result.Final {
 		t.Fatal("admission rejection invented authority or a final stored decision", result, err)
+	}
+}
+
+func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
+	for _, mode := range []string{"malformed", "role-lookup", "conflicting-id"} {
+		t.Run(mode, func(t *testing.T) {
+			c, roles, _, committer, player := adminMutationFixture(t)
+			dir, activity := sessionActivityFixture(t)
+			payload := adminGoldRequestFixture
+			switch mode {
+			case "malformed":
+				payload = strings.Replace(payload, `"amount":100`, `"amount":100,"actor":"forged"`, 1)
+			case "role-lookup":
+				roles.lookupErr = errors.New("private role-store error")
+			case "conflicting-id":
+				if result := adminMutationReply(t, c, MsgAdminGrantGold, payload); !result.Success {
+					t.Fatal(result)
+				}
+				payload = strings.Replace(payload, `"amount":100`, `"amount":200`, 1)
+			}
+			gold, saves := player.Gold, len(committer.ids)
+			activity.appendErr = errors.New("private activity-store error")
+			result := adminMutationReply(t, c, MsgAdminGrantGold, payload)
+			if result.Success || player.Gold != gold || len(committer.ids) != saves || strings.Contains(result.Message, "private") {
+				t.Fatal("rejected request mutated character or exposed storage details", result)
+			}
+			pending, err := adminActivityJournal.Pending(50)
+			if err != nil || len(pending) != 1 {
+				t.Fatal("rejected operation lost its audit during database outage", pending, err)
+			}
+			event := pending[0]
+			if event.Actor != "operator" || event.Target != "recipient" || event.Action != MsgAdminGrantGold ||
+				event.RequestID != "request-123456789" || event.Result == "success" || event.At.IsZero() ||
+				strings.Contains(event.Summary, "private") || strings.Contains(event.Summary, "forged") {
+				t.Fatal("rejected audit lost its sanitized server identity", event)
+			}
+			adminActivityJournal, err = database.OpenAdminActivityJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			activity.appendErr = nil
+			if err := retryPendingAdminActivity(); err != nil {
+				t.Fatal(err)
+			}
+			if err := retryPendingAdminActivity(); err != nil {
+				t.Fatal(err)
+			}
+			if len(activity.events) != 1 || !reflect.DeepEqual(activity.events[0], event) {
+				t.Fatal("recovery changed or duplicated the rejected audit", activity.events)
+			}
+		})
+	}
+}
+
+func TestAdminRejectedMutationFailsClosedWhenBothActivityStoresFail(t *testing.T) {
+	c, _, _, committer, player := adminMutationFixture(t)
+	dir, activity := sessionActivityFixture(t)
+	activity.appendErr = errors.New("private database failure")
+	if err := os.Rename(dir, dir+"-unavailable"); err != nil {
+		t.Fatal(err)
+	}
+	payload := strings.Replace(adminGoldRequestFixture, `"amount":100`, `"amount":100,"actor":"forged"`, 1)
+	result := adminMutationReply(t, c, MsgAdminGrantGold, payload)
+	if result.Success || result.Authorized || result.Final || player.Gold != 100 || len(committer.ids) != 0 ||
+		result.Message != "Administration activity storage is unavailable. Nothing was changed." || len(activity.events) != 0 {
+		t.Fatal("unrecorded rejection acknowledged or changed character", result)
 	}
 }
 

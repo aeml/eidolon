@@ -173,7 +173,14 @@ func auditAdminRejectedRequest(c *Client, action string, request adminMutationRe
 		return false
 	}
 	event.Reason = reason
-	return adminActivities.AppendAdminActivity(event) == nil
+	if adminActivities.AppendAdminActivity(event) == nil {
+		return true
+	}
+	// Rejections have no character mutation/operation journal to replay. Keep
+	// their exact sanitized event in the existing durable activity outbox when
+	// Mongo is unavailable; the normal retry/startup drain inserts that same ID.
+	// If both stores fail, report activity storage unavailable as before.
+	return adminActivityJournal != nil && adminActivityJournal.Write(event) == nil
 }
 
 // Exact online binding, not a display name, stale socket or disconnected entity.
