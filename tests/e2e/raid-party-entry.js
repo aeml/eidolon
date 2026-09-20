@@ -17,7 +17,8 @@ async function closeParty(page) {
 async function raidCard(page, raidType) {
     await openDungeonGuide(page);
     await page.getByRole('tab', { name: 'Raids', exact: true }).click();
-    const card = page.locator(`.elemental-raid-card[data-raid-type="${raidType}"]`);
+    const card = page.locator(raidType === 'weekly_raid' ? '.dungeon-raid-card[data-element="dark"]'
+        : `.elemental-raid-card[data-raid-type="${raidType}"]`);
     await expect(card).toBeVisible();
     await expect(card).toHaveAttribute('data-access', 'open');
     return card;
@@ -27,10 +28,10 @@ async function raidCard(page, raidType) {
 // helper performs normal UI consent and entry, never server messages or grants.
 // Its caller must continue through the full raid and ritual, not count entry as
 // acceptance of the raid or re-run entry as a separate GPU diagnostic.
-export async function formAndEnterElementalRaid(actors, raidType, { enter = true } = {}) {
-    if (!/^(earth|water|fire|air)_crystal_raid$/.test(raidType) || actors.length !== 5 ||
+export async function formAndEnterRaid(actors, raidType, { enter = true } = {}) {
+    if (!/^((earth|water|fire|air)_crystal_raid|weekly_raid)$/.test(raidType) || actors.length !== 5 ||
         new Set(actors.map(actor => actor.login.username)).size !== 5) {
-        throw new Error('Elemental raid route requires five distinct actors and a known raid');
+        throw new Error('Raid route requires five distinct actors and a known raid');
     }
     const leader = actors[0];
     for (const actor of actors) {
@@ -48,7 +49,7 @@ export async function formAndEnterElementalRaid(actors, raidType, { enter = true
     for (const actor of actors) await expect.poll(async () => (await party(actor.page))?.members?.length).toBe(5);
 
     const card = await raidCard(leader.page, raidType);
-    await card.getByRole('button', { name: 'Form Elemental Raid', exact: true }).click();
+    await card.getByRole('button', { name: raidType === 'weekly_raid' ? 'Form Dark Realm Raid' : 'Form Elemental Raid', exact: true }).click();
     // Party updates do not expose MaxSize; use the real conversion receipt.
     await expect(leader.page.locator('#chat-messages')).toContainText('Raid group formed. Invite 5-10 qualified players, then complete a ready check.');
     await leader.page.locator('body').press('Escape');
@@ -67,7 +68,7 @@ export async function formAndEnterElementalRaid(actors, raidType, { enter = true
         await closeParty(actor.page);
     }
     if (!enter) return null;
-    const instance = await enterElementalRaid(leader.page, raidType);
+    const instance = await enterRaid(leader.page, raidType);
     for (const actor of actors) {
         await expect.poll(() => actor.page.evaluate(() => ({ type: window.game.currentInstanceType,
             id: window.game.currentInstanceId }))).toEqual({ type: raidType, id: instance });
@@ -76,8 +77,8 @@ export async function formAndEnterElementalRaid(actors, raidType, { enter = true
     return instance;
 }
 
-export async function enterElementalRaid(page, raidType) {
-    if (!/^(earth|water|fire|air)_crystal_raid$/.test(raidType)) throw new Error('Unknown elemental raid');
+export async function enterRaid(page, raidType) {
+    if (!/^((earth|water|fire|air)_crystal_raid|weekly_raid)$/.test(raidType)) throw new Error('Unknown raid');
     const entry = (await raidCard(page, raidType)).getByRole('button', { name: /^(Enter|Continue) / });
     await expect(entry).toBeEnabled();
     await entry.click();

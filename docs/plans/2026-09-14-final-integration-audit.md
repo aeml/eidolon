@@ -18,6 +18,27 @@ repair escort also remains in scope. Prior owned services are gone, ports are
 free and deployment browser jobs are terminal. Luna monitors terminal-only.
 This is not yet a completed raid; no simultaneous Molten replay is running.
 
+The shared five-role route now also supports `EIDOLON_E2E_RAID=weekly_raid`
+under the existing isolated `party-raid` launcher. This closes a driver gap, not
+the actual finale acceptance: the other path only handled elemental repair.
+It prepares legal level100 Rare/Uncommon role gear and catalog prerequisites,
+leaves Malachar's kill unearned, forms/readies/enters through the real Dark Realm
+card, and uses Mythic100 combat. No earned campaign progress is fabricated or
+claimed for this prepared encounter check. All five clients must receive the
+four ordered Orun/Neris/Pyralis/Aeral events while alive, with actual rendered
+aid callouts, then independently claim Ilyra's reward and retain it after login.
+The optional letter is opened through the UI, not treated as a new reward quest.
+Phase screenshots are captured only while their callout is actually visible.
+Existing elemental repair checks, raid re-entry, movement and timeouts remain.
+
+The actual Go level100 catalog successfully prepares all five roles with14
+legal items each and the final quest at0/1.78 focused fixture/story/aftermath/
+phase/entry/ritual tests pass3.848s; scoped lint/diff pass. The browser spec lists
+without launching another GPU workload. Do not count this as a connected finale,
+visual phase review, weekly-cache persistence proof or full earned campaign.
+Fire native33049 remains the sole native route; run the finale only after its
+terminal result and owned cleanup, not concurrently.
+
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
 failure was an obsolete `const deadline` source assertion in FreshCampaignPhases,

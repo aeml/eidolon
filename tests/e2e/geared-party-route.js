@@ -20,12 +20,13 @@ import { partySpacingActorInterruption } from '../partyRangedSpacing.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { partyDungeonRestNeeded } from '../dungeonRestPolicy.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
-import { RAID_PARTY_ROLES, raidPartyFixture } from '../raidPartyFixture.js';
-import { formAndEnterElementalRaid, enterElementalRaid } from './raid-party-entry.js';
+import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
+import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
 import { raidVigilSupportAnchor } from '../raidVigilControls.js';
+import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
-import { claimChapterAndContinue, readChronicleChapter } from './chronicle-earth-route.js';
+import { claimChapterAndContinue, readChronicleChapter, openIlyra } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
     enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown, settlePointerRaycast } from './helpers.js';
@@ -47,6 +48,17 @@ const readPartySnapshot = (page, chapterId) => page.evaluate(chapterId => {
 }, chapterId);
 
 async function verifyNextStoryOffer(page, story) {
+    if (story.chapterId === DARK_KING_RAID.RestoredQuest) {
+        await expect.poll(() => page.evaluate(() => window.game.player.quests
+            .filter(q => q.id.startsWith('chronicle_') && !q.completed).length)).toBe(0);
+        if (!await page.locator('#quest-window').isVisible()) await openIlyra(page);
+        const letter = page.locator('.quest-aftermath');
+        await expect(letter).toBeVisible();
+        if (await letter.getAttribute('open') === null) await letter.locator('summary').first().click();
+        await expect(letter).toContainText('A Letter Without a Throne');
+        await expect(letter.locator('p').first()).toBeVisible();
+        return;
+    }
     if (story.chapterId === PARTY_DUNGEON_CHAPTERS.verdant_bastion_catacombs) return verifyFreshWaterHandoff(page);
     await expect.poll(() => page.evaluate(({ nextChapterId, laterChapterId }) => window.game.player.quests
         .filter(q => q.id === nextChapterId || q.id === laterChapterId)
@@ -59,6 +71,7 @@ async function observeRole(page) {
         const { observePartyWarning } = await import('/tests/partyDamageRoleControls.js');
         const { recordPartyOutgoingDamage } = await import('/tests/partyEngagementControls.js');
         const { recordPartyCombatReceipt } = await import('/tests/partyCombatReceipts.js');
+        const { recordDarkKingPhase } = await import('/tests/darkKingPartyEvidence.js');
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0, repairStages: [],
             casts: {}, rejected: {}, sawDeath: false, combatReceipts: [], warningMoves: 0, warningEscapes: 0,
@@ -110,6 +123,7 @@ async function observeRole(page) {
                 if (p.accepted) e.lastAcceptedCastAt = performance.now();
             }
             const result = original(message);
+            if (message.type === 'raid_phase') recordDarkKingPhase(e, game, p);
             if (message.type === 'state' || message.type === 'delta') {
                 const now = performance.now();
                 window.__partyClearWarnings = window.__partyClearWarnings
@@ -168,6 +182,7 @@ export async function seedActor(page, credentials, character) {
 
 export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, { raidType } = {}) {
     const isRaid = Boolean(raidType);
+    const isFinale = raidType === DARK_KING_RAID.Type;
     test.skip(process.env[isRaid ? 'EIDOLON_E2E_PARTY_RAID' : 'EIDOLON_E2E_PARTY_DUNGEON'] !== '1', 'Explicit disposable party diagnostic only');
     test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture({ ...process.env, ...(isRaid ? { EIDOLON_E2E_PARTY_DUNGEON: '1' } : {}) });
@@ -175,7 +190,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const gearProfile = partyGearProfile(process.env);
     let playthrough = isRaid ? null : dungeonPlaythroughOptions(process.env);
     const earnedWizard = earnedPartyContinuationEnabled(process.env, playthrough, isRaid);
-    const fixtureLevel = isRaid ? 70 : playthrough.runLevel;
+    const fixtureLevel = isRaid ? (isFinale ? 100 : 70) : playthrough.runLevel;
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1',
             EIDOLON_PARTY_FIXTURE_LEVEL: String(fixtureLevel) }, encoding: 'utf8', timeout: 120_000
@@ -188,8 +203,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const raid = isRaid ? raidPartyFixture(catalog, raidType, roles.map(actorName)) : null;
     if (isRaid) {
         expect(gearProfile).toBe('progressed');
-        const definition = catalog.raids[raidType];
-        playthrough = { dungeonType: raidType, difficulty: 'normal', runLevel: definition.RequiredLevel,
+        const definition = isFinale ? DARK_KING_RAID : catalog.raids[raidType];
+        playthrough = { dungeonType: raidType, difficulty: isFinale ? 'mythic' : 'normal', runLevel: definition.RequiredLevel,
             name: definition.Name, bosses: [definition.Boss] };
     }
     const story = raid || partyDungeonStory(catalog.quests, playthrough.dungeonType);
@@ -249,7 +264,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         const [tank, healer] = actors;
         const damage = actors.filter(actor => actor.className === 'Wizard' || actor.className === 'Rogue');
         let formationAnchor = null;
-        if (isRaid) await formAndEnterElementalRaid(actors, raidType, { enter: false });
+        if (isRaid) await formAndEnterRaid(actors, raidType, { enter: false });
         else {
             await tank.page.locator('body').press('o');
             await expect(tank.page.locator('#social-window')).toBeVisible();
@@ -550,9 +565,22 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
 
         let currentTarget, bossStart;
         let townRests = 0;
+        const phaseScreenshots = new Set();
+        const captureFinalePhase = async () => {
+            if (!isFinale) return;
+            const phase = await tank.page.evaluate(() => {
+                const g = window.game, phase = window.__partyClearEvidence.darkKingPhases?.at(-1)?.phase;
+                return g.uiManager.combatIntentPanel.style.display === 'block' &&
+                    g.uiManager.combatIntentMeta.textContent.startsWith(`Phase ${phase} of 4`) ? phase : null;
+            });
+            if (phase && !phaseScreenshots.has(phase)) {
+                await tank.page.screenshot({ path: testInfo.outputPath(`dark-king-phase-${phase}.png`) });
+                phaseScreenshots.add(phase);
+            }
+        };
         await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party',
             ...(isRaid ? { runInstance: async (actorPage, { beforeExit }) => {
-                await enterElementalRaid(actorPage, raidType);
+                await enterRaid(actorPage, raidType);
                 let failure;
                 try { await beforeExit(); } catch (error) { failure = error; }
                 if (!failure) await returnToTown(actorPage, { allowRespawn: false });
@@ -574,6 +602,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     await expect.poll(async () => (await snapshot(actor.page)).seed).toBe(run.seed);
                 }
                 console.log(`[party-clear] all ${roles.length} entered the same ${playthrough.difficulty} ${playthrough.name} instance`);
+                await captureFinalePhase();
             },
             afterGroundStep: async () => {
                 // The base movement helper proves displacement, not arrival.
@@ -668,14 +697,14 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     return !s.dead && s.hp === s.maxHP && s.mana === s.maxMana;
                 }, { timeout: 15_000 }).toBe(true);
                 console.log('[party-clear-rest-guide]', JSON.stringify({ roomIndex, role: tank.className, phase: 'resume-leader' }));
-                if (isRaid) await enterElementalRaid(tank.page, raidType);
+                if (isRaid) await enterRaid(tank.page, raidType);
                 else await enterDungeon(tank.page, { ...playthrough, useTownGuide: true, resetRun: false });
                 for (const [index, actor] of actors.entries()) {
                     // A fresh start moves the group; resuming intentionally
                     // moves only the requester. Each member uses the guide.
                     if ((await snapshot(actor.page)).instance !== states[index].instance) {
                         console.log('[party-clear-rest-guide]', JSON.stringify({ roomIndex, role: actor.className, phase: 'resume-member' }));
-                        if (isRaid) await enterElementalRaid(actor.page, raidType);
+                        if (isRaid) await enterRaid(actor.page, raidType);
                         else await enterDungeon(actor.page, { ...playthrough, useTownGuide: true, resetRun: false });
                     }
                     await expect.poll(async () => (await snapshot(actor.page)).instance).toBe(states[index].instance);
@@ -690,6 +719,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 return true; // Existing driver rewalks the real cleared route.
             },
             beforeCombat: async (_page, target) => {
+                await captureFinalePhase();
                 // Start the Fighter's ordinary driver first; movement alone
                 // is not an opener, so DPS also waits for a damage receipt.
                 if (currentTarget !== target.id) {
@@ -744,7 +774,12 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 }
             },
             afterClearedRoute: async (_page, controls) => {
-                if (isRaid) {
+                if (isFinale) {
+                    for (const actor of actors) assertDarkKingPhases((await snapshot(actor.page)).evidence);
+                    await captureFinalePhase();
+                    console.log('[raid-clear] Dark King defeated; all five players observed four ordered Eidolon aid callouts');
+                }
+                if (isRaid && !isFinale) {
                     const chamber = await tank.page.evaluate(() => window.game.currentDungeonLayout.rooms.at(-1));
                     const encounter = { x: chamber.x, z: chamber.z, width: chamber.width, height: chamber.height };
                     const deadline = Date.now() + 15 * 60_000;
@@ -822,6 +857,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             actor.combatEvidence = (await snapshot(actor.page)).evidence;
             await claimChapterAndContinue(actor.page, story.chapterId);
             await verifyNextStoryOffer(actor.page, story);
+            if (isFinale && index === 0) await actor.page.screenshot({ path: testInfo.outputPath('dark-king-epilogue.png') });
             await actor.page.locator('#btn-close-quest').click();
             actor.claimedChapter = await readChronicleChapter(actor.page, story.chapterId);
             actor.claimedGold = (await snapshot(actor.page)).gold;
@@ -829,7 +865,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 expect((await readChronicleChapter(waiting.page, story.chapterId)).completed,
                     'Another member turning in must not claim this player’s reward').toBe(false);
             }
-            console.log(`[party-clear-turn-in] ${actor.className}: manual reward and ${story.nextChapterId} offer verified`);
+            console.log(`[party-clear-turn-in] ${actor.className}: manual reward and ${story.nextChapterId || 'Chronicle epilogue'} verified`);
         }
         for (const actor of actors) {
             await loginAndEnterWorld(actor.page, actor.login);

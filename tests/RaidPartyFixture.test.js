@@ -1,4 +1,4 @@
-import { RAID_PARTY_ROLES, raidPartyFixture } from './raidPartyFixture.js';
+import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from './raidPartyFixture.js';
 import { PARTY_DUNGEON_CHAPTERS } from './partyDungeonStory.js';
 
 const roles = { Fighter: ['strength', 'Strong'], Cleric: ['wisdom', 'Wise'],
@@ -64,4 +64,41 @@ test('unknown raids and fewer than five unique participants fail before preparat
     expect(() => raidPartyFixture(catalog, 'unknown', names)).toThrow();
     expect(() => raidPartyFixture(catalog, raidType, names.slice(0, 4))).toThrow();
     expect(() => raidPartyFixture(catalog, raidType, [...names.slice(0, 4), names[0]])).toThrow();
+});
+
+function finaleCatalog() {
+    return { ...catalog, level: 100,
+        roleItems: Object.fromEntries(Object.entries(catalog.roleItems).map(([role, rarities]) => [role,
+            Object.fromEntries(Object.entries(rarities).map(([rarity, items]) => [rarity,
+                new Proxy({}, { get: (_target, name) => ({ ...items[name], level: 100 }) })]))])),
+        quests: [...catalog.quests.slice(0, 4),
+            ...['Earth', 'Water', 'Fire', 'Air'].map(element => ({ id: `${element}-vigil`, type: 'REPAIR', target: `${element}Crystal`, maxCount: 1 })),
+            { id: PARTY_DUNGEON_CHAPTERS.umbral_nexus, type: 'KILL', target: 'EidolonDevourer', maxCount: 1 },
+            { id: DARK_KING_RAID.RestoredQuest, type: 'KILL', target: 'UmbraPrime', maxCount: 1 }]
+    };
+}
+
+test('finale preparation uses five legal level100 roles but never grants the King kill or weekly reward', () => {
+    const fixture = raidPartyFixture(finaleCatalog(), 'weekly_raid', names);
+    expect(fixture.nextChapterId).toBeNull();
+    expect(fixture.boss).toBe('UmbraPrime');
+    for (const character of fixture.characters) {
+        expect(character.level).toBe(100);
+        expect(character.quests.at(-1)).toEqual({ id: DARK_KING_RAID.RestoredQuest, accepted: true, completed: false, count: 0 });
+        expect(Object.values(character.equipment).every(item => item.level === 100)).toBe(true);
+        expect(character.gold).toBe(0);
+        expect(character).not.toHaveProperty('dungeon_progress');
+        expect(character).not.toHaveProperty('raid_lockouts');
+    }
+});
+
+test.each([
+    c => { c.level = 70; }, c => { c.quests.splice(0, 1); },
+    c => { c.quests = c.quests.filter(q => q.target !== 'AirCrystal'); },
+    c => { c.quests = c.quests.filter(q => q.target !== 'EidolonDevourer'); },
+    c => { c.quests.at(-1).target = 'ordinary-enemy'; },
+    c => { c.quests.push({ id: 'invented-future-chapter' }); }
+])('finale preparation rejects missing progression or a mismatched terminal chapter', change => {
+    const c = finaleCatalog(); change(c);
+    expect(() => raidPartyFixture(c, 'weekly_raid', names)).toThrow();
 });
