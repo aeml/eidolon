@@ -20,8 +20,10 @@ the whole goal. Started September 5, 2026.
   four further chapters complete, final Golem hunt25/70. The QA driver's missing
   regional departure after death/respawn is corrected; resume the saved remaining
   kills, not accepted chapters. See the [earned record](2026-09-20-earned-continuation.md).
-  Continuation `earnedwaterregion0920b` is now running under native58053 after
-  that exact release passed; Luna watches it. Do not overlap native browser work.
+  Continuation `earnedwaterregion0920b` ended exit1 after48.8s during stash
+  preparation, before new kills. Actual saved progression is unchanged; owned
+  services are gone. The [stash approach correction](2026-09-20-stash-approach.md)
+  requires a short connected check before continuing the retained hunt.
 - Local next-batch administration follow-up at2ca90f7d adds bounded admission
   rejection audits and dual-store-failure recovery; it is not in the live release.
 - Remaining full-scope work and accepted results are reconciled in the

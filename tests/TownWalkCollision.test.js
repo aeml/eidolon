@@ -2,11 +2,13 @@ import * as THREE from 'three';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { Forge } from '../src/entities/Forge.js';
+import { Stash } from '../src/entities/Stash.js';
+import { interactionApproachPoint } from '../src/core/interactionApproach.js';
 import { installGameEngineMovement } from '../src/core/GameEngineMovement.js';
 import { createCasinoShell, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 import { installGameEngineEntitySync } from '../src/core/GameEngineEntitySync.js';
 
-class InteractionFixture {}
+class InteractionFixture { isHostileActorTarget() { return false; } }
 installGameEngineMovement(InteractionFixture);
 installGameEngineEntitySync(InteractionFixture);
 
@@ -72,6 +74,34 @@ describe('current town building footprints', () => {
         expect(manager.checkCollision(new THREE.Vector3(-10, 0, 193), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-8, 0, 185), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-4, 0, 185), 1.25)).toBeNull();
+        // The direct centre click crosses the rotated Trading House. Ordinary
+        // navigation to the coffer's south face stays clear of it and Hessa.
+        manager.addCircularCollider(-20, 200, 1.25);
+        const path = (from, to) => Array.from({ length: 101 }, (_, i) =>
+            new THREE.Vector3(...from).lerp(new THREE.Vector3(...to), i / 100));
+        const spawn = [-1.25, 0, 200];
+        expect(path(spawn, [-28, 0, 193]).some(p => manager.checkCollision(p, 1.25))).toBe(true);
+        const actor = new Stash('stash-1');
+        actor.position.set(-28, .5, 193);
+        const target = interactionApproachPoint(actor, 0);
+        expect(target.toArray()).toEqual([-28, 0, 196]);
+        expect(actor.position.toArray()).toEqual([-28, .5, 193]);
+        for (const p of path(spawn, target.toArray())) {
+            expect(manager.checkCollision(p, 1.25)).toBeNull();
+        }
+        expect(target.distanceTo(actor.position)).toBeLessThan(new InteractionFixture().getInteractionRangeForEntity(actor));
         disposeCasinoObject(hall);
+    });
+
+    test('stash approach follows its facing; unrelated targets keep their existing centre approach', () => {
+        const stash = new Stash('rotated-stash');
+        stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+        const point = interactionApproachPoint(stash, 7);
+        expect(point.x).toBeCloseTo(3);
+        expect(point.z).toBeCloseTo(0);
+        expect(point.y).toBe(7);
+        const other = { position: new THREE.Vector3(5, 2, 9) };
+        expect(interactionApproachPoint(other, 0).toArray()).toEqual([5, 0, 9]);
+        expect(other.position.toArray()).toEqual([5, 2, 9]);
     });
 });

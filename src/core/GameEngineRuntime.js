@@ -21,6 +21,7 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { interactionApproachPoint } from './interactionApproach.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
 
 class GameEngineRuntimeMethods {
@@ -741,8 +742,7 @@ class GameEngineRuntimeMethods {
                     } else {
                         // MOVING: Chase Target
                         // Continuously update target position to handle moving targets
-                        const target = this.pendingInteraction.position.clone();
-                        target.y = this.player.position.y;
+                        const target = interactionApproachPoint(this.pendingInteraction, this.player.position.y);
 
                         // Force move every frame to override any idle states
                         this.player.move(target);

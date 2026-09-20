@@ -16,6 +16,7 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { interactionApproachPoint } from './interactionApproach.js';
 
 class GameEngineMovementMethods {
     handlePrimaryClick(event = null) {
@@ -1112,8 +1113,7 @@ class GameEngineMovementMethods {
                 900
             );
             // Flatten move target
-            const target = entity.position.clone();
-            target.y = this.player.position.y;
+            const target = interactionApproachPoint(entity, this.player.position.y);
             this.player.move(target);
         } else if (this.isMultiplayer && this.isHostileActorTarget(entity)) {
             // A direct in-range click should not wait for the next animation

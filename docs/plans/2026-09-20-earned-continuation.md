@@ -2,16 +2,19 @@
 
 ## Water partial save retained — level61, final hunt25/70
 
-The retained-save continuation is running under native58053, runID
+The retained-save continuation ended exit1 under native58053, runID
 `earnedwaterregion0920b`, frozen clean534da08b in
 `/tmp/eidolon-water-region-resume-20260920-Azedqr/source`. Launcher/log live in
 its parent directory. All CI35500889856 jobs passed at09:19:12UTC, followed by its
 independent `PUBLIC_RELEASE_VERIFIED` for exact publicd1e707e3/Alpha1.9.24,
-readiness and casino assets. It has entered isolated gameplay setup with both
-owned services live, resuming the saved45 remaining kills and manual Abyssal
-handoff, with the existing two-hour/no-retry bound and automatic private save
-retention. Luna monitors terminal status. This is running, not a passing run;
-keep its source frozen and do not start another native browser session.
+readiness and casino assets. It failed after48.8s while opening storage during
+preparation, before any new Water kills. Actual archive restore confirms the
+same61/21946XP/51012Gold and25/70 Golem credit. The archive is
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920b-5gXoFb/save.archive.gz`,
+SHAdd1862a3df0ae4cdf8a7f477494e4439ce2643fa4c20719f80eb722e7cdacc14.
+Both owned services are gone. See [stash approach](2026-09-20-stash-approach.md)
+for the proved blocked centre path and local gameplay correction. Verify that
+short path before another continuation; do not replay completed Water chapters.
 
 `earnedwaterregion0920a` ended exit1 after1.7h, with terminal phase
 `earned_water_region`. Its owned API/Mongo containers are gone. Independent

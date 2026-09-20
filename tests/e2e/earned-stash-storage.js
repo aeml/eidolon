@@ -19,10 +19,22 @@ export async function openEarnedStash(page) {
             expect(offset, 'The real town stash must be replicated').not.toBeNull();
             const distance = Math.hypot(offset.x, offset.z);
             if (distance < 4.5) break;
-            const scale = Math.min(12, distance - 3) / distance;
-            await moveByGroundClick(page, offset.x * scale, offset.z * scale,
-                { moveOnly: true, allowJumpFallback: false });
+            // The west-side coffer sits beside the rotated Trading House.
+            // Walk toward its exposed south face, not through the house toward
+            // the chest centre. This remains ordinary collision-bound input.
+            const approach = { x: offset.x, z: offset.z + 3 };
+            const remaining = Math.hypot(approach.x, approach.z);
+            const scale = Math.min(1, 12 / Math.max(1, remaining));
+            const stride = remaining * scale;
+            await moveByGroundClick(page, approach.x * scale, approach.z * scale, {
+                moveOnly: true, allowJumpFallback: false,
+                minimumDistance: Math.max(1, Math.min(8, stride * .75)), timeout: 2500
+            });
         }
+        await expect.poll(() => page.evaluate(() => {
+            const game = window.game, stash = game.remotePlayers.get('stash-1');
+            return Math.hypot(stash.position.x - game.player.position.x, stash.position.z - game.player.position.z);
+        }), { message: 'Ordinary walking must reach the stash before clicking it' }).toBeLessThan(4.5);
         await expect.poll(() => page.evaluate(() => {
             const game = window.game;
             return game.player.state === 'IDLE' && !game.player.targetPosition &&

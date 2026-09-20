@@ -8,11 +8,13 @@ login/notes and five exact casino assets match. The enlarged equal-floor venue,
 all requested game counts, stash/sign and adminVIP/100EP shipped as one batch;
 see [expansion evidence](2026-09-20-casino-expansion.md).
 
-After that guard, native58053/run`earnedwaterregion0920b` started from the actual
-level61 full save, retaining completed chapters and25/70 Golem kills. Frozen
-source534da08b and existing bounds remain; Luna monitors terminal status. No
-competing native browser work. Full Water/Abyssal and later campaign/raids remain
-open. Local administration admission/outage follow-ups at2ca90f7d are not deployed.
+After that guard, native58053/run`earnedwaterregion0920b` ended exit1 after48.8s
+on frozen534da08b while opening storage, before new kills. Its actual saved
+level61/21946XP/51012Gold and25/70 Golem credit are unchanged. The normal stash
+centre approach crosses the relocated Trading House; see the
+[local correction and short-check plan](2026-09-20-stash-approach.md). Owned
+services are gone. Full Water/Abyssal and later campaign/raids remain open. Local
+administration admission/outage follow-ups at2ca90f7d are not deployed.
 
 ## Previous September20 checkpoint —1.9.23 and Water partial save
 
