@@ -586,7 +586,7 @@ paragraphs. Do not recreate shipped features or repeat a long passing route
 because an older checklist remains unchecked. Match evidence to its source and
 scope; do not count prepared characters as earned progression.
 
-## Current release boundary
+## Historical release boundary — Alpha 1.9.10
 
 Live Alpha 1.9.10 integration patch: locked elemental-raid and
 portal cards now name the required Chronicle quests and explicitly tell players
@@ -723,7 +723,7 @@ Retain the casino's full public/VIP interaction and currency checklist, not just
 the newest EP tests. The population-dependent second PvP queue remains
 conditional; a fifth class/new continent and payment integration remain excluded.
 
-## Execution order
+## Historical raid-driver preparation — superseded by current results above
 
 Raid preparation now reuses the legal progressed-gear catalog through
 `tests/raidPartyFixture.js`: five distinct level70 characters, Fighter tank,

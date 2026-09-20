@@ -1,7 +1,7 @@
 # Trusted VIP membership and monthly EP — Alpha 1.9.6 batch
 
 September 20 update: automatic administrator VIP now includes the user's approved
-100 EP monthly allowance, implemented locally for the next casino deployment.
+100 EP monthly allowance, verified delivered with the Alpha1.9.24 casino batch.
 See [current admin entitlement policy](2026-09-20-admin-vip-allowance.md).
 The original release status and remaining-scope section below are historical;
 the [casino roadmap](2026-09-09-town-casino-roadmap.md) tracks current delivery.

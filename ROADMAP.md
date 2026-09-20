@@ -23,7 +23,7 @@ Alpha 1.0 is a complete browser action-RPG foundation rather than a vertical sli
 
 The Fourfold Chronicle is offered to every character by Archmage Ilyra, with explicit acceptance and completion conversations. The player learns that Orun, Neris, Pyralis, and Aeral shaped Earth, Water, Fire, and Air into a covenant that protects Eidolon. Malachar, the Dark King, destabilized their crystals so each realm would become dependent on his command.
 
-The 15-chapter campaign requires the player to:
+The expanded 31-chapter campaign, including eight investigation sites and authored realm hunts, requires the player to:
 
 1. Follow the first dissonant signal and recover invented, soulbound realm relics.
 2. Clear the Earth, Water, Fire, and Air dungeons to defeat each corrupted outer guardian and reveal the separate road to that realm's crystal raid.

@@ -2,6 +2,24 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+## Current status — September 20
+
+The reduced reward/drop budgets, current XP curve, 31-chapter Chronicle and eight
+playable investigations are delivered. Earned Earth, Water and Fire-story routes
+and the earned Verdant/Abyssal handoffs have passed; earned Molten remains
+unfinished. The full campaign pacing/economy conclusion is still open. Use the
+[earned continuation](2026-09-20-earned-continuation.md) and
+[current integration audit](2026-09-14-final-integration-audit.md) for retained
+saves, accepted results and next work. Automated defensive kills brought the
+Wizard to100 before Molten; this is not a human pacing benchmark or justification
+for another blanket reward reduction.
+
+## Historical development evidence — September 7–8
+
+The candidate/unpublished statements below describe their original checkpoints,
+not current production status. Do not recreate those shipped changes or repeat
+their accepted checks because these historical paragraphs remain.
+
 Latest isolated reward candidate **a14351b** now replaces the million-XP story/
 daily catalogs and reduces the weekly cache, with gold budgeted independently
 and accepted promises preserved. Its exact production-function receipts and
