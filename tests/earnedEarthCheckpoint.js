@@ -8,7 +8,10 @@ export const earnedEarthCheckpoints = Object.freeze([
     { sha: 'c3cca5c86852d354fc13b3e8f4c48513c5ff083153608866a45c5afdb358c673',
         level: 31, xp: 12448, gold: 9047, count: 50, completed: true },
     { sha: '8b075ebdac1f5fea3b7849927dfd3679b6b2e70d3dfb1dd908961dbc9c31e741',
-        level: 33, xp: 23108, gold: 10598, count: 50, completed: true, waterOffered: true }
+        level: 33, xp: 23108, gold: 10598, count: 50, completed: true, waterOffered: true },
+    { sha: 'c65ddaee9a989f47289b9db2fbc98842746871d5fea84df2e1dd1248382b45a1',
+        level: 42, xp: 32261, gold: 25427, count: 50, completed: true,
+        waterProgress: { accepted: true, completed: false, count: 58 } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
@@ -27,11 +30,17 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
         if (character.class !== 'Wizard' || character.level !== ${checkpoint.level} || character.xp !== ${checkpoint.xp} || character.gold !== ${checkpoint.gold} ||
             !quest?.accepted || Boolean(quest.completed) !== ${checkpoint.completed} || quest.count !== ${checkpoint.count} || quest.max_count !== 50 ||
             character.quests.some(q => q.id.startsWith('daily_') && (q.accepted || q.completed))) throw Error('Unexpected earned progress');
-        if (${checkpoint.waterOffered === true}) {
+        if (${checkpoint.waterOffered === true || Boolean(checkpoint.waterProgress)}) {
             const dungeon = character.quests.find(q => q.id === 'chronicle_03_roots_remember');
             const water = character.quests.find(q => q.id === 'chronicle_water_missing_ferry');
-            if (!dungeon?.completed || dungeon.count !== 1 || !water || water.accepted || water.completed || water.count !== 0)
+            const expected = ${JSON.stringify(checkpoint.waterProgress || { accepted: false, completed: false, count: 0 })};
+            if (!dungeon?.completed || dungeon.count !== 1 || !water || water.accepted !== expected.accepted ||
+                water.completed !== expected.completed || water.count !== expected.count)
                 throw Error('Unexpected earned Water handoff');
+            if (${Boolean(checkpoint.waterProgress)} && (water.max_count !== 60 ||
+                (!expected.completed && ((water.granted_gold || 0) !== 0 || (water.granted_xp || 0) !== 0 ||
+                    character.quests.some(q => q.id === 'chronicle_water_flood_shelter')))))
+                throw Error('Unexpected earned Water reward or next chapter');
         }
         character.name = ${JSON.stringify(username)};
         const target = db.getSiblingDB('eidolon').users;

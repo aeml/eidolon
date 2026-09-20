@@ -63,6 +63,30 @@ test('continues the full saved post-Verdant character without replaying the acce
     expect(fixture.result().writes).toBe(1);
 });
 
+function partialWater(character) {
+    postVerdant(character);
+    Object.assign(character, { level: 42, xp: 32261, gold: 25427 });
+    Object.assign(character.quests[2], { accepted: true, count: 58, max_count: 60 });
+}
+
+test('continues the actual saved 58 Water kills without repeating or claiming them', () => {
+    const fixture = exercise(partialWater, false, earnedEarthCheckpoints[3]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests[2].count = 60; }, p => { p.quests[2].completed = true; },
+    p => { p.quests[2].accepted = false; }, p => { p.quests[2].max_count = 58; },
+    p => { p.quests[2].granted_gold = 400; }, p => { p.quests[2].granted_xp = 28593; },
+    p => { p.quests.push({ id: 'chronicle_water_flood_shelter', accepted: false }); }
+])('refuses altered partial Water credit, premature reward or investigation access', change => {
+    const fixture = exercise(character => { partialWater(character); change(character); }, false, earnedEarthCheckpoints[3]);
+    expect(fixture.run).toThrow(/Unexpected earned Water/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests[1].completed = false; }, p => { p.quests[1].count = 0; },
     p => { p.quests[2].accepted = true; }, p => { p.quests[2].completed = true; },

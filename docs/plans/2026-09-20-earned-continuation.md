@@ -1,5 +1,35 @@
 # Earned campaign continuation with a real party
 
+## Missing Ferry partial save retained —58/60, no repeat required
+
+`earnedwater0920a` ended exit1 after30.0m on frozen29ef2862. Native45531 and
+`WATER_TERMINAL_PHASE=earned_water`/`WATER_PROCESS_EXIT=1` agree. All owned
+services are gone; copied reports/results and log are retained under
+`/tmp/eidolon-earned-water-20260920-MuBmtK/`. No full Water acceptance is claimed.
+
+The reported failure is a six-unit retreat assertion, with4.32units observed;
+the final diagnostic still shows MOVING, no stun/root/freeze, and5.28units of
+eventual displacement. The report marks failed at1,799,762ms, near the whole-
+test30-minute ceiling. This does not establish a new gameplay collision defect
+or prove that the whole-test deadline caused it. Do not weaken movement/combat
+bounds or alter runtime movement on this evidence alone.
+
+Actual isolated archive restore confirms Wizard42/32261XP/25427Gold,
+Missing Ferry accepted58/60 but incomplete with no granted reward, completed
+Verdant1/1 and Earth Orc50/50, no Flood Shelter offer and no accepted dailies.
+Private archive:
+`/tmp/eidolon-party-checkpoint-earnedwater0920a-1o15d8/save.archive.gz`, SHA256
+`c65ddaee9a989f47289b9db2fbc98842746871d5fea84df2e1dd1248382b45a1`.
+The checkpoint catalog pins these exact fields. Real mongosh full-character
+copy into a disposable account passes the exact equality guard;39 focused
+checkpoint/continuation tests pass in0.849s, plus lint/diff checks. The isolated
+verification container was removed; original archive remains private and intact.
+
+Resume only the two remaining kills and manual turn-in using the prepared
+partial-hunt route, then verify the saved investigation offer. Do not replay
+the58 kills, Earth or Verdant. Alpha1.9.23 is locally packaged but not published;
+complete this short continuation before invoking its native deployment QA.
+
 ## Earned Wizard Verdant completion accepted
 
 `earnedparty0920c`, clean3b163421, native63326 is terminal **exit0/PASS** in46.7m.
