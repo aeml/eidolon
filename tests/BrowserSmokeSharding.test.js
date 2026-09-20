@@ -29,12 +29,28 @@ test('all three hosted browser shards require coverage verification and independ
     expect(browser).not.toContain('--fully-parallel');
 });
 
-test('production character QA still waits on the complete browser matrix', () => {
-    expect(predeploy).toContain('needs: [browser-smoke]');
+test('independent hosted browser work does not queue behind Go or Jest', () => {
+    expect(browser).not.toMatch(/^\s+needs:/m);
+    expect(browser).not.toContain('actions/download-artifact');
+    expect(browser).toContain('npm ci');
+});
+
+test('production character QA still waits on Go, Jest and the complete browser matrix', () => {
+    expect(predeploy).toContain('needs: [client-tests, server-tests, browser-smoke]');
     expect(predeploy).toContain("if: (github.event_name == 'push'");
     expect(predeploy).toContain('|| inputs.full_stabilization == true');
     expect(predeploy).not.toContain('always()');
     const config = readFileSync('playwright.config.js', 'utf8');
     expect(config).toContain('fullyParallel: false');
     expect(config).toContain('workers: 1');
+});
+
+test('both publish jobs retain all hosted and native/input gates', () => {
+    for (const job of ['deploy', 'deploy-server']) {
+        const section = workflow.split(`  ${job}:\n`)[1].split(/\n {2}[a-z][a-z-]*:\n/)[0];
+        expect(section).toContain('needs: [client-tests, server-tests, browser-smoke, release-inputs]');
+        expect(section).not.toContain('always()');
+    }
+    const inputs = workflow.split('  release-inputs:\n')[1].split('\n  deploy:')[0];
+    expect(inputs).toContain('needs: [predeploy-character]');
 });

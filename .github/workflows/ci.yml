@@ -130,7 +130,9 @@ jobs:
 
   browser-smoke:
     name: Browser Smoke (Playwright ${{ matrix.shard }}/3)
-    needs: [client-tests, server-tests]
+    # Static-client checks use their own checkout/npm install, not outputs from
+    # Go or Jest. Run hosted work together; keep every gate below before using
+    # the native runner or publishing a release.
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -171,7 +173,7 @@ jobs:
 
   predeploy-character:
     name: Predeploy Character QA (System Chrome)
-    needs: [browser-smoke]
+    needs: [client-tests, server-tests, browser-smoke]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
     if: (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) || inputs.full_stabilization == true
     env:
