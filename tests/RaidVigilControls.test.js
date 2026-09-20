@@ -1,8 +1,31 @@
-import { raidVigilDestination } from './raidVigilControls.js';
+import { raidVigilDestination, raidVigilSupportAnchor } from './raidVigilControls.js';
 
 const point = (x = 0, radius = 6) => ({ x, z: 0, radius, label: 'marker', state: 'active' });
 const crystal = (element, current = 0, hint = '') => ({ stage: 'repairing', element,
     objective: { current, hint, points: [point(0), point(30), point(60), point(90)] } });
+
+test('second healer accompanies a healthy Fire runner before the recorded out-of-range injury', () => {
+    const states = Array.from({ length: 5 }, (_, id) => ({ id, hp: 3050, dead: false, instance: 'raid' }));
+    expect(raidVigilSupportAnchor(crystal('Fire'), 4, states)).toBe(states[3]);
+    expect(raidVigilSupportAnchor(crystal('Fire'), 1, states)).toBeNull();
+    expect(raidVigilSupportAnchor(crystal('Fire'), 4, states.slice(0, 4))).toBeNull();
+});
+
+test('runner support follows personal Air turns and releases completed or unavailable objectives', () => {
+    const states = Array.from({ length: 5 }, (_, id) => ({ id, hp: 3050, dead: false, instance: 'raid' }));
+    expect(raidVigilSupportAnchor(crystal('Air', 0), 4, states)).toBe(states[2]);
+    expect(raidVigilSupportAnchor(crystal('Air', 1), 4, states)).toBe(states[3]);
+    for (const change of [{ complete: true }, { paused: true }, { points: [] }]) {
+        const state = crystal('Fire');
+        Object.assign(state.objective, change);
+        expect(raidVigilSupportAnchor(state, 4, states)).toBeNull();
+    }
+    for (const change of [{ hp: 0 }, { dead: true }, { instance: 'town' }]) {
+        const changed = states.map(s => ({ ...s }));
+        Object.assign(changed[3], change);
+        expect(raidVigilSupportAnchor(crystal('Fire'), 4, changed)).toBeNull();
+    }
+});
 
 test.each(['Earth', 'Water', 'Fire', 'Air'])('%s leaves tank and both healers on combat support', element => {
     for (const index of [0, 1, 4]) expect(raidVigilDestination(crystal(element), index)).toBeNull();

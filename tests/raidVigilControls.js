@@ -32,3 +32,18 @@ export function raidVigilDestination(crystal, actorIndex) {
     return { x: point.x + point.radius / 2, z: point.z,
         tolerance: Math.min(1, point.radius / 4), label: point.label };
 }
+
+// The second healer escorts the currently assigned runner before incoming
+// damage. Waiting for an injured runner can leave a 70-unit gap to close while
+// that player is channeling. This assigns ordinary follow/heal inputs only.
+export function raidVigilSupportAnchor(crystal, healerIndex, states) {
+    if (healerIndex !== 4 || states.length < 5) return null;
+    const healer = states[healerIndex];
+    if (!healer || healer.dead || healer.hp <= 0) return null;
+    for (const index of [2, 3]) {
+        const runner = states[index];
+        if (runner && !runner.dead && runner.hp > 0 && runner.instance === healer.instance &&
+            raidVigilDestination(crystal, index)) return runner;
+    }
+    return null;
+}

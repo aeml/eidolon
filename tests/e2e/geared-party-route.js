@@ -22,6 +22,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterElementalRaid, enterElementalRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
+import { raidVigilSupportAnchor } from '../raidVigilControls.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
@@ -347,20 +348,26 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         async function healParty({ allowMovement = true } = {}, support = healer) {
             const healer = support, healerIndex = actors.indexOf(healer);
             const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
-            const available = await healer.page.evaluate(() => {
+            const { crystal, ...available } = await healer.page.evaluate(() => {
                 const p = window.game.player;
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
                     healRange: window.game.abilityController.getAbilityCastRange('Healing Light'),
                     aura: p.hotbar.indexOf('Guardian Embrace'), auraCooldown: p.cooldowns['Guardian Embrace'] || 0,
                     auraRadius: p.guardianEmbraceRadius || 10,
-                    auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
+                    auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0,
+                    crystal: window.game.currentDungeonRoomState?.crystal };
             });
             const healDistance = Math.min(14, available.healRange - .5);
             const tankAnchor = isRaid && support === actors.find(actor => actor.className === 'Cleric') &&
                 actors.filter(actor => actor.className === 'Cleric').length > 1 ? states[0] : null;
+            const runnerAnchor = isRaid ? raidVigilSupportAnchor(crystal, healerIndex, states) : null;
+            const supportAnchor = tankAnchor || runnerAnchor;
             const hurt = selectPartyHealTarget(states, states[healerIndex], healDistance,
-                { allowApproach: allowMovement, anchor: tankAnchor });
-            if (!hurt) { if (allowMovement && !states[healerIndex].dead) await follow(healer, states[0], 9); return; }
+                { allowApproach: allowMovement, anchor: supportAnchor });
+            if (!hurt) {
+                if (allowMovement && !states[healerIndex].dead) await follow(healer, supportAnchor || states[0], runnerAnchor ? 7 : 9);
+                return;
+            }
             const distance = Math.hypot(hurt.x - states[healerIndex].x, hurt.z - states[healerIndex].z);
             const record = async reason => {
                 const pointer = await healer.page.evaluate(id => ({
@@ -374,6 +381,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 }), hurt.id);
                 healerDecisions.push({ reason, distance, healerIndex, tankAnchor: Boolean(tankAnchor),
                     hurtRole: actors[states.indexOf(hurt)].className,
+                    supportAnchorRole: supportAnchor ? actors[states.indexOf(supportAnchor)].className : null,
                     hp: hurt.hp, maxHP: hurt.maxHP, healerX: states[healerIndex].x, healerZ: states[healerIndex].z,
                     party: states.map((state, index) => ({ role: actors[index].className, hp: state.hp,
                         maxHP: state.maxHP, dead: state.dead, sameInstance: state.instance === states[healerIndex].instance,
@@ -387,7 +395,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 return;
             }
             const auraSpacing = partyAuraFollowSpacing(states[healerIndex], hurt, { ...available,
-                allowMovement: allowMovement && (!tankAnchor || hurt === tankAnchor) });
+                allowMovement: allowMovement && (!supportAnchor || hurt === supportAnchor) });
             if (auraSpacing !== null) {
                 await record(available.auraActive ? 'maintain-active-aura' : 'approach-ready-aura');
                 await follow(healer, hurt, auraSpacing);
