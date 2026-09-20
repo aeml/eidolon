@@ -118,3 +118,18 @@ Log/launcher directory: `/tmp/eidolon-water-raid-20260920-r4-noJI9r/`.
 Same five legal builds, full raid/repair/manual claims/re-login, zero retries.
 Luna `/root/watch_tidestar_0920d` owns terminal monitoring. Do not duplicate
 polling or start competing browsers. Preserve reports when it terminates.
+
+0920d is now terminal: exit1 after17m52s, guardian defeated, first repair wave
+started, all five members alive. The failure was `No damage progress against
+AquaGolem for60seconds`, not another tank death. The last approach record shows
+real walking progress but an unengaged moving target roughly66units away; a
+full clear remains unproven. Do not infer that healer assignments or the new
+crystal-center fix alone resolve every remaining route problem.
+
+Reports/results were copied beside the run log before deployment. Owned run
+containers are gone. Private save:
+`/tmp/eidolon-party-checkpoint-waterraid0920d-Yp6kR0/save.archive.gz`, SHA256
+`1d2900fcd1694cda5e148eef988be33681991bc97c996c18808491d22d0b5ab3`.
+Session84269 and the Luna watcher are terminal; do not poll or restart them.
+Next immediate action is deploy the independently verified1.9.20 crystal-origin
+correction. Inspect the saved target/movement receipts before another raid run.

@@ -1,9 +1,9 @@
 # Alpha 1.9.20 — the crystal holds its ground
 
 Status: implementation verified locally; version/login/cumulative patch notes
-prepared while Tidestar continues with its already-built server image. Not
-pushed or deployed yet. Wait for that run to finish before deployment, then use
-Luna for CI monitoring. Keep the full1.10 scope and accepted evidence.
+prepared. Tidestar0920d has terminated and its artifacts are preserved; ready
+to publish. Not deployed yet. Use Luna for CI monitoring. Keep the full1.10
+scope and accepted evidence.
 
 ## Player-facing patch notes for the next release
 
@@ -39,7 +39,9 @@ README now points at the migrated domains and current31-chapter/admin/1.10
 scope rather than describing a never-deployed1.0 candidate. Old file-size
 measurements are explicitly historical rather than presented as current.
 
-Tidestar run `waterraid0920d` is testing the preceding split-healer inputs using
-its already-built image. Do not overwrite those artifacts or count its result
-as a rendered test of this new origin correction. Next Fire/Air runs should
-use the corrected runtime. No active test is restarted merely to include it.
+Tidestar run `waterraid0920d` tested the preceding split-healer inputs using its
+already-built image. It defeated the guardian with all five alive but failed
+the no-damage-progress limit on a first-wave AquaGolem. Artifacts are preserved
+in `/tmp/eidolon-water-raid-20260920-r4-noJI9r/`; this is not full acceptance or
+a rendered test of the new origin correction. Next raid runs should use the
+corrected runtime. No active test was restarted merely to include it.
