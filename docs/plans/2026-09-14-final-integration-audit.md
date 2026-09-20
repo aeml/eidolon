@@ -37,6 +37,13 @@ Abyssal reward and untouched Fire kiln offer. Retain those full checkpoints;
 next is Fire story, not another Water/Abyssal replay. The later campaign/raids
 and full1.10 remain open.
 
+The first Fire story continuation stopped after15.4m during its post-inventory
+return trip. Actual retained save87/72166XP/114225Gold has the completed kiln,
+seven unclaimed hunt kills and a transit death, not the last periodic five-kill
+report. Fixed waypoint travel now invokes the same bounded defensive combat as
+target search.120 focused tests pass; continue the pinned save through normal
+respawn. The earned continuation record above owns this failure and next run.
+
 Next-batch local polish: the short stash screenshots exposed a service card
 remaining “Move closer” after approach, because hint updates depended on pointer
 raycasts. Refresh the already-visible card during rendering; the existing UI

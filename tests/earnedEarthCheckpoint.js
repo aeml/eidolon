@@ -84,7 +84,24 @@ export const earnedEarthCheckpoints = Object.freeze([
         waterDungeon: { id: 'chronicle_05_drowned_name', accepted: true, completed: true, count: 1,
             max_count: 1, granted_gold: 600, granted_xp: 43562 },
         continuationChapters: [{ id: 'chronicle_fire_cold_kiln', accepted: false, completed: false, count: 0,
-            max_count: 1, granted_gold: 0, granted_xp: 0 }] }
+            max_count: 1, granted_gold: 0, granted_xp: 0 }] },
+    { sha: 'f4e51871b68b08113620ec4bf3c80d1c82b8b3d0cf52ea8939014363b2864e90',
+        level: 87, xp: 72166, gold: 114225, count: 50, completed: true,
+        resources: { version: 1, health: 0, mana: 3700, dead: true },
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: true, count: 70, max_count: 70, granted_gold: 550, granted_xp: 54750 }
+        ],
+        waterDungeon: { id: 'chronicle_05_drowned_name', accepted: true, completed: true, count: 1,
+            max_count: 1, granted_gold: 600, granted_xp: 43562 },
+        continuationChapters: [
+            { id: 'chronicle_fire_cold_kiln', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 250, granted_xp: 5956 },
+            { id: 'chronicle_fire_unending_war', accepted: true, completed: false, count: 7, max_count: 35, granted_gold: 0, granted_xp: 0 }
+        ] }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

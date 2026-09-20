@@ -3,11 +3,19 @@ import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.
 import { getIlyraCompletionReply } from '../../src/ui/QuestConversation.js';
 import { moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
 import { approachInvestigationReading, investigationReadingOpen, resumeInvestigationReading } from './investigation-reading-state.js';
+import { createInvestigationTravelDefense } from './fresh-investigation-combat.js';
 
-async function walkTo(page, x, z, reading = null) {
+async function walkTo(page, x, z, reading = null, beforeTravel) {
     for (let step = 0; step < 50; step++) {
-        const player = await readPlayerState(page);
+        let player = await readPlayerState(page);
         expect(player.state, 'Investigation travel must remain survivable').not.toBe('DEAD');
+        if (Math.hypot(x - player.x, z - player.z) < 2) return;
+        if (reading && await investigationReadingOpen(reading)) return 'already-open';
+        if (beforeTravel) {
+            await beforeTravel(player);
+            player = await readPlayerState(page);
+            expect(player.state, 'Investigation travel defense must remain survivable').not.toBe('DEAD');
+        }
         const dx = x - player.x, dz = z - player.z;
         const distance = Math.hypot(dx, dz);
         if (distance < 2) return;
@@ -25,18 +33,27 @@ async function walkTo(page, x, z, reading = null) {
         } else await move();
         // The shared movement helper confirms displacement, not arrival. Let
         // both the walk and following camera settle before projecting again.
-        await expect.poll(() => page.evaluate(() => {
+        let arrival;
+        await expect.poll(async () => {
+            arrival = await page.evaluate(() => {
             const game = window.game;
-            return game.player.state === 'IDLE' && !game.player.targetPosition &&
-                Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
-                    game.renderSystem.cameraTarget.z - game.player.position.z) < 0.05;
-        })).toBe(true);
+            return { state: game.player.state, hp: game.player.stats.hp,
+                x: game.player.position.x, z: game.player.position.z,
+                target: game.player.targetPosition?.toArray(),
+                cameraDistance: Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
+                    game.renderSystem.cameraTarget.z - game.player.position.z) };
+            });
+            return arrival.state === 'IDLE' && !arrival.target && arrival.cameraDistance < 0.05;
+        }).toBe(true).catch(error => {
+            console.log('[investigation-travel-failure]', JSON.stringify({ waypoint: { x, z }, arrival }));
+            throw error;
+        });
     }
     throw new Error(`Ordinary investigation travel did not reach ${x}, ${z}: ${JSON.stringify(await readPlayerState(page))}`);
 }
 
-export async function walkInvestigationWaypoints(page, waypoints) {
-    for (const [x, z] of waypoints) await walkTo(page, x, z);
+export async function walkInvestigationWaypoints(page, waypoints, { beforeTravel } = {}) {
+    for (const [x, z] of waypoints) await walkTo(page, x, z, null, beforeTravel);
 }
 
 // Ordinary ground/jump clicks, prop clicks and explicit Ilyra turn-ins only. No
@@ -46,7 +63,7 @@ export async function earnEarthInvestigation(page, id, openIlyra, capture, optio
     return earnInvestigation(page, id, openIlyra, capture, options);
 }
 
-export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite, inspectWithKeyboard = false, resumeAccepted = false } = {}) {
+export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite, inspectWithKeyboard = false, resumeAccepted = false, defendTravel = false } = {}) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);
     await openIlyra(page);
     if (selectChapter) await selectChapter(chapter);
@@ -55,18 +72,20 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
     await expect.poll(() => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.accepted, id)).toBe(true);
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);
+    const beforeTravel = defendTravel ? await createInvestigationTravelDefense(page) : undefined;
+    const travelTo = (x, z, reading) => walkTo(page, x, z, reading, beforeTravel);
     if (waypoints) {
-        await walkInvestigationWaypoints(page, waypoints);
+        await walkInvestigationWaypoints(page, waypoints, { beforeTravel });
     } else {
         expect(chapter.realm, 'Non-Earth routes require explicit ordinary travel').toBe('earth');
-        await walkTo(page, 80, 200);
-        await walkTo(page, 125, 200);
-        if (chapter.sites[0].z < 100) await walkTo(page, 145, 80);
+        await travelTo(80, 200);
+        await travelTo(125, 200);
+        if (chapter.sites[0].z < 100) await travelTo(145, 80);
     }
     for (const site of chapter.sites) {
         if (site.kind === 'combat') {
             expect(defeatSite, 'Combat evidence needs ordinary combat, never inspection credit').toBeTruthy();
-            await walkTo(page, site.x + 18, site.z + 18);
+            await travelTo(site.x + 18, site.z + 18);
             try { await defeatSite(site, chapter); } catch (error) {
                 if (capture) await capture(site, 'combat-failure');
                 throw error;
@@ -75,7 +94,7 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
             continue;
         }
         expect(site.kind, 'Combat evidence requires a separate actual combat driver').toBe('inspect');
-        await walkTo(page, site.x, site.z + 3);
+        await travelTo(site.x, site.z + 3);
         if (beforeInspect) {
             try { await beforeInspect(site); } catch (error) {
                 if (capture) await capture(site, 'combat-failure');
@@ -85,7 +104,7 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         const evidence = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
         try {
         const reading = await resumeInvestigationReading(page, evidence, async () => {
-        if (beforeInspect && await walkTo(page, site.x, site.z + 3, evidence) === 'already-open') return 'already-open';
+        if (beforeInspect && await travelTo(site.x, site.z + 3, evidence) === 'already-open') return 'already-open';
         if (await investigationReadingOpen(evidence)) return 'already-open';
         if (capture) await capture(site, 'approach');
         if (inspectWithKeyboard) {

@@ -92,7 +92,8 @@ test('the actual route guards resumed travel without dropping lore, credit or ma
     const source = readFileSync('tests/e2e/chronicle-investigation-route.js', 'utf8');
     expect(source).toContain('approachInvestigationReading(reading, move)');
     expect(source).toContain('moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true })');
-    expect(source).toContain('walkTo(page, site.x, site.z + 3, evidence)');
+    expect(source).toContain('travelTo(site.x, site.z + 3, evidence)');
+    expect(source).toContain('walkTo(page, x, z, reading, beforeTravel)');
     expect(source).toContain("await expect(evidence).toHaveAttribute('open', '')");
     expect(source).toContain('await expect(evidence).toContainText(site.title)');
     expect(source).toContain('expect(before.count).toBe(chapter.sites.length)');

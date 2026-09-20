@@ -70,8 +70,9 @@ test('both uninterrupted story combat loops use ordinary retained-target input',
     const hunt = readFileSync(new URL('./e2e/fresh-story-hunt-route.js', import.meta.url), 'utf8');
     expect(hunt).toContain('observed.selected?.alive ? observed.selected : observed.goal');
     expect(hunt).toContain("expect(deaths, 'Expedition exceeded two ordinary respawns').toBeLessThanOrEqual(2)");
-    expect(hunt).toContain('const deadline = Date.now() + 120_000');
-    expect(hunt).toContain('enemy = await findExpeditionTarget(page, hunt, deadline)');
+    expect(hunt).toContain('let deadline = Date.now() + 120_000');
+    expect(hunt).toContain('findExpeditionTarget(page, hunt, deadline, {');
+    expect(hunt).toContain('enemy = await search(');
     const acquisition = readFileSync(new URL('./e2e/earned-expedition-target.js', import.meta.url), 'utf8');
     expect(hunt).toContain("import { findExpeditionTarget } from './earned-expedition-target.js'");
     expect(acquisition).toContain('step < 100 && Date.now() < deadline');

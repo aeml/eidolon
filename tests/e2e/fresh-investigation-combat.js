@@ -2,6 +2,12 @@ import { expect } from '@playwright/test';
 import { projectEntity, readPlayerState } from './helpers.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 
+export async function createInvestigationTravelDefense(page) {
+    const defend = await createEarnedClassCombat(page, undefined, { useCrowdControl: true });
+    return player => clearFreshInvestigationApproach(page,
+        { id: 'regional-travel', x: player.x, z: player.z }, { defend });
+}
+
 // The fresh reader brings ordinary roaming enemies to a site. Clear its
 // immediate approach with earned basic/class attacks before trying to read;
 // never change target priority, enemy state, credit, gear or player protection.

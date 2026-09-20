@@ -3,7 +3,7 @@ import { chronicleHunts } from '../../src/data/chronicleHunts.generated.js';
 import { chroniclePhoneRoutes } from './chronicle-phone-routes.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnInvestigation, walkInvestigationWaypoints } from './chronicle-investigation-route.js';
-import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
+import { clearFreshInvestigationApproach, createInvestigationTravelDefense } from './fresh-investigation-combat.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { earnEarnedCollection } from './fresh-collection-route.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
@@ -25,7 +25,8 @@ export async function earnRegionToReadiness(page, credentials, realm, { step = (
     const route = earnedRegionRoute(realm);
     expect(await readChronicleChapter(page, route.previous)).toMatchObject({ completed: true });
     const waypoints = chroniclePhoneRoutes[realm];
-    const leaveTown = () => walkInvestigationWaypoints(page, waypoints);
+    const leaveTown = async () => walkInvestigationWaypoints(page, waypoints,
+        { beforeTravel: await createInvestigationTravelDefense(page) });
     const chapter = async (id, run) => {
         const saved = await readChronicleChapter(page, id);
         const state = waterChapterContinuation(saved, realm);
@@ -37,7 +38,8 @@ export async function earnRegionToReadiness(page, credentials, realm, { step = (
         expect((await readChronicleChapter(page, id))?.completed).toBe(true);
     };
     const investigate = id => chapter(id, options => earnInvestigation(page, id, openIlyra, capture, {
-        ...options, waypoints, beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true
+        ...options, waypoints, beforeInspect: site => clearFreshInvestigationApproach(page, site),
+        inspectWithKeyboard: true, defendTravel: true
     }));
     const hunt = id => chapter(id, options => earnFreshStoryHunt(page, credentials, id, {
         ...options, leaveTown

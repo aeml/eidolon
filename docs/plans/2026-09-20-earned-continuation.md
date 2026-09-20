@@ -1,5 +1,32 @@
 # Earned campaign continuation with a real party
 
+## Current Fire continuation — retained kiln and seven hunt kills
+
+`earnedfire0920a`, native46309, frozen117c0b5a, ended exit1 after15.4m:
+`/tmp/eidolon-earned-fire-20260920-r1-CE2hv7/run.log`. The failure was the15s
+IDLE/camera wait in ordinary regional waypoint travel, called after inventory
+maintenance. Its last periodic hunt report showed5 kills/0 deaths, but the actual
+archive has7/35 and a transit death near(-971.697,199.907). Do not call this a
+death-free run or infer a navigation/camera defect from the generic timeout.
+
+Independent network-isolated restore confirms Wizard87/72166XP/114225Gold,
+resources0HP/3700MP/dead, completed Fire kiln1/1 with250Gold/5956XP, retained
+Abyssal/Water rewards, and unclaimed hunt7/35. No active dailies. Full archive:
+`/tmp/eidolon-party-checkpoint-earnedfire0920a-givW70/save.archive.gz`, SHA256
+`f4e51871b68b08113620ec4bf3c80d1c82b8b3d0cf52ea8939014363b2864e90`.
+Owned gameplay services and the temporary inspection copy are gone; original
+archive retained. The pinned transfer preserves death; normal respawn is required.
+
+Target search already defended against pursuers, but the long fixed travel legs
+did not. Regional travel now shares bounded earned defense before each stride,
+recomputes the destination after retreats and preserves normal movement/collision.
+It also records the actual arrival/death snapshot on a failed settle wait rather
+than just false. Reading, manual claims,160-cycle defense,50-step travel and
+two-hour overall bounds remain.120 focused tests pass4.107s, plus lint/diff;
+stale source assertions were updated for the existing hunt search/deadline and
+new travel wrapper. This is QA input correction, not a gameplay balance change.
+Next resume this seven-kill save, not the completed kiln or prior dungeons.
+
 ## Earned Abyssal party clear accepted — next: Fire story
 
 `earnedabyssal0920a`, native56558, frozen47e0adec, passed in approximately65m:
@@ -21,12 +48,12 @@ archive retained.88 checkpoint/regional-route tests pass0.841s, plus lint/diff.
 Continue that complete save into Fire; do not repeat Water or Abyssal. Later
 Fire/Air story, remaining dungeons/raids/finale and full1.10 remain open.
 
-Fire story is now launched as `earnedfire0920a`, native46309, frozen clean
+Fire story launched as `earnedfire0920a`, native46309, frozen clean
 117c0b5a; launcher/log `/tmp/eidolon-earned-fire-20260920-r1-CE2hv7/`.
 It resumes the full85 save through `earned-region`/Fire with the existing
-two-hour bound and zero retries. Luna monitors terminal-only; no other native
-route or deployment browser job overlaps. This is not the separate Fire raid,
-and no Fire story completion is claimed yet.
+two-hour bound and zero retries. Luna monitored terminal-only; no other native
+route or deployment browser job overlapped. Its terminal partial result is above.
+This is not the separate Fire raid, and no full Fire story completion is claimed.
 
 The same earned four-role dungeon route now also accepts Normal70 Molten/Tempest
 after a pinned completed regional save. Its shared entry check requires every

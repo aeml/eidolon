@@ -182,6 +182,33 @@ test('retains the earned four-player Abyssal reward and untouched Fire offer', (
     expect(fixture.result().writes).toBe(1);
 });
 
+function partialFire(character) {
+    completedAbyssal(character);
+    const checkpoint = earnedEarthCheckpoints[11];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold,
+        resources: { ...checkpoint.resources } });
+    character.quests.pop();
+    character.quests.push(...checkpoint.continuationChapters.map(q => ({ ...q })));
+}
+
+test('retains the saved Fire kiln reward, seven kills and actual transit death', () => {
+    const fixture = exercise(partialFire, false, earnedEarthCheckpoints[11]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().saved.resources.dead).toBe(true);
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.resources.health = 4000; }, p => { p.resources.dead = false; },
+    p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
+    p => { p.quests.at(-2).granted_gold = 0; }
+])('rejects healed replacement or altered partial Fire progression', change => {
+    const fixture = exercise(p => { partialFire(p); change(p); }, false, earnedEarthCheckpoints[11]);
+    expect(fixture.run).toThrow(/earned/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-2).completed = false; }, p => { p.quests.at(-2).granted_xp = 0; },
     p => { p.quests.at(-1).accepted = true; }, p => { p.quests.at(-1).count = 1; },
