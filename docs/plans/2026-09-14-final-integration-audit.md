@@ -27,10 +27,17 @@ No inventory, rewards, logout times or gameplay rules are rewritten. The known
 September14 level30 archive remains the valid continuation point; four unsaved
 kills must be earned again, not inferred from the prior passing in-memory log.
 
-Fire run `fireraid0920d`, clean source82472be7, is active in
-`/tmp/eidolon-fire-raid-20260920-r4-8FyL2K/`, session79539/PID2926173, monitored by
-Luna. It includes observed-death retention, with the original complete raid
-requirements and no retries. Do not start another native GPU route concurrently.
+Fire run `fireraid0920d`, clean source82472be7, is terminal exit1 after33.7minutes.
+All assault rooms and the guardian cleared; repair wave1 cleared, then the Rogue
+died during wave2. The runner had moved beyond healing range. Artifacts and
+private save are retained, owned services gone. The linked Fire record describes
+the bounded proactive healer-escort correction, not yet connected acceptance.
+
+Earned-party run `earnedparty0920a` is now active on cleanb038eb98, native35451,
+under `/tmp/eidolon-earned-party-20260920-2zClmS/`, monitored by Luna. It restores
+the checksum-pinned September14 Wizard save and requires actual saved handoff,
+full four-player Verdant clear and personal claim. The other three roles are
+prepared, not earned. Do not overlap native browser tests or alter loaded files.
 
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database

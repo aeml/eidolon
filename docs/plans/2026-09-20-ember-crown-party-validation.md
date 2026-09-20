@@ -2,6 +2,31 @@
 
 ## Current run
 
+`fireraid0920d` is terminal exit1 after33.7minutes on clean82472be7.
+Native79539 and `RAID_PROCESS_EXIT=1` confirm Luna's report; artifacts are
+preserved under `/tmp/eidolon-fire-raid-20260920-r4-8FyL2K/`. Owned services are
+gone. All assault rooms and Ashen Imperator cleared; repair wave1 cleared and
+wave2 started. The Rogue then died; no full repair or manual claim is accepted.
+The other four survived. Both Clerics healed (37,954 and62,304 effective ally HP).
+The Rogue's final incoming hits were ordinary Infernal Behemoth/Magma Golem
+attacks, not an unresolved boss telegraph.
+
+Retained healer decisions show the ritual runner moving57–81units away while
+direct healing range is15. The second healer only approached once the runner
+was injured; its no-injury fallback followed the tank. A detached correction
+assigns the second healer to escort the active ritual runner proactively, while
+the first remains tank-anchored. Personal marker assignments still control the
+runner, with ordinary movement/roster/hotbar inputs and unchanged cast ranges,
+combat stats and survival requirements.50 focused ritual/healing tests pass
+in2.771s; lint/diff checks pass. This is not connected proof of a full Fire clear.
+Keep this correction outside the active earned-party run until it ends.
+
+Private failed-run checkpoint, not a successful raid resume:
+`/tmp/eidolon-party-checkpoint-fireraid0920d-F7Afev/save.archive.gz`, SHA256
+`c8793ebe2250c4ae4c97348c60aa49c8ce0cb3693a4fb0a2fc5b0b03900a24e8`.
+
+### Previous run — observed-death retention
+
 `fireraid0920c` is terminal exit1 after 8.5 minutes on clean `b62ad5eb`.
 Parent session87777 and `RAID_PROCESS_EXIT=1` confirm Luna's terminal report.
 Reports/results are retained in `/tmp/eidolon-fire-raid-20260920-r3-ad8SIz/`;

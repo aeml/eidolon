@@ -29,9 +29,10 @@ receipt. No forced deaths, additional rewards, stat scaling or instance-expiry
 changes. This is earned Wizard progression with prepared support, **not** four
 independently earned characters or acceptance of the party leveling curve.
 
-Implementation is committed in the isolated worktree
-`/tmp/eidolon-earned-continuation-20260920-0VmRVz/`; merge after the active Fire
-raid ends. The 53 focused fixture/isolation checks pass in3.405s, lint/Bash/diff
-checks pass. The connected mixed-provenance party route has not run yet. Use
-the original private archive above, Low graphics, zero retries, and preserve
-the final full save. Never overlap it with Fire or deployment browser QA.
+Implementation merged asbd96dfe0/b038eb98 after Fire ended. The53 focused
+fixture/isolation checks pass in3.405s, lint/Bash/diff checks pass.
+`earnedparty0920a` is active on cleanb038eb98, native35451, launcher/log directory
+`/tmp/eidolon-earned-party-20260920-2zClmS/`, monitored by Luna. It uses the
+original private archive above, Low graphics and zero retries. The wrapper
+preserves the final full save. Never overlap it with Fire or deployment browser
+QA; no full connected continuation acceptance is claimed yet.
