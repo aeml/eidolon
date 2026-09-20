@@ -2,22 +2,35 @@
 
 ## Current delivery — 1.9.26 verified, earned Molten partial
 
-### Finale tuning review — decision pending, no balance change
+### Finale tuning target — approved 5–10 minutes, balance acceptance pending
+
+User confirmed a successful, well-geared five-player Dark King fight should
+take **5–10 minutes total across all four phases**, excluding travel/setup.
+The native combat watchdog now permits ten minutes for UmbraPrime in the weekly
+raid only, without resetting at phase changes; ordinary encounters retain their
+existing limits. It conservatively includes target acquisition/input overhead.
+The60-second damage-stall, survival, four-Eidolon and whole-expedition checks
+remain. This removes the inherited eight-minute mismatch, not the need to
+measure a successful fight. No boss health/damage changes are justified by the
+previous46-second failed attempt. Tune from sustained five-player combat evidence
+with the approved gear and no global stat scaling; preserve all four interventions.
+Focused timing coverage passes13 tests in2.844s; scoped lint and whitespace checks
+pass. This is QA/policy work for the next finale run, not a new deployed version.
 
 Read-only review while earned Molten runs: `enemy_balance.go` gives UmbraPrime
 an8x boss-health factor, combined with20x boss rank and4x Mythic health at100.
 The retained finale's actual1824000HP agrees with that profile; entry accepts
-5–10 players without a health adjustment by current party size. The shared
-`dungeon-playthrough-route.js` still uses an eight-minute fight bound originally
+5–10 players without a health adjustment by current party size. Before the user
+decision, the shared route inherited an eight-minute fight bound originally
 documented for ordinary Tempest combat, not a declared finale pacing target.
 The failed finale stopped after46.187s of combat (Rogue death), not that bound;
 its early HP observations and interrupted support cannot prove steady raid DPS
 or a full-fight duration. Do not label it a damage-timeout failure or nerf the
 boss to make the inherited QA timer pass. Previously corrected second-healer
-support remains awaiting native evidence. User was asked asynchronously for a
-five-player, well-geared finale target of5–10,10–15 or20–30 minutes. No encounter
-health/damage, deadlines, party gates or Eidolon phases changed for this review.
-This open pacing preference does not block earned Molten or other roadmap work.
+support remains awaiting native evidence. The user has now selected5–10 minutes;
+the scoped watchdog update above supersedes that earlier open decision.
+No encounter health/damage, party gates or Eidolon phases changed. The active
+Molten run remains on its frozen source, uninterrupted by this future-finale update.
 
 ### Verified release and retained run evidence
 

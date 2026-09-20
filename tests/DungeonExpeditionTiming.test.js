@@ -1,5 +1,16 @@
 import fs from 'node:fs';
-import { createDungeonExpeditionTiming, dungeonExpeditionBudget } from './dungeonExpeditionTiming.js';
+import { createDungeonExpeditionTiming, dungeonCombatBudget, dungeonExpeditionBudget } from './dungeonExpeditionTiming.js';
+
+test.each([
+    [true, 'weekly_raid', 'UmbraPrime', 600_000],
+    [false, 'weekly_raid', 'UmbraPrime', 120_000],
+    [true, 'weekly_raid', 'DemonOrc', 480_000],
+    [true, 'tempest_spire', 'Zephyrion', 480_000],
+    [true, 'molten_core', 'LordInfernax', 480_000],
+    [true, 'umbral_nexus', 'UmbraPrime', 480_000]
+])('combat allowance full=%s %s/%s is %i ms', (full, dungeon, target, expected) => {
+    expect(dungeonCombatBudget(full, dungeon, target)).toBe(expected);
+});
 
 test('solo retains forty minutes; the party allowance is explicit and bounded', () => {
     expect(dungeonExpeditionBudget()).toBe(2_400_000);
@@ -70,7 +81,7 @@ test('party selects its own allowance without changing encounter, damage-stall, 
     expect(route).toContain("expeditionProfile = 'solo'");
     expect(party).toContain("expeditionProfile: 'party'");
     expect(party).toContain("test.setTimeout(dungeonExpeditionBudget('party') + 300_000)");
-    expect(route).toContain('fullRun ? 480_000 : 120_000');
+    expect(route).toContain('dungeonCombatBudget(fullRun, playthrough.dungeonType, target.type)');
     expect(route).toContain('Date.now() - lastDamageAt > 60_000');
     expect(route).toContain('let deadline = Date.now() + 180_000');
     expect(route).toContain("timing.report('route-exit')");

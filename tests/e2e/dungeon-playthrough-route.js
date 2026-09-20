@@ -9,7 +9,7 @@ import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState,
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter, dungeonCombatTargetType } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
-import { createDungeonExpeditionTiming } from '../dungeonExpeditionTiming.js';
+import { createDungeonExpeditionTiming, dungeonCombatBudget } from '../dungeonExpeditionTiming.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
@@ -47,9 +47,10 @@ export async function playDungeonThroughInputs(page, {
         if (target.encounter) console.log(`${logPrefix} boss encounter ${JSON.stringify({ type: target.type, ...target.encounter })}`);
         // Tempest seed -1329185764639002788 reached Zephyrion alive with
         // continuous damage but outlasted six minutes (93,600 starting HP).
-        // Allow eight minutes for functional combat; retain the 60s damage-stall
-        // watchdog and bounded profile-specific whole-run ceiling. This is not a balance pass.
-        const deadline = Date.now() + (fullRun ? 480_000 : 120_000);
+        // Ordinary combat retains eight minutes. The Dark King's complete
+        // four-phase fight gets the approved ten-minute upper target; phases
+        // never reset it. Retain the 60s stall and whole-run watchdogs.
+        const deadline = Date.now() + dungeonCombatBudget(fullRun, playthrough.dungeonType, target.type);
         let sawDamage = false;
         let lowestHealth = target.health;
         let lastDamageAt = Date.now();

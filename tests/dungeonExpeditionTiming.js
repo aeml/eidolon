@@ -4,6 +4,13 @@ const MINUTE = 60_000;
 const BUDGETS = Object.freeze({ solo: 40 * MINUTE, party: 120 * MINUTE });
 const PHASES = ['entry', 'traversal', 'combat', 'recovery', 'verification'];
 
+export function dungeonCombatBudget(fullRun, dungeonType, targetType) {
+    if (!fullRun) return 2 * MINUTE;
+    // User's finale target is 5–10 minutes across all four phases, not per phase.
+    // A watchdog allowance alone does not establish actual balance acceptance.
+    return (dungeonType === 'weekly_raid' && targetType === 'UmbraPrime' ? 10 : 8) * MINUTE;
+}
+
 export function dungeonExpeditionBudget(profile = 'solo') {
     if (!Object.hasOwn(BUDGETS, profile)) throw new Error(`Unknown dungeon expedition profile: ${profile}`);
     return BUDGETS[profile];
