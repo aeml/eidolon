@@ -33,9 +33,20 @@ response and absence of grants/saves. Related mutation and session-journal tests
 pass normally in2.395s; the final expanded focused race run passes in6.283s
 (native70284 exit0). Formatting and diff checks pass.
 
+Follow-up, local only (not part of the running1.9.23 publication): a failed
+`GetAdminOperation` now records a sanitized error attempt through the same
+activity/outbox path. The original receipt remains untouched and the response
+keeps its correlated pending/non-final status: a lookup outage cannot prove
+that an earlier operation did not run. The focused outage reproduction failed
+before this change and passes afterward, including exact journal reopen/replay.
+New-request and already-applied-request recovery checks both grant/save/complete
+exactly once after retry. Related mutation tests pass in0.989s; the focused race
+run passes in2.615s. Formatting and diff checks pass. Batch into the next release
+with an additive patch-note entry; do not supersede the queued Water run.
+
 This does not close the broader “every operation attempt” audit requirement:
-transport admission rejection and unavailable-operation-store paths still need
-their bounded-policy review. Do not mistake a working live panel for proof of
+transport admission rejection, unavailable-service and pre-intent preparation
+failure paths still need their bounded-policy review. Do not mistake a working live panel for proof of
 every failure branch. Batch this correction into the next appropriate release
 with patch notes and synchronized identity; do not compete with the current
 earned Water browser run or repeat accepted administration mutation matrices.

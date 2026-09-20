@@ -84,9 +84,9 @@ func TestAdminMutationAdmissionRejectionKeepsCorrelatedRetryIdentity(t *testing.
 }
 
 func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
-	for _, mode := range []string{"malformed", "role-lookup", "conflicting-id"} {
+	for _, mode := range []string{"malformed", "role-lookup", "operation-lookup", "conflicting-id"} {
 		t.Run(mode, func(t *testing.T) {
-			c, roles, _, committer, player := adminMutationFixture(t)
+			c, roles, operations, committer, player := adminMutationFixture(t)
 			dir, activity := sessionActivityFixture(t)
 			payload := adminGoldRequestFixture
 			switch mode {
@@ -94,6 +94,8 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 				payload = strings.Replace(payload, `"amount":100`, `"amount":100,"actor":"forged"`, 1)
 			case "role-lookup":
 				roles.lookupErr = errors.New("private role-store error")
+			case "operation-lookup":
+				operations.getErr = errors.New("private operation-store error")
 			case "conflicting-id":
 				if result := adminMutationReply(t, c, MsgAdminGrantGold, payload); !result.Success {
 					t.Fatal(result)
@@ -105,6 +107,9 @@ func TestAdminRejectedMutationSurvivesActivityStoreOutage(t *testing.T) {
 			result := adminMutationReply(t, c, MsgAdminGrantGold, payload)
 			if result.Success || player.Gold != gold || len(committer.ids) != saves || strings.Contains(result.Message, "private") {
 				t.Fatal("rejected request mutated character or exposed storage details", result)
+			}
+			if mode == "operation-lookup" && (!result.Pending || result.Final || !result.Authorized || result.ID != "request-123456789" || len(operations.ops) != 0) {
+				t.Fatal("lookup failure lost retry identity or invented a completed operation", result)
 			}
 			pending, err := adminActivityJournal.Pending(50)
 			if err != nil || len(pending) != 1 {
@@ -146,6 +151,38 @@ func TestAdminRejectedMutationFailsClosedWhenBothActivityStoresFail(t *testing.T
 	if result.Success || result.Authorized || result.Final || player.Gold != 100 || len(committer.ids) != 0 ||
 		result.Message != "Administration activity storage is unavailable. Nothing was changed." || len(activity.events) != 0 {
 		t.Fatal("unrecorded rejection acknowledged or changed character", result)
+	}
+}
+
+func TestAdminMutationLookupFailureDoesNotReplaceOriginalOperation(t *testing.T) {
+	for _, alreadyApplied := range []bool{false, true} {
+		t.Run(map[bool]string{false: "new", true: "replay"}[alreadyApplied], func(t *testing.T) {
+			c, _, operations, committer, player := adminMutationFixture(t)
+			_, activity := sessionActivityFixture(t)
+			if alreadyApplied {
+				if result := adminMutationReply(t, c, MsgAdminGrantGold, adminGoldRequestFixture); !result.Success {
+					t.Fatal(result)
+				}
+			}
+			gold, saves, finishes := player.Gold, len(committer.ids), operations.finishes
+			operations.getErr = errors.New("private lookup error")
+			result := adminMutationReply(t, c, MsgAdminGrantGold, adminGoldRequestFixture)
+			if result.Success || result.Final || !result.Pending || player.Gold != gold || len(committer.ids) != saves || operations.finishes != finishes {
+				t.Fatal("unverified operation changed or finalized", result)
+			}
+			if len(activity.events) != 1 || activity.events[0].Result != "error" || activity.events[0].RequestID != result.ID {
+				t.Fatal("lookup failure missing its correlated error audit", activity.events)
+			}
+			operations.getErr = nil
+			for i := 0; i < 2; i++ {
+				if result := adminMutationReply(t, c, MsgAdminGrantGold, adminGoldRequestFixture); !result.Success || !result.Final || result.Pending {
+					t.Fatal("same request could not recover", result)
+				}
+			}
+			if player.Gold != 200 || len(committer.ids) != 1 || operations.finishes != 1 || len(operations.ops) != 1 || len(activity.events) != 1 {
+				t.Fatal("lookup recovery repeated a grant, save or audit")
+			}
+		})
 	}
 }
 

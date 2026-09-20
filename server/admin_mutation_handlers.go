@@ -70,6 +70,9 @@ func handleAdminMutation(c *Client, msg Message) {
 	stored, err := adminOperations.GetAdminOperation(id)
 	if err != nil {
 		result.Pending = true
+		// The original operation may already exist. Record only this failed
+		// lookup attempt; do not invent a final denial or replace its receipt.
+		auditAdminRejectedRequest(c, msg.Type, request, "error", "Previous operation could not be verified; no new operation admitted. Retry the same request.")
 		return
 	}
 	if stored != nil && (stored.Fingerprint != fingerprint || stored.Actor != c.username || stored.Target != request.Target || stored.Action != msg.Type) {
@@ -151,7 +154,7 @@ func handleAdminMutation(c *Client, msg Message) {
 	result.Message = completed.Audit.Summary
 }
 
-// Only malformed/conflicting requests or role lookup failures use this path.
+// Malformed/conflicting requests and role/operation lookup failures use this path.
 // Valid decisions (including denied non-admin requests) use permanent operation
 // identities so an identical retry never inserts another audit entry.
 func auditAdminRejectedRequest(c *Client, action string, request adminMutationRequest, outcome, summary string) bool {
