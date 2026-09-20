@@ -1,7 +1,9 @@
 # Alpha1.9.22 — keep your party in sight
 
-Status: local candidate, not deployed. Do not overlap deployment browser work
-with Fire run fireraid0920f (native34554); Luna owns its terminal monitoring.
+Status: packaged and queued for publication, not yet deployed. Fire run
+fireraid0920f is terminal exit1 and its services are gone; deployment can use
+the native runner. Luna will monitor the exact publishing workflow. Do not
+start Water or another native raid run until deployment browser work finishes.
 
 The earned Verdant screenshot exposed a four-member roster whose header/tank
 row scrolled offscreen after Ready Check. The real-HTML regression failed before

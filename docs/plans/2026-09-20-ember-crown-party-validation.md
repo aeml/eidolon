@@ -1,14 +1,16 @@
 # Ember Crown prepared-party validation — September20
 
-## Follow-up launched
+## Follow-up terminal — Magma Golem damage stall
 
-`fireraid0920f` launched on clean127e39d6, native34554, with the settled-member
-reservation below. Launcher/log: `/tmp/eidolon-fire-raid-20260920-r6-BnDcKk/`.
-Luna `/root/watch_fire_0920c` owns sparse terminal-only monitoring. Same five
-level70 roles, approved class gear, Low, zero retries and full original
-guardian/three-wave repair/manual-claim/relogin requirements. A live native
-handle was returned at launch; completion is not yet reported. Do not start
-another native browser workload or alter loaded source until it finishes.
+`fireraid0920f` ended exit1 after8.0m on clean127e39d6, native34554, with the
+settled-member reservation below. Luna's terminal report, parent exit and
+`RAID_PROCESS_EXIT=1` agree. Launcher/log and copied reports/results:
+`/tmp/eidolon-fire-raid-20260920-r6-BnDcKk/`. Owned containers are gone.
+It passed the earlier formation point, then stopped on “No damage progress
+against MagmaGolem for60seconds.” No full raid or runner-healer repair acceptance
+is claimed. Diagnose the retained targeting/failure scene before another run;
+do not weaken the damage watchdog or label the stall a balance failure.
+Private save: `/tmp/eidolon-party-checkpoint-fireraid0920f-LxxNAq/save.archive.gz`.
 
 ## Latest terminal run — settled teammate collision
 
