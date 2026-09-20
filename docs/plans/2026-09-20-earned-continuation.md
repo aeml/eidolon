@@ -20,6 +20,15 @@ The new complete private archive, not a build-only fixture, is:
 `8b075ebdac1f5fea3b7849927dfd3679b6b2e70d3dfb1dd908961dbc9c31e741`.
 Use this checkpoint for Water. Do not replay accepted Earth/Verdant work.
 
+Visual follow-up from the inspected `party-boss-HollowSentinel.png`: the narrow
+four-player desktop panel has scrolled its header/tank row out of view while
+lower support controls remain visible. The existing HTML-only party layout
+fixture checks all health-bar bounds for5/10 members but not the initial4-member
+party. Reproduce the four-member leader/ready/control state and heal selection,
+then fix roster visibility in a detached worktree while Fire runs. This does
+not invalidate dungeon clear/persistence, but full party-HUD visual acceptance
+must not be inferred from the gameplay pass. No runtime fix is implemented yet.
+
 Next-region preparation: commit733621eb merged as7fa57f00 after the run ended.
 It extends the existing hunt
 search to Water's authored Troll/Aqua Golem bands. Missing Ferry still searches
