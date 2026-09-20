@@ -10,6 +10,14 @@ The [continuation record](2026-09-20-earned-continuation.md) owns its archive,
 exact seed replay and evidence limits. Timeout observations now retain the
 in-dungeon position before automatic recall; existing deadlines are unchanged.
 
+Fire raid continuation `fireraid0920g`, native33049, launched from frozen clean
+567f8e24 in `/tmp/eidolon-fire-raid-20260920-r7-xSUXEP/`. Five legal progressed
+roles, Low, unchanged two-hour bound and zero retries. Existing failed-target
+acquisition observations cover the previous Magma Golem stall; the two-healer
+repair escort also remains in scope. Prior owned services are gone, ports are
+free and deployment browser jobs are terminal. Luna monitors terminal-only.
+This is not yet a completed raid; no simultaneous Molten replay is running.
+
 Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
 passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
 failure was an obsolete `const deadline` source assertion in FreshCampaignPhases,
