@@ -8,17 +8,18 @@ import (
 
 func handleMsgCasino(client *Client, message Message) {
 	var request struct {
-		Action        string `json:"action"`
-		TableID       string `json:"tableId"`
-		Seat          int    `json:"seat"`
-		SessionID     string `json:"sessionId"`
-		Ready         bool   `json:"ready"`
-		Revision      string `json:"revision"`
-		RoundID       string `json:"roundId"`
-		RoundRevision uint64 `json:"roundRevision"`
-		GameAction    string `json:"gameAction"`
-		Bet           int    `json:"bet"`
-		Choice        int    `json:"choice"`
+		Action        string             `json:"action"`
+		TableID       string             `json:"tableId"`
+		Seat          int                `json:"seat"`
+		SessionID     string             `json:"sessionId"`
+		Ready         bool               `json:"ready"`
+		Revision      string             `json:"revision"`
+		RoundID       string             `json:"roundId"`
+		RoundRevision uint64             `json:"roundRevision"`
+		GameAction    string             `json:"gameAction"`
+		Bet           int                `json:"bet"`
+		Choice        int                `json:"choice"`
+		Wagers        []game.CasinoWager `json:"wagers"`
 	}
 	if json.Unmarshal(message.Payload, &request) != nil {
 		client.sendError("invalid casino interaction")
@@ -88,6 +89,8 @@ func handleMsgCasino(client *Client, message Message) {
 		err = handlePokerBuyIn(client, request.SessionID, request.RoundID, request.Bet, time.Now())
 	case "poker_play":
 		err = handlePokerPlay(client, request.SessionID, request.RoundID, request.GameAction, request.Bet, request.RoundRevision, time.Now())
+	case "house_bet":
+		err = handleHouseBet(client, request.SessionID, request.RoundID, request.Wagers, time.Now())
 	default:
 		client.sendError("unsupported casino action")
 		return
@@ -134,7 +137,8 @@ func sendCasinoState(client *Client) {
 		Blackjack blackjackTableView `json:"blackjack"`
 		Slots     *slotMachineView   `json:"slots,omitempty"`
 		Poker     pokerTableView     `json:"poker"`
-	}{CasinoPresence: world.CasinoPresenceFor(client.playerID, time.Now()), Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjackViewFor(client.playerID), Slots: slotViewFor(client.playerID), Poker: pokerViewFor(client.playerID)})
+		House     *houseTableView    `json:"house,omitempty"`
+	}{CasinoPresence: world.CasinoPresenceFor(client.playerID, time.Now()), Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjackViewFor(client.playerID), Slots: slotViewFor(client.playerID), Poker: pokerViewFor(client.playerID), House: houseViewFor(client.playerID)})
 	client.sendSafe(createMessage("casino_update", encoded))
 }
 

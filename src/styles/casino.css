@@ -101,13 +101,13 @@ body .casino-session .blackjack-card { min-width: 48px; height: 68px; font-size:
 
 /* Persistent six-seat card room. Physical seat order rotates around your seat;
    the table, dealer and controls remain in place through every round phase. */
-body .casino-session:is(.has-blackjack, .has-poker):not([hidden]) {
+body .casino-session:is(.has-blackjack, .has-poker, .has-house):not([hidden]) {
     height: min(860px, calc(100dvh - 32px)); max-height: calc(100dvh - 32px);
     bottom: 16px; padding: 12px; display: flex; flex-direction: column;
     overflow: hidden;
 }
-.casino-session:is(.has-blackjack, .has-poker) .casino-session-header { position: static; flex-shrink: 0; padding-block: 0 8px; }
-.casino-session:is(.has-blackjack, .has-poker) > .casino-session-status { flex-shrink: 0; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.casino-session:is(.has-blackjack, .has-poker, .has-house) .casino-session-header { position: static; flex-shrink: 0; padding-block: 0 8px; }
+.casino-session:is(.has-blackjack, .has-poker, .has-house) > .casino-session-status { flex-shrink: 0; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .casino-session > :is(.blackjack-game, .poker-game):not([hidden]) {
     flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 12px;
 }
@@ -162,6 +162,47 @@ body .casino-session .card-table-center .poker-board .blackjack-card { flex: 0 1
 .card-table-center .casino-celebration strong { font-size: clamp(18px, 2.1vw, 28px); line-height: 1.15; flex-shrink: 0; }
 .card-table-center .casino-celebration p { margin: 4px 0; font-size: 12px; min-height: 0; overflow-y: auto; }
 .blackjack-actions, .poker-actions { min-height: 54px; }
+.casino-session.has-house { width: min(1200px, calc(100vw - 32px)); }
+.casino-session > .house-game:not([hidden]) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; }
+.house-game[hidden] { display: none; }
+.house-wager-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.house-wager-toolbar label { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.house-wager-toolbar input[type="number"] { width: 110px; min-height: 44px; padding: 8px; background: #172535; color: #fff1cc; border: 1px solid #b99a58; border-radius: 6px; font: inherit; }
+.house-wager-toolbar input[type="checkbox"] { width: 20px; height: 20px; accent-color: #d4b269; }
+.house-game summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.house-betting-board { margin-block: 8px; }
+.house-betting-board select { max-width: 100%; width: 100%; min-height: 44px; background: #172535; color: #f4e3bd; border: 1px solid #b99a58; }
+.roulette-number-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
+.roulette-number-board button, .roulette-outside-board button, .baccarat-bets button { margin: 0; min-width: 0; padding: 7px 3px; }
+.roulette-number-board .zero { grid-column: 1 / -1; background: #165b41; }
+.roulette-number-board .red, .roulette-pocket.red { background: #872f43; }
+.roulette-number-board .black, .roulette-pocket.black { background: #14202e; }
+.roulette-outside-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin-block: 6px; }
+.house-betting-board button.selected { outline: 2px solid #ffe1a0; outline-offset: -3px; }
+.baccarat-bets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.house-result { --wheel-size: 180px; --pocket-radius: 77px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.house-result > strong { flex-basis: 100%; }
+.roulette-wheel { position: relative; flex: 0 0 var(--wheel-size); width: var(--wheel-size); height: var(--wheel-size); border-radius: 50%; background: radial-gradient(circle, #bc9854 0 6%, #342c27 7% 48%, #ad8d4c 49% 52%, #183b34 53%); box-shadow: 0 0 0 3px #b99a58, 0 4px 12px #0008; }
+.roulette-pocket { position: absolute; left: calc(50% - 8px); top: calc(50% - 9px); width: 16px; height: 18px; font: 700 9px/18px system-ui; color: #fff3d9; transform: rotate(var(--angle)) translateY(calc(-1 * var(--pocket-radius))); }
+.roulette-pocket.zero { background: #165b41; }
+.roulette-pocket.winner { background: #f6cc66; color: #152232; outline: 2px solid white; }
+.house-result.revealing .roulette-wheel { animation: casino-wheel-spin 1.2s linear infinite; }
+.baccarat-result-hand { display: flex; flex-wrap: wrap; justify-content: center; flex: 1 1 85px; }
+.baccarat-result-hand strong { flex-basis: 100%; text-transform: capitalize; }
+.house-result.revealing .blackjack-card { animation: casino-card-deal .9s ease-in-out infinite alternate; }
+@keyframes casino-wheel-spin { to { transform: rotate(360deg); } }
+@keyframes casino-card-deal { from { transform: translateY(-6px); opacity: .55; } to { transform: translateY(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .house-result.revealing .roulette-wheel, .house-result.revealing .blackjack-card { animation: none; } }
+@media (max-width: 850px) {
+    body .casino-session.has-house { width: calc(100vw - 16px); height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); padding: 8px; }
+    .casino-session > .house-game:not([hidden]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(300px, 1fr) minmax(140px, 38%); gap: 8px; }
+    .house-result { --wheel-size: 130px; --pocket-radius: 54px; }
+    .house-game .roulette-pocket { width: 12px; height: 15px; left: calc(50% - 6px); top: calc(50% - 7.5px); font-size: 7px; line-height: 15px; }
+    .house-game .card-table-seat-hands { font-size: 10px; }
+}
+@media (max-height: 500px) and (min-width: 600px) {
+    .casino-session > .house-game:not([hidden]) { grid-template-columns: minmax(0, 1fr) 290px; grid-template-rows: minmax(0, 1fr); }
+}
 @media (max-width: 700px) {
     body .casino-session:is(.has-blackjack, .has-poker) { height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; bottom: max(8px, env(safe-area-inset-bottom)); padding: 8px; }
     .casino-session > :is(.blackjack-game, .poker-game):not([hidden]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 160px; gap: 8px; }

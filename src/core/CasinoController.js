@@ -3,6 +3,7 @@ import { createCasinoFurniture, createCasinoFurnitureColliders, disposeCasinoObj
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 import { SlotMachineUI } from '../ui/SlotMachineUI.js';
 import { PokerTableUI } from '../ui/PokerTableUI.js';
+import { HouseTableUI } from '../ui/HouseTableUI.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 const CASINO_INSTANCE = 'lanternhold-casino';
 
@@ -23,11 +24,12 @@ export class CasinoController {
         this.leave = this.button('Leave table', () => this.requestLeave());
         this.blackjack = new BlackjackTableUI(payload => this.send(payload));
         this.poker = new PokerTableUI(payload => this.send(payload));
+        this.house = new HouseTableUI(payload => this.send(payload));
         this.slots = new SlotMachineUI(payload => this.send(payload), sound => this.engine.playAudioCue?.({ spin: AUDIO_CUES.casinoSpin, stop: AUDIO_CUES.uiClick, win: AUDIO_CUES.casinoWin, bonus: AUDIO_CUES.casinoBonus, jackpot: AUDIO_CUES.casinoJackpot }[sound]));
         this.header = document.createElement('header'); this.header.className = 'casino-session-header';
         this.header.append(this.heading, this.leave);
         this.status.className = 'casino-session-status'; this.roster.className = 'casino-session-roster';
-        this.panel.append(this.header, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root);
+        this.panel.append(this.header, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.house.root);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
         this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());
@@ -48,7 +50,7 @@ export class CasinoController {
     }
 
     send(payload) {
-        if (payload.action.startsWith('slot_') && this.engine.network.socket?.readyState !== WebSocket.OPEN) return false;
+        if ((payload.action.startsWith('slot_') || payload.action === 'house_bet') && this.engine.network.socket?.readyState !== WebSocket.OPEN) return false;
         this.engine.network.send('casino', { sessionId: this.data.yourSeat?.sessionId, ...payload });
     }
 
@@ -61,7 +63,7 @@ export class CasinoController {
 
     handleActionError(error) {
         if (!error || error.sessionId !== this.data.yourSeat?.sessionId) return;
-        this.slots.rejectAction(error); this.blackjack.rejectAction(error); this.poker.rejectAction(error);
+        this.slots.rejectAction(error); this.blackjack.rejectAction(error); this.poker.rejectAction(error); this.house.rejectAction(error);
     }
 
     setFloor(payload = {}) {
@@ -79,7 +81,7 @@ export class CasinoController {
     updateState(payload = {}) {
         this.floor = payload.floor || 'public'; this.vipActive = payload.vip === true;
         if (this.engine.collisionManager) this.engine.collisionManager.casinoVIPFloor = this.floor === 'vip';
-        if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) this.slots.update(null);
+        if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) { this.slots.update(null); this.house.update(null); }
         const tables = Array.isArray(payload.tables) ? payload.tables : [];
         const signature = JSON.stringify(tables);
         if (signature !== this.catalogSignature) {
@@ -95,15 +97,18 @@ export class CasinoController {
         const isBlackjack = tables.find(table => table.id === seat?.tableId)?.game === 'blackjack' && Boolean(payload.blackjack);
         const isSlots = tables.find(table => table.id === seat?.tableId)?.game === 'slots' && Boolean(payload.slots);
         const isPoker = tables.find(table => table.id === seat?.tableId)?.game === 'poker' && Boolean(payload.poker);
+        const isHouse = ['roulette', 'baccarat'].includes(tables.find(table => table.id === seat?.tableId)?.game) && Boolean(payload.house);
         const tablePresence = { yourSeat: seat, occupants: this.data.occupants.filter(p => p.tableId === seat?.tableId) };
         this.poker.update(isPoker ? payload.poker : null, this.engine.player?.id, tablePresence);
+        this.house.update(isHouse ? payload.house : null, this.engine.player?.id, tablePresence);
+        this.panel.classList.toggle('has-house', isHouse);
         this.panel.classList.toggle('has-poker', isPoker);
         this.slots.update(isSlots ? payload.slots : null);
         this.panel.classList.toggle('has-slots', Boolean(isSlots));
         this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id, tablePresence);
         this.panel.classList.toggle('has-blackjack', isBlackjack);
-        this.ready.hidden = isBlackjack || isSlots || isPoker;
-        this.roster.hidden = Boolean(isSlots || isBlackjack || isPoker);
+        this.ready.hidden = isBlackjack || isSlots || isPoker || isHouse;
+        this.roster.hidden = Boolean(isSlots || isBlackjack || isPoker || isHouse);
         if (seat) this.lastSeat = seat;
         if (seat && !this.active) this.enterView();
         else if (!seat && this.active) this.exitView();
@@ -123,6 +128,7 @@ export class CasinoController {
         if (isBlackjack) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} blackjack. Leaving restores world controls; confirmed wagers continue and payouts are saved.`;
         if (isSlots) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} slots. Free spins and bonus choices belong to you and remain saved when you leave.`;
         if (isPoker) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} Hold’em. Leaving folds a remaining stack; all-in hands stay eligible. Unspent stake and winnings return after the hand.`;
+        if (isHouse) this.status.textContent = `${table.floor === 'vip' ? 'VIP floor · EP' : 'Public floor · Gold'} ${table.game}. One shared round for every seat. Confirmed bets continue and payouts are saved if you leave.`;
         this.status.title = this.status.textContent;
         this.roster.replaceChildren();
         for (const occupant of occupants.sort((a, b) => a.seat - b.seat)) {
@@ -144,7 +150,7 @@ export class CasinoController {
 
     exitView() {
         this.slots.update(null);
-        this.blackjack.update(null); this.poker.update(null);
+        this.blackjack.update(null); this.poker.update(null); this.house.update(null);
         this.active = false; this.panel.hidden = true; this.pendingSeat = null;
         document.body.classList.remove('casino-seated');
         const engine = this.engine, render = engine.renderSystem;
@@ -393,6 +399,7 @@ export class CasinoController {
         this.slots.dispose();
         this.blackjack.dispose();
         this.poker.dispose();
+        this.house.dispose();
         this.stairButton.remove();
         this.removeFurnitureColliders();
         document.removeEventListener('keydown', this.keyHandler, true);

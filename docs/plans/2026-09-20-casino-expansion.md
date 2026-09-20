@@ -1,6 +1,6 @@
 # Expanded Lanternhold Casino — next deployment batch
 
-Status: local implementation in progress; **not deployed or fully playable yet**.
+Status: local implementation in progress; **not deployed or fully verified yet**.
 Keep this batch intact until roulette and baccarat have functioning shared games.
 Parent: [casino roadmap](2026-09-09-town-casino-roadmap.md).
 
@@ -22,6 +22,15 @@ Parent: [casino roadmap](2026-09-09-town-casino-roadmap.md).
   is included in this release batch, not a separate partial deployment.
 - Pure roulette/baccarat rules, cryptographic outcomes, currency limits and
   payout bounds are implemented. New tables have distinct procedural furniture.
+- Shared rounds now use the existing durable table and full-character receipt
+  system. Startup, per-account admission recovery and periodic settlement are
+  wired. Each table runs a 30-second betting window, a six-second reveal, saved
+  payouts, then a 12-second result pause and the next window without a first bet.
+- Betting UI is wired to authenticated `house_bet` requests. Default single-spot
+  bets take one click; an optional slip builder combines multiple positions under
+  one total cap. Confirmed slips are immutable for that round. Stake controls can
+  prepare a different amount for the next round. Dealer/seats remain visible;
+  countdowns interpolate every second, results animate, and saved wins celebrate.
 
 ## Game rules
 
@@ -45,9 +54,19 @@ payment flow. Receipt maxima: roulette 3.6m Gold/3,600 EP; baccarat 900k Gold/90
   opt-in disposable database cases were not enabled in this command.
 - Six focused client suites pass, 43 tests/4.932s: floor visibility, collision,
   stash sync, map markers, VIP controls, and generated teleport geometry parity.
-- Still required: durable shared roulette/baccarat rounds and recovery; protected
-  wager handlers; continuous shared countdowns; betting boards, dealer/results,
-  animated outcomes and clear wins; connected settlement/reconnect evidence.
+- Disposable loopback Mongo checks now pass for both games and both currencies:
+  two funded seats sharing one result, idempotent wager retries, continued
+  settlement after leaving/membership failure, currency isolation, next-round
+  and idle clocks. Prepared pending-debit and pending-payout interruptions recover
+  after clearing the world/cache, using stored character receipts without paying
+  or charging twice. Focused `TestHouse` suite PASS 3.102s; this is real database
+  handler/tick coverage, **not yet actual WebSocket or rendered acceptance**.
+- House/blackjack/poker/controller/clock/VIP UI regression checks: 38 tests pass,
+  3.469s. Focused lint and whitespace checks pass. Reuses existing six-seat scene
+  and celebration components; no new wallet, purchase flow or auto-wager loop.
+- Still required: actual connected settlement/reconnect evidence and browser
+  review. `casino-house-layout.spec.js` covers both games at 390/1440 widths, but
+  has only been authored/linted, not run or visually accepted yet.
 - Still required: rendered expanded-floor review, reachability of all stations,
   full batch patch notes/version bump, deployment and live verification. Updated
   browser fixtures are not a claim that the new screenshots have been reviewed.
@@ -58,3 +77,6 @@ Reuse the established casino transfer journal and account-lock order rather than
 inventing a second currency system. Every new game must settle already funded
 bets after leave/disconnect/VIP expiry and reject late or duplicate debits. Show
 only persisted outcomes; keep both Gold and EP receipts/caches isolated by table.
+Once these games accept live wagers, rollback builds must retain their pending
+intent recovery/admission fence. Do not remove recovery while funded rounds or
+unacknowledged wallet transfers remain in the database.

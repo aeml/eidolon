@@ -119,7 +119,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgFriendRemove:      policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgGuildGet:          policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgGuildEvent:        policy(accessCharacter, 2<<10, 10, 10*time.Second),
-	MsgCasino:            policy(accessCharacter, 2<<10, 15, 10*time.Second),
+	MsgCasino:            policy(accessCharacter, 16<<10, 15, 10*time.Second), // Bounded multi-spot roulette slip.
 	MsgGuildCreate:       policy(accessCharacter, 2<<10, 3, time.Minute),
 	MsgGuildInvite:       policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgGuildRespond:      policy(accessCharacter, 2<<10, 10, 10*time.Second),

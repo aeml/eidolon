@@ -7,7 +7,7 @@ const node = (tag, text = '', className = '') => {
 export class CardTableScene {
     constructor(kind) {
         this.root = node('div', '', `card-table-scene ${kind}-scene`);
-        this.root.setAttribute('aria-label', `${kind === 'poker' ? 'Poker' : 'Blackjack'} table and seats`);
+        this.root.setAttribute('aria-label', `${{ poker: 'Poker', blackjack: 'Blackjack', roulette: 'Roulette', baccarat: 'Baccarat' }[kind] || 'Casino'} table and seats`);
         this.dealer = node('section', '', 'card-table-dealer');
         this.dealer.append(node('span', '✦', 'card-table-dealer-portrait'), node('strong', 'House dealer'));
         this.dealerCards = node('div', '', 'card-table-dealer-cards'); this.dealer.append(this.dealerCards);
@@ -46,7 +46,7 @@ export class CardTableScene {
             slot.name.title = slot.name.textContent;
             slot.avatar.textContent = occupant ? (occupant.name || 'You').slice(0, 1).toUpperCase() : '◇';
             slot.status.textContent = !occupant ? 'Open seat' : occupant.connected === false ? 'Reconnecting' :
-                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'In this hand' :
+                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn ?? funded.wagers?.reduce((sum, w) => sum + w.amount, 0)} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'In this hand' :
                     view.phase === 'betting' ? 'Choosing wager' : 'Waiting for next hand';
             const handPlayer = view.round?.players?.find(p => p.playerId === occupant?.playerId);
             if (handPlayer?.stack !== undefined && occupant?.connected !== false) slot.status.textContent = handPlayer.folded ? 'Folded' :
@@ -57,7 +57,7 @@ export class CardTableScene {
     }
 
     syncClock(view, playerID) {
-        const deadline = view.phase === 'playing' ? view.round?.deadline : view.phase === 'complete' ? view.nextRoundAt : view.dealAt;
+        const deadline = view.phase === 'playing' ? view.round?.deadline : view.phase === 'revealing' ? view.revealAt : view.phase === 'complete' ? view.nextRoundAt : view.dealAt;
         const stamp = Date.parse(deadline), serverNow = Date.parse(view.serverNow);
         const key = `${view.roundId}:${view.phase}:${view.round?.revision}:${deadline}`;
         // Polls must not reset the local countdown. New server deadlines establish
@@ -67,9 +67,9 @@ export class CardTableScene {
             this.expires = performance.now() + stamp - (Number.isFinite(serverNow) ? serverNow : Date.now());
         }
         this.clockLabel.textContent = !view.available ? 'Table unavailable' : view.processing || view.phase === 'settling' ? 'Saving payouts' :
-            view.phase === 'complete' ? 'Next betting window' : view.phase === 'betting' ? 'Betting closes' :
+            view.phase === 'complete' ? 'Next betting window' : view.phase === 'betting' ? 'Betting closes' : view.phase === 'revealing' ? view.game === 'roulette' ? 'Wheel spinning' : 'Dealing cards' :
                 view.round?.turnPlayerId === playerID ? 'Your turn' : `${this.turnName}’s turn`;
-        this.timed = view.available && !view.processing && ['betting', 'playing', 'complete'].includes(view.phase) && Number.isFinite(stamp) && stamp > 0;
+        this.timed = view.available && !view.processing && ['betting', 'playing', 'revealing', 'complete'].includes(view.phase) && Number.isFinite(stamp) && stamp > 0;
         this.tick();
         if (!this.interval) this.interval = setInterval(() => this.tick(), 100);
     }

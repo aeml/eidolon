@@ -453,6 +453,9 @@ func main() {
 	if err := initializePoker(); err != nil {
 		log.Fatalf("Cannot recover durable poker table: %v", err)
 	}
+	if err := initializeHouseTables(); err != nil {
+		log.Fatalf("Cannot recover durable roulette/baccarat tables: %v", err)
+	}
 	if err := recoverAdminOperationsOnStartup(); err != nil {
 		log.Fatal("Administration operation recovery failed; refusing stale character admission")
 	}
@@ -949,6 +952,11 @@ func main() {
 	loops.Every(time.Second, func() {
 		if err := tickPoker(time.Now()); err != nil {
 			log.Printf("Poker table recovery remains pending: %v", err)
+		}
+	})
+	loops.Every(time.Second, func() {
+		if err := tickHouseTables(time.Now()); err != nil {
+			log.Printf("Roulette/baccarat settlement remains pending: %v", err)
 		}
 	})
 
