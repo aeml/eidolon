@@ -11,6 +11,14 @@ version-rewritten engine assets. Receipt and verifier:
 `/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`. No production account mutations.
 The full1.10 goal remains open; this is delivery acceptance, not raid acceptance.
 
+Fire continuation `fireraid0920j` is running from frozendd7dc31f after exact
+delivery verification. Source/log/launcher:
+`/tmp/eidolon-fire-raid-20260920-r10-gYf6xz/`; root native20683, launcher3722420.
+Five progressed, class-geared roles, Low rendering, original120-minute ceiling,
+zero retries. Luna monitors one read-only launcher wait and the terminal footer.
+No result is accepted yet. No competing Eidolon native/deployment browser job
+was present at launch; unrelated software-rendered browser tests were left alone.
+
 Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
 `Party failed to gather before the next pull`, with all five surviving. No
 guardian/repair completion or saved restored-crystal reward is accepted. Source,
