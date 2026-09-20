@@ -4,6 +4,15 @@ const gear = (id, stats, rest = {}) => ({ id, stats, slot: 'mainHand', type: 'WE
 const plan = (bag, worn, className = 'Wizard') => planEarnedEquipmentUpgrade({
     inventory: bag, equipment: worn, level: 30, className });
 
+test('retained Molten bag staff improves Wizard build despite one less flat damage', () => {
+    const current = gear('earned-strong-staff', { strength: 21, dexterity: 21, damage: 28 }, { level: 71 });
+    const upgrade = gear('earned-brilliant-staff', { intelligence: 21, vitality: 21, damage: 27 }, { level: 69 });
+    const state = { className: 'Wizard', level: 100, equipment: { mainHand: current }, inventory: [upgrade] };
+    expect(planEarnedEquipmentUpgrade(state)).toMatchObject({ id: upgrade.id, previousId: current.id, slot: 'mainHand', gain: 27.5 });
+    expect(state.equipment.mainHand).toBe(current);
+    expect(state.inventory).toEqual([upgrade]);
+});
+
 test('canonicalization reconciles only empty wire defaults, preserving values, gems and unknown metadata', () => {
     const item = Object.freeze(gear('same', { damage: 1 }));
     expect(canonicalEarnedItem({ ...item, value: 0 })).toEqual(canonicalEarnedItem({ ...item, gems: [] }));

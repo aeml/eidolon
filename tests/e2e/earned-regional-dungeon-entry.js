@@ -5,6 +5,7 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { earnedRegionalDungeonRoute } from '../earnedRegionRoutes.js';
 import { readPlayerState, returnToTown } from './helpers.js';
+import { upgradeEarnedEquipment } from './earned-equipment-upgrades.js';
 
 // A real completed regional save is required. The existing checksum-pinned archive
 // transfer remains the only source of Wizard progression; never seed this gate.
@@ -36,6 +37,9 @@ async function restoreEarnedEncounterReadiness(page, credentials, route) {
     expect(saved).toMatchObject({ ...earned, correctSaveKey: true });
     for (const id of prior) expect(saved.quests.find(q => q.id === id)?.completed, `Saved ${id}`).toBe(true);
     expect(saved.quests.find(q => q.id === chapter)).toMatchObject({ accepted: true, completed: false, count: 0 });
+    // Regional/raid continuation must use the same existing bag-upgrade route
+    // as the first earned dungeon. Keep every actual item; normal UI swaps only.
+    await upgradeEarnedEquipment(page);
     return earned;
 }
 

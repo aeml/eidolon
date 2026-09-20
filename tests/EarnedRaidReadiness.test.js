@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 const restoreEarnedWizard = jest.fn(), openIlyra = jest.fn(), acceptOfferedChapter = jest.fn();
 const readChronicleChapter = jest.fn(), readSavedEarnedHandoff = jest.fn();
 const readPlayerState = jest.fn(), returnToTown = jest.fn();
+const upgradeEarnedEquipment = jest.fn();
 const poll = read => ({ toBe: async value => expect(await read()).toBe(value) });
 jest.unstable_mockModule('@playwright/test', () => ({ expect: Object.assign(value => expect(value), { poll }) }));
 jest.unstable_mockModule('./e2e/earned-earth-continuation.js', () => ({ restoreEarnedWizard }));
@@ -10,6 +11,7 @@ jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({ readChronicl
 jest.unstable_mockModule('./earnedEarthCheckpoint.js', () => ({ readSavedEarnedHandoff }));
 jest.unstable_mockModule('./e2e/dungeon-guide.js', () => ({ openDungeonGuide: jest.fn() }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState, returnToTown }));
+jest.unstable_mockModule('./e2e/earned-equipment-upgrades.js', () => ({ upgradeEarnedEquipment }));
 const { restoreEarnedRaidReadiness } = await import('./e2e/earned-regional-dungeon-entry.js');
 
 const credentials = { username: 'isolated-wizard' };
@@ -33,6 +35,8 @@ test('restores the private save and requires personal prior claims without gener
     expect(restoreEarnedWizard).toHaveBeenCalledWith(page, credentials);
     expect(acceptOfferedChapter).not.toHaveBeenCalled();
     expect(returnToTown).not.toHaveBeenCalled();
+    expect(upgradeEarnedEquipment).toHaveBeenCalledWith(page);
+    expect(readSavedEarnedHandoff.mock.invocationCallOrder.at(-1)).toBeLessThan(upgradeEarnedEquipment.mock.invocationCallOrder[0]);
     expect(saved).toMatchObject({ xp: 42, gold: 321, quests });
 });
 
@@ -51,6 +55,7 @@ test('failed Recall cannot continue with a missing town guide or claim readiness
     await expect(restoreEarnedRaidReadiness(page, credentials, raid, 70)).rejects.toThrow('Recall unavailable');
     expect(readChronicleChapter).not.toHaveBeenCalled();
     expect(acceptOfferedChapter).not.toHaveBeenCalled();
+    expect(upgradeEarnedEquipment).not.toHaveBeenCalled();
 });
 
 test.each(['client', 'saved'])('refuses a missing prior restoration in %s state', async source => {
