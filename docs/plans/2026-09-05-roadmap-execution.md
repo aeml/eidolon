@@ -10,16 +10,17 @@ the whole goal. Started September 5, 2026.
 - Verified live: **Alpha 1.9.23**, exact commit
   `1eb18f5910999bd19e2824c34f05693f1cecc85f`. CI35494967147 passed; the Water
   launch guard independently verified public identities, readiness and notes.
-- Pending publication: **Alpha 1.9.24**, the complete enlarged casino, functional
+- Published; delivery pending: **Alpha 1.9.24** at `d1e707e3`, the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
   Focused money/restart, UI, collision and software-rendered floor checks pass;
   patch notes/login/runtime versions are aligned. See the
-  [release record](2026-09-20-casino-expansion.md). Publication waits for the
-  existing Water run to release Chrome, then Luna watches the normal CI gate.
-- Water-region continuation is running from the accepted earned level43 save
-  under `/tmp/eidolon-water-region-20260920-D2U8te/`. Its frozen source remains
-  unchanged. Do not replay accepted Earth/Verdant/Missing Ferry progress, cancel
-  this run, or launch overlapping native browser work merely because it is slow.
+  [release record](2026-09-20-casino-expansion.md). Publication followed Water
+  cleanup; Luna watches the normal CI gate and independent public verification.
+- Water continuation ended exit1 after1.7h. Actual retained save is level61,
+  four further chapters complete, final Golem hunt25/70. The QA driver's missing
+  regional departure after death/respawn is corrected; resume the saved remaining
+  kills, not accepted chapters. See the [earned record](2026-09-20-earned-continuation.md).
+  Do not overlap native deployment QA with another gameplay run.
 - Remaining full-scope work and accepted results are reconciled in the
   [final integration audit](2026-09-14-final-integration-audit.md): later earned
   regions, remaining dungeon/raid repairs, portal/Dark King integration, balance

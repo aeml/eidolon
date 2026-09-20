@@ -1,6 +1,42 @@
 # Earned campaign continuation with a real party
 
-## Remaining Water region running after1.9.23 delivery
+## Water partial save retained — level61, final hunt25/70
+
+`earnedwaterregion0920a` ended exit1 after1.7h, with terminal phase
+`earned_water_region`. Its owned API/Mongo containers are gone. Independent
+isolated archive restore confirms level61/21946XP/51012Gold, completed shelter
+ledger1/1, Troll hunt60/60, Pearls8/8 and reflections3/3, then accepted but
+uncompleted Aqua Golem hunt25/70 with no granted reward. No Abyssal offer or
+accepted daily quests exist. This is partial campaign evidence, not Water or
+Abyssal acceptance. Source/reports/log remain at the directory below.
+
+Private full archive:
+`/tmp/eidolon-party-checkpoint-earnedwaterregion0920a-VKwGpk/save.archive.gz`, SHA256
+`ebf5969b1e122e7931fd2f7fd0d1b2112c81f619b3e027b93e6830613405b1a0`.
+The continuation catalog now pins these actual fields, all four chapter rewards,
+and the unclaimed hunt. Existing earlier-checkpoint guards remain unchanged.
+Only the account save key is remapped; no items, credit, resources or time are
+manufactured. Resume the remaining45 kills and manual handoff, not prior chapters.
+
+The retained log records one death at25 kills, successful authoritative full
+HP/mana town respawn, then local target search attempting a direct northward walk
+through town (188.03→187.525Z; blocked target0,181). Unlike rest/training recovery,
+the hunt driver's death branch omitted its supplied regional `leaveTown` route.
+That QA-only branch now uses the same ordinary waypoints after respawn. Do not
+relax movement assertions or change collision on this evidence. No new connected
+resume result is claimed. An earlier status describing the run as having no
+deaths was only true of the interim sample, not this terminal result.
+
+The queued1.9.24 casino release published exactd1e707e3 after owned Water cleanup;
+these continuation changes remain separate from that immutable release. Avoid
+overlapping its native deployment QA with another gameplay run.
+
+60 focused checkpoint/continuation tests pass in1.151s, with changed-file lint
+and whitespace checks. The temporary network-isolated Mongo used to inspect the
+archive was removed; the original owner-only archive remains intact. The route
+recovery change is statically reviewed/linted, not yet a connected respawn pass.
+
+## Historical launch and interim observations after1.9.23 delivery
 
 Parent15946 passed CI35494967147 and independent public acceptance
 of1eb18f59/Alpha1.9.23, and its Water gameplay process is live. Launcher/log directory:

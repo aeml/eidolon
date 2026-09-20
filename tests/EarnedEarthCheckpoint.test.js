@@ -90,6 +90,33 @@ test('continues the saved level43 manual reward and fresh investigation without 
     expect(fixture.result().writes).toBe(1);
 });
 
+function partialWaterRegion(character) {
+    completedFerry(character);
+    const checkpoint = earnedEarthCheckpoints[5];
+    Object.assign(character, { level: checkpoint.level, xp: checkpoint.xp, gold: checkpoint.gold });
+    character.quests.pop();
+    character.quests.push(...checkpoint.waterChapters.map(q => ({ ...q })));
+}
+
+test('retains the actual level61 Water chapters, rewards and 25 earned Golem kills', () => {
+    const fixture = exercise(partialWaterRegion, false, earnedEarthCheckpoints[5]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-1).count++; }, p => { p.quests.at(-1).completed = true; },
+    p => { p.quests.at(-1).granted_gold = 600; }, p => { p.quests[3].granted_xp++; },
+    p => { p.quests[4].accepted = false; }, p => { p.quests[5].max_count++; },
+    p => { p.quests.pop(); }, p => { p.quests.push({ ...p.quests[3] }); },
+    p => { p.quests.push({ id: 'chronicle_05_drowned_name', accepted: false }); }
+])('refuses altered Water continuation state before copying', change => {
+    const fixture = exercise(p => { partialWaterRegion(p); change(p); }, false, earnedEarthCheckpoints[5]);
+    expect(fixture.run).toThrow(/earned Water/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests[2].granted_gold = 0; }, p => { p.quests[2].granted_xp++; },
     p => { p.quests[3].accepted = true; }, p => { p.quests[3].completed = true; },

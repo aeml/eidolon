@@ -1,8 +1,9 @@
 # Expanded Lanternhold Casino — next deployment batch
 
-Status: Alpha 1.9.24 batch implemented and locally checked; **not deployed yet**.
-Keep the full batch together. Publication waits for the running Water campaign
-to release native Chrome, avoiding overlap with self-hosted deployment QA.
+Status: Alpha 1.9.24 batch published at exact `d1e707e3`; **live delivery not yet
+verified**. The full batch shipped together after the Water campaign terminated
+and its owned services released native Chrome. Luna monitors CI and independent
+public verification. Do not overlap another native gameplay run with delivery QA.
 Parent: [casino roadmap](2026-09-09-town-casino-roadmap.md).
 
 ## Implemented locally

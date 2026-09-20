@@ -91,6 +91,10 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
         console.log('[story-hunt] recovery equipment', JSON.stringify({ equipped,
             combat: await combatSnapshot(page) }));
         expect((await readChronicleChapter(page, id)).count).toBeGreaterThanOrEqual(credit);
+        // Respawn returns to Lanternhold, just like a rest/training stop.
+        // Regional target search is local travel, not a route through town
+        // buildings and the realm gate. Reuse the ordinary departure path.
+        if (hunt.huntingRealm !== 'earth') await leaveTown();
     };
     while ((await readChronicleChapter(page, id)).count < hunt.count) {
         if (earnedTownRecoveryEnabled()) await maintainEarnedInventory(page, { leaveTown });

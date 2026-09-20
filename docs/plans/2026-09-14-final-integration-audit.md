@@ -1,15 +1,19 @@
 # 1.10 final integration — evidence and remaining work
 
-## September20 checkpoint —1.9.22 delivered, Water continuation started
+## September20 checkpoint —1.9.23 delivered, Water partial save retained
 
 Alpha1.9.23 at1eb18f59 is delivered: Luna reports all CI35494967147 jobs passed
 at07:14:35UTC (31m09s). The Water launcher independently records
 `PUBLIC_RELEASE_VERIFIED` for the exact commit/version, ready database, login,
 cumulative audit-recovery notes and exact party CSS. Water-region parent15946
-is running after that release guard, from the accepted level43 save.
-Frozen source `/tmp/eidolon-water-region-20260920-D2U8te/source` must remain
-unchanged; do not launch competing native browser work. See the linked earned
-record for guards and full remaining-region scope.
+ended exit1 after1.7h; actual archive restore confirms level61/21946XP/51012Gold,
+four further Water chapters complete and the final Golem hunt25/70 unclaimed.
+After a death and successful town respawn, its driver skipped regional departure
+and tried a direct blocked town walk. The QA route is corrected; full Water and
+Abyssal remain open. Resume the retained save, not completed chapters. See the
+linked earned record for evidence and bounds. Alpha1.9.24 casino/adminVIP at
+d1e707e3 published after owned Water cleanup; Luna monitors delivery. Do not
+overlap deployment native-browser QA with another gameplay run.
 
 Alpha1.9.22 at4f39328b is accepted: CI35492191742 passed all jobs in21m44s,
 ending06:00:17UTC; independent public verification confirms matching identities,

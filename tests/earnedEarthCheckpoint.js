@@ -14,7 +14,17 @@ export const earnedEarthCheckpoints = Object.freeze([
         waterProgress: { accepted: true, completed: false, count: 58 } },
     { sha: 'e6a43eaf1a70cb8e681ef7a14e1a0e0125b91e4b22b294b642c376807887055e',
         level: 43, xp: 35906, gold: 27416, count: 50, completed: true,
-        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 } }
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 } },
+    { sha: 'ebf5969b1e122e7931fd2f7fd0d1b2112c81f619b3e027b93e6830613405b1a0',
+        level: 61, xp: 21946, gold: 51012, count: 50, completed: true,
+        waterProgress: { accepted: true, completed: true, count: 60, grantedGold: 400, grantedXP: 28593 },
+        waterChapters: [
+            { id: 'chronicle_water_flood_shelter', accepted: true, completed: true, count: 1, max_count: 1, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_snow_debts', accepted: true, completed: true, count: 60, max_count: 60, granted_gold: 500, granted_xp: 45093 },
+            { id: 'chronicle_04_pearls_without_tides', accepted: true, completed: true, count: 8, max_count: 8, granted_gold: 300, granted_xp: 18038 },
+            { id: 'chronicle_water_false_reflection', accepted: true, completed: true, count: 3, max_count: 3, granted_gold: 150, granted_xp: 3006 },
+            { id: 'chronicle_water_unmastered_current', accepted: true, completed: false, count: 25, max_count: 70, granted_gold: 0, granted_xp: 0 }
+        ] }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.
@@ -44,11 +54,20 @@ export function earnedEarthTransferScript(username, checkpoint = earnedEarthChec
                 const next = character.quests.find(q => q.id === 'chronicle_water_flood_shelter');
                 if (water.max_count !== 60 || (water.granted_gold || 0) !== (expected.grantedGold || 0) ||
                     (water.granted_xp || 0) !== (expected.grantedXP || 0) ||
-                    (!expected.completed && next) || (expected.completed &&
+                    (!expected.completed && next) || (expected.completed && ${!checkpoint.waterChapters} &&
                         (!next || next.accepted || next.completed || next.count !== 0)))
                     throw Error('Unexpected earned Water reward or next chapter');
             }
         }
+        const chapters = ${JSON.stringify(checkpoint.waterChapters || [])};
+        for (const expected of chapters) {
+            const matches = character.quests.filter(q => q.id === expected.id);
+            if (matches.length !== 1 || Object.entries(expected).some(([key, value]) =>
+                (key.startsWith('granted_') ? (matches[0][key] || 0) : matches[0][key]) !== value))
+                throw Error('Unexpected earned Water continuation');
+        }
+        if (chapters.length && character.quests.some(q => q.id === 'chronicle_05_drowned_name'))
+            throw Error('Premature earned Water dungeon offer');
         character.name = ${JSON.stringify(username)};
         const target = db.getSiblingDB('eidolon').users;
         const result = target.updateOne({ username: ${JSON.stringify(username)}, 'characters.0': { $exists: false } },
