@@ -1,9 +1,13 @@
 # Expanded Lanternhold Casino — next deployment batch
 
-Status: Alpha 1.9.24 batch published at exact `d1e707e3`; **live delivery not yet
-verified**. The full batch shipped together after the Water campaign terminated
-and its owned services released native Chrome. Luna monitors CI and independent
-public verification. Do not overlap another native gameplay run with delivery QA.
+Status: **Alpha 1.9.24 is verified live**, exact commit
+`d1e707e3df87ff2ebe98bf799d04dbd6db208e74`. All CI35500889856 jobs passed,
+finishing September20 at09:19:12UTC in23m45s. Public verification confirms matching
+frontend/backend identity, ready database, login version, cumulative notes and
+five exact casino assets; no production account was changed for verification.
+The Water continuation independently records the same `PUBLIC_RELEASE_VERIFIED`
+receipt before starting under native58053. The full casino batch shipped together.
+This closes delivery of the expansion, not the full1.10 campaign/performance audit.
 Parent: [casino roadmap](2026-09-09-town-casino-roadmap.md).
 
 ## Implemented locally

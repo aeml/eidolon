@@ -7,20 +7,23 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 20
 
-- Verified live: **Alpha 1.9.23**, exact commit
-  `1eb18f5910999bd19e2824c34f05693f1cecc85f`. CI35494967147 passed; the Water
-  launch guard independently verified public identities, readiness and notes.
-- Published; delivery pending: **Alpha 1.9.24** at `d1e707e3`, the complete enlarged casino, functional
+- Verified live: **Alpha 1.9.24**, exact commit
+  `d1e707e3df87ff2ebe98bf799d04dbd6db208e74`. CI35500889856 passed at09:19:12UTC
+  in23m45s; public identities, readiness, notes and five casino assets match.
+- Delivered: the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
   Focused money/restart, UI, collision and software-rendered floor checks pass;
   patch notes/login/runtime versions are aligned. See the
   [release record](2026-09-20-casino-expansion.md). Publication followed Water
-  cleanup; Luna watches the normal CI gate and independent public verification.
+  cleanup; delivery verification is complete.
 - Water continuation ended exit1 after1.7h. Actual retained save is level61,
   four further chapters complete, final Golem hunt25/70. The QA driver's missing
   regional departure after death/respawn is corrected; resume the saved remaining
   kills, not accepted chapters. See the [earned record](2026-09-20-earned-continuation.md).
-  Do not overlap native deployment QA with another gameplay run.
+  Continuation `earnedwaterregion0920b` is now running under native58053 after
+  that exact release passed; Luna watches it. Do not overlap native browser work.
+- Local next-batch administration follow-up at2ca90f7d adds bounded admission
+  rejection audits and dual-store-failure recovery; it is not in the live release.
 - Remaining full-scope work and accepted results are reconciled in the
   [final integration audit](2026-09-14-final-integration-audit.md): later earned
   regions, remaining dungeon/raid repairs, portal/Dark King integration, balance

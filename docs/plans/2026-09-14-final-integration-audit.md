@@ -1,6 +1,20 @@
 # 1.10 final integration — evidence and remaining work
 
-## September20 checkpoint —1.9.23 delivered, Water partial save retained
+## Current delivery — Alpha1.9.24 and retained Water continuation
+
+Exactd1e707e3/Alpha1.9.24 is verified live. CI35500889856 passed all jobs in23m45s,
+ending September20 at09:19:12UTC. Public client/server identities, ready database,
+login/notes and five exact casino assets match. The enlarged equal-floor venue,
+all requested game counts, stash/sign and adminVIP/100EP shipped as one batch;
+see [expansion evidence](2026-09-20-casino-expansion.md).
+
+After that guard, native58053/run`earnedwaterregion0920b` started from the actual
+level61 full save, retaining completed chapters and25/70 Golem kills. Frozen
+source534da08b and existing bounds remain; Luna monitors terminal status. No
+competing native browser work. Full Water/Abyssal and later campaign/raids remain
+open. Local administration admission/outage follow-ups at2ca90f7d are not deployed.
+
+## Previous September20 checkpoint —1.9.23 and Water partial save
 
 Alpha1.9.23 at1eb18f59 is delivered: Luna reports all CI35494967147 jobs passed
 at07:14:35UTC (31m09s). The Water launcher independently records

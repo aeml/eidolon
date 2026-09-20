@@ -1,8 +1,10 @@
 # Automatic administrator VIP and monthly EP
 
 User confirmed September 20: automatic administrator VIP includes **access plus
-100 EP per month**. Implemented locally for the next complete casino deployment;
-not yet a live-release claim. No production balances or roles were changed.
+100 EP per month**. Verified delivered in Alpha1.9.24 atd1e707e3:
+CI35500889856 passed and independent public identity/readiness checks agree.
+The focused/connected allowance evidence below is separate from this read-only
+delivery check; no production balances or roles were changed for verification.
 
 ## Policy and implementation
 
