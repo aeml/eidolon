@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { projectGroundOffsetInPage } from './groundInputProjection.js';
+import { planVisibleGroundStepInPage, projectGroundOffsetInPage } from './groundInputProjection.js';
 
 beforeEach(() => {
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
@@ -46,4 +46,24 @@ test('strict checked paths never shrink silently to a different destination', ()
     const fallback = projectGroundOffsetInPage({ deltaX: 150, deltaZ: 0 });
     expect(fallback.canvas).toBe(true);
     expect(fallback.scale).toBeLessThan(1);
+});
+
+test('visible-prefix planning preserves direction before strict movement and arrival are constructed', () => {
+    const step = { dx: -12, dz: 0 };
+    const full = projectGroundOffsetInPage({ deltaX: step.dx, deltaZ: step.dz, allowScaling: false });
+    document.elementFromPoint = x => ({ tagName: x < full.x + 1 ? 'BUTTON' : 'CANVAS' });
+    const visible = planVisibleGroundStepInPage(step);
+    expect(visible).toEqual({ dx: -9, dz: 0 });
+    expect(step).toEqual({ dx: -12, dz: 0 });
+    const strict = projectGroundOffsetInPage({ deltaX: visible.dx, deltaZ: visible.dz, allowScaling: false });
+    expect(strict).toMatchObject({ canvas: true, scale: 1 });
+    expect(clickedWorld(strict).x).toBeCloseTo(window.game.player.position.x - 9, 7);
+});
+
+test('hidden ground, invalid vectors and sub-unit steps cannot become movement input', () => {
+    expect(planVisibleGroundStepInPage({ dx: .5, dz: 0 })).toBeNull();
+    expect(planVisibleGroundStepInPage({ dx: NaN, dz: 3 })).toBeNull();
+    expect(planVisibleGroundStepInPage(null)).toBeNull();
+    document.elementFromPoint = () => ({ tagName: 'BUTTON' });
+    expect(planVisibleGroundStepInPage({ dx: 12, dz: 0 })).toBeNull();
 });

@@ -565,6 +565,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                             const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival,
                                 PartyFormationRouteUnavailable } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+                            const { planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
                             const g = window.game, p = g.player;
                             const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                                 other.isActive && other.stats && other.state !== 'DEAD' && other.position)
@@ -586,6 +587,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                 if (error instanceof PartyFormationRouteUnavailable) return null;
                                 throw error;
                             }
+                            // HUD-covered ground is not a usable click. Plan a
+                            // visible prefix first, then validate that exact
+                            // segment and its new arrival through normal input.
+                            step = planVisibleGroundStepInPage(step);
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
                                 arrival: partyFormationArrival(p.position, step, anchor.instance) };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,

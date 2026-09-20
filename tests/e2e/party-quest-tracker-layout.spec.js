@@ -84,6 +84,33 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900
             await page.locator('.party-support-mode').click();
             await expect(last).toHaveAttribute('aria-pressed', 'false');
             await page.screenshot({ path: testInfo.outputPath(`raid-roster-${count}.png`) });
+            if (count === 5 && viewport.width === 1280) {
+                const projection = await page.evaluate(async () => {
+                    const THREE = await import('three');
+                    const { projectGroundOffsetInPage, planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
+                    const canvas = document.createElement('canvas');
+                    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1';
+                    document.body.appendChild(canvas);
+                    const position = new THREE.Vector3(100016.02238666322, .5, 19782.617271018567);
+                    const camera = new THREE.OrthographicCamera(-15 * 1280 / 720, 15 * 1280 / 720, 15, -15, .1, 2000);
+                    camera.position.copy(position).add(new THREE.Vector3(100, 100, 100));
+                    camera.lookAt(position); camera.updateMatrixWorld(true);
+                    window.game = { player: { position }, renderSystem: { camera },
+                        inputManager: { groundPlane: new THREE.Plane(new THREE.Vector3(0, 1, 0), 0) } };
+                    const original = { dx: -10.811994311824531, dz: 5.205840854374439 };
+                    const blocked = projectGroundOffsetInPage({ deltaX: original.dx, deltaZ: original.dz, allowScaling: false });
+                    const owner = document.elementFromPoint(blocked.x, blocked.y)?.closest('#party-panel')?.id;
+                    const step = planVisibleGroundStepInPage(original);
+                    const strict = step && projectGroundOffsetInPage({ deltaX: step.dx, deltaZ: step.dz, allowScaling: false });
+                    delete window.game; canvas.remove();
+                    return { owner, blocked: blocked.canvas, original, step, strict };
+                });
+                expect(projection.owner).toBe('party-panel');
+                expect(projection.blocked).toBe(false);
+                expect(projection.step.dx).toBeCloseTo(projection.original.dx * .75);
+                expect(projection.step.dz).toBeCloseTo(projection.original.dz * .75);
+                expect(projection.strict).toMatchObject({ canvas: true, scale: 1 });
+            }
         }
         await page.evaluate(() => window.__partyTrackerLayout.social.setPartyPanelVisible(false));
         expect((await page.locator('#objectives-panel').boundingBox()).height).toBeGreaterThan(66);

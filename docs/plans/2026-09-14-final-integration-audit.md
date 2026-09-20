@@ -1,17 +1,18 @@
 # 1.10 final integration — evidence and remaining work
 
-## September20 checkpoint — raid roster delivered, Fire underway
+## September20 checkpoint — raid roster delivered, Fire input correction
 
 [Alpha1.9.21](2026-09-20-release1-9-21-raid-roster.md) is accepted at44061ffe:
 all CI35483868157 jobs pass, public client/server identities match and database
 is ready. Five-to-ten-member desktop raid rosters fit above default chat; hosted
 checks now overlap without dropping gates. Total measured CI duration20m55s.
 
-[Fire run fireraid0920b](2026-09-20-ember-crown-party-validation.md) started
-after that exact workflow completed. It includes an ordinary-pointer-tested
-fix for the QA driver's missed exposed golem corners, not a gameplay stat or
-watchdog change. Luna `/root/watch_ember_0920b` monitors session33534. There is
-no completed raid result yet. Rootheart, Molten and other documented accepted
+[Fire run fireraid0920b](2026-09-20-ember-crown-party-validation.md) ended exit1
+after5.3minutes: first-room combat progressed, then a follower's planned ground
+click fell behind the wider roster. Exact-coordinate real-UI reproduction passes
+with visible-prefix planning; no stats, gathering deadline or combat watchdog
+changed. Session33534 is terminal, artifacts preserved, owned containers gone.
+Full Fire acceptance remains open. Rootheart, Molten and other documented accepted
 checks below stay accepted within their scope. Remaining Water/Fire/Air raids,
 earned full campaign, relevant dungeon families, integration and physical-phone
 checks remain open. Historical pending/failure paragraphs below are not orders
