@@ -1,11 +1,15 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.25 verified, earned Molten partial
+## Current delivery — 1.9.26 verified, earned Molten partial
 
-Alpha1.9.26 pushed as`b1c5b06996286fb24ed77efe0fdaa1a89d130032`;
-CI35532592235 is in progress under Luna monitoring. No native browser test
-overlaps it. Exact production identity/readiness verification remains required
-before calling1.9.26 live;1.9.25 is still the last verified public receipt.
+Alpha1.9.26 is verified live at`b1c5b06996286fb24ed77efe0fdaa1a89d130032`.
+CI35532592235 passed September20 at19:56:33UTC in24m46s, including live
+character QA; Luna supplied the terminal result. No native browser test overlapped
+delivery. Read-only public verification matches both exact release identities,
+database readiness, login version, cumulative1.9.26/25/24 notes and three exact
+version-rewritten engine assets. Receipt and verifier:
+`/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`. No production account mutations.
+The full1.10 goal remains open; this is delivery acceptance, not raid acceptance.
 
 Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
 `Party failed to gather before the next pull`, with all five surviving. No
@@ -31,12 +35,11 @@ Cross-agent native handles proved unavailable to Luna, so it monitored one
 read-only wait on the verified launcher and inspected the actual terminal footer.
 A missing cross-agent handle was not mistaken for a stopped run.
 
-Alpha1.9.26 is prepared locally as one presentation batch: walking service
+Alpha1.9.26 shipped as one presentation batch: walking service
 hint refresh, transition cleanup and encounter-timed Dark King opening. Login,
 client/server/container/deploy identities and patch notes advance together;
-prior notes remain intact. Fire is now terminal, freeing the deployment browser
-queue.1.9.25 remains the last verified production until CI and exact public
-identity/readiness verification confirm the next release.
+prior notes remain intact. Fire was terminal before delivery, freeing the
+deployment browser queue. CI and public verification now confirm this release.
 The release batch was prepared at72089aed;275 version/history checks pass11.085s,
 with scoped lint, shell syntax and diff checks. The exact pushed identity and CI
 are recorded above.

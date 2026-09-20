@@ -7,33 +7,31 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 20
 
-- Verified live: **Alpha 1.9.25**, exact commit
-  `0a104720cad83d2314534ec042920ee0236207ad`. CI35503417369 passed at10:14:07UTC
-  in23m36s; public identities, readiness, notes and three stash assets match.
+- Verified live: **Alpha 1.9.26**, exact commit
+  `b1c5b06996286fb24ed77efe0fdaa1a89d130032`. CI35532592235 passed at19:56:33UTC
+  in24m46s; public identities, readiness, notes and three engine assets match.
+  Read-only receipt: `/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`.
 - Delivered: the complete enlarged casino, functional
   roulette/baccarat, admin VIP/100 monthly EP and administration recovery batch.
   Focused money/restart, UI, collision and software-rendered floor checks pass;
   patch notes/login/runtime versions are aligned. See the
   [release record](2026-09-20-casino-expansion.md). Publication followed Water
   cleanup; delivery verification is complete.
-- Water continuation ended exit1 after1.7h. Actual retained save is level61,
-  four further chapters complete, final Golem hunt25/70. The QA driver's missing
-  regional departure after death/respawn is corrected; resume the saved remaining
-  kills, not accepted chapters. See the [earned record](2026-09-20-earned-continuation.md).
-  Continuation `earnedwaterregion0920b` ended exit1 after48.8s during stash
-  preparation, before new kills. Actual saved progression is unchanged; owned
-  services are gone. The [stash approach correction](2026-09-20-stash-approach.md)
-  passed desktop/portrait/landscape in23.4s and is live in1.9.25. Guarded
-  `earnedwaterregion0920c` passed CI/public verification and is starting the
-  retained hunt in native47339; no completed chapters replayed.
+- Earned Water, Abyssal and Fire-story continuations have passed. Latest earned
+  Molten run retained four defeated bosses but failed traversal before completion;
+  its private save preserves the accepted, unfinished Molten chapter. See the
+  [earned record](2026-09-20-earned-continuation.md) for exact archives and limits.
+  Fire raid remains unaccepted: the latest attempt failed regrouping with all five
+  alive. A reproduced short-corner planner fix is staged for the next isolated run,
+  after delivery; it is not yet native acceptance or part of1.9.26.
 - Bounded administration admission rejection audits and dual-store-failure
-  recovery are delivered in1.9.25. Local service range-hint refresh atcac54acd
-  is held for the next batch, with43 focused tests passing.
+  recovery are delivered in1.9.25. Service range-hint refresh, stale instance-hover
+  cleanup and encounter-timed Dark King opening are delivered in1.9.26.
 - Remaining full-scope work and accepted results are reconciled in the
   [final integration audit](2026-09-14-final-integration-audit.md): later earned
   regions, remaining dungeon/raid repairs, portal/Dark King integration, balance
   and final release acceptance. User-deferred physical-phone checks are not
-  passes. Neither 1.9.25 nor a successful individual test completes the goal.
+  passes. Neither 1.9.26 nor a successful individual test completes the goal.
 
 The September8 entries below are historical evidence, not active processes or
 instructions to publish those old candidates. Preserve accepted evidence and
