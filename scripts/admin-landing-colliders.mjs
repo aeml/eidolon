@@ -5,6 +5,7 @@ import { createCasinoInterior, createCasinoFurnitureColliders } from '../src/art
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../src/art/ChronicleSiteModels.js';
 import { chronicleInvestigations } from '../src/data/chronicleCatalog.js';
+import { getDarkRealmCampColliders } from '../src/art/ProceduralDarkRealm.js';
 
 // Generated from actual client collision builders, not decorative mesh bounds.
 // Boxes: [centerX, centerZ, halfX, halfZ, yaw, minY, maxY].
@@ -32,6 +33,7 @@ export async function collectAdminLandingColliders() {
     await generator.createTown(0, 200, 100);
     await generator.createOverworldStructures();
     const darkRealm = new CollisionManager();
+    getDarkRealmCampColliders().forEach(box => darkRealm.addCollider(box));
     for (const chapter of chronicleInvestigations) for (const site of chapter.sites) {
         if (site.kind !== 'inspect') continue;
         const model = createChronicleSiteModel(site, chapter.realm);

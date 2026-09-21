@@ -1,11 +1,18 @@
 import * as THREE from 'three';
-import { createDarkRealmScene } from '../src/art/ProceduralDarkRealm.js';
+import { createDarkRealmScene, getDarkRealmCampColliders } from '../src/art/ProceduralDarkRealm.js';
+import { CollisionManager } from '../src/core/CollisionManager.js';
 import { darkRealmFixture } from './darkRealmFixture.js';
 
 test('expedition renders one floor union, four distinct districts and elemental camp lanterns', () => {
     const layout = darkRealmFixture(), scene = new THREE.Group();
     const before = JSON.stringify(layout);
-    const root = createDarkRealmScene(scene, layout);
+    const collisions = new CollisionManager();
+    const root = createDarkRealmScene(scene, layout, collisions);
+    expect(collisions.colliders).toEqual(getDarkRealmCampColliders());
+    expect(collisions.colliders).toHaveLength(6);
+    for (const point of [[40000, 40800], [40012, 40800], [39988, 40800], [40000, 40814]]) {
+        expect(collisions.colliders.some(box => box.clone().expandByScalar(1.3).containsPoint(new THREE.Vector3(point[0], 0, point[1])))).toBe(false);
+    }
     expect(root.parent).toBe(scene);
     expect(root.position.toArray()).toEqual([40000, 0, 40800]);
     expect(JSON.stringify(layout)).toBe(before);
@@ -22,11 +29,11 @@ test('expedition renders one floor union, four distinct districts and elemental 
             Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top)).toBe(false);
     }
     expect(new Set(root.userData.landmarks.map(p => p.kind)))
-        .toEqual(new Set(['resonance-lantern', 'shore', 'archive', 'foundry', 'city']));
+        .toEqual(new Set(['resonance-lantern', 'camp-shelter', 'shore', 'archive', 'foundry', 'city']));
     expect(root.userData.landmarks.filter(p => p.kind === 'resonance-lantern')).toHaveLength(4);
     for (const landmark of root.userData.landmarks) {
         expect(layout.walkRects.some(r => Math.abs(landmark.x - r.x) <= r.width / 2 &&
-            Math.abs(landmark.z - r.z) <= r.height / 2)).toBe(false);
+            Math.abs(landmark.z - r.z) <= r.height / 2)).toBe(['resonance-lantern', 'camp-shelter'].includes(landmark.kind));
     }
     const meshes = [];
     root.traverse(node => { if (node.isMesh) meshes.push(node); });

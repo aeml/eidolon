@@ -1,13 +1,14 @@
 import { Entity } from './Entity.js';
 import * as THREE from 'three';
-import { CHRONICLE_WITNESSES } from '../data/chronicleWitnesses.js';
+import { findChronicleWitness } from '../data/chronicleWitnesses.js';
 
 // A conversational resident, not an Actor or quest giver. No attack target,
 // quest marker, local completion or reward-producing message is introduced.
 export class ChronicleWitness extends Entity {
     constructor(id) {
         super(id);
-        const witness = CHRONICLE_WITNESSES.find(value => value.id === id);
+        const witness = findChronicleWitness(id);
+        this.witnessInstanceId = witness?.instanceId || '';
         this.type = 'ChronicleWitness';
         this.name = witness?.name || 'Covenant witness';
         this.meshType = witness?.model || 'QuestNPC';
@@ -34,7 +35,8 @@ export class ChronicleWitness extends Entity {
 
     interact(engine) {
         const player = engine.player;
-        if (!player || player.state === 'DEAD' || !this.isActive || engine.currentInstanceId) return false;
+        if (!player || player.state === 'DEAD' || !this.isActive ||
+            (engine.currentInstanceId || '') !== this.witnessInstanceId) return false;
         const distance = Math.hypot(player.position.x - this.position.x, player.position.z - this.position.z);
         if (!Number.isFinite(distance) || distance > 5) return false;
         return engine.uiManager?.quest?.openWitnessConversation(this.id) || false;

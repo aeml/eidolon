@@ -141,7 +141,33 @@ apply, receipt replay, floor bounds and every grounded discovery wall. Generated
 geometry matches the actual client collider builders (Jest1/1,8.378s), with
 Dark Realm walls separate from overworld shapes. Scoped lint/diff checks passed.
 
-Still required: inhabited/landmark composition at district scale, connected
+### Expedition residents and readable foothold
+
+Local content now includes Maelin and Scout Ren at the arrival camp, and Captain
+Elin, Clerk Oss, Furnace Tender Vara and Baker Oren beside the corresponding
+district records. Each has an initial optional conversation, a discussion unlocked
+by its specific recorded discovery, and a post-King response. Their voices cover
+the costs of rescue, complicity, endless labor and safety without a future; none
+replaces Ilyra, offers services, grants rewards or auto-completes an objective.
+Town witnesses remain in town. Interaction requires the witness's own scene,
+physical proximity, a living reader and an active entity.
+
+Four smaller elemental lanterns and two canvas supply/sleeping shelters now sit
+near the arrival point. Their footprints are shared by client walking and the
+generated administrative landing checks; spawn, Ilyra and camp residents remain
+unobstructed. District witnesses stand on open discovery approaches, with no
+enemy spawning within15 units. This does not make districts safe from pursuers.
+
+Evidence:30 client checks across witness, camp geometry and canonical admin
+colliders passed2.499s; Dark Realm/witness/admin Go checks passed1.431s. Scoped
+lint/diff passed. The native presentation check passed8.7s after the canvas trim
+and phone close-approach framing changes; desktop camp and phone Maelin images
+were inspected. These are rendered fixtures, not physical-phone acceptance.
+The connected route now also clicks Maelin and checks her read-only, spoiler-
+gated conversation before accepting Ilyra's quest. That extended route still
+needs to run with ordinary travel defense enabled.
+
+Still required: further district-scale composition where needed, connected
 character entry/inspection/turn-in and
 the coordinated100-hour/8–12-hour pacing pass. Authored counts alone do not
 establish duration. The existing earned checkpoint19 and outstanding dungeon,

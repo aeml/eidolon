@@ -1,3 +1,10 @@
+import { DARK_REALM_WITNESSES } from './darkRealmWitnesses.js';
+
+export function findChronicleWitness(id) {
+    return CHRONICLE_WITNESSES.find(witness => witness.id === id)
+        || DARK_REALM_WITNESSES.find(witness => witness.id === id);
+}
+
 // Read-only conversations. World identities/positions are mirrored by
 // server/internal/game/chronicle_witnesses.go; none offers quest rewards.
 export const CHRONICLE_WITNESSES = [

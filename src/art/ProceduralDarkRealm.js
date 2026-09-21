@@ -3,6 +3,19 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
 import { DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
 
+const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
+const CAMP_SHELTERS = [[-22, 12], [22, 12]];
+
+// The same footprints feed ordinary walking and generated admin landings.
+// Canvas shelters are closed supplies/sleeping tents, not walk-through rooms.
+export function getDarkRealmCampColliders(origin = { x: 40000, z: 40800 }) {
+    return [...CAMP_LANTERNS.map(([x, z]) => [x, z, 1.1, 1.1, 6]),
+        ...CAMP_SHELTERS.map(([x, z]) => [x, z, 3.4, 3.4, 5])]
+        .map(([x, z, hx, hz, height]) => new THREE.Box3(
+            new THREE.Vector3(origin.x + x - hx, -1, origin.z + z - hz),
+            new THREE.Vector3(origin.x + x + hx, height, origin.z + z + hz)));
+}
+
 // Streets should support readable actors and discoveries, not repeat the
 // Nexus's luminous fracture pattern across an entire outdoor district.
 function expeditionStoneTexture() {
@@ -27,14 +40,15 @@ function expeditionStoneTexture() {
     return texture;
 }
 
-// An open-air expedition, not another sequence of enclosed boss rooms. All
-// solid scenery stays beyond authoritative floors; streets remain unobstructed.
-export function createDarkRealmScene(scene, layout) {
+// An open-air expedition, not another sequence of enclosed boss rooms. District
+// silhouettes stay outside the floors; camp solids have shared walk colliders.
+export function createDarkRealmScene(scene, layout, collisionManager = null) {
     if (!layout?.rooms?.length || !layout?.walkRects?.length) throw new Error('Dark Realm requires authoritative geography');
     const root = new THREE.Group();
     root.name = 'dark-realm-expedition';
     const origin = layout.rooms[0];
     root.position.set(origin.x, 0, origin.z);
+    getDarkRealmCampColliders(origin).forEach(box => collisionManager?.addCollider(box));
     const floorMaterial = new THREE.MeshStandardMaterial({ map: expeditionStoneTexture(), roughness: .96 });
     const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
     for (const rect of floors) {
@@ -83,15 +97,29 @@ export function createDarkRealmScene(scene, layout) {
             block(bronze, [1, .025, room.height - 20], [x + side * 15, .13, z]);
         }
         if (index === 0) {
-            for (const [i, offset] of [[-1, -1], [1, -1], [1, 1], [-1, 1]].entries()) {
-                const px = x + offset[0] * (room.width / 2 + 10);
-                const pz = z + offset[1] * (room.height / 2 + 10);
+            for (const [i, offset] of CAMP_LANTERNS.entries()) {
+                const px = x + offset[0], pz = z + offset[1];
                 const elemental = new THREE.MeshStandardMaterial({ color: [0x8bb96b, 0x70bcd8, 0xe99663, 0xb9a9ed][i],
                     emissive: [0x8bb96b, 0x70bcd8, 0xe99663, 0xb9a9ed][i], emissiveIntensity: .9 });
-                block(stone, [8, 3, 8], [px, 1.5, pz]);
-                block(bronze, [2, 12, 2], [px, 9, pz]);
-                block(elemental, [4, 6, 4], [px, 18, pz], Math.PI / 4);
+                block(stone, [2.2, 1.2, 2.2], [px, .6, pz]);
+                block(bronze, [.4, 3.4, .4], [px, 2.9, pz]);
+                block(elemental, [1.2, 1.6, 1.2], [px, 5, pz], Math.PI / 4);
                 root.userData.landmarks.push({ kind: 'resonance-lantern', x: px + origin.x, z: pz + origin.z });
+            }
+            const canvas = new THREE.MeshStandardMaterial({ color: 0x587c83, roughness: .94 });
+            for (const [sx, sz] of CAMP_SHELTERS) {
+                const px = x + sx, pz = z + sz;
+                block(canvas, [6.4, 2, 6.4], [px, 1.1, pz]);
+                block(shadow, [1.8, 1.8, .03], [px, 1, pz + 3.22]);
+                block(bronze, [6.45, .1, 6.45], [px, 2.13, pz]);
+                for (const side of [-1, 1]) block(bronze, [.08, 1.9, .04], [px + side * 1, 1.05, pz + 3.24]);
+                const roof = new THREE.Mesh(new THREE.CylinderGeometry(0, 4.6, 2.8, 4, 1, false, Math.PI / 4), canvas);
+                roof.position.set(px, 3.5, pz);
+                roof.name = 'expedition-canvas-shelter';
+                roof.castShadow = true;
+                root.add(roof);
+                for (const side of [-1, 1]) block(bronze, [.14, 2.3, .14], [px + side * 3.2, 1.15, pz + 3.2]);
+                root.userData.landmarks.push({ kind: 'camp-shelter', x: px + origin.x, z: pz + origin.z });
             }
             continue;
         }

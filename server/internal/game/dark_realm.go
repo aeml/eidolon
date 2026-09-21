@@ -78,6 +78,25 @@ func (w *World) spawnDarkRealmCamp() {
 	w.AddEntity(&Entity{ID: darkRealmWizardID, Type: TypeNPC, SubType: "StoryWizard",
 		Name: "Archmage Ilyra · Resonant Projection", InstanceID: DarkRealmInstanceID,
 		X: 40012, Z: 40800, SpawnX: 40012, SpawnZ: 40800, Y: .5, State: "IDLE", Scale: 1})
+	for _, witness := range darkRealmWitnesses {
+		w.AddEntity(&Entity{ID: witness.id, Name: witness.name, Type: TypeNPC, SubType: "ChronicleWitness",
+			InstanceID: DarkRealmInstanceID, X: witness.x, Z: witness.z, SpawnX: witness.x, SpawnZ: witness.z,
+			Y: .5, State: "IDLE", Scale: 1, Rotation: math.Pi})
+	}
+}
+
+// Read-only conversations, never replacement merchants or quest givers.
+// District witnesses stand on the open approaches to their own field records.
+var darkRealmWitnesses = []struct {
+	id, name string
+	x, z     float64
+}{
+	{"dark-witness-maelin", "Artificer Maelin", 39988, 40800},
+	{"dark-witness-ren", "Scout Ren", 40000, 40814},
+	{"dark-witness-elin", "Captain Elin", 39900, 40548},
+	{"dark-witness-oss", "Clerk Oss", 39200, 40548},
+	{"dark-witness-vara", "Furnace Tender Vara", 39180, 39568},
+	{"dark-witness-oren", "Baker Oren", 40130, 39838},
 }
 
 // Run after saved quests/level have loaded but before inserting the character

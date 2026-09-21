@@ -2,6 +2,8 @@ import { jest } from '@jest/globals';
 import * as THREE from 'three';
 import fs from 'node:fs';
 import { CHRONICLE_WITNESSES } from '../src/data/chronicleWitnesses.js';
+import { DARK_REALM_WITNESSES } from '../src/data/darkRealmWitnesses.js';
+import { darkRealmChapters } from '../src/data/chronicleCatalog.js';
 import { CHRONICLE_RESTORATIONS } from '../src/core/ChronicleRestoration.js';
 import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
 import { getWitnessConversation } from '../src/ui/ChronicleWitnessConversation.js';
@@ -12,13 +14,14 @@ import { QuestUI } from '../src/ui/QuestUI.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { Entity } from '../src/entities/Entity.js';
 
-test.each(CHRONICLE_WITNESSES)('$name clicks its own conversation after borrowing a pooled service model', async witness => {
+test.each([...CHRONICLE_WITNESSES, ...DARK_REALM_WITNESSES])('$name clicks its own conversation after borrowing a pooled service model', async witness => {
     const previousPool = MeshFactory.pool[witness.model];
     // Canvas text rendering is outside this geometry/interaction regression.
     const nameTags = jest.spyOn(Entity.prototype, 'updateNameTag').mockImplementation(() => {});
     MeshFactory.pool[witness.model] = [];
     const engine = Object.create(GameEngine.prototype);
     engine.player = { position: new THREE.Vector3(), state: 'IDLE' };
+    engine.currentInstanceId = witness.instanceId || '';
     engine.uiManager = { quest: { openWitnessConversation: jest.fn(() => true) } };
     engine.inputManager = { raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2() };
     const camera = new THREE.PerspectiveCamera(60, 1, .1, 100);
@@ -67,6 +70,30 @@ test.each(CHRONICLE_WITNESSES)('$name clicks its own conversation after borrowin
         MeshFactory.pool[witness.model] = previousPool;
         nameTags.mockRestore();
     }
+});
+
+test.each(DARK_REALM_WITNESSES)('$name stays in the expedition and unlocks only recorded discussion', witness => {
+    const server = fs.readFileSync('server/internal/game/dark_realm.go', 'utf8');
+    expect(server).toContain(`{"${witness.id}", "${witness.name}", ${witness.x}, ${witness.z}}`);
+    const topic = witness.topics.find(topic => topic.requiresDiscovery);
+    const chapter = darkRealmChapters.find(chapter => chapter.sites?.some(site => site.id === topic.requiresDiscovery));
+    expect(chapter).toBeDefined();
+    const index = chapter.sites.findIndex(site => site.id === topic.requiresDiscovery);
+    const quests = [{ id: chapter.id, accepted: true, investigationMask: 1 << index }];
+    const snapshot = JSON.stringify(quests);
+    expect(getWitnessConversation(witness.id, []).topics).toHaveLength(1);
+    expect(getWitnessConversation(witness.id, quests).topics).toHaveLength(2);
+    expect(JSON.stringify(quests)).toBe(snapshot);
+    const npc = new ChronicleWitness(witness.id);
+    const open = jest.fn(() => true);
+    const engine = { currentInstanceId: 'dark-realm', player: { state: 'IDLE', position: new THREE.Vector3(0, 0, 3) },
+        uiManager: { quest: { openWitnessConversation: open } } };
+    expect(npc.interact(engine)).toBe(true);
+    for (const instance of ['', 'casino', 'dungeon-test']) {
+        engine.currentInstanceId = instance;
+        expect(npc.interact(engine)).toBe(false);
+    }
+    expect(open).toHaveBeenCalledTimes(1);
 });
 
 test.each(CHRONICLE_WITNESSES)('$name has a shared neutral identity and spoiler-gated dialogue without changing quests', witness => {

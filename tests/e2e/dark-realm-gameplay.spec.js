@@ -68,6 +68,23 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     };
     const readQuest = () => page.evaluate(id => window.game.player.quests.find(q => q.id === id), chapter.id);
     await enterRealm();
+    await walkInvestigationWaypoints(page, [[39992, 40800]]);
+    let maelin;
+    await expect.poll(async () => {
+        maelin = await projectEntity(page, 'dark-witness-maelin');
+        if (!maelin?.visible) return false;
+        await page.mouse.move(maelin.x, maelin.y);
+        return page.evaluate(() => window.game.hoveredEntity?.id === 'dark-witness-maelin');
+    }).toBe(true);
+    await page.mouse.click(maelin.x, maelin.y);
+    await expect(page.locator('#quest-window')).toBeVisible();
+    await expect(page.locator('#quest-list')).toContainText('How does the foothold keep us safe?');
+    await expect(page.locator('#quest-list details')).toHaveCount(1);
+    expect((await readQuest()).accepted).toBe(false);
+    await page.locator('#quest-list summary').click();
+    await expect(page.locator('#quest-list')).toContainText('Recall will take you to Lanternhold');
+    await page.screenshot({ path: testInfo.outputPath('camp-maelin-conversation.png') });
+    await page.locator('#btn-close-quest').click();
     await openCampIlyra();
     expect((await readQuest()).accepted).toBe(false);
     await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();

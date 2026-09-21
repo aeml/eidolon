@@ -13,6 +13,8 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         const { darkRealmChapters } = await import('/src/data/chronicleCatalog.js');
         const { createChronicleSiteModel } = await import('/src/art/ChronicleSiteModels.js');
         const { Wizard } = await import('/src/entities/Wizard.js');
+        const { ChronicleWitness } = await import('/src/entities/ChronicleWitness.js');
+        const { DARK_REALM_WITNESSES } = await import('/src/data/darkRealmWitnesses.js');
         const gallery = window.__eidolonAnimationGalleryController;
         gallery.cleanupPresentation();
         const render = gallery.renderSystem;
@@ -21,6 +23,13 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         render.scene.children.filter(child => child.type === 'GridHelper').forEach(child => { child.visible = false; });
         const layout = darkRealmFixture();
         const root = createDarkRealmScene(render.instanceEnvironmentGroup, layout);
+        for (const witness of DARK_REALM_WITNESSES) {
+            const npc = new ChronicleWitness(witness.id);
+            npc.position.set(witness.x, .5, witness.z);
+            await npc.ensureMesh();
+            npc.mesh.position.copy(npc.position);
+            render.instanceEnvironmentGroup.add(npc.mesh);
+        }
         const sites = darkRealmChapters.flatMap(chapter => chapter.sites || []);
         for (const site of sites) {
             const model = createChronicleSiteModel(site, 'dark');
@@ -32,6 +41,19 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         reader.isRemote = true;
         await reader.ensureMesh();
         render.entityGroup.add(reader.mesh);
+        window.__darkRealmCampView = phone => {
+            // Phone captures the ordinary close approach to Maelin, not a
+            // zoomed-out miniature of the entire camp.
+            const focus = new THREE.Vector3(phone ? 39991 : 40000, 0, 40800);
+            reader.position.copy(focus);
+            reader.update(1 / 60, null, null, []);
+            render.setGraphicsQuality(phone ? 'low' : 'high');
+            render.setEnvironmentContext('dark_realm', focus, true);
+            render.setZoom(phone ? 15 : 22);
+            render.camera.zoom = 1; render.camera.updateProjectionMatrix();
+            render.camera.position.copy(focus).add(new THREE.Vector3(35, 45, 35));
+            gallery.controls.target.copy(focus); gallery.controls.update();
+        };
         window.__darkRealmSiteView = (model, phone) => {
             const site = sites.find(site => site.model === model);
             const focus = new THREE.Vector3(site.x, 0, site.z);
@@ -77,6 +99,12 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         expect(facts).toEqual({ sites: 38, actorVisible: true });
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         await page.screenshot({ path: testInfo.outputPath(`${model}-${phone ? 'phone' : 'desktop'}.png`) });
+    }
+    for (const phone of [false, true]) {
+        await page.setViewportSize(phone ? { width: 390, height: 844 } : { width: 1280, height: 720 });
+        await page.evaluate(phone => window.__darkRealmCampView(phone), phone);
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        await page.screenshot({ path: testInfo.outputPath(`inhabited-camp-${phone ? 'phone' : 'desktop'}.png`) });
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
