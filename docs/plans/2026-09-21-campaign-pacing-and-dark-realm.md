@@ -125,7 +125,21 @@ removed the expedition projection from active chunks. The cleanup now retains
 her authoritative ID, and the connected regression waits through a cleanup tick
 before interacting. This was an application defect, not an earned campaign
 failure; prepared prerequisites and production accounts remain untouched.
-The corrected route still needs a passing receipt.
+The corrected run (`darkexp0921b`, source `bfb3c1f2`) passed the cleanup-tick
+regression, real Ilyra acceptance and map, then recorded the ferry manifest and
+shelter cups through movement/E input. It died en route to the third record:
+the new harness used move-only travel and never defended against pursuing
+enemies. It now invokes the existing normal Wizard shielding/crowd-control/
+attack travel driver before steps and reading. No enemies, resources, objective
+credit or survival assertion were weakened. The full corrected route still
+needs a passing receipt; do not repeat it unchanged or describe two records as
+completed chapter acceptance.
+
+Admin boundary tests passed (game6.951s), including same-shared-scene/no-party
+visits, rejected entry/level/story bypass, eligibility changes before durable
+apply, receipt replay, floor bounds and every grounded discovery wall. Generated
+geometry matches the actual client collider builders (Jest1/1,8.378s), with
+Dark Realm walls separate from overworld shapes. Scoped lint/diff checks passed.
 
 Still required: inhabited/landmark composition at district scale, connected
 character entry/inspection/turn-in and

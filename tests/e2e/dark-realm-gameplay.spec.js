@@ -6,6 +6,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
 import { openDungeonGuide } from './dungeon-guide.js';
 import { walkInvestigationWaypoints } from './chronicle-investigation-route.js';
 import { darkRealmChapters } from '../../src/data/chronicleCatalog.js';
+import { createInvestigationTravelDefense } from './fresh-investigation-combat.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 
@@ -30,6 +31,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     const character = partyDungeonCharacter(catalog, prior, 'Wizard', credentials.username, 'progressed');
     await seedActor(page, credentials, character);
     await selectGraphicsThroughSettings(page, 'low');
+    const beforeTravel = await createInvestigationTravelDefense(page);
     const enterRealm = async () => {
         await openDungeonGuide(page);
         expect(await page.locator('#dungeon-type-select option[value="umbral_nexus"]').count()).toBe(0);
@@ -81,7 +83,8 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         [[40140, 40520], [40140, 40363], [40130, 40363]]
     ];
     for (const [i, site] of chapter.sites.entries()) {
-        await walkInvestigationWaypoints(page, routes[i]);
+        await walkInvestigationWaypoints(page, routes[i], { beforeTravel });
+        await beforeTravel(await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z })));
         await page.keyboard.press('e');
         const record = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
         await expect(record).toHaveAttribute('open', '');
