@@ -7,16 +7,21 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 21
 
-- Candidate **Alpha1.9.28**, exact9c78d7dfcb8480c4459869f5c21af08d31490337,
-  is pushed to master; CI35549007858 is queued/in progress, not verified live.
+- Verified live: **Alpha1.9.28**, exact9c78d7dfcb8480c4459869f5c21af08d31490337.
+  CI35549007858 passed September21 at01:12:38UTC in21m09s, including live QA.
   Restored current-seed encounters retain original composition/placement/profiles
   rather than generic packs, with saved geometry/progress/expiry unchanged.
   Ten-family resume/compatibility checks and277 version/history checks pass.
   Prepared four-role Molten pack recheck passed1.3min, all alive,493 ally healing;
-  this is not the full earned clear. Luna monitors deployment and the read-only
-  public identity verifier. No simultaneous native GPU route is running.
+  this is not the full earned clear. Luna verified exact frontend/backend/version,
+  database readiness, login/cumulative notes and three published assets; receipt:
+  `/tmp/eidolon-release-1-9-28-20260921-SwZBYp/public-verification.log`.
+  After delivery completed, earned continuation `earnedmolten0921a` started from
+  unchanged archive18 on the same exact source. Root native67495/launcher3020960,
+  `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`; Luna monitors terminal only.
+  No deployment/browser overlap, no rewritten resources/progress/logout times.
 
-- Verified live: **Alpha1.9.27**, exact
+- Previous verified delivery: **Alpha1.9.27**, exact
   `77ba49d486356282914b4b4531d56d536d6aadcc`, CI35542593860 passed September20
   at23:06:30UTC in21m39s. Public identities, readiness, login, cumulative notes
   and three exact assets match. Read-only receipt:

@@ -2,6 +2,16 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+`earnedmolten0921a` is running on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
+root native67495/launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`.
+It started after1.9.28 CI35549007858 passed at01:12:38UTC and the exact public
+identities/readiness/notes/assets were verified. The launcher rechecks delivery
+before creating any isolated services. Uses unchanged earned archive18 (hash
+reconfirmed), ordinary15-minute expiry, owned bag upgrades and three legal
+class-geared supports. Existing2h/zero-retry bound; Luna monitors terminal only.
+Prior pack evidence supports the changed controller/restoration paths, not this
+full clear. No deployment/native GPU overlap or saved-state rewriting.
+
 September21 focused follow-up `moltenpack0921a` exited1 on d54cd4068c6f2b25b7e3c31f72c971a37e61f9fc,
 root native23846/launcher2479583, source/log `/tmp/eidolon-molten-pack-20260921-RmywwM/`.
 The existing prepared encounter fixture now accepts only one additional named
@@ -36,8 +46,8 @@ observed kills included MagmaGolem and InfernalBehemoth. Root handle agrees with
 Luna; owned services cleaned. Prepared-only archive:
 `/tmp/eidolon-party-checkpoint-moltenpack0921b-y5PuuC/save.archive.gz`, SHA256
 `67d19498c74a5a23ccb2bf6498727adddf3aae57f630444dd10461d244dfd386`.
-277 release/history checks pass1.416s; exact1.9.28 candidate is being pushed,
-not yet verified live. Next earned continuation still uses unchanged archive18.
+277 release/history checks pass1.416s; exact1.9.28 delivery is now verified.
+The next earned continuation above uses unchanged archive18.
 
 Read-only follow-up found repeated diagnostic serialization in the controller:
 healing and formation polled the full snapshot (including every retained combat

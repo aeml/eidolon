@@ -1,8 +1,8 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.27 verified, earned Molten partial
+## Current delivery — 1.9.28 verified, earned Molten continuation running
 
-### 1.9.28 candidate — preserve restored encounter composition
+### 1.9.28 verified — preserve restored encounter composition
 
 Prepared room10 diagnostic exposed a production discrepancy: restoration used
 generic packs rather than the original seeded types, counts, placement and
@@ -13,7 +13,7 @@ transferring uncleared enemies. Cleared rooms, geometry, rewards, timestamps,
 retain the compatible legacy path. Ten-family fresh/restored comparisons reproduce
 the old defect; focused resume/compatibility checks pass1.432s,277 version/history
 checks pass1.416s and diff validation passes. Login/build metadata and cumulative
-notes are prepared together, not yet deployed.
+notes are aligned and deployed together.
 
 Prepared-only pack recheck `moltenpack0921b` passed on that exact candidate with
 compact vitals reads and prior hostile-pack spacing correction. Root native75605,
@@ -25,10 +25,19 @@ root native75605 also exited0. This is prepared pack evidence, not earned full
 dungeon acceptance. Private prepared-only archive:
 `/tmp/eidolon-party-checkpoint-moltenpack0921b-y5PuuC/save.archive.gz`, SHA256
 `67d19498c74a5a23ccb2bf6498727adddf3aae57f630444dd10461d244dfd386`.
-The release is being pushed as exact9c78d7df; delivery is not yet verified.
+Exact9c78d7df is verified live: CI35549007858 passed September21 at01:12:38UTC
+in21m09s, including live QA. Luna's read-only verifier confirms both exact
+identities, readiness, login, cumulative notes and three versioned assets:
+`/tmp/eidolon-release-1-9-28-20260921-SwZBYp/public-verification.log`.
 Previous trial all survived
 but used a generic pack and failed its healer-use assertion; it is not acceptance.
-No full earned repeat or overlapping local browser QA is running.
+After delivery completed, earned Molten continuation `earnedmolten0921a` started
+on exact9c78d7df using unchanged archive18 and ordinary15-minute expiry. It has
+the prior validated spacing correction and compact role/vitals observations,
+plus normal owned bag upgrades, not new balance/grants. Root native67495,
+launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`. Existing2h
+bound, zero retries; Luna monitors terminal only. No deployment/browser overlap.
+Full earned clear and Air handoff remain unaccepted until this route proves them.
 
 ### 1.9.27 verified — authoritative dungeon resume landing
 
