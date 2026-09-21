@@ -204,7 +204,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		instanceID := char.InstanceID
 		spawnX, spawnY, spawnZ = game.RestoreCasinoPosition(instanceID, spawnX, spawnY, spawnZ)
 
-		if instanceID != "" && instanceID != game.CasinoInstanceID {
+		if instanceID != "" && instanceID != game.CasinoInstanceID && instanceID != game.DarkRealmInstanceID {
 			// Player was in a dungeon instance
 			timeSinceLogout := time.Since(char.LastLogout)
 			if timeSinceLogout > 15*time.Minute {
@@ -575,6 +575,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			}
 		}
 		entity.LastDailyQuest = char.LastDailyQuest
+		game.RestoreDarkRealmPosition(entity)
 
 		// Fix for persistence issue: If we have quests but no date (or zero date), assume they are valid for today to prevent reset
 		if len(entity.Quests) > 0 && entity.LastDailyQuest.IsZero() {

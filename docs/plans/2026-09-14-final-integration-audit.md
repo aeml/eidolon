@@ -2,6 +2,13 @@
 
 ## Current delivery — 1.9.28 verified; 1.9.29 checkpoint candidate
 
+1.9.29 is pushed at `6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI
+`35556373863` is being monitored by Luna `/root/watch_release_1_9_21`, including
+the exact public-release verifier. Do not claim live until that receipt exists.
+Newer local shared-Dark-Realm foundation work is intentionally unpublished;
+see the [campaign expansion plan](2026-09-21-campaign-pacing-and-dark-realm.md).
+Its client scene, story content and entry flow must be completed before release.
+
 ### September21 approved additions — progression open, checkpoints local
 
 The player selected roughly100 hours to level100 plus8–12 hours of Dark Realm

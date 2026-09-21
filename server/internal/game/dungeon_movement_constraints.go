@@ -10,6 +10,9 @@ func (w *World) isDungeonInstance(instanceID string) bool {
 }
 
 func (w *World) constrainPointToDungeon(instanceID string, x, z float64) (float64, float64, bool) {
+	if instanceID == DarkRealmInstanceID {
+		return constrainPointToWalkRects(darkRealmCanonicalLayout.WalkRects, x, z)
+	}
 	if !w.isDungeonInstance(instanceID) {
 		return x, z, false
 	}
@@ -20,7 +23,11 @@ func (w *World) constrainPointToDungeon(instanceID string, x, z float64) (float6
 	}
 	inst.Mu.RLock()
 	defer inst.Mu.RUnlock()
-	if len(inst.Layout.WalkRects) == 0 {
+	return constrainPointToWalkRects(inst.Layout.WalkRects, x, z)
+}
+
+func constrainPointToWalkRects(rects []DungeonWalkRect, x, z float64) (float64, float64, bool) {
+	if len(rects) == 0 {
 		return x, z, false
 	}
 
@@ -29,7 +36,7 @@ func (w *World) constrainPointToDungeon(instanceID string, x, z float64) (float6
 	bestDistSq := math.Inf(1)
 	found := false
 
-	for _, rect := range inst.Layout.WalkRects {
+	for _, rect := range rects {
 		minX := rect.X - rect.Width/2
 		maxX := rect.X + rect.Width/2
 		minZ := rect.Z - rect.Height/2

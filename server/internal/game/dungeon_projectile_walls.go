@@ -12,6 +12,9 @@ type dungeonSegmentInterval struct{ enter, leave float64 }
 // into another room during a long frame. Room/corridor overlaps are not walls.
 // Overworld/PvP and legacy instances without canonical geometry stay unchanged.
 func (w *World) firstDungeonWallHit(instanceID string, fromX, fromZ, toX, toZ float64) (float64, float64, bool) {
+	if instanceID == DarkRealmInstanceID {
+		return firstDungeonWalkRectWallHit(darkRealmCanonicalLayout.WalkRects, fromX, fromZ, toX, toZ)
+	}
 	instance, exists := w.getDungeonInstance(instanceID)
 	if !exists {
 		return toX, toZ, false
@@ -25,6 +28,9 @@ func (w *World) firstDungeonWallHit(instanceID string, fromX, fromZ, toX, toZ fl
 // acquires an instance lock while holding an actor lock. Layout changes or
 // instance removal cannot mutate this attack's geometry underneath it.
 func (w *World) dungeonWalkRectsSnapshot(instanceID string) []DungeonWalkRect {
+	if instanceID == DarkRealmInstanceID {
+		return append([]DungeonWalkRect(nil), darkRealmCanonicalLayout.WalkRects...)
+	}
 	instance, exists := w.getDungeonInstance(instanceID)
 	if !exists {
 		return nil

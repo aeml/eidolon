@@ -465,12 +465,18 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 	return nil, false
 }
 
-// Quest actions are town conversations, not remotely callable reward claims.
+// Quest actions are local conversations, not remotely callable reward claims.
 // Recheck chapter order even if a saved client submits a future chapter ID.
 func (w *World) canDiscussQuestLocked(player *Entity, quest Quest) bool {
 	npcID := "quest-npc-1"
 	if quest.Category == QuestCategoryChronicle {
 		npcID = "story-wizard-1"
+		if player.InstanceID == DarkRealmInstanceID {
+			if !DarkRealmEntryAllowed(player) {
+				return false
+			}
+			npcID = darkRealmWizardID
+		}
 		for _, definition := range chronicleQuestCatalog() {
 			if definition.ID == quest.ID {
 				break

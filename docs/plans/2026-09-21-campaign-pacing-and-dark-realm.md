@@ -6,6 +6,41 @@ Aim for roughly112 hours overall. Level100 is required before realm entry.
 The finale remains5–10 minutes across four phases for five well-geared players.
 This is required remaining1.10 work, not delivered1.9.29 content.
 
+## Implementation in progress — shared realm foundation
+
+Local server work now defines a permanent `dark-realm` scene with a Resonant
+Foothold camp and four connected, authored districts. The circuit has one
+canonical floor layout for movement, projectile paths and delayed attacks;
+it is deliberately not a party-owned dungeon or eligible for room-clear rewards.
+The camp uses the existing safe-zone healing/Well Rested system. An Ilyra
+projection supports local, manual story acceptance and turn-in with the same
+chapter-order, proximity and duplicate-reward rules as town.
+
+Personal entry requires level100 and four completed crystal repairs. Existing
+Nexus/Dark King veterans retain their earned access, but not an exception to
+level100. Login restores valid district positions or repairs invalid positions
+at the camp; ineligible saved entrants return to town without changing their
+quests, resources or rewards. The private dungeon/raid fifteen-minute rule is
+unchanged. Admin destinations remain fail-closed until realm-specific support
+is implemented; a party leader cannot implicitly grant other members entry.
+
+This is **not a playable or published expansion yet**. Before release, implement
+the realm's scene, guide/portal UI and network action, district encounters,
+investigation/collection/hunt content, the expanded ordered chain and veteran
+catch-up migration, then connect the Nexus and raid gates to that chain. No
+100-hour rebalance or8–12-hour playtime claim follows from this foundation.
+Do not publish these pieces as a finished zone or run another long earned route
+merely to verify this isolated foundation.
+
+Focused server evidence: the Dark Realm, manual quest conversation, movement/
+projectile and safe-zone selection passed in24.647s; server dungeon scene/resume
+regressions passed in2.489s. Coverage includes the connected circuit, no shortcut
+across the void, personal/veteran access, shared entry without reward changes,
+Recall, invalid saved-position recovery, preserved valid district positions,
+rejected remote/busy/dead entry, manual local turn-in and duplicate-reward guards.
+This is automated server evidence, not a rendered scene or end-to-end campaign
+acceptance. No long native run was launched alongside the1.9.29 deployment.
+
 ## Existing seams and implementation order
 
 1. Deliver approved boss-checkpoint town returns and the narrow movement-observer
