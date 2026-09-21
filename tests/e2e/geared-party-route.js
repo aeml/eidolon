@@ -5,7 +5,7 @@ import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyG
 import { resumeEarnedEarthToReadiness, leaveEarnedParty } from './earned-earth-continuation.js';
 import { restoreEarnedRegionalDungeonReadiness, restoreEarnedRaidReadiness } from './earned-regional-dungeon-entry.js';
 import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
-import { partyBossDiagnostic, preparePartyBossDiagnostic } from '../partyBossDiagnostic.js';
+import { partyBossDiagnostic, preparePartyBossDiagnostic, partyDiagnosticRoom } from '../partyBossDiagnostic.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
@@ -242,7 +242,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     encoding: 'utf8', timeout: 120_000
                 }).split('\n').find(line => line.startsWith('[diagnostic-resources]'));
                 character.resources = JSON.parse(pools.slice('[diagnostic-resources]'.length));
-                character = preparePartyBossDiagnostic(character, catalog.diagnosticLayout, credentials.username, index);
+                character = preparePartyBossDiagnostic(character, catalog.diagnosticLayout, credentials.username, index, undefined, diagnosticBoss);
             }
             if (earnedWizard && className === 'Wizard') {
                 if (isRaid) await restoreEarnedRaidReadiness(actorPage, login, raid, playthrough.runLevel);
@@ -292,10 +292,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         for (const actor of actors) {
             await expect.poll(() => actor.page.evaluate(() => window.game.uiManager.social.partyData?.members?.length)).toBe(roles.length);
             if (diagnosticBoss) {
-                const room = catalog.diagnosticLayout.rooms.filter(room => room.type === 'boss')[3];
+                const { room, spawnZ } = partyDiagnosticRoom(catalog.diagnosticLayout, diagnosticBoss);
                 await expect.poll(async () => {
                     const state = await snapshot(actor.page);
-                    return Math.hypot(state.x - room.x, state.z - (room.z + 60));
+                    return Math.hypot(state.x - room.x, state.z - spawnZ);
                 }, { message: 'Prepared dungeon resume must retain each authoritative deep-room landing' }).toBeLessThan(10);
             }
             await expect.poll(() => actor.page.evaluate(() => {

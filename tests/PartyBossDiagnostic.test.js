@@ -1,4 +1,4 @@
-import { partyBossDiagnostic, preparePartyBossDiagnostic } from './partyBossDiagnostic.js';
+import { partyBossDiagnostic, preparePartyBossDiagnostic, partyDiagnosticRoom } from './partyBossDiagnostic.js';
 
 const selection = { dungeonType: 'molten_core', difficulty: 'normal', runLevel: 70 };
 const env = { EIDOLON_E2E_DIAGNOSTIC_BOSS: 'ObsidianGuardian' };
@@ -47,4 +47,24 @@ test('rejects existing-instance characters, non-QA accounts and a different gene
     expect(() => preparePartyBossDiagnostic(character, layout, 'real-player', 0)).toThrow();
     expect(() => preparePartyBossDiagnostic(character, layout, 'codexqa0123456789ab', 4)).toThrow();
     expect(() => preparePartyBossDiagnostic(character, { ...layout, generatorVersion: 1 }, 'codexqa0123456789ab', 0)).toThrow();
+});
+
+test('prepared pack uses its recorded room and leaves its enemies and quest alive', () => {
+    const pack = { ...layout, generationSeed: '-1634763615133968283',
+        rooms: Array.from({ length: 12 }, (_, i) => ({ x: 30027.77138373022, z: 20000 - i * 200,
+            width: 110, height: 110, type: i === 0 ? 'start' : i < 10 && i % 2 ? 'boss' : 'normal' })) };
+    const selected = { EIDOLON_E2E_DIAGNOSTIC_BOSS: 'MoltenPack' };
+    expect(partyBossDiagnostic(selected, selection)).toBe('MoltenPack');
+    expect(() => partyBossDiagnostic({ ...selected, EIDOLON_E2E_EARNED_CHECKPOINT: '/private/earned' }, selection)).toThrow();
+    const before = JSON.stringify({ pack, character });
+    const prepared = preparePartyBossDiagnostic(character, pack, 'codexqa0123456789ab', 0, undefined, 'MoltenPack');
+    expect(prepared.z).toBe(18110);
+    expect(prepared.dungeon_progress.current_room_index).toBe(10);
+    expect(prepared.dungeon_progress.rooms.slice(0, 10).every(r => r.cleared && r.rewarded)).toBe(true);
+    expect(prepared.dungeon_progress.rooms.slice(10).every(r => !r.cleared && !r.rewarded)).toBe(true);
+    expect(prepared.quests).toEqual(character.quests);
+    expect(JSON.stringify({ pack, character })).toBe(before);
+    expect(() => partyDiagnosticRoom(pack, 'ObsidianGuardian')).toThrow();
+    expect(() => partyDiagnosticRoom(layout, 'MoltenPack')).toThrow();
+    expect(() => partyDiagnosticRoom(pack, 'unknown')).toThrow();
 });

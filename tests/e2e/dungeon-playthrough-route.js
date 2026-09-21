@@ -10,6 +10,7 @@ import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter, dungeonCombatTargetType } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 import { createDungeonExpeditionTiming, dungeonCombatBudget } from '../dungeonExpeditionTiming.js';
+import { partyDiagnosticRoom } from '../partyBossDiagnostic.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
@@ -266,6 +267,38 @@ export async function playDungeonThroughInputs(page, {
         expect(layout.generationSeed).toBeTruthy();
         expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
         if (diagnosticBoss) {
+            if (diagnosticBoss === 'MoltenPack') {
+                const { roomIndex, room } = partyDiagnosticRoom(layout, diagnosticBoss);
+                let approaches = 0, kills = 0;
+                const types = new Set();
+                for (let action = 0; action < 24; action++) {
+                    await assertWorldUpdatesContinue(page);
+                    const cleared = await page.evaluate(index => window.game.currentDungeonRoomState.rooms[index].cleared, roomIndex);
+                    if (cleared) {
+                        expect(kills).toBeGreaterThan(0);
+                        expect(types.has('MagmaGolem')).toBe(true);
+                        console.log(`${logPrefix} prepared pack cleared ${JSON.stringify({ roomIndex, kills, types: [...types] })}`);
+                        return; // Prepared room only, no earned/full-run credit.
+                    }
+                    const state = await readPlayerState(page);
+                    const inside = Math.abs(state.x - room.x) <= room.width / 2 - 3 && Math.abs(state.z - room.z) <= room.height / 2 - 3;
+                    const target = (await hostiles(page)).find(enemy => enemy.distance < 40 &&
+                        Math.abs(enemy.x - room.x) <= room.width / 2 && Math.abs(enemy.z - room.z) <= room.height / 2);
+                    if (inside && target) {
+                        const killed = await defeatByMouse(page, { ...target, encounter: room });
+                        kills++;
+                        types.add(killed.type);
+                        if (afterEncounter) await afterEncounter(page, killed);
+                        continue;
+                    }
+                    if (approaches++ >= 8) throw new Error('Prepared pack approach exceeded its bound');
+                    const dx = room.x - state.x, dz = room.z - state.z, length = Math.hypot(dx, dz);
+                    if (length < 1) throw new Error('Uncleared prepared pack has no observed living target');
+                    await moveByGroundClick(page, dx * Math.min(1, 10 / length), dz * Math.min(1, 10 / length), { moveOnly: true, allowJumpFallback: false });
+                    if (afterGroundStep) await afterGroundStep(page);
+                }
+                throw new Error('Prepared pack did not clear within its action bound');
+            }
             if (diagnosticBoss !== 'ObsidianGuardian' || playthrough.dungeonType !== 'molten_core') throw new Error('Unsupported prepared encounter');
             const encounter = dungeonBossEncounter(layout, playthrough.bosses, diagnosticBoss);
             for (let approach = 0; approach < 8; approach++) {

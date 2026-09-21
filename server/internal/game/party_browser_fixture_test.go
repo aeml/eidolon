@@ -153,10 +153,14 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 		"level": level, "quests": chronicleQuestCatalog(), "gearProfile": profile, "roleItems": roleItems,
 		"raids": elementalRaidDefinitions}
 	if boss := os.Getenv("EIDOLON_E2E_DIAGNOSTIC_BOSS"); boss != "" {
-		if boss != "ObsidianGuardian" || level != 70 {
+		if (boss != "ObsidianGuardian" && boss != "MoltenPack") || level != 70 {
 			t.Fatal("unsupported isolated boss diagnostic")
 		}
-		layout := w.generateDungeonLayoutWithSeed("dungeon_diagnostic", DifficultyNormal, "molten_core", 7811600862583822555)
+		seed := int64(7811600862583822555)
+		if boss == "MoltenPack" {
+			seed = -1634763615133968283
+		}
+		layout := w.generateDungeonLayoutWithSeed("dungeon_diagnostic", DifficultyNormal, "molten_core", seed)
 		assignDungeonRoomHooks(&layout)
 		if err := ValidateDungeonLayout(layout); err != nil {
 			t.Fatal(err)
