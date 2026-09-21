@@ -2,6 +2,26 @@
 
 ## Current delivery — 1.9.27 verified, earned Molten partial
 
+### 1.9.28 candidate — preserve restored encounter composition
+
+Prepared room10 diagnostic exposed a production discrepancy: restoration used
+generic packs rather than the original seeded types, counts, placement and
+family-specific profiles. Candidate9c78d7df reconstructs encounters privately
+with the current generator and requires exact saved-layout equality before
+transferring uncleared enemies. Cleared rooms, geometry, rewards, timestamps,
+15-minute expiry and boss balance are unchanged. Older/unmatched/fallback layouts
+retain the compatible legacy path. Ten-family fresh/restored comparisons reproduce
+the old defect; focused resume/compatibility checks pass1.432s,277 version/history
+checks pass1.416s and diff validation passes. Login/build metadata and cumulative
+notes are prepared together, not yet deployed.
+
+Prepared-only pack recheck `moltenpack0921b` runs on that exact candidate with
+compact vitals reads and prior hostile-pack spacing correction. Root native75605,
+launcher2594832, `/tmp/eidolon-molten-pack-20260921-r2-19JwB1/`. Fifteen-minute
+test bound, zero retries; Luna reports only terminal. Previous trial all survived
+but used a generic pack and failed its healer-use assertion; it is not acceptance.
+No full earned repeat or overlapping deployment/browser QA is running.
+
 ### 1.9.27 verified — authoritative dungeon resume landing
 
 Prepared Guardian diagnostic b (0f20c854) restored all four into the same saved

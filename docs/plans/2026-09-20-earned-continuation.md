@@ -27,7 +27,11 @@ requires exact saved-layout equality, and transfers only uncleared encounters.
 No saved geometry, timestamps or earned progress are rewritten. Old/unmatched
 layouts retain their prior restoration path. Fresh/restored comparisons cover all
 ten dungeon/raid families; regressions fail before the fix. Compatibility and
-resume checks pass1.432s. Boss balance is unchanged. Prepared pack recheck pending.
+resume checks pass1.432s. Boss balance is unchanged. Prepared pack recheck
+`moltenpack0921b` now runs on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
+root native75605/launcher2594832, `/tmp/eidolon-molten-pack-20260921-r2-19JwB1/`.
+It includes the compact vitals reads; same15min/zero-retry bound. Luna monitors
+terminal only.277 release/history checks pass1.416s;1.9.28 not yet deployed.
 
 Read-only follow-up found repeated diagnostic serialization in the controller:
 healing and formation polled the full snapshot (including every retained combat
