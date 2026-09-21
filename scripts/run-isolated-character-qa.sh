@@ -903,6 +903,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
       npx playwright test --retries=0 tests/e2e/four-player-dungeon.spec.js
     ;;
+  dark-realm)
+    EIDOLON_E2E_DARK_REALM=1 EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/dark-realm-gameplay.spec.js
+    ;;
   earned-party-dungeon)
     EIDOLON_E2E_PARTY_DUNGEON=1 EIDOLON_E2E_EARNED_PARTY=1 EIDOLON_E2E_EARNED_RESUME=1 \
       EIDOLON_E2E_CLASS=Fighter EIDOLON_E2E_REST_RECOVERY=1 \
