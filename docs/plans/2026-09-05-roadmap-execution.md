@@ -5,7 +5,16 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 20
+## Current checkpoint — September 21
+
+- Candidate **Alpha1.9.28**, exact9c78d7dfcb8480c4459869f5c21af08d31490337,
+  is pushed to master; CI35549007858 is queued/in progress, not verified live.
+  Restored current-seed encounters retain original composition/placement/profiles
+  rather than generic packs, with saved geometry/progress/expiry unchanged.
+  Ten-family resume/compatibility checks and277 version/history checks pass.
+  Prepared four-role Molten pack recheck passed1.3min, all alive,493 ally healing;
+  this is not the full earned clear. Luna monitors deployment and the read-only
+  public identity verifier. No simultaneous native GPU route is running.
 
 - Verified live: **Alpha1.9.27**, exact
   `77ba49d486356282914b4b4531d56d536d6aadcc`, CI35542593860 passed September20

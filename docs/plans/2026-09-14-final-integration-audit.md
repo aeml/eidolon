@@ -15,12 +15,20 @@ the old defect; focused resume/compatibility checks pass1.432s,277 version/histo
 checks pass1.416s and diff validation passes. Login/build metadata and cumulative
 notes are prepared together, not yet deployed.
 
-Prepared-only pack recheck `moltenpack0921b` runs on that exact candidate with
+Prepared-only pack recheck `moltenpack0921b` passed on that exact candidate with
 compact vitals reads and prior hostile-pack spacing correction. Root native75605,
 launcher2594832, `/tmp/eidolon-molten-pack-20260921-r2-19JwB1/`. Fifteen-minute
-test bound, zero retries; Luna reports only terminal. Previous trial all survived
+test bound, zero retries; terminal exit0 in1.3min, combat32.8s. All four survived,
+three directly observed kills (two MagmaGolems and one InfernalBehemoth),493 ally
+healing, server room-clear assertion passed. Luna verified owned-service cleanup;
+root native75605 also exited0. This is prepared pack evidence, not earned full
+dungeon acceptance. Private prepared-only archive:
+`/tmp/eidolon-party-checkpoint-moltenpack0921b-y5PuuC/save.archive.gz`, SHA256
+`67d19498c74a5a23ccb2bf6498727adddf3aae57f630444dd10461d244dfd386`.
+The release is being pushed as exact9c78d7df; delivery is not yet verified.
+Previous trial all survived
 but used a generic pack and failed its healer-use assertion; it is not acceptance.
-No full earned repeat or overlapping deployment/browser QA is running.
+No full earned repeat or overlapping local browser QA is running.
 
 ### 1.9.27 verified — authoritative dungeon resume landing
 

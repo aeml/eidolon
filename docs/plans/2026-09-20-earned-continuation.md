@@ -28,10 +28,16 @@ No saved geometry, timestamps or earned progress are rewritten. Old/unmatched
 layouts retain their prior restoration path. Fresh/restored comparisons cover all
 ten dungeon/raid families; regressions fail before the fix. Compatibility and
 resume checks pass1.432s. Boss balance is unchanged. Prepared pack recheck
-`moltenpack0921b` now runs on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
+`moltenpack0921b` passed on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
 root native75605/launcher2594832, `/tmp/eidolon-molten-pack-20260921-r2-19JwB1/`.
-It includes the compact vitals reads; same15min/zero-retry bound. Luna monitors
-terminal only.277 release/history checks pass1.416s;1.9.28 not yet deployed.
+It includes compact vitals reads; same15min/zero-retry bound. Terminal exit0/1.3min,
+combat32.8s, all four survived,493 ally healing and room cleared. Three directly
+observed kills included MagmaGolem and InfernalBehemoth. Root handle agrees with
+Luna; owned services cleaned. Prepared-only archive:
+`/tmp/eidolon-party-checkpoint-moltenpack0921b-y5PuuC/save.archive.gz`, SHA256
+`67d19498c74a5a23ccb2bf6498727adddf3aae57f630444dd10461d244dfd386`.
+277 release/history checks pass1.416s; exact1.9.28 candidate is being pushed,
+not yet verified live. Next earned continuation still uses unchanged archive18.
 
 Read-only follow-up found repeated diagnostic serialization in the controller:
 healing and formation polled the full snapshot (including every retained combat

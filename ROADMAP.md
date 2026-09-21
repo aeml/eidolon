@@ -109,10 +109,12 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 
 The September 7 scope addition requires a
 [progression/economy balancing pass and eight realm investigations](docs/plans/2026-09-07-progression-balance-and-investigations.md).
-Tune XP, loot, gold and quest requirements together; add diary/discovery sites
-and magical disturbances that develop the crystal mystery in every realm.
-Immediate corrections precede 1.1 pacing sign-off; campaign expansion lands in
-1.4 and full economy/raid tuning in 1.5–1.6. This work remains planned.
+Reduced reward/drop budgets, the current XP curve, the 31-chapter Chronicle and
+eight playable diary/discovery or magical-disturbance sites are delivered.
+Earned Earth, Water and Fire-story continuations have passed; the remaining
+campaign, raid and economy acceptance is still open. Follow the
+[current integration audit](docs/plans/2026-09-14-final-integration-audit.md)
+rather than treating the historical staging plan as unimplemented content.
 
 The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) proposes the alpha-to-beta sequence. Immediate dungeon defects take priority in `1.0.x` hotfixes and must be closed before `1.1`; `1.6` is reserved for encounter improvements, not repairs to unplayable basics. Historical foundation closeout does not override newly reported failures. Later milestones cover visual and combat polish, story depth, progression, competitive PvP, social activity, world events, and measured beta readiness. A fifth class and major realm expansion remain outside this scope.
 
