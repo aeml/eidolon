@@ -2,13 +2,46 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-`earnedmolten0920e` is running from frozen4e8a0093: root native5269,
+`earnedmolten0920e` is terminal exit1/1.3h from frozen4e8a0093: root native5269,
 launcher1400977, source/log `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/`.
 It started only after1.9.27 CI35542593860 passed and exact public identities,
 readiness, notes and assets were verified. Prior owned services/ports were free.
 Uses unchanged archive17, actual normal bag upgrades, three class-geared70
-supports and existing two-hour/zero-retry limit. Luna monitors the exact launcher
-and terminal footer. No earned full clear or new Air handoff is accepted yet.
+supports and existing two-hour/zero-retry limit. Luna verified terminal footer1
+and cleanup; root native5269 agrees. It defeated all four early bosses, including
+Obsidian Guardian, and completed four ordinary town recoveries. Rogue then died
+during MagmaGolem combat before Lord Infernax. No full clear or Air handoff.
+
+Independent network-isolated archive inspection confirms new checkpoint18:
+Wizard100/245125XP/219700Gold, actual2562HP/3725MP/alive,19 completed chapters,
+Molten accepted0/1 and no active/completed dailies. The exact save retains the
+owned staff/shoulder swaps and logout `2026-09-21T00:25:45.901Z`; dungeon room
+index10 remains subject to ordinary15-minute expiry. Original archive:
+`/tmp/eidolon-party-checkpoint-earnedmolten0920e-448Gin/save.archive.gz`, SHA256
+`7b9e160354938afa74c0fc7ff43478c3aa1489c0f4db6d574ee8b73d66f6d33f`.
+Inspection container/copy removed; original retained. No timestamps/resources,
+items or quest credit are rewritten.
+
+Rogue's final receipts show physical hits from MagmaGolem, ScorchedWraith and
+InfernalBehemoth. Cleric was10.46units away with1230mana at the death check;
+last living observations were2111HP with2.53s heal cooldown and1102HP with0.17s
+cooldown. The next recorded heal decision came about18s later, after death.
+This does not prove insufficient class healing or excessive monster damage.
+The ranged planner only considered selected-target separation: replayed geometry
+held position despite another hostile at3.29units. A new regression fails that
+old planner. It now avoids nearby explicitly hostile bodies while retaining
+attack/healer range, full-path collisions, warning rules and no-move outcomes
+when no legal route exists; it cannot retreat into a second hostile's melee
+space.119 focused spacing/interruption/checkpoint checks pass1.529s, lint/diff
+pass. This is a corrected unsafe QA decision, not proof it solely caused the
+death or that the full pack is now survivable. Next isolate that pack/control
+gap before another full earned run; do not repeat the80-minute route unchanged.
+
+Guardian earned damage: Fighter19536, Wizard19718, Rogue29545; Cleric ally
+healing16399, all alive at its defeat. This closes that encounter within this
+earned-Wizard/prepared-support scope, not the whole dungeon or four-earned-player
+campaign. The route spent about61.5min in traversal (50.2min formation),12.0min
+combat and2.65min recovery; these automation times are not human pacing targets.
 
 Prepared Guardian c passed4.6m on77ba49d4, with all four real deep-room positions
 validated,68250HP Guardian defeated and all four alive. Fighter/Wizard/Rogue

@@ -23,19 +23,20 @@ the whole goal. Started September 5, 2026.
   [release record](2026-09-20-casino-expansion.md). Publication followed Water
   cleanup; delivery verification is complete.
 - Earned Water, Abyssal and Fire-story continuations have passed. Latest earned
-  Molten run cleared three bosses before Rogue death at Obsidian Guardian; an
-  earlier run cleared four before a traversal failure. Latest private archive17
+  Molten run cleared four bosses before Rogue death in the later MagmaGolem pack;
+  the prior Guardian failure was passed in this run. Latest private archive18
   preserves actual resources and the accepted, unfinished chapter. See the
   [earned record](2026-09-20-earned-continuation.md) for exact archives and limits.
   Fire raid remains unaccepted: the latest attempt failed regrouping with all five
   alive. The short-corner planner correction and later formation/input changes
   do not yet establish a complete Fire raid or repair Vigil.
-- Next earned continuation is frozen at4e8a0093, reusing normal bag-equipment
+- Latest earned continuation was frozen at4e8a0093, reusing normal bag-equipment
   upgrades before entry (39 focused checks pass). It retains the Wizard's own
   archive17, three legal class-geared supports, and ordinary15-minute expiry.
   Launcher `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/run.sh` started only
-  after CI/public1.9.27 verification succeeded, root native5269. No full clear
-  accepted yet; use the earned record for its eventual result.
+  after CI/public1.9.27 verification succeeded, root native5269, and ended exit1
+  after1.3h; owned services are cleaned. No full clear accepted. See the earned
+  record for exact retained save, pack-death evidence and focused spacing fix.
 - Dark King pacing target is approved:5–10 minutes total across all four phases
   for a well-geared five-player raid. The finale-only watchdog now allows10min;
   no health/damage tuning or successful-finale acceptance is implied.

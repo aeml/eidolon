@@ -39,12 +39,21 @@ export function planPartyRangedSpacing(state, target, healer, canStep = () => tr
     const distance = Math.hypot(state.x - target.x, state.z - target.z);
     const supportDistance = Math.hypot(state.x - healer.x, state.z - healer.z);
     const desired = target.range - 2;
-    if (distance >= desired - 2 && supportDistance < healer.range - .5) return null;
+    // Another member of a pack can reach melee while the selected target is
+    // safely distant. Only explicitly hostile living bodies are threats; NPCs
+    // and allies remain collision obstacles, not reasons to flee.
+    const hostiles = actors.filter(actor => actor.hostile === true && actor.state !== 'DEAD' &&
+        [actor.x, actor.z].every(Number.isFinite));
+    const clearance = actor => (state.radius || 1.25) + (actor.radius || 1.25) + 3;
+    const threats = hostiles.filter(actor => Math.hypot(actor.x - state.x, actor.z - state.z) < clearance(actor));
+    const safer = (x, z) => hostiles.every(actor => Math.hypot(x - actor.x, z - actor.z) >
+        (threats.includes(actor) ? Math.hypot(state.x - actor.x, state.z - actor.z) + 1 : clearance(actor)));
+    if (!threats.length && distance >= desired - 2 && supportDistance < healer.range - .5) return null;
     // A live healer can cross a short optional spacing step between projection
     // and click. Keep firing from a useful position until that ally passes;
     // do not treat the resulting blocked input as a successful retreat. This
     // hold does not apply in melee danger or outside attack/healing reach.
-    if (distance >= desired - 3 && distance < target.range - .5 && supportDistance < healer.range - .5 &&
+    if (!threats.length && distance >= desired - 3 && distance < target.range - .5 && supportDistance < healer.range - .5 &&
         actors.some(actor => actor.friendly === true && actor.state === 'MOVING' &&
             Math.hypot(actor.x - state.x, actor.z - state.z) < (state.radius || 1.25) + (actor.radius || 1.25) + 3)) return null;
     const angle = Math.atan2(state.z - target.z, state.x - target.x);
@@ -56,7 +65,7 @@ export function planPartyRangedSpacing(state, target, healer, canStep = () => tr
             const z = target.z + Math.sin(direction) * radius;
             const step = { dx: x - state.x, dz: z - state.z };
             const travel = Math.hypot(step.dx, step.dz);
-            if (travel < 1 || travel > 12 || Math.hypot(x - healer.x, z - healer.z) >= healer.range - .5) continue;
+            if (travel < 1 || travel > 12 || !safer(x, z) || Math.hypot(x - healer.x, z - healer.z) >= healer.range - .5) continue;
             if (!partyPathAvoidsActors(state, step, actors, state.radius || 1.25) || !canStep(step)) continue;
             candidates.push({ step, travel });
         }
@@ -75,7 +84,7 @@ export function planPartyRangedSpacing(state, target, healer, canStep = () => tr
             const step = { dx: Math.cos(direction) * travel, dz: Math.sin(direction) * travel };
             const x = state.x + step.dx, z = state.z + step.dz;
             const separation = Math.hypot(x - target.x, z - target.z);
-            if (separation < distance + 1 || separation > desired ||
+            if (separation < (threats.length ? Math.min(distance, desired - 2) : distance + 1) || separation > desired || !safer(x, z) ||
                 Math.hypot(x - healer.x, z - healer.z) >= healer.range - .5) continue;
             if (!partyPathAvoidsActors(state, step, actors, state.radius || 1.25) || !canStep(step)) continue;
             partial.push({ step, separation, travel });

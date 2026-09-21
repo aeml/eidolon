@@ -165,7 +165,12 @@ export const earnedEarthCheckpoints = Object.freeze([
     // Wizard survived; preserve actual resources, not a full-heal fixture.
     { ...historicalCheckpoints[13],
         sha: 'f1205c830e6b7a39003cb2102445242718fe2902385e3854bb7a03911ed108cf',
-        gold: 217132, resources: { version: 1, health: 3783, mana: 3513, dead: false } }
+        gold: 217132, resources: { version: 1, health: 3783, mana: 3513, dead: false } },
+    // Four bosses and four town recoveries; Rogue died in the later trash pack.
+    // Keep earned bag upgrades and exact Wizard resources; no final-boss credit.
+    { ...historicalCheckpoints[13],
+        sha: '7b9e160354938afa74c0fc7ff43478c3aa1489c0f4db6d574ee8b73d66f6d33f',
+        gold: 219700, resources: { version: 1, health: 2562, mana: 3725, dead: false } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

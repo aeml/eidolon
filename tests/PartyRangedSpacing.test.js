@@ -8,6 +8,38 @@ const enemy = { x: 0, z: 0, range: 20.5 };
 const healer = { x: 12, z: 4, range: 14 };
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 
+test('a safe selected-target distance must not hide a nearby hostile pack', () => {
+    const origin = { x: 30028.269806331264, z: 18055.533878566315, radius: 1.25 };
+    const target = { x: 30027.6953125, z: 18042.314453125, range: 16.300000071525574 };
+    const support = { x: 30023.60546875, z: 18046.173828125, range: 14 };
+    const threat = { x: 30029.416015625, z: 18052.455078125, radius: 1.5, hostile: true };
+    expect(planPartyRangedSpacing(origin, target, support)).toBeNull();
+    const step = planPartyRangedSpacing(origin, target, support, () => true, [threat]);
+    expect(step).not.toBeNull();
+    const end = { x: origin.x + step.dx, z: origin.z + step.dz };
+    expect(distance(end, threat)).toBeGreaterThan(distance(origin, threat) + 1);
+    expect(distance(end, support)).toBeLessThan(support.range - .5);
+    expect(distance(end, target)).toBeLessThan(target.range);
+    expect(planPartyRangedSpacing(origin, target, support, () => false, [threat])).toBeNull();
+    expect(planPartyRangedSpacing(origin, target, support, () => true,
+        [{ ...threat, hostile: false }])).toBeNull();
+    expect(planPartyRangedSpacing(origin, target, support, () => true,
+        [{ ...threat, state: 'DEAD' }])).toBeNull();
+});
+
+test('retreat from one pack member cannot enter another hostile melee envelope', () => {
+    const origin = { x: 17, z: 0, radius: 1.25 };
+    const target = { x: 0, z: 0, range: 20.5 };
+    const support = { x: 14, z: 0, range: 14 };
+    const pack = [{ x: 14, z: 0, radius: 1.5, hostile: true },
+        { x: 20, z: 6, radius: 1.5, hostile: true }];
+    const step = planPartyRangedSpacing(origin, target, support, () => true, pack);
+    expect(step).not.toBeNull();
+    const end = { x: origin.x + step.dx, z: origin.z + step.dz };
+    expect(distance(end, pack[0])).toBeGreaterThan(distance(origin, pack[0]) + 1);
+    expect(distance(end, pack[1])).toBeGreaterThan(5.75);
+});
+
 test('Tidestar ranged role keeps firing instead of making a tiny spacing step across a moving healer', () => {
     const origin = { x: 89977.37636983006, z: 19227.552667064792, radius: 1.25 };
     const target = { x: 89966.2421875, z: 19222.6796875, range: 16.300000071525574 };

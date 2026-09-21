@@ -481,6 +481,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 const bodies = [...g.remotePlayers.values()].filter(live)
                     .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z,
                         radius: other.radius || 1.25,
+                        hostile: g.isHostileActorTarget(other),
                         friendly: g.isPlayerClassEntity(other) && !g.isHostileActorTarget(other) }));
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&

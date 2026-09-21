@@ -82,6 +82,18 @@ when evaluating the next survival-corrected run; no boss stats changed.
 
 ### Verified release and retained run evidence
 
+Latest `earnedmolten0920e` ended exit1/1.3h on4e8a0093. Four bosses, including
+the previous Guardian failure, and four town recoveries passed; Rogue died in
+the later MagmaGolem pack before the final boss. Luna/root agree terminal;
+owned services are cleaned. Latest independently inspected archive18 preserves
+actual Wizard100/245125XP/219700Gold/2562HP/3725MP and unfinished Molten0/1.
+The [earned record](2026-09-20-earned-continuation.md) contains exact archive,
+timing and support receipts. A reproduced selected-target-only spacing hold now
+accounts for nearby hostile pack members, with119 focused checks passing1.529s.
+No runtime balance change, full-dungeon acceptance or immediate full retry;
+native pack/control verification remains next. Historical runs below remain
+retained evidence, not the latest active run.
+
 Latest continuation `earnedmolten0920d` is terminal exit1/1.3h, frozen0788ca95,
 root21636/launcher44108 stopped. Luna confirms terminal cleanup. It passed normal
 Recall readiness, four-member entry, three bosses and three town recoveries,
