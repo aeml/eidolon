@@ -187,6 +187,9 @@ func (w *World) RestoreDungeon(snapshot DungeonResumeSnapshot) error {
 }
 
 func (w *World) spawnRestoredDungeonEncounters(instance *DungeonInstance) {
+	if w.replayRestoredDungeonEncounters(instance) {
+		return
+	}
 	trash, elite, bosses := dungeonEncounterCatalog(instance.DungeonType)
 	bossIndex := 0
 	for roomIndex, room := range instance.Layout.Rooms {
