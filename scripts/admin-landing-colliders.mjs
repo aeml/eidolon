@@ -4,7 +4,7 @@ import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createCasinoInterior, createCasinoFurnitureColliders } from '../src/art/ProceduralCasino.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../src/art/ChronicleSiteModels.js';
-import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
+import { chronicleInvestigations } from '../src/data/chronicleCatalog.js';
 
 // Generated from actual client collision builders, not decorative mesh bounds.
 // Boxes: [centerX, centerZ, halfX, halfZ, yaw, minY, maxY].
@@ -31,11 +31,13 @@ export async function collectAdminLandingColliders() {
     const generator = new WorldGenerator(scene, collision);
     await generator.createTown(0, 200, 100);
     await generator.createOverworldStructures();
+    const darkRealm = new CollisionManager();
     for (const chapter of chronicleInvestigations) for (const site of chapter.sites) {
         if (site.kind !== 'inspect') continue;
         const model = createChronicleSiteModel(site, chapter.realm);
         model.mesh.position.set(site.x, 0, site.z);
-        getChronicleSiteColliders(model.mesh, model.walls).forEach(collider => collision.addOrientedCollider(collider));
+        const destination = chapter.realm === 'dark' ? darkRealm : collision;
+        getChronicleSiteColliders(model.mesh, model.walls).forEach(collider => destination.addOrientedCollider(collider));
         model.dispose();
     }
     const casino = new CollisionManager();
@@ -48,7 +50,7 @@ export async function collectAdminLandingColliders() {
     }
     const furniture = Object.fromEntries(['slots', 'blackjack', 'poker', 'roulette', 'baccarat'].map(game =>
         [game, boxShape(createCasinoFurnitureColliders([{ game, x: 0, z: 0 }])[0])]));
-    return { version: 1, overworld: shapes(collision), casino: shapes(casino), entities, furniture };
+    return { version: 1, overworld: shapes(collision), darkRealm: shapes(darkRealm), casino: shapes(casino), entities, furniture };
 }
 
 export function formatAdminLandingColliders(value) {

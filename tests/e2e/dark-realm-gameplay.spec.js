@@ -41,13 +41,26 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     };
     const openCampIlyra = async () => {
         await walkInvestigationWaypoints(page, [[40009, 40800]]);
+        // Cross a periodic legacy-cleanup tick. Previously it evicted the
+        // valid expedition projection after the server spawned her.
+        const frame = await page.evaluate(() => window.game.frameCount);
+        await page.waitForFunction(frame => window.game.frameCount >= frame + 65, frame);
+        expect(await page.evaluate(() => window.game.activeEntitiesCache.some(entity => entity.id === 'story-wizard-dark-realm'))).toBe(true);
         let point;
         await expect.poll(async () => {
             point = await projectEntity(page, 'story-wizard-dark-realm');
             if (!point?.visible) return false;
             await page.mouse.move(point.x, point.y);
             return page.evaluate(() => window.game.hoveredEntity?.id === 'story-wizard-dark-realm');
-        }).toBe(true);
+        }).toBe(true).catch(async error => {
+            await page.screenshot({ path: testInfo.outputPath('camp-ilyra-failure.png') });
+            console.log('[dark-expedition-camp]', JSON.stringify(await page.evaluate(() => {
+                const game = window.game, npc = game.remotePlayers.get('story-wizard-dark-realm');
+                return { player: game.player.position.toArray(), npc: npc?.position.toArray(),
+                    mesh: Boolean(npc?.mesh), active: npc?.isActive, hovered: game.hoveredEntity?.id };
+            })));
+            throw error;
+        });
         await page.mouse.click(point.x, point.y);
         await expect(page.locator('#quest-window')).toBeVisible();
     };

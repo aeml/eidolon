@@ -26,8 +26,11 @@ Nexus/Dark King veterans retain their earned access, but not an exception to
 level100. Login restores valid district positions or repairs invalid positions
 at the camp; ineligible saved entrants return to town without changing their
 quests, resources or rewards. The private dungeon/raid fifteen-minute rule is
-unchanged. Admin destinations remain fail-closed until realm-specific support
-is implemented; a party leader cannot implicitly grant other members entry.
+unchanged. Admin visits now support the shared realm only after normal personal
+entry: both players must already be inside, and the recipient's level/story
+eligibility is checked again when the durable move applies. Canonical floor,
+discovery-wall and live-occupancy checks constrain the landing. This is not a
+party summon or a new way to bypass the guide's unlock.
 
 This is **not a finished or published expansion yet**. The initial foundation
 had no district encounters or authored campaign; the integration below now adds
@@ -115,8 +118,17 @@ Evidence:
   These are anonymous presentation fixtures, not earned progress or physical
   phone acceptance. No long raid/dungeon retry or production mutation was needed.
 
+The first connected isolated run (`darkexp0921a`, source `b8695cc7`) reached the
+shared realm through the real guide but failed at Ilyra's interaction. The
+client's periodic legacy cleanup recognized only town quest-giver IDs and
+removed the expedition projection from active chunks. The cleanup now retains
+her authoritative ID, and the connected regression waits through a cleanup tick
+before interacting. This was an application defect, not an earned campaign
+failure; prepared prerequisites and production accounts remain untouched.
+The corrected route still needs a passing receipt.
+
 Still required: inhabited/landmark composition at district scale, connected
-character entry/inspection/turn-in, appropriate admin destination support, and
+character entry/inspection/turn-in and
 the coordinated100-hour/8–12-hour pacing pass. Authored counts alone do not
 establish duration. The existing earned checkpoint19 and outstanding dungeon,
 raid and finale acceptance remain unchanged. Next release needs cumulative patch
@@ -127,8 +139,8 @@ notes and synchronized version labels; the current live build remains1.9.29.
 1. Deliver approved boss-checkpoint town returns and the narrow movement-observer
    correction. Preserve earned encounter evidence; no unchanged long retries.
 2. Coordinate level-band combat, quest, dungeon/raid and optional activity budgets.
-   `experience_budget.go` currently derives kill XP from a percentage of the level
-   requirement: multiplying that curve alone also increases those rewards. Account
+   The old `experience_budget.go` derived kill XP from a percentage of the level
+   requirement; the local tuning candidate now uses independent absolute anchors. Account
    for party sharing and25% Well Rested kill XP. Use representative play rates,
    not slow multi-browser formation time. Keep dailies optional; no forced waits,
    slower combat or daily-reset requirements to fill the100-hour target.

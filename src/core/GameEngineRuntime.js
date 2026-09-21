@@ -147,8 +147,9 @@ class GameEngineRuntimeMethods {
 
                 // QuestNPC Cleanup
                 if (entity instanceof QuestNPC) {
-                    // Allow server quest npc (quest-npc-1) and local (quest-npc-local)
-                    if (!['quest-npc-local', 'quest-npc-1', 'story-wizard-1', 'story-wizard-local'].includes(entity.id)) {
+                    // Keep the shared expedition projection as well as town
+                    // quest givers; all are authoritative service identities.
+                    if (!['quest-npc-local', 'quest-npc-1', 'story-wizard-1', 'story-wizard-local', 'story-wizard-dark-realm'].includes(entity.id)) {
                         console.warn(`Removing rogue QuestNPC entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
                         this.chunkManager.removeEntity(entity);
                     } else if (entity.id === 'quest-npc-local') {

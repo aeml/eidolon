@@ -128,3 +128,84 @@ func TestAdminTeleportSamePartyDungeonUsesCanonicalFloor(t *testing.T) {
 		t.Fatal("different party accepted")
 	}
 }
+
+func TestAdminTeleportDarkRealmRetainsEntryAndDurableGuards(t *testing.T) {
+	for _, scenario := range []string{"allowed", "outside", "underlevel", "unrepaired", "level-changed", "receipt-replay"} {
+		t.Run(scenario, func(t *testing.T) {
+			w, p, a := adminTeleportFixture()
+			w.Grid.Remove(p)
+			w.Grid.Remove(a)
+			p.Level, p.Quests = 100, darkRealmEligiblePlayer("prerequisites").Quests
+			p.InstanceID, a.InstanceID = DarkRealmInstanceID, DarkRealmInstanceID
+			p.X, p.Z, a.X, a.Z = 40000, 40800, 40030, 40800
+			// Shared world visitors need no party, but must enter normally.
+			if scenario == "outside" {
+				p.InstanceID = ""
+			}
+			if scenario == "underlevel" {
+				p.Level = 99
+			}
+			if scenario == "unrepaired" {
+				p.Quests = nil
+			}
+			w.Grid.Add(p)
+			w.Grid.Add(a)
+			plan, err := w.PlanAdminTeleport(p.ID, "player", a.ID)
+			if scenario == "outside" || scenario == "underlevel" || scenario == "unrepaired" {
+				if err == nil {
+					t.Fatal("teleport bypassed personal expedition entry")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if scenario == "level-changed" {
+				p.Level = 99
+			}
+			id, fingerprint := database.AdminOperationID("operator", "dark-realm-teleport-001"), strings.Repeat("d", 64)
+			_, changed, err := w.ApplyDurableAdminTeleport(p.ID, id, fingerprint, plan)
+			if scenario == "level-changed" {
+				if err == nil || changed || p.X != 40000 {
+					t.Fatal("stale eligibility applied")
+				}
+				return
+			}
+			if err != nil || !changed || p.X != plan.X || p.Z != plan.Z || p.InstanceID != DarkRealmInstanceID || p.Health != 17 || p.Mana != 9 || p.Gold != 50 {
+				t.Fatal("shared realm move failed or changed resources", err)
+			}
+			if scenario == "receipt-replay" {
+				p.X, p.Level = 40050, 99
+				if _, changed, err := w.ApplyDurableAdminTeleport(p.ID, id, fingerprint, plan); err != nil || changed || p.X != 40050 {
+					t.Fatal("durable replay moved player", err)
+				}
+			}
+		})
+	}
+}
+
+func TestAdminTeleportDarkRealmFloorAndDiscoveryWalls(t *testing.T) {
+	w, p, _ := adminTeleportFixture()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	for _, plan := range []AdminTeleportPlan{
+		{Instance: DarkRealmInstanceID, X: 39650, Z: 40800}, // Void between districts.
+		{Instance: DarkRealmInstanceID, X: 40000, Z: 40800, Y: 8},
+		{Instance: DarkRealmInstanceID, X: 40000, Z: 40800, VIP: true},
+	} {
+		if w.adminLandingClearLocked(plan, p.ID) {
+			t.Fatal("invalid expedition landing accepted", plan)
+		}
+	}
+	for _, box := range adminLandingColliders.DarkRealm.Boxes {
+		if box[5] > 1.3 {
+			continue
+		}
+		if w.adminLandingClearLocked(AdminTeleportPlan{Instance: DarkRealmInstanceID, X: box[0], Z: box[1]}, p.ID) {
+			t.Fatal("landing inside discovery wall accepted", box)
+		}
+	}
+	if !w.adminLandingClearLocked(AdminTeleportPlan{Instance: DarkRealmInstanceID, X: 40000, Z: 40800}, p.ID) {
+		t.Fatal("clear camp landing rejected")
+	}
+}

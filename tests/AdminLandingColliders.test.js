@@ -11,6 +11,9 @@ test('server teleport geometry matches current client collision builders', async
         expect(actual.overworld.boxes.length).toBeGreaterThan(500);
         expect(actual.overworld.circles).toHaveLength(4);
         expect(actual.casino.boxes.length).toBeGreaterThan(10);
+        expect(actual.darkRealm.boxes.length).toBeGreaterThan(20);
+        expect(actual.darkRealm.boxes.every(box => box[0] > 38000 && box[1] > 39000)).toBe(true);
+        expect(actual.overworld.boxes.every(box => box[0] < 38000)).toBe(true);
         expect(actual.entities.TradingHouse.slice(2, 4)).toEqual([6.175, 5.005]);
         expect(actual.entities.Stash.slice(2, 4)).toEqual([1.775, 1.275]);
     } finally {

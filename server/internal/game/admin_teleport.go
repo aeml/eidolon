@@ -21,6 +21,7 @@ type adminLandingShapes struct {
 type adminLandingGeometry struct {
 	Version   int                   `json:"version"`
 	Overworld adminLandingShapes    `json:"overworld"`
+	DarkRealm adminLandingShapes    `json:"darkRealm"`
 	Casino    adminLandingShapes    `json:"casino"`
 	Entities  map[string][7]float64 `json:"entities"`
 	Furniture map[string][7]float64 `json:"furniture"`
@@ -28,7 +29,7 @@ type adminLandingGeometry struct {
 
 var adminLandingColliders = func() adminLandingGeometry {
 	var data adminLandingGeometry
-	if err := json.Unmarshal(adminLandingGeometryJSON, &data); err != nil || data.Version != 1 || len(data.Overworld.Boxes) == 0 || len(data.Entities) != 3 {
+	if err := json.Unmarshal(adminLandingGeometryJSON, &data); err != nil || data.Version != 1 || len(data.Overworld.Boxes) == 0 || len(data.DarkRealm.Boxes) == 0 || len(data.Entities) != 3 {
 		panic("invalid canonical administration landing geometry")
 	}
 	return data
@@ -111,8 +112,11 @@ func (w *World) adminLandingClearLocked(plan AdminTeleportPlan, playerID string)
 				return false
 			}
 		}
-	case w.isDungeonInstance(plan.Instance):
+	case plan.Instance == DarkRealmInstanceID || w.isDungeonInstance(plan.Instance):
 		if y != 0 || plan.VIP {
+			return false
+		}
+		if plan.Instance == DarkRealmInstanceID && !adminShapesClear(adminLandingColliders.DarkRealm, x, y, z) {
 			return false
 		}
 		inside := false
@@ -155,6 +159,19 @@ func (w *World) adminTeleportReadyLocked(player *Entity) bool {
 		player.CasinoSeat == nil && w.TradeByPlayer[player.ID] == "" && !w.HasPvPMatch(player.ID)
 }
 
+// Shared expedition visits are not party summons or an entry bypass. Both
+// players must already be inside through normal entry; private runs retain
+// their same-party restriction. Eligibility is rechecked at durable apply.
+func adminVisitInstanceAllowed(instance, source, party, anchorParty string, darkEligible bool) bool {
+	if instance == "" || instance == CasinoInstanceID {
+		return true
+	}
+	if instance == DarkRealmInstanceID {
+		return instance == source && darkEligible
+	}
+	return instance == source && party != "" && party == anchorParty
+}
+
 // Actor/target/destination account work locks must already be held by the server.
 func (w *World) PlanAdminTeleport(playerID, destination, anchorID string) (AdminTeleportPlan, error) {
 	w.Mu.Lock()
@@ -168,6 +185,7 @@ func (w *World) PlanAdminTeleport(playerID, destination, anchorID string) (Admin
 	ready := w.adminTeleportReadyLocked(player)
 	plan.SourceInstance, plan.SourceVIP = player.InstanceID, player.CasinoVIPFloor
 	partyID, vipUntil := player.PartyID, player.VIPUntil
+	darkEligible := DarkRealmEntryAllowed(player)
 	player.Mu.RUnlock()
 	if !ready {
 		return plan, fmt.Errorf("%w: finish combat, trading or seating first", ErrAdminTeleportRejected)
@@ -187,7 +205,7 @@ func (w *World) PlanAdminTeleport(playerID, destination, anchorID string) (Admin
 		if !ready || !finiteCoordinate(x) || !finiteCoordinate(z) {
 			return plan, fmt.Errorf("%w: destination player is unavailable or busy", ErrAdminTeleportRejected)
 		}
-		if plan.Instance != "" && plan.Instance != CasinoInstanceID && (plan.Instance != plan.SourceInstance || partyID == "" || partyID != anchorParty) {
+		if !adminVisitInstanceAllowed(plan.Instance, plan.SourceInstance, partyID, anchorParty, darkEligible) {
 			return plan, fmt.Errorf("%w: enter the same party instance normally first", ErrAdminTeleportRejected)
 		}
 		if plan.VIP {
@@ -229,6 +247,7 @@ func (w *World) ApplyDurableAdminTeleport(playerID, id, fingerprint string, plan
 	replayed, err := database.AdminOperationApplied(player.AdminOperationReceipts, id, fingerprint)
 	ready := w.adminTeleportReadyLocked(player) && player.InstanceID == plan.SourceInstance && player.CasinoVIPFloor == plan.SourceVIP
 	partyID, vipUntil := player.PartyID, player.VIPUntil
+	darkEligible := DarkRealmEntryAllowed(player)
 	player.Mu.RUnlock()
 	if err != nil || replayed {
 		return true, false, err
@@ -244,7 +263,7 @@ func (w *World) ApplyDurableAdminTeleport(playerID, id, fingerprint string, plan
 		anchor.Mu.RLock()
 		valid := w.adminTeleportReadyLocked(anchor) && anchor.InstanceID == plan.Instance && anchor.CasinoVIPFloor == plan.VIP &&
 			math.Hypot(anchor.X-plan.AnchorX, anchor.Z-plan.AnchorZ) <= 1 &&
-			(plan.Instance == "" || plan.Instance == CasinoInstanceID || plan.Instance == plan.SourceInstance && partyID != "" && partyID == anchor.PartyID)
+			adminVisitInstanceAllowed(plan.Instance, plan.SourceInstance, partyID, anchor.PartyID, darkEligible)
 		anchor.Mu.RUnlock()
 		if !valid || math.Hypot(plan.X-plan.AnchorX, plan.Z-plan.AnchorZ) > 7.01 {
 			return true, false, fmt.Errorf("%w: destination player or instance changed", ErrAdminTeleportRejected)
