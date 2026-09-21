@@ -43,6 +43,8 @@ measured playthrough evidence; the current short endgame chain is insufficient.
 The existing earned run continues on frozen1.9.28 for encounter/handoff evidence,
 not proof of the newly approved100-hour leveling target. Balance/content changes
 must be versioned, documented in patch notes and checked proportionately.
+The [implementation sequence and working Dark Realm outline](2026-09-21-campaign-pacing-and-dark-realm.md)
+record the coupled XP-budget issue and reuse of existing quest/encounter systems.
 
 ## Historical development evidence — September 7–8
 
