@@ -120,7 +120,16 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     expect(before.investigationMask).toBe(7);
     expect(before.completed).toBe(false);
     await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
-    await expect.poll(async () => (await readQuest()).completed).toBe(true);
+    await expect.poll(async () => (await readQuest()).completed).toBe(true).catch(async error => {
+        await page.screenshot({ path: testInfo.outputPath('camp-turnin-failure.png') });
+        console.log('[dark-expedition-turnin]', JSON.stringify(await page.evaluate(id => ({
+            instance: window.game.currentInstanceId, position: window.game.player.position.toArray(),
+            quest: window.game.player.quests.find(q => q.id === id),
+            error: window.game.uiManager.quest.questActionError,
+            selected: window.game.uiManager.quest.selectedQuestId
+        }), chapter.id)));
+        throw error;
+    });
     await expect(page.locator('#quest-window .quest-dialogue__speech')).toHaveText(chapter.completion);
     await expect.poll(() => page.evaluate(() => window.game.player.gold)).toBe(gold + before.rewardGold);
     const claimed = await readQuest();

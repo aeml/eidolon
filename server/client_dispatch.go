@@ -1543,7 +1543,7 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		player, success := world.PerformAcceptQuest(c.playerID, payload.QuestID)
 		if !success {
-			c.sendError("Speak to the correct quest giver in town to accept an available quest.")
+			c.sendError("Speak to the correct quest giver nearby to accept an available quest.")
 		}
 		if success {
 			// Send Quest Update

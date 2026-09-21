@@ -167,6 +167,17 @@ The connected route now also clicks Maelin and checks her read-only, spoiler-
 gated conversation before accepting Ilyra's quest. That extended route still
 needs to run with ordinary travel defense enabled.
 
+The extended connected run `darkexp0921c` (`40671025`) passed Maelin's physical
+conversation, Ilyra acceptance, all three actual discoveries, Recall and guide
+re-entry. Manual completion then failed. Investigation found a real transition
+bug: `EnterDarkRealm` clears the server movement context, but its handler had not
+published that reset. After Recall, client movement still used the old context,
+so the server rejected the apparent approach to Ilyra. Entry now publishes the
+authoritative context before the scene transition, matching other scene paths.
+The dispatch regression checks reset delivery, rejects departed-town packets,
+and accepts movement under the new context after the normal scene grace. The
+completed/reconnected reward route still requires a passing connected receipt.
+
 Still required: further district-scale composition where needed, connected
 character entry/inspection/turn-in and
 the coordinated100-hour/8–12-hour pacing pass. Authored counts alone do not

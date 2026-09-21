@@ -21,6 +21,10 @@ func handleEnterDarkRealm(client *Client, message Message) {
 	if player == nil || player.InstanceID != game.DarkRealmInstanceID {
 		return
 	}
+	// Recall gives the client a recovery movement context. Realm entry clears
+	// it on the server, so publish that reset before accepting new scene input.
+	// Otherwise the client walks locally while every move is rejected as stale.
+	sendMovementContext(client)
 	payload, _ := json.Marshal(map[string]interface{}{
 		"instanceId": game.DarkRealmInstanceID, "type": game.DarkRealmInstanceType,
 		"layout": game.DarkRealmLayout(),

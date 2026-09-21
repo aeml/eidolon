@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/game"
 )
@@ -65,5 +66,35 @@ func TestDarkRealmDispatchTransfersOnlyEligibleCallerWithAuthoritativeScene(t *t
 		if message.Type == MsgEnterInstance {
 			t.Fatal("ineligible member received an expedition scene")
 		}
+	}
+}
+
+func TestDarkRealmReentryPublishesFreshMovementContext(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	defer world.StopBackground()
+	client := addChatTestClient("realm-returner", "")
+	p := world.Entities[client.playerID]
+	p.Level, p.Health, p.State = 100, 100, "IDLE"
+	for _, id := range []string{game.ChronicleEarthRestoredID, game.ChronicleWaterRestoredID, game.ChronicleFireRestoredID, game.ChronicleAirRestoredID} {
+		p.Quests = append(p.Quests, game.Quest{ID: id, Completed: true})
+	}
+	if err := world.PerformRecall(p.ID, "expedition-return"); err != nil {
+		t.Fatal(err)
+	}
+	// The fixture approaches the town guide; the transition and all movement
+	// admission below use the real handler/world paths.
+	p.X, p.Z = 0, 240
+	drainSentMessages(client.send)
+	handleEnterDarkRealm(client, Message{Type: MsgEnterDarkRealm, Payload: json.RawMessage(`{}`)})
+	assertRecoveryContextMessage(t, client, "")
+	// Empty-context scene transitions retain their existing brief movement
+	// grace. Model its expiry without sleeping or weakening production guards.
+	p.LastRespawnTime, p.MoveLockUntil = time.Now().Add(-2*time.Second), time.Time{}
+	if world.UpdatePlayerMovementWithContext(p.ID, 40009, 0, 40800, 0, "IDLE", 1, "expedition-return") {
+		t.Fatal("departed town context displaced expedition entrant")
+	}
+	if !world.UpdatePlayerMovementWithContext(p.ID, 40009, 0, 40800, 0, "IDLE", 2, "") || p.X != 40009 || p.Z != 40800 {
+		t.Fatal("fresh movement toward camp Ilyra was rejected")
 	}
 }
