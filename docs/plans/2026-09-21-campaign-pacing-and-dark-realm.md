@@ -6,6 +6,11 @@ Aim for roughly112 hours overall. Level100 is required before realm entry.
 The finale remains5–10 minutes across four phases for five well-geared players.
 This is required remaining1.10 work, not delivered1.9.29 content.
 
+The [initial XP tuning candidate](2026-09-21-campaign-xp-tuning.md) now changes
+incoming combat/fresh-daily rewards without changing stored levels or thresholds.
+Reference modeled active progression is approximately93–109 hours depending on
+party/rest assumptions, not a measured duration or final balance approval.
+
 ## Implementation in progress — shared realm foundation
 
 Local server work now defines a permanent `dark-realm` scene with a Resonant

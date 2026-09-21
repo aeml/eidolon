@@ -1,6 +1,6 @@
 package game
 
-// Experimental coordinated-curve budgets. Quotes belong to content, never the
+// Coordinated content budgets. Quotes belong to content, never the
 // recipient's level. Gold is deliberate purchasing income, not XP divided by a
 // magic constant. Accepted saves retain their original quotes in quests.go.
 type questRewardBudget struct{ XP, Gold int }
@@ -53,11 +53,12 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 		return questRewardBudget{}
 	}
 	if level, found := dailyHuntContentLevels[target]; found {
-		// Two percent of a level per objective: a 20% bonus before individual
-		// kill rounding. Daily hunts remain optional hundred-kill tasks.
+		// Keep the optional daily bonus at 20% of that content's ordinary solo
+		// kill budget, rather than retaining the old two-percent-per-kill quote
+		// after ordinary XP is reduced. Story and accepted quotes are unchanged.
 		// New contracts add roughly a 20% Gold bonus to the leaner ordinary
 		// kill purse. Accepted contracts retain their already-displayed quote.
-		return questRewardBudget{contentExperiencePercent(level, 2*count), max(100, level*count/5)}
+		return questRewardBudget{combatExperienceBudget(level, 0, false, false) * count / 5, max(100, level*count/5)}
 	}
 	level, multiplier := 0, 1
 	switch target {
@@ -75,7 +76,7 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 	if level == 0 {
 		return questRewardBudget{}
 	}
-	// Generic, regional AND difficulty dailies can overlap. Each pays four
-	// percent per boss, versus the encounter's personal 35% base reward.
-	return questRewardBudget{contentExperiencePercent(level, 4*count) * multiplier, level * count * 4 * multiplier}
+	// Generic, regional AND difficulty dailies can overlap. Each pays two
+	// percent per boss, versus the encounter's personal20% base reward.
+	return questRewardBudget{contentExperiencePercent(level, 2*count) * multiplier, level * count * 4 * multiplier}
 }

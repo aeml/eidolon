@@ -102,12 +102,12 @@ func TestProgressionPacingAuditOverlappingBossDailies(t *testing.T) {
 			if questXP*4 > bossXP {
 				t.Fatalf("overlapping dailies exceed 25%% of boss XP: daily=%d boss=%d", questXP, bossXP)
 			}
-			wantQuestXP, wantQuestGold := 6760, 960
+			wantQuestXP, wantQuestGold := 3380, 960
 			if difficulty == DifficultyHeroic {
-				wantQuestXP, wantQuestGold = 85200, 4160
+				wantQuestXP, wantQuestGold = 42600, 4160
 			}
 			if difficulty == DifficultyMythic {
-				wantQuestXP, wantQuestGold = 163640, 7360
+				wantQuestXP, wantQuestGold = 81820, 7360
 			}
 			if questXP != wantQuestXP || questGold != wantQuestGold {
 				t.Fatalf("wrong stacked budget: XP=%d gold=%d", questXP, questGold)
