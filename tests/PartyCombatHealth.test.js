@@ -1,5 +1,16 @@
 import { jest } from '@jest/globals';
-import { observePartyCombatHealth, partyCombatHealthSnapshot } from './partyCombatHealth.js';
+import { observePartyCombatHealth, partyCombatHealthSnapshot, partyRoleSnapshot } from './partyCombatHealth.js';
+
+test('healing and formation reads exclude accumulated diagnostic history', () => {
+    const game = { currentInstanceId: 'run', player: { id: 'rogue', state: 'IDLE',
+        position: { x: 3, z: 4 }, stats: { hp: 1102, maxHp: 3075, mana: 12, maxMana: 100 } } };
+    Object.defineProperty(game.player, 'quests', { get() { throw new Error('not a hot-path field'); } });
+    Object.defineProperty(game, '__partyClearEvidence', { get() { throw new Error('never copy combat history'); } });
+    expect(partyRoleSnapshot(game)).toEqual({ id: 'rogue', instance: 'run', x: 3, z: 4,
+        hp: 1102, maxHP: 3075, mana: 12, maxMana: 100, dead: false });
+    game.player.state = 'DEAD';
+    expect(partyRoleSnapshot(game).dead).toBe(true);
+});
 
 test('compact observations retain death history and browser-clock update age', () => {
     const game = { player: { state: 'IDLE' } };

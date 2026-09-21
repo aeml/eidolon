@@ -12,7 +12,7 @@ import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, part
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
-import { observePartyCombatHealth } from '../partyCombatHealth.js';
+import { observePartyCombatHealth, partyRoleSnapshot } from '../partyCombatHealth.js';
 import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget, selectPartyDamageSupportAnchor } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
@@ -212,6 +212,9 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const story = raid || partyDungeonStory(catalog.quests, playthrough.dungeonType);
     const earnedWizard = earnedPartyContinuationEnabled(process.env, playthrough, isRaid);
     const snapshot = actorPage => readPartySnapshot(actorPage, story.chapterId);
+    // Hot decisions need current vitals/positions, not every retained warning,
+    // input trace, quest and damage receipt from the whole expedition.
+    const roleSnapshot = actorPage => actorPage.evaluate(partyRoleSnapshot);
     // Preserve the accepted Verdant fixture. Other families explicitly prepare
     // their prerequisites; they are encounter checks, not earned campaigns.
     const quests = playthrough.dungeonType === 'verdant_bastion_catacombs'
@@ -315,7 +318,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         console.log('[party-clear] visible desktop roster selection and clear verified before combat');
 
         async function follow(actor, anchor, distance = 4) {
-            const state = await snapshot(actor.page);
+            const state = await roleSnapshot(actor.page);
             const step = partyFollowStep(state, anchor, distance);
             if (!step) return;
             // Same covered-pointer handling as the leader: reread on the next
@@ -383,7 +386,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
 
         async function healParty({ allowMovement = true } = {}, support = healer) {
             const healer = support, healerIndex = actors.indexOf(healer);
-            const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
+            const states = await Promise.all(actors.map(actor => roleSnapshot(actor.page)));
             const { crystal, ...available } = await healer.page.evaluate(() => {
                 const p = window.game.player;
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
@@ -641,7 +644,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     { timeout: 5000 }).toBe(true);
                 const formationTrace = [];
                 try {
-                    await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
+                    await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => roleSnapshot(actor.page))),
                         trace: entry => {
                             formationTrace.push(entry);
                             if (formationTrace.length > 32) formationTrace.shift();
@@ -709,7 +712,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions, formationTrace }));
                     throw error;
                 }
-                const arrived = await snapshot(tank.page);
+                const arrived = await roleSnapshot(tank.page);
                 formationAnchor = { x: arrived.x, z: arrived.z };
             },
             recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {

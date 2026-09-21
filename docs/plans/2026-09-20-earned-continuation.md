@@ -17,6 +17,17 @@ scoped lint, shell syntax and diff pass. Prior owned services/ports were free
 and latest CI was terminal success before launch. Luna monitors terminal only.
 No native pack acceptance or full earned retry is claimed yet.
 
+Read-only follow-up found repeated diagnostic serialization in the controller:
+healing and formation polled the full snapshot (including every retained combat
+receipt and input trace). The failed run's four final evidence objects alone
+total247,352 serialized bytes, excluding quest/room/status fields. These frequent
+reads now use a shared positions/vitals-only observation; full snapshots remain
+at setup, rests, death inspection and final artifacts.114 focused health,
+healing and formation checks pass0.841s; lint/diff pass. No game state or timing
+limit changes. This removes unnecessary payload work, not proof of the cause
+of the18s healing gap or a measured native speedup. The already-running pack
+diagnostic stays on its frozen d54cd406 source; use the improvement afterward.
+
 `earnedmolten0920e` is terminal exit1/1.3h from frozen4e8a0093: root native5269,
 launcher1400977, source/log `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/`.
 It started only after1.9.27 CI35542593860 passed and exact public identities,
