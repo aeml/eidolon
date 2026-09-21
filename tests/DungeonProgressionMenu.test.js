@@ -296,6 +296,7 @@ describe('dungeon progression menu', () => {
         const partyStateBox = document.getElementById('dungeon-party-state-box');
         expect(partyStateBox.textContent).toContain('Party instance idle');
         expect(partyStateBox.textContent).toContain('87s');
+        expect(partyStateBox.textContent).toContain('latest cleared boss checkpoint');
         expect(partyStateBox.textContent).toContain('You are the party leader');
         expect(document.getElementById('btn-enter-dungeon').innerText).toBe('Continue Party Run');
         expect(document.getElementById('btn-reset-dungeon').innerText).toBe('Reset Party Instance');
@@ -318,6 +319,7 @@ describe('dungeon progression menu', () => {
         const partyStateBox = document.getElementById('dungeon-party-state-box');
         expect(partyStateBox.textContent).toContain('Party instance active');
         expect(partyStateBox.textContent).toContain('Non-leaders can only continue the current party instance');
+        expect(partyStateBox.textContent).toContain('latest cleared boss checkpoint');
         expect(document.getElementById('btn-enter-dungeon').innerText).toBe('Continue Party Run');
         expect(document.getElementById('btn-reset-dungeon')).toBeNull();
     });

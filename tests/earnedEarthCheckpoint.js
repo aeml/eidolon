@@ -170,7 +170,12 @@ export const earnedEarthCheckpoints = Object.freeze([
     // Keep earned bag upgrades and exact Wizard resources; no final-boss credit.
     { ...historicalCheckpoints[13],
         sha: '7b9e160354938afa74c0fc7ff43478c3aa1489c0f4db6d574ee8b73d66f6d33f',
-        gold: 219700, resources: { version: 1, health: 2562, mana: 3725, dead: false } }
+        gold: 219700, resources: { version: 1, health: 2562, mana: 3725, dead: false } },
+    // Four bosses, all roles alive; a late spacing observation stopped the driver.
+    // No final-boss credit. Preserve the actual saved resources and earnings.
+    { ...historicalCheckpoints[13],
+        sha: 'c3b4f337a123a7bc87e8ced37daa74cb8a21ccf899d30e8e7507174f7d5e2eee',
+        gold: 222342, resources: { version: 1, health: 3895, mana: 3725, dead: false } }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

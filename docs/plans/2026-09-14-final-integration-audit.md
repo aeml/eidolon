@@ -1,6 +1,37 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.28 verified, earned Molten continuation running
+## Current delivery — 1.9.28 verified; 1.9.29 checkpoint candidate
+
+### September21 approved additions — progression open, checkpoints local
+
+The player selected roughly100 hours to level100 plus8–12 hours of Dark Realm
+quests, lore and the dungeon leading to the raid (roughly112 hours overall).
+This adds substantial endgame-story and coordinated progression work to1.10;
+existing31 chapters and old earned timings do not meet that target. Preserve
+the separate5–10-minute Dark King encounter target. The
+[balance plan](2026-09-07-progression-balance-and-investigations.md#approved-pacing-target--september-21)
+records migration, level100 entry and content/evidence requirements.
+
+The player also approved active-dungeon town returns at the latest cleared boss
+checkpoint, retaining15-minute logout expiry. Candidate1.9.29 implements this
+using existing contiguous room-clear state, with entrance fallback before any
+boss clear and authoritative spawn in ordinary re-entry scene messages. It
+neither moves members already inside nor changes resources/rewards. The guide
+explains the rule. Recall/Respawn and scene regressions fail before the fix;
+focused server suites pass1.180s/1.673s.417 client/route/save/version checks pass
+7.743s; scoped lint/diff pass. Native prepared four-role checkpoint verification
+is next, not an immediate unchanged full dungeon rerun. Login/build/notes1.9.29
+are prepared, not yet deployed. No100-hour XP rebalance or8–12-hour story expansion
+is claimed in this patch.
+
+Earned `earnedmolten0921a` ended exit1/1.3h, four bosses cleared and all four
+roles alive, before the final boss. The reported failed spacing input actually
+ended within0.12 units of its requested point after8.96 units of real movement.
+The QA helper now permits one final settled-arrival observation after a polling
+timeout, with the same position/living/instance guards and no extra click or
+deadline increase. Preserve actual archive19 and its logout/resources; see the
+[earned record](2026-09-20-earned-continuation.md). Original frozen source was
+not edited. Root67495 is terminal and owned services are cleaned.
 
 ### 1.9.28 verified — preserve restored encounter composition
 
@@ -37,7 +68,8 @@ the prior validated spacing correction and compact role/vitals observations,
 plus normal owned bag upgrades, not new balance/grants. Root native67495,
 launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`. Existing2h
 bound, zero retries; Luna monitors terminal only. No deployment/browser overlap.
-Full earned clear and Air handoff remain unaccepted until this route proves them.
+That route is now terminal as recorded above; full earned clear and Air handoff
+remain unaccepted.
 
 ### 1.9.27 verified — authoritative dungeon resume landing
 

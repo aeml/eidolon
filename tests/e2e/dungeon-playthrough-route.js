@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { installDungeonObservationInPage, readDungeonTargetStateInPage } from '../dungeonDeathObservation.js';
-import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
+import { buildDungeonTraversalRoutes, dungeonTownReturnRoute } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
 import { aimDungeonCombatTarget, readDungeonTargetPointerInPage, selectDungeonForegroundTarget } from '../dungeonTargetInput.js';
 import { dungeonTargetApproach } from '../dungeonTargetApproach.js';
@@ -394,10 +394,11 @@ export async function playDungeonThroughInputs(page, {
             if (recovered) {
                 timing.count('townReturns');
                 if (afterTownRecovery) await afterTownRecovery(page, { roomIndex });
-                // Rewalk all actual joins from the real entrance. Preserve the
-                // original layout, defeated set, reward baseline and total
-                // deadline; do not teleport ahead or start/reset another run.
-                routeIndex = -1;
+                // The server now returns players to a cleared boss checkpoint.
+                // Verify its real landing, then walk the remaining actual joins.
+                // Preserve layout, defeated set, rewards and the total deadline.
+                const resumedSummary = await page.evaluate(() => window.game.currentDungeonRoomState);
+                routeIndex = dungeonTownReturnRoute(layout, resumedSummary, await readPlayerState(page)) - 1;
             }
         }
         timing.enter('verification');

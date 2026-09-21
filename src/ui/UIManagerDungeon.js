@@ -175,6 +175,13 @@ class UIManagerDungeonMethods {
                 <div style="color: ${data.isLeader ? '#ffd36f' : '#8ea8d1'}; margin-top: 4px; line-height: 1.5;">${data.isLeader ? 'As party leader, your dungeon choice and reset actions define the run for the group.' : 'If you want a different dungeon or a reset, ask the party leader to drive it.'}</div>
             `;
         }
+        if (data.hasInstance) {
+            const checkpointHint = document.createElement('div');
+            checkpointHint.className = 'dungeon-checkpoint-hint';
+            checkpointHint.textContent = 'Returning from town places you at the latest cleared boss checkpoint, or the entrance if no boss has been cleared.';
+            checkpointHint.style.cssText = 'color: #d7dfef; margin-top: 8px; line-height: 1.5;';
+            partyStateBox.appendChild(checkpointHint);
+        }
         scroll.append(partyStateBox, dungeonPanel, raidPanel);
         appendDungeonPreparation(partyStateBox);
 

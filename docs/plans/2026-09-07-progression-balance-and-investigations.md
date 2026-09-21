@@ -14,15 +14,35 @@ saves, accepted results and next work. Automated defensive kills brought the
 Wizard to100 before Molten; this is not a human pacing benchmark or justification
 for another blanket reward reduction.
 
-### Open pacing decision, not a blocker to implementation
+### Approved pacing target — September 21
 
-September20: asked the user for an approximate total fresh-player campaign
-duration through the Dark King, with appropriate dungeon/raid parties and no
-mandatory daily grind. Await the asynchronous answer; do not repeatedly ask or
-invent a target from browser-run durations. Continue encounter/progression fixes
-meanwhile. The separate final-boss target is already approved:5–10 minutes total
-for a well-geared five-player raid across all four phases. Neither that target
-nor the ten-minute finale test watchdog approves the full campaign XP curve.
+The user answered: approximately100 hours of play to reach level100, which is
+required before entering the Dark Realm, followed by8–12 hours of Dark Realm
+quests, lore and the dungeon leading to the Dark King raid. Aim for roughly112
+hours overall (the stated ranges imply108–112). Suitable dungeon/raid parties
+and no mandatory daily-quest grind remain the measurement assumptions. The
+Dark King's four phases together should take5–10 minutes for a well-geared
+five-player raid; that fight is part of the Dark Realm block, not its entirety.
+
+This replaces the open timing question and materially expands remaining1.10
+work. Current reduced budgets and31 chapters are not acceptance of this target;
+neither are bot traversal times, repeated failed-run XP or a prepared level100
+fixture. Do not achieve it by adding forced waits, padding the finale fight or
+blindly multiplying every XP requirement.
+
+Remaining implementation must coordinate level-band XP, enemy/quest rewards,
+equipment usefulness and authored main/optional quest routes so players can
+reach required regional entry levels without a daily wall. Preserve existing
+character levels, earned progress, gear and accepted reward promises through
+any curve migration. Verify the level100 Dark Realm boundary on every entry
+path. Expand the Dark Realm into a genuine8–12-hour quest/lore arc before and
+through the Umbral dungeon, with earned raid access, the existing four-Eidolon
+finale and aftermath. Record authored content/pacing budgets separately from
+measured playthrough evidence; the current short endgame chain is insufficient.
+
+The existing earned run continues on frozen1.9.28 for encounter/handoff evidence,
+not proof of the newly approved100-hour leveling target. Balance/content changes
+must be versioned, documented in patch notes and checked proportionately.
 
 ## Historical development evidence — September 7–8
 

@@ -33,3 +33,22 @@ export function sampleDungeonTraversalRoute(route, spacing = 2) {
     }
     return samples;
 }
+
+// Resume walking from the server's real checkpoint landing after town recovery.
+// This observes progress/position; it never moves actors or clears rooms.
+export function dungeonTownReturnRoute(layout, summary, player) {
+    let checkpoint = 0;
+    for (let i = 1; i < layout.rooms.length; i++) {
+        if (summary?.rooms?.[i]?.cleared !== true) break;
+        if (layout.rooms[i].type === 'boss') checkpoint = i;
+    }
+    const room = layout.rooms[checkpoint];
+    if (!room || player?.state === 'DEAD' || !(player?.health > 0) ||
+        !Number.isFinite(player.x) || !Number.isFinite(player.z) ||
+        Math.hypot(player.x - room.x, player.z - room.z) > 3) {
+        throw new Error('Town return did not reach the actual cleared boss checkpoint');
+    }
+    const next = layout.corridors.findIndex(corridor => corridor.fromRoomIndex === checkpoint);
+    if (next < 0) throw new Error('Checkpoint has no remaining traversal route');
+    return next;
+}

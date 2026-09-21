@@ -20,6 +20,7 @@ import { GroundMovementFailedError } from '../groundInputFailure.js';
 import { partySpacingActorInterruption } from '../partyRangedSpacing.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { partyDungeonRestNeeded } from '../dungeonRestPolicy.js';
+import { dungeonTownReturnRoute } from '../dungeonTraversalRoutes.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
@@ -30,7 +31,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter, openIlyra } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
-    enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown, settlePointerRaycast } from './helpers.js';
+    enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, readPlayerState, returnToTown, settlePointerRaycast } from './helpers.js';
 
 // Shared input route; each spec owns Playwright recording options.
 
@@ -749,7 +750,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 console.log('[party-clear-rest]', JSON.stringify({ roomIndex, townRests,
                     spent: states.map(s => ({ hp: s.hp, mana: s.mana })), allMembersRecovered: roles.length,
                     sameSeedRoomsGoldInventoryAndQuests: true }));
-                return true; // Existing driver rewalks the real cleared route.
+                return true; // Driver observes the real checkpoint and walks the remaining joins.
             },
             beforeCombat: async (_page, target) => {
                 await captureFinalePhase();
@@ -886,6 +887,25 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             }
         });
         if (diagnosticBoss) {
+            if (diagnosticBoss === 'MoltenPack') {
+                const progress = actor => actor.page.evaluate(async () => {
+                    const { dungeonRestSnapshot } = await import('/tests/dungeonRestSnapshot.js');
+                    return dungeonRestSnapshot(window.game);
+                });
+                const before = await Promise.all(actors.map(progress));
+                for (const actor of actors) await returnToTown(actor.page, { allowRespawn: false });
+                for (const [index, actor] of actors.entries()) {
+                    await enterDungeon(actor.page, { ...playthrough, useTownGuide: true, resetRun: false });
+                    await expect.poll(() => progress(actor)).toEqual(before[index]);
+                    await expect.poll(async () => {
+                        const { layout, summary } = await actor.page.evaluate(() => ({
+                            layout: window.game.currentDungeonLayout, summary: window.game.currentDungeonRoomState
+                        }));
+                        return dungeonTownReturnRoute(layout, summary, await readPlayerState(actor.page));
+                    }).toBe(9); // Recorded room10 pack follows the fourth boss in room9.
+                }
+                console.log('[prepared-checkpoint] all four returned through town/guide to the cleared boss checkpoint; seed, rooms, inventory, gold and quests unchanged');
+            }
             for (const actor of actors) {
                 const state = await snapshot(actor.page);
                 expect(state.dead || state.evidence.sawDeath).toBe(false);

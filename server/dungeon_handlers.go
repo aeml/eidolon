@@ -14,6 +14,9 @@ func sendDungeonEntry(run game.PartyDungeonRun, members []string) {
 			continue
 		}
 		response := map[string]interface{}{"instanceId": run.InstanceID, "type": run.DungeonType}
+		if player := world.GetEntityCopy(memberID); player != nil && player.InstanceID == run.InstanceID {
+			response["spawn"] = map[string]float64{"x": player.X, "y": player.Y, "z": player.Z}
+		}
 		if exists {
 			response["layout"] = layout
 		}

@@ -31,6 +31,6 @@ export async function recoverBetweenDungeonRooms(page, { playthrough, roomIndex,
     expect((await readEarnedRestResources(page)).dead).toBe(false);
     console.log('[dungeon-town-rest]', JSON.stringify({ reason, roomIndex, before, arrived, recovered,
         seed: progress.seed, generator: progress.generator, rooms: progress.rooms,
-        note: 'Ordinary Recall/rest/guide re-entry; traversal resumes from the real entrance.' }));
+        note: 'Ordinary Recall/rest/guide re-entry; traversal resumes from the real cleared boss checkpoint.' }));
     return true;
 }

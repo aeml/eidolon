@@ -1092,8 +1092,8 @@ func (w *World) enterInstanceLocked(playerID string, instanceID string) (bool, e
 		if inst, ok := w.getDungeonInstance(instanceID); ok {
 			inst.Mu.RLock()
 			if len(inst.Layout.Rooms) > 0 {
-				startX = inst.Layout.Rooms[0].X
-				startZ = inst.Layout.Rooms[0].Z
+				checkpoint := dungeonReturnRoom(inst)
+				startX, startZ = checkpoint.X, checkpoint.Z
 			} else {
 				fallback := fallbackDungeonLayout(inst.DungeonType)
 				startX = fallback.Rooms[0].X

@@ -2,15 +2,40 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-`earnedmolten0921a` is running on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
+`earnedmolten0921a` is terminal exit1/1.3h on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
 root native67495/launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`.
 It started after1.9.28 CI35549007858 passed at01:12:38UTC and the exact public
 identities/readiness/notes/assets were verified. The launcher rechecks delivery
 before creating any isolated services. Uses unchanged earned archive18 (hash
 reconfirmed), ordinary15-minute expiry, owned bag upgrades and three legal
 class-geared supports. Existing2h/zero-retry bound; Luna monitors terminal only.
-Prior pack evidence supports the changed controller/restoration paths, not this
-full clear. No deployment/native GPU overlap or saved-state rewriting.
+It cleared four bosses, including Guardian, and made four ordinary town returns;
+all four roles survived. A Wizard spacing-input timeout stopped the driver in
+room10 before Lord Infernax; no full clear or Air handoff. Retained final movement
+shows8.96177 units of actual displacement and an idle living character within0.12
+units of its requested endpoint, not an immobile character. The helper now takes
+one final read after polling timeout and accepts only an actual settled arrival
+after a successful canvas click, retaining the same quarter-unit tolerance,
+living/instance guards and whole-encounter/group deadlines. Partial movement,
+deaths and instance changes still fail. No extra input retry or stat change.
+
+Independent network-isolated save inspection confirms new checkpoint19:
+Wizard100/245125XP/222342Gold, actual3895HP/3725MP/alive,19 completed chapters,
+Molten accepted0/1, zero active/completed dailies. Original archive:
+`/tmp/eidolon-party-checkpoint-earnedmolten0921a-hHKQMd/save.archive.gz`, SHA256
+`c3b4f337a123a7bc87e8ced37daa74cb8a21ccf899d30e8e7507174f7d5e2eee`.
+Logout `2026-09-21T02:35:33.429Z`, room10; no timestamp/resource/inventory rewrite.
+Inspection containers and native services were cleaned; root67495 agrees exit1.
+Latest earned continuation must use this save, not earlier checkpoints. The
+new100-hour leveling target is separate from these old-curve encounter receipts.
+
+User-approved boss-checkpoint town returns are implemented locally for1.9.29.
+Server tests confirm Recall/Respawn return positions, no skipped uncleared rooms,
+unchanged rewards/resources and no relocation of members already inside. Town
+entry messages now include authoritative spawn, as login restoration already did.
+The QA route will follow the actual checkpoint onward instead of rewalking from
+room0. Prepared pack plus four-member town/checkpoint re-entry is the next bounded
+native check; no unchanged80-minute retry or full campaign acceptance claim.
 
 September21 focused follow-up `moltenpack0921a` exited1 on d54cd4068c6f2b25b7e3c31f72c971a37e61f9fc,
 root native23846/launcher2479583, source/log `/tmp/eidolon-molten-pack-20260921-RmywwM/`.

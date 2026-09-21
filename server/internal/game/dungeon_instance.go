@@ -101,6 +101,25 @@ func cloneDungeonLayout(layout DungeonLayout) DungeonLayout {
 	return cloned
 }
 
+// Caller holds the instance lock and has checked that the layout has rooms.
+// Checkpoints are derived from existing progress, not a second saved state.
+// Never cross an uncleared room even if later saved flags claim a boss clear.
+func dungeonReturnRoom(instance *DungeonInstance) DungeonRoom {
+	checkpoint := instance.Layout.Rooms[0]
+	if instance.RoomState == nil {
+		return checkpoint
+	}
+	for i := 1; i < len(instance.Layout.Rooms) && i < len(instance.RoomState.Rooms); i++ {
+		if !instance.RoomState.Rooms[i].Cleared {
+			break
+		}
+		if instance.Layout.Rooms[i].Type == "boss" {
+			checkpoint = instance.Layout.Rooms[i]
+		}
+	}
+	return checkpoint
+}
+
 func (w *World) GetDungeonResumeSnapshot(instanceID string) (DungeonResumeSnapshot, bool) {
 	instance, ok := w.getDungeonInstance(instanceID)
 	if !ok {

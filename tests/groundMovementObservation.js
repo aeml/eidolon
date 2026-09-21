@@ -15,3 +15,12 @@ export function groundMovementObserved(before, after, minimumDistance = 1, arriv
     return remaining < arrival.radius || (displacement > minimumDistance &&
         remaining < Math.hypot(before.x - arrival.x, before.z - arrival.z));
 }
+
+// A busy multi-page browser can finish an observation after expect.poll's
+// deadline. One final read may confirm actual arrival, but never waive a failed
+// partial step, death or instance change. No extra input or larger tolerance.
+export function confirmedGroundArrival(before, after, arrival, clickProbe) {
+    return Boolean(arrival && clickProbe?.result === true && clickProbe.dom === 'CANVAS' &&
+        after?.state === 'IDLE' && groundMovementObserved(before, after, 1, arrival) &&
+        Math.hypot(after.x - arrival.x, after.z - arrival.z) < arrival.radius);
+}

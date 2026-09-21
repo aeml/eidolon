@@ -5,7 +5,8 @@ const moveByGroundClick = jest.fn();
 const readPlayerState = jest.fn();
 const projectEntity = jest.fn();
 jest.unstable_mockModule('./dungeonTraversalRoutes.js', () => ({
-    buildDungeonTraversalRoutes: () => [[{ x: 0, z: 0 }]]
+    buildDungeonTraversalRoutes: () => [[{ x: 0, z: 0 }]],
+    dungeonTownReturnRoute: jest.fn()
 }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({
     enterAndExitDungeon, enterDungeon: jest.fn(), returnToTown: jest.fn(),

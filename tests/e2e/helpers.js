@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
-import { groundMovementObserved } from '../groundMovementObservation.js';
+import { groundMovementObserved, confirmedGroundArrival } from '../groundMovementObservation.js';
 import { projectGroundOffsetInPage } from '../groundInputProjection.js';
 import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptInPage } from '../groundInputObservations.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
@@ -462,6 +462,13 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             return observedAfter;
         } catch {
             mark('movement-timeout');
+            if (options.arrival) {
+                const after = await readPlayerState(page);
+                if (confirmedGroundArrival(before, after, options.arrival, attempt.clickProbe)) {
+                    mark('movement-arrival-confirmed');
+                    return after;
+                }
+            }
             if (!useCoveredJump && options.allowJumpFallback !== false) {
                 // Jump is a real desktop input path and lets the character clear
                 // small town props or fence edges that block click-to-move.

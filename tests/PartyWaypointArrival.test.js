@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { partyFormationArrival, gatherPartyFormation } from './partyDungeonControls.js';
-import { groundMovementObserved } from './groundMovementObservation.js';
+import { groundMovementObserved, confirmedGroundArrival } from './groundMovementObservation.js';
 
 // Exact native93038 geometry: a successful detour stopped before reaching the
 // generic one-unit witness, still far from final party formation.
@@ -9,6 +9,24 @@ const before = { x: 19998.853166419776, z: 19901.272430616034,
 const step = { dx: .4241147920183721, dz: 1.005850293498952 };
 const after = { ...before, x: 19999.181221393057, z: 19902.189741240305, state: 'IDLE', health: 845 };
 const anchor = { x: 20013.858489897633, z: 19904.96404559492, instance: before.instanceId };
+
+test('recorded Molten spacing has actually arrived even if its polling witness times out', () => {
+    const origin = { x: 30028.427135322156, z: 18046.158029778202,
+        instanceId: 'molten-recorded', instanceType: 'molten_core' };
+    const arrival = partyFormationArrival(origin, { dx: 1.0068368980500964, dz: 8.9734734620979 }, origin.instanceId);
+    const landed = { ...origin, x: 30029.329486744078, z: 18055.07425805357, health: 3835, state: 'IDLE' };
+    const click = { result: true, dom: 'CANVAS' };
+    expect(Math.hypot(landed.x - origin.x, landed.z - origin.z)).toBeCloseTo(8.961772411);
+    expect(Math.hypot(landed.x - arrival.x, landed.z - arrival.z)).toBeLessThan(.12);
+    expect(confirmedGroundArrival(origin, landed, arrival, click)).toBe(true);
+    for (const changes of [{ x: origin.x, z: origin.z }, { x: origin.x + 1.5, z: origin.z + 1.5 },
+        { state: 'MOVING' }, { state: 'DEAD' }, { health: 0 }, { instanceId: 'elsewhere' }, { instanceType: 'overworld' }]) {
+        expect(confirmedGroundArrival(origin, { ...landed, ...changes }, arrival, click)).toBe(false);
+    }
+    expect(confirmedGroundArrival(origin, landed, null, click)).toBe(false);
+    expect(confirmedGroundArrival(origin, landed, arrival, { ...click, result: false })).toBe(false);
+    expect(confirmedGroundArrival(origin, landed, arrival, { ...click, dom: 'BUTTON' })).toBe(false);
+});
 
 test('recorded short detour reaches its own waypoint without claiming final formation', () => {
     const arrival = partyFormationArrival(before, step, before.instanceId);
