@@ -19,6 +19,16 @@ Does your road reach anyone who has stopped being useful?
 There is no signature. Below the question, a space has been left for a reply.`,
     topics: [
         {
+            id: 'survivors', question: 'What happens to the people beyond the shore?',
+            answer: `“The thirty-first cup is still on the table. This morning its owner asked for a second helping. Nobody amended the manifest.”
+
+Ilyra unfolds a message written in several hands.
+
+“Dain has offered crossings, not evacuation orders. Tovin wants to travel with his sister before deciding where to live. The archive’s witnesses are keeping their disagreements beside one another; Hessa sent fresh paper rather than an official account. Maelin is teaching the foundry workers how to tend a light that does not burn a prisoner’s memories.
+
+“Some people in the City Without Tomorrow opened their doors. Some kept them closed for another day. Both choices were possible. That is not the end of their troubles, and we must not call it that. But the bells no longer make the decision for them.”`
+        },
+        {
             id: 'king', question: 'Is this another message from Malachar?',
             answer: `“Malachar is dead. Do not let an unanswered question take that victory from you.”
 

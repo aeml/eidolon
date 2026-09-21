@@ -326,6 +326,7 @@ func (w *World) initWorld() {
 	w.spawnEnvironmentalHazards()
 	w.spawnChronicleInvestigationSites()
 	w.spawnDarkRealmCamp()
+	w.spawnDarkRealmEncounters()
 }
 
 func (w *World) spawnFence() {

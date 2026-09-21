@@ -69,8 +69,8 @@ func completedChronicleThrough(player *Entity, chapter int) {
 
 func TestChronicleCatalogIsDeepOrderedAndOfferedByWizard(t *testing.T) {
 	catalog := chronicleQuestCatalog()
-	if len(catalog) != 31 {
-		t.Fatalf("expected 31 Chronicle chapters, got %d", len(catalog))
+	if len(catalog) != 55 {
+		t.Fatalf("expected 55 Chronicle chapters, got %d", len(catalog))
 	}
 	for i, quest := range catalog {
 		if quest.Category != QuestCategoryChronicle || quest.Chapter != i+1 {
@@ -204,7 +204,7 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	}
 }
 
-func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
+func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 	w := NewWorld(nil)
 	w.spawnChronicleInvestigationSites()
 	player := &Entity{
@@ -222,6 +222,9 @@ func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
 	}
 
 	for _, definition := range chronicleQuestCatalog() {
+		if _, dark := darkRealmChapterByID(definition.ID); dark {
+			player.Level = 100 // Quest graph fixture, not an earned progression/balance run.
+		}
 		if _, ok := w.PerformAcceptQuest(player.ID, definition.ID); !ok {
 			t.Fatalf("chapter %d accept failed", definition.Chapter)
 		}
@@ -240,11 +243,12 @@ func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
 		case "REPAIR":
 			w.UpdateChronicleEventProgress(player, "REPAIR", definition.Target)
 		case "INVESTIGATE":
-			for _, chapter := range ChronicleInvestigationCatalog() {
+			for _, chapter := range allChronicleInvestigations() {
 				if chapter.ID != definition.ID {
 					continue
 				}
 				for _, site := range chapter.Sites {
+					player.InstanceID = chapter.InstanceID
 					player.X, player.Z = site.X, site.Z
 					if site.Kind == "combat" {
 						// Quest graph test only; actual combat is a separate gate.
@@ -258,7 +262,7 @@ func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
 					}
 				}
 			}
-			player.X, player.Z = 20, 215
+			player.InstanceID, player.X, player.Z = "", 20, 215
 		default:
 			t.Fatalf("chapter %d has unsupported objective type %q", definition.Chapter, definition.Type)
 		}
@@ -273,8 +277,8 @@ func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
 		}
 	}
 
-	if len(advances) != 31 || !advances[len(advances)-1].Finale {
-		t.Fatalf("expected thirty-one ordered advances ending in the finale, got %+v", advances)
+	if len(advances) != 55 || !advances[len(advances)-1].Finale {
+		t.Fatalf("expected fifty-five ordered advances ending in the finale, got %+v", advances)
 	}
 	for index, event := range advances {
 		if event.CompletedID != chronicleQuestCatalog()[index].ID {

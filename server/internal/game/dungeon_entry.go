@@ -127,10 +127,10 @@ func (w *World) enterPartyDungeonLocked(playerID, dungeonType string, difficulty
 				return fail(fmt.Errorf("every party member must be online for the Umbral Nexus"))
 			}
 			member.Mu.RLock()
-			unlocked := HasCompletedChronicleQuest(member, ChronicleAirRestoredID)
+			unlocked := CanEnterUmbralNexus(member)
 			member.Mu.RUnlock()
 			if !unlocked {
-				return fail(fmt.Errorf("the four crystals must be restored by every party member before the Umbral Nexus opens"))
+				return fail(fmt.Errorf("every party member must reach level 100, restore the four crystals, and complete The Door Beneath the Crown before the Umbral Nexus opens"))
 			}
 		}
 	}

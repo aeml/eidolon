@@ -57,7 +57,15 @@ func DarkRealmEntryAllowed(player *Entity) bool {
 		return false
 	}
 	crystals, nexus, king := ChronicleAccessStatus(player)
-	return crystals || nexus || king
+	if crystals || nexus || king {
+		return true
+	}
+	for _, quest := range player.Quests {
+		if (quest.ID == ChronicleGateOpenedID || quest.ID == ChronicleDarkKingID) && quest.Accepted {
+			return true // Preserve a saved contract without inventing missing completions.
+		}
+	}
+	return false
 }
 
 func darkRealmCamp() SafeZone {

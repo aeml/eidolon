@@ -19,7 +19,7 @@ func investigationSite(entityID string) (ChronicleInvestigation, ChronicleDiscov
 	if !strings.HasPrefix(entityID, "chronicle-site-") {
 		return ChronicleInvestigation{}, ChronicleDiscovery{}, 0, false
 	}
-	for _, chapter := range ChronicleInvestigationCatalog() {
+	for _, chapter := range allChronicleInvestigations() {
 		for index, site := range chapter.Sites {
 			if site.EntityID == entityID {
 				return chapter, site, index, true
@@ -32,9 +32,9 @@ func investigationSite(entityID string) (ChronicleInvestigation, ChronicleDiscov
 // Stable world identities are shared with native client landmarks. Combat
 // discoveries retain ordinary enemy AI, damage, party credit and respawning.
 func (w *World) spawnChronicleInvestigationSites() {
-	for _, chapter := range ChronicleInvestigationCatalog() {
+	for _, chapter := range allChronicleInvestigations() {
 		for _, site := range chapter.Sites {
-			entity := &Entity{ID: site.EntityID, Type: TypeNPC, SubType: "ChronicleSite", Name: site.Title,
+			entity := &Entity{ID: site.EntityID, InstanceID: chapter.InstanceID, Type: TypeNPC, SubType: "ChronicleSite", Name: site.Title,
 				X: site.X, Z: site.Z, SpawnX: site.X, SpawnZ: site.Z, State: "IDLE", Scale: 1}
 			if site.Kind == "combat" {
 				profile := overworldEnemyCombatProfile(site.Model, 75, false)
@@ -87,7 +87,8 @@ func (w *World) recordChronicleDiscovery(playerID, entityID string, combat bool)
 	object.Mu.RUnlock()
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
-	if player.State == "DEAD" || player.Health <= 0 || player.InstanceID != "" || objectInstance != "" {
+	if player.State == "DEAD" || player.Health <= 0 || player.InstanceID != chapter.InstanceID || objectInstance != chapter.InstanceID ||
+		(chapter.InstanceID == DarkRealmInstanceID && !DarkRealmEntryAllowed(player)) {
 		return ChronicleDiscoveryReceipt{}, errors.New("This discovery is not available here")
 	}
 	// A matching ID at an arbitrary location is not the authored site.

@@ -50,7 +50,8 @@ func chronicleHuntByID(id string) (ChronicleHunt, bool) {
 
 func isOptionalChronicleAddition(q Quest) bool {
 	_, hunt := chronicleHuntByID(q.ID)
-	return q.Type == "INVESTIGATE" || hunt
+	_, dark := darkRealmChapterByID(q.ID)
+	return q.Type == "INVESTIGATE" || hunt || dark
 }
 
 func expandChronicleHunts(quests []Quest) []Quest {
@@ -98,6 +99,7 @@ func (w *World) updateChronicleHuntKillLocked(player *Entity, enemy string, leve
 	if player == nil {
 		return
 	}
+	w.updateDarkRealmHuntKillLocked(player, enemy, level, instanceID, spawnX, spawnZ)
 	for _, hunt := range chronicleHunts {
 		if huntKillMatches(hunt, enemy, level, instanceID, spawnX, spawnZ) {
 			w.UpdateQuestProgress(player, "ChronicleHunt:"+hunt.ID)

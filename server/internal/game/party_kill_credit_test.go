@@ -19,6 +19,9 @@ func TestPartyKillCreditUsesDungeonPresenceAndTwoScreenOverworldRadius(t *testin
 		{name: "different-run", instance: "run", memberInstance: "other", dungeon: true},
 		{name: "disconnected", instance: "run", memberInstance: "run", dungeon: true, disconnected: true},
 		{name: "overworld-same-position", want: true},
+		{name: "dark-realm-nearby", instance: DarkRealmInstanceID, memberInstance: DarkRealmInstanceID, x: OverworldPartyRewardRadius, want: true},
+		{name: "dark-realm-other-district", instance: DarkRealmInstanceID, memberInstance: DarkRealmInstanceID, x: 700},
+		{name: "dark-realm-recalled", instance: DarkRealmInstanceID},
 		{name: "overworld-boundary", x: OverworldPartyRewardRadius, want: true},
 		{name: "overworld-outside", x: OverworldPartyRewardRadius + .01},
 		{name: "overworld-diagonal-inside", x: 77, z: 77, want: true},
@@ -54,7 +57,7 @@ func TestPartyKillCreditOnlyRecognizesActualDungeonAndRaidTypes(t *testing.T) {
 			t.Fatalf("missing dungeon type %q", instanceType)
 		}
 	}
-	for _, instanceType := range []string{"", "overworld", "pvp_arena", "unknown"} {
+	for _, instanceType := range []string{"", "overworld", "pvp_arena", "unknown", DarkRealmInstanceType} {
 		if partyKillUsesDungeonPresence(instanceType) {
 			t.Fatalf("non-dungeon %q gained instance-wide rewards", instanceType)
 		}

@@ -24,13 +24,12 @@ quests, resources or rewards. The private dungeon/raid fifteen-minute rule is
 unchanged. Admin destinations remain fail-closed until realm-specific support
 is implemented; a party leader cannot implicitly grant other members entry.
 
-This is **not a finished or published expansion yet**. Before release, implement
-district encounters,
-investigation/collection/hunt content, the expanded ordered chain and veteran
-catch-up migration, then connect the Nexus and raid gates to that chain. No
-100-hour rebalance or8–12-hour playtime claim follows from this foundation.
-Do not publish these pieces as a finished zone or run another long earned route
-merely to verify this isolated foundation.
+This is **not a finished or published expansion yet**. The initial foundation
+had no district encounters or authored campaign; the integration below now adds
+them. Remaining release work includes inhabited district presentation, connected
+character acceptance and coordinated pacing. No100-hour rebalance or8–12-hour
+playtime claim follows from this foundation. Do not repeat a long earned route
+merely to verify an isolated content/scene change.
 
 Focused server evidence: the Dark Realm, manual quest conversation, movement/
 projectile and safe-zone selection passed in24.647s; server dungeon scene/resume
@@ -64,6 +63,59 @@ Do not treat the passing render smoke as final art approval or8–12-hour conten
 After the narrative distinction and shared fixture extraction,40 focused client
 checks passed10.429s (scene, menu, conversations), with scoped lint clean. The
 short render case is registered in the existing animation smoke manifest.
+
+## Authored campaign integration — local, not deployed
+
+The campaign now has55 ordered chapters: the existing31 plus24 Dark Realm
+chapters before the Nexus. One authoritative JSON source supplies Go and a
+checked, generated client catalog. Each of the four districts has six chapters:
+three investigations, two hunts and one collection. The12 investigations contain
+38 individually saved discoveries. Four new soulbound items each have their own
+bag icon. Ordinary level100 Shades/Reavers populate all four districts, avoiding
+the discovery approaches; this is a shared overworld, not a party-owned run.
+
+Ilyra's acceptance/completion dialogue follows the king's protection bargain
+through refugee records, edited testimony, the memory foundry and the city whose
+morning never ends. The expedition reconnects Dain/Tovin, the town witnesses,
+Maelin and the four Eidolons. The final investigation directs the player back to
+the town guide for the Nexus. An optional post-victory conversation describes
+the survivors' choices without adding rewards or reviving Malachar.
+
+Fresh characters need the final expedition turn-in before Nexus entry; every
+party member is checked before creating a run. Existing accepted/completed Nexus
+or finale contracts retain access at level100, even when earlier records are
+missing. Missing added chapters become optional, not completed. Existing reward
+quotes, collection counts/pity and earned resources are preserved. Shared-realm
+party credit uses the existing110-unit radius; private dungeon-wide credit and
+the15-minute logout expiry are unchanged.
+
+Client discovery requests now retain the actual scene identity; delayed replies
+after Recall cannot open stale records. The world map and radar draw server
+floor geometry instead of the elemental overworld, with accepted unrecorded
+discoveries marked on the map. The outdoor floor now uses muted masonry rather
+than the Nexus's repeating luminous fractures; all floors still share one union
+and continuous world UVs. The new tide-lens prop uses existing native geometry.
+
+Evidence:
+
+- Focused Go checks across all packages (`Test(DarkRealm|Chronicle|PartyKillCredit|.*DungeonEntry)`)
+  passed; game package4.948s. Further Dark Realm checks passed0.733s, including
+  actual party death rewards, all-member Nexus gating and saved partial contracts.
+-204 client checks across11 suites passed12.627s. Additional map/scene/content
+  checks passed45/45 in3.147s; conversation/aftermath32/32 in2.658s. Lint passed.
+- Native discovery/scene fixture passed7.7s after the paving change, with desktop
+  shelter and low-quality phone lens screenshots inspected. The prior fixture
+  failure was a plain Actor without a mesh type; it now uses the real Wizard
+  class. Two icon/tracker browser cases passed in the earlier23.5s combined run.
+  These are anonymous presentation fixtures, not earned progress or physical
+  phone acceptance. No long raid/dungeon retry or production mutation was needed.
+
+Still required: inhabited/landmark composition at district scale, connected
+character entry/inspection/turn-in, appropriate admin destination support, and
+the coordinated100-hour/8–12-hour pacing pass. Authored counts alone do not
+establish duration. The existing earned checkpoint19 and outstanding dungeon,
+raid and finale acceptance remain unchanged. Next release needs cumulative patch
+notes and synchronized version labels; the current live build remains1.9.29.
 
 ## Existing seams and implementation order
 

@@ -4,7 +4,8 @@ const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
     water: { stone: 0x657c89, wood: 0x475661, glow: 0x85dbe8 },
     fire: { stone: 0x594a48, wood: 0x392e2a, glow: 0xf6af65 },
-    air: { stone: 0x858a9d, wood: 0x645c78, glow: 0xc2baff }
+    air: { stone: 0x858a9d, wood: 0x645c78, glow: 0xc2baff },
+    dark: { stone: 0x696078, wood: 0x40344d, glow: 0xd7b1ed }
 };
 
 // Each model owns its resources. Chunk unload must not dispose another site's
@@ -97,6 +98,16 @@ export function createChronicleSiteModel(site, realm) {
     } else {
         cylinder(1.9, 2.1, 0.18, stone);
         switch (site.model) {
+        case 'tide_lens': {
+            cylinder(0.7, 1.15, 1.1, stone);
+            const lens = mesh(new THREE.SphereGeometry(0.72, 16, 12), material(colors.glow, {
+                emissive: colors.glow, emissiveIntensity: 0.35, metalness: 0.35, roughness: 0.18
+            }), 0, 1.8);
+            lens.scale.z = 0.3;
+            ring(0.9, brass, 1.8, 0);
+            ring(1.15, glow, 1.8, Math.PI / 3);
+            break;
+        }
         case 'root_memory':
         case 'root_growth':
             for (let i = 0; i < 4; i++) {

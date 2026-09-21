@@ -1,5 +1,6 @@
 import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 import { chronicleHunts } from '../data/chronicleHunts.generated.js';
+import { darkRealmChaptersById } from '../data/chronicleCatalog.js';
 import { CHRONICLE_AFTERMATH, hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 
 const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
@@ -19,7 +20,7 @@ export const ILYRA_REPLIES = [
     'The wells have begun to sing again. Neris remembers the names of everyone who stood at the Vigil. Earth and Water can now hold the circuit while Maelin reforges the Ember Crown. Carry their patience into the Crucible; purposeful flame must not become vengeance.',
     'For the first time in years, this candle gives warmth without a shadow-flame. Pyralis is free to change instead of consume. Only the Skyglass remains. Protect Maelin in the Eyrie, and the wind will carry all four voices together.',
     'Four notes, each freely given. I can hear them without pain at last. Their resonance opens our passage into the Dark Realm. At level 100, speak with the guide and join my projection at the Resonant Foothold. We must learn what Malachar built from the stolen histories before we can break his throne’s defenses.',
-    'The portal is open. Before you go, know this: Malachar was not born a shadow. He chose command over covenant, one frightened decision at a time. He will offer that same bargain to you. Refuse it. Orun, Neris, Pyralis, and Aeral will each stand beside you when his court breaks into battle.',
+    'The court’s wards are broken. Before you go, know this: Malachar was not born a shadow. He chose command over covenant, one frightened decision at a time. The people beyond the shore have shown us what his protection costs. He will offer that same bargain to you. Refuse it. Orun, Neris, Pyralis, and Aeral will each stand beside you when his court breaks into battle.',
     'The bells are ringing above the ground. Malachar is dead, but the answer to him is not another throne. It is the defenders who held Maelin’s circle, the four spirits who chose to help, and you, who returned when we asked. Rest now. Eidolon is still imperfect—and it is free.'
 ];
 
@@ -49,6 +50,8 @@ function ilyraGreeting(quests) {
 }
 
 export function getIlyraCompletionReply(quest) {
+    const darkChapter = darkRealmChaptersById.get(quest?.id);
+    if (darkChapter) return quest.legacyOptional ? darkChapter.catchupCompletion : darkChapter.completion;
     const hunt = huntsById.get(quest?.id);
     if (hunt) return quest.legacyOptional ? hunt.catchupCompletion : hunt.completion;
     if (!quest?.legacyOptional && huntHandoffs.has(quest?.id)) return huntHandoffs.get(quest.id);
@@ -153,7 +156,7 @@ export function renderQuestConversation(ui, quests) {
     detail.append(text('div', story ? `${selected.legacyOptional ? optionalLabel : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
     const description = story && selected.legacyOptional
-        ? huntsById.get(selected.id)?.catchupAcceptance || getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
+        ? darkRealmChaptersById.get(selected.id)?.catchupAcceptance || huntsById.get(selected.id)?.catchupAcceptance || getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
         : selected.description;
     detail.append(text('p', description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
     if (story && selected.lore && selected.type !== 'INVESTIGATE') {

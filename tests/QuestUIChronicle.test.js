@@ -175,7 +175,7 @@ describe('QuestUI Fourfold Chronicle', () => {
 
         const journal = document.getElementById('journal-list');
         expect(journal.textContent).toContain('The Fourfold Chronicle');
-        expect(journal.textContent).toContain('1 of 31');
+        expect(journal.textContent).toContain('1 of 55');
         expect(journal.textContent).toContain('Chapter 2: Seeds of the First Grove');
         expect(journal.textContent).toContain('The Rootheart is forgetting every forest');
         expect(journal.textContent).toContain('Recover 4 Verdant Memory Seeds');

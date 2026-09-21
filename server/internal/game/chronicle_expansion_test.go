@@ -125,6 +125,9 @@ func TestChronicleExpansionMigratesEveryLegacyMilestoneWithoutRevokingProgress(t
 				optional++
 			}
 			wantOptional := min(milestone, 8)
+			if active.ID == ChronicleGateOpenedID || active.ID == ChronicleDarkKingID {
+				wantOptional += 12 // New expedition investigations precede these saved contracts.
+			}
 			if optional != wantOptional {
 				t.Fatalf("catch-up chapters=%d want=%d", optional, wantOptional)
 			}

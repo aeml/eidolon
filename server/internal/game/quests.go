@@ -38,7 +38,7 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	quests := expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog()))
+	quests := expandDarkRealmChronicle(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog())))
 	for i := range quests {
 		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 	}
@@ -619,6 +619,10 @@ func (w *World) UpdateChronicleEventProgress(player *Entity, eventType, target s
 }
 
 var chronicleDropSources = map[string]map[string]bool{
+	"Unspent Fare Token":  {"DissonantShade": true},
+	"Unbound Name Leaf":   {"DissonantShade": true},
+	"Resonance Shackle":   {"MemoryReaver": true},
+	"Unwritten Hour":      {"DissonantShade": true},
 	"Verdant Memory Seed": {"Skeleton": true, "Imp": true, "DemonOrc": true, "Construct": true, "InfernoTitan": true},
 	"Moon-Tide Pearl":     {"MountainTroll": true, "AquaGolem": true, "Siren": true, "FrostGuardian": true},
 	"Cinderheart Ore":     {"SandstormDjinn": true, "MagmaGolem": true, "ScorchedWraith": true, "InfernalBehemoth": true, "PhoenixSentinel": true},
@@ -638,6 +642,9 @@ func ChronicleDropForKill(player *Entity, defeatedSubType string, roll float64) 
 			continue
 		}
 		if !chronicleDropSources[quest.Target][defeatedSubType] {
+			return nil
+		}
+		if _, dark := darkRealmCollectionByItem(quest.Target); dark && (player.InstanceID != DarkRealmInstanceID || !DarkRealmEntryAllowed(player)) {
 			return nil
 		}
 		guaranteed := defeatedSubType == "InfernoTitan" || defeatedSubType == "FrostGuardian" ||

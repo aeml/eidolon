@@ -148,6 +148,14 @@ describe('dungeon progression menu', () => {
         window.game = { socket: { send: jest.fn() }, network: { send: jest.fn() } };
     });
 
+    test.each([false, true])('Nexus follows server expedition eligibility, including preserved veteran contracts: %s', available => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ playerLevel: 100, hasInstance: false, isLeader: true,
+            crystalsRestored: !available, canEnterUmbralNexus: available });
+        expect(Boolean(document.querySelector('#dungeon-type-select option[value="umbral_nexus"]'))).toBe(available);
+        expect(document.getElementById('dungeon-menu').textContent.includes('The Door Beneath the Crown')).toBe(!available);
+    });
+
     test.each([false, true])('Dark Realm expedition uses personal server eligibility: %s', available => {
         const ui = new UIManager(false);
         ui.showDungeonMenu({ playerLevel: 100, hasInstance: true, isLeader: true,

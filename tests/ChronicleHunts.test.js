@@ -7,7 +7,7 @@ import { getIlyraCompletionReply } from '../src/ui/QuestConversation.js';
 test('all eight hunts share exact authored server/client content and count toward the Journal', () => {
     expect(chronicleHunts).toEqual(JSON.parse(fs.readFileSync('server/internal/game/content/chronicle-hunts.json', 'utf8')));
     expect(chronicleHunts).toHaveLength(8);
-    expect(CHRONICLE_CHAPTER_COUNT).toBe(31);
+    expect(CHRONICLE_CHAPTER_COUNT).toBe(55);
     expect(() => execFileSync(process.execPath, ['scripts/generate-chronicle-hunts.mjs', '--check'])).not.toThrow();
 });
 

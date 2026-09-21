@@ -1,7 +1,31 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
-import { createProceduralDungeonInteriorKit, DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
+import { DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
+
+// Streets should support readable actors and discoveries, not repeat the
+// Nexus's luminous fracture pattern across an entire outdoor district.
+function expeditionStoneTexture() {
+    const size = 128, pixels = new Uint8Array(size * size * 4);
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        const row = Math.floor(y / 16), shifted = (x + (row % 2) * 16) % size;
+        const column = Math.floor(shifted / 32), u = shifted % 32, v = y % 16;
+        const joint = u < 1 || v < 1;
+        const edge = u === 1 || v === 1;
+        const grain = ((x * 17 + y * 29 + x * y * 3) % 7) - 3;
+        const shade = joint ? -14 : (edge ? 5 : 0) + ((row * 13 + column * 7) % 11) - 5 + grain;
+        const index = (y * size + x) * 4;
+        pixels.set([77 + shade, 74 + shade, 87 + shade, 255], index);
+    }
+    const texture = new THREE.DataTexture(pixels, size, size, THREE.RGBAFormat);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.generateMipmaps = true;
+    texture.needsUpdate = true;
+    return texture;
+}
 
 // An open-air expedition, not another sequence of enclosed boss rooms. All
 // solid scenery stays beyond authoritative floors; streets remain unobstructed.
@@ -11,8 +35,7 @@ export function createDarkRealmScene(scene, layout) {
     root.name = 'dark-realm-expedition';
     const origin = layout.rooms[0];
     root.position.set(origin.x, 0, origin.z);
-    const kit = createProceduralDungeonInteriorKit('umbral_nexus');
-    const floorMaterial = kit.floorMaterial(DUNGEON_FLOOR_TEXTURE_SPAN, DUNGEON_FLOOR_TEXTURE_SPAN);
+    const floorMaterial = new THREE.MeshStandardMaterial({ map: expeditionStoneTexture(), roughness: .96 });
     const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
     for (const rect of floors) {
         const x = (rect.left + rect.right) / 2 - origin.x;

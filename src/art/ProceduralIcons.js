@@ -15,6 +15,14 @@ const ITEM_CACHE = new Map();
 const ITEM_CACHE_LIMIT = 512;
 
 const QUEST_ITEM_DEFINITIONS = Object.freeze({
+    'Unspent Fare Token': Object.freeze({ variant: 'unspent-fare-token', base: '39324e', accent: 'dbb472', pale: 'fff0ce',
+        body: '<circle cx="48" cy="48" r="29"/><circle cx="48" cy="48" r="22" fill="none"/><path d="M27 55h42L59 66H37Zm8-8 13-20v20m0-20 15 20" fill="none" stroke-width="4"/>' }),
+    'Unbound Name Leaf': Object.freeze({ variant: 'unbound-name-leaf', base: '343448', accent: 'c0b8e5', pale: 'f6edff',
+        body: '<path d="m29 16 39 5-4 58-40-5Z"/><path d="m37 34 22 2m-23 10 20 2m-20 10 12 1" fill="none"/><path d="m62 65 13-15 5 8-14 14m-36-7-12 12" fill="none" stroke-width="4"/>' }),
+    'Resonance Shackle': Object.freeze({ variant: 'resonance-shackle', base: '413149', accent: 'b6a9ce', pale: 'f4dbff',
+        body: '<path d="M38 21a22 22 0 1 0 0 39l-7-10a10 10 0 1 1 0-19Zm20 54a22 22 0 1 0 0-39l7 10a10 10 0 1 1 0 19Z"/><path d="m40 47 8-5-1 11 9-5M42 25l7 8m-4 31 7 8" fill="none" stroke-width="4"/>' }),
+    'Unwritten Hour': Object.freeze({ variant: 'unwritten-hour', base: '302e52', accent: 'd4b8eb', pale: 'fff5d6',
+        body: '<path d="M28 18h40v8L53 47l15 23v8H28v-8l15-23-15-21Z" fill="none" stroke-width="5"/><path d="m34 68 14-16 14 16Z"/><path d="M48 43v-7m0-7v-4m-9 7 3 4m15-4-3 4" fill="none" stroke-width="3"/>' }),
     'Verdant Memory Seed': Object.freeze({ variant: 'memory-seed', base: '23492d', accent: '8fdc77', pale: 'e4ffd2',
         body: '<path d="M48 79C18 59 28 28 48 19c20 9 30 40 0 60Z"/><path d="M48 72V30M48 47 34 37M48 59l15-14" fill="none"/><path d="M49 31c1-16 16-18 23-15-1 14-13 23-23 15Z"/>' }),
     'Moon-Tide Pearl': Object.freeze({ variant: 'moon-tide-pearl', base: '173e66', accent: '8bcfec', pale: 'f0faff',

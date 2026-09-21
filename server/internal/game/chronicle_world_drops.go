@@ -31,6 +31,10 @@ func (w *World) spawnChronicleDropLocked(playerID, defeatedSubType, instanceID s
 	if objective == nil || !chronicleDropSources[objective.Target][defeatedSubType] {
 		return nil
 	}
+	if chapter, dark := darkRealmCollectionByItem(objective.Target); dark &&
+		(instanceID != DarkRealmInstanceID || !darkRealmDistrictContains(chapter.District, x, z)) {
+		return nil
+	}
 	remaining := objective.MaxCount - objective.Count
 	for _, entity := range w.Entities {
 		if entity.Type != TypeLoot || entity.LootOwnerID != playerID || entity.LootItem == nil ||

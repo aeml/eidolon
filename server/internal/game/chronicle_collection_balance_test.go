@@ -48,6 +48,12 @@ func TestChronicleCollectionAllRealmsUseCurrentBudget(t *testing.T) {
 		if q.Type != "COLLECT" {
 			continue
 		}
+		if chapter, dark := darkRealmChapterByID(q.ID); dark {
+			if q.MaxCount != chapter.Count || q.CollectionVersion != 2 || !strings.Contains(q.ObjectiveText, "Dark Realm") {
+				t.Fatalf("Dark Realm collection disagrees with its authored budget: %+v", q)
+			}
+			continue
+		}
 		checked++
 		if q.MaxCount != 8 || q.CollectionVersion != 2 || !strings.HasPrefix(q.ObjectiveText, "Recover 8 ") ||
 			!strings.Contains(q.ObjectiveText, "future repair") {

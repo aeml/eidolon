@@ -1,5 +1,5 @@
 import { Entity } from './Entity.js';
-import { chronicleInvestigations } from '../data/chronicleInvestigations.generated.js';
+import { chronicleInvestigations } from '../data/chronicleCatalog.js';
 import { getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
 import { hasChronicleRestoration } from '../core/ChronicleRestoration.js';
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../art/ChronicleSiteModels.js';

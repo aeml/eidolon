@@ -7,6 +7,7 @@
 // ============================================================================
 
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import { drawDarkRealmWorldMap } from './DarkRealmMap.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -525,6 +526,10 @@ export class WorldMap {
         const ctx = this.ctx;
         const w = this.canvas.width;
         const h = this.canvas.height;
+        if (this.gameEngine?.currentInstanceType === 'dark_realm') {
+            drawDarkRealmWorldMap(ctx, w, h, this.gameEngine, player);
+            return;
+        }
         if (this.gameEngine?.currentInstanceType === 'casino') {
             const scale = Math.min(w / 84, h / 96);
             const point = (x, z) => [w / 2 + x * scale, h / 2 + (z - 166) * scale];

@@ -10,7 +10,7 @@ test('all Chronicle bag icons decode and remain distinct at inventory size', asy
         Object.assign(fixture.style, { position: 'fixed', zIndex: '99999', inset: '20px auto auto 20px', padding: '24px', background: '#111923', display: 'flex', gap: '20px', color: '#eee', font: '13px sans-serif' });
         for (const name of names) {
             const item = document.createElement('div');
-            Object.assign(item.style, { display: 'grid', justifyItems: 'center', gap: '10px', width: '130px', textAlign: 'center' });
+            Object.assign(item.style, { display: 'grid', justifyItems: 'center', gap: '10px', width: '110px', textAlign: 'center' });
             const image = document.createElement('img');
             image.alt = name;
             image.width = 48;
@@ -23,9 +23,9 @@ test('all Chronicle bag icons decode and remain distinct at inventory size', asy
         await Promise.all([...fixture.querySelectorAll('img')].map(image => image.decode()));
         return names;
     });
-    expect(names).toHaveLength(4);
+    expect(names).toHaveLength(8);
     const fixture = page.locator('#quest-icon-fixture');
-    await expect(fixture.locator('img')).toHaveCount(4);
+    await expect(fixture.locator('img')).toHaveCount(8);
     expect(await fixture.locator('img').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
     await fixture.screenshot({ path: testInfo.outputPath('chronicle-inventory-icons.png') });
 });

@@ -48,7 +48,7 @@ describe('procedural UI icons', () => {
         const source = readFileSync('server/internal/game/quests.go', 'utf8');
         const dropTable = source.match(/var chronicleDropSources = [^\n]+\{([\s\S]*?)\n\}/)?.[1] || '';
         const names = [...dropTable.matchAll(/"([^"]+)":\s*\{/g)].map(match => match[1]);
-        expect(names).toHaveLength(4);
+        expect(names).toHaveLength(8);
         expect(names.sort()).toEqual(Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.quest).sort());
         const icons = names.map(name => {
             const item = { id: 'chronicle-item-123', name, type: 'RELIC', slot: 'relic' };
@@ -57,7 +57,7 @@ describe('procedural UI icons', () => {
             expect(getProceduralItemIcon({ ...item, id: 'chronicle-item-456', stack: 4 })).toBe(icon);
             return icon;
         });
-        expect(new Set(icons).size).toBe(4);
+        expect(new Set(icons).size).toBe(8);
         expect(decodeIcon(getProceduralItemIcon({ id: 'chronicle-item-future', name: 'Future relic' })))
             .toContain('quest:chronicle-relic');
     });

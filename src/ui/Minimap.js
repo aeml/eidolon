@@ -1,5 +1,6 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
+import { drawDarkRealmFloors } from './DarkRealmMap.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -184,18 +185,22 @@ export class Minimap {
         ctx.clip();
 
         // ---- Realm-tinted background ----
+        const darkRealm = this.gameEngine?.currentInstanceType === 'dark_realm';
         const playerRealm = getRealmForPosition(player.position.x, player.position.z);
-        ctx.fillStyle = REALM_COLORS[playerRealm] || REALM_COLORS.earth;
+        ctx.fillStyle = darkRealm ? '#10121f' : REALM_COLORS[playerRealm] || REALM_COLORS.earth;
         ctx.fillRect(0, 0, size, size);
 
         // ---- Realm boundary hints ----
         // Draw faint boundary lines for nearby realm edges so the player
         // can see when they're approaching a transition.
-        this._drawRealmBoundaries(ctx, toMap, half);
-        this._drawTownServiceMarkers(ctx, toMap, player, half);
+        if (darkRealm) drawDarkRealmFloors(ctx, this.gameEngine.currentDungeonLayout, toMap);
+        else {
+            this._drawRealmBoundaries(ctx, toMap, half);
+            this._drawTownServiceMarkers(ctx, toMap, player, half);
+        }
 
         // ---- Dungeon room overlays ----
-        if (this.gameEngine?.getDungeonRoomSummary) {
+        if (!darkRealm && this.gameEngine?.getDungeonRoomSummary) {
             this._drawDungeonRoomStates(ctx, toMap, player, half, scale);
             this._drawDungeonDebugOverlay(ctx, toMap, scale);
         }

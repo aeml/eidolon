@@ -10,6 +10,9 @@ test('expedition renders one floor union, four distinct districts and elemental 
     expect(root.position.toArray()).toEqual([40000, 0, 40800]);
     expect(JSON.stringify(layout)).toBe(before);
     const floors = root.children.filter(child => child.name === 'dark-realm-union-floor');
+    expect(floors[0].material.emissiveMap).toBeNull();
+    expect(floors[0].material.map.colorSpace).toBe(THREE.SRGBColorSpace);
+    expect(new Set(floors.map(floor => floor.material)).size).toBe(1);
     const rects = floors.map(floor => floor.userData.walkSurface);
     const area = rects.reduce((sum, r) => sum + (r.right - r.left) * (r.bottom - r.top), 0);
     expect(area).toBe(1084000);

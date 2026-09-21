@@ -26,7 +26,9 @@ export function requestNearbyChronicleInspection(engine) {
 
 export function requestChronicleInspection(engine, entity) {
     const player = engine.player;
-    if (!engine.isMultiplayer || !player || player.state === 'DEAD' || engine.currentInstanceId || !entity?.isActive || entity.type !== 'ChronicleSite') return false;
+    if (!engine.isMultiplayer || !player || player.state === 'DEAD' || !entity?.isActive || entity.type !== 'ChronicleSite') return false;
+    const instanceId = engine.currentInstanceId || '';
+    if (instanceId !== (entity.discovery?.chapter.instanceId || '')) return false;
     const distance = Math.hypot(player.position.x - entity.position.x, player.position.z - entity.position.z);
     if (!Number.isFinite(distance) || distance > 5) return false;
     // Interaction runs before the frame's ordinary movement send. Deliver the
@@ -34,7 +36,7 @@ export function requestChronicleInspection(engine, entity) {
     // inspection range; do not enlarge the range or grant local discovery credit.
     engine.sendPlayerMovementIfNeeded?.(0, { flush: true });
     engine.pendingChronicleInspection = {
-        entityId: entity.id, playerId: player.id, instanceId: '', expiresAt: Date.now() + 5000
+        entityId: entity.id, playerId: player.id, instanceId, expiresAt: Date.now() + 5000
     };
     engine.network.send('chronicle_inspect', { entityId: entity.id });
     return true;

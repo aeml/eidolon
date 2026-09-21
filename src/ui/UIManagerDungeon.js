@@ -305,7 +305,7 @@ class UIManagerDungeonMethods {
         const playerLevel = Number(data.playerLevel) || 0;
         const availableDungeons = lockedDungeonType
             ? { [lockedDungeonType]: dungeonInfo[lockedDungeonType] }
-            : Object.fromEntries(Object.entries(dungeonInfo).filter(([key]) => key !== 'umbral_nexus' || (playerLevel >= 100 && data.crystalsRestored)));
+            : Object.fromEntries(Object.entries(dungeonInfo).filter(([key]) => key !== 'umbral_nexus' || (playerLevel >= 100 && (data.canEnterUmbralNexus ?? data.crystalsRestored))));
 
         for (const [key, info] of Object.entries(availableDungeons)) {
             const option = document.createElement('option');
@@ -630,10 +630,10 @@ class UIManagerDungeonMethods {
             raidPanel.appendChild(lockedNote);
         }
 
-        if (playerLevel >= 100 && !data.crystalsRestored) {
+        if (playerLevel >= 100 && !(data.canEnterUmbralNexus ?? data.crystalsRestored)) {
             const storyGate = document.createElement('section');
             storyGate.className = 'dungeon-raid-card';
-            storyGate.innerHTML = '<strong>Umbral Nexus · Sealed</strong><span>Restore all four crystals through their raid Vigils, then turn in “The Skyglass Vigil” to Archmage Ilyra.</span>';
+            storyGate.innerHTML = '<strong>Umbral Nexus · Sealed</strong><span>Restore all four crystals through their raid Vigils, then turn in “The Skyglass Vigil” to Archmage Ilyra. Complete her Dark Realm expedition through “The Door Beneath the Crown”, then return to the town guide to enter the Nexus with your party.</span>';
             raidPanel.appendChild(storyGate);
         }
 

@@ -18,6 +18,7 @@ type ChronicleDiscovery struct {
 }
 
 type ChronicleInvestigation struct {
+	InstanceID        string               `json:"instanceId,omitempty"`
 	ID                string               `json:"id"`
 	Realm             string               `json:"realm"`
 	BeforeQuestID     string               `json:"beforeQuestId"`
@@ -38,13 +39,17 @@ var chronicleInvestigationContent []byte
 // optional quest during metadata refresh. No caller receives the mutable map.
 var chronicleCatchupAcceptances = func() map[string]string {
 	result := make(map[string]string)
-	for _, chapter := range ChronicleInvestigationCatalog() {
+	for _, chapter := range allChronicleInvestigations() {
 		result[chapter.ID] = chapter.CatchupAcceptance
 	}
 	return result
 }()
 
 func withChronicleCatchupDescription(quest Quest) Quest {
+	if chapter, ok := darkRealmChapterByID(quest.ID); ok && quest.LegacyOptional {
+		quest.Description = darkRealmCatchupAcceptance(chapter)
+		return quest
+	}
 	if quest.LegacyOptional {
 		if hunt, ok := chronicleHuntByID(quest.ID); ok {
 			quest.Description = hunt.CatchupAcceptance

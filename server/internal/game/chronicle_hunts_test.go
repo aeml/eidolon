@@ -10,8 +10,8 @@ import (
 
 func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 	catalog := chronicleQuestCatalog()
-	if len(catalog) != 31 || len(ChronicleHuntCatalog()) != 8 {
-		t.Fatal("expected 31 chapters including eight preparation hunts")
+	if len(catalog) != 55 || len(ChronicleHuntCatalog()) != 8 {
+		t.Fatal("expected 55 chapters including eight regional preparation hunts")
 	}
 	indices := map[string]int{}
 	for i, q := range catalog {
