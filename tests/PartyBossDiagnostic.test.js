@@ -26,6 +26,9 @@ test('fresh fixture skips only prior rooms, preserves quest/gear and leaves live
     const now = new Date('2026-09-20T22:00:00Z');
     const fixtures = [0, 1, 2, 3].map(i => preparePartyBossDiagnostic(character, layout, 'codexqa0123456789ab', i, now));
     expect(new Set(fixtures.map(c => c.instance_id)).size).toBe(1);
+    expect(fixtures.map(c => c.dungeon_progress.party_id)).toEqual(
+        Array(4).fill(`party-player-${character.name}`));
+    expect(fixtures.every(c => !c.party_id)).toBe(true);
     expect(new Set(fixtures.map(c => c.x)).size).toBe(4);
     const c = fixtures[0], d = c.dungeon_progress;
     expect(c.quests).toEqual(character.quests);

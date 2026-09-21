@@ -24,14 +24,20 @@ is next, not an immediate unchanged full dungeon rerun. Login/build/notes1.9.29
 are prepared, not yet deployed. No100-hour XP rebalance or8–12-hour story expansion
 is claimed in this patch.
 
-Bounded prepared pack/checkpoint check `checkpoint0921a` is running on exact
+Bounded prepared pack/checkpoint check `checkpoint0921a` ended exit1 after3.9min on exact
 c88e77183d9c96dbcd7ae3abee9617a01d2dc737: root native68140/launcher4119440,
 `/tmp/eidolon-checkpoint-party-20260921-1Bzsij/ready-run.log`. It requires all
 four real town/guide returns at cleared boss room9, unchanged saved progress and
 pack clearance/survival/healing. Existing15min bound, zero native retries; Luna
 monitors terminal. An earlier invocation stopped at source_check while worktree
 checkout30791 was still finishing; no services or gameplay test started then.
-Checkout was confirmed complete/clean before this actual run began.
+Checkout was confirmed complete/clean before this actual run began. The pack was
+cleared with the party alive, but guide return created a fresh dungeon: this
+prepared snapshot had a blank party owner, unlike the party formed through the
+invitation UI. The fixture now records the normal Fighter leader-derived party
+ID without prejoining characters or changing production ownership checks. Its
+unit regression covers all four snapshots. A corrected bounded run is required;
+this failure is not checkpoint acceptance. Owned services were cleaned.
 
 Earned `earnedmolten0921a` ended exit1/1.3h, four bosses cleared and all four
 roles alive, before the final boss. The reported failed spacing input actually

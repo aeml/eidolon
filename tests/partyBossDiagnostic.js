@@ -37,7 +37,9 @@ export function preparePartyBossDiagnostic(character, layout, accountPrefix, ind
     const date = { $date: now.toISOString() };
     return { ...character, x: room.x + [-6, -2, 2, 6][index], y: 0, z: spawnZ,
         instance_id: instance, last_logout: date,
-        dungeon_progress: { instance_id: instance, party_id: '', created_at: date,
+        // Match CreateParty's normal leader-derived ID, without prejoining any
+        // character: the browser still forms the party through invitations.
+        dungeon_progress: { instance_id: instance, party_id: `party-player-${accountPrefix}-fighter`, created_at: date,
             difficulty: 'normal', dungeon_type: 'molten_core', run_level: 70,
             layout: bson(layout), current_room_index: roomIndex,
             // Setup skips earlier rooms but never credits these as actual clears.
