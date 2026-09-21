@@ -66,6 +66,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgChat:    policy(accessCharacter, 2<<10, 5, 5*time.Second),
 
 	MsgEnterDungeon:     policy(accessCharacter, 2<<10, 5, 10*time.Second),
+	MsgEnterDarkRealm:   policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgGetDungeonStatus: policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgResetDungeon:     policy(accessCharacter, 1<<10, 3, 10*time.Second),
 

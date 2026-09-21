@@ -185,6 +185,30 @@ class UIManagerDungeonMethods {
         scroll.append(partyStateBox, dungeonPanel, raidPanel);
         appendDungeonPreparation(partyStateBox);
 
+        if (data.darkRealmExpedition) {
+            const expedition = document.createElement('section');
+            expedition.className = 'dark-realm-expedition';
+            expedition.style.cssText = 'padding: 14px; margin-bottom: 12px; border: 1px solid #8265b0; border-radius: 8px; background: #211c31;';
+            const heading = document.createElement('h3');
+            heading.textContent = 'Beyond the four crystals';
+            const description = document.createElement('p');
+            description.textContent = 'Cross from Lanternhold to the Resonant Foothold. Explore the shared Dark Realm and speak with Ilyra’s projection at camp. Each traveler needs level 100 and all four crystal repairs; this does not reset your party’s dungeon.';
+            const cross = document.createElement('button');
+            cross.id = 'btn-enter-dark-realm';
+            cross.type = 'button';
+            cross.className = 'menu-btn';
+            cross.textContent = 'Enter the Dark Realm';
+            cross.disabled = data.canEnterDarkRealm !== true;
+            cross.title = cross.disabled ? 'Reach level 100, restore the four crystals, and speak to the guide in Lanternhold.' : 'Travel to the shared expedition camp';
+            cross.onclick = () => {
+                if (cross.disabled) return;
+                window.game?.network?.send?.('enter_dark_realm', {});
+                removeMenu();
+            };
+            expedition.append(heading, description, cross);
+            scroll.prepend(expedition);
+        }
+
         // Dungeon Selection
         const dungeonInfo = {
             verdant_bastion_catacombs: { name: 'Verdant Bastion Catacombs', baseLevel: 30, color: '#4a4' },
@@ -620,7 +644,7 @@ class UIManagerDungeonMethods {
             raidBox.dataset.access = data.darkRealmOpen ? 'open' : 'sealed';
             raidBox.innerHTML = data.darkRealmOpen
                 ? '<strong>Dark Realm Raid · Malachar, the Dark King</strong><span>5–10 players · level 100 · Mythic · four Eidolon phases · weekly personal cache</span>'
-                : '<strong>Dark Realm Raid · Portal Dormant</strong><span>After restoring all four crystals, defeat the Eidolon Devourer in the Umbral Nexus, then turn in “The Fifth Note” to Archmage Ilyra to stabilize the portal.</span>';
+                : '<strong>Dark Realm Raid · Court Sealed</strong><span>Defeat the Eidolon Devourer in the Umbral Nexus, then turn in “The Fifth Note” to Archmage Ilyra to break the wards protecting Malachar’s court.</span>';
             const formRaid = document.createElement('button');
             formRaid.type = 'button';
             formRaid.className = 'menu-btn';

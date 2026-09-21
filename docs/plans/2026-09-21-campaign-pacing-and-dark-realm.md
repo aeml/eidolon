@@ -24,8 +24,8 @@ quests, resources or rewards. The private dungeon/raid fifteen-minute rule is
 unchanged. Admin destinations remain fail-closed until realm-specific support
 is implemented; a party leader cannot implicitly grant other members entry.
 
-This is **not a playable or published expansion yet**. Before release, implement
-the realm's scene, guide/portal UI and network action, district encounters,
+This is **not a finished or published expansion yet**. Before release, implement
+district encounters,
 investigation/collection/hunt content, the expanded ordered chain and veteran
 catch-up migration, then connect the Nexus and raid gates to that chain. No
 100-hour rebalance or8–12-hour playtime claim follows from this foundation.
@@ -40,6 +40,30 @@ Recall, invalid saved-position recovery, preserved valid district positions,
 rejected remote/busy/dead entry, manual local turn-in and duplicate-reward guards.
 This is automated server evidence, not a rendered scene or end-to-end campaign
 acceptance. No long native run was launched alongside the1.9.29 deployment.
+
+### Client scene and entry slice
+
+Local client work now consumes the authoritative circuit as one non-overlapping
+floor surface, uses a dedicated open-air scene with four district silhouettes
+and elemental camp lanterns, and selects Umbral atmosphere by scene identity
+rather than overworld coordinates. The guide exposes the server's personal
+eligibility flag and sends a character-authenticated, rate-limited entry action.
+Only the caller moves; an existing party dungeon is neither reset nor replaced.
+The restored-crystal/Nexus dialogue now distinguishes opening the expedition
+portal from breaking the wards around Malachar's raid court.
+
+Fourteen scene/menu unit tests passed17.478s, server action/policy coverage
+passed0.328s, scoped lint/diff passed. A short anonymous rendered fixture passed
+14.3s after1.9.29 deployment completed: desktop camp/city and low-quality phone
+camp. Images are under
+`test-results/dark-realm-presentation-Da-f636c-inates-on-desktop-and-phone/`.
+This is geometry/presentation evidence, not authenticated expedition or physical
+phone acceptance. Visual review found the districts still too sparse: populate
+them with authored quest landmarks, inhabitants and encounters before release.
+Do not treat the passing render smoke as final art approval or8–12-hour content.
+After the narrative distinction and shared fixture extraction,40 focused client
+checks passed10.429s (scene, menu, conversations), with scoped lint clean. The
+short render case is registered in the existing animation smoke manifest.
 
 ## Existing seams and implementation order
 

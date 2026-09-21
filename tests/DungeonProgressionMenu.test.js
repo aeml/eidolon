@@ -148,6 +148,20 @@ describe('dungeon progression menu', () => {
         window.game = { socket: { send: jest.fn() }, network: { send: jest.fn() } };
     });
 
+    test.each([false, true])('Dark Realm expedition uses personal server eligibility: %s', available => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ playerLevel: 100, hasInstance: true, isLeader: true,
+            darkRealmExpedition: true, canEnterDarkRealm: available });
+        const button = document.getElementById('btn-enter-dark-realm');
+        expect(button.disabled).toBe(!available);
+        button.click();
+        if (available) {
+            expect(window.game.network.send).toHaveBeenCalledWith('enter_dark_realm', {});
+            expect(document.getElementById('dungeon-menu')).toBeNull();
+        } else expect(window.game.network.send).not.toHaveBeenCalled();
+        expect(window.game.socket.send).not.toHaveBeenCalled(); // Never reset the active party run.
+    });
+
     test('shows all dungeons at level 30, only unlocked run levels, and locks endgame difficulties', () => {
         const ui = new UIManager(false);
 

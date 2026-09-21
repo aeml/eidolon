@@ -1,13 +1,18 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.28 verified; 1.9.29 checkpoint candidate
+## Current delivery — 1.9.29 verified; Dark Realm expansion local
 
 1.9.29 is pushed at `6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI
-`35556373863` is being monitored by Luna `/root/watch_release_1_9_21`, including
-the exact public-release verifier. Do not claim live until that receipt exists.
+`35556373863` succeeded (03:06:34–03:31:05 UTC,24m31s). Luna
+`/root/watch_release_1_9_21` verified the exact public frontend/backend commit,
+Alpha1.9.29, database readiness, login version, cumulative notes and three assets
+without production-character mutations. Receipt:
+`/tmp/eidolon-checkpoint-party-20260921-r2-NmWmUO/public-verification.log`.
 Newer local shared-Dark-Realm foundation work is intentionally unpublished;
 see the [campaign expansion plan](2026-09-21-campaign-pacing-and-dark-realm.md).
-Its client scene, story content and entry flow must be completed before release.
+Its expanded story, district population and campaign gate integration must be
+completed before release. The local client scene/entry slice is now connected;
+the geometry-only render is explicitly too sparse for final visual acceptance.
 
 ### September21 approved additions — progression open, checkpoints local
 

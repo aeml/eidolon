@@ -21,6 +21,7 @@ import {
 
 const DUNGEON_THEME_KEY_SET = new Set(DUNGEON_THEME_KEYS);
 const RAID_ENVIRONMENT_THEMES = Object.freeze({
+    dark_realm: 'umbral_nexus',
     earth_crystal_raid: 'verdant_bastion_catacombs',
     water_crystal_raid: 'abyssal_well',
     fire_crystal_raid: 'molten_core',

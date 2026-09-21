@@ -726,6 +726,8 @@ func (c *Client) dispatchMessage(msg Message) {
 		resp["crystalsRestored"] = crystalsRestored
 		resp["darkRealmOpen"] = darkRealmOpen
 		resp["darkKingDefeated"] = darkKingDefeated
+		resp["darkRealmExpedition"] = true
+		resp["canEnterDarkRealm"] = game.DarkRealmEntryAllowed(player) && player.InstanceID == ""
 		resp["elementalRaidAccess"] = game.ElementalRaidAccessForPlayer(player)
 		if player.Level >= game.MaxPlayerLevel {
 			now := time.Now().UTC()

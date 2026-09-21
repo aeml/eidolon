@@ -12,6 +12,7 @@ import {
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { applyLoadoutState } from './LoadoutState.js';
 import { createCasinoInterior } from '../art/ProceduralCasino.js';
+import { createDarkRealmScene } from '../art/ProceduralDarkRealm.js';
 
 class GameEngineNetworkMessageMethods {
     async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
@@ -122,7 +123,7 @@ class GameEngineNetworkMessageMethods {
                 type === 'molten_core' ||
                 type === 'tempest_spire' ||
                 type === 'abyssal_well' ||
-                type === 'umbral_nexus'
+                type === 'umbral_nexus' || type === 'dark_realm'
 				|| type === 'weekly_raid'
                 || type === 'earth_crystal_raid'
                 || type === 'water_crystal_raid'
@@ -145,6 +146,8 @@ class GameEngineNetworkMessageMethods {
         this.activeWorldGenerator = worldGen;
         if (type === 'casino') {
             createCasinoInterior(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        } else if (type === 'dark_realm') {
+            createDarkRealmScene(this.getInstanceEnvironmentGroup(), layout);
         } else if (type === 'pvp_arena') {
             worldGen.createPvPArena(layout);
         } else if (type === 'crypt') {
@@ -214,6 +217,7 @@ class GameEngineNetworkMessageMethods {
         // Route atmosphere by instance identity so those coordinates cannot
         // accidentally select the Air realm's light/fog/particles.
         const environmentType = {
+            dark_realm: 'umbral_nexus',
             weekly_raid: 'umbral_nexus',
             earth_crystal_raid: 'verdant_bastion_catacombs',
             water_crystal_raid: 'abyssal_well',

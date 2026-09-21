@@ -228,6 +228,7 @@ const (
 	MsgInventoryDrop     = "inventory_drop"
 	MsgInventorySort     = "inventory_sort"
 	MsgEnterDungeon      = "enter_dungeon"
+	MsgEnterDarkRealm    = "enter_dark_realm"
 	MsgEnterInstance     = "enter_instance"
 	MsgSplitStack        = "split_stack"
 	MsgGetDungeonStatus  = "get_dungeon_status"
