@@ -39,6 +39,21 @@ ID without prejoining characters or changing production ownership checks. Its
 unit regression covers all four snapshots. A corrected bounded run is required;
 this failure is not checkpoint acceptance. Owned services were cleaned.
 
+Corrected `checkpoint0921b` on a936e88a6cc11aa6476063e514587565ff74f579
+verified all four Recall/guide returns at room9 with identical seed, cleared-room
+state, inventory, Gold and quests. All roles survived and the mixed pack cleared.
+The overall harness still exited1 after3.2min: Cleric effective ally healing was0
+(Fighter took350 damage), failing its separate combat-role assertion. This is
+checkpoint acceptance only, not a passing full combat diagnostic or earned run.
+No assertion was weakened and no unchanged repeat is needed for checkpoint
+delivery; prior1.9.28 prepared pack evidence already includes493 real ally healing.
+Log: `/tmp/eidolon-checkpoint-party-20260921-r2-NmWmUO/run.log`; root43739 and
+launcher39580 terminal, owned services cleaned. Prepared-only archive
+`/tmp/eidolon-party-checkpoint-checkpoint0921b-PvLUWp/save.archive.gz`, SHA256
+`45707202d31e4fa13cf3e7118f7d290a4add7b1bc101b3346f718c187bcf4fa2`.
+Fixture ownership regression:4 tests pass0.968s. Proceed with the narrow1.9.29
+checkpoint release; the separate combat assertion remains recorded as failed.
+
 Earned `earnedmolten0921a` ended exit1/1.3h, four bosses cleared and all four
 roles alive, before the final boss. The reported failed spacing input actually
 ended within0.12 units of its requested point after8.96 units of real movement.
