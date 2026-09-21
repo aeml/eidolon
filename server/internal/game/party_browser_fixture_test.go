@@ -22,11 +22,11 @@ func TestPartyBrowserDiagnosticResources(t *testing.T) {
 		t.Skip("explicit prepared character only")
 	}
 	var c struct {
-		Class       string           `json:"class"`
-		Level       int              `json:"level"`
-		Stats       Stats            `json:"stats"`
-		Equipment   map[string]Item  `json:"equipment"`
-		TalentRanks map[string]int   `json:"talent_ranks"`
+		Class       string          `json:"class"`
+		Level       int             `json:"level"`
+		Stats       Stats           `json:"stats"`
+		Equipment   map[string]Item `json:"equipment"`
+		TalentRanks map[string]int  `json:"talent_ranks"`
 	}
 	if err := json.Unmarshal([]byte(raw), &c); err != nil || c.Level != 70 || partyFixturePrimaryStats[c.Class] == "" || len(c.Equipment) != 14 {
 		t.Fatal("invalid prepared diagnostic character")

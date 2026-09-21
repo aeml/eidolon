@@ -2,6 +2,21 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+September21 focused follow-up `moltenpack0921a` is running on d54cd4068c6f2b25b7e3c31f72c971a37e61f9fc,
+root native23846/launcher2479583, source/log `/tmp/eidolon-molten-pack-20260921-RmywwM/`.
+The existing prepared encounter fixture now accepts only one additional named
+case: canonical generator2 seed-1634763615133968283, normal room10 (110x110)
+after Guardian. Four fresh Normal70 class-affixed Rare/Uncommon actors start in
+its actual approach corridor with production-calculated resource caps; prior
+rooms are clearly fixture setup, not earned clears. Full live pack clearance,
+actual MagmaGolem defeat, all-role survival/damage/healing and unchanged story
+credit are required. Bound:15min overall, eight approach moves,24 total actions,
+ordinary encounter watchdogs, zero retries. Earned flags/checkpoints are rejected.
+21 focused fixture/spacing checks pass0.597s; canonical Go catalog generation,
+scoped lint, shell syntax and diff pass. Prior owned services/ports were free
+and latest CI was terminal success before launch. Luna monitors terminal only.
+No native pack acceptance or full earned retry is claimed yet.
+
 `earnedmolten0920e` is terminal exit1/1.3h from frozen4e8a0093: root native5269,
 launcher1400977, source/log `/tmp/eidolon-earned-molten-20260920-r5-JAp5XJ/`.
 It started only after1.9.27 CI35542593860 passed and exact public identities,
