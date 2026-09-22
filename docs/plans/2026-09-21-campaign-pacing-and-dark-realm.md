@@ -163,9 +163,8 @@ colliders passed2.499s; Dark Realm/witness/admin Go checks passed1.431s. Scoped
 lint/diff passed. The native presentation check passed8.7s after the canvas trim
 and phone close-approach framing changes; desktop camp and phone Maelin images
 were inspected. These are rendered fixtures, not physical-phone acceptance.
-The connected route now also clicks Maelin and checks her read-only, spoiler-
-gated conversation before accepting Ilyra's quest. That extended route still
-needs to run with ordinary travel defense enabled.
+The connected route also clicks Maelin and checks her read-only, spoiler-gated
+conversation before accepting Ilyra's quest; the passing receipt is below.
 
 The extended connected run `darkexp0921c` (`40671025`) passed Maelin's physical
 conversation, Ilyra acceptance, all three actual discoveries, Recall and guide
@@ -176,11 +175,31 @@ so the server rejected the apparent approach to Ilyra. Entry now publishes the
 authoritative context before the scene transition, matching other scene paths.
 The dispatch regression checks reset delivery, rejects departed-town packets,
 and accepts movement under the new context after the normal scene grace. The
-completed/reconnected reward route still requires a passing connected receipt.
+completed/reconnected reward route was subsequently verified as described below.
 
-Still required: further district-scale composition where needed, connected
-character entry/inspection/turn-in and
-the coordinated100-hour/8–12-hour pacing pass. Authored counts alone do not
+### Connected task completion and requested pause — September22
+
+Recovered the completed `darkexp0921d` result at source
+`ed88ce6c6bceca7c9fd02ce7ec2e2d45b45ac5e5` from the local Playwright report.
+The sole test, `dark-realm-gameplay.spec.js`, passed without retries or errors:
+start2026-09-21T04:52:24.526Z, test duration79.994s, report duration81.988s.
+Its final stdout receipt confirms shared entry, all three actual discoveries,
+manual camp reward, saved reconnect and Recall. Assertions also cover Maelin's
+read-only conversation, Ilyra surviving the periodic cleanup, no automatic
+completion, the full investigation mask, Gold payout and level100 XP conversion
+to Resonance. Prepared entry prerequisites are **not earned campaign evidence**.
+The movement-context dispatch regression passed0.293s.
+
+On September22, process/container inspection confirmed the isolated run had
+ended and its disposable services were removed. No unchanged rerun was needed.
+The user requested stopping at the next completed task or deployment: this
+connected quest/re-entry task is complete locally, so pause here. No new release
+was pushed; version1.9.29 remains the last verified live version. The overall
+roadmap is not complete, and release preparation is deferred until resumed.
+
+Still required: further district-scale composition where needed and
+the coordinated100-hour/8–12-hour pacing pass. The first connected quest route
+does not verify every later chapter. Authored counts alone do not
 establish duration. The existing earned checkpoint19 and outstanding dungeon,
 raid and finale acceptance remain unchanged. Next release needs cumulative patch
 notes and synchronized version labels; the current live build remains1.9.29.
