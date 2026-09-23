@@ -27,6 +27,11 @@ diary rewards, normal reconnect, level3 without grants. Version labels and
 cumulative patch notes now describe the expedition, slower incoming XP, preserved
 earned progression/quoted rewards and unproven duration targets. Normal CI/
 deployment gates and read-only public checks remain before claiming delivery.
+First1.9.30 push `c357f91b` failed CI35805973030 on three old Go reward
+expectations (status-kill10→5XP and fresh Skeleton-daily4250→520XP). All client
+and browser-smoke jobs passed; deployment was skipped. Correct these exact
+assertions without changing production rewards. Full Go suite now passes
+(`go test ./... -count=1`, game183.714s); repush1.9.30 through unchanged CI gates.
 No long earned dungeon rerun is needed for these isolated changes. Retained
 earned checkpoint19, remaining raids/finale and final pacing acceptance remain
 open. Physical phone dungeon/party feedback remains user-deferred.

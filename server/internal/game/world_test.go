@@ -105,7 +105,9 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 			continue
 		}
 		foundStarter = true
-		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 4250 || quest.RewardGold != 200 {
+		// Newly offered quotes use the tuned level-ten Skeleton budget:
+		// 26 ordinary XP *100 objectives *20%, with unchanged Gold/count.
+		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 520 || quest.RewardGold != 200 {
 			t.Fatalf("unexpected starter daily: %+v", quest)
 		}
 		if quest.Accepted || quest.Completed || quest.Count != 0 {

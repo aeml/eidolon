@@ -2,9 +2,19 @@
 
 ## Current delivery — 1.9.30 pushed; verification pending
 
-September23: release candidate1.9.30 is pushed at
-`c357f91bf317890017f99737b7d3d6d006490b9d`, CI35805973030. Luna monitors this
-specific deployment; no release success is claimed before CI and public checks.
+September23: the first release candidate1.9.30 was pushed at
+`c357f91bf317890017f99737b7d3d6d006490b9d`, CI35805973030. It failed the Go
+suite on three stale pre-tuning reward expectations: bleed/poison kills expected
+10XP instead of5, and a newly offered Skeleton daily expected4250XP instead of
+520. Client tests and all three browser-smoke shards passed. Both deployments
+and live QA were skipped;1.9.29 remains the last verified live release. The
+three assertions now match the approved anchors while retaining exact single-
+award, attribution, objective-count and Gold checks; no production reward or
+combat code was changed to accommodate this failure. Full `go test ./... -count=1`
+passed after correction (main16.151s, game183.714s), recorded in
+`/tmp/eidolon-1-9-30-server-regression.log`. The corrected push retains1.9.30
+because the earlier candidate never deployed. No release success is claimed
+before CI and public checks.
 It includes the shared Dark Realm,24 new chapters/38 discoveries, six optional
 residents, inhabited camp, personal/Nexus gating, guarded administration visits,
 Ilyra/movement re-entry fixes and incoming-XP tuning. Saved progression and

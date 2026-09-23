@@ -70,9 +70,9 @@ func TestEnemyBleedKillCreditsOwnerOnce(t *testing.T) {
 		}
 		time.Sleep(time.Millisecond)
 	}
-	// A level-one ordinary enemy pays 10% of its 100-XP threshold,
+	// A level-one ordinary enemy pays the five-XP progression anchor,
 	// regardless of whether direct damage or a status delivers the last hit.
-	if xp != 10 {
-		t.Fatalf("kill credit missing or duplicated: XP=%d, want 10", xp)
+	if xp != 5 {
+		t.Fatalf("kill credit missing or duplicated: XP=%d, want 5", xp)
 	}
 }

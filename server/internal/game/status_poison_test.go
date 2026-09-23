@@ -77,8 +77,8 @@ func TestPoisonKillCreditsOwnerAndDoesNotFollowLethalBleed(t *testing.T) {
 			}
 			time.Sleep(time.Millisecond)
 		}
-		// Exactly one level-one ordinary-enemy reward under curve 2.
-		if xp != 10 {
+		// Exactly one five-XP level-one reward, including overlapping statuses.
+		if xp != 5 {
 			t.Fatalf("incorrect asynchronous kill credit: %d", xp)
 		}
 	}
