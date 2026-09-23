@@ -2,6 +2,18 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+September23 continuation `earnedmolten0923a` is queued in a live gated launcher,
+not yet a gameplay result. Frozen source1fa494e6 contains the settled-arrival
+observer and boss-checkpoint town-return changes since the last earned attempt.
+Root process117450/native90576 waits for corrected1.9.30 CI35822725614 to succeed,
+then verifies exact public version/commit/readiness/notes/assets before starting
+isolated services. Any delivery failure stops it without retries. Source, script
+and logs: `/tmp/eidolon-earned-molten-20260923-WXBvyM/`.
+It uses unchanged checkpoint19 below (SHA256 reconfirmed), normal15-minute expiry,
+owned bag upgrades, three class-geared supports, existing2h/zero-retry bounds.
+Luna `watch_release_1_9_30` monitors release and subsequent dungeon terminal state.
+No progress, clear, Air handoff or new pacing acceptance is claimed by queuing it.
+
 `earnedmolten0921a` is terminal exit1/1.3h on exact9c78d7dfcb8480c4459869f5c21af08d31490337,
 root native67495/launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`.
 It started after1.9.28 CI35549007858 passed at01:12:38UTC and the exact public
