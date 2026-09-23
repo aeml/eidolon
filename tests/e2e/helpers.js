@@ -570,8 +570,11 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
 
 export async function jumpByGroundClick(page, deltaX, deltaZ) {
     const before = await readPlayerState(page);
-    const target = await projectGroundOffset(page, deltaX, deltaZ);
-    expect(target?.canvas, 'A real Ctrl-click jump requires an unobscured canvas destination').toBe(true);
+    // A planned escape cannot silently become a quarter-distance hop when UI
+    // covers its endpoint. No input is preferable to claiming a different jump.
+    const target = await projectGroundOffset(page, deltaX, deltaZ, { allowScaling: false });
+    if (!target?.canvas) throw movementFailure(
+        'A real Ctrl-click jump requires its full unobscured canvas destination', false, false);
 
     await page.mouse.move(target.x, target.y);
     await page.keyboard.down('Control');

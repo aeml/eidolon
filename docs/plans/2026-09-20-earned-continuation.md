@@ -30,11 +30,24 @@ is retained. The checksum-pinned transfer is registered;90 focused checks pass,
 including unchanged full save/resources/timestamps and rejection of fabricated
 Air progress or altered Molten rewards. Lint/diff checks pass.
 
-The separate public-event branch `earnedevent0923a` has started after Molten
-success/cleanup, frozen atcdf45e3a, launcher1005517/native33751. Script/log/source:
+The separate public-event branch `earnedevent0923a` ended exit1 after7.3min,
+frozen atcdf45e3a, launcher1005517/native33751. Script/log/source:
 `/tmp/eidolon-earned-event-20260923-qbeyMr/`. It uses checkpoint19 on purpose as an
 independent event sample, not a replacement for the latest campaign checkpoint20.
-Luna monitors its25min/zero-retry route. No event completion is claimed yet.
+It reached naturally scheduled Tide eventdisturbance-2983581, then failed in wave1:
+an intended nine-unit crowd jump moved2.2364 units, below the retained six-unit
+assertion. Luna confirmed owned processes/containers/ports cleaned; native33751
+agrees exit1. No event completion or persistent campaign change is claimed.
+
+The screenshot shows expanded instructions covering central combat terrain.
+`jumpByGroundClick` allowed the projection helper to shrink the intended vector;
+a focused regression reproduces nine units becoming2.25 behind an overlay.
+The helper now requests strict full-distance projection and reports unavailable
+input before clicking covered ground. Issued movement/landing failures still fail;
+the escape distance, death bounds, event deadline and zero retries are unchanged.
+The route reads then collapses the real event disclosure during combat, reopening
+it at completion. Fourteen focused tests pass0.959s, lint/diff pass. This is a
+test-input correction, not a production jump fix or completed public event.
 
 Air continuation is prepared, **not launched**:
 `/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source99a7a7ed. Its runtime

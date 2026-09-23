@@ -45,9 +45,11 @@ for exact save/hash/resources, test evidence and scope. Do not repeat this clear
 
 Remaining scope includes the campaign/raids/finale, first-dungeon reward gap,
 party-sensitive Dark Realm duration, economy and public-event acceptance. The
-public-event route `earnedevent0923a` is now running after Molten success/cleanup
-on a separate checkpoint19 branch, root1005517/native33751, monitored by Luna.
-Source/logs `/tmp/eidolon-earned-event-20260923-qbeyMr/`; no event pass yet.
+public-event route `earnedevent0923a` failed in Tide wave1 on a shortened QA jump
+(7.3min/exit1); Luna confirmed cleanup. Source/logs
+`/tmp/eidolon-earned-event-20260923-qbeyMr/`. The strict full-destination input
+correction has14 passing focused checks; a corrected event run remains required.
+The campaign's accepted checkpoint20 is unchanged; Air continuation is prepared.
 Physical phone dungeon/party feedback remains user-deferred and nonblocking.
 
 ### Historical September21 checkpoint

@@ -15,7 +15,9 @@ The expansion and initial XP tuning are delivered, not full1.10 acceptance.
 Molten continuation passed all five bosses, four manual rewards and saved Air
 handoffs (38.6min, no deaths, real Cleric healing); checkpoint20 is independently
 verified. See the [earned continuation](2026-09-20-earned-continuation.md).
-The separate earned public-event route is now running, not yet accepted.
+The separate earned public-event route failed in Tide wave1 on a shortened QA
+jump. Its input correction passes14 focused checks; native event acceptance is
+still open. The campaign checkpoint20 is unchanged.
 The complete remaining Air/Tempest campaign,
 raids/finale, first-dungeon reward gap, full duration/economy tuning and public
 event acceptance remain open. Preserve accepted prior evidence.
@@ -1038,7 +1040,7 @@ actual outgoing damage in each wave, the server's completed/calmed state, render
 completion and persisted rewards after reconnect. No clock, health, credit or
 resource override; zero retries and25min total, including at most one schedule
 interval. Lint, shell syntax and Playwright discovery pass. Native execution is
-now running after successful release/Molten cleanup; this is not event acceptance,
+still unaccepted after the wave1 QA jump failure and cleanup; this is not event acceptance,
 all-realm balance or a replacement campaign checkpoint.
 
 | Area | Existing implementation/evidence to retain | Still required |

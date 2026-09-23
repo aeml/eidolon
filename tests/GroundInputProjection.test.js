@@ -61,6 +61,14 @@ test('visible-prefix planning preserves direction before strict movement and arr
     expect(clickedWorld(strict).x).toBeCloseTo(window.game.player.position.x - 9, 7);
 });
 
+test('an expanded panel can shrink a nine-unit escape to2.25 unless projection is strict', () => {
+    const quarter = projectGroundOffsetInPage({ deltaX: 2.25, deltaZ: 0, allowScaling: false });
+    document.elementFromPoint = x => ({ tagName: x <= quarter.x + 1 ? 'CANVAS' : 'DETAILS' });
+    expect(projectGroundOffsetInPage({ deltaX: 9, deltaZ: 0 })).toMatchObject({ canvas: true, scale: .25 });
+    expect(projectGroundOffsetInPage({ deltaX: 9, deltaZ: 0, allowScaling: false }))
+        .toMatchObject({ canvas: false, scale: 1 });
+});
+
 test('hidden ground, invalid vectors and sub-unit steps cannot become movement input', () => {
     expect(planVisibleGroundStepInPage({ dx: .5, dz: 0 })).toBeNull();
     expect(planVisibleGroundStepInPage({ dx: NaN, dz: 3 })).toBeNull();

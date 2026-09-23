@@ -60,6 +60,9 @@ test('earned Wizard completes a scheduled public disturbance through normal comb
     await expect(panel).toBeVisible();
     if (await panel.getAttribute('open') === null) await panel.locator('summary').click();
     await expect(panel).toContainText(event.site.title);
+    // Read the rules, then use the ordinary disclosure control so the expanded
+    // instructions do not cover combat targets and ground-click destinations.
+    await panel.locator('summary').click();
     const defend = await createEarnedClassCombat(page, 'Wizard', { useCrowdControl: true });
     const moveToward = async (x, z) => {
         const p = await readPlayerState(page);
@@ -124,6 +127,7 @@ test('earned Wizard completes a scheduled public disturbance through normal comb
     for (const wave of evidence.waves) expect(evidence.damageByWave[wave] || 0).toBeGreaterThan(0);
     await expect(panel).toContainText('Road restored');
     await expect(panel).toContainText('no reward to claim');
+    if (await panel.getAttribute('open') === null) await panel.locator('summary').click();
     await page.screenshot({ path: testInfo.outputPath('event-complete.png') });
     const rewards = () => page.evaluate(() => ({ gold: window.game.player.gold, xp: window.game.player.xp,
         resonanceXP: window.game.player.resonanceXP, resonanceLevel: window.game.player.resonanceLevel }));
