@@ -2,6 +2,10 @@
 
 ## Current delivery — 1.9.30 public identity verified; live CI gate correction pending
 
+JSON-parser correction pushed at `cdf45e3ac40286698e494c9a0ba65980332907a0`,
+CI35826334400;286 focused release/history checks pass2.516s, lint/diff pass.
+Luna monitors this exact run and its subsequent gated Molten continuation.
+
 CI35824486046 deployed exacteed9e65d, then its live-matching step failed before
 browser QA: the old `sed` expression accepted only compact JSON and read an empty
 commit from the correctly formatted manifest. The manifest was **available**, not

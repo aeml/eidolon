@@ -2,6 +2,14 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+Current gated launcher: `earnedmolten0923c`, frozen source `cdf45e3a`,
+root495374/native82903, `/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`.
+It waits for CI35826334400 and exact public verification. No gameplay has
+started at this checkpoint. Same unchanged archive19, ordinary15-minute expiry,
+class-geared supports and2h/zero-retry bounds. Luna `watch_release_1_9_30`
+monitors it. The prepared public-event script requires its terminal success
+and absence before running, and has not been launched.
+
 Stopped launcher: `earnedmolten0923b`, frozen source `eed9e65d`, root290694/native98662,
 `/tmp/eidolon-earned-molten-20260923-r2-YGc4o0/`. CI35824486046 deployed but its
 live JSON parser rejected the formatted manifest; launcher exited delivery_wait/1
