@@ -61,6 +61,12 @@ test('earned Wizard completes a scheduled public disturbance through normal comb
     if (await panel.getAttribute('open') === null) await panel.locator('summary').click();
     await expect(panel).toContainText(event.site.title);
     const defend = await createEarnedClassCombat(page, 'Wizard', { useCrowdControl: true });
+    const moveToward = async (x, z) => {
+        const p = await readPlayerState(page);
+        const distance = Math.hypot(x - p.x, z - p.z);
+        const step = Math.min(1, 10 / Math.max(distance, 1));
+        await moveByGroundClick(page, (x - p.x) * step, (z - p.z) * step, { moveOnly: true });
+    };
     let airDirection = 1, previousPhase;
     while (Date.now() < Date.parse(event.endsAt)) {
         const current = await readEvent();
@@ -83,26 +89,26 @@ test('earned Wizard completes a scheduled public disturbance through normal comb
             return enemy ? { id: enemy.id, x: enemy.position.x, z: enemy.position.z } : null;
         }, prefix);
         if (target) {
-            if (await defend(page, target)) continue;
+            if (await defend(page, { ...target,
+                encounter: { x: event.site.x, z: event.site.z, radius: 55 } })) continue;
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
-                if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
-                    await page.mouse.click(point.x, point.y, { button: 'right' });
+                await page.mouse.move(point.x, point.y);
+                await page.waitForTimeout(75);
+                if (await page.evaluate(() => window.game.isHostileActorTarget(window.game.hoveredEntity))) {
+                    await page.mouse.click(point.x, point.y);
+                    if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
+                        await page.mouse.click(point.x, point.y, { button: 'right' });
+                    }
                 }
-            } else {
-                const p = await readPlayerState(page);
-                const distance = Math.hypot(target.x - p.x, target.z - p.z);
-                const step = Math.min(1, 10 / Math.max(distance, 1));
-                await moveByGroundClick(page, (target.x - p.x) * step, (target.z - p.z) * step, { moveOnly: true });
-            }
+            } else await moveToward(target.x, target.z);
         } else if (current.phase === 'defending') {
             const p = await readPlayerState(page);
             const offset = current.innerRadius > 0 ? (current.innerRadius + current.radius) / 2
                 : event.site.realm === 'air' ? 4 * airDirection : 0;
             const x = current.runeX + offset, z = current.runeZ;
             if (Math.hypot(x - p.x, z - p.z) > 1) {
-                await moveByGroundClick(page, x - p.x, z - p.z, { moveOnly: true });
+                await moveToward(x, z);
             } else if (event.site.realm === 'air') airDirection *= -1;
         }
         await page.waitForTimeout(250);
