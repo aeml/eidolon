@@ -1,5 +1,21 @@
 # 1.10 final integration — evidence and remaining work
 
+## Local 1.9.31 candidate — not deployed
+
+Live Resonance synchronization and desktop event-panel placement are fixed in
+db4d4a72. The broadcaster regression fails before the fix and passes afterward,
+including concurrent explicit updates, unchanged-state suppression, reconnect
+reset and failed-enqueue retry (focused Go race1.849s). Reward/progression checks
+pass0.922s; desktop/phone event rendering passes2/2 in15.4s, with both screenshots
+inspected. Release labels and cumulative notes are prepared for1.9.31;381 focused
+client/version/checkpoint/input tests pass3.037s.
+
+One zero-retry event recheck is active on that frozen candidate:
+`/tmp/eidolon-earned-event-20260923-r3-veYvXh/run.sh`, native89450,
+runID `earnedevent0923c`. It uses the independent checkpoint19 event branch,
+not the campaign's accepted Molten checkpoint20. Luna monitors the terminal
+result and cleanup. Full event reconnect acceptance and publication remain pending.
+
 ## Current delivery — Alpha 1.9.30 verified live
 
 CI35826334400 succeeded on `cdf45e3ac40286698e494c9a0ba65980332907a0`:
