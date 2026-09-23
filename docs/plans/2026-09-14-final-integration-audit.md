@@ -979,6 +979,16 @@ were not supplied. The browser question is answered; do not ask it again.
 Actual-phone party/dungeon play remains unverified, separate from automated
 responsive-layout and desktop hardware-rendering results.
 
+September23 public-event preparation: `earned-public-event` now selects one
+ordinary scheduled disturbance on a separate copy of the retained earned Wizard.
+It reuses normal travel/combat controls, requires all three waves plus champion,
+actual outgoing damage in each wave, the server's completed/calmed state, rendered
+completion and persisted rewards after reconnect. No clock, health, credit or
+resource override; zero retries and25min total, including at most one schedule
+interval. Lint, shell syntax and Playwright discovery pass. Native execution is
+still pending after release/Molten browser work; this is not event acceptance,
+all-realm balance or a replacement campaign checkpoint.
+
 | Area | Existing implementation/evidence to retain | Still required |
 | --- | --- | --- |
 | 1.1 first hour and dungeon foundations | Current manual Ilyra chain, town recovery/Well Rested, skill fixes, party credit, passing prepared Verdant route; earned current-curve Earth readiness passes without daily/grant substitutions | Relevant current encounter delta and remaining dungeon families/seeds |

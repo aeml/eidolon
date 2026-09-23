@@ -949,6 +949,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
       npx playwright test --retries=0 tests/e2e/earned-water-region.spec.js
     ;;
+  earned-public-event)
+    EIDOLON_E2E_EARNED_RESUME=1 EIDOLON_E2E_EARNED_PUBLIC_EVENT=1 EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/earned-public-event.spec.js
+    ;;
   earned-region)
     EIDOLON_E2E_EARNED_RESUME=1 EIDOLON_E2E_EARNED_REGION=1 EIDOLON_E2E_CLASS=Wizard EIDOLON_E2E_REST_RECOVERY=1 \
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
