@@ -72,6 +72,39 @@ gear, verify every objective or prove the dungeon access route.
 
 ## Evidence and remaining release work
 
+### September23 first-dungeon reward-gap audit
+
+The existing `TestProgressionPacingAuditQuestBudgets` reports actual fresh
+quotes, including the version2 Seeds quote of1200XP (not its unadjusted1600
+base). Combined with the new ordinary-kill anchors and unchanged thresholds,
+minimum-level objective enemies give this **budget-only** solo path:
+
+| Last completed objective | Total XP | Resulting level |
+| --- | ---: | ---: |
+|Opening and diary|315|3|
+|40 level3 wardens|2,268|7|
+|Eight Seeds, assuming20 level3 kills|3,648|8|
+|60 level20 Imps|16,611|13|
+|Returning Scar investigation|16,811|13|
+|50 level30 Demon Orcs|41,604|18|
+
+Level30 requires195,750 cumulative XP, leaving154,146 outside these required
+objectives. This deliberately omits incidental/elite kills, higher-level
+collection sources, Well Rested and dailies, and optimistically assumes the
+underleveled character can defeat every objective. It is **not** a native
+failure or measured grind duration. Nevertheless, the story moves from a
+level8 budget into level20 targets and from level13 into level30 targets;
+the full100-hour forecast does not establish a smooth first-dungeon path.
+The old earned Earth receipt predates these combat rewards. Fresh level3
+acceptance cannot close this gap either.
+
+Asked the player for the desired level30/first-dungeon milestone within the
+100-hour total (2–3,5–8 or10–15 hours). Keep this early-story bridge open for
+coordinated content/reward tuning; do not silently require daily resets, undo
+the entire XP reduction, change saved contracts or apply rejected stat scaling.
+No production balance change follows from this diagnostic alone. Existing audit
+passed in0.08s; no campaign rerun was needed to identify the budget gap.
+
 Focused Go coverage across all packages passed (game8.259s): progression/save
 conversion, quest budgets, Chronicle/manual claims, party credit, Dark Realm,
 Well Rested and dungeon room awards. The final forecast and real daily-refresh
