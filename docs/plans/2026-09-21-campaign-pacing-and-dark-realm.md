@@ -210,6 +210,37 @@ establish duration. The existing earned checkpoint19 and outstanding dungeon,
 raid and finale acceptance remain unchanged. Next release needs cumulative patch
 notes and synchronized version labels; the current live build remains1.9.29.
 
+## September23 content-budget audit — duration still unproven
+
+Reading the shipped-candidate JSON gives560 required hunt kills,120 personal
+collection items and38 discoveries across24 chapters. With the production35%
+drop chance and a guaranteed fifth eligible kill, expected kills per item are
+`1 + .65 + .65^2 + .65^3 + .65^4 = 2.52563125`, not simply `1/.35`.
+Sequential acceptance prevents collection kills from also satisfying the earlier
+hunt. The expected eligible-kill budget for one character is therefore863.08.
+This excludes incidental/ineligible enemies, missed pickups and another party
+member needing additional personal drops; it is not a measured party duration.
+
+| Assumed eligible kills/hour | Objective combat hours |
+| --- | ---: |
+|90|9.59|
+|135|6.39|
+|180|4.79|
+|270|3.20|
+
+These are sensitivity calculations, not chosen speed limits. Add discovery,
+dialogue, travel/recovery, Nexus and finale time separately; do not double-count
+travel already included in a mixed kills/hour estimate. In particular, reusing
+the level-progression forecast's hypothetical3x field-party throughput would
+leave only3.20 objective hours before those additions. Thus chapter count and a
+solo90-kill/hour assumption do **not** demonstrate the requested8–12-hour
+expedition for suitable parties. The opening connected receipt demonstrates
+functionality only. Measure representative grouped field combat and the actual
+Nexus/finale, then adjust meaningful content or balance if the combined estimate
+misses the target. Do not multiply mandatory collection counts, slow combat or
+add waits merely to force a clock target. No production tuning follows from this
+unmeasured estimate alone.
+
 ## Existing seams and implementation order
 
 1. Deliver approved boss-checkpoint town returns and the narrow movement-observer
