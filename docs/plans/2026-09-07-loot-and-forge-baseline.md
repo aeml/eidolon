@@ -1,5 +1,52 @@
 # Loot and Forge economy baseline
 
+## September23 refresh — current100-hour campaign assumptions
+
+Current source1639fd6f, existing generator/material/upgrade/purchase-sale probes:
+`/tmp/eidolon-economy-20260923.log`, PASS0.713s. This is a calculation/sample audit,
+not measured player pacing. No production prices, drops or balances changed.
+The older baseline below is historical, not the current equipment rate.
+
+`limitRoutineEquipmentLoot` now retains60% of ordinary equipment rolls and at
+most one elite piece, while retaining material rolls. With the current38-entry
+pool, exact equipment expectations are0.28421/ordinary kill and0.99985/elite.
+At the same explicit90 ordinary +3 elite kills/hour used by the XP forecast:
+
+| Reference solo inflow | Current estimate |
+| --- | ---: |
+| Equipment |28.58 pieces/hour |
+| Empty25-slot bag, equipment only |52.49 minutes |
+| Shards, general + dedicated |13.42/hour |
+| Hearts, including one boss/four hours |2.52/hour |
+
+These exclude quest items, gems, chests, extra boss gear, difficulty/Fortune,
+party sharing and useful equipped upgrades. They are not a promised drop cadence.
+At level100 the sampled mean equipment resale values were2594.63 ordinary and
+4958.20 elite; applying the actual retention rates gives about81,240Gold/hour
+from selling all that equipment, versus10,512 raw kill Gold/hour. Vendor sales
+therefore dominate this sample. Do not approve the Gold economy from raw purses
+alone, assume every drop is sold, or treat optional casino losses as mandatory sinks.
+Current1,000-purchase level100 gamble/sale receipts spend3.5M and recover3.47M;
+that finite sample is not a guaranteed return or an exploit finding.
+
+Actual +1 and bulk Forge upgrades now agree: level1→100 costs119 Shards and the
+sample staff reaches13 damage on either path. Fourteen such items cost1666
+Shards versus approximately1342 from the100-hour reference kills; normal level-
+appropriate replacement drops reduce that hypothetical need. Moderate potency
+costs210 Hearts for fourteen +4 items, or255 for one +8 item, versus about252
+Hearts from the same reference100 hours. These are alternatives, not both funded.
+
+**Unresolved:** late potency still uses `2^currentPotency`, so +15→+16 requires
+32768 Hearts and exceeds25×1000 normal bag capacity. Higher ranks are likewise
+unpayable with ordinary stacks. Existing transactions confirm the rejection;
+do not mark Forge affordability complete merely because upgrade precision is fixed.
+An optional user question now asks whether +20 belongs to long-term endgame or
+near campaign completion. Preserve earned gear/materials; align a usable cost
+curve and client quotes with that target rather than merely increasing stack limits.
+Other campaign, raid and progression work can continue while that preference is open.
+
+## Historical September7 baseline
+
 September 7, 2026, source `e470a80`, audit `6172111`. This extends the
 [progression baseline](2026-09-07-progression-pacing-baseline.md). It is not a
 balanced-economy sign-off or an earned gameplay session.
