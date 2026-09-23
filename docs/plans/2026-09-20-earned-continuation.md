@@ -36,6 +36,16 @@ success/cleanup, frozen atcdf45e3a, launcher1005517/native33751. Script/log/sour
 independent event sample, not a replacement for the latest campaign checkpoint20.
 Luna monitors its25min/zero-retry route. No event completion is claimed yet.
 
+Air continuation is prepared, **not launched**:
+`/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source99a7a7ed. Its runtime
+diff against verifiedcdf45e3a is empty; only tests/checkpoint registration and
+documentation changed. It uses archive20, ordinary saved resources and the
+existing `earned-region` Air route (2h, zero retries), covering the weatherkeeper,
+Thunder Roc hunt, Stormglass collection, stolen-horizon discoveries and manually
+accepted/saved Normal70 Tempest handoff. Shell syntax and test discovery pass.
+The launcher requires the public-event run's terminal success/absence before
+starting and repeats exact public release verification; no concurrent browsers.
+
 ### Historical stopped/partial continuations
 
 Stopped launcher: `earnedmolten0923b`, frozen source `eed9e65d`, root290694/native98662,
