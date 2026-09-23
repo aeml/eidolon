@@ -126,6 +126,27 @@ coherent full route. All three selected audit scenarios passed without running
 native gameplay (`TestChronicleRegionalReadinessBudgetAudit`, collection20,
 party1/restedfalse).
 
+The audit now also includes a single clear of the preceding dungeon at its entry
+level, sampling generator seeds1–3. It counts the actual initially generated
+enemy levels/ranks through production combat/party/rest reward functions and
+collects actual room-clear payout events (including reward hooks). Boss counts
+and generated progression layouts are checked. No combat is simulated or claimed;
+summoned adds, repeated clears, Fortune, incidental travel and dailies remain
+excluded. Three seeds are a sample, not a procedural minimum/maximum guarantee.
+
+| Following story segment | Previous dungeon XP, solo/unrested | Remaining XP gap to next gate |
+| --- | ---: | ---: |
+|Water, after Verdant30|21,580–23,539|1,203,278–1,205,237|
+|Fire, after Abyssal60|105,071–111,489|666,804–673,222|
+|Air, after Molten70|140,328–147,917|0|
+
+The selected diagnostic passed in4.46s; all36 solo/party, rested and collection
+scenarios subsequently passed in4.180s. Adding the omitted single-clear income
+does **not** close Water/Fire's required-story budget gaps. This strengthens the
+case for coordinated regional progression work; it does not establish actual
+grind hours, inaccessible gates or a reason to inflate every combat payout.
+These figures retain20 collection kills and minimum-level field objectives.
+
 The opposite risk is efficient dungeon repetition. Normal boss rewards remain
 20% of the **run-level** threshold per eligible player: four Verdant bosses
 therefore provide approximately80% of that threshold, before trash/room XP or
