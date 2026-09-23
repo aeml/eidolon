@@ -49,14 +49,20 @@ The route reads then collapses the real event disclosure during combat, reopenin
 it at completion. Fourteen focused tests pass0.959s, lint/diff pass. This is a
 test-input correction, not a production jump fix or completed public event.
 
+Corrected attempt `earnedevent0923b` is now running on frozen4d6a663c (no runtime
+diff from verifiedcdf45e3a), root1115975/native89896. Script/log/source:
+`/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`. It retains the separate archive19
+branch, ordinary schedule,25min limit and zero retries. Luna monitors natural
+event start and terminal/cleanup only; no pass is claimed before the result.
+
 Air continuation is prepared, **not launched**:
-`/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source99a7a7ed. Its runtime
+`/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source4d6a663c. Its runtime
 diff against verifiedcdf45e3a is empty; only tests/checkpoint registration and
 documentation changed. It uses archive20, ordinary saved resources and the
 existing `earned-region` Air route (2h, zero retries), covering the weatherkeeper,
 Thunder Roc hunt, Stormglass collection, stolen-horizon discoveries and manually
 accepted/saved Normal70 Tempest handoff. Shell syntax and test discovery pass.
-The launcher requires the public-event run's terminal success/absence before
+The launcher requires corrected event0923b's terminal success/absence before
 starting and repeats exact public release verification; no concurrent browsers.
 
 ### Historical stopped/partial continuations
