@@ -35,16 +35,19 @@ actual live parser expressions are checked with compact/spaced/tabbed JSON.
 All corrections passed the complete release workflow; see the
 [integration audit](2026-09-14-final-integration-audit.md) for failed-run history.
 
-Earned continuation `earnedmolten0923c` is active in isolated party setup from
-unchanged checkpoint19, frozen sourcecdf45e3a. Root495374/native82903;
-source/logs `/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`; Luna watches its
-terminal result. Prior a/b launchers stopped before gameplay on failed release
-gates and did not modify the earned save. Existing2h/zero-retry bounds and normal
-15-minute expiry remain. No full clear/Air handoff is claimed yet.
+Earned continuation `earnedmolten0923c` passed1/1 in38.6min on frozen sourcecdf45e3a:
+all five bosses, all four roles alive, four individual manual rewards and saved
+Air offers after reconnect. Cleric ally healing55,462; four town recoveries.
+Root495374/native82903 exited0 and owned services were cleaned. Independent archive
+inspection confirms checkpoint20,100/245125XP/226998Gold,20 completed chapters,
+Molten claimed and Air unaccepted. See the [earned record](2026-09-20-earned-continuation.md)
+for exact save/hash/resources, test evidence and scope. Do not repeat this clear.
 
 Remaining scope includes the campaign/raids/finale, first-dungeon reward gap,
 party-sensitive Dark Realm duration, economy and public-event acceptance. The
-public-event route is prepared but not run, gated after Molten success/cleanup.
+public-event route `earnedevent0923a` is now running after Molten success/cleanup
+on a separate checkpoint19 branch, root1005517/native33751, monitored by Luna.
+Source/logs `/tmp/eidolon-earned-event-20260923-qbeyMr/`; no event pass yet.
 Physical phone dungeon/party feedback remains user-deferred and nonblocking.
 
 ### Historical September21 checkpoint

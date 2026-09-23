@@ -12,7 +12,11 @@ The gated launcher independently retained the same public receipt in
 party setup. No production-character mutations were used for that verifier.
 
 The expansion and initial XP tuning are delivered, not full1.10 acceptance.
-Molten continuation remains active/pending; the complete remaining campaign,
+Molten continuation passed all five bosses, four manual rewards and saved Air
+handoffs (38.6min, no deaths, real Cleric healing); checkpoint20 is independently
+verified. See the [earned continuation](2026-09-20-earned-continuation.md).
+The separate earned public-event route is now running, not yet accepted.
+The complete remaining Air/Tempest campaign,
 raids/finale, first-dungeon reward gap, full duration/economy tuning and public
 event acceptance remain open. Preserve accepted prior evidence.
 
@@ -1034,7 +1038,7 @@ actual outgoing damage in each wave, the server's completed/calmed state, render
 completion and persisted rewards after reconnect. No clock, health, credit or
 resource override; zero retries and25min total, including at most one schedule
 interval. Lint, shell syntax and Playwright discovery pass. Native execution is
-still pending after release/Molten browser work; this is not event acceptance,
+now running after successful release/Molten cleanup; this is not event acceptance,
 all-realm balance or a replacement campaign checkpoint.
 
 | Area | Existing implementation/evidence to retain | Still required |

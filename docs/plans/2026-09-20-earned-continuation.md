@@ -1,15 +1,42 @@
 # Earned campaign continuation with a real party
 
-## Fire story accepted — next: earned Molten party clear
+## Molten accepted — next: Air story and Tempest
 
-Current gated launcher: `earnedmolten0923c`, frozen source `cdf45e3a`,
-root495374/native82903, `/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`.
-CI35826334400 and exact public verification passed. Isolated server startup
-and Playwright party setup are now running; no dungeon clear is claimed.
-Same unchanged archive19, ordinary15-minute expiry,
-class-geared supports and2h/zero-retry bounds. Luna `watch_release_1_9_30`
-monitors it. The prepared public-event script requires its terminal success
-and absence before running, and has not been launched.
+`earnedmolten0923c` passed1/1 in38.6min on frozen `cdf45e3a`, following verified
+Alpha1.9.30 delivery. All five bosses died; all four roles survived. Each player
+manually claimed Molten and retained the reward and unaccepted Air investigation
+offer after reconnect. The Cleric recorded55,462 ally healing. Four ordinary town
+recoveries retained seed/progress/resources and used the cleared-boss checkpoints.
+Dungeon elapsed35.3min includes14.5min automated formation; it is not a human
+clear-time benchmark. The Wizard used earned checkpoint19; three legal geared
+supports are prepared characters, not three independently earned campaigns.
+
+Launcher root495374/native82903 exited0; Luna confirmed owned processes,
+containers and ports18301/18302/4193 cleared. Logs/artifacts:
+`/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`. The final-boss approach screenshot
+was inspected at Low: actors, party/quest UI and floor are visible; the large boss
+extends beyond the top edge. This is not a complete High/Low framing review or
+a device-performance baseline (four browsers ran together).
+
+Independent network-isolated archive inspection confirms **checkpoint20**:
+Wizard100/245125XP/226998Gold,5571HP/4097MP/alive,3,846,758 Resonance XP,
+20 completed chapters and no active/completed dailies. Molten is completed1/1,
+with700Gold/59,562Resonance XP claimed; Air's weatherkeeper is unaccepted0/1.
+Saved town instance is empty; original logout `2026-09-23T07:23:18.454Z` remains.
+Archive `/tmp/eidolon-party-checkpoint-earnedmolten0923c-yeQ6lN/save.archive.gz`,
+SHA256 `735ff4cce2b6876a30d15bf14374be9d1e43f30250df391c5f0cab2a73a40ced`.
+Only the disposable inspection database/container was removed; the private archive
+is retained. The checksum-pinned transfer is registered;90 focused checks pass,
+including unchanged full save/resources/timestamps and rejection of fabricated
+Air progress or altered Molten rewards. Lint/diff checks pass.
+
+The separate public-event branch `earnedevent0923a` has started after Molten
+success/cleanup, frozen atcdf45e3a, launcher1005517/native33751. Script/log/source:
+`/tmp/eidolon-earned-event-20260923-qbeyMr/`. It uses checkpoint19 on purpose as an
+independent event sample, not a replacement for the latest campaign checkpoint20.
+Luna monitors its25min/zero-retry route. No event completion is claimed yet.
+
+### Historical stopped/partial continuations
 
 Stopped launcher: `earnedmolten0923b`, frozen source `eed9e65d`, root290694/native98662,
 `/tmp/eidolon-earned-molten-20260923-r2-YGc4o0/`. CI35824486046 deployed but its

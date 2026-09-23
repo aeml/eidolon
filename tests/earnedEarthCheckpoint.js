@@ -175,7 +175,19 @@ export const earnedEarthCheckpoints = Object.freeze([
     // No final-boss credit. Preserve the actual saved resources and earnings.
     { ...historicalCheckpoints[13],
         sha: 'c3b4f337a123a7bc87e8ced37daa74cb8a21ccf899d30e8e7507174f7d5e2eee',
-        gold: 222342, resources: { version: 1, health: 3895, mana: 3725, dead: false } }
+        gold: 222342, resources: { version: 1, health: 3895, mana: 3725, dead: false } },
+    // Full Molten clear, four manual rewards and reconnects; the earned Wizard
+    // has the Air investigation OFFER, not fabricated Air discoveries.
+    { ...historicalCheckpoints[13],
+        sha: '735ff4cce2b6876a30d15bf14374be9d1e43f30250df391c5f0cab2a73a40ced',
+        gold: 226998, resources: { version: 1, health: 5571, mana: 4097, dead: false },
+        continuationChapters: [
+            ...historicalCheckpoints[13].continuationChapters.slice(0, -1),
+            { id: 'chronicle_07_crown_of_embers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_air_weatherkeeper', accepted: false, completed: false, count: 0,
+                max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] }
 ]);
 
 // These are full private earned saves, not build-only JSON fixtures.

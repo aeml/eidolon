@@ -245,6 +245,38 @@ test.each([14, 15, 16, 17, 18, 19])('retains Molten checkpoint %s earnings and e
     expect(fixture.result().writes).toBe(1);
 });
 
+test('retains completed Molten reward and unaccepted Air offer without resetting earned resources', () => {
+    const checkpoint = earnedEarthCheckpoints[20];
+    const fixture = exercise(character => {
+        fireDungeonReadiness(character);
+        character.quests.pop();
+        character.quests.push(...checkpoint.continuationChapters.slice(-2).map(q => ({ ...q })));
+        Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources },
+            resonance_xp: 3846758, last_logout: '2026-09-23T07:23:18.454Z', instance_id: '' });
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-2).granted_resonance_xp = 0; },
+    p => { p.quests.at(-2).completed = false; },
+    p => { p.quests.at(-1).accepted = true; },
+    p => { p.quests.at(-1).count = 1; }
+])('rejects changed Molten reward or pre-earned Air progress', change => {
+    const checkpoint = earnedEarthCheckpoints[20];
+    const fixture = exercise(character => {
+        fireDungeonReadiness(character);
+        character.quests.pop();
+        character.quests.push(...checkpoint.continuationChapters.slice(-2).map(q => ({ ...q })));
+        Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
+        change(character);
+    }, false, checkpoint);
+    expect(fixture.run).toThrow(/earned/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-1).count = 1; }, p => { p.quests.at(-1).accepted = false; },
     p => { p.quests.at(-2).investigation_mask = 3; }, p => { p.quests.at(-2).granted_resonance_xp = 0; }
