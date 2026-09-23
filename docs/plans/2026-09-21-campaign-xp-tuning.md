@@ -1,6 +1,7 @@
 # Campaign XP tuning toward the approved100-hour target
 
-Local implementation, not deployed. This is an initial balance target, not a
+Delivered in Alpha1.9.30 atcdf45e3a, verified through CI35826334400 and public
+identity/assets checks. This is an initial balance target, not a
 measured human completion time. The shared Dark Realm adds a separate8–12-hour
 content target; its content and acceptance remain in the
 [campaign expansion plan](2026-09-21-campaign-pacing-and-dark-realm.md).

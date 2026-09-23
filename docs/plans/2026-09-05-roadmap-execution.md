@@ -8,12 +8,15 @@ the whole goal. Started September 5, 2026.
 ## Current checkpoint — September 23
 
 The user resumed the roadmap after the requested task-boundary pause. Latest
-verified live release is **Alpha1.9.29**, exact
-`6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI35556373863 succeeded. September23
-remote inspection still shows that commit on master, with no newer deployment.
-The prior1.9.28 checkpoint below is historical, not the current live release.
+verified live release is **Alpha 1.9.30**, exact
+`cdf45e3ac40286698e494c9a0ba65980332907a0`; CI35826334400 succeeded, including
+all tests, both deployments and live character/recovery QA. Luna and the gated
+launcher independently verified public client/server/version/database/login/notes
+and three transformed assets. Receipt is retained in
+`/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/run.log`.
+The older release entries below are historical, not current deployment status.
 
-Local commits now contain the shared level100 Dark Realm,24 added story chapters,
+The release delivers the shared level100 Dark Realm,24 added story chapters,
 38 discoveries, six conversational residents, camp scenery, personal/Nexus gates,
 guarded administration visits and the initial incoming-XP rebalance. The connected
 first Dark Realm chapter passed at`ed88ce6c`: ordinary discoveries, explicit
@@ -21,20 +24,28 @@ turn-in, Gold/Resonance receipts, Recall/re-entry and reconnect. See the
 [campaign implementation record](2026-09-21-campaign-pacing-and-dark-realm.md)
 and [XP assumptions](2026-09-21-campaign-xp-tuning.md).
 
-Next delivery candidate is1.9.30, not1.10 sign-off. Bounded fresh opening
+This is not1.10 sign-off. Bounded fresh opening
 `xpopening0923a` passed1/1 in1.9min: three kills, zero deaths, manual opening and
 diary rewards, normal reconnect, level3 without grants. Version labels and
 cumulative patch notes now describe the expedition, slower incoming XP, preserved
-earned progression/quoted rewards and unproven duration targets. Normal CI/
-deployment gates and read-only public checks remain before claiming delivery.
-First1.9.30 push `c357f91b` failed CI35805973030 on three old Go reward
-expectations (status-kill10→5XP and fresh Skeleton-daily4250→520XP). All client
-and browser-smoke jobs passed; deployment was skipped. Correct these exact
-assertions without changing production rewards. Full Go suite now passes
-(`go test ./... -count=1`, game183.714s); repush1.9.30 through unchanged CI gates.
-No long earned dungeon rerun is needed for these isolated changes. Retained
-earned checkpoint19, remaining raids/finale and final pacing acceptance remain
-open. Physical phone dungeon/party feedback remains user-deferred.
+earned progression/quoted rewards and unproven duration targets. Delivery fixes
+covered three stale Go expectations, a duplicated Pages version literal and a
+compact-JSON-only CI parser. The publisher now uses the canonical manifest;
+actual live parser expressions are checked with compact/spaced/tabbed JSON.
+All corrections passed the complete release workflow; see the
+[integration audit](2026-09-14-final-integration-audit.md) for failed-run history.
+
+Earned continuation `earnedmolten0923c` is active in isolated party setup from
+unchanged checkpoint19, frozen sourcecdf45e3a. Root495374/native82903;
+source/logs `/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`; Luna watches its
+terminal result. Prior a/b launchers stopped before gameplay on failed release
+gates and did not modify the earned save. Existing2h/zero-retry bounds and normal
+15-minute expiry remain. No full clear/Air handoff is claimed yet.
+
+Remaining scope includes the campaign/raids/finale, first-dungeon reward gap,
+party-sensitive Dark Realm duration, economy and public-event acceptance. The
+public-event route is prepared but not run, gated after Molten success/cleanup.
+Physical phone dungeon/party feedback remains user-deferred and nonblocking.
 
 ### Historical September21 checkpoint
 

@@ -1,6 +1,22 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.30 public identity verified; live CI gate correction pending
+## Current delivery — Alpha 1.9.30 verified live
+
+CI35826334400 succeeded on `cdf45e3ac40286698e494c9a0ba65980332907a0`:
+client, Go/race, all three browser shards, predeploy/input validation, both
+deployments and live character/recovery QA all passed. Luna's independent
+public verifier confirms exact frontend/backend identities, Alpha1.9.30,
+database readiness, login label, cumulative notes and three transformed assets.
+The gated launcher independently retained the same public receipt in
+`/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/run.log`, then started isolated
+party setup. No production-character mutations were used for that verifier.
+
+The expansion and initial XP tuning are delivered, not full1.10 acceptance.
+Molten continuation remains active/pending; the complete remaining campaign,
+raids/finale, first-dungeon reward gap, full duration/economy tuning and public
+event acceptance remain open. Preserve accepted prior evidence.
+
+### Historical 1.9.30 delivery corrections — resolved by the successful run above
 
 JSON-parser correction pushed at `cdf45e3ac40286698e494c9a0ba65980332907a0`,
 CI35826334400;286 focused release/history checks pass2.516s, lint/diff pass.

@@ -1,10 +1,13 @@
 # Approved campaign pacing and Dark Realm expansion
 
-September23: work resumed. Alpha1.9.30 is being prepared with the implemented
-expedition and initial XP tuning; it is not yet a verified deployment. The
+September23: Alpha1.9.30 is verified live atcdf45e3a; CI35826334400, complete live
+QA and independent public identity/assets checks passed. It delivers the
+expedition and initial XP tuning. The
 connected first expedition chapter and fresh opening checks have passed. The
 historical pause below records the user's previous stopping point, not a new
 pause request. Full pacing and campaign/raid acceptance remain open.
+Implementation-stage descriptions below are historical; the current delivery
+status above supersedes their local/not-deployed labels.
 
 September21 decision: approximately100 hours to level100, then8–12 hours of
 Dark Realm quests/lore, including the dungeon leading to the Dark King raid.

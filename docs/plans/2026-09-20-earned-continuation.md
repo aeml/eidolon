@@ -4,8 +4,9 @@
 
 Current gated launcher: `earnedmolten0923c`, frozen source `cdf45e3a`,
 root495374/native82903, `/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/`.
-It waits for CI35826334400 and exact public verification. No gameplay has
-started at this checkpoint. Same unchanged archive19, ordinary15-minute expiry,
+CI35826334400 and exact public verification passed. Isolated server startup
+and Playwright party setup are now running; no dungeon clear is claimed.
+Same unchanged archive19, ordinary15-minute expiry,
 class-geared supports and2h/zero-retry bounds. Luna `watch_release_1_9_30`
 monitors it. The prepared public-event script requires its terminal success
 and absence before running, and has not been launched.
