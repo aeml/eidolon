@@ -1,6 +1,10 @@
 # 1.10 final integration — evidence and remaining work
 
-## Local 1.9.31 candidate — not deployed
+## 1.9.31 pushed — deployment pending
+
+Exact1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28 is pushed to master;
+CI35835009087 is queued/running, monitored by Luna. Do not claim it live before
+the complete workflow and exact public verifier pass. Last verified live is1.9.30.
 
 Live Resonance synchronization and desktop event-panel placement are fixed in
 db4d4a72. The broadcaster regression fails before the fix and passes afterward,
@@ -10,11 +14,17 @@ pass0.922s; desktop/phone event rendering passes2/2 in15.4s, with both screensho
 inspected. Release labels and cumulative notes are prepared for1.9.31;381 focused
 client/version/checkpoint/input tests pass3.037s.
 
-One zero-retry event recheck is active on that frozen candidate:
+The zero-retry event recheck **passed1/1 in5.4min** on that frozen candidate:
 `/tmp/eidolon-earned-event-20260923-r3-veYvXh/run.sh`, native89450,
-runID `earnedevent0923c`. It uses the independent checkpoint19 event branch,
-not the campaign's accepted Molten checkpoint20. Luna monitors the terminal
-result and cleanup. Full event reconnect acceptance and publication remain pending.
+runID `earnedevent0923c`, terminal exit0. Natural Root eventdisturbance-2983584
+completed all three waves and champion, with actual damage in each, rendered
+completion, and exact rewards after relogin:224763Gold,245125XP,3669579ResonanceXP,
+Resonance level0. This accepts one full scheduled event, not all-realm/group
+balance. The independent checkpoint19 branch does not replace campaign checkpoint20.
+Luna verified owned processes/containers/ports cleaned; credential scan passed.
+Root independently confirmed the terminal handle/log. Air's prepared launcher
+now targets1639fd6f and requires the event pass and exact public1.9.31 identities.
+No Air browser has started; deployment must finish first.
 
 ## Current delivery — Alpha 1.9.30 verified live
 
@@ -36,8 +46,8 @@ jump. Its input correction passes14 focused checks; native event acceptance is
 still open. The follow-up completed all Ember waves/champion but failed the
 reconnect comparison on4857 additional Resonance XP (Gold/ordinary XP matched).
 The candidate fixes a reproduced missing live-Resonance synchronization path;
-focused race/reward checks pass, but the full event needs rechecking on that
-runtime. Desktop/phone event presentation passes both rendered checks; desktop
+focused race/reward checks and the subsequent full event/reconnect pass (above).
+Desktop/phone event presentation passes both rendered checks; desktop
 instructions now leave central aiming clear. The campaign checkpoint20 is unchanged.
 The complete remaining Air/Tempest campaign,
 raids/finale, first-dungeon reward gap, full duration/economy tuning and public

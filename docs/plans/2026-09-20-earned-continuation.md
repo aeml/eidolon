@@ -63,20 +63,29 @@ notification used by menus, combos and bosses. The candidate sends changed
 progress on normal world updates, serializes explicit updates with broadcasts,
 and only caches successfully queued messages. Award amounts, saves and wire
 format are unchanged. The pre-fix test fails; post-fix focused race checks and
-reward/progression tests pass. Full event reconnect acceptance still needs the
-corrected runtime. Desktop event instructions now sit below the minimap, clear
+reward/progression tests pass. Desktop event instructions now sit below the minimap, clear
 of central aiming; both390px and1280px rendered checks pass15.4s and screenshots
 were inspected. This is presentation evidence, not combat acceptance.
 
+Corrected runtime `earnedevent0923c` **passed1/1 in5.4min**, native89450/exit0,
+source db4d4a72, `/tmp/eidolon-earned-event-20260923-r3-veYvXh/`. Natural Root
+eventdisturbance-2983584 completed all three waves and champion, with actual
+damage in each and rendered Road restored. Gold224763,XP245125,ResonanceXP3669579
+and Resonance level0 matched exactly after relogin. Luna verified owned process,
+container and port cleanup; root confirmed terminal/log. This accepts one full
+scheduled event with earned max-level Wizard, not all-realm or group balance.
+No change to campaign checkpoint20. Release1.9.31 was pushed at1639fd6f;
+CI35835009087 is pending, not yet a live acceptance claim.
+
 Air continuation is prepared, **not launched**:
-`/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source4d6a663c. Its runtime
-diff against verifiedcdf45e3a is empty; only tests/checkpoint registration and
-documentation changed. It uses archive20, ordinary saved resources and the
+`/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source1639fd6f. It includes the
+accepted Resonance fix and uses archive20, ordinary saved resources and the
 existing `earned-region` Air route (2h, zero retries), covering the weatherkeeper,
 Thunder Roc hunt, Stormglass collection, stolen-horizon discoveries and manually
 accepted/saved Normal70 Tempest handoff. Shell syntax and test discovery pass.
-The launcher requires corrected event0923b's terminal success/absence before
-starting and repeats exact public release verification; no concurrent browsers.
+The launcher requires corrected event0923c's terminal success/absence before
+starting and exact public1.9.31 release verification. Wait for CI/live QA to end;
+no concurrent browsers. Archive20 checksum remains unchanged.
 
 ### Historical stopped/partial continuations
 

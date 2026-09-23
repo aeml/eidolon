@@ -55,10 +55,16 @@ higher; Gold/ordinary XP matched. Source/logs:
 `/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`; owned services cleaned.
 A focused regression reproduces missing live Resonance updates after ordinary
 rewards. The candidate syncs changed progress during normal broadcasts, without
-changing rewards or saves; focused race/reward checks pass. Event reconnect
-acceptance remains open. Desktop event HUD no longer covers central aiming;
+changing rewards or saves; focused race/reward checks pass. Corrected runtime
+`earnedevent0923c` passed1/1 in5.4min, native89450/exit0: all natural Root event
+waves/champion and exact Gold/XP/Resonance after relogin. Owned services cleaned.
+This accepts one event, not all-realm/group balance. Source/logs:
+`/tmp/eidolon-earned-event-20260923-r3-veYvXh/` (db4d4a72).
+Desktop event HUD no longer covers central aiming;
 two rendered desktop/phone checks pass and screenshots were inspected.
-The campaign's accepted checkpoint20 is unchanged; Air continuation is prepared.
+The campaign's accepted checkpoint20 is unchanged; Air continuation is prepared
+on1639fd6f, awaiting complete1.9.31 delivery. That exact commit is pushed to master,
+CI35835009087 pending, with Luna monitoring. Last verified live remains1.9.30.
 Physical phone dungeon/party feedback remains user-deferred and nonblocking.
 
 ### Historical September21 checkpoint
