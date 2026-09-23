@@ -106,6 +106,37 @@ the entire XP reduction, change saved contracts or apply rejected stat scaling.
 No production balance change follows from this diagnostic alone. Existing audit
 passed in0.08s; no campaign rerun was needed to identify the budget gap.
 
+### Regional handoffs and repeatable-dungeon sensitivity
+
+The existing regional readiness audit also ran against current budgets for one
+unrested player,20 collection kills, starting at the previous dungeon's minimum
+level. It includes the previous dungeon's quest turn-in, but deliberately omits
+all of that dungeon's enemy/room XP, incidental kills and optional activities:
+
+| Story segment | Starting level | Ending budget level | Next gate | XP shortfall |
+| --- | ---: | ---: | ---: | ---: |
+|Water|30|39|60|1,226,817|
+|Fire|60|62|70|778,293|
+|Air|70|72|70|0|
+
+These are conservative handoff diagnostics, not observed player levels or
+proof that the gates are unreachable. Dungeon income and optional play must
+be added explicitly; the first-dungeon-only adjustment cannot establish a
+coherent full route. All three selected audit scenarios passed without running
+native gameplay (`TestChronicleRegionalReadinessBudgetAudit`, collection20,
+party1/restedfalse).
+
+The opposite risk is efficient dungeon repetition. Normal boss rewards remain
+20% of the **run-level** threshold per eligible player: four Verdant bosses
+therefore provide approximately80% of that threshold, before trash/room XP or
+Well Rested. Supported ten-level run bands extend from30 to100 and remain
+limited by character level; Heroic/Mythic are level100-only. The reference
+forecast's one boss per four hours does not describe a group repeatedly clearing
+dungeons. Use real encounter/travel evidence to compare a dungeon-focused route
+as well as mixed field play before calling the100-hour pacing accepted. Do not
+treat automation's slow formation time as a human clear time, add forced waits,
+or nerf rewards from an assumed clear duration alone.
+
 Focused Go coverage across all packages passed (game8.259s): progression/save
 conversion, quest budgets, Chronicle/manual claims, party credit, Dark Realm,
 Well Rested and dungeon room awards. The final forecast and real daily-refresh
