@@ -101,11 +101,16 @@ var dungeonBossBalances = map[string]dungeonBossBalance{
 	"DissonantHerald":   {HealthMultiplier: 1.35, DamageMultiplier: 1.10},
 	"NullArchitect":     {HealthMultiplier: 1.80, DamageMultiplier: 1.22},
 	"EidolonDevourer":   {HealthMultiplier: 2.70, DamageMultiplier: 1.40},
-	"UmbraPrime":        {HealthMultiplier: 8.00, DamageMultiplier: 1.55},
-	"GravenColossus":    {HealthMultiplier: 4.00, DamageMultiplier: 1.35},
-	"TideboundTyrant":   {HealthMultiplier: 4.25, DamageMultiplier: 1.38},
-	"AshenImperator":    {HealthMultiplier: 4.50, DamageMultiplier: 1.42},
-	"TempestSovereign":  {HealthMultiplier: 4.50, DamageMultiplier: 1.45},
+	// The mandatory Mythic multiplier already scales the finale. The former
+	// 8x family multiplier compounded it to1.824M HP: a legal five-player
+	// party spent four minutes without reaching the first aid transition.
+	// 570k HP retains a5–10-minute target at the observed party throughput;
+	// damage, telegraphs and all four phase boundaries remain unchanged.
+	"UmbraPrime":       {HealthMultiplier: 2.50, DamageMultiplier: 1.55},
+	"GravenColossus":   {HealthMultiplier: 4.00, DamageMultiplier: 1.35},
+	"TideboundTyrant":  {HealthMultiplier: 4.25, DamageMultiplier: 1.38},
+	"AshenImperator":   {HealthMultiplier: 4.50, DamageMultiplier: 1.42},
+	"TempestSovereign": {HealthMultiplier: 4.50, DamageMultiplier: 1.45},
 }
 
 type enemyCombatProfile struct {

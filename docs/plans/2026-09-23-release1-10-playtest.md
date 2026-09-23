@@ -45,7 +45,13 @@ features, automated checks and a complete human campaign playthrough.
   client preparation and deploy-script syntax checks passed.
 - Full JavaScript suite passed:480 suites /7,341 tests (319.163s). Subsequent
   version-history assertions passed281 checks, including the new1.10 note.
-- Prepared five-player Dark King test is running.
+- First prepared five-player Dark King test failed when the Rogue died after
+  239.1seconds combat. The party dealt approximately298k damage but remained in
+  phase one of a1.824M-HP encounter. The mandatory Mythic scaling compounded
+  the family health multiplier. New encounters now use570k HP (family2.5x,
+  down from8x), targeting5–10minutes at observed throughput. Damage, mechanics,
+  survival assertions and gear are unchanged. An affected rerun is required;
+  the failure is not counted as a clear. Host contention limits timing claims.
   Finale uses legal class-specific Uncommon/Rare gear and normal player inputs;
   prepared prerequisites are **not** an earned campaign completion.
 - Retain accepted four-player Verdant/Abyssal/Molten work, five-player Rootheart,
