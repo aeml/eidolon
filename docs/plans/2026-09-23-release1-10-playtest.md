@@ -52,6 +52,16 @@ features, automated checks and a complete human campaign playthrough.
   down from8x), targeting5–10minutes at observed throughput. Damage, mechanics,
   survival assertions and gear are unchanged. An affected rerun is required;
   the failure is not counted as a clear. Host contention limits timing claims.
+  **Affected rerun completed, still failed:**570k→221,501HP in246.2seconds;
+  Rogue died. Embedded report evidence confirms all five clients received and
+  rendered phasesI,II,III alive (only phaseI happened to be screenshot-captured).
+  Do not infer missing phases from screenshot filenames. Tank mana was nearly
+  exhausted; secondary healer was casting with available mana/cooldown and the
+  Rogue died during incoming bursts. This is not proof of a progression gate
+  failure or a successful clear. No further damage nerf, fabricated victory or
+  weakened survival assertion was used. Full finale acceptance remains open.
+  Focused Dark King/enemy race checks passed15.966s;294 release/phase-evidence
+  JavaScript checks passed after the change. Both owned raid runs cleaned up.
   Finale uses legal class-specific Uncommon/Rare gear and normal player inputs;
   prepared prerequisites are **not** an earned campaign completion.
 - Retain accepted four-player Verdant/Abyssal/Molten work, five-player Rootheart,
@@ -73,8 +83,14 @@ character QA. A subsequent public reachability check found both game domains
 following eserver.ddnsfree.com to174.220.28.213 while this origin reported
 47.203.222.61. Local HTTPS with correct SNI/certificate validation still serves
 the exact healthy1.9.31 release. The user has been asked to correct DDNS.
+Direct HTTPS to47.203.222.61 with the real hostname/SNI also returns that exact
+healthy release with certificate validation and no proxy. The DDNS AAAA points
+to2600:1006:b0a6:8dae:98a3:50eb:5675:8757, while this host has only a private
+ULA IPv6 address. Correct the A record and remove the stale public AAAA unless
+a working routed IPv6 origin is deliberately configured. No nginx change is
+needed to address the demonstrated DNS mismatch.
 
-**1.10.0 is being packaged, not yet verified live.** Do not substitute an origin
+**1.10.0 is packaged for publication, not yet verified live.** Do not substitute an origin
 override for public DNS/TLS reachability or claim success from a version label.
 Record the actual CI result and matching frontend/backend identities here once
 delivery completes. No production grants, billing integration or DNS changes
