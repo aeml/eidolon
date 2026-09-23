@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {
     appendReleaseVersion,
     rewriteCss,
     rewriteHtml,
-    rewriteJavaScript
+    rewriteJavaScript,
+    versionPagesRuntime
 } from '../scripts/version-pages-runtime.mjs';
 
 const repoRoot = path.resolve(process.cwd());
@@ -18,6 +20,19 @@ function parseGLTF(data) {
 }
 
 describe('Pages runtime release versioning', () => {
+    test('publishes the copied manifest version with the same commit as browser assets', async () => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-manifest-'));
+        try {
+            fs.writeFileSync(path.join(root, 'index.html'), '<script src="./main.js"></script>');
+            fs.writeFileSync(path.join(root, 'release.json'), JSON.stringify({ commit: 'development', version: 'Alpha 9.8.7' }));
+            await versionPagesRuntime(root, release);
+            expect(JSON.parse(fs.readFileSync(path.join(root, 'release.json'), 'utf8')))
+                .toEqual({ commit: release, version: 'Alpha 9.8.7' });
+            expect(fs.readFileSync(path.join(root, 'index.html'), 'utf8')).toContain(`./main.js?release=${release}`);
+        } finally {
+            fs.rmSync(root, { recursive: true, force: true });
+        }
+    });
     test('versions local URLs while preserving queries and fragments', () => {
         expect(appendReleaseVersion('./module.js', release)).toBe(`./module.js?release=${release}`);
         expect(appendReleaseVersion('../module.js?mode=fast#entry', release))
@@ -87,6 +102,10 @@ describe('Pages runtime release versioning', () => {
         const workflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/ci.yml'), 'utf8');
         const e2eHelpers = fs.readFileSync(path.join(repoRoot, 'tests/e2e/helpers.js'), 'utf8');
         expect(workflow).toContain('node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"');
+        expect(workflow).toContain('cp sw.js release.json public/');
+        expect(workflow.indexOf('cp sw.js release.json public/'))
+            .toBeLessThan(workflow.indexOf('node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"'));
+        expect(workflow).not.toMatch(/printf[^\n]*version[^\n]*> public\/release\.json/);
         expect(workflow.indexOf('node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"'))
             .toBeLessThan(workflow.indexOf('Upload Pages artifact'));
         expect(workflow).toContain('client_runtime_release=');

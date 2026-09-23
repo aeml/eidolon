@@ -316,9 +316,8 @@ jobs:
           # Copy the entire game to public/ for the game site's Pages deployment.
           mkdir -p public
           cp -r index.html assets src vendor public/
-          cp sw.js public/
+          cp sw.js release.json public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.9.29"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server

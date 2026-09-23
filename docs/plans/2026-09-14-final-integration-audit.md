@@ -2,6 +2,18 @@
 
 ## Current delivery — 1.9.30 pushed; verification pending
 
+Corrected Go candidate1fa494e6 reached both production deployments in
+CI35822725614. Live QA then failed1/8 checks: the Pages workflow still wrote
+`Alpha 1.9.29` into public/release.json while the actual login screen correctly
+showed1.9.30. This was a real published identity mismatch, not a bad smoke-test
+expectation. Seven other live checks passed; later recovery QA was skipped.
+The gated Molten launcher stopped in delivery_wait/exit1 without starting any
+gameplay or services. The follow-up copies the repository release.json into
+the site and stamps its commit in the existing runtime-versioning script,
+removing the duplicate workflow version literal. Two regressions reproduced
+the old behavior;285 focused release/history checks pass after the fix. A
+corrected publication and complete live checks are still required.
+
 September23: the first release candidate1.9.30 was pushed at
 `c357f91bf317890017f99737b7d3d6d006490b9d`, CI35805973030. It failed the Go
 suite on three stale pre-tuning reward expectations: bleed/poison kills expected

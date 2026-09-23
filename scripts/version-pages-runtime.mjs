@@ -113,7 +113,15 @@ async function listRuntimeFiles(root) {
 }
 
 export async function versionPagesRuntime(root, release) {
+    if (!SAFE_RELEASE.test(release)) throw new Error('Invalid Pages release id');
     const absoluteRoot = path.resolve(root);
+    // The copied source manifest owns the version. Never maintain a second
+    // version literal in the publishing workflow.
+    const manifestPath = path.join(absoluteRoot, 'release.json');
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+    if (typeof manifest.version !== 'string' || !manifest.version.trim()) {
+        throw new Error('Pages source manifest requires a version');
+    }
     const files = await listRuntimeFiles(absoluteRoot);
     let changedFiles = 0;
     for (const filePath of files) {
@@ -128,6 +136,7 @@ export async function versionPagesRuntime(root, release) {
         await fs.writeFile(filePath, rewritten);
         changedFiles += 1;
     }
+    await fs.writeFile(manifestPath, `${JSON.stringify({ ...manifest, commit: release }, null, 2)}\n`);
     return { root: absoluteRoot, release, scannedFiles: files.length, changedFiles };
 }
 

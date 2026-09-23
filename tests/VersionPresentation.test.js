@@ -1169,6 +1169,7 @@ describe('version presentation', () => {
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
             expect(contents).toContain(expectedVersion);
+            expect([...new Set(contents.match(/Alpha \d+\.\d+\.\d+/g))]).toEqual([expectedVersion]);
         });
     });
 
