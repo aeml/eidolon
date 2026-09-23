@@ -2,11 +2,13 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
-Current launcher: `earnedmolten0923b`, frozeneed9e65d, root290694/native98662,
-`/tmp/eidolon-earned-molten-20260923-r2-YGc4o0/`. It is waiting on replacement
-CI35824486046, then exact public verification, before starting any gameplay.
+Stopped launcher: `earnedmolten0923b`, frozen source `eed9e65d`, root290694/native98662,
+`/tmp/eidolon-earned-molten-20260923-r2-YGc4o0/`. CI35824486046 deployed but its
+live JSON parser rejected the formatted manifest; launcher exited delivery_wait/1
+without gameplay/services. Independent public identity/assets verification passed,
+but the skipped live browser checks still require the corrected CI gate.
 Same unchanged checkpoint19, class-geared supports, ports18301/18302/4193 and
-2h/zero-retry bounds. Luna `watch_release_1_9_30` monitors terminal state. The
+2h/zero-retry bounds. Luna `watch_release_1_9_30` confirmed terminal state. The
 separate public-event route is prepared but not running. No dungeon outcome
 or earned save change is claimed while waiting.
 

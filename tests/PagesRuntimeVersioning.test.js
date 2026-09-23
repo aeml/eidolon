@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { execFileSync } from 'node:child_process';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {
     appendReleaseVersion,
@@ -20,6 +21,19 @@ function parseGLTF(data) {
 }
 
 describe('Pages runtime release versioning', () => {
+    test('the actual live gate parses compact and formatted release JSON', () => {
+        const workflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/ci.yml'), 'utf8');
+        const gate = workflow.split('- name: Wait for matching live releases')[1]
+            .split('- name: Run live anonymous')[0];
+        const parsers = [...gate.matchAll(/\| node -p '([^']+)'/g)].map(match => match[1]);
+        expect(parsers).toHaveLength(2); // Both client manifest and server health.
+        for (const parser of parsers) {
+            for (const spaces of [undefined, 2, '\t']) {
+                const input = JSON.stringify({ version: 'Alpha 9.8.7', commit: release }, null, spaces);
+                expect(execFileSync(process.execPath, ['-p', parser], { input, encoding: 'utf8' }).trim()).toBe(release);
+            }
+        }
+    });
     test('publishes the copied manifest version with the same commit as browser assets', async () => {
         const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-manifest-'));
         try {

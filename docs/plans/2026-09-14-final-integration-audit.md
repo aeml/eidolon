@@ -1,6 +1,18 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.30 pushed; verification pending
+## Current delivery — 1.9.30 public identity verified; live CI gate correction pending
+
+CI35824486046 deployed exacteed9e65d, then its live-matching step failed before
+browser QA: the old `sed` expression accepted only compact JSON and read an empty
+commit from the correctly formatted manifest. The manifest was **available**, not
+a404/outage. Root independently ran `/tmp/eidolon-verify-1-9-30.mjs`: exact public
+client/servereed9e65d, Alpha1.9.30, ready database, login version, cumulative notes
+and three transformed assets all passed, without production-character mutations.
+This establishes public identity, not the skipped live character/recovery checks.
+The live gate now uses Node JSON parsing for both manifest and health. Its actual
+workflow expressions are tested against compact, spaced and tab-indented JSON;
+the regression fails before the change. The gated Molten b launcher again exited
+delivery_wait/1, with no gameplay/services or earned-save changes.
 
 Manifest correction is pushed at `eed9e65da998979e1d9e8dd14f2761b69a559982`,
 CI35824486046. Luna monitors this exact replacement; no successful delivery is

@@ -541,9 +541,9 @@ jobs:
           EXPECTED_COMMIT: ${{ github.sha }}
         run: |
           for attempt in $(seq 1 60); do
-            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
             client_runtime_release="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
-            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_HEALTH_URL}?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_HEALTH_URL}?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
             if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && \
                [ "${client_runtime_release}" = "${EXPECTED_COMMIT}" ] && \
                [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
