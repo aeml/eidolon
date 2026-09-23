@@ -16,6 +16,17 @@ for another blanket reward reduction.
 
 ### Approved pacing target — September 21
 
+September23 clarifications: a new player should reach **level30 and enter the
+first dungeon in approximately2–3 hours**, within the unchanged approximately
+100-hour journey to level100. This is an entry milestone, not a dungeon-clear
+time. Early story and normal exploration must support it without mandatory
+daily grinding; later progression must still support the overall target.
+
+Forge potency should be **moderate during the story**, with **+20 a long-term
+endgame goal** after the campaign. No exact story potency rank or additional
+endgame-hour target was specified. Tune material supply and payable costs
+together; preserve earned gear/materials and keep EP restricted to cosmetics.
+
 The user answered: approximately100 hours of play to reach level100, which is
 required before entering the Dark Realm, followed by8–12 hours of Dark Realm
 quests, lore and the dungeon leading to the Dark King raid. Aim for roughly112

@@ -75,10 +75,11 @@ The reference solo/50%-rested run also exposes the distribution hidden by its
 96.8-hour total: level10 at1.3h, level30 at17.1h, level60 at45.6h, level80 at71.2h,
 and level100 at96.8h. These are cumulative **model** milestones, not observed
 playtimes. The selected existing forecast passed in0.163s on September23.
-Thus matching the total alone can still leave the first dungeon much later
-than desired. The player's first-dungeon milestone question remains open;
-coordinate early route/content and later progression rather than approving the
-current distribution just because the cap forecast is near100 hours.
+The user has now specified **2–3 hours to level30 and first-dungeon entry**.
+The17.1-hour model milestone therefore misses the approved early target even
+though its total is near100 hours. Coordinate early route/content and later
+progression; do not approve the current distribution or speed up every level
+uniformly. The overall approximately100-hour level100 target is unchanged.
 
 ## Evidence and remaining release work
 
@@ -108,8 +109,8 @@ the full100-hour forecast does not establish a smooth first-dungeon path.
 The old earned Earth receipt predates these combat rewards. Fresh level3
 acceptance cannot close this gap either.
 
-Asked the player for the desired level30/first-dungeon milestone within the
-100-hour total (2–3,5–8 or10–15 hours). Keep this early-story bridge open for
+The player answered **2–3 hours** for the level30/first-dungeon milestone within
+the100-hour total. Keep this early-story bridge open for
 coordinated content/reward tuning; do not silently require daily resets, undo
 the entire XP reduction, change saved contracts or apply rejected stat scaling.
 No production balance change follows from this diagnostic alone. Existing audit

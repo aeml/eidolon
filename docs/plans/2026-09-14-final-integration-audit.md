@@ -1,6 +1,21 @@
 # 1.10 final integration — evidence and remaining work
 
-## 1.9.31 pushed — deployment pending
+## Alpha1.9.31 verified live — runner handoff resolved
+
+CI35835009087 completed successfully for exact
+1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28. All jobs passed, including live
+character/recovery QA. The queued live job was assigned around08:36:46UTC.
+Luna repeated the public verifier after full workflow success: matching
+frontend/backend commit/version, ready database, login label, cumulative notes
+and all three expected assets passed. Root independently confirmed the terminal
+workflow status and SHA. No further runner restart is needed. Air's prepared
+1639fd6f route is ready to continue from unchanged Molten checkpoint20.
+
+User balance decisions are now recorded:2–3 hours to level30/first-dungeon entry,
+approximately100 hours to level100, moderate story potency and +20 as long-term
+endgame progression. These are targets, not delivered balance acceptance.
+
+### Historical queue delay — resolved by the complete result above
 
 Both deployment jobs succeeded. Luna's Node24 public verifier passed exact
 1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28/Alpha1.9.31, frontend/backend identity,

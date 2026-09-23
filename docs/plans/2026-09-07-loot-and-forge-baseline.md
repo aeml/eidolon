@@ -41,11 +41,12 @@ Hearts from the same reference100 hours. These are alternatives, not both funded
 unpayable with ordinary stacks. The existing Forge-capacity transaction audit
 was rerun on the current source: PASS1.094s, full25,000-Heart bag rejected for
 +15→+16 and later purchases; `/tmp/eidolon-potency-capacity-20260923.log`.
-do not mark Forge affordability complete merely because upgrade precision is fixed.
-An optional user question now asks whether +20 belongs to long-term endgame or
-near campaign completion. Preserve earned gear/materials; align a usable cost
-curve and client quotes with that target rather than merely increasing stack limits.
-Other campaign, raid and progression work can continue while that preference is open.
+Do not mark Forge affordability complete merely because upgrade precision is fixed.
+The user answered: **+20 is a long-term endgame goal; moderate potency during
+the story**. The +4/+8 arithmetic above is an audit example, not an approved
+exact story-rank target. Preserve earned gear/materials; align material supply,
+a payable long-term cost curve and client quotes with the approved direction
+rather than merely increasing stack limits or making +20 a campaign requirement.
 
 ## Historical September7 baseline
 

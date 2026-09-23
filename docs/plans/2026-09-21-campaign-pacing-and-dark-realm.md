@@ -15,6 +15,12 @@ Aim for roughly112 hours overall. Level100 is required before realm entry.
 The finale remains5–10 minutes across four phases for five well-geared players.
 This is required remaining1.10 work, not delivered1.9.29 content.
 
+September23 approved intermediate target: level30 and first-dungeon entry in
+approximately2–3 hours, while retaining approximately100 hours to level100.
+Forge potency remains moderate during the story; +20 belongs to long-term
+endgame progression. These clarify the balance pass, not completed tuning or
+measured playtime. No exact story potency rank was specified.
+
 The [initial XP tuning candidate](2026-09-21-campaign-xp-tuning.md) now changes
 incoming combat/fresh-daily rewards without changing stored levels or thresholds.
 Reference modeled active progression is approximately93–109 hours depending on
