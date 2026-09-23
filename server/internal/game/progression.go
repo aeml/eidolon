@@ -195,6 +195,12 @@ func (w *World) EndgameProgressForPlayer(playerID string) (EndgameProgress, bool
 	if player == nil {
 		return EndgameProgress{}, false
 	}
+	return player.EndgameProgress(), true
+}
+
+// EndgameProgress returns a detached snapshot shared by login, explicit menu
+// requests and live world updates. The receiver may also be an entity copy.
+func (player *Entity) EndgameProgress() EndgameProgress {
 	player.Mu.RLock()
 	defer player.Mu.RUnlock()
 	ranks := map[string]int{"power": 0, "ward": 0, "fortune": 0}
@@ -207,7 +213,7 @@ func (w *World) EndgameProgressForPlayer(playerID string) (EndgameProgress, bool
 		Unlocked: player.Level >= MaxPlayerLevel, Level: player.ResonanceLevel,
 		XP: player.ResonanceXP, XPToNext: ResonanceXPPerLevel,
 		AvailablePoints: player.ResonancePoints, Ranks: ranks,
-	}, true
+	}
 }
 
 type WeeklyRaidRewardReceipt struct {

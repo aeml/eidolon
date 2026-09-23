@@ -17,7 +17,12 @@ handoffs (38.6min, no deaths, real Cleric healing); checkpoint20 is independentl
 verified. See the [earned continuation](2026-09-20-earned-continuation.md).
 The separate earned public-event route failed in Tide wave1 on a shortened QA
 jump. Its input correction passes14 focused checks; native event acceptance is
-still open. The campaign checkpoint20 is unchanged.
+still open. The follow-up completed all Ember waves/champion but failed the
+reconnect comparison on4857 additional Resonance XP (Gold/ordinary XP matched).
+The candidate fixes a reproduced missing live-Resonance synchronization path;
+focused race/reward checks pass, but the full event needs rechecking on that
+runtime. Desktop/phone event presentation passes both rendered checks; desktop
+instructions now leave central aiming clear. The campaign checkpoint20 is unchanged.
 The complete remaining Air/Tempest campaign,
 raids/finale, first-dungeon reward gap, full duration/economy tuning and public
 event acceptance remain open. Preserve accepted prior evidence.

@@ -56,4 +56,5 @@ func (c *Client) resetSnapshotHistory() {
 	defer c.stateMu.Unlock()
 	c.seenIDs = make(map[string]bool)
 	c.lastState = make(map[string]*EntitySnapshot)
+	c.lastEndgame = nil
 }

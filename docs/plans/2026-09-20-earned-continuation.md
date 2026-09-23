@@ -49,11 +49,24 @@ The route reads then collapses the real event disclosure during combat, reopenin
 it at completion. Fourteen focused tests pass0.959s, lint/diff pass. This is a
 test-input correction, not a production jump fix or completed public event.
 
-Corrected attempt `earnedevent0923b` is now running on frozen4d6a663c (no runtime
-diff from verifiedcdf45e3a), root1115975/native89896. Script/log/source:
-`/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`. It retains the separate archive19
-branch, ordinary schedule,25min limit and zero retries. Luna monitors natural
-event start and terminal/cleanup only; no pass is claimed before the result.
+Corrected attempt `earnedevent0923b` ended exit1 after5.2min on frozen4d6a663c
+(runtime unchanged from verifiedcdf45e3a), root1115975/native89896. Script/log/source:
+`/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`. All three Ember waves and the
+champion completed through normal combat, with damage in each wave and rendered
+Road restored. The final reconnect assertion failed: Gold227891 and XP245125
+matched, but Resonance XP changed from3696249 to3701106 (+4857). Owned services
+were cleaned; no event save replaces campaign checkpoint20.
+
+A focused broadcaster regression reproduces stale live Resonance after an
+authoritative reward change: ordinary kills/rooms lack the explicit endgame
+notification used by menus, combos and bosses. The candidate sends changed
+progress on normal world updates, serializes explicit updates with broadcasts,
+and only caches successfully queued messages. Award amounts, saves and wire
+format are unchanged. The pre-fix test fails; post-fix focused race checks and
+reward/progression tests pass. Full event reconnect acceptance still needs the
+corrected runtime. Desktop event instructions now sit below the minimap, clear
+of central aiming; both390px and1280px rendered checks pass15.4s and screenshots
+were inspected. This is presentation evidence, not combat acceptance.
 
 Air continuation is prepared, **not launched**:
 `/tmp/eidolon-earned-air-20260923-B1O6av/run.sh`, source4d6a663c. Its runtime

@@ -772,6 +772,9 @@ func broadcastState() {
 				return
 			}
 			playerEntity := world.GetEntityCopy(c.playerID)
+			if playerEntity != nil {
+				c.sendEndgameProgressLocked(playerEntity.EndgameProgress(), false)
+			}
 			if playerEntity != nil && playerEntity.InstanceID != "" {
 				world.UpdateDungeonRoomProgress(c.playerID, playerEntity.X, playerEntity.Z)
 			}

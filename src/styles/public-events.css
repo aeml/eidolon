@@ -12,6 +12,16 @@
 .public-event p { margin: 8px 0; }
 .public-event progress { width: 100%; accent-color: #a5db83; }
 .public-event-lore { color: #bed0ca; font-style: italic; }
+@media (min-width: 1024px) and (min-height: 600px) {
+    /* Keep expanded instructions out of the central aiming/telegraph area.
+       The right rail starts below the desktop minimap and ends above controls. */
+    body:not(.mobile-mode) .public-event {
+        left: auto; right: max(16px, env(safe-area-inset-right, 0px));
+        top: max(230px, calc(env(safe-area-inset-top, 0px) + 230px));
+        transform: none; width: min(300px, 25vw);
+        max-height: min(40dvh, calc(100dvh - 320px));
+    }
+}
 @media (max-width: 600px) {
     .public-event { top: max(116px, calc(env(safe-area-inset-top) + 100px)); font-size: 12px; padding: 5px 10px; }
     .public-event summary { min-height: 38px; }

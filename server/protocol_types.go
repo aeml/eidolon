@@ -5,6 +5,8 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"eidolon-server/internal/game"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -124,6 +126,7 @@ type Client struct {
 	playerID        string
 	username        string
 	lastState       map[string]*EntitySnapshot // Track last sent state per entity
+	lastEndgame     *game.EndgameProgress      // Guarded by stateMu; only successfully queued progress.
 	seenIDs         map[string]bool            // Track which entities client knows about
 	qaDisconnect    func()                     // Optional test hook for the allowlisted reconnect fault.
 	policyMu        sync.Mutex

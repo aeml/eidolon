@@ -49,9 +49,15 @@ public-event route `earnedevent0923a` failed in Tide wave1 on a shortened QA jum
 (7.3min/exit1); Luna confirmed cleanup. Source/logs
 `/tmp/eidolon-earned-event-20260923-qbeyMr/`. The strict full-destination input
 correction has14 passing focused checks; a corrected event run remains required.
-Corrected `earnedevent0923b` is now active, root1115975/native89896, frozen4d6a663c
-with unchanged production runtime; Luna monitors its25min/zero-retry route at
-`/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`. No event pass yet.
+Corrected `earnedevent0923b` ended exit1/5.2min after completing all Ember waves
+and champion. Only the reconnect reward comparison failed: Resonance XP was4857
+higher; Gold/ordinary XP matched. Source/logs:
+`/tmp/eidolon-earned-event-20260923-r2-cRpJlH/`; owned services cleaned.
+A focused regression reproduces missing live Resonance updates after ordinary
+rewards. The candidate syncs changed progress during normal broadcasts, without
+changing rewards or saves; focused race/reward checks pass. Event reconnect
+acceptance remains open. Desktop event HUD no longer covers central aiming;
+two rendered desktop/phone checks pass and screenshots were inspected.
 The campaign's accepted checkpoint20 is unchanged; Air continuation is prepared.
 Physical phone dungeon/party feedback remains user-deferred and nonblocking.
 

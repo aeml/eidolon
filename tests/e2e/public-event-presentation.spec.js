@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 
 // Prepared rendered encounter view; not evidence of an earned combat clear.
-test('nearby ward, readable phone objective and instance cleanup', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 720 }]) {
+test(`nearby ward, readable objective and instance cleanup at ${viewport.width}`, async ({ page }, testInfo) => {
+    await page.setViewportSize(viewport);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async () => {
@@ -36,9 +37,18 @@ test('nearby ward, readable phone objective and instance cleanup', async ({ page
     await panel.locator('summary').click();
     await expect(panel).toContainText('Ward 11/20');
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
-    expect((await panel.boundingBox()).width).toBeLessThan(390);
-    await page.screenshot({ path: '/tmp/eidolon-public-event-phone-20260913.png' });
+    const box = await panel.boundingBox();
+    expect(box.width).toBeLessThan(viewport.width);
+    expect(box.y + box.height).toBeLessThan(viewport.height - 60);
+    if (viewport.width >= 1024) {
+        expect(box.x).toBeGreaterThan(viewport.width * .7);
+        expect(box.y).toBeGreaterThanOrEqual(220);
+        expect(await page.evaluate(() => document.elementFromPoint(innerWidth / 2, innerHeight * .4)?.tagName))
+            .toBe('CANVAS');
+    }
+    await page.screenshot({ path: testInfo.outputPath('event-expanded.png') });
     await page.evaluate(() => { window.__eventQA.engine.currentInstanceId = 'dungeon'; });
     await expect(panel).toBeHidden();
     expect(await page.evaluate(() => window.__eventQA.controller.marker.visible)).toBe(false);
 });
+}
