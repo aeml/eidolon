@@ -2,6 +2,10 @@
 
 ## Current delivery — 1.9.30 pushed; verification pending
 
+Manifest correction is pushed at `eed9e65da998979e1d9e8dd14f2761b69a559982`,
+CI35824486046. Luna monitors this exact replacement; no successful delivery is
+claimed yet. Focused release/history checks pass285/285 in1.842s, lint/diff pass.
+
 Corrected Go candidate1fa494e6 reached both production deployments in
 CI35822725614. Live QA then failed1/8 checks: the Pages workflow still wrote
 `Alpha 1.9.29` into public/release.json while the actual login screen correctly

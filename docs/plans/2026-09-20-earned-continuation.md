@@ -2,6 +2,14 @@
 
 ## Fire story accepted — next: earned Molten party clear
 
+Current launcher: `earnedmolten0923b`, frozeneed9e65d, root290694/native98662,
+`/tmp/eidolon-earned-molten-20260923-r2-YGc4o0/`. It is waiting on replacement
+CI35824486046, then exact public verification, before starting any gameplay.
+Same unchanged checkpoint19, class-geared supports, ports18301/18302/4193 and
+2h/zero-retry bounds. Luna `watch_release_1_9_30` monitors terminal state. The
+separate public-event route is prepared but not running. No dungeon outcome
+or earned save change is claimed while waiting.
+
 September23 continuation `earnedmolten0923a` stopped in delivery_wait/exit1
 before any gameplay/services: CI35822725614 deployed both artifacts but failed
 live QA on the stale Pages manifest version. No new campaign save or dungeon
