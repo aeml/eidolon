@@ -1,6 +1,24 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current delivery — 1.9.29 verified; Dark Realm expansion local
+## Current delivery — 1.9.30 pushed; verification pending
+
+September23: release candidate1.9.30 is pushed at
+`c357f91bf317890017f99737b7d3d6d006490b9d`, CI35805973030. Luna monitors this
+specific deployment; no release success is claimed before CI and public checks.
+It includes the shared Dark Realm,24 new chapters/38 discoveries, six optional
+residents, inhabited camp, personal/Nexus gating, guarded administration visits,
+Ilyra/movement re-entry fixes and incoming-XP tuning. Saved progression and
+accepted reward quotes remain intact. Version labels and cumulative notes match.
+
+Connected first-expedition chapter passed at`ed88ce6c` in79.994s, including manual
+reward and reconnect. Fresh opening `xpopening0923a` passed1.9min at`02b11f0d`:
+zero deaths, three kills, opening/diary manual rewards and saved level3. Focused
+Go campaign/gates/reward checks pass (game3.799s);352 focused client checks passed
+across two invocations after correcting the CI version default, and full lint
+passed. These checks do not establish all55 chapters, full raid clears or the
+100-hour/8–12-hour duration targets. Earned checkpoint19 remains unchanged.
+
+### Previous verified delivery — 1.9.29
 
 1.9.29 is pushed at `6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI
 `35556373863` succeeded (03:06:34–03:31:05 UTC,24m31s). Luna
@@ -8,11 +26,9 @@
 Alpha1.9.29, database readiness, login version, cumulative notes and three assets
 without production-character mutations. Receipt:
 `/tmp/eidolon-checkpoint-party-20260921-r2-NmWmUO/public-verification.log`.
-Newer local shared-Dark-Realm foundation work is intentionally unpublished;
-see the [campaign expansion plan](2026-09-21-campaign-pacing-and-dark-realm.md).
-Its expanded story, district population and campaign gate integration must be
-completed before release. The local client scene/entry slice is now connected;
-the geometry-only render is explicitly too sparse for final visual acceptance.
+See the [campaign expansion plan](2026-09-21-campaign-pacing-and-dark-realm.md)
+for the subsequent expansion implementation, passing first-chapter evidence and
+remaining whole-campaign, pacing and visual acceptance work.
 
 ### September21 approved additions — progression open, checkpoints local
 
