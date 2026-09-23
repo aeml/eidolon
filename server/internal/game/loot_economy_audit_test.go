@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/forging"
 	"fmt"
 	"testing"
 	"time"
@@ -124,6 +125,9 @@ func TestLootEconomyAuditForgeAffordability(t *testing.T) {
 		w.AddEntity(player)
 		_, ok, message := w.PerformForgePotency(player.ID, "mainHand")
 		after := auditForgeMaterialCount(player, isForgeHeartItem)
+		if potency < 20 && (!ok || before-after != forging.PotencyCost(potency)) {
+			t.Fatalf("ordinary bag cannot pay exact quoted rank %d cost: %s", potency, message)
+		}
 		if !ok && (after != before || player.Equipment["mainHand"].Potency != potency) {
 			t.Fatal("rejected potency operation mutated inventory or equipment")
 		}

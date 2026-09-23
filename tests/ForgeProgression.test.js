@@ -1,7 +1,14 @@
-import { forgePreview, forgeUpgradeCost } from '../src/core/ForgeProgression.js';
+import { forgePreview, forgeUpgradeCost, forgePotencyCost } from '../src/core/ForgeProgression.js';
 import { eidolon } from '../src/proto/state_pb.js';
 
 describe('Forge accumulated progression previews', () => {
+    test('potency remains a long-term sink with every purchase fitting ordinary stacks', () => {
+        const costs = Array.from({ length: 20 }, (_, rank) => forgePotencyCost(rank));
+        expect(costs).toEqual([1, 2, 4, 8, 16, 32, 64, 128, 256, 320, 448, 640,
+            896, 1216, 1600, 2048, 2560, 3136, 3776, 4480]);
+        expect(costs.every((cost, index) => cost <= 5000 && (!index || cost > costs[index - 1]))).toBe(true);
+        for (const invalid of [-1, 20, 100, NaN, 1.5]) expect(forgePotencyCost(invalid)).toBe(0);
+    });
     test('binary and JSON item snapshots preserve the same preview, including zero potency', () => {
         const item = { level: 41, potency: 2, stats: { damage: 46 },
             forgeBasis: { level: 30, potency: 0, stats: { damage: 30 }, value: 300 } };

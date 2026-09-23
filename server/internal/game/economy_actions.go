@@ -127,12 +127,11 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 		return nil, false, "No item in slot"
 	}
 
-	if item.Potency >= 20 {
+	if item.Potency < 0 || item.Potency >= 20 {
 		return nil, false, "Max potency reached"
 	}
 
-	// Calculate Cost: 2 ^ Potency
-	cost := int(math.Pow(2, float64(item.Potency)))
+	cost := forging.PotencyCost(item.Potency)
 
 	// Check Hearts
 	heartCount := 0

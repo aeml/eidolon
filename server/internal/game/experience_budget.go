@@ -6,7 +6,7 @@ package game
 // This is the100-hour tuning candidate, not measured human completion time.
 func ordinaryExperienceBudget(level int) int {
 	level = max(1, min(MaxPlayerLevel, level))
-	anchors := [...]struct{ level, xp int }{{1, 5}, {10, 26}, {30, 179}, {60, 566}, {80, 780}, {100, 1225}}
+	anchors := [...]struct{ level, xp int }{{1, 5}, {10, 26}, {30, 65}, {60, 170}, {80, 250}, {100, 380}}
 	for i := 1; i < len(anchors); i++ {
 		left, right := anchors[i-1], anchors[i]
 		if level <= right.level {
@@ -25,7 +25,9 @@ func combatExperienceBudget(enemyLevel, runLevel int, boss, elite bool) int {
 		if runLevel > 0 {
 			level = runLevel
 		}
-		return experienceRequiredForLevel(level) / 5
+		// Personal award, worth eight ordinary kills. Repeated dungeon bosses
+		// must not pay a percentage of a level on top of their room/quest awards.
+		return ordinaryExperienceBudget(level) * 8
 	}
 	budget := ordinaryExperienceBudget(enemyLevel)
 	if elite {

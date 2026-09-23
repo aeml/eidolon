@@ -1,5 +1,13 @@
 // Mirrors server/internal/forging. The server remains authoritative; this only
 // previews the same accumulated progress and per-level prices in the Forge.
+export function forgePotencyCost(current) {
+    current = Number(current);
+    if (!Number.isInteger(current) || current < 0 || current >= 20) return 0;
+    if (current < 8) return 2 ** current;
+    const step = current - 8;
+    return 256 + 32 * step * (step + 1);
+}
+
 export function forgeUpgradeCost(level, amount) {
     level = Math.trunc(Number(level));
     if (!Number.isFinite(level) || level < 1 || level >= 100) return { target: level, cost: 0 };

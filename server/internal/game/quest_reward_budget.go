@@ -5,6 +5,33 @@ package game
 // magic constant. Accepted saves retain their original quotes in quests.go.
 type questRewardBudget struct{ XP, Gold int }
 
+// One-time preparation budgets for NEW offers. These are applied after the
+// narrative expansions split their original budgets; saved accepted/completed
+// contracts retain their quoted rewards through copyQuestDefinition.
+// Earth supports its ~170 objective kills plus investigations in 2–3 hours.
+// Subsequent steps prepare characters for the next realm's actual enemy bands,
+// rather than sending level-30 characters straight into level-50 hunts.
+var chroniclePreparationXP = map[string]int{
+	"chronicle_earth_kept_watch":         8_000,
+	"chronicle_02_seeds_first_grove":     25_000,
+	"chronicle_earth_walking_ink":        55_000,
+	"chronicle_earth_returning_scar":     32_000,
+	"chronicle_earth_borrowed_oath":      80_000,
+	ChronicleEarthDungeonID:              270_000,
+	"chronicle_water_missing_ferry":      200_000,
+	"chronicle_water_flood_shelter":      270_000,
+	"chronicle_water_snow_debts":         240_000,
+	"chronicle_04_pearls_without_tides":  180_000,
+	"chronicle_water_false_reflection":   150_000,
+	"chronicle_water_unmastered_current": 180_000,
+	ChronicleWaterDungeonID:              500_000,
+	"chronicle_fire_cold_kiln":           400_000,
+	"chronicle_fire_unending_war":        150_000,
+	"chronicle_06_ash_refuses_cool":      150_000,
+	"chronicle_fire_obedient_ember":      150_000,
+	"chronicle_air_weatherkeeper":        150_000,
+}
+
 func contentExperiencePercent(level, percent int) int {
 	return experienceRequiredForLevel(level) * percent / 100
 }
@@ -76,7 +103,7 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 	if level == 0 {
 		return questRewardBudget{}
 	}
-	// Generic, regional AND difficulty dailies can overlap. Each pays two
-	// percent per boss, versus the encounter's personal20% base reward.
-	return questRewardBudget{contentExperiencePercent(level, 2*count) * multiplier, level * count * 4 * multiplier}
+	// Generic, regional AND difficulty dailies can overlap. Each pays a tenth
+	// of the actual boss budget, so stacking them cannot bypass its pacing.
+	return questRewardBudget{combatExperienceBudget(level, level, true, false) * count * multiplier / 10, level * count * 4 * multiplier}
 }

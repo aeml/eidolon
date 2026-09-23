@@ -4,6 +4,20 @@ package forging
 
 import "math"
 
+// PotencyCost preserves the early-story prices through +8. Beyond that,
+// increasing triangular steps retain long-term material demand without asking
+// players to carry more Hearts than a normal inventory can hold.
+func PotencyCost(current int) int {
+	if current < 0 || current >= 20 {
+		return 0
+	}
+	if current < 8 {
+		return 1 << current
+	}
+	step := current - 8
+	return 256 + 32*step*(step+1)
+}
+
 type Basis struct {
 	Level   int            `json:"level" bson:"level"`
 	Potency int            `json:"potency" bson:"potency"`

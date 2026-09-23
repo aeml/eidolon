@@ -30,10 +30,10 @@ func TestCoordinatedQuestBudgetsUseContentLevelAndIndependentGold(t *testing.T) 
 		target          string
 		count, xp, gold int
 	}{
-		{"Skeleton", 100, 520, 200}, {"Imp", 100, 2040, 400}, {"AquaGolem", 100, 10020, 1100},
-		{"VerdantBastionBoss", 4, 1690, 480}, {"AbyssalWellBoss", 5, 8712, 1200},
-		{"MoltenCoreBoss", 5, 11912, 1400}, {"TempestSpireBoss", 5, 11912, 1400},
-		{"DungeonBossHeroic", 4, 39220, 3200}, {"DungeonBossMythic", 4, 78440, 6400},
+		{"Skeleton", 100, 520, 200}, {"Imp", 100, 900, 400}, {"AquaGolem", 100, 3040, 1100},
+		{"VerdantBastionBoss", 4, 208, 480}, {"AbyssalWellBoss", 5, 680, 1200},
+		{"MoltenCoreBoss", 5, 840, 1400}, {"TempestSpireBoss", 5, 840, 1400},
+		{"DungeonBossHeroic", 4, 2432, 3200}, {"DungeonBossMythic", 4, 4864, 6400},
 	} {
 		if actual := dailyRewardBudget(tc.target, tc.count); actual.XP != tc.xp || actual.Gold != tc.gold {
 			t.Fatalf("%s: %+v expected XP=%d gold=%d", tc.target, actual, tc.xp, tc.gold)
@@ -82,5 +82,39 @@ func TestCampaignBalanceHonorsAcceptedDailyQuotes(t *testing.T) {
 	}
 	if p.Level != 30 || p.Experience != 1234 || p.MaxExperience != 21125 || p.Gold != 5678 {
 		t.Fatal("budget lookup touched character progression")
+	}
+}
+
+func TestPreparationBudgetsPreserveEveryAcceptedStoryQuote(t *testing.T) {
+	seen := 0
+	for _, definition := range chronicleQuestCatalog() {
+		budget, changed := chroniclePreparationXP[definition.ID]
+		if !changed {
+			continue
+		}
+		seen++
+		if definition.RewardXP != budget {
+			t.Fatalf("new offer %s has %d, want %d", definition.ID, definition.RewardXP, budget)
+		}
+		for _, completed := range []bool{false, true} {
+			for _, quote := range []int{0, 1234} {
+				progress := definition
+				progress.Accepted, progress.Completed = true, completed
+				progress.RewardXP, progress.RewardGold = quote, 71
+				progress.RewardXPQuoted, progress.RewardGoldQuoted = true, true
+				progress.Count = 1
+				if definition.Type == "INVESTIGATE" {
+					progress.InvestigationMask = 1
+				}
+				refreshed := copyQuestDefinition(progress, definition)
+				if refreshed.RewardXP != quote || refreshed.RewardGold != 71 || refreshed.Count != 1 ||
+					!refreshed.Accepted || refreshed.Completed != completed {
+					t.Fatalf("rewrote saved contract %s: %+v", definition.ID, refreshed)
+				}
+			}
+		}
+	}
+	if seen != len(chroniclePreparationXP) {
+		t.Fatal("preparation budget references missing story chapters")
 	}
 }

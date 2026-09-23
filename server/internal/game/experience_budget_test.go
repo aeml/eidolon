@@ -4,12 +4,11 @@ import "testing"
 
 func TestCandidateCombatExperienceBudgets(t *testing.T) {
 	for level := 1; level <= 100; level++ {
-		threshold := 100 + 25*(level-1)*(level-1)
 		ordinary := ordinaryExperienceBudget(level)
 		for _, rank := range []struct {
 			boss, elite bool
 			xp          int
-		}{{false, false, ordinary}, {false, true, ordinary * 3}, {true, false, threshold / 5}, {true, true, threshold / 5}} {
+		}{{false, false, ordinary}, {false, true, ordinary * 3}, {true, false, ordinary * 8}, {true, true, ordinary * 8}} {
 			budget := combatExperienceBudget(level, 0, rank.boss, rank.elite)
 			if budget != rank.xp {
 				t.Fatalf("level %d budget %d", level, budget)
@@ -27,7 +26,7 @@ func TestCandidateCombatExperienceBudgets(t *testing.T) {
 			}
 		}
 	}
-	if got := combatExperienceBudget(100, 30, true, false); got != 4225 {
+	if got := combatExperienceBudget(100, 30, true, false); got != 520 {
 		t.Fatalf("selected run level must own boss budget: %d", got)
 	}
 	if got := combatExperienceBudget(1, 100, false, false); got != 5 {
@@ -36,7 +35,7 @@ func TestCandidateCombatExperienceBudgets(t *testing.T) {
 }
 
 func TestOrdinaryExperienceAnchorsHaveNoRewardCliffs(t *testing.T) {
-	for level, want := range map[int]int{-1: 5, 1: 5, 5: 14, 10: 26, 20: 102, 30: 179, 40: 308, 50: 437, 60: 566, 70: 673, 80: 780, 90: 1002, 100: 1225, 101: 1225} {
+	for level, want := range map[int]int{-1: 5, 1: 5, 5: 14, 10: 26, 20: 45, 30: 65, 40: 100, 50: 135, 60: 170, 70: 210, 80: 250, 90: 315, 100: 380, 101: 380} {
 		if got := ordinaryExperienceBudget(level); got != want {
 			t.Fatalf("level%d: %d != %d", level, got, want)
 		}

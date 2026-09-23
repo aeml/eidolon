@@ -70,6 +70,9 @@ func TestChronicleEarthReadinessBudgetAudit(t *testing.T) {
 						t.Fatalf("incomplete modeled Earth route: chapters=%d kills=%d", chapters, kills)
 					}
 					entry := DungeonEntryLevels()["verdant_bastion_catacombs"]
+					if p.Level < entry {
+						t.Fatalf("fresh story leaves an unexplained first-dungeon gap: level %d, need %d", p.Level, entry)
+					}
 					needed, accounted := 0, p.Experience
 					for level := 1; level < entry; level++ {
 						needed += experienceRequiredForLevel(level)

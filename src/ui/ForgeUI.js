@@ -1,5 +1,5 @@
 import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
-import { forgeUpgradeCost } from '../core/ForgeProgression.js';
+import { forgeUpgradeCost, forgePotencyCost } from '../core/ForgeProgression.js';
 import { renderForgeDecision } from './ForgeDecisionPreview.js';
 
 /**
@@ -609,7 +609,7 @@ export class ForgeUI {
             return;
         }
 
-        const cost = Math.pow(2, currentPotency);
+        const cost = forgePotencyCost(currentPotency);
         const availableHearts = this._countInventoryItems(player, (invItem) => this._isHeartItem(invItem));
         const hasEnoughHearts = availableHearts >= cost;
         if (this.forgePotencyCostValue) this.forgePotencyCostValue.textContent = cost;

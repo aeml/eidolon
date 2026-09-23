@@ -26,7 +26,11 @@ func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 			t.Fatalf("broken authored handoff: %+v", hunt)
 		}
 		q := catalog[i]
-		if q.MaxCount != hunt.Count || q.RewardXP != (100+25*(hunt.ContentLevel-1)*(hunt.ContentLevel-1))*75/100 || q.RewardGold != hunt.ContentLevel*10 || q.Accepted || q.Completed || q.LegacyOptional {
+		xp := contentExperiencePercent(hunt.ContentLevel, 75)
+		if preparation, ok := chroniclePreparationXP[hunt.ID]; ok {
+			xp = preparation
+		}
+		if q.MaxCount != hunt.Count || q.RewardXP != xp || q.RewardGold != hunt.ContentLevel*10 || q.Accepted || q.Completed || q.LegacyOptional {
 			t.Fatalf("incorrect hunt offer: %+v", q)
 		}
 		if hunt.Acceptance == "" || hunt.Completion == "" || hunt.Handoff == "" || hunt.Lore == "" || hunt.CatchupAcceptance == "" || hunt.CatchupCompletion == "" {

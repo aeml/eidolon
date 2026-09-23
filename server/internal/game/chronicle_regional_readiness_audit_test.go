@@ -81,6 +81,9 @@ func TestChronicleRegionalReadinessBudgetAudit(t *testing.T) {
 							needed += experienceRequiredForLevel(l)
 						}
 						shortfall := max(0, needed-killXP-questXP)
+						if shortfall > dungeonMin {
+							t.Fatalf("%s story plus one prior dungeon leaves a mandatory grinding gap: %d XP", region.name, shortfall-dungeonMin)
+						}
 						extraKillXP := wellRestedKillXP(p, recipientCombatExperience(combatExperienceBudget(lastHuntLevel, 0, false, false), false, partySize, 1))
 						t.Logf("REGIONAL_HANDOFF realm=%s party=%d rested=%t collection=%d kills=%d kill_xp=%d quest_xp=%d quest_gold=%d level=%d entry=%d shortfall=%d extra_same_level_kills=%d omitted_dungeon_xp=true",
 							region.name, partySize, rested, collectionKills, kills, killXP, questXP, questGold, level, region.entryLevel, shortfall, (shortfall+extraKillXP-1)/extraKillXP)

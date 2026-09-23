@@ -40,6 +40,9 @@ type ChronicleAdvanceEvent struct {
 func chronicleQuestCatalog() []Quest {
 	quests := expandDarkRealmChronicle(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog())))
 	for i := range quests {
+		if xp, ok := chroniclePreparationXP[quests[i].ID]; ok {
+			quests[i].RewardXP = xp
+		}
 		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 	}
 	return quests
