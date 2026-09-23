@@ -71,6 +71,15 @@ groups remain faster; this is not a mandatory100-hour clock or a reason to delay
 combat. The mixed-income forecast does not simulate encounter survival, obtain
 gear, verify every objective or prove the dungeon access route.
 
+The reference solo/50%-rested run also exposes the distribution hidden by its
+96.8-hour total: level10 at1.3h, level30 at17.1h, level60 at45.6h, level80 at71.2h,
+and level100 at96.8h. These are cumulative **model** milestones, not observed
+playtimes. The selected existing forecast passed in0.163s on September23.
+Thus matching the total alone can still leave the first dungeon much later
+than desired. The player's first-dungeon milestone question remains open;
+coordinate early route/content and later progression rather than approving the
+current distribution just because the cap forecast is near100 hours.
+
 ## Evidence and remaining release work
 
 ### September23 first-dungeon reward-gap audit
