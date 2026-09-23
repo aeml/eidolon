@@ -1,8 +1,10 @@
 # Eidolon Engineering Roadmap
 
-Last refreshed: September 7, 2026
+Last refreshed: September 23, 2026
 
 This file is a short pointer. Current forward planning and historical closeout live in these documents:
+
+- [Alpha1.10.0 playtest release record](plans/2026-09-23-release1-10-playtest.md) — current integrated candidate, balance assumptions, retained checks and public-delivery status. Earlier plans below describe their original scope, not current deployment state.
 
 - [`2026-09-05-v1-1-to-v1-10-roadmap.md`](plans/2026-09-05-v1-1-to-v1-10-roadmap.md) — proposed next releases, the immediate dungeon repair gate, and the phone-playability redesign. Dungeon defects and basic phone usability must be resolved before 1.1 closes; 1.2 completes the phone HUD/menu redesign and 1.3 refines touch combat and performance.
 

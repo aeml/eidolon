@@ -22,6 +22,17 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.10.0 retains history and distinguishes playtest targets from measured acceptance', () => {
+        const start = indexHtml.indexOf('data-version="1.10.0"');
+        const previous = indexHtml.indexOf('data-version="1.9.31"');
+        expect(start).toBeGreaterThanOrEqual(0);
+        expect(start).toBeLessThan(previous);
+        for (const text of ['The Resonant Age', '2–3 hours', '8–12 hours', 'not measured guarantees',
+            'prices through +8 are unchanged', 'accepted reward quotes are preserved',
+            'Physical-phone party/dungeon feedback', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.9.31 documents live Resonance and event readability without claiming final acceptance', () => {
         const start = indexHtml.indexOf('data-version="1.9.31"');
         const previous = indexHtml.indexOf('data-version="1.9.30"');
@@ -755,15 +766,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.9.31');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.10.0');
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.9.31');
-        expect(packageLock.packages[''].version).toBe('1.9.31');
-        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.9.31`');
+        expect(packageLock.version).toBe('1.10.0');
+        expect(packageLock.packages[''].version).toBe('1.10.0');
+        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.10.0`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.9.31</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.10.0</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1174,7 +1185,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.9.31';
+        const expectedVersion = 'Alpha 1.10.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

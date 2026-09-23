@@ -9,9 +9,9 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 ## Current Snapshot
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
-- Active implementation line: `Alpha 1.9`, progressing toward the full `1.10.0` beta milestone. Verified live: `1.9.30`, exact `cdf45e3ac40286698e494c9a0ba65980332907a0`; the complete release workflow and public frontend/backend checks passed. It retains latest-cleared-boss town-return checkpoints, the enlarged casino/admin-VIP batch, corrected stash placement and restored dungeon encounter composition. See the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md) and [final integration audit](docs/plans/2026-09-14-final-integration-audit.md).
+- Active candidate: `Alpha 1.10.0 — The Resonant Age`, prepared for user playtesting. Last accepted release: `1.9.31`, exact `1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28`, CI35835009087. Public DNS subsequently became unreachable; local origin health remains valid. See the [current release record](docs/plans/2026-09-23-release1-10-playtest.md) for final checks, known limits and delivery status; preparation is not a live-release claim.
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain unaccepted. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
-- Initial incoming-XP tuning is live, not final balance approval. The [current pacing audit](docs/plans/2026-09-21-campaign-xp-tuning.md) identifies early-story and regional reward gaps even after sampled dungeon income; the near100-hour model total does not establish a smooth route. Remaining source/sink, public-event and integrated presentation work is tracked in the final integration audit. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
+- The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
 - Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
@@ -25,13 +25,13 @@ Alpha 1.0 is a complete browser action-RPG foundation rather than a vertical sli
 
 The Fourfold Chronicle is offered to every character by Archmage Ilyra, with explicit acceptance and completion conversations. The player learns that Orun, Neris, Pyralis, and Aeral shaped Earth, Water, Fire, and Air into a covenant that protects Eidolon. Malachar, the Dark King, destabilized their crystals so each realm would become dependent on his command.
 
-The live31-chapter campaign, including eight investigation chapters and authored realm hunts, requires the player to:
+The55-chapter campaign, including elemental investigations and the Dark Realm expedition, requires the player to:
 
 1. Follow the first dissonant signal and recover invented, soulbound realm relics.
 2. Clear the Earth, Water, Fire, and Air dungeons to defeat each corrupted outer guardian and reveal the separate road to that realm's crystal raid.
 3. Complete Rootheart Sanctum, Tidestar Confluence, Ember Crown Crucible, and Skyglass Eyrie.
 4. After each raid guardian falls, defend Artificer Maelin through a three-wave crystal-repair Vigil.
-5. Use the four restored crystals' resonance to expose the Umbral Nexus and stabilize the Dark Realm portal.
+5. Reach level100, use the four repaired crystals to enter the Dark Realm, complete its expedition and lore, then clear the Umbral Nexus to reach the throne.
 6. Fight Malachar through four phases in which Orun, Neris, Pyralis, and Aeral each provide a distinct combat intervention.
 
 Daily quests remain separate repeatable contracts offered by the visible Quest Giver outside the Ashen Smithy.
