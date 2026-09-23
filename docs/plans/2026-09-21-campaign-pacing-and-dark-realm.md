@@ -1,5 +1,11 @@
 # Approved campaign pacing and Dark Realm expansion
 
+September23: work resumed. Alpha1.9.30 is being prepared with the implemented
+expedition and initial XP tuning; it is not yet a verified deployment. The
+connected first expedition chapter and fresh opening checks have passed. The
+historical pause below records the user's previous stopping point, not a new
+pause request. Full pacing and campaign/raid acceptance remain open.
+
 September21 decision: approximately100 hours to level100, then8–12 hours of
 Dark Realm quests/lore, including the dungeon leading to the Dark King raid.
 Aim for roughly112 hours overall. Level100 is required before realm entry.

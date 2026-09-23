@@ -79,8 +79,15 @@ quote preservation checks passed7.216s. All100 enemy levels are checked for
 rank/difficulty/party accounting and monotonic ordinary rewards. Production boss
 death receipts and overlapping daily claims retain their accounting assertions.
 
-Review a bounded connected fresh/earned segment with these rates before the
-combined release. Preserve existing earned checkpoint19 exactly: its previous
+Bounded connected check `xpopening0923a` passed September23 against source
+`02b11f0d`: a newly created level-one Wizard, ordinary baseline stats and no
+grants, earned three opening kills with no deaths, manually claimed100Gold/
+100XP, then inspected the diary and claimed25Gold/200XP. Saved receipts and
+levels survived normal reconnects. The route reached level3 in110s; Playwright
+passed1/1 in1.9min. This verifies the playable opening and reward persistence,
+not the modeled full-campaign duration. No earned dungeon rerun was necessary.
+
+Preserve existing earned checkpoint19 exactly: its previous
 XP receipts describe the previous balance, not a newly earned route. Do not replay
 the entire campaign to validate each rate edit or wait100 real hours to publish
 an initial target. Remaining raids/finale belong to the consolidated1.10 pass.

@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 21
+## Current checkpoint — September 23
+
+The user resumed the roadmap after the requested task-boundary pause. Latest
+verified live release is **Alpha1.9.29**, exact
+`6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI35556373863 succeeded. September23
+remote inspection still shows that commit on master, with no newer deployment.
+The prior1.9.28 checkpoint below is historical, not the current live release.
+
+Local commits now contain the shared level100 Dark Realm,24 added story chapters,
+38 discoveries, six conversational residents, camp scenery, personal/Nexus gates,
+guarded administration visits and the initial incoming-XP rebalance. The connected
+first Dark Realm chapter passed at`ed88ce6c`: ordinary discoveries, explicit
+turn-in, Gold/Resonance receipts, Recall/re-entry and reconnect. See the
+[campaign implementation record](2026-09-21-campaign-pacing-and-dark-realm.md)
+and [XP assumptions](2026-09-21-campaign-xp-tuning.md).
+
+Next delivery candidate is1.9.30, not1.10 sign-off. Bounded fresh opening
+`xpopening0923a` passed1/1 in1.9min: three kills, zero deaths, manual opening and
+diary rewards, normal reconnect, level3 without grants. Version labels and
+cumulative patch notes now describe the expedition, slower incoming XP, preserved
+earned progression/quoted rewards and unproven duration targets. Normal CI/
+deployment gates and read-only public checks remain before claiming delivery.
+No long earned dungeon rerun is needed for these isolated changes. Retained
+earned checkpoint19, remaining raids/finale and final pacing acceptance remain
+open. Physical phone dungeon/party feedback remains user-deferred.
+
+### Historical September21 checkpoint
 
 - Verified live: **Alpha1.9.28**, exact9c78d7dfcb8480c4459869f5c21af08d31490337.
   CI35549007858 passed September21 at01:12:38UTC in21m09s, including live QA.
