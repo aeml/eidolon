@@ -38,7 +38,9 @@ Hearts from the same reference100 hours. These are alternatives, not both funded
 
 **Unresolved:** late potency still uses `2^currentPotency`, so +15→+16 requires
 32768 Hearts and exceeds25×1000 normal bag capacity. Higher ranks are likewise
-unpayable with ordinary stacks. Existing transactions confirm the rejection;
+unpayable with ordinary stacks. The existing Forge-capacity transaction audit
+was rerun on the current source: PASS1.094s, full25,000-Heart bag rejected for
++15→+16 and later purchases; `/tmp/eidolon-potency-capacity-20260923.log`.
 do not mark Forge affordability complete merely because upgrade precision is fixed.
 An optional user question now asks whether +20 belongs to long-term endgame or
 near campaign completion. Preserve earned gear/materials; align a usable cost

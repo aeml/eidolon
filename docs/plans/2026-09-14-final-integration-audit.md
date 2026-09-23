@@ -2,6 +2,25 @@
 
 ## 1.9.31 pushed — deployment pending
 
+Both deployment jobs succeeded. Luna's Node24 public verifier passed exact
+1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28/Alpha1.9.31, frontend/backend identity,
+database readiness, login label, cumulative notes and three exact assets.
+Full workflow acceptance remains pending: Live Release and Character QA,
+job107101256968, has been queued since08:20:15UTC with no assigned runner.
+GitHub reports matching `eidolon-codex-chrome` online/idle. Root confirms its
+systemd service and Listener are running, no browser Runner.Worker, and prior
+predeploy completed08:18:51. Broker logs show a local-token cancellation during
+the normal job-status transition, not a proven root cause. No global Actions
+incident was reported by the status API when checked.
+
+After rechecking queued/idle/no worker, root attempted only the browser-runner
+service restart. The noninteractive sudo policy query allowed the command, but
+execution required a password and exited1; **no service was restarted**. The user
+needs to run the guarded sudo command if the job remains stalled. Luna monitors
+the original job; do not cancel/retry it, touch the soak runner, or overlap Air
+with pending CI browser work. Public availability is verified separately from
+the still-pending live-character acceptance.
+
 Exact1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28 is pushed to master;
 CI35835009087 is queued/running, monitored by Luna. Do not claim it live before
 the complete workflow and exact public verifier pass. Last verified live is1.9.30.
@@ -42,16 +61,17 @@ Molten continuation passed all five bosses, four manual rewards and saved Air
 handoffs (38.6min, no deaths, real Cleric healing); checkpoint20 is independently
 verified. See the [earned continuation](2026-09-20-earned-continuation.md).
 The separate earned public-event route failed in Tide wave1 on a shortened QA
-jump. Its input correction passes14 focused checks; native event acceptance is
-still open. The follow-up completed all Ember waves/champion but failed the
+jump. Its input correction passes14 focused checks. The follow-up completed all Ember waves/champion but failed the
 reconnect comparison on4857 additional Resonance XP (Gold/ordinary XP matched).
 The candidate fixes a reproduced missing live-Resonance synchronization path;
 focused race/reward checks and the subsequent full event/reconnect pass (above).
 Desktop/phone event presentation passes both rendered checks; desktop
 instructions now leave central aiming clear. The campaign checkpoint20 is unchanged.
 The complete remaining Air/Tempest campaign,
-raids/finale, first-dungeon reward gap, full duration/economy tuning and public
-event acceptance remain open. Preserve accepted prior evidence.
+raids/finale, first-dungeon reward gap and full duration/economy tuning remain
+open. Late Forge potency still exceeds ordinary bag capacity; see the updated
+[supply and affordability audit](2026-09-07-loot-and-forge-baseline.md).
+Preserve accepted prior evidence, including the completed Root event above.
 
 ### Historical 1.9.30 delivery corrections — resolved by the successful run above
 
@@ -1071,8 +1091,10 @@ actual outgoing damage in each wave, the server's completed/calmed state, render
 completion and persisted rewards after reconnect. No clock, health, credit or
 resource override; zero retries and25min total, including at most one schedule
 interval. Lint, shell syntax and Playwright discovery pass. Native execution is
-still unaccepted after the wave1 QA jump failure and cleanup; this is not event acceptance,
-all-realm balance or a replacement campaign checkpoint.
+accepted on the corrected runtime for one complete Root event, including exact
+reconnect rewards (see current result above). This does not establish all-realm
+balance or replace the campaign checkpoint; do not repeat the passed event solely
+for another version number.
 
 | Area | Existing implementation/evidence to retain | Still required |
 | --- | --- | --- |
