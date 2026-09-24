@@ -23,7 +23,7 @@ const RARE_SLOTS = new Set(['mainHand', 'offHand', 'chest', 'legs', 'trinket1'])
 
 export function partyGearProfile(env = {}) {
     const profile = env.EIDOLON_E2E_PARTY_GEAR || 'progressed';
-    if (!['common', 'progressed'].includes(profile)) throw new Error('Unknown party gear profile');
+    if (!['common', 'progressed', 'endgame'].includes(profile)) throw new Error('Unknown party gear profile');
     return profile;
 }
 
@@ -48,6 +48,10 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
     const level = catalog.level ?? 30;
     if (!Number.isInteger(level) || level < 30 || level > 100 || level % 10 !== 0) throw new Error('Invalid party catalog level');
     partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: profile });
+    if (profile === 'endgame' && (level !== 100 || !catalog.roleTalents?.[className] ||
+        Object.values(catalog.roleTalents[className]).reduce((sum, rank) => sum + rank, 0) !== 20)) {
+        throw new Error('Endgame preparation requires level100 and the server-validated20-point class build');
+    }
     if (catalog.gearProfile && catalog.gearProfile !== profile) throw new Error('Party catalog profile mismatch');
     const tank = className === 'Fighter', rogue = className === 'Rogue';
     const names = {
@@ -64,12 +68,12 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
         neck: 'Pendant', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana'
     };
     const equipment = Object.fromEntries(Object.entries(names).map(([slot, itemName]) => {
-        const rarity = profile === 'common' ? 'Common' : RARE_SLOTS.has(slot) ? 'Rare' : 'Uncommon';
+        const rarity = profile === 'common' ? 'Common' : profile === 'endgame' || RARE_SLOTS.has(slot) ? 'Rare' : 'Uncommon';
         const item = profile === 'common' ? catalog.items?.[itemName] : catalog.roleItems?.[className]?.[rarity]?.[itemName];
-        if (!item || item.level !== level || item.rarity !== rarity || (item.potency || 0) !== 0) {
+        if (!item || item.level !== level || item.rarity !== rarity || (item.potency || 0) !== (profile === 'endgame' ? 4 : 0)) {
             throw new Error(`Invalid catalog item ${itemName}`);
         }
-        if (profile === 'progressed' && (!item.name.startsWith(`${PRIMARY[className][1]} `) ||
+        if (profile !== 'common' && (!item.name.startsWith(`${PRIMARY[className][1]} `) ||
             !(item.stats?.[PRIMARY[className][0]] > 0) ||
             (rarity === 'Rare' && (!item.name.endsWith(' of the Whale') || !(item.stats?.vitality > 0))))) {
             throw new Error(`Wrong role affixes for ${className}: ${itemName}`);
@@ -86,6 +90,6 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
     const mastery = { Fighter: 'FTR_03', Cleric: 'CLR_03', Wizard: 'WIZ_01', Rogue: 'ROG_01' }[className];
     return { name, class: className, level, xp: 0, progression_version: 2,
         gold: 0, x: -1.25, y: 0, z: 200, stats: catalog.stats, equipment,
-        talent_ranks: { [mastery]: 5 }, selected_branch: tank || className === 'Cleric' ? 'A' : 'C',
+        talent_ranks: profile === 'endgame' ? { ...catalog.roleTalents[className] } : { [mastery]: 5 }, selected_branch: tank || className === 'Cleric' ? 'A' : 'C',
         unlocked_skills: skills, inventory: [], stash: [], quests: JSON.parse(JSON.stringify(quests)) };
 }

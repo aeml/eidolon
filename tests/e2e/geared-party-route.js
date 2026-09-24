@@ -177,6 +177,9 @@ export async function seedActor(page, credentials, character) {
         expect(equipped[slot], `${character.class} must actually wear its prepared ${slot}`).toEqual({
             name: item.name, level: item.level, rarity: item.rarity, stats: item.stats });
     }
+    await expect.poll(() => page.evaluate(() => Object.fromEntries(Object.entries(window.game.player.equipment)
+        .map(([slot, item]) => [slot, item?.potency || 0])))).toEqual(Object.fromEntries(
+        Object.entries(character.equipment).map(([slot, item]) => [slot, item.potency || 0])));
     const skills = character.unlocked_skills.slice(1);
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar)).toEqual(expect.arrayContaining(skills));
     await observeRole(page);
@@ -205,7 +208,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
     const actorName = (role, index) => `${credentials.username}-${role.toLowerCase()}${isRaid ? `-${index}` : ''}`;
     const raid = isRaid ? raidPartyFixture(catalog, raidType, roles.map(actorName)) : null;
     if (isRaid) {
-        expect(gearProfile).toBe('progressed');
+        expect(['progressed', ...(isFinale ? ['endgame'] : [])]).toContain(gearProfile);
         const definition = isFinale ? DARK_KING_RAID : catalog.raids[raidType];
         playthrough = { dungeonType: raidType, difficulty: isFinale ? 'mythic' : 'normal', runLevel: definition.RequiredLevel,
             name: definition.Name, bosses: [definition.Boss] };

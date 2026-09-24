@@ -40,7 +40,31 @@ test.each(PARTY_ROLES)('%s fixture has legal level30 specialization without futu
 test('progressed gear is the default and the original Common baseline remains an explicit diagnostic', () => {
     expect(partyGearProfile()).toBe('progressed');
     expect(partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'common' })).toBe('common');
+    expect(partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'endgame' })).toBe('endgame');
     expect(() => partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'legendary' })).toThrow();
+});
+
+test.each(PARTY_ROLES)('endgame %s uses only catalog Rare +4 gear and20 legal prepared talents', role => {
+    const [stat, prefix, ids] = {
+        Fighter: ['strength', 'Strong', ['FTR_05', 'FTR_07', 'FTR_28', 'FTR_31']],
+        Rogue: ['dexterity', 'Agile', ['ROG_01', 'ROG_02', 'ROG_33', 'ROG_35']],
+        Wizard: ['intelligence', 'Brilliant', ['WIZ_01', 'WIZ_27', 'WIZ_28', 'WIZ_40']],
+        Cleric: ['wisdom', 'Wise', ['CLR_03', 'CLR_05', 'CLR_29', 'CLR_39']]
+    }[role];
+    const catalog = { level: 100, gearProfile: 'endgame', stats: { [stat]: 109 },
+        roleTalents: { [role]: Object.fromEntries(ids.map(id => [id, 5])) },
+        roleItems: { [role]: { Rare: new Proxy({}, { get: (_target, name) => ({
+            name: `${prefix} ${name} of the Whale`, level: 100, rarity: 'Rare', potency: 4,
+            stats: { [stat]: 50, vitality: 50 }
+        }) }) } } };
+    const c = partyDungeonCharacter(catalog, [], role, 'endgame-fixture', 'endgame');
+    expect(Object.values(c.equipment)).toHaveLength(14);
+    expect(Object.values(c.equipment).every(item => item.rarity === 'Rare' && item.potency === 4)).toBe(true);
+    expect(c.stats).toEqual(catalog.stats);
+    expect(c.talent_ranks).toEqual(catalog.roleTalents[role]);
+    expect(c.talent_ranks).not.toBe(catalog.roleTalents[role]);
+    expect(() => partyDungeonCharacter({ ...catalog, level: 70 }, [], role, 'wrong', 'endgame')).toThrow();
+    expect(() => partyDungeonCharacter({ ...catalog, roleTalents: {} }, [], role, 'wrong', 'endgame')).toThrow();
 });
 
 test('equipped verification reads hydrated rarity names without altering item stats', () => {

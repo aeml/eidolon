@@ -14,6 +14,43 @@ var partyFixturePrimaryStats = map[string]string{
 	"Fighter": "strength", "Rogue": "dexterity", "Wizard": "intelligence", "Cleric": "wisdom",
 }
 
+func partyEndgameTalents(t *testing.T, w *World) map[string]map[string]int {
+	t.Helper()
+	builds := map[string][]string{
+		"Fighter": {"FTR_05", "FTR_07", "FTR_28", "FTR_31"},
+		"Rogue":   {"ROG_01", "ROG_02", "ROG_33", "ROG_35"},
+		"Wizard":  {"WIZ_01", "WIZ_27", "WIZ_28", "WIZ_40"},
+		"Cleric":  {"CLR_03", "CLR_05", "CLR_29", "CLR_39"},
+	}
+	result := map[string]map[string]int{}
+	for class, talents := range builds {
+		p := newTestPlayer("endgame-talents-"+class, class)
+		p.Level, p.TalentRanks = 100, map[string]int{}
+		w.AddEntity(p)
+		for _, id := range talents {
+			for rank := 0; rank < 5; rank++ {
+				if _, ok, reason := w.PerformUnlockTalent(p.ID, id); !ok {
+					t.Fatal(reason)
+				}
+			}
+		}
+		if p.TalentPoints != 0 {
+			t.Fatal("endgame build must spend exactly20 legal talent points")
+		}
+		if _, ok, _ := w.PerformUnlockTalent(p.ID, talents[0]); ok {
+			t.Fatal("extra talent purchase succeeded")
+		}
+		result[class] = p.TalentRanks
+	}
+	return result
+}
+
+func TestPartyEndgameTalentsSpendOnlyEarnablePoints(t *testing.T) {
+	if len(partyEndgameTalents(t, newTestWorld())) != 4 {
+		t.Fatal("missing class build")
+	}
+}
+
 // Fresh prepared actors only: calculate legal equipped pools using the server,
 // rather than waiting for town regeneration in an isolated boss-room fixture.
 func TestPartyBrowserDiagnosticResources(t *testing.T) {
@@ -107,7 +144,7 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 	if profile == "" {
 		profile = "progressed"
 	}
-	if profile != "common" && profile != "progressed" {
+	if profile != "common" && profile != "progressed" && profile != "endgame" {
 		t.Fatal("unknown party gear profile")
 	}
 	level := 30
@@ -124,16 +161,36 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 	if _, ok := w.SetPlayerLevel(p.ID, level); !ok {
 		t.Fatal("party level preparation failed")
 	}
+	if profile == "endgame" && level != 100 {
+		t.Fatal("endgame preparation requires level100")
+	}
 	items := map[string]*Item{}
 	roleItems := map[string]map[ItemRarity]map[string]*Item{}
-	if profile == "progressed" {
+	if profile == "progressed" || profile == "endgame" {
 		for class, primary := range partyFixturePrimaryStats {
 			roleItems[class] = map[ItemRarity]map[string]*Item{}
 			for _, rarity := range []ItemRarity{RarityUncommon, RarityRare} {
 				roleItems[class][rarity] = map[string]*Item{}
 				for _, base := range BaseItems {
 					if base.Type != ItemMaterial && base.Type != ItemRelic {
-						roleItems[class][rarity][base.Name] = partyFixtureRoleItemAtLevel(t, base, rarity, primary, level)
+						item := partyFixtureRoleItemAtLevel(t, base, rarity, primary, level)
+						if profile == "endgame" {
+							// Prepared equipment, never an in-run grant: exercise the
+							// same four paid Forge transactions available to players.
+							p.Equipment = map[string]Item{"mainHand": *item}
+							p.Inventory = []Item{{Name: "Eidolon Heart", Type: ItemMaterial, Stack: 15, MaxStack: 1000}}
+							for rank := 0; rank < 4; rank++ {
+								if _, ok, reason := w.PerformForgePotency(p.ID, "mainHand"); !ok {
+									t.Fatal(reason)
+								}
+							}
+							if len(p.Inventory) != 0 {
+								t.Fatal("+4 must consume exactly15 Hearts")
+							}
+							upgraded := p.Equipment["mainHand"]
+							item = &upgraded
+						}
+						roleItems[class][rarity][base.Name] = item
 					}
 				}
 			}
@@ -152,6 +209,9 @@ func TestPartyBrowserFixtureCatalog(t *testing.T) {
 	result := map[string]interface{}{"stats": p.BaseStats, "items": items,
 		"level": level, "quests": chronicleQuestCatalog(), "gearProfile": profile, "roleItems": roleItems,
 		"raids": elementalRaidDefinitions}
+	if profile == "endgame" {
+		result["roleTalents"] = partyEndgameTalents(t, w)
+	}
 	if boss := os.Getenv("EIDOLON_E2E_DIAGNOSTIC_BOSS"); boss != "" {
 		if (boss != "ObsidianGuardian" && boss != "MoltenPack") || level != 70 {
 			t.Fatal("unsupported isolated boss diagnostic")

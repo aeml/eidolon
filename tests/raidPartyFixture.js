@@ -37,7 +37,7 @@ export function raidPartyFixture(catalog, raidType, names) {
         count: i < index ? quest.maxCount : 0
     }));
     const characters = RAID_PARTY_ROLES.map((role, i) => {
-        const character = partyDungeonCharacter(catalog, prepared, role, names[i], 'progressed');
+        const character = partyDungeonCharacter(catalog, prepared, role, names[i], catalog.gearProfile || 'progressed');
         // Repeated classes remain different owners with different item IDs.
         for (const [slot, item] of Object.entries(character.equipment)) {
             item.id = `raid-${i}-${slot}`;
