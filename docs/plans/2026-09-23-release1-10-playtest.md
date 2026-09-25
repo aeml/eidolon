@@ -152,8 +152,22 @@ merchant sales of the obsolete level30 girdle/gloves can release the needed
 space; no stash deletion, capacity increase or production auto-sell is added.
 167 inventory/equipment/checkpoint checks and scoped lint pass. Native sale
 confirmation remains pending; the completed30-kill chapter must not be replayed.
-The corrected Water/Fire/Air/Nexus batch at be571c6e is now running independently
-under `/tmp/eidolon-remaining-encounters-20260925-r2-xSKvUh`.
+The corrected Water/Fire/Air/Nexus batch at be571c6e stopped on Water before
+the guardian, after13.4minutes; all five were alive. Its formation planner
+repeatedly proposed a path using rounded replicated ally coordinates, then
+rejected it against more precise own-client coordinates. The recorded snapshot
+reproduces `clearRemote=true / clearActual=false` for the second healer's path;
+this is a QA reservation disagreement, not proof of impassable production terrain.
+Planning now receives the same observed party positions as reservations, while
+other actors, floor checks, clearance and the original15-second formation bound
+remain intact.64 focused control checks pass, including the exact failed positions
+reaching formation through checked moves. Native confirmation remains pending.
+Fire/Air/Nexus did not start; logs remain under
+`/tmp/eidolon-remaining-encounters-20260925-r2-xSKvUh`. Its private Water archive
+is `/tmp/eidolon-party-checkpoint-finalwater0925b-1F7v0E/save.archive.gz`, SHA
+57b9f6a70b2107b894b100f955983110126c39f75a59fec799dbd8cdd54f4249.
+Air collection continuation `earnedair0925d` at4f640e2a has started after that
+cleanup, preserving the claimed hunt and carried pinion; it remains pending.
 
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all

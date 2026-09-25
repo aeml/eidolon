@@ -184,7 +184,7 @@ export async function gatherPartyFormation({ read, move, plan, trace, now = Date
         const needed = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
         if (needed.every(step => !step)) return;
         const steps = await Promise.all(needed.map((step, index) => step && plan
-            ? plan(index + 1, states[index + 1], states[0], spacing) : step));
+            ? plan(index + 1, states[index + 1], states[0], spacing, states) : step));
         const origins = steps.map((step, index) => step?.origin || states[index + 1]);
         const batch = [];
         steps.forEach((step, index) => {

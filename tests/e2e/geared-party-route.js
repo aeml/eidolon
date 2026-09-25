@@ -654,15 +654,21 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                             formationTrace.push(entry);
                             if (formationTrace.length > 32) formationTrace.shift();
                         },
-                        plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot }) => {
+                        plan: (index, _state, anchor, spacing, members) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot, members }) => {
                             const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival,
                                 PartyFormationRouteUnavailable } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const { planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
                             const g = window.game, p = g.player;
+                            const observed = new Map(members.map(member => [member.id, member]));
                             const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                                 other.isActive && other.stats && other.state !== 'DEAD' && other.position)
-                                .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                                // Use the same own-client positions as the shared
+                                // reservation check. Float32 ally replication at
+                                // large raid coordinates otherwise makes a tangent
+                                // path pass planning but fail reservation forever.
+                                .map(other => ({ x: observed.get(other.id)?.x ?? other.position.x,
+                                    z: observed.get(other.id)?.z ?? other.position.z, radius: other.radius || 1.25 }));
                             let step;
                             try {
                                 step = partyFormationStep(p.position, anchor, previous, (step, from) => {
@@ -690,7 +696,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
                                 arrival: partyFormationArrival(p.position, step, anchor.instance) };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,
-                            spacing, slot: [Math.PI / 3, -Math.PI / 3, 0][index - 1] }),
+                            spacing, members, slot: [Math.PI / 3, -Math.PI / 3, 0][index - 1] }),
                         move: async (index, step) => {
                             await tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
                                 step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,

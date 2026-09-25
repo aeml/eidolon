@@ -249,6 +249,39 @@ test('unexpected formation planner errors still stop the run', async () => {
     expect(move).not.toHaveBeenCalled();
 });
 
+test('recorded Water formation plans against the same precise bodies used by reservations', async () => {
+    const states = [
+        { x: 89999.95337286495, z: 19745.028321341353 },
+        { x: 89995.99778057265, z: 19747.21404472539 },
+        { x: 90003.70630106355, z: 19747.262241753368 },
+        { x: 89999.84396047727, z: 19749.541117246867 },
+        { x: 90005.57076582064, z: 19749.480259900993 }
+    ];
+    const previous = { x: 89999.88258515942, z: 19755.917688744194 };
+    const rounded = states.slice(0, 4).map(p => ({ x: Math.fround(p.x), z: Math.fround(p.z) }));
+    const oldStep = partyFormationStep(states[4], states[0], previous,
+        (step, from) => partyPathAvoidsActors(from, step, rounded), 4, null, rounded);
+    expect(partyPathAvoidsActors(states[4], oldStep, rounded)).toBe(true);
+    expect(partyPathAvoidsActors(states[4], oldStep, states.slice(0, 4))).toBe(false);
+    let clock = 0, moves = 0;
+    await gatherPartyFormation({
+        now: () => clock,
+        read: async () => { clock += 100; return states.map(p => ({ ...p })); },
+        plan: async (index, state, anchor, spacing, observed) => {
+            const bodies = observed.filter((_, other) => other !== index);
+            return partyFormationStep(state, anchor, previous,
+                (step, from) => partyPathAvoidsActors(from, step, bodies), spacing, null, bodies);
+        },
+        move: async (index, step) => {
+            expect(partyPathAvoidsActors(states[index], step, states.filter((_, other) => other !== index))).toBe(true);
+            states[index].x += step.dx; states[index].z += step.dz; moves++;
+        }
+    });
+    expect(moves).toBeGreaterThan(0);
+    expect(moves).toBeLessThan(10);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+});
+
 test('recorded Fire route cannot walk into a settled teammate missing from its remote planning view', async () => {
     const states = [
         { x: 100000.67491701675, z: 19779.387366209627 },
