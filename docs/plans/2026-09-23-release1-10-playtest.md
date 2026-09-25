@@ -5,6 +5,27 @@ and deploy 1.10 for playtesting. This record supersedes older *current status*
 paragraphs, not their retained test evidence. It does not equate implemented
 features, automated checks and a complete human campaign playthrough.
 
+## Current handoff — September 25
+
+- Verified live remains Alpha 1.10.0 at e67fc0ad1b924002758e67e5a3a3bcb615d97476.
+  Alpha 1.10.1 is a local, undeployed notification-polish candidate. Login,
+  package and server version defaults and cumulative notes agree; all 293
+  focused release/version/asset checks pass. Accepted native notification
+  presentation checks are recorded below; no repeat finale run is required.
+- Air continuation `earnedair0925d` is running with the completed hunt retained.
+  Air collection, remaining story steps and Tempest acceptance remain open.
+- Water/Fire/Air crystal raids and Umbral Nexus remain open. The next native
+  batch must use the observed-position formation correction at 708631c5 or
+  later, run after Air cleanup, and stop on its first failure. Earlier batch
+  failures below are history, not currently running jobs or successful clears.
+- The Dark King kill plus exact saved continuation have verified all five
+  players' rewards, epilogues and persistence. This is not an uninterrupted
+  earned campaign. Human campaign timing remains a playtest question; phone
+  dungeon/party feedback and the separate IPv6 issue are user-deferred.
+
+Older dated entries below retain the sequence and limitations of each run;
+this handoff and the latest result for each named route govern current status.
+
 ## Final progression changes
 
 - New story offers prepare players for the real regional enemy/dungeon levels.
