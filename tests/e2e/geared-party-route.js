@@ -46,7 +46,8 @@ const readPartySnapshot = (page, chapterId) => page.evaluate(chapterId => {
         gold: p.gold, xp: p.xp, resonanceXP: p.resonanceXP ?? 0, resonanceLevel: p.resonanceLevel ?? 0,
         level: p.level, stats: p.baseStats, hotbar: p.hotbar,
         quest: p.quests?.find(q => q.id === chapterId),
-        rooms: g.currentDungeonRoomState?.rooms, evidence: window.__partyClearEvidence };
+        rooms: g.currentDungeonRoomState?.rooms, crystal: g.currentDungeonRoomState?.crystal,
+        evidence: window.__partyClearEvidence };
 }, chapterId);
 
 async function verifyNextStoryOffer(page, story) {
@@ -819,7 +820,13 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                 if (isRaid && !isFinale) {
                     const chamber = await tank.page.evaluate(() => window.game.currentDungeonLayout.rooms.at(-1));
                     const encounter = { x: chamber.x, z: chamber.z, width: chamber.width, height: chamber.height };
-                    const deadline = Date.now() + 15 * 60_000;
+                    // Three waves contain24 attackers plus per-wave ritual
+                    // work. Five native browsers on the shared GPU cleared two
+                    // Water waves and kept progressing through the third when
+                    // the old15-minute aggregate allowance expired. This is a
+                    // harness budget, not a human balance target; the unchanged
+                    // two-hour expedition and per-enemy watchdogs still apply.
+                    const deadline = Date.now() + 30 * 60_000;
                     let restored = false;
                     while (Date.now() < deadline) {
                         controls.assertActive();

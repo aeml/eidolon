@@ -112,10 +112,27 @@ dungeon evidence are not replayed.
 Further reviewed phone polish: the inspected Chronicle notification still
 ellipsized its victory title. Phone callouts now wrap the full title while
 ordinary enemy target cards retain their compact single-line treatment.14
-focused lifetime/style tests and lint pass. The existing native presentation
-case now checks unclipped title bounds and also covers landscape; that updated
-browser check must run after the queued expeditions release the GPU. This local
-change is not in their frozen e577c533 source and is not yet deployed.
+focused lifetime/style tests and lint pass. The updated native presentation
+check passed all three desktop/portrait/landscape cases at dad61f02 in23.2seconds;
+the portrait screenshot was inspected and shows the complete title on two lines.
+This local change is not in the expeditions' frozen e577c533 source and is not
+yet deployed.
+
+Water batch result (`finalwater0925a`): failed after39.2minutes at the aggregate
+15-minute repair-event watchdog. The complete combat route and Tidebound Tyrant
+were cleared; all five survived and observed waves1/2 cleared and wave3 started.
+The last observed Frost Guardian was still being fought/defeated, not a stationary
+objective loop. Five-client rendering measured5–23FPS. No restoration/reward
+acceptance is claimed. The prepared batch stopped before Fire/Air/Nexus. Its
+private archive is `/tmp/eidolon-party-checkpoint-finalwater0925a-PU7EJK/save.archive.gz`,
+SHA022313eb6afdfeed780d8ab3e1ccb86af9780e14823bd5c4a659498d405d5091.
+The repair-event harness now allows30minutes for24 attackers and three ritual
+tasks, still inside the same nonrenewing two-hour expedition budget and existing
+per-enemy watchdogs. Death, all-wave, ritual, personal reward and persistence
+assertions are unchanged; this does not nerf production encounters or establish
+human completion timing. Final artifacts now also retain the crystal snapshot.
+The corrected Air inventory continuation `earnedair0925c` at3f161403 has started
+after both previous queues cleaned up; its result remains pending.
 
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
