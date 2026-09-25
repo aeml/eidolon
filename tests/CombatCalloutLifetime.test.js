@@ -9,9 +9,11 @@ beforeEach(() => {
     jest.useFakeTimers();
     document.head.innerHTML = '';
     const style = document.createElement('style');
-    style.textContent = readFileSync(new URL('../src/styles/hud.css', import.meta.url), 'utf8');
+    style.textContent = readFileSync(new URL('../src/styles/hud.css', import.meta.url), 'utf8') +
+        readFileSync(new URL('../src/styles/phone-layout.css', import.meta.url), 'utf8');
     document.head.append(style);
-    document.body.innerHTML = '<div id="combat-intent-panel"><span id="name"></span><span id="status"></span><span id="meta"></span>' +
+    document.body.className = '';
+    document.body.innerHTML = '<div id="combat-intent-panel"><span id="name" class="combat-intent__name"></span><span id="status"></span><span id="meta"></span>' +
         '<div class="combat-intent__preview-row combat-intent__preview-row--attack"><span>Attack power</span><span id="basic"></span></div>' +
         '<span id="label"></span></div>';
     ui = new Feedback();
@@ -24,6 +26,16 @@ beforeEach(() => {
 });
 afterEach(() => { jest.clearAllTimers(); jest.useRealTimers(); });
 const intent = { entityId: 'enemy', name: 'Skeleton', status: 'in_range', distance: 2 };
+
+test('phone notices wrap their full title without expanding ordinary target names', () => {
+    document.body.className = 'mobile-mode';
+    ui.updateCombatIntent(intent);
+    expect(getComputedStyle(ui.combatIntentName).whiteSpace).toBe('nowrap');
+    ui.showCombatCallout({ title: 'THE CHRONICLE IS COMPLETE', tone: 'victory', duration: 2 });
+    expect(getComputedStyle(ui.combatIntentName).whiteSpace).toBe('normal');
+    jest.advanceTimersByTime(2000);
+    expect(getComputedStyle(ui.combatIntentName).whiteSpace).toBe('nowrap');
+});
 
 test('narrative notices hide the empty attack row and restore it with target intent', () => {
     const row = document.querySelector('.combat-intent__preview-row--attack');

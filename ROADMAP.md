@@ -2,7 +2,7 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Current-status pointers refreshed: September 23, 2026
+> Current-status pointers refreshed: September 25, 2026
 
 This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 

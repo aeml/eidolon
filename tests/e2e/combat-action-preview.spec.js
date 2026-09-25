@@ -53,7 +53,7 @@ for (const [width, height, mobile] of [[1280, 720, false], [390, 844, true], [84
     });
 }
 
-for (const [width, height] of [[1280, 720], [390, 844]]) {
+for (const [width, height] of [[1280, 720], [390, 844], [844, 390]]) {
     test(`${width}x${height}: combat card shows cast cost without invented damage`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -86,7 +86,7 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             const refresh = () => ui.updateCombatIntent(engine.buildCombatIntentState());
             window.__combatPreview = { player, refresh, ui };
             refresh();
-        }, width < 600);
+        }, width < 900);
         await expect(page.locator('#combat-intent-preview-basic')).toHaveText('5');
         await expect(page.locator('#combat-intent-preview-ability')).toHaveText('30 MP');
         await expect(page.locator('#combat-intent-panel')).not.toContainText('~');
@@ -95,7 +95,7 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             window.__combatPreview.refresh();
         });
         await expect(page.locator('#combat-intent-preview-ability')).toHaveText('27 MP');
-        if (width > 600) await expect(page.getByText('Attack power', { exact: true })).toBeVisible();
+        if (width >= 900) await expect(page.getByText('Attack power', { exact: true })).toBeVisible();
         else await expect(page.locator('#combat-intent-name')).toHaveText('Level 20 • Imp');
         const bounds = await page.locator('#combat-intent-panel').boundingBox();
         expect(bounds.x).toBeGreaterThanOrEqual(0);
@@ -119,12 +119,19 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             metaText: 'Manual turn-in confirmed', label: 'Fourfold Chronicle', tone: 'victory', duration: 30
         }));
         await expect(page.locator('#combat-intent-name')).toHaveText('THE CHRONICLE IS COMPLETE');
+        expect(await page.locator('#combat-intent-name').evaluate(element =>
+            element.scrollWidth <= element.clientWidth && element.scrollHeight <= element.clientHeight)).toBe(true);
+        const noticeBounds = await page.locator('#combat-intent-panel').boundingBox();
+        expect(noticeBounds.x).toBeGreaterThanOrEqual(0);
+        expect(noticeBounds.y).toBeGreaterThanOrEqual(0);
+        expect(noticeBounds.x + noticeBounds.width).toBeLessThanOrEqual(width);
+        expect(noticeBounds.y + noticeBounds.height).toBeLessThanOrEqual(height);
         await expect(page.getByText('Attack power', { exact: true })).toBeHidden();
         await expect(page.locator('#combat-intent-preview-ability-label')).toHaveText('Fourfold Chronicle');
         await page.locator('#combat-intent-panel').screenshot({ path: testInfo.outputPath('chronicle-notice.png') });
         await page.evaluate(() => window.__combatPreview.refresh());
         await expect(page.locator('#combat-intent-preview-basic')).toHaveText('5');
-        if (width > 600) await expect(page.getByText('Attack power', { exact: true })).toBeVisible();
+        if (width >= 900) await expect(page.getByText('Attack power', { exact: true })).toBeVisible();
         await page.evaluate(() => window.__combatPreview.ui.clearCombatIntent());
         await expect(page.locator('#combat-intent-panel')).toBeHidden();
         expect(failures, failures.join('\n')).toEqual([]);

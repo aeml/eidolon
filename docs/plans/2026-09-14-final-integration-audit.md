@@ -1,6 +1,16 @@
 # 1.10 final integration — evidence and remaining work
 
-## Alpha1.9.31 verified live — runner handoff resolved
+## Current status — September 25
+
+Use the [Alpha1.10 release record](2026-09-23-release1-10-playtest.md) for current
+delivery and outstanding checks. Alpha1.10.0 is verified live; the accepted
+five-player finale/reward continuation and remaining Air/raid/Nexus checks are
+recorded there. The dated evidence below remains valid within its stated scope,
+but its old “current”, “pending” and release-candidate paragraphs are historical.
+Do not restart those completed deployments or repeat accepted encounters based
+on these older queue descriptions.
+
+## Historical Alpha1.9.31 delivery — runner handoff resolved
 
 CI35835009087 completed successfully for exact
 1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28. All jobs passed, including live

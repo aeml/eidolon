@@ -96,6 +96,14 @@ uses the legal level100 Rare+4 endgame profile; elemental parties retain the
 accepted class-affixed Uncommon/Rare profile. Existing accepted finale and other
 dungeon evidence are not replayed.
 
+Further reviewed phone polish: the inspected Chronicle notification still
+ellipsized its victory title. Phone callouts now wrap the full title while
+ordinary enemy target cards retain their compact single-line treatment.14
+focused lifetime/style tests and lint pass. The existing native presentation
+case now checks unclipped title bounds and also covers landscape; that updated
+browser check must run after the queued expeditions release the GPU. This local
+change is not in their frozen e577c533 source and is not yet deployed.
+
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
 14 role-affixed Rare items at +4 using normal paid Forge transactions, and
