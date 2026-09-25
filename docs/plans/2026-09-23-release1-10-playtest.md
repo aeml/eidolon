@@ -84,6 +84,18 @@ travel/combat/checkpoint checks and lint pass. This is a test-driver correction,
 not proof of a production targeting defect; native continuation must confirm
 whether it resolves the interruption. No blanket modal dismissal was added.
 
+Execution handoff: corrected Air continuation `earnedair0925b` is running from
+that exact save at e577c533. An independent prepared-party batch is queued
+behind its cleanup: Water, Fire, Air crystal raids (five players), then Umbral
+Nexus (four players). It runs one browser expedition at a time and stops on its
+first failure, with no automatic retry. Logs and separate frozen source trees
+are under `/tmp/eidolon-remaining-encounters-20260925-YMvJXK`; Air is under
+`/tmp/eidolon-air-continue-20260925-r2-nZLqoQ`. Luna monitors terminal outcomes.
+These checks are pending, not completed earned campaign gates. The Nexus party
+uses the legal level100 Rare+4 endgame profile; elemental parties retain the
+accepted class-affixed Uncommon/Rare profile. Existing accepted finale and other
+dungeon evidence are not replayed.
+
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
 14 role-affixed Rare items at +4 using normal paid Forge transactions, and
