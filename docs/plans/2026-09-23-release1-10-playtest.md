@@ -14,6 +14,11 @@ features, automated checks and a complete human campaign playthrough.
   presentation checks are recorded below; no repeat finale run is required.
 - Air continuation `earnedair0925d` is running with the completed hunt retained.
   Air collection, remaining story steps and Tempest acceptance remain open.
+  Its native merchant step now passes: six normal UI sales freed bag slots
+  from2 to8 and increased Gold342312 to350842, exactly8530 in verified proceeds.
+  This confirms the obsolete-spare sale path at4f640e2a; it does not establish
+  completion of the field route. Receipt: `[earned-bag-management]` in
+  `/tmp/eidolon-air-continue-20260925-r4-GAZ18w/run.log`.
 - Water/Fire/Air crystal raids and Umbral Nexus remain open. A batch pinned to
   70583f18 is queued behind the live Air wrapper and cleanup checks at
   `/tmp/eidolon-remaining-encounters-20260925-r3-NLfnnW`, using the observed-position
