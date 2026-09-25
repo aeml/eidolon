@@ -68,6 +68,17 @@ level100/245125XP/234181Gold and saved5065HP/3265MP. That exact hash and state
 are now registered for continuation, with96 checkpoint checks passing; no Air
 completion, healing, logout refresh or missing quest credit was manufactured.
 
+The affected `finalturnin0925a` rerun stopped during combat on an obstructed
+Wizard movement step (0.483m observed versus1m required), before testing town
+turn-in. All five remained alive; do not count this as a boss clear or an Ilyra
+regression result. Its services were cleaned up. To avoid repeating accepted
+combat for a town interaction, `finale-turn-in` now restores the checksum-pinned
+actual `endgameking0924a` survivor saves into new disposable accounts. Only the
+account save-key names change. Exact original Gold, XP, Resonance and personal
+claim states are checked before normal UI turn-ins and relogin. This validates
+the saved continuation, not an uninterrupted whole campaign or a fresh kill.
+Native execution remains pending; lint, test discovery and shell syntax passed.
+
 - Focused Forge Go/client/live-refresh tests passed. Full normal-bag transaction
   probes now require every potency step to be payable and charge its exact quote.
 - Full Go run completed with two stale audit expectations failing after the
