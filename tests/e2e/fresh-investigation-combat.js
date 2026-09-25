@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { projectEntity, readPlayerState } from './helpers.js';
+import { projectEntity, readPlayerState, settlePointerRaycast } from './helpers.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 
 export async function createInvestigationTravelDefense(page) {
@@ -45,9 +45,24 @@ export async function clearFreshInvestigationApproach(page, site, { defend, dead
             'Fresh investigation retreat must remain survivable').not.toBe('DEAD');
         const point = await projectEntity(page, target);
         if (point?.visible) {
-            await page.mouse.click(point.x, point.y);
-            if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
-                await page.mouse.click(point.x, point.y, { button: 'right' });
+            // Projection alone is not target acquisition: a moving enemy can
+            // expose a portal behind it while the camera catches up. Observe
+            // the normal pointer ray before clicking, without forcing hover or
+            // changing production priorities. Retry within the existing bound.
+            await page.mouse.move(point.x, point.y);
+            await settlePointerRaycast(page);
+            const hostileHovered = () => page.evaluate(id => {
+                const game = window.game, hit = game.hoveredEntity;
+                return hit?.id === id && game.isHostileActorTarget(hit) &&
+                    hit.isActive !== false && hit.state !== 'DEAD' &&
+                    (hit.health ?? hit.stats?.hp) > 0;
+            }, target);
+            if (await hostileHovered()) {
+                await page.mouse.click(point.x, point.y);
+                if (await hostileHovered() &&
+                    await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
+                    await page.mouse.click(point.x, point.y, { button: 'right' });
+                }
             }
         }
         await page.waitForTimeout(250);

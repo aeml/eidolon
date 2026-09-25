@@ -259,16 +259,16 @@ test('retains completed Molten reward and unaccepted Air offer without resetting
     expect(fixture.result().writes).toBe(1);
 });
 
-function partialAir(character) {
-    const checkpoint = earnedEarthCheckpoints[21];
+function partialAir(character, checkpoint = earnedEarthCheckpoints[21]) {
     fireDungeonReadiness(character);
     character.quests.pop();
     character.quests.push(...checkpoint.continuationChapters.slice(-3).map(q => ({ ...q })));
     Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
 }
 
-test('resumes the claimed Air investigation without replaying it or awarding hunt credit', () => {
-    const fixture = exercise(partialAir, false, earnedEarthCheckpoints[21]);
+test.each([21, 22])('resumes Air checkpoint %s without replaying discoveries or awarding hunt credit', index => {
+    const checkpoint = earnedEarthCheckpoints[index];
+    const fixture = exercise(character => partialAir(character, checkpoint), false, checkpoint);
     fixture.run();
     expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
     expect(fixture.result().writes).toBe(1);

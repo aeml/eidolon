@@ -201,6 +201,20 @@ export const earnedEarthCheckpoints = Object.freeze([
                 max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
             { id: 'chronicle_air_unstolen_hours', accepted: true, completed: false, count: 0,
                 max_count: 30, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] },
+    // Actual next Air save: two hunt kills before a portal menu intercepted
+    // travel input. Keep the earned inventory and resources, not a new build.
+    { ...historicalCheckpoints[13],
+        sha: '0e99c03089482b95510a104b7ec291f3d22876dd9af79da99fe300575a03290c',
+        gold: 250176, resources: { version: 1, health: 4794, mana: 3453, dead: false },
+        continuationChapters: [
+            ...historicalCheckpoints[13].continuationChapters.slice(0, -1),
+            { id: 'chronicle_07_crown_of_embers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_air_weatherkeeper', accepted: true, completed: true, count: 1,
+                max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
+            { id: 'chronicle_air_unstolen_hours', accepted: true, completed: false, count: 2,
+                max_count: 30, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);
 

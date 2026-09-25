@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 
-const readPlayerState = jest.fn(), projectEntity = jest.fn();
+const readPlayerState = jest.fn(), projectEntity = jest.fn(), settlePointerRaycast = jest.fn();
 const createDefense = jest.fn(), defend = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: value => expect(value) }));
-jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState, projectEntity }));
+jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState, projectEntity, settlePointerRaycast }));
 jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
 const { clearFreshInvestigationApproach } = await import('./e2e/fresh-investigation-combat.js');
 
@@ -18,8 +18,8 @@ afterEach(() => jest.restoreAllMocks());
 
 function makePage(className = 'Wizard', targets = ['skeleton', null]) {
     return { evaluate: jest.fn().mockResolvedValueOnce(className)
-        .mockImplementation((_fn, site) => site ? targets.shift() : true),
-    mouse: { click: jest.fn() }, waitForTimeout: jest.fn() };
+        .mockImplementation((_fn, site) => site && typeof site === 'object' ? targets.shift() : true),
+    mouse: { click: jest.fn(), move: jest.fn() }, waitForTimeout: jest.fn() };
 }
 
 test('Wizard defends before ordinary basic and class attacks', async () => {
@@ -31,6 +31,27 @@ test('Wizard defends before ordinary basic and class attacks', async () => {
     expect(defend).toHaveBeenCalledWith(page, { id: 'skeleton' });
     expect(defend.mock.invocationCallOrder[0]).toBeLessThan(projectEntity.mock.invocationCallOrder[0]);
     expect(page.mouse.click.mock.calls).toEqual([[100, 120], [100, 120, { button: 'right' }]]);
+    expect(page.mouse.move.mock.invocationCallOrder[0]).toBeLessThan(settlePointerRaycast.mock.invocationCallOrder[0]);
+    expect(settlePointerRaycast.mock.invocationCallOrder[0]).toBeLessThan(page.mouse.click.mock.invocationCallOrder[0]);
+});
+
+test('a projected enemy exposing a portal is not clicked', async () => {
+    const page = makePage();
+    const targets = ['skeleton', null];
+    page.evaluate.mockReset().mockResolvedValueOnce('Wizard')
+        .mockImplementation((_fn, argument) => typeof argument === 'object' ? targets.shift() : false);
+    await clearFreshInvestigationApproach(page, { id: 'portal-approach' });
+    expect(settlePointerRaycast).toHaveBeenCalledTimes(1);
+    expect(page.mouse.click).not.toHaveBeenCalled();
+});
+
+test('an enemy lost after the basic click does not receive a stale right-click', async () => {
+    const page = makePage();
+    const targets = ['skeleton', null], hovered = [true, false];
+    page.evaluate.mockReset().mockResolvedValueOnce('Wizard')
+        .mockImplementation((_fn, argument) => typeof argument === 'object' ? targets.shift() : hovered.shift());
+    await clearFreshInvestigationApproach(page, { id: 'portal-approach' });
+    expect(page.mouse.click.mock.calls).toEqual([[100, 120]]);
 });
 
 test('a defensive cast consumes this input cycle instead of double-casting', async () => {
@@ -68,7 +89,7 @@ test('an uncontested investigation does not attack or spend resources', async ()
 test('transit reuses its existing defense controller without resetting cast observations', async () => {
     const page = makePage();
     const targets = ['troll', null];
-    page.evaluate.mockReset().mockImplementation((_fn, site) => site ? targets.shift() : true);
+    page.evaluate.mockReset().mockImplementation((_fn, site) => site && typeof site === 'object' ? targets.shift() : true);
     await clearFreshInvestigationApproach(page, { id: 'golem-travel', x: 0, z: -650 }, { defend });
     expect(createDefense).not.toHaveBeenCalled();
     expect(defend).toHaveBeenCalledWith(page, { id: 'troll' });

@@ -47,15 +47,17 @@ the post-clear turn-in failure without a production reward change. Keep the
 prepared-prerequisite and saved-continuation scope explicit: it is not an
 uninterrupted earned campaign. A separate later combat attempt stopped on a
 movement-controller diagnostic; that remains distinct from the accepted kill.
-All owned finale services were cleaned up. Air continuation is now running from
-its actual partial save; no Air/Tempest completion claim yet.
+All owned finale services were cleaned up. Air continuation remains incomplete;
+no Air/Tempest completion claim yet.
 
 Pending follow-up polish: the reviewed epilogue screenshot exposed an empty
 “Attack power” row in narrative notifications because they reuse the target
 card. Callout styling now hides only that attack row; normal target selection
 restores it.80 focused feedback/lifetime checks and scoped lint passed. The
 existing desktop/phone presentation case now checks hide/restore and captures
-the Chronicle notice; run it after the active Air browser releases the GPU.
+the Chronicle notice. All five native presentation cases passed in31seconds
+at002b609a; the phone Chronicle screenshot was inspected and the empty attack
+row is gone.
 This visual change is local, not yet deployed; include it in the next release's
 patch notes rather than triggering a separate deployment for test-only work.
 
@@ -67,6 +69,20 @@ visits now restore the original loot setting **after** the normal return trip,
 so the cleared bag is not immediately refilled in transit.27 inventory checks
 and scoped lint passed. The active frozen Air run is unchanged; no items were
 deleted, drop rates altered or quest rewards/credit injected.
+
+Latest Air result (`earnedair0925a`, source b3cef857): stopped after13.9minutes
+with the Verdant dungeon-entry modal visibly covering ground input near
+x767/z150. It did not clear Air. Inspection of its retained private archive
+found Unstolen Hours at2/30, not the earlier live observation of1/30; level100,
+XP245125, Gold250176, saved4794HP/3453MP. The exact archive hash is registered
+for continuation. Its disposable inspection database was removed; the original
+archive was retained unchanged. The travel-combat helper clicked projected
+enemy coordinates without acquiring the actual hover target, unlike guarded
+interaction drivers. It now observes the normal raycast and requires a live
+hostile match before basic input, and rechecks before right-clicking.112 scoped
+travel/combat/checkpoint checks and lint pass. This is a test-driver correction,
+not proof of a production targeting defect; native continuation must confirm
+whether it resolves the interruption. No blanket modal dismissal was added.
 
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
