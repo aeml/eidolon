@@ -78,8 +78,9 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
             (rarity === 'Rare' && (!item.name.endsWith(' of the Whale') || !(item.stats?.vitality > 0))))) {
             throw new Error(`Wrong role affixes for ${className}: ${itemName}`);
         }
-        const { maxStack, statScaleVersion, ...rest } = item;
-        return [slot, { ...rest, id: `party-${className}-${slot}`, max_stack: maxStack, stat_scale_version: statScaleVersion }];
+        const { maxStack, statScaleVersion, forgeBasis, ...rest } = item;
+        return [slot, { ...rest, id: `party-${className}-${slot}`, max_stack: maxStack, stat_scale_version: statScaleVersion,
+            ...(forgeBasis ? { forge_basis: { ...forgeBasis, stats: { ...forgeBasis.stats } } } : {}) }];
     }));
     const skills = {
         Fighter: ['Charge', 'Whirlwind', 'Shield Slam', 'Iron Fortress'],

@@ -18,8 +18,9 @@ export function projectGroundOffsetInPage({ deltaX, deltaZ, allowScaling = true 
             visible: projected.z >= -1 && projected.z <= 1 &&
                 projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1
         };
-        lastProjection.canvas = lastProjection.visible &&
-            document.elementFromPoint(lastProjection.x, lastProjection.y)?.tagName === 'CANVAS';
+        const element = lastProjection.visible ? document.elementFromPoint(lastProjection.x, lastProjection.y) : null;
+        lastProjection.canvas = lastProjection.visible && element?.tagName === 'CANVAS';
+        lastProjection.blockedBy = lastProjection.canvas ? null : { tag: element?.tagName || null, id: element?.id || null };
         if (lastProjection.canvas) return lastProjection;
     }
     return lastProjection;

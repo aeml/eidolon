@@ -1,5 +1,46 @@
 import { jest } from '@jest/globals';
-import { approachTownGuide } from './guideApproach.js';
+import { approachStoryWizard, approachTownGuide } from './guideApproach.js';
+
+test('story approach settles every waypoint and uses move-only input through a party crowd', async () => {
+    let player = { x: 0, z: 0 }, pending;
+    const moves = [];
+    await approachStoryWizard({ read: async () => ({ player, wizard: { x: 25, z: 0 }, range: 5 }),
+        settle: async () => { if (pending) { player = pending; pending = null; } },
+        move: async (dx, dz, options) => {
+            moves.push({ dx, dz, options });
+            pending = { x: player.x + dx, z: player.z + dz };
+            player = { x: player.x + 1, z: player.z };
+        } });
+    expect(moves).toEqual([12, 10].map(dx => ({ dx, dz: 0,
+        options: { moveOnly: true, allowJumpFallback: false } })));
+    expect(player).toEqual({ x: 22, z: 0 });
+});
+
+test('story approach already inside the live interaction range does not move', async () => {
+    const move = jest.fn(), settle = jest.fn();
+    await approachStoryWizard({ settle, move,
+        read: async () => ({ player: { x: 16, z: 215 }, wizard: { x: 20, z: 215 }, range: 5 }) });
+    expect(settle).toHaveBeenCalledTimes(1);
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('story approach cannot silently click an out-of-range NPC after its step bound', async () => {
+    const move = jest.fn();
+    await expect(approachStoryWizard({ settle: jest.fn(), move,
+        read: async () => ({ player: { x: 0, z: 200 }, wizard: { x: 20, z: 215 }, range: 5 }) }))
+        .rejects.toThrow('remains out of range');
+    expect(move).toHaveBeenCalledTimes(12);
+});
+
+test('story approach stops on unsettled movement or unavailable NPC instead of guessing', async () => {
+    const read = jest.fn(), move = jest.fn();
+    await expect(approachStoryWizard({ read, move, settle: async () => { throw new Error('still moving'); } }))
+        .rejects.toThrow('still moving');
+    expect(read).not.toHaveBeenCalled();
+    await expect(approachStoryWizard({ read: async () => ({ player: { x: 0, z: 0 } }), move, settle: jest.fn() }))
+        .rejects.toThrow('live NPC');
+    expect(move).not.toHaveBeenCalled();
+});
 
 test('each short movement observation finishes before another guide waypoint is computed', async () => {
     let z = 200, pending = null;

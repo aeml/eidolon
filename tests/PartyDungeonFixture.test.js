@@ -55,11 +55,14 @@ test.each(PARTY_ROLES)('endgame %s uses only catalog Rare +4 gear and20 legal pr
         roleTalents: { [role]: Object.fromEntries(ids.map(id => [id, 5])) },
         roleItems: { [role]: { Rare: new Proxy({}, { get: (_target, name) => ({
             name: `${prefix} ${name} of the Whale`, level: 100, rarity: 'Rare', potency: 4,
-            stats: { [stat]: 50, vitality: 50 }
+            stats: { [stat]: 50, vitality: 50 },
+            forgeBasis: { level: 100, potency: 0, stats: { [stat]: 36, vitality: 36 }, value: 100 }
         }) }) } } };
     const c = partyDungeonCharacter(catalog, [], role, 'endgame-fixture', 'endgame');
     expect(Object.values(c.equipment)).toHaveLength(14);
     expect(Object.values(c.equipment).every(item => item.rarity === 'Rare' && item.potency === 4)).toBe(true);
+    expect(c.equipment.mainHand.forge_basis).toEqual(catalog.roleItems[role].Rare['Iron Sword'].forgeBasis);
+    expect(c.equipment.mainHand).not.toHaveProperty('forgeBasis');
     expect(c.stats).toEqual(catalog.stats);
     expect(c.talent_ranks).toEqual(catalog.roleTalents[role]);
     expect(c.talent_ranks).not.toBe(catalog.roleTalents[role]);

@@ -346,6 +346,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     mark('initial-observation');
     expect(before).not.toBeNull();
     const attempts = [];
+    const unavailableProjections = [];
     let maximumDisplacement = 0;
     const magnitude = Math.hypot(deltaX, deltaZ) || 1;
     const sideDistance = Math.max(8, magnitude * 0.4);
@@ -397,6 +398,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             mark('project-ground');
         } catch {
             mark('projection-unavailable');
+            unavailableProjections.push({ candidateX, candidateZ, target });
             continue;
         }
 
@@ -528,6 +530,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 targetZ: player.targetPosition?.z
             } : null,
             pendingType: game?.pendingInteraction?.constructor?.name || null,
+            camera: { locked: game?.cameraLocked, target: game?.renderSystem?.cameraTarget?.toArray(),
+                position: game?.renderSystem?.camera?.position?.toArray(), zoom: game?.renderSystem?.camera?.zoom },
             pendingSubtype: game?.pendingInteraction?.subType ||
                 game?.pendingInteraction?.constructor?.name || null,
             movement: { ...player?.movementMetrics,
@@ -562,7 +566,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     });
     throw movementFailure(
         `No real input established ${options.minimumDistance || 1} units toward (${deltaX}, ${deltaZ}): ` +
-        JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic }),
+        JSON.stringify({ before, maximumDisplacement, attempts, unavailableProjections, ...diagnostic }),
         attempts.length > 0, mobileMovement, attempts,
         { before, maximumDisplacement, attempts, ...diagnostic }
     );

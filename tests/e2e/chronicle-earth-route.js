@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test';
 import { jumpByGroundClick, moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
     returnToTown, setAutoLootThroughSettings, useCombatQAWaypoint, useEncounterQAWaypoint } from './helpers.js';
-import { openDungeonGuide } from './dungeon-guide.js';
+import { openDungeonGuide, settledGuideApproach } from './dungeon-guide.js';
+import { approachStoryWizard } from '../guideApproach.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
 import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
@@ -23,20 +24,15 @@ export const readChronicleChapter = (page, id) => page.evaluate(id => {
 
 export async function openIlyra(page) {
     await returnToTown(page);
-    for (let step = 0; step < 12; step++) {
-        const position = await readPlayerState(page);
-        if (Math.hypot(position.x - 20, position.z - 215) < 4.5) break;
-        const dx = 17 - position.x, dz = 215 - position.z;
-        const scale = Math.min(1, 12 / Math.hypot(dx, dz));
-        await moveByGroundClick(page, dx * scale, dz * scale, { allowJumpFallback: false });
-    }
-    // Finish the ground approach before projecting the moving camera's NPC.
-    await expect.poll(() => page.evaluate(() => {
-        const game = window.game;
-        return game.player.state === 'IDLE' && !game.player.targetPosition &&
-            Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
-                game.renderSystem.cameraTarget.z - game.player.position.z) < 0.05;
-    })).toBe(true);
+    await approachStoryWizard({
+        settle: () => settledGuideApproach(page),
+        read: () => page.evaluate(() => {
+            const game = window.game, wizard = game.remotePlayers.get('story-wizard-1');
+            return { player: game.player.position, wizard: wizard?.position,
+                range: wizard && game.getInteractionRangeForEntity(wizard) };
+        }),
+        move: (dx, dz, options) => moveByGroundClick(page, dx, dz, options)
+    });
     let point;
     await expect.poll(async () => {
         point = await projectEntity(page, 'story-wizard-1');

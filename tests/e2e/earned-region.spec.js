@@ -14,9 +14,12 @@ test('earned later-region story retains discoveries, collection and saved dungeo
     const credentials = credentialsFromEnvironment();
     const failures = collectBrowserFailures(page, baseURL);
     await restoreEarnedWizard(page, credentials);
-    await earnRegionToReadiness(page, credentials, realm, {
+    try { await earnRegionToReadiness(page, credentials, realm, {
         step: (name, body) => test.step(name, body),
         capture: (site, stage) => page.screenshot({ path: testInfo.outputPath(`${site.id}-${stage}.png`) })
-    });
+    }); } catch (error) {
+        await page.screenshot({ path: testInfo.outputPath('regional-failure-scene.png') }).catch(() => {});
+        throw error;
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

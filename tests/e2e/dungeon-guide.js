@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { moveByGroundClick, projectEntity, readPlayerState, zoomOutForPortal } from './helpers.js';
 import { approachTownGuide } from '../guideApproach.js';
 
-async function settledGuideApproach(page) {
+export async function settledGuideApproach(page) {
     await expect.poll(() => page.evaluate(() => {
         const game = window.game, player = game.player, camera = game.renderSystem;
         return player.state === 'IDLE' && !player.targetPosition && !camera.cameraPunch &&

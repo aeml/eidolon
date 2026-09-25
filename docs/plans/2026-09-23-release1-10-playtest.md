@@ -35,6 +35,33 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Verification and retained evidence
 
+September 24: user requires the remaining failures to be resolved, not handed
+off as completed work. A separate endgame encounter fixture now prepares all
+14 role-affixed Rare items at +4 using normal paid Forge transactions, and
+allocates exactly 20 legal class talent points through normal unlock rules.
+The prior mixed Uncommon/Rare +0, five-talent-point fixture remains unchanged.
+This is prepared encounter QA, not earned progression. Survival, four-phase,
+manual turn-in and persistence assertions remain intact. Fixture validation passed in Go and
+49 focused JavaScript checks. No additional boss damage or health change.
+
+The prepared endgame run `endgameking0924a` at `bafe485b` defeated the Dark King
+with all five characters alive and all four ordered Eidolon callouts verified.
+Combat took269.341seconds (4m29s), slightly below the requested5–10minute target;
+one automated result is not a precise human balance measurement. The Fighter
+manually claimed the finale and saw the epilogue. The next character's Ilyra
+window did not open: its failure context still displayed “Move closer.” The
+overall run failed, so five-player turn-in/relogin acceptance remains open.
+Owned services were cleaned up and the actual private save retained.
+
+September25: the Ilyra test driver was issuing subsequent ground clicks before
+the previous movement and camera finished, and could fall through its step
+limit without proving interaction range. It now settles each step, uses normal
+move-only input through party crowds and requires the live NPC's actual range.
+35 focused fixture/approach checks and scoped lint passed. Native confirmation
+is still required; this is a test-driver correction, not a proven production
+quest-reward fix. Added ground-projection diagnostics and failure screenshots
+will distinguish the remaining Air input interruption from server movement.
+
 - Focused Forge Go/client/live-refresh tests passed. Full normal-bag transaction
   probes now require every potency step to be payable and charge its exact quote.
 - Full Go run completed with two stale audit expectations failing after the
@@ -90,8 +117,12 @@ ULA IPv6 address. Correct the A record and remove the stale public AAAA unless
 a working routed IPv6 origin is deliberately configured. No nginx change is
 needed to address the demonstrated DNS mismatch.
 
-**1.10.0 is packaged for publication, not yet verified live.** Do not substitute an origin
-override for public DNS/TLS reachability or claim success from a version label.
-Record the actual CI result and matching frontend/backend identities here once
-delivery completes. No production grants, billing integration or DNS changes
-were made by these checks.
+**September 24: Alpha 1.10.0 is verified live.** CI35909760534 passed all ten
+jobs for e67fc0ad1b924002758e67e5a3a3bcb615d97476, including live character and
+town recovery checks. After the user corrected IPv4 DDNS, the public verifier
+confirmed both release identities, database readiness, login label, cumulative
+notes and three exact published assets without an origin override. Do not poll
+that completed CI again. The public AAAA belongs to another machine running the
+Windows DDNS updater; the user explicitly deferred DNS/IPv6 changes. IPv4 works,
+but public IPv6 service remains unverified. Deployment success does not close the failed encounter
+checks above. No production grants or billing changes were made.
