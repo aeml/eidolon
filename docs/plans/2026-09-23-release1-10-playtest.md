@@ -50,6 +50,15 @@ movement-controller diagnostic; that remains distinct from the accepted kill.
 All owned finale services were cleaned up. Air continuation is now running from
 its actual partial save; no Air/Tempest completion claim yet.
 
+Pending follow-up polish: the reviewed epilogue screenshot exposed an empty
+“Attack power” row in narrative notifications because they reuse the target
+card. Callout styling now hides only that attack row; normal target selection
+restores it.80 focused feedback/lifetime checks and scoped lint passed. The
+existing desktop/phone presentation case now checks hide/restore and captures
+the Chronicle notice; run it after the active Air browser releases the GPU.
+This visual change is local, not yet deployed; include it in the next release's
+patch notes rather than triggering a separate deployment for test-only work.
+
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
 14 role-affixed Rare items at +4 using normal paid Forge transactions, and

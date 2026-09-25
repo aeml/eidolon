@@ -114,6 +114,17 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             window.__combatPreview.refresh();
         });
         await expect(page.locator('#combat-intent-status')).toHaveText('In Range');
+        await page.evaluate(() => window.__combatPreview.ui.showCombatCallout({
+            title: 'THE CHRONICLE IS COMPLETE', subtitle: 'The four crystals sing as one.',
+            metaText: 'Manual turn-in confirmed', label: 'Fourfold Chronicle', tone: 'victory', duration: 30
+        }));
+        await expect(page.locator('#combat-intent-name')).toHaveText('THE CHRONICLE IS COMPLETE');
+        await expect(page.getByText('Attack power', { exact: true })).toBeHidden();
+        await expect(page.locator('#combat-intent-preview-ability-label')).toHaveText('Fourfold Chronicle');
+        await page.locator('#combat-intent-panel').screenshot({ path: testInfo.outputPath('chronicle-notice.png') });
+        await page.evaluate(() => window.__combatPreview.refresh());
+        await expect(page.locator('#combat-intent-preview-basic')).toHaveText('5');
+        if (width > 600) await expect(page.getByText('Attack power', { exact: true })).toBeVisible();
         await page.evaluate(() => window.__combatPreview.ui.clearCombatIntent());
         await expect(page.locator('#combat-intent-panel')).toBeHidden();
         expect(failures, failures.join('\n')).toEqual([]);

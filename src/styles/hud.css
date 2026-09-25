@@ -336,6 +336,12 @@
     font-size: 12px;
 }
 
+/* Story, level-up and telegraph notices reuse the target card, but do not
+   describe an attack stat. The normal row returns when target intent resumes. */
+#combat-intent-panel[data-callout-tone] .combat-intent__preview-row--attack {
+    display: none;
+}
+
 .objectives-panel__header {
     flex-shrink: 0;
     padding: 3px 0;

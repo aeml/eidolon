@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
 import { installUIManagerFeedback } from '../src/ui/UIManagerFeedback.js';
 
 class Feedback {}
@@ -6,9 +7,16 @@ installUIManagerFeedback(Feedback);
 let ui;
 beforeEach(() => {
     jest.useFakeTimers();
-    document.body.innerHTML = '<div id="panel"><span id="name"></span><span id="status"></span><span id="meta"></span><span id="label"></span></div>';
+    document.head.innerHTML = '';
+    const style = document.createElement('style');
+    style.textContent = readFileSync(new URL('../src/styles/hud.css', import.meta.url), 'utf8');
+    document.head.append(style);
+    document.body.innerHTML = '<div id="combat-intent-panel"><span id="name"></span><span id="status"></span><span id="meta"></span>' +
+        '<div class="combat-intent__preview-row combat-intent__preview-row--attack"><span>Attack power</span><span id="basic"></span></div>' +
+        '<span id="label"></span></div>';
     ui = new Feedback();
-    ui.combatIntentPanel = document.getElementById('panel');
+    ui.combatIntentPanel = document.getElementById('combat-intent-panel');
+    ui.combatIntentPreviewBasic = document.getElementById('basic');
     ui.combatIntentName = document.getElementById('name');
     ui.combatIntentStatus = document.getElementById('status');
     ui.combatIntentMeta = document.getElementById('meta');
@@ -16,6 +24,17 @@ beforeEach(() => {
 });
 afterEach(() => { jest.clearAllTimers(); jest.useRealTimers(); });
 const intent = { entityId: 'enemy', name: 'Skeleton', status: 'in_range', distance: 2 };
+
+test('narrative notices hide the empty attack row and restore it with target intent', () => {
+    const row = document.querySelector('.combat-intent__preview-row--attack');
+    ui.updateCombatIntent({ ...intent, preview: { attackPower: 75 } });
+    expect(getComputedStyle(row).display).toBe('flex');
+    ui.showCombatCallout({ title: 'The Chronicle is complete', tone: 'victory', duration: 2 });
+    expect(getComputedStyle(row).display).toBe('none');
+    jest.advanceTimersByTime(2000);
+    expect(getComputedStyle(row).display).toBe('flex');
+    expect(ui.combatIntentPreviewBasic.textContent).toBe('75');
+});
 
 test('active narrative aid uses its own label and metadata without claiming an incoming attack', () => {
     ui.showCombatCallout({ title: 'The Tide Remembers', duration: 8,
