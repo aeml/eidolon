@@ -10,7 +10,7 @@ import { moveByGroundClick, projectEntity, readPlayerState, returnToTown, setAut
 
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
-    return { level: p.level, gold: p.gold, inventory: p.inventory, stash: p.stash || [], equipment: p.equipment,
+    return { className: p.constructor.name, level: p.level, gold: p.gold, inventory: p.inventory, stash: p.stash || [], equipment: p.equipment,
         quests: p.quests.filter(q => q.accepted).map(q => ({ id: q.id, count: q.count, completed: q.completed })) };
 });
 

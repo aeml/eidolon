@@ -131,8 +131,29 @@ tasks, still inside the same nonrenewing two-hour expedition budget and existing
 per-enemy watchdogs. Death, all-wave, ritual, personal reward and persistence
 assertions are unchanged; this does not nerf production encounters or establish
 human completion timing. Final artifacts now also retain the crystal snapshot.
-The corrected Air inventory continuation `earnedair0925c` at3f161403 has started
-after both previous queues cleaned up; its result remains pending.
+The corrected Air inventory continuation `earnedair0925c` at3f161403 completed
+the30-kill Unstolen Hours hunt, manually claimed800Gold/117093Resonance XP and
+verified checkpoint/relogin, with zero deaths and seven rest stops. Actual stack
+merging passed exact item conservation without allocating new stash slots.
+The run then reached Feathers of Captured Thunder1/8 before stopping at a genuinely
+full stash (projected102items/100capacity), after about1.3hours. No Air readiness
+or Tempest clear is claimed. Its registered exact archive
+`/tmp/eidolon-party-checkpoint-earnedair0925c-HCVnUL/save.archive.gz` has SHA
+231bdca909468078911bc81a843c65168d21bb80dea2fa4b71d7b1b74aba02c1,
+level100/245125XP/341739Gold and saved5461HP/4680MP. The temporary inspection
+database was removed and the original save retained unchanged.
+
+The inventory driver no longer hoards every Rare forever: after ordinary spare
+gear, it may sell only needed unmodified Rares at least ten levels below every
+compatible worn slot and strictly worse by the same class score used for normal
+equip decisions. Invested gear, sets/unique effects, unknown stats, future gear,
+Epic+ items and quest/crafting items are preserved. On the actual save, ordinary
+merchant sales of the obsolete level30 girdle/gloves can release the needed
+space; no stash deletion, capacity increase or production auto-sell is added.
+167 inventory/equipment/checkpoint checks and scoped lint pass. Native sale
+confirmation remains pending; the completed30-kill chapter must not be replayed.
+The corrected Water/Fire/Air/Nexus batch at be571c6e is now running independently
+under `/tmp/eidolon-remaining-encounters-20260925-r2-xSKvUh`.
 
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all

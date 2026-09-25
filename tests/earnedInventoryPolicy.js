@@ -1,4 +1,5 @@
 import { isEquippableItem } from '../src/core/EquipmentSlots.js';
+import { earnedGearScore } from './earnedEquipmentUpgrades.js';
 
 export const EARNED_BAG_MIN_FREE = 5;
 export const EARNED_BAG_TARGET_FREE = 8;
@@ -16,22 +17,34 @@ export function earnedStashFreeSlots(stash, capacity) {
 }
 
 // A conservative ordinary-player baseline after filling empty equipment slots.
-// Never dispose of quest fragments, crafting items, rare+ gear or future-level
-// equipment. This is a QA decision policy, not automatic selling in the game.
-export function planEarnedBagSales({ inventory, equipment, level }, targetFree = EARNED_BAG_TARGET_FREE) {
+// Preserve quest/crafting items, Epic+ gear, invested gear and future upgrades.
+// Obsolete unmodified Rares may be sold after ordinary spares, using the same
+// class utility as equip preparation and a ten-level gap to every worn match.
+// This is a disposable QA character's decision, not in-game automatic selling.
+export function planEarnedBagSales({ inventory, equipment, level, className }, targetFree = EARNED_BAG_TARGET_FREE) {
     if (!Number.isInteger(targetFree) || targetFree < 0 || targetFree > inventory.length) throw new Error('Invalid bag space target');
     const needed = Math.max(0, targetFree - earnedBagFreeSlots(inventory));
     const equippedIds = new Set(Object.values(equipment).map(item => item?.id).filter(Boolean));
     const candidates = inventory.filter(item => {
         if (!item?.id || item.id.startsWith('chronicle-item-') || equippedIds.has(item.id) ||
-            !isEquippableItem(item) || !Number.isFinite(item.level) || item.level > level ||
-            !['Common', 'Uncommon'].includes(item.rarity?.name || item.rarity)) return false;
+            item.potency || item.sockets || item.gems?.length || item.setId || item.uniqueEffect ||
+            !isEquippableItem(item) || !Number.isFinite(item.level) || item.level > level) return false;
         const slots = item.slot === 'ring' ? ['ring1', 'ring2'] :
             item.slot === 'trinket' ? ['trinket1', 'trinket2'] : [item.slot];
-        return slots.every(slot => equipment[slot]?.id);
+        if (!slots.every(slot => equipment[slot]?.id)) return false;
+        const rarity = item.rarity?.name || item.rarity;
+        if (['Common', 'Uncommon'].includes(rarity)) return true;
+        if (rarity !== 'Rare' || !className || (item.stack || 1) !== 1 || item.maxStack > 1) return false;
+        const score = earnedGearScore(item, className);
+        return score !== null && slots.every(slot => {
+            const worn = equipment[slot], wornScore = earnedGearScore(worn, className);
+            return Number.isFinite(worn.level) && worn.level >= item.level + 10 &&
+                wornScore !== null && wornScore > score;
+        });
     }).map(item => ({ id: item.id, rarity: item.rarity?.name || item.rarity,
         value: Math.max(1, item.value || 0) * Math.max(1, item.stack || 0) }));
-    candidates.sort((a, b) => (a.rarity === 'Common' ? 0 : 1) - (b.rarity === 'Common' ? 0 : 1) ||
+    const rarityOrder = ['Common', 'Uncommon', 'Rare'];
+    candidates.sort((a, b) => rarityOrder.indexOf(a.rarity) - rarityOrder.indexOf(b.rarity) ||
         a.value - b.value || a.id.localeCompare(b.id));
     return candidates.slice(0, needed);
 }

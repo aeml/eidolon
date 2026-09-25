@@ -274,6 +274,19 @@ test.each([21, 22, 23])('resumes Air checkpoint %s without replaying discoveries
     expect(fixture.result().writes).toBe(1);
 });
 
+test('retains the claimed30-kill Air reward and one collection fragment without restarting the hunt', () => {
+    const checkpoint = earnedEarthCheckpoints[24];
+    const fixture = exercise(character => {
+        fireDungeonReadiness(character);
+        character.quests.pop();
+        character.quests.push(...checkpoint.continuationChapters.slice(-4).map(q => ({ ...q })));
+        Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
 test.each([
     p => { p.quests.at(-2).investigation_mask = 0; },
     p => { p.quests.at(-2).granted_resonance_xp = 0; },

@@ -51,6 +51,37 @@ test('counts empty slots and does not sell when the bag already has room', () =>
     expect(planEarnedBagSales({ inventory, equipment, level: 5 }, 3)).toEqual([]);
 });
 
+const obsoleteRare = changes => gear('old-rare', { rarity: 'Rare', level: 30,
+    stats: { intelligence: 9, defense: 2 }, ...changes });
+const veteran = { className: 'Wizard', level: 100,
+    equipment: { head: gear('worn-rare', { rarity: 'Rare', level: 72, stats: { intelligence: 22, defense: 8 } }) } };
+
+test('sells only the needed obsolete unmodified Rare after cheaper ordinary spare gear', () => {
+    const inventory = [obsoleteRare({ value: 1 }), gear('common'),
+        gear('uncommon', { rarity: 'Uncommon' }), obsoleteRare({ id: 'keep-spare', value: 100 })];
+    expect(planEarnedBagSales({ ...veteran, inventory }, 3).map(sale => sale.id))
+        .toEqual(['common', 'uncommon', 'old-rare']);
+    expect(inventory).toHaveLength(4);
+});
+
+test.each([
+    { potency: 1 }, { sockets: 1 }, { gems: [{ stats: { intelligence: 1 } }] },
+    { setId: 'set' }, { uniqueEffect: 'special' }, { rarity: 'Legendary' },
+    { level: 70 }, { stats: { intelligence: 100 } }, { stats: { unknownEffect: 1 } },
+    { level: 101 }, { id: 'chronicle-item-gear' }
+])('retains invested, valuable, recent or unmodelled rare equipment: %j', changes => {
+    expect(planEarnedBagSales({ ...veteran, inventory: [obsoleteRare(changes)] }, 1)).toEqual([]);
+});
+
+test('both paired equipment slots must beat an obsolete Rare before selling it', () => {
+    const ring = obsoleteRare({ slot: 'ring' });
+    const equipment = { ring1: { ...veteran.equipment.head, slot: 'ring' },
+        ring2: gear('weak-ring', { slot: 'ring', level: 70, stats: { intelligence: 1 } }) };
+    expect(planEarnedBagSales({ ...veteran, inventory: [ring], equipment }, 1)).toEqual([]);
+    equipment.ring2 = { ...equipment.ring1, id: 'strong-second' };
+    expect(planEarnedBagSales({ ...veteran, inventory: [ring], equipment }, 1)).toHaveLength(1);
+});
+
 test('sale quotes match minimum value and stack rules without granting anything', () => {
     expect(planEarnedBagSales({ inventory: [gear('zero', { value: 0 }), gear('stack', { stack: 2 })], equipment, level: 5 }, 2))
         .toEqual([{ id: 'zero', rarity: 'Common', value: 1 }, { id: 'stack', rarity: 'Common', value: 60 }]);
