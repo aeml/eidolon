@@ -266,7 +266,7 @@ function partialAir(character, checkpoint = earnedEarthCheckpoints[21]) {
     Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
 }
 
-test.each([21, 22])('resumes Air checkpoint %s without replaying discoveries or awarding hunt credit', index => {
+test.each([21, 22, 23])('resumes Air checkpoint %s without replaying discoveries or awarding hunt credit', index => {
     const checkpoint = earnedEarthCheckpoints[index];
     const fixture = exercise(character => partialAir(character, checkpoint), false, checkpoint);
     fixture.run();

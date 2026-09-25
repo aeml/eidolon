@@ -215,6 +215,20 @@ export const earnedEarthCheckpoints = Object.freeze([
                 max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
             { id: 'chronicle_air_unstolen_hours', accepted: true, completed: false, count: 2,
                 max_count: 30, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] },
+    // Next continuation reached six actual hunt kills, then failed a stash
+    // capacity preflight in town. Keep its earned swaps, sales and recovery.
+    { ...historicalCheckpoints[13],
+        sha: '4f3e2ba4e8a711bf2c8850fbeb45119369fc430880129a4c2c9bbf45cc67f29d',
+        gold: 268179, resources: { version: 1, health: 5571, mana: 4196, dead: false },
+        continuationChapters: [
+            ...historicalCheckpoints[13].continuationChapters.slice(0, -1),
+            { id: 'chronicle_07_crown_of_embers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_air_weatherkeeper', accepted: true, completed: true, count: 1,
+                max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
+            { id: 'chronicle_air_unstolen_hours', accepted: true, completed: false, count: 6,
+                max_count: 30, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);
 

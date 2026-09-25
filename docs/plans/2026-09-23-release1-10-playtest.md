@@ -84,9 +84,22 @@ travel/combat/checkpoint checks and lint pass. This is a test-driver correction,
 not proof of a production targeting defect; native continuation must confirm
 whether it resolves the interruption. No blanket modal dismissal was added.
 
-Execution handoff: corrected Air continuation `earnedair0925b` is running from
-that exact save at e577c533. An independent prepared-party batch is queued
-behind its cleanup: Water, Fire, Air crystal raids (five players), then Umbral
+Execution handoff: corrected Air continuation `earnedair0925b` at e577c533
+terminated after20.8minutes on inventory-driver stash capacity planning, not
+the previous portal interruption. The last logged hunt counter was5/30; the
+actual final archive records6/30, zero claimed hunt reward, Gold268179 and
+saved5571HP/4196MP. No death was observed. Its exact hash
+`4f3e2ba4e8a711bf2c8850fbeb45119369fc430880129a4c2c9bbf45cc67f29d` is registered;
+the private original remains unchanged. The disposable inspection database was
+removed. A99/100-slot stash could not accept the two planned gear items, but
+fourteen carried gem/material stacks fit existing stacks without allocating
+another slot. Storage planning now consolidates those first, and preflight
+checks the actual merged occupancy, not one new slot per deposit.29 inventory
+checks plus98 checkpoint checks and scoped lint pass. No rare gear, quest item
+or crafting valuable is sold/deleted, and native confirmation is still pending.
+
+An independent prepared-party batch has started after Air cleanup: Water, Fire,
+Air crystal raids (five players), then Umbral
 Nexus (four players). It runs one browser expedition at a time and stops on its
 first failure, with no automatic retry. Logs and separate frozen source trees
 are under `/tmp/eidolon-remaining-encounters-20260925-YMvJXK`; Air is under

@@ -62,8 +62,14 @@ export async function storeEarnedSpareEquipment(page, planned, readState) {
     const initial = await readState(page);
     const capacity = await page.locator('#stash-grid .inv-slot').count();
     const freeSlots = earnedStashFreeSlots(initial.stash, capacity);
-    expect(freeSlots, 'Real stash capacity must cover the complete deposits').toBeGreaterThanOrEqual(planned.length);
-    console.log('[earned-stash-capacity]', JSON.stringify({ capacity, freeSlots, planned: planned.length }));
+    const projected = planned.reduce((stash, deposit) => {
+        const item = initial.inventory.find(item => item?.id === deposit.id);
+        expect(item, 'Every planned deposit must still be carried').toBeDefined();
+        return expectedEarnedStashDeposit(stash, item);
+    }, initial.stash.filter(item => item?.id));
+    expect(projected.length, 'Real stash capacity must cover deposits after ordinary stack merging').toBeLessThanOrEqual(capacity);
+    console.log('[earned-stash-capacity]', JSON.stringify({ capacity, freeSlots, planned: planned.length,
+        requiredNewSlots: projected.length - (capacity - freeSlots) }));
     const stored = [];
     for (const deposit of planned) {
         const before = await readState(page);

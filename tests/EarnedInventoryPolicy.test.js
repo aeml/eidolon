@@ -103,6 +103,32 @@ test('stack deposits preserve destination identity and exact overflow without mu
     expect(item.stack).toBe(5);
 });
 
+test('a nearly full stash consolidates carried gems before allocating slots to spare gear', () => {
+    const gem = Object.freeze({ id: 'carried-gem', name: 'Flawed Ruby', type: 'GEM', stack: 3, maxStack: 99 });
+    const shard = Object.freeze({ id: 'carried-shard', name: 'Eidolon Shard', type: 'MATERIAL', stack: 23, maxStack: 1000 });
+    const stash = Object.freeze([{ ...gem, id: 'banked-gem', stack: 7 },
+        { ...shard, id: 'banked-shard', stack: 70 }, ...Array.from({ length: 97 }, (_, i) => gear(`banked-${i}`))]);
+    const inventory = Object.freeze([gear('rare-spare', { rarity: 'Rare' }), gem, shard]);
+    const planned = planEarnedBagStorage({ inventory, equipment, stash }, 2);
+    expect(planned).toEqual([{ id: gem.id, name: gem.name }, { id: shard.id, name: shard.name }]);
+    const after = planned.reduce((state, deposit) => expectedEarnedStashDeposit(state,
+        inventory.find(item => item.id === deposit.id)), stash);
+    expect(earnedStashFreeSlots(after, 100)).toBe(1);
+    expect(after[0]).toMatchObject({ id: 'banked-gem', stack: 10 });
+    expect(after[1]).toMatchObject({ id: 'banked-shard', stack: 93 });
+    expect(stash[0].stack).toBe(7);
+    expect(inventory[0].id).toBe('rare-spare');
+});
+
+test('multiple carried stacks cannot reserve the same available bank space twice', () => {
+    const gem = { id: 'gem-a', name: 'Ruby', type: 'GEM', stack: 3, maxStack: 10 };
+    const stash = [{ ...gem, id: 'banked', stack: 7 }];
+    const inventory = [gear('spare'), gem, { ...gem, id: 'gem-b' }];
+    expect(planEarnedBagStorage({ inventory, equipment, stash }, 2)).toEqual([
+        { id: 'gem-a', name: 'Ruby' }, { id: 'spare', name: undefined }
+    ]);
+});
+
 test('complete merges, legacy capacity refresh and first deposits preserve every unit', () => {
     const item = { id: 'new', name: 'Gem', type: 'GEM', stack: 2, maxStack: 99 };
     expect(expectedEarnedStashDeposit([], item)).toEqual([item]);

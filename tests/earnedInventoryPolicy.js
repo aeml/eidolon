@@ -36,9 +36,9 @@ export function planEarnedBagSales({ inventory, equipment, level }, targetFree =
     return candidates.slice(0, needed);
 }
 
-// Preserve spare gear first, then bank crafting valuables without selling them.
-// Quest fragments and consumables stay carried. The real stash handles stacks.
-export function planEarnedBagStorage({ inventory, equipment }, targetFree = EARNED_BAG_TARGET_FREE) {
+// Consolidate existing stacks first, then preserve spare gear and bank other
+// valuables. Quest fragments and consumables stay carried; no items are sold.
+export function planEarnedBagStorage({ inventory, equipment, stash = [] }, targetFree = EARNED_BAG_TARGET_FREE) {
     if (!Number.isInteger(targetFree) || targetFree < 0 || targetFree > inventory.length) throw new Error('Invalid bag space target');
     const needed = Math.max(0, targetFree - earnedBagFreeSlots(inventory));
     const equippedIds = new Set(Object.values(equipment).map(item => item?.id).filter(Boolean));
@@ -52,7 +52,18 @@ export function planEarnedBagStorage({ inventory, equipment }, targetFree = EARN
     const valuables = inventory.filter(item => item?.id && !item.id.startsWith('chronicle-item-') &&
         !equippedIds.has(item.id) && ['GEM', 'MATERIAL', 'RELIC'].includes(item.type) &&
         Number.isInteger(item.stack) && item.stack > 0 && Number.isInteger(item.maxStack) && item.maxStack >= item.stack);
-    return [...gear, ...valuables].slice(0, needed).map(item => ({ id: item.id, name: item.name }));
+    const merged = [];
+    let projected = stash.filter(item => item?.id);
+    for (const item of valuables) {
+        const next = expectedEarnedStashDeposit(projected, item);
+        if (next.length === projected.length) {
+            merged.push(item);
+            projected = next;
+        }
+    }
+    const mergedIds = new Set(merged.map(item => item.id));
+    return [...merged, ...gear, ...valuables.filter(item => !mergedIds.has(item.id))]
+        .slice(0, needed).map(item => ({ id: item.id, name: item.name }));
 }
 
 // Mirror the existing full-stack deposit semantics for read-only conservation
