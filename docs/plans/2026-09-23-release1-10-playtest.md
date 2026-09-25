@@ -14,9 +14,11 @@ features, automated checks and a complete human campaign playthrough.
   presentation checks are recorded below; no repeat finale run is required.
 - Air continuation `earnedair0925d` is running with the completed hunt retained.
   Air collection, remaining story steps and Tempest acceptance remain open.
-- Water/Fire/Air crystal raids and Umbral Nexus remain open. The next native
-  batch must use the observed-position formation correction at 708631c5 or
-  later, run after Air cleanup, and stop on its first failure. Earlier batch
+- Water/Fire/Air crystal raids and Umbral Nexus remain open. A batch pinned to
+  70583f18 is queued behind the live Air wrapper and cleanup checks at
+  `/tmp/eidolon-remaining-encounters-20260925-r3-NLfnnW`, using the observed-position
+  formation correction. It runs one encounter at a time and stops on its
+  first failure; Luna monitors terminal results without automatic retries. Earlier batch
   failures below are history, not currently running jobs or successful clears.
 - The Dark King kill plus exact saved continuation have verified all five
   players' rewards, epilogues and persistence. This is not an uninterrupted
