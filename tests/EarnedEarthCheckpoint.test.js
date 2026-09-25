@@ -259,6 +259,33 @@ test('retains completed Molten reward and unaccepted Air offer without resetting
     expect(fixture.result().writes).toBe(1);
 });
 
+function partialAir(character) {
+    const checkpoint = earnedEarthCheckpoints[21];
+    fireDungeonReadiness(character);
+    character.quests.pop();
+    character.quests.push(...checkpoint.continuationChapters.slice(-3).map(q => ({ ...q })));
+    Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
+}
+
+test('resumes the claimed Air investigation without replaying it or awarding hunt credit', () => {
+    const fixture = exercise(partialAir, false, earnedEarthCheckpoints[21]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.at(-2).investigation_mask = 0; },
+    p => { p.quests.at(-2).granted_resonance_xp = 0; },
+    p => { p.quests.at(-1).count = 1; },
+    p => { p.quests.at(-1).completed = true; },
+    p => { p.resources.health++; }
+])('rejects altered Air discovery, reward, resources or premature hunt credit', change => {
+    const fixture = exercise(p => { partialAir(p); change(p); }, false, earnedEarthCheckpoints[21]);
+    expect(fixture.run).toThrow(/earned/);
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-2).granted_resonance_xp = 0; },
     p => { p.quests.at(-2).completed = false; },

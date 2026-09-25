@@ -187,6 +187,20 @@ export const earnedEarthCheckpoints = Object.freeze([
                 max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
             { id: 'chronicle_air_weatherkeeper', accepted: false, completed: false, count: 0,
                 max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] },
+    // First Air investigation actually claimed; travel failed before the next
+    // hunt's first kill. Retain its exact save, not a completed Air handoff.
+    { ...historicalCheckpoints[13],
+        sha: 'bd9d3b79cfff5a04721b0bce8b84aa7ede8f298ace27bfc535e9dcb72bec67a6',
+        gold: 234181, resources: { version: 1, health: 5065, mana: 3265, dead: false },
+        continuationChapters: [
+            ...historicalCheckpoints[13].continuationChapters.slice(0, -1),
+            { id: 'chronicle_07_crown_of_embers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_air_weatherkeeper', accepted: true, completed: true, count: 1,
+                max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
+            { id: 'chronicle_air_unstolen_hours', accepted: true, completed: false, count: 0,
+                max_count: 30, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);
 

@@ -61,6 +61,12 @@ move-only input through party crowds and requires the live NPC's actual range.
 is still required; this is a test-driver correction, not a proven production
 quest-reward fix. Added ground-projection diagnostics and failure screenshots
 will distinguish the remaining Air input interruption from server movement.
+The retained `earnedair0923a` archive was inspected in a disposable, network-
+isolated database (then removed; original archive retained). Its actual Wizard
+has the Weatherkeeper investigation claimed and Unstolen Hours accepted at0/30,
+level100/245125XP/234181Gold and saved5065HP/3265MP. That exact hash and state
+are now registered for continuation, with96 checkpoint checks passing; no Air
+completion, healing, logout refresh or missing quest credit was manufactured.
 
 - Focused Forge Go/client/live-refresh tests passed. Full normal-bag transaction
   probes now require every potency step to be payable and charge its exact quote.
