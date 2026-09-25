@@ -35,6 +35,21 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Verification and retained evidence
 
+**Current finale result — September25:** the four-phase five-player kill from
+`endgameking0924a` and its exact saved continuation `savedfinale0925b` now verify
+all five survivors' individual finale rewards, rendered epilogue and relogin
+persistence. The latter passed in4.4minutes at `b3cef857`, with all five final
+balances20516Gold/245125XP/1502410Resonance XP. The previously claimed Fighter
+was not paid twice; each of the other four manually received5000Gold and
+490250Resonance XP, without completing another player's quest. Ilyra could be
+reopened after each login; the epilogue screenshot was inspected. This closes
+the post-clear turn-in failure without a production reward change. Keep the
+prepared-prerequisite and saved-continuation scope explicit: it is not an
+uninterrupted earned campaign. A separate later combat attempt stopped on a
+movement-controller diagnostic; that remains distinct from the accepted kill.
+All owned finale services were cleaned up. Air continuation is now running from
+its actual partial save; no Air/Tempest completion claim yet.
+
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
 14 role-affixed Rare items at +4 using normal paid Forge transactions, and
