@@ -36,6 +36,8 @@ test('merchant route uses ordinary right-click sales and independently verifies 
     expect(source).toContain('current.gold + sale.value');
     expect(source).toContain('expect(after.quests).toEqual(before.quests)');
     expect(source).toContain('await leaveTown()');
+    expect(source.indexOf('await setAutoLootThroughSettings(page, false)')).toBeLessThan(source.indexOf('await leaveTown()'));
+    expect(source.indexOf('await setAutoLootThroughSettings(page, autoLoot)')).toBeGreaterThan(source.indexOf('await leaveTown()'));
     expect(source).toContain('await ensureEarnedMerchantWindow(page, async () =>');
     expect(source).toContain('{ moveOnly: true, allowJumpFallback: false }');
     expect(source).not.toMatch(/network\.send|onSellItem\(|player\.gold\s*\+=|useCombatQAWaypoint/);

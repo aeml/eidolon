@@ -107,8 +107,12 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     expect(after.stash.filter(item => item?.id)).toEqual(stored.reduce(expectedEarnedStashDeposit,
         prepared.stash.filter(item => item?.id)));
     expect(earnedBagFreeSlots(after.inventory)).toBeGreaterThanOrEqual(EARNED_BAG_TARGET_FREE);
-    await setAutoLootThroughSettings(page, autoLoot);
+    // Do not refill the newly cleared bag with unrelated roadside drops before
+    // reaching the hunt. These are normal settings/travel inputs, not deleted
+    // items or suppressed world drops. Resume the player's original setting
+    // at the destination so objective combat still collects its actual loot.
     await leaveTown();
+    await setAutoLootThroughSettings(page, autoLoot);
     console.log('[earned-bag-management]', JSON.stringify({ equipped, upgrades, sales, stored: stored.map(({ id, name }) => ({ id, name })),
         before: { level: before.level, gold: before.gold, freeSlots: earnedBagFreeSlots(before.inventory) },
         after: { level: after.level, gold: after.gold, freeSlots: earnedBagFreeSlots(after.inventory) },

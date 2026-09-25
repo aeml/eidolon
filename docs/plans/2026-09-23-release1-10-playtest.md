@@ -59,6 +59,15 @@ the Chronicle notice; run it after the active Air browser releases the GPU.
 This visual change is local, not yet deployed; include it in the next release's
 patch notes rather than triggering a separate deployment for test-only work.
 
+Air monitoring: direct saved-position reads confirmed travel from roughly
+x599 to1071 to1534, with the first hunt at1/30; this is not a stationary timeout
+or completed Air route. Repeated bag visits also showed the driver re-enabling
+auto-loot before returning through unrelated roadside enemies. Future inventory
+visits now restore the original loot setting **after** the normal return trip,
+so the cleared bag is not immediately refilled in transit.27 inventory checks
+and scoped lint passed. The active frozen Air run is unchanged; no items were
+deleted, drop rates altered or quest rewards/credit injected.
+
 September 24: user requires the remaining failures to be resolved, not handed
 off as completed work. A separate endgame encounter fixture now prepares all
 14 role-affixed Rare items at +4 using normal paid Forge transactions, and
