@@ -74,6 +74,13 @@ test('actual Dark King survivors manually claim once and retain their epilogue a
                 { ...options, input: script });
             await loginAndEnterWorld(actorPage, login);
             await leaveEarnedParty(actorPage);
+            // Five independent native browsers share one GPU. Presentation has
+            // separate accepted High/Low coverage; this route checks receipts.
+            await actorPage.keyboard.press('Escape');
+            await actorPage.locator('#btn-settings').click();
+            await actorPage.locator('#graphics-quality').selectOption('low');
+            await actorPage.locator('#btn-close-settings').click();
+            if (await actorPage.locator('#esc-menu').isVisible()) await actorPage.locator('#btn-resume').click();
             expect(await readChronicleChapter(actorPage, chapterId)).toMatchObject({ count: 1, completed: index === 0 });
             expect(await receipt(actorPage)).toEqual({ gold: index === 0 ? 20516 : 15516, xp: 245125,
                 resonanceXP: index === 0 ? 1502410 : 1012160 });

@@ -26,11 +26,22 @@ export async function openIlyra(page) {
     await returnToTown(page);
     await approachStoryWizard({
         settle: () => settledGuideApproach(page),
-        read: () => page.evaluate(() => {
-            const game = window.game, wizard = game.remotePlayers.get('story-wizard-1');
-            return { player: game.player.position, wizard: wizard?.position,
-                range: wizard && game.getInteractionRangeForEntity(wizard) };
-        }),
+        read: async () => {
+            let state;
+            // Recall/login scenery readiness precedes streamed NPC readiness.
+            // Wait for the same live entity source used by pointer projection.
+            await expect.poll(async () => {
+                state = await page.evaluate(() => {
+                    const game = window.game;
+                    const wizard = game.activeEntitiesCache.find(entity => entity.id === 'story-wizard-1') ||
+                        game.remotePlayers.get('story-wizard-1');
+                    return { player: game.player.position, wizard: wizard?.isActive ? wizard.position : null,
+                        range: wizard && game.getInteractionRangeForEntity(wizard) };
+                });
+                return Boolean(state.wizard && Number.isFinite(state.range));
+            }, { timeout: 15_000, message: 'Ilyra must finish streaming after town recall/login' }).toBe(true);
+            return state;
+        },
         move: (dx, dz, options) => moveByGroundClick(page, dx, dz, options)
     });
     let point;

@@ -78,6 +78,13 @@ account save-key names change. Exact original Gold, XP, Resonance and personal
 claim states are checked before normal UI turn-ins and relogin. This validates
 the saved continuation, not an uninterrupted whole campaign or a fresh kill.
 Native execution remains pending; lint, test discovery and shell syntax passed.
+First saved continuation verified the Fighter's existing claim without paying
+again, then the Cleric's actual5000Gold/490250Resonance claim and exact relogin
+receipt. It failed only while reopening Ilyra after that Cleric relogin
+(`finale-saved-turn-in.spec.js:101`), not at its initial claim. A screenshot
+shows Ilyra present shortly afterward. The driver now waits for streamed NPC
+readiness using the same active-cache/remote lookup as real projection. The
+remaining three characters and that final reopening still require confirmation.
 
 - Focused Forge Go/client/live-refresh tests passed. Full normal-bag transaction
   probes now require every potency step to be payable and charge its exact quote.
