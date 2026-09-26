@@ -668,9 +668,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             // Every member and this party were just created. There is no prior
             // instance to discard (and no active-run confirmation dialog).
             resetRun: false,
-            // Walk the short return from a12.5-unit quake instead of spending
-            //20mana on Charge every cycle; retain it for real opening gaps.
-            minimumChargeDistance: 18,
+            // The raid support workers walk; an uncoordinated long Charge
+            // can open a new pack40units beyond both ready healers. Keep the
+            // raid tank with its support. Dungeon Charge coverage is retained.
+            minimumChargeDistance: isRaid ? Infinity : 18,
             requiredFighterSkills: ['Iron Fortress', 'Whirlwind', 'Shield Slam'],
             afterEntry: async () => {
                 entered = true;

@@ -207,6 +207,21 @@ features, automated checks and a complete human campaign playthrough.
   `/tmp/eidolon-air-recovery-20260926-u65to6`, behind Water's exact wrapper PID,
   terminal marker and cleanup. One corrected, bounded attempt; no other accepted
   encounter is repeated and no deployment/browser overlap is allowed.
+- `finalwater0926d` cleared the guardian and two repair waves, then the Fighter
+  died in wave3 after47.6minutes. The last two enemies remained alive; this is
+  not a completed Vigil. Both Clerics had full mana and ready heals but were
+  roughly40units behind the final pull, closing36→24 and40→28→17→7units while
+  the tank's health fell. The secondary healer selected its heal at309HP, too
+  late. They recorded65177/50251 effective ally healing over the run. The next
+  prepared raid uses ordinary walking rather than uncoordinated long Charge
+  inputs so the tank does not deliberately outpace its walking support. Dungeon
+  Charge coverage and all production stats, collision, damage/healing, gear,
+  death assertions and time budgets are unchanged. This is a test-party tactic,
+  not a demonstrated production healing defect or accepted raid clear.
+  Archive `/tmp/eidolon-party-checkpoint-finalwater0926d-g5dtO1/save.archive.gz`, SHA
+  f36836ec734795a2f34149b79823d1d04aa246d5ebba750230c9f2de0d9798dd.
+  Water's terminal handle is collected. Frozen38de1fd0 Air `finalair0926e`
+  has now started after Water cleanup; do not alter its running source.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

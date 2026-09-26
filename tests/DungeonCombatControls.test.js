@@ -37,6 +37,11 @@ test('earned melee controls honor resolved talent/equipment costs', () => {
         skillCosts: { Whirlwind: 24 } }, true)).toBeNull();
 });
 const primary = { ability: 'Charge', cooldown: 0, dead: false, distance: 10, attackRange: 4, castRange: 18 };
+test.each([10, 20, 40, 60])('walking raid-tank policy avoids an unsupported Charge at %s units', distance => {
+    const state = { ...primary, distance, castRange: 60 };
+    expect(shouldUseHuntPrimary(state, { minimumChargeDistance: Infinity })).toBe(false);
+    expect(shouldUseHuntPrimary(state)).toBe(true);
+});
 const partyTank = { ...fighter, hotbar: ['Whirlwind', 'Shield Slam', 'Iron Fortress'],
     cooldowns: { 'Iron Fortress': 30 } };
 test.each([25, 39, 40, 64])('party tank preserves the next Fortress instead of starving it with Slam: %s', mana => {
