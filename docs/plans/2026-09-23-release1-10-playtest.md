@@ -7,6 +7,13 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
+- Latest queue: Air `finalair0926e` is running at38de1fd0. Water
+  `finalwater0926e` is queued at60a791f6 under
+  `/tmp/eidolon-water-support-20260926-7QmXo5/run.sh`; it waits for Air's
+  terminal marker and owned-container cleanup before starting. Water uses the
+  recorded walking-tank support correction below. Both are single attempts,
+  with unchanged encounter limits and no retries. Fire, Nexus, Tempest and the
+  finale remain accepted and are not repeated. No deployment has started.
 - Verified live remains Alpha 1.10.0 at e67fc0ad1b924002758e67e5a3a3bcb615d97476.
   Alpha 1.10.1 is a local, undeployed notification-polish candidate. Login,
   package and server version defaults and cumulative notes agree; all 293
