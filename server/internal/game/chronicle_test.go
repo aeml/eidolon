@@ -222,8 +222,15 @@ func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 	}
 
 	for _, definition := range chronicleQuestCatalog() {
-		if _, dark := darkRealmChapterByID(definition.ID); dark {
+		darkChapter, dark := darkRealmChapterByID(definition.ID)
+		if dark {
 			player.Level = 100 // Quest graph fixture, not an earned progression/balance run.
+			player.InstanceID = DarkRealmInstanceID
+			wizard := w.Entities[darkRealmWizardID]
+			player.X, player.Z = wizard.X, wizard.Z
+			if CanEnterUmbralNexus(player) {
+				t.Fatalf("Nexus unlocked before expedition chapter %s", definition.ID)
+			}
 		}
 		if _, ok := w.PerformAcceptQuest(player.ID, definition.ID); !ok {
 			t.Fatalf("chapter %d accept failed", definition.Chapter)
@@ -232,14 +239,40 @@ func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 		if !active.Accepted || active.Completed {
 			t.Fatalf("chapter %d was not the active story step: %+v", definition.Chapter, active)
 		}
+		if _, ok := w.PerformCompleteQuest(player.ID, definition.ID); ok {
+			t.Fatalf("chapter %d paid before objective work", definition.Chapter)
+		}
 		switch definition.Type {
 		case "KILL":
 			for count := 0; count < definition.MaxCount; count++ {
-				w.UpdateQuestProgress(player, definition.Target)
+				if dark {
+					district, _ := darkRealmDistrict(darkChapter.District)
+					w.updateDarkRealmHuntKillLocked(player, darkChapter.Enemy, 100, DarkRealmInstanceID, district.Room.X, district.Room.Z)
+				} else {
+					w.UpdateQuestProgress(player, definition.Target)
+				}
 			}
 		case "COLLECT":
-			player.Inventory[0] = Item{ID: "chronicle-item-chain", Name: definition.Target, Stack: definition.MaxCount, MaxStack: definition.MaxCount}
-			w.UpdateCollectionQuestProgress(player, definition.Target, definition.MaxCount)
+			if dark {
+				district, _ := darkRealmDistrict(darkChapter.District)
+				for count := 0; count < definition.MaxCount; count++ {
+					// Exercise district/source selection and normal pickup; the
+					// fixed successful roll is not a combat or drop-rate measurement.
+					w.Mu.Lock()
+					loot := w.spawnChronicleDropLocked(player.ID, darkChapter.Enemy, DarkRealmInstanceID, district.Room.X, district.Room.Z, 0)
+					w.Mu.Unlock()
+					if loot == nil {
+						t.Fatalf("chapter %s could not produce fragment %d", definition.ID, count+1)
+					}
+					player.X, player.Z = loot.X, loot.Z
+					if _, ok, reason := w.PerformPickup(player.ID, loot.ID); !ok {
+						t.Fatalf("chapter %s pickup failed: %s", definition.ID, reason)
+					}
+				}
+			} else {
+				player.Inventory[0] = Item{ID: "chronicle-item-chain", Name: definition.Target, Stack: definition.MaxCount, MaxStack: definition.MaxCount}
+				w.UpdateCollectionQuestProgress(player, definition.Target, definition.MaxCount)
+			}
 		case "REPAIR":
 			w.UpdateChronicleEventProgress(player, "REPAIR", definition.Target)
 		case "INVESTIGATE":
@@ -266,6 +299,10 @@ func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 		default:
 			t.Fatalf("chapter %d has unsupported objective type %q", definition.Chapter, definition.Type)
 		}
+		if dark {
+			wizard := w.Entities[darkRealmWizardID]
+			player.InstanceID, player.X, player.Z = DarkRealmInstanceID, wizard.X, wizard.Z
+		}
 		if questByID(t, player, definition.ID).Completed {
 			t.Fatal("objective auto-completed")
 		}
@@ -274,6 +311,18 @@ func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 		}
 		if !questByID(t, player, definition.ID).Completed {
 			t.Fatalf("chapter %d did not complete", definition.Chapter)
+		}
+		gold, xp, resonanceLevel, resonanceXP := player.Gold, player.Experience, player.ResonanceLevel, player.ResonanceXP
+		if _, ok := w.PerformCompleteQuest(player.ID, definition.ID); ok ||
+			player.Gold != gold || player.Experience != xp || player.ResonanceLevel != resonanceLevel || player.ResonanceXP != resonanceXP {
+			t.Fatalf("chapter %d allowed a duplicate reward", definition.Chapter)
+		}
+		if definition.ID == darkRealmNexusReadyID && !CanEnterUmbralNexus(player) {
+			t.Fatal("manual expedition finale did not unlock Nexus")
+		}
+		// Original dungeon/finale graph fixtures continue at Lanternhold.
+		if dark {
+			player.InstanceID, player.X, player.Z = "", 20, 215
 		}
 	}
 

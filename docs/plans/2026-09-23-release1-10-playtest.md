@@ -43,6 +43,16 @@ features, automated checks and a complete human campaign playthrough.
   Umbral Nexus. Runs are sequential, bounded, zero-retry and stop on first
   failure. Luna monitors terminal outcomes. None of these new checks is yet
   accepted; no new deployment has been started.
+- The existing55-chapter graph regression now exercises every Dark Realm hunt
+  through its district/enemy consumer and all four collection items through
+  personal drop creation and normal pickup, rather than inserting those items
+  directly. All24 expedition conversations use the shared-realm Ilyra, and the
+  check rejects premature Nexus access, early turn-ins and duplicate rewards.
+  Focused graph/Dark Realm tests pass in2.463seconds. Positions and successful
+  drop rolls are controlled unit fixtures: this proves objective integration,
+  not combat, navigation, persistence, drop pacing or human campaign duration.
+  The retained Air final-discovery screenshot was inspected: all three lore
+  records are readable in the Journal with the Stolen Horizon marked Ready.
 - The Dark King kill plus exact saved continuation have verified all five
   players' rewards, epilogues and persistence. This is not an uninterrupted
   earned campaign. Human campaign timing remains a playtest question; phone
