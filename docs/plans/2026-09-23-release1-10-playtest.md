@@ -146,6 +146,21 @@ features, automated checks and a complete human campaign playthrough.
   Fire/Nexus nor the finale is repeated, and no production deployment overlaps
   this native queue. Read terminal results from this exact batch before deciding
   further work; the previous batch and Fire continuation are completed handles.
+- `finalair0926c` stopped after19.9minutes during Tempest Sovereign, all five
+  alive. The second healer did make1.859units of actual movement on its planned
+  1.5unit departure, but the moving boss deflected it away from the frozen
+  waypoint. The newly reused formation observation required progress toward
+  that point, even though combat support replans to a moving ally each tick.
+  Combat following now uses ordinary greater-than-one-unit displacement for
+  steps longer than1.25units, retaining live/same-instance post-input checks;
+  short corners and actual dungeon formation retain their arrival contracts.
+  Path/body validation, input origin checks, real healing, survival and target/
+  expedition progress budgets remain unchanged. This is input acceptance, not
+  proof of reaching support range or a completed raid. The recorded regression
+  explicitly still fails formation arrival and refuses an unmoving input.
+  Archive `/tmp/eidolon-party-checkpoint-finalair0926c-j6KE2Z/save.archive.gz`, SHA
+  36d89ba89e004e74867278dbcc74656361001c49ffe9eac3b70562c544f7406b.
+  Water is still running on frozen67393a8e; do not alter or restart that attempt.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

@@ -27,6 +27,15 @@ export function partyFormationArrival(origin, step, instanceId) {
     return { x: origin.x + step.dx, z: origin.z + step.dz, radius: .25, instanceId };
 }
 
+// Combat support replans toward a moving ally every role tick; it is not a
+// settled formation waypoint. A body can deflect a real walking step. Require
+// ordinary witnessed displacement for longer steps, retaining exact arrival
+// for short corners where a one-unit displacement cannot be expected.
+export function partyCombatFollowObservation(origin, step, instanceId) {
+    const arrival = partyFormationArrival(origin, step, instanceId);
+    return Math.hypot(step.dx, step.dz) > 1.25 ? { minimumDistance: 1 } : { arrival };
+}
+
 // The static floor query does not include actors. Check the same logical
 // circles used by entity collision, allowing movement away from an existing
 // overlap but never a new intersection or deeper penetration.

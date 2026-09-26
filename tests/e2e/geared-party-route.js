@@ -8,7 +8,8 @@ import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { partyBossDiagnostic, preparePartyBossDiagnostic, partyDiagnosticRoom } from '../partyBossDiagnostic.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
-import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyWarningInputPolicy, partyFormationArrival,
+    partyCombatFollowObservation } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
@@ -324,7 +325,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
 
         async function follow(actor, anchor, distance = 4) {
             const plan = await actor.page.evaluate(async ({ anchor, distance }) => {
-                const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival,
+                const { partyFormationStep, partyPathAvoidsActors,
                     PartyFormationRouteUnavailable } = await import('/tests/partyDungeonControls.js');
                 const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                 const { planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
@@ -348,16 +349,21 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     throw error;
                 }
                 step = planVisibleGroundStepInPage(step, { minimumDistance: .25 });
-                return step && { ...step, origin: { x: p.position.x, z: p.position.z, instanceId: g.currentInstanceId },
-                    arrival: partyFormationArrival(p.position, step, g.currentInstanceId) };
+                return step && { ...step, origin: { x: p.position.x, z: p.position.z, instanceId: g.currentInstanceId } };
             }, { anchor, distance });
             if (!plan) return;
             // Reuse formation's body/floor-aware detours for combat support too.
             // An unavailable route waits for the existing bounded combat loop;
             // a real issued input that fails still fails the expedition.
-            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.dx, plan.dz,
-                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true,
-                    batchPreparation: true, expectedOrigin: plan.origin, arrival: plan.arrival }));
+            await tryDungeonGroundStep(async () => {
+                const after = await moveByGroundClick(actor.page, plan.dx, plan.dz,
+                    { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true,
+                        batchPreparation: true, expectedOrigin: plan.origin,
+                        ...partyCombatFollowObservation(plan.origin, plan, plan.origin.instanceId) });
+                expect(after.state).not.toBe('DEAD');
+                expect(after.health).toBeGreaterThan(0);
+                expect(after.instanceId).toBe(plan.origin.instanceId);
+            });
         }
 
         async function avoidWarnings(actor, encounter) {
