@@ -76,8 +76,26 @@ features, automated checks and a complete human campaign playthrough.
   Unlike the old stop-first batch, each failure is retained and the next check
   may run only after confirming prior owned containers are gone. This collects
   distinct remaining results without repeating Tempest or allowing overlapping
-  expeditions. Luna reports terminal outcomes. Nexus passed; Fire is running,
-  with Air and Water still queued and all three raid results open.
+  expeditions. Luna reports terminal outcomes. Nexus passed; Fire's combat and
+  restoration completed but its stale terminal QA flag failed (details below).
+  Air is running and Water remains queued. Fire's manual rewards remain open.
+- `finalfire0926b` ended with all five players alive, all three wave-clear events,
+  `3:complete`, crystal stage `restored` and personal repair quest1/1, unclaimed.
+  Its final bounded fight crossed the30-minute ritual loop-start deadline; the
+  local `restored` flag was not read again before the assertion. The driver now
+  reads authoritative crystal state once after the loop, without starting more
+  combat or extending any deadline. This is a QA-only correction, not a game
+  defect or a full accepted reward route. The two Clerics recorded125373/83068
+  effective ally healing; no player death was observed. The untouched archive
+  `/tmp/eidolon-party-checkpoint-finalfire0926b-1UGY7j/save.archive.gz`, SHA
+  8a8a777f55f3351702c44f505d07928c91a2d458a411faca885b95c38956f8c4,
+  independently confirms all five level70/6895XP/1849Gold survivors with the
+  accepted, unclaimed Fire repair credit and148906XP/1400Gold reward quote.
+  Its temporary inspection database was removed. A short saved continuation
+  reuses the existing finale turn-in route with `EIDOLON_E2E_SAVED_RAID=fire`;
+  expected normal reward is level71/36676XP/3249Gold and the Skyglass offer.
+  This must wait for the current batch to finish, preserve original logout
+  timestamps, and verify individual claims/relogin without replaying the raid.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

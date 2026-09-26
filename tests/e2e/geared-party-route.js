@@ -834,7 +834,6 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     // harness budget, not a human balance target; the unchanged
                     // two-hour expedition and per-enemy watchdogs still apply.
                     const deadline = Date.now() + 30 * 60_000;
-                    let restored = false;
                     while (Date.now() < deadline) {
                         controls.assertActive();
                         const status = await tank.page.evaluate(() => {
@@ -847,7 +846,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                         distance: e.position.distanceTo(g.player.position) }))
                                     .sort((a, b) => a.distance - b.distance) };
                         });
-                        if (status.crystal?.stage === 'restored') { restored = true; break; }
+                        if (status.crystal?.stage === 'restored') break;
                         if (status.enemies.length) {
                             await controls.fight({ ...status.enemies[0], encounter });
                         } else {
@@ -874,6 +873,11 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                 'raid defense requires current authoritative updates').toBeLessThan(10_000);
                         }
                     }
+                    // A bounded fight started before the loop deadline can finish
+                    // the final wave after it. Read its actual result before
+                    // declaring failure; do not start another fight or extend time.
+                    controls.assertActive();
+                    const restored = await tank.page.evaluate(() => window.game.currentDungeonRoomState?.crystal?.stage === 'restored');
                     expect(restored, 'complete all three defended ritual waves within the same expedition').toBe(true);
                     for (const actor of actors) {
                         await expect.poll(() => actor.page.evaluate(() => window.game.currentDungeonRoomState?.crystal?.stage)).toBe('restored');
