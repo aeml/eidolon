@@ -139,6 +139,13 @@ features, automated checks and a complete human campaign playthrough.
   encounter/expedition deadlines and15-minute saved-run expiry remain unchanged.
   Luna's watcher stopped at its usage limit after the Air report; root confirmed
   both remaining terminal logs and absence of owned services directly.
+  The corrected, frozen67393a8e batch is now running under
+  `/tmp/eidolon-air-water-20260926-E82svp`: Air then Water, five class-geared
+  level70 players, one attempt each, sequential with owned-container cleanup
+  guards. The Fire saved reward pass is a launch prerequisite. Neither accepted
+  Fire/Nexus nor the finale is repeated, and no production deployment overlaps
+  this native queue. Read terminal results from this exact batch before deciding
+  further work; the previous batch and Fire continuation are completed handles.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with
