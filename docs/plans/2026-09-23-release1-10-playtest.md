@@ -181,6 +181,10 @@ features, automated checks and a complete human campaign playthrough.
   94736598c3de3152986f7c516e333dc3e668fa0d4b082060b92150987a6850e0.
   The Air/Water batch is now terminal; Air-only `finalair0926d` has started after
   its cleanup. Keep that frozen run intact, then verify only corrected Water.
+  Water-only `finalwater0926d` at861c3f3b is queued in
+  `/tmp/eidolon-water-final-20260926-GpPW6e`, waiting for Air's exact wrapper
+  PID/terminal marker and service cleanup. It runs once with the same five
+  level70 class-geared players and existing bounds, without native retries.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with
