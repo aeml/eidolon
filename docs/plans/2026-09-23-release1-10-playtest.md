@@ -96,6 +96,11 @@ features, automated checks and a complete human campaign playthrough.
   expected normal reward is level71/36676XP/3249Gold and the Skyglass offer.
   This must wait for the current batch to finish, preserve original logout
   timestamps, and verify individual claims/relogin without replaying the raid.
+  Frozen continuation90ba7ded is queued under
+  `/tmp/eidolon-fire-reward-20260926-OoRqOE`; it waits for the original wrapper's
+  terminal marker and owned-container cleanup, then runs once with a10-minute
+  native test limit. Scoped lint, all11 Vigil-control unit tests, Playwright
+  discovery and whitespace checks pass. Luna monitors the terminal result.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with
