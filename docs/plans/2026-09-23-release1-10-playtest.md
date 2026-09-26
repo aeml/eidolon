@@ -37,6 +37,12 @@ features, automated checks and a complete human campaign playthrough.
   Retained Water save: `/tmp/eidolon-party-checkpoint-finalwater0925c-jncY7K/save.archive.gz`,
   SHAdebf92bb3b14a0f546901f9cd84274824799484843863651ccb0092c1b845671.
   Both runs cleaned up; no automatic retry or active old batch remains.
+- Next native batch started at f0cc6e71 under
+  `/tmp/eidolon-final-encounters-20260926-Ox4Ijm`: earned Wizard plus three
+  class-geared supports in Tempest, then prepared Water/Fire/Air raids and
+  Umbral Nexus. Runs are sequential, bounded, zero-retry and stop on first
+  failure. Luna monitors terminal outcomes. None of these new checks is yet
+  accepted; no new deployment has been started.
 - The Dark King kill plus exact saved continuation have verified all five
   players' rewards, epilogues and persistence. This is not an uninterrupted
   earned campaign. Human campaign timing remains a playtest question; phone
