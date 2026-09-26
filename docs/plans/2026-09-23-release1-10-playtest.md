@@ -161,6 +161,11 @@ features, automated checks and a complete human campaign playthrough.
   Archive `/tmp/eidolon-party-checkpoint-finalair0926c-j6KE2Z/save.archive.gz`, SHA
   36d89ba89e004e74867278dbcc74656361001c49ffe9eac3b70562c544f7406b.
   Water is still running on frozen67393a8e; do not alter or restart that attempt.
+  The80 focused formation/movement tests and scoped lint/diff pass. Air-only
+  `finalair0926d` atfe0fb99c is queued under
+  `/tmp/eidolon-air-final-20260926-krGvMm`, waiting for that exact batch PID and
+  terminal marker plus owned-container cleanup. One fresh bounded attempt,
+  zero retries; no changed logout timestamps or fabricated saved boss state.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with
