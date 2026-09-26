@@ -47,3 +47,16 @@ export function raidVigilSupportAnchor(crystal, healerIndex, states) {
     }
     return null;
 }
+
+// After handing off an Air anchor (or completing another ritual), rejoin
+// support instead of standing alone waiting for the tank's next selected kill.
+// The currently assigned runner must still physically complete their marker.
+export function raidVigilRecoveryAnchor(crystal, actorIndex, actor, healers) {
+    if (crystal?.stage !== 'repairing' || ![2, 3].includes(actorIndex) ||
+        !actor || actor.dead || !(actor.hp > 0) || raidVigilDestination(crystal, actorIndex)) return null;
+    const distance = other => Math.hypot(actor.x - other.x, actor.z - other.z);
+    const nearest = healers.filter(other => other && !other.dead && other.hp > 0 && other.instance === actor.instance &&
+        [other.x, other.z, actor.x, actor.z].every(Number.isFinite))
+        .sort((a, b) => distance(a) - distance(b))[0];
+    return nearest && distance(nearest) > 9 ? nearest : null;
+}

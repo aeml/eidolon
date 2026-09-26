@@ -26,7 +26,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
-import { raidVigilSupportAnchor } from '../raidVigilControls.js';
+import { raidVigilSupportAnchor, raidVigilRecoveryAnchor } from '../raidVigilControls.js';
 import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter, openIlyra } from './chronicle-earth-route.js';
@@ -568,12 +568,6 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
 
         async function actCombatRole(actor, policy, target) {
             if (actor.className === 'Cleric') return healParty({ allowMovement: policy.allowApproach }, actor);
-            if (isRaid && policy.allowApproach && await stepRaidVigilInput(actor.page, actors.indexOf(actor))) return;
-            const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
-                damageByTarget: window.__partyClearEvidence.damageByTarget
-            })), target.id);
-            if (!tankEngaged) return; // Wait for a real tank hit, not just movement.
-            if (policy.allowApproach && await spaceRangedRole(actor, target)) return;
             const enemy = await actor.page.evaluate(id => {
                 const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                 return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
@@ -595,6 +589,21 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     return;
                 }
             }
+            if (isRaid && policy.allowApproach) {
+                if (await stepRaidVigilInput(actor.page, actors.indexOf(actor))) return;
+                const crystal = await actor.page.evaluate(() => window.game.currentDungeonRoomState?.crystal);
+                if (crystal?.stage === 'repairing') {
+                    const states = await Promise.all(actors.map(role => roleSnapshot(role.page)));
+                    const anchor = raidVigilRecoveryAnchor(crystal, actors.indexOf(actor), states[actors.indexOf(actor)],
+                        states.filter((_state, index) => actors[index].className === 'Cleric'));
+                    if (anchor) { await follow(actor, anchor, 8); return; }
+                }
+            }
+            const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
+                damageByTarget: window.__partyClearEvidence.damageByTarget
+            })), target.id);
+            if (!tankEngaged) return; // Offense waits for a real hit; self-protection and recovery do not.
+            if (policy.allowApproach && await spaceRangedRole(actor, target)) return;
             const point = await projectEntity(actor.page, target.id);
             if (!point?.visible) {
                 if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);

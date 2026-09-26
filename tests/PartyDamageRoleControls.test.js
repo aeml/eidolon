@@ -8,12 +8,15 @@ test('injured Wizard selects a real equipped shield key', () => {
     expect(selectPartyDamageBuff(wizard)).toEqual({ skill: 'Arcane Shield', key: '2' });
 });
 test.each([
-    { dead: true }, { distance: 21 }, { distance: NaN }, { mana: 39 }, { mana: NaN },
+    { dead: true }, { mana: 39 }, { mana: NaN },
     { sinceCastMs: 100 }, { healthRatio: 1 }, { shieldActive: true }, { hotbar: [] },
     { unlockedSkills: [] }, { cooldowns: { 'Arcane Shield': 1 } }, { costs: {} },
     { hotbar: ['a', 'b', 'c', 'd', 'Arcane Shield'] }
 ])('unavailable shield produces no input: %j', unavailable => {
     expect(selectPartyDamageBuff({ ...wizard, ...unavailable })).toBeNull();
+});
+test.each([31, Infinity, NaN])('injured repair runner can self-shield while the tank target is distant: %s', distance => {
+    expect(selectPartyDamageBuff({ ...wizard, distance })).toEqual({ skill: 'Arcane Shield', key: '2' });
 });
 const rogue = { ...wizard, className: 'Rogue', healthRatio: 1,
     hotbar: ['Smoke Bomb', 'Poison Coating'], unlockedSkills: ['Poison Coating'], costs: { 'Poison Coating': 30 } };

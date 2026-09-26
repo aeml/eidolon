@@ -29,7 +29,9 @@ export async function attackPartyDamageTarget(input, targetId) {
 // Choose legal self-buff inputs from the actual loadout/resources. This does
 // not grant skills or stats, and never spends mana during travel/out-of-range.
 export function selectPartyDamageBuff(state) {
-    if (state.dead || !Number.isFinite(state.distance) || state.distance > state.range ||
+    // Self-protection does not require the tank's selected enemy to be in
+    // casting range. A repair runner can be attacked by a different enemy.
+    if (state.dead || (state.className !== 'Wizard' && (!Number.isFinite(state.distance) || state.distance > state.range)) ||
         !Number.isFinite(state.mana) || state.sinceCastMs < 550) return null;
     const skill = state.className === 'Wizard' && state.healthRatio < .9 && !state.shieldActive
         ? 'Arcane Shield' : state.className === 'Rogue' && !state.poisonActive ? 'Poison Coating' : null;

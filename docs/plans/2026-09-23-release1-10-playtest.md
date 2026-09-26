@@ -185,6 +185,24 @@ features, automated checks and a complete human campaign playthrough.
   `/tmp/eidolon-water-final-20260926-GpPW6e`, waiting for Air's exact wrapper
   PID/terminal marker and service cleanup. It runs once with the same five
   level70 class-geared players and existing bounds, without native retries.
+- `finalair0926d` cleared Tempest Sovereign and reached the first repair wave,
+  then failed the survival assertion after28.3minutes: the Wizard died at wind
+  anchor3 to repeated325-damage Harpy attacks while both healers were about30
+  units away. All four physical wind handoffs had completed. This is a real
+  failed encounter, not an input-observation false negative. The test driver
+  gated even self-shielding behind the tank's first hit on its selected enemy,
+  and an unassigned runner could wait alone after handing off its anchor.
+  Self-protection now precedes that offensive gate; the Wizard's self-shield
+  does not require the tank target to be in spell range. Unassigned ritual
+  runners outside9units rejoin the nearest living same-instance healer through
+  ordinary collision-checked movement. Assigned runners retain their markers;
+  offensive attacks still wait for real tank damage.49 focused role/Vigil tests
+  and scoped lint/diff pass. No stats, gear, damage, healing, rewards, survival
+  assertion or time limits changed. Native Air acceptance remains open.
+  Archive `/tmp/eidolon-party-checkpoint-finalair0926d-Dt5kxx/save.archive.gz`, SHA
+  b3ff0bfeef094efe497c6dcad233634c3908af591e84371629fc3a8423772f0f.
+  Root collected the terminal Air handle; Water-only `finalwater0926d` started
+  after Air cleanup and remains unchanged on861c3f3b.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

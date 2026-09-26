@@ -1,8 +1,25 @@
-import { raidVigilDestination, raidVigilSupportAnchor } from './raidVigilControls.js';
+import { raidVigilDestination, raidVigilSupportAnchor, raidVigilRecoveryAnchor } from './raidVigilControls.js';
 
 const point = (x = 0, radius = 6) => ({ x, z: 0, radius, label: 'marker', state: 'active' });
 const crystal = (element, current = 0, hint = '') => ({ stage: 'repairing', element,
     objective: { current, hint, points: [point(0), point(30), point(60), point(90)] } });
+
+test('Air runner rejoins nearby healing after passing its anchor rather than waiting alone for tank credit', () => {
+    const wizard = { x: 109975.1548128499, z: 19280.43283794859, hp: 2700, instance: 'raid' };
+    const tankHealer = { x: 109994.13292991625, z: 19318.572248725173, hp: 2975, instance: 'raid' };
+    const escort = { x: 110005.69156205864, z: 19280.405858986054, hp: 2338, instance: 'raid' };
+    expect(raidVigilRecoveryAnchor(crystal('Air', 3), 2, wizard, [tankHealer, escort])).toBe(escort);
+    expect(raidVigilRecoveryAnchor(crystal('Air', 2), 2, wizard, [escort])).toBeNull();
+    const completed = crystal('Air', 4);
+    completed.objective.complete = true;
+    expect(raidVigilRecoveryAnchor(completed, 2, wizard, [escort])).toBe(escort);
+    expect(raidVigilRecoveryAnchor(completed, 2, wizard, [{ ...escort, x: wizard.x + 8, z: wizard.z }])).toBeNull();
+    for (const changes of [{ dead: true }, { hp: 0 }, { instance: 'town' }, { x: NaN }]) {
+        expect(raidVigilRecoveryAnchor(completed, 2, wizard, [{ ...escort, ...changes }])).toBeNull();
+    }
+    expect(raidVigilRecoveryAnchor(completed, 2, { ...wizard, dead: true }, [escort])).toBeNull();
+    expect(raidVigilRecoveryAnchor({ ...completed, stage: 'restored' }, 2, wizard, [escort])).toBeNull();
+});
 
 test('second healer accompanies a healthy Fire runner before the recorded out-of-range injury', () => {
     const states = Array.from({ length: 5 }, (_, id) => ({ id, hp: 3050, dead: false, instance: 'raid' }));
