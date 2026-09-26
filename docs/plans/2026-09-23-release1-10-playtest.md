@@ -70,6 +70,13 @@ features, automated checks and a complete human campaign playthrough.
   SHAf86af5b080b88a7bd37368ed418c367d3c1d6ad431777e9413d0dc276d2afc59.
   Root confirmed the old wrapper ended, no owned Water containers were running
   and ports18307/18308/4197 were clear. Retain Tempest's pass; do not replay it.
+- The corrected remaining-encounter batch is now running at bff2c1b9:
+  `/tmp/eidolon-remaining-encounters-20260926-r2-mfwnDe`, Nexus→Fire→Air→Water.
+  These are independent prepared-party checks, run sequentially without retries.
+  Unlike the old stop-first batch, each failure is retained and the next check
+  may run only after confirming prior owned containers are gone. This collects
+  distinct remaining results without repeating Tempest or allowing overlapping
+  expeditions. Luna reports terminal outcomes; all four new results remain open.
 - The existing55-chapter graph regression now exercises every Dark Realm hunt
   through its district/enemy consumer and all four collection items through
   personal drop creation and normal pickup, rather than inserting those items
