@@ -76,7 +76,19 @@ features, automated checks and a complete human campaign playthrough.
   Unlike the old stop-first batch, each failure is retained and the next check
   may run only after confirming prior owned containers are gone. This collects
   distinct remaining results without repeating Tempest or allowing overlapping
-  expeditions. Luna reports terminal outcomes; all four new results remain open.
+  expeditions. Luna reports terminal outcomes. Nexus passed; Fire is running,
+  with Air and Water still queued and all three raid results open.
+- `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
+  Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
+  manual rewards and Dark King offers, then completed-run recall/re-entry with
+  preserved seed/clears/Gold. The Cleric recorded17506 actual ally healing;
+  all three damage roles dealt damage. All four final balances were4302Gold.
+  This uses prepared level100 class-specific Rare+4 builds and prior quest
+  prerequisites; it is an encounter/transition check, not an earned Dark Realm
+  expedition or human duration measurement. Retained save
+  `/tmp/eidolon-party-checkpoint-finalnexus0926b-k1WPmw/save.archive.gz`, SHA
+  f474680560128890aa1dccfd6591f30238013f8af1e4d05574d4f70cf745df6b.
+  Do not replay this accepted clear for later test-only or documentation work.
 - The existing55-chapter graph regression now exercises every Dark Realm hunt
   through its district/enemy consumer and all four collection items through
   personal drop creation and normal pickup, rather than inserting those items
