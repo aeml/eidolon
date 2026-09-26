@@ -60,3 +60,16 @@ export function raidVigilRecoveryAnchor(crystal, actorIndex, actor, healers) {
         .sort((a, b) => distance(a) - distance(b))[0];
     return nearest && distance(nearest) > 9 ? nearest : null;
 }
+
+// Once the marker work ends, the escort must not remain alone self-healing
+// against a pack while both damage runners return to the tank. Walk during
+// direct-heal cooldowns (or when nobody needs healing), never instead of a
+// ready heal. The caller still uses normal warning-aware, collision-safe input.
+export function raidVigilEscortRecoveryAnchor(crystal, healerIndex, healer, tank,
+    { allowMovement, cooldown, needsHeal }) {
+    if (crystal?.stage !== 'repairing' || !crystal.objective?.complete || healerIndex !== 4 ||
+        !allowMovement || (needsHeal && !(Number.isFinite(cooldown) && cooldown >= 1)) ||
+        !healer || !tank || healer.dead || tank.dead || !(healer.hp > 0) || !(tank.hp > 0) ||
+        healer.instance !== tank.instance || ![healer.x, healer.z, tank.x, tank.z].every(Number.isFinite)) return null;
+    return Math.hypot(healer.x - tank.x, healer.z - tank.z) > 9 ? tank : null;
+}

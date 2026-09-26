@@ -26,7 +26,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
-import { raidVigilSupportAnchor, raidVigilRecoveryAnchor } from '../raidVigilControls.js';
+import { raidVigilSupportAnchor, raidVigilRecoveryAnchor, raidVigilEscortRecoveryAnchor } from '../raidVigilControls.js';
 import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter, openIlyra } from './chronicle-earth-route.js';
@@ -445,6 +445,9 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             const supportAnchor = tankAnchor || runnerAnchor || damageAnchor;
             const hurt = selectPartyHealTarget(states, states[healerIndex], healDistance,
                 { allowApproach: allowMovement, anchor: supportAnchor });
+            const regroup = isRaid && raidVigilEscortRecoveryAnchor(crystal, healerIndex, states[healerIndex], states[0],
+                { allowMovement, cooldown: available.cooldown, needsHeal: Boolean(hurt) });
+            if (regroup) { await follow(healer, regroup, 7); return; }
             if (!hurt) {
                 if (allowMovement && !states[healerIndex].dead) await follow(healer, supportAnchor || states[0], runnerAnchor || damageAnchor ? 7 : 9);
                 return;

@@ -7,13 +7,30 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
-- Latest queue: Air `finalair0926e` is running at38de1fd0. Water
-  `finalwater0926e` is queued at60a791f6 under
+- Latest queue: Air `finalair0926e` failed at38de1fd0 (result below). Water
+  `finalwater0926e` is running at60a791f6 under
   `/tmp/eidolon-water-support-20260926-7QmXo5/run.sh`; it waits for Air's
   terminal marker and owned-container cleanup before starting. Water uses the
   recorded walking-tank support correction below. Both are single attempts,
   with unchanged encounter limits and no retries. Fire, Nexus, Tempest and the
   finale remain accepted and are not repeated. No deployment has started.
+- Air `finalair0926e` defeated Tempest Sovereign and cleared repair wave1,
+  then failed during wave2 in32.2minutes. Both Clerics and the Rogue were dead
+  in the final snapshots; Fighter/Wizard survived. All five had1246Gold and
+  unclaimed0/1 crystal credit. Both wave2 wind handoffs completed, but enemies
+  remained. The escort Cleric was48.3units from the tank after its assignment
+  ended, repeatedly self-healing through325Harpy/447Giant attacks without
+  regrouping. Effective ally healing was69156/45886; this is not evidence of
+  broken healing. The failure screenshot was inspected. Untouched archive:
+  `/tmp/eidolon-party-checkpoint-finalair0926e-PD1EAa/save.archive.gz`, SHA
+  9ffe52dd77a2a7538b06f75e924a77cfddab5455a7b37d38dcbf832f26def77c.
+  The escort now follows the tank after the actual objective completes, only
+  during direct-heal cooldowns or when nobody needs healing. Ready heals,
+  active ritual assignments, warning safety and ordinary collision-checked
+  movement retain priority.60 focused healing/Vigil tests pass in3.623seconds;
+  scoped lint and whitespace checks pass. This QA tactic needs native evidence;
+  it changes no production stats, damage, rewards, deadlines or survival gates.
+  Water's frozen running source is unchanged.
 - Verified live remains Alpha 1.10.0 at e67fc0ad1b924002758e67e5a3a3bcb615d97476.
   Alpha 1.10.1 is a local, undeployed notification-polish candidate. Login,
   package and server version defaults and cumulative notes agree; all 293

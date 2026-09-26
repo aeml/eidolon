@@ -1,8 +1,30 @@
-import { raidVigilDestination, raidVigilSupportAnchor, raidVigilRecoveryAnchor } from './raidVigilControls.js';
+import { raidVigilDestination, raidVigilSupportAnchor, raidVigilRecoveryAnchor, raidVigilEscortRecoveryAnchor } from './raidVigilControls.js';
 
 const point = (x = 0, radius = 6) => ({ x, z: 0, radius, label: 'marker', state: 'active' });
 const crystal = (element, current = 0, hint = '') => ({ stage: 'repairing', element,
     objective: { current, hint, points: [point(0), point(30), point(60), point(90)] } });
+
+test('completed Air escort walks back during heal cooldown instead of self-tanking the distant pack', () => {
+    const state = crystal('Air', 4);
+    state.objective.complete = true;
+    const escort = { x: 109992.49963800776, z: 19261.280656522296, hp: 1419, instance: 'raid' };
+    const tank = { x: 110040.12862780761, z: 19253.44329116012, hp: 2236, instance: 'raid' };
+    const policy = { allowMovement: true, cooldown: 3.3, needsHeal: true };
+    expect(raidVigilEscortRecoveryAnchor(state, 4, escort, tank, policy)).toBe(tank);
+    for (const cooldown of [0, .9, NaN, Infinity]) {
+        expect(raidVigilEscortRecoveryAnchor(state, 4, escort, tank, { ...policy, cooldown })).toBeNull();
+    }
+    expect(raidVigilEscortRecoveryAnchor(state, 4, escort, tank, { ...policy, cooldown: 0, needsHeal: false })).toBe(tank);
+    expect(raidVigilEscortRecoveryAnchor(state, 4, escort, tank, { ...policy, allowMovement: false })).toBeNull();
+    expect(raidVigilEscortRecoveryAnchor(crystal('Air', 3), 4, escort, tank, policy)).toBeNull();
+    expect(raidVigilEscortRecoveryAnchor({ ...state, stage: 'restored' }, 4, escort, tank, policy)).toBeNull();
+    expect(raidVigilEscortRecoveryAnchor(state, 1, escort, tank, policy)).toBeNull();
+    expect(raidVigilEscortRecoveryAnchor(state, 4, escort, { ...tank, x: escort.x, z: escort.z + 8 }, policy)).toBeNull();
+    for (const changes of [{ dead: true }, { hp: 0 }, { instance: 'town' }, { x: NaN }]) {
+        expect(raidVigilEscortRecoveryAnchor(state, 4, escort, { ...tank, ...changes }, policy)).toBeNull();
+        expect(raidVigilEscortRecoveryAnchor(state, 4, { ...escort, ...changes }, tank, policy)).toBeNull();
+    }
+});
 
 test('Air runner rejoins nearby healing after passing its anchor rather than waiting alone for tank credit', () => {
     const wizard = { x: 109975.1548128499, z: 19280.43283794859, hp: 2700, instance: 'raid' };
