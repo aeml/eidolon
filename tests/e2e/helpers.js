@@ -468,9 +468,15 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             return observedAfter;
         } catch {
             mark('movement-timeout');
-            if (options.arrival) {
+            // A loaded multi-page browser may deliver a successful read after
+            // the poll deadline. Confirm an already finished move-only click
+            // at its exact destination, not arbitrary displacement or a retry.
+            const finalArrival = options.arrival || (useMoveOnly && groundPoint
+                ? { x: groundPoint.x, z: groundPoint.z, radius: .25, instanceId: before.instanceId } : null);
+            if (finalArrival) {
                 const after = await readPlayerState(page);
-                if (confirmedGroundArrival(before, after, options.arrival, attempt.clickProbe)) {
+                if (confirmedGroundArrival(before, after, finalArrival, attempt.clickProbe) &&
+                    (options.arrival || groundMovementObserved(before, after, options.minimumDistance || 1))) {
                     mark('movement-arrival-confirmed');
                     return after;
                 }

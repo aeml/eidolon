@@ -68,6 +68,36 @@ test('current spacing still requires actual movement after its real click', asyn
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
 });
 
+test.each([
+    [{}, true], [{ x: 8 }, false], [{ state: 'MOVING' }, false],
+    [{ state: 'DEAD' }, false], [{ health: 0 }, false], [{ instanceId: 'other' }, false]
+])('late move-only observation confirms only living, settled arrival: %j', async (changes, accepted) => {
+    const page = movementPage(true, false, 0, 8.9);
+    const original = page.evaluate.getMockImplementation();
+    page.evaluate.mockImplementation(async (callback, args) => {
+        if (callback.name === 'readGroundClickReceiptInPage') return { clickProbe: { result: true, dom: 'CANVAS' } };
+        const value = await original(callback, args);
+        return callback.name === 'readPlayerStateInPage' && page.mouse.click.mock.calls.length
+            ? { ...value, ...changes } : value;
+    });
+    const originalPoll = assertions.poll;
+    const poll = jest.spyOn(assertions, 'poll').mockImplementation(callback => {
+        const matcher = originalPoll(callback);
+        return { ...matcher, async toBe(value) {
+            if (!page.mouse.click.mock.calls.length) return matcher.toBe(value);
+            await callback();
+            throw new Error('Observation completed after poll deadline');
+        } };
+    });
+    try {
+        const action = moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+            allowAlternatePaths: false, allowJumpFallback: false });
+        if (accepted) expect((await action).x).toBe(8.9);
+        else await expect(action).rejects.toMatchObject({ name: 'GroundMovementFailedError' });
+        expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    } finally { poll.mockRestore(); }
+});
+
 test.each([false, true])('live path observation needs no published test modules and preserves walls: %s', async blocked => {
     const page = movementPage(false);
     const original = page.evaluate.getMockImplementation();

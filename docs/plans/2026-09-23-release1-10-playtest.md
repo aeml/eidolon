@@ -8,12 +8,28 @@ features, automated checks and a complete human campaign playthrough.
 ## Current handoff — September 26
 
 - Latest queue: Air `finalair0926e` failed at38de1fd0 (result below). Water
-  `finalwater0926e` is running at60a791f6 under
+  `finalwater0926e` failed at60a791f6 under
   `/tmp/eidolon-water-support-20260926-7QmXo5/run.sh`; it waits for Air's
   terminal marker and owned-container cleanup before starting. Water uses the
   recorded walking-tank support correction below. Both are single attempts,
   with unchanged encounter limits and no retries. Fire, Nexus, Tempest and the
   finale remain accepted and are not repeated. No deployment has started.
+- Water `finalwater0926e` stopped in45.7minutes with all five alive, after
+  Tidebound Tyrant and two repair waves, during wave3. All had1347Gold and
+  unclaimed0/1 crystal credit; effective ally healing55638/41124. The escort's
+  real move-only click walked11.871units and settled0.145units from its target,
+  but the polling deadline rejected its delayed observation. The existing final
+  settled-arrival confirmation now also covers move-only clicks without an
+  explicit formation region: accepted canvas click, same instance, living/idle,
+  within0.25units of the clicked point, and the original displacement threshold.
+  No extra input, expanded timeout, partial-step acceptance or game change.
+  All73 focused movement/arrival tests pass in2.086seconds; scoped lint and
+  whitespace checks pass. Archive remains unchanged:
+  `/tmp/eidolon-party-checkpoint-finalwater0926e-GmUBg4/save.archive.gz`, SHA
+  779c90dc2b32b4770033947ee3cbd12a7813282890da469155456143b8441f07.
+  Root collected Water's terminal handle; Air `finalair0926f` at5ab1aa49 has
+  started after cleanup, with no edits to that frozen source. Water is still
+  not accepted; retain its failed result, not a crystal-restoration claim.
 - Air `finalair0926e` defeated Tempest Sovereign and cleared repair wave1,
   then failed during wave2 in32.2minutes. Both Clerics and the Rogue were dead
   in the final snapshots; Fighter/Wizard survived. All five had1246Gold and
