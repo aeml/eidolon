@@ -22,6 +22,10 @@ features, automated checks and a complete human campaign playthrough.
   Archive `/tmp/eidolon-party-checkpoint-finalair0926g-0rFTQq/save.archive.gz`, SHA
   1a15fb00673ada8b235a2d9411d17f4a45db9f95f5ba57384a9bde775ebd65cb,
   remains unchanged. Water's currently running frozen source is unchanged.
+  Air-only `finalair0926h` at359c4c46 is queued under
+  `/tmp/eidolon-air-triage-20260926-mX41o5/run.sh`, gated on Water's terminal
+  marker and owned-container cleanup; one bounded attempt, no retries or
+  deployment overlap. Accepted encounters are not repeated.
 - Prior Water f result:
   Water `finalwater0926f` failed in43.2minutes with all five alive/full health
   in the final snapshots,1434Gold and0/1 unclaimed repair credit. It cleared
