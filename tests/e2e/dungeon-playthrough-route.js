@@ -9,7 +9,7 @@ import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState,
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter, dungeonCombatTargetType } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
-import { createDungeonExpeditionTiming, dungeonCombatBudget } from '../dungeonExpeditionTiming.js';
+import { createDungeonExpeditionTiming, createDungeonTargetProgress, dungeonCombatBudget } from '../dungeonExpeditionTiming.js';
 import { partyDiagnosticRoom } from '../partyBossDiagnostic.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
@@ -50,11 +50,10 @@ export async function playDungeonThroughInputs(page, {
         // continuous damage but outlasted six minutes (93,600 starting HP).
         // Ordinary combat retains eight minutes. The Dark King's complete
         // four-phase fight gets the approved ten-minute upper target; phases
-        // never reset it. Retain the 60s stall and whole-run watchdogs.
+        // never reset it. Retain60s approach/combat stalls and whole-run bounds.
         const deadline = Date.now() + dungeonCombatBudget(fullRun, playthrough.dungeonType, target.type);
         let sawDamage = false;
-        let lowestHealth = target.health;
-        let lastDamageAt = Date.now();
+        const progress = createDungeonTargetProgress(target, Date.now());
         let nextReport = 0;
         let nextSkillAttemptAt = 0;
         const attempted = new Set([target.id]);
@@ -81,11 +80,8 @@ export async function playDungeonThroughInputs(page, {
             }
             if (!state) throw new Error(`Combat target disappeared without a confirmed death: ${target.type}`);
             sawDamage ||= state.health < target.health;
-            if (state.health < lowestHealth) {
-                lowestHealth = state.health;
-                lastDamageAt = Date.now();
-            }
-            if (Date.now() - lastDamageAt > 60_000) {
+            const stalledPhase = progress.observe(state, Date.now());
+            if (stalledPhase) {
                 // Preserve the real hit stack/cache/mesh state only on failure.
                 // Position-only traces cannot distinguish crowd occlusion from
                 // an actor missing its interaction proxy or active-cache entry.
@@ -101,7 +97,7 @@ export async function playDungeonThroughInputs(page, {
                         moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
                         approach: window.__dungeonLatestTargetApproach || null };
                 }, target.id))}`);
-                throw new Error(`No damage progress against ${target.type} for 60 seconds`);
+                throw new Error(`No ${stalledPhase} progress against ${target.type} for 60 seconds`);
             }
             if (Date.now() >= nextReport) {
                 const diagnostic = await page.evaluate(id => {
@@ -131,7 +127,7 @@ export async function playDungeonThroughInputs(page, {
                     console.log(`${logPrefix} foreground target ${target.type} -> ${foreground.type}`);
                     target = foreground;
                     attempted.add(target.id);
-                    lowestHealth = target.health;
+                    progress.retarget(target);
                     sawDamage = false;
                     // No deadline extension or death credit. beforeCombat on
                     // the next iteration switches the party's input workers;

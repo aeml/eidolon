@@ -1,5 +1,51 @@
 import fs from 'node:fs';
-import { createDungeonExpeditionTiming, dungeonCombatBudget, dungeonExpeditionBudget } from './dungeonExpeditionTiming.js';
+import { createDungeonExpeditionTiming, createDungeonTargetProgress, dungeonCombatBudget, dungeonExpeditionBudget } from './dungeonExpeditionTiming.js';
+
+test('recorded Water approach makes progress without pretending distant travel is damage', () => {
+    const progress = createDungeonTargetProgress({ health: 11550, distance: 112.65549742119684 }, 0);
+    for (const [at, distance] of [[0, 112.6555], [20000, 110.1980], [40000, 99.2826], [61000, 79.46]]) {
+        expect(progress.observe({ health: 11550, distance, range: 4.3 }, at)).toBeNull();
+    }
+    expect(progress.observe({ health: 11550, distance: 79.46, range: 4.3 }, 121001)).toBe('approach');
+});
+
+test('stationary, oscillating and sub-unit jitter cannot keep an approach alive', () => {
+    for (const distances of [[100, 100], [101, 100], [99.8, 99.6]]) {
+        const progress = createDungeonTargetProgress({ health: 100, distance: 100 }, 0);
+        expect(progress.observe({ health: 100, distance: distances[0], range: 4 }, 30000)).toBeNull();
+        expect(progress.observe({ health: 100, distance: distances[1], range: 4 }, 60001)).toBe('approach');
+    }
+});
+
+test.each(['range', 'damage'])('engagement by %s permanently switches to the60s damage guard', engagement => {
+    const progress = createDungeonTargetProgress({ health: 100, distance: 100 }, 0);
+    let health = engagement === 'damage' ? 99 : 100;
+    expect(progress.observe({ health, distance: engagement === 'range' ? 4 : 90, range: 4 }, 20000)).toBeNull();
+    expect(progress.observe({ health, distance: 40, range: 4 }, 60000)).toBeNull();
+    expect(progress.observe({ health, distance: 20, range: 4 }, 80001)).toBe('damage');
+    health--;
+    expect(progress.observe({ health, distance: 4, range: 4 }, 80002)).toBeNull();
+    expect(progress.observe({ health, distance: 3, range: 4 }, 140003)).toBe('damage');
+});
+
+test('making approach progress never extends the separate fixed encounter budget', () => {
+    const progress = createDungeonTargetProgress({ health: 100, distance: 1000 }, 0);
+    const deadline = dungeonCombatBudget(true, 'water_crystal_raid', 'FrostGuardian');
+    for (let at = 30000; at <= deadline; at += 30000) {
+        expect(progress.observe({ health: 100, distance: 1000 - at / 30000, range: 4 }, at)).toBeNull();
+    }
+    expect(deadline).toBe(480000);
+});
+
+test('foreground retargeting neither resets the stall nor mistakes different health for damage', () => {
+    for (const engaged of [false, true]) {
+        const progress = createDungeonTargetProgress({ health: 100, distance: 100 }, 0);
+        if (engaged) progress.observe({ health: 99, distance: 100, range: 4 }, 0);
+        progress.retarget({ health: 500, distance: 50 });
+        expect(progress.observe({ health: 500, distance: 50, range: 4 }, 60001)).toBe(engaged ? 'damage' : 'approach');
+        expect(progress.observe({ health: 490, distance: 50, range: 4 }, 60002)).toBeNull();
+    }
+});
 
 test.each([
     [true, 'weekly_raid', 'UmbraPrime', 600_000],
@@ -82,7 +128,8 @@ test('party selects its own allowance without changing encounter, damage-stall, 
     expect(party).toContain("expeditionProfile: 'party'");
     expect(party).toContain("test.setTimeout(dungeonExpeditionBudget('party') + 300_000)");
     expect(route).toContain('dungeonCombatBudget(fullRun, playthrough.dungeonType, target.type)');
-    expect(route).toContain('Date.now() - lastDamageAt > 60_000');
+    expect(route).toContain('progress.observe(state, Date.now())');
+    expect(route).toContain('while (Date.now() < deadline)');
     expect(route).toContain('let deadline = Date.now() + 180_000');
     expect(route).toContain("timing.report('route-exit')");
     expect(party).toContain('gatherPartyFormation');

@@ -42,8 +42,10 @@ export function installDungeonObservationInPage() {
 
 export function readDungeonTargetStateInPage(id) {
     const game = window.game, entity = game.remotePlayers.get(id);
-    if (entity) return { health: entity.health ?? entity.stats?.hp, state: entity.state };
+    if (entity) return { health: entity.health ?? entity.stats?.hp, state: entity.state,
+        distance: entity.position && game.player?.position
+            ? Math.hypot(entity.position.x - game.player.position.x, entity.position.z - game.player.position.z) : undefined,
+        range: typeof game.getBasicAttackRangeForEntity === 'function' ? game.getBasicAttackRangeForEntity(entity) : undefined };
     const death = window.__dungeonConfirmedDeaths?.get(id);
     return death?.instance === (game.currentInstanceId || '') ? { health: death.health, state: death.state } : null;
 }
-

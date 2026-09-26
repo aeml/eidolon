@@ -41,8 +41,8 @@ features, automated checks and a complete human campaign playthrough.
   `/tmp/eidolon-final-encounters-20260926-Ox4Ijm`: earned Wizard plus three
   class-geared supports in Tempest, then prepared Water/Fire/Air raids and
   Umbral Nexus. Runs are sequential, bounded, zero-retry and stop on first
-  failure. Luna monitors terminal outcomes. Tempest has now passed; Water is
-  running next, with Fire/Air/Nexus still queued. No new deployment has started.
+  failure. Tempest passed; Water subsequently failed and the batch stopped.
+  Fire/Air/Nexus did not start. No new deployment has started.
 - `finaltempest0926a` passed the complete four-role Tempest route in39.5minutes:
   all encounters through Zephyrion,14 room traversals,4 town recoveries, no
   deaths, individual manual claims and completed-run recall/re-entry preserving
@@ -56,6 +56,20 @@ features, automated checks and a complete human campaign playthrough.
   is registered as checkpoint26;105 checkpoint tests pass. The inspection
   database was removed without modifying the original archive. Retain this
   full clear rather than replaying it solely for a later version or document.
+- `finalwater0926a` stopped after41minutes on a60-second no-damage guard while
+  still approaching a Frost Guardian: observed distance113→110→99→79metres,
+  target11550HP. This is not a demonstrated attackability defect. The initial
+  approach now has a60-second measurable-distance-progress guard; first damage
+  or reaching basic range permanently starts the60-second damage guard. Idle,
+  oscillating and sub-unit-jitter approaches still fail; moving away or switching
+  foreground targets cannot reset combat stalls. The same8-minute target budget
+  and2-hour whole-expedition cap remain nonrenewing.24 focused timing/death
+  observation checks and scoped lint pass. This QA-only correction requires
+  native confirmation; no production HP, rewards, speed or geometry changed.
+  Archive `/tmp/eidolon-party-checkpoint-finalwater0926a-BBkBTT/save.archive.gz`,
+  SHAf86af5b080b88a7bd37368ed418c367d3c1d6ad431777e9413d0dc276d2afc59.
+  Root confirmed the old wrapper ended, no owned Water containers were running
+  and ports18307/18308/4197 were clear. Retain Tempest's pass; do not replay it.
 - The existing55-chapter graph regression now exercises every Dark Realm hunt
   through its district/enemy consumer and all four collection items through
   personal drop creation and normal pickup, rather than inserting those items

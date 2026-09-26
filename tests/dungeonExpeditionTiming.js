@@ -4,6 +4,40 @@ const MINUTE = 60_000;
 const BUDGETS = Object.freeze({ solo: 40 * MINUTE, party: 120 * MINUTE });
 const PHASES = ['entry', 'traversal', 'combat', 'recovery', 'verification'];
 
+// Approaching an unengaged enemy is not yet a damage stall. Both phases must
+// make measurable progress within60s; entering combat is irreversible. The
+// caller's fixed encounter and expedition deadlines remain independent.
+export function createDungeonTargetProgress(target, startedAt) {
+    let lowestHealth = target.health, closestDistance = target.distance;
+    let engaged = false, lastProgressAt = startedAt;
+    return {
+        retarget(next) {
+            lowestHealth = next.health;
+            closestDistance = next.distance;
+            // Switching to an observed foreground enemy is not progress and
+            // cannot reset either the stall clock or an engaged combat phase.
+        },
+        observe({ health, distance, range }, at) {
+            if (health < lowestHealth) {
+                lowestHealth = health;
+                engaged = true;
+                lastProgressAt = at;
+            }
+            if (!engaged) {
+                if (Number.isFinite(distance) && Number.isFinite(range) && distance <= range) {
+                    engaged = true;
+                    lastProgressAt = at;
+                } else if (Number.isFinite(distance) &&
+                    (!Number.isFinite(closestDistance) || distance <= closestDistance - 1)) {
+                    closestDistance = distance;
+                    lastProgressAt = at;
+                }
+            }
+            return at - lastProgressAt > 60_000 ? (engaged ? 'damage' : 'approach') : null;
+        }
+    };
+}
+
 export function dungeonCombatBudget(fullRun, dungeonType, targetType) {
     if (!fullRun) return 2 * MINUTE;
     // User's finale target is 5–10 minutes across all four phases, not per phase.

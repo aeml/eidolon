@@ -10,6 +10,18 @@ beforeEach(() => {
 });
 const update = (u = {}, r = []) => window.game.handleServerMessage({ type: 'delta', payload: { u, r } });
 
+test('target health, actual approach distance and current basic range share one observation', () => {
+    window.game.player.position = { x: 89964.49296573347, z: 19225.47232271333 };
+    window.game.getBasicAttackRangeForEntity = enemy => enemy.radius + 3;
+    update({ enemy: { state: 'MOVING', health: 11550, radius: 1.3,
+        position: { x: 89915.17392574556, z: 19287.775341457902 } } });
+    const state = readDungeonTargetStateInPage('enemy');
+    expect(state).toMatchObject({ health: 11550, state: 'MOVING', range: 4.3 });
+    expect(state.distance).toBeGreaterThan(79);
+    expect(state.distance).toBeLessThan(80);
+    expect(window.game.player.position.x).toBe(89964.49296573347);
+});
+
 test('retains a confirmed death while awaited support input outlasts corpse cleanup', () => {
     update({ enemy: { state: 'ATTACKING', stats: { hp: 318 } } });
     expect(readDungeonTargetStateInPage('enemy').health).toBe(318);
