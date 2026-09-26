@@ -21,7 +21,11 @@ features, automated checks and a complete human campaign playthrough.
   Archive `/tmp/eidolon-party-checkpoint-finalair0926f-pXNWsI/save.archive.gz`,
   SHAcc90f8815647894b89cb2b2ac9fb7e93dfb1f83b451e368bef50c8eefaef63b8,
   remains unchanged. This is a QA correction, not a production game change.
-  Water's running source is frozen and is not edited.
+  Water's running source is frozen and is not edited. Air-only `finalair0926g`
+  at646e5545 is queued in `/tmp/eidolon-air-follow-20260926-unu9Zv/run.sh`;
+  it requires Water's terminal marker and owned-container cleanup. Single
+  bounded attempt, zero retries, no repeated accepted encounter or deployment
+  overlap. It also includes the prior late-arrival confirmation correction.
 - Latest queue: Air `finalair0926e` failed at38de1fd0 (result below). Water
   `finalwater0926e` failed at60a791f6 under
   `/tmp/eidolon-water-support-20260926-7QmXo5/run.sh`; it waits for Air's
