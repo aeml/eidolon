@@ -7,7 +7,22 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
-- Current active run: Water `finalwater0926f` at073771b1, after Air f cleanup.
+- Current active run: Air `finalair0926g` at646e5545, after Water f cleanup.
+  Water `finalwater0926f` failed in43.2minutes with all five alive/full health
+  in the final snapshots,1434Gold and0/1 unclaimed repair credit. It cleared
+  Tyrant and waves1/2, then the Rogue's combat recovery follow moved0.605units
+  after a1.067-unit click but missed the exact waypoint. The already committed
+  646e5545 short-step correction accepts this witnessed combat displacement
+  (threshold0.533), still rejects zero movement and still rejects this as exact
+  formation; the recorded geometry was checked directly without another code
+  change. Effective ally healing58759/42695. Archive remains untouched:
+  `/tmp/eidolon-party-checkpoint-finalwater0926f-QwX78W/save.archive.gz`, SHA
+  04815651ed6ee6797321bb4db7baa493a07cd56b28a299b4e49c51a6d3300663.
+  Water-only `finalwater0926g` uses the same646e5545 source, queued under
+  `/tmp/eidolon-water-follow-20260926-X7kuKQ/run.sh`, gated on Air's terminal
+  marker and owned-container cleanup. One bounded attempt, no retries or
+  repeated accepted encounters. No deployment has started.
+- Prior Air `finalair0926f` result and short-step correction:
   Air `finalair0926f` stopped in19.2minutes during Tempest Sovereign; all five
   were alive with1107Gold and no repair credit. A0.692-unit escort follow step
   moved0.979units but a moving body deflected it outside the fixed0.25-unit
