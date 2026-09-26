@@ -17,7 +17,7 @@ features, automated checks and a complete human campaign playthrough.
 - Air `finalair0926e` defeated Tempest Sovereign and cleared repair wave1,
   then failed during wave2 in32.2minutes. Both Clerics and the Rogue were dead
   in the final snapshots; Fighter/Wizard survived. All five had1246Gold and
-  unclaimed0/1 crystal credit. Both wave2 wind handoffs completed, but enemies
+  unclaimed0/1 crystal credit. All four wave2 wind handoffs completed, but enemies
   remained. The escort Cleric was48.3units from the tank after its assignment
   ended, repeatedly self-healing through325Harpy/447Giant attacks without
   regrouping. Effective ally healing was69156/45886; this is not evidence of
@@ -30,7 +30,10 @@ features, automated checks and a complete human campaign playthrough.
   movement retain priority.60 focused healing/Vigil tests pass in3.623seconds;
   scoped lint and whitespace checks pass. This QA tactic needs native evidence;
   it changes no production stats, damage, rewards, deadlines or survival gates.
-  Water's frozen running source is unchanged.
+  Water's frozen running source is unchanged. Air-only `finalair0926f` at
+  5ab1aa49 is queued under `/tmp/eidolon-air-escort-20260926-hQ6Cg5/run.sh`,
+  gated on Water's terminal marker and owned-container cleanup. It includes
+  the walking-tank correction and escort regrouping; one attempt, no retries.
 - Verified live remains Alpha 1.10.0 at e67fc0ad1b924002758e67e5a3a3bcb615d97476.
   Alpha 1.10.1 is a local, undeployed notification-polish candidate. Login,
   package and server version defaults and cumulative notes agree; all 293
