@@ -25,6 +25,10 @@ features, automated checks and a complete human campaign playthrough.
   Archive `/tmp/eidolon-party-checkpoint-finalwater0926g-YFbARI/save.archive.gz`,
   SHAdd419d46d876209853a8ed76bad1642f2343ead196351c29958bb72dd881293f,
   remains unchanged. Air's frozen running source has not been edited.
+  Water-only `finalwater0926h` at1f8e1357 is queued under
+  `/tmp/eidolon-water-crossing-20260926-NiBswB/run.sh`, requiring Air's terminal
+  marker and owned-container cleanup. One bounded attempt, no retries,
+  repeated accepted encounters or deployment overlap.
 - Current active run: Water `finalwater0926g` at646e5545, after Air g cleanup.
   Air `finalair0926g` cleared Sovereign and waves1/2, then failed in41.2minutes
   when the tank Cleric died during wave3 (wind anchor3/4). Other four survived;
