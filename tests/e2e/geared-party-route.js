@@ -349,21 +349,37 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     throw error;
                 }
                 step = planVisibleGroundStepInPage(step, { minimumDistance: .25 });
-                return step && { ...step, origin: { x: p.position.x, z: p.position.z, instanceId: g.currentInstanceId } };
+                return step && { ...step, bodies, blockedStops: p.movementMetrics?.blockedStops || 0,
+                    instanceId: g.currentInstanceId,
+                    origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25, instanceId: g.currentInstanceId } };
             }, { anchor, distance });
             if (!plan) return;
             // Reuse formation's body/floor-aware detours for combat support too.
             // An unavailable route waits for the existing bounded combat loop;
-            // a real issued input that fails still fails the expedition.
-            await tryDungeonGroundStep(async () => {
-                const after = await moveByGroundClick(actor.page, plan.dx, plan.dz,
-                    { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true,
-                        batchPreparation: true, expectedOrigin: plan.origin,
-                        ...partyCombatFollowObservation(plan.origin, plan, plan.origin.instanceId) });
-                expect(after.state).not.toBe('DEAD');
-                expect(after.health).toBeGreaterThan(0);
-                expect(after.instanceId).toBe(plan.origin.instanceId);
-            });
+            // unexplained failed input still fails. Like optional combat spacing,
+            // a proven new moving-body obstruction reserves the next tick for
+            // replanning, never counts as successful movement or resets a timer.
+            try {
+                await tryDungeonGroundStep(async () => {
+                    const after = await moveByGroundClick(actor.page, plan.dx, plan.dz,
+                        { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true,
+                            batchPreparation: true, expectedOrigin: plan.origin,
+                            ...partyCombatFollowObservation(plan.origin, plan, plan.origin.instanceId) });
+                    expect(after.state).not.toBe('DEAD');
+                    expect(after.health).toBeGreaterThan(0);
+                    expect(after.instanceId).toBe(plan.origin.instanceId);
+                });
+            } catch (error) {
+                const interruptedBy = error instanceof GroundMovementFailedError
+                    ? partySpacingActorInterruption({ ...plan, step: plan }, error.observation) : null;
+                await actor.page.evaluate(record => {
+                    const records = window.__partyClearEvidence.recentRangedSpacing;
+                    records.push(record);
+                    if (records.length > 20) records.shift();
+                }, { purpose: 'combat-follow', plan, moved: false, interruptedBy,
+                    failure: error.message?.slice(0, 1500) }).catch(() => {});
+                if (!interruptedBy) throw error;
+            }
         }
 
         async function avoidWarnings(actor, encounter) {

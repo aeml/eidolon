@@ -7,6 +7,24 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
+- Current active run: Air `finalair0926h` at359c4c46, after Water g cleanup.
+  Water `finalwater0926g` stopped in22.2minutes, after Tyrant and the start of
+  repair wave1. All five survived with1045Gold and0/1 unclaimed repair credit;
+  effective healing13581/9629. The Wizard's1.275-unit combat follow stopped
+  after0.196units with a collision receipt; the tank occupied its path at the
+  final observation. This is incomplete movement, not a successful step.
+  Combat follow now retains original body poses/collision count and uses the
+  existing strict spacing-interruption classifier. Only a witnessed known body
+  moving from clear to obstructing, new matching collision stop, single actual
+  canvas walk, living same-instance actor and unchanged origin permit the next
+  tick to replan. It never reports movement success or resets encounter timers;
+  unexplained failures and ordinary traversal still fail.87 focused controls/
+  interruption tests pass in2.465seconds; lint and whitespace pass. Regression
+  final geometry is recorded, but its initial clear tank pose is explicitly a
+  fixture, not a recovered native sample. Native confirmation remains required.
+  Archive `/tmp/eidolon-party-checkpoint-finalwater0926g-YFbARI/save.archive.gz`,
+  SHAdd419d46d876209853a8ed76bad1642f2343ead196351c29958bb72dd881293f,
+  remains unchanged. Air's frozen running source has not been edited.
 - Current active run: Water `finalwater0926g` at646e5545, after Air g cleanup.
   Air `finalair0926g` cleared Sovereign and waves1/2, then failed in41.2minutes
   when the tank Cleric died during wave3 (wind anchor3/4). Other four survived;

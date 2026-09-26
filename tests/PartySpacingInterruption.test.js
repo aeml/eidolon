@@ -2,6 +2,7 @@ import { partySpacingActorInterruption } from './partyRangedSpacing.js';
 import { partyPathAvoidsActors } from './partyDungeonControls.js';
 import { GroundMovementFailedError, movementFailure } from './groundInputFailure.js';
 import { tryDungeonGroundStep } from './dungeonNavigationInput.js';
+import { groundMovementObserved } from './groundMovementObservation.js';
 
 function recordedSpacing() {
     // Actual waterraid0920a path and crossing FrostGuardian coordinates.
@@ -22,6 +23,23 @@ function recordedSpacing() {
     };
     return { plan, observation };
 }
+
+test('a tank crossing a combat-follow step requests replanning, not movement success', () => {
+    const plan = { instanceId: 'water-vigil', blockedStops: 0,
+        origin: { x: 90032.82366135946, z: 19345.719326545594, radius: 1.25 },
+        step: { dx: -.026232176994952578, dz: 1.2745547994851305 },
+        // Clear initial pose is a fixture; final crossing geometry is from Water g.
+        bodies: [{ id: 'tank', x: 90033.21, z: 19350, radius: 1.25 }] };
+    const observation = { before: { ...plan.origin, instanceId: plan.instanceId },
+        player: { x: 90032.62746336852, z: 19345.710987917344,
+            instanceId: plan.instanceId, state: 'IDLE', health: 2761 },
+        movement: { blockedStops: 1, blockedTarget: { x: 90032.72892701397, z: 19347.038805762477 } },
+        attempts: [{ mode: 'move-only-walk', clickProbe: { result: true, dom: 'CANVAS' } }],
+        actors: [{ id: 'tank', x: 90032.375, z: 19347.224609375, radius: 1.25 }] };
+    expect(groundMovementObserved(observation.before, observation.player, .637412359466083)).toBe(false);
+    expect(partySpacingActorInterruption(plan, observation)).toBe('tank');
+    expect(partySpacingActorInterruption({ ...plan, bodies: observation.actors }, observation)).toBeNull();
+});
 
 test('a witnessed crossing body invalidates optional spacing, not the movement-success assertion', async () => {
     const { plan, observation } = recordedSpacing();
