@@ -7,6 +7,21 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
+- **Accepted Air clear:** `finalair0926h` passed in46.7minutes at359c4c46.
+  Five prepared level70 class-specific Uncommon/Rare raiders completed Tempest
+  Sovereign, all three defended repair waves and personal restoration receipts,
+  individual manual claims and relogin persistence with Dark Shore offers.
+  All five survived and finished level71/36676XP/3008Gold; each received the
+  exact148906XP/1400Gold quest reward. Effective Cleric healing80296/67005;
+  all three damage roles contributed. The crystal-restored screenshot was
+  inspected and the credential scan passed. Root collected terminal exit0.
+  Archive `/tmp/eidolon-party-checkpoint-finalair0926h-rmELvG/save.archive.gz`,
+  SHAeac060cace2d7d5ab685301cec4962a9ec9b1ce198cb7b1e7e17e9374a60acb5,
+  is retained unchanged. This accepts a prepared-party encounter/quest route,
+  not an uninterrupted earned campaign or human pacing measurement.
+  **Do not replay Air.** Water `finalwater0926h` at1f8e1357 starts after Air's
+  cleanup and is the only remaining elemental raid clear. The release remains
+  local1.10.1 / verified-live1.10.0; no new deployment has started.
 - Current active run: Air `finalair0926h` at359c4c46, after Water g cleanup.
   Water `finalwater0926g` stopped in22.2minutes, after Tyrant and the start of
   repair wave1. All five survived with1045Gold and0/1 unclaimed repair credit;
