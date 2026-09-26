@@ -7,7 +7,22 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
-- Current active run: Air `finalair0926g` at646e5545, after Water f cleanup.
+- Current active run: Water `finalwater0926g` at646e5545, after Air g cleanup.
+  Air `finalair0926g` cleared Sovereign and waves1/2, then failed in41.2minutes
+  when the tank Cleric died during wave3 (wind anchor3/4). Other four survived;
+  all had1612Gold and unclaimed0/1 repair credit. Effective healing81509/69721.
+  Recorded decisions show the Cleric at406 then85/2975HP still selecting its
+  assigned tank at2453 then2457/3025HP. At85HP it chose aura instead of the ready
+  direct heal because the selected tank was above55%. Anchored healer selection
+  now prioritizes a below40% reachable ally when its assigned anchor is above60%;
+  urgent tanks retain priority, and no distant ally chase overrides assignment.
+  The exact self/healthy-tank case and boundaries are covered;61 focused healing/
+  Vigil tests pass in2.045seconds, scoped lint and whitespace pass. This changes
+  QA input selection only, not production healing, damage, stats or deadlines.
+  Archive `/tmp/eidolon-party-checkpoint-finalair0926g-0rFTQq/save.archive.gz`, SHA
+  1a15fb00673ada8b235a2d9411d17f4a45db9f95f5ba57384a9bde775ebd65cb,
+  remains unchanged. Water's currently running frozen source is unchanged.
+- Prior Water f result:
   Water `finalwater0926f` failed in43.2minutes with all five alive/full health
   in the final snapshots,1434Gold and0/1 unclaimed repair credit. It cleared
   Tyrant and waves1/2, then the Rogue's combat recovery follow moved0.605units

@@ -49,6 +49,17 @@ test('tank assignment recovers tank range instead of repeatedly healing less inj
         { anchor: tank, allowApproach: false })).toBe(wizard);
 });
 
+test('Air tank healer saves its critical self instead of an81%-healthy assigned tank', () => {
+    const self = member('healer', 85, 0, { maxHP: 2975 });
+    const tank = member('tank', 2457, 1.5421717039846197, { maxHP: 3025 });
+    expect(selectPartyHealTarget([tank, self], self, 14, { anchor: tank })).toBe(self);
+    const urgentTank = { ...tank, hp: 1100 };
+    expect(selectPartyHealTarget([urgentTank, self], self, 14, { anchor: urgentTank })).toBe(urgentTank);
+    const rogue = member('rogue', 200, 13);
+    expect(selectPartyHealTarget([tank, healer, rogue], healer, 14, { anchor: tank })).toBe(rogue);
+    expect(selectPartyHealTarget([tank, healer, { ...rogue, x: 15 }], healer, 14, { anchor: tank })).toBe(tank);
+});
+
 test('tank healer can help nearby allies when the tank is healthy, and unassigns unavailable tanks', () => {
     const tank = member('tank', 855, 5), rogue = member('rogue', 100, 12);
     expect(selectPartyHealTarget([tank, healer, rogue], healer, 14, { anchor: tank })).toBe(rogue);

@@ -25,6 +25,11 @@ export function selectPartyHealTarget(states, healer, range, { allowApproach = t
     // same slightly more injured runner and leave incoming tank damage unaided.
     const anchored = anchor && !anchor.dead && anchor.hp > 0 && anchor.instance === healer.instance;
     if (anchored) {
+        // Assignment is not a reason to let a reachable critical ally die
+        // while the assigned tank/runner is safe. Do not chase distant allies
+        // or take priority away from an anchor below60% health.
+        const urgent = injured.find(state => state.hp / state.maxHP < .4 && distance(state) <= range);
+        if (urgent && anchor.hp / anchor.maxHP > .6) return urgent;
         if (injured.includes(anchor) && (allowApproach || distance(anchor) <= range)) return anchor;
         return injured.find(state => distance(state) <= range) || null;
     }
