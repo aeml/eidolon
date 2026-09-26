@@ -295,6 +295,22 @@ function airDungeonReadiness(character) {
     Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
 }
 
+test('retains the earned Tempest claim and unaccepted Rootheart offer without manufacturing repair credit', () => {
+    const checkpoint = earnedEarthCheckpoints[26];
+    const fixture = exercise(character => {
+        airDungeonReadiness(character);
+        character.quests.pop();
+        character.quests.push(...checkpoint.continuationChapters.slice(-2).map(q => ({ ...q })));
+        character.gold = checkpoint.gold;
+    }, false, checkpoint);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().saved.quests.find(q => q.id === 'chronicle_10_rootheart_raid')).toMatchObject({
+        accepted: false, completed: false, count: 0
+    });
+    expect(fixture.result().writes).toBe(1);
+});
+
 test('retains Air rewards and discoveries with an accepted but uncompleted Tempest handoff', () => {
     const fixture = exercise(airDungeonReadiness, false, earnedEarthCheckpoints[25]);
     fixture.run();

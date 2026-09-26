@@ -143,7 +143,7 @@ const historicalCheckpoints = Object.freeze([
         ] }
 ]);
 
-export const earnedEarthCheckpoints = Object.freeze([
+const earnedDungeonCheckpoints = Object.freeze([
     ...historicalCheckpoints,
     // Failed Molten expedition: actual drops/resources are retained, but the
     // quest is still uncompleted. Normal login owns the 15-minute run expiry;
@@ -263,6 +263,21 @@ export const earnedEarthCheckpoints = Object.freeze([
             { id: 'chronicle_air_stolen_horizon', accepted: true, completed: true, count: 3,
                 max_count: 3, investigation_mask: 7, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
             { id: 'chronicle_09_sky_answers', accepted: true, completed: false, count: 0,
+                max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] }
+]);
+
+export const earnedEarthCheckpoints = Object.freeze([
+    ...earnedDungeonCheckpoints,
+    // Actual four-player Tempest clear: only the Wizard's history is earned.
+    { ...earnedDungeonCheckpoints[25],
+        sha: '751fddc4399d6be6f46405d23841be982735ebedeff84f3050adae80615e7402',
+        gold: 378904,
+        continuationChapters: [
+            ...earnedDungeonCheckpoints[25].continuationChapters.slice(0, -1),
+            { id: 'chronicle_09_sky_answers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_10_rootheart_raid', accepted: false, completed: false, count: 0,
                 max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);

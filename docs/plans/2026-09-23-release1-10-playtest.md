@@ -41,8 +41,21 @@ features, automated checks and a complete human campaign playthrough.
   `/tmp/eidolon-final-encounters-20260926-Ox4Ijm`: earned Wizard plus three
   class-geared supports in Tempest, then prepared Water/Fire/Air raids and
   Umbral Nexus. Runs are sequential, bounded, zero-retry and stop on first
-  failure. Luna monitors terminal outcomes. None of these new checks is yet
-  accepted; no new deployment has been started.
+  failure. Luna monitors terminal outcomes. Tempest has now passed; Water is
+  running next, with Fire/Air/Nexus still queued. No new deployment has started.
+- `finaltempest0926a` passed the complete four-role Tempest route in39.5minutes:
+  all encounters through Zephyrion,14 room traversals,4 town recoveries, no
+  deaths, individual manual claims and completed-run recall/re-entry preserving
+  seed, boss clears and Gold. The final boss approach screenshot was inspected.
+  The actual earned Wizard save independently confirms level100/245125XP,
+  378904Gold,5461HP/4680MP and the claimed Tempest reward700Gold/59562Resonance XP;
+  Rootheart is offered, unaccepted and0/1. The three support characters were
+  prepared level70 class-geared fixtures, not earned campaign characters.
+  Archive `/tmp/eidolon-party-checkpoint-finaltempest0926a-pw1XnQ/save.archive.gz`,
+  SHA751fddc4399d6be6f46405d23841be982735ebedeff84f3050adae80615e7402,
+  is registered as checkpoint26;105 checkpoint tests pass. The inspection
+  database was removed without modifying the original archive. Retain this
+  full clear rather than replaying it solely for a later version or document.
 - The existing55-chapter graph regression now exercises every Dark Realm hunt
   through its district/enemy consumer and all four collection items through
   personal drop creation and normal pickup, rather than inserting those items
