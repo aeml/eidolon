@@ -9,16 +9,23 @@ test('moving-boss deflection is real combat-follow input, not a settled formatio
     const after = { ...before, x: 109994.28053740878, z: 19321.223809168812, state: 'IDLE', health: 2975 };
     const step = { dx: 1.060660171773634, dz: 1.0606601717809099 };
     const observation = partyCombatFollowObservation(before, step, before.instanceId);
-    expect(observation).toEqual({ minimumDistance: 1 });
+    expect(observation.minimumDistance).toBeCloseTo(.75);
     expect(groundMovementObserved(before, after, observation.minimumDistance)).toBe(true);
     expect(groundMovementObserved(before, before, observation.minimumDistance)).toBe(false);
     expect(groundMovementObserved(before, after, 1, partyFormationArrival(before, step, before.instanceId))).toBe(false);
 });
 
-test('short combat-follow corners retain witnessed arrival without reducing collision clearance', () => {
-    const origin = { x: 10, z: 20 }, step = { dx: .5, dz: .5 };
-    expect(partyCombatFollowObservation(origin, step, 'raid')).toEqual({
-        arrival: partyFormationArrival(origin, step, 'raid') });
+test('short combat-follow deflection witnesses input without claiming a fixed formation arrival', () => {
+    const origin = { x: 109999.95393505205, z: 19318.067295727946, instanceId: 'raid', instanceType: 'air_crystal_raid' };
+    const step = { dx: .5460649479500717, dz: .4248129661209532 };
+    const after = { ...origin, x: 110000.93200029542, z: 19318.11084424956, state: 'IDLE', health: 2975 };
+    const observation = partyCombatFollowObservation(origin, step, 'raid');
+    expect(observation.minimumDistance).toBeCloseTo(.3459227);
+    expect(groundMovementObserved(origin, after, observation.minimumDistance)).toBe(true);
+    expect(groundMovementObserved(origin, origin, observation.minimumDistance)).toBe(false);
+    expect(groundMovementObserved(origin, { ...origin, x: origin.x + .1 }, observation.minimumDistance)).toBe(false);
+    expect(groundMovementObserved(origin, after, 1, partyFormationArrival(origin, step, 'raid'))).toBe(false);
+    expect(partyCombatFollowObservation(origin, { dx: 12, dz: 0 }, 'raid')).toEqual({ minimumDistance: 1 });
     expect(() => partyCombatFollowObservation(origin, { dx: NaN, dz: 0 }, 'raid')).toThrow();
 });
 

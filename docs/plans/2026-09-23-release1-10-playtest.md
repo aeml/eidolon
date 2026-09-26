@@ -7,6 +7,21 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 26
 
+- Current active run: Water `finalwater0926f` at073771b1, after Air f cleanup.
+  Air `finalair0926f` stopped in19.2minutes during Tempest Sovereign; all five
+  were alive with1107Gold and no repair credit. A0.692-unit escort follow step
+  moved0.979units but a moving body deflected it outside the fixed0.25-unit
+  waypoint region. Combat-follow observation now witnesses displacement scaled
+  to the requested step (half its length, capped at1unit), without claiming
+  settled formation. Exact formation arrival, collision/projection/origin,
+  living/same-instance checks and all encounter deadlines remain unchanged.
+  The recorded geometry still fails exact formation and passes combat-input
+  observation; no movement and0.1-unit jitter still fail.103 focused formation/
+  observation tests pass in1.158seconds; scoped lint and whitespace pass.
+  Archive `/tmp/eidolon-party-checkpoint-finalair0926f-pXNWsI/save.archive.gz`,
+  SHAcc90f8815647894b89cb2b2ac9fb7e93dfb1f83b451e368bef50c8eefaef63b8,
+  remains unchanged. This is a QA correction, not a production game change.
+  Water's running source is frozen and is not edited.
 - Latest queue: Air `finalair0926e` failed at38de1fd0 (result below). Water
   `finalwater0926e` failed at60a791f6 under
   `/tmp/eidolon-water-support-20260926-7QmXo5/run.sh`; it waits for Air's
