@@ -78,7 +78,8 @@ features, automated checks and a complete human campaign playthrough.
   distinct remaining results without repeating Tempest or allowing overlapping
   expeditions. Luna reports terminal outcomes. Nexus passed; Fire's combat and
   restoration completed but its stale terminal QA flag failed (details below).
-  Air is running and Water remains queued. Fire's manual rewards remain open.
+  Air and Water subsequently failed; the batch is terminal and its owned
+  services are gone. Fire's saved manual-reward continuation passed below.
 - `finalfire0926b` ended with all five players alive, all three wave-clear events,
   `3:complete`, crystal stage `restored` and personal repair quest1/1, unclaimed.
   Its final bounded fight crossed the30-minute ritual loop-start deadline; the
@@ -101,6 +102,43 @@ features, automated checks and a complete human campaign playthrough.
   terminal marker and owned-container cleanup, then runs once with a10-minute
   native test limit. Scoped lint, all11 Vigil-control unit tests, Playwright
   discovery and whitespace checks pass. Luna monitors the terminal result.
+- `savedfire0926a` passed in4.1minutes on90ba7ded: all five actual survivors
+  manually claimed1400Gold/148906XP exactly once, reaching level71/36676XP/
+  3249Gold, with the Skyglass Vigil offered but unaccepted. Every personal
+  receipt and balance survived login and reopening Ilyra; waiting members
+  remained unclaimed. The rendered handoff screenshot was inspected. The save
+  `/tmp/eidolon-party-checkpoint-savedfire0926a-9U14ok/save.archive.gz`, SHA
+  e6a340608d1f82bb86350dfa2e29c7ed18a6233c6000e53fa79cee04a020bfd3,
+  is retained. The original57.3-minute Fire combat/restoration and this exact
+  continuation establish the prepared-party encounter/reward path, not an
+  uninterrupted earned campaign or human fight-duration result. Do not replay.
+- `finalair0926b` failed after21.2minutes during Tempest Sovereign combat, all
+  five alive, before crystal repair. The secondary healer's direct follow
+  inputs crossed boss/teammate bodies; displacement was only0.278units. Combat
+  following now reuses the existing floor/body-aware formation planner, strict
+  projection/origin/arrival checks and ordinary walking. A recorded overlapping
+  boss/two-teammate case exposed missing combined departure directions; the
+  bounded planner now offers16 short candidates, still checking every entire
+  edge against all bodies/floor. No collision radius or failure assertion was
+  weakened. The recorded regression and all65 formation tests pass. Archive
+  `/tmp/eidolon-party-checkpoint-finalair0926b-gPZcNw/save.archive.gz`, SHA
+  5fa19df11eef4692ca695a5b4b3fd8d12b53eccf72e755ff80ccde18ef977594.
+- `finalwater0926b` failed after37.9minutes in repair wave2, all five alive.
+  The Rogue's optional spacing path was clear when planned; an Aqua Golem
+  crossed it at the recorded real click and had left again by the timeout
+  snapshot. The existing interruption classifier now also accepts the known,
+  active body's witnessed click-time pose, retaining the same incremented
+  collision counter, exact blocked target, live/same-instance and single-input
+  guards. This records an interruption, never successful movement; unexplained
+  failures still propagate. The recorded regression and negative cases pass;
+  all101 formation/spacing checks pass across the focused runs. Scoped lint
+  and whitespace checks pass. Archive
+  `/tmp/eidolon-party-checkpoint-finalwater0926b-DU6orK/save.archive.gz`, SHA
+  610f94e3b7cb3a4b99d8f9e8ae1eb6f6d013c4c7c2136962091db000d02a4e87.
+  Both corrections are QA-only and need native Air/Water confirmation. Existing
+  encounter/expedition deadlines and15-minute saved-run expiry remain unchanged.
+  Luna's watcher stopped at its usage limit after the Air report; root confirmed
+  both remaining terminal logs and absence of owned services directly.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

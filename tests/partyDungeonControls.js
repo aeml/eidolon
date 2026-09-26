@@ -97,6 +97,16 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
         .map(actor => ({ actor, distance: Math.min(Math.hypot(actor.x - state.x, actor.z - state.z),
             Math.hypot(actor.x - anchor.x, actor.z - anchor.z)) }))
         .filter(entry => entry.distance <= 24).sort((a, b) => a.distance - b.distance).slice(0, 8);
+    if (nearby.some(({ actor }) => Math.hypot(state.x - actor.x, state.z - actor.z) <
+        (state.radius || 1.25) + (actor.radius || 1.25) + .1)) {
+        // At simultaneous boss/teammate contact, departing directly away from
+        // either body can enter the other. Offer bounded combined directions;
+        // every graph edge must still clear all bodies and the complete floor.
+        for (let index = 0; index < 16; index++) {
+            const direction = index * Math.PI / 8;
+            add(state.x + Math.cos(direction) * 1.5, state.z + Math.sin(direction) * 1.5);
+        }
+    }
     for (const { actor } of nearby) {
         const dx = state.x - actor.x, dz = state.z - actor.z, distance = Math.hypot(dx, dz);
         const clearance = (state.radius || 1.25) + (actor.radius || 1.25) + .1;

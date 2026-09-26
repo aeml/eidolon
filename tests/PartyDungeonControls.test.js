@@ -33,6 +33,31 @@ test('formation follows the walked corner instead of cutting an L-shaped hallway
     expect(second).toEqual({ dx: 0, dz: 10 });
 });
 
+test('recorded Skyglass healer approach detours around the boss and touching teammates', () => {
+    const follower = { x: 109994.89166654447, z: 19313.926397707975, radius: 1.25 };
+    const direct = { dx: -2.50777362195548, dz: -8.452585637930195 };
+    const length = Math.hypot(direct.dx, direct.dz);
+    const anchor = { x: follower.x + direct.dx * (length + 7) / length,
+        z: follower.z + direct.dz * (length + 7) / length };
+    const bodies = [
+        { x: 109996.5234375, z: 19312.767578125, radius: 1.25 },
+        { x: 110006.9609375, z: 19315.36328125, radius: 1.25 },
+        { x: 109994.3828125, z: 19311.447265625, radius: 1.25 },
+        { x: 109988.28125, z: 19302.306640625, radius: 1.25 },
+        { x: 109989.515625, z: 19315.32421875, radius: 5 }
+    ];
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+    expect(clear(direct)).toBe(false);
+    let inputs = 0;
+    while (partyFollowStep(follower, anchor, 7) && inputs++ < 12) {
+        const step = partyFormationStep(follower, anchor, null, clear, 7, null, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(Math.hypot(follower.x - anchor.x, follower.z - anchor.z)).toBeLessThan(8);
+});
+
 test('a teammate occupying the straight gathering destination gets a verified alternative', () => {
     const follower = { x: 0, z: 5.8 }, tank = { x: 0, z: 0 };
     const bodies = [{ ...tank, radius: 1.25 }, { x: 0, z: 2.5, radius: 1.25 }];

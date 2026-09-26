@@ -8,7 +8,7 @@ import { readSavedEarnedHandoff } from '../earnedEarthCheckpoint.js';
 import { partyBossDiagnostic, preparePartyBossDiagnostic, partyDiagnosticRoom } from '../partyBossDiagnostic.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { PARTY_DUNGEON_CHAPTERS, partyDungeonStory } from '../partyDungeonStory.js';
-import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
@@ -323,12 +323,41 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         console.log('[party-clear] visible desktop roster selection and clear verified before combat');
 
         async function follow(actor, anchor, distance = 4) {
-            const state = await roleSnapshot(actor.page);
-            const step = partyFollowStep(state, anchor, distance);
-            if (!step) return;
-            // Same covered-pointer handling as the leader: reread on the next
-            // bounded loop, never count a blocked ray as successful movement.
-            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, step.dx, step.dz, PARTY_FOLLOW_INPUT_OPTIONS));
+            const plan = await actor.page.evaluate(async ({ anchor, distance }) => {
+                const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival,
+                    PartyFormationRouteUnavailable } = await import('/tests/partyDungeonControls.js');
+                const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+                const { planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
+                const g = window.game, p = g.player;
+                const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
+                    other.isActive && other.stats && other.state !== 'DEAD' && other.position)
+                    .map(other => ({ id: other.id, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                const target = bodies.find(other => other.id === anchor.id) || anchor;
+                let step;
+                try {
+                    step = partyFormationStep(p.position, target, null, (candidate, from) => {
+                        const origin = p.position.clone();
+                        origin.x = from.x;
+                        origin.z = from.z;
+                        return partyPathAvoidsActors(origin, candidate, bodies, p.radius || 1.25) &&
+                            isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
+                                { x: candidate.dx, z: candidate.dz });
+                    }, distance, null, bodies);
+                } catch (error) {
+                    if (error instanceof PartyFormationRouteUnavailable) return null;
+                    throw error;
+                }
+                step = planVisibleGroundStepInPage(step, { minimumDistance: .25 });
+                return step && { ...step, origin: { x: p.position.x, z: p.position.z, instanceId: g.currentInstanceId },
+                    arrival: partyFormationArrival(p.position, step, g.currentInstanceId) };
+            }, { anchor, distance });
+            if (!plan) return;
+            // Reuse formation's body/floor-aware detours for combat support too.
+            // An unavailable route waits for the existing bounded combat loop;
+            // a real issued input that fails still fails the expedition.
+            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.dx, plan.dz,
+                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true,
+                    batchPreparation: true, expectedOrigin: plan.origin, arrival: plan.arrival }));
         }
 
         async function avoidWarnings(actor, encounter) {

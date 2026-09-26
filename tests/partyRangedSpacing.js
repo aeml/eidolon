@@ -19,7 +19,16 @@ export function partySpacingActorInterruption(plan, observation) {
     const attempts = observation.attempts;
     if (attempts?.length !== 1 || attempts[0].mode !== 'move-only-walk' ||
         attempts[0].clickProbe?.result !== true || attempts[0].clickProbe?.dom !== 'CANVAS') return null;
-    for (const body of observation.actors || []) {
+    // A moving body may cross during the real click and leave again before
+    // timeout. Retain that witnessed pose, using only a known body's radius;
+    // unknown/dead hover targets cannot explain a collision. All input, living,
+    // instance, blocked-target and collision-increment guards above still apply.
+    const clickedBodies = [attempts[0].clickProbe.before, attempts[0].clickProbe.after]
+        .filter(body => body?.active === true && body.state !== 'DEAD' &&
+            plan.bodies?.some(prior => prior.id === body.id))
+        .map(body => ({ id: body.id, x: body.position?.x, z: body.position?.z,
+            radius: plan.bodies.find(prior => prior.id === body.id).radius }));
+    for (const body of [...(observation.actors || []), ...clickedBodies]) {
         const before = plan.bodies?.find(actor => actor.id === body.id);
         if (!before || ![before.x, before.z, body.x, body.z].every(Number.isFinite) ||
             Math.hypot(before.x - body.x, before.z - body.z) < .25) continue;

@@ -68,3 +68,28 @@ test('a stationary or already obstructing body does not excuse a failed plan', (
     expect(partySpacingActorInterruption(null, observation)).toBeNull();
     expect(partySpacingActorInterruption(plan, null)).toBeNull();
 });
+
+test('recorded Water golem crossing remains evidenced after it leaves the blocked path', () => {
+    const plan = { instanceId: 'water-vigil', blockedStops: 10,
+        origin: { x: 90050.09751597785, z: 19240.99045287158, radius: 1.25 },
+        step: { dx: 3.5531993275071727, dz: -3.6450443540597917 },
+        bodies: [{ id: 'golem', x: 90041.35140960531, z: 19237.476103033256, radius: 1.5 }] };
+    const observation = { before: { ...plan.origin, instanceId: plan.instanceId },
+        player: { instanceId: plan.instanceId, state: 'IDLE', health: 3025 },
+        movement: { blockedStops: 11, blockedTarget: { x: 90053.58991337626, z: 19237.293931327935 } },
+        attempts: [{ mode: 'move-only-walk', clickProbe: { result: true, dom: 'CANVAS',
+            after: { id: 'golem', active: true, state: 'ATTACKING', position: { x: 90050.640625, z: 19240.529296875 } } } }],
+        actors: [{ id: 'golem', x: 90056.359375, z: 19243.02734375, radius: 1.5 }] };
+    expect(partyPathAvoidsActors(plan.origin, plan.step, plan.bodies)).toBe(true);
+    expect(partyPathAvoidsActors(plan.origin, plan.step, observation.actors)).toBe(true);
+    expect(partySpacingActorInterruption(plan, observation)).toBe('golem');
+    for (const change of [{ active: false }, { state: 'DEAD' }, { id: 'unknown' },
+        { position: { x: NaN, z: 0 } }, { position: plan.bodies[0] }]) {
+        const attempt = observation.attempts[0];
+        const invalid = { ...observation, attempts: [{ ...attempt, clickProbe: { ...attempt.clickProbe,
+            after: { ...attempt.clickProbe.after, ...change } } }] };
+        expect(partySpacingActorInterruption(plan, invalid)).toBeNull();
+    }
+    observation.movement.blockedStops = 10;
+    expect(partySpacingActorInterruption(plan, observation)).toBeNull();
+});
