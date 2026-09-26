@@ -30,6 +30,11 @@ features, automated checks and a complete human campaign playthrough.
   Root collected Water's terminal handle; Air `finalair0926f` at5ab1aa49 has
   started after cleanup, with no edits to that frozen source. Water is still
   not accepted; retain its failed result, not a crystal-restoration claim.
+  Water-only `finalwater0926f` at073771b1 is queued under
+  `/tmp/eidolon-water-arrival-20260926-ujJ2Hm/run.sh`, requiring Air's terminal
+  marker and owned-container cleanup. One bounded attempt, no retries. Do not
+  alter the15-minute logout rule or old archive timestamps to reuse expired
+  raid progress, and do not replay any accepted encounter.
 - Air `finalair0926e` defeated Tempest Sovereign and cleared repair wave1,
   then failed during wave2 in32.2minutes. Both Clerics and the Rogue were dead
   in the final snapshots; Fighter/Wizard survived. All five had1246Gold and
