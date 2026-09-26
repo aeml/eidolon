@@ -166,6 +166,21 @@ features, automated checks and a complete human campaign playthrough.
   `/tmp/eidolon-air-final-20260926-krGvMm`, waiting for that exact batch PID and
   terminal marker plus owned-container cleanup. One fresh bounded attempt,
   zero retries; no changed logout timestamps or fabricated saved boss state.
+- `finalwater0926c` ended after33.1minutes in wave2, all five alive, on the
+  unchanged60-second initial-approach stall guard. The retained consecutive
+  observations show clear perpendicular steps alternating in opposite directions
+  beside the same teammates, while the selected Frost Guardian stayed distant
+  and undamaged. The occluded-target planner now tries forward diagonals before
+  perpendicular probes for distant targets. Its regression walks the recorded
+  geometry into attack range through collision-clear segments with monotonic
+  distance reduction; all9 target-approach tests and scoped lint/diff pass.
+  Nearby crowd handling, collision checks and combat/expedition budgets are
+  unchanged. This is another QA-only correction, not a production movement fix
+  or an accepted Water Vigil. Archive
+  `/tmp/eidolon-party-checkpoint-finalwater0926c-9PuwJc/save.archive.gz`, SHA
+  94736598c3de3152986f7c516e333dc3e668fa0d4b082060b92150987a6850e0.
+  The Air/Water batch is now terminal; Air-only `finalair0926d` has started after
+  its cleanup. Keep that frozen run intact, then verify only corrected Water.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with

@@ -25,6 +25,13 @@ export function dungeonOccludedTargetStep(player, target, canStep, actors = []) 
     if (distance > standOff + 1) {
         const advance = Math.min(12, distance - standOff);
         candidates.push({ dx: nx * advance, dz: nz * advance });
+        // Prefer forward diagonals before perpendicular probes while closing
+        // on a distant enemy. Otherwise a clear sideways step can alternate
+        // with its inverse forever even when the onward diagonal is open.
+        for (const angle of [Math.PI / 4, -Math.PI / 4]) {
+            candidates.push({ dx: (nx * Math.cos(angle) - nz * Math.sin(angle)) * 3.5,
+                dz: (nz * Math.cos(angle) + nx * Math.sin(angle)) * 3.5 });
+        }
     }
     candidates.push({ dx: -nz * 3.5, dz: nx * 3.5 }, { dx: nz * 3.5, dz: -nx * 3.5 },
         { dx: -nx * 3.5, dz: -nz * 3.5 });

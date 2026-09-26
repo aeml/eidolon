@@ -56,3 +56,31 @@ test('recorded Tidestar formation can leave through a clear diagonal without cro
         .toBeLessThan(Math.hypot(target.x - player.x, target.z - player.z));
     expect(dungeonOccludedTargetStep(player, target, () => false, teammates)).toBeNull();
 });
+
+test('recorded Water wave-two approach advances after a sidestep instead of reversing it', () => {
+    const player = { x: 89979.09783508329, z: 19229.755756322513, radius: 1.25 };
+    const target = { x: 89922.79918462635, z: 19274.23845122648, radius: 1.5, range: 4.300000071525574 };
+    const actors = [
+        { x: 89974.78125, z: 19230.740234375, radius: 1.25 },
+        { x: 89983.515625, z: 19220.46875, radius: 1.25 },
+        { x: 89979.0546875, z: 19243.373046875, radius: 1.25 },
+        { x: 89972.78125, z: 19224.509765625, radius: 1.25 },
+        { x: 90000, z: 19280, radius: 1.4375 },
+        { x: 90054.15624988338, z: 19333.88398418841, radius: 1.5 },
+        { x: 89998.859375, z: 19357.8671875, radius: 1.5 },
+        { x: 89938.49168266903, z: 19337.639510686808, radius: 1.5 }
+    ];
+    const initialDistance = Math.hypot(player.x - target.x, player.z - target.z);
+    for (let count = 0; count < 12; count++) {
+        const step = dungeonOccludedTargetStep(player, target, () => true, actors);
+        expect(step).not.toBeNull();
+        expect(partyPathAvoidsActors(player, step, [...actors, target])).toBe(true);
+        const before = Math.hypot(player.x - target.x, player.z - target.z);
+        player.x += step.dx;
+        player.z += step.dz;
+        expect(Math.hypot(player.x - target.x, player.z - target.z)).toBeLessThan(before);
+        if (Math.hypot(player.x - target.x, player.z - target.z) <= target.range) break;
+    }
+    expect(Math.hypot(player.x - target.x, player.z - target.z)).toBeLessThan(initialDistance - 60);
+    expect(Math.hypot(player.x - target.x, player.z - target.z)).toBeLessThanOrEqual(target.range);
+});
