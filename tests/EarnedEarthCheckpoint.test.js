@@ -287,6 +287,32 @@ test('retains the claimed30-kill Air reward and one collection fragment without 
     expect(fixture.result().writes).toBe(1);
 });
 
+function airDungeonReadiness(character) {
+    const checkpoint = earnedEarthCheckpoints[25];
+    fireDungeonReadiness(character);
+    character.quests.pop();
+    character.quests.push(...checkpoint.continuationChapters.slice(-6).map(q => ({ ...q })));
+    Object.assign(character, { gold: checkpoint.gold, resources: { ...checkpoint.resources } });
+}
+
+test('retains Air rewards and discoveries with an accepted but uncompleted Tempest handoff', () => {
+    const fixture = exercise(airDungeonReadiness, false, earnedEarthCheckpoints[25]);
+    fixture.run();
+    expect(fixture.result().saved).toEqual({ ...JSON.parse(fixture.original), name: 'codexqaresume' });
+    expect(fixture.result().writes).toBe(1);
+});
+
+test.each([
+    p => { p.quests.find(q => q.id === 'chronicle_08_feathers_thunder').granted_resonance_xp++; },
+    p => { p.quests.find(q => q.id === 'chronicle_air_stolen_horizon').investigation_mask = 3; },
+    p => { p.quests.find(q => q.id === 'chronicle_09_sky_answers').completed = true; },
+    p => { p.resources.health++; }
+])('rejects altered Air rewards, discoveries, resources or invented Tempest completion', change => {
+    const fixture = exercise(p => { airDungeonReadiness(p); change(p); }, false, earnedEarthCheckpoints[25]);
+    expect(() => fixture.run()).toThrow();
+    expect(fixture.result().writes).toBe(0);
+});
+
 test.each([
     p => { p.quests.at(-2).investigation_mask = 0; },
     p => { p.quests.at(-2).granted_resonance_xp = 0; },

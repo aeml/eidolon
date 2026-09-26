@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
 import { groundMovementObserved, confirmedGroundArrival } from '../groundMovementObservation.js';
 import { projectGroundOffsetInPage } from '../groundInputProjection.js';
-import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptInPage } from '../groundInputObservations.js';
+import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptInPage, groundInputOriginMatches } from '../groundInputObservations.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
@@ -340,7 +340,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     const prepared = batchPreparation ? await page.evaluate(async delta => {
         const { prepareGroundInputInPage } = await import('/tests/groundInputPreparation.js');
         return prepareGroundInputInPage(delta);
-    }, { deltaX, deltaZ }) : null;
+    }, { deltaX, deltaZ, expectedOrigin: options.expectedOrigin }) : null;
     if (prepared) mark('batch-preparation');
     const before = prepared ? prepared.before : await observeEntranceClick(page);
     mark('initial-observation');
@@ -413,8 +413,12 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         mark('hover-settled');
         // One browser observation sees hover and its current ground ray together.
         // It clears only the previous diagnostic click, before real input.
-        const { isClearGround, groundPoint } = await page.evaluate(readGroundPointerInPage, target);
+        const { isClearGround, groundPoint, origin } = await page.evaluate(readGroundPointerInPage, target);
         mark('ground-ray');
+        if (!groundInputOriginMatches(options.expectedOrigin, origin)) {
+            mark('origin-stale');
+            continue;
+        }
         const useMoveOnly = options.moveOnly === true;
         if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
         const useCoveredJump = !isClearGround && !useMoveOnly;

@@ -502,6 +502,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             try {
                 moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
                     { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        batchPreparation: true, expectedOrigin: { ...plan.origin, instanceId: plan.instanceId },
                         arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
             } catch (error) {
                 failure = error;

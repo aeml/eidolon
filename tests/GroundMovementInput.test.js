@@ -26,6 +26,7 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
                 return { canvas: true, x: 100, y: 100, world: ground };
             }
             if (code.includes('getGroundIntersectionFromEvent')) return {
+                origin: { x, z: 0, instanceId: 'dungeon-test' },
                 isClearGround: !covered, groundPoint: ground && { ...ground, x: ground.x + drift }
             };
             if (code.includes('!window.game?.hoveredEntity')) return !covered;
@@ -41,6 +42,31 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
         waitForTimeout: jest.fn()
     };
 }
+
+test('spacing that becomes stale after projection sends no click and remains available for replanning', async () => {
+    const page = movementPage(false);
+    const original = page.evaluate.getMockImplementation();
+    page.evaluate.mockImplementation(async (callback, args) => {
+        const result = await original(callback, args);
+        if (callback.toString().includes('getGroundIntersectionFromEvent')) result.origin.x = 17;
+        return result;
+    });
+    await expect(moveByGroundClick(page, 2, 0, { batchPreparation: true, moveOnly: true,
+        requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false,
+        expectedOrigin: { x: 0, z: 0, instanceId: 'dungeon-test' }
+    })).rejects.toMatchObject({ name: 'GroundInputUnavailableError' });
+    expect(page.mouse.click).not.toHaveBeenCalled();
+});
+
+test('current spacing still requires actual movement after its real click', async () => {
+    const page = movementPage(false);
+    const after = await moveByGroundClick(page, 10, 0, { batchPreparation: true, moveOnly: true,
+        requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false,
+        expectedOrigin: { x: 0, z: 0, instanceId: 'dungeon-test' }
+    });
+    expect(after.x).toBe(10);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
 
 test.each([false, true])('live path observation needs no published test modules and preserves walls: %s', async blocked => {
     const page = movementPage(false);

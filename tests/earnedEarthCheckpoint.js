@@ -245,6 +245,25 @@ export const earnedEarthCheckpoints = Object.freeze([
                 max_count: 30, granted_gold: 800, granted_xp: 0, granted_resonance_xp: 117093 },
             { id: 'chronicle_08_feathers_thunder', accepted: true, completed: false, count: 1,
                 max_count: 8, collection_version: 2, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
+        ] },
+    // Actual Air completion and saved Tempest handoff; no dungeon credit yet.
+    { ...historicalCheckpoints[13],
+        sha: '92308f1031e2e29be16c8006c4524fefcc23b16d7a0f754b6f5baae10d142b2c',
+        gold: 374513, resources: { version: 1, health: 5461, mana: 4680, dead: false },
+        continuationChapters: [
+            ...historicalCheckpoints[13].continuationChapters.slice(0, -1),
+            { id: 'chronicle_07_crown_of_embers', accepted: true, completed: true, count: 1,
+                max_count: 1, granted_gold: 700, granted_xp: 0, granted_resonance_xp: 59562 },
+            { id: 'chronicle_air_weatherkeeper', accepted: true, completed: true, count: 1,
+                max_count: 1, investigation_mask: 1, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
+            { id: 'chronicle_air_unstolen_hours', accepted: true, completed: true, count: 30,
+                max_count: 30, granted_gold: 800, granted_xp: 0, granted_resonance_xp: 117093 },
+            { id: 'chronicle_08_feathers_thunder', accepted: true, completed: true, count: 8,
+                max_count: 8, collection_version: 2, granted_gold: 500, granted_xp: 0, granted_resonance_xp: 35738 },
+            { id: 'chronicle_air_stolen_horizon', accepted: true, completed: true, count: 3,
+                max_count: 3, investigation_mask: 7, granted_gold: 250, granted_xp: 0, granted_resonance_xp: 5956 },
+            { id: 'chronicle_09_sky_answers', accepted: true, completed: false, count: 0,
+                max_count: 1, granted_gold: 0, granted_xp: 0, granted_resonance_xp: 0 }
         ] }
 ]);
 

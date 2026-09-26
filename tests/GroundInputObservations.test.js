@@ -78,6 +78,7 @@ test.each([true, false])('pointer observation retains actual hover and ray, cove
     const position = { ...game.player.position }, target = game.player.targetPosition;
     window.__entranceClickProbe = { click: { stale: true }, requested: 2, received: 3 };
     expect(readGroundPointerInPage({ x: 100, y: 200 })).toEqual({ isClearGround: !covered,
+        origin: { x: 4, z: 8, instanceId: 'instance' },
         groundPoint: { x: 10, y: 0, z: 12 } });
     expect(game.inputManager.getGroundIntersectionFromEvent).toHaveBeenCalledWith({ clientX: 100, clientY: 200 });
     expect(window.__entranceClickProbe).toEqual({ click: null, requested: 2, received: 3 });

@@ -52,7 +52,19 @@ export function readGroundPointerInPage({ x, y }) {
     // Reset evidence before input; never reset a game-owned interaction.
     if (window.__entranceClickProbe) window.__entranceClickProbe.click = null;
     return { isClearGround: !game.hoveredEntity,
+        origin: { x: game.player.position.x, z: game.player.position.z, instanceId: game.currentInstanceId || '' },
         groundPoint: hit ? { x: hit.x, y: hit.y, z: hit.z } : null };
+}
+
+// A relative step belongs to the position and instance where it was planned.
+// If ordinary movement continued meanwhile, replan instead of translating that
+// step to a different endpoint and testing arrival at the original one.
+export function groundInputOriginMatches(expected, observed) {
+    if (expected === undefined) return true;
+    return Boolean(expected && observed &&
+        [expected.x, expected.z, observed.x, observed.z].every(Number.isFinite) &&
+        expected.instanceId === observed.instanceId &&
+        Math.hypot(expected.x - observed.x, expected.z - observed.z) <= .25);
 }
 
 export function readGroundClickReceiptInPage() {

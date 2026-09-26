@@ -5,26 +5,38 @@ and deploy 1.10 for playtesting. This record supersedes older *current status*
 paragraphs, not their retained test evidence. It does not equate implemented
 features, automated checks and a complete human campaign playthrough.
 
-## Current handoff — September 25
+## Current handoff — September 26
 
 - Verified live remains Alpha 1.10.0 at e67fc0ad1b924002758e67e5a3a3bcb615d97476.
   Alpha 1.10.1 is a local, undeployed notification-polish candidate. Login,
   package and server version defaults and cumulative notes agree; all 293
   focused release/version/asset checks pass. Accepted native notification
   presentation checks are recorded below; no repeat finale run is required.
-- Air continuation `earnedair0925d` is running with the completed hunt retained.
-  Air collection, remaining story steps and Tempest acceptance remain open.
-  Its native merchant step now passes: six normal UI sales freed bag slots
-  from2 to8 and increased Gold342312 to350842, exactly8530 in verified proceeds.
-  This confirms the obsolete-spare sale path at4f640e2a; it does not establish
-  completion of the field route. Receipt: `[earned-bag-management]` in
-  `/tmp/eidolon-air-continue-20260925-r4-GAZ18w/run.log`.
-- Water/Fire/Air crystal raids and Umbral Nexus remain open. A batch pinned to
-  70583f18 is queued behind the live Air wrapper and cleanup checks at
-  `/tmp/eidolon-remaining-encounters-20260925-r3-NLfnnW`, using the observed-position
-  formation correction. It runs one encounter at a time and stops on its
-  first failure; Luna monitors terminal results without automatic retries. Earlier batch
-  failures below are history, not currently running jobs or successful clears.
+- Air continuation `earnedair0925d` passed in34.7minutes at4f640e2a: collection
+  8/8,16 observed collection-target deaths, no player deaths, Stolen Horizon3/3,
+  manual rewards, checkpoint/relogin and saved Tempest handoff. The actual save
+  independently confirms level100/245125XP/374513Gold,5461HP/4680MP, completed
+  collection reward500Gold/35738Resonance XP and investigation250Gold/5956Resonance
+  XP. Tempest is accepted with0/1 and not completed. The unchanged archive is
+  `/tmp/eidolon-party-checkpoint-earnedair0925d-7X2SsQ/save.archive.gz`, SHA
+  92308f1031e2e29be16c8006c4524fefcc23b16d7a0f754b6f5baae10d142b2c,
+  registered as checkpoint25. The isolated inspection database was removed.
+  Continue with the earned Wizard and three class-geared support characters;
+  do not replay Air or claim that all four party characters earned its history.
+- Water/Fire/Air crystal raids and Umbral Nexus remain open. Batch r3 at70583f18
+  stopped on Water after23.2minutes; all five alive, Tidebound Tyrant defeated,
+  first repair wave still incomplete. Fire/Air/Nexus never started. The Rogue's
+  spacing input projected a relative step after its origin moved about17metres,
+  then checked arrival against the old plan. Preparation now rejects stale
+  origin/instance and checks it again before clicking; normal replan loops retain
+  the same deadlines, collision, living-player and arrival assertions. This is
+  a QA correction, not a production movement fix or a successful Vigil.92 focused
+  movement checks and188 checkpoint/projection/formation checks pass; scoped lint
+  and whitespace checks pass. Native confirmation remains required.
+  Logs: `/tmp/eidolon-remaining-encounters-20260925-r3-NLfnnW`.
+  Retained Water save: `/tmp/eidolon-party-checkpoint-finalwater0925c-jncY7K/save.archive.gz`,
+  SHAdebf92bb3b14a0f546901f9cd84274824799484843863651ccb0092c1b845671.
+  Both runs cleaned up; no automatic retry or active old batch remains.
 - The Dark King kill plus exact saved continuation have verified all five
   players' rewards, epilogues and persistence. This is not an uninterrupted
   earned campaign. Human campaign timing remains a playtest question; phone

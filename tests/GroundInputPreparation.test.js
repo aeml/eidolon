@@ -17,6 +17,32 @@ afterEach(() => {
     delete window.__entranceClickProbe; delete window.__entranceClickProbeInstalled;
 });
 
+test('recorded Water movement cannot translate a stale spacing step to a new origin', () => {
+    const game = window.game;
+    const click = game.handlePrimaryClick;
+    game.currentInstanceId = 'water-run';
+    const expectedOrigin = { x: 89966.87793141647, z: 19317.715642942374, instanceId: 'water-run' };
+    game.player.position.set(89949.51141627667, 0, 19320.625063497286);
+    const result = prepareGroundInputInPage({ deltaX: 1.431642232098966, deltaZ: -.9117536360136, expectedOrigin });
+    expect(result).toMatchObject({ clear: false, target: null });
+    expect(game.collisionManager.checkCollision).not.toHaveBeenCalled();
+    expect(click).not.toHaveBeenCalled();
+});
+
+test.each(['current', 'moved', 'instance', 'invalid'])(
+    'planned origin must remain current before path preparation: %s', mode => {
+        const game = window.game;
+        const click = game.handlePrimaryClick;
+        game.currentInstanceId = 'original-run';
+        const expectedOrigin = { x: game.player.position.x, z: game.player.position.z, instanceId: 'original-run' };
+        if (mode === 'moved') game.player.position.x += .3;
+        if (mode === 'instance') game.currentInstanceId = 'other-run';
+        if (mode === 'invalid') expectedOrigin.x = NaN;
+        const result = prepareGroundInputInPage({ deltaX: 2, deltaZ: 0, expectedOrigin });
+        expect(result.clear).toBe(mode === 'current');
+        expect(click).not.toHaveBeenCalled();
+    });
+
 test('one preparation retains origin, entire collision path and exact unscaled projection without input', () => {
     const game = window.game, origin = game.player.position.clone(), click = game.handlePrimaryClick;
     const result = prepareGroundInputInPage({ deltaX: -8.919, deltaZ: 1.201 });
