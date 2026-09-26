@@ -203,6 +203,10 @@ features, automated checks and a complete human campaign playthrough.
   b3ff0bfeef094efe497c6dcad233634c3908af591e84371629fc3a8423772f0f.
   Root collected the terminal Air handle; Water-only `finalwater0926d` started
   after Air cleanup and remains unchanged on861c3f3b.
+  Air-only `finalair0926e` at38de1fd0 is queued in
+  `/tmp/eidolon-air-recovery-20260926-u65to6`, behind Water's exact wrapper PID,
+  terminal marker and cleanup. One corrected, bounded attempt; no other accepted
+  encounter is repeated and no deployment/browser overlap is allowed.
 - `finalnexus0926b` passed in14.9minutes at bff2c1b9: full Umbral Nexus through
   Eidolon Devourer,6 room traversals,1 town recovery, all four alive, individual
   manual rewards and Dark King offers, then completed-run recall/re-entry with
