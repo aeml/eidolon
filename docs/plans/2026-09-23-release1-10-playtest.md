@@ -7,6 +7,18 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+- **Verified live Alpha1.10.1:** exactf8a9b051c4043ad5a64cfaa57444a40df0515620,
+  [CI36283549819](https://github.com/aeml/eidolon/actions/runs/36283549819),
+  all ten jobs successful, including Go/client/browser gates, both deployments,
+  and live character/recovery QA. Independent public IPv4 verification confirms
+  matching frontend/backend version+commit, ready database, login label,
+  cumulative patch notes and five exact runtime/style assets. Verifier:
+  `/tmp/eidolon-release-1-10-1-20260927-EaoGYx/verify.mjs`. No production account
+  mutations were used by that verifier. IPv6 remains user-deferred/unverified.
+  All native encounter queues are finished; do not rerun accepted encounters.
+  The complete uninterrupted fresh campaign and human pacing remain unproven,
+  distinct from the now-accepted scoped group encounter/repair/reward evidence.
+  The overall roadmap goal remains open; this release is ready for playtesting.
 - **Accepted Water clear:** `finalwater0926h` passed in46.4minutes at1f8e1357.
   All five prepared class-geared raiders survived Tyrant and all three defended
   repair waves, received personal restoration credit, manually claimed their

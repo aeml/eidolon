@@ -1,10 +1,11 @@
 # 1.10 final integration — evidence and remaining work
 
-## Current status — September 25
+## Current status — September 27
 
 Use the [Alpha1.10 release record](2026-09-23-release1-10-playtest.md) for current
-delivery and outstanding checks. Alpha1.10.0 is verified live; the accepted
-five-player finale/reward continuation and remaining Air/raid/Nexus checks are
+delivery and outstanding checks. Alpha1.10.1 is verified live in CI36283549819;
+accepted elemental raid repairs, earned Air/Tempest, Nexus and finale/reward
+checks, plus outstanding uninterrupted campaign and human pacing acceptance, are
 recorded there. The dated evidence below remains valid within its stated scope,
 but its old “current”, “pending” and release-candidate paragraphs are historical.
 Do not restart those completed deployments or repeat accepted encounters based
