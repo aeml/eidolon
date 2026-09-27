@@ -315,19 +315,19 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 1.10.2` (release candidate; not yet verified live)
-- Last verified live release: `Alpha 1.10.1`, exact f8a9b051c4043ad5a64cfaa57444a40df0515620, CI36283549819. See the release record below for scoped acceptance and remaining campaign playtesting.
+- Current in-game displayed version: `Alpha 1.10.2` (verified live)
+- Last verified live release: `Alpha 1.10.2`, exact 8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813, CI36285496845. See the release record below for scoped acceptance and remaining campaign playtesting.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.10` final integration, following the [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md)
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
 - Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
 
-Verification state as of September 25, 2026:
+Verification state as of September 27, 2026:
 
 - The retained Alpha 1.0 foundation includes migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
 - Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
-- Alpha 1.10.1 passed all ten release jobs in CI36283549819, including live character/recovery QA. Independent public IPv4 checks verified matching frontend/backend identities, database readiness, login label, patch history and five exact assets. The [1.10 playtest release record](docs/plans/2026-09-23-release1-10-playtest.md) retains scoped encounter evidence and remaining campaign/playtest limitations.
+- Alpha 1.10.2 passed all ten release jobs in CI36285496845, including live character/recovery QA. Independent public IPv4 checks verified matching frontend/backend identities, database readiness, login label, patch history and five exact assets. The [1.10 playtest release record](docs/plans/2026-09-23-release1-10-playtest.md) retains scoped encounter evidence and remaining campaign/playtest limitations.
 - The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Historical Alpha 1.0 decomposition measurements (physical lines, `wc -l`; not current file sizes):

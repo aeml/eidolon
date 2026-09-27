@@ -7,6 +7,27 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+- **Verified live Alpha1.10.2:** exact8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813,
+  [CI36285496845](https://github.com/aeml/eidolon/actions/runs/36285496845),
+  all ten jobs successful, including live character/animation/town-recovery QA.
+  Public IPv4 verification passed matching client/server identities, ready
+  database, login label, cumulative notes and five exact assets. Verifier:
+  `/tmp/eidolon-release-1-10-2-20260927-VgeEbt/verify.mjs`; terminal watcher63417
+  exited0. The read-audit fix is now delivered, not pending. No gameplay balance,
+  currency or saved-character changes. IPv6 remains user-deferred/unverified.
+  The optional casino hardware profile started only after full CI success, at
+  QA-only descendante88c8538; see its [predeclared contract](2026-09-27-casino-frame-profile.md).
+  Full campaign/human pacing and remaining integrated acceptance stay open.
+- **Casino profile completed, not accepted:** one29.2-second native hardware
+  run ate88c8538 collected all four High/Low floor views with180frames each.
+  High passes; Low medians20.1/20.3ms miss the predeclared20ms target, while all
+  p95 values pass. Retain the [measurements and limits](2026-09-27-casino-frame-profile.md);
+  do not rerun unchanged or relax the target. Four screenshots were inspected.
+  No profile or deployment remains running. This does not change live1.10.2.
+
+The candidate/next-batch notes immediately below are historical; the verified
+1.10.2 receipt above supersedes their publication status.
+
 - **Alpha1.10.2 release candidate:** packages the tested read-audit recovery fix
   with synchronized login/package/server/CI versions and cumulative patch notes.
   Publication is now the next delivery step; no additional gameplay defect was

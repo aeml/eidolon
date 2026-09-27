@@ -1,6 +1,10 @@
 # Rejected administration requests — durable outage recovery
 
-## Read-audit follow-up — September 27, not deployed
+## Read-audit follow-up — September 27, verified live in1.10.2
+
+Delivered at8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813, all ten jobs of
+CI36285496845 successful plus exact public IPv4 release verification. The
+historical batching note below is fulfilled by1.10.2 and its cumulative notes.
 
 A focused reproduction found that status, online-player and history reads
 withheld privileged data when the Mongo audit append failed, but lost the read

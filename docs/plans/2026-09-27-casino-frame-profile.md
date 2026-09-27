@@ -30,3 +30,36 @@ currency, multiplayer-game and persistence evidence remains separate.
 Status: instrumentation prepared; native execution not started. This changes QA
 only and is not part of the immutable1.10.2 candidate8b2b955f. No performance
 acceptance or production optimization is claimed before the measurements exist.
+
+## Result — September27, Low median target not met
+
+One run at QA-onlye88c8538 started01:50:08UTC after all ten release jobs passed;
+terminal96388 exited1 in29.2seconds, zero retries. System Chrome renderer:
+`ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)`.
+All four views collected180 frames with a visible document and valid counts.
+
+| View | Median ms | p95 ms | Render CPU median ms | Draw calls | Geometry / textures |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| High public | 22.3 | 26.6 | 21.2 | 2702 | 363 /23 |
+| High VIP | 22.6 | 28.4 | 21.4 | 2658 | 486 /23 |
+| Low public | 20.1 | 24.1 | 19.0 | 2635 | 486 /23 |
+| Low VIP | 20.3 | 24.5 | 19.4 | 2591 | 486 /23 |
+
+Both High views and all p95 values meet their predeclared targets. Both Low
+medians exceed20ms, so the performance gate remains failed. The small miss can
+be sensitive to shared-host scheduling; it is not proof of a specific bottleneck,
+and no unchanged retry or relaxed threshold is justified. First inspect draw
+submission/scene work; do not assume an optimization before locating it.
+The first-public→first-VIP geometry increase is not a leak measurement: this
+run did not repeat views or perform a resource-lifetime sequence.
+
+All four screenshots were inspected: only the selected floor is visible,
+public/VIP carpet treatment is distinct, lanes between tables remain clear,
+seated patrons and their auras appear on the correct floor. The wide overview
+does not prove table-hand UI or ordinary-camera readability. No visual failure
+was observed; the two Low median assertions are the reported failures.
+
+Evidence: `/tmp/eidolon-casino-native-profile-20260927-whiOZK/`, containing
+`run.log`, `report.json`, four view screenshots and the frame-profile attachment.
+The owned4189 listener is gone after terminal cleanup. No production account,
+wager, balance, runtime setting or game code was changed.
