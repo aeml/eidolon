@@ -9,9 +9,9 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 ## Current Snapshot
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
-- Alpha1.10.1 notification polish retains accepted group clears for all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. Uninterrupted fresh-campaign verification and human pacing remain open; do not replay accepted encounters merely for the patch label.
-- Live release: `Alpha 1.10.1 — Clearer victories`, exact `f8a9b051c4043ad5a64cfaa57444a40df0515620`, CI36283549819 passed all ten jobs, including live character/recovery QA. Public IPv4 release identity, five exact assets and database readiness were verified. Full gameplay acceptance remains open; deployment is not proof of campaign completion. See the [current release record](docs/plans/2026-09-23-release1-10-playtest.md) for remaining checks. The user deferred the separate IPv6/DDNS configuration issue.
-- The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain unaccepted. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
+- Accepted group clears cover all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. On September27 the user assigned uninterrupted campaign and pacing validation to their playtest; do not run another long automated campaign or mark those checks passed.
+- Live release: `Alpha 1.10.2`, exact `8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813`, CI36285496845 passed all ten jobs, including live character/recovery QA. Public IPv4 release identity, five exact assets and database readiness were verified. Read-audit recovery is delivered. Local casino rendering optimizations remain unshipped pending hardware timing acceptance; see the [current release record](docs/plans/2026-09-23-release1-10-playtest.md). The user deferred the separate IPv6/DDNS configuration issue.
+- The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
 - Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
@@ -112,10 +112,11 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 
 The September 7 scope addition requires a
 [progression/economy balancing pass and eight realm investigations](docs/plans/2026-09-07-progression-balance-and-investigations.md).
-Reduced reward/drop budgets, the current XP curve, the 31-chapter Chronicle and
-eight playable diary/discovery or magical-disturbance sites are delivered.
-Earned Earth, Water and Fire-story continuations have passed; the remaining
-campaign, raid and economy acceptance is still open. Follow the
+Reduced reward/drop budgets, the current XP curve, the expanded55-chapter
+Chronicle and realm diary/discovery or magical-disturbance sites are delivered.
+Earned regional continuations and all four elemental raid repair routes have
+scoped acceptance; uninterrupted campaign/economy/pacing validation belongs to
+the user's playtest. Follow the
 [current integration audit](docs/plans/2026-09-14-final-integration-audit.md)
 rather than treating the historical staging plan as unimplemented content.
 

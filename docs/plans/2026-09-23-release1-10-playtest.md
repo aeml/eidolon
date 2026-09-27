@@ -7,6 +7,12 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+- **User-owned campaign validation:** the user explicitly chose “Leave
+  campaign/pacing validation to our playtest; finish any remaining code gaps.”
+  The uninterrupted earned campaign, real-player reward/economy progression and
+  human pacing are therefore playtest follow-ups, not agent-blocking automated
+  campaign gates. They are not recorded as passed. Retain accepted encounter
+  evidence; do not launch a long campaign or repeat completed clears.
 - **Verified live Alpha1.10.2:** exact8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813,
   [CI36285496845](https://github.com/aeml/eidolon/actions/runs/36285496845),
   all ten jobs successful, including live character/animation/town-recovery QA.
@@ -17,13 +23,22 @@ features, automated checks and a complete human campaign playthrough.
   currency or saved-character changes. IPv6 remains user-deferred/unverified.
   The optional casino hardware profile started only after full CI success, at
   QA-only descendante88c8538; see its [predeclared contract](2026-09-27-casino-frame-profile.md).
-  Full campaign/human pacing and remaining integrated acceptance stay open.
+  Campaign/human pacing now belong to the user's playtest. Other outstanding
+  checks retain their stated scope.
 - **Casino profile completed, not accepted:** one29.2-second native hardware
   run ate88c8538 collected all four High/Low floor views with180frames each.
   High passes; Low medians20.1/20.3ms miss the predeclared20ms target, while all
   p95 values pass. Retain the [measurements and limits](2026-09-27-casino-frame-profile.md);
   do not rerun unchanged or relax the target. Four screenshots were inspected.
   No profile or deployment remains running. This does not change live1.10.2.
+- **Remaining local code:** hidden-floor status animation and actor scene
+  traversal optimizations are committed but unshipped. Their38 focused checks
+  pass; the changed-build hardware timing result is not accepted. At03:22UTC
+  the shared host still had29–42 runnable tasks and5–7% CPU idle on16 logical
+  CPUs. No additional timing run was started. See the [candidate and measured
+  limits](2026-09-27-casino-frame-profile.md). The source review found no further
+  confirmed feature gap; this is not a claim of bug-free software. Live1.10.2
+  remains available for playtesting while that performance follow-up is held.
 
 The candidate/next-batch notes immediately below are historical; the verified
 1.10.2 receipt above supersedes their publication status.

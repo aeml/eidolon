@@ -3,10 +3,12 @@
 ## Current status — September 27
 
 Use the [Alpha1.10 release record](2026-09-23-release1-10-playtest.md) for current
-delivery and outstanding checks. Alpha1.10.1 is verified live in CI36283549819;
+delivery and outstanding checks. Alpha1.10.2 is verified live in CI36285496845;
 accepted elemental raid repairs, earned Air/Tempest, Nexus and finale/reward
-checks, plus outstanding uninterrupted campaign and human pacing acceptance, are
-recorded there. The dated evidence below remains valid within its stated scope,
+checks are recorded there. On September27 the user assigned uninterrupted
+campaign and human pacing validation to their playtest; do not start a long
+automated campaign or treat that handoff as a passed test. The dated evidence
+below remains valid within its stated scope,
 but its old “current”, “pending” and release-candidate paragraphs are historical.
 Do not restart those completed deployments or repeat accepted encounters based
 on these older queue descriptions.
@@ -1133,24 +1135,29 @@ for another version number.
 | 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming; [connected restart/penalty evidence](2026-09-14-connected-arena-acceptance.md) and [rendered four-client ranked2v2/results](2026-09-19-rendered-team-arena-preparation.md) pass | Retain these results in the final cross-feature review; do not recreate a season or repeat the standalone rendered match |
 | 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating; [connected recruitment/consent/readiness/token-resume roster](2026-09-14-connected-group-finder-acceptance.md) and [connected guild invites/calendar permissions/reschedule consent/actual restart persistence](2026-09-14-connected-guild-calendar-acceptance.md) pass | Integrated rendered group/raid/casino experience; retain accepted connected social evidence |
 | 1.9 world/casino | Connected public/VIP game, EP cosmetic, membership and recovery receipts retained. One naturally scheduled earned Root disturbance passed all three waves, champion and exact relogin rewards (`earnedevent0923c`, 5.4min). The [expanded casino review](2026-09-20-casino-expansion.md) covers all92 stations/232 seats, 40 equipped actors, all four High/Low floor views, isolated-floor/aura visibility, phone stairs and connected roulette/baccarat restart settlement | Remaining integrated venue experience and native populated-floor performance. Expanded-floor screenshots used software rendering, not40 connected players or native performance measurement. Retain the [current casino checklist](2026-09-09-town-casino-roadmap.md). One Root event does not prove all-realm event balance |
-| 1.10 integration/delivery | Alpha1.10.1 exact `f8a9b051c4043ad5a64cfaa57444a40df0515620`, all ten CI36283549819 jobs, public IPv4 frontend/backend identity, database readiness, cumulative notes and five exact assets verified; retained bounded performance and persistence/backup results keep their original scopes | Full cross-feature/fresh-campaign acceptance and human pacing. The committed read-audit outage fix is not deployed and needs inclusion in the next release with notes and exact live verification; IPv6 and physical-phone party/dungeon feedback are user-deferred |
+| 1.10 integration/delivery | Alpha1.10.2 exact `8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813`, all ten CI36285496845 jobs, public IPv4 frontend/backend identity, database readiness, cumulative notes and five exact assets verified; read-audit recovery delivered; retained bounded performance and persistence/backup results keep their original scopes | Campaign and human pacing are user-playtest-owned. Local casino rendering optimizations remain unshipped pending useful hardware timing evidence; IPv6 and physical-phone party/dungeon feedback are user-deferred |
 
 September27 reconciliation: the table above now incorporates the later encounter,
 event and release receipts rather than treating their historical pending entries
 as instructions to rerun them. This is an evidence/status correction, not a new
 test pass. It does not close the parent roadmap's compound requirements.
 
-The remaining work is separated into three categories:
+The remaining work is separated into three categories. The campaign-related
+requirements in the table above now have the user-playtest ownership below;
+this changes ownership, not the evidence or targets.
 
-1. **Known code awaiting delivery:** `5194b8fa`, read-audit recovery; focused
-   tests and race checks pass. No additional implementation defect was confirmed
-   by this reconciliation. This is not a claim that every feature is bug-free.
-2. **Acceptance not established by retained evidence:** the current-reward fresh
-   campaign, earned progression/economy and full Dark Realm journey, remaining
-   cross-feature/visual/venue coverage, and measured human pacing. Model outputs
-   and prepared characters must not substitute for these checks. The optional
-   user question about long campaign automation remains unanswered; do not
-   interpret silence as a waiver or start repeated accepted encounters.
+1. **Local code awaiting acceptance/delivery:** hidden-floor status animation
+   and actor scene traversal optimizations. The38 focused functional checks
+   pass, but hardware frame timing remains unaccepted on the heavily loaded
+   shared host. See the [bounded profile and candidate](2026-09-27-casino-frame-profile.md).
+   Read-audit recovery is already delivered in1.10.2. No further implementation
+   defect was confirmed by this reconciliation; that is not a bug-free claim.
+2. **Explicitly user-owned playtest:** on September27 the user chose to own
+   uninterrupted campaign and pacing validation. This includes earned
+   progression/economy through the full Dark Realm journey. Model outputs and
+   prepared characters do not prove these targets. Do not run a long automated
+   campaign, repeat accepted encounters, or keep these as agent-blocking gates.
+   Any concrete bug subsequently reported remains implementation work.
 3. **Explicitly deferred external checks:** physical-phone dungeon/party feedback
    and the separate IPv6/DDNS configuration. Continue other work without repeating
    those requests or misreporting either as passed.
