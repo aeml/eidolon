@@ -1,5 +1,17 @@
 # Rejected administration requests — durable outage recovery
 
+## Current delivery — September27
+
+The changes recorded below are included in verified-live Alpha1.10.1,
+f8a9b051c4043ad5a64cfaa57444a40df0515620 (CI36283549819, all ten jobs passed).
+The1.9.25 cumulative notes already describe replaced-session and authenticated
+request-limit rejection history. Older “local”/“not shipped” statements below
+refer to the named historical release boundaries, not current missing features.
+Do not repeat the accepted administration mutation/restart/browser matrices.
+The simultaneous database/disk failure limitation remains: pending RAM-only
+events do not survive forced process loss; no character mutation is admitted
+on the basis of an undurable rejection event.
+
 ## Follow-up after the published1.9.24 batch
 
 The authenticated/rate-limited mutation path could lose its active connection
