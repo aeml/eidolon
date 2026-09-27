@@ -12,6 +12,8 @@ if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
 // these seated models are not network clients or earned-currency acceptance.
 test('equipped crowd remains readable on both casino floors at High and Low', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_CASINO_FIXTURE_CATALOG !== '1', 'Explicit bounded busy-floor review');
+    const profile = process.env.EIDOLON_CASINO_PROFILE === '1';
+    if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
         { cwd: 'server', encoding: 'utf8', timeout: 120000 });
     const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
@@ -67,6 +69,8 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         }
         controller.render(models);
         let auras = [];
+        const updateAuras = { update(dt) { auras.forEach(aura => aura.update(dt)); } };
+        gallery.persistentEntities.push(updateAuras);
         window.__casinoCrowd = {
             view(quality, floor) {
                 render.setGraphicsQuality(quality);
@@ -93,6 +97,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                     floors: { public: interior.userData.floors.public.visible, vip: interior.userData.floors.vip.visible } };
             },
             dispose() {
+                gallery.persistentEntities = gallery.persistentEntities.filter(entry => entry !== updateAuras);
                 controller.dispose();
                 auras.forEach(aura => aura.dispose());
                 models.forEach(({ type, mesh }) => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
@@ -102,6 +107,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         return { tables: tables.length, seats: controller.furniture.userData.seats.length, models: models.length };
     }, tables);
     expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
+    const profiles = [];
     try {
         for (const quality of ['high', 'low']) for (const floor of ['public', 'vip']) {
             const view = await page.evaluate(({ quality, floor }) => window.__casinoCrowd.view(quality, floor), { quality, floor });
@@ -111,8 +117,55 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             expect(view.floors).toEqual({ public: floor === 'public', vip: floor === 'vip' });
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
+            if (profile) {
+                const sample = await page.evaluate(() => new Promise((resolve, reject) => {
+                    const render = window.__eidolonAnimationGalleryController.renderSystem;
+                    const original = render.render;
+                    const samples = [];
+                    let warmup = 60, previous;
+                    const timer = setTimeout(() => {
+                        render.render = original;
+                        reject(new Error(`Casino frame profile timed out: ${samples.length}/180`));
+                    }, 30000);
+                    render.render = function () {
+                        const started = performance.now();
+                        try { original.call(this); }
+                        catch (error) { clearTimeout(timer); render.render = original; reject(error); return; }
+                        const cpu = performance.now() - started;
+                        const interval = previous === undefined ? 0 : started - previous;
+                        previous = started;
+                        if (warmup-- > 0) return;
+                        const info = render.renderer.info;
+                        samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles });
+                        if (samples.length < 180) return;
+                        clearTimeout(timer);
+                        render.render = original;
+                        const percentile = (key, fraction) => samples.map(sample => sample[key]).sort((a, b) => a - b)[Math.floor((samples.length - 1) * fraction)];
+                        const context = render.renderer.getContext();
+                        const extension = context.getExtension('WEBGL_debug_renderer_info');
+                        resolve({ frames: samples.length, visibility: document.visibilityState,
+                            medianMs: percentile('interval', .5), p95Ms: percentile('interval', .95),
+                            renderCpuMedianMs: percentile('cpu', .5), renderCpuP95Ms: percentile('cpu', .95),
+                            calls: percentile('calls', .5), triangles: percentile('triangles', .5),
+                            geometries: info.memory.geometries, textures: info.memory.textures,
+                            renderer: extension ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER) });
+                    };
+                }));
+                profiles.push({ quality, floor, ...sample });
+                console.log('[casino-frame-profile]', JSON.stringify(profiles.at(-1)));
+                expect(sample.frames).toBe(180);
+                expect(sample.visibility).toBe('visible');
+                expect(sample.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+                expect(sample.calls).toBeGreaterThan(0);
+                expect(sample.medianMs).toBeGreaterThan(0);
+                // Same hardware-specific targets as the retained raid workload.
+                // These are not network, device-wide or sustained FPS claims.
+                expect.soft(sample.medianMs).toBeLessThanOrEqual(quality === 'high' ? 25 : 20);
+                expect.soft(sample.p95Ms).toBeLessThanOrEqual(quality === 'high' ? 50 : 33.3);
+            }
         }
     } finally {
+        if (profile) await testInfo.attach('casino-frame-profiles', { body: JSON.stringify(profiles, null, 2), contentType: 'application/json' });
         await page.evaluate(() => window.__casinoCrowd.dispose());
     }
     expect(failures, failures.join('\n')).toEqual([]);
