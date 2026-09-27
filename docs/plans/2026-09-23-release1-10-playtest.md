@@ -5,7 +5,24 @@ and deploy 1.10 for playtesting. This record supersedes older *current status*
 paragraphs, not their retained test evidence. It does not equate implemented
 features, automated checks and a complete human campaign playthrough.
 
-## Current handoff — September 26
+## Current handoff — September 27
+
+- **Accepted Water clear:** `finalwater0926h` passed in46.4minutes at1f8e1357.
+  All five prepared class-geared raiders survived Tyrant and all three defended
+  repair waves, received personal restoration credit, manually claimed their
+  individual108906XP/1200Gold rewards, and retained completed Tidestar and
+  offered Ember Crown chapters after relogin. Final balances for all five:
+  level70/114586XP/2789Gold. Effective healing51398/60239; all damage roles
+  contributed. Root collected terminal exit0 and inspected the restored-crystal
+  screenshot; credential scan passed. Unchanged archive:
+  `/tmp/eidolon-party-checkpoint-finalwater0926h-V6ftfA/save.archive.gz`, SHA
+  68c7b041ef4e9b98701405004d5ca37f0a2535bfb70bc7f336b15f6664206086.
+  All elemental raid encounter/repair checks are now accepted within their
+  recorded prepared-party/saved-continuation scopes. Do not replay them.
+  No native expedition remains queued.1.10.1 notification polish is ready
+  for publishing checks and exact live verification, not yet deployed. Full
+  uninterrupted fresh-campaign acceptance and human pacing remain unproven;
+  phone dungeon/party feedback and IPv6 remain user-deferred.
 
 - **Accepted Air clear:** `finalair0926h` passed in46.7minutes at359c4c46.
   Five prepared level70 class-specific Uncommon/Rare raiders completed Tempest

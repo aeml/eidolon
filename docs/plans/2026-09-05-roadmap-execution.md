@@ -5,17 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 25
+## Current checkpoint — September 27
 
 Alpha1.10.0 is verified live at e67fc0ad1b924002758e67e5a3a3bcb615d97476;
 all ten jobs of CI35909760534 passed. The authoritative
 [1.10 release record](2026-09-23-release1-10-playtest.md) tracks current remaining
 work and supersedes the older status paragraphs below. Deployment is complete,
-but integrated gameplay acceptance is not: Air/Tempest, three elemental raids,
-Nexus and connected campaign verification remain open. Dark King's four phases,
+but integrated gameplay acceptance is not: uninterrupted fresh-campaign and
+human pacing verification remain open. Earned Air/Tempest, all four elemental
+raid repairs and Umbral Nexus have accepted scoped group evidence. Dark King's four phases,
 five survivors' manual rewards, epilogues and relogin are accepted within the
 explicit prepared-encounter/saved-continuation scope. DNS/IPv6 and physical-phone
 party/dungeon feedback are user-deferred, not reasons to repeat accepted tests.
+Alpha1.10.1 notification polish is prepared locally for publishing checks and
+exact live verification; it is not deployed yet. No encounter replay is needed.
 
 ## Historical checkpoint — September 23
 

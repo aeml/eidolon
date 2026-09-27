@@ -2,13 +2,14 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Current-status pointers refreshed: September 25, 2026
+> Current-status pointers refreshed: September 27, 2026
 
 This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
+- The local1.10.1 notification-polish candidate retains accepted group clears for all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. Uninterrupted fresh-campaign verification and human pacing remain open; do not replay accepted encounters merely for the patch label.
 - Live release: `Alpha 1.10.0 — The Resonant Age`, exact `e67fc0ad1b924002758e67e5a3a3bcb615d97476`, CI35909760534 passed all ten jobs. Public IPv4 release identity, assets and database readiness were verified. Full gameplay acceptance remains open; deployment is not proof of campaign completion. See the [current release record](docs/plans/2026-09-23-release1-10-playtest.md) for remaining checks. The user deferred the separate IPv6/DDNS configuration issue.
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain unaccepted. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
