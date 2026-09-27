@@ -192,9 +192,13 @@ func auditAdminRejectedRequest(c *Client, action string, request adminMutationRe
 	if adminActivities.AppendAdminActivity(event) == nil {
 		return true
 	}
-	// Rejections have no character mutation/operation journal to replay. Keep
-	// their exact sanitized event in the existing durable activity outbox when
-	// Mongo is unavailable; the normal retry/startup drain inserts that same ID.
+	return retainFailedAdminActivity(c, event)
+}
+
+// Reads and rejected mutations have no character operation journal to replay.
+// Preserve the exact event after a failed or ambiguous Mongo append so recovery
+// can insert the same identity without changing an already committed record.
+func retainFailedAdminActivity(c *Client, event database.AdminActivity) bool {
 	if adminActivityJournal != nil && adminActivityJournal.Write(event) == nil {
 		return true
 	}

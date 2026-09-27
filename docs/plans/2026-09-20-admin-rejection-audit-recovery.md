@@ -1,5 +1,29 @@
 # Rejected administration requests — durable outage recovery
 
+## Read-audit follow-up — September 27, not deployed
+
+A focused reproduction found that status, online-player and history reads
+withheld privileged data when the Mongo audit append failed, but lost the read
+attempt's audit entry. These three cases and the dual-store outage regression
+failed before the correction. Reads now reuse the existing rejection recovery
+helper: preserve the exact event in the disk outbox and replay after recovery.
+The response still fails closed even when the fallback journal succeeds.
+An ambiguous database write must not regenerate or alter the event on replay.
+
+If both stores fail, the existing RAM recovery buffer retains the event, the
+connection closes and readiness stays unhealthy until persistence recovers.
+Forced process loss can still lose RAM-only events; this is not a new durability
+guarantee. No schema, character changes, permissions or gameplay changes.
+Regression coverage reopens the actual disk journal, compares the full replayed
+event and confirms that a second drain does not duplicate it. The related read,
+rejection, admission and session-activity tests pass (6.359 seconds), including
+the race-detector run (5.550 seconds). Formatting and whitespace checks pass.
+
+Batch with the next release rather than triggering a deployment for this small
+correction alone. Required player-facing note: “Administration read history now
+survives temporary audit-database outages; access still fails closed until
+storage recovers.” Live Alpha 1.10.1 does not include this follow-up.
+
 ## Current delivery — September27
 
 The changes recorded below are included in verified-live Alpha1.10.1,

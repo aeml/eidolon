@@ -159,6 +159,12 @@ func handleAdminRead(c *Client, msg Message) {
 				auditErr = err
 				if err == nil {
 					auditErr = adminActivities.AppendAdminActivity(event)
+					if auditErr != nil {
+						// Retain the original identity and content: an ambiguous
+						// database error may have followed a committed insert.
+						// Journal recovery does not authorize this read response.
+						retainFailedAdminActivity(c, event)
+					}
 				}
 			}
 			if auditErr != nil {

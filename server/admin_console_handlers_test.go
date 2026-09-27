@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -173,7 +175,7 @@ func TestAdminConsoleAdmissionRequiresAuthenticationAndRateLimits(t *testing.T) 
 
 func TestAdminConsoleHistoryAuthorizationAuditAndFailure(t *testing.T) {
 	c, roles := adminReadFixture(t)
-	store := adminActivities.(*fakeAdminActivityStore)
+	_, store := sessionActivityFixture(t)
 	adminRead(t, c, MsgAdminStatus, "")
 	if len(store.events) != 1 || store.events[0].Actor != "operator" || store.events[0].Action != MsgAdminStatus || store.events[0].Result != "success" {
 		t.Fatal(store.events)
@@ -196,5 +198,63 @@ func TestAdminConsoleHistoryAuthorizationAuditAndFailure(t *testing.T) {
 	store.appendErr = errors.New("audit disk failed")
 	if result := adminRead(t, c, MsgAdminHistory, ""); result.Success || result.Authorized || result.History != nil {
 		t.Fatal("acknowledged unaudited read", result)
+	}
+}
+
+func TestAdminReadAuditOutagePreservesExactEvent(t *testing.T) {
+	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory} {
+		t.Run(kind, func(t *testing.T) {
+			c, _ := adminReadFixture(t)
+			dir, store := sessionActivityFixture(t)
+			store.appendErr = errors.New("private database outage")
+			result := adminRead(t, c, kind, "")
+			if result.Success || result.Authorized || result.History != nil || len(result.Players) != 0 || len(result.Items) != 0 || result.Account != "" {
+				t.Fatal("audit outage exposed privileged data", result)
+			}
+			pending, err := adminActivityJournal.Pending(50)
+			if err != nil || len(pending) != 1 {
+				t.Fatalf("read attempt lost during database outage: %v %v", pending, err)
+			}
+			if pending[0].Actor != "operator" || pending[0].Action != kind || pending[0].RequestID != result.ID {
+				t.Fatal("incorrect retained identity", pending[0])
+			}
+			adminActivityJournal, err = database.OpenAdminActivityJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			store.appendErr = nil
+			if err := retryPendingAdminActivity(); err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(store.events, pending) {
+				t.Fatal("replay changed audit identity or content", store.events, pending)
+			}
+			if err := retryPendingAdminActivity(); err != nil || len(store.events) != 1 {
+				t.Fatal("replay duplicated read audit", err, store.events)
+			}
+		})
+	}
+}
+
+func TestAdminReadAuditDualOutageClosesConnectionAndRecovers(t *testing.T) {
+	c, _ := adminReadFixture(t)
+	dir, store := sessionActivityFixture(t)
+	store.appendErr = errors.New("database unavailable")
+	if err := os.Rename(dir, dir+"-unavailable"); err != nil {
+		t.Fatal(err)
+	}
+	result := adminRead(t, c, MsgAdminHistory, "")
+	if result.Success || result.History != nil || !c.transportClosed.Load() || sessionActivityJournalHealthy() {
+		t.Fatal("dual outage did not fail closed", result)
+	}
+	if err := os.Rename(dir+"-unavailable", dir); err != nil {
+		t.Fatal(err)
+	}
+	store.appendErr = nil
+	if err := retryPendingAdminActivity(); err != nil {
+		t.Fatal(err)
+	}
+	if !sessionActivityJournalHealthy() || len(store.events) != 1 || store.events[0].Action != MsgAdminHistory {
+		t.Fatal("read audit not recovered", store.events)
 	}
 }

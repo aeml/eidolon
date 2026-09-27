@@ -7,6 +7,15 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+- **Next-batch fix, not deployed:** administrator status/player/history reads
+  now retain their exact audit entries through the existing outbox when the
+  database append fails, without exposing privileged data. Focused reproductions
+  failed before and pass after the correction; journal reopen/replay and dual
+  outage recovery are covered. See the [read-audit follow-up](2026-09-20-admin-rejection-audit-recovery.md).
+  Batch this small fix with the next release; do not rerun accepted encounters
+  or start a standalone release solely for this change. No production data was
+  changed. Uninterrupted campaign automation remains unstarted pending the
+  optional user preference; existing scoped encounter acceptance is retained.
 - **Verified live Alpha1.10.1:** exactf8a9b051c4043ad5a64cfaa57444a40df0515620,
   [CI36283549819](https://github.com/aeml/eidolon/actions/runs/36283549819),
   all ten jobs successful, including Go/client/browser gates, both deployments,
