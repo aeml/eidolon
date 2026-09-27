@@ -332,21 +332,42 @@ export class CasinoController {
             && ((entity?.position?.y ?? entity?.mesh?.position?.y ?? 0) >= 7.5) !== (this.floor === 'vip');
     }
 
-    restoreCutawayActors() {
-        for (const [entity, mesh] of this.cutawayActors) {
-            // Never reveal a body that another subsystem has retired.
-            if (entity.state !== 'DEAD' && entity.isActive !== false) mesh.visible = true;
+    restoreCutawayActors(entities = this.engine.chunkManager?.getActiveEntities?.(), keepHidden = false) {
+        for (const [entity, record] of this.cutawayActors) {
+            const { mesh } = record;
+            const alive = entity.mesh === mesh && entity.state !== 'DEAD' && entity.isActive !== false;
+            const present = !entities || entities.includes(entity);
+            if (alive && present && keepHidden && this.isActorCutAway(entity)) {
+                mesh.visible = false;
+                // Chunk streaming can reattach the same live mesh. Only detach
+                // scene-owned roots; never disturb another subsystem's parent.
+                if (mesh.parent === this.engine.renderSystem.scene) {
+                    record.parent = mesh.parent;
+                    mesh.removeFromParent();
+                }
+                continue;
+            }
+            if (alive) {
+                mesh.visible = true;
+                // An absent actor belongs to streaming/scene teardown. Restore
+                // visibility for future reuse, but do not reinsert its body.
+                if (present && record.parent && !mesh.parent) record.parent.add(mesh);
+            }
+            this.cutawayActors.delete(entity);
         }
-        this.cutawayActors.clear();
     }
 
     render(entities) {
-        this.restoreCutawayActors();
+        this.restoreCutawayActors(entities, true);
         for (const entity of entities) {
             if (!entity.mesh) continue;
             if (this.isActorCutAway(entity) && entity.mesh.visible) {
-                this.cutawayActors.set(entity, entity.mesh);
+                const parent = entity.mesh.parent === this.engine.renderSystem.scene ? entity.mesh.parent : null;
+                this.cutawayActors.set(entity, { mesh: entity.mesh, parent });
                 entity.mesh.visible = false;
+                // Visibility alone still traverses every rig/equipment matrix
+                // in Three. Keep the live actor, but omit its hidden scene root.
+                if (parent) entity.mesh.removeFromParent();
             }
             const seated = entity.state === 'SEATED' || (entity === this.engine.player && this.active);
             let pose = this.poses.get(entity);
