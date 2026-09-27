@@ -315,7 +315,7 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 1.10.1` (verified live)
+- Current in-game displayed version: `Alpha 1.10.2` (release candidate; not yet verified live)
 - Last verified live release: `Alpha 1.10.1`, exact f8a9b051c4043ad5a64cfaa57444a40df0515620, CI36283549819. See the release record below for scoped acceptance and remaining campaign playtesting.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.10` final integration, following the [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md)

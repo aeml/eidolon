@@ -7,6 +7,12 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+- **Alpha1.10.2 release candidate:** packages the tested read-audit recovery fix
+  with synchronized login/package/server/CI versions and cumulative patch notes.
+  Publication is now the next delivery step; no additional gameplay defect was
+  confirmed by the latest acceptance reconciliation. Do not claim it live until
+  its full pipeline and exact public identities pass. Retain all accepted
+  encounters; no campaign rerun is required for this read-only admin change.
 - **Next-batch fix, not deployed:** administrator status/player/history reads
   now retain their exact audit entries through the existing outbox when the
   database append fails, without exposing privileged data. Focused reproductions

@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.10.1</span>
+                    <span class="start-version-row__label">Alpha 1.10.2</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -682,6 +682,14 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.10.2">
+                    <h3 class="patch-note-entry__title">Alpha 1.10.2 (Resilient administration history)</h3>
+                    <ul>
+                        <li><strong>Recoverable read history:</strong> Administration status, online-player and history requests retain their audit entries during temporary audit-database outages, using the existing recovery journal.</li>
+                        <li><strong>Permissions stay strict:</strong> Failed audit writes still withhold privileged results. If both database and local storage fail, the connection closes and recovery remains pending; forced process loss can still lose entries held only in memory.</li>
+                        <li><strong>No gameplay changes:</strong> Combat, progression, rewards, saved characters, casino rules and currencies are unchanged. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.10.1">
                     <h3 class="patch-note-entry__title">Alpha 1.10.1 (Clearer victories)</h3>
                     <ul>
