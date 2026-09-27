@@ -1124,16 +1124,36 @@ for another version number.
 
 | Area | Existing implementation/evidence to retain | Still required |
 | --- | --- | --- |
-| 1.1 first hour and dungeon foundations | Current manual Ilyra chain, town recovery/Well Rested, skill fixes, party credit and passing prepared Verdant route; earned Earth readiness predates the1.9.30 incoming-XP cut, while the current fresh opening reaches level3 without grants | Early progression bridge under current rewards, relevant encounter delta and remaining dungeon families/seeds |
+| 1.1 first hour and dungeon foundations | Manual Ilyra chain, town recovery/Well Rested, party credit; accepted Verdant/Abyssal/Molten, earned Air/Tempest and prepared Umbral Nexus routes. Current Earth reward/readiness checks reach level30 in all12 modeled scenarios without dailies | Actual fresh early progression under current rewards; retained routes are not an all-class/all-seed dungeon matrix or human pacing proof |
 | 1.2 character/equipment/mobile | Published class/equipment work, inspected galleries, real phone user reports “everything looks good,” responsive menu checks | Integrated High/Low visual review and sustained phone combat/party scope; do not erase the user's positive UI feedback |
 | 1.3 combat feel | Existing cast/impact, movement, aiming, telegraph and sound work with focused native receipts | Inspect/hear these together during the actual group/campaign routes, including other instances and representative runes |
 | 1.4 Chronicle | 55 chapters, eight original investigation sites plus38 Dark Realm discoveries, four town witnesses and six optional expedition residents; manual Ilyra conversations, restoration consequences and named-NPC click fix are live | Complete earned campaign through all four dungeon handoffs, four full raids and repair defenses, expanded Dark Realm, Nexus and four-Eidolon Dark King finale |
 | 1.5 progression/economy | Current reduced budgets, promised-reward migration, Forge refresh, builds, appearance collection, Gold/EP separation | Record earned XP/Gold/drops/upgrades and sources/sinks across the campaign; no mandatory daily wall, no max-level lost rewards |
-| 1.6 encounters | Distinct boss footprints, four different repair jobs, party preparation/recovery and lockout copy | Actual group raid completion, all repair waves/objectives, wipe/re-entry/reconnect and individual saved receipts; targeted recheck of changed 1.6 mechanics |
+| 1.6 encounters | All four five-player elemental raid clears and three-wave repairs accepted: [Rootheart](2026-09-19-rootheart-party-acceptance.md), Water/Air and Fire's saved turn-in continuation in the [release record](2026-09-23-release1-10-playtest.md). Individual manual rewards and relogin receipts retained. Four-player Nexus and five-player four-phase Dark King plus saved finale turn-ins accepted | Join these into earned campaign acceptance; retained prepared-party clears and saved continuations do not prove every wipe/re-entry state, all-class balance or a complete fresh campaign. Do not repeat already accepted clears just to remove this row |
 | 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming; [connected restart/penalty evidence](2026-09-14-connected-arena-acceptance.md) and [rendered four-client ranked2v2/results](2026-09-19-rendered-team-arena-preparation.md) pass | Retain these results in the final cross-feature review; do not recreate a season or repeat the standalone rendered match |
 | 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating; [connected recruitment/consent/readiness/token-resume roster](2026-09-14-connected-group-finder-acceptance.md) and [connected guild invites/calendar permissions/reschedule consent/actual restart persistence](2026-09-14-connected-guild-calendar-acceptance.md) pass | Integrated rendered group/raid/casino experience; retain accepted connected social evidence |
-| 1.9 world/casino | Rotating disturbances; public and VIP venue/games; connected public blackjack and EP poker/restart; [VIP blackjack](2026-09-14-connected-vip-blackjack-acceptance.md), [EP cosmetic purchase/apply/replay/restart](2026-09-14-connected-cosmetic-vendor-acceptance.md), [Gold/EP Earth-slot spins/bonus/restart](2026-09-14-connected-slots-acceptance.md), membership/recovery and [High/Low crowded-floor presentation](2026-09-19-casino-crowd-review.md) pass | Earned full public event and remaining integrated venue experience; retain crowded-floor evidence within its documented rendering-only scope |
-| 1.10 integration/delivery | Post-Malachar “A Letter Without a Throne” and Help cadence shipped in 1.9.1; bounded 50/100-client concurrency, controlled High/Low rendering and schema12 recovery accepted | Final cross-feature acceptance, cumulative notes and exact live 1.10 identities; retain the accepted performance/recovery evidence and its limits |
+| 1.9 world/casino | Connected public/VIP game, EP cosmetic, membership and recovery receipts retained. One naturally scheduled earned Root disturbance passed all three waves, champion and exact relogin rewards (`earnedevent0923c`, 5.4min). The [expanded casino review](2026-09-20-casino-expansion.md) covers all92 stations/232 seats, 40 equipped actors, all four High/Low floor views, isolated-floor/aura visibility, phone stairs and connected roulette/baccarat restart settlement | Remaining integrated venue experience and native populated-floor performance. Expanded-floor screenshots used software rendering, not40 connected players or native performance measurement. Retain the [current casino checklist](2026-09-09-town-casino-roadmap.md). One Root event does not prove all-realm event balance |
+| 1.10 integration/delivery | Alpha1.10.1 exact `f8a9b051c4043ad5a64cfaa57444a40df0515620`, all ten CI36283549819 jobs, public IPv4 frontend/backend identity, database readiness, cumulative notes and five exact assets verified; retained bounded performance and persistence/backup results keep their original scopes | Full cross-feature/fresh-campaign acceptance and human pacing. The committed read-audit outage fix is not deployed and needs inclusion in the next release with notes and exact live verification; IPv6 and physical-phone party/dungeon feedback are user-deferred |
+
+September27 reconciliation: the table above now incorporates the later encounter,
+event and release receipts rather than treating their historical pending entries
+as instructions to rerun them. This is an evidence/status correction, not a new
+test pass. It does not close the parent roadmap's compound requirements.
+
+The remaining work is separated into three categories:
+
+1. **Known code awaiting delivery:** `5194b8fa`, read-audit recovery; focused
+   tests and race checks pass. No additional implementation defect was confirmed
+   by this reconciliation. This is not a claim that every feature is bug-free.
+2. **Acceptance not established by retained evidence:** the current-reward fresh
+   campaign, earned progression/economy and full Dark Realm journey, remaining
+   cross-feature/visual/venue coverage, and measured human pacing. Model outputs
+   and prepared characters must not substitute for these checks. The optional
+   user question about long campaign automation remains unanswered; do not
+   interpret silence as a waiver or start repeated accepted encounters.
+3. **Explicitly deferred external checks:** physical-phone dungeon/party feedback
+   and the separate IPv6/DDNS configuration. Continue other work without repeating
+   those requests or misreporting either as passed.
 
 September19 crowded-floor visual review now has a bounded High/Low result:
 40 equipped models across the canonical public/VIP venue, actual seated poses

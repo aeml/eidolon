@@ -2,6 +2,15 @@
 
 Requested September 9, 2026. Status: **implementation underway; full casino not complete**.
 
+September27 evidence reconciliation: the expanded venue is implemented and
+delivered; remaining acceptance must not be confused with missing games or floors.
+The September20 [expansion record](2026-09-20-casino-expansion.md) supersedes the
+older16-station balcony review: its full-hall review covers all92 stations and
+232 seats,40 equipped actors, both separate floors and High/Low settings. Four
+screenshots were inspected. This was software rendering, not native populated
+performance or40 connected players. Reuse that evidence instead of repeating
+the visual review; retain the outstanding performance/integrated-play scope.
+
 ## September 20 expansion — required in the next casino deployment
 
 The latest user request supersedes the old balcony layout and table counts:
