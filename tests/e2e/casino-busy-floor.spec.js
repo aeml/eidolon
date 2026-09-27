@@ -13,6 +13,8 @@ if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
 test('equipped crowd remains readable on both casino floors at High and Low', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_CASINO_FIXTURE_CATALOG !== '1', 'Explicit bounded busy-floor review');
     const profile = process.env.EIDOLON_CASINO_PROFILE === '1';
+    const cpuDiagnostic = process.env.EIDOLON_CASINO_CPU_PROFILE === '1';
+    if (cpuDiagnostic && !profile) throw new Error('CPU diagnostic requires the casino frame profile');
     if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
         { cwd: 'server', encoding: 'utf8', timeout: 120000 });
@@ -118,6 +120,14 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
             if (profile) {
+                // One diagnostic sample only. Profiler overhead means this run
+                // cannot establish timing acceptance, even if assertions pass.
+                const cpuSession = cpuDiagnostic && quality === 'low' && floor === 'public'
+                    ? await page.context().newCDPSession(page) : null;
+                if (cpuSession) {
+                    await cpuSession.send('Profiler.enable');
+                    await cpuSession.send('Profiler.start');
+                }
                 const sample = await page.evaluate(() => new Promise((resolve, reject) => {
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
@@ -151,6 +161,12 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                             renderer: extension ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER) });
                     };
                 }));
+                if (cpuSession) {
+                    const { profile: cpuProfile } = await cpuSession.send('Profiler.stop');
+                    await testInfo.attach('casino-low-public-cpu-diagnostic', {
+                        body: JSON.stringify(cpuProfile), contentType: 'application/json' });
+                    await cpuSession.detach();
+                }
                 profiles.push({ quality, floor, ...sample });
                 console.log('[casino-frame-profile]', JSON.stringify(profiles.at(-1)));
                 expect(sample.frames).toBe(180);

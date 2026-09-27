@@ -91,3 +91,28 @@ assertion fails. The4189 listener is gone. No test is running.
 Future patch note: “Effects on the hidden casino floor no longer animate
 unnecessarily; their appearance catches up when you change floors.” Batch this
 small optimization with the next gameplay release; live remains1.10.2.
+
+## CPU attribution — diagnostic only
+
+One29.9-second diagnostic run on the same runtime captured a5.43-second Chrome
+CPU profile of the Low/public sample,4155 samples. Terminal78152 exited1; the
+trace lives in the `casino-low-public-cpu-diagnostic` JSON attachment under
+`/tmp/eidolon-casino-cpu-diagnostic-20260927-v5mAxm/report.json`.
+Profiler overhead makes this run unsuitable for timing acceptance, regardless
+of any individual timing assertion. It is not an unchanged acceptance retry.
+
+Largest exclusive sampled costs: `updateMatrixWorld`17.5%, `projectObject`8.4%,
+`multiplyMatrices`6.7%, `renderObjects`6.0%, `renderBufferDirect`5.7%,
+`copyArray`4.9%, `getParameters`4.5%, frustum intersection3.7%, shader program
+selection3.3%, render-list sort3.2%. These are sampled CPU attribution, not GPU
+timings. Matrix multiplication also occurs outside world-transform traversal;
+do not assign its entire6.7% to hidden actors without checking call stacks.
+
+Source inspection confirms the casino architecture/furniture already merge by
+material. Three's world-matrix traversal still visits hidden descendants, and
+equipment keeps hidden original pieces for named inspection/bounds. Blindly
+freezing or removing those originals can break world-space inspection or future
+equipment changes. The next investigation should target redundant transforms
+while preserving movement, animation, floor transitions, picking and bounds;
+do not replace the renderer or reduce visible detail merely to pass this gate.
+The prior Low/public20.3ms miss remains open. No further run was started.
