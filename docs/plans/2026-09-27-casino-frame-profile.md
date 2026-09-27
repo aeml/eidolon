@@ -116,3 +116,40 @@ equipment changes. The next investigation should target redundant transforms
 while preserving movement, animation, floor transitions, picking and bounds;
 do not replace the renderer or reduce visible detail merely to pass this gate.
 The prior Low/public20.3ms miss remains open. No further run was started.
+
+## Hidden actor traversal — candidate, not accepted or deployed
+
+Commitaa054304 keeps live hidden-floor actors out of the render scene while
+leaving their authoritative positions, equipment and ordinary updates intact.
+Only scene-owned roots are detached; nested meshes retain their original parent.
+Changing floor restores the current live mesh. Streaming absence restores
+visibility without reinserting the actor, and retired/replaced meshes are never
+resurrected. Actual ChunkManager move-out/move-back/removal coverage is included.
+Three new lifecycle reproductions failed before the change;38 focused controller,
+status and VIP checks pass2.861seconds afterward. Lint and whitespace pass.
+No renderer or equipment-resource ownership API was replaced.
+
+One native run on this changed build ended with terminal35403/exit1. Every view
+retained the same draw/triangle/resource counts and passed floor visibility,
+seating and aura counts. Hardware identity is unchanged. Timings failed:
+
+| View | Median ms | p95 ms | Render CPU median ms |
+| --- | ---: | ---: | ---: |
+| High public | 32.6 | 42.0 | 30.7 |
+| High VIP | 31.9 | 45.3 | 30.0 |
+| Low public | 28.8 | 40.8 | 27.0 |
+| Low VIP | 28.3 | 43.6 | 26.1 |
+
+Immediately afterward (02:06UTC), the16-logical-CPU shared host reported load
+40.02/31.27/24.13. The process list included active server/loadtest, ccwat/ccnews,
+Plex transcoding and PalServer work. None was stopped or changed. This supports
+a contention concern, not a measured causal attribution for the regression;
+no comparable within-run host profile was recorded for either baseline.
+Do not count this as a performance pass, infer a speedup from fewer matrix calls,
+or launch repeated trials on this loaded host. Preserve the candidate and test
+when a suitably uncontended window is available, without relaxing the targets.
+The production optimization remains unshipped pending that evidence.
+
+Artifacts: `/tmp/eidolon-casino-native-profile-r3-20260927-z7mpmQ/` with logs,
+JSON frame attachment and screenshots. The owned4189 listener is gone; no
+deployment or native profile is running. Live remains verified1.10.2.
