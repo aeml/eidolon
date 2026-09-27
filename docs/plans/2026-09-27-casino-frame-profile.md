@@ -153,3 +153,18 @@ The production optimization remains unshipped pending that evidence.
 Artifacts: `/tmp/eidolon-casino-native-profile-r3-20260927-z7mpmQ/` with logs,
 JSON frame attachment and screenshots. The owned4189 listener is gone; no
 deployment or native profile is running. Live remains verified1.10.2.
+
+### Resource recheck — hardware retest held
+
+At02:07UTC the host remained loaded (34.78/31.73/24.89). A subsequent five-second
+`vmstat 1 6` probe, excluding its since-boot first row, observed24–42 runnable
+tasks and only3–7% aggregate CPU idle on16 logical CPUs. GPU busy was0% when
+read afterward. This establishes current CPU contention, not its exact effect
+on any prior profile or a GPU bottleneck. No hardware rerun, deployment, process
+termination or priority change was made. A quiet CPU window is needed for a
+useful changed-build comparison; do not spend runs against this condition.
+
+The non-GPU source check of shared-realm party rewards found no missing fix:
+`partyKillUsesDungeonPresence` excludes the Dark Realm, and the existing party
+credit tests cover its110-unit boundary and distant-district exclusion. Retain
+that coverage; no redundant reward test run or gameplay change was made.
