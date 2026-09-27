@@ -63,3 +63,31 @@ Evidence: `/tmp/eidolon-casino-native-profile-20260927-whiOZK/`, containing
 `run.log`, `report.json`, four view screenshots and the frame-profile attachment.
 The owned4189 listener is gone after terminal cleanup. No production account,
 wager, balance, runtime setting or game code was changed.
+
+## Hidden-floor animation follow-up — local, not deployed
+
+Source inspection confirmed that all attached effects on the invisible floor
+still traversed/animated every frame. Regression first failed with30 hidden
+traversals where zero were expected. Commitd44273ee keeps elapsed and deferred
+delta time but skips invisible pose/mote updates, then catches up exactly once
+when the floor becomes visible. All defined status effects at both qualities
+match the continuously updated reference's position, quaternion, scale and
+instanced matrices after reveal and the following visible frame.34 focused
+status/controller/VIP tests pass2.078s; lint and whitespace pass.
+
+One changed-build hardware check ran for29.1seconds, zero retries, terminal55462
+exit1. Same renderer, workload and limits. High public22.1/26.3ms median/p95;
+High VIP22.6/27.4ms; Low public20.3/25.0ms; Low VIP19.7/23.2ms. Draw calls,
+triangles, geometry and texture counts match the original corresponding views.
+Low public still misses the20ms median target, so acceptance remains open.
+This proves removed invisible work, **not a uniform frame-time improvement**;
+the remaining result is consistent with frame submission still dominating.
+Do not retry unchanged or claim that the optimization closed the performance gap.
+
+Artifacts: `/tmp/eidolon-casino-native-profile-r2-20260927-9JdN9Z/`. The Low public
+screenshot was inspected: floor isolation, tables, clear lanes and visible auras
+remain intact. All four floor/count checks pass; only the Low public median
+assertion fails. The4189 listener is gone. No test is running.
+Future patch note: “Effects on the hidden casino floor no longer animate
+unnecessarily; their appearance catches up when you change floors.” Batch this
+small optimization with the next gameplay release; live remains1.10.2.
