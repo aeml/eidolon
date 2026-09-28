@@ -15,6 +15,14 @@ test('login project credit stays readable and keyboard-accessible on desktop and
         await expect(note).toContainText('Eidolon is an open-source project.');
         await page.locator('#btn-register').focus();
         await page.keyboard.press('Tab');
+        const help = page.locator('#login-panel .auth-session-help');
+        await expect(help.locator('summary')).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expect(help).toHaveAttribute('open', '');
+        await expect(help).toContainText('One active session');
+        await page.keyboard.press('Enter');
+        await expect(help).not.toHaveAttribute('open');
+        await page.keyboard.press('Tab');
         await expect(link).toBeFocused();
         await expect(link).toBeInViewport();
         await expect(link).toHaveAttribute('href', 'https://github.com/aeml/eidolon');
