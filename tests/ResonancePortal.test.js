@@ -19,7 +19,7 @@ const repaired = () => Object.values(CHRONICLE_RESTORATIONS).map(({ questId }) =
 test('canonical registry drives client locations, map and Ilyra directions', () => {
     expect(WORLD_LOCATIONS).toEqual(JSON.parse(fs.readFileSync('server/internal/game/content/world-locations.json')));
     execFileSync(process.execPath, ['scripts/generate-world-locations.mjs', '--check']);
-    for (const location of WORLD_LOCATIONS) {
+    for (const location of WORLD_LOCATIONS.filter(p => !p.instanceId)) {
         expect(TOWN_SERVICE_POINTS.find(point => point.id === location.id)).toMatchObject({ x: location.x, z: location.z });
     }
     expect(getIlyraCompletionReply({ id: 'chronicle_13_skyglass_raid' })).toContain(PORTAL_DIRECTIONS);

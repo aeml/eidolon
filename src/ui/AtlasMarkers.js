@@ -4,9 +4,33 @@ function overlaps(a, b, padding = 4) {
     return a.x < b.x + b.w + padding && a.x + a.w + padding > b.x && a.y < b.y + b.h + padding && a.y + a.h + padding > b.y;
 }
 
+// Same shape/state/color language on the atlas and radar.
+export function drawAtlasMarker(ctx, point, pos, selected = false) {
+    const category = ATLAS_CATEGORIES[point.category];
+    ctx.save(); ctx.fillStyle = '#121b20'; ctx.strokeStyle = point.color || category.color; ctx.lineWidth = selected ? 2.5 : 1.5;
+    ctx.beginPath();
+    if (point.category === 'entrances') {
+        ctx.moveTo(pos.x, pos.y - 8); ctx.lineTo(pos.x + 8, pos.y); ctx.lineTo(pos.x, pos.y + 8); ctx.lineTo(pos.x - 8, pos.y); ctx.closePath();
+    } else if (point.category === 'services') {
+        ctx.moveTo(pos.x - 6, pos.y - 6); ctx.lineTo(pos.x + 6, pos.y - 6); ctx.lineTo(pos.x + 6, pos.y + 6); ctx.lineTo(pos.x - 6, pos.y + 6); ctx.closePath();
+    } else ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = point.color || category.color; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+    if (!['services', 'entrances'].includes(point.category)) ctx.fillText(point.symbol || category.symbol, pos.x, pos.y + 4);
+    ctx.restore();
+}
+
 export function drawAtlasLocations(ctx, locations, { project, width, height, scale, selectedId, filters, reservedLabels = [], clusterTown = true }) {
     const marks = [], labels = [...reservedLabels];
-    const priority = p => p.id === selectedId ? 0 : p.id === 'lanternhold' ? 1 : p.category === 'entrances' ? 2 : p.category === 'quests' ? 3 : 4;
+    const selected = locations.find(p => p.id === selectedId && filters.has(p.category));
+    if (selected?.area) {
+        const r = selected.area, corners = [[r.minX, r.minZ], [r.maxX, r.minZ], [r.maxX, r.maxZ], [r.minX, r.maxZ]].map(([x, z]) => project(x, z));
+        ctx.save(); ctx.fillStyle = 'rgba(239, 209, 132, .08)'; ctx.strokeStyle = selected.color || '#efd184'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(corners[0].x, corners[0].y);
+        for (const p of corners.slice(1)) ctx.lineTo(p.x, p.y);
+        ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    }
+    const priority = p => p.id === selectedId ? 0 : p.id === 'lanternhold' ? 1 : p.questId && p.category === 'quests' ? 2 : p.category === 'entrances' ? 3 : 4;
     const ordered = locations.filter(p => filters.has(p.category)).sort((a, b) => priority(a) - priority(b));
     for (const p of ordered) {
         // Town collapses into one selectable settlement at overview scale.
@@ -16,17 +40,8 @@ export function drawAtlasLocations(ctx, locations, { project, width, height, sca
         const pos = project(p.x, p.z);
         if (pos.x < 12 || pos.x > width - 12 || pos.y < 44 || pos.y > height - 30) continue;
         if (marks.some(mark => Math.hypot(mark.screen.x - pos.x, mark.screen.y - pos.y) < 15)) continue;
-        const category = ATLAS_CATEGORIES[p.category];
-        ctx.save(); ctx.fillStyle = '#121b20'; ctx.strokeStyle = category.color; ctx.lineWidth = p.id === selectedId ? 2.5 : 1.5;
-        ctx.beginPath();
-        if (p.category === 'entrances') {
-            ctx.moveTo(pos.x, pos.y - 8); ctx.lineTo(pos.x + 8, pos.y); ctx.lineTo(pos.x, pos.y + 8); ctx.lineTo(pos.x - 8, pos.y); ctx.closePath();
-        } else if (p.category === 'services') {
-            ctx.moveTo(pos.x - 6, pos.y - 6); ctx.lineTo(pos.x + 6, pos.y - 6); ctx.lineTo(pos.x + 6, pos.y + 6); ctx.lineTo(pos.x - 6, pos.y + 6); ctx.closePath();
-        } else ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = category.color; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
-        if (!['services', 'entrances'].includes(p.category)) ctx.fillText(category.symbol, pos.x, pos.y + 4);
+        drawAtlasMarker(ctx, p, pos, p.id === selectedId);
+        ctx.save();
         marks.push({ ...p, screen: pos });
         ctx.font = p.id === selectedId ? 'bold 13px system-ui' : '12px system-ui';
         let name = p.name;

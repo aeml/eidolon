@@ -11,7 +11,8 @@ func TestResonancePortalRegistrySpawn(t *testing.T) {
 	w.spawnResonancePortal()
 	w.spawnDungeonNPC()
 	w.spawnQuestNPC()
-	for _, id := range []string{"resonance-portal", "dungeon-guide", "story-wizard"} {
+	w.spawnDarkRealmCamp()
+	for _, id := range []string{"resonance-portal", "dungeon-guide", "story-wizard", "story-wizard-dark-realm"} {
 		location := worldLocation(id)
 		entity := w.Entities[location.EntityID]
 		if entity == nil || entity.Type != TypeNPC || entity.X != location.X || entity.Z != location.Z || entity.InstanceID != location.InstanceID {

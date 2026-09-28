@@ -84,6 +84,24 @@ describe('Minimap dungeon room states', () => {
         jest.restoreAllMocks();
     });
 
+    test('radar shares tracked quest and saved-discovery symbols, filters and instance boundaries', () => {
+        const minimap = new Minimap(200);
+        const player = { id: 'reader', position: { x: 156, z: 60 }, quests: [{ id: 'chronicle_earth_returning_scar',
+            category: 'chronicle', accepted: true, count: 2, maxCount: 3, investigationMask: 5 }] };
+        minimap.gameEngine = { player, currentInstanceType: 'overworld', currentInstanceId: '',
+            worldMap: { navigation: { filters: new Set(['quests', 'discoveries']) } } };
+        minimap.update(player, []);
+        expect(texts.some(p => p.args[0] === '!' && p.fillStyle === '#efd184')).toBe(true);
+        expect(texts.some(p => p.args[0] === '✓' && p.fillStyle === '#a9c5dd')).toBe(true);
+        texts.length = 0; minimap.gameEngine.worldMap.navigation.filters.delete('quests');
+        minimap.update(player, []);
+        expect(texts.some(p => p.args[0] === '!')).toBe(false);
+        expect(texts.some(p => p.args[0] === '✓')).toBe(true);
+        texts.length = 0; minimap.gameEngine.currentInstanceId = 'private-run'; minimap.gameEngine.currentInstanceType = 'molten_core';
+        minimap.update(player, []);
+        expect(texts.some(p => ['!', '✓'].includes(p.args[0]))).toBe(false);
+    });
+
     test('renders dungeon room overlays and objective marker colors', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {

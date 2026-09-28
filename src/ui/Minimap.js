@@ -5,6 +5,8 @@ import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeogra
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
 import { getCasinoMapLandmarks, isCasinoMapGuestVisible } from './CasinoMap.js';
+import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
+import { drawAtlasMarker } from './AtlasMarkers.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -55,6 +57,7 @@ const toMarkerColor = (hexColor) => {
 };
 
 const TOWN_SERVICE_MARKERS = TOWN_SERVICE_POINTS.map((point) => ({
+    id: point.id,
     x: point.x,
     z: point.z,
     label: point.shortLabel,
@@ -255,6 +258,14 @@ export class Minimap {
         }
 
         // ---- Player dot (center) ----
+        const filters = this.gameEngine?.worldMap?.navigation?.filters;
+        const marked = [];
+        for (const location of getAtlasQuestLocations(this.gameEngine)) {
+            if (filters && !filters.has(location.category)) continue;
+            const pos = toMap(location.x, location.z);
+            if (Math.hypot(pos.x - half, pos.y - half) > half - 12 || marked.some(p => Math.hypot(p.x - pos.x, p.y - pos.y) < 15)) continue;
+            drawAtlasMarker(ctx, location, pos); marked.push(pos);
+        }
         const waypoint = this.gameEngine?.worldMap?.navigation?.waypoint;
         const guidance = getWaypointGuidance(this.gameEngine, waypoint);
         if (guidance) drawAtlasWaypoint(ctx, toMap(waypoint.x, waypoint.z), { x: half, y: half }, half - 25, `${Math.round(guidance.distance)}m`);
@@ -444,6 +455,8 @@ export class Minimap {
 
         const markers = casino ? getCasinoMapLandmarks(this.gameEngine) : TOWN_SERVICE_MARKERS;
         markers.forEach((marker) => {
+            const questGiver = ['quest-giver', 'story-wizard'].includes(marker.id);
+            if (questGiver && this.gameEngine?.worldMap?.navigation?.filters && !this.gameEngine.worldMap.navigation.filters.has('quests')) return;
             const pos = toMap(marker.x, marker.z);
             const dx = pos.x - half;
             const dy = pos.y - half;
@@ -465,6 +478,8 @@ export class Minimap {
 
             ctx.fillStyle = '#f2f2f2';
             ctx.fillText(marker.shortLabel || marker.label, drawX, drawY - 10);
+            if (questGiver) drawAtlasMarker(ctx, { category: 'quests', color: marker.color,
+                ...getAtlasQuestGiverState(this.gameEngine?.player?.quests, marker.id === 'story-wizard') }, { x: drawX, y: drawY });
         });
     }
 

@@ -5,10 +5,12 @@ import { DUNGEON_ENTRY_LEVELS } from '../data/dungeonProgression.js';
 import { getResonancePortalState } from '../core/ResonancePortalState.js';
 import { getInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { isCasinoMapGuestVisible } from './CasinoMap.js';
+import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
     quests: { name: 'Quests', symbol: '!', color: '#efd184' },
+    discoveries: { name: 'Discoveries', symbol: '✓', color: '#a9c5dd' },
     entrances: { name: 'Entrances', symbol: '◆', color: '#d6b3ef' },
     passages: { name: 'Passages', symbol: '↔', color: '#cfbc97' },
     events: { name: 'Events', symbol: '✦', color: '#b4dda4' },
@@ -36,15 +38,17 @@ const SERVICE_PURPOSE = {
 
 export function getAtlasLocations(engine) {
     // Interiors have their own maps. Public entrances are not interior targets.
-    if (!isOverworldAtlas(engine)) return getInstanceAtlas(engine)?.locations || [];
+    if (!isOverworldAtlas(engine)) return [...(getInstanceAtlas(engine)?.locations || []), ...getAtlasQuestLocations(engine)];
     const player = engine?.player;
     const result = TOWN_SERVICE_POINTS.map(point => {
         const portal = point.id === 'resonance-portal';
         const category = portal ? 'entrances' : ['quest-giver', 'story-wizard'].includes(point.id) ? 'quests' : 'services';
+        const questState = category === 'quests' ? getAtlasQuestGiverState(player?.quests, point.id === 'story-wizard') : null;
         return { id: point.id, name: point.label, x: point.x, z: point.z, category, instanceId: '',
+            ...(questState || {}), color: category === 'quests' ? point.color : undefined,
             purpose: portal ? 'Fourfold Portal to the shared Dark Realm expedition. This marker is the town entrance.' : SERVICE_PURPOSE[point.id],
             availability: portal ? (getResonancePortalState(player).eligible ? 'Portal attuned: approach to enter.' :
-                'Requires level 100 and personally claimed repairs of all four crystals. Speak to Ilyra.') : 'Lanternhold · safe zone' };
+                'Requires level 100 and personally claimed repairs of all four crystals. Speak to Ilyra.') : questState?.availability || 'Lanternhold · safe zone' };
     });
     result.push({ id: 'lanternhold', name: 'Lanternhold', category: 'services', instanceId: '',
         x: 0, z: 200, purpose: 'Town services, Ilyra and the Fourfold Portal. Select to inspect the town map.',
@@ -73,7 +77,7 @@ export function getAtlasLocations(engine) {
             x: event.site.x, z: event.site.z, purpose: 'Current public world event.',
             availability: event.phase === 'complete' ? 'Event complete' : 'Event active' });
     }
-    return result;
+    return [...result, ...getAtlasQuestLocations(engine)];
 }
 
 export function getWaypointGuidance(engine, waypoint) {
@@ -175,7 +179,7 @@ export class AtlasNavigation {
             for (const p of visible) {
                 const row = document.createElement('div'); row.setAttribute('role', 'listitem');
                 const button = document.createElement('button'); button.type = 'button';
-                button.textContent = `${ATLAS_CATEGORIES[p.category].symbol} ${p.name}`;
+                button.textContent = `${p.symbol || ATLAS_CATEGORIES[p.category].symbol} ${p.name}`;
                 button.setAttribute('aria-pressed', String(this.selectedId === p.id));
                 button.onclick = () => this.select(p.id); row.append(button); this.results.append(row);
             }
@@ -200,6 +204,7 @@ export class AtlasNavigation {
         this.root.querySelector('details').open = false;
         this.map.mapOffsetX = 0; this.map.mapOffsetY = 0;
         this.map.scale = location.category === 'services' || location.category === 'quests' ? 3 : 1;
+        if (location.area) { this.map.fitAtlasBounds(location.area); this.map.autoFitAtlas = false; }
         this.map.updateZoomLabel(); this.refresh(true); this.map._redrawIfVisible();
         this.detail.querySelector('h3')?.focus();
     }

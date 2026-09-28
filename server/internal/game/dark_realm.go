@@ -75,9 +75,10 @@ func darkRealmCamp() SafeZone {
 }
 
 func (w *World) spawnDarkRealmCamp() {
-	w.AddEntity(&Entity{ID: darkRealmWizardID, Type: TypeNPC, SubType: "StoryWizard",
-		Name: "Archmage Ilyra · Resonant Projection", InstanceID: DarkRealmInstanceID,
-		X: 40012, Z: 40800, SpawnX: 40012, SpawnZ: 40800, Y: .5, State: "IDLE", Scale: 1})
+	p := worldLocation("story-wizard-dark-realm")
+	w.AddEntity(&Entity{ID: p.EntityID, Type: TypeNPC, SubType: "StoryWizard",
+		Name: p.Name, InstanceID: p.InstanceID,
+		X: p.X, Z: p.Z, SpawnX: p.X, SpawnZ: p.Z, Y: .5, State: "IDLE", Scale: 1})
 	for _, witness := range darkRealmWitnesses {
 		w.AddEntity(&Entity{ID: witness.id, Name: witness.name, Type: TypeNPC, SubType: "ChronicleWitness",
 			InstanceID: DarkRealmInstanceID, X: witness.x, Z: witness.z, SpawnX: witness.x, SpawnZ: witness.z,

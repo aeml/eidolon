@@ -55,6 +55,37 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.screenshot({ path: testInfo.outputPath('atlas-navigation.png') });
         await page.evaluate(() => window.__atlas.map.navigation.select('forge'));
         await page.screenshot({ path: testInfo.outputPath('atlas-town.png') });
+        await page.evaluate(async () => {
+            const { engine, map } = window.__atlas;
+            const { QuestUI } = await import('/src/ui/QuestUI.js');
+            engine.player.quests = [{ id: 'chronicle_earth_returning_scar', category: 'chronicle', type: 'INVESTIGATE',
+                title: 'The Scar That Grows Back', accepted: true, count: 2, maxCount: 3, investigationMask: 5 }];
+            engine.uiManager.quest = new QuestUI({ getLastPlayer: () => engine.player, isMobile: engine.isMobile });
+            map.update(engine.player);
+        });
+        await search.fill('new growth');
+        await page.getByRole('button', { name: '! New growth', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Tracked · The Scar That Grows Back');
+        await expect(page.getByRole('region', { name: 'Selected destination' })).not.toContainText('neighbor’s hand');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        await expect(page.getByLabel('Waypoint guidance')).toContainText('New growth');
+        await page.screenshot({ path: testInfo.outputPath('atlas-tracked-discovery.png') });
+        await page.evaluate(() => {
+            const { engine, map } = window.__atlas;
+            engine.uiManager.quest.setQuestTracked(engine.player.quests[0], false); map.update(engine.player);
+        });
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toBeHidden();
+        await search.fill('severed root');
+        await page.getByRole('button', { name: '✓ Severed root', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Recorded discovery');
+        await page.evaluate(() => {
+            const { engine, map } = window.__atlas, q = engine.player.quests[0];
+            q.count = 3; q.investigationMask = 7; engine.uiManager.quest.setQuestTracked(q, true); map.update(engine.player);
+        });
+        await search.fill('turn in');
+        await page.getByRole('button', { name: '? Turn in · The Scar That Grows Back', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Complete Quest');
+        await page.screenshot({ path: testInfo.outputPath('atlas-ready-turnin.png') });
         await page.evaluate(() => {
             const { engine, map } = window.__atlas;
             engine.currentInstanceId = 'private-dungeon'; engine.currentInstanceType = 'molten_core'; map.update(engine.player);

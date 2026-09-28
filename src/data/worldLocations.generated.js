@@ -26,5 +26,14 @@ export const WORLD_LOCATIONS = Object.freeze([
     "instanceId": "",
     "x": 28,
     "z": 235
+  },
+  {
+    "id": "story-wizard-dark-realm",
+    "entityId": "story-wizard-dark-realm",
+    "name": "Archmage Ilyra · Resonant Projection",
+    "kind": "story",
+    "instanceId": "dark-realm",
+    "x": 40012,
+    "z": 40800
   }
 ].map(Object.freeze));

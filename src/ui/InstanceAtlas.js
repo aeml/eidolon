@@ -2,7 +2,6 @@ import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
 import { findNextDungeonMeaningfulRoom, getDungeonBeatLabel, getDungeonCadenceLabel, isLiveDungeonBossRoom } from '../utils/dungeonRoomMetadata.js';
 import { getCasinoMapState } from './CasinoMap.js';
 import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
-import { darkRealmObjectiveSites } from './DarkRealmMap.js';
 
 const TITLES = Object.freeze({
     crypt: 'Crypt', verdant_bastion_catacombs: 'Verdant Bastion', abyssal_well: 'Abyssal Well',
@@ -60,7 +59,6 @@ export function getInstanceAtlas(engine) {
     } else if (type === 'dark_realm') {
         (layout?.rooms || []).forEach((r, i) => add(`district-${i}`, DISTRICTS[i] || 'Dark Realm district', r.x, r.z, 'passages',
             i === 0 ? 'Expedition recovery and Ilyra’s projection.' : 'A district of the shared Dark Realm expedition.', i === 0 ? 'Recovery camp' : 'Level 100 combat territory'));
-        darkRealmObjectiveSites(engine.player?.quests).forEach(p => add(`discovery-${p.id}`, p.title || 'Investigation site', p.x, p.z, 'quests', 'Investigate for your accepted story quest. Journal text is revealed through play.', 'Current investigation'));
     } else if (type !== 'pvp_arena') {
         rooms.forEach((r, i) => {
             const index = r.index ?? i;
