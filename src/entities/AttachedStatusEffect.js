@@ -44,7 +44,6 @@ export class AttachedStatusEffect {
         this.statusKey = statusKey;
         this.quality = options.quality === 'low' ? 'low' : 'high';
         this.elapsed = 0;
-        this.pendingVisualTime = 0;
         this.isActive = true;
         this.disposed = false;
         this.group = createProceduralStatusEffect(statusKey, { quality: this.quality });
@@ -62,18 +61,12 @@ export class AttachedStatusEffect {
         if (this.group.parent !== this.scene) this.scene.add(this.group);
         const step = Math.max(0, Number(dt) || 0);
         this.elapsed += step;
-        this.pendingVisualTime += step;
-        // The other casino floor cannot be seen. Keep animation time, but
-        // defer its pose/mote work until visible; incremental rotations then
-        // catch up once alongside effects driven by absolute elapsed time.
-        if (!this.group.visible) return;
         const sourcePosition = this.owner.mesh?.position || this.owner.position;
         if (sourcePosition) this.group.position.copy(sourcePosition);
         if (this.statusKey === 'guardian_embrace') {
             setProceduralStatusAreaRadius(this.group, this.owner.guardianEmbraceRadius > 0 ? this.owner.guardianEmbraceRadius : 10);
         }
-        updateProceduralStatusEffect(this.group, this.elapsed, this.pendingVisualTime);
-        this.pendingVisualTime = 0;
+        updateProceduralStatusEffect(this.group, this.elapsed, step);
     }
 
     getMetrics() {

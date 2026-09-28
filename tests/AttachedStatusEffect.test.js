@@ -30,48 +30,6 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
-    test('hidden casino effects defer animation work and catch up without changing their pose', () => {
-        for (const quality of ['high', 'low']) for (const statusKey of Object.keys(ACTOR_STATUS_VISUAL_STATES)) {
-            let hidden = false;
-            const position = new THREE.Vector3();
-            const owner = { position, guardianEmbraceRadius: 12,
-                gameEngine: { casino: { isActorCutAway: () => hidden } } };
-            const effect = new AttachedStatusEffect(new THREE.Group(), owner, statusKey, { quality });
-            const reference = new AttachedStatusEffect(new THREE.Group(), { position, guardianEmbraceRadius: 12 }, statusKey, { quality });
-            const traverse = jest.spyOn(effect.group, 'traverse');
-            try {
-                effect.update(.1); reference.update(.1);
-                traverse.mockClear();
-                hidden = true;
-                for (let frame = 0; frame < 30; frame++) {
-                    position.x += .1;
-                    effect.update(1 / 60); reference.update(1 / 60);
-                }
-                expect(effect.group.visible).toBe(false);
-                expect(traverse).not.toHaveBeenCalled();
-                expect(effect.elapsed).toBe(reference.elapsed);
-                hidden = false;
-                effect.update(1 / 60); reference.update(1 / 60);
-                expect(effect.group.visible).toBe(true);
-                const poses = root => {
-                    const values = [];
-                    root.traverse(part => values.push(...part.position.toArray(), ...part.quaternion.toArray(),
-                        ...part.scale.toArray(), ...(part.isInstancedMesh ? part.instanceMatrix.array : [])));
-                    return values;
-                };
-                const actual = poses(effect.group), expected = poses(reference.group);
-                expect(actual.length).toBe(expected.length);
-                actual.forEach((value, index) => expect(value).toBeCloseTo(expected[index], 5));
-                // No hidden-time debt is applied twice on subsequent visible frames.
-                effect.update(.2); reference.update(.2);
-                const next = poses(reference.group);
-                poses(effect.group).forEach((value, index) => expect(value).toBeCloseTo(next[index], 5));
-            } finally {
-                traverse.mockRestore(); effect.dispose(); reference.dispose();
-            }
-        }
-    });
-
     test('maps every authoritative replicated buff and debuff field to an intentional status visual', () => {
         const protobufSource = fs.readFileSync(
             path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'server', 'internal', 'proto', 'state.pb.go'),
