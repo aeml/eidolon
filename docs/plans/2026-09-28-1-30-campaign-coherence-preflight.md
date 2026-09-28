@@ -1,7 +1,8 @@
 # Alpha 1.30 — campaign coherence review
 
-Local partial implementation. No1.30 version or release. Keep this out of
-the committed1.28 and the local1.29 candidate.
+Versioned 1.30 candidate committed locally at ceeec18c, not published.
+The [release record](2026-09-28-release1-30.md) supersedes historical preparation
+status below. Delivery waits for 1.29's terminal CI and exact public acceptance.
 
 ## Retained foundation, not work to recreate
 
@@ -100,4 +101,5 @@ account, selected by authored order, without inventing intervening discoveries.
 Its updated11-case coherence suite passed0.697s; five authoritative Go graph,
 legacy-contract and updated-copy cases passed0.295s. These are not campaign runs.
 
-Final version/notes/packaging and delivery gates remain before publication.
+Final version/notes/packaging are recorded in the release receipt. Publication,
+mandatory CI and exact live verification remain; human campaign pacing is open.
