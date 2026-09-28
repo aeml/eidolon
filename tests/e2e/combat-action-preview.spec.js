@@ -1,45 +1,46 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-test('four Eidolon cues render with distinct geometry on High and Low without retaining effects', async ({ page, baseURL }, testInfo) => {
-    const failures = collectBrowserFailures(page, baseURL);
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    await page.evaluate(() => {
-        const gallery = window.__eidolonAnimationGalleryController;
-        gallery.playActorState('Idle'); // Clear the gallery's default persistent spell before counting owned effects.
-        gallery.remoteActor.mesh.visible = false;
-        gallery.targetActor.mesh.visible = false;
-        gallery.renderSystem.applyLightingPreset('umbral_nexus', true);
-        document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(el => { el.style.display = 'none'; });
+// Give each rendered cue its own normal test budget and fresh effect lifecycle.
+// Eight software-rendered screenshots in one test exhausted the shared deadline
+// on hosted runners, obscuring which phase/quality actually failed.
+for (const quality of ['high', 'low']) for (const phase of [1, 2, 3, 4]) {
+    test(`Eidolon cue ${phase} on ${quality} renders distinct geometry and releases its effects`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
+        await page.evaluate(() => {
+            const gallery = window.__eidolonAnimationGalleryController;
+            gallery.playActorState('Idle'); // Clear the gallery's default persistent spell before counting owned effects.
+            gallery.remoteActor.mesh.visible = false;
+            gallery.targetActor.mesh.visible = false;
+            gallery.renderSystem.applyLightingPreset('umbral_nexus', true);
+            document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(el => { el.style.display = 'none'; });
+        });
+        const result = await page.evaluate(async ({ phase, quality }) => {
+            const { createTransientEffect } = await import('/src/core/TransientEffects.js');
+            const gallery = window.__eidolonAnimationGalleryController;
+            gallery.renderSystem.setGraphicsQuality(quality);
+            const scene = gallery.renderSystem.effectGroup;
+            const before = scene.children.length;
+            const effect = createTransientEffect(scene, 'eidolon_aid', gallery.actor.position, 0xffffff, { phase, quality });
+            effect.update(.8);
+            window.__aidRender = { effect, before };
+            gallery.renderSystem.render();
+            return { count: effect.meshes[0].children.length, geometry: effect.meshes[0].children[0].geometry.type };
+        }, { phase, quality });
+        expect(result.count).toBe(quality === 'low' ? 4 : 8);
+        expect(result.geometry).toBe(['DodecahedronGeometry', 'SphereGeometry', 'ConeGeometry', 'TorusGeometry'][phase - 1]);
+        await page.screenshot({ path: testInfo.outputPath(`eidolon-${phase}-${quality}.png`) });
+        expect(await page.evaluate(() => {
+            const { effect, before } = window.__aidRender;
+            effect.dispose();
+            return !effect.isActive && window.__eidolonAnimationGalleryController.renderSystem.effectGroup.children.length === before;
+        })).toBe(true);
+        expect(failures, failures.join('\n')).toEqual([]);
     });
-    for (const quality of ['high', 'low']) {
-        for (const phase of [1, 2, 3, 4]) {
-            const result = await page.evaluate(async ({ phase, quality }) => {
-                const { createTransientEffect } = await import('/src/core/TransientEffects.js');
-                const gallery = window.__eidolonAnimationGalleryController;
-                gallery.renderSystem.setGraphicsQuality(quality);
-                const scene = gallery.renderSystem.effectGroup;
-                const before = scene.children.length;
-                const effect = createTransientEffect(scene, 'eidolon_aid', gallery.actor.position, 0xffffff, { phase, quality });
-                effect.update(.8);
-                window.__aidRender = { effect, before };
-                gallery.renderSystem.render();
-                return { count: effect.meshes[0].children.length, geometry: effect.meshes[0].children[0].geometry.type };
-            }, { phase, quality });
-            expect(result.count).toBe(quality === 'low' ? 4 : 8);
-            expect(result.geometry).toBe(['DodecahedronGeometry', 'SphereGeometry', 'ConeGeometry', 'TorusGeometry'][phase - 1]);
-            await page.screenshot({ path: testInfo.outputPath(`eidolon-${phase}-${quality}.png`) });
-            expect(await page.evaluate(() => {
-                const { effect, before } = window.__aidRender;
-                effect.dispose();
-                return !effect.isActive && window.__eidolonAnimationGalleryController.renderSystem.effectGroup.children.length === before;
-            })).toBe(true);
-        }
-    }
-    expect(failures, failures.join('\n')).toEqual([]);
-});
+}
 
 for (const [width, height] of [[1280, 720], [390, 844], [844, 390]]) {
     test(`${width}x${height}: Eidolon aid remains readable beside immediate target and danger feedback`, async ({ page, baseURL }, testInfo) => {
