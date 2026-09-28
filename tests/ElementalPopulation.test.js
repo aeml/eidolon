@@ -98,7 +98,23 @@ test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS], ['air', AIR_PATHS]])('%
     }
     for (const scene of [high, low]) {
         expect(scene.children).toHaveLength(8);
-        expect(scene.children.every(root => root.children.length >= 2 && root.children.length <= 5)).toBe(true);
+        expect(scene.children.every(root => root.children.length >= 3 && root.children.length <= 7)).toBe(true);
+        for (const root of scene.children) {
+            const apron = root.getObjectByName(`${root.userData.locationId}:ground-wear`);
+            expect(apron).toBeDefined(); expect(apron.material.depthWrite).toBe(false);
+            expect(apron.position.y).toBeLessThan(.035); // stays below the authored path overlay
+            const extent = Math.hypot(apron.geometry.parameters.width, apron.geometry.parameters.height) / 2;
+            for (const [hx, hz, radius] of FOLIAGE_HAZARD_CLEARINGS[realm]) {
+                expect(Math.hypot(root.position.x + apron.position.x - hx, root.position.z + apron.position.z - hz) - extent)
+                    .toBeGreaterThan(radius + 1.5);
+            }
+            const chips = root.getObjectByName(`${root.userData.locationId}:ground-chips`);
+            if (chips) {
+                chips.geometry.computeBoundingBox();
+                expect(chips.geometry.boundingBox.max.y).toBeLessThan(.3);
+                expect(chips.geometry.attributes.color).toBeDefined();
+            }
+        }
         for (const f of scene.userData.walkFootprints) {
             for (const path of paths) {
                 const clear = pathClearsFootprint(path, f);

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPairedEyesGeometry, createPauldronGeometry } from '../src/art/ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPairedEyesGeometry, createPauldronGeometry, createDrapedSkirtGeometry } from '../src/art/ProceduralGarmentGeometry.js';
 import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../src/art/ProceduralHumanoid.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../src/art/ProceduralEquipment.js';
 
@@ -29,16 +29,46 @@ test.each(['shell', 'rim', 'lame'])('pauldron %s is a bounded finite shell with 
     surface.dispose();
 });
 
-test('tailored torso narrows at both waist and neckline with finite faceted surfaces', () => {
+test('tailored torso follows a rounded shoulder roll inside the original fitted bounds', () => {
     const geometry = createTailoredTorsoGeometry(0.4, 0.6, 1.1);
     const profile = geometry.parameters.points;
-    expect(profile).toHaveLength(5);
-    expect(profile[0].x).toBeLessThan(profile[2].x);
-    expect(profile.at(-1).x).toBeLessThan(profile[2].x * 0.5);
+    expect(profile).toHaveLength(9);
+    expect(profile[0].x).toBeLessThan(profile[4].x);
+    expect(profile.at(-1).x).toBeLessThan(profile[4].x * 0.5);
+    expect(profile.every(point => point.x <= .6)).toBe(true);
+    expect(geometry.parameters.segments).toBe(24);
     expect(profile.at(-1).y - profile[0].y).toBeCloseTo(1.1);
     expect(geometry.attributes.position.array.every(Number.isFinite)).toBe(true);
     expect(geometry.attributes.normal.array.every(Number.isFinite)).toBe(true);
     geometry.dispose();
+});
+
+test('cloth folds are bounded, deterministic and have finite smooth normals and UVs', () => {
+    for (const border of [false, true]) {
+        const geometry = createDrapedSkirtGeometry(border);
+        const second = createDrapedSkirtGeometry(border);
+        expect([...geometry.attributes.position.array]).toEqual([...second.attributes.position.array]);
+        for (const attribute of Object.values(geometry.attributes)) expect(attribute.array.every(Number.isFinite)).toBe(true);
+        geometry.computeBoundingBox();
+        expect(geometry.boundingBox.min.z).toBeGreaterThanOrEqual(0);
+        expect(geometry.boundingBox.max.z).toBeLessThan(.06);
+        expect(geometry.boundingBox.min.y).toBeGreaterThan(-1.4);
+        expect(geometry.boundingBox.max.x).toBeLessThan(.31);
+        expect(geometry.index.count / 3).toBeLessThanOrEqual(320);
+        geometry.dispose(); second.dispose();
+    }
+});
+
+test('woven skirt border follows existing panel triangles without intersecting them', () => {
+    const panel = createDrapedSkirtGeometry(), border = createDrapedSkirtGeometry(true);
+    const a = panel.attributes.position, b = border.attributes.position;
+    for (let row = 0; row <= 10; row++) for (let column = 0; column < 2; column++) {
+        const p = row * 17 + 12 + column, q = row * 2 + column;
+        expect(b.getX(q)).toBeCloseTo(a.getX(p), 6);
+        expect(b.getY(q)).toBeCloseTo(a.getY(p), 6);
+        expect(b.getZ(q) - a.getZ(p)).toBeCloseTo(.002, 6);
+    }
+    panel.dispose(); border.dispose();
 });
 
 test('hood leaves the face opening clear rather than forming a cone over the face', () => {

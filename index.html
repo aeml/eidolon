@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.17.0</span>
+                    <span class="start-version-row__label">Alpha 1.18.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -443,13 +443,13 @@
             <div class="support-window__body support-window__body--settings">
                 <div class="support-field">
                     <label for="graphics-quality" class="support-field__label">Graphics Quality</label>
-                    <select id="graphics-quality" class="support-field__control">
+                    <select id="graphics-quality" class="support-field__control" aria-describedby="graphics-quality-help">
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high" selected>High</option>
                     </select>
-                    <div class="support-field__hint">
-                        High is the default target and enables full effects. Lower settings reduce post-processing and shadow cost.
+                    <div id="graphics-quality-help" class="support-field__hint">
+                        High gives the richest lighting. Medium reduces shadow detail and effects. Low turns off dynamic shadows and post-processing; try it first if play feels uneven. Phone mode keeps shadows off at every setting. Danger warnings and interactions remain available.
                     </div>
                 </div>
                 <div class="support-field">
@@ -698,6 +698,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.18.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.18.0 (worn surfaces and clearer silhouettes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Fitted equipment:</strong> Rounded torso and shoulder transitions replace broad faceted chest surfaces. Silk skirts have shallow folds and fitted edging; the leather cap no longer covers the Rogue’s eyes at the viewing angle. All four classes keep their existing equipment anchors, animations and item stats.</li>
+                        <li><strong>Material character:</strong> Shared generated cloth, leather, metal and timber surfaces add restrained grain, roughness and relief to equipment. Cloth trim no longer reflects like metal; rarity accents, sockets and cosmetic identities remain intact.</li>
+                        <li><strong>Weathered places:</strong> Water, Fire and Air sites gain softly worn ground and low scattered debris outside their walking paths. These decorations grant no rewards and add no blocking floor or collision; nearby hazard warnings remain clear.</li>
+                        <li><strong>Atlas and minimap agreement:</strong> Dark Realm witness courts now appear on the minimap with the same place glyph and filter as the atlas. Other instances and pending layouts do not inherit those markers.</li>
+                        <li><strong>Choose your graphics setting:</strong> Settings explains High, Medium, Low and the phone shadow policy. Populated-world and equipment comparisons cover both qualities; desktop phone-sized tests are not real-phone performance certification.</li>
+                        <li><strong>Scope:</strong> This is an early visual integration pass, not final modern-art or closed-beta approval. Actor-model integration and owner art review remain open. Existing saves, manual quest claims, Gold/EP rules and dungeon recovery are unchanged. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.17.0">
                     <h3 class="patch-note-entry__title">Alpha 1.17.0 (companions and the unmeasured sky)</h3>
                     <ul class="patch-note-entry__list">

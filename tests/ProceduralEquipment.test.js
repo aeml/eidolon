@@ -51,6 +51,21 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test.each([1, 30, 100])('leather cap clears Rogue eyes at the normal close-up angle at level %s', level => {
+        const root = createProceduralRogue();
+        applyProceduralEquipment(root, {head: item('Leather Cap', 'head', {level})});
+        root.updateMatrixWorld(true);
+        const pieces = root.getObjectByName('Equipment_Head').children.filter(part => part.userData.equipmentVisual);
+        const direction = new THREE.Vector3(0, .32, 1).normalize();
+        for (const name of ['Rogue_EyeGlow', 'Rogue_EyeGlowRight']) {
+            const eye = root.getObjectByName(name);
+            expect(eye.visible).toBe(true);
+            const point = eye.getWorldPosition(new THREE.Vector3());
+            const ray = new THREE.Raycaster(point.clone().addScaledVector(direction, 2), direction.clone().negate(), 0, 2);
+            expect(ray.intersectObjects(pieces, true).filter(hit => hit.object.visible)).toHaveLength(0);
+        }
+    });
+
     test.each(['Steel Pauldrons', 'Reinforced Spaulders'])('%s uses fitted layered shells and embedded sockets', (baseName) => {
         const data = item(baseName, 'shoulders', { level: 1, sockets: 3 });
         for (const side of [-1, 1]) {
@@ -75,7 +90,8 @@ describe('rigid equipment batching', () => {
             expect(duplicate.getObjectByName('Gear_Shoulder').geometry).toBe(cap.geometry);
             expect(duplicate.getObjectByName('Gear_Shoulder').material).toBe(cap.material);
             const torso = createProceduralEquipmentVisual(item('Plate Mail', 'chest'));
-            expect(torso.getObjectByName('Gear_Torso').material.flatShading).toBe(true);
+            expect(torso.getObjectByName('Gear_Torso').material.flatShading).toBe(false);
+            expect(torso.getObjectByName('Gear_ChestSigil').material.flatShading).toBe(true);
         }
     });
 

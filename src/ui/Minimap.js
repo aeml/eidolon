@@ -270,7 +270,11 @@ export class Minimap {
 
         // ---- Player dot (center) ----
         const marked = [];
-        for (const location of [...getAtlasQuestLocations(this.gameEngine), ...getAtlasWorldLocations(this.gameEngine)]) {
+        // Interior room objectives and casino services have dedicated tactical
+        // overlays above; public interior places still need the same landmark
+        // glyph as the atlas (not an overworld marker at unrelated coordinates).
+        const places = interior ? interior.locations.filter(location => location.category === 'places') : getAtlasWorldLocations(this.gameEngine);
+        for (const location of [...getAtlasQuestLocations(this.gameEngine), ...places]) {
             if (filters && !filters.has(location.category)) continue;
             const pos = toMap(location.x, location.z);
             if (Math.hypot(pos.x - half, pos.y - half) > half - 12 || marked.some(p => Math.hypot(p.x - pos.x, p.y - pos.y) < 15)) continue;
@@ -413,8 +417,8 @@ export class Minimap {
         if (!pd || !pd.members) return;
         for (const member of pd.members) {
             if (member.id === player.id || !isAtlasPartyMemberVisible(this.gameEngine, member)) continue;
-            // Party snapshots need not carry floor/instance identity. Only a
-            // currently represented casino guest can place a trustworthy dot.
+            // Matching instance identity is checked above; casino floor
+            // visibility additionally requires a currently represented guest.
             if (this.gameEngine.currentInstanceType === 'casino'
                 && !isCasinoMapGuestVisible(this.gameEngine, this.gameEngine.remotePlayers?.get(member.id))) continue;
             if (member.x === undefined || member.z === undefined) continue;

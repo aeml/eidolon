@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry } from './ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry, createDrapedSkirtGeometry } from './ProceduralGarmentGeometry.js';
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
 import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
+import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -148,9 +149,10 @@ const SHIELD_OUTLINE = [[0, 0.78], [0.58, 0.46], [0.47, -0.36], [0, -0.84], [-0.
 function material(key, color, options = {}) {
     const cacheKey = [key, color.toString(16), options.emissive || 0, options.emissiveIntensity || 0,
         options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide,
-        options.flatShading ?? true].join(':');
+        options.flatShading ?? true, options.surface || ''].join(':');
     if (!MATERIALS.has(cacheKey)) {
         MATERIALS.set(cacheKey, new THREE.MeshStandardMaterial({
+            ...(options.surface ? getEquipmentSurfaceMaps(options.surface) : {}),
             color,
             roughness: options.roughness ?? 0.62,
             metalness: options.metalness ?? 0.15,
@@ -195,15 +197,16 @@ function createMaterials(item, visual) {
                 ? { metalness: 0.03, roughness: 0.84 }
                 : { metalness: 0.01, roughness: 0.88 };
     const potency = Math.max(0, Number(item?.potency) || 0);
-    // Rolled armor uses the shell's authored normals. Keep this material choice
-    // in the cache key: other plate items still use their existing hard edges.
-    const surface = { ...materialDefaults,
-        flatShading: !(visual.family === 'shoulderArmor' && visual.variant !== 'mantle') };
+    // Fitted shells and woven cloth use their authored normals. Weapons and
+    // ornaments retain hard facets; this distinction is part of the cache key.
+    const surface = { ...materialDefaults, surface: visual.material,
+        flatShading: !(['bodyArmor', 'headwear', 'legArmor'].includes(visual.family)
+            || (visual.family === 'shoulderArmor' && visual.variant !== 'mantle')) };
     return {
         primary: material(`${visual.variant}-primary`, visual.primary, surface),
         secondary: material(`${visual.variant}-secondary`, visual.secondary, {
             ...surface,
-            metalness: Math.max(materialDefaults.metalness, 0.25)
+            metalness: visual.material === 'cloth' ? materialDefaults.metalness : Math.max(materialDefaults.metalness, 0.25)
         }),
         accent: material(`${visual.variant}-${rarityName}-accent`, rarityColor, {
             metalness: 0.5,
@@ -324,10 +327,10 @@ function buildOffhand(group, visual, mats) {
 function buildHeadwear(group, visual, mats) {
     if (visual.variant === 'cap') {
         addMesh(group, 'Gear_CapCrown', geometry('gear-cap-crown', () => new THREE.SphereGeometry(0.39, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2)), mats.primary, {
-            position: [0, 0.26, 0], scale: [1, 0.78, 1]
+            position: [0, 0.34, 0], scale: [1, 0.78, 1]
         });
         addMesh(group, 'Gear_CapBand', geometry('gear-cap-band', () => new THREE.TorusGeometry(0.34, 0.055, 5, 8)), mats.secondary, {
-            position: [0, 0.22, 0], rotation: [Math.PI / 2, 0, 0]
+            position: [0, 0.3, 0], rotation: [Math.PI / 2, 0, 0]
         });
     } else if (visual.variant === 'hood') {
         addMesh(group, 'Gear_Hood', geometry('gear-hood', createOpenHoodGeometry), mats.primary);
@@ -383,8 +386,7 @@ function buildLegArmor(group, visual, mats) {
     const skirt = visual.variant === 'skirt';
     const thighArmor = addMesh(group, 'Gear_ThighArmor', geometry(`gear-leg-${visual.variant}`, () =>
         skirt
-            ? beveledPanel([[-0.27, 0.04], [0.27, 0.04], [0.31, -0.7], [0.23, -1.3],
-                [0.05, -1.18], [-0.26, -1.32], [-0.3, -0.7]], 0.018, 0.006)
+            ? createDrapedSkirtGeometry()
             : new THREE.CylinderGeometry(visual.variant === 'plate' ? 0.285 : 0.265, 0.21, 0.9, 8)
     ), mats.primary, {
         position: skirt ? [0, 0, 0.24] : [0, -0.43, 0]
@@ -393,9 +395,8 @@ function buildLegArmor(group, visual, mats) {
         addMesh(group, 'Gear_SkirtBack', thighArmor.geometry, mats.primary, {
             position: [0, 0, -0.2], rotation: [0, Math.PI, 0], scale: [1, 0.9, 1]
         });
-        addMesh(group, 'Gear_SkirtBorder', geometry('gear-skirt-border', () => beveledPanel(
-            [[-0.025, 0], [0.025, 0], [0.055, -0.66], [0.02, -1.14], [-0.035, -1.22], [-0.04, -0.66]], 0.008, 0.003
-        )), mats.secondary, { position: [0.19, 0, 0.263] });
+        addMesh(group, 'Gear_SkirtBorder', geometry('gear-skirt-border', () => createDrapedSkirtGeometry(true)),
+            mats.secondary, { position: [0, 0, 0.24] });
     }
     addMesh(group, 'Gear_KneeMark', geometry('gear-knee-mark', () => new THREE.OctahedronGeometry(0.11, 0)), mats.accent, {
         position: skirt ? [0.16, -0.72, 0.29] : [0, -0.77, 0.2], scale: [1, 0.75, 0.45]

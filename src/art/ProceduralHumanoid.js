@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
+import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -92,6 +93,7 @@ function geometry(key, create) {
 function material(key, color, options = {}) {
     if (!MATERIALS.has(key)) {
         MATERIALS.set(key, new THREE.MeshStandardMaterial({
+            ...(options.surface ? getEquipmentSurfaceMaps(options.surface) : {}),
             color,
             roughness: options.roughness ?? 0.72,
             metalness: options.metalness ?? 0,
@@ -1340,7 +1342,7 @@ export function createProceduralFighter() {
         chestAnchor,
         'Fighter_Breastplate',
         geometry('breastplate', () => createTailoredTorsoGeometry(0.52, 0.62, 1.12)),
-        materials.iron,
+        material('fighter-fitted-iron', FIGHTER_PALETTE.iron, { metalness: .72, roughness: .42, flatShading: false, surface: 'metal' }),
         { position: [0, 0.48, 0], scale: [1.18, 1, 0.72] }
     );
     addMesh(
@@ -1551,7 +1553,7 @@ export function createProceduralRogue() {
         chestAnchor,
         'Rogue_Jerkin',
         geometry('rogue-jerkin', () => createTailoredTorsoGeometry(0.355, 0.48, 1.04)),
-        materials.leather,
+        material('rogue-fitted-leather', ROGUE_PALETTE.leather, { roughness: .88, flatShading: false, surface: 'leather' }),
         { position: [0, 0.45, 0], scale: [1.04, 1, 0.72] }
     );
     addMesh(
@@ -1840,7 +1842,7 @@ export function createProceduralWizard() {
         chestAnchor,
         'Wizard_RunicCuirass',
         geometry('wizard-runic-cuirass', () => createTailoredTorsoGeometry(0.45, 0.52, 1.13)),
-        materials.cloth,
+        material('wizard-fitted-cloth', WIZARD_PALETTE.cloth, { roughness: .96, side: THREE.DoubleSide, flatShading: false, surface: 'cloth' }),
         { position: [0, 0.48, 0], scale: [1.04, 1, 0.75] }
     );
     addMesh(
@@ -2110,7 +2112,7 @@ export function createProceduralCleric() {
         chestAnchor,
         'Cleric_ReliquaryCuirass',
         geometry('cleric-reliquary-cuirass-v2', () => createTailoredTorsoGeometry(0.34, 0.5, 1.08)),
-        materials.iron,
+        material('cleric-fitted-iron', CLERIC_PALETTE.iron, { metalness: .68, roughness: .46, flatShading: false, surface: 'metal' }),
         { position: [0, 0.48, 0], scale: [1.04, 1, 0.7] }
     );
     addMesh(

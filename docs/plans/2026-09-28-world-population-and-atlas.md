@@ -3,9 +3,11 @@
 Requested September 28, 2026. Required scope under the
 [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md), not a separate
 optional art project. Current status: first pass in progress. The1.14 atlas is
-accepted live;1.15 Lanternhold/Earth population is also accepted live.1.16
-Water/Fire population is a local candidate awaiting publication. See version receipts for delivery evidence;
-later realms and final art/performance gates are not complete.
+accepted live;1.15 Lanternhold/Earth and1.16 Water/Fire population are accepted
+live.1.17 Air/Dark Realm population is also accepted live atfbc3929a;
+1.18 local equipment/ground/material and minimap integration checks are complete.
+See version receipts for exact evidence. These early passes do not approve final
+modern-art quality or the full B1 gate.
 
 ## Outcome
 

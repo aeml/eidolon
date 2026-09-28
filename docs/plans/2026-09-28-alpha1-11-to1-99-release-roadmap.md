@@ -595,6 +595,15 @@ IPv4 release/database/login/history and18 exact runtime assets.1.17 is prepared
 for publication with its synchronized notes and version.1.18 source/visual
 preflight may proceed locally, but its publication waits for1.17 acceptance.
 
+Superseding execution checkpoint: **1.17 accepted live** at
+`fbc3929ac2255808536bc886f94b2ad15e763926`, CI36438798888 fully green including
+both deployments and final live character QA. Root independently verified exact
+public IPv4 version/commit, database, login/history and16 changed runtime assets.
+[1.18](2026-09-28-release1-18.md) is prepared for publication with equipment
+surface/fit, regional ground dressing, minimap parity and quality guidance;
+its own CI/live gates remain required. Modern-art, actor handoff and B1 policy
+approvals remain open.1.19 operations work stays local and separately scoped.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

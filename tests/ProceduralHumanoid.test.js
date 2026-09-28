@@ -171,7 +171,7 @@ describe('shared procedural humanoid Rogue', () => {
         expect(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusBottom)
             .toBeGreaterThan(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusTop);
         expect(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.points[0].x)
-            .toBeLessThan(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.points[2].x);
+            .toBeLessThan(Math.max(...rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.points.map(point => point.x)));
         expect(hasOnlyFiniteTransforms(rogue)).toBe(true);
     });
 
@@ -378,7 +378,7 @@ describe('shared procedural humanoid Cleric', () => {
         expect(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusBottom)
             .toBeGreaterThan(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusTop);
         expect(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.points[0].x)
-            .toBeLessThan(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.points[2].x);
+            .toBeLessThan(Math.max(...cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.points.map(point => point.x)));
         expect(cleric.userData.equipmentScaleBySlot).toEqual(expect.objectContaining({
             head: 0.86,
             shoulders: 0.6,

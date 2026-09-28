@@ -80,7 +80,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             };
             window.__populatedWorld = { visit, engine, samples, async profile() {
                 const profiles = [];
-                for (const id of ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar']) {
+                const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
+                    elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'communal-kiln', 'quenched-foundry'] :
+                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar'];
+                for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;
                     for (let i = 0; i < 150; i++) {
@@ -95,8 +98,14 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                         cpuP95: percentile(cpuTimes, .95), calls: render.renderer.info.render.calls,
                         triangles: render.renderer.info.render.triangles });
                 }
+                const resources = () => ({ geometries: render.renderer.info.memory.geometries,
+                    textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
+                const beforeRepeat = resources();
+                for (const id of profileSites) visit(id);
+                const afterRepeat = resources();
                 const gl = render.renderer.getContext(), extension = gl.getExtension('WEBGL_debug_renderer_info');
-                return { renderer: gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER), profiles };
+                return { renderer: gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
+                    userAgent: navigator.userAgent, quality, mobile, beforeRepeat, afterRepeat, profiles };
             }, dispose() {
                 readings.forEach(r => r.dispose()); portal.dispose(); engine.inputManager.dispose();
                 hero.removeFromParent(); MeshFactory.releaseMesh('Fighter', hero);
@@ -125,15 +134,18 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             await testInfo.attach('scene-counts', { path: countsPath, contentType: 'application/json' });
             // Opt-in local hardware acceptance; shared CI is not a comparable
             // frame-time environment. No busy loop, uncapped render or GPU finish.
-            if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
+            if (process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
                 const profile = await page.evaluate(() => window.__populatedWorld.profile());
                 const path = testInfo.outputPath('frame-profile.json');
                 await writeFile(path, JSON.stringify(profile, null, 2));
                 await testInfo.attach('frame-profile', { path, contentType: 'application/json' });
                 expect(profile.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
+                expect(profile.afterRepeat).toEqual(profile.beforeRepeat);
                 for (const view of profile.profiles) {
                     expect(view.median, `${view.id} median`).toBeLessThanOrEqual(quality === 'high' ? 20 : 33.4);
                     expect(view.p95, `${view.id} p95`).toBeLessThanOrEqual(quality === 'high' ? 33.4 : 50);
+                    expect(view.calls, `${view.id} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
+                    expect(view.triangles, `${view.id} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
                 }
             }
             expect(failures, failures.join('\n')).toEqual([]);

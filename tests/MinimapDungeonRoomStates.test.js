@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { Minimap } from '../src/ui/Minimap.js';
 import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
+import { darkRealmFixture } from './darkRealmFixture.js';
 
 describe('Minimap dungeon room states', () => {
     test('minimap and buff tooltip share the menu HUD stacking root', () => {
@@ -116,6 +117,29 @@ describe('Minimap dungeon room states', () => {
         texts.length = 0; minimap.gameEngine.currentInstanceId = 'private-run';
         minimap.gameEngine.worldMap.navigation.filters.add('places');
         minimap.update(player, [reading]); expect(texts.some(p => p.args[0] === '▤')).toBe(false);
+    });
+
+    test('Dark Realm courts share atlas landmark glyphs, filters and pending-layout boundaries', () => {
+        const minimap = new Minimap(200);
+        const player = { id: 'traveler', position: { x: 39900, z: 40570 }, quests: [] };
+        const engine = { player, currentInstanceType: 'dark_realm', currentInstanceId: 'dark-realm',
+            currentDungeonLayout: darkRealmFixture(), worldMap: { navigation: { filters: new Set(['places']) } } };
+        minimap.gameEngine = engine;
+        minimap.update(player, []);
+        expect(texts.filter(p => p.args[0] === '◇')).toHaveLength(1);
+        texts.length = 0; engine.worldMap.navigation.filters.delete('places');
+        minimap.update(player, []);
+        expect(texts.some(p => p.args[0] === '◇')).toBe(false);
+        texts.length = 0; engine.worldMap.navigation.filters.add('places');
+        engine.currentInstanceType = 'molten_core'; engine.currentInstanceId = 'private-run'; engine.currentDungeonLayout = null;
+        minimap.update(player, []);
+        expect(texts.some(p => p.args[0] === '◇')).toBe(false);
+        engine.currentInstanceType = 'dark_realm'; engine.currentInstanceId = 'dark-realm';
+        minimap.update(player, []);
+        expect(texts.some(p => p.args[0] === '◇')).toBe(false);
+        engine.currentDungeonLayout = darkRealmFixture();
+        minimap.update(player, []);
+        expect(texts.filter(p => p.args[0] === '◇')).toHaveLength(1);
     });
 
     test('neutral Chronicle scenery and residents never fall through to hostile red dots', () => {

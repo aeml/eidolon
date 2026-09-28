@@ -1,13 +1,28 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (supersedes chronological notes below):** Alpha1.16.0 is
-accepted live at2cc806fd3db66e8f0af42fe1e9ce2a6b984b9ce4, CI36430486346.
-Luna confirmed every gate including live QA; root independently verified public
-IPv4 exact identity, healthy database, login/help/history and18 runtime assets.
-1.17 party guidance/recruitment, Air population/terrain and Dark Realm courts/
-streets are implemented, locally checked and versioned for publication.
-Next: commit/push1.17, Luna mandatory CI/deployment/live QA watch, root exact
-live acceptance, then1.18.1.18 preflight/ordinary-outfit captures are local only.
+**Current checkpoint (supersedes chronological notes below):** Alpha1.17.0 is
+accepted live atfbc3929ac2255808536bc886f94b2ad15e763926, CI36438798888.
+Luna confirmed all gates, both deployments and final live QA (8m47s). The server
+test job including race detection passed10m35s after the indexed-spawn correction;
+CI timeouts and coverage were not weakened. Root independently verified public
+IPv4 exact frontend/backend identity, healthy database, login/history and16
+changed runtime assets. This delivers party guidance/recruitment, Air population
+and Dark Realm courts/streets; final modern-art/B1 approval remains open.
+
+1.18 is prepared for publication after that accepted predecessor. It adds rounded fitted torso surfaces, folded skirts,
+shared equipment surface maps, regional ground dressing, cap eye clearance,
+Dark Realm court minimap parity and clear quality-setting guidance. Final
+world budgets/resource return and equipment checks passed; the full client run
+had one stale Settings assertion, corrected with its entire71-test suite passing.
+See1.18 release receipt/preflight/device
+matrix for exact limits and remaining work; no final modern-art/B1 claim.
+1.18 is ready for its publication gate; exact public verifier prepared in its
+receipt.1.19 operations preflight stays separate and local. Owner questions
+about existing-account access, invitation policy, cohort size and support
+contact are pending; current access and saves are unchanged. Local1.19 now also
+hardens the Mongo-only restore helper (18 fake-command scenarios pass, no live
+operations) and drafts docs/BETA_OPERATIONS.md. Keep those uncommitted changes
+out of1.18; its preflight records scope and pending policy decisions.
 See [1.17 receipt](docs/plans/2026-09-28-release1-17.md). Global roadmap and
 final art/beta gates remain open. Do not publish receipt-only changes by themselves.
 

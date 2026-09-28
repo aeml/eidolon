@@ -1424,7 +1424,11 @@ describe('menu polish regressions', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<label for="graphics-quality" class="support-field__label">Graphics Quality</label>');
-        expect(html).toContain('<select id="graphics-quality" class="support-field__control">');
+        const document = new DOMParser().parseFromString(html, 'text/html');
+        const quality = document.getElementById('graphics-quality');
+        expect(quality.classList.contains('support-field__control')).toBe(true);
+        const help = document.getElementById(quality.getAttribute('aria-describedby'));
+        expect(help?.textContent).toContain('Phone mode keeps shadows off');
         expect(html).toContain('<label for="graphics-brightness" class="support-field__label">Brightness</label>');
         expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">50%</span>');
         expect(html).toContain('<input id="graphics-brightness" class="support-field__range" type="range"');

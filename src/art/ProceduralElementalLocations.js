@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } from '../data/elementalPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS, WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { distanceToPath } from '../data/worldPopulation.js';
+import { createLocationGroundMaterials, addLocationGroundWear } from './LocationGroundWear.js';
+import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -9,6 +12,8 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (!['water', 'fire', 'air'].includes(realm)) throw new Error(`Unsupported population realm: ${realm}`);
     const water = realm === 'water', air = realm === 'air', sites = air ? AIR_LOCATIONS : water ? WATER_LOCATIONS : FIRE_LOCATIONS;
     const root = new THREE.Group(); root.name = `${realm} authored locations`;
+    const groundMaterials = createLocationGroundMaterials(realm);
+    const paths = air ? AIR_PATHS : water ? WATER_PATHS : FIRE_PATHS;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x77727d : water ? 0x657d87 : 0x584841, roughness: .91 }), 'stone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x555160 : water ? 0x4e6264 : 0x473c32, roughness: .96 }), 'timber'),
@@ -258,6 +263,8 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             const mesh = new THREE.Mesh(geometry, materials[key]); mesh.name = `${site.id}:${key}`;
             mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh);
         }
+        addLocationGroundWear(group, site, groundMaterials, (x, z) =>
+            paths.every(path => distanceToPath(x, z, path.points) > path.width / 2 + 2), FOLIAGE_HAZARD_CLEARINGS[realm]);
         root.add(group);
     }
     root.userData.walkFootprints = footprints;
