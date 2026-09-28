@@ -8,7 +8,7 @@ import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
 import { getAbilityCooldown } from '../core/AbilityEconomy.js';
 
 const playerClasses = new Set(['Fighter','Rogue','Wizard','Cleric','AvengingSeraph']);
-const alive = entity => entity instanceof Actor && entity.isActive && entity.state !== 'DEAD' && !entity.isRemote && !entity.isMultiplayer && !entity.gameEngine?.isMultiplayer;
+const alive = entity => entity instanceof Actor && entity.isActive && entity.stats?.hp > 0 && entity.state !== 'DEAD' && !entity.isRemote && !entity.isMultiplayer && !entity.gameEngine?.isMultiplayer;
 const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 const body = entity => Number.isFinite(entity.radius) ? Math.max(0,entity.radius) : 0;
 const walkRects = engine => engine?.currentInstanceId && engine.currentInstanceType !== 'overworld' ? engine.currentDungeonLayout?.walkRects : null;

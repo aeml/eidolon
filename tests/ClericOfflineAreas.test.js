@@ -20,6 +20,25 @@ function fixture(){
     return {p,engine,add,entities};
 }
 
+test.each(['Healing Light', 'Divine Intervention'])('offline %s cursor skips zero-health recipients before the death state arrives', skill => {
+    const {p,engine,add}=fixture();
+    const unavailable=add('zero-health',3), living=add('living',4);
+    unavailable.stats.hp=0;
+    p.useAbility(unavailable.position.clone(),engine,skill);
+    expect(living.stats.hp).toBeGreaterThan(100);
+    expect(unavailable.stats.hp).toBe(0);
+});
+
+test('offline Beacon does not revive a zero-health bystander', () => {
+    const {p,engine,add}=fixture();
+    const living=add('living',3), unavailable=add('zero-health',4);
+    unavailable.stats.hp=0;
+    p.skillRunes={'Healing Light':'healinglight_beacon'};
+    p.useAbility(living.position.clone(),engine,'Healing Light');
+    expect(living.stats.hp).toBeGreaterThan(100);
+    expect(unavailable.stats.hp).toBe(0);
+});
+
 test.each([0,1,5])('offline trained Radiant Strike hits the planar padded cone, rank %s',rank=>{
     const {p,engine,add}=fixture();p.talentRanks={CLR_34:rank};
     const radius=3*(1+.03*rank);

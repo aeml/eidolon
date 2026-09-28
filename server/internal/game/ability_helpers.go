@@ -358,6 +358,11 @@ func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64
 	if offensive && !w.CanDamage(player, target) {
 		return false
 	}
+	// Cursor selection and secondary support recipients need the same living,
+	// connected eligibility as an explicitly selected ally. A heal is not a revive.
+	if !offensive && (target.Health <= 0 || target.Disconnected) {
+		return false
+	}
 	if !offensive && target.Type == TypePlayer && w.CombatRelationship(player, target) == RelationshipHostile {
 		return false
 	}

@@ -346,7 +346,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				for _, ally := range nearby {
 					if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, ally, partyRadius) {
 						ally.Mu.Lock()
-						if ally.State == "DEAD" {
+						if ally.State == "DEAD" || ally.Health <= 0 || ally.Disconnected {
 							ally.Mu.Unlock()
 							continue
 						}
@@ -405,7 +405,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					for _, ally := range nearby {
 						if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, tX, tZ, ally, aoeRadius) {
 							ally.Mu.Lock()
-							if ally.State == "DEAD" {
+							if ally.State == "DEAD" || ally.Health <= 0 || ally.Disconnected {
 								ally.Mu.Unlock()
 								continue
 							}
