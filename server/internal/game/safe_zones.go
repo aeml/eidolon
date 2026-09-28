@@ -15,7 +15,7 @@ type SafeZone struct {
 var initialSafeZones = []SafeZone{
 	darkRealmCamp(),
 	{ID: "casino", Name: "Lanternhold Casino", InstanceID: CasinoInstanceID, MinX: -54, MaxX: 54, MinZ: 98, MaxZ: 206},
-	{ID: "lanternhold", Name: "Lanternhold", MinX: -100, MaxX: 100, MinZ: 100, MaxZ: 300},
+	lanternholdSafeZone(),
 }
 
 // Separate locking lets callers query zones while holding World/Entity locks.

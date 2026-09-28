@@ -1,0 +1,15 @@
+{
+  "fenceStep": 4,
+  "regions": [
+    {"id": "earth", "name": "Earth Realm", "minX": -1000, "maxX": 1000, "minZ": -600, "maxZ": 1000,
+      "walls": [{"side": "north", "gap": [-20, 20]}, {"side": "south"}, {"side": "west", "gap": [180, 220]}, {"side": "east", "gap": [180, 220]}]},
+    {"id": "town", "name": "Lanternhold", "minX": -100, "maxX": 100, "minZ": 100, "maxZ": 300,
+      "walls": [{"side": "north", "gap": [-10, 10]}, {"side": "south", "gap": [-10, 10]}, {"side": "west", "gap": [190, 210]}, {"side": "east", "gap": [190, 210]}]},
+    {"id": "water", "name": "Water Realm", "minX": -1000, "maxX": 1000, "minZ": -2200, "maxZ": -600,
+      "walls": [{"side": "north"}, {"side": "west"}, {"side": "east"}]},
+    {"id": "fire", "name": "Fire Realm", "minX": -3000, "maxX": -1000, "minZ": -600, "maxZ": 1000,
+      "walls": [{"side": "north"}, {"side": "south"}, {"side": "west"}]},
+    {"id": "air", "name": "Air Realm", "minX": 1000, "maxX": 3000, "minZ": -600, "maxZ": 1000,
+      "walls": [{"side": "north"}, {"side": "south"}, {"side": "east"}]}
+  ]
+}

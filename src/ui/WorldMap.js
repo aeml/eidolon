@@ -7,6 +7,8 @@
 // ============================================================================
 
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import { WORLD_REGIONS, WORLD_GEOGRAPHY, getRegionWallSegments } from '../data/worldGeography.js';
+import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { drawDarkRealmWorldMap } from './DarkRealmMap.js';
 import { drawCasinoWorldMap } from './CasinoMap.js';
 import {
@@ -24,26 +26,32 @@ import {
 /** Realm background fills drawn first (large tinted rectangles). */
 const REALM_BACKGROUNDS = [
     // Water/Snow realm
-    { x: -1000, z: -2200, w: 2000, d: 1600, fill: 'rgba(200, 240, 255, 0.2)' },
+    { id: 'water', fill: 'rgba(200, 240, 255, 0.2)' },
     // Fire realm
-    { x: -3000, z: -600, w: 2000, d: 1600, fill: 'rgba(255, 100, 0, 0.15)' },
+    { id: 'fire', fill: 'rgba(255, 100, 0, 0.15)' },
     // Air realm
-    { x: 1000, z: -600, w: 2000, d: 1600, fill: 'rgba(150, 200, 255, 0.15)' },
+    { id: 'air', fill: 'rgba(150, 200, 255, 0.15)' },
     // Town
-    { x: -100, z: 100, w: 200, d: 200, fill: 'rgba(100, 100, 255, 0.3)', stroke: '#44f', lineWidth: 2 },
-];
+    { id: 'town', fill: 'rgba(100, 100, 255, 0.3)' },
+].map(({ id, ...style }) => {
+    const r = WORLD_REGIONS[id];
+    return { x: r.minX, z: r.minZ, w: r.maxX - r.minX, d: r.maxZ - r.minZ, ...style };
+});
 
 /**
  * Realm labels (large text drawn at every zoom level).
  * `minScale` controls the minimum zoom at which the label appears (0 = always).
  */
 const REALM_LABELS = [
-    { wx: 0, wz: -1400, text: 'The Abyssal Well (Water Realm)', color: '#fff', fontSize: 48, minScale: 0 },
-    { wx: 0, wz: 200, text: 'The Iron Weald (Earth Realm)', color: '#fff', fontSize: 48, minScale: 0, offsetY: -100 },
-    { wx: -2000, wz: 200, text: 'The Scorched Wastes (Fire Realm)', color: '#ff6600', fontSize: 48, minScale: 0 },
-    { wx: 2000, wz: 200, text: 'The Skyward Peaks (Air Realm)', color: '#88ccff', fontSize: 48, minScale: 0 },
-    { wx: 0, wz: 200, text: 'TOWN', color: '#fff', fontSize: 36, minScale: 0.8 },
-];
+    { id: 'water', color: '#fff', fontSize: 48, minScale: 0 },
+    { id: 'earth', color: '#fff', fontSize: 48, minScale: 0, offsetY: -100 },
+    { id: 'fire', color: '#ff6600', fontSize: 48, minScale: 0 },
+    { id: 'air', color: '#88ccff', fontSize: 48, minScale: 0 },
+    { id: 'town', color: '#fff', fontSize: 36, minScale: 0.8 },
+].map(({ id, ...style }) => {
+    const r = WORLD_REGIONS[id];
+    return { wx: (r.minX + r.maxX) / 2, wz: (r.minZ + r.maxZ) / 2, text: r.name, ...style };
+});
 
 /**
  * Enemy/level zones — rectangular regions with labels.
@@ -81,11 +89,14 @@ const ZONE_CONFIGS = [
 
 /** Dungeon markers — gold star + circle + label. */
 const DUNGEON_MARKERS = [
-    { wx: 800, wz: 200, name: 'Verdant Bastion', dotColor: '#00aa00', tier: 'zone' },
-    { wx: 0, wz: -1400, name: 'Abyssal Well', dotColor: '#1aa3c8', tier: 'zone' },
-    { wx: -2400, wz: 200, name: 'Molten Core', dotColor: '#ff4400', tier: 'zone', labelOffsetY: -40 },
-    { wx: 2400, wz: 200, name: 'Tempest Spire', dotColor: '#4488ff', tier: 'zone', labelOffsetY: -40 },
-];
+    { id: 'verdant_bastion_catacombs', name: 'Verdant Bastion', dotColor: '#00aa00', tier: 'zone' },
+    { id: 'abyssal_well', name: 'Abyssal Well', dotColor: '#1aa3c8', tier: 'zone' },
+    { id: 'molten_core', name: 'Molten Core', dotColor: '#ff4400', tier: 'zone', labelOffsetY: -40 },
+    { id: 'tempest_spire', name: 'Tempest Spire', dotColor: '#4488ff', tier: 'zone', labelOffsetY: -40 },
+].map(marker => {
+    const [wx, , wz] = DUNGEON_ENTRANCE_DEFINITIONS[marker.id].position;
+    return { ...marker, wx, wz };
+});
 
 const TOWN_POIS = TOWN_SERVICE_POINTS.map((point) => ({
     wx: point.x,
@@ -109,51 +120,10 @@ const DUNGEON_MARKER_LOOKUP = Object.freeze({
  * Each entry is an array of line segments: [[x1,z1, x2,z2], ...].
  * Gaps are achieved by splitting a wall into separate line segments.
  */
-const FENCE_SEGMENTS = [
-    // Earth realm fence — rectangular with a gap on the north wall
-    {
-        color: '#8B4513', lineWidth: 3,
-        lines: [
-            // North wall left of gap
-            [-1000, -600, -20, -600],
-            // North wall right of gap
-            [20, -600, 1000, -600],
-            // East wall
-            [1000, -600, 1000, 1000],
-            // South wall
-            [1000, 1000, -1000, 1000],
-            // West wall
-            [-1000, 1000, -1000, -600],
-        ],
-    },
-    // Water realm fence (3 walls — open south connects to Earth)
-    {
-        color: '#8B4513', lineWidth: 3,
-        lines: [
-            [-1000, -600, -1000, -2200],
-            [-1000, -2200, 1000, -2200],
-            [1000, -2200, 1000, -600],
-        ],
-    },
-    // Fire realm fence (3 walls — open east connects to Earth)
-    {
-        color: '#8B4513', lineWidth: 3,
-        lines: [
-            [-3000, -600, -1000, -600],
-            [-3000, -600, -3000, 1000],
-            [-3000, 1000, -1000, 1000],
-        ],
-    },
-    // Air realm fence (3 walls — open west connects to Earth)
-    {
-        color: '#8B4513', lineWidth: 3,
-        lines: [
-            [1000, -600, 3000, -600],
-            [3000, -600, 3000, 1000],
-            [3000, 1000, 1000, 1000],
-        ],
-    },
-];
+const FENCE_SEGMENTS = WORLD_GEOGRAPHY.regions.map(region => ({
+    color: region.id === "town" ? "#c4b18a" : "#8B4513", lineWidth: 3,
+    lines: getRegionWallSegments(region)
+}));
 
 /** Tier → minimum scale thresholds for label / zone visibility. */
 const TIER_MIN_SCALE = {

@@ -1,4 +1,5 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeography.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
 import { getCasinoMapLandmarks, isCasinoMapGuestVisible } from './CasinoMap.js';
@@ -61,17 +62,10 @@ const TOWN_SERVICE_MARKERS = TOWN_SERVICE_POINTS.map((point) => ({
 
 /**
  * Determine which realm a world position falls in.
- * Mirrors RenderSystem.getRealmForPosition() logic.
+ * Use real geography, not the renderer's ambient-light blending radius.
  */
 function getRealmForPosition(x, z) {
-    // Town: 120-radius circle around (0, 200)
-    const dx = x - 0;
-    const dz = z - 200;
-    if (dx * dx + dz * dz < 120 * 120) return 'town';
-    if (z < -600) return 'water';
-    if (x < -1000) return 'fire';
-    if (x > 1000) return 'air';
-    return 'earth';
+    return getOverworldRegion(x, z) || 'earth';
 }
 
 /** Classify an entity for minimap display. Returns { color, size, ring } or null. */
@@ -714,7 +708,7 @@ export class Minimap {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.lineWidth = 1;
 
-        // Key boundaries: z=-600 (water/earth), x=-1000 (fire/earth), x=1000 (earth/air)
+        // Physical walls, including all town and inter-realm gate openings.
         const boundaries = Minimap._REALM_BOUNDARIES;
 
         for (const [x1, z1, x2, z2] of boundaries) {
@@ -756,8 +750,4 @@ export class Minimap {
 }
 
 /** Pre-allocated realm boundary line segments [x1, z1, x2, z2]. */
-Minimap._REALM_BOUNDARIES = Object.freeze([
-    [-3000, -600, 3000, -600],   // Water ↔ Earth/Fire/Air
-    [-1000, -2200, -1000, 1000], // Fire ↔ Earth/Water
-    [1000, -2200, 1000, 1000],   // Earth/Water ↔ Air
-]);
+Minimap._REALM_BOUNDARIES = WORLD_BOUNDARY_SEGMENTS;

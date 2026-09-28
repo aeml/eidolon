@@ -7,6 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
+import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import {
     DUNGEON_THEME_KEYS,
@@ -212,10 +213,13 @@ export class RenderSystem {
 
         report(50, 'Carving the five realms...');
         const fenceInset = 0.75; // Match fence thickness so water shows beyond bounds
-        const realmWidth = 2000 - fenceInset * 2;
-        const realmDepth = 1600 - fenceInset * 2;
         this.terrainTextures ||= {};
-        const createRealmGround = (property, key, x, y, z, width = realmWidth, depth = realmDepth) => {
+        const createRealmGround = (property, key, y = 0) => {
+            const region = WORLD_REGIONS[key];
+            const width = region.maxX - region.minX - fenceInset * 2;
+            const depth = region.maxZ - region.minZ - fenceInset * 2;
+            const x = (region.minX + region.maxX) / 2;
+            const z = (region.minZ + region.maxZ) / 2;
             if (!this.terrainTextures[key]) {
                 this.terrainTextures[key] = createProceduralTerrainTexture(key, { quality });
                 this.setupTexture(this.terrainTextures[key], ...PROCEDURAL_TERRAIN_DEFINITIONS[key].surface.repeat);
@@ -239,11 +243,11 @@ export class RenderSystem {
             if (!this[property].parent) this.staticEnvironmentGroup.add(this[property]);
         };
 
-        createRealmGround('groundEarth', 'earth', 0, 0, 200);
-        createRealmGround('groundSnow', 'water', 0, 0, -1400);
-        createRealmGround('groundFire', 'fire', -2000, 0, 200);
-        createRealmGround('groundAir', 'air', 2000, 0, 200);
-        createRealmGround('groundTown', 'town', 0, 0.025, 200, 198.5, 198.5);
+        createRealmGround('groundEarth', 'earth');
+        createRealmGround('groundSnow', 'water');
+        createRealmGround('groundFire', 'fire');
+        createRealmGround('groundAir', 'air');
+        createRealmGround('groundTown', 'town', 0.025);
 
         report(100, 'Five codeborn realms ready');
         if (!this._pMesh) this.initRealmParticles();
