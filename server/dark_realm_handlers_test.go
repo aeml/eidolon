@@ -98,3 +98,25 @@ func TestDarkRealmReentryPublishesFreshMovementContext(t *testing.T) {
 		t.Fatal("fresh movement toward camp Ilyra was rejected")
 	}
 }
+
+func TestDarkRealmPhysicalPortalDispatchUsesCallerAndFreshContext(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	defer world.StopBackground()
+	client := addChatTestClient("physical-portal-traveler", "")
+	p := world.Entities[client.playerID]
+	portal := world.Entities["resonance-portal-1"]
+	if portal == nil {
+		t.Fatal("physical portal missing from production world")
+	}
+	p.Level, p.Health, p.State, p.X, p.Z = 100, 100, "IDLE", portal.X, portal.Z+2
+	for _, id := range []string{game.ChronicleEarthRestoredID, game.ChronicleWaterRestoredID, game.ChronicleFireRestoredID, game.ChronicleAirRestoredID} {
+		p.Quests = append(p.Quests, game.Quest{ID: id, Completed: true})
+	}
+	drainSentMessages(client.send)
+	handleEnterDarkRealm(client, Message{Type: MsgEnterDarkRealm, Payload: json.RawMessage(`{"playerId":"not-the-caller","x":1,"z":2}`)})
+	if p.InstanceID != game.DarkRealmInstanceID || p.X != 40000 || p.Z != 40800 {
+		t.Fatal("physical portal did not land authenticated traveler at camp")
+	}
+	assertRecoveryContextMessage(t, client, "")
+}

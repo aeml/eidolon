@@ -7,6 +7,7 @@ import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { ResonancePortal } from '../entities/ResonancePortal.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
 import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
@@ -1470,6 +1471,7 @@ export class GameEngine {
         const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         return entity instanceof DwarfSalesman
             || entity instanceof ChronicleSite
+            || entity instanceof ResonancePortal
             || entity instanceof ChronicleWitness
             || entity instanceof CosmeticVendor
             || entity instanceof QuestNPC
@@ -1480,6 +1482,7 @@ export class GameEngine {
             || entity instanceof TradingHouse
             || type === 'DwarfSalesman'
             || type === 'ChronicleSite'
+            || type === 'ResonancePortal'
             || type === 'ChronicleWitness'
             || type === 'CosmeticVendor'
             || type === 'QuestNPC'
@@ -1653,6 +1656,8 @@ export class GameEngine {
             promptLabel = inRange ? 'Click to browse EP cosmetic looks. No stats, no Gold resale.' : 'Move closer to browse Veyra’s cosmetic wardrobe.';
         } else if (interactableType === 'ChronicleWitness') {
             promptLabel = inRange ? `Click to speak with ${entity.name}. Optional Chronicle conversations.` : 'Move closer to speak with this witness.';
+        } else if (interactableType === 'ResonancePortal') {
+            promptLabel = inRange ? 'Click or press E to hear the four crystals and view your passage requirements.' : 'Approach the Fourfold Resonance Portal.';
         } else if (interactableType === 'ChronicleSite') {
             promptLabel = inRange
                 ? 'Click or press E to inspect this discovery. Recovered evidence is saved in your journal.'
@@ -2171,7 +2176,9 @@ export class GameEngine {
 
         // If type is NPC, handle it
         if (type === 'NPC') {
-            if (subType === 'ChronicleSite') {
+            if (subType === 'ResonancePortal') {
+                p = new ResonancePortal(id);
+            } else if (subType === 'ChronicleSite') {
                 p = new ChronicleSite(id);
             } else if (subType === 'ChronicleWitness') {
                 p = new ChronicleWitness(id);

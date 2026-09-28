@@ -22,6 +22,16 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.12.0 documents the physical personal-gated portal and retains previous history', () => {
+        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/resonance-portal.spec.js');
+        const start = indexHtml.indexOf('data-version="1.12.0"');
+        const previous = indexHtml.indexOf('data-version="1.11.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['the fourfold passage', 'southeast plaza', 'Each traveler still needs level 100',
+            'shared location registry', 'not the completed map overhaul', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.11.0 records actual art/map changes without claiming the populated world or beta complete', () => {
         const start = indexHtml.indexOf('data-version="1.11.0"');
         const previous = indexHtml.indexOf('data-version="1.10.2"');
@@ -794,15 +804,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.11.0');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.12.0');
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.11.0');
-        expect(packageLock.packages[''].version).toBe('1.11.0');
-        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.11.0`');
+        expect(packageLock.version).toBe('1.12.0');
+        expect(packageLock.packages[''].version).toBe('1.12.0');
+        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.12.0`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.11.0</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.12.0</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1213,7 +1223,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.11.0';
+        const expectedVersion = 'Alpha 1.12.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

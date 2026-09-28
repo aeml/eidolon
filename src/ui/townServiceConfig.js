@@ -1,4 +1,11 @@
+import { WORLD_LOCATIONS, RESONANCE_PORTAL } from '../data/worldLocations.js';
+
 export const TOWN_SERVICE_POINTS = [
+    {
+        id: RESONANCE_PORTAL.id, label: 'Fourfold Portal', shortLabel: 'Fourfold Portal',
+        x: RESONANCE_PORTAL.x, z: RESONANCE_PORTAL.z, color: '#cfbfff', strokeColor: '#cfbfff',
+        ring: true, minScale: 0.75, labelOffsetY: 12
+    },
     {
         id: 'quest-giver',
         label: 'Quest Giver',
@@ -13,7 +20,7 @@ export const TOWN_SERVICE_POINTS = [
     },
     {
         id: 'story-wizard', label: 'Archmage Ilyra · Story', shortLabel: 'Story Wizard',
-        x: 20, z: 215, color: '#ffd56a', strokeColor: '#ffd56a', ring: true,
+        color: '#ffd56a', strokeColor: '#ffd56a', ring: true,
         minScale: 0.75, labelOffsetY: 20
     },
     {
@@ -68,12 +75,13 @@ export const TOWN_SERVICE_POINTS = [
         id: 'dungeon-guide',
         label: 'Dungeon Guide',
         shortLabel: 'Dungeon Guide',
-        x: 0,
-        z: 240,
         color: '#c88cff',
         strokeColor: '#c88cff',
         ring: true,
         minScale: 0.75,
         labelOffsetY: 28
     }
-];
+].map(point => {
+    const canonical = WORLD_LOCATIONS.find(location => location.id === point.id);
+    return canonical ? { ...point, x: canonical.x, z: canonical.z } : point;
+});

@@ -4,6 +4,7 @@ import {
     isEndgameDifficultyUnlocked
 } from '../data/dungeonProgression.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
 import { appendDungeonPreparation, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from './DungeonPreparation.js';
 
@@ -192,7 +193,7 @@ class UIManagerDungeonMethods {
             const heading = document.createElement('h3');
             heading.textContent = 'Beyond the four crystals';
             const description = document.createElement('p');
-            description.textContent = 'Cross from Lanternhold to the Resonant Foothold. Explore the shared Dark Realm and speak with Ilyra’s projection at camp. Each traveler needs level 100 and all four crystal repairs; this does not reset your party’s dungeon.';
+            description.textContent = PORTAL_DIRECTIONS + ' I can also send you from here to the Resonant Foothold. Speak with Ilyra’s projection at camp. Each traveler needs level 100 and all four crystal repairs; this does not reset your party’s dungeon. Use Return to Lanternhold in the game menu (B) to come back.';
             const cross = document.createElement('button');
             cross.id = 'btn-enter-dark-realm';
             cross.type = 'button';

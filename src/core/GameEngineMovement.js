@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { PORTAL_INTERACTION_RANGE } from './ResonancePortalState.js';
 import { CONSTANTS } from './Constants.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { Actor } from '../entities/Actor.js';
@@ -1263,6 +1264,7 @@ class GameEngineMovementMethods {
     }
 
     getInteractionRangeForEntity(entity) {
+        if (entity?.type === 'ResonancePortal') return PORTAL_INTERACTION_RANGE;
         let range = 5.0;
 
         // The modern hearth and the hero's 1.25m collision capsule prevent

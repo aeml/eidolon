@@ -1,0 +1,5 @@
+[
+  {"id":"story-wizard", "entityId":"story-wizard-1", "name":"Archmage Ilyra", "kind":"story", "instanceId":"", "x":20, "z":215},
+  {"id":"dungeon-guide", "entityId":"dungeon-npc-1", "name":"Dungeon Guide", "kind":"service", "instanceId":"", "x":0, "z":240},
+  {"id":"resonance-portal", "entityId":"resonance-portal-1", "name":"Fourfold Resonance Portal", "kind":"portal", "instanceId":"", "x":28, "z":235}
+]

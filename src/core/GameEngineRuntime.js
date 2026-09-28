@@ -10,6 +10,7 @@ import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { ResonancePortal } from '../entities/ResonancePortal.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
 import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestChronicleInspection } from './ChronicleInspection.js';
@@ -639,7 +640,7 @@ class GameEngineRuntimeMethods {
                             this.uiManager.toggleShop();
                             this.pendingInteraction = null;
 
-                        } else if (this.pendingInteraction instanceof ChronicleWitness || this.pendingInteraction instanceof CosmeticVendor) {
+                        } else if (this.pendingInteraction instanceof ChronicleWitness || this.pendingInteraction instanceof CosmeticVendor || this.pendingInteraction instanceof ResonancePortal) {
                             this.player.targetPosition = null;
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');

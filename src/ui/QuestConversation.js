@@ -2,6 +2,7 @@ import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/Chr
 import { chronicleHunts } from '../data/chronicleHunts.generated.js';
 import { darkRealmChaptersById } from '../data/chronicleCatalog.js';
 import { CHRONICLE_AFTERMATH, hasCompletedDarkKing } from '../data/chronicleAftermath.js';
+import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 
 const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
 const huntHandoffs = new Map(chronicleHunts.map(hunt => [hunt.previousQuestId, hunt.handoff]));
@@ -19,7 +20,7 @@ export const ILYRA_REPLIES = [
     'Orun’s pulse has reached the roots beneath this tower. You and Maelin have truly restored the Rootheart—not merely driven away its captors. Its steady note will shelter the next repair. Take the Moon-Tide Pearls to the Confluence and give Neris her returning current.',
     'The wells have begun to sing again. Neris remembers the names of everyone who stood at the Vigil. Earth and Water can now hold the circuit while Maelin reforges the Ember Crown. Carry their patience into the Crucible; purposeful flame must not become vengeance.',
     'For the first time in years, this candle gives warmth without a shadow-flame. Pyralis is free to change instead of consume. Only the Skyglass remains. Protect Maelin in the Eyrie, and the wind will carry all four voices together.',
-    'Four notes, each freely given. I can hear them without pain at last. Their resonance opens our passage into the Dark Realm. At level 100, speak with the guide and join my projection at the Resonant Foothold. We must learn what Malachar built from the stolen histories before we can break his throne’s defenses.',
+    `Four notes, each freely given. I can hear them without pain at last. Their resonance opens our passage into the Dark Realm. ${PORTAL_DIRECTIONS} At level 100, cross there and join my projection at the Resonant Foothold. The Guide can also send you. We must learn what Malachar built from the stolen histories before we can break his throne’s defenses.`,
     'The court’s wards are broken. Before you go, know this: Malachar was not born a shadow. He chose command over covenant, one frightened decision at a time. The people beyond the shore have shown us what his protection costs. He will offer that same bargain to you. Refuse it. Orun, Neris, Pyralis, and Aeral will each stand beside you when his court breaks into battle.',
     'The bells are ringing above the ground. Malachar is dead, but the answer to him is not another throne. It is the defenders who held Maelin’s circle, the four spirits who chose to help, and you, who returned when we asked. Rest now. Eidolon is still imperfect—and it is free.'
 ];
@@ -44,7 +45,7 @@ function ilyraGreeting(quests) {
         return '“The portal is open, and the four Eidolons stand with us. Malachar waits beyond it. The records you recover remind us why his promised peace must never become our answer.”';
     }
     if (originalChapterIds.slice(9, 13).every(id => completed.has(id))) {
-        return '“The four crystals sing again. You and Maelin have given them back their voices. Now their resonance must carry us to the source of the wound.”';
+        return `“The four crystals sing again. You and Maelin have given them back their voices. ${PORTAL_DIRECTIONS} At level 100 its resonance can carry you to my projection at the Foothold.”`;
     }
     return '“The crystals cannot heal themselves. Let me guide you, and together we will save Eidolon.”';
 }

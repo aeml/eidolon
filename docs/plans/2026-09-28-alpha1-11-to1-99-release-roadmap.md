@@ -2,7 +2,7 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.10.2; see the [release record](2026-09-23-release1-10-playtest.md).
+baseline is Alpha 1.11.0; see the [release record](2026-09-28-release1-11.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
@@ -545,6 +545,13 @@ foliage comparison, focused checks and release scope. Version/notes are 1.11.0;
 casino performance candidates are explicitly removed from this runtime and
 retained for 1.13. State: **locally verified, publication/live verification pending**.
 Do not start the 1.12 release until the exact 1.11 pipeline and live checks succeed.
+
+Superseding receipt: **1.11 accepted live**, SHA
+4f57104edb63b51b0cc7c54d9a43c1cd1efafc42, CI36391433834 successful including
+Live Release and Character QA. Independent IPv4 frontend/backend identity,
+database readiness, login/history and six published asset checks passed.
+**1.12 implementing**; later rows remain planned. Full receipt and unchanged
+global limitations are in the 1.11 release record.
 
 ## References
 

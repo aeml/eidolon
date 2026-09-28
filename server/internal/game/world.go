@@ -314,6 +314,7 @@ func (w *World) initWorld() {
 	w.spawnCosmeticVendor()
 	w.spawnRespecNPC()
 	w.spawnDungeonNPC()
+	w.spawnResonancePortal()
 	w.spawnStash()
 	w.spawnForge()
 	w.spawnTradingHouse()
@@ -1122,21 +1123,23 @@ func (w *World) spawnQuestNPC() {
 		Scale:    1.0,
 	}
 	w.AddEntity(npc)
+	ilyra := worldLocation("story-wizard")
 	w.AddEntity(&Entity{
-		ID: "story-wizard-1", Type: TypeNPC, SubType: "StoryWizard",
-		Name: "Archmage Ilyra", X: 20, Y: 0.5, Z: 215,
+		ID: ilyra.EntityID, Type: TypeNPC, SubType: "StoryWizard",
+		Name: ilyra.Name, X: ilyra.X, Y: 0.5, Z: ilyra.Z,
 		Rotation: -math.Pi / 2, State: "IDLE", Scale: 1,
 	})
 }
 
 func (w *World) spawnDungeonNPC() {
+	location := worldLocation("dungeon-guide")
 	npc := &Entity{
-		ID:       "dungeon-npc-1",
+		ID:       location.EntityID,
 		Type:     TypeNPC,
 		SubType:  "DungeonNPC",
-		X:        0,
+		X:        location.X,
 		Y:        0.5,
-		Z:        240,
+		Z:        location.Z,
 		Rotation: math.Pi,
 		State:    "IDLE",
 		Scale:    1.0,

@@ -1164,6 +1164,8 @@ export class UIManager {
     updateBuybackList(items) { this.inventory.updateBuybackList(items); }
 
     handleEscape() {
+        const resonanceDialog = document.getElementById('resonance-portal-dialog');
+        if (resonanceDialog?.__closeMenu) { resonanceDialog.__closeMenu(); return; }
         // The topmost generated dialog owns Escape; closing it must not also
         // open the pause menu underneath or dismiss other gameplay windows.
         const dungeonDialog = document.getElementById('dungeon-menu-backdrop');

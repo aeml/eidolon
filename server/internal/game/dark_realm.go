@@ -124,7 +124,7 @@ func RestoreDarkRealmPosition(player *Entity) {
 	player.TargetX, player.TargetZ = player.X, player.Z
 }
 
-// Called by the forthcoming guide/portal interaction. Keep the transition
+// Called by the guide or physical portal. Keep the transition
 // server-owned: a party leader's unlock must not carry an ineligible member in.
 func (w *World) EnterDarkRealm(playerID string) error {
 	w.Mu.Lock()
@@ -146,10 +146,19 @@ func (w *World) EnterDarkRealm(playerID string) error {
 		(p.State != "IDLE" && p.State != "MOVING") || time.Now().Before(p.MoveLockUntil) || w.TradeByPlayer[playerID] != "" {
 		return errors.New("finish your current action before entering the Dark Realm")
 	}
-	guide := w.Entities["dungeon-npc-1"]
-	if guide == nil || guide.Type != TypeNPC || guide.InstanceID != "" ||
-		!finiteCoordinate(p.X) || !finiteCoordinate(p.Z) || math.Hypot(p.X-guide.X, p.Z-guide.Z) > 10 {
-		return errors.New("speak to the Dungeon Guide in Lanternhold first")
+	nearEntrance := false
+	if finiteCoordinate(p.X) && finiteCoordinate(p.Z) {
+		for _, locationID := range []string{"dungeon-guide", "resonance-portal"} {
+			location := worldLocation(locationID)
+			entrance := w.Entities[location.EntityID]
+			if entrance != nil && entrance.Type == TypeNPC && entrance.InstanceID == "" &&
+				finiteCoordinate(entrance.X) && finiteCoordinate(entrance.Z) && math.Hypot(p.X-entrance.X, p.Z-entrance.Z) <= 10 {
+				nearEntrance = true
+			}
+		}
+	}
+	if !nearEntrance {
+		return errors.New("approach the Fourfold Resonance Portal or Dungeon Guide in Lanternhold first")
 	}
 	landing := DarkRealmDistricts()[0].Room
 	w.Grid.Remove(p)
