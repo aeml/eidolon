@@ -96,8 +96,9 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
         await page.evaluate(() => window.__phoneQuest.ui.quest.toggleJournal());
         const journal = page.locator('#quest-journal');
         const journalList = page.locator('#journal-list');
-        await journalList.locator('summary').tap();
-        await expect(journalList.locator('details')).toHaveAttribute('open', '');
+        const recoveredLore = journalList.locator('.quest-chronicle-archive');
+        await recoveredLore.locator('summary').tap();
+        await expect(recoveredLore).toHaveAttribute('open', '');
         const lastTrack = journalList.locator('.quest-tracking-control').last();
         await lastTrack.scrollIntoViewIfNeeded();
         expect((await lastTrack.boundingBox()).height).toBeGreaterThanOrEqual(44);
@@ -108,7 +109,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
             const { ui, player } = window.__phoneQuest;
             player.quests.at(-1).count = 2; ui.quest.updateJournal(player.quests);
         });
-        await expect(journalList.locator('details')).toHaveAttribute('open', '');
+        await expect(recoveredLore).toHaveAttribute('open', '');
         expect(await journalList.evaluate(el => el.scrollTop)).toBeCloseTo(scroll, 0);
         expect(await journalList.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
         const chat = await page.locator('#chat-box').boundingBox();

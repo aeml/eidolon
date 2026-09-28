@@ -153,7 +153,7 @@ test.each([
     ['finished campaign', ['chronicle_15_dark_king'], 'Eidolon is free'],
     ['four repaired crystals', ['chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
         'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid'], 'four crystals sing again'],
-    ['opened portal', ['chronicle_14_resonance_gate'], 'portal is open']
+    ['earned court access', ['chronicle_14_resonance_gate'], 'court is open to you']
 ])('optional discoveries do not rewind Ilyra’s greeting after %s', (_label, completed, expected) => {
     const optional = story({ id: chronicleInvestigations[0].id, legacyOptional: true,
         type: 'INVESTIGATE', title: chronicleInvestigations[0].title });
