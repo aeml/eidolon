@@ -1,9 +1,73 @@
 package game
 
 import (
+	"math"
+	"math/rand"
 	"strings"
 	"testing"
 )
+
+func linearWorldPopulationSpawnAllowed(x, z float64) bool {
+	for _, f := range worldPopulationFootprints {
+		if math.Abs(x-f.X) <= f.Width/2+2 && math.Abs(z-f.Z) <= f.Depth/2+2 {
+			return false
+		}
+	}
+	return true
+}
+
+func TestWorldPopulationIndexMatchesAllPaddedEdgesAndRealms(t *testing.T) {
+	check := func(x, z float64) {
+		t.Helper()
+		if worldPopulationSpawnAllowed(x, z) != linearWorldPopulationSpawnAllowed(x, z) {
+			t.Fatalf("index changes scenery exclusion at (%v,%v)", x, z)
+		}
+	}
+	for _, f := range worldPopulationFootprints {
+		for _, side := range []float64{-1, 0, 1} {
+			for _, epsilon := range []float64{-.00001, 0, .00001} {
+				for _, corner := range []float64{-1, 0, 1} {
+					check(f.X+side*(f.Width/2+2+epsilon), f.Z+corner*(f.Depth/2+2+epsilon))
+				}
+			}
+		}
+	}
+	random := rand.New(rand.NewSource(118))
+	for i := 0; i < 20000; i++ {
+		check(random.Float64()*7000-3500, random.Float64()*5000-3000)
+	}
+	for x := -28; x < 28; x++ {
+		for z := -24; z < 16; z++ {
+			for _, epsilon := range []float64{-.00001, 0, .00001} {
+				check(float64(x)*worldPopulationCellSize+epsilon, float64(z)*worldPopulationCellSize+epsilon)
+			}
+		}
+	}
+	for _, value := range []float64{math.NaN(), math.Inf(1), math.Inf(-1)} {
+		check(value, 0)
+		check(0, value)
+	}
+}
+
+func BenchmarkWorldPopulationSpawnLookup(b *testing.B) {
+	points := make([][2]float64, 1024)
+	random := rand.New(rand.NewSource(118))
+	for i := range points {
+		points[i] = [2]float64{random.Float64()*6000 - 3000, random.Float64()*3500 - 2000}
+	}
+	for _, method := range []struct {
+		name    string
+		allowed func(float64, float64) bool
+	}{{"linear", linearWorldPopulationSpawnAllowed}, {"indexed", worldPopulationSpawnAllowed}} {
+		b.Run(method.name, func(b *testing.B) {
+			b.ReportAllocs()
+			for i := 0; i < b.N; i++ {
+				point := points[i%len(points)]
+				method.allowed(point[0], point[1])
+			}
+		})
+	}
+}
 
 func TestWorldPopulationSpawnSolids(t *testing.T) {
 	for _, f := range worldPopulationFootprints {

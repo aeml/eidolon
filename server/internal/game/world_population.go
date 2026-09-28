@@ -62,8 +62,36 @@ var worldPopulationFootprints = func() []worldPopulationFootprint {
 	return data.Footprints
 }()
 
-func worldPopulationSpawnAllowed(x, z float64) bool {
+const worldPopulationCellSize = 128.0
+
+// Built once from immutable authored solids. A spawn roll used to scan every
+// realm's scenery, even when nowhere near it. World construction repeats this
+// thousands of times; race instrumentation made that full scan particularly
+// expensive across the whole game test package. Index padded bounds, retaining
+// the exact narrow-phase predicate and random roll sequence.
+var worldPopulationCells = func() map[[2]int][]worldPopulationFootprint {
+	cells := make(map[[2]int][]worldPopulationFootprint)
 	for _, f := range worldPopulationFootprints {
+		minX, maxX := int(math.Floor((f.X-f.Width/2-2)/worldPopulationCellSize)), int(math.Floor((f.X+f.Width/2+2)/worldPopulationCellSize))
+		minZ, maxZ := int(math.Floor((f.Z-f.Depth/2-2)/worldPopulationCellSize)), int(math.Floor((f.Z+f.Depth/2+2)/worldPopulationCellSize))
+		for x := minX; x <= maxX; x++ {
+			for z := minZ; z <= maxZ; z++ {
+				key := [2]int{x, z}
+				cells[key] = append(cells[key], f)
+			}
+		}
+	}
+	return cells
+}()
+
+func worldPopulationSpawnAllowed(x, z float64) bool {
+	// Preserve the previous predicate for nonfinite diagnostic input, without
+	// converting NaN/infinity into an implementation-dependent integer key.
+	if !finiteCoordinate(x) || !finiteCoordinate(z) {
+		return true
+	}
+	key := [2]int{int(math.Floor(x / worldPopulationCellSize)), int(math.Floor(z / worldPopulationCellSize))}
+	for _, f := range worldPopulationCells[key] {
 		if math.Abs(x-f.X) <= f.Width/2+2 && math.Abs(z-f.Z) <= f.Depth/2+2 {
 			return false
 		}
