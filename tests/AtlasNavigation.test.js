@@ -9,7 +9,11 @@ const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 
 
 test('public realm places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
     const ge = engine(), sites = getAtlasWorldLocations(ge);
-    expect(sites).toHaveLength(20);
+    expect(sites).toHaveLength(26);
+    expect(sites.map(site => site.id)).toEqual(expect.arrayContaining([
+        'spire-muster', 'horizon-orrery', 'couriers-exchange', 'weatherkeepers-bivouac',
+        'unsent-dispatch', 'unmeasured-sky'
+    ]));
     expect(sites.every(site => site.category === 'places' && site.symbol !== '✓')).toBe(true);
     expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 750, z: 200 });
     expect(sites.some(site => site.id === 'keepers-empty-house' || site.id === 'returning-scar')).toBe(false);

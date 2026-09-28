@@ -395,7 +395,13 @@ describe('dungeon progression menu', () => {
             const card = document.querySelector(`[data-raid-type="${realm}_crystal_raid"]`);
             expect(card.textContent).toContain(`turn in “${title(id)}” to Archmage Ilyra`);
             expect(card.dataset.access).toBe('sealed');
-            expect([...card.querySelectorAll('button')].every(button => button.disabled)).toBe(true);
+            const buttons = [...card.querySelectorAll('button')];
+            const recruitment = buttons.find(button => button.textContent === 'Find companions');
+            expect(recruitment).toBeDefined();
+            expect(recruitment.disabled).toBe(false);
+            const entryButtons = buttons.filter(button => button !== recruitment);
+            expect(entryButtons).toHaveLength(2);
+            expect(entryButtons.every(button => button.disabled)).toBe(true);
         }
         const menu = document.getElementById('dungeon-menu');
         for (const id of ['ChronicleAirRestoredID', 'ChronicleGateOpenedID']) {
