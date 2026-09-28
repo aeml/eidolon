@@ -2,6 +2,7 @@ import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
 import { findNextDungeonMeaningfulRoom, getDungeonBeatLabel, getDungeonCadenceLabel, isLiveDungeonBossRoom } from '../utils/dungeonRoomMetadata.js';
 import { getCasinoMapState } from './CasinoMap.js';
 import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
+import { DARK_REALM_COURTS, DARK_REALM_PATHS } from '../data/darkRealmPopulation.js';
 
 const TITLES = Object.freeze({
     crypt: 'Crypt', verdant_bastion_catacombs: 'Verdant Bastion', abyssal_well: 'Abyssal Well',
@@ -57,8 +58,13 @@ export function getInstanceAtlas(engine) {
         casino.landmarks.forEach((p, i) => add(`casino-landmark-${i}`, p.label, p.x, p.z, 'passages', 'Walk to this venue interaction.', title));
         casino.tables.forEach(p => add(`table-${p.id}`, `${p.label} · ${p.id}`, p.x, p.z, 'services', 'Approach and interact with this station to take a seat.', title));
     } else if (type === 'dark_realm') {
+        if (layout?.walkRects?.length) model.paths = DARK_REALM_PATHS;
         (layout?.rooms || []).forEach((r, i) => add(`district-${i}`, DISTRICTS[i] || 'Dark Realm district', r.x, r.z, 'passages',
             i === 0 ? 'Expedition recovery and Ilyra’s projection.' : 'A district of the shared Dark Realm expedition.', i === 0 ? 'Recovery camp' : 'Level 100 combat territory'));
+        if (layout?.walkRects?.length) DARK_REALM_COURTS.forEach(site => {
+            if (!layout.walkRects.some(r => Math.abs(site.arrivalX - r.x) < r.width / 2 && Math.abs(site.arrivalZ - r.z) < r.height / 2)) return;
+            add(site.id, site.name, site.arrivalX, site.arrivalZ, 'places', site.purpose, 'Level 100 combat territory');
+        });
     } else if (type !== 'pvp_arena') {
         rooms.forEach((r, i) => {
             const index = r.index ?? i;
@@ -86,6 +92,14 @@ export function drawInstanceAtlasFloor(ctx, model, project) {
         ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
     }
     ctx.stroke();
+    if (model.paths?.length) {
+        ctx.strokeStyle = '#887f82'; ctx.lineWidth = 1; ctx.beginPath();
+        for (const path of model.paths) path.points.forEach(([x, z], index) => {
+            const p = project(x, z);
+            if (index) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
+        });
+        ctx.stroke();
+    }
 }
 
 export function drawInstanceAtlas(ctx, model, project, width, height) {

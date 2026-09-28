@@ -15,6 +15,8 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         const { Wizard } = await import('/src/entities/Wizard.js');
         const { ChronicleWitness } = await import('/src/entities/ChronicleWitness.js');
         const { DARK_REALM_WITNESSES } = await import('/src/data/darkRealmWitnesses.js');
+        const { DARK_REALM_COURTS } = await import('/src/data/darkRealmPopulation.js');
+        const { CollisionManager } = await import('/src/core/CollisionManager.js');
         const gallery = window.__eidolonAnimationGalleryController;
         gallery.cleanupPresentation();
         const render = gallery.renderSystem;
@@ -22,7 +24,8 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         render.staticEnvironmentGroup.visible = false;
         render.scene.children.filter(child => child.type === 'GridHelper').forEach(child => { child.visible = false; });
         const layout = darkRealmFixture();
-        const root = createDarkRealmScene(render.instanceEnvironmentGroup, layout);
+        const collision = new CollisionManager();
+        const root = createDarkRealmScene(render.instanceEnvironmentGroup, layout, collision);
         for (const witness of DARK_REALM_WITNESSES) {
             const npc = new ChronicleWitness(witness.id);
             npc.position.set(witness.x, .5, witness.z);
@@ -53,6 +56,19 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
             render.camera.zoom = 1; render.camera.updateProjectionMatrix();
             render.camera.position.copy(focus).add(new THREE.Vector3(35, 45, 35));
             gallery.controls.target.copy(focus); gallery.controls.update();
+        };
+        window.__darkRealmCourtView = (index, phone) => {
+            const site = DARK_REALM_COURTS[index];
+            const focus = new THREE.Vector3(site.arrivalX, 0, site.arrivalZ);
+            reader.position.copy(focus); reader.update(1 / 60, null, null, []);
+            render.setGraphicsQuality(phone ? 'low' : 'high');
+            render.setEnvironmentContext('dark_realm', focus, true);
+            render.setZoom(15); render.camera.zoom = 1; render.camera.updateProjectionMatrix();
+            render.camera.position.copy(focus).add(new THREE.Vector3(30, 40, 30));
+            gallery.controls.target.copy(focus); gallery.controls.update();
+            render.render();
+            return {id: site.id, blocked: Boolean(collision.checkCollision(focus, 1.3)),
+                calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles};
         };
         window.__darkRealmSiteView = (model, phone) => {
             const site = sites.find(site => site.model === model);
@@ -105,6 +121,13 @@ test('Dark Realm circuit renders at real scene coordinates on desktop and phone'
         await page.evaluate(phone => window.__darkRealmCampView(phone), phone);
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         await page.screenshot({ path: testInfo.outputPath(`inhabited-camp-${phone ? 'phone' : 'desktop'}.png`) });
+        for (let index = 0; index < 4; index++) {
+            const stats = await page.evaluate(({index, phone}) => window.__darkRealmCourtView(index, phone), {index, phone});
+            expect(stats.blocked).toBe(false);
+            expect(stats.calls).toBeGreaterThan(0);
+            await page.screenshot({path: testInfo.outputPath(`${stats.id}-${phone ? 'phone' : 'desktop'}.png`)});
+            await testInfo.attach(`${stats.id}-${phone ? 'phone' : 'desktop'}-counts`, {body: JSON.stringify(stats), contentType: 'application/json'});
+        }
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });

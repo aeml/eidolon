@@ -5,7 +5,7 @@ import { WORLD_READINGS } from '../src/data/worldPopulation.js';
 
 // Spawn exclusion is derived from the same solid footprints as the rendered
 // environment. It is not an overworld movement validator or a new safe zone.
-const scenes = [createEarthLocations(), createElementalLocations('water'), createElementalLocations('fire')];
+const scenes = [createEarthLocations(), ...['water', 'fire', 'air'].map(realm => createElementalLocations(realm))];
 const footprints = scenes.flatMap(scene => scene.userData.walkFootprints).map(({ siteId, x, z, width, depth }) =>
     ({ siteId, x, z, width, depth }));
 const readings = WORLD_READINGS.map(({ id, name, x, z }) => ({ id, name, x, z }));

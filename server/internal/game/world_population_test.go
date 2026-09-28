@@ -19,10 +19,23 @@ func TestWorldPopulationSpawnSolids(t *testing.T) {
 	}
 }
 
+func TestDarkRealmPopulationKeepsAuthoredActorsAndSpawnPositionsClear(t *testing.T) {
+	w := NewWorld(nil)
+	for _, entity := range w.Entities {
+		if entity.InstanceID != DarkRealmInstanceID || (entity.Type != TypeEnemy && entity.SubType != "ChronicleWitness" && entity.SubType != "StoryWizard") {
+			continue
+		}
+		if !adminShapesClear(adminLandingColliders.DarkRealm, entity.SpawnX, 0, entity.SpawnZ) {
+			t.Fatalf("Dark Realm actor spawns inside scene solids: %s", entity.ID)
+		}
+	}
+}
+
 func TestWorldPopulationReadingsSpawnAsNoncombatObjects(t *testing.T) {
 	w := NewWorld(nil)
 	for _, id := range []string{"world-reading-bellkeepers-cairn", "world-reading-unbound-milestone",
-		"world-reading-soundings-stone", "world-reading-unclaimed-names", "world-reading-commons-register", "world-reading-counterseal-stone"} {
+		"world-reading-soundings-stone", "world-reading-unclaimed-names", "world-reading-commons-register", "world-reading-counterseal-stone",
+		"world-reading-unsent-dispatch", "world-reading-unmeasured-sky"} {
 		entity := w.Entities[id]
 		if entity == nil || entity.Type != TypeNPC || entity.SubType != "WorldReading" || entity.InstanceID != "" || entity.Health != 0 {
 			t.Fatalf("missing/non-passive optional reading: %s", id)
@@ -40,7 +53,7 @@ func TestWorldPopulationRegionalEnemiesKeepCountsAndClearSolids(t *testing.T) {
 		if entity.Type != TypeEnemy || entity.InstanceID != "" {
 			continue
 		}
-		if entity.Z >= -600 && entity.X >= -1000 {
+		if entity.Z >= -600 && entity.X >= -1000 && entity.X <= 1000 {
 			continue
 		}
 		// Story combat anchors are separate authored encounters, not one of
@@ -63,6 +76,11 @@ func TestWorldPopulationRegionalEnemiesKeepCountsAndClearSolids(t *testing.T) {
 			t.Fatalf("changed Fire count %s: %d", kind, counts[kind])
 		}
 	}
+	for _, kind := range []string{"StormHarpy", "CloudElemental", "ThunderRoc", "TempestGiant", "CycloneAvatar"} {
+		if counts[kind] != 200 {
+			t.Fatalf("changed Air count %s: %d", kind, counts[kind])
+		}
+	}
 	f := worldPopulationFootprints[0]
 	if _, _, ok := rollWorldPopulationSpawn(f.X-.01, f.X+.01, f.Z-.01, f.Z+.01); ok {
 		t.Fatal("accepted an obstructed region")
@@ -74,7 +92,7 @@ func TestWorldPopulationEliteSceneryRecovery(t *testing.T) {
 	for _, f := range worldPopulationFootprints {
 		// Test each solid with the real elite type/sector that can reach it.
 		// Only Earth currently has randomly spawned rectangular-sector elites.
-		if f.Z < -600 || f.X < -1000 {
+		if f.Z < -600 || f.X < -1000 || f.X > 1000 {
 			continue
 		}
 		kind, minX, maxX := "Skeleton", -200.0, 200.0

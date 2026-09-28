@@ -396,10 +396,10 @@ describe('WorldGenerator shadow setup', () => {
         const earthSolids = locations.userData.walkFootprints.length;
         expect(earthSolids).toBe(27);
         const elemental = generator.scene.add.mock.calls[2];
-        expect(elemental.map(group => group.name)).toEqual(['water authored locations', 'fire authored locations', 'Water authored paths', 'Fire authored paths']);
-        expect(elemental.slice(0, 2).map(group => group.children.length)).toEqual([8, 8]);
-        const worldSolids = earthSolids + elemental.slice(0, 2).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
-        expect(worldSolids).toBe(89);
+        expect(elemental.map(group => group.name)).toEqual(['water authored locations', 'fire authored locations', 'air authored locations', 'Water authored paths', 'Fire authored paths', 'Air authored paths']);
+        expect(elemental.slice(0, 3).map(group => group.children.length)).toEqual([8, 8, 8]);
+        const worldSolids = earthSolids + elemental.slice(0, 3).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
+        expect(worldSolids).toBe(126);
         expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + worldSolids + 13);
         const doorCollider = generator.collisionManager.addCollider.mock.calls[worldSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);

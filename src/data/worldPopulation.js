@@ -1,6 +1,6 @@
 import { chronicleInvestigations } from './chronicleInvestigations.generated.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from './dungeonEntrances.js';
-import { WATER_LOCATIONS, FIRE_LOCATIONS } from './elementalPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } from './elementalPopulation.js';
 
 const freeze = value => {
     if (value && typeof value === 'object') {
@@ -64,7 +64,7 @@ export const EARTH_LOCATIONS = freeze([
             ] } }
 ]);
 
-export const WORLD_READINGS = freeze([...EARTH_LOCATIONS, ...WATER_LOCATIONS, ...FIRE_LOCATIONS].filter(site => site.reading).map(site => ({
+export const WORLD_READINGS = freeze([...EARTH_LOCATIONS, ...WATER_LOCATIONS, ...FIRE_LOCATIONS, ...AIR_LOCATIONS].filter(site => site.reading).map(site => ({
     id: `world-reading-${site.id}`, locationId: site.id, name: site.name,
     x: site.x + site.readingOffset[0], z: site.z + site.readingOffset[1],
     reading: site.reading

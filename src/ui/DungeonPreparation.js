@@ -12,10 +12,10 @@ export function appendDungeonPreparation(parent) {
     summary.textContent = 'Prepare your party · recover and retry';
     details.append(summary);
     for (const text of [
-        'Plan a tank, a healer and damage dealers. Start with level-appropriate Uncommon/Rare gear: Strong Fighter, Agile Rogue, Brilliant Wizard, Wise Cleric. These are recommendations, not class-entry restrictions.',
+        'Plan a tank, a healer and damage dealers. Start with level-appropriate Uncommon/Rare gear: Strong Fighter (Strength), Agile Rogue (Dexterity), Brilliant Wizard (Intelligence), Wise Cleric (Wisdom). Vitality helps everyone survive. These are recommendations, not class-entry restrictions; higher difficulties need stronger preparation.',
         'Fill HP and mana in Lanternhold before leaving. Safe zones restore 10% per second and bank Well Rested. Check your equipped weapon, skill bar and healing target; use the Forge or a saved loadout in town.',
         'For raids, form a 5–10-player raid and complete a ready check in the Party panel. Every member needs the realm dungeon chapter and minimum level. Pick ritual runners before pulling the guardian.',
-        'After a death, respawn in town, recover, then Continue the same run at the Guide. Continuing moves only you and keeps cleared rooms. The empty instance expires after 5 minutes; return before its timer ends.',
+        'After a death, respawn in town, recover, then Continue the same run at the Guide. Continuing moves only you to the latest cleared boss checkpoint, or the entrance before the first boss. A completely empty live instance expires after 5 minutes; saved dungeon logout restoration has a separate 15-minute window. Watch the Guide’s current run timer.',
         'If everyone leaves the crystal chamber or dies, only the current wave’s ritual work restarts. Previously cleared waves remain while the instance lives. A server restart may require all three repair waves again.',
         'Reset is a fresh run, not a revive: everyone must leave first and only the leader can reset. It discards instance progress, not claimed quests, inventory or the weekly reward limit.'
     ]) {
@@ -24,6 +24,18 @@ export function appendDungeonPreparation(parent) {
         details.append(paragraph);
     }
     parent.append(details);
+    return details;
+}
+
+export function partyPreparationText(party, playerId) {
+    if (!party?.partyId || !Array.isArray(party.members)) return 'Party details unavailable. Open Party to check your group; this guide does not certify entry eligibility.';
+    const members = party.members, ready = members.filter(member => member.ready === true).length;
+    const leader = party.leaderId === playerId;
+    const readiness = party.readyCheckActive ? `Ready check in progress: ${ready}/${members.length} ready.` :
+        party.allReady ? `Latest ready check: ${ready}/${members.length} ready.` : 'No completed ready check.';
+    return `${members.length} listed party member${members.length === 1 ? '' : 's'} · ${leader ? 'You lead this group.' : 'Your leader starts new runs.'} ${readiness} ` +
+        (members.length < 2 ? 'Normal dungeons allow solo entry, but a tank, healer and damage party is recommended. ' : '') +
+        'Raids require a formed 5–10-player raid and a launch ready check. Each traveler’s level, story, life and location are still checked by the server.';
 }
 
 export function weeklyRaidRewardText(reward) {

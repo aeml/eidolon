@@ -136,6 +136,23 @@ export class SocialUI {
     /** Close the social window. */
     close() {
         if (this.socialWindow) this.socialWindow.style.display = 'none';
+        this.groupFinder?.setActive(false);
+    }
+
+    openGroupFinder(activityId) {
+        this._activeTab = 'groups';
+        this.toggleSocial(true);
+        this._switchTab('groups');
+        this.groupFinder.focusActivity(activityId);
+    }
+
+    openPartyPreparation() {
+        if (this.phoneParty) { this.phoneParty.open(); return; }
+        this.ctx.closePrimaryHudMenus?.();
+        this.setPartyPanelVisible(true);
+        const target = [this.btnPartyReadyCheck, this.btnPartyReady, document.getElementById('party-invite-input')]
+            .find(control => control && !control.hidden && !control.disabled);
+        target?.focus({ preventScroll: true });
     }
 
     /** Toggle social window open/closed. */

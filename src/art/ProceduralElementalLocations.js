@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { WATER_LOCATIONS, FIRE_LOCATIONS } from '../data/elementalPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } from '../data/elementalPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
 export function createElementalLocations(realm, { quality = 'high' } = {}) {
-    if (!['water', 'fire'].includes(realm)) throw new Error(`Unsupported population realm: ${realm}`);
-    const water = realm === 'water', sites = water ? WATER_LOCATIONS : FIRE_LOCATIONS;
+    if (!['water', 'fire', 'air'].includes(realm)) throw new Error(`Unsupported population realm: ${realm}`);
+    const water = realm === 'water', air = realm === 'air', sites = air ? AIR_LOCATIONS : water ? WATER_LOCATIONS : FIRE_LOCATIONS;
     const root = new THREE.Group(); root.name = `${realm} authored locations`;
     const materials = {
-        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: water ? 0x657d87 : 0x584841, roughness: .91 }), 'stone'),
-        wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: water ? 0x4e6264 : 0x473c32, roughness: .96 }), 'timber'),
-        iron: new THREE.MeshStandardMaterial({ color: water ? 0x748f99 : 0x4b4542, roughness: .65, metalness: .7 }),
-        cloth: new THREE.MeshStandardMaterial({ color: water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }),
-        accent: new THREE.MeshStandardMaterial({ color: water ? 0x95c7d2 : 0xb8804b, roughness: water ? .3 : .82,
-            metalness: water ? .1 : .3, emissive: water ? 0x16333b : 0x392017, emissiveIntensity: .22 })
+        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x77727d : water ? 0x657d87 : 0x584841, roughness: .91 }), 'stone'),
+        wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x555160 : water ? 0x4e6264 : 0x473c32, roughness: .96 }), 'timber'),
+        iron: new THREE.MeshStandardMaterial({ color: air ? 0x9e9476 : water ? 0x748f99 : 0x4b4542, roughness: .65, metalness: .7 }),
+        cloth: new THREE.MeshStandardMaterial({ color: air ? 0x9891ac : water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }),
+        accent: new THREE.MeshStandardMaterial({ color: air ? 0xbcb3cb : water ? 0x95c7d2 : 0xb8804b, roughness: water ? .3 : .82,
+            metalness: water ? .1 : .3, emissive: air ? 0x211d32 : water ? 0x16333b : 0x392017, emissiveIntensity: .22 })
     };
     const footprints = [], radial = quality === 'low' ? 6 : 12;
     for (const site of sites) {
@@ -71,6 +71,73 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             beam([x - 2.6, 2.8, z - 5], [x - 2.6, 2.8, z + 5], .18);
         };
         switch (site.recipe) {
+        case 'chart-court':
+        case 'vane-array':
+            for (const side of [-1, 1]) {
+                const x = side * 18, z = site.recipe === 'chart-court' ? 12 : -19;
+                box('stone', x, .45, z, 3, .9, 3, true);
+                cylinder('iron', x, 3.8, z, .13, .2, 7);
+                beam([x - 2, 7, z], [x + 2, 7, z], .13, 'iron');
+                part(new THREE.ConeGeometry(.6, 1.5, 3), 'accent', x + 2, 7, z, [0, 0, -Math.PI / 2]);
+                part(new THREE.TorusGeometry(1.8, .1, 5, radial * 2), 'iron', x, 4.4, z, [0, .6, 0]);
+                if (site.recipe === 'chart-court') {
+                    box('wood', x, 1.4, z + 5, 5, .3, 2, true);
+                    box('cloth', x, 1.57, z + 5, 3.8, .04, 1.5);
+                    for (let i = 0; i < 4; i++) box('iron', x - 1.4 + i * .9, 1.6, z + 5, .03, .03, 1.3);
+                }
+            }
+            break;
+        case 'courier-muster':
+            for (const side of [-1, 1]) for (let i = 0; i < 3; i++) {
+                const x = -39 - i * 6, z = side * 13;
+                box('stone', x, .5, z, 2, 1, 2, true);
+                cylinder('iron', x, 4, z, .12, .2, 8);
+                beam([x, 7.7, z], [x + 2.5, 7.7, z], .12, 'iron');
+                part(new THREE.PlaneGeometry(2.2, 3 - i * .4), 'cloth', x + 1.3, 6, z, [0, .2, .1]);
+            }
+            break;
+        case 'horizon-orrery':
+            for (const side of [-1, 1]) {
+                box('stone', 0, 1, side * 12, 4, 2, 4, true);
+                beam([0, 1.8, side * 12], [0, 11, side * 5], .4, 'iron');
+            }
+            for (const angle of [-.7, .7]) part(new THREE.TorusGeometry(6, .22, 6, radial * 3),
+                'iron', 0, 12, 0, [angle, Math.PI / 2, 0]);
+            part(new THREE.SphereGeometry(1.4, radial, 8), 'accent', 0, 12, 0);
+            break;
+        case 'courier-exchange':
+        case 'weather-bivouac':
+            for (const side of [-1, 1]) {
+                const x = side * 12;
+                for (const z of [-7, 7]) box('wood', x, 2.5, z, .6, 5, .6, true);
+                beam([x, 5, -7], [x, 5, 7], .22);
+                // Narrow side sails shelter open bays, leaving the central
+                // aisle and all ground-level gameplay sightlines unobstructed.
+                part(new THREE.PlaneGeometry(14, 3.5, 12, 2), 'cloth', x, 3, 0, [0, Math.PI / 2, -.1]);
+                footprint(x, 2.5, 0, .7, 5, 14);
+                rope([[x, 4.8, -7], [x + side * 2, 2, -9], [x + side * 3, .1, -10]], .09, 'iron');
+                if (site.recipe === 'courier-exchange') {
+                    for (let shelf = 0; shelf < 3; shelf++) box('wood', x - side * 2, .6 + shelf * .8, 4, 3, .15, 4);
+                    footprint(x - side * 2, 1.2, 4, 3, 2.4, 4);
+                    for (let i = 0; i < 4; i++) box('cloth', x - side * 2, .9, 2.8 + i * .8, 1.5, .45, .6);
+                } else {
+                    for (const z of [-4, 4]) box('cloth', x - side * 3, .2, z, 2.6, .4, 4);
+                    box('stone', x - side * 2, .55, -8, 5, 1.1, 1.5, true);
+                }
+            }
+            break;
+        case 'dispatch-frame':
+        case 'sky-measure':
+            box('stone', 6, .75, -6, 2.6, 1.5, 1.3, true);
+            for (const z of [-7, 7]) box('stone', -8, .5, z, 2.4, 1, 2.4, true);
+            beam([-8, .7, -7], [-8, 6, 0], .2, 'iron');
+            beam([-8, .7, 7], [-8, 6, 0], .2, 'iron');
+            if (site.recipe === 'dispatch-frame') {
+                box('wood', -8, 3.5, 0, .3, 4, 8);
+                for (let i = 0; i < 5; i++) box('cloth', -7.8, 3 + i % 2, -3 + i * 1.5, .04, 1.2, 1);
+                footprint(-8, 3, 0, .5, 6, 8);
+            } else part(new THREE.TorusGeometry(3.7, .16, 6, radial * 2), 'iron', -8, 5, 0, [0, Math.PI / 2, .25]);
+            break;
         case 'mooring-yard':
             for (const side of [-1, 1]) {
                 gauge(side * 12, 10, 5);

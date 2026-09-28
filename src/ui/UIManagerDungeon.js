@@ -7,7 +7,7 @@ import {
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
-import { appendDungeonPreparation, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from './DungeonPreparation.js';
+import { appendDungeonPreparation, partyPreparationText, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from './DungeonPreparation.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -38,6 +38,7 @@ class UIManagerDungeonMethods {
         menu.addEventListener('click', (e) => e.stopPropagation());
 
         let isMenuClosed = false;
+        let refreshPreparation = null;
         const handleMenuEscape = (event) => {
             if (event.key === 'Escape') {
                 removeMenu();
@@ -60,6 +61,7 @@ class UIManagerDungeonMethods {
                 return;
             }
             isMenuClosed = true;
+            if (this.dungeonPreparationRefresh === refreshPreparation) this.dungeonPreparationRefresh = null;
             window.removeEventListener('keydown', handleMenuEscape);
             delete backdrop.__closeMenu;
             if (this.phoneDungeonMenuClose === removeMenu) this.phoneDungeonMenuClose = null;
@@ -185,7 +187,33 @@ class UIManagerDungeonMethods {
             partyStateBox.appendChild(checkpointHint);
         }
         scroll.append(partyStateBox, dungeonPanel, raidPanel);
-        appendDungeonPreparation(partyStateBox);
+        const sharedPreparation = appendDungeonPreparation(partyStateBox);
+        const partySnapshot = document.createElement('p');
+        partySnapshot.id = 'dungeon-party-readiness';
+        partySnapshot.setAttribute('role', 'status');
+        const partyControls = document.createElement('button');
+        partyControls.type = 'button'; partyControls.className = 'menu-btn';
+        partyControls.textContent = 'Open party & readiness';
+        partyControls.disabled = !this.social?.openPartyPreparation;
+        partyControls.onclick = () => { removeMenu(); this.social?.openPartyPreparation(); };
+        sharedPreparation.querySelector('summary').after(partySnapshot);
+        sharedPreparation.append(partyControls);
+        refreshPreparation = party => {
+            if (isMenuClosed) return;
+            const text = partyPreparationText(party, this.lastPlayerRef?.id);
+            if (partySnapshot.textContent !== text) partySnapshot.textContent = text;
+        };
+        this.dungeonPreparationRefresh = refreshPreparation;
+        refreshPreparation(this.social?.partyData);
+        const recruitmentButton = activity => {
+            const button = document.createElement('button');
+            button.type = 'button'; button.className = 'menu-btn';
+            button.textContent = 'Find companions';
+            button.disabled = !this.social?.openGroupFinder;
+            button.onclick = () => { const selected = typeof activity === 'function' ? activity() : activity;
+                removeMenu(); this.social?.openGroupFinder(selected); };
+            return button;
+        };
 
         if (data.darkRealmExpedition) {
             const expedition = document.createElement('section');
@@ -456,11 +484,9 @@ class UIManagerDungeonMethods {
         preparation.className = 'phone-adventure-details';
         preparation.style.cssText = 'margin: 10px 0; padding: 10px; border: 1px solid #353c47; border-radius: 6px; font-size: 14px; line-height: 1.5;';
         const preparationTitle = document.createElement('summary');
-        preparationTitle.textContent = 'Prepare for the Bastion';
         preparationTitle.tabIndex = 0;
         const preparationText = document.createElement('p');
-        preparationText.textContent = 'Recommended group: a tank, a healer and damage dealers. Bring level-appropriate Uncommon/Rare gear: Strength for Fighters, Dexterity for Rogues, Intelligence for Wizards and Wisdom for Clerics. Vitality helps everyone survive. Recover health and mana in Lanternhold between encounters, then continue your active run with the Dungeon Guide.';
-        preparation.append(preparationTitle, preparationText);
+        preparation.append(preparationTitle, preparationText, recruitmentButton(() => dungeonSelect.value));
         dungeonPanel.appendChild(preparation);
 
         const rewardLadderBox = document.createElement('div');
@@ -497,7 +523,13 @@ class UIManagerDungeonMethods {
             const diff = difficultyInfo[selectedDifficulty];
             const selectedRunLevel = Number(runLevelSelect.value) || null;
             const restriction = entryRestriction();
-            preparation.hidden = dungeonKey !== 'verdant_bastion_catacombs' || selectedDifficulty !== 'normal';
+            preparationTitle.textContent = `Prepare for ${dungeon.name}`;
+            preparationText.textContent = `${dungeon.name} starts at level ${dungeon.baseLevel}. ` +
+                (activeRun ? 'Continue preserves this run’s level and difficulty; only you return, at its latest cleared boss checkpoint. ' :
+                    'Choose an appropriate run level and gather your companions before the leader starts. ') +
+                (selectedDifficulty === 'normal' ? 'Normal is the learning route; solo entry is allowed but a balanced party is recommended. ' :
+                    'Heroic and Mythic require level 100 and stronger preparation; they are not starter routes. ') +
+                'Open “Prepare your party · recover and retry” above for class gear, recovery and raid rituals. Recruitment never posts or starts a run automatically.';
             enterBtn.disabled = Boolean(restriction);
             enterBtn.title = restriction;
             enterBtn.style.backgroundColor = restriction ? '#25303b' : '#29483d';
@@ -505,7 +537,7 @@ class UIManagerDungeonMethods {
             enterBtn.style.borderColor = restriction ? '#506076' : '#779e89';
             enterBtn.style.boxShadow = restriction ? 'none' : '0 10px 24px rgba(12, 38, 24, 0.35)';
             enterBtn.style.cursor = restriction ? 'not-allowed' : 'pointer';
-            unlockNote.textContent = restriction || `${dungeon.name} entry available. Your level: ${playerLevel}. Party members must also meet the entry requirements.`;
+            unlockNote.textContent = restriction || `${dungeon.name}: your level selection is valid. Your level: ${playerLevel}. The server still checks every entering member’s level, story, life and location.`;
             phoneMenu?.updateSummary(restriction || `${dungeon.name} · ${diff.name} · Level ${selectedRunLevel}`);
             const dailyQuestEntries = this.getDungeonDailyQuestEntries(dungeonKey, selectedDifficulty, data.quests);
             const ladderRows = dailyQuestEntries.length > 0
@@ -617,7 +649,7 @@ class UIManagerDungeonMethods {
                 window.game?.network?.send?.('raid_enter', { raidType: raid.type });
                 removeMenu();
             };
-            raidBox.append(formRaid, enterRaid);
+            raidBox.append(formRaid, enterRaid, recruitmentButton(raid.type));
             if (unlocked) {
                 const preparation = document.createElement('p');
                 preparation.className = 'adventure-raid-note';
@@ -665,7 +697,7 @@ class UIManagerDungeonMethods {
                 window.game?.network?.send?.('raid_enter', { raidType: 'weekly_raid' });
                 removeMenu();
             };
-            raidBox.append(formRaid, enterRaid);
+            raidBox.append(formRaid, enterRaid, recruitmentButton('weekly_raid'));
             const rewards = document.createElement('p');
             rewards.className = 'adventure-raid-note';
             rewards.dataset.weeklyRaidReward = data.weeklyRaidReward?.status || 'unknown';

@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
 // Bounded production-renderer scene review, not campaign or network coverage.
-for (const elemental of [false, true]) for (const [quality, width] of [['high', 1280], ['low', 390]]) {
-    test(`populated ${elemental ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px`, async ({ page, baseURL }, testInfo) => {
+for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, width] of [['high', 1280], ['low', 390]]) {
+    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height: 844 });
@@ -17,7 +17,7 @@ for (const elemental of [false, true]) for (const [quality, width] of [['high', 
             const { MeshFactory } = await import('/src/utils/MeshFactory.js');
             const { WorldReading } = await import('/src/entities/WorldReading.js');
             const { EARTH_LOCATIONS, LANTERNHOLD_COURTYARDS, WORLD_READINGS } = await import('/src/data/worldPopulation.js');
-            const { WATER_LOCATIONS, FIRE_LOCATIONS } = await import('/src/data/elementalPopulation.js');
+            const { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } = await import('/src/data/elementalPopulation.js');
             const { createProceduralLanternholdStructure, getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
             const { createChronicleSiteModel } = await import('/src/art/ChronicleSiteModels.js');
             const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
@@ -35,7 +35,7 @@ for (const elemental of [false, true]) for (const [quality, width] of [['high', 
                 const mesh = createProceduralLanternholdStructure(kind); mesh.position.set(x, .5, z); mesh.rotation.y = angle;
                 render.instanceEnvironmentGroup.add(mesh); collision.addOrientedCollider(getLanternholdWalkCollider(mesh));
             }
-            for (const chapter of chronicleInvestigations.filter(c => elemental ? ['water', 'fire'].includes(c.realm) : c.realm === 'earth')) for (const site of chapter.sites) {
+            for (const chapter of chronicleInvestigations.filter(c => elemental === 'water-fire' ? ['water', 'fire'].includes(c.realm) : c.realm === elemental)) for (const site of chapter.sites) {
                 if (site.kind !== 'inspect') continue;
                 const model = createChronicleSiteModel(site, chapter.realm); model.mesh.position.set(site.x, 0, site.z);
                 render.instanceEnvironmentGroup.add(model.mesh);
@@ -53,7 +53,7 @@ for (const elemental of [false, true]) for (const [quality, width] of [['high', 
             engine.chunkManager = { getActiveEntities: () => readings };
             engine.inputManager = new InputManager(render.camera, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
-            const sites = elemental ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [...LANTERNHOLD_COURTYARDS, ...EARTH_LOCATIONS];
+            const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [...LANTERNHOLD_COURTYARDS, ...EARTH_LOCATIONS];
             const samples = [];
             const visit = id => {
                 const site = sites.find(s => s.id === id);
@@ -109,7 +109,7 @@ for (const elemental of [false, true]) for (const [quality, width] of [['high', 
                 const stats = await page.evaluate(id => window.__populatedWorld.visit(id), id);
                 await page.screenshot({ path: testInfo.outputPath(`${id}.png`) });
                 expect(stats.calls).toBeGreaterThan(0);
-                if (stats.readingHit !== undefined || ['bellkeepers-cairn', 'unbound-milestone', 'soundings-stone', 'unclaimed-names', 'commons-register', 'counterseal-stone'].includes(id)) {
+                if (stats.readingHit !== undefined || ['bellkeepers-cairn', 'unbound-milestone', 'soundings-stone', 'unclaimed-names', 'commons-register', 'counterseal-stone', 'unsent-dispatch', 'unmeasured-sky'].includes(id)) {
                     expect(stats.readingHit, JSON.stringify(stats)).toBe(`world-reading-${id}`);
                     expect(stats.approachBlocked).toBe(false);
                     await page.keyboard.press('e');
@@ -125,7 +125,7 @@ for (const elemental of [false, true]) for (const [quality, width] of [['high', 
             await testInfo.attach('scene-counts', { path: countsPath, contentType: 'application/json' });
             // Opt-in local hardware acceptance; shared CI is not a comparable
             // frame-time environment. No busy loop, uncapped render or GPU finish.
-            if (!elemental && process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
+            if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
                 const profile = await page.evaluate(() => window.__populatedWorld.profile());
                 const path = testInfo.outputPath('frame-profile.json');
                 await writeFile(path, JSON.stringify(profile, null, 2));

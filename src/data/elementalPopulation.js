@@ -100,6 +100,58 @@ export const FIRE_LOCATIONS = freeze([
             ] } }
 ]);
 
+export const AIR_LOCATIONS = freeze([
+    { id: 'open-observatory', name: 'The Open Observatory', region: 'air', role: 'story', recipe: 'chart-court',
+        ...story('selen_journal'), radius: 23, visibility: 'quest',
+        purpose: 'Weather charts and dismantled sighting frames surround Selen’s observatory. Her journal remains part of the existing investigation.' },
+    { id: 'silent-weatherworks', name: 'The Silent Weatherworks', region: 'air', role: 'story', recipe: 'vane-array',
+        ...story('silent_vane'), radius: 25, visibility: 'quest',
+        purpose: 'Unmoving vanes frame the trapped updraft and freed horizon. Follow Ilyra’s existing evidence sequence; these frames do not grant credit.' },
+    { id: 'spire-muster', name: 'Tempest Spire Muster', region: 'air', role: 'landmark', recipe: 'courier-muster',
+        ...entrance('tempest_spire'), radius: 64, arrivalOffset: [-45, 0], visibility: 'public',
+        purpose: 'Courier standards mark a gathering court west of the Spire. Meet outside its gate; the southern trail passes around the tower.' },
+    { id: 'horizon-orrery', name: 'The Horizon Orrery', region: 'air', role: 'landmark', recipe: 'horizon-orrery',
+        x: 1810, z: 130, radius: 26, visibility: 'public',
+        purpose: 'An open instrument frames the moving sky above the road. Walk beneath its suspended rings; it is not a portal or climbable platform.' },
+    { id: 'couriers-exchange', name: 'Couriers’ Exchange', region: 'air', role: 'camp', recipe: 'courier-exchange',
+        x: 1460, z: -160, radius: 27, visibility: 'public',
+        purpose: 'Open sorting bays and anchored mail sails await couriers who never returned. This abandoned workspace is combat territory.' },
+    { id: 'weatherkeepers-bivouac', name: 'Weatherkeepers’ Bivouac', region: 'air', role: 'camp', recipe: 'weather-bivouac',
+        x: 2250, z: 540, radius: 28, visibility: 'public',
+        purpose: 'Low windbreaks shelter empty bedrolls and rescued charts. The central aisle is open; the camp provides no safe-zone recovery.' },
+    { id: 'unsent-dispatch', name: 'The Unsent Dispatch', region: 'air', role: 'lore', recipe: 'dispatch-frame',
+        x: 2020, z: -460, radius: 18, readingOffset: [6, -6], visibility: 'public',
+        purpose: 'Read a courier’s last unsent dispatch. Optional lore, with no item, reward or saved discovery claim.',
+        reading: { title: 'Leave the Route Unfinished',
+            introduction: 'A waterproof dispatch case hangs beside an empty route board. Its seal was broken from the inside.',
+            paragraphs: [
+                'We carried weather warnings, marriage promises and news of ordinary births. Every delivery ended with a question: where next? The wind knew more roads than our maps, and a courier was allowed to change her mind.',
+                'Then every vane pointed toward the same distant throne. Dispatches arrived before their writers had chosen the words. My own hand had signed an order to abandon the valley, though I had spent the morning carrying its children uphill.',
+                'I have left the last route blank. Selen says a forecast is a possibility, not a command. If you find this case, take whatever path brings someone home. No king gets to write the journey before we have lived it.'
+            ] } },
+    { id: 'unmeasured-sky', name: 'The Unmeasured Sky', region: 'air', role: 'lore', recipe: 'sky-measure',
+        x: 2790, z: 790, radius: 18, readingOffset: [6, -6], visibility: 'public',
+        purpose: 'Read a weatherkeeper’s field note beside an unbound measuring ring. Optional lore; no protection or progression credit.',
+        reading: { title: 'An Instrument Must Listen',
+            introduction: 'The sighting ring has been unbolted from its royal bearing. A note is pinned beneath a handful of stones.',
+            paragraphs: [
+                'Our instruments once disagreed. A shepherd at the lower ridge would see rain while we saw clear sky. We kept both readings because the mountain was larger than either of us, and tomorrow might need the shepherd’s answer.',
+                'The new governor called disagreement a defect. He tied every instrument to a single bearing until even the clouds bent to match his chart. The records became immaculate. The birds stopped crossing the ridge.',
+                'We loosened the bearing one bolt at a time. The first breath that escaped carried no message and owed us nothing. When the crystal sings freely again, keep room in every chart for a wind you did not predict.'
+            ] } }
+]);
+
+export const AIR_PATHS = freeze([
+    { id: 'air-passage', width: 8, points: [[1000,200],[1410,200],[1490,130],[2250,130],[2280,200],[2355,200]] },
+    { id: 'spire-bypass', width: 6, points: [[2280,200],[2300,280],[2510,280],[2630,310],[2820,310],[2920,260]] },
+    { id: 'observatory-path', width: 4, points: [[1080,200],[1080,290],[1150,290],[1150,254]] },
+    { id: 'weatherworks-path', width: 4, points: [[1080,200],[1080,155],[1160,155]] },
+    { id: 'exchange-path', width: 6, points: [[1410,200],[1410,-110],[1460,-110],[1460,-160]] },
+    { id: 'bivouac-path', width: 6, points: [[2510,280],[2510,590],[2250,590],[2250,540]] },
+    { id: 'dispatch-path', width: 6, points: [[2020,130],[1980,-120],[1980,-330],[2020,-420],[2020,-460]] },
+    { id: 'sky-measure-path', width: 6, points: [[2820,310],[2790,390],[2790,790]] }
+]);
+
 export const WATER_PATHS = freeze([
     { id: 'water-passage', width: 8, points: [[0,-600],[0,-950],[35,-975],[35,-1025],[0,-1050],[0,-1352]] },
     { id: 'well-bypass', width: 6, points: [[0,-1300],[-70,-1320],[-70,-1480],[0,-1500],[0,-1880],[35,-1910],[35,-1985],[0,-2015],[0,-2150]] },

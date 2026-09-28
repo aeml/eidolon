@@ -623,6 +623,265 @@
       "z": -225,
       "width": 7,
       "depth": 2.5
+    },
+    {
+      "siteId": "open-observatory",
+      "x": 1132,
+      "z": 257,
+      "width": 3,
+      "depth": 3
+    },
+    {
+      "siteId": "open-observatory",
+      "x": 1132,
+      "z": 262,
+      "width": 5,
+      "depth": 2
+    },
+    {
+      "siteId": "open-observatory",
+      "x": 1168,
+      "z": 257,
+      "width": 3,
+      "depth": 3
+    },
+    {
+      "siteId": "open-observatory",
+      "x": 1168,
+      "z": 262,
+      "width": 5,
+      "depth": 2
+    },
+    {
+      "siteId": "silent-weatherworks",
+      "x": 1162,
+      "z": 126,
+      "width": 3,
+      "depth": 3
+    },
+    {
+      "siteId": "silent-weatherworks",
+      "x": 1198,
+      "z": 126,
+      "width": 3,
+      "depth": 3
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2361,
+      "z": 187,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2355,
+      "z": 187,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2349,
+      "z": 187,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2361,
+      "z": 213,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2355,
+      "z": 213,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "spire-muster",
+      "x": 2349,
+      "z": 213,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "horizon-orrery",
+      "x": 1810,
+      "z": 118,
+      "width": 4,
+      "depth": 4
+    },
+    {
+      "siteId": "horizon-orrery",
+      "x": 1810,
+      "z": 142,
+      "width": 4,
+      "depth": 4
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1448,
+      "z": -167,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1448,
+      "z": -153,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1448,
+      "z": -160,
+      "width": 0.7,
+      "depth": 14
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1450,
+      "z": -156,
+      "width": 3,
+      "depth": 4
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1472,
+      "z": -167,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1472,
+      "z": -153,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1472,
+      "z": -160,
+      "width": 0.7,
+      "depth": 14
+    },
+    {
+      "siteId": "couriers-exchange",
+      "x": 1470,
+      "z": -156,
+      "width": 3,
+      "depth": 4
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2238,
+      "z": 533,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2238,
+      "z": 547,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2238,
+      "z": 540,
+      "width": 0.7,
+      "depth": 14
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2240,
+      "z": 532,
+      "width": 5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2262,
+      "z": 533,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2262,
+      "z": 547,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2262,
+      "z": 540,
+      "width": 0.7,
+      "depth": 14
+    },
+    {
+      "siteId": "weatherkeepers-bivouac",
+      "x": 2260,
+      "z": 532,
+      "width": 5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "unsent-dispatch",
+      "x": 2026,
+      "z": -466,
+      "width": 2.6,
+      "depth": 1.3
+    },
+    {
+      "siteId": "unsent-dispatch",
+      "x": 2012,
+      "z": -467,
+      "width": 2.4,
+      "depth": 2.4
+    },
+    {
+      "siteId": "unsent-dispatch",
+      "x": 2012,
+      "z": -453,
+      "width": 2.4,
+      "depth": 2.4
+    },
+    {
+      "siteId": "unsent-dispatch",
+      "x": 2012,
+      "z": -460,
+      "width": 0.5,
+      "depth": 8
+    },
+    {
+      "siteId": "unmeasured-sky",
+      "x": 2796,
+      "z": 784,
+      "width": 2.6,
+      "depth": 1.3
+    },
+    {
+      "siteId": "unmeasured-sky",
+      "x": 2782,
+      "z": 783,
+      "width": 2.4,
+      "depth": 2.4
+    },
+    {
+      "siteId": "unmeasured-sky",
+      "x": 2782,
+      "z": 797,
+      "width": 2.4,
+      "depth": 2.4
     }
   ],
   "readings": [
@@ -661,6 +920,18 @@
       "name": "The Counterseal Stone",
       "x": -2624,
       "z": -226
+    },
+    {
+      "id": "world-reading-unsent-dispatch",
+      "name": "The Unsent Dispatch",
+      "x": 2026,
+      "z": -466
+    },
+    {
+      "id": "world-reading-unmeasured-sky",
+      "name": "The Unmeasured Sky",
+      "x": 2796,
+      "z": 784
     }
   ]
 }

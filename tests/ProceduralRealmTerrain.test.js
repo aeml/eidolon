@@ -10,7 +10,7 @@ import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
 const TERRAIN_KEYS = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean', 'sky']);
 
 describe('procedural dark-fantasy realm terrain', () => {
-    test.each(['town', 'earth', 'water', 'fire'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
+    test.each(['town', 'earth', 'water', 'fire', 'air'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
         const high = createProceduralTerrainMaterial(key);
         const duplicate = createProceduralTerrainMaterial(key);
         const low = createProceduralTerrainMaterial(key, { quality: 'low' });

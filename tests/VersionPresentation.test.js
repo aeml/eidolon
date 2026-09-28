@@ -3,6 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
+const currentVersion = '1.17.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -22,6 +23,13 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.17.0 describes population and explicit party preparation without claiming final art', () => {
+        const start = indexHtml.indexOf('data-version="1.17.0"'), previous = indexHtml.indexOf('data-version="1.16.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['companions and the unmeasured sky', 'No automatic listing', 'Eight places in Air',
+            'Ten worn streets', '15-minute', 'not final graphics or closed-beta certification', 'Full prior patch history'])
+            expect(indexHtml.slice(start, previous)).toContain(text);
+    });
     test('1.16.0 retains history and scopes population/session work honestly', () => {
         const start = indexHtml.indexOf('data-version="1.16.0"'), previous = indexHtml.indexOf('data-version="1.15.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
@@ -842,15 +850,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.16.0');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe(currentVersion);
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.16.0');
-        expect(packageLock.packages[''].version).toBe('1.16.0');
-        expect(rootReadme).toContain('Current source version: `Alpha 1.16.0`');
+        expect(packageLock.version).toBe(currentVersion);
+        expect(packageLock.packages[''].version).toBe(currentVersion);
+        expect(rootReadme).toContain(`Current source version: \`Alpha ${currentVersion}\``);
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.16.0</span>');
+        expect(indexHtml).toContain(`<span class="start-version-row__label">Alpha ${currentVersion}</span>`);
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1261,7 +1269,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.16.0';
+        const expectedVersion = `Alpha ${currentVersion}`;
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

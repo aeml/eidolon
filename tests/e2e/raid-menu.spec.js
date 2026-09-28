@@ -30,6 +30,45 @@ async function setupMenu(page, isMobile = false) {
 for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
     test.describe(`family level choices ${width}x${height}`, () => {
         test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('Guide routes to real recruitment and party readiness without submitting actions', async ({page}) => {
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => {
+                const {ui, sent} = window.__raidMenuFixture;
+                ui.social.onGroupFinder = payload => sent.push({type: 'group_finder', payload});
+                ui.lastPlayerRef = {id: 'self', level: 100};
+                ui.updateParty({partyId: 'party', leaderId: 'self', members: [{id: 'self', name: 'Hero', hp: 100, maxHp: 100}]});
+                ui.showDungeonMenu({playerLevel: 100, isLeader: true});
+            });
+            await page.locator('#dungeon-type-select').selectOption('tempest_spire');
+            await page.locator('#dungeon-preparation summary').click();
+            await page.locator('#dungeon-preparation').getByRole('button', {name: 'Find companions'}).click();
+            await expect(page.locator('#dungeon-menu')).toHaveCount(0);
+            const groups = page.locator('#tab-panel-groups');
+            await expect(groups).toBeVisible();
+            await expect(groups).toContainText('Loading the recruitment catalogue');
+            await page.evaluate(() => window.__raidMenuFixture.ui.social.groupFinder.update({activities: [
+                {id: 'world', name: 'Exploration', minLevel: 1}, {id: 'tempest_spire', name: 'Tempest Spire', minLevel: 70}
+            ], listings: []}));
+            await expect(groups.getByLabel('Activity filter')).toHaveValue('tempest_spire');
+            await groups.getByRole('button', {name: 'Prepare my listing'}).click();
+            await expect(groups.getByLabel('Minimum level')).toHaveValue('70');
+            await expect(groups.getByLabel('Listing type')).toBeFocused();
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent)).toEqual([{type: 'group_finder', payload: {action: 'list'}}]);
+            await page.evaluate(() => {
+                const {ui} = window.__raidMenuFixture;
+                ui.social.close();
+                ui.showDungeonMenu({playerLevel: 100, isLeader: true});
+                // Phone wraps party details in another intentional disclosure.
+                document.querySelectorAll('#dungeon-menu details').forEach(el => { el.open = true; });
+                ui.updateParty({partyId: 'party', leaderId: 'self', readyCheckActive: true,
+                    members: [{id: 'self', name: 'Hero', hp: 100, maxHp: 100, ready: true}]});
+            });
+            await expect(page.locator('#dungeon-party-readiness')).toContainText('1/1 ready');
+            await page.getByRole('button', {name: 'Open party & readiness'}).click();
+            await expect(page.locator('#dungeon-menu')).toHaveCount(0);
+            await expect(page.locator(isMobile ? '#phone-party-panel' : '#party-panel')).toBeVisible();
+            expect(await page.evaluate(() => window.__raidMenuFixture.ui.dungeonPreparationRefresh)).toBeNull();
+        });
         test('Bastion preparation is operable without hiding the entry controls', async ({ page, baseURL }, testInfo) => {
             const failures = collectBrowserFailures(page, baseURL);
             await setupMenu(page, isMobile);
@@ -38,7 +77,7 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
             }));
             const preparation = page.locator('#dungeon-preparation');
             const summary = preparation.locator('summary');
-            await expect(summary).toHaveText('Prepare for the Bastion');
+            await expect(summary).toHaveText('Prepare for Verdant Bastion Catacombs');
             await expect(preparation.locator('p')).toBeHidden();
             await summary.scrollIntoViewIfNeeded();
             if (isMobile) await summary.tap();
@@ -55,10 +94,11 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                 await expect(preparation.locator('p')).toBeVisible();
                 await expect(summary).toBeFocused();
             }
-            for (const text of ['Strength for Fighters', 'Dexterity for Rogues', 'Intelligence for Wizards',
-                'Wisdom for Clerics', 'Uncommon/Rare', 'Lanternhold']) {
-                await expect(preparation).toContainText(text);
-            }
+            await expect(preparation).toContainText('solo entry is allowed but a balanced party is recommended');
+            await expect(preparation).toContainText('Recruitment never posts or starts a run automatically');
+            const sharedAdvice = page.locator('.adventure-preparation');
+            for (const text of ['Strong Fighter (Strength)', 'Agile Rogue (Dexterity)', 'Brilliant Wizard (Intelligence)',
+                'Wise Cleric (Wisdom)', 'Uncommon/Rare', 'Lanternhold']) await expect(sharedAdvice).toContainText(text);
             if (isMobile) {
                 await expect(page.locator('body')).toHaveClass(/mobile-mode/);
                 expect(await preparation.locator('p').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
@@ -72,7 +112,7 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                     element.scrollIntoView({ block: 'end', behavior: 'instant' });
                     const text = element.firstChild;
                     const range = document.createRange();
-                    range.setStart(text, text.length - 'Dungeon Guide.'.length);
+                    range.setStart(text, text.length - 'automatically.'.length);
                     range.setEnd(text, text.length);
                     const line = range.getBoundingClientRect();
                     const viewport = element.closest('.adventure-scroll').getBoundingClientRect();
@@ -103,7 +143,7 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                 expect(await page.locator('#dungeon-run-level-select option').evaluateAll(options => options.map(option => Number(option.value))))
                     .toEqual([30, 40, 50, 60, 70, 80, 90, 100].filter(level => level >= minimum));
                 await expect(page.locator('#btn-enter-dungeon')).toBeEnabled();
-                await expect(page.locator('#dungeon-unlock-note')).toContainText('entry available');
+                await expect(page.locator('#dungeon-unlock-note')).toContainText('your level selection is valid');
             }
             await page.locator('#dungeon-run-level-select').selectOption('60');
             const enter = page.locator('#btn-enter-dungeon');
@@ -194,12 +234,26 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await page.keyboard.press('Enter');
     await expect(preparation).toHaveAttribute('open', '');
     await page.keyboard.press('Tab');
+    await expect(preparation.getByRole('button', { name: 'Open party & readiness' })).toBeFocused();
+    await page.keyboard.press('Tab');
     await expect(earth.getByRole('button', { name: 'Form Elemental Raid' })).toBeFocused();
     await page.keyboard.press('Enter');
     await page.keyboard.press('Tab');
     await expect(earth.getByRole('button', { name: 'Enter Rootheart Sanctum' })).toBeFocused();
     await page.keyboard.press('Tab');
+    await expect(earth.getByRole('button', { name: 'Find companions' })).toBeFocused();
+    // Recruitment stays available even when this character cannot enter yet.
+    const recruitment = page.locator('#adventure-raids').getByRole('button', { name: 'Find companions' });
+    for (let i = 1; i < await recruitment.count(); i++) {
+        await page.keyboard.press('Tab');
+        await expect(recruitment.nth(i)).toBeFocused();
+    }
+    await page.keyboard.press('Tab');
     await expect(close).toBeFocused();
+    for (let i = await recruitment.count() - 1; i >= 0; i--) {
+        await page.keyboard.press('Shift+Tab');
+        await expect(recruitment.nth(i)).toBeFocused();
+    }
     await page.keyboard.press('Shift+Tab');
     await expect(earth.getByRole('button', { name: 'Enter Rootheart Sanctum' })).toBeFocused();
     await page.keyboard.press('Enter');

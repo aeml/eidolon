@@ -1,4 +1,4 @@
-import { WATER_LOCATIONS, FIRE_LOCATIONS, WATER_PATHS, FIRE_PATHS } from '../src/data/elementalPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS, WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../src/data/elementalPopulation.js';
 import { distanceToPath, WORLD_READINGS } from '../src/data/worldPopulation.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../src/data/worldFoliage.js';
 import { WORLD_REGIONS, containsWorldPosition } from '../src/data/worldGeography.js';
@@ -24,7 +24,7 @@ function pathClearsFootprint(path, box) {
     return true;
 }
 
-test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIRE_PATHS]])(
+test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIRE_PATHS], ['air', AIR_LOCATIONS, AIR_PATHS]])(
     '%s has eight distinct, canonical places and hazard-aware flat routes', (realm, places, paths) => {
         expect(places).toHaveLength(8); expect(Object.isFrozen(places)).toBe(true);
         expect(new Set(places.map(site => site.id)).size).toBe(8);
@@ -51,7 +51,7 @@ test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIR
                     .toEqual({ path: path.id, hazard: [x, z], clear: true });
             }
             // Protect actual preserved buildings/entrances, not just POI dots.
-            for (const site of places.filter(p => p.source && p.recipe !== 'echo-bank' && p.recipe !== 'exhaust-channel')) {
+            for (const site of places.filter(p => p.source && !['echo-bank', 'exhaust-channel', 'vane-array'].includes(p.recipe))) {
                 const bounds = site.source.kind === 'entrance' ? DUNGEON_ENTRANCE_DEFINITIONS[site.source.id].bounds : [7.2, 3, 7.2];
                 const margin = path.width / 2 + 1.25;
                 for (let i = 1; i < path.points.length; i++) {
@@ -67,7 +67,7 @@ test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIR
 
 test('public realm destinations and readings agree with built scenes without revealing story-gated markers', () => {
     const publicPlaces = getAtlasWorldLocations({});
-    for (const site of [...WATER_LOCATIONS, ...FIRE_LOCATIONS]) {
+    for (const site of [...WATER_LOCATIONS, ...FIRE_LOCATIONS, ...AIR_LOCATIONS]) {
         const place = publicPlaces.find(p => p.id === site.id);
         if (site.visibility === 'quest') { expect(place).toBeUndefined(); continue; }
         expect(place).toBeDefined();
@@ -79,11 +79,11 @@ test('public realm destinations and readings agree with built scenes without rev
     expect(getAtlasWorldLocations({ currentInstanceId: 'private-run' })).toEqual([]);
 });
 
-test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS]])('%s scenery solids clear paths and hazards at both qualities', (realm, paths) => {
+test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS], ['air', AIR_PATHS]])('%s scenery solids clear paths and hazards at both qualities', (realm, paths) => {
     const high = createElementalLocations(realm), low = createElementalLocations(realm, { quality: 'low' });
     expect(high.userData.walkFootprints).toEqual(low.userData.walkFootprints);
     const generated = JSON.parse(readFileSync(new URL('../server/internal/game/content/world-population-footprints.json', import.meta.url), 'utf8'));
-    const sites = realm === 'water' ? WATER_LOCATIONS : FIRE_LOCATIONS;
+    const sites = realm === 'air' ? AIR_LOCATIONS : realm === 'water' ? WATER_LOCATIONS : FIRE_LOCATIONS;
     const ids = new Set(sites.map(site => site.id));
     expect(generated.footprints.filter(f => ids.has(f.siteId))).toEqual(
         high.userData.walkFootprints.map(({ siteId, x, z, width, depth }) => ({ siteId, x, z, width, depth })));

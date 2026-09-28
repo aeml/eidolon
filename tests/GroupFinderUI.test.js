@@ -50,3 +50,46 @@ test('refresh stops when inactive and does not poll a hidden social window', () 
     expect(action).toHaveBeenCalledTimes(1);
     ui.setActive(false); jest.useRealTimers();
 });
+
+test('guide context waits for the authoritative catalogue and never posts or invites', () => {
+    const {ui, action, invite} = setup();
+    ui.update({activities: [], listings: []});
+    ui.focusActivity('molten_core');
+    expect(ui.context.textContent).toContain('Loading');
+    expect(ui.activity.options).toHaveLength(0);
+    ui.update({activities, listings: [listing]});
+    expect(ui.filter.value).toBe('molten_core');
+    expect(ui.activity.value).toBe('molten_core');
+    expect(ui.minimum.value).toBe('70');
+    expect(ui.list.textContent).toContain('Only real players');
+    expect(ui.list.textContent).not.toContain(listing.name);
+    ui.list.querySelector('button').click();
+    expect(ui.editor.open).toBe(true);
+    expect(document.activeElement).toBe(ui.mode);
+    expect(action).not.toHaveBeenCalled();
+    expect(invite).not.toHaveBeenCalled();
+});
+
+test('unknown activities do not manufacture entry floors and manual filters cancel pending context', () => {
+    const {ui, action} = setup();
+    ui.focusActivity('unreleased_raid');
+    expect(ui.context.textContent).toContain('unavailable');
+    expect([...ui.activity.options].some(option => option.value === 'unreleased_raid')).toBe(false);
+    ui.filter.value = 'world'; ui.filter.onchange();
+    ui.update({activities, listings: [listing]});
+    expect(ui.filter.value).toBe('world');
+    expect(ui.context.hidden).toBe(true);
+    expect(action).not.toHaveBeenCalled();
+});
+
+test('opening contextual recruitment twice keeps one refresh request and closing stops refresh', () => {
+    jest.useFakeTimers();
+    const {ui, action} = setup();
+    ui.setActive(true); ui.setActive(true);
+    ui.update({activities, listings: []});
+    expect(action).toHaveBeenCalledTimes(1);
+    ui.setActive(false);
+    jest.advanceTimersByTime(30000);
+    expect(action).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+});

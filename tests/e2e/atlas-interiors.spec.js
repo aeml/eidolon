@@ -58,6 +58,14 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             expect(state.count).toBeGreaterThan(0);
             expect(state.destinations.every(p => p.instanceId === state.instanceId)).toBe(true);
             expect(state.destinations.some(p => ['forge', 'stash', 'molten_core'].includes(p.id))).toBe(false);
+            if (type === 'dark_realm') {
+                expect(state.destinations.filter(p => p.id.startsWith('court-'))).toHaveLength(4);
+                expect(await page.evaluate(async () => {
+                    const {getInstanceAtlas} = await import('/src/ui/InstanceAtlas.js');
+                    const model = getInstanceAtlas(window.__interiorAtlas.engine);
+                    return {paths: model.paths.length, court: model.locations.find(p => p.id === 'court-shore')};
+                })).toMatchObject({paths: 10, court: {x: 39900, z: 40552, category: 'places'}});
+            }
             for (const p of state.corners) {
                 expect(p.x).toBeGreaterThanOrEqual(0); expect(p.x).toBeLessThanOrEqual(state.width);
                 expect(p.y).toBeGreaterThanOrEqual(0); expect(p.y).toBeLessThanOrEqual(state.height);

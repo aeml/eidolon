@@ -1,9 +1,9 @@
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
-import { WATER_PATHS, FIRE_PATHS } from '../data/elementalPopulation.js';
+import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 
-const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS });
+const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS, air: AIR_PATHS });
 
 const INKS = Object.freeze({
     earth: ['#26352d', '#687260', '#b0ac7c'],

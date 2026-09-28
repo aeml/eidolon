@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { appendDungeonPreparation, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from '../src/ui/DungeonPreparation.js';
+import { appendDungeonPreparation, CRYSTAL_VIGIL_PREPARATION, partyPreparationText, weeklyRaidRewardText } from '../src/ui/DungeonPreparation.js';
 import { installUIManagerDungeon } from '../src/ui/UIManagerDungeon.js';
 
 class MenuFixture { getDungeonDailyQuestEntries() { return []; } }
@@ -24,6 +24,36 @@ test.each(['available', 'claimed', 'unknown'])('weekly %s cache advice separates
     expect(text).toContain('does not reset this reward limit');
     if (status === 'unknown') expect(text).toContain('Do not assume');
     if (status === 'claimed') expect(text).toContain('still enter and help');
+});
+
+test('party readiness describes the snapshot without certifying server entry eligibility', () => {
+    expect(partyPreparationText(null, 'self')).toContain('does not certify entry');
+    const party = {partyId: 'party', leaderId: 'self', members: [{id: 'self', ready: true}]};
+    expect(partyPreparationText(party, 'self')).toContain('Normal dungeons allow solo');
+    party.members.push({id: 'friend', ready: false});
+    party.readyCheckActive = true;
+    const text = partyPreparationText(party, 'self');
+    expect(text).toContain('2 listed party members');
+    expect(text).toContain('You lead');
+    expect(text).toContain('1/2 ready');
+    expect(text).toContain('still checked by the server');
+    expect(text).not.toContain('online');
+    expect(partyPreparationText(party, 'friend')).toContain('Your leader starts');
+});
+
+test('guide hands off to contextual recruitment and retires its party refresh callback', () => {
+    document.body.replaceChildren();
+    const menu = new MenuFixture();
+    menu.social = {openGroupFinder: jest.fn(), openPartyPreparation: jest.fn()};
+    menu.lastPlayerRef = {id: 'self'};
+    menu.showDungeonMenu({playerLevel: 100, isLeader: true, elementalRaidAccess: {air_crystal_raid: true}});
+    menu.dungeonPreparationRefresh({partyId: 'party', leaderId: 'self', members: [{id: 'self'}]});
+    expect(document.getElementById('dungeon-party-readiness').textContent).toContain('1 listed party member');
+    const raid = document.querySelector('[data-raid-type="air_crystal_raid"]');
+    [...raid.querySelectorAll('button')].find(button => button.textContent === 'Find companions').click();
+    expect(menu.social.openGroupFinder).toHaveBeenCalledWith('air_crystal_raid');
+    expect(menu.dungeonPreparationRefresh).toBeNull();
+    expect(document.getElementById('dungeon-menu-backdrop')).toBeNull();
 });
 
 test('desktop reset is deliberate and cancellation keeps the existing run', () => {

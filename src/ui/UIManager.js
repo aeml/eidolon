@@ -1263,7 +1263,10 @@ export class UIManager {
 
     toggleSocial(show) { this.social.toggleSocial(show); }
     updateSocialList(players) { this.social.updateSocialList(players); }
-    updateParty(partyData) { this.social.updateParty(partyData); }
+    updateParty(partyData) {
+        this.social.updateParty(partyData);
+        this.dungeonPreparationRefresh?.(partyData);
+    }
     showPartyRequest(inviterName) { this.social.showPartyRequest(inviterName); }
     hidePartyRequest() { this.social.hidePartyRequest(); }
 

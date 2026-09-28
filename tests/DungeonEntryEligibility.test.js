@@ -26,9 +26,9 @@ describe.each([false, true])('dungeon entry eligibility (phone=%s)', isMobile =>
         open();
         const preparation = document.getElementById('dungeon-preparation');
         expect(preparation.hidden).toBe(false);
-        expect(preparation.querySelector('summary').textContent).toBe('Prepare for the Bastion');
+        expect(preparation.querySelector('summary').textContent).toBe('Prepare for Verdant Bastion Catacombs');
         for (const text of ['Uncommon', 'Rare', 'Strength', 'Dexterity', 'Intelligence', 'Wisdom', 'Vitality', 'Lanternhold']) {
-            expect(preparation.textContent).toContain(text);
+            expect(document.querySelector('.adventure-preparation').textContent).toContain(text);
         }
         expect(preparation.open).toBe(false);
         expect(button().disabled).toBe(false);
@@ -41,9 +41,11 @@ describe.each([false, true])('dungeon entry eligibility (phone=%s)', isMobile =>
     test('introductory preparation does not imply the same gear is sufficient for higher tiers', () => {
         open({ playerLevel: 100 });
         const preparation = document.getElementById('dungeon-preparation');
-        select('abyssal_well'); expect(preparation.hidden).toBe(true);
+        select('abyssal_well'); expect(preparation.querySelector('summary').textContent).toBe('Prepare for Abyssal Well');
         select('verdant_bastion_catacombs'); expect(preparation.hidden).toBe(false);
-        document.getElementById('diff-btn-heroic').click(); expect(preparation.hidden).toBe(true);
+        document.getElementById('diff-btn-heroic').click();
+        expect(preparation.textContent).toContain('stronger preparation');
+        expect(preparation.textContent).not.toContain('Normal is the learning route');
         document.getElementById('diff-btn-normal').click(); expect(preparation.hidden).toBe(false);
     });
 

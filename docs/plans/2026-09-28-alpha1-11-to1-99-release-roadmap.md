@@ -2,7 +2,7 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.15.0; see the [release record](2026-09-28-release1-15.md).
+baseline is Alpha 1.16.0; see the [release record](2026-09-28-release1-16.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
@@ -575,6 +575,25 @@ including Live Release and Character QA. Independent IPv4 verification confirms
 frontend/backend identity, healthy database, login/cumulative notes and11 exact
 deployed assets. [Evidence](2026-09-28-release1-14.md). **1.15 implementing
 locally** from its [receipt](2026-09-28-release1-15.md); later gates remain open.
+
+Superseding execution checkpoint: **1.15 accepted live** at
+`156345544c699514d4f430b7fc6275e8f31df497`, CI36424283224, with exact independent
+public IPv4 verification ([receipt](2026-09-28-release1-15.md)). **1.16 replacement
+candidate** `2cc806fd3db66e8f0af42fe1e9ce2a6b984b9ce4`, CI36430486346, passed
+client/server/browser gates and is undergoing predeploy/deployment validation;
+not yet independently accepted ([receipt](2026-09-28-release1-16.md)).
+**1.17 local versioned candidate** implements party preparation/recruitment,
+eight Air places, four Dark Realm witness courts and matching streets/atlas
+references. Focused checks and notes are recorded in [its receipt](2026-09-28-release1-17.md).
+Hold1.17 publication until1.16 acceptance. Later milestones, model quality and
+closed-beta gates remain open; these first-pass populated scenes are not final art.
+
+Final superseding checkpoint: **1.16 accepted live** at exact
+`2cc806fd3db66e8f0af42fe1e9ce2a6b984b9ce4`. CI36430486346 completed successfully
+including Live Release and Character QA; root independently verified public
+IPv4 release/database/login/history and18 exact runtime assets.1.17 is prepared
+for publication with its synchronized notes and version.1.18 source/visual
+preflight may proceed locally, but its publication waits for1.17 acceptance.
 
 ## References
 

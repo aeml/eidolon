@@ -580,8 +580,10 @@ func (w *World) spawnAirRealm() {
 	// Helper to spawn enemies in an Air Realm area
 	spawnAirArea := func(subType string, minX, maxX float64, baseLevel int) {
 		for i := 0; i < count; i++ {
-			x := minX + rand.Float64()*(maxX-minX)
-			z := minZ + rand.Float64()*(maxZ-minZ)
+			x, z, clear := rollWorldPopulationSpawn(minX, maxX, minZ, maxZ)
+			if !clear {
+				continue
+			}
 			level := baseLevel + rand.Intn(6)
 			profile := overworldEnemyCombatProfile(subType, level, false)
 

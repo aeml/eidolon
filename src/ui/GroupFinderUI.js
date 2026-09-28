@@ -13,10 +13,14 @@ export class GroupFinderUI {
         this.toolbar = document.createElement('div');
         this.toolbar.className = 'group-finder__controls';
         this.filter = this.select('Activity filter', [['', 'All activities']], this.toolbar);
-        this.filter.onchange = () => this.renderListings();
+        this.filter.onchange = () => {
+            this.requestedActivity = null; this.context.hidden = true;
+            this.renderListings();
+        };
         this.joinRole = this.select('Join as', ['flexible', 'tank', 'healer', 'damage'].map(value => [value, value]), this.toolbar);
         this.toolbar.append(this.button('Refresh', () => action({ action: 'list' })));
         const editor = document.createElement('details');
+        this.editor = editor;
         const summary = document.createElement('summary');
         summary.textContent = 'Post or update my listing';
         const form = document.createElement('form');
@@ -42,7 +46,9 @@ export class GroupFinderUI {
         editor.append(summary, form);
         this.list = document.createElement('div');
         this.list.className = 'group-finder__list';
-        container.append(guidance, this.toolbar, editor, this.list);
+        this.context = document.createElement('p');
+        this.context.setAttribute('role', 'status'); this.context.hidden = true;
+        container.append(guidance, this.context, this.toolbar, editor, this.list);
     }
 
     label(text, control, parent) {
@@ -66,9 +72,33 @@ export class GroupFinderUI {
     }
 
     setActive(active) {
+        if (this.active === active) return;
         clearTimeout(this.refresh);
         this.active = active;
         if (active) this.action({ action: 'list' });
+    }
+
+    focusActivity(activityId) {
+        this.requestedActivity = activityId;
+        this.applyRequestedActivity();
+        this.renderListings();
+        this.filter.focus({ preventScroll: true });
+    }
+
+    applyRequestedActivity() {
+        if (!this.requestedActivity) return;
+        const activity = this.data.activities.find(entry => entry.id === this.requestedActivity);
+        this.context.hidden = false;
+        if (!activity) {
+            this.context.textContent = this.data.activities.length
+                ? 'This activity is unavailable in the current recruitment catalogue. Choose another activity.'
+                : 'Loading the recruitment catalogue for your selected activity…';
+            return;
+        }
+        this.filter.value = this.activity.value = activity.id;
+        this.activity.onchange();
+        this.context.textContent = `${activity.name}: browse real players or publish your own listing. No listing has been posted automatically.`;
+        this.requestedActivity = null;
     }
 
     update(data) {
@@ -84,6 +114,7 @@ export class GroupFinderUI {
             }
             this.activity.onchange();
         }
+        this.applyRequestedActivity();
         this.renderListings();
         clearTimeout(this.refresh);
         if (this.active) this.refresh = setTimeout(() => {
@@ -129,8 +160,14 @@ export class GroupFinderUI {
         }
         if (!this.list.children.length) {
             const empty = document.createElement('p');
-            empty.textContent = 'No available listings for this activity. Post yours or refresh later.';
-            this.list.append(empty);
+            empty.textContent = 'No available listings for this activity. Publish a listing, invite a friend, or return later. Only real players fill groups; posting does not create a party or start a run. Continue overworld quests or prepare gear while waiting. Raids still require 5–10 players and their normal entry requirements.';
+            const post = this.button('Prepare my listing', () => {
+                if (this.filter.value) { this.activity.value = this.filter.value; this.activity.onchange(); }
+                this.editor.open = true;
+                this.mode.focus({ preventScroll: true });
+                this.editor.scrollIntoView?.({ block: 'nearest' });
+            });
+            this.list.append(empty, post);
         }
     }
 }

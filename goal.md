@@ -1,12 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (supersedes chronological notes below):** Alpha1.15.0 is
-accepted live at156345544c699514d4f430b7fc6275e8f31df497, CI36424283224.
-Luna confirmed all gates; root independently verified public IPv4 exact identity,
-healthy database, login/notes and16 assets.1.16 Water/Fire population and session
-recovery is being prepared for publication; see [its receipt](docs/plans/2026-09-28-release1-16.md).
-Next: finish proportionate1.16 checks, publish, Luna terminal monitoring and exact
-live acceptance; then1.17. Global roadmap and final art/beta gates remain open.
+**Current checkpoint (supersedes chronological notes below):** Alpha1.16.0 is
+accepted live at2cc806fd3db66e8f0af42fe1e9ce2a6b984b9ce4, CI36430486346.
+Luna confirmed every gate including live QA; root independently verified public
+IPv4 exact identity, healthy database, login/help/history and18 runtime assets.
+1.17 party guidance/recruitment, Air population/terrain and Dark Realm courts/
+streets are implemented, locally checked and versioned for publication.
+Next: commit/push1.17, Luna mandatory CI/deployment/live QA watch, root exact
+live acceptance, then1.18.1.18 preflight/ordinary-outfit captures are local only.
+See [1.17 receipt](docs/plans/2026-09-28-release1-17.md). Global roadmap and
+final art/beta gates remain open. Do not publish receipt-only changes by themselves.
 
 Current instruction, September 28, 2026: work through the
 [authoritative roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)

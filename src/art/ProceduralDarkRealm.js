@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
 import { DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
+import { DARK_REALM_COURTS, DARK_REALM_COURT_SOLIDS, DARK_REALM_PATHS } from '../data/darkRealmPopulation.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -14,6 +17,12 @@ export function getDarkRealmCampColliders(origin = { x: 40000, z: 40800 }) {
         .map(([x, z, hx, hz, height]) => new THREE.Box3(
             new THREE.Vector3(origin.x + x - hx, -1, origin.z + z - hz),
             new THREE.Vector3(origin.x + x + hx, height, origin.z + z + hz)));
+}
+
+export function getDarkRealmCourtColliders() {
+    return DARK_REALM_COURT_SOLIDS.map(s => new THREE.Box3(
+        new THREE.Vector3(s.x - s.width / 2, -1, s.z - s.depth / 2),
+        new THREE.Vector3(s.x + s.width / 2, s.height, s.z + s.depth / 2)));
 }
 
 // Streets should support readable actors and discoveries, not repeat the
@@ -48,7 +57,11 @@ export function createDarkRealmScene(scene, layout, collisionManager = null) {
     root.name = 'dark-realm-expedition';
     const origin = layout.rooms[0];
     root.position.set(origin.x, 0, origin.z);
+    const paths = createWorldPathNetwork(DARK_REALM_PATHS, {name: 'Dark Realm', color: [124, 115, 121]});
+    paths.position.set(-origin.x, .085, -origin.z);
+    root.add(paths);
     getDarkRealmCampColliders(origin).forEach(box => collisionManager?.addCollider(box));
+    getDarkRealmCourtColliders().forEach(box => collisionManager?.addCollider(box));
     const floorMaterial = new THREE.MeshStandardMaterial({ map: expeditionStoneTexture(), roughness: .96 });
     const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
     for (const rect of floors) {
@@ -68,7 +81,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null) {
         root.add(floor);
     }
 
-    const stone = new THREE.MeshStandardMaterial({ color: 0x343342, roughness: .86 });
+    const stone = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x44414b, roughness: .9 }), 'stone');
     const bronze = new THREE.MeshStandardMaterial({ color: 0x84755c, metalness: .55, roughness: .6 });
     const shadow = new THREE.MeshStandardMaterial({ color: 0x171925, roughness: .9 });
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
@@ -90,6 +103,51 @@ export function createDarkRealmScene(scene, layout, collisionManager = null) {
     }
 
     root.userData.landmarks = [];
+    // Inhabited-scale spaces within the real districts. These complement, not
+    // replace, the distant skyline and the original discovery models.
+    const paper = new THREE.MeshStandardMaterial({ color: 0xa69b89, roughness: 1 });
+    const cloth = new THREE.MeshStandardMaterial({ color: 0x71687e, roughness: 1 });
+    for (const site of DARK_REALM_COURTS) {
+        const x = site.x - origin.x, z = site.z - origin.z;
+        // Broken paving inlays stay below ankle height; not extra walk floors.
+        for (const side of [-1, 1]) for (let i = 0; i < 7; i++) {
+            block(bronze, [.25, .02, 1.7], [x + side * 5, .125, z + 3 + i * 3]);
+            block(stone, [3, .08, 1.5], [x + side * 9, .15, z + 11 + i * 1.7]);
+        }
+        root.userData.landmarks.push({ kind: `court-${site.recipe}`, x: site.arrivalX, z: site.arrivalZ });
+    }
+    for (const solid of DARK_REALM_COURT_SOLIDS) {
+        const x = solid.x - origin.x, z = solid.z - origin.z;
+        if (solid.kind === 'standard') {
+            block(stone, [2, .8, 2], [x, .4, z]);
+            block(bronze, [.25, 5, .25], [x, 3, z]);
+            block(cloth, [1.3, 2.2, .08], [x, 4.7, z]);
+            for (const side of [-1, 1]) block(bronze, [.08, 2.3, .1], [x + side * .68, 4.7, z]);
+            continue;
+        }
+        block(stone, [4, .3, 2.5], [x, 1.2, z]);
+        for (const side of [-1, 1]) block(stone, [.45, 1.2, 2.1], [x + side * 1.6, .6, z]);
+        if (solid.recipe === 'shore') {
+            for (let i = 0; i < 4; i++) {
+                block(paper, [.65, .07, 1.25], [x - 1.35 + i * .9, 1.4, z]);
+                block(bronze, [.5, .45, .5], [x - 1.35 + i * .9, 1.65, z + .7]);
+            }
+        } else if (solid.recipe === 'archive') {
+            for (let i = 0; i < 4; i++) {
+                block(cloth, [.7, .4 + i % 2 * .2, 1.5], [x - 1.35 + i * .9, 1.6, z]);
+                block(paper, [.72, .08, 1.3], [x - 1.35 + i * .9, 1.85, z]);
+            }
+        } else if (solid.recipe === 'foundry') {
+            block(bronze, [1.7, .7, 1], [x - .7, 1.7, z]);
+            for (let i = 0; i < 3; i++) {
+                block(shadow, [.2, .2, 1.7], [x + .4 + i * .5, 1.5, z]);
+                block(bronze, [.4, .3, .4], [x + .4 + i * .5, 1.6, z - .6]);
+            }
+        } else {
+            for (const side of [-1, 1]) block(bronze, [4, .15, .12], [x, 1.8, z + side]);
+            for (let i = 0; i < 4; i++) block(paper, [.65, .4, 1.3], [x - 1.35 + i * .9, 1.55, z]);
+        }
+    }
     for (const [index, room] of layout.rooms.entries()) {
         const x = room.x - origin.x, z = room.z - origin.z;
         // Thin inlaid processional lines are decoration, not a second floor.

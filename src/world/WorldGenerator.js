@@ -31,7 +31,7 @@ import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js
 import { createEarthPathNetwork, createWorldPathNetwork } from '../art/ProceduralWorldPaths.js';
 import { createEarthLocations } from '../art/ProceduralEarthLocations.js';
 import { createElementalLocations } from '../art/ProceduralElementalLocations.js';
-import { WATER_PATHS, FIRE_PATHS } from '../data/elementalPopulation.js';
+import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
@@ -199,10 +199,11 @@ export class WorldGenerator {
         this.scene.add(createEarthPathNetwork());
         const earthLocations = createEarthLocations({ quality: this.graphicsQuality });
         this.scene.add(earthLocations);
-        const elementalLocations = ['water', 'fire'].map(realm => createElementalLocations(realm, { quality: this.graphicsQuality }));
+        const elementalLocations = ['water', 'fire', 'air'].map(realm => createElementalLocations(realm, { quality: this.graphicsQuality }));
         this.scene.add(...elementalLocations,
             createWorldPathNetwork(WATER_PATHS, { name: 'Water', color: [126, 142, 143] }),
-            createWorldPathNetwork(FIRE_PATHS, { name: 'Fire', color: [94, 83, 70] }));
+            createWorldPathNetwork(FIRE_PATHS, { name: 'Fire', color: [94, 83, 70] }),
+            createWorldPathNetwork(AIR_PATHS, { name: 'Air', color: [123, 118, 133] }));
         for (const footprint of [earthLocations, ...elementalLocations].flatMap(group => group.userData.walkFootprints)) {
             // Authored solids are currently axis-aligned. Keep the shared
             // footprint explicit rather than using decoration/roof bounds.

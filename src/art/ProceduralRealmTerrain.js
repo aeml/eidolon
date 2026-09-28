@@ -28,8 +28,8 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
-        'fractured storm slate, silver conductors, captive-violet charge, and wind-scoured edges', 0xc3841dd9,
-        { roughness: 0.55, metalness: 0.24, repeat: [68, 54], tint: 0xc8d7f0, emissive: 0x0b1021, emissiveIntensity: 0.14 }
+        'wind-scoured slate, fine pale scree, softened mineral strata, and weathered violet-grey stone', 0xc3841dd9,
+        { roughness: 0.93, metalness: 0.03, repeat: [68, 54], tint: 0xd1cdd8 }
     ),
     ocean: terrainDefinition(
         'eidolic-blackwater', 'water', 'The Eidolic Deep',
@@ -180,16 +180,14 @@ function sampleFire(x, y, _size, definition) {
     return rock.map((value, index) => Math.round(value + (dust[index] - value) * ash));
 }
 
-function sampleAir(x, y, _size, definition, palette) {
-    const tile = 31;
-    const localX = (x + Math.floor(y / tile) * 9) % tile;
-    const localY = y % tile;
-    const noise = hash2d(x, y, definition.seed);
-    const seam = localX < 1.5 || localY < 1.5 || Math.abs(localX - localY * 0.42) < 1.1;
-    const conductor = (x + y * 2) % 97 < 1.4;
-    if (conductor) return mixColor(palette.accent, palette.spirit, 0.46);
-    if (seam) return mixColor(palette.shadow, 0x090d18, 0.28);
-    return mixColor(palette.ground, palette.midtone, 0.12 + noise * 0.24);
+function sampleAir(x, y, _size, definition) {
+    const broad = periodicNoise(x, y, 11, definition.seed);
+    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x717b);
+    const grain = hash2d(x, y, definition.seed ^ 0xa893);
+    const scree = Math.max(0, (broad - .4) * .5);
+    const rock = mixColor(0x49464f, 0x787380, .15 + grit * .34 + grain * .2);
+    const dust = colorChannels(0xa7a3ae);
+    return rock.map((value, index) => Math.round(value + (dust[index] - value) * scree));
 }
 
 function sampleOcean(x, y, _size, definition, palette) {
@@ -273,7 +271,7 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
 // bright magical mark is not a raised bump. Evaluate one periodic canonical
 // field so Low and High retain the same stone/soil footprint and normal strength.
 function createTerrainSurfaceMaps(key, quality) {
-    if (!['town', 'earth', 'water', 'fire'].includes(key)) return null;
+    if (!['town', 'earth', 'water', 'fire', 'air'].includes(key)) return null;
     const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
     const canonicalSize = 256;
     const height = new Float32Array(canonicalSize * canonicalSize);
@@ -293,9 +291,9 @@ function createTerrainSurfaceMaps(key, quality) {
                 height[index] = .2 + broad * .16 + grit * .065;
                 roughness[index] = .86 + broad * .12;
             } else {
-                const frost = key === 'water';
-                const broad = periodicNoise(x, y, frost ? 14 : 13, definition.seed);
-                const grit = periodicNoise(x, y, 32, definition.seed ^ (frost ? 0x4b19 : 0x31ef));
+                const frost = key === 'water', air = key === 'air';
+                const broad = periodicNoise(x, y, air ? 11 : frost ? 14 : 13, definition.seed);
+                const grit = periodicNoise(x, y, 32, definition.seed ^ (air ? 0x717b : frost ? 0x4b19 : 0x31ef));
                 height[index] = .2 + broad * .17 + grit * .12;
                 roughness[index] = frost ? .72 + broad * .23 : .85 + broad * .13;
             }
