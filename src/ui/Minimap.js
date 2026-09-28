@@ -1,5 +1,5 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
-import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
+import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint, getAtlasWorldLocations } from './AtlasNavigation.js';
 import { getInstanceAtlas, drawInstanceAtlasFloor } from './InstanceAtlas.js';
 import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeography.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
@@ -80,6 +80,12 @@ function getRealmForPosition(x, z) {
 function classifyEntity(entity) {
     const type = entity.constructor.name;
     const meshType = entity.meshType;
+    // Static/quest atlas markers own these records. The generic enemy fallback
+    // must not paint harmless scenery red or duplicate its discovery glyph.
+    if (['WorldReading', 'ChronicleSite', 'ResonancePortal'].some(kind => type === kind || entity.type === kind)) return null;
+    if (['ChronicleWitness', 'CosmeticVendor'].some(kind => type === kind || entity.type === kind)) {
+        return { color: '#c9ba91', size: 3, ring: false };
+    }
     if (type === 'QuestNPC') return { color: entity.story ? '#ffd56a' : '#65baff', size: 3, ring: true };
 
     // Players
@@ -264,7 +270,7 @@ export class Minimap {
 
         // ---- Player dot (center) ----
         const marked = [];
-        for (const location of getAtlasQuestLocations(this.gameEngine)) {
+        for (const location of [...getAtlasQuestLocations(this.gameEngine), ...getAtlasWorldLocations(this.gameEngine)]) {
             if (filters && !filters.has(location.category)) continue;
             const pos = toMap(location.x, location.z);
             if (Math.hypot(pos.x - half, pos.y - half) > half - 12 || marked.some(p => Math.hypot(p.x - pos.x, p.y - pos.y) < 15)) continue;

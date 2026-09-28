@@ -360,7 +360,7 @@ describe('QuestUI objectives panel', () => {
         const list = document.getElementById('objectives-list');
         expect(panel.style.display).toBe('flex');
         expect(guidance).not.toBeNull();
-        expect(guidance.textContent).toContain('Meet the Quest Giver');
+        expect(guidance.textContent).toContain('Meet Archmage Ilyra');
         expect(guidance.textContent).toContain('Quest Giver');
         expect(guidance.textContent).toContain('Forge');
         expect(guidance.textContent).toContain('Stash');
@@ -370,8 +370,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Gems');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Quest Giver by the Forge');
-        expect(list.textContent).toContain('Meet the Quest Giver');
-        expect(list.textContent).toContain('Head to the Quest Giver by the Forge');
+        expect(list.textContent).toContain('Meet Archmage Ilyra');
+        expect(list.textContent).toContain('optional daily contracts');
+        expect(list.textContent).toContain('Complete Quest');
         expect(list.textContent).toContain('Stash');
         expect(list.textContent).toContain('vendor obvious Common junk');
         expect(list.textContent).toContain('check stronger drops before selling');
@@ -410,9 +411,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Recover in town and re-orient');
         expect(guidance.textContent).toContain('Respawned in town');
-        expect(guidance.textContent).toContain('Stash');
-        expect(guidance.textContent).toContain('Vendor / Repair');
-        expect(guidance.textContent).toContain('Forge');
+        expect(guidance.textContent).toContain('Anywhere inside Lanternhold');
+        expect(guidance.textContent).toContain('10% health and mana each second');
+        expect(guidance.textContent).toContain('Well Rested');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Journal (J)');
         expect(guidance.querySelector('.objective-guidance__footer').textContent).toBe('World Map (M) · Journal (J)');

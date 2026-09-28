@@ -470,6 +470,18 @@
     margin-bottom: 6px;
 }
 
+/* Put the touch/first-session guide before the desktop key reference on phones,
+   retaining all keyboard documentation for people using an external keyboard. */
+.mobile-mode .support-window__body--help {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-mode #help-first-hour-guide {
+    order: -1;
+    flex-shrink: 0;
+}
+
 .help-guide__key {
     color: #ffd700;
 }

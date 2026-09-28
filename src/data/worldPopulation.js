@@ -30,7 +30,7 @@ export const EARTH_LOCATIONS = freeze([
         ...investigation('marked_stone'), radius: 22, visibility: 'quest',
         purpose: 'A broken grove boundary surrounding the three traces in Ilyra’s investigation.' },
     { id: 'verdant-approach', name: 'Verdant Bastion Approach', role: 'landmark', recipe: 'grave-road',
-        ...entrance('verdant_bastion_catacombs'), radius: 64, visibility: 'public',
+        ...entrance('verdant_bastion_catacombs'), radius: 64, visibility: 'public', arrivalOffset: [-50, 0],
         purpose: 'The old grave road leads to the Bastion. Gather your party outside its gate.' },
     { id: 'first-grove-arch', name: 'First Grove Arch', role: 'landmark', recipe: 'root-arch',
         x: 0, z: -260, radius: 24, visibility: 'public',

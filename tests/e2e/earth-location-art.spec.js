@@ -33,7 +33,7 @@ for (const quality of ['high', 'low']) test(`Earth authored scenery renders at $
         const ctx = sheet.getContext('2d'); ctx.fillStyle = '#10191c'; ctx.fillRect(0, 0, sheet.width, sheet.height);
         const samples = [];
         for (let i = 0; i < EARTH_LOCATIONS.length; i++) {
-            const site = EARTH_LOCATIONS[i], x = site.x + (site.id === 'verdant-approach' ? -50 : 0), z = site.z;
+            const site = EARTH_LOCATIONS[i], x = site.x + (site.arrivalOffset?.[0] || 0), z = site.z;
             camera.position.set(x + 55, 65, z + 55); camera.lookAt(x, 0, z);
             light.position.set(x - 35, 65, z + 25); light.target.position.set(x, 0, z);
             renderer.render(scene, camera);

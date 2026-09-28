@@ -1,10 +1,27 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { AtlasNavigation, getAtlasLocations, getWaypointGuidance, isAtlasPartyMemberVisible, drawAtlasWaypoint } from '../src/ui/AtlasNavigation.js';
+import { AtlasNavigation, getAtlasLocations, getAtlasWorldLocations, getWaypointGuidance, isAtlasPartyMemberVisible, drawAtlasWaypoint } from '../src/ui/AtlasNavigation.js';
+import { WORLD_READINGS } from '../src/data/worldPopulation.js';
 import { DUNGEON_ENTRY_LEVELS } from '../src/data/dungeonProgression.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
 
 const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } }, currentInstanceId: '', currentInstanceType: '' });
+
+test('public Earth places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
+    const ge = engine(), sites = getAtlasWorldLocations(ge);
+    expect(sites).toHaveLength(6);
+    expect(sites.every(site => site.category === 'places' && site.symbol !== '✓')).toBe(true);
+    expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 750, z: 200 });
+    expect(sites.some(site => site.id === 'keepers-empty-house' || site.id === 'returning-scar')).toBe(false);
+    for (const reading of WORLD_READINGS) {
+        const marker = sites.find(site => site.id === reading.locationId);
+        expect(marker).toMatchObject({ x: reading.x, z: reading.z, symbol: '▤' });
+        expect(marker.availability).toContain('not a saved quest discovery');
+        expect(JSON.stringify(marker)).not.toContain(reading.reading.paragraphs[0]);
+    }
+    ge.currentInstanceId = 'private'; expect(getAtlasWorldLocations(ge)).toEqual([]);
+    ge.currentInstanceId = ''; ge.currentInstanceType = 'casino'; expect(getAtlasWorldLocations(ge)).toEqual([]);
+});
 
 test('known catalogue derives all entrances and seven real gates without revealing private/discovery data', () => {
     const ge = engine(), locations = getAtlasLocations(ge);

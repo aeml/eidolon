@@ -102,6 +102,31 @@ describe('Minimap dungeon room states', () => {
         expect(texts.some(p => ['!', '✓'].includes(p.args[0]))).toBe(false);
     });
 
+    test('public lore uses the shared document glyph without a false hostile dot, and respects filters/instances', () => {
+        const minimap = new Minimap(200);
+        const player = { id: 'reader', position: { x: -320, z: -182 }, quests: [] };
+        const reading = { id: 'world-reading-bellkeepers-cairn', type: 'WorldReading', position: { x: -320, z: -186 } };
+        minimap.gameEngine = { player, currentInstanceType: 'overworld', currentInstanceId: '',
+            worldMap: { navigation: { filters: new Set(['places']) } } };
+        minimap.update(player, [reading]);
+        expect(texts.filter(p => p.args[0] === '▤')).toHaveLength(1);
+        expect(fillRects.some(p => p.fillStyle === '#ff0000')).toBe(false);
+        texts.length = 0; minimap.gameEngine.worldMap.navigation.filters.delete('places');
+        minimap.update(player, [reading]); expect(texts.some(p => p.args[0] === '▤')).toBe(false);
+        texts.length = 0; minimap.gameEngine.currentInstanceId = 'private-run';
+        minimap.gameEngine.worldMap.navigation.filters.add('places');
+        minimap.update(player, [reading]); expect(texts.some(p => p.args[0] === '▤')).toBe(false);
+    });
+
+    test('neutral Chronicle scenery and residents never fall through to hostile red dots', () => {
+        const minimap = new Minimap(200), player = { position: { x: 0, z: 200 }, quests: [] };
+        minimap.gameEngine = { player, currentInstanceId: '', currentInstanceType: 'overworld' };
+        minimap.update(player, ['ChronicleSite', 'ResonancePortal', 'ChronicleWitness', 'CosmeticVendor'].map((type, i) =>
+            ({ id: type, type, position: { x: i, z: 205 } })));
+        expect(fillRects.some(p => p.fillStyle === '#ff0000')).toBe(false);
+        expect(fillRects.filter(p => p.fillStyle === '#c9ba91')).toHaveLength(2);
+    });
+
     test('renders dungeon room overlays and objective marker colors', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {

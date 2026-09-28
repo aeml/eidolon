@@ -1323,15 +1323,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Skill Tree');
     });
 
-    test('includes a first-hour milestone quick-reference in the help screen', () => {
-        expect(indexHtml).toContain('id="help-first-hour-guide"');
-        expect(indexHtml).toContain('First Hour Milestones');
-        expect(indexHtml).toContain('Level 30');
-        expect(indexHtml).toContain('Dungeon Guide');
-        expect(indexHtml).toContain('Level 100');
-        expect(indexHtml).toContain('Heroic');
-        expect(indexHtml).toContain('World Map (M)');
-        expect(indexHtml).toContain('Journal (J)');
+    test('current starting guide covers story, class gear, training, recovery and optional exploration without a one-hour dungeon promise', () => {
+        const page = new DOMParser().parseFromString(indexHtml, 'text/html');
+        const guide = page.getElementById('help-first-hour-guide').textContent;
+        for (const phrase of ['Starting Your Journey', 'Archmage Ilyra', 'Complete Quest', 'Level 30', 'Dungeon Guide',
+            'Level 100', 'Heroic', 'World Map (M)', 'Journal (J)', 'Skill Tree (K)', 'Well Rested', '10% of health and mana',
+            '25% more enemy-kill XP', 'Places & lore', 'Roadside camps are not safe zones']) expect(guide).toContain(phrase);
+        expect(guide).not.toContain('First Hour Milestones');
+        for (const [name, stat] of Object.entries({ fighter: 'Strength', rogue: 'Dexterity', wizard: 'Intelligence', cleric: 'Wisdom' })) {
+            expect(page.getElementById(`class-${name}-description`).textContent).toContain(`Primary stat: ${stat}`);
+        }
     });
 
     test('includes an optional adventure cadence guide with actual reset rules', () => {

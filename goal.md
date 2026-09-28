@@ -45,7 +45,9 @@ Luna confirmed terminal success/live identity. Independent IPv4 verification
 confirmed frontend/backend version and SHA, health/database, login/cumulative
 notes and11 exact deployed source assets. IPv6 remains owner-deferred.
 **1.15 implementing locally:** Earth scenery/paths, shared spawn solids and
-optional read-only lore interaction. See its receipt for actual checks and the
+optional read-only lore interaction, shared public atlas/radar markers and
+corrected first-session/class/recovery guidance. Desktop/phone-sized atlas and
+guidance checks pass. See its receipt for actual checks and the
 remaining town/onboarding/map/full-world acceptance work. No1.15 push yet.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only

@@ -395,19 +395,19 @@
                 <div class="class-selection__title">Create New Character</div>
                 <button class="class-btn" data-type="Fighter" aria-labelledby="class-fighter-name" aria-describedby="class-fighter-description">
                     <span id="class-fighter-name" class="class-btn__name">Fighter</span>
-                    <span id="class-fighter-description" class="class-selection__description class-selection__description--fighter">A durable melee bruiser. Hold the frontline and protect your allies.</span>
+                    <span id="class-fighter-description" class="class-selection__description class-selection__description--fighter">A durable melee bruiser. Hold the frontline and protect your allies. Primary stat: Strength.</span>
                 </button>
                 <button class="class-btn" data-type="Rogue" aria-labelledby="class-rogue-name" aria-describedby="class-rogue-description">
                     <span id="class-rogue-name" class="class-btn__name">Rogue</span>
-                    <span id="class-rogue-description" class="class-selection__description class-selection__description--rogue">A mobile skirmisher. Strike at the perfect moment, then slip away.</span>
+                    <span id="class-rogue-description" class="class-selection__description class-selection__description--rogue">A mobile skirmisher. Strike at the perfect moment, then slip away. Primary stat: Dexterity.</span>
                 </button>
                 <button class="class-btn" data-type="Wizard" aria-labelledby="class-wizard-name" aria-describedby="class-wizard-description">
                     <span id="class-wizard-name" class="class-btn__name">Wizard</span>
-                    <span id="class-wizard-description" class="class-selection__description class-selection__description--wizard">A ranged caster. Master powerful spells and shape the battlefield.</span>
+                    <span id="class-wizard-description" class="class-selection__description class-selection__description--wizard">A ranged caster. Master powerful spells and shape the battlefield. Primary stat: Intelligence.</span>
                 </button>
                 <button class="class-btn" data-type="Cleric" aria-labelledby="class-cleric-name" aria-describedby="class-cleric-description">
                     <span id="class-cleric-name" class="class-btn__name">Cleric</span>
-                    <span id="class-cleric-description" class="class-selection__description class-selection__description--cleric">A sustain-focused hybrid. Mend your allies and bring down judgment.</span>
+                    <span id="class-cleric-description" class="class-selection__description class-selection__description--cleric">A sustain-focused hybrid. Mend your allies and bring down judgment. Primary stat: Wisdom.</span>
                 </button>
             </div>
         </div>
@@ -630,7 +630,7 @@
             <div class="support-window__body support-window__body--help">
                 <div class="help-guide">
                     <div class="help-guide__title">Core Controls</div>
-                    <div><strong class="help-guide__key">Left Click:</strong> Move / Melee Attack</div>
+                    <div><strong class="help-guide__key">Left Click:</strong> Move / Basic Attack / Interact</div>
                     <div><strong class="help-guide__key">Shift + Left Click:</strong> Move only; ignore enemies, loot and discoveries under the cursor</div>
                     <div><strong class="help-guide__key">Right Click:</strong> Use Ability</div>
                     <div><strong class="help-guide__key">Scroll:</strong> Zoom In / Out</div>
@@ -640,7 +640,7 @@
                     <div><strong class="help-guide__key">I:</strong> Inventory</div>
                     <div><strong class="help-guide__key">M:</strong> World Map</div>
                     <div><strong class="help-guide__key">J:</strong> Journal / current quest route</div>
-                    <div><strong class="help-guide__key">E:</strong> Inspect a nearby accepted Chronicle discovery</div>
+                    <div><strong class="help-guide__key">E:</strong> Inspect nearby accepted Chronicle evidence, read optional roadside lore, or examine the town portal</div>
                     <div><strong class="help-guide__key">B:</strong> Return to Lanternhold, including from a dungeon. Also available in the Escape menu.</div>
                 </div>
                 <div id="help-keyboard-reference" class="help-guide help-guide--separated help-guide--keyboard-reference" style="display: none;">
@@ -653,10 +653,13 @@
                     </div>
                 </div>
                 <div id="help-first-hour-guide" class="help-guide help-guide--separated">
-                    <div class="phone-menu-action"><strong>Touch combat:</strong> Move with the joystick. Tap an enemy to select it, then press Attack, Skill or a hotbar ability. Tap overlapping enemies again to cycle the selection. Tap empty ground or the target's × button to cancel pursuit. Without a selected enemy, directional skills cast ahead of your hero. Pinch the world to zoom; Menu → Reset Camera restores the default view.</div>
-                    <div class="help-guide__title">First Hour Milestones</div>
+                    <div class="help-guide__title">Starting Your Journey</div>
+                    <div class="phone-menu-action"><strong>Touch combat:</strong> Move with the joystick. Tap an enemy to select it, then press Attack, Skill or a hotbar ability. Tap overlapping enemies again to cycle the selection. Tap empty ground or the target's × button to cancel pursuit. Without a selected enemy, directional skills cast ahead of your hero. Tap a lore object or press Use nearby to read it. Pinch the world to zoom; Menu → Reset Camera restores the default view.</div>
                     <div><strong class="help-guide__key">1.</strong> Meet <strong>Archmage Ilyra</strong> in town to accept your <strong>Fourfold Chronicle</strong> beneath her gold quest marker. Visit the <strong>Quest Giver</strong> outside the <strong>Forge</strong> for blue-marked daily contracts. Return to the appropriate giver and click <strong>Complete Quest</strong> to receive your rewards.</div>
-                    <div><strong class="help-guide__key">2.</strong> Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
+                    <div><strong class="help-guide__key">2.</strong> Open <strong>Inventory (I)</strong> to compare and equip useful drops. Favor <strong>Strength</strong> for Fighters, <strong>Dexterity</strong> for Rogues, <strong>Intelligence</strong> for Wizards and <strong>Wisdom</strong> for Clerics; <strong>Vitality</strong> helps every class survive. Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
+                    <div><strong class="help-guide__key">Train:</strong> Open <strong>Skill Tree (K)</strong>, spend earned training points, and place learned abilities on your hotbar. On phones, use <strong>Menu → Skills &amp; Runes</strong> and the bag button instead of keyboard shortcuts.</div>
+                    <div><strong class="help-guide__key">Recover:</strong> Anywhere inside Lanternhold restores <strong>10% of health and mana each second</strong>. Time in town builds <strong>Well Rested</strong>, up to two hours: <strong>10% more stats</strong> and <strong>25% more enemy-kill XP</strong>. Its timer runs only outside safe zones. Roadside camps are not safe zones.</div>
+                    <div><strong class="help-guide__key">Explore:</strong> The atlas’s <strong>Places &amp; lore</strong> filter shows public camps, landmarks and optional readings. Select a destination for a personal waypoint; this does not move your hero. Journal tracking controls which quest objectives appear. Optional lore does not replace Ilyra’s saved investigations or grant quest rewards.</div>
                     <div><strong class="help-guide__key">3.</strong> <strong>Level 30</strong> unlocks <strong>Verdant Bastion Catacombs</strong>. Later realms have higher entry requirements; check the <strong>Dungeon Guide</strong> before setting out.</div>
                     <div><strong class="help-guide__key">4.</strong> <strong>Level 100</strong> unlocks <strong>Heroic</strong> and <strong>Mythic</strong> dungeon difficulties.</div>
                     <div><strong class="help-guide__key">5.</strong> If you get turned around, reopen <strong>World Map (M)</strong> or <strong>Journal (J)</strong> to recover the route.</div>

@@ -55,6 +55,19 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.screenshot({ path: testInfo.outputPath('atlas-navigation.png') });
         await page.evaluate(() => window.__atlas.map.navigation.select('forge'));
         await page.screenshot({ path: testInfo.outputPath('atlas-town.png') });
+        await search.fill('Bellkeeper');
+        await page.getByRole('button', { name: '▤ Bellkeeper’s Cairn', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('not a saved quest discovery');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        expect(await page.evaluate(() => {
+            const waypoint = window.__atlas.map.navigation.waypoint;
+            return [waypoint.x, waypoint.z];
+        })).toEqual([-320, -186]);
+        await page.screenshot({ path: testInfo.outputPath('atlas-public-lore.png') });
+        await page.locator('.atlas-directory > summary').click();
+        await page.getByRole('checkbox', { name: '◇ Places & lore' }).uncheck();
+        await expect(page.getByRole('button', { name: '▤ Bellkeeper’s Cairn', exact: true })).toHaveCount(0);
+        await page.getByRole('checkbox', { name: '◇ Places & lore' }).check();
         await page.evaluate(async () => {
             const { engine, map } = window.__atlas;
             const { QuestUI } = await import('/src/ui/QuestUI.js');

@@ -423,11 +423,11 @@ export class QuestUI {
         const copyByReason = {
             respawn: {
                 title: 'Recover in town and re-orient',
-                hint: 'Respawned in town. Recover at the Stash, Vendor / Repair, or Forge, then open World Map (M) or Journal (J) and head back to your next quest stop.'
+                hint: 'Respawned in town. Anywhere inside Lanternhold restores 10% health and mana each second and builds Well Rested time. Repair or sort gear if needed, then open World Map (M) or Journal (J) to resume your route.'
             },
             recall: {
                 title: 'Re-orient after recalling',
-                hint: 'Recalled to town. Sort gear, repair if needed, then open World Map (M) or Journal (J) and pick the route back up.'
+                hint: 'Recalled to town. Recover health and mana anywhere inside Lanternhold and build Well Rested time. Sort gear or repair if needed, then open World Map (M) or Journal (J) to resume your route.'
             },
             town_return: {
                 title: 'Pick up the route again',
@@ -460,7 +460,7 @@ export class QuestUI {
 
         return {
             id: 'starter-town-quest-giver',
-            title: 'Meet the Quest Giver',
+            title: 'Meet Archmage Ilyra',
             progressLabel: 'Town',
             progressPct: 5,
             rewardXP: 0,
@@ -468,7 +468,7 @@ export class QuestUI {
             badge: 'Town',
             badgeClass: 'is-objective',
             routeTone: 'support',
-            hint: 'Head to the Quest Giver by the Forge. Open World Map (M) or Journal (J) if you need a reminder, use the Stash to sort gear, vendor obvious Common junk, check stronger drops before selling, and keep Shards, Hearts, and Gems for the Forge before heading out.'
+            hint: 'Speak to Archmage Ilyra beneath the gold marker for your story; return and click Complete Quest to claim rewards. The blue Quest Giver by the Forge offers optional daily contracts. Open World Map (M) or Journal (J) for directions. Use the Stash, vendor obvious Common junk, check stronger drops before selling, and keep Shards, Hearts, and Gems for the Forge.'
         };
     }
 

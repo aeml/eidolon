@@ -6,11 +6,13 @@ import { getResonancePortalState } from '../core/ResonancePortalState.js';
 import { getInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
+import { EARTH_LOCATIONS, WORLD_READINGS } from '../data/worldPopulation.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
     quests: { name: 'Quests', symbol: '!', color: '#efd184' },
     discoveries: { name: 'Discoveries', symbol: '✓', color: '#a9c5dd' },
+    places: { name: 'Places & lore', symbol: '◇', color: '#c9ba91' },
     entrances: { name: 'Entrances', symbol: '◆', color: '#d6b3ef' },
     passages: { name: 'Passages', symbol: '↔', color: '#cfbc97' },
     events: { name: 'Events', symbol: '✦', color: '#b4dda4' },
@@ -18,6 +20,21 @@ export const ATLAS_CATEGORIES = Object.freeze({
 });
 
 export const isOverworldAtlas = engine => !engine?.currentInstanceId && (!engine?.currentInstanceType || engine.currentInstanceType === 'overworld');
+
+const publicWorldLocations = Object.freeze(EARTH_LOCATIONS.filter(site => site.visibility === 'public').map(site => {
+    const reading = WORLD_READINGS.find(reading => reading.locationId === site.id);
+    return Object.freeze({ id: site.id, name: site.name, instanceId: '', category: 'places',
+        symbol: reading ? '▤' : '◇', x: reading?.x ?? site.x + (site.arrivalOffset?.[0] || 0),
+        z: reading?.z ?? site.z + (site.arrivalOffset?.[1] || 0), purpose: site.purpose,
+        availability: reading ? 'Optional public reading · approach and inspect · not a saved quest discovery' :
+            site.role === 'camp' ? 'Abandoned site · combat territory, not a safe zone' : 'Public landmark · combat territory' });
+}));
+
+// Public wayfinding is separate from saved Chronicle masks. Mandatory story
+// surroundings remain represented by their eligible quest/discovery markers.
+export function getAtlasWorldLocations(engine) {
+    return isOverworldAtlas(engine) ? publicWorldLocations : [];
+}
 
 // Party snapshots explicitly include instanceId. Missing identity is not proof
 // of shared space; do not project private coordinates onto a public atlas.
@@ -77,7 +94,7 @@ export function getAtlasLocations(engine) {
             x: event.site.x, z: event.site.z, purpose: 'Current public world event.',
             availability: event.phase === 'complete' ? 'Event complete' : 'Event active' });
     }
-    return [...result, ...getAtlasQuestLocations(engine)];
+    return [...result, ...getAtlasQuestLocations(engine), ...getAtlasWorldLocations(engine)];
 }
 
 export function getWaypointGuidance(engine, waypoint) {

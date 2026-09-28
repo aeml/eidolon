@@ -158,7 +158,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             break;
         default: throw new Error(`Unknown Earth location recipe: ${site.recipe}`);
         }
-        const apronX = site.id === 'verdant-approach' ? -51 : 0;
+        const apronX = site.arrivalOffset?.[0] || 0;
         const apronRadius = site.role === 'landmark' ? 15 : site.radius * .65;
         part(new THREE.PlaneGeometry(apronRadius * 2, apronRadius * 1.6), 'soil', apronX, .018, 0, [-Math.PI / 2, 0, .12]);
         // Quiet peripheral vegetation/debris ties the composition into the
