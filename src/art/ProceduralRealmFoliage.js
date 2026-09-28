@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { getRegionTheme } from './darkFantasyTheme.js';
+import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -24,8 +26,10 @@ const material = (key, color, options = {}) => {
             emissive: options.emissive ?? 0x000000,
             emissiveIntensity: options.emissiveIntensity ?? 0,
             flatShading: true,
+            vertexColors: options.vertexColors ?? false,
             side: options.side ?? THREE.FrontSide
         }));
+        if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
     }
     return MATERIALS.get(key);
 };
@@ -50,6 +54,7 @@ const trunk = geometry('foliage-trunk', () => new THREE.CylinderGeometry(0.28, 0
 const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeometry(0.16, 0.32, 6.2, 7));
 const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08, 0.18, 2.8, 6));
 const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronGeometry(1.55, 0));
+const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const pineCrown = geometry('foliage-pine-crown', () => new THREE.ConeGeometry(1.7, 3.4, 7));
 const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
 const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
@@ -63,17 +68,17 @@ function palette(region) {
 
 function createOssuaryBirch() {
     const p = palette('earth');
-    const bark = material('foliage-birch-bark', 0x8d8977);
+    const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber' });
     const scar = material('foliage-birch-scar', p.shadow);
-    const leaf = material('foliage-gloam-leaf', 0x34432f, { side: THREE.DoubleSide });
+    const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-grave-lantern', p.accent, { emissive: p.accent, emissiveIntensity: 0.72, roughness: 0.5 });
     return [
         part('pale scarred trunk', narrowTrunk, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
         part('black bark seam', narrowTrunk, scar, { position: [0.12, 3.35, 0.08], rotation: [0, 0, -0.09], scale: [0.18, 0.92, 0.16] }),
         part('west grave bough', branch, bark, { position: [-0.72, 5.2, 0], rotation: [0, 0, -0.72] }),
         part('east grave bough', branch, bark, { position: [0.68, 4.68, 0.16], rotation: [0.12, 0, 0.82], scale: [0.88, 0.88, 0.88] }),
-        part('faceted crown', broadCrown, leaf, { position: [-0.25, 6.55, 0], scale: [1.25, 0.82, 1.08] }),
-        part('low gloam crown', broadCrown, leaf, { position: [0.78, 5.62, 0.08], scale: [0.8, 0.58, 0.74] }),
+        part('layered birch leaves', leafCrown, leaf, { position: [-0.25, 6.55, 0], scale: [1.25, 0.82, 1.08] }),
+        part('low gloam crown', leafCrown, leaf, { position: [0.78, 5.62, 0.08], scale: [0.8, 0.58, 0.74] }),
         part('grave lantern fruit', lantern, glow, { position: [-0.98, 4.75, 0.15], castShadow: false })
     ];
 }

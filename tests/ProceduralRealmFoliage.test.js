@@ -87,7 +87,7 @@ describe('procedural realm foliage', () => {
         }
 
         expect(getProceduralFoliageCacheMetrics()).toEqual({
-            geometries: 10,
+            geometries: 11,
             materials: 28,
             archetypes: 9
         });

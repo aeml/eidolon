@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -123,6 +124,7 @@ function material(key, color, options = {}) {
             polygonOffsetUnits: 1,
             shadowSide: THREE.FrontSide
         }));
+        if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
     }
     return MATERIALS.get(key);
 }
@@ -143,11 +145,11 @@ const SHAPES = Object.freeze({
 function createMaterials() {
     const palette = getRegionTheme('town').palette;
     return Object.freeze({
-        foundation: material('lanternhold-foundation', 0x292824, { roughness: 0.98 }),
-        stone: material('lanternhold-stone', 0x555148, { roughness: 0.94 }),
-        paleStone: material('lanternhold-pale-stone', 0x777062, { roughness: 0.92 }),
-        timber: material('lanternhold-black-oak', 0x241a17, { roughness: 0.96 }),
-        roof: material('lanternhold-roof-slate', 0x20232a, { metalness: 0.12, roughness: 0.84 }),
+        foundation: material('lanternhold-foundation', 0x292824, { roughness: 0.98, surface: 'stone' }),
+        stone: material('lanternhold-stone', 0x555148, { roughness: 0.94, surface: 'stone' }),
+        paleStone: material('lanternhold-pale-stone', 0x777062, { roughness: 0.92, surface: 'stone' }),
+        timber: material('lanternhold-black-oak', 0x241a17, { roughness: 0.96, surface: 'timber' }),
+        roof: material('lanternhold-roof-slate', 0x303946, { metalness: 0.04, roughness: 0.84, surface: 'slate' }),
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),
         brass: material('lanternhold-oath-brass', 0x9d6a32, { metalness: 0.66, roughness: 0.4 }),
         leather: material('lanternhold-road-leather', 0x4c3025, { roughness: 0.92 }),

@@ -214,3 +214,47 @@ Remaining: larger-scale surface variation, architecture/prop materials,
 vegetation, water/ice/fire/air treatments, lighting/atmosphere integration and
 scene-wide review. This initial shader-input improvement does not complete the
 environment redesign or modern closed-beta visual gate.
+
+## September 28 Lanternhold/Earth scene pass — local, not deployed
+
+The first representative scene combines the production batched Trading House,
+smithy and stash with production town/Earth ground and instanced ossuary birches.
+It is a controlled material-comparison vignette, not the actual town layout or
+evidence of live navigation/interaction acceptance.
+
+- Shared architecture materials now have world-scale staggered masonry,
+  overlapping slate courses, weather variation and subtle timber fibres. The
+  standard-material shader retains lighting, shadows, fog and normal maps;
+  joints are derivative-filtered and fade when subpixel. Instancing and merged
+  structures use physical world coordinates rather than stretched box UVs.
+- Town/Earth key and fill colors now separate warmer light from cooler shadows.
+  Town exposure is slightly reduced; lanterns retain their warm navigation accent.
+- Ossuary birch crowns use deterministic folded leaf geometry with per-leaf
+  color variation instead of solid polyhedra. Each crown remains one shared
+  opaque instanced mesh (no individual leaf draw calls or alpha-texture sorting).
+  Other tree species are deliberately not marked redesigned.
+- No layout, picking volume, walking collider, quest, combat or saved-data change.
+  No downloaded textures or per-frame shader updates were added.
+
+Verification: 23 focused tests pass across surface hooks, leaf geometry,
+architecture, foliage and regional themes; scoped lint and whitespace checks
+pass. The final bounded browser route passes in 6.7 seconds with no reported
+browser/shader failures. High and Low both render all three surface variants;
+the comparison switches ground texture resolution to 256/128 respectively.
+Final screenshots on both settings were inspected. Draw observations for this
+fixture: High 182 calls / 19,979 triangles, Low 88 calls / 10,051 triangles; 33 textures each.
+These are fixture observations, not a full-world/mobile performance acceptance.
+
+Artifacts: `/tmp/eidolon-lanternhold-scene-20260928-zH7KRj/`, with `before/`,
+`after/` (building/lighting only), `leaves/` and `final/` captures. These temporary
+local files must be preserved with release evidence before long-term reliance.
+
+Cost/remaining work: the shared leaf geometry is 108 KiB of attributes and 1,024
+triangles per crown. Two crowns across 120 world birches add 237,120 submitted
+triangles versus the old 36-triangle crowns when the complete instance batches
+are drawn, before shadow passes. Keep this cost explicit; measure the populated
+world and add spatial batching/LOD if needed before release. This small scene
+is not proof that every realm meets its frame budget. Broad ground repetition,
+town-edge transitions, richer silhouettes/props, other vegetation species and
+realm-specific water/ice/lava/air/dungeon/raid/casino treatment remain open.
+The modern-art gate and owner scene review are not complete.
