@@ -28,8 +28,9 @@ manual turn-in states and character/instance privacy. Final integrated atlas/rep
 routes and native browser touch gestures passed; service/facing consistency is
 implemented. Initial Alpha1.14.0 candidate8098796179ffd5faab250e7a3a04766343f6a1ab
 failed CI36415402488 on two stale Jest fixtures. Those fixtures are corrected;
-44 focused checks pass and runtime behavior is unchanged. Next: publish the
-corrected1.14.0 candidate, Luna terminal-only watch, complete deployment gates and
+44 focused checks pass and runtime behavior is unchanged. Corrected candidate
+0dc2f055180e219c45afddec7e56e7f1210a630d is pushed; replacement CI36416114631
+confirmed pending, Luna monitoring. Next: complete mandatory deployment gates and
 independent exact live verification, then1.15. No partial
 milestone deployed.
 The global goal and later gates are still open.
