@@ -4,7 +4,9 @@ Last refreshed: September 28, 2026
 
 This file is a short pointer. Current forward planning and historical closeout live in these documents:
 
-- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, playable/wider beta, feature freeze, release candidates, launch gates, decisions and evidence policy. Planning only, not shipped work.
+- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, beta/launch gates and sequential implement/deploy/verify execution. 1.11 inventory is implementing; no new milestone is shipped yet.
+
+- [World population and atlas](plans/2026-09-28-world-population-and-atlas.md) — required world density, meaningful locations/activities, accurate map/minimap, delivery assignments and B1 acceptance. First pass before closed beta, followed by regional refinement.
 
 - [Alpha 1.10 playtest release record](plans/2026-09-23-release1-10-playtest.md) — last verified live baseline 1.10.2, retained checks, remaining portal/performance work and user-owned campaign playtesting. Earlier plans describe original scope, not current deployment state.
 

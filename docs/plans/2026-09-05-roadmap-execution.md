@@ -15,7 +15,10 @@ work and supersedes the older status paragraphs below. Deployment is complete,
 but full roadmap acceptance is not. Uninterrupted fresh-campaign and human
 pacing verification belong to the user's playtest; do not launch another long
 campaign. The physical portal is missing and casino rendering optimizations
-remain local/unshipped. All 1.11–1.99 milestones are planning, not delivered work.
+remain local/unshipped. 1.11 inventory is now implementing; later 1.11–1.99 scope
+is planned, not delivered work. The [world/atlas addition](2026-09-28-world-population-and-atlas.md)
+and [execution goal](../../goal.md) require sequential milestone completion,
+deployment and live verification before advancing, with Luna monitoring.
 Earned Air/Tempest, all four elemental
 raid repairs and Umbral Nexus have accepted scoped group evidence. Dark King's four phases,
 five survivors' manual rewards, epilogues and relogin are accepted within the

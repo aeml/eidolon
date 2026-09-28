@@ -121,9 +121,17 @@ The user supplies actor models only (player classes, monsters/bosses and NPCs).
 Environment/equipment geometry, textures/materials, lighting, shaders, effects
 and integration remain code-owned, as detailed in the visual contract.
 
+The [populated-world and atlas contract](docs/plans/2026-09-28-world-population-and-atlas.md)
+adds purposeful landmarks, roads, camps, ambient life, discoveries and working
+optional activities, plus an accurate modern world map/minimap. First-pass
+coverage is required before closed beta; later realm milestones refine it.
+The [execution goal](goal.md) is to complete, test, publish and live-verify each
+milestone in order, then continue; Luna monitors deployments.
+
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
-rules, decision points and beta/full-release gates. All start **planned**.
+rules, decision points and beta/full-release gates. **1.11 is implementing**;
+later milestones remain planned. No new milestone is deployed yet.
 
 | Versions | Outcome |
 | --- | --- |

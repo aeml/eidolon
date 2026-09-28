@@ -1,4 +1,43 @@
-# Eidolon Procedural Dark-Fantasy Visual Redesign Goal
+# Eidolon roadmap execution goal — Alpha 1.11 through 1.99
+
+Current instruction, September 28, 2026: work through the
+[authoritative roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+version by version. Finish each milestone's necessary implementation, verify it
+proportionately, publish synchronized version/patch notes, commit/push, monitor
+deployment, confirm the exact live build and changed behavior, then continue to
+the next milestone. A completed patch or deployment is not the terminal goal.
+
+Required additions include the [populated world and atlas overhaul](docs/plans/2026-09-28-world-population-and-atlas.md)
+and [modern ARPG visual contract](docs/art/2026-09-28-modern-arpg-closed-beta.md).
+The first populated-world/map pass is required before closed beta, not deferred
+to late polish. User-provided actor models are a dependency; environments,
+equipment, materials, shaders and integration remain implementation-owned.
+
+Current checkpoint: 1.11 inventory/visual baseline is implementing; 1.10.2 is
+the last verified live release. Local art changes and pending casino optimization
+are not deployed. Reconcile the full outgoing diff before any release push.
+
+Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
+reports. Keep focused checks and mandatory CI; reuse unaffected evidence. Do not
+restart long campaign/soak runs: campaign/pacing remains user-playtest-owned.
+Preserve player data, authority and Gold/EP isolation. Do not activate payments,
+wipe characters, buy services or change launch/access policies without approval.
+
+Terminal condition: the roadmap's mandatory scope and release gates are met,
+the approved 1.99 release-ready candidate is live and verified, and its evidence,
+limitations and operations handoff are recorded. Owner-only beta/launch decisions
+remain genuine gates; do not invent approval to keep moving. Continue until this
+outcome, an explicit pause or a material dependency requiring user direction.
+
+This file records the execution contract, not the goal controller's runtime
+status. If that controller is paused, only the user's Resume control can restore
+automatic continuation; never claim a documentation edit resumed it.
+
+## Historical procedural visual migration contract
+
+The following original goal is retained for context. The current roadmap and
+September 28 ownership/quality requirements above supersede conflicting original
+procedural-only restrictions and its narrower terminal condition.
 
 September 28 direction update: the original migration contract below is retained
 as history and architecture guidance. The user now requests modern Diablo/Path

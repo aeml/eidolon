@@ -1,7 +1,7 @@
 # Eidolon 1.11–1.99: playable beta to release readiness
 
-Requested September 28, 2026. **Planning only: none of the milestones below is
-claimed implemented, tested, or deployed by this document.** Last verified live
+Requested September 28, 2026. **Execution authorized; milestone scope is not
+claimed implemented, tested, or deployed merely by this document.** Last verified live
 baseline is Alpha 1.10.2; see the [release record](2026-09-23-release1-10-playtest.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
@@ -19,6 +19,15 @@ generated textures/PBR maps, lighting, shaders, weather/VFX, icons and actor
 integration remain implementation work. Follow the visual contract's ownership
 table; do not convert this into a request that the user produce a world asset
 pack. Code-owned world/material work proceeds before actor imports are available.
+
+World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)
+is mandatory. Fill the actual world with purposeful places, routes, ambient life,
+discoveries and activities, and rebuild world-map/minimap presentation around
+accurate shared location data. The first complete pass is required before B1;
+later regional/art milestones refine it, not postpone all content until then.
+The user authorizes sequential milestone implementation, scoped verification,
+version/patch-note updates, push/deployment and live-success checks, then the next
+milestone. See [the execution goal](../../goal.md) and section 7.
 
 This is the authoritative forward roadmap after the
 [1.1–1.10 foundation plan](2026-09-05-v1-1-to-v1-10-roadmap.md). It covers every
@@ -155,14 +164,14 @@ even if their comprehensive review is scheduled in a later band.
 
 | Version | Delivery scope | Exit evidence / dependency |
 | --- | --- | --- |
-| 1.11 | Promise-to-product inventory and visual baseline: reconcile earlier explicit requests against code/live receipts; inspect four-class anatomy, materials and equipment fit. Begin one coherent modern Fighter art slice. | Traceable gap register plus actual comparison views; preserve existing passes; list portal, casino and newly reopened art work. No blanket “feature complete” assertion. |
-| 1.12 | Physical resonance portal: intentional Lanternhold site, four restored-crystal motifs, locked/ready/active presentation, Ilyra's final-Vigil directions, map marker, click/touch entry and arrival/return guidance. | Each player's level/crystal gate enforced server-side; eligible travel, ineligible explanation, legacy eligibility, party separation, reconnect and collision checks; inspected desktop/touch presentation. Guide remains a compatible fallback. |
+| 1.11 | Promise-to-product inventory and visual baseline: reconcile prior requests against code/live receipts; inspect four-class anatomy/equipment fit; begin the Fighter slice. Audit world population, canonical locations and current map; plan each realm's additions. | Traceable gap/location registers plus actual scene/map comparison views; preserve existing passes; list portal, casino, art and atlas gaps. No blanket “feature complete” assertion. |
+| 1.12 | Physical resonance plaza/portal: four crystal motifs, locked/ready/active presentation, Ilyra's directions, entry/return guidance. Establish validated shared location data for world, quests and map references. | Each player's level/crystal gate enforced server-side; eligible/ineligible travel, legacy eligibility, party separation, reconnect, registry consistency and collision checks; inspected desktop/touch presentation. Guide remains a compatible fallback. |
 | 1.13 | Complete the pending casino hidden-floor optimizations and investigate remaining measured rendering cost without degrading the promised venue. | Comparable hardware measurements against the predeclared targets; functional floor/streaming cleanup retained; no busy-host pass claim. Publish the accepted candidate with notes. |
-| 1.14 | Beta feedback loop: accessible report action, build/area context, opt-in bounded diagnostics, privacy-safe error grouping and actionable issue triage. | A submitted test report reaches an operator with usable repro context, without passwords, tokens, chat dumps or automatic private-data uploads. |
-| 1.15 | First-session guidance: character/class explanation, move/attack/interact, Ilyra, manual turn-ins, bag/equipment, skill/talent spending, town recovery and next activity. | Fresh desktop/touch walkthrough has understandable next steps without developer coaching; returning veterans are not forced through a reset/tutorial. |
-| 1.16 | Beta account continuity: login/logout/resume errors, lost-connection recovery, safe session replacement and clear recovery/help entry points. | Supported reconnect/expired-session paths preserve progress; review existing account protections and remediate confirmed defects. Depends on durable save/session contract, not invented account privileges. |
-| 1.17 | Dungeon/raid preparation and party access: visible requirements, appropriate gear guidance, role recruitment, ready checks, unlock reasons and sparse-population guidance. | Players can assemble and enter an eligible party using normal UI; per-member gates and reward eligibility remain intact. No forced fake-player matchmaking. |
-| 1.18 | Finish the early four-class modern-art/equipment workstream and declare provisional beta browser/device matrix and quality presets; resolve blocking layout/targeting/readability. | Visual-contract review, motion/fit and relevant render checks; desktop plus available touch evidence. Label unverified devices and retain deferred phone feedback honestly. |
+| 1.14 | Beta feedback loop: accessible reports, build/area context and opt-in bounded diagnostics. Atlas first pass: actual geography/routes, modern cartography, legend/filters, location search/details and personal waypoint. | Test report reaches an operator without private dumps; known locations/map coordinates agree, essential controls work on desktop/touch, and map input never moves/attacks underneath. |
+| 1.15 | First-session guidance for classes, movement/combat, Ilyra, turn-ins, equipment/builds and town recovery. Populate Lanternhold/Earth with purposeful paths, landmarks, camps, story surroundings and working optional discoveries. | Fresh walkthrough needs no developer coaching; Earth meets the population contract, interactions/approaches and map agree; returning players retain quests/progress. |
+| 1.16 | Beta account continuity: login/logout/resume, safe session replacement and recovery/help. Populate Water/Fire with distinct locations, routes, inhabited/abandoned sites and optional discoveries. | Supported session paths and discoveries preserve progress; Water/Fire meet population requirements without duplicate story objectives, inaccessible locations or invented account privileges. |
+| 1.17 | Dungeon/raid preparation and party access: requirements, gear/role guidance, recruitment/readiness and low-population behavior. Populate Air and finish Dark Realm district surroundings/approaches with coherent map references. | Normal eligible party entry works; Air meets population coverage, existing Dark Realm content is integrated, and meeting points/approaches are usable. No fake-player matchmaking or per-member gate bypass. |
+| 1.18 | Finish early four-class art/equipment and B1 populated-world/atlas coverage. Integrate map/minimap/instance views, quest/party markers, discovery visibility and supported controls; declare beta device matrix and quality presets. | Visual/world contracts reviewed in gameplay, actor fit checked, populated-scene performance/resource budgets met; no marker-only POIs or false device claims. Retain deferred phone feedback honestly. |
 | 1.19 | Closed-beta policies and operations: cohort selection/access approach, support/report destination, moderation contacts, wipe/carryover decision, channel/version label, known limitations and capacity budget. | Owner resolves B1 decisions including treatment of existing open-alpha accounts; no live access restriction, wipe or payment action without an approved transition. |
 | 1.20 | Package the playable closed-beta candidate: required alpha promises and visual contract, notes, onboarding/help, known issues and stable deployment. | **B1** checklist below; exact identity and smoke results plus approved cohort transition. Human campaign pacing remains user-playtest-owned, not an automated admission gate. |
 
@@ -291,6 +300,14 @@ even if their comprehensive review is scheduled in a later band.
 - [ ] Every prior promise is mapped to delivered evidence, a concrete repair,
   or an explicitly approved future scope; core-play gaps are not waived silently.
 - [ ] Physical Dark Realm portal and the existing authoritative journey agree.
+- [ ] The [world/atlas contract](2026-09-28-world-population-and-atlas.md) is met:
+  all four realms have at least eight distinct purposeful named locations,
+  including two working optional interactive sites each; existing investigations
+  and Dark Realm content remain integrated and saved. Town/routes/landmarks are
+  readable and the updated atlas/minimap reflects real geography and gates.
+- [ ] Normal-scale populated-world views and map controls are reviewed; shared
+  location consistency, travel/interaction safety, discovery/reward authority and
+  populated-scene quality budgets have evidence, not just empty-gallery screenshots.
 - [ ] No known blocking login, character creation, movement/combat, quest handoff,
   dungeon/raid entry/exit, save or reward defect in the supported beta path.
 - [ ] Party formation/roles, clear requirements, recovery and reporting work.
@@ -387,6 +404,7 @@ Do not convert “verification missing” into “feature missing.”
 | Dungeon death/town recovery/checkpoints/15-minute expiry, party credit/rewards | 1.16–1.17, 1.26, 1.28–1.29, 1.38, 1.88 |
 | Inventory/equipment, quest icons/tracking, item drop, stash, Forge, crafting, trade/auction/guild bank | 1.34–1.36, 1.41, 1.45, 1.52, 1.73 |
 | Procedural visuals/coverage, animations, environment collisions, effects, sound, responsive menus | 1.41–1.50, 1.86–1.87 |
+| Populated world, meaningful landmarks/roads/camps/discoveries, atlas/minimap/waypoints and canonical location data | 1.11–1.18, B1 at 1.20, 1.22–1.30, 1.42, 1.45–1.50, 1.53, 1.57, 1.80, 1.98; [detailed contract](2026-09-28-world-population-and-atlas.md) |
 | Phones, controls, accessibility, settings, representative performance and resource lifetime | 1.18, 1.43–1.50, 1.87, 1.95 |
 | Friends, chat, consent, recruitment, guilds/calendar, reports/moderation/support | 1.14, 1.17, 1.51–1.53, 1.59–1.60, 1.84 |
 | Duels, open-world PvP, team arena, matchmaking, seasons and anti-farming | 1.54–1.56, 1.60, 1.72–1.73 |
@@ -419,6 +437,28 @@ with a questionnaire. Existing user deferrals remain in force until revisited.
 ## 7. Delivery and verification discipline
 
 ### Each milestone's completion record
+
+The September 28 instruction explicitly authorizes this execution loop:
+
+1. Take the next unaccepted milestone in order; reconcile its inherited work and
+   newly required world/art scope before coding. Keep one release candidate active.
+2. Finish its required implementation and focused checks. Record external inputs
+   honestly; do not label an incomplete milestone done or silently skip a gate.
+3. Update version identities and real patch notes, inspect the complete outgoing
+   diff (including older unshipped commits), commit and push the release candidate.
+4. Delegate GitHub CI/deployment monitoring to Luna, reporting terminal success
+   or actionable failure. Diagnose and fix failures; no blind retry loop.
+5. Confirm exact frontend/backend commit and version, readiness, published assets
+   and a bounded live smoke of changed behavior. A green deploy job alone is not
+   proof the intended version is playable. Do not overlap the next release push.
+6. Record the live-success receipt, advance the milestone and continue without
+   asking for routine deploy approval. Stop for an explicit pause or a missing
+   material owner decision/authority, not simply because one version shipped.
+
+Use Luna for long dungeon/raid monitoring too, as already authorized. Preserve
+mandatory CI and safety checks, but do not add a campaign/soak per version or
+poll every tick. This authority does not include payments, destructive data
+changes, infrastructure purchases or declaring a public beta/full launch.
 
 Append a compact receipt in section 8 when work actually happens: scope delivered,
 remaining issues, implementation commit, changed-behavior checks, retained
@@ -485,6 +525,14 @@ character/equipment target. First local shoulder-shell construction/fit slice
 implemented; evidence and remaining anatomy/material work are in the
 [visual contract](../art/2026-09-28-modern-arpg-closed-beta.md). This does not close
 1.11's full promise audit or the four-class art pass, and is not deployed.
+
+September 28 world/atlas and execution follow-up: added the mandatory populated
+world/map contract and scheduled first-pass delivery across 1.11–1.18, with B1
+coverage and later refinement. Sequential implement/check/notes/push/monitor/live
+verification/continue is now the explicit execution policy. Current milestone:
+**1.11 implementing (inventory)**; no 1.11 deployment or acceptance yet. Recent
+art commits remain local, and the older casino candidate must be accounted for
+before publishing any branch containing it.
 
 ## References
 
