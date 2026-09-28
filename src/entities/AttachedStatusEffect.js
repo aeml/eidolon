@@ -59,14 +59,20 @@ export class AttachedStatusEffect {
         // Status art lives in the world effect group, not under the actor mesh.
         // Follow the same floor cutaway without cancelling the underlying buff.
         this.group.visible = !this.owner.gameEngine?.casino?.isActorCutAway?.(this.owner);
-        if (this.group.parent !== this.scene) this.scene.add(this.group);
         const step = Math.max(0, Number(dt) || 0);
         this.elapsed += step;
         this.pendingVisualTime += step;
         // The other casino floor cannot be seen. Keep animation time, but
         // defer its pose/mote work until visible; incremental rotations then
         // catch up once alongside effects driven by absolute elapsed time.
-        if (!this.group.visible) return;
+        if (!this.group.visible) {
+            // Invisible descendants still incur Three's world-matrix traversal.
+            // This effect owns its root; retain resources/time off-scene until
+            // reveal, rather than moving it back and forth every hidden frame.
+            this.group.removeFromParent();
+            return;
+        }
+        if (this.group.parent !== this.scene) this.scene.add(this.group);
         const sourcePosition = this.owner.mesh?.position || this.owner.position;
         if (sourcePosition) this.group.position.copy(sourcePosition);
         if (this.statusKey === 'guardian_embrace') {

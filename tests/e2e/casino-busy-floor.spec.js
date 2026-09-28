@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
+import { cpus, loadavg } from 'node:os';
 import { collectBrowserFailures } from './helpers.js';
+
+function hostCpuSnapshot() {
+    return cpus().reduce((sum, cpu) => ({
+        idle: sum.idle + cpu.times.idle,
+        total: sum.total + Object.values(cpu.times).reduce((a, b) => a + b, 0)
+    }), { idle: 0, total: 0 });
+}
 
 // Optional bounded visual-only review while native GPU gameplay QA owns the
 // renderer. Software screenshots are not native performance evidence.
@@ -14,8 +22,22 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     test.skip(process.env.EIDOLON_CASINO_FIXTURE_CATALOG !== '1', 'Explicit bounded busy-floor review');
     const profile = process.env.EIDOLON_CASINO_PROFILE === '1';
     const cpuDiagnostic = process.env.EIDOLON_CASINO_CPU_PROFILE === '1';
+    const baselineCommit = process.env.EIDOLON_CASINO_BASELINE_COMMIT;
+    const baselineModulesServed = new Set();
     if (cpuDiagnostic && !profile) throw new Error('CPU diagnostic requires the casino frame profile');
     if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
+    if (baselineCommit) {
+        if (!profile || !/^[0-9a-f]{40}$/.test(baselineCommit)) throw new Error('Casino baseline requires profile mode and an exact Git SHA');
+        // Same current art/workload/browser on both sides; replace only the two
+        // optimized runtime modules with their immutable baseline source.
+        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js']) {
+            const body = execFileSync('git', ['show', `${baselineCommit}:${file}`], { encoding: 'utf8' });
+            await page.route(`**/${file}*`, route => {
+                baselineModulesServed.add(file);
+                return route.fulfill({ body, contentType: 'text/javascript' });
+            });
+        }
+    }
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
         { cwd: 'server', encoding: 'utf8', timeout: 120000 });
     const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
@@ -109,6 +131,9 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         return { tables: tables.length, seats: controller.furniture.userData.seats.length, models: models.length };
     }, tables);
     expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
+    if (baselineCommit) expect([...baselineModulesServed].sort()).toEqual([
+        'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
+    ]);
     const profiles = [];
     try {
         for (const quality of ['high', 'low']) for (const floor of ['public', 'vip']) {
@@ -128,6 +153,8 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                     await cpuSession.send('Profiler.enable');
                     await cpuSession.send('Profiler.start');
                 }
+                const cpuBefore = hostCpuSnapshot();
+                const loadBefore = loadavg();
                 const sample = await page.evaluate(() => new Promise((resolve, reject) => {
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
@@ -167,7 +194,10 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                         body: JSON.stringify(cpuProfile), contentType: 'application/json' });
                     await cpuSession.detach();
                 }
-                profiles.push({ quality, floor, ...sample });
+                const cpuAfter = hostCpuSnapshot();
+                profiles.push({ quality, floor, ...sample, baselineCommit: baselineCommit || null,
+                    host: { idlePercent: 100 * (cpuAfter.idle - cpuBefore.idle) / (cpuAfter.total - cpuBefore.total),
+                        loadBefore, loadAfter: loadavg() } });
                 console.log('[casino-frame-profile]', JSON.stringify(profiles.at(-1)));
                 expect(sample.frames).toBe(180);
                 expect(sample.visibility).toBe('visible');

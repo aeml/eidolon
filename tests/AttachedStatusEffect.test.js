@@ -30,6 +30,36 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
+    test('hidden aura roots leave matrix traversal and return safely on reveal', () => {
+        let hidden = false;
+        const scene = new THREE.Group();
+        const owner = { position: new THREE.Vector3(2, 8, 140),
+            gameEngine: { casino: { isActorCutAway: () => hidden } } };
+        const effect = new AttachedStatusEffect(scene, owner, 'well_rested');
+        const matrixUpdate = jest.spyOn(effect.group, 'updateMatrixWorld');
+        try {
+            hidden = true;
+            effect.update(.1);
+            scene.updateMatrixWorld(true);
+            expect(matrixUpdate).not.toHaveBeenCalled();
+            expect(effect.group.parent).toBeNull();
+            owner.position.x = 12;
+            hidden = false;
+            effect.update(.1);
+            scene.updateMatrixWorld(true);
+            expect(effect.group.parent).toBe(scene);
+            expect(effect.group.getWorldPosition(new THREE.Vector3()).toArray()).toEqual([12, 8, 140]);
+            hidden = true;
+            effect.update(.1);
+            effect.dispose();
+            hidden = false;
+            effect.update(.1);
+            expect(effect.group.parent).toBeNull();
+        } finally {
+            matrixUpdate.mockRestore(); effect.dispose();
+        }
+    });
+
     test('hidden casino effects defer animation work and catch up without changing their pose', () => {
         for (const quality of ['high', 'low']) for (const statusKey of Object.keys(ACTOR_STATUS_VISUAL_STATES)) {
             let hidden = false;
