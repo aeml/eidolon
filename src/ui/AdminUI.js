@@ -19,15 +19,20 @@ export class AdminUI {
                 <p data-admin-role>Administrator access has not been verified.</p>
                 <div class="administration-actions" aria-label="Administration views">
                     <button type="button" data-view="players" aria-pressed="true">Online players</button>
-                    <button type="button" data-view="history" aria-pressed="false">Activity history</button></div>
+                    <button type="button" data-view="history" aria-pressed="false">Activity history</button>
+                    <button type="button" data-view="reports" aria-pressed="false">Player reports</button></div>
                 <div class="administration-filters" hidden>
                     <label>Exact account<input data-actor maxlength="71" autocomplete="off" placeholder="All accounts"></label>
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
-                        <option value="admin_history">History reads</option><option value="login">Login</option>
+                        <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="login">Login</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
                         <option value="admin_teleport">Teleports</option></select></label>
+                </div>
+                <div class="administration-filters" data-report-filters hidden>
+                    <label>Report status<select data-report-status><option value="open">Open</option>
+                        <option value="resolved">Resolved</option><option value="">All reports</option></select></label>
                 </div>
                 <div class="administration-actions"><button type="button" data-refresh>Refresh players</button>
                     <button type="button" data-next hidden>Next page</button></div>
@@ -42,6 +47,8 @@ export class AdminUI {
         this.refresh = this.root.querySelector('[data-refresh]');
         this.next = this.root.querySelector('[data-next]');
         this.filters = this.root.querySelector('.administration-filters');
+        this.reportFilters = this.root.querySelector('[data-report-filters]');
+        this.reportStatus = this.root.querySelector('[data-report-status]');
         this.actor = this.root.querySelector('[data-actor]');
         this.action = this.root.querySelector('[data-action]');
         this.views = [...this.root.querySelectorAll('[data-view]')];
@@ -64,12 +71,13 @@ export class AdminUI {
             if (this.pending || !this.authorized) return;
             this.view = button.dataset.view;
             this.filters.hidden = this.view !== 'history';
-            this.refresh.textContent = this.view === 'history' ? 'Refresh history' : 'Refresh players';
-            this.list.setAttribute('aria-label', this.view === 'history' ? 'Activity history entries' : 'Online players');
+            this.reportFilters.hidden = this.view !== 'reports';
+            this.refresh.textContent = this.view === 'reports' ? 'Refresh reports' : this.view === 'history' ? 'Refresh history' : 'Refresh players';
+            this.list.setAttribute('aria-label', this.view === 'reports' ? 'Submitted player reports' : this.view === 'history' ? 'Activity history entries' : 'Online players');
             for (const view of this.views) view.setAttribute('aria-pressed', String(view === button));
             this.refreshView('');
         });
-        for (const filter of [this.actor, this.action]) filter.addEventListener('input', () => {
+        for (const filter of [this.actor, this.action, this.reportStatus]) filter.addEventListener('input', () => {
             // Never combine a previous query's cursor with changed filters.
             this.cursor = '';
             this.next.hidden = true;
@@ -97,7 +105,7 @@ export class AdminUI {
         this.refresh.disabled = true;
         this.next.disabled = true;
         for (const view of this.views) view.disabled = true;
-        this.actor.disabled = this.action.disabled = true;
+        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = true;
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
@@ -126,6 +134,10 @@ export class AdminUI {
         if (this.view === 'players') { this.requestPlayers(cursor); return; }
         if (!this.connected || !this.authorized || this.pending) return;
         this.list.replaceChildren();
+        if (this.view === 'reports') {
+            this.request('admin_reports', { before: cursor, status: this.reportStatus.value });
+            return;
+        }
         this.request('admin_history', { before: cursor, actor: this.actor.value, action: this.action.value });
     }
 
@@ -134,7 +146,7 @@ export class AdminUI {
         this.pending = null;
         clearTimeout(this.timeout);
         this.root.setAttribute('aria-busy', 'false');
-        this.actor.disabled = this.action.disabled = false;
+        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = false;
         const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
         this.setAuthorized(result.authorized === true && (mutation || result.success === true));
         if (mutation) this.operations.handleResult(result);
@@ -148,6 +160,10 @@ export class AdminUI {
         }
         if (type === 'admin_history_result') {
             this.renderHistory(result.history);
+            return;
+        }
+        if (type === 'admin_reports_result') {
+            this.renderReports(result.reports);
             return;
         }
         if (type !== 'admin_players_result') return;
@@ -171,6 +187,28 @@ export class AdminUI {
         this.next.hidden = !this.cursor;
         this.next.disabled = false;
         this.status.textContent = players.length ? `${players.length} online player${players.length === 1 ? '' : 's'} on this page.` : 'No authenticated players are currently in the world.';
+    }
+
+    renderReports(page) {
+        const reports = Array.isArray(page?.reports) ? page.reports.slice(0, 10) : [];
+        for (const report of reports) {
+            const row = document.createElement('li');
+            const title = document.createElement('strong');
+            title.textContent = `${report.reportType} · ${report.status}`;
+            const author = document.createElement('span');
+            author.textContent = `${report.username} · ${new Date(report.createdAt).toLocaleString()}`;
+            const details = document.createElement('details');
+            const summary = document.createElement('summary');
+            summary.textContent = `Inspect report JSON · ${report.id}`;
+            const json = document.createElement('pre');
+            json.className = 'administration-report-json';
+            json.textContent = JSON.stringify(report, null, 2);
+            details.append(summary, json); row.append(title, author, details); this.list.append(row);
+        }
+        this.cursor = typeof page?.next === 'string' ? page.next : '';
+        this.next.hidden = !this.cursor; this.next.disabled = false;
+        this.note.textContent = 'Private administrator view · up to 10 reports per page, newest IDs first. Viewing JSON does not resolve reports or punish players. Redact personal information before sharing.';
+        this.status.textContent = reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} on this page.` : 'No reports match this status.';
     }
 
     renderHistory(history) {

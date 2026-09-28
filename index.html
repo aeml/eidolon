@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.18.0</span>
+                    <span class="start-version-row__label">Alpha 1.19.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -698,6 +698,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.19.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.19.0 (reports in reach and safer operations)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>In-game report review:</strong> Administrators can open Administration → Player reports, filter Open / Resolved / All reports, and inspect each report’s JSON. Ten-report pages keep the view manageable on desktop and phone-sized layouts. Viewing a report does not resolve it or punish a player.</li>
+                        <li><strong>Private, verified access:</strong> Every report read rechecks the server’s durable administrator role and requires an audit entry. Report text is displayed as text, never executable HTML, and is not copied into activity history. Disconnects and lost access clear the private results.</li>
+                        <li><strong>Open alpha continues:</strong> Closed beta waits until the game is nearly complete. Existing accounts and characters will retain access and progress; new beta players will be invited. We plan for up to 100 beta players, subject to capacity validation—not a promise of 100 simultaneous sessions today. Support stays in the in-game report tool.</li>
+                        <li><strong>Safer recovery tooling:</strong> The operator-only Mongo restore helper requires an exact archive and explicit data-loss confirmation, refuses active or ambiguous game-server state, and limits restoration to Eidolon. It does not stop production services or restore data automatically.</li>
+                        <li><strong>Preserved progress:</strong> No character wipe, access restriction, reward change, payment integration or beta opening accompanies this release. Modern art and the deferred actor-model pilot remain in progress. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.18.0">
                     <h3 class="patch-note-entry__title">Alpha 1.18.0 (worn surfaces and clearer silhouettes)</h3>
                     <ul class="patch-note-entry__list">

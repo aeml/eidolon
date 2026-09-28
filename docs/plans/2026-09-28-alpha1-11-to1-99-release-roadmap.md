@@ -1,14 +1,27 @@
-# Eidolon 1.11–1.99: playable beta to release readiness
+# Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.16.0; see the [release record](2026-09-28-release1-16.md).
+baseline is Alpha1.18.0, exact24721f9d, CI36445044791. See the
+[1.18 release record](2026-09-28-release1-18.md).1.19 is a locally verified candidate.
+
+**Owner timing/policy update:** closed beta must wait until the entire game is
+almost done, not begin at1.20. Keep open alpha through feature completion and
+integrated readiness; target the closed-beta admission review at1.90, after the
+1.80 feature freeze and1.81–1.89 operations work. The number alone cannot open
+beta. Existing accounts and characters retain access/progress; new beta players
+will be invited. Plan for up to100 beta players, with capacity evidence before
+promising100 simultaneous sessions. Support uses the in-game report tool;
+admins must be able to inspect submitted report JSON in-game. No early access
+restriction, wipe or beta announcement is authorized. Early gates are renamed
+A1/A2 (formerly B1/B2); their alpha quality work remains, but they do not admit
+a beta cohort. CB is the new near-completion closed-beta gate.
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
 dark-fantasy graphics and substantially improved characters/equipment/fit.
 The [modern ARPG visual contract](../art/2026-09-28-modern-arpg-closed-beta.md)
-is now a required early workstream and part of B1, not deferred to 1.41–1.50.
+is now a required early workstream and part of A1, not deferred to 1.41–1.50.
 Later visual milestones refine that baseline. An optional authored-model pilot
 may be evaluated; no bulk purchase/import, live-access restriction or beta
 announcement is implied by this planning update.
@@ -23,7 +36,7 @@ pack. Code-owned world/material work proceeds before actor imports are available
 World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)
 is mandatory. Fill the actual world with purposeful places, routes, ambient life,
 discoveries and activities, and rebuild world-map/minimap presentation around
-accurate shared location data. The first complete pass is required before B1;
+accurate shared location data. The first complete pass is required before A1;
 later regional/art milestones refine it, not postpone all content until then.
 The user authorizes sequential milestone implementation, scoped verification,
 version/patch-note updates, push/deployment and live-success checks, then the next
@@ -139,20 +152,20 @@ owner's go/no-go. This plan does not silently reset the game to version 1.0.
 
 | Band | Purpose | Exit gate |
 | --- | --- | --- |
-| 1.11–1.20 | Close alpha promises, establish modern character/equipment quality and prepare closed beta | B1: playable closed-beta candidate |
-| 1.21–1.40 | Real-player journey, class and economy tuning | B2: wider-beta readiness |
+| 1.11–1.20 | Close foundational alpha gaps, improve art/world and prepare operations | A1: integrated open-alpha foundation, not beta admission |
+| 1.21–1.40 | Open-alpha journey, class and economy tuning | A2: progression/balance readiness, not wider beta |
 | 1.41–1.50 | Visual, audio, interaction and device finish | Q: presentation/support baseline |
 | 1.51–1.60 | Community, competition and repeatable endgame | S: sustainable multiplayer loops |
 | 1.61–1.70 | Casino, cosmetic/VIP economy and trust | E: venue/economy closeout |
 | 1.71–1.80 | Security, privacy, persistence and service capacity | F: launch feature freeze |
-| 1.81–1.90 | Support, release operations and integrated candidate | RC1: first release candidate |
-| 1.91–1.99 | Resolve launch blockers and prove readiness | R: full-release go/no-go package |
+| 1.81–1.90 | Support, release operations and nearly complete integrated candidate | CB/RC1: owner-approved closed-beta candidate |
+| 1.91–1.99 | Resolve closed-beta findings and launch blockers | R: full-release go/no-go package |
 
 All rows below start **PLANNED**, not done. “Evidence” means evidence of the
 delivered behavior, not merely a test filename or a document promising it.
 
 Dependencies are cumulative across phase gates, not permission to postpone
-urgent fixes: B2 builds on B1; Q/S/E and the security/service work feed F; RC1
+urgent fixes: A2 builds on A1; Q/S/E and the security/service work feed F; RC1
 requires F and launch operations; R requires RC1 plus resolved candidate gaps.
 Within a band, independent work can proceed when its own prerequisites exist.
 Feedback/telemetry must precede evidence-based balancing; privacy decisions
@@ -160,7 +173,7 @@ precede new data collection; EP policy and owner approval precede any paid branc
 capacity targets precede load trials. Security and data-loss fixes ship promptly
 even if their comprehensive review is scheduled in a later band.
 
-### 1.11–1.20 — alpha closeout and playable beta
+### 1.11–1.20 — integrated open-alpha foundation
 
 | Version | Delivery scope | Exit evidence / dependency |
 | --- | --- | --- |
@@ -171,11 +184,11 @@ even if their comprehensive review is scheduled in a later band.
 | 1.15 | First-session guidance for classes, movement/combat, Ilyra, turn-ins, equipment/builds and town recovery. Populate Lanternhold/Earth with purposeful paths, landmarks, camps, story surroundings and working optional discoveries. | Fresh walkthrough needs no developer coaching; Earth meets the population contract, interactions/approaches and map agree; returning players retain quests/progress. |
 | 1.16 | Beta account continuity: login/logout/resume, safe session replacement and recovery/help. Populate Water/Fire with distinct locations, routes, inhabited/abandoned sites and optional discoveries. | Supported session paths and discoveries preserve progress; Water/Fire meet population requirements without duplicate story objectives, inaccessible locations or invented account privileges. |
 | 1.17 | Dungeon/raid preparation and party access: requirements, gear/role guidance, recruitment/readiness and low-population behavior. Populate Air and finish Dark Realm district surroundings/approaches with coherent map references. | Normal eligible party entry works; Air meets population coverage, existing Dark Realm content is integrated, and meeting points/approaches are usable. No fake-player matchmaking or per-member gate bypass. |
-| 1.18 | Finish early four-class art/equipment and B1 populated-world/atlas coverage. Integrate map/minimap/instance views, quest/party markers, discovery visibility and supported controls; declare beta device matrix and quality presets. | Visual/world contracts reviewed in gameplay, actor fit checked, populated-scene performance/resource budgets met; no marker-only POIs or false device claims. Retain deferred phone feedback honestly. |
-| 1.19 | Closed-beta policies and operations: cohort selection/access approach, support/report destination, moderation contacts, wipe/carryover decision, channel/version label, known limitations and capacity budget. | Owner resolves B1 decisions including treatment of existing open-alpha accounts; no live access restriction, wipe or payment action without an approved transition. |
-| 1.20 | Package the playable closed-beta candidate: required alpha promises and visual contract, notes, onboarding/help, known issues and stable deployment. | **B1** checklist below; exact identity and smoke results plus approved cohort transition. Human campaign pacing remains user-playtest-owned, not an automated admission gate. |
+| 1.18 | Finish early four-class art/equipment and A1 populated-world/atlas coverage. Integrate map/minimap/instance views, quest/party markers, discovery visibility and supported controls; declare beta device matrix and quality presets. | Visual/world contracts reviewed in gameplay, actor fit checked, populated-scene performance/resource budgets met; no marker-only POIs or false device claims. Retain deferred phone feedback honestly. |
+| 1.19 | Prepare future beta operations while remaining open alpha: retain current accounts/characters, plan invited new players and up to100 beta players; add an administrator-only in-game report JSON viewer, recovery safeguards, known limitations and support handoff. | Durable role rechecked for every bounded report read; private text safely rendered, pagination/reconnect/error paths covered. No early admission restriction or wipe. Staffing, retention and capacity evidence remain named later gates. |
+| 1.20 | Integrate the improved open-alpha foundation: alpha promises, code-owned art/world/atlas, notes, onboarding/help, known issues and stable deployment. | **A1** checklist; exact identity/scoped smoke results and honest actor-pilot dependencies. Keep open alpha. Final modern-art requirements remain mandatory for Q/CB; no early cohort transition. |
 
-### 1.21–1.40 — journey, combat and economy in beta
+### 1.21–1.40 — journey, combat and economy in open alpha
 
 | Version | Delivery scope | Exit evidence / dependency |
 | --- | --- | --- |
@@ -198,7 +211,7 @@ even if their comprehensive review is scheduled in a later band.
 | 1.37 | Level-cap rewards and Resonance: worthwhile enemy/quest/event/raid progression, clear capped XP treatment and cosmetic/power separation. | No silent lost rewards, repeat-claim exploit or forced daily loop; earned character receipts match displayed rewards. |
 | 1.38 | Party progression fairness: whole-instance kill credit, nearby open-world sharing, role contribution, disconnects, downed members and cross-instance boundaries. | Relevant membership/distance/instance tests and player feedback; prevent remote leeching without penalizing real tanks/healers. |
 | 1.39 | Consolidated progression/balance patch: prioritize measured cohort blockers across level bands, party sizes and classes; document changed rewards and preserved contracts. | Human feedback vs targets recorded with sample limitations; no broad curve reset or nerf solely to match a spreadsheet. |
-| 1.40 | Wider-beta readiness: incorporate the first feedback cohort, stable core loops, understandable recruitment, published limitations and bounded capacity. | **B2** checklist; unresolved real-player campaign observations remain honestly tracked, with known blockers fixed before widening. |
+| 1.40 | Progression/balance readiness: incorporate open-alpha feedback, stabilize core loops/recruitment and publish limitations and measured capacity. | **A2** checklist; unresolved human campaign observations remain honestly tracked. No automatic beta opening or widening. |
 
 ### 1.41–1.50 — presentation, usability and device quality
 
@@ -273,7 +286,7 @@ even if their comprehensive review is scheduled in a later band.
 | 1.87 | Candidate performance consolidation: apply unresolved measured improvements across supported hardware/workloads; settings persist and fallbacks stay readable. | Earlier accepted benchmarks retained; rerun only impacted cases or missing evidence on a comparable host; no lowering targets to hide a regression. |
 | 1.88 | Integrated fresh/returning-player compatibility: saves from supported releases, in-progress story, bags/builds, social membership, wallets, cosmetics and reconnects. | Focused cross-feature journey plus schema/contract fixtures; user playtest owns whole-campaign pacing. Known saves cannot be stranded by new UI/gates. |
 | 1.89 | Commercial branch closeout OR explicit free-launch signoff. If separately authorized: checkout/provider sandbox, signed replay-safe entitlements, cancellation/refund/dispute and monthly benefit handling. | Owner/provider/specialist approvals and purchase/recovery receipts if paid; otherwise record disabled commerce and do not build it. No silent price/benefit decisions or EP→Gold escape. |
-| 1.90 | First release candidate: consolidate tested features, policies, support, performance and exact release artifacts into one candidate. | **RC1** checklist; scoped integrated validation, notes and controlled publication. A candidate label is not full-release authorization. |
+| 1.90 | Near-completion closed-beta candidate: consolidate completed features/content/art, support, performance and exact artifacts. Review invitation-based admission for new beta players while retaining existing accounts/characters; up to100 beta players planned. | **CB/RC1** checklist and explicit owner go/no-go before access/channel changes. Reaching1.90 alone cannot open beta or authorize full release. |
 
 ### 1.91–1.99 — release qualification and handoff
 
@@ -291,12 +304,13 @@ even if their comprehensive review is scheduled in a later band.
 
 ## 4. Gate checklists: what “done” actually means
 
-### B1 — playable beta at 1.20
+### A1 — integrated open-alpha foundation at 1.20 (formerly B1)
 
 - [ ] The [modern ARPG visual contract](../art/2026-09-28-modern-arpg-closed-beta.md)
-  is met for all four classes, equipment families/fit and coherent world/combat
-  presentation. Historical faceted-art completion and mere attachment counts
-  do not satisfy this newly requested quality bar.
+  has reviewed early code-owned class/equipment/world coverage and a concrete
+  remaining-defect/actor-handoff register. Work starts early; the owner's deferred
+  model pilot is not fabricated or repeatedly requested. Final approved modern
+  quality is still required for Q/CB; attachment counts are not visual approval.
 - [ ] Every prior promise is mapped to delivered evidence, a concrete repair,
   or an explicitly approved future scope; core-play gaps are not waived silently.
 - [ ] Physical Dark Realm portal and the existing authoritative journey agree.
@@ -313,16 +327,17 @@ even if their comprehensive review is scheduled in a later band.
 - [ ] Party formation/roles, clear requirements, recovery and reporting work.
 - [ ] Casino candidate measured appropriately and released; venue not replaced
   with a reduced prototype to make a benchmark pass.
-- [ ] Provisional device support, capacity, support contact, known issues and
-  character continuity policy are published; channel label chosen by owner.
-- [ ] Closed-beta cohort/access and treatment of existing open-alpha players
-  are approved before applying access restrictions; preserve their saved data.
+- [ ] Provisional device evidence, known issues, in-game reporting and preserved
+  character continuity are documented. Up to100 beta players is a future target,
+  not proven capacity. The channel stays open alpha.
+- [ ] Future invited-beta/current-account policy is recorded without activating
+  it. Near-completion CB approval, not A1, controls the eventual transition.
 - [ ] Exact build deploy, normal smoke and valuable-operation safety checks pass.
   Human campaign duration is not a prerequisite to this beta opening.
 
-### B2 — wider beta at 1.40
+### A2 — progression/balance readiness at 1.40 (formerly B2)
 
-- [ ] First-cohort feedback has actionable progression/class/economy results;
+- [ ] Open-alpha feedback has actionable progression/class/economy results;
   missing observations remain named with an owner rather than invented.
 - [ ] No known major campaign blocker or routinely broken class/role; regional
   and endgame handoffs have consistent explanations and preserved saves.
@@ -330,7 +345,8 @@ even if their comprehensive review is scheduled in a later band.
   no demand to replay every accepted raid just to widen the cohort.
 - [ ] Supported-platform claims and concurrent-player admissions are bounded by
   evidence. Unverified phone scope is labeled, not secretly certified.
-- [ ] Owner approves broader availability and the published beta limitations.
+- [ ] Findings/limitations are published without an early beta announcement;
+  current access remains unchanged until CB approval.
 
 ### Q, S and E — presentation, multiplayer, venue (1.50 / 1.60 / 1.70)
 
@@ -360,9 +376,18 @@ even if their comprehensive review is scheduled in a later band.
   have owners and implementation paths; no unsupported compliance claims.
 - [ ] Launch content and dependency set frozen, with documented exception policy.
 
-### RC1 and R — first candidate / full-release readiness (1.90 / 1.99)
+### CB/RC1 and R — near-complete closed beta / release readiness (1.90 / 1.99)
 
-- [ ] B1/B2/Q/S/E/F evidence is complete and valid for the candidate, or an owner
+- [ ] CB: mandatory content, systems, modern art, usability and operations are
+  nearly complete; remaining work is playtest-led fixes/tuning, not missing
+  foundational features. The owner approves the integrated candidate.
+- [ ] CB: existing accounts/characters retain access/progress; invited new
+  admissions, tested capacity for the chosen cohort (up to100 planned), in-game
+  admin-visible reports and staffed support are ready before changing access.
+- [ ] CB: model handoff and modern-art reviews have valid integration evidence;
+  neither deferral nor early A1 approval waives the final visual requirements.
+
+- [ ] A1/A2/Q/S/E/F evidence is complete and valid for the candidate, or an owner
   has explicitly approved a documented support/scope change. A milestone number
   or expired test artifact is not an exception.
 - [ ] No unresolved known progression/save-loss blocker, critical security issue,
@@ -409,7 +434,7 @@ It also records the confirmed stale casino-map repair and open release gates.
 | Dungeon death/town recovery/checkpoints/15-minute expiry, party credit/rewards | 1.16–1.17, 1.26, 1.28–1.29, 1.38, 1.88 |
 | Inventory/equipment, quest icons/tracking, item drop, stash, Forge, crafting, trade/auction/guild bank | 1.34–1.36, 1.41, 1.45, 1.52, 1.73 |
 | Procedural visuals/coverage, animations, environment collisions, effects, sound, responsive menus | 1.41–1.50, 1.86–1.87 |
-| Populated world, meaningful landmarks/roads/camps/discoveries, atlas/minimap/waypoints and canonical location data | 1.11–1.18, B1 at 1.20, 1.22–1.30, 1.42, 1.45–1.50, 1.53, 1.57, 1.80, 1.98; [detailed contract](2026-09-28-world-population-and-atlas.md) |
+| Populated world, meaningful landmarks/roads/camps/discoveries, atlas/minimap/waypoints and canonical location data | 1.11–1.18, A1 at 1.20, 1.22–1.30, 1.42, 1.45–1.50, 1.53, 1.57, 1.80, 1.98; [detailed contract](2026-09-28-world-population-and-atlas.md) |
 | Phones, controls, accessibility, settings, representative performance and resource lifetime | 1.18, 1.43–1.50, 1.87, 1.95 |
 | Friends, chat, consent, recruitment, guilds/calendar, reports/moderation/support | 1.14, 1.17, 1.51–1.53, 1.59–1.60, 1.84 |
 | Duels, open-world PvP, team arena, matchmaking, seasons and anti-farming | 1.54–1.56, 1.60, 1.72–1.73 |
@@ -429,12 +454,12 @@ with a questionnaire. Existing user deferrals remain in force until revisited.
 
 | Decision | Needed by | Handling until answered |
 | --- | --- | --- |
-| Closed-beta cohort/access transition from open alpha, channel/name and final full-release version | 1.19 / 1.98 | Keep current Alpha labels and live access; no automatic account exclusion or launch announcement. |
-| Preserve beta characters vs explicitly announced wipe/other policy | 1.19 | Preserve all existing data; no destructive reset. |
-| Initial cohort size, public launch concurrency/headroom, hosting budget and operator | 1.19 baseline; 1.79/1.94 final | Existing bounded load evidence is not a capacity promise; don't buy hosting or change unrelated services. |
+| Closed-beta transition/channel and final full-release version | 1.19 policy;1.90 admission;1.98 release | Owner chose near-completion beta, retained current accounts and invited new players. Keep open-alpha access until explicit CB go/no-go. |
+| Character continuity | Approved policy | Existing accounts/characters retain access/progress; no wipe. |
+| Cohort/concurrency, hosting budget and operator | 1.19 baseline;1.79/1.90/1.94 evidence | Owner plans up to100 beta players. Measure capacity/headroom before promising simultaneous sessions; hosting budget/operator still need confirmation. |
 | Browser/device/OS scope, accessibility commitments and additional languages | 1.18/1.40; 1.95 final | Publish tested/experimental distinctions. Phone feedback remains deferred; no fabricated acceptance. |
 | Public network/address-family exposure and DDNS ownership | 1.77 | IPv6 issue remains documented; no unsanctioned DNS changes or false claim that a browser always forces IPv4. |
-| Support/moderation staffing, contact, retention policies and recovery objectives | 1.19/1.59/1.75/1.81 | Prefer existing tools; avoid collecting new sensitive data without a defined purpose. |
+| Support/moderation staffing, retention and recovery objectives | 1.19/1.59/1.75/1.81 | Owner chose in-game reports and admin JSON viewing; implement in1.19. Staffing, retention and recovery objectives remain later explicit decisions; no new unrelated sensitive data. |
 | Free-only release vs paid VIP/EP; price, other benefits, launch audience/regions and providers | 1.69 before any commercial implementation | No payments. $5/month was illustrative. Preserve 100 EP/month, one-way exchange and no-power rules. Seek qualified review rather than assuming cosmetics remove all obligations. |
 | Human campaign/pacing findings and launch acceptance of any remaining uncertainty | Beta feedback and 1.98 | User/cohort owned; no long automatic campaign reinstatement. |
 | Jev/API access, spending cap and data policy if a bot pilot is wanted | Only if separately approved | Optional short isolated encounter experiment; no paid API calls or new testing dependency. |
@@ -525,14 +550,14 @@ September 28, 2026: forward roadmap created; all 1.11–1.99 milestones planned.
 No game version bump, deployment, payment integration, infrastructure change,
 new long test or completed-beta claim is made by this planning change.
 
-September 28 visual follow-up: B1 now includes the user's modern dark-fantasy
+September 28 visual follow-up: A1 now includes the user's modern dark-fantasy
 character/equipment target. First local shoulder-shell construction/fit slice
 implemented; evidence and remaining anatomy/material work are in the
 [visual contract](../art/2026-09-28-modern-arpg-closed-beta.md). This does not close
 1.11's full promise audit or the four-class art pass, and is not deployed.
 
 September 28 world/atlas and execution follow-up: added the mandatory populated
-world/map contract and scheduled first-pass delivery across 1.11–1.18, with B1
+world/map contract and scheduled first-pass delivery across 1.11–1.18, with A1
 coverage and later refinement. Sequential implement/check/notes/push/monitor/live
 verification/continue is now the explicit execution policy. Current milestone:
 **1.11 implementing (inventory)**; no 1.11 deployment or acceptance yet. Recent
@@ -601,7 +626,7 @@ both deployments and final live character QA. Root independently verified exact
 public IPv4 version/commit, database, login/history and16 changed runtime assets.
 [1.18](2026-09-28-release1-18.md) is prepared for publication with equipment
 surface/fit, regional ground dressing, minimap parity and quality guidance;
-its own CI/live gates remain required. Modern-art, actor handoff and B1 policy
+its own CI/live gates remain required. Modern-art, actor handoff and A1 policy
 approvals remain open.1.19 operations work stays local and separately scoped.
 
 ## References

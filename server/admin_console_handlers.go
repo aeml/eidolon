@@ -22,6 +22,8 @@ const (
 	MsgAdminPlayersResult = "admin_players_result"
 	MsgAdminHistory       = "admin_history"
 	MsgAdminHistoryResult = "admin_history_result"
+	MsgAdminReports       = "admin_reports"
+	MsgAdminReportsResult = "admin_reports_result"
 	adminPlayerPageSize   = 50
 )
 
@@ -35,12 +37,21 @@ type adminActivityStore interface {
 
 var adminActivities adminActivityStore
 
+type adminReportStore interface {
+	ReadReportPage(database.ReportQuery) (database.ReportPage, error)
+}
+
+// Production uses the existing database connection; tests may supply an isolated
+// repository. No new connection/migration is opened for an administration read.
+var adminReports adminReportStore
+
 type adminReadRequest struct {
 	ID     string `json:"id"`
 	After  string `json:"after,omitempty"`
 	Before string `json:"before,omitempty"`
 	Actor  string `json:"actor,omitempty"`
 	Action string `json:"action,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 
 type adminOnlinePlayer struct {
@@ -60,6 +71,7 @@ type adminReadResult struct {
 	Players    []adminOnlinePlayer         `json:"players,omitempty"`
 	Next       string                      `json:"next,omitempty"`
 	History    *database.AdminActivityPage `json:"history,omitempty"`
+	Reports    *database.ReportPage        `json:"reports,omitempty"`
 	Account    string                      `json:"account,omitempty"`
 	Items      []game.AdminItemDefinition  `json:"items,omitempty"`
 }
@@ -94,13 +106,24 @@ func decodeAdminRead(msg Message) (adminReadRequest, error) {
 				return request, errors.New("invalid field")
 			}
 			request.After = text
-		case "before", "actor", "action":
+		case "status":
+			if msg.Type != MsgAdminReports || (text != "" && text != database.ReportStatusOpen && text != database.ReportStatusResolved) {
+				return request, errors.New("invalid report status")
+			}
+			request.Status = text
+		case "before":
+			if msg.Type != MsgAdminHistory && msg.Type != MsgAdminReports {
+				return request, errors.New("invalid field")
+			}
+			if msg.Type == MsgAdminReports && len(text) > 24 {
+				return request, errors.New("invalid report cursor")
+			}
+			request.Before = text
+		case "actor", "action":
 			if msg.Type != MsgAdminHistory {
 				return request, errors.New("invalid field")
 			}
 			switch key {
-			case "before":
-				request.Before = text
 			case "actor":
 				request.Actor = text
 			case "action":
@@ -135,6 +158,9 @@ func handleAdminRead(c *Client, msg Message) {
 	}
 	if msg.Type == MsgAdminHistory {
 		responseType = MsgAdminHistoryResult
+	}
+	if msg.Type == MsgAdminReports {
+		responseType = MsgAdminReportsResult
 	}
 	defer func() {
 		// Do not acknowledge a privileged read without its durable audit entry.
@@ -197,6 +223,25 @@ func handleAdminRead(c *Client, msg Message) {
 	if msg.Type == MsgAdminStatus {
 		result.Success, result.Message = true, "Administrator access verified."
 		result.Account, result.Items = c.username, game.AdminItemCatalog()
+		return
+	}
+	if msg.Type == MsgAdminReports {
+		var store adminReportStore = adminReports
+		if store == nil && db != nil {
+			store = db
+		}
+		if store == nil {
+			result.Authorized = false
+			return
+		}
+		page, err := store.ReadReportPage(database.ReportQuery{Before: request.Before, Status: request.Status})
+		if err != nil {
+			result.Authorized = false
+			result.Message = "Report queue unavailable or filter invalid. Refresh with valid filters."
+			return
+		}
+		result.Reports = &page
+		result.Success, result.Message = true, "Report queue refreshed."
 		return
 	}
 	if msg.Type == MsgAdminHistory {

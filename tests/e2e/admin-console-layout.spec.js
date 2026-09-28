@@ -38,7 +38,12 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     ...(type === 'admin_history' ? { history: { entries: Array.from({ length: 50 }, (_, index) => ({
                         actor: 'realm-operator', action: 'admin_players', result: 'success', at: '2026-09-19T12:00:00Z',
                         summary: `Online players refreshed. Read ${index}.`
-                    })), next: 'history-cursor', retentionDays: 90 } } : {})
+                    })), next: 'history-cursor', retentionDays: 90 } } : {}),
+                    ...(type === 'admin_reports' ? { reports: { reports: Array.from({ length: 10 }, (_, index) => ({
+                        id: String(index + (payload.before ? 10 : 0)).padStart(24, '0'), username: 'fixture-reporter',
+                        reportType: 'Bug Report', status: payload.status || 'open', createdAt: '2026-09-28T12:00:00Z',
+                        text: '<img src=x onerror=alert(1)>\n' + 'long-text'.repeat(400)
+                    })), next: payload.before ? '' : '000000000000000000000009' } } : {})
                 }), 0),
                 openWindow: element => ui.toggleStaticModal(element, 'flex'),
                 closeWindow: element => ui.closeStaticModal(element) });
@@ -69,6 +74,21 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(dialog.getByLabel('Exact account')).toBeVisible();
         expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('administration-history.png') });
+        await dialog.getByRole('button', {name: 'Player reports', exact: true}).click();
+        await expect(dialog.locator('li')).toHaveCount(10);
+        await dialog.locator('li summary').first().click();
+        const json = dialog.locator('.administration-report-json').first();
+        await expect(json).toBeVisible();
+        expect(JSON.parse(await json.textContent()).status).toBe('open');
+        await expect(dialog.locator('li img')).toHaveCount(0);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await page.screenshot({path: testInfo.outputPath('administration-report-json.png')});
+        await dialog.getByRole('button', {name: 'Next page', exact: true}).click();
+        await expect(dialog.locator('li summary').first()).toContainText('000000000000000000000010');
+        await expect(dialog.getByRole('button', {name: 'Next page', exact: true})).toBeHidden();
+        await dialog.getByLabel('Report status').selectOption('resolved');
+        await dialog.getByRole('button', {name: 'Refresh reports', exact: true}).click();
+        await expect(dialog.locator('li strong').first()).toContainText('resolved');
         const operations = dialog.locator('.administration-operations');
         await operations.locator('summary').click();
         await operations.getByLabel('Target account', { exact: true }).fill('realm-warden-0');

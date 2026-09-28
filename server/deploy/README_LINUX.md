@@ -164,23 +164,23 @@ the matching compatible server as described above. A local `COMPLETE` marker
 checks archive integrity; it does not authorize a restore or prove that an
 arbitrary image can read the saved format.
 
-If archive is in `server/` root:
+After explicit recovery approval, specify the exact archive and confirm the
+loss of subsequent progress. There is no automatic archive selection:
 
 ```bash
-./deploy/restore_mongo_archive.sh
+./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss
 ```
 
-Or specify exact path:
-
-```bash
-./deploy/restore_mongo_archive.sh ./your_dump.archive.gz
-```
-
-Restore command used in container:
-
-```bash
-mongorestore --drop --gzip --archive=/tmp/<archive_name> --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin
-```
+The helper checks gzip integrity, one running Compose Mongo container and that
+the Compose API is stopped; it refuses running, paused, restarting or ambiguous
+API state without stopping it. Operators must also stop any writers outside this
+Compose project and prevent concurrent deployment/restart throughout recovery.
+The guard is not a global database lock. It streams the selected archive on stdin,
+limits restoration to `eidolon.*` and stops on restore errors. It does not copy
+the archive to a container filename or execute the host `.env` as shell code.
+Mongo credentials are expanded only inside the existing container. A successful
+Mongo check does not restore journals, authorize admission or prove save-format
+compatibility; keep writers stopped until the full recovery set is verified.
 
 If restore fails due to auth mismatch on existing `mongo_data` volume, **do not run `docker compose down -v` unless explicitly confirmed**.
 

@@ -68,6 +68,31 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if !response.Success || !found[operator] || !found[member] {
 		t.Fatal("missing authenticated players")
 	}
+	const reportText = "Private collision report <img src=x>"
+	resourceSend(t, b, MsgReport, ReportPayload{ReportType: "Bug Report", Text: reportText, RequestID: "report-submit-000001"})
+	var saved struct {
+		Success  bool   `json:"success"`
+		ReportID string `json:"reportId"`
+	}
+	resourceReadMessage(t, b, "report_result", &saved)
+	if !saved.Success || saved.ReportID == "" {
+		t.Fatal("report did not persist", saved)
+	}
+	if denied := request(b, MsgAdminReports, "member-reports-000001"); denied.Success || denied.Authorized || denied.Reports != nil {
+		t.Fatal("ordinary player read private reports", denied)
+	}
+	reports := request(a, MsgAdminReports, "admin-reports-000001")
+	foundReport := false
+	if reports.Success && reports.Reports != nil {
+		for _, report := range reports.Reports.Reports {
+			if report.ID.Hex() == saved.ReportID && report.Username == member && report.Text == reportText && report.Status == database.ReportStatusOpen {
+				foundReport = true
+			}
+		}
+	}
+	if !foundReport {
+		t.Fatal("admin did not receive submitted report JSON", reports)
+	}
 	resourceCloseAndWait(t, repo, b, member)
 	resumed, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
 	if err != nil {
@@ -85,6 +110,9 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	encoded, _ := json.Marshal(history)
 	if strings.Contains(string(encoded), token) || strings.Contains(string(encoded), "-test-password") || strings.Contains(string(encoded), "password_hash") {
 		t.Fatal("history leaked credentials")
+	}
+	if strings.Contains(string(encoded), "Private collision report") {
+		t.Fatal("private report text copied into activity history")
 	}
 	resourceCloseAndWait(t, repo, a, operator)
 	stop()
@@ -104,8 +132,8 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 		seen[event.ID.Hex()] = true
 		counts[event.Action]++
 	}
-	if counts["login"] != 1 || counts["resume"] != 1 || counts["disconnect"] != 2 || counts[MsgAdminStatus] != 1 || counts[MsgAdminPlayers] != 1 {
+	if counts["login"] != 1 || counts["resume"] != 1 || counts["disconnect"] != 2 || counts[MsgAdminStatus] != 1 || counts[MsgAdminPlayers] != 1 || counts[MsgAdminReports] != 1 {
 		t.Fatal("wrong saved session history", counts)
 	}
-	t.Log("two actual accounts: administrator/non-admin reads, login, token resume, two disconnects and restart-persisted history passed")
+	t.Log("two actual accounts: submitted report/admin JSON/denied member, administrator reads, login, token resume, disconnects and restart-persisted history passed")
 }

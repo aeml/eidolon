@@ -6,47 +6,52 @@ SERVER_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${SERVER_DIR}"
 
+# This is an operator-approved, destructive Mongo-only recovery, not rollback.
+# Never choose an archive based on its filename or silently stop a live writer.
+if [ "$#" -ne 2 ] || [ "$2" != "--confirm-data-loss" ]; then
+  echo "Usage: $0 /exact/archive.gz --confirm-data-loss" >&2
+  echo "Requires approval for lost progress, stopped writers and a matching journal/server recovery plan." >&2
+  exit 1
+fi
+archive_file="$1"
+if [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
+  echo "Explicit restore archive is missing or unreadable." >&2
+  exit 1
+fi
+gzip -t -- "${archive_file}"
+
 if [ ! -f ".env" ]; then
   echo "Missing .env in ${SERVER_DIR}" >&2
   exit 1
 fi
 
-set -a
-source .env
-set +a
+# Compose reads its own env file. Do not execute it as a host shell script or
+# put database credentials into host-side command arguments.
+mongo_id="$(docker compose ps --status running -q mongo)"
+if [[ ! "${mongo_id}" =~ ^[a-f0-9]{12,64}$ ]]; then
+  echo "Restore requires exactly one running Compose Mongo container." >&2
+  exit 1
+fi
 
-required_vars=(MONGO_INITDB_ROOT_USERNAME MONGO_INITDB_ROOT_PASSWORD)
-for key in "${required_vars[@]}"; do
-  if [ -z "${!key:-}" ]; then
-    echo "Missing required env var: ${key}" >&2
+api_id="$(docker compose ps -a -q api)"
+if [ -n "${api_id}" ]; then
+  if [[ ! "${api_id}" =~ ^[a-f0-9]{12,64}$ ]]; then
+    echo "Cannot identify one authoritative Compose API; refusing restore." >&2
     exit 1
   fi
-done
-
-if ! docker compose ps mongo >/dev/null 2>&1; then
-  echo "Mongo service not available via docker compose." >&2
-  exit 1
+  api_status="$(docker inspect --format '{{.State.Status}}' "${api_id}")"
+  case "${api_status}" in
+    exited|created) ;;
+    *) echo "API is not stopped (${api_status}); refusing restore. Stop all writers explicitly." >&2; exit 1 ;;
+  esac
 fi
-
-archive_file="${1:-}"
-if [ -z "${archive_file}" ]; then
-  archive_file="$(find . -maxdepth 1 -type f \( -name "*.archive" -o -name "*.archive.gz" -o -name "*.dump.gz" -o -name "*mongo*.gz" \) | sort | tail -n1)"
-fi
-
-if [ -z "${archive_file}" ] || [ ! -f "${archive_file}" ]; then
-  echo "No archive found in ${SERVER_DIR}. Pass archive path as first argument." >&2
-  exit 1
-fi
-
-archive_base="$(basename "${archive_file}")"
 
 echo "Using archive: ${archive_file}"
-echo "Copying archive into mongo container..."
-docker compose cp "${archive_file}" "mongo:/tmp/${archive_base}"
-
-echo "Running mongorestore (drop+gzip+archive) ..."
+echo "Keep all writers stopped, including any outside this Compose project. Restoring eidolon only."
+# Stream bytes instead of interpolating an archive name into a container shell.
+# No temporary archive is left behind and no other database may be restored.
 set +e
-docker compose exec -T mongo sh -lc "mongorestore --drop --gzip --archive=/tmp/${archive_base} --username \"\$MONGO_INITDB_ROOT_USERNAME\" --password \"\$MONGO_INITDB_ROOT_PASSWORD\" --authenticationDatabase admin"
+docker compose exec -T mongo sh -c 'exec mongorestore --drop --gzip --archive --nsInclude="eidolon.*" --stopOnError --username "${MONGO_INITDB_ROOT_USERNAME:?Missing Mongo username}" --password "${MONGO_INITDB_ROOT_PASSWORD:?Missing Mongo password}" --authenticationDatabase admin' < "${archive_file}"
 restore_exit=$?
 set -e
 
@@ -59,7 +64,6 @@ if [ ${restore_exit} -ne 0 ]; then
 fi
 
 echo "Restore succeeded. Verifying collections and DB stats..."
-docker compose exec -T mongo mongosh "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/admin?authSource=admin" --quiet --eval 'db.getSiblingDB("eidolon").getCollectionNames()'
-docker compose exec -T mongo mongosh "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/admin?authSource=admin" --quiet --eval 'db.getSiblingDB("eidolon").stats()'
+docker compose exec -T mongo sh -c 'exec mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval '\''const d = db.getSiblingDB("eidolon"); printjson(d.getCollectionNames()); const s = d.stats(); printjson(s); if (s.ok !== 1) quit(1);'\'''
 
-echo "Mongo restore and verification complete."
+echo "Mongo-only restore and verification complete. Writers remain stopped; verify matching journals and server before reopening."

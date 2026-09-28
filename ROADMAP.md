@@ -10,10 +10,10 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
 - Accepted group clears cover all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. On September27 the user assigned uninterrupted campaign and pacing validation to their playtest; do not run another long automated campaign or mark those checks passed.
-- Live release: `Alpha 1.10.2`, exact `8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813`, CI36285496845 passed all ten jobs, including live character/recovery QA. Public IPv4 release identity, five exact assets and database readiness were verified. Read-audit recovery is delivered. Local casino rendering optimizations remain unshipped pending hardware timing acceptance; see the [current release record](docs/plans/2026-09-23-release1-10-playtest.md). The user deferred the separate IPv6/DDNS configuration issue.
+- Live release: `Alpha 1.18.0`, exact `24721f9d4a47508ee5bd977a9f09f56b90efcb35`, CI36445044791 passed all jobs including live character/recovery QA. Independent public IPv4 checks confirmed both release identities, database readiness and seven exact changed runtime assets. Casino rendering improvements shipped in1.13; fitted equipment, surface maps and regional ground dressing shipped in1.18. See the [current release record](docs/plans/2026-09-28-release1-18.md). The user deferred the separate IPv6/DDNS configuration issue.
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
-- New forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor version planned, a playable-beta gate at 1.20, wider beta at 1.40, feature freeze at 1.80 and release readiness at 1.99. These are scope/gate targets, not deployed features or dates. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited requirements/evidence source.
+- Forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per the owner's latest decision,1.20/1.40 remain open-alpha quality milestones. Closed beta waits until the game is nearly complete, targeted for the1.90 readiness review after1.80 feature freeze; release readiness remains1.99. Existing accounts/characters stay; new beta players are invited, up to100 planned. Support uses in-game reports with an administrator-only JSON viewer. No automatic beta transition or unmeasured capacity promise. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited scope.
 - Physical resonance portal delivered in 1.12: Lanternhold (28, 235), east of the Dungeon Guide, with personal server-enforced eligibility. Guide entry remains compatible. Later population/atlas and beta gates remain open; a version number is not full roadmap completion.
 - Phone UI work and the user's positive general-use feedback are retained. Actual dungeon/party phone feedback is user-deferred; further supported-device validation and launch support decisions are planned in 1.18, 1.47 and 1.95. See the [original mobile requirements](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
@@ -130,20 +130,20 @@ milestone in order, then continue; Luna monitors deployments.
 
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
-rules, decision points and beta/full-release gates. **1.13 is accepted live**
-(CI36403511513, exact 730987e3); **1.14 is implementing**. Later milestones
+rules, decision points and beta/full-release gates. **1.18 is accepted live**
+(CI36445044791, exact24721f9d); **1.19 is locally verified**. Later milestones
 remain planned, not delivered.
 
 | Versions | Outcome |
 | --- | --- |
-| 1.11–1.20 | Close alpha promises, physical Dark Realm portal, casino performance, modern character/equipment visuals, onboarding and a playable closed-beta candidate. |
-| 1.21–1.40 | Real-player campaign, encounter, class, loot, Forge and economy tuning; wider-beta readiness. |
+| 1.11–1.20 | Improve the open-alpha foundation: portal, casino performance, early art/world/atlas, onboarding, support and safe operations. No beta opening. |
+| 1.21–1.40 | Open-alpha campaign, encounter, class, loot, Forge and economy tuning. |
 | 1.41–1.50 | Consistent character/equipment/world art, combat effects, audio, UI, accessibility and device performance. |
 | 1.51–1.60 | Dependable community, guilds, recruitment, PvP/seasons, world events, moderation and endgame loops. |
 | 1.61–1.70 | Complete casino experience, all game rules/settlements, cosmetic catalog, VIP lifecycle and strict EP/Gold separation. |
 | 1.71–1.80 | Security, account recovery, valuable-operation safety, administration, privacy, persistence, hosting and capacity; feature freeze. |
-| 1.81–1.90 | Recovery/rollback, incidents, support, player/contributor documentation and first release candidate. |
-| 1.91–1.99 | Close candidate blockers; capacity/device/security/data signoff, launch rehearsal and a verified release-ready build. |
+| 1.81–1.90 | Recovery/rollback, incidents, support, documentation and a nearly complete closed-beta candidate with owner go/no-go. |
+| 1.91–1.99 | Closed-beta feedback and candidate blockers; capacity/device/security/data signoff, launch rehearsal and a verified release-ready build. |
 
 Beta/channel and full-release version labels require explicit gate approval, not
 just a version bump. Payment integration remains excluded unless separately

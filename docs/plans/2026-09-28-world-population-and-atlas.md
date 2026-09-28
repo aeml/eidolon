@@ -9,6 +9,11 @@ live.1.17 Air/Dark Realm population is also accepted live atfbc3929a;
 See version receipts for exact evidence. These early passes do not approve final
 modern-art quality or the full B1 gate.
 
+Timing update: early world/map coverage remains required at A1 (formerly B1)
+in1.20, while the owner's closed-beta transition is deferred until the game is
+nearly complete (CB review targeted at1.90). Final visual quality is not waived;
+continue improving the populated world throughout alpha.
+
 ## Outcome
 
 Replace long stretches of undifferentiated terrain with a deliberately composed,

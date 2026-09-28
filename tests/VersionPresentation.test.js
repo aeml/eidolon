@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.18.0';
+const currentVersion = '1.19.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,13 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.19.0 explains report access and near-completion beta without enabling early restrictions', () => {
+        const start = indexHtml.indexOf('data-version="1.19.0"'), previous = indexHtml.indexOf('data-version="1.18.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['reports in reach and safer operations', 'Player reports', 'Ten-report pages',
+            'durable administrator role', 'nearly complete', 'up to 100 beta players', 'No character wipe',
+            'Full prior patch history']) expect(indexHtml.slice(start, previous)).toContain(text);
+    });
     test('1.18.0 records early visual integration without claiming final art or real-phone certification', () => {
         const start = indexHtml.indexOf('data-version="1.18.0"'), previous = indexHtml.indexOf('data-version="1.17.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

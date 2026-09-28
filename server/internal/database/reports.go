@@ -15,7 +15,61 @@ const (
 	ReportStatusOpen     = "open"
 	ReportStatusResolved = "resolved"
 	maximumReportLength  = 4000
+	AdminReportPageSize  = 10
 )
+
+type ReportQuery struct {
+	Before string `json:"before"`
+	Status string `json:"status"`
+}
+
+type ReportPage struct {
+	Reports []Report `json:"reports"`
+	Next    string   `json:"next,omitempty"`
+}
+
+func reportPageFilter(query ReportQuery) (bson.M, error) {
+	filter := bson.M{}
+	if query.Status != "" && query.Status != ReportStatusOpen && query.Status != ReportStatusResolved {
+		return nil, errors.New("invalid report status")
+	}
+	if query.Status != "" {
+		filter["status"] = query.Status
+	}
+	if query.Before != "" {
+		id, err := primitive.ObjectIDFromHex(query.Before)
+		if err != nil {
+			return nil, errors.New("invalid report cursor")
+		}
+		filter["_id"] = bson.M{"$lt": id}
+	}
+	return filter, nil
+}
+
+// Keyset pages use Mongo's indexed immutable report IDs; no offsets, full
+// collection dumps or report mutations. Resolve remains an operator-only tool.
+func (db *DB) ReadReportPage(query ReportQuery) (ReportPage, error) {
+	page := ReportPage{Reports: []Report{}}
+	filter, err := reportPageFilter(query)
+	if err != nil {
+		return page, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cursor, err := db.reports.Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: -1}}).SetLimit(AdminReportPageSize+1))
+	if err != nil {
+		return page, err
+	}
+	defer cursor.Close(ctx)
+	if err := cursor.All(ctx, &page.Reports); err != nil {
+		return ReportPage{}, err
+	}
+	if len(page.Reports) > AdminReportPageSize {
+		page.Reports = page.Reports[:AdminReportPageSize]
+		page.Next = page.Reports[len(page.Reports)-1].ID.Hex()
+	}
+	return page, nil
+}
 
 type Report struct {
 	ID         primitive.ObjectID `bson:"_id,omitempty" json:"id"`

@@ -42,6 +42,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgAdminStatus:        policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgAdminPlayers:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgAdminHistory:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminReports:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 	MsgAdminGrantGold:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
 	MsgAdminGrantItem:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
 	MsgAdminTeleport:      policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),

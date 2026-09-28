@@ -11,6 +11,12 @@ target. Existing procedural geometry is an implementation starting point, not
 an aesthetic constraint. A passing mesh manifest or the historical September 4
 visual closeout does not establish this newly requested visual quality.
 
+Timing update: the owner now requires closed beta only when the game is nearly
+complete, not at1.20. Keep code-owned art work early and ongoing. A1/A2 are
+open-alpha foundation gates; final approved modern presentation is required
+for Q and the near-completion CB gate, targeted at1.90 subject to readiness.
+This changes beta timing, not the requested visual scope or quality bar.
+
 ## Art ownership — user supplies actors, implementation supplies the world
 
 Latest user direction: do as much environment, texture, lighting and shader work
@@ -107,6 +113,12 @@ Keep geometry/material ownership, draw budgets, cache reuse and cleanup intact.
 Existing tests remain valuable for regressions but do not judge visual appeal.
 
 ## Optional authored-model pilot and artist handoff
+
+Owner update: the first Fighter model is not available yet. The owner plans to
+provide one neutral-pose GLB body with source/licensing information, rig and UVs
+when ready. Do not repeat the request or ask for the whole actor catalog now.
+Continue code-owned environment and equipment improvements meanwhile. This
+defers the handoff, not the eventual model-integration or visual-approval checks.
 
 The user may supply models made in Meshy or another tool. This is an option to
 evaluate, not a claim that an external generator produces game-ready assets or

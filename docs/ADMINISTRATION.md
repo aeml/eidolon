@@ -21,6 +21,20 @@ QA-only accounts cannot use it. A role lookup failure hides or disables access.
 activity, with account/action filters. These are structured records, not raw
 server logs or private character dumps.
 
+**Player reports** (Alpha 1.19) shows the existing in-game support queue.
+Choose **Open**, **Resolved**, or **All reports**, then **Refresh reports**.
+Expand **Inspect report JSON** to see the submitted record, including its ID,
+author, type, text and status. Pages contain at most ten reports, newest IDs
+first; **Next page** continues that filter and Refresh starts again.
+
+This is private, read-only triage: viewing does not resolve a report, delete it,
+or punish a player. Each request rechecks the durable administrator role and
+requires an audit entry; report bodies are not copied into activity history.
+JSON is displayed as text, and the results clear on disconnect or lost access.
+Redact usernames and personal details before sharing a reproduction publicly.
+Use the existing operator report tool for resolution; see the
+[operations handoff](BETA_OPERATIONS.md) for its migration and privacy cautions.
+
 Under **Character operations**, select an exact account or **Use my account**:
 
 - **Grant Gold:** positive whole amounts, up to100,000,000 per request.
@@ -81,7 +95,7 @@ schema markers or run an older writer against a newer database.
 ## Safe live acceptance
 
 Sign in with an existing administrator account and confirm that **Administration**,
-**Online players** and **Activity history** load. No production grants or teleports
+**Online players**, **Activity history** and **Player reports** load. No production grants or teleports
 are needed for this check. Authenticated disposable two-account mutation, replay,
 restart and rendered checks are already recorded in the
 [implementation evidence](plans/2026-09-19-administration-console.md) and

@@ -18,6 +18,43 @@ beforeEach(() => {
 });
 afterEach(() => { ui.dispose(); jest.useRealTimers(); });
 
+test('report JSON is private text, paginated, filter-safe and cleared on disconnect', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
+    ui.root.querySelector('[data-view="reports"]').click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '', status: 'open' });
+    expect(ui.reportStatus.disabled).toBe(true);
+    const report = { id: '0123456789abcdef01234567', username: '<img src=x>', reportType: 'Bug Report',
+        status: 'open', text: '<script>steal()</script>\nLong report', createdAt: '2026-09-28T12:00:00Z' };
+    reply({ reports: { reports: [report], next: report.id } });
+    expect(ui.filters.hidden).toBe(true); expect(ui.reportFilters.hidden).toBe(false);
+    expect(ui.root.querySelector('img, script')).toBeNull();
+    expect(JSON.parse(ui.list.querySelector('pre').textContent)).toEqual(report);
+    expect(ui.list.querySelector('details').open).toBe(false);
+    expect(ui.note.textContent).toContain('does not resolve');
+    ui.next.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: report.id, status: 'open' });
+    reply({ reports: { reports: [report], next: report.id } });
+    ui.reportStatus.value = 'resolved'; ui.reportStatus.dispatchEvent(new Event('input'));
+    expect(ui.cursor).toBe(''); expect(ui.next.hidden).toBe(true);
+    ui.refresh.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '', status: 'resolved' });
+    reply({ reports: { reports: [] } });
+    expect(ui.status.textContent).toContain('No reports');
+    ui.refresh.click(); const staleID = ui.pending.id;
+    ui.connectionState('disconnected');
+    ui.handleResult('admin_reports_result', { id: staleID, success: true, authorized: true, reports: {reports: [report]} });
+    expect(ui.list.children).toHaveLength(0); expect(ui.launcher.hidden).toBe(true);
+    expect(send.mock.calls.every(([type]) => !type.includes('resolve'))).toBe(true);
+});
+
+test('report view fails closed after revocation or storage error', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({players: []});
+    ui.root.querySelector('[data-view="reports"]').click();
+    reply({success: false, authorized: false, message: 'Report queue unavailable.'});
+    expect(ui.list.children).toHaveLength(0); expect(ui.launcher.hidden).toBe(true);
+    expect(ui.status.textContent).toContain('unavailable');
+});
+
 test('launcher stays hidden until an authenticated server response verifies the role', () => {
     expect(ui.launcher.hidden).toBe(true);
     ui.launcher.click();

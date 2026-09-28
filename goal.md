@@ -1,6 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (supersedes chronological notes below):** Alpha1.17.0 is
+**Current checkpoint (supersedes chronological notes below):** Alpha1.18.0 is
+accepted live at24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791.
+All mandatory jobs and final live QA passed; root independently verified exact
+public IPv4 frontend/backend identity, ready database, login/history/help and
+seven changed runtime assets. No active1.18 watcher remains. Luna exhausted its
+usage limit during1.18; use quiet terminal-only process monitoring if unavailable,
+not another model or repeated tick logs.
+
+Local1.19 now includes the role-gated/audited ten-report JSON viewer, safe text
+rendering/pagination/private-state clearing, guarded Mongo restore helper and
+the owner's near-completion beta policies. Full ESLint,302 focused client/version
+checks, focused Go tests, real disposable Mongo pagination, two-account report
+submission/authorization/restart, three browser layouts and18 restore guard cases
+passed. See [1.19 receipt](docs/plans/2026-09-28-release1-19.md).
+Next: publish1.19, monitor mandatory CI/live QA, independently verify exact assets,
+then implement1.20 A1 integration. Do not repeat the long campaign or alter access.
+All final modern-art/CB requirements remain open; model pilot is owner-deferred.
+
+**Historical checkpoint:** Alpha1.17.0 is
 accepted live atfbc3929ac2255808536bc886f94b2ad15e763926, CI36438798888.
 Luna confirmed all gates, both deployments and final live QA (8m47s). The server
 test job including race detection passed10m35s after the indexed-spawn correction;
@@ -9,20 +27,38 @@ IPv4 exact frontend/backend identity, healthy database, login/history and16
 changed runtime assets. This delivers party guidance/recruitment, Air population
 and Dark Realm courts/streets; final modern-art/B1 approval remains open.
 
-1.18 is prepared for publication after that accepted predecessor. It adds rounded fitted torso surfaces, folded skirts,
+1.18 candidate25f552bf2a58efd90d035e7160ac6fe94464b610 is pushed to master;
+Luna is monitoring its own CI/deployment/live-QA gates. It adds rounded fitted torso surfaces, folded skirts,
 shared equipment surface maps, regional ground dressing, cap eye clearance,
 Dark Realm court minimap parity and clear quality-setting guidance. Final
 world budgets/resource return and equipment checks passed; the full client run
 had one stale Settings assertion, corrected with its entire71-test suite passing.
 See1.18 release receipt/preflight/device
 matrix for exact limits and remaining work; no final modern-art/B1 claim.
-1.18 is ready for its publication gate; exact public verifier prepared in its
-receipt.1.19 operations preflight stays separate and local. Owner questions
-about existing-account access, invitation policy, cohort size and support
-contact are pending; current access and saves are unchanged. Local1.19 now also
+1.18 still requires live acceptance; exact public verifier prepared in its
+receipt.1.19 operations implementation stays separate and local. The owner chose
+retained accounts/characters, invited new beta players, up to100 beta players
+and in-game reports with admin JSON viewing. Closed beta must wait until the
+game is nearly complete: the roadmap now keeps1.20/1.40 as A1/A2 alpha gates,
+with CB readiness review targeted at1.90 after feature completion. No current
+access restriction or capacity promise. Local1.19 now also
 hardens the Mongo-only restore helper (18 fake-command scenarios pass, no live
 operations) and drafts docs/BETA_OPERATIONS.md. Keep those uncommitted changes
 out of1.18; its preflight records scope and pending policy decisions.
+The administrator report viewer is implemented locally: durable-role-gated and
+audited report reads,10-item ID-keyset pages/status filters and safe expandable
+JSON, clearing on disconnect/access loss. Focused Go/admin UI checks pass;
+actual disposable Mongo pagination, browser report-view checks and remaining
+integration/release notes are still required.1.18 CI36442058638 watcher is a
+quiet local process in tool session82742 after Luna hit its usage limit; poll
+that same handle, do not restart/cancel the job. Terminal errors distinguish
+observation failure from a failed CI run. Root exact1.18 live verifier remains
+`/tmp/eidolon-release-1-18-0-20260928-viToEq/verify.mjs`.
+The owner confirmed the Fighter GLB pilot is not ready yet and will supply a
+neutral-pose body with source/licensing information, rig and UVs when available.
+Do not keep asking for it or request the whole catalog. Continue code-owned
+environment/equipment work; model integration and final art/B1 approval remain
+pending, not waived.
 See [1.17 receipt](docs/plans/2026-09-28-release1-17.md). Global roadmap and
 final art/beta gates remain open. Do not publish receipt-only changes by themselves.
 

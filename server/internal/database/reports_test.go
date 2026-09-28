@@ -1,10 +1,78 @@
 package database
 
 import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 	"testing"
 	"time"
 )
+
+func TestReportQueueKeysetPagesAreStableAndReadOnly(t *testing.T) {
+	db := newFriendshipDB(t)
+	// A uniquely named disposable collection, never existing player reports.
+	db.reports = db.reports.Database().Collection(uniqueID("report-pages"))
+	t.Cleanup(func() { _ = db.reports.Drop(context.Background()) })
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	documents := []interface{}{}
+	for i := 0; i < 25; i++ {
+		status := ReportStatusOpen
+		if i < 10 {
+			status = ReportStatusResolved
+		}
+		documents = append(documents, Report{ID: primitive.NewObjectID(), Username: "fixture-reporter", ReportType: "Bug Report", Text: "private fixture text", Status: status, CreatedAt: time.Unix(1700000000, 0)})
+	}
+	if _, err := db.reports.InsertMany(ctx, documents); err != nil {
+		t.Fatal(err)
+	}
+	first, err := db.ReadReportPage(ReportQuery{Status: ReportStatusOpen})
+	if err != nil || len(first.Reports) != 10 || first.Next != first.Reports[9].ID.Hex() {
+		t.Fatal(first, err)
+	}
+	// A newly submitted report should not shift/duplicate the next keyset page.
+	if _, err := db.reports.InsertOne(ctx, Report{ID: primitive.NewObjectID(), Status: ReportStatusOpen}); err != nil {
+		t.Fatal(err)
+	}
+	second, err := db.ReadReportPage(ReportQuery{Status: ReportStatusOpen, Before: first.Next})
+	if err != nil || len(second.Reports) != 5 || second.Next != "" {
+		t.Fatal(second, err)
+	}
+	seen := map[string]bool{}
+	previous := "ffffffffffffffffffffffff"
+	for _, report := range append(first.Reports, second.Reports...) {
+		id := report.ID.Hex()
+		if seen[id] || id >= previous || report.Status != ReportStatusOpen || report.Text != "private fixture text" {
+			t.Fatal("unstable/private-data-changing read", report)
+		}
+		seen[id] = true
+		previous = id
+	}
+	resolved, err := db.ReadReportPage(ReportQuery{Status: ReportStatusResolved})
+	if err != nil || len(resolved.Reports) != 10 || resolved.Next != "" {
+		t.Fatal(resolved, err)
+	}
+	if count, err := db.reports.CountDocuments(ctx, bson.M{"status": ReportStatusOpen}); err != nil || count != 16 {
+		t.Fatal("read changed report state", count, err)
+	}
+}
+
+func TestReportPageFilterIsBoundedAndStrict(t *testing.T) {
+	id := primitive.NewObjectID()
+	filter, err := reportPageFilter(ReportQuery{Before: id.Hex(), Status: ReportStatusOpen})
+	if err != nil || filter["status"] != ReportStatusOpen || filter["_id"].(bson.M)["$lt"] != id || AdminReportPageSize != 10 {
+		t.Fatal(filter, err)
+	}
+	for _, query := range []ReportQuery{{Before: "invalid"}, {Before: strings.Repeat("a", 25)}, {Status: "deleted"}, {Status: "$ne"}} {
+		if _, err := reportPageFilter(query); err == nil {
+			t.Fatal("accepted invalid report query", query)
+		}
+	}
+	if filter, err := reportPageFilter(ReportQuery{}); err != nil || len(filter) != 0 {
+		t.Fatal(filter, err)
+	}
+}
 
 func TestNewReportValidatesAndNormalizesInput(t *testing.T) {
 	now := time.Unix(1_700_000_000, 0)
