@@ -4,7 +4,7 @@ Last refreshed: September 28, 2026
 
 This file is a short pointer. Current forward planning and historical closeout live in these documents:
 
-- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, beta/launch gates and sequential implement/deploy/verify execution. 1.13 is accepted live (CI36403511513, 730987e3); 1.14 is implementing.
+- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, beta/launch gates and sequential implement/deploy/verify execution. 1.14 is accepted live (CI36416114631, 0dc2f055); 1.15 is implementing.
 
 - [World population and atlas](plans/2026-09-28-world-population-and-atlas.md) — required world density, meaningful locations/activities, accurate map/minimap, delivery assignments and B1 acceptance. First pass before closed beta, followed by regional refinement.
 

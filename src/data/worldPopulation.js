@@ -42,7 +42,7 @@ export const EARTH_LOCATIONS = freeze([
         x: -480, z: 530, radius: 26, visibility: 'public',
         purpose: 'A deserted timber yard with an open, roofless workshop. This is combat territory.' },
     { id: 'bellkeepers-cairn', name: 'Bellkeeper’s Cairn', role: 'lore', recipe: 'bell-cairn',
-        x: -320, z: -180, radius: 14, visibility: 'public',
+        x: -320, z: -180, radius: 14, visibility: 'public', readingOffset: [0, -6],
         purpose: 'Read a surviving bellkeeper’s record. Optional lore; no quest or reward required.',
         reading: { title: 'The Bell That Meant Shelter',
             introduction: 'A slate lies beneath the cracked bell. Someone has rubbed ash into the letters so they remain legible.',
@@ -52,7 +52,7 @@ export const EARTH_LOCATIONS = freeze([
                 'We have taken the children south to Lanternhold. If the bell speaks with a voice instead of a note, do not answer its question. Ring for whoever is still outside.'
             ] } },
     { id: 'unbound-milestone', name: 'The Unbound Milestone', role: 'lore', recipe: 'oath-stone',
-        x: 520, z: 440, radius: 14, visibility: 'public',
+        x: 520, z: 440, radius: 14, visibility: 'public', readingOffset: [8, -3],
         purpose: 'Read the travelers’ oath cut into this roadside stone. Optional lore; no saved discovery claim.',
         reading: { title: 'A Promise Without a Master',
             introduction: 'Dozens of names surround an older inscription. No crest claims the stone; even the smallest names have been cut at the same depth.',
@@ -62,6 +62,12 @@ export const EARTH_LOCATIONS = freeze([
                 'At the foot of the stone, a fresh line reads: We keep the scar so our children know the promise was defended. The grove belongs to those who need its shelter, not to whoever learns to command its roots.'
             ] } }
 ]);
+
+export const WORLD_READINGS = freeze(EARTH_LOCATIONS.filter(site => site.reading).map(site => ({
+    id: `world-reading-${site.id}`, locationId: site.id, name: site.name,
+    x: site.x + site.readingOffset[0], z: site.z + site.readingOffset[1],
+    reading: site.reading
+})));
 
 // These are authored ground-surface centerlines, shared with cartography when
 // the population scene is attached. Width is the full traversable path width;

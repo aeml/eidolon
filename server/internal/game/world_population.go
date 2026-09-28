@@ -20,6 +20,31 @@ type worldPopulationFootprint struct {
 	Depth  float64 `json:"depth"`
 }
 
+type worldReading struct {
+	ID   string  `json:"id"`
+	Name string  `json:"name"`
+	X    float64 `json:"x"`
+	Z    float64 `json:"z"`
+}
+
+func (w *World) spawnWorldReadings() {
+	var data struct {
+		Readings []worldReading `json:"readings"`
+	}
+	if err := json.Unmarshal(worldPopulationContent, &data); err != nil {
+		panic(err)
+	}
+	seen := map[string]bool{}
+	for _, reading := range data.Readings {
+		if reading.ID == "" || seen[reading.ID] || reading.Name == "" || !finiteCoordinate(reading.X) || !finiteCoordinate(reading.Z) {
+			panic("invalid world reading")
+		}
+		seen[reading.ID] = true
+		w.AddEntity(&Entity{ID: reading.ID, Name: reading.Name, Type: TypeNPC, SubType: "WorldReading",
+			X: reading.X, Z: reading.Z, SpawnX: reading.X, SpawnZ: reading.Z, State: "IDLE", Scale: 1})
+	}
+}
+
 var worldPopulationFootprints = func() []worldPopulationFootprint {
 	var data struct {
 		SchemaVersion int                        `json:"schemaVersion"`
@@ -43,4 +68,27 @@ func worldPopulationSpawnAllowed(x, z float64) bool {
 		}
 	}
 	return true
+}
+
+// Elite count/strength stays unchanged when a roll lands in scenery. Search a
+// small bounded neighborhood, retaining its sector and beginner-protection rules.
+func (w *World) clearEliteScenerySpawn(subType string, x, z, minX, maxX, minZ, maxZ float64) (float64, float64, bool) {
+	if worldPopulationSpawnAllowed(x, z) {
+		return x, z, true
+	}
+	for radius := 3.0; radius <= 48; radius += 3 {
+		for i := 0; i < 8; i++ {
+			angle := float64(i) * math.Pi / 4
+			px, pz := x+math.Cos(angle)*radius, z+math.Sin(angle)*radius
+			if px < minX || px > maxX || pz < minZ || pz > maxZ || w.SafeZoneAt("", px, pz) != "" ||
+				!worldPopulationSpawnAllowed(px, pz) || !lanternholdAdvancedSpawnAllowed(subType, px, pz) {
+				continue
+			}
+			if subType == "Skeleton" && lanternholdSkeletonLevel(px, pz) < 10 {
+				continue
+			}
+			return px, pz, true
+		}
+	}
+	return x, z, false
 }

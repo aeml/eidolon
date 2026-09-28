@@ -569,6 +569,13 @@ database, login/history and both changed assets verified. Scoped evidence and
 limitations: [1.13 receipt](2026-09-28-release1-13.md). **1.14 implementing**
 from the [atlas/feedback preflight](2026-09-28-1-14-preflight.md); later gates open.
 
+Superseding receipt: **1.14 accepted live**, exact
+`0dc2f055180e219c45afddec7e56e7f1210a630d`, CI36416114631 fully successful,
+including Live Release and Character QA. Independent IPv4 verification confirms
+frontend/backend identity, healthy database, login/cumulative notes and11 exact
+deployed assets. [Evidence](2026-09-28-release1-14.md). **1.15 implementing
+locally** from its [receipt](2026-09-28-release1-15.md); later gates remain open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

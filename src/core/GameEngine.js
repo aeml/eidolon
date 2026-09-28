@@ -9,6 +9,7 @@ import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitec
 import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { ResonancePortal } from '../entities/ResonancePortal.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
+import { WorldReading } from '../entities/WorldReading.js';
 import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
@@ -1473,6 +1474,7 @@ export class GameEngine {
             || entity instanceof ChronicleSite
             || entity instanceof ResonancePortal
             || entity instanceof ChronicleWitness
+            || entity instanceof WorldReading
             || entity instanceof CosmeticVendor
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
@@ -1484,6 +1486,7 @@ export class GameEngine {
             || type === 'ChronicleSite'
             || type === 'ResonancePortal'
             || type === 'ChronicleWitness'
+            || type === 'WorldReading'
             || type === 'CosmeticVendor'
             || type === 'QuestNPC'
             || type === 'RespecNPC'
@@ -1656,6 +1659,8 @@ export class GameEngine {
             promptLabel = inRange ? 'Click to browse EP cosmetic looks. No stats, no Gold resale.' : 'Move closer to browse Veyra’s cosmetic wardrobe.';
         } else if (interactableType === 'ChronicleWitness') {
             promptLabel = inRange ? `Click to speak with ${entity.name}. Optional Chronicle conversations.` : 'Move closer to speak with this witness.';
+        } else if (interactableType === 'WorldReading') {
+            promptLabel = inRange ? 'Click or press E to read this optional lore. No quest or reward required.' : 'Move closer to read this roadside record.';
         } else if (interactableType === 'ResonancePortal') {
             promptLabel = inRange ? 'Click or press E to hear the four crystals and view your passage requirements.' : 'Approach the Fourfold Resonance Portal.';
         } else if (interactableType === 'ChronicleSite') {
@@ -2182,6 +2187,8 @@ export class GameEngine {
                 p = new ChronicleSite(id);
             } else if (subType === 'ChronicleWitness') {
                 p = new ChronicleWitness(id);
+            } else if (subType === 'WorldReading') {
+                p = new WorldReading(id);
             } else if (subType === 'CosmeticVendor') {
                 p = new CosmeticVendor(id);
             } else if (subType === 'DwarfSalesman') {

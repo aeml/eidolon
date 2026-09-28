@@ -12,6 +12,7 @@ import { QuestNPC } from '../entities/QuestNPC.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { ResonancePortal } from '../entities/ResonancePortal.js';
 import { ChronicleWitness } from '../entities/ChronicleWitness.js';
+import { WorldReading } from '../entities/WorldReading.js';
 import { CosmeticVendor } from '../entities/CosmeticVendor.js';
 import { requestChronicleInspection } from './ChronicleInspection.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
@@ -640,7 +641,7 @@ class GameEngineRuntimeMethods {
                             this.uiManager.toggleShop();
                             this.pendingInteraction = null;
 
-                        } else if (this.pendingInteraction instanceof ChronicleWitness || this.pendingInteraction instanceof CosmeticVendor || this.pendingInteraction instanceof ResonancePortal) {
+                        } else if (this.pendingInteraction instanceof ChronicleWitness || this.pendingInteraction instanceof WorldReading || this.pendingInteraction instanceof CosmeticVendor || this.pendingInteraction instanceof ResonancePortal) {
                             this.player.targetPosition = null;
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');

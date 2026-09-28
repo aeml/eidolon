@@ -311,6 +311,7 @@ func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
 	w.spawnChronicleWitnesses()
+	w.spawnWorldReadings()
 	w.spawnCosmeticVendor()
 	w.spawnRespecNPC()
 	w.spawnDungeonNPC()
@@ -871,6 +872,11 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	if !lanternholdAdvancedSpawnAllowed(subType, x, z) {
 		// Keep the one elite per sector, outside the introductory roads.
 		x = math.Copysign(100+lanternholdAdvancedSpawnDistance, x)
+	}
+	var clear bool
+	x, z, clear = w.clearEliteScenerySpawn(subType, x, z, minX, maxX, minZ, maxZ)
+	if !clear {
+		return
 	}
 	profile := overworldEnemyCombatProfile(subType, level, true)
 

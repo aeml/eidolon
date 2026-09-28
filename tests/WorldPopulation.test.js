@@ -1,4 +1,4 @@
-import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
+import { EARTH_LOCATIONS, EARTH_PATHS, WORLD_READINGS, distanceToPath } from '../src/data/worldPopulation.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements, FOLIAGE_HAZARD_CLEARINGS } from '../src/data/worldFoliage.js';
 import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
@@ -12,6 +12,7 @@ test('all eight scenery recipes render bounded per-location batches with shared 
     expect(high.userData.walkFootprints).toEqual(low.userData.walkFootprints);
     const generated = JSON.parse(readFileSync(new URL('../server/internal/game/content/world-population-footprints.json', import.meta.url), 'utf8'));
     expect(generated.footprints).toEqual(high.userData.walkFootprints.map(({ siteId, x, z, width, depth }) => ({ siteId, x, z, width, depth })));
+    expect(generated.readings).toEqual(WORLD_READINGS.map(({ id, name, x, z }) => ({ id, name, x, z })));
     for (const f of high.userData.walkFootprints) {
         expect(f.angle).toBe(0);
         for (const path of EARTH_PATHS) {

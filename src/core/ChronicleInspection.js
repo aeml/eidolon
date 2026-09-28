@@ -24,8 +24,10 @@ export function requestNearbyChronicleInspection(engine) {
     candidates.sort((a, b) => Number(a.recorded) - Number(b.recorded) || a.distance - b.distance || a.entity.id.localeCompare(b.entity.id));
     if (candidates.length) return requestChronicleInspection(engine, candidates[0].entity);
     if (!engine.isMultiplayer || player.state === 'DEAD') return false;
-    const portal = entities.find(entity => entity?.isActive && entity.type === 'ResonancePortal' && entity.canInteract?.(engine));
-    return portal?.interact(engine) || false;
+    const reading = entities.filter(entity => entity?.isActive && ['ResonancePortal', 'WorldReading'].includes(entity.type) && entity.canInteract?.(engine))
+        .sort((a, b) => Math.hypot(player.position.x - a.position.x, player.position.z - a.position.z) -
+            Math.hypot(player.position.x - b.position.x, player.position.z - b.position.z) || a.id.localeCompare(b.id))[0];
+    return reading?.interact(engine) || false;
 }
 
 export function requestChronicleInspection(engine, entity) {

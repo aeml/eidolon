@@ -190,5 +190,19 @@
       "width": 2.8,
       "depth": 1.6
     }
+  ],
+  "readings": [
+    {
+      "id": "world-reading-bellkeepers-cairn",
+      "name": "Bellkeeper’s Cairn",
+      "x": -320,
+      "z": -186
+    },
+    {
+      "id": "world-reading-unbound-milestone",
+      "name": "The Unbound Milestone",
+      "x": 528,
+      "z": 437
+    }
   ]
 }

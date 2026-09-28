@@ -13,7 +13,7 @@ The first populated-world/map pass is required before closed beta, not deferred
 to late polish. User-provided actor models are a dependency; environments,
 equipment, materials, shaders and integration remain implementation-owned.
 
-Current checkpoint: [1.13.0 is accepted live](docs/plans/2026-09-28-release1-13.md),
+Previous checkpoint: [1.13.0 is accepted live](docs/plans/2026-09-28-release1-13.md),
 exact SHA 730987e3ce7b7eb55bc5c55a6a44ca06a8927f2a, CI36403511513 successful,
 including live QA and independent public IPv4 identity/assets verification.
 1.14 atlas/feedback is implementing from its
@@ -38,6 +38,15 @@ with matching atlas centerlines;32 focused checks pass. Its
 scenery, interactions, onboarding and review. Do not publish1.15 before1.14 is
 accepted and the whole1.15 milestone is ready. No partial milestone deployed.
 The global goal and later gates are still open.
+
+Superseding checkpoint: **1.14.0 accepted live**, corrected commit
+0dc2f055180e219c45afddec7e56e7f1210a630d, CI36416114631 fully successful.
+Luna confirmed terminal success/live identity. Independent IPv4 verification
+confirmed frontend/backend version and SHA, health/database, login/cumulative
+notes and11 exact deployed source assets. IPv6 remains owner-deferred.
+**1.15 implementing locally:** Earth scenery/paths, shared spawn solids and
+optional read-only lore interaction. See its receipt for actual checks and the
+remaining town/onboarding/map/full-world acceptance work. No1.15 push yet.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
 reports. Keep focused checks and mandatory CI; reuse unaffected evidence. Do not
