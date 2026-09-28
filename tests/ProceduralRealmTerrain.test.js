@@ -10,6 +10,68 @@ import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
 const TERRAIN_KEYS = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean', 'sky']);
 
 describe('procedural dark-fantasy realm terrain', () => {
+    test.each(['town', 'earth'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
+        const high = createProceduralTerrainMaterial(key);
+        const duplicate = createProceduralTerrainMaterial(key);
+        const low = createProceduralTerrainMaterial(key, { quality: 'low' });
+        for (const channel of ['normalMap', 'roughnessMap']) {
+            const texture = high[channel];
+            expect(texture.isDataTexture).toBe(true);
+            expect(texture.colorSpace).toBe(THREE.NoColorSpace);
+            expect(texture.repeat.toArray()).toEqual(high.map.repeat.toArray());
+            expect(texture.generateMipmaps).toBe(true);
+            expect(texture.wrapS).toBe(THREE.RepeatWrapping);
+            expect(texture.wrapT).toBe(THREE.RepeatWrapping);
+            expect(texture.image.data.every((value, index) => value === duplicate[channel].image.data[index])).toBe(true);
+            expect(texture.image.data.byteLength).toBe(256 * 256 * 4);
+            expect(low[channel].image.data.byteLength).toBe(128 * 128 * 4);
+            for (let y = 0; y < 128; y += 7) {
+                for (let x = 0; x < 128; x += 7) {
+                    const highOffset = (y * 2 * 256 + x * 2) * 4;
+                    const lowOffset = (y * 128 + x) * 4;
+                    expect(low[channel].image.data.slice(lowOffset, lowOffset + 4))
+                        .toEqual(texture.image.data.slice(highOffset, highOffset + 4));
+                }
+            }
+        }
+        const data = high.normalMap.image.data;
+        let tilted = 0;
+        let maximumLengthError = 0;
+        let minimumZ = 1;
+        for (let offset = 0; offset < data.length; offset += 4) {
+            const x = data[offset] / 255 * 2 - 1, y = data[offset + 1] / 255 * 2 - 1, z = data[offset + 2] / 255 * 2 - 1;
+            maximumLengthError = Math.max(maximumLengthError, Math.abs(Math.hypot(x, y, z) - 1));
+            minimumZ = Math.min(minimumZ, z);
+            if (Math.abs(x) + Math.abs(y) > .02) tilted++;
+        }
+        // Each signed component is quantized by at most 1/255. The vector's
+        // length error is bounded by sqrt(3)/255, not a two-decimal tolerance.
+        expect(maximumLengthError).toBeLessThanOrEqual(Math.sqrt(3) / 255);
+        expect(minimumZ).toBeGreaterThan(0);
+        expect(tilted).toBeGreaterThan(100);
+        for (const material of [high, duplicate, low]) { material.map.dispose(); material.dispose(); }
+    });
+
+    test('surface maps follow provided albedo transforms and are released once without disposing shared albedo', () => {
+        const albedo = createProceduralTerrainTexture('town', { quality: 'low' });
+        albedo.offset.set(.2, .3); albedo.center.set(.5, .5); albedo.rotation = .4; albedo.anisotropy = 4;
+        const material = createProceduralTerrainMaterial('town', { texture: albedo });
+        const calls = { albedo: 0, normal: 0, roughness: 0 };
+        albedo.addEventListener('dispose', () => { calls.albedo++; });
+        material.normalMap.addEventListener('dispose', () => { calls.normal++; });
+        material.roughnessMap.addEventListener('dispose', () => { calls.roughness++; });
+        for (const surface of [material.normalMap, material.roughnessMap]) {
+            expect(surface.image.width).toBe(128);
+            expect(surface.offset.toArray()).toEqual(albedo.offset.toArray());
+            expect(surface.center.toArray()).toEqual(albedo.center.toArray());
+            expect(surface.rotation).toBe(albedo.rotation);
+            expect(surface.anisotropy).toBe(albedo.anisotropy);
+        }
+        material.dispose(); material.dispose();
+        expect(calls).toEqual({ albedo: 0, normal: 1, roughness: 1 });
+        albedo.dispose();
+    });
+
     test('declares an intentional and unique identity for every production surface', () => {
         expect(Object.keys(PROCEDURAL_TERRAIN_DEFINITIONS)).toEqual(TERRAIN_KEYS);
         expect(new Set(Object.values(PROCEDURAL_TERRAIN_DEFINITIONS).map((entry) => entry.id)).size)

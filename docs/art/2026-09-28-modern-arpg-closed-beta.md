@@ -11,6 +11,54 @@ target. Existing procedural geometry is an implementation starting point, not
 an aesthetic constraint. A passing mesh manifest or the historical September 4
 visual closeout does not establish this newly requested visual quality.
 
+## Art ownership — user supplies actors, implementation supplies the world
+
+Latest user direction: do as much environment, texture, lighting and shader work
+as possible in code so the user's external asset work is limited to **player
+class models, monsters, bosses and NPCs**. This is the production division of
+work, not merely an optional way to divide a larger outsourced asset list.
+
+| User-provided model scope | Code/integration work owned by implementation |
+| --- | --- |
+| Fighter, Rogue, Wizard and Cleric bodies/base appearances | Actor import/validation, rig/animation integration, equipment anchors, material assignment, previews, LOD/resource budgets, local/remote appearance and fallback behavior |
+| Monster families and named bosses | Enemy instancing/pooling, animations/integration, materials, hit/selection bounds, attacks, warnings, death effects and encounter lighting |
+| Town/story/service NPCs | NPC material/animation integration, placement, interaction bounds, names, quest markers and dialogue presentation |
+| No requested environment asset production | Terrain, buildings/interiors, dungeon/raid rooms, props, foliage, rocks, roads, water, sky, portals, crystals and casino furniture/machines |
+| No requested environment texture/shader production | Code-generated surface textures and PBR maps, terrain blending, lighting, reflection/atmosphere, shadows, weather, VFX, UI/item icons and quality/performance controls |
+| No requested per-item armor/weapon modeling campaign | Procedural equipment families, fitted modular layers, weapons/shields/accessories, cosmetics and adaptation to approved actor rigs |
+
+Actor geometry remains the user's creative contribution. Prefer neutral-pose
+models and keep source files; supply a rig/UVs if available. The implementation
+owns the engine integration and generated material work. The preferred technical
+handoff below is a compatibility checklist, not a demand that the user author
+environment assets, paint every texture, or solve the engine's rigging code.
+If a model's topology/pose prevents sound animation or equipment fit, identify
+the exact required mesh correction; code cannot guarantee repair of arbitrary
+broken geometry. Prove one actor end-to-end before asking for a full catalog.
+
+### Code-owned environment workstream
+
+1. Establish a consistent generated material library: stone/mortar, soil/moss,
+   timber/bark, cloth/leather, worn metal, ice, ash/obsidian and magical crystal.
+   Base color, physical surface relief and roughness are separate signals.
+2. Improve town and realm ground using seamless, registered surface maps and
+   larger-scale variation; prevent repeated grids and noisy sparkling detail.
+3. Refine buildings, landmarks, dungeon/raid interiors, props and vegetation
+   with meaningful silhouettes, layered construction and matching collisions.
+4. Integrate region-specific key/fill light, reflection response, contact
+   grounding, fog, sky/water, weather and restrained emissive effects. Preserve
+   combat readability and avoid expensive full-screen effects as a substitute
+   for better geometry/materials.
+5. Keep ability/projectile/impact/portal/crystal/casino effects and interaction
+   feedback code-owned and tied to authoritative state.
+6. Compare representative daylight/dark-interior/elemental scenes at normal
+   gameplay zoom, High/Low and supported viewports, with bounded resource cost.
+   Higher-quality screenshots alone do not prove sustained device performance.
+
+Start with Lanternhold's stone and Earth soil material response using the actual
+production terrain builder. This does not wait for imported actor models, change
+collision heights, or require downloaded texture packs.
+
 ## Target
 
 - Grounded heroic anatomy: believable shoulder/hip balance, neck/head joins,
@@ -138,3 +186,31 @@ class browser fit routes pass (44.7seconds), covering both local and replicated
 views of all four classes were inspected, plus Fighter attack-side construction.
 These checks verify attachment/motion and the small visual change, not full
 modern-art acceptance, Low/mobile coverage or performance on the busy host.
+
+## September 28 environment slice — local, not deployed
+
+The production town/Earth terrain materials now generate normal and roughness
+maps alongside existing albedo. Town relief uses the same stone/mortar shape as
+its color texture; Earth relief uses its periodic soil fields. Darkness is not
+treated as height, so painted stains do not become holes. Linear surface maps
+and sRGB albedo stay separate. High/Low share canonical physical features and
+normal strength; no displacement, extra ground polygons or collision change.
+
+Maps are created with the environment/material, not per actor or frame. Extra
+raw map storage across both production surfaces is1MiB at High /256KiB at Low,
+before mipmaps/GPU overhead. Material disposal frees its private maps while
+leaving caller-owned albedo alone; preview quality swaps remain stable.
+
+Verification:19 terrain/environment unit checks pass, including deterministic
+High/Low registration, normalized-vector byte quantization, map ownership and
+unchanged realm footprints; scoped lint and whitespace checks pass. Two browser
+routes pass (21.8seconds) and inspect four town/Earth High/Low views. Town High/Low
+and Earth High images were visually reviewed against the baseline. Generated
+materials compile without reported browser failures and retain two ground
+triangles. These bounded gallery observations are not launch-performance proof.
+Artifacts: `/tmp/eidolon-beta-surfaces-20260928-vXtBZd/` (before/after).
+
+Remaining: larger-scale surface variation, architecture/prop materials,
+vegetation, water/ice/fire/air treatments, lighting/atmosphere integration and
+scene-wide review. This initial shader-input improvement does not complete the
+environment redesign or modern closed-beta visual gate.

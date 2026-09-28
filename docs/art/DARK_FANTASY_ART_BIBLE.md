@@ -6,6 +6,9 @@ The user wants the grounded, atmospheric feel of modern Diablo/Path of Exile.
 Preserve Eidolon's identities, readability and performance contracts while
 improving anatomy, equipment construction/fit, materials, lighting and motion.
 An authored-model pilot may be evaluated; no bulk import is approved or complete.
+The user-supplied asset scope is actor models (players, monsters/bosses, NPCs).
+Environment and equipment geometry, generated textures/materials, lighting,
+shaders and effects remain code-owned; see the visual contract's ownership table.
 
 ## Identity
 

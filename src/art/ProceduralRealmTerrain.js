@@ -127,7 +127,7 @@ function sampleEarth(x, y, _size, definition) {
     return color.map((channel) => Math.round(channel + chip * 13));
 }
 
-function sampleTown(x, y, size, definition, palette) {
+function townStoneShape(x, y, size, definition) {
     // Canonical texel coordinates keep Low's stones the same physical size.
     // Eight columns / sixteen rows wrap exactly, including the offset bond.
     const px = x * 256 / size;
@@ -142,6 +142,11 @@ function sampleTown(x, y, size, definition, palette) {
     const dy = Math.min(localY, 16 - localY);
     const cornerCut = 1.1 + stoneNoise * 1.3;
     const edge = Math.min(dx, dy, (dx + dy - cornerCut) * 0.707);
+    return { px, py, stoneNoise, edge };
+}
+
+function sampleTown(x, y, size, definition, palette) {
+    const { px, py, stoneNoise, edge } = townStoneShape(x, y, size, definition);
     const wear = hash2d(Math.floor(px), Math.floor(py), definition.seed ^ 0x9f31);
     const stain = Math.sin(px * Math.PI / 128) * Math.cos(py * Math.PI / 64);
     const stone = mixColor(palette.ground, palette.midtone, 0.17 + stoneNoise * 0.16 + wear * 0.05 + stain * 0.035);
@@ -266,13 +271,84 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
     return texture;
 }
 
+// Surface shape is independent of albedo: a dark stain is not a hole and a
+// bright magical mark is not a raised bump. Evaluate one periodic canonical
+// field so Low and High retain the same stone/soil footprint and normal strength.
+function createTerrainSurfaceMaps(key, quality) {
+    if (key !== 'town' && key !== 'earth') return null;
+    const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
+    const canonicalSize = 256;
+    const height = new Float32Array(canonicalSize * canonicalSize);
+    const roughness = new Float32Array(height.length);
+    for (let y = 0; y < canonicalSize; y++) {
+        for (let x = 0; x < canonicalSize; x++) {
+            const index = y * canonicalSize + x;
+            if (key === 'town') {
+                const { edge, stoneNoise } = townStoneShape(x, y, canonicalSize, definition);
+                const bevel = THREE.MathUtils.clamp((edge - .3) / 2.8, 0, 1);
+                const coverage = bevel * bevel * (3 - 2 * bevel);
+                height[index] = .06 + coverage * (.55 + stoneNoise * .12);
+                roughness[index] = .98 - coverage * (.20 + stoneNoise * .06);
+            } else {
+                const broad = periodicNoise(x, y, 8, definition.seed);
+                const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
+                height[index] = .2 + broad * .16 + grit * .065;
+                roughness[index] = .86 + broad * .12;
+            }
+        }
+    }
+    const size = quality === 'low' ? 128 : 256;
+    const normalData = new Uint8Array(size * size * 4);
+    const roughnessData = new Uint8Array(normalData.length);
+    const sample = (x, y) => height[((y + canonicalSize) % canonicalSize) * canonicalSize + (x + canonicalSize) % canonicalSize];
+    for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+            const cx = x * canonicalSize / size, cy = y * canonicalSize / size;
+            const nx = -(sample(cx + 1, cy) - sample(cx - 1, cy)) * 2;
+            const ny = -(sample(cx, cy + 1) - sample(cx, cy - 1)) * 2;
+            const length = Math.hypot(nx, ny, 1);
+            const offset = (y * size + x) * 4;
+            normalData[offset] = Math.round((nx / length * .5 + .5) * 255);
+            normalData[offset + 1] = Math.round((ny / length * .5 + .5) * 255);
+            normalData[offset + 2] = Math.round((1 / length * .5 + .5) * 255);
+            normalData[offset + 3] = 255;
+            const value = Math.round(roughness[cy * canonicalSize + cx] * 255);
+            roughnessData[offset] = roughnessData[offset + 1] = roughnessData[offset + 2] = value;
+            roughnessData[offset + 3] = 255;
+        }
+    }
+    const makeTexture = (data, channel) => {
+        const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType);
+        texture.name = `ProceduralTerrain:${definition.id}:${channel}:${quality}`;
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.colorSpace = THREE.NoColorSpace;
+        texture.generateMipmaps = true;
+        texture.needsUpdate = true;
+        return texture;
+    };
+    return { normalMap: makeTexture(normalData, 'normal'), roughnessMap: makeTexture(roughnessData, 'roughness') };
+}
+
 export function createProceduralTerrainMaterial(key, { quality = 'high', texture = null } = {}) {
     const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
     if (!definition) return null;
     const map = texture || createProceduralTerrainTexture(key, { quality });
     map.repeat.set(...definition.surface.repeat);
+    const surfaces = createTerrainSurfaceMaps(key, map.userData.quality || quality);
+    if (surfaces) {
+        for (const surface of Object.values(surfaces)) {
+            surface.repeat.copy(map.repeat);
+            surface.offset.copy(map.offset);
+            surface.center.copy(map.center);
+            surface.rotation = map.rotation;
+            surface.anisotropy = map.anisotropy;
+        }
+    }
     const material = new THREE.MeshStandardMaterial({
         map,
+        ...surfaces,
         color: definition.surface.tint,
         roughness: definition.surface.roughness,
         metalness: definition.surface.metalness,
@@ -284,6 +360,16 @@ export function createProceduralTerrainMaterial(key, { quality = 'high', texture
     material.userData.terrainKey = key;
     material.userData.terrainId = definition.id;
     material.userData.motif = definition.motif;
+    if (surfaces) {
+        // Albedo can be shared/owned by RenderSystem. These two maps are owned
+        // by this material and must also be freed by preview/quality swaps.
+        const release = () => {
+            surfaces.normalMap.dispose();
+            surfaces.roughnessMap.dispose();
+            material.removeEventListener('dispose', release);
+        };
+        material.addEventListener('dispose', release);
+    }
     return material;
 }
 

@@ -58,6 +58,12 @@ test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, 
                 quality, generationMs, medianMs: frames[Math.floor(frames.length / 2)],
                 p95Ms: frames[Math.floor(frames.length * 0.95)],
                 textureBytes: floor.material.map.image.data.byteLength,
+                surfaceMaps: ['normalMap', 'roughnessMap'].map(channel => ({
+                    channel,
+                    bytes: floor.material[channel]?.image.data.byteLength || 0,
+                    colorSpace: floor.material[channel]?.colorSpace,
+                    repeat: floor.material[channel]?.repeat.toArray()
+                })),
                 repeat: floor.material.map.repeat.toArray(),
                 geometries: render.renderer.info.memory.geometries,
                 textures: render.renderer.info.memory.textures,
@@ -67,6 +73,12 @@ test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, 
         expect(metrics.medianMs).toBeGreaterThan(0);
         console.log(`Terrain comparison: ${JSON.stringify(metrics)}`);
         expect(metrics.textureBytes).toBe(quality === 'high' ? 256 * 256 * 4 : 128 * 128 * 4);
+        expect(metrics.surfaceTriangles).toBe(2);
+        for (const surfaceMap of metrics.surfaceMaps) {
+            expect(surfaceMap.bytes).toBe(metrics.textureBytes);
+            expect(surfaceMap.colorSpace).toBe(''); // Three.NoColorSpace, not sRGB albedo.
+            expect(surfaceMap.repeat).toEqual(metrics.repeat);
+        }
         await testInfo.attach(`terrain-${quality}-metrics`, { body: JSON.stringify(metrics, null, 2), contentType: 'application/json' });
         await page.screenshot({ path: testInfo.outputPath(`${surface}-${quality}.png`) });
     }

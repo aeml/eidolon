@@ -117,6 +117,9 @@ character/equipment quality required before opening that cohort. Follow the
 [visual contract](docs/art/2026-09-28-modern-arpg-closed-beta.md); the original
 faceted-art finish is no longer the final target. No existing account access
 or save policy changes automatically with this roadmap update.
+The user supplies actor models only (player classes, monsters/bosses and NPCs).
+Environment/equipment geometry, textures/materials, lighting, shaders, effects
+and integration remain code-owned, as detailed in the visual contract.
 
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited

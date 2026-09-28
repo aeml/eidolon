@@ -13,6 +13,13 @@ Later visual milestones refine that baseline. An optional authored-model pilot
 may be evaluated; no bulk purchase/import, live-access restriction or beta
 announcement is implied by this planning update.
 
+Art ownership follow-up: the user intends to supply only player-class,
+monster/boss and NPC models. Environment geometry, buildings/props, equipment,
+generated textures/PBR maps, lighting, shaders, weather/VFX, icons and actor
+integration remain implementation work. Follow the visual contract's ownership
+table; do not convert this into a request that the user produce a world asset
+pack. Code-owned world/material work proceeds before actor imports are available.
+
 This is the authoritative forward roadmap after the
 [1.1–1.10 foundation plan](2026-09-05-v1-1-to-v1-10-roadmap.md). It covers every
 minor version from **1.11.0 through 1.99.0**, with scope, dependencies, evidence,
