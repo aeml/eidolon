@@ -36,7 +36,7 @@ Initial39 navigation/hazard/synchronization/command-anchor checks pass3.429s.
 Nine final geometry/elemental population cases pass10.38s, covering finite arch
 geometry, unchanged generated solids and approach/hazard clearances.
 
-## Browser review — desktop performance acceptance still open
+## Browser review — initial desktop failure
 
 The bounded four-case run completed: desktop and390px atlas interactions passed
 20.8s/19.2s, including actual Magma hunt selection,75+ copy and waypoint-1600,200.
@@ -66,6 +66,25 @@ Follow-up copy review makes the lava/unsafe-waypoint warning consistent for
 Magma hunts and Ore collection as well as generic Fire hunts. All three Fire
 navigation tests pass again1.072s; scoped ESLint passes. This is a text-only
 follow-up after the retained browser captures, not another rendered check.
+
+## Desktop check resolved on the exact Fire candidate
+
+After the earlier competing Chrome processes ended, one bounded recheck used
+detached commitb1a3ae674993bdc3d673426338a10de647dc1db9 in
+`/tmp/eidolon-fire124-performance-ao6YRQ`, separate from all Air work. The first
+setup attempt stopped before rendering because a fresh checkout lacked vendor
+dependencies; retained at`/tmp/eidolon-124-isolated-desktop-recheck/`. After the
+normal `npm run prepare:client` step, the actual desktop check passed34.1s
+(35.7s total), with no tracked changes in that worktree. Evidence:
+`/tmp/eidolon-124-isolated-desktop-prepared/`. Final Kiln Span capture inspected.
+
+On AMD RADV hardware, all six views met the unchanged budgets: Kiln Span
+median16.7ms/p9533.3ms,172 calls/124194 triangles; other p95s16.7–16.8ms.
+Before/after repeat resources were exactly304 geometries/41 textures/35 programs.
+This resolves the desktop candidate check without deleting the earlier failed
+evidence, weakening a threshold or stopping any other service. It does not prove
+the initial failure's cause or guarantee performance under arbitrary contention.
+Together with the retained passing Low case, the local graphics gate is met.
 
 Human pacing/difficulty and final modern-art approval remain open. Retain the
 accepted encounter receipts at their original earned/prepared scopes; do not
