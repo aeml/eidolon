@@ -1,6 +1,7 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
+import { getCasinoMapLandmarks, isCasinoMapGuestVisible } from './CasinoMap.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -210,6 +211,7 @@ export class Minimap {
 
         entities.forEach(entity => {
             if (entity === player) return;
+            if (this.gameEngine?.currentInstanceType === 'casino' && !isCasinoMapGuestVisible(this.gameEngine, entity)) return;
 
             const cls = classifyEntity(entity);
             if (!cls) return;
@@ -392,6 +394,10 @@ export class Minimap {
         if (!pd || !pd.members) return;
         for (const member of pd.members) {
             if (member.id === player.id) continue;
+            // Party snapshots need not carry floor/instance identity. Only a
+            // currently represented casino guest can place a trustworthy dot.
+            if (this.gameEngine.currentInstanceType === 'casino'
+                && !isCasinoMapGuestVisible(this.gameEngine, this.gameEngine.remotePlayers?.get(member.id))) continue;
             if (member.x === undefined || member.z === undefined) continue;
             const pos = toMap(member.x, member.z);
             const dx = pos.x - half;
@@ -429,14 +435,11 @@ export class Minimap {
 
     _drawTownServiceMarkers(ctx, toMap, player, half) {
         const casino = this.gameEngine?.currentInstanceType === 'casino';
-        if (getRealmForPosition(player.position.x, player.position.z) !== 'town') {
+        if (!casino && getRealmForPosition(player.position.x, player.position.z) !== 'town') {
             return;
         }
 
-        const markers = casino ? [
-            { x: 0, z: 150, label: 'VIP Guard', color: '#e8c980', ring: true },
-            { x: 0, z: 202, label: 'Exit', color: '#78e08f', ring: true }
-        ] : TOWN_SERVICE_MARKERS;
+        const markers = casino ? getCasinoMapLandmarks(this.gameEngine) : TOWN_SERVICE_MARKERS;
         markers.forEach((marker) => {
             const pos = toMap(marker.x, marker.z);
             const dx = pos.x - half;
@@ -458,7 +461,7 @@ export class Minimap {
             ctx.fill();
 
             ctx.fillStyle = '#f2f2f2';
-            ctx.fillText(marker.label, drawX, drawY - 10);
+            ctx.fillText(marker.shortLabel || marker.label, drawX, drawY - 10);
         });
     }
 

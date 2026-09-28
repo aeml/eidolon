@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralDungeonNPC } from './ProceduralTownActors.js';
+import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
 
 export function createCasinoInterior(scene, collision) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-interior';
@@ -10,7 +11,8 @@ export function createCasinoInterior(scene, collision) {
         const group = new THREE.Group(); group.name = `casino-${floor}-floor`; group.position.y = y;
         const palette = floor === 'vip' ? { ...m, velvet: new THREE.MeshStandardMaterial({ color: 0x34234e, roughness: .7 }),
             stone: new THREE.MeshStandardMaterial({ color: 0x667581, roughness: .32, metalness: .15 }) } : m;
-        box(group, 'marble-gaming-floor', palette.dark, [112, .3, 112], [0, -.15, 152]);
+        box(group, 'marble-gaming-floor', palette.dark,
+            [CASINO_INTERIOR_LAYOUT.width, .3, CASINO_INTERIOR_LAYOUT.depth], [0, -.15, CASINO_INTERIOR_LAYOUT.centerZ]);
         for (let x = -52; x <= 52; x += 8) for (let z = 100; z <= 204; z += 8) {
             box(group, 'polished-marble-tile', ((x + z) / 8) % 2 ? palette.stone : palette.wood,
                 [7.88, .015, 7.88], [x, .012, z]);
@@ -44,11 +46,11 @@ export function createCasinoInterior(scene, collision) {
         group.visible = floor === 'public'; root.add(group); floors[floor] = group;
     }
     // Reuse the established humanoid rig, with a real body and readable uniform.
-    const guard = createProceduralDungeonNPC(); guard.name = 'casino-vip-guard'; guard.position.set(0, 0, 100);
+    const guard = createProceduralDungeonNPC(); guard.name = 'casino-vip-guard'; guard.position.set(0, 0, CASINO_INTERIOR_LAYOUT.guardZ);
     floors.public.add(guard);
     collision.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(0, 1.65, 100), new THREE.Vector3(1.3, 3.3, 1.3)));
-    const exit = box(floors.public, 'casino-interior-exit', m.gold, [6, 4, .4], [0, 2, 207.3]);
-    const stairs = box(floors.vip, 'casino-return-stairs', m.gold, [6, 3, .4], [0, 1.5, 98]);
+    const exit = box(floors.public, 'casino-interior-exit', m.gold, [6, 4, .4], [0, 2, CASINO_INTERIOR_LAYOUT.exitZ]);
+    const stairs = box(floors.vip, 'casino-return-stairs', m.gold, [6, 3, .4], [0, 1.5, CASINO_INTERIOR_LAYOUT.stairsZ]);
     root.userData.floors = floors; root.userData.casinoStairs = stairs;
     root.userData.drawMeshCount = floors.public.userData.drawMeshCount + floors.vip.userData.drawMeshCount;
     root.userData.casinoGuard = guard; root.userData.casinoExit = exit;

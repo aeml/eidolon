@@ -395,6 +395,11 @@ owner, planned version/dependency, severity and next action. Start with portal
 and casino timing as confirmed gaps; classify everything else from evidence.
 Do not convert “verification missing” into “feature missing.”
 
+The [1.11 promise/gap register](2026-09-28-1-11-gap-register.md) now records the
+inherited requirements, current implementation/evidence limits, newly required
+world/art scope, realm site anchors, responsible owner and next milestone.
+It also records the confirmed stale casino-map repair and open release gates.
+
 | Requirement family | Primary delivery / review versions |
 | --- | --- |
 | Original alpha promises, story/daily separation, manual claims and quest items | 1.11–1.12, 1.15, 1.21–1.30, 1.34, 1.45 |
