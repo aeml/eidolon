@@ -315,10 +315,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.32.0` (local candidate; deployment pending)
-- Last verified live release: `Alpha 1.31.0`, exact36c82ebd80647a0b1c7998d43b903bae68cc0929, CI36493779845. See the [release record](docs/plans/2026-09-28-release1-31.md) for scoped acceptance.
+- Current source version: `Alpha 1.32.0` (verified live; 1.33 work remains local)
+- Last verified live release: `Alpha 1.32.0`, exact8a68685b341b9f796effc5091c648e7d63891e5d, CI36496302108. See the [release record](docs/plans/2026-09-28-release1-32.md) for scoped acceptance.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.32` scoped encounter warnings, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.31 is accepted live;1.32 is prepared for publication. The expanded twelve-spec kit rework belongs to1.33 and is not included. Human pacing remains a playtest gate. Neither milestone opens beta or restricts alpha accounts.
+- Active delivery line: `Alpha 1.33` full twelve-specialization kit rework, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.32 is accepted live;1.33 remains local and incomplete. Human pacing remains a playtest gate. Neither milestone opens beta or restricts alpha accounts.
 - Forward plan: [Alpha 1.11–1.99 — playable beta to full-release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor milestone, completion gates, policy decisions and proportionate verification. This is planned scope, not a new deployment or a claim that beta is complete.
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
