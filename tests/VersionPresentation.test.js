@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.27.0';
+const currentVersion = '1.28.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.28.0 records Nexus admission, guardians and personal claims without resetting contracts', () => {
+        const start = indexHtml.indexOf('data-version="1.28.0"'), previous = indexHtml.indexOf('data-version="1.27.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['the road through the Fifth Note', 'Dungeon Guide', 'Dissonant Herald', 'MEMORY FRACTURE',
+            'Each character claims personally', 'boss loot does not unlock the court', 'latest cleared boss checkpoint',
+            'saved contracts are unchanged', 'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.27.0 records expedition wayfinding and landscape polish without claiming measured pacing', () => {
         const start = indexHtml.indexOf('data-version="1.27.0"'), previous = indexHtml.indexOf('data-version="1.26.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

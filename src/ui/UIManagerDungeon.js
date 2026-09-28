@@ -7,7 +7,7 @@ import {
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
-import { appendDungeonPreparation, partyPreparationText, weeklyRaidRewardText } from './DungeonPreparation.js';
+import { appendDungeonPreparation, partyPreparationText, weeklyRaidRewardText, NEXUS_PREPARATION } from './DungeonPreparation.js';
 import { appendElementalRaidBriefing } from './ElementalRaidBriefing.js';
 
 class UIManagerDungeonMethods {
@@ -487,7 +487,13 @@ class UIManagerDungeonMethods {
         const preparationTitle = document.createElement('summary');
         preparationTitle.tabIndex = 0;
         const preparationText = document.createElement('p');
-        preparation.append(preparationTitle, preparationText, recruitmentButton(() => dungeonSelect.value));
+        const nexusBriefing = document.createElement('div');
+        nexusBriefing.id = 'nexus-preparation';
+        nexusBriefing.hidden = true;
+        for (const text of NEXUS_PREPARATION) {
+            const paragraph = document.createElement('p'); paragraph.textContent = text; nexusBriefing.append(paragraph);
+        }
+        preparation.append(preparationTitle, preparationText, nexusBriefing, recruitmentButton(() => dungeonSelect.value));
         dungeonPanel.appendChild(preparation);
 
         const rewardLadderBox = document.createElement('div');
@@ -525,6 +531,7 @@ class UIManagerDungeonMethods {
             const selectedRunLevel = Number(runLevelSelect.value) || null;
             const restriction = entryRestriction();
             preparationTitle.textContent = `Prepare for ${dungeon.name}`;
+            nexusBriefing.hidden = dungeonKey !== 'umbral_nexus';
             preparationText.textContent = `${dungeon.name} starts at level ${dungeon.baseLevel}. ` +
                 (activeRun ? 'Continue preserves this run’s level and difficulty; only you return, at its latest cleared boss checkpoint. ' :
                     'Choose an appropriate run level and gather your companions before the leader starts. ') +

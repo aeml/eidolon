@@ -156,6 +156,23 @@ describe('dungeon progression menu', () => {
         expect(document.getElementById('dungeon-menu').textContent.includes('The Door Beneath the Crown')).toBe(!available);
     });
 
+    test('Nexus briefing follows selection and does not start a run or appear for another dungeon', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ playerLevel: 100, hasInstance: false, isLeader: true, canEnterUmbralNexus: true });
+        const select = document.getElementById('dungeon-type-select');
+        const briefing = document.getElementById('nexus-preparation');
+        expect(briefing.hidden).toBe(true);
+        select.value = 'umbral_nexus'; select.dispatchEvent(new Event('change'));
+        expect(briefing.hidden).toBe(false);
+        expect(briefing.textContent).toContain('Dissonant Herald → Null Architect → Eidolon Devourer');
+        expect(briefing.textContent).toContain('click Complete Quest');
+        expect(document.querySelector('#dungeon-preparation summary').textContent).toBe('Prepare for Umbral Nexus');
+        select.value = 'verdant_bastion_catacombs'; select.dispatchEvent(new Event('change'));
+        expect(briefing.hidden).toBe(true);
+        expect(window.game.network.send).not.toHaveBeenCalled();
+        expect(window.game.socket.send).not.toHaveBeenCalled();
+    });
+
     test.each([false, true])('Dark Realm expedition uses personal server eligibility: %s', available => {
         const ui = new UIManager(false);
         ui.showDungeonMenu({ playerLevel: 100, hasInstance: true, isLeader: true,

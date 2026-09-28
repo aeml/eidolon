@@ -30,6 +30,30 @@ async function setupMenu(page, isMobile = false) {
 for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
     test.describe(`family level choices ${width}x${height}`, () => {
         test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('Nexus selection explains its guardian route and personal court unlock', async ({ page, baseURL }, testInfo) => {
+            const failures = collectBrowserFailures(page, baseURL);
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => window.__raidMenuFixture.ui.showDungeonMenu({
+                playerLevel: 100, isLeader: true, canEnterUmbralNexus: true
+            }));
+            const menu = page.locator('#dungeon-menu');
+            await menu.locator('#dungeon-type-select').selectOption('umbral_nexus');
+            await menu.locator('#dungeon-preparation summary').click();
+            const briefing = menu.locator('#nexus-preparation');
+            await expect(briefing).toBeVisible();
+            await expect(briefing).toContainText('Dissonant Herald → Null Architect → Eidolon Devourer');
+            await expect(briefing).toContainText('MEMORY FRACTURE');
+            await expect(briefing).toContainText('Each character claims personally');
+            await briefing.locator('p').last().scrollIntoViewIfNeeded();
+            const bounds = await briefing.boundingBox();
+            expect(bounds.x).toBeGreaterThanOrEqual(0);
+            expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+            await page.screenshot({ path: testInfo.outputPath('nexus-personal-unlock.png') });
+            await menu.locator('#dungeon-type-select').selectOption('verdant_bastion_catacombs');
+            await expect(briefing).toBeHidden();
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent)).toEqual([]);
+            expect(failures, failures.join('\n')).toEqual([]);
+        });
         test('elemental briefings disclose guardian, ritual and personal claims without starting a raid', async ({ page, baseURL }, testInfo) => {
             const failures = collectBrowserFailures(page, baseURL);
             await setupMenu(page, isMobile);
@@ -107,20 +131,20 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
             const preparation = page.locator('#dungeon-preparation');
             const summary = preparation.locator('summary');
             await expect(summary).toHaveText('Prepare for Verdant Bastion Catacombs');
-            await expect(preparation.locator('p')).toBeHidden();
+            await expect(preparation.locator(':scope > p')).toBeHidden();
             await summary.scrollIntoViewIfNeeded();
             if (isMobile) await summary.tap();
             else {
                 await summary.focus();
                 await page.keyboard.press('Enter');
             }
-            await expect(preparation.locator('p')).toBeVisible();
+            await expect(preparation.locator(':scope > p')).toBeVisible();
             if (!isMobile) {
                 await expect(summary).toBeFocused();
                 await page.keyboard.press('Space');
-                await expect(preparation.locator('p')).toBeHidden();
+                await expect(preparation.locator(':scope > p')).toBeHidden();
                 await page.keyboard.press('Space');
-                await expect(preparation.locator('p')).toBeVisible();
+                await expect(preparation.locator(':scope > p')).toBeVisible();
                 await expect(summary).toBeFocused();
             }
             await expect(preparation).toContainText('solo entry is allowed but a balanced party is recommended');
@@ -130,14 +154,14 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                 'Wise Cleric (Wisdom)', 'Uncommon/Rare', 'Lanternhold']) await expect(sharedAdvice).toContainText(text);
             if (isMobile) {
                 await expect(page.locator('body')).toHaveClass(/mobile-mode/);
-                expect(await preparation.locator('p').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
+                expect(await preparation.locator(':scope > p').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
             }
             expect(await page.locator('#dungeon-menu').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
             await preparation.screenshot({ path: testInfo.outputPath('bastion-preparation.png') });
             if (isMobile) {
                 // A short landscape reading area may need scrolling. Verify
                 // the final line can clear both the header and fixed footer.
-                expect(await preparation.locator('p').evaluate(element => {
+                expect(await preparation.locator(':scope > p').evaluate(element => {
                     element.scrollIntoView({ block: 'end', behavior: 'instant' });
                     const text = element.firstChild;
                     const range = document.createRange();

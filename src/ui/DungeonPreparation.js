@@ -5,6 +5,12 @@ export const CRYSTAL_VIGIL_PREPARATION = Object.freeze({
     Air: 'Wind relay: touch four bright anchors in order. A different raider must take each next anchor; two runners can alternate.'
 });
 
+export const NEXUS_PREPARATION = Object.freeze([
+    'Clear the full party-owned route: Dissonant Herald → Null Architect → Eidolon Devourer, including the chambers between them. This is not the shared Dark Realm expedition. Every traveler needs level 100 and their own story eligibility; existing veteran access is preserved.',
+    'All three guardians warn with MEMORY FRACTURE: leave the marked circle before impact. Follow the live ground markings, keep room to move and regroup before the next guardian.',
+    'After the Devourer, return to Ilyra and click Complete Quest for your ready Fifth Note. Each character claims personally; boss loot alone does not open Malachar’s court. Then prepare the raid with the Dungeon Guide. For town recovery, use Continue on the same run to return to the latest cleared boss checkpoint; the usual instance and logout expiry rules still apply.'
+]);
+
 export function appendDungeonPreparation(parent) {
     const details = document.createElement('details');
     details.className = 'adventure-preparation';

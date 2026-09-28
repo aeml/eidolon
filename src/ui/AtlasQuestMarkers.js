@@ -86,6 +86,15 @@ export function getAtlasQuestLocations(engine) {
             continue;
         }
         const darkChapter = darkRealmChaptersById.get(q.id);
+        if ((overworld || dark) && ['EidolonDevourer', 'UmbraPrime'].includes(q.target)) {
+            const encounter = q.target === 'EidolonDevourer' ? 'Umbral Nexus' : 'Dark King’s court';
+            const point = overworld ? TOWN_SERVICE_POINTS.find(p => p.id === 'dungeon-guide')
+                : WORLD_LOCATIONS.find(p => p.id === 'story-wizard-dark-realm');
+            add(q, { ...point, name: `${title} · ${overworld ? 'Dungeon Guide' : 'return to Lanternhold'}` },
+                'quests', 'Tracked · private encounter admission',
+                `${dark ? 'This marker is the recovery camp, not a dungeon entrance. Recall (B) or use Return to Lanternhold in the Escape menu. ' : ''}Speak to the Dungeon Guide in Lanternhold for ${encounter}. The Fourfold Portal enters the shared expedition, not this private encounter. Every traveler must meet their own level and story requirements.`);
+            continue;
+        }
         if (dark && darkChapter && !chapter) {
             const room = engine.currentDungeonLayout?.rooms?.[districtIds.indexOf(darkChapter.district)];
             const enemy = darkChapter.enemy?.replace(/([a-z\d])([A-Z])/g, '$1 $2');
@@ -98,7 +107,7 @@ export function getAtlasQuestLocations(engine) {
                 'This marks a search area, not a live enemy. Follow the connected roads; a waypoint is not a safe path. Return to Ilyra’s projection at the Resonant Foothold and click Complete Quest when ready.'].filter(Boolean).join(' '));
         }
         if (!overworld) continue;
-        if (darkChapter || ['EidolonDevourer', 'UmbraPrime'].includes(q.target)) {
+        if (darkChapter) {
             add(q, TOWN_SERVICE_POINTS.find(p => p.id === 'resonance-portal'), 'quests', 'Tracked · Dark Realm journey',
                 'Enter through the Fourfold Portal when eligible. Follow the expedition and use the Dungeon Guide for eligible dungeon/raid admission.');
             continue;

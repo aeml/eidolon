@@ -600,9 +600,11 @@ export class QuestUI {
         const sequenceHint = isLiveBossObjective ? '' : this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
 
         if (!objectiveRoom) {
+            const nexus = instanceType === 'umbral_nexus' && this.ctx.getLastPlayer?.()?.quests?.some(quest =>
+                quest?.id === 'chronicle_14_resonance_gate' && quest.accepted && !quest.completed);
             return {
                 id: `dungeon-route-${instanceType}`,
-                title: 'Return to Lanternhold',
+                title: nexus ? 'Return to Ilyra in town' : 'Return to Lanternhold',
                 progressLabel,
                 progressPct,
                 rewardXP: 0,
@@ -610,8 +612,9 @@ export class QuestUI {
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 routeTone: 'support',
-                hint: 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
-                sequenceHint: ''
+                hint: nexus ? 'Nexus cleared — return to Ilyra and click Complete Quest for your ready Fifth Note. Each character claims personally; boss loot does not unlock the court.'
+                    : 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
+                sequenceHint: nexus ? 'Press B or use Return to Lanternhold in the Escape menu. After your personal claim, speak to the Dungeon Guide and prepare the Dark King raid.' : ''
             };
         }
 
