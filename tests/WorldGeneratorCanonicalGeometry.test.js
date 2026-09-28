@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
-import { PROCEDURAL_FOLIAGE_RECIPES } from '../src/art/ProceduralRealmFoliage.js';
+import { PROCEDURAL_FOLIAGE_RECIPES, getProceduralFoliageArchetype } from '../src/art/ProceduralRealmFoliage.js';
 import {
     DUNGEON_ENTRANCE_DEFINITIONS,
     DUNGEON_ENTRANCE_IDS
@@ -322,11 +322,34 @@ describe('WorldGenerator shadow setup', () => {
             expect(group.children.length).toBeGreaterThanOrEqual(4);
             for (const instance of group.children) {
                 expect(instance).toBeInstanceOf(THREE.InstancedMesh);
-                expect(instance.count).toBe(recipe.count);
+                expect(instance.count).toBe(instance.userData.placementIndices.length);
+                expect(instance.count).toBeLessThanOrEqual(recipe.count);
                 expect(instance.material.flatShading).toBe(true);
                 expect(instance.material.transparent).toBe(false);
                 expect(instance.material.depthWrite).toBe(true);
                 expect([THREE.FrontSide, THREE.DoubleSide]).toContain(instance.material.side);
+            }
+            const parts = getProceduralFoliageArchetype(recipe.id);
+            for (const part of parts) {
+                const batches = group.children.filter(instance => instance.name === part.name);
+                const indices = batches.flatMap(batch => batch.userData.placementIndices);
+                expect(indices.toSorted((a, b) => a - b)).toEqual(Array.from({ length: recipe.count }, (_, i) => i));
+                for (const batch of batches) {
+                    expect(batch.geometry).toBe(part.geometry);
+                    expect(batch.material).toBe(part.material);
+                    batch.userData.placementIndices.forEach((placementIndex, instanceIndex) => {
+                        const placement = group.userData.placements[placementIndex];
+                        const expected = new THREE.Matrix4().compose(new THREE.Vector3(placement.x, 0, placement.z),
+                            new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), placement.rotation),
+                            new THREE.Vector3().setScalar(placement.scale)).multiply(part.matrix);
+                        const actual = new THREE.Matrix4(); batch.getMatrixAt(instanceIndex, actual);
+                        expected.elements.forEach((value, i) => expect(actual.elements[i]).toBeCloseTo(value, 3));
+                    });
+                }
+            }
+            if (recipe.renderCellSize) {
+                expect(new Set(group.children.map(mesh => mesh.userData.foliageCell)).size).toBeGreaterThan(1);
+                expect(Math.max(...group.children.map(mesh => mesh.count))).toBeLessThan(recipe.count / 3);
             }
         }
 

@@ -124,34 +124,12 @@ export class WorldGenerator {
             group.userData.placements = placements;
             const colliders = [];
 
-            const instancedParts = parts.map((descriptor) => {
-                const configuredMaterial = MeshFactory.configureShadowCastingForMaterial(
-                    descriptor.material,
-                    { isFoliage: true }
-                );
-                const instance = new THREE.InstancedMesh(
-                    descriptor.geometry,
-                    configuredMaterial,
-                    placements.length
-                );
-                instance.name = descriptor.name;
-                instance.castShadow = descriptor.castShadow;
-                instance.receiveShadow = descriptor.receiveShadow;
-                group.add(instance);
-                return { descriptor, instance };
-            });
-
+            const cells = new Map();
             placements.forEach((placement, index) => {
-                TEMP_POS.set(placement.x, 0, placement.z);
-                TEMP_SCALE.setScalar(placement.scale);
-                TEMP_QUAT.setFromAxisAngle(TEMP_UP, placement.rotation);
-                TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
-
-                for (const { descriptor, instance } of instancedParts) {
-                    TEMP_PART_MAT4.multiplyMatrices(TEMP_MAT4, descriptor.matrix);
-                    instance.setMatrixAt(index, TEMP_PART_MAT4);
-                }
-
+                const cell = recipe.renderCellSize
+                    ? `${Math.floor(placement.x / recipe.renderCellSize)},${Math.floor(placement.z / recipe.renderCellSize)}` : 'all';
+                if (!cells.has(cell)) cells.set(cell, []);
+                cells.get(cell).push(index);
                 if (recipe.collision) {
                     const [radius, height] = recipe.collision;
                     const colliderSize = new THREE.Vector3(
@@ -168,10 +146,34 @@ export class WorldGenerator {
                 }
             });
 
-            for (const { instance } of instancedParts) {
-                instance.instanceMatrix.needsUpdate = true;
-                instance.computeBoundingBox();
-                instance.computeBoundingSphere();
+            // Placement, geometry and collision stay identical. Only draw-batch
+            // bounds change, allowing Three to omit distant detailed canopies.
+            for (const [cell, indices] of cells) {
+                for (const descriptor of parts) {
+                    const instance = new THREE.InstancedMesh(descriptor.geometry,
+                        MeshFactory.configureShadowCastingForMaterial(descriptor.material, { isFoliage: true }), indices.length);
+                    instance.name = descriptor.name;
+                    instance.castShadow = descriptor.castShadow;
+                    instance.receiveShadow = descriptor.receiveShadow;
+                    // These local transforms stay identity; placement lives in
+                    // the instance buffer. Parent/world updates remain enabled.
+                    instance.matrixAutoUpdate = false;
+                    instance.userData.foliageCell = cell;
+                    instance.userData.placementIndices = indices;
+                    indices.forEach((placementIndex, index) => {
+                        const placement = placements[placementIndex];
+                        TEMP_POS.set(placement.x, 0, placement.z);
+                        TEMP_SCALE.setScalar(placement.scale);
+                        TEMP_QUAT.setFromAxisAngle(TEMP_UP, placement.rotation);
+                        TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
+                        TEMP_PART_MAT4.multiplyMatrices(TEMP_MAT4, descriptor.matrix);
+                        instance.setMatrixAt(index, TEMP_PART_MAT4);
+                    });
+                    instance.instanceMatrix.needsUpdate = true;
+                    instance.computeBoundingBox();
+                    instance.computeBoundingSphere();
+                    group.add(instance);
+                }
             }
             if (!shouldAttach()) return false;
             colliders.forEach((collider) => this.collisionManager.addCollider(collider));

@@ -209,7 +209,8 @@ const ARCHETYPE_BUILDERS = Object.freeze({
 });
 
 export const PROCEDURAL_FOLIAGE_RECIPES = Object.freeze([
-    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', count: 120, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2] }),
+    // Detailed opaque leaves need spatial culling, not a realm-wide draw batch.
+    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', count: 120, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 256 }),
     Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', count: 115, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5] }),
     Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', count: 95, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2] }),
     // Only Gloamwood retains tree collision because it is the one realm whose
