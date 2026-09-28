@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.26.0';
+const currentVersion = '1.27.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,16 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.27.0 records expedition wayfinding and landscape polish without claiming measured pacing', () => {
+        const start = indexHtml.indexOf('data-version="1.27.0"'), previous = indexHtml.indexOf('data-version="1.26.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['finding your way through the expedition', 'Resonant Projection', 'Gold and Resonance XP',
+            'inside the lantern circle', 'chance drops and physical pickup', 'scrollable directions sit beside the map',
+            'not a measured claim', 'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/atlas-interiors.spec.js');
+    });
     test('1.26.0 explains the full Vigil and personal claims without altering earned progress', () => {
         const start = indexHtml.indexOf('data-version="1.26.0"'), previous = indexHtml.indexOf('data-version="1.25.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

@@ -3,6 +3,8 @@ import { findNextDungeonMeaningfulRoom, getDungeonBeatLabel, getDungeonCadenceLa
 import { getCasinoMapState } from './CasinoMap.js';
 import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
 import { DARK_REALM_COURTS, DARK_REALM_PATHS } from '../data/darkRealmPopulation.js';
+import { DARK_REALM_WITNESSES } from '../data/darkRealmWitnesses.js';
+import { WORLD_LOCATIONS } from '../data/worldLocations.js';
 
 const TITLES = Object.freeze({
     crypt: 'Crypt', verdant_bastion_catacombs: 'Verdant Bastion', abyssal_well: 'Abyssal Well',
@@ -12,6 +14,13 @@ const TITLES = Object.freeze({
     weekly_raid: 'Dark Realm Raid', dark_realm: 'Dark Realm', pvp_arena: 'PvP Arena'
 });
 const DISTRICTS = ['Resonant Foothold', 'Unwritten Shore', 'Tithe of Names', 'Stillwater Foundry', 'City Without Tomorrow'];
+const DISTRICT_ROUTES = [
+    'Rest inside the lantern circle for health, mana and Well Rested. Speak to Ilyra’s projection to accept or personally complete story quests. Recall (B), or Return to Lanternhold in the Escape menu, takes you home; the town portal or Guide can send you back.',
+    'North of the Foothold. The western road leads to the Tithe of Names; the southern road returns to camp.',
+    'West of the Unwritten Shore. Take the southern road to Stillwater Foundry, or return east to the shore.',
+    'South of the Tithe of Names. The eastern road leads to the City Without Tomorrow; north returns to the archive.',
+    'East of Stillwater Foundry. The northern road returns to the Unwritten Shore. Nexus field records are not a dungeon entrance; Recall to Lanternhold and speak to the Dungeon Guide when eligible.'
+];
 const CASINO_RECTS = Object.freeze([{ x: 0, z: CASINO_INTERIOR_LAYOUT.centerZ,
     width: CASINO_INTERIOR_LAYOUT.width, height: CASINO_INTERIOR_LAYOUT.depth, kind: 'room' }]);
 const geometryCache = new WeakMap();
@@ -60,7 +69,18 @@ export function getInstanceAtlas(engine) {
     } else if (type === 'dark_realm') {
         if (layout?.walkRects?.length) model.paths = DARK_REALM_PATHS;
         (layout?.rooms || []).forEach((r, i) => add(`district-${i}`, DISTRICTS[i] || 'Dark Realm district', r.x, r.z, 'passages',
-            i === 0 ? 'Expedition recovery and Ilyra’s projection.' : 'A district of the shared Dark Realm expedition.', i === 0 ? 'Recovery camp' : 'Level 100 combat territory'));
+            `${DISTRICT_ROUTES[i] || 'A district of the shared Dark Realm expedition.'} Follow connected roads; a straight-line waypoint is not a safe path across the void.`, i === 0 ? 'Recovery inside the lantern circle' : 'Level 100 combat territory'));
+        const projection = WORLD_LOCATIONS.find(p => p.id === 'story-wizard-dark-realm');
+        const campPeople = [
+            { ...projection, purpose: 'Accept story quests and click Complete Quest here for ready objectives. Claims are personal. At level 100, quest XP becomes Resonance XP; Gold is a separate reward.' },
+            ...DARK_REALM_WITNESSES.filter(p => ['dark-witness-maelin', 'dark-witness-ren'].includes(p.id)).map(p => ({ ...p,
+                purpose: p.id === 'dark-witness-maelin' ? 'Ask about the camp lanterns and recovery. Optional read-only conversation, not a new quest giver or repair vendor.'
+                    : 'Ask about the district roads and the way back. Optional read-only conversation; no quest credit or auto-navigation.' }))
+        ];
+        for (const person of campPeople) {
+            if (!layout?.walkRects?.some(r => Math.abs(person.x - r.x) < r.width / 2 && Math.abs(person.z - r.z) < r.height / 2)) continue;
+            add(person.id, person.name, person.x, person.z, 'services', person.purpose, 'Resonant Foothold');
+        }
         if (layout?.walkRects?.length) DARK_REALM_COURTS.forEach(site => {
             if (!layout.walkRects.some(r => Math.abs(site.arrivalX - r.x) < r.width / 2 && Math.abs(site.arrivalZ - r.z) < r.height / 2)) return;
             add(site.id, site.name, site.arrivalX, site.arrivalZ, 'places', site.purpose, 'Level 100 combat territory');

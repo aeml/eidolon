@@ -6,6 +6,77 @@ const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-l
 const layouts = ['molten_core', 'earth_crystal_raid'].map(type => fixtures.find(f => f.dungeonType === type));
 
 for (const [width, height] of [[1280, 800], [390, 844]]) {
+    test(`Dark Realm camp and collection directions are searchable at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.setViewportSize({ width, height });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async () => {
+            const { WorldMap } = await import('/src/ui/WorldMap.js');
+            const { darkRealmFixture } = await import('/tests/darkRealmFixture.js');
+            const { darkRealmChapters } = await import('/src/data/chronicleCatalog.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', innerWidth < 600);
+            const chapter = darkRealmChapters.find(q => q.type === 'COLLECT');
+            const engine = { currentInstanceId: 'dark-realm', currentInstanceType: 'dark_realm',
+                currentDungeonLayout: darkRealmFixture(), isMobile: innerWidth < 600,
+                player: { id: 'dark-atlas-reader', level: 100, position: { x: 40000, z: 40800 }, quests: [] },
+                uiManager: { partyData: { members: [] } }, remotePlayers: new Map(), chunkManager: { getActiveEntities: () => [] } };
+            const map = new WorldMap(engine); engine.worldMap = map; map.toggle();
+            window.__darkJourney = { engine, map, chapter };
+        });
+        const search = page.getByRole('searchbox', { name: 'Find a known location' });
+        const detail = page.getByRole('region', { name: 'Selected destination' });
+        for (const name of ['Artificer Maelin', 'Scout Ren', 'Archmage Ilyra · Resonant Projection']) {
+            await search.fill(name);
+            await page.getByRole('button', { name: `■ ${name}`, exact: true }).click();
+            await expect(detail).toContainText('Resonant Foothold');
+        }
+        await expect(detail).toContainText('click Complete Quest');
+        await expect(detail).toContainText('Resonance XP');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        expect(await page.evaluate(() => {
+            const p = window.__darkJourney.map.navigation.waypoint; return [p.x, p.z, p.instanceId];
+        })).toEqual([40012, 40800, 'dark-realm']);
+        await page.screenshot({ path: testInfo.outputPath('dark-camp-ilyra.png') });
+        await page.evaluate(() => {
+            const { engine, map, chapter } = window.__darkJourney;
+            engine.player.quests = [{ id: chapter.id, title: chapter.title, type: chapter.type,
+                target: chapter.item, accepted: true, count: 0, maxCount: chapter.count }];
+            map.update(engine.player);
+        });
+        await search.fill('A Fare Nobody Owes');
+        await page.getByRole('button', { name: '! A Fare Nobody Owes · district', exact: true }).click();
+        await expect(detail).toContainText('Dissonant Shade');
+        await expect(detail).toContainText('chance drops');
+        await expect(detail).toContainText('kills alone do not collect it');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        expect(await page.evaluate(() => {
+            const p = window.__darkJourney.map.navigation.waypoint; return [p.x, p.z];
+        })).toEqual([40000, 40400]);
+        await page.screenshot({ path: testInfo.outputPath('dark-collection-directions.png') });
+        const bounds = await detail.boundingBox();
+        expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+        if (width === 390) {
+            // Keep actual mobile mode while rotating; width alone is not a
+            // substitute for the phone's persisted input/layout mode.
+            await page.setViewportSize({ width: 844, height: 390 });
+            const waypoint = page.getByRole('button', { name: 'Set personal waypoint' });
+            await waypoint.scrollIntoViewIfNeeded();
+            await waypoint.click();
+            await expect.poll(async () => (await page.locator('#world-map-canvas').boundingBox()).height).toBeGreaterThan(150);
+            const pane = await page.locator('.atlas-navigation').boundingBox();
+            const mapBounds = await page.locator('#world-map-canvas').boundingBox();
+            expect(mapBounds.x).toBeGreaterThanOrEqual(pane.x + pane.width - 1);
+            expect(mapBounds.width).toBeGreaterThan(300);
+            const action = await waypoint.boundingBox();
+            expect(action.y).toBeGreaterThanOrEqual(0); expect(action.y + action.height).toBeLessThanOrEqual(390);
+            await expect(page.locator('#btn-close-world-map')).toBeVisible();
+            await page.screenshot({ path: testInfo.outputPath('dark-directions-landscape.png') });
+        }
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
     test(`atlas follows dungeon, raid, expedition, casino floors and arena at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));

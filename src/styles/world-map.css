@@ -91,5 +91,8 @@
 .mobile-mode .world-map-controls { font-size: 16px; }
 .mobile-mode .world-map-controls span { flex-basis: 100%; }
 @media (orientation: landscape) and (max-height: 500px) {
+    .mobile-mode .world-map-body { flex-direction: row; }
+    .mobile-mode .atlas-navigation { flex: 0 0 42%; max-height: none; border-right: 1px solid #65543a; border-bottom: none; }
+    .mobile-mode .world-map-body #world-map-canvas { width: 0; height: 100%; }
     .mobile-mode .world-map-controls span { flex-basis: auto; }
 }

@@ -88,9 +88,14 @@ export function getAtlasQuestLocations(engine) {
         const darkChapter = darkRealmChaptersById.get(q.id);
         if (dark && darkChapter && !chapter) {
             const room = engine.currentDungeonLayout?.rooms?.[districtIds.indexOf(darkChapter.district)];
+            const enemy = darkChapter.enemy?.replace(/([a-z\d])([A-Z])/g, '$1 $2');
+            const instruction = darkChapter.type === 'COLLECT'
+                ? `Recover ${darkChapter.item} from ${enemy} in this district. Quest items are chance drops: pick up the dropped item; kills alone do not collect it.`
+                : `Only level-100-or-higher ${enemy} defeated inside this district count for this hunt.`;
             if (room) add(q, { id: darkChapter.district, name: `${title} · district`, x: room.x, z: room.z,
                 area: { minX: room.x - room.width / 2, maxX: room.x + room.width / 2, minZ: room.z - room.height / 2, maxZ: room.z + room.height / 2 } },
-            'quests', 'Tracked · search this district', q.objectiveText || 'Search this district for your accepted objective. This marks an area, not a live enemy.');
+            'quests', 'Tracked · search this district', [q.objectiveText, instruction,
+                'This marks a search area, not a live enemy. Follow the connected roads; a waypoint is not a safe path. Return to Ilyra’s projection at the Resonant Foothold and click Complete Quest when ready.'].filter(Boolean).join(' '));
         }
         if (!overworld) continue;
         if (darkChapter || ['EidolonDevourer', 'UmbraPrime'].includes(q.target)) {
