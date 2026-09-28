@@ -30,6 +30,7 @@ import {
 import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
 import { createEarthPathNetwork } from '../art/ProceduralWorldPaths.js';
 import { createEarthLocations } from '../art/ProceduralEarthLocations.js';
+import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -62,6 +63,8 @@ export class WorldGenerator {
         this.crystalChamber = options.layout?.rooms?.at(-1) || null;
         this.graphicsQuality = options.graphicsQuality || 'high';
         this.crystalSanctum = null;
+        this.townCourtyards = null;
+        this.reducedMotionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
     }
 
     async preloadTextures() {
@@ -283,6 +286,15 @@ export class WorldGenerator {
                 new THREE.Vector3(2, 10, 2)
             );
             this.collisionManager.addCollider(collider);
+        }
+        this.townCourtyards = createLanternholdCourtyards({ quality: this.graphicsQuality });
+        this.townCourtyards.traverse(part => {
+            if (part.isMesh) MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
+        });
+        this.scene.add(this.townCourtyards);
+        for (const f of this.townCourtyards.userData.walkFootprints) {
+            this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
+                new THREE.Vector3(f.x, f.y, f.z), new THREE.Vector3(f.width, f.height, f.depth)));
         }
         return true;
     }
@@ -1223,5 +1235,9 @@ export class WorldGenerator {
         for (const presentation of this.dungeonRoomPresentations.values()) {
             animateDungeonRoomStatePresentation(presentation, this.dungeonPresentationElapsed);
         }
+    }
+
+    updateTownPresentation(dt, playerPosition) {
+        this.townCourtyards?.userData.update(dt, playerPosition, Boolean(this.reducedMotionQuery?.matches));
     }
 }

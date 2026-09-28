@@ -9,7 +9,7 @@ const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 
 
 test('public Earth places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
     const ge = engine(), sites = getAtlasWorldLocations(ge);
-    expect(sites).toHaveLength(6);
+    expect(sites).toHaveLength(8);
     expect(sites.every(site => site.category === 'places' && site.symbol !== '✓')).toBe(true);
     expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 750, z: 200 });
     expect(sites.some(site => site.id === 'keepers-empty-house' || site.id === 'returning-scar')).toBe(false);

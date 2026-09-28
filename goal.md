@@ -48,7 +48,14 @@ notes and11 exact deployed source assets. IPv6 remains owner-deferred.
 optional read-only lore interaction, shared public atlas/radar markers and
 corrected first-session/class/recovery guidance. Desktop/phone-sized atlas and
 guidance checks pass. See its receipt for actual checks and the
-remaining town/onboarding/map/full-world acceptance work. No1.15 push yet.
+remaining acceptance work. The two communal courtyards now have shared map
+destinations, checked character clearance, local reduced-motion-aware animation
+and owned-resource cleanup. Production-renderer scene checks cover all eight
+Earth sites and both courts at desktop-high and phone-sized-low settings; actual
+tablet occlusion found in that check is fixed in world/server/map data together.
+Still required: bounded fresh-session/travel verification, populated-scene cost
+acceptance and remaining ambient-town review, then the complete1.15 release.
+No1.15 push yet;1.14 remains live.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
 reports. Keep focused checks and mandatory CI; reuse unaffected evidence. Do not

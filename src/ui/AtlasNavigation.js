@@ -6,7 +6,7 @@ import { getResonancePortalState } from '../core/ResonancePortalState.js';
 import { getInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
-import { EARTH_LOCATIONS, WORLD_READINGS } from '../data/worldPopulation.js';
+import { EARTH_LOCATIONS, WORLD_READINGS, LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
@@ -21,12 +21,13 @@ export const ATLAS_CATEGORIES = Object.freeze({
 
 export const isOverworldAtlas = engine => !engine?.currentInstanceId && (!engine?.currentInstanceType || engine.currentInstanceType === 'overworld');
 
-const publicWorldLocations = Object.freeze(EARTH_LOCATIONS.filter(site => site.visibility === 'public').map(site => {
+const publicWorldLocations = Object.freeze([...EARTH_LOCATIONS, ...LANTERNHOLD_COURTYARDS].filter(site => site.visibility === 'public').map(site => {
     const reading = WORLD_READINGS.find(reading => reading.locationId === site.id);
     return Object.freeze({ id: site.id, name: site.name, instanceId: '', category: 'places',
         symbol: reading ? '▤' : '◇', x: reading?.x ?? site.x + (site.arrivalOffset?.[0] || 0),
         z: reading?.z ?? site.z + (site.arrivalOffset?.[1] || 0), purpose: site.purpose,
-        availability: reading ? 'Optional public reading · approach and inspect · not a saved quest discovery' :
+        availability: site.region === 'town' ? 'Lanternhold safe zone · recovery works throughout town' :
+            reading ? 'Optional public reading · approach and inspect · not a saved quest discovery' :
             site.role === 'camp' ? 'Abandoned site · combat territory, not a safe zone' : 'Public landmark · combat territory' });
 }));
 

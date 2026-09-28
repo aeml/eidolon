@@ -488,7 +488,7 @@ export class GameEngine {
         this.currentDungeonRoomState = null;
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
-        this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, { graphicsQuality: this.renderSystem.graphicsQuality });
         this.activeWorldGenerator = this.worldGenerator;
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);

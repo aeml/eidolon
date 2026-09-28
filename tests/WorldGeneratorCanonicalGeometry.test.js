@@ -386,7 +386,7 @@ describe('WorldGenerator shadow setup', () => {
         await generator.loadBuildings(0, 0);
 
         expect(loadModelSpy).not.toHaveBeenCalled();
-        expect(generator.scene.add).toHaveBeenCalledTimes(6);
+        expect(generator.scene.add).toHaveBeenCalledTimes(7);
         const [paths, locations] = generator.scene.add.mock.calls.slice(0, 2).map(([object]) => object);
         expect(paths.name).toBe('Earth authored paths');
         expect(locations.name).toBe('Earth authored locations');
@@ -395,7 +395,7 @@ describe('WorldGenerator shadow setup', () => {
         // the existing 22 town colliders; entry now uses its dialogue.
         const earthSolids = locations.userData.walkFootprints.length;
         expect(earthSolids).toBe(27);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + earthSolids);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + earthSolids + 13);
         const doorCollider = generator.collisionManager.addCollider.mock.calls[earthSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
         expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);

@@ -107,6 +107,7 @@ class GameEngineRuntimeMethods {
         this.frameCount++;
         this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
+        this.activeWorldGenerator?.updateTownPresentation?.(dt, this.player?.position);
 
         // Manual movement owns this tick before buffered casts, actor movement
         // and pursuit can execute. The joystick's start callback clears older

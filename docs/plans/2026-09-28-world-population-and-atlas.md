@@ -2,7 +2,10 @@
 
 Requested September 28, 2026. Required scope under the
 [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md), not a separate
-optional art project. Current status: planning/inventory; not deployed.
+optional art project. Current status: first pass in progress. The1.14 atlas is
+accepted live;1.15 Lanternhold/Earth population is implemented locally with
+acceptance work remaining. See the version receipts for exact delivery evidence;
+later realms and final art/performance gates are not complete.
 
 ## Outcome
 

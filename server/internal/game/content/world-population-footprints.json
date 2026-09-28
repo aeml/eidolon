@@ -178,7 +178,7 @@
     },
     {
       "siteId": "bellkeepers-cairn",
-      "x": -320,
+      "x": -314,
       "z": -186,
       "width": 2.6,
       "depth": 1.3
@@ -195,7 +195,7 @@
     {
       "id": "world-reading-bellkeepers-cairn",
       "name": "Bellkeeper’s Cairn",
-      "x": -320,
+      "x": -314,
       "z": -186
     },
     {

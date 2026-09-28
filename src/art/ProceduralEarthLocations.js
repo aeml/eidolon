@@ -147,7 +147,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             beam([-3, 6.5, -5], [3, 6.5, -5], .4);
             cylinder('brass', 0, 4.4, -5, .65, 1.6, 2.2);
             cylinder('iron', 0, 3.4, -5, .1, .22, 1.4);
-            box('stone', 0, .75, -6, 2.6, 1.5, 1.3, 0, true);
+            box('stone', 6, .75, -6, 2.6, 1.5, 1.3, 0, true);
             break;
         case 'oath-stone':
             box('stone', 8, 2.6, -4, 2.8, 5.2, 1.6, 0, true);

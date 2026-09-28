@@ -62,7 +62,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         expect(await page.evaluate(() => {
             const waypoint = window.__atlas.map.navigation.waypoint;
             return [waypoint.x, waypoint.z];
-        })).toEqual([-320, -186]);
+        })).toEqual([-314, -186]);
         await page.screenshot({ path: testInfo.outputPath('atlas-public-lore.png') });
         await page.locator('.atlas-directory > summary').click();
         await page.getByRole('checkbox', { name: '◇ Places & lore' }).uncheck();

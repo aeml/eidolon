@@ -42,10 +42,10 @@ export const EARTH_LOCATIONS = freeze([
         x: -480, z: 530, radius: 26, visibility: 'public',
         purpose: 'A deserted timber yard with an open, roofless workshop. This is combat territory.' },
     { id: 'bellkeepers-cairn', name: 'Bellkeeper’s Cairn', role: 'lore', recipe: 'bell-cairn',
-        x: -320, z: -180, radius: 14, visibility: 'public', readingOffset: [0, -6],
+        x: -320, z: -180, radius: 14, visibility: 'public', readingOffset: [6, -6],
         purpose: 'Read a surviving bellkeeper’s record. Optional lore; no quest or reward required.',
         reading: { title: 'The Bell That Meant Shelter',
-            introduction: 'A slate lies beneath the cracked bell. Someone has rubbed ash into the letters so they remain legible.',
+            introduction: 'A slate rests beside the cracked bell. Someone has rubbed ash into the letters so they remain legible.',
             paragraphs: [
                 'Three strokes for a lost traveler. Five for a fire among the roots. One long toll when the grove itself asks for help. We were taught to answer the bell before asking whose hands had rung it.',
                 'Yesterday the sound came back from the trees without an echo. A voice beneath it asked us to name the deserving. Old Bera rang again until her palms bled. Shelter is not a prize, she said. Orun never made us earn the shade.',
@@ -68,6 +68,15 @@ export const WORLD_READINGS = freeze(EARTH_LOCATIONS.filter(site => site.reading
     x: site.x + site.readingOffset[0], z: site.z + site.readingOffset[1],
     reading: site.reading
 })));
+
+export const LANTERNHOLD_COURTYARDS = freeze([
+    { id: 'lanternhold-common-well', name: 'Lanternhold Common Well', region: 'town',
+        recipe: 'common-well', x: 55, z: 240, radius: 11, visibility: 'public', role: 'courtyard',
+        arrivalOffset: [-5, 0], purpose: 'A communal wash and gathering court. Recovery and Well Rested work throughout town; the well is not a required healing interaction.' },
+    { id: 'lanternhold-menders-yard', name: 'The Menders’ Yard', region: 'town',
+        recipe: 'menders-yard', x: -55, z: 238, radius: 11, visibility: 'public', role: 'courtyard',
+        arrivalOffset: [0, 3.5], purpose: 'Shared workbenches and drying cloth beside the refugee camps. For equipment repairs, visit Vendor / Repair; this is town scenery, not a second service.' }
+]);
 
 // These are authored ground-surface centerlines, shared with cartography when
 // the population scene is attached. Width is the full traversable path width;
