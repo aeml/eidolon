@@ -1,18 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint:** Alpha1.19.0 is accepted live at
-7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553 all jobs successful.
-Root exact public IPv4 frontend/backend/database/login/history/three-asset checks
-passed again after terminal CI. Watcher89597 finished successfully.1.20 is pushed
-atdddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 running.
-Quiet terminal-only watcher session62253 monitors that exact run/SHA.
-Its prepared verifier takes that SHA after all mandatory CI/live gates pass.
-1.21 code remains excluded from this release; it is separate local work.
+**Current checkpoint:** Alpha1.20.0 is accepted live at
+dddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 all ten jobs successful.
+Root exact public IPv4 frontend/backend/database/login/history/four-asset checks
+passed again after terminal CI at17:07UTC.1.21 is now ready to publish.
 Owner approved the optional playtest timer: local-only until explicitly shared.
 Its code, version/notes, privacy docs and mandatory browser coverage are ready
-locally. Final309 model/UI/binding/version tests, full lint and three browser
+locally, committed as539a4e3d (not pushed). Final309 model/UI/binding/version tests, full lint and three browser
 views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md). Publish only
 after1.20 acceptance; actual human pacing remains an open playtest gate.
+The1.21 exact verifier is prepared at
+`/tmp/eidolon-release-1-21-0-20260928-M4uYcf/verify.mjs`.
 
 Separate1.22 prerequisite geometry/material work MUST remain excluded from1.21:
 EarthLandmarkGeometry, ProceduralEarthLocations, WorldSurfaceDetail and their

@@ -8,10 +8,10 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint — September 28
 
-Superseding checkpoint: [Alpha 1.19.0](2026-09-28-release1-19.md) is accepted
-live at7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553 successful
+Superseding checkpoint: [Alpha 1.20.0](2026-09-28-release1-20.md) is accepted
+live atdddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 successful
 including mandatory live QA; public IPv4 identities/assets independently
-verified.1.20 is publishing. Its integration
+verified.1.21 is prepared for publication. The1.20 integration
 preserves open alpha, improves report/help consistency and records remaining
 art defects. Closed beta waits for near-completion CB, not1.20. The paragraphs
 below retain the preceding1.10 baseline, not a claim that the portal/casino

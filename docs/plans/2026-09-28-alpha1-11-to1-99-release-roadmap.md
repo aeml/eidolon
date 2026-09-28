@@ -2,8 +2,8 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.19.0, exact7588d255, CI36449267553. See the
-[1.19 release record](2026-09-28-release1-19.md).1.20 is publishing;
+baseline is Alpha1.20.0, exactdddbf01f, CI36452639581. See the
+[1.20 release record](2026-09-28-release1-20.md).1.21 is prepared for publication;
 [its A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
