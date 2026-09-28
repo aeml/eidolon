@@ -134,6 +134,12 @@ rules, decision points and beta/full-release gates. **1.30 is accepted live**
 (CI36490373870, exactf079a650); **1.31 is prepared for publication**. Later milestones
 remain planned, not delivered.
 
+Owner-expanded 1.33 scope: [complete class-kit rework](docs/plans/2026-09-28-class-kit-rework.md)
+for all twelve specializations, including single-branch combos. Wizard's two
+non-Pyromancer branches and all Fighter branches lead the pass, followed by
+Rogue and Cleric. Existing skill/talent selections and gear remain preserved;
+respec-copy fixes alone cannot complete this milestone.
+
 | Versions | Outcome |
 | --- | --- |
 | 1.11–1.20 | Improve the open-alpha foundation: portal, casino performance, early art/world/atlas, onboarding, support and safe operations. No beta opening. |
