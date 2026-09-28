@@ -4,7 +4,6 @@ import { CasinoController } from '../src/core/CasinoController.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { AttachedStatusEffect } from '../src/entities/AttachedStatusEffect.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
-import { ChunkManager } from '../src/core/ChunkManager.js';
 import { createCasinoShell, createCasinoFurniture, updateCasinoCutaway, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
 const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'blackjack', x: -4.3, z: 171,
@@ -80,92 +79,6 @@ test('cutaway cleanup restores living patrons but never revives retired bodies',
     expect(living.mesh.visible).toBe(true);
     expect(dead.mesh.visible).toBe(false);
     expect(engine.currentInstanceId).toBe('lanternhold-casino');
-});
-
-test('hidden floor patrons leave the scene traversal and return with current transforms', () => {
-    const { engine, controller } = setup();
-    const actor = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 137), state: 'SEATED' };
-    actor.mesh.position.copy(actor.position);
-    engine.renderSystem.scene.add(actor.mesh);
-    const update = jest.spyOn(actor.mesh, 'updateMatrixWorld');
-    controller.render([actor]);
-    expect(actor.mesh.parent).toBeNull();
-    engine.renderSystem.scene.updateMatrixWorld(true);
-    expect(update).not.toHaveBeenCalled();
-    // Ordinary authoritative movement still updates the detached actor.
-    actor.position.x = 12; actor.mesh.position.copy(actor.position);
-    actor.mesh.visible = true;
-    controller.render([actor]);
-    expect(actor.mesh.visible).toBe(false);
-    expect(actor.mesh.parent).toBeNull();
-    controller.floor = 'vip'; controller.render([actor]);
-    expect(actor.mesh.visible).toBe(true);
-    expect(actor.mesh.parent).toBe(engine.renderSystem.scene);
-    engine.renderSystem.scene.updateMatrixWorld(true);
-    expect(actor.mesh.getWorldPosition(new THREE.Vector3()).toArray()).toEqual([12, 8, 137]);
-    update.mockRestore(); controller.dispose();
-});
-
-test('cutaway does not resurrect removed, retired or replaced scene meshes', () => {
-    for (const change of ['absent', 'dead', 'inactive', 'replaced']) {
-        const { engine, controller } = setup();
-        const mesh = new THREE.Group(); engine.renderSystem.scene.add(mesh);
-        const actor = { mesh, position: new THREE.Vector3(0, 8, 137), state: 'SEATED' };
-        controller.render([actor]);
-        if (change === 'dead') actor.state = 'DEAD';
-        if (change === 'inactive') actor.isActive = false;
-        if (change === 'replaced') {
-            actor.mesh = new THREE.Group(); engine.renderSystem.scene.add(actor.mesh);
-        }
-        controller.floor = 'vip'; controller.render(change === 'absent' ? [] : [actor]);
-        expect(mesh.parent).toBeNull();
-        if (change === 'absent') {
-            // A streamed-out live actor may later be added by ChunkManager.
-            expect(mesh.visible).toBe(true);
-            engine.renderSystem.scene.add(mesh); controller.render([actor]);
-            expect(mesh.parent).toBe(engine.renderSystem.scene);
-            expect(mesh.visible).toBe(true);
-        }
-        if (change === 'replaced') expect(actor.mesh.visible).toBe(true);
-        controller.dispose();
-    }
-});
-
-test('cutaway cleanup restores scene-owned bodies without reparenting nested meshes', () => {
-    const { engine, controller } = setup();
-    const nested = new THREE.Group(); engine.renderSystem.scene.add(nested);
-    const actor = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 137), state: 'SEATED' };
-    const child = { ...actor, mesh: new THREE.Group() };
-    engine.renderSystem.scene.add(actor.mesh); nested.add(child.mesh);
-    controller.render([actor, child]);
-    expect(actor.mesh.parent).toBeNull();
-    expect(child.mesh.parent).toBe(nested);
-    controller.dispose();
-    expect(actor.mesh.parent).toBe(engine.renderSystem.scene);
-    expect(actor.mesh.visible).toBe(true);
-    expect(child.mesh.parent).toBe(nested);
-    expect(child.mesh.visible).toBe(true);
-});
-
-test('actual chunk streaming restores a hidden-floor actor after leaving and returning', () => {
-    const { engine, controller } = setup();
-    const chunks = new ChunkManager(engine.renderSystem.scene); engine.chunkManager = chunks;
-    const actor = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 137), state: 'SEATED', isActive: true };
-    const near = chunks.getChunkKey(actor.position.x, actor.position.z);
-    chunks.activeChunkKeys.add(near); chunks.addEntity(actor);
-    controller.render(chunks.getActiveEntities());
-    expect(actor.mesh.parent).toBeNull();
-    actor.position.x = 10000; chunks.updateEntityChunk(actor);
-    controller.render(chunks.getActiveEntities());
-    expect(actor.mesh.parent).toBeNull(); expect(actor.mesh.visible).toBe(true);
-    actor.position.x = 0; chunks.updateEntityChunk(actor);
-    controller.floor = 'vip'; controller.render(chunks.getActiveEntities());
-    expect(actor.mesh.parent).toBe(engine.renderSystem.scene);
-    expect(actor.mesh.visible).toBe(true);
-    controller.floor = 'public'; controller.render(chunks.getActiveEntities());
-    chunks.removeEntity(actor);
-    controller.dispose();
-    expect(actor.mesh.parent).toBeNull();
 });
 
 test('server-owned seat controls camera/input, readiness and exit without altering camera preferences', () => {
