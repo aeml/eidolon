@@ -15,7 +15,14 @@ test('courtyards have bounded local batches, real solid footprints and truthful 
     expect(high.userData.walkFootprints).toHaveLength(13);
     for (const group of [high, low]) {
         expect(group.children.map(root => root.name)).toEqual(LANTERNHOLD_COURTYARDS.map(site => site.id));
-        expect(group.children.reduce((total, root) => total + root.children.length, 0)).toBe(13);
+        expect(group.children.reduce((total, root) => total + root.children.length, 0)).toBe(15);
+        const residents = [];
+        group.traverse(part => { if (part.userData.ambientResident) residents.push(part); });
+        expect(residents).toHaveLength(2);
+        for (const resident of residents) resident.traverse(part => {
+            expect(part.userData.entityId).toBeUndefined();
+            expect(part.name).not.toMatch(/ServiceSigil|ServicePlinth/);
+        });
         for (const site of LANTERNHOLD_COURTYARDS) {
             const marker = getAtlasWorldLocations({}).find(p => p.id === site.id);
             expect(marker.availability).toContain('recovery works throughout town');
@@ -60,12 +67,14 @@ test('full-size heroes can reach both courtyards without hitting services, camps
 test('ambient motion stays local, honors reduced motion and stops after scene removal; resources are owned', () => {
     const scene = new THREE.Group(), group = createLanternholdCourtyards(); scene.add(group);
     const ripple = group.getObjectByName('well-water-ripple'), cloth = group.getObjectByName('drying-cloth-0');
+    const workerArm = group.getObjectByName('cloth-mender').getObjectByName('Rig_ForearmRight');
     group.userData.update(.1, { x: 55, z: 240 });
     expect(ripple.scale.x).not.toBe(1);
     const scale = ripple.scale.x;
     group.userData.update(.1, { x: 800, z: 200 }); expect(ripple.scale.x).toBe(scale);
     group.userData.update(.1, { x: 0, z: 240 }, true);
     expect(ripple.scale.x).toBe(1); expect(cloth.rotation.x).toBe(0);
+    expect(workerArm.rotation.x).toBe(-.8);
     group.removeFromParent(); group.userData.update(.1, { x: 55, z: 240 });
     expect(ripple.scale.x).toBe(1);
     const disposed = jest.spyOn(ripple.geometry, 'dispose');

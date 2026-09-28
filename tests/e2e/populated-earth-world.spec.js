@@ -77,7 +77,26 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
                 }
                 samples.push(stats); return stats;
             };
-            window.__populatedWorld = { visit, engine, samples, dispose() {
+            window.__populatedWorld = { visit, engine, samples, async profile() {
+                const profiles = [];
+                for (const id of ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar']) {
+                    visit(id);
+                    const frameTimes = [], cpuTimes = []; let previous;
+                    for (let i = 0; i < 150; i++) {
+                        const now = await new Promise(resolve => requestAnimationFrame(resolve));
+                        const start = performance.now();
+                        world.updateTownPresentation(1 / 60, engine.player.position); render.render();
+                        if (i >= 30) { frameTimes.push(now - previous); cpuTimes.push(performance.now() - start); }
+                        previous = now;
+                    }
+                    const percentile = (values, p) => values.sort((a, b) => a - b)[Math.floor((values.length - 1) * p)];
+                    profiles.push({ id, median: percentile(frameTimes, .5), p95: percentile(frameTimes, .95),
+                        cpuP95: percentile(cpuTimes, .95), calls: render.renderer.info.render.calls,
+                        triangles: render.renderer.info.render.triangles });
+                }
+                const gl = render.renderer.getContext(), extension = gl.getExtension('WEBGL_debug_renderer_info');
+                return { renderer: gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER), profiles };
+            }, dispose() {
                 readings.forEach(r => r.dispose()); portal.dispose(); engine.inputManager.dispose();
                 hero.removeFromParent(); MeshFactory.releaseMesh('Fighter', hero);
                 render.clearInstanceScene(); render.dispose();
@@ -103,6 +122,19 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             const countsPath = testInfo.outputPath('scene-counts.json');
             await writeFile(countsPath, JSON.stringify(result.samples, null, 2));
             await testInfo.attach('scene-counts', { path: countsPath, contentType: 'application/json' });
+            // Opt-in local hardware acceptance; shared CI is not a comparable
+            // frame-time environment. No busy loop, uncapped render or GPU finish.
+            if (process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
+                const profile = await page.evaluate(() => window.__populatedWorld.profile());
+                const path = testInfo.outputPath('frame-profile.json');
+                await writeFile(path, JSON.stringify(profile, null, 2));
+                await testInfo.attach('frame-profile', { path, contentType: 'application/json' });
+                expect(profile.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
+                for (const view of profile.profiles) {
+                    expect(view.median, `${view.id} median`).toBeLessThanOrEqual(quality === 'high' ? 20 : 33.4);
+                    expect(view.p95, `${view.id} p95`).toBeLessThanOrEqual(quality === 'high' ? 33.4 : 50);
+                }
+            }
             expect(failures, failures.join('\n')).toEqual([]);
         } finally { await page.evaluate(() => window.__populatedWorld.dispose()); }
     });

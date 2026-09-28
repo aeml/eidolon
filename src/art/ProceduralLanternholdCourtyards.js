@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createProceduralTownResident } from './ProceduralTownActors.js';
 
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
@@ -88,6 +89,18 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
             cylinder('metal', 5.5, 1, 4.5, .75, .4, 1.6, true);
             cylinder('glow', 5.5, 1.7, 4.5, .55, .55, .08);
         }
+        const resident = createProceduralTownResident();
+        const well = site.recipe === 'common-well';
+        resident.name = well ? 'well-tender' : 'cloth-mender';
+        resident.position.set(well ? 4.3 : 0, 0, well ? 0 : -4);
+        resident.rotation.y = well ? -Math.PI / 2 : 0;
+        resident.scale.setScalar(well ? .9 : .72);
+        const arm = resident.getObjectByName('Rig_UpperArmRight');
+        const forearm = resident.getObjectByName('Rig_ForearmRight');
+        arm.rotation.x = well ? -1.05 : -.6; forearm.rotation.x = -.8;
+        const head = resident.getObjectByName('Rig_Head'); head.rotation.x = .15;
+        root.add(resident);
+        motions.push({ site, mesh: forearm, head, rest: -.8, kind: 'resident', phase: well ? 0 : 1 });
         for (const [key, geometries] of batches) {
             const geometry = mergeGeometries(geometries, false); geometries.forEach(g => g.dispose());
             const mesh = new THREE.Mesh(geometry, materials[key]); mesh.name = `${site.id}:${key}`;
@@ -103,6 +116,10 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
         for (const motion of motions) {
             if (Math.hypot(position.x - motion.site.x, position.z - motion.site.z) > 90) continue;
             if (motion.kind === 'ripple') motion.mesh.scale.setScalar(reducedMotion ? 1 : 1 + Math.sin(elapsed * 1.4) * .25);
+            else if (motion.kind === 'resident') {
+                motion.mesh.rotation.x = motion.rest + (reducedMotion ? 0 : Math.sin(elapsed * 1.6 + motion.phase) * .12);
+                motion.head.rotation.y = reducedMotion ? 0 : Math.sin(elapsed * .4 + motion.phase) * .08;
+            }
             else motion.mesh.rotation.x = reducedMotion ? 0 : Math.sin(elapsed * .8 + motion.phase) * .065;
         }
     };

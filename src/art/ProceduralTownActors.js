@@ -752,6 +752,29 @@ export function createProceduralRespecNPC() {
     return createProceduralTownActor('RespecNPC');
 }
 
+// Ordinary townsfolk use the established adult proportions, without a service
+// identity, interaction sigil, weapons or quest marker. Scenery owns these
+// resources independently of the actor cache so a zone unload is safe.
+export function createProceduralTownResident() {
+    const definition = TOWN_ACTOR_DEFINITIONS.QuestNPC;
+    const materials = createMaterials('Resident', { ...definition.palette,
+        cloth: 0x59635b, clothDark: 0x333b35, trim: 0x655540 });
+    const root = new THREE.Group(); root.name = 'Lanternhold resident';
+    addBaseActor(root, 'Resident', definition, { ...materials, metal: materials.cloth });
+    for (const name of ['ServicePlinth', 'ServiceSigil', 'Breastplate', 'Cowl', 'Cloak', 'CloakClasp', 'Collar', 'BeltSeal']) {
+        root.getObjectByName(`Resident_${name}`)?.removeFromParent();
+    }
+    const geometries = new Map(), ownedMaterials = new Map();
+    root.traverse(part => {
+        if (!part.isMesh) return;
+        if (!geometries.has(part.geometry)) geometries.set(part.geometry, part.geometry.clone());
+        if (!ownedMaterials.has(part.material)) ownedMaterials.set(part.material, part.material.clone());
+        part.geometry = geometries.get(part.geometry); part.material = ownedMaterials.get(part.material);
+    });
+    root.userData.ambientResident = true;
+    return root;
+}
+
 // A raid artificer shares the established adult rig and resource caches, not
 // the four town-service identities or the player's Wizard equipment/model.
 export function createProceduralCrystalKeeper() {
