@@ -168,3 +168,26 @@ The non-GPU source check of shared-realm party rewards found no missing fix:
 `partyKillUsesDungeonPresence` excludes the Dark Realm, and the existing party
 credit tests cover its110-unit boundary and distant-district exclusion. Retain
 that coverage; no redundant reward test run or gameplay change was made.
+
+## September 28 — 1.13 preflight, no new timing claim
+
+The two optimization candidates were removed from the accepted 1.11 runtime
+(reverts 76d074c1/53c5b206), preserving them in history for milestone 1.13.
+1.12 candidate eea69e51 adds the physical town portal, not casino performance
+changes. Its CI36394561726 must finish and its live identity be accepted first.
+
+The next comparison must use the same current art on both sides: baseline
+1.12 versus a candidate with the retained optimizations. Do not compare new
+equipment/lighting to September 27's timings as though only floor handling
+changed. Reuse the real 92-station/40-equipped-actor fixture, all four High/Low
+views, zero retries and unchanged median/p95 limits above. Preserve actual
+visibility, scene ownership, streaming, picking and pose/effect catch-up tests.
+Do not relax target values or trade away the promised venue for a passing result.
+
+A five-second read-only host probe during 1.12 CI saw 16–26% CPU idle and
+1–35 runnable tasks (excluding vmstat's since-boot first row). This is materially
+different from the September 27 3–7% idle sample, but not a controlled hardware
+window or an FPS result. No new rendering profile, background-work termination,
+priority change or soak was started. Wait for owned browser deployment work to
+finish, then assess whether a paired comparison is meaningful; record contention
+alongside any measurements rather than guessing its causal cost.

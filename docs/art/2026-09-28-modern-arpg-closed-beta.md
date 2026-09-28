@@ -113,9 +113,11 @@ evaluate, not a claim that an external generator produces game-ready assets or
 that importing a single mesh finishes equipment/animation integration. No paid
 tool use, bulk asset purchase or production loader migration is authorized here.
 
-Before commissioning/generating a whole set, prepare **one Fighter body and one
-matched armor set** as a pilot. Agree the visual silhouette in neutral front,
-side and rear views first. The game integration needs:
+Before commissioning/generating a whole set, use **one user-supplied Fighter body**
+as the pilot. Implementation supplies and fits its procedural armor set; the user
+is not being asked to model equipment, environments or texture packs. Agree the
+visual silhouette in neutral front, side and rear views first. The game
+integration needs:
 
 - Editable source plus a proposed glTF/GLB handoff, with recorded provenance and
   redistribution rights appropriate for this open-source project. Validate the
@@ -123,9 +125,11 @@ side and rear views first. The game integration needs:
 - Consistent scale, axes, grounded origin and neutral bind pose, aligned to a
   supplied reference rig. Current rigs are rigid procedural hierarchies, not a
   ready-made guarantee of compatibility with an arbitrary skinned character.
-- Separate body and swappable armor regions. Do not bake every equipment item
-  into one inseparable character mesh. Agree body masking/layering for covered
-  skin, hair, helmets, gloves, boots and long cloth.
+- A body that can accept swappable equipment, not a fully armored inseparable
+  character mesh. Implementation supplies equipment and body masking/layering
+  for covered skin, hair, helmets, gloves, boots and long cloth. Prefer a neutral
+  pose; a rig and UVs are useful if available, not a requirement for the user to
+  solve the engine integration before submitting the pilot.
 - A shared skeleton/retarget plan and explicit attachment mapping. Preserve the
   production state vocabulary and canonical equipment anchors from
   `src/art/ProceduralHumanoid.js`; support both hands, shield, head, torso, neck,

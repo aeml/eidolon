@@ -41,6 +41,14 @@ export class ResonancePortal extends Entity {
 
     interact(engine) {
         if (!this.canInteract(engine)) return false;
+        engine.inputManager?.clearInputState?.();
+        engine.clearCombatIntentState?.();
+        engine.pendingInteraction = null;
+        engine.player.targetPosition = null;
+        if (engine.player.state === 'MOVING') {
+            engine.player.state = 'IDLE';
+            engine.player.playAnimation?.('Idle');
+        }
         this.dialog?.close();
         this.dialog = openResonancePortalDialog(engine, this);
         return true;

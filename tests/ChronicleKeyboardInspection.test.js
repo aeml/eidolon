@@ -42,3 +42,13 @@ test('already recorded nearby evidence does not steal the next inspection', () =
     expect(requestNearbyChronicleInspection(engine)).toBe(true);
     expect(engine.network.send).toHaveBeenCalledWith('chronicle_inspect',{entityId:growth.id});
 });
+
+test.each(['nearby', 'far', 'dead', 'menu', 'offline'])('E inspects the physical portal without granting travel: %s', mode => {
+    const portal = { type: 'ResonancePortal', isActive: true,
+        canInteract: jest.fn(() => mode !== 'far' && mode !== 'dead'), interact: jest.fn(() => true) };
+    const engine = { isMultiplayer: mode !== 'offline', player: { state: mode === 'dead' ? 'DEAD' : 'IDLE' },
+        uiManager: { isEscMenuOpen: mode === 'menu' }, chunkManager: { getActiveEntities: () => [portal] }, network: { send: jest.fn() } };
+    expect(requestNearbyChronicleInspection(engine)).toBe(mode === 'nearby');
+    expect(portal.interact).toHaveBeenCalledTimes(mode === 'nearby' ? 1 : 0);
+    expect(engine.network.send).not.toHaveBeenCalled();
+});

@@ -10,6 +10,8 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
         await page.evaluate(async () => {
             const THREE = await import('three');
             const { ResonancePortal } = await import('/src/entities/ResonancePortal.js');
+            const { InputManager } = await import('/src/core/InputManager.js');
+            const { requestNearbyChronicleInspection } = await import('/src/core/ChronicleInspection.js');
             const { RESONANCE_PORTAL } = await import('/src/data/worldLocations.js');
             const { CHRONICLE_RESTORATIONS } = await import('/src/core/ChronicleRestoration.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -21,7 +23,7 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             gallery.remoteActor.mesh.visible = false; gallery.targetActor.mesh.visible = false;
             const engine = {
                 player: { id: 'fixture', level: 100, state: 'IDLE', position: new THREE.Vector3(28, 0, 239), quests: [] },
-                currentInstanceId: '', collisionManager: new CollisionManager(), sent: [],
+                currentInstanceId: '', isMultiplayer: true, collisionManager: new CollisionManager(), sent: [],
                 network: { send: (type, payload) => engine.sent.push({ type, payload }) }
             };
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(198.5, 198.5), createProceduralTerrainMaterial('town'));
@@ -33,6 +35,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
                 engine.collisionManager.orientedColliders.some(collider => collider.box.clone().applyMatrix4(collider.matrix).intersectsBox(plaza));
             if (blocked) throw new Error('Portal plaza overlaps an existing town collider');
             const portal = new ResonancePortal(RESONANCE_PORTAL.entityId);
+            engine.chunkManager = { getActiveEntities: () => [portal] };
+            engine.inputManager = new InputManager(render.camera, render.renderer.domElement);
+            engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
             portal.position.set(RESONANCE_PORTAL.x, 0, RESONANCE_PORTAL.z); portal.gameEngine = engine;
             await portal.ensureMesh(); render.scene.add(portal.mesh);
             gallery.actor.position.copy(engine.player.position); gallery.actor.mesh.position.copy(engine.player.position);
@@ -51,7 +56,19 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             await expect.poll(() => page.evaluate(() => window.__portalFixture.portal.mesh.userData.portalStage)).toBe(stage);
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`plaza-${stage}.png`) });
-            await page.evaluate(() => window.__portalFixture.portal.interact(window.__portalFixture.engine));
+            if (stage === 'active') {
+                await page.evaluate(() => {
+                    document.activeElement?.blur();
+                    const engine = window.__portalFixture.engine;
+                    engine.inputManager.keys.w = true; engine.player.state = 'MOVING';
+                    engine.player.targetPosition = engine.player.position.clone().addScalar(20);
+                });
+                await page.keyboard.press('e');
+                expect(await page.evaluate(() => {
+                    const engine = window.__portalFixture.engine;
+                    return { moving: engine.inputManager.keys.w, target: engine.player.targetPosition, state: engine.player.state, sent: engine.sent.length };
+                })).toEqual({ moving: false, target: null, state: 'IDLE', sent: 0 });
+            } else await page.evaluate(() => window.__portalFixture.portal.interact(window.__portalFixture.engine));
             const dialog = page.getByRole('dialog', { name: 'Fourfold Resonance Portal' });
             await expect(dialog).toBeVisible();
             await expect(dialog.getByRole('listitem')).toHaveCount(4);
