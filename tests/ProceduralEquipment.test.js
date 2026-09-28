@@ -51,6 +51,34 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test.each(['Steel Pauldrons', 'Reinforced Spaulders'])('%s uses fitted layered shells and embedded sockets', (baseName) => {
+        const data = item(baseName, 'shoulders', { level: 1, sockets: 3 });
+        for (const side of [-1, 1]) {
+            const piece = createProceduralEquipmentVisual(data, { side });
+            const cap = piece.getObjectByName('Gear_Shoulder');
+            const lame = piece.getObjectByName('Gear_ShoulderLame');
+            const rim = piece.getObjectByName('Gear_ShoulderRidge');
+            expect(cap.geometry.type).toBe('LatheGeometry');
+            expect(cap.material.flatShading).toBe(false);
+            expect(lame).toBeDefined();
+            expect(rim.material).not.toBe(cap.material);
+            const capBounds = new THREE.Box3().setFromObject(cap);
+            const lameBounds = new THREE.Box3().setFromObject(lame);
+            expect(capBounds.getSize(new THREE.Vector3()).x).toBeLessThan(.94);
+            expect(lameBounds.max.y).toBeGreaterThan(capBounds.min.y);
+            expect(lameBounds.min.y).toBeLessThan(capBounds.min.y);
+            for (let index = 1; index <= 3; index++) {
+                const mount = piece.getObjectByName(`Gear_SocketMount${index}`);
+                expect(mount.position.z).toBeLessThan(capBounds.max.z + .015);
+            }
+            const duplicate = createProceduralEquipmentVisual(data, { side });
+            expect(duplicate.getObjectByName('Gear_Shoulder').geometry).toBe(cap.geometry);
+            expect(duplicate.getObjectByName('Gear_Shoulder').material).toBe(cap.material);
+            const torso = createProceduralEquipmentVisual(item('Plate Mail', 'chest'));
+            expect(torso.getObjectByName('Gear_Torso').material.flatShading).toBe(true);
+        }
+    });
+
     test.each([
         ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
         ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]

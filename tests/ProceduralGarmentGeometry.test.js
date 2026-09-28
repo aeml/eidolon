@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPairedEyesGeometry } from '../src/art/ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPairedEyesGeometry, createPauldronGeometry } from '../src/art/ProceduralGarmentGeometry.js';
 import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../src/art/ProceduralHumanoid.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../src/art/ProceduralEquipment.js';
 
@@ -9,6 +9,25 @@ const classes = [
     ['Wizard', createProceduralWizard, 'Wizard_RobePanelLeft'],
     ['Cleric', createProceduralCleric, 'Cleric_VestmentPanelLeft']
 ];
+
+test.each(['shell', 'rim', 'lame'])('pauldron %s is a bounded finite shell with a modeled inside', (part) => {
+    const geometry = createPauldronGeometry(part);
+    expect(geometry.attributes.position.array.every(Number.isFinite)).toBe(true);
+    expect(geometry.attributes.normal.array.every(Number.isFinite)).toBe(true);
+    expect(geometry.parameters.points.length).toBeGreaterThanOrEqual(7);
+    geometry.computeBoundingBox();
+    expect(geometry.boundingBox.getSize(new THREE.Vector3()).x).toBeLessThan(.94);
+    const surface = new THREE.MeshStandardMaterial();
+    const mesh = new THREE.Mesh(geometry, surface);
+    mesh.updateMatrixWorld(true);
+    const hits = new THREE.Raycaster(new THREE.Vector3(0, -1, .02), new THREE.Vector3(0, 1, 0)).intersectObject(mesh);
+    if (part === 'shell') {
+        expect(hits.length).toBeGreaterThan(0);
+        expect(hits[0].point.y).toBeGreaterThan(.18);
+    } else expect(hits).toHaveLength(0);
+    geometry.dispose();
+    surface.dispose();
+});
 
 test('tailored torso narrows at both waist and neckline with finite faceted surfaces', () => {
     const geometry = createTailoredTorsoGeometry(0.4, 0.6, 1.1);

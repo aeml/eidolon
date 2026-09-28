@@ -2,6 +2,13 @@
 
 Started: September 4, 2026
 
+September 28: visual quality is reopened by the user's modern dark-fantasy ARPG
+direction. Use the [closed-beta visual contract](2026-09-28-modern-arpg-closed-beta.md)
+for current work, including character bodies/faces, armor construction and fit,
+materials, lighting and optional authored-model evaluation. The historical
+completion below does not certify the new target; do not postpone this work
+until after the closed-beta opening.
+
 Status: completed locally on September 4, 2026. All six implementation passes
 and the final acceptance checks are complete for the Alpha 1.0.1 candidate.
 The implementation was committed and pushed September 5; production release

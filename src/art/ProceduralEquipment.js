@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createTailoredTorsoGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry } from './ProceduralGarmentGeometry.js';
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
 import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 
@@ -147,7 +147,8 @@ const SHIELD_OUTLINE = [[0, 0.78], [0.58, 0.46], [0.47, -0.36], [0, -0.84], [-0.
 
 function material(key, color, options = {}) {
     const cacheKey = [key, color.toString(16), options.emissive || 0, options.emissiveIntensity || 0,
-        options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide].join(':');
+        options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide,
+        options.flatShading ?? true].join(':');
     if (!MATERIALS.has(cacheKey)) {
         MATERIALS.set(cacheKey, new THREE.MeshStandardMaterial({
             color,
@@ -155,7 +156,7 @@ function material(key, color, options = {}) {
             metalness: options.metalness ?? 0.15,
             emissive: options.emissive ?? 0x000000,
             emissiveIntensity: options.emissiveIntensity ?? 0,
-            flatShading: true,
+            flatShading: options.flatShading ?? true,
             side: options.side ?? THREE.FrontSide
         }));
     }
@@ -194,10 +195,14 @@ function createMaterials(item, visual) {
                 ? { metalness: 0.03, roughness: 0.84 }
                 : { metalness: 0.01, roughness: 0.88 };
     const potency = Math.max(0, Number(item?.potency) || 0);
+    // Rolled armor uses the shell's authored normals. Keep this material choice
+    // in the cache key: other plate items still use their existing hard edges.
+    const surface = { ...materialDefaults,
+        flatShading: !(visual.family === 'shoulderArmor' && visual.variant !== 'mantle') };
     return {
-        primary: material(`${visual.variant}-primary`, visual.primary, materialDefaults),
+        primary: material(`${visual.variant}-primary`, visual.primary, surface),
         secondary: material(`${visual.variant}-secondary`, visual.secondary, {
-            ...materialDefaults,
+            ...surface,
             metalness: Math.max(materialDefaults.metalness, 0.25)
         }),
         accent: material(`${visual.variant}-${rarityName}-accent`, rarityColor, {
@@ -436,20 +441,29 @@ function buildHandwear(group, visual, mats) {
 function buildShoulderArmor(group, visual, mats, side) {
     const mantle = visual.variant === 'mantle';
     const plate = visual.variant === 'plate';
-    addMesh(group, 'Gear_Shoulder', geometry(`gear-shoulder-${visual.variant}`, () =>
-        mantle
-            ? new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2)
-            : new THREE.DodecahedronGeometry(plate ? 0.55 : 0.49, 0)
+    if (!mantle) {
+        // Keep the cap close to the upper-arm pivot and let the overlapping
+        // lower plate cover its join. Smaller leather uses the same tailored
+        // construction; neither replaces the shoulder with a solid boulder.
+        const scale = plate ? 1 : .91;
+        const transform = { position: [side * .035, 0, 0], scale: [scale, scale, scale] };
+        addMesh(group, 'Gear_Shoulder', geometry('gear-shoulder-shell', () => createPauldronGeometry()), mats.primary, transform);
+        addMesh(group, 'Gear_ShoulderLame', geometry('gear-shoulder-lame', () => createPauldronGeometry('lame')), mats.primary, transform);
+        addMesh(group, 'Gear_ShoulderRidge', geometry('gear-shoulder-rim', () => createPauldronGeometry('rim')), mats.secondary, transform);
+        return;
+    }
+    addMesh(group, 'Gear_Shoulder', geometry('gear-shoulder-mantle', () =>
+        new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2)
     ), mats.primary, {
         position: [side * 0.05, -0.06, 0],
         rotation: [0, 0, side * 0.16],
-        scale: mantle ? [1.15, 0.45, 0.92] : [1.12, plate ? 0.62 : 0.54, 0.88]
+        scale: [1.15, 0.45, 0.92]
     });
-    addMesh(group, 'Gear_ShoulderRidge', geometry(`gear-shoulder-ridge-${mantle ? 'cloth' : 'solid'}`, () =>
-        mantle ? new THREE.BoxGeometry(0.12, 0.58, 0.36) : new THREE.ConeGeometry(0.13, 0.42, 4)
-    ), mantle ? mats.secondary : mats.accent, {
-        position: [side * 0.31, mantle ? -0.23 : 0.14, 0],
-        rotation: [0, 0, -side * (mantle ? 0.16 : 0.45)]
+    addMesh(group, 'Gear_ShoulderRidge', geometry('gear-shoulder-ridge-cloth', () =>
+        new THREE.BoxGeometry(0.12, 0.58, 0.36)
+    ), mats.secondary, {
+        position: [side * 0.31, -0.23, 0],
+        rotation: [0, 0, -side * 0.16]
     });
 }
 
@@ -541,12 +555,13 @@ const BUILDERS = Object.freeze({
     trinket: buildTrinket
 });
 
-function socketDecorationPosition(slot) {
+function socketDecorationPosition(slot, visual) {
     if (slot === 'mainHand') return [0.1, 0.3, 0.08];
     if (slot === 'offHand') return [-0.2, 0.08, 0.4];
     if (slot === 'head') return [0.27, 0.37, 0.27];
     if (slot === 'chest') return [0.31, 0.55, 0.55];
-    if (slot === 'shoulders') return [0, -0.04, 0.46];
+    if (slot === 'shoulders') return visual?.variant === 'mantle'
+        ? [0, -0.04, 0.46] : [0, -0.04, visual?.variant === 'reinforced' ? .338 : .371];
     if (slot === 'legs') return [0, -0.64, 0.25];
     if (slot === 'feet') return [0.12, 0.23, 0.38];
     if (slot === 'gloves') return [0.1, 0.08, 0.2];
@@ -561,7 +576,7 @@ function addSocketDetails(group, item, visual, mats) {
     // edge. Matching reverse fittings represent the same embedded stones and
     // keep a naturally pitched weapon readable from either face.
     const blade = visual.family === 'blade';
-    const origin = blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot);
+    const origin = blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot, visual);
     const shown = Math.min(3, socketCount);
     for (let index = 0; index < shown; index++) {
         const gem = gems[index];
@@ -602,7 +617,7 @@ function addIdentityDetails(group, item, visual) {
     const uniqueEffect = String(item?.uniqueEffect || '');
     if (!setId && !uniqueEffect) return;
 
-    const origin = socketDecorationPosition(visual.slot);
+    const origin = socketDecorationPosition(visual.slot, visual);
     if (setId) {
         const setColor = SET_COLORS[setId] || 0x9e7cc2;
         const setMaterial = material(`equipment-set-${setId}`, setColor, {

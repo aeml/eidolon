@@ -4,6 +4,15 @@ Requested September 28, 2026. **Planning only: none of the milestones below is
 claimed implemented, tested, or deployed by this document.** Last verified live
 baseline is Alpha 1.10.2; see the [release record](2026-09-23-release1-10-playtest.md).
 
+September 28 follow-up: the user identifies the current game as **open alpha**
+and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
+dark-fantasy graphics and substantially improved characters/equipment/fit.
+The [modern ARPG visual contract](../art/2026-09-28-modern-arpg-closed-beta.md)
+is now a required early workstream and part of B1, not deferred to 1.41–1.50.
+Later visual milestones refine that baseline. An optional authored-model pilot
+may be evaluated; no bulk purchase/import, live-access restriction or beta
+announcement is implied by this planning update.
+
 This is the authoritative forward roadmap after the
 [1.1–1.10 foundation plan](2026-09-05-v1-1-to-v1-10-roadmap.md). It covers every
 minor version from **1.11.0 through 1.99.0**, with scope, dependencies, evidence,
@@ -114,7 +123,7 @@ owner's go/no-go. This plan does not silently reset the game to version 1.0.
 
 | Band | Purpose | Exit gate |
 | --- | --- | --- |
-| 1.11–1.20 | Close alpha promises and open a usable beta | B1: playable beta candidate |
+| 1.11–1.20 | Close alpha promises, establish modern character/equipment quality and prepare closed beta | B1: playable closed-beta candidate |
 | 1.21–1.40 | Real-player journey, class and economy tuning | B2: wider-beta readiness |
 | 1.41–1.50 | Visual, audio, interaction and device finish | Q: presentation/support baseline |
 | 1.51–1.60 | Community, competition and repeatable endgame | S: sustainable multiplayer loops |
@@ -139,16 +148,16 @@ even if their comprehensive review is scheduled in a later band.
 
 | Version | Delivery scope | Exit evidence / dependency |
 | --- | --- | --- |
-| 1.11 | Promise-to-product inventory: reconcile every earlier explicit request, numbered requirement and unchecked compound item against current code/live receipts. Record actual gaps, severity and owning milestone. | One traceable gap register; preserve existing passes; list portal and casino work explicitly. No blanket “feature complete” assertion. |
+| 1.11 | Promise-to-product inventory and visual baseline: reconcile earlier explicit requests against code/live receipts; inspect four-class anatomy, materials and equipment fit. Begin one coherent modern Fighter art slice. | Traceable gap register plus actual comparison views; preserve existing passes; list portal, casino and newly reopened art work. No blanket “feature complete” assertion. |
 | 1.12 | Physical resonance portal: intentional Lanternhold site, four restored-crystal motifs, locked/ready/active presentation, Ilyra's final-Vigil directions, map marker, click/touch entry and arrival/return guidance. | Each player's level/crystal gate enforced server-side; eligible travel, ineligible explanation, legacy eligibility, party separation, reconnect and collision checks; inspected desktop/touch presentation. Guide remains a compatible fallback. |
 | 1.13 | Complete the pending casino hidden-floor optimizations and investigate remaining measured rendering cost without degrading the promised venue. | Comparable hardware measurements against the predeclared targets; functional floor/streaming cleanup retained; no busy-host pass claim. Publish the accepted candidate with notes. |
 | 1.14 | Beta feedback loop: accessible report action, build/area context, opt-in bounded diagnostics, privacy-safe error grouping and actionable issue triage. | A submitted test report reaches an operator with usable repro context, without passwords, tokens, chat dumps or automatic private-data uploads. |
 | 1.15 | First-session guidance: character/class explanation, move/attack/interact, Ilyra, manual turn-ins, bag/equipment, skill/talent spending, town recovery and next activity. | Fresh desktop/touch walkthrough has understandable next steps without developer coaching; returning veterans are not forced through a reset/tutorial. |
 | 1.16 | Beta account continuity: login/logout/resume errors, lost-connection recovery, safe session replacement and clear recovery/help entry points. | Supported reconnect/expired-session paths preserve progress; review existing account protections and remediate confirmed defects. Depends on durable save/session contract, not invented account privileges. |
 | 1.17 | Dungeon/raid preparation and party access: visible requirements, appropriate gear guidance, role recruitment, ready checks, unlock reasons and sparse-population guidance. | Players can assemble and enter an eligible party using normal UI; per-member gates and reward eligibility remain intact. No forced fake-player matchmaking. |
-| 1.18 | Declare provisional beta browser/device matrix and quality presets; finish blocking layout, targeting and readability issues in town/combat/core menus. | Desktop browser evidence plus available touch evidence; clearly label unverified devices. Record phone feedback as deferred, not passed; preserve user's earlier positive UI report. |
-| 1.19 | Beta policies and operations setup: recruit cohort, support/report destination, moderation contacts, wipe/carryover decision, channel/version label, known limitations and capacity budget. | Owner resolves decision register entries due at B1; visible player-facing policies; no wipe or payment action implied. |
-| 1.20 | Package the playable beta candidate: complete missing alpha promises required for the core journey, notes, onboarding/help, known-issues list and stable deployment. | **B1** checklist below; published exact identity and smoke results. Whole-campaign pacing remains the user's playtest, not an automated admission gate. |
+| 1.18 | Finish the early four-class modern-art/equipment workstream and declare provisional beta browser/device matrix and quality presets; resolve blocking layout/targeting/readability. | Visual-contract review, motion/fit and relevant render checks; desktop plus available touch evidence. Label unverified devices and retain deferred phone feedback honestly. |
+| 1.19 | Closed-beta policies and operations: cohort selection/access approach, support/report destination, moderation contacts, wipe/carryover decision, channel/version label, known limitations and capacity budget. | Owner resolves B1 decisions including treatment of existing open-alpha accounts; no live access restriction, wipe or payment action without an approved transition. |
+| 1.20 | Package the playable closed-beta candidate: required alpha promises and visual contract, notes, onboarding/help, known issues and stable deployment. | **B1** checklist below; exact identity and smoke results plus approved cohort transition. Human campaign pacing remains user-playtest-owned, not an automated admission gate. |
 
 ### 1.21–1.40 — journey, combat and economy in beta
 
@@ -268,6 +277,10 @@ even if their comprehensive review is scheduled in a later band.
 
 ### B1 — playable beta at 1.20
 
+- [ ] The [modern ARPG visual contract](../art/2026-09-28-modern-arpg-closed-beta.md)
+  is met for all four classes, equipment families/fit and coherent world/combat
+  presentation. Historical faceted-art completion and mere attachment counts
+  do not satisfy this newly requested quality bar.
 - [ ] Every prior promise is mapped to delivered evidence, a concrete repair,
   or an explicitly approved future scope; core-play gaps are not waived silently.
 - [ ] Physical Dark Realm portal and the existing authoritative journey agree.
@@ -278,6 +291,8 @@ even if their comprehensive review is scheduled in a later band.
   with a reduced prototype to make a benchmark pass.
 - [ ] Provisional device support, capacity, support contact, known issues and
   character continuity policy are published; channel label chosen by owner.
+- [ ] Closed-beta cohort/access and treatment of existing open-alpha players
+  are approved before applying access restrictions; preserve their saved data.
 - [ ] Exact build deploy, normal smoke and valuable-operation safety checks pass.
   Human campaign duration is not a prerequisite to this beta opening.
 
@@ -384,7 +399,7 @@ with a questionnaire. Existing user deferrals remain in force until revisited.
 
 | Decision | Needed by | Handling until answered |
 | --- | --- | --- |
-| Beta channel/name, invitation/public audience and final full-release version | 1.19 / 1.98 | Keep current Alpha labels; no public launch announcement inferred. |
+| Closed-beta cohort/access transition from open alpha, channel/name and final full-release version | 1.19 / 1.98 | Keep current Alpha labels and live access; no automatic account exclusion or launch announcement. |
 | Preserve beta characters vs explicitly announced wipe/other policy | 1.19 | Preserve all existing data; no destructive reset. |
 | Initial cohort size, public launch concurrency/headroom, hosting budget and operator | 1.19 baseline; 1.79/1.94 final | Existing bounded load evidence is not a capacity promise; don't buy hosting or change unrelated services. |
 | Browser/device/OS scope, accessibility commitments and additional languages | 1.18/1.40; 1.95 final | Publish tested/experimental distinctions. Phone feedback remains deferred; no fabricated acceptance. |
@@ -457,6 +472,12 @@ never redefine success as “all version numbers were used.”
 September 28, 2026: forward roadmap created; all 1.11–1.99 milestones planned.
 No game version bump, deployment, payment integration, infrastructure change,
 new long test or completed-beta claim is made by this planning change.
+
+September 28 visual follow-up: B1 now includes the user's modern dark-fantasy
+character/equipment target. First local shoulder-shell construction/fit slice
+implemented; evidence and remaining anatomy/material work are in the
+[visual contract](../art/2026-09-28-modern-arpg-closed-beta.md). This does not close
+1.11's full promise audit or the four-class art pass, and is not deployed.
 
 ## References
 

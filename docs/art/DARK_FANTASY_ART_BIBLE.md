@@ -1,10 +1,17 @@
 # Eidolon Dark-Fantasy Art Bible
 
+September 28 update: the [modern ARPG closed-beta visual contract](2026-09-28-modern-arpg-closed-beta.md)
+supersedes the earlier faceted/low-poly finish as the final quality target.
+The user wants the grounded, atmospheric feel of modern Diablo/Path of Exile.
+Preserve Eidolon's identities, readability and performance contracts while
+improving anatomy, equipment construction/fit, materials, lighting and motion.
+An authored-model pilot may be evaluated; no bulk import is approved or complete.
+
 ## Identity
 
-Eidolon is a stylized dark-fantasy action RPG seen from an isometric gameplay camera. Its visual language is built from sculpted, faceted forms; dark neutral materials; strong silhouettes; restrained regional palettes; and one bright magical accent per gameplay concept. The look should feel handcrafted and adventurous rather than photorealistic, muddy, toy-like, or neon-saturated.
+Eidolon is a modern dark-fantasy action RPG seen from an isometric gameplay camera. Its visual language uses grounded heroic anatomy, sculpted forms, believable layered equipment, deliberate hard edges, dark neutral materials, strong silhouettes, restrained regional palettes and one bright magical accent per gameplay concept. The target is atmospheric and substantial, with readable gameplay and coherent material response.
 
-The production target is code-generated geometry, materials, shaders, particles, icons, rigs, and animation. Geometry must be cached and reused. Visual detail should come from silhouette, layering, color blocking, surface rhythm, controlled emissive accents, and motion—not huge textures or excessive mesh density.
+The current production implementation is code-generated geometry, materials, shaders, particles, icons, rigs, and animation. It is a starting point, not a limit on the approved visual target. Geometry must be cached and reused. Prioritize silhouette, fitted layers, surface normals, materials, lighting and motion; evaluate any authored pilot against the new asset contract before changing production dependencies.
 
 ## Readability rules
 
@@ -112,4 +119,4 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - Active world hazards: 65 total — 19 lava pools, 12 sandstorms, 15 lightning zones, and 19 wind gusts.
 - Equippable schema slots: head, chest, legs, feet, shoulders, belt, ring, trinket, main hand, off hand, neck, and gloves. Material and relic are inventory-only categories.
 
-This baseline is a ceiling, not a target. Each migration patch may reduce legacy files and runtime references but must never add a new authored 3D dependency.
+This is the historical procedural-migration baseline, not permission to restore the old payload. New authored dependencies, if approved after the September 28 pilot, need explicit budgets, provenance, fit/animation integration and production-check updates; do not import them silently.

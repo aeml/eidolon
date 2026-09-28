@@ -1,5 +1,14 @@
 # Eidolon Procedural Dark-Fantasy Visual Redesign Goal
 
+September 28 direction update: the original migration contract below is retained
+as history and architecture guidance. The user now requests modern Diablo/Path
+of Exile-like dark-fantasy presentation and better character/equipment quality
+before closed beta. Follow the [new visual contract](docs/art/2026-09-28-modern-arpg-closed-beta.md):
+the faceted-only finish is superseded, and an authored-model pilot can be
+evaluated before any explicitly approved production dependency change. Preserve
+the existing gameplay, rig, save and ownership contracts. Historical migration
+completion is not completion of the new visual target.
+
 Fully redesign Eidolon's visual presentation into a cohesive, polished, code-generated dark-fantasy art style. Replace the existing authored 3D models throughout the production game with procedural geometry, code-driven rigs and animation, generated materials, shaders, particles, icons, and effects.
 
 Complete this as a safe multi-patch migration. Continue autonomously from patch to patch; do not stop after planning, prototypes, individual classes, partial coverage, commits, pushes, or intermediate deployments. The terminal condition is the complete code-generated visual system running successfully in production.

@@ -111,13 +111,20 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 
 ## Forward Roadmap: Alpha 1.11–1.99
 
+Latest direction: current public availability remains **open alpha**. The next
+target is a deliberately prepared **closed beta**, with modern dark-fantasy
+character/equipment quality required before opening that cohort. Follow the
+[visual contract](docs/art/2026-09-28-modern-arpg-closed-beta.md); the original
+faceted-art finish is no longer the final target. No existing account access
+or save policy changes automatically with this roadmap update.
+
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
 rules, decision points and beta/full-release gates. All start **planned**.
 
 | Versions | Outcome |
 | --- | --- |
-| 1.11–1.20 | Close alpha promises, physical Dark Realm portal, casino performance, onboarding, feedback and a playable beta candidate. |
+| 1.11–1.20 | Close alpha promises, physical Dark Realm portal, casino performance, modern character/equipment visuals, onboarding and a playable closed-beta candidate. |
 | 1.21–1.40 | Real-player campaign, encounter, class, loot, Forge and economy tuning; wider-beta readiness. |
 | 1.41–1.50 | Consistent character/equipment/world art, combat effects, audio, UI, accessibility and device performance. |
 | 1.51–1.60 | Dependable community, guilds, recruitment, PvP/seasons, world events, moderation and endgame loops. |

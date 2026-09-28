@@ -37,3 +37,21 @@ export function createOpenHoodGeometry() {
         12, 0.72, Math.PI * 2 - 1.44
     );
 }
+
+// Thin, overlapping armor shells rather than solid polyhedra. The profile
+// returns along the inside, so raised arms expose a real inner surface without
+// double-sided materials. Callers cache each part and attach it to the shoulder.
+export function createPauldronGeometry(part = 'shell') {
+    const profiles = {
+        shell: [[0, .24], [.19, .22], [.34, .14], [.43, .015], [.45, -.08],
+            [.415, -.085], [.395, .005], [.315, .11], [.18, .185], [0, .205]],
+        rim: [[.434, -.015], [.458, -.07], [.452, -.105], [.414, -.105],
+            [.421, -.07], [.405, -.015], [.434, -.015]],
+        lame: [[.385, -.065], [.405, -.17], [.375, -.275], [.34, -.285],
+            [.342, -.25], [.373, -.165], [.355, -.065], [.385, -.065]]
+    };
+    if (!profiles[part]) throw new Error(`Unknown pauldron part: ${part}`);
+    const result = new THREE.LatheGeometry(profiles[part].map(([x, y]) => new THREE.Vector2(x, y)), 12);
+    result.scale(1, 1, .85);
+    return result;
+}
