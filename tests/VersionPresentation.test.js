@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.25.0';
+const currentVersion = '1.26.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,16 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.26.0 explains the full Vigil and personal claims without altering earned progress', () => {
+        const start = indexHtml.indexOf('data-version="1.26.0"'), previous = indexHtml.indexOf('data-version="1.25.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['the crystal is not the guardian', 'Stay for the Vigil', 'all three waves',
+            'Return to Ilyra in town', 'Each character claims personally', 'No combat, XP, drop-rate, currency or save changes',
+            'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
+    });
     test('1.25.0 records Air navigation, instrument art and bounded projectile evidence', () => {
         const start = indexHtml.indexOf('data-version="1.25.0"'), previous = indexHtml.indexOf('data-version="1.24.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

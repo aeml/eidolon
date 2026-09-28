@@ -8,6 +8,48 @@ test.use({ launchOptions: {
     args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer']
 } });
 
+for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
+    test(`Vigil tracker distinguishes pending repair from personal turn-in at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
+        await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.setViewportSize(viewport);
+        const mobile = viewport.width < 900;
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const { QuestUI } = await import('/src/ui/QuestUI.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const summary = { rooms: [{ index: 0, type: 'start' }, { index: 1, type: 'boss', cleared: true }],
+                objectiveRoomIndex: -1, crystal: { stage: 'fractured', wave: 0 } };
+            const player = { id: 'vigil-tracker-layout', quests: [] };
+            const quest = new QuestUI({ isMobile: mobile, getLastPlayer: () => player,
+                getCurrentInstanceId: () => 'raid-fixture', getCurrentInstanceType: () => 'air_crystal_raid',
+                getDungeonRoomSummary: () => summary });
+            window.__vigilTracker = { quest, summary, render(stage) {
+                summary.crystal.stage = stage;
+                quest.renderObjectivesPanel([quest.buildDungeonRoutingObjective()]);
+            } };
+            window.__vigilTracker.render('fractured');
+        }, mobile);
+        const title = page.locator('#objectives-panel .objective-entry__title');
+        await expect(title).toBeVisible();
+        await expect(title).toHaveText('Stay for Maelin’s Vigil');
+        await expect(page.locator('#objectives-panel')).not.toContainText('leave with your loot');
+        await page.evaluate(() => window.__vigilTracker.render('repairing'));
+        await expect(page.locator('#objectives-panel')).toContainText('Preparing the Vigil');
+        await page.evaluate(() => window.__vigilTracker.render('restored'));
+        await expect(title).toHaveText('Return to Ilyra in town');
+        const box = await title.boundingBox();
+        expect(box.x).toBeGreaterThanOrEqual(0); expect(box.y).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+        expect(box.y + box.height).toBeLessThanOrEqual(viewport.height + 1);
+        if (mobile) {
+            await expect(page.locator('#objectives-panel .objective-entry__hint')).toBeHidden();
+            await expect(page.getByRole('button', { name: 'Open journal: Return to Ilyra in town · Ready', exact: true })).toBeVisible();
+        } else await expect(page.locator('#objectives-panel')).toContainText('click Complete Quest with Ilyra');
+        await page.screenshot({ path: testInfo.outputPath('vigil-personal-claim.png') });
+    });
+}
+
 for (const viewport of [{ width: 1280, height: 720 }, { width: 1440, height: 900 }]) {
     test(`party quest strip stays reachable above healing controls at ${viewport.width}px`, async ({ page }, testInfo) => {
         // UI-only fixture: actual styles/components, no game scene or earned quest claim.

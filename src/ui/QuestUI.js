@@ -551,12 +551,32 @@ export class QuestUI {
 
         const instanceType = this.ctx.getCurrentInstanceType?.() || 'dungeon';
         const crystal = summary.crystal;
+        if (crystal?.stage === 'fractured' && summary.rooms.some(room => room?.type === 'boss') &&
+            summary.rooms.every(room => room && (room.type === 'start' || room.cleared))) {
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: 'Stay for Maelin’s Vigil', progressLabel: 'Guardian defeated · repair pending', progressPct: 0,
+                rewardXP: 0, completed: false, badge: 'Crystal Vigil', badgeClass: 'is-active', routeTone: 'support',
+                hint: 'The assault is cleared, but the crystal is not restored. Regroup in the crystal chamber for Maelin’s repair ritual.',
+                sequenceHint: 'Defend all three waves and complete their ritual tasks before returning to Ilyra.'
+            };
+        }
+        if (crystal?.stage === 'restored') {
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: 'Return to Ilyra in town', progressLabel: 'Crystal restored · 3/3 waves', progressPct: 100,
+                rewardXP: 0, completed: true, badge: 'Exit', badgeClass: 'is-exit', routeTone: 'support',
+                hint: 'Return to Lanternhold and speak to Ilyra. Use Complete Quest for your ready repair quest; each character claims personally.',
+                sequenceHint: 'Press B or use Return to Lanternhold in the Escape menu. Check your Chronicle, then click Complete Quest with Ilyra. Every character must claim their own quest.'
+            };
+        }
         if (crystal?.stage === 'repairing') {
             const ritual = crystal.objective;
             return {
                 id: `dungeon-vigil-${instanceType}`,
                 title: ritual?.title || `Defend ${crystal.name || 'the crystal'}`,
-                progressLabel: `Wave ${crystal.wave || 1}/3 · ${ritual?.current || 0}/${ritual?.total || 1}`,
+                progressLabel: crystal.wave > 0
+                    ? `Wave ${crystal.wave}/3 · ${ritual?.current || 0}/${ritual?.total || 1}` : 'Preparing the Vigil',
                 progressPct: Math.min(99, Number(crystal.progress) || 0),
                 rewardXP: 0,
                 completed: false,

@@ -7,7 +7,8 @@ import {
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
-import { appendDungeonPreparation, partyPreparationText, CRYSTAL_VIGIL_PREPARATION, weeklyRaidRewardText } from './DungeonPreparation.js';
+import { appendDungeonPreparation, partyPreparationText, weeklyRaidRewardText } from './DungeonPreparation.js';
+import { appendElementalRaidBriefing } from './ElementalRaidBriefing.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -651,10 +652,7 @@ class UIManagerDungeonMethods {
             };
             raidBox.append(formRaid, enterRaid, recruitmentButton(raid.type));
             if (unlocked) {
-                const preparation = document.createElement('p');
-                preparation.className = 'adventure-raid-note';
-                preparation.textContent = CRYSTAL_VIGIL_PREPARATION[raid.element] + ' Complete this task AND defeat every attacker in all three waves, then return to Ilyra.';
-                raidBox.append(preparation);
+                appendElementalRaidBriefing(raidBox, raid.element);
             }
             raidPanel.appendChild(raidBox);
         });

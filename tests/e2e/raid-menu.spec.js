@@ -30,6 +30,35 @@ async function setupMenu(page, isMobile = false) {
 for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
     test.describe(`family level choices ${width}x${height}`, () => {
         test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('elemental briefings disclose guardian, ritual and personal claims without starting a raid', async ({ page, baseURL }, testInfo) => {
+            const failures = collectBrowserFailures(page, baseURL);
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => window.__raidMenuFixture.ui.showDungeonMenu({
+                playerLevel: 100, isLeader: true,
+                elementalRaidAccess: Object.fromEntries(['earth', 'water', 'fire', 'air'].map(element => [`${element}_crystal_raid`, true]))
+            }));
+            const menu = page.locator('#dungeon-menu');
+            await menu.getByRole('tab', { name: 'Raids', exact: true }).click();
+            for (const [element, boss] of [['earth', 'Graven Colossus'], ['water', 'Tidebound Tyrant'],
+                ['fire', 'Ashen Imperator'], ['air', 'Tempest Sovereign']]) {
+                const card = menu.locator(`[data-raid-type="${element}_crystal_raid"]`);
+                const details = card.locator('.adventure-preparation');
+                await expect(details.locator('p').first()).toBeHidden();
+                await details.locator('summary').click();
+                await expect(details.locator('p').first()).toBeVisible();
+                await expect(details).toContainText(boss);
+                await expect(details).toContainText('Maelin channels automatically');
+                await expect(details).toContainText('Each character claims personally');
+                const bounds = await details.boundingBox();
+                expect(bounds.x).toBeGreaterThanOrEqual(0);
+                expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+                await details.locator('p').last().scrollIntoViewIfNeeded();
+                if (element !== 'air') await details.locator('summary').click();
+            }
+            await page.screenshot({ path: testInfo.outputPath('elemental-briefing.png') });
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent)).toEqual([]);
+            expect(failures, failures.join('\n')).toEqual([]);
+        });
         test('Guide routes to real recruitment and party readiness without submitting actions', async ({page}) => {
             await setupMenu(page, isMobile);
             await page.evaluate(() => {

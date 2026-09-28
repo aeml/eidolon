@@ -39,7 +39,63 @@ test('ritual remains the tracked objective after the boss dies, including recove
     summary.crystal.objective.paused = true;
     expect(ui.buildDungeonRoutingObjective().badge).toBe('Regroup');
     summary.crystal.stage = 'restored';
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ title: 'Return to Ilyra in town', completed: true });
+});
+
+test.each(['earth', 'water', 'fire', 'air'])('%s never tells a cleared assault to leave before its Vigil', realm => {
+    const summary = { rooms: [{ index: 0, type: 'start' }, { index: 1, type: 'boss', cleared: true }],
+        objectiveRoomIndex: -1, crystal: { stage: 'fractured', wave: 0 } };
+    const ui = Object.create(QuestUI.prototype);
+    ui.ctx = { getCurrentInstanceId: () => 'raid', getCurrentInstanceType: () => `${realm}_crystal_raid`,
+        getDungeonRoomSummary: () => summary };
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ title: 'Stay for Maelin’s Vigil', completed: false,
+        progressLabel: 'Guardian defeated · repair pending', progressPct: 0 });
+    expect(ui.buildDungeonRoutingObjective().hint).toContain('not restored');
+    summary.crystal.stage = 'repairing';
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ completed: false, progressLabel: 'Preparing the Vigil' });
+    summary.crystal.stage = 'restored';
+    const ready = ui.buildDungeonRoutingObjective();
+    // Phones hide both hint lines: the compact title must identify Ilyra too.
+    expect(ready).toMatchObject({ title: 'Return to Ilyra in town', completed: true, progressPct: 100 });
+    expect(ready.hint).toContain('speak to Ilyra');
+    expect(ready.hint).toContain('Complete Quest');
+    expect(ready.sequenceHint).toContain('click Complete Quest');
+    expect(ready.sequenceHint).toContain('Every character must claim their own quest');
+});
+
+test('ordinary completed dungeons retain their loot exit guidance', () => {
+    const ui = Object.create(QuestUI.prototype);
+    ui.ctx = { getCurrentInstanceId: () => 'dungeon', getCurrentInstanceType: () => 'tempest_spire',
+        getDungeonRoomSummary: () => ({ rooms: [{ type: 'boss', cleared: true }], objectiveRoomIndex: -1 }) };
     expect(ui.buildDungeonRoutingObjective()).toMatchObject({ title: 'Return to Lanternhold', completed: true });
+    expect(ui.buildDungeonRoutingObjective().hint).toContain('leave with your loot');
+});
+
+test('town recovery and re-entry use the current repair snapshot without premature completion', () => {
+    let instanceId = 'raid';
+    const summary = { rooms: [{ index: 0, type: 'start' }, { index: 1, type: 'boss', cleared: false }],
+        objectiveRoomIndex: 1, crystal: { stage: 'fractured', wave: 0 } };
+    const ui = Object.create(QuestUI.prototype);
+    ui.ctx = { getCurrentInstanceId: () => instanceId, getCurrentInstanceType: () => 'air_crystal_raid',
+        getDungeonRoomSummary: () => summary };
+    const assault = ui.buildDungeonRoutingObjective();
+    expect(assault.completed).toBe(false);
+    expect(assault.id).toBe('dungeon-route-air_crystal_raid');
+    summary.rooms[1].cleared = true;
+    summary.objectiveRoomIndex = -1;
+    summary.crystal = JSON.parse(JSON.stringify(crystal));
+    summary.crystal.objective.paused = true;
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ badge: 'Regroup', completed: false });
+    instanceId = null;
+    expect(ui.buildDungeonRoutingObjective()).toBeNull();
+    instanceId = 'raid';
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ badge: 'Regroup', completed: false });
+    summary.crystal.objective.paused = false;
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ badge: 'Crystal Vigil', completed: false,
+        progressLabel: 'Wave 2/3 · 1/4' });
+    // A restarted partial repair can legitimately return a fractured snapshot.
+    summary.crystal = { stage: 'fractured', wave: 0 };
+    expect(ui.buildDungeonRoutingObjective()).toMatchObject({ title: 'Stay for Maelin’s Vigil', completed: false });
 });
 
 test('markers use exact server footprints, ordered pips, low-quality visibility and no collisions', () => {
