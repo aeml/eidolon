@@ -7,6 +7,14 @@ features, automated checks and a complete human campaign playthrough.
 
 ## Current handoff — September 27
 
+September 28 forward scope: use the [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+for planned beta and launch work. The physical Dark Realm portal was confirmed
+missing: current entry is the Dungeon Guide's menu. Its replacement/presentation
+is a concrete 1.12 deliverable, with compatible authoritative travel preserved.
+This corrects the earlier “no further confirmed feature gap” assessment below;
+the verified 1.10.2 deployment is not full roadmap completion. No new deployment
+is made by adding this plan.
+
 - **User-owned campaign validation:** the user explicitly chose “Leave
   campaign/pacing validation to our playtest; finish any remaining code gaps.”
   The uninterrupted earned campaign, real-player reward/economy progression and

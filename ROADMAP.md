@@ -2,9 +2,9 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Current-status pointers refreshed: September 27, 2026
+> Current-status pointers refreshed: September 28, 2026
 
-This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
+This is the product-level roadmap and historical Alpha 1.0 closeout record. The authoritative forward plan is [Alpha 1.11–1.99: playable beta to release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
 
@@ -13,8 +13,9 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 - Live release: `Alpha 1.10.2`, exact `8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813`, CI36285496845 passed all ten jobs, including live character/recovery QA. Public IPv4 release identity, five exact assets and database readiness were verified. Read-audit recovery is delivered. Local casino rendering optimizations remain unshipped pending hardware timing acceptance; see the [current release record](docs/plans/2026-09-23-release1-10-playtest.md). The user deferred the separate IPv6/DDNS configuration issue.
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
-- Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
-- Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
+- New forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor version planned, a playable-beta gate at 1.20, wider beta at 1.40, feature freeze at 1.80 and release readiness at 1.99. These are scope/gate targets, not deployed features or dates. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited requirements/evidence source.
+- Confirmed alpha presentation gap: Dark Realm access is currently through the Dungeon Guide menu, not the promised physical resonance portal. The forward plan includes a discoverable, server-gated portal at 1.12; an earlier safe corrective release is allowed. Do not treat 1.10.2's version number as full roadmap completion.
+- Phone UI work and the user's positive general-use feedback are retained. Actual dungeon/party phone feedback is user-deferred; further supported-device validation and launch support decisions are planned in 1.18, 1.47 and 1.95. See the [original mobile requirements](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
 - Historical Alpha 1.0 architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216 (not current measurements).
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
@@ -108,7 +109,32 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 - The full client and Go test suites, lint, build, race detector, Mongo integration tests, benchmarks, load checks, and browser smoke routes pass
 - Beta work can focus on scale, tuning, operations, polish, and content growth instead of missing foundations
 
-## Next: Beta
+## Forward Roadmap: Alpha 1.11–1.99
+
+The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
+rules, decision points and beta/full-release gates. All start **planned**.
+
+| Versions | Outcome |
+| --- | --- |
+| 1.11–1.20 | Close alpha promises, physical Dark Realm portal, casino performance, onboarding, feedback and a playable beta candidate. |
+| 1.21–1.40 | Real-player campaign, encounter, class, loot, Forge and economy tuning; wider-beta readiness. |
+| 1.41–1.50 | Consistent character/equipment/world art, combat effects, audio, UI, accessibility and device performance. |
+| 1.51–1.60 | Dependable community, guilds, recruitment, PvP/seasons, world events, moderation and endgame loops. |
+| 1.61–1.70 | Complete casino experience, all game rules/settlements, cosmetic catalog, VIP lifecycle and strict EP/Gold separation. |
+| 1.71–1.80 | Security, account recovery, valuable-operation safety, administration, privacy, persistence, hosting and capacity; feature freeze. |
+| 1.81–1.90 | Recovery/rollback, incidents, support, player/contributor documentation and first release candidate. |
+| 1.91–1.99 | Close candidate blockers; capacity/device/security/data signoff, launch rehearsal and a verified release-ready build. |
+
+Beta/channel and full-release version labels require explicit gate approval, not
+just a version bump. Payment integration remains excluded unless separately
+authorized; a free launch is valid. Wipe policy, population/hosting budget,
+device support and launch operations have owner decision points. Preserve saves
+by default. Human campaign/pacing stays user-playtest-owned. Reuse accepted
+evidence; do not run a full campaign/soak for every milestone. New classes,
+continents and Jev bots are not automatic launch prerequisites.
+
+### Inherited 1.10 foundation and evidence
 
 The September 7 scope addition requires a
 [progression/economy balancing pass and eight realm investigations](docs/plans/2026-09-07-progression-balance-and-investigations.md).
@@ -120,14 +146,15 @@ the user's playtest. Follow the
 [current integration audit](docs/plans/2026-09-14-final-integration-audit.md)
 rather than treating the historical staging plan as unimplemented content.
 
-The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) proposes the alpha-to-beta sequence. Immediate dungeon defects take priority in `1.0.x` hotfixes and must be closed before `1.1`; `1.6` is reserved for encounter improvements, not repairs to unplayable basics. Historical foundation closeout does not override newly reported failures. Later milestones cover visual and combat polish, story depth, progression, competitive PvP, social activity, world events, and measured beta readiness. A fifth class and major realm expansion remain outside this scope.
+The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) records the preceding foundation scope. Its dated release instructions are historical; newly confirmed blockers ship in an appropriate current corrective patch, not by restarting the 1.0.x sequence. The new forward roadmap inherits outstanding promises without reimplementing accepted work.
 
 ### Phone-first playability — a release requirement
 
-The September 6 report identifies a connected camera and interface problem:
+The September 6 report identified a connected camera and interface problem:
 zooming out enough to see the world makes characters tiny, while desktop-style
-menus remain difficult to use. The planned solution is a phone-specific layout,
-not further shrinking the desktop screen.
+menus were difficult to use. The original milestone requirements below explain
+the phone-specific redesign; use current evidence to distinguish delivered work
+from remaining actual-device validation.
 
 - **1.1: make ordinary play usable.** Frame the camera around the visible play
   area, keep the hero and threats readable at the default zoom, simplify the HUD,
@@ -143,8 +170,9 @@ Success means normal play without maximum zoom-out, browser zoom, or forced
 rotation; readable text and separated touch targets; and verified town, combat,
 inventory, quest and dungeon flows on actual iOS and Android phones. The detailed
 [mobile acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13)
-remain open until that evidence exists. This is planned scope, not a claim that
-the redesign is already complete.
+retain their evidence requirements. The user has confirmed general mobile UI
+looks good and deferred dungeon/party feedback; neither erases implemented UI
+work nor proves every device. The forward plan owns remaining support decisions.
 
 ## Supporting Documents
 

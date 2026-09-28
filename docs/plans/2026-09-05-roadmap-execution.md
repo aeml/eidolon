@@ -1,18 +1,22 @@
 # Roadmap execution ledger
 
-Objective: implement the full 1.1–1.10 roadmap step by step, deploying each version
-with patch notes. Scope and completion gates remain in
-[the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
-the whole goal. Started September 5, 2026.
+Started September 5, 2026 for the 1.1–1.10 foundation roadmap, deploying each
+version with patch notes. The September 28 [1.11–1.99 continuation](2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+now owns future scope, gates and execution receipts through full-release
+readiness. This ledger preserves prior delivery evidence; individual hotfixes
+do not close the whole goal or restart historical queues.
 
-## Current checkpoint — September 27
+## Current checkpoint — September 28
 
-Alpha1.10.1 is verified live at f8a9b051c4043ad5a64cfaa57444a40df0515620;
-all ten jobs of CI36283549819 passed, including live character/recovery QA. The authoritative
+Alpha1.10.2 is verified live at 8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813;
+all ten jobs of CI36285496845 passed, including live character/recovery QA. The authoritative
 [1.10 release record](2026-09-23-release1-10-playtest.md) tracks current remaining
 work and supersedes the older status paragraphs below. Deployment is complete,
-but integrated gameplay acceptance is not: uninterrupted fresh-campaign and
-human pacing verification remain open. Earned Air/Tempest, all four elemental
+but full roadmap acceptance is not. Uninterrupted fresh-campaign and human
+pacing verification belong to the user's playtest; do not launch another long
+campaign. The physical portal is missing and casino rendering optimizations
+remain local/unshipped. All 1.11–1.99 milestones are planning, not delivered work.
+Earned Air/Tempest, all four elemental
 raid repairs and Umbral Nexus have accepted scoped group evidence. Dark King's four phases,
 five survivors' manual rewards, epilogues and relogin are accepted within the
 explicit prepared-encounter/saved-continuation scope. DNS/IPv6 and physical-phone

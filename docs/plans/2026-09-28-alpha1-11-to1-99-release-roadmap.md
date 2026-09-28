@@ -1,0 +1,473 @@
+# Eidolon 1.11–1.99: playable beta to release readiness
+
+Requested September 28, 2026. **Planning only: none of the milestones below is
+claimed implemented, tested, or deployed by this document.** Last verified live
+baseline is Alpha 1.10.2; see the [release record](2026-09-23-release1-10-playtest.md).
+
+This is the authoritative forward roadmap after the
+[1.1–1.10 foundation plan](2026-09-05-v1-1-to-v1-10-roadmap.md). It covers every
+minor version from **1.11.0 through 1.99.0**, with scope, dependencies, evidence,
+and release gates. It does not reset completed work or turn old unchecked
+compound requirements into instructions to rebuild shipped features.
+
+## 1. Destination and boundaries
+
+**Playable beta:** strangers can create a character, understand Ilyra's request,
+play a class comfortably, find companions, traverse the complete campaign and
+endgame, use the economy/social/casino systems, and retain their progress. Known
+limitations are visible; reporting a problem is easy; operators can recover the
+service. Balance and polish are still being refined through real play.
+
+**Release-ready game:** the same complete experience is understandable,
+consistent, sufficiently balanced, supported on declared devices, protected
+against known serious exploits, and operable at a declared launch population.
+Players know the progression, support, privacy, monetization and character
+continuity policies. Recovery and launch procedures have credible evidence.
+
+This is a finite launch scope, not a promise of every possible MMO feature or
+zero future bugs. The four classes, four elemental realms, Dark Realm, existing
+dungeon/raid families, competitive modes, social systems, world events, casino,
+cosmetics and operations form the product. A fifth class, new continent, native
+mobile app, controller/console port, global server mesh, player housing, mounts,
+extra PvP queues, and additional launch languages are **not automatically added**.
+Proposals require explicit scope approval and cannot silently displace this work.
+
+Payment integration remains excluded unless separately authorized. A complete
+free launch is valid; paid checkout is not an implicit requirement of 1.99.
+Jev bots are an optional efficiency experiment, not a beta or launch dependency.
+
+## 2. Current baseline: preserve, finish, verify
+
+Use the [integration audit](2026-09-14-final-integration-audit.md),
+[casino expansion](2026-09-20-casino-expansion.md), and current release record
+for exact evidence and limitations, not historical headings announcing a pending
+release that subsequently shipped.
+
+| Category | Starting position and next treatment |
+| --- | --- |
+| Implemented foundation | Four classes; procedural presentation; manual 55-chapter Chronicle; elemental investigations and repair raids; level-100 Dark Realm expedition; Nexus and four-phase Malachar; parties, guilds, economy, PvP, events, administration and casino. Verify integration and improve quality; do not recreate these systems. |
+| Accepted scoped evidence | Geared-party dungeon/raid clears, repair defenses, individual manual rewards, reconnect receipts, connected social/casino/admin routes, bounded concurrency and backup/restore checks. Reuse where the tested behavior has not changed. Prepared characters do not prove earned campaign pacing. |
+| Confirmed missing presentation | Dark Realm entry currently uses the town Dungeon Guide menu. Deliver the originally requested physical four-crystal resonance portal, with authoritative eligibility and discoverable location; do not call the menu the finished portal. |
+| Local, unshipped code | Hidden-floor casino status animation and actor-traversal optimizations. Functional regressions pass; hardware timing acceptance remains open. Finish or correct this candidate, then publish with notes. |
+| User-owned playtest | Uninterrupted earned campaign, real-player progression/economy and pacing. No replacement long automated campaign is authorized by this plan. Instrument and collect actual playtest reports instead. |
+| Deferred external evidence | Physical-phone dungeon/party feedback and IPv6/DDNS configuration. Neither is passed. Keep them nonblocking for ongoing code and the current release; address support/exposure decisions at the later gates below. |
+
+### Non-negotiable inherited decisions
+
+- Preserve saved characters, earned quest contracts, equipment, wallets and
+  receipts. No production wipe, reset, grant, data migration or destructive
+  maintenance is authorized merely by inclusion in this roadmap.
+- Story quests come from Archmage Ilyra, not the daily NPC; acceptance and reward
+  claims are explicit. Daily markers are blue; story markers are gold. Quest
+  completion gives XP and Gold, with correct max-level reward behavior and no
+  silently discarded progression. Preserve player-selected tracking and item icons.
+- Clear each elemental dungeon to unlock its crystal raid road. All four full
+  raids plus three-wave Maelin repair Vigils precede Dark Realm access. Entry
+  requires level 100 and each traveler's eligibility; party leadership is not a
+  bypass. The Dark Realm's expedition and Nexus precede Malachar's raid.
+- Target roughly **2–3 hours to level 30**, **100 hours to level 100**, then
+  **8–12 hours in the Dark Realm**, approximately **112 hours total** for the
+  intended player/party profile without mandatory daily grinding. These are
+  real-play targets, not guarantees or an excuse to fabricate elapsed-time proof.
+- A well-geared five-player Malachar success should take about **5–10 minutes**,
+  with all four Eidolons relevant. Forge +20 remains a long-term endgame goal;
+  story gear has moderate potency. No level-based double-stat scaling.
+- Safe zones recover **10% maximum HP and MP per second**. Each second there
+  earns one second of Well Rested, capped at **two hours**, consumed only outside
+  safe zones; **10% all stats, 25% enemy-kill XP**, with a readable aura. Preserve
+  reduced outside recovery rather than undoing the town-recovery loop.
+- Keep the **15-minute dungeon logout expiry** and return via the latest cleared
+  boss checkpoint. Party dungeon kill credit includes members present in the
+  dungeon; open-world sharing uses the established nearby/two-screen policy.
+- Keep class-appropriate Uncommon/Rare party fixtures and normal role behavior
+  for encounter diagnostics, without substituting grants for earned pacing.
+- Public casino uses Gold; VIP games use **EP (Eidolon Points)**. Exchange is
+  **1,000,000 Gold → 1 EP**, never the reverse. **100 EP per VIP month**; admins
+  receive VIP access and that allowance without duplicate monthly claims.
+  EP wagers win only EP; its reward utility is cosmetics only, with no indirect
+  Gold/resource resale, stats, XP, crafting power or progression advantage.
+- Each separate, equally large casino floor has **4 blackjack, 4 Hold'em,
+  2 roulette, 4 baccarat tables, and 32 slots**. Shared physical seating, persistent
+  table presentation and per-second countdowns remain required. Blackjack natural
+  payout is **3:2**; stakes cap at **100,000 Gold / 100 EP**. Preserve timed-seat
+  turnover, card/hand readouts, clear payouts and slot win/bonus celebrations.
+- Preserve clickable Lanternhold Casino entry, the westward stash clearance,
+  visible named town services, permanent chat presentation and working Forge UI.
+- The project remains open source with the unobtrusive login attribution/link.
+  No real-money implementation, final VIP price, extra paid benefit or direct EP
+  purchase price is approved here.
+
+## 3. Versioning and phase gates
+
+Minor numbers are integers: 1.19 → 1.20, and eventually 1.98 → 1.99. Hotfixes
+use 1.x.y; they do not consume a future milestone. The 89 rows are ordered work
+packages, not 89 mandatory long testing campaigns, dates, or predictions of cost.
+Deliver meaningful batches; when a dependency is already satisfied, cite its
+evidence instead of inventing work. Reordering or combining named milestones
+requires an explicit roadmap update and must retain their scope and notes.
+
+Retain the requested Alpha 1.x planning lineage. **Beta/RC/full-release channel
+labels change only at their gates**, with a user-approved display/version policy
+at 1.19. A number does not certify readiness. 1.99 is a release-ready candidate;
+the public full-release announcement and final product version require the
+owner's go/no-go. This plan does not silently reset the game to version 1.0.
+
+| Band | Purpose | Exit gate |
+| --- | --- | --- |
+| 1.11–1.20 | Close alpha promises and open a usable beta | B1: playable beta candidate |
+| 1.21–1.40 | Real-player journey, class and economy tuning | B2: wider-beta readiness |
+| 1.41–1.50 | Visual, audio, interaction and device finish | Q: presentation/support baseline |
+| 1.51–1.60 | Community, competition and repeatable endgame | S: sustainable multiplayer loops |
+| 1.61–1.70 | Casino, cosmetic/VIP economy and trust | E: venue/economy closeout |
+| 1.71–1.80 | Security, privacy, persistence and service capacity | F: launch feature freeze |
+| 1.81–1.90 | Support, release operations and integrated candidate | RC1: first release candidate |
+| 1.91–1.99 | Resolve launch blockers and prove readiness | R: full-release go/no-go package |
+
+All rows below start **PLANNED**, not done. “Evidence” means evidence of the
+delivered behavior, not merely a test filename or a document promising it.
+
+Dependencies are cumulative across phase gates, not permission to postpone
+urgent fixes: B2 builds on B1; Q/S/E and the security/service work feed F; RC1
+requires F and launch operations; R requires RC1 plus resolved candidate gaps.
+Within a band, independent work can proceed when its own prerequisites exist.
+Feedback/telemetry must precede evidence-based balancing; privacy decisions
+precede new data collection; EP policy and owner approval precede any paid branch;
+capacity targets precede load trials. Security and data-loss fixes ship promptly
+even if their comprehensive review is scheduled in a later band.
+
+### 1.11–1.20 — alpha closeout and playable beta
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.11 | Promise-to-product inventory: reconcile every earlier explicit request, numbered requirement and unchecked compound item against current code/live receipts. Record actual gaps, severity and owning milestone. | One traceable gap register; preserve existing passes; list portal and casino work explicitly. No blanket “feature complete” assertion. |
+| 1.12 | Physical resonance portal: intentional Lanternhold site, four restored-crystal motifs, locked/ready/active presentation, Ilyra's final-Vigil directions, map marker, click/touch entry and arrival/return guidance. | Each player's level/crystal gate enforced server-side; eligible travel, ineligible explanation, legacy eligibility, party separation, reconnect and collision checks; inspected desktop/touch presentation. Guide remains a compatible fallback. |
+| 1.13 | Complete the pending casino hidden-floor optimizations and investigate remaining measured rendering cost without degrading the promised venue. | Comparable hardware measurements against the predeclared targets; functional floor/streaming cleanup retained; no busy-host pass claim. Publish the accepted candidate with notes. |
+| 1.14 | Beta feedback loop: accessible report action, build/area context, opt-in bounded diagnostics, privacy-safe error grouping and actionable issue triage. | A submitted test report reaches an operator with usable repro context, without passwords, tokens, chat dumps or automatic private-data uploads. |
+| 1.15 | First-session guidance: character/class explanation, move/attack/interact, Ilyra, manual turn-ins, bag/equipment, skill/talent spending, town recovery and next activity. | Fresh desktop/touch walkthrough has understandable next steps without developer coaching; returning veterans are not forced through a reset/tutorial. |
+| 1.16 | Beta account continuity: login/logout/resume errors, lost-connection recovery, safe session replacement and clear recovery/help entry points. | Supported reconnect/expired-session paths preserve progress; review existing account protections and remediate confirmed defects. Depends on durable save/session contract, not invented account privileges. |
+| 1.17 | Dungeon/raid preparation and party access: visible requirements, appropriate gear guidance, role recruitment, ready checks, unlock reasons and sparse-population guidance. | Players can assemble and enter an eligible party using normal UI; per-member gates and reward eligibility remain intact. No forced fake-player matchmaking. |
+| 1.18 | Declare provisional beta browser/device matrix and quality presets; finish blocking layout, targeting and readability issues in town/combat/core menus. | Desktop browser evidence plus available touch evidence; clearly label unverified devices. Record phone feedback as deferred, not passed; preserve user's earlier positive UI report. |
+| 1.19 | Beta policies and operations setup: recruit cohort, support/report destination, moderation contacts, wipe/carryover decision, channel/version label, known limitations and capacity budget. | Owner resolves decision register entries due at B1; visible player-facing policies; no wipe or payment action implied. |
+| 1.20 | Package the playable beta candidate: complete missing alpha promises required for the core journey, notes, onboarding/help, known-issues list and stable deployment. | **B1** checklist below; published exact identity and smoke results. Whole-campaign pacing remains the user's playtest, not an automated admission gate. |
+
+### 1.21–1.40 — journey, combat and economy in beta
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.21 | Instrument and review the real first-hour/level-30 journey, including time spent lost, fighting, recovering, grouping and offline. | User/cohort records distinguish active play, idle and assistance; compare against 2–3-hour target; fix the biggest demonstrated early friction. Requires 1.14 privacy policy. |
+| 1.22 | Earth story/readability pass: collection/hunts, both investigations, equipment preparation, Verdant progression and the crystal-raid handoff. | Fix actual player-reported ambiguity/blockers; retain accepted combat receipts and document earned rewards without repeating a full clear solely for this number. |
+| 1.23 | Water journey pass: lore sites, navigation, quest drops/counts, Abyssal handoff and party preparation. | Current chapter UI, item icons, objective locations and saved handoffs agree; tune from playtest evidence, not assumed completion time. |
+| 1.24 | Fire journey pass: investigate/collect/kill variety, Molten requirements, warning readability and progression into the raid road. | No contradictory guide levels, dead-end objectives or hidden gate; targeted repros for changed behavior. |
+| 1.25 | Air journey pass: traversal, aim/projectile visibility, story rhythm, Tempest objectives and access clarity. | Valid casts show/hit consistently; journal, guide, objectives and physical world agree at relevant heights. Preserve earned Air/Tempest evidence. |
+| 1.26 | Four elemental raid/Vigil quality pass: each raid's identity, boss instructions, three-wave repair defense, NPC purpose and explicit personal turn-ins. | All four existing routes mapped to readable mechanics/rewards; correct real party feedback and changed failure/re-entry cases without gratuitous replays. |
+| 1.27 | Dark Realm expedition: portal-to-camp onboarding, district navigation, discoveries, witnesses, objective variety and level-cap reward clarity. | Player reports and objective map support the intended 8–12-hour arc; no unexplained grinding or repeat-content padding. Depends on 1.12 and level-100 eligibility. |
+| 1.28 | Umbral Nexus finish: prepare party, read the three-guardian route, recover/re-enter, claim individually and understand the court unlock. | Nexus-to-raid handoff and retained progress are dependable; reuse accepted geared clear and retest only affected mechanics. |
+| 1.29 | Malachar finale finish: four readable Eidolon interventions, dialogue timing, role opportunities, reward ceremony and epilogue. | Real suitably geared five-player feedback targets 5–10 minutes; each phase and manual reward/epilogue persists. No fabricated human timing from prepared bots. |
+| 1.30 | Campaign coherence/editing: complete quest graph, consistent names/locations/voices, repaired-crystal consequences, Journal recap, portal guidance and post-Malachar hook. | All current chapters and legacy in-flight contracts have reachable next steps; campaign feedback remains user-owned. No missing content masked by a “complete” checkbox. |
+| 1.31 | Four-class combat tuning: Fighter tanking, Rogue agility/damage, Wizard ranged casting, Cleric support; resource cadence and useful ability choices. | Representative group/solo evidence identifies and corrects outliers; preserve intended retreat/town recovery and class-stat identities. |
+| 1.32 | Enemy/boss combat fairness: attack windups, real hit areas, line of sight, vertical aim, crowd control, summons, deaths and cleanup. | Changed attacks have matched server/visual footprints; no unavoidable ordinary encounters or invisible damage in supported views. |
+| 1.33 | Builds and skill/talent/rune choices: accurate descriptions, respec friction, understandable synergies and nonfunctional choice cleanup. | Selected representative builds have distinct use; displayed values match authoritative effects. Do not promise exhaustive equality of every combination. |
+| 1.34 | Item/drop and quest-item economy: rarity curves, useful class gear, affixes, item readability, collection rates/counts, bag pressure and unwanted-item handling. | Reward/drop observations by level/activity; all quest items recognizable; safe drag-out/drop confirmation and no loss of protected quest items. |
+| 1.35 | Forge/crafting progression: potency costs, materials, upgrade feedback, stat comparisons and immediate UI refresh. | Moderate story investment is viable; +20 modeled and playtested as long-term endgame; upgrades and resources settle once and survive reconnect. |
+| 1.36 | Gold sources/sinks and trading economy: quests, vendors, loot sales, repairs/Forge, auctions, direct trade and guild flows. | Source/sink breakdown and pricing outliers reviewed; inflation/hoarding signals monitored; existing currency preserved and no unexplained confiscation. |
+| 1.37 | Level-cap rewards and Resonance: worthwhile enemy/quest/event/raid progression, clear capped XP treatment and cosmetic/power separation. | No silent lost rewards, repeat-claim exploit or forced daily loop; earned character receipts match displayed rewards. |
+| 1.38 | Party progression fairness: whole-instance kill credit, nearby open-world sharing, role contribution, disconnects, downed members and cross-instance boundaries. | Relevant membership/distance/instance tests and player feedback; prevent remote leeching without penalizing real tanks/healers. |
+| 1.39 | Consolidated progression/balance patch: prioritize measured cohort blockers across level bands, party sizes and classes; document changed rewards and preserved contracts. | Human feedback vs targets recorded with sample limitations; no broad curve reset or nerf solely to match a spreadsheet. |
+| 1.40 | Wider-beta readiness: incorporate the first feedback cohort, stable core loops, understandable recruitment, published limitations and bounded capacity. | **B2** checklist; unresolved real-player campaign observations remain honestly tracked, with known blockers fixed before widening. |
+
+### 1.41–1.50 — presentation, usability and device quality
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.41 | Character/equipment finish: four-class silhouettes, armor layers, hair/head fit, weapon/shield grips and local/remote equipment swaps through animations. | Targeted visual gallery and gameplay-size review across representative slots/rarities/classes; no routine clipping, missing models or stale equipment. |
+| 1.42 | World/town/dungeon art integration: recognizable realm palettes, landmarks, terrain joins, interiors, door hints and intentional service layout. | Inspect each environment family and known overlap/collision regressions; retain safe walking space and accurate rendered/physical footprints. |
+| 1.43 | Combat VFX/animation finish: casts, impacts, telegraphs, projectiles, death/respawn, aura priorities, camera shake and effect cleanup. | Readable busy fights at High/Low; no persistent respawn cube, hidden projectile or misleading radius; reduced-effects option does not remove essential warnings. |
+| 1.44 | Audio pass: distinct actions/impacts, positional danger, ambience, realm/casino identity, volume buses, mute and browser-audio activation. | Licensed/provenanced assets, intelligible mix and settings persistence; sound-off play retains necessary visual cues. |
+| 1.45 | Interface consistency: journal/tracking, bags/stash, forge, trading, character/build sheets, menus, tooltips, notifications and interaction priority. | Loading/empty/error/success states; keyboard/touch focus and escape behavior; no overloaded quest list, stale values or obstructed combat. |
+| 1.46 | Accessibility baseline: remapping, UI/text scale, contrast, non-color cues, reduced motion/flashes, audio controls and accessible account/menu forms. | Named accessibility review and known-limitations list; essential warnings remain usable. Declare scope honestly rather than claiming universal accessibility. |
+| 1.47 | Phone session quality: sustained combat, targeting, two-thumb controls, bag/quest/skills, keyboard/safe areas, portrait/landscape and interruptions. | Actual device evidence collected when available, not a synthetic phone-FPS claim. Resolve supported-device failures; owner approves any launch support limitation. |
+| 1.48 | Client performance pass: entity/effect budgets, culling, shaders, asset startup, network rendering and quality fallback under representative scenes. | Predeclared device/scene median/p95 and hitch targets, controlled comparisons, unchanged gameplay visibility. No universal FPS promise from one desktop. |
+| 1.49 | Session/resource lifetime: repeated zone changes, equipment changes, dungeon exits, casino floors, death and reconnect; stalls and leak recovery. | Bounded memory/resource trends on supported profiles; fix confirmed leaks, retain diagnostics and avoid indefinite soak polling. |
+| 1.50 | Integrated presentation candidate: town → overworld → group encounter → social/casino, with coherent settings and transitions. | **Q** checklist; review changed integration seams, reuse accepted scene reviews and publish remaining limitations. |
+
+### 1.51–1.60 — community, competition and long-term play
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.51 | Friends/chat/community usability: presence, invitations, whispers, group channels, ignore/report and readable permanent chat. | Normal players can connect and protect themselves; correct identity/permission boundaries and reconnect behavior. |
+| 1.52 | Guild operations: ranks/permissions, shared bank/audit, invitations, succession, scheduling and clear destructive-action confirmations. | Role/ownership transitions and valuable transfers remain durable and auditable; integrate with support/moderation flows. |
+| 1.53 | Group finder and activity scheduling: role needs, recruitment, readiness, meeting points, consent and low-population behavior. | A real party forms through the game without developer intervention; no stale listing/token or wrong-instance invitation. |
+| 1.54 | Duels/open-world PvP finish: opt-in consent, safe-zone protection, surrender, defeat and combat readability. | No unintended PvE loss or safe-zone griefing; normal PvE remains unaffected by declined/expired challenges. |
+| 1.55 | Arena quality: 1v1/2v2, team elimination, practice/ranked, matchmaking windows, disconnect treatment and results. | Existing connected evidence retained; address live fairness/wait-time problems and verify changed settlement paths. |
+| 1.56 | Season policy: published rating/reset/reward rules, anti-farming, cosmetic rewards and player-visible calendar. | Durable one-time season settlement; dates and operator procedure agreed before activating a real season. No speculative extra queue splitting. |
+| 1.57 | Rotating world events: realm variety, scheduling/discovery, contribution/party fairness, reward clarity and empty/overcrowded-event handling. | Representative event-family behavior and cohort observations; one accepted Root event is not claimed to prove every realm's balance. |
+| 1.58 | Endgame engagement: repeat dungeons/raids, weekly personal rewards, Resonance, Forge goals, collections and post-story direction. | Players have meaningful optional goals without mandatory daily chores; reward sources and intended repetition are explicit. |
+| 1.59 | Moderation workflow: report queue triage, chat/name abuse response, sanctions, appeals, staff boundaries and evidence retention. | Disposable report-to-resolution exercise; audited staff actions, restricted private data and a documented player appeal route. |
+| 1.60 | Social/endgame integration closeout: scheduling → recruitment → activity → rewards → next goal. | **S** checklist; assess population bottlenecks using real reports rather than adding systems to solve hypothetical problems. |
+
+### 1.61–1.70 — casino, cosmetics and economy trust
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.61 | Casino world experience: door dialogue, shared arrival, full two-floor layout, guard/stairs, signage, stash clearance, seating/camera and clean exit. | Both floors retain the required 46 stations each and isolation; ordinary controls restored, seats/collisions valid and other patrons visible. Reuse expansion receipts. |
+| 1.62 | Blackjack polish/fairness: shared dealer/rounds, visible hands/counts, legal actions, 3:2 naturals, next-round wagers and timeout chair release. | Rules and every payout category agree with server settlement; countdown updates smoothly; occupied-seat UI remains present between hands. |
+| 1.63 | Hold'em polish/fairness: real-player minimum, blinds/turns, side pots, all-ins/ties, best-hand readout, showdown and disconnect/timeout seat turnover. | Independent hand/pot fixtures and connected edge-case receipts; private cards stay private until rules permit reveal; no house-filled opponents. |
+| 1.64 | Roulette/baccarat finish: clear wagers, rounds, public table state, winning-result presentation and settlement. | Rules/payout disclosures match implementation; bets cannot enter closed rounds or settle twice; both currencies stay isolated. |
+| 1.65 | Slots finish: lore machine variants, animated reels, paylines, changing stake between rounds, queued spins, win tiers and interactive bonuses/free spins. | Server-committed outcomes match presentation; auto-spin pauses for required win/bonus interaction and stops safely on exit/disconnect/insufficient funds. Clear actual rules/odds information. |
+| 1.66 | EP/Gold isolation and receipts: fixed one-way exchange, stake caps, EP-only winnings, crash/reconnect settlement and no indirect conversion. | Review all value-transfer paths including refunds, resale, gifting and admin actions; preserve wallets and prove changed paths cannot create power or duplicate value. |
+| 1.67 | Cosmetics/VIP vendor quality: armor/weapon/shield previews, ownership, equip/unequip, class fit and clarity about appearance-only purchases. | Preview matches equipped local/remote appearance; no stat changes, lost unlocks or duplicate purchase; all catalog entries have artwork and provenance. |
+| 1.68 | Membership lifecycle: access, expiry, monthly allowance, admin-derived VIP and membership status UI. | Trusted server role/entitlement, durable calendar receipts, no double normal/admin allowance or stale access; no payment code unless separately approved. |
+| 1.69 | Casino trust and commercial decision review: understandable rules, voluntary limits/stop controls, misleading presentation review, launch audience/regions and expert/provider review if considering paid EP. | Owner records free-only vs separately authorized commerce direction and required safeguards. Cosmetic-only/no cash-out is not assumed to answer legal or provider questions. No legal conclusion supplied by this roadmap. |
+| 1.70 | Casino/economy closeout: review actual public/VIP experience, stale seats, fairness, affordable Gold play and cosmetic-only EP spending. | **E** checklist and issue closure; keep performance, multiplayer settlement and human enjoyment evidence distinct. |
+
+### 1.71–1.80 — security, persistence and service readiness
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.71 | Account security/recovery: credentials, session/token lifecycle, concurrent sessions, rate limiting, recovery abuse and protected administrator access. | Threat-model review and targeted negative tests; support can assist without seeing passwords or granting arbitrary ownership. Choose any recovery delivery dependency explicitly. |
+| 1.72 | Protocol/gameplay abuse: malformed input, forged authority, impossible movement/casts, visibility leaks, spam and denial-of-service limits; dependency/secret exposure review. | Authorized isolated adversarial checks cover trust boundaries; no new endpoint/message bypasses registration, authorization or resource bounds. Known vulnerable dependencies and leaked credentials have an explicit remediation path. |
+| 1.73 | Valuable-operation invariants: trade, auction, guild bank, vendor, drops, Forge, quest/raid/event rewards and casino wallets. | Failure/concurrency/replay ledger verifies relevant exactly-once effects; fix known dupes before release, with safe existing-data remediation plans. |
+| 1.74 | Administration safety/operations: discoverability, online/history views, grants/teleports, role revocation, idempotency and outage audit retention. | Retained two-account proof and read-audit fix reviewed; permission/data boundaries intact; documented RAM-only dual-store-outage limitation is not described as crash durability. |
+| 1.75 | Privacy/data handling: inventory of account, session, report, chat, audit and analytics data; retention/deletion/export/support procedures and notices. | Owner approves collection/retention policy; access tests and redaction samples; qualified review where needed. No public raw logs or credentials. |
+| 1.76 | Database/persistence scale: indexes, growth, save serialization, migrations, legacy accounts, durable receipts and outage behavior. | Representative query/save measurements and migration compatibility evidence; document online/offline ownership and fail-closed behavior. |
+| 1.77 | Hosting/network reliability: domain/TLS renewal, DDNS ownership, reachable address families, WebSockets/proxy limits, service startup and environment separation. | Documented supported public paths and certificate/restart checks. Resolve or owner-approve mitigation for IPv6 exposure before public launch; do not silently mutate DNS. |
+| 1.78 | Observability and operating budgets: actionable health/error/latency/queue/storage/currency signals, alerts, log retention and cost controls. | A disposable failure triggers a useful notification; dashboards omit secrets; alert ownership and hosting/capacity budget are agreed. |
+| 1.79 | Representative multiplayer capacity: actual admission, dense town/casino, active parties/raids, events, chat and save load at the declared target. | Predeclared workload/duration/headroom with server tick/network/DB/client metrics; reuse the accepted bounded 50/100-client tests as baseline, not proof of all launch load. |
+| 1.80 | Launch feature freeze: remaining promises reconciled, content/catalog locked, high-risk dependency changes stopped and launch-critical issue list agreed. | **F** checklist. Only scoped blockers, balancing and stabilization after freeze; new feature requests are explicitly scheduled or approved as exceptions. |
+
+### 1.81–1.90 — launch operations and first release candidate
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.81 | Recovery readiness: backup location/access, retention, integrity, restoration and recovery-point/recovery-time objectives chosen with the owner. | Restore a representative backup into isolation and verify characters, guilds, currencies, receipts and instance policy; reuse compatible existing proof where sufficient. |
+| 1.82 | Deployment/rollback reliability: versioned assets, cache invalidation, schema compatibility, preflight backup, old-client behavior, isolated runner queues and protected release credentials. | A release can be safely promoted or recovered using a known-compatible binary/data strategy; untrusted PR code cannot reach production/self-hosted secrets; no assumption that every database migration is reversible. |
+| 1.83 | Incident and maintenance playbook: degraded database, unavailable origin, abuse burst, stuck settlement, storage exhaustion and maintenance announcements. | Tabletop plus targeted safe exercises; named escalation/stop conditions and maintenance/recovery communications. No destructive live experiment. |
+| 1.84 | Player support readiness: lost account/progress, stuck character, billing only if enabled, abuse/appeals and error-report follow-up. | Support entry points, response expectations and role-limited workflows; no unnecessary data collection or unaudited compensations. |
+| 1.85 | Player-facing documentation: first steps, classes, party roles, gates, town rest, instances, crafting, economy, casino, controls, settings and known issues. | Docs match current UI and actual rules; accessible in-game links; no stale level requirements or obsolete portal directions. |
+| 1.86 | Content/update pipeline: authoring validation, quest/item/visual coverage, localization-ready text structure, event/season configuration and contributor guidance. | One small representative content change validates through existing tools; third-party asset/dependency licenses recorded; no speculative tooling rewrite. |
+| 1.87 | Candidate performance consolidation: apply unresolved measured improvements across supported hardware/workloads; settings persist and fallbacks stay readable. | Earlier accepted benchmarks retained; rerun only impacted cases or missing evidence on a comparable host; no lowering targets to hide a regression. |
+| 1.88 | Integrated fresh/returning-player compatibility: saves from supported releases, in-progress story, bags/builds, social membership, wallets, cosmetics and reconnects. | Focused cross-feature journey plus schema/contract fixtures; user playtest owns whole-campaign pacing. Known saves cannot be stranded by new UI/gates. |
+| 1.89 | Commercial branch closeout OR explicit free-launch signoff. If separately authorized: checkout/provider sandbox, signed replay-safe entitlements, cancellation/refund/dispute and monthly benefit handling. | Owner/provider/specialist approvals and purchase/recovery receipts if paid; otherwise record disabled commerce and do not build it. No silent price/benefit decisions or EP→Gold escape. |
+| 1.90 | First release candidate: consolidate tested features, policies, support, performance and exact release artifacts into one candidate. | **RC1** checklist; scoped integrated validation, notes and controlled publication. A candidate label is not full-release authorization. |
+
+### 1.91–1.99 — release qualification and handoff
+
+| Version | Delivery scope | Exit evidence / dependency |
+| --- | --- | --- |
+| 1.91 | Candidate playtest fixes: prioritize concrete player blockers, reward/currency issues and serious readability/usability regressions. | Each fix has a repro and focused verification; unresolved issues have severity/owner. No unrelated feature expansion. |
+| 1.92 | Data/recovery signoff: inspect candidate compatibility with the accepted restore, retention, migration and rollback receipts. | Reuse proofs or exercise only invalidated paths; recovery limitations and player-data policy acknowledged by owner. |
+| 1.93 | Security/economy closure: resolve candidate threat/abuse findings and reconcile outstanding value-transfer/audit risks. | No known exploitable authorization bypass, reward dupe or EP-to-power path; justified residual risks documented, not hidden by green CI. |
+| 1.94 | Launch-capacity signoff: validate approved population/headroom, queues/admission policy, network exposure, monitoring and operating cost. | Target/workload and results named; repeat load only for changed behavior or missing launch evidence. Explicit plan for demand beyond capacity. |
+| 1.95 | Supported-device/accessibility signoff: close launch-blocking failures, publish matrix and accurate unsupported/experimental labels. | Actual evidence for advertised support or owner-approved scope adjustment; never turn deferred phone feedback into a pass. |
+| 1.96 | Public release package: final game description, help, status/support, privacy/terms/rules, credits/license notices, wipe policy and applicable commercial disclosures. | Owner review; documents reflect deployed features and specialist advice where required. No unapproved legal or payment assumptions. |
+| 1.97 | Launch rehearsal: operator follows deploy/verify/monitor/recover checklist with release artifacts and agreed communications. | Bounded staging rehearsal of changed paths; assigned operator and recoverable backup. No production wipe, real charge or gratuitous complete campaign replay. |
+| 1.98 | Final release candidate and go/no-go review: close regressions, freeze exact build/content/policy revisions and assemble the gate ledger. | All required gates have valid evidence; decision owner approves or records concrete blockers. No last-minute untested dependency/content changes. |
+| 1.99 | Release-ready build: publish the approved 1.99 candidate with cumulative notes, synchronized login/server identity, live smoke and operations handoff. | **R** checklist; exact deployed identity and health verified, residual known issues disclosed. Public full-release declaration/version follows explicit owner approval. |
+
+## 4. Gate checklists: what “done” actually means
+
+### B1 — playable beta at 1.20
+
+- [ ] Every prior promise is mapped to delivered evidence, a concrete repair,
+  or an explicitly approved future scope; core-play gaps are not waived silently.
+- [ ] Physical Dark Realm portal and the existing authoritative journey agree.
+- [ ] No known blocking login, character creation, movement/combat, quest handoff,
+  dungeon/raid entry/exit, save or reward defect in the supported beta path.
+- [ ] Party formation/roles, clear requirements, recovery and reporting work.
+- [ ] Casino candidate measured appropriately and released; venue not replaced
+  with a reduced prototype to make a benchmark pass.
+- [ ] Provisional device support, capacity, support contact, known issues and
+  character continuity policy are published; channel label chosen by owner.
+- [ ] Exact build deploy, normal smoke and valuable-operation safety checks pass.
+  Human campaign duration is not a prerequisite to this beta opening.
+
+### B2 — wider beta at 1.40
+
+- [ ] First-cohort feedback has actionable progression/class/economy results;
+  missing observations remain named with an owner rather than invented.
+- [ ] No known major campaign blocker or routinely broken class/role; regional
+  and endgame handoffs have consistent explanations and preserved saves.
+- [ ] Existing scoped encounter receipts plus user reports cover changed routes;
+  no demand to replay every accepted raid just to widen the cohort.
+- [ ] Supported-platform claims and concurrent-player admissions are bounded by
+  evidence. Unverified phone scope is labeled, not secretly certified.
+- [ ] Owner approves broader availability and the published beta limitations.
+
+### Q, S and E — presentation, multiplayer, venue (1.50 / 1.60 / 1.70)
+
+- [ ] Q: major character/equipment/world/interface/audio inconsistencies fixed;
+  essential warnings readable with low effects, muted audio and supported inputs.
+- [ ] Q: stated device targets, actual support evidence, accessibility findings
+  and remaining limitations are linked; leaks/hitches are investigated by data.
+- [ ] S: recruiting, party/guild permissions, activity entry, rewards, chat,
+  reports and moderation work together; PvP consent/settlement are trustworthy.
+- [ ] S: season/event/endgame cadence and sparse-population behavior are workable
+  without forced chores or more queues than the population can sustain.
+- [ ] E: all 92 casino stations are functional in their intended games/currency;
+  physical interaction, hidden floors, table timers, rounds, payouts, bonuses and
+  seat turnover meet their specific contract. Prior evidence is retained.
+- [ ] E: Gold/EP isolation, cosmetic ownership, monthly/admin allowance and
+  recoverable settlement are sound; public rules and commercial decision recorded.
+
+### F — feature freeze at 1.80
+
+- [ ] Mandatory content/features implemented and reviewed against the promise
+  register; remaining work is stabilization, support, approved commercial branch
+  or identified launch-gate evidence, not missing foundational systems.
+- [ ] Threat model, serious exploit list and data/authority boundaries reviewed.
+- [ ] Supported population, hosting budget, service objectives and alert owners
+  chosen; capacity results have named workload and limits.
+- [ ] Privacy/retention, administration, moderation and account-recovery policies
+  have owners and implementation paths; no unsupported compliance claims.
+- [ ] Launch content and dependency set frozen, with documented exception policy.
+
+### RC1 and R — first candidate / full-release readiness (1.90 / 1.99)
+
+- [ ] B1/B2/Q/S/E/F evidence is complete and valid for the candidate, or an owner
+  has explicitly approved a documented support/scope change. A milestone number
+  or expired test artifact is not an exception.
+- [ ] No unresolved known progression/save-loss blocker, critical security issue,
+  unauthorized value creation, or EP-to-gameplay-power route.
+- [ ] Human campaign/progression review has been received from its user/cohort
+  owner, including level-band and Dark Realm observations. At launch the owner
+  must judge sufficiency or explicitly accept the remaining uncertainty; do not
+  secretly replace it with automation or mark unavailable feedback successful.
+- [ ] Advertised browser/device and audience/region scope, public DNS/TLS paths,
+  declared concurrency/headroom and operational budget have appropriate evidence.
+- [ ] Backup/restore, migration/old-client compatibility and recovery/rollback
+  strategy are proven within their stated recovery objectives and save scope.
+- [ ] Support, moderation, incident response, maintenance communications and
+  season/content ownership are staffed/assigned, not merely buttons in a panel.
+- [ ] Payment branch either approved and qualified or explicitly disabled; no
+  unresolved purchase policy is disguised as a completed free-game feature.
+- [ ] Release notes, known issues, help, license notices and applicable player
+  policies match the shipped product. Wipe/carryover decision is explicit.
+- [ ] Final candidate CI and risk-appropriate checks pass; live frontend/backend
+  commit/version/assets, readiness and normal account smoke are verified.
+- [ ] Owner signs go/no-go and public release naming; handoff identifies exact
+  build, support owner, monitored signals, recovery procedure and next maintenance.
+
+## 5. Coverage and traceability
+
+The launch-gap register created at 1.11 must enumerate **every requirement from
+the existing roadmap and user additions**, not just this summary. Required fields:
+ID, source/acceptance wording, current implementation, evidence/limits, status,
+owner, planned version/dependency, severity and next action. Start with portal
+and casino timing as confirmed gaps; classify everything else from evidence.
+Do not convert “verification missing” into “feature missing.”
+
+| Requirement family | Primary delivery / review versions |
+| --- | --- |
+| Original alpha promises, story/daily separation, manual claims and quest items | 1.11–1.12, 1.15, 1.21–1.30, 1.34, 1.45 |
+| Four elemental dungeons, raid roads, crystal defenses, shared Dark Realm, Nexus, four-phase finale | 1.12, 1.17, 1.22–1.30, 1.32, 1.88 |
+| Level-band pacing, rewards, drop/collection rates, lore variety, no mandatory daily wall | 1.21–1.30, 1.34–1.39; user-owned playtest |
+| Four classes, gear/stat identity, builds, skills, runes, cooldown/resources, Well Rested | 1.15, 1.31–1.33, 1.38, 1.41–1.43 |
+| Dungeon death/town recovery/checkpoints/15-minute expiry, party credit/rewards | 1.16–1.17, 1.26, 1.28–1.29, 1.38, 1.88 |
+| Inventory/equipment, quest icons/tracking, item drop, stash, Forge, crafting, trade/auction/guild bank | 1.34–1.36, 1.41, 1.45, 1.52, 1.73 |
+| Procedural visuals/coverage, animations, environment collisions, effects, sound, responsive menus | 1.41–1.50, 1.86–1.87 |
+| Phones, controls, accessibility, settings, representative performance and resource lifetime | 1.18, 1.43–1.50, 1.87, 1.95 |
+| Friends, chat, consent, recruitment, guilds/calendar, reports/moderation/support | 1.14, 1.17, 1.51–1.53, 1.59–1.60, 1.84 |
+| Duels, open-world PvP, team arena, matchmaking, seasons and anti-farming | 1.54–1.56, 1.60, 1.72–1.73 |
+| Events, weekly rewards, Resonance, long-term Forge, collections and endgame direction | 1.35, 1.37, 1.56–1.58, 1.67, 1.86 |
+| Casino venue/counts, all games, seating, multiplayer timers/cards, slots/bonuses/autospin | 1.13, 1.61–1.65, 1.70 |
+| Gold/EP separation, VIP/admin membership, monthly receipts, cosmetic utility, no pay-to-win | 1.36, 1.66–1.70, 1.73; conditional 1.89 |
+| Account/session security, authoritative actions, exploits, permissions/admin audit | 1.16, 1.59, 1.71–1.75, 1.93 |
+| Persistent characters/economy, migrations, restart/reconnect, backup/restore | 1.16, 1.73–1.76, 1.81–1.82, 1.88, 1.92 |
+| Domains/TLS, hosting, capacity/load, monitoring, CI/runners, release and rollback | 1.13, 1.19, 1.77–1.83, 1.87, 1.94, 1.97–1.99 |
+| Data policies, audience/support/wipe decisions, licenses, open-source attribution and contributor docs | 1.19, 1.69, 1.75, 1.84–1.86, 1.96 |
+| Live operations, staffing, content cadence, launch communications and readiness decision | 1.56–1.60, 1.78, 1.80–1.86, 1.90–1.99 |
+
+## 6. Decisions requiring the owner, not invented defaults
+
+Ask when the decision becomes necessary; do not interrupt all implementation
+with a questionnaire. Existing user deferrals remain in force until revisited.
+
+| Decision | Needed by | Handling until answered |
+| --- | --- | --- |
+| Beta channel/name, invitation/public audience and final full-release version | 1.19 / 1.98 | Keep current Alpha labels; no public launch announcement inferred. |
+| Preserve beta characters vs explicitly announced wipe/other policy | 1.19 | Preserve all existing data; no destructive reset. |
+| Initial cohort size, public launch concurrency/headroom, hosting budget and operator | 1.19 baseline; 1.79/1.94 final | Existing bounded load evidence is not a capacity promise; don't buy hosting or change unrelated services. |
+| Browser/device/OS scope, accessibility commitments and additional languages | 1.18/1.40; 1.95 final | Publish tested/experimental distinctions. Phone feedback remains deferred; no fabricated acceptance. |
+| Public network/address-family exposure and DDNS ownership | 1.77 | IPv6 issue remains documented; no unsanctioned DNS changes or false claim that a browser always forces IPv4. |
+| Support/moderation staffing, contact, retention policies and recovery objectives | 1.19/1.59/1.75/1.81 | Prefer existing tools; avoid collecting new sensitive data without a defined purpose. |
+| Free-only release vs paid VIP/EP; price, other benefits, launch audience/regions and providers | 1.69 before any commercial implementation | No payments. $5/month was illustrative. Preserve 100 EP/month, one-way exchange and no-power rules. Seek qualified review rather than assuming cosmetics remove all obligations. |
+| Human campaign/pacing findings and launch acceptance of any remaining uncertainty | Beta feedback and 1.98 | User/cohort owned; no long automatic campaign reinstatement. |
+| Jev/API access, spending cap and data policy if a bot pilot is wanted | Only if separately approved | Optional short isolated encounter experiment; no paid API calls or new testing dependency. |
+
+## 7. Delivery and verification discipline
+
+### Each milestone's completion record
+
+Append a compact receipt in section 8 when work actually happens: scope delivered,
+remaining issues, implementation commit, changed-behavior checks, retained
+evidence, published version/notes, CI URL, exact live identity, and any approved
+scope decisions. Suggested states: **planned → implementing → locally verified
+→ deployed → live verified → accepted**. An accepted milestone can reopen for a
+confirmed regression. A deferment requires an owner, destination and rationale.
+
+- Every published minor and hotfix has accurate cumulative patch notes. Keep
+  login, package/server identity, release manifest, deployment defaults and CI
+  aligned. Planning entries are not patch notes for unshipped features.
+- Use risk-appropriate regressions and existing mandatory CI/smoke; do not
+  silently bypass security, save-data or currency checks to speed a release.
+- Batch integrated testing at the named phase gates, using retained evidence
+  for unchanged code. No full campaign, long soak or entire raid suite per patch.
+- A failed run must lead to a diagnosis or changed condition before retry.
+  State the test hypothesis, workload, pass threshold, time/spend cap and stop
+  condition first. Never relax a threshold after seeing a miss to claim a pass.
+- The existing casino hardware contract remains High median ≤25ms / p95 ≤50ms,
+  Low median ≤20ms / p95 ≤33.3ms for its named host/workload, not all devices.
+  Use a useful quiet window or an approved comparable test arrangement; don't
+  stop unrelated workloads, endlessly poll a saturated host, or claim success
+  from software rendering. Other target profiles are set before their trials.
+- Existing 50/100-client checks establish bounded admission/replication/memory
+  behavior only. Additional load work must answer a concrete launch-capacity
+  question, not repeat those tests for every version label.
+- Follow the user's delegation: use Luna for deployment and long dungeon/raid
+  monitoring, reporting terminal success/failure. If unavailable, use bounded
+  low-frequency monitoring; avoid per-tick expensive-agent commentary. This is
+  not authority to delegate implementation or create additional agents broadly.
+- Native browser tests inspect controls/rendering; lightweight clients inspect
+  protocol/party/load behavior. Neither alone proves the other's coverage.
+  Optional Jev chooses bounded legal actions; independent assertions judge game
+  correctness, with disposable accounts and sanitized state, not hidden cheats.
+- Never grant production items/currency, reset players, change prices, enable
+  billing, alter DNS or interrupt unrelated services merely to satisfy a test.
+- Human campaign/pacing stays user-owned. If feedback is unavailable, record it
+  and request a launch decision when needed, not another hundred-hour bot run.
+
+### Severity and escalation
+
+- **Stop-release:** known unauthorized access, save corruption/loss, currency
+  duplication, EP-to-power conversion, payment errors if enabled, or a core
+  progression/login blocker. Fix promptly; do not wait for the themed version.
+- **Beta priority:** frequent crash, failed supported-device flow, unfair
+  encounter, broken matchmaking/social loop, inaccessible essential UI, serious
+  performance regression or misleading reward/rule presentation.
+- **Polish backlog:** minor clipping/text/layout and optional content requests
+  that do not break use. Track with owners; do not let endless polish prevent
+  a justified launch or disguise an actual promised feature as optional.
+
+If 1.99 arrives with a stop-release issue or missing mandatory proof, it is not
+release-ready. Ship corrective 1.99.x patches or explicitly revise the plan;
+never redefine success as “all version numbers were used.”
+
+## 8. Execution receipts
+
+September 28, 2026: forward roadmap created; all 1.11–1.99 milestones planned.
+No game version bump, deployment, payment integration, infrastructure change,
+new long test or completed-beta claim is made by this planning change.
+
+## References
+
+- [Product roadmap](../../ROADMAP.md)
+- [Current 1.10 delivery/playtest record](2026-09-23-release1-10-playtest.md)
+- [Previous 1.1–1.10 scope](2026-09-05-v1-1-to-v1-10-roadmap.md)
+- [Integrated evidence and limits](2026-09-14-final-integration-audit.md)
+- [Campaign pacing and Dark Realm](2026-09-21-campaign-pacing-and-dark-realm.md)
+- [Casino requirements and approved EP policy](2026-09-09-town-casino-roadmap.md)
+- [Casino hardware profile and pending optimizations](2026-09-27-casino-frame-profile.md)
+- [Bounded multiplayer baseline](2026-09-14-broadcast-snapshot-sharing.md)
+- [Administrator operations](../ADMINISTRATION.md)
+- [Protocol contract](../PROTOCOL.md)
+- [Procedural visual closure](../art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md)
