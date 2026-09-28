@@ -315,7 +315,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.29.0` (local candidate; deployment pending)
+- Current source version: `Alpha 1.30.0` (local candidate; deployment pending)
 - Last verified live release: `Alpha 1.28.0`, exact16be66a7f962018b25b47807ba8ac0dd837c4f34, CI36481458231. See the [release record](docs/plans/2026-09-28-release1-28.md) for scoped acceptance.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.29` four-phase finale presentation and personal claims, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.28 is accepted live;1.29 is prepared for publication. Human pacing remains a playtest gate. Neither milestone opens beta or restricts alpha accounts.

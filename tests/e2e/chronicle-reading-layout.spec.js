@@ -4,6 +4,50 @@ import { chronicleEndingReadable, chronicleReadingMetrics, revealChronicleEnding
 
 test.use({ hasTouch: true, isMobile: true, viewport: { width: 844, height: 390 } });
 
+test('earned story recap stays readable and open after refresh on portrait and landscape phones', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async () => {
+        const { UIManager } = await import('/src/ui/UIManager.js');
+        // Layout snapshots only, not earned campaign/character evidence.
+        const quests = ['chronicle_01_bell_below', 'chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
+            'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid', 'chronicle_14_resonance_gate', 'chronicle_15_dark_king']
+            .map((id, chapter) => ({ id, chapter: chapter + 1, category: 'chronicle', completed: true, accepted: true }));
+        document.body.classList.add('mobile-mode');
+        document.getElementById('start-screen').style.display = 'none';
+        const ui = new UIManager(true);
+        ui.lastPlayerRef = { id: 'recap-layout', level: 100, quests };
+        ui.showHUD(); ui.quest.toggleJournal();
+        window.__recapLayout = { ui, quests };
+    });
+    const recap = page.locator('.quest-chronicle-recap');
+    await expect(recap).not.toHaveAttribute('open');
+    await recap.locator('summary').tap();
+    for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+        await page.setViewportSize(viewport);
+        await expect(recap).toHaveAttribute('open', '');
+        await recap.locator('p').last().scrollIntoViewIfNeeded();
+        await expect(recap.locator('p').last()).toBeInViewport();
+        await expect(recap).toContainText('A Letter Without a Throne');
+        expect(await recap.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        const before = await page.locator('#journal-list').evaluate(el => el.scrollTop);
+        await page.evaluate(() => {
+            const { ui, quests } = window.__recapLayout;
+            window.__recapLayout.control = document.querySelector('.quest-chronicle-recap > summary');
+            ui.quest.updateJournal(quests);
+        });
+        expect(await recap.locator('summary').evaluate(el => el === window.__recapLayout.control)).toBe(true);
+        await expect(recap).toHaveAttribute('open', '');
+        expect(await page.locator('#journal-list').evaluate(el => el.scrollTop)).toBeCloseTo(before, 0);
+        await page.screenshot({ path: testInfo.outputPath(`recap-${viewport.width}.png`) });
+    }
+    await page.locator('#btn-close-journal').tap();
+    await expect(page.locator('#quest-journal')).not.toBeVisible();
+    await page.evaluate(() => window.__recapLayout.ui.characterPreview.dispose());
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 test('a later field record survives refresh and remains reachable by touch in either scroll direction', async ({ page, context, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

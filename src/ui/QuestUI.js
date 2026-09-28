@@ -1,5 +1,6 @@
 import { renderQuestConversation } from './QuestConversation.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
+import { appendChronicleRecap } from './ChronicleRecap.js';
 import { hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 import { renderWitnessConversation } from './ChronicleWitnessConversation.js';
 import { formatQuestRewards } from './questRewards.js';
@@ -1012,7 +1013,7 @@ export class QuestUI {
     // QUEST JOURNAL
     // ================================================================
 
-    renderChronicleSection(quests, existingRecords = new Map()) {
+    renderChronicleSection(quests, existingRecords = new Map(), existingRecap = null) {
         const chronicle = Array.isArray(quests)
             ? quests.filter((q) => q?.category === 'chronicle' || q?.id?.startsWith('chronicle_'))
                 .sort((left, right) => (Number(left.chapter) || 0) - (Number(right.chapter) || 0))
@@ -1074,6 +1075,7 @@ export class QuestUI {
             }));
         }
 
+        appendChronicleRecap(section, chronicle, existingRecap);
         if (completed.length > 0) {
             const archive = document.createElement('details');
             archive.className = 'quest-chronicle-archive';
@@ -1150,6 +1152,8 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        const existingRecap = this.journalList?.querySelector('.quest-chronicle-recap');
+        const recapFocused = Boolean(existingRecap && document.activeElement === existingRecap.firstElementChild);
         const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
             .map(record => [record.dataset.discoveryId, record]));
         const scroll = this.journalList?.scrollTop || 0;
@@ -1161,6 +1165,7 @@ export class QuestUI {
         const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
+            if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
             const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;
             if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
@@ -1196,7 +1201,7 @@ export class QuestUI {
         trackingHint.className = 'quest-tracking-hint';
         this.journalList.appendChild(trackingHint);
 
-        const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords);
+        const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords, existingRecap);
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
         if (repeatableLadder) {

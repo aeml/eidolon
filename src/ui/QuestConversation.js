@@ -42,7 +42,7 @@ function ilyraGreeting(quests) {
         return '“Eidolon is free. Now we must remember more than the battles. Bring me the stories we passed along the way; the people in them helped hold this world together.”';
     }
     if (completed.has('chronicle_14_resonance_gate')) {
-        return '“The portal is open, and the four Eidolons stand with us. Malachar waits beyond it. The records you recover remind us why his promised peace must never become our answer.”';
+        return '“The Nexus has yielded its Fifth Note. Malachar’s court is open to you. Gather your raid with the Dungeon Guide in Lanternhold—the Fourfold Portal carries travelers to the shared expedition, not his throne. The four Eidolons will stand beside you.”';
     }
     if (originalChapterIds.slice(9, 13).every(id => completed.has(id))) {
         return `“The four crystals sing again. You and Maelin have given them back their voices. ${PORTAL_DIRECTIONS} At level 100 its resonance can carry you to my projection at the Foothold.”`;

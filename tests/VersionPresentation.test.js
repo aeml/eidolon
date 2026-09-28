@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.29.0';
+const currentVersion = '1.30.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.30.0 records earned recaps and correct admission without changing saved contracts', () => {
+        const start = indexHtml.indexOf('data-version="1.30.0"'), previous = indexHtml.indexOf('data-version="1.29.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['remembering the journey', 'Your journey so far', 'personally completed',
+            'Opening a dungeon road is not repairing its crystal', 'Dungeon Guide', 'Complete Quest',
+            'counts, quoted rewards and prior grants', 'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.29.0 records independent aid, personal finale claims and retained history', () => {
         const start = indexHtml.indexOf('data-version="1.29.0"'), previous = indexHtml.indexOf('data-version="1.28.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

@@ -729,3 +729,16 @@
 .hud-menu-btn:active {
     transform: translateY(1px);
 }
+.quest-chronicle-recap {
+    margin: 10px 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(202, 168, 231, 0.3);
+    border-radius: 6px;
+    background: rgba(18, 14, 29, 0.7);
+    color: #c8c1d6;
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+.quest-chronicle-recap > summary { cursor: pointer; color: #dfb5ff; }
+.quest-chronicle-recap p { margin: 10px 0 0; }

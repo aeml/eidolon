@@ -145,14 +145,14 @@ func classicChronicleQuestCatalog() []Quest {
 			ID: ChronicleGateOpenedID, Type: "KILL", Target: "EidolonDevourer", MaxCount: 1,
 			Title: "The Fifth Note", Category: QuestCategoryChronicle, Chapter: 14,
 			ObjectiveText: "Clear the Umbral Nexus beneath the Dark Realm and defeat the Eidolon Devourer to break the wards around Malachar's court.",
-			Description:   "The four restored crystals hold our passage to the Resonant Foothold. Beyond it, Malachar feeds the histories he has stolen into the Umbral Nexus. The Devourer turns those memories into the wards protecting his throne. Clear the entire Nexus and silence the Devourer; then the four Eidolons can reach the court with us.",
+			Description:   "The four restored crystals hold our passage to the Resonant Foothold. Beyond it, Malachar feeds the histories he has stolen into the Umbral Nexus. The Devourer turns those memories into the wards protecting his throne. Return to Lanternhold and gather your party with the Dungeon Guide to enter the private Nexus. Clear the entire dungeon and silence the Devourer, then return to me and personally complete The Fifth Note. The shared expedition portal does not lead directly into the dungeon or court.",
 			Lore:          "Shadow is not a fifth element. It is the distance between a thing and the truth it refuses to face. The Dark King built his realm from that distance, then fed it with every fear the four guardians buried in silence.",
 		},
 		{
 			ID: ChronicleDarkKingID, Type: "KILL", Target: "UmbraPrime", MaxCount: 1,
 			Title: "The King Beyond Shadow", Category: QuestCategoryChronicle, Chapter: 15,
 			ObjectiveText: "Lead a raid into Malachar's unsealed court in the Dark Realm and defeat the Dark King.",
-			Description:   "The resonance holds. Beyond the portal waits Malachar, architect of the crystal wounds. He means to make every element dependent on his command, then offer Eidolon a choice between obedience and extinction. Enter his court and let the four spirits answer him in battle.",
+			Description:   "The resonance holds. Gather your raid with the Dungeon Guide in Lanternhold to enter Malachar's private court; the Fourfold Portal leads to the shared expedition, not his throne. Malachar is the architect of the crystal wounds. He means to make every element dependent on his command, then offer Eidolon a choice between obedience and extinction. Enter his court and let the four spirits answer him in battle. When he falls, return to me and personally complete your finale; each defender must claim their own ending.",
 			Lore:          "Malachar was once the mortal keeper who carried messages between the four sanctums. He came to despise a world whose powers required balance instead of obedience. If he falls, it will not be because one champion overpowered him, but because Earth, Water, Fire, Air, and mortal will chose one another freely.",
 		},
 	}
