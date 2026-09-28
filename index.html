@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.31.0</span>
+                    <span class="start-version-row__label">Alpha 1.32.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -707,6 +707,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.32.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.32.0 (warnings that belong to your encounter)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Keep the useful instructions:</strong> Boss warnings retain their authored movement advice. Multi-circle attacks show all their boundaries but announce the warning once.</li>
+                        <li><strong>Your encounter only:</strong> Warnings retain their cast-time instance. Other dungeons and late warnings from an area you already left no longer overwrite local combat feedback.</li>
+                        <li><strong>Relevant overworld danger:</strong> Distant warnings outside the loaded area are ignored; large circles overlapping your area remain visible.</li>
+                        <li><strong>Stuns affect summons:</strong> Offline Seraphs cannot attack while stunned. Stun expiry restores attacks without extending summon lifetime or preventing owner-loss cleanup.</li>
+                        <li><strong>Mechanics preserved:</strong> No damage, radius, windup, stat scaling or reward changes. Focused warning, collision and summon checks do not replace real-player encounter feedback.</li>
+                        <li><strong>Still open alpha:</strong> This release does not open closed beta. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.31.0">
                     <h3 class="patch-note-entry__title">Alpha 1.31.0 (support that reaches living allies)</h3>
                     <ul class="patch-note-entry__list">
