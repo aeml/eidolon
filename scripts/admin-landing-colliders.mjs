@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { readFile, writeFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createCasinoInterior, createCasinoFurnitureColliders } from '../src/art/ProceduralCasino.js';
@@ -58,4 +61,19 @@ export async function collectAdminLandingColliders() {
 export function formatAdminLandingColliders(value) {
     // One primitive per line keeps generated geometry reviews compact.
     return JSON.stringify(value).replaceAll('],[', '],\n[') + '\n';
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+    // The casino's optional nameplate asks for a canvas. Headless geometry
+    // generation omits that non-solid sprite; all collision builders still run.
+    globalThis.document ??= { createElement(tag) {
+        if (tag !== 'canvas') throw new Error(`Unexpected geometry-generation element: ${tag}`);
+        return { getContext: () => null };
+    } };
+    const target = new URL('../server/internal/game/content/admin-landing-colliders.json', import.meta.url);
+    const content = formatAdminLandingColliders(await collectAdminLandingColliders());
+    if (process.argv.includes('--check')) {
+        if (await readFile(target, 'utf8') !== content) throw new Error('Admin landing geometry is stale; run node scripts/admin-landing-colliders.mjs');
+    } else await writeFile(target, content);
+    console.log('Admin landing geometry matches the client collision builders.');
 }

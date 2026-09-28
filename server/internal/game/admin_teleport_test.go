@@ -91,6 +91,10 @@ func TestAdminTeleportCanonicalObstructionsAndNonfiniteLandings(t *testing.T) {
 		{X: 0, Z: 178.35},  // Closed casino facade door.
 		{X: 800, Z: 200},   // Dungeon entrance circle.
 		{X: 150, Z: 211.7}, // Chronicle cottage rear wall.
+		{X: 55, Z: 240},    // Communal well basin.
+		{X: -55, Z: 236},   // Menders' worktable.
+		{X: -314, Z: -186}, // Bellkeeper's reading pedestal.
+		{X: 528, Z: 436},   // Oath-stone body.
 		{X: math.NaN(), Z: 200}, {X: 0, Z: math.Inf(1)}, {X: 4000, Z: 200},
 		{X: 2000, Z: -1400},                                          // Outside actual four-realm floor envelope.
 		{Instance: CasinoInstanceID, X: -30, Z: 120},                 // Blackjack table.

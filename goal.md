@@ -62,6 +62,9 @@ See the release receipt for exact scopes and the mixed-client fresh-route caveat
 Candidate `c776113011047e12fc80fd82f5a754a02aa40d1e` is pushed;
 CI36423730242 is in progress, Luna monitoring. Next: required CI/deploy/live QA,
 independent exact acceptance, then1.16. The1.16 source preflight is local only.
+Correction: that CI failed on missing generated administrator landing geometry.
+The40 new solids are now included, with before/after server safety coverage.
+The corrected1.15 candidate must pass a replacement CI before live acceptance.
 1.14 remains the last verified live release until those gates pass.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
