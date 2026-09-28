@@ -3,6 +3,34 @@ import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements, FOLIAGE_
 import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
 import { createEarthPathNetwork, createWorldPathGeometry } from '../src/art/ProceduralWorldPaths.js';
+import { createEarthLocations } from '../src/art/ProceduralEarthLocations.js';
+import { readFileSync } from 'node:fs';
+
+test('all eight scenery recipes render bounded per-location batches with shared exact spawn footprints', () => {
+    const high = createEarthLocations(), low = createEarthLocations({ quality: 'low' });
+    expect(high.children.map(site => site.userData.locationId)).toEqual(EARTH_LOCATIONS.map(site => site.id));
+    expect(high.userData.walkFootprints).toEqual(low.userData.walkFootprints);
+    const generated = JSON.parse(readFileSync(new URL('../server/internal/game/content/world-population-footprints.json', import.meta.url), 'utf8'));
+    expect(generated.footprints).toEqual(high.userData.walkFootprints.map(({ siteId, x, z, width, depth }) => ({ siteId, x, z, width, depth })));
+    for (const f of high.userData.walkFootprints) {
+        expect(f.angle).toBe(0);
+        for (const path of EARTH_PATHS) {
+            expect(distanceToPath(f.x, f.z, path.points)).toBeGreaterThan(Math.hypot(f.width, f.depth) / 2 + path.width / 2 + 1);
+        }
+    }
+    for (const scene of [high, low]) {
+        expect(scene.children.reduce((count, site) => count + site.children.length, 0)).toBeLessThanOrEqual(40);
+        const materials = new Set();
+        scene.traverse(mesh => {
+            if (!mesh.isMesh) return;
+            materials.add(mesh.material);
+            expect([...mesh.geometry.attributes.position.array].every(Number.isFinite)).toBe(true);
+            expect(mesh.geometry.attributes.normal.count).toBe(mesh.geometry.attributes.position.count);
+            mesh.geometry.dispose();
+        });
+        for (const material of materials) { material.map?.dispose(); material.dispose(); }
+    }
+});
 
 test('Earth has eight distinct compositions and exactly two freely readable optional lore sites', () => {
     expect(EARTH_LOCATIONS).toHaveLength(8);

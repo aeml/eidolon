@@ -7,12 +7,12 @@ function pathTexture() {
         const seed = (Math.imul(x + 17, 73856093) ^ Math.imul(y + 31, 19349663)) >>> 0;
         const grain = (seed % 101) / 100;
         const edge = Math.min(x, size - 1 - x) / size;
-        const wear = Math.max(0, Math.min(1, (edge - .025 - grain * .035) / .15));
+        const wear = Math.max(0, Math.min(1, (edge - .025 - grain * .09) / .3));
         const rut = Math.exp(-Math.pow((x / size - .29) * 23, 2)) + Math.exp(-Math.pow((x / size - .71) * 23, 2));
-        const shade = .79 + grain * .22 - rut * .09;
+        const shade = .79 + grain * .22 - rut * .025;
         const i = (y * size + x) * 4;
-        pixels[i] = 115 * shade; pixels[i + 1] = 102 * shade; pixels[i + 2] = 79 * shade;
-        pixels[i + 3] = 235 * wear;
+        pixels[i] = 98 * shade; pixels[i + 1] = 88 * shade; pixels[i + 2] = 70 * shade;
+        pixels[i + 3] = 185 * wear;
     }
     const texture = new THREE.DataTexture(pixels, size, size);
     texture.colorSpace = THREE.SRGBColorSpace;

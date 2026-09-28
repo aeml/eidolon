@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "footprints": [
+    {
+      "siteId": "keepers-empty-house",
+      "x": 144,
+      "z": 223,
+      "width": 0.9,
+      "depth": 0.9
+    },
+    {
+      "siteId": "keepers-empty-house",
+      "x": 156,
+      "z": 223,
+      "width": 0.9,
+      "depth": 0.9
+    },
+    {
+      "siteId": "returning-scar",
+      "x": 150.128677106876,
+      "z": 68.07007380960792,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "returning-scar",
+      "x": 142.44778261802674,
+      "z": 63.31680907844451,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "returning-scar",
+      "x": 137.82982687270112,
+      "z": 55.55381027079479,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "returning-scar",
+      "x": 137.31851476210386,
+      "z": 46.53559394610434,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "returning-scar",
+      "x": 141.02940801531884,
+      "z": 38.30036856870267,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 742,
+      "z": 188,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 748,
+      "z": 188,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 754,
+      "z": 188,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 742,
+      "z": 212,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 748,
+      "z": 212,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "verdant-approach",
+      "x": 754,
+      "z": 212,
+      "width": 1.5,
+      "depth": 1.5
+    },
+    {
+      "siteId": "first-grove-arch",
+      "x": -8,
+      "z": -260,
+      "width": 3,
+      "depth": 4
+    },
+    {
+      "siteId": "first-grove-arch",
+      "x": 8,
+      "z": -260,
+      "width": 3,
+      "depth": 4
+    },
+    {
+      "siteId": "pilgrim-rest",
+      "x": -190,
+      "z": 417,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "pilgrim-rest",
+      "x": -170,
+      "z": 417,
+      "width": 2,
+      "depth": 2
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -492,
+      "z": 520,
+      "width": 0.7,
+      "depth": 0.7
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -492,
+      "z": 540,
+      "width": 0.7,
+      "depth": 0.7
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -468,
+      "z": 520,
+      "width": 0.7,
+      "depth": 0.7
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -468,
+      "z": 540,
+      "width": 0.7,
+      "depth": 0.7
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -490,
+      "z": 528,
+      "width": 2.8,
+      "depth": 8
+    },
+    {
+      "siteId": "foresters-yard",
+      "x": -471.5,
+      "z": 537,
+      "width": 2.4,
+      "depth": 7
+    },
+    {
+      "siteId": "bellkeepers-cairn",
+      "x": -323,
+      "z": -185,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "bellkeepers-cairn",
+      "x": -317,
+      "z": -185,
+      "width": 0.6,
+      "depth": 0.6
+    },
+    {
+      "siteId": "bellkeepers-cairn",
+      "x": -320,
+      "z": -186,
+      "width": 2.6,
+      "depth": 1.3
+    },
+    {
+      "siteId": "unbound-milestone",
+      "x": 528,
+      "z": 436,
+      "width": 2.8,
+      "depth": 1.6
+    }
+  ]
+}

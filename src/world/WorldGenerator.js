@@ -29,6 +29,7 @@ import {
 } from '../art/ProceduralDungeonInteriors.js';
 import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
 import { createEarthPathNetwork } from '../art/ProceduralWorldPaths.js';
+import { createEarthLocations } from '../art/ProceduralEarthLocations.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -98,7 +99,6 @@ export class WorldGenerator {
 
     async createTownDecorations(centerX, centerZ, options = {}) {
         if (options.shouldAttach && !options.shouldAttach()) return;
-        this.scene.add(createEarthPathNetwork());
         await Promise.all([
             this.loadBuildings(centerX, centerZ, options),
             this.loadTrees(centerX, centerZ, options)
@@ -187,6 +187,20 @@ export class WorldGenerator {
 
     async loadBuildings(cx, cz, { shouldAttach = () => true } = {}) {
         if (!shouldAttach()) return false;
+
+        // Both staged multiplayer startup and the full createTown path call
+        // loadBuildings. Attaching only in createTownDecorations misses the
+        // production staged loader entirely.
+        this.scene.add(createEarthPathNetwork());
+        const earthLocations = createEarthLocations({ quality: this.graphicsQuality });
+        this.scene.add(earthLocations);
+        for (const footprint of earthLocations.userData.walkFootprints) {
+            // Authored solids are currently axis-aligned. Keep the shared
+            // footprint explicit rather than using decoration/roof bounds.
+            this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
+                new THREE.Vector3(footprint.x, footprint.y, footprint.z),
+                new THREE.Vector3(footprint.width, footprint.height, footprint.depth)));
+        }
 
         const setupBuilding = (mesh, x, z, rotationY = 0, targetY = -0.5, customCollider = null) => {
             mesh.rotation.y = rotationY;

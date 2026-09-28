@@ -344,6 +344,7 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := minZ + rand.Float64()*(maxZ-minZ)
+
 		level := 50 + rand.Intn(6)
 		profile := overworldEnemyCombatProfile("MountainTroll", level, false)
 
@@ -1073,6 +1074,16 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := minZ + rand.Float64()*(maxZ-minZ)
+
+		// Keep random enemies out of new solid scenery without excluding an
+		// entire landmark/camp. Existing starter and safe-zone rules still apply.
+		for attempt := 0; attempt < 16 && !worldPopulationSpawnAllowed(x, z); attempt++ {
+			x = minX + rand.Float64()*(maxX-minX)
+			z = minZ + rand.Float64()*(maxZ-minZ)
+		}
+		if !worldPopulationSpawnAllowed(x, z) {
+			continue
+		}
 
 		// Avoid Town Safe Zone if in center sector
 		// Town: Rectangular (-100 to 100 X, 100 to 300 Z)
