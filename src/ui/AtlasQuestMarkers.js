@@ -6,6 +6,7 @@ import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { earthQuestSearch } from '../data/earthQuestSearch.js';
+import { waterQuestSearch } from '../data/waterQuestSearch.js';
 
 const hunts = new Map(chronicleHunts.map(q => [q.id, q]));
 const targetsByRealm = {
@@ -108,11 +109,13 @@ export function getAtlasQuestLocations(engine) {
         const hunt = hunts.get(q.id);
         const realmId = hunt?.huntingRealm || Object.keys(targetsByRealm).find(id => targetsByRealm[id].includes(q.target));
         const realm = WORLD_REGIONS[realmId];
-        const search = realmId === 'earth' ? earthQuestSearch(q, hunt) : null;
+        const search = realmId === 'earth' ? earthQuestSearch(q, hunt)
+            : realmId === 'water' ? waterQuestSearch(q, hunt) : null;
         if (search) {
+            const enemyName = (hunt?.enemy || q.target || 'quest targets').replace(/([a-z\d])([A-Z])/g, '$1 $2');
             add(q, { id: realmId, name: `${title} · ${realm.name} area`, ...search }, 'quests',
                 'Tracked · search area, not a live target',
-                `${q.objectiveText || `Find ${hunt?.enemy || q.target} in ${realm.name}.`} ${search.directions} ${hunt ? `Only ${hunt.enemy} of level ${hunt.minEnemyLevel} or higher count for this hunt. ` : ''}This marks a search area, not a specific spawn. Check enemy levels before fighting.`);
+                `${q.objectiveText || `Find ${enemyName} in ${realm.name}.`} ${search.directions} ${hunt ? `Only ${enemyName} enemies of level ${hunt.minEnemyLevel} or higher count for this hunt. ` : ''}This marks a search area, not a specific spawn. Check enemy levels before fighting.`);
             continue;
         }
         if (realm) add(q, { id: realmId, name: `${title} · ${realm.name} area`, x: (realm.minX + realm.maxX) / 2,

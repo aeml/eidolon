@@ -5,6 +5,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { distanceToPath } from '../data/worldPopulation.js';
 import { createLocationGroundMaterials, addLocationGroundWear } from './LocationGroundWear.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
+import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './WaterLandmarkGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -23,6 +24,9 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             metalness: water ? .1 : .3, emissive: air ? 0x211d32 : water ? 0x16333b : 0x392017, emissiveIntensity: .22 })
     };
     const footprints = [], radial = quality === 'low' ? 6 : 12;
+    if (water) materials.rib = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
+        color: 0x849594, roughness: .87, metalness: .04
+    }), 'fieldstone');
     for (const site of sites) {
         const group = new THREE.Group(); group.name = `${realm}-location:${site.id}`;
         group.position.set(site.x, 0, site.z); group.userData.locationId = site.id;
@@ -31,6 +35,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             siteId: site.id, x: site.x + x, y, z: site.z + z, width, height, depth, angle: 0
         });
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
+            if (site.recipe === 'tide-rib' && key === 'stone') key = 'rib';
             const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
             baked.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale)));
@@ -69,11 +74,22 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         };
         const hull = (x, z) => {
             footprint(x, 1.5, z, 5.5, 3, 13);
-            // An open rib skeleton, not an opaque walkable ship/deck.
-            for (let i = 0; i < 6; i++) rope([[x - 2.6, 2.8, z - 5 + i * 2], [x, .4, z - 5 + i * 2],
-                [x + 2.6, 2.8, z - 5 + i * 2]], .19);
+            // Tapered bow/stern and surviving curved planking read as a wreck,
+            // with open ribs and no deck. All remain inside the old hull solid.
+            for (let i = 0; i < 6; i++) {
+                const along = -5 + i * 2, halfWidth = wreckHullHalfWidth(along);
+                rope([[x - halfWidth, 2.8, z + along], [x - halfWidth * .5, 1, z + along],
+                    [x, .4, z + along], [x + halfWidth * .5, 1, z + along], [x + halfWidth, 2.8, z + along]], .14);
+            }
             beam([x, .35, z - 6.5], [x, .35, z + 6.5], .3);
-            beam([x - 2.6, 2.8, z - 5], [x - 2.6, 2.8, z + 5], .18);
+            for (const side of [-1, 1]) {
+                rope([[-6, 1.7], [-3, 2.4], [0, 2.8], [3, 2.4], [6, 1.7]]
+                    .map(([along, y]) => [x + side * wreckHullHalfWidth(along), y, z + along]), .12);
+                for (let band = 0; band < 3; band++) {
+                    part(createWreckPlank(side, band, -6, -1.4 + band * .3, quality), 'wood', x, 0, z);
+                    if (side < 0 || band !== 1) part(createWreckPlank(side, band, .6 + band * .4, 6, quality), 'wood', x, 0, z);
+                }
+            }
         };
         switch (site.recipe) {
         case 'chart-court':
@@ -169,12 +185,27 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 box('stone', water ? side * 10 : 0, 4, water ? 0 : side * 10, 3, 8, 3, true);
             }
             for (const shift of [-2.5, 2.5]) {
+                if (water) {
+                    for (let i = 0; i < 15; i++) part(createTideRibStone(i), 'rib', 0, 0, shift);
+                    continue;
+                }
                 const points = [];
                 for (let i = 0; i <= 12; i++) {
                     const angle = i / 12 * Math.PI, span = Math.cos(angle) * 10, y = 7 + Math.sin(angle) * 8;
                     points.push(water ? [span, y, shift] : [shift, y, span]);
                 }
                 rope(points, water ? .7 : 1.05, water ? 'accent' : 'iron');
+            }
+            if (water) {
+                for (const side of [-1, 1]) {
+                    // Overhead capital carries both ribs; the narrow ground
+                    // pier and its existing collision footprint stay intact.
+                    box('stone', side * 10, 7.7, 0, 3, .6, 6.8);
+                    for (let level = 1; level <= 7; level++) {
+                        box('iron', side * 10, level, 1.51, level % 2 ? .9 : 1.65, .085, .04);
+                    }
+                    beam([side * 10, 7.7, -2.5], [side * 10, 7.7, 2.5], .12, 'iron');
+                }
             }
             break;
         case 'sail-shelter':
