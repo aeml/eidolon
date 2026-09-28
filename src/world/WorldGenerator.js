@@ -28,6 +28,7 @@ import {
     createProceduralDungeonInteriorKit
 } from '../art/ProceduralDungeonInteriors.js';
 import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
+import { createEarthPathNetwork } from '../art/ProceduralWorldPaths.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -96,6 +97,8 @@ export class WorldGenerator {
     }
 
     async createTownDecorations(centerX, centerZ, options = {}) {
+        if (options.shouldAttach && !options.shouldAttach()) return;
+        this.scene.add(createEarthPathNetwork());
         await Promise.all([
             this.loadBuildings(centerX, centerZ, options),
             this.loadTrees(centerX, centerZ, options)

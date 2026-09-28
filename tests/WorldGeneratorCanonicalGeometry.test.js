@@ -160,6 +160,16 @@ describe('WorldGenerator staged overworld startup', () => {
         expect(generator.createRectangularFence).toHaveBeenLastCalledWith(10, 20, 60, 60);
         expect(generator.loadBuildings).toHaveBeenCalledWith(10, 20, {});
         expect(generator.loadTrees).toHaveBeenCalledWith(10, 20, {});
+        expect(generator.scene.add.mock.calls.some(([group]) => group.name === 'Earth authored paths')).toBe(true);
+    });
+
+    test('a superseded decoration load attaches no path surfaces or foliage', async () => {
+        const generator = createGenerator();
+        generator.loadBuildings = jest.fn(); generator.loadTrees = jest.fn();
+        await generator.createTownDecorations(0, 200, { shouldAttach: () => false });
+        expect(generator.scene.add).not.toHaveBeenCalled();
+        expect(generator.loadBuildings).not.toHaveBeenCalled();
+        expect(generator.loadTrees).not.toHaveBeenCalled();
     });
 
     test('does not attach a deferred dungeon entrance after its overworld scene is invalidated', async () => {

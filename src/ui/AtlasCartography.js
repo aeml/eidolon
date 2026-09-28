@@ -1,5 +1,6 @@
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
+import { EARTH_PATHS } from '../data/worldPopulation.js';
 
 const INKS = Object.freeze({
     earth: ['#26352d', '#687260', '#b0ac7c'],
@@ -50,6 +51,18 @@ export class AtlasCartography {
                 ctx.fillStyle = ink[1]; ctx.strokeStyle = ink[2]; ctx.lineWidth = .6;
                 ctx.beginPath(); ctx.moveTo(x, y - size); ctx.lineTo(x + size * .7, y + size * .5);
                 ctx.lineTo(x - size * .7, y + size * .5); ctx.closePath(); ctx.fill(); ctx.stroke();
+            }
+        }
+        if (id === 'earth') {
+            ctx.strokeStyle = '#b4a481'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+            for (const path of EARTH_PATHS) {
+                ctx.lineWidth = Math.max(1, path.width * sx);
+                ctx.beginPath();
+                path.points.forEach(([x, z], i) => {
+                    const px = (x - region.minX) * sx, py = (z - region.minZ) * sz;
+                    if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+                });
+                ctx.stroke();
             }
         }
         // Do not outline each tile: a solid rectangle would falsely seal the

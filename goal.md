@@ -30,9 +30,13 @@ implemented. Initial Alpha1.14.0 candidate8098796179ffd5faab250e7a3a04766343f6a1
 failed CI36415402488 on two stale Jest fixtures. Those fixtures are corrected;
 44 focused checks pass and runtime behavior is unchanged. Corrected candidate
 0dc2f055180e219c45afddec7e56e7f1210a630d is pushed; replacement CI36416114631
-confirmed pending, Luna monitoring. Next: complete mandatory deployment gates and
-independent exact live verification, then1.15. No partial
-milestone deployed.
+is in progress with its full client gate green, Luna monitoring. Next: complete
+mandatory deployment gates and independent exact live verification. Local1.15
+preparation now includes shared Earth compositions/lore and physical path ribbons
+with matching atlas centerlines;32 focused checks pass. Its
+[implementation receipt](docs/plans/2026-09-28-release1-15.md) lists remaining
+scenery, interactions, onboarding and review. Do not publish1.15 before1.14 is
+accepted and the whole1.15 milestone is ready. No partial milestone deployed.
 The global goal and later gates are still open.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
