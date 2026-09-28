@@ -539,6 +539,13 @@ verification/continue is now the explicit execution policy. Current milestone:
 art commits remain local, and the older casino candidate must be accounted for
 before publishing any branch containing it.
 
+September 28 1.11 release preparation: [candidate record](2026-09-28-release1-11.md)
+contains the completed inventory baseline, initial art/map changes, spatial
+foliage comparison, focused checks and release scope. Version/notes are 1.11.0;
+casino performance candidates are explicitly removed from this runtime and
+retained for 1.13. State: **locally verified, publication/live verification pending**.
+Do not start the 1.12 release until the exact 1.11 pipeline and live checks succeed.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

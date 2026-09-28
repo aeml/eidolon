@@ -13,9 +13,11 @@ The first populated-world/map pass is required before closed beta, not deferred
 to late polish. User-provided actor models are a dependency; environments,
 equipment, materials, shaders and integration remain implementation-owned.
 
-Current checkpoint: 1.11 inventory/visual baseline is implementing; 1.10.2 is
-the last verified live release. Local art changes and pending casino optimization
-are not deployed. Reconcile the full outgoing diff before any release push.
+Current checkpoint: the [1.11.0 candidate](docs/plans/2026-09-28-release1-11.md)
+is locally verified with version/notes prepared; publication/live verification
+is pending. 1.10.2 remains the last verified live release. The two unaccepted
+casino optimizations have been removed from this runtime and retained in history
+for 1.13. Confirm exact 1.11 CI/live success before starting the 1.12 release.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only
 reports. Keep focused checks and mandatory CI; reuse unaffected evidence. Do not
