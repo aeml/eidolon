@@ -30,6 +30,29 @@ async function setupMenu(page, isMobile = false) {
 for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
     test.describe(`family level choices ${width}x${height}`, () => {
         test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('finale briefing explains roles and personal epilogue without entering the raid', async ({ page, baseURL }, testInfo) => {
+            const failures = collectBrowserFailures(page, baseURL);
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => window.__raidMenuFixture.ui.showDungeonMenu({
+                playerLevel: 100, isLeader: true, darkRealmOpen: true
+            }));
+            const menu = page.locator('#dungeon-menu');
+            await menu.getByRole('tab', { name: 'Raids', exact: true }).click();
+            const briefing = menu.locator('[data-finale-preparation]');
+            await briefing.locator('summary').click();
+            for (const paragraph of await briefing.locator('p').all()) {
+                await paragraph.scrollIntoViewIfNeeded();
+                await expect(paragraph).toBeInViewport();
+                expect(await paragraph.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+            }
+            await expect(briefing).toContainText('does not resurrect');
+            await expect(briefing).toContainText('personally click Complete Quest');
+            await expect(menu.getByRole('button', { name: 'Enter Dark Realm Raid', exact: true })).toBeEnabled();
+            await expect(page.locator('#btn-close-dungeon-menu')).toBeInViewport();
+            await menu.screenshot({ path: testInfo.outputPath('finale-briefing.png') });
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent)).toEqual([]);
+            expect(failures, failures.join('\n')).toEqual([]);
+        });
         test('Nexus selection explains its guardian route and personal court unlock', async ({ page, baseURL }, testInfo) => {
             const failures = collectBrowserFailures(page, baseURL);
             await setupMenu(page, isMobile);

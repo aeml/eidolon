@@ -132,6 +132,28 @@
     z-index: calc(var(--z-hud) + 1);
 }
 
+.eidolon-phase-notice {
+    position: fixed;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #c6ad7280;
+    border-radius: var(--radius-md);
+    background: #101722f5;
+    color: #e4edf6;
+    z-index: calc(var(--z-hud) + 1);
+    pointer-events: none;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+.eidolon-phase-notice strong { display: block; color: #f0d999; margin-bottom: 3px; }
+.eidolon-phase-notice__meta { display: block; color: #acbad0; font-size: 11px; margin-bottom: 3px; }
+.eidolon-phase-notice .eidolon-phase-notice__compact { display: none; }
+.mobile-mode.eidolon-aid-visible #objectives-panel { visibility: hidden; }
+.mobile-mode .eidolon-phase-notice { padding: 5px 8px; line-height: 1.3; }
+.mobile-mode .eidolon-phase-notice :is(.eidolon-phase-notice__title, .eidolon-phase-notice__meta, .eidolon-phase-notice__effect) { display: none; }
+.mobile-mode .eidolon-phase-notice .eidolon-phase-notice__compact { display: block; }
+
 #combat-intent-panel {
     display: none;
     pointer-events: none;

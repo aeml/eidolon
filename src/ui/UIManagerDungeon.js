@@ -9,6 +9,7 @@ import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
 import { appendDungeonPreparation, partyPreparationText, weeklyRaidRewardText, NEXUS_PREPARATION } from './DungeonPreparation.js';
 import { appendElementalRaidBriefing } from './ElementalRaidBriefing.js';
+import { appendFinaleBriefing } from './FinaleGuidance.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -711,6 +712,7 @@ class UIManagerDungeonMethods {
             phases.className = 'adventure-raid-note';
             phases.textContent = 'Four phases: Orun weakens the King’s attacks; Neris restores the living raid; Pyralis opens a damage window; Aeral restores mana for the final assault. Keep the tank supported and save cooldowns for the Eidolons’ callouts.';
             raidBox.append(rewards, phases);
+            if (data.darkRealmOpen) appendFinaleBriefing(raidBox);
             raidPanel.appendChild(raidBox);
         }
 

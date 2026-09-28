@@ -1,6 +1,7 @@
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { formatQuestRewards } from './questRewards.js';
 import { writePreference } from './PreferenceStorage.js';
+import { EidolonPhaseNotice } from './EidolonPhaseNotice.js';
 
 class UIManagerFeedbackMethods {
     createDeathScreen() {
@@ -37,6 +38,7 @@ class UIManagerFeedbackMethods {
     }
 
     showDeathScreen(details = {}) {
+        this.clearEidolonPhaseNotice();
         if (this.deathScreen) {
             const match = this.pvp?.state?.match;
             const title = match ? 'ELIMINATED' : (details.title || 'YOU DIED');
@@ -90,6 +92,7 @@ class UIManagerFeedbackMethods {
      * @param {'connected'|'reconnecting'|'lost'} state
      */
     setConnectionState(state) {
+        if (state !== 'connected') this.clearEidolonPhaseNotice();
         const el = this.connIndicator;
         if (!el) return;
         el.classList.remove('conn-indicator--reconnecting', 'conn-indicator--lost');
@@ -403,6 +406,16 @@ class UIManagerFeedbackMethods {
             intent.preview?.manaShortfall ?? '',
             intent.preview?.abilityName ?? ''
         ].join('|');
+    }
+
+    showEidolonPhaseNotice(phase) {
+        if (!this.combatIntentPanel) return;
+        this.eidolonPhaseNotice ||= new EidolonPhaseNotice(this.combatIntentPanel);
+        this.eidolonPhaseNotice.show(phase);
+    }
+
+    clearEidolonPhaseNotice() {
+        this.eidolonPhaseNotice?.clear();
     }
 
     showCombatCallout(callout = {}) {

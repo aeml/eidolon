@@ -667,8 +667,9 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
             if (!isFinale) return;
             const phase = await tank.page.evaluate(() => {
                 const g = window.game, phase = window.__partyClearEvidence.darkKingPhases?.at(-1)?.phase;
-                return g.uiManager.combatIntentPanel.style.display === 'block' &&
-                    g.uiManager.combatIntentMeta.textContent.startsWith(`Phase ${phase} of 4`) ? phase : null;
+                const notice = g.uiManager.eidolonPhaseNotice?.root;
+                return notice?.isConnected && notice.getBoundingClientRect().height > 0 &&
+                    notice.querySelector('.eidolon-phase-notice__meta')?.textContent.startsWith(`Phase ${phase} of 4`) ? phase : null;
             });
             if (phase && !phaseScreenshots.has(phase)) {
                 await tank.page.screenshot({ path: testInfo.outputPath(`dark-king-phase-${phase}.png`) });

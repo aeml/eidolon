@@ -23,6 +23,9 @@ for (const [width,height] of [[390,844],[844,390],[568,320]]) {
             ui.lastPlayerRef={id:'self'};
             ui.social.updateParty({partyId:'composition-party',leaderId:'self',members:Array.from({length:5},(_,i)=>({
                 id:i===0?'self':`ally-${i}`,name:`Long named adventurer ${i}`,hp:60,maxHp:100,level:30,class:i===0?'Cleric':'Fighter'}))});
+            ui.showCombatCallout({title:'MEMORY FRACTURE',subtitle:'Leave the marked circle before impact.',duration:30});
+            ui.showEidolonPhaseNotice({phase:4,eidolon:'Aeral',element:'Air',title:'Phase IV · The Unbound Sky',
+                effect:'Aeral restores all mana and the full resonance increases player damage to Malachar by 35%.'});
             const hero=await MeshFactory.createMeshForType('Wizard'),enemy=await MeshFactory.createMeshForType('Skeleton');
             enemy.position.set(4,0,-4);render.entityGroup.add(hero,enemy);
             const terrain=new THREE.Mesh(new THREE.PlaneGeometry(120,120),createProceduralTerrainMaterial('earth',{quality:'low'}));
@@ -43,6 +46,13 @@ for (const [width,height] of [[390,844],[844,390],[568,320]]) {
             const metrics=await page.evaluate(()=>window.__encounterComposition.metrics());
             await testInfo.attach('composition',{body:JSON.stringify(metrics),contentType:'application/json'});
             await page.screenshot({path:testInfo.outputPath('encounter.png')});
+            const notice = page.locator('.eidolon-phase-notice');
+            await expect(notice).toBeVisible();
+            const aid = await notice.boundingBox();
+            expect(aid.y + aid.height).toBeLessThanOrEqual(height);
+            for (const point of [metrics.head, metrics.feet, metrics.enemy]) {
+                expect(point.x < aid.x || point.x > aid.x + aid.width || point.y < aid.y || point.y > aid.y + aid.height).toBe(true);
+            }
             expect(metrics.region).not.toBeNull();
             expect(metrics.zoom).toBe(15);
             expect(metrics.height).toBeGreaterThan(40);
@@ -99,7 +109,7 @@ for (const [width,height] of [[390,844],[844,390],[568,320]]) {
             await page.locator('#chat-mobile-toggle').tap();
             await expect(page.locator('#chat-box')).not.toHaveClass(/chat-mobile-expanded/);
         } finally {
-            await page.evaluate(()=>{const s=window.__encounterComposition;cancelAnimationFrame(s.frame);s.input.dispose();s.ui.social.phoneParty?.dispose();s.ui.characterPreview?.dispose();s.render.dispose();});
+            await page.evaluate(()=>{const s=window.__encounterComposition;cancelAnimationFrame(s.frame);s.ui.clearEidolonPhaseNotice();s.ui.clearCombatIntent();s.input.dispose();s.ui.social.phoneParty?.dispose();s.ui.characterPreview?.dispose();s.render.dispose();});
         }
         expect(failures,failures.join('\n')).toEqual([]);
     });

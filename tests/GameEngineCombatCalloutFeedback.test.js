@@ -47,6 +47,24 @@ describe('GameEngine encounter callouts', () => {
             expect(call[0]).toBe('AYLA: SMITE');
         }
     });
+    test('a delayed phase from a departed raid cannot create a notice or log entry', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.currentInstanceId = 'new-instance';
+        engine.uiManager = { showEidolonPhaseNotice: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage({ type: 'raid_phase', payload: { instanceId: 'old-instance', phase: 1 } });
+        expect(engine.uiManager.showEidolonPhaseNotice).not.toHaveBeenCalled();
+        expect(engine.uiManager.addGameMessage).not.toHaveBeenCalled();
+    });
+
+    test('a dead observer keeps story logs without showing a new aid notice', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { state: 'DEAD' };
+        engine.uiManager = { showEidolonPhaseNotice: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage({ type: 'raid_phase', payload: { phase: 2, dialogue: 'Neris speaks.' } });
+        expect(engine.uiManager.showEidolonPhaseNotice).not.toHaveBeenCalled();
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Fourfold Covenant', 'Neris speaks.');
+    });
+
     test.each([
         ['showRemoteActionReadability', ['Divine Intervention'], 'DIVINE INTERVENTION'],
         ['showRemoteStateReadability', ['ATTACKING', 'IDLE'], 'ATTACK'],
@@ -123,7 +141,7 @@ describe('GameEngine encounter callouts', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
         engine.floatingTextManager = { spawn: jest.fn() };
-        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.uiManager = { showEidolonPhaseNotice: jest.fn(), showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
 
         engine.handleServerMessage({
@@ -134,10 +152,10 @@ describe('GameEngine encounter callouts', () => {
             }
         });
 
-        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Phase III · The Will to Burn', subtitle: expect.stringContaining('Pyralis'), tone: 'boss',
-            metaText: 'Phase 3 of 4 · Fire', label: 'Eidolon Aid'
+        expect(engine.uiManager.showEidolonPhaseNotice).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Phase III · The Will to Burn', phase: 3, eidolon: 'Pyralis'
         }));
+        expect(engine.uiManager.showCombatCallout).not.toHaveBeenCalled();
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Fourfold Covenant', 'Malachar reveals his plan.');
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Resonance', 'Malachar takes 25% more damage.');
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('Fire: Pyralis', engine.player.position, '#ff7b3d', '26px');
@@ -146,14 +164,15 @@ describe('GameEngine encounter callouts', () => {
     test('Aeral joining the final phase is active aid, not a claim that Malachar is defeated', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = { id: 'player-1' };
-        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.uiManager = { showEidolonPhaseNotice: jest.fn(), showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
         engine.handleServerMessage({ type: 'raid_phase', payload: {
             phase: 4, eidolon: 'Aeral', element: 'Air', title: 'The Unbound Sky',
             dialogue: 'Aeral: No crown can own the wind.', effect: 'All mana restored.'
         } });
-        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            tone: 'boss', metaText: 'Phase 4 of 4 · Air', label: 'Eidolon Aid'
+        expect(engine.uiManager.showEidolonPhaseNotice).toHaveBeenCalledWith(expect.objectContaining({
+            phase: 4, eidolon: 'Aeral', element: 'Air'
         }));
+        expect(engine.uiManager.showCombatCallout).not.toHaveBeenCalled();
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Fourfold Covenant', 'Aeral: No crown can own the wind.');
     });
 

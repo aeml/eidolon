@@ -3,6 +3,7 @@ import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts
 import { createProceduralCombatFeedbackEffect } from '../art/ProceduralCombatFeedback.js';
 import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
 import { addDangerContrastUnderlay } from '../art/DangerBoundary.js';
+import { createEidolonAidPresentation } from '../art/ProceduralEidolonAid.js';
 
 class TransientEffect {
     constructor(scene, meshes, duration, updateFn = null) {
@@ -446,6 +447,13 @@ function createTelegraphLabelSprite(text, color = '#ffffff') {
 
 export function createTransientEffect(scene, type, position, color = 0xffffff, options = {}) {
     if (!scene || !position) return null;
+    if (type === 'eidolon_aid') {
+        const presentation = createEidolonAidPresentation(options.phase, options.quality);
+        if (!presentation) return null;
+        presentation.root.position.copy(position);
+        scene.add(presentation.root);
+        return new TransientEffect(scene, presentation.root, presentation.duration, presentation.update);
+    }
     if (options.abilityName) {
         return createProceduralAbilityCastEffect(scene, type, position, color, options);
     }

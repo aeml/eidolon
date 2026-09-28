@@ -1,4 +1,6 @@
 import { renderQuestConversation } from './QuestConversation.js';
+import { getFinaleExitGuidance } from './FinaleGuidance.js';
+import { hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 import { renderWitnessConversation } from './ChronicleWitnessConversation.js';
 import { formatQuestRewards } from './questRewards.js';
 import { MAX_PLAYER_LEVEL } from '../data/dungeonProgression.js';
@@ -614,7 +616,8 @@ export class QuestUI {
                 routeTone: 'support',
                 hint: nexus ? 'Nexus cleared — return to Ilyra and click Complete Quest for your ready Fifth Note. Each character claims personally; boss loot does not unlock the court.'
                     : 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
-                sequenceHint: nexus ? 'Press B or use Return to Lanternhold in the Escape menu. After your personal claim, speak to the Dungeon Guide and prepare the Dark King raid.' : ''
+                sequenceHint: nexus ? 'Press B or use Return to Lanternhold in the Escape menu. After your personal claim, speak to the Dungeon Guide and prepare the Dark King raid.' : '',
+                ...getFinaleExitGuidance(instanceType, this.ctx.getLastPlayer?.()?.quests)
             };
         }
 
@@ -1058,9 +1061,16 @@ export class QuestUI {
                 lore.textContent = current.lore;
                 section.appendChild(lore);
             }
-        } else {
+        } else if (hasCompletedDarkKing(chronicle)) {
             section.appendChild(this.createMessage('The resonance is whole. Malachar has fallen, and Eidolon belongs to no king.', {
                 color: '#7cf0a5', fontSize: '13px', fontWeight: 'bold'
+            }));
+            section.appendChild(this.createMessage('Speak to Archmage Ilyra to read A Letter Without a Throne. Your completed Chronicle and earned rewards are unchanged.', {
+                color: '#aab8d0', fontSize: '12px', lineHeight: '1.55'
+            }));
+        } else {
+            section.appendChild(this.createMessage('The Chronicle continues. Return to Archmage Ilyra in Lanternhold to review your next chapter.', {
+                color: '#ffd56a', fontSize: '13px', fontWeight: 'bold'
             }));
         }
 

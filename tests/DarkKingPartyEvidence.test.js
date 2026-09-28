@@ -1,5 +1,7 @@
 import { recordDarkKingPhase, assertDarkKingPhases } from './darkKingPartyEvidence.js';
 
+afterEach(() => { document.body.replaceChildren(); });
+
 function observedPhases() {
     const evidence = {};
     const game = { currentInstanceId: 'owned-raid', currentInstanceType: 'weekly_raid',
@@ -9,9 +11,16 @@ function observedPhases() {
         title: `Phase ${i + 1}`, effect: `${eidolon} offers aid`, dialogue: `${eidolon} speaks`
     }));
     for (const p of phases) {
-        game.uiManager = { combatIntentPanel: { style: { display: 'block' } }, combatIntentName: { textContent: p.title },
-            combatIntentMeta: { textContent: `Phase ${p.phase} of 4 · ${p.element}` },
-            combatIntentStatus: { textContent: `${p.eidolon} · ${p.effect}` } };
+        const root = document.createElement('aside');
+        for (const [field, text] of Object.entries({ title: p.title, meta: `Phase ${p.phase} of 4 · ${p.element}`, effect: p.effect })) {
+            const span = document.createElement('span');
+            span.className = `eidolon-phase-notice__${field}`;
+            span.textContent = text;
+            root.append(span);
+        }
+        root.getBoundingClientRect = () => ({ height: 100 });
+        document.body.append(root);
+        game.uiManager = { eidolonPhaseNotice: { root } };
         recordDarkKingPhase(evidence, game, p);
     }
     return { evidence, game, phases };
@@ -24,10 +33,13 @@ test('requires all four actual events with the correct rendered callout and livi
 
 test('retains observation times for phase durations without changing game state', () => {
     const { game, phases } = observedPhases();
-    const evidence = {}, before = JSON.parse(JSON.stringify(game));
+    const evidence = {}, before = JSON.stringify(game.player), root = game.uiManager.eidolonPhaseNotice.root;
+    const markup = root.outerHTML;
     for (const [i, phase] of phases.entries()) recordDarkKingPhase(evidence, game, phase, 1000 + i * 90_000);
     expect(evidence.darkKingPhases.map(p => p.observedAtMs)).toEqual([1000, 91000, 181000, 271000]);
-    expect(game).toEqual(before);
+    expect(JSON.stringify(game.player)).toBe(before);
+    expect(game.uiManager.eidolonPhaseNotice.root).toBe(root);
+    expect(root.outerHTML).toBe(markup);
 });
 
 test.each([

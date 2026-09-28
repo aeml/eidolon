@@ -37,6 +37,7 @@ class GameEngineNetworkMessageMethods {
         if (this.casino) this.casino.hoverHint = null;
         document.body.style.cursor = 'default';
         this.clearCombatIntentState();
+        this.uiManager?.clearEidolonPhaseNotice?.();
         this.resetRenderUpdateSignatures();
         this.refreshDungeonEntranceHint();
         this.playerJumpState = null;
@@ -1562,14 +1563,11 @@ class GameEngineNetworkMessageMethods {
             }
         } else if (msg.type === 'raid_phase') {
             const phase = msg.payload || {};
-            this.uiManager?.showCombatCallout?.({
-                title: phase.title || `Resonance Phase ${phase.phase || ''}`,
-                subtitle: `${phase.eidolon || 'An Eidolon'} · ${phase.effect || 'The resonance answers.'}`,
-                metaText: `Phase ${phase.phase || '?'} of 4 · ${phase.element || 'Resonance'}`,
-                label: 'Eidolon Aid',
-                tone: 'boss',
-                duration: 8
-            });
+            if (phase.instanceId && phase.instanceId !== this.currentInstanceId) return;
+            if (this.player?.state !== 'DEAD') this.uiManager?.showEidolonPhaseNotice?.(phase);
+            if (this.player?.state !== 'DEAD' && this.player?.position && this.renderSystem?.effectGroup) {
+                this.spawnTransientEffect('eidolon_aid', this.player.position, 0xffffff, { phase: phase.phase });
+            }
             this.uiManager?.addGameMessage?.('Fourfold Covenant', phase.dialogue || 'The Dark Realm trembles.');
             this.uiManager?.addGameMessage?.('Resonance', phase.effect || 'The Eidolons answer your call.');
             if (this.player?.position && this.floatingTextManager) {

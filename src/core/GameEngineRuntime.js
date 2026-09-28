@@ -74,6 +74,7 @@ class GameEngineRuntimeMethods {
         this.uiManager?.cosmeticVendor?.dispose();
         this.uiManager?.admin?.dispose();
         this.uiManager?.playtest?.dispose();
+        this.uiManager?.clearEidolonPhaseNotice?.();
         this.publicEvents?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {

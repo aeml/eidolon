@@ -23,6 +23,34 @@ function chronicleQuest(overrides = {}) {
     };
 }
 
+test('a partial completed journal is not evidence of Malachar defeat', () => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 30 }) });
+    const completed = chronicleQuest({ completed: true });
+    const optional = chronicleQuest({ id: 'chronicle_earth_keepers_house', legacyOptional: true });
+    ui.updateJournal([completed, optional]);
+    const journal = document.querySelector('.chronicle-journal');
+    expect(journal.textContent).not.toContain('Malachar has fallen');
+    expect(journal.textContent).not.toContain('A Letter Without a Throne');
+    expect(journal.textContent).toContain('Return to Archmage Ilyra');
+    expect(journal.textContent).toContain('Optional earlier');
+    expect(completed.completed).toBe(true);
+    expect(optional.completed).toBe(false);
+});
+
+test('only a completed finale receipt unlocks the Journal victory and epilogue directions', () => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 100 }) });
+    const finale = chronicleQuest({ id: 'chronicle_15_dark_king', type: 'KILL', target: 'UmbraPrime',
+        chapter: 55, count: 1, maxCount: 1 });
+    ui.updateJournal([finale]);
+    expect(document.querySelector('.chronicle-journal').textContent).not.toContain('Malachar has fallen');
+    finale.completed = true;
+    ui.updateJournal([finale]);
+    expect(document.querySelector('.chronicle-journal').textContent).toContain('Malachar has fallen');
+    expect(document.querySelector('.chronicle-journal').textContent).toContain('A Letter Without a Throne');
+});
+
 test.each(Object.entries(CHRONICLE_RESTORATIONS))('%s restoration lore unlocks only after turn-in and retains the open page', (realm, lore) => {
     buildDom();
     const ui = new QuestUI({ getLastPlayer: () => ({ level: 70 }) });

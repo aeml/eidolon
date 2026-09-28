@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.28.0';
+const currentVersion = '1.29.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.29.0 records independent aid, personal finale claims and retained history', () => {
+        const start = indexHtml.indexOf('data-version="1.29.0"'), previous = indexHtml.indexOf('data-version="1.28.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['hear the four voices', 'danger warnings', 'Game log', 'quest-tracker space',
+            'stone, water, fire and air', 'Dungeon Guide', 'Complete Quest', 'completed finale receipt',
+            'No combat balance, reward or save changes', 'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.28.0 records Nexus admission, guardians and personal claims without resetting contracts', () => {
         const start = indexHtml.indexOf('data-version="1.28.0"'), previous = indexHtml.indexOf('data-version="1.27.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

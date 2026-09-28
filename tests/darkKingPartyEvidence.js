@@ -6,13 +6,14 @@ export function recordDarkKingPhase(evidence, game, phase, observedAtMs = perfor
     const phases = evidence.darkKingPhases ||= [];
     if (phases.length >= 8) { evidence.darkKingPhaseOverflow = true; return; }
     const ui = game.uiManager;
+    const notice = ui?.eidolonPhaseNotice?.root;
     phases.push({ phase: phase.phase, eidolon: phase.eidolon, element: phase.element, observedAtMs,
         title: phase.title, effect: phase.effect, dialogue: phase.dialogue,
         alive: game.player.state !== 'DEAD' && game.player.stats.hp > 0,
-        renderedTitle: ui?.combatIntentName?.textContent,
-        renderedMeta: ui?.combatIntentMeta?.textContent,
-        renderedEffect: ui?.combatIntentStatus?.textContent,
-        visible: ui?.combatIntentPanel?.style.display === 'block' });
+        renderedTitle: notice?.querySelector('.eidolon-phase-notice__title')?.textContent,
+        renderedMeta: notice?.querySelector('.eidolon-phase-notice__meta')?.textContent,
+        renderedEffect: notice?.querySelector('.eidolon-phase-notice__effect')?.textContent,
+        visible: Boolean(notice?.isConnected && notice.getBoundingClientRect().height > 0) });
 }
 
 export function assertDarkKingPhases(evidence) {
