@@ -1,18 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint:** Alpha1.20.0 is accepted live at
-dddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 all ten jobs successful.
-Root exact public IPv4 frontend/backend/database/login/history/four-asset checks
-passed again after terminal CI at17:07UTC.1.21 is pushed at
-614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 running.
-Quiet terminal-only watcher29138 checks the exact run/SHA once per minute;
-Luna remains unavailable. Do not start another run merely because it is quiet.
+**Current checkpoint:** Alpha1.21.0 is accepted live at
+614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.
+Root exact public IPv4 frontend/backend/database/login/history/five-asset checks
+passed again after terminal CI. Watcher29138 completed successfully; no active
+1.21 process remains.1.22 is ready for publication;1.23 source stays excluded.
 Owner approved the optional playtest timer: local-only until explicitly shared.
 Its code, version/notes, privacy docs and mandatory browser coverage are ready
 in the published candidate (code539a4e3d plus acceptance docs614acf03).
 Final309 model/UI/binding/version tests, full lint and three browser
-views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md). Await all
-1.21 CI/live gates; actual human pacing remains an open playtest gate.
+views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md).
+Actual human pacing remains an open playtest gate.
 The1.21 exact verifier is prepared at
 `/tmp/eidolon-release-1-21-0-20260928-M4uYcf/verify.mjs`.
 
@@ -29,8 +27,26 @@ Those files stayed out of1.21. No balance changes or long campaign run.
 The local1.22 version/login/notes/runtime defaults are now synchronized. Final
 322 version/geometry/shader/world/atlas checks pass2.976s; full repository lint
 and whitespace pass. [1.22 receipt](docs/plans/2026-09-28-release1-22.md) records
-scope and remaining gates. Keep local until1.21 accepted; prepare exact public
-verifier before its publication. No active local test processes remain.
+scope and remaining gates. Committed locally ase430528e; do not push until1.21
+accepted. Exact public verifier is prepared at
+`/tmp/eidolon-release-1-22-0-20260928-OcqnFC/verify.mjs`.
+
+Separate UNCOMMITTED1.23 prerequisite work: waterQuestSearch, WaterLandmarkGeometry,
+ProceduralElementalLocations, AtlasQuestMarkers, Water tests and atlas/population
+browser specs. Do not stage these into1.22's acceptance/docs publication commit.
+Water hunting bands no longer target the Abyssal entrance; Tide Rib is carved,
+lower and visibly supported.37 focused checks, scoped lint, two atlas views and
+final two Water/Fire High/Low captures54.1s pass; final images/profile inspected.
+[Water preflight](docs/plans/2026-09-28-1-23-water-preflight.md) records contract
+review and final metrics. Water wrecks now also have tapered frames and curved,
+partly missing planks within unchanged solids. Final10 geometry/population tests
+pass4.414s; High browser pass28.1s. Low stopped before rendering with trace-proven
+ERR_NETWORK_CHANGED; one affected rerun passed26.0s. Both final wreck captures
+inspected; resource counts stable and frame budgets pass. [1.23 candidate receipt](docs/plans/2026-09-28-release1-23.md)
+is local/unversioned and MUST stay excluded from1.22 publication. No active local
+tests remain.1.21 CI36456025227 and its exact public verifier are accepted above.
+1.23 public verifier also prepared at
+`/tmp/eidolon-release-1-23-0-20260928-70tMN1/verify.mjs`.
 
 **Prior checkpoint:** Alpha1.18.0 is
 accepted live at24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791.
