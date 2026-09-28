@@ -3,12 +3,16 @@
 **Current checkpoint:** Alpha1.20.0 is accepted live at
 dddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 all ten jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/four-asset checks
-passed again after terminal CI at17:07UTC.1.21 is now ready to publish.
+passed again after terminal CI at17:07UTC.1.21 is pushed at
+614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 running.
+Quiet terminal-only watcher29138 checks the exact run/SHA once per minute;
+Luna remains unavailable. Do not start another run merely because it is quiet.
 Owner approved the optional playtest timer: local-only until explicitly shared.
 Its code, version/notes, privacy docs and mandatory browser coverage are ready
-locally, committed as539a4e3d (not pushed). Final309 model/UI/binding/version tests, full lint and three browser
-views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md). Publish only
-after1.20 acceptance; actual human pacing remains an open playtest gate.
+in the published candidate (code539a4e3d plus acceptance docs614acf03).
+Final309 model/UI/binding/version tests, full lint and three browser
+views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md). Await all
+1.21 CI/live gates; actual human pacing remains an open playtest gate.
 The1.21 exact verifier is prepared at
 `/tmp/eidolon-release-1-21-0-20260928-M4uYcf/verify.mjs`.
 
@@ -21,7 +25,12 @@ Earth journey source/retained-contract review is now recorded there. Further
 separate1.22 changes: earthQuestSearch, AtlasQuestMarkers, its unit tests and
 atlas-navigation browser test. Earth hunt waypoints no longer point into town;
 ten atlas tests and two browser layouts27.3s pass, phone-sized capture inspected.
-Those files must also stay out of1.21. No balance changes or long campaign run.
+Those files stayed out of1.21. No balance changes or long campaign run.
+The local1.22 version/login/notes/runtime defaults are now synchronized. Final
+322 version/geometry/shader/world/atlas checks pass2.976s; full repository lint
+and whitespace pass. [1.22 receipt](docs/plans/2026-09-28-release1-22.md) records
+scope and remaining gates. Keep local until1.21 accepted; prepare exact public
+verifier before its publication. No active local test processes remain.
 
 **Prior checkpoint:** Alpha1.18.0 is
 accepted live at24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791.

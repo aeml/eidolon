@@ -5,6 +5,7 @@ import { WORLD_LOCATIONS } from '../data/worldLocations.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
+import { earthQuestSearch } from '../data/earthQuestSearch.js';
 
 const hunts = new Map(chronicleHunts.map(q => [q.id, q]));
 const targetsByRealm = {
@@ -104,8 +105,16 @@ export function getAtlasQuestLocations(engine) {
                 'Speak to the Dungeon Guide for the required raid or dungeon. Entry requirements still apply; this marker is not the crystal or boss.');
             continue;
         }
-        const realmId = hunts.get(q.id)?.huntingRealm || Object.keys(targetsByRealm).find(id => targetsByRealm[id].includes(q.target));
+        const hunt = hunts.get(q.id);
+        const realmId = hunt?.huntingRealm || Object.keys(targetsByRealm).find(id => targetsByRealm[id].includes(q.target));
         const realm = WORLD_REGIONS[realmId];
+        const search = realmId === 'earth' ? earthQuestSearch(q, hunt) : null;
+        if (search) {
+            add(q, { id: realmId, name: `${title} · ${realm.name} area`, ...search }, 'quests',
+                'Tracked · search area, not a live target',
+                `${q.objectiveText || `Find ${hunt?.enemy || q.target} in ${realm.name}.`} ${search.directions} ${hunt ? `Only ${hunt.enemy} of level ${hunt.minEnemyLevel} or higher count for this hunt. ` : ''}This marks a search area, not a specific spawn. Check enemy levels before fighting.`);
+            continue;
+        }
         if (realm) add(q, { id: realmId, name: `${title} · ${realm.name} area`, x: (realm.minX + realm.maxX) / 2,
             z: (realm.minZ + realm.maxZ) / 2, area: realm }, 'quests', 'Tracked · broad search area, not a live target',
         `${q.objectiveText || `Find ${q.target} in ${realm.name}.`} The marker is the region center, not a specific spawn. Follow the quest’s level requirements.`);

@@ -82,7 +82,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const profiles = [];
                 const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'communal-kiln', 'quenched-foundry'] :
-                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar'];
+                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar', 'first-grove-arch'];
                 for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;

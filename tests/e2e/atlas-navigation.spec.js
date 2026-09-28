@@ -99,6 +99,22 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.getByRole('button', { name: '? Turn in · The Scar That Grows Back', exact: true }).click();
         await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Complete Quest');
         await page.screenshot({ path: testInfo.outputPath('atlas-ready-turnin.png') });
+        await page.evaluate(() => {
+            const { engine, map } = window.__atlas;
+            engine.player.quests = [{ id: 'chronicle_earth_kept_watch', category: 'chronicle',
+                title: 'Those Who Kept the Watch', type: 'KILL', target: 'ChronicleHunt:chronicle_earth_kept_watch',
+                accepted: true, count: 0, maxCount: 40 }];
+            engine.uiManager.quest.setQuestTracked(engine.player.quests[0], true); map.update(engine.player);
+        });
+        await search.fill('Those Who Kept');
+        await page.getByRole('button', { name: '! Those Who Kept the Watch · Earth Realm area', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('level 3 or higher');
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('not a specific spawn');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        expect(await page.evaluate(() => {
+            const { x, z } = window.__atlas.map.navigation.waypoint; return [x, z];
+        })).toEqual([175, 200]);
+        await page.screenshot({ path: testInfo.outputPath('atlas-earth-hunt.png') });
         if (width < 600) {
             const box = await canvas.boundingBox(), x = Math.round(box.x + box.width / 2), y = Math.round(box.y + box.height * .6);
             const cdp = await page.context().newCDPSession(page);

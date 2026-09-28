@@ -3,7 +3,7 @@ import { Material } from 'three';
 // Material detail in physical world units, including merged/instanced buildings.
 // Retains MeshStandardMaterial lighting, shadows, fog and quality settings. No
 // downloaded textures, per-frame updates, extra meshes or displaced colliders.
-const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3 });
+const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5 });
 
 const FRAGMENT = /* glsl */`
 varying vec3 vEidolonSurface;
@@ -23,7 +23,19 @@ vec3 eidolonSurface(vec3 p) {
     vec3 axis = abs(cross(dFdx(p), dFdy(p)));
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
-#if EIDOLON_SURFACE == 3
+#if EIDOLON_SURFACE == 5
+    float grain = eidolonNoise(uv * vec2(7., .85) + vec2(weather * .3, 0.));
+    float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * .85)));
+    grain = mix(.5, grain, detail);
+    return vec3(.58 + grain * .38 + weather * .16, .91 + grain * .07, grain * .045 * detail);
+#elif EIDOLON_SURFACE == 4
+    // Carved natural blocks have their own geometric joints: do not paint an
+    // unrelated rectangular brick grid across a curved vault or fallen stone.
+    float grain = eidolonNoise(uv * 7.);
+    float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * 7.)));
+    grain = mix(.5, grain, detail);
+    return vec3(.72 + weather * .34 + grain * .15, .91 + grain * .07, grain * .012 * detail);
+#elif EIDOLON_SURFACE == 3
     // Subtle, interrupted fibres rather than deep stripes on cross-beams.
     float grain = eidolonNoise(uv * vec2(22., 1.8));
     float fade = 1. - smoothstep(.2, .8, max(fwidth(uv.x * 22.), fwidth(uv.y * 1.8)));

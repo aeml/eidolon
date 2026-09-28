@@ -6,6 +6,10 @@ import { chronicleInvestigations, darkRealmChapters } from '../src/data/chronicl
 import { WORLD_LOCATIONS } from '../src/data/worldLocations.js';
 import { darkRealmFixture } from './darkRealmFixture.js';
 import { questMarkerState } from '../src/entities/QuestNPC.js';
+import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
+import { EARTH_HUNT_SECTORS } from '../src/data/earthQuestSearch.js';
+import { getOverworldRegion } from '../src/data/worldGeography.js';
+import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
 
 function game(quests) {
     const engine = { player: { id: 'atlas-reader', level: 100, position: { x: 150, z: 60 }, quests },
@@ -118,4 +122,35 @@ test('regional collection mappings continue to match the authoritative source fa
         expect(enemies.length).toBeGreaterThan(0);
         for (const enemy of enemies) expect(region(enemy)).toBe(region(item));
     }
+});
+
+test('Earth search sectors match authored spawns and never send an active hunt to town', () => {
+    const source = fs.readFileSync('server/internal/game/world.go', 'utf8');
+    for (const [enemy, [minX, maxX]] of Object.entries(EARTH_HUNT_SECTORS)) {
+        expect(source).toMatch(new RegExp(`spawnEnemyRect\\("${enemy}", \\d+, ${minX}, ${maxX}, -600, 1000, \\d+\\)`));
+    }
+    for (const hunt of chronicleHunts.filter(h => h.huntingRealm === 'earth')) {
+        const quest = { id: hunt.id, target: `ChronicleHunt:${hunt.id}`, type: 'KILL', accepted: true, count: 0, maxCount: hunt.count };
+        const marker = getAtlasQuestLocations(game([quest]))[0];
+        expect(getOverworldRegion(marker.x, marker.z)).toBe('earth');
+        expect(marker.x).toBeGreaterThanOrEqual(EARTH_HUNT_SECTORS[hunt.enemy][0]);
+        expect(marker.x).toBeLessThanOrEqual(EARTH_HUNT_SECTORS[hunt.enemy][1]);
+        expect(marker.purpose).toContain(`level ${hunt.minEnemyLevel} or higher`);
+        expect(marker.purpose).toContain('not a specific spawn');
+        if (hunt.enemy === 'Skeleton') expect(marker).toMatchObject({ x: 175, z: 200 });
+        quest.count = quest.maxCount;
+        expect(getAtlasQuestLocations(game([quest]))[0].symbol).toBe('?');
+        const wizard = TOWN_SERVICE_POINTS.find(p => p.id === 'story-wizard');
+        expect(getAtlasQuestLocations(game([quest]))[0]).toMatchObject({ x: wizard.x, z: wizard.z });
+    }
+});
+
+test('opening fight and Seed guidance lead outside town without promising guaranteed drops', () => {
+    const opening = { id: 'chronicle_01_bell_below', target: 'Skeleton', type: 'KILL', accepted: true, count: 0, maxCount: 3 };
+    expect(getAtlasQuestLocations(game([opening]))[0]).toMatchObject({ x: 125, z: 180 });
+    const seeds = { ...opening, id: 'chronicle_02_seeds_first_grove', target: 'Verdant Memory Seed', type: 'COLLECT', maxCount: 8 };
+    const marker = getAtlasQuestLocations(game([seeds]))[0];
+    expect(getOverworldRegion(marker.x, marker.z)).toBe('earth');
+    expect(marker.purpose).toContain('chance drops');
+    expect(marker.purpose).toContain('collect the dropped quest item');
 });

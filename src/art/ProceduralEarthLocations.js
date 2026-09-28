@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createTaperedRoot, createGroveArchStone, createGrovePierCourse } from './EarthLandmarkGeometry.js';
 
 // The environment owns these resources; no external asset or global disposable
 // cache is needed. Each location/material is a separate cullable draw batch.
@@ -19,7 +20,9 @@ export function createEarthLocations({ quality = 'high' } = {}) {
     groundTexture.needsUpdate = true;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, roughness: .96 }), 'stone'),
+        fieldstone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, roughness: .96 }), 'fieldstone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'timber'),
+        bark: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'bark'),
         iron: new THREE.MeshStandardMaterial({ color: 0x414647, roughness: .7, metalness: .65 }),
         brass: new THREE.MeshStandardMaterial({ color: 0x93815a, roughness: .62, metalness: .55 }),
         cloth: new THREE.MeshStandardMaterial({ color: 0x746a53, roughness: 1, side: THREE.DoubleSide }),
@@ -33,6 +36,8 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         root.position.set(site.x, 0, site.z); root.userData.locationId = site.id;
         const batches = new Map();
         const part = (geometry, material, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
+            // Vault, piers and fallen blocks share one natural-stone draw batch.
+            if (site.recipe === 'root-arch' && material === 'stone') material = 'fieldstone';
             const matrix = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
             const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone();
@@ -55,10 +60,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             const midpoint = start.add(end).multiplyScalar(.5);
             part(geometry, material, midpoint.x, midpoint.y, midpoint.z);
         };
-        const rootCurve = (points, radius) => {
-            const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
-            part(new THREE.TubeGeometry(curve, quality === 'low' ? 12 : 24, radius, radial, false), 'wood', 0, 0, 0);
-        };
+        const rootCurve = (points, radius) => part(createTaperedRoot(points, radius, quality), 'bark', 0, 0, 0);
         const pennant = (x, z, height = 6) => {
             cylinder('wood', x, height / 2, z, .12, .2, height);
             const geometry = new THREE.BufferGeometry();
@@ -97,8 +99,8 @@ export function createEarthLocations({ quality = 'high' } = {}) {
                 stone(x, 1.2, z, 1.3, 1.8, 1, angle);
                 box('stone', x, 1, z, 1.5, 2, 1.5, 0, true);
             }
-            rootCurve([[-18, .3, -8], [-16, 3, -13], [-8, 2, -17], [0, .4, -19]], .65);
-            rootCurve([[-19, .2, 4], [-16, 1.5, 0], [-12, .3, -5]], .4);
+            rootCurve([[-18, -.8, -8], [-16, 3, -13], [-8, 2, -17], [0, .4, -19]], .65);
+            rootCurve([[-19, -.5, 4], [-16, 1.5, 0], [-12, .3, -5]], .4);
             break;
         case 'grave-road':
             for (const side of [-1, 1]) {
@@ -112,12 +114,16 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             break;
         case 'root-arch':
             for (const side of [-1, 1]) {
-                box('stone', side * 8, 4, 0, 3, 8, 4, 0, true);
-                for (let i = 0; i < 3; i++) box('stone', side * (8 - i), 8 + i * 1.1, 0, 3.5, 1.5, 4);
-                rootCurve([[side * 14, .2, 4], [side * 10, 3, 2], [side * 9, 8, 0], [side * 3, 11.5, 0]], .85);
+                // Preserve the exact published solid while rendering separate
+                // worn courses within it instead of a featureless tall box.
+                footprints.push({ siteId: site.id, x: site.x + side * 8, z: site.z, width: 3, depth: 4, height: 8, y: 4, angle: 0 });
+                for (let course = 0; course < 6; course++) part(createGrovePierCourse(course), 'fieldstone', side * 8, 0, 0);
+                rootCurve([[side * 14, -.95, 4], [side * 10, 3, 2], [side * 9, 8, 0], [side * 5, 11.8, 0], [side, 13.15, 0]], .85);
+                rootCurve([[side * 10, 3, 2], [side * 10.8, 4.7, 2], [side * 11.5, 6.2, 1.6]], .25);
+                rootCurve([[side * 9, 8, 0], [side * 8.4, 9, 1.4], [side * 7.3, 10.3, 1.8]], .22);
                 stone(side * 16, .6, -4, 2, .8, 1.2);
             }
-            box('stone', 0, 11, 0, 8, 1.6, 3.8);
+            for (let i = 0; i < 13; i++) part(createGroveArchStone(i), 'fieldstone', 0, 0, 0);
             break;
         case 'pilgrim-camp':
             hearth(0, -7);
