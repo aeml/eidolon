@@ -7,6 +7,7 @@ import { createLocationGroundMaterials, addLocationGroundWear } from './Location
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './WaterLandmarkGeometry.js';
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
+import { createHorizonRing } from './AirLandmarkGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -121,11 +122,22 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         case 'horizon-orrery':
             for (const side of [-1, 1]) {
                 box('stone', 0, 1, side * 12, 4, 2, 4, true);
-                beam([0, 1.8, side * 12], [0, 11, side * 5], .4, 'iron');
+                beam([0, 1.8, side * 12], [0, 8, side * 4.5], .3, 'iron');
+                cylinder('iron', 0, 2.1, side * 12, .65, .85, .2);
+                part(new THREE.CylinderGeometry(.45, .45, .55, radial), 'iron', 0, 8, side * 4.5, [Math.PI / 2, 0, 0]);
             }
-            for (const angle of [-.7, .7]) part(new THREE.TorusGeometry(6, .22, 6, radial * 3),
-                'iron', 0, 12, 0, [angle, Math.PI / 2, 0]);
-            part(new THREE.SphereGeometry(1.4, radial, 8), 'accent', 0, 12, 0);
+            for (const [radius, angles] of [[4.5, [0, Math.PI / 2, 0]],
+                [3.9, [.65, .55, .3]], [3.3, [Math.PI / 2, 0, .3]]]) {
+                part(createHorizonRing(radius, quality), 'iron', 0, 8, 0, angles);
+            }
+            beam([0, 8, -4.5], [0, 8, 4.5], .09, 'iron');
+            for (let i = 0; i < 24; i++) {
+                const angle = i / 24 * Math.PI * 2;
+                part(new THREE.BoxGeometry(.08, i % 3 === 0 ? .35 : .2, .08), 'accent',
+                    .13, 8 + Math.cos(angle) * 4.36, Math.sin(angle) * 4.36, [angle, 0, 0]);
+            }
+            part(new THREE.IcosahedronGeometry(.8, 0), 'accent', 0, 8, 0);
+            for (const side of [-1, 1]) part(new THREE.SphereGeometry(.24, radial, 6), 'accent', 0, 8, side * 2.5);
             break;
         case 'courier-exchange':
         case 'weather-bivouac':

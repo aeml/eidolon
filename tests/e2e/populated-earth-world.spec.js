@@ -51,7 +51,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             await portal.ensureMesh(); render.entityGroup.add(portal.mesh);
             const hero = await MeshFactory.createMeshForType('Fighter'); render.entityGroup.add(hero);
             engine.chunkManager = { getActiveEntities: () => readings };
-            engine.inputManager = new InputManager(render.camera, render.renderer.domElement);
+            engine.inputManager = new InputManager(render.camera, render.scene, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
             const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [...LANTERNHOLD_COURTYARDS, ...EARTH_LOCATIONS];
             const samples = [];
@@ -78,7 +78,38 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 }
                 samples.push(stats); return stats;
             };
-            window.__populatedWorld = { visit, engine, samples, async profile() {
+            let airShot = null;
+            // A bounded input/render fixture, not a network cast or damage test.
+            // Server travel/hit regression is separately exercised in Go.
+            const { Projectile } = await import('/src/entities/Projectile.js');
+            engine.inputManager.subscribe('onRightClick', () => {
+                if (elemental !== 'air') return;
+                airShot?.dispose();
+                const target = engine.inputManager.getGroundIntersection().clone();
+                target.y = 1.5;
+                airShot = new Projectile('air-visual-review', { isMultiplayer: true, stats: { intelligence: 20 } },
+                    'Fireball', engine.player.position.clone().setY(1.5), target);
+                render.entityGroup.add(airShot.mesh);
+            });
+            window.__populatedWorld = { visit, engine, samples,
+                prepareAirShot(x) {
+                    airShot?.dispose(); airShot = null;
+                    engine.player.position.set(x, 0, 200); hero.position.copy(engine.player.position);
+                    render.setZoom(15); render.setCameraTarget(engine.player.position); render.setSceneryFocus(engine.player.position);
+                    render.applyLightingPreset('air', true); render.render(); render.camera.updateMatrixWorld(true);
+                    const target = new THREE.Vector3(x + 8, 0, 200).project(render.camera);
+                    const bounds = render.renderer.domElement.getBoundingClientRect();
+                    return { x: bounds.x + (target.x + 1) * bounds.width / 2,
+                        y: bounds.y + (1 - target.y) * bounds.height / 2 };
+                }, advanceAirShot() {
+                    if (!airShot) return null;
+                    const aim = engine.inputManager.getGroundIntersection().clone();
+                    airShot.update(.25, null, null, null, null, engine); render.render();
+                    const projected = airShot.position.clone().project(render.camera);
+                    return { aim: aim.toArray(), position: airShot.position.toArray(), active: airShot.isActive,
+                        visible: airShot.mesh.visible, projected: projected.toArray(),
+                        travel: airShot.position.distanceTo(engine.player.position.clone().setY(1.5)) };
+                }, async profile() {
                 const profiles = [];
                 const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
@@ -107,6 +138,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 return { renderer: gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
                     userAgent: navigator.userAgent, quality, mobile, beforeRepeat, afterRepeat, profiles };
             }, dispose() {
+                airShot?.dispose();
                 readings.forEach(r => r.dispose()); portal.dispose(); engine.inputManager.dispose();
                 hero.removeFromParent(); MeshFactory.releaseMesh('Fighter', hero);
                 render.clearInstanceScene(); render.dispose();
@@ -129,6 +161,20 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             }
             const result = await page.evaluate(() => ({ samples: window.__populatedWorld.samples, sent: window.__populatedWorld.engine.sent }));
             expect(result.sent).toEqual([]);
+            if (elemental === 'air') for (const x of [1010, 2850]) {
+                const target = await page.evaluate(x => window.__populatedWorld.prepareAirShot(x), x);
+                expect(target.x).toBeGreaterThan(0); expect(target.x).toBeLessThan(width);
+                expect(target.y).toBeGreaterThan(0); expect(target.y).toBeLessThan(844);
+                await page.mouse.click(target.x, target.y, { button: 'right' });
+                const shot = await page.evaluate(() => window.__populatedWorld.advanceAirShot());
+                expect(shot).not.toBeNull();
+                expect(Math.hypot(shot.aim[0] - x - 8, shot.aim[2] - 200)).toBeLessThan(.25);
+                expect(shot.position[1]).toBeCloseTo(1.5, 5);
+                expect(shot.travel).toBeCloseTo(5, 4);
+                expect(shot.active).toBe(true); expect(shot.visible).toBe(true);
+                expect(shot.projected.every(v => Number.isFinite(v) && Math.abs(v) <= 1)).toBe(true);
+                await page.screenshot({ path: testInfo.outputPath(`air-fireball-${x}.png`) });
+            }
             const countsPath = testInfo.outputPath('scene-counts.json');
             await writeFile(countsPath, JSON.stringify(result.samples, null, 2));
             await testInfo.attach('scene-counts', { path: countsPath, contentType: 'application/json' });

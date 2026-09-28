@@ -147,6 +147,28 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             const { x, z } = window.__atlas.map.navigation.waypoint; return [x, z];
         })).toEqual([-1600, 200]);
         await page.screenshot({ path: testInfo.outputPath('atlas-fire-hunt.png') });
+        for (const [quest, query, label, expected, waypoint] of [
+            [{ id: 'chronicle_air_unstolen_hours', title: 'The Hours We Refuse to Lose', type: 'KILL',
+                target: 'ChronicleHunt:chronicle_air_unstolen_hours' }, 'Hours We', 'The Hours We Refuse to Lose',
+            'Thunder Roc enemies of level 80 or higher', [2000, 200]],
+            [{ id: 'chronicle_08_feathers_thunder', title: 'Feathers of Thunder', type: 'COLLECT',
+                target: 'Stormglass Pinion' }, 'Feathers', 'Feathers of Thunder', 'Begin with Storm Harpies', [1200, 200]]
+        ]) {
+            await page.evaluate(quest => {
+                const { engine, map } = window.__atlas;
+                engine.player.quests = [{ ...quest, category: 'chronicle', accepted: true, count: 0, maxCount: 8 }];
+                engine.uiManager.quest.setQuestTracked(engine.player.quests[0], true); map.update(engine.player);
+            }, quest);
+            await search.fill(query);
+            await page.getByRole('button', { name: `! ${label} · Air Realm area`, exact: true }).click();
+            await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText(expected);
+            await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('not a safe path');
+            await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+            expect(await page.evaluate(() => {
+                const { x, z } = window.__atlas.map.navigation.waypoint; return [x, z];
+            })).toEqual(waypoint);
+        }
+        await page.screenshot({ path: testInfo.outputPath('atlas-air-collection.png') });
         if (width < 600) {
             const box = await canvas.boundingBox(), x = Math.round(box.x + box.width / 2), y = Math.round(box.y + box.height * .6);
             const cdp = await page.context().newCDPSession(page);

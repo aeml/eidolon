@@ -8,9 +8,10 @@ import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { earthQuestSearch } from '../data/earthQuestSearch.js';
 import { waterQuestSearch } from '../data/waterQuestSearch.js';
 import { fireQuestSearch } from '../data/fireQuestSearch.js';
+import { airQuestSearch } from '../data/airQuestSearch.js';
 
 const hunts = new Map(chronicleHunts.map(q => [q.id, q]));
-const questSearchers = { earth: earthQuestSearch, water: waterQuestSearch, fire: fireQuestSearch };
+const questSearchers = { earth: earthQuestSearch, water: waterQuestSearch, fire: fireQuestSearch, air: airQuestSearch };
 const targetsByRealm = {
     earth: ['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan', 'Verdant Memory Seed'],
     water: ['MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian', 'Moon-Tide Pearl'],
