@@ -11,6 +11,8 @@ import { WORLD_REGIONS, WORLD_GEOGRAPHY, getRegionWallSegments } from '../data/w
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { drawDarkRealmWorldMap } from './DarkRealmMap.js';
 import { drawCasinoWorldMap } from './CasinoMap.js';
+import { AtlasNavigation, ATLAS_CATEGORIES, OVERWORLD_CENTER, isOverworldAtlas,
+    isAtlasPartyMemberVisible, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -195,7 +197,14 @@ export class WorldMap {
         this.gameEngine = gameEngine;
         this.isMobile = Boolean(gameEngine.isMobile || document.body.classList.contains('mobile-mode'));
         this.container = document.getElementById('world-map');
+        this.container.__eidolonWorldMap?.dispose();
+        this.container.__eidolonWorldMap = this;
+        this.listeners = new AbortController();
         this.canvas = document.getElementById('world-map-canvas');
+        if (!this.container.querySelector('.world-map-body')) {
+            const body = document.createElement('div'); body.className = 'world-map-body';
+            this.canvas.before(body); body.append(this.canvas);
+        }
         this.ctx = this.canvas.getContext('2d');
 
         this.visitedChunks = new Set();
@@ -214,15 +223,53 @@ export class WorldMap {
         this.lastMouseY = 0;
 
         this.setupInteraction();
+        this.navigation = new AtlasNavigation(this);
+        this.container.setAttribute('role', 'dialog');
+        this.container.setAttribute('aria-label', 'World atlas');
+        this.canvas.tabIndex = 0;
+        this.canvas.setAttribute('aria-label', 'Map view. Arrow keys pan. Use the location list to select destinations.');
+        this.listen(this.container, 'keydown', e => {
+            e.stopPropagation();
+            const typing = ['INPUT', 'TEXTAREA'].includes(e.target.tagName);
+            if (e.key === 'Escape' || (!typing && e.key.toLowerCase() === 'm')) {
+                e.preventDefault(); this.toggle(); return;
+            }
+            if (e.target === this.canvas && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                e.preventDefault();
+                this.mapOffsetX += e.key === 'ArrowLeft' ? 60 : e.key === 'ArrowRight' ? -60 : 0;
+                this.mapOffsetY += e.key === 'ArrowUp' ? 60 : e.key === 'ArrowDown' ? -60 : 0;
+                this._redrawIfVisible();
+            }
+            if (e.key === 'Tab') {
+                const nodes = [...this.container.querySelectorAll('button, input, summary, canvas[tabindex]')]
+                    .filter(node => !node.disabled && node.getClientRects().length);
+                const first = nodes[0], last = nodes.at(-1);
+                if (first && e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (last && !e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+        });
+        for (const name of ['pointerdown', 'pointerup', 'click', 'dblclick', 'contextmenu']) {
+            this.listen(this.container, name, e => e.stopPropagation());
+        }
 
         this.resizeObserver = new ResizeObserver(() => this.resize());
         this.resizeObserver.observe(this.container);
+        this.resizeObserver.observe(this.canvas);
         this.resize();
     }
 
     // -----------------------------------------------------------------------
     // Interaction
     // -----------------------------------------------------------------------
+
+    listen(target, type, handler, options = {}) {
+        target.addEventListener(type, handler, { ...options, signal: this.listeners.signal });
+    }
+
+    dispose() {
+        this.listeners.abort();
+        this.resizeObserver?.disconnect();
+    }
 
     setupInteraction() {
         const controls = document.createElement('div');
@@ -240,7 +287,7 @@ export class WorldMap {
         controls.querySelector('[data-map-zoom="in"]').onclick = () => this.setMapScale(this.scale * 1.25);
         controls.querySelector('[data-map-center]').onclick = () => this.centerOnPlayer();
         for (const event of ['pointerdown', 'touchstart', 'click']) controls.addEventListener(event, e => e.stopPropagation());
-        this.canvas.addEventListener('wheel', (e) => {
+        this.listen(this.canvas, 'wheel', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const zoomSpeed = 0.1;
@@ -248,21 +295,24 @@ export class WorldMap {
             this.setMapScale(this.scale + delta * zoomSpeed * this.scale);
         }, { passive: false });
 
-        this.canvas.addEventListener('mousedown', (e) => {
+        this.listen(this.canvas, 'mousedown', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.isDragging = true;
             this.lastMouseX = e.clientX;
             this.lastMouseY = e.clientY;
+            this.pointerStart = { x: e.clientX, y: e.clientY };
+            this.mapGestureMoved = false;
             this.canvas.style.cursor = 'grabbing';
         });
 
-        this.canvas.addEventListener('mousemove', (e) => {
+        this.listen(this.canvas, 'mousemove', (e) => {
             if (!this.isDragging) return;
             e.preventDefault();
             e.stopPropagation();
             this.mapOffsetX += e.clientX - this.lastMouseX;
             this.mapOffsetY += e.clientY - this.lastMouseY;
+            if (Math.hypot(e.clientX - this.pointerStart.x, e.clientY - this.pointerStart.y) > 6) this.mapGestureMoved = true;
             this.lastMouseX = e.clientX;
             this.lastMouseY = e.clientY;
             this._redrawIfVisible();
@@ -272,8 +322,11 @@ export class WorldMap {
             this.isDragging = false;
             this.canvas.style.cursor = 'default';
         };
-        this.canvas.addEventListener('mouseup', stopDrag);
-        this.canvas.addEventListener('mouseleave', stopDrag);
+        this.listen(this.canvas, 'mouseup', stopDrag);
+        this.listen(this.canvas, 'mouseleave', stopDrag);
+        this.listen(this.canvas, 'click', e => {
+            if (!this.mapGestureMoved) this.selectMapLocation(e.clientX, e.clientY);
+        });
 
         const gesture = touches => {
             if (!touches.length || touches.length > 2) return null;
@@ -286,16 +339,23 @@ export class WorldMap {
         };
         const begin = e => {
             e.preventDefault(); e.stopPropagation(); stopDrag();
+            if (e.type === 'touchstart') {
+                this.pointerStart = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+                this.mapGestureMoved = e.touches.length !== 1;
+            } else if (e.type === 'touchend' && !e.touches.length && this.pointerStart && !this.mapGestureMoved) {
+                this.selectMapLocation(this.pointerStart.x, this.pointerStart.y);
+            }
             this.touchGesture = gesture(e.touches);
         };
-        this.canvas.addEventListener('touchstart', begin, { passive: false });
-        this.canvas.addEventListener('touchmove', e => {
+        this.listen(this.canvas, 'touchstart', begin, { passive: false });
+        this.listen(this.canvas, 'touchmove', e => {
             e.preventDefault(); e.stopPropagation();
             const next = gesture(e.touches), previous = this.touchGesture;
+            if (e.touches.length !== 1 || !this.pointerStart || Math.hypot(e.touches[0].clientX - this.pointerStart.x, e.touches[0].clientY - this.pointerStart.y) > 6) this.mapGestureMoved = true;
             if (next && previous && next.count === previous.count) {
                 const oldScale = this.scale;
                 const zoom = next.count === 2 && previous.distance > 0 ? next.distance / previous.distance : 1;
-                this.scale = Math.max(.5, Math.min(10, this.scale * zoom));
+                this.scale = Math.max(.01, Math.min(10, this.scale * zoom));
                 const ratio = this.scale / oldScale;
                 // Preserve the map location beneath the moving pinch midpoint.
                 this.mapOffsetX = next.x + (this.mapOffsetX - previous.x) * ratio;
@@ -305,9 +365,9 @@ export class WorldMap {
             }
             this.touchGesture = next;
         }, { passive: false });
-        this.canvas.addEventListener('touchend', begin, { passive: false });
-        this.canvas.addEventListener('touchcancel', e => {
-            e.stopPropagation(); this.touchGesture = null; stopDrag();
+        this.listen(this.canvas, 'touchend', begin, { passive: false });
+        this.listen(this.canvas, 'touchcancel', e => {
+            e.stopPropagation(); this.touchGesture = null; this.mapGestureMoved = true; stopDrag();
         });
     }
 
@@ -318,7 +378,7 @@ export class WorldMap {
     setMapScale(value) {
         if (!Number.isFinite(value)) return;
         const previous = this.scale;
-        this.scale = Math.max(.5, Math.min(10, value));
+        this.scale = Math.max(.01, Math.min(10, value));
         this.mapOffsetX *= this.scale / previous;
         this.mapOffsetY *= this.scale / previous;
         this.updateZoomLabel();
@@ -333,6 +393,32 @@ export class WorldMap {
         this.mapOffsetX = 0; this.mapOffsetY = 0;
         this.touchGesture = null; this.isDragging = false;
         this._redrawIfVisible();
+    }
+
+    isVisible() { return this.container.style.display === 'flex' || this.container.style.display === 'block'; }
+
+    showWorldOverview() {
+        if (!isOverworldAtlas(this.gameEngine)) return;
+        this.cameraX = OVERWORLD_CENTER.x; this.cameraZ = OVERWORLD_CENTER.z;
+        this.mapOffsetX = 0; this.mapOffsetY = 0;
+        const width = WORLD_REGIONS.air.maxX - WORLD_REGIONS.fire.minX;
+        const depth = WORLD_REGIONS.earth.maxZ - WORLD_REGIONS.water.minZ;
+        // A 45-degree view projects the combined extent onto both axes.
+        this.scale = Math.max(.01, Math.min(this.canvas.width - 64, this.canvas.height - 64) / ((width + depth) * Math.SQRT1_2));
+        this.updateZoomLabel(); this._redrawIfVisible();
+    }
+
+    selectMapLocation(clientX, clientY) {
+        if (!this.navigation || !isOverworldAtlas(this.gameEngine)) return;
+        const rect = this.canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const x = (clientX - rect.left) * this.canvas.width / rect.width;
+        const y = (clientY - rect.top) * this.canvas.height / rect.height;
+        const w2s = this._makeWorldToScreen(this.canvas.width / 2, this.canvas.height / 2);
+        const match = this.navigation.locations.filter(p => this.navigation.filters.has(p.category))
+            .map(p => ({ p, distance: Math.hypot(w2s(p.x, p.z).x - x, w2s(p.x, p.z).y - y) }))
+            .filter(p => p.distance <= 18).sort((a, b) => a.distance - b.distance)[0];
+        if (match) this.navigation.select(match.p.id);
     }
 
     // -----------------------------------------------------------------------
@@ -356,6 +442,14 @@ export class WorldMap {
 
     toggle() {
         this.touchGesture = null; this.isDragging = false;
+        const opening = !this.isVisible();
+        if (opening) {
+            this.opener = document.activeElement;
+            this.gameEngine.inputManager?.clearInputState?.();
+            this.navigation.refresh(true);
+            // Focus after the existing window manager makes the map visible.
+            queueMicrotask(() => { if (this.isVisible()) this.navigation.search.focus(); });
+        } else this.opener?.focus?.();
         if (this.gameEngine?.uiManager?.windowLayouts) {
             const opened = this.gameEngine.uiManager.toggleManagedWindow('map');
             if (opened && this.gameEngine.player) {
@@ -381,11 +475,12 @@ export class WorldMap {
 
     update(player) {
         if (!player) return;
+        this.navigation?.refresh();
         const cx = Math.floor(player.position.x / this.chunkSize);
         const cz = Math.floor(player.position.z / this.chunkSize);
         for (let x = cx - 1; x <= cx + 1; x++) {
             for (let z = cz - 1; z <= cz + 1; z++) {
-                this.visitedChunks.add(`${x},${z}`);
+                if (isOverworldAtlas(this.gameEngine)) this.visitedChunks.add(`${x},${z}`);
             }
         }
         if (this.container.style.display !== 'none') {
@@ -452,7 +547,7 @@ export class WorldMap {
 
     mapFontSize(base) {
         const scaled = base * this.scale / 2;
-        return this.isMobile ? Math.max(14, Math.min(base >= 36 ? 20 : 16, scaled)) : scaled;
+        return this.isMobile ? Math.max(14, Math.min(base >= 36 ? 20 : 16, scaled)) : Math.max(12, Math.min(28, scaled));
     }
 
     _buildDungeonBeatPreview() {
@@ -495,6 +590,7 @@ export class WorldMap {
     draw(player) {
         if (!player || !this.ctx) return;
         const ctx = this.ctx;
+        this.navigation?.refresh();
         const w = this.canvas.width;
         const h = this.canvas.height;
         if (this.gameEngine?.currentInstanceType === 'dark_realm') {
@@ -526,7 +622,7 @@ export class WorldMap {
         }
 
         const event = this.gameEngine.publicEvents?.data;
-        if (event && event.phase !== 'expired' && !this.gameEngine.currentInstanceId) {
+        if (event && event.phase !== 'expired' && isOverworldAtlas(this.gameEngine) && this.navigation?.filters.has('events')) {
             const point = w2s(event.site.x, event.site.z);
             ctx.save();
             ctx.strokeStyle = '#d5f5ad'; ctx.fillStyle = '#d5f5ad'; ctx.lineWidth = 2;
@@ -564,6 +660,7 @@ export class WorldMap {
         // 6. Dungeon markers (zoom-culled)
         const dungeonBeatPreview = this._buildDungeonBeatPreview();
         for (const dg of DUNGEON_MARKERS) {
+            if (this.navigation && !this.navigation.filters.has('entrances')) continue;
             if (!this._tierVisible(dg.tier)) continue;
             const pos = w2s(dg.wx, dg.wz);
             const yOff = (dg.labelOffsetY || -15) * this.scale;
@@ -606,6 +703,8 @@ export class WorldMap {
 
         // 6b. Town points of interest
         for (const poi of TOWN_POIS) {
+            const category = this.navigation?.locations.find(p => p.name === poi.name)?.category;
+            if (category && !this.navigation.filters.has(category)) continue;
             if (this.scale < (poi.minScale || 0)) continue;
             const pos = w2s(poi.wx, poi.wz);
             ctx.fillStyle = poi.dotColor;
@@ -644,6 +743,7 @@ export class WorldMap {
             const activeEntities = this.gameEngine.chunkManager.getActiveEntities();
             activeEntities.forEach(entity => {
                 if (entity === player) return;
+                if (!this.navigation?.filters.has('party') && this.gameEngine.uiManager?.partyData?.members?.some(member => member.id === entity.id)) return;
                 const cls = classifyEntity(entity);
                 if (!cls) return;
                 const pos = w2s(entity.position.x, entity.position.z);
@@ -655,9 +755,9 @@ export class WorldMap {
         }
 
         // 9. Party members (global positions)
-        if (this.gameEngine.uiManager.partyData && this.gameEngine.uiManager.partyData.members) {
+        if (this.gameEngine.uiManager?.partyData?.members && this.navigation?.filters.has('party')) {
             this.gameEngine.uiManager.partyData.members.forEach(member => {
-                if (member.id === player.id) return;
+                if (member.id === player.id || !isAtlasPartyMemberVisible(this.gameEngine, member)) return;
                 if (member.x === undefined || member.z === undefined) return;
                 const pos = w2s(member.x, member.z);
                 ctx.fillStyle = '#00ff00';
@@ -679,5 +779,16 @@ export class WorldMap {
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.stroke();
+        if (isOverworldAtlas(this.gameEngine) && this.navigation) {
+            for (const p of this.navigation.locations) {
+                if (p.category !== 'passages' || !this.navigation.filters.has(p.category)) continue;
+                const point = w2s(p.x, p.z);
+                ctx.fillStyle = ATLAS_CATEGORIES.passages.color; ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center';
+                ctx.fillText('↔', point.x, point.y + 5);
+            }
+            const waypoint = this.navigation.waypoint;
+            const guidance = getWaypointGuidance(this.gameEngine, waypoint);
+            if (guidance) drawAtlasWaypoint(ctx, w2s(waypoint.x, waypoint.z), { x: cx, y: cy }, Math.max(1, Math.min(w, h) / 2 - 28), `${Math.round(guidance.distance)}m ${guidance.direction}`);
+        }
     }
 }

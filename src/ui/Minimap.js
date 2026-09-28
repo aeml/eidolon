@@ -1,4 +1,5 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
 import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeography.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
@@ -189,10 +190,10 @@ export class Minimap {
         // Draw faint boundary lines for nearby realm edges so the player
         // can see when they're approaching a transition.
         if (darkRealm) drawDarkRealmFloors(ctx, this.gameEngine.currentDungeonLayout, toMap);
-        else {
+        else if (isOverworldAtlas(this.gameEngine)) {
             this._drawRealmBoundaries(ctx, toMap, half);
             this._drawTownServiceMarkers(ctx, toMap, player, half);
-        }
+        } else if (this.gameEngine?.currentInstanceType === 'casino') this._drawTownServiceMarkers(ctx, toMap, player, half);
 
         // ---- Dungeon room overlays ----
         if (!darkRealm && this.gameEngine?.getDungeonRoomSummary) {
@@ -249,6 +250,9 @@ export class Minimap {
         }
 
         // ---- Player dot (center) ----
+        const waypoint = this.gameEngine?.worldMap?.navigation?.waypoint;
+        const guidance = getWaypointGuidance(this.gameEngine, waypoint);
+        if (guidance) drawAtlasWaypoint(ctx, toMap(waypoint.x, waypoint.z), { x: half, y: half }, half - 25, `${Math.round(guidance.distance)}m`);
         ctx.fillStyle = '#00ff00';
         ctx.beginPath();
         ctx.arc(half, half, 4, 0, Math.PI * 2);
@@ -387,7 +391,7 @@ export class Minimap {
         const pd = this.gameEngine.uiManager && this.gameEngine.uiManager.partyData;
         if (!pd || !pd.members) return;
         for (const member of pd.members) {
-            if (member.id === player.id) continue;
+            if (member.id === player.id || !isAtlasPartyMemberVisible(this.gameEngine, member)) continue;
             // Party snapshots need not carry floor/instance identity. Only a
             // currently represented casino guest can place a trustworthy dot.
             if (this.gameEngine.currentInstanceType === 'casino'

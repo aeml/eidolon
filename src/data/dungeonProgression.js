@@ -1,5 +1,10 @@
 export const MAX_PLAYER_LEVEL = 100;
 export const DUNGEON_UNLOCK_LEVEL = 30;
+// Rolling-deployment presentation defaults; server status and admission win.
+export const DUNGEON_ENTRY_LEVELS = Object.freeze({
+    verdant_bastion_catacombs: 30, abyssal_well: 60, molten_core: 70,
+    tempest_spire: 70, umbral_nexus: 100
+});
 export const ENDGAME_DIFFICULTY_UNLOCK_LEVEL = MAX_PLAYER_LEVEL;
 export const DUNGEON_RUN_LEVEL_BANDS = [30, 40, 50, 60, 70, 80, 90, 100];
 

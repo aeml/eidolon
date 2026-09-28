@@ -201,6 +201,22 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.worldMap.update).toHaveBeenCalledTimes(2);
     });
 
+    test('idle visible atlas refreshes party and availability data at a bounded cadence', () => {
+        const clock = jest.spyOn(performance, 'now').mockReturnValue(0);
+        try {
+            const engine = createEngineHarness();
+            engine.worldMap.isVisible.mockReturnValue(true);
+            engine.render(1);
+            clock.mockReturnValue(499); engine.render(1);
+            expect(engine.worldMap.update).toHaveBeenCalledTimes(1);
+            clock.mockReturnValue(500); engine.render(1);
+            expect(engine.worldMap.update).toHaveBeenCalledTimes(2);
+            engine.worldMap.isVisible.mockReturnValue(false);
+            clock.mockReturnValue(1000); engine.render(1);
+            expect(engine.worldMap.update).toHaveBeenCalledTimes(2);
+        } finally { clock.mockRestore(); }
+    });
+
     test('render throttles hotbar cooldown updates when displayed values are unchanged', () => {
         const engine = createEngineHarness();
         engine.player.cooldowns = { Slash: 3.2 };

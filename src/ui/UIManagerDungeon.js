@@ -1,4 +1,5 @@
 import {
+    DUNGEON_ENTRY_LEVELS,
     availableDungeonRunLevelsForPlayer,
     canSelectDungeonRunLevel,
     isEndgameDifficultyUnlocked
@@ -221,6 +222,7 @@ class UIManagerDungeonMethods {
         // Older servers retain the known defaults during a rolling deployment.
         // Current servers publish the same family gates used for actual entry.
         for (const [type, info] of Object.entries(dungeonInfo)) {
+            info.baseLevel = DUNGEON_ENTRY_LEVELS[type];
             const required = Number(data.dungeonEntryLevels?.[type]);
             if (Number.isInteger(required) && required > 0) info.baseLevel = required;
         }

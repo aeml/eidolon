@@ -19,9 +19,11 @@ including live QA and independent public IPv4 identity/assets verification.
 1.14 atlas/feedback is implementing from its
 [source preflight](docs/plans/2026-09-28-1-14-preflight.md).
 Its [implementation receipt](docs/plans/2026-09-28-release1-14.md) records the
-tested report acknowledgement/privacy work and shared geography foundations.
-Next: atlas cartography, location search/details, waypoints and input/privacy
-checks before the complete 1.14 release cut. No partial milestone deployed.
+tested report acknowledgement/privacy work, shared geography, and overworld
+location search/details/waypoints with desktop/phone-sized control checks.
+Next: cached atlas cartography, marker/quest/discovery consistency and complete
+interior/PvP input/privacy review before the 1.14 release cut. No partial
+milestone deployed.
 The global goal and later gates are still open.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only

@@ -95,14 +95,14 @@ describe('WorldMap town wayfinding', () => {
         document.querySelector('[data-map-zoom="out"]').click();
         expect(map.scale).toBe(2);
         map.setMapScale(100); expect(map.scale).toBe(10);
-        map.setMapScale(.01); expect(map.scale).toBe(.5);
-        map.setMapScale(NaN); expect(map.scale).toBe(.5);
+        map.setMapScale(.001); expect(map.scale).toBe(.01);
+        map.setMapScale(NaN); expect(map.scale).toBe(.01);
         engine.player = { position: { x: 70, z: 210 } };
         map._redrawIfVisible = () => {};
         map.mapOffsetX = 99; map.mapOffsetY = 90;
         document.querySelector('[data-map-center]').click();
         expect([map.cameraX, map.cameraZ, map.mapOffsetX, map.mapOffsetY]).toEqual([70, 210, 0, 0]);
-        expect(map.scale).toBe(.5);
+        expect(map.scale).toBe(.01);
     });
 
     test('renders named town POIs for new-player wayfinding', () => {
@@ -122,6 +122,24 @@ describe('WorldMap town wayfinding', () => {
             'Vendor / Repair',
             'Dungeon Guide'
         ]));
+    });
+
+    test('overview fits the real extents and replacement map removes prior input ownership', () => {
+        const engine = { player: { id: 'me', position: { x: 0, z: 200 } } };
+        const oldMap = new WorldMap(engine);
+        const map = new WorldMap(engine);
+        map.canvas.width = 640; map.canvas.height = 400;
+        map.showWorldOverview();
+        const project = map._makeWorldToScreen(320, 200);
+        for (const [x, z] of [[-3000, -2200], [3000, -2200], [-3000, 1000], [3000, 1000]]) {
+            const p = project(x, z);
+            expect(p.x).toBeGreaterThanOrEqual(30); expect(p.x).toBeLessThanOrEqual(610);
+            expect(p.y).toBeGreaterThanOrEqual(30); expect(p.y).toBeLessThanOrEqual(370);
+        }
+        map.canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        expect(map.mapOffsetX).toBe(-60); expect(oldMap.mapOffsetX).toBe(0);
+        expect(document.querySelectorAll('.atlas-navigation')).toHaveLength(1);
+        expect(document.querySelectorAll('.atlas-waypoint-row')).toHaveLength(1);
     });
 
     test('prioritizes starter-route POIs in onboarding order and emphasizes quest and forge markers', () => {

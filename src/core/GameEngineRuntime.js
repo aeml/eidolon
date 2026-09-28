@@ -1055,6 +1055,10 @@ class GameEngineRuntimeMethods {
                     ].join('::')
                     : '';
                 const worldMapSignature = [
+                    // Party, event and quest state can change while standing still.
+                    // Refresh an otherwise-idle atlas twice a second. Movement
+                    // and room changes still redraw immediately.
+                    Math.floor(performance.now() / 500),
                     Math.floor(this.player.position.x ?? 0),
                     Math.floor(this.player.position.z ?? 0),
                     this.currentInstanceId || '',

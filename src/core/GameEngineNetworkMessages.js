@@ -935,6 +935,7 @@ class GameEngineNetworkMessageMethods {
             }
             this.refreshDungeonEntranceHint();
         } else if (msg.type === 'get_dungeon_status') {
+            this.atlasDungeonEntryLevels = msg.payload?.dungeonEntryLevels || null;
             if (this.uiManager) {
                 this.uiManager.showDungeonMenu(msg.payload);
             }
