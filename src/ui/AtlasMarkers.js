@@ -81,3 +81,23 @@ export function drawAtlasFrame(ctx, width, height, scale) {
     ctx.font = '11px system-ui'; ctx.textAlign = 'left'; ctx.fillText(`${metres}m`, 16, height - 25);
     ctx.restore();
 }
+
+export function drawAtlasPlayer(ctx, player, project) {
+    const p = project(player.position.x, player.position.z), q = player.rotation;
+    ctx.save(); ctx.fillStyle = '#d0fbff'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+    // Actors face local +Z. Project the quaternion's forward vector through
+    // the same 45-degree transform as the map, never through camera heading.
+    if (q && [q.x, q.y, q.z, q.w].every(Number.isFinite)) {
+        const x = 2 * (q.x * q.z + q.w * q.y), z = 1 - 2 * (q.x * q.x + q.y * q.y);
+        const ahead = project(player.position.x + x, player.position.z + z);
+        const length = Math.hypot(ahead.x - p.x, ahead.y - p.y);
+        if (length > .00001) {
+            const dx = (ahead.x - p.x) / length, dy = (ahead.y - p.y) / length;
+            ctx.beginPath(); ctx.moveTo(p.x + dx * 14, p.y + dy * 14);
+            ctx.lineTo(p.x + dx * 6 - dy * 4, p.y + dy * 6 + dx * 4);
+            ctx.lineTo(p.x + dx * 6 + dy * 4, p.y + dy * 6 - dx * 4);
+            ctx.closePath(); ctx.fill();
+        }
+    }
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+}

@@ -1,12 +1,24 @@
 import { jest } from '@jest/globals';
 import { AtlasCartography } from '../src/ui/AtlasCartography.js';
-import { drawAtlasLocations } from '../src/ui/AtlasMarkers.js';
+import { drawAtlasLocations, drawAtlasPlayer } from '../src/ui/AtlasMarkers.js';
 import { getAtlasLocations, ATLAS_CATEGORIES } from '../src/ui/AtlasNavigation.js';
 import { PROCEDURAL_FOLIAGE_RECIPES as dataRecipes, createProceduralFoliagePlacements as dataPlacements } from '../src/data/worldFoliage.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../src/art/ProceduralRealmFoliage.js';
 
 const context = () => ({ ...Object.fromEntries(['fillRect', 'strokeRect', 'save', 'restore', 'transform', 'drawImage', 'beginPath', 'moveTo', 'lineTo', 'closePath', 'fill', 'stroke', 'arc', 'fillText'].map(k => [k, jest.fn()])),
     measureText: text => ({ width: text.length * 7 }) });
+
+test('player facing uses the actor quaternion and the shared map axes at any zoom', () => {
+    for (const scale of [.05, 4]) for (const yaw of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) {
+        const ctx = context(), player = { position: { x: 10, z: 200 }, rotation: { x: 0, y: Math.sin(yaw / 2), z: 0, w: Math.cos(yaw / 2) } };
+        const project = (x, z) => ({ x: 100 + ((x - 10) - (z - 200)) * scale, y: 100 + ((x - 10) + (z - 200)) * scale });
+        drawAtlasPlayer(ctx, player, project);
+        const [x, y] = ctx.moveTo.mock.calls[0];
+        expect(x).toBeCloseTo(100 + (Math.sin(yaw) - Math.cos(yaw)) * 14 / Math.SQRT2);
+        expect(y).toBeCloseTo(100 + (Math.sin(yaw) + Math.cos(yaw)) * 14 / Math.SQRT2);
+        expect(ctx.arc).toHaveBeenCalledWith(100, 100, 4, 0, Math.PI * 2);
+    }
+});
 
 test('cartography reuses production foliage data, caches art across marker/pan updates, and releases storage', () => {
     expect(dataRecipes).toBe(PROCEDURAL_FOLIAGE_RECIPES);

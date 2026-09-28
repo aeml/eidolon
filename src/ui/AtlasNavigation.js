@@ -45,7 +45,7 @@ export function getAtlasLocations(engine) {
         const category = portal ? 'entrances' : ['quest-giver', 'story-wizard'].includes(point.id) ? 'quests' : 'services';
         const questState = category === 'quests' ? getAtlasQuestGiverState(player?.quests, point.id === 'story-wizard') : null;
         return { id: point.id, name: point.label, x: point.x, z: point.z, category, instanceId: '',
-            ...(questState || {}), color: category === 'quests' ? point.color : undefined,
+            ...(questState || {}), color: point.color,
             purpose: portal ? 'Fourfold Portal to the shared Dark Realm expedition. This marker is the town entrance.' : SERVICE_PURPOSE[point.id],
             availability: portal ? (getResonancePortalState(player).eligible ? 'Portal attuned: approach to enter.' :
                 'Requires level 100 and personally claimed repairs of all four crystals. Speak to Ilyra.') : questState?.availability || 'Lanternhold · safe zone' };

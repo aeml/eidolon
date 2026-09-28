@@ -9,7 +9,7 @@
 import { WORLD_REGIONS, WORLD_GEOGRAPHY, getRegionWallSegments } from '../data/worldGeography.js';
 import { getInstanceAtlas, drawInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { AtlasCartography } from './AtlasCartography.js';
-import { drawAtlasLocations, drawAtlasFrame } from './AtlasMarkers.js';
+import { drawAtlasLocations, drawAtlasFrame, drawAtlasPlayer } from './AtlasMarkers.js';
 import { AtlasNavigation, isOverworldAtlas,
     isAtlasPartyMemberVisible, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
 
@@ -573,11 +573,10 @@ export class WorldMap {
                 if (member.id === player.id || !this.navigation.filters.has('party') || !isAtlasPartyMemberVisible(this.gameEngine, member)) continue;
                 const p = w2s(member.x, member.z); ctx.fillStyle = '#a4ddac'; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
             }
-            const p = w2s(player.position.x, player.position.z);
-            ctx.fillStyle = '#fff3ce'; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
             drawAtlasFrame(ctx, w, h, this.scale);
             const waypoint = this.navigation.waypoint, guidance = getWaypointGuidance(this.gameEngine, waypoint);
             if (guidance) drawAtlasWaypoint(ctx, w2s(waypoint.x, waypoint.z), { x: cx, y: cy }, Math.max(1, Math.min(w, h) / 2 - 28), `${Math.round(guidance.distance)}m ${guidance.direction}`);
+            drawAtlasPlayer(ctx, player, w2s);
             return;
         }
 
@@ -677,15 +676,6 @@ export class WorldMap {
             });
         }
 
-        // 10. Local player (drawn last so it's on top)
-        const pp = w2s(player.position.x, player.position.z);
-        ctx.fillStyle = '#00ffff';
-        ctx.beginPath();
-        ctx.arc(pp.x, pp.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
         if (isOverworldAtlas(this.gameEngine) && this.navigation) {
             this.visibleAtlasMarkers = drawAtlasLocations(ctx, this.navigation.locations, { project: w2s, width: w, height: h,
                 scale: this.scale, selectedId: this.navigation.selectedId, filters: this.navigation.filters, reservedLabels: realmLabelBoxes });
@@ -694,5 +684,7 @@ export class WorldMap {
             const guidance = getWaypointGuidance(this.gameEngine, waypoint);
             if (guidance) drawAtlasWaypoint(ctx, w2s(waypoint.x, waypoint.z), { x: cx, y: cy }, Math.max(1, Math.min(w, h) / 2 - 28), `${Math.round(guidance.distance)}m ${guidance.direction}`);
         }
+        // Local position/facing stays above labels and selected search areas.
+        drawAtlasPlayer(ctx, player, w2s);
     }
 }

@@ -6,7 +6,7 @@ import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
 import { getCasinoMapLandmarks, isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
-import { drawAtlasMarker } from './AtlasMarkers.js';
+import { drawAtlasMarker, drawAtlasPlayer } from './AtlasMarkers.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -51,6 +51,8 @@ const toMarkerColor = (hexColor) => {
         return 'rgba(94, 200, 255, 0.95)';
     case '#c88cff':
         return 'rgba(200, 140, 255, 0.95)';
+    case '#cfbfff':
+        return 'rgba(207, 191, 255, 0.95)';
     default:
         return 'rgba(242, 242, 242, 0.95)';
     }
@@ -58,6 +60,7 @@ const toMarkerColor = (hexColor) => {
 
 const TOWN_SERVICE_MARKERS = TOWN_SERVICE_POINTS.map((point) => ({
     id: point.id,
+    category: point.id === 'resonance-portal' ? 'entrances' : ['quest-giver', 'story-wizard'].includes(point.id) ? 'quests' : 'services',
     x: point.x,
     z: point.z,
     label: point.shortLabel,
@@ -157,6 +160,7 @@ export class Minimap {
         if (!entities) entities = [];
         this._tick++;
         this._renderBuffList();
+        const filters = this.gameEngine?.worldMap?.navigation?.filters;
 
         const ctx = this.ctx;
         const size = this.canvas.width;
@@ -214,6 +218,7 @@ export class Minimap {
 
         entities.forEach(entity => {
             if (entity === player) return;
+            if (filters && !filters.has('party') && partyIds.has(entity.id)) return;
             if (this.gameEngine?.currentInstanceType === 'casino' && !isCasinoMapGuestVisible(this.gameEngine, entity)) return;
 
             const cls = classifyEntity(entity);
@@ -258,7 +263,6 @@ export class Minimap {
         }
 
         // ---- Player dot (center) ----
-        const filters = this.gameEngine?.worldMap?.navigation?.filters;
         const marked = [];
         for (const location of getAtlasQuestLocations(this.gameEngine)) {
             if (filters && !filters.has(location.category)) continue;
@@ -269,13 +273,7 @@ export class Minimap {
         const waypoint = this.gameEngine?.worldMap?.navigation?.waypoint;
         const guidance = getWaypointGuidance(this.gameEngine, waypoint);
         if (guidance) drawAtlasWaypoint(ctx, toMap(waypoint.x, waypoint.z), { x: half, y: half }, half - 25, `${Math.round(guidance.distance)}m`);
-        ctx.fillStyle = '#00ff00';
-        ctx.beginPath();
-        ctx.arc(half, half, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        drawAtlasPlayer(ctx, player, toMap);
 
         // ---- Cardinal directions ----
         this._drawCardinals(ctx, half);
@@ -404,6 +402,7 @@ export class Minimap {
 
     /** Draw global party members that may be out of chunk range. */
     _drawGlobalPartyMembers(ctx, toMap, half, player) {
+        if (this.gameEngine?.worldMap?.navigation?.filters && !this.gameEngine.worldMap.navigation.filters.has('party')) return;
         const pd = this.gameEngine.uiManager && this.gameEngine.uiManager.partyData;
         if (!pd || !pd.members) return;
         for (const member of pd.members) {
@@ -456,7 +455,8 @@ export class Minimap {
         const markers = casino ? getCasinoMapLandmarks(this.gameEngine) : TOWN_SERVICE_MARKERS;
         markers.forEach((marker) => {
             const questGiver = ['quest-giver', 'story-wizard'].includes(marker.id);
-            if (questGiver && this.gameEngine?.worldMap?.navigation?.filters && !this.gameEngine.worldMap.navigation.filters.has('quests')) return;
+            const category = casino ? 'passages' : marker.category;
+            if (this.gameEngine?.worldMap?.navigation?.filters && !this.gameEngine.worldMap.navigation.filters.has(category)) return;
             const pos = toMap(marker.x, marker.z);
             const dx = pos.x - half;
             const dy = pos.y - half;
@@ -465,21 +465,10 @@ export class Minimap {
             const drawX = dist > maxRadius ? half + (dx / dist) * maxRadius : pos.x;
             const drawY = dist > maxRadius ? half + (dy / dist) * maxRadius : pos.y;
 
-            ctx.strokeStyle = marker.color;
-            ctx.lineWidth = marker.ring ? 2 : 1.5;
-            ctx.beginPath();
-            ctx.arc(drawX, drawY, marker.ring ? 8 : 6, 0, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.fillStyle = marker.color;
-            ctx.beginPath();
-            ctx.arc(drawX, drawY, 3, 0, Math.PI * 2);
-            ctx.fill();
-
             ctx.fillStyle = '#f2f2f2';
             ctx.fillText(marker.shortLabel || marker.label, drawX, drawY - 10);
-            if (questGiver) drawAtlasMarker(ctx, { category: 'quests', color: marker.color,
-                ...getAtlasQuestGiverState(this.gameEngine?.player?.quests, marker.id === 'story-wizard') }, { x: drawX, y: drawY });
+            drawAtlasMarker(ctx, { category, color: marker.color,
+                ...(questGiver ? getAtlasQuestGiverState(this.gameEngine?.player?.quests, marker.id === 'story-wizard') : {}) }, { x: drawX, y: drawY });
         });
     }
 

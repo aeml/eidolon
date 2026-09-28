@@ -24,9 +24,10 @@ location search/details/waypoints and cached overworld cartography with inspecte
 desktop/phone-sized captures, including a reproduced/fixed Canvas2D tile failure.
 Real interior/PvP maps and journal-tracked quests/saved discovery overlays now
 pass focused unit/browser checks, including desktop/phone-sized resize recovery,
-manual turn-in states and character/instance privacy. Next: final integrated
-input/render review, remaining service/facing consistency and the 1.14 release
-cut with mandatory gates and exact live verification. No partial
+manual turn-in states and character/instance privacy. Final integrated atlas/report
+routes and native browser touch gestures passed; service/facing consistency is
+implemented. Alpha1.14.0 version and cumulative notes are prepared. Next: mandatory
+release gates, push/Luna deployment watch and exact live verification. No partial
 milestone deployed.
 The global goal and later gates are still open.
 

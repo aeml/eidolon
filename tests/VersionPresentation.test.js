@@ -22,6 +22,17 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.14.0 documents atlas/report behavior and retains the populated-world boundary', () => {
+        const start = indexHtml.indexOf('data-version="1.14.0"'), previous = indexHtml.indexOf('data-version="1.13.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['an atlas for the journey', 'straight-line distance', 'manual turn-ins', 'instance/floor boundaries',
+            'draft until storage is acknowledged', 'not the completed populated-world', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+        for (const file of ['atlas-navigation', 'atlas-interiors', 'report-feedback']) {
+            expect(browserStages.find(stage => stage.name === 'interface').files).toContain(`tests/e2e/${file}.spec.js`);
+        }
+    });
     test('1.13.0 documents hidden-floor work without reducing the casino or promising universal FPS', () => {
         const start = indexHtml.indexOf('data-version="1.13.0"');
         const previous = indexHtml.indexOf('data-version="1.12.0"');
@@ -814,15 +825,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.13.0');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.14.0');
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.13.0');
-        expect(packageLock.packages[''].version).toBe('1.13.0');
-        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.13.0`');
+        expect(packageLock.version).toBe('1.14.0');
+        expect(packageLock.packages[''].version).toBe('1.14.0');
+        expect(rootReadme).toContain('Current in-game displayed version: `Alpha 1.14.0`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.13.0</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.14.0</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1233,7 +1244,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.13.0';
+        const expectedVersion = 'Alpha 1.14.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

@@ -12,12 +12,12 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             document.getElementById('start-screen').style.display = 'none';
             document.body.classList.toggle('mobile-mode', innerWidth < 600);
             const engine = { isMobile: innerWidth < 600, currentInstanceId: '', currentInstanceType: '',
-                player: { id: 'local', level: 30, position: { x: 0, z: 200 } },
+                player: { id: 'local', level: 30, position: { x: 0, z: 200 }, rotation: { x: 0, y: 0, z: 0, w: 1 } },
                 uiManager: { partyData: { members: [] } }, chunkManager: { getActiveEntities: () => [] },
                 inputManager: { clearInputState() { engine.clears++; } }, clears: 0, worldEvents: [] };
             const map = new WorldMap(engine); engine.worldMap = map;
             document.getElementById('btn-close-world-map').onclick = () => map.toggle();
-            for (const name of ['keydown', 'pointerdown', 'click']) window.addEventListener(name, () => engine.worldEvents.push(name));
+            for (const name of ['keydown', 'pointerdown', 'click', 'touchstart', 'touchmove', 'touchend']) window.addEventListener(name, () => engine.worldEvents.push(name));
             window.__atlas = { engine, map };
             map.toggle();
         });
@@ -86,6 +86,21 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.getByRole('button', { name: '? Turn in · The Scar That Grows Back', exact: true }).click();
         await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Complete Quest');
         await page.screenshot({ path: testInfo.outputPath('atlas-ready-turnin.png') });
+        if (width < 600) {
+            const box = await canvas.boundingBox(), x = Math.round(box.x + box.width / 2), y = Math.round(box.y + box.height * .6);
+            const cdp = await page.context().newCDPSession(page);
+            await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+            const initial = await page.evaluate(() => ({ scale: window.__atlas.map.scale, offset: window.__atlas.map.mapOffsetX }));
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 25, y }] });
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            expect(await page.evaluate(() => window.__atlas.map.mapOffsetX)).toBeGreaterThan(initial.offset);
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x - 20, y, id: 1 }, { x: x + 20, y, id: 2 }] });
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x - 40, y, id: 1 }, { x: x + 40, y, id: 2 }] });
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            expect(await page.evaluate(() => window.__atlas.map.scale)).toBeGreaterThan(initial.scale);
+            await cdp.detach();
+        }
         await page.evaluate(() => {
             const { engine, map } = window.__atlas;
             engine.currentInstanceId = 'private-dungeon'; engine.currentInstanceType = 'molten_core'; map.update(engine.player);

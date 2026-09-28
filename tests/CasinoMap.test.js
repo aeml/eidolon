@@ -79,7 +79,7 @@ test('minimap shows upstairs stairs even north of old town bounds, never the pub
         (x, z) => { positions.push([x, z]); return { x: 100, y: 100 }; },
         { position: { x: 0, y: 8, z: 98 } }, 100);
     expect(positions).toEqual([[0, 98]]);
-    expect(ctx.texts.map(entry => entry.text)).toEqual(['Downstairs']);
+    expect(ctx.texts.map(entry => entry.text)).toEqual(['Downstairs', '↔']);
 });
 
 test('casino minimap global party dots require a live guest on the selected floor', () => {
