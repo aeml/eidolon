@@ -1,5 +1,6 @@
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { formatQuestRewards } from './questRewards.js';
+import { writePreference } from './PreferenceStorage.js';
 
 class UIManagerFeedbackMethods {
     createDeathScreen() {
@@ -468,7 +469,7 @@ class UIManagerFeedbackMethods {
     /** Toggle the friend-online toast setting and persist it. */
     setFriendOnlineToastEnabled(enabled) {
         this.friendOnlineToastEnabled = enabled;
-        localStorage.setItem('eidolon.friendOnlineToast', String(enabled));
+        writePreference('eidolon.friendOnlineToast', String(enabled));
     }
 
     /** @returns {boolean} */

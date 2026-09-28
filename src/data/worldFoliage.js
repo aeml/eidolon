@@ -72,6 +72,10 @@ function randomGenerator(seed) {
 }
 
 export function isProceduralFoliagePlacementClear(region, x, z) {
+    const sites = region === 'water' ? WATER_LOCATIONS : region === 'fire' ? FIRE_LOCATIONS : [];
+    const paths = region === 'water' ? WATER_PATHS : region === 'fire' ? FIRE_PATHS : [];
+    if (sites.some(site => Math.hypot(x - site.x, z - site.z) <= site.radius + 8)) return false;
+    if (paths.some(path => distanceToPath(x, z, path.points) <= path.width / 2 + 8)) return false;
     for (const [clearX, clearZ, radius] of FOLIAGE_HAZARD_CLEARINGS[region] || []) {
         if (Math.hypot(x - clearX, z - clearZ) <= radius + 8) return false;
     }
@@ -110,3 +114,5 @@ export function createProceduralFoliagePlacements(recipe) {
     }
     return placements;
 }
+import { WATER_LOCATIONS, FIRE_LOCATIONS, WATER_PATHS, FIRE_PATHS } from './elementalPopulation.js';
+import { distanceToPath } from './worldPopulation.js';

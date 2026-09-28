@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 
-function pathTexture() {
+function pathTexture(color = [98, 88, 70], name = 'Earth') {
     const size = 128, pixels = new Uint8Array(size * size * 4);
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
         const seed = (Math.imul(x + 17, 73856093) ^ Math.imul(y + 31, 19349663)) >>> 0;
@@ -11,7 +11,7 @@ function pathTexture() {
         const rut = Math.exp(-Math.pow((x / size - .29) * 23, 2)) + Math.exp(-Math.pow((x / size - .71) * 23, 2));
         const shade = .79 + grain * .22 - rut * .025;
         const i = (y * size + x) * 4;
-        pixels[i] = 98 * shade; pixels[i + 1] = 88 * shade; pixels[i + 2] = 70 * shade;
+        pixels[i] = color[0] * shade; pixels[i + 1] = color[1] * shade; pixels[i + 2] = color[2] * shade;
         pixels[i + 3] = 185 * wear;
     }
     const texture = new THREE.DataTexture(pixels, size, size);
@@ -19,7 +19,7 @@ function pathTexture() {
     texture.wrapS = THREE.ClampToEdgeWrapping; texture.wrapT = THREE.RepeatWrapping;
     texture.magFilter = THREE.LinearFilter; texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.generateMipmaps = true; texture.needsUpdate = true;
-    texture.name = 'Earth path · worn loam and cart ruts';
+    texture.name = `${name} path · worn ground and cart ruts`;
     return texture;
 }
 
@@ -67,11 +67,15 @@ export function createWorldPathGeometry(path) {
 }
 
 export function createEarthPathNetwork() {
-    const group = new THREE.Group(); group.name = 'Earth authored paths';
-    const material = new THREE.MeshStandardMaterial({ map: pathTexture(), roughness: 1,
+    return createWorldPathNetwork(EARTH_PATHS, { name: 'Earth' });
+}
+
+export function createWorldPathNetwork(paths, { name = 'World', color } = {}) {
+    const group = new THREE.Group(); group.name = `${name} authored paths`;
+    const material = new THREE.MeshStandardMaterial({ map: pathTexture(color, name), roughness: 1,
         transparent: true, alphaTest: .025, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
-    material.name = 'Earth worn-path surface';
-    for (const path of EARTH_PATHS) {
+    material.name = `${name} worn-path surface`;
+    for (const path of paths) {
         const mesh = new THREE.Mesh(createWorldPathGeometry(path), material);
         mesh.name = `world-path:${path.id}`; mesh.receiveShadow = true;
         mesh.userData.worldPathId = path.id;

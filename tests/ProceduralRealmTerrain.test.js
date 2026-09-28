@@ -10,7 +10,7 @@ import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
 const TERRAIN_KEYS = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean', 'sky']);
 
 describe('procedural dark-fantasy realm terrain', () => {
-    test.each(['town', 'earth'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
+    test.each(['town', 'earth', 'water', 'fire'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
         const high = createProceduralTerrainMaterial(key);
         const duplicate = createProceduralTerrainMaterial(key);
         const low = createProceduralTerrainMaterial(key, { quality: 'low' });
@@ -208,7 +208,26 @@ describe('procedural dark-fantasy realm terrain', () => {
         texture.dispose();
     });
 
-    test.each(['town', 'earth'])('%s tile edges avoid a hard color discontinuity at texture wrapping', (key) => {
+    test.each(['water', 'fire'])('%s ordinary ground stays muted so genuine hazards remain distinguishable', (key) => {
+        const material = createProceduralTerrainMaterial(key);
+        const { data } = material.map.image;
+        const colors = new Set();
+        let brightest = 0, saturation = 0;
+        for (let offset = 0; offset < data.length; offset += 4) {
+            const rgb = Array.from(data.slice(offset, offset + 3));
+            brightest = Math.max(brightest, ...rgb);
+            saturation = Math.max(saturation, Math.max(...rgb) - Math.min(...rgb));
+            colors.add(rgb.join(','));
+        }
+        expect(brightest).toBeLessThan(160);
+        expect(saturation).toBeLessThan(35);
+        expect(colors.size).toBeGreaterThan(200);
+        expect(material.emissiveIntensity).toBe(0);
+        expect(material.metalness).toBeLessThan(.1);
+        material.map.dispose(); material.dispose();
+    });
+
+    test.each(['town', 'earth', 'water', 'fire'])('%s tile edges avoid a hard color discontinuity at texture wrapping', (key) => {
         const texture = createProceduralTerrainTexture(key);
         const { data, width } = texture.image;
         let seamDifference = 0;

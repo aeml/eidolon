@@ -1,6 +1,9 @@
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
+import { WATER_PATHS, FIRE_PATHS } from '../data/elementalPopulation.js';
+
+const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS });
 
 const INKS = Object.freeze({
     earth: ['#26352d', '#687260', '#b0ac7c'],
@@ -53,9 +56,9 @@ export class AtlasCartography {
                 ctx.lineTo(x - size * .7, y + size * .5); ctx.closePath(); ctx.fill(); ctx.stroke();
             }
         }
-        if (id === 'earth') {
-            ctx.strokeStyle = '#b4a481'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-            for (const path of EARTH_PATHS) {
+        if (PATHS[id]) {
+            ctx.strokeStyle = id === 'water' ? '#b3c6c7' : '#b4a481'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+            for (const path of PATHS[id]) {
                 ctx.lineWidth = Math.max(1, path.width * sx);
                 ctx.beginPath();
                 path.points.forEach(([x, z], i) => {

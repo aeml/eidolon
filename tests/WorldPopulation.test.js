@@ -11,7 +11,8 @@ test('all eight scenery recipes render bounded per-location batches with shared 
     expect(high.children.map(site => site.userData.locationId)).toEqual(EARTH_LOCATIONS.map(site => site.id));
     expect(high.userData.walkFootprints).toEqual(low.userData.walkFootprints);
     const generated = JSON.parse(readFileSync(new URL('../server/internal/game/content/world-population-footprints.json', import.meta.url), 'utf8'));
-    expect(generated.footprints).toEqual(high.userData.walkFootprints.map(({ siteId, x, z, width, depth }) => ({ siteId, x, z, width, depth })));
+    expect(generated.footprints.filter(f => EARTH_LOCATIONS.some(s => s.id === f.siteId)))
+        .toEqual(high.userData.walkFootprints.map(({ siteId, x, z, width, depth }) => ({ siteId, x, z, width, depth })));
     expect(generated.readings).toEqual(WORLD_READINGS.map(({ id, name, x, z }) => ({ id, name, x, z })));
     for (const f of high.userData.walkFootprints) {
         expect(f.angle).toBe(0);

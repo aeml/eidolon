@@ -386,7 +386,7 @@ describe('WorldGenerator shadow setup', () => {
         await generator.loadBuildings(0, 0);
 
         expect(loadModelSpy).not.toHaveBeenCalled();
-        expect(generator.scene.add).toHaveBeenCalledTimes(7);
+        expect(generator.scene.add).toHaveBeenCalledTimes(8);
         const [paths, locations] = generator.scene.add.mock.calls.slice(0, 2).map(([object]) => object);
         expect(paths.name).toBe('Earth authored paths');
         expect(locations.name).toBe('Earth authored locations');
@@ -395,14 +395,19 @@ describe('WorldGenerator shadow setup', () => {
         // the existing 22 town colliders; entry now uses its dialogue.
         const earthSolids = locations.userData.walkFootprints.length;
         expect(earthSolids).toBe(27);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + earthSolids + 13);
-        const doorCollider = generator.collisionManager.addCollider.mock.calls[earthSolids][0];
+        const elemental = generator.scene.add.mock.calls[2];
+        expect(elemental.map(group => group.name)).toEqual(['water authored locations', 'fire authored locations', 'Water authored paths', 'Fire authored paths']);
+        expect(elemental.slice(0, 2).map(group => group.children.length)).toEqual([8, 8]);
+        const worldSolids = earthSolids + elemental.slice(0, 2).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
+        expect(worldSolids).toBe(89);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + worldSolids + 13);
+        const doorCollider = generator.collisionManager.addCollider.mock.calls[worldSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
         expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -21.65))).toBe(true);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -19))).toBe(false);
         expect(generator.collisionManager.addOrientedCollider).not.toHaveBeenCalled();
-        const structures = generator.scene.add.mock.calls.slice(2).map(([object]) => object);
+        const structures = generator.scene.add.mock.calls.slice(3).map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
             'casino',
             'trading_post',

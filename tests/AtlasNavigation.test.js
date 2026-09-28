@@ -7,9 +7,9 @@ import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
 
 const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } }, currentInstanceId: '', currentInstanceType: '' });
 
-test('public Earth places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
+test('public realm places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
     const ge = engine(), sites = getAtlasWorldLocations(ge);
-    expect(sites).toHaveLength(8);
+    expect(sites).toHaveLength(20);
     expect(sites.every(site => site.category === 'places' && site.symbol !== '✓')).toBe(true);
     expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 750, z: 200 });
     expect(sites.some(site => site.id === 'keepers-empty-house' || site.id === 'returning-scar')).toBe(false);
@@ -74,7 +74,7 @@ test('search, category filters, selection, waypoint clearing and scene transitio
         _redrawIfVisible: jest.fn(), updateZoomLabel: jest.fn(), showWorldOverview: jest.fn() };
     const navigation = new AtlasNavigation(map);
     navigation.search.value = 'molten'; navigation.search.dispatchEvent(new Event('input'));
-    expect(navigation.results.querySelectorAll('button')).toHaveLength(1);
+    expect(navigation.results.querySelectorAll('button')).toHaveLength(2);
     navigation.results.querySelector('button').click();
     expect([map.cameraX, map.cameraZ]).toEqual([-2400, 200]);
     expect(document.activeElement.textContent).toBe('Molten Core');
@@ -83,7 +83,9 @@ test('search, category filters, selection, waypoint clearing and scene transitio
     expect(navigation.waypoint.id).toBe('molten_core');
     expect(navigation.status.textContent).toContain('2400m W');
     const entries = [...navigation.root.querySelectorAll('.atlas-filters label')].find(label => label.textContent.includes('Entrances')).querySelector('input');
-    entries.click(); expect(navigation.results.textContent).toContain('No matching');
+    entries.click();
+    expect(navigation.results.querySelectorAll('button')).toHaveLength(1);
+    expect(navigation.results.textContent).toContain('Molten Core Approach');
     ge.currentInstanceId = 'other'; navigation.refresh();
     expect(navigation.detail.hidden).toBe(true);
     expect(navigation.results.textContent).toContain('Current instance');

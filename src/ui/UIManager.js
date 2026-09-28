@@ -1,4 +1,5 @@
 import { RARITY } from '../core/ItemSystem.js';
+import { readPreference } from './PreferenceStorage.js';
 import { getAbilityManaCost } from '../core/AbilityEconomy.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
@@ -225,13 +226,13 @@ export class UIManager {
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
-        this.assetLastSyncedVersionValue = localStorage.getItem('eidolon.assetLastSyncedVersion') || null;
+        this.assetLastSyncedVersionValue = readPreference('eidolon.assetLastSyncedVersion') || null;
         this.assetPackStatuses = {
             'core-models': 'cached',
             'dungeon-models': 'cached',
             'environment-textures': 'cached'
         };
-        this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
+        this.graphicsQuality = readPreference('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
             this.graphicsQualitySelect.addEventListener('change', () => {
@@ -240,7 +241,7 @@ export class UIManager {
             });
         }
 
-        const storedBrightnessValue = localStorage.getItem('eidolon.graphicsBrightness');
+        const storedBrightnessValue = readPreference('eidolon.graphicsBrightness');
         const storedBrightness = Number(storedBrightnessValue);
         this.graphicsBrightness = storedBrightnessValue !== null && storedBrightnessValue.trim() !== '' && Number.isFinite(storedBrightness)
             ? Math.max(0, Math.min(100, storedBrightness)) : 50;
@@ -252,7 +253,7 @@ export class UIManager {
         }
         this.updateBrightnessLabel();
 
-        const storedUiScaleValue = localStorage.getItem(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale');
+        const storedUiScaleValue = readPreference(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale');
         const storedUiScale = Number(storedUiScaleValue);
         this.uiScale = storedUiScaleValue !== null && Number.isFinite(storedUiScale)
             ? Math.max(this.isMobile ? 100 : 85, Math.min(125, storedUiScale))
@@ -271,7 +272,7 @@ export class UIManager {
             this.phoneSettings = new PhoneSettingsUI(this.settingsScreen);
         }
 
-        this.controlHintLevel = this.normalizeControlHintLevel(localStorage.getItem('eidolon.controlHintLevel'));
+        this.controlHintLevel = this.normalizeControlHintLevel(readPreference('eidolon.controlHintLevel'));
         if (this.controlHintLevelSelect) {
             this.controlHintLevelSelect.value = this.controlHintLevel;
             this.controlHintLevelSelect.addEventListener('change', () => {
@@ -280,7 +281,7 @@ export class UIManager {
         }
         this.applyControlHintLevel();
 
-        const storedAutoLoot = localStorage.getItem('eidolon.autoLootEnabled');
+        const storedAutoLoot = readPreference('eidolon.autoLootEnabled');
         this.autoLootEnabled = storedAutoLoot === null ? false : storedAutoLoot === 'true';
         if (this.autoLootToggle) {
             this.autoLootToggle.checked = this.autoLootEnabled;
@@ -313,7 +314,7 @@ export class UIManager {
         }
         this.updateAudioVolumeLabel();
 
-        const storedCameraShake = localStorage.getItem('eidolon.cameraShakeEnabled');
+        const storedCameraShake = readPreference('eidolon.cameraShakeEnabled');
         this.cameraShakeEnabled = storedCameraShake === null ? false : storedCameraShake === 'true';
         if (this.cameraShakeToggle) {
             this.cameraShakeToggle.checked = this.cameraShakeEnabled;
@@ -325,18 +326,18 @@ export class UIManager {
         this.cameraShakeStrengthSlider = document.getElementById('camera-shake-strength');
         this.cameraShakeStrengthLabel = document.getElementById('camera-shake-strength-value');
         let storedCameraStrength = null;
-        try { storedCameraStrength = localStorage.getItem('eidolon.cameraShakeStrength'); } catch { /* Use default. */ }
+        storedCameraStrength = readPreference('eidolon.cameraShakeStrength');
         this.setCameraShakeStrength(storedCameraStrength === null ? 50 : Number(storedCameraStrength));
         this.cameraShakeStrengthSlider?.addEventListener('input', () => {
             this.setCameraShakeStrength(Number(this.cameraShakeStrengthSlider.value));
         });
 
         // Friend-online toast setting (0.38.3) — defaults to enabled.
-        const storedFriendToast = localStorage.getItem('eidolon.friendOnlineToast');
+        const storedFriendToast = readPreference('eidolon.friendOnlineToast');
         this.friendOnlineToastEnabled = storedFriendToast === null ? true : storedFriendToast === 'true';
         // Rate-limit map: username → timestamp of last toast shown.
         this._friendToastLastShown = new Map();
-        const storedFullscreen = localStorage.getItem('eidolon.fullscreenEnabled');
+        const storedFullscreen = readPreference('eidolon.fullscreenEnabled');
         this.fullscreenEnabled = storedFullscreen === null ? false : storedFullscreen === 'true';
         if (this.fullscreenToggle) {
             this.fullscreenToggle.checked = this.fullscreenEnabled;

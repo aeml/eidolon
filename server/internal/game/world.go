@@ -343,8 +343,10 @@ func (w *World) spawnSnowWorld() {
 	maxX := 1000.0 - 5.0
 
 	for i := 0; i < count; i++ {
-		x := minX + rand.Float64()*(maxX-minX)
-		z := minZ + rand.Float64()*(maxZ-minZ)
+		x, z, clear := rollWorldPopulationSpawn(minX, maxX, minZ, maxZ)
+		if !clear {
+			continue
+		}
 
 		level := 50 + rand.Intn(6)
 		profile := overworldEnemyCombatProfile("MountainTroll", level, false)
@@ -382,8 +384,10 @@ func (w *World) spawnSnowWorld() {
 	agMaxZ := -1000.0 - 5.0
 
 	for i := 0; i < agCount; i++ {
-		x := minX + rand.Float64()*(maxX-minX)
-		z := agMinZ + rand.Float64()*(agMaxZ-agMinZ)
+		x, z, clear := rollWorldPopulationSpawn(minX, maxX, agMinZ, agMaxZ)
+		if !clear {
+			continue
+		}
 		level := 55 + rand.Intn(6)
 		profile := overworldEnemyCombatProfile("AquaGolem", level, false)
 
@@ -420,8 +424,10 @@ func (w *World) spawnSnowWorld() {
 	sirenMaxZ := -1400.0 - 5.0
 
 	for i := 0; i < sirenCount; i++ {
-		x := minX + rand.Float64()*(maxX-minX)
-		z := sirenMinZ + rand.Float64()*(sirenMaxZ-sirenMinZ)
+		x, z, clear := rollWorldPopulationSpawn(minX, maxX, sirenMinZ, sirenMaxZ)
+		if !clear {
+			continue
+		}
 		level := 60 + rand.Intn(6)
 		profile := overworldEnemyCombatProfile("Siren", level, false)
 
@@ -458,8 +464,10 @@ func (w *World) spawnSnowWorld() {
 	fgMaxZ := -1800.0 - 5.0
 
 	for i := 0; i < fgCount; i++ {
-		x := minX + rand.Float64()*(maxX-minX)
-		z := fgMinZ + rand.Float64()*(fgMaxZ-fgMinZ)
+		x, z, clear := rollWorldPopulationSpawn(minX, maxX, fgMinZ, fgMaxZ)
+		if !clear {
+			continue
+		}
 		level := 65 + rand.Intn(6)
 		profile := overworldEnemyCombatProfile("FrostGuardian", level, false)
 
@@ -506,8 +514,10 @@ func (w *World) spawnFireRealm() {
 	// Helper to spawn enemies in a Fire Realm area
 	spawnFireArea := func(subType string, minX, maxX float64, baseLevel int) {
 		for i := 0; i < count; i++ {
-			x := minX + rand.Float64()*(maxX-minX)
-			z := minZ + rand.Float64()*(maxZ-minZ)
+			x, z, clear := rollWorldPopulationSpawn(minX, maxX, minZ, maxZ)
+			if !clear {
+				continue
+			}
 			level := baseLevel + rand.Intn(6)
 			profile := overworldEnemyCombatProfile(subType, level, false)
 

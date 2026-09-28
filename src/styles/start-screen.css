@@ -244,6 +244,25 @@
     text-align: center;
 }
 
+.auth-session-help {
+    color: var(--entry-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.auth-session-help summary {
+    cursor: pointer;
+    padding: 8px 0;
+    color: var(--entry-gold);
+}
+
+.auth-session-help summary:focus-visible {
+    outline: 2px solid var(--entry-gold);
+    outline-offset: 3px;
+}
+
+.auth-session-help p { margin: 8px 0; }
+
 .auth-project-note a {
     display: inline-block;
     padding: 4px 6px;

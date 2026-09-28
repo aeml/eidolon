@@ -17,6 +17,17 @@ describe('phone settings routes', () => {
         input = document.getElementById('auto-loot-enabled');
         ui = new PhoneSettingsUI(root);
     });
+    test('blocked storage keeps touch controls usable for this session', () => {
+        const read = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('Blocked'); });
+        const write = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new DOMException('Blocked'); });
+        try {
+            new PhoneSettingsUI(root);
+            const hand = root.querySelector('#phone-control-hand');
+            expect(hand.value).toBe('right');
+            hand.value = 'left'; hand.dispatchEvent(new Event('change'));
+            expect(document.documentElement.dataset.phoneControlHand).toBe('left');
+        } finally { read.mockRestore(); write.mockRestore(); }
+    });
     test('category navigation is outside the scroller and reuses live controls', () => {
         expect(body.contains(root.querySelector('.phone-settings-tabs'))).toBe(false);
         const change = jest.fn(); input.addEventListener('change', change);

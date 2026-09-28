@@ -155,6 +155,20 @@ describe('UIManager settings', () => {
         localStorage.clear();
     });
 
+    test.each([false, true])('HUD and session settings work when storage is unavailable (mobile=%s)', mobile => {
+        buildDom();
+        const reads = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('Blocked', 'SecurityError'); });
+        const writes = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new DOMException('Blocked', 'SecurityError'); });
+        try {
+            const ui = new UIManager(mobile);
+            ui.onAutoLootChange = jest.fn();
+            ui.setAutoLootEnabled(true);
+            expect(ui.getAutoLootEnabled()).toBe(true);
+            expect(ui.onAutoLootChange).toHaveBeenCalledWith(true);
+            expect(() => ui.setCameraShakeEnabled(false)).not.toThrow();
+        } finally { reads.mockRestore(); writes.mockRestore(); }
+    });
+
     test('reads auto-loot setting from localStorage', () => {
         localStorage.setItem('eidolon.autoLootEnabled', 'true');
         buildDom();

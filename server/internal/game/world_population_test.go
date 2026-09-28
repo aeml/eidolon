@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestWorldPopulationSpawnSolids(t *testing.T) {
 	for _, f := range worldPopulationFootprints {
@@ -18,7 +21,8 @@ func TestWorldPopulationSpawnSolids(t *testing.T) {
 
 func TestWorldPopulationReadingsSpawnAsNoncombatObjects(t *testing.T) {
 	w := NewWorld(nil)
-	for _, id := range []string{"world-reading-bellkeepers-cairn", "world-reading-unbound-milestone"} {
+	for _, id := range []string{"world-reading-bellkeepers-cairn", "world-reading-unbound-milestone",
+		"world-reading-soundings-stone", "world-reading-unclaimed-names", "world-reading-commons-register", "world-reading-counterseal-stone"} {
 		entity := w.Entities[id]
 		if entity == nil || entity.Type != TypeNPC || entity.SubType != "WorldReading" || entity.InstanceID != "" || entity.Health != 0 {
 			t.Fatalf("missing/non-passive optional reading: %s", id)
@@ -29,11 +33,52 @@ func TestWorldPopulationReadingsSpawnAsNoncombatObjects(t *testing.T) {
 	}
 }
 
+func TestWorldPopulationRegionalEnemiesKeepCountsAndClearSolids(t *testing.T) {
+	w := NewWorld(nil)
+	counts := map[string]int{}
+	for _, entity := range w.Entities {
+		if entity.Type != TypeEnemy || entity.InstanceID != "" {
+			continue
+		}
+		if entity.Z >= -600 && entity.X >= -1000 {
+			continue
+		}
+		// Story combat anchors are separate authored encounters, not one of
+		// the ordinary regional rolls whose density this test protects.
+		if !strings.HasPrefix(entity.ID, entity.SubType+"-") {
+			continue
+		}
+		if !worldPopulationSpawnAllowed(entity.SpawnX, entity.SpawnZ) {
+			t.Fatalf("regional enemy spawned in scenery: %s", entity.SubType)
+		}
+		counts[entity.SubType]++
+	}
+	for _, kind := range []string{"MountainTroll", "AquaGolem", "Siren", "FrostGuardian"} {
+		if counts[kind] != 300 {
+			t.Fatalf("changed Water count %s: %d", kind, counts[kind])
+		}
+	}
+	for _, kind := range []string{"SandstormDjinn", "MagmaGolem", "ScorchedWraith", "InfernalBehemoth", "PhoenixSentinel"} {
+		if counts[kind] != 200 {
+			t.Fatalf("changed Fire count %s: %d", kind, counts[kind])
+		}
+	}
+	f := worldPopulationFootprints[0]
+	if _, _, ok := rollWorldPopulationSpawn(f.X-.01, f.X+.01, f.Z-.01, f.Z+.01); ok {
+		t.Fatal("accepted an obstructed region")
+	}
+}
+
 func TestWorldPopulationEliteSceneryRecovery(t *testing.T) {
 	w := &World{}
 	for _, f := range worldPopulationFootprints {
 		// Test each solid with the real elite type/sector that can reach it.
+		// Only Earth currently has randomly spawned rectangular-sector elites.
+		if f.Z < -600 || f.X < -1000 {
+			continue
+		}
 		kind, minX, maxX := "Skeleton", -200.0, 200.0
+		minZ, maxZ := -600.0, 1000.0
 		switch {
 		case f.X < -200:
 			kind, minX, maxX = "Imp", -600, -200
@@ -46,8 +91,8 @@ func TestWorldPopulationEliteSceneryRecovery(t *testing.T) {
 		if kind == "Skeleton" && lanternholdSkeletonLevel(f.X, f.Z) < 10 {
 			continue
 		}
-		x, z, ok := w.clearEliteScenerySpawn(kind, f.X, f.Z, minX, maxX, -600, 1000)
-		if !ok || !worldPopulationSpawnAllowed(x, z) || !lanternholdAdvancedSpawnAllowed(kind, x, z) || x < minX || x > maxX {
+		x, z, ok := w.clearEliteScenerySpawn(kind, f.X, f.Z, minX, maxX, minZ, maxZ)
+		if !ok || !worldPopulationSpawnAllowed(x, z) || !lanternholdAdvancedSpawnAllowed(kind, x, z) || x < minX || x > maxX || z < minZ || z > maxZ {
 			t.Fatalf("could not preserve elite at %s: %v %v %v", f.SiteID, x, z, ok)
 		}
 	}

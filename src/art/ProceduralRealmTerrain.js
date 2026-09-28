@@ -18,13 +18,13 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     water: terrainDefinition(
         'moonfrost-drowned-ice', 'water', 'Moonfrost Expanse',
-        'moonlit blue ice, drowned basalt shadows, rime dust, and branching fractures', 0x39c56a11,
-        { roughness: 0.46, metalness: 0.28, repeat: [64, 52], tint: 0xc8e6f0 }
+        'frost-dusted basalt, weathered blue-grey ice, wind-swept rime, and subdued mineral grains', 0x39c56a11,
+        { roughness: 0.9, metalness: 0.03, repeat: [64, 52], tint: 0xe0e6e8 }
     ),
     fire: terrainDefinition(
         'cinder-waste-blackglass', 'fire', 'Cinder Wastes',
-        'charred blackglass plates, ash pockets, ember seams, and furnace-orange faults', 0xa21f3c87,
-        { roughness: 0.82, metalness: 0.12, repeat: [70, 56], tint: 0xefa075, emissive: 0x210604, emissiveIntensity: 0.22 }
+        'cooled volcanic rock, soft ash pockets, iron-rich mineral grains, and wind-scoured basalt', 0xa21f3c87,
+        { roughness: 0.96, metalness: 0.04, repeat: [70, 56], tint: 0xd9c8b6 }
     ),
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
@@ -158,28 +158,26 @@ function sampleTown(x, y, size, definition, palette) {
     return stone.map((channel, index) => Math.round(joint[index] + (channel * bevel - joint[index]) * coverage));
 }
 
-function sampleWater(x, y, _size, definition, palette) {
-    const noise = hash2d(x, y, definition.seed);
-    const broad = hash2d(Math.floor(x / 9), Math.floor(y / 9), definition.seed ^ 0x4b19);
-    const fracture = Math.abs(
-        Math.sin(x * 0.061 + Math.sin(y * 0.047) * 2.8)
-        + Math.cos(y * 0.073 + Math.sin(x * 0.031) * 2.2)
-    );
-    if (fracture < 0.09) return mixColor(palette.shadow, palette.accent, 0.42 + noise * 0.22);
-    const rime = noise > 0.91;
-    return mixColor(palette.ground, rime ? 0xd6edf2 : palette.midtone, 0.12 + broad * 0.25);
+function sampleWater(x, y, _size, definition) {
+    // Walkable frost, not a continuous glowing crack network that reads as
+    // open water. Actual pools and combat hazards own their brighter effects.
+    const broad = periodicNoise(x, y, 14, definition.seed);
+    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x4b19);
+    const grain = hash2d(x, y, definition.seed ^ 0xb03);
+    const frost = Math.max(0, (broad - .35) * .6);
+    const rock = mixColor(0x454f54, 0x718087, .2 + grit * .28 + grain * .3);
+    const rime = colorChannels(0xa2aba8);
+    return rock.map((value, index) => Math.round(value + (rime[index] - value) * frost));
 }
 
-function sampleFire(x, y, _size, definition, palette) {
-    const noise = hash2d(x, y, definition.seed);
-    const plate = hash2d(Math.floor(x / 11), Math.floor(y / 11), definition.seed ^ 0x31ef);
-    const fault = Math.abs(
-        Math.sin(x * 0.052 + Math.sin(y * 0.019) * 3.6)
-        + Math.cos(y * 0.067 + plate * 1.4)
-    );
-    if (fault < 0.12) return mixColor(0xff5420, palette.accent, 0.4 + noise * 0.48);
-    const ash = noise > 0.88;
-    return mixColor(palette.shadow, ash ? palette.midtone : palette.ground, 0.22 + plate * 0.28);
+function sampleFire(x, y, _size, definition) {
+    const broad = periodicNoise(x, y, 13, definition.seed);
+    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x31ef);
+    const grain = hash2d(x, y, definition.seed ^ 0xc19);
+    const ash = Math.max(0, (broad - .38) * .45);
+    const rock = mixColor(0x363431, 0x62574c, .16 + grit * .3 + grain * .32);
+    const dust = colorChannels(0x898276);
+    return rock.map((value, index) => Math.round(value + (dust[index] - value) * ash));
 }
 
 function sampleAir(x, y, _size, definition, palette) {
@@ -275,7 +273,7 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
 // bright magical mark is not a raised bump. Evaluate one periodic canonical
 // field so Low and High retain the same stone/soil footprint and normal strength.
 function createTerrainSurfaceMaps(key, quality) {
-    if (key !== 'town' && key !== 'earth') return null;
+    if (!['town', 'earth', 'water', 'fire'].includes(key)) return null;
     const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
     const canonicalSize = 256;
     const height = new Float32Array(canonicalSize * canonicalSize);
@@ -289,11 +287,17 @@ function createTerrainSurfaceMaps(key, quality) {
                 const coverage = bevel * bevel * (3 - 2 * bevel);
                 height[index] = .06 + coverage * (.55 + stoneNoise * .12);
                 roughness[index] = .98 - coverage * (.20 + stoneNoise * .06);
-            } else {
+            } else if (key === 'earth') {
                 const broad = periodicNoise(x, y, 8, definition.seed);
                 const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
                 height[index] = .2 + broad * .16 + grit * .065;
                 roughness[index] = .86 + broad * .12;
+            } else {
+                const frost = key === 'water';
+                const broad = periodicNoise(x, y, frost ? 14 : 13, definition.seed);
+                const grit = periodicNoise(x, y, 32, definition.seed ^ (frost ? 0x4b19 : 0x31ef));
+                height[index] = .2 + broad * .17 + grit * .12;
+                roughness[index] = frost ? .72 + broad * .23 : .85 + broad * .13;
             }
         }
     }

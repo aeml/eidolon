@@ -115,11 +115,13 @@ export class NetworkManager {
      * message queue.  Time messages are stored separately for perf.
      */
     setupListeners() {
+        const socket = this.socket;
         // ArrayBuffer avoids one asynchronous FileReader per 30 Hz state
         // packet. Besides reducing queue latency, synchronous decoding keeps
         // authoritative movement frames in WebSocket transport order.
         this.socket.binaryType = 'arraybuffer';
         this.socket.onmessage = (event) => {
+            if (this.isExpectedDisconnect || this.socket !== socket) return;
             try {
                 let data = event.data;
 
@@ -131,7 +133,9 @@ export class NetworkManager {
                 if (data instanceof Blob) {
                     this._binaryDecodeChain = this._binaryDecodeChain
                         .then(() => data.arrayBuffer())
-                        .then((buffer) => this._decodeBinaryState(buffer))
+                        .then((buffer) => {
+                            if (!this.isExpectedDisconnect && this.socket === socket) this._decodeBinaryState(buffer);
+                        })
                         .catch((error) => console.error('Decompression error:', error));
                     return;
                 }
@@ -171,6 +175,7 @@ export class NetworkManager {
         };
 
         this.socket.onclose = () => {
+            if (this.socket !== socket) return;
             console.log('Disconnected from server.');
             if (!this.isExpectedDisconnect) {
                 this._scheduleReconnect();
@@ -178,6 +183,7 @@ export class NetworkManager {
         };
 
         this.socket.onerror = (error) => {
+            if (this.isExpectedDisconnect || this.socket !== socket) return;
             console.error('WebSocket error:', error);
         };
     }
@@ -301,6 +307,7 @@ export class NetworkManager {
      * Calls onReconnectFailed when max attempts are exhausted.
      */
     _scheduleReconnect() {
+        if (this.isExpectedDisconnect) return;
         if (this._reconnectAttempts >= this._maxReconnectAttempts) {
             console.log('Max reconnect attempts reached. Giving up.');
             this._reconnecting = false;
@@ -326,6 +333,7 @@ export class NetworkManager {
      * Falls back to onReconnectFailed if no URL or no token is available.
      */
     _doReconnect() {
+        if (this.isExpectedDisconnect) return;
         if (!this.reconnectUrl) {
             this._reconnecting = false;
             if (this.onReconnectFailed) this.onReconnectFailed();
@@ -344,6 +352,7 @@ export class NetworkManager {
         this.socket = newSocket;
 
         newSocket.onopen = () => {
+            if (this.isExpectedDisconnect || this.socket !== newSocket) return;
             const token = this.getResumeToken ? this.getResumeToken() : null;
             if (!token) {
                 // No token available — cannot resume; tell the caller.
@@ -359,14 +368,30 @@ export class NetworkManager {
         };
 
         newSocket.onclose = () => {
+            if (this.socket !== newSocket) return;
             // Failed before open — retry.
             this._scheduleReconnect();
         };
 
         newSocket.onerror = (err) => {
+            if (this.isExpectedDisconnect || this.socket !== newSocket) return;
             console.warn('Reconnect socket error:', err);
             // onclose will fire next; let it drive the retry.
         };
+    }
+
+    dispose() {
+        this.isExpectedDisconnect = true;
+        clearTimeout(this._reconnectTimer); this._reconnectTimer = null;
+        this._reconnecting = false;
+        const socket = this.socket; this.socket = null;
+        this.onReconnectFailed = null; this.onResumeSuccess = null;
+        this.onConnectionStateChange = null; this.getResumeToken = null;
+        this.messageQueue.length = 0; this.latestServerTime = null;
+        if (socket) {
+            socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null;
+            socket.close?.();
+        }
     }
 
     // ------------------------------------------------------------------

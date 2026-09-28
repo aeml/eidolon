@@ -2,6 +2,7 @@ import { GameEngine } from './core/GameEngine.js';
 import { AssetCacheManager } from './assets/AssetCacheManager.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
+import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -11,7 +12,7 @@ const perfOverlayEnabled = urlParams.get('perf') === '1' || debugMode;
 const FULLSCREEN_STORAGE_KEY = 'eidolon.fullscreenEnabled';
 
 function getStoredFullscreenPreference() {
-    return localStorage.getItem(FULLSCREEN_STORAGE_KEY) === 'true';
+    try { return localStorage.getItem(FULLSCREEN_STORAGE_KEY) === 'true'; } catch { return false; }
 }
 
 async function syncFullscreenPreference(enabled) {
@@ -134,6 +135,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     let inFlightLoginRequest = null;
     let authReconnectTimer = null;
     let authReconnectAttempts = 0;
+    let sessionResumeToken = null;
 
     const classSelectionContainer = document.getElementById('class-selection-container');
     const playContainer = document.getElementById('play-container');
@@ -310,6 +312,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 authStatus.style.color = '#4CAF50';
 
                 // Persist resume token so we can reconnect without re-authenticating.
+                sessionResumeToken = data.resumeToken || null;
                 if (data.resumeToken) {
                     try { localStorage.setItem('eidolon_resume_token', data.resumeToken); } catch (_) { /* Storage may be unavailable. */ }
                 }
@@ -393,6 +396,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.log('Main.js loaded. Waiting for user input...');
 
     const startGame = async (type) => {
+        let sessionGame;
         try {
             const isMultiplayer = true; // Always multiplayer
             const serverAddress = serverAddressInput ? serverAddressInput.value : '';
@@ -422,33 +426,38 @@ window.addEventListener('DOMContentLoaded', async () => {
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
 
             // Wire session-resume / reconnect callbacks into the network layer.
-            if (window.game.network) {
+            sessionGame = window.game;
+            if (sessionGame.network) {
                 const addr = serverAddressInput ? serverAddressInput.value : serverAddress;
                 window.game.network.reconnectUrl = addr;
                 window.game.network.getResumeToken = () => {
-                    try { return localStorage.getItem('eidolon_resume_token'); } catch (_) { return null; }
+                    // Never borrow another tab/account's token from shared storage.
+                    return window.game === sessionGame ? sessionResumeToken : null;
                 };
                 window.game.network.onResumeSuccess = (newToken) => {
+                    if (window.game !== sessionGame) return;
+                    sessionResumeToken = newToken;
                     try { localStorage.setItem('eidolon_resume_token', newToken); } catch (_) { /* Storage may be unavailable. */ }
                 };
                 window.game.network.onConnectionStateChange = (state) => {
+                    if (window.game !== sessionGame) return;
                     if (state !== 'connected') window.game?.uiManager?.casino?.slots?.stopAuto('Connection lost; auto spins stopped.');
                     window.game?.uiManager?.setConnectionState(state);
                     window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                 };
                 window.game.network.onReconnectFailed = () => {
+                    if (window.game !== sessionGame) return;
+                    sessionResumeToken = null;
                     try { localStorage.removeItem('eidolon_resume_token'); } catch (_) { /* Storage may be unavailable. */ }
                     isAuthenticated = false;
-                    if (loginPanel) loginPanel.style.display = '';
-                    if (authStatus) {
-                        authStatus.textContent = 'Disconnected. Please log in again.';
-                        authStatus.style.color = '#ff4444';
-                    }
-                    if (window.game && typeof window.game.destroy === 'function') {
-                        window.game.destroy();
-                    }
+                    finishAuthRequest();
+                    sessionGame.network.dispose();
+                    const previousAuthSocket = authSocket; authSocket = null;
+                    previousAuthSocket?.close?.();
+                    sessionGame.destroy();
                     window.game = null;
+                    showSessionRecoveryLogin();
                 };
             }
             if (window.game?.uiManager) {
@@ -477,10 +486,12 @@ window.addEventListener('DOMContentLoaded', async () => {
             }
             
             console.log("Calling loadGame...");
-            await window.game.loadGame((progress, text) => {
+            await sessionGame.loadGame((progress, text) => {
+                if (window.game !== sessionGame || sessionGame.isDestroyed) return;
                 loadingBarFill.style.width = `${progress}%`;
                 if (text) loadingText.textContent = text;
             });
+            if (window.game !== sessionGame || sessionGame.isDestroyed) return;
             console.log("loadGame finished.");
 
             if (perfOverlayEnabled && window.game.renderSystem && perfOverlay) {
@@ -497,6 +508,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             console.log(`Eidolon Engine Started with ${type}`);
         } catch (error) {
+            if (sessionGame && (window.game !== sessionGame || sessionGame.isDestroyed)) return;
             console.error("Failed to start game:", error);
             alert("Error starting game. Check console for details.");
         }

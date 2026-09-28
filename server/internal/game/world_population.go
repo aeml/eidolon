@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"math"
+	"math/rand"
 )
 
 // Generated from the exact solid scenery footprints, not a circular exclusion
@@ -91,4 +92,17 @@ func (w *World) clearEliteScenerySpawn(subType string, x, z, minX, maxX, minZ, m
 		}
 	}
 	return x, z, false
+}
+
+// Regional spawners do not use the Earth rectangular-spawn helper. Keep their
+// rolls inside their original sector and exclude only authored solid scenery.
+func rollWorldPopulationSpawn(minX, maxX, minZ, maxZ float64) (float64, float64, bool) {
+	for attempt := 0; attempt < 16; attempt++ {
+		x := minX + rand.Float64()*(maxX-minX)
+		z := minZ + rand.Float64()*(maxZ-minZ)
+		if worldPopulationSpawnAllowed(x, z) {
+			return x, z, true
+		}
+	}
+	return 0, 0, false
 }

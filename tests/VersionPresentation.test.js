@@ -22,6 +22,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.16.0 retains history and scopes population/session work honestly', () => {
+        const start = indexHtml.indexOf('data-version="1.16.0"'), previous = indexHtml.indexOf('data-version="1.15.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['Sixteen places across Water and Fire', 'Four optional stories',
+            'Failed session recovery', '15-minute logout rule', 'not final art or completed beta readiness']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/session-recovery-login.spec.js');
+    });
     test('1.15.0 describes implemented population and guidance without promising final art or new rewards', () => {
         const start = indexHtml.indexOf('data-version="1.15.0"'), previous = indexHtml.indexOf('data-version="1.14.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
@@ -833,15 +842,15 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.15.0');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.16.0');
         const packageLock = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package-lock.json'), 'utf8'));
-        expect(packageLock.version).toBe('1.15.0');
-        expect(packageLock.packages[''].version).toBe('1.15.0');
-        expect(rootReadme).toContain('Current source version: `Alpha 1.15.0`');
+        expect(packageLock.version).toBe('1.16.0');
+        expect(packageLock.packages[''].version).toBe('1.16.0');
+        expect(rootReadme).toContain('Current source version: `Alpha 1.16.0`');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.15.0</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.16.0</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -1252,7 +1261,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.15.0';
+        const expectedVersion = 'Alpha 1.16.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {

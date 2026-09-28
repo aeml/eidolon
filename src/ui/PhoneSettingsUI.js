@@ -64,8 +64,8 @@ export class PhoneSettingsUI {
         section.prepend(field, sizeField);
         const hand = field.querySelector('select');
         const size = sizeField.querySelector('input');
-        hand.value = localStorage.getItem('eidolon.phoneControlHand') === 'left' ? 'left' : 'right';
-        const stored = Number(localStorage.getItem('eidolon.phoneControlSize'));
+        hand.value = readPreference('eidolon.phoneControlHand') === 'left' ? 'left' : 'right';
+        const stored = Number(readPreference('eidolon.phoneControlSize'));
         size.value = String(Number.isFinite(stored) ? Math.max(100, Math.min(120, stored)) : 100);
         const apply = (save = false) => {
             window.game?.inputManager?.clearInputState?.();
@@ -73,8 +73,8 @@ export class PhoneSettingsUI {
             document.documentElement.style.setProperty('--phone-control-scale', String(Number(size.value) / 100));
             sizeField.querySelector('output').textContent = `${size.value}%`;
             if (save) {
-                localStorage.setItem('eidolon.phoneControlHand', hand.value);
-                localStorage.setItem('eidolon.phoneControlSize', size.value);
+                writePreference('eidolon.phoneControlHand', hand.value);
+                writePreference('eidolon.phoneControlSize', size.value);
             }
         };
         hand.onchange = () => apply(true);
@@ -91,3 +91,4 @@ export class PhoneSettingsUI {
         this.body.scrollTop = this.scroll.get(key) || 0;
     }
 }
+import { readPreference, writePreference } from './PreferenceStorage.js';

@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Current checkpoint (supersedes chronological notes below):** Alpha1.15.0 is
+accepted live at156345544c699514d4f430b7fc6275e8f31df497, CI36424283224.
+Luna confirmed all gates; root independently verified public IPv4 exact identity,
+healthy database, login/notes and16 assets.1.16 Water/Fire population and session
+recovery is being prepared for publication; see [its receipt](docs/plans/2026-09-28-release1-16.md).
+Next: finish proportionate1.16 checks, publish, Luna terminal monitoring and exact
+live acceptance; then1.17. Global roadmap and final art/beta gates remain open.
+
 Current instruction, September 28, 2026: work through the
 [authoritative roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 version by version. Finish each milestone's necessary implementation, verify it
@@ -65,6 +73,13 @@ independent exact acceptance, then1.16. The1.16 source preflight is local only.
 Correction: that CI failed on missing generated administrator landing geometry.
 The40 new solids are now included, with before/after server safety coverage.
 The corrected1.15 candidate must pass a replacement CI before live acceptance.
+Corrected SHA156345544c699514d4f430b7fc6275e8f31df497 is pushed;
+replacement CI36424283224 is Luna's active watch.1.16 recovery work is local
+and uncommitted while that gate runs: usable login after failed resume, retired
+connection isolation, blocked-storage and stale-load recovery.40 unit checks
+and two bootstrap/browser scenarios pass; full1.16 account/world scope remains
+open in [its receipt](docs/plans/2026-09-28-release1-16.md). Do not accidentally
+include these partial1.16 changes in a further1.15 correction push.
 1.14 remains the last verified live release until those gates pass.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only

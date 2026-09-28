@@ -2,7 +2,7 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.13.0; see the [release record](2026-09-28-release1-13.md).
+baseline is Alpha 1.15.0; see the [release record](2026-09-28-release1-15.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like

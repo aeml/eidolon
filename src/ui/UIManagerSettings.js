@@ -1,6 +1,7 @@
 import { DEFAULT_ASSET_VERSION, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { writePreference } from './PreferenceStorage.js';
 
 class UIManagerSettingsMethods {
     toggleEscMenu() {
@@ -52,13 +53,13 @@ class UIManagerSettingsMethods {
         const valid = quality === 'low' || quality === 'medium' || quality === 'high';
         const nextQuality = valid ? quality : 'high';
         this.graphicsQuality = nextQuality;
-        localStorage.setItem('eidolon.graphicsQuality', nextQuality);
+        const saved = writePreference('eidolon.graphicsQuality', nextQuality);
         if (this.graphicsQualitySelect && this.graphicsQualitySelect.value !== nextQuality) {
             this.graphicsQualitySelect.value = nextQuality;
         }
         if (this.onGraphicsQualityChange) {
             const applyResult = this.onGraphicsQualityChange(nextQuality);
-            if (applyResult && applyResult.reloadRequired) {
+            if (applyResult && applyResult.reloadRequired && saved) {
                 const shouldReload = window.confirm('Some graphics features need a reload to fully apply. Reload now?');
                 if (shouldReload) {
                     window.location.reload();
@@ -81,7 +82,7 @@ class UIManagerSettingsMethods {
         const numericLevel = Number.isFinite(level) ? level : 100;
         const clamped = Math.max(0, Math.min(100, numericLevel));
         this.graphicsBrightness = clamped;
-        localStorage.setItem('eidolon.graphicsBrightness', String(clamped));
+        writePreference('eidolon.graphicsBrightness', String(clamped));
         if (this.graphicsBrightnessSlider && Number(this.graphicsBrightnessSlider.value) !== clamped) {
             this.graphicsBrightnessSlider.value = String(clamped);
         }
@@ -110,7 +111,7 @@ class UIManagerSettingsMethods {
         const numericScale = Number.isFinite(scalePercent) ? scalePercent : 100;
         const clamped = Math.max(this.isMobile ? 100 : 85, Math.min(125, numericScale));
         this.uiScale = clamped;
-        localStorage.setItem(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale', String(clamped));
+        writePreference(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale', String(clamped));
         if (this.uiScaleSlider && Number(this.uiScaleSlider.value) !== clamped) {
             this.uiScaleSlider.value = String(clamped);
         }
@@ -138,7 +139,7 @@ class UIManagerSettingsMethods {
     setControlHintLevel(level) {
         const nextValue = this.normalizeControlHintLevel(level);
         this.controlHintLevel = nextValue;
-        localStorage.setItem('eidolon.controlHintLevel', nextValue);
+        writePreference('eidolon.controlHintLevel', nextValue);
         if (this.controlHintLevelSelect && this.controlHintLevelSelect.value !== nextValue) {
             this.controlHintLevelSelect.value = nextValue;
         }
@@ -155,7 +156,7 @@ class UIManagerSettingsMethods {
     setAutoLootEnabled(enabled) {
         const nextValue = Boolean(enabled);
         this.autoLootEnabled = nextValue;
-        localStorage.setItem('eidolon.autoLootEnabled', String(nextValue));
+        writePreference('eidolon.autoLootEnabled', String(nextValue));
         if (this.autoLootToggle) {
             this.autoLootToggle.checked = nextValue;
         }
@@ -227,7 +228,7 @@ class UIManagerSettingsMethods {
     setCameraShakeEnabled(enabled) {
         const nextValue = Boolean(enabled);
         this.cameraShakeEnabled = nextValue;
-        localStorage.setItem('eidolon.cameraShakeEnabled', String(nextValue));
+        writePreference('eidolon.cameraShakeEnabled', String(nextValue));
         if (this.cameraShakeToggle) {
             this.cameraShakeToggle.checked = nextValue;
         }
@@ -242,7 +243,7 @@ class UIManagerSettingsMethods {
 
     setCameraShakeStrength(value) {
         this.cameraShakeStrength = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 50;
-        try { localStorage.setItem('eidolon.cameraShakeStrength', String(this.cameraShakeStrength)); } catch { /* Session setting still works. */ }
+        writePreference('eidolon.cameraShakeStrength', String(this.cameraShakeStrength));
         if (this.cameraShakeStrengthSlider) this.cameraShakeStrengthSlider.value = String(this.cameraShakeStrength);
         if (this.cameraShakeStrengthLabel) this.cameraShakeStrengthLabel.textContent = `${this.cameraShakeStrength}%`;
         this.onCameraShakeStrengthChange?.(this.cameraShakeStrength);
@@ -255,7 +256,7 @@ class UIManagerSettingsMethods {
     setFullscreenEnabled(enabled) {
         const nextValue = Boolean(enabled);
         this.fullscreenEnabled = nextValue;
-        localStorage.setItem('eidolon.fullscreenEnabled', String(nextValue));
+        writePreference('eidolon.fullscreenEnabled', String(nextValue));
         if (this.fullscreenToggle) {
             this.fullscreenToggle.checked = nextValue;
         }
@@ -303,7 +304,7 @@ class UIManagerSettingsMethods {
 
     markAssetsSynced(version = DEFAULT_ASSET_VERSION) {
         this.assetLastSyncedVersionValue = version;
-        localStorage.setItem('eidolon.assetLastSyncedVersion', version);
+        writePreference('eidolon.assetLastSyncedVersion', version);
         this.renderLastSyncedVersion();
     }
 
@@ -384,7 +385,7 @@ class UIManagerSettingsMethods {
 
     setAssetPackStatus(packName, status) {
         this.assetPackStatuses[packName] = status;
-        localStorage.setItem(`eidolon.assetPack.${packName}`, status);
+        writePreference(`eidolon.assetPack.${packName}`, status);
         const badgeState = status === 'cached'
             ? 'current'
             : status === 'downloading'

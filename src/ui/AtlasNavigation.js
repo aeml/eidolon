@@ -7,6 +7,7 @@ import { getInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
 import { EARTH_LOCATIONS, WORLD_READINGS, LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS } from '../data/elementalPopulation.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
@@ -21,7 +22,7 @@ export const ATLAS_CATEGORIES = Object.freeze({
 
 export const isOverworldAtlas = engine => !engine?.currentInstanceId && (!engine?.currentInstanceType || engine.currentInstanceType === 'overworld');
 
-const publicWorldLocations = Object.freeze([...EARTH_LOCATIONS, ...LANTERNHOLD_COURTYARDS].filter(site => site.visibility === 'public').map(site => {
+const publicWorldLocations = Object.freeze([...EARTH_LOCATIONS, ...WATER_LOCATIONS, ...FIRE_LOCATIONS, ...LANTERNHOLD_COURTYARDS].filter(site => site.visibility === 'public').map(site => {
     const reading = WORLD_READINGS.find(reading => reading.locationId === site.id);
     return Object.freeze({ id: site.id, name: site.name, instanceId: '', category: 'places',
         symbol: reading ? '▤' : '◇', x: reading?.x ?? site.x + (site.arrivalOffset?.[0] || 0),

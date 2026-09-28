@@ -96,6 +96,38 @@ function installMockWebSocket() {
 // Basic send / drainMessages (smoke)
 // ---------------------------------------------------------------------------
 
+describe('retired session isolation', () => {
+    test('dispose cancels retry and makes saved callbacks inert', () => {
+        jest.useFakeTimers();
+        try {
+            const { created } = installMockWebSocket();
+            const socket = makeMockSocket(); socket.close = jest.fn();
+            const nm = new NetworkManager(socket); nm.setupListeners();
+            const receive = socket.onmessage, close = socket.onclose;
+            nm.reconnectUrl = 'ws://localhost/ws'; nm.getResumeToken = () => 'old-token';
+            nm._scheduleReconnect(); nm.messageQueue.push({ type: 'chat' });
+            nm.dispose();
+            receive({ data: JSON.stringify({ type: 'chat', payload: 'late' }) }); close();
+            jest.runAllTimers();
+            expect(created).toHaveLength(0); expect(nm.drainMessages()).toEqual([]);
+            expect(nm.socket).toBeNull(); expect(socket.close).toHaveBeenCalledTimes(1);
+            expect(socket.onmessage).toBeNull(); expect(nm.getResumeToken).toBeNull();
+            nm.dispose(); expect(socket.close).toHaveBeenCalledTimes(1);
+        } finally { jest.useRealTimers(); }
+    });
+
+    test('replaced socket cannot deliver messages or schedule another reconnect', () => {
+        const first = makeMockSocket(), second = makeMockSocket();
+        const nm = new NetworkManager(first); nm.setupListeners();
+        nm.socket = second; nm.setupListeners();
+        const reconnect = jest.spyOn(nm, '_scheduleReconnect');
+        first.simulateMessage({ type: 'chat', payload: 'stale' }); first.simulateClose();
+        second.simulateMessage({ type: 'chat', payload: 'current' });
+        expect(nm.drainMessages()).toEqual([{ type: 'chat', payload: 'current' }]);
+        expect(reconnect).not.toHaveBeenCalled();
+    });
+});
+
 describe('NetworkManager — basic send / queue', () => {
     test('send() serialises message when socket is OPEN', () => {
         const sock = makeMockSocket();
