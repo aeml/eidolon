@@ -170,7 +170,7 @@ describe('WorldMap town wayfinding', () => {
             player: { position: { x: 2400, z: 200 }, id: 'player-1' },
             chunkManager: { getActiveEntities: () => [] },
             uiManager: { partyData: { members: [] } },
-            currentInstanceType: 'tempest_spire',
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
             getDungeonRoomSummary: () => ({
                 currentRoomIndex: 0,
                 objectiveRoomIndex: 1,
@@ -180,19 +180,19 @@ describe('WorldMap town wayfinding', () => {
                     { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
                     { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
                     { index: 4, type: 'boss', explored: false, cleared: false }
-                ]
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
             })
         });
 
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Treasure Cache • Payoff]',
+            'Tempest Spire', 'Treasure Cache · Payoff',
             'Next: Ambush Chamber'
         ]));
         expect(strokes).toEqual(expect.arrayContaining([
-            expect.objectContaining({ strokeStyle: '#ffd700' }),
-            expect.objectContaining({ strokeStyle: 'rgba(255, 145, 90, 0.6)' })
+            expect.objectContaining({ strokeStyle: '#e6c67e' }),
+            expect.objectContaining({ strokeStyle: '#e6c67e' })
         ]));
     });
 
@@ -201,7 +201,7 @@ describe('WorldMap town wayfinding', () => {
             player: { position: { x: 2400, z: 200 }, id: 'player-1' },
             chunkManager: { getActiveEntities: () => [] },
             uiManager: { partyData: { members: [] } },
-            currentInstanceType: 'tempest_spire',
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
             getDungeonRoomSummary: () => ({
                 currentRoomIndex: 2,
                 objectiveRoomIndex: 3,
@@ -211,18 +211,18 @@ describe('WorldMap town wayfinding', () => {
                     { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: true },
                     { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
                     { index: 4, type: 'boss', explored: false, cleared: false }
-                ]
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
             })
         });
 
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Boss Approach • Pressure]',
+            'Tempest Spire', 'Boss Approach · Pressure',
             'Next: Boss Lair'
         ]));
         expect(strokes).toEqual(expect.arrayContaining([
-            expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
+            expect.objectContaining({ strokeStyle: '#e6c67e' })
         ]));
     });
 
@@ -231,7 +231,7 @@ describe('WorldMap town wayfinding', () => {
             player: { position: { x: 2400, z: 200 }, id: 'player-1' },
             chunkManager: { getActiveEntities: () => [] },
             uiManager: { partyData: { members: [] } },
-            currentInstanceType: 'tempest_spire',
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
             getDungeonRoomSummary: () => ({
                 currentRoomIndex: 4,
                 objectiveRoomIndex: 4,
@@ -241,18 +241,18 @@ describe('WorldMap town wayfinding', () => {
                     { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
                     { index: 3, type: 'normal', hook: 'shrine', explored: true, cleared: true },
                     { index: 4, type: 'boss', explored: true, cleared: false }
-                ]
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
             })
         });
 
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Boss Now • Climax]'
+            'Tempest Spire', 'Boss Now · Climax'
         ]));
         expect(texts).not.toContain('Next: Boss Lair');
         expect(strokes).toEqual(expect.arrayContaining([
-            expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
+            expect.objectContaining({ strokeStyle: '#ed9990' })
         ]));
     });
 });

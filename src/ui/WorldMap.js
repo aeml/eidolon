@@ -6,22 +6,12 @@
 // coordinates, making it easy to add new zones or adjust layout.
 // ============================================================================
 
-import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { WORLD_REGIONS, WORLD_GEOGRAPHY, getRegionWallSegments } from '../data/worldGeography.js';
-import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
-import { drawDarkRealmWorldMap } from './DarkRealmMap.js';
-import { drawCasinoWorldMap } from './CasinoMap.js';
+import { getInstanceAtlas, drawInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
 import { AtlasCartography } from './AtlasCartography.js';
 import { drawAtlasLocations, drawAtlasFrame } from './AtlasMarkers.js';
-import { AtlasNavigation, OVERWORLD_CENTER, isOverworldAtlas,
+import { AtlasNavigation, isOverworldAtlas,
     isAtlasPartyMemberVisible, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
-import {
-    findNextDungeonMeaningfulRoom,
-    getDungeonBeatLabel,
-    getDungeonCadenceLabel,
-    getDungeonRoomRole,
-    isLiveDungeonBossRoom
-} from '../utils/dungeonRoomMetadata.js';
 
 // ---------------------------------------------------------------------------
 // Config tables
@@ -76,33 +66,6 @@ const ZONE_CONFIGS = [
     { x: 2600, z: -600, w: 400, d: 1600, fill: 'rgba(0, 50, 255, 0.1)', stroke: 'rgba(0, 50, 255, 0.3)', label: 'Cyclone (90-95)', labelColor: '#2266ff', fontSize: 32, tier: 'detail' },
 ];
 
-/** Dungeon markers — gold star + circle + label. */
-const DUNGEON_MARKERS = [
-    { id: 'verdant_bastion_catacombs', name: 'Verdant Bastion', dotColor: '#00aa00', tier: 'zone' },
-    { id: 'abyssal_well', name: 'Abyssal Well', dotColor: '#1aa3c8', tier: 'zone' },
-    { id: 'molten_core', name: 'Molten Core', dotColor: '#ff4400', tier: 'zone', labelOffsetY: -40 },
-    { id: 'tempest_spire', name: 'Tempest Spire', dotColor: '#4488ff', tier: 'zone', labelOffsetY: -40 },
-].map(marker => {
-    const [wx, , wz] = DUNGEON_ENTRANCE_DEFINITIONS[marker.id].position;
-    return { ...marker, wx, wz };
-});
-
-const TOWN_POIS = TOWN_SERVICE_POINTS.map((point) => ({
-    wx: point.x,
-    wz: point.z,
-    name: point.label,
-    dotColor: point.color,
-    strokeColor: point.strokeColor,
-    minScale: point.minScale,
-    labelOffsetY: point.labelOffsetY
-}));
-
-const DUNGEON_MARKER_LOOKUP = Object.freeze({
-    verdant_bastion_catacombs: 'Verdant Bastion',
-    abyssal_well: 'Abyssal Well',
-    molten_core: 'Molten Core',
-    tempest_spire: 'Tempest Spire'
-});
 
 /**
  * Fence segments (boundary walls).
@@ -224,6 +187,7 @@ export class WorldMap {
             }
             if (e.target === this.canvas && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
                 e.preventDefault();
+                this.autoFitAtlas = false;
                 this.mapOffsetX += e.key === 'ArrowLeft' ? 60 : e.key === 'ArrowRight' ? -60 : 0;
                 this.mapOffsetY += e.key === 'ArrowUp' ? 60 : e.key === 'ArrowDown' ? -60 : 0;
                 this._redrawIfVisible();
@@ -255,6 +219,7 @@ export class WorldMap {
     }
 
     dispose() {
+        if (this.resizeFrame) cancelAnimationFrame(this.resizeFrame);
         this.listeners.abort();
         this.resizeObserver?.disconnect();
         this.cartography?.dispose();
@@ -288,6 +253,7 @@ export class WorldMap {
             e.preventDefault();
             e.stopPropagation();
             this.isDragging = true;
+            this.autoFitAtlas = false;
             this.lastMouseX = e.clientX;
             this.lastMouseY = e.clientY;
             this.pointerStart = { x: e.clientX, y: e.clientY };
@@ -339,6 +305,7 @@ export class WorldMap {
         this.listen(this.canvas, 'touchstart', begin, { passive: false });
         this.listen(this.canvas, 'touchmove', e => {
             e.preventDefault(); e.stopPropagation();
+            this.autoFitAtlas = false;
             const next = gesture(e.touches), previous = this.touchGesture;
             if (e.touches.length !== 1 || !this.pointerStart || Math.hypot(e.touches[0].clientX - this.pointerStart.x, e.touches[0].clientY - this.pointerStart.y) > 6) this.mapGestureMoved = true;
             if (next && previous && next.count === previous.count) {
@@ -366,6 +333,7 @@ export class WorldMap {
 
     setMapScale(value) {
         if (!Number.isFinite(value)) return;
+        this.autoFitAtlas = false;
         const previous = this.scale;
         this.scale = Math.max(.01, Math.min(10, value));
         this.mapOffsetX *= this.scale / previous;
@@ -377,6 +345,7 @@ export class WorldMap {
     centerOnPlayer() {
         const player = this.gameEngine.player;
         if (!player) return;
+        this.autoFitAtlas = false;
         this.cameraX = player.position.x;
         this.cameraZ = player.position.z;
         this.mapOffsetX = 0; this.mapOffsetY = 0;
@@ -387,18 +356,26 @@ export class WorldMap {
     isVisible() { return this.container.style.display === 'flex' || this.container.style.display === 'block'; }
 
     showWorldOverview() {
-        if (!isOverworldAtlas(this.gameEngine)) return;
-        this.cameraX = OVERWORLD_CENTER.x; this.cameraZ = OVERWORLD_CENTER.z;
+        const model = getInstanceAtlas(this.gameEngine);
+        const bounds = model ? model.bounds : { minX: WORLD_REGIONS.fire.minX, maxX: WORLD_REGIONS.air.maxX,
+            minZ: WORLD_REGIONS.water.minZ, maxZ: WORLD_REGIONS.earth.maxZ };
+        if (!bounds) return;
+        this.fitAtlasBounds(bounds);
+        this._redrawIfVisible();
+    }
+
+    fitAtlasBounds(bounds) {
+        this.autoFitAtlas = true;
+        this.cameraX = (bounds.minX + bounds.maxX) / 2; this.cameraZ = (bounds.minZ + bounds.maxZ) / 2;
         this.mapOffsetX = 0; this.mapOffsetY = 0;
-        const width = WORLD_REGIONS.air.maxX - WORLD_REGIONS.fire.minX;
-        const depth = WORLD_REGIONS.earth.maxZ - WORLD_REGIONS.water.minZ;
+        const width = bounds.maxX - bounds.minX, depth = bounds.maxZ - bounds.minZ;
         // A 45-degree view projects the combined extent onto both axes.
-        this.scale = Math.max(.01, Math.min(this.canvas.width - 64, this.canvas.height - 64) / ((width + depth) * Math.SQRT1_2));
-        this.updateZoomLabel(); this._redrawIfVisible();
+        this.scale = Math.max(.01, Math.min(10, Math.min(this.canvas.width - 64, this.canvas.height - 130) / ((width + depth) * Math.SQRT1_2)));
+        this.updateZoomLabel();
     }
 
     selectMapLocation(clientX, clientY) {
-        if (!this.navigation || !isOverworldAtlas(this.gameEngine)) return;
+        if (!this.navigation) return;
         const rect = this.canvas.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         const x = (clientX - rect.left) * this.canvas.width / rect.width;
@@ -422,11 +399,25 @@ export class WorldMap {
 
     resize() {
         if (!this.container || this.container.clientWidth === 0 || this.container.clientHeight === 0) return;
-        this.canvas.width = this.canvas.clientWidth || this.container.clientWidth;
-        this.canvas.height = this.canvas.clientHeight || Math.max(0, this.container.clientHeight -
+        const width = this.canvas.clientWidth || this.container.clientWidth;
+        const height = this.canvas.clientHeight || Math.max(0, this.container.clientHeight -
             (document.getElementById('world-map-header')?.offsetHeight || 40) -
             (this.container.querySelector('.world-map-controls')?.offsetHeight || 0));
-        this._redrawIfVisible();
+        // Assigning even an unchanged backing size clears the bitmap and context.
+        // Both the canvas and its container are observed; duplicate notifications
+        // must not discard a finished frame.
+        if (this.canvas.width === width && this.canvas.height === height) return;
+        if (this.canvas.width !== width) this.canvas.width = width;
+        if (this.canvas.height !== height) this.canvas.height = height;
+        if (this.autoFitAtlas) this.showWorldOverview();
+        else this._redrawIfVisible();
+        // A backing-store resize can discard the immediate accelerated draw on
+        // Chrome. Paint again after layout settles, coalesced to one frame.
+        if (this.resizeFrame) cancelAnimationFrame(this.resizeFrame);
+        this.resizeFrame = requestAnimationFrame(() => {
+            this.resizeFrame = null;
+            this._redrawIfVisible();
+        });
     }
 
     toggle() {
@@ -539,38 +530,6 @@ export class WorldMap {
         return this.isMobile ? Math.max(14, Math.min(base >= 36 ? 20 : 16, scaled)) : Math.max(12, Math.min(28, scaled));
     }
 
-    _buildDungeonBeatPreview() {
-        const instanceType = this.gameEngine?.currentInstanceType;
-        const dungeonName = DUNGEON_MARKER_LOOKUP[instanceType];
-        const summary = this.gameEngine?.getDungeonRoomSummary?.();
-        if (!dungeonName || !summary || !Array.isArray(summary.rooms) || typeof summary.objectiveRoomIndex !== 'number' || summary.objectiveRoomIndex < 0) {
-            return null;
-        }
-
-        const objectiveRoom = summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex);
-        if (!objectiveRoom) {
-            return null;
-        }
-
-        const nextRoom = findNextDungeonMeaningfulRoom(summary, summary.objectiveRoomIndex);
-
-        const previewColor = getDungeonRoomRole(nextRoom) === 'event'
-            ? 'rgba(255, 145, 90, 0.6)'
-            : getDungeonRoomRole(nextRoom) === 'boss'
-                ? 'rgba(255, 110, 110, 0.6)'
-                : ['elite', 'approach'].includes(getDungeonRoomRole(nextRoom))
-                    ? 'rgba(255, 190, 90, 0.6)'
-                    : 'rgba(255, 215, 90, 0.6)';
-
-        return {
-            dungeonName,
-            objectiveLabel: getDungeonBeatLabel(objectiveRoom, summary),
-            objectiveCadenceLabel: getDungeonCadenceLabel(objectiveRoom),
-            nextLabel: nextRoom ? getDungeonBeatLabel(nextRoom, summary) : '',
-            previewColor,
-            objectiveIsLiveBoss: isLiveDungeonBossRoom(objectiveRoom, summary)
-        };
-    }
 
     // -----------------------------------------------------------------------
     // Main draw
@@ -582,17 +541,45 @@ export class WorldMap {
         this.navigation?.refresh();
         const w = this.canvas.width;
         const h = this.canvas.height;
-        if (this.gameEngine?.currentInstanceType === 'dark_realm') {
-            drawDarkRealmWorldMap(ctx, w, h, this.gameEngine, player);
-            return;
+        const space = atlasSpaceKey(this.gameEngine), interior = getInstanceAtlas(this.gameEngine);
+        if (this.lastAtlasSpace !== space || (interior?.bounds && !this.lastAtlasHadBounds)) {
+            if (interior?.bounds) this.fitAtlasBounds(interior.bounds);
+            else {
+                this.autoFitAtlas = false;
+                this.cameraX = player.position.x; this.cameraZ = player.position.z; this.mapOffsetX = 0; this.mapOffsetY = 0;
+                if (this.lastAtlasSpace !== undefined && !interior) { this.scale = 2; this.updateZoomLabel(); }
+            }
+            this.lastAtlasSpace = space;
         }
-        if (this.gameEngine?.currentInstanceType === 'casino') {
-            drawCasinoWorldMap(ctx, w, h, this.gameEngine, player);
-            return;
-        }
+        this.lastAtlasHadBounds = Boolean(interior?.bounds);
         const cx = w / 2;
         const cy = h / 2;
         const w2s = this._makeWorldToScreen(cx, cy);
+        if (interior) {
+            this.visibleAtlasMarkers = [];
+            drawInstanceAtlas(ctx, interior, w2s, w, h);
+            if (!interior.bounds) return;
+            this.visibleAtlasMarkers = drawAtlasLocations(ctx, this.navigation.locations, { project: w2s, width: w, height: h, scale: this.scale,
+                selectedId: this.navigation.selectedId, filters: this.navigation.filters, clusterTown: false,
+                reservedLabels: [{ x: 0, y: 0, w, h: interior.objective ? 70 : 38 }] });
+            const guests = interior.casino?.guests || (this.gameEngine.currentInstanceType === 'dark_realm'
+                ? [...(this.gameEngine.remotePlayers?.values() || [])].filter(guest => guest.instanceId === this.gameEngine.currentInstanceId) : []);
+            for (const guest of guests) {
+                if (!Number.isFinite(guest.position?.x) || !Number.isFinite(guest.position?.z)) continue;
+                if (!this.navigation.filters.has('party') && this.gameEngine.uiManager?.partyData?.members?.some(member => member.id === guest.id)) continue;
+                const p = w2s(guest.position.x, guest.position.z); ctx.fillStyle = '#80c6d4'; ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill();
+            }
+            for (const member of this.gameEngine.uiManager?.partyData?.members || []) {
+                if (member.id === player.id || !this.navigation.filters.has('party') || !isAtlasPartyMemberVisible(this.gameEngine, member)) continue;
+                const p = w2s(member.x, member.z); ctx.fillStyle = '#a4ddac'; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
+            }
+            const p = w2s(player.position.x, player.position.z);
+            ctx.fillStyle = '#fff3ce'; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
+            drawAtlasFrame(ctx, w, h, this.scale);
+            const waypoint = this.navigation.waypoint, guidance = getWaypointGuidance(this.gameEngine, waypoint);
+            if (guidance) drawAtlasWaypoint(ctx, w2s(waypoint.x, waypoint.z), { x: cx, y: cy }, Math.max(1, Math.min(w, h) / 2 - 28), `${Math.round(guidance.distance)}m ${guidance.direction}`);
+            return;
+        }
 
         // Geography artwork is cached independently of moving markers. No
         // checkerboard fog or rectangular level-band fills obscure real land.
@@ -643,72 +630,6 @@ export class WorldMap {
             }
         }
 
-        // 6. Dungeon markers (zoom-culled)
-        const dungeonBeatPreview = this._buildDungeonBeatPreview();
-        for (const dg of isOverworldAtlas(this.gameEngine) ? [] : DUNGEON_MARKERS) {
-            if (this.navigation && !this.navigation.filters.has('entrances')) continue;
-            if (!this._tierVisible(dg.tier)) continue;
-            const pos = w2s(dg.wx, dg.wz);
-            const yOff = (dg.labelOffsetY || -15) * this.scale;
-            const isActiveDungeon = dungeonBeatPreview && dungeonBeatPreview.dungeonName === dg.name;
-            // Dot
-            ctx.fillStyle = dg.dotColor;
-            ctx.beginPath();
-            ctx.arc(pos.x, pos.y + (dg.labelOffsetY ? 0 : 0), 8, 0, Math.PI * 2);
-            ctx.fill();
-            // Gold ring
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = isActiveDungeon ? 3 : 2;
-            ctx.stroke();
-            // Label
-            ctx.fillStyle = '#ffd700';
-            ctx.font = `${this.mapFontSize(28)}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.fillText(
-                isActiveDungeon
-                    ? `\u2605 ${dg.name} [${dungeonBeatPreview.objectiveLabel}${dungeonBeatPreview.objectiveCadenceLabel ? ` • ${dungeonBeatPreview.objectiveCadenceLabel}` : ''}]`
-                    : `\u2605 ${dg.name}`,
-                pos.x,
-                pos.y + yOff
-            );
-            if (isActiveDungeon && (dungeonBeatPreview.nextLabel || dungeonBeatPreview.objectiveIsLiveBoss)) {
-                ctx.strokeStyle = dungeonBeatPreview.objectiveIsLiveBoss
-                    ? 'rgba(255, 110, 110, 0.6)'
-                    : dungeonBeatPreview.previewColor;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 13, 0, Math.PI * 2);
-                ctx.stroke();
-                if (dungeonBeatPreview.nextLabel) {
-                    ctx.fillStyle = dungeonBeatPreview.previewColor;
-                    ctx.font = `${this.mapFontSize(18)}px Arial`;
-                    ctx.fillText(`Next: ${dungeonBeatPreview.nextLabel}`, pos.x, pos.y + ((dg.labelOffsetY || 18) * this.scale));
-                }
-            }
-        }
-
-        // 6b. Town points of interest
-        for (const poi of isOverworldAtlas(this.gameEngine) ? [] : TOWN_POIS) {
-            const category = this.navigation?.locations.find(p => p.name === poi.name)?.category;
-            if (category && !this.navigation.filters.has(category)) continue;
-            if (this.scale < (poi.minScale || 0)) continue;
-            const pos = w2s(poi.wx, poi.wz);
-            ctx.fillStyle = poi.dotColor;
-            ctx.beginPath();
-            ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
-            ctx.fill();
-            if (poi.strokeColor) {
-                ctx.strokeStyle = poi.strokeColor;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-            ctx.fillStyle = '#f2f2f2';
-            ctx.font = `${this.mapFontSize(18)}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.fillText(poi.name, pos.x, pos.y + ((poi.labelOffsetY || -16) * this.scale));
-        }
 
         // 7. Fences
         for (const fence of FENCE_SEGMENTS) {

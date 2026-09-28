@@ -1,5 +1,6 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
+import { getInstanceAtlas, drawInstanceAtlasFloor } from './InstanceAtlas.js';
 import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeography.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
@@ -189,7 +190,11 @@ export class Minimap {
         // ---- Realm boundary hints ----
         // Draw faint boundary lines for nearby realm edges so the player
         // can see when they're approaching a transition.
-        if (darkRealm) drawDarkRealmFloors(ctx, this.gameEngine.currentDungeonLayout, toMap);
+        const interior = getInstanceAtlas(this.gameEngine);
+        if (interior?.bounds) {
+            drawInstanceAtlasFloor(ctx, interior, toMap);
+            if (this.gameEngine?.currentInstanceType === 'casino') this._drawTownServiceMarkers(ctx, toMap, player, half);
+        } else if (darkRealm) drawDarkRealmFloors(ctx, this.gameEngine.currentDungeonLayout, toMap);
         else if (isOverworldAtlas(this.gameEngine)) {
             this._drawRealmBoundaries(ctx, toMap, half);
             this._drawTownServiceMarkers(ctx, toMap, player, half);
@@ -497,8 +502,12 @@ export class Minimap {
             const center = toMap(room.x, room.z);
             const roomWidth = Math.max(6, room.width * scale * 0.5);
             const roomHeight = Math.max(6, room.height * scale * 0.5);
-            const left = center.x - roomWidth / 2;
-            const top = center.y - roomHeight / 2;
+            const roomPath = () => {
+                const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([x, z]) => toMap(room.x + x * room.width / 2, room.z + z * room.height / 2));
+                ctx.beginPath(); ctx.moveTo(corners[0].x, corners[0].y);
+                for (const corner of corners.slice(1)) ctx.lineTo(corner.x, corner.y);
+                ctx.closePath();
+            };
 
             let fill = 'rgba(255, 255, 255, 0.08)';
             if (getDungeonRoomRole(room) === 'recovery') {
@@ -517,17 +526,12 @@ export class Minimap {
                 fill = 'rgba(90, 160, 255, 0.18)';
             }
             ctx.fillStyle = fill;
-            ctx.fillRect(left, top, roomWidth, roomHeight);
+            roomPath(); ctx.fill();
 
             if (room.index === summary.currentRoomIndex) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
                 ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(left, top);
-                ctx.lineTo(left + roomWidth, top);
-                ctx.lineTo(left + roomWidth, top + roomHeight);
-                ctx.lineTo(left, top + roomHeight);
-                ctx.lineTo(left, top);
+                roomPath();
                 ctx.stroke();
             }
 

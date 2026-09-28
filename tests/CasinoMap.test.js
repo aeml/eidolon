@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { getCasinoMapState, drawCasinoWorldMap } from '../src/ui/CasinoMap.js';
 import { Minimap } from '../src/ui/Minimap.js';
 import { WorldMap } from '../src/ui/WorldMap.js';
+import { getAtlasLocations, ATLAS_CATEGORIES } from '../src/ui/AtlasNavigation.js';
+import { getInstanceAtlas } from '../src/ui/InstanceAtlas.js';
 import { createCasinoInterior, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
 const tables = ['public', 'vip'].flatMap(floor => ['slots', 'blackjack', 'poker', 'roulette', 'baccarat']
@@ -10,7 +12,8 @@ const engine = floor => ({ currentInstanceType: 'casino', currentInstanceId: 'la
     casino: { floor, vipActive: false, data: { tables } }, remotePlayers: new Map() });
 function canvas() {
     const texts = [], arcs = [], rectangles = [];
-    return { texts, arcs, rectangles, save() {}, restore() {}, beginPath() {}, fill() {}, stroke() {},
+    return { texts, arcs, rectangles, save() {}, restore() {}, beginPath() {}, fill() {}, stroke() {}, moveTo() {}, lineTo() {}, closePath() {},
+        measureText(text) { return { width: text.length * 6 }; },
         arc(...args) { arcs.push(args); }, fillRect(...args) { rectangles.push(args); },
         strokeRect() {}, fillText(text, x, y) { texts.push({ text, x, y }); } };
 }
@@ -55,14 +58,19 @@ test('map anchors match the actual production interior objects', () => {
 
 test.each([[320, 480], [1000, 660]])('production world-map route renders current floor/legend within %sx%s canvas', (width, height) => {
     const ctx = canvas(), game = engine('vip');
-    WorldMap.prototype.draw.call({ ctx, canvas: { width, height }, gameEngine: game }, { position: { x: 0, y: 8, z: 152 } });
+    const map = Object.assign(Object.create(WorldMap.prototype), { ctx, canvas: { width, height }, gameEngine: game,
+        navigation: { refresh() {}, locations: getAtlasLocations(game), filters: new Set(Object.keys(ATLAS_CATEGORIES)) } });
+    map.draw({ position: { x: 0, y: 8, z: 152 } });
     expect(ctx.texts.map(entry => entry.text)).toEqual(expect.arrayContaining([
-        'Lanternhold Casino · VIP / EP', 'Return downstairs', 'R Roulette · B Baccarat'
+        'Lanternhold Casino · VIP / EP', 'Return downstairs'
     ]));
+    expect(map.navigation.locations.some(p => p.name.includes('Roulette'))).toBe(true);
+    expect(map.navigation.locations.some(p => p.name.includes('Baccarat'))).toBe(true);
     expect(ctx.texts.some(entry => /Public|VIP Guard|Exit to/.test(entry.text))).toBe(false);
     expect(ctx.arcs.every(([x, y]) => x >= 0 && x <= width && y >= 0 && y <= height)).toBe(true);
-    const [, , floorWidth, floorDepth] = ctx.rectangles[1];
-    expect(floorWidth).toBe(floorDepth); // Current venue is 112 x 112, not the old 68 x 76.
+    const bounds = getInstanceAtlas(game).bounds;
+    expect(bounds.maxX - bounds.minX).toBe(112);
+    expect(bounds.maxZ - bounds.minZ).toBe(112);
 });
 
 test('minimap shows upstairs stairs even north of old town bounds, never the public exit', () => {
@@ -76,7 +84,7 @@ test('minimap shows upstairs stairs even north of old town bounds, never the pub
 
 test('casino minimap global party dots require a live guest on the selected floor', () => {
     const game = engine('public'), ctx = canvas(), seen = [];
-    game.uiManager = { partyData: { members: ['here', 'upstairs', 'absent'].map(id => ({ id, x: 1, z: 150 })) } };
+    game.uiManager = { partyData: { members: ['here', 'upstairs', 'absent'].map(id => ({ id, x: 1, z: 150, instanceId: game.currentInstanceId })) } };
     game.remotePlayers = new Map([
         ['here', { position: { x: 1, y: 0, z: 150 } }],
         ['upstairs', { position: { x: 1, y: 8, z: 150 } }]

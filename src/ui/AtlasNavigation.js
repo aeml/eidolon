@@ -3,6 +3,8 @@ import { WORLD_GEOGRAPHY, WORLD_REGIONS } from '../data/worldGeography.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { DUNGEON_ENTRY_LEVELS } from '../data/dungeonProgression.js';
 import { getResonancePortalState } from '../core/ResonancePortalState.js';
+import { getInstanceAtlas, atlasSpaceKey } from './InstanceAtlas.js';
+import { isCasinoMapGuestVisible } from './CasinoMap.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
@@ -19,6 +21,7 @@ export const isOverworldAtlas = engine => !engine?.currentInstanceId && (!engine
 // of shared space; do not project private coordinates onto a public atlas.
 export function isAtlasPartyMemberVisible(engine, member) {
     return typeof member?.instanceId === 'string' && member.instanceId === (engine?.currentInstanceId || '') &&
+        (engine?.currentInstanceType !== 'casino' || isCasinoMapGuestVisible(engine, engine.remotePlayers?.get(member.id))) &&
         Number.isFinite(member.x) && Number.isFinite(member.z);
 }
 
@@ -33,7 +36,7 @@ const SERVICE_PURPOSE = {
 
 export function getAtlasLocations(engine) {
     // Interiors have their own maps. Public entrances are not interior targets.
-    if (!isOverworldAtlas(engine)) return [];
+    if (!isOverworldAtlas(engine)) return getInstanceAtlas(engine)?.locations || [];
     const player = engine?.player;
     const result = TOWN_SERVICE_POINTS.map(point => {
         const portal = point.id === 'resonance-portal';
@@ -74,7 +77,8 @@ export function getAtlasLocations(engine) {
 }
 
 export function getWaypointGuidance(engine, waypoint) {
-    if (!waypoint || !isOverworldAtlas(engine) || waypoint.instanceId !== '') return null;
+    if (!waypoint || waypoint.instanceId !== (engine?.currentInstanceId || '')) return null;
+    if (waypoint.spaceKey ? waypoint.spaceKey !== atlasSpaceKey(engine) : !isOverworldAtlas(engine)) return null;
     const position = engine?.player?.position;
     if (!position || ![position.x, position.z, waypoint.x, waypoint.z].every(Number.isFinite)) return null;
     const dx = waypoint.x - position.x, dz = waypoint.z - position.z;
@@ -156,6 +160,11 @@ export class AtlasNavigation {
     }
 
     refresh(force = false) {
+        const space = atlasSpaceKey(this.engine);
+        if (this.space && this.space !== space) {
+            this.selectedId = null; this.query = ''; this.search.value = '';
+        }
+        this.space = space;
         this.locations = getAtlasLocations(this.engine);
         const signature = JSON.stringify([this.locations, this.query, [...this.filters], this.selectedId]);
         if (force || signature !== this.signature) {
@@ -172,11 +181,13 @@ export class AtlasNavigation {
             }
             if (!visible.length) this.results.textContent = isOverworldAtlas(this.engine) ? 'No matching known locations.' : 'Current instance map. Overworld destinations return when you leave this instance.';
             this.renderDetail();
-            this.root.querySelector('[data-atlas-overview]').disabled = !isOverworldAtlas(this.engine);
+            const overview = this.root.querySelector('[data-atlas-overview]');
+            overview.textContent = isOverworldAtlas(this.engine) ? 'World overview' : 'Area overview';
+            overview.disabled = !isOverworldAtlas(this.engine) && !getInstanceAtlas(this.engine)?.bounds;
             if (focused && !focused.isConnected) this.search.focus();
         }
         const guidance = getWaypointGuidance(this.engine, this.waypoint);
-        const text = guidance?.text || (this.waypoint ? `${this.waypoint.name} · waypoint in the overworld` : 'No personal waypoint');
+        const text = guidance?.text || (this.waypoint ? `${this.waypoint.name} · waypoint in ${this.waypoint.instanceId ? 'another area' : 'the overworld'}` : 'No personal waypoint');
         if (this.status.textContent !== text) this.status.textContent = text;
         this.clear.disabled = !this.waypoint;
     }
@@ -184,6 +195,7 @@ export class AtlasNavigation {
     select(id) {
         const location = this.locations.find(p => p.id === id);
         if (!location) return;
+        this.map.autoFitAtlas = false;
         this.selectedId = id; this.map.cameraX = location.x; this.map.cameraZ = location.z;
         this.root.querySelector('details').open = false;
         this.map.mapOffsetX = 0; this.map.mapOffsetY = 0;
@@ -202,7 +214,7 @@ export class AtlasNavigation {
         availability.textContent = `${p.availability} · ${Math.round(p.x)}, ${Math.round(p.z)}`;
         const waypoint = document.createElement('button'); waypoint.type = 'button'; waypoint.textContent = 'Set personal waypoint';
         waypoint.onclick = () => {
-            this.waypoint = { id: p.id, name: p.name, x: p.x, z: p.z, instanceId: '' };
+            this.waypoint = { id: p.id, name: p.name, x: p.x, z: p.z, instanceId: p.instanceId, spaceKey: atlasSpaceKey(this.engine) };
             this.refresh(); this.map._redrawIfVisible();
         };
         this.detail.append(title, copy, availability, waypoint);

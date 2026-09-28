@@ -22,8 +22,9 @@ Its [implementation receipt](docs/plans/2026-09-28-release1-14.md) records the
 tested report acknowledgement/privacy work, shared geography, and overworld
 location search/details/waypoints and cached overworld cartography with inspected
 desktop/phone-sized captures, including a reproduced/fixed Canvas2D tile failure.
-Next: real interior/PvP maps, tracked quest/saved discovery overlays and complete
-instance/input/privacy review before the 1.14 release cut. No partial
+Real interior/PvP maps now pass focused unit/browser checks, including rendered
+desktop/phone-sized resize recovery. Next: tracked quest/saved discovery overlays,
+radar consistency and final integrated review before the 1.14 release cut. No partial
 milestone deployed.
 The global goal and later gates are still open.
 

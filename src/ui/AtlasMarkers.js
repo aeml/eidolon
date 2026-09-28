@@ -4,15 +4,15 @@ function overlaps(a, b, padding = 4) {
     return a.x < b.x + b.w + padding && a.x + a.w + padding > b.x && a.y < b.y + b.h + padding && a.y + a.h + padding > b.y;
 }
 
-export function drawAtlasLocations(ctx, locations, { project, width, height, scale, selectedId, filters, reservedLabels = [] }) {
+export function drawAtlasLocations(ctx, locations, { project, width, height, scale, selectedId, filters, reservedLabels = [], clusterTown = true }) {
     const marks = [], labels = [...reservedLabels];
     const priority = p => p.id === selectedId ? 0 : p.id === 'lanternhold' ? 1 : p.category === 'entrances' ? 2 : p.category === 'quests' ? 3 : 4;
     const ordered = locations.filter(p => filters.has(p.category)).sort((a, b) => priority(a) - priority(b));
     for (const p of ordered) {
         // Town collapses into one selectable settlement at overview scale.
         // At street scale the actual service markers replace that cluster.
-        if (p.id === 'lanternhold' && scale >= .4) continue;
-        if (scale < .4 && p.id !== 'lanternhold' && p.x >= -100 && p.x <= 100 && p.z >= 100 && p.z <= 300 && p.id !== selectedId) continue;
+        if (clusterTown && p.id === 'lanternhold' && scale >= .4) continue;
+        if (clusterTown && scale < .4 && p.id !== 'lanternhold' && p.x >= -100 && p.x <= 100 && p.z >= 100 && p.z <= 300 && p.id !== selectedId) continue;
         const pos = project(p.x, p.z);
         if (pos.x < 12 || pos.x > width - 12 || pos.y < 44 || pos.y > height - 30) continue;
         if (marks.some(mark => Math.hypot(mark.screen.x - pos.x, mark.screen.y - pos.y) < 15)) continue;
