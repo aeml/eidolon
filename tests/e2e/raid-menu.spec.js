@@ -125,7 +125,7 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
             }
             await expect(preparation).toContainText('solo entry is allowed but a balanced party is recommended');
             await expect(preparation).toContainText('Recruitment never posts or starts a run automatically');
-            const sharedAdvice = page.locator('.adventure-preparation');
+            const sharedAdvice = page.locator('#dungeon-party-state-box > .adventure-preparation');
             for (const text of ['Strong Fighter (Strength)', 'Agile Rogue (Dexterity)', 'Brilliant Wizard (Intelligence)',
                 'Wise Cleric (Wisdom)', 'Uncommon/Rare', 'Lanternhold']) await expect(sharedAdvice).toContainText(text);
             if (isMobile) {
@@ -258,7 +258,7 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await expect(raids).toBeFocused();
     const earth = page.locator('[data-raid-type="earth_crystal_raid"]');
     await page.keyboard.press('Tab');
-    const preparation = page.locator('.adventure-preparation');
+    const preparation = page.locator('#dungeon-party-state-box > .adventure-preparation');
     await expect(preparation.locator('summary')).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(preparation).toHaveAttribute('open', '');
@@ -271,6 +271,11 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await expect(earth.getByRole('button', { name: 'Enter Rootheart Sanctum' })).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(earth.getByRole('button', { name: 'Find companions' })).toBeFocused();
+    const briefing = earth.locator('.adventure-preparation');
+    await page.keyboard.press('Tab');
+    await expect(briefing.locator('summary')).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(briefing).toHaveAttribute('open', '');
     // Recruitment stays available even when this character cannot enter yet.
     const recruitment = page.locator('#adventure-raids').getByRole('button', { name: 'Find companions' });
     for (let i = 1; i < await recruitment.count(); i++) {
@@ -281,6 +286,10 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await expect(close).toBeFocused();
     for (let i = await recruitment.count() - 1; i >= 0; i--) {
         await page.keyboard.press('Shift+Tab');
+        if (i === 0) {
+            await expect(briefing.locator('summary')).toBeFocused();
+            await page.keyboard.press('Shift+Tab');
+        }
         await expect(recruitment.nth(i)).toBeFocused();
     }
     await page.keyboard.press('Shift+Tab');
