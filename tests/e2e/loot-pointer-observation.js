@@ -1,4 +1,17 @@
 // Read the real pointer result; never assign hover or send a pickup request.
+export async function readLootBlockingHostile(page, id) {
+    return page.evaluate(id => {
+        const game = window.game, hovered = game?.hoveredEntity;
+        const hits = game?.raycastHitEntities || [];
+        const drop = hits.find(entity => entity.id === id);
+        if (game?.needsRaycast !== false || game.inputManager?.pointerOverCanvas !== true ||
+            !drop?.isActive || !drop.item?.id || drop.constructor?.name !== 'LootDrop' ||
+            !hovered?.isActive || hovered.state === 'DEAD' || !hits.includes(hovered) ||
+            !game.isHostileActorTarget?.(hovered)) return null;
+        return hovered.id;
+    }, id);
+}
+
 export async function readLootPointerTarget(page, id, options = {}) {
     return page.evaluate(({ id, allowOverlappingLoot }) => {
         const game = window.game;

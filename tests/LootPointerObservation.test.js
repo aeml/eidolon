@@ -1,4 +1,4 @@
-import { readLootPointerTarget } from './e2e/loot-pointer-observation.js';
+import { readLootPointerTarget, readLootBlockingHostile } from './e2e/loot-pointer-observation.js';
 
 const drop = id => ({ id, constructor: { name: 'LootDrop' }, isActive: true,
     item: { id: `item-${id}`, name: id } });
@@ -13,6 +13,26 @@ beforeEach(() => {
         remotePlayers: new Map([['intended', intended], ['covering', covering]]) };
 });
 afterEach(() => { window.game = previousGame; });
+
+test('combat clearance identifies only a live hostile sharing the intended loot ray', async () => {
+    const game = window.game, loot = game.hoveredEntity;
+    const hostile = {id: 'blocker', isActive: true, state: 'IDLE', health: 30};
+    game.isHostileActorTarget = entity => entity === hostile;
+    game.hoveredEntity = hostile; game.raycastHitEntities = [hostile, loot];
+    expect(await readLootBlockingHostile(page, loot.id)).toBe('blocker');
+    expect(hostile.health).toBe(30); expect(game.hoveredEntity).toBe(hostile);
+    game.raycastHitEntities = [hostile];
+    expect(await readLootBlockingHostile(page, loot.id)).toBeNull();
+    game.raycastHitEntities = [hostile, loot];
+    hostile.state = 'DEAD';
+    expect(await readLootBlockingHostile(page, loot.id)).toBeNull();
+    hostile.state = 'IDLE'; game.isHostileActorTarget = () => false;
+    expect(await readLootBlockingHostile(page, loot.id)).toBeNull();
+    game.isHostileActorTarget = () => true; game.needsRaycast = true;
+    expect(await readLootBlockingHostile(page, loot.id)).toBeNull();
+    game.needsRaycast = false; game.inputManager.pointerOverCanvas = false;
+    expect(await readLootBlockingHostile(page, loot.id)).toBeNull();
+});
 
 test('strict selection returns the intended item and leaves observations unchanged', async () => {
     const before = JSON.stringify(window.game);

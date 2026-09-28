@@ -6,7 +6,7 @@ import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptI
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
-import { readLootPointerTarget } from './loot-pointer-observation.js';
+import { readLootPointerTarget, readLootBlockingHostile } from './loot-pointer-observation.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -932,6 +932,28 @@ export async function acquireLootPointer(page, id, timeout = 10_000, options = {
     return point;
 }
 
+// Only the combat-and-loot route may clear a real hostile covering its earned
+// drop. Other pointer tests remain strictly observational. Never move/delete an
+// entity, change targeting priority, enable auto-loot or send pickup directly.
+export async function acquireCombatLootPointer(page, id, timeout = 10_000) {
+    for (let cleared = 0; ; cleared++) {
+        try {
+            return await acquireLootPointer(page, id, timeout, { allowOverlappingLoot: true });
+        } catch (error) {
+            const blocker = cleared < 2 && error.lootPoint?.visible
+                ? await readLootBlockingHostile(page, id) : null;
+            if (!blocker) throw error;
+            await page.mouse.click(error.lootPoint.x, error.lootPoint.y);
+            await expect.poll(async () => {
+                const entity = await readEntity(page, blocker);
+                return !entity || !entity.isActive || entity.state === 'DEAD' || entity.health <= 0;
+            }, { timeout: 20_000, intervals: [100, 250, 500],
+                message: 'The real hostile covering earned loot must be defeated through normal combat' }).toBe(true);
+            console.log('[loot-pickup] cleared a ray-confirmed hostile with a real mouse click');
+        }
+    }
+}
+
 async function projectNearestLoot(page) {
     return page.evaluate(() => {
         const game = window.game;
@@ -1612,7 +1634,7 @@ export async function exerciseCombatAndLoot(page) {
         // a living hostile. Never treat an unverified click as a pickup attempt.
         let point;
         try {
-            point = await acquireLootPointer(page, loot.id, 10_000, { allowOverlappingLoot: true });
+            point = await acquireCombatLootPointer(page, loot.id);
         } catch (error) {
             point = error.lootPoint;
             const diagnostic = await page.evaluate(({ id, point }) => {

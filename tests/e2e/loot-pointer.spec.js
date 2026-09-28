@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { existsSync } from 'node:fs';
-import { acquireLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
+import { acquireLootPointer, acquireCombatLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
 
 // Input/geometry only: no rendered game or GPU contention with live QA.
@@ -87,6 +87,27 @@ test('a covered loot center keeps enemy priority while exposed loot edges remain
     const point = await acquireLootPointer(page, 'loot', 2000);
     expect(point.visible).toBe(true);
     expect(await page.evaluate(() => window.game.hoveredEntity?.id)).toBe('loot');
+});
+
+test('combat loot recovery clicks a fully covering hostile before reacquiring the earned drop', async ({page}) => {
+    // Component fixture only: model an authoritative death response to one real
+    // hostile click. The disposable gameplay smoke separately proves combat and
+    // item persistence; this deterministically covers the rare overlap branch.
+    await page.evaluate(() => {
+        const game = window.game, hostile = game.activeEntitiesCache.find(entity => entity.id === 'hostile');
+        hostile.health = 30; hostile.mesh.scale.set(8, 1, 8); hostile.mesh.updateMatrixWorld(true);
+        window.__blockerClicks = 0;
+        game.inputManager.subscribe('onClick', () => {
+            game.performRaycast();
+            if (game.hoveredEntity !== hostile) throw new Error('Recovery did not click the blocking hostile');
+            window.__blockerClicks++;
+            hostile.health = 0; hostile.state = 'DEAD'; hostile.isActive = false; hostile.mesh.visible = false;
+        });
+    });
+    const point = await acquireCombatLootPointer(page, 'loot', 500);
+    expect(point.lootId).toBe('loot');
+    expect(await page.evaluate(() => window.__blockerClicks)).toBe(1);
+    expect(await page.evaluate(() => window.game.remotePlayers.get('loot').isActive)).toBe(true);
 });
 
 test('a coincident loot pile exposes its real front item without changing target priority', async ({ page }) => {
