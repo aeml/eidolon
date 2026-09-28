@@ -42,7 +42,19 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(height + 1);
         expect(canvasBounds.height).toBeGreaterThan(100);
+        const art = await page.evaluate(() => {
+            const map = window.__atlas.map, tile = map.cartography.tiles.get('fire');
+            const point = map._makeWorldToScreen(map.canvas.width / 2, map.canvas.height / 2)(-2700, 600);
+            return { tile: [...tile.getContext('2d').getImageData(10, 10, 1, 1).data],
+                land: [...map.ctx.getImageData(Math.round(point.x), Math.round(point.y), 1, 1).data],
+                cache: [...map.cartography.tiles].map(([id, canvas]) => ({ id, width: canvas.width, height: canvas.height,
+                    lost: canvas.getContext('2d').isContextLost(), pixel: [...canvas.getContext('2d').getImageData(10, 10, 1, 1).data] })) };
+        });
+        expect(art.tile[3], JSON.stringify(art)).toBe(255);
+        expect(art.land.slice(0, 3)).not.toEqual([17, 28, 36]);
         await page.screenshot({ path: testInfo.outputPath('atlas-navigation.png') });
+        await page.evaluate(() => window.__atlas.map.navigation.select('forge'));
+        await page.screenshot({ path: testInfo.outputPath('atlas-town.png') });
         await page.evaluate(() => {
             const { engine, map } = window.__atlas;
             engine.currentInstanceId = 'private-dungeon'; engine.currentInstanceType = 'molten_core'; map.update(engine.player);

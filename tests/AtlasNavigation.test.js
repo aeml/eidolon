@@ -15,6 +15,7 @@ test('known catalogue derives all entrances and seven real gates without reveali
     expect(locations.find(p => p.id === 'molten_core').availability).toContain('Minimum level 70');
     expect(locations.find(p => p.id === 'resonance-portal').availability).toContain('Requires level 100');
     ge.atlasDungeonEntryLevels = { molten_core: 75 };
+    ge.currentInstanceType = 'overworld'; // actual return-to-town wire type
     expect(getAtlasLocations(ge).find(p => p.id === 'molten_core').availability).toContain('Minimum level 75');
     for (const type of ['casino', 'dark_realm', 'molten_core', 'earth_crystal_raid', 'arena']) {
         ge.currentInstanceType = type; expect(getAtlasLocations(ge)).toEqual([]);

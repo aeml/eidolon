@@ -13,7 +13,7 @@ export const ATLAS_CATEGORIES = Object.freeze({
     party: { name: 'Party', symbol: '●', color: '#a4ddac' }
 });
 
-export const isOverworldAtlas = engine => !engine?.currentInstanceId && !engine?.currentInstanceType;
+export const isOverworldAtlas = engine => !engine?.currentInstanceId && (!engine?.currentInstanceType || engine.currentInstanceType === 'overworld');
 
 // Party snapshots explicitly include instanceId. Missing identity is not proof
 // of shared space; do not project private coordinates onto a public atlas.
@@ -43,6 +43,9 @@ export function getAtlasLocations(engine) {
             availability: portal ? (getResonancePortalState(player).eligible ? 'Portal attuned: approach to enter.' :
                 'Requires level 100 and personally claimed repairs of all four crystals. Speak to Ilyra.') : 'Lanternhold · safe zone' };
     });
+    result.push({ id: 'lanternhold', name: 'Lanternhold', category: 'services', instanceId: '',
+        x: 0, z: 200, purpose: 'Town services, Ilyra and the Fourfold Portal. Select to inspect the town map.',
+        availability: 'Safe zone · health and mana recovery' });
     for (const [id, definition] of Object.entries(DUNGEON_ENTRANCE_DEFINITIONS)) {
         const provided = Number(engine?.atlasDungeonEntryLevels?.[id]);
         const level = Number.isInteger(provided) && provided > 0 ? provided : DUNGEON_ENTRY_LEVELS[id];

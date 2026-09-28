@@ -2,6 +2,8 @@ import { WorldMap } from '../src/ui/WorldMap.js';
 import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
 
 describe('WorldMap town wayfinding', () => {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    afterEach(() => { HTMLCanvasElement.prototype.getContext = originalGetContext; });
     let texts;
     let strokes;
     let ctx;
@@ -11,6 +13,10 @@ describe('WorldMap town wayfinding', () => {
         strokes = [];
         ctx = {
             fillRect: () => {},
+            strokeRect: () => {},
+            transform: () => {},
+            drawImage: () => {},
+            measureText: text => ({ width: String(text).length * 7 }),
             beginPath: () => {},
             arc: () => {},
             fill: () => {},
@@ -43,8 +49,8 @@ describe('WorldMap town wayfinding', () => {
         Object.defineProperty(container, 'clientWidth', { configurable: true, value: 640 });
         Object.defineProperty(container, 'clientHeight', { configurable: true, value: 480 });
 
-        const canvas = document.getElementById('world-map-canvas');
-        canvas.getContext = () => ctx;
+        // The atlas also owns offscreen cached terrain canvases.
+        HTMLCanvasElement.prototype.getContext = () => ctx;
 
         global.ResizeObserver = class {
             constructor(callback) {
@@ -112,9 +118,11 @@ describe('WorldMap town wayfinding', () => {
             uiManager: { partyData: { members: [] } }
         });
 
-        worldMap.draw({ position: { x: 0, z: 200 }, id: 'player-1' });
+        worldMap.centerOnPlayer();
 
-        expect(texts).toEqual(expect.arrayContaining([
+        // Canvas labels now cull collisions; the equivalent location list must
+        // retain every essential service even when a nearby label cannot fit.
+        expect(worldMap.navigation.locations.map(p => p.name)).toEqual(expect.arrayContaining([
             'Quest Giver',
             'Stash',
             'Forge',
@@ -142,31 +150,19 @@ describe('WorldMap town wayfinding', () => {
         expect(document.querySelectorAll('.atlas-waypoint-row')).toHaveLength(1);
     });
 
-    test('prioritizes starter-route POIs in onboarding order and emphasizes quest and forge markers', () => {
+    test('selected service takes marker priority while crowded labels remain in the location list', () => {
         const worldMap = new WorldMap({
             player: { position: { x: 0, z: 200 }, id: 'player-1' },
             chunkManager: { getActiveEntities: () => [] },
             uiManager: { partyData: { members: [] } }
         });
 
-        worldMap.draw({ position: { x: 0, z: 200 }, id: 'player-1' });
-
-        const questIndex = texts.indexOf('Quest Giver');
-        const forgeIndex = texts.indexOf('Forge');
-        const stashIndex = texts.indexOf('Stash');
-        const vendorIndex = texts.indexOf('Vendor / Repair');
-
-        expect(questIndex).toBeGreaterThanOrEqual(0);
-        expect(forgeIndex).toBeGreaterThanOrEqual(0);
-        expect(stashIndex).toBeGreaterThanOrEqual(0);
-        expect(vendorIndex).toBeGreaterThanOrEqual(0);
-        expect(questIndex).toBeLessThan(forgeIndex);
-        expect(forgeIndex).toBeLessThan(stashIndex);
-        expect(stashIndex).toBeLessThan(vendorIndex);
-        expect(strokes).toEqual(expect.arrayContaining([
-            expect.objectContaining({ strokeStyle: '#ffd700' }),
-            expect.objectContaining({ strokeStyle: '#ff9b4a' })
-        ]));
+        worldMap.navigation.select('forge');
+        expect(worldMap.visibleAtlasMarkers[0].id).toBe('forge');
+        expect(texts).toContain('Forge');
+        expect(worldMap.navigation.results.textContent).toContain('Quest Giver');
+        expect(worldMap.navigation.results.textContent).toContain('Stash');
+        expect(strokes).toEqual(expect.arrayContaining([expect.objectContaining({ lineWidth: 2.5 })]));
     });
 
     test('renders current and next dungeon beat markers for the active instance', () => {

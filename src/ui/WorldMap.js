@@ -11,7 +11,9 @@ import { WORLD_REGIONS, WORLD_GEOGRAPHY, getRegionWallSegments } from '../data/w
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { drawDarkRealmWorldMap } from './DarkRealmMap.js';
 import { drawCasinoWorldMap } from './CasinoMap.js';
-import { AtlasNavigation, ATLAS_CATEGORIES, OVERWORLD_CENTER, isOverworldAtlas,
+import { AtlasCartography } from './AtlasCartography.js';
+import { drawAtlasLocations, drawAtlasFrame } from './AtlasMarkers.js';
+import { AtlasNavigation, OVERWORLD_CENTER, isOverworldAtlas,
     isAtlasPartyMemberVisible, getWaypointGuidance, drawAtlasWaypoint } from './AtlasNavigation.js';
 import {
     findNextDungeonMeaningfulRoom,
@@ -25,34 +27,19 @@ import {
 // Config tables
 // ---------------------------------------------------------------------------
 
-/** Realm background fills drawn first (large tinted rectangles). */
-const REALM_BACKGROUNDS = [
-    // Water/Snow realm
-    { id: 'water', fill: 'rgba(200, 240, 255, 0.2)' },
-    // Fire realm
-    { id: 'fire', fill: 'rgba(255, 100, 0, 0.15)' },
-    // Air realm
-    { id: 'air', fill: 'rgba(150, 200, 255, 0.15)' },
-    // Town
-    { id: 'town', fill: 'rgba(100, 100, 255, 0.3)' },
-].map(({ id, ...style }) => {
-    const r = WORLD_REGIONS[id];
-    return { x: r.minX, z: r.minZ, w: r.maxX - r.minX, d: r.maxZ - r.minZ, ...style };
-});
 
 /**
  * Realm labels (large text drawn at every zoom level).
  * `minScale` controls the minimum zoom at which the label appears (0 = always).
  */
 const REALM_LABELS = [
-    { id: 'water', color: '#fff', fontSize: 48, minScale: 0 },
-    { id: 'earth', color: '#fff', fontSize: 48, minScale: 0, offsetY: -100 },
-    { id: 'fire', color: '#ff6600', fontSize: 48, minScale: 0 },
-    { id: 'air', color: '#88ccff', fontSize: 48, minScale: 0 },
-    { id: 'town', color: '#fff', fontSize: 36, minScale: 0.8 },
+    { id: 'water', color: '#b6d4d4', fontSize: 48, minScale: 0 },
+    { id: 'earth', color: '#b8c4a3', fontSize: 48, minScale: 0 },
+    { id: 'fire', color: '#d4ae7c', fontSize: 48, minScale: 0 },
+    { id: 'air', color: '#c1bedb', fontSize: 48, minScale: 0 },
 ].map(({ id, ...style }) => {
     const r = WORLD_REGIONS[id];
-    return { wx: (r.minX + r.maxX) / 2, wz: (r.minZ + r.maxZ) / 2, text: r.name, ...style };
+    return { wx: (r.minX + r.maxX) / 2, wz: r.minZ + (r.maxZ - r.minZ) * .24, text: r.name, ...style };
 });
 
 /**
@@ -123,7 +110,7 @@ const DUNGEON_MARKER_LOOKUP = Object.freeze({
  * Gaps are achieved by splitting a wall into separate line segments.
  */
 const FENCE_SEGMENTS = WORLD_GEOGRAPHY.regions.map(region => ({
-    color: region.id === "town" ? "#c4b18a" : "#8B4513", lineWidth: 3,
+    color: region.id === 'town' ? '#c4b18a' : '#7b765d', lineWidth: 1.5,
     lines: getRegionWallSegments(region)
 }));
 
@@ -206,6 +193,7 @@ export class WorldMap {
             this.canvas.before(body); body.append(this.canvas);
         }
         this.ctx = this.canvas.getContext('2d');
+        this.cartography = new AtlasCartography({ mobile: this.isMobile });
 
         this.visitedChunks = new Set();
         this.chunkSize = 50; // Match CONSTANTS.SCENE.CHUNK_SIZE
@@ -269,6 +257,7 @@ export class WorldMap {
     dispose() {
         this.listeners.abort();
         this.resizeObserver?.disconnect();
+        this.cartography?.dispose();
     }
 
     setupInteraction() {
@@ -415,7 +404,7 @@ export class WorldMap {
         const x = (clientX - rect.left) * this.canvas.width / rect.width;
         const y = (clientY - rect.top) * this.canvas.height / rect.height;
         const w2s = this._makeWorldToScreen(this.canvas.width / 2, this.canvas.height / 2);
-        const match = this.navigation.locations.filter(p => this.navigation.filters.has(p.category))
+        const match = (this.visibleAtlasMarkers || []).filter(p => this.navigation.filters.has(p.category))
             .map(p => ({ p, distance: Math.hypot(w2s(p.x, p.z).x - x, w2s(p.x, p.z).y - y) }))
             .filter(p => p.distance <= 18).sort((a, b) => a.distance - b.distance)[0];
         if (match) this.navigation.select(match.p.id);
@@ -605,24 +594,12 @@ export class WorldMap {
         const cy = h / 2;
         const w2s = this._makeWorldToScreen(cx, cy);
 
-        // 1. Clear
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, w, h);
-
-        // 2. Visited chunks (fog of war background)
-        this.visitedChunks.forEach(key => {
-            const [chunkX, chunkZ] = key.split(',').map(Number);
-            this._drawRect(ctx, w2s, chunkX * this.chunkSize, chunkZ * this.chunkSize,
-                this.chunkSize, this.chunkSize, '#222', '#333', 1);
-        });
-
-        // 3. Realm backgrounds
-        for (const bg of REALM_BACKGROUNDS) {
-            this._drawRect(ctx, w2s, bg.x, bg.z, bg.w, bg.d, bg.fill, bg.stroke || null, bg.lineWidth || 1);
-        }
+        // Geography artwork is cached independently of moving markers. No
+        // checkerboard fog or rectangular level-band fills obscure real land.
+        this.cartography.draw(ctx, w2s, w, h);
 
         const event = this.gameEngine.publicEvents?.data;
-        if (event && event.phase !== 'expired' && isOverworldAtlas(this.gameEngine) && this.navigation?.filters.has('events')) {
+        if (event && event.phase !== 'expired' && !this.navigation && isOverworldAtlas(this.gameEngine)) {
             const point = w2s(event.site.x, event.site.z);
             ctx.save();
             ctx.strokeStyle = '#d5f5ad'; ctx.fillStyle = '#d5f5ad'; ctx.lineWidth = 2;
@@ -635,9 +612,6 @@ export class WorldMap {
         // 4. Zone rectangles + labels (zoom-culled)
         for (const zone of ZONE_CONFIGS) {
             const visible = this._tierVisible(zone.tier);
-            // Always draw zone fill (subtle); only draw stroke/label when in tier range
-            this._drawRect(ctx, w2s, zone.x, zone.z, zone.w, zone.d,
-                zone.fill, visible ? (zone.stroke || zone.fill.replace('0.05', '0.2')) : null, 1);
             if (visible && zone.label) {
                 const labelCX = zone.x + zone.w / 2;
                 const labelCZ = zone.z + zone.d / 2;
@@ -651,15 +625,27 @@ export class WorldMap {
         }
 
         // 5. Realm labels (always visible unless filtered by minScale)
+        const realmLabelBoxes = [];
         for (const lbl of REALM_LABELS) {
             if (this.scale >= lbl.minScale) {
+                const point = w2s(lbl.wx, lbl.wz);
+                ctx.font = `${this.mapFontSize(lbl.fontSize)}px Arial`;
+                const textWidth = ctx.measureText(lbl.text).width, textHeight = this.mapFontSize(lbl.fontSize);
+                const box = { x: point.x - textWidth / 2, y: point.y - textHeight, w: textWidth, h: textHeight + 4 };
+                const coversMarker = this.navigation?.locations.some(p => {
+                    if (!this.navigation.filters.has(p.category)) return false;
+                    const marker = w2s(p.x, p.z);
+                    return marker.x >= box.x - 12 && marker.x <= box.x + box.w + 12 && marker.y >= box.y - 12 && marker.y <= box.y + box.h + 12;
+                });
+                if (coversMarker) continue;
                 this._drawLabel(ctx, w2s, lbl.wx, lbl.wz, lbl.text, lbl.color, lbl.fontSize, lbl.offsetY || 0);
+                realmLabelBoxes.push(box);
             }
         }
 
         // 6. Dungeon markers (zoom-culled)
         const dungeonBeatPreview = this._buildDungeonBeatPreview();
-        for (const dg of DUNGEON_MARKERS) {
+        for (const dg of isOverworldAtlas(this.gameEngine) ? [] : DUNGEON_MARKERS) {
             if (this.navigation && !this.navigation.filters.has('entrances')) continue;
             if (!this._tierVisible(dg.tier)) continue;
             const pos = w2s(dg.wx, dg.wz);
@@ -702,7 +688,7 @@ export class WorldMap {
         }
 
         // 6b. Town points of interest
-        for (const poi of TOWN_POIS) {
+        for (const poi of isOverworldAtlas(this.gameEngine) ? [] : TOWN_POIS) {
             const category = this.navigation?.locations.find(p => p.name === poi.name)?.category;
             if (category && !this.navigation.filters.has(category)) continue;
             if (this.scale < (poi.minScale || 0)) continue;
@@ -780,12 +766,9 @@ export class WorldMap {
         ctx.lineWidth = 2;
         ctx.stroke();
         if (isOverworldAtlas(this.gameEngine) && this.navigation) {
-            for (const p of this.navigation.locations) {
-                if (p.category !== 'passages' || !this.navigation.filters.has(p.category)) continue;
-                const point = w2s(p.x, p.z);
-                ctx.fillStyle = ATLAS_CATEGORIES.passages.color; ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center';
-                ctx.fillText('↔', point.x, point.y + 5);
-            }
+            this.visibleAtlasMarkers = drawAtlasLocations(ctx, this.navigation.locations, { project: w2s, width: w, height: h,
+                scale: this.scale, selectedId: this.navigation.selectedId, filters: this.navigation.filters, reservedLabels: realmLabelBoxes });
+            drawAtlasFrame(ctx, w, h, this.scale);
             const waypoint = this.navigation.waypoint;
             const guidance = getWaypointGuidance(this.gameEngine, waypoint);
             if (guidance) drawAtlasWaypoint(ctx, w2s(waypoint.x, waypoint.z), { x: cx, y: cy }, Math.max(1, Math.min(w, h) / 2 - 28), `${Math.round(guidance.distance)}m ${guidance.direction}`);

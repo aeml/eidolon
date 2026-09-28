@@ -20,9 +20,10 @@ including live QA and independent public IPv4 identity/assets verification.
 [source preflight](docs/plans/2026-09-28-1-14-preflight.md).
 Its [implementation receipt](docs/plans/2026-09-28-release1-14.md) records the
 tested report acknowledgement/privacy work, shared geography, and overworld
-location search/details/waypoints with desktop/phone-sized control checks.
-Next: cached atlas cartography, marker/quest/discovery consistency and complete
-interior/PvP input/privacy review before the 1.14 release cut. No partial
+location search/details/waypoints and cached overworld cartography with inspected
+desktop/phone-sized captures, including a reproduced/fixed Canvas2D tile failure.
+Next: real interior/PvP maps, tracked quest/saved discovery overlays and complete
+instance/input/privacy review before the 1.14 release cut. No partial
 milestone deployed.
 The global goal and later gates are still open.
 
