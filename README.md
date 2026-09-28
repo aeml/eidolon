@@ -315,10 +315,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.19.0` (local candidate; deployment pending)
-- Last verified live release: `Alpha 1.18.0`, exact24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791. See the [release record](docs/plans/2026-09-28-release1-18.md) for scoped acceptance.
+- Current source version: `Alpha 1.20.0` (local candidate; deployment pending)
+- Last verified live release: `Alpha 1.19.0`, exact7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553. See the [release record](docs/plans/2026-09-28-release1-19.md) for scoped acceptance.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active implementation line: `Alpha 1.19` administrator report JSON, recovery safeguards and near-completion beta planning, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.18 is accepted live; the operations candidate does not open beta or restrict alpha accounts.
+- Active implementation line: `Alpha 1.20` open-alpha integration, accurate report context and usable Help controls, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.19 is accepted live;1.20 is publishing. Neither milestone opens beta or restricts alpha accounts.
 - Forward plan: [Alpha 1.11–1.99 — playable beta to full-release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor milestone, completion gates, policy decisions and proportionate verification. This is planned scope, not a new deployment or a claim that beta is complete.
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.

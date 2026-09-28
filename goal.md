@@ -1,6 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (supersedes chronological notes below):** Alpha1.18.0 is
+**Current checkpoint:** Alpha1.19.0 is accepted live at
+7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553 all jobs successful.
+Root exact public IPv4 frontend/backend/database/login/history/three-asset checks
+passed again after terminal CI. Watcher89597 finished successfully.1.20 is ready
+and publishing with its own notes/version and bounded integration evidence.
+Its prepared verifier needs the eventual exact candidate SHA, and all its own
+CI/live gates must pass.1.21 code remains excluded from this release.
+
+**Prior checkpoint:** Alpha1.18.0 is
 accepted live at24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791.
 All mandatory jobs and final live QA passed; root independently verified exact
 public IPv4 frontend/backend identity, ready database, login/history/help and
@@ -8,14 +16,39 @@ seven changed runtime assets. No active1.18 watcher remains. Luna exhausted its
 usage limit during1.18; use quiet terminal-only process monitoring if unavailable,
 not another model or repeated tick logs.
 
-Local1.19 now includes the role-gated/audited ten-report JSON viewer, safe text
+Published1.19 candidate7588d255a36acc1519173b91efe38662a46b25e2 includes the role-gated/audited ten-report JSON viewer, safe text
 rendering/pagination/private-state clearing, guarded Mongo restore helper and
 the owner's near-completion beta policies. Full ESLint,302 focused client/version
 checks, focused Go tests, real disposable Mongo pagination, two-account report
 submission/authorization/restart, three browser layouts and18 restore guard cases
 passed. See [1.19 receipt](docs/plans/2026-09-28-release1-19.md).
-Next: publish1.19, monitor mandatory CI/live QA, independently verify exact assets,
-then implement1.20 A1 integration. Do not repeat the long campaign or alter access.
+CI36449267553 remains running (all predeploy gates and both deployments passed;
+final live QA started16:28:46UTC). Quiet terminal-only watcher session89597
+monitors the exact run/SHA; Luna is unavailable. Root verifier is prepared at
+`/tmp/eidolon-release-1-19-0-20260928-bz4qDD/verify.mjs`. Next: mandatory CI/live QA
+completion, then root exact acceptance. Do not repeat the long campaign or alter access.
+
+Local1.20 is versioned but uncommitted/unpublished: canonical report geography,
+collapsed alpha/support help and a real clipped Help-footer correction using
+flex layout.118 UI/settings/report tests and345 version/geography/atlas/population
+checks pass. Five browser cases passed37.5s, including existing journey guidance,
+three Help/report viewport sizes, final-section scrollability and visible Close.
+Short-landscape screenshot inspected. Full repository ESLint and whitespace passed. See
+[integration review](docs/plans/2026-09-28-1-20-integration.md) for A1 evidence and
+concrete remaining visual defects; do not claim final art approval.1.20 publication
+waits for1.19 acceptance, then its own mandatory CI/live gates.
+The previous watcher2316 terminated143; CI itself was rechecked still running,
+not restarted.1.20 receipt and public verifier are prepared at
+`/tmp/eidolon-release-1-20-0-20260928-B9AzYC/verify.mjs` (supply eventual exact SHA).
+1.21 source preflight records missing human journey evidence; owner was asked
+whether to use an opt-in local timer or written feedback. A local-only default-off
+timer and Help controls are now prepared in separate unstaged files, with explicit
+draft append only (never submission). UIManager/UIBindings/runtime cleanup changes
+and all PlaytestSession files/tests are EXCLUDED from staged1.20.85 focused tests
+and three browser views passed; portrait summary inspected. No server telemetry
+or storage added. Include its browser spec in the1.21 interface CI stage later.
+Root's1.19 public verifier already passed once while final live QA runs; wait for
+all mandatory gates before acceptance and1.20 publication.
 All final modern-art/CB requirements remain open; model pilot is owner-deferred.
 
 **Historical checkpoint:** Alpha1.17.0 is

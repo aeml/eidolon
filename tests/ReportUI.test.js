@@ -91,6 +91,22 @@ describe('report save confirmation and privacy', () => {
         expect(collectReportContext(engine, true).position).toBeUndefined();
     });
 
+    test.each([
+        [0, 200, 'Lanternhold'], [100, 300, 'Lanternhold'], [101, 300, 'Earth Realm'],
+        [0, -600, 'Earth Realm'], [0, -601, 'Water Realm'],
+        [-1001, 200, 'Fire Realm'], [1001, 200, 'Air Realm'],
+        [20000, 20000, 'overworld'], [NaN, 200, 'overworld'],
+        [-2400, -900, 'overworld']
+    ])('report context follows shared geography at %s,%s', (x, z, area) => {
+        setup();
+        const engine = { player: { position: { x, z } } };
+        expect(collectReportContext(engine).area).toBe(area);
+        engine.currentInstanceType = 'casino';
+        engine.currentInstanceId = 'private-allocation';
+        expect(collectReportContext(engine).area).toBe('casino');
+        expect(JSON.stringify(collectReportContext(engine))).not.toContain('private-allocation');
+    });
+
     test('reconstructing the form clears prior session drafts and removes old listeners/timers', () => {
         const ui = setup(); const old = ui.report;
         old.submit();

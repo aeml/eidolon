@@ -386,7 +386,12 @@
 .support-window--help {
     width: min(460px, calc(100vw - 24px));
     z-index: 101;
+    flex-direction: column;
 }
+
+.support-window--help > .window-header,
+.support-window--help > .support-window__footer { flex-shrink: 0; }
+.support-window__body--help > .help-guide { flex-shrink: 0; }
 
 .support-window--patch-notes {
     width: min(500px, calc(100vw - 24px));
@@ -457,6 +462,11 @@
     padding-left: 20px;
     line-height: 1.6;
 }
+
+.help-alpha-status { margin-bottom: 14px; border-bottom: 1px solid #665638; }
+.help-alpha-status > summary { cursor: pointer; min-height: 44px; padding-block: 10px; box-sizing: border-box; color: #e7c77f; }
+.help-alpha-status > summary:focus-visible { outline: 2px solid #e7c77f; outline-offset: -2px; }
+.help-alpha-status p { overflow-wrap: anywhere; line-height: 1.5; }
 
 .help-guide--separated {
     border-top: 1px solid #444;

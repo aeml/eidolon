@@ -1,3 +1,5 @@
+import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
+
 const MAX_TEXT = 3200;
 const REPORT_TYPES = new Set(['Bug Report', 'Player Report', 'Feature Request']);
 const SAFE_TAG = /^[a-zA-Z0-9 ._-]{1,80}$/;
@@ -9,10 +11,8 @@ export function collectReportContext(engine, diagnostics = false) {
     const position = engine.player?.position;
     let area = engine.currentInstanceType || 'overworld';
     if (area === 'overworld') {
-        const x = position?.x, z = position?.z;
-        area = !Number.isFinite(x) || !Number.isFinite(z) ? 'overworld'
-            : x >= -100 && x <= 100 && z >= 100 && z <= 300 ? 'Lanternhold'
-                : z < -600 ? 'Water realm' : x < -1000 ? 'Fire realm' : x > 1000 ? 'Air realm' : 'Earth realm';
+        const region = getOverworldRegion(position?.x, position?.z);
+        area = WORLD_REGIONS[region]?.name || 'overworld';
     }
     const context = {
         build: tag(document.querySelector('.start-version-row__label')?.textContent?.trim()),

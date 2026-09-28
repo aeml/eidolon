@@ -8,11 +8,14 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint — September 28
 
-Superseding checkpoint: [Alpha 1.13.0](2026-09-28-release1-13.md) is accepted
-live at 730987e3ce7b7eb55bc5c55a6a44ca06a8927f2a, CI36403511513 successful
+Superseding checkpoint: [Alpha 1.19.0](2026-09-28-release1-19.md) is accepted
+live at7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553 successful
 including mandatory live QA; public IPv4 identities/assets independently
-verified. 1.14 atlas/feedback work is implementing. The paragraphs below retain
-the preceding 1.10 baseline, not a claim that the portal is still unpublished.
+verified.1.20 is publishing. Its integration
+preserves open alpha, improves report/help consistency and records remaining
+art defects. Closed beta waits for near-completion CB, not1.20. The paragraphs
+below retain the preceding1.10 baseline, not a claim that the portal/casino
+improvements are still unpublished.
 
 Alpha1.10.2 is verified live at 8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813;
 all ten jobs of CI36285496845 passed, including live character/recovery QA. The authoritative

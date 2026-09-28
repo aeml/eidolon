@@ -130,8 +130,8 @@ milestone in order, then continue; Luna monitors deployments.
 
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
-rules, decision points and beta/full-release gates. **1.18 is accepted live**
-(CI36445044791, exact24721f9d); **1.19 is locally verified**. Later milestones
+rules, decision points and beta/full-release gates. **1.19 is accepted live**
+(CI36449267553, exact7588d255); **1.20 is publishing**. Later milestones
 remain planned, not delivered.
 
 | Versions | Outcome |

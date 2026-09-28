@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.19.0</span>
+                    <span class="start-version-row__label">Alpha 1.20.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -635,6 +635,15 @@
         <div id="help-screen" class="window support-window support-window--help" style="display: none;">
             <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
             <div class="support-window__body support-window__body--help">
+                <details id="help-alpha-status" class="help-guide help-alpha-status">
+                    <summary>Open alpha · Known limits &amp; reporting</summary>
+                    <p>Eidolon is still in open alpha. Character art, equipment fit, environments and balance are improving; this is not the finished visual quality or a closed-beta launch.</p>
+                    <p><strong>Performance:</strong> Try Low graphics in Settings if play feels uneven. Phone-sized layouts are tested, but sustained dungeon and party play on real phones is still being evaluated. No universal device or frame-rate guarantee.</p>
+                    <p><strong>Story pacing:</strong> Campaign completion time and group difficulty are playtest targets, not measured guarantees. Report stalled quests, unreachable locations or unclear encounter instructions.</p>
+                    <p><strong>Need help?</strong> Use Menu → Report Bug / Feature. Include what happened, what you expected and how to repeat it. Build and area are included automatically; optional diagnostics stay off unless you select them. Do not include passwords or payment information.</p>
+                    <p>Keep your report reference after the server confirms it was saved. Administrators can review it in-game; submitting does not promise an immediate reply or automatically punish another player.</p>
+                    <p><strong>Future beta:</strong> Closed beta waits until the game is nearly complete. Existing accounts and characters retain access and progress; new beta players will be invited. Public alpha access is unchanged.</p>
+                </details>
                 <div class="help-guide">
                     <div class="help-guide__title">Core Controls</div>
                     <div><strong class="help-guide__key">Left Click:</strong> Move / Basic Attack / Interact</div>
@@ -698,6 +707,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.20.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.20.0 (an integrated open-alpha foundation)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Help without clipped controls:</strong> Help now keeps its header and Close button visible while the contents scroll, including on short screens. Existing touch-first journey guidance and keyboard controls remain available.</li>
+                        <li><strong>Clear alpha expectations:</strong> Open Help’s “Open alpha · Known limits &amp; reporting” section for performance, story-playtest and support guidance. Character art, equipment fit and world quality remain in development; this milestone does not open closed beta or claim final graphics.</li>
+                        <li><strong>Accurate report context:</strong> Bug reports use the same bounded realm geography as the atlas. Coordinates outside the overworld no longer imply an unrelated elemental realm. Instance type stays primary; private instance IDs are never included.</li>
+                        <li><strong>A connected foundation:</strong> The physical resonance portal, populated elemental sites, optional lore, atlas directions, party preparation and private admin report queue are retained from the preceding milestones. This integration preserves manual quest claims, personal entry gates, saved discoveries and dungeon recovery.</li>
+                        <li><strong>Unchanged access and progression:</strong> Public alpha remains open, with no wipe, reward adjustment, wager change or payment integration. Final actor-model integration, visual refinement and human pacing/device feedback remain open work. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.19.0">
                     <h3 class="patch-note-entry__title">Alpha 1.19.0 (reports in reach and safer operations)</h3>
                     <ul class="patch-note-entry__list">

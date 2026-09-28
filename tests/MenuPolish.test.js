@@ -571,7 +571,7 @@ describe('menu polish regressions', () => {
         const ui = new UIManager(false);
 
         ui.toggleHelp();
-        expect(document.getElementById('help-screen').style.display).toBe('block');
+        expect(document.getElementById('help-screen').style.display).toBe('flex');
         expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
         document.getElementById('btn-close-help-header').click();
         expect(document.getElementById('help-screen').style.display).toBe('none');
@@ -674,7 +674,7 @@ describe('menu polish regressions', () => {
         ui.toggleEscMenu();
         ui.toggleHelp();
         expect(document.getElementById('esc-menu').style.display).toBe('block');
-        expect(document.getElementById('help-screen').style.display).toBe('block');
+        expect(document.getElementById('help-screen').style.display).toBe('flex');
         expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
 
         ui.handleEscape();

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const [width, height] of [[1280, 800], [390, 844]]) {
+for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
     test(`report form preserves drafts and previews consent at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
@@ -17,6 +17,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             document.body.classList.toggle('mobile-mode', innerWidth < 600);
             const ui = new Host();
             Object.assign(ui, { uiLayer: document.getElementById('ui-layer'), isMobile: innerWidth < 600,
+                helpScreen: document.getElementById('help-screen'),
                 reportScreen: document.getElementById('report-screen'), reportText: document.getElementById('report-text'),
                 reportType: document.getElementById('report-type'), btnSubmitReport: document.getElementById('btn-submit-report'),
                 requests: [], getReportContext: include => collectReportContext({ isMobile: innerWidth < 600, player: { position: { x: 4, z: 200 } }, renderSystem: { graphicsQuality: 'high' } }, include) });
@@ -25,9 +26,34 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             ui.registerWindowLayouts();
             document.getElementById('btn-close-report-header').onclick = () => ui.toggleReport();
             document.getElementById('btn-cancel-report').onclick = () => ui.toggleReport();
-            ui.toggleReport();
+            ui.toggleHelp();
             window.__reportFixture = ui;
         });
+        const help = page.locator('#help-screen');
+        const disclosure = page.locator('#help-alpha-status > summary');
+        await expect(help).toBeVisible();
+        await expect(page.locator('#help-alpha-status')).not.toHaveAttribute('open');
+        await disclosure.focus(); await page.keyboard.press('Enter');
+        await expect(page.locator('#help-alpha-status')).toHaveAttribute('open', '');
+        await expect(help).toContainText('Closed beta waits until the game is nearly complete');
+        await expect(help).toContainText('optional diagnostics stay off');
+        const helpBounds = await help.boundingBox();
+        expect(helpBounds.x).toBeGreaterThanOrEqual(0); expect(helpBounds.y).toBeGreaterThanOrEqual(0);
+        expect(helpBounds.x + helpBounds.width).toBeLessThanOrEqual(width + 1);
+        expect(helpBounds.y + helpBounds.height).toBeLessThanOrEqual(height + 1);
+        expect(await help.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        const closeBounds = await page.locator('#btn-close-help').boundingBox();
+        expect(closeBounds.y).toBeGreaterThanOrEqual(helpBounds.y);
+        expect(closeBounds.y + closeBounds.height).toBeLessThanOrEqual(helpBounds.y + helpBounds.height);
+        const body = help.locator('.support-window__body');
+        await body.evaluate(el => { el.scrollTop = el.scrollHeight; });
+        await expect(help.getByText('Together, or a quieter evening:', { exact: true })).toBeInViewport();
+        await disclosure.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: testInfo.outputPath('alpha-help-limits.png') });
+        await disclosure.press('Enter');
+        await expect(page.locator('#help-alpha-status')).not.toHaveAttribute('open');
+        await page.evaluate(() => { window.__reportFixture.toggleHelp(); window.__reportFixture.toggleReport(); });
+        await expect(help).toBeHidden();
         const dialog = page.getByRole('dialog', { name: 'SUBMIT REPORT' });
         const text = page.getByLabel('What happened, what you expected, and steps to reproduce');
         await expect(dialog).toBeVisible(); await expect(text).toBeFocused();

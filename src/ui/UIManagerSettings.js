@@ -26,7 +26,7 @@ class UIManagerSettingsMethods {
     }
 
     toggleHelp() {
-        this.toggleStaticModal(this.helpScreen, 'block');
+        this.toggleStaticModal(this.helpScreen, 'flex');
     }
 
     toggleSettings() {
