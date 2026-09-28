@@ -1,14 +1,20 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test.afterEach(async ({ page }) => {
+    await page.evaluate(() => window.__portalFixture?.dispose());
+});
+
 for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     test(`physical resonance plaza and personal entry on ${viewport.width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize(viewport);
-        await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
-        await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-        await page.evaluate(async () => {
+        await page.goto('/', { waitUntil: 'networkidle' });
+        const rendererIdentity = await page.evaluate(async mobile => {
             const THREE = await import('three');
+            const { RenderSystem } = await import('/src/core/RenderSystem.js');
+            const { MeshFactory } = await import('/src/utils/MeshFactory.js');
             const { ResonancePortal } = await import('/src/entities/ResonancePortal.js');
             const { InputManager } = await import('/src/core/InputManager.js');
             const { requestNearbyChronicleInspection } = await import('/src/core/ChronicleInspection.js');
@@ -17,10 +23,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { createProceduralTerrainMaterial } = await import('/src/art/ProceduralRealmTerrain.js');
-            const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
+            document.getElementById('start-screen').style.display = 'none';
+            const render = new RenderSystem(mobile);
             render.staticEnvironmentGroup.visible = false;
-            render.scene.children.filter(child => child.type === 'GridHelper').forEach(child => { child.visible = false; });
-            gallery.remoteActor.mesh.visible = false; gallery.targetActor.mesh.visible = false;
             const engine = {
                 player: { id: 'fixture', level: 100, state: 'IDLE', position: new THREE.Vector3(28, 0, 239), quests: [] },
                 currentInstanceId: '', isMultiplayer: true, collisionManager: new CollisionManager(), sent: [],
@@ -40,17 +45,29 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
             portal.position.set(RESONANCE_PORTAL.x, 0, RESONANCE_PORTAL.z); portal.gameEngine = engine;
             await portal.ensureMesh(); render.scene.add(portal.mesh);
-            gallery.actor.position.copy(engine.player.position); gallery.actor.mesh.position.copy(engine.player.position);
+            const hero = await MeshFactory.createMeshForType('Fighter');
+            hero.position.copy(engine.player.position); render.entityGroup.add(hero);
+            render.setGraphicsQuality('high');
             render.applyLightingPreset('town', true); render.setZoom(22);
-            render.camera.position.set(72, 60, 295); gallery.controls.target.set(28, 2, 235); gallery.controls.update();
-            document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(node => { node.style.display = 'none'; });
+            render.camera.position.set(72, 60, 295); render.camera.lookAt(28, 2, 235); render.camera.updateMatrixWorld(true);
+            // Presentation/input coverage, not a frame-rate benchmark. Submit
+            // bounded production frames instead of running the unrelated full
+            // animation gallery (including summons) throughout every screenshot.
+            const paint = () => { portal.update(1 / 60); render.render(); };
             const setStage = stage => {
                 engine.player.quests = stage === 'locked' ? [] : Object.values(CHRONICLE_RESTORATIONS).map(value => ({ id: value.questId, completed: true }));
-                engine.player.level = stage === 'ready' ? 99 : 100; portal.update(0);
+                engine.player.level = stage === 'ready' ? 99 : 100; paint();
             };
-            const tick = () => { portal.update(1 / 60); requestAnimationFrame(tick); }; tick();
-            window.__portalFixture = { engine, portal, setStage };
-        });
+            window.__portalFixture = { engine, portal, setStage, render, paint, dispose() {
+                engine.inputManager.dispose(); portal.dispose();
+                hero.removeFromParent(); MeshFactory.releaseMesh('Fighter', hero); render.dispose();
+            } };
+            const context = render.renderer.getContext();
+            const extension = context.getExtension('WEBGL_debug_renderer_info');
+            return context.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : context.RENDERER);
+        }, viewport.width < 600);
+        await testInfo.attach('portal-renderer', { body: rendererIdentity, contentType: 'text/plain' });
+        console.log(`Portal presentation renderer (${viewport.width}px): ${rendererIdentity}`);
         for (const stage of ['locked', 'ready', 'active']) {
             await page.evaluate(stage => window.__portalFixture.setStage(stage), stage);
             await expect.poll(() => page.evaluate(() => window.__portalFixture.portal.mesh.userData.portalStage)).toBe(stage);
@@ -86,7 +103,7 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             }
             await expect(dialog).toHaveCount(0);
         }
-        await page.evaluate(() => window.__eidolonAnimationGalleryController.renderSystem.setGraphicsQuality('low'));
+        await page.evaluate(() => { const fixture = window.__portalFixture; fixture.render.setGraphicsQuality('low'); fixture.paint(); });
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         await page.screenshot({ path: testInfo.outputPath('plaza-active-low.png') });
         // Native modal focus stays inside; movement after opening closes it,
