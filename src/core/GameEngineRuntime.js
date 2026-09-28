@@ -73,6 +73,7 @@ class GameEngineRuntimeMethods {
         this.casino?.dispose();
         this.uiManager?.cosmeticVendor?.dispose();
         this.uiManager?.admin?.dispose();
+        this.uiManager?.playtest?.dispose();
         this.publicEvents?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {

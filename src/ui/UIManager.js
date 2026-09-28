@@ -4,6 +4,7 @@ import { getAbilityManaCost } from '../core/AbilityEconomy.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { ReportUI } from './ReportUI.js';
+import { PlaytestSessionUI, appendPlaytestReportDraft } from './PlaytestSessionUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { PhoneSettingsUI } from './PhoneSettingsUI.js';
 import { PhoneMenuUI } from './PhoneMenuUI.js';
@@ -450,6 +451,10 @@ export class UIManager {
 
         if (this.btnCancelReport) this.btnCancelReport.addEventListener('click', () => this.toggleReport());
         if (this.reportScreen?.querySelector('#report-diagnostics')) this.report = new ReportUI(this);
+        this.playtest = new PlaytestSessionUI(this.helpScreen?.querySelector('.support-window__body'), {
+            sample: () => this.getPlaytestContext?.() || {},
+            appendDraft: summary => appendPlaytestReportDraft(this, summary)
+        });
 
         // Social UI (extracted module) — must come before setupWindow block
         this.social = new SocialUI({

@@ -38,9 +38,9 @@ run a newer/unreviewed checkout merely to view reports on production. The curren
 report indexes do not implement automatic report expiry. In-game reporting is
 the chosen channel; staff coverage and a retention policy remain unassigned.
 
-The1.19 local candidate adds **Administration → Player reports** with open,
+The accepted1.19 release adds **Administration → Player reports** with open,
 resolved and all-status filters,10-report cursor pages and expandable JSON.
-It is not live until1.19 deployment acceptance. Reads use the existing server
+Reads use the existing server
 database connection, recheck the durable admin role and require an audit entry;
 they do not resolve reports or publish their bodies into activity history.
 JSON is rendered as text, not HTML, and private results clear on reconnect or
@@ -51,7 +51,29 @@ from QA authorization. Existing audit retention defaults to90days, configurable
 within7–365days; that does not set report or backup retention. Grants/teleports
 are not needed for routine health/report acceptance.
 
-## Release and incident checks
+## Voluntary progression feedback (1.21 candidate)
+
+Help offers a default-off, page-local playtest timer. Players label their activity
+and outside assistance; the summary distinguishes idle, hidden, disconnected and
+suspended/unobserved time. Its initial/latest levels and first observed level30
+crossing are not proof of a complete new-character journey. Closed-page time is
+not measured. A sixty-second input-idle heuristic can also classify unattended
+combat as idle; do not treat it as authoritative encounter telemetry.
+
+Nothing is stored on disk or sent by the timer. Players may stop, inspect, and
+explicitly append a bounded summary to a report draft, then separately submit it.
+That report has the same authenticated identity, private admin review and
+retention rules as other submitted reports. Clearing the local timer does not
+delete copies the player already placed in drafts or submitted. No automatic
+recruitment, identity/input/chat recording, grants or balance adjustment occurs.
+
+For a useful first-hour/level30 sample, ask for start/end levels, active versus
+idle/offline time, assistance, and the principal point of confusion. Compare
+fresh journeys separately from existing or helped characters. Record sample
+limits before evaluating the2–3-hour target; do not extrapolate one timer test
+into the full100-hour campaign. The owner assigned human pacing to playtesting.
+
+## Release verification
 
 For each published version, retain the exact commit, mandatory CI/live-QA result,
 frontend `release.json`, backend `/healthz`, login version and cumulative notes.
@@ -91,8 +113,8 @@ results do not establish concurrent-player capacity. Choose the cohort target,
 then use a bounded representative multiplayer workload to establish headroom.
 Do not repeat the112-hour campaign to obtain an operations number.
 
-Before publishing1.19, verify the in-game report viewer and publish these approved
-policy facts and limitations. Do not activate invitations now. Before CB, finish
+The1.19 report viewer and scoped deployment checks are accepted; see its
+[release record](plans/2026-09-28-release1-19.md). Do not activate invitations now. Before CB, finish
 all mandatory game/art work and resolve staffing, retention, recovery and capacity
 evidence; implement the approved transition server-side with save protection.
 Human

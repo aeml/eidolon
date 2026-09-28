@@ -91,6 +91,8 @@ export class UIBindings {
         };
 
         ui.getReportContext = diagnostics => collectReportContext(engine, diagnostics);
+        ui.getPlaytestContext = () => ({ level: engine.player?.level,
+            connected: engine.isMultiplayer === true && engine.network?.socket?.readyState === WebSocket.OPEN });
         ui.onReportSubmit = (type, text, requestId) => {
             if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
             engine.network.send('report', { reportType: type, text, requestId });

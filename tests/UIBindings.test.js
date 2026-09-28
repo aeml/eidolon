@@ -58,6 +58,19 @@ describe('UIBindings', () => {
         };
     }
 
+    test('playtest sampling exposes only connection and level, without sending observations', () => {
+        const engine = createEngine();
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.player.level = 12;
+        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: true, level: 12 });
+        engine.network.socket.readyState = WebSocket.CLOSED;
+        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: false, level: 12 });
+        engine.network.socket.readyState = WebSocket.OPEN;
+        engine.isMultiplayer = false;
+        expect(engine.uiManager.getPlaytestContext().connected).toBe(false);
+        expect(engine.network.send).not.toHaveBeenCalled();
+    });
+
     test('bindConstructorCallbacks wires representative UI actions to engine behavior', () => {
         const engine = createEngine();
         const bindings = new UIBindings(engine);

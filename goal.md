@@ -3,10 +3,27 @@
 **Current checkpoint:** Alpha1.19.0 is accepted live at
 7588d255a36acc1519173b91efe38662a46b25e2, CI36449267553 all jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/three-asset checks
-passed again after terminal CI. Watcher89597 finished successfully.1.20 is ready
-and publishing with its own notes/version and bounded integration evidence.
-Its prepared verifier needs the eventual exact candidate SHA, and all its own
-CI/live gates must pass.1.21 code remains excluded from this release.
+passed again after terminal CI. Watcher89597 finished successfully.1.20 is pushed
+atdddbf01fcd7f4d7683097853933d67f3603fc91b, CI36452639581 running.
+Quiet terminal-only watcher session62253 monitors that exact run/SHA.
+Its prepared verifier takes that SHA after all mandatory CI/live gates pass.
+1.21 code remains excluded from this release; it is separate local work.
+Owner approved the optional playtest timer: local-only until explicitly shared.
+Its code, version/notes, privacy docs and mandatory browser coverage are ready
+locally. Final309 model/UI/binding/version tests, full lint and three browser
+views pass. See [1.21 receipt](docs/plans/2026-09-28-release1-21.md). Publish only
+after1.20 acceptance; actual human pacing remains an open playtest gate.
+
+Separate1.22 prerequisite geometry/material work MUST remain excluded from1.21:
+EarthLandmarkGeometry, ProceduralEarthLocations, WorldSurfaceDetail and their
+tests/populated-Earth browser profile, plus the1.22 preflight. Final17 focused
+checks, scoped lint and two browser cases43.2s pass. Final screenshots inspected,
+stable warmed resources; [Earth preflight](docs/plans/2026-09-28-1-22-earth-preflight.md).
+Earth journey source/retained-contract review is now recorded there. Further
+separate1.22 changes: earthQuestSearch, AtlasQuestMarkers, its unit tests and
+atlas-navigation browser test. Earth hunt waypoints no longer point into town;
+ten atlas tests and two browser layouts27.3s pass, phone-sized capture inspected.
+Those files must also stay out of1.21. No balance changes or long campaign run.
 
 **Prior checkpoint:** Alpha1.18.0 is
 accepted live at24721f9d4a47508ee5bd977a9f09f56b90efcb35, CI36445044791.
@@ -22,33 +39,18 @@ the owner's near-completion beta policies. Full ESLint,302 focused client/versio
 checks, focused Go tests, real disposable Mongo pagination, two-account report
 submission/authorization/restart, three browser layouts and18 restore guard cases
 passed. See [1.19 receipt](docs/plans/2026-09-28-release1-19.md).
-CI36449267553 remains running (all predeploy gates and both deployments passed;
-final live QA started16:28:46UTC). Quiet terminal-only watcher session89597
-monitors the exact run/SHA; Luna is unavailable. Root verifier is prepared at
-`/tmp/eidolon-release-1-19-0-20260928-bz4qDD/verify.mjs`. Next: mandatory CI/live QA
-completion, then root exact acceptance. Do not repeat the long campaign or alter access.
+CI36449267553 and its public verifier passed; acceptance is recorded above.
 
-Local1.20 is versioned but uncommitted/unpublished: canonical report geography,
+Published1.20 includes canonical report geography,
 collapsed alpha/support help and a real clipped Help-footer correction using
 flex layout.118 UI/settings/report tests and345 version/geography/atlas/population
 checks pass. Five browser cases passed37.5s, including existing journey guidance,
 three Help/report viewport sizes, final-section scrollability and visible Close.
 Short-landscape screenshot inspected. Full repository ESLint and whitespace passed. See
 [integration review](docs/plans/2026-09-28-1-20-integration.md) for A1 evidence and
-concrete remaining visual defects; do not claim final art approval.1.20 publication
-waits for1.19 acceptance, then its own mandatory CI/live gates.
-The previous watcher2316 terminated143; CI itself was rechecked still running,
-not restarted.1.20 receipt and public verifier are prepared at
-`/tmp/eidolon-release-1-20-0-20260928-B9AzYC/verify.mjs` (supply eventual exact SHA).
-1.21 source preflight records missing human journey evidence; owner was asked
-whether to use an opt-in local timer or written feedback. A local-only default-off
-timer and Help controls are now prepared in separate unstaged files, with explicit
-draft append only (never submission). UIManager/UIBindings/runtime cleanup changes
-and all PlaytestSession files/tests are EXCLUDED from staged1.20.85 focused tests
-and three browser views passed; portrait summary inspected. No server telemetry
-or storage added. Include its browser spec in the1.21 interface CI stage later.
-Root's1.19 public verifier already passed once while final live QA runs; wait for
-all mandatory gates before acceptance and1.20 publication.
+concrete remaining visual defects; do not claim final art approval.1.20 still
+requires its own mandatory CI/live gates and exact public verifier at
+`/tmp/eidolon-release-1-20-0-20260928-B9AzYC/verify.mjs` (supply published SHA).
 All final modern-art/CB requirements remain open; model pilot is owner-deferred.
 
 **Historical checkpoint:** Alpha1.17.0 is
