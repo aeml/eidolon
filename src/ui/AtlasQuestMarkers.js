@@ -7,8 +7,10 @@ import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../data/dungeonEntrances.js';
 import { earthQuestSearch } from '../data/earthQuestSearch.js';
 import { waterQuestSearch } from '../data/waterQuestSearch.js';
+import { fireQuestSearch } from '../data/fireQuestSearch.js';
 
 const hunts = new Map(chronicleHunts.map(q => [q.id, q]));
+const questSearchers = { earth: earthQuestSearch, water: waterQuestSearch, fire: fireQuestSearch };
 const targetsByRealm = {
     earth: ['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan', 'Verdant Memory Seed'],
     water: ['MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian', 'Moon-Tide Pearl'],
@@ -109,8 +111,7 @@ export function getAtlasQuestLocations(engine) {
         const hunt = hunts.get(q.id);
         const realmId = hunt?.huntingRealm || Object.keys(targetsByRealm).find(id => targetsByRealm[id].includes(q.target));
         const realm = WORLD_REGIONS[realmId];
-        const search = realmId === 'earth' ? earthQuestSearch(q, hunt)
-            : realmId === 'water' ? waterQuestSearch(q, hunt) : null;
+        const search = questSearchers[realmId]?.(q, hunt);
         if (search) {
             const enemyName = (hunt?.enemy || q.target || 'quest targets').replace(/([a-z\d])([A-Z])/g, '$1 $2');
             add(q, { id: realmId, name: `${title} · ${realm.name} area`, ...search }, 'quests',

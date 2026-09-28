@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.23.0';
+const currentVersion = '1.24.0';
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
@@ -23,6 +23,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('1.24.0 records Fire guidance, warnings and scenery without claiming balance completion', () => {
+        const start = indexHtml.indexOf('data-version="1.24.0"'), previous = indexHtml.indexOf('data-version="1.23.0"');
+        expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+        for (const text of ['the Fire journey', 'level-75-or-higher', 'Cinderheart Ore', 'not a safe path',
+            'forged Kiln Span', 'level-70 Molten admission', 'No XP, drop-rate, quest-count or gear changes',
+            'does not open closed beta', 'Full prior patch history']) {
+            expect(indexHtml.slice(start, previous)).toContain(text);
+        }
+    });
     test('1.23.0 records Water guidance and scenery without changing rewards or opening beta', () => {
         const start = indexHtml.indexOf('data-version="1.23.0"'), previous = indexHtml.indexOf('data-version="1.22.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);

@@ -131,6 +131,22 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             const { x, z } = window.__atlas.map.navigation.waypoint; return [x, z];
         })).toEqual([0, -1200]);
         await page.screenshot({ path: testInfo.outputPath('atlas-water-hunt.png') });
+        await page.evaluate(() => {
+            const { engine, map } = window.__atlas;
+            engine.player.quests = [{ id: 'chronicle_fire_unending_war', category: 'chronicle',
+                title: 'Fuel for an Unending War', type: 'KILL', target: 'ChronicleHunt:chronicle_fire_unending_war',
+                accepted: true, count: 0, maxCount: 35 }];
+            engine.uiManager.quest.setQuestTracked(engine.player.quests[0], true); map.update(engine.player);
+        });
+        await search.fill('Unending');
+        await page.getByRole('button', { name: '! Fuel for an Unending War · Fire Realm area', exact: true }).click();
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('Magma Golem enemies of level 75 or higher');
+        await expect(page.getByRole('region', { name: 'Selected destination' })).toContainText('do not need to reach the Molten Core');
+        await page.getByRole('button', { name: 'Set personal waypoint' }).click();
+        expect(await page.evaluate(() => {
+            const { x, z } = window.__atlas.map.navigation.waypoint; return [x, z];
+        })).toEqual([-1600, 200]);
+        await page.screenshot({ path: testInfo.outputPath('atlas-fire-hunt.png') });
         if (width < 600) {
             const box = await canvas.boundingBox(), x = Math.round(box.x + box.width / 2), y = Math.round(box.y + box.height * .6);
             const cdp = await page.context().newCDPSession(page);

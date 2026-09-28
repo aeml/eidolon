@@ -315,7 +315,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.23.0` (local candidate; deployment pending)
+- Current source version: `Alpha 1.24.0` (local candidate; deployment pending)
 - Last verified live release: `Alpha 1.22.0`, exact4b0df9d50860aae4d04f43c3668d24625a284459, CI36459353414. See the [release record](docs/plans/2026-09-28-release1-22.md) for scoped acceptance.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.23` Water navigation and coastal landmarks, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.22 is accepted live;1.23 is prepared for publication. Human pacing remains a playtest gate. Neither milestone opens beta or restricts alpha accounts.

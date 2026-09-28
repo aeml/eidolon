@@ -6,6 +6,7 @@ import { distanceToPath } from '../data/worldPopulation.js';
 import { createLocationGroundMaterials, addLocationGroundWear } from './LocationGroundWear.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './WaterLandmarkGeometry.js';
+import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -189,12 +190,15 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                     for (let i = 0; i < 15; i++) part(createTideRibStone(i), 'rib', 0, 0, shift);
                     continue;
                 }
-                const points = [];
-                for (let i = 0; i <= 12; i++) {
-                    const angle = i / 12 * Math.PI, span = Math.cos(angle) * 10, y = 7 + Math.sin(angle) * 8;
-                    points.push(water ? [span, y, shift] : [shift, y, span]);
+                part(createKilnArchBeam(), 'iron', shift, 0, 0, [0, Math.PI / 2, 0]);
+                for (const edge of [-1, 1]) {
+                    part(createKilnArchBeam(true), 'iron', shift + edge * .5, 0, 0, [0, Math.PI / 2, 0]);
+                    for (let i = 1; i < 10; i++) {
+                        const angle = i / 10 * Math.PI;
+                        part(new THREE.CylinderGeometry(.17, .17, .15, 6), 'accent',
+                            shift + edge * .61, 7 + Math.sin(angle) * 5.5, -Math.cos(angle) * 10, [0, 0, Math.PI / 2]);
+                    }
                 }
-                rope(points, water ? .7 : 1.05, water ? 'accent' : 'iron');
             }
             if (water) {
                 for (const side of [-1, 1]) {
@@ -205,6 +209,11 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                         box('iron', side * 10, level, 1.51, level % 2 ? .9 : 1.65, .085, .04);
                     }
                     beam([side * 10, 7.7, -2.5], [side * 10, 7.7, 2.5], .12, 'iron');
+                }
+            } else {
+                for (const side of [-1, 1]) box('stone', 0, 7.7, side * 10, 7, .6, 3);
+                for (const angle of [Math.PI / 4, Math.PI / 2, Math.PI * .75]) {
+                    box('iron', 0, 7 + Math.sin(angle) * 5.5, -Math.cos(angle) * 10, 5, .22, .25);
                 }
             }
             break;

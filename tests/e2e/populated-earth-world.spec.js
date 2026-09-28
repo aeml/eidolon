@@ -81,7 +81,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             window.__populatedWorld = { visit, engine, samples, async profile() {
                 const profiles = [];
                 const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
-                    elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'communal-kiln', 'quenched-foundry'] :
+                    elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
                         ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar', 'first-grove-arch'];
                 for (const id of profileSites) {
                     visit(id);
