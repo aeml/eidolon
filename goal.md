@@ -18,7 +18,7 @@ exact SHA 14290d229c591b3f389418334690416b4d74268f, CI36397654640 successful,
 including live QA and independent public IPv4 identity/assets verification.
 [1.13 casino performance](docs/plans/2026-09-28-release1-13.md) is implementing;
 the two retained optimizations are reapplied locally with passing focused tests,
-but comparable hardware acceptance and publication remain pending. The global
+and the paired current-art hardware gate passes; publication/live QA remain pending. The global
 goal and later gates are still open.
 
 Use Luna for CI/deployment and long dungeon/raid monitoring, with terminal-only

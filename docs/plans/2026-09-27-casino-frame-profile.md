@@ -191,3 +191,51 @@ window or an FPS result. No new rendering profile, background-work termination,
 priority change or soak was started. Wait for owned browser deployment work to
 finish, then assess whether a paired comparison is meaningful; record contention
 alongside any measurements rather than guessing its causal cost.
+
+## September 28 — paired 1.13 hardware acceptance
+
+Current-art comparison completed after the existing 24-hour soak's load phase
+ended successfully. CI36308655332 subsequently completed cleanup successfully;
+no workload was cancelled/restarted. A pre-run five-second probe found 77–85%
+CPU idle and 2–4 runnable tasks (excluding since-boot row), unlike the earlier
+loaded-host trials. No other owned GPU test ran concurrently.
+
+Candidate source: ab6db45c (hidden actor roots, deferred status animation and
+detached hidden aura roots). Baseline mode serves the exact CasinoController
+and AttachedStatusEffect modules from accepted 1.12 SHA
+14290d229c591b3f389418334690416b4d74268f; both served modules are asserted.
+All other current art, catalog, viewport, camera, browser and workload remain
+identical. Git runtime source diff against 1.12 is exactly those two modules.
+
+Each side ran once, zero retries: baseline 21.8s, candidate 21.3s. Same System
+Chrome hardware renderer: ANGLE AMD Vulkan 1.4.318, Radeon Graphics RADV RENOIR
+(0x00001638). All eight view samples contain 180 frames after 60 warmup frames
+with a visible document and no collected browser failures. All predeclared
+High median≤25ms/p95≤50ms and Low median≤20ms/p95≤33.3ms targets pass.
+
+| View | Baseline median/p95 ms | Candidate median/p95 ms | Baseline→candidate render CPU median ms | Host CPU idle baseline/candidate |
+| --- | ---: | ---: | ---: | ---: |
+| High public | 16.7 /24.5 | 16.7 /22.9 | 15.5→15.1 | 64.3% /61.7% |
+| High VIP | 16.7 /19.0 | 16.7 /16.9 | 15.4→14.1 | 64.5% /69.9% |
+| Low public | 16.7 /22.3 | 16.7 /19.4 | 14.5→13.3 | 58.9% /60.3% |
+| Low VIP | 16.7 /17.2 | 16.7 /16.8 | 14.0→12.2 | 69.1% /69.3% |
+
+Counts are exactly equal between corresponding views: draw calls
+2702/2658/2635/2591; triangles 149223/147162/120988/118927; geometries
+367/490/490/490; textures 27 throughout. Fixture retains 92 stations, 232 seats,
+40 equipped models, 20 visible patrons/auras on each selected floor. All four
+candidate screenshots and baseline High/public and Low/VIP were inspected;
+floor isolation, distinct carpets, visible equipment/auras and open circulation
+remain intact. This wide scene is not a new table UI, phone or network-load test.
+
+The scoped hardware gate is now passed. Lower sampled render CPU cost is
+consistent with the removed hidden work; both builds have the same 16.7ms frame
+median, so do not claim a universal FPS increase or quantify a causal improvement
+from a single paired run. Shared-host variation remains possible. Earlier loaded
+failures are retained, not reclassified as passing results. No further unchanged
+trial or new CPU trace is needed for this milestone.
+
+Evidence: `/tmp/eidolon-casino-1-13-paired-20260928-dpGl1V/`, baseline.json,
+candidate.json, frame-profile attachments and eight captures. Listener4189 is
+gone after cleanup. Publication and live acceptance remain in the
+[1.13 release record](2026-09-28-release1-13.md).
