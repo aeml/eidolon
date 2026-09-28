@@ -697,6 +697,7 @@ type ChatPayload struct {
 type ReportPayload struct {
 	ReportType string `json:"reportType"`
 	Text       string `json:"text"`
+	RequestID  string `json:"requestId,omitempty"`
 }
 
 type SelectBranchPayload struct {

@@ -2,6 +2,7 @@ import { RARITY } from '../core/ItemSystem.js';
 import { getAbilityManaCost } from '../core/AbilityEconomy.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
+import { ReportUI } from './ReportUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { PhoneSettingsUI } from './PhoneSettingsUI.js';
 import { PhoneMenuUI } from './PhoneMenuUI.js';
@@ -447,15 +448,7 @@ export class UIManager {
         });
 
         if (this.btnCancelReport) this.btnCancelReport.addEventListener('click', () => this.toggleReport());
-        if (this.btnSubmitReport) this.btnSubmitReport.addEventListener('click', () => {
-            const type = this.reportType.value;
-            const text = this.reportText.value.trim();
-            if (text && this.onReportSubmit) {
-                this.onReportSubmit(type, text);
-                this.reportText.value = ''; // Clear
-                this.toggleReport();
-            }
-        });
+        if (this.reportScreen?.querySelector('#report-diagnostics')) this.report = new ReportUI(this);
 
         // Social UI (extracted module) — must come before setupWindow block
         this.social = new SocialUI({

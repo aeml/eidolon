@@ -1406,7 +1406,12 @@ describe('menu polish regressions', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<select id="report-type" class="support-field__control">');
-        expect(html).toContain('<textarea id="report-text" class="support-field__control support-field__textarea" rows="8" placeholder="Describe your issue or idea..."></textarea>');
+        const reportText = new DOMParser().parseFromString(html, 'text/html').getElementById('report-text');
+        expect([...reportText.classList]).toEqual(['support-field__control', 'support-field__textarea']);
+        expect(reportText.rows).toBe(6);
+        expect(reportText.maxLength).toBe(3200);
+        expect(reportText.getAttribute('aria-describedby')).toBe('report-count report-status');
+        expect(reportText.placeholder).toBe('Describe your issue or idea...');
         expect(html).not.toContain('<select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">');
         expect(html).not.toContain('<textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>');
 

@@ -2,7 +2,7 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.12.0; see the [release record](2026-09-28-release1-12.md).
+baseline is Alpha 1.13.0; see the [release record](2026-09-28-release1-13.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
@@ -560,6 +560,14 @@ login/history and seven changed published modules verified. The physical portal
 and three-anchor registry are delivered, not a complete atlas/population pass.
 **1.13 implementing**; subsequent milestones remain planned. Full scoped
 evidence: [1.12 release record](2026-09-28-release1-12.md).
+
+Superseding receipt: **1.13 accepted live**, exact
+`730987e3ce7b7eb55bc5c55a6a44ca06a8927f2a`, CI36403511513 fully successful
+including final live character QA. Paired native casino hardware targets passed
+with all venue/actor/resource counts preserved; independent public IPv4 release,
+database, login/history and both changed assets verified. Scoped evidence and
+limitations: [1.13 receipt](2026-09-28-release1-13.md). **1.14 implementing**
+from the [atlas/feedback preflight](2026-09-28-1-14-preflight.md); later gates open.
 
 ## References
 

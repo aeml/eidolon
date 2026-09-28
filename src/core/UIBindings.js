@@ -1,3 +1,5 @@
+import { collectReportContext } from '../ui/ReportUI.js';
+
 const PROTECTED_INVENTORY_TYPES = new Set(['GEM', 'MATERIAL', 'RELIC']);
 const PROTECTED_INVENTORY_SLOTS = new Set(['gem', 'material', 'relic']);
 
@@ -88,8 +90,11 @@ export class UIBindings {
             engine.network.send('trading_cancel', { auctionId });
         };
 
-        ui.onReportSubmit = (type, text) => {
-            engine.network.send('report', { reportType: type, text });
+        ui.getReportContext = diagnostics => collectReportContext(engine, diagnostics);
+        ui.onReportSubmit = (type, text, requestId) => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('report', { reportType: type, text, requestId });
+            return true;
         };
         ui.social.onSafety = (action, username, context = '') => {
             if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;

@@ -8,10 +8,10 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint — September 28
 
-Superseding checkpoint: [Alpha 1.12.0](2026-09-28-release1-12.md) is accepted
-live at 14290d229c591b3f389418334690416b4d74268f, CI36397654640 successful
+Superseding checkpoint: [Alpha 1.13.0](2026-09-28-release1-13.md) is accepted
+live at 730987e3ce7b7eb55bc5c55a6a44ca06a8927f2a, CI36403511513 successful
 including mandatory live QA; public IPv4 identities/assets independently
-verified. 1.13 casino performance work is implementing. The paragraphs below retain
+verified. 1.14 atlas/feedback work is implementing. The paragraphs below retain
 the preceding 1.10 baseline, not a claim that the portal is still unpublished.
 
 Alpha1.10.2 is verified live at 8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813;

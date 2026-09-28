@@ -1435,15 +1435,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 	case MsgReport:
-		var payload ReportPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-		if err := saveReport(c.username, payload); err != nil {
-			c.sendError("Report submission failed")
-			return
-		}
-		c.sendSystemChat("Report submitted successfully.")
+		c.handleReport(msg.Payload)
 
 	case MsgStashDeposit:
 		if c.playerID == "" {

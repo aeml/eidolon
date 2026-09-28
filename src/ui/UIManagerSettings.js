@@ -41,7 +41,11 @@ class UIManagerSettingsMethods {
     }
 
     toggleReport() {
+        const opening = !this.isElementVisible(this.reportScreen);
+        if (opening) this.report?.refreshContext();
         this.toggleStaticModal(this.reportScreen, 'block');
+        if (opening) this.report?.focusOnOpen();
+        else this.report?.restoreFocus();
     }
 
     setGraphicsQuality(quality) {

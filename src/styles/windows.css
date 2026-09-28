@@ -559,6 +559,17 @@
     resize: none;
 }
 
+.report-diagnostics-option { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.report-diagnostics-option input { width: 20px; height: 20px; flex-shrink: 0; }
+.report-context-preview summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.report-context-preview summary::after { content: '▸'; margin-left: auto; padding-left: 8px; }
+.report-context-preview[open] summary::after { content: '▾'; }
+.report-context-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+#report-status { line-height: 1.5; overflow-wrap: anywhere; }
+#report-count { color: var(--color-text-muted); font-size: 13px; }
+.mobile-mode #report-screen { font-size: 16px; max-height: calc(100dvh - 24px); }
+.mobile-mode #report-screen :is(button, select, textarea) { font-size: 16px; min-height: 44px; }
+
 .support-field__range {
     width: 100%;
 }

@@ -455,6 +455,8 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+        } else if (msg.type === 'report_result') {
+            this.uiManager?.report?.handleResult(msg.payload);
         } else if (['admin_status_result', 'admin_players_result', 'admin_history_result',
             'admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(msg.type)) {
             this.uiManager?.admin?.handleResult(msg.type, msg.payload);

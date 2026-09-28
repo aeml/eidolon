@@ -16,7 +16,7 @@ describe('UIBindings', () => {
             isMultiplayer: true,
             pendingInteraction: { id: 'enemy-1' },
             collisionManager: {},
-            network: { send: jest.fn() },
+            network: { send: jest.fn(), socket: { readyState: WebSocket.OPEN } },
             renderSystem: {
                 setGraphicsQuality: jest.fn(),
                 setBrightnessLevel: jest.fn(),
