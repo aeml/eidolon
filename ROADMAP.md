@@ -10,7 +10,7 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
 - Accepted group clears cover all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. On September27 the user assigned uninterrupted campaign and pacing validation to their playtest; do not run another long automated campaign or mark those checks passed.
-- Live release: `Alpha 1.27.0`, exact `046b8ccaf3bcf2c83647d4b9e585b0bd0c011053`, CI36477795979 passed all jobs including live character/recovery QA. Independent post-CI public IPv4 checks confirmed both release identities, database readiness and three exact changed runtime assets. See the [current release record](docs/plans/2026-09-28-release1-27.md).1.28 Nexus guidance is prepared for publication. Human pacing and the separate IPv6/DDNS configuration remain unverified.
+- Live release: `Alpha 1.28.0`, exact `16be66a7f962018b25b47807ba8ac0dd837c4f34`, CI36481458231 passed all jobs including live character/recovery QA. Independent post-CI public IPv4 checks confirmed both release identities, database readiness and four exact changed runtime assets. See the [current release record](docs/plans/2026-09-28-release1-28.md).1.29 finale presentation is prepared for publication. Human pacing and the separate IPv6/DDNS configuration remain unverified.
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
 - Forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per the owner's latest decision,1.20/1.40 remain open-alpha quality milestones. Closed beta waits until the game is nearly complete, targeted for the1.90 readiness review after1.80 feature freeze; release readiness remains1.99. Existing accounts/characters stay; new beta players are invited, up to100 planned. Support uses in-game reports with an administrator-only JSON viewer. No automatic beta transition or unmeasured capacity promise. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited scope.
@@ -130,8 +130,8 @@ milestone in order, then continue; Luna monitors deployments.
 
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
-rules, decision points and beta/full-release gates. **1.27 is accepted live**
-(CI36477795979, exact046b8cca); **1.28 is prepared for publication**. Later milestones
+rules, decision points and beta/full-release gates. **1.28 is accepted live**
+(CI36481458231, exact16be66a7); **1.29 is prepared for publication**. Later milestones
 remain planned, not delivered.
 
 | Versions | Outcome |
