@@ -2,7 +2,7 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.11.0; see the [release record](2026-09-28-release1-11.md).
+baseline is Alpha 1.12.0; see the [release record](2026-09-28-release1-12.md).
 
 September 28 follow-up: the user identifies the current game as **open alpha**
 and wants it ready for a **closed beta**, with modern Diablo/Path of Exile-like
@@ -552,6 +552,14 @@ Live Release and Character QA. Independent IPv4 frontend/backend identity,
 database readiness, login/history and six published asset checks passed.
 **1.12 implementing**; later rows remain planned. Full receipt and unchanged
 global limitations are in the 1.11 release record.
+
+Superseding receipt: **1.12 accepted live**, exact
+`14290d229c591b3f389418334690416b4d74268f`, CI36397654640 fully successful
+including live character QA. Independent public IPv4 identity, database,
+login/history and seven changed published modules verified. The physical portal
+and three-anchor registry are delivered, not a complete atlas/population pass.
+**1.13 implementing**; subsequent milestones remain planned. Full scoped
+evidence: [1.12 release record](2026-09-28-release1-12.md).
 
 ## References
 

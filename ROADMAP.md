@@ -14,7 +14,7 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 - The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
 - New forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor version planned, a playable-beta gate at 1.20, wider beta at 1.40, feature freeze at 1.80 and release readiness at 1.99. These are scope/gate targets, not deployed features or dates. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited requirements/evidence source.
-- Confirmed alpha presentation gap: Dark Realm access is currently through the Dungeon Guide menu, not the promised physical resonance portal. The forward plan includes a discoverable, server-gated portal at 1.12; an earlier safe corrective release is allowed. Do not treat 1.10.2's version number as full roadmap completion.
+- Physical resonance portal delivered in 1.12: Lanternhold (28, 235), east of the Dungeon Guide, with personal server-enforced eligibility. Guide entry remains compatible. Later population/atlas and beta gates remain open; a version number is not full roadmap completion.
 - Phone UI work and the user's positive general-use feedback are retained. Actual dungeon/party phone feedback is user-deferred; further supported-device validation and launch support decisions are planned in 1.18, 1.47 and 1.95. See the [original mobile requirements](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
 - Historical Alpha 1.0 architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216 (not current measurements).
@@ -130,8 +130,8 @@ milestone in order, then continue; Luna monitors deployments.
 
 The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
-rules, decision points and beta/full-release gates. **1.11 is accepted live**
-(CI36391433834, exact 4f57104e); **1.12 is implementing**. Later milestones
+rules, decision points and beta/full-release gates. **1.12 is accepted live**
+(CI36397654640, exact 14290d22); **1.13 is implementing**. Later milestones
 remain planned, not delivered.
 
 | Versions | Outcome |
