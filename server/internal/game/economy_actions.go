@@ -480,6 +480,9 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 }
 
 func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
+	if itemID == "" {
+		return nil, false
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
