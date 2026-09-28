@@ -228,9 +228,10 @@ func applyFinalDamageWithCritical(attacker, target *Entity, baseDamage int, dama
 	return finalDamage
 }
 
-func (w *World) fireTelegraphEvent(sourceID string, x, z, radius float64, duration time.Duration) {
+func (w *World) fireTelegraphEvent(sourceID, instanceID string, x, z, radius float64, duration time.Duration) {
 	if w.OnEvent != nil {
 		w.OnEvent("telegraph", TelegraphEvent{
+			InstanceID: instanceID,
 			SourceID:   sourceID,
 			X:          x,
 			Z:          z,

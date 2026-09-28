@@ -629,17 +629,9 @@ type ComboPayload struct {
 	ComboName string `json:"comboName"`
 }
 
-type TelegraphPayload struct {
-	SourceID   string  `json:"sourceId"`
-	X          float64 `json:"x"`
-	Z          float64 `json:"z"`
-	Radius     float64 `json:"radius"`
-	Duration   float64 `json:"duration"`
-	Theme      string  `json:"theme,omitempty"`
-	Attack     string  `json:"attack,omitempty"`
-	ThreatTier string  `json:"threatTier,omitempty"`
-	Label      string  `json:"label,omitempty"`
-}
+// Keep encounter hints, multi-circle silence and cast-time instance identity
+// intact across the wire rather than maintaining a lossy second field list.
+type TelegraphPayload = game.TelegraphEvent
 
 type RewardSummaryPayload struct {
 	PlayerID          string `json:"playerId"`

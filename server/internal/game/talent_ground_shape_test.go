@@ -108,6 +108,9 @@ func TestMeteorApocalypseKeepsTalentRadiusSnapshot(t *testing.T) {
 	for i := 0; i < 6; i++ {
 		select {
 		case event := <-telegraphs:
+			if event.InstanceID != p.InstanceID {
+				t.Fatalf("meteor warning lost cast instance: %+v", event)
+			}
 			want := 29.04
 			if i > 0 {
 				want *= .7

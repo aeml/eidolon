@@ -735,25 +735,12 @@ func main() {
 			if !ok {
 				return
 			}
-			payload := TelegraphPayload{
-				SourceID:   evt.SourceID,
-				X:          evt.X,
-				Z:          evt.Z,
-				Radius:     evt.Radius,
-				Duration:   evt.Duration,
-				Theme:      evt.Theme,
-				Attack:     evt.Attack,
-				ThreatTier: evt.ThreatTier,
-				Label:      evt.Label,
+			message, err := telegraphBroadcast(evt)
+			if err != nil {
+				return
 			}
-			b, _ := json.Marshal(payload)
-			outMsg := Message{
-				Type:    MsgTelegraph,
-				Payload: b,
-			}
-			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgTelegraph, Data: dataBytes}
+				broadcast <- message
 			}()
 		case "reward_summary":
 			evt, ok := data.(game.RewardSummaryEvent)

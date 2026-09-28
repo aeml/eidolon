@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CONSTANTS } from './Constants.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
@@ -841,7 +842,20 @@ class GameEngineNetworkMessageMethods {
         } else if (msg.type === 'telegraph') {
             // Boss AoE telegraph — show a warning circle on the ground
             const data = msg.payload;
+            // Queued warnings can arrive after an instance transition. Empty
+            // means overworld; omitted scope remains compatible with old servers.
+            if (typeof data?.instanceId === 'string' && data.instanceId !== (this.currentInstanceId || '')) return;
             if (data) {
+                // The overworld is one shared instance. A boss in another
+                // realm must not replace local combat feedback. Keep warnings
+                // overlapping the loaded square, including large distant AoEs.
+                const playerPosition = this.player?.position;
+                if (!this.currentInstanceId && playerPosition) {
+                    const chunkSize = this.chunkManager?.chunkSize ?? CONSTANTS.SCENE.CHUNK_SIZE;
+                    const loadDistance = this.chunkManager?.loadDistance ?? CONSTANTS.SCENE.LOAD_DISTANCE;
+                    const extent = chunkSize * (loadDistance + 1) + (data.radius || 10);
+                    if (Math.abs(data.x - playerPosition.x) > extent || Math.abs(data.z - playerPosition.z) > extent) return;
+                }
                 const pos = new THREE.Vector3(data.x, 0, data.z);
                 const threatTier = data.threatTier || 'boss';
                 const label = data.label || (threatTier === 'boss' ? 'BOSS' : threatTier === 'lethal' ? 'DANGER' : 'WATCH');

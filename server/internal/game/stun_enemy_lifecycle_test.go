@@ -88,6 +88,16 @@ func TestStunnedSeraphStillExpiresAndCleansUpOwnerLoss(t *testing.T) {
 			if containsPlayer(deferred.removals, seraph.ID) != (condition != "active") {
 				t.Fatalf("stun changed summon cleanup: %v", deferred.removals)
 			}
+			if condition == "active" {
+				seraph.StunEndTime = time.Now().Add(-time.Millisecond)
+				w.updateEntity(seraph, .05, []*Entity{owner}, deferred)
+				if seraph.Stunned || target.Health >= target.MaxHealth {
+					t.Fatal("living summon did not resume attacking after stun expired")
+				}
+				if containsPlayer(deferred.removals, seraph.ID) {
+					t.Fatal("stun expiry dismissed a living summon")
+				}
+			}
 		})
 	}
 }

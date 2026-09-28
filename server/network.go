@@ -40,9 +40,9 @@ func runHub() {
 		case message := <-broadcast:
 			for client := range clients {
 				// Filter by InstanceID
-				if message.InstanceID != "" {
+				if message.InstanceID != "" || message.Type == MsgTelegraph {
 					clientInstance := world.GetPlayerInstance(client.boundPlayerID())
-					if clientInstance != message.InstanceID {
+					if !broadcastMatchesInstance(message, clientInstance) {
 						continue
 					}
 				}

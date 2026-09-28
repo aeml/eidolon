@@ -119,6 +119,11 @@ func TestDungeonFissurePreparedPartyCanMoveOutBeforeActualImpact(t *testing.T) {
 	if len(telegraphs) != 3 || telegraphs[0].Silent || !telegraphs[1].Silent || !strings.Contains(telegraphs[0].Hint, "sideways") {
 		t.Fatalf("missing one-callout fissure warning: %+v", telegraphs)
 	}
+	for index, warning := range telegraphs {
+		if warning.InstanceID != instanceID || warning.Silent != (index > 0) {
+			t.Fatalf("pattern warning lost scope/silence: %+v", warning)
+		}
+	}
 	// The healer, mage and rogue leave through the marked line's side. The
 	// geared tank deliberately stays in two overlapping circles: only one hit.
 	for i, p := range players {

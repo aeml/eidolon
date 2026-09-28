@@ -1677,6 +1677,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if w.OnEvent != nil {
 							for index, circle := range circles {
 								w.OnEvent("telegraph", TelegraphEvent{
+									InstanceID: instanceID,
 									SourceID:   bossID,
 									X:          circle.X,
 									Z:          circle.Z,

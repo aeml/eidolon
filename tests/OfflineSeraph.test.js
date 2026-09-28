@@ -71,6 +71,36 @@ test.each(['expiry', 'owner-death', 'owner-disconnect', 'instance-change', 'summ
     } finally { f.cleanup(); }
 });
 
+test('stun pauses offline Seraph attacks while lifetime and stun timers still advance', () => {
+    const f = fixture();
+    try {
+        const seraph = f.cast(), receive = jest.spyOn(f.enemy, 'takeDamage');
+        seraph.stunTimer = 1;
+        const lifetime = seraph.summonRemaining;
+        seraph.update(.25, null, f.owner, f.engine.chunkManager, f.engine.floatingTextManager);
+        expect(receive).not.toHaveBeenCalled();
+        expect(seraph.summonRemaining).toBeCloseTo(lifetime-.25);
+        expect(seraph.stunTimer).toBeCloseTo(.75);
+        seraph.update(.75, null, f.owner, f.engine.chunkManager, f.engine.floatingTextManager);
+        expect(receive).not.toHaveBeenCalled();
+        expect(seraph.stunTimer).toBe(0);
+        seraph.update(.05, null, f.owner, f.engine.chunkManager, f.engine.floatingTextManager);
+        expect(receive).toHaveBeenCalledTimes(1);
+    } finally { f.cleanup(); }
+});
+
+test('stun cannot extend offline Seraph lifetime', () => {
+    const f = fixture();
+    try {
+        const seraph = f.cast(), receive = jest.spyOn(f.enemy, 'takeDamage');
+        seraph.stunTimer = 5; seraph.summonRemaining = .01;
+        seraph.update(.05, null, f.owner, f.engine.chunkManager, f.engine.floatingTextManager);
+        expect(receive).not.toHaveBeenCalled();
+        expect(seraph.isActive).toBe(false);
+        expect(f.owner.offlineSeraphs.size).toBe(0);
+    } finally { f.cleanup(); }
+});
+
 test.each([false, true])('summon attacks obey canonical wall/door geometry: doorway=%s', doorway => {
     const f = fixture();
     try {

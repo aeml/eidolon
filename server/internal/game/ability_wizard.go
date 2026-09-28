@@ -450,7 +450,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
-					w.fireTelegraphEvent(player.ID, impactX, impactZ, visualAbilityRadius(skillName, clusterRadius), impactDelay)
+					w.fireTelegraphEvent(player.ID, player.InstanceID, impactX, impactZ, visualAbilityRadius(skillName, clusterRadius), impactDelay)
 				}
 			} else {
 				// Single meteor
@@ -477,7 +477,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
-				w.fireTelegraphEvent(player.ID, targetX, targetZ, visualAbilityRadius(skillName, radius), impactDelay)
+				w.fireTelegraphEvent(player.ID, player.InstanceID, targetX, targetZ, visualAbilityRadius(skillName, radius), impactDelay)
 
 				// Apocalypse rune: meteors continue for 5s after cast
 				if runeID == "meteor_apocalypse" {
@@ -528,7 +528,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							w.Entities[apocProj.ID] = apocProj
 							w.Grid.Add(apocProj)
 							w.Mu.Unlock()
-							w.fireTelegraphEvent(playerID, apocProj.X, apocProj.Z, visualAbilityRadius("Meteor Drop", apocProj.Radius), impactDelay)
+							w.fireTelegraphEvent(playerID, instanceID, apocProj.X, apocProj.Z, visualAbilityRadius("Meteor Drop", apocProj.Radius), impactDelay)
 						}
 					})
 				}

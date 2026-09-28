@@ -265,6 +265,7 @@ type HazardDamageEvent struct {
 // Clients render a warning indicator at (X, Z) with the given Radius for
 // Duration seconds before the damage lands.
 type TelegraphEvent struct {
+	InstanceID string  `json:"instanceId"`
 	Hint       string  `json:"hint,omitempty"`
 	Silent     bool    `json:"silent,omitempty"`
 	SourceID   string  `json:"sourceId"`

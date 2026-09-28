@@ -62,6 +62,14 @@ export function updateOfflineSeraph(seraph, dt) {
     seraph.summonRemaining -= dt;
     if (seraph.summonRemaining <= 0) { dismissOfflineSeraph(seraph); return false; }
     seraph.summonAttackCooldown -= dt;
+    // Summon AI runs before Actor.update, so do not launch a Smite before the
+    // shared stun gate gets a chance to run. Let Actor advance status timers;
+    // lifetime/owner cleanup above must continue even while actions are paused.
+    if (seraph.stunTimer > 0) {
+        seraph.targetPosition = null;
+        seraph.velocity.set(0, 0, 0);
+        return true;
+    }
     const rects = engine.currentDungeonLayout?.walkRects || [];
     let target = null, distance = 15;
     for (const entity of engine.chunkManager.getActiveEntities()) {
