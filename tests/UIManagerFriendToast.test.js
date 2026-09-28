@@ -29,13 +29,8 @@ jest.unstable_mockModule('../src/assets/assetManifest.js', () => ({
     getRecommendedAssetPackNames: () => [],
 }));
 
-jest.unstable_mockModule('../src/data/dungeonProgression.js', () => ({
-    MAX_PLAYER_LEVEL: 100,
-    DUNGEON_RUN_LEVEL_BANDS: [],
-    availableDungeonRunLevelsForPlayer: () => [],
-    canSelectDungeonRunLevel: () => false,
-    isEndgameDifficultyUnlocked: () => false,
-}));
+// Dungeon progression is a pure data/helper module. Use its real exports so
+// transitive UI imports cannot become incompatible with a partial mock.
 
 jest.unstable_mockModule('../src/audio/AudioManager.js', () => ({
     AudioManager: class {

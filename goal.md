@@ -26,9 +26,10 @@ Real interior/PvP maps and journal-tracked quests/saved discovery overlays now
 pass focused unit/browser checks, including desktop/phone-sized resize recovery,
 manual turn-in states and character/instance privacy. Final integrated atlas/report
 routes and native browser touch gestures passed; service/facing consistency is
-implemented. Alpha1.14.0 version and cumulative notes are pushed as exact
-8098796179ffd5faab250e7a3a04766343f6a1ab; CI36415402488 confirmed running,
-Luna watching terminal-only. Next: complete mandatory deployment gates and
+implemented. Initial Alpha1.14.0 candidate8098796179ffd5faab250e7a3a04766343f6a1ab
+failed CI36415402488 on two stale Jest fixtures. Those fixtures are corrected;
+44 focused checks pass and runtime behavior is unchanged. Next: publish the
+corrected1.14.0 candidate, Luna terminal-only watch, complete deployment gates and
 independent exact live verification, then1.15. No partial
 milestone deployed.
 The global goal and later gates are still open.
