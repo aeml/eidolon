@@ -90,6 +90,10 @@ travel and damage at these positions. Combined scopes are recorded explicitly;
 neither is a full campaign or every-skill/every-angle guarantee. No new long
 encounter or performance profiling run was started.
 
-Remaining: final patch notes/versioning, predecessor
+Final patch notes/login/runtime defaults are synchronized at1.25 in local
+commit63437c99.347 focused packaging checks8.171s, full lint and whitespace pass.
+The candidate is not pushed; see the1.25 release record for the public verifier.
+
+Remaining: predecessor
 acceptance, publication and exact live verification. Human pacing and final
 modern-art approval remain open. No long campaign or soak started.

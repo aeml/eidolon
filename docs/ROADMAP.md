@@ -4,11 +4,11 @@ Last refreshed: September 28, 2026
 
 This file is a short pointer. Current forward planning and historical closeout live in these documents:
 
-- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, beta/launch gates and sequential implement/deploy/verify execution. 1.16 is accepted live (CI36430486346, 2cc806fd); 1.17 is the next publication candidate.
+- [Alpha 1.11–1.99 release roadmap](plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md) — authoritative forward scope: all 89 minor milestones, beta/launch gates and sequential implement/deploy/verify execution. Its opening checkpoint identifies the accepted live release and next candidate.
 
-- [World population and atlas](plans/2026-09-28-world-population-and-atlas.md) — required world density, meaningful locations/activities, accurate map/minimap, delivery assignments and B1 acceptance. First pass before closed beta, followed by regional refinement.
+- [World population and atlas](plans/2026-09-28-world-population-and-atlas.md) — required world density, meaningful locations/activities, accurate map/minimap, delivery assignments and early alpha quality gates. First pass before closed beta, followed by regional refinement.
 
-- [Alpha 1.10 playtest release record](plans/2026-09-23-release1-10-playtest.md) — last verified live baseline 1.10.2, retained checks, remaining portal/performance work and user-owned campaign playtesting. Earlier plans describe original scope, not current deployment state.
+- [Alpha 1.10 playtest release record](plans/2026-09-23-release1-10-playtest.md) — historical 1.10.2 baseline, retained checks and user-owned campaign playtesting. Earlier plans describe original scope, not current deployment state; subsequent portal/performance delivery is recorded in the forward roadmap.
 
 - [`2026-09-05-v1-1-to-v1-10-roadmap.md`](plans/2026-09-05-v1-1-to-v1-10-roadmap.md) — inherited foundation requirements, dungeon reliability and phone-playability scope. Preserve its acceptance requirements and decisions without restarting historical release queues.
 
