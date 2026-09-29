@@ -1,4 +1,5 @@
-import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from '../src/art/WaterLandmarkGeometry.js';
+import { createTideRibStone, createWreckPlank, wreckHullHalfWidth, createWreckRib,
+    createTornWreckSail } from '../src/art/WaterLandmarkGeometry.js';
 
 test.each(['high', 'low'])('%s wreck planks remain finite and inside the old hull solid', quality => {
     expect(wreckHullHalfWidth(6)).toBeLessThan(wreckHullHalfWidth(0));
@@ -8,9 +9,38 @@ test.each(['high', 'low'])('%s wreck planks remain finite and inside the old hul
         expect(bounds.min.z).toBeGreaterThanOrEqual(-6.5); expect(bounds.max.z).toBeLessThanOrEqual(6.5);
         expect(bounds.min.y).toBeGreaterThan(0); expect(bounds.max.y).toBeLessThan(3);
         expect([...geometry.attributes.position.array, ...geometry.attributes.normal.array].every(Number.isFinite)).toBe(true);
+        expect(geometry.attributes.color.count).toBe(geometry.attributes.position.count);
+        expect(new Set([...geometry.attributes.color.array].map(v => v.toFixed(3))).size).toBeGreaterThan(10);
         expect(geometry.index.count / 3).toBeLessThan(110);
         geometry.dispose();
     }
+});
+
+test.each(['high', 'low'])('%s squared ship ribs fit the unchanged hull footprint', quality => {
+    for (const along of [-5, -3, -1, 1, 3, 5]) {
+        const rib = createWreckRib(along, quality), { min, max } = rib.boundingBox;
+        expect(min.x).toBeGreaterThan(-2.75); expect(max.x).toBeLessThan(2.75);
+        expect(min.y).toBeGreaterThan(0); expect(max.y).toBeLessThan(3);
+        expect(min.z).toBeGreaterThan(-6.5); expect(max.z).toBeLessThan(6.5);
+        for (const attribute of Object.values(rib.attributes)) expect([...attribute.array].every(Number.isFinite)).toBe(true);
+        expect(rib.attributes.color.count).toBe(rib.attributes.position.count);
+        expect(rib.attributes.position.count / 3).toBeLessThan(160);
+        rib.dispose();
+    }
+});
+
+test('torn sail has folded lighting normals, a ragged foot and deterministic repairs', () => {
+    const a = createTornWreckSail(), b = createTornWreckSail();
+    expect([...a.attributes.position.array]).toEqual([...b.attributes.position.array]);
+    expect(a.boundingBox.min.x).toBeGreaterThanOrEqual(-2); expect(a.boundingBox.max.x).toBeLessThanOrEqual(2);
+    expect(a.boundingBox.min.y).toBeGreaterThanOrEqual(-2.5); expect(a.boundingBox.max.y).toBeLessThanOrEqual(2.5);
+    const foot = Array.from({ length: 13 }, (_, i) => a.attributes.position.getY(i));
+    expect(Math.max(...foot) - Math.min(...foot)).toBeGreaterThan(1);
+    expect(a.boundingBox.max.z - a.boundingBox.min.z).toBeGreaterThan(.3);
+    expect(new Set([...a.attributes.normal.array].map(v => v.toFixed(3))).size).toBeGreaterThan(10);
+    expect(a.attributes.color.count).toBe(a.attributes.position.count);
+    expect(a.index.count / 3).toBeLessThan(300);
+    a.dispose(); b.dispose();
 });
 
 test('carved tide ribs are finite, stay overhead and fit the gameplay crown budget', () => {

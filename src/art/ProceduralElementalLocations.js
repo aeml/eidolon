@@ -5,7 +5,8 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { distanceToPath } from '../data/worldPopulation.js';
 import { createLocationGroundMaterials, addLocationGroundWear } from './LocationGroundWear.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
-import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './WaterLandmarkGeometry.js';
+import { createTideRibStone, createWreckPlank, wreckHullHalfWidth, createWreckRib,
+    createTornWreckSail, weatherWreckWood } from './WaterLandmarkGeometry.js';
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
@@ -31,6 +32,12 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (water) materials.rib = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0x849594, roughness: .87, metalness: .04
     }), 'fieldstone');
+    if (water) {
+        materials.wreckWood = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
+            color: 0xffffff, vertexColors: true, roughness: .96 }), 'timber');
+        materials.wreckSail = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+            side: THREE.DoubleSide, roughness: 1 });
+    }
     if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0xffffff, vertexColors: true, roughness: .94
     }), 'fieldstone');
@@ -45,8 +52,12 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         });
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
             if (site.recipe === 'tide-rib' && key === 'stone') key = 'rib';
+            if (site.recipe === 'boat-grave' && key === 'wood') {
+                key = 'wreckWood';
+                if (!geometry.attributes.color) weatherWreckWood(geometry, x * 2 + z);
+            }
             const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
-            if (key !== 'furnace') baked.deleteAttribute('color');
+            if (!['furnace', 'wreckWood', 'wreckSail'].includes(key)) baked.deleteAttribute('color');
             baked.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale)));
             if (!batches.has(key)) batches.set(key, []);
@@ -82,14 +93,16 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 part(new THREE.TorusGeometry(.29, .065, 4, radial), 'iron', x - 1.8 + i * .9, 2.04, z, [Math.PI / 2, 0, 0]);
             }
         };
-        const hull = (x, z) => {
+        const hull = (x, z, broken = false) => {
             footprint(x, 1.5, z, 5.5, 3, 13);
             // Tapered bow/stern and surviving curved planking read as a wreck,
             // with open ribs and no deck. All remain inside the old hull solid.
             for (let i = 0; i < 6; i++) {
-                const along = -5 + i * 2, halfWidth = wreckHullHalfWidth(along);
-                rope([[x - halfWidth, 2.8, z + along], [x - halfWidth * .5, 1, z + along],
-                    [x, .4, z + along], [x + halfWidth * .5, 1, z + along], [x + halfWidth, 2.8, z + along]], .14);
+                if (broken && i === 3) continue;
+                const along = -5 + i * 2;
+                part(createWreckRib(along, quality), 'wood', x, 0, z);
+                for (const side of [-1, 1]) part(new THREE.SphereGeometry(.075, 5, 3), 'iron',
+                    x + side * wreckHullHalfWidth(along), 2.72, z + along);
             }
             beam([x, .35, z - 6.5], [x, .35, z + 6.5], .3);
             for (const side of [-1, 1]) {
@@ -97,9 +110,19 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                     .map(([along, y]) => [x + side * wreckHullHalfWidth(along), y, z + along]), .12);
                 for (let band = 0; band < 3; band++) {
                     part(createWreckPlank(side, band, -6, -1.4 + band * .3, quality), 'wood', x, 0, z);
-                    if (side < 0 || band !== 1) part(createWreckPlank(side, band, .6 + band * .4, 6, quality), 'wood', x, 0, z);
+                    if ((side < 0 || band !== 1) && !(broken && side > 0 && band === 2))
+                        part(createWreckPlank(side, band, .6 + band * .4, 6, quality), 'wood', x, 0, z);
                 }
             }
+            // Salvage stays inside the already impassable hull, never across
+            // the walking lane. One vessel has an abandoned rope coil; the
+            // other holds collapsed spars and a folded remnant of sailcloth.
+            if (broken) {
+                for (let i = 0; i < 3; i++) box('wood', x - .5 + i * .45, .7 + i * .08, z + .1,
+                    .22, .16, 4.8 - i * .55);
+                part(createTornWreckSail(), 'wreckSail', x, 1, z - 3, [-Math.PI / 2, 0, .1], [.52, .4, .3]);
+            } else for (let i = 0; i < 4; i++) part(new THREE.TorusGeometry(.35 + i * .09, .045, 4, 16),
+                'wood', x + .25, .75 + i * .02, z + 3.7, [Math.PI / 2, 0, 0]);
         };
         switch (site.recipe) {
         case 'chart-court':
@@ -258,9 +281,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             cylinder('iron', -9, .5, 9, 1.5, 1, 1); rack(9, -10);
             break;
         case 'boat-grave':
-            hull(-10, -3); hull(11, 4);
+            hull(-10, -3); hull(11, 4, true);
             beam([-10, 1, -7], [-16, 5.5, -12], .22);
-            part(new THREE.PlaneGeometry(4, 5), 'cloth', -14, 2.5, -10, [-.5, .8, .2]);
+            part(createTornWreckSail(), 'wreckSail', -14, 2.5, -10, [-.5, .8, .2]);
+            rope([[-15.8, 5.3, -11.8], [-13.5, 2.4, -9], [-11.4, 2.55, -7]], .045, 'iron');
             break;
         case 'kiln-yard':
             for (const side of [-1, 1]) {
