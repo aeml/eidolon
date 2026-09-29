@@ -20,16 +20,17 @@ export function createLeafCanopyGeometry(quality = 'high') {
         const radial = Math.sqrt(1 - y * y);
         const direction = new Vector3(Math.cos(angle) * radial, y, Math.sin(angle) * radial);
         // Leaves grow in overlapping branch-tip clusters, not a uniformly
-        // packed spherical shell. Smaller leaves and gaps between lobes break
-        // the pom-pom silhouette. Tapered blades below use four triangles each.
-        const center = lobes[index % lobes.length].clone().addScaledVector(direction, .26 + random() * .3);
+        // packed spherical shell. Compact overlapping sprays supply canopy
+        // mass at gameplay distance; gaps between lobes retain the branching
+        // silhouette. Thin isolated blades made mature trees read as saplings.
+        const center = lobes[index % lobes.length].clone().addScaledVector(direction, .22 + random() * .24);
         const leafNormal = direction.clone().addScaledVector(up, .65).normalize();
         const side = new Vector3().crossVectors(leafNormal, up).normalize();
         const forward = new Vector3().crossVectors(side, leafNormal).normalize();
         // Tilt each folded leaf rather than giving the crown a regular shell.
         const tilt = random() * Math.PI * 2;
         side.applyAxisAngle(leafNormal, tilt); forward.applyAxisAngle(leafNormal, tilt);
-        const length = .10 + random() * .075, width = length * .48;
+        const length = .17 + random() * .10, width = length * .5;
         const points = [
             center.clone().addScaledVector(forward, length),
             center.clone().addScaledVector(forward, length * .3).addScaledVector(side, width),

@@ -7,6 +7,10 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Made Earth birch/willow/pine crowns fuller at gameplay zoom with overlapping
+  leaf and needle sprays, retaining tree locations, clearances and High/Low
+  triangle counts. See the [canopy review](2026-09-29-woodland-canopy-mass.md).
+
 - Refined Earth trails with subdued embedded gravel, shallow crevices and
   clearer worn tracks, retaining existing path geometry and walking space.
   See the [road material review](2026-09-29-bastion-road-verges.md).
