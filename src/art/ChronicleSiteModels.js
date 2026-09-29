@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createKilnFurnaceGeometry } from './KilnWorkshopGeometry.js';
 import { createKeeperCottage } from './KeeperCottage.js';
+import { createReturningScarClue } from './ReturningScar.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -107,6 +108,13 @@ export function createChronicleSiteModel(site, realm) {
             orbit.position.x = 2;
             orbit.position.z = -1.5;
         }
+    } else if (realm === 'earth' && ['root_memory', 'root_growth', 'command_stone'].includes(site.model)) {
+        const clue = createReturningScarClue(site.model);
+        clue.traverse(part => {
+            if (part.geometry) geometries.add(part.geometry);
+            if (part.material) materials.add(part.material);
+        });
+        root.add(clue);
     } else {
         cylinder(1.9, 2.1, 0.18, stone);
         switch (site.model) {
