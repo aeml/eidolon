@@ -26,6 +26,20 @@ function parseServerHazardAnchors(sliceName) {
 }
 
 describe('procedural realm foliage', () => {
+    test('new woodland stems stay inside existing walking boxes at character height', () => {
+        for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === 'earth')) {
+            const stem = getProceduralFoliageArchetype(recipe.id)[0], point = new THREE.Vector3();
+            const positions = stem.geometry.attributes.position;
+            for (let i = 0; i < positions.count; i++) {
+                point.fromBufferAttribute(positions, i).applyMatrix4(stem.matrix);
+                if (point.y > 2.5) continue;
+                // Radial bound remains valid at every placement rotation.
+                expect(Math.hypot(point.x, point.z)).toBeLessThan(recipe.collision[0]);
+            }
+            expect(Array.from(stem.geometry.attributes.normal.array).every(Number.isFinite)).toBe(true);
+            expect(stem.material.userData.worldSurfaceDetail).toBe('timber');
+        }
+    });
     test('mature woodland crowns stay inside existing eight-metre sightline aprons', () => {
         for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === 'earth')) {
             const preview = createProceduralFoliagePreview(recipe.id);
@@ -65,7 +79,9 @@ describe('procedural realm foliage', () => {
             expect(meshes.length).toBeGreaterThanOrEqual(4);
             expect(bounds.min.y).toBeGreaterThanOrEqual(-0.35);
             expect(bounds.max.y).toBeGreaterThan(2);
-            expect(meshes.every((mesh) => mesh.material.flatShading)).toBe(true);
+            expect(meshes.every((mesh) => mesh.material.isMeshStandardMaterial)).toBe(true);
+            if (recipe.region === 'earth') expect(meshes[0].material.flatShading).toBe(false);
+            else expect(meshes.every(mesh => mesh.material.flatShading)).toBe(true);
             expect(meshes.every((mesh) => mesh.matrixWorld.elements.every(Number.isFinite))).toBe(true);
         }
     });
@@ -105,7 +121,7 @@ describe('procedural realm foliage', () => {
         }
 
         expect(getProceduralFoliageCacheMetrics()).toEqual({
-            geometries: 12,
+            geometries: 15,
             materials: 28,
             archetypes: 9
         });

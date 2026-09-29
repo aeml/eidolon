@@ -4,6 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -27,7 +28,7 @@ const material = (key, color, options = {}) => {
             metalness: options.metalness ?? 0,
             emissive: options.emissive ?? 0x000000,
             emissiveIntensity: options.emissiveIntensity ?? 0,
-            flatShading: true,
+            flatShading: options.flatShading ?? true,
             vertexColors: options.vertexColors ?? false,
             side: options.side ?? THREE.FrontSide
         }));
@@ -64,6 +65,9 @@ const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
 const root = geometry('foliage-root', () => new THREE.ConeGeometry(0.2, 1.9, 5));
 const lantern = geometry('foliage-lantern', () => new THREE.OctahedronGeometry(0.2, 0));
+const birchStem = geometry('woodland-birch-stem', () => createWoodlandStemGeometry({ height: 6.2, baseRadius: .32, tipRadius: .11, bend: .2, forks: 2, seed: 3 }));
+const pineStem = geometry('woodland-pine-stem', () => createWoodlandStemGeometry({ height: 5.4, baseRadius: .48, tipRadius: .16, bend: .13, forks: 3, seed: 7 }));
+const willowStem = geometry('woodland-willow-stem', () => createWoodlandStemGeometry({ height: 5.4, baseRadius: .48, tipRadius: .19, bend: .26, forks: 3, seed: 11 }));
 
 function palette(region) {
     return getRegionTheme(region).palette;
@@ -88,15 +92,13 @@ function matureWoodland(parts) {
 
 function createOssuaryBirch() {
     const p = palette('earth');
-    const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber' });
+    const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber', flatShading: false });
     const scar = material('foliage-birch-scar', p.shadow);
     const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-grave-lantern', p.accent, { emissive: p.accent, emissiveIntensity: 0.72, roughness: 0.5 });
     return matureWoodland([
-        part('pale scarred trunk', narrowTrunk, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
+        part('pale scarred trunk', birchStem, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
         part('black bark seam', narrowTrunk, scar, { position: [0.12, 3.35, 0.08], rotation: [0, 0, -0.09], scale: [0.18, 0.92, 0.16] }),
-        part('west grave bough', branch, bark, { position: [-0.72, 5.2, 0], rotation: [0, 0, -0.72] }),
-        part('east grave bough', branch, bark, { position: [0.68, 4.68, 0.16], rotation: [0.12, 0, 0.82], scale: [0.88, 0.88, 0.88] }),
         part('layered birch leaves', leafCrown, leaf, { position: [-0.25, 6.55, 0], scale: [1.25, 0.82, 1.08] }),
         part('low gloam crown', leafCrown, leaf, { position: [0.78, 5.62, 0.08], scale: [0.8, 0.58, 0.74] }),
         part('grave lantern fruit', lantern, glow, { position: [-0.98, 4.75, 0.15], castShadow: false })
@@ -105,11 +107,11 @@ function createOssuaryBirch() {
 
 function createGravePine() {
     const p = palette('earth');
-    const bark = material('foliage-black-pine-bark', 0x262822);
+    const bark = material('foliage-black-pine-bark', 0x262822, { surface: 'timber', flatShading: false });
     const leaf = material('foliage-black-pine-needle', 0x35483a, { side: THREE.DoubleSide, vertexColors: true });
     const moss = material('foliage-pine-moss', p.midtone);
     return matureWoodland([
-        part('black pine trunk', trunk, bark, { position: [0, 2.7, 0], scale: [0.76, 1.12, 0.76] }),
+        part('black pine trunk', pineStem, bark, { position: [0, 2.7, 0], scale: [0.76, 1.12, 0.76] }),
         part('lower funeral tier', needleCrown, leaf, { position: [0, 3.6, 0], scale: [1.45, 0.8, 1.4] }),
         part('middle funeral tier', needleCrown, leaf, { position: [.14, 5.35, -.1], rotation: [0, .7, 0], scale: [1.05, 0.7, 1.02] }),
         part('high funeral tier', needleCrown, leaf, { position: [.06, 6.75, .03], rotation: [0, 1.4, .08], scale: [.64, .55, .62] }),
@@ -119,11 +121,11 @@ function createGravePine() {
 
 function createMourningWillow() {
     const p = palette('earth');
-    const bark = material('foliage-willow-bark', 0x403a31);
+    const bark = material('foliage-willow-bark', 0x403a31, { surface: 'timber', flatShading: false });
     const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-willow-votive', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.5 });
     return matureWoodland([
-        part('crooked mourning trunk', trunk, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
+        part('crooked mourning trunk', willowStem, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
         part('mourning crown', leafCrown, leaf, { position: [-0.3, 5.25, 0], scale: [2.3, .8, 1.85] }),
         part('west leaf curtain', leafCrown, leaf, { position: [-1.55, 3.95, .1], rotation: [.05, 0, -.12], scale: [.62, 1.2, .65] }),
         part('east leaf curtain', leafCrown, leaf, { position: [1.28, 3.82, -.12], rotation: [-.04, 0, .15], scale: [.6, 1.3, .58] }),

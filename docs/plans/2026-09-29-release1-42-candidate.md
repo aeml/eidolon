@@ -7,6 +7,10 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Gloamwood trees gain bent, tapered stems with connected forks, smaller shaped
+  broadleaves and finer pine sprays. Existing tree placements and walking
+  clearances are preserved. See the [woodland review and geometry costs](2026-09-29-woodland-stems-and-leaves.md).
+
 - Earth roads gain coherent compacted soil, worn tracks, gravel shoulders and
   matching normal/roughness detail. Low retains the same features at reduced
   texture resolution; travel routes and collisions are unchanged. See the

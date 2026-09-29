@@ -21,7 +21,7 @@ export function createLeafCanopyGeometry() {
         const direction = new Vector3(Math.cos(angle) * radial, y, Math.sin(angle) * radial);
         // Leaves grow in overlapping branch-tip clusters, not a uniformly
         // packed spherical shell. Smaller leaves and gaps between lobes break
-        // the pom-pom silhouette without increasing the triangle budget.
+        // the pom-pom silhouette. Tapered blades below use four triangles each.
         const center = lobes[index % lobes.length].clone().addScaledVector(direction, .26 + random() * .3);
         const leafNormal = direction.clone().addScaledVector(up, .65).normalize();
         const side = new Vector3().crossVectors(leafNormal, up).normalize();
@@ -29,19 +29,21 @@ export function createLeafCanopyGeometry() {
         // Tilt each folded leaf rather than giving the crown a regular shell.
         const tilt = random() * Math.PI * 2;
         side.applyAxisAngle(leafNormal, tilt); forward.applyAxisAngle(leafNormal, tilt);
-        const length = .12 + random() * .08, width = length * .55;
+        const length = .10 + random() * .075, width = length * .48;
         const points = [
             center.clone().addScaledVector(forward, length),
-            center.clone().addScaledVector(side, width),
+            center.clone().addScaledVector(forward, length * .3).addScaledVector(side, width),
+            center.clone().addScaledVector(forward, -length * .45).addScaledVector(side, width * .75),
             center.clone().addScaledVector(forward, -length),
-            center.clone().addScaledVector(side, -width)
+            center.clone().addScaledVector(forward, -length * .45).addScaledVector(side, -width * .75),
+            center.clone().addScaledVector(forward, length * .3).addScaledVector(side, -width)
         ];
-        // Fold along the tip-to-tip spine: two faces retain every leaf and
-        // its silhouette without the old four-triangle center pyramid.
-        points[0].addScaledVector(leafNormal, .035);
-        points[2].addScaledVector(leafNormal, .035);
+        // A tapered six-point blade avoids the large diamond-confetti edges.
+        // Tip/spine curvature supplies a shallow fold, not a pyramidal leaf.
+        points[0].addScaledVector(leafNormal, .026);
+        points[3].addScaledVector(leafNormal, .012);
         const shade = .7 + random() * .36 + (center.y + 1) * .06;
-        for (const indices of [[0, 1, 2], [0, 2, 3]]) {
+        for (const indices of [[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 5]]) {
             for (const index of indices) {
                 const point = points[index];
                 positions.push(point.x, point.y, point.z);
