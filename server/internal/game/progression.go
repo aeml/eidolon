@@ -138,7 +138,11 @@ func (w *World) awardExperienceLocked(player *Entity, amount int) ExperienceRewa
 		player.BaseStats.Intelligence++
 		player.BaseStats.Wisdom++
 		player.RecalculateStats()
-		player.Health = player.MaxHealth
+		// Shared kills can level a downed party member. Earned progression
+		// must not heal a corpse or bypass the normal respawn flow.
+		if player.Health > 0 && player.State != "DEAD" {
+			player.Health = player.MaxHealth
+		}
 	}
 	if player.Level >= MaxPlayerLevel {
 		overflow := player.Experience

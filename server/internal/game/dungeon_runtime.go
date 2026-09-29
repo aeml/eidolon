@@ -377,7 +377,7 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				continue
 			}
 			entity.Mu.Lock()
-			if entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
+			if entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.Disconnected || entity.Health <= 0 || entity.State == "DEAD" {
 				entity.Mu.Unlock()
 				continue
 			}

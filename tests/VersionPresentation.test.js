@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.37.0';
+const currentVersion = '1.38.0';
+
+test('1.38.0 records party presence fixes without revoking downed kill credit', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.38.0"'), previous = html.indexOf('data-version="1.37.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['party presence and rewards', 'Disconnected characters',
+        'Zero-health characters', 'Reconnecting does not replay', 'XP still include downed party members',
+        'Living level-up healing is unchanged', 'do not need damage contribution',
+        '15-minute dungeon-resume rule are unchanged', 'does not open closed beta', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.37.0 records exact capped rewards and recoverable weekly caches', () => {
     const html = fs.readFileSync('index.html', 'utf8');

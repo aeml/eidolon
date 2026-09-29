@@ -11,6 +11,8 @@ func TestMarkDungeonRoomClearedAwardsNonBossRoomsOnce(t *testing.T) {
 		ID:            "player-1",
 		Type:          TypePlayer,
 		Level:         40,
+		Health:        100,
+		MaxHealth:     100,
 		MaxExperience: experienceRequiredForLevel(40),
 	}
 	w.AddEntity(player)
@@ -93,6 +95,8 @@ func TestMarkDungeonRoomClearedEmitsEventRewardsForEliteAndNormalRooms(t *testin
 		ID:            "player-1",
 		Type:          TypePlayer,
 		Level:         60,
+		Health:        100,
+		MaxHealth:     100,
 		MaxExperience: experienceRequiredForLevel(60),
 	}
 	w.AddEntity(player)

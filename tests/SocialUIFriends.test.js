@@ -56,6 +56,7 @@ test.each([null, { partyId: 'group', leaderId: 'self', members: [{ id: 'self', n
         expect(guidance.textContent).toContain('Dungeon: whole instance');
         expect(guidance.textContent).toContain('Overworld: roughly two screens');
         expect(guidance.title).toContain('Downed allies count');
+        expect(guidance.title).toContain('Room-clear bonuses and shrines require living, connected presence');
         expect(guidance.title).toContain('completes their own quests');
     }
 );
