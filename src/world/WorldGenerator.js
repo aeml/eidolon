@@ -38,6 +38,7 @@ import { createElementalLocations } from '../art/ProceduralElementalLocations.js
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
 import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurniture.js';
+import { createLanternholdRoadCart } from '../art/LanternholdRoadCart.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -213,13 +214,14 @@ export class WorldGenerator {
         // production staged loader entirely.
         this.scene.add(createEarthPathNetwork({ elevation: this.terrainElevation }));
         const earthLocations = createEarthLocations({ quality: this.graphicsQuality });
-        this.scene.add(earthLocations);
+        const roadCart = createLanternholdRoadCart({ quality: this.graphicsQuality, terrainElevation: this.terrainElevation });
+        this.scene.add(earthLocations, roadCart);
         const elementalLocations = ['water', 'fire', 'air'].map(realm => createElementalLocations(realm, { quality: this.graphicsQuality }));
         this.scene.add(...elementalLocations,
             createWorldPathNetwork(WATER_PATHS, { name: 'Water', color: [126, 142, 143] }),
             createWorldPathNetwork(FIRE_PATHS, { name: 'Fire', color: [94, 83, 70] }),
             createWorldPathNetwork(AIR_PATHS, { name: 'Air', color: [123, 118, 133] }));
-        for (const footprint of [earthLocations, ...elementalLocations].flatMap(group => group.userData.walkFootprints)) {
+        for (const footprint of [earthLocations, roadCart, ...elementalLocations].flatMap(group => group.userData.walkFootprints)) {
             // Authored solids are currently axis-aligned. Keep the shared
             // footprint explicit rather than using decoration/roof bounds.
             this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(

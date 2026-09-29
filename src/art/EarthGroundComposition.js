@@ -37,8 +37,15 @@ const mineralAt = (x, z) => smooth(.48, .77, noise(x * .012 + noise(x * .025, z 
 
 // Broad connected heath/moss beds, shared by the ground material and physical
 // undergrowth. Keep these larger than a character, not pixel-sized green noise.
-export const sampleEarthMeadow = (x, z) => smooth(.38, .7,
-    noise(x * .025 + 17, z * .025 - 9) * .8 + noise(x * .08, z * .08) * .2);
+export const sampleEarthMeadow = (x, z) => {
+    const meadow = smooth(.38, .7,
+        noise(x * .025 + 17, z * .025 - 9) * .8 + noise(x * .08, z * .08) * .2);
+    // A continuous worn-town / planted-verge / open-fight transition at the
+    // first road. Share this field with physical ground cover, not a separate
+    // green decal or a uniformly planted combat clearing.
+    const gateVerge = 1 - smooth(.25, 1.1, Math.hypot((x - 112) / 11, (z - 170) / 22));
+    return Math.max(meadow, gateVerge * (.8 + noise(x * .08, z * .08) * .2));
+};
 
 export function sampleEarthGround(x, z) {
     let canopy = 0, trail = 0;
