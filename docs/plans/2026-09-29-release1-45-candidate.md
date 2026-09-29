@@ -5,6 +5,12 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Desktop right-click inspection adds a scrollable item panel, aligned stats
+  and side-by-side comparison; keyboard users can use Shift+F10 on a bag slot.
+  Existing equip/sell/stash shortcuts remain. Open item details refresh
+  upgrades without losing reading position or focus. Phone stat rows share
+  the clearer layout. See [inspection checks](2026-09-29-desktop-item-inspection.md).
+
 - Wide-screen desktop combat HUD groups health, mana, the primary ability and
   four numbered skill slots in a compact central dock. Existing bindings,
   cooldowns and gameplay remain unchanged.

@@ -85,7 +85,7 @@ export class InventoryUI {
         this._bindTooltipEvents();
         this._bindCompareMode();
 
-        this.mobileDetails = this.isMobile ? new MobileItemDetails(this) : null;
+        this.mobileDetails = new MobileItemDetails(this);
         this.phoneStash = this.isMobile && this.stashScreen ? new PhoneStashUI(this) : null;
 
         this.setupShop();
@@ -246,11 +246,12 @@ export class InventoryUI {
         return !Number.isFinite(level) || level < 30;
     }
     _buildInventoryGuidance(player) {
+        const inspection = this.isMobile ? '' : ' Right-click to inspect; Shift+F10 from a focused bag slot.';
         if (!this._isStarterProgressionWindow(player)) {
-            return 'Shards: levels · Hearts: power and sockets · Gems: Forge. Trade valuable drops; stash what you want to keep.';
+            return 'Shards: levels · Hearts: power and sockets · Gems: Forge. Trade valuable drops; stash what you want to keep.' + inspection;
         }
 
-        return 'Compare gear before selling. Shards raise item level; Hearts add power and sockets. Save gems for the Forge.';
+        return 'Compare gear before selling. Shards raise item level; Hearts add power and sockets. Save gems for the Forge.' + inspection;
     }
     _buildStarterItemGuidance(item, player) {
         if (!item || !this._isStarterProgressionWindow(player)) return '';
@@ -729,6 +730,11 @@ export class InventoryUI {
             };
 
             // Tooltip
+            slotEl.oncontextmenu = e => {
+                if (this.isMobile) return;
+                e.preventDefault(); e.stopPropagation();
+                this.mobileDetails.open({ type: 'equipment', slot: slotId, itemId: item.id }, slotEl);
+            };
             slotEl.onmouseenter = () => {
                 if (this.isMobile) return;
                 const rect = slotEl.getBoundingClientRect();
@@ -749,6 +755,7 @@ export class InventoryUI {
             slotEl.style.boxShadow = 'none';
             slotEl.title = 'Empty Slot';
             slotEl.onclick = null;
+            slotEl.oncontextmenu = null;
             this.setupItemDragAndDrop(slotEl, 'equipment', slotId, null);
         }
         if (this.isMobile && item?.id) {
@@ -841,6 +848,11 @@ export class InventoryUI {
             slots[i].setAttribute('role', 'button');
             slots[i].setAttribute('aria-label', item?.id ? `${item.name || 'Item'}${item.stack > 1 ? `, stack of ${item.stack}` : ''}` : 'Empty bag slot');
             slots[i].onkeydown = item?.id ? event => {
+                if (!this.isMobile && (event.key === 'ContextMenu' || (event.key === 'F10' && event.shiftKey))) {
+                    event.preventDefault(); event.stopPropagation();
+                    this.mobileDetails.open({ type: 'inventory', index: i, itemId: item.id }, slots[i]);
+                    return;
+                }
                 if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); slots[i].click(); }
             } : null;
 
@@ -945,6 +957,8 @@ export class InventoryUI {
                         this.sellItem(player, i);
                     } else if (this.stashScreen.style.display === 'flex') {
                         if (this.onStashDeposit) this.onStashDeposit(item.id);
+                    } else if (!this.isMobile) {
+                        this.mobileDetails.open({ type: 'inventory', index: i, itemId: item.id }, slots[i]);
                     }
                 };
             } else {

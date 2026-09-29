@@ -69,6 +69,31 @@
 #phone-item-details button:disabled { opacity: 0.55; cursor: default; }
 #phone-item-details button:focus-visible, .mobile-mode #inventory-grid .inv-slot:focus-visible { outline: 2px solid #e4c991; outline-offset: 2px; }
 #phone-item-drop { color: #efb29c !important; background: #3a2727 !important; }
+.item-inspection-stats { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; clear: both; margin: 16px 0; }
+.item-inspection-stats :is(dt, dd) { margin: 0; padding: 7px 0; border-bottom: 1px solid #b99b621f; overflow-wrap: anywhere; }
+.item-inspection-stats dt { color: #bac8d8; }
+.item-inspection-stats dd { text-align: right; color: #eef3f8; font-variant-numeric: tabular-nums; }
+#phone-item-details.desktop-item-details {
+    inset: 0;
+    margin: auto;
+    width: min(800px, calc(100vw - 32px));
+    height: min(720px, calc(100dvh - 32px));
+    background: radial-gradient(ellipse at top left, #29343e 0, #171c24 48%, #10141a 100%);
+    border-top: 2px solid var(--item-rarity, #dfc796);
+    box-shadow: 0 24px 80px #000a, inset 0 0 0 1px #ffffff08;
+}
+.desktop-item-details .phone-item-header { padding: 16px 20px; }
+.desktop-item-details .phone-item-header h2 { color: var(--item-rarity, #dfc796); font-size: 21px; }
+.desktop-item-details .phone-item-scroll { padding: 20px 24px; }
+.desktop-item-details .phone-item-footer { padding: 14px 20px; background: #0c101680; }
+.desktop-item-details .phone-item-icon { width: 88px; height: 88px; padding: 8px; box-sizing: border-box; border: 1px solid #b99b6244; border-radius: 6px; background: #080c1266; }
+.desktop-item-details .equipment-change-summary { font-size: 14px; }
+@media (min-width: 720px) {
+    .desktop-item-details .phone-item-scroll:has(#phone-item-comparison:not([hidden])) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-content: start; }
+}
+@media (max-width: 719px) {
+    .desktop-item-details .phone-item-scroll:has(#phone-item-comparison:not([hidden])) { display: block; }
+}
 @media (orientation: landscape) {
     .phone-item-scroll:has(#phone-item-comparison:not([hidden])) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-content: start; }
     #phone-item-comparison { padding-top: 0; }

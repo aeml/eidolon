@@ -1,7 +1,8 @@
 import { SET_DEFINITIONS, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
 
-// A touch-first detail route. Item identity is revalidated at every action;
+// Shared deliberate inspection route: touch on phones, right-click on desktop.
+// Item identity is revalidated at every action;
 // acknowledgements and inventory mutations remain owned by the game/server.
 export class MobileItemDetails {
     constructor(inventory) {
@@ -11,6 +12,7 @@ export class MobileItemDetails {
         previous?.remove();
         this.dialog = document.createElement('dialog');
         this.dialog.id = 'phone-item-details';
+        this.dialog.classList.toggle('desktop-item-details', !inventory.isMobile);
         this.dialog.setAttribute('aria-labelledby', 'phone-item-title');
         this.dialog.innerHTML = `
             <header class="phone-item-header"><button type="button" id="phone-item-back">Back</button><h2 id="phone-item-title"></h2></header>
@@ -56,6 +58,12 @@ export class MobileItemDetails {
         return item?.id === this.source?.itemId ? item : null;
     }
 
+    presentationSignature() {
+        const player = this.inventory._getLastPlayer();
+        return JSON.stringify([this.currentItem(), player?.equipment, player?.level,
+            this.inventory.isShopOpen, this.inventory.isStashOpen]);
+    }
+
     open(source, origin) {
         this.source = source;
         const item = this.currentItem();
@@ -65,6 +73,7 @@ export class MobileItemDetails {
         this.inventory.hideTooltips();
         window.game?.inputManager?.clearInputState?.();
         this.get('title').textContent = item.name || 'Item details';
+        this.dialog.style.setProperty('--item-rarity', item.rarity?.color || '#dfc796');
         this.describe(this.get('description'), item);
         this.get('comparison').hidden = true;
         this.get('comparison').replaceChildren();
@@ -86,6 +95,7 @@ export class MobileItemDetails {
         if (this.get('equip').disabled && !this.get('equip').hidden) this.get('status').textContent = `Requires level ${item.level}.`;
         this.get('drop').textContent = 'Drop stack';
         this.dialog.querySelector('.phone-item-scroll').scrollTop = 0;
+        this.lastPresentation = this.presentationSignature();
         if (!this.dialog.open) this.dialog.showModal();
         this.get('back').focus({ preventScroll: true });
     }
@@ -101,8 +111,16 @@ export class MobileItemDetails {
         if (item.description) line(item.description);
         if (item.stack > 1) line(`Stack: ${item.stack} / ${item.maxStack || 1000}`);
         if (item.potency > 0) line(`Potency +${item.potency}`);
-        for (const key of this.inventory.getOrderedItemStatKeys(item.stats)) {
-            line(`${Number(item.stats[key]) >= 0 ? '+' : ''}${item.stats[key]} ${this.inventory._formatStatName(key)}`);
+        const keys = this.inventory.getOrderedItemStatKeys(item.stats);
+        if (keys.length) {
+            const stats = document.createElement('dl'); stats.className = 'item-inspection-stats';
+            for (const key of keys) {
+                const label = document.createElement('dt'), value = document.createElement('dd');
+                label.textContent = this.inventory._formatStatName(key);
+                value.textContent = `${Number(item.stats[key]) >= 0 ? '+' : ''}${item.stats[key]}`;
+                stats.append(label, value);
+            }
+            container.append(stats);
         }
         if (this.inventory._isGemItem(item)) {
             line(`${this.inventory._getGemQualityInfo(item)?.name || item.gemQuality || ''} ${this.inventory._getGemTypeInfo(item)?.name || item.gemType || ''} gem`);
@@ -124,9 +142,22 @@ export class MobileItemDetails {
     }
 
     refresh() {
-        if (!this.dialog.open || this.currentItem()) return;
-        this.get('status').textContent = 'This item or slot changed. Go back and select it again.';
-        for (const button of this.dialog.querySelectorAll('.phone-item-actions button')) button.disabled = true;
+        if (!this.dialog.open) return;
+        if (!this.currentItem()) {
+            this.get('status').textContent = 'This item or slot changed. Go back and select it again.';
+            for (const button of this.dialog.querySelectorAll('.phone-item-actions button')) button.disabled = true;
+            return;
+        }
+        if (this.presentationSignature() === this.lastPresentation) return;
+        const scroll = this.dialog.querySelector('.phone-item-scroll');
+        const top = scroll.scrollTop, focus = document.activeElement;
+        const comparisonOpen = !this.get('comparison').hidden;
+        // Rebuild only changed item/equipment data, not every health tick. Keep
+        // the user's reading position and invalidate any old drop confirmation.
+        this.open(this.source, this.returnFocus);
+        if (comparisonOpen && !this.get('compare').hidden) this.act('compare');
+        scroll.scrollTop = top;
+        if (focus?.isConnected && !focus.disabled && !focus.hidden) focus.focus({ preventScroll: true });
     }
 
     act(action) {
