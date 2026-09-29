@@ -42,6 +42,33 @@ function setup() {
 }
 
 describe('open forge authoritative refresh', () => {
+    test('all three caps keep current stats visible and clear stale spending actions until another item arrives', () => {
+        const { engine, forge, item, delta } = setup();
+        forge.selectedForgeSocketSlot = 'mainHand';
+        forge.onForgeUpgrade = jest.fn(); forge.onForgePotency = jest.fn(); forge.onForgeSocket = jest.fn();
+        delta({ equipment: { mainHand: { ...item, level: 100, potency: 20, sockets: 4, stats: { damage: 234 } } } });
+        for (const [panel, button, label] of [
+            ['forge-upgrade-stats', 'btn-forge-upgrade-1', 'Item level 100 reached'],
+            ['forge-potency-stats', 'btn-forge-potency', 'Potency +20 reached'],
+            ['forge-socket-stats', 'btn-forge-socket', 'All 4 sockets unlocked']
+        ]) {
+            const content = document.getElementById(panel).textContent;
+            expect(content).toContain(label); expect(content).toContain('234');
+            expect(content).toContain('No materials will be spent');
+            expect(document.getElementById(button).disabled).toBe(true);
+            expect(document.getElementById(button).textContent).not.toContain('Need');
+        }
+        forge.handleForgeUpgrade(1); forge.handleForgePotency(); forge.handleForgeSocket();
+        expect(forge.onForgeUpgrade).not.toHaveBeenCalled();
+        expect(forge.onForgePotency).not.toHaveBeenCalled();
+        expect(forge.onForgeSocket).not.toHaveBeenCalled();
+        delta({ equipment: { mainHand: { ...item, id: 'new-staff' } },
+            inventory: [{ name: 'Eidolon Shard', stack: 1000000 }, { name: 'Eidolon Heart', stack: 1000000 }] });
+        expect(document.querySelector('.forge-limit')).toBeNull();
+        for (const id of ['btn-forge-upgrade-1', 'btn-forge-potency', 'btn-forge-socket']) expect(document.getElementById(id).disabled).toBe(false);
+        expect(forge.upgradeQuote.itemId).toBe('new-staff');
+    });
+
     test.each(['replacement', 'shifted sockets'])('removal requires a fresh selection after %s arrives', change => {
         const { engine, forge, item, delta } = setup();
         const socketed = { ...item, sockets: 2, gems: [
