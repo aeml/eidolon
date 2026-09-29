@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createKilnFurnaceGeometry } from './KilnWorkshopGeometry.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -27,6 +29,10 @@ export function createChronicleSiteModel(site, realm) {
     };
     const stone = material(colors.stone);
     const wood = material(colors.wood);
+    if (site.model === 'cold_kiln') {
+        applyWorldSurfaceDetail(stone, 'stone');
+        applyWorldSurfaceDetail(wood, 'timber');
+    }
     const brass = material(0xb59a62, { metalness: 0.55, roughness: 0.4 });
     const glow = material(colors.glow, { emissive: colors.glow, emissiveIntensity: 0.65 });
     const paper = material(0xe6d8b4);
@@ -84,9 +90,13 @@ export function createChronicleSiteModel(site, realm) {
             }
             box(5.8, 0.08, 0.03, glow, 0, 0.8, -3.05); // old flood mark
         } else if (site.model === 'cold_kiln') {
-            cylinder(0.85, 1.2, 2.5, stone, -1.7, 1.25, -1.8);
-            cylinder(0.45, 0.65, 1.2, wood, -1.7, 3.05, -1.8);
-            box(0.8, 0.9, 0.12, wood, -1.7, 0.6, -0.65);
+            const furnace = createKilnFurnaceGeometry({ quality: 'low' });
+            const masonry = applyWorldSurfaceDetail(material(0xffffff, { vertexColors: true }), 'fieldstone');
+            const iron = material(0x4b4542, { vertexColors: true, roughness: .65, metalness: .7 });
+            for (const [key, surface] of [['masonry', masonry], ['iron', iron]]) {
+                furnace[key].scale(.48, .64, .48);
+                mesh(furnace[key], surface, -1.7, 0, -1.8);
+            }
         } else {
             cylinder(0.1, 0.16, 2.2, brass, 2, 1.1, -1.5);
             const lens = cylinder(0.27, 0.35, 1.65, brass, 2, 2.2, -1.5);

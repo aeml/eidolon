@@ -16,6 +16,12 @@ publication permission requirement.
   behind fences or adding collision blockers.
 - Lanternhold Casino gains stonework and slate roofing to match its neighbors.
   Its entrance label, clickable door and separate interior remain unchanged.
+- The Cold Communal Kiln gains constructed masonry furnaces with recessed
+  fireboxes and open flues, pottery drying shelves and worn loading-yard paving.
+  Hessa's quest workshop uses the matching kiln treatment. Existing roads,
+  quest interactions and collision footprints remain unchanged. See the
+  [kiln workshop integration record](2026-09-29-kiln-workshop-composition.md)
+  for bounded desktop/phone evidence and remaining visual limitations.
 
 No combat, item, reward, progression, casino-money or saved-character changes.
 The earlier town well/paving depth correction remains part of prepared 1.35.

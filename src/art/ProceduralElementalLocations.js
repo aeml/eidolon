@@ -8,6 +8,7 @@ import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './WaterLandmarkGeometry.js';
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
+import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -29,6 +30,9 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (water) materials.rib = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0x849594, roughness: .87, metalness: .04
     }), 'fieldstone');
+    if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
+        color: 0xffffff, vertexColors: true, roughness: .94
+    }), 'fieldstone');
     for (const site of sites) {
         const group = new THREE.Group(); group.name = `${realm}-location:${site.id}`;
         group.position.set(site.x, 0, site.z); group.userData.locationId = site.id;
@@ -39,6 +43,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
             if (site.recipe === 'tide-rib' && key === 'stone') key = 'rib';
             const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
+            if (key !== 'furnace') baked.deleteAttribute('color');
             baked.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale)));
             if (!batches.has(key)) batches.set(key, []);
@@ -256,11 +261,19 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             break;
         case 'kiln-yard':
             for (const side of [-1, 1]) {
-                rack(side * 12, 10);
-                cylinder('stone', side * 12, 2, -10, 1.3, 2.5, 4);
+                const furnace = createKilnFurnaceGeometry({ quality });
+                part(furnace.masonry, 'furnace', side * 12, 0, -10);
+                part(furnace.iron, 'iron', side * 12, 0, -10);
+                footprint(side * 12, 1.5, 10, 5, .3, 2.6);
                 footprint(side * 12, 2, -10, 5, 4, 5);
-                cylinder('iron', side * 12, 4.8, -10, .6, .8, 2);
+                const dryingRack = createKilnDryingRackGeometry({ quality });
+                part(dryingRack.wood, 'wood', side * 12, 0, 10);
+                part(dryingRack.masonry, 'furnace', side * 12, 0, 10);
             }
+            part(createKilnYardPaving((x, z, radius) =>
+                paths.every(path => distanceToPath(site.x + x, site.z + z, path.points) > path.width / 2 + radius) &&
+                FOLIAGE_HAZARD_CLEARINGS.fire.every(([hx, hz, r]) => Math.hypot(site.x + x - hx, site.z + z - hz) > r + radius + 2)),
+            'furnace', 0, 0, 0);
             break;
         case 'exhaust-channel':
             for (const side of [-1, 1]) {
