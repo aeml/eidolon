@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Lanternhold's service court gains planted stone beds, benches and framed
+  lanterns beside the market/smithy approaches. Walking solids match the
+  visible furniture and service routes stay open. See the
+  [street-edge review](2026-09-29-lanternhold-street-edges.md).
+
 - Casino exterior windows now sit in front of the walls, with recessed arches,
   stone framing, a rose window and a ridged hip roof. The overdoor facade no
   longer exposes the old shell interior. Placement, door and shared casino
