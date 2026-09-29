@@ -11,6 +11,34 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
     test.setTimeout(240_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
+    const review = process.env.EIDOLON_E2E_ROUTE_REVIEW === '1';
+    const views = [];
+    const captureReview = async stage => {
+        if (!review) return;
+        await expect(page.locator('#start-screen')).toBeHidden();
+        await expect(page.locator('#auth-password')).toBeHidden();
+        const state = await page.evaluate(() => {
+            const g = window.game, r = g.renderSystem, tag = g.player.nameTag;
+            const nameLayers = tag?.layers.mask;
+            // Redact the disposable account's in-world label, not scenery/HUD.
+            if (tag) tag.layers.mask = 0;
+            return { nameLayers, position: g.player.position.toArray(), zoom: r.currentZoom,
+                quality: r.graphicsQuality, instance: g.currentInstanceType || 'overworld' };
+        });
+        try {
+            await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+            await page.screenshot({ path: testInfo.outputPath(stage + '.png'),
+                style: '#perf-overlay { visibility: hidden !important; }',
+                mask: [page.getByText(credentials.username, { exact: false })] });
+            const { nameLayers: _redacted, ...view } = state;
+            views.push({ stage, ...view });
+        } finally {
+            await page.evaluate(mask => {
+                if (mask !== undefined && window.game.player.nameTag) window.game.player.nameTag.layers.mask = mask;
+            }, state.nameLayers);
+        }
+    };
+    await captureReview('town-start');
     // Level preparation only: this is route/input coverage, not earned pacing,
     // survival balance or dungeon-clear evidence. No waypoint or position writes.
     await page.locator('#chat-mobile-toggle').tap();
@@ -32,6 +60,7 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
     const cdp = await context.newCDPSession(page);
     const box = await page.locator('#joystick-zone').boundingBox();
     const receipts = [];
+    let roadCaptured = false;
     let touching = false;
     try {
         for (const [x, z] of route) {
@@ -60,6 +89,10 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
                     state: window.game.player.state, activeElement: document.activeElement?.id,
                     paused: window.game.uiManager.isEscMenuOpen }));
                 if (current.hp <= 0 || current.instance) throw new Error('Route interrupted by death or a scene change');
+                if (review && !roadCaptured && current.x > 400) {
+                    roadCaptured = true;
+                    await captureReview('earth-road');
+                }
                 const dx = x - current.x, dz = z - current.z, distance = Math.hypot(dx, dz);
                 if (distance < 1.8) return true;
                 if (distance < bestDistance - .2) { bestDistance = distance; lastProgress = Date.now(); }
@@ -97,6 +130,7 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
         return { visible: Math.abs(p.x) < .95 && Math.abs(p.y) < .95,
             x: rect.left + (p.x + 1) * rect.width / 2, y: rect.top + (1 - p.y) * rect.height / 2 };
     });
+    await captureReview('bastion-arrival');
     expect(gate.visible).toBe(true);
     await page.touchscreen.tap(gate.x, gate.y);
     await expect(page.locator('#dungeon-menu')).toBeVisible();
@@ -107,6 +141,8 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
         return g.currentInstanceType === 'verdant_bastion_catacombs' && Boolean(g.currentInstanceId && g.currentDungeonLayout)
             && g.collisionManager.dungeonWalkableRects.length > 0;
     }), { timeout: 30_000 }).toBe(true);
+    await captureReview('dungeon-entry');
+    if (review) await testInfo.attach('route-views', { body: JSON.stringify(views), contentType: 'application/json' });
     await testInfo.attach('route-receipt', { body: JSON.stringify({ checkpoints: receipts, enteredVerdant: true }), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });
