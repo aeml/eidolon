@@ -1605,7 +1605,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot, payload.Amount)
+		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot, payload.Amount, payload.Expected)
 		if success {
 			// Send Inventory Update
 			world.Mu.RLock()
@@ -1632,7 +1632,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgePotency(c.playerID, payload.Slot)
+		player, success, msgStr := world.PerformForgePotency(c.playerID, payload.Slot, payload.Expected)
 		if success {
 			// Send Inventory Update
 			world.Mu.RLock()
@@ -1659,10 +1659,12 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeSocket(c.playerID, payload.Slot)
+		player, success, msgStr := world.PerformForgeSocket(c.playerID, payload.Slot, payload.Expected)
 		if success {
 			// Send Inventory Update
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
@@ -1682,10 +1684,12 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeInsertGem(c.playerID, payload.EquipSlot, payload.GemInvIndex, payload.SocketIndex)
+		player, success, msgStr := world.PerformForgeInsertGem(c.playerID, payload.EquipSlot, payload.GemInvIndex, payload.SocketIndex, payload.Expected)
 		if success {
 			// Send Inventory Update
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
@@ -1706,10 +1710,12 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeCombineGems(c.playerID, payload.GemIndices)
+		player, success, msgStr := world.PerformForgeCombineGems(c.playerID, payload.GemIndices, payload.Expected)
 		if success {
 			// Send Inventory Update
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
@@ -1730,10 +1736,12 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeRemoveGem(c.playerID, payload.EquipSlot, payload.SocketIndex)
+		player, success, msgStr := world.PerformForgeRemoveGem(c.playerID, payload.EquipSlot, payload.SocketIndex, payload.Expected)
 		if success {
 			// Send Inventory Update
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,

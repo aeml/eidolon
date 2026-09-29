@@ -58,6 +58,24 @@ describe('UIBindings', () => {
         };
     }
 
+    test('Forge bindings preserve the displayed quote on the wire', () => {
+        const engine = createEngine();
+        new UIBindings(engine).bindConstructorCallbacks();
+        const expected = { itemId: 'staff', level: 30, potency: 0 };
+        engine.uiManager.forge.onForgeUpgrade('mainHand', 10, expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_upgrade', { slot: 'mainHand', amount: 10, expected });
+        engine.uiManager.forge.onForgePotency('mainHand', expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_potency', { slot: 'mainHand', expected });
+        engine.uiManager.forge.onForgeSocket('mainHand', expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_socket', { slot: 'mainHand', expected });
+        engine.uiManager.forge.onForgeInsertGem('mainHand', 2, 0, expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_insert_gem', { equipSlot: 'mainHand', gemInvIndex: 2, socketIndex: 0, expected });
+        engine.uiManager.forge.onForgeCombineGem([0, 1, 2], expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_combine_gem', { gemIndices: [0, 1, 2], expected });
+        engine.uiManager.forge.onForgeRemoveGem('mainHand', 0, expected);
+        expect(engine.network.send).toHaveBeenLastCalledWith('forge_remove_gem', { equipSlot: 'mainHand', socketIndex: 0, expected });
+    });
+
     test('playtest sampling exposes only connection and level, without sending observations', () => {
         const engine = createEngine();
         new UIBindings(engine).bindConstructorCallbacks();

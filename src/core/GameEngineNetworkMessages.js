@@ -1542,7 +1542,7 @@ class GameEngineNetworkMessageMethods {
                         this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
                     }
 
-                    if (pData.equipment !== undefined || pData.inventory !== undefined || pData.gold !== undefined) {
+                    if (pData.equipment !== undefined || pData.inventory !== undefined || pData.gold !== undefined || pData.level !== undefined) {
                         this.uiManager.forge?.refresh?.(this.player);
                     }
 

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity, bool, string) {
+func (w *World) PerformForgeUpgrade(playerID, slot string, amount int, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -30,6 +30,9 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	}
 
 	// Charge every purchased level at its own tier, independent of batch size.
+	if !forgeQuoteMatches(item, expected) {
+		return nil, false, "Equipment changed. Review the Forge preview and try again."
+	}
 	targetLevel, cost := forging.UpgradeCost(item.Level, amount)
 
 	levelsToAdd := targetLevel - item.Level
@@ -110,7 +113,7 @@ func isForgeShardItem(item Item) bool {
 	return strings.EqualFold(item.Name, "Eidolon Shard") || strings.EqualFold(item.Name, "Shard")
 }
 
-func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, string) {
+func (w *World) PerformForgePotency(playerID, slot string, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -127,6 +130,9 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 		return nil, false, "No item in slot"
 	}
 
+	if !forgeQuoteMatches(item, expected) {
+		return nil, false, "Equipment changed. Review the Forge preview and try again."
+	}
 	if item.Potency < 0 || item.Potency >= 20 {
 		return nil, false, "Max potency reached"
 	}
@@ -177,7 +183,7 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	return player, true, "Potency upgrade successful"
 }
 
-func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string) {
+func (w *World) PerformForgeSocket(playerID, slot string, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -185,6 +191,8 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	// Get item from slot
 	item, ok := player.Equipment[slot]
@@ -194,6 +202,9 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 
 	if item.Sockets >= 4 {
 		return nil, false, "Max sockets reached"
+	}
+	if !forgeQuoteMatches(item, expected) {
+		return nil, false, "Equipment changed. Review the Forge preview and try again."
 	}
 
 	// Calculate Cost
@@ -259,7 +270,7 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	}
 
 	// Add Socket
-	newItem := item
+	newItem := cloneItem(item)
 	newItem.Sockets++
 	player.Equipment[slot] = newItem
 	player.EquipmentRevision++
@@ -268,7 +279,7 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 }
 
 // PerformForgeInsertGem inserts a gem from inventory into an equipment socket
-func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, socketIndex int) (*Entity, bool, string) {
+func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, socketIndex int, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -276,6 +287,8 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	// Get equipment item
 	equipItem, ok := player.Equipment[equipSlot]
@@ -284,6 +297,9 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	}
 
 	// Check if equipment has sockets
+	if !forgeQuoteMatches(equipItem, expected) || !forgeGemQuoteMatches(player.Inventory, []int{gemInvIndex}, expected) {
+		return nil, false, "Equipment or gems changed. Review the Forge preview and try again."
+	}
 	if equipItem.Sockets <= 0 {
 		return nil, false, "Equipment has no sockets"
 	}
@@ -322,7 +338,7 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	}
 
 	// Add gem to equipment
-	newEquipItem := equipItem
+	newEquipItem := cloneItem(equipItem)
 	if newEquipItem.Gems == nil {
 		newEquipItem.Gems = make([]SocketedGem, 0)
 	}
@@ -330,14 +346,15 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	player.Equipment[equipSlot] = newEquipItem
 	player.EquipmentRevision++
 
-	// Remove gem from inventory
-	player.Inventory = append(player.Inventory[:gemInvIndex], player.Inventory[gemInvIndex+1:]...)
+	// Consume one unit, not the entire selected stack.
+	consumeForgeGemUnits(player.Inventory, gemInvIndex, 1)
+	player.RecalculateStats()
 
 	return player, true, "Gem inserted successfully"
 }
 
 // PerformForgeCombineGems combines 3 gems of same type and quality into 1 gem of next quality
-func (w *World) PerformForgeCombineGems(playerID string, gemIndices [3]int) (*Entity, bool, string) {
+func (w *World) PerformForgeCombineGems(playerID string, gemIndices [3]int, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -345,17 +362,22 @@ func (w *World) PerformForgeCombineGems(playerID string, gemIndices [3]int) (*En
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
-	// Validate indices are unique and in range
-	indexMap := make(map[int]bool)
+	// A stack may supply multiple units of the three-gem recipe.
+	if !forgeGemQuoteMatches(player.Inventory, gemIndices[:], expected) {
+		return nil, false, "Gems changed. Review the Forge preview and try again."
+	}
+	indexCounts := make(map[int]int)
 	for _, idx := range gemIndices {
 		if idx < 0 || idx >= len(player.Inventory) {
 			return nil, false, "Invalid inventory slot"
 		}
-		if indexMap[idx] {
-			return nil, false, "Duplicate gem slot selected"
+		indexCounts[idx]++
+		if indexCounts[idx] > forgeInventoryStackCount(player.Inventory[idx]) {
+			return nil, false, "Not enough gems in the selected stack"
 		}
-		indexMap[idx] = true
 	}
 
 	// Get the three gems and validate they're all gems of same type and quality
@@ -388,29 +410,33 @@ func (w *World) PerformForgeCombineGems(playerID string, gemIndices [3]int) (*En
 	// Create the upgraded gem
 	upgradedGem := GenerateGem(gemType, nextQuality)
 
-	// Remove the 3 gems from inventory (remove from highest index first to preserve indices)
-	sortedIndices := make([]int, 3)
-	copy(sortedIndices, gemIndices[:])
-	// Sort descending
-	for i := 0; i < 2; i++ {
-		for j := i + 1; j < 3; j++ {
-			if sortedIndices[i] < sortedIndices[j] {
-				sortedIndices[i], sortedIndices[j] = sortedIndices[j], sortedIndices[i]
-			}
-		}
+	// Plan consumption and output together: a full bag must not destroy inputs.
+	planned := &Entity{Inventory: cloneItems(player.Inventory)}
+	for len(planned.Inventory) < MaxInventorySize {
+		planned.Inventory = append(planned.Inventory, Item{})
 	}
-	for _, idx := range sortedIndices {
-		player.Inventory = append(player.Inventory[:idx], player.Inventory[idx+1:]...)
+	for index, count := range indexCounts {
+		consumeForgeGemUnits(planned.Inventory, index, count)
 	}
-
-	// Add upgraded gem to inventory
-	player.Inventory = append(player.Inventory, *upgradedGem)
+	if planned.AddItemToInventory(*upgradedGem) != 0 {
+		return nil, false, "Make room in your bag for the combined gem"
+	}
+	player.Inventory = planned.Inventory
 
 	return player, true, "Gems combined successfully"
 }
 
+func consumeForgeGemUnits(inventory []Item, index, count int) {
+	remaining := forgeInventoryStackCount(inventory[index]) - count
+	if remaining <= 0 {
+		inventory[index] = Item{}
+	} else {
+		inventory[index].Stack = remaining
+	}
+}
+
 // PerformForgeRemoveGem removes a gem from an equipment socket (gem is destroyed)
-func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex int) (*Entity, bool, string) {
+func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex int, expected ...*ForgeQuote) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -418,6 +444,8 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	// Get equipment item
 	equipItem, ok := player.Equipment[equipSlot]
@@ -426,6 +454,9 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 	}
 
 	// Check if equipment has gems
+	if !forgeQuoteMatches(equipItem, expected) {
+		return nil, false, "Equipment changed. Review the Forge preview and try again."
+	}
 	if len(equipItem.Gems) == 0 {
 		return nil, false, "Equipment has no socketed gems"
 	}
@@ -436,10 +467,11 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 	}
 
 	// Remove gem from equipment (gem is destroyed)
-	newEquipItem := equipItem
+	newEquipItem := cloneItem(equipItem)
 	newEquipItem.Gems = append(newEquipItem.Gems[:socketIndex], newEquipItem.Gems[socketIndex+1:]...)
 	player.Equipment[equipSlot] = newEquipItem
 	player.EquipmentRevision++
+	player.RecalculateStats()
 
 	return player, true, "Gem removed (destroyed)"
 }

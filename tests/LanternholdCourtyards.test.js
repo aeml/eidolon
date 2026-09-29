@@ -37,6 +37,12 @@ test('full-size heroes can reach both courtyards without hitting services, camps
     const scene = new THREE.Group(), collision = new CollisionManager();
     const generator = new WorldGenerator(scene, collision);
     await generator.loadBuildings(0, 200);
+    generator.townCourtyards.traverse(part => {
+        if (!part.isMesh) return;
+        expect(part.material.polygonOffset).toBe(false);
+        expect(part.material.shadowSide).toBe(THREE.FrontSide);
+        expect(part.material.depthTest).toBe(true);
+    });
     for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -16, 193, 0]]) {
         const mesh = createProceduralLanternholdStructure(kind); mesh.position.set(x, .5, z); mesh.rotation.y = angle;
         collision.addOrientedCollider(getLanternholdWalkCollider(mesh));

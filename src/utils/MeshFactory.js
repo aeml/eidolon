@@ -647,9 +647,9 @@ export class MeshFactory {
 
         if (stableFrontShadows) {
             material.shadowSide = THREE.FrontSide;
-            material.polygonOffset = true;
-            material.polygonOffsetFactor = 1;
-            material.polygonOffsetUnits = 1;
+            // Shadow-side selection must not bias the visible depth buffer.
+            // A positive slope offset hides shallow paving under the terrain,
+            // increasingly so as the orthographic camera zooms out.
         }
 
         material.needsUpdate = true;

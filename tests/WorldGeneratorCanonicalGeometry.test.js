@@ -306,7 +306,7 @@ describe('WorldGenerator shadow setup', () => {
             expect(mesh.castShadow).toBe(true);
             expect(mesh.receiveShadow).toBe(true);
             expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
-            expect(mesh.material.polygonOffset).toBe(true);
+            expect(mesh.material.polygonOffset).toBe(false);
         }
     });
 
@@ -429,9 +429,7 @@ describe('WorldGenerator shadow setup', () => {
         expect(mesh.castShadow).toBe(true);
         expect(mesh.receiveShadow).toBe(true);
         expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
-        expect(mesh.material.polygonOffset).toBe(true);
-        expect(mesh.material.polygonOffsetFactor).toBe(1);
-        expect(mesh.material.polygonOffsetUnits).toBe(1);
+        expect(mesh.material.polygonOffset).toBe(false);
 
         loadModelSpy.mockRestore();
     });
