@@ -146,6 +146,7 @@ export class QuestUI {
         if (!getRecordedChronicleDiscoveries(quest).some(site => site.id === receipt?.siteId)) return false;
         if (!this.isJournalOpen) this.toggleJournal();
         else this.updateJournal(player.quests);
+        this.setJournalView('story');
         const record = [...this.journalList.querySelectorAll('details[data-discovery-id]')]
             .find(record => record.dataset.discoveryId === receipt.siteId);
         if (!record) return false;
@@ -858,6 +859,7 @@ export class QuestUI {
         const signature = JSON.stringify([this.activeQuestSummary, trackedObjectives, this.trackingStorageKey, this.ctx.isMobile, phoneIndex]);
         if (this.objectiveSignature === signature) return;
         this.objectiveSignature = signature;
+        const scrollTop = this.objectivesList.scrollTop;
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
         this.clearElement(this.objectivesList);
         this.objectivesPanel.querySelector('.objectives-panel__more')?.remove();
@@ -940,6 +942,7 @@ export class QuestUI {
             }
             this.objectivesPanel.appendChild(controls);
         } else if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
+        this.objectivesList.scrollTop = scrollTop;
     }
 
     // ================================================================
@@ -1013,6 +1016,64 @@ export class QuestUI {
     // QUEST JOURNAL
     // ================================================================
 
+    setJournalView(view) {
+        this.journalView = ['all', 'story', 'contracts'].includes(view) ? view : 'all';
+        this.applyJournalView();
+        if (this.journalList) this.journalList.scrollTop = 0;
+    }
+
+    updateJournalNavigation(quests) {
+        if (!this.journalList) return;
+        const identity = this.ctx.getLastPlayer?.()?.id || this.ctx.getLastPlayer?.()?.characterId;
+        if (identity !== this.journalIdentity) {
+            this.journalIdentity = identity;
+            this.journalView = 'all';
+        }
+        if (!this.journalNavigation) {
+            const nav = document.createElement('div');
+            nav.className = 'quest-journal-navigation';
+            nav.setAttribute('role', 'group');
+            nav.setAttribute('aria-label', 'Quest journal sections');
+            for (const [view, label] of [['all', 'All quests'], ['story', 'Story'], ['contracts', 'Contracts']]) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.journalView = view;
+                button.dataset.label = label;
+                button.setAttribute('aria-controls', 'journal-list');
+                button.addEventListener('click', () => this.setJournalView(view));
+                nav.appendChild(button);
+            }
+            nav.addEventListener('keydown', event => {
+                if ([' ', 'Enter'].includes(event.key)) event.stopPropagation();
+            });
+            this.journalList.before(nav);
+            this.journalNavigation = nav;
+        }
+        const contracts = (quests || []).filter(q => q.accepted && !q.completed && q.category !== 'chronicle' && !q.id?.startsWith('chronicle_'));
+        for (const button of this.journalNavigation.children) {
+            button.textContent = button.dataset.label + (button.dataset.journalView === 'contracts' ? ` (${contracts.length})` : '');
+        }
+    }
+
+    applyJournalView() {
+        const view = this.journalView || 'all';
+        for (const button of this.journalNavigation?.children || []) {
+            button.setAttribute('aria-pressed', String(button.dataset.journalView === view));
+        }
+        for (const section of this.journalList?.querySelectorAll('[data-journal-section]') || []) {
+            section.hidden = view !== 'all' && section.dataset.journalSection !== view;
+        }
+        const existing = this.journalList?.querySelector('.quest-journal-empty');
+        existing?.remove();
+        if (view !== 'all' && !this.journalList?.querySelector(`[data-journal-section="${view}"]:not(.quest-journal-reset)`)) {
+            const empty = this.createMessage(view === 'story'
+                ? 'No story chapters recorded. Speak to Archmage Ilyra in Lanternhold.'
+                : 'No active contracts. Visit the daily quest giver in Lanternhold to choose one.');
+            empty.className = 'quest-journal-empty';
+            this.journalList?.appendChild(empty);
+        }
+    }
+
     renderChronicleSection(quests, existingRecords = new Map(), existingRecap = null) {
         const chronicle = Array.isArray(quests)
             ? quests.filter((q) => q?.category === 'chronicle' || q?.id?.startsWith('chronicle_'))
@@ -1026,6 +1087,7 @@ export class QuestUI {
         const optionalKind = optional.some(quest => quest.type !== 'INVESTIGATE') ? 'story chapters' : 'investigations';
         const section = document.createElement('section');
         section.className = 'chronicle-journal';
+        section.dataset.journalSection = 'story';
 
         section.appendChild(this.createMessage('The Fourfold Chronicle', {
             color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'
@@ -1165,6 +1227,7 @@ export class QuestUI {
         const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
+            this.applyJournalView();
             if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
             const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;
@@ -1182,11 +1245,13 @@ export class QuestUI {
         };
         this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
+        this.updateJournalNavigation(quests);
         this.clearElement(this.journalList);
         const resetSnapshot = this.getDailyResetSnapshot();
 
         const infoDiv = document.createElement('div');
         infoDiv.className = 'quest-journal-reset';
+        infoDiv.dataset.journalSection = 'contracts';
         infoDiv.style.color = '#888';
         infoDiv.style.fontSize = '12px';
         infoDiv.style.marginBottom = '15px';
@@ -1196,7 +1261,7 @@ export class QuestUI {
         infoDiv.textContent = resetSnapshot.statusLine;
         this.journalList.appendChild(infoDiv);
         const trackingHint = this.createMessage(this.ctx.isMobile
-            ? 'Choose “Track on screen” on any quest. Use Next quest on the compact tracker to cycle your selections. Story tracking follows the next chapter.'
+            ? 'Choose “Track on screen” below; use › on the tracker to cycle quests. Story tracking follows new chapters.'
             : 'Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
         trackingHint.className = 'quest-tracking-hint';
         this.journalList.appendChild(trackingHint);
@@ -1207,6 +1272,7 @@ export class QuestUI {
         if (repeatableLadder) {
             const ladder = document.createElement('details');
             ladder.className = 'quest-repeatable-ladder';
+            ladder.dataset.journalSection = 'contracts';
             ladder.open = dailyOpen ?? (repeatableLadder.acceptedCount > 0 || !hasActiveChronicle);
             ladder.style.background = 'linear-gradient(180deg, rgba(29, 35, 46, 0.95), rgba(18, 22, 29, 0.95))';
             ladder.style.border = '1px solid rgba(143, 176, 217, 0.35)';
@@ -1265,83 +1331,68 @@ export class QuestUI {
         if (!quests) { restoreReading(); return; }
         let hasActive = hasActiveChronicle;
 
-        quests.forEach(q => {
-            if (!q.accepted || q.completed) return;
-            if (q.category === 'chronicle' || q.id?.startsWith('chronicle_')) return;
+        const isReady = q => q.maxCount > 0 && q.count >= q.maxCount;
+        const contracts = quests.filter(q => q.accepted && !q.completed && q.category !== 'chronicle' && !q.id?.startsWith('chronicle_'));
+        contracts.sort((a, b) => Number(isReady(b)) - Number(isReady(a)));
+        contracts.forEach(q => {
             hasActive = true;
 
             const div = document.createElement('div');
             div.className = 'quest-journal-entry';
-            div.style.background = '#222';
-            div.style.border = '1px solid #444';
-            div.style.padding = '10px';
-            div.style.display = 'flex';
-            div.style.flexDirection = 'column';
-            div.style.gap = '5px';
+            div.dataset.journalSection = 'contracts';
+            div.dataset.questId = q.id;
 
-            const pct = Math.min(100, (q.count / q.maxCount) * 100);
-            const ready = q.maxCount > 0 && q.count >= q.maxCount;
-            const color = ready ? '#65baff' : '#b7cce0';
-            const status = ready ? 'RETURN TO QUEST GIVER' : 'IN PROGRESS';
+            const count = Math.max(0, Number(q.count) || 0);
+            const maxCount = Math.max(0, Number(q.maxCount) || 0);
+            const pct = maxCount > 0 ? Math.min(100, count / maxCount * 100) : 0;
+            const ready = isReady(q);
+            div.classList.toggle('is-ready', ready);
 
             const header = document.createElement('div');
             header.className = 'quest-journal-entry__header';
-            header.style.display = 'flex';
-            header.style.justifyContent = 'space-between';
 
             const title = document.createElement('span');
-            title.style.color = '#fff';
-            title.style.fontWeight = 'bold';
+            title.className = 'quest-journal-entry__title';
             title.textContent = this.getQuestTitle(q);
 
             const statusEl = document.createElement('span');
-            statusEl.style.color = color;
-            statusEl.style.fontSize = '12px';
-            statusEl.textContent = status;
+            statusEl.className = 'quest-journal-entry__status';
+            statusEl.textContent = ready ? 'Ready to turn in' : 'In progress';
 
             header.appendChild(title);
             header.appendChild(statusEl);
 
             const progress = document.createElement('div');
             progress.className = 'quest-journal-entry__progress';
-            progress.style.background = '#111';
-            progress.style.height = '10px';
-            progress.style.border = '1px solid #444';
-            progress.style.position = 'relative';
+            progress.setAttribute('role', 'progressbar');
+            progress.setAttribute('aria-label', this.getQuestTitle(q));
+            progress.setAttribute('aria-valuemin', '0');
+            progress.setAttribute('aria-valuemax', String(maxCount || 1));
+            progress.setAttribute('aria-valuenow', String(Math.min(count, maxCount)));
+            progress.setAttribute('aria-valuetext', `${count} / ${maxCount}`);
 
             const progressFill = document.createElement('div');
-            progressFill.style.background = color;
+            progressFill.className = 'quest-journal-entry__fill';
             progressFill.style.width = `${pct}%`;
-            progressFill.style.height = '100%';
 
             const progressLabel = document.createElement('div');
             progressLabel.className = 'quest-journal-entry__count';
-            progressLabel.style.position = 'absolute';
-            progressLabel.style.top = '0';
-            progressLabel.style.left = '0';
-            progressLabel.style.width = '100%';
-            progressLabel.style.textAlign = 'center';
-            progressLabel.style.fontSize = '8px';
-            progressLabel.style.lineHeight = '10px';
-            progressLabel.style.color = '#fff';
-            progressLabel.textContent = `${q.count} / ${q.maxCount}`;
+            progressLabel.textContent = `${count} / ${maxCount}`;
 
             progress.appendChild(progressFill);
-            progress.appendChild(progressLabel);
+            const progressRow = document.createElement('div');
+            progressRow.className = 'quest-journal-entry__progress-row';
+            progressRow.append(progress, progressLabel);
 
             const reward = document.createElement('div');
-            reward.style.color = '#aaa';
-            reward.style.fontSize = '12px';
+            reward.className = 'quest-journal-entry__reward';
             reward.textContent = `Reward: ${this.getQuestRewardLabel(q)}`;
 
             div.appendChild(header);
-            div.appendChild(this.createTrackingControl(q));
-            div.appendChild(progress);
+            div.appendChild(this.createMessage(ready ? 'Return to the daily quest giver in Lanternhold to claim your rewards.' : this.getQuestObjective(q)));
+            div.appendChild(progressRow);
             div.appendChild(reward);
-
-            if (q.completed) {
-                // Turn in at NPC for now
-            }
+            div.appendChild(this.createTrackingControl(q));
             this.journalList.appendChild(div);
         });
 

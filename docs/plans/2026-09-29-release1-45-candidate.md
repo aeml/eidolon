@@ -5,6 +5,11 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Journal section buttons separate Story and Contracts without losing your
+  tracking choices. Clearer contract cards put ready turn-ins first and use
+  readable progress counts. Progress updates preserve the desktop tracker's
+  scroll position. See [journal checks](2026-09-29-journal-navigation.md).
+
 - Item set counts and comparisons exclude inactive legacy gear, while keeping
   those items recoverable. Special effects use their display names. Integrated
   UI checks now join the existing hosted CI stage; heavier visual references

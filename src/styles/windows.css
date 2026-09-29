@@ -960,6 +960,28 @@
     background: linear-gradient(145deg, #252438, #151e2b);
 }
 
+.quest-journal-navigation { display: flex; flex: 0 0 auto; gap: 6px; padding: 10px 16px; border-bottom: 1px solid #b99b6240; background: #111821; }
+.quest-journal-navigation button { flex: 1; min-width: 0; min-height: 44px; padding: 8px 6px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: #bfc9d6; font: inherit; font-size: 13px; cursor: pointer; }
+.quest-journal-navigation button[aria-pressed="true"] { border-color: #b99b6270; background: #b99b6219; color: #f2d9a3; }
+.quest-journal-navigation button:hover { background: #b99b6228; }
+.quest-journal-navigation button:focus-visible { outline: 2px solid #e4c991; outline-offset: -3px; }
+#journal-list [data-journal-section][hidden] { display: none; }
+.quest-journal-empty { padding: 24px 8px; color: #bfc9d6; line-height: 1.6; }
+.quest-journal-entry { display: flex; flex-direction: column; gap: 9px; padding: 14px; border: 1px solid #7d99b338; border-left: 3px solid #6d829b; border-radius: 4px; background: linear-gradient(140deg, #202b37, #121a24); overflow-wrap: anywhere; }
+.quest-journal-entry.is-ready { border-left-color: #75c6f2; background: linear-gradient(140deg, #203340, #131d27); }
+.quest-journal-entry__header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; }
+.quest-journal-entry__title { color: #f1ede3; font-weight: 600; font-size: 15px; }
+.quest-journal-entry__status { color: #b7cce0; font-size: 12px; }
+.is-ready .quest-journal-entry__status { color: #8fd3ff; }
+.quest-journal-entry > .quest-copy { color: #c2cbd8; font-size: 13px; line-height: 1.5; }
+.quest-journal-entry__progress-row { display: flex; align-items: center; gap: 12px; }
+.quest-journal-entry__progress { flex: 1; height: 5px; overflow: hidden; border-radius: 3px; background: #080d15; }
+.quest-journal-entry__fill { height: 100%; background: #819fbc; }
+.is-ready .quest-journal-entry__fill { background: #75c6f2; }
+.quest-journal-entry__count { flex: 0 0 auto; color: #e0e8f3; font-size: 13px; font-variant-numeric: tabular-nums; }
+.quest-journal-entry__reward { color: #c7b58b; font-size: 12px; }
+.quest-journal-entry .quest-tracking-control { border-top: 1px solid #a9bdd31a; padding-top: 7px; }
+
 #trading-house-screen .window-body,
 #quest-window .window-list,
 #quest-journal .window-list {
