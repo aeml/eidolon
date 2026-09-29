@@ -72,8 +72,8 @@ material improvement, not a finished-art or frame-performance claim.
 
 ## Remaining milestone work
 
-- Dark Realm integrated scene review and remaining full-world presentation
-  limitations, including landmark composition with foliage/actors present.
+- Remaining full-world presentation limitations, including landmark composition
+  with foliage/actors present and owner art acceptance.
 - Final milestone integration and ordered release/live verification. The local
   preview described below is not a published 1.42 or full visual acceptance.
 
@@ -145,3 +145,18 @@ An isolated preview is collected at
 `d56fcf23`. Runtime version stays at its inherited 1.38 until earlier milestones
 and this milestone are ready for ordered publication. Draft player-facing notes
 are in [the candidate notes](2026-09-29-release1-42-candidate.md).
+
+## Dark Realm review
+
+The integrated Dark Realm browser passed (15.9s), exercising the authoritative
+layout at real coordinates, camp, 38 story-site models, witnesses and all four
+courts on desktop and phone-sized Low views. Inspected inhabited camp desktop/
+phone, Archive court and the city-wide view in `/tmp/eidolon-142-dark-review/`.
+Court arrivals remain clear. The camp/site views preserve actor and record
+readability; the city-wide view remains deliberately sparse and is not final
+world-density or art approval. No extra decorative blockers were added.
+
+The Dark Realm and transient-warning unit selection passed 23 checks (2.646s).
+Environment geometry is unchanged by this review. Full inhabited-world visual
+acceptance and ordered publication remain open; the next independent effects
+work is tracked separately under 1.43, not included in this preview.
