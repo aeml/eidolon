@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
+import { dangerAudioOptions } from '../audio/DangerAudioSpatial.js';
 import { getOverworldGroundHeight } from './WorldGrounding.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 import { stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
@@ -896,6 +897,10 @@ class GameEngineNetworkMessageMethods {
                     theme: data.theme || '',
                     attack: data.attack || ''
                 });
+                if (!data.silent) {
+                    const audio = dangerAudioOptions(pos, playerPosition, this.renderSystem?.camera, Number(data.radius || 10));
+                    if (audio) this.playAudioCue?.(AUDIO_CUES.dangerWarning, audio);
+                }
                 if (this.uiManager?.showCombatCallout && !data.silent) {
                     this.uiManager.showCombatCallout({
                         title: label,

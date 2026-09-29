@@ -25,6 +25,7 @@ import {
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
+import { worldAmbienceKey } from '../audio/WorldAmbience.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
 const isContactShadowActor = entity => entity instanceof Actor;
@@ -89,6 +90,7 @@ class GameEngineRuntimeMethods {
     destroy() {
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
+        this.audioManager?.dispose?.();
         this.casino?.dispose();
         this.uiManager?.cosmeticVendor?.dispose();
         this.uiManager?.admin?.dispose();
@@ -124,6 +126,7 @@ class GameEngineRuntimeMethods {
 
 
     update(dt) {
+        this.audioManager?.ambience?.update(worldAmbienceKey(this));
         this.casino?.beforeUpdate(dt);
         this.publicEvents?.update(dt);
         this.frameCount++;

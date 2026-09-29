@@ -32,10 +32,34 @@ function createEngineHarness() {
         updateDungeonRoomState: jest.fn()
     };
     engine.spawnTransientEffect = jest.fn(() => true);
+    engine.playAudioCue = jest.fn(() => true);
     return engine;
 }
 
 describe('GameEngine telegraph feedback', () => {
+    test('session teardown releases its audio manager', () => {
+        const engine = createEngineHarness();
+        engine.audioManager = { dispose: jest.fn() };
+        engine.clearCombatIntentState = jest.fn();
+        engine.destroy();
+        expect(engine.audioManager.dispose).toHaveBeenCalledTimes(1);
+        expect(engine.isDestroyed).toBe(true);
+    });
+
+    test('nearby warning plays positional sound; distant warnings still retain visuals', () => {
+        const engine = createEngineHarness();
+        engine.renderSystem = { camera: new THREE.PerspectiveCamera() };
+        engine.renderSystem.camera.position.set(100, 100, 100);
+        engine.renderSystem.camera.lookAt(0, 0, 0);
+        engine.renderSystem.camera.updateMatrixWorld();
+        for (const x of [10, 100]) engine.handleServerMessage({ type: 'telegraph', payload: {
+            x, z: -10, radius: 6, duration: 2
+        } });
+        expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(2);
+        expect(engine.playAudioCue).toHaveBeenCalledTimes(1);
+        expect(engine.playAudioCue).toHaveBeenCalledWith('combat.danger', expect.objectContaining({ pan: .8, gain: expect.any(Number) }));
+    });
+
     test.each([
         [1000, 10, false],
         [100, 10, true],
@@ -64,6 +88,7 @@ describe('GameEngine telegraph feedback', () => {
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledTimes(visible ? 1 : 0);
         if (visible) expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(
             expect.objectContaining({ subtitle: 'Step sideways out of the fissure line.' }));
+        expect(engine.playAudioCue).toHaveBeenCalledTimes(visible ? 1 : 0);
     });
 
     test('additional pattern circles render without repeating the callout', () => {
@@ -74,6 +99,7 @@ describe('GameEngine telegraph feedback', () => {
         } });
         expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledTimes(1);
+        expect(engine.playAudioCue).toHaveBeenCalledTimes(1);
     });
 
     test('renders boss telegraphs with threat tier and warning label', () => {

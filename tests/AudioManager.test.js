@@ -14,6 +14,7 @@ function createMockContext() {
         createGain: jest.fn(() => {
             const gain = {
                 connect: jest.fn(),
+                disconnect: jest.fn(),
                 gain: {
                     value: 1,
                     setValueAtTime: jest.fn(),
@@ -28,6 +29,7 @@ function createMockContext() {
                 type: '',
                 frequency: { setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn() },
                 connect: jest.fn(),
+                disconnect: jest.fn(),
                 start: jest.fn(),
                 stop: jest.fn(),
             };
@@ -42,6 +44,122 @@ function createMockContext() {
 }
 
 describe('AudioManager', () => {
+    test('disposing a session stops pending tones/media, closes context and cannot restart from stale UI callbacks', () => {
+        const context = createMockContext();
+        context.close = jest.fn(() => Promise.resolve());
+        const media = { volume: 1, play: jest.fn(), pause: jest.fn() };
+        const audio = new AudioManager({ context, mediaFactory: () => media, now: () => 1000 });
+        audio.play(AUDIO_CUES.wizardCast);
+        audio.play(AUDIO_CUES.uiClick);
+        expect(audio.activeTones.size).toBe(2);
+        audio.dispose(); audio.dispose();
+        expect(audio.activeTones.size).toBe(0);
+        expect(media.pause).toHaveBeenCalledTimes(1);
+        expect(media.volume).toBe(0);
+        expect(context.close).toHaveBeenCalledTimes(1);
+        context.createdOscillators.forEach(oscillator => {
+            expect(oscillator.stop).toHaveBeenCalledTimes(2);
+            oscillator.onended();
+            expect(oscillator.disconnect).toHaveBeenCalledTimes(1);
+        });
+        expect(audio.play(AUDIO_CUES.clericCast)).toBe(false);
+        expect(audio.unlock()).toBe(false);
+        expect(audio.getSettings().enabled).toBe(true);
+    });
+
+    test('danger tones pan, attenuate, clean up and survive reduced detail without rapid repeats', () => {
+        const context = createMockContext();
+        const panners = [];
+        context.createStereoPanner = () => {
+            const node = { pan: { value: 0 }, connect: jest.fn(), disconnect: jest.fn() };
+            panners.push(node); return node;
+        };
+        let now = 1000;
+        const audio = new AudioManager({ context, now: () => now });
+        audio.setDetailLevel('reduced');
+        expect(audio.play(AUDIO_CUES.dangerWarning, { pan: -.8, gain: .5 })).toBe(true);
+        expect(panners).toHaveLength(2);
+        expect(panners[0].pan.value).toBe(-.8);
+        expect(context.createdGains[2].gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(.0325, 2.008);
+        expect(panners[0].connect).toHaveBeenCalledWith(audio.busGains.get('combat'));
+        context.createdOscillators.forEach(oscillator => oscillator.onended());
+        panners.forEach(panner => expect(panner.disconnect).toHaveBeenCalledTimes(1));
+        now += 100; expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(false);
+        now += 200; expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+        audio.setEnabled(false);
+        expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(false);
+    });
+
+    test('positional cues retain mono feedback if stereo panning is unavailable', () => {
+        const context = createMockContext();
+        const audio = new AudioManager({ context, now: () => 1000 });
+        expect(audio.play(AUDIO_CUES.dangerWarning, { pan: .8 })).toBe(true);
+        expect(context.createdGains[2].connect).toHaveBeenCalledWith(audio.busGains.get('combat'));
+    });
+
+    test('independent buses persist and route generated cues through master volume', () => {
+        const context = createMockContext();
+        const audio = new AudioManager({ context, now: () => 1000 });
+        audio.setBusVolume('interface', .2);
+        audio.setBusVolume('combat', .7);
+        expect(audio.play(AUDIO_CUES.uiClick)).toBe(true);
+        expect(audio.play(AUDIO_CUES.wizardCast)).toBe(true);
+        expect(audio.busGains.get('interface').gain.value).toBe(.2);
+        expect(audio.busGains.get('combat').gain.value).toBe(.7);
+        for (const bus of audio.busGains.values()) expect(bus.connect).toHaveBeenCalledWith(audio.masterGain);
+        expect(audio.masterGain.gain.value).toBe(.45);
+        expect(context.createdGains[2].connect).toHaveBeenCalledWith(audio.busGains.get('interface'));
+        expect(context.createdGains[4].connect).toHaveBeenCalledWith(audio.busGains.get('combat'));
+        expect(new AudioManager().getBusVolumes()).toEqual({ combat: .7, interface: .2, ambience: 1 });
+        audio.setBusVolume('combat', 0);
+        expect(audio.busGains.get('combat').gain.value).toBe(0);
+        expect(audio.play(AUDIO_CUES.combatHit)).toBe(false);
+        expect(audio.play(AUDIO_CUES.lootPickup)).toBe(true);
+        audio.setVolume(0);
+        expect(audio.play(AUDIO_CUES.casinoWin)).toBe(false);
+        expect(audio.getBusVolumes()).toEqual({ combat: 0, interface: .2, ambience: 1 });
+    });
+
+    test('authored media already playing follows bus, master and mute changes', () => {
+        const media = { volume: 1, play: jest.fn() };
+        const audio = new AudioManager({ mediaFactory: () => media, now: () => 1000 });
+        expect(audio.play(AUDIO_CUES.uiClick)).toBe(true);
+        audio.setBusVolume('interface', .5);
+        expect(media.volume).toBeCloseTo(.225);
+        audio.setVolume(.8);
+        expect(media.volume).toBeCloseTo(.4);
+        audio.setEnabled(false);
+        expect(media.volume).toBe(0);
+        audio.setEnabled(true);
+        expect(media.volume).toBeCloseTo(.4);
+        audio.setBusVolume('combat', 0);
+        expect(media.volume).toBeCloseTo(.4);
+    });
+
+    test('bus settings clamp valid values and survive blocked storage without invalid gains', () => {
+        const audio = new AudioManager({ storage: {
+            getItem: () => { throw new Error('blocked'); },
+            setItem: () => { throw new Error('blocked'); }
+        } });
+        expect(audio.getBusVolumes()).toEqual({ combat: 1, interface: 1, ambience: 1 });
+        expect(audio.setBusVolume('combat', Infinity)).toBe(false);
+        expect(audio.setBusVolume('other', .5)).toBe(false);
+        audio.setBusVolume('combat', -1);
+        audio.setBusVolume('interface', 8);
+        expect(audio.getBusVolumes()).toEqual({ combat: 0, interface: 1, ambience: 1 });
+    });
+
+    test('finished generated tones release oscillator and envelope connections', () => {
+        const context = createMockContext();
+        const audio = new AudioManager({ context, now: () => 1000 });
+        audio.play(AUDIO_CUES.uiClick);
+        context.createdOscillators[0].onended();
+        expect(context.createdOscillators[0].disconnect).toHaveBeenCalledTimes(1);
+        expect(context.createdGains[2].disconnect).toHaveBeenCalledTimes(1);
+        expect(audio.masterGain.disconnect).not.toHaveBeenCalled();
+        expect(audio.busGains.get('interface').disconnect).not.toHaveBeenCalled();
+    });
+
     test('class cast sounds have distinct envelopes, no missing asset requests, and bounded repeats', () => {
         let now = 1000;
         const context = createMockContext();
