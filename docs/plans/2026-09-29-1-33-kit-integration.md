@@ -68,9 +68,13 @@ AbilityController range test guards the corrected targeting value.
 
 ## Remaining release work
 
-Package only 1.33 changes, finish the exact-candidate combined regressions and
-compatibility review, update login/package/backend/cumulative notes, then push,
-use Luna for CI monitoring and independently verify the exact live identity.
+The 1.33-only package, local exact-candidate checks, compatibility review and
+login/package/backend/cumulative notes are complete, with receipts in the
+[release record](2026-09-28-release1-33.md). Candidate
+`0767054e` failed CI 36502234080 on stale regression fixtures. The corrected
+source `7052581e` passed isolated focused checks, detailed in the release
+record. Replacement CI must succeed, followed by independent exact public
+identity verification before accepting delivery.
 Do not repeat long campaign/raid tests to measure a tooltip or combo card.
 Player preference and numerical role tuning remain explicit playtest inputs;
 1.39 balance and 1.43 integrated VFX polish retain their separate roadmap scope.
