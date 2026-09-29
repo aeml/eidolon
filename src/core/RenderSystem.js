@@ -11,7 +11,7 @@ import { ActorContactShadows } from './ActorContactShadows.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
-import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
+import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import {
     DUNGEON_THEME_KEYS,
@@ -235,7 +235,7 @@ export class RenderSystem {
                     quality,
                     texture: this.terrainTextures[key]
                 });
-                const ground = new THREE.Mesh(createRealmGroundGeometry(region, .75, key === 'earth' ? this.terrainElevation : null), material);
+                const ground = createRealmGroundMesh(region, material, key === 'earth' ? this.terrainElevation : null);
                 ground.name = `ProceduralRealmTerrain:${key}`;
                 ground.userData.proceduralTerrain = true;
                 ground.userData.terrainKey = key;

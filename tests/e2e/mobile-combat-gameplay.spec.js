@@ -45,11 +45,12 @@ async function runPhoneCombat({ page, baseURL, context }) {
     if (process.env.EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION === 'true') {
         const terrain = await page.evaluate(() => {
             const game = window.game, p = game.player, field = game.terrainElevation;
-            const geometry = game.renderSystem.groundEarth.geometry;
+            let vertices = 0;
+            game.renderSystem.groundEarth.traverse(object => { vertices += object.geometry?.getAttribute('position').count || 0; });
             return { profile: game.network.expectedTerrainProfile, field: Boolean(field),
                 rocks: game.collisionManager.rockSolids.length,
                 rockMeshes: game.getInstanceEnvironmentGroup().getObjectByName('Earth exposed rock shelves')?.children.length,
-                vertices: geometry.getAttribute('position').count,
+                vertices,
                 height: field?.sample(p.position.x, p.position.z), y: p.position.y };
         });
         expect(terrain.profile).toBe('earth-elevation-rocks-v1');

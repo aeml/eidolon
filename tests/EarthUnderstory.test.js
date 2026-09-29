@@ -63,7 +63,7 @@ test.each([null, { sample: (x, z) => 2 + Math.sin(x * .01) * .5 + Math.cos(z * .
         expect(mesh.castShadow).toBe(false);
         expect(mesh.material.transparent).toBe(false);
         expect(mesh.material.userData.woodlandWind).toBe(true);
-        expect(mesh.boundingSphere.radius).toBeLessThan(38);
+        expect(mesh.boundingSphere.radius).toBeLessThan(22);
         for (let i = 0; i < mesh.count; i++) {
             mesh.getMatrixAt(i, matrix); position.setFromMatrixPosition(matrix);
             const expected = terrainElevation?.sample(position.x, position.z) ?? 0;

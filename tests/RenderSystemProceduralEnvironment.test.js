@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 import { PROCEDURAL_TERRAIN_DEFINITIONS } from '../src/art/ProceduralRealmTerrain.js';
+import { EARTH_ELEVATION } from '../src/data/worldElevation.js';
 
 function createEnvironmentHarness(quality) {
     const renderSystem = Object.create(RenderSystem.prototype);
@@ -34,6 +35,23 @@ function disposeHarness(renderSystem) {
 }
 
 describe.each(['high', 'low'])('RenderSystem procedural environment (%s)', (quality) => {
+    test('the opted-in elevation profile builds reusable cullable ground without tiling other realms', async () => {
+        const renderSystem = createEnvironmentHarness(quality);
+        renderSystem.terrainElevation = EARTH_ELEVATION;
+        try {
+            await renderSystem.preloadEnvironment();
+            const ground = renderSystem.groundEarth;
+            expect(ground.userData.tiledRealmGround).toBe(true);
+            expect(ground.position.toArray()).toEqual([0, 0, 200]);
+            expect(ground.children.every(tile => tile.material.map === renderSystem.terrainTextures.earth)).toBe(true);
+            expect(renderSystem.groundSnow.isMesh).toBe(true);
+            expect(renderSystem.groundTown.isMesh).toBe(true);
+            await renderSystem.preloadEnvironment();
+            expect(renderSystem.groundEarth).toBe(ground);
+            expect(renderSystem.staticEnvironmentGroup.children).toHaveLength(6);
+        } finally { disposeHarness(renderSystem); }
+    });
+
     test('creates exact realm footprints without authored texture loading and remains idempotent', async () => {
         const renderSystem = createEnvironmentHarness(quality);
         const loadSpy = jest.spyOn(THREE.TextureLoader.prototype, 'loadAsync');

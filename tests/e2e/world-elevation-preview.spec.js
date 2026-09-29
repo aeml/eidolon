@@ -23,6 +23,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         const { installGameEngineMovement } = await import('/src/core/GameEngineMovement.js');
         const { EARTH_ELEVATION: field } = await import('/src/data/worldElevation.js');
         const { WORLD_REGIONS } = await import('/src/data/worldGeography.js');
+        const { createRealmGroundMesh } = await import('/src/art/RealmGroundMesh.js');
         const { createRealmGroundGeometry } = await import('/src/art/RealmGroundGeometry.js');
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
         const { EARTH_OUTCROP_PROFILE } = await import('/src/data/earthOutcrops.js');
@@ -30,9 +31,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
         await render.preloadEnvironment();
-        const previousGeometry = render.groundEarth.geometry;
-        render.groundEarth.geometry = createRealmGroundGeometry(WORLD_REGIONS.earth, .75, field);
-        previousGeometry.dispose();
+        const previousGround = render.groundEarth;
+        render.groundEarth = createRealmGroundMesh(WORLD_REGIONS.earth, previousGround.material, field);
+        render.groundEarth.position.copy(previousGround.position);
+        render.groundEarth.quaternion.copy(previousGround.quaternion);
+        previousGround.parent.add(render.groundEarth);
+        previousGround.removeFromParent(); previousGround.geometry.dispose();
         const focus = new THREE.Vector3(-120, field.sample(-120, -187), -187);
         class MovementPreview {}
         installGameEngineMovement(MovementPreview);
@@ -258,6 +262,36 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             return { height: actor.position.y, calls: render.renderer.info.render.calls,
                 triangles: render.renderer.info.render.triangles };
         };
+        window.__reviewSurfaceCulling = () => {
+            const baseline = new THREE.Mesh(createRealmGroundGeometry(WORLD_REGIONS.earth, .75, field), render.groundEarth.children[0].material);
+            baseline.position.copy(render.groundEarth.position); baseline.quaternion.copy(render.groundEarth.quaternion);
+            baseline.receiveShadow = true; render.scene.add(baseline);
+            const target = new THREE.WebGLRenderTarget(640, 422), pixels = [], costs = [];
+            const previousTarget = render.renderer.getRenderTarget();
+            const wind = understory.children[0].material, updateWind = wind.onBeforeRender;
+            // Freeze the already compiled wind phase between synchronous draws.
+            wind.onBeforeRender = () => {};
+            try {
+                for (const spatial of [false, true]) {
+                    baseline.visible = !spatial; render.groundEarth.visible = spatial;
+                    understory.children.forEach(mesh => { mesh.frustumCulled = spatial; });
+                    render.renderer.setRenderTarget(target); render.renderer.render(render.scene, render.camera);
+                    costs.push({ calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles });
+                    const data = new Uint8Array(640 * 422 * 4);
+                    render.renderer.readRenderTargetPixels(target, 0, 0, 640, 422, data); pixels.push(data);
+                }
+                let changed = 0;
+                for (let i = 0; i < pixels[0].length; i += 4) {
+                    if ([0, 1, 2].some(c => Math.abs(pixels[0][i + c] - pixels[1][i + c]) > 2)) changed++;
+                }
+                return { changed, total: 640 * 422, costs };
+            } finally {
+                wind.onBeforeRender = updateWind; render.renderer.setRenderTarget(previousTarget);
+                target.dispose();
+                baseline.removeFromParent(); baseline.geometry.dispose(); render.groundEarth.visible = true;
+                understory.children.forEach(mesh => { mesh.frustumCulled = true; });
+            }
+        };
         return { treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
             attachedDraws, understoryCost, outcropDraws,
             beamDraws, beamParts: beamParts.length,
@@ -287,6 +321,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         console.log(`[bastion ${quality} ${name}] ${JSON.stringify(view)}`);
         await page.screenshot({ path: testInfo.outputPath(`bastion-${name}.png`) });
     }
+    const culling = await page.evaluate(() => window.__reviewSurfaceCulling());
+    await testInfo.attach('surface-culling-equivalence', { body: JSON.stringify(culling), contentType: 'application/json' });
+    console.log(`[surface culling ${quality}] ${JSON.stringify(culling)}`);
+    expect(culling.changed / culling.total).toBeLessThan(.001);
+    expect(culling.costs[1].triangles).toBeLessThan(culling.costs[0].triangles / 2);
     expect(result.treeCount).toBeGreaterThan(0);
     expect(result.attachedDraws).toBeGreaterThan(0);
     expect(result.beamDraws).toBeGreaterThan(0);
