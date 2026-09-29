@@ -65,6 +65,10 @@ function buildDom() {
         <input id="audio-enabled" type="checkbox" />
         <input id="audio-volume" />
         <div id="audio-volume-value"></div>
+        <input id="audio-combat-volume" type="range" min="0" max="100" />
+        <output id="audio-combat-volume-value"></output>
+        <input id="audio-interface-volume" type="range" min="0" max="100" />
+        <output id="audio-interface-volume-value"></output>
         <select id="audio-detail-level"><option value="full">Full cues</option><option value="reduced">Reduced UI cues</option></select>
         <input id="camera-shake-enabled" type="checkbox" />
         <input id="camera-shake-strength" type="range" min="0" max="100" />
@@ -340,6 +344,20 @@ describe('UIManager settings', () => {
         expect(ui.getFullscreenEnabled()).toBe(true);
         expect(document.getElementById('fullscreen-enabled').checked).toBe(true);
         expect(ui.onFullscreenChange).toHaveBeenCalledWith(true);
+    });
+
+    test('audio bus sliders restore independently and apply without a reload', () => {
+        localStorage.setItem('eidolon.audioBus.combat', '.7');
+        const ui = new UIManager(false);
+        const combat = document.getElementById('audio-combat-volume');
+        const menus = document.getElementById('audio-interface-volume');
+        expect(combat.value).toBe('70');
+        expect(menus.value).toBe('100');
+        menus.value = '25'; menus.dispatchEvent(new Event('input'));
+        expect(ui.audioManager.getBusVolumes()).toEqual({ combat: .7, interface: .25, ambience: 1 });
+        expect(document.getElementById('audio-interface-volume-value').textContent).toBe('25%');
+        expect(localStorage.getItem('eidolon.audioBus.interface')).toBe('0.25');
+        expect(ui.getAudioVolume()).toBe(.45);
     });
 
     test('audio detail level persists and invokes callback', () => {

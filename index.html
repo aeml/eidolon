@@ -511,6 +511,21 @@
                     </div>
                 </div>
                 <div class="support-field">
+                    <label for="audio-combat-volume" class="support-field__label">Combat and movement <output id="audio-combat-volume-value" for="audio-combat-volume">100%</output></label>
+                    <input id="audio-combat-volume" class="support-field__range" type="range" min="0" max="100" step="1" value="100" />
+                    <div class="support-field__hint">Abilities, impacts and movement, relative to master volume. Visual warnings remain when muted.</div>
+                </div>
+                <div class="support-field">
+                    <label for="audio-interface-volume" class="support-field__label">Interface, loot and casino <output id="audio-interface-volume-value" for="audio-interface-volume">100%</output></label>
+                    <input id="audio-interface-volume" class="support-field__range" type="range" min="0" max="100" step="1" value="100" />
+                    <div class="support-field__hint">Menu feedback, pickups and casino sounds, independent of combat.</div>
+                </div>
+                <div class="support-field">
+                    <label for="audio-ambience-volume" class="support-field__label">World ambience <output id="audio-ambience-volume-value" for="audio-ambience-volume">100%</output></label>
+                    <input id="audio-ambience-volume" class="support-field__range" type="range" min="0" max="100" step="1" value="100" />
+                    <div class="support-field__hint">Quiet realm, dungeon and casino sound beds. Pauses when the game tab is hidden.</div>
+                </div>
+                <div class="support-field">
                     <label for="audio-detail-level" class="support-field__label">Audio Detail</label>
                     <select id="audio-detail-level" class="support-field__control">
                         <option value="full" selected>Full cues</option>

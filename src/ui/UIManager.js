@@ -21,7 +21,7 @@ import { ChatUI } from './ChatUI.js';
 import { DirectTradeUI } from './DirectTradeUI.js';
 import { PvPUI } from './PvPUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
-import { AudioManager } from '../audio/AudioManager.js';
+import { AudioManager, AUDIO_BUSES } from '../audio/AudioManager.js';
 import { getProceduralAbilityIcon, getProceduralItemIcon } from '../art/ProceduralIcons.js';
 import { installUIManagerFeedback } from './UIManagerFeedback.js';
 import { installUIManagerWindows } from './UIManagerWindows.js';
@@ -314,6 +314,20 @@ export class UIManager {
             });
         }
         this.updateAudioVolumeLabel();
+        for (const bus of AUDIO_BUSES) {
+            const slider = document.getElementById(`audio-${bus}-volume`);
+            if (!slider) continue;
+            const updateLabel = () => {
+                const label = document.getElementById(`audio-${bus}-volume-value`);
+                if (label) label.textContent = `${slider.value}%`;
+            };
+            slider.value = String(Math.round((this.audioManager.getBusVolumes?.()[bus] ?? 1) * 100));
+            updateLabel();
+            slider.addEventListener('input', () => {
+                this.audioManager.setBusVolume?.(bus, Number(slider.value) / 100);
+                updateLabel();
+            });
+        }
 
         const storedCameraShake = readPreference('eidolon.cameraShakeEnabled');
         this.cameraShakeEnabled = storedCameraShake === null ? false : storedCameraShake === 'true';

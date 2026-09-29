@@ -1,6 +1,9 @@
+import { WorldAmbience } from './WorldAmbience.js';
+
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
 const DEFAULT_DETAIL_LEVEL = 'full';
+export const AUDIO_BUSES = Object.freeze(['combat', 'interface', 'ambience']);
 
 const AUDIO_DETAIL_LEVELS = Object.freeze({
     full: 'full',
@@ -15,6 +18,7 @@ export const AUDIO_CUES = Object.freeze({
     lootBlocked: 'loot.blocked',
     combatHit: 'combat.hit',
     combatMiss: 'combat.miss',
+    dangerWarning: 'combat.danger',
     fighterCast: 'ability.fighter',
     rogueCast: 'ability.rogue',
     wizardCast: 'ability.wizard',
@@ -58,6 +62,7 @@ export const AUDIO_CUE_ASSETS = Object.freeze({
     [AUDIO_CUES.lootBlocked]: createCueAsset('loot', 'loot-blocked'),
     [AUDIO_CUES.combatHit]: createCueAsset('combat', 'combat-hit'),
     [AUDIO_CUES.combatMiss]: createCueAsset('combat', 'combat-miss'),
+    [AUDIO_CUES.dangerWarning]: generatedCombatCue,
     [AUDIO_CUES.fighterCast]: generatedCombatCue,
     [AUDIO_CUES.rogueCast]: generatedCombatCue,
     [AUDIO_CUES.wizardCast]: generatedCombatCue,
@@ -78,14 +83,22 @@ export class AudioManager {
         this.assetManifest = options.assetManifest || AUDIO_CUE_ASSETS;
         this.mediaFactory = options.mediaFactory || null;
         this.masterGain = null;
+        this.busGains = new Map();
         this.lastCueTimes = new Map();
         this.mediaCache = new Map();
         this.failedAssetCues = new Set();
         this.unlocked = false;
+        this.disposed = false;
+        this.activeTones = new Set();
 
         this.enabled = this.readStoredBoolean('eidolon.audioEnabled', true);
         this.volume = this.readStoredNumber('eidolon.audioVolume', DEFAULT_VOLUME, 0, 1);
         this.detailLevel = this.readStoredDetailLevel('eidolon.audioDetailLevel', DEFAULT_DETAIL_LEVEL);
+        this.busVolumes = Object.fromEntries(AUDIO_BUSES.map(bus =>
+            [bus, this.readStoredNumber(`eidolon.audioBus.${bus}`, 1, 0, 1)]));
+        this.ambience = new WorldAmbience(this);
+        this.onVisibilityChange = () => this.ambience.update(this.ambience.key);
+        globalThis.document?.addEventListener('visibilitychange', this.onVisibilityChange);
     }
 
     readStoredBoolean(key, fallback) {
@@ -130,6 +143,7 @@ export class AudioManager {
     }
 
     ensureContext() {
+        if (this.disposed) return null;
         if (this.context) return this.context;
         this.context = this.contextFactory?.() || null;
         if (!this.context) return null;
@@ -161,16 +175,60 @@ export class AudioManager {
         return true;
     }
 
+    getCueBus(cueName) {
+        const category = this.getCueAssetMetadata(cueName)?.category;
+        return category === 'ui' || category === 'loot' ? 'interface' : 'combat';
+    }
+
+    ensureBusGain(bus) {
+        const master = this.ensureMasterGain();
+        if (!master) return null;
+        if (!this.busGains.has(bus)) {
+            const gain = this.context.createGain();
+            gain.gain.value = this.busVolumes[bus];
+            gain.connect(master);
+            this.busGains.set(bus, gain);
+        }
+        return this.busGains.get(bus);
+    }
+
+    getBusVolumes() {
+        return { ...this.busVolumes };
+    }
+
+    setBusVolume(bus, volume) {
+        if (!AUDIO_BUSES.includes(bus)) return false;
+        const numeric = Number(volume);
+        if (!Number.isFinite(numeric)) return false;
+        this.busVolumes[bus] = Math.max(0, Math.min(1, numeric));
+        this.persistSetting(`eidolon.audioBus.${bus}`, this.busVolumes[bus]);
+        if (this.busGains.has(bus)) this.busGains.get(bus).gain.value = this.busVolumes[bus];
+        this.syncMediaVolumes();
+        this.ambience.update(this.ambience.key);
+        return true;
+    }
+
+    syncMediaVolumes() {
+        for (const [cueName, media] of this.mediaCache) {
+            if (media && 'volume' in media) media.volume = this.enabled
+                ? this.volume * this.busVolumes[this.getCueBus(cueName)] : 0;
+        }
+    }
+
     setEnabled(enabled) {
         this.enabled = Boolean(enabled);
         this.persistSetting('eidolon.audioEnabled', this.enabled);
         if (this.masterGain) this.masterGain.gain.value = this.enabled ? this.volume : 0;
+        this.syncMediaVolumes();
+        this.ambience.update(this.ambience.key);
     }
 
     setVolume(volume) {
         this.volume = Math.max(0, Math.min(1, Number(volume) || 0));
         this.persistSetting('eidolon.audioVolume', this.volume);
         if (this.masterGain) this.masterGain.gain.value = this.enabled ? this.volume : 0;
+        this.syncMediaVolumes();
+        this.ambience.update(this.ambience.key);
     }
 
     setDetailLevel(detailLevel) {
@@ -206,24 +264,29 @@ export class AudioManager {
         if (!this.isCueAllowedForDetailLevel(cueName)) return false;
         const lastPlayedAt = this.lastCueTimes.get(cueName) || 0;
         const now = this.now();
-        const cooldown = typeof cueName === 'string' && cueName.startsWith('ability.') ? 120 : CUE_COOLDOWN_MS;
+        const cooldown = cueName === AUDIO_CUES.dangerWarning ? 250
+            : typeof cueName === 'string' && cueName.startsWith('ability.') ? 120 : CUE_COOLDOWN_MS;
         if (now - lastPlayedAt < cooldown) return false;
         this.lastCueTimes.set(cueName, now);
         return true;
     }
 
     play(cueName, options = {}) {
+        if (this.disposed) return false;
+        const bus = this.getCueBus(cueName);
+        if (options.gain === 0) return false;
+        if (this.volume === 0 || this.busVolumes[bus] === 0) return false;
         if (!this.canPlay(cueName)) return false;
         if (this.playAuthoredCue(cueName)) return true;
 
         const context = this.ensureContext();
-        const destination = this.ensureMasterGain();
+        const destination = this.ensureBusGain(bus);
         const cue = this.createCue(cueName, options);
         if (!context || !destination || !cue) return false;
 
         const startAt = context.currentTime || 0;
         try {
-            cue.forEach((tone) => this.playTone(context, destination, startAt, tone));
+            cue.forEach((tone) => this.playTone(context, destination, startAt, tone, options));
         } catch {
             return false;
         }
@@ -240,7 +303,7 @@ export class AudioManager {
 
         try {
             if ('currentTime' in media) media.currentTime = 0;
-            if ('volume' in media) media.volume = this.volume;
+            if ('volume' in media) media.volume = this.volume * this.busVolumes[this.getCueBus(cueName)];
             const result = media.play();
             if (result?.catch) {
                 result.catch(() => {
@@ -310,6 +373,11 @@ export class AudioManager {
                 ];
             case AUDIO_CUES.combatMiss:
                 return [{ frequency: 240 * pitch, duration: 0.06, type: 'triangle', gain: 0.045 }];
+            case AUDIO_CUES.dangerWarning:
+                return [
+                    { frequency: 330, endFrequency: 220, duration: .14, type: 'triangle', gain: .065 },
+                    { frequency: 440, endFrequency: 294, delay: .12, duration: .16, type: 'sine', gain: .055 }
+                ];
             case AUDIO_CUES.fighterCast:
                 return [
                     { frequency: 190, endFrequency: 85, duration: .13, type: 'triangle', gain: .09 },
@@ -341,12 +409,12 @@ export class AudioManager {
         }
     }
 
-    playTone(context, destination, startAt, tone) {
+    playTone(context, destination, startAt, tone, options = {}) {
         const oscillator = context.createOscillator();
         const gain = context.createGain();
         const toneStart = startAt + (tone.delay || 0);
         const toneEnd = toneStart + tone.duration;
-        const peakGain = tone.gain;
+        const peakGain = tone.gain * (Number.isFinite(options.gain) ? Math.max(0, Math.min(1, options.gain)) : 1);
 
         oscillator.type = tone.type;
         if (oscillator.frequency?.setValueAtTime) {
@@ -363,8 +431,56 @@ export class AudioManager {
             gain.gain.value = peakGain;
         }
         oscillator.connect?.(gain);
-        gain.connect?.(destination);
-        oscillator.start?.(toneStart);
-        oscillator.stop?.(toneEnd + 0.01);
+        let panner = null;
+        if (Number.isFinite(options.pan) && options.pan !== 0 && context.createStereoPanner) {
+            panner = context.createStereoPanner();
+            panner.pan.value = Math.max(-1, Math.min(1, options.pan));
+            gain.connect?.(panner);
+            panner.connect(destination);
+        } else gain.connect?.(destination);
+        let released = false;
+        const voice = { oscillator, release: () => {
+            if (released) return;
+            released = true;
+            oscillator.disconnect?.();
+            gain.disconnect?.();
+            panner?.disconnect();
+            this.activeTones.delete(voice);
+        } };
+        oscillator.onended = voice.release;
+        this.activeTones.add(voice);
+        try {
+            oscillator.start?.(toneStart);
+            oscillator.stop?.(toneEnd + 0.01);
+        } catch (error) {
+            voice.release();
+            throw error;
+        }
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        globalThis.document?.removeEventListener('visibilitychange', this.onVisibilityChange);
+        this.ambience.dispose();
+        if (this.masterGain) this.masterGain.gain.value = 0;
+        for (const voice of this.activeTones) {
+            try { voice.oscillator.stop?.(); } catch { /* Already stopped/closed. */ }
+            voice.release();
+        }
+        for (const media of this.mediaCache.values()) {
+            media?.pause?.();
+            if (media && 'volume' in media) media.volume = 0;
+        }
+        this.mediaCache.clear();
+        for (const bus of this.busGains.values()) bus.disconnect?.();
+        this.busGains.clear();
+        this.masterGain?.disconnect?.();
+        const context = this.context;
+        this.context = null;
+        this.masterGain = null;
+        if (context?.state !== 'closed') {
+            try { context?.close?.()?.catch?.(() => {}); } catch { /* Browser already released context. */ }
+        }
     }
 }
