@@ -36,6 +36,7 @@ import { spawnEarthshakerPresentation } from '../skills/earthshakerPresentation.
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
+import { ActorHitReaction } from './ActorHitReaction.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -400,6 +401,8 @@ export class Actor extends Entity {
     }
 
     setMesh(mesh) {
+        this.hitReaction?.dispose();
+        this.hitReaction = null;
         restoreActorStealthAppearance(this);
         super.setMesh(mesh);
 
@@ -973,8 +976,15 @@ export class Actor extends Entity {
         return applyProceduralEquipment(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
     }
 
+    playHitReaction(sourcePosition, amount) {
+        if (!this.mesh) return false;
+        this.hitReaction ??= new ActorHitReaction(this);
+        return this.hitReaction.play(sourcePosition, amount);
+    }
+
     update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
+        this.hitReaction?.update(dt);
         this.syncAttachedStatusEffects(dt);
         // Recipient-owned Renewal continues while stunned; never heal replicas.
         updateOfflineHealingLight(this, dt);
@@ -1261,7 +1271,6 @@ export class Actor extends Entity {
                 // Scale animation speed for remote entities
                 if (this.currentAction && this.stats.attackSpeed) {
                     const cooldown = this.stats.attackSpeed;
-                    const clipDuration = this.currentAction.getClip().duration;
 
                     // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
                     // For RootboundWarden, play even faster (70%) to align hit with server damage (35%)
@@ -1270,7 +1279,7 @@ export class Actor extends Entity {
                         speedFactor = 0.7;
                     }
 
-                    const timeScale = clipDuration / (cooldown * speedFactor);
+                    const timeScale = this.getBasicAttackAnimationTimeScale(cooldown, speedFactor);
                     this.currentAction.setEffectiveTimeScale(timeScale);
                 }
             } else if (this.state === 'MOVING') {
@@ -1595,6 +1604,21 @@ export class Actor extends Entity {
         // Override in subclasses
     }
 
+    getBasicAttackAnimationTimeScale(cooldown, fallbackDurationFactor = .9) {
+        const clip = this.currentAction?.getClip?.();
+        const duration = clip?.duration || 1;
+        const interval = Number.isFinite(cooldown) && cooldown > 0 ? cooldown : 1;
+        const contact = this.mesh?.userData.basicAttackContactTime;
+        // Only annotated basic clips opt in. Ability clips, enemies and future
+        // imported rigs retain their existing playback until authored/verified.
+        // Server and offline basic damage both land at 35% of the interval.
+        // Match the visible contact, not the entire clip's arbitrary duration.
+        if (clip?.name === 'Attack' && Number.isFinite(contact) && contact > 0 && contact <= duration) {
+            return contact / (interval * .35);
+        }
+        return duration / (interval * fallbackDurationFactor);
+    }
+
     getAttackHitDelay() {
         let cooldown = this.stats.attackSpeed || 1.0;
         if (this.hasteTimer > 0) {
@@ -1641,21 +1665,15 @@ export class Actor extends Entity {
 
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false, true);
-        
-        // Scale animation speed to match cooldown exactly (Slow attack = Slow animation)
-        let effectiveCooldown = cooldownMs / 1000;
-        let timeScale = 1.0;
-        let clipDuration = 1.0;
 
+        // Match the authored contact pose to the existing delayed impact.
+        const effectiveCooldown = cooldownMs / 1000;
         if (this.currentAction) {
-            clipDuration = this.currentAction.getClip().duration;
-            // Scale to fit cooldown
-            timeScale = clipDuration / effectiveCooldown;
-            this.currentAction.setEffectiveTimeScale(timeScale);
+            this.currentAction.setEffectiveTimeScale(this.getBasicAttackAnimationTimeScale(effectiveCooldown, 1));
         }
-        
+
         const duration = cooldownMs;
-        // Hit happens at 35% of the animation (which is now exactly the cooldown duration)
+        // Impact timing stays at 35% of the gameplay cooldown.
         const hitDelay = duration * 0.35;
 
         // Face target
@@ -2098,9 +2116,7 @@ export class Actor extends Entity {
         const cooldown = this.stats.attackSpeed || 1.0;
 
         if (this.currentAction) {
-            const clipDuration = this.currentAction.getClip().duration;
-            // Play slightly faster (90% of cooldown) to ensure it finishes before state reset
-            const timeScale = clipDuration / (cooldown * 0.9);
+            const timeScale = this.getBasicAttackAnimationTimeScale(cooldown);
             this.currentAction.setEffectiveTimeScale(timeScale);
         }
 
@@ -2117,6 +2133,8 @@ export class Actor extends Entity {
     }
 
     dispose() {
+        this.hitReaction?.dispose();
+        this.hitReaction = null;
         restoreActorStealthAppearance(this);
         this.clearManagedTimers();
         this.clearAnimationFinishedHandler();

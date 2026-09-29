@@ -370,6 +370,7 @@ class GameEngineNetworkMessageMethods {
     }
 
     renderCombatFeedback(data = {}, eventType = 'damage') {
+        if (eventType === 'damage' && (!Number.isFinite(Number(data.amount)) || Number(data.amount) <= 0)) return false;
         const target = data.targetId === this.player?.id
             ? this.player
             : this.remotePlayers?.get?.(data.targetId);
@@ -404,15 +405,35 @@ class GameEngineNetworkMessageMethods {
 
         const position = target.position.clone();
         position.y = Math.max(0.08, Number(position.y) || 0.08);
+        let impactDirection;
+        if (eventType === 'damage' && feedbackKind.endsWith('_strike') && !isHazard) {
+            const height = (Number(target.mesh?.userData.bounds?.height) || 2.6) * Math.abs(target.mesh?.scale?.y || 1);
+            position.y += Math.min(4, Math.max(.55, height * .45));
+            if (source?.position) {
+                const dx = source.position.x - target.position.x, dz = source.position.z - target.position.z;
+                const length = Math.hypot(dx, dz);
+                if (Number.isFinite(length) && length > .001) {
+                    impactDirection = { x: dx / length, z: dz / length };
+                    const radius = (Number(target.mesh?.userData.bounds?.radius) || .6) * Math.abs(target.mesh?.scale?.x || 1);
+                    const offset = Math.min(1, radius * .55, length * .25);
+                    position.x += impactDirection.x * offset;
+                    position.z += impactDirection.z * offset;
+                }
+            }
+        }
         const spawned = this.spawnTransientEffect?.('combat_feedback', position, 0xffffff, {
             feedbackKind,
             feedbackDensity: compact ? 'compact' : 'full',
             amount: Math.max(1, Number(data.amount) || 1),
             sourceId: data.sourceId || '',
             targetId: data.targetId || '',
-            instanceId: eventInstance
+            instanceId: eventInstance,
+            impactDirection
         });
         if (!spawned) return false;
+        if (eventType === 'damage' && feedbackKind.endsWith('_strike') && !isHazard) {
+            target.playHitReaction?.(source?.position, Number(data.amount));
+        }
         // Only confirmed direct hits involving this hero move their camera.
         // One area hit/party burst must not restart the punch for every victim.
         if (eventType === 'damage' && isLocalInvolvement && Number(data.amount) > 0

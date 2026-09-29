@@ -1342,6 +1342,7 @@ export function createProceduralFighter({ batch = false } = {}) {
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
     );
     root.userData.animations = createHumanoidAnimationClips();
+    root.userData.basicAttackContactTime = .5;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
@@ -1650,6 +1651,7 @@ export function createProceduralRogue({ batch = false } = {}) {
         offHand: 0.88
     });
     root.userData.animations = createRogueAnimationClips();
+    root.userData.basicAttackContactTime = .26;
     root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
@@ -1888,6 +1890,7 @@ export function createProceduralWizard({ batch = false } = {}) {
         offHand: 0.9
     });
     root.userData.animations = createWizardAnimationClips();
+    root.userData.basicAttackContactTime = .62;
     root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
@@ -2306,6 +2309,7 @@ export function createProceduralCleric({ batch = false } = {}) {
         offHand: 0.88
     });
     root.userData.animations = createClericAnimationClips();
+    root.userData.basicAttackContactTime = .58;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);

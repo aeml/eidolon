@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import {
     PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS,
     createProceduralCombatFeedbackEffect,
@@ -22,6 +23,48 @@ function meshes(root) {
 }
 
 describe('procedural combat feedback', () => {
+    test('direct hits face the source, expire quickly and preserve resources across frame sizes', () => {
+        const scene = new THREE.Group(), options = { feedbackKind: 'fighter_strike', amount: 20,
+            impactDirection: { x: 1, z: 0 } };
+        const first = createProceduralCombatFeedbackEffect(scene, new THREE.Vector3(0, 2, 0), options);
+        const second = createProceduralCombatFeedbackEffect(scene, new THREE.Vector3(0, 2, 0), options);
+        expect(first.root.rotation.y).toBeCloseTo(Math.PI / 2);
+        expect(first.duration).toBe(.28);
+        expect(first.root.children.some(part => /WoundSeal|WitnessHalo/.test(part.name))).toBe(false);
+        expect(first.root.children).toHaveLength(6);
+        const dispose = jest.spyOn(first.root.children[0].material, 'dispose');
+        first.update(.12);
+        for (let i = 0; i < 6; i++) second.update(.02);
+        first.root.children.forEach((part, i) => {
+            expect(part.position.distanceTo(second.root.children[i].position)).toBeLessThan(1e-6);
+            expect(part.scale.distanceTo(second.root.children[i].scale)).toBeLessThan(1e-6);
+        });
+        first.update(.2); second.dispose();
+        expect(first.isActive).toBe(false);
+        expect(scene.children).toHaveLength(0);
+        expect(dispose).not.toHaveBeenCalled();
+    });
+
+    test('reduced motion retains the contact flash without travelling sparks', () => {
+        const old = globalThis.matchMedia;
+        globalThis.matchMedia = () => ({ matches: true });
+        try {
+            const effect = createProceduralCombatFeedbackEffect(new THREE.Group(), new THREE.Vector3(0, 2, 0), {
+                feedbackKind: 'wizard_strike', quality: 'low', impactDirection: { x: NaN, z: 1 }
+            });
+            expect(effect.root.rotation.y).toBe(0);
+            expect(effect.root.children).toHaveLength(4);
+            effect.update(.1);
+            for (const part of effect.root.children.filter(part => part.userData.motion === 'contact-spark')) {
+                expect(part.position.length()).toBe(0);
+                expect(part.scale.x).toBeGreaterThan(0);
+            }
+            effect.dispose();
+        } finally {
+            if (old) globalThis.matchMedia = old; else delete globalThis.matchMedia;
+        }
+    });
+
     test('compact party feedback uses fewer meshes and smaller intensity without changing its identity', () => {
         const scene = new THREE.Group(), position = new THREE.Vector3();
         const options = { feedbackKind: 'wizard_strike', amount: 100, quality: 'high' };
@@ -75,7 +118,8 @@ describe('procedural combat feedback', () => {
                 sharedGeometry: true,
                 sharedMaterials: true
             }));
-            expect(meshes(root).filter((part) => part.visible).length).toBeGreaterThanOrEqual(6);
+            expect(meshes(root).filter((part) => part.visible).length).toBeGreaterThanOrEqual(
+                feedbackKind.endsWith('_strike') && quality === 'low' ? 4 : 6);
             effect.update(0.22);
             root.traverse((part) => {
                 expect(part.position.toArray().every(Number.isFinite)).toBe(true);
