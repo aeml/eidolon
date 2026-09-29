@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Water/Fire authored places gain regional reed and dry-grass edge beds,
+  arranged around scenery while preserving paths, interactions and hazard
+  visibility. Low uses fewer plants at the same positions. See the
+  [edge-bed review and resource budget](2026-09-29-elemental-location-edge-beds.md).
+
 - Water and Fire ground gains coordinated mineral, frost/ash, normal and
   roughness detail. Revised directional lighting reduces ambient wash while
   preserving regional color and readable shadows. No terrain geometry or
