@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { AudioManager, AUDIO_CUES, AUDIO_CUE_ASSETS } from '../src/audio/AudioManager.js';
+import { AudioManager, AUDIO_CUES, AUDIO_CUE_ASSETS, MAX_CUE_TONES } from '../src/audio/AudioManager.js';
 
 function createMockContext() {
     const destination = { id: 'destination' };
@@ -44,6 +44,124 @@ function createMockContext() {
 }
 
 describe('AudioManager', () => {
+    test('crowded generated cues stay bounded while complete danger cues take priority', () => {
+        const context = createMockContext();
+        let now = 1000;
+        const audio = new AudioManager({ context, now: () => now });
+        try {
+            for (let i = 0; i < 11; i++) {
+                expect(audio.play(AUDIO_CUES.wizardCast)).toBe(true); now += 130;
+            }
+            expect(audio.activeTones.size).toBe(MAX_CUE_TONES - 2);
+            const created = context.createOscillator.mock.calls.length;
+            expect(audio.play(AUDIO_CUES.clericCast)).toBe(false);
+            expect(audio.lastCueTimes.has(AUDIO_CUES.clericCast)).toBe(false);
+            expect(context.createOscillator).toHaveBeenCalledTimes(created);
+            expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+            expect(audio.activeTones.size).toBe(MAX_CUE_TONES);
+            const old = [...audio.activeTones].slice(0, 2);
+            now += 300;
+            expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+            old.forEach(voice => {
+                expect(audio.activeTones.has(voice)).toBe(false);
+                expect(voice.oscillator.disconnect).toHaveBeenCalledTimes(1);
+            });
+            // Includes delayed tones, even when a context has not advanced.
+            for (let i = 0; i < 30; i++) {
+                now += 300; expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+                expect(audio.activeTones.size).toBeLessThanOrEqual(MAX_CUE_TONES);
+            }
+        } finally { audio.dispose(); }
+    });
+
+    test('hidden tabs release one-shots and media and do not replay them on return', () => {
+        const visible = jest.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+        const context = createMockContext();
+        const media = { volume: 1, play: jest.fn(), pause: jest.fn() };
+        let now = 1000;
+        const audio = new AudioManager({ context, mediaFactory: () => media, now: () => now });
+        try {
+            audio.play(AUDIO_CUES.wizardCast); audio.play(AUDIO_CUES.uiClick);
+            const created = context.createOscillator.mock.calls.length;
+            visible.mockReturnValue(true); document.dispatchEvent(new Event('visibilitychange'));
+            expect(audio.activeTones.size).toBe(0);
+            expect(media.pause).toHaveBeenCalledTimes(1);
+            now += 1000;
+            expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(false);
+            expect(audio.play(AUDIO_CUES.uiOpen)).toBe(false);
+            expect(context.createOscillator).toHaveBeenCalledTimes(created);
+            visible.mockReturnValue(false); document.dispatchEvent(new Event('visibilitychange'));
+            expect(audio.activeTones.size).toBe(0);
+            expect(media.play).toHaveBeenCalledTimes(1);
+            expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+        } finally { audio.dispose(); visible.mockRestore(); }
+    });
+
+    test('muting a bus or master releases its queued tones without stopping another bus', () => {
+        const audio = new AudioManager({ context: createMockContext(), now: () => 1000 });
+        try {
+            audio.play(AUDIO_CUES.wizardCast); audio.play(AUDIO_CUES.casinoJackpot);
+            expect(audio.activeTones.size).toBe(8);
+            audio.setBusVolume('interface', 0);
+            expect([...audio.activeTones].map(voice => voice.bus)).toEqual(['combat', 'combat']);
+            audio.setEnabled(false); expect(audio.activeTones.size).toBe(0);
+            audio.setEnabled(true); audio.play(AUDIO_CUES.fighterCast);
+            expect(audio.activeTones.size).toBe(2);
+            audio.setVolume(0); expect(audio.activeTones.size).toBe(0);
+        } finally { audio.dispose(); }
+    });
+
+    test('suspended live contexts do not queue old cues for later activation', () => {
+        const context = createMockContext(); context.state = 'suspended';
+        const audio = new AudioManager({ context, now: () => 1000 });
+        try {
+            expect(audio.play(AUDIO_CUES.casinoJackpot)).toBe(false);
+            expect(context.createOscillator).not.toHaveBeenCalled();
+            expect(audio.lastCueTimes.has(AUDIO_CUES.casinoJackpot)).toBe(false);
+            audio.unlock(); context.state = 'running';
+            expect(audio.play(AUDIO_CUES.casinoJackpot)).toBe(true);
+            context.state = 'closed';
+            expect(audio.unlock()).toBe(false);
+        } finally { audio.dispose(); }
+    });
+
+    test('audio focus loss retires queued effects and detaches its context listener at teardown', () => {
+        const context = createMockContext();
+        let change;
+        context.addEventListener = jest.fn((event, listener) => { change = listener; });
+        context.removeEventListener = jest.fn();
+        const audio = new AudioManager({ context, now: () => 1000 });
+        try {
+            audio.unlock(); audio.play(AUDIO_CUES.casinoJackpot);
+            expect(context.addEventListener).toHaveBeenCalledTimes(1);
+            expect(audio.activeTones.size).toBe(6);
+            context.state = 'suspended'; change();
+            expect(audio.activeTones.size).toBe(0);
+            context.state = 'running'; change();
+            expect(audio.activeTones.size).toBe(0);
+            expect(audio.play(AUDIO_CUES.dangerWarning)).toBe(true);
+        } finally { audio.dispose(); }
+        expect(context.removeEventListener).toHaveBeenCalledWith('statechange', change);
+    });
+
+    test.each(['start', 'panner'])('a failed compound cue releases its started and partially allocated tones (%s)', failure => {
+        const context = createMockContext(), create = context.createOscillator;
+        context.createOscillator = jest.fn(() => {
+            const oscillator = create();
+            if (failure === 'start' && context.createdOscillators.length === 2) oscillator.start.mockImplementation(() => { throw new Error('closed'); });
+            return oscillator;
+        });
+        if (failure === 'panner') context.createStereoPanner = () => {
+            if (context.createdOscillators.length === 2) throw new Error('closed');
+            return { pan: { value: 0 }, connect: jest.fn(), disconnect: jest.fn() };
+        };
+        const audio = new AudioManager({ context, now: () => 1000 });
+        try {
+            expect(audio.play(AUDIO_CUES.casinoWin, { pan: .5 })).toBe(false);
+            expect(audio.activeTones.size).toBe(0);
+            context.createdOscillators.forEach(oscillator => expect(oscillator.disconnect).toHaveBeenCalledTimes(1));
+        } finally { audio.dispose(); }
+    });
     test('disposing a session stops pending tones/media, closes context and cannot restart from stale UI callbacks', () => {
         const context = createMockContext();
         context.close = jest.fn(() => Promise.resolve());

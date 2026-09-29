@@ -2,6 +2,59 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
+test('cue voice budget and browser audio suspension recover without stale effects', async ({ page, baseURL }) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async () => {
+        const { AudioManager, AUDIO_CUES, MAX_CUE_TONES } = await import('/src/audio/AudioManager.js');
+        document.getElementById('start-screen').style.display = 'none';
+        let now = 1000;
+        const audio = new AudioManager({ storage: { getItem: () => null, setItem: () => {} }, now: () => now });
+        const button = document.createElement('button'); button.textContent = 'Activate audio review';
+        button.style.cssText = 'position:fixed;top:10px;left:10px;z-index:99999';
+        button.onclick = () => audio.unlock(); document.body.appendChild(button);
+        window.__cueReview = { audio, cues: AUDIO_CUES, limit: MAX_CUE_TONES, advance: () => { now += 1000; } };
+    });
+    await page.getByRole('button', { name: 'Activate audio review' }).click();
+    await expect.poll(() => page.evaluate(() => window.__cueReview.audio.context?.state)).toBe('running');
+    const burst = await page.evaluate(() => {
+        const q = window.__cueReview;
+        for (let i = 0; i < 11; i++) { q.advance(); q.audio.play(q.cues.wizardCast); }
+        const before = q.audio.activeTones.size;
+        const extra = q.audio.play(q.cues.clericCast);
+        const warning = q.audio.play(q.cues.dangerWarning);
+        return { before, extra, warning, after: q.audio.activeTones.size, limit: q.limit };
+    });
+    expect(burst.before).toBe(burst.limit - 2);
+    expect(burst.extra).toBe(false); expect(burst.warning).toBe(true);
+    expect(burst.after).toBe(burst.limit);
+    const queued = await page.evaluate(async () => {
+        const q = window.__cueReview;
+        q.audio.stopOneShots(); q.advance();
+        if (!q.audio.play(q.cues.casinoJackpot)) throw new Error('Expected a fresh delayed cue');
+        const count = q.audio.activeTones.size;
+        await q.audio.context.suspend();
+        return count;
+    });
+    expect(queued).toBe(6);
+    await expect.poll(() => page.evaluate(() => window.__cueReview.audio.activeTones.size)).toBe(0);
+    expect(await page.evaluate(() => {
+        const q = window.__cueReview; q.advance(); return q.audio.play(q.cues.casinoJackpot);
+    })).toBe(false);
+    await page.getByRole('button', { name: 'Activate audio review' }).click();
+    await expect.poll(() => page.evaluate(() => window.__cueReview.audio.context.state)).toBe('running');
+    expect(await page.evaluate(() => window.__cueReview.audio.activeTones.size)).toBe(0);
+    expect(await page.evaluate(() => {
+        // Same cue and clock as the rejected suspended attempt: it must not
+        // have consumed a playback cooldown.
+        const q = window.__cueReview; return q.audio.play(q.cues.casinoJackpot);
+    })).toBe(true);
+    await expect.poll(() => page.evaluate(() => window.__cueReview.audio.activeTones.size)).toBe(0);
+    await page.evaluate(() => window.__cueReview.audio.dispose());
+    expect(failures).toEqual([]);
+});
+
 test('realm and casino ambience render finite distinct stereo sound beds', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
