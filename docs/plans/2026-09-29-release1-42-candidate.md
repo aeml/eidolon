@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Fixed multiplayer's retired orange fence blocks overlapping Lanternhold's
+  new palisade. Existing collision and network behavior are preserved. Verified
+  with an ordinary town-to-starter-fight route; see the
+  [connected route review](2026-09-29-connected-starter-route.md).
+
 - Earth's fern and sedge beds gain rooted wind sway, spatially varied gusts
   and restrained flutter. Reduced motion disables the sway; walking space,
   plant counts and terrain height are unchanged. See the

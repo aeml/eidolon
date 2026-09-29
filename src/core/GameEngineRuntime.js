@@ -5,6 +5,7 @@ import { DungeonNPC } from '../entities/DungeonNPC.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { Fence } from '../entities/Fence.js';
+import { ownsPerimeterFence } from '../art/LanternholdPerimeter.js';
 import { Forge } from '../entities/Forge.js';
 import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
@@ -284,7 +285,9 @@ class GameEngineRuntimeMethods {
                     remoteEntity.lifeTime = Number.POSITIVE_INFINITY;
                     remoteEntity.serverAuthoritativeLifetime = true;
                 } else if (pData.type === 'Fence') {
-                    remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0);
+                    const perimeter = this.getInstanceEnvironmentGroup().getObjectByName('TownFence');
+                    remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0,
+                        { environmentOwned: ownsPerimeterFence(perimeter, pData) });
                     // Add to collision manager
                     const box = new THREE.Box3();
 
