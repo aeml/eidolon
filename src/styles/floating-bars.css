@@ -6,18 +6,30 @@
 
 .floating-bar {
     position: absolute;
-    width: 60px;
-    height: 6px;
-    background: var(--bg-dark);
-    border: 1px solid #000;
+    left: 0;
+    top: 0;
+    width: 70px;
+    height: 7px;
+    background: #171312;
+    border: 1px solid #29201d;
+    box-shadow: 0 1px 3px #000b, 0 0 0 1px #0008;
+    border-radius: 2px;
+    overflow: hidden;
+    z-index: calc(var(--z-hud) - 12);
     pointer-events: none;
     display: none; /* Hidden by default */
     transform: translate(-50%, -50%);
 }
 
-.floating-fill {
+.floating-fill, .floating-loss {
+    position: absolute;
+    inset: 0;
     height: 100%;
-    background: #ff0000;
     width: 100%;
-    transition: width var(--transition-fast);
+    transform-origin: left center;
 }
+
+.floating-fill { background: linear-gradient(#cc6454, #9a352e 55%, #762820); }
+.floating-loss { background: #c1a16b; }
+.floating-bar--selected { width: 92px; height: 8px; border-color: #d0b57e; }
+.mobile-mode .floating-bar { height: 8px; }
