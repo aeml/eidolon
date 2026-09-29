@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry, createDrapedSkirtGeometry } from './ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry, createDrapedSkirtGeometry, createWristCuffGeometry, createFittedBootGeometry, fittedBootFrontDepth, createClothMantleGeometry, createLegSectionGeometry } from './ProceduralGarmentGeometry.js';
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
 import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
@@ -200,8 +200,7 @@ function createMaterials(item, visual) {
     // Fitted shells and woven cloth use their authored normals. Weapons and
     // ornaments retain hard facets; this distinction is part of the cache key.
     const surface = { ...materialDefaults, surface: visual.material,
-        flatShading: !(['bodyArmor', 'headwear', 'legArmor'].includes(visual.family)
-            || (visual.family === 'shoulderArmor' && visual.variant !== 'mantle')) };
+        flatShading: !(['bodyArmor', 'headwear', 'legArmor', 'handwear', 'footwear', 'shoulderArmor'].includes(visual.family)) };
     return {
         primary: material(`${visual.variant}-primary`, visual.primary, surface),
         secondary: material(`${visual.variant}-secondary`, visual.secondary, {
@@ -387,9 +386,10 @@ function buildLegArmor(group, visual, mats) {
     const thighArmor = addMesh(group, 'Gear_ThighArmor', geometry(`gear-leg-${visual.variant}`, () =>
         skirt
             ? createDrapedSkirtGeometry()
-            : new THREE.CylinderGeometry(visual.variant === 'plate' ? 0.285 : 0.265, 0.21, 0.9, 8)
+            : createLegSectionGeometry('thigh')
     ), mats.primary, {
-        position: skirt ? [0, 0, 0.24] : [0, -0.43, 0]
+        position: skirt ? [0, 0, 0.24] : [0, 0, 0],
+        scale: !skirt && visual.variant === 'plate' ? [1.07, 1, 1.07] : [1, 1, 1]
     });
     if (skirt) {
         addMesh(group, 'Gear_SkirtBack', thighArmor.geometry, mats.primary, {
@@ -399,8 +399,16 @@ function buildLegArmor(group, visual, mats) {
             mats.secondary, { position: [0, 0, 0.24] });
     }
     addMesh(group, 'Gear_KneeMark', geometry('gear-knee-mark', () => new THREE.OctahedronGeometry(0.11, 0)), mats.accent, {
-        position: skirt ? [0.16, -0.72, 0.29] : [0, -0.77, 0.2], scale: [1, 0.75, 0.45]
+        position: fitArmorOrnament(group, visual, skirt ? [0.16, -0.72, 0.29] : [0, -0.77, 0.2]), scale: [1, 0.75, 0.45]
     });
+}
+
+function buildShinArmor(group, visual, mats) {
+    addMesh(group, 'Gear_ShinArmor', geometry('gear-fitted-shin', () => createLegSectionGeometry('shin')),
+        visual.variant === 'skirt' ? mats.dark : mats.primary);
+    if (visual.variant !== 'skirt') {
+        addMesh(group, 'Gear_Greave', geometry('gear-fitted-greave', () => createLegSectionGeometry('greave')), mats.secondary);
+    }
 }
 
 function buildFootwear(group, visual, mats) {
@@ -412,30 +420,25 @@ function buildFootwear(group, visual, mats) {
             position: [0, 0.1, 0.18], rotation: [Math.PI / 2, 0, 0]
         });
     } else {
-        addMesh(group, 'Gear_Boot', geometry(`gear-boot-${visual.variant}`, () => new THREE.BoxGeometry(0.4, 0.28, 0.66)), mats.primary, {
-            position: [0, 0.12, 0.14]
-        });
-        addMesh(group, 'Gear_BootCap', geometry('gear-boot-cap', () => new THREE.DodecahedronGeometry(0.2, 0)), mats.secondary, {
-            position: [0, 0.13, 0.38], scale: [1, 0.62, 1.1]
-        });
+        addMesh(group, 'Gear_Boot', geometry('gear-fitted-boot', () => createFittedBootGeometry()), mats.primary);
+        addMesh(group, 'Gear_BootSole', geometry('gear-fitted-sole', () => createFittedBootGeometry('sole')), mats.dark);
+        addMesh(group, 'Gear_BootCap', geometry('gear-fitted-toe', () => createFittedBootGeometry('toe')), mats.secondary);
     }
     addMesh(group, 'Gear_FootMark', geometry('gear-foot-mark', () => new THREE.BoxGeometry(0.16, 0.05, 0.05)), mats.accent, {
-        position: [0, 0.24, 0.39]
+        position: visual.variant === 'sandals' ? [0, .12, .38] : [0, .17, .414]
     });
 }
 
 function buildHandwear(group, visual, mats) {
     const plate = visual.variant === 'plate';
-    addMesh(group, 'Gear_Glove', geometry(`gear-glove-${visual.variant}`, () => new THREE.DodecahedronGeometry(plate ? 0.23 : 0.205, 0)), mats.primary, {
-        scale: plate ? [0.86, 1.14, 0.96] : [0.8, 1.05, 0.9]
+    addMesh(group, 'Gear_Glove', geometry('gear-wrist-cuff', () => createWristCuffGeometry()), mats.primary, {
+        scale: plate ? [1, 1, 1] : [.94, 1, .94]
     });
-    if (plate) {
-        addMesh(group, 'Gear_GlovePlate', geometry('gear-glove-plate', () => new THREE.BoxGeometry(0.28, 0.16, 0.08)), mats.secondary, {
-            position: [0, 0.03, 0.17], rotation: [-0.18, 0, 0]
-        });
-    }
+    addMesh(group, 'Gear_GloveRim', geometry('gear-wrist-rim', () => createWristCuffGeometry(true)), mats.secondary, {
+        scale: plate ? [1, 1, 1] : [.94, 1, .94]
+    });
     addMesh(group, 'Gear_GloveMark', geometry('gear-glove-mark', () => new THREE.OctahedronGeometry(0.06, 0)), mats.accent, {
-        position: [0, 0.05, 0.2], scale: [1, 0.7, 0.35]
+        position: [0, .045, plate ? .157 : .148], scale: [.7, .55, .25]
     });
 }
 
@@ -453,19 +456,9 @@ function buildShoulderArmor(group, visual, mats, side) {
         addMesh(group, 'Gear_ShoulderRidge', geometry('gear-shoulder-rim', () => createPauldronGeometry('rim')), mats.secondary, transform);
         return;
     }
-    addMesh(group, 'Gear_Shoulder', geometry('gear-shoulder-mantle', () =>
-        new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2)
-    ), mats.primary, {
-        position: [side * 0.05, -0.06, 0],
-        rotation: [0, 0, side * 0.16],
-        scale: [1.15, 0.45, 0.92]
-    });
-    addMesh(group, 'Gear_ShoulderRidge', geometry('gear-shoulder-ridge-cloth', () =>
-        new THREE.BoxGeometry(0.12, 0.58, 0.36)
-    ), mats.secondary, {
-        position: [side * 0.31, -0.23, 0],
-        rotation: [0, 0, -side * 0.16]
-    });
+    const transform = { position: [side * .035, 0, 0] };
+    addMesh(group, 'Gear_Shoulder', geometry('gear-draped-mantle', () => createClothMantleGeometry()), mats.primary, transform);
+    addMesh(group, 'Gear_ShoulderRidge', geometry('gear-mantle-hem', () => createClothMantleGeometry(true)), mats.secondary, transform);
 }
 
 function buildWaist(group, visual, mats) {
@@ -490,13 +483,16 @@ function buildRing(group, visual, mats) {
     addMesh(group, 'Gear_RingBand', geometry('gear-ring-band', () => new THREE.TorusGeometry(0.075, 0.018, 5, 8)), mats.primary, {
         rotation: [Math.PI / 2, 0, 0]
     });
+    addMesh(group, 'Gear_RingSetting', geometry('gear-ring-setting', () => new THREE.BoxGeometry(.14, .025, .065)), mats.primary, {
+        position: [0, .023, 0]
+    });
     if (visual.variant === 'ruby') {
         addMesh(group, 'Gear_RingStone', geometry('gear-ring-stone', () => new THREE.OctahedronGeometry(0.055, 0)), mats.secondary, {
             position: [0, 0.07, 0]
         });
     } else {
         addMesh(group, 'Gear_RingSeal', geometry('gear-ring-seal', () => new THREE.DodecahedronGeometry(0.045, 0)), mats.accent, {
-            position: [0, 0.07, 0], scale: [1, 0.65, 1]
+            position: [0, 0.06, 0], scale: [1, 0.65, 1]
         });
     }
 }
@@ -511,14 +507,23 @@ function buildNeckwear(group, visual, mats) {
         });
         return;
     }
-    addMesh(group, 'Gear_NeckChain', geometry('gear-neck-chain', () => new THREE.TorusGeometry(0.31, 0.025, 5, 10, Math.PI * 1.35)), mats.primary, {
-        position: [0, -0.05, 0.08], rotation: [Math.PI / 2, 0, -0.55]
-    });
+    addMesh(group, 'Gear_NeckChain', geometry('gear-neck-chain', () => new THREE.TubeGeometry(
+        new THREE.CatmullRomCurve3([
+            [0, -.09, .60], [-.2, -.045, .50], [-.28, .01, .25],
+            [-.2, .04, -.08], [0, .045, -.2], [.2, .04, -.08],
+            [.28, .01, .25], [.2, -.045, .50]
+        ].map(point => new THREE.Vector3(...point)), true, 'centripetal'), 40, .018, 6, true
+    )), mats.primary);
     addMesh(group, 'Gear_NeckFocus', geometry(`gear-neck-${visual.variant}`, () =>
         visual.variant === 'pendant' ? new THREE.OctahedronGeometry(0.13, 0) : new THREE.TorusGeometry(0.12, 0.035, 5, 8)
     ), visual.variant === 'pendant' ? mats.secondary : mats.accent, {
-        position: [0, -0.28, 0.34], rotation: [Math.PI / 2, 0, 0], scale: [0.82, 1.15, 0.55]
+        position: [0, -.17, .605], scale: [.62, .85, .55]
     });
+    if (visual.variant === 'necklace') {
+        addMesh(group, 'Gear_NeckSetting', geometry('gear-neck-setting', () => new THREE.CylinderGeometry(.1, .1, .02, 16)), mats.dark, {
+            position: [0, -.17, .60], rotation: [Math.PI / 2, 0, 0], scale: [.62, .55, .85]
+        });
+    }
 }
 
 function buildTrinket(group, visual, mats) {
@@ -536,7 +541,10 @@ function buildTrinket(group, visual, mats) {
         visual.variant === 'amulet' ? new THREE.OctahedronGeometry(0.13, 0) : new THREE.TorusGeometry(0.12, 0.035, 4, 8)
     ), mats.accent, { position: [0, -0.32, 0], scale: [0.82, 1.12, 0.5] });
     addMesh(group, 'Gear_TrinketFrame', geometry('gear-trinket-frame', () => new THREE.TorusGeometry(0.16, 0.025, 5, 8)), mats.secondary, {
-        position: [0, -0.32, -0.01], rotation: [Math.PI / 2, 0, 0]
+        position: [0, -0.32, -0.01]
+    });
+    addMesh(group, 'Gear_TrinketSetting', geometry('gear-trinket-setting', () => new THREE.CylinderGeometry(.14, .14, .025, 16)), mats.dark, {
+        position: [0, -.32, -.025], rotation: [Math.PI / 2, 0, 0]
     });
 }
 
@@ -564,9 +572,36 @@ function socketDecorationPosition(slot, visual) {
     if (slot === 'shoulders') return visual?.variant === 'mantle'
         ? [0, -0.04, 0.46] : [0, -0.04, visual?.variant === 'reinforced' ? .338 : .371];
     if (slot === 'legs') return [0, -0.64, 0.25];
-    if (slot === 'feet') return [0.12, 0.23, 0.38];
-    if (slot === 'gloves') return [0.1, 0.08, 0.2];
+    if (slot === 'feet') return visual?.variant === 'sandals' ? [0, .12, .385] : [0, .115, .49];
+    if (slot === 'gloves') return [0, .13, visual?.variant === 'plate' ? .176 : .166];
     return [0.1, 0.08, 0.18];
+}
+
+// Small jewelry needs settings at its own scale, not the armor default.
+// Origins remain item-local; surface fitting happens before cached batching.
+function accessoryLayout(visual) {
+    if (visual.family === 'ring') return { scale: .28, spacing: .035, origin: [0, .06, 0], identity: [0, .025, .035], top: true,
+        surfaces: ['Gear_RingSetting', 'Gear_RingSeal', 'Gear_RingStone'] };
+    if (visual.family === 'waist') return { scale: .6, spacing: .09, origin: [0, 0, .55], identity: [0, .05, .55],
+        surfaces: ['Gear_Belt', 'Gear_Buckle', 'Gear_BeltMark'] };
+    if (visual.family === 'trinket') return { scale: .5, spacing: .045,
+        origin: [0, visual.variant === 'orb' ? 0 : -.29, .1], identity: [0, visual.variant === 'orb' ? .035 : -.37, .1],
+        surfaces: ['Gear_Orb', 'Gear_TrinketFocus', 'Gear_TrinketSetting'] };
+    if (visual.family === 'neckwear') return { scale: .28, spacing: .022,
+        origin: [0, visual.variant === 'choker' ? -.08 : -.17, .6],
+        identity: [0, visual.variant === 'choker' ? -.045 : -.135, .6],
+        surfaces: ['Gear_ChokerSeal', 'Gear_NeckFocus', 'Gear_NeckSetting'] };
+    return null;
+}
+
+function fitAccessoryDecoration(group, layout, position, top = false) {
+    const supports = layout.surfaces.map(name => group.getObjectByName(name)).filter(Boolean);
+    supports.forEach(part => part.updateMatrixWorld(true));
+    const ray = new THREE.Raycaster(top ? new THREE.Vector3(position[0], 2, position[2]) : new THREE.Vector3(position[0], position[1], 2),
+        top ? new THREE.Vector3(0, -1, 0) : new THREE.Vector3(0, 0, -1));
+    const hit = ray.intersectObjects(supports)[0];
+    if (hit) position[top ? 1 : 2] = hit.point[top ? 'y' : 'z'] + .004 * layout.scale;
+    return position;
 }
 
 function addSocketDetails(group, item, visual, mats) {
@@ -577,7 +612,8 @@ function addSocketDetails(group, item, visual, mats) {
     // edge. Matching reverse fittings represent the same embedded stones and
     // keep a naturally pitched weapon readable from either face.
     const blade = visual.family === 'blade';
-    const origin = blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot, visual);
+    const layout = accessoryLayout(visual), size = layout?.scale ?? 1;
+    const origin = layout?.origin ?? (blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot, visual));
     const shown = Math.min(3, socketCount);
     for (let index = 0; index < shown; index++) {
         const gem = gems[index];
@@ -591,14 +627,25 @@ function addSocketDetails(group, item, visual, mats) {
                 emissiveIntensity: 0.12
             })
             : mats.dark;
-        const offset = (index - (shown - 1) / 2) * 0.085;
+        const offset = (index - (shown - 1) / 2) * (layout?.spacing ?? .085);
         const position = [origin[0] + (blade ? 0 : offset), origin[1] + (blade ? offset : 0), origin[2]];
+        if (visual.family === 'handwear') {
+            // Seat all three sockets on the curved cuff, not floating beyond
+            // the narrow wrist's sides. Geometry remains shared and immutable.
+            const radius = visual.variant === 'plate' ? .192 : .1805;
+            position[2] = Math.sqrt(radius * radius - position[0] * position[0]) * .9 + .003;
+        }
+        if (visual.family === 'footwear') {
+            fitFootOrnament(visual, position);
+        }
+        fitArmorOrnament(group, visual, position);
+        if (layout) fitAccessoryDecoration(group, layout, position, layout.top);
         addMesh(group, `Gear_SocketMount${index + 1}`, geometry('gear-socket-mount', () => new THREE.OctahedronGeometry(0.048, 0)), mats.dark, {
-            position, scale: [1, 1, 0.4]
+            position, scale: [size, size, .4 * size], rotation: [layout?.top ? -Math.PI / 2 : 0, 0, 0]
         });
         addMesh(group, `Gear_Socket${index + 1}`, geometry('gear-socket', () => new THREE.OctahedronGeometry(0.033, 0)), gemMaterial, {
-            position: [position[0], position[1], position[2] + 0.018],
-            scale: [1, 1, 0.55]
+            position: [position[0], position[1] + (layout?.top ? .018 * size : 0), position[2] + (layout?.top ? 0 : .018 * size)],
+            scale: [size, size, .55 * size], rotation: [layout?.top ? -Math.PI / 2 : 0, 0, 0]
         });
         if (blade) {
             // The extruded blade spans z=0..0.035 before its bevel. Mirror
@@ -613,12 +660,41 @@ function addSocketDetails(group, item, visual, mats) {
     }
 }
 
+function fitFootOrnament(visual, position) {
+    if (visual.family !== 'footwear') return position;
+    if (visual.variant === 'sandals') {
+        position[1] = .12;
+        position[2] = .18 + Math.sqrt(.18 ** 2 - position[0] ** 2) + .025;
+    } else position[2] = fittedBootFrontDepth(position[0], position[1]) + .009;
+    return position;
+}
+
+// Fit once when constructing an item, never during animation. Sample the
+// actual shell so folds, handedness and curved metal stay consistent.
+function fitArmorOrnament(group, visual, position) {
+    const surface = visual.family === 'shoulderArmor' ? 'Gear_Shoulder'
+        : visual.family === 'legArmor' ? 'Gear_ThighArmor' : null;
+    if (!surface) return position;
+    const shell = group.getObjectByName(surface);
+    shell.updateMatrixWorld(true);
+    const ray = new THREE.Raycaster(new THREE.Vector3(position[0], position[1], 2), new THREE.Vector3(0, 0, -1));
+    const hit = ray.intersectObject(shell)[0];
+    if (hit) position[2] = hit.point.z + .009;
+    return position;
+}
+
 function addIdentityDetails(group, item, visual) {
     const setId = String(item?.setId || '');
     const uniqueEffect = String(item?.uniqueEffect || '');
     if (!setId && !uniqueEffect) return;
 
-    const origin = socketDecorationPosition(visual.slot, visual);
+    const layout = accessoryLayout(visual), size = layout?.scale ?? 1;
+    const origin = layout?.identity ?? socketDecorationPosition(visual.slot, visual);
+    const positionFor = (sign, paired, depth) => {
+        const position = [origin[0] + sign * (paired ? .08 * size : 0), origin[1] + (layout ? 0 : .1), origin[2] + depth];
+        return layout ? fitAccessoryDecoration(group, layout, position)
+            : fitArmorOrnament(group, visual, fitFootOrnament(visual, position));
+    };
     if (setId) {
         const setColor = SET_COLORS[setId] || 0x9e7cc2;
         const setMaterial = material(`equipment-set-${setId}`, setColor, {
@@ -628,9 +704,9 @@ function addIdentityDetails(group, item, visual) {
             emissiveIntensity: 0.08
         });
         addMesh(group, 'Gear_SetRune', geometry('gear-set-rune', () => new THREE.TorusGeometry(0.058, 0.009, 3, 4)), setMaterial, {
-            position: [origin[0] - (uniqueEffect ? 0.08 : 0), origin[1] + 0.1, origin[2] + 0.012],
+            position: positionFor(-1, uniqueEffect, .012),
             rotation: [0, 0, 0],
-            scale: [1, 1.25, 1]
+            scale: [size, 1.25 * size, size]
         });
     }
     if (uniqueEffect) {
@@ -642,9 +718,9 @@ function addIdentityDetails(group, item, visual) {
             emissiveIntensity: 0.12
         });
         addMesh(group, 'Gear_UniqueRune', geometry('gear-unique-rune', () => new THREE.OctahedronGeometry(0.044, 0)), effectMaterial, {
-            position: [origin[0] + (setId ? 0.08 : 0), origin[1] + 0.1, origin[2] + 0.018],
+            position: positionFor(1, setId, .018),
             rotation: [0, 0, Math.PI / 4],
-            scale: [0.85, 1.2, 0.48]
+            scale: [.85 * size, 1.2 * size, .48 * size]
         });
     }
 }
@@ -660,7 +736,8 @@ export function createProceduralEquipmentVisual(item, {
     fitScale = 1,
     fitLength = fitScale,
     name = null,
-    batch = false
+    batch = false,
+    segment = 'main'
 } = {}) {
     const visual = resolveEquipmentVisualDescriptor(item);
     if (!visual) return null;
@@ -669,6 +746,7 @@ export function createProceduralEquipmentVisual(item, {
     group.name = name || `EquippedVisual_${resolvedSlot}`;
     group.userData.equipmentVisual = true;
     group.userData.slot = resolvedSlot;
+    group.userData.segment = segment;
     group.userData.itemId = item.id || '';
     group.userData.baseName = visual.baseName;
     group.userData.family = visual.family;
@@ -682,9 +760,13 @@ export function createProceduralEquipmentVisual(item, {
     group.userData.fitScale = Math.max(0.5, Math.min(1.25, Number(fitScale) || 1));
     group.userData.fitLength = Math.max(0.5, Math.min(1.25, Number(fitLength) || 1));
     const mats = createMaterials(item, visual);
-    BUILDERS[visual.family](group, visual, mats, side >= 0 ? 1 : -1);
-    addSocketDetails(group, item, visual, mats);
-    addIdentityDetails(group, item, visual);
+    if (visual.family === 'legArmor' && segment === 'shin') {
+        buildShinArmor(group, visual, mats);
+    } else {
+        BUILDERS[visual.family](group, visual, mats, side >= 0 ? 1 : -1);
+        addSocketDetails(group, item, visual, mats);
+        addIdentityDetails(group, item, visual);
+    }
     if (batch) batchRigidEquipmentParts(group);
     const tierScale = (1 + group.userData.tier * 0.025) * group.userData.fitScale;
     group.scale.setScalar(tierScale);
@@ -810,6 +892,7 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
                 side: anchor.name.includes('Left') ? 1 : -1,
                 fitScale: root.userData.equipmentScaleBySlot?.[slot] ?? 1,
                 fitLength: root.userData.equipmentLengthBySlot?.[slot],
+                segment: anchor.userData.equipmentSegment || 'main',
                 batch: true
             });
             if (!visual) return;

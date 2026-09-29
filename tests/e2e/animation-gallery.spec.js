@@ -173,7 +173,7 @@ test.describe('deterministic production animation gallery', () => {
             expect(metrics.remoteGenderPresentation).toBe(
                 actorType === 'Rogue' || actorType === 'Cleric' ? 'female' : null
             );
-            expect(metrics.equipmentAnchorCount).toBe(18);
+            expect(metrics.equipmentAnchorCount).toBe(20);
             expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(40);
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {

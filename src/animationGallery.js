@@ -266,7 +266,8 @@ function countSceneMetrics(root) {
 function countEquipmentIdentityRegions(root, identityField) {
     let count = 0;
     root?.traverse?.((child) => {
-        if (child.userData?.equipmentVisual && child.userData[identityField]) count++;
+        const ornament = identityField === 'setId' ? 'Gear_SetRune' : 'Gear_UniqueRune';
+        if (child.userData?.equipmentVisual && child.userData[identityField] && child.getObjectByName(ornament)) count++;
     });
     return count;
 }
@@ -969,6 +970,7 @@ export class AnimationGallery {
         if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
         const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === baseName);
         if (!baseItem) return false;
+        this.cleanupPresentation();
         const renderSlot = this.getRenderSlot(baseItem);
         const item = this.createGalleryEquipmentItem(baseItem, renderSlot, EQUIPPABLE_BASE_ITEMS.indexOf(baseItem));
         this.currentEquipmentName = baseItem.name;
@@ -987,6 +989,7 @@ export class AnimationGallery {
 
     presentEquipmentLoadout() {
         if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
+        this.cleanupPresentation();
         const equipment = {};
         const showcase = PROCEDURAL_SHOWCASE_LOADOUTS[this.currentActorType] ||
             PROCEDURAL_SHOWCASE_LOADOUTS.Fighter;
