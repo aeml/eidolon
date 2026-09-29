@@ -22,7 +22,7 @@ test('production dungeon and raid fixtures have clear routes at their real coord
             const render = gallery.renderSystem;
             const previous = render.scene.getObjectByName('ProductionDungeonFixture');
             if (previous) {
-                previous.traverse(mesh => mesh.geometry?.dispose());
+                render.disposeObjectResources(previous);
                 render.scene.remove(previous);
             }
             [gallery.actor, gallery.remoteActor, gallery.targetActor].forEach(actor => { if (actor?.mesh) actor.mesh.visible = false; });

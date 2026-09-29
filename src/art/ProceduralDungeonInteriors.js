@@ -81,12 +81,18 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
     const baseColor = mixBytes(shadow, wall ? midtone : ground, wall ? 0.48 : 0.72);
     let color = baseColor;
     let emissive = 0;
+    // Physical detail follows masonry, not brightness: luminous marks and
+    // stains must not turn into raised geometry or highly polished patches.
+    let relief = 0.5;
+    let roughness = 0.9;
 
     if (dungeonType === 'verdant_bastion_catacombs') {
         const blockX = (x + (Math.floor(y / 8) % 2) * 4) % 16;
         const mortar = blockX < 1 || y % 8 < 1;
         const root = Math.abs(x - (30 + Math.sin(y * 0.22) * 13)) < (wall ? 1.8 : 1.25);
         const moss = ((x * 7 + y * 11) % 29) < (wall ? 4 : 7);
+        relief += mortar ? -0.22 : root ? 0.12 : 0;
+        roughness = mortar || moss ? 1 : 0.86;
         if (mortar) color = mixBytes(color, shadow, 0.58);
         if (moss) color = mixBytes(color, accent, 0.2);
         if (root) {
@@ -98,6 +104,8 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         const plate = plateX < 1 || y % 14 < 1;
         const faultA = Math.abs(x - (30 + Math.sin(y * 0.17) * 11)) < 1.1;
         const faultB = y > 18 && y < 38 && Math.abs(x - (35 + ((y - 28) * 0.72))) < 0.9;
+        relief -= plate || faultA || faultB ? 0.2 : 0;
+        roughness = plate || faultA || faultB ? 0.98 : 0.73;
         if (plate) color = mixBytes(color, shadow, 0.72);
         if (faultA || faultB) {
             const brokenFault = ((x * 11 + y * 7) % 23) < 14;
@@ -111,6 +119,8 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         const slate = (x + offset) % 20 < 1 || y % 12 < 1;
         const conductor = Math.abs(((x - y + 128) % 37) - 18) < 0.9;
         const node = ((x - 6) % 24 < 2) && ((y - 6) % 24 < 2);
+        relief -= slate ? 0.2 : 0;
+        roughness = slate ? 0.98 : conductor ? 0.68 : 0.84;
         if (slate) color = mixBytes(color, shadow, 0.62);
         if (conductor || node) {
             color = mixBytes(color, node ? accent : midtone, node ? 0.62 : 0.38);
@@ -124,6 +134,8 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         const tidePhase = wall ? x * 0.24 : x * Math.PI * 2 / TEXTURE_SIZE;
         const tide = Math.abs(y - (32 + Math.sin(tidePhase) * (wall ? 10 : 7))) < 1.25;
         const pearl = wall && ((x * 5 + y * 13) % 53) < 2;
+        relief -= joint ? 0.22 : 0;
+        roughness = joint ? 0.96 : 0.72;
         if (joint) color = mixBytes(color, shadow, 0.7);
         if (tide || pearl) {
             color = mixBytes(color, accent, wall ? (tide ? 0.42 : 0.3) : 0.12);
@@ -133,6 +145,8 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         const fracture = Math.abs(x - (31 + Math.sin(y * 0.31) * 15)) < 1.2;
         const constellation = ((x * 17 + y * 23) % 61) < 2;
         const memoryTile = (x + (Math.floor(y / 10) % 2) * 5) % 19 < 1 || y % 10 < 1;
+        relief -= memoryTile || fracture ? 0.2 : 0;
+        roughness = memoryTile || fracture ? 0.98 : 0.76;
         if (memoryTile) color = mixBytes(color, shadow, 0.72);
         if (fracture || constellation) {
             color = mixBytes(color, fracture ? accent : midtone, fracture ? 0.56 : 0.38);
@@ -144,10 +158,10 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         color = mixBytes(baseColor, color, 0.55);
         emissive *= 0.3;
     }
-    return { color, emissive };
+    return { color, emissive, relief, roughness };
 }
 
-function createSurfaceTexture(dungeonType, surface, emissiveOnly = false) {
+function createSurfaceTexture(dungeonType, surface, channel = 'color') {
     const theme = getRegionTheme(dungeonType);
     const palette = Object.freeze({
         shadow: colorBytes(theme.palette.shadow),
@@ -160,7 +174,22 @@ function createSurfaceTexture(dungeonType, surface, emissiveOnly = false) {
         for (let x = 0; x < TEXTURE_SIZE; x += 1) {
             const sample = surfaceSample(dungeonType, surface, x, y, palette);
             const offset = ((y * TEXTURE_SIZE) + x) * 4;
-            if (emissiveOnly) {
+            if (channel === 'normal') {
+                // Wrapped central differences keep repeat boundaries valid.
+                // Small tangent normals add relief without displacing floors.
+                const relief = (dx, dy) => surfaceSample(dungeonType, surface,
+                    (x + dx + TEXTURE_SIZE) % TEXTURE_SIZE,
+                    (y + dy + TEXTURE_SIZE) % TEXTURE_SIZE, palette).relief;
+                const nx = (relief(-1, 0) - relief(1, 0)) * 1.5;
+                const ny = (relief(0, -1) - relief(0, 1)) * 1.5;
+                const length = Math.hypot(nx, ny, 1);
+                data[offset] = clampByte((nx / length * 0.5 + 0.5) * 255);
+                data[offset + 1] = clampByte((ny / length * 0.5 + 0.5) * 255);
+                data[offset + 2] = clampByte((1 / length * 0.5 + 0.5) * 255);
+            } else if (channel === 'roughness') {
+                const value = clampByte(sample.roughness * 255);
+                data[offset] = data[offset + 1] = data[offset + 2] = value;
+            } else if (channel === 'emissive') {
                 const value = clampByte(sample.emissive * 255);
                 data[offset] = value;
                 data[offset + 1] = value;
@@ -175,13 +204,13 @@ function createSurfaceTexture(dungeonType, surface, emissiveOnly = false) {
     }
 
     const texture = new THREE.DataTexture(data, TEXTURE_SIZE, TEXTURE_SIZE, THREE.RGBAFormat);
-    texture.name = `procedural-dungeon-${dungeonType}-${surface}${emissiveOnly ? '-emissive' : ''}`;
+    texture.name = `procedural-dungeon-${dungeonType}-${surface}${channel === 'color' ? '' : `-${channel}`}`;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = true;
-    if (!emissiveOnly) texture.colorSpace = THREE.SRGBColorSpace;
+    texture.colorSpace = channel === 'color' ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     texture.needsUpdate = true;
     texture.userData.proceduralDungeonSurface = true;
     return texture;
@@ -668,9 +697,13 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     const theme = getRegionTheme(dungeonType);
     const baseTextures = Object.freeze({
         floor: createSurfaceTexture(dungeonType, 'floor'),
-        floorEmissive: createSurfaceTexture(dungeonType, 'floor', true),
+        floorEmissive: createSurfaceTexture(dungeonType, 'floor', 'emissive'),
+        floorNormal: createSurfaceTexture(dungeonType, 'floor', 'normal'),
+        floorRoughness: createSurfaceTexture(dungeonType, 'floor', 'roughness'),
         wall: createSurfaceTexture(dungeonType, 'wall'),
-        wallEmissive: createSurfaceTexture(dungeonType, 'wall', true)
+        wallEmissive: createSurfaceTexture(dungeonType, 'wall', 'emissive'),
+        wallNormal: createSurfaceTexture(dungeonType, 'wall', 'normal'),
+        wallRoughness: createSurfaceTexture(dungeonType, 'wall', 'roughness')
     });
     const materials = new Map();
     const geometries = new Map();
@@ -678,8 +711,8 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     const detailMaterials = createMaterialSet(dungeonType);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {
-        // Keep masonry legible at gameplay zoom without adding geometry or
-        // increasing texture memory. Walls retain their established scale.
+        // Keep masonry legible at gameplay zoom without adding geometry.
+        // Walls retain their established scale; every map uses matching UVs.
         const repeatWorldSize = surface === 'floor' ? DUNGEON_FLOOR_TEXTURE_SPAN : 12;
         const repeatX = Math.max(1, Math.round(Math.abs(width) / repeatWorldSize));
         const repeatY = Math.max(1, Math.round(Math.abs(height) / repeatWorldSize));
@@ -687,13 +720,18 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
         if (materials.has(key)) return materials.get(key);
         const map = baseTextures[surface].clone();
         const emissiveMap = baseTextures[`${surface}Emissive`].clone();
-        map.repeat.set(repeatX, repeatY);
-        emissiveMap.repeat.set(repeatX, repeatY);
-        map.needsUpdate = true;
-        emissiveMap.needsUpdate = true;
+        const normalMap = baseTextures[`${surface}Normal`].clone();
+        const roughnessMap = baseTextures[`${surface}Roughness`].clone();
+        for (const texture of [map, emissiveMap, normalMap, roughnessMap]) {
+            texture.repeat.set(repeatX, repeatY);
+            texture.needsUpdate = true;
+        }
         const material = configureDungeonMaterial(new THREE.MeshStandardMaterial({
             map,
             emissiveMap,
+            normalMap,
+            normalScale: new THREE.Vector2(surface === 'floor' ? 0.5 : 0.8, surface === 'floor' ? 0.5 : 0.8),
+            roughnessMap,
             emissive: theme.palette.accent,
             emissiveIntensity: surface === 'floor' ? 0.2 : 0.16,
             roughness: surface === 'floor' ? 0.92 : 0.96,

@@ -271,6 +271,18 @@ test('casino roof is one axis-aligned canopy covering the upper cornice', () => 
     disposeCasinoObject(shell);
 });
 
+test('town facade uses masonry and slate while its door remains an isolated interaction material', () => {
+    const shell = createCasinoShell();
+    const surfaces = new Set();
+    shell.userData.casinoCutaway.traverse(mesh => {
+        if (mesh.material?.userData.worldSurfaceDetail) surfaces.add(mesh.material.userData.worldSurfaceDetail);
+    });
+    expect([...surfaces].sort()).toEqual(['slate', 'stone']);
+    expect(shell.userData.casinoDoor.material.userData.worldSurfaceDetail).toBeUndefined();
+    expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(18);
+    disposeCasinoObject(shell);
+});
+
 test('town casino door raycast provides Casino label, click prompt and isolated hover tint', () => {
     const { engine, controller } = setup(); engine.currentInstanceId = '';
     const shell = createCasinoShell(); engine.renderSystem.scene.add(shell); shell.updateMatrixWorld(true);
