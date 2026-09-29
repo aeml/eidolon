@@ -2,6 +2,52 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
+test('ability families render distinct bounded cues through the combat bus', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const samples = await page.evaluate(async () => {
+        const { AudioManager, AUDIO_CUES } = await import('/src/audio/AudioManager.js');
+        const families = [
+            ['fighterCast', 'Sweeping Strike'], ['fighterCast', 'Shield Slam'], ['fighterCast', 'Earthshaker'],
+            ['rogueCast', 'Backstab'], ['rogueCast', 'Shadow Lunge'], ['rogueCast', 'Tripwire'],
+            ['wizardCast', 'Fireball'], ['wizardCast', 'Arcane Missiles'], ['wizardCast', 'Gravity Well'],
+            ['wizardCast', 'Time Warp'], ['wizardCast', 'Frost Nova'],
+            ['clericCast', 'Healing Light'], ['clericCast', 'Radiant Strike'], ['clericCast', 'Avenging Seraph']
+        ];
+        const samples = [];
+        for (const [cue, skillName] of [...families, ['wizardCast', 'Fireball']]) {
+            const context = new OfflineAudioContext(2, 24000, 48000);
+            const audio = new AudioManager({ context, storage: { getItem: () => null, setItem: () => {} } });
+            audio.setVolume(1);
+            const muted = samples.length === families.length;
+            if (muted) audio.setBusVolume('combat', 0);
+            const played = audio.play(AUDIO_CUES[cue], { skillName });
+            const buffer = await context.startRendering(), data = buffer.getChannelData(0);
+            let peak = 0, squares = 0, tailPeak = 0;
+            for (let i = 0; i < data.length; i++) {
+                peak = Math.max(peak, Math.abs(data[i])); squares += data[i] ** 2;
+                if (i > 19200) tailPeak = Math.max(tailPeak, Math.abs(data[i]));
+            }
+            const hash = await crypto.subtle.digest('SHA-256', data.buffer);
+            samples.push({ skillName, muted, played, peak, rms: Math.sqrt(squares / data.length), tailPeak,
+                signature: Array.from(new Uint8Array(hash)).map(v => v.toString(16).padStart(2, '0')).join('') });
+            audio.dispose();
+        }
+        return samples;
+    });
+    expect(new Set(samples.slice(0, 14).map(s => s.signature)).size).toBe(14);
+    for (const sample of samples.slice(0, 14)) {
+        expect(sample.played, sample.skillName).toBe(true);
+        expect(sample.rms, sample.skillName).toBeGreaterThan(.0001);
+        expect(sample.peak, sample.skillName).toBeLessThan(.12);
+        expect(sample.tailPeak, sample.skillName).toBe(0);
+    }
+    expect(samples.at(-1).played).toBe(false); expect(samples.at(-1).peak).toBe(0);
+    await testInfo.attach('ability-audio-samples', { body: JSON.stringify(samples), contentType: 'application/json' });
+    expect(failures).toEqual([]);
+});
+
 test('cue voice budget and browser audio suspension recover without stale effects', async ({ page, baseURL }) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

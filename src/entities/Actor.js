@@ -593,7 +593,7 @@ export class Actor extends Entity {
     spawnAbilityPresentation(gameEngine, skillName, targetVector) {
         if (skillName === 'Earthshaker') {
             const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
-            if (spawned) playLocalAbilityCue(gameEngine, this);
+            if (spawned) playLocalAbilityCue(gameEngine, this, skillName);
             if (spawned) this.lastAbilityPresentation = { skillName, requestedSkillName: skillName, layerCount: 1,
                 timestamp: globalThis.performance?.now?.() ?? Date.now() };
             return spawned;
@@ -601,7 +601,7 @@ export class Actor extends Entity {
         const className = this.meshType || this.subType || this.constructor.name;
         const presentation = getAbilityPresentation(className, skillName);
         if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;
-        playLocalAbilityCue(gameEngine, this);
+        playLocalAbilityCue(gameEngine, this, skillName);
 
         const sourcePosition = this.position?.clone?.() || this.position;
         let targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;
