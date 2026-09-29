@@ -29,6 +29,7 @@ import { LootLabelPresentation } from './LootLabelPresentation.js';
 import { worldAmbienceKey } from '../audio/WorldAmbience.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
+const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
     updateRemoteCorpsePresentation(dt) {
@@ -944,6 +945,10 @@ class GameEngineRuntimeMethods {
         this.lootLabelPresentation.update(activeEntities, {
             camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,
             player: this.player, target: this.pendingInteraction, mobile: this.isMobile
+        });
+        this.renderSystem.updateActorContactShadows?.(activeEntities, {
+            isActor: isContactShadowActor,
+            terrainElevation: this.currentInstanceId ? null : this.terrainElevation
         });
         this.renderSystem.render();
 

@@ -11,6 +11,19 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
     test.setTimeout(240_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
+    const expectGroundContact = async () => {
+        await expect.poll(() => page.evaluate(() => {
+            const g = window.game, contacts = g.renderSystem.actorContactShadows?.mesh;
+            if (g.renderSystem.renderer.shadowMap.enabled || !contacts?.visible) return false;
+            const values = contacts.instanceMatrix.array, p = g.player.mesh.position;
+            for (let i = 0; i < contacts.count; i++) {
+                const offset = i * 16;
+                if (Math.hypot(values[offset + 12] - p.x, values[offset + 14] - p.z) < .1) return true;
+            }
+            return false;
+        })).toBe(true);
+    };
+    await expectGroundContact();
     const review = process.env.EIDOLON_E2E_ROUTE_REVIEW === '1';
     const views = [];
     const captureReview = async stage => {
@@ -60,7 +73,7 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
     const cdp = await context.newCDPSession(page);
     const box = await page.locator('#joystick-zone').boundingBox();
     const receipts = [];
-    let roadCaptured = false;
+    const roadViews = review ? [250, 400, 600, 710] : [];
     let touching = false;
     try {
         for (const [x, z] of route) {
@@ -89,9 +102,8 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
                     state: window.game.player.state, activeElement: document.activeElement?.id,
                     paused: window.game.uiManager.isEscMenuOpen }));
                 if (current.hp <= 0 || current.instance) throw new Error('Route interrupted by death or a scene change');
-                if (review && !roadCaptured && current.x > 400) {
-                    roadCaptured = true;
-                    await captureReview('earth-road');
+                if (roadViews.length && current.x > roadViews[0]) {
+                    await captureReview(`earth-road-${roadViews.shift()}`);
                 }
                 const dx = x - current.x, dz = z - current.z, distance = Math.hypot(dx, dz);
                 if (distance < 1.8) return true;
@@ -141,6 +153,7 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
         return g.currentInstanceType === 'verdant_bastion_catacombs' && Boolean(g.currentInstanceId && g.currentDungeonLayout)
             && g.collisionManager.dungeonWalkableRects.length > 0;
     }), { timeout: 30_000 }).toBe(true);
+    await expectGroundContact();
     await captureReview('dungeon-entry');
     if (review) await testInfo.attach('route-views', { body: JSON.stringify(views), contentType: 'application/json' });
     await testInfo.attach('route-receipt', { body: JSON.stringify({ checkpoints: receipts, enteredVerdant: true }), contentType: 'application/json' });

@@ -5,6 +5,11 @@ remain open; runtime version metadata is intentionally unchanged.
 
 ## Draft patch notes
 
+- Added soft actor contact shadows for phones and Low graphics, grounding
+  characters without enabling expensive directional shadows. Contacts follow
+  movement and fade during jumps; hidden/stealthed actors remain unrevealed.
+  See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
+
 - Corrected the four player classes' floating walk/run poses. Walks now make
   ground contact and runs retain stance and flight, including equipped boots
   and moving casts. Movement speed and combat timing are unchanged. See the

@@ -7,6 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
+import { ActorContactShadows } from './ActorContactShadows.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
@@ -680,6 +681,7 @@ export class RenderSystem {
         const isFirefox = /firefox/i.test(navigator.userAgent);
         const allowShadows = normalized !== 'low' && !this.isMobile;
         this.renderer.shadowMap.enabled = allowShadows;
+        if (allowShadows) this.actorContactShadows?.clear();
         this.renderer.shadowMap.autoUpdate = true;
         this.renderer.shadowMap.needsUpdate = true;
         this.renderer.shadowMap.type = allowShadows
@@ -1034,6 +1036,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.actorContactShadows?.clear();
         this.clearGroupChildren(this.instanceEnvironmentGroup, { dispose: true });
         this.clearGroupChildren(this.entityGroup);
         this.clearGroupChildren(this.effectGroup);
@@ -1083,6 +1086,12 @@ export class RenderSystem {
                 disposeMaterial(child.material);
             }
         });
+    }
+
+    updateActorContactShadows(entities, options) {
+        const enabled = !this.renderer.shadowMap.enabled;
+        if (enabled) this.actorContactShadows ??= new ActorContactShadows(this.scene);
+        this.actorContactShadows?.update(entities, { ...options, enabled });
     }
 
     render() {
@@ -1158,6 +1167,8 @@ export class RenderSystem {
 
 
     dispose() {
+        this.actorContactShadows?.dispose();
+        this.actorContactShadows = null;
         this.disposePostProcessing();
         this.disposeShadowTargets();
         if (this._onWindowResize) window.removeEventListener('resize', this._onWindowResize, false);
