@@ -73,6 +73,9 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 { id: 'lanternhold-trading-roof', x: -17, z: 191, region: 'town' },
                 { id: 'lanternhold-east-gate', x: 108, z: 200, region: 'earth' },
                 { id: 'first-road-encounter', x: 119, z: 178, region: 'earth' },
+                { id: 'bastion-road-woodland', x: 340, z: 200, region: 'earth' },
+                { id: 'bastion-road-junction', x: 520, z: 200, region: 'earth' },
+                { id: 'bastion-road-turn', x: 720, z: 200, region: 'earth' },
                 ...EARTH_LOCATIONS
             ];
             const samples = [];

@@ -20,7 +20,9 @@ export function isEarthUnderstoryClear(x, z, radius = 2.2) {
     if (Math.abs(x) < 105 + radius && Math.abs(z - 200) < 105 + radius) return false;
     if (STARTER_ROAD_CLEARINGS.some(([cx, cz, clear]) => Math.hypot(x - cx, z - cz) < clear + radius)) return false;
     if (Math.hypot(x - LANTERNHOLD_ROAD_CART.x, z - LANTERNHOLD_ROAD_CART.z) < LANTERNHOLD_ROAD_CART.clearing + radius) return false;
-    if (Math.abs(x) < 14 + radius || Math.abs(z - 200) < 14 + radius) return false;
+    // Low ground cover follows the actual authored road width, not the old
+    // 28m tree-trunk exclusion. The path margin below includes full plant
+    // reach plus two metres of open shoulder; fight clearings stay separate.
     if (EARTH_LOCATIONS.some(site => Math.hypot(x - site.x, z - site.z) < site.radius + radius + 2)) return false;
     return !EARTH_PATHS.some(path => distanceToPath(x, z, path.points) < path.width / 2 + radius + 2);
 }

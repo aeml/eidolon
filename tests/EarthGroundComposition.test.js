@@ -1,8 +1,25 @@
 import * as THREE from 'three';
-import { sampleEarthGround, createEarthCompositionMask, createForestFloorDetail, applyEarthGroundComposition } from '../src/art/EarthGroundComposition.js';
+import { sampleEarthGround, sampleEarthMeadow, createEarthCompositionMask, createForestFloorDetail, applyEarthGroundComposition } from '../src/art/EarthGroundComposition.js';
 import { EARTH_PATHS } from '../src/data/worldPopulation.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../src/data/worldFoliage.js';
 import { WORLD_REGIONS } from '../src/data/worldGeography.js';
+
+test('Bastion meadow shoulders share the plant field while all junction surfaces remain worn', () => {
+    for (const x of [260, 340, 420, 620, 700]) {
+        const cover = sampleEarthMeadow(x, 212), ground = sampleEarthGround(x, 212);
+        expect(cover).toBeGreaterThan(.45);
+        expect(ground.meadow).toBeGreaterThan(.2);
+        expect(ground.meadow).toBeLessThanOrEqual(cover);
+        expect(sampleEarthGround(x, 200).meadow).toBe(0);
+    }
+    // The southbound milestone path takes priority over the new meadow field.
+    expect(sampleEarthGround(520, 212).meadow).toBe(0);
+    for (const x of [189.999, 190, 225, 755, 790, 790.001]) {
+        const before = sampleEarthMeadow(x - .001, 212), after = sampleEarthMeadow(x + .001, 212);
+        expect(Number.isFinite(before) && Number.isFinite(after)).toBe(true);
+        expect(Math.abs(before - after)).toBeLessThan(.001);
+    }
+});
 
 test('forest floor follows actual woodland and leaves worn trail centers clear', () => {
     for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(r => r.region === 'earth')) {

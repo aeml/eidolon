@@ -2,6 +2,25 @@ import * as THREE from 'three';
 import { createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
+import { STARTER_ROAD_CLEARINGS } from '../src/data/lanternholdApproach.js';
+
+test('low roadside cover uses path shoulders without inheriting the tree-trunk exclusion', () => {
+    expect(isEarthUnderstoryClear(340, 209)).toBe(true);
+    expect(isEarthUnderstoryClear(340, 207)).toBe(false);
+    expect(isEarthUnderstoryClear(9, -400)).toBe(true);
+    expect(isEarthUnderstoryClear(7, -400)).toBe(false);
+    expect(isEarthUnderstoryClear(100, 240)).toBe(false);
+    for (const [x, z, radius] of STARTER_ROAD_CLEARINGS) {
+        expect(isEarthUnderstoryClear(x, z)).toBe(false);
+        expect(isEarthUnderstoryClear(x + radius + 1, z)).toBe(false);
+    }
+    for (const quality of ['high', 'low']) {
+        const verge = createEarthUnderstoryPlacements(quality)
+            .filter(p => p.x > 220 && p.x < 700 && Math.abs(p.z - 200) < 16.2);
+        expect(verge.length).toBeGreaterThan(100);
+        expect(verge.every(p => Math.abs(p.z - 200) >= 8.2)).toBe(true);
+    }
+});
 
 test('understory forms repeatable beds with a matching Low subset and clear travel space', () => {
     const high = createEarthUnderstoryPlacements(), low = createEarthUnderstoryPlacements('low');

@@ -7,6 +7,10 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Connected the long Bastion road with irregular meadow verges, reducing
+  empty stretches between landmarks while retaining clear roads, junctions
+  and starter combat space. See the [road review and rendering cost](2026-09-29-bastion-road-verges.md).
+
 - Rebuilt the Returning Scar's three investigation clues to match their story:
   severed wood, a bending sapling and the interrupted command inscription with
   its broken seal. Natural boundary stones and grounded roots replace the
