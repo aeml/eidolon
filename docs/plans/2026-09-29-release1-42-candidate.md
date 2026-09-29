@@ -7,6 +7,10 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Lanternhold's orange rail fence becomes weathered timber palisades with
+  iron fittings and lantern-marked gates. Existing openings and collision
+  bounds are unchanged. See the [perimeter review](2026-09-29-lanternhold-perimeter.md).
+
 - The first road east of Lanternhold gains a stranded supply wagon and a
   planted verge, with clear starter fighting space and open travel routes.
   Cart walking/spawn/landing bounds match the new model; ordinary encounter
