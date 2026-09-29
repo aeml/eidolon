@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Earth soil and meadow surfaces gain finer, lighting-responsive aggregates
+  and restrained material variation, reducing the flat color wash without
+  changing terrain geometry or movement. See the
+  [soil response review and shader cost](2026-09-29-earth-soil-relief.md).
+
 - Gloamwood trees gain bent, tapered stems with connected forks, smaller shaped
   broadleaves and finer pine sprays. Existing tree placements and walking
   clearances are preserved. See the [woodland review and geometry costs](2026-09-29-woodland-stems-and-leaves.md).
