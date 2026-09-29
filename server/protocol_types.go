@@ -487,31 +487,37 @@ type StashWithdrawPayload struct {
 }
 
 type ForgeUpgradePayload struct {
-	Slot   string `json:"slot"`
-	Amount int    `json:"amount"`
+	Slot     string           `json:"slot"`
+	Amount   int              `json:"amount"`
+	Expected *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type ForgePotencyPayload struct {
-	Slot string `json:"slot"`
+	Slot     string           `json:"slot"`
+	Expected *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type ForgeSocketPayload struct {
-	Slot string `json:"slot"`
+	Slot     string           `json:"slot"`
+	Expected *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type ForgeInsertGemPayload struct {
-	EquipSlot   string `json:"equipSlot"`
-	GemInvIndex int    `json:"gemInvIndex"`
-	SocketIndex int    `json:"socketIndex"`
+	EquipSlot   string           `json:"equipSlot"`
+	GemInvIndex int              `json:"gemInvIndex"`
+	SocketIndex int              `json:"socketIndex"`
+	Expected    *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type ForgeCombineGemPayload struct {
-	GemIndices [3]int `json:"gemIndices"`
+	GemIndices [3]int           `json:"gemIndices"`
+	Expected   *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type ForgeRemoveGemPayload struct {
-	EquipSlot   string `json:"equipSlot"`
-	SocketIndex int    `json:"socketIndex"`
+	EquipSlot   string           `json:"equipSlot"`
+	SocketIndex int              `json:"socketIndex"`
+	Expected    *game.ForgeQuote `json:"expected,omitempty"`
 }
 
 type AcceptQuestPayload struct {

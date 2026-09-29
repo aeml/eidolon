@@ -2,6 +2,14 @@ import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
 import { forgeUpgradeCost, forgePotencyCost } from '../core/ForgeProgression.js';
 import { renderForgeDecision } from './ForgeDecisionPreview.js';
 
+function forgeQuote(item) {
+    if (!item) return null;
+    return {
+        itemId: item.id, level: item.level, potency: item.potency || 0, sockets: item.sockets || 0,
+        gems: (item.gems || []).map(gem => ({ type: gem.type, quality: gem.quality, stats: { ...gem.stats } }))
+    };
+}
+
 /**
  * Forge UI module — handles upgrade, potency, socket, and gem sub-systems.
  *
@@ -441,6 +449,7 @@ export class ForgeUI {
     }
 
     updateForgeInfo(item, player = this.ctx.getLastPlayer()) {
+        this.upgradeQuote = forgeQuote(item);
         if (!item) return;
         this.forgeUpgradeInfo.style.display = 'flex';
         if (this.forgeSelectedItemName) {
@@ -451,14 +460,17 @@ export class ForgeUI {
         const { cost: cost1, target: targetLevel1 } = forgeUpgradeCost(item.level, 1);
         const availableShards = this._countInventoryItems(player, (invItem) => this._isShardItem(invItem));
         const { cost: cost10, target: targetLevel10 } = forgeUpgradeCost(item.level, 10);
+        const actualLevelGain10 = targetLevel10 - item.level;
+        const meetsLevel1 = (player?.level || 1) >= targetLevel1;
+        const meetsLevel10 = (player?.level || 1) >= targetLevel10;
 
         if (this.forgeCostValue) {
             if (item.level >= 100) {
                 this.forgeCostValue.textContent = "MAX";
                 this.forgeCostValue.style.color = '#00ff88';
             } else {
-                this.forgeCostValue.textContent = `${cost1} (1 Lvl) / ${cost10} (10 Lvl)`;
-                this.forgeCostValue.style.color = availableShards >= cost1 ? '#00ff88' : '#ff4444';
+                this.forgeCostValue.textContent = `${cost1} (1 Lvl) / ${cost10} (${actualLevelGain10} Lvl)`;
+                this.forgeCostValue.style.color = meetsLevel1 && availableShards >= cost1 ? '#00ff88' : '#ff4444';
             }
         }
 
@@ -471,17 +483,16 @@ export class ForgeUI {
 
         const hasEnoughShards1 = availableShards >= cost1;
         const hasEnoughShards10 = availableShards >= cost10;
-        const actualLevelGain10 = targetLevel10 - item.level;
 
         if (this.btnForgeUpgrade1) {
-            this.btnForgeUpgrade1.disabled = !hasEnoughShards1;
-            this.btnForgeUpgrade1.textContent = hasEnoughShards1
+            this.btnForgeUpgrade1.disabled = !meetsLevel1 || !hasEnoughShards1;
+            this.btnForgeUpgrade1.textContent = !meetsLevel1 ? `Requires Level ${targetLevel1}` : hasEnoughShards1
                 ? `+1 Level (${cost1})`
                 : `Need ${cost1 - availableShards} More Shards`;
         }
         if (this.btnForgeUpgrade10) {
-            this.btnForgeUpgrade10.disabled = !hasEnoughShards10;
-            this.btnForgeUpgrade10.textContent = hasEnoughShards10
+            this.btnForgeUpgrade10.disabled = !meetsLevel10 || !hasEnoughShards10;
+            this.btnForgeUpgrade10.textContent = !meetsLevel10 ? `Requires Level ${targetLevel10}` : hasEnoughShards10
                 ? `+${actualLevelGain10} Levels (${cost10})`
                 : `Need ${cost10 - availableShards} More Shards`;
         }
@@ -496,8 +507,8 @@ export class ForgeUI {
     }
 
     handleForgeUpgrade(amount) {
-        if (!this.selectedForgeSlot) return;
-        if (this.onForgeUpgrade) this.onForgeUpgrade(this.selectedForgeSlot, amount);
+        if (!this.selectedForgeSlot || !this.upgradeQuote) return;
+        if (this.onForgeUpgrade) this.onForgeUpgrade(this.selectedForgeSlot, amount, this.upgradeQuote);
     }
 
     // ------------------------------------------------------------------
@@ -594,6 +605,7 @@ export class ForgeUI {
     }
 
     updateForgePotencyInfo(item, player = this.ctx.getLastPlayer()) {
+        this.potencyQuote = forgeQuote(item);
         if (!item) return;
         this.forgePotencyInfo.style.display = 'flex';
         if (this.forgePotencyItemName) {
@@ -630,8 +642,8 @@ export class ForgeUI {
     }
 
     handleForgePotency() {
-        if (!this.selectedForgePotencySlot) return;
-        if (this.onForgePotency) this.onForgePotency(this.selectedForgePotencySlot);
+        if (!this.selectedForgePotencySlot || !this.potencyQuote) return;
+        if (this.onForgePotency) this.onForgePotency(this.selectedForgePotencySlot, this.potencyQuote);
     }
 
     // ------------------------------------------------------------------
@@ -733,6 +745,7 @@ export class ForgeUI {
     }
 
     updateForgeSocketInfo(item, player = this.ctx.getLastPlayer()) {
+        this.socketQuote = forgeQuote(item);
         if (!item) return;
         this.forgeSocketInfo.style.display = 'flex';
         if (this.forgeSocketItemName) {
@@ -780,8 +793,8 @@ export class ForgeUI {
     }
 
     handleForgeSocket() {
-        if (!this.selectedForgeSocketSlot) return;
-        if (this.onForgeSocket) this.onForgeSocket(this.selectedForgeSocketSlot);
+        if (!this.selectedForgeSocketSlot || !this.socketQuote) return;
+        if (this.onForgeSocket) this.onForgeSocket(this.selectedForgeSocketSlot, this.socketQuote);
     }
 
     // ------------------------------------------------------------------
@@ -921,6 +934,8 @@ export class ForgeUI {
 
         const equipItem = item || (this.selectedGemEquipSlot && player.equipment ? player.equipment[this.selectedGemEquipSlot] : null);
         const gemItem = this.selectedGemInvIndex !== null && player.inventory ? player.inventory[this.selectedGemInvIndex] : null;
+        this.insertQuote = equipItem && gemItem
+            ? { ...forgeQuote(equipItem), gemIds: [gemItem.id], gemCounts: [gemItem.stack || 1] } : null;
 
         if (!equipItem || !this.selectedGemEquipSlot) {
             this.forgeGemInfo.style.display = 'none';
@@ -1010,10 +1025,10 @@ export class ForgeUI {
     }
 
     handleForgeInsertGem() {
-        if (!this.selectedGemEquipSlot || this.selectedGemInvIndex === null || this.selectedGemSocketIndex === null) return;
+        if (!this.selectedGemEquipSlot || this.selectedGemInvIndex === null || this.selectedGemSocketIndex === null || !this.insertQuote) return;
 
         if (this.onForgeInsertGem) {
-            this.onForgeInsertGem(this.selectedGemEquipSlot, this.selectedGemInvIndex, this.selectedGemSocketIndex);
+            this.onForgeInsertGem(this.selectedGemEquipSlot, this.selectedGemInvIndex, this.selectedGemSocketIndex, this.insertQuote);
         }
 
         this.selectedGemInvIndex = null;
@@ -1060,8 +1075,8 @@ export class ForgeUI {
                     if (isSelected) {
                         el.style.boxShadow = '0 0 10px #ff00ff';
                         el.style.borderColor = '#ff00ff';
-                        const num = this.selectedCombineGemIndices.indexOf(index) + 1;
-                        el.innerHTML += `<div style="position: absolute; top: 2px; right: 2px; color: #ff00ff; font-size: 10px; font-weight: bold;">${num}</div>`;
+                        const units = this.selectedCombineGemIndices.filter(i => i === index).length;
+                        el.innerHTML += `<div style="position: absolute; top: 2px; right: 2px; color: #ff00ff; font-size: 10px; font-weight: bold;">×${units}</div>`;
                     }
 
                     let canSelect = true;
@@ -1083,12 +1098,13 @@ export class ForgeUI {
                         if (isSelected) {
                             this.selectedCombineGemIndices = this.selectedCombineGemIndices.filter(i => i !== index);
                         } else if (this.selectedCombineGemIndices.length < 3) {
-                            this.selectedCombineGemIndices.push(index);
+                            const units = Math.min(3 - this.selectedCombineGemIndices.length, item.stack || 1);
+                            this.selectedCombineGemIndices.push(...Array(units).fill(index));
                         }
                         this.updateGemCombineUI(player);
                     };
 
-                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'}`;
+                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'} ×${item.stack || 1} — click to select up to three; click again to deselect`;
                     this.forgeGemCombineInventory.appendChild(el);
                 }
             });
@@ -1108,6 +1124,9 @@ export class ForgeUI {
     }
 
     updateGemCombineSlots(player) {
+        this.combineQuote = this.selectedCombineGemIndices.length === 3
+            ? { gemIds: this.selectedCombineGemIndices.map(index => player.inventory?.[index]?.id),
+                gemCounts: this.selectedCombineGemIndices.map(index => player.inventory?.[index]?.stack || 1) } : null;
         if (!this.forgeGemCombineSlots || !this.forgeGemCombineResult) return;
 
         const slots = this.forgeGemCombineSlots.children;
@@ -1160,9 +1179,9 @@ export class ForgeUI {
     }
 
     handleForgeCombineGem() {
-        if (this.selectedCombineGemIndices.length !== 3) return;
+        if (this.selectedCombineGemIndices.length !== 3 || !this.combineQuote) return;
 
-        if (this.onForgeCombineGem) this.onForgeCombineGem(this.selectedCombineGemIndices);
+        if (this.onForgeCombineGem) this.onForgeCombineGem(this.selectedCombineGemIndices, this.combineQuote);
 
         this.selectedCombineGemIndices = [];
         const player = this.ctx.getLastPlayer();
@@ -1253,6 +1272,14 @@ export class ForgeUI {
     }
 
     updateGemRemoveInfo(item, player) {
+        const nextQuote = forgeQuote(item);
+        // A refreshed quote must not silently authorize destruction of a new
+        // item or a gem that shifted into the previously selected socket.
+        if (this.removeQuote && (!nextQuote || this.removeQuote.itemId !== nextQuote.itemId ||
+            JSON.stringify(this.removeQuote.gems) !== JSON.stringify(nextQuote.gems))) {
+            this.selectedRemoveSocketIndex = null;
+        }
+        this.removeQuote = nextQuote;
         if (!this.forgeGemRemoveInfo || !item || !item.gems || item.gems.length === 0) {
             if (this.forgeGemRemoveInfo) this.forgeGemRemoveInfo.style.display = 'none';
             return;
@@ -1318,9 +1345,9 @@ export class ForgeUI {
     }
 
     handleForgeRemoveGem() {
-        if (!this.selectedRemoveEquipSlot || this.selectedRemoveSocketIndex === null) return;
+        if (!this.selectedRemoveEquipSlot || this.selectedRemoveSocketIndex === null || !this.removeQuote) return;
 
-        if (this.onForgeRemoveGem) this.onForgeRemoveGem(this.selectedRemoveEquipSlot, this.selectedRemoveSocketIndex);
+        if (this.onForgeRemoveGem) this.onForgeRemoveGem(this.selectedRemoveEquipSlot, this.selectedRemoveSocketIndex, this.removeQuote);
 
         this.selectedRemoveSocketIndex = null;
         const player = this.ctx.getLastPlayer();

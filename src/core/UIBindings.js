@@ -218,23 +218,23 @@ export class UIBindings {
         ui.onWardrobeRequest = (type, payload) => engine.network.send(type, payload);
         ui.onAdminRequest = (type, payload) => engine.network.send(type, payload);
 
-        ui.forge.onForgeUpgrade = (slot, amount) => {
-            engine.network.send('forge_upgrade', { slot, amount });
+        ui.forge.onForgeUpgrade = (slot, amount, expected) => {
+            engine.network.send('forge_upgrade', { slot, amount, expected });
         };
-        ui.forge.onForgePotency = (slot) => {
-            engine.network.send('forge_potency', { slot });
+        ui.forge.onForgePotency = (slot, expected) => {
+            engine.network.send('forge_potency', { slot, expected });
         };
-        ui.forge.onForgeSocket = (slot) => {
-            engine.network.send('forge_socket', { slot });
+        ui.forge.onForgeSocket = (slot, expected) => {
+            engine.network.send('forge_socket', { slot, expected });
         };
-        ui.forge.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
-            engine.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex });
+        ui.forge.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex, expected) => {
+            engine.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex, expected });
         };
-        ui.forge.onForgeCombineGem = (gemIndices) => {
-            engine.network.send('forge_combine_gem', { gemIndices });
+        ui.forge.onForgeCombineGem = (gemIndices, expected) => {
+            engine.network.send('forge_combine_gem', { gemIndices, expected });
         };
-        ui.forge.onForgeRemoveGem = (equipSlot, socketIndex) => {
-            engine.network.send('forge_remove_gem', { equipSlot, socketIndex });
+        ui.forge.onForgeRemoveGem = (equipSlot, socketIndex, expected) => {
+            engine.network.send('forge_remove_gem', { equipSlot, socketIndex, expected });
         };
 
         ui.quest.onAcceptQuest = (questId) => {
