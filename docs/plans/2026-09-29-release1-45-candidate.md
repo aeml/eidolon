@@ -1,0 +1,21 @@
+# Alpha 1.45 — interface consistency candidate
+
+Unreleased partial work, not a complete1.45 milestone. Earlier release gates
+remain in force and runtime/version metadata is unchanged.
+
+## Draft patch notes
+
+- Wide-screen desktop combat HUD groups health, mana, the primary ability and
+  four numbered skill slots in a compact central dock. Existing bindings,
+  cooldowns and gameplay remain unchanged.
+- The primary icon identifies its right-mouse binding; HP/MP labels and numerical
+  values remain visible together.
+- Desktop chat stays available and resizable without covering the dock; menu
+  buttons wrap beside it. Phone and narrow desktop layouts remain unchanged.
+
+See [connected desktop review and checks](2026-09-29-desktop-combat-dock.md).
+
+Remaining1.45 scope: comprehensive journal/tracking, inventory/stash, forge,
+trading, character/build sheets, menus/tooltips/notifications and loading,
+empty, failure/success, focus, Escape and interaction-priority review.
+These checks do not certify those areas or final visual quality.

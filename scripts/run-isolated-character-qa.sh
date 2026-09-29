@@ -644,6 +644,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   release-smoke)
     EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
     ;;
+  desktop-presentation)
+    EIDOLON_E2E_CLASS=Fighter EIDOLON_E2E_DESKTOP_PRESENTATION=1 \
+      npx playwright test --retries=0 --output=test-results/desktop-presentation tests/e2e/desktop-presentation-gameplay.spec.js
+    ;;
   initial-stats)
     run_initial_stats
     ;;
