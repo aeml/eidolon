@@ -326,6 +326,19 @@ func dungeonEffectReachesTarget(rects []DungeonWalkRect, originX, originZ float6
 	return !blocked
 }
 
+// The caller already checks scene/hostility and holds the recipient lock.
+// Use its scene plus the captured dungeon floor; immutable overworld solids
+// require no instance/world lock while applying damage or secondary effects.
+func (w *World) withinWorldAbilityRadius(rects []DungeonWalkRect, effectName string, originX, originZ float64, target *Entity, radius float64) bool {
+	return withinDungeonAbilityRadius(rects, effectName, originX, originZ, target, radius) &&
+		!w.rockLineBlocked(target.InstanceID, rockPoint{originX, originZ}, rockPoint{target.X, target.Z})
+}
+
+func (w *World) worldEffectReachesTarget(rects []DungeonWalkRect, originX, originZ float64, target *Entity) bool {
+	return dungeonEffectReachesTarget(rects, originX, originZ, target) &&
+		!w.rockLineBlocked(target.InstanceID, rockPoint{originX, originZ}, rockPoint{target.X, target.Z})
+}
+
 // Check the clamped ground destination before spending resources or consuming
 // a combo. A destination in another room is not legal through a solid wall.
 func (w *World) validDungeonGroundCastTarget(player *Entity, x, z float64) bool {
@@ -333,7 +346,7 @@ func (w *World) validDungeonGroundCastTarget(player *Entity, x, z float64) bool 
 		return false
 	}
 	_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, x, z)
-	return !blocked
+	return !blocked && !w.rockLineBlocked(player.InstanceID, rockPoint{player.X, player.Z}, rockPoint{x, z})
 }
 
 func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
@@ -376,7 +389,7 @@ func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64
 		// solid wall. Friendly support and noncanonical instances retain their
 		// existing rules; real doorways remain valid paths.
 		_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, target.X, target.Z)
-		return !blocked
+		return !blocked && !w.rockLineBlocked(player.InstanceID, rockPoint{player.X, player.Z}, rockPoint{target.X, target.Z})
 	}
 	return true
 }
@@ -395,7 +408,7 @@ func (w *World) spreadPoison(source, primaryTarget *Entity, budget statusDamageB
 			continue
 		}
 		target.Mu.Lock()
-		if w.CanDamage(source, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, "Poison Spread", originX, originZ, target, radius) {
+		if w.CanDamage(source, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, "Poison Spread", originX, originZ, target, radius) {
 			target.Poisoned = true
 			target.PoisonDamage = budget.forTarget(source, target)
 			target.PoisonSourceID = source.ID

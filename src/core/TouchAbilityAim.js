@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getOverworldGroundHeight } from './WorldGrounding.js';
 
 const DEAD_ZONE = 14;
 const FULL_RANGE_DRAG = 80;
@@ -18,10 +19,10 @@ export class TouchAbilityAim {
             return new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
         });
         this.rangeRing = new THREE.Line(new THREE.BufferGeometry().setFromPoints(circle), material);
-        this.aimLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(), new THREE.Vector3()
-        ]), material);
-        this.endpoint = new THREE.Line(this.rangeRing.geometry, material);
+        this.aimLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+            Array.from({ length: 33 }, () => new THREE.Vector3())
+        ), material);
+        this.endpoint = new THREE.Line(this.rangeRing.geometry.clone(), material);
         this.endpoint.scale.setScalar(0.35);
         this.preview.add(this.rangeRing, this.aimLine, this.endpoint);
         engine.renderSystem.scene.add(this.preview);
@@ -121,17 +122,41 @@ export class TouchAbilityAim {
         right.y = up.y = 0;
         right.normalize(); up.normalize();
         const offset = right.multiplyScalar(dx).add(up.multiplyScalar(-dy)).normalize().multiplyScalar(length);
-        // Keep the player's actual realm elevation (not a hard-coded y=0 plane).
+        // Ground the destination, while leaving instance-owned floors unchanged.
         gesture.target = player.position.clone().add(offset);
+        gesture.target.y = getOverworldGroundHeight(this.engine, gesture.target) ?? player.position.y;
+        offset.y = gesture.target.y - player.position.y;
         this.preview.position.copy(player.position);
         this.preview.position.y += 0.12;
         this.rangeRing.scale.setScalar(range);
         this.endpoint.position.copy(offset);
+        this.updateGroundPreview(player.position, offset, range);
+        this.hint.textContent = `${gesture.skill} · ${length.toFixed(1)} / ${range.toFixed(1)}m${distance >= FULL_RANGE_DRAG ? ' · Max range' : ''} — release to cast; slide back to cancel`;
+    }
+
+    updateGroundPreview(origin, offset, range) {
+        const point = this._groundPoint || (this._groundPoint = new THREE.Vector3());
+        for (const [line, radius, center] of [[this.rangeRing, range, origin], [this.endpoint, .35, this.gesture.target]]) {
+            const vertices = line.geometry.attributes.position;
+            for (let i = 0; i < vertices.count; i++) {
+                const angle = i / (vertices.count - 1) * Math.PI * 2;
+                const x = Math.cos(angle), z = Math.sin(angle);
+                point.set(center.x + x * radius, center.y, center.z + z * radius);
+                const height = getOverworldGroundHeight(this.engine, point) ?? center.y;
+                vertices.setXYZ(i, x, radius > 0 ? (height - center.y) / radius : 0, z);
+            }
+            vertices.needsUpdate = true;
+            line.geometry.computeBoundingSphere();
+        }
         const positions = this.aimLine.geometry.attributes.position;
-        positions.setXYZ(1, offset.x, 0, offset.z);
+        for (let i = 0; i < positions.count; i++) {
+            const t = i / (positions.count - 1);
+            point.set(origin.x + offset.x * t, origin.y, origin.z + offset.z * t);
+            const height = getOverworldGroundHeight(this.engine, point) ?? origin.y;
+            positions.setXYZ(i, offset.x * t, height - origin.y, offset.z * t);
+        }
         positions.needsUpdate = true;
         this.aimLine.geometry.computeBoundingSphere();
-        this.hint.textContent = `${gesture.skill} · ${length.toFixed(1)} / ${range.toFixed(1)}m${distance >= FULL_RANGE_DRAG ? ' · Max range' : ''} — release to cast; slide back to cancel`;
     }
 
     cancel() {
@@ -145,6 +170,7 @@ export class TouchAbilityAim {
         this.cancel();
         this.preview.removeFromParent();
         this.rangeRing.geometry.dispose();
+        this.endpoint.geometry.dispose();
         this.aimLine.geometry.dispose();
         this.rangeRing.material.dispose();
         this.hint.remove();

@@ -15,7 +15,7 @@ test('public realm places use physical approaches and lore anchors without expos
         'unsent-dispatch', 'unmeasured-sky'
     ]));
     expect(sites.every(site => site.category === 'places' && site.symbol !== '✓')).toBe(true);
-    expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 750, z: 200 });
+    expect(sites.find(site => site.id === 'verdant-approach')).toMatchObject({ x: 800, z: 242 });
     expect(sites.some(site => site.id === 'keepers-empty-house' || site.id === 'returning-scar')).toBe(false);
     for (const reading of WORLD_READINGS) {
         const marker = sites.find(site => site.id === reading.locationId);

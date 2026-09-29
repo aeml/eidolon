@@ -57,6 +57,7 @@ func (w *World) spawnChronicleDropLocked(playerID, defeatedSubType, instanceID s
 		InstanceID: instanceID, X: x + (rand.Float64()-0.5)*1.5, Y: 0.5, Z: z + (rand.Float64()-0.5)*1.5,
 		LootItem: item, LootTime: time.Now(), LootOwnerID: playerID,
 	}
+	w.groundLootLocked(loot)
 	w.Entities[loot.ID] = loot
 	w.Grid.Add(loot)
 	return loot

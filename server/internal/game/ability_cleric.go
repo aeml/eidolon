@@ -143,7 +143,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if target.State != "DEAD" && target.Health > 0 && w.CanDamage(player, target) && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+				if target.State != "DEAD" && target.Health > 0 && w.CanDamage(player, target) && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					hit := impacts.damage(player, target, damage, "holy", skillName)
 					addThreatLocked(target, player.ID, float64(hit))
 					if target.Health > 0 && !target.CCImmune && (!target.Slowed || !time.Now().Before(target.SlowEndTime)) {
@@ -235,6 +235,8 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				SummonDuration: duration,
 			}
 			// Direct entity add (PerformAbility already holds w.Mu)
+			w.recoverActorFromRocks(seraph)
+			w.groundActorLocked(seraph)
 			w.Entities[seraph.ID] = seraph
 			w.Grid.Add(seraph)
 
@@ -563,7 +565,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						}
 
 						target.Mu.Lock()
-						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+						if !w.worldEffectReachesTarget(walkRects, player.X, player.Z, target) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -650,7 +652,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.RUnlock()
 
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					finalDamage := impacts.damage(player, target, damage, "holy", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					if !target.CCImmune {
@@ -718,8 +720,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				zone.ConsecratedGroundEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
 			}
 
-			w.Entities[zone.ID] = zone
-			w.Grid.Add(zone)
+			w.addProjectileLocked(zone)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})

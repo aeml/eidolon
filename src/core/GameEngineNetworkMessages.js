@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
+import { getOverworldGroundHeight } from './WorldGrounding.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 import { stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS } from '../art/ProceduralCombatFeedback.js';
@@ -143,7 +144,8 @@ class GameEngineNetworkMessageMethods {
 
         // Generate new world
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
-            instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality
+            instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality,
+            terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile
         });
         this.activeWorldGenerator = worldGen;
         if (type === 'casino') {
@@ -212,7 +214,12 @@ class GameEngineNetworkMessageMethods {
             startZ = spawn.z;
             if (Number.isFinite(spawn.y)) startY = spawn.y;
         }
+        // Old flat-world landings must agree with the rebuilt terrain before
+        // camera placement or the first rendered frame. Instance floors retain
+        // their authoritative height, including the casino's upstairs floor.
+        startY = getOverworldGroundHeight(this, { x: startX, z: startZ }) ?? startY;
         this.player.position.set(startX, startY, startZ);
+        this.player.resetTransformInterpolation?.();
         this.player.targetPosition = null; // Clear any pending movement target
 
         // Dungeon coordinates intentionally live far outside the overworld.

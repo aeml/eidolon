@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GroundedProjectileVisual } from './GroundedProjectileVisual.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -81,6 +82,7 @@ function addPart(parent, type, name, geo, mat, options = {}) {
         phase: options.phase || 0,
         highQualityOnly: Boolean(options.highQualityOnly),
         gameplayBoundary: Boolean(options.gameplayBoundary),
+        groundSurface: Boolean(options.gameplayBoundary || options.groundSurface),
         gameplayRadius: options.gameplayRadius ?? null,
         normalizedGameplayRadius: options.normalizedGameplayRadius ?? null,
         basePosition: part.position.toArray(),
@@ -128,7 +130,7 @@ function buildImpact(root, type, definition, mats, radius, quality) {
                 position: [0, 0.08 + index * 0.025, 0],
                 rotation: [-Math.PI / 2, 0, definition.signature * 0.17 + index * 0.48],
                 scale: [sealRadius * (0.48 + index * 0.25), sealRadius * (0.48 + index * 0.25), 1],
-                motion: index % 2 ? 'counter-spin-expand' : 'spin-expand', phase: index
+                motion: index % 2 ? 'counter-spin-expand' : 'spin-expand', phase: index, groundSurface: true
             });
     }
 
@@ -173,12 +175,21 @@ function buildImpact(root, type, definition, mats, radius, quality) {
     return isAoe ? (type === 'Meteor' ? 1.15 : 0.92) : 0.68;
 }
 
-function updateImpact(root, elapsed, duration, dt) {
+function updateImpact(root, elapsed, duration, dt, terrain = null) {
     const t = Math.min(1, elapsed / duration);
     const fade = Math.max(0, 1 - t);
+    const worldPoint = new THREE.Vector3();
+    const groundHeight = terrain?.sample(root.position.x, root.position.z);
     root.traverse((part) => {
         if (!part.isMesh) return;
         const data = part.userData;
+        // Undo only last frame's terrain lift before evaluating animation.
+        if (data.terrainLift) part.position.y -= data.terrainLift;
+        data.terrainLift = 0;
+        if (terrain && data.groundSurface) {
+            part.visible = t < (data.gameplayBoundary ? .82 : 1);
+            return;
+        }
         if (data.gameplayBoundary) {
             part.scale.fromArray(data.baseScale);
             part.visible = t < 0.82;
@@ -211,11 +222,16 @@ function updateImpact(root, elapsed, duration, dt) {
             part.scale.set(base[0], base[1], base[2] * close);
             part.rotation.y += dt * (data.phase % 2 ? -1.8 : 1.8);
         }
+        if (terrain) {
+            part.getWorldPosition(worldPoint);
+            data.terrainLift = terrain.sample(worldPoint.x, worldPoint.z) - groundHeight;
+            part.position.y += data.terrainLift;
+        }
     });
 }
 
 class ProceduralProjectileImpactEffect {
-    constructor(scene, root, duration) {
+    constructor(scene, root, duration, terrain = null) {
         this.scene = scene;
         this.root = root;
         this.meshes = [root];
@@ -223,13 +239,19 @@ class ProceduralProjectileImpactEffect {
         this.elapsed = 0;
         this.isActive = true;
         this.disposed = false;
+        this.terrain = terrain;
+        if (terrain) {
+            this.groundPresentation = new GroundedProjectileVisual(root, { groundDetails: false, surfaceOffset: .1 });
+            this.groundPresentation.update(terrain);
+        }
     }
 
     update(dt) {
         if (!this.isActive) return;
         const step = Math.max(0, Number(dt) || 0);
         this.elapsed += step;
-        updateImpact(this.root, this.elapsed, this.duration, step);
+        updateImpact(this.root, this.elapsed, this.duration, step, this.terrain);
+        this.groundPresentation?.update(this.terrain);
         if (this.elapsed >= this.duration) this.dispose();
     }
 
@@ -237,6 +259,8 @@ class ProceduralProjectileImpactEffect {
         if (this.disposed) return;
         this.disposed = true;
         this.isActive = false;
+        this.groundPresentation?.dispose();
+        this.groundPresentation = null;
         this.root.parent?.remove(this.root);
         this.root.clear();
         this.meshes.length = 0;
@@ -259,7 +283,9 @@ export function createProceduralProjectileImpactEffect(scene, position, options 
     // Canonical dungeon floors are at Y=0.1. A ground-level server hit must
     // keep its fill and exact edge above that floor, not bury the fill at .075.
     // Preserve elevated hits; this changes presentation, never combat height.
-    root.position.y = Math.max(0.1, Number(position.y) || 0);
+    const terrain = options.terrainElevation;
+    const floor = terrain ? terrain.sample(position.x, position.z) + .1 : .1;
+    root.position.y = Math.max(floor, Number(position.y) || 0);
     const direction = options.direction?.isVector3
         ? options.direction.clone().setY(0).normalize()
         : new THREE.Vector3(0, 0, 1);
@@ -283,7 +309,7 @@ export function createProceduralProjectileImpactEffect(scene, position, options 
         if (part.userData?.highQualityOnly) part.visible = quality !== 'low';
     });
     scene.add(root);
-    return new ProceduralProjectileImpactEffect(scene, root, duration);
+    return new ProceduralProjectileImpactEffect(scene, root, duration, terrain);
 }
 
 export function getProceduralProjectileImpactCacheMetrics() {

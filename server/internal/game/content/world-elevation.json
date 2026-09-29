@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "region": "earth",
+  "spacing": 16,
+  "inset": 0.75,
+  "edgeFade": 64,
+  "padFade": 80,
+  "maxGrade": 0.35,
+  "hills": [
+    {
+      "id": "grove-west-shoulder",
+      "x": -92,
+      "z": -255,
+      "radiusX": 150,
+      "radiusZ": 190,
+      "height": 12
+    },
+    {
+      "id": "grove-east-shoulder",
+      "x": 110,
+      "z": -330,
+      "radiusX": 155,
+      "radiusZ": 210,
+      "height": 15
+    },
+    {
+      "id": "bellkeeper-ridge",
+      "x": -365,
+      "z": -300,
+      "radiusX": 230,
+      "radiusZ": 155,
+      "height": 17
+    },
+    {
+      "id": "scar-uplift",
+      "x": 285,
+      "z": 28,
+      "radiusX": 130,
+      "radiusZ": 155,
+      "height": 11
+    },
+    {
+      "id": "bastion-shoulder",
+      "x": 645,
+      "z": 98,
+      "radiusX": 200,
+      "radiusZ": 125,
+      "height": 15
+    },
+    {
+      "id": "southern-fold",
+      "x": -260,
+      "z": 535,
+      "radiusX": 245,
+      "radiusZ": 195,
+      "height": 16
+    },
+    {
+      "id": "forester-ridge",
+      "x": -570,
+      "z": 410,
+      "radiusX": 200,
+      "radiusZ": 235,
+      "height": 18
+    },
+    {
+      "id": "oathstone-rise",
+      "x": 615,
+      "z": 560,
+      "radiusX": 235,
+      "radiusZ": 220,
+      "height": 17
+    }
+  ],
+  "bounds": {
+    "minX": -999.25,
+    "maxX": 999.25,
+    "minZ": -599.25,
+    "maxZ": 999.25
+  },
+  "flatTown": {
+    "minX": -124,
+    "maxX": 124,
+    "minZ": 76,
+    "maxZ": 324
+  },
+  "pads": [
+    {
+      "id": "keepers-empty-house",
+      "x": 150,
+      "z": 215,
+      "radius": 41
+    },
+    {
+      "id": "returning-scar",
+      "x": 156,
+      "z": 50,
+      "radius": 45
+    },
+    {
+      "id": "verdant-approach",
+      "x": 800,
+      "z": 200,
+      "radius": 87
+    },
+    {
+      "id": "first-grove-arch",
+      "x": 0,
+      "z": -260,
+      "radius": 47
+    },
+    {
+      "id": "pilgrim-rest",
+      "x": -180,
+      "z": 430,
+      "radius": 45
+    },
+    {
+      "id": "foresters-yard",
+      "x": -480,
+      "z": 530,
+      "radius": 49
+    },
+    {
+      "id": "bellkeepers-cairn",
+      "x": -320,
+      "z": -180,
+      "radius": 37
+    },
+    {
+      "id": "unbound-milestone",
+      "x": 520,
+      "z": 440,
+      "radius": 37
+    }
+  ]
+}

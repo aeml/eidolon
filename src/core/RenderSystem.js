@@ -228,7 +228,7 @@ export class RenderSystem {
                     quality,
                     texture: this.terrainTextures[key]
                 });
-                const ground = new THREE.Mesh(createRealmGroundGeometry(region), material);
+                const ground = new THREE.Mesh(createRealmGroundGeometry(region, .75, key === 'earth' ? this.terrainElevation : null), material);
                 ground.name = `ProceduralRealmTerrain:${key}`;
                 ground.userData.proceduralTerrain = true;
                 ground.userData.terrainKey = key;

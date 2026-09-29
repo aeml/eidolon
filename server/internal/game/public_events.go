@@ -116,6 +116,7 @@ func (w *World) spawnPublicEventWaveLocked(event *publicEventState, players int)
 			enemy.Health = enemy.MaxHealth
 		}
 		w.Entities[enemy.ID] = enemy
+		w.recoverWorldEntryLocked(enemy)
 		if w.Grid != nil {
 			w.Grid.Add(enemy)
 		}

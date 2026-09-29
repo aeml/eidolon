@@ -67,7 +67,18 @@ describe.each(['high', 'low'])('RenderSystem procedural environment (%s)', (qual
             for (const [property, key, position, dimensions] of realmSurfaces) {
                 const surface = renderSystem[property];
                 expect(surface.position.toArray()).toEqual(position);
-                expect([surface.geometry.parameters.width, surface.geometry.parameters.height]).toEqual(dimensions);
+                // The rectangle now shares one BufferGeometry with adjoining
+                // gate patches, so PlaneGeometry constructor metadata is gone.
+                // Assert its actual four base vertices instead; gateway bounds
+                // and exact single-floor coverage have their own geometry test.
+                const vertices = surface.geometry.getAttribute('position');
+                expect(Array.from({ length: 4 }, (_, i) => [vertices.getX(i), vertices.getY(i), vertices.getZ(i)]))
+                    .toEqual([
+                        [-dimensions[0] / 2, dimensions[1] / 2, 0],
+                        [dimensions[0] / 2, dimensions[1] / 2, 0],
+                        [-dimensions[0] / 2, -dimensions[1] / 2, 0],
+                        [dimensions[0] / 2, -dimensions[1] / 2, 0]
+                    ]);
                 expect(surface.userData).toEqual(expect.objectContaining({
                     proceduralTerrain: true,
                     terrainKey: key,

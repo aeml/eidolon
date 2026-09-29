@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
-import { PROCEDURAL_FOLIAGE_RECIPES, getProceduralFoliageArchetype } from '../src/art/ProceduralRealmFoliage.js';
+import { PROCEDURAL_FOLIAGE_RECIPES } from '../src/art/ProceduralRealmFoliage.js';
+import { getFoliageRenderBatches } from '../src/art/FoliageRenderBatches.js';
 import {
     DUNGEON_ENTRANCE_DEFINITIONS,
     DUNGEON_ENTRANCE_IDS
@@ -221,8 +222,17 @@ describe('WorldGenerator staged overworld startup', () => {
                 expect(visibleMeshes.length).toBeLessThanOrEqual(9);
                 for (const mesh of visibleMeshes) {
                     expect(mesh.castShadow || mesh.userData.portalSurface).toBe(true);
-                    expect(mesh.material.polygonOffset).toBe(true);
-                    expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
+                    if (mesh.material.userData.dungeonVeilTime) {
+                        // The recessed aperture is double-sided, not offset masonry.
+                        expect(mesh.userData.portalSurface).toBe(true);
+                        expect(mesh.material.side).toBe(THREE.DoubleSide);
+                        expect(mesh.material.transparent).toBe(false);
+                        expect(mesh.material.depthWrite).toBe(true);
+                        expect(mesh.material.customProgramCacheKey()).toBe('dungeon-veil-v1');
+                    } else {
+                        expect(mesh.material.polygonOffset).toBe(true);
+                        expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
+                    }
                 }
             });
         } finally {
@@ -316,8 +326,9 @@ describe('WorldGenerator shadow setup', () => {
 
         await generator.loadTrees(0, 200);
 
-        const groups = generator.scene.add.mock.calls.map(([object]) => object);
+        const groups = generator.scene.add.mock.calls.map(([object]) => object).filter(object => object.userData.proceduralFoliage);
         expect(groups).toHaveLength(PROCEDURAL_FOLIAGE_RECIPES.length);
+        expect(generator.scene.add.mock.calls.filter(([object]) => object.userData.earthUnderstory)).toHaveLength(1);
         expect(loadModelSpy).not.toHaveBeenCalled();
         for (const [index, group] of groups.entries()) {
             const recipe = PROCEDURAL_FOLIAGE_RECIPES[index];
@@ -328,7 +339,7 @@ describe('WorldGenerator shadow setup', () => {
                 region: recipe.region,
                 instanceCount: recipe.count
             }));
-            expect(group.children.length).toBeGreaterThanOrEqual(4);
+            expect(group.children.length).toBeGreaterThanOrEqual(getFoliageRenderBatches(recipe.id).length);
             for (const instance of group.children) {
                 expect(instance).toBeInstanceOf(THREE.InstancedMesh);
                 expect(instance.count).toBe(instance.userData.placementIndices.length);
@@ -338,7 +349,7 @@ describe('WorldGenerator shadow setup', () => {
                 expect(instance.material.depthWrite).toBe(true);
                 expect([THREE.FrontSide, THREE.DoubleSide]).toContain(instance.material.side);
             }
-            const parts = getProceduralFoliageArchetype(recipe.id);
+            const parts = getFoliageRenderBatches(recipe.id);
             for (const part of parts) {
                 const batches = group.children.filter(instance => instance.name === part.name);
                 const indices = batches.flatMap(batch => batch.userData.placementIndices);

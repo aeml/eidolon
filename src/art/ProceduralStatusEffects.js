@@ -142,6 +142,7 @@ function ring(parent, statusKey, name, radius, mat, options = {}) {
             highQualityOnly: options.highQualityOnly
         }
     );
+    mesh.userData.groundSurface = (options.y ?? .155) < .25;
     return mesh;
 }
 
@@ -172,19 +173,27 @@ function shapeGeometry(shape) {
 
 const restingMoteTransform = new THREE.Object3D();
 
-function updateRestingMoteBatch(batch, elapsed) {
+function updateRestingMoteBatch(batch, elapsed, terrain = null, origin = null) {
     for (let slot = 0; slot < batch.count; slot++) {
         const index = batch.userData.moteIndices[slot], phase = index / 16;
         const rise = (elapsed * 0.2 + phase) % 1;
         const angle = phase * Math.PI * 8 + elapsed * 0.45;
         const radius = 0.85 + (index % 3) * 0.2, fade = Math.sin(rise * Math.PI);
         restingMoteTransform.position.set(Math.cos(angle) * radius, 0.15 + rise * 2.6, Math.sin(angle) * radius);
+        if (terrain && origin) {
+            restingMoteTransform.position.y += terrain.sample(origin.x + restingMoteTransform.position.x,
+                origin.z + restingMoteTransform.position.z) - origin.y;
+        }
         restingMoteTransform.rotation.set(0, angle, 0);
         restingMoteTransform.scale.set(0.18 * fade, 0.32 * fade, 0.18 * fade);
         restingMoteTransform.updateMatrix();
         batch.setMatrixAt(slot, restingMoteTransform.matrix);
     }
     batch.instanceMatrix.needsUpdate = true;
+    if (batch.boundingSphere) {
+        batch.boundingSphere.center.y = 1.45 + (terrain && origin ? terrain.sample(origin.x, origin.z) - origin.y : 0);
+        batch.boundingSphere.radius = terrain ? 2.6 : 2;
+    }
 }
 
 function addRestingMotes(root, statusKey, materials) {
@@ -466,13 +475,13 @@ export function setProceduralStatusAreaRadius(root, radius) {
     }
 }
 
-export function updateProceduralStatusEffect(root, elapsed, dt) {
+export function updateProceduralStatusEffect(root, elapsed, dt, terrain = null) {
     if (!root?.userData?.proceduralStatusEffect) return;
     root.traverse((child) => {
         const motion = child.userData?.motion;
         if (!motion) return;
         if (motion === 'rest-rise-batch') {
-            updateRestingMoteBatch(child, elapsed);
+            updateRestingMoteBatch(child, elapsed, terrain, root.position);
             return;
         }
         const phase = Number(child.userData.phase || 0);

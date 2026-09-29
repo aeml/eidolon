@@ -110,6 +110,7 @@ function addGroundRing(parent, type, name, innerRadius, outerRadius, materialVal
         materialValue,
         { position: [0, y, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
+    result.userData.groundSurface = true;
     return result;
 }
 
@@ -319,6 +320,7 @@ function createZone(type, materials, mode, radius) {
     );
     field.userData.gameplayRadius = radius;
     field.userData.gameplayBoundary = true;
+    field.userData.groundSurface = true;
     const boundary = addGroundRing(root, type, `${type}:GameplayBoundary`, radius * 0.965, radius, materials.boundary, 0.065, 64);
     boundary.userData.gameplayBoundary = true;
     boundary.userData.gameplayRadius = radius;
@@ -330,10 +332,11 @@ function createZone(type, materials, mode, radius) {
         const fault = geometry(`${type}:fault`, () => new THREE.PlaneGeometry(radius * 0.055, radius * 0.82));
         for (let index = 0; index < 9; index += 1) {
             const angle = (index / 9) * Math.PI * 2;
-            mesh(spin, `${type}:MagmaFault${index + 1}`, fault, index % 3 === 0 ? materials.pale : materials.glow, {
+            const marking = mesh(spin, `${type}:MagmaFault${index + 1}`, fault, index % 3 === 0 ? materials.pale : materials.glow, {
                 position: [Math.sin(angle) * radius * 0.28, 0, Math.cos(angle) * radius * 0.28],
                 rotation: [-Math.PI / 2, 0, angle + (index % 2 ? 0.16 : -0.12)]
             });
+            marking.userData.groundSurface = true;
         }
         const ember = geometry(`${type}:ember`, () => new THREE.OctahedronGeometry(0.12, 0));
         for (let index = 0; index < 14; index += 1) {
@@ -343,13 +346,22 @@ function createZone(type, materials, mode, radius) {
             });
         }
     } else if (mode === 'holy') {
-        const ray = geometry(`${type}:ray`, () => new THREE.ConeGeometry(radius * 0.045, radius * 0.88, 3));
+        const ray = geometry(`${type}:ground-ray`, () => {
+            const result = new THREE.BufferGeometry();
+            result.setAttribute('position', new THREE.Float32BufferAttribute([
+                -radius*.045, -radius*.44, 0, radius*.045, -radius*.44, 0, 0, radius*.44, 0
+            ], 3));
+            result.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, .5, 1], 2));
+            result.computeVertexNormals();
+            return result;
+        });
         for (let index = 0; index < 12; index += 1) {
             const angle = (index / 12) * Math.PI * 2;
-            mesh(spin, `${type}:ReliquaryRay${index + 1}`, ray, index % 3 === 0 ? materials.pale : materials.glow, {
+            const marking = mesh(spin, `${type}:ReliquaryRay${index + 1}`, ray, index % 3 === 0 ? materials.pale : materials.glow, {
                 position: [Math.sin(angle) * radius * 0.42, 0, Math.cos(angle) * radius * 0.42],
                 rotation: [-Math.PI / 2, 0, -angle]
             });
+            marking.userData.groundSurface = true;
         }
         for (let index = 0; index < 8; index += 1) {
             const angle = (index / 8) * Math.PI * 2;
@@ -361,9 +373,10 @@ function createZone(type, materials, mode, radius) {
         const ward = geometry(`${type}:ward`, () => new THREE.PlaneGeometry(radius * 0.055, radius * 1.42));
         for (let index = 0; index < 6; index += 1) {
             const angle = (index / 6) * Math.PI;
-            mesh(spin, `${type}:CrossedWard${index + 1}`, ward, index % 2 ? materials.glow : materials.pale, {
+            const marking = mesh(spin, `${type}:CrossedWard${index + 1}`, ward, index % 2 ? materials.glow : materials.pale, {
                 position: [0, 0, 0], rotation: [-Math.PI / 2, 0, angle]
             });
+            marking.userData.groundSurface = true;
         }
         for (let index = 0; index < 6; index += 1) {
             const angle = (index / 6) * Math.PI * 2;

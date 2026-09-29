@@ -77,6 +77,12 @@ func (w *World) constrainDungeonTargetPosition(entity *Entity, x, z float64) (fl
 // position, then constrain the complete path through the canonical floors.
 // Ordinary walk target selection and AI routing retain their separate policy.
 func (w *World) constrainDungeonMovementDestination(entity *Entity, x, z float64) (float64, float64, bool) {
+	// The existing ability/jump destination entry point also owns candidate
+	// overworld cover. Ordinary AI target selection remains unconstrained here.
+	if entity != nil && entity.InstanceID == "" && len(w.rockSolids) > 0 {
+		x, z = w.stopRockMovement(entity, x, z)
+		return x, z, true
+	}
 	x, z, constrained := w.constrainDungeonTargetPosition(entity, x, z)
 	if !constrained {
 		return x, z, false

@@ -118,6 +118,9 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	}
 
 	for _, e := range deferred.additions {
+		w.recoverActorFromRocks(e)
+		w.groundActorLocked(e)
+		w.groundLootLocked(e)
 		w.Entities[e.ID] = e
 		w.Grid.Add(e)
 	}

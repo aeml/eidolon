@@ -114,7 +114,7 @@ function createMaterials(type, palette) {
 }
 
 function addGroundMesh(parent, type, name, geometryValue, materialValue, options = {}) {
-    return mesh(parent, name, geometryValue, materialValue, {
+    const part = mesh(parent, name, geometryValue, materialValue, {
         ...options,
         rotation: [
             -Math.PI / 2,
@@ -122,6 +122,9 @@ function addGroundMesh(parent, type, name, geometryValue, materialValue, options
             options.rotation?.[2] || 0
         ]
     });
+    // Planar markings conform to terrain; rigid teeth/vanes keep their shape.
+    part.userData.groundSurface = ['RingGeometry', 'CircleGeometry', 'PlaneGeometry'].includes(geometryValue.type);
+    return part;
 }
 
 function addRing(parent, type, name, innerRadius, outerRadius, materialValue, y = 0.05, segments = 48) {

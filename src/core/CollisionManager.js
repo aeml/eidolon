@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 import { constrainCasinoWalk, inCasinoVenue } from './casinoNavigation.js';
+import { moveAroundRockSolids, stopAtRockSolids } from './RockCollision.js';
 
 // Optimization: Reusable temp objects to avoid GC pressure
 const TEMP_VEC3 = new THREE.Vector3();
@@ -27,6 +28,15 @@ export class CollisionManager {
         this.circularColliders = []; // Array of {x, z, radius}
         this.safeZones = []; // Array of THREE.Box3
         this.dungeonWalkableRects = []; // Canonical server-provided walk rects for local containment
+        this.rockSolids = []; // Negotiated opt-in solids; never inferred from visual meshes.
+    }
+
+    setOverworldRockSolids(solids = []) { this.rockSolids = solids; }
+
+    constrainRockMovementDestination(start, end, radius) {
+        if (!this.rockSolids.length || this.dungeonWalkableRects.length || this.casinoInterior || this.casinoNavigation) return;
+        const point = stopAtRockSolids(this.rockSolids, start, end, radius);
+        end.x = point.x; end.z = point.z;
     }
 
     addCollider(box) {
@@ -55,6 +65,7 @@ export class CollisionManager {
         this.orientedColliders = [];
         this.circularColliders = [];
         this.safeZones = [];
+        this.rockSolids = [];
         this.clearDungeonWalkableGeometry();
     }
 
@@ -405,6 +416,12 @@ export class CollisionManager {
             collided = true;
         }
 
+        if (this.rockSolids.length && !this.dungeonWalkableRects.length && !this.casinoInterior && !this.casinoNavigation) {
+            const point = moveAroundRockSolids(this.rockSolids, oldPosition || position, TEMP_VEC3, radius);
+            if (point.x !== TEMP_VEC3.x || point.z !== TEMP_VEC3.z) {
+                TEMP_VEC3.x = point.x; TEMP_VEC3.z = point.z; collided = true;
+            }
+        }
         return collided ? TEMP_VEC3.clone() : null;
     }
 

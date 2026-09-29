@@ -139,7 +139,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
-					if !withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
+					if !w.withinWorldAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
 						target.Mu.Unlock()
 						continue
 					}
@@ -159,10 +159,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 					if dist > 0.5 && !target.CCImmune {
 						oldX, oldZ := target.X, target.Z
-						target.X += dx * pullStrength
-						target.Z += dz * pullStrength
+						target.X, target.Z = w.stopRockMovement(target, target.X+dx*pullStrength, target.Z+dz*pullStrength)
 						// The whole pull segment was validated above. Interpolation
 						// stays on that segment without a nested instance lock.
+						w.groundActorLocked(target)
 						w.Grid.Update(target, oldX, oldZ)
 					}
 
@@ -269,8 +269,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				ProjectileSkill:   "Fireball",
 				FireballWellBoost: wellBoostActive, // Combo: Implosion
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+			w.addProjectileLocked(proj)
 
 			player.State = "ATTACKING"
 			setCooldown(cooldown)
@@ -325,7 +324,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					// Nova Cascade combo: skip angle check (360° AoE)
 					if novaCascadeActive || dot > math.Cos(angleThreshold) {
 						target.Mu.Lock()
-						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+						if !w.worldEffectReachesTarget(walkRects, player.X, player.Z, target) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -391,8 +390,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Scale:           1.0,
 				ProjectileSkill: "Flame Tornado",
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+			w.addProjectileLocked(proj)
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
@@ -438,6 +436,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					impactX := targetX + offset.dx
 					impactZ := targetZ + offset.dz
 					impactX, impactZ, _ = w.firstDungeonWallHit(player.InstanceID, targetX, targetZ, impactX, impactZ)
+					impactX, impactZ, _ = w.clipRockSegment(player.InstanceID, targetX, targetZ, impactX, impactZ)
 					proj := &Entity{
 						ID:               fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
 						InstanceID:       player.InstanceID,
@@ -457,8 +456,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						ProjectileRuneID: runeID,
 						ProjectileSkill:  "Meteor Drop",
 					}
-					w.Entities[proj.ID] = proj
-					w.Grid.Add(proj)
+					w.addProjectileLocked(proj)
 					w.fireTelegraphEvent(player.ID, player.InstanceID, impactX, impactZ, visualAbilityRadius(skillName, clusterRadius), impactDelay)
 				}
 			} else {
@@ -483,8 +481,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					ProjectileRuneID: runeID,
 					ProjectileSkill:  "Meteor Drop",
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+				w.addProjectileLocked(proj)
 				w.fireTelegraphEvent(player.ID, player.InstanceID, targetX, targetZ, visualAbilityRadius(skillName, radius), impactDelay)
 
 				// Apocalypse rune: meteors continue for 5s after cast
@@ -514,6 +511,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							offsetX := (rand.Float64() - 0.5) * 10
 							offsetZ := (rand.Float64() - 0.5) * 10
 							impactX, impactZ, _ := w.firstDungeonWallHit(instanceID, px, pz, px+offsetX, pz+offsetZ)
+							impactX, impactZ, _ = w.clipRockSegment(instanceID, px, pz, impactX, impactZ)
 							impactDelay := 1500 * time.Millisecond
 							apocProj := &Entity{
 								ID:              fmt.Sprintf("proj-meteor-apoc-%d-%d", time.Now().UnixNano(), i),
@@ -533,8 +531,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 								Scale:           0.7,
 								ProjectileSkill: "Meteor Drop",
 							}
-							w.Entities[apocProj.ID] = apocProj
-							w.Grid.Add(apocProj)
+							w.addProjectileLocked(apocProj)
 							w.Mu.Unlock()
 							w.fireTelegraphEvent(playerID, instanceID, apocProj.X, apocProj.Z, visualAbilityRadius("Meteor Drop", apocProj.Radius), impactDelay)
 						}
@@ -585,8 +582,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				ZoneDoubleTick:  doubleTickActive, // Combo: Time Burn
 				ProjectileSkill: "Inferno Cataclysm",
 			}
-			w.Entities[zone.ID] = zone
-			w.Grid.Add(zone)
+			w.addProjectileLocked(zone)
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
@@ -616,6 +612,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			dirZ := dz / dist
 			beamEndX, beamEndZ, _ := firstDungeonWalkRectWallHit(walkRects, player.X, player.Z,
 				player.X+dirX*rangeDist, player.Z+dirZ*rangeDist)
+			beamEndX, beamEndZ, _ = w.clipRockSegment(player.InstanceID, player.X, player.Z, beamEndX, beamEndZ)
 			rangeDist = math.Hypot(beamEndX-player.X, beamEndZ-player.Z)
 
 			// Check all entities
@@ -648,7 +645,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					if d2 < lineWidth*lineWidth {
 						// Hit
 						target.Mu.Lock()
-						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+						if !w.worldEffectReachesTarget(walkRects, player.X, player.Z, target) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -717,8 +714,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Scale:           1.0,
 				ProjectileSkill: "Dragonfire Lance",
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+			w.addProjectileLocked(proj)
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
@@ -749,7 +745,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.RUnlock()
 
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					finalDamage := impacts.damage(player, target, damage, "arcane", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
@@ -846,8 +842,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					Scale:           1.0,
 					ProjectileSkill: "Arcane Missiles",
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+				w.addProjectileLocked(proj)
 			}
 
 			player.State = "ATTACKING"
@@ -895,7 +890,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						}
 						target.Mu.RUnlock()
 
-						if withinDungeonAbilityRadius(walkRects, skillName, oldX, oldZ, target, warpRadius) {
+						if w.withinWorldAbilityRadius(walkRects, skillName, oldX, oldZ, target, warpRadius) {
 							target.Mu.Lock()
 							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))
@@ -927,6 +922,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				player.X = targetX
 				player.Z = targetZ
 				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
+				w.groundActorLocked(player)
 				w.Grid.Update(player, oldX, oldZ)
 
 				// Warp rune: damage enemies at end location
@@ -940,7 +936,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						}
 						target.Mu.RUnlock()
 
-						if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, warpRadius) {
+						if w.withinWorldAbilityRadius(walkRects, skillName, targetX, targetZ, target, warpRadius) {
 							target.Mu.Lock()
 							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))

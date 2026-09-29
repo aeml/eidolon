@@ -61,6 +61,7 @@ func (w *World) PerformRespawn(playerID string, contexts ...string) error {
 	setRecoveryMovementContextLocked(player, context)
 
 	// Add back to grid in the new location/instance
+	w.recoverWorldEntryLocked(player)
 	w.Grid.Add(player)
 	return nil
 }
@@ -115,6 +116,7 @@ func (w *World) PerformRecall(playerID string, contexts ...string) error {
 	player.InstanceID = ""
 	resetSceneMovementLocked(player)
 	setRecoveryMovementContextLocked(player, context)
+	w.recoverWorldEntryLocked(player)
 	w.Grid.Add(player)
 	return nil
 }

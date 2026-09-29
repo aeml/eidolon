@@ -550,6 +550,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					}
 
 					// Always add directly since we are async
+					w.groundLootLocked(lootEntity)
 					w.Entities[lootEntity.ID] = lootEntity
 					w.Grid.Add(lootEntity)
 				}

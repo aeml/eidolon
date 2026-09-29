@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
+import { conformGroundRibbon } from './GroundRibbonGeometry.js';
 
 function pathTexture(color = [98, 88, 70], name = 'Earth') {
     const size = 128, pixels = new Uint8Array(size * size * 4);
@@ -26,7 +27,7 @@ function pathTexture(color = [98, 88, 70], name = 'Earth') {
 // Continuous ribbon with mitered joins: no overlapping segment quads at bends.
 // Centerline vertices are subdivided for culling-friendly, inspectable geometry;
 // UV distance is in world units so long paths do not stretch the surface grain.
-export function createWorldPathGeometry(path) {
+export function createWorldPathGeometry(path, { elevation = null } = {}) {
     if (!Number.isFinite(path?.width) || path.width <= 0 || !Array.isArray(path.points) || path.points.length < 2 ||
         path.points.some(p => !Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite))) {
         throw new TypeError('A world path requires a positive width and finite centerline');
@@ -63,20 +64,23 @@ export function createWorldPathGeometry(path) {
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     geometry.setIndex(indices); geometry.computeVertexNormals(); geometry.computeBoundingSphere();
-    return geometry;
+    if (!elevation) return geometry;
+    const grounded = conformGroundRibbon(geometry, elevation);
+    geometry.dispose();
+    return grounded;
 }
 
-export function createEarthPathNetwork() {
-    return createWorldPathNetwork(EARTH_PATHS, { name: 'Earth' });
+export function createEarthPathNetwork({ elevation = null } = {}) {
+    return createWorldPathNetwork(EARTH_PATHS, { name: 'Earth', elevation });
 }
 
-export function createWorldPathNetwork(paths, { name = 'World', color } = {}) {
+export function createWorldPathNetwork(paths, { name = 'World', color, elevation = null } = {}) {
     const group = new THREE.Group(); group.name = `${name} authored paths`;
     const material = new THREE.MeshStandardMaterial({ map: pathTexture(color, name), roughness: 1,
         transparent: true, alphaTest: .025, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
     material.name = `${name} worn-path surface`;
     for (const path of paths) {
-        const mesh = new THREE.Mesh(createWorldPathGeometry(path), material);
+        const mesh = new THREE.Mesh(createWorldPathGeometry(path, { elevation }), material);
         mesh.name = `world-path:${path.id}`; mesh.receiveShadow = true;
         mesh.userData.worldPathId = path.id;
         group.add(mesh);

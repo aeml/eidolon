@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { restoreActorStealthAppearance } from './ActorStealthAppearance.js';
+import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
+import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -82,9 +84,21 @@ export class Rogue extends Actor {
             for (let i = this.traps.length - 1; i >= 0; i--) {
                 const trap = this.traps[i];
                 trap.elapsed = (trap.elapsed || 0) + Math.max(0, Number(dt) || 0);
+                trap.groundPresentation?.prepareAnimation();
                 updateProceduralProjectileVisual(trap.mesh, 'Tripwire', trap.elapsed, dt);
+                const engine = gameEngine || this.gameEngine;
+                const ground = getOverworldGroundHeight(engine, trap.position);
+                if (ground !== null) {
+                    trap.position.y = ground + .5;
+                    trap.mesh.position.copy(trap.position);
+                    trap.groundPresentation ||= new GroundedProjectileVisual(trap.mesh, { animatedDetails: true });
+                    trap.groundPresentation.update(engine.terrainElevation);
+                } else if (trap.groundPresentation) {
+                    trap.groundPresentation.dispose();
+                    trap.groundPresentation = null;
+                }
                 let triggered = false;
-                
+
                 for (const entity of activeEntities) {
                     if (trap.elapsed >= 60 || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer || gameEngine?.isMultiplayer) break;
                     if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor &&
@@ -121,6 +135,7 @@ export class Rogue extends Actor {
                 }
 
                 if (triggered || trap.elapsed >= 60) {
+                    trap.groundPresentation?.dispose();
                     releaseProceduralProjectileVisual(trap.mesh);
                     this.traps.splice(i, 1);
                 }
@@ -406,6 +421,8 @@ export class Rogue extends Actor {
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld' ? gameEngine.currentDungeonLayout?.walkRects : null;
             const landing = resolveDungeonMovementEndpoint(rects, this.position, trapPos);
             trapPos.set(landing.x, this.position.y, landing.z);
+            const trapGround = getOverworldGroundHeight(gameEngine, trapPos);
+            if (trapGround !== null) trapPos.y = trapGround + .5;
 
             // Multiplayer receives the server-owned stationary projectile.
             // The cast cue is predicted by the canonical presentation layer.
@@ -417,6 +434,11 @@ export class Rogue extends Actor {
             const mesh = createProceduralProjectileVisual('Tripwire');
             mesh.position.copy(trapPos);
             trapScene.add(mesh);
+            let groundPresentation = null;
+            if (gameEngine.terrainElevation && !gameEngine.currentInstanceId) {
+                groundPresentation = new GroundedProjectileVisual(mesh, { animatedDetails: true });
+                groundPresentation.update(gameEngine.terrainElevation);
+            }
 
             this.traps.push({
                 position: trapPos,
@@ -424,6 +446,7 @@ export class Rogue extends Actor {
                 damage: resolveRogueAbilityDamage(this, skill) * (venomBurst ? 2 : 1),
                 radius: PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS.Tripwire.gameplayRadius,
                 mesh,
+                groundPresentation,
                 elapsed: 0
             });
             this._suppressLegacyCastVisualUntil = 0;
@@ -505,7 +528,10 @@ export class Rogue extends Actor {
         this.stealthTimer = 0;
         this.speedBoostTimer = 0;
         this.speedBoostFactor = 0;
-        this.traps.forEach((trap) => releaseProceduralProjectileVisual(trap.mesh));
+        this.traps.forEach((trap) => {
+            trap.groundPresentation?.dispose();
+            releaseProceduralProjectileVisual(trap.mesh);
+        });
         this.traps.length = 0;
         restoreActorStealthAppearance(this);
     }

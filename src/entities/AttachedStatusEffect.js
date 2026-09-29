@@ -5,6 +5,7 @@ import {
     setProceduralStatusAreaRadius,
     updateProceduralStatusEffect
 } from '../art/ProceduralStatusEffects.js';
+import { GroundedRingVisual } from '../art/GroundedRingVisual.js';
 
 export const ACTOR_STATUS_VISUAL_STATES = Object.freeze({
     invulnerable: (actor) => Math.max(actor.invulnerabilityTimer || 0, actor.teleportPhaseTimer || 0) > 0,
@@ -47,6 +48,7 @@ export class AttachedStatusEffect {
         this.pendingVisualTime = 0;
         this.isActive = true;
         this.disposed = false;
+        this.groundRings = new Map();
         this.group = createProceduralStatusEffect(statusKey, { quality: this.quality });
         this.group.name = `AttachedStatusEffect:${statusKey}:${owner.id || 'actor'}`;
         this.group.userData.ownerId = owner.id || null;
@@ -78,7 +80,17 @@ export class AttachedStatusEffect {
         if (this.statusKey === 'guardian_embrace') {
             setProceduralStatusAreaRadius(this.group, this.owner.guardianEmbraceRadius > 0 ? this.owner.guardianEmbraceRadius : 10);
         }
-        updateProceduralStatusEffect(this.group, this.elapsed, this.pendingVisualTime);
+        const engine = this.owner.gameEngine;
+        const terrain = engine?.currentInstanceId ? null : engine?.terrainElevation;
+        updateProceduralStatusEffect(this.group, this.elapsed, this.pendingVisualTime, terrain);
+        if (terrain || this.groundRings.size) {
+            this.group.updateWorldMatrix(true, false);
+            for (const ring of this.group.children) {
+                if (!ring.userData.groundSurface) continue;
+                if (terrain && !this.groundRings.has(ring)) this.groundRings.set(ring, new GroundedRingVisual(ring));
+                this.groundRings.get(ring)?.update(terrain, this.group.matrixWorld.elements[13]);
+            }
+        }
         this.pendingVisualTime = 0;
     }
 
@@ -100,6 +112,8 @@ export class AttachedStatusEffect {
         if (this.disposed) return;
         this.disposed = true;
         this.isActive = false;
+        this.groundRings.forEach(ring => ring.dispose());
+        this.groundRings.clear();
         releaseProceduralStatusEffect(this.group);
     }
 }

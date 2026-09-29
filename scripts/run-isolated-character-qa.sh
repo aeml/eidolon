@@ -247,6 +247,7 @@ mongo_uri="mongodb://${mongo_username}:${mongo_password}@${mongo_host}:${mongo_p
 docker run -d --name "${API_CONTAINER}" "${api_network_args[@]}" "${SERVER_IMAGE}" \
   --addr="${api_addr}" --mongo-uri="${mongo_uri}" \
   --qa-usernames="${qa_allowlist}" \
+  --qa-terrain-elevation="${EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION:-false}" \
   --log-file= --log-stdout=false --suspicious-log-file= --suspicious-stdout=false >/dev/null
 api_created=true
 
@@ -1138,7 +1139,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   phone-adventure)
     run_phone_adventure
     ;;
+  bastion-route)
+    EIDOLON_E2E_CLASS=Fighter npx playwright test --retries=0 tests/e2e/bastion-approach-gameplay.spec.js
+    ;;
   *)
+    echo "Town-to-Bastion touch travel and real entrance interaction: EIDOLON_ISOLATED_QA_ROUTE=bastion-route" >&2
     echo "Earned rest, real travel/combat and reconnect verification: EIDOLON_ISOLATED_QA_ROUTE=well-rested" >&2
     echo "Earned rest through prepared hostile death and dungeon transitions: EIDOLON_ISOLATED_QA_ROUTE=well-rested-transitions" >&2
     echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2

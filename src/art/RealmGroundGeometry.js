@@ -4,12 +4,26 @@ import { WORLD_REGIONS } from '../data/worldGeography.js';
 
 // Keep the shoreline inset behind fences, but carry the ground to the shared
 // realm boundary at open gates. A shared wall may be owned by the other realm.
-export function createRealmGroundGeometry(region, inset = 0.75) {
+export function createRealmGroundGeometry(region, inset = 0.75, elevation = null) {
     const width = region.maxX - region.minX - inset * 2;
     const depth = region.maxZ - region.minZ - inset * 2;
     const centerX = (region.minX + region.maxX) / 2;
     const centerZ = (region.minZ + region.maxZ) / 2;
-    const parts = [new THREE.PlaneGeometry(width, depth)];
+    // Elevation is opt-in for the integration preview until ALL placement,
+    // movement, effects and picking consumers use the shared height contract.
+    if (elevation && (elevation.minX !== region.minX + inset || elevation.maxX !== region.maxX - inset ||
+        elevation.minZ !== region.minZ + inset || elevation.maxZ !== region.maxZ - inset)) {
+        throw new Error('Elevation field does not match realm ground bounds');
+    }
+    const surface = new THREE.PlaneGeometry(width, depth, elevation?.columns ?? 1, elevation?.rows ?? 1);
+    if (elevation) {
+        const positions = surface.getAttribute('position');
+        for (let row = 0; row <= elevation.rows; row++) for (let column = 0; column <= elevation.columns; column++) {
+            positions.setZ(row * (elevation.columns + 1) + column, elevation.vertexHeight(column, row));
+        }
+        surface.computeVertexNormals();
+    }
+    const parts = [surface];
     const seen = new Set();
     for (const owner of Object.values(WORLD_REGIONS)) for (const wall of owner.walls) {
         if (!wall.gap) continue;

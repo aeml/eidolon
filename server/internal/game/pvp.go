@@ -704,6 +704,7 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 			resetSceneMovementLocked(player)
 			player.Y = origin.Y
 			player.TargetX, player.TargetZ = player.X, player.Z
+			w.recoverWorldEntryLocked(player)
 			player.InvulnerableEndTime = time.Now().Add(3 * time.Second)
 			w.Grid.Add(player)
 			player.Mu.Unlock()

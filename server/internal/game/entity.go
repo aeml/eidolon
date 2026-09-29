@@ -162,12 +162,16 @@ type Entity struct {
 	LifestealBonus     float64 `json:"-"`
 	AllResistBonus     float64 `json:"-"`
 
-	TargetX  float64 `json:"-"`
-	TargetZ  float64 `json:"-"`
-	TargetID string  `json:"-"`
-	SpawnX   float64 `json:"-"`
-	SpawnZ   float64 `json:"-"`
-	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
+	TargetX         float64 `json:"-"`
+	TargetZ         float64 `json:"-"`
+	TargetID        string  `json:"-"`
+	rockRoute       []rockPoint
+	rockRouteGoal   rockPoint
+	rockRouteRadius float64
+	rockRouteRetry  time.Time
+	SpawnX          float64 `json:"-"`
+	SpawnZ          float64 `json:"-"`
+	State           string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 	// LastMoveSequence acknowledges the newest ordered client movement sample
 	// accepted by the server. It is replicated to the owning client so normal
 	// network delay is never mistaken for an authoritative correction.

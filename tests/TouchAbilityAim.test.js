@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { InputManager } from '../src/core/InputManager.js';
 import { TouchAbilityAim } from '../src/core/TouchAbilityAim.js';
 import { AbilityController } from '../src/core/AbilityController.js';
+import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 describe('phone skill drag aiming', () => {
     let input, aim, engine, button;
@@ -70,6 +71,36 @@ describe('phone skill drag aiming', () => {
         expect(aim.hint.textContent).toBe('Release to cancel');
         touch('touchend', finger());
         expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
+    });
+
+    test('elevated drag keeps horizontal range and grounds destination and preview vertices', () => {
+        engine.terrainElevation = field;
+        engine.player.position.set(-570, field.sample(-570, 410), 410);
+        touch('touchstart', finger(), button);
+        touch('touchmove', finger(260));
+        const target = aim.gesture.target.clone();
+        expect(Math.hypot(target.x - engine.player.position.x, target.z - engine.player.position.z)).toBeCloseTo(12, 9);
+        expect(target.y).toBe(field.sample(target.x, target.z));
+        expect(Math.abs(target.y - engine.player.position.y)).toBeGreaterThan(.1);
+        aim.preview.updateMatrixWorld(true);
+        for (const line of [aim.rangeRing, aim.endpoint, aim.aimLine]) {
+            const vertices = line.geometry.attributes.position;
+            for (let i = 0; i < vertices.count; i++) {
+                const point = new THREE.Vector3().fromBufferAttribute(vertices, i).applyMatrix4(line.matrixWorld);
+                expect(point.y - field.sample(point.x, point.z)).toBeCloseTo(.12, 5);
+            }
+        }
+        touch('touchend', finger(260));
+        expect(engine.abilityController.performAbility).toHaveBeenCalledWith(target, 'Fireball');
+        // The same cached preview must return to a flat instance floor.
+        engine.currentInstanceId = 'lanternhold-casino';
+        engine.player.position.y = 8;
+        touch('touchstart', finger(), button); touch('touchmove', finger(260));
+        expect(aim.gesture.target.y).toBe(8);
+        for (const line of [aim.rangeRing, aim.endpoint, aim.aimLine]) {
+            const vertices = line.geometry.attributes.position;
+            for (let i = 0; i < vertices.count; i++) expect(vertices.getY(i)).toBe(0);
+        }
     });
 
     test('another finger cannot commit or move the skill aim', () => {

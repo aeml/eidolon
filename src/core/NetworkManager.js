@@ -152,6 +152,15 @@ export class NetworkManager {
                 if (msg.type === 'time') {
                     this.latestServerTime = JSON.stringify(msg.payload);
                 } else if (msg.type === 'resume_session') {
+                    // A changed server surface requires a fresh scene, not a
+                    // resume into geometry from the previous deployment.
+                    if (this.expectedTerrainProfile && (msg.payload?.terrainProfile || 'flat-v1') !== this.expectedTerrainProfile) {
+                        const fail = this.onReconnectFailed;
+                        this.onConnectionStateChange?.('lost');
+                        this.dispose();
+                        fail?.();
+                        return;
+                    }
                     // Server confirmed the session resume.
                     this._reconnecting = false;
                     this._reconnectAttempts = 0;

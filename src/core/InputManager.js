@@ -12,6 +12,7 @@ export class InputManager {
         this.pointerOverCanvas = false;
         this.groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane at Y=0
         this._intersectionTarget = new THREE.Vector3(); // Reusable vector
+        this.groundIntersectionResolver = null;
         
         this._listeners = [];
         this._onMouseMove = (e) => this.onMouseMove(e);
@@ -430,8 +431,15 @@ export class InputManager {
 
     getGroundIntersection() {
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, this._intersectionTarget);
-        return intersection ? this._intersectionTarget : null;
+        return this.intersectGroundRay();
+    }
+
+    intersectGroundRay() {
+        // A surface miss is a miss, not permission to aim through it at y=0.
+        if (this.groundIntersectionResolver) {
+            return this.groundIntersectionResolver(this.raycaster.ray, this._intersectionTarget, this.groundPlane);
+        }
+        return this.raycaster.ray.intersectPlane(this.groundPlane, this._intersectionTarget);
     }
 
     getGroundIntersectionFromEvent(event) {
@@ -443,8 +451,7 @@ export class InputManager {
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
         this.raycaster.setFromCamera(pointer, this.camera);
-        const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, this._intersectionTarget);
-        return intersection ? this._intersectionTarget : null;
+        return this.intersectGroundRay();
     }
 
     updateMouseFromEvent(event) {

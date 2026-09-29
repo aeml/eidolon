@@ -1131,6 +1131,7 @@ func (w *World) enterInstanceLocked(playerID string, instanceID string) (bool, e
 	player.TargetX = startX
 	player.TargetZ = startZ
 	resetSceneMovementLocked(player)
+	w.recoverWorldEntryLocked(player)
 
 	w.Grid.Add(player)
 	player.Mu.Unlock()

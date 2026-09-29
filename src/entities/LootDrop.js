@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
+import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { GEM_QUALITIES } from '../core/ItemSystem.js';
 import {
     createProceduralLootVisual,
@@ -162,6 +163,8 @@ export class LootDrop extends Entity {
     }
 
     update(dt) {
+        const ground = getOverworldGroundHeight(this.gameEngine, this.position);
+        if (ground !== null) this.position.y = ground + .5;
         if (Date.now() - this.creationTime >= this.maxLifetime) {
             this.isActive = false;
             return;

@@ -45,6 +45,7 @@ func (w *World) PerformInventoryDrop(playerID string, slot int, itemID string, e
 	loot := &Entity{ID: lootID, Type: TypeLoot, X: player.X, Y: 0.5, Z: player.Z,
 		InstanceID: player.InstanceID, LootItem: &item, LootTime: now, CreatedAt: now}
 	player.Inventory[slot] = Item{}
+	w.groundLootLocked(loot)
 	w.Entities[loot.ID] = loot
 	w.Grid.Add(loot)
 	return cloneItems(player.Inventory), nil

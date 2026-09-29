@@ -56,6 +56,33 @@ function makeMockSocket(initialReadyState = WebSocket.OPEN) {
     return sock;
 }
 
+test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('session resume rejects a changed %s terrain profile before queuing state', profile => {
+    const socket = makeMockSocket();
+    const network = new NetworkManager(socket);
+    network.expectedTerrainProfile = profile;
+    network.setupListeners();
+    const failed = jest.fn(), success = jest.fn();
+    network.onReconnectFailed = failed;
+    network.onResumeSuccess = success;
+    socket.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'replacement',
+        terrainProfile: profile === 'flat-v1' ? 'earth-elevation-v1' : 'flat-v1' } });
+    expect(failed).toHaveBeenCalledTimes(1);
+    expect(success).not.toHaveBeenCalled();
+    expect(network.socket).toBeNull();
+    expect(network.messageQueue).toEqual([]);
+});
+
+test.each([undefined, 'flat-v1'])('legacy/flat resume profile %s stays compatible', terrainProfile => {
+    const socket = makeMockSocket(), network = new NetworkManager(socket);
+    network.expectedTerrainProfile = 'flat-v1';
+    network.setupListeners();
+    network.onResumeSuccess = jest.fn();
+    socket.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'replacement', terrainProfile } });
+    expect(network.onResumeSuccess).toHaveBeenCalledWith('replacement');
+    expect(network.messageQueue[0].type).toBe('resume_session');
+    network.dispose();
+});
+
 // Install a global WebSocket constructor that records created instances.
 function installMockWebSocket() {
     const created = [];

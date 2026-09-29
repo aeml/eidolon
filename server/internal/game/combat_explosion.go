@@ -18,7 +18,7 @@ func (w *World) applyOnKillExplosion(attacker *Entity, corpseID, instanceID stri
 		}
 		nearby.Mu.Lock()
 		if nearby.InstanceID != instanceID || nearby.State == "DEAD" || nearby.Health <= 0 ||
-			!withinDungeonAbilityRadius(walkRects, "", x, z, nearby, radius) {
+			!w.withinWorldAbilityRadius(walkRects, "", x, z, nearby, radius) {
 			nearby.Mu.Unlock()
 			continue
 		}

@@ -37,6 +37,7 @@ import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStat
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
+import { getGroundAwareDistance, getGroundedActorHeight } from '../core/WorldGrounding.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -348,7 +349,7 @@ export class Actor extends Entity {
         if (this.state === 'DEAD') return true;
 
         if (player && player.state !== 'DEAD') {
-            const dist = this.position.distanceTo(player.position);
+            const dist = getGroundAwareDistance(this.gameEngine, this.position, player.position);
 
             if (dist < this.sightRange) {
                 if (dist < this.attackRange) {
@@ -971,6 +972,20 @@ export class Actor extends Entity {
         }
     }
 
+    groundToTerrain() {
+        const height = getGroundedActorHeight(this);
+        if (height !== null) this.position.y = height;
+    }
+
+    render(interpolation) {
+        super.render(interpolation);
+        if (!this.mesh) return;
+        // Sampling only packet/tick endpoints cuts a chord through a curved
+        // slope. Use the interpolated X/Z, including visual separation.
+        const height = getGroundedActorHeight(this, this.mesh.position);
+        if (height !== null) this.mesh.position.y = height + (this.visualOffset?.y || 0);
+    }
+
     syncEquipmentVisuals(equipment = this.equipment, options = {}) {
         if (equipment && equipment !== this.equipment) this.equipment = equipment;
         return applyProceduralEquipment(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
@@ -984,6 +999,7 @@ export class Actor extends Entity {
 
     update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
+        this.groundToTerrain();
         this.hitReaction?.update(dt);
         this.syncAttachedStatusEffects(dt);
         // Recipient-owned Renewal continues while stunned; never heal replicas.
@@ -1170,6 +1186,8 @@ export class Actor extends Entity {
                     this.position.copy(this.targetServerPosition);
                 }
             }
+
+            this.groundToTerrain();
 
             // Interpolate Rotation
             if (this.targetServerRotation !== undefined) {
@@ -1480,6 +1498,7 @@ export class Actor extends Entity {
                 this.syncMovementAnimationSpeed(this.stats.speed);
             }
         }
+        this.groundToTerrain();
     }
 
     cleanse() {
@@ -2111,7 +2130,7 @@ export class Actor extends Entity {
 
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false, restartAnimation);
-        
+
         // Scale animation speed
         const cooldown = this.stats.attackSpeed || 1.0;
 

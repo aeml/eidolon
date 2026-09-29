@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { Projectile } from '../src/entities/Projectile.js';
+import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 function makeEngine() {
     return {
@@ -105,14 +106,15 @@ describe('authoritative projectile impact feedback', () => {
         );
     });
 
-    test('remote Meteor removal uses the typed deduplicated fallback', () => {
+    test.each([false, true])('remote Meteor removal uses the typed deduplicated fallback, elevated=%s', elevated => {
         const engine = makeEngine();
+        if (elevated) { engine.currentInstanceId = ''; engine.terrainElevation = field; }
         const owner = {
             id: 'player-local', stats: { intelligence: 10, dexterity: 10, wisdom: 10 },
             skillRunes: {}, isMultiplayer: true, isRemote: false, constructor: { name: 'Wizard' }
         };
         const meteor = new Projectile('meteor-removal', owner, 'Meteor',
-            new THREE.Vector3(3, 8, 4), new THREE.Vector3(3, 0, 4));
+            elevated ? new THREE.Vector3(-570, 50, 410) : new THREE.Vector3(3, 8, 4));
         meteor.explosionRadius = 26.4;
         engine.remotePlayers.set(meteor.id, meteor);
         engine.chunkManager = {
@@ -125,7 +127,7 @@ describe('authoritative projectile impact feedback', () => {
         engine.removeRemoteEntity(meteor.id);
 
         expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
-            'projectile_impact', expect.any(THREE.Vector3), 0xffffff,
+            'projectile_impact', expect.objectContaining({ y: elevated ? field.sample(-570, 410) : .1 }), 0xffffff,
             expect.objectContaining({ projectileType: 'Meteor', radius: 26.4, terminal: true })
         );
         expect(engine.remotePlayers.has(meteor.id)).toBe(false);

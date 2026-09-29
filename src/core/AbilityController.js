@@ -4,6 +4,7 @@
 // ============================================================================
 
 import * as THREE from 'three';
+import { getGroundAwareDistance, getOverworldGroundHeight } from './WorldGrounding.js';
 import { getAbilityManaCost } from './AbilityEconomy.js';
 import { AUTHORITATIVE_SHAPE_ABILITIES, SELF_CENTERED_SHAPE_ABILITIES, getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange, getWizardGroundCastRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
@@ -116,7 +117,7 @@ export class AbilityController {
             const radius = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
             return Math.max(0, Math.hypot(target.position.x - origin.x, target.position.z - origin.z) - radius);
         }
-        return origin.distanceTo(target.position);
+        return getGroundAwareDistance(this.engine, origin, target.position);
     }
 
     getConfiguredManaCost(skillName) {
@@ -586,10 +587,12 @@ export class AbilityController {
                     900
                 );
                 const direction = new THREE.Vector3()
-                    .subVectors(engine.hoveredEntity.position, player.position)
-                    .normalize();
+                    .subVectors(engine.hoveredEntity.position, player.position);
+                if (getOverworldGroundHeight(engine, player.position) !== null) direction.y = 0;
+                direction.normalize();
                 const stopPoint = engine.hoveredEntity.position.clone()
                     .sub(direction.multiplyScalar(abilityRange * 0.9));
+                stopPoint.y = getOverworldGroundHeight(engine, stopPoint) ?? stopPoint.y;
                 player.move(stopPoint);
             }
         } else {

@@ -82,6 +82,9 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	if dist > attackRange {
 		return 0, false
 	}
+	if w.rockLineBlocked(attackerInstanceID, rockPoint{attackerX, attackerZ}, rockPoint{targetX, targetZ}) {
+		return 0, false
+	}
 	walkRects := w.dungeonWalkRectsSnapshot(attackerInstanceID)
 	if _, _, blocked := firstDungeonWalkRectWallHit(walkRects, attackerX, attackerZ, targetX, targetZ); blocked {
 		return 0, false
@@ -176,7 +179,8 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	}
 	// A valid wind-up is not permission to hit through a wall after either
 	// actor moves. The copied geometry needs no instance lock here.
-	if _, _, blocked := firstDungeonWalkRectWallHit(walkRects, impactX, impactZ, tgt.X, tgt.Z); blocked {
+	if _, _, blocked := firstDungeonWalkRectWallHit(walkRects, impactX, impactZ, tgt.X, tgt.Z); blocked ||
+		w.rockLineBlocked(attackerInstanceID, rockPoint{impactX, impactZ}, rockPoint{tgt.X, tgt.Z}) {
 		tgt.Mu.Unlock()
 		return
 	}

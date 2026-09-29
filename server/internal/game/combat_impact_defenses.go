@@ -28,6 +28,7 @@ func defensiveBuffIncomingDamageLocked(target *Entity, damage int, now time.Time
 	}
 	return damage
 }
+
 // Timer cleanup and impact resolution share the same boundary. An expired or
 // malformed shield cannot absorb between updates, reflect, or detonate history.
 // Caller holds the receiver lock. All real shield casts provide an expiry.
@@ -130,7 +131,7 @@ func (w *World) applyImpactShieldExplosion(owner *Entity, explosion impactShield
 	for _, target := range w.Grid.Nearby(explosion.x, explosion.z, expandedAbilityRadius("Arcane Shield", radius), explosion.instanceID) {
 		target.Mu.Lock()
 		if target.State == "DEAD" || target.Health <= 0 || target.Disconnected ||
-			!w.CanDamage(source, target) || !withinDungeonAbilityRadius(walkRects, "Arcane Shield", explosion.x, explosion.z, target, radius) {
+			!w.CanDamage(source, target) || !w.withinWorldAbilityRadius(walkRects, "Arcane Shield", explosion.x, explosion.z, target, radius) {
 			target.Mu.Unlock()
 			continue
 		}

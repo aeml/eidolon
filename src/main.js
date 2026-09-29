@@ -131,6 +131,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     let authSocket = null;
     let isAuthenticated = false;
+    let serverTerrainProfile = 'flat-v1';
     let pendingAuthRequest = null;
     let inFlightLoginRequest = null;
     let authReconnectTimer = null;
@@ -308,6 +309,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 isAuthenticated = true;
                 
                 const data = msg.payload;
+                serverTerrainProfile = data.terrainProfile || 'flat-v1';
                 authStatus.textContent = data.message || "Logged in!";
                 authStatus.style.color = '#4CAF50';
 
@@ -423,7 +425,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 window.game.destroy();
             }
             // Pass username and socket to GameEngine
-            window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
+            window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
 
             // Wire session-resume / reconnect callbacks into the network layer.
             sessionGame = window.game;

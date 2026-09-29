@@ -243,6 +243,7 @@ func (w *World) returnTradeOfferLocked(player *Entity, offer DirectTradeOffer) {
 				LootItem: &item, LootTime: time.Now(), CreatedAt: time.Now(),
 			}
 			w.Entities[loot.ID] = loot
+			w.groundLootLocked(loot)
 			w.Grid.Add(loot)
 		}
 	}

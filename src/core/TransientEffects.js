@@ -4,6 +4,8 @@ import { createProceduralCombatFeedbackEffect } from '../art/ProceduralCombatFee
 import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
 import { addDangerContrastUnderlay } from '../art/DangerBoundary.js';
 import { createEidolonAidPresentation } from '../art/ProceduralEidolonAid.js';
+import { conformGroundEffectMesh } from '../art/GroundRibbonGeometry.js';
+import { createTerrainBeamGeometry } from '../art/TerrainBeamGeometry.js';
 
 class TransientEffect {
     constructor(scene, meshes, duration, updateFn = null) {
@@ -825,6 +827,18 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
             ? options.source.position.clone().add(new THREE.Vector3(0, 1.5, 0))
             : position.clone().add(new THREE.Vector3(0, 1.0, 0));
         const end = position.clone();
+        if (options.terrainElevation) {
+            end.y = options.terrainElevation.sample(end.x, end.z) + 1.5;
+            const presentation = createTerrainBeamGeometry(start, end, options.terrainElevation, .22, 10);
+            const mesh = new THREE.Mesh(presentation.geometry, createBeamMaterial(color, .82));
+            mesh.position.copy(start);
+            addToScene(scene, mesh);
+            return new TransientEffect(scene, mesh, .35, ({ t }) => {
+                presentation.setWidthScale(Math.max(.08, 1 - t * .85));
+                mesh.material.uniforms.uTime.value = t * 2;
+                mesh.material.uniforms.uOpacity.value = (.82 + (quality === 'high' ? .1 : 0)) * (1 - t);
+            });
+        }
         if (end.y < start.y - 0.5) end.y = start.y;
         const direction = end.clone().sub(start);
         const range = Math.max(0.001, direction.length());
@@ -900,7 +914,9 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         // Server warnings use ground-level positions. Dungeon floors sit at
         // y=0.1; keep every warning layer above them without changing X/Z or radius.
         const groundPosition = position.clone();
-        groundPosition.y = Math.max(0.1, Number(position.y) || 0);
+        const terrain = options.terrainElevation;
+        const groundHeight = terrain?.sample(position.x, position.z);
+        groundPosition.y = terrain ? groundHeight + .1 : Math.max(0.1, Number(position.y) || 0);
         const reducedMotion = options.reducedMotion ?? Boolean(
             globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
         );
@@ -935,6 +951,13 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         fill.rotation.x = -Math.PI / 2;
         fill.position.copy(groundPosition);
         fill.position.y += 0.05;
+
+        if (terrain) {
+            ring.traverse(mesh => {
+                if (mesh.isMesh) conformGroundEffectMesh(mesh, terrain, groundHeight);
+            });
+            conformGroundEffectMesh(fill, terrain, groundHeight);
+        }
 
         const motif = createDungeonTelegraphMotif(
             options?.theme,
