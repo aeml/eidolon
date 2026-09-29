@@ -278,7 +278,9 @@ function createSkeletonClips() {
             numberTrack('Rig_SkeletonLantern', 'rotation[z]', attackTimes, [0, -0.18, -0.36, 0.38, 0])
         ]),
         new THREE.AnimationClip('Death', 1.45, [
-            numberTrack('Rig_SkeletonBody', 'position[y]', deathTimes, [0.34, 0.36, 0.14, -0.32, -0.56]),
+            // Rotate onto the side above the floor; the old negative body
+            // translation buried the whole torso before the corpse hold.
+            numberTrack('Rig_SkeletonBody', 'position[y]', deathTimes, [0.34, 0.36, 0.33, 0.67, 1.09]),
             numberTrack('Rig_SkeletonBody', 'rotation[x]', deathTimes, [0, -0.1, 0.38, 0.94, 1.38]),
             numberTrack('Rig_SkeletonBody', 'rotation[z]', deathTimes, [0, 0.08, -0.2, -0.62, -0.86]),
             numberTrack('Rig_SkeletonHead', 'rotation[x]', deathTimes, [0, -0.12, 0.28, 0.65, 0.9]),
