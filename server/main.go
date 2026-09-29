@@ -65,7 +65,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.35.0"
+	buildVersion = "Alpha 1.36.0"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -463,7 +463,8 @@ func main() {
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
 		log.Printf("Startup auction refunds remain pending: %v", err)
 	}
-	startEconomyMetrics(world, *economyMetricsFilePath)
+	stopEconomyMetrics := startEconomyMetrics(world, *economyMetricsFilePath)
+	defer stopEconomyMetrics()
 	loops := newServerLoops()
 
 	// Sweep goroutine: remove disconnected player entities whose resume window

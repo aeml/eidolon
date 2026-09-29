@@ -485,7 +485,8 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 		return nil, false
 	}
 
-	// Cost calculated to ensure ~0.5% house edge against EV (34.5 * Level)
+	// Price is 35 Gold per level. Actual resale returns depend on generated
+	// item values; the economy receipt audit measures them separately.
 	cost := int(math.Ceil(35 * float64(player.Level)))
 
 	if player.Gold < cost {
@@ -582,6 +583,9 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 }
 
 func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
+	if itemID == "" {
+		return nil, false
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -589,6 +593,8 @@ func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
 	if !ok {
 		return nil, false
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	buybackIndex := -1
 	var itemToBuy *Item
@@ -618,9 +624,24 @@ func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
 		return nil, false
 	}
 
+	freeSlot := -1
+	for i := 0; i < len(player.Inventory) && i < MaxInventorySize; i++ {
+		if player.Inventory[i].ID == "" {
+			freeSlot = i
+			break
+		}
+	}
+	if freeSlot < 0 && len(player.Inventory) >= MaxInventorySize {
+		return nil, false
+	}
+
 	player.Gold -= totalCost
 	w.Economy.RecordSink("buyback", totalCost)
-	player.Inventory = append(player.Inventory, *itemToBuy)
+	if freeSlot >= 0 {
+		player.Inventory[freeSlot] = *itemToBuy
+	} else {
+		player.Inventory = append(player.Inventory, *itemToBuy)
+	}
 
 	// Remove from buyback
 	player.Buyback = append(player.Buyback[:buybackIndex], player.Buyback[buybackIndex+1:]...)

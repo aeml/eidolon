@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.35.0';
+const currentVersion = '1.36.0';
+
+test('1.36.0 records economy safety without resetting player balances', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.36.0"'), previous = html.indexOf('data-version="1.35.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Gold economy safety', 'available visible bag slot',
+        'full bag no longer charges Gold', 'current instance', 'final partial hour',
+        'not a crash-proof currency ledger', 'balances, prices, rewards and drop rates are unchanged',
+        'does not open closed beta', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.35.0 records Forge safety and unchanged progression costs', () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -1228,8 +1228,11 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		player, success := world.PerformBuyback(c.playerID, payload.ItemID)
 		if success {
-			// Send Inventory Update
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			buybackPayload, _ := json.Marshal(player.Buyback)
+			player.Mu.RUnlock()
+			// Send Inventory Update
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
@@ -1238,7 +1241,6 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSafe(bInv)
 
 			// Send Buyback Update
-			buybackPayload, _ := json.Marshal(player.Buyback)
 			msgBuyback := Message{
 				Type:    MsgBuybackList,
 				Payload: buybackPayload,

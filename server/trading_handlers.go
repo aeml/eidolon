@@ -335,7 +335,7 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 			} else {
 				// Stash also full - Drop on Ground
 				item.Stack = stashRemaining
-				world.DropLoot(item, player.X, player.Z)
+				world.DropLootInInstance(item, player.X, player.Z, player.InstanceID)
 				c.sendError("Inventory & Stash full! Item dropped on ground.")
 			}
 		} else {

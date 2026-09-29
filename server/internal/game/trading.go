@@ -495,7 +495,7 @@ func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World
 		if remStash > 0 {
 			// Fallback: Drop on Ground
 			leftoverItem.Stack = remStash
-			w.DropLoot(leftoverItem, buyer.X, buyer.Y)
+			w.DropLootInInstance(leftoverItem, buyer.X, buyer.Z, buyer.InstanceID)
 		}
 	}
 
@@ -713,7 +713,7 @@ func (ts *TradingSystem) CancelAuction(auctionID string, player *Entity, w *Worl
 		if remStash > 0 {
 			// Fallback: Drop on Ground
 			leftoverItem.Stack = remStash
-			w.DropLoot(leftoverItem, player.X, player.Y)
+			w.DropLootInInstance(leftoverItem, player.X, player.Z, player.InstanceID)
 		}
 	}
 

@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.35.0</span>
+                    <span class="start-version-row__label">Alpha 1.36.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -707,6 +707,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.36.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.36.0 (Gold economy safety)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Safe vendor buyback:</strong> Recovered equipment goes into an available visible bag slot. A full bag no longer charges Gold or removes the recovery item.</li>
+                        <li><strong>Recoverable legacy overflow:</strong> No-database auction overflow now uses the player's ground position and current instance. Durable auction bag/stash settlement is unchanged.</li>
+                        <li><strong>Better economy observations:</strong> Normal shutdown saves the final partial hour of aggregate source/sink metrics, including deployments less than an hour apart. These logs are not a crash-proof currency ledger.</li>
+                        <li><strong>No economy reset:</strong> Existing balances, prices, rewards and drop rates are unchanged. Gold-to-EP remains one-way; EP cannot buy character power.</li>
+                        <li><strong>Still open alpha:</strong> This release does not open closed beta. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.35.0">
                     <h3 class="patch-note-entry__title">Alpha 1.35.0 (safe Forge upgrades and gem crafting)</h3>
                     <ul class="patch-note-entry__list">

@@ -5,24 +5,43 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"eidolon-server/internal/game"
 )
 
-func startEconomyMetrics(world *game.World, path string) {
+// Stop after gameplay has drained. A normal deploy preserves the final partial
+// hour; abrupt crashes and write failures are still not a durable ledger.
+func startEconomyMetrics(world *game.World, path string) func() {
 	if world == nil || world.Economy == nil || path == "" {
-		return
+		return func() {}
 	}
+	stop, done := make(chan struct{}), make(chan struct{})
+	var once sync.Once
 	go func() {
+		defer close(done)
 		ticker := time.NewTicker(time.Hour)
 		defer ticker.Stop()
-		for now := range ticker.C {
+		flush := func(now time.Time) {
 			if err := appendEconomySummary(path, world.Economy.Drain(now)); err != nil {
 				log.Printf("economy metrics write failed: %v", err)
 			}
 		}
+		for {
+			select {
+			case now := <-ticker.C:
+				flush(now)
+			case <-stop:
+				flush(time.Now())
+				return
+			}
+		}
 	}()
+	return func() {
+		once.Do(func() { close(stop) })
+		<-done
+	}
 }
 
 func appendEconomySummary(path string, summary game.EconomySummary) error {
