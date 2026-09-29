@@ -6,6 +6,7 @@ import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
 import { createBastionFoundation, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
+import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS, DUNGEON_ENTRANCE_IDS } from '../data/dungeonEntrances.js';
 
 const GEOMETRIES = new Map();
@@ -65,7 +66,11 @@ const SHAPES = Object.freeze({
     bastionFoundation: geometry('dungeon-entrance-bastion-foundation', createBastionFoundation),
     bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
     bastionParapet: geometry('dungeon-entrance-bastion-parapet', createBastionTowerParapet),
-    bastionRecess: geometry('dungeon-entrance-bastion-recess', createBastionRecess)
+    bastionRecess: geometry('dungeon-entrance-bastion-recess', createBastionRecess),
+    moltenFoundation: geometry('dungeon-entrance-molten-foundation', createMoltenFoundation),
+    moltenVault: geometry('dungeon-entrance-molten-vault', createMoltenVault),
+    moltenVaultRib: geometry('dungeon-entrance-molten-rib', createMoltenVaultRib),
+    moltenForegate: geometry('dungeon-entrance-molten-foregate', createMoltenForegate)
 });
 
 function regionMaterials(region) {
@@ -81,10 +86,10 @@ function regionMaterials(region) {
             spirit: theme.palette.spirit
         },
         molten_core: {
-            dark: 0x120907,
-            stone: 0x2d1916,
-            pale: 0x603023,
-            metal: 0x4a3932,
+            dark: 0x171819,
+            stone: 0x4a4540,
+            pale: 0x74685a,
+            metal: 0x625c50,
             accent: theme.palette.accent,
             spirit: theme.palette.spirit
         },
@@ -286,9 +291,10 @@ function createVerdantBastion(root) {
 
 function createMoltenCore(root) {
     const m = MATERIAL_SETS.molten_core;
-    box(root, 'molten:obsidian-foundation', m.dark, [72, 3.5, 70], [0, 1.75, 0]);
-    box(root, 'molten:kiln-vault', m.stone, [47, 29, 31], [0, 17.5, -6]);
-    box(root, 'molten:kiln-brow', m.metal, [52, 5, 34], [0, 32, -6]);
+    addMesh(root, 'molten:obsidian-foundation', SHAPES.moltenFoundation, m.stone);
+    addMesh(root, 'molten:kiln-vault', SHAPES.moltenVault, m.stone);
+    addMesh(root, 'molten:carved-foregate', SHAPES.moltenForegate, m.pale);
+    for (const z of [-20, -7, 8.5]) addMesh(root, `molten:kiln-brow:${z}`, SHAPES.moltenVaultRib, m.metal, { position: [0, 0, z] });
     for (const side of [-1, 1]) {
         addMesh(root, `molten:crucible-pylon:${side}`, SHAPES.tapered6, m.stone, {
             position: [side * 27, 21, -7],
@@ -298,23 +304,23 @@ function createMoltenCore(root) {
             [side * 25, 51, -5], [13, 28, 13], [0, 0, side * -0.38]);
         beam(root, `molten:furnace-rib:${side}`, m.metal,
             [side * 12, 31, 9], [side * 26, 49, 0], 1.5, SHAPES.cylinder8);
-        beam(root, `molten:great-chain-upper:${side}`, m.metal,
-            [side * 25, 43, 5], [side * 10, 34, 11], 0.65, SHAPES.cylinder8);
-        beam(root, `molten:great-chain-lower:${side}`, m.metal,
-            [side * 10, 34, 11], [side * 15, 21, 14], 0.65, SHAPES.cylinder8);
+        addMesh(root, `molten:great-chain-upper:${side}`,
+            geometry(`molten-chain-upper:${side}`, () => createMoltenChain([side * 25, 43, 5], [side * 10, 34, 11])), m.metal);
+        addMesh(root, `molten:great-chain-lower:${side}`,
+            geometry(`molten-chain-lower:${side}`, () => createMoltenChain([side * 10, 34, 11], [side * 15, 21, 14])), m.metal);
         for (const z of [3, 12, 21, 30]) {
-            box(root, `molten:lava-channel:${side}:${z}`, m.accent, [3.2, 0.35, 7], [side * 7.5, 3.7, z]);
+            box(root, `molten:lava-channel:${side}:${z}`, m.accent, [1.4, .14, 5.5], [side * 7.5, 1.55, z]);
         }
         spike(root, `molten:basalt-fang:${side}`, m.pale,
             [side * 18, 12, 12], [5, 17, 5], [Math.PI, 0, side * 0.1]);
     }
-    portal(root, 'molten:furnace-mouth', m, [0, 15.5, 9.65], [13.5, 19.5, 2.4]);
+    portal(root, 'molten:furnace-mouth', m, [0, 12, 32.4], [13, 19, 2.4]);
     addMesh(root, 'molten:crucible-halo', SHAPES.torus, m.metal, {
         position: [0, 38.5, 11.3],
         scale: [12, 12, 2.5]
     });
     spike(root, 'molten:kiln-crown', m.spirit, [0, 45.5, 11.5], [5, 10, 3], [0, 0, Math.PI]);
-    box(root, 'molten:threshold-rift', m.spirit, [11, 0.3, 25], [0, 3.8, 24]);
+    box(root, 'molten:threshold-rift', m.spirit, [8, .08, .28], [0, 1.7, 33]);
 }
 
 function createTempestSpire(root) {
@@ -447,6 +453,12 @@ function buildArchitecture(root, dungeonType) {
     // the visible gate. Its tall crowns engulfed the west approach camera.
     // Scale in parent space so tilted buttresses retain their XZ footprint.
     if (dungeonType === 'verdant_bastion_catacombs') architecture.scale.y = .5;
+    if (dungeonType === 'molten_core') {
+        // The actual approach is east of the kiln. Face its visible threshold
+        // toward those players, and keep the crown below the normal camera.
+        architecture.rotation.y = Math.PI / 2;
+        architecture.scale.y = .55;
+    }
     root.add(architecture);
     BUILDERS[dungeonType](architecture);
 }

@@ -33,10 +33,13 @@ for (const config of cases) {
             const hero = new Wizard('visibility-wizard');
             // The lower Verdant profile exposes the old (-36,-30) position.
             // Keep this an actual occlusion test, outside its collision circle.
-            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-30, 0, -25] : [-10, 0, -10]));
-            if (config.type === 'verdant_bastion_catacombs' &&
+            // Molten's old (-10,-10) sample was inside blocked architecture;
+            // use the reachable rear-pylon edge for its redesigned vault.
+            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-30, 0, -25] :
+                config.type === 'molten_core' ? [-10, 0, -36] : [-10, 0, -10]));
+            if (['verdant_bastion_catacombs', 'molten_core'].includes(config.type) &&
                 Math.hypot(hero.position.x, hero.position.z) <= root.userData.interactionRadius + 1.25) {
-                throw new Error('Verdant cutaway fixture must remain outside the physical entrance');
+                throw new Error('Refined-entrance cutaway fixture must remain outside the physical entrance');
             }
             await hero.ensureMesh();
             hero.mesh.position.copy(hero.position); render.add(hero.mesh);

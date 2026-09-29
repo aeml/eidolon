@@ -67,7 +67,7 @@ export const FIRE_LOCATIONS = freeze([
         ...story('cold_ash'), radius: 25, visibility: 'quest',
         purpose: 'A broken exhaust channel links the cold ash, command anchor and released ember. Existing combat and inspection prerequisites still apply.' },
     { id: 'molten-approach', name: 'Molten Core Approach', region: 'fire', role: 'landmark', recipe: 'furnace-procession',
-        ...entrance('molten_core'), radius: 68, arrivalOffset: [52, 0], visibility: 'public',
+        ...entrance('molten_core'), radius: 68, arrivalOffset: [44, 0], visibility: 'public',
         purpose: 'Old heat baffles shelter the eastern gathering approach. Meet outside the gate; the northern trail bypasses the entrance.' },
     { id: 'kiln-span', name: 'The Kiln Span', region: 'fire', role: 'landmark', recipe: 'kiln-span',
         x: -1740, z: 240, radius: 24, visibility: 'public',
@@ -163,7 +163,7 @@ export const WATER_PATHS = freeze([
     { id: 'flotilla-path', width: 6, points: [[0,-1800],[0,-1740],[230,-1740],[230,-1780]] }
 ]);
 export const FIRE_PATHS = freeze([
-    { id: 'fire-passage', width: 8, points: [[-1000,200],[-1450,200],[-1490,240],[-2200,240],[-2250,200],[-2348,200]] },
+    { id: 'fire-passage', width: 8, points: [[-1000,200],[-1450,200],[-1490,240],[-2200,240],[-2250,200],[-2356,200]] },
     { id: 'core-bypass', width: 6, points: [[-2250,200],[-2290,280],[-2510,280],[-2590,240],[-2800,240],[-2920,200]] },
     { id: 'communal-kiln-path', width: 4, points: [[-1100,200],[-1100,285],[-1170,285],[-1170,253]] },
     { id: 'command-scar-path', width: 4, points: [[-1100,200],[-1100,155],[-1164,155]] },

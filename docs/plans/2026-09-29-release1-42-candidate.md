@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Molten Core gains an east-facing carved foregate, constructed barrel vault,
+  linked chains and a lower visible crown. Its public approach marker and road
+  end move8m closer for phone visibility; gameplay bounds and entry rules stay
+  unchanged. See [Molten entrance review](2026-09-29-molten-entrance-alignment.md).
+
 - Water/Fire authored places gain regional reed and dry-grass edge beds,
   arranged around scenery while preserving paths, interactions and hazard
   visibility. Low uses fewer plants at the same positions. See the

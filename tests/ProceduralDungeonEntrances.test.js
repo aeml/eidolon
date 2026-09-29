@@ -30,6 +30,33 @@ const EXPECTED_CONTRACTS = Object.freeze({
 });
 
 describe('procedural dungeon entrances', () => {
+    test.each([false, true])('Molten gate faces its east approach within the unchanged gameplay box (batched=%s)', optimized => {
+        const root = createProceduralDungeonEntrance('molten_core', { optimized });
+        root.updateMatrixWorld(true);
+        const visibleBounds = new THREE.Box3();
+        root.traverse(part => {
+            if (part.userData.proceduralDungeonEntrancePart) visibleBounds.union(new THREE.Box3().setFromObject(part));
+        });
+        expect(visibleBounds.max.y).toBeLessThan(37);
+        expect(visibleBounds.max.y).toBeGreaterThan(30);
+        expect(visibleBounds.min.y).toBeGreaterThanOrEqual(0);
+        expect(root.userData.interactionRadius).toBe(DUNGEON_ENTRANCE_DEFINITIONS.molten_core.interactionRadius);
+        const ray = new THREE.Raycaster(new THREE.Vector3(45, 6.6, 0), new THREE.Vector3(-1, 0, 0));
+        const hit = ray.intersectObject(root, true).find(hit => hit.object.material.visible !== false);
+        expect(hit.object.userData.portalSurface).toBe(true);
+        expect(hit.point.x).toBeCloseTo(32.49, 2);
+        if (!optimized) {
+            const gate = root.getObjectByName('molten:furnace-mouth:eidolic-veil');
+            expect(gate.getWorldPosition(new THREE.Vector3()).y).toBeCloseTo(6.6);
+            const normal = new THREE.Vector3(0, 0, 1).transformDirection(gate.matrixWorld);
+            expect(normal.x).toBeCloseTo(1); expect(normal.z).toBeCloseTo(0);
+            const vault = root.getObjectByName('molten:kiln-vault');
+            // Real recessed chamber behind the foregate, not a solid box.
+            const interior = new THREE.Raycaster(new THREE.Vector3(25, 4, 0), new THREE.Vector3(-1, 0, 0));
+            const hit = interior.intersectObject(vault)[0];
+            expect(hit.point.x).toBeCloseTo(-18.9, 2);
+        }
+    });
     test('Bastion has an open ruined hall, finite broken parapets and curved bark roots', () => {
         const root = createProceduralDungeonEntrance('verdant_bastion_catacombs', { optimized: false });
         root.updateMatrixWorld(true);
@@ -207,7 +234,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 26,
+            geometries: 34,
             materials: 30,
             entrances: 4
         });

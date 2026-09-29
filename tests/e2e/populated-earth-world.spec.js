@@ -79,8 +79,9 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const stats = { id, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures,
                     shadowFocusError: render.shadowTarget.distanceTo(engine.player.position) };
-                if (id === 'verdant-approach') {
-                    const gatePoint = new THREE.Vector3(800, 6, 232.19).project(render.camera);
+                if (id === 'verdant-approach' || id === 'molten-approach') {
+                    const molten = id === 'molten-approach';
+                    const gatePoint = new THREE.Vector3(...(molten ? [-2367.51, 6.6, 200] : [800, 6, 232.19])).project(render.camera);
                     const ray = new THREE.Raycaster();
                     ray.setFromCamera(new THREE.Vector2(gatePoint.x, gatePoint.y), render.camera);
                     const hit = ray.intersectObjects(render.instanceEnvironmentGroup.children, true)
@@ -88,10 +89,13 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     let target = hit?.object;
                     while (target && !target.userData.proceduralDungeonEntrance) target = target.parent;
                     stats.gateInView = Math.abs(gatePoint.x) < .95 && Math.abs(gatePoint.y) < .95;
+                    stats.gateProjection = gatePoint.toArray();
                     stats.gateHit = target?.userData.dungeonType;
+                    stats.portalHit = Boolean(hit?.object.userData.portalSurface);
                     stats.approachBlocked = Boolean(collision.checkCollision(engine.player.position, 1.25));
-                    if (!stats.gateInView || stats.gateHit !== 'verdant_bastion_catacombs' || stats.approachBlocked) {
-                        throw new Error(`Unreadable or blocked Bastion arrival: ${JSON.stringify(stats)}`);
+                    if (!stats.gateInView || stats.gateHit !== (molten ? 'molten_core' : 'verdant_bastion_catacombs') ||
+                        (molten && !stats.portalHit) || stats.approachBlocked) {
+                        throw new Error(`Unreadable or blocked dungeon arrival: ${JSON.stringify(stats)}`);
                     }
                 }
                 if (reading) {
