@@ -1,6 +1,55 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('body-level periodic feedback remains visible beside equipped classes', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const results = await page.evaluate(async () => {
+        const THREE = await import('three');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { Actor } = await import('/src/entities/Actor.js');
+        const factories = await import('/src/art/ProceduralHumanoid.js');
+        const { createProceduralCombatFeedbackEffect } = await import('/src/art/ProceduralCombatFeedback.js');
+        const render = new RenderSystem(false), results = [];
+        render.setZoom(15); render.setCameraTarget(new THREE.Vector3());
+        const target = new THREE.WebGLRenderTarget(640, 450);
+        const capture = () => {
+            const pixels = new Uint8Array(640 * 450 * 4);
+            render.renderer.setRenderTarget(target); render.renderer.render(render.scene, render.camera);
+            render.renderer.readRenderTargetPixels(target, 0, 0, 640, 450, pixels);
+            return pixels;
+        };
+        for (const type of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
+            const actor = new Actor('cue-review', {});
+            actor.meshType = type; actor.setMesh(factories[`createProcedural${type}`]({ batch: true }));
+            render.entityGroup.add(actor.mesh);
+            const height = actor.mesh.userData.bounds.height * Math.abs(actor.mesh.scale.y);
+            const position = new THREE.Vector3(0, .08 + Math.min(4, Math.max(.55, height * .45)), 0);
+            for (const quality of ['high', 'low']) for (const feedbackKind of ['poison_tick', 'restoration_tick']) {
+                render.setGraphicsQuality(quality);
+                const effect = createProceduralCombatFeedbackEffect(render.effectGroup, position,
+                    { quality, feedbackKind, amount: 40, bodyRadius: Math.min(2, Math.max(.65, height * .2)) });
+                effect.update(.08);
+                const visible = capture(); effect.root.visible = false; const absent = capture();
+                let pixels = 0;
+                for (let i = 0; i < visible.length; i += 4) {
+                    if (Math.abs(visible[i] - absent[i]) + Math.abs(visible[i + 1] - absent[i + 1]) +
+                        Math.abs(visible[i + 2] - absent[i + 2]) > 12) pixels++;
+                }
+                results.push({ type, quality, feedbackKind, pixels }); effect.dispose();
+            }
+            actor.dispose();
+        }
+        render.renderer.setRenderTarget(null); target.dispose(); render.renderer.dispose();
+        return results;
+    });
+    await testInfo.attach('body-cue-pixels', { body: JSON.stringify(results), contentType: 'application/json' });
+    for (const row of results) expect(row.pixels, JSON.stringify(row)).toBeGreaterThan(0);
+    expect(failures).toEqual([]);
+});
+
 test('ground-level combat fields remain visible above dungeon floors', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -92,6 +141,7 @@ for (const motion of ['no-preference', 'reduce']) test(`boss warning edge stays 
             const THREE = await import('three');
             const { AttachedStatusEffect } = await import('/src/entities/AttachedStatusEffect.js');
             const { createProceduralProjectileImpactEffect } = await import('/src/art/ProceduralProjectileImpacts.js');
+            const { createProceduralCombatFeedbackEffect } = await import('/src/art/ProceduralCombatFeedback.js');
             const gallery = window.__eidolonAnimationGalleryController;
             // Deliberately layered presentation fixture, not a claim that one
             // build can cast every effect or that this is network combat.
@@ -101,6 +151,13 @@ for (const motion of ['no-preference', 'reduce']) test(`boss warning edge stays 
                 effect.update(.4);
                 return effect;
             }));
+            for (const owner of owners) for (const feedbackKind of ['poison_tick', 'restoration_tick']) {
+                const position = owner.position.clone();
+                position.y += 1.2;
+                const effect = createProceduralCombatFeedbackEffect(gallery.renderSystem.effectGroup,
+                    position, { feedbackKind, amount: 40, quality });
+                effect.update(.15); effects.push(effect);
+            }
             for (const [index, projectileType] of ['Fireball', 'Meteor', 'ExplosiveTrap'].entries()) {
                 const effect = createProceduralProjectileImpactEffect(gallery.renderSystem.effectGroup,
                     new THREE.Vector3((index - 1) * 3, 0, 2), { projectileType, radius: 4, quality });
@@ -110,7 +167,7 @@ for (const motion of ['no-preference', 'reduce']) test(`boss warning edge stays 
             window.__warningClutter = effects;
             return { owners: owners.length, effects: effects.length };
         }, quality);
-        expect(clutter).toEqual({ owners: 3, effects: 12 });
+        expect(clutter).toEqual({ owners: 3, effects: 18 });
         for (const phase of [0.0625, 0.125, 0.25, 0.75]) {
             const result = await page.evaluate(({ quality, phase }) => {
                 const render = window.__eidolonAnimationGalleryController.renderSystem;

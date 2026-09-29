@@ -27,7 +27,7 @@ function makeEngine() {
 }
 
 describe('authoritative combat feedback visuals', () => {
-    test('direct contact is on the source-facing body, without moving the target or periodic feedback', () => {
+    test('direct contact faces the source; periodic receipts stay body-centered without moving the target', () => {
         const engine = makeEngine(), enemy = actor('enemy', 'Skeleton', 0, 6);
         enemy.mesh = { userData: { bounds: { height: 4, radius: 1 } }, scale: { x: 1, y: 1 } };
         engine.remotePlayers.set(enemy.id, enemy);
@@ -39,8 +39,10 @@ describe('authoritative combat feedback visuals', () => {
         expect(options.impactDirection).toEqual({ x: 0, z: -1 });
         expect(enemy.position.equals(original)).toBe(true);
         engine.renderCombatFeedback({ sourceId: engine.player.id, targetId: enemy.id, amount: 3, kind: 'poison' });
-        expect(engine.spawnTransientEffect.mock.calls[1][1].equals(original)).toBe(true);
+        expect(engine.spawnTransientEffect.mock.calls[1][1].equals(original.clone().add(new THREE.Vector3(0, 1.8, 0)))).toBe(true);
+        expect(enemy.position.equals(original)).toBe(true);
         expect(engine.spawnTransientEffect.mock.calls[1][3].impactDirection).toBeUndefined();
+        expect(engine.spawnTransientEffect.mock.calls[1][3].bodyRadius).toBe(.8);
     });
 
     test.each([0, -1, NaN, Infinity])('non-damage %s cannot produce a confirmed hit flash', amount => {

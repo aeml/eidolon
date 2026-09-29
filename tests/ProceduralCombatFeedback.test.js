@@ -23,6 +23,39 @@ function meshes(root) {
 }
 
 describe('procedural combat feedback', () => {
+    test.each(KINDS.filter(kind => !kind.endsWith('_strike')))('%s is a bounded body cue, not a decorative area ring', feedbackKind => {
+        const old = globalThis.matchMedia;
+        try {
+            for (const reduce of [false, true]) {
+                globalThis.matchMedia = () => ({ matches: reduce });
+                const scene = new THREE.Group(), position = new THREE.Vector3(5, 3, 9);
+                const a = createProceduralCombatFeedbackEffect(scene, position, { feedbackKind, amount: 100 });
+                const b = createProceduralCombatFeedbackEffect(scene, position, { feedbackKind, amount: 100 });
+                const parts = [...a.root.children], starts = parts.map(p => p.position.clone());
+                const rotations = parts.map(p => p.quaternion.clone());
+                expect(parts.every(p => !/RingGeometry|TorusGeometry/.test(p.geometry.type))).toBe(feedbackKind !== 'wind_tick');
+                // Wind keeps a small upright crescent, never a ground ring.
+                expect(parts.every(p => /TickMote/.test(p.name))).toBe(true);
+                a.update(.2); for (let i = 0; i < 10; i++) b.update(.02);
+                parts.forEach((part, i) => {
+                    expect(part.position.distanceTo(b.root.children[i].position)).toBeLessThan(1e-6);
+                    expect(part.scale.distanceTo(b.root.children[i].scale)).toBeLessThan(1e-6);
+                    expect(part.quaternion.equals(rotations[i])).toBe(true);
+                    expect(Math.hypot(part.position.x, part.position.z)).toBeLessThan(.8);
+                    if (reduce) expect(part.position.equals(starts[i])).toBe(true);
+                    else if (a.root.userData.restorative) expect(part.position.y).toBeGreaterThan(starts[i].y);
+                    else expect(part.position.y).toBeLessThan(starts[i].y);
+                });
+                expect(a.root.position.equals(position)).toBe(true);
+                a.update(1); b.dispose();
+                expect(scene.children).toHaveLength(0);
+                expect(a.disposed).toBe(true);
+            }
+        } finally {
+            if (old) globalThis.matchMedia = old; else delete globalThis.matchMedia;
+        }
+    });
+
     test('direct hits face the source, expire quickly and preserve resources across frame sizes', () => {
         const scene = new THREE.Group(), options = { feedbackKind: 'fighter_strike', amount: 20,
             impactDirection: { x: 1, z: 0 } };
@@ -118,8 +151,8 @@ describe('procedural combat feedback', () => {
                 sharedGeometry: true,
                 sharedMaterials: true
             }));
-            expect(meshes(root).filter((part) => part.visible).length).toBeGreaterThanOrEqual(
-                feedbackKind.endsWith('_strike') && quality === 'low' ? 4 : 6);
+            expect(meshes(root).filter((part) => part.visible)).toHaveLength(
+                feedbackKind.endsWith('_strike') ? (quality === 'low' ? 4 : 6) : (quality === 'low' ? 2 : 4));
             effect.update(0.22);
             root.traverse((part) => {
                 expect(part.position.toArray().every(Number.isFinite)).toBe(true);

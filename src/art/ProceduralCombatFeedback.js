@@ -40,7 +40,7 @@ export const PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS = Object.freeze({
         { dark: 0x132027, base: 0x3d7080, accent: 0x80d9e8, pale: 0xe6fcff }, 'crescent', 'shear'),
     cleric_heal: feedback('restoration', 'mercy-reliquary-stitch', 'golden mercy reliquary stitching a living wound',
         { dark: 0x182217, base: 0x4c7b46, accent: 0x9ee876, pale: 0xf1ffd2 }, 'wing', 'rise', true),
-    restoration_tick: feedback('restoration', 'verdant-rosary-return', 'verdant rosary beads rising through a quiet halo',
+    restoration_tick: feedback('restoration', 'verdant-rosary-return', 'verdant rosary beads rising in quiet threads',
         { dark: 0x102016, base: 0x356945, accent: 0x67ca7d, pale: 0xd9ffe0 }, 'bead', 'spiral', true),
     lifesteal: feedback('restoration', 'sanguine-covenant-return', 'sanguine covenant thread returning stolen vitality',
         { dark: 0x240b14, base: 0x681d38, accent: 0xc83f68, pale: 0xffa7bd }, 'drop', 'inward', true),
@@ -118,48 +118,21 @@ function emblemGeometry(shape) {
 function buildFeedback(root, kind, definition, mats, quality, intensity) {
     if (kind.endsWith('_strike')) return buildDirectImpact(root, kind, mats, quality, intensity);
     const restorative = definition.restorative;
-    const emblemCount = quality === 'low' ? 4 : 7;
+    const emblemCount = quality === 'low' ? 2 : 4;
     const emblem = emblemGeometry(definition.shape);
-
-    addPart(root, kind, 'WoundSeal',
-        geometry('feedback:seal', () => new THREE.RingGeometry(0.52, 0.68, 20)),
-        restorative ? mats.accent : mats.dark, {
-            position: [0, 0.06, 0], rotation: [-Math.PI / 2, 0, 0],
-            scale: [intensity, intensity, intensity], motion: restorative ? 'gather' : 'seal'
-        });
-    addPart(root, kind, 'WitnessHalo',
-        geometry('feedback:halo', () => new THREE.RingGeometry(0.3, 0.38, 16)), mats.pale, {
-            position: [0, 0.12, 0], rotation: [-Math.PI / 2, 0, Math.PI / 8],
-            scale: [intensity, intensity, intensity], motion: restorative ? 'rise' : 'snap'
-        });
-
+    // Tick receipts aren't area indicators. Keep their distinct color/symbol
+    // near the body, leaving ground rings for actual range and danger fields.
     for (let index = 0; index < emblemCount; index += 1) {
         const angle = (index / emblemCount) * Math.PI * 2 + definition.motif.length * 0.07;
-        const outward = restorative ? -1 : 1;
-        const travel = intensity * (0.75 + (index % 3) * 0.25);
-        addPart(root, kind, `Relic${index + 1}`, emblem,
-            index % 3 === 0 ? mats.pale : (index % 2 ? mats.base : mats.accent), {
-                position: [Math.cos(angle) * 0.18, 0.45 + (index % 2) * 0.22, Math.sin(angle) * 0.18],
-                rotation: [Math.PI / 2, -angle, restorative ? Math.PI : 0],
-                scale: [intensity, intensity, intensity],
-                motion: restorative ? definition.motion : 'shard', phase: angle,
-                travel: travel * outward, highQualityOnly: index >= 4
+        addPart(root, kind, `TickMote${index + 1}`, emblem, index % 2 ? mats.base : mats.accent, {
+                position: [Math.cos(angle) * root.userData.bodyRadius, index * .09, Math.sin(angle) * root.userData.bodyRadius],
+                rotation: [.3, -angle, restorative ? 0 : .7],
+                scale: [.45 * intensity, .65 * intensity, .45 * intensity],
+                motion: restorative ? 'periodic-rise' : 'periodic-fall', phase: angle,
+                travel: intensity * (restorative ? .7 : .3)
             });
     }
-
-    if (definition.motion === 'cross' || definition.motion === 'rend' || definition.motion === 'fork') {
-        const strokes = definition.motion === 'fork' ? 3 : 2;
-        for (let index = 0; index < strokes; index += 1) {
-            addPart(root, kind, `Stroke${index + 1}`,
-                geometry('feedback:stroke', () => new THREE.BoxGeometry(0.08, 1.7, 0.08)), mats.pale, {
-                    position: [(index - (strokes - 1) / 2) * 0.35, 0.9, 0],
-                    rotation: [0, 0, (index - (strokes - 1) / 2) * 0.72],
-                    scale: [intensity, intensity, intensity], motion: 'stroke', phase: index
-                });
-        }
-    }
-
-    return restorative ? 0.72 : 0.52;
+    return restorative ? .55 : .38;
 }
 
 function buildDirectImpact(root, kind, mats, quality, intensity) {
@@ -183,9 +156,8 @@ function buildDirectImpact(root, kind, mats, quality, intensity) {
     return .28;
 }
 
-function updateFeedback(root, elapsed, duration, dt) {
+function updateFeedback(root, elapsed, duration) {
     const t = Math.min(1, elapsed / duration);
-    const close = t > 0.7 ? Math.max(0, (1 - t) / 0.3) : 1;
     root.traverse((part) => {
         if (!part.isMesh) return;
         const data = part.userData;
@@ -200,30 +172,13 @@ function updateFeedback(root, elapsed, duration, dt) {
                 Math.sin(data.phase) * distance * .6 - (root.userData.reducedMotion ? 0 : t * t * .65),
                 distance * .65);
             part.scale.setScalar((1 - t) * base[0]);
-        } else if (data.motion === 'seal' || data.motion === 'snap') {
-            const spread = 0.6 + Math.sin(t * Math.PI / 2) * 1.5;
-            part.scale.set(base[0] * spread * close, base[1] * spread * close, base[2] * close);
-            part.rotation.z += dt * (data.motion === 'snap' ? -5 : 3.5);
-        } else if (data.motion === 'shard' || data.motion === 'cleave' || data.motion === 'crown'
-            || data.motion === 'rend' || data.motion === 'erupt' || data.motion === 'scour'
-            || data.motion === 'fork' || data.motion === 'shear' || data.motion === 'reverse') {
-            const distance = Math.sin(t * Math.PI / 2) * Number(data.travel || 1);
-            part.position.set(
-                origin[0] + Math.cos(data.phase) * distance,
-                origin[1] + Math.sin(t * Math.PI) * Math.abs(data.travel) * 0.45,
-                origin[2] + Math.sin(data.phase) * distance
-            );
-            part.scale.set(base[0] * close, base[1] * close, base[2] * close);
-            part.rotation.y += dt * 5;
-        } else if (data.motion === 'gather' || data.motion === 'rise' || data.motion === 'spiral' || data.motion === 'inward') {
-            const inward = 1 - Math.sin(t * Math.PI / 2);
-            const orbit = data.phase + t * Math.PI * 1.5;
-            const radius = Math.abs(data.travel) * inward;
-            part.position.set(Math.cos(orbit) * radius, origin[1] + t * 1.65, Math.sin(orbit) * radius);
-            part.scale.set(base[0] * close, base[1] * close, base[2] * close);
-            part.rotation.y -= dt * 3.5;
-        } else if (data.motion === 'stroke') {
-            part.scale.set(base[0], base[1] * Math.sin(t * Math.PI), base[2]);
+        } else if (data.motion === 'periodic-rise' || data.motion === 'periodic-fall') {
+            const travel = root.userData.reducedMotion ? 0 : data.travel * t;
+            const rise = data.motion === 'periodic-rise';
+            const spread = rise ? 1 - travel * .3 : 1 + travel * .5;
+            part.position.set(origin[0] * spread, origin[1] + (rise ? travel : -travel * t), origin[2] * spread);
+            const fade = Math.pow(1 - t, 1.5);
+            part.scale.set(base[0] * fade, base[1] * fade, base[2] * fade);
         }
     });
 }
@@ -242,7 +197,7 @@ class ProceduralCombatFeedbackEffect {
         if (!this.isActive) return;
         const step = Math.max(0, Number(dt) || 0);
         this.elapsed += step;
-        updateFeedback(this.root, this.elapsed, this.duration, step);
+        updateFeedback(this.root, this.elapsed, this.duration);
         if (this.elapsed >= this.duration) this.dispose();
     }
 
@@ -288,6 +243,7 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
         sourceId: options.sourceId || '',
         targetId: options.targetId || '',
         instanceId: options.instanceId || '',
+        bodyRadius: Math.max(.65, Math.min(2, Number(options.bodyRadius) || .65)),
         sharedGeometry: true,
         sharedMaterials: true
     });

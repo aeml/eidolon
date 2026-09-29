@@ -412,10 +412,10 @@ class GameEngineNetworkMessageMethods {
 
         const position = target.position.clone();
         position.y = Math.max(0.08, Number(position.y) || 0.08);
+        const height = (Number(target.mesh?.userData.bounds?.height) || 2.6) * Math.abs(target.mesh?.scale?.y || 1);
+        position.y += Math.min(4, Math.max(.55, height * .45));
         let impactDirection;
         if (eventType === 'damage' && feedbackKind.endsWith('_strike') && !isHazard) {
-            const height = (Number(target.mesh?.userData.bounds?.height) || 2.6) * Math.abs(target.mesh?.scale?.y || 1);
-            position.y += Math.min(4, Math.max(.55, height * .45));
             if (source?.position) {
                 const dx = source.position.x - target.position.x, dz = source.position.z - target.position.z;
                 const length = Math.hypot(dx, dz);
@@ -435,6 +435,7 @@ class GameEngineNetworkMessageMethods {
             sourceId: data.sourceId || '',
             targetId: data.targetId || '',
             instanceId: eventInstance,
+            bodyRadius: Math.min(2, Math.max(.65, height * .2)),
             impactDirection
         });
         if (!spawned) return false;
