@@ -88,6 +88,12 @@ test('owns and releases only the two added maps once; leaves ground depth behavi
     expect(shader.fragmentShader).toContain('normalize(vEarthNormal)');
     expect(shader.fragmentShader).toContain('vEarthGround * .12');
     expect(shader.fragmentShader).toContain('earthStone.a * .028');
+    expect(shader.fragmentShader).toContain('vEarthGround * .74');
+    expect(shader.fragmentShader).toContain('vEarthGround * 1.73');
+    // Ordinary soil has relief even when canopy, mineral and meadow masks
+    // are zero; keep it distinct from the optional forest/rock contributions.
+    expect(shader.fragmentShader).toContain('(earthClod * .022 + earthPore * .006) * (1. - earthRock)');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v7');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();

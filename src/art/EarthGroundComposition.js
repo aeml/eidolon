@@ -162,7 +162,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v6';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v7';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -180,6 +180,11 @@ export function applyEarthGroundComposition(material, quality = 'high') {
         `).replace('#include <map_fragment>', `#include <map_fragment>
             vec4 earthWear = texture2D(earthComposition, (vEarthGround - earthBounds.xy) / earthBounds.zw);
             vec3 earthGrain = texture2D(earthDetail, vEarthGround * .18).rgb;
+            // Physical-scale soil aggregates, independent of the broad realm
+            // color map. The second scale supplies grit between larger clods
+            // without another texture or a screen-space noise overlay.
+            float earthGrit = texture2D(earthDetail, vEarthGround * .74 + vec2(.13, .47)).r;
+            float earthFineGrit = texture2D(earthDetail, vEarthGround * 1.73 + vec2(.51, .29)).r;
             vec4 earthBroad = texture2D(earthDetail, vEarthGround * .043 + vec2(.37, .19));
             // Small fractured stone and broad mineral weathering have separate
             // scales. Drawing the broad cellular seams at full contrast made
@@ -202,10 +207,19 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Exposed shoulders retain soil between mineral fragments. A
             // full replacement turned whole hillsides into pale cracked paving.
             earthRock = smoothstep(.14, .8, earthRock) * .72;
+            float earthClod = smoothstep(.25, .69, earthGrit);
+            float earthPore = smoothstep(.22, .65, earthFineGrit);
+            float earthMoss = smoothstep(.25, .66, earthGrain.r + (earthGrit - .5) * .24);
+            // Distinct dry clod faces, dark recesses and low moss cushions
+            // replace a uniform muddy tint. World-registered fields keep the
+            // composition stable under camera movement and quality changes.
+            vec3 earthSoil = diffuseColor.rgb * mix(.82, 1.17, earthClod);
+            earthSoil *= mix(.92, 1.06, earthPore);
             vec3 forestBed = diffuseColor.rgb * vec3(.67, .75, .68);
             vec3 fallenLeaf = diffuseColor.rgb * vec3(1.15, .95, .64) * mix(.7, 1.1, earthScatter);
             vec3 heathBed = mix(vec3(.035, .058, .028), vec3(.085, .112, .051), earthScatter);
-            diffuseColor.rgb = mix(diffuseColor.rgb, heathBed * (.85 + earthGrain.r * .3), earthWear.a * .82);
+            heathBed *= mix(.9, 1.1, earthMoss) * mix(.9, 1.08, earthClod);
+            diffuseColor.rgb = mix(earthSoil, heathBed, earthWear.a * (.74 + earthMoss * .12));
             forestBed = mix(forestBed, fallenLeaf, earthGrain.g * .72);
             diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);
             diffuseColor.rgb = mix(diffuseColor.rgb, fallenLeaf,
@@ -220,8 +234,12 @@ export function applyEarthGroundComposition(material, quality = 'high') {
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
             roughnessFactor = mix(roughnessFactor, .92 + earthGrain.r * .07, earthWear.r);
             roughnessFactor = mix(roughnessFactor, .81 + earthStone.a * .15, earthRock);
+            roughnessFactor = mix(roughnessFactor, .87 + earthPore * .12,
+                (1. - earthWear.r) * (1. - earthRock));
         `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-            float earthRelief = (earthGrain.g * .018 + earthGrain.b * .01) * earthWear.r
+            float earthRelief = (earthClod * .022 + earthPore * .006) * (1. - earthRock)
+                + earthMoss * earthWear.a * .012
+                + (earthGrain.g * .018 + earthGrain.b * .01) * earthWear.r
                 + (earthStone.a * .028 + earthBroad.r * .012) * earthRock;
             vec3 earthDx = dFdx(-vViewPosition), earthDy = dFdy(-vViewPosition);
             vec3 earthR1 = cross(earthDy, normal), earthR2 = cross(normal, earthDx);
