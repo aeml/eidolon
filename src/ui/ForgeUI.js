@@ -1,6 +1,6 @@
 import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
 import { forgeUpgradeCost, forgePotencyCost } from '../core/ForgeProgression.js';
-import { renderForgeDecision } from './ForgeDecisionPreview.js';
+import { renderForgeDecision, renderForgeLimit } from './ForgeDecisionPreview.js';
 
 function forgeQuote(item) {
     if (!item) return null;
@@ -451,6 +451,8 @@ export class ForgeUI {
     updateForgeInfo(item, player = this.ctx.getLastPlayer()) {
         this.upgradeQuote = forgeQuote(item);
         if (!item) return;
+        const costDisplay = document.getElementById('forge-upgrade-cost');
+        if (costDisplay) costDisplay.hidden = item.level >= 100;
         this.forgeUpgradeInfo.style.display = 'flex';
         if (this.forgeSelectedItemName) {
             this.forgeSelectedItemName.textContent = item.name;
@@ -475,14 +477,20 @@ export class ForgeUI {
         }
 
         if (item.level >= 100) {
-            if (this.btnForgeUpgrade1) this.btnForgeUpgrade1.disabled = true;
-            if (this.btnForgeUpgrade10) this.btnForgeUpgrade10.disabled = true;
-            if (this.forgeUpgradeStats) this.forgeUpgradeStats.innerHTML = '';
+            this.upgradeQuote = null;
+            for (const button of [this.btnForgeUpgrade1, this.btnForgeUpgrade10, this.btnForgeUpgrade]) {
+                if (button) { button.disabled = true; button.textContent = 'Maximum level reached'; }
+            }
+            renderForgeLimit(this.forgeUpgradeStats, item, 'Item level 100 reached', stat => this.ctx.formatStatName?.(stat) || stat);
             return;
         }
 
         const hasEnoughShards1 = availableShards >= cost1;
         const hasEnoughShards10 = availableShards >= cost10;
+        if (this.btnForgeUpgrade) {
+            this.btnForgeUpgrade.disabled = !meetsLevel1 || !hasEnoughShards1;
+            this.btnForgeUpgrade.textContent = 'Upgrade 1 level';
+        }
 
         if (this.btnForgeUpgrade1) {
             this.btnForgeUpgrade1.disabled = !meetsLevel1 || !hasEnoughShards1;
@@ -607,6 +615,8 @@ export class ForgeUI {
     updateForgePotencyInfo(item, player = this.ctx.getLastPlayer()) {
         this.potencyQuote = forgeQuote(item);
         if (!item) return;
+        const costDisplay = document.getElementById('forge-potency-cost');
+        if (costDisplay) costDisplay.hidden = item.potency >= 20;
         this.forgePotencyInfo.style.display = 'flex';
         if (this.forgePotencyItemName) {
             this.forgePotencyItemName.textContent = item.name;
@@ -615,9 +625,12 @@ export class ForgeUI {
 
         const currentPotency = item.potency || 0;
         if (currentPotency >= 20) {
-            if (this.forgePotencyCostValue) this.forgePotencyCostValue.textContent = "MAX";
-            if (this.btnForgePotency) this.btnForgePotency.disabled = true;
-            if (this.forgePotencyStats) this.forgePotencyStats.innerHTML = '';
+            this.potencyQuote = null;
+            if (this.forgePotencyCostValue) {
+                this.forgePotencyCostValue.textContent = 'MAX'; this.forgePotencyCostValue.style.color = '#a5cbb0';
+            }
+            if (this.btnForgePotency) { this.btnForgePotency.disabled = true; this.btnForgePotency.textContent = 'Maximum potency reached'; }
+            renderForgeLimit(this.forgePotencyStats, item, 'Potency +20 reached', stat => this.ctx.formatStatName?.(stat) || stat);
             return;
         }
 
@@ -747,6 +760,8 @@ export class ForgeUI {
     updateForgeSocketInfo(item, player = this.ctx.getLastPlayer()) {
         this.socketQuote = forgeQuote(item);
         if (!item) return;
+        const costDisplay = document.getElementById('forge-socket-cost');
+        if (costDisplay) costDisplay.hidden = item.sockets >= 4;
         this.forgeSocketInfo.style.display = 'flex';
         if (this.forgeSocketItemName) {
             this.forgeSocketItemName.textContent = item.name;
@@ -755,10 +770,12 @@ export class ForgeUI {
 
         const currentSockets = item.sockets || 0;
         if (currentSockets >= 4) {
-            if (this.forgeSocketCostHearts) this.forgeSocketCostHearts.textContent = "MAX";
-            if (this.forgeSocketCostShards) this.forgeSocketCostShards.textContent = "MAX";
-            if (this.btnForgeSocket) this.btnForgeSocket.disabled = true;
-            if (this.forgeSocketStats) this.forgeSocketStats.innerHTML = '';
+            this.socketQuote = null;
+            for (const cost of [this.forgeSocketCostHearts, this.forgeSocketCostShards]) {
+                if (cost) { cost.textContent = 'MAX'; cost.style.color = '#a5cbb0'; }
+            }
+            if (this.btnForgeSocket) { this.btnForgeSocket.disabled = true; this.btnForgeSocket.textContent = 'All 4 sockets unlocked'; }
+            renderForgeLimit(this.forgeSocketStats, item, 'All 4 sockets unlocked', stat => this.ctx.formatStatName?.(stat) || stat);
             return;
         }
 

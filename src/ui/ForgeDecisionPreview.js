@@ -1,5 +1,22 @@
 import { forgePreview } from '../core/ForgeProgression.js';
 
+export function renderForgeLimit(host, item, message, formatStat) {
+    if (!host) return;
+    host.replaceChildren();
+    const summary = document.createElement('div'); summary.className = 'forge-limit';
+    const heading = document.createElement('strong'); heading.textContent = message;
+    const state = document.createElement('p');
+    state.textContent = `Level ${item.level || 1} · Potency +${item.potency || 0} · ${item.sockets || 0} sockets`;
+    const stats = document.createElement('dl');
+    for (const [key, value] of Object.entries(item.stats || {})) {
+        const label = document.createElement('dt'); label.textContent = formatStat(key);
+        const number = document.createElement('dd'); number.textContent = String(value);
+        stats.append(label, number);
+    }
+    const note = document.createElement('p'); note.textContent = 'No materials will be spent. Choose another item or Forge service.';
+    summary.append(heading, state, stats, note); host.append(summary);
+}
+
 export function renderForgeDecision(host, item, choices, formatStat, material, available) {
     const wrapper = document.createElement('div'); wrapper.className = 'forge-decision';
     const resources = document.createElement('p');

@@ -5,6 +5,11 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Forge lists show item names beside upgrade previews on wide desktops.
+  Capped items retain useful stats and clear maximum-reached feedback;
+  phone item rows fit wrapped names, and actions use the game styling.
+  See [Forge presentation checks](2026-09-29-forge-presentation.md).
+
 - Character sheets show equipment beside build stats on wide desktops, with
   clearer vitals and signed attribute differences. Live stat updates preserve
   upgrade-button focus; phone progression controls are larger. EP/wardrobe

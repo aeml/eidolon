@@ -10,3 +10,25 @@
 .forge-decision th { font-weight: normal; color: #cbd7e5; }
 .forge-decision p { color: #aebfd2; line-height: 1.5; }
 .mobile-mode .forge-decision table { font-size: 16px; min-width: 280px; }
+.forge-limit { padding: 16px; border: 1px solid #88ac9060; border-radius: 6px; background: #88ac9010; color: #dce6dc; }
+.forge-limit > strong { color: #b4d4b6; font-size: 16px; }
+.forge-limit p { color: #b6c4ca; line-height: 1.5; }
+.forge-limit dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.forge-limit dd { margin: 0; color: #ecede6; font-variant-numeric: tabular-nums; }
+#forge-screen .btn-menu { padding: 10px; border: 1px solid #b99b6266; border-radius: 4px; background: #283343; color: #e9dcc2; font: inherit; cursor: pointer; }
+#forge-screen .btn-menu:hover:not(:disabled) { background: #374456; border-color: #d5bb87; }
+#forge-screen .btn-menu:disabled { background: #19212b; color: #9fa8b5; border-color: #53607066; cursor: default; }
+.mobile-mode #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list, #forge-gem-equipment, #forge-gem-remove-equipment) { grid-auto-rows: max-content; align-content: start; }
+
+@media (min-width: 1000px) {
+    body:not(.mobile-mode) #forge-screen { width: min(960px, calc(100vw - 48px)); }
+    body:not(.mobile-mode) #forge-screen :is(#forge-panel-upgrade, #forge-panel-potency, #forge-panel-socket)[style*="display: flex"] { display: grid !important; grid-template-columns: minmax(240px, .9fr) minmax(0, 1.1fr); align-items: start; align-content: start; gap: 12px 24px; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-panel-upgrade, #forge-panel-potency, #forge-panel-socket) > :is(h3, p) { grid-column: 1 / -1; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list) { grid-template-columns: minmax(0, 1fr) !important; grid-auto-rows: max-content; align-content: start; max-height: min(500px, 55dvh); overflow-y: auto; overscroll-behavior: contain; padding: 3px; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list) .forge-item-choice { aspect-ratio: auto; width: 100%; height: auto; min-height: 68px; box-sizing: border-box; padding: 10px 8px 10px 66px; background-size: 48px 48px !important; background-position: 8px center !important; border-radius: 5px; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list) .forge-item-label { display: grid; gap: 4px; pointer-events: none; overflow-wrap: anywhere; }
+    body:not(.mobile-mode) #forge-screen .forge-item-label__name { color: #f4ede1; font-size: 14px; }
+    body:not(.mobile-mode) #forge-screen .forge-item-label__meta { color: #bcc7d5; font-size: 12px; text-transform: capitalize; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list) :is(.level-indicator, .potency-indicator, .socket-indicator) { display: none !important; }
+    body:not(.mobile-mode) #forge-screen :is(#forge-upgrade-info, #forge-potency-info, #forge-socket-info) { min-width: 0; padding: 12px !important; border: 1px solid #b99b6240 !important; border-radius: 6px; background: #101824; }
+}
