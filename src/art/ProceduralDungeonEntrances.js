@@ -8,6 +8,7 @@ import { createBastionFoundation, createBastionGatehouse, createBastionTowerPara
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
+import { createTempestForegate, createTempestFoundation, createTempestNeedle } from './TempestEntranceGeometry.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS, DUNGEON_ENTRANCE_IDS } from '../data/dungeonEntrances.js';
 
 const GEOMETRIES = new Map();
@@ -72,7 +73,10 @@ const SHAPES = Object.freeze({
     moltenVault: geometry('dungeon-entrance-molten-vault', createMoltenVault),
     moltenVaultRib: geometry('dungeon-entrance-molten-rib', createMoltenVaultRib),
     moltenForegate: geometry('dungeon-entrance-molten-foregate', createMoltenForegate),
-    tideReliquary: geometry('dungeon-entrance-tide-reliquary', createTideReliquaryArch)
+    tideReliquary: geometry('dungeon-entrance-tide-reliquary', createTideReliquaryArch),
+    tempestForegate: geometry('dungeon-entrance-tempest-foregate', createTempestForegate),
+    tempestFoundation: geometry('dungeon-entrance-tempest-foundation', createTempestFoundation),
+    tempestNeedle: geometry('dungeon-entrance-tempest-needle', createTempestNeedle)
 });
 
 function regionMaterials(region) {
@@ -122,7 +126,7 @@ function regionMaterials(region) {
         } : {}),
         dark: material(`${prefix}:dark`, definitions.dark, { roughness: 0.98 }),
         stone: material(`${prefix}:stone`, definitions.stone, { roughness: 0.94,
-            surface: region === 'verdant_bastion_catacombs' ? 'fortress' : region === 'molten_core' ? 'fieldstone' : region === 'tempest_spire' ? 'slate' : 'stone' }),
+            surface: region === 'verdant_bastion_catacombs' ? 'fortress' : ['molten_core', 'tempest_spire'].includes(region) ? 'fieldstone' : 'stone' }),
         pale: material(`${prefix}:pale`, definitions.pale, { roughness: 0.88, surface: 'fieldstone' }),
         metal: material(`${prefix}:metal`, definitions.metal, { roughness: 0.48, metalness: 0.62 }),
         accent: material(`${prefix}:accent`, definitions.accent, {
@@ -133,7 +137,7 @@ function regionMaterials(region) {
         spirit: material(`${prefix}:spirit`, definitions.spirit, {
             roughness: 0.24,
             emissive: definitions.spirit,
-            emissiveIntensity: 1.35,
+            emissiveIntensity: region === 'tempest_spire' ? .45 : 1.35,
             transparent: true,
             opacity: 0.82,
             depthWrite: false,
@@ -327,10 +331,10 @@ function createMoltenCore(root) {
 
 function createTempestSpire(root) {
     const m = MATERIAL_SETS.tempest_spire;
-    box(root, 'tempest:storm-shelf', m.dark, [41, 3, 44], [0, 1.5, 0]);
-    addMesh(root, 'tempest:central-needle', SHAPES.tapered6, m.stone, {
-        position: [0, 35, -5],
-        scale: [19, 64, 19]
+    addMesh(root, 'tempest:storm-shelf', SHAPES.tempestFoundation, m.stone);
+    addMesh(root, 'tempest:carved-foregate', SHAPES.tempestForegate, m.pale);
+    addMesh(root, 'tempest:central-needle', SHAPES.tempestNeedle, m.stone, {
+        position: [0, 3, -5]
     });
     for (const side of [-1, 1]) {
         addMesh(root, `tempest:split-spire:${side}`, SHAPES.tapered6, m.pale, {
@@ -352,20 +356,29 @@ function createTempestSpire(root) {
             });
         }
         beam(root, `tempest:lightning-leg-a:${side}`, m.spirit,
-            [0, 55, 3], [side * 9, 48, 8], 0.42, SHAPES.cylinder6);
+            [0, 55, -3], [side * 9, 48, 0], 0.1, SHAPES.cylinder6);
         beam(root, `tempest:lightning-leg-b:${side}`, m.spirit,
-            [side * 9, 48, 8], [side * 15, 40, 10], 0.42, SHAPES.cylinder6);
+            [side * 9, 48, 0], [side * 15, 40, 2], 0.1, SHAPES.cylinder6);
         beam(root, `tempest:conductor:${side}`, m.metal,
             [side * 7, 20, 8], [side * 16, 4, 19], 0.78, SHAPES.cylinder8);
     }
-    portal(root, 'tempest:storm-eye', m, [0, 14, 6.2], [10.5, 16.5, 2]);
+    portal(root, 'tempest:storm-eye', m, [0, 12, 21], [11.5, 18.5, 2]);
+    for (const side of [-1, 1]) {
+        beam(root, `tempest:gate-conductor:${side}`, m.metal,
+            [side * 9.3, 3, 20.5], [side * 9.3, 15, 20.5], .22);
+        beam(root, `tempest:gate-crown:${side}`, m.metal,
+            [side * 9.3, 15, 20.5], [0, 28.4, 20.5], .22);
+        for (let step = 0; step < 3; step++) {
+            box(root, `tempest:threshold-course:${side}:${step}`, m.pale,
+                [5.3, .45, 2.1], [side * 2.72, 1.65 + step * .22, 15 + step * 2.2]);
+        }
+    }
     addMesh(root, 'tempest:captive-storm-halo', SHAPES.torus, m.accent, {
         position: [0, 39, 5],
         rotation: [0.18, 0, 0],
         scale: [13, 8, 2]
     });
     spike(root, 'tempest:spire-needle', m.spirit, [0, 69.5, -5], [4, 14, 4]);
-    box(root, 'tempest:split-threshold', m.pale, [17, 2.2, 18], [0, 2.8, 15], [-0.07, 0, 0]);
 }
 
 function createAbyssalWell(root) {
@@ -467,6 +480,10 @@ function buildArchitecture(root, dungeonType) {
         architecture.scale.y = .55;
     }
     if (dungeonType === 'abyssal_well') architecture.scale.y = .7;
+    if (dungeonType === 'tempest_spire') {
+        architecture.rotation.y = -Math.PI / 2;
+        architecture.scale.y = .55;
+    }
     root.add(architecture);
     BUILDERS[dungeonType](architecture);
 }

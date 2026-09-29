@@ -5,6 +5,12 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Tempest Spire gains a west-facing carved threshold, lower masonry needle,
+  chamfered foundation and restrained lightning. The road/arrival moves15m
+  closer so the portal reads at normal desktop and phone zoom. Legacy bounds
+  and dungeon entry rules stay unchanged. See the
+  [Air entrance review](2026-09-29-tempest-entrance-alignment.md).
+
 - Gloamwood gains taller, broader woodland crowns with clustered leaves and
   low spreading bracken/sedge beds along the reference routes. Trunk locations,
   walking routes and collision contracts are unchanged. Low keeps a matching

@@ -30,6 +30,29 @@ const EXPECTED_CONTRACTS = Object.freeze({
 });
 
 describe('procedural dungeon entrances', () => {
+    test.each([false, true])('Tempest gate faces the west road with an open stone threshold (batched=%s)', optimized => {
+        const root = createProceduralDungeonEntrance('tempest_spire', { optimized });
+        root.updateMatrixWorld(true);
+        const ray = new THREE.Raycaster(new THREE.Vector3(-30, 6.6, 0), new THREE.Vector3(1, 0, 0));
+        const hit = ray.intersectObject(root, true).find(hit => hit.object.material.visible !== false);
+        expect(hit.object.userData.portalSurface).toBe(true);
+        expect(hit.point.x).toBeCloseTo(-21.09, 2);
+        expect(root.userData.interactionRadius).toBe(DUNGEON_ENTRANCE_DEFINITIONS.tempest_spire.interactionRadius);
+        const visible = new THREE.Box3();
+        root.traverse(part => {
+            if (part.userData.proceduralDungeonEntrancePart) visible.union(new THREE.Box3().setFromObject(part));
+        });
+        expect(visible.max.y).toBeLessThan(43); expect(visible.max.y).toBeGreaterThan(38);
+        expect(visible.min.y).toBeGreaterThanOrEqual(-1e-6);
+        if (!optimized) {
+            const arch = root.getObjectByName('tempest:carved-foregate');
+            expect(ray.intersectObject(arch)).toHaveLength(0);
+            expect([...arch.geometry.attributes.normal.array].every(Number.isFinite)).toBe(true);
+            const veil = root.getObjectByName('tempest:storm-eye:eidolic-veil');
+            const normal = new THREE.Vector3(0, 0, 1).transformDirection(veil.matrixWorld);
+            expect(normal.x).toBeCloseTo(-1); expect(normal.z).toBeCloseTo(0);
+        }
+    });
     test.each([false, true])('Abyssal foregate is reachable in view without changing its legacy bounds (batched=%s)', optimized => {
         const root = createProceduralDungeonEntrance('abyssal_well', { optimized });
         root.updateMatrixWorld(true);
@@ -173,7 +196,7 @@ describe('procedural dungeon entrances', () => {
             if (part.userData.portalSurface) portalMaterials.add(part.material);
         });
         expect(stone.size).toBe(dungeonType === 'verdant_bastion_catacombs' ? 3 : 2);
-        const surface = dungeonType === 'verdant_bastion_catacombs' ? 'fortress' : dungeonType === 'molten_core' ? 'fieldstone' : dungeonType === 'tempest_spire' ? 'slate' : 'stone';
+        const surface = dungeonType === 'verdant_bastion_catacombs' ? 'fortress' : ['molten_core', 'tempest_spire'].includes(dungeonType) ? 'fieldstone' : 'stone';
         expect([...stone].map(material => material.userData.worldSurfaceDetail)).toContain(surface);
         for (const material of stone) {
             expect(batched.children.some(part => part.material === material)).toBe(true);
@@ -257,7 +280,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 35,
+            geometries: 38,
             materials: 30,
             entrances: 4
         });

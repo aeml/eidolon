@@ -108,7 +108,7 @@ export const AIR_LOCATIONS = freeze([
         ...story('silent_vane'), radius: 25, visibility: 'quest',
         purpose: 'Unmoving vanes frame the trapped updraft and freed horizon. Follow Ilyra’s existing evidence sequence; these frames do not grant credit.' },
     { id: 'spire-muster', name: 'Tempest Spire Muster', region: 'air', role: 'landmark', recipe: 'courier-muster',
-        ...entrance('tempest_spire'), radius: 64, arrivalOffset: [-45, 0], visibility: 'public',
+        ...entrance('tempest_spire'), radius: 64, arrivalOffset: [-30, 0], visibility: 'public',
         purpose: 'Courier standards mark a gathering court west of the Spire. Meet outside its gate; the southern trail passes around the tower.' },
     { id: 'horizon-orrery', name: 'The Horizon Orrery', region: 'air', role: 'landmark', recipe: 'horizon-orrery',
         x: 1810, z: 130, radius: 26, visibility: 'public',
@@ -142,7 +142,7 @@ export const AIR_LOCATIONS = freeze([
 ]);
 
 export const AIR_PATHS = freeze([
-    { id: 'air-passage', width: 8, points: [[1000,200],[1410,200],[1490,130],[2250,130],[2280,200],[2355,200]] },
+    { id: 'air-passage', width: 8, points: [[1000,200],[1410,200],[1490,130],[2250,130],[2280,200],[2370,200]] },
     { id: 'spire-bypass', width: 6, points: [[2280,200],[2300,280],[2510,280],[2630,310],[2820,310],[2920,260]] },
     { id: 'observatory-path', width: 4, points: [[1080,200],[1080,290],[1150,290],[1150,254]] },
     { id: 'weatherworks-path', width: 4, points: [[1080,200],[1080,155],[1160,155]] },
