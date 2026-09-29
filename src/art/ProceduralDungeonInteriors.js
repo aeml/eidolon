@@ -4,6 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
+import { createCryptWallGeometry } from './CryptWallGeometry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -401,7 +402,9 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
         addRoomStateMesh(
             sealCrown,
             `DungeonObjectiveRune:${i}`,
-            new THREE.ConeGeometry(radius * 0.08, radius * 0.34, 3),
+            // A compact objective glyph, not a huge solid arrow competing
+            // with boss cones. Room state and the objective HUD remain primary.
+            new THREE.RingGeometry(.32, .46, 4),
             sealMaterial.clone(),
             {
                 position: [Math.cos(angle) * radius * 0.68, 0, Math.sin(angle) * radius * 0.68],
@@ -748,9 +751,10 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     const geometry = (kind, width, height = 0, depth = 0) => {
         const key = `${kind}:${width}:${height}:${depth}`;
         if (!geometries.has(key)) {
-            const value = kind === 'floor'
-                ? new THREE.PlaneGeometry(width, height)
-                : new THREE.BoxGeometry(width, height, depth);
+            const value = kind === 'floor' ? new THREE.PlaneGeometry(width, height)
+                : kind === 'wall' && dungeonType === 'verdant_bastion_catacombs'
+                    ? createCryptWallGeometry(width, height, depth)
+                    : new THREE.BoxGeometry(width, height, depth);
             value.computeBoundingBox();
             value.computeBoundingSphere();
             geometries.set(key, value);
@@ -762,7 +766,9 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
         dungeonType,
         definition,
         floorGeometry: (width, depth) => geometry('floor', width, depth),
-        wallGeometry: (width, height, depth) => geometry('wall', width, height, depth),
+        // Keep foreground cutaways simple: overlapping translucent courses
+        // would darken the hero through multiple blended layers.
+        wallGeometry: (width, height, depth, cutaway = false) => geometry(cutaway ? 'wall-cutaway' : 'wall', width, height, depth),
         floorMaterial: (width, depth) => surfaceMaterial('floor', width, depth, false),
         wallMaterial: (width, height, transparent = false) => surfaceMaterial('wall', width, height, transparent),
         createRoomDressing(room, roomIndex, { optimized = true } = {}) {

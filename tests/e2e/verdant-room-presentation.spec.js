@@ -24,6 +24,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             document.body.classList.toggle('mobile-mode', mobile);
             const render = new RenderSystem(mobile), ui = new UIManager(mobile);
             render.setGraphicsQuality(mobile ? 'low' : 'high');
+            await render.preloadEnvironment();
             const input = new InputManager(render.camera, render.scene, render.renderer.domElement);
             if (mobile) input.setupMobileControls();
             ui.showHUD(); ui.toggleChat(true);
@@ -48,6 +49,19 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 width: floor.material.map.repeat.x, height: floor.material.map.repeat.y };
         }, { layout: fixture.layout, mobile });
         await page.screenshot({ path: testInfo.outputPath('verdant-room.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        const wallReview = await page.evaluate(room => {
+            const { render, hero } = window.__masonryReview;
+            hero.position.set(room.x - room.width / 2 + 8, 0, room.z - 10);
+            hero.mesh.position.copy(hero.position);
+            render.setCameraTarget(hero.position);
+            render.updateEnvironmentLighting(hero.position, 0); render.render(); render.render();
+            const walls = render.instanceEnvironmentGroup.children.filter(part => part.name === 'ProceduralDungeonWall');
+            return { detailed: walls.filter(part => part.geometry.userData.cryptWall).length,
+                cutaway: walls.filter(part => part.material.transparent && part.geometry.type === 'BoxGeometry').length };
+        }, fixture.layout.rooms[0]);
+        await page.screenshot({ path: testInfo.outputPath('verdant-wall.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        expect(wallReview.detailed).toBeGreaterThan(0);
+        expect(wallReview.cutaway).toBeGreaterThan(0);
         expect(result.zoom).toBe(15);
         expect(result.textureSize).toBe(256);
         expect(failures).toEqual([]);
