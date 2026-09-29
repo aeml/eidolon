@@ -26,7 +26,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 actor.targetPosition = actor.position.clone().add(new THREE.Vector3(100, 0, 0));
                 actor.state = 'MOVING'; actor.stats.speed = 6; actor.playAnimation('Run');
                 actor.update(.15, null, null, null);
-                actor.playAbilityAnimation(['Guardian Roar', 'Cloak & Vanish', 'Arcane Shield', 'Spirit Guardians'][i], { duration: 1 });
+                actor.playAbilityAnimation(['Guardian Roar', 'Cloak & Vanish', 'Fireball', 'Spirit Guardians'][i], { duration: 1 });
                 actor.mesh.position.copy(actor.position); render.entityGroup.add(actor.mesh);
                 return actor;
             });
@@ -55,6 +55,18 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             expect(Math.max(...strides) - Math.min(...strides)).toBeGreaterThan(.5);
             expect(Math.max(...ankles) - Math.min(...ankles)).toBeGreaterThan(.1);
         }
+        const gestures = await page.evaluate(() => {
+            const { render, actors } = window.__movingCastReview;
+            actors.forEach((actor, i) => {
+                actor.state = 'IDLE'; actor.targetPosition = null;
+                actor.playAbilityAnimation(['Iron Fortress', 'Poison Coating', 'Gravity Well', 'Blessing of Resolve'][i]);
+                for (let frame = 0; frame < 25; frame++) actor.updateAnimationMixer(1 / 60);
+            });
+            render.render(); render.render();
+            return actors.map(actor => actor.currentAnimationName);
+        });
+        expect(gestures).toEqual(['Guard', 'Guard', 'Channel', 'Bless']);
+        await page.screenshot({ path: testInfo.outputPath('support-gestures.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         expect(failures).toEqual([]);
     });
 }

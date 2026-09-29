@@ -24,7 +24,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Fighter | Iron Fortress | buff | buff | sphere@source | iron_fortress | class-handler | explicit | Extended (ironfortress_extended)<br>Thorns (ironfortress_thorns)<br>Immovable (ironfortress_immovable) |
 | Fighter | Guardian Roar | buff | shout | ring@source | guardian_roar | class-handler | explicit | none |
 | Fighter | Sweeping Strike | melee | sweep | cone@source | none | class-handler | explicit | none |
-| Fighter | Earthshaker | area | heavy | wave@source, impact@target | none | class-handler | explicit | Fissure (earthshaker_fissure)<br>Aftershock (earthshaker_aftershock)<br>Seismic (earthshaker_seismic) |
+| Fighter | Earthshaker | area | heavy | wave@source | none | class-handler | explicit | Fissure (earthshaker_fissure)<br>Aftershock (earthshaker_aftershock)<br>Seismic (earthshaker_seismic) |
 | Fighter | Unbreakable Grip | control | pull | beam@target, impact@target | none | class-handler | explicit | none |
 | Fighter | Juggernaut Charge | movement | charge | wave@source, impact@target | none | class-handler | explicit | none |
 | Fighter | Berserker Edge | buff | buff | buff@source, ring@source | berserker_edge | class-handler | explicit | none |
@@ -53,7 +53,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Wizard | Arcane Missiles | projectile | volley | burst@source | none | class-handler | explicit | none |
 | Wizard | Spell Focus | buff | channel | buff@source, sphere@source | spell_focus | class-handler | explicit | none |
 | Wizard | Dragonfire Lance | projectile | heavy-cast | beam@target, impact@target | none | class-handler | explicit | none |
-| Wizard | Teleport | movement | teleport | smoke@source, burst@target | none | class-handler | explicit | Blink (teleport_blink)<br>Phase (teleport_phase)<br>Warp (teleport_warp) |
+| Wizard | Teleport | movement | teleport | smoke@source, burst@target, ring@source, ring@target | none | class-handler | explicit | Blink (teleport_blink)<br>Phase (teleport_phase)<br>Warp (teleport_warp) |
 | Wizard | Arcane Shield | buff | buff | sphere@source, buff@source | arcane_shield | class-handler | explicit | Extended (arcaneshield_extended)<br>Reflective (arcaneshield_reflective)<br>Explosive (arcaneshield_explosive) |
 | Wizard | Gravity Well | persistent-area | heavy-cast | ring@target, sphere@target | gravity_well | class-handler | explicit | Expanded (gravitywell_expanded)<br>Crushing (gravitywell_crushing)<br>Black Hole (gravitywell_blackhole) |
 | Wizard | Time Warp | buff-area | channel | ring@source, buff@source | time_warp | class-handler | explicit | none |
@@ -104,10 +104,10 @@ All player classes declare Idle/Walk/Run/Attack/Death clips through the shared p
 
 | Actor | Category | Source | Declared clips | Jump | Special behavior | Browser evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| Fighter | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Wizard | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Cleric | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Fighter | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
+| Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
+| Wizard | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
+| Cleric | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
 | Skeleton | enemy | procedural Gloamwood ossuary rig | Idle, Walk, Run, Attack, Death | not-used | grave-sickle, soul lantern, shroud, and loose-bone collapse | local hardware gallery: High/Low |
 | Imp | enemy | procedural Cinder Wastes ember-scavenger rig | Idle, Walk, Run, Attack, Death | not-used | beating coal heart, bat wings, pilfer-fork, and spaded tail | local hardware gallery: High/Low |
 | DemonOrc | enemy | procedural Cinder Wastes kiln-warrior rig | Idle, Walk, Run, Attack, Death | not-used | furnace breastplate, cinder cleaver, coal chain, and heavy collapse | local hardware gallery: High/Low |
@@ -162,12 +162,14 @@ All player classes declare Idle/Walk/Run/Attack/Death clips through the shared p
 | DungeonNPC | npc | procedural town actor rig | Idle | not-used | wayfinding lantern and key language | local hardware gallery: High/Low |
 | RespecNPC | npc | procedural town actor rig | Idle | not-used | memory reliquary and soul language | local hardware gallery: High/Low |
 
-## Persistent and crowd-control actor states (23)
+## Persistent and crowd-control actor states (25)
 
 These effects are world-space groups: they follow actor position without inheriting imported model scale or facing. Server-replicated booleans and remaining durations reconstruct combat buffs/debuffs on local and remote actors after full state, delta state, reconnect, and join-in-progress. Spirit Guardians uses its dedicated orbit implementation and is therefore listed in the ability table rather than this shared attached-state table.
 
 | State key | Visual composition | Accent color | Radius |
 | --- | --- | --- | --- |
+| invulnerable | silver-blue orbiting shards and a thin protective seal | #93ddff | 1.7 |
+| well_rested | golden sanctuary motes carrying four elemental echoes | #ffcf68 | 1.55 |
 | iron_fortress | riveted oathsteel bastion cage | #a8d8ff | 1.75 |
 | guardian_roar | procession of sky-blue oath shields | #54d6ff | 1.9 |
 | berserker_edge | hooked bloodsteel fury halo | #ff3131 | 1.55 |

@@ -1,3 +1,4 @@
+import { HUMANOID_ABILITY_CLIPS } from '../src/art/HumanoidAbilityClips.js';
 import * as THREE from 'three';
 import {
     createProceduralFighter,
@@ -64,7 +65,7 @@ describe('shared procedural humanoid Fighter', () => {
         const originalRotation = arm.rotation.x;
         const mixer = new THREE.AnimationMixer(fighter);
 
-        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        expect(Object.keys(clips)).toEqual([...HUMANOID_ANIMATION_STATES, ...HUMANOID_ABILITY_CLIPS]);
         HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
 
         mixer.clipAction(clips.Attack).reset().play();
@@ -186,7 +187,7 @@ describe('shared procedural humanoid Rogue', () => {
         for (const anchorName of Object.values(HUMANOID_EQUIPMENT_ANCHORS).flat()) {
             expect(rogue.getObjectByName(anchorName)?.userData.equipmentAnchor).toBe(true);
         }
-        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        expect(Object.keys(clips)).toEqual([...HUMANOID_ANIMATION_STATES, ...HUMANOID_ABILITY_CLIPS]);
         HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
 
         mixer.clipAction(clips.Attack).reset().play();
@@ -276,7 +277,7 @@ describe('shared procedural humanoid Wizard', () => {
         for (const anchorName of Object.values(HUMANOID_EQUIPMENT_ANCHORS).flat()) {
             expect(wizard.getObjectByName(anchorName)?.userData.equipmentAnchor).toBe(true);
         }
-        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        expect(Object.keys(clips)).toEqual([...HUMANOID_ANIMATION_STATES, ...HUMANOID_ABILITY_CLIPS]);
         HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
 
         mixer.clipAction(clips.Attack).reset().play();
@@ -400,7 +401,7 @@ describe('shared procedural humanoid Cleric', () => {
         for (const anchorName of Object.values(HUMANOID_EQUIPMENT_ANCHORS).flat()) {
             expect(cleric.getObjectByName(anchorName)?.userData.equipmentAnchor).toBe(true);
         }
-        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        expect(Object.keys(clips)).toEqual([...HUMANOID_ANIMATION_STATES, ...HUMANOID_ABILITY_CLIPS]);
         HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
 
         mixer.clipAction(clips.Attack).reset().play();

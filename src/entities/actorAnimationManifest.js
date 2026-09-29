@@ -1,4 +1,5 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
+import { HUMANOID_ABILITY_CLIPS } from '../art/HumanoidAbilityClips.js';
 
 const entry = (category, source, states, options = {}) => Object.freeze({
     category,
@@ -10,13 +11,14 @@ const entry = (category, source, states, options = {}) => Object.freeze({
 });
 
 const STANDARD_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
+const PLAYER_CLIPS = [...STANDARD_CLIPS, ...HUMANOID_ABILITY_CLIPS];
 const WALKING_ENEMY_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
 
 export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
-    Fighter: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
-    Rogue: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
-    Wizard: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
-    Cleric: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+    Fighter: entry('player', 'shared procedural humanoid rig', PLAYER_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback', special: 'Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained' }),
+    Rogue: entry('player', 'shared procedural humanoid rig', PLAYER_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback', special: 'Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained' }),
+    Wizard: entry('player', 'shared procedural humanoid rig', PLAYER_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback', special: 'Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained' }),
+    Cleric: entry('player', 'shared procedural humanoid rig', PLAYER_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback', special: 'Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained' }),
 
     Skeleton: entry('enemy', 'procedural Gloamwood ossuary rig', WALKING_ENEMY_CLIPS, {
         special: 'grave-sickle, soul lantern, shroud, and loose-bone collapse'
