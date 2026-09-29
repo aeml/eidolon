@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
+import { configureEnemyStrikeContact } from './EnemyStrikeContact.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -77,6 +78,7 @@ function finalize(root, type, clips) {
         combatRadius: definition.combatRadius, interactionPadding: 0.75, sharedGeometry: true, bounds: definition.bounds, animations: clips
     });
     groundEnemyDeathClip(type, clips);
+    configureEnemyStrikeContact(root, type, clips);
     root.name = `Procedural${type}`; installRestPoseReset(root); return root;
 }
 
