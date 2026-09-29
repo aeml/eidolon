@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralDungeonNPC } from './ProceduralTownActors.js';
 import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { addCasinoFacade, createCasinoHippedRoof } from './CasinoFacade.js';
 
 export function createCasinoInterior(scene, collision) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-interior';
@@ -104,7 +105,7 @@ export function createCasinoShell(x = 0, z = 170) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-shell'; root.position.set(x, 0, z);
     const m = materials();
     // Match the surrounding town's masonry and slate without changing the
-    // facade silhouette, door target, material buckets or shared casino rooms.
+    // wall footprint, door target or shared casino rooms.
     applyWorldSurfaceDetail(m.stone, 'stone');
     applyWorldSurfaceDetail(m.dark, 'slate');
     const cutaway = new THREE.Group(); cutaway.name = 'casino-cutaway'; root.add(cutaway);
@@ -133,11 +134,7 @@ export function createCasinoShell(x = 0, z = 170) {
         box(cutaway, `casino-wall-${i}`, m.stone, wall.size, wall.position);
         box(root, `casino-wall-base-${i}`, m.dark, [wall.size[0], 0.65, wall.size[2]], [wall.position[0], 0.325, wall.position[2]]);
     }
-    for (const px of [-9.2, -6, -2.75, 2.75, 6, 9.2]) {
-        box(cutaway, 'casino-pilaster', m.dark, [0.42, 6, 0.65], [px, 3, 8.15]);
-        box(cutaway, 'casino-capital', m.gold, [0.65, 0.24, 0.8], [px, 5.65, 8.15]);
-    }
-    box(cutaway, 'casino-entrance-lintel', m.gold, [5.5, 0.3, 0.8], [0, 5.6, 8.2]);
+    addCasinoFacade(cutaway, m);
     for (const px of [-3.25, 3.25]) {
         box(cutaway, 'casino-lantern-cage', m.dark, [0.65, 1.25, 0.55], [px, 3.4, 8.6]);
         box(cutaway, 'casino-lantern', m.light, [0.38, 0.8, 0.6], [px, 3.4, 8.64]);
@@ -162,17 +159,7 @@ export function createCasinoShell(x = 0, z = 170) {
     }
     box(upstairs, 'vip-stairwell-rail', m.gold, [.12, .12, 12.5], [8.7, 7.05, .25]);
     for (let pz = -5.5; pz <= 6; pz += 1.5) box(upstairs, 'vip-stairwell-baluster', m.gold, [.1, 1.05, .1], [8.7, 6.525, pz]);
-    for (const px of [-7, -3.5, 0, 3.5, 7]) {
-        box(cutaway, 'casino-upper-window-frame', m.gold, [1.7, 2.75, 0.2], [px, 8.15, 7.8]);
-        box(cutaway, 'casino-upper-window', m.felt, [1.4, 2.4, 0.23], [px, 8.15, 7.82]);
-    }
-    for (const y of [5.9, 10.7]) box(cutaway, 'casino-gold-cornice', m.gold, [26.6, 0.3, 16.6], [0, y, 0]);
-    // Bake the rotation BEFORE the rectangular scale. Scaling the mesh's local Z
-    // first skewed the roof across the facade and exposed the gold ceiling slab
-    // like a second, differently sized roof.
-    const roofGeometry = new THREE.ConeGeometry(14 * Math.SQRT2, 3.5, 4);
-    roofGeometry.rotateY(Math.PI / 4); roofGeometry.scale(1, 1, 18 / 28);
-    const roof = new THREE.Mesh(roofGeometry, m.dark);
+    const roof = new THREE.Mesh(createCasinoHippedRoof(), m.dark);
     roof.name = 'casino-roof'; roof.position.y = 12.55;
     roof.castShadow = true; cutaway.add(roof);
     root.userData.casinoCutaway = cutaway;

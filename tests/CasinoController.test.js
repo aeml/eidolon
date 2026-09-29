@@ -304,3 +304,39 @@ test('town casino door raycast provides Casino label, click prompt and isolated 
     engine.currentInstanceId = 'dungeon'; expect(controller.updateDoorHover()).toBeNull();
     controller.dispose(); disposeCasinoObject(shell);
 });
+
+test('all facade windows are visible in front of opaque walls after material batching', () => {
+    const shell = createCasinoShell(); shell.updateMatrixWorld(true);
+    const ray = new THREE.Raycaster();
+    const seeGlass = (origin, direction) => {
+        ray.set(new THREE.Vector3(...origin), new THREE.Vector3(...direction));
+        const hit = ray.intersectObject(shell.userData.casinoCutaway, true)[0];
+        expect(hit?.object.material.userData.casinoExteriorGlass).toBe(true);
+    };
+    for (const x of [-10.3, -6.6, 6.6, 10.3]) for (const y of [3.1, 8.25]) {
+        seeGlass([x + .25, y + .25, 184], [0, 0, -1]);
+    }
+    for (const side of [-1, 1]) for (const x of [-4.8, 0, 4.8]) for (const y of [3.1, 8.25]) {
+        seeGlass([side * 18, y + .25, 170 - side * (x + .25)], [-side, 0, 0]);
+    }
+    for (const x of [-4.5, 4.5, -2.8, 2.8]) {
+        ray.set(new THREE.Vector3(x, 3.75, 184), new THREE.Vector3(0, 0, -1));
+        expect(ray.intersectObject(shell.userData.casinoCutaway, true)[0]?.object.material.name).toBe('casino-carved-limestone');
+    }
+    // The area above the door must not reveal the obsolete shell VIP carpet.
+    ray.set(new THREE.Vector3(1.8, 9, 184), new THREE.Vector3(0, 0, -1));
+    const overdoor = ray.intersectObject(shell.userData.casinoCutaway, true)[0];
+    expect(overdoor.point.z).toBeCloseTo(178.25);
+    // Every roof triangle faces outward/up, with a long ridge at the same cap.
+    const roofVertices = [];
+    shell.userData.casinoCutaway.traverse(mesh => {
+        if (!mesh.isMesh || mesh.material.userData.worldSurfaceDetail !== 'slate') return;
+        const position = mesh.geometry.attributes.position, normal = mesh.geometry.attributes.normal;
+        for (let i = 0; i < position.count; i++) if (position.getY(i) > 10.8) {
+            expect(normal.getY(i)).toBeGreaterThan(0);
+            if (position.getY(i) > 14.29) roofVertices.push(position.getX(i));
+        }
+    });
+    expect(roofVertices).toContain(-7); expect(roofVertices).toContain(7);
+    disposeCasinoObject(shell);
+});

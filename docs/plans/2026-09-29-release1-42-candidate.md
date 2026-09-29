@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Casino exterior windows now sit in front of the walls, with recessed arches,
+  stone framing, a rose window and a ridged hip roof. The overdoor facade no
+  longer exposes the old shell interior. Placement, door and shared casino
+  rooms are unchanged. See the [town exterior review](2026-09-29-lanternhold-gathering-court.md).
+
 - Lanternhold's oversized radial paving becomes human-scale weathered
   flagstones with a modest Fourfold engraving. The casino name becomes a
   smaller facade plaque above its unchanged clickable door. See the
