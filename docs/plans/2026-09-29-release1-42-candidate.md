@@ -7,6 +7,10 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Gave the Stranded Flotilla distinct damaged hulls, weathered timber, squared
+  frames, abandoned rigging and folded torn sails. Walking bounds are unchanged.
+  See the [wreck-site review](2026-09-29-stranded-flotilla.md).
+
 - Combined the resonance plaza's static stonework and trim into fewer draws,
   retaining its appearance, crystal repair effects and interaction. Full-view
   comparisons save24 High/12 Low draws; some town budgets remain unmet.
