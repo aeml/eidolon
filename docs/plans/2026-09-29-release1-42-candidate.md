@@ -7,6 +7,12 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Repositioned the main and fill lights for clearer lit/shaded faces and visible
+  ground contact shadows. Fitted the shadow region to the view instead of a
+  symmetric square. Regional palettes and brightness controls are unchanged;
+  some scene rendering budgets still need work. See the
+  [lighting comparison and remaining cost](2026-09-29-cross-lit-world.md).
+
 - Fixed graphics-quality changes retaining the previous shadow resolution.
   Low now releases unused shadow and postprocessing buffers; switching back
   restores the effects without accumulating those textures. See the

@@ -17,14 +17,29 @@ describe('RenderSystem shadow coverage', () => {
         renderSystem.setCameraTarget(new THREE.Vector3(2200, 0, -1400));
         renderSystem.updateEnvironmentLighting(new THREE.Vector3(2200, 0, -1400), 0.016);
 
-        expect(renderSystem.keyLight.position.x).toBeGreaterThan(2000);
-        expect(renderSystem.keyLight.position.z).toBeLessThan(-1150);
+        expect(renderSystem.keyLight.position.clone().sub(renderSystem.keyLight.target.position).distanceTo(
+            renderSystem.shadowFollowOffset)).toBeLessThan(.00001);
         const texelSize = renderSystem.getShadowWorldTexelSize();
         expect(Math.abs(renderSystem.keyLight.target.position.x - 2200)).toBeLessThanOrEqual(texelSize / 2);
         expect(Math.abs(renderSystem.keyLight.target.position.z + 1400)).toBeLessThanOrEqual(texelSize / 2);
-        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
-        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(renderSystem.shadowViewBounds.left);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
         expect(renderSystem.shadowCoverageRadius).toBeLessThan(280);
+    });
+
+    test('cross-lighting separates the visible faces while preserving ground illumination', () => {
+        const renderSystem = new RenderSystem(false);
+        const key = renderSystem.shadowFollowOffset.clone().normalize();
+        const eye = renderSystem.cameraOffset.clone().normalize();
+        expect(key.dot(eye)).toBeLessThan(.6);
+        expect(key.x * key.z).toBeLessThan(0);
+        // Similar elevation avoids darkening the entire floor to gain contrast.
+        expect(key.y).toBeGreaterThan(.7); expect(key.y).toBeLessThan(.85);
+        const fill = renderSystem.fillLight.position.clone().sub(renderSystem.fillLight.target.position).normalize();
+        expect(fill.dot(eye)).toBeGreaterThan(.9);
+        expect(renderSystem.fillLight.castShadow).toBe(false);
+        expect(renderSystem.keyLight.position.clone().sub(renderSystem.keyLight.target.position).normalize().distanceTo(key)).toBeLessThan(.00001);
+        renderSystem.dispose();
     });
 
     test('uses filtered shadow maps and keeps shadows updating while the light follows the player', () => {
@@ -39,8 +54,8 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.shadow.radius).toBeGreaterThanOrEqual(4);
         expect(renderSystem.keyLight.shadow.bias).toBeLessThanOrEqual(-0.0001);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.04);
-        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
-        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(renderSystem.shadowViewBounds.left);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.03);
     });
 
@@ -54,8 +69,8 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.castShadow).toBe(true);
         expect(renderSystem.renderer.shadowMap.type).toBe(THREE.PCFSoftShadowMap);
         expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(2048);
-        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
-        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(renderSystem.shadowViewBounds.left);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
         const texelSize = renderSystem.getShadowWorldTexelSize();
         expect(Math.abs(renderSystem.keyLight.target.position.x + 1900)).toBeLessThanOrEqual(texelSize / 2);
         expect(Math.abs(renderSystem.keyLight.target.position.z - 900)).toBeLessThanOrEqual(texelSize / 2);
@@ -67,7 +82,7 @@ describe('RenderSystem shadow coverage', () => {
         const near = renderSystem.shadowCoverageRadius;
         renderSystem.setZoom(30);
         expect(renderSystem.shadowCoverageRadius).toBeGreaterThan(near);
-        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
         expect(renderSystem.getShadowWorldTexelSize()).toBe(renderSystem.shadowCoverageRadius * 2 / 4096);
         renderSystem.dispose();
     });
