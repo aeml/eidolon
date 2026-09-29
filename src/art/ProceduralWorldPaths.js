@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { conformGroundRibbon } from './GroundRibbonGeometry.js';
+import { createEarthTrailMaps } from './EarthTrailSurface.js';
 
 function pathTexture(color = [98, 88, 70], name = 'Earth') {
     const size = 128, pixels = new Uint8Array(size * size * 4);
@@ -70,13 +71,14 @@ export function createWorldPathGeometry(path, { elevation = null } = {}) {
     return grounded;
 }
 
-export function createEarthPathNetwork({ elevation = null } = {}) {
-    return createWorldPathNetwork(EARTH_PATHS, { name: 'Earth', elevation });
+export function createEarthPathNetwork({ elevation = null, quality = 'high' } = {}) {
+    return createWorldPathNetwork(EARTH_PATHS, { name: 'Earth', elevation, quality });
 }
 
-export function createWorldPathNetwork(paths, { name = 'World', color, elevation = null } = {}) {
+export function createWorldPathNetwork(paths, { name = 'World', color, elevation = null, quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = `${name} authored paths`;
-    const material = new THREE.MeshStandardMaterial({ map: pathTexture(color, name), roughness: 1,
+    const surfaces = name === 'Earth' ? createEarthTrailMaps(quality) : { map: pathTexture(color, name) };
+    const material = new THREE.MeshStandardMaterial({ ...surfaces, roughness: 1,
         transparent: true, alphaTest: .025, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
     material.name = `${name} worn-path surface`;
     for (const path of paths) {

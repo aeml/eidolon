@@ -213,7 +213,7 @@ export class WorldGenerator {
         // Both staged multiplayer startup and the full createTown path call
         // loadBuildings. Attaching only in createTownDecorations misses the
         // production staged loader entirely.
-        this.scene.add(createEarthPathNetwork({ elevation: this.terrainElevation }));
+        this.scene.add(createEarthPathNetwork({ elevation: this.terrainElevation, quality: this.graphicsQuality }));
         const earthLocations = createEarthLocations({ quality: this.graphicsQuality });
         const roadCart = createLanternholdRoadCart({ quality: this.graphicsQuality, terrainElevation: this.terrainElevation });
         this.scene.add(earthLocations, roadCart);

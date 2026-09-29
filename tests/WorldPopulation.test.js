@@ -127,9 +127,11 @@ test('path network uses upward-facing, continuous joins and one owned surface ma
     }
     expect(vertices).toBeLessThan(500);
     const material = group.children[0].material;
-    expect(material.map.image.data).toHaveLength(128 * 128 * 4);
+    expect(material.map.image.data).toHaveLength(256 * 256 * 4);
+    expect(material.normalMap.image.width).toBe(256);
+    expect(material.roughnessMap.image.width).toBe(256);
     expect(material.depthWrite).toBe(false);
-    material.map.dispose(); material.dispose();
+    material.map.dispose(); material.normalMap.dispose(); material.roughnessMap.dispose(); material.dispose();
 });
 
 test('invalid and zero-length paths fail instead of generating NaN scene bounds', () => {
