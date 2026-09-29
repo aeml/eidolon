@@ -129,7 +129,7 @@ func (w *World) updateWhirlwindImpacts(player *Entity, now time.Time, deferred *
 			}
 			target.Mu.Lock()
 			if !w.CanDamage(attacker, target) || target.State == "DEAD" ||
-				!withinDungeonAbilityRadius(walkRects, "Whirlwind", originX, originZ, target, radius) {
+				!w.withinWorldAbilityRadius(walkRects, "Whirlwind", originX, originZ, target, radius) {
 				target.Mu.Unlock()
 				continue
 			}
@@ -144,8 +144,8 @@ func (w *World) updateWhirlwindImpacts(player *Entity, now time.Time, deferred *
 					if distance > 1 {
 						oldX, oldZ := target.X, target.Z
 						pull := math.Min(2, distance)
-						target.X += dx / distance * pull
-						target.Z += dz / distance * pull
+						target.X, target.Z = w.stopRockMovement(target, target.X+dx/distance*pull, target.Z+dz/distance*pull)
+						w.groundActorLocked(target)
 						w.Grid.Update(target, oldX, oldZ)
 					}
 				}

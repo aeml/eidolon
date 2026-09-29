@@ -24,6 +24,7 @@ import {
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
+import { getGroundAwareDistance } from './WorldGrounding.js';
 
 class GameEngineRuntimeMethods {
     loop(time) {
@@ -484,7 +485,7 @@ class GameEngineRuntimeMethods {
                 } else if (this.inputManager.keys.shift) {
                     this.movePlayerToPointerGround();
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                    const dist = this.player.position.distanceTo(this.hoveredEntity.position);
+                    const dist = getGroundAwareDistance(this, this.player.position, this.hoveredEntity.position);
                     const range = this.getBasicAttackRangeForEntity(this.hoveredEntity);
 
                     if (dist < range) {

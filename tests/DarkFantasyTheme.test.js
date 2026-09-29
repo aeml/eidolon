@@ -15,6 +15,14 @@ import {
 } from '../src/art/darkFantasyTheme.js';
 
 describe('Eidolon dark-fantasy art direction', () => {
+    test('Earth and town keep directional shape without raising ambient wash', () => {
+        for (const region of ['earth', 'town']) {
+            const lighting = DARK_FANTASY_REGION_THEMES[region].lighting;
+            expect(lighting.keyIntensity / lighting.ambientIntensity).toBeGreaterThan(2.4);
+            expect(lighting.fillIntensity).toBeGreaterThanOrEqual(.4);
+            expect(lighting.exposure).toBeGreaterThanOrEqual(1.2);
+        }
+    });
     test('every overworld realm, town, and dungeon has a distinct intentional theme', () => {
         const keys = [...OVERWORLD_THEME_KEYS, ...DUNGEON_THEME_KEYS];
         expect(keys).toHaveLength(10);

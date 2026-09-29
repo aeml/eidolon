@@ -19,6 +19,34 @@ This changes beta timing, not the requested visual scope or quality bar.
 
 ## Art ownership — user supplies actors, implementation supplies the world
 
+### September 29 owner priority — player experience over milestone count
+
+The owner reaffirmed that incremental improvements are not yet enough: the
+world and combat should earn players' attention alongside modern dark-fantasy
+ARPGs. Treat Diablo/PoE as direction for cohesion, atmosphere, readability and
+responsiveness, not a claim of equivalent production quality or copied assets.
+
+Use Lanternhold → Earth → the first dungeon as the playable reference:
+judge it at ordinary gameplay zoom, in motion and with the actual interface.
+Improve composition, material scale, grounded architecture, vegetation and
+landmarks together; do not substitute darker lighting or more particles for
+finished scenery. Combat review must include attack anticipation/contact/
+recovery, movement responsiveness, sound, readable threats and a satisfying
+single-specialization kit. Equipment must fit and remain recognizable in motion.
+
+Passing technical checks establishes correctness, not final art or fun.
+Concentrate bounded tests on changed behavior, compare visible results, and
+carry honest remaining gaps forward. Do not advance visual acceptance solely
+because a version shipped. Preserve ordered release gates and owner-deferred
+playtests; this priority does not silently approve those gates.
+
+The September 29 integrated terrain preview still shows broad muddy surface
+variation, conspicuous repeated plant clumps, angular rock shelves and small
+procedural actors. These are concrete remaining art gaps, not approved modern
+ARPG presentation. Review scene composition and material frequencies next to
+the remaining audio integration; retain clear enemy warnings and usable Low
+settings. A faster renderer alone does not close these visual gaps.
+
 Latest user direction: do as much environment, texture, lighting and shader work
 as possible in code so the user's external asset work is limited to **player
 class models, monsters, bosses and NPCs**. This is the production division of

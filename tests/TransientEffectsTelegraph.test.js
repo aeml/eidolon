@@ -1,8 +1,35 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { createTransientEffect } from '../src/core/TransientEffects.js';
+import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 describe('Transient telegraph readability', () => {
+    test('raised warning fill, exact-radius edge and contrast backing follow terrain through their full lifetime', () => {
+        const scene = new THREE.Scene(), position = new THREE.Vector3(-570, 0, 410);
+        const effect = createTransientEffect(scene, 'telegraph', position, 0xff2200, {
+            radius: 18, telegraphDuration: 2, terrainElevation: field
+        });
+        const [ring, fill] = effect.meshes;
+        const backing = ring.children.find(mesh => mesh.name === 'DangerContrastUnderlay');
+        const owned = [ring, fill, backing].map(mesh => jest.spyOn(mesh.geometry, 'dispose'));
+        for (const time of [0, .5, 1.99]) {
+            effect.elapsed = time; effect.update(0); scene.updateMatrixWorld(true);
+            for (const [mesh, lift] of [[ring, .16], [fill, .15], [backing, .145]]) {
+                const vertices = mesh.geometry.attributes.position;
+                for (let i = 0; i < vertices.count; i += 3) {
+                    const points = [0, 1, 2].map(j => new THREE.Vector3().fromBufferAttribute(vertices, i+j).applyMatrix4(mesh.matrixWorld));
+                    const center = points.reduce((v, p) => v.add(p), new THREE.Vector3()).divideScalar(3);
+                    expect(center.y - field.sample(center.x, center.z)).toBeCloseTo(lift, 4);
+                    for (const p of points) expect(Math.hypot(p.x-position.x, p.z-position.z)).toBeLessThanOrEqual(18.0001);
+                }
+            }
+        }
+        expect(position.y).toBe(0);
+        expect(ring.userData.gameplayRadius).toBe(18);
+        effect.update(.02);
+        expect(scene.children).toHaveLength(0);
+        owned.forEach(spy => expect(spy).toHaveBeenCalledTimes(1));
+    });
     test.each(['', 'verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus'])(
         '%s warnings clear dungeon floors while retaining elevated origins and exact footprints', theme => {
             for (const y of [0, .04, .5, 8]) {

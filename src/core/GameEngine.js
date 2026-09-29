@@ -3,6 +3,8 @@ import { syncWellRested } from './WellRested.js';
 import { getTrackedActorBuffs } from './TrackedActorBuffs.js';
 import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
+import { intersectEngineGround } from './WorldGrounding.js';
+import { resolveWorldElevationProfile } from '../data/worldElevation.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
@@ -444,15 +446,20 @@ export class GameEngine {
         return this.network?.socket ?? null;
     }
 
-    constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
+    constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null, terrainProfile = 'flat-v1') {
+        this.terrainElevation = resolveWorldElevationProfile(terrainProfile);
+        this.terrainProfile = terrainProfile || 'flat-v1';
         this.isMobile = isMobile;
         this.isMultiplayer = true;
         this.serverAddress = serverAddress;
         this.username = username;
         this.network = new NetworkManager(socket);
+        this.network.expectedTerrainProfile = terrainProfile || 'flat-v1';
         this.remotePlayers = new Map();
         this.renderSystem = new RenderSystem(isMobile);
+        this.renderSystem.terrainElevation = this.terrainElevation;
         this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene, this.renderSystem.renderer.domElement);
+        this.inputManager.groundIntersectionResolver = (ray, target, plane) => intersectEngineGround(this, ray, target, plane);
         if (this.isMobile) {
             this.inputManager.setupMobileControls();
             this.cameraLocked = true;
@@ -488,7 +495,9 @@ export class GameEngine {
         this.currentDungeonRoomState = null;
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
-        this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, { graphicsQuality: this.renderSystem.graphicsQuality });
+        this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
+            graphicsQuality: this.renderSystem.graphicsQuality, terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile
+        });
         this.activeWorldGenerator = this.worldGenerator;
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
@@ -1037,6 +1046,9 @@ export class GameEngine {
             return true;
         }
         let effectPosition = position;
+        if (type === 'telegraph' && this.terrainElevation && !this.currentInstanceId) {
+            effectPosition = position.clone().setY(this.terrainElevation.sample(position.x, position.z));
+        }
         if (type === 'beam' && options.abilityName === 'Scorch Beam' && options.source?.position && !options.authoritativeEndpoint) {
             const walkRects = this.currentInstanceId && this.currentInstanceType !== 'overworld'
                 ? this.currentDungeonLayout?.walkRects : null;
@@ -1051,7 +1063,8 @@ export class GameEngine {
         const mergedOptions = {
             quality: this.uiManager ? this.uiManager.getGraphicsQuality() : 'high',
             effectScale: this.renderSystem.getEffectQualityScale(),
-            ...options
+            ...options,
+            terrainElevation: this.currentInstanceId ? null : this.terrainElevation
         };
         const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;

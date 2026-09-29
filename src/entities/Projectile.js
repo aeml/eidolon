@@ -13,6 +13,8 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
+import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
+import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -271,10 +273,42 @@ export class Projectile extends Entity {
         applyProceduralProjectileScale(this.mesh, this.scale);
     }
 
+    render(alpha) {
+        super.render(alpha);
+        if (!this.mesh || this.type === 'Meteor') return;
+        const ground = getOverworldGroundHeight(this.gameEngine, this.position);
+        if (ground !== null) {
+            this.mesh.position.y = getOverworldGroundHeight(this.gameEngine, this.mesh.position) + this.position.y - ground;
+        }
+        this.updateGroundPresentation();
+    }
+
+    updateGroundPresentation() {
+        const role = this.mesh?.userData.projectileRole;
+        if (role !== 'zone' && role !== 'trap') return;
+        const field = this.gameEngine?.currentInstanceId ? null : this.gameEngine?.terrainElevation;
+        if (!field) {
+            this.groundPresentation?.dispose();
+            this.groundPresentation = null;
+            return;
+        }
+        this.groundPresentation ||= new GroundedProjectileVisual(this.mesh);
+        this.groundPresentation.update(field);
+    }
+
+    dispose() {
+        this.groundPresentation?.dispose();
+        this.groundPresentation = null;
+        super.dispose();
+    }
+
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) {
         if (!this.isActive) return;
         const locallySimulated = !this.serverAuthoritativeLifetime && !gameEngine?.isMultiplayer &&
             !this.owner?.isMultiplayer && !this.owner?.isRemote;
+        this.gameEngine = gameEngine;
+        const previousGround = getOverworldGroundHeight(gameEngine, this.position);
+        if (previousGround !== null && this.type !== 'Meteor') this.velocity.y = 0;
         const walkRects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
             ? gameEngine.currentDungeonLayout?.walkRects : null;
 
@@ -301,10 +335,12 @@ export class Projectile extends Entity {
         if (this.homingTarget && this.homingTarget.isActive && this.homingTarget.state !== 'DEAD') {
             const targetPos = this.homingTarget.position.clone();
             targetPos.y += 1.0; // Aim for center mass
-            
-            const directionToTarget = new THREE.Vector3().subVectors(targetPos, this.position).normalize();
+
+            const directionToTarget = new THREE.Vector3().subVectors(targetPos, this.position);
+            if (previousGround !== null && this.type !== 'Meteor') directionToTarget.y = 0;
+            directionToTarget.normalize();
             const currentDirection = this.velocity.clone().normalize();
-            
+
             // Slerp direction
             const newDirection = currentDirection.lerp(directionToTarget, this.homingTurnRate * dt).normalize();
             this.velocity = newDirection.multiplyScalar(this.speed);
@@ -344,10 +380,16 @@ export class Projectile extends Entity {
             }
         }
         this.position.add(moveStep);
-        
+        if (previousGround !== null) {
+            const ground = getOverworldGroundHeight(gameEngine, this.position);
+            if (this.type === 'Meteor') this.position.y = Math.max(ground, this.position.y);
+            else this.position.y += ground - previousGround;
+        }
+
         if (this.mesh) {
             this.mesh.position.copy(this.position);
             updateProceduralProjectileVisual(this.mesh, this.type, this.visualElapsed, dt);
+            this.updateGroundPresentation();
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)

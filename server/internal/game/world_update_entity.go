@@ -57,6 +57,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				oldX, oldZ := e.X, e.Z
 				e.X = e.SpawnX
 				e.Z = e.SpawnZ
+				w.recoverActorFromRocks(e)
+				e.rockRoute = nil
+				w.groundActorLocked(e)
 				w.Grid.Update(e, oldX, oldZ)
 			}
 			e.Mu.Unlock()
@@ -214,7 +217,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						}
 						target.Mu.Lock()
 						if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != zoneInstanceID ||
-							!withinDungeonAbilityRadius(walkRects, zoneSubType, zoneX, zoneZ, target, radius) {
+							!w.withinWorldAbilityRadius(walkRects, zoneSubType, zoneX, zoneZ, target, radius) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -270,12 +273,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Meteor Logic
 		if e.SubType == "Meteor" {
+			groundY, _ := w.overworldGroundHeight(e.InstanceID, e.X, e.Z)
 			// Replicate a deterministic 20-unit/s descent so every client sees
 			// the same fall instead of a meteor suspended at its spawn height.
 			if remaining := time.Until(e.LastAttackTime).Seconds(); remaining > 0 {
-				e.Y = 20 * remaining
+				e.Y = groundY + 20*remaining
 			} else {
-				e.Y = 0
+				e.Y = groundY
 			}
 			if time.Now().After(e.LastAttackTime) {
 				// Impact!
@@ -296,7 +300,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				w.fireProjectileImpactEvent(ProjectileImpactEvent{
 					ProjectileID: e.ID, ProjectileType: projectileSubType,
 					SourceID: ownerID, InstanceID: impactInstanceID, SkillName: impactName,
-					X: impactX, Y: 0, Z: impactZ,
+					X: impactX, Y: groundY, Z: impactZ,
 					Radius: visualAbilityRadius(impactName, radius), Terminal: true,
 				})
 
@@ -304,7 +308,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				for _, target := range nearby {
 					target.Mu.Lock()
 					if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
-						!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, radius) {
+						!w.withinWorldAbilityRadius(walkRects, impactName, impactX, impactZ, target, radius) {
 						target.Mu.Unlock()
 						continue
 					}
@@ -345,7 +349,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						for _, target := range explosionNearby {
 							target.Mu.Lock()
 							if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
-								!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, explosionRadius) {
+								!w.withinWorldAbilityRadius(walkRects, impactName, impactX, impactZ, target, explosionRadius) {
 								target.Mu.Unlock()
 								continue
 							}
@@ -433,7 +437,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		} else {
 			wallX, wallZ, wallHit = w.firstDungeonWallHit(e.InstanceID, oldX, oldZ, nextX, nextZ)
 		}
+		if x, z, hit := w.clipRockSegment(e.InstanceID, oldX, oldZ, wallX, wallZ); hit {
+			wallX, wallZ, wallHit = x, z, true
+		}
 		e.X, e.Z = wallX, wallZ
+		if ground, active := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); active {
+			e.Y += ground - w.terrainElevation.sample(oldX, oldZ, "")
+		}
 		w.Grid.Update(e, oldX, oldZ)
 		if wallHit && !boundedFlight {
 			impact := ProjectileImpactEvent{ProjectileID: e.ID, ProjectileType: e.SubType,
@@ -472,6 +482,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			// Read Target State
 			target.Mu.RLock()
 			if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" {
+				target.Mu.RUnlock()
+				continue
+			}
+			if w.rockLineBlocked(projectileInstanceID, rockPoint{oldX, oldZ}, rockPoint{target.X, target.Z}) {
 				target.Mu.RUnlock()
 				continue
 			}
@@ -721,7 +735,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							continue
 						}
 
-						if withinDungeonAbilityRadius(walkRects, subType, projX, projZ, splashTarget, splashRadius) {
+						if w.withinWorldAbilityRadius(walkRects, subType, projX, projZ, splashTarget, splashRadius) {
 							// Begin with raw projectile damage. Direct-hit crits and
 							// target debuffs must not be reapplied to other recipients.
 							splashDmg := int(float64(damage) * 0.4)
@@ -808,7 +822,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					for _, bt := range burnTargets {
 						bt.Mu.Lock()
 						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" || bt.Health <= 0 || bt.Disconnected ||
-							!withinDungeonAbilityRadius(walkRects, "Magma", projX, projZ, bt, burnRadius) || burnBudget.amount <= 0 {
+							!w.withinWorldAbilityRadius(walkRects, "Magma", projX, projZ, bt, burnRadius) || burnBudget.amount <= 0 {
 							bt.Mu.Unlock()
 							continue
 						}
@@ -893,7 +907,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			e.JumpProgress = progress
 			e.X = e.JumpStartX + (e.JumpTargetX-e.JumpStartX)*progress
 			e.Z = e.JumpStartZ + (e.JumpTargetZ-e.JumpStartZ)*progress
-			e.Y = e.JumpStartY + math.Sin(progress*math.Pi)*e.JumpHeight
+			baseY := e.JumpStartY
+			if ground, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {
+				baseY = ground
+			}
+			e.Y = baseY + math.Sin(progress*math.Pi)*e.JumpHeight
 			if progress >= 1 {
 				e.X = e.JumpTargetX
 				e.Y = e.JumpTargetY
@@ -909,6 +927,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 		// Fighter Charge
 		if e.IsCharging {
+			e.ChargeTargetX, e.ChargeTargetZ = w.stopRockMovement(e, e.ChargeTargetX, e.ChargeTargetZ)
 			dx := e.ChargeTargetX - e.X
 			dz := e.ChargeTargetZ - e.Z
 			dist := math.Sqrt(dx*dx + dz*dz)
@@ -926,6 +945,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				e.X = endX
 				e.Z = endZ
+				w.groundActorLocked(e)
 				w.Grid.Update(e, oldX, oldZ)
 
 				// Calculate charge distance for momentum rune
@@ -1000,13 +1020,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.RUnlock()
 						continue
 					}
-					reachable := withinDungeonAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius)
+					reachable := w.withinWorldAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius)
 					target.Mu.RUnlock()
 
 					if reachable {
 						target.Mu.Lock()
 						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID ||
-							!withinDungeonAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius) {
+							!w.withinWorldAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -1053,7 +1073,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					for _, target := range shockwaveNearby {
 						target.Mu.RLock()
 						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" ||
-							!withinDungeonAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
+							!w.withinWorldAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
 							target.Mu.RUnlock()
 							continue
 						}
@@ -1070,7 +1090,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 							target.Mu.Lock()
 							if target.CCImmune || target.IronFortressImmovable || target.InstanceID != instanceID ||
-								!withinDungeonAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
+								!w.withinWorldAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
 								target.Mu.Unlock()
 								continue
 							}
@@ -1082,6 +1102,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								endTX, endTZ = constrainedX, constrainedZ
 							}
 							target.X, target.Z = endTX, endTZ
+							w.groundActorLocked(target)
 							w.Grid.Update(target, oldTX, oldTZ)
 							target.Mu.Unlock()
 						}
@@ -1104,6 +1125,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.X = nextX
 				e.Z = nextZ
 				e.Rotation = math.Atan2(dx, dz)
+				w.groundActorLocked(e)
 				w.Grid.Update(e, oldX, oldZ)
 				e.Mu.Unlock()
 			}
@@ -1334,7 +1356,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								if targetHostile && targetState != "DEAD" {
 									target.Mu.Lock()
 									if !w.CanDamage(spiritCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID ||
-										!withinDungeonAbilityRadius(walkRects, "Spirit Guardians", pX, pZ, target, radius) {
+										!w.withinWorldAbilityRadius(walkRects, "Spirit Guardians", pX, pZ, target, radius) {
 										target.Mu.Unlock()
 										continue
 									}
@@ -1441,7 +1463,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		nearby := w.Grid.Nearby(ex, ez, minDist, instanceID)
 		for _, t := range nearby {
 			t.Mu.RLock()
-			if !w.CanDamage(seraphCombat, t) || t.State == "DEAD" || !dungeonEffectReachesTarget(walkRects, ex, ez, t) {
+			if !w.CanDamage(seraphCombat, t) || t.State == "DEAD" || !w.worldEffectReachesTarget(walkRects, ex, ez, t) {
 				t.Mu.RUnlock()
 				continue
 			}
@@ -1481,7 +1503,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				target.Mu.Lock()
 				// The target may have moved or died since acquisition.
 				if !w.CanDamage(seraphCombat, target) || target.State == "DEAD" ||
-					math.Hypot(target.X-ex, target.Z-ez) >= 15 || !dungeonEffectReachesTarget(walkRects, ex, ez, target) {
+					math.Hypot(target.X-ex, target.Z-ez) >= 15 || !w.worldEffectReachesTarget(walkRects, ex, ez, target) {
 					target.Mu.Unlock()
 					return
 				}
@@ -1514,22 +1536,27 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if dist > 3.0 && !e.Rooted {
 				e.State = "MOVING"
 				// Move towards owner
-				dirX := dx / dist
-				dirZ := dz / dist
+				waypoint := w.rockNavigationTarget(e, rockPoint{ox, oz}, time.Now())
+				pathX, pathZ := waypoint.X-e.X, waypoint.Z-e.Z
+				pathDistance := math.Hypot(pathX, pathZ)
+				dirX := pathX / math.Max(pathDistance, 1e-9)
+				dirZ := pathZ / math.Max(pathDistance, 1e-9)
 				followSpeed := 6.0
 				if e.Slowed {
 					followSpeed *= 1 - math.Max(0, math.Min(1, e.SlowFactor))
 				}
-				speed := math.Min(followSpeed*dt, dist-3)
+				speed := math.Min(followSpeed*dt, math.Min(dist-3, pathDistance))
 				newX := e.X + dirX*speed
 				newZ := e.Z + dirZ*speed
 				newX, newZ, _ = firstDungeonWalkRectWallHit(walkRects, e.X, e.Z, newX, newZ)
+				newX, newZ = w.constrainRockStep(e, newX, newZ)
 
 				e.X = newX
 				e.Z = newZ
 				e.Rotation = math.Atan2(dirX, dirZ)
 
 				// Update Grid
+				w.groundActorLocked(e)
 				w.Grid.Update(e, ex, ez)
 			} else {
 				e.State = "IDLE"
@@ -1680,7 +1707,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		if target != nil && minDist <= sightRange {
-			if minDist <= attackRange {
+			if minDist <= attackRange && !w.rockLineBlocked(e.InstanceID, rockPoint{e.X, e.Z}, rockPoint{targetX, targetZ}) {
 				// Attack (if off cooldown). If still on cooldown, stay IDLE in-place.
 				if !cooldownActive {
 					// Boss AoE Slam: bosses (Scale >= 4.0) periodically use a
@@ -1751,7 +1778,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									p.Mu.Unlock()
 									continue
 								}
-								if insideBossImpactPattern(p.X, p.Z, circles) {
+								if insideBossImpactPattern(p.X, p.Z, circles) &&
+									!w.rockLineBlocked(instID, rockPoint{sourceSnapshot.X, sourceSnapshot.Z}, rockPoint{p.X, p.Z}) {
 									damage := dmg - p.Defense/2
 									if damage < 1 {
 										damage = 1
@@ -1807,8 +1835,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				e.State = "MOVING"
 
-				dx := e.TargetX - e.X
-				dz := e.TargetZ - e.Z
+				waypoint := w.rockNavigationTarget(e, rockPoint{e.TargetX, e.TargetZ}, time.Now())
+				dx := waypoint.X - e.X
+				dz := waypoint.Z - e.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
 				if dist > 0 {
 					moveDist := e.Speed * dt
@@ -1818,6 +1847,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					oldX, oldZ := e.X, e.Z
 					newX := e.X + (dx/dist)*moveDist
 					newZ := e.Z + (dz/dist)*moveDist
+					newX, newZ = w.constrainRockStep(e, newX, newZ)
 					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
 						newX = constrainedX
 						newZ = constrainedZ
@@ -1829,6 +1859,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						e.X = newX
 						e.Z = newZ
 						e.Rotation = math.Atan2(dx, dz)
+						w.groundActorLocked(e)
 						w.Grid.Update(e, oldX, oldZ)
 					}
 				}
@@ -1861,8 +1892,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.State = "MOVING"
 			}
 
-			dx = e.TargetX - e.X
-			dz = e.TargetZ - e.Z
+			waypoint := w.rockNavigationTarget(e, rockPoint{e.TargetX, e.TargetZ}, time.Now())
+			dx = waypoint.X - e.X
+			dz = waypoint.Z - e.Z
 			dist := math.Sqrt(dx*dx + dz*dz)
 
 			if dist > 0 {
@@ -1873,6 +1905,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				oldX, oldZ := e.X, e.Z
 				newX := e.X + (dx/dist)*moveDist
 				newZ := e.Z + (dz/dist)*moveDist
+				newX, newZ = w.constrainRockStep(e, newX, newZ)
 				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
 					newX = constrainedX
 					newZ = constrainedZ
@@ -1885,6 +1918,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.X = newX
 					e.Z = newZ
 					e.Rotation = math.Atan2(dx, dz)
+					w.groundActorLocked(e)
 					w.Grid.Update(e, oldX, oldZ)
 				}
 			}

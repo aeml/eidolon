@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { EnvironmentalHazard } from '../src/entities/EnvironmentalHazard.js';
+import { Entity } from '../src/entities/Entity.js';
+import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 const worldGeneratorInstances = [];
 
@@ -249,6 +251,25 @@ describe('GameEngine dungeon containment wiring', () => {
         const engine = createEngineHarness();
         await engine.enterInstance('', 'overworld', null, null, { x: 12, y: 0, z: 205 });
         expect(engine.player.position.toArray()).toEqual([12, 0, 205]);
+    });
+
+    test('terrain return resolves landing and clears departed-scene interpolation before rendering', async () => {
+        const engine = createEngineHarness();
+        const previous = engine.player;
+        engine.player = Object.assign(new Entity('transition-player'), previous);
+        engine.player.mesh = new THREE.Group();
+        engine.player.position.set(30000, 8, 20000);
+        engine.player.capturePreviousTransform();
+        engine.terrainElevation = field;
+        await engine.enterInstance('', 'overworld', null, null, { x: -570, y: 0, z: 410 });
+        const landing = [-570, field.sample(-570, 410), 410];
+        for (const alpha of [0, .5, 1]) {
+            engine.player.render(alpha);
+            expect(engine.player.mesh.position.toArray()).toEqual(landing);
+        }
+        await engine.enterInstance('instance-floor', 'crypt', null, null, { x: -570, y: 8, z: 410 });
+        engine.player.render(0);
+        expect(engine.player.mesh.position.toArray()).toEqual([-570, 8, 410]);
     });
 
     test.each([8, 0, undefined, NaN, Infinity])('scene entry preserves finite authoritative floor height %s', async height => {

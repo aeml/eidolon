@@ -66,6 +66,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				player.X = destX
 				player.Z = destZ
 				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
+				w.groundActorLocked(player)
 				w.Grid.Update(player, oldX, oldZ)
 
 				// Deal Damage with talent bonus
@@ -182,8 +183,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				CreatedAt:  time.Now(),
 				Scale:      1.0,
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+			w.addProjectileLocked(proj)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -219,8 +219,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				OwnerID:    player.ID,
 				CreatedAt:  time.Now(),
 			}
-			w.Entities[trap.ID] = trap
-			w.Grid.Add(trap)
+			w.addProjectileLocked(trap)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -246,8 +245,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				OwnerID:    player.ID,
 				CreatedAt:  time.Now(),
 			}
-			w.Entities[trap.ID] = trap
-			w.Grid.Add(trap)
+			w.addProjectileLocked(trap)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 18*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -275,7 +273,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
-					if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
+					if w.withinWorldAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
 						finalDamage := impacts.damage(player, target, damage, "physical", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
@@ -342,8 +340,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				ProjectileBounces: bounces,
 				ProjectileSkill:   "Piercing Throw",
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+			w.addProjectileLocked(proj)
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 1*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -389,8 +386,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					ProjectileRuneID: runeID,
 					ProjectileSkill:  "Fan of Knives",
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+				w.addProjectileLocked(proj)
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 6*time.Second))
@@ -459,6 +455,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					player.Z = teleZ
 					player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 					player.Rotation = tRot
+					w.groundActorLocked(player)
 					w.Grid.Update(player, oldX, oldZ)
 				}
 
@@ -596,6 +593,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				player.Z = teleZ
 				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				player.Rotation = tRot
+				w.groundActorLocked(player)
 				w.Grid.Update(player, oldX, oldZ)
 
 				// The base skill primes Death Spiral with a bleed, independently
@@ -679,8 +677,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					ProjectileSkill:       "Blade Storm",
 					ProjectileTravelLimit: radius,
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+				w.addProjectileLocked(proj)
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
@@ -719,7 +716,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.RUnlock()
 
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					// Calculate final damage
 					finalDamage := damage
 					if player.HasAnySetBonus("deathSpiralConsume") {
@@ -814,7 +811,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					if !target.CCImmune {
 						target.Slowed = true
 						target.SlowFactor = 0.5
@@ -846,6 +843,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				sx, sz, _ := constrainPointToWalkRects(rects, player.X, player.Z)
 				x, z, _ = firstDungeonWalkRectWallHit(rects, sx, sz, x, z)
 			}
+			x, z, _ = w.clipRockSegment(player.InstanceID, player.X, player.Z, x, z)
 			damage := int(float64(20+player.Stats.Dexterity) * player.GetSkillDamageMultiplier(skillName))
 			if player.ActiveCombo == "tripwire_damage_boost" {
 				damage *= 2
@@ -867,8 +865,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				CreatedAt:       time.Now(),
 				Scale:           1.0,
 			}
-			w.Entities[trap.ID] = trap
-			w.Grid.Add(trap)
+			w.addProjectileLocked(trap)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, x, z)
@@ -920,8 +917,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					ProjectileActivationTime: time.Now().Add(time.Duration(i) * 150 * time.Millisecond),
 					ProjectilePierce:         shouldPierce, // Blade Tornado combo effect
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+				w.addProjectileLocked(proj)
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 18*time.Second))

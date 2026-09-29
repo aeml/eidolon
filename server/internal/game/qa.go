@@ -46,7 +46,12 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 		// Arrive on the forecourt so first movement is not a collision ejection.
 		x, z = 800, 250
 	case "encounter":
-		const anchorX, anchorZ = 120.0, 200.0
+		anchorX, anchorZ := 120.0, 200.0
+		if w.terrainElevation != nil {
+			// Candidate QA must exercise a raised encounter, not accidentally
+			// pass all combat checks on the town's flat foundation.
+			anchorX, anchorZ = -120, -187
+		}
 		nearestDistanceSq := math.MaxFloat64
 		var enemyX, enemyZ float64
 		foundEnemy := false
@@ -57,6 +62,9 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 			candidateX, candidateZ := candidate.X, candidate.Z
 			candidate.Mu.RUnlock()
 			if !eligible {
+				continue
+			}
+			if w.terrainElevation != nil && w.terrainElevation.sample(candidateX, candidateZ, "") < 1 {
 				continue
 			}
 			dx, dz := candidateX-anchorX, candidateZ-anchorZ
@@ -87,6 +95,7 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player.TargetZ = z
 	player.TargetID = ""
 	player.State = "IDLE"
+	w.recoverWorldEntryLocked(player)
 	player.MoveLockUntil = time.Now().Add(QAWaypointMovementLockDuration)
 	player.QAWaypointProtectionEndTime = time.Now().Add(QAWaypointProtectionDuration)
 	player.QAHazardInspectionEndTime = time.Time{}

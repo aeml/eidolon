@@ -114,6 +114,10 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 }
 
 type World struct {
+	// Immutable before world publication. Remains nil until elevation's scene,
+	// effects and client movement integration is complete; tests can opt in.
+	terrainElevation   *worldElevationField
+	rockSolids         []worldRockSolid // Immutable opt-in terrain solids; nil in ordinary worlds.
 	backgroundWork     lifecycle.Group
 	backgroundStopInit sync.Once
 	backgroundStopOnce sync.Once
@@ -280,8 +284,32 @@ type TelegraphEvent struct {
 }
 
 func NewWorld(db *database.DB) *World {
+	return newWorldWithElevation(db, nil)
+}
+
+// Explicit integration candidate. The ordinary constructor remains flat until
+// the connected gameplay and presentation acceptance gates are complete.
+func NewWorldWithElevationCandidate(db *database.DB) (*World, error) {
+	field, err := readWorldElevationCandidate()
+	if err != nil {
+		return nil, err
+	}
+	solids, err := readEarthOutcropSolids()
+	if err != nil {
+		return nil, err
+	}
+	return newWorldWithTerrain(db, field, solids), nil
+}
+
+func newWorldWithElevation(db *database.DB, field *worldElevationField) *World {
+	return newWorldWithTerrain(db, field, nil)
+}
+
+func newWorldWithTerrain(db *database.DB, field *worldElevationField, solids []worldRockSolid) *World {
 	economy := NewEconomyTelemetry(time.Now().UTC())
 	w := &World{
+		terrainElevation:   field,
+		rockSolids:         solids,
 		Entities:           make(map[string]*Entity),
 		Parties:            make(map[string]*Party),
 		Trading:            NewTradingSystem(db),
@@ -305,6 +333,16 @@ func NewWorld(db *database.DB) *World {
 	}
 	w.Trading.economy = economy
 	w.initWorld()
+	// Initial population includes direct insertions as well as AddEntity.
+	for _, entity := range w.Entities {
+		oldX, oldZ := entity.X, entity.Z
+		w.recoverActorFromRocks(entity)
+		w.groundActorLocked(entity)
+		w.groundLootLocked(entity)
+		if oldX != entity.X || oldZ != entity.Z {
+			w.Grid.Update(entity, oldX, oldZ)
+		}
+	}
 	return w
 }
 
@@ -915,6 +953,7 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		Scale:          1.0,
 	}
 	w.Entities[elite.ID] = elite
+	w.recoverWorldEntryLocked(elite)
 	w.Grid.Add(elite)
 
 	if w.OnEvent != nil {
@@ -1171,6 +1210,9 @@ func (w *World) AddEntity(e *Entity) {
 		w.Grid.Remove(old)
 	}
 	w.Entities[e.ID] = e
+	w.recoverActorFromRocks(e)
+	w.groundActorLocked(e)
+	w.groundLootLocked(e)
 	w.Grid.Add(e)
 	if e.Type == TypePlayer && strings.HasPrefix(e.InstanceID, "dungeon_") {
 		// Login can restore membership directly without EnterInstance. The run
@@ -1229,6 +1271,9 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	// A resume starts a fresh exposure window. It must not complete a damage
 	// tick accumulated before the socket went away.
 	delete(w.PlayerHazardTicks, id)
+	oldX, oldZ := e.X, e.Z
+	w.recoverWorldEntryLocked(e)
+	w.Grid.Update(e, oldX, oldZ)
 	return true
 }
 
@@ -1254,6 +1299,9 @@ func (w *World) ClearEntityDisconnected(id string) (*Entity, bool) {
 	e.Disconnected = false
 	e.restTickAt = time.Now()
 	e.DisconnectedAt = time.Time{}
+	oldX, oldZ := e.X, e.Z
+	w.recoverWorldEntryLocked(e)
+	w.Grid.Update(e, oldX, oldZ)
 	return e, true
 }
 
@@ -1343,6 +1391,13 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 	}
 
 	if e.Type == TypePlayer {
+		if e.InstanceID == "" && len(w.rockSolids) > 0 {
+			if !finiteCoordinate(x) || !finiteCoordinate(y) || !finiteCoordinate(z) {
+				return false
+			}
+			point := moveAroundRockSolids(w.rockSolids, rockPoint{e.X, e.Z}, rockPoint{x, z}, e.ReplicatedBodyRadius())
+			x, z = point.X, point.Z
+		}
 		if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
 			x = constrainedX
 			z = constrainedZ
@@ -1366,6 +1421,7 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 	e.X = x
 	e.Y = y
 	e.Z = z
+	w.groundActorLocked(e)
 	e.Rotation = rotation
 	if sequence > 0 {
 		e.LastMoveSequence = sequence
@@ -1420,6 +1476,13 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 		z = constrainedZ
 	}
 
+	if ground, ok := w.overworldGroundHeight(e.InstanceID, x, z); ok {
+		if e.State == "JUMPING" {
+			return false
+		}
+		y = ground // The client cannot choose an airborne landing height.
+		w.groundActorLocked(e)
+	}
 	dx := x - e.X
 	dz := z - e.Z
 	travelDistance := math.Sqrt(dx*dx + dz*dz)

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { InputManager } from '../src/core/InputManager.js';
+import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -125,6 +126,23 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test.each([['', true], ['dungeon_floor', false]])('held basic attack respects terrain ownership in %s', (instanceId, attacks) => {
+        const engine = createEngineHarness();
+        engine.terrainElevation = field;
+        engine.currentInstanceId = instanceId;
+        engine.inputManager.keys = {};
+        engine.getBasicAttackRangeForEntity = () => 5;
+        engine.showReadabilityFeedback = jest.fn();
+        engine.player.position.set(-525, field.sample(-525, 440), 440);
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'slope-target', state: 'IDLE', isActive: true,
+            position: engine.player.position.clone().add(new THREE.Vector3(4, 8, 0))
+        });
+        engine.update(.016);
+        expect(engine.abilityController.performAttack).toHaveBeenCalledTimes(attacks ? 1 : 0);
+        if (attacks) expect(engine.abilityController.performAttack).toHaveBeenCalledWith(engine.hoveredEntity);
+    });
+
     test.each([2, 30])('held Shift keeps ground movement when a hostile is %sm away', distance => {
         const engine = createEngineHarness();
         // Use production modifier tracking, not an invented keys.shift value.

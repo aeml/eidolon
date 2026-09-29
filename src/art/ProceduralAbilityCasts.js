@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { getWhirlwindCastDuration, stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
+import { createTerrainBeamGeometry } from './TerrainBeamGeometry.js';
+import { GroundedRingVisual } from './GroundedRingVisual.js';
+import { GroundedProjectileVisual } from './GroundedProjectileVisual.js';
 
 const geometryCache = new Map();
 const materialCache = new Map();
@@ -149,6 +152,7 @@ function addPart(parent, identity, name, geo, mat, options = {}) {
         gameplayBoundary: Boolean(options.gameplayBoundary),
         gameplayRadius: options.gameplayRadius,
         gameplayArc: options.gameplayArc,
+        groundSurface: Boolean(options.groundSurface),
         basePosition: mesh.position.toArray(),
         baseScale: mesh.scale.toArray(),
         orbitRadius: options.orbitRadius,
@@ -170,7 +174,7 @@ function relicGeometry(shape) {
 }
 
 function addRing(parent, identity, name, radius, mat, options = {}) {
-    return addPart(parent, identity, name,
+    const ring = addPart(parent, identity, name,
         geometry(`cast-ring:${options.segments || 32}:${options.thickness || 0.08}:${options.arc || Math.PI * 2}`, () =>
             new THREE.RingGeometry(1 - (options.thickness || 0.08), 1, options.segments || 32, 1,
                 options.thetaStart || 0, options.arc || Math.PI * 2)),
@@ -186,6 +190,9 @@ function addRing(parent, identity, name, radius, mat, options = {}) {
             gameplayArc: options.gameplayArc,
             highQualityOnly: options.highQualityOnly
         });
+    // Beam lenses are vertical/body effects; only floor-facing rings deform.
+    ring.userData.terrainRing = !options.rotation || Math.abs(options.rotation[0] + Math.PI / 2) < 1e-8;
+    return ring;
 }
 
 function addOrbit(parent, identity, def, materials, radius, height, options = {}) {
@@ -256,6 +263,7 @@ function addConeBoundary(parent, identity, radius, arc, direction, materials) {
             position: [ray.x * radius / 2, 0.08, ray.z * radius / 2],
             scale: [1, 1, radius],
             gameplayBoundary: true,
+            groundSurface: true,
             gameplayRadius: radius,
             gameplayArc: arc
         });
@@ -275,12 +283,21 @@ function buildBeam(root, identity, def, materials, position, options) {
     const start = options.source?.position?.clone?.() || position.clone();
     start.y += 1.25;
     const end = position.clone();
-    if (end.y < start.y - 0.5) end.y = start.y;
+    const terrain = options.terrainElevation;
+    if (terrain) end.y = terrain.sample(end.x, end.z) + 1.25;
+    else if (end.y < start.y - 0.5) end.y = start.y;
     const localEnd = end.clone().sub(start);
     const range = Math.max(0.001, localEnd.length());
     const midpoint = localEnd.clone().multiplyScalar(0.5);
     root.position.copy(start);
     for (let layer = 0; layer < 2; layer += 1) {
+        if (terrain) {
+            const presentation = createTerrainBeamGeometry(start, end, terrain, layer ? .055 : .12, layer ? 5 : 8);
+            const beam = addPart(root, identity, layer ? 'BeamHeart' : 'BeamCage', presentation.geometry,
+                layer ? materials.pale : materials.accent, { motion: 'beam-pulse', phase: layer * Math.PI });
+            beam.terrainBeam = presentation;
+            continue;
+        }
         const beam = addPart(root, identity, layer ? 'BeamHeart' : 'BeamCage',
             geometry(`cast-beam:${layer}`, () => {
                 const geo = new THREE.CylinderGeometry(layer ? 0.055 : 0.12, layer ? 0.055 : 0.12, 1, layer ? 5 : 8);
@@ -321,11 +338,11 @@ function buildCast(root, identity, def, materials, type, position, options) {
         // shards animate without stretching that gameplay boundary.
         for (const side of [-1, 1]) {
             addPart(root, identity, `FissureSide${side}`, geometry('cast-fissure-edge', () => new THREE.BoxGeometry(1, .04, 1)), materials.pale,
-                { position: [side * halfWidth, .08, radius/2], scale: [.06, 1, radius], gameplayBoundary: true, gameplayRadius: radius });
+                { position: [side * halfWidth, .08, radius/2], scale: [.06, 1, radius], gameplayBoundary: true, groundSurface: true, gameplayRadius: radius });
         }
         for (const end of [0, radius]) {
             addPart(root, identity, `FissureEnd${end === 0 ? 'Start' : 'Finish'}`, geometry('cast-fissure-edge', () => new THREE.BoxGeometry(1, .04, 1)), materials.pale,
-                { position: [0, .08, end], scale: [halfWidth*2, 1, .06], gameplayBoundary: true, gameplayRadius: radius });
+                { position: [0, .08, end], scale: [halfWidth*2, 1, .06], gameplayBoundary: true, groundSurface: true, gameplayRadius: radius });
         }
         for (let i = 0; i < 9; i++) {
             const z = radius * (i+.5)/9;
@@ -458,8 +475,11 @@ function updateRoot(root, elapsed, duration, dt) {
             const amount = 0.45 + t * 2.5;
             child.scale.set(baseScale[0] * amount, baseScale[1] * amount, baseScale[2] * amount);
         } else if (motion === 'beam-pulse') {
-            child.scale.x = baseScale[0] * pulse;
-            child.scale.y = baseScale[1] * pulse;
+            if (child.terrainBeam) child.terrainBeam.setWidthScale(pulse);
+            else {
+                child.scale.x = baseScale[0] * pulse;
+                child.scale.y = baseScale[1] * pulse;
+            }
         }
 
         if (t > 0.78 && !['beam-pulse', 'rise'].includes(motion)) {
@@ -470,7 +490,7 @@ function updateRoot(root, elapsed, duration, dt) {
 }
 
 class ProceduralAbilityCastEffect {
-    constructor(scene, root, duration, whirlwindSource = null) {
+    constructor(scene, root, duration, whirlwindSource = null, terrain = null) {
         this.scene = scene;
         this.root = root;
         this.meshes = [root];
@@ -480,6 +500,18 @@ class ProceduralAbilityCastEffect {
         this.disposed = false;
         this.whirlwindSource = whirlwindSource;
         this.authoritativeSeen = false;
+        this.terrain = terrain;
+        this.groundRings = [];
+        if (terrain && root.userData.layerType !== 'beam') {
+            root.position.y = terrain.sample(root.position.x, root.position.z);
+            root.traverse(part => {
+                if (part.userData.terrainRing) this.groundRings.push(new GroundedRingVisual(part, { maxEdge: .15 }));
+            });
+            this.groundPresentation = new GroundedProjectileVisual(root, {
+                animatedDetails: true, surfaceOffset: 0, detailFilter: part => !part.userData.terrainRing
+            });
+            this.updateTerrain();
+        }
         if (whirlwindSource) whirlwindSource.whirlwindCastEffect = this;
     }
 
@@ -519,18 +551,31 @@ class ProceduralAbilityCastEffect {
         }
         this.elapsed += step;
         if (source) source.whirlwindRemaining = Math.max(0, this.duration - this.elapsed);
+        this.groundPresentation?.prepareAnimation();
         updateRoot(this.root, this.elapsed, this.duration, step);
+        this.updateTerrain();
         if (this.elapsed >= this.duration) {
             this.isActive = false;
             this.dispose();
         }
     }
 
+    updateTerrain() {
+        if (!this.groundPresentation) return;
+        this.groundPresentation.update(this.terrain);
+        const height = this.root.matrixWorld.elements[13];
+        this.groundRings.forEach(ring => ring.update(this.terrain, height));
+    }
+
     dispose() {
         if (this.disposed) return;
         this.disposed = true;
         this.isActive = false;
+        this.groundPresentation?.dispose();
+        this.groundRings.forEach(ring => ring.dispose());
+        this.groundRings.length = 0;
         this.root.parent?.remove(this.root);
+        this.root.traverse(child => child.terrainBeam?.geometry.dispose());
         this.root.clear();
         this.meshes.length = 0;
         if (this.whirlwindSource?.whirlwindCastEffect === this) {
@@ -575,7 +620,7 @@ export function createProceduralAbilityCastEffect(scene, type, position, _color,
         if (child.userData?.highQualityOnly) child.visible = quality !== 'low';
     });
     scene.add(root);
-    return new ProceduralAbilityCastEffect(scene, root, duration, isWhirlwind ? options.source : null);
+    return new ProceduralAbilityCastEffect(scene, root, duration, isWhirlwind ? options.source : null, options.terrainElevation);
 }
 
 export function getProceduralAbilityCastCacheMetrics() {

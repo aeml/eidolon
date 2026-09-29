@@ -4,6 +4,7 @@ import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { getOverworldGroundHeight } from './WorldGrounding.js';
 
 class GameEngineEntitySyncMethods {
     applyPositionHacks(pData) {
@@ -144,6 +145,11 @@ class GameEngineEntitySyncMethods {
      * @param {Object} pData  Entity payload from server
      */
     syncRemoteEntity(remoteEntity, pData) {
+        if (pData.type !== undefined) {
+            remoteEntity.terrainGrounded = pData.type === 'Player' || pData.type === 'Enemy' ||
+                (pData.type === 'NPC' && (pData.subType === 'AvengingSeraph' ||
+                    (pData.subType === undefined && remoteEntity.terrainGrounded === true)));
+        }
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
         if (pData.appearances !== undefined) remoteEntity.appearances = pData.appearances || {};
@@ -162,6 +168,11 @@ class GameEngineEntitySyncMethods {
                 const horizontalSpeed = Math.hypot(pData.velX, pData.velZ);
                 if (horizontalSpeed > 0) remoteEntity.speed = horizontalSpeed;
             }
+        } else if (pData.type === 'Loot') {
+            // Loot does not run Actor's remote interpolation. Apply authoritative
+            // relocation/correction to the entity, hitbox and label together.
+            remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
+            remoteEntity.resetTransformInterpolation?.();
         } else {
             const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
             if (!remoteEntity.targetServerPosition) {
@@ -312,7 +323,7 @@ class GameEngineEntitySyncMethods {
                 sourceId: entity.owner?.id || '',
                 instanceId: this.currentInstanceId || '',
                 x: entity.position.x,
-                y: 0.1,
+                y: getOverworldGroundHeight(this, entity.position) ?? 0.1,
                 z: entity.position.z,
                 radius: entity.explosionRadius || 26.4,
                 terminal: true

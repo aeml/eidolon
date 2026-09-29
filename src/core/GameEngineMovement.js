@@ -17,6 +17,7 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { getOverworldGroundHeight } from './WorldGrounding.js';
 
 class GameEngineMovementMethods {
     handlePrimaryClick(event = null) {
@@ -132,9 +133,12 @@ class GameEngineMovementMethods {
         const end = destination.clone();
         end.y = this.player.position.y;
 
+        this.collisionManager?.constrainRockMovementDestination?.(this.player.position, end, this.player.radius || 0);
+
         if (this.collisionManager?.constrainToDungeonWalkableArea) {
             this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
         }
+        end.y = getOverworldGroundHeight(this, end) ?? end.y;
 
         if (this.playerJumpState) {
             this.playerQueuedJump = true;
@@ -176,11 +180,15 @@ class GameEngineMovementMethods {
         const end = destination.clone();
         end.y = start.y;
 
+        this.collisionManager?.constrainRockMovementDestination?.(start, end, this.player.radius || 0);
+
         if (this.collisionManager?.constrainToDungeonWalkableArea) {
             this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
         }
+        start.y = getOverworldGroundHeight(this, start) ?? start.y;
+        end.y = getOverworldGroundHeight(this, end) ?? end.y;
 
-        const travelDistance = start.distanceTo(end);
+        const travelDistance = Math.hypot(end.x - start.x, end.z - start.z);
         const duration = this.getJumpTravelDuration(travelDistance);
         const height = this.getJumpArcHeight(travelDistance);
 
@@ -336,7 +344,7 @@ class GameEngineMovementMethods {
             end.y = start.y;
         }
 
-        const travelDistance = start.distanceTo(end);
+        const travelDistance = Math.hypot(end.x - start.x, end.z - start.z);
         const duration = Math.max(0.001, getJumpScalarField('jumpDuration', existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0)));
         const isSameJump = this.isSameAuthoritativeJump(existingJump, start, end, duration)
             || (!hasJumpTrajectoryMetadata && !!existingJump?.serverDriven);
@@ -363,7 +371,8 @@ class GameEngineMovementMethods {
             : authoritativeProgress;
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
-        const baseY = THREE.MathUtils.lerp(start.y, end.y, entity === this.player ? progress : authoritativeProgress);
+        const baseY = getOverworldGroundHeight(this, currentPosition)
+            ?? THREE.MathUtils.lerp(start.y, end.y, entity === this.player ? progress : authoritativeProgress);
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
         const visualHeight = entity === this.player
@@ -538,7 +547,7 @@ class GameEngineMovementMethods {
             }
             const displayTarget = this.getAuthoritativeJumpDisplayTarget(this.player, jump) || this.player.position;
             jump.displayPosition.lerp(displayTarget, 0.35);
-            jump.displayPosition.y = this.player.position.y;
+            jump.displayPosition.y = getOverworldGroundHeight(this, jump.displayPosition) ?? this.player.position.y;
             this.playerJumpVisualHeight = jump.visualHeight || 0;
             this.renderSystem?.setCameraTarget?.(jump.displayPosition);
             return true;
@@ -551,7 +560,7 @@ class GameEngineMovementMethods {
         const progress = jump.visualProgress ?? this.getJumpVisualProgress(jump);
 
         this.player.position.lerpVectors(jump.start, jump.end, progress);
-        this.player.position.y = jump.start.y;
+        this.player.position.y = getOverworldGroundHeight(this, this.player.position) ?? jump.start.y;
         this.playerJumpVisualHeight = jump.visualHeight || 0;
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
@@ -649,7 +658,9 @@ class GameEngineMovementMethods {
         }
 
         const clampedProgress = Math.max(0, Math.min(1, progress));
-        return new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, clampedProgress);
+        const position = new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, clampedProgress);
+        position.y = getOverworldGroundHeight(this, position) ?? position.y;
+        return position;
     }
 
     applyJumpImpactEffect(entity, impact = 0.9, positionOverride = null) {
@@ -795,6 +806,8 @@ class GameEngineMovementMethods {
             return;
         }
 
+        const ground = getOverworldGroundHeight(this, entity.mesh.position);
+        if (ground !== null) entity.mesh.position.y = ground;
         const visualHeight = jumpState.visualHeight ?? 0;
         entity.mesh.position.y += visualHeight;
 

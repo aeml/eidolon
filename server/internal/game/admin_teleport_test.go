@@ -18,6 +18,49 @@ func adminTeleportFixture() (*World, *Entity, *Entity) {
 	return w, p, a
 }
 
+func TestAdminTeleportElevatedPlanClearanceAndDurableApply(t *testing.T) {
+	w, p, anchor := adminTeleportFixture()
+	var err error
+	w.terrainElevation, err = readWorldElevationCandidate()
+	if err != nil {
+		t.Fatal(err)
+	}
+	oldX, oldZ := anchor.X, anchor.Z
+	anchor.X, anchor.Z = -570, 410
+	w.groundActorLocked(anchor)
+	w.Grid.Update(anchor, oldX, oldZ)
+	plan, err := w.PlanAdminTeleport(p.ID, "player", anchor.ID)
+	if err != nil || plan.Y < 1 || plan.Y != w.terrainElevation.sample(plan.X, plan.Z, "") {
+		t.Fatalf("missing grounded landing: %+v %v", plan, err)
+	}
+	id, fingerprint := database.AdminOperationID("operator", "elevated-teleport-001"), strings.Repeat("e", 64)
+	wrongHeight := plan
+	wrongHeight.Y++
+	if _, changed, err := w.ApplyDurableAdminTeleport(p.ID, id, fingerprint, wrongHeight); err == nil || changed || p.X != 40 {
+		t.Fatal("height was silently corrected after validating a different landing", err)
+	}
+	if _, changed, err := w.ApplyDurableAdminTeleport(p.ID, id, fingerprint, plan); err != nil || !changed {
+		t.Fatal("valid elevated plan was not applied", changed, err)
+	}
+	if p.X != plan.X || p.Y != plan.Y || p.Z != plan.Z {
+		t.Fatal("durable apply diverged from the validated landing")
+	}
+	checked := 0
+	for _, box := range adminLandingColliders.Overworld.Boxes {
+		height := w.terrainElevation.sample(box[0], box[1], "")
+		if height <= 1 {
+			continue
+		}
+		checked++
+		if w.adminLandingClearLocked(AdminTeleportPlan{X: box[0], Y: height, Z: box[1]}, p.ID) {
+			t.Fatal("raised static obstruction allowed an admin landing")
+		}
+	}
+	if checked == 0 {
+		t.Fatal("no elevated canonical obstruction tested")
+	}
+}
+
 func TestAdminTeleportPlayerLandingReceiptResourcesAndMovementFence(t *testing.T) {
 	w, p, a := adminTeleportFixture()
 	plan, err := w.PlanAdminTeleport(p.ID, "player", a.ID)

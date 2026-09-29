@@ -2,6 +2,8 @@ import { Entity } from './Entity.js';
 import { Actor } from './Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
+import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
+import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
 import {
     createProceduralAreaField,
     releaseProceduralAreaField,
@@ -24,15 +26,16 @@ export class AreaOfEffect extends Entity {
         this.elapsedTime = 0;
         this.effectType = config.effectType;
         this.skillName = config.skillName || (config.effectType === 'InfernoCataclysm' ? 'Inferno Cataclysm' : '');
-        
+
         this.onTick = config.onTick || null; // Custom logic per tick
         this.onExpire = config.onExpire || null; // Custom logic on expire
-        
+
         this.isHostile = config.isHostile !== undefined ? config.isHostile : true; // Damages enemies?
-        
+
         this.mesh = this.createVisual();
+        this.syncGroundPresentation();
     }
-    
+
     createVisual() {
         const quality = this.gameEngine?.uiManager?.getGraphicsQuality?.() || 'high';
         const field = createProceduralAreaField(this.effectType, this.radius, { quality });
@@ -47,9 +50,11 @@ export class AreaOfEffect extends Entity {
             if (this.onExpire) this.onExpire(this.gameEngine, this);
             return;
         }
-        
+
+        this.groundPresentation?.prepareAnimation();
         updateProceduralAreaField(this.mesh, this.elapsedTime, dt);
-        
+        this.syncGroundPresentation();
+
         // Damage Tick
         this.tickTimer += dt;
         if (this.tickTimer >= this.damageInterval) {
@@ -57,7 +62,20 @@ export class AreaOfEffect extends Entity {
             this.performTick(chunkManager);
         }
     }
-    
+
+    syncGroundPresentation() {
+        const ground = getOverworldGroundHeight(this.gameEngine, this.position);
+        if (ground === null) {
+            this.groundPresentation?.dispose();
+            this.groundPresentation = null;
+            return;
+        }
+        this.position.y = ground;
+        this.mesh.position.copy(this.position);
+        this.groundPresentation ||= new GroundedProjectileVisual(this.mesh, { animatedDetails: true });
+        this.groundPresentation.update(this.gameEngine.terrainElevation);
+    }
+
     performTick(chunkManager) {
         if (this.gameEngine?.isMultiplayer || this.owner?.isMultiplayer || this.owner?.isRemote) return;
         if (this.damage > 0) {
@@ -105,7 +123,8 @@ export class AreaOfEffect extends Entity {
                 if (!isEnemy) continue;
 
                 const canonical = this.effectType === 'InfernoCataclysm';
-                const dist = canonical ? Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z)
+                const horizontalRange = canonical || getOverworldGroundHeight(this.gameEngine, this.position) !== null;
+                const dist = horizontalRange ? Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z)
                     : this.position.distanceTo(entity.position);
                 const rects = this.gameEngine.currentInstanceId && this.gameEngine.currentInstanceType !== 'overworld'
                     ? this.gameEngine.currentDungeonLayout?.walkRects : null;
@@ -124,6 +143,8 @@ export class AreaOfEffect extends Entity {
     }
 
     dispose() {
+        this.groundPresentation?.dispose();
+        this.groundPresentation = null;
         if (this.mesh) {
             releaseProceduralAreaField(this.mesh);
             this.mesh = null;

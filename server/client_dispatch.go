@@ -96,10 +96,11 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		// Send success message
 		response := map[string]interface{}{
-			"message":       "Login successful",
-			"hasCharacter":  hasCharacter,
-			"characterType": characterType,
-			"resumeToken":   resumeToken,
+			"message":        "Login successful",
+			"terrainProfile": world.TerrainProfile(),
+			"hasCharacter":   hasCharacter,
+			"characterType":  characterType,
+			"resumeToken":    resumeToken,
 		}
 		payloadBytes, _ := json.Marshal(response)
 
@@ -881,8 +882,9 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		// Notify the client that the session resumed successfully.
 		resumeResp := map[string]interface{}{
-			"playerID":    playerID,
-			"resumeToken": newToken,
+			"playerID":       playerID,
+			"terrainProfile": world.TerrainProfile(),
+			"resumeToken":    newToken,
 		}
 		resumePayload, _ := json.Marshal(resumeResp)
 		resumeMsg := Message{Type: MsgResumeSession, Payload: resumePayload}

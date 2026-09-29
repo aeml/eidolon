@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { createEarthOutcrops } from '../art/EarthOutcrops.js';
+import { EARTH_OUTCROP_COLLISIONS, EARTH_OUTCROP_PROFILE } from '../data/earthOutcrops.js';
+import { compileRockSolids } from '../core/RockCollision.js';
 import { createCasinoShell } from '../art/ProceduralCasino.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralPvPArena } from '../art/ProceduralPvPArena.js';
@@ -62,6 +65,8 @@ export class WorldGenerator {
         this.dungeonRoomPresentations = new Map();
         this.dungeonPresentationElapsed = 0;
         this.instanceId = options.instanceId || '';
+        this.terrainElevation = this.instanceId ? null : options.terrainElevation || null;
+        this.hasEarthOutcrops = !this.instanceId && options.terrainProfile === EARTH_OUTCROP_PROFILE;
         this.instanceType = options.instanceType || '';
         this.crystalChamber = options.layout?.rooms?.at(-1) || null;
         this.graphicsQuality = options.graphicsQuality || 'high';
@@ -148,7 +153,7 @@ export class WorldGenerator {
                     );
                     const colliderCenter = new THREE.Vector3(
                         placement.x,
-                        colliderSize.y / 2,
+                        colliderSize.y / 2 + (this.terrainElevation?.sample(placement.x, placement.z) ?? 0),
                         placement.z
                     );
                     colliders.push(new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize));
@@ -171,7 +176,7 @@ export class WorldGenerator {
                     instance.userData.placementIndices = indices;
                     indices.forEach((placementIndex, index) => {
                         const placement = placements[placementIndex];
-                        TEMP_POS.set(placement.x, 0, placement.z);
+                        TEMP_POS.set(placement.x, this.terrainElevation?.sample(placement.x, placement.z) ?? 0, placement.z);
                         TEMP_SCALE.setScalar(placement.scale);
                         TEMP_QUAT.setFromAxisAngle(TEMP_UP, placement.rotation);
                         TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
@@ -188,17 +193,24 @@ export class WorldGenerator {
             colliders.forEach((collider) => this.collisionManager.addCollider(collider));
             this.scene.add(group);
         }
-        if (shouldAttach()) this.scene.add(createEarthUnderstory({ quality: this.graphicsQuality }));
+        if (shouldAttach()) this.scene.add(createEarthUnderstory({
+            quality: this.graphicsQuality, terrainElevation: this.terrainElevation
+        }));
         return true;
     }
 
     async loadBuildings(cx, cz, { shouldAttach = () => true } = {}) {
         if (!shouldAttach()) return false;
 
+        if (this.hasEarthOutcrops) {
+            this.scene.add(createEarthOutcrops({ terrainElevation: this.terrainElevation }));
+            this.collisionManager.setOverworldRockSolids(compileRockSolids(EARTH_OUTCROP_COLLISIONS));
+        }
+
         // Both staged multiplayer startup and the full createTown path call
         // loadBuildings. Attaching only in createTownDecorations misses the
         // production staged loader entirely.
-        this.scene.add(createEarthPathNetwork());
+        this.scene.add(createEarthPathNetwork({ elevation: this.terrainElevation }));
         const earthLocations = createEarthLocations({ quality: this.graphicsQuality });
         this.scene.add(earthLocations);
         const elementalLocations = ['water', 'fire', 'air'].map(realm => createElementalLocations(realm, { quality: this.graphicsQuality }));

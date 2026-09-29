@@ -66,7 +66,17 @@ func adminBoxBlocks(box [7]float64, x, y, z, radius float64) bool {
 }
 
 func adminShapesClear(shapes adminLandingShapes, x, y, z float64) bool {
+	return adminShapesClearOnGround(shapes, x, y, z, nil)
+}
+
+func adminShapesClearOnGround(shapes adminLandingShapes, x, y, z float64, elevation *worldElevationField) bool {
 	for _, box := range shapes.Boxes {
+		// Work on the copied box; the canonical flat export is also used by
+		// worlds without elevation. Match the client's rigid placement lift.
+		if elevation != nil {
+			height := elevation.sample(box[0], box[1], "")
+			box[5], box[6] = box[5]+height, box[6]+height
+		}
 		if adminBoxBlocks(box, x, y, z, adminLandingRadius) {
 			return false
 		}
@@ -88,10 +98,14 @@ func (w *World) adminLandingClearLocked(plan AdminTeleportPlan, playerID string)
 	x, y, z, r := plan.X, plan.Y, plan.Z, adminLandingRadius
 	switch {
 	case plan.Instance == "":
-		if y != 0 || plan.VIP || z < -2200+r || z > 1000-r || math.Abs(x) > 3000-r || z < -600 && math.Abs(x) > 1000-r {
+		if insideRockSolids(w.rockSolids, rockPoint{x, z}, r) {
 			return false
 		}
-		if !adminShapesClear(adminLandingColliders.Overworld, x, y, z) {
+		ground, _ := w.overworldGroundHeight("", x, z)
+		if y != ground || plan.VIP || z < -2200+r || z > 1000-r || math.Abs(x) > 3000-r || z < -600 && math.Abs(x) > 1000-r {
+			return false
+		}
+		if !adminShapesClearOnGround(adminLandingColliders.Overworld, x, y, z, w.terrainElevation) {
 			return false
 		}
 	case plan.Instance == CasinoInstanceID:
@@ -226,6 +240,9 @@ func (w *World) PlanAdminTeleport(playerID, destination, anchorID string) (Admin
 			}
 			angle := float64(step) * math.Pi / 8
 			plan.X, plan.Z = x+math.Cos(angle)*radius, z+math.Sin(angle)*radius
+			if ground, active := w.overworldGroundHeight(plan.Instance, plan.X, plan.Z); active {
+				plan.Y = ground
+			}
 			if w.adminLandingClearLocked(plan, playerID) {
 				return plan, nil
 			}

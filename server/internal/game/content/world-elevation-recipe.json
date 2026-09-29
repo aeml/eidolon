@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "region": "earth",
+  "spacing": 16,
+  "inset": 0.75,
+  "edgeFade": 64,
+  "padFade": 80,
+  "maxGrade": 0.35,
+  "hills": [
+    {"id": "grove-west-shoulder", "x": -92, "z": -255, "radiusX": 150, "radiusZ": 190, "height": 12},
+    {"id": "grove-east-shoulder", "x": 110, "z": -330, "radiusX": 155, "radiusZ": 210, "height": 15},
+    {"id": "bellkeeper-ridge", "x": -365, "z": -300, "radiusX": 230, "radiusZ": 155, "height": 17},
+    {"id": "scar-uplift", "x": 285, "z": 28, "radiusX": 130, "radiusZ": 155, "height": 11},
+    {"id": "bastion-shoulder", "x": 645, "z": 98, "radiusX": 200, "radiusZ": 125, "height": 15},
+    {"id": "southern-fold", "x": -260, "z": 535, "radiusX": 245, "radiusZ": 195, "height": 16},
+    {"id": "forester-ridge", "x": -570, "z": 410, "radiusX": 200, "radiusZ": 235, "height": 18},
+    {"id": "oathstone-rise", "x": 615, "z": 560, "radiusX": 235, "radiusZ": 220, "height": 17}
+  ]
+}

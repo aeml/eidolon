@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { createCherubArt, createProceduralCherub } from '../art/ProceduralCherub.js';
+import { GroundedRingVisual } from '../art/GroundedRingVisual.js';
 import { createPersistentAuraMaterial } from '../art/PersistentAuraMaterial.js';
 
 const GOLD = 0xffd75a;
@@ -102,6 +103,8 @@ export class SpiritGuardiansEffect {
         if (options.rebuild || changed) {
             this.rebuild();
         } else if (previousRadius !== this.effectRadius && this.pulseRing) {
+            this.groundRing?.dispose();
+            this.groundRing = null;
             const oldGeometry = this.pulseRing.geometry;
             this.resources.delete(oldGeometry);
             oldGeometry.dispose();
@@ -125,6 +128,8 @@ export class SpiritGuardiansEffect {
     }
 
     rebuild() {
+        this.groundRing?.dispose();
+        this.groundRing = null;
         for (const child of this.group.children.slice()) {
             this.group.remove(child);
         }
@@ -174,6 +179,10 @@ export class SpiritGuardiansEffect {
         const speed = this.boosted ? 1.7 : 1.25;
         const pulse = 0.5 + 0.5 * Math.sin(this.elapsed * Math.PI * 2);
         const count = Math.max(1, this.guardians.length);
+        const engine = this.source.gameEngine;
+        const terrain = engine?.currentInstanceId ? null : engine?.terrainElevation;
+        const origin = this.group.position;
+        const ground = terrain?.sample(origin.x, origin.z);
 
         this.guardians.forEach((guardian, index) => {
             const angle = this.elapsed * speed + (index / count) * Math.PI * 2;
@@ -183,6 +192,7 @@ export class SpiritGuardiansEffect {
                 1.35 + bob,
                 Math.sin(angle) * this.orbitRadius
             );
+            if (terrain) guardian.position.y += terrain.sample(origin.x + guardian.position.x, origin.z + guardian.position.z) - ground;
             guardian.rotation.y = -angle + Math.PI / 2;
             const scale = (this.boosted ? 1.12 : 1.0) * (0.96 + pulse * 0.08);
             guardian.scale.setScalar(scale);
@@ -200,6 +210,9 @@ export class SpiritGuardiansEffect {
             this.pulseRing.scale.setScalar(1);
             this.pulseRing.material.opacity = .24 + pulse * (this.boosted ? .16 : .08);
             this.pulseRing.rotation.z = this.elapsed * 0.12;
+            if (terrain && !this.groundRing) this.groundRing = new GroundedRingVisual(this.pulseRing);
+            this.group.updateWorldMatrix(true, false);
+            this.groundRing?.update(terrain, this.group.matrixWorld.elements[13] - .12);
         }
     }
 
@@ -229,6 +242,8 @@ export class SpiritGuardiansEffect {
     dispose() {
         if (!this.isActive) return;
         this.isActive = false;
+        this.groundRing?.dispose();
+        this.groundRing = null;
         this.group.parent?.remove?.(this.group);
         for (const child of this.group.children.slice()) {
             this.group.remove(child);
