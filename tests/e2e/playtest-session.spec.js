@@ -19,6 +19,15 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         });
         const help = page.locator('#help-screen');
         const summary = page.getByLabel('Local playtest summary');
+        await page.locator('#help-alpha-status > summary').click();
+        const targets = page.locator('#help-progression-targets');
+        await expect(targets).toBeVisible();
+        await targets.scrollIntoViewIfNeeded();
+        expect(await targets.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        const statusClose = await page.locator('#btn-close-help').boundingBox();
+        expect(statusClose.y + statusClose.height).toBeLessThanOrEqual(height + 1);
+        await page.screenshot({ path: testInfo.outputPath('alpha-readiness-guide.png') });
+        await page.locator('#help-alpha-status > summary').click();
         await page.getByText('Optional playtest timer · local only', { exact: true }).click();
         await expect(summary).toHaveText('No observations recorded.');
         const start = page.getByRole('button', { name: 'Start timer', exact: true });

@@ -315,21 +315,22 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.39.0` (release candidate; not yet accepted live)
-- Last verified live release: `Alpha 1.32.0`, exact8a68685b341b9f796effc5091c648e7d63891e5d, CI36496302108. See the [release record](docs/plans/2026-09-28-release1-32.md) for scoped acceptance.
+- Current source version: `Alpha 1.40.0` (release candidate; not yet accepted live)
+- Last independently verified live release: `Alpha 1.38.0`, exact5a6560a792a68d04123d475cf3f84c7169fec936, successful CI36531803682. Normal-DNS IPv4 frontend/backend checks agree and the database is ready.1.39's audit-repaired build461e5f97 remains in CI; it is not yet counted as accepted live.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.33` full twelve-specialization kit rework, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md).1.32 is accepted live;1.33 remains local and incomplete. Human pacing remains a playtest gate. Neither milestone opens beta or restricts alpha accounts.
+- Active delivery line: `Alpha 1.40` open-alpha progression/readiness disclosure, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Class-kit, Forge, Gold, cap-reward and party fixes through1.38 are published; human campaign and sustained-role balance observations remain assigned to player playtesting. Modern world/character/equipment presentation remains a priority in the upcoming art releases. This does not close A2 or open beta.
 - Forward plan: [Alpha 1.11–1.99 — playable beta to full-release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor milestone, completion gates, policy decisions and proportionate verification. This is planned scope, not a new deployment or a claim that beta is complete.
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
 - Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
 
-Verification state as of September 27, 2026:
+Verification state as of September 29, 2026:
 
 - The retained Alpha 1.0 foundation includes migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
 - Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
 - Alpha 1.10.2 passed all ten release jobs in CI36285496845, including live character/recovery QA. Independent public IPv4 checks verified matching frontend/backend identities, database readiness, login label, patch history and five exact assets. The [1.10 playtest release record](docs/plans/2026-09-23-release1-10-playtest.md) retains scoped encounter evidence and remaining campaign/playtest limitations.
 - The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
+- The [1.40 readiness review](docs/plans/2026-09-29-1-40-readiness.md) distinguishes implemented progression contracts, retained scoped evidence and missing campaign/device/capacity observations. Targets remain level30 in2–3hours, level100 in about100hours, Dark Realm8–12hours and a well-geared five-player finale in5–10minutes. Up to100 future beta players is a plan, not demonstrated current concurrent capacity. Current public alpha access and all saves remain unchanged.
 
 Historical Alpha 1.0 decomposition measurements (physical lines, `wc -l`; not current file sizes):
 

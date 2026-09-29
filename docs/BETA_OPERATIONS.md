@@ -51,7 +51,7 @@ from QA authorization. Existing audit retention defaults to90days, configurable
 within7–365days; that does not set report or backup retention. Grants/teleports
 are not needed for routine health/report acceptance.
 
-## Voluntary progression feedback (1.21 candidate)
+## Voluntary progression feedback (1.21–1.40 implementation)
 
 Help offers a default-off, page-local playtest timer. Players label their activity
 and outside assistance; the summary distinguishes idle, hidden, disconnected and
@@ -66,6 +66,12 @@ That report has the same authenticated identity, private admin review and
 retention rules as other submitted reports. Clearing the local timer does not
 delete copies the player already placed in drafts or submitted. No automatic
 recruitment, identity/input/chat recording, grants or balance adjustment occurs.
+
+The1.39 implementation adds a known class label, active time by level band and
+party roster size. Interval attribution uses the previous observed context;
+roster size is not evidence that those members fought together. The timer does
+not collect party member identities. The1.40 Help guide puts pacing/Forge goals
+and useful report context alongside current platform/population limits.
 
 For a useful first-hour/level30 sample, ask for start/end levels, active versus
 idle/offline time, assistance, and the principal point of confusion. Compare
