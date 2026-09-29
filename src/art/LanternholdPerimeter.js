@@ -2,10 +2,20 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
+// Network fences retain their authoritative entity/collision lifecycle, but
+// must not draw the retired orange block over locally authored construction.
+export function ownsPerimeterFence(root, data) {
+    if (!root || (data.scale ?? 1) !== 1) return false;
+    return Boolean(root.userData.fenceSegments?.some(([x, z, yaw]) =>
+        Math.abs(data.x - x) < .001 && Math.abs(data.z - z) < .001 &&
+        Math.abs(Math.sin((data.rotation || 0) - yaw)) < .0001));
+}
+
 // Weathered timber and iron, inside the existing fence collision envelope.
 // Unbatched construction is a rendering reference, not the runtime path.
 export function createLanternholdPerimeter(cx, cz, width, depth, { batched = true } = {}) {
     const root = new THREE.Group(); root.name = 'TownFence';
+    root.userData.fenceSegments = [];
     const materials = {
         timber: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x554b3a,
             roughness: .95, vertexColors: true, shadowSide: THREE.FrontSide }), 'timber'),
@@ -45,6 +55,7 @@ export function createLanternholdPerimeter(cx, cz, width, depth, { batched = tru
         local.applyMatrix4(transform); buckets.get(key).parts.push(local);
     };
     const segment = (x, z, yaw, gate, seed) => {
+        root.userData.fenceSegments.push([x, z, yaw]);
         const c = Math.cos(yaw), s = Math.sin(yaw), shade = .83 + (seed % 7) * .025;
         const box = (key, dx, y, dz, w, h, d, name, tilt = 0) => part(geometries.box, key,
             x + c * dx + s * dz, y, z - s * dx + c * dz, w, h, d, [0, yaw, tilt], shade, name);
