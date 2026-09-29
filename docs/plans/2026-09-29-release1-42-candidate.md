@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Water and Fire ground gains coordinated mineral, frost/ash, normal and
+  roughness detail. Revised directional lighting reduces ambient wash while
+  preserving regional color and readable shadows. No terrain geometry or
+  hazard changes. See [ground/light review](2026-09-29-elemental-ground-and-light.md).
+
 - Dungeon entrance masonry now uses the same detailed surface treatment as
   Lanternhold, with regional stone, weathered blocks and slate.
 - Five dungeon themes gain subtle masonry relief and varied roughness on floors
