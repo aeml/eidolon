@@ -31,7 +31,7 @@ export const EARTH_LOCATIONS = freeze([
         ...investigation('marked_stone'), radius: 22, visibility: 'quest',
         purpose: 'A broken grove boundary surrounding the three traces in Ilyra’s investigation.' },
     { id: 'verdant-approach', name: 'Verdant Bastion Approach', role: 'landmark', recipe: 'grave-road',
-        ...entrance('verdant_bastion_catacombs'), radius: 64, visibility: 'public', arrivalOffset: [-50, 0],
+        ...entrance('verdant_bastion_catacombs'), radius: 64, visibility: 'public', arrivalOffset: [0, 42],
         purpose: 'The old grave road leads to the Bastion. Gather your party outside its gate.' },
     { id: 'first-grove-arch', name: 'First Grove Arch', role: 'landmark', recipe: 'root-arch',
         x: 0, z: -260, radius: 24, visibility: 'public',
@@ -86,9 +86,9 @@ export const EARTH_PATHS = freeze([
     { id: 'north-trail', width: 8, points: [[0, 100], [0, -600]] },
     { id: 'south-trail', width: 8, points: [[0, 300], [0, 900]] },
     { id: 'west-trail', width: 8, points: [[-100, 200], [-1000, 200]] },
-    // Stop outside the Bastion's preserved entrance footprint. The narrow
-    // northern bypass continues to the realm edge without crossing its walls.
-    { id: 'bastion-road', width: 8, points: [[100, 200], [750, 200]] },
+    // Approach the south-facing portal around the west flank, staying outside
+    // the preserved fortress footprint. The north bypass remains independent.
+    { id: 'bastion-road', width: 8, points: [[100, 200], [725, 200], [755, 260], [800, 270], [800, 242]] },
     { id: 'bastion-bypass', width: 6, points: [[720, 200], [720, 135], [880, 135], [1000, 200]] },
     { id: 'pilgrim-path', width: 6, points: [[0, 430], [-180, 430]] },
     { id: 'foresters-path', width: 6, points: [[-180, 430], [-480, 530]] },

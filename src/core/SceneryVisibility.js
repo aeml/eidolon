@@ -62,6 +62,10 @@ export class SceneryVisibility {
             let clone = entry.clones.get(original);
             if (!clone) {
                 clone = original.clone();
+                // MeshStandardMaterial.copy resets defines to STANDARD. Keep
+                // custom shader features (such as the portal's UV varying)
+                // when composing the cutaway with an existing material hook.
+                if (original.defines) clone.defines = { ...original.defines };
                 clone.onBeforeCompile = (shader, renderer) => {
                     original.onBeforeCompile.call(clone, shader, renderer);
                     shader.uniforms.uSceneryFocusView = entry.uniforms.focus;

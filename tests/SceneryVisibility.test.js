@@ -16,6 +16,26 @@ function advance(s, start = 0, frames = 90) {
     for (let i = 0; i <= frames; i++) s.controller.update(s.group, s.camera, s.focus, start + i / 60);
 }
 
+test('portal cutaway composes both shaders and keeps its original animation uniform', () => {
+    const s = scene(); advance(s);
+    const entry = s.controller.entries.get(s.root);
+    const part = entry.parts.find(part => part.material.userData.dungeonVeilTime);
+    expect(part.mesh.material).not.toBe(part.material);
+    expect(part.mesh.material.defines).toEqual({ STANDARD: '', USE_UV: '' });
+    expect(part.mesh.material.defines).not.toBe(part.material.defines);
+    const shader = { uniforms: {}, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
+    part.mesh.material.onBeforeCompile(shader, null);
+    expect(shader.uniforms.dungeonVeilTime).toBe(part.material.userData.dungeonVeilTime);
+    expect(shader.uniforms.uSceneryReveal).toBe(entry.uniforms.reveal);
+    expect(shader.fragmentShader).toContain('totalEmissiveRadiance += dungeonVeilTint');
+    expect(shader.fragmentShader).toContain('if (sceneryCoverage < sceneryDither) discard;');
+    part.material.userData.dungeonVeilTime.value = -1;
+    part.mesh.onBeforeRender();
+    expect(shader.uniforms.dungeonVeilTime.value).toBeGreaterThanOrEqual(0);
+    s.controller.clear();
+    expect(part.mesh.material).toBe(part.material);
+});
+
 test('the actual Verdant roof hides a hero outside the legacy circular collider', () => {
     const s = scene('verdant_bastion_catacombs', new THREE.Vector3(-36, 0, -30));
     expect(s.focus.length()).toBeGreaterThan(s.root.userData.interactionRadius + 1);
@@ -76,7 +96,7 @@ test('landmarks behind the hero and unrelated dungeon architecture remain opaque
 test('the private shader cuts only a soft foreground window and retains material opacity outside it', () => {
     const s = scene(); advance(s);
     const entry = s.controller.entries.get(s.root), part = entry.parts[0];
-    const shader = { uniforms: {}, fragmentShader: '#include <opaque_fragment>' };
+    const shader = { ...THREE.ShaderLib.standard, uniforms: {} };
     part.mesh.material.onBeforeCompile(shader, null);
     expect(part.mesh.material.opacity).toBe(part.material.opacity);
     expect(shader.uniforms.uSceneryReveal).toBe(entry.uniforms.reveal);

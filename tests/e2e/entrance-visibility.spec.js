@@ -22,9 +22,22 @@ for (const config of cases) {
             document.body.appendChild(render.renderer.domElement);
             render.setGraphicsQuality(config.quality);
             const root = createProceduralDungeonEntrance(config.type);
+            // Compare cutaway pixels at the same animation phase. Otherwise
+            // the portal's legitimate motion changes pixels outside the hero
+            // window between captures, independently of scenery visibility.
+            root.traverse(part => {
+                const time = part.material?.userData.dungeonVeilTime;
+                if (time) part.onBeforeRender = () => { time.value = 7; };
+            });
             render.addToEnvironment(root);
             const hero = new Wizard('visibility-wizard');
-            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-36, 0, -30] : [-10, 0, -10]));
+            // The lower Verdant profile exposes the old (-36,-30) position.
+            // Keep this an actual occlusion test, outside its collision circle.
+            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-30, 0, -25] : [-10, 0, -10]));
+            if (config.type === 'verdant_bastion_catacombs' &&
+                Math.hypot(hero.position.x, hero.position.z) <= root.userData.interactionRadius + 1.25) {
+                throw new Error('Verdant cutaway fixture must remain outside the physical entrance');
+            }
             await hero.ensureMesh();
             hero.mesh.position.copy(hero.position); render.add(hero.mesh);
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300),
@@ -111,16 +124,19 @@ for (const config of cases) {
             const center = q.hero.position.clone().add(new THREE.Vector3(0, 1.5, 0)).project(camera);
             const cx = (center.x + 1) * 128, cy = (center.y + 1) * 128;
             const rx = 256 * 4.7 / (camera.right - camera.left), ry = 256 * 4.7 / (camera.top - camera.bottom);
-            const after = q.capture(); let count = 0;
+            const after = q.capture(); let count = 0; const samples = [];
             for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) {
                 if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1) continue;
                 const i = (y * 256 + x) * 4;
                 if (Math.abs(after[i] - q.beforeFrame[i]) + Math.abs(after[i + 1] - q.beforeFrame[i + 1]) +
-                    Math.abs(after[i + 2] - q.beforeFrame[i + 2]) > 3) count++;
+                    Math.abs(after[i + 2] - q.beforeFrame[i + 2]) > 3) {
+                    count++;
+                    if (samples.length < 8) samples.push({ x, y, before: [...q.beforeFrame.slice(i, i + 3)], after: [...after.slice(i, i + 3)] });
+                }
             }
-            return count;
+            return { count, samples };
         });
-        expect(changedOutside, 'architecture outside the cutaway must retain its original depth ordering and shadows').toBe(0);
+        expect(changedOutside.count, `Architecture outside cutaway must remain unchanged: ${JSON.stringify(changedOutside)}`).toBe(0);
         await page.screenshot({ path: testInfo.outputPath('entrance-revealed.png') });
         expect(await page.evaluate(() => {
             const q = window.__visibilityQA;

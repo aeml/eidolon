@@ -182,7 +182,17 @@ func TestWorldPopulationEliteSceneryRecovery(t *testing.T) {
 	if !ok || x != 0 || z != -400 {
 		t.Fatal("unaffected elite was moved")
 	}
-	_, _, ok = w.clearEliteScenerySpawn("InfernoTitan", 742, 212, 741.9, 742.1, 211.9, 212.1)
+	var pier worldPopulationFootprint
+	for _, footprint := range worldPopulationFootprints {
+		if footprint.SiteID == "verdant-approach" {
+			pier = footprint
+			break
+		}
+	}
+	if pier.SiteID == "" {
+		t.Fatal("missing Bastion scenery fixture")
+	}
+	_, _, ok = w.clearEliteScenerySpawn("InfernoTitan", pier.X, pier.Z, pier.X-.1, pier.X+.1, pier.Z-.1, pier.Z+.1)
 	if ok {
 		t.Fatal("accepted an impossible fully obstructed spawn sector")
 	}

@@ -15,10 +15,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
             const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+            const { Actor } = await import('/src/entities/Actor.js');
             const { WorldReading } = await import('/src/entities/WorldReading.js');
             const { EARTH_LOCATIONS, LANTERNHOLD_COURTYARDS, WORLD_READINGS } = await import('/src/data/worldPopulation.js');
             const { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } = await import('/src/data/elementalPopulation.js');
-            const { createProceduralLanternholdStructure, getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
+            const { getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
             const { createChronicleSiteModel } = await import('/src/art/ChronicleSiteModels.js');
             const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
             const { ResonancePortal } = await import('/src/entities/ResonancePortal.js');
@@ -32,7 +33,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             await world.createTownBase(0, 200, 100);
             await world.loadBuildings(0, 200); await world.loadTrees(0, 200); await world.createOverworldStructures();
             for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -16, 193, 0]]) {
-                const mesh = createProceduralLanternholdStructure(kind); mesh.position.set(x, .5, z); mesh.rotation.y = angle;
+                const type = { trading_house: 'TradingHouse', forge: 'Forge', stash: 'Stash' }[kind];
+                const mesh = await MeshFactory.createMeshForType(type);
+                if (!(mesh.userData.drawMeshCount < mesh.userData.sourceMeshCount)) throw new Error(`Unoptimized production service: ${type}`);
+                mesh.position.set(x, .5, z); mesh.rotation.y = angle;
                 render.instanceEnvironmentGroup.add(mesh); collision.addOrientedCollider(getLanternholdWalkCollider(mesh));
             }
             for (const chapter of chronicleInvestigations.filter(c => elemental === 'water-fire' ? ['water', 'fire'].includes(c.realm) : c.realm === elemental)) for (const site of chapter.sites) {
@@ -53,7 +57,12 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             engine.chunkManager = { getActiveEntities: () => readings };
             engine.inputManager = new InputManager(render.camera, render.scene, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
-            const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [...LANTERNHOLD_COURTYARDS, ...EARTH_LOCATIONS];
+            const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
+                ...LANTERNHOLD_COURTYARDS,
+                { id: 'lanternhold-service-court', x: 0, z: 199, region: 'town' },
+                { id: 'lanternhold-trading-roof', x: -17, z: 191, region: 'town' },
+                ...EARTH_LOCATIONS
+            ];
             const samples = [];
             const visit = id => {
                 const site = sites.find(s => s.id === id);
@@ -63,9 +72,28 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 engine.player.position.set(x - (reading ? 4 : 0), 0, z + (reading ? 3 : 0)); hero.position.copy(engine.player.position);
                 render.setZoom(15); render.setCameraTarget(engine.player.position); render.setSceneryFocus(engine.player.position);
                 render.applyLightingPreset(site.region || 'earth', true);
+                // Match the runtime's player-following sun/shadow frame, not
+                // a static light left at the world origin between visits.
+                render.updateEnvironmentLighting(engine.player.position, 0);
                 world.updateTownPresentation(1 / 60, engine.player.position); render.render();
                 const stats = { id, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
-                    geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures };
+                    geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures,
+                    shadowFocusError: render.shadowTarget.distanceTo(engine.player.position) };
+                if (id === 'verdant-approach') {
+                    const gatePoint = new THREE.Vector3(800, 6, 232.19).project(render.camera);
+                    const ray = new THREE.Raycaster();
+                    ray.setFromCamera(new THREE.Vector2(gatePoint.x, gatePoint.y), render.camera);
+                    const hit = ray.intersectObjects(render.instanceEnvironmentGroup.children, true)
+                        .find(hit => hit.object.visible && hit.object.material?.visible !== false);
+                    let target = hit?.object;
+                    while (target && !target.userData.proceduralDungeonEntrance) target = target.parent;
+                    stats.gateInView = Math.abs(gatePoint.x) < .95 && Math.abs(gatePoint.y) < .95;
+                    stats.gateHit = target?.userData.dungeonType;
+                    stats.approachBlocked = Boolean(collision.checkCollision(engine.player.position, 1.25));
+                    if (!stats.gateInView || stats.gateHit !== 'verdant_bastion_catacombs' || stats.approachBlocked) {
+                        throw new Error(`Unreadable or blocked Bastion arrival: ${JSON.stringify(stats)}`);
+                    }
+                }
                 if (reading) {
                     render.scene.updateMatrixWorld(true); render.camera.updateMatrixWorld(true);
                     const point = reading.mesh.localToWorld(new THREE.Vector3(0, 1.7, 0)).project(render.camera);
@@ -78,7 +106,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 }
                 samples.push(stats); return stats;
             };
-            let airShot = null;
+            let airShot = null, impactActor = null, attackActor = null, contactFeedback = null;
             // A bounded input/render fixture, not a network cast or damage test.
             // Server travel/hit regression is separately exercised in Go.
             const { Projectile } = await import('/src/entities/Projectile.js');
@@ -92,6 +120,73 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 render.entityGroup.add(airShot.mesh);
             });
             window.__populatedWorld = { visit, engine, samples,
+                async reviewBasicAttack(fraction) {
+                    // Prepared timeline samples on the actual world renderer,
+                    // not server damage or earned gameplay evidence.
+                    if (!attackActor) {
+                        attackActor = new Actor('basic-contact-review', {});
+                        attackActor.meshType = 'Fighter';
+                        attackActor.position.copy(engine.player.position);
+                        await attackActor.ensureMesh(); render.entityGroup.add(attackActor.mesh);
+                        attackActor.mesh.position.copy(attackActor.position);
+                        hero.visible = false;
+                        impactActor.position.copy(engine.player.position).add(new THREE.Vector3(-2.4, 0, 2.4));
+                        impactActor.mesh.position.copy(impactActor.position);
+                        attackActor.mesh.lookAt(impactActor.position);
+                        attackActor.rotation.copy(attackActor.mesh.quaternion);
+                    }
+                    attackActor.stats.attackSpeed = 1.8;
+                    attackActor.setAttackingState();
+                    attackActor.mixer.update(1.8 * fraction);
+                    contactFeedback?.dispose(); contactFeedback = null;
+                    impactActor.hitReaction?.update(1);
+                    if (fraction >= .35) {
+                        const { GameEngine } = await import('/src/core/GameEngine.js');
+                        const { createTransientEffect } = await import('/src/core/TransientEffects.js');
+                        const feedbackEngine = { player: attackActor, remotePlayers: new Map([[impactActor.id, impactActor]]),
+                            isPlayerClassEntity: GameEngine.prototype.isPlayerClassEntity, isNearbyCombatEvent: () => true,
+                            resolveCombatFeedbackKind: GameEngine.prototype.resolveCombatFeedbackKind,
+                            spawnTransientEffect(type, position, color, options) {
+                                contactFeedback = createTransientEffect(render.effectGroup, type, position, color, { ...options, quality });
+                                return Boolean(contactFeedback);
+                            } };
+                        GameEngine.prototype.renderCombatFeedback.call(feedbackEngine, {
+                            sourceId: attackActor.id, targetId: impactActor.id, kind: 'physical', amount: 25
+                        });
+                        const elapsed = (fraction - .35) * 1.8;
+                        contactFeedback.update(elapsed); impactActor.hitReaction?.update(elapsed);
+                    }
+                    render.render();
+                    return { chestYaw: attackActor.mesh.getObjectByName('Rig_Chest').rotation.y,
+                        stationaryRoot: attackActor.position.equals(engine.player.position),
+                        feedbackActive: Boolean(contactFeedback?.isActive),
+                        impactSeconds: attackActor.mesh.userData.basicAttackContactTime /
+                            attackActor.animations.Attack.getEffectiveTimeScale() };
+                },
+                endBasicAttackReview() {
+                    contactFeedback?.dispose(); contactFeedback = null;
+                    attackActor?.dispose(); attackActor = null; hero.visible = true;
+                    impactActor.position.copy(engine.player.position).add(new THREE.Vector3(-4, 0, 5));
+                    impactActor.mesh.position.copy(impactActor.position);
+                },
+                async reviewImpact(dt) {
+                    if (!impactActor) {
+                        visit('first-grove-arch');
+                        impactActor = new Actor('impact-review', {});
+                        impactActor.meshType = 'Skeleton';
+                        // Keep the review encounter in the open approach, not
+                        // hidden behind the arch's near pier at this camera.
+                        impactActor.position.copy(engine.player.position).add(new THREE.Vector3(-4, 0, 5));
+                        await impactActor.ensureMesh();
+                        render.entityGroup.add(impactActor.mesh);
+                        impactActor.mesh.position.copy(impactActor.position);
+                        impactActor.playHitReaction(engine.player.position, 25);
+                    }
+                    impactActor.hitReaction.update(dt);
+                    render.render();
+                    return { angle: impactActor.hitReaction.pivot.quaternion.angleTo(new THREE.Quaternion()),
+                        stationaryHitbox: impactActor.mesh.getObjectByName('ActorInteractionHitbox').parent === impactActor.mesh };
+                },
                 prepareAirShot(x) {
                     airShot?.dispose(); airShot = null;
                     engine.player.position.set(x, 0, 200); hero.position.copy(engine.player.position);
@@ -109,11 +204,32 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     return { aim: aim.toArray(), position: airShot.position.toArray(), active: airShot.isActive,
                         visible: airShot.mesh.visible, projected: projected.toArray(),
                         travel: airShot.position.distanceTo(engine.player.position.clone().setY(1.5)) };
+                }, diagnoseDraws() {
+                    const counts = new Map(), originals = [];
+                    const boundaries = [render.scene, render.instanceEnvironmentGroup, render.staticEnvironmentGroup, render.entityGroup];
+                    render.scene.traverse(mesh => {
+                        if (!mesh.isMesh) return;
+                        let root = mesh;
+                        while (root.parent && !boundaries.includes(root.parent)) root = root.parent;
+                        const name = root.name || root.type;
+                        if (!counts.has(name)) counts.set(name, { name, color: 0, shadow: 0 });
+                        const entry = counts.get(name), color = mesh.onBeforeRender, shadow = mesh.onBeforeShadow;
+                        originals.push({ mesh, color, shadow });
+                        mesh.onBeforeRender = function(...args) { entry.color++; return color.apply(this, args); };
+                        mesh.onBeforeShadow = function(...args) { entry.shadow++; return shadow.apply(this, args); };
+                    });
+                    try {
+                        render.render();
+                        return [...counts.values()].filter(entry => entry.color + entry.shadow)
+                            .sort((a, b) => b.color + b.shadow - a.color - a.shadow);
+                    } finally {
+                        originals.forEach(({ mesh, color, shadow }) => { mesh.onBeforeRender = color; mesh.onBeforeShadow = shadow; });
+                    }
                 }, async profile() {
                 const profiles = [];
                 const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
-                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'foresters-yard', 'returning-scar', 'first-grove-arch'];
+                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'lanternhold-trading-roof', 'foresters-yard', 'returning-scar', 'first-grove-arch'];
                 for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;
@@ -138,6 +254,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 return { renderer: gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
                     userAgent: navigator.userAgent, quality, mobile, beforeRepeat, afterRepeat, profiles };
             }, dispose() {
+                contactFeedback?.dispose(); attackActor?.dispose(); impactActor?.dispose();
                 airShot?.dispose();
                 readings.forEach(r => r.dispose()); portal.dispose(); engine.inputManager.dispose();
                 hero.removeFromParent(); MeshFactory.releaseMesh('Fighter', hero);
@@ -150,6 +267,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const stats = await page.evaluate(id => window.__populatedWorld.visit(id), id);
                 await page.screenshot({ path: testInfo.outputPath(`${id}.png`) });
                 expect(stats.calls).toBeGreaterThan(0);
+                expect(stats.shadowFocusError).toBeLessThan(1);
                 if (stats.readingHit !== undefined || ['bellkeepers-cairn', 'unbound-milestone', 'soundings-stone', 'unclaimed-names', 'commons-register', 'counterseal-stone', 'unsent-dispatch', 'unmeasured-sky'].includes(id)) {
                     expect(stats.readingHit, JSON.stringify(stats)).toBe(`world-reading-${id}`);
                     expect(stats.approachBlocked).toBe(false);
@@ -158,6 +276,24 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     await page.getByRole('button', { name: 'Close reading' }).click();
                     await expect(page.locator('#world-reading-dialog')).toHaveCount(0);
                 }
+            }
+            if (elemental === 'earth') {
+                for (const [phase, dt] of [['before', 0], ['contact', .045], ['settled', .3]]) {
+                    const result = await page.evaluate(dt => window.__populatedWorld.reviewImpact(dt), dt);
+                    expect(result.stationaryHitbox).toBe(true);
+                    if (phase === 'contact') expect(result.angle).toBeGreaterThan(.05);
+                    else expect(result.angle).toBe(0);
+                    await page.screenshot({ path: testInfo.outputPath(`earth-impact-${phase}.png`) });
+                }
+                for (const [phase, fraction] of [['ready', 0], ['windup', .2], ['contact', .35], ['impact', .37], ['recovery', .85]]) {
+                    const result = await page.evaluate(fraction => window.__populatedWorld.reviewBasicAttack(fraction), fraction);
+                    expect(result.stationaryRoot).toBe(true);
+                    expect(result.impactSeconds).toBeCloseTo(1.8 * .35, 5);
+                    if (phase === 'contact') expect(result.chestYaw).toBeCloseTo(.65, 4);
+                    expect(result.feedbackActive).toBe(['contact', 'impact'].includes(phase));
+                    await page.screenshot({ path: testInfo.outputPath(`earth-basic-${phase}.png`) });
+                }
+                await page.evaluate(() => window.__populatedWorld.endBasicAttackReview());
             }
             const result = await page.evaluate(() => ({ samples: window.__populatedWorld.samples, sent: window.__populatedWorld.engine.sent }));
             expect(result.sent).toEqual([]);
@@ -180,6 +316,13 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             await testInfo.attach('scene-counts', { path: countsPath, contentType: 'application/json' });
             // Opt-in local hardware acceptance; shared CI is not a comparable
             // frame-time environment. No busy loop, uncapped render or GPU finish.
+            if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_DIAGNOSE === '1') {
+                const breakdown = await page.evaluate(() => ['lanternhold-common-well', 'returning-scar', 'first-grove-arch'].map(id => {
+                    window.__populatedWorld.visit(id);
+                    return { id, draws: window.__populatedWorld.diagnoseDraws() };
+                }));
+                await writeFile(testInfo.outputPath('draw-breakdown.json'), JSON.stringify(breakdown, null, 2));
+            }
             if (process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {
                 const profile = await page.evaluate(() => window.__populatedWorld.profile());
                 const path = testInfo.outputPath('frame-profile.json');

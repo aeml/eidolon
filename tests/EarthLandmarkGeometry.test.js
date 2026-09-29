@@ -1,5 +1,5 @@
 import { Vector3, CatmullRomCurve3 } from 'three';
-import { createTaperedRoot, createGroveArchStone, createGrovePierCourse } from '../src/art/EarthLandmarkGeometry.js';
+import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createGroveThresholdStone } from '../src/art/EarthLandmarkGeometry.js';
 
 test.each(['high', 'low'])('organic roots taper within their old radius at %s quality', quality => {
     const points = [[14, -.35, 4], [10, 3, 2], [9, 8, 0], [5, 12, 0], [1, 15.8, 0]];
@@ -29,6 +29,7 @@ test('thirteen beveled vault stones remain overhead with a clear hero-height pas
         expect(geometry.boundingBox.max.x).toBeLessThan(9.6);
         expect([...geometry.attributes.position.array].every(Number.isFinite)).toBe(true);
         expect(geometry.attributes.normal.count).toBe(geometry.attributes.position.count);
+        expect(geometry.attributes.color.count).toBe(geometry.attributes.position.count);
         triangles += geometry.attributes.position.count / 3;
         geometry.dispose();
     }
@@ -42,6 +43,23 @@ test('worn pier courses stay within the original authoritative pillar solid', ()
         expect(min.x).toBeGreaterThanOrEqual(-1.5); expect(max.x).toBeLessThanOrEqual(1.5);
         expect(min.y).toBeGreaterThanOrEqual(-.00001); expect(max.y).toBeLessThanOrEqual(8);
         expect(min.z).toBeGreaterThanOrEqual(-2); expect(max.z).toBeLessThanOrEqual(2);
+        expect(geometry.attributes.color.count).toBe(geometry.attributes.position.count);
+        expect(new Set([...geometry.attributes.color.array].map(value => value.toFixed(2))).size).toBeGreaterThan(5);
+        expect(geometry.attributes.position.count / 3).toBeLessThan(200);
+        geometry.dispose();
+    }
+});
+
+test('threshold fragments are finite, upward-facing, bounded and flush', () => {
+    for (let seed = 0; seed < 70; seed++) {
+        const geometry = createGroveThresholdStone(seed); geometry.computeBoundingBox();
+        expect(Math.abs(geometry.boundingBox.min.y)).toBeLessThan(.0001);
+        expect(Math.abs(geometry.boundingBox.max.y)).toBeLessThan(.0001);
+        expect(geometry.boundingBox.min.x).toBeGreaterThan(-1.16);
+        expect(geometry.boundingBox.max.x).toBeLessThan(1.16);
+        expect([...geometry.attributes.position.array].every(Number.isFinite)).toBe(true);
+        expect([...geometry.attributes.color.array].every(value => Number.isFinite(value) && value > 0 && value < 1.2)).toBe(true);
+        for (let i = 0; i < geometry.attributes.normal.count; i++) expect(geometry.attributes.normal.getY(i)).toBeCloseTo(1);
         geometry.dispose();
     }
 });
