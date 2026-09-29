@@ -4,6 +4,8 @@ const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
 const DEFAULT_DETAIL_LEVEL = 'full';
 export const AUDIO_BUSES = Object.freeze(['combat', 'interface', 'ambience']);
+export const MAX_CUE_TONES = 24;
+const RESERVED_DANGER_TONES = 2;
 
 const AUDIO_DETAIL_LEVELS = Object.freeze({
     full: 'full',
@@ -97,7 +99,16 @@ export class AudioManager {
         this.busVolumes = Object.fromEntries(AUDIO_BUSES.map(bus =>
             [bus, this.readStoredNumber(`eidolon.audioBus.${bus}`, 1, 0, 1)]));
         this.ambience = new WorldAmbience(this);
-        this.onVisibilityChange = () => this.ambience.update(this.ambience.key);
+        this.observedContext = null;
+        this.onContextStateChange = () => {
+            if (this.disposed) return;
+            if (this.context?.state !== 'running') this.stopOneShots();
+            this.ambience.update(this.ambience.key);
+        };
+        this.onVisibilityChange = () => {
+            if (globalThis.document?.hidden) this.stopOneShots();
+            this.ambience.update(this.ambience.key);
+        };
         globalThis.document?.addEventListener('visibilitychange', this.onVisibilityChange);
     }
 
@@ -144,9 +155,13 @@ export class AudioManager {
 
     ensureContext() {
         if (this.disposed) return null;
-        if (this.context) return this.context;
-        this.context = this.contextFactory?.() || null;
+        if (!this.context) this.context = this.contextFactory?.() || null;
         if (!this.context) return null;
+        if (this.observedContext !== this.context) {
+            this.observedContext?.removeEventListener?.('statechange', this.onContextStateChange);
+            this.observedContext = this.context;
+            this.context.addEventListener?.('statechange', this.onContextStateChange);
+        }
         return this.context;
     }
 
@@ -163,7 +178,7 @@ export class AudioManager {
 
     unlock() {
         const context = this.ensureContext();
-        if (!context) return false;
+        if (!context || context.state === 'closed' || globalThis.document?.hidden) return false;
         this.ensureMasterGain();
 
         if (context.state === 'suspended' && typeof context.resume === 'function') {
@@ -204,6 +219,7 @@ export class AudioManager {
         this.persistSetting(`eidolon.audioBus.${bus}`, this.busVolumes[bus]);
         if (this.busGains.has(bus)) this.busGains.get(bus).gain.value = this.busVolumes[bus];
         this.syncMediaVolumes();
+        if (this.busVolumes[bus] === 0) this.stopOneShots(bus);
         this.ambience.update(this.ambience.key);
         return true;
     }
@@ -220,6 +236,7 @@ export class AudioManager {
         this.persistSetting('eidolon.audioEnabled', this.enabled);
         if (this.masterGain) this.masterGain.gain.value = this.enabled ? this.volume : 0;
         this.syncMediaVolumes();
+        if (!this.enabled) this.stopOneShots();
         this.ambience.update(this.ambience.key);
     }
 
@@ -228,6 +245,7 @@ export class AudioManager {
         this.persistSetting('eidolon.audioVolume', this.volume);
         if (this.masterGain) this.masterGain.gain.value = this.enabled ? this.volume : 0;
         this.syncMediaVolumes();
+        if (this.volume === 0) this.stopOneShots();
         this.ambience.update(this.ambience.key);
     }
 
@@ -262,33 +280,73 @@ export class AudioManager {
     canPlay(cueName) {
         if (!this.enabled) return false;
         if (!this.isCueAllowedForDetailLevel(cueName)) return false;
-        const lastPlayedAt = this.lastCueTimes.get(cueName) || 0;
+        const lastPlayedAt = this.lastCueTimes.get(cueName) ?? -Infinity;
         const now = this.now();
         const cooldown = cueName === AUDIO_CUES.dangerWarning ? 250
             : typeof cueName === 'string' && cueName.startsWith('ability.') ? 120 : CUE_COOLDOWN_MS;
         if (now - lastPlayedAt < cooldown) return false;
-        this.lastCueTimes.set(cueName, now);
         return true;
     }
 
     play(cueName, options = {}) {
-        if (this.disposed) return false;
+        if (this.disposed || globalThis.document?.hidden) return false;
         const bus = this.getCueBus(cueName);
         if (options.gain === 0) return false;
         if (this.volume === 0 || this.busVolumes[bus] === 0) return false;
         if (!this.canPlay(cueName)) return false;
-        if (this.playAuthoredCue(cueName)) return true;
+        if (this.playAuthoredCue(cueName)) {
+            this.lastCueTimes.set(cueName, this.now());
+            return true;
+        }
 
         const context = this.ensureContext();
-        const destination = this.ensureBusGain(bus);
         const cue = this.createCue(cueName, options);
-        if (!context || !destination || !cue) return false;
+        if (!context || !cue || context.state === 'closed') return false;
+        // A suspended live context must not accumulate effects for a later
+        // gesture. OfflineAudioContext deliberately schedules before rendering.
+        if (context.state === 'suspended' && typeof context.startRendering !== 'function') return false;
+        if (!this.reserveCueTones(cueName, cue.length)) return false;
+        const destination = this.ensureBusGain(bus);
+        if (!destination) return false;
 
         const startAt = context.currentTime || 0;
+        const cueId = {};
         try {
-            cue.forEach((tone) => this.playTone(context, destination, startAt, tone, options));
+            cue.forEach((tone) => this.playTone(context, destination, startAt, tone, { ...options, bus, cueName, cueId }));
         } catch {
+            this.stopTones(voice => voice.cueId === cueId);
             return false;
+        }
+        this.lastCueTimes.set(cueName, this.now());
+        return true;
+    }
+
+    stopTones(matches = () => true) {
+        for (const voice of [...this.activeTones]) {
+            if (!matches(voice)) continue;
+            try { voice.oscillator.stop?.(); } catch { /* Already stopped/closed. */ }
+            voice.release();
+        }
+    }
+
+    stopOneShots(bus = null) {
+        this.stopTones(voice => !bus || voice.bus === bus);
+        for (const [cueName, media] of this.mediaCache) {
+            if (!bus || this.getCueBus(cueName) === bus) media?.pause?.();
+        }
+    }
+
+    reserveCueTones(cueName, count) {
+        const danger = cueName === AUDIO_CUES.dangerWarning;
+        const limit = MAX_CUE_TONES - (danger ? 0 : RESERVED_DANGER_TONES);
+        if (count > limit) return false;
+        if (!danger) return this.activeTones.size + count <= limit;
+        while (this.activeTones.size + count > limit) {
+            // Retire complete older cues, not half an arpeggio. Warnings may
+            // displace ordinary sounds; ordinary sounds cannot displace them.
+            const oldest = [...this.activeTones].find(voice => voice.cueName !== AUDIO_CUES.dangerWarning)
+                || this.activeTones.values().next().value;
+            this.stopTones(voice => voice.cueId === oldest.cueId);
         }
         return true;
     }
@@ -411,45 +469,44 @@ export class AudioManager {
 
     playTone(context, destination, startAt, tone, options = {}) {
         const oscillator = context.createOscillator();
-        const gain = context.createGain();
-        const toneStart = startAt + (tone.delay || 0);
-        const toneEnd = toneStart + tone.duration;
-        const peakGain = tone.gain * (Number.isFinite(options.gain) ? Math.max(0, Math.min(1, options.gain)) : 1);
-
-        oscillator.type = tone.type;
-        if (oscillator.frequency?.setValueAtTime) {
-            oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-            if (tone.endFrequency > 0) oscillator.frequency.exponentialRampToValueAtTime?.(tone.endFrequency, toneEnd);
-        } else if (oscillator.frequency) {
-            oscillator.frequency.value = tone.frequency;
-        }
-        if (gain.gain?.setValueAtTime && gain.gain?.exponentialRampToValueAtTime) {
-            gain.gain.setValueAtTime(0.0001, toneStart);
-            gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + 0.008);
-            gain.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
-        } else if (gain.gain) {
-            gain.gain.value = peakGain;
-        }
-        oscillator.connect?.(gain);
-        let panner = null;
-        if (Number.isFinite(options.pan) && options.pan !== 0 && context.createStereoPanner) {
-            panner = context.createStereoPanner();
-            panner.pan.value = Math.max(-1, Math.min(1, options.pan));
-            gain.connect?.(panner);
-            panner.connect(destination);
-        } else gain.connect?.(destination);
+        let gain = null, panner = null;
         let released = false;
-        const voice = { oscillator, release: () => {
+        const voice = { oscillator, bus: options.bus, cueName: options.cueName, cueId: options.cueId, release: () => {
             if (released) return;
             released = true;
             oscillator.disconnect?.();
-            gain.disconnect?.();
+            gain?.disconnect?.();
             panner?.disconnect();
             this.activeTones.delete(voice);
         } };
         oscillator.onended = voice.release;
         this.activeTones.add(voice);
         try {
+            gain = context.createGain();
+            const toneStart = startAt + (tone.delay || 0);
+            const toneEnd = toneStart + tone.duration;
+            const peakGain = tone.gain * (Number.isFinite(options.gain) ? Math.max(0, Math.min(1, options.gain)) : 1);
+            oscillator.type = tone.type;
+            if (oscillator.frequency?.setValueAtTime) {
+                oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+                if (tone.endFrequency > 0) oscillator.frequency.exponentialRampToValueAtTime?.(tone.endFrequency, toneEnd);
+            } else if (oscillator.frequency) {
+                oscillator.frequency.value = tone.frequency;
+            }
+            if (gain.gain?.setValueAtTime && gain.gain?.exponentialRampToValueAtTime) {
+                gain.gain.setValueAtTime(0.0001, toneStart);
+                gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + 0.008);
+                gain.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
+            } else if (gain.gain) {
+                gain.gain.value = peakGain;
+            }
+            oscillator.connect?.(gain);
+            if (Number.isFinite(options.pan) && options.pan !== 0 && context.createStereoPanner) {
+                panner = context.createStereoPanner();
+                panner.pan.value = Math.max(-1, Math.min(1, options.pan));
+                gain.connect?.(panner);
+                panner.connect(destination);
+            } else gain.connect?.(destination);
             oscillator.start?.(toneStart);
             oscillator.stop?.(toneEnd + 0.01);
         } catch (error) {
@@ -462,12 +519,11 @@ export class AudioManager {
         if (this.disposed) return;
         this.disposed = true;
         globalThis.document?.removeEventListener('visibilitychange', this.onVisibilityChange);
+        this.observedContext?.removeEventListener?.('statechange', this.onContextStateChange);
+        this.observedContext = null;
         this.ambience.dispose();
         if (this.masterGain) this.masterGain.gain.value = 0;
-        for (const voice of this.activeTones) {
-            try { voice.oscillator.stop?.(); } catch { /* Already stopped/closed. */ }
-            voice.release();
-        }
+        this.stopTones();
         for (const media of this.mediaCache.values()) {
             media?.pause?.();
             if (media && 'volume' in media) media.volume = 0;
