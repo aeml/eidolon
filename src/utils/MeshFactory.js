@@ -732,19 +732,19 @@ export class MeshFactory {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
         if (type === 'Fighter') {
-            return createProceduralFighter();
+            return createProceduralFighter({ batch: true });
         }
 
         if (type === 'Rogue') {
-            return createProceduralRogue();
+            return createProceduralRogue({ batch: true });
         }
 
         if (type === 'Wizard') {
-            return createProceduralWizard();
+            return createProceduralWizard({ batch: true });
         }
 
         if (type === 'Cleric') {
-            return createProceduralCleric();
+            return createProceduralCleric({ batch: true });
         }
 
         if (type === 'DwarfSalesman') {

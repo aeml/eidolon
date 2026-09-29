@@ -1,8 +1,9 @@
 # Alpha 1.41 character/equipment finish — unreleased candidate
 
 This is a code-owned integration candidate, not a published version. It builds
-on the prepared 1.38 branch; 1.39/1.40 pacing/readiness gates and ordered live
-publication remain open. Runtime version metadata is intentionally not bumped
+on the prepared 1.38 branch; ordered1.39/1.40 live publication remains pending.
+Human pacing/readiness observations remain assigned to player playtesting;
+they are not a new code-publication permission requirement. Runtime metadata is not bumped
 on this preview branch. Do not deploy it as a replacement for those releases.
 
 ## Draft player-facing patch notes
@@ -20,6 +21,9 @@ on this preview branch. Do not deploy it as a replacement for those releases.
   are unchanged; blade sockets remain visible on both faces.
 - Fixed inward-facing shoulder armor surfaces and stale spell effects in the
   equipment preview. No character stats, saved items or collision sizes changed.
+- Production class models now combine compatible rigid parts into fewer draws,
+  preserving fitted surfaces, animation pivots, equipment masking and pooling.
+  See the [bounded integration comparison](2026-09-29-1-41-rigid-batch-integration.md).
 
 ## Verification and limits
 
@@ -33,5 +37,5 @@ by these tests. No long soak was added for this visual work.
 This improves procedural fallback actors and equipment. The user's first
 Fighter GLB, source/license information and final authored-art approval remain
 outstanding. It does not claim Diablo/PoE production-art parity or whole-game
-beta readiness. Publish final version/patch-note entries only when the ordered
-release prerequisites and remaining art acceptance are resolved.
+beta readiness. Publish final version/patch-note entries after the preceding
+releases pass their live checks, disclosing the deferred final-art observations.

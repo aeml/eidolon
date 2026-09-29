@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry, createFittedBootGeometry, createWristCuffGeometry, createPauldronGeometry, createClothMantleGeometry, createGreatHelmGeometry, createLegSectionGeometry, createDrapedSkirtGeometry } from './ProceduralGarmentGeometry.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
+import { batchHumanoidRenderParts, getHumanoidBatchGeometryCount } from './HumanoidRenderBatches.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -1151,7 +1152,7 @@ function installRestPoseReset(root) {
  * Lanternhold oathguard silhouette. Geometry and immutable materials are
  * cached; transform pivots and animation state are unique per actor instance.
  */
-export function createProceduralFighter() {
+export function createProceduralFighter({ batch = false } = {}) {
     const materials = {
         iron: material('fighter-iron', FIGHTER_PALETTE.iron, { metalness: 0.72, roughness: 0.42 }),
         ironLight: material('fighter-iron-light', FIGHTER_PALETTE.ironLight, { metalness: 0.66, roughness: 0.38 }),
@@ -1342,6 +1343,7 @@ export function createProceduralFighter() {
     );
     root.userData.animations = createHumanoidAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
@@ -1351,7 +1353,7 @@ export function createProceduralFighter() {
  * silhouette with asymmetrical leathers, split cloak, venom glass, and a
  * dedicated dual-strike motion set on the shared humanoid attachment contract.
  */
-export function createProceduralRogue() {
+export function createProceduralRogue({ batch = false } = {}) {
     const materials = {
         leather: material('rogue-leather', ROGUE_PALETTE.leather, { roughness: 0.88 }),
         leatherLight: material('rogue-leather-light', ROGUE_PALETTE.leatherLight, { roughness: 0.76 }),
@@ -1649,6 +1651,7 @@ export function createProceduralRogue() {
     });
     root.userData.animations = createRogueAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
@@ -1658,7 +1661,7 @@ export function createProceduralRogue() {
  * framed by split robes, an asymmetric rune mantle, a stormstaff, and a
  * hovering astrolabe on the shared humanoid attachment contract.
  */
-export function createProceduralWizard() {
+export function createProceduralWizard({ batch = false } = {}) {
     const materials = {
         cloth: material('wizard-cloth', WIZARD_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
         clothDark: material('wizard-cloth-dark', WIZARD_PALETTE.clothDark, { roughness: 0.99, side: THREE.DoubleSide }),
@@ -1886,6 +1889,7 @@ export function createProceduralWizard() {
     });
     root.userData.animations = createWizardAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
@@ -1895,7 +1899,7 @@ export function createProceduralWizard() {
  * framed by fitted reliquary plate, a split war skirt, radiant crown,
  * oathmace, and swinging spirit censer on the shared humanoid contract.
  */
-export function createProceduralCleric() {
+export function createProceduralCleric({ batch = false } = {}) {
     const materials = {
         cloth: material('cleric-cloth', CLERIC_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
         clothDark: material('cleric-cloth-dark', CLERIC_PALETTE.clothDark, { roughness: 0.99, side: THREE.DoubleSide }),
@@ -2303,10 +2307,11 @@ export function createProceduralCleric() {
     });
     root.userData.animations = createClericAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.55, origin: 'feet' });
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
 
 export function getProceduralHumanoidCacheMetrics() {
-    return Object.freeze({ geometries: GEOMETRIES.size, materials: MATERIALS.size });
+    return Object.freeze({ geometries: GEOMETRIES.size + getHumanoidBatchGeometryCount(), materials: MATERIALS.size });
 }
