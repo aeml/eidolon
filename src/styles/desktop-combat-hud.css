@@ -1,0 +1,96 @@
+/* One glance covers resources and actions. Keep the established narrow-screen
+   and phone layouts; visibility, cooldowns and controls remain runtime-owned. */
+@media (min-width: 1100px) {
+    body:not(.mobile-mode) #player-hud {
+        position: fixed;
+        left: 50%;
+        bottom: 88px;
+        transform: translateX(-50%);
+        width: 334px;
+        height: 22px;
+        pointer-events: none;
+        z-index: var(--z-hud);
+    }
+    body:not(.mobile-mode) #player-hud::before {
+        content: '';
+        position: absolute;
+        inset: -10px -12px -72px;
+        border: 1px solid #8b78554d;
+        border-top-color: #c4ad7666;
+        border-radius: 9px 9px 5px 5px;
+        background: linear-gradient(165deg, #202325f2, #101416f2 45%, #090c10f5);
+        box-shadow: inset 0 1px 0 #e1d3aa12, 0 6px 24px #0008;
+        z-index: -1;
+    }
+    body:not(.mobile-mode) #player-hud .bar-container {
+        box-sizing: border-box;
+        float: left;
+        width: 162px;
+        height: 22px;
+        margin: 0;
+        border: 1px solid #b29b6659;
+        border-radius: 3px;
+        background: #080b10;
+        box-shadow: inset 0 2px 5px #000b;
+    }
+    body:not(.mobile-mode) #player-hud .bar-container + .bar-container { float: right; }
+    body:not(.mobile-mode) #player-hud .bar-container::before {
+        content: 'HP';
+        position: absolute;
+        left: 6px;
+        top: 5px;
+        color: #fff3dd;
+        font: 700 9px/1 var(--font-primary);
+        text-shadow: 0 1px 2px #000;
+        z-index: 1;
+    }
+    body:not(.mobile-mode) #player-hud .bar-container + .bar-container::before { content: 'MP'; }
+    body:not(.mobile-mode) #player-hud .bar-text { padding-left: 14px; box-sizing: border-box; font-size: 11px; font-variant-numeric: tabular-nums; }
+    body:not(.mobile-mode) #player-hud .health-fill { background: linear-gradient(180deg, #b4544c, #882d32 45%, #592126); }
+    body:not(.mobile-mode) #player-hud .mana-fill { background: linear-gradient(180deg, #5793ba, #2c638d 45%, #1d405f); }
+
+    body:not(.mobile-mode) #ability-container,
+    body:not(.mobile-mode) #hotbar-container {
+        position: fixed;
+        bottom: 22px;
+        transform: none;
+        z-index: calc(var(--z-hud) + 1);
+    }
+    body:not(.mobile-mode) #ability-container {
+        left: calc(50% - 167px);
+        width: 54px;
+        height: 54px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        border: 2px solid #b69b60;
+    }
+    body:not(.mobile-mode) #ability-container::after {
+        content: 'RMB';
+        position: absolute;
+        top: 2px;
+        left: 3px;
+        padding: 1px 3px;
+        border-radius: 2px;
+        background: #090c10df;
+        color: #f1e0b6;
+        font: 700 9px/1.2 var(--font-primary);
+        pointer-events: none;
+    }
+    body:not(.mobile-mode) #hotbar-container { left: calc(50% - 85px); gap: 12px; }
+    body:not(.mobile-mode) .hotbar-slot {
+        box-sizing: border-box;
+        width: 54px;
+        height: 54px;
+        border: 1px solid #89775180;
+        border-radius: 5px;
+        background: linear-gradient(145deg, #24272a, #101317 60%);
+        box-shadow: inset 0 1px 0 #ffffff0d, inset 0 -3px 7px #0007;
+    }
+    body:not(.mobile-mode) .hotbar-slot:hover { border-color: var(--color-gold); }
+    body:not(.mobile-mode) .hotbar-key { color: #decba5; z-index: 1; }
+    /* Resizing chat must not cover the central resource/action cluster.
+       Keep all channels, transcript, input and resize affordance available. */
+    body:not(.mobile-mode) #chat-box { max-width: calc(50vw - 203px); }
+    body:not(.mobile-mode) #menu-bar { max-width: calc(50vw - 210px); flex-wrap: wrap; justify-content: flex-end; }
+    body:not(.mobile-mode) #xp-text { left: 20px; top: -18px; transform: none; }
+}

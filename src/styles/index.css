@@ -18,6 +18,7 @@
 @import './overlays.css';
 @import './hud.css';
 @import './abilities.css';
+@import './desktop-combat-hud.css';
 @import './floating-bars.css';
 @import './windows.css';
 @import './skill-tree.css';
