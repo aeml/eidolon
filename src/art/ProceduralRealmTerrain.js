@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyTownGroundComposition } from './TownGroundComposition.js';
 import { applyEarthGroundComposition } from './EarthGroundComposition.js';
+import { sampleElementalTerrain } from './ElementalTerrainSurface.js';
 
 function terrainDefinition(id, region, label, motif, seed, surface) {
     return Object.freeze({ id, region, label, motif, seed, surface: Object.freeze(surface) });
@@ -161,25 +162,11 @@ function sampleTown(x, y, size, definition, palette) {
 }
 
 function sampleWater(x, y, _size, definition) {
-    // Walkable frost, not a continuous glowing crack network that reads as
-    // open water. Actual pools and combat hazards own their brighter effects.
-    const broad = periodicNoise(x, y, 14, definition.seed);
-    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x4b19);
-    const grain = hash2d(x, y, definition.seed ^ 0xb03);
-    const frost = Math.max(0, (broad - .35) * .6);
-    const rock = mixColor(0x454f54, 0x718087, .2 + grit * .28 + grain * .3);
-    const rime = colorChannels(0xa2aba8);
-    return rock.map((value, index) => Math.round(value + (rime[index] - value) * frost));
+    return sampleElementalTerrain(x, y, 'water', definition.seed).color;
 }
 
 function sampleFire(x, y, _size, definition) {
-    const broad = periodicNoise(x, y, 13, definition.seed);
-    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x31ef);
-    const grain = hash2d(x, y, definition.seed ^ 0xc19);
-    const ash = Math.max(0, (broad - .38) * .45);
-    const rock = mixColor(0x363431, 0x62574c, .16 + grit * .3 + grain * .32);
-    const dust = colorChannels(0x898276);
-    return rock.map((value, index) => Math.round(value + (dust[index] - value) * ash));
+    return sampleElementalTerrain(x, y, 'fire', definition.seed).color;
 }
 
 function sampleAir(x, y, _size, definition) {
@@ -292,12 +279,14 @@ function createTerrainSurfaceMaps(key, quality) {
                 const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
                 height[index] = .2 + broad * .16 + grit * .065;
                 roughness[index] = .86 + broad * .12;
+            } else if (key === 'water' || key === 'fire') {
+                const surface = sampleElementalTerrain(x, y, key, definition.seed);
+                height[index] = surface.height; roughness[index] = surface.roughness;
             } else {
-                const frost = key === 'water', air = key === 'air';
-                const broad = periodicNoise(x, y, air ? 11 : frost ? 14 : 13, definition.seed);
-                const grit = periodicNoise(x, y, 32, definition.seed ^ (air ? 0x717b : frost ? 0x4b19 : 0x31ef));
+                const broad = periodicNoise(x, y, 11, definition.seed);
+                const grit = periodicNoise(x, y, 32, definition.seed ^ 0x717b);
                 height[index] = .2 + broad * .17 + grit * .12;
-                roughness[index] = frost ? .72 + broad * .23 : .85 + broad * .13;
+                roughness[index] = .85 + broad * .13;
             }
         }
     }
