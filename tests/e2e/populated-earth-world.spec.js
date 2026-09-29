@@ -82,7 +82,8 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const gateViews = {
                     'verdant-approach': ['verdant_bastion_catacombs', [800, 6, 232.19]],
                     'molten-approach': ['molten_core', [-2367.51, 6.6, 200]],
-                    'abyssal-approach': ['abyssal_well', [0, 6.3, -1377.91]]
+                    'abyssal-approach': ['abyssal_well', [0, 6.3, -1377.91]],
+                    'spire-muster': ['tempest_spire', [2378.91, 6.6, 200]]
                 };
                 if (gateViews[id]) {
                     const [dungeonType, portalPosition] = gateViews[id];
