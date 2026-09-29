@@ -1,11 +1,13 @@
 # Alpha 1.43 — combat presentation preview
 
-Unreleased partial candidate. Ordered publication and earlier milestone gates
-remain open; runtime version metadata is intentionally unchanged.
+Unreleased integrated candidate on the prepared1.42 branch. Runtime/package/
+login/CI/default build identities and cumulative notes now identify1.43.0.
+Ordered publication waits for preceding accepted deployments. Human campaign/
+phone observations remain playtest-owned; they are not a new permission gate.
 
 ## Draft patch notes
 
-- Added soft actor contact shadows for phones and Low graphics, grounding
+- Retained supporting1.42 contact shadows for phones and Low graphics, grounding
   characters without enabling expensive directional shadows. Contacts follow
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
@@ -51,6 +53,8 @@ remain open; runtime version metadata is intentionally unchanged.
   feedback without particle travel. Actual danger/healing ranges and combat
   values are unchanged. See [verification](2026-09-29-periodic-combat-feedback.md).
 
+Supporting1.42 warning/terrain presentation remains integrated:
+
 - Boss danger circles, their shaded areas and regional motifs now sit above
   dungeon floors instead of being hidden underneath them.
 - Fireball, Meteor and Explosive Trap impact areas remain visible on dungeon
@@ -68,3 +72,41 @@ See [combat presentation preflight](2026-09-29-1-43-combat-presentation-prefligh
 for before/after rendering evidence, focused lifecycle/cast checks and crowded
 High/Low warning review. Earlier release gates and public deployment remain
 outstanding; no live release or complete 1.43 milestone is claimed.
+
+## Ordered integration verification
+
+Built on prepared1.42 commit18a53061; eleven remaining combat commits integrate
+through34f32b14. Shared warning/contact/aura and terrain consumers were already
+assembled in1.42, so their fixes are retained rather than reapplied. Art source
+comparison against048aec6e now shows only the harmless batch-helper blank line.
+Actor differs only by forthcoming1.44 audio skill-name arguments; runtime
+differences are forthcoming audio and1.45 loot-label presentation. No final
+audio/interface code was silently copied into this candidate.
+
+Resolved documentation overlaps by preserving both scoped notes. Retained
+newer class batching tests when adding skeleton coverage. The enemy-health
+browser-stage conflict adds only its real new test file, not the five absent
+future1.45 UI fixtures. Corpse presentation and contact-shadow rendering now
+both have their valid imports. No source force-copy or test tolerance change.
+
+Seven existing moving-cast/gait/ability-gesture/batch/health/corpse/basic-contact
+seam suites pass79 checks in7.429s; full lint, shell syntax and whitespace pass.
+Desktop four-class equipped moving-cast/walk/run/support rendering passes8.7s,
+and prepared enemy health/camera/contact/death rendering passes16.7s. Inspected
+moving-cast and enemy-contact captures at
+/tmp/eidolon-1-43-integrated-cast-0930 and
+/tmp/eidolon-1-43-integrated-health-0930. These checks use prepared actors,
+not authenticated enemy clears or human combat-feel/pacing measurements.
+Unchanged full actor-family/gallery evidence remains in the linked preflights.
+
+Metadata-only synchronization was checked directly: all package/build/runtime
+labels agree, cumulative entries are unique and ordered1.43 before1.42, old
+1.0 history remains, and every registered explicit browser file exists. This
+does not replace the standard CI required for eventual publication. Website
+files still matchad22dea7; fetch/merge newer master before each push.
+
+Final authored actors, human enjoyment, full modern-art acceptance and later
+representative performance/capacity gates remain open. No additional campaign
+soak, real-phone claim, save wipe, production terrain activation or beta access
+change. The candidate is ready for ordered CI publication after predecessors
+pass, not yet a live or fully accepted Q/CB release.

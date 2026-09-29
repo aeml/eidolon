@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.42.0</span>
+                    <span class="start-version-row__label">Alpha 1.43.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -717,6 +717,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.43.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.43.0 (combat in motion)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Grounded class movement:</strong> All four classes' walks/runs make clearer foot contact, including equipped boots. Moving casts keep the lower-body stride while distinct upper-body gestures express attacks, spells and support.</li>
+                        <li><strong>Strikes with intent:</strong> Armed enemies swing toward their targets; creature gores, pecks, bites and thrusts have anticipation and recovery. Visible contact aligns with existing basic-attack timing, without changing damage or cooldowns.</li>
+                        <li><strong>Readable encounters:</strong> Wounded and selected enemy health bars follow the rendered actor and camera smoothly, with a clear damage-loss segment and phone/PvP targeting support. Friendly services do not receive enemy bars.</li>
+                        <li><strong>Quieter feedback and cleaner endings:</strong> Periodic damage/healing use smaller body-level cues. Enemy corpses hold their death pose and fade; corrected death poses stay above the floor. Reduced motion retains essential feedback.</li>
+                        <li><strong>Progress preserved:</strong> Skeleton rigid batching reduces redundant draws without dropping animated surfaces. Loot, movement speed, server respawn timing, saved builds and combat values are unchanged. Final authored actors and human combat-feel review remain open; this does not open closed beta. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.42.0">
                     <h3 class="patch-note-entry__title">Alpha 1.42.0 (a more grounded world)</h3>
                     <ul class="patch-note-entry__list">
