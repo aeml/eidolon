@@ -6,6 +6,7 @@ import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createG
 import { createEarthGroundCoverTuft, earthGroundCoverPlacements } from './EarthGroundCover.js';
 import { createBastionPavingFragment, createBastionMarkerCap } from './BastionForecourtGeometry.js';
 import { createKeeperGardenPlant } from './KeeperCottage.js';
+import { createScarStandingStone } from './ReturningScar.js';
 
 // The environment owns these resources; no external asset or global disposable
 // cache is needed. Each location/material is a separate cullable draw batch.
@@ -40,7 +41,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         const batches = new Map();
         const part = (geometry, material, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
             // Vault, piers and fallen blocks share one natural-stone draw batch.
-            if (['root-arch', 'grave-road'].includes(site.recipe) && material === 'stone') material = 'fieldstone';
+            if (['root-arch', 'grave-road', 'wounded-grove'].includes(site.recipe) && material === 'stone') material = 'fieldstone';
             const matrix = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
             const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone();
@@ -130,11 +131,17 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         case 'wounded-grove':
             for (let i = 0; i < 5; i++) {
                 const angle = Math.PI * .6 + i * .48, x = Math.cos(angle) * 19, z = Math.sin(angle) * 19;
-                stone(x, 1.2, z, 1.3, 1.8, 1, angle);
-                box('stone', x, 1, z, 1.5, 2, 1.5, 0, true);
+                part(createScarStandingStone(i, 1.25 + i % 2 * .12, 2.35 + i % 3 * .2), 'fieldstone', x, 0, z);
+                footprints.push({ siteId: site.id, x: site.x + x, z: site.z + z,
+                    width: 1.5, depth: 1.5, height: 2, y: 1, angle: 0 });
+                for (let plant = 0; plant < 3; plant++) part(createKeeperGardenPlant(i * 7 + plant),
+                    'moss', x - .6 + plant * .6, .03, z + .7, [0, plant * 2, 0]);
             }
-            rootCurve([[-18, -.8, -8], [-16, 3, -13], [-8, 2, -17], [0, .4, -19]], .65);
-            rootCurve([[-19, -.5, 4], [-16, 1.5, 0], [-12, .3, -5]], .4);
+            rootCurve([[-18, -.35, -8], [-17, .62, -10], [-15, .85, -13], [-10, .42, -15], [-5, .15, -17], [0, -.14, -19]], .65);
+            rootCurve([[-15, .68, -13], [-14, .4, -16], [-11, .15, -18], [-9, -.1, -19]], .24);
+            rootCurve([[-10, .36, -15], [-8, .18, -13], [-6, -.1, -12]], .18);
+            rootCurve([[-19, -.25, 4], [-17, .65, 1], [-15, .34, -1], [-12, -.15, -5]], .4);
+            rootCurve([[-17, .5, 1], [-19, .24, -1], [-20, -.15, -4]], .19);
             break;
         case 'grave-road':
             for (const side of [-1, 1]) {

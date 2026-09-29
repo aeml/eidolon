@@ -82,7 +82,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const x = reading?.position.x ?? site.x + (site.arrivalOffset?.[0] || 0);
                 const z = reading?.position.z ?? site.z + (site.arrivalOffset?.[1] || 0);
                 engine.player.position.set(x - (reading ? 4 : 0), 0, z + (reading ? 3 : 0)); hero.position.copy(engine.player.position);
-                if (id === 'keepers-empty-house') {
+                if (id === 'keepers-empty-house' || id === 'returning-scar') {
                     // Review from the actual open-front inspection approach,
                     // not with the prepared hero standing inside the diary table.
                     engine.player.position.z += 4.1; hero.position.copy(engine.player.position);
@@ -96,6 +96,16 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const stats = { id, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures,
                     shadowFocusError: render.shadowTarget.distanceTo(engine.player.position) };
+                if (id === 'returning-scar') {
+                    const chapter = chronicleInvestigations.find(c => c.id === 'chronicle_earth_returning_scar');
+                    for (const clue of chapter.sites) {
+                        const point = new THREE.Vector3(clue.x, clue.model === 'root_growth' ? .7 : 1.1, clue.z).project(render.camera);
+                        const ray = new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(point.x, point.y), render.camera);
+                        const hit = ray.intersectObjects(render.instanceEnvironmentGroup.children, true)
+                            .find(result => { let o = result.object; while (o) { if (!o.visible) return false; o = o.parent; } return true; });
+                        if (hit?.object.userData.entityId !== clue.entityId) throw new Error(`Grove clue is obscured: ${clue.id}`);
+                    }
+                }
                 const gateViews = {
                     'verdant-approach': ['verdant_bastion_catacombs', [800, 6, 232.19]],
                     'molten-approach': ['molten_core', [-2367.51, 6.6, 200]],

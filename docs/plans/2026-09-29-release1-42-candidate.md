@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Rebuilt the Returning Scar's three investigation clues to match their story:
+  severed wood, a bending sapling and the interrupted command inscription with
+  its broken seal. Natural boundary stones and grounded roots replace the
+  older placeholders. See the [grove review](2026-09-29-returning-scar.md).
+
 - Rebuilt Mara's diary cottage and abandoned garden with weathered masonry,
   broken roofing, a readable ledger table, nursery pots, planted beds and a
   constructed wheelbarrow. Existing walking and interaction bounds remain
