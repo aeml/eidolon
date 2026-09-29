@@ -129,23 +129,23 @@ export const ABILITY_ANIMATION_PROFILES = Object.freeze({
     quick: Object.freeze({ clip: 'Attack', duration: 0.42 }),
     throw: Object.freeze({ clip: 'Attack', duration: 0.52 }),
     volley: Object.freeze({ clip: 'Attack', duration: 0.68 }),
-    cast: Object.freeze({ clip: 'Attack', duration: 0.7 }),
-    'heavy-cast': Object.freeze({ clip: 'Attack', duration: 1.05 }),
-    channel: Object.freeze({ clip: 'Attack', duration: 1.15 }),
+    cast: Object.freeze({ clip: 'Cast', duration: 0.7 }),
+    'heavy-cast': Object.freeze({ clip: 'Channel', duration: 1.05 }),
+    channel: Object.freeze({ clip: 'Channel', duration: 1.15 }),
     heavy: Object.freeze({ clip: 'Attack', duration: 0.82 }),
     sweep: Object.freeze({ clip: 'Attack', duration: 0.72 }),
     spin: Object.freeze({ clip: 'Attack', duration: 0.9 }),
     charge: Object.freeze({ clip: 'Run', duration: 0.75, movement: true }),
     lunge: Object.freeze({ clip: 'Attack', duration: 0.48 }),
     pull: Object.freeze({ clip: 'Attack', duration: 0.75 }),
-    buff: Object.freeze({ clip: 'Attack', duration: 0.78 }),
-    shout: Object.freeze({ clip: 'Attack', duration: 0.88 }),
+    buff: Object.freeze({ clip: 'Guard', duration: 0.78 }),
+    shout: Object.freeze({ clip: 'Shout', duration: 0.88 }),
     mark: Object.freeze({ clip: 'Attack', duration: 0.62 }),
     place: Object.freeze({ clip: 'Attack', duration: 0.58 }),
     vanish: Object.freeze({ clip: 'Attack', duration: 0.45 }),
     teleport: Object.freeze({ clip: 'Attack', duration: 0.5 }),
-    summon: Object.freeze({ clip: 'Attack', duration: 1.0 }),
-    bless: Object.freeze({ clip: 'Attack', duration: 0.82 })
+    summon: Object.freeze({ clip: 'Bless', duration: 1.0 }),
+    bless: Object.freeze({ clip: 'Bless', duration: 0.82 })
 });
 
 export function getSkillTreeAbilityNames(className) {

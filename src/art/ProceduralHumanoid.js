@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry, createFittedBootGeometry, createWristCuffGeometry, createPauldronGeometry, createClothMantleGeometry, createGreatHelmGeometry, createLegSectionGeometry, createDrapedSkirtGeometry } from './ProceduralGarmentGeometry.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 import { batchHumanoidRenderParts, getHumanoidBatchGeometryCount } from './HumanoidRenderBatches.js';
+import { createHumanoidAbilityClips } from './HumanoidAbilityClips.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -1341,7 +1342,7 @@ export function createProceduralFighter({ batch = false } = {}) {
     root.userData.equipmentAnchors = Object.fromEntries(
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
     );
-    root.userData.animations = createHumanoidAnimationClips();
+    root.userData.animations = [...createHumanoidAnimationClips(), ...createHumanoidAbilityClips(root)];
     root.userData.basicAttackContactTime = .5;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -1650,7 +1651,7 @@ export function createProceduralRogue({ batch = false } = {}) {
         mainHand: 0.92,
         offHand: 0.88
     });
-    root.userData.animations = createRogueAnimationClips();
+    root.userData.animations = [...createRogueAnimationClips(), ...createHumanoidAbilityClips(root)];
     root.userData.basicAttackContactTime = .26;
     root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -1889,7 +1890,7 @@ export function createProceduralWizard({ batch = false } = {}) {
         mainHand: 0.92,
         offHand: 0.9
     });
-    root.userData.animations = createWizardAnimationClips();
+    root.userData.animations = [...createWizardAnimationClips(), ...createHumanoidAbilityClips(root)];
     root.userData.basicAttackContactTime = .62;
     root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -2308,7 +2309,7 @@ export function createProceduralCleric({ batch = false } = {}) {
         mainHand: 0.9,
         offHand: 0.88
     });
-    root.userData.animations = createClericAnimationClips();
+    root.userData.animations = [...createClericAnimationClips(), ...createHumanoidAbilityClips(root)];
     root.userData.basicAttackContactTime = .58;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);

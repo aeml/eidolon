@@ -1,3 +1,4 @@
+import { HUMANOID_ABILITY_CLIPS } from '../src/art/HumanoidAbilityClips.js';
 import { readFileSync } from 'node:fs';
 import { MeshCatalog } from '../src/utils/MeshCatalog.js';
 import {
@@ -43,28 +44,28 @@ describe('actor animation manifest', () => {
     test('classifies Fighter as the shared procedural humanoid vertical slice', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Fighter).toEqual(expect.objectContaining({
             source: 'shared procedural humanoid rig',
-            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
     test('classifies Rogue as a class-specific shared procedural humanoid', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Rogue).toEqual(expect.objectContaining({
             source: 'shared procedural humanoid rig',
-            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
     test('classifies Wizard as a class-specific shared procedural humanoid', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Wizard).toEqual(expect.objectContaining({
             source: 'shared procedural humanoid rig',
-            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
     test('classifies Cleric as a class-specific shared procedural humanoid', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Cleric).toEqual(expect.objectContaining({
             source: 'shared procedural humanoid rig',
-            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
