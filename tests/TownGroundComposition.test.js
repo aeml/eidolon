@@ -30,8 +30,10 @@ test('mask is deterministic, linear and registered between qualities', () => {
 
 test('town composition preserves depth, geometry and shared albedo ownership', () => {
     const material = createProceduralTerrainMaterial('town', { quality: 'low' });
-    const { mask, soilTexture } = material.userData.townGroundComposition;
-    const calls = { mask: 0, soil: 0, albedo: 0 };
+    const { mask, soilTexture, paving } = material.userData.townGroundComposition;
+    const calls = { mask: 0, soil: 0, albedo: 0, court: 0, surface: 0 };
+    paving.color.addEventListener('dispose', () => calls.court++);
+    paving.surface.addEventListener('dispose', () => calls.surface++);
     mask.addEventListener('dispose', () => calls.mask++);
     soilTexture.addEventListener('dispose', () => calls.soil++);
     material.map.addEventListener('dispose', () => calls.albedo++);
@@ -40,10 +42,11 @@ test('town composition preserves depth, geometry and shared albedo ownership', (
     const shader = { uniforms: {}, vertexShader: THREE.ShaderLib.standard.vertexShader, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
     material.onBeforeCompile(shader);
     expect(shader.uniforms.townComposition.value).toBe(mask);
+    expect(shader.uniforms.townCourt.value).toBe(paving.color);
     expect(shader.fragmentShader).toContain('mix(townEarth, diffuseColor.rgb, townWear.r)');
     expect(shader.fragmentShader).toContain('mix(townFlatNormal, normal, townWear.r)');
     expect(shader.vertexShader).not.toContain('transformed +=');
     material.dispose(); material.dispose();
-    expect(calls).toEqual({ mask: 1, soil: 1, albedo: 0 });
+    expect(calls).toEqual({ mask: 1, soil: 1, albedo: 0, court: 1, surface: 1 });
     material.map.dispose();
 });

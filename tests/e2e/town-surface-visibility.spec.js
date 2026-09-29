@@ -24,6 +24,9 @@ test('town masonry stays visible across gameplay zoom', async ({ page, baseURL }
             // Compare the same clear paving point with and without the town
             // ground. A buried/biased surface exposes a different ground pixel.
             const target = new THREE.WebGLRenderTarget(1280, 900);
+            // Compare display-referred pixels, like the visible canvas. Raw
+            // linear values made the brightness check reject visible masonry.
+            target.texture.colorSpace = THREE.SRGBColorSpace;
             const point = new THREE.Vector3(x, .04, z + 7.5).project(render.camera);
             const pixelX = Math.floor((point.x + 1) * 640);
             const pixelY = Math.floor((point.y + 1) * 450);
