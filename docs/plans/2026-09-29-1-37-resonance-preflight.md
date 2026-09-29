@@ -146,9 +146,9 @@ rerun; their unchanged earlier disposable-database evidence remains above.
 Prepared /tmp/eidolon-release-1-37-verify.mjs for exact public frontend/backend
 identity, database readiness, login/cache key, cumulative history and deployed
 reward/character/town client assets. It is syntax-checked, not a live receipt.
-The owner's public DDNS currently resolves to the wrong IPv4; publication is
-held without changing DNS or bypassing the release order. Schema15 rollback
-limits are documented in the release plan.
+The owner's public IPv4 path now passes independent verification through1.36;
+IPv6 remains owner-deferred. Ordered1.37 publication can proceed. Schema15
+rollback limits are documented in the release plan.
 
 ## Reward sources and cosmetic boundary
 
