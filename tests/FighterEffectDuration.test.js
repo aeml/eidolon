@@ -43,6 +43,12 @@ describe.each(cases)('%s %s', (skill, rune, timer, base, recipient) => {
         f.caster.useAbility(f.target.position.clone(), f.engine, skill);
         expect(f.caster.stats.mana).toBe(200 - config.mana);
         expect(f.caster.cooldowns[skill]).toBeCloseTo(config.cooldown * (1 - f.caster.stats.cooldownReduction), 8);
+        // Juggernaut applies its effect at landing, not at cast admission.
+        if (skill === 'Juggernaut Charge') {
+            expect(f.target.takeDamage).not.toHaveBeenCalled();
+            f.caster.update(.2, null, null, f.engine.chunkManager);
+            expect(f.caster.isCharging).toBe(false);
+        }
         expect(f[recipient][timer]).toBeCloseTo(base * (1 + .07 * rank), 8);
         if (skill === 'Guardian Roar') expect(f.ally[timer]).toBe(f.caster[timer]);
         if (skill === 'Unbreakable Grip') expect(f.target.stunTimer).toBe(0);
@@ -66,6 +72,7 @@ test.each(['Earthshaker', 'Juggernaut Charge', 'Unbreakable Grip'])('%s respects
     f.target.ccImmune = true;
     f.target.position.set(0, 0, 5);
     f.caster.useAbility(f.target.position.clone(), f.engine, skill);
+    if (skill === 'Juggernaut Charge') f.caster.update(.2, null, null, f.engine.chunkManager);
     expect(f.target.stunTimer).toBe(0);
     expect(f.target.rootTimer).toBe(0);
     expect(f.target.slowTimer).toBe(0);

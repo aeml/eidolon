@@ -31,7 +31,7 @@ func TestBackstabCriticalSourcesComposeOnce(t *testing.T) {
 			w.Entities, w.Grid = make(map[string]*Entity), NewSpatialMap(50)
 			p := newTestPlayer("composition-rogue", "Rogue")
 			p.InstanceID, p.Level = "qa-critical-composition", 100
-			p.UnlockedSkills = []string{"Backstab", "Cloak & Vanish"}
+			p.UnlockedSkills = []string{"Backstab", "Weak Point Mark"}
 			p.SkillRunes = map[string]string{"Backstab": tc.rune}
 			p.Rotation = math.Pi // No independent behind-target multiplier.
 			w.AddEntity(p)
@@ -40,11 +40,11 @@ func TestBackstabCriticalSourcesComposeOnce(t *testing.T) {
 			w.AddEntity(target)
 			if tc.combo {
 				mana := p.Mana
-				if result := w.PerformAbility(p.ID, p.X, p.Z, "", "Cloak & Vanish"); !result.Accepted || p.Mana >= mana {
+				if result := w.PerformAbility(p.ID, target.X, target.Z, target.ID, "Weak Point Mark"); !result.Accepted || p.Mana >= mana {
 					t.Fatalf("paid combo opener failed: %+v", result)
 				}
 				// Advance only the GCD; normal dispatch still recognizes its own
-				// recorded Cloak history and activates/consumes the combo.
+				// recorded Mark history and activates/consumes the combo.
 				p.LastAbilityTime = time.Now().Add(-time.Second)
 			}
 			p.Damage, p.CritChanceBonus = 100, 0

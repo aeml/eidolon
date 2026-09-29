@@ -189,6 +189,7 @@ describe('Cleric Spirit Guardians lifecycle', () => {
     test('boosted activation creates five guardians and expiry removes them once', () => {
         const cleric = new Cleric('cleric-boosted');
         cleric.mesh = new THREE.Group();
+        cleric.unlockedSkills.push('Spirit Guardians Boost');
         const engine = makeEngine();
 
         cleric.useAbility(new THREE.Vector3(), engine, 'Spirit Guardians Boost');
