@@ -8,6 +8,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
+import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
@@ -675,6 +676,7 @@ export class RenderSystem {
         const normalized = (quality === 'low' || quality === 'medium' || quality === 'high') ? quality : 'high';
         const previousQuality = this.graphicsQuality;
         this.graphicsQuality = normalized;
+        updateFoliageRenderQuality(this.instanceEnvironmentGroup, normalized);
         this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
         this.effectQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.78 : 0.52);
 

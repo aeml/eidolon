@@ -1,15 +1,27 @@
 import { Matrix4 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
+import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
+import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 
 const BATCHES = new Map();
+const LOW_CROWNS = new Map();
 
 // Bake each static tree's same-material parts together once. Spatial instancing
 // still owns world placement/culling; previews retain their named source parts.
-export function getFoliageRenderBatches(id) {
-    if (BATCHES.has(id)) return BATCHES.get(id);
+export function getFoliageRenderBatches(id, quality = 'high') {
+    const source = getProceduralFoliageArchetype(id);
+    const reduced = quality === 'low' && source.some(part => part.geometry.userData.woodlandCrown);
+    const cacheKey = `${id}:${reduced ? 'low' : 'high'}`;
+    if (BATCHES.has(cacheKey)) return BATCHES.get(cacheKey);
     const buckets = new Map();
-    for (const part of getProceduralFoliageArchetype(id)) {
+    for (let part of source) {
+        const crown = part.geometry.userData.woodlandCrown;
+        if (quality === 'low' && crown) {
+            if (!LOW_CROWNS.has(crown)) LOW_CROWNS.set(crown,
+                crown === 'leaf' ? createLeafCanopyGeometry('low') : createConiferBoughGeometry('low'));
+            part = { ...part, geometry: LOW_CROWNS.get(crown) };
+        }
         const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);
@@ -28,6 +40,25 @@ export function getFoliageRenderBatches(id) {
             material: parts[0].material, matrix: new Matrix4(),
             castShadow: parts[0].castShadow, receiveShadow: parts[0].receiveShadow });
     });
-    BATCHES.set(id, Object.freeze(batches));
-    return BATCHES.get(id);
+    BATCHES.set(cacheKey, Object.freeze(batches));
+    return BATCHES.get(cacheKey);
+}
+
+// Swap shared detail geometry in place. No collision, placement, material or
+// instance buffer rebuild, and no disposal of cache-owned geometry on a toggle.
+export function updateFoliageRenderQuality(root, quality) {
+    const level = quality === 'low' ? 'low' : 'high';
+    root?.traverse(group => {
+        if (!group.userData.proceduralFoliage || group.userData.region !== 'earth' ||
+            group.userData.foliageQuality === level) return;
+        const parts = new Map(getFoliageRenderBatches(group.userData.foliageId, level).map(part => [part.name, part]));
+        for (const mesh of group.children) {
+            const part = parts.get(mesh.name);
+            if (!part || mesh.geometry === part.geometry) continue;
+            mesh.geometry = part.geometry;
+            mesh.computeBoundingBox();
+            mesh.boundingBox.getBoundingSphere(mesh.boundingSphere);
+        }
+        group.userData.foliageQuality = level;
+    });
 }

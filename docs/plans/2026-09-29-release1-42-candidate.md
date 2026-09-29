@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Framed the Bastion road with staggered woodland stands while preserving
+  existing trees, open lanes and saved-position escape. Low retains all trees
+  with simpler leaf surfaces; finer culling limits off-screen work. Some High
+  budgets remain unmet. See the [woodland review and cost](2026-09-29-bastion-woodland-edges.md).
+
 - Gave the Stranded Flotilla distinct damaged hulls, weathered timber, squared
   frames, abandoned rigging and folded torn sails. Walking bounds are unchanged.
   See the [wreck-site review](2026-09-29-stranded-flotilla.md).

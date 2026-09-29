@@ -26,7 +26,7 @@ test('production woodland retains its appearance while distant leaf batches are 
             const group = render.scene.getObjectByName(`foliage:earth:${id}`);
             const placements = group.userData.placements;
             spatial.add(group); trees += placements.length; first ??= placements[0];
-            for (const part of getFoliageRenderBatches(id)) {
+            for (const part of getFoliageRenderBatches(id, generator.graphicsQuality)) {
                 const mesh = new THREE.InstancedMesh(part.geometry, part.material, placements.length);
                 placements.forEach((p, i) => mesh.setMatrixAt(i, new THREE.Matrix4().compose(
                     new THREE.Vector3(p.x, 0, p.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), p.rotation),
@@ -51,7 +51,7 @@ test('production woodland retains its appearance while distant leaf batches are 
         window.__foliageComparison = { baseline, spatial, render };
         return { trees, batches: spatial.children.reduce((n, g) => n + g.children.length, 0), baselineBatches: baseline.children.length };
     });
-    expect(setup.trees).toBe(330); expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
+    expect(setup.trees).toBe(391); expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
     for (const quality of ['high', 'low']) {
         const metrics = {};
         for (const mode of ['baseline', 'spatial']) {

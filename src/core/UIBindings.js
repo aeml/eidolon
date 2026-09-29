@@ -21,7 +21,14 @@ export class UIBindings {
         const ui = engine.uiManager;
 
         ui.onGraphicsQualityChange = (quality) => {
-            return engine.renderSystem.setGraphicsQuality(quality);
+            const result = engine.renderSystem.setGraphicsQuality(quality);
+            // The overworld generator is constructed before these saved UI
+            // preferences are applied. Keep initial and future scene builds in
+            // sync with the renderer, not the constructor's default High.
+            const normalized = ['low', 'medium', 'high'].includes(quality) ? quality : 'high';
+            if (engine.worldGenerator) engine.worldGenerator.graphicsQuality = normalized;
+            if (engine.activeWorldGenerator) engine.activeWorldGenerator.graphicsQuality = normalized;
+            return result;
         };
         ui.onBrightnessChange = (level) => {
             engine.renderSystem.setBrightnessLevel(level);
@@ -33,7 +40,7 @@ export class UIBindings {
             engine.renderSystem.setCameraShakeStrength(strength);
         };
 
-        engine.renderSystem.setGraphicsQuality(ui.getGraphicsQuality());
+        ui.onGraphicsQualityChange(ui.getGraphicsQuality());
         engine.renderSystem.setBrightnessLevel(ui.getBrightnessLevel());
         engine.renderSystem.setCameraShakeEnabled(ui.getCameraShakeEnabled());
         engine.renderSystem.setCameraShakeStrength?.(ui.getCameraShakeStrength?.() ?? 50);

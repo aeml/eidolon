@@ -1745,6 +1745,153 @@
       "depth": 1.6066272923022509
     },
     {
+      "siteId": "tree:ossuary_birch:120",
+      "x": 220,
+      "z": 181,
+      "width": 1.4112,
+      "depth": 1.4112
+    },
+    {
+      "siteId": "tree:ossuary_birch:121",
+      "x": 247,
+      "z": 223,
+      "width": 1.584,
+      "depth": 1.584
+    },
+    {
+      "siteId": "tree:ossuary_birch:122",
+      "x": 339,
+      "z": 181,
+      "width": 1.4687999999999999,
+      "depth": 1.4687999999999999
+    },
+    {
+      "siteId": "tree:ossuary_birch:123",
+      "x": 373,
+      "z": 220,
+      "width": 1.6415999999999997,
+      "depth": 1.6415999999999997
+    },
+    {
+      "siteId": "tree:ossuary_birch:124",
+      "x": 476,
+      "z": 180,
+      "width": 1.5264,
+      "depth": 1.5264
+    },
+    {
+      "siteId": "tree:ossuary_birch:125",
+      "x": 561,
+      "z": 224,
+      "width": 1.4112,
+      "depth": 1.4112
+    },
+    {
+      "siteId": "tree:ossuary_birch:126",
+      "x": 632,
+      "z": 183,
+      "width": 1.584,
+      "depth": 1.584
+    },
+    {
+      "siteId": "tree:ossuary_birch:127",
+      "x": 696,
+      "z": 218,
+      "width": 1.4687999999999999,
+      "depth": 1.4687999999999999
+    },
+    {
+      "siteId": "tree:ossuary_birch:128",
+      "x": 219,
+      "z": 227,
+      "width": 1.6415999999999997,
+      "depth": 1.6415999999999997
+    },
+    {
+      "siteId": "tree:ossuary_birch:129",
+      "x": 260,
+      "z": 169,
+      "width": 1.5264,
+      "depth": 1.5264
+    },
+    {
+      "siteId": "tree:ossuary_birch:130",
+      "x": 281,
+      "z": 224,
+      "width": 1.4112,
+      "depth": 1.4112
+    },
+    {
+      "siteId": "tree:ossuary_birch:131",
+      "x": 338,
+      "z": 229,
+      "width": 1.584,
+      "depth": 1.584
+    },
+    {
+      "siteId": "tree:ossuary_birch:132",
+      "x": 388,
+      "z": 168,
+      "width": 1.4687999999999999,
+      "depth": 1.4687999999999999
+    },
+    {
+      "siteId": "tree:ossuary_birch:133",
+      "x": 415,
+      "z": 176,
+      "width": 1.6415999999999997,
+      "depth": 1.6415999999999997
+    },
+    {
+      "siteId": "tree:ossuary_birch:134",
+      "x": 424,
+      "z": 233,
+      "width": 1.5264,
+      "depth": 1.5264
+    },
+    {
+      "siteId": "tree:ossuary_birch:135",
+      "x": 479,
+      "z": 225,
+      "width": 1.4112,
+      "depth": 1.4112
+    },
+    {
+      "siteId": "tree:ossuary_birch:136",
+      "x": 557,
+      "z": 173,
+      "width": 1.584,
+      "depth": 1.584
+    },
+    {
+      "siteId": "tree:ossuary_birch:137",
+      "x": 591,
+      "z": 172,
+      "width": 1.4687999999999999,
+      "depth": 1.4687999999999999
+    },
+    {
+      "siteId": "tree:ossuary_birch:138",
+      "x": 600,
+      "z": 226,
+      "width": 1.6415999999999997,
+      "depth": 1.6415999999999997
+    },
+    {
+      "siteId": "tree:ossuary_birch:139",
+      "x": 650,
+      "z": 231,
+      "width": 1.5264,
+      "depth": 1.5264
+    },
+    {
+      "siteId": "tree:ossuary_birch:140",
+      "x": 688,
+      "z": 225,
+      "width": 1.4112,
+      "depth": 1.4112
+    },
+    {
       "siteId": "tree:grave_pine:0",
       "x": -20.641575251555363,
       "z": -226.07683419454304,
@@ -2550,6 +2697,146 @@
       "depth": 1.7609222294725477
     },
     {
+      "siteId": "tree:grave_pine:115",
+      "x": 227,
+      "z": 220,
+      "width": 1.5912000000000002,
+      "depth": 1.5912000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:116",
+      "x": 281,
+      "z": 183,
+      "width": 1.7784,
+      "depth": 1.7784
+    },
+    {
+      "siteId": "tree:grave_pine:117",
+      "x": 346,
+      "z": 222,
+      "width": 1.6536000000000002,
+      "depth": 1.6536000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:118",
+      "x": 423,
+      "z": 183,
+      "width": 1.5288,
+      "depth": 1.5288
+    },
+    {
+      "siteId": "tree:grave_pine:119",
+      "x": 487,
+      "z": 218,
+      "width": 1.7160000000000002,
+      "depth": 1.7160000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:120",
+      "x": 599,
+      "z": 179,
+      "width": 1.5912000000000002,
+      "depth": 1.5912000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:121",
+      "x": 643,
+      "z": 222,
+      "width": 1.7784,
+      "depth": 1.7784
+    },
+    {
+      "siteId": "tree:grave_pine:122",
+      "x": 212,
+      "z": 174,
+      "width": 1.6536000000000002,
+      "depth": 1.6536000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:123",
+      "x": 234,
+      "z": 229,
+      "width": 1.5288,
+      "depth": 1.5288
+    },
+    {
+      "siteId": "tree:grave_pine:124",
+      "x": 273,
+      "z": 176,
+      "width": 1.7160000000000002,
+      "depth": 1.7160000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:125",
+      "x": 296,
+      "z": 226,
+      "width": 1.5912000000000002,
+      "depth": 1.5912000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:126",
+      "x": 353,
+      "z": 231,
+      "width": 1.7784,
+      "depth": 1.7784
+    },
+    {
+      "siteId": "tree:grave_pine:127",
+      "x": 365,
+      "z": 227,
+      "width": 1.6536000000000002,
+      "depth": 1.6536000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:128",
+      "x": 430,
+      "z": 174,
+      "width": 1.5288,
+      "depth": 1.5288
+    },
+    {
+      "siteId": "tree:grave_pine:129",
+      "x": 468,
+      "z": 173,
+      "width": 1.7160000000000002,
+      "depth": 1.7160000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:130",
+      "x": 494,
+      "z": 227,
+      "width": 1.5912000000000002,
+      "depth": 1.5912000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:131",
+      "x": 553,
+      "z": 231,
+      "width": 1.7784,
+      "depth": 1.7784
+    },
+    {
+      "siteId": "tree:grave_pine:132",
+      "x": 606,
+      "z": 170,
+      "width": 1.6536000000000002,
+      "depth": 1.6536000000000002
+    },
+    {
+      "siteId": "tree:grave_pine:133",
+      "x": 624,
+      "z": 176,
+      "width": 1.5288,
+      "depth": 1.5288
+    },
+    {
+      "siteId": "tree:grave_pine:134",
+      "x": 696,
+      "z": 173,
+      "width": 1.7160000000000002,
+      "depth": 1.7160000000000002
+    },
+    {
       "siteId": "tree:mourning_willow:0",
       "x": 25.60469624735,
       "z": -247.71706229306793,
@@ -3213,6 +3500,146 @@
       "z": -7.169399014674127,
       "width": 1.5770765494238583,
       "depth": 1.5770765494238583
+    },
+    {
+      "siteId": "tree:mourning_willow:95",
+      "x": 253,
+      "z": 178,
+      "width": 1.7384,
+      "depth": 1.7384
+    },
+    {
+      "siteId": "tree:mourning_willow:96",
+      "x": 289,
+      "z": 217,
+      "width": 1.6072,
+      "depth": 1.6072
+    },
+    {
+      "siteId": "tree:mourning_willow:97",
+      "x": 381,
+      "z": 177,
+      "width": 1.804,
+      "depth": 1.804
+    },
+    {
+      "siteId": "tree:mourning_willow:98",
+      "x": 417,
+      "z": 224,
+      "width": 1.6727999999999998,
+      "depth": 1.6727999999999998
+    },
+    {
+      "siteId": "tree:mourning_willow:99",
+      "x": 550,
+      "z": 182,
+      "width": 1.8695999999999997,
+      "depth": 1.8695999999999997
+    },
+    {
+      "siteId": "tree:mourning_willow:100",
+      "x": 593,
+      "z": 217,
+      "width": 1.7384,
+      "depth": 1.7384
+    },
+    {
+      "siteId": "tree:mourning_willow:101",
+      "x": 704,
+      "z": 180,
+      "width": 1.6072,
+      "depth": 1.6072
+    },
+    {
+      "siteId": "tree:mourning_willow:102",
+      "x": 227,
+      "z": 172,
+      "width": 1.804,
+      "depth": 1.804
+    },
+    {
+      "siteId": "tree:mourning_willow:103",
+      "x": 245,
+      "z": 171,
+      "width": 1.6727999999999998,
+      "depth": 1.6727999999999998
+    },
+    {
+      "siteId": "tree:mourning_willow:104",
+      "x": 278,
+      "z": 168,
+      "width": 1.8695999999999997,
+      "depth": 1.8695999999999997
+    },
+    {
+      "siteId": "tree:mourning_willow:105",
+      "x": 346,
+      "z": 172,
+      "width": 1.7384,
+      "depth": 1.7384
+    },
+    {
+      "siteId": "tree:mourning_willow:106",
+      "x": 373,
+      "z": 170,
+      "width": 1.6072,
+      "depth": 1.6072
+    },
+    {
+      "siteId": "tree:mourning_willow:107",
+      "x": 380,
+      "z": 229,
+      "width": 1.804,
+      "depth": 1.804
+    },
+    {
+      "siteId": "tree:mourning_willow:108",
+      "x": 409,
+      "z": 231,
+      "width": 1.6727999999999998,
+      "depth": 1.6727999999999998
+    },
+    {
+      "siteId": "tree:mourning_willow:109",
+      "x": 483,
+      "z": 171,
+      "width": 1.8695999999999997,
+      "depth": 1.8695999999999997
+    },
+    {
+      "siteId": "tree:mourning_willow:110",
+      "x": 542,
+      "z": 175,
+      "width": 1.7384,
+      "depth": 1.7384
+    },
+    {
+      "siteId": "tree:mourning_willow:111",
+      "x": 568,
+      "z": 233,
+      "width": 1.6072,
+      "depth": 1.6072
+    },
+    {
+      "siteId": "tree:mourning_willow:112",
+      "x": 585,
+      "z": 224,
+      "width": 1.804,
+      "depth": 1.804
+    },
+    {
+      "siteId": "tree:mourning_willow:113",
+      "x": 635,
+      "z": 229,
+      "width": 1.6727999999999998,
+      "depth": 1.6727999999999998
+    },
+    {
+      "siteId": "tree:mourning_willow:114",
+      "x": 701,
+      "z": 165,
+      "width": 1.8695999999999997,
+      "depth": 1.8695999999999997
     }
   ],
   "readings": [

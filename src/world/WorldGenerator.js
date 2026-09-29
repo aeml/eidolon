@@ -130,11 +130,12 @@ export class WorldGenerator {
 
         for (const recipe of PROCEDURAL_FOLIAGE_RECIPES) {
             const placements = createProceduralFoliagePlacements(recipe);
-            const parts = getFoliageRenderBatches(recipe.id);
+            const parts = getFoliageRenderBatches(recipe.id, this.graphicsQuality);
             const group = new THREE.Group();
             group.name = `foliage:${recipe.region}:${recipe.id}`;
             group.userData.proceduralFoliage = true;
             group.userData.foliageId = recipe.id;
+            group.userData.foliageQuality = this.graphicsQuality === 'low' ? 'low' : 'high';
             group.userData.region = recipe.region;
             group.userData.theme = recipe.theme;
             group.userData.instanceCount = placements.length;

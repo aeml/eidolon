@@ -2,7 +2,7 @@ import { BufferGeometry, Float32BufferAttribute, Vector3 } from 'three';
 
 // Opaque, folded needle fans on staggered boughs. One reusable crown replaces
 // the solid cone silhouette without alpha sorting or a draw call per needle.
-export function createConiferBoughGeometry() {
+export function createConiferBoughGeometry(quality = 'high') {
     const positions = [], colors = [];
     const triangle = (a, b, c, shade) => {
         for (const point of [a, b, c]) {
@@ -30,12 +30,13 @@ export function createConiferBoughGeometry() {
                     const ridge = root.clone().lerp(tip, .48); ridge.y += .055;
                     const edge = ridge.clone().addScaledVector(side, sign * .095); edge.y -= .05;
                     triangle(root, edge, tip, shade * (sign < 0 ? .91 : 1));
-                    triangle(root, tip, ridge, shade * 1.04);
+                    if (quality !== 'low') triangle(root, tip, ridge, shade * 1.04);
                 }
             }
         }
     }
     const geometry = new BufferGeometry();
+    geometry.userData.woodlandCrown = 'needle';
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
     geometry.computeVertexNormals(); geometry.computeBoundingBox(); geometry.computeBoundingSphere();

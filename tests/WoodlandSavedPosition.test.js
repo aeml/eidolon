@@ -8,7 +8,7 @@ test('ordinary movement escapes saved positions inside every relocated trunk wit
     const world = new WorldGenerator(scene, collision);
     await world.loadTrees(0, 200);
     const trunks = collision.colliders.slice();
-    expect(trunks).toHaveLength(330);
+    expect(trunks).toHaveLength(391);
     // Include surrounding scenery so an escape cannot silently enter another
     // structure. No production save or login is rewritten by this check.
     await world.loadBuildings(0, 200);
@@ -31,6 +31,6 @@ test('ordinary movement escapes saved positions inside every relocated trunk wit
             samples++;
         }
     }
-    expect(samples).toBe(1320);
+    expect(samples).toBe(1564);
     actor.dispose();
 });
