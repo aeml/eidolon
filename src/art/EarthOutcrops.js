@@ -16,24 +16,26 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
             minimum = Math.min(minimum, terrain?.sample(solid.x + x, solid.z + z) ?? 0);
         }
     }
-    // Break long faces with a displaced midpoint, retaining the exact buried
-    // collision footprint. Alternating recesses and lips produce real strata
-    // and cast shadows, rather than a tapered stack with a pyramidal crown.
+    // Break long faces with displaced midpoints, retaining the exact buried
+    // collision footprint. An eroded shoulder and broad cleaved crown avoid
+    // both a pointed pyramid and repeated horizontal slab shelves.
     const contour = outline.flatMap(([x, z], side) => {
         const next = outline[(side + 1) % outline.length];
         const split = .35 + random(solid.seed + side * 47) * .3;
         return [[x, z], [x + (next[0] - x) * split, z + (next[1] - z) * split]];
     });
-    const layers = [[0, 1], [.27, .94], [.30, .79], [.61, .86], [.65, .72], [.94, .78], [1, .66]];
+    const layers = [[0, 1], [.22, .99], [.40, .96], [.60, .90], [.78, .80], [.93, .64], [1, .43]];
     const rings = layers.map(([level, width], tier) => contour.map(([x, z], side) => {
         const weathering = (random(solid.seed + side * 31) - .5) * .10;
-        // Fractures peter out around the stone; don't turn every layer into a
-        // complete, evenly inset stair encircling the whole formation.
-        const intact = tier === 2 || tier === 4 ? Math.max(0, Math.sin(side * .57 + solid.seed)) * .12 : 0;
-        const erosion = tier ? Math.min(.985, width + intact + weathering + Math.sin(side * 1.7 + tier) * .025) : 1;
+        const cleave = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .085;
+        const erosion = tier ? Math.min(.985, width + cleave + weathering) : 1;
         const tilt = ((x * .065 - z * .04) * erosion + Math.sin(side * 1.9 + solid.seed) * .025 * (1 - level)) * level * solid.height;
+        // Uneven shoulder heights break the contour bands. Keep the crown
+        // planar: side-index noise on skinny cap triangles produced spikes.
+        const bedding = Math.sin(side * .71 + solid.seed + tier * .6) * .065;
+        const crown = (x * .025 + z * .012) * erosion;
         return [solid.x + x * solid.width / 2 * erosion,
-            tier ? ground + level * solid.height + tilt : minimum - .8,
+            tier ? ground + (level + (tier < 5 ? bedding : crown)) * solid.height + tilt : minimum - .8,
             solid.z + z * solid.depth / 2 * erosion];
     }));
     const faceNormal = (a, b, c) => new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a)).normalize();
@@ -80,7 +82,7 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
 export function createEarthOutcrops({ terrainElevation = null } = {}) {
     const root = new THREE.Group(); root.name = 'Earth exposed rock shelves';
     const material = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
-        color: 0x62675e, vertexColors: true, roughness: .95
+        color: 0x646b6c, vertexColors: true, roughness: .95
     }), 'stratified-rock');
     root.userData.walkFootprints = [];
     for (const formation of EARTH_OUTCROP_FORMATIONS) {
