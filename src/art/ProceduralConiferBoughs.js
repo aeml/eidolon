@@ -24,11 +24,14 @@ export function createConiferBoughGeometry(quality = 'high') {
                 // Sweep each tip outward/down, with a raised folded midrib.
                 for (const sign of [-1, 1]) {
                     const root = center.clone().addScaledVector(forward, -.05);
-                    const tip = center.clone().addScaledVector(forward, .29)
-                        .addScaledVector(side, sign * .24 * (1 - t * .45));
+                    // Overlapping needle sprays read as a living bough rather
+                    // than disconnected fine triangles at the gameplay zoom.
+                    // Keep every tier/fan and the existing Low detail policy.
+                    const tip = center.clone().addScaledVector(forward, .41)
+                        .addScaledVector(side, sign * .31 * (1 - t * .45));
                     tip.y -= .025 + .04 * t;
                     const ridge = root.clone().lerp(tip, .48); ridge.y += .055;
-                    const edge = ridge.clone().addScaledVector(side, sign * .095); edge.y -= .05;
+                    const edge = ridge.clone().addScaledVector(side, sign * .15); edge.y -= .05;
                     triangle(root, edge, tip, shade * (sign < 0 ? .91 : 1));
                     if (quality !== 'low') triangle(root, tip, ridge, shade * 1.04);
                 }
