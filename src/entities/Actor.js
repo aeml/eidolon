@@ -1643,8 +1643,8 @@ export class Actor extends Entity {
         const duration = clip?.duration || 1;
         const interval = Number.isFinite(cooldown) && cooldown > 0 ? cooldown : 1;
         const contact = this.mesh?.userData.basicAttackContactTime;
-        // Only annotated basic clips opt in. Ability clips, enemies and future
-        // imported rigs retain their existing playback until authored/verified.
+        // Only annotated basic clips opt in. Unreviewed enemy/imported rigs
+        // and ability clips retain their existing playback.
         // Server and offline basic damage both land at 35% of the interval.
         // Match the visible contact, not the entire clip's arbitrary duration.
         if (clip?.name === 'Attack' && Number.isFinite(contact) && contact > 0 && contact <= duration) {
