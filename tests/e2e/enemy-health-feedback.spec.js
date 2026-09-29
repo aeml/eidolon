@@ -102,10 +102,14 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
             // Exercise the production corpse updater and actual death clip;
             // authoritative death is prepared, not an earned network kill.
             target.state = 'IDLE'; target.isRemote = true; target.die();
-            target.serverEntityType = 'Enemy'; engine.remotePlayers = new Map([[target.id, target]]);
+            const giant = window.__healthReview.actors.find(actor => actor.id === 'enemy-large');
+            giant.stats.hp = 0; giant.isRemote = true; giant.die();
+            target.serverEntityType = giant.serverEntityType = 'Enemy';
+            engine.remotePlayers = new Map([[target.id, target], [giant.id, giant]]);
             engine.updateRemoteCorpsePresentation(.01);
             const effect = target.corpsePresentation;
             target.updateAnimationMixer(effect.hold + .2);
+            giant.updateAnimationMixer(effect.hold + .2);
             engine.updateRemoteCorpsePresentation(effect.hold + .2); engine.render(1);
             return { visible: target.mesh.visible, materials: effect.materials.size,
                 fading: [...effect.materials].every(([source, copy]) => copy.opacity > 0 && copy.opacity < source.opacity) };
@@ -114,7 +118,7 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
         await page.screenshot({ path: testInfo.outputPath('enemy-corpse-fade.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         expect(await page.evaluate(() => {
             const { target, engine } = window.__healthReview;
-            engine.updateRemoteCorpsePresentation(.5); engine.render(1);
+            engine.updateRemoteCorpsePresentation(1); engine.render(1);
             return !target.mesh.visible && target.corpsePresentation.materials.size === 0;
         })).toBe(true);
         await page.evaluate(() => window.__healthReview.ui.clearEnemyBars());

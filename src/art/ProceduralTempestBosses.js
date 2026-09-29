@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -148,6 +149,7 @@ function finalize(root, type, clips) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = clips;
+    groundEnemyDeathClip(type, clips);
     installRestPoseReset(root);
     return root;
 }
