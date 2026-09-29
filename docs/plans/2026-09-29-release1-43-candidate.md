@@ -10,6 +10,11 @@ remain open; runtime version metadata is intentionally unchanged.
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 
+- Corrected below-floor death poses for22 more regional enemy and boss models,
+  including Constructs, Moonfrost enemies and several dungeon bosses. Attack
+  animations, collision bounds and encounter timing remain unchanged. See
+  [regional death grounding](2026-09-29-regional-death-grounding.md).
+
 - Enemy corpses hold after their death animation and fade instead of abruptly
   disappearing. Skeletons now fall above the floor rather than sinking below
   it. Loot, combat and server respawn timing are unchanged. See the

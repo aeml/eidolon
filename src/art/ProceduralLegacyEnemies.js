@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
 
 const GEOMETRIES = new Map();
@@ -180,6 +181,7 @@ function finalizeEnemy(root, type, clips, { batch = false } = {}) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = clips;
+    groundEnemyDeathClip(type, clips);
     // Batch before recording the reset pose so pooled actors own only the
     // actual render tree, not removed source meshes. Skeleton uses the same
     // immutable rigid-pivot contract as the procedural player rigs.

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -75,6 +76,7 @@ function finalize(root, type, clips) {
         artStyle: definition.artStyle, region: definition.region, faction: definition.faction,
         combatRadius: definition.combatRadius, interactionPadding: 0.75, sharedGeometry: true, bounds: definition.bounds, animations: clips
     });
+    groundEnemyDeathClip(type, clips);
     root.name = `Procedural${type}`; installRestPoseReset(root); return root;
 }
 
