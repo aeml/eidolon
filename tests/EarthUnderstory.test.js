@@ -10,6 +10,9 @@ test('understory forms repeatable beds with a matching Low subset and clear trav
     expect(low.length).toBeLessThan(high.length);
     const keys = new Set(high.map(p => JSON.stringify(p)));
     expect(low.every(p => keys.has(JSON.stringify(p)))).toBe(true);
+    const sizes = new Set(high.map(p => Math.floor(p.scale * 10)));
+    expect(sizes.size).toBeGreaterThanOrEqual(7);
+    expect(high.every(p => p.scale >= .65 && p.scale <= 1.4)).toBe(true);
     for (const plant of high) {
         if (!isEarthUnderstoryClear(plant.x, plant.z)) throw new Error('plant entered a clearing');
         for (const path of EARTH_PATHS) {

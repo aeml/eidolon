@@ -26,17 +26,23 @@ export function createEarthUnderstoryPlacements(quality = 'high') {
             const x = gx + random(gx, gz, 1) * 8, z = gz + random(gx, gz, 2) * 8;
             const cover = sampleEarthMeadow(x, z);
             if (cover < .3 || random(gx, gz, 3) > cover) continue;
-            for (let tuft = 0; tuft < 7; tuft++) {
-                if (quality === 'low' && tuft % 2) continue;
+            // Uneven, stretched beds break up the repeated seven-plant dots.
+            // Keep the same approximate density and two shared geometries.
+            const count = 3 + Math.floor(random(gx, gz, 35) * 7);
+            const bedAngle = random(gx, gz, 36) * Math.PI * 2;
+            const reach = 2.4 + random(gx, gz, 37) * 2.8;
+            const width = .35 + random(gx, gz, 38) * .5;
+            for (let tuft = 0; tuft < count; tuft++) {
+                if (quality === 'low' && random(gx, gz, tuft + 60) > .57) continue;
                 const angle = random(gx, gz, tuft + 4) * Math.PI * 2;
-                const spread = Math.sqrt(random(gx, gz, tuft + 14)) * 2.1;
-                const px = x + Math.cos(angle) * spread, pz = z + Math.sin(angle) * spread;
+                const spread = Math.sqrt(random(gx, gz, tuft + 14)) * reach;
+                const along = Math.cos(angle) * spread, across = Math.sin(angle) * spread * width;
+                const px = x + Math.cos(bedAngle) * along - Math.sin(bedAngle) * across;
+                const pz = z + Math.sin(bedAngle) * along + Math.cos(bedAngle) * across;
                 if (!isEarthUnderstoryClear(px, pz)) continue;
                 plants.push({ x: px, z: pz, rotation: angle,
-                    // Read as low fern/heath beds at gameplay zoom, not tiny
-                    // isolated sprouts. Same shared meshes and clump count.
-                    scale: 1.05 + random(gx, gz, tuft + 24) * .35,
-                    variant: random(gx, gz, 34) > .7 ? 0 : 1 });
+                    scale: .65 + random(gx, gz, tuft + 24) * .75,
+                    variant: random(gx, gz, tuft + 44) > .7 ? 0 : 1 });
             }
         }
     }
