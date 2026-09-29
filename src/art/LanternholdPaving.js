@@ -7,35 +7,44 @@ const hash = (a, b) => {
     return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
 };
 
-// The gathering square is an old, repaired fourfold stonework court. Rings
-// are construction courses, not emissive objectives or collision geometry.
+// Human-scale, relaid flagstones with a small worn Fourfold engraving. Keep
+// the gathering space open without making its entire floor a giant target.
+// This is surface detail only, never walkable height or collision geometry.
 export function sampleLanternholdPaving(x, y) {
-    const radius = Math.hypot(x, y), angle = Math.atan2(y, x) + Math.PI;
-    const courses = [0, 1.4, 3.1, 5.2, 7, 9.2, 11.1, 13.5, 15.5, 24];
-    const wornRadius = radius + Math.sin(angle * 5 + radius * .8) * .055;
-    const course = Math.max(0, courses.findIndex(bound => bound > wornRadius) - 1);
-    const inner = courses[course], outer = courses[course + 1];
-    const sectors = Math.max(7, Math.round((inner + outer) * Math.PI / 2.2));
-    const along = angle / (Math.PI * 2) * sectors + (course % 2) * .5;
-    const sector = Math.floor(along) % sectors, fraction = along - Math.floor(along);
-    const radialEdge = Math.min(wornRadius - inner, outer - wornRadius);
-    const edge = Math.min(radialEdge, Math.min(fraction, 1 - fraction) * 2.2);
-    const coverage = clamp((edge - .012) / .065);
-    const stone = hash(course, sector);
-    const weather = Math.sin(x * .41 + Math.sin(y * .28)) * Math.cos(y * .37);
-    // A single outer border, with the fourfold inlay confined to the centre.
-    const band = Math.abs(radius - 14.8) < .13;
-    const spoke = radius > 1.6 && radius < 3 && Math.min(Math.abs(x), Math.abs(y)) < .13;
-    const dark = band || spoke;
-    const tone = .72 + stone * .38 + weather * .07;
-    const fracture = stone > .73 && fraction > .18 && fraction < .82
-        ? clamp(1 - Math.abs(wornRadius - inner - (outer - inner) * (.25 + fraction * .5)) / .045) : 0;
-    const grit = Math.sin(x * 17 + Math.sin(y * 13)) * Math.cos(y * 19) * 1.2;
-    const color = (dark ? [76, 77, 68] : [109, 106, 92]).map((v, i) =>
-        Math.round([68, 64, 54][i] * (1 - coverage) + (v * tone + grit - fracture * 12) * coverage));
-    return { color, height: coverage * (.065 + stone * .009),
-        roughness: .96 - coverage * (.13 + stone * .035),
-        coverage: clamp((15.5 - radius) / .5) };
+    const radius = Math.hypot(x, y);
+    const weather = Math.sin(x * .43 + Math.sin(y * .28)) * Math.cos(y * .37);
+    const warpedY = y + Math.sin(x * .9 + y * .3) * .028;
+    const row = Math.floor(warpedY / 1.05), localY = warpedY - row * 1.05;
+    const width = 1.25 + hash(row, 19) * .7;
+    const along = x + hash(row, 47) * 3 + Math.sin(y * 1.3) * .024;
+    const column = Math.floor(along / width), localX = along - column * width;
+    const stone = hash(row, column), repair = stone > .89;
+    const edgeX = Math.min(localX, width - localX), edgeY = Math.min(localY, 1.05 - localY);
+    const chippedCorner = (edgeX + edgeY - (.07 + stone * .1)) * .7;
+    const edge = Math.min(edgeX, edgeY, chippedCorner);
+    const coverage = clamp((edge - .016) / .05);
+    const face = Math.sin(x * 3.6 + Math.cos(y * 4.1)) * Math.cos(y * 5.7) * .003;
+    const fracture = stone > .76 && stone < .89 && localX > .15 && localX < width - .12
+        ? clamp(1 - Math.abs(localY - (.27 + localX * .32 + Math.sin(localX * 7) * .06)) / .027) : 0;
+
+    // Carved leaves point to the four realms. Worn lines cross the joints
+    // instead of replacing them with another raised circular platform.
+    const leaf = radius < 3.1 ? Math.min(
+        Math.abs(Math.hypot((Math.abs(x) - 1.3) * .8, y * 1.35) - .82),
+        Math.abs(Math.hypot(x * 1.35, (Math.abs(y) - 1.3) * .8) - .82)) : 1;
+    const engraving = Math.max(clamp(1 - leaf / .065), clamp(1 - Math.abs(radius - 2.65) / .065))
+        * clamp((3.1 - radius) * 4) * (.65 + weather * .2);
+    const traffic = Math.max(clamp(1 - Math.abs(x + .8) / 3), clamp(1 - Math.abs(y - 1.4) / 3));
+    const dirt = (1 - coverage) * (1 - traffic * .5);
+    const tone = .9 + stone * .18 + weather * .07;
+    const mineral = Math.sin(x * 2.1 + Math.cos(y * 1.8)) * Math.cos(y * 2.8 + Math.sin(x * 1.6));
+    const grit = (hash(Math.floor(x * 8), Math.floor(y * 8)) - .5) * 5 + mineral * 5;
+    const color = (repair ? [94, 93, 82] : [96, 98, 91]).map((v, i) => Math.round(
+        [62, 63, 55][i] * (1 - coverage) +
+        (v * tone + grit + traffic * 3 - fracture * 15 - engraving * 25) * coverage + dirt * [4, 3, 0][i]));
+    return { color, height: coverage * (.031 + stone * .006 + face - fracture * .012 - engraving * .01),
+        roughness: .96 - coverage * (.09 + traffic * .045 + stone * .025),
+        coverage: clamp((15.4 - Math.max(Math.abs(x), Math.abs(y)) + weather * .3) / 1.4) };
 }
 
 export function createLanternholdPavingMaps(quality = 'high') {

@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Lanternhold's oversized radial paving becomes human-scale weathered
+  flagstones with a modest Fourfold engraving. The casino name becomes a
+  smaller facade plaque above its unchanged clickable door. See the
+  [town square review](2026-09-29-lanternhold-gathering-court.md).
+
 - Tempest Spire gains a west-facing carved threshold, lower masonry needle,
   chamfered foundation and restrained lightning. The road/arrival moves15m
   closer so the portal reads at normal desktop and phone zoom. Legacy bounds
@@ -63,5 +68,5 @@ Validated locally: entrance/interior High/Low galleries, 30 real-coordinate
 dungeon/raid layout fixtures, realm gateway surfaces, town service/event
 clearance and four-realm authored-location galleries. Layout fixtures are not
 earned combat clears; gallery views are not claims about mobile performance,
-final world density or AAA art acceptance. Public deployment verification is
-still blocked by the owner's DDNS routing. No new production release is claimed.
+final world density or AAA art acceptance. This environment candidate is not
+deployed; ordered release gates still apply. No new production release is claimed.

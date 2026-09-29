@@ -290,7 +290,12 @@ test('town casino door raycast provides Casino label, click prompt and isolated 
     const camera = engine.renderSystem.camera; camera.position.set(0, 8, 200); camera.lookAt(0, 2.4, 178.35); camera.updateMatrixWorld(true);
     const pointer = new THREE.Vector3(0, 2.4, 178.35).project(camera);
     engine.inputManager.mouse = new THREE.Vector2(pointer.x, pointer.y);
-    expect(shell.getObjectByName('casino-nameplate')).toBeDefined();
+    const sign = shell.getObjectByName('casino-nameplate');
+    expect(sign.isMesh).toBe(true);
+    expect(sign.material.depthTest).toBe(true);
+    expect(sign.material.depthWrite).toBe(true);
+    expect(sign.geometry.parameters.width).toBe(8.5);
+    expect(sign.position.y - sign.geometry.parameters.height / 2).toBeGreaterThan(4.8);
     expect(controller.updateDoorHover()).toEqual(expect.objectContaining({ dungeonName: 'Lanternhold Casino', inRange: true,
         promptLabel: 'Click to open the Casino entrance, then choose Enter Casino.' }));
     expect(shell.userData.casinoDoor.material.emissive.getHex()).not.toBe(0);

@@ -1,5 +1,47 @@
 # Lanternhold gathering court — September 29
 
+## Normal-scale review: replace the oversized radial platform
+
+Follow-up after67c7e248. The earlier radial courses still read as a giant
+target-like platform in the connected desktop capture. Replaced them with
+1–2m staggered flagstones, worn/chipped corners, occasional repaired slabs,
+small fractures, mineral variation and traffic wear. A small, non-emissive
+Fourfold engraving crosses the joints; no large border rings. Rectangular
+relaid paving blends into the existing connected court mask rather than a
+pale circular disk. All gameplay geometry, open gathering space, routes,
+texture dimensions and ground draw count remain unchanged.
+
+The casino's oversized always-on-top billboard becomes a facade plaque above
+the unchanged door. Its two-line Lanternhold / Casino lettering is larger
+within the smaller sign, which uses ordinary depth testing. Same sign mesh
+name, clickable door, hover title/prompt and independent door material.
+
+The browser fixture omitted the runtime's player-following shadow update.
+Corrected the fixture before the comparison baseline; this is not a shipped
+lighting fix. The final fixture also asserts initial shadow focus and visits
+the casino approach at normal zoom15 alongside court/market/smithy views.
+
+Verification: five map/material checks passed25.711s (physical High/Low
+registration, boundary alpha, unit normals/roughness, small joint courses,
+unchanged shader/depth/ownership). Final14 casino controller/door tests passed
+1.658s; scoped lint and whitespace checks passed. Final two High desktop/Low
+phone browser cases passed16.8s, covering four town positions each. Reviewed
+the court and entrance captures. The first narrow one-line facade lettering
+was too small; the final two-line design keeps the place name and emphasizes
+Casino. No FPS or connected gameplay claim from these presentation fixtures.
+
+Comparison baseline: `/tmp/eidolon-town-flagstones-focused-before-0929`.
+Final: `/tmp/eidolon-town-square-reviewed-0929`. The unfocused earlier baseline
+is not used for the lighting comparison. Paving texture dimensions and ground
+draw count remain unchanged; the sign canvas is640×180 rather than768×112.
+
+Remaining: broad flat ground, sparse inhabited edges and procedural actors
+still limit the town. This is not final modern-ARPG approval or a live release.
+Next composition work should address the occupied edges and approach framing,
+not keep repainting this square. No full campaign soak or new CI queue.
+
+## Earlier radial implementation — superseded above
+
 Local continuation after a072d68b. Runtime stays1.38.0; no deployment or
 release identity change. Full ordered roadmap remains active.
 
