@@ -30,6 +30,27 @@ const EXPECTED_CONTRACTS = Object.freeze({
 });
 
 describe('procedural dungeon entrances', () => {
+    test.each(DUNGEON_ENTRANCE_IDS)('%s has world-scaled stone detail without texturing portal surfaces', dungeonType => {
+        const source = createProceduralDungeonEntrance(dungeonType, { optimized: false });
+        const batched = createProceduralDungeonEntrance(dungeonType);
+        const stone = new Set(), portalMaterials = new Set();
+        source.traverse(part => {
+            if (!part.isMesh) return;
+            if (part.material.userData.worldSurfaceDetail) stone.add(part.material);
+            if (part.userData.portalSurface) portalMaterials.add(part.material);
+        });
+        expect(stone.size).toBe(2);
+        const surface = dungeonType === 'molten_core' ? 'fieldstone' : dungeonType === 'tempest_spire' ? 'slate' : 'stone';
+        expect([...stone].map(material => material.userData.worldSurfaceDetail)).toContain(surface);
+        for (const material of stone) {
+            expect(batched.children.some(part => part.material === material)).toBe(true);
+            expect(material.depthTest).toBe(true);
+            expect(material.depthWrite).toBe(true);
+            expect(material.transparent).toBe(false);
+        }
+        for (const material of portalMaterials) expect(material.userData.worldSurfaceDetail).toBeUndefined();
+    });
+
     test('catalogs every production threshold with its measured legacy contract', () => {
         expect(DUNGEON_ENTRANCE_IDS).toEqual(Object.keys(EXPECTED_CONTRACTS));
         for (const dungeonType of DUNGEON_ENTRANCE_IDS) {

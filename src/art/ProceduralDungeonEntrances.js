@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS, DUNGEON_ENTRANCE_IDS } from '../data/dungeonEntrances.js';
 
 const GEOMETRIES = new Map();
@@ -39,6 +40,7 @@ function material(key, color, options = {}) {
             polygonOffsetUnits: 1,
             shadowSide: THREE.FrontSide
         }));
+        if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
     }
     return MATERIALS.get(key);
 }
@@ -97,8 +99,9 @@ function regionMaterials(region) {
 
     return Object.freeze({
         dark: material(`${prefix}:dark`, definitions.dark, { roughness: 0.98 }),
-        stone: material(`${prefix}:stone`, definitions.stone, { roughness: 0.94 }),
-        pale: material(`${prefix}:pale`, definitions.pale, { roughness: 0.88 }),
+        stone: material(`${prefix}:stone`, definitions.stone, { roughness: 0.94,
+            surface: region === 'molten_core' ? 'fieldstone' : region === 'tempest_spire' ? 'slate' : 'stone' }),
+        pale: material(`${prefix}:pale`, definitions.pale, { roughness: 0.88, surface: 'fieldstone' }),
         metal: material(`${prefix}:metal`, definitions.metal, { roughness: 0.48, metalness: 0.62 }),
         accent: material(`${prefix}:accent`, definitions.accent, {
             roughness: 0.35,

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralDungeonNPC } from './ProceduralTownActors.js';
 import { CASINO_INTERIOR_LAYOUT } from '../data/casinoInteriorLayout.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 export function createCasinoInterior(scene, collision) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-interior';
@@ -102,6 +103,10 @@ function batchMeshes(root) {
 export function createCasinoShell(x = 0, z = 170) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-shell'; root.position.set(x, 0, z);
     const m = materials();
+    // Match the surrounding town's masonry and slate without changing the
+    // facade silhouette, door target, material buckets or shared casino rooms.
+    applyWorldSurfaceDetail(m.stone, 'stone');
+    applyWorldSurfaceDetail(m.dark, 'slate');
     const cutaway = new THREE.Group(); cutaway.name = 'casino-cutaway'; root.add(cutaway);
     const upstairs = new THREE.Group(); upstairs.name = 'casino-vip-lounge'; root.add(upstairs);
     box(root, 'casino-floor', m.dark, [26, 0.2, 16], [0, -0.1, 0]);

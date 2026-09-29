@@ -9,6 +9,7 @@ import {
     createProceduralDungeonInteriorKit
 } from '../src/art/ProceduralDungeonInteriors.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
+import { RenderSystem } from '../src/core/RenderSystem.js';
 
 const identityRooms = Object.freeze({
     entry_gate: { type: 'start' },
@@ -27,6 +28,56 @@ function finiteObject(object) {
 }
 
 describe('Procedural dungeon interior art', () => {
+    test('zone cleanup disposes shared physical maps exactly once', () => {
+        const kit = createProceduralDungeonInteriorKit('molten_core');
+        const material = kit.floorMaterial(24, 24);
+        const geometry = kit.floorGeometry(24, 24);
+        const scene = new THREE.Group();
+        scene.add(new THREE.Mesh(geometry, material), new THREE.Mesh(geometry, material));
+        const dispose = [material.map, material.emissiveMap, material.normalMap, material.roughnessMap]
+            .map(texture => jest.spyOn(texture, 'dispose'));
+        RenderSystem.prototype.disposeObjectResources.call({}, scene);
+        for (const spy of dispose) expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(DUNGEON_INTERIOR_IDS)('%s has bounded physical surface maps aligned with masonry', dungeonType => {
+        const kit = createProceduralDungeonInteriorKit(dungeonType);
+        for (const material of [kit.floorMaterial(120, 96), kit.wallMaterial(120, 96, true)]) {
+            const normal = material.normalMap, roughness = material.roughnessMap;
+            for (const texture of [normal, roughness]) {
+                expect(texture.colorSpace).toBe(THREE.NoColorSpace);
+                expect(texture.image.data.byteLength).toBe(64 * 64 * 4);
+                expect(texture.wrapS).toBe(THREE.RepeatWrapping);
+                expect(texture.wrapT).toBe(THREE.RepeatWrapping);
+            }
+            const slopes = new Set(), finishes = new Set();
+            let maxLengthError = 0, minFacing = 1;
+            for (let i = 0; i < normal.image.data.length; i += 4) {
+                const components = Array.from(normal.image.data.slice(i, i + 3), value => value / 255 * 2 - 1);
+                maxLengthError = Math.max(maxLengthError, Math.abs(Math.hypot(...components) - 1));
+                minFacing = Math.min(minFacing, components[2]);
+                slopes.add(normal.image.data[i]);
+                finishes.add(roughness.image.data[i + 1]);
+            }
+            expect(maxLengthError).toBeLessThan(0.01);
+            expect(minFacing).toBeGreaterThan(0.8);
+            expect(slopes.size).toBeGreaterThan(1);
+            expect(finishes.size).toBeGreaterThan(1);
+            expect(Math.min(...finishes)).toBeGreaterThanOrEqual(170);
+            expect(material.displacementMap).toBeNull();
+        }
+    });
+
+    test('abyss tide paint does not become a raised or polished stripe', () => {
+        const material = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(24, 24);
+        // At x=4, y=34 is tide paint and y=33 is plain stone; both are
+        // away from mortar. Their physical material should be identical.
+        const pixel = (texture, y) => Array.from(texture.image.data.slice((y * 64 + 4) * 4, (y * 64 + 4) * 4 + 4));
+        expect(pixel(material.map, 34)).not.toEqual(pixel(material.map, 33));
+        expect(pixel(material.normalMap, 34)).toEqual(pixel(material.normalMap, 33));
+        expect(pixel(material.roughnessMap, 34)).toEqual(pixel(material.roughnessMap, 33));
+    });
+
     test('sRGB floor bytes preserve the authored basalt palette rather than double-darkening it', () => {
         const map = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(120, 120).map;
         // Plain stone at (10,10):72% ground #102b37 over shadow #07131b.
@@ -43,7 +94,8 @@ describe('Procedural dungeon interior art', () => {
         expect(wall.map.repeat.toArray()).toEqual([10, 8]);
         for (const material of [floor, wall]) {
             expect(material.emissiveMap.repeat.toArray()).toEqual(material.map.repeat.toArray());
-            for (const texture of [material.map, material.emissiveMap]) {
+            for (const texture of [material.map, material.emissiveMap, material.normalMap, material.roughnessMap]) {
+                expect(texture.repeat.toArray()).toEqual(material.map.repeat.toArray());
                 expect(texture.magFilter).toBe(THREE.LinearFilter);
                 expect(texture.minFilter).toBe(THREE.LinearMipmapLinearFilter);
                 expect(texture.generateMipmaps).toBe(true);
@@ -127,7 +179,7 @@ describe('Procedural dungeon interior art', () => {
         expect(dressing.userData.drawMeshCount).toBeLessThanOrEqual(8);
         expect(finiteObject(dressing)).toBe(true);
         expect(kit.metrics()).toEqual({
-            surfaceTextures: 4,
+            surfaceTextures: 8,
             surfaceMaterials: 2,
             surfaceGeometries: 1,
             detailGeometries: 9,

@@ -8,6 +8,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
+import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import {
     DUNGEON_THEME_KEYS,
@@ -212,12 +213,9 @@ export class RenderSystem {
         if (!this.waterPlane.parent) this.staticEnvironmentGroup.add(this.waterPlane);
 
         report(50, 'Carving the five realms...');
-        const fenceInset = 0.75; // Match fence thickness so water shows beyond bounds
         this.terrainTextures ||= {};
         const createRealmGround = (property, key, y = 0) => {
             const region = WORLD_REGIONS[key];
-            const width = region.maxX - region.minX - fenceInset * 2;
-            const depth = region.maxZ - region.minZ - fenceInset * 2;
             const x = (region.minX + region.maxX) / 2;
             const z = (region.minZ + region.maxZ) / 2;
             if (!this.terrainTextures[key]) {
@@ -229,7 +227,7 @@ export class RenderSystem {
                     quality,
                     texture: this.terrainTextures[key]
                 });
-                const ground = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), material);
+                const ground = new THREE.Mesh(createRealmGroundGeometry(region), material);
                 ground.name = `ProceduralRealmTerrain:${key}`;
                 ground.userData.proceduralTerrain = true;
                 ground.userData.terrainKey = key;

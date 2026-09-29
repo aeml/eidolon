@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { openGame } from './helpers.js';
 import { writeFile } from 'node:fs/promises';
 
-for (const realm of ['water', 'fire']) for (const quality of ['high', 'low']) {
+for (const realm of ['water', 'fire', 'air']) for (const quality of ['high', 'low']) {
     test(`${realm} location composition gallery ${quality}`, async ({ page }, testInfo) => {
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await openGame(page);
@@ -15,18 +15,19 @@ for (const realm of ['water', 'fire']) for (const quality of ['high', 'low']) {
             const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
             const data = await import('/src/data/elementalPopulation.js');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
-            const water = realm === 'water', sites = water ? data.WATER_LOCATIONS : data.FIRE_LOCATIONS;
-            const scene = new THREE.Scene(); scene.background = new THREE.Color(water ? 0x17252f : 0x281b18);
-            scene.add(createElementalLocations(realm, { quality }), createWorldPathNetwork(water ? data.WATER_PATHS : data.FIRE_PATHS,
-                { name: realm, color: water ? [126, 142, 143] : [67, 58, 52] }));
+            const water = realm === 'water', air = realm === 'air';
+            const sites = air ? data.AIR_LOCATIONS : water ? data.WATER_LOCATIONS : data.FIRE_LOCATIONS;
+            const scene = new THREE.Scene(); scene.background = new THREE.Color(air ? 0x242330 : water ? 0x17252f : 0x281b18);
+            scene.add(createElementalLocations(realm, { quality }), createWorldPathNetwork(air ? data.AIR_PATHS : water ? data.WATER_PATHS : data.FIRE_PATHS,
+                { name: realm, color: air ? [118, 112, 127] : water ? [126, 142, 143] : [67, 58, 52] }));
             for (const chapter of chronicleInvestigations.filter(c => c.realm === realm)) for (const site of chapter.sites) {
                 if (site.kind !== 'inspect') continue;
                 const model = createChronicleSiteModel(site, realm); model.mesh.position.set(site.x, 0, site.z); scene.add(model.mesh);
             }
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(2200, 1800), createProceduralTerrainMaterial(realm, { quality }));
-            ground.rotation.x = -Math.PI / 2; ground.position.set(water ? 0 : -2000, 0, water ? -1400 : 200); scene.add(ground);
-            scene.add(new THREE.HemisphereLight(water ? 0xbcd8e8 : 0xe5c1a0, 0x242323, 1.7));
-            const light = new THREE.DirectionalLight(water ? 0xd2e3f0 : 0xf5c493, 2.4); scene.add(light, light.target);
+            ground.rotation.x = -Math.PI / 2; ground.position.set(air ? 2000 : water ? 0 : -2000, 0, water ? -1400 : 200); scene.add(ground);
+            scene.add(new THREE.HemisphereLight(air ? 0xc9c4e5 : water ? 0xbcd8e8 : 0xe5c1a0, 0x242323, 1.7));
+            const light = new THREE.DirectionalLight(air ? 0xe3ddf0 : water ? 0xd2e3f0 : 0xf5c493, 2.4); scene.add(light, light.target);
             const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(400, 300); renderer.setPixelRatio(1);
             renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
             const camera = new THREE.OrthographicCamera(-35, 35, 26.25, -26.25, .1, 400);

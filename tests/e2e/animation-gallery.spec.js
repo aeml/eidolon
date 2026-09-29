@@ -1228,7 +1228,7 @@ test.describe('deterministic production animation gallery', () => {
                 'dormant'
             ]));
             expect(entry.cache).toEqual({
-                surfaceTextures: 4,
+                surfaceTextures: 8,
                 surfaceMaterials: 3,
                 surfaceGeometries: 3,
                 detailGeometries: 9,
