@@ -5,6 +5,10 @@ import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 const repoRoot = path.resolve(process.cwd());
 const currentVersion = '1.35.0';
 
+test('town surface regression remains in automatic browser coverage', () => {
+    expect(browserStages.some(stage => stage.files.includes('tests/e2e/town-surface-visibility.spec.js'))).toBe(true);
+});
+
 test('1.35.0 records Forge safety and unchanged progression costs', () => {
     const html = fs.readFileSync('index.html', 'utf8');
     const start = html.indexOf('data-version="1.35.0"'), previous = html.indexOf('data-version="1.34.0"');
