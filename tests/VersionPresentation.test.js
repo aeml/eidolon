@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.33.0';
+const currentVersion = '1.34.0';
+
+test('1.34.0 publishes safe drops without implying an economy reset', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.34.0"'), previous = html.indexOf('data-version="1.33.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['safer item drops', 'quantity has not changed', 'without removing items',
+        'one-minute pickup lifetime', 'Protected quest items', 'rates are unchanged',
+        'does not open closed beta', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.33.0 publishes the class-kit changes and preserves prior notes', () => {
     const html = fs.readFileSync('index.html', 'utf8');

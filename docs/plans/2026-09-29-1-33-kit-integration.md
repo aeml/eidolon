@@ -73,8 +73,8 @@ login/package/backend/cumulative notes are complete, with receipts in the
 [release record](2026-09-28-release1-33.md). Candidate
 `0767054e` failed CI 36502234080 on stale regression fixtures. The corrected
 source `7052581e` passed isolated focused checks, detailed in the release
-record. Replacement CI must succeed, followed by independent exact public
-identity verification before accepting delivery.
+record. Replacement CI36504220731 and independent exact public verification
+subsequently passed for3f07f6ed; Alpha1.33.0 delivery is accepted.
 Do not repeat long campaign/raid tests to measure a tooltip or combo card.
 Player preference and numerical role tuning remain explicit playtest inputs;
 1.39 balance and 1.43 integrated VFX polish retain their separate roadmap scope.

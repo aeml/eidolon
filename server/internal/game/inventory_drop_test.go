@@ -83,6 +83,28 @@ func TestInventoryDropRejectsUnsafeRequestsWithoutChangingBag(t *testing.T) {
 	}
 }
 
+func TestInventoryDropRejectsChangedQuantityWithoutLosingItems(t *testing.T) {
+	for _, expected := range []int{0, -1, 2, 7} {
+		w := NewWorld(nil)
+		player := newTestPlayer("drop-stack", "Fighter")
+		player.Inventory = []Item{{ID: "same-stack-id", Stack: 5}}
+		w.AddEntity(player)
+		before, count := cloneItems(player.Inventory), len(w.Entities)
+		if _, err := w.PerformInventoryDrop(player.ID, 0, "same-stack-id", expected); err == nil {
+			t.Fatalf("stale quantity %d was accepted", expected)
+		}
+		if !reflect.DeepEqual(before, player.Inventory) || len(w.Entities) != count {
+			t.Fatal("quantity mismatch changed bag or spawned ground loot")
+		}
+		if _, err := w.PerformInventoryDrop(player.ID, 0, "same-stack-id", 5); err != nil {
+			t.Fatal("fresh quantity rejected", err)
+		}
+		if player.Inventory[0].ID != "" || len(w.Entities) != count+1 {
+			t.Fatal("fresh quantity did not move exactly one stack")
+		}
+	}
+}
+
 func TestConcurrentInventoryDropRequestsCreateOnlyOneGroundItem(t *testing.T) {
 	w := NewWorld(nil)
 	player := newTestPlayer("drop-once", "Wizard")

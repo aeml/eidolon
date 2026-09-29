@@ -324,8 +324,9 @@ type InventoryMovePayload struct {
 }
 
 type InventoryDropPayload struct {
-	Index  int    `json:"index"`
-	ItemID string `json:"itemId"`
+	Index         int    `json:"index"`
+	ItemID        string `json:"itemId"`
+	ExpectedStack *int   `json:"expectedStack,omitempty"`
 }
 
 type SocialEntry struct {

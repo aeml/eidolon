@@ -34,3 +34,30 @@ func TestInventoryDropDispatchReturnsAuthoritativeBagAndRejectsReplay(t *testing
 		t.Fatal("replayed drop was not rejected")
 	}
 }
+
+func TestInventoryDropDispatchChecksClientQuantityBeforeMovingStack(t *testing.T) {
+	previousWorld, previousDB := world, db
+	defer func() { world, db = previousWorld, previousDB }()
+	db = nil
+	world = game.NewWorld(nil)
+	t.Cleanup(world.StopBackground)
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.Health = 100
+	player.Inventory = []game.Item{{ID: "changing-stack", Stack: 5}}
+	world.AddEntity(player)
+	expected := 2
+	payload, _ := json.Marshal(InventoryDropPayload{Index: 0, ItemID: "changing-stack", ExpectedStack: &expected})
+	client.handleMessage(Message{Type: MsgInventoryDrop, Payload: payload})
+	messages := drainSentMessages(client.send)
+	if len(messages) != 1 || messages[0].Type != MsgError || player.Inventory[0].Stack != 5 {
+		t.Fatal("stale quantity did not leave the bag unchanged", messages)
+	}
+	expected = 5
+	payload, _ = json.Marshal(InventoryDropPayload{Index: 0, ItemID: "changing-stack", ExpectedStack: &expected})
+	client.handleMessage(Message{Type: MsgInventoryDrop, Payload: payload})
+	messages = drainSentMessages(client.send)
+	if len(messages) != 1 || messages[0].Type != MsgInventory || player.Inventory[0].ID != "" {
+		t.Fatal("fresh quantity did not receive authoritative inventory acknowledgement", messages)
+	}
+}

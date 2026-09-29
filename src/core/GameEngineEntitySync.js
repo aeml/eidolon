@@ -425,7 +425,7 @@ class GameEngineEntitySyncMethods {
         this.droppedInventoryItemIds ||= new Set();
         this.droppedInventoryItemIds.add(itemId);
         if (this.droppedInventoryItemIds.size > 200) this.droppedInventoryItemIds.delete(this.droppedInventoryItemIds.values().next().value);
-        this.network.send('inventory_drop', { index, itemId });
+        this.network.send('inventory_drop', { index, itemId, expectedStack: item.stack || 1 });
         return true;
     }
 

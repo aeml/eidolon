@@ -2,13 +2,11 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.32.0, exact8a68685b, CI36496302108. See the
-[1.32 release record](2026-09-28-release1-32.md). The expanded all-spec 1.33
-candidate's first [CI run](https://github.com/aeml/eidolon/actions/runs/36502234080)
-failed on stale class-test fixtures. Corrected source through `7052581e` has
-passed isolated focused checks; replacement CI and exact public-release
-acceptance remain required. See its
-[release record](2026-09-28-release1-33.md).
+baseline is Alpha1.33.0, exact3f07f6ed, CI36504220731. The expanded all-spec
+release passed CI/live QA and independent public IPv4 checks of both identities,
+database readiness, login/history and six exact changed assets. See its
+[release record](2026-09-28-release1-33.md). Alpha1.34 is the next isolated
+candidate; later local Forge/economy/reward changes are not included.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

@@ -6,8 +6,9 @@ import (
 )
 
 // PerformInventoryDrop moves exactly the requested current bag item to the
-// player's feet. The item ID guards against a slot changing during a drag.
-func (w *World) PerformInventoryDrop(playerID string, slot int, itemID string) ([]Item, error) {
+// player's feet. ID and optional quantity guard against changes while dragging
+// or in transit. Older clients omit quantity during a rolling deployment.
+func (w *World) PerformInventoryDrop(playerID string, slot int, itemID string, expectedStack ...int) ([]Item, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	player := w.Entities[playerID]
@@ -31,6 +32,9 @@ func (w *World) PerformInventoryDrop(playerID string, slot int, itemID string) (
 	}
 	if item.Stack <= 0 {
 		item.Stack = 1
+	}
+	if len(expectedStack) > 0 && (len(expectedStack) != 1 || expectedStack[0] != item.Stack) {
+		return nil, fmt.Errorf("that stack changed; inspect the item and try again")
 	}
 	now := time.Now()
 	baseID := fmt.Sprintf("loot-drop-%s-%d", playerID, now.UnixNano())

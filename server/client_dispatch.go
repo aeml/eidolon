@@ -1061,7 +1061,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.playerID == "" || json.Unmarshal(msg.Payload, &payload) != nil {
 			return
 		}
-		inventory, err := world.PerformInventoryDrop(c.playerID, payload.Index, payload.ItemID)
+		var expectedStack []int
+		if payload.ExpectedStack != nil {
+			expectedStack = []int{*payload.ExpectedStack}
+		}
+		inventory, err := world.PerformInventoryDrop(c.playerID, payload.Index, payload.ItemID, expectedStack...)
 		if err != nil {
 			c.sendError(err.Error())
 			return

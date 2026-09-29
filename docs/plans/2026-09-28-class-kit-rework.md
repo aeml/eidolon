@@ -14,14 +14,14 @@ alone cannot complete the milestone. Earlier 1.31 support fixes and 1.32 warning
 work retain their narrower claims; they do not prove the redesigned kits done.
 Implementation across all four classes and focused receipts are recorded in the
 [build-choice preflight](2026-09-28-1-33-build-choice-preflight.md). The first
-all-twelve-branch candidate is now packaged and pushed; delivery acceptance and
-player feedback remain pending.
+all-twelve-branch candidate is now accepted live as Alpha1.33.0 at3f07f6ed;
+player feedback remains pending.
 
 The subsequent [integrated review](2026-09-29-1-33-kit-integration.md) records
 all twelve ordinary loops, pressure/party roles, 60 learned level/gear admission
 checks and bounded rendered/UI inspection. Local exact-candidate regressions
 are recorded in the [release record](2026-09-28-release1-33.md); CI and public
-delivery verification remain pending. Subjective feel is not certified.
+delivery verification passed. Subjective feel is not certified.
 
 Pre-rework baseline audit: 9 of the 16 combo pairs span branches. Fighter C,
 Rogue A/C, Wizard A/B and Cleric B have no reachable combo. The client catalog

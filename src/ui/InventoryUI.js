@@ -435,6 +435,10 @@ export class InventoryUI {
             this.draggedBagItem = null;
             const item = this._getLastPlayer()?.inventory?.[source.index];
             if (item?.id !== source.itemId) return;
+            if (source.stack !== (item.stack || 1)) {
+                this._addChatMessage('System', 'Stack changed while dragging. Inspect the item and drag it again.');
+                return;
+            }
             if (item.id.startsWith('chronicle-item-')) {
                 this._addChatMessage('System', 'Quest items cannot be dropped.');
                 return;
@@ -1504,7 +1508,7 @@ export class InventoryUI {
 
         element.ondragstart = (e) => {
             if (!e.dataTransfer) return;
-            this.draggedBagItem = type === 'inventory' ? { index: indexOrSlot, itemId: item.id } : null;
+            this.draggedBagItem = type === 'inventory' ? { index: indexOrSlot, itemId: item.id, stack: item.stack || 1 } : null;
             e.dataTransfer.setData('text/plain', JSON.stringify({ type, id: indexOrSlot }));
             e.dataTransfer.effectAllowed = 'move';
         };

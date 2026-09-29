@@ -98,7 +98,7 @@ describe('GameEngine loot pickup feedback', () => {
         engine.network.socket = { readyState: WebSocket.OPEN };
         expect(engine.dropInventoryItem(0, item.id)).toBe(true);
         expect(engine.player.inventory[0]).toBe(item);
-        expect(engine.network.send).toHaveBeenCalledWith('inventory_drop', { index: 0, itemId: item.id });
+        expect(engine.network.send).toHaveBeenCalledWith('inventory_drop', { index: 0, itemId: item.id, expectedStack: item.stack || 1 });
         const loot = createLootEntity({ item });
         engine.player.inventory[0] = null; // authoritative inventory acknowledgement
         engine.activeEntitiesCache = [loot];

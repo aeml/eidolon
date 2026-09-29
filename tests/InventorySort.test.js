@@ -53,6 +53,24 @@ function createInventory(player) {
 }
 
 describe('Inventory sorting', () => {
+    test('a stack changed during a drag must be inspected again before dropping', () => {
+        buildDom();
+        const player = { inventory: [{ id: 'changing-stack', name: 'Eidolon Shard', stack: 2 }], equipment: {} };
+        const inventory = createInventory(player), slot = document.querySelector('.inv-slot');
+        const canvas = document.createElement('canvas'); document.body.appendChild(canvas);
+        const previousGame = window.game;
+        window.game = { renderSystem: { renderer: { domElement: canvas } }, dropInventoryItem: jest.fn() };
+        try {
+            inventory.setupItemDragAndDrop(slot, 'inventory', 0, player.inventory[0]);
+            slot.ondragstart({ dataTransfer: { setData: jest.fn() } });
+            player.inventory[0].stack = 5;
+            canvas.dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).not.toHaveBeenCalled();
+            expect(player.inventory[0].stack).toBe(5);
+            expect(inventory.ctx.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Stack changed'));
+        } finally { window.game = previousGame; }
+    });
+
     test('dragging a bag item onto the world requests a drop; other windows and cancelled drags do not', () => {
         buildDom();
         const player = { inventory: [{ id: 'bag-item' }], equipment: {} };
