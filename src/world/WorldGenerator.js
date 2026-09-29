@@ -188,7 +188,11 @@ export class WorldGenerator {
                     });
                     instance.instanceMatrix.needsUpdate = true;
                     instance.computeBoundingBox();
-                    instance.computeBoundingSphere();
+                    // The exact aggregate box already contains all transformed
+                    // vertices. Successive sphere unions can drift far beyond
+                    // compact woodland cells and submit invisible canopies.
+                    if (recipe.renderCellSize) instance.boundingSphere = instance.boundingBox.getBoundingSphere(new THREE.Sphere());
+                    else instance.computeBoundingSphere();
                     group.add(instance);
                 }
             }

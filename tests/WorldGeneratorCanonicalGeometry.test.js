@@ -344,7 +344,8 @@ describe('WorldGenerator shadow setup', () => {
                 expect(instance).toBeInstanceOf(THREE.InstancedMesh);
                 expect(instance.count).toBe(instance.userData.placementIndices.length);
                 expect(instance.count).toBeLessThanOrEqual(recipe.count);
-                expect(instance.material.flatShading).toBe(true);
+                // Bark intentionally uses smooth normals; material identity
+                // against the authored batch is verified below for every part.
                 expect(instance.material.transparent).toBe(false);
                 expect(instance.material.depthWrite).toBe(true);
                 expect([THREE.FrontSide, THREE.DoubleSide]).toContain(instance.material.side);
@@ -368,8 +369,17 @@ describe('WorldGenerator shadow setup', () => {
                 }
             }
             if (recipe.renderCellSize) {
+                expect(recipe.renderCellSize).toBeLessThanOrEqual(64);
                 expect(new Set(group.children.map(mesh => mesh.userData.foliageCell)).size).toBeGreaterThan(1);
                 expect(Math.max(...group.children.map(mesh => mesh.count))).toBeLessThan(recipe.count / 3);
+                for (const mesh of group.children) {
+                    // The frustum sphere must contain the complete aggregate
+                    // box, including crowns beyond the cell's placement edge.
+                    const box = mesh.boundingBox, sphere = mesh.boundingSphere;
+                    for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z]) {
+                        expect(sphere.center.distanceTo(new THREE.Vector3(x, y, z))).toBeLessThanOrEqual(sphere.radius + 1e-6);
+                    }
+                }
             }
         }
 

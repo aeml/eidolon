@@ -3,7 +3,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 // Bounded geometry-cost comparison, NOT a shared-host FPS acceptance run.
 // Same placements/materials/camera; only realm-wide versus spatial batch bounds.
-test('production birches retain their appearance while distant leaf batches are culled', async ({ page, baseURL }, testInfo) => {
+test('production woodland retains its appearance while distant leaf batches are culled', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
@@ -11,7 +11,7 @@ test('production birches retain their appearance while distant leaf batches are 
     const setup = await page.evaluate(async () => {
         const THREE = await import('three');
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
-        const { getProceduralFoliageArchetype } = await import('/src/art/ProceduralRealmFoliage.js');
+        const { getFoliageRenderBatches } = await import('/src/art/FoliageRenderBatches.js');
         const { createProceduralTerrainMaterial } = await import('/src/art/ProceduralRealmTerrain.js');
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         render.staticEnvironmentGroup.visible = false;
@@ -19,20 +19,29 @@ test('production birches retain their appearance while distant leaf batches are 
         render.scene.children.filter(child => child.type === 'GridHelper').forEach(child => { child.visible = false; });
         const generator = new WorldGenerator(render.scene, { addCollider() {} });
         await generator.loadTrees(0, 200);
-        const spatial = render.scene.getObjectByName('foliage:earth:ossuary_birch');
-        const placements = spatial.userData.placements;
+        const spatial = new THREE.Group(); render.scene.add(spatial);
         const baseline = new THREE.Group();
-        for (const part of getProceduralFoliageArchetype('ossuary_birch')) {
-            const mesh = new THREE.InstancedMesh(part.geometry, part.material, placements.length);
-            placements.forEach((p, i) => mesh.setMatrixAt(i, new THREE.Matrix4().compose(
-                new THREE.Vector3(p.x, 0, p.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), p.rotation),
-                new THREE.Vector3().setScalar(p.scale)).multiply(part.matrix)));
-            mesh.castShadow = part.castShadow; mesh.receiveShadow = part.receiveShadow;
-            mesh.computeBoundingBox(); mesh.computeBoundingSphere(); baseline.add(mesh);
+        let trees = 0, first;
+        for (const id of ['ossuary_birch', 'grave_pine', 'mourning_willow']) {
+            const group = render.scene.getObjectByName(`foliage:earth:${id}`);
+            const placements = group.userData.placements;
+            spatial.add(group); trees += placements.length; first ??= placements[0];
+            for (const part of getFoliageRenderBatches(id)) {
+                const mesh = new THREE.InstancedMesh(part.geometry, part.material, placements.length);
+                placements.forEach((p, i) => mesh.setMatrixAt(i, new THREE.Matrix4().compose(
+                    new THREE.Vector3(p.x, 0, p.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), p.rotation),
+                    new THREE.Vector3().setScalar(p.scale)).multiply(part.matrix)));
+                mesh.castShadow = part.castShadow; mesh.receiveShadow = part.receiveShadow;
+                mesh.computeBoundingBox(); mesh.computeBoundingSphere(); baseline.add(mesh);
+            }
         }
+        // Wind is intentionally unrelated to this static-tree equivalence
+        // comparison; its performance.now uniforms differ between draws.
+        render.scene.getObjectByName('Gloamwood heath and fern beds').visible = false;
         render.scene.add(baseline); spatial.visible = false;
-        const focus = new THREE.Vector3(placements[0].x, 2, placements[0].z);
+        const focus = new THREE.Vector3(first.x, 2, first.z);
         render.applyLightingPreset('earth', true); render.setZoom(28);
+        render.updateShadowFocus(focus);
         render.camera.position.copy(focus).add(new THREE.Vector3(75, 95, 115));
         gallery.controls.target.copy(focus); gallery.controls.update();
         const ground = new THREE.Mesh(new THREE.PlaneGeometry(1998.5, 1598.5), createProceduralTerrainMaterial('earth'));
@@ -40,9 +49,9 @@ test('production birches retain their appearance while distant leaf batches are 
         render.scene.add(ground);
         document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(el => { el.style.display = 'none'; });
         window.__foliageComparison = { baseline, spatial, render };
-        return { trees: placements.length, batches: spatial.children.length, baselineBatches: baseline.children.length };
+        return { trees, batches: spatial.children.reduce((n, g) => n + g.children.length, 0), baselineBatches: baseline.children.length };
     });
-    expect(setup.trees).toBe(120); expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
+    expect(setup.trees).toBe(330); expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
     for (const quality of ['high', 'low']) {
         const metrics = {};
         for (const mode of ['baseline', 'spatial']) {
@@ -62,6 +71,34 @@ test('production birches retain their appearance while distant leaf batches are 
         console.log(`Foliage draw comparison: ${JSON.stringify({ quality, ...setup, ...metrics })}`);
         expect(metrics.spatial.triangles).toBeLessThan(metrics.baseline.triangles / 3);
         await testInfo.attach(`${quality}-draw-cost`, { body: JSON.stringify({ setup, metrics }), contentType: 'application/json' });
+        const appearance = await page.evaluate(async () => {
+            const THREE = await import('three');
+            const { baseline, spatial, render } = window.__foliageComparison;
+            const target = new THREE.WebGLRenderTarget(720, 500), pixels = [];
+            const previous = render.renderer.getRenderTarget();
+            try {
+                // Two synchronous draws share camera, particles and lighting.
+                // Read the base scene including actual tree shadows; no
+                // postprocessing or screenshot encoding can hide missing leaves.
+                for (const mode of ['baseline', 'spatial']) {
+                    baseline.visible = mode === 'baseline'; spatial.visible = mode === 'spatial';
+                    render.renderer.setRenderTarget(target);
+                    render.renderer.render(render.scene, render.camera);
+                    const data = new Uint8Array(720 * 500 * 4);
+                    render.renderer.readRenderTargetPixels(target, 0, 0, 720, 500, data); pixels.push(data);
+                }
+                let changed = 0;
+                for (let i = 0; i < pixels[0].length; i += 4) {
+                    if ([0, 1, 2].some(channel => Math.abs(pixels[0][i + channel] - pixels[1][i + channel]) > 2)) changed++;
+                }
+                return { changed, total: 720 * 500 };
+            } finally {
+                render.renderer.setRenderTarget(previous); target.dispose();
+                baseline.visible = false; spatial.visible = true;
+            }
+        });
+        expect(appearance.changed / appearance.total, JSON.stringify(appearance)).toBeLessThan(.001);
+        await testInfo.attach(`${quality}-pixel-equivalence`, { body: JSON.stringify(appearance), contentType: 'application/json' });
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
