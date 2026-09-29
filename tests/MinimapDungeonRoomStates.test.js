@@ -37,6 +37,7 @@ describe('Minimap dungeon room states', () => {
             stroke: () => strokes.push({ strokeStyle: ctx.strokeStyle, lineWidth: ctx.lineWidth }),
             fill: () => fillRects.push({ fillStyle: ctx.fillStyle }),
             fillText: (...args) => texts.push({ fillStyle: ctx.fillStyle, args }),
+            measureText: text => ({ width: String(text).length * 6 }),
             translate: () => {},
             rotate: () => {},
             closePath: () => {},
@@ -424,35 +425,25 @@ describe('Minimap dungeon room states', () => {
 
         minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
 
-        expect(texts.some((entry) => String(entry.args[0]).includes('Quest Giver'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Stash'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Forge'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Trading House'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Vendor / Repair'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Dungeon Guide'))).toBe(true);
+        expect(minimap.serviceLabelLayout.length).toBeGreaterThan(1);
+        // All service icons remain, even when a name cannot fit on this radar.
+        expect(strokes.filter(entry => entry.lineWidth === 1.5 && entry.strokeStyle?.endsWith('0.95)'))).toHaveLength(TOWN_SERVICE_POINTS.length);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 213, 106, 0.95)')).toBe(true);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(101, 186, 255, 0.95)')).toBe(true);
     });
 
-    test('renders starter-route services in onboarding order and highlights forge alongside the quest marker', () => {
+    test('prioritizes ready quest labels and retains the forge marker', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {
             getDungeonRoomSummary: () => null,
             getActiveBuffs: () => ([]),
             uiManager: { partyData: { members: [] } }
         };
+        minimap.gameEngine.player = { quests: [{ id: 'daily-ready', accepted: true, completed: false, count: 1, maxCount: 1 }] };
 
         minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
 
-        const labels = texts.map((entry) => String(entry.args[0]));
-        const questIndex = labels.findIndex((label) => label.includes('Quest Giver'));
-        const forgeIndex = labels.findIndex((label) => label.includes('Forge'));
-        const stashIndex = labels.findIndex((label) => label.includes('Stash'));
-        const vendorIndex = labels.findIndex((label) => label.includes('Vendor / Repair'));
-
-        expect(questIndex).toBeLessThan(forgeIndex);
-        expect(forgeIndex).toBeLessThan(stashIndex);
-        expect(stashIndex).toBeLessThan(vendorIndex);
+        expect(minimap.serviceLabelLayout[0].id).toBe('quest-giver');
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 155, 74, 0.95)')).toBe(true);
     });
 

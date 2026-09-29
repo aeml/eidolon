@@ -5,6 +5,11 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Town minimap names avoid one another and service icons, prioritizing ready
+  quests and nearby services. All service icons stay in place; phone radar
+  retains icons without tiny labels. A stronger backdrop improves contrast.
+  See [map readability checks](2026-09-29-minimap-service-labels.md).
+
 - Desktop right-click inspection adds a scrollable item panel, aligned stats
   and side-by-side comparison; keyboard users can use Shift+F10 on a bag slot.
   Existing equip/sell/stash shortcuts remain. Open item details refresh
