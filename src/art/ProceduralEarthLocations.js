@@ -5,6 +5,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createGroveThresholdStone } from './EarthLandmarkGeometry.js';
 import { createEarthGroundCoverTuft, earthGroundCoverPlacements } from './EarthGroundCover.js';
 import { createBastionPavingFragment, createBastionMarkerCap } from './BastionForecourtGeometry.js';
+import { createKeeperGardenPlant } from './KeeperCottage.js';
 
 // The environment owns these resources; no external asset or global disposable
 // cache is needed. Each location/material is a separate cullable draw batch.
@@ -44,6 +45,13 @@ export function createEarthLocations({ quality = 'high' } = {}) {
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
             const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone();
             geometry.dispose(); transformed.applyMatrix4(matrix);
+            // Opaque soil and leaves share the existing rough vertex-color batch.
+            if (material === 'gardenEarth') {
+                const color = new THREE.Color(0x3a3429), values = [];
+                for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
+                transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
+                material = 'moss';
+            }
             if (['moss', 'soil', 'fieldstone'].includes(material) && !transformed.attributes.color) {
                 const color = new THREE.Color(material === 'moss' ? 0x465942 : 0xffffff), values = [];
                 for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
@@ -92,12 +100,31 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         case 'evacuated-garden':
             for (const side of [-1, 1]) {
                 for (let i = 0; i < 4; i++) box('wood', side * 8, .17, -5 + i * 3, 4, .3, .22);
-                for (let i = 0; i < 7; i++) part(new THREE.SphereGeometry(.45, 6, 4), 'moss', side * (7 + i % 2), .22, -4 + i * 1.3, [0, i, 0], [1, .55, 1]);
+                for (let bed = 0; bed < 3; bed++) {
+                    const x = side * 8, z = -3.5 + bed * 3;
+                    for (const edge of [-1, 1]) box('wood', x + edge * 1.89, .13, z, .17, .21, 2.7);
+                    part(new THREE.SphereGeometry(1, 12, 6), 'gardenEarth', x, .015, z, [0, 0, 0], [1.78, .065, 1.23]);
+                    for (let plant = 0; plant < 6; plant++) {
+                        const seed = bed * 17 + plant * 7 + (side + 1) * 9;
+                        if (seed % 5 === 0) continue; // Empty spaces tell the evacuation story.
+                        part(createKeeperGardenPlant(seed), 'moss', x - 1.08 + plant % 3 * 1.02,
+                            .08, z - .55 + Math.floor(plant / 3) * 1.03, [0, seed, 0]);
+                    }
+                }
                 box('stone', side * 6, 1.15, 8, .9, 2.3, .9, 0, true);
             }
             box('wood', -9, .6, 9, 2.8, .25, 1.7);
-            beam([-10, .5, 9.8], [-7, .5, 12], .09);
-            part(new THREE.TorusGeometry(.65, .09, 5, 12), 'wood', -10.3, .65, 9, [0, Math.PI / 2, .25]);
+            for (const side of [-1, 1]) {
+                box('wood', -9, .97, 9 + side * .77, 2.55, .48, .13);
+                beam([-9.8, .43, 9 + side * .56], [-6.3, .72, 9 + side * .56], .11);
+                beam([-8.1, .1, 9 + side * .55], [-8.35, .55, 9 + side * .55], .1);
+            }
+            box('wood', -10.28, .97, 9, .13, .48, 1.44);
+            part(new THREE.TorusGeometry(.5, .09, 5, 14), 'wood', -10.3, .59, 9);
+            for (let spoke = 0; spoke < 6; spoke++) {
+                const angle = spoke * Math.PI / 3;
+                beam([-10.3, .59, 9], [-10.3 + Math.cos(angle) * .48, .59 + Math.sin(angle) * .48, 9], .045);
+            }
             pennant(10, 9, 4);
             break;
         case 'wounded-grove':

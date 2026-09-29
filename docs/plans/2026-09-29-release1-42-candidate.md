@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Rebuilt Mara's diary cottage and abandoned garden with weathered masonry,
+  broken roofing, a readable ledger table, nursery pots, planted beds and a
+  constructed wheelbarrow. Existing walking and interaction bounds remain
+  unchanged. See the [cottage review](2026-09-29-keeper-cottage-and-garden.md).
+
 - Fixed multiplayer's retired orange fence blocks overlapping Lanternhold's
   new palisade. Existing collision and network behavior are preserved. Verified
   with an ordinary town-to-starter-fight route; see the

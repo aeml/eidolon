@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createKilnFurnaceGeometry } from './KilnWorkshopGeometry.js';
+import { createKeeperCottage } from './KeeperCottage.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -53,7 +54,7 @@ export function createChronicleSiteModel(site, realm) {
         return value;
     };
     const wall = (w, h, d, x, z) => {
-        box(w, h, d, stone, x, h / 2, z);
+        if (site.model !== 'ruined_house') box(w, h, d, stone, x, h / 2, z);
         walls.push(new THREE.Box3(new THREE.Vector3(x - w / 2, -1, z - d / 2), new THREE.Vector3(x + w / 2, h, z + d / 2)));
     };
     const book = () => {
@@ -69,19 +70,20 @@ export function createChronicleSiteModel(site, realm) {
     };
     const house = ['ruined_house', 'flood_shelter', 'cold_kiln', 'observatory'].includes(site.model);
     if (house) {
-        box(7.2, 0.12, 6.2, stone, 0, 0.01, -0.5);
+        if (site.model !== 'ruined_house') box(7.2, 0.12, 6.2, stone, 0, 0.01, -0.5);
         // Roofless and open towards +Z: the book remains visible from the road.
         // Only the actual three walls block walking, never the foundation.
         wall(7, 2.2, 0.45, 0, -3.3);
         wall(0.45, 1.5, 4.8, -3.3, -0.7);
         wall(0.45, 0.85, 3.6, 3.3, -1.3);
-        book();
+        if (site.model !== 'ruined_house') book();
         if (site.model === 'ruined_house') {
-            for (let i = 0; i < 5; i++) {
-                const branch = cylinder(0.12, 0.21, 2.8, wood, -2.6 + i * 0.18, 0.6, -2.2 + i * 0.8);
-                branch.rotation.z = 0.8;
-                mesh(new THREE.IcosahedronGeometry(0.35, 0), glow, -1.7 + i * 0.12, 1.4, -2.2 + i * 0.8);
-            }
+            const cottage = createKeeperCottage();
+            cottage.traverse(part => {
+                if (part.geometry) geometries.add(part.geometry);
+                if (part.material) materials.add(part.material);
+            });
+            root.add(cottage);
         } else if (site.model === 'flood_shelter') {
             for (const x of [-2.5, 2.5]) {
                 cylinder(0.14, 0.18, 2.7, wood, x, 1.35, 1.6);
