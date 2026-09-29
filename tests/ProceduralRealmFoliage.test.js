@@ -26,6 +26,24 @@ function parseServerHazardAnchors(sliceName) {
 }
 
 describe('procedural realm foliage', () => {
+    test('mature woodland crowns stay inside existing eight-metre sightline aprons', () => {
+        for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === 'earth')) {
+            const preview = createProceduralFoliagePreview(recipe.id);
+            const bounds = new THREE.Box3().setFromObject(preview);
+            expect(bounds.max.y).toBeGreaterThan(9.5);
+            expect(bounds.min.y).toBeGreaterThanOrEqual(-.35);
+            for (const mesh of preview.children) {
+                const positions = mesh.geometry.attributes.position;
+                const point = new THREE.Vector3();
+                for (let i = 0; i < positions.count; i++) {
+                    point.fromBufferAttribute(positions, i).applyMatrix4(mesh.matrixWorld);
+                    if (Math.hypot(point.x, point.z) * recipe.scale[1] >= 8) {
+                        throw new Error(`Canopy exceeds reserved apron: ${recipe.id}`);
+                    }
+                }
+            }
+        }
+    });
     test('every overworld realm owns intentional, distinct foliage silhouettes', () => {
         expect(PROCEDURAL_FOLIAGE_RECIPES).toHaveLength(9);
         expect(new Set(PROCEDURAL_FOLIAGE_RECIPES.map((recipe) => recipe.id)).size).toBe(9);

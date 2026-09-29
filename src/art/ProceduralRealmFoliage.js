@@ -69,13 +69,30 @@ function palette(region) {
     return getRegionTheme(region).palette;
 }
 
+function matureWoodland(parts) {
+    // Taller overhead cover gives the woodland a canopy rather than a field
+    // of saplings. Keep every trunk's XZ transform and all placement/collision
+    // contracts unchanged; only leaf/needle crowns spread horizontally.
+    const height = new THREE.Matrix4().makeScale(1, 1.65, 1);
+    return parts.map(descriptor => {
+        const matrix = height.clone().multiply(descriptor.matrix);
+        const baseY = descriptor.geometry.boundingBox.clone().applyMatrix4(descriptor.matrix).min.y;
+        // Growing a slightly buried trunk must not deepen its buried base.
+        if (baseY < 0) matrix.elements[13] -= baseY * .65;
+        if (descriptor.geometry === leafCrown || descriptor.geometry === needleCrown) {
+            matrix.scale(new THREE.Vector3(1.4, 1, 1.4));
+        }
+        return Object.freeze({ ...descriptor, matrix });
+    });
+}
+
 function createOssuaryBirch() {
     const p = palette('earth');
     const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber' });
     const scar = material('foliage-birch-scar', p.shadow);
     const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-grave-lantern', p.accent, { emissive: p.accent, emissiveIntensity: 0.72, roughness: 0.5 });
-    return [
+    return matureWoodland([
         part('pale scarred trunk', narrowTrunk, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
         part('black bark seam', narrowTrunk, scar, { position: [0.12, 3.35, 0.08], rotation: [0, 0, -0.09], scale: [0.18, 0.92, 0.16] }),
         part('west grave bough', branch, bark, { position: [-0.72, 5.2, 0], rotation: [0, 0, -0.72] }),
@@ -83,7 +100,7 @@ function createOssuaryBirch() {
         part('layered birch leaves', leafCrown, leaf, { position: [-0.25, 6.55, 0], scale: [1.25, 0.82, 1.08] }),
         part('low gloam crown', leafCrown, leaf, { position: [0.78, 5.62, 0.08], scale: [0.8, 0.58, 0.74] }),
         part('grave lantern fruit', lantern, glow, { position: [-0.98, 4.75, 0.15], castShadow: false })
-    ];
+    ]);
 }
 
 function createGravePine() {
@@ -91,13 +108,13 @@ function createGravePine() {
     const bark = material('foliage-black-pine-bark', 0x262822);
     const leaf = material('foliage-black-pine-needle', 0x35483a, { side: THREE.DoubleSide, vertexColors: true });
     const moss = material('foliage-pine-moss', p.midtone);
-    return [
+    return matureWoodland([
         part('black pine trunk', trunk, bark, { position: [0, 2.7, 0], scale: [0.76, 1.12, 0.76] }),
         part('lower funeral tier', needleCrown, leaf, { position: [0, 3.6, 0], scale: [1.45, 0.8, 1.4] }),
         part('middle funeral tier', needleCrown, leaf, { position: [.14, 5.35, -.1], rotation: [0, .7, 0], scale: [1.05, 0.7, 1.02] }),
         part('high funeral tier', needleCrown, leaf, { position: [.06, 6.75, .03], rotation: [0, 1.4, .08], scale: [.64, .55, .62] }),
         part('mossbound root', root, moss, { position: [-0.48, 0.25, 0.05], rotation: [0, 0, Math.PI / 2], scale: [0.8, 0.65, 0.8] })
-    ];
+    ]);
 }
 
 function createMourningWillow() {
@@ -105,14 +122,14 @@ function createMourningWillow() {
     const bark = material('foliage-willow-bark', 0x403a31);
     const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-willow-votive', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.5 });
-    return [
+    return matureWoodland([
         part('crooked mourning trunk', trunk, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
         part('mourning crown', leafCrown, leaf, { position: [-0.3, 5.25, 0], scale: [2.3, .8, 1.85] }),
         part('west leaf curtain', leafCrown, leaf, { position: [-1.55, 3.95, .1], rotation: [.05, 0, -.12], scale: [.62, 1.2, .65] }),
         part('east leaf curtain', leafCrown, leaf, { position: [1.28, 3.82, -.12], rotation: [-.04, 0, .15], scale: [.6, 1.3, .58] }),
         part('rear leaf curtain', leafCrown, leaf, { position: [-.1, 3.95, -1.4], rotation: [.12, 0, 0], scale: [.75, 1.25, .6] }),
         part('willow votive', lantern, glow, { position: [0.82, 2.62, 0.22], castShadow: false })
-    ];
+    ]);
 }
 
 function createRimePine() {

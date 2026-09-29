@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Gloamwood gains taller, broader woodland crowns with clustered leaves and
+  low spreading bracken/sedge beds along the reference routes. Trunk locations,
+  walking routes and collision contracts are unchanged. Low keeps a matching
+  subset. See [woodland layers and costs](2026-09-29-woodland-canopy-floor-layers.md).
+
 - Abyssal Well gains an open carved foregate, a nearer visible portal, a lower
   silhouette and dark well water. Its arrival marker and road end move16m
   closer; legacy bounds and admission stay unchanged. See the

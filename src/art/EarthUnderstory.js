@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { sampleEarthMeadow } from './EarthGroundComposition.js';
-import { createEarthGroundCoverTuft } from './EarthGroundCover.js';
+import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.js';
 
 // First playable art reference: north grove route and east dungeon approach.
 // Low vegetation only: no new blockers, server footprints or reward sources.
@@ -22,28 +22,18 @@ export function isEarthUnderstoryClear(x, z, radius = 2.2) {
 export function createEarthUnderstoryPlacements(quality = 'high') {
     const plants = [];
     for (const [minX, maxX, minZ, maxZ] of BANDS) {
-        for (let gx = minX; gx < maxX; gx += 8) for (let gz = minZ; gz < maxZ; gz += 8) {
-            const x = gx + random(gx, gz, 1) * 8, z = gz + random(gx, gz, 2) * 8;
+        for (let gx = minX; gx < maxX; gx += 3) for (let gz = minZ; gz < maxZ; gz += 3) {
+            const x = gx + random(gx, gz, 1) * 3, z = gz + random(gx, gz, 2) * 3;
             const cover = sampleEarthMeadow(x, z);
-            if (cover < .3 || random(gx, gz, 3) > cover) continue;
-            // Uneven, stretched beds break up the repeated seven-plant dots.
-            // Keep the same approximate density and two shared geometries.
-            const count = 3 + Math.floor(random(gx, gz, 35) * 7);
-            const bedAngle = random(gx, gz, 36) * Math.PI * 2;
-            const reach = 2.4 + random(gx, gz, 37) * 2.8;
-            const width = .35 + random(gx, gz, 38) * .5;
-            for (let tuft = 0; tuft < count; tuft++) {
-                if (quality === 'low' && random(gx, gz, tuft + 60) > .57) continue;
-                const angle = random(gx, gz, tuft + 4) * Math.PI * 2;
-                const spread = Math.sqrt(random(gx, gz, tuft + 14)) * reach;
-                const along = Math.cos(angle) * spread, across = Math.sin(angle) * spread * width;
-                const px = x + Math.cos(bedAngle) * along - Math.sin(bedAngle) * across;
-                const pz = z + Math.sin(bedAngle) * along + Math.cos(bedAngle) * across;
-                if (!isEarthUnderstoryClear(px, pz)) continue;
-                plants.push({ x: px, z: pz, rotation: angle,
-                    scale: .65 + random(gx, gz, tuft + 24) * .75,
-                    variant: random(gx, gz, tuft + 44) > .7 ? 0 : 1 });
-            }
+            // Follow the same broad meadow field as the terrain. Continuous
+            // irregular beds replace a repeated cluster of stems per anchor.
+            // Low removes instances only; it cannot move the patch boundaries.
+            if (cover < .32 || random(gx, gz, 3) > cover * .88) continue;
+            if (quality === 'low' && random(gx, gz, 60) > .57) continue;
+            if (!isEarthUnderstoryClear(x, z)) continue;
+            plants.push({ x, z, rotation: random(gx, gz, 4) * Math.PI * 2,
+                scale: .7 + random(gx, gz, 24) * .7,
+                variant: random(gx, gz, 44) > .75 ? 0 : 1 });
         }
     }
     return plants;
@@ -55,9 +45,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     root.userData.earthUnderstory = true;
     const plants = createEarthUnderstoryPlacements(quality);
     root.userData.plantCount = plants.length;
-    // These sub-metre plants are background cover, not inspectable landmark
-    // foliage. Retain curved blades but omit subpixel fern folds on both tiers.
-    const geometries = [12, 13].map(seed => createEarthGroundCoverTuft(seed, 'low'));
+    const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     const cells = new Map();
