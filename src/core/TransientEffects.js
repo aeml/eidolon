@@ -897,6 +897,13 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         const radius = (options && options.radius) || 10.0;
         const telegraphDuration = (options && options.telegraphDuration) || 2.0;
         const theme = getTelegraphTheme(options);
+        // Server warnings use ground-level positions. Dungeon floors sit at
+        // y=0.1; keep every warning layer above them without changing X/Z or radius.
+        const groundPosition = position.clone();
+        groundPosition.y = Math.max(0.1, Number(position.y) || 0);
+        const reducedMotion = options.reducedMotion ?? Boolean(
+            globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+        );
 
         // Outer warning ring
         const ringGeo = new THREE.RingGeometry(radius * 0.92, radius, 48);
@@ -912,7 +919,7 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         ring.userData.gameplayRadius = radius;
         addDangerContrastUnderlay(ring, radius);
         ring.rotation.x = -Math.PI / 2;
-        ring.position.copy(position);
+        ring.position.copy(groundPosition);
         ring.position.y += 0.06;
 
         // Inner fill disc
@@ -926,13 +933,13 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         });
         const fill = new THREE.Mesh(fillGeo, fillMat);
         fill.rotation.x = -Math.PI / 2;
-        fill.position.copy(position);
+        fill.position.copy(groundPosition);
         fill.position.y += 0.05;
 
         const motif = createDungeonTelegraphMotif(
             options?.theme,
             radius,
-            position,
+            groundPosition,
             theme.motifColor || theme.ringColor
         );
         if (motif) {
@@ -941,7 +948,7 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
 
         const label = createTelegraphLabelSprite(options.label, theme.labelColor);
         if (label) {
-            label.position.copy(position);
+            label.position.copy(groundPosition);
             label.position.y += 2.6;
         }
 
@@ -951,22 +958,22 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         addToScene(scene, telegraphMeshes);
         return new TransientEffect(scene, telegraphMeshes, telegraphDuration, ({ t }) => {
             // Pulsing opacity — gets more urgent near the end
-            const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
+            const pulse = reducedMotion ? 0.5 : 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
             // The edge is gameplay information: never blink it out or move it
             // away from the authoritative radius. Pulse brightness, not size.
             ring.material.opacity = Math.min(1, (theme.ringOpacity + theme.ringPulseBoost * t) * (0.65 + 0.35 * pulse));
             // Fill grows more opaque as impact approaches
             fill.material.opacity = theme.fillOpacity + theme.fillPulseBoost * t;
             if (motif) {
-                motif.rotation.y = t * Math.PI * 0.22;
-                motif.scale.setScalar(0.96 + (0.08 * t) + (0.02 * pulse));
+                motif.rotation.y = reducedMotion ? 0 : t * Math.PI * 0.22;
+                motif.scale.setScalar(reducedMotion ? 1 : 0.96 + (0.08 * t) + (0.02 * pulse));
                 motif.traverse((part) => {
                     if (part.material) part.material.opacity = 0.44 + (0.38 * t) + (0.1 * pulse);
                 });
             }
             if (label?.material) {
                 label.material.opacity = 0.72 + 0.2 * pulse;
-                const labelPulse = 1.0 + (0.04 * pulse);
+                const labelPulse = reducedMotion ? 1 : 1.0 + (0.04 * pulse);
                 const [baseWidth, baseHeight] = label.userData.baseScale || [6.5, 1.8];
                 label.scale.set(baseWidth * labelPulse, baseHeight * labelPulse, 1);
             }

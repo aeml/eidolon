@@ -51,6 +51,24 @@ function owner() {
 }
 
 describe('procedural projectile impacts', () => {
+    test.each(['Fireball', 'Meteor', 'ExplosiveTrap'])('%s keeps ground fields above dungeon floors without moving elevated impacts', type => {
+        for (const y of [0, .04, .5, 8]) for (const quality of ['high', 'low']) {
+            const scene = new THREE.Group(), position = new THREE.Vector3(4, y, 7);
+            const effect = createProceduralProjectileImpactEffect(scene, position, { projectileType: type, radius: 6, quality });
+            expect(position.toArray()).toEqual([4, y, 7]);
+            expect(effect.root.position.toArray()).toEqual([4, Math.max(.1, y), 7]);
+            effect.root.updateMatrixWorld(true);
+            const boundaries = collectMeshes(effect.root).filter(part => part.userData.gameplayBoundary);
+            expect(boundaries).toHaveLength(2);
+            for (const part of boundaries) {
+                expect(part.getWorldPosition(new THREE.Vector3()).y).toBeGreaterThan(.1);
+                expect(part.userData.gameplayRadius).toBe(6);
+                expect(part.scale.x).toBe(6);
+            }
+            effect.dispose();
+        }
+    });
+
     test('the impact manifest exhaustively covers every collision-capable server projectile subtype', () => {
         expect(Object.keys(PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS).sort()).toEqual([...TYPES].sort());
         expect(readServerCollisionProjectileSubtypes()).toEqual([...TYPES].sort());

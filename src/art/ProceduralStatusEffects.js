@@ -129,7 +129,9 @@ function ring(parent, statusKey, name, radius, mat, options = {}) {
             new THREE.RingGeometry(1 - (options.thickness || 0.1), 1, options.segments || 24)),
         mat,
         {
-            position: [0, options.y ?? 0.055, 0],
+            // Actor origins may be y=0 while dungeon floors reach y=0.1.
+            // Lift ground seals only; body-attached ornaments keep their pose.
+            position: [0, options.y ?? 0.155, 0],
             rotation: [-Math.PI / 2, 0, options.rotation || 0],
             scale: [radius, radius, radius],
             motion: options.motion || 'seal',
@@ -260,14 +262,14 @@ function buildStatus(root, statusKey, def, materials) {
             // never a body shell, solid enclosure, or interaction mesh.
             addRestingMotes(root, statusKey, materials);
             ring(root, statusKey, 'SanctuaryThread', radius * 0.74, materials.accent,
-                { thickness: 0.018, y: 0.065, motion: 'counter-seal' });
+                { thickness: 0.018, y: 0.165, motion: 'counter-seal' });
             break;
         }
         case 'phase-veil':
             orbit(root, statusKey, 'PhaseShard', 'crystal', 6, radius * 0.72, 1.2, materials,
                 { speed: 1.5, scale: [0.38, 0.8, 0.38], optionalEvery: 2 });
             ring(root, statusKey, 'ProtectionSeal', radius * 0.8, materials.accent,
-                { thickness: 0.025, y: 0.08, motion: 'counter-seal' });
+                { thickness: 0.025, y: 0.18, motion: 'counter-seal' });
             break;
         case 'bastion-cage':
             addPart(root, statusKey, 'OathsteelShell', geometry('status-shell', () => new THREE.IcosahedronGeometry(1, 1)), materials.veil,

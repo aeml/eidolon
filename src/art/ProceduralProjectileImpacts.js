@@ -254,7 +254,10 @@ export function createProceduralProjectileImpactEffect(scene, position, options 
     const root = new THREE.Group();
     root.name = `ProceduralProjectileImpact:${type}`;
     root.position.copy(position);
-    root.position.y = Math.max(0.04, Number(position.y) || 0.04);
+    // Canonical dungeon floors are at Y=0.1. A ground-level server hit must
+    // keep its fill and exact edge above that floor, not bury the fill at .075.
+    // Preserve elevated hits; this changes presentation, never combat height.
+    root.position.y = Math.max(0.1, Number(position.y) || 0);
     const direction = options.direction?.isVector3
         ? options.direction.clone().setY(0).normalize()
         : new THREE.Vector3(0, 0, 1);

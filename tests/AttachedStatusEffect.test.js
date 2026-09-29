@@ -30,6 +30,29 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
+    test.each(['high', 'low'])('%s ground seals clear dungeon floors and healing reach remains exact', quality => {
+        for (const statusKey of Object.keys(ACTOR_STATUS_VISUAL_STATES)) {
+            const position = new THREE.Vector3(4, 0, 7);
+            const effect = new AttachedStatusEffect(new THREE.Group(), { position, guardianEmbraceRadius: 6 }, statusKey, { quality });
+            try {
+                for (const elapsed of [0, .5, 1.5]) {
+                    effect.update(elapsed);
+                    for (const name of ['OuterSeal', 'InnerSeal', 'SanctuaryThread', 'ProtectionSeal', 'HealingReach']) {
+                        const ring = effect.group.getObjectByName(`${statusKey}:${name}`);
+                        if (ring) expect(ring.getWorldPosition(new THREE.Vector3()).y).toBeGreaterThan(.1);
+                    }
+                    if (statusKey === 'guardian_embrace') {
+                        const reach = effect.group.getObjectByName('guardian_embrace:HealingReach');
+                        expect(reach.visible).toBe(true);
+                        expect(reach.geometry.parameters.outerRadius * reach.scale.x).toBe(6);
+                    }
+                    expect(position.toArray()).toEqual([4, 0, 7]);
+                    expect(effect.group.position.toArray()).toEqual([4, 0, 7]);
+                }
+            } finally { effect.dispose(); }
+        }
+    });
+
     test('hidden aura roots leave matrix traversal and return safely on reveal', () => {
         let hidden = false;
         const scene = new THREE.Group();
