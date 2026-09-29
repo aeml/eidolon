@@ -159,13 +159,23 @@ test('a real Radiant Strike purge removes Berserker strength and defense cost, n
     expect(target.stats.hp).toBeLessThan(10000);
 });
 
-test('Last Stand rejects healthy actors and ordinary cooldown rejection cannot refresh Berserker', () => {
+test.each([.299, .30, 1])('Last Stand captures health %s and cooldown rejection cannot refresh buffs', health => {
     const actor = hero(), game = engine();
     actor.unlockedSkills.push('Berserker Edge', 'Last Stand Rampage');
-    actor.stats.hp = actor.stats.maxHp * .3;
+    actor.stats.hp = actor.stats.maxHp * health;
     actor.useAbility(actor.position.clone(), game, 'Last Stand Rampage');
-    expect(actor.lastStandTimer).toBe(0);
-    expect(actor.cooldowns['Last Stand Rampage'] || 0).toBe(0);
+    const multiplier = health < .30 ? 3 : 2;
+    expect(actor.lastStandMultiplier).toBe(multiplier);
+    expect(actor.stats.damage).toBe(25 * multiplier);
+    expect(actor.lastStandTimer).toBe(10);
+    expect(actor.cooldowns['Last Stand Rampage']).toBe(84); // Existing global cooldown tuning: 120 × .7.
+    actor.stats.hp = 1;
+    actor.recalculateStats();
+    expect(actor.stats.damage).toBe(25 * multiplier);
+    actor.lastStandTimer = 5;
+    actor.useAbility(actor.position.clone(), game, 'Last Stand Rampage');
+    expect(actor.lastStandTimer).toBe(5);
+    expect(actor.lastStandMultiplier).toBe(multiplier);
     actor.useAbility(actor.position.clone(), game, 'Berserker Edge');
     actor.berserkerEdgeTimer = 5;
     actor.talentRanks = { FTR_19: 5 };

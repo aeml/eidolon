@@ -932,7 +932,7 @@ export class Actor extends Entity {
         // Wizard resolves it below; multiplayer waits for the accepted event.
         const offlineCharge = className === 'Fighter' && skillName === 'Charge' &&
             !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
-        if (skillName !== 'Teleport' && !offlineCharge) this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
+        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
 
         // Subclasses implement actual logic
         return true;

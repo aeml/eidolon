@@ -22,6 +22,16 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			training.NormalizeTalentRanks()
 			player.SpellFocusMultiplier = 2.5 * (1 + training.GetSkillBonus(skillName).SkillDamage)
 			player.SpellFocusEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
+			// Focus is also this branch's deliberate defensive window. Do not
+			// stack, refresh or replace a still-active shield from another source.
+			now := time.Now()
+			if !player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !now.Before(player.ArcaneShieldEndTime) {
+				player.ArcaneShieldActive = true
+				player.ArcaneShieldHP = max(0, 40+2*player.Stats.Intelligence)
+				player.ArcaneShieldEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 6*time.Second))
+				player.ArcaneShieldRuneID = ""
+				player.ArcaneShieldAbsorbed = 0
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -61,6 +71,12 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
+			// Reprise the caster's own movement/control loop, never party
+			// cooldowns or Time Warp itself. GCD and mana still gate the next cast.
+			delete(player.Cooldowns, "Teleport")
+			delete(player.Cooldowns, "Gravity Well")
+			player.TeleportCharges = 0
+			player.TeleportChargeReadyAt = time.Time{}
 			radius := effectiveAbilityAreaRadius(player, skillName, 15.0)
 			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			if player.HasAnySetBonus("timeWarpZone") {
@@ -187,7 +203,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Check for rune effects
 		runeID := player.GetRuneForSkill("Fireball")
 
-		// Combo: Implosion (Gravity Well → Fireball) = +100% damage to slowed targets
+		// Implosion also works against control-immune targets, without slowing them.
 		wellBoostActive := player.ActiveCombo == "fireball_well_boost"
 		if wellBoostActive {
 			player.ActiveCombo = "" // Consume combo
@@ -267,7 +283,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			// Combo: Nova Cascade (Teleport → Flame Whip) = 360° cone
+			// Combo: Nova Cascade (Fireball → Flame Whip) = 360° cone
 			novaCascadeActive := player.ActiveCombo == "flame_whip_360"
 			if novaCascadeActive {
 				player.ActiveCombo = "" // Consume combo
@@ -396,12 +412,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Meteor Drop")
 
-			// Combo: Arcane Barrage (Arcane Shield → Meteor Drop) = Shield explodes on impact
-			shieldExplodeActive := player.ActiveCombo == "shield_meteor_explosion"
-			if shieldExplodeActive {
-				player.ActiveCombo = "" // Consume combo
-			}
-
 			damage := int(float64(50+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Meteor Drop"))
 
 			// Match the large ground ring the client shows for Meteor Drop.
@@ -429,24 +439,23 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					impactZ := targetZ + offset.dz
 					impactX, impactZ, _ = w.firstDungeonWallHit(player.InstanceID, targetX, targetZ, impactX, impactZ)
 					proj := &Entity{
-						ID:                  fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
-						InstanceID:          player.InstanceID,
-						Type:                TypeProjectile,
-						SubType:             "Meteor",
-						X:                   impactX,
-						Y:                   20 * impactDelay.Seconds(),
-						Z:                   impactZ,
-						VelX:                0,
-						VelZ:                0,
-						Radius:              clusterRadius,
-						Damage:              clusterDamage,
-						OwnerID:             player.ID,
-						CreatedAt:           time.Now(),
-						LastAttackTime:      time.Now().Add(impactDelay), // Stagger impact
-						Scale:               0.7,
-						ProjectileRuneID:    runeID,
-						ProjectileSkill:     "Meteor Drop",
-						MeteorShieldExplode: shieldExplodeActive && i == 0, // Only first meteor triggers explosion
+						ID:               fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
+						InstanceID:       player.InstanceID,
+						Type:             TypeProjectile,
+						SubType:          "Meteor",
+						X:                impactX,
+						Y:                20 * impactDelay.Seconds(),
+						Z:                impactZ,
+						VelX:             0,
+						VelZ:             0,
+						Radius:           clusterRadius,
+						Damage:           clusterDamage,
+						OwnerID:          player.ID,
+						CreatedAt:        time.Now(),
+						LastAttackTime:   time.Now().Add(impactDelay), // Stagger impact
+						Scale:            0.7,
+						ProjectileRuneID: runeID,
+						ProjectileSkill:  "Meteor Drop",
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -456,24 +465,23 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				// Single meteor
 				impactDelay := 1500 * time.Millisecond
 				proj := &Entity{
-					ID:                  fmt.Sprintf("proj-meteor-%d", time.Now().UnixNano()),
-					InstanceID:          player.InstanceID,
-					Type:                TypeProjectile,
-					SubType:             "Meteor",
-					X:                   targetX,
-					Y:                   30.0,
-					Z:                   targetZ,
-					VelX:                0,
-					VelZ:                0,
-					Radius:              radius,
-					Damage:              damage,
-					OwnerID:             player.ID,
-					CreatedAt:           time.Now(),
-					LastAttackTime:      time.Now().Add(impactDelay),
-					Scale:               1.0,
-					ProjectileRuneID:    runeID,
-					ProjectileSkill:     "Meteor Drop",
-					MeteorShieldExplode: shieldExplodeActive, // Combo: Arcane Barrage
+					ID:               fmt.Sprintf("proj-meteor-%d", time.Now().UnixNano()),
+					InstanceID:       player.InstanceID,
+					Type:             TypeProjectile,
+					SubType:          "Meteor",
+					X:                targetX,
+					Y:                30.0,
+					Z:                targetZ,
+					VelX:             0,
+					VelZ:             0,
+					Radius:           radius,
+					Damage:           damage,
+					OwnerID:          player.ID,
+					CreatedAt:        time.Now(),
+					LastAttackTime:   time.Now().Add(impactDelay),
+					Scale:            1.0,
+					ProjectileRuneID: runeID,
+					ProjectileSkill:  "Meteor Drop",
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -552,7 +560,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 			player.Mana -= cost
 
-			// Combo: Time Burn (Time Warp → Inferno Cataclysm) = Double tick rate
+			// Combo: Time Burn (Flame Tornado → Inferno Cataclysm) = Double tick rate
 			doubleTickActive := player.ActiveCombo == "cataclysm_double_tick"
 			if doubleTickActive {
 				player.ActiveCombo = "" // Consume combo
@@ -648,6 +656,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						target.ArmorReduction = 5
 						target.ArmorReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
+						// Early precision-caster breathing room. Preserve an existing
+						// slow rather than downgrading or extending another effect.
+						now := time.Now()
+						if target.Health > 0 && !target.CCImmune && (!target.Slowed || !now.Before(target.SlowEndTime)) {
+							target.Slowed, target.SlowFactor = true, 0.30
+							target.SlowEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -801,6 +816,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			baseAngle := math.Atan2(dz, dx)
 			angles := []float64{baseAngle - 0.2, baseAngle, baseAngle + 0.2}
+			if player.ActiveCombo == "arcane_missile_barrage" {
+				angles = []float64{baseAngle - 0.4, baseAngle - 0.2, baseAngle, baseAngle + 0.2, baseAngle + 0.4}
+				player.ActiveCombo = ""
+			}
 
 			for i, angle := range angles {
 				velX := math.Cos(angle) * 25.0

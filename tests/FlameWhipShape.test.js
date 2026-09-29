@@ -119,24 +119,27 @@ test.each([false, true])('offline cone respects dungeon cover, doorway=%s', door
     expect(target.takeDamage).toHaveBeenCalledTimes(doorway ? 1 : 0);
 });
 
-test.each(['combo', 'expired', 'intervening'])('offline Teleport then Flame Whip: %s', mode => {
+test.each(['combo', 'expired', 'intervening'])('offline Fireball then Flame Whip: %s', mode => {
     jest.spyOn(Date, 'now').mockReturnValue(10000);
     const player = new Wizard('offline-combo');
-    player.unlockedSkills.push('Teleport', 'Flame Whip', 'Arcane Shield');
+    player.unlockedSkills.push('Flame Whip', 'Flame Tornado');
     player.stats.mana = 1000;
     const target = new Actor('behind', {});
     target.position.set(-5, 0, 0);
     target.isActive = true;
     target.takeDamage = jest.fn();
     const engine = { chunkManager: { getActiveEntities: () => [target] },
-        floatingTextManager: { spawn: jest.fn() }, spawnTransientEffect: jest.fn(() => true) };
+        floatingTextManager: { spawn: jest.fn() }, spawnTransientEffect: jest.fn(() => true), addEntity: jest.fn() };
     try {
-        player.useAbility(new THREE.Vector3(), engine, 'Teleport');
+        player.useAbility(new THREE.Vector3(8, 0, 0), engine, 'Fireball');
         if (mode === 'expired') Date.now.mockReturnValue(14000);
-        if (mode === 'intervening') player.useAbility(new THREE.Vector3(), engine, 'Arcane Shield');
+        if (mode === 'intervening') player.useAbility(new THREE.Vector3(8, 0, 0), engine, 'Flame Tornado');
         engine.spawnTransientEffect.mockClear();
         player.useAbility(new THREE.Vector3(1, 0, 0), engine, 'Flame Whip');
         expect(target.takeDamage).toHaveBeenCalledTimes(mode === 'combo' ? 1 : 0);
         expect(engine.spawnTransientEffect.mock.calls[0][3].arc).toBe(mode === 'combo' ? 2 * Math.PI : Math.PI / 2);
-    } finally { jest.restoreAllMocks(); }
+    } finally {
+        for (const [entity] of engine.addEntity.mock.calls) entity.dispose?.();
+        player.dispose(); target.dispose(); jest.restoreAllMocks();
+    }
 });

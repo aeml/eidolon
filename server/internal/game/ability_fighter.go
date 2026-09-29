@@ -73,6 +73,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			if runeID == "shieldslam_reverberation" {
 				damage *= 2
 			}
+			if player.ActiveCombo == "shield_slam_counter" {
+				damage = damage * 3 / 2
+				player.ActiveCombo = ""
+			}
 			stunDuration := 1500 * time.Millisecond
 			if runeID == "shieldslam_concussion" {
 				stunDuration += time.Second
@@ -183,6 +187,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.IronFortressActive = true
 			player.IronFortressEndTime = time.Now().Add(duration)
 			player.IronFortressRuneID = runeID
+			delete(player.Cooldowns, "Shield Slam")
 
 			// Thorns rune: reflect 20% damage while active
 			if runeID == "ironfortress_thorns" {
@@ -311,10 +316,15 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				// Publish the selected enemy's original location, not an imprecise
 				// nearby cursor point or its already-pulled landing position.
 				targetX, targetZ = target.X, target.Z
+				// Grip still connects against a control-immune boss: a trained
+				// physical strike and extra threat, never forced displacement.
+				damage := int(math.Floor(float64(player.Damage+player.Stats.Strength)*player.GetSkillDamageMultiplier(skillName) + 1e-9))
+				finalDamage := impacts.damage(player, target, damage, "physical", skillName)
+				addThreatLocked(target, player.ID, float64(finalDamage)*2)
 				dx := target.X - player.X
 				dz := target.Z - player.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist > 0 && !target.IronFortressImmovable && !target.CCImmune {
+				if target.Health > 0 && dist > 0 && !target.IronFortressImmovable && !target.CCImmune {
 					oldX, oldZ := target.X, target.Z
 					// Pull along the validated segment without pushing an enemy
 					// already inside the two-unit stopping distance outwards.
@@ -323,39 +333,9 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					target.Z = player.Z + dz/dist*stopDistance
 					w.Grid.Update(target, oldX, oldZ)
 				}
-				if !target.CCImmune {
+				if target.Health > 0 && !target.CCImmune {
 					target.Rooted = true
 					target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Second))
-				}
-				target.Mu.Unlock()
-				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-				w.fireAbilityEvent(player.ID, target.ID, skillName, targetX, targetZ)
-			}
-		}
-	} else if skillName == "Juggernaut Charge" {
-		cost := resolveAbilityManaCost(player, skillName, 30)
-		if player.Mana >= cost {
-			player.Mana -= cost
-			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
-			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
-			training.NormalizeTalentRanks()
-			radius := effectiveAbilityAreaRadius(training, skillName, 10)
-			damage := player.Damage + player.Stats.Strength
-			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
-			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
-			for _, target := range nearby {
-				target.Mu.Lock()
-				if !w.CanDamage(player, target) || target.State == "DEAD" || !withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
-					target.Mu.Unlock()
-					continue
-				}
-				finalDamage := impacts.damage(player, target, damage, "physical", skillName)
-				addThreatLocked(target, player.ID, float64(finalDamage))
-				if !target.CCImmune {
-					target.Slowed = true
-					target.SlowFactor = 0.6
-					target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
-					target.RecalculateStats()
 				}
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
@@ -365,9 +345,26 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					w.handleDeathWorldLocked(target, player, nil)
 					target.Mu.Unlock()
 				}
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
+				w.fireAbilityEvent(player.ID, target.ID, skillName, targetX, targetZ)
 			}
+		}
+	} else if skillName == "Juggernaut Charge" {
+		cost := resolveAbilityManaCost(player, skillName, 30)
+		if player.Mana >= cost {
+			player.Mana -= cost
+			x, z := clampAbilityTargetDistance(player, targetX, targetZ, 10)
+			if cx, cz, ok := w.constrainDungeonMovementDestination(player, x, z); ok {
+				x, z = cx, cz
+			}
+			player.IsCharging, player.ChargeSkillName = true, skillName
+			player.ChargeRuneID = "" // Never inherit the shared starter's rune.
+			player.ChargeStartX, player.ChargeStartZ = player.X, player.Z
+			player.ChargeTargetX, player.ChargeTargetZ = x, z
+			player.ChargeEffectDurationBonus = player.GetSkillBonus(skillName).SkillDuration
+			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
+			w.fireAbilityEvent(player.ID, targetID, skillName, x, z)
 		}
 	} else if skillName == "Berserker Edge" {
 		// Berserker Edge (Buff)
@@ -412,30 +409,27 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		}
 
 	} else if skillName == "Last Stand Rampage" {
-		// Last Stand (Buff) - Requires < 30% HP
-		hpPercent := float64(player.Health) / float64(player.MaxHealth)
-		if hpPercent < 0.30 {
-			player.LastStandActive = true
-			player.LastStandMultiplier = fighterDamageBuffMultiplierAtCast(player, skillName)
-			player.LastStandEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
-			player.RecalculateStats()
+		// Always usable; capture the stronger desperate-health payoff at cast.
+		player.LastStandActive = true
+		player.LastStandMultiplier = fighterDamageBuffMultiplierAtCast(player, skillName)
+		player.LastStandEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
+		player.RecalculateStats()
 
-			// Combo: Iron Will (Iron Fortress → Last Stand Rampage) = Damage reduction persists
-			if player.ActiveCombo == "rampage_damage_reduction" {
-				// Extend Iron Fortress to match Last Stand duration
-				if player.IronFortressActive {
-					player.IronFortressEndTime = player.LastStandEndTime
-				} else {
-					// Reactivate Iron Fortress if it just expired
-					player.IronFortressActive = true
-					player.IronFortressEndTime = player.LastStandEndTime
-				}
-				player.ActiveCombo = "" // Consume combo
+		// A learned offensive-branch sequence offers a finite defensive window,
+		// without borrowing the shield tank's armor, slow or immovability.
+		if player.ActiveCombo == "rampage_ward" {
+			if !player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !time.Now().Before(player.ArcaneShieldEndTime) {
+				player.ArcaneShieldActive = true
+				player.ArcaneShieldHP = max(1, player.MaxHealth/5)
+				player.ArcaneShieldEndTime = player.LastStandEndTime
+				player.ArcaneShieldRuneID = ""
+				player.ArcaneShieldAbsorbed = 0
 			}
-
-			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 120*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			player.ActiveCombo = "" // Consume combo
 		}
+
+		setCooldown(resolveAbilityCooldown(player.SubType, skillName, 120*time.Second))
+		w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 	}
 }
 

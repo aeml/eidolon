@@ -269,7 +269,7 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         fallbackDuration: 10,
         extraPayloadKeys: ['lastStandMultiplier'],
         onActivate: (entity, payload) => {
-            entity.lastStandMultiplier = readDamageBuffMultiplier(payload, 'lastStandMultiplier', entity.lastStandMultiplier, 3, 3.6);
+            entity.lastStandMultiplier = readDamageBuffMultiplier(payload, 'lastStandMultiplier', entity.lastStandMultiplier, 3, 3.6, 2);
             entity.lastStandDamageBoost = entity.lastStandMultiplier - 1;
         },
         onDeactivate: entity => { entity.lastStandMultiplier = 1; entity.lastStandDamageBoost = 0; }

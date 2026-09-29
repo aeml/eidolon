@@ -161,6 +161,7 @@ export class AbilityController {
      * @param {number} targetZ
      */
     triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ, shape = {}, { skipAnimation = false, boundaryOnly = false } = {}) {
+        if (skillName === 'Juggernaut Charge' && !(shape.radius > 0)) return;
         if (!entity || (
             typeof this.engine?.spawnTransientEffect !== 'function' &&
             typeof entity.spawnVisualEffect !== 'function'

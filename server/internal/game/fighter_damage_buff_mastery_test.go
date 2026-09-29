@@ -164,7 +164,7 @@ func TestFighterDamageBuffPurgeClearsStoredBerserkerStrength(t *testing.T) {
 	}
 }
 
-func TestFighterDamageBuffLastStandHealthGateDoesNotGrantStrength(t *testing.T) {
+func TestFighterDamageBuffLastStandHealthyCastCapturesStrength(t *testing.T) {
 	w, p, _ := directSkillWallFixture("Fighter", true)
 	defer w.StopBackground()
 	p.Level, p.UnlockedSkills = 100, []string{"Last Stand Rampage"}
@@ -172,11 +172,16 @@ func TestFighterDamageBuffLastStandHealthGateDoesNotGrantStrength(t *testing.T) 
 	p.RecalculateStats()
 	p.Health = p.MaxHealth
 	damage := p.Damage
-	if r := w.PerformAbility(p.ID, p.X, p.Z, "", "Last Stand Rampage"); r.Accepted {
-		t.Fatal("healthy character bypassed Last Stand gate")
+	if r := w.PerformAbility(p.ID, p.X, p.Z, "", "Last Stand Rampage"); !r.Accepted {
+		t.Fatal("healthy character could not use Rampage", r)
 	}
-	if p.LastStandActive || p.LastStandMultiplier != 0 || p.Damage != damage || !p.Cooldowns["Last Stand Rampage"].IsZero() {
-		t.Fatal("rejected cast granted strength or spent cooldown")
+	if !p.LastStandActive || p.LastStandMultiplier != 2.4 || p.Damage != int(float64(damage)*2.4) || !p.Cooldowns["Last Stand Rampage"].After(time.Now()) {
+		t.Fatal("healthy cast did not apply mastered 2x strength and cooldown")
+	}
+	p.Health = 1
+	p.RecalculateStats()
+	if p.LastStandMultiplier != 2.4 || p.Damage != int(float64(damage)*2.4) {
+		t.Fatal("health change altered the captured buff")
 	}
 }
 

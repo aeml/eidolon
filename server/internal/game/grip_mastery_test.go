@@ -30,8 +30,8 @@ func TestGripMasteryPaidRootDuration(t *testing.T) {
 				deadline := target.RootEndTime
 				p.TalentRanks = nil
 				p.RecalculateStats()
-				if target.Health != hp || target.Stunned || target.RootEndTime != deadline || math.Abs(math.Hypot(target.X-p.X, target.Z-p.Z)-2) > 1e-8 {
-					t.Fatal("mastery changed damage, stun, pull endpoint or existing duration")
+				if target.Health >= hp || target.Stunned || target.RootEndTime != deadline || math.Abs(math.Hypot(target.X-p.X, target.Z-p.Z)-2) > 1e-8 {
+					t.Fatal("strike missing, or mastery changed stun, pull endpoint or existing duration")
 				}
 			})
 		}

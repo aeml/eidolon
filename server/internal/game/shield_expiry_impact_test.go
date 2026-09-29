@@ -46,7 +46,7 @@ func TestPaidShieldExpiresAtExactImpactBoundary(t *testing.T) {
 	}
 }
 
-func TestPaidMeteorComboCannotSpendExpiredShield(t *testing.T) {
+func TestRetiredCrossBranchMeteorPairCannotSpendShield(t *testing.T) {
 	w, source, defender := abilityDefenseDuel(t, "Wizard", "Meteor Drop", "")
 	source.UnlockedSkills = append(source.UnlockedSkills, "Arcane Shield")
 	if result := w.PerformAbility(source.ID, source.X, source.Z, "", "Arcane Shield"); !result.Accepted {
@@ -62,12 +62,12 @@ func TestPaidMeteorComboCannotSpendExpiredShield(t *testing.T) {
 			combo = true
 		}
 	}
-	if !combo {
-		t.Fatal("ordinary two-cast sequence did not arm Arcane Barrage")
+	if combo {
+		t.Fatal("retired cross-branch sequence still armed Arcane Barrage")
 	}
-	source.ArcaneShieldEndTime = time.Now().Add(-time.Second)
+	shieldBefore := source.ArcaneShieldHP
 	advancePaidProjectileUntilHit(t, w, source, defender)
-	if source.ArcaneShieldActive || source.ArcaneShieldHP != 0 || defender.ArcaneShieldAbsorbed != 52 {
-		t.Fatalf("meteor consumed an expired shield for bonus damage: active=%v capacity=%d defenderAbsorbed=%d", source.ArcaneShieldActive, source.ArcaneShieldHP, defender.ArcaneShieldAbsorbed)
+	if !source.ArcaneShieldActive || source.ArcaneShieldHP != shieldBefore || defender.ArcaneShieldAbsorbed != 52 {
+		t.Fatalf("retired pair consumed the shield or added meteor damage: active=%v capacity=%d defenderAbsorbed=%d", source.ArcaneShieldActive, source.ArcaneShieldHP, defender.ArcaneShieldAbsorbed)
 	}
 }

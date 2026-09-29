@@ -14,6 +14,7 @@ import { AvengingSeraph } from './AvengingSeraph.js';
 import { configureOfflineSeraph, dismissOfflineSeraph } from './SeraphSummon.js';
 import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
 import { getClericUtilityPower, isOfflineUtilityActor } from '../skills/clericUtilityPower.js';
+import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -37,12 +38,19 @@ export class Cleric extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         const skill = skillNameOverride || this.abilityName;
         const offline = !this.isMultiplayer && !this.isRemote && !gameEngine?.isMultiplayer;
-        if (offline && ['Healing Light','Radiant Strike','Avenging Seraph','Divine Intervention'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
+        if (offline && !['Spirit Guardians', 'Guardian Spirits'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
         if (offline && skill === 'Avenging Seraph' && !gameEngine?.addEntity) return;
+        const markedTarget = offline && skill === 'Mark of Weakness'
+            ? findOfflineAbilityTarget(this, gameEngine, targetVector || this.position, { range: 15, cursorRadius: 5 }) : null;
+        if (offline && skill === 'Mark of Weakness' && (!markedTarget || !isOfflineUtilityActor(markedTarget) ||
+            markedTarget.stats.hp <= 0 || (markedTarget.instanceId || '') !== (this.instanceId || ''))) return;
         const previous = this.lastOfflineClericCast;
         const chained = offline && previous && Date.now()-previous.at >= 0 && Date.now()-previous.at <= 3000;
         this.healingLightMassRevival = Boolean(chained && skill === 'Healing Light' && previous.skill === 'Divine Intervention');
-        const holyFury = chained && skill === 'Radiant Strike' && previous.skill === 'Mark of Weakness';
+        const holyFury = chained && skill === 'Radiant Strike' && previous.skill === 'Consecrated Ground';
+        const sanctuary = chained && skill === 'Guardian Embrace' && previous.skill === 'Healing Light';
+        const divineStorm = chained && skill === 'Spirit Guardians' && previous.skill === 'Blessing of Zeal';
+        this.spiritGuardiansDivineStorm = Boolean(divineStorm);
         const healingTarget = offline && ['Healing Light','Divine Intervention'].includes(skill)
             ? (this.healingLightMassRevival ? this : resolveOfflineClericHealTarget(this,targetVector,gameEngine)) : null;
         // Resolve the offline target before the canonical cast presentation, so
@@ -50,11 +58,18 @@ export class Cleric extends Actor {
         if (healingTarget) targetVector = healingTarget.position;
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) {
             this.healingLightMassRevival = false;
+            this.spiritGuardiansDivineStorm = false;
             return;
         }
         this.gameEngine = gameEngine || this.gameEngine;
         if (!offline) return true;
         this.lastOfflineClericCast = {skill,at:Date.now()};
+        const combo = holyFury ? ['Holy Fury', 'holy_fury'] : sanctuary ? ['Sanctuary', 'sanctuary_combo']
+            : divineStorm ? ['Divine Storm', 'divine_storm'] : null;
+        if (combo) {
+            gameEngine.floatingTextManager?.spawn(`COMBO: ${combo[0]}!`, this.position, '#ffd700');
+            gameEngine.uiManager?.showComboNotification?.(...combo);
+        }
 
         if (skill === "Healing Light") {
             // Shared economy has already charged mana and the trained 8s CD.
@@ -70,6 +85,9 @@ export class Cleric extends Actor {
             this.guardianEmbraceTimer = getClericEffectDuration(this, skill, 10);
             this.guardianEmbraceRadius = getAbilityAoeRadius('Cleric', skill, this);
             this.embraceTickTimer = 1; // The server's first eligible update pulses immediately.
+            if (sanctuary) {
+                this.invulnerabilityTimer = Math.max(this.invulnerabilityTimer || 0, getClericEffectDuration(this, skill, 3));
+            }
             
             gameEngine.floatingTextManager.spawn("Guardian Embrace!", this.position, '#ffff00');
             this.spawnVisualEffect(gameEngine, this.position, 0xffff00, "buff");
@@ -80,18 +98,29 @@ export class Cleric extends Actor {
         if (skill === "Purifying Wave") {
             console.log("Cleric used Purifying Wave!");
             
-            // Keep the shared economy's talented cooldown and canonical cast
-            // presentation. This remains a cleanse, not an invented healing pulse.
+            // Shared cost, cooldown and area presentation; allies are cleansed,
+            // while the hostile pulse cannot cross dungeon walls.
             const radius = getAbilityAoeRadius('Cleric', skill, this);
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
             const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
             for (const entity of entities) {
-                if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
-                const hostile = typeof gameEngine.isHostileActorTarget === 'function'
+                if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD' || entity.stats.hp <= 0 ||
+                    !isOfflineUtilityActor(entity) || (entity.instanceId || '') !== (this.instanceId || '')) continue;
+                const hostile = entity !== this && (typeof gameEngine.isHostileActorTarget === 'function'
                     ? gameEngine.isHostileActorTarget(entity)
-                    : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name);
-                if (entity !== this && hostile) continue;
+                    : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name));
                 const distance = Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z);
                 if (distance > radius + (entity.radius || 0)) continue;
+                if (hostile) {
+                    if (clipDungeonEffectSegment(rects, this.position, entity.position).blocked) continue;
+                    applyOfflineAbilityHit(this, entity, 20 + this.stats.wisdom, skill, gameEngine.floatingTextManager, '#ffff66');
+                    if (entity.stats.hp > 0 && !entity.ccImmune && !(entity.slowTimer > 0)) {
+                        entity.slowFactor = .30;
+                        entity.slowTimer = getClericEffectDuration(this, skill, 2);
+                    }
+                    continue;
+                }
                 entity.cleanse();
                 gameEngine.floatingTextManager?.spawn('Cleanse!', entity.position, '#ffffff');
             }
@@ -159,6 +188,7 @@ export class Cleric extends Actor {
         // --- Branch C: Buff/Debuff Support ---
 
         if (skill === "Blessing of Resolve" || skill === "Blessing of Zeal") {
+            if (skill === 'Blessing of Zeal') this.cooldowns['Spirit Guardians'] = 0;
             const radius = getAbilityAoeRadius('Cleric', skill, this);
             const power = getClericUtilityPower(this, skill);
             // Retain shared cooldown/presentation and include self even when
@@ -195,20 +225,7 @@ export class Cleric extends Actor {
             console.log("Cleric used Mark of Weakness!");
             
 
-            // Target closest enemy to cursor
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0 && d < minDst) {
-                        minDst = d;
-                        target = entity;
-                    }
-                }
-            });
+            const target = markedTarget;
 
             if (target) {
                 target.markWeaknessTimer = getClericEffectDuration(this, skill, 10);
@@ -259,8 +276,9 @@ export class Cleric extends Actor {
             
             this.spiritsActive = true;
             this.spiritDuration = getClericEffectDuration(this, 'Spirit Guardians', 8);
-            this.spiritBoosted = false; // Normal mode
+            this.spiritBoosted = Boolean(divineStorm);
             this.spiritRadius = getAbilityAoeRadius('Cleric', 'Spirit Guardians', this);
+            this.spiritGuardiansDivineStorm = false;
             this.spiritRune = this.skillRunes?.['Spirit Guardians'] || '';
             this.spiritDamageTimer = .5;
             this.createSpirits(gameEngine);
@@ -336,6 +354,7 @@ export class Cleric extends Actor {
         for (const seraph of this.offlineSeraphs || []) dismissOfflineSeraph(seraph);
         this.lastOfflineClericCast = null;
         this.healingLightMassRevival = false;
+        this.spiritGuardiansDivineStorm = false;
         this.clearConsecratedZone();
         this.spiritsActive = false;
         this.spiritDuration = 0;

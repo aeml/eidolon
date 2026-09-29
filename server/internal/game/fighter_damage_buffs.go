@@ -7,6 +7,9 @@ func fighterDamageBuffMultiplierAtCast(caster *Entity, skill string) float64 {
 	id, base := "FTR_19", 1.5
 	if skill == "Last Stand Rampage" {
 		id, base = "FTR_25", 3
+		if caster != nil && caster.MaxHealth > 0 && float64(caster.Health)/float64(caster.MaxHealth) >= .30 {
+			base = 2
+		}
 	} else if skill != "Berserker Edge" {
 		return 1
 	}
@@ -37,5 +40,8 @@ func (e *Entity) ActiveBerserkerModeMultiplier() float64 {
 }
 
 func (e *Entity) ActiveLastStandMultiplier() float64 {
+	if e.LastStandActive && e.LastStandMultiplier >= 2 && e.LastStandMultiplier <= 3.6 {
+		return e.LastStandMultiplier
+	}
 	return activeDamageBuffMultiplier(e.LastStandActive, e.LastStandMultiplier, 3, 3.6)
 }

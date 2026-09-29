@@ -8,6 +8,12 @@ import { SELF_CENTERED_SHAPE_ABILITIES } from '../src/skills/abilityRadii.js';
 import { PLAYER_ABILITY_VISUALS, getAbilityPresentation } from '../src/skills/abilityVisualManifest.js';
 
 const owned = [];
+
+test('Juggernaut aim range matches its ten-unit movement cap', () => {
+    const player = new Fighter('juggernaut-aim'); owned.push(player);
+    expect(new AbilityController({ player }).getAbilityCastRange('Juggernaut Charge')).toBe(10);
+});
+
 function fixture(rank = 0, generic = 0) {
     const player = new Fighter('shockwave'); owned.push(player); player.mesh = new THREE.Group();
     player.position.set(50000, 40, 50000); player.unlockedSkills.push('Juggernaut Charge');
@@ -23,9 +29,52 @@ function fixture(rank = 0, generic = 0) {
         target.stats.hp = target.stats.maxHp = 1000; jest.spyOn(target, 'takeDamage');
         return target;
     };
-    return { player, engine, add, cast: () => player.useAbility(new THREE.Vector3(50001, 0, 50000), engine, 'Juggernaut Charge') };
+    // Stationary landing isolates existing area/training checks. Travel timing
+    // and displaced origins are covered separately below.
+    return { player, engine, add, cast: () => {
+        player.useAbility(player.position.clone(), engine, 'Juggernaut Charge');
+        player.update(0, null, null, engine.chunkManager);
+    } };
 }
 afterEach(() => { for (const actor of owned.splice(0)) actor.dispose(); jest.restoreAllMocks(); });
+
+test('actual Juggernaut travels at charge speed and releases exactly one landing wave', () => {
+    const f = fixture(), target = f.add('landing-only', 18);
+    f.player.skillRunes = { Charge: 'charge_momentum' };
+    f.player.useAbility(new THREE.Vector3(50100, 40, 50000), f.engine, 'Juggernaut Charge');
+    expect(f.player.chargeTarget.x).toBe(50010);
+    expect(f.engine.spawnTransientEffect).not.toHaveBeenCalled();
+    expect(target.takeDamage).not.toHaveBeenCalled();
+    f.player.update(.1, null, null, f.engine.chunkManager);
+    expect(f.player.position.x).toBe(50005); expect(target.takeDamage).not.toHaveBeenCalled();
+    f.player.update(.1, null, null, f.engine.chunkManager);
+    expect(f.player.position.x).toBe(50010); expect(f.player.isCharging).toBe(false);
+    expect(target.takeDamage).toHaveBeenCalledTimes(1); expect(target.stats.hp).toBe(940);
+    expect(target.slowTimer).toBe(5);
+    const waves = f.engine.spawnTransientEffect.mock.calls.filter(call => call[0] === 'wave');
+    expect(waves).toHaveLength(1); expect(waves[0][1].x).toBe(50010);
+    f.player.update(.1, null, null, f.engine.chunkManager);
+    expect(target.takeDamage).toHaveBeenCalledTimes(1);
+});
+
+test.each(['cancel', 'death', 'scene'])('%s cancels pending Juggernaut damage and impact visuals', mode => {
+    const f = fixture(), target = f.add('canceled-target', 18);
+    f.player.useAbility(new THREE.Vector3(50010, 40, 50000), f.engine, 'Juggernaut Charge');
+    if (mode === 'cancel') f.player.cancelAbilities();
+    if (mode === 'death') f.player.die();
+    if (mode === 'scene') f.engine.currentInstanceId = 'different';
+    f.player.update(.3, null, null, f.engine.chunkManager);
+    expect(target.takeDamage).not.toHaveBeenCalled();
+    expect(f.engine.spawnTransientEffect).not.toHaveBeenCalled();
+    expect(f.player.offlineCharge).toBeNull();
+});
+
+test('remote cast-start event cannot show the landing shockwave early', () => {
+    const engine = { spawnTransientEffect: jest.fn() };
+    const remote = { meshType: 'Fighter', position: new THREE.Vector3(), playAbilityAnimation: jest.fn() };
+    new AbilityController(engine).triggerRemoteAbilityVisuals(remote, 'Juggernaut Charge', 10, 0, {});
+    expect(engine.spawnTransientEffect).not.toHaveBeenCalled();
+});
 
 test.each([0,1,5].flatMap(rank => [0,5].map(generic => ({ rank, generic }))))(
     'paid shockwave rank$rank generic$generic matches trained damage, planar area and visible radius', ({ rank, generic }) => {

@@ -51,10 +51,10 @@ test('Grip ignores nearby friend and selects an enemy within planar body-padded 
     expect(friend.rootTimer).toBe(0);expect(enemy.rootTimer).toBe(1);expect(enemy.position.x).toBe(50002);
 });
 
-test.each(['ccImmune','ironFortressImmovable'])('Grip respects %s without pushing an enemy or adding damage',flag=>{
+test.each(['ccImmune','ironFortressImmovable'])('Grip damages but respects %s without pushing an enemy',flag=>{
     const f=fixture(5),target=f.add('immune',5);target[flag]=true;const hp=target.stats.hp;
     f.cast(target.position.clone());expect(f.player.stats.mana).toBe(165);expect(target.position.x).toBe(50005);
-    expect(target.rootTimer).toBe(flag==='ccImmune'?0:1);expect(target.stats.hp).toBe(hp);expect(target.stunTimer).toBe(0);
+    expect(target.rootTimer).toBe(flag==='ccImmune'?0:1);expect(target.stats.hp).toBeLessThan(hp);expect(target.stunTimer).toBe(0);
 });
 
 test('online Grip never predicts pull or root',()=>{

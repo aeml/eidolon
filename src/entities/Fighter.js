@@ -12,7 +12,6 @@ import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { beginOfflineWhirlwind, advanceOfflineWhirlwind, cancelOfflineWhirlwind } from '../skills/offlineWhirlwind.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
-import { applyOfflineJuggernaut } from '../skills/offlineJuggernaut.js';
 import { findOfflineGripTarget, applyOfflineGrip } from '../skills/offlineGrip.js';
 import { applyOfflineSweepingStrike } from '../skills/offlineFighterCone.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
@@ -74,13 +73,9 @@ export class Fighter extends Actor {
             }
         }
         if (requestedSkill === 'Whirlwind' && (this.isRemote || !this.unlockedSkills.includes(requestedSkill))) return false;
-        if (['Charge', 'Shattering Charge'].includes(requestedSkill) && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
+        if (['Charge', 'Shattering Charge', 'Juggernaut Charge'].includes(requestedSkill) && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
             ![targetVector?.x, targetVector?.z].every(Number.isFinite))) return false;
         if (['Executioner Spin', 'Whirlwind'].includes(requestedSkill)) targetVector = this.position.clone();
-        if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
-            gameEngine?.floatingTextManager?.spawn?.('HP too high!', this.position, '#888888');
-            return false;
-        }
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         this.gameEngine = gameEngine;
@@ -95,6 +90,7 @@ export class Fighter extends Actor {
 
         const previousCast = this.lastOfflineFighterCast;
         const now = Date.now();
+        const follows = opener => previousCast?.skill === opener && now - previousCast.at >= 0 && now - previousCast.at <= 3000;
         const momentumStrike = skill === 'Whirlwind' && previousCast?.skill === 'Charge' &&
             now - previousCast.at >= 0 && now - previousCast.at <= 3000;
         this.lastOfflineFighterCast = { skill, at: now };
@@ -113,7 +109,8 @@ export class Fighter extends Actor {
 
             this.spawnVisualEffect(gameEngine, this.position.clone().add(forward), 0xffff00, "impact");
 
-            applyOfflineShieldSlam(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
+            applyOfflineShieldSlam(this, targetVector, gameEngine, isGuardianRoarFriendlyActor, follows('Iron Fortress'));
+            if (follows('Iron Fortress')) gameEngine.floatingTextManager?.spawn('FORTRESS COUNTER!', this.position, '#e6c482');
             return;
         }
 
@@ -123,6 +120,8 @@ export class Fighter extends Actor {
 
             const baseDuration = this.skillRunes?.[skill] === 'ironfortress_extended' ? 45 : 30;
             this.ironFortressTimer = getFighterEffectDuration(this, baseDuration, skill);
+            this.cooldowns['Shield Slam'] = 0;
+            if (this.abilityName === 'Shield Slam') this.abilityCooldown = 0;
 
             // Match the authoritative receiving pipeline; Mastery changes
             // duration, never protection strength.
@@ -144,7 +143,7 @@ export class Fighter extends Actor {
 
 
             const radius = getAbilityAoeRadius('Fighter', skill, this);
-            const buffDuration = getFighterEffectDuration(this, 10, skill);
+            const buffDuration = getFighterEffectDuration(this, follows('Shield Slam') ? 15 : 10, skill);
             const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
                 ? gameEngine.currentDungeonLayout?.walkRects : null;
@@ -200,11 +199,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Juggernaut Charge") {
-            console.log("Fighter used Juggernaut Charge (Shockwave)!");
-
-
-            gameEngine.floatingTextManager.spawn("SHOCKWAVE!", this.position, '#00ffff');
-            applyOfflineJuggernaut(this, gameEngine, isGuardianRoarFriendlyActor);
+            beginOfflineCharge(this, targetVector, gameEngine, false, skill);
             return;
         }
 
@@ -243,28 +238,30 @@ export class Fighter extends Actor {
         if (skill === "Last Stand Rampage") {
             console.log("Fighter used Last Stand Rampage!");
 
-            // Check HP Requirement (< 30%)
-            const hpPercent = this.stats.hp / this.stats.maxHp;
-            if (hpPercent >= 0.30) {
-                gameEngine.floatingTextManager.spawn("HP too high!", this.position, '#888888');
-                return false; // Failed to cast
-            }
-
-
             applyOfflineFighterDamageBuff(this, skill, gameEngine);
+            if (follows('Berserker Edge') && (!this.arcaneShieldActive || this.shieldHP <= 0 || this.arcaneShieldTimer <= 0)) {
+                this.arcaneShieldActive = true;
+                this.shieldHP = Math.max(1, Math.floor(this.stats.maxHp / 5));
+                this.arcaneShieldTimer = this.lastStandTimer;
+                gameEngine.floatingTextManager?.spawn(`IRON WILL +${this.shieldHP}`, this.position, '#e6c482');
+            }
 
             gameEngine.floatingTextManager.spawn("RAMPAGE!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
             return;
         }
 
-        if (skill === 'Charge') beginOfflineCharge(this, targetVector, gameEngine);
+        if (skill === 'Charge') beginOfflineCharge(this, targetVector, gameEngine, follows('Earthshaker'));
     }
 
     cancelAbilities() {
         const hadFortress = this.ironFortressTimer > 0;
         cancelOfflineWhirlwind(this);
         this.lastOfflineFighterCast = null;
+        if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+            this.arcaneShieldActive = false;
+            this.arcaneShieldTimer = this.shieldHP = 0;
+        }
         clearOfflineFighterDamageBuffs(this);
         cancelOfflineCharge(this);
         this.runeArmorBuff = this.runeArmorBuffTimer = 0;

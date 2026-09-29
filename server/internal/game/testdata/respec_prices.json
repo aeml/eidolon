@@ -1,0 +1,10 @@
+[
+  { "level": 1, "talents": 1000, "skills": 1000, "both": 1500 },
+  { "level": 19, "talents": 1000, "skills": 1000, "both": 1500 },
+  { "level": 20, "talents": 2000, "skills": 2000, "both": 3000 },
+  { "level": 39, "talents": 2000, "skills": 2000, "both": 3000 },
+  { "level": 40, "talents": 3000, "skills": 3000, "both": 4500 },
+  { "level": 60, "talents": 4000, "skills": 4000, "both": 6000 },
+  { "level": 80, "talents": 5000, "skills": 5000, "both": 7500 },
+  { "level": 100, "talents": 6000, "skills": 6000, "both": 9000 }
+]

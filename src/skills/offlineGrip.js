@@ -2,6 +2,8 @@ import { Actor } from '../entities/Actor.js';
 import { getAbilityRange } from '../core/AbilityRange.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
+import { getFighterAbilityDamage } from './fighterAbilityDamage.js';
 
 // Resolve before spending resources. Grip is a single-target planar pull;
 // area talents do not expand its range or its body-padded cursor tolerance.
@@ -27,7 +29,10 @@ export function findOfflineGripTarget(source, aim, engine, isFriendlyActor) {
 }
 
 export function applyOfflineGrip(source, target, engine) {
-    if (!target || source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer || target.ccImmune) return;
+    if (!target || source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
+    const damage = getFighterAbilityDamage(source, 'Unbreakable Grip', source.stats.damage + source.stats.strength);
+    applyOfflineAbilityHit(source, target, damage, 'Unbreakable Grip', engine.floatingTextManager, '#d2b48c');
+    if (target.ccImmune || target.state === 'DEAD' || target.stats.hp <= 0) return;
     if (!target.ironFortressImmovable) {
         const dx = target.position.x-source.position.x, dz = target.position.z-source.position.z;
         const distance = Math.hypot(dx, dz);

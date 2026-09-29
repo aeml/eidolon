@@ -41,6 +41,7 @@ func TestJuggernautTrainingPurchasesCapsAndImmutableSave(t *testing.T) {
 	if !w.PerformAbility(p.ID, target.X, target.Z, "", "Juggernaut Charge").Accepted {
 		t.Fatal("cast rejected")
 	}
+	w.updateEntity(p, .25, nil, &deferredActions{})
 	if 10000-target.Health != 72 || math.Abs(event.Radius-11) > 1e-8 || !maps.Equal(ranks, p.TalentRanks) {
 		t.Fatalf("cap/foreign rank/immutable save failed: damage=%d radius=%v ranks=%v", 10000-target.Health, event.Radius, p.TalentRanks)
 	}
@@ -77,11 +78,12 @@ func TestJuggernautPaidDamageAndAreaTraining(t *testing.T) {
 					}
 				}
 				mana := p.Mana
-				result := w.PerformAbility(p.ID, p.X+1, p.Z, "", "Juggernaut Charge")
+				result := w.PerformAbility(p.ID, p.X, p.Z, "", "Juggernaut Charge")
 				if !result.Accepted || p.Mana != mana-30 || result.CooldownRemaining <= 0 {
 					t.Fatalf("paid control failed: %+v", result)
 				}
 				want := int(math.Floor(60*(1+.04*float64(rank)+.02*float64(generic)) + 1e-9))
+				w.updateEntity(p, 0, nil, &deferredActions{})
 				for _, target := range []*Entity{center, edge} {
 					if 10000-target.Health != want || target.MaxHealth != 10000 || !target.Slowed || target.SlowFactor != .6 || target.Threat[p.ID] != float64(want) || damageEvents[target.ID] != 1 {
 						t.Errorf("%s damage=%d slow=%v factor=%v threat=%v receipts=%d want=%d", target.ID, 10000-target.Health, target.Slowed, target.SlowFactor, target.Threat[p.ID], damageEvents[target.ID], want)
@@ -112,6 +114,7 @@ func TestJuggernautTrainedWallImmunityAndCritical(t *testing.T) {
 				if !w.PerformAbility(p.ID, target.X, target.Z, "", "Juggernaut Charge").Accepted {
 					t.Fatal("cast rejected")
 				}
+				w.updateEntity(p, .25, nil, &deferredActions{})
 				want := 0
 				if doorway {
 					want = 156

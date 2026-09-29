@@ -7,11 +7,11 @@ import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 
 // Paid offline shockwave only. Keep server-compatible planar body/wall/hostile
 // admission; authoritative multiplayer damage is never predicted here.
-export function applyOfflineJuggernaut(source, engine, isFriendlyActor) {
+export function applyOfflineJuggernaut(source, engine, isFriendlyActor, castDuration) {
     if (source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
     const skill = 'Juggernaut Charge', radius = getAbilityAoeRadius('Fighter', skill, source);
     const damage = getFighterAbilityDamage(source, skill, Math.floor(source.stats.damage + source.stats.strength));
-    const duration = getFighterEffectDuration(source, 5);
+    const duration = castDuration ?? getFighterEffectDuration(source, 5);
     const rects = engine.currentInstanceId && engine.currentInstanceType !== 'overworld' ? engine.currentDungeonLayout?.walkRects : null;
     for (const target of new Set(engine.chunkManager.getActiveEntities())) {
         if (target === source || !(target instanceof Actor) || !target.isActive || target.state === 'DEAD' ||
@@ -22,7 +22,7 @@ export function applyOfflineJuggernaut(source, engine, isFriendlyActor) {
         if (Math.hypot(target.position.x-source.position.x, target.position.z-source.position.z) > radius+body ||
             clipDungeonEffectSegment(rects, source.position, target.position).blocked) continue;
         applyOfflineAbilityHit(source, target, damage, skill, engine.floatingTextManager, '#ffff00');
-        if (!target.ccImmune) {
+        if (target.stats.hp > 0 && target.state !== 'DEAD' && !target.ccImmune) {
             target.slowTimer = duration; target.slowFactor = .6;
             engine.floatingTextManager?.spawn('Slowed!', target.position, '#00ffff');
         }

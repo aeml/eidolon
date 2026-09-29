@@ -135,8 +135,8 @@ func TestSpiritTrainedTicksRetainWallsAndComboVariant(t *testing.T) {
 	for _, doorway := range []bool{false, true} {
 		w, p, target := directSkillWallFixture("Cleric", doorway)
 		p.Stats.Wisdom = 10
-		p.TalentRanks, p.UnlockedSkills = map[string]int{"CLR_34": 5}, []string{"Heaven's Trumpet", "Spirit Guardians"}
-		if !w.PerformAbility(p.ID, p.X, p.Z, "", "Heaven's Trumpet").Accepted {
+		p.TalentRanks, p.UnlockedSkills = map[string]int{"CLR_34": 5}, []string{"Blessing of Zeal", "Spirit Guardians"}
+		if !w.PerformAbility(p.ID, p.X, p.Z, "", "Blessing of Zeal").Accepted {
 			t.Fatal("combo opener rejected")
 		}
 		p.LastAbilityTime = time.Now().Add(-time.Second)

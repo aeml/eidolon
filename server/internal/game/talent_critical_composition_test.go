@@ -83,6 +83,7 @@ func TestFireballSplashAppliesRecipientModifiersOnce(t *testing.T) {
 	for _, tc := range []struct {
 		name                                                                                   string
 		critical, fire, primaryMark, splashMark, combo, primarySlow, splashSlow, wall, doorway bool
+		primaryImmune, splashImmune                                                            bool
 	}{
 		{name: "baseline"},
 		{name: "critical", critical: true},
@@ -92,6 +93,9 @@ func TestFireballSplashAppliesRecipientModifiersOnce(t *testing.T) {
 		{name: "secondary weakness only", splashMark: true},
 		{name: "combo primary slowed", combo: true, primarySlow: true},
 		{name: "combo secondary slowed", combo: true, splashSlow: true},
+		{name: "combo primary immune", combo: true, primaryImmune: true},
+		{name: "combo splash immune", combo: true, splashImmune: true},
+		{name: "ordinary immune", primaryImmune: true},
 		{name: "all modifiers", critical: true, fire: true, primaryMark: true, splashMark: true, combo: true, primarySlow: true, splashSlow: true},
 		{name: "dungeon wall", wall: true},
 		{name: "dungeon doorway", wall: true, doorway: true},
@@ -117,6 +121,7 @@ func TestFireballSplashAppliesRecipientModifiersOnce(t *testing.T) {
 				X: 8, Health: 10000, MaxHealth: 10000, State: "IDLE", MarkWeakness: tc.primaryMark, MarkWeaknessFactor: .5, Slowed: tc.primarySlow}
 			secondary := &Entity{ID: "splash-secondary", Type: TypeEnemy, InstanceID: p.InstanceID,
 				X: 8, Z: 6, Health: 10000, MaxHealth: 10000, State: "IDLE", MarkWeakness: tc.splashMark, MarkWeaknessFactor: .5, Slowed: tc.splashSlow}
+			primary.CCImmune, secondary.CCImmune = tc.primaryImmune, tc.splashImmune
 			outsider := &Entity{ID: "splash-other-instance", Type: TypeEnemy, InstanceID: "unrelated-instance",
 				X: 8, Z: 6, Health: 10000, MaxHealth: 10000, State: "IDLE"}
 			w.AddEntity(primary)
@@ -146,10 +151,10 @@ func TestFireballSplashAppliesRecipientModifiersOnce(t *testing.T) {
 				w.updateEntity(projectile, .05, nil, &deferredActions{})
 			}
 			wantPrimary, wantSplash := 100, 40
-			if tc.combo && tc.primarySlow {
+			if tc.combo && (tc.primarySlow || tc.primaryImmune) {
 				wantPrimary *= 2
 			}
-			if tc.combo && tc.splashSlow {
+			if tc.combo && (tc.splashSlow || tc.splashImmune) {
 				wantSplash *= 2
 			}
 			if tc.critical {

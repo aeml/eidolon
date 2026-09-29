@@ -30,6 +30,19 @@ function fixture(rune = '', ranks = {}) {
         dispose: () => { source.dispose(); targets.forEach(target => target.dispose()); } };
 }
 
+test.each(['ordinary', 'immune', 'existing stun'])('learned control-branch Tremor Rush knockdown: %s', kind => {
+    const f = fixture();
+    try {
+        f.source.unlockedSkills = ['Charge', 'Sweeping Strike', 'Earthshaker', 'Unbreakable Grip', 'Juggernaut Charge'];
+        const target = f.add(20);
+        target.ccImmune = kind === 'immune';
+        if (kind === 'existing stun') target.stunTimer = 6;
+        f.source.useAbility(f.source.position.clone(), f.engine, 'Earthshaker');
+        f.cast(); f.step(.4);
+        expect(target.stunTimer).toBe(kind === 'immune' ? 0 : kind === 'existing stun' ? 6 : 2);
+    } finally { f.dispose(); }
+});
+
 test.each([0, 1, 5])('paid Charge uses planar speed, fixed body-edge radius and impact-time damage rank %s', rank => {
     const f = fixture('', { FTR_21: rank, FTR_22: rank, FTR_38: rank });
     try {

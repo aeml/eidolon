@@ -66,7 +66,7 @@ describe.each(cases)('$name', entry => {
 test('wave mastery retains its saved ID and five ranks, with precise cleanse-radius copy', () => {
     const mastery = CONSTANTS.PASSIVE_TALENTS.Cleric.find(talent => talent.id === 'CLR_07');
     expect(mastery.maxRank).toBe(5);
-    expect(mastery.desc).toBe('+4% Purifying Wave cleansing radius per rank (20% max).');
+    expect(mastery.desc).toBe('+4% Purifying Wave radius per rank (20% max).');
 });
 
 test.each([0, 1, 5])('wave-specific mastery does not leak into other Cleric areas, ministry rank %s', rank => {
@@ -87,7 +87,7 @@ test.each([[100, 9.6], [1.9, 8.32], [-1, 8], [Infinity, 8], [NaN, 8]])('wave mas
     expect(getAbilityAoeRadius('Cleric', skill, { talentRanks: { CLR_07: rank } })).toBeCloseTo(radius, 8);
 });
 
-test('offline wave protects enemies, PvP opponents and inactive/dead actors', () => {
+test('offline wave does not cleanse enemies, PvP opponents or inactive/dead actors', () => {
     const p = new Cleric('wave-caster');
     p.unlockedSkills.push(skill);
     const targets = ['enemy', 'opponent', 'dead', 'inactive'].map(id => {

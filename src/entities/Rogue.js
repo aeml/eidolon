@@ -131,6 +131,7 @@ export class Rogue extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
         const skill = skillNameOverride || this.abilityName;
+        if (skill === 'Tripwire' && ![targetVector.x, targetVector.z].every(Number.isFinite)) return false;
         let castTarget = null;
         if (skill === 'Backstab' && !this.isMultiplayer && !gameEngine?.isMultiplayer && !this.unlockedSkills.includes(skill)) return false;
         if (['Weak Point Mark', 'Backstab', 'Shadow Lunge'].includes(skill) && !this.isMultiplayer && !gameEngine?.isMultiplayer) {
@@ -151,8 +152,12 @@ export class Rogue extends Actor {
         // Only accepted offline casts advance sequence history. Target, mana
         // and cooldown rejections above must not consume a pending Ambush.
         const now = Date.now();
-        const ambushCombo = skill === 'Backstab' && this.lastOfflineRogueSkill === 'Cloak & Vanish' &&
-            now - this.lastOfflineRogueSkillAt <= 3000;
+        const follows = opener => this.lastOfflineRogueSkill === opener &&
+            now - this.lastOfflineRogueSkillAt >= 0 && now - this.lastOfflineRogueSkillAt <= 3000;
+        const ambushCombo = skill === 'Backstab' && follows('Weak Point Mark');
+        const venomBurst = skill === 'Tripwire' && follows('Poison Coating');
+        const shadowDance = skill === 'Smoke Bomb' && follows('Cloak & Vanish');
+        const bladeTornado = skill === 'Phantom Volley' && follows('Fan of Knives');
         this.lastOfflineRogueSkill = skill;
         this.lastOfflineRogueSkillAt = now;
 
@@ -295,6 +300,10 @@ export class Rogue extends Actor {
 
         if (skill === "Phantom Volley") {
             console.log("Rogue used Phantom Volley!");
+            if (bladeTornado) {
+                gameEngine.floatingTextManager?.spawn('COMBO: Blade Tornado!', this.position, '#ffd700');
+                gameEngine.uiManager?.showComboNotification?.('Blade Tornado', 'blade_tornado');
+            }
             
 
             // Snapshot every shot at this paid cast, not the delayed emission.
@@ -303,15 +312,26 @@ export class Rogue extends Actor {
             const startPos = this.position.clone();
             startPos.y += 1.0;
             
-            const direction = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
+            const direction = new THREE.Vector3().subVectors(targetVector, this.position);
+            direction.y = 0;
+            if (!direction.lengthSq()) direction.set(0, 0, 1).applyQuaternion(this.mesh.quaternion);
+            direction.normalize();
             const targetPos = startPos.clone().add(direction.multiplyScalar(50)); // Far away target
+
+            const scene = gameEngine.currentInstanceId || '';
+            const instance = this.instanceId || '';
+            const generation = this.volleyGeneration || 0;
 
             for (let i = 0; i < 3; i++) {
                 this.scheduleTask(() => {
+                    if ((this.volleyGeneration || 0) !== generation || this.state === 'DEAD' || this.isActive === false ||
+                        this.stats.hp <= 0 || this.isRemote || this.isMultiplayer || gameEngine.isMultiplayer ||
+                        (gameEngine.currentInstanceId || '') !== scene || (this.instanceId || '') !== instance) return;
                     // Use 'PhantomArrow' for the purple visual
                     const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
                     arrow.skillName = skill;
                     arrow.damage = volleyDamage;
+                    arrow.projectilePierce = bladeTornado;
                     gameEngine.addEntity(arrow);
                     
                     // Small burst for each shot
@@ -342,6 +362,7 @@ export class Rogue extends Actor {
                 const dagger = new Projectile(null, this, 'Dagger', startPos, target);
                 dagger.skillName = skill;
                 dagger.damage = resolveRogueAbilityDamage(this, skill);
+                dagger.fanRune = this.skillRunes?.[skill] || '';
                 dagger.isPiercingThrow = true;
                 if (this.serratedEdgesActive) dagger.applyBleed = true;
                 gameEngine.addEntity(dagger);
@@ -354,6 +375,11 @@ export class Rogue extends Actor {
         if (skill === "Smoke Bomb") {
             // Actor.useAbility already presents the shared trained footprint.
             applyOfflineSmokeBomb(this, gameEngine);
+            if (shadowDance) {
+                this.cooldowns.Tripwire = 0;
+                if (this.abilityName === 'Tripwire') this.abilityCooldown = 0;
+                gameEngine.floatingTextManager?.spawn('SHADOW DANCE: TRAP READY', this.position, '#b3a1ff');
+            }
             return;
         }
 
@@ -373,8 +399,13 @@ export class Rogue extends Actor {
             console.log("Rogue used Tripwire!");
             
 
-            // Place trap at feet
-            const trapPos = this.position.clone();
+            const trapPos = targetVector.clone();
+            const dx = trapPos.x - this.position.x, dz = trapPos.z - this.position.z;
+            const distance = Math.hypot(dx, dz), range = getAbilityRange(this, skill, 6);
+            if (distance > range) { trapPos.x = this.position.x + dx * range / distance; trapPos.z = this.position.z + dz * range / distance; }
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld' ? gameEngine.currentDungeonLayout?.walkRects : null;
+            const landing = resolveDungeonMovementEndpoint(rects, this.position, trapPos);
+            trapPos.set(landing.x, this.position.y, landing.z);
 
             // Multiplayer receives the server-owned stationary projectile.
             // The cast cue is predicted by the canonical presentation layer.
@@ -390,7 +421,7 @@ export class Rogue extends Actor {
             this.traps.push({
                 position: trapPos,
                 instanceId: this.instanceId || gameEngine.currentInstanceId || '',
-                damage: resolveRogueAbilityDamage(this, skill),
+                damage: resolveRogueAbilityDamage(this, skill) * (venomBurst ? 2 : 1),
                 radius: PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS.Tripwire.gameplayRadius,
                 mesh,
                 elapsed: 0
@@ -464,6 +495,9 @@ export class Rogue extends Actor {
     }
 
     cancelAbilities() {
+        this.volleyGeneration = (this.volleyGeneration || 0) + 1;
+        this.lastOfflineRogueSkill = null;
+        this.lastOfflineRogueSkillAt = 0;
         this.serratedEdgesActive = false;
         this.serratedEdgesTimer = 0;
         this.poisonCoatingActive = false;

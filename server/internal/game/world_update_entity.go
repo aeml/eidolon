@@ -524,12 +524,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Calculate final damage with rune modifications
 				finalDamage := damage
 
-				// Combo: Implosion (Gravity Well → Fireball) = +100% damage to slowed targets
+				// Implosion's damage payoff survives boss control immunity.
 				if projSkill == "Fireball" && fireballWellBoost {
 					target.Mu.RLock()
-					isSlowed := target.Slowed
+					eligible := target.Slowed || target.CCImmune
 					target.Mu.RUnlock()
-					if isSlowed {
+					if eligible {
 						finalDamage *= 2
 					}
 				}
@@ -602,6 +602,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Fan of Knives rune effects
 				if projSkill == "Fan of Knives" && !isDead {
+					// Serrated blades create a brief spacing window for the ranged
+					// branch. Never replace an existing slow or bypass immunity.
+					if ownerSerratedEdges && !target.CCImmune && (!target.Slowed || !time.Now().Before(target.SlowEndTime)) {
+						target.Slowed, target.SlowFactor = true, .20
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, projSkill, 2*time.Second))
+						target.RecalculateStats()
+					}
 					if projRuneID == "fanofknives_weighted" {
 						if !target.CCImmune {
 							target.Slowed = true
@@ -718,7 +725,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							// Begin with raw projectile damage. Direct-hit crits and
 							// target debuffs must not be reapplied to other recipients.
 							splashDmg := int(float64(damage) * 0.4)
-							if projSkill == "Fireball" && fireballWellBoost && splashTarget.Slowed {
+							if projSkill == "Fireball" && fireballWellBoost && (splashTarget.Slowed || splashTarget.CCImmune) {
 								splashDmg *= 2
 							}
 							splashDmg = impacts.damage(ownerCombat, splashTarget, splashDmg, "fire", projSkill)
@@ -934,6 +941,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Resolve the existing impact first so canonical Charge deals exactly
 				// twice its previous integer damage. Shattering remains unchanged.
 				damage := int(float64(e.Damage) * 1.5 * 1.3 * e.GetSkillDamageMultiplier(impactSkill))
+				if impactSkill == "Juggernaut Charge" {
+					training := snapshotCombatAttackerLocked(e)
+					training.NormalizeTalentRanks()
+					damage = int(math.Floor(float64(e.Damage+e.Stats.Strength)*training.GetSkillDamageMultiplier(impactSkill) + 1e-9))
+				}
 
 				// Rune effects
 				runeID := e.ChargeRuneID
@@ -962,6 +974,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if impactSkill == "Shattering Charge" {
 					impactRadius = effectiveAbilityAreaRadius(e, impactSkill, impactRadius)
 				}
+				if impactSkill == "Juggernaut Charge" {
+					training := snapshotCombatAttackerLocked(e)
+					training.NormalizeTalentRanks()
+					impactRadius = effectiveAbilityAreaRadius(training, impactSkill, 10)
+				}
 				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
 				chargeCombat := snapshotCombatAttackerLocked(e)
 				chargeCombat.PartyID = e.PartyID
@@ -970,6 +987,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				e.Mu.Unlock() // Unlock before interaction
+				if impactSkill == "Juggernaut Charge" {
+					w.fireAbilityEvent(sourceID, "", impactSkill, impactX, impactZ, AbilityShape{Radius: impactRadius, Arc: 2 * math.Pi})
+				}
 
 				walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 				nearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius(impactSkill, impactRadius), instanceID)
@@ -993,13 +1013,18 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						finalDamage := impacts.damage(chargeCombat, target, damage, "physical", impactSkill)
 						addThreatLocked(target, sourceID, float64(finalDamage))
 						isDead := target.Health <= 0
+						if impactSkill == "Juggernaut Charge" && !isDead && !target.CCImmune {
+							target.Slowed, target.SlowFactor = true, .6
+							target.SlowEndTime = time.Now().Add(armorDuration)
+							target.RecalculateStats()
+						}
 						if impactSkill == "Shattering Charge" && !isDead {
 							target.ArmorReduction = 5
 							target.ArmorReductionEndTime = time.Now().Add(armorDuration)
 						}
 
 						// Combo: Tremor Rush (Earthshaker → Charge) = +2s knockdown
-						if consumeKnockdownCombo && !target.CCImmune {
+						if consumeKnockdownCombo && !isDead && !target.CCImmune {
 							deadline := time.Now().Add(knockdownDuration)
 							if !target.Stunned || deadline.After(target.StunEndTime) {
 								target.StunEndTime = deadline

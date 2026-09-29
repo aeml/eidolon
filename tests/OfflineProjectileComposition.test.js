@@ -14,6 +14,9 @@ test.each([
     { name: 'flight doorway', flightWall: true, doorway: true },
     { name: 'combo primary slowed', combo: true, primarySlow: true },
     { name: 'combo secondary slowed', combo: true, secondarySlow: true },
+    { name: 'combo primary control-immune', combo: true, primaryImmune: true },
+    { name: 'combo secondary control-immune', combo: true, secondaryImmune: true },
+    { name: 'ordinary control-immune target', primaryImmune: true },
     { name: 'combo both critical', combo: true, primarySlow: true, secondarySlow: true, critical: true },
     { name: 'authoritative engine only', authoritative: true }
 ])('$name uses raw per-recipient damage and legal dungeon paths', config => {
@@ -31,6 +34,8 @@ test.each([
         primary.position.set(0, 0, 6);
         secondary.position.set(6, 0, 6);
         for (const target of [primary, secondary]) target.stats.hp = target.stats.maxHp = 10000;
+        primary.ccImmune = !!config.primaryImmune;
+        secondary.ccImmune = !!config.secondaryImmune;
         let rects = null;
         if (config.wall) {
             rects = [{ x: 0, z: 4, width: 4, height: 20 }, { x: 6, z: 4, width: 4, height: 20 }];
@@ -54,6 +59,8 @@ test.each([
             const mana = actor.stats.mana;
             actor.useAbility(primary.position.clone(), engine, 'Gravity Well');
             expect(actor.stats.mana).toBeLessThan(mana);
+            if (config.primaryImmune) expect(primary.slowTimer).toBe(0);
+            if (config.secondaryImmune) expect(secondary.slowTimer).toBe(0);
             // Keep the real paid combo history, but isolate Fireball's
             // per-recipient slow handling from the opener's pull/damage.
             primary.position.set(0, 0, 6);
@@ -72,8 +79,8 @@ test.each([
             projectile.update(.02, null, null, engine.chunkManager, engine.floatingTextManager, engine);
         }
         const blocked = config.authoritative || config.flightWall && !config.doorway;
-        expect(10000 - primary.stats.hp).toBe(blocked ? 0 : 100 * (config.critical ? 2 : 1) * (config.primarySlow ? 2 : 1));
-        expect(10000 - secondary.stats.hp).toBe(blocked || config.wall && !config.doorway ? 0 : 40 * (config.critical ? 2 : 1) * (config.secondarySlow ? 2 : 1));
+        expect(10000 - primary.stats.hp).toBe(blocked ? 0 : 100 * (config.critical ? 2 : 1) * (config.combo && (config.primarySlow || config.primaryImmune) ? 2 : 1));
+        expect(10000 - secondary.stats.hp).toBe(blocked || config.wall && !config.doorway ? 0 : 40 * (config.critical ? 2 : 1) * (config.combo && (config.secondarySlow || config.secondaryImmune) ? 2 : 1));
         if (config.combo) expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('COMBO: Implosion!', actor.position, '#ffd700');
         if (config.flightWall && !config.doorway) {
             expect(projectile.isActive).toBe(false);

@@ -19,6 +19,26 @@ function fixture() {
         dispose: () => { source.dispose(); ally.dispose(); } };
 }
 
+test('Time Warp refreshes only the caster movement/control cooldowns and charge recovery', () => {
+    const f = fixture();
+    try {
+        Object.assign(f.source.cooldowns, { Teleport: 12, 'Gravity Well': 20, 'Arcane Shield': 30 });
+        Object.assign(f.ally.cooldowns, { Teleport: 11, 'Gravity Well': 19 });
+        f.source.offlineTeleportCharges = 0; f.source.offlineTeleportChargeTimer = 12;
+        f.cast();
+        expect(f.source.cooldowns.Teleport).toBe(0);
+        expect(f.source.cooldowns['Gravity Well']).toBe(0);
+        expect(f.source.cooldowns['Arcane Shield']).toBe(30);
+        expect(f.source.cooldowns['Time Warp']).toBeGreaterThan(0);
+        expect(f.source.offlineTeleportChargeTimer).toBe(0);
+        expect(f.ally.cooldowns.Teleport).toBe(11);
+        expect(f.ally.cooldowns['Gravity Well']).toBe(19);
+        f.source.cooldowns.Teleport = 9;
+        f.cast(); // paid cooldown rejects a repeat, without resetting again
+        expect(f.source.cooldowns.Teleport).toBe(9);
+    } finally { f.dispose(); }
+});
+
 test.each([[0, 0, 8], [1, 0, 8.32], [5, 0, 9.6], [99, 0, 9.6], [-1, 0, 8],
     [Infinity, 0, 8], [5, 5, 11.2]])('Time Warp Mastery %s plus general duration %s grants %ss, without stronger haste', (rank, general, duration) => {
     const f = fixture();

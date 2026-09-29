@@ -131,22 +131,22 @@ export const CONSTANTS = {
                 name: "Shield & Mitigation",
                 Tier2: { name: "Whirlwind", desc: "Spin around dealing damage to all nearby enemies." },
                 Tier3: { name: "Shield Slam", desc: "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies." },
-                Tier4: { name: "Iron Fortress", desc: "For 30 seconds, take 20% less damage and gain 50% armor, at the cost of 20% movement speed. Mastery extends duration." },
+                Tier4: { name: "Iron Fortress", desc: "Refresh Shield Slam and brace for 30 seconds: take 20% less damage and gain 50% armor, at the cost of 20% movement speed. Follow with Shield Slam for a stronger counter. Mastery extends duration." },
                 Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + 30% group damage reduction (10s base duration)." }
             },
             BranchB: {
                 name: "Control & Crowd Management",
                 Tier2: { name: "Sweeping Strike", desc: "Small AoE cleave that increases threat." },
                 Tier3: { name: "Earthshaker", desc: "Ground smash that knocks down nearby enemies." },
-                Tier4: { name: "Unbreakable Grip", desc: "Short-range pull (single target) to help cluster mobs." },
-                Tier5: { name: "Juggernaut Charge", desc: "After Charge, creates a shockwave that slows enemies heavily." }
+                Tier4: { name: "Unbreakable Grip", desc: "Strike and pull one enemy into melee range, briefly rooting it. Generates double damage threat; control-immune enemies take the hit without being moved or rooted." },
+                Tier5: { name: "Juggernaut Charge", desc: "Charge up to 10 units, then unleash a damaging shockwave that slows susceptible enemies by 60% for 5 seconds." }
             },
             BranchC: {
                 name: "Damage Tank / Offense-Tank Hybrid",
                 Tier2: { name: "Berserker Edge", desc: "For 15 seconds, you and nearby party members gain +50% Damage stat at the cost of 20% defense. Mastery strengthens the damage multiplier." },
                 Tier3: { name: "Shattering Charge", desc: "Charge applies armor reduction to all hit." },
                 Tier4: { name: "Executioner Spin", desc: "AoE spin that deals higher damage to marked or taunted enemies." },
-                Tier5: { name: "Last Stand Rampage", desc: "Activate below 30% health to gain +200% Damage stat for 10 seconds. Mastery strengthens the damage multiplier." }
+                Tier5: { name: "Last Stand Rampage", desc: "Gain +100% Damage stat for 10 seconds, or +200% when activated below 30% health. Mastery strengthens the damage multiplier." }
             }
         },
         Rogue: {
@@ -161,15 +161,15 @@ export const CONSTANTS = {
             BranchB: {
                 name: "Throwing Specialist Path",
                 Tier2: { name: "Fan of Knives", desc: "Throw daggers in all directions around you." },
-                Tier3: { name: "Serrated Edges", desc: "Piercing hits apply bleed to all targets hit." },
+                Tier3: { name: "Serrated Edges", desc: "Piercing hits apply bleed. While active, Fan of Knives also slows susceptible enemies by 20% for 2 seconds without replacing existing slows." },
                 Tier4: { name: "Blade Storm", desc: "Throw a fan of 5 daggers in a cone." },
-                Tier5: { name: "Phantom Volley", desc: "Rapid-fire three Piercing Throws in a row." }
+                Tier5: { name: "Phantom Volley", desc: "Fire three rapid shots. Follow Fan of Knives within 3s to make the volley pierce enemies." }
             },
             BranchC: {
                 name: "Utility / Debuff Path",
                 Tier2: { name: "Smoke Bomb", desc: "AoE slow + reduces enemy accuracy." },
                 Tier3: { name: "Poison Coating", desc: "Small DoT + healing reduction." },
-                Tier4: { name: "Tripwire", desc: "Drop a trap that roots the first enemy touched." },
+                Tier4: { name: "Tripwire", desc: "Place a trap within 6 units on reachable ground. It damages and roots the first enemy touched; immune enemies still take damage." },
                 Tier5: { name: "Cloak & Vanish", desc: "Instant invisibility + massive movement speed burst." }
             }
         },
@@ -184,9 +184,9 @@ export const CONSTANTS = {
             },
             BranchB: {
                 name: "Single-Target Caster",
-                Tier2: { name: "Scorch Beam", desc: "Line nuke, melts armor." },
+                Tier2: { name: "Scorch Beam", desc: "Line strike that melts armor and slows susceptible enemies by 30% for 3s base. Existing slows are preserved. Follow with Arcane Missiles within 3s for a five-missile volley." },
                 Tier3: { name: "Arcane Missiles", desc: "Homing projectiles." },
-                Tier4: { name: "Spell Focus", desc: "Channel to drastically increase damage for next spell." },
+                Tier4: { name: "Spell Focus", desc: "Empower your next damaging spell and gain a brief ward (40 + twice Intelligence; 6s base). Does not stack with an active shield." },
                 Tier5: { name: "Dragonfire Lance", desc: "Huge single-target spike damage." }
             },
             BranchC: {
@@ -194,7 +194,7 @@ export const CONSTANTS = {
                 Tier2: { name: "Teleport", desc: "Instantly teleport to a target location." },
                 Tier3: { name: "Arcane Shield", desc: "Absorbs damage." },
                 Tier4: { name: "Gravity Well", desc: "Pulls enemies together for combos with Fireball." },
-                Tier5: { name: "Time Warp", desc: "Party haste + cooldown reduction." }
+                Tier5: { name: "Time Warp", desc: "Party haste + cooldown reduction. Immediately refreshes your own Teleport and Gravity Well; mana and the global cooldown still apply. Does not reset allies' skills or itself." }
             }
         },
         Cleric: {
@@ -203,7 +203,7 @@ export const CONSTANTS = {
                 name: "Pure Healer Path",
                 Tier2: { name: "Healing Light", desc: "Restores health to yourself or a target." },
                 Tier3: { name: "Guardian Embrace", desc: "AoE heal over time around the cleric." },
-                Tier4: { name: "Purifying Wave", desc: "Cleanse negative effects." },
+                Tier4: { name: "Purifying Wave", desc: "Cleanse nearby allies. A holy pulse damages nearby enemies and slows susceptible targets by 30% for 2s base; existing slows are preserved." },
                 Tier5: { name: "Divine Intervention", desc: "Save an ally from death once every X minutes." }
             },
             BranchB: {
@@ -216,7 +216,7 @@ export const CONSTANTS = {
             BranchC: {
                 name: "Buff/Debuff Support",
                 Tier2: { name: "Blessing of Resolve", desc: "Party defense buff." },
-                Tier3: { name: "Blessing of Zeal", desc: "Party attack speed buff." },
+                Tier3: { name: "Blessing of Zeal", desc: "Party attack and movement speed buff. Refreshes your own Spirit Guardians; follow with it within 3s for boosted damage and radius. Normal mana and global cooldown apply." },
                 Tier4: { name: "Mark of Weakness", desc: "Enemies take more damage from all sources." },
                 Tier5: { name: "Heaven's Trumpet", desc: "Massive AoE stun + damage taken buff on enemies." }
             }
@@ -240,7 +240,7 @@ export const CONSTANTS = {
                 "Sweeping Strike": { mana: 30, cooldown: 4.0, range: 4.0 },
                 Earthshaker: { mana: 40, cooldown: 12.0, range: 6.0 },
                 "Unbreakable Grip": { mana: 35, cooldown: 15.0, range: 10.0 },
-                "Juggernaut Charge": { mana: 30, cooldown: 20.0, range: 28.0 },
+                "Juggernaut Charge": { mana: 30, cooldown: 20.0, range: 10.0 },
                 "Berserker Edge": { mana: 0, cooldown: 45.0, range: 0.0 },
                 "Shattering Charge": { mana: 30, cooldown: 12.0, range: 28.0 },
                 "Executioner Spin": { mana: 40, cooldown: 15.0, range: 5.0 },
@@ -351,7 +351,7 @@ export const CONSTANTS = {
                 ...(i === 14 ? { desc: '+4% Unbreakable Grip root duration per rank (20% max). Pull distance is unchanged; immune targets still resist control.' } : {}),
                 ...(i === 15 ? { desc: '+3% Unbreakable Grip cooldown reduction and +2% targeting range per rank. Does not enlarge the cursor selection tolerance.' } : {}),
                 ...(i === 18 ? { desc: '+4% Berserker Edge damage multiplier per rank (20% max): 1.5× to 1.8× Damage stat. Nearby party members inherit your strength; defense cost stays 20%.' } : {}),
-                ...(i === 24 ? { desc: '+4% Last Stand Rampage damage multiplier per rank (20% max): 3× to 3.6× Damage stat. The below-30%-health activation requirement is unchanged.' } : {}),
+                ...(i === 24 ? { desc: '+4% Last Stand Rampage damage multiplier per rank (20% max): 2× to 2.4× Damage stat, or 3× to 3.6× when activated below 30% health.' } : {}),
                 abilityDuration: i === 6 ? { skill: 'Iron Fortress', duration: 0.04 }
                     : i === 8 ? { skill: 'Guardian Roar', duration: 0.04 }
                     : i === 14 ? { skill: 'Unbreakable Grip', duration: 0.04 } : undefined,
@@ -507,10 +507,10 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                const benefit = s === 'Purifying Wave' ? 'cleansing radius'
+                const benefit = s === 'Purifying Wave' ? 'radius'
                     : ['Healing Light', 'Guardian Embrace', 'Divine Intervention'].includes(s) ? 'healing' : 'power';
                 entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} ${benefit} per rank (20% max).`, maxRank: 5 });
-                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% duration/range per rank.`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% duration per rank.`, maxRank: 5 });
             }
 
             entries.push(
@@ -645,32 +645,33 @@ export const CONSTANTS = {
     // ================================================================
     // SKILL COMBOS
     // Using specific skill sequences within 3 seconds triggers bonus effects
-    // Each class has 4 unique combos
+    // Learned-branch skill sequences; the number can vary by class.
     // ================================================================
     SKILL_COMBOS: {
         Fighter: [
+            { id: "fortress_counter", name: "Fortress Counter", firstSkill: "Iron Fortress", secondSkill: "Shield Slam", description: "Shield Slam deals 50% more damage. Normal mana and global cooldown apply." },
             { id: "momentum_strike", name: "Momentum Strike", firstSkill: "Charge", secondSkill: "Whirlwind", description: "+50% Whirlwind damage" },
             { id: "tremor_rush", name: "Tremor Rush", firstSkill: "Earthshaker", secondSkill: "Charge", description: "+2s knockdown on Charge" },
-            { id: "guardian_combo", name: "Guardian Combo", firstSkill: "Shield Slam", secondSkill: "Guardian Roar", description: "+50% taunt duration" },
-            { id: "iron_will", name: "Iron Will", firstSkill: "Iron Fortress", secondSkill: "Last Stand Rampage", description: "Damage reduction persists during rampage" },
+            { id: "guardian_combo", name: "Guardian Combo", firstSkill: "Shield Slam", secondSkill: "Guardian Roar", description: "Guardian Roar protection lasts 50% longer; taunt is still a one-time threat boost." },
+            { id: "iron_will", name: "Iron Will", firstSkill: "Berserker Edge", secondSkill: "Last Stand Rampage", description: "Gain an absorb ward equal to 20% of maximum health for Rampage's duration. Does not replace or stack with an active ward." },
         ],
         Rogue: [
-            { id: "ambush", name: "Ambush", firstSkill: "Cloak & Vanish", secondSkill: "Backstab", description: "Guaranteed critical hit" },
-            { id: "venom_burst", name: "Venom Burst", firstSkill: "Poison Coating", secondSkill: "Death Spiral", description: "+100% poison damage" },
+            { id: "ambush", name: "Ambush", firstSkill: "Weak Point Mark", secondSkill: "Backstab", description: "Guaranteed critical hit" },
+            { id: "venom_burst", name: "Venom Burst", firstSkill: "Poison Coating", secondSkill: "Tripwire", description: "Tripwire deals 100% more impact damage." },
             { id: "blade_tornado", name: "Blade Tornado", firstSkill: "Fan of Knives", secondSkill: "Phantom Volley", description: "Volley pierces all targets" },
-            { id: "shadow_dance", name: "Shadow Dance", firstSkill: "Shadow Lunge", secondSkill: "Smoke Bomb", description: "Smoke bomb instant cast" },
+            { id: "shadow_dance", name: "Shadow Dance", firstSkill: "Cloak & Vanish", secondSkill: "Smoke Bomb", description: "Smoke Bomb refreshes Tripwire. Normal mana and cooldowns apply." },
         ],
         Wizard: [
-            { id: "implosion", name: "Implosion", firstSkill: "Gravity Well", secondSkill: "Fireball", description: "+100% Fireball damage in gravity well" },
-            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Arcane Shield", secondSkill: "Meteor Drop", description: "Shield explodes on meteor impact" },
-            { id: "time_burn", name: "Time Burn", firstSkill: "Time Warp", secondSkill: "Inferno Cataclysm", description: "Cataclysm ticks twice as fast" },
-            { id: "nova_cascade", name: "Nova Cascade", firstSkill: "Teleport", secondSkill: "Flame Whip", description: "360° Flame Whip" },
+            { id: "implosion", name: "Implosion", firstSkill: "Gravity Well", secondSkill: "Fireball", description: "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity." },
+            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Scorch Beam", secondSkill: "Arcane Missiles", description: "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply." },
+            { id: "time_burn", name: "Time Burn", firstSkill: "Flame Tornado", secondSkill: "Inferno Cataclysm", description: "Cataclysm ticks twice as fast" },
+            { id: "nova_cascade", name: "Nova Cascade", firstSkill: "Fireball", secondSkill: "Flame Whip", description: "360° Flame Whip" },
         ],
         Cleric: [
-            { id: "divine_storm", name: "Divine Storm", firstSkill: "Heaven's Trumpet", secondSkill: "Spirit Guardians", description: "Guardians deal holy damage" },
-            { id: "sanctuary_combo", name: "Sanctuary", firstSkill: "Consecrated Ground", secondSkill: "Guardian Embrace", description: "Ground also provides damage immunity" },
-            { id: "holy_fury", name: "Holy Fury", firstSkill: "Mark of Weakness", secondSkill: "Radiant Strike", description: "+100% Radiant Strike damage" },
-            { id: "mass_revival", name: "Mass Revival", firstSkill: "Divine Intervention", secondSkill: "Healing Light", description: "Healing Light heals entire party" },
+            { id: "divine_storm", name: "Divine Storm", firstSkill: "Blessing of Zeal", secondSkill: "Spirit Guardians", description: "Activates boosted Spirit Guardians damage and radius." },
+            { id: "sanctuary_combo", name: "Sanctuary", firstSkill: "Healing Light", secondSkill: "Guardian Embrace", description: "Guardian Embrace also protects the caster from damage for 3s base. Does not make allies immune." },
+            { id: "holy_fury", name: "Holy Fury", firstSkill: "Consecrated Ground", secondSkill: "Radiant Strike", description: "Radiant Strike deals 100% more damage. No enemy mark required." },
+            { id: "mass_revival", name: "Mass Revival", firstSkill: "Divine Intervention", secondSkill: "Healing Light", description: "Healing Light heals living nearby allies around you (base 20-unit radius). Does not resurrect." },
         ],
     }
 };

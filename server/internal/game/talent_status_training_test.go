@@ -45,6 +45,9 @@ func TestStatusMasteryActualApplicationsAndTicks(t *testing.T) {
 					w.AddEntity(p)
 					target := &Entity{ID: "status-training-target", Type: TypeEnemy, SubType: "Skeleton", InstanceID: p.InstanceID,
 						X: p.X + 6, Z: p.Z, SpawnX: p.X + 6, SpawnZ: p.Z, Scale: 1, State: "IDLE", Health: 10000, MaxHealth: 10000}
+					// Fan now applies a slow, which recalculates derived stats.
+					// Keep this synthetic enemy's authored health consistent.
+					target.BaseStats.Vitality = 1000
 					w.AddEntity(target)
 					var ticks []DamageEvent
 					w.OnEvent = func(kind string, payload interface{}) {

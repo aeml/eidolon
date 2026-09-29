@@ -68,9 +68,9 @@ func TestFlameWhipNovaCascadeAndCover(t *testing.T) {
 			t.Run(fmt.Sprintf("combo=%v/doorway=%v", combo, doorway), func(t *testing.T) {
 				w, p, front := directSkillWallFixture("Wizard", doorway)
 				p.Level, p.TalentRanks = 100, map[string]int{"WIZ_35": 5, "WIZ_36": 5}
-				p.UnlockedSkills = []string{"Teleport", "Flame Whip"}
+				w.PerformSelectBranch(p.ID, "A")
 				if combo {
-					if r := w.PerformAbility(p.ID, p.X, p.Z, "", "Teleport"); !r.Accepted {
+					if r := w.PerformAbility(p.ID, p.X+8, p.Z, "", "Fireball"); !r.Accepted {
 						t.Fatal(r)
 					}
 					// Advance only the fixture's GCD clock; combo comes from real dispatch.

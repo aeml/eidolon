@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.32.0';
+const currentVersion = '1.33.0';
+
+test('1.33.0 publishes the class-kit changes and preserves prior notes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.33.0"'), previous = html.indexOf('data-version="1.32.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['builds that work together', 'Single-specialization kits', 'Wizard:', 'Fighter:',
+        'Rogue:', 'Cleric:', 'Skill IDs, saved builds and equipment are preserved', 'no forced reset',
+        'Talent Master', 'not proof of final balance', 'does not open closed beta', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');

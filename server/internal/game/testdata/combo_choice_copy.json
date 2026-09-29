@@ -1,0 +1,16 @@
+[
+  { "className": "Fighter", "id": "fortress_counter", "first": "Iron Fortress", "second": "Shield Slam", "description": "Shield Slam deals 50% more damage. Normal mana and global cooldown apply." },
+  { "className": "Fighter", "id": "iron_will", "first": "Berserker Edge", "second": "Last Stand Rampage", "description": "Gain an absorb ward equal to 20% of maximum health for Rampage's duration. Does not replace or stack with an active ward." },
+  { "className": "Fighter", "id": "guardian_combo", "first": "Shield Slam", "second": "Guardian Roar", "description": "Guardian Roar protection lasts 50% longer; taunt is still a one-time threat boost." },
+  { "className": "Rogue", "id": "ambush", "first": "Weak Point Mark", "second": "Backstab", "description": "Guaranteed critical hit" },
+  { "className": "Rogue", "id": "venom_burst", "first": "Poison Coating", "second": "Tripwire", "description": "Tripwire deals 100% more impact damage." },
+  { "className": "Rogue", "id": "shadow_dance", "first": "Cloak & Vanish", "second": "Smoke Bomb", "description": "Smoke Bomb refreshes Tripwire. Normal mana and cooldowns apply." },
+  { "className": "Wizard", "id": "implosion", "first": "Gravity Well", "second": "Fireball", "description": "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity." },
+  { "className": "Wizard", "id": "time_burn", "first": "Flame Tornado", "second": "Inferno Cataclysm", "description": "Cataclysm ticks twice as fast" },
+  { "className": "Wizard", "id": "nova_cascade", "first": "Fireball", "second": "Flame Whip", "description": "360° Flame Whip" },
+  { "className": "Wizard", "id": "arcane_barrage", "first": "Scorch Beam", "second": "Arcane Missiles", "description": "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply." },
+  { "className": "Cleric", "id": "divine_storm", "first": "Blessing of Zeal", "second": "Spirit Guardians", "description": "Activates boosted Spirit Guardians damage and radius." },
+  { "className": "Cleric", "id": "sanctuary_combo", "first": "Healing Light", "second": "Guardian Embrace", "description": "Guardian Embrace also protects the caster from damage for 3s base. Does not make allies immune." },
+  { "className": "Cleric", "id": "holy_fury", "first": "Consecrated Ground", "second": "Radiant Strike", "description": "Radiant Strike deals 100% more damage. No enemy mark required." },
+  { "className": "Cleric", "id": "mass_revival", "first": "Divine Intervention", "second": "Healing Light", "description": "Healing Light heals living nearby allies around you (base 20-unit radius). Does not resurrect." }
+]

@@ -118,10 +118,13 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.GuardianEmbraceRadius = effectiveAbilityAreaRadius(player, skillName, 10)
 			player.GuardianEmbraceEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 
-			// Combo: Sanctuary (Consecrated Ground → Guardian Embrace) = Damage immunity
+			// Sanctuary: Healing Light → Guardian Embrace protects the caster.
 			if player.ActiveCombo == "ground_damage_immunity" {
 				// Grant brief damage immunity (3s)
-				player.InvulnerableEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+				until := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+				if until.After(player.InvulnerableEndTime) {
+					player.InvulnerableEndTime = until
+				}
 				player.ActiveCombo = "" // Consume combo
 			}
 
@@ -129,15 +132,32 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.GuardianEmbraceRadius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Purifying Wave" {
-		// Purifying Wave (AoE Cleanse)
+		// Cleanse allies and create space against nearby enemies.
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
 
 			radius := effectiveAbilityAreaRadius(player, skillName, 8.0)
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
+			damage := int(float64(20+player.Stats.Wisdom) * player.GetSkillDamageMultiplier(skillName))
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
+				if target.State != "DEAD" && target.Health > 0 && w.CanDamage(player, target) && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
+					hit := impacts.damage(player, target, damage, "holy", skillName)
+					addThreatLocked(target, player.ID, float64(hit))
+					if target.Health > 0 && !target.CCImmune && (!target.Slowed || !time.Now().Before(target.SlowEndTime)) {
+						target.Slowed, target.SlowFactor = true, .30
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
+						target.RecalculateStats()
+					}
+					if target.Health <= 0 {
+						w.handleDeathWorldLocked(target, player, nil)
+					}
+					target.Mu.Unlock()
+					w.fireDamageEvent(player, target.ID, hit, "holy", player.InstanceID)
+					continue
+				}
 				if target.State != "DEAD" && (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					// Cleanse Debuffs
 					target.Bleeding = false
@@ -309,7 +329,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			runeID := player.GetRuneForSkill("Spirit Guardians")
 			player.SpiritGuardiansRuneID = runeID
 
-			// Combo: Divine Storm (Heaven's Trumpet → Spirit Guardians) = +50% holy damage bonus
+			// Divine Storm: Blessing of Zeal → Spirit Guardians activates the boosted variant.
 			if player.ActiveCombo == "spirits_holy_damage" {
 				player.SpiritsBoosted = true // Repurpose SpiritsBoosted for combo bonus
 				player.ActiveCombo = ""      // Consume combo
@@ -494,7 +514,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Radiant Strike Rune Effects
 			runeID := player.GetRuneForSkill("Radiant Strike")
 
-			// Combo: Holy Fury (Mark of Weakness → Radiant Strike) = +100% damage to marked targets
+			// Holy Fury: Consecrated Ground → Radiant Strike doubles this strike.
 			holyFuryActive := player.ActiveCombo == "radiant_strike_boost"
 			if holyFuryActive {
 				player.ActiveCombo = "" // Consume combo
@@ -527,7 +547,6 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 				dx := target.X - player.X
 				dz := target.Z - player.Z
-				isMarked := target.MarkWeakness
 				target.Mu.RUnlock()
 
 				dist := math.Sqrt(dx*dx + dz*dz)
@@ -539,8 +558,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					if dot > math.Cos(angleThreshold) {
 						// Calculate final damage
 						damage := baseDamage
-						// Holy Fury combo: +100% damage to marked targets
-						if holyFuryActive && isMarked {
+						if holyFuryActive {
 							damage = baseDamage * 2
 						}
 
@@ -711,6 +729,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			// Enable the support branch's immediate guardian payoff without
+			// refreshing allies' skills or bypassing mana/global cooldown.
+			delete(player.Cooldowns, "Spirit Guardians")
 			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
 			power := clericUtilityPowerAtCast(player, skillName)
 

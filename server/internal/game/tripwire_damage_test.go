@@ -65,7 +65,7 @@ func TestPaidTripwireMasteryAndTechniqueReachActualTrigger(t *testing.T) {
 					X: p.X + .5, Z: p.Z, Health: 10000, MaxHealth: 10000}
 				w.AddEntity(target)
 				mana := p.Mana
-				if result := w.PerformAbility(p.ID, p.X+5, p.Z, "", "Tripwire"); !result.Accepted || mana-p.Mana != 25 {
+				if result := w.PerformAbility(p.ID, p.X, p.Z, "", "Tripwire"); !result.Accepted || mana-p.Mana != 25 {
 					t.Fatalf("unpaid cast: %+v", result)
 				}
 				var trap *Entity

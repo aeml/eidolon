@@ -17,7 +17,7 @@ test.each([0, 1, 5].flatMap(mastery => [0, 1, 5].flatMap(technique => [false, tr
             const engine = { effectScene: new THREE.Group(), spawnTransientEffect: jest.fn(() => true),
                 floatingTextManager: { spawn: jest.fn() }, chunkManager: { getActiveEntities: () => [enemy] },
                 isHostileActorTarget: entity => entity === enemy };
-            p.useAbility(new THREE.Vector3(5, 0, 0), engine, 'Tripwire');
+            p.useAbility(p.position.clone(), engine, 'Tripwire');
             expect(p.stats.mana).toBe(975); expect(p.traps).toHaveLength(1);
             p.update(.016, null, null, engine.chunkManager, engine.floatingTextManager, engine);
             const damage = Math.trunc(120 * (1 + .04 * mastery)) * (technique ? 2 : 1);
@@ -42,7 +42,7 @@ test.each(['friendly', 'dead', 'inactive', 'other-instance', 'remote', 'online',
                 effectScene: new THREE.Group(), spawnTransientEffect: jest.fn(() => true),
                 floatingTextManager: { spawn: jest.fn() }, chunkManager: { getActiveEntities: () => [enemy] },
                 isHostileActorTarget: () => excluded !== 'friendly' };
-            p.useAbility(new THREE.Vector3(5, 0, 0), engine, 'Tripwire');
+            p.useAbility(p.position.clone(), engine, 'Tripwire');
             if (excluded === 'dead') enemy.state = 'DEAD';
             if (excluded === 'inactive') enemy.isActive = false;
             if (excluded === 'other-instance') enemy.instanceId = 'elsewhere';

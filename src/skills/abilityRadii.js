@@ -96,6 +96,9 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return getWizardAbilityAreaRadius(source, 15);
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip') return getFlameWhipRadius(source);
     if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && source?.healingLightMassRevival) return getAbilityAreaRadius(source, className, 20, canonicalSkillName);
+    if (className === 'Cleric' && canonicalSkillName === 'Spirit Guardians' && source?.spiritGuardiansDivineStorm) {
+        return getAbilityAreaRadius(source, className, source?.skillRunes?.[canonicalSkillName] === 'spirits_expanded' ? 30 : 20, canonicalSkillName);
+    }
     const definition = PLAYER_ABILITY_AOE_RADII[className]?.[canonicalSkillName];
     if (!definition) return null;
 

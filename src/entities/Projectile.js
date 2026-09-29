@@ -12,6 +12,7 @@ import { Actor } from './Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
+import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -452,6 +453,13 @@ export class Projectile extends Entity {
                             }
                             
                             const hit = applyOfflineAbilityHit(this.owner, entity, finalDamage, this.skillName, floatingTextManager);
+                            if (this.skillName === 'Fan of Knives' && hit > 0 && entity.stats?.hp > 0 && !entity.ccImmune) {
+                                const weighted = this.fanRune === 'fanofknives_weighted';
+                                if (weighted || this.owner.serratedEdgesActive && !(entity.slowTimer > 0)) {
+                                    entity.slowFactor = weighted ? .30 : .20;
+                                    entity.slowTimer = getRogueEffectDuration(this.owner, weighted ? 3 : 2, 'Fan of Knives');
+                                }
+                            }
                             // Like the server, coatings are checked at impact.
                             // The bleed inherits this hit's modifiers and crit;
                             // its own Mastery is applied once to the snapshot.
@@ -472,9 +480,12 @@ export class Projectile extends Entity {
                         });
 
                     } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow') {
-                        // Single Hit Logic
-                        this.isActive = false;
-                        if (this.mesh) this.mesh.visible = false;
+                        const pierces = this.type === 'PhantomArrow' && this.projectilePierce;
+                        this.hitEntities.add(entity.id);
+                        if (!pierces) {
+                            this.isActive = false;
+                            if (this.mesh) this.mesh.visible = false;
+                        }
                         
                         if (!this.owner.isMultiplayer && !this.owner.isRemote) {
                             applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, floatingTextManager, '#aa00ff');
@@ -482,9 +493,9 @@ export class Projectile extends Entity {
                         
                         spawnProjectileImpact(gameEngine, this, this.position, {
                             targetId: entity.id,
-                            terminal: true
+                            terminal: !pierces
                         });
-                        break;
+                        if (!pierces) break;
 
                     } else if (this.type === 'Fireball' || this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
                         // Explode Logic: Hit, Splash, Destroy
@@ -511,7 +522,7 @@ export class Projectile extends Entity {
                                     // independent recipient criticals, never a
                                     // critical multiplied into another critical.
                                     let raw = splashTarget === entity || this.type === 'Meteor' ? this.damage : Math.floor(this.damage * .4);
-                                    if (this.type === 'Fireball' && this.fireballWellBoost && splashTarget.slowTimer > 0) raw *= 2;
+                                    if (this.type === 'Fireball' && this.fireballWellBoost && (splashTarget.slowTimer > 0 || splashTarget.ccImmune)) raw *= 2;
                                     applyOfflineAbilityHit(this.owner, splashTarget, raw, this.skillName, floatingTextManager, '#ff4500');
                                 }
                             }

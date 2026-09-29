@@ -1,4 +1,5 @@
 import { CONSTANTS } from '../core/Constants.js';
+import { comboBuildLabel } from './ComboBuildAvailability.js';
 
 const modes = ['skills', 'talents', 'runes', 'combos'];
 const el = (tag, text, className) => {
@@ -212,7 +213,9 @@ export class MobileSkillTree {
     combos(content) {
         content.append(el('h2', 'Combat combinations'), el('p', 'Use these skills in order within three seconds to trigger their combined effect.'));
         for (const combo of CONSTANTS.SKILL_COMBOS[this.classType] || []) {
-            this.card(content, combo.name, combo.description).append(el('p', `${combo.firstSkill} → ${combo.secondSkill}`, 'phone-build-meta'));
+            this.card(content, combo.name, combo.description).append(
+                el('p', `${combo.firstSkill} → ${combo.secondSkill}`, 'phone-build-meta'),
+                el('p', comboBuildLabel(this.classType, combo, this.owner.ctx.getLastPlayer() || {}), 'phone-build-meta'));
         }
     }
 }

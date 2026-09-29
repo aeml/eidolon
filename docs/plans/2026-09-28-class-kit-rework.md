@@ -12,12 +12,23 @@ Owner decisions, September 28, 2026:
 This expands 1.33 beyond respec prices and combo descriptions. Those corrections
 alone cannot complete the milestone. Earlier 1.31 support fixes and 1.32 warning
 work retain their narrower claims; they do not prove the redesigned kits done.
-All implementation and class-playability receipts below remain pending.
+Partial implementation across all four classes and focused receipts are recorded in the
+[build-choice preflight](2026-09-28-1-33-build-choice-preflight.md). Full-kit and
+gameplay-presentation acceptance remain pending for all twelve branches.
 
-Baseline audit: 9 of the 16 current combo pairs span branches. Fighter C,
+The subsequent [integrated review](2026-09-29-1-33-kit-integration.md) records
+all twelve ordinary loops, pressure/party roles, 60 learned level/gear admission
+checks and bounded rendered/UI inspection. Exact-candidate compatibility,
+regressions and delivery are still required; subjective feel is not certified.
+
+Pre-rework baseline audit: 9 of the 16 combo pairs span branches. Fighter C,
 Rogue A/C, Wizard A/B and Cleric B have no reachable combo. The client catalog
 was enumerated against its tree and the corresponding server branch list
 inspected; fixtures that force both skills unlocked do not close this gap.
+Wizard, Fighter, Rogue and Cleric catalog pairs have since been changed/checked
+to fit learned branches. Cleric now has an initial healer pressure pulse,
+within-branch protective/strike/guardian payoffs and Zeal guardian rearming. Catalog
+eligibility does not itself prove each kit or offline consumer complete.
 
 ## Design contract
 

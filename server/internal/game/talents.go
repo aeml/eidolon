@@ -308,7 +308,7 @@ func clericTalentDef(n int) (TalentDef, bool) {
 		isMastery := (n % 2) == 1
 
 		if isMastery {
-			// Purifying Wave cleanses rather than heals: Mastery expands its reach.
+			// Purifying Wave Mastery expands both cleanse and hostile pulse reach.
 			if skillName == "Purifying Wave" {
 				return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillAoe: 0.04}}, true
 			}

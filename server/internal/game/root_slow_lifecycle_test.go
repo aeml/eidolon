@@ -27,7 +27,14 @@ func TestPaidEnemyRootAndSlowLifecycle(t *testing.T) {
 				X: p.X + 8, Z: p.Z, SpawnX: p.X + 8, SpawnZ: p.Z, Scale: 1, Radius: 1.25, Speed: 8, BaseSpeed: 8}
 			w.AddEntity(e)
 			mana := p.Mana
-			result := w.PerformAbility(p.ID, e.X, e.Z, "", tc.skill)
+			aimX, aimZ := e.X, e.Z
+			if tc.skill == "Juggernaut Charge" {
+				aimX, aimZ = p.X, p.Z
+			}
+			result := w.PerformAbility(p.ID, aimX, aimZ, "", tc.skill)
+			if tc.skill == "Juggernaut Charge" {
+				w.updateEntity(p, 0, nil, &deferredActions{})
+			}
 			root := tc.skill == "Gravity Well"
 			if !result.Accepted || p.Mana >= mana || !e.Slowed || e.SlowFactor <= 0 || e.Rooted != root || e.Health >= 10000 {
 				t.Fatalf("paid damaging control failed: accepted=%v slow=%v factor=%v root=%v hp=%d", result.Accepted, e.Slowed, e.SlowFactor, e.Rooted, e.Health)
@@ -152,6 +159,9 @@ func TestPaidRootAndSlowRespectControlImmunity(t *testing.T) {
 			target.CCImmune = true
 			health := target.Health
 			result := w.PerformAbility(p.ID, target.X, target.Z, "", skill)
+			if skill == "Juggernaut Charge" {
+				w.updateEntity(p, .25, nil, &deferredActions{})
+			}
 			if !result.Accepted || p.Mana >= 200 || target.Health >= health {
 				t.Fatal("control immunity must not prevent paid damaging cast")
 			}

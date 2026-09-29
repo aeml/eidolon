@@ -482,7 +482,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					damage = int(float64(damage) * 2.5)
 				}
 
-				// Combo: Ambush (Cloak & Vanish → Backstab) = Guaranteed critical hit
+				// Combo: Ambush (Weak Point Mark → Backstab).
 				guaranteedCritical := false
 				if player.ActiveCombo == "backstab_guaranteed_crit" {
 					guaranteedCritical = true
@@ -706,12 +706,6 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Damage*2) * player.GetSkillDamageMultiplier("Death Spiral"))
 
-			// Combo: Venom Burst (Poison Coating → Death Spiral) = +100% poison damage
-			venomBurstActive := player.ActiveCombo == "death_spiral_poison_boost"
-			if venomBurstActive {
-				player.ActiveCombo = "" // Consume combo
-			}
-
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
@@ -728,10 +722,6 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					// Calculate final damage
 					finalDamage := damage
-					// Venom Burst: +100% damage to poisoned targets
-					if venomBurstActive && target.Poisoned {
-						finalDamage = damage * 2
-					}
 					if player.HasAnySetBonus("deathSpiralConsume") {
 						now := time.Now()
 						if target.Bleeding && now.Before(target.BleedEndTime) {
@@ -813,11 +803,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Smoke Bomb (AoE Slow)
 		cost := resolveAbilityManaCost(player, skillName, 35)
 
-		// Combo: Shadow Dance (Shadow Lunge → Smoke Bomb) = Instant cast (no cooldown, reduced mana)
-		shadowDanceActive := player.ActiveCombo == "smoke_bomb_instant"
-		if shadowDanceActive {
-			cost = cost / 2 // Half mana cost
-		}
+		shadowDanceActive := player.ActiveCombo == "smoke_rearm_tripwire"
 
 		if player.Mana >= cost {
 			player.Mana -= cost
@@ -841,13 +827,12 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.Unlock()
 			}
 
-			// Shadow Dance combo: no cooldown
+			// Reposition under concealment, then rearm the trap with Smoke.
 			if shadowDanceActive {
 				player.ActiveCombo = "" // Consume combo after the cast succeeds.
-				setCooldown(0)
-			} else {
-				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
+				delete(player.Cooldowns, "Tripwire")
 			}
+			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Tripwire" {
@@ -855,17 +840,28 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			x, z := clampAbilityTargetDistance(player, targetX, targetZ, effectiveAbilityRange(player, skillName, 6))
+			if rects := w.dungeonWalkRectsSnapshot(player.InstanceID); len(rects) > 0 {
+				x, z, _ = constrainPointToWalkRects(rects, x, z)
+				sx, sz, _ := constrainPointToWalkRects(rects, player.X, player.Z)
+				x, z, _ = firstDungeonWalkRectWallHit(rects, sx, sz, x, z)
+			}
+			damage := int(float64(20+player.Stats.Dexterity) * player.GetSkillDamageMultiplier(skillName))
+			if player.ActiveCombo == "tripwire_damage_boost" {
+				damage *= 2
+				player.ActiveCombo = ""
+			}
 
 			trap := &Entity{
 				ID:              fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
 				InstanceID:      player.InstanceID,
 				Type:            TypeProjectile,
 				SubType:         "Tripwire",
-				X:               player.X,
+				X:               x,
 				Y:               0.1,
-				Z:               player.Z,
+				Z:               z,
 				Radius:          1.5,
-				Damage:          int(float64(20+player.Stats.Dexterity) * player.GetSkillDamageMultiplier(skillName)),
+				Damage:          damage,
 				ProjectileSkill: skillName,
 				OwnerID:         player.ID,
 				CreatedAt:       time.Now(),
@@ -875,7 +871,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			w.Grid.Add(trap)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, x, z)
 		}
 	} else if skillName == "Phantom Volley" {
 		// Phantom Volley (Rapid Fire Single Target)

@@ -1,6 +1,7 @@
 import { CONSTANTS } from '../core/Constants.js';
 import { MobileSkillTree } from './MobileSkillTree.js';
 import { DesktopTalentConfirmation } from './DesktopTalentConfirmation.js';
+import { comboBuildLabel } from './ComboBuildAvailability.js';
 
 /**
  * Skill Tree UI module — handles skill trees, talents, runes, combos, and respec.
@@ -891,6 +892,12 @@ export class SkillTreeUI {
             descDiv.textContent = combo.description;
             comboCard.appendChild(descDiv);
 
+            const availability = document.createElement('p');
+            availability.style.color = '#bbc9d4';
+            availability.style.fontSize = '12px';
+            availability.textContent = comboBuildLabel(classType, combo, this.ctx.getLastPlayer() || {});
+            comboCard.appendChild(availability);
+
             list.appendChild(comboCard);
         }
 
@@ -1044,9 +1051,11 @@ export class SkillTreeUI {
         const playerLevel = player?.level || 1;
         const playerGold = player?.gold || 0;
 
-        const talentCost = playerLevel * 100;
-        const skillCost = playerLevel * 50;
-        const bothCost = playerLevel * 125;
+        // Match server respecGoldCost; shared boundary fixtures protect both
+        // the advertised price and affordability against the actual deduction.
+        const talentCost = 1000 * (1 + Math.floor(playerLevel / 20));
+        const skillCost = talentCost;
+        const bothCost = talentCost * 3 / 2;
 
         const createRespecButton = (label, type, cost, color, detail) => {
             const container = document.createElement('div');

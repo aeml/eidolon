@@ -965,6 +965,13 @@ func (c *Client) dispatchMessage(msg Message) {
 		resultPayload, _ := json.Marshal(result)
 		resultMessage, _ := json.Marshal(Message{Type: MsgAbilityResult, Payload: resultPayload})
 		c.sendSafe(resultMessage)
+		if result.Accepted && (result.SkillName == "Time Warp" || result.SkillName == "Iron Fortress" || result.SkillName == "Smoke Bomb" || result.SkillName == "Blessing of Zeal") {
+			// Reuse the complete authoritative snapshot so refreshed controls
+			// become usable immediately, without waiting for local timers/relogin.
+			cooldowns, _ := world.GetAbilityCooldownSnapshot(c.playerID)
+			payload, _ := json.Marshal(map[string]interface{}{"cooldowns": cooldowns})
+			c.sendSafe(createMessage(MsgAbilityCooldowns, payload))
+		}
 
 	case MsgChat:
 		if c.username == "" {

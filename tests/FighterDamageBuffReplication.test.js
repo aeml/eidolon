@@ -5,11 +5,11 @@ import { Fighter } from '../src/entities/Fighter.js';
 
 const buffs = [
     { id: 'berserker_edge', active: 'berserkerModeActive', duration: 'berserkerModeDuration', wire: 'berserkerModeMultiplier', property: 'berserkerEdgeMultiplier', timer: 'berserkerEdgeTimer', values: [1.5, 1.56, 1.8], base: 1.5 },
-    { id: 'last_stand', active: 'lastStandActive', duration: 'lastStandDuration', wire: 'lastStandMultiplier', property: 'lastStandMultiplier', timer: 'lastStandTimer', values: [3, 3.12, 3.6], base: 3 }
+    { id: 'last_stand', active: 'lastStandActive', duration: 'lastStandDuration', wire: 'lastStandMultiplier', property: 'lastStandMultiplier', timer: 'lastStandTimer', values: [2, 2.4, 3, 3.12, 3.6], base: 3 }
 ];
 
 describe.each(buffs)('$id', buff => {
-    test.each([0, 1, 2])('actual protobuf preserves rank case %s', index => {
+    test.each(buff.values.map((_, index) => index))('actual protobuf preserves rank case %s', index => {
         const value = buff.values[index];
         const packet = eidolon.state.Entity.decode(eidolon.state.Entity.encode({
             [buff.active]: true, [buff.duration]: 8, [buff.wire]: value

@@ -34,7 +34,7 @@ test.each([
         actor.stats.mana = 1000;
         actor.stats.critChanceBonus = config.equipment ? 1 : 0;
         actor.talentRanks = config.trained ? { ROG_03: 5, ROG_38: config.masteryOnly ? 0 : 5 } : {};
-        actor.unlockedSkills.push('Cloak & Vanish', 'Backstab');
+        actor.unlockedSkills.push('Weak Point Mark', 'Backstab');
         actor.skillRunes = { Backstab: config.rune };
         target.mesh = new THREE.Group();
         target.mesh.rotation.y = config.behind ? 0 : Math.PI;
@@ -45,7 +45,7 @@ test.each([
             floatingTextManager: { spawn: jest.fn() }, spawnTransientEffect: jest.fn(() => true) };
         if (config.combo) {
             const mana = actor.stats.mana;
-            actor.useAbility(actor.position, engine, 'Cloak & Vanish');
+            actor.useAbility(target.position, engine, 'Weak Point Mark');
             expect(actor.stats.mana).toBeLessThan(mana);
             now += config.expired ? 3001 : 600;
         }

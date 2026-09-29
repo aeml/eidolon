@@ -16,7 +16,7 @@ test.each([0,1,5].flatMap(rank => [0,5].map(generic => ({rank,generic}))))(
             player.useAbility(target.position.clone(), engine, 'Unbreakable Grip');
             expect(player.stats.mana).toBe(165);
             expect(target.rootTimer).toBeCloseTo(1+.04*rank+.07*generic,8);
-            expect(target.position.x).toBe(2); expect(target.stats.hp).toBe(hp); expect(target.stunTimer).toBe(0);
+            expect(target.position.x).toBe(2); expect(target.stats.hp).toBeLessThan(hp); expect(target.stunTimer).toBe(0);
             const duration = target.rootTimer; player.talentRanks = {};
             expect(target.rootTimer).toBe(duration);
         } finally {player.dispose();target.dispose();}

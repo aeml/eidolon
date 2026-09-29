@@ -13,7 +13,7 @@ func TestGetComboForSkillsResolvesEachClassCatalog(t *testing.T) {
 		wantID      string
 	}{
 		{class: "Fighter", firstSkill: "Charge", secondSkill: "Whirlwind", wantID: "momentum_strike"},
-		{class: "Rogue", firstSkill: "Cloak & Vanish", secondSkill: "Backstab", wantID: "ambush"},
+		{class: "Rogue", firstSkill: "Weak Point Mark", secondSkill: "Backstab", wantID: "ambush"},
 		{class: "Wizard", firstSkill: "Gravity Well", secondSkill: "Fireball", wantID: "implosion"},
 		{class: "Cleric", firstSkill: "Divine Intervention", secondSkill: "Healing Light", wantID: "mass_revival"},
 	}

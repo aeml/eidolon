@@ -4,7 +4,8 @@ const offline = actor => actor && !actor.isRemote && !actor.isMultiplayer && !ac
 const heroes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
 
 export function getFighterDamageBuffMultiplier(source, skill) {
-    const base = skill === 'Berserker Edge' ? 1.5 : skill === 'Last Stand Rampage' ? 3 : 1;
+    const healthy = source?.stats?.maxHp > 0 && source.stats.hp / source.stats.maxHp >= .30;
+    const base = skill === 'Berserker Edge' ? 1.5 : skill === 'Last Stand Rampage' ? (healthy ? 2 : 3) : 1;
     if (base === 1) return 1;
     const raw = Number(source?.talentRanks?.[base === 1.5 ? 'FTR_19' : 'FTR_25'] || 0);
     const rank = Number.isFinite(raw) ? Math.max(0, Math.min(5, Math.floor(raw))) : 0;
@@ -52,7 +53,7 @@ export function applyOfflineFighterDamageBuffStats(actor) {
     }
     if (actor.lastStandTimer > 0) {
         const value = actor.lastStandMultiplier;
-        actor.stats.damage = Math.trunc(actor.stats.damage * (value >= 3 && value <= 3.6 ? value : 3));
+        actor.stats.damage = Math.trunc(actor.stats.damage * (value >= 2 && value <= 3.6 ? value : 3));
     }
     if (actor.ironFortressTimer > 0) {
         actor.stats.defense = Math.trunc(actor.stats.defense * 1.5);

@@ -36,6 +36,9 @@ func TestFighterEffectDurationRanksReachPaidCasts(t *testing.T) {
 				p.Mana, p.Health = p.MaxMana, p.MaxHealth/4
 				mana, start := p.Mana, time.Now()
 				result := w.PerformAbility(p.ID, enemy.X, enemy.Z, enemy.ID, tc.skill)
+				if tc.skill == "Juggernaut Charge" {
+					w.updateEntity(p, .25, nil, &deferredActions{})
+				}
 				end := time.Now()
 				if !result.Accepted || (tc.skill != "Last Stand Rampage" && tc.skill != "Berserker Edge" && p.Mana >= mana) {
 					t.Fatalf("ordinary paid ability failed: accepted=%v mana=%d->%d", result.Accepted, mana, p.Mana)

@@ -90,16 +90,22 @@ export class Wizard extends Actor {
             targetVector = placement;
         }
         this.flameWhipNovaCascade = offline && requestedSkill === 'Flame Whip' &&
-            Number.isFinite(this.lastOfflineTeleportAt) && Date.now() - this.lastOfflineTeleportAt <= 3000;
+            Number.isFinite(this.lastOfflineFireballAt) && Date.now() - this.lastOfflineFireballAt <= 3000;
+        const timeBurn = offline && requestedSkill === 'Inferno Cataclysm' &&
+            Number.isFinite(this.lastOfflineFlameTornadoAt) && Date.now() - this.lastOfflineFlameTornadoAt <= 3000;
         const implosion = offline && requestedSkill === 'Fireball' &&
             Number.isFinite(this.lastOfflineGravityWellAt) && Date.now() - this.lastOfflineGravityWellAt <= 3000;
+        const arcaneBarrage = offline && requestedSkill === 'Arcane Missiles' &&
+            Number.isFinite(this.lastOfflineScorchBeamAt) && Date.now() - this.lastOfflineScorchBeamAt <= 3000;
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         const skill = skillNameOverride || this.abilityName;
 
         if (!offline) return true;
-        this.lastOfflineTeleportAt = null;
+        this.lastOfflineFireballAt = null;
+        this.lastOfflineFlameTornadoAt = null;
         this.lastOfflineGravityWellAt = null;
+        this.lastOfflineScorchBeamAt = null;
 
         // Snapshot named training once, then consume at most one Focus charge.
         let damageMultiplier = getWizardAbilityDamageMultiplier(this, skill);
@@ -184,6 +190,7 @@ export class Wizard extends Actor {
             const tornado = new Projectile(null, this, 'FlameTornado', startPos, adjustedTarget);
             // Damage is set in Projectile.js but we can override or apply multiplier
             tornado.damage = spellDamage;
+            this.lastOfflineFlameTornadoAt = Date.now();
             
             gameEngine.addEntity(tornado);
             return;
@@ -264,13 +271,17 @@ export class Wizard extends Actor {
                 radius: getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', this) || 12,
                 duration: 8.0,
                 damage: damage,
-                damageInterval: 1.0, // Ordinary server cadence; combo timing is separate.
+                damageInterval: timeBurn ? .5 : 1.0,
                 effectType: 'InfernoCataclysm',
                 isHostile: true
             };
 
             const zone = gameEngine.isMultiplayer ? null : new AreaOfEffect(gameEngine, this, targetVector, config);
             if (zone) gameEngine.addEntity(zone);
+            if (timeBurn) {
+                gameEngine.floatingTextManager?.spawn('COMBO: Time Burn!', this.position, '#ffd700');
+                gameEngine.uiManager?.showComboNotification?.('Time Burn', 'time_burn');
+            }
             
             // Initial explosion visual
             this.spawnVisualEffect(gameEngine, targetVector, 0xff4500, "ring");
@@ -283,6 +294,7 @@ export class Wizard extends Actor {
         if (skill === "Scorch Beam") {
             if (!this.unlockedSkills.includes("Scorch Beam")) return;
             console.log("Wizard used Scorch Beam!");
+            this.lastOfflineScorchBeamAt = Date.now();
             
             
             // Instant Line Damage
@@ -325,6 +337,10 @@ export class Wizard extends Actor {
                 if (!entity.isActive || entity.state === 'DEAD') continue;
                 if (entity === this) continue;
                 if (!(entity instanceof Actor) || typeof entity.takeDamage !== 'function') continue;
+                const hostile = typeof gameEngine.isHostileActorTarget === 'function'
+                    ? gameEngine.isHostileActorTarget(entity)
+                    : !entity.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(entity.constructor.name);
+                if (!hostile || entity.isRemote || entity.isMultiplayer || entity.gameEngine?.isMultiplayer) continue;
                 
                 // Simple distance check to line segment
                 // Project entity pos onto line
@@ -337,6 +353,11 @@ export class Wizard extends Actor {
                     const dist = Math.hypot(closestPoint.x - entity.position.x, closestPoint.z - entity.position.z);
                     if (dist < width + targetRadius && !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
                          applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffaa00');
+                         if (entity.stats.hp > 0 && !entity.ccImmune && !(entity.slowTimer > 0)) {
+                             entity.slowFactor = .30;
+                             entity.slowTimer = getWizardEffectDuration(this, skill, 3);
+                             gameEngine.floatingTextManager.spawn('SLOWED', entity.position, '#ffaa00');
+                         }
                          if (applyOfflineArmorMelt(entity, getWizardEffectDuration(this, skill, 5))) {
                              gameEngine.floatingTextManager.spawn("ARMOR MELT", entity.position, '#ffaa00');
                          }
@@ -385,6 +406,11 @@ export class Wizard extends Actor {
             spawnMissile(0, 0);
             spawnMissile(200, 2.0);
             spawnMissile(400, -2.0);
+            if (arcaneBarrage) {
+                spawnMissile(500, 3.0);
+                spawnMissile(600, -3.0);
+                gameEngine.floatingTextManager.spawn('ARCANE BARRAGE!', this.position, '#c66bff');
+            }
             
             return;
         }
@@ -399,6 +425,12 @@ export class Wizard extends Actor {
             this.spellFocusActive = true;
             this.spellFocusTimer = getWizardEffectDuration(this, skill, 15);
             this.spellFocusMultiplier = getSpellFocusCastMultiplier(this);
+            if (!this.arcaneShieldActive || this.shieldHP <= 0 || this.arcaneShieldTimer <= 0) {
+                this.shieldHP = Math.max(0, 40 + 2 * this.stats.intelligence);
+                this.arcaneShieldActive = true;
+                this.arcaneShieldTimer = getWizardEffectDuration(this, skill, 6);
+                gameEngine.floatingTextManager.spawn(`WARD +${this.shieldHP}`, this.position, '#a449ff');
+            }
             
             gameEngine.floatingTextManager.spawn("SPELL FOCUS!", this.position, '#8800ff');
             this.spawnVisualEffect(gameEngine, this.position, 0x8800ff, "buff");
@@ -537,7 +569,6 @@ export class Wizard extends Actor {
             this.spawnAbilityPresentation(gameEngine, skill, finalTarget);
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
-            this.lastOfflineTeleportAt = Date.now();
             if (this.skillRunes?.Teleport === 'teleport_phase') {
                 this.teleportPhaseTimer = getWizardEffectDuration(this, 'Teleport', 1);
             }
@@ -574,6 +605,7 @@ export class Wizard extends Actor {
         // if (this.skillLevels.pyromancer.burningGround > 0) { ... }
         
         gameEngine.addEntity(fireball);
+        this.lastOfflineFireballAt = Date.now();
     }
 
     spawnVisualEffect(gameEngine, position, color, type, direction = null) {
@@ -587,6 +619,10 @@ export class Wizard extends Actor {
     }
 
     cancelAbilities() {
+        this.lastOfflineScorchBeamAt = null;
+        this.lastOfflineGravityWellAt = null;
+        this.lastOfflineFireballAt = null;
+        this.lastOfflineFlameTornadoAt = null;
         this.spellFocusActive = false;
         this.spellFocusTimer = 0;
         this.spellFocusMultiplier = 1;

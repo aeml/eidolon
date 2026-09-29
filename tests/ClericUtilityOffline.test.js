@@ -8,7 +8,7 @@ test.each([0, 1, 5].flatMap(rank => ['Blessing of Resolve', 'Blessing of Zeal', 
         const source = new Cleric('utility-caster'), ally = new Fighter('utility-ally'), remote = new Fighter('utility-remote');
         const actors = [ally, remote];
         const engine = { chunkManager: { getActiveEntities: () => actors }, spawnTransientEffect: jest.fn(() => true),
-            floatingTextManager: { spawn: jest.fn() }, isHostileActorTarget: () => false };
+            floatingTextManager: { spawn: jest.fn() }, isHostileActorTarget: actor => skill === 'Mark of Weakness' && actor === ally };
         try {
             source.baseStats.intelligence = 100;
             source.recalculateStats();
