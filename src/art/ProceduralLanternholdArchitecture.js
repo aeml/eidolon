@@ -119,9 +119,6 @@ function material(key, color, options = {}) {
             opacity: options.opacity ?? 1,
             depthWrite: options.depthWrite ?? true,
             colorWrite: options.colorWrite ?? true,
-            polygonOffset: true,
-            polygonOffsetFactor: 1,
-            polygonOffsetUnits: 1,
             shadowSide: THREE.FrontSide
         }));
         if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
