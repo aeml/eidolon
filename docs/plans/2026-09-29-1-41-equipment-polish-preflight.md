@@ -1,9 +1,10 @@
 # Alpha 1.41 — character/equipment finish, local work
 
 Partial code-owned polish, not a versioned release or final art acceptance.
-1.35–1.38 still await ordered publication after the owner's DDNS correction.
-1.39/1.40 human pacing/readiness evidence remains open. This independent art
-work does not skip those gates or imply beta admission.
+1.35–1.38 have since been published;1.39's audit-repaired build is in CI.
+Human pacing/readiness observations remain assigned to the owner's playtest.
+Existing roadmap publication authorization remains in force; this independent
+art work does not claim A2 acceptance or imply beta admission.
 
 ## Wrist silhouettes and visible grips
 
@@ -197,8 +198,9 @@ completed local evidence. Do not rerun them one slice at a time without changes.
   asset. This work improves the procedural fallback and integration; it does
   not replace rigid anatomy with authored characters or prove final modern-ARPG
   art quality. Do not invent a rig, licensing or owner art approval.
-- Ordered publication and real live verification remain pending the earlier
-  releases and public DDNS correction. 1.39/1.40 human gates also remain open.
+- Ordered publication and real live verification remain pending the preceding
+  release sequence. Human campaign observations remain open and owner-deferred;
+  they must be disclosed, not treated as a new code-publication permission gate.
   No 1.41 version or full-milestone completion is claimed by this preflight.
 
 ### Small accessories and unified equipment check
