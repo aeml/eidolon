@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
+import { createLanternholdPavingMaps } from './LanternholdPaving.js';
 
 // Surface composition, not navigation data: branches connect service courts
 // and gate approaches, bending around the casino and larger service buildings.
@@ -63,13 +64,15 @@ export function createTownCompositionMask(quality = 'high') {
 // This material owns only the mask and supplied soil map, never shared albedo.
 export function applyTownGroundComposition(material, soilTexture, quality = 'high') {
     const mask = createTownCompositionMask(quality), region = WORLD_REGIONS.town;
+    const paving = createLanternholdPavingMaps(quality);
     const uniforms = {
         townComposition: { value: mask }, townSoil: { value: soilTexture },
+        townCourt: { value: paving.color }, townCourtSurface: { value: paving.surface },
         townBounds: { value: new THREE.Vector4(region.minX, region.minZ,
             region.maxX - region.minX, region.maxZ - region.minZ) }
     };
-    material.userData.townGroundComposition = { mask, soilTexture };
-    material.customProgramCacheKey = () => 'eidolon-town-ground-composition-v1';
+    material.userData.townGroundComposition = { mask, soilTexture, paving };
+    material.customProgramCacheKey = () => 'eidolon-town-ground-composition-v2';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, uniforms);
         shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec2 vTownGround;')
@@ -78,6 +81,8 @@ export function applyTownGroundComposition(material, soilTexture, quality = 'hig
             varying vec2 vTownGround;
             uniform sampler2D townComposition;
             uniform sampler2D townSoil;
+            uniform sampler2D townCourt;
+            uniform sampler2D townCourtSurface;
             uniform vec4 townBounds;
         `).replace('#include <map_fragment>', `#include <map_fragment>
             vec3 townWear = texture2D(townComposition, (vTownGround - townBounds.xy) / townBounds.zw).rgb;
@@ -85,15 +90,27 @@ export function applyTownGroundComposition(material, soilTexture, quality = 'hig
             townEarth *= mix(.85, 1.08, townWear.g);
             diffuseColor.rgb = mix(townEarth, diffuseColor.rgb, townWear.r);
             diffuseColor.rgb *= 1. - townWear.b * .12;
+            vec2 courtUV = vec2(vTownGround.x, 200. - vTownGround.y) / 32. + .5;
+            vec4 courtColor = texture2D(townCourt, courtUV);
+            vec4 courtSurface = texture2D(townCourtSurface, courtUV);
+            float courtWeight = courtColor.a * townWear.r;
+            diffuseColor.rgb = mix(diffuseColor.rgb, courtColor.rgb, courtWeight);
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
             roughnessFactor = mix(.98, roughnessFactor, townWear.r);
+            roughnessFactor = mix(roughnessFactor, courtSurface.a, courtWeight);
         `).replace('#include <normal_fragment_maps>', `
             vec3 townFlatNormal = normal;
             #include <normal_fragment_maps>
             normal = normalize(mix(townFlatNormal, normal, townWear.r));
+            #ifdef USE_NORMALMAP_TANGENTSPACE
+                normal = normalize(mix(normal, normalize(tbn * (courtSurface.rgb * 2. - 1.)), courtWeight));
+            #endif
         `);
     };
-    const release = () => { mask.dispose(); soilTexture.dispose(); material.removeEventListener('dispose', release); };
+    const release = () => {
+        mask.dispose(); soilTexture.dispose(); paving.color.dispose(); paving.surface.dispose();
+        material.removeEventListener('dispose', release);
+    };
     material.addEventListener('dispose', release);
     material.needsUpdate = true;
     return material;
