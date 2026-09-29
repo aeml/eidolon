@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -166,7 +167,7 @@ function installRestPoseReset(root) {
     };
 }
 
-function finalizeEnemy(root, type, clips) {
+function finalizeEnemy(root, type, clips, { batch = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS[type];
     root.name = `Procedural${type}`;
     root.userData.proceduralEnemyFamily = true;
@@ -179,6 +180,10 @@ function finalizeEnemy(root, type, clips) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = clips;
+    // Batch before recording the reset pose so pooled actors own only the
+    // actual render tree, not removed source meshes. Skeleton uses the same
+    // immutable rigid-pivot contract as the procedural player rigs.
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
@@ -288,7 +293,7 @@ function createSkeletonClips() {
     ];
 }
 
-export function createProceduralSkeleton() {
+export function createProceduralSkeleton({ batch = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.Skeleton;
     const p = definition.palette;
     const materials = {
@@ -371,7 +376,7 @@ export function createProceduralSkeleton() {
     addMesh(weapon, 'Skeleton_GravesickleRune', geometry('skeleton-sickle-rune', () => new THREE.OctahedronGeometry(0.08, 0)), materials.spirit,
         { position: [0, 0.47, 0], castShadow: false });
 
-    return finalizeEnemy(root, 'Skeleton', createSkeletonClips());
+    return finalizeEnemy(root, 'Skeleton', createSkeletonClips(), { batch });
 }
 
 function addOrcLimb(body, side, materials, isArm) {
