@@ -37,6 +37,7 @@ import { createEarthLocations } from '../art/ProceduralEarthLocations.js';
 import { createElementalLocations } from '../art/ProceduralElementalLocations.js';
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
+import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurniture.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -307,6 +308,15 @@ export class WorldGenerator {
                 new THREE.Vector3(2, 10, 2)
             );
             this.collisionManager.addCollider(collider);
+        }
+        const streets = createLanternholdStreetFurniture({ quality: this.graphicsQuality, cx, cz });
+        streets.traverse(part => {
+            if (part.isMesh) MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
+        });
+        this.scene.add(streets);
+        for (const f of streets.userData.walkFootprints) {
+            this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
+                new THREE.Vector3(f.x, f.y, f.z), new THREE.Vector3(f.width, f.height, f.depth)));
         }
         this.townCourtyards = createLanternholdCourtyards({ quality: this.graphicsQuality });
         this.townCourtyards.traverse(part => {
