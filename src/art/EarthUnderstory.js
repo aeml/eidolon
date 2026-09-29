@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { sampleEarthMeadow } from './EarthGroundComposition.js';
 import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.js';
+import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
 
 // First playable art reference: north grove route and east dungeon approach.
 // Low vegetation only: no new blockers, server footprints or reward sources.
-const BANDS = [[-220, 220, -520, 30], [150, 740, 120, 280]];
+const BANDS = [[-220, 220, -520, 30], [111, 740, 120, 280]];
 const random = (x, z, salt = 0) => {
     let n = Math.imul(x + salt * 79, 1597334677) ^ Math.imul(z - salt * 37, 3812015801);
     n = Math.imul(n ^ n >>> 16, 2246822519);
@@ -13,7 +14,11 @@ const random = (x, z, salt = 0) => {
 };
 
 export function isEarthUnderstoryClear(x, z, radius = 2.2) {
-    if (Math.hypot(x, z - 200) < 165 + radius) return false;
+    // The town is rectangular. The old165m circle stripped all vegetation
+    // from the first fights east of the gate, well outside the actual fence.
+    if (Math.abs(x) < 105 + radius && Math.abs(z - 200) < 105 + radius) return false;
+    if (STARTER_ROAD_CLEARINGS.some(([cx, cz, clear]) => Math.hypot(x - cx, z - cz) < clear + radius)) return false;
+    if (Math.hypot(x - LANTERNHOLD_ROAD_CART.x, z - LANTERNHOLD_ROAD_CART.z) < LANTERNHOLD_ROAD_CART.clearing + radius) return false;
     if (Math.abs(x) < 14 + radius || Math.abs(z - 200) < 14 + radius) return false;
     if (EARTH_LOCATIONS.some(site => Math.hypot(x - site.x, z - site.z) < site.radius + radius + 2)) return false;
     return !EARTH_PATHS.some(path => distanceToPath(x, z, path.points) < path.width / 2 + radius + 2);

@@ -54,6 +54,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             const portal = new ResonancePortal('resonance-portal'); portal.position.set(28, 0, 235); portal.gameEngine = engine;
             await portal.ensureMesh(); render.entityGroup.add(portal.mesh);
             const hero = await MeshFactory.createMeshForType('Fighter'); render.entityGroup.add(hero);
+            if (elemental === 'earth') for (const [x, z] of [[125, 180], [130, 215], [125, 250]]) {
+                // Authored starter positions, prepared art reference only.
+                const skeleton = await MeshFactory.createMeshForType('Skeleton');
+                skeleton.position.set(x, 0, z); render.entityGroup.add(skeleton);
+            }
             engine.chunkManager = { getActiveEntities: () => readings };
             engine.inputManager = new InputManager(render.camera, render.scene, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
@@ -61,6 +66,8 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 ...LANTERNHOLD_COURTYARDS,
                 { id: 'lanternhold-service-court', x: 0, z: 199, region: 'town' },
                 { id: 'lanternhold-trading-roof', x: -17, z: 191, region: 'town' },
+                { id: 'lanternhold-east-gate', x: 108, z: 200, region: 'earth' },
+                { id: 'first-road-encounter', x: 119, z: 178, region: 'earth' },
                 ...EARTH_LOCATIONS
             ];
             const samples = [];
@@ -113,6 +120,12 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     stats.readingHit = hit?.object.userData.entityId;
                     stats.firstHit = hit?.object.name;
                     stats.approachBlocked = Boolean(collision.checkCollision(engine.player.position, 1.25));
+                }
+                if (id === 'first-road-encounter') {
+                    const cart = render.instanceEnvironmentGroup.getObjectByName('Lanternhold stranded supply cart');
+                    const point = cart.localToWorld(new THREE.Vector3(0, 1.6, 0)).project(render.camera);
+                    stats.cartInView = Math.abs(point.x) < .85 && Math.abs(point.y) < .85 && Math.abs(point.z) < 1;
+                    if (!stats.cartInView) throw new Error(`Starter cart out of view: ${point.toArray()}`);
                 }
                 samples.push(stats); return stats;
             };

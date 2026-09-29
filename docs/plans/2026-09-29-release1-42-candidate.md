@@ -5,6 +5,12 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- The first road east of Lanternhold gains a stranded supply wagon and a
+  planted verge, with clear starter fighting space and open travel routes.
+  Cart walking/spawn/landing bounds match the new model; ordinary encounter
+  rewards and safe zones are unchanged. See the
+  [starter-road review](2026-09-29-starter-road-composition.md).
+
 - Lanternhold's service court gains planted stone beds, benches and framed
   lanterns beside the market/smithy approaches. Walking solids match the
   visible furniture and service routes stay open. See the

@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import { createEarthLocations } from '../src/art/ProceduralEarthLocations.js';
+import { createLanternholdRoadCart } from '../src/art/LanternholdRoadCart.js';
 import { createElementalLocations } from '../src/art/ProceduralElementalLocations.js';
 import { WORLD_READINGS } from '../src/data/worldPopulation.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../src/data/worldFoliage.js';
 
 // Spawn exclusion is derived from the same solid footprints as the rendered
 // environment. It is not an overworld movement validator or a new safe zone.
-const scenes = [createEarthLocations(), ...['water', 'fire', 'air'].map(realm => createElementalLocations(realm))];
+const scenes = [createEarthLocations(), createLanternholdRoadCart(), ...['water', 'fire', 'air'].map(realm => createElementalLocations(realm))];
 const footprints = scenes.flatMap(scene => scene.userData.walkFootprints).map(({ siteId, x, z, width, depth }) =>
     ({ siteId, x, z, width, depth }));
 // Trees already block local walking and admin landings. Use those same trunk

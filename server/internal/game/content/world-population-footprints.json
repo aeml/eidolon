@@ -191,6 +191,27 @@
       "depth": 1.6
     },
     {
+      "siteId": "lanternhold-road-cart",
+      "x": 136,
+      "z": 191,
+      "width": 3.5,
+      "depth": 4.42
+    },
+    {
+      "siteId": "lanternhold-road-cart",
+      "x": 135.233,
+      "z": 187.88,
+      "width": 0.14,
+      "depth": 2.55
+    },
+    {
+      "siteId": "lanternhold-road-cart",
+      "x": 136.767,
+      "z": 187.88,
+      "width": 0.14,
+      "depth": 2.55
+    },
+    {
       "siteId": "flood-shelter",
       "x": -72,
       "z": -730,
