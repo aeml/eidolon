@@ -32,9 +32,10 @@
 .mobile-mode .quest-tracking-hint { font-size: 16px; }
 .mobile-mode .quest-journal-entry__header { flex-wrap: wrap; gap: 8px; font-size: 16px; overflow-wrap: anywhere; }
 .mobile-mode .quest-journal-entry__header span { font-size: 16px !important; }
-.mobile-mode .quest-journal-entry__progress { height: 22px !important; }
-.mobile-mode .quest-journal-entry__count { font-size: 14px !important; line-height: 22px !important; }
-.mobile-mode .quest-journal-entry > div:last-child { font-size: 16px !important; }
+.mobile-mode .quest-journal-entry__count { font-size: 16px; }
+.mobile-mode .quest-journal-entry__reward { font-size: 16px; }
+.mobile-mode .quest-journal-navigation { padding: 8px 12px; }
+.mobile-mode .quest-journal-navigation button { font-size: 16px; }
 .mobile-mode .quest-ladder-row { border-top: 1px solid #8fb0d933; padding-top: 8px; }
 .mobile-mode .quest-ladder-row > .quest-copy { min-width: 0; }
 

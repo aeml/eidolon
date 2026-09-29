@@ -4,6 +4,77 @@ import { collectBrowserFailures } from './helpers.js';
 // Controlled presentation fixture: actual QuestUI, DOM and shipped CSS, not a
 // claimed earned quest completion or authorization to change server rewards.
 for (const [width, height] of [[1280, 720], [390, 844]]) {
+    test(`${width}x${height}: many contracts remain navigable with readable progress and stable tracking`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width, height });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const { QuestUI } = await import('/src/ui/QuestUI.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const quests = [
+                { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'The First Covenant', accepted: true, count: 1, maxCount: 3 },
+                ...Array.from({ length: 12 }, (_, i) => ({ id: `daily_crowd_${i}`, title: `Contract ${i + 1}: Echoes beneath the abandoned watchtower`,
+                    accepted: true, target: 'Skeleton', count: i === 8 ? 30 : i, maxCount: 30, rewardXP: 200, rewardGold: 25 }))
+            ];
+            const player = { id: 'many-contracts', quests };
+            const ui = new QuestUI({ isMobile: mobile, getLastPlayer: () => player });
+            ui.questJournal.style.display = 'flex';
+            ui.updateJournal(quests);
+            window.__manyContracts = { ui, player };
+        }, width < 600);
+        const journal = page.locator('#quest-journal');
+        const navigation = journal.getByRole('group', { name: 'Quest journal sections' });
+        const contracts = navigation.getByRole('button', { name: 'Contracts (12)', exact: true });
+        await contracts.click();
+        await expect(journal.locator('.chronicle-journal')).toBeHidden();
+        await expect(journal.locator('.quest-journal-entry').first()).toHaveAttribute('data-quest-id', 'daily_crowd_8');
+        await page.evaluate(() => window.__manyContracts.ui.updateJournal(window.__manyContracts.player.quests));
+        await expect(contracts).toBeFocused();
+        await expect(contracts).toHaveAttribute('aria-pressed', 'true');
+        await journal.locator('.quest-repeatable-ladder > summary').click();
+        const count = journal.locator('.quest-journal-entry__count').first();
+        expect(await count.evaluate(node => parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(13);
+        await page.screenshot({ path: testInfo.outputPath('contracts-ready-first.png') });
+
+        const track = journal.locator('[data-quest-track="daily_crowd_11"]');
+        await track.scrollIntoViewIfNeeded();
+        const before = await journal.locator('#journal-list').evaluate(node => node.scrollTop);
+        expect(before).toBeGreaterThan(0);
+        await track.check();
+        await expect(track).toBeFocused();
+        expect(await journal.locator('#journal-list').evaluate(node => node.scrollTop)).toBeCloseTo(before, 0);
+        expect(await journal.locator('#journal-list').evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+        const navBounds = await navigation.boundingBox();
+        expect(navBounds.y).toBeGreaterThanOrEqual(0);
+        expect(navBounds.y + navBounds.height).toBeLessThan(height);
+        expect((await contracts.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        await page.screenshot({ path: testInfo.outputPath('contracts-track-deep-list.png') });
+        await navigation.getByRole('button', { name: 'Story', exact: true }).click();
+        await expect(journal.locator('.chronicle-journal')).toBeVisible();
+        await expect(journal.locator('.quest-journal-entry').first()).toBeHidden();
+        expect(await journal.locator('#journal-list').evaluate(node => node.scrollTop)).toBe(0);
+        expect(await page.evaluate(() => window.__manyContracts.player.quests.some(q => q.completed))).toBe(false);
+        if (width >= 600) {
+            const scroll = await page.evaluate(() => {
+                const { ui, player } = window.__manyContracts;
+                ui.closeJournal();
+                ui.trackedQuestKeys = new Set(['story', ...player.quests.filter(q => q.id.startsWith('daily_')).map(q => q.id)]);
+                ui.updateJournal(player.quests);
+                ui.objectivesList.scrollTop = ui.objectivesList.scrollHeight;
+                const before = ui.objectivesList.scrollTop;
+                player.quests[1].count++;
+                ui.updateJournal(player.quests);
+                return { before, after: ui.objectivesList.scrollTop };
+            });
+            expect(scroll.before).toBeGreaterThan(0);
+            expect(scroll.after).toBeCloseTo(scroll.before, 0);
+            await page.screenshot({ path: testInfo.outputPath('all-tracked-scroll-retained.png') });
+        }
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
     test(`${width}x${height}: ready quest replaces town recovery guidance without claiming it`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
