@@ -7,6 +7,7 @@ import { drawDarkRealmFloors } from './DarkRealmMap.js';
 import { getCasinoMapLandmarks, isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
 import { drawAtlasMarker, drawAtlasPlayer } from './AtlasMarkers.js';
+import { placeMinimapLabels } from './MinimapLabels.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -138,7 +139,7 @@ export class Minimap {
         this.canvas.style.position = 'relative';
         this.canvas.style.border = '2px solid #444';
         this.canvas.style.borderRadius = '50%';
-        this.canvas.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        this.canvas.style.backgroundColor = 'rgba(8, 12, 18, 0.94)';
         this.canvas.style.zIndex = '100';
 
         this.buffTooltip = document.createElement('div');
@@ -457,12 +458,16 @@ export class Minimap {
     }
 
     _drawTownServiceMarkers(ctx, toMap, player, half) {
+        this.serviceLabelLayout = [];
         const casino = this.gameEngine?.currentInstanceType === 'casino';
         if (!casino && getRealmForPosition(player.position.x, player.position.z) !== 'town') {
             return;
         }
 
         const markers = casino ? getCasinoMapLandmarks(this.gameEngine) : TOWN_SERVICE_MARKERS;
+        const visible = [];
+        ctx.save();
+        ctx.font = '11px Arial';
         markers.forEach((marker) => {
             const questGiver = ['quest-giver', 'story-wizard'].includes(marker.id);
             const category = casino ? 'passages' : marker.category;
@@ -475,11 +480,28 @@ export class Minimap {
             const drawX = dist > maxRadius ? half + (dx / dist) * maxRadius : pos.x;
             const drawY = dist > maxRadius ? half + (dy / dist) * maxRadius : pos.y;
 
-            ctx.fillStyle = '#f2f2f2';
-            ctx.fillText(marker.shortLabel || marker.label, drawX, drawY - 10);
-            drawAtlasMarker(ctx, { category, color: marker.color,
-                ...(questGiver ? getAtlasQuestGiverState(this.gameEngine?.player?.quests, marker.id === 'story-wizard') : {}) }, { x: drawX, y: drawY });
+            const state = questGiver ? getAtlasQuestGiverState(this.gameEngine?.player?.quests, marker.id === 'story-wizard') : {};
+            const text = marker.shortLabel || marker.label;
+            visible.push({ id: marker.id, text, x: drawX, y: drawY,
+                width: ctx.measureText(text).width, distance: dist,
+                priority: state.symbol === '?' ? 2 : state.symbol === '!' ? 1 : 0,
+                marker: { category, color: marker.color, ...state } });
         });
+        this.serviceLabelLayout = this.gameEngine?.isMobile ? [] : placeMinimapLabels(visible, half);
+        ctx.strokeStyle = '#c0cbd377'; ctx.lineWidth = 1;
+        for (const label of this.serviceLabelLayout) {
+            ctx.beginPath(); ctx.moveTo(label.markerX, label.markerY);
+            ctx.lineTo(Math.max(label.x, Math.min(label.x + label.width, label.markerX)),
+                Math.max(label.y, Math.min(label.y + label.height, label.markerY)));
+            ctx.stroke();
+        }
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for (const label of this.serviceLabelLayout) {
+            ctx.fillStyle = '#10161feb'; ctx.fillRect(label.x, label.y, label.width, label.height);
+            ctx.fillStyle = '#e5eaf0'; ctx.fillText(label.text, label.x + label.width / 2, label.y + label.height / 2);
+        }
+        for (const entry of visible) drawAtlasMarker(ctx, entry.marker, entry);
+        ctx.restore();
     }
 
     _drawDungeonRoomStates(ctx, toMap, player, half, scale) {
