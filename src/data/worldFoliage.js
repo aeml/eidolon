@@ -1,8 +1,8 @@
 export const PROCEDURAL_FOLIAGE_RECIPES = Object.freeze([
     // Detailed opaque leaves need spatial culling, not a realm-wide draw batch.
-    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', count: 120, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 256 }),
-    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', count: 115, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 128 }),
-    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', count: 95, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 128 }),
+    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', count: 120, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 64 }),
+    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', count: 115, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 64 }),
+    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', count: 95, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 64 }),
     // Only Gloamwood retains tree collision because it is the one realm whose
     // authored trees already shaped navigation. New regional dressing stays
     // visual-only so this art migration cannot silently change combat paths.

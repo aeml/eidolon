@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Tightened woodland rendering batches so fewer off-screen canopies are drawn,
+  retaining all trees, shadows and collision. The sampled desktop road views
+  submit20–51% fewer triangles; this is not a measured FPS guarantee. See the
+  [culling review and appearance comparison](2026-09-29-woodland-culling.md).
+
 - Connected the long Bastion road with irregular meadow verges, reducing
   empty stretches between landmarks while retaining clear roads, junctions
   and starter combat space. See the [road review and rendering cost](2026-09-29-bastion-road-verges.md).
