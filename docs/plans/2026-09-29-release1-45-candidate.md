@@ -5,6 +5,12 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Desktop storage shows Bag and Stash together, with named items, search,
+  category filters, capacity counts and independently scrolling lists.
+  Click to inspect or right-click to transfer; refreshed items preserve focus
+  and reading position. Phone storage stays unchanged.
+  See [stash presentation checks](2026-09-29-desktop-stash-presentation.md).
+
 - Forge lists show item names beside upgrade previews on wide desktops.
   Capped items retain useful stats and clear maximum-reached feedback;
   phone item rows fit wrapped names, and actions use the game styling.

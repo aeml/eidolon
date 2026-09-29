@@ -51,7 +51,10 @@ export async function openEarnedStash(page) {
         await page.mouse.click(point.x, point.y);
     }
     await expect(page.locator('#stash-screen')).toBeVisible();
-    await expect(page.locator('#inventory-screen')).toBeVisible();
+    await expect(page.locator('#inventory-screen')).toBeHidden();
+    await expect(page.locator('#stash-browser')).toBeVisible();
+    await page.locator('#stash-browser input').fill('');
+    await page.locator('#stash-browser select').selectOption('all');
     await expect(page.locator('#shop-screen')).toBeHidden();
     console.log('[earned-stash-window]', JSON.stringify({ position: await readPlayerState(page) }));
 }
@@ -60,7 +63,8 @@ export async function storeEarnedSpareEquipment(page, planned, readState) {
     if (!planned.length) return [];
     await openEarnedStash(page);
     const initial = await readState(page);
-    const capacity = await page.locator('#stash-grid .inv-slot').count();
+    const capacity = Number((await page.locator('#stash-browser-stash-title [role="status"]').textContent()).split('/')[1]);
+    expect(capacity).toBe(100);
     const freeSlots = earnedStashFreeSlots(initial.stash, capacity);
     const projected = planned.reduce((stash, deposit) => {
         const item = initial.inventory.find(item => item?.id === deposit.id);
@@ -78,7 +82,7 @@ export async function storeEarnedSpareEquipment(page, planned, readState) {
         const item = before.inventory[index];
         const expectedStash = expectedEarnedStashDeposit(before.stash, item);
         await expect(page.locator('#shop-screen')).toBeHidden();
-        await page.locator('#inventory-grid .inv-slot').nth(index).click({ button: 'right' });
+        await page.locator(`.stash-browser-item[data-source="inventory"][data-slot-index="${index}"]`).click({ button: 'right' });
         await expect.poll(async () => (await readState(page)).inventory.some(entry => entry?.id === item.id)).toBe(false);
         await expect.poll(async () => (await readState(page)).stash.filter(entry => entry?.id)).toEqual(expectedStash);
         const after = await readState(page);

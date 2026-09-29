@@ -1099,6 +1099,39 @@
     text-align: center;
 }
 
+.stash-window.stash-browser-window {
+    width: min(860px, calc(100vw - 24px));
+    height: min(660px, calc(100dvh - 24px));
+    overflow: hidden;
+}
+.stash-browser-window > :is(#stash-grid, #stash-guidance) { display: none; }
+.stash-browser-window > .window-header { flex: 0 0 auto; }
+#stash-browser { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 16px; gap: 12px; }
+.stash-browser-tools { display: flex; gap: 12px; }
+.stash-browser-tools label { display: flex; flex-direction: column; gap: 5px; color: #cbb991; font-size: 12px; }
+.stash-browser-tools label:first-child { flex: 1; min-width: 0; }
+.stash-browser-tools :is(input, select) { box-sizing: border-box; width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #796745; border-radius: 5px; background: #101820; color: #ede4d4; font: inherit; font-size: 14px; }
+.stash-browser-help { margin: 0; color: #b8b4aa; font-size: 12px; line-height: 1.4; }
+.stash-browser-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+.stash-browser-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; border: 1px solid #574a35; border-radius: 6px; background: #0e151bd9; overflow: hidden; }
+.stash-browser-pane h3 { margin: 0; padding: 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 15px; color: #e5cea1; border-bottom: 1px solid #574a35; }
+.stash-browser-pane h3 span { font: 12px/1.5 sans-serif; color: #bcb9b2; }
+.stash-browser-pane h3 .full { color: #edbd8b; }
+.stash-browser-list { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.stash-browser-item { display: flex; width: 100%; align-items: center; gap: 10px; margin-bottom: 6px; padding: 9px; min-height: 66px; border: 1px solid #ffffff18; border-left: 3px solid var(--stash-rarity, #a89a82); border-radius: 4px; background: #1a222c; color: #eee6d8; text-align: left; cursor: pointer; }
+.stash-browser-item:hover { background: #26313e; border-top-color: #a18c62; }
+.stash-browser-item img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; }
+.stash-browser-item > span { min-width: 0; display: flex; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+.stash-browser-item strong { font-size: 14px; font-weight: 500; line-height: 1.3; }
+.stash-browser-item span span { font-size: 12px; color: #adb8c5; }
+#stash-browser :focus-visible { outline: 2px solid #e4c991; outline-offset: -2px; }
+.stash-browser-empty { margin: 8px; color: #bcb9b2; font-size: 14px; line-height: 1.5; }
+@media (max-width: 620px) {
+    .stash-browser-columns { gap: 8px; }
+    #stash-browser { padding: 8px; gap: 8px; }
+    .stash-browser-item { flex-direction: column; align-items: flex-start; }
+}
+
 /* ---- HUD Utility Windows ---- */
 #abilities-menu,
 #character-sheet,

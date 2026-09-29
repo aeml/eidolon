@@ -27,15 +27,18 @@ function browser({ full = false, reject = false, loseMetadata = false, loseOld =
         state.inventory[index] = loseOld ? null : old;
         return [action];
     });
-    const page = { locator: selector => ({ click: jest.fn(), isVisible: async () => false,
-        nth: index => ({ click: async options => {
+    const page = { locator: selector => ({ isVisible: async () => false,
+        click: async options => {
+            const match = selector.match(/data-slot-index="(\d+)"/);
+            if (!match) return;
+            const index = Number(match[1]);
             withdrawals.push({ selector, index, options });
             if (reject) return;
             const [item] = state.stash.splice(index, 1);
             if (loseMetadata) delete item.extra;
             state.inventory[state.inventory.findIndex(item => !item?.id)] = item;
             if (changeGold) state.gold++;
-        } }) }) };
+        } }) };
     return { page, state, withdrawals };
 }
 
@@ -45,7 +48,7 @@ afterEach(() => jest.restoreAllMocks());
 test('normal withdrawal equips the stored improvement and preserves all displaced and future gear', async () => {
     const { page, state, withdrawals } = browser();
     const result = await upgradeEarnedStoredEquipment(page);
-    expect(withdrawals).toEqual([{ selector: '#stash-grid .inv-slot', index: 0, options: { button: 'right' } }]);
+    expect(withdrawals).toEqual([{ selector: '.stash-browser-item[data-source="stash"][data-slot-index="0"]', index: 0, options: { button: 'right' } }]);
     expect(result.upgrades).toEqual([expect.objectContaining({ id: 'stored', slot: 'ring2', previousId: 'weak' })]);
     expect(state.equipment.ring1.id).toBe('strong');
     expect(state.equipment.ring2.id).toBe('stored');
