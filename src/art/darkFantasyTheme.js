@@ -141,7 +141,10 @@ export const DARK_FANTASY_REGION_THEMES = Object.freeze({
         realm: 'dungeon',
         motif: 'root-bound masonry, tarnished bronze, funerary ivy, witchlight',
         palette: { shadow: 0x101710, ground: 0x263226, midtone: 0x53654b, accent: 0x88b45d, spirit: 0xa8e6a0, fog: 0x35483a },
-        lighting: { ambientIntensity: 1.35, keyIntensity: 2.2, keyColor: 0xaed783, fillColor: 0x426b58, fillIntensity: 0.38, fogColor: 0x35483a, fogNear: 120, fogFar: 620, exposure: 1.24, bloomStrength: 0.35, bloomRadius: 0.42, bloomThreshold: 0.7 },
+        // Witchlight belongs to lamps and wards, not a green wash over stone.
+        // The following camera sits ~173 units from its target: keep the
+        // immediate combat floor ahead of the fog's start.
+        lighting: { ambientIntensity: 1.0, keyIntensity: 2.7, keyColor: 0xdde3d3, fillColor: 0x718479, fillIntensity: 0.38, fogColor: 0x35483a, fogNear: 210, fogFar: 620, exposure: 1.24, bloomStrength: 0.18, bloomRadius: 0.32, bloomThreshold: 0.9 },
         particles: { color: 0x9ad47a, size: 2.4, velY: [0.04, 0.22], velXZ: [-0.12, 0.12], life: [6, 12], spread: [36, 16, 36], spawnY: [0, 14] }
     }),
     molten_core: regionTheme({

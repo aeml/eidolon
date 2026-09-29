@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
+import { sampleVerdantMasonry } from './VerdantMasonry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -77,6 +78,7 @@ function mixBytes(a, b, amount) {
 }
 
 function surfaceSample(dungeonType, surface, x, y, palette) {
+    if (dungeonType === 'verdant_bastion_catacombs') return sampleVerdantMasonry(x, y, surface === 'wall');
     const { shadow, ground, midtone, accent } = palette;
     const wall = surface === 'wall';
     const baseColor = mixBytes(shadow, wall ? midtone : ground, wall ? 0.48 : 0.72);
@@ -87,20 +89,7 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
     let relief = 0.5;
     let roughness = 0.9;
 
-    if (dungeonType === 'verdant_bastion_catacombs') {
-        const blockX = (x + (Math.floor(y / 8) % 2) * 4) % 16;
-        const mortar = blockX < 1 || y % 8 < 1;
-        const root = Math.abs(x - (30 + Math.sin(y * 0.22) * 13)) < (wall ? 1.8 : 1.25);
-        const moss = ((x * 7 + y * 11) % 29) < (wall ? 4 : 7);
-        relief += mortar ? -0.22 : root ? 0.12 : 0;
-        roughness = mortar || moss ? 1 : 0.86;
-        if (mortar) color = mixBytes(color, shadow, 0.58);
-        if (moss) color = mixBytes(color, accent, 0.2);
-        if (root) {
-            color = mixBytes(color, accent, wall ? 0.34 : 0.27);
-            emissive = wall ? 0.2 : 0.12;
-        }
-    } else if (dungeonType === 'molten_core') {
+    if (dungeonType === 'molten_core') {
         const plateX = (x + (Math.floor(y / 14) % 2) * 6) % 20;
         const plate = plateX < 1 || y % 14 < 1;
         const faultA = Math.abs(x - (30 + Math.sin(y * 0.17) * 11)) < 1.1;
@@ -162,7 +151,9 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
     return { color, emissive, relief, roughness };
 }
 
-function createSurfaceTexture(dungeonType, surface, channel = 'color') {
+function createSurfaceTexture(dungeonType, surface, channel = 'color', sampleCache = new Map()) {
+    const size = dungeonType === 'verdant_bastion_catacombs' ? 256 : TEXTURE_SIZE;
+    const step = TEXTURE_SIZE / size;
     const theme = getRegionTheme(dungeonType);
     const palette = Object.freeze({
         shadow: colorBytes(theme.palette.shadow),
@@ -170,17 +161,20 @@ function createSurfaceTexture(dungeonType, surface, channel = 'color') {
         midtone: colorBytes(theme.palette.midtone),
         accent: colorBytes(theme.palette.accent)
     });
-    const data = new Uint8Array(TEXTURE_SIZE * TEXTURE_SIZE * 4);
-    for (let y = 0; y < TEXTURE_SIZE; y += 1) {
-        for (let x = 0; x < TEXTURE_SIZE; x += 1) {
-            const sample = surfaceSample(dungeonType, surface, x, y, palette);
-            const offset = ((y * TEXTURE_SIZE) + x) * 4;
+    // Reuse one sampled surface for all four maps, then release it with this
+    // kit-construction call. No persistent pixel cache or per-frame generation.
+    if (!sampleCache.has(surface)) sampleCache.set(surface, Array.from({ length: size * size }, (_, index) =>
+        surfaceSample(dungeonType, surface, (index % size) * step, Math.floor(index / size) * step, palette)));
+    const samples = sampleCache.get(surface);
+    const data = new Uint8Array(size * size * 4);
+    for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+            const sample = samples[y * size + x];
+            const offset = ((y * size) + x) * 4;
             if (channel === 'normal') {
                 // Wrapped central differences keep repeat boundaries valid.
                 // Small tangent normals add relief without displacing floors.
-                const relief = (dx, dy) => surfaceSample(dungeonType, surface,
-                    (x + dx + TEXTURE_SIZE) % TEXTURE_SIZE,
-                    (y + dy + TEXTURE_SIZE) % TEXTURE_SIZE, palette).relief;
+                const relief = (dx, dy) => samples[((y + dy + size) % size) * size + (x + dx + size) % size].relief;
                 const nx = (relief(-1, 0) - relief(1, 0)) * 1.5;
                 const ny = (relief(0, -1) - relief(0, 1)) * 1.5;
                 const length = Math.hypot(nx, ny, 1);
@@ -204,7 +198,7 @@ function createSurfaceTexture(dungeonType, surface, channel = 'color') {
         }
     }
 
-    const texture = new THREE.DataTexture(data, TEXTURE_SIZE, TEXTURE_SIZE, THREE.RGBAFormat);
+    const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
     texture.name = `procedural-dungeon-${dungeonType}-${surface}${channel === 'color' ? '' : `-${channel}`}`;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -700,16 +694,18 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
     if (!definition) throw new Error(`Unknown procedural dungeon interior: ${dungeonType}`);
 
     const theme = getRegionTheme(dungeonType);
+    const sampleCache = new Map();
     const baseTextures = Object.freeze({
-        floor: createSurfaceTexture(dungeonType, 'floor'),
-        floorEmissive: createSurfaceTexture(dungeonType, 'floor', 'emissive'),
-        floorNormal: createSurfaceTexture(dungeonType, 'floor', 'normal'),
-        floorRoughness: createSurfaceTexture(dungeonType, 'floor', 'roughness'),
-        wall: createSurfaceTexture(dungeonType, 'wall'),
-        wallEmissive: createSurfaceTexture(dungeonType, 'wall', 'emissive'),
-        wallNormal: createSurfaceTexture(dungeonType, 'wall', 'normal'),
-        wallRoughness: createSurfaceTexture(dungeonType, 'wall', 'roughness')
+        floor: createSurfaceTexture(dungeonType, 'floor', 'color', sampleCache),
+        floorEmissive: createSurfaceTexture(dungeonType, 'floor', 'emissive', sampleCache),
+        floorNormal: createSurfaceTexture(dungeonType, 'floor', 'normal', sampleCache),
+        floorRoughness: createSurfaceTexture(dungeonType, 'floor', 'roughness', sampleCache),
+        wall: createSurfaceTexture(dungeonType, 'wall', 'color', sampleCache),
+        wallEmissive: createSurfaceTexture(dungeonType, 'wall', 'emissive', sampleCache),
+        wallNormal: createSurfaceTexture(dungeonType, 'wall', 'normal', sampleCache),
+        wallRoughness: createSurfaceTexture(dungeonType, 'wall', 'roughness', sampleCache)
     });
+    sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
     const shapes = createShapes();
