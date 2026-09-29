@@ -61,20 +61,29 @@ function acquireTextTexture(message, color) {
     if (!entry) {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-        const fontSize = 32;
-        context.font = `Bold ${fontSize}px Arial`;
+        const fontSize = 28;
+        context.font = `600 ${fontSize}px Arial`;
         const textWidth = typeof context.measureText === 'function'
             ? context.measureText(message).width
             : message.length * fontSize * 0.62;
-        canvas.width = Math.ceil(textWidth + 20);
-        canvas.height = fontSize + 20;
-        context.font = `Bold ${fontSize}px Arial`;
+        canvas.width = Math.ceil(textWidth + 40);
+        canvas.height = 52;
+        context.fillStyle = '#101416';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.strokeStyle = '#635c4a';
+        context.lineWidth = 2;
+        context.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+        // A restrained rarity edge and lightened lettering remain readable
+        // against bright ground as well as shadow, without a bloom beacon.
+        context.fillStyle = color;
+        context.fillRect(1, 1, 4, canvas.height - 2);
+        context.font = `600 ${fontSize}px Arial`;
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.strokeStyle = 'black';
         context.lineWidth = 6;
         context.strokeText?.(message, canvas.width / 2, canvas.height / 2);
-        context.fillStyle = color;
+        context.fillStyle = new THREE.Color(color).lerp(new THREE.Color('#ffffff'), .32).getStyle();
         context.fillText?.(message, canvas.width / 2, canvas.height / 2);
         entry = {
             texture: new THREE.CanvasTexture(canvas),
@@ -83,6 +92,7 @@ function acquireTextTexture(message, color) {
             refs: 0,
             lastUsed: ++textureClock
         };
+        entry.texture.colorSpace = THREE.SRGBColorSpace;
         TEXTURE_CACHE.set(cacheKey, entry);
     }
     entry.refs++;
@@ -153,9 +163,16 @@ export class LootDrop extends Entity {
 
     createTextSprite(message, color) {
         const entry = acquireTextTexture(message, color);
-        const material = new THREE.SpriteMaterial({ map: entry.texture, transparent: true });
+        const material = new THREE.SpriteMaterial({ map: entry.texture, transparent: true,
+            depthTest: false, depthWrite: false, toneMapped: false });
         const sprite = new THREE.Sprite(material);
         sprite.name = 'LootLabel';
+        sprite.renderOrder = 20;
+        // Three's raycaster does not skip invisible objects. Suppressed crowd
+        // labels must not steal input; the item's fixed world hitbox remains.
+        sprite.raycast = function (raycaster, hits) {
+            if (this.visible) THREE.Sprite.prototype.raycast.call(this, raycaster, hits);
+        };
         sprite.userData.textTextureCacheKey = entry.cacheKey;
         const scale = 0.015;
         sprite.scale.set(entry.width * scale, entry.height * scale, 1);

@@ -29,6 +29,18 @@ const actorConfig = {
 };
 
 describe('GameEngine raycast target priority', () => {
+    test('an explicit loot label beats other drops, but not a living hostile', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = new Fighter('local');
+        const front = new LootDrop({ name: 'Iron Sword' }, 0, 0, 'front');
+        const labeled = new LootDrop({ name: 'Gold Ring' }, 0, 0, 'labeled');
+        const hostile = new Actor('hostile', actorConfig);
+        expect(engine.sortRaycastEntities([front, labeled], labeled.id)).toEqual([labeled, front]);
+        expect(engine.sortRaycastEntities([front, labeled, hostile], labeled.id)).toEqual([hostile, labeled, front]);
+        expect(engine.sortRaycastEntities([front, labeled])).toEqual([front, labeled]);
+        front.dispose(); labeled.dispose();
+    });
+
     test.each([false, true])('an exposed entrance remains clickable beside a live enemy (mobile=%s)', mobile => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = new Fighter('portal-player');
