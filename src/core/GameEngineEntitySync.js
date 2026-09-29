@@ -146,6 +146,7 @@ class GameEngineEntitySyncMethods {
      */
     syncRemoteEntity(remoteEntity, pData) {
         if (pData.type !== undefined) {
+            remoteEntity.serverEntityType = pData.type;
             remoteEntity.terrainGrounded = pData.type === 'Player' || pData.type === 'Enemy' ||
                 (pData.type === 'NPC' && (pData.subType === 'AvengingSeraph' ||
                     (pData.subType === undefined && remoteEntity.terrainGrounded === true)));
@@ -256,6 +257,8 @@ class GameEngineEntitySyncMethods {
         } else {
             remoteEntity.isDead = false;
             remoteEntity.deadTimer = 0;
+            remoteEntity.corpsePresentation?.dispose();
+            remoteEntity.corpsePresentation = null;
             if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
 
             // Stats

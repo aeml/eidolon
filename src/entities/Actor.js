@@ -403,6 +403,8 @@ export class Actor extends Entity {
     }
 
     setMesh(mesh) {
+        this.corpsePresentation?.dispose();
+        this.corpsePresentation = null;
         this.movingCastGait?.dispose();
         this.movingCastGait = null;
         this.hitReaction?.dispose();
@@ -2165,6 +2167,8 @@ export class Actor extends Entity {
     }
 
     dispose() {
+        this.corpsePresentation?.dispose();
+        this.corpsePresentation = null;
         this.movingCastGait?.dispose();
         this.movingCastGait = null;
         this.hitReaction?.dispose();

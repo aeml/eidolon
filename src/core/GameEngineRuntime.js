@@ -26,9 +26,25 @@ import {
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
+import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
 const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
+    updateRemoteCorpsePresentation(dt) {
+        this.remotePlayers.forEach(entity => {
+            if (entity.state !== 'DEAD') return;
+            if (entity.serverEntityType === 'Enemy' && entity.mesh) {
+                entity.corpsePresentation ??= new EnemyCorpsePresentation(entity);
+                entity.corpsePresentation.update(dt);
+            } else {
+                // Preserve existing remote-player/NPC death behavior.
+                if (typeof entity.deadTimer !== 'number') entity.deadTimer = 0;
+                entity.deadTimer += dt;
+                if (entity.deadTimer > 2 && entity.mesh) entity.mesh.visible = false;
+            }
+        });
+    }
+
     loop(time) {
         try {
             const seconds = time * 0.001;
@@ -364,17 +380,7 @@ class GameEngineRuntimeMethods {
 
         // Remote Entity Corpse Cleanup
         if (this.isMultiplayer) {
-            this.remotePlayers.forEach(entity => {
-                if (entity.state === 'DEAD') {
-                    if (typeof entity.deadTimer !== 'number') entity.deadTimer = 0;
-                    entity.deadTimer += dt;
-
-                    // Hide after 2 seconds
-                    if (entity.deadTimer > 2.0 && entity.mesh && entity.mesh.visible) {
-                        entity.mesh.visible = false;
-                    }
-                }
-            });
+            this.updateRemoteCorpsePresentation(dt);
         }
 
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();

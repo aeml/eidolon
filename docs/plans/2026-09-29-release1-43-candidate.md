@@ -10,6 +10,11 @@ remain open; runtime version metadata is intentionally unchanged.
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 
+- Enemy corpses hold after their death animation and fade instead of abruptly
+  disappearing. Skeletons now fall above the floor rather than sinking below
+  it. Loot, combat and server respawn timing are unchanged. See the
+  [death-presentation checks](2026-09-29-enemy-death-presentation.md).
+
 - Enemy health bars follow camera/movement smoothly and account for model
   height. Wounded and selected foes remain readable without hover, including
   phone targets and PvP opponents. A brief loss segment clarifies hits and
