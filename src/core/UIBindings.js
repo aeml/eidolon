@@ -76,13 +76,13 @@ export class UIBindings {
             engine.network.send('social', {});
         };
         ui.trading.onTradingSearch = (filters) => {
-			engine.network.send('trading_search', filters);
+            return engine.network.send('trading_search', filters);
         };
         ui.trading.onTradingCreate = (slotIndex, bid, buyout, duration, expectedItemId, expectedStack) => {
             engine.network.send('trading_create', { slotIndex, bid, buyout, duration, expectedItemId, expectedStack });
         };
         ui.trading.onTradingMyAuctions = () => {
-            engine.network.send('trading_my_auctions', {});
+            return engine.network.send('trading_my_auctions', {});
         };
         ui.trading.onTradingBuyout = (auctionId) => {
             engine.network.send('trading_buyout', { auctionId });

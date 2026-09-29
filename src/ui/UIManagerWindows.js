@@ -258,6 +258,7 @@ class UIManagerWindowMethods {
         const layout = this.windowLayouts?.get(id);
         if (layout?.element) {
             const wasOpen = this.isElementVisible(layout.element);
+            if (id === 'trading') this.trading?.close();
             layout.element.style.display = 'none';
             if (!silent && wasOpen) {
                 this.playUICue(AUDIO_CUES.uiClose);

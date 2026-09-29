@@ -79,7 +79,9 @@ export class NetworkManager {
     send(type, payload) {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(JSON.stringify({ type, payload }));
+            return true;
         }
+        return false;
     }
 
     // ------------------------------------------------------------------

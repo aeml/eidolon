@@ -1490,3 +1490,5 @@
 .quest-contract__marker { grid-row: span 2; font: bold 24px Georgia, serif; color: var(--quest-accent); }
 .quest-contract:hover { border-color: var(--quest-accent); background: #243348; }
 .quest-contract:focus-visible { outline: 2px solid var(--quest-accent); outline-offset: -2px; }
+
+.trading-read-status { padding: 8px 12px; color: #d4dce7; font-size: 13px; line-height: 1.5; }

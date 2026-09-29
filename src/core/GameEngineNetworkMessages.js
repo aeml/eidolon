@@ -749,16 +749,16 @@ class GameEngineNetworkMessageMethods {
 		} else if (msg.type === 'trade_cancel') {
 			this.uiManager.directTrade?.update(msg.payload, 'cancelled');
         } else if (msg.type === 'trading_list') {
-            if (msg.payload) {
-                const auctions = msg.payload.map(auction => ({
+            if (Array.isArray(msg.payload) || msg.payload === null) {
+                const auctions = (msg.payload || []).map(auction => ({
                     ...auction,
                     item: this.hydrateItem(auction.item)
                 }));
                 this.uiManager.trading.renderAuctionList(auctions);
             }
         } else if (msg.type === 'trading_my_list') {
-            if (msg.payload) {
-                const auctions = msg.payload.map(auction => ({
+            if (Array.isArray(msg.payload) || msg.payload === null) {
+                const auctions = (msg.payload || []).map(auction => ({
                     ...auction,
                     item: this.hydrateItem(auction.item)
                 }));

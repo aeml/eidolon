@@ -48,6 +48,18 @@ export class TradingUI {
 
         // --- State ---
         this.selectedTradingItem = null;
+        this.pendingReads = new Map();
+        this.readStatus = new Map();
+        for (const [tab, list] of [['bid', this.tradingListContainer], ['my', this.tradingMyList]]) {
+            if (!list) continue;
+            const status = this.createMessage('');
+            status.className = 'trading-read-status';
+            status.setAttribute('role', 'status');
+            status.setAttribute('aria-live', 'polite');
+            status.hidden = true;
+            list.before(status);
+            this.readStatus.set(tab, status);
+        }
 
         // --- Callbacks (set by GameEngine) ---
         this.onTradingSearch = null;
@@ -163,16 +175,14 @@ export class TradingUI {
 
         if (isHidden) {
             this.switchTab('bid');
-            if (this.ctx.getLastPlayer()) {
-                this.handleSearch();
-            }
         } else {
-            this.clearSelection();
+            this.close();
         }
     }
 
     /** Close the trading house if open. */
     close() {
+        this.clearPendingReads();
         this.clearSelection();
         if (this.tradingHouseScreen) {
             this.tradingHouseScreen.style.display = 'none';
@@ -206,7 +216,7 @@ export class TradingUI {
         } else if (tab === 'my') {
             if (this.panelTradingMy) this.panelTradingMy.style.display = 'flex';
             this.updateTradingGuidance('My Auctions separates active listings from sold, expired, and cancelled results so you can collect gold or reclaim items without guessing.');
-            if (this.onTradingMyAuctions) this.onTradingMyAuctions();
+            this.handleMyAuctions();
         }
     }
 
@@ -217,14 +227,54 @@ export class TradingUI {
     handleSearch() {
         const query = this.tradingSearchInput ? this.tradingSearchInput.value : '';
         if (this.onTradingSearch) {
-			this.onTradingSearch({
+            this.requestRead('bid', () => this.onTradingSearch({
 				query,
 				itemType: this.tradingFilterType?.value || '',
 				rarity: this.tradingFilterRarity?.value || '',
 				minLevel: Math.max(0, Number(this.tradingFilterMinLevel?.value) || 0),
 				maxLevel: Math.max(0, Number(this.tradingFilterMaxLevel?.value) || 0)
-			});
+            }));
         }
+    }
+
+    handleMyAuctions() {
+        if (this.onTradingMyAuctions) this.requestRead('my', () => this.onTradingMyAuctions());
+    }
+
+    requestRead(tab, send) {
+        this.finishRead(tab);
+        const list = tab === 'bid' ? this.tradingListContainer : this.tradingMyList;
+        const status = this.readStatus.get(tab);
+        list?.setAttribute('aria-busy', 'true');
+        if (status) {
+            status.hidden = false;
+            status.textContent = 'Loading auctions… Previous results may be out of date.';
+        }
+        // Reads only: no automatic retry, bid, purchase or listing is ever sent.
+        this.pendingReads.set(tab, setTimeout(() => this.finishRead(tab,
+            tab === 'bid' ? 'Auctions did not load. Select Search to retry.'
+                : 'Auctions did not load. Select My Auctions to retry.'), 10000));
+        try {
+            if (send() === false) this.finishRead(tab, 'Not connected. Reconnect, then retry the auction search.');
+        } catch {
+            this.finishRead(tab, 'Auctions could not load. Reconnect, then retry.');
+        }
+    }
+
+    finishRead(tab, message = '') {
+        clearTimeout(this.pendingReads.get(tab));
+        this.pendingReads.delete(tab);
+        const list = tab === 'bid' ? this.tradingListContainer : this.tradingMyList;
+        list?.setAttribute('aria-busy', 'false');
+        const status = this.readStatus.get(tab);
+        if (status) {
+            status.textContent = message;
+            status.hidden = !message;
+        }
+    }
+
+    clearPendingReads() {
+        for (const tab of new Set([...this.readStatus.keys(), ...this.pendingReads.keys()])) this.finishRead(tab);
     }
 
     handleCreate() {
@@ -360,6 +410,7 @@ export class TradingUI {
     // ================================================================
 
     renderAuctionList(auctions) {
+        this.finishRead('bid');
         if (!this.tradingListContainer) return;
         this.clearElement(this.tradingListContainer);
 
@@ -455,6 +506,7 @@ export class TradingUI {
     }
 
     renderMyAuctions(auctions) {
+        this.finishRead('my');
         if (!this.tradingMyList) return;
         this.clearElement(this.tradingMyList);
 

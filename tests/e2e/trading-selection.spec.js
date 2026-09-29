@@ -3,7 +3,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 // Prepared UI fixture, not evidence of earned inventory or a database listing.
 for (const [width, height] of [[1280, 900], [390, 844]]) {
-    test(`${width}: trading selection cannot silently retarget a changed bag`, async ({ page, baseURL }) => {
+    test(`${width}: trading selection cannot silently retarget a changed bag`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
@@ -21,11 +21,34 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
             ui.lastPlayerRef = player;
             ui.showHUD();
             ui.toggleChat(true);
+            const reads = [];
+            ui.trading.onTradingSearch = filters => { reads.push(filters); return true; };
             ui.trading.toggle();
             const calls = [];
             ui.trading.onTradingCreate = (...args) => calls.push(args);
-            window.__listingSelection = { ui, player, calls };
+            window.__listingSelection = { ui, player, calls, reads };
         }, { mobile: width < 600 });
+        const status = page.locator('#trading-panel-bid .trading-read-status');
+        await expect(status).toContainText('Loading auctions');
+        expect(await page.evaluate(() => window.__listingSelection.reads.length)).toBe(1);
+        await page.evaluate(() => window.__listingSelection.ui.trading.renderAuctionList([]));
+        await expect(status).toBeHidden();
+        await expect(page.locator('#trading-list-container')).toContainText('No auctions found');
+        await page.evaluate(() => { window.__listingSelection.ui.trading.onTradingSearch = () => false; });
+        const search = page.locator('#btn-trading-search');
+        await search.focus();
+        await page.keyboard.press('Enter');
+        await expect(status).toContainText('Not connected');
+        await expect(search).toBeFocused();
+        expect(await status.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('auction-read-retry.png') });
+        await page.evaluate(() => {
+            const { ui } = window.__listingSelection;
+            ui.trading.onTradingSearch = () => { ui.trading.renderAuctionList([]); return true; };
+        });
+        await page.keyboard.press('Enter');
+        await expect(status).toBeHidden();
+        await expect(search).toBeFocused();
         await page.locator('#tab-trading-list').click();
         await page.locator('#trading-inventory-list .inv-slot').first().click();
         await page.locator('#trading-input-bid').fill('100');

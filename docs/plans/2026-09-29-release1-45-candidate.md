@@ -1,7 +1,9 @@
 # Alpha 1.45 — interface consistency candidate
 
-Unreleased partial work, not a complete1.45 milestone. Earlier release gates
-remain in force and runtime/version metadata is unchanged.
+Unreleased integrated candidate on the prepared1.44 branch. Runtime/package/
+login/CI/default build identities and cumulative notes identify1.45.0.
+Ordered predecessor publication and this candidate's own CI/live checks remain
+required. This is not final modern-art, accessibility or closed-beta acceptance.
 
 ## Draft patch notes
 
@@ -58,7 +60,54 @@ remain in force and runtime/version metadata is unchanged.
 
 See [connected desktop review and checks](2026-09-29-desktop-combat-dock.md).
 
-Remaining1.45 scope: comprehensive journal/tracking, inventory/stash, forge,
-trading, character/build sheets, menus/tooltips/notifications and loading,
-empty, failure/success, focus, Escape and interaction-priority review.
-These checks do not certify those areas or final visual quality.
+## Integrated review and verification
+
+Nine scoped UI commits merge onto prepared1.44 in their dependency order,
+throughbf0fb3df. Source matches the assembled048aec6e reference, apart from a
+harmless rigid-batch whitespace line and the additional read-state fix below.
+Retained the newer ordinary desktop town-to-earned-kill fixture, rather than
+regressing it to prepared waypoints. Browser-stage lists preserve each actual
+earlier/new test file once. Website content remains equalad22dea7.
+
+Reviewed journal/navigation and tracking, item details and live comparisons,
+stash independent scroll/focus, Forge quote/refresh/caps, character stats,
+minimap and loot interaction priority. Nine existing suites pass67checks
+in12.769s. Five hardware-Chrome checks pass37.0s: the combat dock across four
+viewports,1024px item inspection/storage,900px and390px character sheets, and
+390px Forge refresh/caps. Captures in/tmp/eidolon-1-45-integrated-ui-0930
+were inspected. Fixtures validate UI presentation and callbacks, not earned
+inventory, real-player comfort or final character art.
+
+The review found that opening Trading House sent the same search twice and
+auction reads had no pending/failure feedback. Opening now sends one query.
+Browse and My Auctions expose polite loading/retry status while retaining old
+rows until the server replies. An unsent/thrown read ends immediately; an
+unanswered read ends after10seconds with explicit retry instructions. No
+automatic retry or transaction is introduced. Closing through the window
+manager also clears timers/selection. A server null auction list now clears
+the old display as genuinely empty. Wire message names, economic actions and
+server authority are unchanged.
+
+Four focused suites (TradingSelection,NetworkManager,UIBindings,MenuPolish)
+pass141checks in4.981s, including offline/throw/timeout/retry, synchronous
+reply, null-list dispatch and managed-close cleanup. Existing menu checks cover
+Escape, shared chrome, interaction guidance and responsive controls.
+Four additional Chrome checks pass21.7s: desktop/390px auction loading→empty→
+offline→keyboard retry, plus crowded journals with12contracts, ready-first
+ordering and stable tracking/focus. Evidence:/tmp/eidolon-1-45-auction-journal-
+0930. Failure rendering never sends bids, purchases or listings. The prepared
+listing safety checks still reject replaced items and send the exact explicitly
+reselected item only once.
+
+Runtime/login/history/build labels are synchronized; cumulative entries remain
+intact. Full lint, raw release identity/history/script-file checks, shell syntax
+and whitespace pass;312version/history checks pass1.892s. The auction and
+crowded-journal captures were inspected. Standard CI remains required before
+live acceptance. Preserve fresh remote website changes at each ordered push.
+
+Remaining integrated quality work:1.46 accessibility/remapping/scale and known
+limits,1.47 actual-device interruption feedback,1.48 performance (including
+High woodland),1.49 resource/session ownership and1.50 coherent social/casino
+transitions. Owner playtest and supplied actor assets remain deferred, not
+permission blockers for independent code. These scoped checks do not claim
+every game screen, final art, human combat enjoyment or beta qualification.

@@ -159,7 +159,7 @@ describe('NetworkManager — basic send / queue', () => {
     test('send() serialises message when socket is OPEN', () => {
         const sock = makeMockSocket();
         const nm = new NetworkManager(sock);
-        nm.send('move', { x: 1, z: 2 });
+        expect(nm.send('move', { x: 1, z: 2 })).toBe(true);
         expect(sock.sent).toHaveLength(1);
         expect(sock.sent[0]).toEqual({ type: 'move', payload: { x: 1, z: 2 } });
     });
@@ -167,7 +167,7 @@ describe('NetworkManager — basic send / queue', () => {
     test('send() is a no-op when socket is not OPEN', () => {
         const sock = makeMockSocket(0 /* CONNECTING */);
         const nm = new NetworkManager(sock);
-        nm.send('move', { x: 1 });
+        expect(nm.send('move', { x: 1 })).toBe(false);
         expect(sock.sent).toHaveLength(0);
     });
 

@@ -3,7 +3,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.44.0';
+const currentVersion = '1.45.0';
 
 test('1.38.0 records party presence fixes without revoking downed kill credit', () => {
     const html = fs.readFileSync('index.html', 'utf8');
