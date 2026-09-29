@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createLappedSlateRoof, createDormerGable } from './LanternholdRoofGeometry.js';
+import { createLanternholdArchPanel, createLanternholdArchFrame } from './LanternholdFacadeGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -119,7 +121,8 @@ function material(key, color, options = {}) {
             opacity: options.opacity ?? 1,
             depthWrite: options.depthWrite ?? true,
             colorWrite: options.colorWrite ?? true,
-            shadowSide: THREE.FrontSide
+            shadowSide: THREE.FrontSide,
+            vertexColors: options.vertexColors ?? false
         }));
         if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
     }
@@ -136,7 +139,9 @@ const SHAPES = Object.freeze({
     octahedron: geometry('lanternhold-unit-octahedron', () => new THREE.OctahedronGeometry(0.5, 0)),
     dodecahedron: geometry('lanternhold-unit-dodecahedron', () => new THREE.DodecahedronGeometry(0.5, 0)),
     torus: geometry('lanternhold-unit-torus', () => new THREE.TorusGeometry(0.5, 0.065, 5, 12)),
-    ring: geometry('lanternhold-unit-ring', () => new THREE.RingGeometry(0.38, 0.5, 12))
+    ring: geometry('lanternhold-unit-ring', () => new THREE.RingGeometry(0.38, 0.5, 12)),
+    archPanel: geometry('lanternhold-arch-panel', createLanternholdArchPanel),
+    archFrame: geometry('lanternhold-arch-frame', createLanternholdArchFrame)
 });
 
 function createMaterials() {
@@ -146,7 +151,7 @@ function createMaterials() {
         stone: material('lanternhold-stone', 0x555148, { roughness: 0.94, surface: 'stone' }),
         paleStone: material('lanternhold-pale-stone', 0x777062, { roughness: 0.92, surface: 'stone' }),
         timber: material('lanternhold-black-oak', 0x241a17, { roughness: 0.96, surface: 'timber' }),
-        roof: material('lanternhold-roof-slate', 0x303946, { metalness: 0.04, roughness: 0.84, surface: 'slate' }),
+        roof: material('lanternhold-roof-slate', 0x303946, { metalness: 0.04, roughness: 0.84, surface: 'fieldstone', vertexColors: true }),
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),
         brass: material('lanternhold-oath-brass', 0x9d6a32, { metalness: 0.66, roughness: 0.4 }),
         leather: material('lanternhold-road-leather', 0x4c3025, { roughness: 0.92 }),
@@ -232,6 +237,15 @@ function addGabledRoof(root, prefix, width, depth, eaveY, rise, materialValue = 
     const halfDepth = depth / 2;
     const slopeLength = Math.hypot(halfDepth, rise);
     const angle = Math.atan2(rise, halfDepth);
+    if (materialValue === MATERIAL_SET.roof) {
+        const slates = geometry(`lanternhold-slates:${width}:${slopeLength}`, () => createLappedSlateRoof(width, slopeLength));
+        for (const side of [-1, 1]) addMesh(root, `${prefix}:roof-${side > 0 ? 'south' : 'north'}`, slates, materialValue, {
+            position: [0, eaveY + rise / 2, side * halfDepth / 2],
+            rotation: [side * angle, side > 0 ? 0 : Math.PI, 0]
+        });
+        box(root, `${prefix}:roof-ridge`, MATERIAL_SET.iron, [width + 0.2, 0.28, 0.35], [0, eaveY + rise, 0]);
+        return;
+    }
     box(
         root,
         `${prefix}:roof-south`,
@@ -251,6 +265,18 @@ function addGabledRoof(root, prefix, width, depth, eaveY, rise, materialValue = 
     box(root, `${prefix}:roof-ridge`, MATERIAL_SET.iron, [width + 0.2, 0.28, 0.35], [0, eaveY + rise, 0]);
 }
 
+function addDormer(root, prefix, x, y, z) {
+    const dormer = new THREE.Group(); dormer.name = `${prefix}:dormer`; dormer.position.set(x, y, z); root.add(dormer);
+    box(dormer, `${prefix}:dormer-cheeks`, MATERIAL_SET.paleStone, [2.1, .9, 1.9], [0, .45, 0]);
+    addMesh(dormer, `${prefix}:dormer-gable`, geometry('lanternhold-dormer-gable', createDormerGable), MATERIAL_SET.paleStone,
+        { position: [0, .9, .91] });
+    const roof = new THREE.Group(); roof.rotation.y = Math.PI / 2; dormer.add(roof);
+    addGabledRoof(roof, `${prefix}:dormer`, 2.2, 2.4, .9, .8);
+    addWindow(dormer, `${prefix}:dormer-window`, 0, .55, 1.04, .7, .72);
+    for (const side of [-1, 1]) box(dormer, `${prefix}:dormer-jamb:${side}`, MATERIAL_SET.timber,
+        [.13, 1.05, .15], [side * .9, .48, 1.04]);
+}
+
 function addButtress(root, prefix, x, z, height, rotationY = 0) {
     addMesh(root, `${prefix}:buttress`, SHAPES.tapered, MATERIAL_SET.stone, {
         position: [x, height / 2, z],
@@ -265,9 +291,17 @@ function addButtress(root, prefix, x, z, height, rotationY = 0) {
 }
 
 function addWindow(root, prefix, x, y, z, width = 1.1, height = 1.8, rotationY = 0) {
-    box(root, `${prefix}:amber-pane`, MATERIAL_SET.amber, [width, height, 0.13], [x, y, z], [0, rotationY, 0]);
-    box(root, `${prefix}:iron-mullion-v`, MATERIAL_SET.iron, [0.11, height + 0.22, 0.18], [x, y, z + 0.01], [0, rotationY, 0]);
-    box(root, `${prefix}:iron-mullion-h`, MATERIAL_SET.iron, [width + 0.18, 0.11, 0.18], [x, y, z + 0.01], [0, rotationY, 0]);
+    const window = new THREE.Group(); window.name = `${prefix}:window`; window.position.set(x, y, z);
+    window.rotation.y = rotationY; root.add(window);
+    addMesh(window, `${prefix}:shade-reveal`, SHAPES.archPanel, MATERIAL_SET.timber,
+        { scale: [width * 1.16, height * 1.12, .07] });
+    addMesh(window, `${prefix}:amber-pane`, SHAPES.archPanel, MATERIAL_SET.amber,
+        { scale: [width * .9, height * .9, .08], position: [0, 0, .04] });
+    addMesh(window, `${prefix}:carved-surround`, SHAPES.archFrame, MATERIAL_SET.paleStone,
+        { scale: [width * 1.3, height * 1.18, .24], position: [0, 0, .085] });
+    box(window, `${prefix}:iron-mullion-v`, MATERIAL_SET.iron, [.08, height * .84, .07], [0, 0, .20]);
+    box(window, `${prefix}:iron-mullion-h`, MATERIAL_SET.iron, [width * .78, .08, .07], [0, -height * .06, .20]);
+    box(window, `${prefix}:drip-sill`, MATERIAL_SET.paleStone, [width * 1.45, .12, .48], [0, -height * .57, .1]);
 }
 
 function addLantern(root, prefix, x, y, z, scale = 1) {
@@ -285,9 +319,12 @@ function addLantern(root, prefix, x, y, z, scale = 1) {
 }
 
 function addDoor(root, prefix, y, z, width = 2.5, height = 3.8) {
-    box(root, `${prefix}:black-oak-door`, MATERIAL_SET.timber, [width, height, 0.28], [0, y, z]);
-    box(root, `${prefix}:door-spine`, MATERIAL_SET.iron, [0.16, height + 0.25, 0.34], [0, y, z + 0.04]);
-    box(root, `${prefix}:door-brace`, MATERIAL_SET.iron, [width + 0.18, 0.17, 0.34], [0, y, z + 0.04]);
+    addMesh(root, `${prefix}:black-oak-door`, SHAPES.archPanel, MATERIAL_SET.timber,
+        { scale: [width, height, .14], position: [0, y, z - .01] });
+    addMesh(root, `${prefix}:carved-doorway`, SHAPES.archFrame, MATERIAL_SET.paleStone,
+        { scale: [width * 1.22, height * 1.1, .42], position: [0, y, z + .08] });
+    box(root, `${prefix}:door-spine`, MATERIAL_SET.iron, [.12, height * .88, .11], [0, y - height * .04, z + .12]);
+    box(root, `${prefix}:door-brace`, MATERIAL_SET.iron, [width * .85, .14, .11], [0, y - height * .26, z + .12]);
     addMesh(root, `${prefix}:oath-lock`, SHAPES.octahedron, MATERIAL_SET.brass, {
         position: [0.48, y, z + 0.22],
         scale: [0.34, 0.45, 0.18]
@@ -313,6 +350,7 @@ function createOathhall(root) {
     box(root, 'oathhall:upper-timber-hall', MATERIAL_SET.paleStone, [15.3, 4.8, 13.2], [0, 9.15, 0]);
     addTimberFrame(root, 'oathhall', 15.3, 4.8, 13.2, 6.75);
     addGabledRoof(root, 'oathhall', 19.2, 17.8, 11.7, 4.4);
+    for (const side of [-1, 1]) addDormer(root, `oathhall:${side}`, side * 5.1, 12.6, 5.8);
     addDoor(root, 'oathhall', 2.65, 7.95, 3.2, 4.6);
 
     for (const x of [-6.3, -3.4, 3.4, 6.3]) {
@@ -431,8 +469,9 @@ function createTradingHouse(root) {
     box(root, 'compact:ledger-hall', MATERIAL_SET.paleStone, [12.35, 6.0, 9.4], [0, 3.75, 0]);
     addTimberFrame(root, 'compact', 12.35, 6.0, 9.4, 0.75);
     addGabledRoof(root, 'compact', 13.5, 10.7, 6.55, 3.25);
+    for (const side of [-1, 1]) addDormer(root, `compact:${side}`, side * 3.4, 7.1, 3.3);
     addDoor(root, 'compact', 2.7, 4.82, 2.8, 4.25);
-    for (const x of [-4.55, -2.25, 2.25, 4.55]) {
+    for (const x of [-4.55, -2.8, 2.8, 4.55]) {
         addWindow(root, `compact:ledger-window:${x}`, x, 4.0, 4.8, 1.05, 1.85);
     }
     box(root, 'compact:gilded-sign-bracket', MATERIAL_SET.iron, [7.0, 0.3, 0.35], [0, 7.0, 5.0]);
@@ -449,8 +488,8 @@ function createTradingHouse(root) {
             scale: [1.3, 0.35, 1.3]
         });
     }
-    addLantern(root, 'compact:west-lantern', -2.15, 4.15, 5.05, 0.86);
-    addLantern(root, 'compact:east-lantern', 2.15, 4.15, 5.05, 0.86);
+    addLantern(root, 'compact:west-lantern', -2, 4.15, 5.05, 0.86);
+    addLantern(root, 'compact:east-lantern', 2, 4.15, 5.05, 0.86);
 }
 
 function createForge(root) {
@@ -560,6 +599,10 @@ function getOptimizedStructureParts(structureId) {
         const bakedGeometry = part.geometry.index
             ? part.geometry.toNonIndexed()
             : part.geometry.clone();
+        if (part.material.vertexColors && !bakedGeometry.attributes.color) {
+            bakedGeometry.setAttribute('color', new THREE.Float32BufferAttribute(
+                new Float32Array(bakedGeometry.attributes.position.count * 3).fill(1), 3));
+        }
         buckets.get(key).geometries.push(bakedGeometry.applyMatrix4(part.matrixWorld));
     });
 
