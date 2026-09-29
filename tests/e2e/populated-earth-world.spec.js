@@ -32,6 +32,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             const world = new WorldGenerator(render.instanceEnvironmentGroup, collision, { graphicsQuality: quality });
             await world.createTownBase(0, 200, 100);
             await world.loadBuildings(0, 200); await world.loadTrees(0, 200); await world.createOverworldStructures();
+            const understory = render.instanceEnvironmentGroup.getObjectByName('Gloamwood heath and fern beds');
+            const windMaterial = understory.children[0].material;
+            let windUniforms;
+            const compileWind = windMaterial.onBeforeCompile;
+            windMaterial.onBeforeCompile = shader => { compileWind(shader); windUniforms = shader.uniforms; };
             for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -16, 193, 0]]) {
                 const type = { trading_house: 'TradingHouse', forge: 'Forge', stash: 'Stash' }[kind];
                 const mesh = await MeshFactory.createMeshForType(type);
@@ -143,6 +148,28 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 render.entityGroup.add(airShot.mesh);
             });
             window.__populatedWorld = { visit, engine, samples,
+                reviewWind() {
+                    visit('first-grove-arch');
+                    if (!windUniforms) throw new Error('No production understory shader compiled in grove');
+                    const beforeRender = windMaterial.onBeforeRender;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = render.renderer.domElement.width; canvas.height = render.renderer.domElement.height;
+                    const context = canvas.getContext('2d', { willReadFrequently: true });
+                    const frames = [];
+                    try {
+                        for (const seconds of [0, 1.25]) {
+                            windMaterial.onBeforeRender = () => { beforeRender(); windUniforms.woodlandTime.value = seconds; };
+                            render.render(); context.drawImage(render.renderer.domElement, 0, 0);
+                            frames.push(context.getImageData(0, 0, canvas.width, canvas.height).data);
+                        }
+                    } finally { windMaterial.onBeforeRender = beforeRender; }
+                    let changed = 0;
+                    for (let i = 0; i < frames[0].length; i += 4) {
+                        if (Math.max(...[0, 1, 2].map(c => Math.abs(frames[0][i + c] - frames[1][i + c]))) > 3) changed++;
+                    }
+                    return { changed, motion: windUniforms.woodlandMotion.value,
+                        calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+                },
                 async reviewBasicAttack(fraction) {
                     // Prepared timeline samples on the actual world renderer,
                     // not server damage or earned gameplay evidence.
@@ -317,6 +344,18 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     await page.screenshot({ path: testInfo.outputPath(`earth-basic-${phase}.png`) });
                 }
                 await page.evaluate(() => window.__populatedWorld.endBasicAttackReview());
+                const moving = await page.evaluate(() => window.__populatedWorld.reviewWind());
+                expect(moving.motion).toBe(1);
+                expect(moving.changed).toBeGreaterThan(20);
+                await page.screenshot({ path: testInfo.outputPath('grove-wind.png') });
+                await page.emulateMedia({ reducedMotion: 'reduce' });
+                const still = await page.evaluate(() => window.__populatedWorld.reviewWind());
+                expect(still.motion).toBe(0);
+                expect(still.changed).toBe(0);
+                expect(still.calls).toBe(moving.calls);
+                expect(still.triangles).toBe(moving.triangles);
+                await page.emulateMedia({ reducedMotion: 'no-preference' });
+                await writeFile(testInfo.outputPath('understory-wind.json'), JSON.stringify({ moving, still }, null, 2));
             }
             const result = await page.evaluate(() => ({ samples: window.__populatedWorld.samples, sent: window.__populatedWorld.engine.sent }));
             expect(result.sent).toEqual([]);

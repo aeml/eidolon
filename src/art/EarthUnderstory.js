@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { sampleEarthMeadow } from './EarthGroundComposition.js';
 import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.js';
+import { createWoodlandWindMaterial, WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
 import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
 
 // First playable art reference: north grove route and east dungeon approach.
@@ -51,8 +52,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     const plants = createEarthUnderstoryPlacements(quality);
     root.userData.plantCount = plants.length;
     const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
-    const material = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
-        side: THREE.DoubleSide, roughness: 1 });
+    const material = createWoodlandWindMaterial();
     const cells = new Map();
     for (const plant of plants) {
         const key = `${Math.floor(plant.x / 32)}:${Math.floor(plant.z / 32)}:${plant.variant}`;
@@ -73,6 +73,10 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
         });
         mesh.instanceMatrix.needsUpdate = true;
         mesh.computeBoundingBox();
+        // GPU-only sway is absent from CPU geometry bounds. Include its full
+        // horizontal envelope so patch edges cannot pop out of the frustum.
+        const reach = WOODLAND_WIND_REACH * 1.4;
+        mesh.boundingBox.expandByVector(new THREE.Vector3(reach, 0, reach));
         // Repeated sphere unions drift wider than these compact cells. The
         // aggregate AABB already includes every transformed plant vertex.
         mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());

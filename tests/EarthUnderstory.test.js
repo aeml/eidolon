@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
+import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
 
 test('understory forms repeatable beds with a matching Low subset and clear travel space', () => {
     const high = createEarthUnderstoryPlacements(), low = createEarthUnderstoryPlacements('low');
@@ -30,12 +31,19 @@ test.each([null, { sample: (x, z) => 2 + Math.sin(x * .01) * .5 + Math.cos(z * .
     'understory uses cullable opaque shared geometry and samples each instance (%p)', terrainElevation => {
     const root = createEarthUnderstory({ quality: 'low', terrainElevation });
     const geometries = new Set(), materials = new Set(), matrix = new THREE.Matrix4(), position = new THREE.Vector3();
+    const first = root.children[0], animatedBounds = first.boundingBox.clone();
+    first.computeBoundingBox();
+    expect(animatedBounds.min.x).toBeCloseTo(first.boundingBox.min.x - WOODLAND_WIND_REACH * 1.4, 5);
+    expect(animatedBounds.max.z).toBeCloseTo(first.boundingBox.max.z + WOODLAND_WIND_REACH * 1.4, 5);
+    expect(animatedBounds.min.y).toBe(first.boundingBox.min.y);
+    first.boundingBox.copy(animatedBounds);
     let count = 0, raised = 0;
     for (const mesh of root.children) {
         geometries.add(mesh.geometry); materials.add(mesh.material);
         expect(mesh.isInstancedMesh).toBe(true);
         expect(mesh.castShadow).toBe(false);
         expect(mesh.material.transparent).toBe(false);
+        expect(mesh.material.userData.woodlandWind).toBe(true);
         expect(mesh.boundingSphere.radius).toBeLessThan(38);
         for (let i = 0; i < mesh.count; i++) {
             mesh.getMatrixAt(i, matrix); position.setFromMatrixPosition(matrix);

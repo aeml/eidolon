@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Earth's fern and sedge beds gain rooted wind sway, spatially varied gusts
+  and restrained flutter. Reduced motion disables the sway; walking space,
+  plant counts and terrain height are unchanged. See the
+  [woodland wind review](2026-09-29-woodland-wind.md).
+
 - Earth soil and meadow surfaces gain finer, lighting-responsive aggregates
   and restrained material variation, reducing the flat color wash without
   changing terrain geometry or movement. See the
