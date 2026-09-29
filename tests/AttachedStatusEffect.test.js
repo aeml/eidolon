@@ -30,6 +30,31 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
+    test('personal buff decoration stays subordinate without breaking healing, debuff or rested indicators', () => {
+        for (const [key, definition] of Object.entries(PROCEDURAL_STATUS_EFFECT_DEFINITIONS)) {
+            const root = createProceduralStatusEffect(key);
+            const outer = root.getObjectByName(`${key}:OuterSeal`);
+            if (definition.polarity === 'buff' && key !== 'well_rested') {
+                expect(outer.material.blending).toBe(THREE.NormalBlending);
+                expect(outer.material.opacity).toBeLessThan(.4);
+                expect(outer.geometry.parameters.innerRadius).toBeGreaterThan(.96);
+                expect(outer.geometry.parameters.thetaLength).toBeLessThan(Math.PI * 2);
+            } else {
+                expect(outer.geometry.parameters.thetaLength).toBeCloseTo(Math.PI * 2);
+                expect(outer.material.opacity).toBeGreaterThan(.8);
+            }
+            if (key === 'guardian_embrace') {
+                const reach = root.getObjectByName('guardian_embrace:HealingReach');
+                expect(reach.geometry.parameters.thetaLength).toBeCloseTo(Math.PI * 2);
+                expect(reach.material.opacity).toBeCloseTo(.48);
+                expect(reach.material.blending).toBe(THREE.NormalBlending);
+                expect(reach.material.userData.auraInnerRatio.value).toBeCloseTo(.988);
+                expect(reach.material).not.toBe(outer.material);
+            }
+            releaseProceduralStatusEffect(root);
+        }
+    });
+
     test.each(['high', 'low'])('%s ground seals clear dungeon floors and healing reach remains exact', quality => {
         for (const statusKey of Object.keys(ACTOR_STATUS_VISUAL_STATES)) {
             const position = new THREE.Vector3(4, 0, 7);

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createPersistentAuraMaterial } from './PersistentAuraMaterial.js';
 
 const geometryCache = new Map();
 const materialCache = new Map();
@@ -92,6 +93,7 @@ function createMaterials(statusKey, palette) {
         base: material(statusKey, 'base', palette.base, { opacity: 0.76 }),
         accent: material(statusKey, 'accent', palette.accent, { opacity: 0.86 }),
         pale: material(statusKey, 'pale', palette.pale, { opacity: 0.94 }),
+        ground: material(statusKey, 'ground', palette.accent, { opacity: .34, blending: THREE.NormalBlending }),
         veil: material(statusKey, 'veil', palette.accent, { opacity: 0.17, wireframe: true })
     };
 }
@@ -121,12 +123,13 @@ function addPart(parent, statusKey, name, geo, mat, options = {}) {
 }
 
 function ring(parent, statusKey, name, radius, mat, options = {}) {
-    return addPart(
+    const arc = options.arc ?? Math.PI * 2;
+    const mesh = addPart(
         parent,
         statusKey,
         name,
-        geometry(`status-ring:${options.segments || 24}:${options.thickness || 0.1}`, () =>
-            new THREE.RingGeometry(1 - (options.thickness || 0.1), 1, options.segments || 24)),
+        geometry(`status-ring:${options.segments || 24}:${options.thickness || 0.1}:${arc}`, () =>
+            new THREE.RingGeometry(1 - (options.thickness || 0.1), 1, options.segments || 24, 1, 0, arc)),
         mat,
         {
             // Actor origins may be y=0 while dungeon floors reach y=0.1.
@@ -139,6 +142,7 @@ function ring(parent, statusKey, name, radius, mat, options = {}) {
             highQualityOnly: options.highQualityOnly
         }
     );
+    return mesh;
 }
 
 function shapeGeometry(shape) {
@@ -248,10 +252,18 @@ function radialMarks(parent, statusKey, count, radius, materials, options = {}) 
 
 function buildStatus(root, statusKey, def, materials) {
     const radius = def.radius;
-    ring(root, statusKey, 'OuterSeal', radius, materials.accent, { segments: 28, thickness: statusKey === 'well_rested' ? 0.018 : 0.075 });
-    ring(root, statusKey, 'InnerSeal', radius * 0.64, materials.base, {
+    // Personal buff seals are decoration, not area-of-effect boundaries.
+    // Broken, quieter arcs leave feet/weapon motion visible under stacked buffs.
+    // Keep debuff indicators and the requested Well Rested aura recognizable.
+    const quiet = def.polarity === 'buff' && statusKey !== 'well_rested';
+    ring(root, statusKey, 'OuterSeal', radius, quiet ? materials.ground : materials.accent, {
+        segments: 28, thickness: statusKey === 'well_rested' ? .018 : quiet ? .028 : .075,
+        arc: quiet ? Math.PI * 1.55 : Math.PI * 2
+    });
+    ring(root, statusKey, 'InnerSeal', radius * 0.64, quiet ? materials.ground : materials.base, {
         segments: 16,
-        thickness: statusKey === 'well_rested' ? 0.025 : 0.12,
+        thickness: statusKey === 'well_rested' ? .025 : quiet ? .035 : .12,
+        arc: quiet ? Math.PI * 1.15 : Math.PI * 2,
         motion: 'counter-seal',
         highQualityOnly: true
     });
@@ -431,7 +443,11 @@ export function createProceduralStatusEffect(statusKey, options = {}) {
     if (statusKey === 'guardian_embrace') {
         // Gameplay reach is separate from the body-sized reliquary arms/seals.
         // A steady thin perimeter remains exact at both graphics settings.
-        const boundary = ring(root, statusKey, 'HealingReach', 1, materials.base, { thickness: 0.012, segments: quality === 'low' ? 32 : 64 });
+        const boundaryKey = `${statusKey}:healing-boundary`;
+        if (!materialCache.has(boundaryKey)) {
+            materialCache.set(boundaryKey, createPersistentAuraMaterial(def.palette.base));
+        }
+        const boundary = ring(root, statusKey, 'HealingReach', 1, materialCache.get(boundaryKey), { thickness: 0.012, segments: quality === 'low' ? 32 : 64 });
         boundary.userData.gameplayBoundary = true;
         boundary.userData.normalizedGameplayRadius = 1;
         setProceduralStatusAreaRadius(root, Number(options.gameplayRadius) || 10);

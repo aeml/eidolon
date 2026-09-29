@@ -51,6 +51,22 @@ function owner() {
 }
 
 describe('procedural projectile impacts', () => {
+    test('decorative echoes are quiet broken arcs while exact boundaries and bright hit cores stay distinct', () => {
+        for (const type of TYPES) {
+            const effect = createProceduralProjectileImpactEffect(new THREE.Group(), new THREE.Vector3(), { projectileType: type, radius: 6 });
+            const find = name => effect.root.getObjectByName(`${type}:Impact:${name}`);
+            const edge = find('ExactBoundary'), echo = find('BrokenSeal1'), heart = find('ImpactHeart');
+            expect(edge.geometry.parameters.thetaLength).toBeCloseTo(Math.PI * 2);
+            expect(edge.geometry.parameters.outerRadius * edge.scale.x).toBe(6);
+            expect(echo.geometry.parameters.thetaLength).toBeLessThan(Math.PI * 2);
+            expect(echo.material.blending).toBe(THREE.NormalBlending);
+            expect(echo.material.opacity).toBeLessThan(edge.material.opacity);
+            expect(heart.material.blending).toBe(THREE.AdditiveBlending);
+            expect(heart.material.opacity).toBeGreaterThan(.9);
+            effect.dispose();
+        }
+    });
+
     test.each(['Fireball', 'Meteor', 'ExplosiveTrap'])('%s keeps ground fields above dungeon floors without moving elevated impacts', type => {
         for (const y of [0, .04, .5, 8]) for (const quality of ['high', 'low']) {
             const scene = new THREE.Group(), position = new THREE.Vector3(4, y, 7);
