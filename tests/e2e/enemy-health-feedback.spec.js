@@ -2,6 +2,70 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 for (const [width, mobile] of [[1280, false], [390, true]]) {
+    test(`loot pile labels stay readable and use ordinary interaction at ${width}px`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const THREE = await import('three');
+            const { RenderSystem } = await import('/src/core/RenderSystem.js');
+            const { GameEngine } = await import('/src/core/GameEngine.js');
+            const { InputManager } = await import('/src/core/InputManager.js');
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            const { Fighter } = await import('/src/entities/Fighter.js');
+            const { LootDrop } = await import('/src/entities/LootDrop.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const render = new RenderSystem(mobile), ui = new UIManager(mobile);
+            render.setGraphicsQuality(mobile ? 'low' : 'high'); await render.preloadEnvironment();
+            const player = new Fighter('loot-review'); player.position.set(-4, 0, 200);
+            await player.ensureMesh(); render.entityGroup.add(player.mesh);
+            const names = ['Iron Sword', 'Steel Dagger', 'Chipped Sapphire', 'Gold Ring', 'Leather Boots'];
+            const loot = names.map((name, i) => {
+                const drop = new LootDrop({ id: 'item-' + i, name, rarity: ['Common', 'Rare', 'Uncommon', 'Legendary', 'Eidolic'][i] }, 4, 200, 'drop-' + i);
+                drop.creationTime -= 1000; drop.update(0); render.entityGroup.add(drop.mesh); return drop;
+            });
+            const entities = [player, ...loot], input = new InputManager(render.camera, render.scene, render.renderer.domElement);
+            const engine = Object.assign(Object.create(GameEngine.prototype), {
+                player, isMobile: mobile, frameCount: 1, renderSystem: render, uiManager: ui, inputManager: input,
+                abilityController: {}, chunkManager: { getActiveEntities: () => entities }, activeEntitiesCache: entities,
+                minimap: { update() {} }, worldMap: { isVisible: () => false },
+                applyPlayerJumpVisuals() {}, applyPlayerCorrectionVisuals() {}, applyEntityJumpVisuals() {},
+                refreshDungeonEntranceHint() {}, refreshCombatIntentState() {}, showReadabilityFeedback() {}
+            });
+            input.subscribe('onClick', event => engine.handlePrimaryClick(event));
+            input.subscribe('onMouseMove', () => engine.performRaycast());
+            ui.showHUD(); ui.toggleChat(true); render.onWindowResize(); render.setCameraTarget(new THREE.Vector3(0, 0, 200));
+            render.applyLightingPreset('earth', true); render.updateEnvironmentLighting(player.position, 0);
+            engine.render(1);
+            window.__lootReview = { engine, loot, THREE };
+        }, mobile);
+        const points = await page.evaluate(() => {
+            const { engine, loot, THREE } = window.__lootReview;
+            return loot.map(drop => {
+                if (!drop.label.visible) throw new Error('Missing pile label: ' + drop.id);
+                const p = drop.label.getWorldPosition(new THREE.Vector3()).project(engine.renderSystem.camera);
+                return { id: drop.id, x: (p.x + 1) * innerWidth / 2, y: (1 - p.y) * innerHeight / 2 };
+            });
+        });
+        await page.screenshot({ path: testInfo.outputPath('loot-pile.png'), style: '#perf-overlay { visibility:hidden !important; }' });
+        for (const point of points) {
+            await page.mouse.click(point.x, point.y);
+            expect(await page.evaluate(() => window.__lootReview.engine.pendingInteraction?.id)).toBe(point.id);
+            // Selection/render must not shuffle the remaining click targets.
+            await page.evaluate(() => window.__lootReview.engine.render(1));
+        }
+        expect(await page.evaluate(() => {
+            const { engine, loot } = window.__lootReview;
+            return { movingTo: engine.player.targetPosition.toArray(), active: loot.every(drop => drop.isActive),
+                lootPosition: loot[0].position.toArray() };
+        })).toEqual({ movingTo: [4, 0, 200], active: true, lootPosition: [4, 0, 200] });
+        expect(failures).toEqual([]);
+    });
+}
+
+for (const [width, mobile] of [[1280, false], [390, true]]) {
     test(`combat health bars follow rendered enemies and the camera ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

@@ -1153,9 +1153,10 @@ class GameEngineMovementMethods {
         return 4;
     }
 
-    sortRaycastEntities(entities) {
+    sortRaycastEntities(entities, preferredLootId = null) {
         return [...new Set(entities)].sort((a, b) =>
             this.getRaycastEntityPriority(a) - this.getRaycastEntityPriority(b)
+            || Number(b.id === preferredLootId) - Number(a.id === preferredLootId)
         );
     }
 
@@ -1209,6 +1210,7 @@ class GameEngineMovementMethods {
 
         if (intersects.length > 0) {
             let hitEntities = [];
+            let labelLootId = null;
             const entranceProxies = new Map();
             for (const hit of intersects) {
                 let obj = hit.object;
@@ -1241,12 +1243,16 @@ class GameEngineMovementMethods {
                 }
                 if (obj.userData.entityId) {
                     const entity = this.activeEntitiesCache.find(e => e.id === obj.userData.entityId);
+                    // An explicit displaced label wins over another drop's
+                    // broad ground volume, never over a living enemy.
+                    if (labelLootId === null && hit.object.name === 'LootLabel'
+                        && hit.object.visible && entity instanceof LootDrop) labelLootId = entity.id;
                     if (entity) hitEntities.push(entity);
                 }
             }
 
             hitEntities = this.sortRaycastEntities(
-                hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop)
+                hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop), labelLootId
             );
             this.raycastHitEntities = hitEntities;
 

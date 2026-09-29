@@ -5,6 +5,12 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Ground loot has zoom-readable, rarity-accented labels that separate crowded
+  drops and leave room around the player. Clicking a label selects that drop
+  without shuffling nearby labels; living enemies retain targeting priority.
+  Pickup range, capacity and server confirmation are unchanged.
+  See [loot presentation checks](2026-09-29-loot-label-presentation.md).
+
 - Desktop storage shows Bag and Stash together, with named items, search,
   category filters, capacity counts and independently scrolling lists.
   Click to inspect or right-click to transfer; refreshed items preserve focus

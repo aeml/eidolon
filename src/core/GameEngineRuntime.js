@@ -25,6 +25,7 @@ import {
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
+import { LootLabelPresentation } from './LootLabelPresentation.js';
 import { worldAmbienceKey } from '../audio/WorldAmbience.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
@@ -943,6 +944,11 @@ class GameEngineRuntimeMethods {
             camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,
             player: this.player, target: (this.isMobile ? this.mobileCombatTarget : null) || this.pendingInteraction || this.hoveredEntity,
             isInteractable: entity => this.isInteractableEntity?.(entity), mobile: this.isMobile
+        });
+        this.lootLabelPresentation ||= new LootLabelPresentation();
+        this.lootLabelPresentation.update(activeEntities, {
+            camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,
+            player: this.player, target: this.pendingInteraction, mobile: this.isMobile
         });
         this.renderSystem.updateActorContactShadows?.(activeEntities, {
             isActor: isContactShadowActor,
