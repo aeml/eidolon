@@ -19,13 +19,19 @@ export function createConiferBoughGeometry() {
             for (let fan = 0; fan < 6; fan++) {
                 const t = (fan + .4) / 6, reach = length * t;
                 const center = forward.clone().multiplyScalar(reach).setY(y - .28 * t + .13 * Math.sin(branch * 3 + tier));
-                const tip = center.clone().addScaledVector(forward, .33).add(new Vector3(0, .09, 0));
-                const left = center.clone().addScaledVector(side, .30 * (1 - t * .6));
-                const right = center.clone().addScaledVector(side, -.30 * (1 - t * .6));
-                center.y += .06;
                 const shade = .68 + tier * .055 + ((branch + fan) % 3) * .07;
-                triangle(center, left, tip, shade);
-                triangle(tip, right, center, shade * .9);
+                // Paired narrow sprays replace the broad triangular arrowhead.
+                // Sweep each tip outward/down, with a raised folded midrib.
+                for (const sign of [-1, 1]) {
+                    const root = center.clone().addScaledVector(forward, -.05);
+                    const tip = center.clone().addScaledVector(forward, .29)
+                        .addScaledVector(side, sign * .24 * (1 - t * .45));
+                    tip.y -= .025 + .04 * t;
+                    const ridge = root.clone().lerp(tip, .48); ridge.y += .055;
+                    const edge = ridge.clone().addScaledVector(side, sign * .095); edge.y -= .05;
+                    triangle(root, edge, tip, shade * (sign < 0 ? .91 : 1));
+                    triangle(root, tip, ridge, shade * 1.04);
+                }
             }
         }
     }

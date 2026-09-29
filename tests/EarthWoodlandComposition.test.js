@@ -32,7 +32,7 @@ test('server spawn exclusions match every client woodland trunk exactly', () => 
 
 test('needle boughs have finite folded surfaces within a bounded reusable crown', () => {
     const geometry = createConiferBoughGeometry(), positions = geometry.attributes.position;
-    expect(positions.count / 3).toBe(420);
+    expect(positions.count / 3).toBe(840);
     expect(positions.count).toBeGreaterThan(300);
     expect([...positions.array, ...geometry.attributes.normal.array, ...geometry.attributes.color.array].every(Number.isFinite)).toBe(true);
     expect(geometry.attributes.color.count).toBe(positions.count);
