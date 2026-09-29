@@ -1,6 +1,7 @@
 import { itemStatTotals, renderEquipmentComparison } from '../src/ui/EquipmentComparison.js';
 import { renderForgeDecision } from '../src/ui/ForgeDecisionPreview.js';
 import { forgePreview } from '../src/core/ForgeProgression.js';
+import { UNIQUE_EFFECTS } from '../src/core/ItemSystem.js';
 
 beforeEach(() => { document.body.innerHTML = '<div id="host"></div>'; });
 const host = () => document.getElementById('host');
@@ -20,7 +21,7 @@ test('comparison flags breaking a set and losing a proc instead of hiding them i
     const player = { equipment: { chest: worn, head: { slot: 'head', setId: 'ward' } } };
     renderEquipmentComparison(host(), {}, { equippedItem: worn, slotKey: 'chest', slotLabel: 'Chest' }, player, s => s, { ward: { name: 'Ward', bonus2: {} } });
     expect(host().textContent).toContain('Loses Ward 2-piece bonus');
-    expect(host().textContent).toContain('Loses special effect: guardian');
+    expect(host().textContent).toContain(`Loses special effect: ${UNIQUE_EFFECTS.guardian.name}`);
 });
 
 test('Forge table shows exact per-choice results and remaining resources', () => {
@@ -31,6 +32,11 @@ test('Forge table shows exact per-choice results and remaining resources', () =>
     expect(cells).toEqual(['30', `${forgePreview(item, 31).stats.damage} (0)`, `${forgePreview(item, 40).stats.damage} (+8)`]);
     expect(host().textContent).toContain('Need 5');
     expect(host().textContent).toContain('progress carries forward');
+});
+test('known special effects use player-facing names in comparisons', () => {
+    const key = Object.keys(UNIQUE_EFFECTS)[0];
+    renderEquipmentComparison(host(), { uniqueEffect: key }, { slotLabel: 'Main Hand' }, { equipment: {} }, s => s);
+    expect(host().textContent).toContain(`Gains special effect: ${UNIQUE_EFFECTS[key].name}`);
 });
 
 test('labels are text, and preview leaves actual combat gear untouched', () => {

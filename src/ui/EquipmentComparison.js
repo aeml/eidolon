@@ -1,4 +1,5 @@
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
+import { UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 
 export function itemStatTotals(item) {
     const totals = {};
@@ -28,9 +29,11 @@ export function renderEquipmentComparison(host, candidate, comparison, player, f
     }
     if (!list.children.length) { const row = document.createElement('li'); row.textContent = 'No item or socket-stat change.'; list.append(row); }
     const note = text => { const row = document.createElement('p'); row.textContent = text; panel.append(row); };
+    if (comparison.inactiveItem) note(`Stored item is inactive: ${comparison.inactiveItem.name || 'legacy equipment'}. Its stats are not counted.`);
     if (candidate.uniqueEffect !== comparison.equippedItem?.uniqueEffect) {
-        if (comparison.equippedItem?.uniqueEffect) note(`Loses special effect: ${comparison.equippedItem.uniqueEffect}.`);
-        if (candidate.uniqueEffect) note(`Gains special effect: ${candidate.uniqueEffect}.`);
+        const label = key => UNIQUE_EFFECTS[key]?.name || key;
+        if (comparison.equippedItem?.uniqueEffect) note(`Loses special effect: ${label(comparison.equippedItem.uniqueEffect)}.`);
+        if (candidate.uniqueEffect) note(`Gains special effect: ${label(candidate.uniqueEffect)}.`);
     }
     for (const setID of new Set([candidate.setId, comparison.equippedItem?.setId].filter(Boolean))) {
         const definition = sets[setID]; if (!definition) continue;

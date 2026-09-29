@@ -5,6 +5,11 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Item set counts and comparisons exclude inactive legacy gear, while keeping
+  those items recoverable. Special effects use their display names. Integrated
+  UI checks now join the existing hosted CI stage; heavier visual references
+  stay opt-in. See [integration evidence](2026-09-29-presentation-ci-integration.md).
+
 - Town minimap names avoid one another and service icons, prioritizing ready
   quests and nearby services. All service icons stay in place; phone radar
   retains icons without tiny labels. A stronger backdrop improves contrast.

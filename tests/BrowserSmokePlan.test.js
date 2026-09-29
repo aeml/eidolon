@@ -50,6 +50,18 @@ test('all supplemental coverage stays in exactly one required job', () => {
     expect(browserSmokeBaselineFiles(manifest).length).toBe(new Set(browserSmokeBaselineFiles(manifest)).size);
 });
 
+test('integrated desktop presentation checks run once in the existing interface stage', () => {
+    const stages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard));
+    for (const file of ['desktop-combat-hud-layout', 'desktop-item-inspection', 'minimap-service-labels']) {
+        const owners = stages.filter(stage => stage.files.includes(`tests/e2e/${file}.spec.js`));
+        expect(owners.map(stage => stage.name)).toEqual(['interface']);
+    }
+    // Authenticated reference routes must not enter the anonymous hosted job.
+    const baseline = browserSmokeBaselineFiles(manifest);
+    expect(baseline).not.toContain('tests/e2e/desktop-presentation-gameplay.spec.js');
+    expect(baseline).not.toContain('tests/e2e/bastion-approach-gameplay.spec.js');
+});
+
 test('baseline preserves the complete current release workflow command union', () => {
     const files = ['anonymous', 'nameplates', 'resource-hud', 'crystal-art', 'interface']
         .flatMap(name => manifest.scripts[`test:e2e:${name}`].split(/\s+/).slice(2));

@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { InventoryUI } from '../src/ui/InventoryUI.js';
+import { SET_DEFINITIONS } from '../src/core/ItemSystem.js';
 
 let ui, player;
 beforeEach(() => {
@@ -38,6 +39,30 @@ test('merchant and stash right-click shortcuts remain unchanged', () => {
     rightClick(ui.inventoryGrid.children[0]);
     expect(ui.onStashDeposit).toHaveBeenCalledWith('blade');
     expect(ui.mobileDetails.dialog.open).toBe(false);
+});
+test('set details exclude inactive legacy equipment in both inspection and hover', () => {
+    const setId = Object.keys(SET_DEFINITIONS)[0];
+    player.inventory[0].setId = setId;
+    player.equipment = {
+        head: { id: 'real-set-piece', type: 'ARMOR', slot: 'head', setId },
+        legacy: { id: 'inactive-old-piece', type: 'ARMOR', slot: 'chest', setId },
+        chest: { id: 'wrong-slot-piece', type: 'ARMOR', slot: 'feet', setId }
+    };
+    ui.updateInventory(player); rightClick(ui.inventoryGrid.children[0]);
+    const expected = `1/${SET_DEFINITIONS[setId].slots.length}`;
+    expect(ui.mobileDetails.get('description').textContent).toContain(expected + ' equipped');
+    expect(ui.mobileDetails.get('description').textContent).toContain('2 pieces (inactive)');
+    ui.showItemTooltip(player.inventory[0], 0, 0);
+    expect(ui.statTooltipDesc.textContent).toContain(expected + ' pieces');
+    expect(Object.keys(player.equipment)).toHaveLength(3);
+});
+test('comparison does not subtract stats from an inactive stored item', () => {
+    player.equipment.mainHand = { id: 'legacy-gem', name: 'Stored Sapphire', type: 'GEM', slot: 'gem', stats: { damage: 50 } };
+    ui.updateInventory(player); rightClick(ui.inventoryGrid.children[0]); ui.mobileDetails.act('compare');
+    expect(ui.mobileDetails.get('comparison').textContent).toContain('+12 damage');
+    expect(ui.mobileDetails.get('comparison').textContent).toContain('No active gear');
+    expect(ui.mobileDetails.get('comparison').textContent).toContain('Stored Sapphire');
+    expect(player.equipment.mainHand.stats.damage).toBe(50);
 });
 test('same-ID upgrades refresh stats and comparison without resetting focus on unrelated ticks', () => {
     rightClick(ui.inventoryGrid.children[0]); ui.mobileDetails.act('compare');
