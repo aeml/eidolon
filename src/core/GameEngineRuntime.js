@@ -95,6 +95,7 @@ class GameEngineRuntimeMethods {
         this.uiManager?.windowLayoutObserver?.disconnect();
         this.uiManager?.chat?.sizeObserver?.disconnect();
         this.floatingTextManager?.dispose();
+        this.uiManager?.clearEnemyBars?.();
 
         if (this.renderSystem) {
             this.renderSystem.dispose();
@@ -1040,23 +1041,29 @@ class GameEngineRuntimeMethods {
                 }
             }
 
+            const barTargets = activeEntities.filter(entity => this.isHostileActorTarget(entity));
+            const barTarget = this.combatIntent?.entity || this.mobileCombatTarget;
             const enemyBarSignature = [
                 this.hoveredEntity?.id || '',
+                barTarget?.id || '',
                 this.inputManager.keys.alt ? '1' : '0',
-                activeEntities
-                    .filter((entity) => !entity.id.startsWith('player') && entity.stats && entity.stats.hp > 0 && entity.mesh)
-                    .map((entity) => `${entity.id}:${Math.ceil(entity.stats.hp ?? 0)}/${entity.stats.maxHp ?? 0}`)
+                barTargets
+                    .map((entity) => `${entity.id}:${entity.stats?.hp}/${entity.stats?.maxHp}:${Boolean(entity.mesh)}`)
                     .join('|')
             ].join('::');
             if (enemyBarSignature !== this.lastRenderEnemyBarSignature) {
                 this.uiManager.updateEnemyBars(
-                    activeEntities,
+                    barTargets,
                     this.renderSystem.camera,
                     this.hoveredEntity,
-                    this.inputManager.keys.alt
+                    this.inputManager.keys.alt,
+                    barTarget
                 );
                 this.lastRenderEnemyBarSignature = enemyBarSignature;
             }
+            // Interpolated actors and camera motion change between health
+            // snapshots. Reproject the bounded visible set every render frame.
+            this.uiManager.updateEnemyBarPositions?.(this.renderSystem.camera);
             if (this.worldMap?.isVisible?.()) {
                 const dungeonBeatSignature = this.currentDungeonRoomState
                     ? [

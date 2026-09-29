@@ -10,6 +10,12 @@ remain open; runtime version metadata is intentionally unchanged.
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 
+- Enemy health bars follow camera/movement smoothly and account for model
+  height. Wounded and selected foes remain readable without hover, including
+  phone targets and PvP opponents. A brief loss segment clarifies hits and
+  honors reduced motion; friendly services do not get enemy bars. See the
+  [health feedback checks](2026-09-29-enemy-health-feedback.md).
+
 - Periodic damage and healing use smaller body-level cues instead of additional
   decorative ground rings and large particle bursts. Reduced motion retains
   feedback without particle travel. Actual danger/healing ranges and combat

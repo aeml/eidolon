@@ -1,127 +1,19 @@
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { EnemyHealthBars } from './EnemyHealthBars.js';
 
 class UIManagerWindowMethods {
-    updateEnemyBars(entities, camera, hoveredEntity, isAltPressed) {
-        // 1. Identify which entities need bars
-        const activeIds = new Set();
-
-        // Performance: Pre-calculate camera frustum for culling
-        // and cache viewport dimensions
-        const halfWidth = window.innerWidth * 0.5;
-        const halfHeight = window.innerHeight * 0.5;
-        const cullMargin = 100; // Pixels outside viewport to still render
-
-        // Use indexed loop for slight performance gain
-        const entitiesLen = entities.length;
-        for (let i = 0; i < entitiesLen; i++) {
-            const entity = entities[i];
-
-            // Arena opponents use the same readable overhead bars as monsters.
-            if ((entity.id.startsWith('player') && !entity._pvpHostileActive) || !entity.stats || entity.stats.hp <= 0) continue;
-            if (!entity.mesh) continue; // Skip entities without mesh (can't position bar)
-
-            const isHovered = (hoveredEntity && hoveredEntity.id === entity.id);
-            const shouldShow = isAltPressed || isHovered;
-
-            if (shouldShow) {
-                // Frustum culling: Skip entities that are off-screen
-                // Get position above head and project to screen
-                const pos = entity.position.clone();
-                pos.y += 2.5;
-                pos.project(camera);
-
-                // Check if on screen (with margin)
-                const screenX = (pos.x * 0.5 + 0.5) * window.innerWidth;
-                const screenY = (-(pos.y * 0.5) + 0.5) * window.innerHeight;
-
-                if (screenX < -cullMargin || screenX > window.innerWidth + cullMargin ||
-                    screenY < -cullMargin || screenY > window.innerHeight + cullMargin ||
-                    pos.z > 1) { // Behind camera
-                    continue;
-                }
-
-                activeIds.add(entity.id);
-                let bar = this.floatingBars.get(entity.id);
-
-                // Create if missing or get from pool
-                if (!bar) {
-                    bar = this._getPooledBar() || this.createFloatingBar();
-                    this.floatingBars.set(entity.id, bar);
-                    if (!bar.parentNode) {
-                        this.uiLayer.appendChild(bar);
-                    }
-                }
-
-                // Update Position directly (already computed above)
-                bar.style.left = `${screenX}px`;
-                bar.style.top = `${screenY}px`;
-                bar.style.transform = 'translate(-50%, -50%)';
-
-                // Update Fill
-                const fill = bar.querySelector('.floating-fill');
-                const pct = (entity.stats.hp / entity.stats.maxHp) * 100;
-                fill.style.width = `${Math.max(0, pct)}%`;
-
-                bar.style.display = 'block';
-            }
-        }
-
-        // 2. Hide unused bars and return to pool
-        for (const [id, bar] of this.floatingBars) {
-            if (!activeIds.has(id)) {
-                bar.style.display = 'none';
-                // Pool for reuse instead of keeping in DOM hidden
-                this._returnBarToPool(bar);
-                this.floatingBars.delete(id);
-            }
-        }
+    updateEnemyBars(entities, camera, hoveredEntity, isAltPressed, targetEntity = null) {
+        this.enemyHealthBars ||= new EnemyHealthBars(this.uiLayer, this.floatingBars, this.isMobile);
+        this.enemyHealthBars.reconcile(entities, hoveredEntity, isAltPressed, targetEntity);
     }
 
-    // DOM element pooling for health bars
-    _getPooledBar() {
-        if (!this._barPool) this._barPool = [];
-        return this._barPool.pop();
+    updateEnemyBarPositions(camera) {
+        this.enemyHealthBars?.updatePositions(camera);
     }
 
-    _returnBarToPool(bar) {
-        if (!this._barPool) this._barPool = [];
-        if (this._barPool.length < 50) { // Limit pool size
-            this._barPool.push(bar);
-        } else if (bar.parentNode) {
-            bar.parentNode.removeChild(bar);
-        }
-    }
-
-    createFloatingBar() {
-        const div = document.createElement('div');
-        div.className = 'floating-bar';
-        const fill = document.createElement('div');
-        fill.className = 'floating-fill';
-        div.appendChild(fill);
-        return div;
-    }
-
-    updateBarPosition(bar, entity, camera) {
-        if (!entity.mesh) return;
-
-        // Get position above head
-        const pos = entity.position.clone();
-        pos.y += 2.5; // Height offset
-
-        // Project to 2D screen space
-        pos.project(camera);
-
-        // Convert NDC to pixel coordinates
-        // NDC: [-1, 1] -> Screen: [0, width]
-        const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
-        // NDC Y is up, Screen Y is down
-        const y = (-(pos.y * 0.5) + 0.5) * window.innerHeight;
-
-        // Center the bar horizontally
-        bar.style.left = `${x}px`;
-        bar.style.top = `${y}px`;
-        bar.style.transform = 'translate(-50%, -50%)'; // Center anchor point
+    clearEnemyBars() {
+        this.enemyHealthBars?.clear();
     }
 
     get isEscMenuOpen() {

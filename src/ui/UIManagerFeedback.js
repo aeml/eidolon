@@ -90,6 +90,7 @@ class UIManagerFeedbackMethods {
     handleSellAll(rarityName) { this.inventory.handleSellAll(rarityName); }
 
     resetDisplaySignatures() {
+        this.clearEnemyBars?.();
         this.lastCombatIntentSignature = '';
         this.lastDungeonEntranceHintSignature = '';
         this.lastPlayerStatsSignature = '';

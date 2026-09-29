@@ -15,6 +15,9 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { Skeleton } = await import('../src/entities/Skeleton.js');
+const { QuestNPC } = await import('../src/entities/QuestNPC.js');
+const { Fighter } = await import('../src/entities/Fighter.js');
 
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -43,6 +46,7 @@ function createEngineHarness() {
         updateXP: jest.fn(),
         updateHotbarCooldowns: jest.fn(),
         updateEnemyBars: jest.fn(),
+        updateEnemyBarPositions: jest.fn(),
         updateCharacterSheet: jest.fn(),
         isCharacterSheetOpen: false,
         floatingBars: new Map()
@@ -250,13 +254,13 @@ describe('GameEngine render-time HUD throttling', () => {
 
     test('render does not spam enemy bar updates when hover, alt state, and tracked enemies are unchanged', () => {
         const engine = createEngineHarness();
-        const enemy = {
+        const enemy = Object.assign(new Skeleton('enemy-1'), {
             id: 'enemy-1',
             stats: { hp: 100, maxHp: 100 },
             position: new THREE.Vector3(5, 0, 0),
             mesh: {},
             render: jest.fn()
-        };
+        });
         engine.activeEntitiesCache = [enemy];
         engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, enemy]);
         engine.hoveredEntity = enemy;
@@ -266,11 +270,30 @@ describe('GameEngine render-time HUD throttling', () => {
         engine.render(1);
 
         expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(1);
+        expect(engine.uiManager.updateEnemyBarPositions).toHaveBeenCalledTimes(2);
 
         engine.inputManager.keys.alt = true;
         engine.render(1);
 
         expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(2);
+    });
+
+    test('bar candidates use actual hostility, include PvP changes and track phone selection without HP changes', () => {
+        const engine = createEngineHarness();
+        const enemy = new Skeleton('enemy-1'), npc = new QuestNPC('quest-1'), opponent = new Fighter('player-other');
+        for (const actor of [enemy, npc, opponent]) actor.mesh = new THREE.Group();
+        engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, enemy, npc, opponent]);
+        engine.socialController = { isPvPHostile: jest.fn(() => false) };
+        engine.render(1);
+        expect(engine.uiManager.updateEnemyBars.mock.calls.at(-1)[0]).toEqual([enemy]);
+        engine.mobileCombatTarget = enemy; engine.render(1);
+        expect(engine.uiManager.updateEnemyBars.mock.calls.at(-1)[4]).toBe(enemy);
+        engine.socialController.isPvPHostile.mockReturnValue(true); engine.render(1);
+        expect(engine.uiManager.updateEnemyBars.mock.calls.at(-1)[0]).toEqual([enemy, opponent]);
+        opponent.stats.hp -= 10; engine.render(1);
+        expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(4);
+        enemy.isActive = false; engine.render(1);
+        expect(engine.uiManager.updateEnemyBars.mock.calls.at(-1)[0]).toEqual([opponent]);
     });
 
     test('render does not spam open character sheet updates when tracked sheet data is unchanged', () => {
