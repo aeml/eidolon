@@ -685,7 +685,8 @@ test.describe('deterministic production animation gallery', () => {
             }).toBe(expectedCount);
             const feedbackMetrics = await galleryMetrics(page);
             expect(feedbackMetrics.proceduralCombatFeedback.every((entry) =>
-                entry.artStyle.length > 16 && entry.motif.length > 8 && entry.visibleParts >= 6
+                entry.artStyle.length > 16 && entry.motif.length > 8 && entry.visibleParts >=
+                    (entry.feedbackKind.endsWith('_strike') && entry.quality === 'low' ? 4 : 6)
             )).toBe(true);
             expect(new Set(feedbackMetrics.proceduralCombatFeedback.map((entry) => entry.motif)).size).toBe(expectedCount);
             expect(feedbackMetrics.nonFiniteTransforms).toBe(0);

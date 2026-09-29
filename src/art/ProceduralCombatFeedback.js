@@ -116,6 +116,7 @@ function emblemGeometry(shape) {
 }
 
 function buildFeedback(root, kind, definition, mats, quality, intensity) {
+    if (kind.endsWith('_strike')) return buildDirectImpact(root, kind, mats, quality, intensity);
     const restorative = definition.restorative;
     const emblemCount = quality === 'low' ? 4 : 7;
     const emblem = emblemGeometry(definition.shape);
@@ -161,6 +162,27 @@ function buildFeedback(root, kind, definition, mats, quality, intensity) {
     return restorative ? 0.72 : 0.52;
 }
 
+function buildDirectImpact(root, kind, mats, quality, intensity) {
+    const cut = geometry('feedback:contact-cut', () => new THREE.ShapeGeometry(new THREE.Shape([
+        [-.85, -.025], [-.12, .09], [.85, .025], [.12, -.09]
+    ].map(([x, y]) => new THREE.Vector2(x, y)))));
+    // Two crossing planes keep the small contact legible from the isometric
+    // camera even when the incoming direction is edge-on to one plane.
+    for (let i = 0; i < 2; i++) addPart(root, kind, `ContactCut${i}`, cut, i ? mats.accent : mats.pale, {
+        rotation: [0, i * Math.PI / 2, i ? -.65 : .55],
+        scale: [intensity, intensity, intensity], motion: 'contact-cut'
+    });
+    const spark = geometry('feedback:contact-spark', () => new THREE.ConeGeometry(.035, .38, 3));
+    const count = quality === 'low' ? 2 : 4;
+    for (let i = 0; i < count; i++) addPart(root, kind, `ContactSpark${i}`, spark,
+        i % 2 ? mats.accent : mats.pale, {
+            rotation: [.7, i * 1.7, .4 + i * .9],
+            scale: [intensity, intensity, intensity], motion: 'contact-spark',
+            phase: i * 2.4 + .4, travel: intensity * (.65 + i * .17)
+        });
+    return .28;
+}
+
 function updateFeedback(root, elapsed, duration, dt) {
     const t = Math.min(1, elapsed / duration);
     const close = t > 0.7 ? Math.max(0, (1 - t) / 0.3) : 1;
@@ -169,7 +191,16 @@ function updateFeedback(root, elapsed, duration, dt) {
         const data = part.userData;
         const base = data.baseScale || [1, 1, 1];
         const origin = data.basePosition || [0, 0, 0];
-        if (data.motion === 'seal' || data.motion === 'snap') {
+        if (data.motion === 'contact-cut') {
+            const fade = Math.pow(1 - t, 3);
+            part.scale.set(base[0] * (.75 + t * .45), base[1] * fade, base[2]);
+        } else if (data.motion === 'contact-spark') {
+            const distance = root.userData.reducedMotion ? 0 : data.travel * (1 - (1 - t) ** 2);
+            part.position.set(Math.cos(data.phase) * distance,
+                Math.sin(data.phase) * distance * .6 - (root.userData.reducedMotion ? 0 : t * t * .65),
+                distance * .65);
+            part.scale.setScalar((1 - t) * base[0]);
+        } else if (data.motion === 'seal' || data.motion === 'snap') {
             const spread = 0.6 + Math.sin(t * Math.PI / 2) * 1.5;
             part.scale.set(base[0] * spread * close, base[1] * spread * close, base[2] * close);
             part.rotation.z += dt * (data.motion === 'snap' ? -5 : 3.5);
@@ -238,6 +269,11 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
     root.name = `ProceduralCombatFeedback:${kind}`;
     root.position.copy(position);
     root.position.y = Math.max(0.08, Number(position.y) || 0.08);
+    const direction = options.impactDirection;
+    if (kind.endsWith('_strike') && Number.isFinite(direction?.x) && Number.isFinite(direction?.z)
+        && Math.hypot(direction.x, direction.z) > .001) {
+        root.rotation.y = Math.atan2(direction.x, direction.z);
+    }
     Object.assign(root.userData, {
         proceduralCombatFeedback: true,
         feedbackKind: kind,
@@ -255,6 +291,7 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
         sharedGeometry: true,
         sharedMaterials: true
     });
+    root.userData.reducedMotion = Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
     const duration = buildFeedback(root, kind, definition, getMaterials(kind, definition.palette), quality, intensity);
     root.traverse((part) => {
         if (part.userData?.highQualityOnly) part.visible = quality !== 'low';

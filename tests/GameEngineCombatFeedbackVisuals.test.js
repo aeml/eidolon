@@ -27,6 +27,41 @@ function makeEngine() {
 }
 
 describe('authoritative combat feedback visuals', () => {
+    test('direct contact is on the source-facing body, without moving the target or periodic feedback', () => {
+        const engine = makeEngine(), enemy = actor('enemy', 'Skeleton', 0, 6);
+        enemy.mesh = { userData: { bounds: { height: 4, radius: 1 } }, scale: { x: 1, y: 1 } };
+        engine.remotePlayers.set(enemy.id, enemy);
+        const original = enemy.position.clone();
+        engine.renderCombatFeedback({ sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' });
+        const [, contact, , options] = engine.spawnTransientEffect.mock.calls[0];
+        expect(contact.y).toBeCloseTo(2.3);
+        expect(contact.z).toBeCloseTo(5.45);
+        expect(options.impactDirection).toEqual({ x: 0, z: -1 });
+        expect(enemy.position.equals(original)).toBe(true);
+        engine.renderCombatFeedback({ sourceId: engine.player.id, targetId: enemy.id, amount: 3, kind: 'poison' });
+        expect(engine.spawnTransientEffect.mock.calls[1][1].equals(original)).toBe(true);
+        expect(engine.spawnTransientEffect.mock.calls[1][3].impactDirection).toBeUndefined();
+    });
+
+    test.each([0, -1, NaN, Infinity])('non-damage %s cannot produce a confirmed hit flash', amount => {
+        const engine = makeEngine();
+        expect(engine.renderCombatFeedback({ sourceId: 'enemy', targetId: engine.player.id, amount })).toBe(false);
+        expect(engine.spawnTransientEffect).not.toHaveBeenCalled();
+    });
+
+    test('accepted direct hits react; healing, periodic damage, hazards and other instances do not', () => {
+        const engine = makeEngine(), enemy = actor('enemy', 'Skeleton');
+        enemy.playHitReaction = jest.fn(); engine.remotePlayers.set(enemy.id, enemy);
+        const hit = { sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' };
+        engine.renderCombatFeedback(hit);
+        expect(enemy.playHitReaction).toHaveBeenCalledWith(engine.player.position, 30);
+        for (const kind of ['poison', 'bleed', 'lava_pool']) engine.renderCombatFeedback({ ...hit, kind });
+        engine.renderCombatFeedback({ ...hit, kind: 'holy' }, 'heal');
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, instanceId: 'other-room' });
+        expect(enemy.playHitReaction).toHaveBeenCalledTimes(1);
+    });
+
     test('only local direct hits punch the camera, once per burst', () => {
         const engine = makeEngine();
         engine.renderSystem = { applyCameraPunch: jest.fn() };
@@ -110,7 +145,11 @@ describe('authoritative combat feedback visuals', () => {
         });
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith(72, enemy.position, '#ffff00');
         expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
-            'combat_feedback', expect.objectContaining({ x: 2, z: 3 }), 0xffffff,
+            'combat_feedback', expect.objectContaining({
+                x: expect.closeTo(2 - 2 / Math.sqrt(13) * .33, 8),
+                y: expect.closeTo(.5 + 2.6 * .45, 8),
+                z: expect.closeTo(3 - 3 / Math.sqrt(13) * .33, 8)
+            }), 0xffffff,
             expect.objectContaining({
                 feedbackKind: 'fighter_strike', amount: 72,
                 sourceId: engine.player.id, targetId: enemy.id,
