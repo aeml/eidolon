@@ -806,6 +806,10 @@ class GameEngineRuntimeMethods {
                         this.player.position.copy(nextPos);
                     }
 
+                    // Touch movement runs after Actor.update(), so its new X/Z
+                    // must be grounded before camera and movement replication.
+                    this.player.groundToTerrain();
+
                     this.player.state = 'MOVING';
                     this.player.playAnimation('Run');
 

@@ -7,6 +7,12 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Added broad roadside banks to the opt-in Earth elevation candidate, with
+  matching client/server ground and preserved level entrances. Normal worlds
+  remain flat pending terrain acceptance. Fixed touch movement retaining the
+  previous tick's ground height after moving on slopes. See the
+  [landform comparison and remaining budgets](2026-09-29-bastion-terrain-banks.md).
+
 - Framed the Bastion road with staggered woodland stands while preserving
   existing trees, open lanes and saved-position escape. Low retains all trees
   with simpler leaf surfaces; finer culling limits off-screen work. Some High

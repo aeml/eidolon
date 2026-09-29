@@ -255,6 +255,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             render.setCameraTarget(actor.position);
             render.updateEnvironmentLighting(actor.position, 0);
             render.render(); render.render();
+            return { height: actor.position.y, calls: render.renderer.info.render.calls,
+                triangles: render.renderer.info.render.triangles };
         };
         return { treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
             attachedDraws, understoryCost, outcropDraws,
@@ -279,6 +281,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.screenshot({ path: testInfo.outputPath('grove-bedrock-shoulder.png') });
     await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
     await page.screenshot({ path: testInfo.outputPath('grove-rock-formation.png') });
+    for (const [name, x, z] of [['west-bank', 340, 200], ['woodland-cut', 470, 200], ['outer-fold', 600, 200]]) {
+        const view = await page.evaluate(([x, z]) => window.__reviewEarthShoulder(x, z), [x, z]);
+        await testInfo.attach(`bastion-${name}`, { body: JSON.stringify(view), contentType: 'application/json' });
+        console.log(`[bastion ${quality} ${name}] ${JSON.stringify(view)}`);
+        await page.screenshot({ path: testInfo.outputPath(`bastion-${name}.png`) });
+    }
     expect(result.treeCount).toBeGreaterThan(0);
     expect(result.attachedDraws).toBeGreaterThan(0);
     expect(result.beamDraws).toBeGreaterThan(0);
