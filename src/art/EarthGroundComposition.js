@@ -34,6 +34,7 @@ function getWoodland() {
 }
 
 const mineralAt = (x, z) => smooth(.48, .77, noise(x * .012 + noise(x * .025, z * .025) * 2, z * .035));
+const bastionRoad = EARTH_PATHS.find(path => path.id === 'bastion-road');
 
 // Broad connected heath/moss beds, shared by the ground material and physical
 // undergrowth. Keep these larger than a character, not pixel-sized green noise.
@@ -44,7 +45,16 @@ export const sampleEarthMeadow = (x, z) => {
     // first road. Share this field with physical ground cover, not a separate
     // green decal or a uniformly planted combat clearing.
     const gateVerge = 1 - smooth(.25, 1.1, Math.hypot((x - 112) / 11, (z - 170) / 22));
-    return Math.max(meadow, gateVerge * (.8 + noise(x * .08, z * .08) * .2));
+    // Deliberate, irregular meadow shoulders connect the long eastern road.
+    // The generic field alone left whole screenfuls bare between landmarks.
+    // Preserve the worn centre; placement separately keeps full leaf/wind
+    // reach outside every road and the authored encounter/site clearings.
+    const roadDistance = x > 190 && x < 790 ? distanceToPath(x, z, bastionRoad.points) : Infinity;
+    const edgeWarp = noise(x * .047, z * .041) * 5;
+    const shoulder = smooth(6, 10, roadDistance) * (1 - smooth(15 + edgeWarp, 23 + edgeWarp, roadDistance));
+    const roadVerge = shoulder * smooth(190, 225, x) * (1 - smooth(755, 790, x)) *
+        (.48 + noise(x * .038 + 8, z * .055) * .5);
+    return Math.max(meadow, roadVerge, gateVerge * (.8 + noise(x * .08, z * .08) * .2));
 };
 
 export function sampleEarthGround(x, z) {
