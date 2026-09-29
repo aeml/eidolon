@@ -213,7 +213,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.41.0" \
+  --build-arg "BUILD_VERSION=Alpha 1.42.0" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -643,6 +643,10 @@ set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   release-smoke)
     EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
+    ;;
+  presentation-route)
+    # One connected ordinary town-to-fight slice, not a campaign/raid soak.
+    EIDOLON_E2E_DESKTOP_PRESENTATION=1 npx playwright test --retries=0 tests/e2e/desktop-presentation-gameplay.spec.js
     ;;
   initial-stats)
     run_initial_stats
