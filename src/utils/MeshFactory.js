@@ -764,7 +764,7 @@ export class MeshFactory {
         }
 
         if (type === 'Skeleton') {
-            return createProceduralSkeleton();
+            return createProceduralSkeleton({ batch: true });
         }
 
         if (type === 'DemonOrc') {

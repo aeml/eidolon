@@ -61,15 +61,19 @@ for (const quality of ['high', 'low']) test(`resonance plaza batches preserve re
 });
 
 // A bounded renderer equivalence check, not party/network or frame-time QA.
-for (const quality of ['high', 'low']) test(`four class rigid batches preserve rendered poses: ${quality}`, async ({ page, baseURL }, testInfo) => {
+for (const [label, types, minimumSaved] of [
+    ['four-class', ['Fighter', 'Rogue', 'Wizard', 'Cleric'], 63],
+    ['skeleton', ['Skeleton'], 17]
+]) for (const quality of ['high', 'low']) test(`${label} rigid batches preserve rendered poses: ${quality}`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: 1100, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const results = await page.evaluate(async quality => {
+    const results = await page.evaluate(async ({ quality, types }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const factories = await import('/src/art/ProceduralHumanoid.js');
+        const enemies = await import('/src/art/ProceduralLegacyEnemies.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low');
@@ -81,8 +85,9 @@ for (const quality of ['high', 'low']) test(`four class rigid batches preserve r
         const original = new THREE.Group(), batched = new THREE.Group();
         render.entityGroup.add(original, batched);
         const place = (mesh, index) => mesh.position.set(index % 2 ? 3 : -3, 0, index < 2 ? -3 : 3);
-        for (const [index, type] of ['Fighter', 'Rogue', 'Wizard', 'Cleric'].entries()) {
-            const meshes = [factories[`createProcedural${type}`](), await MeshFactory.createMeshForType(type)];
+        for (const [index, type] of types.entries()) {
+            const make = (type === 'Skeleton' ? enemies : factories)[`createProcedural${type}`];
+            const meshes = [make(), await MeshFactory.createMeshForType(type)];
             meshes.forEach((mesh, variant) => {
                 place(mesh, index);
                 [original, batched][variant].add(mesh);
@@ -130,13 +135,13 @@ for (const quality of ['high', 'low']) test(`four class rigid batches preserve r
         }
         capture(true);
         return results;
-    }, quality);
+    }, { quality, types });
     await testInfo.attach('rigid-batch-render-comparison', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
     await writeFile(testInfo.outputPath('comparison.json'), JSON.stringify(results, null, 2));
-    await page.locator('canvas[data-batch-review]').screenshot({ path: testInfo.outputPath('four-class-batched.png') });
+    await page.locator('canvas[data-batch-review]').screenshot({ path: testInfo.outputPath(`${label}-batched.png`) });
     for (const result of results) {
         expect(result.after.calls).toBeLessThan(result.before.calls);
-        expect(result.before.calls - result.after.calls).toBeGreaterThanOrEqual(63);
+        expect(result.before.calls - result.after.calls).toBeGreaterThanOrEqual(minimumSaved);
         expect(result.after.triangles).toBe(result.before.triangles);
         expect(result.meanPixelError).toBeLessThan(.1);
         expect(result.changedFraction).toBeLessThan(.001);

@@ -7,6 +7,7 @@ import { applyActorStealthAppearance, restoreActorStealthAppearance } from '../s
 import { batchHumanoidRenderParts } from '../src/art/HumanoidRenderBatches.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { Actor } from '../src/entities/Actor.js';
+import { createProceduralSkeleton } from '../src/art/ProceduralLegacyEnemies.js';
 
 const cases = [
     ['Fighter', createProceduralFighter, 61, 53], ['Rogue', createProceduralRogue, 77, 60],
@@ -136,3 +137,30 @@ test('a directly animated leaf is not absorbed into a rigid batch', () => {
     expect(visibleMeshes(root)).toHaveLength(2);
 });
 
+test('skeleton batches preserve every animated surface and pooled reset without new shared geometry', async () => {
+    const source = createProceduralSkeleton(), batched = await MeshFactory.createMeshForType('Skeleton');
+    // Runtime adds an interaction hitbox; this compares only constructor art.
+    expect(batched.userData.humanoidRenderBatches).toEqual({ sourceMeshes: 51, drawMeshes: 34 });
+    expect(visibleMeshes(batched).length).toBeLessThan(visibleMeshes(source).length);
+    expect(batched.userData.bounds).toEqual(source.userData.bounds);
+    expect(batched.userData.combatRadius).toBe(source.userData.combatRadius);
+    for (const clip of source.userData.animations) {
+        for (const phase of [.25, .7]) {
+            const mixers = [source, batched].map(root => new THREE.AnimationMixer(root));
+            mixers.forEach(mixer => { mixer.clipAction(clip).play(); mixer.update(clip.duration * phase); });
+            checkSurfaces(source, batched);
+            mixers.forEach((mixer, i) => { mixer.stopAllAction(); mixer.uncacheRoot([source, batched][i]); });
+            source.userData.resetPose(); batched.userData.resetPose();
+        }
+    }
+    const batch = visibleMeshes(batched).find(mesh => mesh.userData.humanoidBatchSources);
+    const geometry = batch.geometry, original = batch.material;
+    const dispose = jest.spyOn(geometry, 'dispose');
+    batch.visible = false;
+    batched.userData.resetPose(); expect(batch.visible).toBe(true);
+    const actor = new Actor('batched-skeleton', {}); actor.setMesh(batched); actor.dispose();
+    expect(dispose).not.toHaveBeenCalled(); dispose.mockRestore();
+    const other = createProceduralSkeleton({ batch: true });
+    expect(other.getObjectByName(batch.name).geometry).toBe(geometry);
+    expect(other.getObjectByName(batch.name).material).toBe(original);
+});
