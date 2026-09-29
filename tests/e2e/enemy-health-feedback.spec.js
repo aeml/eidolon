@@ -17,6 +17,10 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
             const { Construct } = await import('/src/entities/Construct.js');
             const { Actor } = await import('/src/entities/Actor.js');
             const { createProceduralRootboundWarden } = await import('/src/art/ProceduralThorncryptBosses.js');
+            const { createProceduralOverworldEnemy } = await import('/src/art/ProceduralOverworldEnemies.js');
+            const { createProceduralCindermaw } = await import('/src/art/ProceduralMoltenBosses.js');
+            const { createProceduralRocMatriarch } = await import('/src/art/ProceduralTempestBosses.js');
+            const { createProceduralTiderendLeviathan } = await import('/src/art/ProceduralAbyssalBosses.js');
             const { QuestNPC } = await import('/src/entities/QuestNPC.js');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -72,16 +76,22 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
                     player.playHitReaction(striker.position, 10); player.hitReaction.update(.045);
                 } else player.hitReaction?.update(1);
                 engine.render(1); striker.mesh.updateMatrixWorld(true);
-                const weapon = new THREE.Box3().setFromObject(striker.mesh.getObjectByName(`Rig_${striker.mesh.userData.proceduralActorType}Weapon`)).getCenter(new THREE.Vector3());
+                const type = striker.mesh.userData.proceduralActorType;
+                const marker = { InfernalBehemoth: 'BullSkull', PhoenixSentinel: 'Beak', ThunderRoc: 'Beak',
+                    StormHarpy: 'LightningJavelin', Cindermaw: 'LowerMaw', RocMatriarch: 'SilverBeak', TiderendLeviathan: 'TideJaw' }[type];
+                const weapon = new THREE.Box3().setFromObject(striker.mesh.getObjectByName(marker ? `${type}_${marker}` : `Rig_${type}Weapon`)).getCenter(new THREE.Vector3());
                 const forward = player.position.clone().sub(striker.position).setY(0).normalize();
                 return { time: striker.currentAction.time, contact: striker.mesh.userData.basicAttackContactTime,
                     forwardReach: weapon.sub(striker.position).dot(forward), state: striker.state };
             };
             let boss;
-            const sampleBossAttack = fraction => {
+            const sampleBossAttack = (fraction, type = 'RootboundWarden') => {
                 if (!boss) {
-                    boss = new Actor('warden-review', {}); boss.type = 'RootboundWarden';
-                    boss.position.set(0, 0, 358.5); boss.setMesh(createProceduralRootboundWarden());
+                    boss = new Actor('creature-review', {}); boss.type = type;
+                    const factory = { RootboundWarden: createProceduralRootboundWarden, Cindermaw: createProceduralCindermaw,
+                        RocMatriarch: createProceduralRocMatriarch, TiderendLeviathan: createProceduralTiderendLeviathan }[type];
+                    boss.position.set(0, 0, ['PhoenixSentinel', 'ThunderRoc', 'StormHarpy'].includes(type) ? 359.3 : 358.5);
+                    boss.setMesh(factory ? factory() : createProceduralOverworldEnemy(type));
                     boss.stats.attackSpeed = 2; render.entityGroup.add(boss.mesh);
                     for (const actor of actors) if (actor !== player) actor.mesh.visible = false;
                 }
@@ -135,6 +145,14 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
             await page.screenshot({ path: testInfo.outputPath(`warden-attack-${phase}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
         }
         await page.evaluate(() => window.__healthReview.endBossReview());
+        for (const type of ['InfernalBehemoth', 'PhoenixSentinel', 'ThunderRoc', 'StormHarpy', 'Cindermaw', 'RocMatriarch', 'TiderendLeviathan']) {
+            const before = await page.evaluate(type => window.__healthReview.sampleBossAttack(.25, type), type);
+            const contact = await page.evaluate(type => window.__healthReview.sampleBossAttack(.35, type), type);
+            expect(contact.time).toBeCloseTo(.35, 4);
+            expect(contact.forwardReach - before.forwardReach).toBeGreaterThan(.3);
+            await page.screenshot({ path: testInfo.outputPath(`creature-${type}-contact.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+            await page.evaluate(() => window.__healthReview.endBossReview());
+        }
         await page.emulateMedia({ reducedMotion: 'reduce' });
         const reduced = await page.evaluate(() => {
             const { target, engine, ui } = window.__healthReview;

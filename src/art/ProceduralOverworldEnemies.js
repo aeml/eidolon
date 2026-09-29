@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 import { configureEnemyStrikeContact } from './EnemyStrikeContact.js';
+import { configureCreatureAttack } from './CreatureAttackClips.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -170,6 +171,7 @@ function finalize(root, type, clips) {
     root.name = `Procedural${type}`;
     groundEnemyDeathClip(type, clips);
     configureEnemyStrikeContact(root, type, clips);
+    configureCreatureAttack(root, type, clips);
     installRestPoseReset(root);
     return root;
 }

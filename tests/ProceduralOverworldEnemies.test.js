@@ -85,7 +85,8 @@ describe('procedural Cinder Wastes and Stormcrown enemy families', () => {
         const clips = Object.fromEntries(enemy.userData.animations.map((clip) => [clip.name, clip]));
         expect(Object.keys(clips)).toEqual(PROCEDURAL_OVERWORLD_ENEMY_STATES);
         PROCEDURAL_OVERWORLD_ENEMY_STATES.forEach((state) => expect(clips[state].tracks.length).toBeGreaterThanOrEqual(9));
-        expect(clips.Attack.tracks.some((animationTrack) => animationTrack.name.includes('Weapon.rotation'))).toBe(true);
+        const contactTrack = enemy.userData.creatureAttackKind ? 'Head.position[z]' : 'Weapon.rotation';
+        expect(clips.Attack.tracks.some((animationTrack) => animationTrack.name.includes(contactTrack))).toBe(true);
         expect(clips.Death.tracks.some((animationTrack) => animationTrack.name.endsWith('Body.position[y]'))).toBe(true);
 
         for (const state of PROCEDURAL_OVERWORLD_ENEMY_STATES) {

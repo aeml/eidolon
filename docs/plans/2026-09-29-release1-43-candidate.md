@@ -10,6 +10,11 @@ remain open; runtime version metadata is intentionally unchanged.
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 
+- Seven creature attacks now use distinct gores, pecks, bites and a javelin
+  thrust with anticipation and recovery, aligned to the existing hit timing.
+  Planted feet and actual contact anatomy are checked throughout the motion.
+  See the [creature pose review](2026-09-29-creature-attack-poses.md).
+
 - Corrected forward basic swings and hit-time alignment for26 additional armed
   regional enemies and dungeon bosses, including Rootbound Warden. Distinct
   bird/bite rigs are not given an assumed weapon animation. See the
