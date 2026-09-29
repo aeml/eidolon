@@ -1,4 +1,5 @@
 import { WorldAmbience } from './WorldAmbience.js';
+import { ABILITY_CAST_PROFILES, getAbilityCastProfile } from './AbilityCastProfiles.js';
 
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
@@ -46,10 +47,10 @@ const generatedCombatCue = Object.freeze({ category: 'combat', fallback: 'genera
 const CLASS_CAST_CUES = Object.freeze({ Fighter: AUDIO_CUES.fighterCast, Rogue: AUDIO_CUES.rogueCast,
     Wizard: AUDIO_CUES.wizardCast, Cleric: AUDIO_CUES.clericCast });
 
-export function playLocalAbilityCue(engine, actor) {
+export function playLocalAbilityCue(engine, actor, skillName) {
     if (!actor || actor !== engine?.player) return false;
     const cue = CLASS_CAST_CUES[actor.meshType || actor.subType || actor.constructor.name];
-    return cue ? engine.playAudioCue?.(cue) || false : false;
+    return cue ? engine.playAudioCue?.(cue, { skillName }) || false : false;
 }
 
 export const AUDIO_CUE_ASSETS = Object.freeze({
@@ -393,6 +394,9 @@ export class AudioManager {
     }
 
     createCue(cueName, options = {}) {
+        const className = Object.keys(CLASS_CAST_CUES).find(key => CLASS_CAST_CUES[key] === cueName);
+        const profile = className && options.skillName ? getAbilityCastProfile(className, options.skillName) : null;
+        if (profile) return ABILITY_CAST_PROFILES[profile];
         const impact = Math.max(0, Math.min(1, Number(options.impact ?? 0.5)));
         const pitch = Math.max(0.5, Math.min(1.8, Number(options.pitch ?? 1)));
 

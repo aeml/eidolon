@@ -5,6 +5,10 @@ open; runtime identity is unchanged. Final listening/mix approval is not claimed
 
 ## Draft patch notes
 
+- Distinct short cast cues for fourteen ability families across all four
+  classes, including fire, arcane, gravity and time magic. Existing local-only
+  playback, combat volume controls and danger priority are preserved.
+
 - Independent combat, interface and ambience volume controls, saved per device
   and available in desktop and phone settings.
 - Regional ambience for town, elemental realms, Dark Realm, dungeons and both
@@ -21,5 +25,5 @@ open; runtime identity is unchanged. Final listening/mix approval is not claimed
 Evidence: [audio integration](2026-09-29-audio-reference-integration.md) and
 [voice ownership/recovery](2026-09-29-audio-voice-lifecycle.md).
 Sounds are original code-generated cues/beds, not a finished cinematic score.
-Remaining: richer action/impact identity where needed, representative listening/
+Remaining: richer impact/foley identity where needed, representative listening/
 busy-mix approval, and ordered packaging/deployment. No full1.44 acceptance.

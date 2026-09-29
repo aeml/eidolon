@@ -1,5 +1,27 @@
 # Audio reference integration — September 29
 
+## Follow-up: ability-family identity (on be44cb7a)
+
+Local cast presentation now passes its skill name into the existing class cue.
+Fourteen short synthesized signatures distinguish steel/guard/force, blade/
+shadow/trap, fire/arcane/gravity/time/frost and healing/radiant/summon actions.
+Known aliases resolve consistently, retaining Frost Nova's non-fire override.
+Each uses at most two voices and ends within0.35s. Existing class cooldowns,
+combat bus, mute, danger reservation and local-only filtering are unchanged.
+Calls without skill metadata retain the old class cue. No combat values,
+cast timing, remote-party noise or asset downloads were added.
+
+46 focused audio/lifecycle checks passed in1.438s; scoped lint/diff passed.
+Two hardware-Chrome audio tests passed9.6s: fourteen actual OfflineAudioContext
+renders have distinct sample hashes, finite bounded output, silent tails after
+0.4s and complete combat-bus mute. Existing live-context voice budget/suspension
+recovery also passes. Artifacts:/tmp/eidolon-ability-audio-0929. This is signal
+and integration evidence, not a human listening or busy-fight mix approval.
+These remain synthesized accents, not finished weapon foley or cinematic sound.
+No runtime bump, deployment or ordered-release gate waiver.
+
+## Earlier combined integration
+
 Local combined candidate based on 2cfde25c. Runtime identity stays Alpha
 1.38.0. No push, deployment or release-gate acceptance.
 
