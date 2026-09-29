@@ -183,8 +183,27 @@ describe('Procedural dungeon interior art', () => {
             surfaceMaterials: 2,
             surfaceGeometries: 1,
             detailGeometries: 9,
-            detailMaterials: 5
+            detailMaterials: 6
         });
+    });
+
+    test.each(DUNGEON_INTERIOR_IDS)('%s decorative floor inlays leave the combat floor readable', dungeonType => {
+        const kit = createProceduralDungeonInteriorKit(dungeonType);
+        const dressing = kit.createRoomDressing({ x: 0, z: 0, width: 120, height: 120, type: 'start' }, 0, { optimized: false });
+        const inlay = dressing.getObjectByName('entry_gate:inner-ward');
+        expect(inlay.material.emissiveIntensity).toBeLessThanOrEqual(.1);
+        const { innerRadius, outerRadius } = inlay.geometry.parameters;
+        expect((outerRadius - innerRadius) / outerRadius).toBeLessThan(.03);
+        const halo = dressing.getObjectByName('DungeonObjectiveHalo').geometry.parameters;
+        expect(halo.outerRadius - halo.innerRadius).toBeLessThanOrEqual(.45 + Number.EPSILON * 16);
+        if (dungeonType === 'verdant_bastion_catacombs') {
+            for (const side of [-1, 1]) {
+                const root = dressing.getObjectByName(`verdant:grave-root:${side}`);
+                const bounds = new THREE.Box3().setFromObject(root);
+                expect(root.geometry.type).toBe('TubeGeometry');
+                expect(bounds.max.y).toBeLessThan(1);
+            }
+        }
     });
 
     test.each(DUNGEON_INTERIOR_IDS)('%s room dressing mirrors objective, reward, cleared, and exit lifecycle', (dungeonType) => {

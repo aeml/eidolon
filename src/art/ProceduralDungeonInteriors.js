@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
+import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -259,6 +260,10 @@ function createMaterialSet(dungeonType) {
             emissive: theme.palette.spirit,
             emissiveIntensity: 1.42,
             side: THREE.DoubleSide
+        }),
+        inlay: makeDetailMaterial(theme.palette.midtone, {
+            roughness: .82, metalness: .25,
+            emissive: theme.palette.accent, emissiveIntensity: .08
         })
     });
 }
@@ -271,8 +276,8 @@ function createShapes() {
         cone4: new THREE.ConeGeometry(0.5, 1, 4),
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         torus: new THREE.TorusGeometry(0.5, 0.075, 6, 24),
-        ring: new THREE.RingGeometry(0.34, 0.5, 24),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
+        graveRoot: createTaperedRoot([[-1, 0, 0], [-.6, .18, .12], [.2, .08, -.12], [1, 0, 0]], .07, 'low'),
         octahedron: new THREE.OctahedronGeometry(0.5, 0)
     });
 }
@@ -309,7 +314,7 @@ function addPylon(root, shapes, materials, name, x, z, height = 4) {
 }
 
 function addFloorRing(root, shapes, material, name, radius, y = 0.14) {
-    return addPart(root, name, shapes.ring, material, {
+    return addPart(root, name, shapes.vigilInlay, material, {
         position: [0, y, 0],
         rotation: [-Math.PI / 2, 0, 0],
         scale: [radius * 2, radius * 2, 1],
@@ -374,14 +379,14 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const objectiveHalo = addRoomStateMesh(
         root,
         'DungeonObjectiveHalo',
-        new THREE.RingGeometry(radius * 0.78, radius * 0.9, 48),
+        new THREE.RingGeometry(radius * 0.9 - Math.min(.45, radius * .025), radius * 0.9, 48),
         objectiveMaterial,
         { position: [0, 0.24, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
     const currentHalo = addRoomStateMesh(
         root,
         'DungeonCurrentRoomHalo',
-        new THREE.RingGeometry(radius * 0.48, radius * 0.55, 32),
+        new THREE.RingGeometry(radius * 0.55 - Math.min(.3, radius * .02), radius * 0.55, 32),
         currentMaterial,
         { position: [0, 0.23, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
@@ -502,11 +507,11 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
 function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     if (dungeonType === 'verdant_bastion_catacombs') {
         for (const side of [-1, 1]) {
-            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.cylinder6, materials.shadow, {
-                position: [side * radius * 0.56, 1.2, radius * 0.58],
-                scale: [0.7, radius * 0.72, 0.7]
+            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.graveRoot, materials.shadow, {
+                position: [side * radius * 0.78, .2, radius * 0.58],
+                scale: [radius * .36, 2, 3]
             });
-            rootBeam.rotation.z = side * 0.95;
+            rootBeam.rotation.y = side * .6;
         }
     } else if (dungeonType === 'molten_core') {
         for (const side of [-1, 1]) {
@@ -559,7 +564,7 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
 
     addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, radius);
-    addFloorRing(root, shapes, materials.accent, `${identity}:inner-ward`, radius * 0.67, 0.16);
+    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, radius * 0.67, 0.16);
     buildRegionalMotif(root, dungeonType, shapes, materials, radius);
 
     switch (identity) {
@@ -626,7 +631,7 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
                 scale: [radius * 0.84, radius * 0.84, 1], castShadow: false, receiveShadow: false
             });
         } else {
-            addFloorRing(root, shapes, materials.spirit, 'boss:soul-circuit', radius * 0.42, 0.35);
+            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.35);
         }
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;
