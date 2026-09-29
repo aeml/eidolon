@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Earth roads gain coherent compacted soil, worn tracks, gravel shoulders and
+  matching normal/roughness detail. Low retains the same features at reduced
+  texture resolution; travel routes and collisions are unchanged. See the
+  [trail-surface review](2026-09-29-earth-trail-surfaces.md).
+
 - Lanternhold's orange rail fence becomes weathered timber palisades with
   iron fittings and lantern-marked gates. Existing openings and collision
   bounds are unchanged. See the [perimeter review](2026-09-29-lanternhold-perimeter.md).
