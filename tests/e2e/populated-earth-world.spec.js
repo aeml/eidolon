@@ -82,6 +82,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const x = reading?.position.x ?? site.x + (site.arrivalOffset?.[0] || 0);
                 const z = reading?.position.z ?? site.z + (site.arrivalOffset?.[1] || 0);
                 engine.player.position.set(x - (reading ? 4 : 0), 0, z + (reading ? 3 : 0)); hero.position.copy(engine.player.position);
+                if (id === 'keepers-empty-house') {
+                    // Review from the actual open-front inspection approach,
+                    // not with the prepared hero standing inside the diary table.
+                    engine.player.position.z += 4.1; hero.position.copy(engine.player.position);
+                }
                 render.setZoom(15); render.setCameraTarget(engine.player.position); render.setSceneryFocus(engine.player.position);
                 render.applyLightingPreset(site.region || 'earth', true);
                 // Match the runtime's player-following sun/shadow frame, not
@@ -131,6 +136,14 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     const point = cart.localToWorld(new THREE.Vector3(0, 1.6, 0)).project(render.camera);
                     stats.cartInView = Math.abs(point.x) < .85 && Math.abs(point.y) < .85 && Math.abs(point.z) < 1;
                     if (!stats.cartInView) throw new Error(`Starter cart out of view: ${point.toArray()}`);
+                }
+                if (id === 'keepers-empty-house') {
+                    const diary = new THREE.Vector3(site.x, 1.5, site.z).project(render.camera);
+                    const ray = new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(diary.x, diary.y), render.camera);
+                    const hit = ray.intersectObjects([render.instanceEnvironmentGroup, render.entityGroup], true)
+                        .find(hit => hit.object.visible);
+                    stats.diaryHit = hit?.object.userData.entityId;
+                    if (stats.diaryHit !== 'chronicle-site-mara_diary') throw new Error(`Diary approach obscured: ${JSON.stringify(stats)}`);
                 }
                 samples.push(stats); return stats;
             };
