@@ -9,7 +9,7 @@ test('trail material wraps every surface channel and keeps soft clear outer edge
     for (let y = 0; y < 256; y += 11) {
         expect(sampleEarthTrail(0, y).alpha).toBe(0);
         expect(sampleEarthTrail(256, y).alpha).toBe(0);
-        expect(sampleEarthTrail(128, y).alpha).toBe(215);
+        expect(sampleEarthTrail(128, y).alpha).toBe(245);
         expect(sampleEarthTrail(74, y).roughness).toBeLessThan(sampleEarthTrail(128, y).roughness);
     }
 });
@@ -21,6 +21,17 @@ test('Low retains registered albedo, normal and roughness features from High', (
         expect(a.colorSpace).toBe(key === 'map' ? THREE.SRGBColorSpace : THREE.NoColorSpace);
         expect(a.wrapT).toBe(THREE.RepeatWrapping);
         expect(a.generateMipmaps).toBe(true);
+        if (key === 'normalMap') {
+            // Shallow embedded aggregate, not sparkling steep-faced pebbles.
+            for (const texture of [a, b]) {
+                const data = texture.image.data;
+                let maximumTilt = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    maximumTilt = Math.max(maximumTilt, Math.hypot(data[i] / 255 * 2 - 1, data[i + 1] / 255 * 2 - 1));
+                }
+                expect(maximumTilt).toBeLessThan(.28);
+            }
+        }
         for (let y = 0; y < 128; y += 9) for (let x = 0; x < 128; x += 7) {
             expect(a.image.data.slice((y * 2 * 256 + x * 2) * 4, (y * 2 * 256 + x * 2) * 4 + 4))
                 .toEqual(b.image.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 4));
