@@ -39,7 +39,7 @@
   .intro-copy { max-width: 760px; }
   .intro-copy h2 { margin-bottom: 28px; }
   .intro-copy p + p { margin-top: 16px; }
-  .realm-section { display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 110px; }
+  .realm-section { display: grid; grid-template-columns: repeat(4, 1fr); }
   .classes-section { background: #141a16; border-block: 1px solid var(--line); }
   .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 55px; margin-bottom: 55px; }
   .section-heading > p { max-width: 355px; }
@@ -51,6 +51,43 @@
   .site-footer { padding-block: 35px 45px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 30px; }
 }
 @layer components {
+  strong { color: var(--text); font-weight: 600; }
+  .alpha-notice { display: flex; align-items: center; gap: 28px; padding-block: 28px; border-bottom: 1px solid var(--line); }
+  .alpha-notice p { flex: 1; font-size: .9375rem; }
+  .alpha-notice .text-link { flex-shrink: 0; }
+  .status-badge { display: inline-block; align-self: flex-start; width: fit-content; padding: 6px 10px; border: 1px solid #617453; color: #c3d5ae; font-size: .6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; }
+  .alpha-notice .status-badge { flex-shrink: 0; align-self: auto; }
+  .status-badge.planned { border-color: #62543c; color: var(--gold); }
+  .realm-route { margin: auto 0 26px; font-size: .8125rem; line-height: 1.6; }
+  .realm-route dt { color: var(--realm); text-transform: uppercase; letter-spacing: .1em; font-size: .625rem; }
+  .realm-route dd { margin: 4px 0 16px; }
+  .realm-route dd:last-child { margin-bottom: 0; }
+  .realm-card .realm-rule { margin-top: 0; }
+  .vigil-note { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; padding-block: 28px; border-bottom: 1px solid var(--line); }
+  .vigil-note p { font-size: .9375rem; }
+  .dark-realm { margin-block: 48px 110px; padding: 48px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; border: 1px solid #494253; background: radial-gradient(ellipse at top left, #322439, #17191d 70%); }
+  .dark-realm .eyebrow, .dark-realm em { color: #ccb0df; }
+  .dark-realm h3 { margin-block: 20px; font-size: clamp(2rem, 3vw, 3rem); }
+  .dark-realm p + p { margin-top: 18px; }
+  .dark-realm .dark-requirement { font-size: .8125rem; max-width: 290px; }
+  .dark-realm .text-link { margin-top: 18px; color: #ccb0df; }
+  .features-section { background: #141a16; border-block: 1px solid var(--line); }
+  .features-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 64px; }
+  .feature-card { position: relative; padding: 30px 0 30px 48px; border-top: 1px solid var(--line); }
+  .feature-number { position: absolute; left: 0; top: 35px; font-size: .75rem; color: var(--gold); }
+  .feature-card h3 { font-size: 1.5rem; margin-bottom: 14px; }
+  .feature-card p { font-size: .9375rem; }
+  .roadmap-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .roadmap-card { background: var(--surface); border: 1px solid var(--line); padding: 28px; }
+  .roadmap-card h3 { margin-block: 26px 20px; font-size: 1.65rem; }
+  .roadmap-card ul { padding-left: 18px; margin: 0; color: var(--muted); font-size: .9375rem; }
+  .roadmap-card li + li { margin-top: 16px; }
+  .roadmap-card li::marker { color: var(--gold); }
+  .roadmap-card > p { font-size: .875rem; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .feedback-note { display: flex; gap: 40px; align-items: center; justify-content: space-between; margin-top: 32px; padding: 32px 0; border-bottom: 1px solid var(--line); }
+  .feedback-note h3 { font-size: 1.5rem; margin-bottom: 10px; }
+  .feedback-note p { max-width: 720px; font-size: .9375rem; }
+  .feedback-note .text-link { flex-shrink: 0; color: var(--gold); }
   .skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; background: var(--gold); color: var(--bg); padding: 12px 20px; }
   .skip-link:focus { top: 12px; }
   .wordmark { display: inline-flex; align-items: center; gap: 13px; letter-spacing: .22em; font: 1.35rem var(--serif); color: var(--text); white-space: nowrap; }
@@ -117,7 +154,10 @@
     .hero { min-height: 680px; }
     .intro { gap: 40px; }
     .realm-section, .class-grid { grid-template-columns: repeat(2, 1fr); }
-    .realm-section { padding-bottom: 80px; }
+    .alpha-notice { flex-wrap: wrap; gap: 16px 24px; }
+    .alpha-notice p { flex-basis: 65%; }
+    .dark-realm { padding: 32px; gap: 36px; margin-bottom: 80px; }
+    .roadmap-grid { grid-template-columns: 1fr; }
     .realm-card:nth-child(2) { border-right: 1px solid var(--line); }
     .realm-card:nth-child(n+3) { border-top: 0; }
     .class-card { padding: 30px; }
@@ -130,8 +170,8 @@
     .container { width: calc(100% - 40px); }
     .site-header { min-height: 80px; padding: 18px 20px; flex-wrap: wrap; gap: 16px; }
     .site-header .wordmark { font-size: 1.1rem; gap: 7px; }
-    .site-header nav { order: 3; width: 100%; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 14px; gap: 12px; }
-    .site-header nav a { padding-block: 3px; font-size: .8125rem; }
+    .site-header nav { order: 3; width: 100%; flex-wrap: wrap; justify-content: flex-start; border-top: 1px solid var(--line); padding-top: 8px; gap: 0 20px; }
+    .site-header nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .8125rem; }
     .button-small { padding: 8px 15px; gap: 18px; }
     .section { padding-block: 64px; }
     .hero { min-height: 690px; }
@@ -143,7 +183,14 @@
     .hero-bottom { flex-direction: column; gap: 6px; font-size: .75rem; letter-spacing: .05em; bottom: 22px; }
     .intro { grid-template-columns: 1fr; gap: 30px; }
     .label-line { display: none; }
-    .realm-section { padding-bottom: 64px; }
+    .alpha-notice { align-items: flex-start; flex-direction: column; gap: 14px; }
+    .alpha-notice .status-badge { align-self: flex-start; }
+    .vigil-note { grid-template-columns: 1fr; gap: 12px; }
+    .dark-realm { grid-template-columns: 1fr; gap: 24px; padding: 28px 24px; margin-block: 32px 64px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card { padding-left: 36px; }
+    .roadmap-card { padding: 24px; }
+    .feedback-note { flex-direction: column; align-items: flex-start; gap: 16px; }
     .realm-card { padding: 24px 18px; }
     .realm-card h3 { font-size: 1.4rem; }
     .section-heading { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
@@ -158,8 +205,7 @@
     .site-footer { align-items: flex-start; flex-direction: column; }
     .footer-links { align-items: flex-start; }
   }
-  @media (max-width: 380px) {
-    h1 { font-size: 2.7rem; }
+  @media (max-width: 600px) {
     .realm-section, .class-grid { grid-template-columns: 1fr; }
     .realm-card { border-right: 1px solid var(--line); }
     .realm-card + .realm-card { border-top: 0; }
@@ -167,5 +213,6 @@
     .class-card + .class-card { border-top: 1px solid var(--line); margin-top: 0; }
     .class-top { min-height: auto; }
   }
+  @media (max-width: 380px) { h1 { font-size: 2.7rem; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .button { transition: none; } }
 }
