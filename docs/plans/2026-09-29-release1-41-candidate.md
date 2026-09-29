@@ -15,9 +15,9 @@ on this preview branch. Do not deploy it as a replacement for those releases.
 - Rounded Fighter helmet and an open Rogue hood. Rogue facial features and
   hanging hair remain visible when other headwear is equipped.
 - Connected necklace chains and pendants positioned clear of raised chest armor.
-- Gems and item-effect settings sized and fitted to shoulders, gloves, legs,
-  footwear, rings, necklaces, belts and trinkets. Earned gem colors/effects are
-  unchanged; legacy head/chest setting offsets still require review.
+- Gems and item-effect settings sized and fitted to headwear, chest and limb
+  armor, weapons, off-hands and small accessories. Earned gem colors/effects
+  are unchanged; blade sockets remain visible on both faces.
 - Fixed inward-facing shoulder armor surfaces and stale spell effects in the
   equipment preview. No character stats, saved items or collision sizes changed.
 
