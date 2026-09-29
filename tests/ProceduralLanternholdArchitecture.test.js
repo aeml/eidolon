@@ -108,7 +108,7 @@ describe('procedural Lanternhold architecture', () => {
         first.position.set(20, 3, -5);
         expect(second.position.toArray()).toEqual([0, 0, 0]);
         expect(getProceduralLanternholdCacheMetrics()).toEqual({
-            geometries: 10,
+            geometries: 17,
             materials: 15,
             structures: 7
         });

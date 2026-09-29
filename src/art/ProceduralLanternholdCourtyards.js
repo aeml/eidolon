@@ -7,7 +7,7 @@ import { createProceduralTownResident } from './ProceduralTownActors.js';
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
     const materials = {
-        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xaaa28c, roughness: .91 }), 'stone'),
+        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xaaa28c, vertexColors: true, roughness: .91 }), 'stone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x66533c, roughness: .95 }), 'timber'),
         metal: new THREE.MeshStandardMaterial({ color: 0x71684e, metalness: .6, roughness: .62 }),
         cloth: new THREE.MeshStandardMaterial({ color: 0x859386, roughness: 1, side: THREE.DoubleSide }),
@@ -25,6 +25,10 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
                 mesh.rotation.set(...rotation); root.add(mesh); return mesh;
             }
             const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
+            if (key === 'stone' && !transformed.attributes.color) {
+                const colors = new Float32Array(transformed.attributes.position.count * 3).fill(1);
+                transformed.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            }
             transformed.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(1, 1, 1)));
             if (!batches.has(key)) batches.set(key, []);
@@ -46,7 +50,15 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
         };
         // Flat inlaid paving follows the existing town floor rather than
         // introducing a raised lip or a new walkable-height rule.
-        cylinder('stone', 0, .034, 0, 9.5, 9.5, .012);
+        const paving = new THREE.CylinderGeometry(9.5, 9.5, .012, radial);
+        const tones = [];
+        for (let i = 0; i < paving.attributes.position.count; i++) {
+            const x = paving.attributes.position.getX(i), z = paving.attributes.position.getZ(i);
+            const shade = .27 + .035 * Math.sin(x * .65 + z * .38);
+            tones.push(shade, shade, shade * .97);
+        }
+        paving.setAttribute('color', new THREE.Float32BufferAttribute(tones, 3));
+        part(paving, 'stone', 0, .034, 0);
         part(new THREE.TorusGeometry(8.8, .06, 4, radial * 2), 'metal', 0, .05, 0, [Math.PI / 2, 0, 0]);
         if (site.recipe === 'common-well') {
             const profile = [[2.4, 0], [2.7, .25], [2.65, .4], [2.3, .5], [2.3, 1.45], [2.65, 1.5], [2.7, 1.7], [2.1, 1.7], [2.05, .4]];

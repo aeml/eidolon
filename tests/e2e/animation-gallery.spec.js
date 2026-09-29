@@ -1118,7 +1118,7 @@ test.describe('deterministic production animation gallery', () => {
 
         let metrics = await page.evaluate(() => window.__eidolonArchitectureGallery);
         expect(metrics.structures.map((entry) => entry.id)).toEqual(LANTERNHOLD_STRUCTURE_IDS);
-        expect(metrics.cache).toEqual({ geometries: 10, materials: 15, structures: 7 });
+        expect(metrics.cache).toEqual({ geometries: 17, materials: 15, structures: 7 });
         for (const entry of metrics.structures) {
             expect(entry.artStyle).toBe(LANTERNHOLD_STRUCTURE_DEFINITIONS[entry.id].artStyle);
             expect(entry.role).toBeTruthy();
