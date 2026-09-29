@@ -37,6 +37,7 @@ import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStat
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
+import { ActorMovingCastGait } from './ActorMovingCastGait.js';
 import { getGroundAwareDistance, getGroundedActorHeight } from '../core/WorldGrounding.js';
 
 // Optimization: Reusable temporary objects to avoid GC
@@ -402,6 +403,8 @@ export class Actor extends Entity {
     }
 
     setMesh(mesh) {
+        this.movingCastGait?.dispose();
+        this.movingCastGait = null;
         this.hitReaction?.dispose();
         this.hitReaction = null;
         restoreActorStealthAppearance(this);
@@ -455,6 +458,7 @@ export class Actor extends Entity {
             mesh.userData.animations.forEach(clip => {
                 this.animations[clip.name] = this.mixer.clipAction(clip);
             });
+            if (mesh.userData.proceduralClass) this.movingCastGait = new ActorMovingCastGait(this);
 
             // Initial Animation State
             if (this.state === 'DEAD') {
@@ -687,8 +691,10 @@ export class Actor extends Entity {
             action.stop?.();
         }
 
+        const movingCastPhase = this.movingCastGait?.phaseFor(name);
         action.enabled = true;
         action.reset?.();
+        if (movingCastPhase != null) action.time = movingCastPhase;
         action.fadeIn?.(fadeDuration);
         action.play?.();
         action.setEffectiveTimeScale?.(1.0);
@@ -768,6 +774,13 @@ export class Actor extends Entity {
             if (moveAnim) this.playAnimation(moveAnim);
         }
         return true;
+    }
+
+    updateAnimationMixer(dt) {
+        if (!this.mixer) return;
+        this.movingCastGait?.restore();
+        this.mixer.update(dt);
+        this.movingCastGait?.apply(dt);
     }
 
     clearBlockedMovementTarget() {
@@ -1311,7 +1324,7 @@ export class Actor extends Entity {
             }
 
             if (this.mixer) {
-                this.mixer.update(dt);
+                this.updateAnimationMixer(dt);
             }
             return;
         }
@@ -1339,7 +1352,7 @@ export class Actor extends Entity {
         }
 
         if (this.mixer) {
-            this.mixer.update(dt);
+            this.updateAnimationMixer(dt);
         }
 
         // A delayed authoritative packet can report MOVING after local
@@ -2152,6 +2165,8 @@ export class Actor extends Entity {
     }
 
     dispose() {
+        this.movingCastGait?.dispose();
+        this.movingCastGait = null;
         this.hitReaction?.dispose();
         this.hitReaction = null;
         restoreActorStealthAppearance(this);
