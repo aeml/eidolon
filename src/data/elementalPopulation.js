@@ -26,7 +26,7 @@ export const WATER_LOCATIONS = freeze([
         ...story('mooring_bell'), radius: 22, visibility: 'quest',
         purpose: 'An exposed mooring frames the two echo pools and their bell; follow the existing investigation in order.' },
     { id: 'abyssal-approach', name: 'Abyssal Well Approach', region: 'water', role: 'landmark', recipe: 'tide-procession',
-        ...entrance('abyssal_well'), radius: 68, arrivalOffset: [0, 48], visibility: 'public',
+        ...entrance('abyssal_well'), radius: 68, arrivalOffset: [0, 32], visibility: 'public',
         purpose: 'Flood gauges mark the old procession route. Gather south of the Well, outside its entrance.' },
     { id: 'tide-rib', name: 'The Tide Rib', region: 'water', role: 'landmark', recipe: 'tide-rib',
         x: 0, z: -1170, radius: 24, visibility: 'public',
@@ -153,7 +153,7 @@ export const AIR_PATHS = freeze([
 ]);
 
 export const WATER_PATHS = freeze([
-    { id: 'water-passage', width: 8, points: [[0,-600],[0,-950],[35,-975],[35,-1025],[0,-1050],[0,-1352]] },
+    { id: 'water-passage', width: 8, points: [[0,-600],[0,-950],[35,-975],[35,-1025],[0,-1050],[0,-1368]] },
     { id: 'well-bypass', width: 6, points: [[0,-1300],[-70,-1320],[-70,-1480],[0,-1500],[0,-1880],[35,-1910],[35,-1985],[0,-2015],[0,-2150]] },
     { id: 'flood-shelter-path', width: 4, points: [[0,-710],[-60,-710],[-60,-733]] },
     { id: 'echo-pools-path', width: 4, points: [[0,-820],[-40,-815],[-74,-817]] },

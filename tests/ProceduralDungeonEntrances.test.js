@@ -30,6 +30,29 @@ const EXPECTED_CONTRACTS = Object.freeze({
 });
 
 describe('procedural dungeon entrances', () => {
+    test.each([false, true])('Abyssal foregate is reachable in view without changing its legacy bounds (batched=%s)', optimized => {
+        const root = createProceduralDungeonEntrance('abyssal_well', { optimized });
+        root.updateMatrixWorld(true);
+        const ray = new THREE.Raycaster(new THREE.Vector3(0, 6.3, 32), new THREE.Vector3(0, 0, -1));
+        const hit = ray.intersectObject(root, true).find(hit => hit.object.material.visible !== false);
+        expect(hit.object.userData.portalSurface).toBe(true); expect(hit.point.z).toBeCloseTo(22.09, 2);
+        expect(root.userData.interactionRadius).toBe(DUNGEON_ENTRANCE_DEFINITIONS.abyssal_well.interactionRadius);
+        const visible = new THREE.Box3();
+        root.traverse(part => {
+            if (part.userData.proceduralDungeonEntrancePart) visible.union(new THREE.Box3().setFromObject(part));
+        });
+        expect(visible.max.y).toBeLessThan(25); expect(visible.min.y).toBeGreaterThanOrEqual(0);
+        if (!optimized) {
+            const arch = root.getObjectByName('abyssal:carved-foregate');
+            expect(ray.intersectObject(arch)).toHaveLength(0);
+            const pool = root.getObjectByName('abyssal:black-water-eye');
+            expect(pool.material.emissiveIntensity).toBe(0);
+            expect(pool.material.transparent).toBe(false);
+            const shelfBounds = new THREE.Box3().setFromObject(root.getObjectByName('abyssal:drowned-shelf'));
+            const poolBounds = new THREE.Box3().setFromObject(pool);
+            expect(poolBounds.min.y - shelfBounds.max.y).toBeGreaterThan(.05);
+        }
+    });
     test.each([false, true])('Molten gate faces its east approach within the unchanged gameplay box (batched=%s)', optimized => {
         const root = createProceduralDungeonEntrance('molten_core', { optimized });
         root.updateMatrixWorld(true);
@@ -234,7 +257,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 34,
+            geometries: 35,
             materials: 30,
             entrances: 4
         });

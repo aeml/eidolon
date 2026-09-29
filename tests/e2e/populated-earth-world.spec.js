@@ -79,9 +79,14 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const stats = { id, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures,
                     shadowFocusError: render.shadowTarget.distanceTo(engine.player.position) };
-                if (id === 'verdant-approach' || id === 'molten-approach') {
-                    const molten = id === 'molten-approach';
-                    const gatePoint = new THREE.Vector3(...(molten ? [-2367.51, 6.6, 200] : [800, 6, 232.19])).project(render.camera);
+                const gateViews = {
+                    'verdant-approach': ['verdant_bastion_catacombs', [800, 6, 232.19]],
+                    'molten-approach': ['molten_core', [-2367.51, 6.6, 200]],
+                    'abyssal-approach': ['abyssal_well', [0, 6.3, -1377.91]]
+                };
+                if (gateViews[id]) {
+                    const [dungeonType, portalPosition] = gateViews[id];
+                    const gatePoint = new THREE.Vector3(...portalPosition).project(render.camera);
                     const ray = new THREE.Raycaster();
                     ray.setFromCamera(new THREE.Vector2(gatePoint.x, gatePoint.y), render.camera);
                     const hit = ray.intersectObjects(render.instanceEnvironmentGroup.children, true)
@@ -93,8 +98,8 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     stats.gateHit = target?.userData.dungeonType;
                     stats.portalHit = Boolean(hit?.object.userData.portalSurface);
                     stats.approachBlocked = Boolean(collision.checkCollision(engine.player.position, 1.25));
-                    if (!stats.gateInView || stats.gateHit !== (molten ? 'molten_core' : 'verdant_bastion_catacombs') ||
-                        (molten && !stats.portalHit) || stats.approachBlocked) {
+                    if (!stats.gateInView || stats.gateHit !== dungeonType ||
+                        (id !== 'verdant-approach' && !stats.portalHit) || stats.approachBlocked) {
                         throw new Error(`Unreadable or blocked dungeon arrival: ${JSON.stringify(stats)}`);
                     }
                 }

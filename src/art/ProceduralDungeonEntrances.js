@@ -7,6 +7,7 @@ import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
 import { createBastionFoundation, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
+import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS, DUNGEON_ENTRANCE_IDS } from '../data/dungeonEntrances.js';
 
 const GEOMETRIES = new Map();
@@ -70,7 +71,8 @@ const SHAPES = Object.freeze({
     moltenFoundation: geometry('dungeon-entrance-molten-foundation', createMoltenFoundation),
     moltenVault: geometry('dungeon-entrance-molten-vault', createMoltenVault),
     moltenVaultRib: geometry('dungeon-entrance-molten-rib', createMoltenVaultRib),
-    moltenForegate: geometry('dungeon-entrance-molten-foregate', createMoltenForegate)
+    moltenForegate: geometry('dungeon-entrance-molten-foregate', createMoltenForegate),
+    tideReliquary: geometry('dungeon-entrance-tide-reliquary', createTideReliquaryArch)
 });
 
 function regionMaterials(region) {
@@ -103,8 +105,8 @@ function regionMaterials(region) {
         },
         abyssal_well: {
             dark: 0x07131b,
-            stone: 0x173440,
-            pale: 0x367084,
+            stone: 0x495e61,
+            pale: 0x77868a,
             metal: 0x416d72,
             accent: theme.palette.accent,
             spirit: theme.palette.spirit
@@ -368,8 +370,10 @@ function createTempestSpire(root) {
 
 function createAbyssalWell(root) {
     const m = MATERIAL_SETS.abyssal_well;
-    box(root, 'abyssal:drowned-shelf', m.dark, [72, 3, 48], [0, 1.5, 0]);
-    addMesh(root, 'abyssal:black-water-eye', SHAPES.disc, m.spirit, {
+    // The beveled source is 3.1 high; keep its top below the water at 3.1.
+    // Coplanar surfaces otherwise flicker when cutaway materials change draw order.
+    addMesh(root, 'abyssal:drowned-shelf', SHAPES.bastionFoundation, m.stone, { scale: [1.05, 3 / 3.1, .84] });
+    addMesh(root, 'abyssal:black-water-eye', SHAPES.disc, m.dark, {
         position: [0, 3.1, -4],
         rotation: [-Math.PI / 2, 0, 0],
         scale: [29, 19, 1],
@@ -382,7 +386,10 @@ function createAbyssalWell(root) {
         rotation: [Math.PI / 2, 0, 0],
         scale: [32, 22, 6]
     });
-    box(root, 'abyssal:reliquary-brow', m.stone, [39, 7, 12], [0, 20, 0]);
+    addMesh(root, 'abyssal:reliquary-brow', SHAPES.tideReliquary, m.stone, {
+        position: [0, 2.5, -21], scale: [2.15, 1, 1]
+    });
+    addMesh(root, 'abyssal:carved-foregate', SHAPES.tideReliquary, m.pale);
     for (const side of [-1, 1]) {
         addMesh(root, `abyssal:tide-pillar:${side}`, SHAPES.tapered6, m.stone, {
             position: [side * 21, 13, -1],
@@ -407,7 +414,7 @@ function createAbyssalWell(root) {
             receiveShadow: false
         });
     }
-    portal(root, 'abyssal:reliquary-gate', m, [0, 13, 6.1], [12.5, 15.5, 2.2]);
+    portal(root, 'abyssal:reliquary-gate', m, [0, 9, 22], [11.4, 14.5, 2.2]);
     addMesh(root, 'abyssal:drowned-moon', SHAPES.ring, m.metal, {
         position: [0, 27, 6.2],
         scale: [9, 9, 2]
@@ -459,6 +466,7 @@ function buildArchitecture(root, dungeonType) {
         architecture.rotation.y = Math.PI / 2;
         architecture.scale.y = .55;
     }
+    if (dungeonType === 'abyssal_well') architecture.scale.y = .7;
     root.add(architecture);
     BUILDERS[dungeonType](architecture);
 }
