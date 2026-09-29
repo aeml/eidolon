@@ -59,6 +59,12 @@ master and merge any concurrent website work into this clean release branch;
 resolve overlaps and verify affected integration seams. Never force-push or
 replace the owner's dirty development worktree.
 
+Fetched website commitad22dea7 and1.40 receipt2c962ecb into the release branch.
+Only README's source-version/live-baseline lines overlapped; resolved to retain
+1.41 candidate identity and the accepted1.39 receipt. All four website files
+remain exactly equal toad22dea7; its standalone build and SEO checks pass.
+Future remote updates must still be fetched and integrated before publication.
+
 This improves procedural fallback actors and equipment. The user's first
 Fighter GLB, source/license information and final authored-art approval remain
 outstanding. It does not claim Diablo/PoE production-art parity or whole-game
