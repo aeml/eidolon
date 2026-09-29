@@ -2,6 +2,20 @@ import { jest } from '@jest/globals';
 import { UIBindings } from '../src/core/UIBindings.js';
 
 describe('UIBindings', () => {
+    test('saved graphics preference and subsequent changes reach current and future world builders', () => {
+        const engine = createEngine();
+        engine.worldGenerator = { graphicsQuality: 'high' };
+        engine.activeWorldGenerator = { graphicsQuality: 'high' };
+        engine.uiManager.getGraphicsQuality.mockReturnValue('low');
+        engine.renderSystem.setGraphicsQuality.mockReturnValue({ changed: true, reloadRequired: false });
+        new UIBindings(engine).bindConstructorCallbacks();
+        expect(engine.worldGenerator.graphicsQuality).toBe('low');
+        expect(engine.activeWorldGenerator.graphicsQuality).toBe('low');
+        expect(engine.uiManager.onGraphicsQualityChange('medium')).toEqual({ changed: true, reloadRequired: false });
+        expect(engine.worldGenerator.graphicsQuality).toBe('medium');
+        expect(engine.activeWorldGenerator.graphicsQuality).toBe('medium');
+    });
+
     function createEngine() {
         return {
             player: {

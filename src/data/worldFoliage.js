@@ -1,8 +1,29 @@
+// Staggered woodland edges frame the actual Bastion travel corridor. These
+// append to, rather than reshuffle, the established woodland and its trunk IDs.
+export const EARTH_ROADSIDE_TREES = Object.freeze([
+    [220, 181], [227, 220], [253, 178], [247, 223], [281, 183], [289, 217],
+    [339, 181], [346, 222], [381, 177], [373, 220], [423, 183], [417, 224],
+    [476, 180], [487, 218], [550, 182], [561, 224], [599, 179], [593, 217],
+    [632, 183], [643, 222], [704, 180], [696, 218],
+    // Uneven outer companions form small stands, rather than a planted avenue.
+    // Existing nearby trees fill some stands; don't duplicate their trunks.
+    [212, 174], [227, 172], [219, 227], [234, 229], [245, 171], [260, 169],
+    [273, 176], [278, 168], [281, 224], [296, 226], [346, 172], [338, 229],
+    [353, 231], [373, 170], [388, 168], [365, 227], [380, 229], [415, 176],
+    [430, 174], [409, 231], [424, 233], [468, 173], [483, 171], [479, 225],
+    [494, 227], [542, 175], [557, 173], [553, 231], [568, 233], [591, 172],
+    [606, 170], [585, 224], [600, 226], [624, 176], [635, 229], [650, 231],
+    [696, 173], [701, 165], [688, 225]
+].map(([x, z], index) => Object.freeze({
+    species: ['ossuary_birch', 'grave_pine', 'mourning_willow'][index % 3],
+    x, z, rotation: index * 2.399963229728653 % (Math.PI * 2), scale: .98 + index % 5 * .04
+})));
+
 export const PROCEDURAL_FOLIAGE_RECIPES = Object.freeze([
     // Detailed opaque leaves need spatial culling, not a realm-wide draw batch.
-    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', count: 120, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 64 }),
-    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', count: 115, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 64 }),
-    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', count: 95, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 64 }),
+    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', coreCount: 120, count: 141, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 32 }),
+    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', coreCount: 115, count: 135, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 32 }),
+    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', coreCount: 95, count: 115, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 32 }),
     // Only Gloamwood retains tree collision because it is the one realm whose
     // authored trees already shaped navigation. New regional dressing stays
     // visual-only so this art migration cannot silently change combat paths.
@@ -115,7 +136,7 @@ function createEarthWoodlandPlacements() {
     for (const quota of [6, Infinity]) for (const recipe of recipes) {
         const random = streams.get(recipe.id);
         const placements = result.get(recipe.id), [minX, maxX, minZ, maxZ] = recipe.bounds;
-        const target = Math.min(quota, recipe.count);
+        const target = Math.min(quota, recipe.coreCount);
         for (let attempt = 0; placements.length < target && attempt < recipe.count * 100; attempt++) {
             let x, z;
             if (placements.length < 6 || random() < .8) {
@@ -133,6 +154,16 @@ function createEarthWoodlandPlacements() {
             placements.push(placement); occupied.push(placement);
         }
         if (placements.length !== target) throw new Error(`Unable to compose woodland: ${recipe.id} (${placements.length}/${target})`);
+    }
+    for (const { species, ...placement } of EARTH_ROADSIDE_TREES) {
+        if (!isProceduralFoliagePlacementClear('earth', placement.x, placement.z) ||
+            occupied.some(tree => Math.hypot(tree.x - placement.x, tree.z - placement.z) < 7)) {
+            throw new Error(`Roadside woodland overlaps a clearing or trunk: ${placement.x},${placement.z}`);
+        }
+        result.get(species).push(Object.freeze(placement)); occupied.push(placement);
+    }
+    for (const recipe of recipes) {
+        if (result.get(recipe.id).length !== recipe.count) throw new Error(`Incorrect woodland total: ${recipe.id}`);
     }
     result.forEach(Object.freeze);
     return result;
