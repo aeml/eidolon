@@ -12,7 +12,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
             document.getElementById('start-screen').style.display = 'none';
             document.body.classList.toggle('mobile-mode', innerWidth < 600 || innerHeight < 500);
             const ui = new UIManager(innerWidth < 600 || innerHeight < 500);
-            ui.getPlaytestContext = () => ({ connected: true, level: 4 });
+            ui.getPlaytestContext = () => ({ connected: true, level: 4, className: 'Wizard', partySize: 4 });
             ui.requests = [];
             ui.onReportSubmit = (...args) => { ui.requests.push(args); return true; };
             ui.toggleHelp(); window.__playtestUI = ui;
@@ -29,6 +29,9 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await expect.poll(() => page.evaluate(() => window.__playtestUI.playtest.session.elapsed())).toBeGreaterThan(0);
         await stop.click(); await expect(stop).toBeDisabled();
         await expect(summary).toContainText('Levels: 4 → 4');
+        await expect(summary).toContainText('Class: Wizard');
+        await expect(summary).toContainText('Active time by level band');
+        await expect(summary).toContainText('Active time by party roster size');
         await expect(summary).toContainText('Active time marked assisted');
         await summary.scrollIntoViewIfNeeded();
         const bounds = await help.boundingBox(), close = await page.locator('#btn-close-help').boundingBox();

@@ -10,7 +10,7 @@ export class PlaytestSessionUI {
         this.root = document.createElement('details');
         this.root.className = 'help-guide help-alpha-status';
         this.root.innerHTML = `<summary>Optional playtest timer · local only</summary>
-            <p>Off by default. Choose what you are doing and mark outside help. Timer data stays in memory unless you choose to submit it in a report. Closing the page or changing character clears this session. Maximum eight hours.</p>
+            <p>Off by default. Choose what you are doing and mark outside help. Your class, level bands and party roster size help us compare progression. Timer data stays in memory unless you choose to submit it in a report. Closing the page or changing character clears this session. Maximum eight hours.</p>
             <label>Current activity<select class="support-field__control" data-activity>${PLAYTEST_ACTIVITIES.map(value => `<option value="${value}">${value}</option>`).join('')}</select></label>
             <label><input type="checkbox" data-assisted> Receiving outside help (gear, gifts or carries)</label>
             <p>After 60 seconds without input, time is labeled idle. Hidden pages, lost connections and suspended gaps do not count as active play. These are estimates; update your activity when it changes.</p>
@@ -63,6 +63,7 @@ export class PlaytestSessionUI {
     context() {
         const sample = this.sample();
         return { connected: sample.connected === true, level: sample.level,
+            className: sample.className, partySize: sample.partySize,
             hidden: document.hidden, idle: this.now() - this.lastInput >= 60000 };
     }
 

@@ -1,6 +1,9 @@
 export const PLAYTEST_ACTIVITIES = Object.freeze(['exploring', 'fighting', 'recovering', 'grouping', 'lost', 'idle']);
 const CATEGORIES = [...PLAYTEST_ACTIVITIES, 'hidden', 'disconnected', 'unobserved'];
 const levelOf = value => Number.isInteger(value) && value >= 1 && value <= 100 ? value : null;
+const LEVEL_BANDS = ['1–29', '30–59', '60–99', '100', 'unknown'];
+const bandOf = value => levelOf(value) === null ? 'unknown' : value < 30 ? '1–29' : value < 60 ? '30–59' : value < 100 ? '60–99' : '100';
+const partyOf = value => Number.isInteger(value) && value >= 1 && value <= 5 ? String(value) : 'unknown';
 const MAX_SESSION_MS = 8 * 60 * 60 * 1000;
 
 // Voluntary, page-local aggregate timing. No identity, input contents, position,
@@ -15,6 +18,9 @@ export class PlaytestSession {
         this.assisted = false;
         this.totals = Object.fromEntries(CATEGORIES.map(key => [key, 0]));
         this.assistedMs = 0;
+        this.className = null;
+        this.activeByLevelBand = Object.fromEntries(LEVEL_BANDS.map(key => [key, 0]));
+        this.activeByPartySize = Object.fromEntries(['1', '2', '3', '4', '5', 'unknown'].map(key => [key, 0]));
         this.startLevel = this.endLevel = this.level30 = null;
         this.previous = null;
     }
@@ -23,6 +29,7 @@ export class PlaytestSession {
         if (this.started || !Number.isFinite(now)) return false;
         this.started = this.running = true;
         this.startLevel = this.endLevel = levelOf(context.level);
+        this.className = ['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(context.className) ? context.className : null;
         this.previous = { now, ...this.classify(context) };
         return true;
     }
@@ -31,7 +38,8 @@ export class PlaytestSession {
         const category = context.connected !== true ? 'disconnected'
             : context.hidden === true ? 'hidden'
                 : context.idle === true ? 'idle' : this.activity;
-        return { category, assisted: this.assisted && PLAYTEST_ACTIVITIES.includes(category) && category !== 'idle' };
+        return { category, assisted: this.assisted && PLAYTEST_ACTIVITIES.includes(category) && category !== 'idle',
+            levelBand: bandOf(context.level), partySize: partyOf(context.partySize) };
     }
 
     tick(now, context = {}) {
@@ -43,6 +51,10 @@ export class PlaytestSession {
         const category = gap > 5000 ? 'unobserved' : this.previous.category;
         this.totals[category] += delta;
         if (category !== 'unobserved' && this.previous.assisted) this.assistedMs += delta;
+        if (PLAYTEST_ACTIVITIES.includes(category) && category !== 'idle') {
+            this.activeByLevelBand[this.previous.levelBand] += delta;
+            this.activeByPartySize[this.previous.partySize] += delta;
+        }
         // A late wake after the cap cannot date a level change inside the
         // recorded window. Leave its last observed level/milestone unchanged.
         const level = gap <= MAX_SESSION_MS - elapsed ? levelOf(context.level) : null;
@@ -63,13 +75,16 @@ export class PlaytestSession {
         return [
             'Voluntary playtest summary (self-reported activity; page-local only)',
             `Levels: ${this.startLevel ?? 'unknown'} → ${this.endLevel ?? 'unknown'}`,
+            `Class: ${this.className ?? 'unknown'}`,
             `Observed session: ${minutes(this.elapsed())}; active labels: ${minutes(this.active())}`,
             ...CATEGORIES.map(key => `${key}: ${minutes(this.totals[key])}`),
             `Active time marked assisted: ${minutes(this.assistedMs)}`,
+            `Active time by level band: ${LEVEL_BANDS.map(key => `${key}: ${minutes(this.activeByLevelBand[key])}`).join('; ')}`,
+            `Active time by party roster size: ${Object.entries(this.activeByPartySize).map(([key, ms]) => `${key === '1' ? 'solo' : key === 'unknown' ? key : key + ' players'}: ${minutes(ms)}`).join('; ')}`,
             this.level30 ? `Level 30 observed: ${minutes(this.level30.elapsedMs)} session / ${minutes(this.level30.activeMs)} active`
                 : this.startLevel >= 30 ? 'Started at/above level 30; not a fresh level-30 timing.' : 'Level 30 not observed.',
             'Hidden, disconnected and unobserved time is excluded from active time. Closed-page time is not measured.',
-            'Activity and assistance labels are player estimates, not authoritative combat telemetry.'
+            'Activity and assistance labels are player estimates. Party roster size does not prove participation.'
         ].join('\n');
     }
 }
