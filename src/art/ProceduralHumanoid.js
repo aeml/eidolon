@@ -4,6 +4,7 @@ import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGe
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 import { batchHumanoidRenderParts, getHumanoidBatchGeometryCount } from './HumanoidRenderBatches.js';
 import { createHumanoidAbilityClips } from './HumanoidAbilityClips.js';
+import { groundHumanoidGaits } from './HumanoidGaitGrounding.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -1343,6 +1344,7 @@ export function createProceduralFighter({ batch = false } = {}) {
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
     );
     root.userData.animations = [...createHumanoidAnimationClips(), ...createHumanoidAbilityClips(root)];
+    groundHumanoidGaits(root);
     root.userData.basicAttackContactTime = .5;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -1652,6 +1654,7 @@ export function createProceduralRogue({ batch = false } = {}) {
         offHand: 0.88
     });
     root.userData.animations = [...createRogueAnimationClips(), ...createHumanoidAbilityClips(root)];
+    groundHumanoidGaits(root);
     root.userData.basicAttackContactTime = .26;
     root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -1891,6 +1894,7 @@ export function createProceduralWizard({ batch = false } = {}) {
         offHand: 0.9
     });
     root.userData.animations = [...createWizardAnimationClips(), ...createHumanoidAbilityClips(root)];
+    groundHumanoidGaits(root);
     root.userData.basicAttackContactTime = .62;
     root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);
@@ -2310,6 +2314,7 @@ export function createProceduralCleric({ batch = false } = {}) {
         offHand: 0.88
     });
     root.userData.animations = [...createClericAnimationClips(), ...createHumanoidAbilityClips(root)];
+    groundHumanoidGaits(root);
     root.userData.basicAttackContactTime = .58;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.55, origin: 'feet' });
     if (batch) batchHumanoidRenderParts(root);

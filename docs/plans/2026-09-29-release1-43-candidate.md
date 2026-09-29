@@ -5,6 +5,11 @@ remain open; runtime version metadata is intentionally unchanged.
 
 ## Draft patch notes
 
+- Corrected the four player classes' floating walk/run poses. Walks now make
+  ground contact and runs retain stance and flight, including equipped boots
+  and moving casts. Movement speed and combat timing are unchanged. See the
+  [gait contact review](2026-09-29-humanoid-gait-contact.md).
+
 - Seven creature attacks now use distinct gores, pecks, bites and a javelin
   thrust with anticipation and recovery, aligned to the existing hit timing.
   Planted feet and actual contact anatomy are checked throughout the motion.

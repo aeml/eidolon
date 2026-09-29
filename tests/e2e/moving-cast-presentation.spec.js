@@ -22,6 +22,9 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const actors = ['Fighter', 'Rogue', 'Wizard', 'Cleric'].map((type, i) => {
                 const actor = new Actor(`review-${type}`, { STATS: { STRENGTH: 5, INTELLIGENCE: 5, DEXTERITY: 6, WISDOM: 5, STAMINA: 5 } });
                 actor.meshType = type; actor.setMesh(factories[`createProcedural${type}`]({ batch: true }));
+                const footwear = ['Iron Boots', 'Leather Boots', 'Sandals', 'Iron Boots'][i];
+                actor.syncEquipmentVisuals({ feet: { id: `review-boots-${i}`, baseName: footwear,
+                    name: footwear, type: 'ARMOR', slot: 'feet', rarity: 'Rare', level: 42 } });
                 actor.position.set((i - 1.5) * 4, 0, 200);
                 actor.targetPosition = actor.position.clone().add(new THREE.Vector3(100, 0, 0));
                 actor.state = 'MOVING'; actor.stats.speed = 6; actor.playAnimation('Run');
@@ -67,6 +70,34 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         });
         expect(gestures).toEqual(['Guard', 'Guard', 'Channel', 'Bless']);
         await page.screenshot({ path: testInfo.outputPath('support-gestures.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        for (const clipName of ['Walk', 'Run']) {
+            const contacts = await page.evaluate(clipName => {
+                const { render, actors, THREE } = window.__movingCastReview;
+                const heights = actors.map(actor => {
+                    actor.currentAbilityAnimation = null;
+                    actor.movingCastGait?.restore();
+                    actor.state = 'MOVING'; actor.isRunning = clipName === 'Run';
+                    actor.playAnimation(clipName, true, true);
+                    // Finish the crossfade, then inspect a known stance phase.
+                    actor.updateAnimationMixer(.2);
+                    actor.currentAction.time = actor.currentAction.getClip().duration * .25;
+                    actor.updateAnimationMixer(0); actor.mesh.updateMatrixWorld(true);
+                    let min = Infinity; const point = new THREE.Vector3();
+                    for (const side of ['Left', 'Right']) actor.mesh.getObjectByName(`Equipment_Foot${side}`).traverseVisible(part => {
+                        if (!part.isMesh) return;
+                        const p = part.geometry.attributes.position;
+                        for (let i = 0; i < p.count; i++) {
+                            point.fromBufferAttribute(p, i).applyMatrix4(part.matrixWorld);
+                            min = Math.min(min, point.y - actor.mesh.position.y);
+                        }
+                    });
+                    return min;
+                });
+                render.render(); render.render(); return heights;
+            }, clipName);
+            for (const height of contacts) { expect(height).toBeGreaterThan(-.012); expect(height).toBeLessThan(.025); }
+            await page.screenshot({ path: testInfo.outputPath(`${clipName.toLowerCase()}-stance.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+        }
         expect(failures).toEqual([]);
     });
 }
