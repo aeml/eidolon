@@ -197,6 +197,9 @@ describe('Procedural dungeon interior art', () => {
         expect((outerRadius - innerRadius) / outerRadius).toBeLessThan(.03);
         const halo = dressing.getObjectByName('DungeonObjectiveHalo').geometry.parameters;
         expect(halo.outerRadius - halo.innerRadius).toBeLessThanOrEqual(.45 + Number.EPSILON * 16);
+        const rune = dressing.getObjectByName('DungeonObjectiveRune:0');
+        expect(rune.geometry.type).toBe('RingGeometry');
+        expect(rune.geometry.parameters.outerRadius).toBeLessThanOrEqual(.5);
         if (dungeonType === 'verdant_bastion_catacombs') {
             for (const side of [-1, 1]) {
                 const root = dressing.getObjectByName(`verdant:grave-root:${side}`);

@@ -962,7 +962,7 @@ export class WorldGenerator {
 
     createWall(x, z, w, h, d, rotY, isTransparent = false) {
         const geo = this.dungeonInteriorKit
-            ? this.dungeonInteriorKit.wallGeometry(w, h, d)
+            ? this.dungeonInteriorKit.wallGeometry(w, h, d, isTransparent)
             : new THREE.BoxGeometry(w, h, d);
         let mat;
         if (this.dungeonInteriorKit) {
