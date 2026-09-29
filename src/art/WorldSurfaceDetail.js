@@ -3,7 +3,7 @@ import { Material } from 'three';
 // Material detail in physical world units, including merged/instanced buildings.
 // Retains MeshStandardMaterial lighting, shadows, fog and quality settings. No
 // downloaded textures, per-frame updates, extra meshes or displaced colliders.
-const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5 });
+const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7 });
 
 const FRAGMENT = /* glsl */`
 varying vec3 vEidolonSurface;
@@ -23,7 +23,21 @@ vec3 eidolonSurface(vec3 p) {
     vec3 axis = abs(cross(dFdx(p), dFdy(p)));
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
-#if EIDOLON_SURFACE == 5
+#if EIDOLON_SURFACE == 6
+    float strata = p.y * 1.2 + p.x * .13 - p.z * .08 + eidolonNoise(p.xz * .3) * 1.3;
+    float footprint = max(fwidth(strata), .001);
+    float joint = 1. - smoothstep(.025 - footprint, .09 + footprint, abs(fract(strata) - .5));
+    float fade = (1. - smoothstep(.2, .6, footprint)) * smoothstep(.2, .65, weather);
+    fade *= 1. - smoothstep(.3, .8, axis.y / max(length(axis), .00001));
+    // Broad mineral breakup must read at play distance. Fine grain alone is
+    // subpixel there and leaves the outcrop looking like plain polygon faces.
+    float cleave = eidolonNoise(uv * 1.6 + vec2(weather, -weather));
+    float grainFade = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 5.), fwidth(uv.y * 5.)));
+    float grain = mix(.5, eidolonNoise(uv * 5.), grainFade);
+    return vec3(.63 + weather * .26 + cleave * .3 + grain * .1 - joint * fade * .12,
+        .79 + cleave * .13 + grain * .07,
+        cleave * .12 + grain * .018 * grainFade - joint * fade * .035);
+#elif EIDOLON_SURFACE == 5
     float grain = eidolonNoise(uv * vec2(7., .85) + vec2(weather * .3, 0.));
     float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * .85)));
     grain = mix(.5, grain, detail);
@@ -42,10 +56,21 @@ vec3 eidolonSurface(vec3 p) {
     grain = mix(.5, grain, fade);
     return vec3(.78 + grain * .36 + weather * .16, .88 + grain * .09, grain * .004);
 #else
-    vec2 tileSize = EIDOLON_SURFACE == 2 ? vec2(.62, .46) : vec2(1.05, .56);
+#if EIDOLON_SURFACE == 7
+    // Horizontal foundation caps are worn stone, not wall courses turned
+    // sideways into oversized paving. Reserve ashlar joints for vertical faces.
+    if (axis.y > max(axis.x, axis.z)) {
+        float grain = eidolonNoise(uv * 1.8);
+        return vec3(.74 + weather * .28 + grain * .14, .9 + grain * .08, grain * .018);
+    }
+#endif
+    vec2 tileSize = EIDOLON_SURFACE == 7 ? vec2(2.8, 1.4) : (EIDOLON_SURFACE == 2 ? vec2(.62, .46) : vec2(1.05, .56));
     vec2 tile = uv / tileSize;
     float row = floor(tile.y);
     tile.x += mod(row, 2.) * .5;
+#if EIDOLON_SURFACE == 7
+    tile.x += (eidolonHash(vec2(row, 17.)) - .5) * .35;
+#endif
     vec2 cell = floor(tile), f = fract(tile);
     // Derivative-filter joints, then fade subpixel courses to their mean. This
     // avoids moire when the camera zooms out, especially without postprocessing.
@@ -61,8 +86,8 @@ vec3 eidolonSurface(vec3 p) {
     face *= .84 + .22 * smoothstep(.08, .8, f.y);
 #endif
     float detail = 1. - smoothstep(.3, .9, max(footprint.x, footprint.y));
-    float shade = mix(.93, mix(.52, face, coverage), detail);
-    float height = coverage * (EIDOLON_SURFACE == 2 ? .013 : .023) * detail;
+    float shade = mix(.93, mix(EIDOLON_SURFACE == 7 ? .7 : .52, face, coverage), detail);
+    float height = coverage * (EIDOLON_SURFACE == 7 ? .028 : (EIDOLON_SURFACE == 2 ? .013 : .023)) * detail;
     return vec3(shade, mix(.98, .80 + seed * .12, coverage), height);
 #endif
 }
@@ -86,7 +111,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v1:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 2 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');

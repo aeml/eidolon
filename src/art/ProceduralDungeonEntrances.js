@@ -2,6 +2,10 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
+import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
+import { createBastionFoundation, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
+import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS, DUNGEON_ENTRANCE_IDS } from '../data/dungeonEntrances.js';
 
 const GEOMETRIES = new Map();
@@ -56,7 +60,12 @@ const SHAPES = Object.freeze({
     dodecahedron: geometry('dungeon-entrance-unit-dodecahedron', () => new THREE.DodecahedronGeometry(0.5, 0)),
     torus: geometry('dungeon-entrance-unit-torus', () => new THREE.TorusGeometry(0.5, 0.065, 6, 24)),
     ring: geometry('dungeon-entrance-unit-ring', () => new THREE.RingGeometry(0.29, 0.5, 24)),
-    disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24))
+    disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24)),
+    bastionForegate: geometry('dungeon-entrance-bastion-foregate', createBastionForegateGeometry),
+    bastionFoundation: geometry('dungeon-entrance-bastion-foundation', createBastionFoundation),
+    bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
+    bastionParapet: geometry('dungeon-entrance-bastion-parapet', createBastionTowerParapet),
+    bastionRecess: geometry('dungeon-entrance-bastion-recess', createBastionRecess)
 });
 
 function regionMaterials(region) {
@@ -65,8 +74,8 @@ function regionMaterials(region) {
     const definitions = {
         verdant_bastion_catacombs: {
             dark: 0x111611,
-            stone: 0x344034,
-            pale: 0x62705a,
+            stone: 0x454b3e,
+            pale: 0x686759,
             metal: 0x665a38,
             accent: theme.palette.accent,
             spirit: theme.palette.spirit
@@ -97,10 +106,16 @@ function regionMaterials(region) {
         }
     }[region];
 
+    const veilKey = `${prefix}:veil`;
+    if (!MATERIALS.has(veilKey)) MATERIALS.set(veilKey, createDungeonVeilMaterial(definitions.accent));
     return Object.freeze({
+        veil: MATERIALS.get(veilKey),
+        ...(region === 'verdant_bastion_catacombs' ? {
+            root: material(`${prefix}:root`, 0x363b2b, { roughness: .98, surface: 'bark' })
+        } : {}),
         dark: material(`${prefix}:dark`, definitions.dark, { roughness: 0.98 }),
         stone: material(`${prefix}:stone`, definitions.stone, { roughness: 0.94,
-            surface: region === 'molten_core' ? 'fieldstone' : region === 'tempest_spire' ? 'slate' : 'stone' }),
+            surface: region === 'verdant_bastion_catacombs' ? 'fortress' : region === 'molten_core' ? 'fieldstone' : region === 'tempest_spire' ? 'slate' : 'stone' }),
         pale: material(`${prefix}:pale`, definitions.pale, { roughness: 0.88, surface: 'fieldstone' }),
         metal: material(`${prefix}:metal`, definitions.metal, { roughness: 0.48, metalness: 0.62 }),
         accent: material(`${prefix}:accent`, definitions.accent, {
@@ -149,6 +164,13 @@ function addMesh(parent, name, geometryValue, materialValue, {
     mesh.userData.proceduralDungeonEntrancePart = !gameplayBounds;
     mesh.userData.gameplayBounds = gameplayBounds;
     mesh.userData.portalSurface = portal;
+    if (materialValue.userData.dungeonVeilTime) {
+        // Keep the original uniform alive even when SceneryVisibility swaps
+        // in a cutaway clone: its compile hook shares this same uniform.
+        mesh.onBeforeRender = () => {
+            materialValue.userData.dungeonVeilTime.value = performance.now() / 1000;
+        };
+    }
     parent.add(mesh);
     return mesh;
 }
@@ -178,14 +200,14 @@ function portal(parent, prefix, materials, position, scale) {
         receiveShadow: false,
         portal: true
     });
-    addMesh(parent, `${prefix}:eidolic-veil`, SHAPES.disc, materials.spirit, {
+    addMesh(parent, `${prefix}:eidolic-veil`, SHAPES.disc, materials.veil, {
         position: [position[0], position[1], position[2] + 0.09],
-        scale: [scale[0] * 0.82, scale[1] * 0.82, scale[2]],
+        scale: [scale[0] * 0.94, scale[1] * 0.94, scale[2]],
         castShadow: false,
         receiveShadow: false,
         portal: true
     });
-    addMesh(parent, `${prefix}:ward-ring`, SHAPES.torus, materials.accent, {
+    addMesh(parent, `${prefix}:ward-ring`, SHAPES.torus, materials.metal, {
         position: [position[0], position[1], position[2] + 0.16],
         scale: [scale[0] * 1.08, scale[1] * 1.08, Math.max(1.2, scale[2])],
         castShadow: false,
@@ -200,44 +222,65 @@ function spike(parent, name, materialValue, position, scale, rotation = [0, 0, 0
 
 function createVerdantBastion(root) {
     const m = MATERIAL_SETS.verdant_bastion_catacombs;
-    box(root, 'verdant:buried-fortress-plinth', m.dark, [68, 3, 54], [0, 1.5, -2]);
-    box(root, 'verdant:mossed-ramp', m.stone, [24, 2, 23], [0, 2.7, 22], [-0.06, 0, 0]);
-    box(root, 'verdant:gatehouse', m.stone, [42, 24, 24], [0, 15, -5]);
-    box(root, 'verdant:gatehouse-crown', m.pale, [47, 3, 28], [0, 27, -5]);
+    addMesh(root, 'verdant:buried-fortress-plinth', SHAPES.bastionFoundation, m.stone);
+    box(root, 'verdant:mossed-ramp', m.pale, [22, 2, 23], [0, 2.7, 22], [-0.06, 0, 0]);
+    addMesh(root, 'verdant:gatehouse', SHAPES.bastionHall, m.stone);
+    addMesh(root, 'verdant:recessed-hall-door', SHAPES.bastionRecess, m.dark, {
+        position: [0, 3, 7.07], castShadow: false
+    });
+    for (let i = 0; i < 11; i++) {
+        if (i === 3 || i === 8) continue;
+        const height = 1.6 + (i * 7 % 5) * .5;
+        box(root, `verdant:broken-wall-crown:${i}`, m.pale, [3.6, height, 2.8],
+            [-19 + i * 3.8, 27 + height / 2, 5.5], [0, 0, (i % 3 - 1) * .018]);
+    }
+    const livingRoot = (name, points, radius) => addMesh(root, name,
+        geometry(name, () => createTaperedRoot(points, radius, 'low')), m.root);
     for (const side of [-1, 1]) {
-        addMesh(root, `verdant:tower:${side}`, SHAPES.tapered6, m.stone, {
+        addMesh(root, `verdant:tower:${side}`, SHAPES.cylinder8, m.stone, {
             position: [side * 25, 17, -7],
             scale: [17, 34, 17]
         });
-        addMesh(root, `verdant:tower-crown:${side}`, SHAPES.cone6, m.dark, {
-            position: [side * 25, 38, -7],
-            scale: [19, 13, 19]
+        addMesh(root, `verdant:tower-crown:${side}`, SHAPES.bastionParapet, m.pale, {
+            position: [side * 25, 34, -7], rotation: [0, side * .45, 0]
         });
+        addMesh(root, `verdant:tower-belt:${side}`, SHAPES.cylinder8, m.pale, {
+            position: [side * 25, 28, -7], scale: [17.6, 1.2, 17.6]
+        });
+        for (const x of [10, 17]) {
+            box(root, `verdant:wall-pilaster:${side}:${x}`, m.pale, [1.4, 22, 1.7], [side * x, 14, 7.5]);
+        }
         for (const offset of [-4, 0, 4]) {
             spike(root, `verdant:briar-merlon:${side}:${offset}`, m.metal,
                 [side * 25 + offset, 37.8 + Math.abs(offset) * 0.35, 1],
                 [2.4, 7 + Math.abs(offset), 2.4],
                 [0, 0, side * offset * -0.025]);
         }
-        beam(root, `verdant:root-buttress-front:${side}`, m.dark,
-            [side * 18, 4.7, 12], [side * 34, 3.2, 30], 1.8, SHAPES.tapered6);
-        beam(root, `verdant:root-buttress-rear:${side}`, m.dark,
-            [side * 20, 5.7, -16], [side * 33, 2.9, -30], 1.55, SHAPES.tapered6);
-        beam(root, `verdant:antler-trunk:${side}`, m.dark,
-            [side * 7, 27, -3], [side * 13, 51, -5], 1.2, SHAPES.tapered6);
-        beam(root, `verdant:antler-branch:${side}`, m.dark,
-            [side * 11, 42, -4], [side * 23, 55, -7], 0.8, SHAPES.tapered6);
-        beam(root, `verdant:antler-tine:${side}`, m.dark,
-            [side * 17, 49, -6], [side * 19, 59, -6], 0.55, SHAPES.tapered6);
+        livingRoot(`verdant:root-buttress-front:${side}`,
+            [[side * 21, 18, 1], [side * 23, 7, 9], [side * 29, 3, 20], [side * 34, 1, 30]], 1.8);
+        livingRoot(`verdant:root-buttress-rear:${side}`,
+            [[side * 21, 12, -12], [side * 25, 5, -18], [side * 30, 2, -25], [side * 33, .8, -30]], 1.55);
+        livingRoot(`verdant:antler-trunk:${side}`,
+            [[side * 7, 23, -2], [side * 9, 37, -4], [side * 13, 49, -5], [side * 16, 57, -9]], 1.45);
+        livingRoot(`verdant:antler-branch:${side}`,
+            [[side * 11, 43, -4], [side * 16, 48, -6], [side * 22, 53, -10], [side * 28, 54, -15]], .9);
+        livingRoot(`verdant:antler-tine:${side}`,
+            [[side * 18, 49, -8], [side * 20, 57, -11], [side * 19, 59, -14]], .55);
     }
-    portal(root, 'verdant:witch-gate', m, [0, 14, 7.18], [12.5, 18, 2.2]);
+    // The physical entry circle stops players at the ramp's outer end. Place
+    // the visible threshold there, not 25m behind that boundary in the wall.
+    addMesh(root, 'verdant:carved-foregate', SHAPES.bastionForegate, m.pale);
+    portal(root, 'verdant:witch-gate', m, [0, 12, 32.1], [12.5, 18, 2.2]);
     addMesh(root, 'verdant:funerary-sun', SHAPES.ring, m.metal, {
         position: [0, 34, 7.4],
         scale: [8.5, 8.5, 2]
     });
     spike(root, 'verdant:keystone-thorn', m.accent, [0, 34, 7.65], [3, 6, 2.2], [0, 0, Math.PI]);
     for (const side of [-1, 1]) {
-        box(root, `verdant:witchlight-slit:${side}`, m.accent, [2.3, 10, 0.35], [side * 25, 22, 1.55]);
+        addMesh(root, `verdant:tower-window:${side}`, SHAPES.bastionRecess, m.dark, {
+            position: [side * 25, 14.5, 1.6], scale: [.38, .45, 1], castShadow: false
+        });
+        box(root, `verdant:witchlight-slit:${side}`, m.accent, [.65, 4, .15], [side * 25, 20, 1.72]);
     }
 }
 
@@ -397,6 +440,17 @@ function addGameplayBounds(root, definition) {
     return bounds;
 }
 
+function buildArchitecture(root, dungeonType) {
+    const architecture = new THREE.Group();
+    architecture.name = `${dungeonType}:architecture`;
+    // The legacy 61m envelope is a gameplay contract, not a requirement for
+    // the visible gate. Its tall crowns engulfed the west approach camera.
+    // Scale in parent space so tilted buttresses retain their XZ footprint.
+    if (dungeonType === 'verdant_bastion_catacombs') architecture.scale.y = .5;
+    root.add(architecture);
+    BUILDERS[dungeonType](architecture);
+}
+
 function getOptimizedParts(dungeonType) {
     if (OPTIMIZED_PARTS.has(dungeonType)) return OPTIMIZED_PARTS.get(dungeonType);
     const definition = DUNGEON_ENTRANCE_DEFINITIONS[dungeonType];
@@ -404,7 +458,7 @@ function getOptimizedParts(dungeonType) {
     if (!definition || !build) throw new Error(`Unknown procedural dungeon entrance: ${dungeonType}`);
 
     const source = configureRoot(new THREE.Group(), definition);
-    build(source);
+    buildArchitecture(source, dungeonType);
     source.updateMatrixWorld(true);
     const buckets = new Map();
     let sourceMeshCount = 0;
@@ -460,7 +514,7 @@ export function createProceduralDungeonEntrance(dungeonType, { optimized = true 
         root.userData.sourceMeshCount = optimizedParts.sourceMeshCount;
         root.userData.drawMeshCount = optimizedParts.parts.length;
     } else {
-        build(root);
+        buildArchitecture(root, dungeonType);
     }
     addGameplayBounds(root, definition);
     return root;

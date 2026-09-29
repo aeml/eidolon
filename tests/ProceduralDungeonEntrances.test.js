@@ -30,6 +30,89 @@ const EXPECTED_CONTRACTS = Object.freeze({
 });
 
 describe('procedural dungeon entrances', () => {
+    test('Bastion has an open ruined hall, finite broken parapets and curved bark roots', () => {
+        const root = createProceduralDungeonEntrance('verdant_bastion_catacombs', { optimized: false });
+        root.updateMatrixWorld(true);
+        const hall = root.getObjectByName('verdant:gatehouse');
+        const ray = new THREE.Raycaster(new THREE.Vector3(0, 100, -5), new THREE.Vector3(0, -1, 0));
+        const hits = ray.intersectObject(hall);
+        expect(hits.length).toBeGreaterThan(0);
+        expect(hits[0].point.y).toBeCloseTo(2); // Floor, not a solid roof at 13.5m.
+        for (const side of [-1, 1]) {
+            const parapet = root.getObjectByName(`verdant:tower-crown:${side}`);
+            const normals = parapet.geometry.attributes.normal.array;
+            expect([...normals].every(Number.isFinite)).toBe(true);
+            const bounds = new THREE.Box3().setFromObject(parapet);
+            expect(bounds.min.y).toBeGreaterThanOrEqual(17);
+            expect(bounds.max.y).toBeLessThan(20);
+            const branch = root.getObjectByName(`verdant:antler-trunk:${side}`);
+            expect(branch.material.userData.worldSurfaceDetail).toBe('bark');
+            expect(branch.geometry.attributes.position.count).toBeGreaterThan(80);
+        }
+        expect(root.getObjectByName('verdant:gatehouse-crown')).toBeUndefined();
+    });
+
+    test.each(DUNGEON_ENTRANCE_IDS)('%s batches a depth-writing, animated veil without extra transparent layers', dungeonType => {
+        const raw = createProceduralDungeonEntrance(dungeonType, { optimized: false });
+        const veil = [];
+        raw.traverse(part => {
+            if (part.isMesh && part.material.userData.dungeonVeilTime) veil.push(part);
+        });
+        expect(veil).toHaveLength(1);
+        const material = veil[0].material;
+        expect(material.transparent).toBe(false);
+        expect(material.depthWrite).toBe(true);
+        expect(material.map).toBeNull();
+        expect(material.userData.worldSurfaceDetail).toBeUndefined();
+        const batched = createProceduralDungeonEntrance(dungeonType);
+        const part = batched.children.find(part => part.material === material);
+        expect(part.userData.portalSurface).toBe(true);
+        material.userData.dungeonVeilTime.value = -1;
+        part.onBeforeRender();
+        expect(material.userData.dungeonVeilTime.value).toBeGreaterThanOrEqual(0);
+        const shader = { uniforms: {}, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
+        material.onBeforeCompile(shader);
+        expect(shader.uniforms.dungeonVeilTime).toBe(material.userData.dungeonVeilTime);
+        expect(shader.fragmentShader).toContain('totalEmissiveRadiance += dungeonVeilTint');
+        expect(shader.fragmentShader).toContain('#include <opaque_fragment>');
+        expect(shader.fragmentShader).toContain('#include <fog_fragment>');
+    });
+
+    test.each([false, true])('Verdant visible towers fit the approach view without changing legacy bounds (batched=%s)', optimized => {
+        const root = createProceduralDungeonEntrance('verdant_bastion_catacombs', { optimized });
+        root.updateMatrixWorld(true);
+        const visibleBounds = new THREE.Box3();
+        root.traverse(part => {
+            if (part.userData.proceduralDungeonEntrancePart) visibleBounds.union(new THREE.Box3().setFromObject(part));
+        });
+        expect(visibleBounds.max.y).toBeLessThan(31);
+        expect(visibleBounds.max.y).toBeGreaterThan(28);
+        expect(visibleBounds.min.y).toBeGreaterThanOrEqual(0);
+        expect(visibleBounds.getSize(new THREE.Vector3()).x).toBeGreaterThan(60);
+        expect(new THREE.Box3().setFromObject(root).max.y).toBeCloseTo(61.46895885467529);
+        expect(root.userData.interactionRadius).toBe(DUNGEON_ENTRANCE_DEFINITIONS.verdant_bastion_catacombs.interactionRadius);
+    });
+
+    test('Verdant threshold is visibly aligned with the reachable forecourt', () => {
+        const root = createProceduralDungeonEntrance('verdant_bastion_catacombs', { optimized: false });
+        const gate = root.getObjectByName('verdant:witch-gate:eidolic-veil');
+        const position = gate.getWorldPosition(new THREE.Vector3());
+        expect(position.x).toBe(0);
+        expect(position.z).toBeGreaterThan(32);
+        expect(position.z).toBeLessThan(root.userData.interactionRadius);
+        expect(position.y).toBe(6);
+        const arch = root.getObjectByName('verdant:carved-foregate');
+        expect(arch.material.userData.worldSurfaceDetail).toBe('fieldstone');
+        const bounds = new THREE.Box3().setFromObject(arch);
+        expect(bounds.min.y).toBeGreaterThan(0);
+        expect(bounds.max.y).toBeLessThan(12.5);
+        expect(bounds.min.z).toBeGreaterThan(29);
+        expect(bounds.max.z).toBeLessThan(33);
+        // The real carved opening remains empty, not a textured solid box.
+        const ray = new THREE.Raycaster(new THREE.Vector3(0, 7, 40), new THREE.Vector3(0, 0, -1));
+        expect(ray.intersectObject(arch)).toHaveLength(0);
+    });
+
     test.each(DUNGEON_ENTRANCE_IDS)('%s has world-scaled stone detail without texturing portal surfaces', dungeonType => {
         const source = createProceduralDungeonEntrance(dungeonType, { optimized: false });
         const batched = createProceduralDungeonEntrance(dungeonType);
@@ -39,8 +122,8 @@ describe('procedural dungeon entrances', () => {
             if (part.material.userData.worldSurfaceDetail) stone.add(part.material);
             if (part.userData.portalSurface) portalMaterials.add(part.material);
         });
-        expect(stone.size).toBe(2);
-        const surface = dungeonType === 'molten_core' ? 'fieldstone' : dungeonType === 'tempest_spire' ? 'slate' : 'stone';
+        expect(stone.size).toBe(dungeonType === 'verdant_bastion_catacombs' ? 3 : 2);
+        const surface = dungeonType === 'verdant_bastion_catacombs' ? 'fortress' : dungeonType === 'molten_core' ? 'fieldstone' : dungeonType === 'tempest_spire' ? 'slate' : 'stone';
         expect([...stone].map(material => material.userData.worldSurfaceDetail)).toContain(surface);
         for (const material of stone) {
             expect(batched.children.some(part => part.material === material)).toBe(true);
@@ -124,8 +207,8 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 11,
-            materials: 25,
+            geometries: 26,
+            materials: 30,
             entrances: 4
         });
     });

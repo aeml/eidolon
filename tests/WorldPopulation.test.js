@@ -89,6 +89,25 @@ test('diary approach stays outside the existing house and the eastern route bypa
     }
 });
 
+test('Bastion road, rally scenery and atlas arrival agree on the south-facing gate', () => {
+    const site = EARTH_LOCATIONS.find(s => s.id === 'verdant-approach');
+    const road = EARTH_PATHS.find(p => p.id === 'bastion-road');
+    const entrance = DUNGEON_ENTRANCE_DEFINITIONS.verdant_bastion_catacombs;
+    const arrival = [site.x + site.arrivalOffset[0], site.z + site.arrivalOffset[1]];
+    expect(road.points.at(-1)).toEqual(arrival);
+    expect(arrival[0]).toBe(entrance.position[0]);
+    expect(arrival[1] - entrance.position[2]).toBeGreaterThan(entrance.bounds[2] / 2 + road.width / 2 + 1.25);
+    // Final straight approaches the visible front, not the blocked west flank.
+    expect(road.points.at(-2)[0]).toBe(arrival[0]);
+    expect(road.points.at(-2)[1]).toBeGreaterThan(arrival[1]);
+    const generated = JSON.parse(readFileSync(new URL('../server/internal/game/content/world-population-footprints.json', import.meta.url)));
+    const piers = generated.footprints.filter(f => f.siteId === site.id);
+    expect(piers).toHaveLength(6);
+    expect(piers.every(p => p.z > site.z + 40 && Math.abs(p.x - site.x) === 12)).toBe(true);
+    expect(EARTH_PATHS.find(p => p.id === 'bastion-bypass').points)
+        .toEqual([[720, 200], [720, 135], [880, 135], [1000, 200]]);
+});
+
 test('path network uses upward-facing, continuous joins and one owned surface material', () => {
     const group = createEarthPathNetwork();
     expect(group.children).toHaveLength(EARTH_PATHS.length);

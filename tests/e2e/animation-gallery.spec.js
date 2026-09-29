@@ -1162,7 +1162,7 @@ test.describe('deterministic production animation gallery', () => {
 
         let metrics = await page.evaluate(() => window.__eidolonEntranceGallery);
         expect(metrics.entrances.map((entry) => entry.dungeonType)).toEqual(DUNGEON_ENTRANCE_IDS);
-        expect(metrics.cache).toEqual({ geometries: 11, materials: 25, entrances: 4 });
+        expect(metrics.cache).toEqual({ geometries: 26, materials: 30, entrances: 4 });
         expect(new Set(metrics.entrances.map((entry) => entry.artStyle)).size).toBe(4);
         for (const entry of metrics.entrances) {
             const definition = DUNGEON_ENTRANCE_DEFINITIONS[entry.dungeonType];

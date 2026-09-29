@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
-import { createTaperedRoot, createGroveArchStone, createGrovePierCourse } from './EarthLandmarkGeometry.js';
+import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createGroveThresholdStone } from './EarthLandmarkGeometry.js';
+import { createEarthGroundCoverTuft, earthGroundCoverPlacements } from './EarthGroundCover.js';
+import { createBastionPavingFragment, createBastionMarkerCap } from './BastionForecourtGeometry.js';
 
 // The environment owns these resources; no external asset or global disposable
 // cache is needed. Each location/material is a separate cullable draw batch.
@@ -20,14 +22,14 @@ export function createEarthLocations({ quality = 'high' } = {}) {
     groundTexture.needsUpdate = true;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, roughness: .96 }), 'stone'),
-        fieldstone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, roughness: .96 }), 'fieldstone'),
+        fieldstone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, vertexColors: true, roughness: .96 }), 'fieldstone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'timber'),
         bark: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'bark'),
         iron: new THREE.MeshStandardMaterial({ color: 0x414647, roughness: .7, metalness: .65 }),
         brass: new THREE.MeshStandardMaterial({ color: 0x93815a, roughness: .62, metalness: .55 }),
         cloth: new THREE.MeshStandardMaterial({ color: 0x746a53, roughness: 1, side: THREE.DoubleSide }),
-        moss: new THREE.MeshStandardMaterial({ color: 0x465942, roughness: 1, side: THREE.DoubleSide }),
-        soil: new THREE.MeshStandardMaterial({ map: groundTexture, roughness: 1, transparent: true, depthWrite: false, alphaTest: .01 })
+        moss: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, side: THREE.DoubleSide }),
+        soil: new THREE.MeshStandardMaterial({ map: groundTexture, vertexColors: true, roughness: 1, transparent: true, depthWrite: false, alphaTest: .01 })
     };
     const footprints = [];
     const radial = quality === 'low' ? 6 : 10;
@@ -37,11 +39,16 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         const batches = new Map();
         const part = (geometry, material, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
             // Vault, piers and fallen blocks share one natural-stone draw batch.
-            if (site.recipe === 'root-arch' && material === 'stone') material = 'fieldstone';
+            if (['root-arch', 'grave-road'].includes(site.recipe) && material === 'stone') material = 'fieldstone';
             const matrix = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
             const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone();
             geometry.dispose(); transformed.applyMatrix4(matrix);
+            if (['moss', 'soil', 'fieldstone'].includes(material) && !transformed.attributes.color) {
+                const color = new THREE.Color(material === 'moss' ? 0x465942 : 0xffffff), values = [];
+                for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
+                transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
+            }
             if (!batches.has(material)) batches.set(material, []);
             batches.get(material).push(transformed);
         };
@@ -105,11 +112,30 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         case 'grave-road':
             for (const side of [-1, 1]) {
                 for (let i = 0; i < 3; i++) {
-                    box('stone', -58 + i * 6, 1.8, side * 12, 1.5, 3.6 - i * .45, 1.5, 0, true);
-                    stone(-58 + i * 6, 3.8 - i * .45, side * 12, 1.2, .7, 1.2);
+                    // Same published walk solid; the visible marker now has
+                    // actual worn masonry courses grounded at its foot.
+                    const height = 3.6 - i * .45;
+                    footprints.push({ siteId: site.id, x: site.x + side * 12, z: site.z + 58 - i * 6,
+                        width: 1.5, depth: 1.5, height, y: 1.8, angle: 0 });
+                    for (let course = 0; course < 3; course++) {
+                        part(createGrovePierCourse(course), 'fieldstone', side * 12, .04, 58 - i * 6,
+                            [0, 0, 0], [.5, height / 4, .375]);
+                    }
+                    part(createBastionMarkerCap(i + side * 7), 'fieldstone', side * 12,
+                        height + .08, 58 - i * 6, [0, side * .025, 0]);
                 }
-                pennant(-58, side * 18, 8);
-                box('stone', -50, .32, side * 21, 8, .6, 2);
+                pennant(side * 18, 58, 8);
+                box('stone', side * 21, .32, 50, 2, .6, 8);
+            }
+            // Remnants of the burial procession road: almost flush with the
+            // dirt, broken into small runs rather than a pristine tiled apron.
+            // These are walkable decoration, not new navigation obstacles.
+            for (let row = 0; row < 13; row++) for (let column = -2; column <= 2; column++) {
+                const seed = row * 19 + column + 43;
+                if (seed % 5 === 0 || (row > 8 && seed % 3 === 0) || (row > 5 && column === -2)) continue;
+                part(createBastionPavingFragment(seed), 'fieldstone', column * 2.15 + (row % 2) * .25 + Math.sin(seed) * .12,
+                    .045 + (seed % 3) * .001, 35 + row * 2.2 + Math.cos(seed * 1.7) * .15,
+                    [0, Math.sin(seed * 2.7) * .24, 0], [1, 1, 1.2]);
             }
             break;
         case 'root-arch':
@@ -118,12 +144,19 @@ export function createEarthLocations({ quality = 'high' } = {}) {
                 // worn courses within it instead of a featureless tall box.
                 footprints.push({ siteId: site.id, x: site.x + side * 8, z: site.z, width: 3, depth: 4, height: 8, y: 4, angle: 0 });
                 for (let course = 0; course < 6; course++) part(createGrovePierCourse(course), 'fieldstone', side * 8, 0, 0);
-                rootCurve([[side * 14, -.95, 4], [side * 10, 3, 2], [side * 9, 8, 0], [side * 5, 11.8, 0], [side, 13.15, 0]], .85);
+                rootCurve([[side * 14, -.95, 4], [side * 10, 3, 2], [side * 9, 8, 2.1], [side * 5, 11.8, 2.15], [side, 13.15, 2.05]], .85);
                 rootCurve([[side * 10, 3, 2], [side * 10.8, 4.7, 2], [side * 11.5, 6.2, 1.6]], .25);
-                rootCurve([[side * 9, 8, 0], [side * 8.4, 9, 1.4], [side * 7.3, 10.3, 1.8]], .22);
+                rootCurve([[side * 9, 8, 2.1], [side * 8.4, 9, 2.3], [side * 7.3, 10.3, 2.2]], .22);
+                rootCurve([[side * 10, .05, 3], [side * 10.8, .28, 5], [side * 12.6, .12, 6.8], [side * 15, -.15, 7.5]], .27);
                 stone(side * 16, .6, -4, 2, .8, 1.2);
             }
             for (let i = 0; i < 13; i++) part(createGroveArchStone(i), 'fieldstone', 0, 0, 0);
+            for (let row = -3; row <= 3; row++) for (let column = -2; column <= 2; column++) {
+                const seed = (row + 3) * 11 + column + 2;
+                if ((seed % 5 === 0) || (Math.abs(row) === 3 && column % 2 === 0)) continue;
+                part(createGroveThresholdStone(seed), 'fieldstone', column * 1.95 + (row % 2) * .35,
+                    .045 + (seed % 3) * .001, row * 1.55, [0, Math.sin(seed * 2.7) * .16, 0]);
+            }
             break;
         case 'pilgrim-camp':
             hearth(0, -7);
@@ -165,8 +198,9 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         default: throw new Error(`Unknown Earth location recipe: ${site.recipe}`);
         }
         const apronX = site.arrivalOffset?.[0] || 0;
+        const apronZ = site.arrivalOffset?.[1] || 0;
         const apronRadius = site.role === 'landmark' ? 15 : site.radius * .65;
-        part(new THREE.PlaneGeometry(apronRadius * 2, apronRadius * 1.6), 'soil', apronX, .018, 0, [-Math.PI / 2, 0, .12]);
+        part(new THREE.PlaneGeometry(apronRadius * 2, apronRadius * 1.6), 'soil', apronX, .018, apronZ, [-Math.PI / 2, 0, .12]);
         // Quiet peripheral vegetation/debris ties the composition into the
         // ground. Keep all of it low and off the actual walking centerlines;
         // central mandatory evidence and dungeon silhouettes remain uncluttered.
@@ -176,16 +210,17 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             const radius = site.radius * (.22 + Math.sqrt(random(i * 37 + 11)) * .67);
             const x = Math.cos(angle) * radius, z = Math.sin(angle) * radius;
             if (site.role === 'story' && radius < 10) continue;
-            if (site.id === 'verdant-approach' && x > -42) continue;
+            if (site.id === 'verdant-approach' && z < 42) continue;
             if (EARTH_PATHS.some(path => distanceToPath(site.x + x, site.z + z, path.points) < path.width / 2 + 2)) continue;
             if (i % 4 === 0) stone(x, .14, z, .45 + i % 3 * .3, .22, .4, angle);
-            else for (let blade = 0; blade < 3; blade++) {
-                const geometry = new THREE.BufferGeometry();
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute([-.28, 0, 0, .28, 0, 0, .1, .8 + i % 3 * .2, .15], 3));
-                geometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, .5, 1], 2));
-                geometry.computeVertexNormals();
-                part(geometry, 'moss', x, .02, z, [0, angle + blade * Math.PI / 3, 0]);
-            }
+        }
+        for (const tuft of earthGroundCoverPlacements(site, quality)) {
+            // A soft humus/moss bed anchors each overlapping clump without a
+            // new texture, draw batch, collision surface or raised ground.
+            const bed = new THREE.PlaneGeometry(3.6, 3.2);
+            bed.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: 4 }, () => [.55, .85, .45]).flat(), 3));
+            part(bed, 'soil', tuft.x, .022, tuft.z, [-Math.PI / 2, 0, tuft.rotation]);
+            part(createEarthGroundCoverTuft(tuft.seed, quality), 'moss', tuft.x, .02, tuft.z, [0, tuft.rotation, 0]);
         }
         for (const [key, geometries] of batches) {
             const geometry = mergeGeometries(geometries, false);
