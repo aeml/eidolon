@@ -10,6 +10,11 @@ remain open; runtime version metadata is intentionally unchanged.
   movement and fade during jumps; hidden/stealthed actors remain unrevealed.
   See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 
+- Corrected forward basic swings and hit-time alignment for26 additional armed
+  regional enemies and dungeon bosses, including Rootbound Warden. Distinct
+  bird/bite rigs are not given an assumed weapon animation. See the
+  [regional strike review](2026-09-29-regional-strike-contact.md).
+
 - Skeletons, Demon Orcs, Imps, Constructs and Inferno Titans swing toward their
   targets, with the visible strike aligned to the existing basic-attack damage
   time. Damage and cooldowns are unchanged. See the

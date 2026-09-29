@@ -15,6 +15,8 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
             const { Fighter } = await import('/src/entities/Fighter.js');
             const { Skeleton } = await import('/src/entities/Skeleton.js');
             const { Construct } = await import('/src/entities/Construct.js');
+            const { Actor } = await import('/src/entities/Actor.js');
+            const { createProceduralRootboundWarden } = await import('/src/art/ProceduralThorncryptBosses.js');
             const { QuestNPC } = await import('/src/entities/QuestNPC.js');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -58,24 +60,39 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
                 return { id, dx: Math.abs(rect.x + rect.width / 2 - (point.x + 1) * innerWidth / 2),
                     dy: Math.abs(rect.y + rect.height / 2 - (1 - point.y) * innerHeight / 2) };
             });
-            const sampleEnemyAttack = fraction => {
+            const sampleEnemyAttack = (fraction, striker = target) => {
                 // Independently sample each pose: screenshot/GPU latency must
                 // not consume the actor's real wall-clock recovery timer.
-                target.isRemote = true; target.targetPosition = null;
-                target.mesh.lookAt(player.position); target.rotation.copy(target.mesh.quaternion);
-                target.setAttackingState();
-                const step = fraction * target.stats.attackSpeed;
-                for (let time = 0; time < step; time += 1 / 60) target.update(Math.min(1 / 60, step - time));
+                striker.isRemote = true; striker.targetPosition = null;
+                striker.mesh.lookAt(player.position); striker.rotation.copy(striker.mesh.quaternion);
+                striker.setAttackingState();
+                const step = fraction * striker.stats.attackSpeed;
+                for (let time = 0; time < step; time += 1 / 60) striker.update(Math.min(1 / 60, step - time));
                 if (fraction === .35) {
-                    player.playHitReaction(target.position, 10); player.hitReaction.update(.045);
+                    player.playHitReaction(striker.position, 10); player.hitReaction.update(.045);
                 } else player.hitReaction?.update(1);
-                engine.render(1); target.mesh.updateMatrixWorld(true);
-                const weapon = new THREE.Box3().setFromObject(target.mesh.getObjectByName('Rig_SkeletonWeapon')).getCenter(new THREE.Vector3());
-                const forward = player.position.clone().sub(target.position).setY(0).normalize();
-                return { time: target.currentAction.time, contact: target.mesh.userData.basicAttackContactTime,
-                    forwardReach: weapon.sub(target.position).dot(forward), state: target.state };
+                engine.render(1); striker.mesh.updateMatrixWorld(true);
+                const weapon = new THREE.Box3().setFromObject(striker.mesh.getObjectByName(`Rig_${striker.mesh.userData.proceduralActorType}Weapon`)).getCenter(new THREE.Vector3());
+                const forward = player.position.clone().sub(striker.position).setY(0).normalize();
+                return { time: striker.currentAction.time, contact: striker.mesh.userData.basicAttackContactTime,
+                    forwardReach: weapon.sub(striker.position).dot(forward), state: striker.state };
             };
-            window.__healthReview = { engine, ui, target, render, actors, alignment, sampleEnemyAttack, reconciles: () => reconciles };
+            let boss;
+            const sampleBossAttack = fraction => {
+                if (!boss) {
+                    boss = new Actor('warden-review', {}); boss.type = 'RootboundWarden';
+                    boss.position.set(0, 0, 358.5); boss.setMesh(createProceduralRootboundWarden());
+                    boss.stats.attackSpeed = 2; render.entityGroup.add(boss.mesh);
+                    for (const actor of actors) if (actor !== player) actor.mesh.visible = false;
+                }
+                return sampleEnemyAttack(fraction, boss);
+            };
+            const endBossReview = () => {
+                boss.mesh.removeFromParent(); boss.dispose(); boss = null;
+                for (const actor of actors) actor.mesh.visible = true;
+                player.hitReaction?.update(1); engine.render(1);
+            };
+            window.__healthReview = { engine, ui, target, render, actors, alignment, sampleEnemyAttack, sampleBossAttack, endBossReview, reconciles: () => reconciles };
         }, mobile);
         const selected = page.locator('.floating-bar[data-entity-id="enemy-selected"]');
         await expect(selected).toBeVisible();
@@ -110,6 +127,14 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
             await page.screenshot({ path: testInfo.outputPath(`enemy-attack-${phase}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
         }
         await page.evaluate(() => { window.__healthReview.target.updateState('IDLE'); });
+        for (const [phase, fraction] of [['windup', .18], ['contact', .35]]) {
+            const pose = await page.evaluate(fraction => window.__healthReview.sampleBossAttack(fraction), fraction);
+            if (phase === 'contact') {
+                expect(pose.time).toBeCloseTo(.78, 4); expect(pose.forwardReach).toBeGreaterThan(.3);
+            } else expect(pose.forwardReach).toBeLessThan(-.3);
+            await page.screenshot({ path: testInfo.outputPath(`warden-attack-${phase}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+        }
+        await page.evaluate(() => window.__healthReview.endBossReview());
         await page.emulateMedia({ reducedMotion: 'reduce' });
         const reduced = await page.evaluate(() => {
             const { target, engine, ui } = window.__healthReview;
