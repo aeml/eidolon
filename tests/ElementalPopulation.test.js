@@ -98,7 +98,9 @@ test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS], ['air', AIR_PATHS]])('%
     }
     for (const scene of [high, low]) {
         expect(scene.children).toHaveLength(8);
-        expect(scene.children.every(root => root.children.length >= 3 && root.children.length <= 7)).toBe(true);
+        // One new opaque, scene-owned ground-cover batch on Water/Fire. Air
+        // retains the previous budget; roads/colliders keep their old contract.
+        expect(scene.children.every(root => root.children.length >= 3 && root.children.length <= (realm === 'air' ? 7 : 8))).toBe(true);
         for (const root of scene.children) {
             const apron = root.getObjectByName(`${root.userData.locationId}:ground-wear`);
             expect(apron).toBeDefined(); expect(apron.material.depthWrite).toBe(false);

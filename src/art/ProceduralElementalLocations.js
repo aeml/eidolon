@@ -9,6 +9,7 @@ import { createTideRibStone, createWreckPlank, wreckHullHalfWidth } from './Wate
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
+import { createElementalGroundCover } from './ElementalGroundCover.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -33,6 +34,8 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0xffffff, vertexColors: true, roughness: .94
     }), 'fieldstone');
+    if (!air) materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+        side: THREE.DoubleSide, roughness: 1 });
     for (const site of sites) {
         const group = new THREE.Group(); group.name = `${realm}-location:${site.id}`;
         group.position.set(site.x, 0, site.z); group.userData.locationId = site.id;
@@ -330,6 +333,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         }
         addLocationGroundWear(group, site, groundMaterials, (x, z) =>
             paths.every(path => distanceToPath(x, z, path.points) > path.width / 2 + 2), FOLIAGE_HAZARD_CLEARINGS[realm]);
+        if (!air) {
+            const cover = createElementalGroundCover(site, realm, footprints, materials.cover, quality);
+            if (cover) group.add(cover);
+        }
         root.add(group);
     }
     root.userData.walkFootprints = footprints;
