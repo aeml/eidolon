@@ -59,6 +59,47 @@ for (const [width, height] of [[1440, 900], [1024, 600]]) {
         await expect(page.locator('#phone-item-compare')).toBeFocused();
         expect(await page.evaluate(() => window.__inspect.calls)).toEqual([]);
         await page.locator('#phone-item-back').click();
+        await page.evaluate(() => {
+            const q = window.__inspect, blade = q.player.inventory[0];
+            q.player.inventory = Array.from({ length: 25 }, (_, i) => ({ ...blade, id: `bag-${i}`, name: `Lanternkeeper's Ceremonial Sword ${i + 1}` }));
+            q.player.stash = Array.from({ length: 100 }, (_, i) => ({ ...blade, id: `stored-${i}`, name: `Earthwarden's Relic of the Western Watch ${i + 1}` }));
+            q.ui.inventory.onStashDeposit = id => q.calls.push(`deposit:${id}`);
+            q.ui.inventory.onStashWithdraw = id => q.calls.push(`withdraw:${id}`);
+            q.ui.inventory.toggleStash();
+        });
+        const stash = page.locator('#stash-screen'), browser = page.locator('#stash-browser');
+        await expect(stash).toBeVisible(); await expect(page.locator('#inventory-screen')).toBeHidden();
+        await expect(page.locator('#stash-browser-inventory-title')).toContainText('25 / 25');
+        await expect(page.locator('#stash-browser-stash-title')).toContainText('100 / 100');
+        const panes = browser.locator('.stash-browser-list');
+        for (const pane of await panes.all()) {
+            expect(await pane.evaluate(el => el.scrollHeight > el.clientHeight && el.scrollWidth <= el.clientWidth)).toBe(true);
+        }
+        const stashBounds = await stash.boundingBox();
+        expect(stashBounds.x).toBeGreaterThanOrEqual(0); expect(stashBounds.y).toBeGreaterThanOrEqual(0);
+        expect(stashBounds.x + stashBounds.width).toBeLessThanOrEqual(width);
+        expect(stashBounds.y + stashBounds.height).toBeLessThanOrEqual(height);
+        await page.screenshot({ path: testInfo.outputPath('desktop-stash.png') });
+        await browser.locator('input').fill('Western Watch 100');
+        const stored = browser.locator('[data-item-id="stored-99"]');
+        await expect(stored).toBeVisible(); await expect(stored).toHaveAttribute('data-slot-index', '99');
+        await stored.click(); await expect(dialog).toBeVisible();
+        expect(await page.evaluate(() => window.__inspect.calls)).toEqual([]);
+        await page.locator('#phone-item-withdraw').click(); await expect(dialog).toBeHidden();
+        expect(await page.evaluate(() => window.__inspect.calls)).toEqual(['withdraw:stored-99']);
+        await browser.locator('input').fill('');
+        const bag = browser.locator('[data-item-id="bag-0"]');
+        await bag.click({ button: 'right' });
+        expect(await page.evaluate(() => window.__inspect.calls)).toEqual(['withdraw:stored-99', 'deposit:bag-0']);
+        await bag.click();
+        await page.evaluate(() => {
+            const q = window.__inspect; q.player.inventory[0] = { ...q.player.inventory[0], potency: 6 };
+            q.ui.inventory.updateInventory(q.player);
+        });
+        await expect(page.locator('#phone-item-description')).toContainText('Potency +6');
+        await page.locator('#phone-item-back').click(); await expect(bag).toBeFocused();
+        expect(await page.evaluate(() => window.__inspect.player.inventory.length)).toBe(25);
+        await page.locator('#btn-close-stash').click(); await expect(stash).toBeHidden();
         await page.evaluate(() => { window.__inspect.input.dispose(); window.__inspect.ui.characterPreview.dispose(); });
         expect(failures, failures.join('\n')).toEqual([]);
     });

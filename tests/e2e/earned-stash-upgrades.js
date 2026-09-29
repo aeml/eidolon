@@ -28,7 +28,7 @@ export async function upgradeEarnedStoredEquipment(page) {
         if (!action) break;
         if (action.blockedByFullBag) throw new Error('Stored upgrade requires one free bag slot before withdrawal');
         const index = state.stash.findIndex(item => item?.id === action.id);
-        await page.locator('#stash-grid .inv-slot').nth(index).click({ button: 'right' });
+        await page.locator(`.stash-browser-item[data-source="stash"][data-slot-index="${index}"]`).click({ button: 'right' });
         await expect.poll(async () => {
             const p = await readEarnedGear(page);
             return p.inventory.some(item => item?.id === action.id) && !p.stash.some(item => item?.id === action.id);

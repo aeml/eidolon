@@ -30,7 +30,8 @@ afterEach(() => { delete window.game; jest.restoreAllMocks(); });
 function browser() {
     let visible = false;
     return { evaluate: async callback => callback(),
-        locator: selector => ({ isVisible: async () => selector !== '#shop-screen' && visible }),
+        locator: selector => ({ isVisible: async () => !['#shop-screen', '#inventory-screen'].includes(selector) && visible,
+            fill: jest.fn(), selectOption: jest.fn() }),
         mouse: { move: jest.fn(async () => { window.game.hoveredEntity = { id: 'stash-1' }; }),
             click: jest.fn(async () => { visible = true; }) } };
 }

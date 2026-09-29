@@ -36,12 +36,15 @@ export class MobileItemDetails {
         for (const event of ['keydown', 'keyup']) this.dialog.addEventListener(event, e => e.stopPropagation());
         this.dialog.addEventListener('close', () => {
             this.inventory.selectedSlot = -1;
+            const sourceType = this.source?.type;
             this.source = null;
             this.confirmStack = null;
             const refreshedRow = this.inventory.isStashOpen && this.inventory.phoneStash
                 ? [...this.inventory.phoneStash.list.querySelectorAll('button')].find(row =>
                     row.dataset.itemId === this.returnFocus?.dataset.itemId) : null;
-            const origin = this.returnFocus?.isConnected ? this.returnFocus : refreshedRow ||
+            const desktopRow = this.inventory.isStashOpen
+                ? this.inventory.stashBrowser?.focusTarget(sourceType, this.returnFocus?.dataset.itemId) : null;
+            const origin = this.returnFocus?.isConnected ? this.returnFocus : refreshedRow || desktopRow ||
                 (this.inventory.isStashOpen ? this.inventory.phoneStash?.list || this.inventory.btnCloseStash : this.inventory.btnCloseInventory);
             origin?.focus({ preventScroll: true });
         });
