@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Abyssal Well gains an open carved foregate, a nearer visible portal, a lower
+  silhouette and dark well water. Its arrival marker and road end move16m
+  closer; legacy bounds and admission stay unchanged. See the
+  [Water entrance review](2026-09-29-abyssal-entrance-alignment.md).
+
 - Molten Core gains an east-facing carved foregate, constructed barrel vault,
   linked chains and a lower visible crown. Its public approach marker and road
   end move8m closer for phone visibility; gameplay bounds and entry rules stay

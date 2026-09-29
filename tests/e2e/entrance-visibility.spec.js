@@ -35,9 +35,10 @@ for (const config of cases) {
             // Keep this an actual occlusion test, outside its collision circle.
             // Molten's old (-10,-10) sample was inside blocked architecture;
             // use the reachable rear-pylon edge for its redesigned vault.
+            // Likewise use the outside tide-pillar edge for the rebuilt Well.
             hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-30, 0, -25] :
-                config.type === 'molten_core' ? [-10, 0, -36] : [-10, 0, -10]));
-            if (['verdant_bastion_catacombs', 'molten_core'].includes(config.type) &&
+                config.type === 'molten_core' ? [-10, 0, -36] : config.type === 'abyssal_well' ? [-35, 0, -15] : [-10, 0, -10]));
+            if (['verdant_bastion_catacombs', 'molten_core', 'abyssal_well'].includes(config.type) &&
                 Math.hypot(hero.position.x, hero.position.z) <= root.userData.interactionRadius + 1.25) {
                 throw new Error('Refined-entrance cutaway fixture must remain outside the physical entrance');
             }
