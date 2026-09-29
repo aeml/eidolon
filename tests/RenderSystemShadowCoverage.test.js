@@ -14,6 +14,7 @@ describe('RenderSystem shadow coverage', () => {
     test('tracks the directional shadow camera around the player instead of a tiny origin-bound frustum', () => {
         const renderSystem = new RenderSystem(false);
 
+        renderSystem.setCameraTarget(new THREE.Vector3(2200, 0, -1400));
         renderSystem.updateEnvironmentLighting(new THREE.Vector3(2200, 0, -1400), 0.016);
 
         expect(renderSystem.keyLight.position.x).toBeGreaterThan(2000);
@@ -21,8 +22,9 @@ describe('RenderSystem shadow coverage', () => {
         const texelSize = renderSystem.getShadowWorldTexelSize();
         expect(Math.abs(renderSystem.keyLight.target.position.x - 2200)).toBeLessThanOrEqual(texelSize / 2);
         expect(Math.abs(renderSystem.keyLight.target.position.z + 1400)).toBeLessThanOrEqual(texelSize / 2);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
-        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.shadowCoverageRadius).toBeLessThan(280);
     });
 
     test('uses filtered shadow maps and keeps shadows updating while the light follows the player', () => {
@@ -37,13 +39,14 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.shadow.radius).toBeGreaterThanOrEqual(4);
         expect(renderSystem.keyLight.shadow.bias).toBeLessThanOrEqual(-0.0001);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.04);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-260);
-        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.03);
     });
 
     test('refreshes shadow frustum after graphics quality changes', () => {
         const renderSystem = new RenderSystem(false);
+        renderSystem.setCameraTarget(new THREE.Vector3(-1900, 0, 900));
         renderSystem.updateEnvironmentLighting(new THREE.Vector3(-1900, 0, 900), 0.016);
 
         renderSystem.setGraphicsQuality('high');
@@ -51,11 +54,22 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.castShadow).toBe(true);
         expect(renderSystem.renderer.shadowMap.type).toBe(THREE.PCFSoftShadowMap);
         expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(2048);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
-        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
+        expect(renderSystem.keyLight.shadow.camera.left).toBe(-renderSystem.shadowCoverageRadius);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
         const texelSize = renderSystem.getShadowWorldTexelSize();
         expect(Math.abs(renderSystem.keyLight.target.position.x + 1900)).toBeLessThanOrEqual(texelSize / 2);
         expect(Math.abs(renderSystem.keyLight.target.position.z - 900)).toBeLessThanOrEqual(texelSize / 2);
+    });
+
+    test('refits immediately when zoom changes without waiting for player movement', () => {
+        const renderSystem = new RenderSystem(false);
+        renderSystem.setZoom(5);
+        const near = renderSystem.shadowCoverageRadius;
+        renderSystem.setZoom(30);
+        expect(renderSystem.shadowCoverageRadius).toBeGreaterThan(near);
+        expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowCoverageRadius);
+        expect(renderSystem.getShadowWorldTexelSize()).toBe(renderSystem.shadowCoverageRadius * 2 / 4096);
+        renderSystem.dispose();
     });
 
     test('setupLights removes reparented old lights and old directional targets before installing replacements', () => {
@@ -165,13 +179,17 @@ describe('RenderSystem shadow coverage', () => {
         const texelSize = renderSystem.getShadowWorldTexelSize();
         const insideSameTexelOffset = texelSize * 0.2;
 
-        renderSystem.updateEnvironmentLighting(new THREE.Vector3(125.11, 0, -43.08), 0.016);
+        const start = new THREE.Vector3(Math.round(125 / texelSize) * texelSize, 0, Math.round(-43 / texelSize) * texelSize);
+        renderSystem.setCameraTarget(start);
+        renderSystem.updateEnvironmentLighting(start, 0.016);
         const firstTargetX = renderSystem.keyLight.target.position.x;
         const firstTargetZ = renderSystem.keyLight.target.position.z;
         const firstLightX = renderSystem.keyLight.position.x;
         const firstLightZ = renderSystem.keyLight.position.z;
 
-        renderSystem.updateEnvironmentLighting(new THREE.Vector3(125.11 + insideSameTexelOffset, 0, -43.08 - insideSameTexelOffset), 0.016);
+        const moved = start.clone().add(new THREE.Vector3(insideSameTexelOffset, 0, -insideSameTexelOffset));
+        renderSystem.setCameraTarget(moved);
+        renderSystem.updateEnvironmentLighting(moved, 0.016);
 
         expect(renderSystem.keyLight.target.position.x).toBeCloseTo(firstTargetX, 6);
         expect(renderSystem.keyLight.target.position.z).toBeCloseTo(firstTargetZ, 6);

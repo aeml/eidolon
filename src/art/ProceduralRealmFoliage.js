@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { PROCEDURAL_FOLIAGE_RECIPES } from '../data/worldFoliage.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
+import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 const GEOMETRIES = new Map();
@@ -56,6 +57,7 @@ const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeo
 const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08, 0.18, 2.8, 6));
 const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronGeometry(1.55, 0));
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
+const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
 const pineCrown = geometry('foliage-pine-crown', () => new THREE.ConeGeometry(1.7, 3.4, 7));
 const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
 const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
@@ -87,13 +89,13 @@ function createOssuaryBirch() {
 function createGravePine() {
     const p = palette('earth');
     const bark = material('foliage-black-pine-bark', 0x262822);
-    const leaf = material('foliage-black-pine-needle', 0x26352d, { side: THREE.DoubleSide });
+    const leaf = material('foliage-black-pine-needle', 0x35483a, { side: THREE.DoubleSide, vertexColors: true });
     const moss = material('foliage-pine-moss', p.midtone);
     return [
         part('black pine trunk', trunk, bark, { position: [0, 2.7, 0], scale: [0.76, 1.12, 0.76] }),
-        part('lower funeral tier', pineCrown, leaf, { position: [0, 3.6, 0], scale: [1.15, 0.8, 1.15] }),
-        part('middle funeral tier', pineCrown, leaf, { position: [0, 5.35, 0], scale: [0.86, 0.7, 0.86] }),
-        part('high funeral tier', pineCrown, leaf, { position: [0, 6.75, 0], scale: [0.58, 0.55, 0.58] }),
+        part('lower funeral tier', needleCrown, leaf, { position: [0, 3.6, 0], scale: [1.45, 0.8, 1.4] }),
+        part('middle funeral tier', needleCrown, leaf, { position: [.14, 5.35, -.1], rotation: [0, .7, 0], scale: [1.05, 0.7, 1.02] }),
+        part('high funeral tier', needleCrown, leaf, { position: [.06, 6.75, .03], rotation: [0, 1.4, .08], scale: [.64, .55, .62] }),
         part('mossbound root', root, moss, { position: [-0.48, 0.25, 0.05], rotation: [0, 0, Math.PI / 2], scale: [0.8, 0.65, 0.8] })
     ];
 }
@@ -101,14 +103,14 @@ function createGravePine() {
 function createMourningWillow() {
     const p = palette('earth');
     const bark = material('foliage-willow-bark', 0x403a31);
-    const leaf = material('foliage-willow-leaf', 0x3f4c37, { side: THREE.DoubleSide });
+    const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true });
     const glow = material('foliage-willow-votive', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.5 });
     return [
         part('crooked mourning trunk', trunk, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
-        part('mourning crown', broadCrown, leaf, { position: [-0.3, 5.25, 0], scale: [1.42, 0.7, 1.2] }),
-        part('west leaf curtain', curtain, leaf, { position: [-1.05, 3.65, 0.1], rotation: [0.05, 0, -0.08] }),
-        part('east leaf curtain', curtain, leaf, { position: [0.78, 3.72, -0.12], rotation: [-0.04, 0, 0.1], scale: [0.9, 0.92, 0.9] }),
-        part('rear leaf curtain', curtain, leaf, { position: [-0.1, 3.55, -0.88], rotation: [0.12, 0, 0], scale: [0.72, 0.86, 0.72] }),
+        part('mourning crown', leafCrown, leaf, { position: [-0.3, 5.25, 0], scale: [2.3, .8, 1.85] }),
+        part('west leaf curtain', leafCrown, leaf, { position: [-1.55, 3.95, .1], rotation: [.05, 0, -.12], scale: [.62, 1.2, .65] }),
+        part('east leaf curtain', leafCrown, leaf, { position: [1.28, 3.82, -.12], rotation: [-.04, 0, .15], scale: [.6, 1.3, .58] }),
+        part('rear leaf curtain', leafCrown, leaf, { position: [-.1, 3.95, -1.4], rotation: [.12, 0, 0], scale: [.75, 1.25, .6] }),
         part('willow votive', lantern, glow, { position: [0.82, 2.62, 0.22], castShadow: false })
     ];
 }

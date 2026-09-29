@@ -7,6 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
+import { getShadowViewCoverage } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -128,7 +129,7 @@ export class RenderSystem {
         this.sceneryFocus = null;
         this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
         this.shadowTarget = new THREE.Vector3();
-        this.shadowCoverageRadius = 280;
+        this.shadowCoverageRadius = getShadowViewCoverage(this.camera, this.cameraOffset, this.shadowFollowOffset);
         this.shadowTexelSnap = true;
         this.cameraShakeEnabled = false;
         this.cameraShakeStrength = 0.5;
@@ -587,7 +588,7 @@ export class RenderSystem {
 
     configureShadowFrustum(light, radius = this.shadowCoverageRadius) {
         if (!light?.shadow?.camera) return;
-        const coverage = Math.max(180, Number(radius) || this.shadowCoverageRadius || 220);
+        const coverage = Math.max(64, Number(radius) || this.shadowCoverageRadius || 280);
         light.shadow.camera.left = -coverage;
         light.shadow.camera.right = coverage;
         light.shadow.camera.top = coverage;
@@ -598,7 +599,7 @@ export class RenderSystem {
 
     getShadowWorldTexelSize() {
         const mapSize = this.keyLight?.shadow?.mapSize?.width || this.getShadowMapSize();
-        const coverage = Math.max(180, Number(this.shadowCoverageRadius) || 220);
+        const coverage = Math.max(64, Number(this.shadowCoverageRadius) || 280);
         return (coverage * 2) / Math.max(1, mapSize);
     }
 
@@ -617,6 +618,12 @@ export class RenderSystem {
 
     updateShadowFocus(position = null) {
         if (!this.keyLight || !position) return;
+        const coverage = getShadowViewCoverage(this.camera, this.cameraOffset, this.shadowFollowOffset,
+            this.cameraTarget.clone().sub(position));
+        if (coverage !== this.shadowCoverageRadius) {
+            this.shadowCoverageRadius = coverage;
+            this.configureShadowFrustum(this.keyLight, coverage);
+        }
         const snappedTarget = this.getShadowSnappedTarget(position);
         this.shadowTarget.copy(snappedTarget);
         this.keyLight.target.position.copy(this.shadowTarget);
@@ -877,6 +884,7 @@ export class RenderSystem {
         this.camera.top = d + verticalOffset;
         this.camera.bottom = -d + verticalOffset;
         this.camera.updateProjectionMatrix();
+        if (this.keyLight) this.updateShadowFocus(this.shadowTarget);
     }
 
     onWindowResize() {

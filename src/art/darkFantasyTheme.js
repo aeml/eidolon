@@ -30,15 +30,17 @@ export const DARK_FANTASY_REGION_THEMES = Object.freeze({
         motif: 'weathered stone, black oak, moss, grave-lantern gold',
         palette: { shadow: 0x171b18, ground: 0x34382f, midtone: 0x65705a, accent: 0xc6a15b, spirit: 0x9bb7a2, fog: 0x8f998e },
         lighting: {
-            ambientIntensity: 1.9,
-            keyIntensity: 2.45,
-            keyColor: 0xffecd4,
+            // Keep lit ground readable while allowing shaded faces to retain
+            // depth. Stronger key, less omnidirectional/reflected wash.
+            ambientIntensity: 0.95,
+            keyIntensity: 3.1,
+            keyColor: 0xffeddf,
             fillColor: 0xa5b8ce,
             fillIntensity: 0.45,
             fogColor: 0x8f998e,
             fogNear: 1120,
             fogFar: 3900,
-            exposure: 1.4,
+            exposure: 1.2,
             bloomStrength: 0.2,
             bloomRadius: 0.26,
             bloomThreshold: 0.84
@@ -52,15 +54,15 @@ export const DARK_FANTASY_REGION_THEMES = Object.freeze({
         motif: 'charcoal timber, old iron, amber windows, protective runes',
         palette: { shadow: 0x181715, ground: 0x3f3a32, midtone: 0x756a58, accent: 0xf0b85c, spirit: 0xffdda0, fog: 0xa19a8f },
         lighting: {
-            ambientIntensity: 2.0,
-            keyIntensity: 2.35,
+            ambientIntensity: 1.15,
+            keyIntensity: 2.8,
             keyColor: 0xffecd4,
             fillColor: 0xa5b8ce,
             fillIntensity: 0.5,
             fogColor: 0xa19a8f,
             fogNear: 1250,
             fogFar: 3800,
-            exposure: 1.38,
+            exposure: 1.25,
             bloomStrength: 0.25,
             bloomRadius: 0.32,
             bloomThreshold: 0.79

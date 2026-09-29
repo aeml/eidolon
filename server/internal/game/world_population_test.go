@@ -162,6 +162,8 @@ func TestWorldPopulationEliteSceneryRecovery(t *testing.T) {
 		kind, minX, maxX := "Skeleton", -200.0, 200.0
 		minZ, maxZ := -600.0, 1000.0
 		switch {
+		case f.X < -600:
+			kind, minX, maxX = "Construct", -1000, -600
 		case f.X < -200:
 			kind, minX, maxX = "Imp", -600, -200
 		case f.X > 600:

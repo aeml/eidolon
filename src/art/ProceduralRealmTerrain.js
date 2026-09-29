@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { getRegionTheme } from './darkFantasyTheme.js';
+import { applyTownGroundComposition } from './TownGroundComposition.js';
+import { applyEarthGroundComposition } from './EarthGroundComposition.js';
 
 function terrainDefinition(id, region, label, motif, seed, surface) {
     return Object.freeze({ id, region, label, motif, seed, surface: Object.freeze(surface) });
@@ -362,6 +364,12 @@ export function createProceduralTerrainMaterial(key, { quality = 'high', texture
     material.userData.terrainKey = key;
     material.userData.terrainId = definition.id;
     material.userData.motif = definition.motif;
+    if (key === 'town') {
+        const soil = createProceduralTerrainTexture('earth', { quality: map.userData.quality || quality });
+        soil.wrapS = THREE.RepeatWrapping; soil.wrapT = THREE.RepeatWrapping;
+        applyTownGroundComposition(material, soil, map.userData.quality || quality);
+    }
+    if (key === 'earth') applyEarthGroundComposition(material, map.userData.quality || quality);
     if (surfaces) {
         // Albedo can be shared/owned by RenderSystem. These two maps are owned
         // by this material and must also be freed by preview/quality swaps.
