@@ -1,5 +1,37 @@
 # Lanternhold gathering court — September 29
 
+## Casino exterior integration
+
+Follow-up afteradc2c6d3. The casino's old upper glazing sat atz7.82 behind
+the front wall'sz8.25 face, leaving most of the building blank. The exterior
+now has20 recessed arched windows across the front and both sides, limestone
+surrounds/sills/supports, restrained amber panes and narrow glazing bars. A
+rose window and solid overdoor wall prevent the old shell's upper interior
+from showing above the sign. A long hipped ridge replaces the roof's single
+point, preserving its eaves/peak bounds. Existing town placement, five wall
+colliders, five-unit opening, door target, cutaway and shared interior remain.
+Ground-level front relief stays within the old pilaster'sz8.475 envelope.
+
+Verification: final16 casino controller/navigation checks passed2.212s,
+including real post-batch raycasts at all20 panes, visible supports/jambs,
+overdoor closure, outward roof normals, old roof bounds and unchanged door
+hover/click admission. The first added roof-normal assertion accidentally
+included vertical wall-top vertices; restricted it to the roof's slate batch,
+retaining the outward-normal requirement. Scoped lint/diff checks passed.
+
+Two browser cases passed19.9s, each visiting court, market, smithy and entrance
+at normal zoom. Final High desktop and Low phone entrance images inspected:
+`/tmp/eidolon-casino-facade-final-0929`. Baseline entrance images are in
+`/tmp/eidolon-town-square-reviewed-0929`. These are production-renderer
+presentation fixtures, not a connected casino session or real-device FPS test.
+
+Cost: exterior cutaway5→7 material batches and416→7,210 triangles; total
+structure14→16 batches, below the retained18-batch check. Shared stone/slate
+maps remain; no extra dynamic lights. This is deliberately more constructed
+geometry, not a claim that detail is free. The broad roof, repeated stonework,
+sparse surroundings and procedural actors still need wider quality work.
+Local candidate only; ordered release gates and final art acceptance stay open.
+
 ## Normal-scale review: replace the oversized radial platform
 
 Follow-up after67c7e248. The earlier radial courses still read as a giant
