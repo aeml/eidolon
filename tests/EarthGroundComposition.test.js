@@ -55,6 +55,23 @@ test('bedrock reuses detail alpha for varied plates and narrow fracture seams', 
     texture.dispose();
 });
 
+test.each(['high', 'low'])('soil aggregates retain coherent detail without a tile-edge jump (%s)', quality => {
+    const texture = createForestFloorDetail(quality);
+    const { data, width: size } = texture.image;
+    const at = (x, y) => data[(y * size + x % size) * 4];
+    let nearby = 0, separated = 0, seam = 0;
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        nearby += Math.abs(at(x, y) - at(x + 1, y));
+        separated += Math.abs(at(x, y) - at(x + size / 8, y));
+        if (x === size - 1) seam += Math.abs(at(x, y) - at(0, y));
+    }
+    // Uncorrelated texel noise fails this: adjacent and distant differences
+    // are comparable, so the field disappears into its mean when minified.
+    expect(nearby).toBeLessThan(separated * .7);
+    expect(seam / size).toBeLessThan(nearby / (size * size) * 1.5);
+    texture.dispose();
+});
+
 test('owns and releases only the two added maps once; leaves ground depth behavior unchanged', () => {
     const shared = new THREE.Texture(), material = new THREE.MeshStandardMaterial({ map: shared });
     applyEarthGroundComposition(material, 'low');

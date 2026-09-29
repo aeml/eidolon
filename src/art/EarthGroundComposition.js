@@ -10,9 +10,10 @@ const hash = (x, y) => {
     n = Math.imul(n ^ n >>> 16, 2246822519);
     return ((n ^ n >>> 13) >>> 0) / 4294967296;
 };
-function noise(x, y) {
+function noise(x, y, period = 0) {
     const ix = Math.floor(x), iy = Math.floor(y), u = smooth(0, 1, x - ix), v = smooth(0, 1, y - iy);
-    const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
+    const sample = period ? (a, b) => hash(((a % period) + period) % period, ((b % period) + period) % period) : hash;
+    const a = sample(ix, iy), b = sample(ix + 1, iy), c = sample(ix, iy + 1), d = sample(ix + 1, iy + 1);
     return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
 
@@ -134,7 +135,9 @@ export function createForestFloorDetail(quality = 'high') {
             vein = Math.max(vein, coverage * (1 - smooth(.2, 1.25, Math.abs(across))) * (1 - Math.abs(along) / (length + 2)));
         }
         const at = (y * size + x) * 4;
-        data[at] = Math.round((.25 + hash(px, py) * .5) * 255);
+        // Coherent soil aggregates survive mip filtering at normal play zoom.
+        // Pure per-texel noise averaged to grey, leaving only blurry realm masks.
+        data[at] = Math.round((.18 + noise(px / 32, py / 32, 8) * .55 + hash(px, py) * .16) * 255);
         data[at + 1] = Math.round(leaf * 255); data[at + 2] = Math.round(vein * 255);
         const fracture = smooth(.005, .12, second - nearest);
         const seamStrength = smooth(-.6, .1, Math.sin(px * turn * 3) * Math.cos(py * turn * 5));
@@ -152,7 +155,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v5';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v6';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -176,6 +179,10 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // the whole clearing resemble a tiled pavement.
             vec4 earthStone = texture2D(earthDetail, vEarthGround * .12 + vec2(-.21, .63));
             float earthScatter = earthBroad.r;
+            // Break the large mask edges with registered soil detail rather
+            // than blending every material into a uniform brown-green wash.
+            earthWear.a = smoothstep(.12, .72, earthWear.a + (earthScatter - .5) * .35);
+            earthWear.r = smoothstep(.06, .94, earthWear.r + (earthScatter - .5) * .18);
             // Interpolated authored vertex normals keep material boundaries
             // smooth. Face derivatives visibly outlined the terrain triangles.
             vec3 earthFace = normalize(vEarthNormal);
@@ -185,9 +192,12 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Keep weathering independent of the fracture mask: using its
             // dark seams as soil coverage drew a complete black crack network.
             earthRock *= .65 + earthBroad.r * .35;
+            // Exposed shoulders retain soil between mineral fragments. A
+            // full replacement turned whole hillsides into pale cracked paving.
+            earthRock = smoothstep(.14, .8, earthRock) * .72;
             vec3 forestBed = diffuseColor.rgb * vec3(.67, .75, .68);
             vec3 fallenLeaf = diffuseColor.rgb * vec3(1.15, .95, .64) * mix(.7, 1.1, earthScatter);
-            vec3 heathBed = mix(vec3(.038, .064, .031), vec3(.097, .124, .056), earthScatter);
+            vec3 heathBed = mix(vec3(.035, .058, .028), vec3(.085, .112, .051), earthScatter);
             diffuseColor.rgb = mix(diffuseColor.rgb, heathBed * (.85 + earthGrain.r * .3), earthWear.a * .82);
             forestBed = mix(forestBed, fallenLeaf, earthGrain.g * .72);
             diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);
@@ -195,7 +205,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
                 earthGrain.g * earthWear.a * (1. - earthWear.r) * .22);
             // Cool slate separates exposed stone from warmer soil and heath;
             // an olive tint on all three made the entire scene read as mud.
-            float earthMineralTone = earthStone.a * .72 + earthBroad.r * .28;
+            float earthMineralTone = earthStone.a * .4 + earthBroad.r * .6;
             vec3 mineral = mix(vec3(.083, .093, .098), vec3(.133, .145, .148), earthMineralTone);
             mineral *= .86 + earthGrain.r * .24;
             diffuseColor.rgb = mix(diffuseColor.rgb, mineral, earthRock);
