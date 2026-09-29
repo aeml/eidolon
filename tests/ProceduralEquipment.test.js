@@ -51,6 +51,53 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test.each(['Iron Sword', 'Steel Dagger', 'Wooden Staff', 'Cleric Mace', 'Wooden Shield', 'Spell Tome', 'Leather Gloves', 'Iron Gauntlets', 'Silk Gloves'])(
+        '%s fits sockets and both identity markers to its actual support', baseName => {
+            const visual = EQUIPMENT_VISUAL_DESCRIPTORS[baseName];
+            const piece = createProceduralEquipmentVisual(item(baseName, visual.slot, { level: 1, sockets: 3,
+                setId: 'warlord_fury', uniqueEffect: 'guardian' }));
+            piece.updateMatrixWorld(true);
+            const supports = ['Gear_Blade', 'Gear_BladeRune', 'Gear_Shaft', 'Gear_MaceHead', 'Gear_TomeCover',
+                'Gear_ShieldFace', 'Gear_ShieldRim', 'Gear_ShieldSpine', 'Gear_Glove', 'Gear_GloveRim']
+                .map(name => piece.getObjectByName(name)).filter(Boolean);
+            for (const name of ['Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+                const part = piece.getObjectByName(name), point = part.getWorldPosition(new THREE.Vector3());
+                const hit = new THREE.Raycaster(point.clone().add(new THREE.Vector3(0, 0, 2)), new THREE.Vector3(0, 0, -1))
+                    .intersectObjects(supports)[0];
+                expect(hit).toBeDefined();
+                expect(point.z - hit.point.z).toBeGreaterThan(0);
+                expect(point.z - hit.point.z).toBeLessThan(.004);
+            }
+            if (visual.family === 'blade') for (let index = 1; index <= 3; index++) {
+                const front = piece.getObjectByName(`Gear_SocketMount${index}`);
+                const back = piece.getObjectByName(`Gear_SocketMountBack${index}`);
+                expect(back.scale.equals(front.scale)).toBe(true);
+                expect(front.position.z + back.position.z).toBeCloseTo(.035);
+                expect(front.position.y).toBe(back.position.y);
+            }
+        });
+
+    test.each(['Leather Cap', 'Iron Helm', 'Silk Hood', 'Plate Mail', 'Leather Tunic', 'Robes'])(
+        '%s seats all sockets and identity settings against its curved surface', baseName => {
+            const visual = EQUIPMENT_VISUAL_DESCRIPTORS[baseName];
+            for (const level of [1, 100]) {
+                const piece = createProceduralEquipmentVisual(item(baseName, visual.slot, {
+                    level, sockets: 3, setId: 'warlord_fury', uniqueEffect: 'guardian'
+                }));
+                piece.updateMatrixWorld(true);
+                const supports = ['Gear_CapCrown', 'Gear_CapBand', 'Gear_Hood', 'Gear_Helm', 'Gear_HelmCrown', 'Gear_HelmBrow', 'Gear_Torso']
+                    .map(name => piece.getObjectByName(name)).filter(Boolean);
+                for (const name of ['Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+                    const point = piece.getObjectByName(name).getWorldPosition(new THREE.Vector3());
+                    const hit = new THREE.Raycaster(point.clone().add(new THREE.Vector3(0, 0, 2)), new THREE.Vector3(0, 0, -1))
+                        .intersectObjects(supports)[0];
+                    expect(hit).toBeDefined();
+                    const expectedGap = (visual.family === 'headwear' ? .004 * .65 : .009) * piece.scale.z;
+                    expect(point.z - hit.point.z).toBeCloseTo(expectedGap, 5);
+                }
+            }
+        });
+
     test.each(Object.entries(EQUIPMENT_VISUAL_DESCRIPTORS).filter(([, visual]) =>
         ['ring', 'waist', 'trinket', 'neckwear'].includes(visual.family)).map(([name]) => name))(
         '%s has surface-mounted, accessory-sized gem and identity settings', baseName => {
@@ -149,7 +196,7 @@ describe('rigid equipment batching', () => {
     ])('%s eyes remain clear through every headwear family and item tier', (type, factory, pairedOffset) => {
         const actor = factory();
         for (const baseName of ['Iron Helm', 'Leather Cap', 'Silk Hood']) for (const level of [1, 30, 100]) {
-            applyProceduralEquipment(actor, { head: item(baseName, 'head', { level }) });
+            applyProceduralEquipment(actor, { head: item(baseName, 'head', { level, sockets: 3, setId: 'warlord_fury', uniqueEffect: 'guardian' }) });
             actor.updateMatrixWorld(true);
             const head = actor.getObjectByName('Equipment_Head');
             const gear = head.children.filter(part => part.userData.equipmentVisual);

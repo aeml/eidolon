@@ -188,10 +188,9 @@ and Cleric necklace views, plus the final Rogue with hair visible under its cap.
 The preceding boot/cuff, shoulder, leg, cloth, eye/face and necklace checks are
 completed local evidence. Do not rerun them one slice at a time without changes.
 
-- Small accessories are integrated and a clean preview candidate is staged
-  below. Do not reopen the completed boot/cuff/leg/shoulder slices without new
-  evidence. The final enhanced gallery still shows legacy head/chest decoration
-  offsets; review those mounts before claiming the full ornament pass complete.
+- The code-owned fit work and isolated candidate are prepared below, including
+  the final head/chest/weapon settings pass. Reopen completed pieces only for
+  new evidence, not another speculative round of microscopic adjustments.
 - Reuse accepted galleries and lifecycle checks for candidate review rather
   than another broad soak. Do not infer phone hardware acceptance.
 - The supplied Fighter GLB pilot is still an open handoff, not an existing
@@ -231,3 +230,32 @@ The isolated art candidate is based on prepared1.38, separate from the root's
 pending gameplay WIP, and includes draft unreleased patch notes. Its runtime
 version remains1.38 deliberately: no publication or skipped1.39/1.40 gate.
 Candidate files are byte-matched to the tested root files before committing.
+
+### Final decoration integration and local review
+
+Headwear settings now follow the cap/crown or run vertically beside the hood's
+face opening, with smaller mounts. Torso settings sample the curved chest.
+The same review found legacy offsets on focus weapons, off-hands, blade
+identity markers and glove identity markers; these now sample real supporting
+surfaces too. Shield fitting updates its translated parent before sampling.
+Blade front/back sockets retain matched size and mirrored position. No earned
+item property, inventory schema, skill behavior or animation track changed.
+
+349 focused tests passed5.043s. Added surface-contact checks for all six
+head/chest forms and nine weapon/off-hand/glove forms; existing armor/accessory
+checks remain. Four-class eye clearance now uses fully decorated headwear at
+levels1/30/100 rather than empty helmets. Lint and whitespace passed.
+
+The final combined hardware-Chrome case passed19.8s at
+/tmp/eidolon-141-final-settings/: all36 equipment families on all four local
+and replicated classes, High/Low full outfits. Root inspected all four final
+High screenshots. Previous ordinary/mixed gear and movement galleries cover
+the unchanged geometry and attachments; the final change is ornament placement.
+This closes the known code-fit issues from this pass without claiming universal
+clipping freedom, final authored art or phone performance.
+
+The code-owned1.41 preview is ready for ordered integration, subject to earlier
+version gates and live verification. Continue independent1.42 environment
+integration while those gates remain open. The Fighter GLB/source/license and
+owner's final art approval remain outstanding; do not turn procedural fallback
+polish into a claim of production-art parity or full-roadmap completion.

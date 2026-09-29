@@ -577,9 +577,25 @@ function socketDecorationPosition(slot, visual) {
     return [0.1, 0.08, 0.18];
 }
 
-// Small jewelry needs settings at its own scale, not the armor default.
+// Jewelry and headwear need settings at their own scale, not the armor default.
 // Origins remain item-local; surface fitting happens before cached batching.
-function accessoryLayout(visual) {
+function fittedDecorationLayout(visual) {
+    if (visual.family === 'blade') return { scale: .65, spacing: .085, vertical: true,
+        origin: [0, .4, .08], identity: [0, .66, .08], surfaces: ['Gear_Blade', 'Gear_BladeRune'] };
+    if (visual.family === 'focusWeapon') return { scale: .6, spacing: .08, vertical: true,
+        origin: [0, .45, .08], identity: [0, .7, .08], surfaces: ['Gear_Shaft', 'Gear_MaceHead'] };
+    if (visual.family === 'offhand') return { scale: .75, spacing: .07,
+        origin: visual.variant === 'tome' ? [.08, .12, .4] : [-.2, .08, .4],
+        identity: visual.variant === 'tome' ? [.08, .45, .4] : [-.2, .25, .4],
+        surfaces: ['Gear_TomeCover', 'Gear_ShieldFace', 'Gear_ShieldRim', 'Gear_ShieldSpine'] };
+    if (visual.family === 'handwear') return { scale: .65, spacing: .065,
+        origin: [0, .13, .18], identity: [0, .04, .18], surfaces: ['Gear_Glove', 'Gear_GloveRim'] };
+    if (visual.family === 'headwear') return {
+        scale: .65, spacing: .055, vertical: visual.variant === 'hood',
+        origin: visual.variant === 'hood' ? [.30, .22, .3] : [0, visual.variant === 'cap' ? .40 : .48, .3],
+        identity: visual.variant === 'hood' ? [.30, .40, .3] : [0, visual.variant === 'cap' ? .50 : .58, .3],
+        surfaces: ['Gear_CapCrown', 'Gear_CapBand', 'Gear_Hood', 'Gear_Helm', 'Gear_HelmCrown', 'Gear_HelmBrow']
+    };
     if (visual.family === 'ring') return { scale: .28, spacing: .035, origin: [0, .06, 0], identity: [0, .025, .035], top: true,
         surfaces: ['Gear_RingSetting', 'Gear_RingSeal', 'Gear_RingStone'] };
     if (visual.family === 'waist') return { scale: .6, spacing: .09, origin: [0, 0, .55], identity: [0, .05, .55],
@@ -596,7 +612,8 @@ function accessoryLayout(visual) {
 
 function fitAccessoryDecoration(group, layout, position, top = false) {
     const supports = layout.surfaces.map(name => group.getObjectByName(name)).filter(Boolean);
-    supports.forEach(part => part.updateMatrixWorld(true));
+    // Shield surfaces are nested under a translated mount; update ancestors too.
+    supports.forEach(part => part.updateWorldMatrix(true, false));
     const ray = new THREE.Raycaster(top ? new THREE.Vector3(position[0], 2, position[2]) : new THREE.Vector3(position[0], position[1], 2),
         top ? new THREE.Vector3(0, -1, 0) : new THREE.Vector3(0, 0, -1));
     const hit = ray.intersectObjects(supports)[0];
@@ -612,7 +629,7 @@ function addSocketDetails(group, item, visual, mats) {
     // edge. Matching reverse fittings represent the same embedded stones and
     // keep a naturally pitched weapon readable from either face.
     const blade = visual.family === 'blade';
-    const layout = accessoryLayout(visual), size = layout?.scale ?? 1;
+    const layout = fittedDecorationLayout(visual), size = layout?.scale ?? 1;
     const origin = layout?.origin ?? (blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot, visual));
     const shown = Math.min(3, socketCount);
     for (let index = 0; index < shown; index++) {
@@ -628,7 +645,8 @@ function addSocketDetails(group, item, visual, mats) {
             })
             : mats.dark;
         const offset = (index - (shown - 1) / 2) * (layout?.spacing ?? .085);
-        const position = [origin[0] + (blade ? 0 : offset), origin[1] + (blade ? offset : 0), origin[2]];
+        const vertical = blade || layout?.vertical;
+        const position = [origin[0] + (vertical ? 0 : offset), origin[1] + (vertical ? offset : 0), origin[2]];
         if (visual.family === 'handwear') {
             // Seat all three sockets on the curved cuff, not floating beyond
             // the narrow wrist's sides. Geometry remains shared and immutable.
@@ -651,10 +669,10 @@ function addSocketDetails(group, item, visual, mats) {
             // The extruded blade spans z=0..0.035 before its bevel. Mirror
             // around its mid-plane; do not draw through the blade or body.
             addMesh(group, `Gear_SocketMountBack${index + 1}`, geometry('gear-socket-mount', () => new THREE.OctahedronGeometry(0.048, 0)), mats.dark, {
-                position: [position[0], position[1], 0.035 - position[2]], scale: [1, 1, 0.4]
+                position: [position[0], position[1], 0.035 - position[2]], scale: [size, size, .4 * size]
             });
             addMesh(group, `Gear_SocketBack${index + 1}`, geometry('gear-socket', () => new THREE.OctahedronGeometry(0.033, 0)), gemMaterial, {
-                position: [position[0], position[1], 0.035 - position[2] - 0.018], scale: [1, 1, 0.55]
+                position: [position[0], position[1], 0.035 - position[2] - .018 * size], scale: [size, size, .55 * size]
             });
         }
     }
@@ -673,7 +691,8 @@ function fitFootOrnament(visual, position) {
 // actual shell so folds, handedness and curved metal stay consistent.
 function fitArmorOrnament(group, visual, position) {
     const surface = visual.family === 'shoulderArmor' ? 'Gear_Shoulder'
-        : visual.family === 'legArmor' ? 'Gear_ThighArmor' : null;
+        : visual.family === 'legArmor' ? 'Gear_ThighArmor'
+            : visual.family === 'bodyArmor' ? 'Gear_Torso' : null;
     if (!surface) return position;
     const shell = group.getObjectByName(surface);
     shell.updateMatrixWorld(true);
@@ -688,10 +707,12 @@ function addIdentityDetails(group, item, visual) {
     const uniqueEffect = String(item?.uniqueEffect || '');
     if (!setId && !uniqueEffect) return;
 
-    const layout = accessoryLayout(visual), size = layout?.scale ?? 1;
+    const layout = fittedDecorationLayout(visual), size = layout?.scale ?? 1;
     const origin = layout?.identity ?? socketDecorationPosition(visual.slot, visual);
     const positionFor = (sign, paired, depth) => {
-        const position = [origin[0] + sign * (paired ? .08 * size : 0), origin[1] + (layout ? 0 : .1), origin[2] + depth];
+        const separation = sign * (paired ? .08 * size : 0);
+        const position = [origin[0] + (layout?.vertical ? 0 : separation),
+            origin[1] + (layout?.vertical ? separation : layout ? 0 : .1), origin[2] + depth];
         return layout ? fitAccessoryDecoration(group, layout, position)
             : fitArmorOrnament(group, visual, fitFootOrnament(visual, position));
     };
