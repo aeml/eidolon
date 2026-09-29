@@ -5,6 +5,10 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Refined Earth trails with subdued embedded gravel, shallow crevices and
+  clearer worn tracks, retaining existing path geometry and walking space.
+  See the [road material review](2026-09-29-bastion-road-verges.md).
+
 - Reduced off-screen terrain and fern/sedge rendering without removing plants
   or altering the terrain surface. Sampled Low road views now meet geometry
   targets; High and frame-time acceptance remain open. See the

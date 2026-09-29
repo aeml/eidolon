@@ -28,26 +28,34 @@ export function sampleEarthTrail(x, y) {
     const shoulder = smooth(.16, .39, Math.abs(u - .5));
     const edge = Math.min(u, 1 - u);
     const alpha = smooth(.012 + broad * .1, .16 + broad * .12, edge);
-    const sx = u * 24, sy = v * 20, cx = Math.floor(sx), cy = Math.floor(sy);
-    let stone = 0, stoneTone = 0;
+    // Larger half-buried aggregate reads at play zoom; tiny grain alone
+    // disappears into the soil's mean color after mip filtering.
+    const sx = u * 16, sy = v * 14, cx = Math.floor(sx), cy = Math.floor(sy);
+    let stone = 0, stoneTone = 0, stoneFace = 0, crevice = 0;
     for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
-        const ix = cx + dx, iy = cy + dy, wy = wrap(iy, 20), seed = hash(ix + 91, wy);
-        if (seed < .73 - shoulder * .2) continue;
+        const ix = cx + dx, iy = cy + dy, wy = wrap(iy, 14), seed = hash(ix + 91, wy);
+        if (seed < .75 - shoulder * .22 + (broad - .5) * .3) continue;
         const px = sx - ix - hash(ix, wy), py = sy - iy - hash(ix + 73, wy);
         const angle = seed * Math.PI * 2;
         const a = px * Math.cos(angle) - py * Math.sin(angle), b = px * Math.sin(angle) + py * Math.cos(angle);
-        const distance = Math.hypot(a / (.18 + seed * .12), b / (.13 + seed * .1));
-        const shape = 1 - smooth(.55, 1, distance);
-        if (shape > stone) { stone = shape; stoneTone = seed; }
+        const ax = a / (.24 + seed * .14), by = b / (.18 + seed * .12);
+        // Unequal clipped facets avoid both round pebbles and square tiles.
+        const distance = Math.max(Math.abs(ax), Math.abs(by), Math.abs(ax + by * .63) * .76);
+        const shape = 1 - smooth(.68, 1, distance);
+        crevice = Math.max(crevice, (1 - smooth(.95, 1.24, distance)) * smooth(.62, 1, distance));
+        if (shape > stone) {
+            stone = shape; stoneTone = seed;
+            stoneFace = clamp(.55 + ax * .17 - by * .2);
+        }
     }
-    stone *= .3 + shoulder * .7;
-    const shade = .86 + broad * .23 + grit * .09 - tracks * .13;
-    const soil = [87, 76, 59].map(value => value * shade);
-    const gravel = [106, 102, 90].map(value => value * (.78 + stoneTone * .2));
+    stone *= (.36 + shoulder * .64) * (.45 + smooth(.2, .7, broad) * .55);
+    const shade = .83 + broad * .27 + grit * .12 - tracks * .17 - crevice * .11;
+    const soil = [94, 81, 62].map(value => value * shade);
+    const gravel = [108, 104, 93].map(value => value * (.72 + stoneTone * .16 + stoneFace * .14));
     return {
         color: soil.map((value, i) => Math.round(value + (gravel[i] - value) * stone)),
-        alpha: Math.round(alpha * 215),
-        height: .26 + broad * .12 + grit * .06 - tracks * .055 + stone * .17,
+        alpha: Math.round(alpha * 245),
+        height: .26 + broad * .12 + grit * .06 - tracks * .07 + stone * (.12 + stoneFace * .1),
         roughness: .94 - tracks * .13 - stone * .09
     };
 }
@@ -61,8 +69,8 @@ export function createEarthTrailMaps(quality = 'high') {
         const cx = x * canonical / size, cy = y * canonical / size, at = (y * size + x) * 4;
         const sample = samples[cy * canonical + cx];
         pixels[0].set([...sample.color, sample.alpha], at);
-        const nx = (height(cx - 1, cy) - height(cx + 1, cy)) * 2.5;
-        const ny = (height(cx, cy - 1) - height(cx, cy + 1)) * 2.5;
+        const nx = (height(cx - 1, cy) - height(cx + 1, cy)) * .85;
+        const ny = (height(cx, cy - 1) - height(cx, cy + 1)) * .85;
         const length = Math.hypot(nx, ny, 1);
         pixels[1].set([Math.round((nx / length * .5 + .5) * 255), Math.round((ny / length * .5 + .5) * 255),
             Math.round((1 / length * .5 + .5) * 255), 255], at);

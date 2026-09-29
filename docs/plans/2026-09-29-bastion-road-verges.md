@@ -1,5 +1,30 @@
 # Bastion road: connecting the empty intervals
 
+## Follow-up: worn trail material (on 8b900756)
+
+Reworked the existing Earth trail maps with larger irregular embedded aggregate,
+shallow edge crevices and more distinct compacted tracks. Grouped stone coverage
+with the soil field; softened normal relief after the first preview looked like
+bright confetti. Road opacity increases at the centre while retaining zero-alpha
+outer edges. Same textures/resolutions/materials, topology, walking space and
+six-metre longitudinal wrapping; both qualities retain registered features.
+
+23 trail/ribbon/population checks passed (12.055s), plus the final three trail
+checks (5.009s) after adding a shallow-normal regression. An initial command
+included a nonexistent WorldPaths test; the corrected named suites passed.
+Final High/Low terrain preview passed22.4s, including movement, picking, effects
+and culling pixel equivalence. Inspected High western bank and Low woodland cut.
+Draw/triangle counts are unchanged from8b900756. This improves road readability;
+the surrounding terrain still needs stronger composition and the whole scene
+remains below the final visual target. No FPS/physical-phone/campaign claim.
+
+Comparison: `/tmp/eidolon-terrain-culling-final-0929` (before),
+`/tmp/eidolon-trail-aggregate-0929` (rejected bright preview),
+`/tmp/eidolon-trail-weathered-0929` (retained). Scoped lint/diff passed.
+No deployment, runtime change, gate waiver or elevation activation.
+
+## Earlier verge composition
+
 Extended the existing Earth/town scene review with normal-camera road samples
 at x340, x520 and x720, z200. Before captures showed almost bare screenfuls
 between the authored locations, including the milestone junction and Bastion
