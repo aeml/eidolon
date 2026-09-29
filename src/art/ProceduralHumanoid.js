@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
+import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry, createFittedBootGeometry, createWristCuffGeometry, createPauldronGeometry, createClothMantleGeometry, createGreatHelmGeometry, createLegSectionGeometry, createDrapedSkirtGeometry } from './ProceduralGarmentGeometry.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 
 const GEOMETRIES = new Map();
@@ -74,7 +74,7 @@ export const HUMANOID_EQUIPMENT_ANCHORS = Object.freeze({
     chest: ['Equipment_Chest'],
     gloves: ['Equipment_GloveLeft', 'Equipment_GloveRight'],
     belt: ['Equipment_Belt'],
-    legs: ['Equipment_LegLeft', 'Equipment_LegRight'],
+    legs: ['Equipment_LegLeft', 'Equipment_LegRight', 'Equipment_ShinLeft', 'Equipment_ShinRight'],
     feet: ['Equipment_FootLeft', 'Equipment_FootRight'],
     neck: ['Equipment_Neck'],
     ring1: ['Equipment_RingLeft'],
@@ -133,6 +133,52 @@ function addPivot(parent, name, position = [0, 0, 0], rotation = [0, 0, 0]) {
     return pivot;
 }
 
+function fittedMaterial(source, doubleSided = false) {
+    const key = `fitted:${source.uuid}:${doubleSided}`;
+    if (!MATERIALS.has(key)) {
+        const fitted = source.clone();
+        fitted.flatShading = false;
+        if (doubleSided) fitted.side = THREE.DoubleSide;
+        MATERIALS.set(key, fitted);
+    }
+    return MATERIALS.get(key);
+}
+
+function addDefaultBoot(anchor, name, upper, trim, sole, scale, lift = 0) {
+    for (const [part, suffix, surface] of [['upper', '', upper], ['sole', '_Sole', sole], ['toe', '_Toe', trim]]) {
+        addMesh(anchor, name + suffix, geometry(`default-fitted-boot:${part}`, () => createFittedBootGeometry(part)),
+            fittedMaterial(surface), { scale, position: [0, lift, 0] });
+    }
+}
+
+function addDefaultCuff(anchor, name, surface, width) {
+    for (const rim of [false, true]) {
+        addMesh(anchor, name + (rim ? '_Rim' : ''), geometry(`default-fitted-cuff:${rim}`, () => createWristCuffGeometry(rim)),
+            fittedMaterial(surface), { scale: [width, 1, width] });
+    }
+}
+
+function addDefaultShoulder(anchor, name, surface, trim, sign, scale, cloth = false) {
+    const parts = cloth ? [['shell', ''], ['rim', '_Hem']] : [['shell', ''], ['rim', '_Rim'], ['lame', '_Lame']];
+    for (const [part, suffix] of parts) {
+        const shape = geometry(`default-shoulder:${cloth}:${part}`, () => cloth
+            ? createClothMantleGeometry(part === 'rim') : createPauldronGeometry(part));
+        addMesh(anchor, name + suffix, shape, fittedMaterial(part === 'rim' ? trim : surface, cloth),
+            { position: [sign * .035, 0, 0], scale });
+    }
+}
+
+function addDefaultLegSection(anchor, name, section, surface, scale = [1, 1, 1]) {
+    return addMesh(anchor, name, geometry(`default-leg:${section}`, () => createLegSectionGeometry(section)),
+        fittedMaterial(surface), { scale });
+}
+
+function addShinAnchor(shin, side) {
+    const anchor = addAnchor(shin, `Equipment_Shin${side}`);
+    anchor.userData.equipmentSegment = 'shin';
+    return anchor;
+}
+
 function addAnchor(parent, name, position = [0, 0, 0], rotation = [0, 0, 0]) {
     const anchor = addPivot(parent, name, position, rotation);
     anchor.userData.equipmentAnchor = true;
@@ -188,13 +234,7 @@ function addArm(parent, side, materials) {
     );
 
     const pauldronAnchor = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
-    addMesh(
-        pauldronAnchor,
-        `Fighter_Pauldron${side}`,
-        geometry('pauldron', () => new THREE.DodecahedronGeometry(0.5, 0)),
-        materials.ironLight,
-        { position: [sign * 0.05, -0.06, 0], scale: [1.12, 0.56, 0.86], rotation: [0, 0, sign * 0.16] }
-    );
+    addDefaultShoulder(pauldronAnchor, `Fighter_Pauldron${side}`, materials.ironLight, materials.edge, sign, [1, 1, 1]);
     addMesh(
         pauldronAnchor,
         `Fighter_PauldronRidge${side}`,
@@ -202,7 +242,7 @@ function addArm(parent, side, materials) {
         materials.edge,
         { position: [sign * 0.32, 0.14, 0], rotation: [0, 0, -sign * 0.45] }
     );
-    addRivet(pauldronAnchor, `Fighter_PauldronRivet${side}`, [sign * 0.16, -0.12, 0.4], 0.06);
+    addRivet(pauldronAnchor, `Fighter_PauldronRivet${side}`, [sign * 0.10, -0.07, 0.385], 0.06);
 
     const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.7, 0], [-0.08, 0, 0]);
     addMesh(
@@ -213,13 +253,7 @@ function addArm(parent, side, materials) {
         { position: [0, -0.32, 0] }
     );
     const gloveAnchor = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.63, 0]);
-    addMesh(
-        gloveAnchor,
-        `Fighter_Gauntlet${side}`,
-        geometry('gauntlet', () => new THREE.DodecahedronGeometry(0.2, 0)),
-        materials.iron,
-        { scale: [0.8, 1.05, 0.9] }
-    );
+    addDefaultCuff(gloveAnchor, `Fighter_Gauntlet${side}`, materials.iron, .9);
 
     const ringName = side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight';
     addGrippingHand(gloveAnchor, `Fighter_Hand${side}`, materials.leather, sign, side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 1.1);
@@ -233,38 +267,15 @@ function addLeg(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
     const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.32, -0.12, 0], [0, 0, sign * 0.025]);
     const legAnchor = addAnchor(thigh, `Equipment_Leg${side}`);
-    addMesh(
-        legAnchor,
-        `Fighter_Thigh${side}`,
-        geometry('thigh', () => new THREE.CylinderGeometry(0.26, 0.21, 0.86, 8)),
-        materials.iron,
-        { position: [0, -0.43, 0] }
-    );
+    addDefaultLegSection(legAnchor, `Fighter_Thigh${side}`, 'thigh', materials.iron);
 
     const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.84, 0], [0.02, 0, 0]);
-    addMesh(
-        shin,
-        `Fighter_Shin${side}`,
-        geometry('shin', () => new THREE.CylinderGeometry(0.2, 0.16, 0.8, 8)),
-        materials.leather,
-        { position: [0, -0.4, 0] }
-    );
-    addMesh(
-        shin,
-        `Fighter_Greave${side}`,
-        geometry('greave', () => new THREE.ConeGeometry(0.22, 0.72, 5)),
-        materials.ironLight,
-        { position: [0, -0.38, 0.11], rotation: [Math.PI, 0, 0], scale: [0.88, 1, 0.5] }
-    );
+    const shinArmor = addShinAnchor(shin, side);
+    addDefaultLegSection(shinArmor, `Fighter_Shin${side}`, 'shin', materials.leather);
+    addDefaultLegSection(shinArmor, `Fighter_Greave${side}`, 'greave', materials.ironLight);
 
     const footAnchor = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.8, 0.09]);
-    addMesh(
-        footAnchor,
-        `Fighter_Boot${side}`,
-        geometry('boot', () => new THREE.BoxGeometry(0.38, 0.24, 0.62, 1, 1, 1)),
-        materials.iron,
-        { position: [0, 0.1, 0.13], rotation: [-0.05, 0, 0] }
-    );
+    addDefaultBoot(footAnchor, `Fighter_Boot${side}`, materials.iron, materials.ironLight, materials.leather, [.95, 1, 1]);
     return thigh;
 }
 
@@ -410,17 +421,9 @@ function addRogueArm(parent, side, materials) {
     );
 
     const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
-    addMesh(
-        shoulder,
-        `Rogue_ShoulderGuard${side}`,
-        geometry('rogue-shoulder-guard', () => new THREE.DodecahedronGeometry(0.38, 0)),
-        side === 'Left' ? materials.leatherLight : materials.leather,
-        {
-            position: [sign * 0.04, -0.08, 0.01],
-            rotation: [0, 0, sign * 0.18],
-            scale: side === 'Left' ? [1.12, 0.48, 0.78] : [0.92, 0.38, 0.68]
-        }
-    );
+    addDefaultShoulder(shoulder, `Rogue_ShoulderGuard${side}`,
+        side === 'Left' ? materials.leatherLight : materials.leather, materials.leatherLight,
+        sign, side === 'Left' ? [.85, .8, .8] : [.72, .7, .7]);
     if (side === 'Left') {
         addMesh(
             shoulder,
@@ -440,13 +443,7 @@ function addRogueArm(parent, side, materials) {
         { position: [0, -0.3, 0] }
     );
     const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.59, 0]);
-    addMesh(
-        glove,
-        `Rogue_Bracer${side}`,
-        geometry('rogue-bracer', () => new THREE.CylinderGeometry(0.14, 0.115, 0.34, 7)),
-        materials.leatherLight,
-        { position: [0, 0.11, 0] }
-    );
+    addDefaultCuff(glove, `Rogue_Bracer${side}`, materials.leatherLight, .76);
     addMesh(
         glove,
         `Rogue_WristBlade${side}`,
@@ -469,13 +466,7 @@ function addRogueLeg(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
     const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.29, -0.08, 0], [0.04, 0, sign * 0.035]);
     const leg = addAnchor(thigh, `Equipment_Leg${side}`);
-    addMesh(
-        leg,
-        `Rogue_Thigh${side}`,
-        geometry('rogue-thigh', () => new THREE.CylinderGeometry(0.225, 0.17, 0.8, 7)),
-        materials.cloth,
-        { position: [0, -0.4, 0] }
-    );
+    addDefaultLegSection(leg, `Rogue_Thigh${side}`, 'thigh', materials.cloth, [.85, .94, .85]);
     addMesh(
         leg,
         `Rogue_ThighStrap${side}`,
@@ -485,36 +476,12 @@ function addRogueLeg(parent, side, materials) {
     );
 
     const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.78, 0], [0.08, 0, 0]);
-    addMesh(
-        shin,
-        `Rogue_Shin${side}`,
-        geometry('rogue-shin', () => new THREE.CylinderGeometry(0.16, 0.12, 0.73, 7)),
-        materials.clothDark,
-        { position: [0, -0.36, 0] }
-    );
-    addMesh(
-        shin,
-        `Rogue_ShinGuard${side}`,
-        geometry('rogue-shin-guard', () => new THREE.ConeGeometry(0.16, 0.56, 5)),
-        materials.leatherLight,
-        { position: [0, -0.35, 0.1], rotation: [Math.PI, 0, 0], scale: [0.8, 1, 0.42] }
-    );
+    const shinArmor = addShinAnchor(shin, side);
+    addDefaultLegSection(shinArmor, `Rogue_Shin${side}`, 'shin', materials.clothDark, [.8, .96, .8]);
+    addDefaultLegSection(shinArmor, `Rogue_ShinGuard${side}`, 'greave', materials.leatherLight, [.8, .96, .8]);
 
     const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.78, 0.08]);
-    addMesh(
-        foot,
-        `Rogue_Boot${side}`,
-        geometry('rogue-boot', () => new THREE.BoxGeometry(0.31, 0.2, 0.56)),
-        materials.leather,
-        { position: [0, 0.09, 0.13], rotation: [-0.08, 0, 0] }
-    );
-    addMesh(
-        foot,
-        `Rogue_BootToe${side}`,
-        geometry('rogue-boot-toe', () => new THREE.ConeGeometry(0.15, 0.3, 5)),
-        materials.leatherLight,
-        { position: [0, 0.08, 0.39], rotation: [Math.PI / 2, 0, 0], scale: [0.86, 1, 0.62] }
-    );
+    addDefaultBoot(foot, `Rogue_Boot${side}`, materials.leather, materials.leatherLight, materials.clothDark, [.82, .85, .94], .007);
 }
 
 function addWizardArm(parent, side, materials) {
@@ -529,23 +496,15 @@ function addWizardArm(parent, side, materials) {
     );
 
     const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
-    addMesh(
-        shoulder,
-        `Wizard_Mantle${side}`,
-        geometry('wizard-mantle', () => new THREE.TetrahedronGeometry(0.42, 0)),
-        side === 'Left' ? materials.slate : materials.clothLight,
-        {
-            position: [sign * 0.04, -0.08, -0.01],
-            rotation: [0.1, 0, sign * 0.72],
-            scale: side === 'Left' ? [1.2, 0.72, 0.9] : [1, 0.62, 0.82]
-        }
-    );
+    addDefaultShoulder(shoulder, `Wizard_Mantle${side}`,
+        side === 'Left' ? materials.slate : materials.clothLight, materials.silver,
+        sign, side === 'Left' ? [.95, .9, .9] : [.85, .85, .82], true);
     addMesh(
         shoulder,
         `Wizard_MantleRune${side}`,
         geometry('wizard-mantle-rune', () => new THREE.TorusGeometry(0.1, 0.025, 4, 6)),
         side === 'Left' ? materials.storm : materials.arcane,
-        { position: [sign * 0.08, -0.08, 0.25], rotation: [Math.PI / 2, 0, 0], scale: [0.9, 1.2, 1] }
+        { position: [sign * 0.08, -0.08, side === 'Left' ? .342 : .314], rotation: [.25, 0, 0], scale: [.75, .75, .5] }
     );
 
     const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.71, 0], [0.08, 0, 0]);
@@ -557,13 +516,7 @@ function addWizardArm(parent, side, materials) {
         { position: [0, -0.31, 0] }
     );
     const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.62, 0]);
-    addMesh(
-        glove,
-        `Wizard_RuneBracer${side}`,
-        geometry('wizard-rune-bracer', () => new THREE.CylinderGeometry(0.155, 0.115, 0.36, 7)),
-        materials.slate,
-        { position: [0, 0.12, 0] }
-    );
+    addDefaultCuff(glove, `Wizard_RuneBracer${side}`, materials.slate, .82);
     addMesh(
         glove,
         `Wizard_BracerGem${side}`,
@@ -586,53 +539,20 @@ function addWizardLeg(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
     const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.28, -0.1, 0], [0, 0, sign * 0.025]);
     const leg = addAnchor(thigh, `Equipment_Leg${side}`);
-    addMesh(
-        leg,
-        `Wizard_Thigh${side}`,
-        geometry('wizard-thigh', () => new THREE.CylinderGeometry(0.22, 0.17, 0.84, 7)),
-        materials.clothDark,
-        { position: [0, -0.42, 0] }
-    );
+    addDefaultLegSection(leg, `Wizard_Thigh${side}`, 'thigh', materials.clothDark, [.84, 1, .84]);
     addMesh(
         leg,
         `Wizard_RobePanel${side}`,
-        geometry('wizard-robe-panel', () => {
-            const shape = new THREE.Shape();
-            shape.moveTo(-0.3, 0.12);
-            shape.lineTo(0.3, 0.12);
-            shape.lineTo(0.22, -1.12);
-            shape.lineTo(0, -1.28);
-            shape.lineTo(-0.24, -1.08);
-            shape.closePath();
-            return new THREE.ShapeGeometry(shape, 1);
-        }),
-        side === 'Left' ? materials.cloth : materials.clothLight,
-        { position: [sign * 0.12, -0.16, 0.22], rotation: [0.04, Math.PI, sign * 0.035], receiveShadow: false }
+        geometry('wizard-robe-panel', () => createDrapedSkirtGeometry()),
+        fittedMaterial(side === 'Left' ? materials.cloth : materials.clothLight, true),
+        { position: [sign * 0.06, -0.06, 0.23], rotation: [0.04, 0, sign * 0.035], receiveShadow: false }
     );
 
     const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.82, 0], [0.03, 0, 0]);
-    addMesh(
-        shin,
-        `Wizard_Shin${side}`,
-        geometry('wizard-shin', () => new THREE.CylinderGeometry(0.17, 0.12, 0.78, 7)),
-        materials.clothDark,
-        { position: [0, -0.38, 0] }
-    );
+    const shinArmor = addShinAnchor(shin, side);
+    addDefaultLegSection(shinArmor, `Wizard_Shin${side}`, 'shin', materials.clothDark, [.85, 1, .85]);
     const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.8, 0.08]);
-    addMesh(
-        foot,
-        `Wizard_Boot${side}`,
-        geometry('wizard-boot', () => new THREE.BoxGeometry(0.32, 0.22, 0.58)),
-        materials.leather,
-        { position: [0, 0.1, 0.13], rotation: [-0.06, 0, 0] }
-    );
-    addMesh(
-        foot,
-        `Wizard_BootCap${side}`,
-        geometry('wizard-boot-cap', () => new THREE.ConeGeometry(0.15, 0.32, 5)),
-        materials.slate,
-        { position: [0, 0.1, 0.4], rotation: [Math.PI / 2, 0, 0], scale: [0.82, 1, 0.58] }
-    );
+    addDefaultBoot(foot, `Wizard_Boot${side}`, materials.leather, materials.slate, materials.clothDark, [.84, .9, .96], .008);
 }
 
 function addWizardStaff(anchor, materials) {
@@ -714,23 +634,15 @@ function addClericArm(parent, side, materials) {
     );
 
     const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
-    addMesh(
-        shoulder,
-        `Cleric_ReliquaryPauldron${side}`,
-        geometry('cleric-reliquary-pauldron', () => new THREE.DodecahedronGeometry(0.42, 0)),
-        side === 'Left' ? materials.bronze : materials.iron,
-        {
-            position: [sign * 0.04, -0.08, 0],
-            rotation: [0, 0, sign * 0.18],
-            scale: side === 'Left' ? [1.02, 0.5, 0.82] : [0.92, 0.44, 0.76]
-        }
-    );
+    addDefaultShoulder(shoulder, `Cleric_ReliquaryPauldron${side}`,
+        side === 'Left' ? materials.bronze : materials.iron, materials.gold,
+        sign, side === 'Left' ? [.9, .85, .87] : [.82, .8, .8]);
     addMesh(
         shoulder,
         `Cleric_ShoulderSeal${side}`,
         geometry('cleric-shoulder-seal', () => new THREE.CylinderGeometry(0.11, 0.11, 0.035, 8)),
         side === 'Left' ? materials.holy : materials.spirit,
-        { position: [sign * 0.08, -0.06, 0.34], rotation: [Math.PI / 2, 0, 0], scale: [1, 1, 0.5] }
+        { position: [sign * 0.08, -0.06, side === 'Left' ? .332 : .307], rotation: [Math.PI / 2, 0, 0], scale: [1, 1, 0.5] }
     );
 
     const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.71, 0], [-0.04, 0, 0]);
@@ -742,13 +654,7 @@ function addClericArm(parent, side, materials) {
         { position: [0, -0.31, 0] }
     );
     const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.62, 0]);
-    addMesh(
-        glove,
-        `Cleric_VotiveGauntlet${side}`,
-        geometry('cleric-votive-gauntlet', () => new THREE.CylinderGeometry(0.165, 0.125, 0.38, 8)),
-        materials.bronze,
-        { position: [0, 0.12, 0] }
-    );
+    addDefaultCuff(glove, `Cleric_VotiveGauntlet${side}`, materials.bronze, .87);
     addMesh(
         glove,
         `Cleric_GauntletRune${side}`,
@@ -771,67 +677,40 @@ function addClericLeg(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
     const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.33, -0.1, 0], [0, 0, sign * 0.025]);
     const leg = addAnchor(thigh, `Equipment_Leg${side}`);
-    addMesh(
-        leg,
-        `Cleric_Thigh${side}`,
-        geometry('cleric-thigh', () => new THREE.CylinderGeometry(0.23, 0.175, 0.82, 8)),
-        materials.iron,
-        { position: [0, -0.41, 0] }
-    );
+    addDefaultLegSection(leg, `Cleric_Thigh${side}`, 'thigh', materials.iron, [.9, .98, .9]);
     addMesh(
         leg,
         `Cleric_VestmentPanel${side}`,
-        geometry('cleric-vestment-panel', () => {
-            const shape = new THREE.Shape();
-            shape.moveTo(-0.29, 0.14);
-            shape.lineTo(0.29, 0.14);
-            shape.lineTo(0.24, -0.62);
-            shape.lineTo(0.06, -0.76);
-            shape.lineTo(-0.08, -0.65);
-            shape.lineTo(-0.25, -0.72);
-            shape.closePath();
-            return new THREE.ShapeGeometry(shape, 1);
-        }),
-        side === 'Left' ? materials.cloth : materials.clothDark,
-        { position: [sign * 0.11, -0.11, 0.22], rotation: [0.035, Math.PI, sign * 0.04], receiveShadow: false }
+        geometry('cleric-vestment-panel', () => createDrapedSkirtGeometry()),
+        fittedMaterial(side === 'Left' ? materials.cloth : materials.clothDark, true),
+        { position: [sign * 0.07, -0.04, 0.24], rotation: [0.035, 0, sign * 0.04], scale: [.9, .62, 1], receiveShadow: false }
     );
     addMesh(
         leg,
         `Cleric_VestmentHem${side}`,
-        geometry('cleric-vestment-hem', () => new THREE.BoxGeometry(0.46, 0.08, 0.05)),
-        materials.gold,
-        { position: [sign * 0.11, -0.77, 0.235], rotation: [0, 0, sign * 0.06], scale: [0.82, 1, 1] }
+        geometry('cleric-vestment-hem', () => createDrapedSkirtGeometry('hem')),
+        fittedMaterial(materials.gold, true),
+        { position: [sign * 0.07, -0.04, 0.24], rotation: [0.035, 0, sign * 0.04], scale: [.9, .62, 1], receiveShadow: false }
     );
     addMesh(
         leg,
         `Cleric_ThighSunplate${side}`,
         geometry('cleric-thigh-sunplate', () => new THREE.DodecahedronGeometry(0.2, 0)),
         materials.bronze,
-        { position: [0, -0.32, 0.18], scale: [0.82, 1.25, 0.34] }
+        { position: [0, -0.32, 0.28], scale: [0.65, 0.7, 0.18] }
     );
 
     const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.81, 0], [0.03, 0, 0]);
-    addMesh(
-        shin,
-        `Cleric_Shin${side}`,
-        geometry('cleric-shin', () => new THREE.CylinderGeometry(0.18, 0.14, 0.77, 8)),
-        materials.clothDark,
-        { position: [0, -0.38, 0] }
-    );
+    const shinArmor = addShinAnchor(shin, side);
+    addDefaultLegSection(shinArmor, `Cleric_Shin${side}`, 'shin', materials.clothDark, [.9, 1, .9]);
     const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.79, 0.08]);
-    addMesh(
-        foot,
-        `Cleric_Boot${side}`,
-        geometry('cleric-boot', () => new THREE.BoxGeometry(0.36, 0.23, 0.59)),
-        materials.leather,
-        { position: [0, 0.1, 0.13], rotation: [-0.05, 0, 0] }
-    );
+    addDefaultBoot(foot, `Cleric_Boot${side}`, materials.leather, materials.bronze, materials.clothDark, [.93, .96, .98], .004);
     addMesh(
         foot,
         `Cleric_BootReliquary${side}`,
         geometry('cleric-boot-reliquary', () => new THREE.BoxGeometry(0.22, 0.15, 0.08)),
         materials.bronze,
-        { position: [0, 0.12, 0.38], rotation: [0, 0, Math.PI / 4] }
+        { position: [0, .20, .33], rotation: [0, 0, Math.PI / 4] }
     );
 }
 
@@ -1414,9 +1293,8 @@ export function createProceduralFighter() {
     addMesh(
         headAnchor,
         'Fighter_GreatHelm',
-        geometry('great-helm', () => new THREE.CylinderGeometry(0.38, 0.34, 0.65, 8)),
-        materials.iron,
-        { position: [0, 0.17, 0] }
+        geometry('great-helm', () => createGreatHelmGeometry()),
+        fittedMaterial(materials.iron)
     );
     addMesh(
         headAnchor,
@@ -1642,7 +1520,7 @@ export function createProceduralRogue() {
         { position: [0, 0.18, -0.015], scale: [0.83, 1, 0.83] }
     );
     [-1, 1].forEach((side) => {
-        addMesh(
+        const lock = addMesh(
             headAnchor,
             side < 0 ? 'Rogue_HairLockLeft' : 'Rogue_HairLockRight',
             geometry('rogue-hair-lock', () => new THREE.ConeGeometry(0.075, 0.42, 5)),
@@ -1653,13 +1531,14 @@ export function createProceduralRogue() {
                 scale: [0.82, side < 0 ? 1.08 : 0.9, 0.72]
             }
         );
+        lock.userData.equipmentBodyBase = true;
     });
     addMesh(
         headAnchor,
         'Rogue_Hood',
-        geometry('rogue-hood', () => new THREE.ConeGeometry(0.43, 0.76, 7, 1, true)),
-        materials.cloth,
-        { position: [0, 0.29, -0.09], rotation: [0, 0, Math.PI], scale: [1, 1, 0.82] }
+        geometry('rogue-hood', createOpenHoodGeometry),
+        fittedMaterial(materials.cloth, true),
+        { position: [0, 0, -0.015], scale: [.83, .96, .85] }
     );
     addMesh(
         headAnchor,
@@ -1692,29 +1571,34 @@ export function createProceduralRogue() {
     );
     rightEye.userData.equipmentBodyBase = true;
     [-1, 1].forEach((side) => {
-        addMesh(
+        const brow = addMesh(
             headAnchor,
             side < 0 ? 'Rogue_BrowLeft' : 'Rogue_BrowRight',
             geometry('rogue-brow', () => new THREE.BoxGeometry(0.105, 0.018, 0.018)),
             materials.hair,
             { position: [side * 0.095, 0.225, 0.235], rotation: [0, 0, -side * 0.09] }
         );
+        brow.userData.equipmentBodyBase = true;
     });
-    addMesh(
+    const nose = addMesh(
         headAnchor,
         'Rogue_Nose',
         geometry('rogue-nose', () => new THREE.TetrahedronGeometry(0.065, 0)),
         materials.skin,
         { position: [0, 0.105, 0.255], rotation: [0.16, Math.PI / 4, 0], scale: [0.52, 1, 0.55] }
     );
-    addMesh(
+    nose.userData.equipmentBodyBase = true;
+    const lips = addMesh(
         headAnchor,
         'Rogue_Lips',
         geometry('rogue-lips', () => new THREE.BoxGeometry(0.105, 0.022, 0.018)),
         materials.lips,
         { position: [0, 0.01, 0.238], rotation: [0, 0, -0.025] }
     );
+    lips.userData.equipmentBodyBase = true;
     const braid = addPivot(headAnchor, 'Rogue_Braid', [0.22, 0.02, -0.21], [0.18, 0, -0.16]);
+    // The cap/fringe hides under equipped headwear; the hanging hair remains.
+    braid.userData.equipmentBodyBase = true;
     for (let index = 0; index < 4; index++) {
         addMesh(
             braid,

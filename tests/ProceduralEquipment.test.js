@@ -51,6 +51,301 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test.each(Object.entries(EQUIPMENT_VISUAL_DESCRIPTORS).filter(([, visual]) =>
+        ['ring', 'waist', 'trinket', 'neckwear'].includes(visual.family)).map(([name]) => name))(
+        '%s has surface-mounted, accessory-sized gem and identity settings', baseName => {
+            const visual = EQUIPMENT_VISUAL_DESCRIPTORS[baseName];
+            for (const level of [1, 100]) {
+                const piece = createProceduralEquipmentVisual(item(baseName, visual.slot, {
+                    level, sockets: 3, gems: [{ type: 'Ruby' }, { type: 'Emerald' }, { type: 'Sapphire' }],
+                    setId: 'warlord_fury', uniqueEffect: 'guardian'
+                }));
+                piece.updateMatrixWorld(true);
+                const supports = ['Gear_RingSetting', 'Gear_RingSeal', 'Gear_RingStone', 'Gear_Belt', 'Gear_Buckle', 'Gear_BeltMark',
+                    'Gear_Orb', 'Gear_TrinketFocus', 'Gear_TrinketSetting', 'Gear_ChokerSeal', 'Gear_NeckFocus', 'Gear_NeckSetting']
+                    .map(name => piece.getObjectByName(name)).filter(Boolean);
+                for (const name of ['Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+                    const setting = piece.getObjectByName(name), point = setting.getWorldPosition(new THREE.Vector3());
+                    const top = visual.family === 'ring' && name.startsWith('Gear_SocketMount');
+                    const direction = top ? new THREE.Vector3(0, -1, 0) : new THREE.Vector3(0, 0, -1);
+                    const ray = new THREE.Raycaster(point.clone().addScaledVector(direction, -2), direction);
+                    const hit = ray.intersectObjects(supports)[0];
+                    expect(hit).toBeDefined();
+                    expect(point.distanceTo(hit.point)).toBeLessThan(.004);
+                    expect(setting.scale.x).toBeLessThanOrEqual(.6);
+                }
+                for (let index = 1; index <= 3; index++) expect(piece.getObjectByName(`Gear_Socket${index}`).material.emissiveIntensity).toBe(.12);
+            }
+        });
+
+    test.each(['Pendant', 'Necklace'])('%s has a continuous draped chain that meets its front-facing focus', baseName => {
+        const first = createProceduralEquipmentVisual(item(baseName, 'neck', { level: 1 }));
+        const second = createProceduralEquipmentVisual(item(baseName, 'neck', { level: 1 }));
+        const chain = first.getObjectByName('Gear_NeckChain'), focus = first.getObjectByName('Gear_NeckFocus');
+        expect(chain.geometry.type).toBe('TubeGeometry');
+        expect(chain.geometry).toBe(second.getObjectByName('Gear_NeckChain').geometry);
+        for (const attribute of Object.values(chain.geometry.attributes)) expect(attribute.array.every(Number.isFinite)).toBe(true);
+        expect(chain.geometry.parameters.closed).toBe(true);
+        expect(focus.rotation.x).toBe(0);
+        first.updateMatrixWorld(true);
+        const join = chain.geometry.parameters.path.getPoint(0).applyMatrix4(chain.matrixWorld);
+        const vertices = focus.geometry.attributes.position, indices = focus.geometry.index;
+        let distance = Infinity;
+        for (let i = 0; i < (indices?.count ?? vertices.count); i += 3) {
+            const points = [0, 1, 2].map(offset => new THREE.Vector3()
+                .fromBufferAttribute(vertices, indices ? indices.getX(i + offset) : i + offset).applyMatrix4(focus.matrixWorld));
+            distance = Math.min(distance, new THREE.Triangle(...points).closestPointToPoint(join, new THREE.Vector3()).distanceTo(join));
+        }
+        expect(distance).toBeLessThan(.018); // chain radius: actual touching surfaces, not just overlapping bounds
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
+        ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
+    ])('%s neck focus clears every equipped chest family', (_name, factory) => {
+        const actor = factory();
+        for (const chest of ['Plate Mail', 'Leather Tunic', 'Robes']) for (const neck of ['Pendant', 'Necklace']) for (const [chestLevel, neckLevel] of [[1, 100], [100, 1]]) {
+            const result = applyProceduralEquipment(actor, { chest: item(chest, 'chest', { level: chestLevel }), neck: item(neck, 'neck', { level: neckLevel }) });
+            expect(result.items).toBe(2);
+            actor.updateMatrixWorld(true);
+            const focus = actor.getObjectByName('Gear_NeckFocus');
+            const point = focus.getWorldPosition(new THREE.Vector3());
+            const direction = new THREE.Vector3(0, 0, 1).transformDirection(actor.getObjectByName('Equipment_Neck').matrixWorld);
+            const chestPieces = actor.getObjectByName('Equipment_Chest').children.filter(part => part.userData.equipmentVisual);
+            expect(chestPieces).toHaveLength(1);
+            const hits = new THREE.Raycaster(point.clone().addScaledVector(direction, 2), direction.clone().negate(), 0, 1.99)
+                .intersectObjects(chestPieces, true).filter(hit => hit.object.visible);
+            expect(hits.map(hit => `${chest}/${neck}:${hit.object.name}`)).toEqual([]);
+        }
+    });
+
+    test('Rogue retains facial details when any headwear replaces the open default hood', () => {
+        const actor = createProceduralRogue();
+        const features = ['Rogue_Nose', 'Rogue_Lips', 'Rogue_BrowLeft', 'Rogue_BrowRight',
+            'Rogue_HairLockLeft', 'Rogue_HairLockRight', 'Rogue_Braid'];
+        const hood = actor.getObjectByName('Rogue_Hood');
+        expect(hood.geometry.type).toBe('LatheGeometry');
+        expect(hood.material.flatShading).toBe(false);
+        actor.updateMatrixWorld(true);
+        for (const name of ['Rogue_EyeGlow', 'Rogue_EyeGlowRight']) {
+            const eye = actor.getObjectByName(name).getWorldPosition(new THREE.Vector3());
+            const direction = new THREE.Vector3(0, .32, 1).normalize();
+            expect(new THREE.Raycaster(eye.clone().addScaledVector(direction, 2), direction.clone().negate(), 0, 1.99)
+                .intersectObject(hood)).toHaveLength(0);
+        }
+        for (const baseName of ['Iron Helm', 'Leather Cap', 'Silk Hood']) {
+            applyProceduralEquipment(actor, { head: item(baseName, 'head') });
+            expect(hood.visible).toBe(false);
+            for (const name of features) expect(actor.getObjectByName(name).visible).toBe(true);
+        }
+        clearProceduralEquipment(actor);
+        expect(hood.visible).toBe(true);
+        for (const name of features) expect(actor.getObjectByName(name).visible).toBe(true);
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter, .125], ['Rogue', createProceduralRogue, 0],
+        ['Wizard', createProceduralWizard, .1], ['Cleric', createProceduralCleric, 0]
+    ])('%s eyes remain clear through every headwear family and item tier', (type, factory, pairedOffset) => {
+        const actor = factory();
+        for (const baseName of ['Iron Helm', 'Leather Cap', 'Silk Hood']) for (const level of [1, 30, 100]) {
+            applyProceduralEquipment(actor, { head: item(baseName, 'head', { level }) });
+            actor.updateMatrixWorld(true);
+            const head = actor.getObjectByName('Equipment_Head');
+            const gear = head.children.filter(part => part.userData.equipmentVisual);
+            expect(gear.length).toBeGreaterThan(0);
+            for (const side of [-1, 1]) {
+                const eye = actor.getObjectByName(`${type}_EyeGlow${pairedOffset || side === -1 ? '' : 'Right'}`);
+                const point = eye.localToWorld(new THREE.Vector3(side * pairedOffset, 0, 0));
+                for (const elevation of [0, .32]) {
+                    const direction = new THREE.Vector3(0, elevation, 1).transformDirection(head.matrixWorld);
+                    const hits = new THREE.Raycaster(point.clone().addScaledVector(direction, 2), direction.clone().negate(), 0, 1.99)
+                        .intersectObjects(gear, true).filter(hit => hit.object.visible);
+                    expect(hits.map(hit => `${baseName}:${level}:${hit.object.name}`)).toEqual([]);
+                }
+            }
+        }
+    });
+
+    test.each(['Plate Greaves', 'Leather Pants', 'Silk Skirt'])('%s seats its knee mark, sockets and identity ornaments against the upper leg', baseName => {
+        const piece = createProceduralEquipmentVisual(item(baseName, 'legs', {
+            level: 1, sockets: 3, setId: 'warlord_fury', uniqueEffect: 'guardian'
+        }));
+        piece.updateMatrixWorld(true);
+        const surface = piece.getObjectByName('Gear_ThighArmor');
+        for (const name of ['Gear_KneeMark', 'Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+            const decoration = piece.getObjectByName(name);
+            const hit = new THREE.Raycaster(new THREE.Vector3(decoration.position.x, decoration.position.y, 1),
+                new THREE.Vector3(0, 0, -1)).intersectObject(surface)[0];
+            expect(hit).toBeDefined();
+            expect(decoration.position.z - hit.point.z).toBeCloseTo(.009, 5);
+        }
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
+        ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
+    ])('%s replaces both leg sections without leaving old shin armor or moving the feet', (type, factory) => {
+        const actor = factory();
+        const feet = ['Left', 'Right'].map(side => actor.getObjectByName(`Equipment_Foot${side}`));
+        const footPositions = feet.map(foot => foot.position.clone());
+        for (const baseName of ['Plate Greaves', 'Leather Pants', 'Silk Skirt']) {
+            applyProceduralEquipment(actor, { legs: item(baseName, 'legs', { level: 1, sockets: 1, gems: [{ type: 'Ruby' }] }) });
+            expect(visualGroups(actor)).toHaveLength(4);
+            for (const side of ['Left', 'Right']) {
+                const shin = actor.getObjectByName(`Rig_Shin${side}`);
+                const anchor = actor.getObjectByName(`Equipment_Shin${side}`);
+                const visual = anchor.children.find(part => part.userData.equipmentVisual);
+                expect(anchor.parent).toBe(shin);
+                expect(visual.userData.segment).toBe('shin');
+                expect(visual.getObjectByName('Gear_ShinArmor')).toBeDefined();
+                expect(visual.getObjectByName('Gear_Greave') !== undefined).toBe(baseName !== 'Silk Skirt');
+                expect(visual.getObjectByName('Gear_Socket1')).toBeUndefined();
+                expect(actor.getObjectByName(`${type}_Shin${side}`).visible).toBe(false);
+                expect(feet.every(foot => foot.visible)).toBe(true);
+                actor.updateMatrixWorld(true);
+                const before = visual.getWorldPosition(new THREE.Vector3());
+                const rotation = shin.rotation.x;
+                // Position below the knee must move with the shin, not the thigh.
+                const tipBefore = visual.localToWorld(new THREE.Vector3(0, -.6, 0));
+                shin.rotation.x += .8;
+                actor.updateMatrixWorld(true);
+                expect(visual.getWorldPosition(new THREE.Vector3()).distanceTo(before)).toBeLessThan(.0001);
+                expect(visual.localToWorld(new THREE.Vector3(0, -.6, 0)).distanceTo(tipBefore)).toBeGreaterThan(.3);
+                shin.rotation.x = rotation;
+            }
+            clearProceduralEquipment(actor);
+            expect(visualGroups(actor)).toHaveLength(0);
+            for (const side of ['Left', 'Right']) expect(actor.getObjectByName(`${type}_Shin${side}`).visible).toBe(true);
+        }
+        feet.forEach((foot, index) => expect(foot.position.equals(footPositions[index])).toBe(true));
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter, 'Pauldron'], ['Rogue', createProceduralRogue, 'ShoulderGuard'],
+        ['Wizard', createProceduralWizard, 'Mantle'], ['Cleric', createProceduralCleric, 'ReliquaryPauldron']
+    ])('%s preserves its fitted default shoulders through equip and removal', (type, factory, name) => {
+        const root = factory(), other = factory(), parts = [];
+        for (const side of ['Left', 'Right']) {
+            const anchor = root.getObjectByName(`Equipment_Shoulder${side}`);
+            for (const suffix of type === 'Wizard' ? ['', '_Hem'] : ['', '_Rim', '_Lame']) {
+                const part = root.getObjectByName(`${type}_${name}${side}${suffix}`);
+                expect(part.parent).toBe(anchor);
+                expect(part.material.flatShading).toBe(false);
+                expect(part.geometry).toBe(other.getObjectByName(part.name).geometry);
+                expect(part.material).toBe(other.getObjectByName(part.name).material);
+                if (type === 'Wizard') expect(part.material.side).toBe(THREE.DoubleSide);
+                parts.push(part);
+            }
+        }
+        applyProceduralEquipment(root, { shoulders: item('Velvet Mantle', 'shoulders') });
+        for (const part of parts) expect(part.visible).toBe(false);
+        clearProceduralEquipment(root);
+        for (const part of parts) expect(part.visible).toBe(true);
+    });
+
+    test.each(['Steel Pauldrons', 'Reinforced Spaulders', 'Velvet Mantle'])('%s fits sockets and identity ornaments to both shoulder surfaces', baseName => {
+        const data = item(baseName, 'shoulders', { level: 1, sockets: 3, setId: 'warlord_fury', uniqueEffect: 'guardian' });
+        for (const side of [-1, 1]) {
+            const piece = createProceduralEquipmentVisual(data, { side });
+            piece.updateMatrixWorld(true);
+            const cap = piece.getObjectByName('Gear_Shoulder');
+            expect(cap.material.flatShading).toBe(false);
+            for (const name of ['Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+                const decoration = piece.getObjectByName(name);
+                const ray = new THREE.Raycaster(new THREE.Vector3(decoration.position.x, decoration.position.y, 1), new THREE.Vector3(0, 0, -1));
+                const hit = ray.intersectObject(cap)[0];
+                expect(hit).toBeDefined();
+                expect(decoration.position.z - hit.point.z).toBeCloseTo(.009, 5);
+            }
+        }
+    });
+
+    test('rounded Fighter great helm leaves its paired eyes visible and restores after unequip', () => {
+        const actor = createProceduralFighter();
+        actor.updateMatrixWorld(true);
+        const helm = actor.getObjectByName('Fighter_GreatHelm'), eyes = actor.getObjectByName('Fighter_EyeGlow');
+        expect(helm.material.flatShading).toBe(false);
+        for (const x of [-.125, .125]) {
+            const point = eyes.localToWorld(new THREE.Vector3(x, 0, 0));
+            const direction = new THREE.Vector3(0, .32, 1).transformDirection(eyes.matrixWorld);
+            const ray = new THREE.Raycaster(point.clone().addScaledVector(direction, 2), direction.clone().negate(), 0, 1.99);
+            expect(ray.intersectObject(helm)).toHaveLength(0);
+        }
+        applyProceduralEquipment(actor, { head: item('Iron Helm', 'head') });
+        expect(helm.visible).toBe(false);
+        clearProceduralEquipment(actor);
+        expect(helm.visible).toBe(true);
+    });
+
+    test.each([
+        ['Fighter', createProceduralFighter, 'Gauntlet'], ['Rogue', createProceduralRogue, 'Bracer'],
+        ['Wizard', createProceduralWizard, 'RuneBracer'], ['Cleric', createProceduralCleric, 'VotiveGauntlet']
+    ])('%s restores fitted class footwear and cuffs after equipment removal', (type, factory, cuffName) => {
+        const root = factory(), second = factory();
+        const defaults = [], anchors = [];
+        for (const side of ['Left', 'Right']) {
+            for (const slot of ['Foot', 'Glove']) {
+                const anchor = root.getObjectByName(`Equipment_${slot}${side}`);
+                anchors.push([anchor, anchor.position.clone(), anchor.quaternion.clone()]);
+            }
+            for (const name of [`${type}_Boot${side}`, `${type}_Boot${side}_Sole`, `${type}_Boot${side}_Toe`,
+                `${type}_${cuffName}${side}`, `${type}_${cuffName}${side}_Rim`]) {
+                const part = root.getObjectByName(name);
+                expect(part.material.flatShading).toBe(false);
+                expect(part.geometry).toBe(second.getObjectByName(name).geometry);
+                expect(part.material).toBe(second.getObjectByName(name).material);
+                defaults.push([part, part.geometry, part.material]);
+            }
+        }
+        applyProceduralEquipment(root, { feet: item('Iron Boots', 'feet'), gloves: item('Silk Gloves', 'gloves') });
+        for (const [part] of defaults) expect(part.visible).toBe(false);
+        clearProceduralEquipment(root);
+        for (const [part, geometry, material] of defaults) {
+            expect(part.visible).toBe(true); expect(part.geometry).toBe(geometry); expect(part.material).toBe(material);
+        }
+        for (const [anchor, position, rotation] of anchors) {
+            expect(anchor.position.equals(position)).toBe(true); expect(anchor.quaternion.equals(rotation)).toBe(true);
+        }
+    });
+
+    test.each(['Iron Boots', 'Leather Boots', 'Sandals'])('%s seats sockets and identity ornaments on the actual footwear', baseName => {
+        const data = item(baseName, 'feet', { level: 1, sockets: 3, setId: 'warlord_fury', uniqueEffect: 'guardian' });
+        const piece = createProceduralEquipmentVisual(data);
+        piece.updateMatrixWorld(true);
+        const support = ['Gear_Boot', 'Gear_BootCap', 'Gear_SandalStrap'].map(name => piece.getObjectByName(name)).filter(Boolean);
+        for (const name of ['Gear_SocketMount1', 'Gear_SocketMount2', 'Gear_SocketMount3', 'Gear_SetRune', 'Gear_UniqueRune']) {
+            const decoration = piece.getObjectByName(name);
+            const ray = new THREE.Raycaster(new THREE.Vector3(decoration.position.x, decoration.position.y, 1), new THREE.Vector3(0, 0, -1));
+            const hit = ray.intersectObjects(support)[0];
+            expect(hit).toBeDefined();
+            expect(Math.abs(hit.point.z - decoration.position.z)).toBeLessThan(.02);
+        }
+        if (baseName !== 'Sandals') {
+            expect(piece.getObjectByName('Gear_Boot').material.flatShading).toBe(false);
+            expect(piece.getObjectByName('Gear_BootSole')).toBeDefined();
+        }
+    });
+
+    test.each(['Leather Gloves', 'Iron Gauntlets', 'Silk Gloves'])('%s exposes the grip beneath a shared fitted cuff', baseName => {
+        const data = item(baseName, 'gloves', { level: 1, sockets: 3 });
+        const first = createProceduralEquipmentVisual(data), second = createProceduralEquipmentVisual(data);
+        const cuff = first.getObjectByName('Gear_Glove');
+        expect(cuff.geometry.type).toBe('LatheGeometry');
+        expect(cuff.geometry).toBe(second.getObjectByName('Gear_Glove').geometry);
+        expect(cuff.material.flatShading).toBe(false);
+        expect(first.getObjectByName('Gear_GloveRim')).toBeDefined();
+        for (let index = 1; index <= 3; index++) {
+            const mount = first.getObjectByName(`Gear_SocketMount${index}`);
+            // The setting intersects the shell rather than floating over it.
+            first.updateMatrixWorld(true);
+            const ray = new THREE.Raycaster(new THREE.Vector3(mount.position.x, mount.position.y, 1), new THREE.Vector3(0, 0, -1));
+            const hit = ray.intersectObject(cuff)[0];
+            expect(hit).toBeDefined();
+            expect(Math.abs(hit.point.z - mount.position.z)).toBeLessThan(.012);
+        }
+    });
+
     test.each([1, 30, 100])('leather cap clears Rogue eyes at the normal close-up angle at level %s', level => {
         const root = createProceduralRogue();
         applyProceduralEquipment(root, {head: item('Leather Cap', 'head', {level})});
@@ -343,8 +638,14 @@ describe('procedural equipment visual manifest', () => {
                 uniqueEffect: 'vampiric',
                 statScaleVersion: 1
             }));
-            expect(group.getObjectByName('Gear_SetRune')).toBeTruthy();
-            expect(group.getObjectByName('Gear_UniqueRune')).toBeTruthy();
+            if (group.userData.segment === 'shin') {
+                // Identity and sockets remain on the upper section, not duplicated per bone.
+                expect(group.getObjectByName('Gear_SetRune')).toBeUndefined();
+                expect(group.getObjectByName('Gear_UniqueRune')).toBeUndefined();
+            } else {
+                expect(group.getObjectByName('Gear_SetRune')).toBeTruthy();
+                expect(group.getObjectByName('Gear_UniqueRune')).toBeTruthy();
+            }
         });
         expect(result.parts).toBeGreaterThan(groups.length);
         expect(finiteTransforms(root)).toBe(true);
@@ -464,7 +765,7 @@ describe('procedural equipment visual manifest', () => {
             items: EQUIPMENT_RENDER_SLOTS.length,
             missing: []
         }));
-        expect(visualGroups(root)).toHaveLength(18);
+        expect(visualGroups(root)).toHaveLength(20);
         expect(result.parts).toBeGreaterThanOrEqual(45);
         expect(face.visible).toBe(true);
         expect(eyes.visible).toBe(true);
@@ -499,7 +800,7 @@ describe('procedural equipment visual manifest', () => {
             items: EQUIPMENT_RENDER_SLOTS.length,
             missing: []
         }));
-        expect(visualGroups(root)).toHaveLength(18);
+        expect(visualGroups(root)).toHaveLength(20);
         expect(result.parts).toBeGreaterThanOrEqual(45);
         visualGroups(root).forEach((group) => {
             expect(group.userData.fitScale).toBe(root.userData.equipmentScaleBySlot[group.userData.slot]);
@@ -546,7 +847,7 @@ describe('procedural equipment visual manifest', () => {
             items: EQUIPMENT_RENDER_SLOTS.length,
             missing: []
         }));
-        expect(visualGroups(root)).toHaveLength(18);
+        expect(visualGroups(root)).toHaveLength(20);
         expect(result.parts).toBeGreaterThanOrEqual(45);
         visualGroups(root).forEach((group) => {
             expect(group.userData.fitScale).toBe(root.userData.equipmentScaleBySlot[group.userData.slot]);
@@ -591,7 +892,7 @@ describe('procedural equipment visual manifest', () => {
             items: EQUIPMENT_RENDER_SLOTS.length,
             missing: []
         }));
-        expect(visualGroups(root)).toHaveLength(18);
+        expect(visualGroups(root)).toHaveLength(20);
         expect(result.parts).toBeGreaterThanOrEqual(45);
         visualGroups(root).forEach((group) => {
             expect(group.userData.fitScale).toBe(root.userData.equipmentScaleBySlot[group.userData.slot]);

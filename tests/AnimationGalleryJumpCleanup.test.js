@@ -25,6 +25,23 @@ function gallery() {
 }
 
 describe('gallery jump preview lifecycle', () => {
+    test.each(['presentEquipment', 'presentEquipmentLoadout'])('%s clears old effects and jump state before showing gear', method => {
+        const value = gallery();
+        value.actor.mesh.userData.proceduralHumanoid = true;
+        value.actor.syncEquipmentVisuals = jest.fn();
+        value.equipmentSelect = { value: '' };
+        value.playActorState('Jump'); value.update(.4);
+        expect(value.jumpDuration).toBe(1);
+        const effectsBefore = value.clearEffects.mock.calls.length;
+        expect(value[method]('Iron Sword')).toBe(true);
+        expect(value.clearEffects.mock.calls.length).toBe(effectsBefore + 1);
+        expect(value.jumpDuration).toBe(0);
+        expect(value.actor.state).toBe('IDLE');
+        expect(value.actor.syncEquipmentVisuals).toHaveBeenCalled();
+        expect(value.phase).toMatch(/^equipment:/);
+        value.actor.dispose();
+    });
+
     test.each(['Walk', 'Run'])('an interrupted jump cannot reset a replacement actor’s %s preview', state => {
         const value = gallery();
         const oldActor = value.actor;
