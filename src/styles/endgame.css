@@ -34,6 +34,7 @@
     color: #b9acd2;
     font-size: 0.72rem;
 }
+.resonance-btn .resonance-trait-label { color: #f2eaff; font-size: inherit; }
 
 .resonance-btn:disabled {
     cursor: default;

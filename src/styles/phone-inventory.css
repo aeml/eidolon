@@ -29,6 +29,9 @@
 .mobile-mode #character-sheet .char-sheet-body { flex: 1 1 auto; min-height: 0; max-height: none; padding: 12px; overscroll-behavior: contain; touch-action: pan-y; }
 .mobile-mode #character-sheet :is(#stats-content, .stat-row, .character-attributes .stat-row) { font-size: 16px; }
 .mobile-mode #character-sheet .stat-btn, .mobile-mode .character-preview-controls button { min-width: 44px; min-height: 44px; }
+.mobile-mode #character-sheet .character-attributes { grid-template-columns: minmax(0, 1fr); }
+.mobile-mode #character-sheet :is(.character-stat-note, .character-section-heading, .resonance-panel > div, .resonance-btn span) { font-size: 16px; line-height: 1.5; }
+.mobile-mode #character-sheet .resonance-btn { min-height: 44px; font-size: 16px; align-items: center; text-align: left; }
 .mobile-mode #character-sheet .equipment-slots { flex: 0 0 auto; grid-template-columns: 76px minmax(0, 1fr) 76px; grid-template-rows: repeat(7, 76px); }
 .mobile-mode #character-sheet .equip-slot { width: 76px; height: 76px; font-size: 13px; padding-bottom: 22px; }
 .mobile-mode .phone-equipped-label { display: block; position: absolute; bottom: 2px; left: 2px; right: 2px; color: #d4deea; font-size: 11px; line-height: 1.1; }

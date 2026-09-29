@@ -1,5 +1,6 @@
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { equipmentVisualSignature } from '../art/ProceduralEquipment.js';
+import { updateCharacterStatsPanel } from './CharacterStatsPanel.js';
 
 class UIManagerCharacterMethods {
     updateXP(player) {
@@ -41,54 +42,7 @@ class UIManagerCharacterMethods {
         }
         this.lastCharacterSheetSignature = signature;
 
-        const showPoints = !player.isMultiplayer;
-        const btnStyle = (player.statPoints > 0 && showPoints) ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
-
-        // Helper to format stat with bonus
-        const fmtStat = (statName) => {
-            const total = player.stats[statName];
-            const base = player.baseStats ? player.baseStats[statName] : total; // Fallback if baseStats missing
-            const bonus = total - base;
-            if (bonus > 0) {
-                return `${total} <span class="character-stat-bonus">(+${bonus})</span>`;
-            }
-            return total;
-        };
-
-        const resonanceRanks = player.resonanceRanks || {};
-        const resonance = player.level >= 100 || player.resonanceUnlocked ? `
-            <div class="resonance-panel" aria-label="Endgame Resonance progression">
-                <strong>Resonance ${player.resonanceLevel || 0}</strong>
-                <div>${player.resonanceXP || 0} / ${player.resonanceXPToNext || 5000000} resonance XP · ${player.resonancePoints || 0} unspent</div>
-                <div class="resonance-guidance">At level 100, enemy, quest and dungeon XP becomes Resonance XP. Daily quests are optional. Each Resonance level grants one trait point; EP cannot buy these points.</div>
-                <div class="resonance-traits">
-                    ${[['power', 'Power', '+1% damage'], ['ward', 'Ward', '+1% health and armor'], ['fortune', 'Fortune', '+1% gold and XP']].map(([trait, label, detail]) => `
-                        <button type="button" class="resonance-btn" data-resonance-trait="${trait}" ${(player.resonancePoints || 0) <= 0 || (resonanceRanks[trait] || 0) >= 50 ? 'disabled' : ''}>
-                            ${label} ${resonanceRanks[trait] || 0}/50 <span>${detail}</span>
-                        </button>`).join('')}
-                </div>
-            </div>` : '';
-
-        this.statsContent.innerHTML = `
-            <div class="character-summary">
-                <strong>Level ${player.level}</strong>
-                <span>XP ${player.xp} / ${player.xpToNextLevel}</span>
-                ${showPoints ? `<span class="character-points">${player.statPoints} attribute points</span>` : ''}
-            </div>
-            ${resonance}
-            <div class="character-vitals">
-                <span class="character-health">Health <strong>${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</strong></span>
-                <span class="character-mana">Mana <strong>${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</strong></span>
-            </div>
-            <div class="character-attributes">
-                ${[['strength', 'Strength'], ['dexterity', 'Dexterity'], ['intelligence', 'Intellect'], ['vitality', 'Vitality'], ['wisdom', 'Wisdom']].map(([stat, label]) => `
-                    <div class="stat-row" data-stat-name="${stat}"><strong>${label}</strong><span class="character-stat-value">${fmtStat(stat)}</span><button type="button" class="stat-btn" data-stat="${stat}" aria-label="Increase ${stat}" style="${btnStyle}">+</button></div>`).join('')}
-            </div>
-            <div class="character-combat-stats">
-                <span>Damage <strong>${player.stats.damage}</strong></span>
-                <span>Defense <strong>${player.stats.defense}</strong></span>
-            </div>
-        `;
+        updateCharacterStatsPanel(this.statsContent, player);
 
         this.inventory.updateEquipSlot('slot-head', player.equipment.head, 'HEAD');
         this.inventory.updateEquipSlot('slot-shoulders', player.equipment.shoulders, 'SHOULDERS');

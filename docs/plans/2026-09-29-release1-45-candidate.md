@@ -5,6 +5,11 @@ remain in force and runtime/version metadata is unchanged.
 
 ## Draft patch notes
 
+- Character sheets show equipment beside build stats on wide desktops, with
+  clearer vitals and signed attribute differences. Live stat updates preserve
+  upgrade-button focus; phone progression controls are larger. EP/wardrobe
+  panels follow the main build. See [character-sheet checks](2026-09-29-character-sheet-presentation.md).
+
 - Journal section buttons separate Story and Contracts without losing your
   tracking choices. Clearer contract cards put ready turn-ins first and use
   readable progress counts. Progress updates preserve the desktop tracker's
