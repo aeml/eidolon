@@ -28,10 +28,14 @@ export function createLeafCanopyGeometry() {
             center.clone().addScaledVector(forward, -length),
             center.clone().addScaledVector(side, -width)
         ];
-        const ridge = center.clone().addScaledVector(direction, .055);
+        // Fold along the tip-to-tip spine: two faces retain every leaf and
+        // its silhouette without the old four-triangle center pyramid.
+        points[0].addScaledVector(direction, .055);
+        points[2].addScaledVector(direction, .055);
         const shade = .68 + random() * .52;
-        for (let edge = 0; edge < 4; edge++) {
-            for (const point of [points[edge], points[(edge + 1) % 4], ridge]) {
+        for (const indices of [[0, 1, 2], [0, 2, 3]]) {
+            for (const index of indices) {
+                const point = points[index];
                 positions.push(point.x, point.y, point.z);
                 colors.push(shade * .91, shade, shade * .82);
             }

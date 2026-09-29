@@ -7,9 +7,10 @@ import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitec
 import { MeshFactory } from '../utils/MeshFactory.js';
 import {
     PROCEDURAL_FOLIAGE_RECIPES,
-    createProceduralFoliagePlacements,
-    getProceduralFoliageArchetype
+    createProceduralFoliagePlacements
 } from '../art/ProceduralRealmFoliage.js';
+import { getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
+import { createEarthUnderstory } from '../art/EarthUnderstory.js';
 import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
     createLanternholdCampPlacements,
@@ -121,7 +122,7 @@ export class WorldGenerator {
 
         for (const recipe of PROCEDURAL_FOLIAGE_RECIPES) {
             const placements = createProceduralFoliagePlacements(recipe);
-            const parts = getProceduralFoliageArchetype(recipe.id);
+            const parts = getFoliageRenderBatches(recipe.id);
             const group = new THREE.Group();
             group.name = `foliage:${recipe.region}:${recipe.id}`;
             group.userData.proceduralFoliage = true;
@@ -187,6 +188,7 @@ export class WorldGenerator {
             colliders.forEach((collider) => this.collisionManager.addCollider(collider));
             this.scene.add(group);
         }
+        if (shouldAttach()) this.scene.add(createEarthUnderstory({ quality: this.graphicsQuality }));
         return true;
     }
 
