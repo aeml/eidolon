@@ -27,4 +27,23 @@ test('court is bounded, non-emissive stonework with unchanged scale across quali
     for (const maps of [high, low]) Object.values(maps).forEach(texture => texture.dispose());
     expect(sampleLanternholdPaving(16, 0).coverage).toBe(0);
     expect(sampleLanternholdPaving(3, 4).coverage).toBe(1);
+    // The relaid court is a square, not a circular disk or outer target ring.
+    // Its quiet rectangular edges blend into the connected court mask.
+    expect(sampleLanternholdPaving(12, 12).coverage).toBe(1);
+});
+
+test('flagstone joints retain human-scale courses and finite relief across the court', () => {
+    let joints = 0, wasJoint = false;
+    for (let x = -12; x < 12; x += .025) {
+        const sample = sampleLanternholdPaving(x, 6.6);
+        const joint = sample.height < .01;
+        if (joint && !wasJoint) joints++;
+        wasJoint = joint;
+        expect(sample.height).toBeGreaterThanOrEqual(0);
+        expect(sample.height).toBeLessThan(.045);
+        expect(sample.color.every(v => Number.isFinite(v) && v >= 0 && v <= 255)).toBe(true);
+    }
+    // Around 1–2m per slab, not several-metre wedge-shaped courses.
+    expect(joints).toBeGreaterThanOrEqual(12);
+    expect(joints).toBeLessThanOrEqual(22);
 });

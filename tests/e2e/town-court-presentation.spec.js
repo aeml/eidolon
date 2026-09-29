@@ -30,21 +30,26 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const world = new WorldGenerator(render.instanceEnvironmentGroup, collision);
             await world.loadBuildings(0, 200);
             render.onWindowResize(); render.setCameraTarget(hero.position);
-            render.applyLightingPreset('town', true); render.render(); render.render();
+            render.applyLightingPreset('town', true);
+            render.updateEnvironmentLighting(hero.position, 0);
+            render.render(); render.render();
             window.__courtReview = { render, hero };
             return { zoom: render.currentZoom, opaque: !render.groundTown.material.transparent,
-                courtSize: render.groundTown.material.userData.townGroundComposition.paving.color.image.width };
+                courtSize: render.groundTown.material.userData.townGroundComposition.paving.color.image.width,
+                shadowFocused: render.shadowTarget.distanceTo(hero.position) < 1 };
         }, mobile);
         await page.screenshot({ path: testInfo.outputPath('town-court.png'), style: '#perf-overlay { visibility: hidden !important; }' });
-        for (const [label, x] of [['market', 22], ['smithy', -20]]) {
-            await page.evaluate(x => {
+        for (const [label, x, z] of [['market', 22, 200], ['smithy', -20, 200], ['casino', 0, 183]]) {
+            await page.evaluate(({ x, z }) => {
                 const { render, hero } = window.__courtReview;
-                hero.position.set(x, 0, 200); hero.mesh.position.copy(hero.position);
-                render.setCameraTarget(hero.position); render.render(); render.render();
-            }, x);
+                hero.position.set(x, 0, z); hero.mesh.position.copy(hero.position);
+                render.setCameraTarget(hero.position);
+                render.updateEnvironmentLighting(hero.position, 0);
+                render.render(); render.render();
+            }, { x, z });
             await page.screenshot({ path: testInfo.outputPath(`town-${label}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
         }
-        expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512 });
+        expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512, shadowFocused: true });
         expect(failures).toEqual([]);
     });
 }

@@ -196,16 +196,20 @@ export function createCasinoShell(x = 0, z = 170) {
     door.material.emissiveIntensity = .7;
     box(door, 'casino-door-handle', m.gold, [.15, .7, .2], [.7, 0, .3]);
     root.userData.casinoDoor = door;
-    const canvas = document.createElement('canvas'); canvas.width = 768; canvas.height = 112;
+    const canvas = document.createElement('canvas'); canvas.width = 640; canvas.height = 180;
     const context = canvas.getContext('2d');
     if (context) {
-        context.fillStyle = 'rgba(17, 24, 34, 0.94)'; context.fillRect(0, 0, 768, 112);
-        context.strokeStyle = '#d8b86b'; context.lineWidth = 4; context.strokeRect(3, 3, 762, 106);
-        context.font = 'bold 48px Georgia, serif'; context.textAlign = 'center'; context.textBaseline = 'middle';
-        context.fillStyle = '#f6df9b'; context.fillText('Lanternhold Casino', 384, 56);
+        context.fillStyle = '#111822'; context.fillRect(0, 0, 640, 180);
+        context.strokeStyle = '#d8b86b'; context.lineWidth = 4; context.strokeRect(3, 3, 634, 174);
+        context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillStyle = '#f6df9b';
+        context.font = '600 44px sans-serif'; context.fillText('LANTERNHOLD', 320, 48);
+        context.font = 'bold 76px sans-serif'; context.fillText('CASINO', 320, 119);
         const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
-        const sign = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false }));
-        sign.name = 'casino-nameplate'; sign.position.set(0, 7, 9); sign.scale.set(14, 2.04, 1);
+        // A facade-mounted plaque, not a large always-on-top billboard that
+        // cuts across the town view, foreground buildings and phone HUD.
+        const sign = new THREE.Mesh(new THREE.PlaneGeometry(8.5, 8.5 * 180 / 640),
+            new THREE.MeshBasicMaterial({ map: texture }));
+        sign.name = 'casino-nameplate'; sign.position.set(0, 6.35, 8.58);
         root.add(sign);
     }
     return root;

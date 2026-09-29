@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Lanternhold's oversized radial paving becomes human-scale weathered
+  flagstones with a modest Fourfold engraving. The casino name becomes a
+  smaller facade plaque above its unchanged clickable door. See the
+  [town square review](2026-09-29-lanternhold-gathering-court.md).
+
 - Tempest Spire gains a west-facing carved threshold, lower masonry needle,
   chamfered foundation and restrained lightning. The road/arrival moves15m
   closer so the portal reads at normal desktop and phone zoom. Legacy bounds
