@@ -411,10 +411,12 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 					}
 				}
 			}
-			w.awardExperienceLocked(entity, xpReward)
+			progression := w.awardExperienceLocked(entity, xpReward)
 			entity.Gold += goldReward
 			w.Economy.RecordSource("dungeon_room_rewards", goldReward)
-			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, dungeonType, difficulty, room.Type, room.Hook, healthRestored, manaRestored))
+			reward := buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, dungeonType, difficulty, room.Type, room.Hook, healthRestored, manaRestored)
+			reward.Progression = &progression
+			playerRewards = append(playerRewards, reward)
 			entity.Mu.Unlock()
 		}
 	}

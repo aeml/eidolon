@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
@@ -101,18 +102,25 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 	return player, true
 }
 
+// ExperienceRewardReceipt separates ordinary XP from actual cap overflow.
+// Reward summaries retain their total XP field for older clients.
+type ExperienceRewardReceipt struct {
+	XP          int `json:"xp"`
+	ResonanceXP int `json:"resonanceXP"`
+}
+
 // awardExperienceLocked owns the complete level-to-cap transition. Callers
 // must hold the entity lock (or World.Mu in legacy quest code).
-func (w *World) awardExperienceLocked(player *Entity, amount int) {
+func (w *World) awardExperienceLocked(player *Entity, amount int) ExperienceRewardReceipt {
 	if player == nil || player.Type != TypePlayer || amount <= 0 {
-		return
+		return ExperienceRewardReceipt{}
 	}
 	if player.Level >= MaxPlayerLevel {
 		player.Level = MaxPlayerLevel
 		player.MaxExperience = experienceRequiredForLevel(MaxPlayerLevel)
 		player.Experience = player.MaxExperience
 		player.addResonanceExperienceLocked(amount)
-		return
+		return ExperienceRewardReceipt{ResonanceXP: amount}
 	}
 	if player.MaxExperience <= 0 {
 		player.MaxExperience = experienceRequiredForLevel(max(1, player.Level))
@@ -136,7 +144,9 @@ func (w *World) awardExperienceLocked(player *Entity, amount int) {
 		overflow := player.Experience
 		player.Experience = player.MaxExperience
 		player.addResonanceExperienceLocked(overflow)
+		return ExperienceRewardReceipt{XP: amount - overflow, ResonanceXP: overflow}
 	}
+	return ExperienceRewardReceipt{XP: amount}
 }
 
 func (player *Entity) addResonanceExperienceLocked(amount int) {
@@ -221,15 +231,58 @@ type WeeklyRaidRewardReceipt struct {
 	ItemGranted       bool
 }
 
+// Called while the death/reward path owns player.Mu. Persisted snapshots now
+// retain an owed completion even if its asynchronous database handoff fails.
+func (player *Entity) queueWeeklyRaidCompletionLocked(at time.Time) {
+	if player.Type != TypePlayer || player.Level < MaxPlayerLevel {
+		return
+	}
+	year, week := at.UTC().ISOWeek()
+	key := fmt.Sprintf("%d-W%02d", year, week)
+	if player.WeeklyRaidRewardReceipts[key] {
+		return
+	}
+	if player.WeeklyRaidCompletions == nil {
+		player.WeeklyRaidCompletions = make(map[string]time.Time)
+	}
+	if _, exists := player.WeeklyRaidCompletions[key]; !exists {
+		player.WeeklyRaidCompletions[key] = at.UTC()
+	}
+}
+
+func (w *World) ClearWeeklyRaidCompletion(playerID, week string) {
+	w.Mu.RLock()
+	player := w.Entities[playerID]
+	w.Mu.RUnlock()
+	if player == nil {
+		return
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	delete(player.WeeklyRaidCompletions, week)
+}
+
 func (w *World) GrantWeeklyRaidReward(playerID string) bool {
 	_, granted := w.GrantWeeklyRaidRewardWithReceipt(playerID)
 	return granted
 }
 
-// The database weekly claim remains the idempotency gate. Return the actual
-// grant so full-bag compensation and partial Resonance ranks are described
-// correctly instead of announcing a unique or a whole rank that was not given.
+// Legacy unkeyed grant used by isolated reward-budget callers. Runtime delivery
+// uses GrantWeeklyRaidRewardForWeek and saves its receipt with the actual grant.
 func (w *World) GrantWeeklyRaidRewardWithReceipt(playerID string) (WeeklyRaidRewardReceipt, bool) {
+	return w.grantWeeklyRaidReward(playerID, "")
+}
+
+// GrantWeeklyRaidRewardForWeek applies a prepared entitlement at most once.
+// Save the receipt and the full grant together before acknowledging delivery.
+func (w *World) GrantWeeklyRaidRewardForWeek(playerID, week string) (WeeklyRaidRewardReceipt, bool) {
+	if week == "" {
+		return WeeklyRaidRewardReceipt{}, false
+	}
+	return w.grantWeeklyRaidReward(playerID, week)
+}
+
+func (w *World) grantWeeklyRaidReward(playerID, week string) (WeeklyRaidRewardReceipt, bool) {
 	w.Mu.RLock()
 	player := w.Entities[playerID]
 	w.Mu.RUnlock()
@@ -238,7 +291,26 @@ func (w *World) GrantWeeklyRaidRewardWithReceipt(playerID string) (WeeklyRaidRew
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
-	if player.Level < MaxPlayerLevel {
+	receipt, granted := player.grantWeeklyRaidRewardLocked(week)
+	if granted && w.Economy != nil {
+		w.Economy.RecordSource("weekly_raid", receipt.Gold)
+	}
+	return receipt, granted
+}
+
+// ApplyWeeklyRaidRewardForWeek also supports a detached, persisted character
+// while its account work lock prevents concurrent login or saving.
+func (player *Entity) ApplyWeeklyRaidRewardForWeek(week string) (WeeklyRaidRewardReceipt, bool) {
+	if week == "" {
+		return WeeklyRaidRewardReceipt{}, false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	return player.grantWeeklyRaidRewardLocked(week)
+}
+
+func (player *Entity) grantWeeklyRaidRewardLocked(week string) (WeeklyRaidRewardReceipt, bool) {
+	if player.Level < MaxPlayerLevel || (week != "" && player.WeeklyRaidRewardReceipts[week]) {
 		return WeeklyRaidRewardReceipt{}, false
 	}
 	player.addResonanceExperienceLocked(1_000_000)
@@ -253,8 +325,11 @@ func (w *World) GrantWeeklyRaidRewardWithReceipt(playerID string) (WeeklyRaidRew
 		}
 	}
 	player.Gold += goldReward
-	if w.Economy != nil {
-		w.Economy.RecordSource("weekly_raid", goldReward)
+	if week != "" {
+		if player.WeeklyRaidRewardReceipts == nil {
+			player.WeeklyRaidRewardReceipts = make(map[string]bool)
+		}
+		player.WeeklyRaidRewardReceipts[week] = true
 	}
 	return WeeklyRaidRewardReceipt{Gold: goldReward, ResonanceXP: 1_000_000, ItemGranted: itemGranted}, true
 }

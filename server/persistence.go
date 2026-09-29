@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"maps"
 	"sort"
 	"time"
 
@@ -219,30 +220,32 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 
 	// Update DB character
 	char := &database.Character{
-		GoldCreditReceipts:     cloneGoldCreditReceipts(entity.GoldCreditReceipts),
-		EP:                     entity.EP,
-		EPExchangeReceipts:     cloneGoldCreditReceipts(entity.EPExchangeReceipts),
-		EPCasinoReceipts:       cloneGoldCreditReceipts(entity.EPCasinoReceipts),
-		VIPAllowanceReceipts:   cloneGoldCreditReceipts(entity.VIPAllowanceReceipts),
-		ItemDeliveryReceipts:   cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
-		AdminOperationReceipts: cloneItemDeliveryReceipts(entity.AdminOperationReceipts),
-		Resources:              resourceSnapshot(entity),
-		WellRested:             wellRestedSnapshot(entity),
-		Name:                   username,
-		Class:                  entity.SubType,
-		Level:                  entity.Level,
-		XP:                     entity.Experience,
-		ProgressionVersion:     game.CurrentProgressionVersion,
-		ResonanceLevel:         entity.ResonanceLevel,
-		ResonanceXP:            entity.ResonanceXP,
-		ResonancePoints:        entity.ResonancePoints,
-		ResonanceRanks:         resonanceRanks,
-		Gold:                   entity.Gold,
-		X:                      x,
-		Y:                      y,
-		Z:                      z,
-		InstanceID:             instanceID,
-		LastLogout:             savedAt,
+		GoldCreditReceipts:       cloneGoldCreditReceipts(entity.GoldCreditReceipts),
+		EP:                       entity.EP,
+		EPExchangeReceipts:       cloneGoldCreditReceipts(entity.EPExchangeReceipts),
+		EPCasinoReceipts:         cloneGoldCreditReceipts(entity.EPCasinoReceipts),
+		VIPAllowanceReceipts:     cloneGoldCreditReceipts(entity.VIPAllowanceReceipts),
+		ItemDeliveryReceipts:     cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
+		AdminOperationReceipts:   cloneItemDeliveryReceipts(entity.AdminOperationReceipts),
+		WeeklyRaidRewardReceipts: maps.Clone(entity.WeeklyRaidRewardReceipts),
+		WeeklyRaidCompletions:    maps.Clone(entity.WeeklyRaidCompletions),
+		Resources:                resourceSnapshot(entity),
+		WellRested:               wellRestedSnapshot(entity),
+		Name:                     username,
+		Class:                    entity.SubType,
+		Level:                    entity.Level,
+		XP:                       entity.Experience,
+		ProgressionVersion:       game.CurrentProgressionVersion,
+		ResonanceLevel:           entity.ResonanceLevel,
+		ResonanceXP:              entity.ResonanceXP,
+		ResonancePoints:          entity.ResonancePoints,
+		ResonanceRanks:           resonanceRanks,
+		Gold:                     entity.Gold,
+		X:                        x,
+		Y:                        y,
+		Z:                        z,
+		InstanceID:               instanceID,
+		LastLogout:               savedAt,
 		Stats: database.Stats{
 			Vitality:     entity.BaseStats.Vitality,
 			Strength:     entity.BaseStats.Strength,

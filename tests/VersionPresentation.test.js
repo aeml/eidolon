@@ -3,7 +3,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.36.0';
+const currentVersion = '1.37.0';
+
+test('1.37.0 records exact capped rewards and recoverable weekly caches', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.37.0"'), previous = html.indexOf('data-version="1.36.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['clearer level-cap rewards', 'actual grant', 'original completion week',
+        'Saved delivery receipts prevent duplicate grants', 'legacy completed lockouts stay completed',
+        'optional daily quests', 'EP cannot buy Resonance trait points',
+        'XP rates, trait benefits and existing progress are unchanged',
+        'does not open closed beta', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.36.0 records economy safety without resetting player balances', () => {
     const html = fs.readFileSync('index.html', 'utf8');
@@ -15,6 +28,10 @@ test('1.36.0 records economy safety without resetting player balances', () => {
         'does not open closed beta', 'Full prior patch history']) {
         expect(html.slice(start, previous)).toContain(text);
     }
+});
+
+test('town surface regression remains in automatic browser coverage', () => {
+    expect(browserStages.some(stage => stage.files.includes('tests/e2e/town-surface-visibility.spec.js'))).toBe(true);
 });
 
 test('1.35.0 records Forge safety and unchanged progression costs', () => {

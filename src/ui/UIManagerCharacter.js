@@ -60,6 +60,7 @@ class UIManagerCharacterMethods {
             <div class="resonance-panel" aria-label="Endgame Resonance progression">
                 <strong>Resonance ${player.resonanceLevel || 0}</strong>
                 <div>${player.resonanceXP || 0} / ${player.resonanceXPToNext || 5000000} resonance XP · ${player.resonancePoints || 0} unspent</div>
+                <div class="resonance-guidance">At level 100, enemy, quest and dungeon XP becomes Resonance XP. Daily quests are optional. Each Resonance level grants one trait point; EP cannot buy these points.</div>
                 <div class="resonance-traits">
                     ${[['power', 'Power', '+1% damage'], ['ward', 'Ward', '+1% health and armor'], ['fortune', 'Fortune', '+1% gold and XP']].map(([trait, label, detail]) => `
                         <button type="button" class="resonance-btn" data-resonance-trait="${trait}" ${(player.resonancePoints || 0) <= 0 || (resonanceRanks[trait] || 0) >= 50 ? 'disabled' : ''}>

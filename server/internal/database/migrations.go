@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 14
+const CurrentSchemaVersion = 15
 
 type schemaMigration struct {
 	Version int
@@ -78,6 +78,9 @@ var schemaMigrations = []schemaMigration{
 	// Earlier full-character writers erase admin operation receipts, allowing a
 	// pending grant to pay twice. Fence those binaries before the first grant.
 	{Version: 14, Name: "administration_operation_receipts", Apply: applyAdminOperationIndexes},
+	// A previous full-character writer would erase delivered weekly receipts
+	// and allow an unresolved entitlement to pay twice. No reward backfill.
+	{Version: 15, Name: "weekly_raid_delivery_receipts", Apply: applyWeeklyRaidDeliveryIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

@@ -42,6 +42,12 @@ func TestAdminOperationReceiptsRequireNewWriterSchema(t *testing.T) {
 	}
 }
 
+func TestWeeklyRaidReceiptsRequireNewWriterSchema(t *testing.T) {
+	if CurrentSchemaVersion < 15 || len(schemaMigrations) < 15 || schemaMigrations[14].Name != "weekly_raid_delivery_receipts" {
+		t.Fatal("weekly delivery receipts could be erased by an older writer")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {

@@ -3,6 +3,17 @@ import { formatQuestRewards } from './questRewards.js';
 import { writePreference } from './PreferenceStorage.js';
 import { EidolonPhaseNotice } from './EidolonPhaseNotice.js';
 
+function experienceRewardParts(summary) {
+    // Never infer the split from current level: a reward can cross the cap,
+    // and its summary can arrive before or after the character-state update.
+    const xp = summary.progression?.xp ?? summary.xp;
+    const resonanceXP = summary.progression?.resonanceXP;
+    const parts = [];
+    if (xp) parts.push(`+${xp} XP`);
+    if (resonanceXP) parts.push(`+${resonanceXP} Resonance XP`);
+    return parts;
+}
+
 class UIManagerFeedbackMethods {
     createDeathScreen() {
         const existing = document.getElementById('death-screen');
@@ -154,7 +165,7 @@ class UIManagerFeedbackMethods {
         const lootParts = [];
 
         if (summary.gold) currencyParts.push(`+${summary.gold} gold`);
-        if (summary.xp) currencyParts.push(`+${summary.xp} XP`);
+        currencyParts.push(...experienceRewardParts(summary));
         if (summary.itemCount) lootParts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
         if (summary.gemCount) lootParts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
         if (summary.heartCount) lootParts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
@@ -178,7 +189,7 @@ class UIManagerFeedbackMethods {
     formatRewardPulse(summary = {}) {
         const parts = [];
         if (summary.gold) parts.push(`+${summary.gold} gold`);
-        if (summary.xp) parts.push(`+${summary.xp} XP`);
+        parts.push(...experienceRewardParts(summary));
         if (summary.itemCount || summary.gemCount || summary.heartCount) {
             parts.push('build drops ready');
         }
@@ -327,7 +338,7 @@ class UIManagerFeedbackMethods {
         const parts = [];
         const headlineLine = this.formatRoomClearHeadline(summary);
         if (summary.gold) parts.push(`+${summary.gold} gold`);
-        if (summary.xp) parts.push(`+${summary.xp} XP`);
+        parts.push(...experienceRewardParts(summary));
         if (summary.itemCount) parts.push(`+${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
         if (summary.gemCount) parts.push(`+${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
         if (summary.heartCount) parts.push(`+${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);

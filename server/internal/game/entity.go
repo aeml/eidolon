@@ -69,43 +69,45 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
-	Mu                     sync.RWMutex       // Protects concurrent access
-	ID                     string             `json:"id"`
-	InstanceID             string             `json:"instanceId"`
-	PvPReturn              *PvPOrigin         `json:"-"` // Immutable pre-match save projection.
-	CasinoSeat             *CasinoSeatSession `json:"-"` // Session-local; saves project its safe exit.
-	WorldEventID           string             `json:"-"` // Temporary event enemies never become normal respawns.
-	Name                   string             `json:"name"`
-	Type                   EntityType         `json:"type"`
-	SubType                string             `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X                      float64            `json:"x"`
-	Y                      float64            `json:"y"`
-	Z                      float64            `json:"z"`
-	Rotation               float64            `json:"rotation"` // Y-axis rotation in radians
-	Health                 int                `json:"health"`
-	MaxHealth              int                `json:"maxHealth"`
-	Mana                   int                `json:"mana"`
-	MaxMana                int                `json:"maxMana"`
-	Level                  int                `json:"level"`
-	Experience             int                `json:"experience"`
-	MaxExperience          int                `json:"maxExperience"`
-	ResonanceLevel         int                `json:"resonanceLevel,omitempty"`
-	ResonanceXP            int                `json:"resonanceXp,omitempty"`
-	ResonancePoints        int                `json:"resonancePoints,omitempty"`
-	ResonanceRanks         map[string]int     `json:"resonanceRanks,omitempty"`
-	Gold                   int                `json:"gold"`
-	WellRestedSeconds      float64            `json:"wellRestedSeconds"`
-	SafeZoneID             string             `json:"safeZoneId"`
-	restTickAt             time.Time          // Process-local monotonic clock, never persisted or replicated.
-	GoldCreditReceipts     map[string]int     `json:"-"`
-	EP                     int                `json:"-"`
-	EPExchangeReceipts     map[string]int     `json:"-"`
-	EPCasinoReceipts       map[string]int     `json:"-"`
-	VIPAllowanceReceipts   map[string]int     `json:"-"`
-	VIPUntil               time.Time          `json:"-"` // Refreshed from trusted account membership, never client save data.
-	CasinoVIPFloor         bool               `json:"-"` // Server-owned scene state; client height never grants access.
-	ItemDeliveryReceipts   map[string]string  `json:"-"`
-	AdminOperationReceipts map[string]string  `json:"-"`
+	Mu                       sync.RWMutex         // Protects concurrent access
+	ID                       string               `json:"id"`
+	InstanceID               string               `json:"instanceId"`
+	PvPReturn                *PvPOrigin           `json:"-"` // Immutable pre-match save projection.
+	CasinoSeat               *CasinoSeatSession   `json:"-"` // Session-local; saves project its safe exit.
+	WorldEventID             string               `json:"-"` // Temporary event enemies never become normal respawns.
+	Name                     string               `json:"name"`
+	Type                     EntityType           `json:"type"`
+	SubType                  string               `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X                        float64              `json:"x"`
+	Y                        float64              `json:"y"`
+	Z                        float64              `json:"z"`
+	Rotation                 float64              `json:"rotation"` // Y-axis rotation in radians
+	Health                   int                  `json:"health"`
+	MaxHealth                int                  `json:"maxHealth"`
+	Mana                     int                  `json:"mana"`
+	MaxMana                  int                  `json:"maxMana"`
+	Level                    int                  `json:"level"`
+	Experience               int                  `json:"experience"`
+	MaxExperience            int                  `json:"maxExperience"`
+	ResonanceLevel           int                  `json:"resonanceLevel,omitempty"`
+	ResonanceXP              int                  `json:"resonanceXp,omitempty"`
+	ResonancePoints          int                  `json:"resonancePoints,omitempty"`
+	ResonanceRanks           map[string]int       `json:"resonanceRanks,omitempty"`
+	Gold                     int                  `json:"gold"`
+	WellRestedSeconds        float64              `json:"wellRestedSeconds"`
+	SafeZoneID               string               `json:"safeZoneId"`
+	restTickAt               time.Time            // Process-local monotonic clock, never persisted or replicated.
+	GoldCreditReceipts       map[string]int       `json:"-"`
+	EP                       int                  `json:"-"`
+	EPExchangeReceipts       map[string]int       `json:"-"`
+	EPCasinoReceipts         map[string]int       `json:"-"`
+	VIPAllowanceReceipts     map[string]int       `json:"-"`
+	VIPUntil                 time.Time            `json:"-"` // Refreshed from trusted account membership, never client save data.
+	CasinoVIPFloor           bool                 `json:"-"` // Server-owned scene state; client height never grants access.
+	ItemDeliveryReceipts     map[string]string    `json:"-"`
+	AdminOperationReceipts   map[string]string    `json:"-"`
+	WeeklyRaidRewardReceipts map[string]bool      `json:"-"`
+	WeeklyRaidCompletions    map[string]time.Time `json:"-"`
 
 	// Inventory
 	Inventory            []Item                         `json:"-"`
@@ -939,6 +941,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		CasinoVIPFloor:           e.CasinoVIPFloor,
 		ItemDeliveryReceipts:     maps.Clone(e.ItemDeliveryReceipts),
 		AdminOperationReceipts:   maps.Clone(e.AdminOperationReceipts),
+		WeeklyRaidRewardReceipts: maps.Clone(e.WeeklyRaidRewardReceipts),
+		WeeklyRaidCompletions:    maps.Clone(e.WeeklyRaidCompletions),
 		LastDailyQuest:           e.LastDailyQuest,
 		BaseStats:                e.BaseStats,
 		Stats:                    e.Stats,

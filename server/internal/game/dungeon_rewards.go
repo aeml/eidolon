@@ -6,8 +6,9 @@ import (
 )
 
 type WeeklyRaidCompletionEvent struct {
-	PlayerID   string `json:"playerId"`
-	InstanceID string `json:"instanceId"`
+	PlayerID    string    `json:"playerId"`
+	InstanceID  string    `json:"instanceId"`
+	CompletedAt time.Time `json:"completedAt"`
 }
 
 type DungeonCompletionEvent struct {
@@ -29,47 +30,49 @@ func isFinalDungeonBoss(subType string) bool {
 }
 
 type RewardSummaryEvent struct {
-	PlayerID          string `json:"playerId"`
-	Title             string `json:"title"`
-	Subtitle          string `json:"subtitle,omitempty"`
-	Gold              int    `json:"gold"`
-	XP                int    `json:"xp"`
-	ItemCount         int    `json:"itemCount"`
-	GemCount          int    `json:"gemCount"`
-	HeartCount        int    `json:"heartCount"`
-	BossName          string `json:"bossName,omitempty"`
-	InstanceType      string `json:"instanceType,omitempty"`
-	Difficulty        string `json:"difficulty,omitempty"`
-	RunLevel          int    `json:"runLevel,omitempty"`
-	RoomsCleared      int    `json:"roomsCleared,omitempty"`
-	TotalRooms        int    `json:"totalRooms,omitempty"`
-	EliteRoomsCleared int    `json:"eliteRoomsCleared,omitempty"`
-	TotalEliteRooms   int    `json:"totalEliteRooms,omitempty"`
-	DifficultyNote    string `json:"difficultyNote,omitempty"`
-	ExitHint          string `json:"exitHint,omitempty"`
+	Progression       *ExperienceRewardReceipt `json:"progression,omitempty"`
+	PlayerID          string                   `json:"playerId"`
+	Title             string                   `json:"title"`
+	Subtitle          string                   `json:"subtitle,omitempty"`
+	Gold              int                      `json:"gold"`
+	XP                int                      `json:"xp"`
+	ItemCount         int                      `json:"itemCount"`
+	GemCount          int                      `json:"gemCount"`
+	HeartCount        int                      `json:"heartCount"`
+	BossName          string                   `json:"bossName,omitempty"`
+	InstanceType      string                   `json:"instanceType,omitempty"`
+	Difficulty        string                   `json:"difficulty,omitempty"`
+	RunLevel          int                      `json:"runLevel,omitempty"`
+	RoomsCleared      int                      `json:"roomsCleared,omitempty"`
+	TotalRooms        int                      `json:"totalRooms,omitempty"`
+	EliteRoomsCleared int                      `json:"eliteRoomsCleared,omitempty"`
+	TotalEliteRooms   int                      `json:"totalEliteRooms,omitempty"`
+	DifficultyNote    string                   `json:"difficultyNote,omitempty"`
+	ExitHint          string                   `json:"exitHint,omitempty"`
 }
 
 type DungeonRoomClearRewardEvent struct {
-	PlayerID            string `json:"playerId"`
-	Title               string `json:"title"`
-	Subtitle            string `json:"subtitle,omitempty"`
-	Gold                int    `json:"gold"`
-	XP                  int    `json:"xp"`
-	ItemCount           int    `json:"itemCount,omitempty"`
-	GemCount            int    `json:"gemCount,omitempty"`
-	HeartCount          int    `json:"heartCount,omitempty"`
-	Hint                string `json:"hint,omitempty"`
-	RoomIndex           int    `json:"roomIndex"`
-	ObjectiveRoomIndex  int    `json:"objectiveRoomIndex"`
-	RoomType            string `json:"roomType,omitempty"`
-	RoomHook            string `json:"roomHook,omitempty"`
-	InstanceType        string `json:"instanceType,omitempty"`
-	Difficulty          string `json:"difficulty,omitempty"`
-	HealthRestored      int    `json:"healthRestored,omitempty"`
-	ManaRestored        int    `json:"manaRestored,omitempty"`
-	BuffName            string `json:"buffName,omitempty"`
-	BuffDurationSeconds int    `json:"buffDurationSeconds,omitempty"`
-	DamageReductionPct  int    `json:"damageReductionPct,omitempty"`
+	Progression         *ExperienceRewardReceipt `json:"progression,omitempty"`
+	PlayerID            string                   `json:"playerId"`
+	Title               string                   `json:"title"`
+	Subtitle            string                   `json:"subtitle,omitempty"`
+	Gold                int                      `json:"gold"`
+	XP                  int                      `json:"xp"`
+	ItemCount           int                      `json:"itemCount,omitempty"`
+	GemCount            int                      `json:"gemCount,omitempty"`
+	HeartCount          int                      `json:"heartCount,omitempty"`
+	Hint                string                   `json:"hint,omitempty"`
+	RoomIndex           int                      `json:"roomIndex"`
+	ObjectiveRoomIndex  int                      `json:"objectiveRoomIndex"`
+	RoomType            string                   `json:"roomType,omitempty"`
+	RoomHook            string                   `json:"roomHook,omitempty"`
+	InstanceType        string                   `json:"instanceType,omitempty"`
+	Difficulty          string                   `json:"difficulty,omitempty"`
+	HealthRestored      int                      `json:"healthRestored,omitempty"`
+	ManaRestored        int                      `json:"manaRestored,omitempty"`
+	BuffName            string                   `json:"buffName,omitempty"`
+	BuffDurationSeconds int                      `json:"buffDurationSeconds,omitempty"`
+	DamageReductionPct  int                      `json:"damageReductionPct,omitempty"`
 }
 
 func formatDungeonLabel(instanceType string) string {

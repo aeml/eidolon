@@ -47,6 +47,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 
 	target.Health = 0
 	target.State = "DEAD"
+	killedAt := time.Now().UTC()
 	clearWhirlwindLocked(target)
 	clearChargeStateLocked(target)
 	target.LastAttackTime = time.Now()
@@ -299,7 +300,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					rewardMultiplier := resonanceRewardMultiplier(member)
 					memberXP := wellRestedKillXP(member, int(float64(xpPerMember)*rewardMultiplier))
 					memberGold := int(float64(goldPerMember) * rewardMultiplier)
-					w.awardExperienceLocked(member, memberXP)
+					progression := w.awardExperienceLocked(member, memberXP)
 					member.Gold += memberGold
 					w.Economy.RecordSource("combat_rewards", memberGold)
 					memberRewardItemCount := 0
@@ -360,10 +361,14 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					}
 
 					memberID := member.ID
+					if weeklyRaidBoss {
+						member.queueWeeklyRaidCompletionLocked(killedAt)
+					}
 					rewardSummary := RewardSummaryEvent{}
 					hasRewardSummary := false
 					if isBoss {
 						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, memberGold, memberXP, heartCount, memberRewardItems)
+						rewardSummary.Progression = &progression
 						if memberRewardItemCount > 0 {
 							rewardSummary.ItemCount = memberRewardItemCount
 						}
@@ -384,7 +389,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 								w.OnEvent("reward_summary", summary)
 							}
 							if weekly {
-								w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID})
+								w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID, CompletedAt: killedAt})
 							}
 						})
 					}
@@ -400,7 +405,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				finalXp = wellRestedKillXP(attacker, int(float64(finalXp)*rewardMultiplier))
 				finalGold = int(float64(finalGold) * rewardMultiplier)
 
-				w.awardExperienceLocked(attacker, finalXp)
+				progression := w.awardExperienceLocked(attacker, finalXp)
 				attacker.Gold += finalGold
 				w.Economy.RecordSource("combat_rewards", finalGold)
 				attackerRewardItemCount := 0
@@ -460,10 +465,14 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				}
 
 				attackerID := attacker.ID
+				if weeklyRaidBoss {
+					attacker.queueWeeklyRaidCompletionLocked(killedAt)
+				}
 				rewardSummary := RewardSummaryEvent{}
 				hasRewardSummary := false
 				if isBoss {
 					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, finalGold, finalXp, heartCount, attackerRewardItems)
+					rewardSummary.Progression = &progression
 					if attackerRewardItemCount > 0 {
 						rewardSummary.ItemCount = attackerRewardItemCount
 					}
@@ -484,7 +493,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 							w.OnEvent("reward_summary", summary)
 						}
 						if weekly {
-							w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID})
+							w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID, CompletedAt: killedAt})
 						}
 					})
 				}

@@ -65,7 +65,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.36.0"
+	buildVersion = "Alpha 1.37.0"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -411,6 +411,7 @@ func main() {
 	adminRoles = db
 	adminActivities = db
 	adminOperations = db
+	weeklyRaidRewards = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
 	if err != nil {
@@ -418,6 +419,11 @@ func main() {
 	}
 	if err := retryPendingCharacterSaves(); err != nil {
 		log.Fatalf("Cannot recover pending character saves; refusing stale logins: %v", err)
+	}
+	if err := recoverPendingWeeklyRaidRewards(); err != nil {
+		// Character journals have already replayed. Unpaid entitlements can
+		// retry under account locks without blocking unrelated player logins.
+		log.Printf("Weekly reward delivery remains pending at startup: %v", err)
 	}
 	arenaResultJournal, err = database.OpenPvPResultJournal(filepath.Join(*characterJournalDir, "arena-results"))
 	if err != nil {
@@ -841,30 +847,33 @@ func main() {
 			if !ok {
 				return
 			}
+			earnedAt := evt.CompletedAt
 			scheduleCharacterWork(func() {
-				claimed, err := db.ClaimWeeklyRaidReward(evt.PlayerID, time.Now().UTC())
-				if err != nil {
-					log.Printf("weekly raid lockout for %s: %v", evt.PlayerID, err)
-					return
-				}
 				client := getClientByPlayerID(evt.PlayerID)
-				if !claimed {
+				entry, err := prepareRecordedWeeklyRaidCompletion(database.WeeklyRaidLockout{
+					PlayerID: evt.PlayerID, Week: database.CurrentRaidWeek(earnedAt), CompletedAt: earnedAt, DeliveryPending: true})
+				if err != nil {
+					log.Printf("Weekly raid entitlement not confirmed for %s at %s: %v", evt.PlayerID, earnedAt.Format(time.RFC3339), err)
 					if client != nil {
-						client.sendSystemChat("Weekly raid already completed; no duplicate weekly cache awarded.")
+						client.sendSystemChat("Weekly cache confirmation failed. If your cache does not arrive, submit a bug report so an administrator can review this completion.")
 					}
 					return
 				}
-				receipt, granted := world.GrantWeeklyRaidRewardWithReceipt(evt.PlayerID)
-				if !granted {
-					log.Printf("weekly raid reward player missing: %s", evt.PlayerID)
+				if entry == nil {
+					if client != nil {
+						client.sendSystemChat("Weekly cache already recorded; any pending delivery will retry automatically.")
+					}
 					return
 				}
-				if client != nil {
-					client.sendSystemChat(weeklyRaidRewardMessage(receipt))
-					sendInventoryForPlayer(evt.PlayerID)
-					sendEndgameState(client)
-					savePlayer(client)
+				receipt, granted, err := deliverWeeklyRaidReward(*entry)
+				if err != nil {
+					log.Printf("Weekly raid delivery remains pending for %s: %v", evt.PlayerID, err)
+					if client != nil {
+						client.sendSystemChat("Your weekly cache is secured; delivery will retry automatically.")
+					}
+					return
 				}
+				notifyWeeklyRaidReward(evt.PlayerID, receipt, granted)
 			})
 		case "dungeon_complete":
 			evt, ok := data.(game.DungeonCompletionEvent)
@@ -972,6 +981,11 @@ func main() {
 	loops.Every(5*time.Second, func() {
 		if err := recoverPendingAdminOperations(); err != nil {
 			log.Print("Administration operation recovery remains pending")
+		}
+	})
+	loops.Every(5*time.Second, func() {
+		if err := recoverPendingWeeklyRaidRewards(); err != nil {
+			log.Printf("Weekly raid reward recovery remains pending: %v", err)
 		}
 	})
 	loops.Every(game.RefundRetryInterval, func() {
