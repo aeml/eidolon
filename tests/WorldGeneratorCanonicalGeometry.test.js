@@ -397,11 +397,14 @@ describe('WorldGenerator shadow setup', () => {
         await generator.loadBuildings(0, 0);
 
         expect(loadModelSpy).not.toHaveBeenCalled();
-        expect(generator.scene.add).toHaveBeenCalledTimes(8);
+        expect(generator.scene.add).toHaveBeenCalledTimes(9);
         const [paths, locations] = generator.scene.add.mock.calls.slice(0, 2).map(([object]) => object);
         expect(paths.name).toBe('Earth authored paths');
         expect(locations.name).toBe('Earth authored locations');
         expect(locations.children).toHaveLength(8);
+        const cart = generator.scene.add.mock.calls[1][1];
+        expect(cart.name).toBe('Lanternhold stranded supply cart');
+        expect(cart.userData.walkFootprints).toHaveLength(3);
         // The shared-zone entrance has a closed physical door in addition to
         // the existing 22 town colliders; entry now uses its dialogue.
         const earthSolids = locations.userData.walkFootprints.length;
@@ -409,9 +412,13 @@ describe('WorldGenerator shadow setup', () => {
         const elemental = generator.scene.add.mock.calls[2];
         expect(elemental.map(group => group.name)).toEqual(['water authored locations', 'fire authored locations', 'air authored locations', 'Water authored paths', 'Fire authored paths', 'Air authored paths']);
         expect(elemental.slice(0, 3).map(group => group.children.length)).toEqual([8, 8, 8]);
-        const worldSolids = earthSolids + elemental.slice(0, 3).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
-        expect(worldSolids).toBe(126);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + worldSolids + 13);
+        const worldSolids = earthSolids + cart.userData.walkFootprints.length
+            + elemental.slice(0, 3).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
+        expect(worldSolids).toBe(129);
+        const streets = generator.scene.add.mock.calls[7][0];
+        expect(streets.name).toBe('Lanternhold planted street edges');
+        expect(streets.userData.walkFootprints).toHaveLength(4);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + worldSolids + 13 + 4);
         const doorCollider = generator.collisionManager.addCollider.mock.calls[worldSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
         expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);

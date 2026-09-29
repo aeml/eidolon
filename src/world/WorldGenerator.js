@@ -39,6 +39,7 @@ import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.
 import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
 import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurniture.js';
 import { createLanternholdRoadCart } from '../art/LanternholdRoadCart.js';
+import { createLanternholdPerimeter } from '../art/LanternholdPerimeter.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -333,99 +334,9 @@ export class WorldGenerator {
     }
 
     createRectangularFence(cx, cz, width, depth) {
-        // Taller fence: Post height 8, Rail height adjusted
-        const postGeo = new THREE.BoxGeometry(0.8, 8, 0.8);
-        const railGeo = new THREE.BoxGeometry(4, 0.4, 0.2);
-        const material = MeshFactory.configureShadowCastingForMaterial(
-            new THREE.MeshStandardMaterial({ color: 0x8B4513 }),
-            { stableFrontShadows: true }
-        );
-
-        const group = new THREE.Group();
-        group.name = 'TownFence';
-        const buckets = new Map();
-        // Small local batches preserve useful camera/shadow frustum culling.
-        // Keep vertices near their origin even in distant dungeon coordinates.
-        const addPart = (geometry, x, y, z, rotation = 0) => {
-            const bx = Math.floor(x / 32) * 32, bz = Math.floor(z / 32) * 32;
-            const key = `${bx}:${bz}`;
-            if (!buckets.has(key)) buckets.set(key, { x: bx, z: bz, geometries: [] });
-            const transform = new THREE.Matrix4().makeRotationY(rotation);
-            transform.setPosition(x - bx, y, z - bz);
-            buckets.get(key).geometries.push(geometry.clone().applyMatrix4(transform));
-        };
-        
-        const minX = cx - width / 2;
-        const maxX = cx + width / 2;
-        const minZ = cz - depth / 2;
-        const maxZ = cz + depth / 2;
-
-        const segmentLength = 4;
-        const exitGap = 20;
-
-        // Helper to create segment
-        const createSegment = (x, z, rotation) => {
-            // Post
-            addPart(postGeo, x, 4, z);
-
-            // Rails
-            const railHeights = [2, 4, 6];
-            for (let h of railHeights) {
-                addPart(railGeo, x, h, z, rotation);
-            }
-
-            // Collider
-            const collider = new THREE.Box3();
-            const sizeX = (Math.abs(Math.cos(rotation)) > 0.1) ? 4.5 : 1.0;
-            const sizeZ = (Math.abs(Math.sin(rotation)) > 0.1) ? 4.5 : 1.0;
-            
-            collider.setFromCenterAndSize(
-                new THREE.Vector3(x, 4, z),
-                new THREE.Vector3(sizeX, 8, sizeZ) 
-            );
-            this.collisionManager.addCollider(collider);
-        };
-
-        // North Wall (minZ) - Horizontal
-        for (let x = minX; x <= maxX; x += segmentLength) {
-            if (Math.abs(x - cx) < exitGap / 2) continue;
-            createSegment(x, minZ, 0);
-        }
-
-        // South Wall (maxZ) - Horizontal
-        for (let x = minX; x <= maxX; x += segmentLength) {
-            if (Math.abs(x - cx) < exitGap / 2) continue;
-            createSegment(x, maxZ, 0);
-        }
-
-        // West Wall (minX) - Vertical
-        for (let z = minZ; z <= maxZ; z += segmentLength) {
-            if (Math.abs(z - cz) < exitGap / 2) continue;
-            createSegment(minX, z, Math.PI / 2);
-        }
-
-        // East Wall (maxX) - Vertical
-        for (let z = minZ; z <= maxZ; z += segmentLength) {
-            if (Math.abs(z - cz) < exitGap / 2) continue;
-            createSegment(maxX, z, Math.PI / 2);
-        }
-
-        for (const bucket of buckets.values()) {
-            const geometry = mergeGeometries(bucket.geometries, false);
-            bucket.geometries.forEach(part => part.dispose());
-            if (!geometry) throw new Error('Unable to batch town fence geometry');
-            geometry.computeBoundingBox();
-            geometry.computeBoundingSphere();
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(bucket.x, 0, bucket.z);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            group.add(mesh);
-        }
-        postGeo.dispose();
-        railGeo.dispose();
-        if (!group.children.length) material.dispose();
-        this.scene.add(group);
+        const fence = createLanternholdPerimeter(cx, cz, width, depth);
+        for (const collider of fence.userData.walkColliders) this.collisionManager.addCollider(collider);
+        this.scene.add(fence);
     }
 
     addPost(group, geo, mat, x, z) {

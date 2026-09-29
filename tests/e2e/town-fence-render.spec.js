@@ -1,30 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { openGame } from './helpers.js';
 
-test('batched town fence preserves rendered rails and shadows with fewer draw calls', async ({ page }, testInfo) => {
+test('weathered perimeter batching preserves its new materials and shadows with fewer draw calls', async ({ page }, testInfo) => {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await openGame(page);
     const result = await page.evaluate(async () => {
         const THREE = await import('/vendor/three/build/three.module.js');
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
-        const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        const { createLanternholdPerimeter } = await import('/src/art/LanternholdPerimeter.js');
         const scene = new THREE.Scene(), boxes = [];
         new WorldGenerator(scene, { addCollider: box => boxes.push(box) }).createRectangularFence(0, 200, 200, 200);
-        const batched = scene.children[0], legacy = new THREE.Group();
-        const post = new THREE.BoxGeometry(.8, 8, .8), rail = new THREE.BoxGeometry(4, .4, .2);
-        // Reconstruct the old segment renderer from the unchanged colliders.
-        for (const box of boxes) {
-            const center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
-            for (const [geometry, y] of [[post, 4], [rail, 2], [rail, 4], [rail, 6]]) {
-                const material = MeshFactory.configureShadowCastingForMaterial(
-                    new THREE.MeshStandardMaterial({ color: 0x8b4513 }), { stableFrontShadows: true });
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set(center.x, y, center.z);
-                if (geometry === rail && size.z > size.x) mesh.rotation.y = Math.PI / 2;
-                mesh.castShadow = mesh.receiveShadow = true;
-                legacy.add(mesh);
-            }
-        }
+        // Compare the new art with its unbatched reference. Legacy collision
+        // equality is independently tested against the original rail layout.
+        const batched = scene.children[0], legacy = createLanternholdPerimeter(0, 200, 200, 200, { batched: false });
         scene.add(legacy);
         scene.background = new THREE.Color(0x17202b);
         const ground = new THREE.Mesh(new THREE.PlaneGeometry(260, 260),
@@ -67,13 +55,13 @@ test('batched town fence preserves rendered rails and shadows with fewer draw ca
         return { beforeCalls: before.calls, afterCalls: after.calls, differentPixels: different,
             meshes: batched.children.length, pictures };
     });
-    for (const [index, picture] of result.pictures.entries()) await testInfo.attach(index ? 'batched-fence' : 'original-fence', {
+    for (const [index, picture] of result.pictures.entries()) await testInfo.attach(index ? 'batched-fence' : 'unbatched-new-perimeter', {
         body: Buffer.from(picture.split(',')[1], 'base64'), contentType: 'image/png'
     });
     const { pictures: _pictures, ...metrics } = result;
     await testInfo.attach('fence-render-metrics', { body: JSON.stringify(metrics), contentType: 'application/json' });
     expect(result.beforeCalls).toBeGreaterThan(500);
     expect(result.afterCalls).toBeLessThan(result.beforeCalls / 5);
-    expect(result.meshes).toBeLessThan(32);
+    expect(result.meshes).toBeLessThan(64);
     expect(result.differentPixels).toBeLessThan(320 * 320 * .005);
 });
