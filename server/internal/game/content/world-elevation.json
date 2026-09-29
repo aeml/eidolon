@@ -48,6 +48,30 @@
       "height": 15
     },
     {
+      "id": "bastion-west-bank",
+      "x": 340,
+      "z": 159,
+      "radiusX": 112,
+      "radiusZ": 82,
+      "height": 8
+    },
+    {
+      "id": "bastion-south-bank",
+      "x": 470,
+      "z": 265,
+      "radiusX": 125,
+      "radiusZ": 95,
+      "height": 10
+    },
+    {
+      "id": "bastion-outer-fold",
+      "x": 600,
+      "z": 260,
+      "radiusX": 90,
+      "radiusZ": 88,
+      "height": 7
+    },
+    {
       "id": "southern-fold",
       "x": -260,
       "z": 535,

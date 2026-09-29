@@ -22,7 +22,7 @@ test('server terrain profile explicitly selects the candidate and rejects unknow
 });
 
 test('canonical elevation generation is current and terrain stays bounded', () => {
-    expect(execFileSync(process.execPath, ['scripts/generate-world-elevation.mjs', '--check'], { encoding: 'utf8' })).toContain('8 Earth terrain forms');
+    expect(execFileSync(process.execPath, ['scripts/generate-world-elevation.mjs', '--check'], { encoding: 'utf8' })).toContain('11 Earth terrain forms');
     expect(field.columns).toBe(125); expect(field.rows).toBe(100);
     expect(field.maxHeight).toBeGreaterThan(15); expect(field.maxHeight).toBeLessThan(20);
     expect(field.maxGrade).toBeLessThanOrEqual(WORLD_ELEVATION.maxGrade);
@@ -30,8 +30,20 @@ test('canonical elevation generation is current and terrain stays bounded', () =
     for (let row = 0; row <= field.rows; row++) for (let column = 0; column <= field.columns; column++) {
         bytes.writeInt32LE(Math.round(field.vertexHeight(column, row) * 1000), (row * (field.columns + 1) + column) * 4);
     }
-    expect(createHash('sha256').update(bytes).digest('hex')).toBe('d30df1a45da4f962957b8c041a6d117c54919575fa4da11891e4acb333e2e570');
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe('448de4a61b7baf8c285d8a0d1f8b698b952bb9222f2a89cfc75ea5981da7d897');
     expect(() => createRealmGroundGeometry(WORLD_REGIONS.water, .75, field)).toThrow('bounds');
+});
+
+test('Bastion road climbs between higher banks without sharp steps or moving its landings', () => {
+    for (const [x, bankZ] of [[340, 159], [470, 265], [600, 260]]) {
+        expect(field.sample(x, 200)).toBeGreaterThan(1);
+        expect(field.sample(x, bankZ) - field.sample(x, 200)).toBeGreaterThan(4);
+    }
+    for (let x = 100; x < 725; x += .5) {
+        expect(Math.abs(field.sample(x + .5, 200) - field.sample(x, 200))).toBeLessThanOrEqual(.35 * .5);
+    }
+    expect(field.sample(100, 200)).toBe(0);
+    expect(field.sample(800, 270)).toBe(0);
 });
 
 test('town, landmark footprints and realm boundaries stay level; the Earth field never applies inside instances', () => {

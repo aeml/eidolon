@@ -67,9 +67,11 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
         // then join the authored road at the eastern gate.
         return [[12, 200], [12, 215], [47, 215], [70, 200], ...EARTH_PATHS.find(path => path.id === 'bastion-road').points];
     });
-    if (process.env.EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION === 'true') {
+    const elevated = process.env.EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION === 'true';
+    if (elevated) {
         expect(await page.evaluate(() => window.game.network.expectedTerrainProfile)).toBe('earth-elevation-rocks-v1');
     }
+    const terrainReceipt = { samples: 0, maxHeight: 0, maxClientError: 0, maxServerError: 0 };
     const cdp = await context.newCDPSession(page);
     const box = await page.locator('#joystick-zone').boundingBox();
     const receipts = [];
@@ -94,14 +96,29 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
             expect(clear, `authored segment to ${x},${z} must be walkable`).toBe(true);
             let bestDistance = Infinity, lastProgress = Date.now();
             await expect.poll(async () => {
-                const current = await page.evaluate(() => ({ x: window.game.player.position.x,
+                const current = await page.evaluate(elevated => {
+                    const g = window.game, p = g.player.position;
+                    const server = g.movementNetworkState?.lastAcknowledgedServerPosition;
+                    return { x: window.game.player.position.x,
                     z: window.game.player.position.z, hp: window.game.player.stats.hp,
                     instance: window.game.currentInstanceId,
                     joystick: window.game.inputManager.joystickVector.toArray(),
                     acknowledged: window.game.movementNetworkState?.lastAcknowledgedServerPosition,
                     state: window.game.player.state, activeElement: document.activeElement?.id,
-                    paused: window.game.uiManager.isEscMenuOpen }));
+                    paused: window.game.uiManager.isEscMenuOpen,
+                    ground: elevated ? { height: p.y, clientError: Math.abs(p.y - g.terrainElevation.sample(p.x, p.z)),
+                        serverError: server ? Math.abs(server.y - g.terrainElevation.sample(server.x, server.z)) : null } : null };
+                }, elevated);
                 if (current.hp <= 0 || current.instance) throw new Error('Route interrupted by death or a scene change');
+                if (elevated) {
+                    const ground = current.ground;
+                    terrainReceipt.samples++;
+                    terrainReceipt.maxHeight = Math.max(terrainReceipt.maxHeight, ground.height);
+                    terrainReceipt.maxClientError = Math.max(terrainReceipt.maxClientError, ground.clientError);
+                    if (ground.serverError !== null) terrainReceipt.maxServerError = Math.max(terrainReceipt.maxServerError, ground.serverError);
+                    expect(ground.clientError).toBeLessThan(.001);
+                    if (ground.serverError !== null) expect(ground.serverError).toBeLessThan(.001);
+                }
                 if (roadViews.length && current.x > roadViews[0]) {
                     await captureReview(`earth-road-${roadViews.shift()}`);
                 }
@@ -143,6 +160,11 @@ test('town to Bastion uses the authored road and a real entrance interaction', a
             x: rect.left + (p.x + 1) * rect.width / 2, y: rect.top + (1 - p.y) * rect.height / 2 };
     });
     await captureReview('bastion-arrival');
+    if (elevated) {
+        expect(terrainReceipt.samples).toBeGreaterThan(20);
+        expect(terrainReceipt.maxHeight).toBeGreaterThan(2);
+        await testInfo.attach('terrain-route-receipt', { body: JSON.stringify(terrainReceipt), contentType: 'application/json' });
+    }
     expect(gate.visible).toBe(true);
     await page.touchscreen.tap(gate.x, gate.y);
     await expect(page.locator('#dungeon-menu')).toBeVisible();

@@ -12,6 +12,9 @@
     {"id": "bellkeeper-ridge", "x": -365, "z": -300, "radiusX": 230, "radiusZ": 155, "height": 17},
     {"id": "scar-uplift", "x": 285, "z": 28, "radiusX": 130, "radiusZ": 155, "height": 11},
     {"id": "bastion-shoulder", "x": 645, "z": 98, "radiusX": 200, "radiusZ": 125, "height": 15},
+    {"id": "bastion-west-bank", "x": 340, "z": 159, "radiusX": 112, "radiusZ": 82, "height": 8},
+    {"id": "bastion-south-bank", "x": 470, "z": 265, "radiusX": 125, "radiusZ": 95, "height": 10},
+    {"id": "bastion-outer-fold", "x": 600, "z": 260, "radiusX": 90, "radiusZ": 88, "height": 7},
     {"id": "southern-fold", "x": -260, "z": 535, "radiusX": 245, "radiusZ": 195, "height": 16},
     {"id": "forester-ridge", "x": -570, "z": 410, "radiusX": 200, "radiusZ": 235, "height": 18},
     {"id": "oathstone-rise", "x": 615, "z": 560, "radiusX": 235, "radiusZ": 220, "height": 17}
