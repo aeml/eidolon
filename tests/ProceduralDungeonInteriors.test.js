@@ -46,7 +46,8 @@ describe('Procedural dungeon interior art', () => {
             const normal = material.normalMap, roughness = material.roughnessMap;
             for (const texture of [normal, roughness]) {
                 expect(texture.colorSpace).toBe(THREE.NoColorSpace);
-                expect(texture.image.data.byteLength).toBe(64 * 64 * 4);
+                const size = dungeonType === 'verdant_bastion_catacombs' ? 256 : 64;
+                expect(texture.image.data.byteLength).toBe(size * size * 4);
                 expect(texture.wrapS).toBe(THREE.RepeatWrapping);
                 expect(texture.wrapT).toBe(THREE.RepeatWrapping);
             }
