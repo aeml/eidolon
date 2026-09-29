@@ -1,7 +1,9 @@
 # Alpha 1.42 — environment integration candidate
 
 Local preview, not deployed or a final milestone sign-off. Earlier releases
-remain queued; this does not skip pacing/readiness gates or open closed beta.
+remain queued; this does not skip their live verification or open closed beta.
+Human campaign/pacing observations remain playtest-owned, not a new code
+publication permission requirement.
 
 ## Draft patch notes
 
@@ -27,4 +29,28 @@ dungeon/raid layout fixtures, realm gateway surfaces, town service/event
 clearance and four-realm authored-location galleries. Layout fixtures are not
 earned combat clears; gallery views are not claims about mobile performance,
 final world density or AAA art acceptance. Public deployment verification is
-still blocked by the owner's DDNS routing. No new production release is claimed.
+not yet applicable to this candidate. Normal-DNS IPv4 public checks work for
+accepted1.39; the separate IPv6/DDNS issue remains owner-deferred. No new
+production release is claimed.
+
+## Ordered integration in progress
+
+Built /tmp/eidolon-1-42-release-20260930 from the clean1.41 candidateae6f8678,
+including preserved website commitad22dea7 and the1.40 publication receipt.
+Integrated initial surface/gateway, Dark Realm evidence, Bastion architecture
+and woodland material/composition commits as1ea8eecf,be8985f8,aacef818,66635f00.
+The animation-stage script conflict was resolved as the union of the existing
+rigid-batch check and incoming surface/gateway cases. Imported only the seven
+town architecture/courtyard source and related test files from01be9903 as
+aea5d4da; this avoids replacing newer1.41 batch code with the earlier duplicate
+or importing future hit-reaction tests without their implementation.
+
+This is a partial staged integration, not complete1.42. Remaining environmental
+construction/refinements, shared terrain/placement consumers, saved-character
+clearance, quality/resource fixes and the connected normal-camera review still
+need reconciliation against the integrated art candidate048aec6e. Reuse accepted
+scene evidence; check changed integration seams after the full set is assembled.
+The preview currently retains1.41 runtime identity; do not publish until scope,
+final1.42 metadata/notes and ordered predecessor acceptance are ready. Final
+modern-art quality, representative High budgets and authored actor acceptance
+remain open; no QA-only raised-terrain profile is enabled in production.
