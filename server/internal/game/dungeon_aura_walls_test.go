@@ -29,6 +29,11 @@ func TestDungeonSelfAreaEffectsRespectWalls(t *testing.T) {
 				if !result.Accepted {
 					t.Fatalf("self-area cast rejected: %+v", result)
 				}
+				if spec.skill == "Juggernaut Charge" {
+					for step := 0; step < 20 && p.IsCharging; step++ {
+						w.updateEntity(p, .05, nil, &deferredActions{})
+					}
+				}
 				if p.SpiritsActive {
 					w.updateEntity(p, 0.05, nil, &deferredActions{})
 				}

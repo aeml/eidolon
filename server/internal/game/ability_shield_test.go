@@ -66,6 +66,13 @@ func TestPaidHostileAbilitiesRespectArcaneShield(t *testing.T) {
 					if !result.Accepted || source.Mana >= mana {
 						t.Fatalf("paid attack rejected: %+v", result)
 					}
+					if attack.skill == "Juggernaut Charge" {
+						// Damage now occurs on arrival, through the real charge
+						// update, not at acceptance of the movement command.
+						for step := 0; step < 20 && source.IsCharging; step++ {
+							w.updateEntity(source, .05, nil, &deferredActions{})
+						}
+					}
 				}
 				if !shielded {
 					if defender.Health >= health {
