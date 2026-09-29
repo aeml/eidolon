@@ -7,7 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
-import { getShadowViewCoverage } from './ShadowViewCoverage.js';
+import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundGeometry } from '../art/RealmGroundGeometry.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -127,9 +127,14 @@ export class RenderSystem {
         this.scene.add(this.effectGroup);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
-        this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
+        // Cross-light the fixed isometric view: one visible face catches the
+        // key while the other retains cool fill. A camera-aligned key flattened
+        // both faces and hid most ground contact shadows behind the object.
+        this.shadowFollowOffset = new THREE.Vector3(-320, 500, 260);
         this.shadowTarget = new THREE.Vector3();
-        this.shadowCoverageRadius = getShadowViewCoverage(this.camera, this.cameraOffset, this.shadowFollowOffset);
+        this.shadowViewBounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset);
+        this.shadowCoverageRadius = Math.max(this.shadowViewBounds.right - this.shadowViewBounds.left,
+            this.shadowViewBounds.top - this.shadowViewBounds.bottom) / 2;
         this.shadowTexelSnap = true;
         this.cameraShakeEnabled = false;
         this.cameraShakeStrength = 0.5;
@@ -427,7 +432,7 @@ export class RenderSystem {
         this.scene.add(ambientLight);
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-        dirLight.position.set(10, 20, 10);
+        dirLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
         dirLight.castShadow = this.renderer.shadowMap.enabled;
         
         // Optimization: Reduce Shadow Map Size on Mobile
@@ -441,13 +446,13 @@ export class RenderSystem {
         dirLight.shadow.normalBias = 0.05;
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 1400;
-        this.configureShadowFrustum(dirLight, this.shadowCoverageRadius);
+        this.configureShadowFrustum(dirLight);
         dirLight.target.position.copy(this.shadowTarget);
         this.scene.add(dirLight.target);
         this.scene.add(dirLight);
 
         const fillLight = new THREE.DirectionalLight(0x99b7ff, 0.35);
-        fillLight.position.set(-14, 12, -8);
+        fillLight.position.set(14, 12, 8);
         fillLight.castShadow = false;
         this.scene.add(fillLight);
 
@@ -601,20 +606,17 @@ export class RenderSystem {
         return 4096;
     }
 
-    configureShadowFrustum(light, radius = this.shadowCoverageRadius) {
+    configureShadowFrustum(light) {
         if (!light?.shadow?.camera) return;
-        const coverage = Math.max(64, Number(radius) || this.shadowCoverageRadius || 280);
-        light.shadow.camera.left = -coverage;
-        light.shadow.camera.right = coverage;
-        light.shadow.camera.top = coverage;
-        light.shadow.camera.bottom = -coverage;
+        const bounds = this.shadowViewBounds || { left: -280, right: 280, top: 280, bottom: -280 };
+        Object.assign(light.shadow.camera, bounds);
         light.shadow.camera.updateProjectionMatrix();
         light.shadow.needsUpdate = true;
     }
 
     getShadowWorldTexelSize() {
         const mapSize = this.keyLight?.shadow?.mapSize?.width || this.getShadowMapSize();
-        const coverage = Math.max(64, Number(this.shadowCoverageRadius) || 280);
+        const coverage = Number(this.shadowCoverageRadius) || 280;
         return (coverage * 2) / Math.max(1, mapSize);
     }
 
@@ -633,11 +635,12 @@ export class RenderSystem {
 
     updateShadowFocus(position = null) {
         if (!this.keyLight || !position) return;
-        const coverage = getShadowViewCoverage(this.camera, this.cameraOffset, this.shadowFollowOffset,
+        const bounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset,
             this.cameraTarget.clone().sub(position));
-        if (coverage !== this.shadowCoverageRadius) {
-            this.shadowCoverageRadius = coverage;
-            this.configureShadowFrustum(this.keyLight, coverage);
+        if (Object.keys(bounds).some(edge => bounds[edge] !== this.shadowViewBounds?.[edge])) {
+            this.shadowViewBounds = bounds;
+            this.shadowCoverageRadius = Math.max(bounds.right - bounds.left, bounds.top - bounds.bottom) / 2;
+            this.configureShadowFrustum(this.keyLight);
         }
         const snappedTarget = this.getShadowSnappedTarget(position);
         this.shadowTarget.copy(snappedTarget);
@@ -696,7 +699,7 @@ export class RenderSystem {
             this.keyLight.shadow.radius = normalized === 'high' ? 4.5 : 3.0;
             this.keyLight.shadow.bias = normalized === 'high' ? -0.00014 : -0.00012;
             this.keyLight.shadow.normalBias = normalized === 'high' ? 0.05 : 0.045;
-            this.configureShadowFrustum(this.keyLight, this.shadowCoverageRadius);
+            this.configureShadowFrustum(this.keyLight);
             this.keyLight.shadow.needsUpdate = true;
         }
 
