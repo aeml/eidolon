@@ -1,5 +1,6 @@
 import { SET_DEFINITIONS, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
+import { isActiveEquipment } from '../core/EquipmentSlots.js';
 
 // Shared deliberate inspection route: touch on phones, right-click on desktop.
 // Item identity is revalidated at every action;
@@ -131,7 +132,8 @@ export class MobileItemDetails {
         }
         const set = SET_DEFINITIONS[item.setId];
         if (set) {
-            const count = Object.values(this.inventory._getLastPlayer()?.equipment || {}).filter(e => e?.setId === item.setId).length;
+            const count = Object.entries(this.inventory._getLastPlayer()?.equipment || {})
+                .filter(([slot, equipped]) => isActiveEquipment(slot, equipped) && equipped.setId === item.setId).length;
             line(`${set.name} — ${count}/${set.slots.length} equipped`, 'phone-item-section');
             for (const pieces of [2, 4, 6]) if (set[`bonus${pieces}`]) {
                 line(`${pieces} pieces (${count >= pieces ? 'active' : 'inactive'}): ${this.inventory.formatSetBonus(set[`bonus${pieces}`])}`);
@@ -174,7 +176,7 @@ export class MobileItemDetails {
             if (!section.hidden) {
                 section.replaceChildren();
                 const heading = document.createElement('h3');
-                heading.textContent = `${comparison.slotLabel}: ${comparison.equippedItem?.name || 'Empty'}`;
+                heading.textContent = `${comparison.slotLabel}: ${comparison.equippedItem?.name || (comparison.inactiveItem ? 'No active gear' : 'Empty')}`;
                 section.append(heading);
                 renderEquipmentComparison(section, item, comparison, player, stat => ui._formatStatName(stat), SET_DEFINITIONS);
                 if (comparison.equippedItem) { const contents = document.createElement('div'); section.append(contents); this.describe(contents, comparison.equippedItem); }

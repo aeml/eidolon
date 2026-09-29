@@ -235,10 +235,13 @@ export class InventoryUI {
             slotKey = this._getWeakerEquipmentSlot(player, 'trinket1', 'trinket2');
         }
 
+        const stored = player?.equipment?.[slotKey] || null;
+        const active = isActiveEquipment(slotKey, stored);
         return {
             slotKey,
             slotLabel: this._formatEquipmentSlotLabel(slotKey),
-            equippedItem: player?.equipment?.[slotKey] || null
+            equippedItem: active ? stored : null,
+            inactiveItem: active ? null : stored
         };
     }
     _isStarterProgressionWindow(player) {
@@ -1313,7 +1316,7 @@ export class InventoryUI {
             if (player && player.equipment) {
                 for (const slot in player.equipment) {
                     const equipped = player.equipment[slot];
-                    if (equipped && equipped.setId === item.setId) equippedCount++;
+                    if (isActiveEquipment(slot, equipped) && equipped.setId === item.setId) equippedCount++;
                 }
             }
 
