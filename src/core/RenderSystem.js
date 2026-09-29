@@ -406,6 +406,7 @@ export class RenderSystem {
     }
 
     setupLights() {
+        this.disposeShadowTargets();
         if (this.ambientLight?.parent?.remove) {
             this.ambientLight.parent.remove(this.ambientLight);
         }
@@ -456,6 +457,7 @@ export class RenderSystem {
     }
 
     setupPostProcessing() {
+        this.disposePostProcessing();
         const params = new URLSearchParams(window.location.search);
         const forcePost = params.get('post') === '1';
         const disablePost = params.get('post') === '0';
@@ -489,14 +491,27 @@ export class RenderSystem {
             this.applyPostProcessingPreset(this.targetLighting || this.realmLightingPresets.earth);
         } catch (error) {
             console.warn('RenderSystem: Post-processing disabled due to setup failure.', error);
-            this.usePostProcessing = false;
+            this.disposePostProcessing();
             this.postProcessingInitFailed = true;
-            this.composer = null;
-            this.renderPass = null;
-            this.bloomPass = null;
-            this.fxaaPass = null;
-            this.outputPass = null;
         }
+    }
+
+    disposePostProcessing() {
+        // EffectComposer owns its two buffers/copy pass, not its added passes.
+        // Include partially constructed passes when initialization failed.
+        const passes = new Set([...(this.composer?.passes || []), this.renderPass,
+            this.bloomPass, this.fxaaPass, this.outputPass].filter(Boolean));
+        passes.forEach(pass => pass.dispose?.());
+        this.composer?.dispose();
+        this.composer = this.renderPass = this.bloomPass = this.fxaaPass = this.outputPass = null;
+        this.usePostProcessing = false;
+    }
+
+    disposeShadowTargets() {
+        const shadow = this.keyLight?.shadow;
+        if (!shadow) return;
+        new Set([shadow.map, shadow.mapPass].filter(Boolean)).forEach(target => target.dispose());
+        shadow.map = shadow.mapPass = null;
     }
 
     updateFxaaResolution() {
@@ -671,6 +686,10 @@ export class RenderSystem {
         if (this.keyLight) {
             this.keyLight.castShadow = allowShadows;
             const shadowSize = this.getShadowMapSize();
+            // Three only allocates a PCF target when map is null; changing
+            // mapSize alone otherwise leaves the old-sized texture in use.
+            if (!allowShadows || this.keyLight.shadow.mapSize.width !== shadowSize ||
+                this.keyLight.shadow.mapSize.height !== shadowSize) this.disposeShadowTargets();
             this.keyLight.shadow.mapSize.width = shadowSize;
             this.keyLight.shadow.mapSize.height = shadowSize;
             this.keyLight.shadow.autoUpdate = true;
@@ -682,7 +701,7 @@ export class RenderSystem {
         }
 
         if (normalized === 'low') {
-            this.usePostProcessing = false;
+            this.disposePostProcessing();
         } else {
             if (!this.composer) {
                 this.setupPostProcessing();
@@ -1136,6 +1155,8 @@ export class RenderSystem {
 
 
     dispose() {
+        this.disposePostProcessing();
+        this.disposeShadowTargets();
         if (this._onWindowResize) window.removeEventListener('resize', this._onWindowResize, false);
         this.phoneEncounterObserver?.disconnect();
         if (this._pMesh) {
@@ -1176,9 +1197,6 @@ export class RenderSystem {
             }
         });
 
-        if (this.composer) {
-            this.composer.dispose();
-        }
         if (this.renderer) {
             this.renderer.dispose();
             if (this.renderer.domElement && this.renderer.domElement.parentNode) {

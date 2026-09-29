@@ -1,6 +1,52 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('graphics changes resize real shadow targets and release unused postprocessing', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 960, height: 720 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async () => {
+        const THREE = await import('three');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const render = new RenderSystem(false), snapshots = [];
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: 0x777777 }));
+        floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true;
+        const box = new THREE.Mesh(new THREE.BoxGeometry(3, 5, 3), new THREE.MeshStandardMaterial({ color: 0x98745c }));
+        box.position.y = 2.5; box.castShadow = true;
+        render.scene.add(floor, box);
+        render.setCameraTarget(new THREE.Vector3()); render.setZoom(15);
+        render.applyLightingPreset('earth', true); render.updateShadowFocus(new THREE.Vector3());
+        try {
+            for (const quality of ['high', 'medium', 'low', 'medium', 'high', 'low', 'high']) {
+                render.setGraphicsQuality(quality); render.render();
+                snapshots.push({ quality, requested: render.keyLight.shadow.mapSize.x,
+                    allocated: render.keyLight.shadow.map?.width ?? null,
+                    composer: Boolean(render.composer), bloom: Boolean(render.bloomPass),
+                    enabled: render.usePostProcessing, textures: render.renderer.info.memory.textures });
+            }
+            // A repeated current setting must not churn its active targets.
+            const shadow = render.keyLight.shadow.map, composer = render.composer;
+            render.setGraphicsQuality('high'); render.render();
+            return { snapshots, reused: shadow === render.keyLight.shadow.map && composer === render.composer };
+        } finally { render.dispose(); }
+    });
+    await testInfo.attach('quality-resource-transitions', { body: JSON.stringify(result), contentType: 'application/json' });
+    for (const state of result.snapshots) {
+        expect(state.allocated, JSON.stringify(state)).toBe(state.quality === 'high' ? 4096 : state.quality === 'medium' ? 2048 : null);
+        expect(state.composer).toBe(state.quality !== 'low');
+        expect(state.bloom).toBe(state.quality !== 'low');
+        expect(state.enabled).toBe(state.quality !== 'low');
+    }
+    const low = result.snapshots.filter(s => s.quality === 'low');
+    const high = result.snapshots.filter(s => s.quality === 'high');
+    expect(low[1].textures).toBe(low[0].textures);
+    expect(high.at(-1).textures).toBe(high[0].textures);
+    expect(low[0].textures).toBeLessThan(high[0].textures);
+    expect(result.reused).toBe(true);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 for (const surface of ['town', 'earth']) {
 test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
