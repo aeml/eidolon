@@ -5,6 +5,11 @@ remain open; runtime version metadata is intentionally unchanged.
 
 ## Draft patch notes
 
+- Periodic damage and healing use smaller body-level cues instead of additional
+  decorative ground rings and large particle bursts. Reduced motion retains
+  feedback without particle travel. Actual danger/healing ranges and combat
+  values are unchanged. See [verification](2026-09-29-periodic-combat-feedback.md).
+
 - Boss danger circles, their shaded areas and regional motifs now sit above
   dungeon floors instead of being hidden underneath them.
 - Fireball, Meteor and Explosive Trap impact areas remain visible on dungeon
