@@ -5,6 +5,10 @@ remain open; runtime version metadata is intentionally unchanged.
 
 ## Draft patch notes
 
+- Added soft actor contact shadows for phones and Low graphics, grounding
+  characters without enabling expensive directional shadows. Contacts follow
+  movement and fade during jumps; hidden/stealthed actors remain unrevealed.
+  See the [connected route and rendered-floor checks](2026-09-29-low-quality-actor-grounding.md).
 - Boss danger circles, their shaded areas and regional motifs now sit above
   dungeon floors instead of being hidden underneath them.
 - Fireball, Meteor and Explosive Trap impact areas remain visible on dungeon

@@ -26,6 +26,7 @@ import {
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
+const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
     loop(time) {
@@ -928,6 +929,10 @@ class GameEngineRuntimeMethods {
             camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,
             player: this.player, target: (this.isMobile ? this.mobileCombatTarget : null) || this.pendingInteraction || this.hoveredEntity,
             isInteractable: entity => this.isInteractableEntity?.(entity), mobile: this.isMobile
+        });
+        this.renderSystem.updateActorContactShadows?.(activeEntities, {
+            isActor: isContactShadowActor,
+            terrainElevation: this.currentInstanceId ? null : this.terrainElevation
         });
         this.renderSystem.render();
 
