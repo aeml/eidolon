@@ -3,6 +3,61 @@ import { jest } from '@jest/globals';
 import { createTransientEffect } from '../src/core/TransientEffects.js';
 
 describe('Transient telegraph readability', () => {
+    test.each(['', 'verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus'])(
+        '%s warnings clear dungeon floors while retaining elevated origins and exact footprints', theme => {
+            for (const y of [0, .04, .5, 8]) {
+                const position = new THREE.Vector3(4, y, 7);
+                const effect = createTransientEffect(new THREE.Scene(), 'telegraph', position, 0xff2200, {
+                    radius: 6, telegraphDuration: 2, theme, label: 'DANGER'
+                });
+                const [ring, fill] = effect.meshes;
+                expect(position.toArray()).toEqual([4, y, 7]);
+                expect(ring.position.toArray()).toEqual([4, Math.max(.1, y) + .06, 7]);
+                expect(fill.position.y).toBeCloseTo(Math.max(.1, y) + .05);
+                expect(ring.geometry.parameters.outerRadius).toBe(6);
+                expect(fill.geometry.parameters.radius).toBe(6);
+                const backing = ring.getObjectByName('DangerContrastUnderlay');
+                expect(backing.getWorldPosition(new THREE.Vector3()).y).toBeGreaterThan(.1);
+                if (theme) expect(effect.meshes[2].position.y).toBeCloseTo(Math.max(.1, y) + .075);
+                effect.update(2);
+                expect(effect.meshes).toHaveLength(0);
+            }
+        }
+    );
+
+    test.each(['option', 'browser'])('reduced motion from %s retains warning timing and radius without pulsing or rotation', source => {
+        const previous = globalThis.matchMedia;
+        globalThis.matchMedia = jest.fn(() => ({ matches: source === 'browser' }));
+        try {
+            const scene = new THREE.Scene();
+            const effect = createTransientEffect(scene, 'telegraph', new THREE.Vector3(0, .5, 0), 0xff2200, {
+                radius: 6, telegraphDuration: 2, theme: 'molten_core', label: 'DANGER', threatTier: 'boss',
+                ...(source === 'option' ? { reducedMotion: true } : {})
+            });
+            const [ring, fill, motif, label] = effect.meshes;
+            let opacity = 0, fillOpacity = 0;
+            for (const elapsed of [0, .25, .5, 1, 1.5, 1.99]) {
+                effect.elapsed = elapsed; effect.update(0);
+                expect(ring.geometry.parameters.outerRadius * ring.scale.x).toBe(6);
+                expect(ring.material.opacity).toBeGreaterThanOrEqual(opacity);
+                expect(fill.material.opacity).toBeGreaterThanOrEqual(fillOpacity);
+                expect(motif.rotation.y).toBe(0);
+                expect(motif.scale.toArray()).toEqual([1, 1, 1]);
+                expect(label.scale.toArray()).toEqual([...label.userData.baseScale, 1]);
+                expect(label.material.opacity).toBeCloseTo(.82);
+                expect(effect.isActive).toBe(true);
+                opacity = ring.material.opacity; fillOpacity = fill.material.opacity;
+            }
+            expect(ring.material.opacity).toBeGreaterThan(.45);
+            effect.update(.02);
+            expect(effect.isActive).toBe(false);
+            expect(scene.children).toHaveLength(0);
+        } finally {
+            if (previous === undefined) delete globalThis.matchMedia;
+            else globalThis.matchMedia = previous;
+        }
+    });
+
     test.each(['expiry', 'explicit'])('releases owned label textures exactly once on %s, without disposing shared maps', (mode) => {
         const context = {
             clearRect: jest.fn(), fillRect: jest.fn(), strokeRect: jest.fn(),
