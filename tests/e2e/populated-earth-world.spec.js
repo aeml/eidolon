@@ -339,8 +339,15 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             return sites.map(s => s.id);
         }, { quality, mobile: width < 600, elemental });
         try {
+            const breakdown = [];
             for (const id of locations) {
                 const stats = await page.evaluate(id => window.__populatedWorld.visit(id), id);
+                // Capture before the later prepared combat actors are added;
+                // otherwise their shadows contaminate a town-only diagnosis.
+                if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_DIAGNOSE === '1'
+                    && ['lanternhold-common-well', 'lanternhold-service-court', 'returning-scar', 'first-grove-arch'].includes(id)) {
+                    breakdown.push({ id, draws: await page.evaluate(() => window.__populatedWorld.diagnoseDraws()) });
+                }
                 await page.screenshot({ path: testInfo.outputPath(`${id}.png`) });
                 expect(stats.calls).toBeGreaterThan(0);
                 expect(stats.shadowFocusError).toBeLessThan(1);
@@ -405,10 +412,6 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             // Opt-in local hardware acceptance; shared CI is not a comparable
             // frame-time environment. No busy loop, uncapped render or GPU finish.
             if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_DIAGNOSE === '1') {
-                const breakdown = await page.evaluate(() => ['lanternhold-common-well', 'returning-scar', 'first-grove-arch'].map(id => {
-                    window.__populatedWorld.visit(id);
-                    return { id, draws: window.__populatedWorld.diagnoseDraws() };
-                }));
                 await writeFile(testInfo.outputPath('draw-breakdown.json'), JSON.stringify(breakdown, null, 2));
             }
             if (process.env.EIDOLON_E2E_POPULATION_PROFILE === '1') {

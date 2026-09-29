@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Combined the resonance plaza's static stonework and trim into fewer draws,
+  retaining its appearance, crystal repair effects and interaction. Full-view
+  comparisons save24 High/12 Low draws; some town budgets remain unmet.
+  See [plaza comparison and culling tradeoff](2026-09-29-resonance-plaza-batches.md).
+
 - Repositioned the main and fill lights for clearer lit/shaded faces and visible
   ground contact shadows. Fitted the shadow region to the view instead of a
   symmetric square. Regional palettes and brightness controls are unchanged;

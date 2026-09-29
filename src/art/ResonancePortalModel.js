@@ -1,14 +1,15 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { PORTAL_CRYSTALS } from '../core/ResonancePortalState.js';
 
 // Four facets borrow the distant sanctums' light; these are not replacement
 // crystals or a new repair objective. The walkable plaza has no solid floor box.
-export function createResonancePortalModel() {
+export function createResonancePortalModel({ batched = true } = {}) {
     const mesh = new THREE.Group();
     mesh.name = 'FourfoldResonancePlaza';
     mesh.userData.bounds = { height: 8 };
-    const geometries = new Set(), materials = new Set();
+    const geometries = new Set(), materials = new Set(), frameParts = [];
     const material = options => { const value = new THREE.MeshStandardMaterial(options); materials.add(value); return value; };
     const stone = material({ color: 0x585461, roughness: .92 });
     applyWorldSurfaceDetail(stone, 'stone');
@@ -19,24 +20,25 @@ export function createResonancePortalModel() {
         part.position.set(x, y, z); part.castShadow = true; part.receiveShadow = true;
         mesh.add(part); return part;
     };
-    const paving = add(new THREE.CylinderGeometry(8, 8, .12, 48), stone, 0, .05, 0);
+    const frame = (...args) => { const part = add(...args); frameParts.push(part); return part; };
+    const paving = frame(new THREE.CylinderGeometry(8, 8, .12, 48), stone, 0, .05, 0);
     paving.castShadow = false;
     for (const radius of [6.7, 7.7]) {
-        const inlay = add(new THREE.TorusGeometry(radius, .055, 5, 64), metal, 0, .13, 0);
+        const inlay = frame(new THREE.TorusGeometry(radius, .055, 5, 64), metal, 0, .13, 0);
         inlay.rotation.x = Math.PI / 2;
     }
-    const ring = add(new THREE.TorusGeometry(3.5, .38, 8, 40), stone, 0, 4.2, 0);
+    const ring = frame(new THREE.TorusGeometry(3.5, .38, 8, 40), stone, 0, 4.2, 0);
     ring.name = 'CovenantArch';
-    add(new THREE.TorusGeometry(3.5, .075, 5, 64), metal, 0, 4.2, .38);
+    frame(new THREE.TorusGeometry(3.5, .075, 5, 64), metal, 0, 4.2, .38);
     const walls = [];
     for (const x of [-3.5, 3.5]) {
-        add(new THREE.BoxGeometry(.95, 3.5, 1.25), stone, x, 1.85, 0);
+        frame(new THREE.BoxGeometry(.95, 3.5, 1.25), stone, x, 1.85, 0);
         walls.push({ x, z: 0, width: .95, depth: 1.25, height: 3.7 });
     }
     const crystals = PORTAL_CRYSTALS.map((crystal, index) => {
         const x = index % 2 ? 5.4 : -5.4, z = index < 2 ? -3.6 : 3.6;
-        add(new THREE.CylinderGeometry(.7, 1, 1.25, 8), stone, x, .75, z);
-        add(new THREE.CylinderGeometry(.82, .82, .14, 8), metal, x, 1.43, z);
+        frame(new THREE.CylinderGeometry(.7, 1, 1.25, 8), stone, x, .75, z);
+        frame(new THREE.CylinderGeometry(.82, .82, .14, 8), metal, x, 1.43, z);
         const surface = material({ color: crystal.color, emissive: crystal.color, emissiveIntensity: .04, roughness: .25, metalness: .24 });
         const shard = add(new THREE.OctahedronGeometry(.85), surface, x, 2.5, z);
         shard.scale.set(.72, 1.8, .72); shard.rotation.y = index * .6;
@@ -63,6 +65,35 @@ export function createResonancePortalModel() {
     materials.add(veil);
     const surface = add(new THREE.CircleGeometry(3.1, 48), veil, 0, 4.2, 0);
     surface.castShadow = false;
+    // Frame surfaces are rigid and share materials. Keep the walkable paving's
+    // shadow policy separate and never merge the independently restored shards,
+    // rays or animated veil. Unbatched construction is a visual reference only.
+    if (batched) {
+        const buckets = new Map();
+        for (const part of frameParts) {
+            const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
+            if (!buckets.has(key)) buckets.set(key, []);
+            buckets.get(key).push(part);
+        }
+        for (const [index, parts] of [...buckets.values()].entries()) {
+            if (parts.length < 2) continue;
+            const baked = parts.map(part => {
+                part.updateMatrix();
+                return (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix);
+            });
+            const combined = mergeGeometries(baked, false);
+            baked.forEach(geometry => geometry.dispose());
+            if (!combined) throw new Error('Unable to batch resonance plaza frame');
+            combined.computeBoundingBox(); combined.computeBoundingSphere();
+            const batch = add(combined, parts[0].material, 0, 0, 0);
+            batch.name = `PortalFrameBatch:${index}`;
+            batch.castShadow = parts[0].castShadow; batch.receiveShadow = parts[0].receiveShadow;
+            for (const part of parts) {
+                part.removeFromParent(); geometries.delete(part.geometry); part.geometry.dispose();
+            }
+        }
+    }
+    mesh.userData.portalFrameBatched = batched;
     let elapsed = 0;
     return {
         mesh, walls, crystals,
