@@ -55,3 +55,24 @@ test('only bounded aggregates enter summaries; clearing removes previous observa
     session.clear(); expect(session.started).toBe(false); expect(session.elapsed()).toBe(0);
     expect(session.endLevel).toBeNull(); expect(session.level30).toBeNull();
 });
+
+test('active progression bands and party rosters settle the previous interval and exclude unavailable play', () => {
+    const session = new PlaytestSession();
+    session.start(0, { ...active, level: 29, className: 'Wizard', partySize: 1 });
+    session.tick(1000, { ...active, level: 30, partySize: 4 });
+    session.tick(2000, { ...active, level: 60, partySize: 5, hidden: true });
+    session.tick(3000, { ...active, level: 100, partySize: 5 });
+    session.tick(9000, { ...active, level: 100, partySize: 5 });
+    session.stop(10000, { ...active, level: 100, partySize: 5 });
+    expect(session.activeByLevelBand).toEqual({ '1–29': 1000, '30–59': 1000, '60–99': 0, '100': 1000, unknown: 0 });
+    expect(session.activeByPartySize).toEqual({ '1': 1000, '2': 0, '3': 0, '4': 1000, '5': 1000, unknown: 0 });
+    expect(Object.values(session.activeByLevelBand).reduce((a, b) => a + b, 0)).toBe(session.active());
+    expect(session.summary()).toContain('Class: Wizard');
+    expect(session.summary()).toContain('roster size does not prove participation');
+    session.clear(); expect(session.className).toBeNull();
+    session.start(0, { ...active, level: 101, partySize: 99, className: '<private name>' });
+    session.stop(1000, active);
+    expect(session.activeByLevelBand.unknown).toBe(1000);
+    expect(session.activeByPartySize.unknown).toBe(1000);
+    expect(session.summary()).not.toContain('private name');
+});

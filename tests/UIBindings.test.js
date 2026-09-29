@@ -76,13 +76,14 @@ describe('UIBindings', () => {
         expect(engine.network.send).toHaveBeenLastCalledWith('forge_remove_gem', { equipSlot: 'mainHand', socketIndex: 0, expected });
     });
 
-    test('playtest sampling exposes only connection and level, without sending observations', () => {
+    test('playtest sampling exposes bounded progression context without identities or sending observations', () => {
         const engine = createEngine();
         new UIBindings(engine).bindConstructorCallbacks();
         engine.player.level = 12;
-        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: true, level: 12 });
+        engine.player.meshType = 'Wizard';
+        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: true, level: 12, className: 'Wizard', partySize: 1 });
         engine.network.socket.readyState = WebSocket.CLOSED;
-        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: false, level: 12 });
+        expect(engine.uiManager.getPlaytestContext()).toEqual({ connected: false, level: 12, className: 'Wizard', partySize: 1 });
         engine.network.socket.readyState = WebSocket.OPEN;
         engine.isMultiplayer = false;
         expect(engine.uiManager.getPlaytestContext().connected).toBe(false);
