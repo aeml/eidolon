@@ -4,6 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createLappedSlateRoof, createDormerGable } from './LanternholdRoofGeometry.js';
 import { createLanternholdArchPanel, createLanternholdArchFrame } from './LanternholdFacadeGeometry.js';
+import { createLanternholdCanopy } from './LanternholdCanopyGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -155,7 +156,7 @@ function createMaterials() {
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),
         brass: material('lanternhold-oath-brass', 0x9d6a32, { metalness: 0.66, roughness: 0.4 }),
         leather: material('lanternhold-road-leather', 0x4c3025, { roughness: 0.92 }),
-        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide }),
+        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true }),
         ashCloth: material('lanternhold-ash-cloth', 0x3b3735, { roughness: 0.98, side: THREE.DoubleSide }),
         amber: material('lanternhold-amber-window', palette.accent, {
             emissive: palette.accent,
@@ -385,10 +386,11 @@ function createTradingPost(root) {
     addFoundation(root, 'market', 10.8, 9.5, { steps: false });
     for (const [index, x] of [-4.35, 4.35].entries()) {
         for (const z of [-3.25, 3.25]) {
-            box(root, `market:canopy-post:${index}:${z}`, MATERIAL_SET.timber, [0.46, 5.2, 0.46], [x, 3.15, z]);
+            box(root, `market:canopy-post:${index}:${z}`, MATERIAL_SET.timber, [0.46, 4.85, 0.46], [x, 3.075, z]);
         }
     }
-    addGabledRoof(root, 'market', 10.65, 7.65, 5.55, 1.45, MATERIAL_SET.cloth);
+    addMesh(root, 'market:tensioned-cloth-canopy', geometry('lanternhold-market-canopy', createLanternholdCanopy), MATERIAL_SET.cloth);
+    box(root, 'market:ridge-pole', MATERIAL_SET.timber, [10.85, .16, .18], [0, 6.94, 0]);
     box(root, 'market:merchant-counter', MATERIAL_SET.timber, [8.4, 1.35, 1.3], [0, 1.4, 2.9]);
     box(root, 'market:counter-brass-edge', MATERIAL_SET.brass, [8.55, 0.16, 1.42], [0, 2.1, 2.9]);
     for (const x of [-3.25, -1.1, 1.1, 3.25]) {
@@ -400,8 +402,35 @@ function createTradingPost(root) {
         box(root, `market:ledger:${x}`, MATERIAL_SET.parchment, [1.2, 0.12, 0.8], [x, 2.25, 2.72], [-0.18, 0, 0]);
     }
     box(root, 'market:rear-supply-chest', MATERIAL_SET.leather, [2.1, 1.25, 1.35], [-2.75, 1.3, -2.4]);
-    box(root, 'market:sealed-crate', MATERIAL_SET.stone, [1.45, 1.6, 1.45], [2.7, 1.5, -2.45]);
+    addShippingCrate(root, 'market:sealed-crate', 2.7, .8, -2.45, 1.45);
+    addShippingCrate(root, 'market:stacked-crate', 2.9, 2.25, -2.45, 1.05);
+    // Supplies on the counter communicate a working market at play distance;
+    // keep the ledgers and all dressing within its existing blocked footprint.
+    for (const [i, x] of [-2.2, .1, 2.3].entries()) {
+        addMesh(root, `market:wrapped-bundle:${i}`, SHAPES.cylinder, MATERIAL_SET.leather, {
+            position: [x, 2.43, 3.05], scale: [.48, 1.1, .48], rotation: [0, 0, Math.PI / 2]
+        });
+        for (const offset of [-.35, .35]) addMesh(root, `market:bundle-binding:${i}:${offset}`, SHAPES.torus, MATERIAL_SET.brass, {
+            position: [x + offset, 2.43, 3.05], scale: [.5, .5, .45], rotation: [0, Math.PI / 2, 0]
+        });
+    }
     addLantern(root, 'market:votive', 0, 4.2, -3.45, 0.85);
+}
+
+function addShippingCrate(root, prefix, x, y, z, size) {
+    for (let board = 0; board < 4; board++) {
+        const offset = (board - 1.5) * size / 4;
+        for (const side of [-1, 1]) {
+            box(root, `${prefix}:face:${board}:${side}`, MATERIAL_SET.timber,
+                [size * .235, size, .09], [x + offset, y + size / 2, z + side * (size / 2 - .045)]);
+            box(root, `${prefix}:side:${board}:${side}`, MATERIAL_SET.timber,
+                [.09, size, size * .235], [x + side * (size / 2 - .045), y + size / 2, z + offset]);
+        }
+        box(root, `${prefix}:lid:${board}`, MATERIAL_SET.timber,
+            [size * .235, .08, size], [x + offset, y + size - .04, z]);
+    }
+    for (const side of [-1, 1]) box(root, `${prefix}:strap:${side}`, MATERIAL_SET.iron,
+        [size, .12, .05], [x, y + size * (side > 0 ? .8 : .2), z + size / 2]);
 }
 
 function createBlacksmith(root) {
@@ -428,9 +457,21 @@ function createBlacksmith(root) {
             receiveShadow: false
         });
     }
-    box(root, 'smithy:side-workbench', MATERIAL_SET.timber, [3.8, 1.25, 1.4], [4.65, 1.55, 4.35]);
+    box(root, 'smithy:side-workbench', MATERIAL_SET.timber, [3.8, 1.25, 1.4], [4.65, 1.55, 6]);
+    // A small repair rack rather than freestanding route-blocking clutter.
+    for (const x of [-4.6, -2.5]) box(root, `smithy:repair-rack:${x}`, MATERIAL_SET.timber,
+        [.16, 2.7, .2], [x, 2.1, 5.5]);
+    box(root, 'smithy:repair-rack-crossbar', MATERIAL_SET.timber, [2.4, .18, .2], [-3.55, 3.25, 5.5]);
+    for (const [i, x] of [-4.3, -3.55, -2.8].entries()) {
+        box(root, `smithy:unfinished-blade:${i}`, MATERIAL_SET.iron, [.16, 1.4 + i * .16, .065], [x, 2.25, 5.64], [0, 0, (i - 1) * .07]);
+        box(root, `smithy:blade-tang:${i}`, MATERIAL_SET.iron, [.065, .36, .065], [x, 3.2, 5.64]);
+    }
+    for (let i = 0; i < 3; i++) box(root, `smithy:waiting-billet:${i}`, MATERIAL_SET.iron,
+        [.25, .18, .85], [3.6 + i * .4, 2.26, 6]);
+    box(root, 'smithy:hammer-handle', MATERIAL_SET.timber, [.12, .12, .85], [5.6, 2.25, 5.9], [0, .35, 0]);
+    box(root, 'smithy:hammer-head', MATERIAL_SET.iron, [.5, .26, .26], [5.73, 2.36, 6.27]);
     addMesh(root, 'smithy:sign-anvil', SHAPES.tapered, MATERIAL_SET.iron, {
-        position: [4.65, 3.1, 5.0],
+        position: [4.65, 3.1, 6.4],
         rotation: [0, 0, Math.PI / 2],
         scale: [0.72, 1.6, 0.72]
     });
