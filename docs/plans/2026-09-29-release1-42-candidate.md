@@ -7,6 +7,11 @@ publication permission requirement.
 
 ## Draft patch notes
 
+- Fixed graphics-quality changes retaining the previous shadow resolution.
+  Low now releases unused shadow and postprocessing buffers; switching back
+  restores the effects without accumulating those textures. See the
+  [quality-transition regression](2026-09-29-graphics-quality-resources.md).
+
 - Tightened woodland rendering batches so fewer off-screen canopies are drawn,
   retaining all trees, shadows and collision. The sampled desktop road views
   submit20–51% fewer triangles; this is not a measured FPS guarantee. See the
