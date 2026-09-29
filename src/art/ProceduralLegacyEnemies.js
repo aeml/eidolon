@@ -9,6 +9,7 @@ export const PROCEDURAL_LEGACY_ENEMY_STATES = Object.freeze(['Idle', 'Walk', 'Ru
 
 export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
     Skeleton: Object.freeze({
+        basicAttackContactTime: .66,
         artStyle: 'Gloamwood ossuary pilgrim',
         region: 'Gloamwood',
         faction: 'gravebound',
@@ -25,6 +26,7 @@ export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
         })
     }),
     DemonOrc: Object.freeze({
+        basicAttackContactTime: .72,
         artStyle: 'Cinder Wastes kiln-warrior',
         region: 'Cinder Wastes',
         faction: 'ash legion',
@@ -41,6 +43,7 @@ export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
         })
     }),
     Imp: Object.freeze({
+        basicAttackContactTime: .54,
         artStyle: 'Cinder Wastes ember-scavenger',
         region: 'Cinder Wastes',
         faction: 'ash legion',
@@ -57,6 +60,7 @@ export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
         })
     }),
     Construct: Object.freeze({
+        basicAttackContactTime: .9,
         artStyle: 'Gloamwood grave-reliquary construct',
         region: 'Gloamwood',
         faction: 'gravebound',
@@ -74,6 +78,7 @@ export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
         })
     }),
     InfernoTitan: Object.freeze({
+        basicAttackContactTime: .88,
         artStyle: 'Cinder Wastes crucible titan',
         region: 'Cinder Wastes',
         faction: 'ash legion',
@@ -181,6 +186,9 @@ function finalizeEnemy(root, type, clips, { batch = false } = {}) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = clips;
+    // Reviewed forward-sweep key, aligned by Actor with the unchanged 35%
+    // basic damage time. Boss abilities and other families are not inferred.
+    root.userData.basicAttackContactTime = definition.basicAttackContactTime;
     groundEnemyDeathClip(type, clips);
     // Batch before recording the reset pose so pooled actors own only the
     // actual render tree, not removed source meshes. Skeleton uses the same
@@ -272,9 +280,9 @@ function createSkeletonClips() {
         new THREE.AnimationClip('Attack', 0.92, [
             numberTrack('Rig_SkeletonBody', 'position[y]', attackTimes, [0.34, 0.37, 0.44, 0.31, 0.34]),
             numberTrack('Rig_SkeletonBody', 'rotation[y]', attackTimes, [0, -0.22, -0.42, 0.32, 0]),
-            numberTrack('Rig_SkeletonShoulderRight', 'rotation[x]', attackTimes, [0, -0.72, -1.12, 0.88, 0]),
+            numberTrack('Rig_SkeletonShoulderRight', 'rotation[x]', attackTimes, [0, 0.72, 1.12, -0.88, 0]),
             numberTrack('Rig_SkeletonShoulderRight', 'rotation[z]', attackTimes, [0.12, 0.48, 0.68, -0.36, 0.12]),
-            numberTrack('Rig_SkeletonElbowRight', 'rotation[x]', attackTimes, [0, -0.35, -0.58, 0.34, 0]),
+            numberTrack('Rig_SkeletonElbowRight', 'rotation[x]', attackTimes, [0, 0.35, 0.58, -0.34, 0]),
             numberTrack('Rig_SkeletonWeapon', 'rotation[z]', attackTimes, [-0.18, -1, -1.36, 0.74, -0.18]),
             numberTrack('Rig_SkeletonHead', 'rotation[y]', attackTimes, [0, 0.15, 0.22, -0.12, 0]),
             numberTrack('Rig_SkeletonLantern', 'rotation[z]', attackTimes, [0, -0.18, -0.36, 0.38, 0])
@@ -454,9 +462,9 @@ function createDemonOrcClips() {
         new THREE.AnimationClip('Attack', 1, [
             numberTrack('Rig_DemonOrcBody', 'position[y]', attackTimes, [0.72, 0.76, 0.86, 0.68, 0.72]),
             numberTrack('Rig_DemonOrcChest', 'rotation[y]', attackTimes, [0, -0.3, -0.55, 0.42, 0]),
-            numberTrack('Rig_DemonOrcShoulderRight', 'rotation[x]', attackTimes, [0, -0.85, -1.22, 0.92, 0]),
+            numberTrack('Rig_DemonOrcShoulderRight', 'rotation[x]', attackTimes, [0, 0.85, 1.22, -0.92, 0]),
             numberTrack('Rig_DemonOrcShoulderRight', 'rotation[z]', attackTimes, [0.13, 0.58, 0.82, -0.48, 0.13]),
-            numberTrack('Rig_DemonOrcElbowRight', 'rotation[x]', attackTimes, [0, -0.32, -0.66, 0.52, 0]),
+            numberTrack('Rig_DemonOrcElbowRight', 'rotation[x]', attackTimes, [0, 0.32, 0.66, -0.52, 0]),
             numberTrack('Rig_DemonOrcWeapon', 'rotation[z]', attackTimes, [-0.24, -1.02, -1.48, 0.88, -0.24]),
             numberTrack('Rig_DemonOrcHead', 'rotation[y]', attackTimes, [0, 0.18, 0.3, -0.16, 0]),
             numberTrack('Rig_DemonOrcChain', 'rotation[z]', attackTimes, [0.16, -0.28, -0.55, 0.6, 0.16])
@@ -637,9 +645,9 @@ function createImpClips() {
         new THREE.AnimationClip('Attack', 0.78, [
             numberTrack('Rig_ImpBody', 'position[y]', attackTimes, [0.33, 0.41, 0.51, 0.31, 0.33]),
             numberTrack('Rig_ImpBody', 'rotation[y]', attackTimes, [0, -0.26, -0.48, 0.4, 0]),
-            numberTrack('Rig_ImpShoulderRight', 'rotation[x]', attackTimes, [0, -0.8, -1.22, 0.9, 0]),
+            numberTrack('Rig_ImpShoulderRight', 'rotation[x]', attackTimes, [0, 0.8, 1.22, -0.9, 0]),
             numberTrack('Rig_ImpShoulderRight', 'rotation[z]', attackTimes, [0.18, 0.56, 0.78, -0.42, 0.18]),
-            numberTrack('Rig_ImpElbowRight', 'rotation[x]', attackTimes, [0, -0.28, -0.58, 0.44, 0]),
+            numberTrack('Rig_ImpElbowRight', 'rotation[x]', attackTimes, [0, 0.28, 0.58, -0.44, 0]),
             numberTrack('Rig_ImpWeapon', 'rotation[z]', attackTimes, [-0.12, -1, -1.4, 0.8, -0.12]),
             numberTrack('Rig_ImpWingLeft', 'rotation[z]', attackTimes, [-0.28, -0.7, -0.82, 0.12, -0.28]),
             numberTrack('Rig_ImpWingRight', 'rotation[z]', attackTimes, [0.28, 0.7, 0.82, -0.12, 0.28]),
@@ -828,9 +836,9 @@ function createConstructClips() {
             numberTrack('Rig_ConstructBody', 'position[y]', attackTimes, [0.55, 0.59, 0.68, 0.5, 0.55]),
             numberTrack('Rig_ConstructBody', 'rotation[y]', attackTimes, [0, -0.2, -0.42, 0.34, 0]),
             numberTrack('Rig_ConstructChest', 'rotation[x]', attackTimes, [0, -0.14, -0.24, 0.22, 0]),
-            numberTrack('Rig_ConstructShoulderRight', 'rotation[x]', attackTimes, [0, -0.74, -1.2, 0.86, 0]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[x]', attackTimes, [0, 0.74, 1.2, -0.86, 0]),
             numberTrack('Rig_ConstructShoulderRight', 'rotation[z]', attackTimes, [0.16, 0.5, 0.72, -0.4, 0.16]),
-            numberTrack('Rig_ConstructElbowRight', 'rotation[x]', attackTimes, [0, -0.38, -0.64, 0.38, 0]),
+            numberTrack('Rig_ConstructElbowRight', 'rotation[x]', attackTimes, [0, 0.38, 0.64, -0.38, 0]),
             numberTrack('Rig_ConstructWeapon', 'rotation[z]', attackTimes, [0.18, -0.88, -1.42, 0.82, 0.18]),
             numberTrack('Rig_ConstructHead', 'rotation[y]', attackTimes, [-0.08, 0.08, 0.2, -0.12, -0.08]),
             numberTrack('Rig_ConstructBell', 'rotation[z]', attackTimes, [0, -0.18, -0.4, 0.46, 0])
@@ -1027,9 +1035,9 @@ function createInfernoTitanClips() {
             numberTrack('Rig_InfernoTitanBody', 'position[y]', attackTimes, [0.58, 0.64, 0.75, 0.53, 0.58]),
             numberTrack('Rig_InfernoTitanBody', 'rotation[y]', attackTimes, [0, -0.22, -0.45, 0.36, 0]),
             numberTrack('Rig_InfernoTitanChest', 'rotation[x]', attackTimes, [-0.04, -0.2, -0.32, 0.24, -0.04]),
-            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[x]', attackTimes, [0, -0.78, -1.24, 0.9, 0]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[x]', attackTimes, [0, 0.78, 1.24, -0.9, 0]),
             numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[z]', attackTimes, [0.12, 0.48, 0.74, -0.4, 0.12]),
-            numberTrack('Rig_InfernoTitanElbowRight', 'rotation[x]', attackTimes, [0, -0.36, -0.62, 0.4, 0]),
+            numberTrack('Rig_InfernoTitanElbowRight', 'rotation[x]', attackTimes, [0, 0.36, 0.62, -0.4, 0]),
             numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', attackTimes, [-0.2, -0.96, -1.48, 0.86, -0.2]),
             numberTrack('Rig_InfernoTitanHead', 'rotation[y]', attackTimes, [0.05, 0.16, 0.25, -0.15, 0.05]),
             numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', attackTimes, [0, -0.2, -0.44, 0.48, 0])

@@ -58,7 +58,24 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
                 return { id, dx: Math.abs(rect.x + rect.width / 2 - (point.x + 1) * innerWidth / 2),
                     dy: Math.abs(rect.y + rect.height / 2 - (1 - point.y) * innerHeight / 2) };
             });
-            window.__healthReview = { engine, ui, target, render, actors, alignment, reconciles: () => reconciles };
+            const sampleEnemyAttack = fraction => {
+                // Independently sample each pose: screenshot/GPU latency must
+                // not consume the actor's real wall-clock recovery timer.
+                target.isRemote = true; target.targetPosition = null;
+                target.mesh.lookAt(player.position); target.rotation.copy(target.mesh.quaternion);
+                target.setAttackingState();
+                const step = fraction * target.stats.attackSpeed;
+                for (let time = 0; time < step; time += 1 / 60) target.update(Math.min(1 / 60, step - time));
+                if (fraction === .35) {
+                    player.playHitReaction(target.position, 10); player.hitReaction.update(.045);
+                } else player.hitReaction?.update(1);
+                engine.render(1); target.mesh.updateMatrixWorld(true);
+                const weapon = new THREE.Box3().setFromObject(target.mesh.getObjectByName('Rig_SkeletonWeapon')).getCenter(new THREE.Vector3());
+                const forward = player.position.clone().sub(target.position).setY(0).normalize();
+                return { time: target.currentAction.time, contact: target.mesh.userData.basicAttackContactTime,
+                    forwardReach: weapon.sub(target.position).dot(forward), state: target.state };
+            };
+            window.__healthReview = { engine, ui, target, render, actors, alignment, sampleEnemyAttack, reconciles: () => reconciles };
         }, mobile);
         const selected = page.locator('.floating-bar[data-entity-id="enemy-selected"]');
         await expect(selected).toBeVisible();
@@ -81,6 +98,18 @@ for (const [width, mobile] of [[1280, false], [390, true]]) {
         await expect(selected).toBeVisible();
         await expect(selected).not.toHaveClass(/selected/);
         await page.screenshot({ path: testInfo.outputPath('earth-combat-health.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        // Actual runtime clips and directional recoil, with prepared contact
+        // timing; this is not an earned network attack or damage assertion.
+        for (const [phase, fraction] of [['windup', .18], ['contact', .35], ['recovery', .6]]) {
+            const pose = await page.evaluate(fraction => window.__healthReview.sampleEnemyAttack(fraction), fraction);
+            expect(pose.state).toBe('ATTACKING');
+            if (phase === 'contact') {
+                expect(pose.time).toBeCloseTo(pose.contact, 4);
+                expect(pose.forwardReach).toBeGreaterThan(.3);
+            }
+            await page.screenshot({ path: testInfo.outputPath(`enemy-attack-${phase}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+        }
+        await page.evaluate(() => { window.__healthReview.target.updateState('IDLE'); });
         await page.emulateMedia({ reducedMotion: 'reduce' });
         const reduced = await page.evaluate(() => {
             const { target, engine, ui } = window.__healthReview;
