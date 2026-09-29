@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { createCherubArt, createProceduralCherub } from '../art/ProceduralCherub.js';
+import { createPersistentAuraMaterial } from '../art/PersistentAuraMaterial.js';
 
 const GOLD = 0xffd75a;
 const BOOSTED_GOLD = 0xffffff;
@@ -105,11 +106,12 @@ export class SpiritGuardiansEffect {
             this.resources.delete(oldGeometry);
             oldGeometry.dispose();
             this.pulseRing.geometry = this.createRingGeometry();
+            this.pulseRing.material.userData.auraInnerRatio.value = this.pulseRing.geometry.parameters.innerRadius / this.effectRadius;
         }
     }
 
     createRingGeometry() {
-        return this.track(new THREE.RingGeometry(Math.max(0.2, this.effectRadius - 0.35), this.effectRadius, this.quality === 'low' ? 32 : 64));
+        return this.track(new THREE.RingGeometry(Math.max(0.2, this.effectRadius - 0.12), this.effectRadius, this.quality === 'low' ? 32 : 64));
     }
 
     track(resource) {
@@ -143,13 +145,8 @@ export class SpiritGuardiansEffect {
         }
 
         const ringGeometry = this.createRingGeometry();
-        const ringMaterial = this.track(new THREE.MeshBasicMaterial({
-            color,
-            transparent: true,
-            opacity: 0.24,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
+        const ringMaterial = this.track(createPersistentAuraMaterial(color, {
+            opacity: .3, innerRatio: ringGeometry.parameters.innerRadius / this.effectRadius
         }));
         this.pulseRing = new THREE.Mesh(ringGeometry, ringMaterial);
         this.pulseRing.name = 'SpiritGuardiansAura';
@@ -201,7 +198,7 @@ export class SpiritGuardiansEffect {
             // Animate opacity, not the gameplay edge. Body padding is not a
             // reason to draw a changing or oversized damage boundary.
             this.pulseRing.scale.setScalar(1);
-            this.pulseRing.material.opacity = 0.14 + pulse * (this.boosted ? 0.22 : 0.14);
+            this.pulseRing.material.opacity = .24 + pulse * (this.boosted ? .16 : .08);
             this.pulseRing.rotation.z = this.elapsed * 0.12;
         }
     }

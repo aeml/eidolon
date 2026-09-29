@@ -16,6 +16,11 @@ function makeSource() {
 describe('SpiritGuardiansEffect', () => {
     test.each(['high', 'low'])('cherubs share batched geometry and flap their wings on %s quality', (quality) => {
         const effect = new SpiritGuardiansEffect(new THREE.Group(), makeSource(), { quality });
+        expect(effect.pulseRing.material.blending).toBe(THREE.NormalBlending);
+        const ring = effect.pulseRing.geometry.parameters;
+        expect(ring.outerRadius - ring.innerRadius).toBeCloseTo(.12);
+        expect(ring.thetaLength).toBeCloseTo(Math.PI * 2);
+        expect(effect.pulseRing.material.userData.auraInnerRatio.value).toBeCloseTo(ring.innerRadius / ring.outerRadius);
         const [first, second] = effect.guardians;
         expect(first.getObjectByName('Cherub_Batch_body').geometry).toBe(second.getObjectByName('Cherub_Batch_body').geometry);
         let visibleMeshes = 0;
@@ -23,6 +28,7 @@ describe('SpiritGuardiansEffect', () => {
         expect(visibleMeshes).toBeLessThanOrEqual(7);
         const before = first.userData.wings[0].rotation.y;
         effect.update(0.2);
+        expect(effect.pulseRing.scale.toArray()).toEqual([1, 1, 1]);
         expect(first.userData.wings[0].rotation.y).not.toBe(before);
         expect(first.userData.bodyMaterial.transparent).toBe(false);
         effect.dispose();

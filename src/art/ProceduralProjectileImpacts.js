@@ -61,7 +61,9 @@ function materials(type, palette) {
         base: material(`${type}:impact:base`, palette.base, 0.78),
         accent: material(`${type}:impact:accent`, palette.accent, 0.9),
         pale: material(`${type}:impact:pale`, palette.pale, 0.96),
-        field: material(`${type}:impact:field`, palette.accent, 0.14)
+        field: material(`${type}:impact:field`, palette.accent, .065, THREE.NormalBlending),
+        boundary: material(`${type}:impact:boundary`, palette.accent, .58, THREE.NormalBlending),
+        echo: material(`${type}:impact:echo`, palette.accent, .38, THREE.NormalBlending)
     };
 }
 
@@ -105,7 +107,7 @@ function addExactAoeBoundary(root, type, radius, mats) {
             gameplayBoundary: true, gameplayRadius: radius, normalizedGameplayRadius: 1
         });
     const boundary = addPart(root, type, 'ExactBoundary',
-        geometry(`impact:boundary:unit:64`, () => new THREE.RingGeometry(0.965, 1, 64)), mats.pale, {
+        geometry('impact:boundary:unit:64', () => new THREE.RingGeometry(.98, 1, 64)), mats.boundary, {
             position: [0, 0.065, 0], rotation: [-Math.PI / 2, 0, 0], scale: [radius, radius, radius],
             gameplayBoundary: true, gameplayRadius: radius, normalizedGameplayRadius: 1
         });
@@ -121,8 +123,8 @@ function buildImpact(root, type, definition, mats, radius, quality) {
     const sealRadius = isAoe ? Math.min(radius * 0.48, 5.8) : 1.05;
     for (let index = 0; index < 3; index += 1) {
         addPart(root, type, `BrokenSeal${index + 1}`,
-            geometry(`impact:ring:${index}`, () => new THREE.RingGeometry(0.9 - index * 0.12, 1, 32)),
-            index === 1 ? mats.pale : mats.accent, {
+            geometry(`impact:broken-ring:${index}`, () => new THREE.RingGeometry(.945, 1, 28, 1, index * .4, Math.PI * 1.45)),
+            mats.echo, {
                 position: [0, 0.08 + index * 0.025, 0],
                 rotation: [-Math.PI / 2, 0, definition.signature * 0.17 + index * 0.48],
                 scale: [sealRadius * (0.48 + index * 0.25), sealRadius * (0.48 + index * 0.25), 1],
