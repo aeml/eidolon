@@ -5,6 +5,11 @@ remain queued; this does not skip pacing/readiness gates or open closed beta.
 
 ## Draft patch notes
 
+- Reduced off-screen terrain and fern/sedge rendering without removing plants
+  or altering the terrain surface. Sampled Low road views now meet geometry
+  targets; High and frame-time acceptance remain open. See the
+  [surface-culling comparison](2026-09-29-terrain-surface-culling.md).
+
 - Added broad roadside banks to the opt-in Earth elevation candidate, with
   matching client/server ground and preserved level entrances. Normal worlds
   remain flat pending terrain acceptance. Fixed touch movement retaining the

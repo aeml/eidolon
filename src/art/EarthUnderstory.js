@@ -57,7 +57,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     const material = createWoodlandWindMaterial();
     const cells = new Map();
     for (const plant of plants) {
-        const key = `${Math.floor(plant.x / 32)}:${Math.floor(plant.z / 32)}:${plant.variant}`;
+        const key = `${Math.floor(plant.x / 16)}:${Math.floor(plant.z / 16)}:${plant.variant}`;
         if (!cells.has(key)) cells.set(key, []);
         cells.get(key).push(plant);
     }
