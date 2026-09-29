@@ -12,8 +12,10 @@ import { MeshFactory } from '../src/utils/MeshFactory.js';
 
 const REQUIRED_IDENTITY_PARTS = Object.freeze({
     oathhall: ['oathhall:bell-tower', 'oathhall:oath-bell', 'oathhall:belfry-spire'],
-    trading_post: ['market:merchant-counter', 'market:ledger:-3.25', 'market:votive:lantern-flame'],
-    blacksmith: ['smithy:chimney-stack', 'smithy:horned-stack-cap', 'smithy:sign-anvil'],
+    trading_post: ['market:merchant-counter', 'market:ledger:-3.25', 'market:votive:lantern-flame',
+        'market:tensioned-cloth-canopy', 'market:sealed-crate:lid:0', 'market:wrapped-bundle:0'],
+    blacksmith: ['smithy:chimney-stack', 'smithy:horned-stack-cap', 'smithy:sign-anvil',
+        'smithy:repair-rack-crossbar', 'smithy:unfinished-blade:0', 'smithy:hammer-head'],
     camp: ['camp:grave-road-tent', 'camp:oathfire-ring', 'camp:split-oath-banner'],
     trading_house: ['compact:gilded-ledger-sign', 'compact:chained-scale-ring', 'compact:scale-pan:-1'],
     forge: ['forge:white-hot-mouth', 'forge:crowned-hood', 'forge:anvil-face'],
@@ -29,6 +31,16 @@ function visibleMeshes(root) {
 }
 
 describe('procedural Lanternhold architecture', () => {
+    test('smithy workbench and repair supplies are outside the wall, inside the unchanged building envelope', () => {
+        const root = createProceduralLanternholdStructure('blacksmith');
+        root.updateMatrixWorld(true);
+        const wall = new THREE.Box3().setFromObject(root.getObjectByName('smithy:stone-workshop'));
+        for (const name of ['smithy:side-workbench', 'smithy:waiting-billet:0', 'smithy:hammer-head']) {
+            const bounds = new THREE.Box3().setFromObject(root.getObjectByName(name));
+            expect(bounds.min.z).toBeGreaterThan(wall.max.z);
+            expect(bounds.max.z).toBeLessThan(LANTERNHOLD_STRUCTURE_DEFINITIONS.blacksmith.bounds[2] / 2);
+        }
+    });
     test('covers every authored town-building role with an intentional style and exact gameplay bounds', () => {
         expect(LANTERNHOLD_STRUCTURE_IDS).toEqual([
             'oathhall',
@@ -108,7 +120,7 @@ describe('procedural Lanternhold architecture', () => {
         first.position.set(20, 3, -5);
         expect(second.position.toArray()).toEqual([0, 0, 0]);
         expect(getProceduralLanternholdCacheMetrics()).toEqual({
-            geometries: 17,
+            geometries: 18,
             materials: 15,
             structures: 7
         });

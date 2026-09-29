@@ -36,6 +36,14 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 courtSize: render.groundTown.material.userData.townGroundComposition.paving.color.image.width };
         }, mobile);
         await page.screenshot({ path: testInfo.outputPath('town-court.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        for (const [label, x] of [['market', 22], ['smithy', -20]]) {
+            await page.evaluate(x => {
+                const { render, hero } = window.__courtReview;
+                hero.position.set(x, 0, 200); hero.mesh.position.copy(hero.position);
+                render.setCameraTarget(hero.position); render.render(); render.render();
+            }, x);
+            await page.screenshot({ path: testInfo.outputPath(`town-${label}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+        }
         expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512 });
         expect(failures).toEqual([]);
     });
