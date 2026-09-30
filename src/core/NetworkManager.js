@@ -202,10 +202,20 @@ export class NetworkManager {
     }
 
     _captureSocketHandlers(socket, names) {
+        if (this._ownedSocketHandlers?.socket !== socket) this._detachOwnedSocketHandlers();
         const handlers = this._ownedSocketHandlers?.socket === socket
             ? { ...this._ownedSocketHandlers.handlers } : {};
         for (const name of names) handlers[name] = socket[name];
         this._ownedSocketHandlers = { socket, handlers };
+    }
+
+    _detachOwnedSocketHandlers() {
+        const owned = this._ownedSocketHandlers;
+        if (!owned) return;
+        for (const [name, handler] of Object.entries(owned.handlers)) {
+            if (owned.socket[name] === handler) owned.socket[name] = null;
+        }
+        this._ownedSocketHandlers = null;
     }
 
     _decodeBinaryState(buffer) {
@@ -409,17 +419,15 @@ export class NetworkManager {
         this.onReconnectFailed = null; this.onResumeSuccess = null;
         this.onConnectionStateChange = null; this.getResumeToken = null;
         this.messageQueue.length = 0; this.latestServerTime = null;
+        // The owned transport may be the previous socket after replacement.
+        // Remove only our handlers, never another session/application's hooks.
+        this._detachOwnedSocketHandlers();
         if (socket) {
             if (closeSocket) {
                 socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null;
                 socket.close?.();
-            } else if (this._ownedSocketHandlers?.socket === socket) {
-                for (const [name, handler] of Object.entries(this._ownedSocketHandlers.handlers)) {
-                    if (socket[name] === handler) socket[name] = null;
-                }
             }
         }
-        this._ownedSocketHandlers = null;
     }
 
     // ------------------------------------------------------------------

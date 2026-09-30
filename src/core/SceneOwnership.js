@@ -32,6 +32,9 @@ export function clearEngineSceneOwnership(engine, { preservePlayer = false, adva
         owned.delete(engine.player);
         if (engine.player) engine.player._chunkKey = null;
     }
+    // Seated bones/cutaway roots are borrowed from actor models. Restore and
+    // forget them before retirement can return those models to a reusable pool.
+    engine.casino?.clearActorPresentation?.();
     for (const object of owned) object.isActive = false;
 
     engine.remotePlayers?.clear(); engine.hazards?.clear();

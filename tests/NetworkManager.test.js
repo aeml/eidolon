@@ -96,6 +96,36 @@ test('explicit disposal still closes its socket once', () => {
     expect(socket.onmessage).toBeNull(); expect(network.socket).toBeNull();
 });
 
+test('socket replacement releases prior transport handlers but preserves application ownership', () => {
+    installMockWebSocket();
+    const socket = makeMockSocket(), applicationOpen = jest.fn(); socket.onopen = applicationOpen;
+    const network = new NetworkManager(socket); network.setupListeners();
+    network.reconnectUrl = 'ws://localhost/ws'; network.getResumeToken = () => 'fixture-token';
+    network._doReconnect();
+    try {
+        expect(socket.onmessage).toBeNull(); expect(socket.onclose).toBeNull(); expect(socket.onerror).toBeNull();
+        expect(socket.onopen).toBe(applicationOpen);
+        network.socket.simulateOpen();
+        expect(network.socket.sent[0]).toEqual({ type: 'resume_session', payload: { token: 'fixture-token' } });
+    } finally { network.destroy(); }
+});
+
+test('replacement and detach never clear another owner\'s handlers on either transport', () => {
+    installMockWebSocket();
+    const socket = makeMockSocket(), network = new NetworkManager(socket); network.setupListeners();
+    const replacement = new NetworkManager(socket); replacement.setupListeners();
+    const replacementHandlers = [socket.onmessage, socket.onclose, socket.onerror];
+    network.reconnectUrl = 'ws://localhost/ws'; network._doReconnect();
+    expect([socket.onmessage, socket.onclose, socket.onerror]).toEqual(replacementHandlers);
+    const ownedSocket = network.socket;
+    const borrowed = makeMockSocket(); borrowed.onmessage = jest.fn(); borrowed.onclose = jest.fn();
+    const borrowedHandlers = [borrowed.onmessage, borrowed.onclose]; network.socket = borrowed;
+    network.destroy();
+    expect(ownedSocket.onopen).toBeNull(); expect(ownedSocket.onclose).toBeNull(); expect(ownedSocket.onerror).toBeNull();
+    expect([borrowed.onmessage, borrowed.onclose]).toEqual(borrowedHandlers);
+    replacement.destroy();
+});
+
 test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('session resume rejects a changed %s terrain profile before queuing state', profile => {
     const socket = makeMockSocket();
     const network = new NetworkManager(socket);

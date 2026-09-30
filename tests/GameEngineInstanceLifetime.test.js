@@ -5,6 +5,7 @@ import { ChunkManager } from '../src/core/ChunkManager.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { Entity } from '../src/entities/Entity.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
+import { CasinoController } from '../src/core/CasinoController.js';
 
 function harness(multiplayer = true) {
     const environment = new THREE.Group(), entities = new THREE.Group(), player = new Entity('player');
@@ -93,4 +94,26 @@ test('late instance entry cannot recreate a destroyed scene', async () => {
     expect(engine.overworldSceneGeneration).toBeUndefined();
     expect(engine.player.mesh).toBe(model);
     expect(engine.clearCombatIntentState).not.toHaveBeenCalled();
+});
+
+test('instance retirement clears seated-pose references before an old model can be reused', async () => {
+    const engine = harness(); engine.currentInstanceId = 'lanternhold-casino';
+    engine.network = { socket: {}, send: jest.fn() };
+    engine.casino = new CasinoController(engine);
+    const old = new Entity('old-patron'), model = new THREE.Group(), hips = new THREE.Group();
+    hips.name = 'Rig_Hips'; hips.position.y = 1.9; model.add(hips); old.mesh = model; old.state = 'SEATED';
+    dormant(engine, old); old.position.y = 8;
+    engine.casino.render([old]); expect(hips.position.y).toBe(1.12); expect(model.visible).toBe(false);
+    let restoredBeforeDisposal;
+    const dispose = old.dispose.bind(old);
+    old.dispose = () => { restoredBeforeDisposal = hips.position.y === 1.9 && model.visible; dispose(); };
+    try {
+        await enter(engine);
+        const replacement = new Entity('new-owner'); replacement.mesh = model;
+        hips.position.y = 2.3; hips.rotation.x = .7;
+        engine.casino.render([replacement]);
+        expect(hips.position.y).toBe(2.3); expect(hips.rotation.x).toBe(.7);
+        expect(restoredBeforeDisposal).toBe(true);
+        expect(engine.casino.poses.size).toBe(0); expect(engine.casino.cutawayActors.size).toBe(0);
+    } finally { engine.casino.dispose(); }
 });

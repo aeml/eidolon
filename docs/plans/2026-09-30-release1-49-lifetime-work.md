@@ -1,5 +1,51 @@
 # Alpha1.49 session-lifetime work
 
+## Reconnect transport and borrowed casino-pose retirement — September30
+
+Two pre-fix network cases fail0.513s: replacing a transport retains the old
+socket's owned callbacks, and destruction misses its owned handlers when the
+current socket was externally replaced. Centralize identity-checked detachment
+before switching the captured transport and during disposal. Never erase a
+replacement manager's or application-owned callbacks. Borrowed disposal still
+leaves the application transport open; explicit disposal still closes once.
+No authentication, token policy, retry/backoff or protocol changes. Network,
+scene teardown and navigation selection64 checks passes1.3s.
+
+Two native-Chrome cases pass14.8s, three transport interruptions/recoveries
+each at High/Low using browser WebSockets, the real NetworkManager, real queued
+enter_instance handling, full local GameEngine/model/renderer ownership and
+death/respawn. Routed protocol responses rotate fixture tokens and rebuild the
+prepared arena; default1000ms reconnect delay is unchanged. Each cycle clears
+prior owned socket callbacks, consumes the ordered instance message and retains
+the attached, chunk-tracked equipped player. High geometries/textures69/28 and
+Low64/14 stay exact across all three recoveries. Final engine destruction
+releases the context, retry timer and current owned callbacks while the borrowed
+transport remains open until its fixture owner closes it. Six connection-state
+events per quality alternate reconnecting/connected; exactly three resumes and
+the current token per request. No browser failures. Artifacts:
+`/tmp/eidolon-1-49-transport-resources-0930`.
+
+This proves bounded client transport/scene ownership and resource recovery, not
+server authentication, saved progress, production resume or phone/FPS behavior.
+No real accounts, credential requests, combat or economic actions. Existing
+authenticated/rejection/profile evidence remains distinct, not replaced by this
+routed fixture. It is not a new campaign or soak test.
+
+The remaining callback audit also reproduces a stale casino pose reference:
+after an instance change, rendering the next model owner restores the old
+patron's hip height1.9 over its new2.3 pose (one failing check1.507s). Restore
+and forget borrowed seat bones/cutaway roots before scene retirement can return
+models to their pool, not after another entity acquires them. Reuse the same
+idempotent presentation cleanup on casino disposal. New proof checks restoration
+before disposal and no later pose corruption; four impacted instance/casino/
+navigation/teardown suites31 checks pass4.413s. Scoped lint and whitespace pass.
+No wager, chair timeout, visibility rule, reward, stat or casino protocol change.
+
+Runtime stays1.47 and149 remains unpublished behind ordered148 acceptance.
+Broader callback/lifetime audit and this version's release metadata, own CI and
+exact public acceptance stay open. Do not infer a whole milestone or full
+roadmap completion from these targeted checks.
+
 ## Normal instance transitions and warmed resources — September30
 
 The actual instance-entry path retained actors owned only by dormant chunks.

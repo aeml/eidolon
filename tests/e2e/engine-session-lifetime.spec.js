@@ -143,3 +143,119 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
+
+// Browser WebSockets and the real reconnect/queue/scene owners, with a routed
+// transport fixture only. This does not test server authentication or saves.
+for (const quality of ['high', 'low']) test(`${quality}: three transport recoveries retire prior callbacks and retain warmed scene resources`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(60_000);
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    let currentTransport, resumes = 0;
+    const protocolFailures = [];
+    await page.routeWebSocket(/\/lifetime-recovery$/, transport => {
+        currentTransport = transport;
+        transport.onMessage(data => {
+            const message = JSON.parse(data);
+            if (message.type !== 'resume_session') return;
+            if (message.payload.token !== `fixture-token-${resumes}`) protocolFailures.push('Incorrect resume token');
+            resumes++;
+            transport.send(JSON.stringify({ type: 'resume_session', payload: {
+                resumeToken: `fixture-token-${resumes}`, terrainProfile: 'flat-v1' } }));
+            transport.send(JSON.stringify({ type: 'enter_instance', payload: {
+                instanceId: `lifetime-arena-${resumes}`, type: 'pvp_arena',
+                layout: { walkRects: [{ x: 0, z: 0, width: 80, height: 80 }] },
+                spawn: { x: 0, y: .5, z: 0 } } }));
+        });
+    });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async ({ quality, url }) => {
+        const { GameEngine } = await import('/src/core/GameEngine.js');
+        const { Fighter } = await import('/src/entities/Fighter.js');
+        const { BASE_ITEMS, RARITY } = await import('/src/core/ItemSystem.js');
+        const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const socket = new WebSocket(url);
+        await new Promise((resolve, reject) => {
+            socket.addEventListener('open', resolve, { once: true });
+            socket.addEventListener('error', reject, { once: true });
+        });
+        const engine = new GameEngine('Fighter', false, true, '', '', socket);
+        engine.renderSystem.setGraphicsQuality(quality);
+        engine.player = new Fighter('recovery-player'); engine.player.gameEngine = engine;
+        await engine.player.ensureMesh(); engine.addEntity(engine.player);
+        const gear = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
+            const base = BASE_ITEMS.find(item => item.slot === slot.replace(/[12]$/, ''));
+            return [slot, { ...base, id: `recovery-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
+        }));
+        const fit = engine.player.syncEquipmentVisuals(gear);
+        if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete recovery gear');
+        const fixture = { engine, states: [], token: 'fixture-token-0', priorSockets: [], reports: [] };
+        window.__lifetimeRecovery = fixture;
+        // Observe the promise from the normal queued enter_instance handler;
+        // do not substitute a fake scene or an already-ready signal.
+        const enter = engine.enterInstance;
+        engine.enterInstance = (...args) => { fixture.entryPromise = enter.apply(engine, args); return fixture.entryPromise; };
+        engine.network.reconnectUrl = url;
+        engine.network.getResumeToken = () => fixture.token;
+        engine.network.onResumeSuccess = token => { fixture.token = token; };
+        engine.network.onConnectionStateChange = state => {
+            fixture.states.push(state); engine.inputManager.clearInputState(); engine.uiManager.setConnectionState(state);
+        };
+        engine.network.onReconnectFailed = () => { throw Error('Prepared recovery failed'); };
+        engine.network.connect('Fighter');
+        await engine.enterInstance('lifetime-arena-0', 'pvp_arena', {
+            walkRects: [{ x: 0, z: 0, width: 80, height: 80 }] }, null, { x: 0, y: .5, z: 0 });
+    }, { quality, url: baseURL.replace(/^http/, 'ws') + '/lifetime-recovery' });
+    try {
+        for (let cycle = 0; cycle < 3; cycle++) {
+            await page.evaluate(() => { const f = window.__lifetimeRecovery; f.priorSockets.push(f.engine.network.socket); });
+            await currentTransport.close({ code: 1011, reason: 'Prepared lifetime interruption' });
+            await page.waitForFunction(count => {
+                const f = window.__lifetimeRecovery;
+                return f.token === `fixture-token-${count}` && f.engine.network.messageQueue.some(message => message.type === 'enter_instance');
+            }, cycle + 1);
+            await page.evaluate(async cycle => {
+                const f = window.__lifetimeRecovery, engine = f.engine;
+                for (const message of engine.network.drainMessages()) engine.handleServerMessage(message);
+                await f.entryPromise;
+                engine.player.die(); engine.player.respawn(0, 0); engine.player.render(1);
+                engine.renderSystem.setCameraTarget(engine.player.position); engine.renderSystem.render();
+                f.reports.push({ cycle, ...engine.renderSystem.renderer.info.memory,
+                    instance: engine.currentInstanceId, playerTracked: engine.chunkManager.chunks.get(engine.player._chunkKey)?.has(engine.player),
+                    playerAttached: engine.player.mesh.parent === engine.renderSystem.entityGroup,
+                    connected: engine.network.socket.readyState === WebSocket.OPEN && !engine.network._reconnecting,
+                    emptyQueue: engine.network.messageQueue.length === 0,
+                    oldCallbacksDetached: f.priorSockets.every(socket =>
+                        [socket.onopen, socket.onmessage, socket.onclose, socket.onerror].every(handler => handler === null)) });
+            }, cycle);
+        }
+        const result = await page.evaluate(async () => {
+            const f = window.__lifetimeRecovery, engine = f.engine, socket = engine.network.socket;
+            const context = engine.renderSystem.renderer.getContext();
+            engine.destroy(); await new Promise(resolve => requestAnimationFrame(resolve));
+            const result = { reports: f.reports, states: f.states, contextLost: context.isContextLost(),
+                borrowedOpen: socket.readyState === WebSocket.OPEN, retryRetired: engine.network._reconnectTimer === null,
+                callbacksRetired: [socket.onopen, socket.onmessage, socket.onclose, socket.onerror].every(handler => handler === null) };
+            socket.close(); delete window.__lifetimeRecovery; return result;
+        });
+        await testInfo.attach('transport-recovery-resources', { body: JSON.stringify(result), contentType: 'application/json' });
+        console.log('[transport-recovery-resources]', quality, JSON.stringify(result));
+        expect(resumes).toBe(3); expect(protocolFailures).toEqual([]);
+        expect(result.states).toEqual(['reconnecting', 'connected', 'reconnecting', 'connected', 'reconnecting', 'connected']);
+        for (const report of result.reports) {
+            expect(report.geometries).toBeGreaterThan(0); expect(report.instance).toBe(`lifetime-arena-${report.cycle + 1}`);
+            for (const key of ['playerTracked', 'playerAttached', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
+        }
+        expect(result.reports[2].geometries).toBe(result.reports[1].geometries);
+        expect(result.reports[2].textures).toBe(result.reports[1].textures);
+        expect(result.contextLost).toBe(true); expect(result.borrowedOpen).toBe(true);
+        expect(result.retryRetired).toBe(true); expect(result.callbacksRetired).toBe(true);
+        expect(failures, failures.join('\n')).toEqual([]);
+    } finally {
+        await page.evaluate(() => {
+            const f = window.__lifetimeRecovery;
+            if (!f) return;
+            const socket = f.engine.network.socket; f.engine.destroy(); socket?.close(); delete window.__lifetimeRecovery;
+        });
+    }
+});

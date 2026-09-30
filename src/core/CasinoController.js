@@ -402,6 +402,12 @@ export class CasinoController {
 
     restorePose(pose) { for (const { bone, x, y } of pose.bones) { bone.rotation.x = x; bone.position.y = y; } }
 
+    clearActorPresentation() {
+        this.restoreCutawayActors();
+        for (const pose of this.poses.values()) this.restorePose(pose);
+        this.poses.clear();
+    }
+
     removeFurnitureColliders() {
         const colliders = this.engine.collisionManager?.colliders;
         if (!colliders) return;
@@ -412,9 +418,8 @@ export class CasinoController {
 
     dispose() {
         if (this.active) this.exitView();
-        this.restoreCutawayActors();
-        for (const pose of this.poses.values()) this.restorePose(pose);
-        this.poses.clear(); disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
+        this.clearActorPresentation();
+        disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
         this.slots.dispose();
         this.blackjack.dispose();
         this.poker.dispose();
