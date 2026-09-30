@@ -49,6 +49,19 @@ version. Ordered1.43 live acceptance now permits publishing this candidate.
 
 ## Current upstream integration — September30
 
+### CI fixture correction — September30
+
+Candidate89d3baf8 CI36671909093 failed one Jest suite before loading its tests:
+the friend-toast fixture's partial AudioManager mock omitted the new public
+AUDIO_BUSES export used by UIManager. Production exports and channel controls
+remain intact; the mock now supplies the same frozen combat/interface/ambience
+list. No tests or deployment gates were removed. The corrected friend-toast,
+AudioManager, typed-impact, UI settings and phone settings suites pass89checks
+in3.9s, with scoped lint and whitespace passing. An initial local command named
+a nonexistent UIManagerAudioSettings suite; that command failed and is not
+counted as passing evidence. The explicit existing-suite command is the receipt.
+The corrected source still requires a new exact-head CI/live acceptance.
+
 Merged master132e1a844c610f0b3dc1e917d01a37544140ee4e into the prepared
 candidate. Preserve1.44 identities, its cumulative patch entry and website
 files, while carrying the accepted1.42 first-party font,1.43 dependency patches,
