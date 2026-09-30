@@ -16,9 +16,11 @@ import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { applyLoadoutState } from './LoadoutState.js';
 import { createCasinoInterior } from '../art/ProceduralCasino.js';
 import { createDarkRealmScene } from '../art/ProceduralDarkRealm.js';
+import { clearEngineSceneOwnership } from './SceneOwnership.js';
 
 class GameEngineNetworkMessageMethods {
     async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
+        if (this.isDestroyed) return;
         console.log(`Entering instance: ${instanceId} (${type})`);
         // Any scenery job started for the prior scene must not add meshes or
         // colliders after the instance transition has cleared that scene.
@@ -63,42 +65,11 @@ class GameEngineNetworkMessageMethods {
         }
         this.inputManager?.clearInputState?.();
 
-        for (const effect of this.effects) {
-            effect?.dispose?.();
-        }
-        this.effects = [];
-
-        for (const hazard of this.hazards.values()) {
-            hazard?.removeFromScene?.(this.renderSystem.environmentGroup);
-            hazard?.dispose?.();
-        }
-        this.hazards.clear();
-
-        // Creation is intentionally throttled across frames. Anything still
-        // queued belongs to the old scene and must not materialize after its
-        // authoritative instance has already been torn down.
-        this.entityCreationQueue = [];
-        this.pendingEntityIds?.clear();
-
-        // Clear current dynamic entities through explicit render ownership paths.
-        this.remotePlayers.forEach(entity => {
-            if (entity.mesh) {
-                if (typeof this.renderSystem.remove === 'function') {
-                    this.renderSystem.remove(entity.mesh);
-                } else if (entity.mesh.parent?.remove) {
-                    entity.mesh.parent.remove(entity.mesh);
-                }
-            }
-            if (entity.healthBar) entity.healthBar.remove();
-            this.chunkManager.removeEntity(entity);
-        });
-        this.remotePlayers.clear();
-
-        this.enemies.forEach(e => this.chunkManager.removeEntity(e));
-        this.enemies = [];
-
-        this.lootDrops.forEach(e => this.chunkManager.removeEntity(e));
-        this.lootDrops = [];
+        // Include dormant/chunk-only owners, not just the current remote map.
+        // This method already advanced its scenery token; preserve that token
+        // and the live player while retiring everything belonging to old scenes.
+        clearEngineSceneOwnership(this, { preservePlayer: true, advanceGeneration: false });
+        this.uiManager?.clearEnemyBars?.();
 
         if (typeof this.renderSystem.clearInstanceScene === 'function') {
             this.renderSystem.clearInstanceScene();
@@ -114,9 +85,6 @@ class GameEngineNetworkMessageMethods {
             });
         }
         this.activeWorldGenerator = null;
-
-        // Clear collisions
-        this.collisionManager.clear();
 
         const hasCanonicalDungeonWalkRects = !!(
             layout &&
@@ -246,6 +214,8 @@ class GameEngineNetworkMessageMethods {
         }
 
         // Force update chunk to ensure player is tracked correctly in new location
+        const spawnChunkKey = this.chunkManager.getChunkKey?.(this.player.position.x, this.player.position.z);
+        if (spawnChunkKey !== undefined) this.chunkManager.activeChunkKeys?.add(spawnChunkKey);
         this.chunkManager.updateEntityChunk(this.player);
 
         // Reset Camera

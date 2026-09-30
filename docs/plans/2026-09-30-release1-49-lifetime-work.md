@@ -1,5 +1,56 @@
 # Alpha1.49 session-lifetime work
 
+## Normal instance transitions and warmed resources — September30
+
+The actual instance-entry path retained actors owned only by dormant chunks.
+The first corrected real-ChunkManager fixture reproduces two failures before
+the fix (2.905s): an old actor is not disposed, and its late model completion
+binds to the replacement scene. The offline persistent-NPC case already passes.
+
+Reuse scene-owner teardown for normal instance entry, preserving the live
+player and the transition's already-advanced scenery generation. Retire all
+prior authoritative actors, including dormant/cache-only owners, clear pending
+loot and delayed-hit timers, and reject entry into an already-destroyed engine.
+Keep historical offline persistent residents. Reset the player's old chunk
+membership and activate the actual landing chunk before reinsertion, including
+same-coordinate instance changes. An intermediate fixture caught the player
+being detached by real ChunkManager.addEntity; fixed landing activation rather
+than weakening player attachment assertions. No saved progress, stat, currency,
+15-minute expiry or server authority changes.
+
+Final initial five-suite instance/residency/ctrl-click/room-state/teardown
+selection38 checks passes5.26s. Two additional delayed-timer/destroyed-entry
+checks bring the focused instance suite to5 passing checks2.749s. Scoped lint
+and whitespace pass. These new cases do not require a long campaign run.
+
+Two native-Chrome High/Low tests pass19.6s. Each performs three real local
+instance cycles: populated generated town, two complete14-slot Rare loadouts,
+death/respawn, the canonical checked-in Verdant dungeon layout, an equipped
+actor placed only in a dormant chunk, and public/VIP casino shell floors.
+All24 recorded checkpoints retain the visible, chunk-tracked player with
+invisible/non-color-writing interaction hitbox. Dormant actors are retired on
+the next transition. Geometry/texture counts exactly match cycles1 and2:
+
+| Prepared scene | High geometry/texture | Low geometry/texture |
+| --- | --- | --- |
+| Town after death |168/69|137/55|
+| Verdant dungeon |91/55|87/41|
+| Public casino shell |115/47|84/33|
+| VIP casino shell |122/47|90/33|
+
+First-cycle town/dungeon geometry counts are one lower, consistent with
+warming; neither texture nor geometry counts grow on the measured repeat.
+Artifacts: `/tmp/eidolon-1-49-transition-resources-0930`.
+This is bounded local owner/resource evidence, not authenticated recovery,
+server gameplay, a cleared dungeon, populated casino tables, driver-memory
+bytes, actual-phone performance or an FPS claim under the active CPU soak.
+No accounts or economic actions are used.
+
+Runtime remains1.47,149 unpublished. Connected-recovery resource evidence,
+remaining callback audit, ordered148 acceptance and149's own metadata/CI/live
+gates stay open. Owner reports the public page is back up; do not infer an
+IPv6/nginx change or full roadmap completion from that report.
+
 ## Delayed attack callback retirement — September30
 
 Callback audit finds the ground-attack timeout unowned and reading whichever
