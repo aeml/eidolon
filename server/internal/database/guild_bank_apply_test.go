@@ -170,7 +170,10 @@ func TestGuildBankApplyRejectsChangedPermissionsVersionAndItemWithoutEffects(t *
 				updates["members.0.rank"] = GuildRankMember
 				updates["bank.gold"] = 1000
 			case "missing-member":
-				updates["members"] = []GuildMember{}
+				// Preserve a valid guild membership array: the unique multikey
+				// index permits only one null/empty array across this database.
+				// An unrelated member still proves the requester has no access.
+				updates["members"] = []GuildMember{{PlayerID: uniqueID("unrelated-bank-member"), Rank: GuildRankLeader}}
 			case "changed-item":
 				changed := *item
 				changed.Potency++
