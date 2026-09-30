@@ -2,6 +2,43 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
+test('confirmed damage types render distinct short impacts and quieter periodic ticks', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const samples = await page.evaluate(async () => {
+        const { AudioManager, AUDIO_CUES } = await import('/src/audio/AudioManager.js');
+        const samples = [];
+        for (const kind of ['physical', 'fire', 'cold', 'lightning', 'arcane', 'holy', 'shadow', 'periodic', 'muted']) {
+            const context = new OfflineAudioContext(2, 16000, 48000);
+            const audio = new AudioManager({ context, storage: { getItem: () => null, setItem: () => {} } });
+            audio.setVolume(1);
+            if (kind === 'muted') audio.setBusVolume('combat', 0);
+            const played = audio.play(AUDIO_CUES.combatHit, { kind: kind === 'muted' ? 'fire' : kind, impact: 1 });
+            const buffer = await context.startRendering(), data = buffer.getChannelData(0);
+            let peak = 0, squares = 0, tailPeak = 0;
+            for (let i = 0; i < data.length; i++) {
+                peak = Math.max(peak, Math.abs(data[i])); squares += data[i] ** 2;
+                if (i >= 12000) tailPeak = Math.max(tailPeak, Math.abs(data[i]));
+            }
+            const hash = await crypto.subtle.digest('SHA-256', data.buffer);
+            samples.push({ kind, played, peak, rms: Math.sqrt(squares / data.length), tailPeak,
+                signature: [...new Uint8Array(hash)].map(v => v.toString(16).padStart(2, '0')).join('') });
+            audio.dispose();
+        }
+        return samples;
+    });
+    expect(new Set(samples.slice(0, 8).map(sample => sample.signature)).size).toBe(8);
+    for (const sample of samples.slice(0, 8)) {
+        expect(sample.played, sample.kind).toBe(true); expect(sample.rms, sample.kind).toBeGreaterThan(.0001);
+        expect(sample.peak, sample.kind).toBeLessThan(.11); expect(sample.tailPeak, sample.kind).toBe(0);
+    }
+    expect(samples[7].rms).toBeLessThan(Math.min(...samples.slice(0, 7).map(sample => sample.rms)) / 3);
+    expect(samples[8].played).toBe(false); expect(samples[8].peak).toBe(0);
+    await testInfo.attach('impact-audio-samples', { body: JSON.stringify(samples), contentType: 'application/json' });
+    expect(failures).toEqual([]);
+});
+
 test('ability families render distinct bounded cues through the combat bus', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

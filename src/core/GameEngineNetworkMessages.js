@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
-import { AUDIO_CUES } from '../audio/AudioManager.js';
+import { AUDIO_CUES, playLocalDamageCue } from '../audio/AudioManager.js';
 import { dangerAudioOptions } from '../audio/DangerAudioSpatial.js';
 import { getOverworldGroundHeight } from './WorldGrounding.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
@@ -728,10 +728,7 @@ class GameEngineNetworkMessageMethods {
                 this.renderCombatFeedback(dmgData, 'damage');
             }
 
-            if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id)) {
-                const amount = Math.max(0, Number(dmgData.amount) || 0);
-                this.playAudioCue(AUDIO_CUES.combatHit, { impact: Math.min(1, amount / 80) });
-            }
+            playLocalDamageCue(this, dmgData);
 
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
