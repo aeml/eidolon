@@ -13,7 +13,7 @@ export class PhoneSettingsUI {
         this.tabs.setAttribute('aria-label', 'Settings categories');
         const groups = [
             ['screen', 'Screen', ['graphics-quality', 'graphics-brightness', 'ui-scale', 'fullscreen-enabled']],
-            ['play', 'Play', ['control-hint-level', 'auto-loot-enabled', 'camera-shake-enabled', 'camera-shake-strength']],
+            ['play', 'Play', ['control-hint-level', 'keyboard-bindings', 'motion-preference', 'auto-loot-enabled', 'camera-shake-enabled', 'camera-shake-strength']],
             ['sound', 'Sound', ['audio-enabled', 'audio-volume', 'audio-combat-volume', 'audio-interface-volume', 'audio-ambience-volume', 'audio-detail-level']],
             ['device', 'Device', []]
         ];

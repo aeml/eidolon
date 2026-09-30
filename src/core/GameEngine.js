@@ -3,6 +3,7 @@ import { syncWellRested } from './WellRested.js';
 import { getTrackedActorBuffs } from './TrackedActorBuffs.js';
 import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
+import { bindingLabel } from './KeyboardBindings.js';
 import { intersectEngineGround } from './WorldGrounding.js';
 import { resolveWorldElevationProfile } from '../data/worldElevation.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
@@ -1619,6 +1620,8 @@ export class GameEngine {
         const entityLabel = isDungeonEntrance ? 'Dungeon Portal'
             : interactableType === 'QuestNPC' ? (entity.story ? 'Story quests' : 'Daily contracts') : dungeonName;
         let promptLabel;
+        const inspectionKey = this.inputManager?.keyboardBindings?.inspect ?? 'e';
+        const inspectionAction = inspectionKey ? `Click or press ${bindingLabel(inspectionKey)}` : 'Click';
         let statusLabel = inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`;
 
         if (isDungeonEntrance) {
@@ -1673,12 +1676,12 @@ export class GameEngine {
         } else if (interactableType === 'ChronicleWitness') {
             promptLabel = inRange ? `Click to speak with ${entity.name}. Optional Chronicle conversations.` : 'Move closer to speak with this witness.';
         } else if (interactableType === 'WorldReading') {
-            promptLabel = inRange ? 'Click or press E to read this optional lore. No quest or reward required.' : 'Move closer to read this roadside record.';
+            promptLabel = inRange ? `${inspectionAction} to read this optional lore. No quest or reward required.` : 'Move closer to read this roadside record.';
         } else if (interactableType === 'ResonancePortal') {
-            promptLabel = inRange ? 'Click or press E to hear the four crystals and view your passage requirements.' : 'Approach the Fourfold Resonance Portal.';
+            promptLabel = inRange ? `${inspectionAction} to hear the four crystals and view your passage requirements.` : 'Approach the Fourfold Resonance Portal.';
         } else if (interactableType === 'ChronicleSite') {
             promptLabel = inRange
-                ? 'Click or press E to inspect this discovery. Recovered evidence is saved in your journal.'
+                ? `${inspectionAction} to inspect this discovery. Recovered evidence is saved in your journal.`
                 : 'Move closer to inspect this discovery.';
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange

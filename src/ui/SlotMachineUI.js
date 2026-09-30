@@ -1,4 +1,5 @@
 import { getSlotSymbolIcon } from '../art/ProceduralSlotIcons.js';
+import { prefersReducedMotion } from '../core/MotionPreference.js';
 import { CasinoCelebration, goldText, slotWinTier } from './CasinoCelebration.js';
 
 function node(tag, text = '', className = '') { const n = document.createElement(tag); n.textContent = text; n.className = className; return n; }
@@ -116,7 +117,7 @@ export class SlotMachineUI {
             const last = s.last;
             if (last && previous?.available && previous.machine.theme === machine.theme && !changedCurrency && last.bonusPicked < 0) {
                 this.startReels(last.landed);
-                const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+                const reduced = prefersReducedMotion();
                 const delay = reduced ? 150 : 1700;
                 last.stages.forEach((stage, index) => this.timers.push(setTimeout(() => {
                     this.grid.classList.remove('spinning'); this.showStage(stage, index, last.stages.length);
@@ -164,7 +165,7 @@ export class SlotMachineUI {
     startReels(landed) {
         this.animating = true; this.grid.classList.add('spinning');
         this.result.textContent = landed ? 'Reels spinning…' : 'Spinning · waiting for the saved result…';
-        if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+        if (prefersReducedMotion()) return;
         const stopped = new Set(); let tick = 0;
         const draw = () => {
             const grid = Array.from({ length: 5 }, (_, reel) => stopped.has(reel) ? landed[reel] : Array.from({ length: 3 }, (_, row) => (tick + reel * 3 + row) % 8));

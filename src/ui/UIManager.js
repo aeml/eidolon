@@ -7,6 +7,7 @@ import { ReportUI } from './ReportUI.js';
 import { PlaytestSessionUI, appendPlaytestReportDraft } from './PlaytestSessionUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { PhoneSettingsUI } from './PhoneSettingsUI.js';
+import { KeyboardSettingsUI } from './KeyboardSettingsUI.js';
 import { PhoneMenuUI } from './PhoneMenuUI.js';
 import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
@@ -269,6 +270,11 @@ export class UIManager {
         this.applyUiScale();
         this.updateUiScaleLabel();
 
+        const keyboardSettings = this.settingsScreen?.querySelector('#keyboard-bindings');
+        if (keyboardSettings) this.keyboardSettings = new KeyboardSettingsUI(keyboardSettings);
+        this.motionPreferenceSelect = document.getElementById('motion-preference');
+        this.setMotionPreference(readPreference('eidolon.motionPreference'), { save: false });
+        this.motionPreferenceSelect?.addEventListener('change', () => this.setMotionPreference(this.motionPreferenceSelect.value));
         if (this.isMobile && this.settingsScreen?.querySelector('.support-window__body--settings')) {
             this.phoneSettings = new PhoneSettingsUI(this.settingsScreen);
         }

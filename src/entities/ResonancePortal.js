@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 import { Entity } from './Entity.js';
 import { RESONANCE_PORTAL } from '../data/worldLocations.js';
 import { createResonancePortalModel } from '../art/ResonancePortalModel.js';
@@ -10,7 +11,7 @@ export class ResonancePortal extends Entity {
         super(id);
         this.type = 'ResonancePortal';
         this.name = RESONANCE_PORTAL.name;
-        this.reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+        this.motionPreference = createMotionPreference();
     }
 
     async ensureMesh() {
@@ -55,7 +56,7 @@ export class ResonancePortal extends Entity {
     }
 
     update(dt = 0) {
-        this.portalModel?.update(dt, getResonancePortalState(this.gameEngine?.player), this.reducedMotion);
+        this.portalModel?.update(dt, getResonancePortalState(this.gameEngine?.player), this.motionPreference.matches);
         this.dialog?.update();
     }
 

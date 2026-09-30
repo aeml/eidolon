@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 import { createEarthOutcrops } from '../art/EarthOutcrops.js';
 import { EARTH_OUTCROP_COLLISIONS, EARTH_OUTCROP_PROFILE } from '../data/earthOutcrops.js';
 import { compileRockSolids } from '../core/RockCollision.js';
@@ -75,7 +76,7 @@ export class WorldGenerator {
         this.graphicsQuality = options.graphicsQuality || 'high';
         this.crystalSanctum = null;
         this.townCourtyards = null;
-        this.reducedMotionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+        this.reducedMotionQuery = createMotionPreference();
     }
 
     async preloadTextures() {

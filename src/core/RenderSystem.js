@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { prefersReducedMotion } from './MotionPreference.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -988,7 +989,7 @@ export class RenderSystem {
 
     applyCameraPunch({ intensity = 0.8, duration = 0.16, vertical = 1.0, horizontal = 0.45 } = {}) {
         const strength = this.cameraShakeStrength ?? 0.5;
-        if (!this.cameraShakeEnabled || strength === 0 || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+        if (!this.cameraShakeEnabled || strength === 0 || prefersReducedMotion()) {
             this.cameraPunch = null;
             this.updateCamera();
             return;

@@ -1,4 +1,5 @@
 import { Vector3 } from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 
 // Values reconcile only when combat state changes. Projection follows rendered
 // meshes every frame, independently of the slower health/network updates.
@@ -10,7 +11,7 @@ export class EnemyHealthBars {
         this.records = new Map();
         this.pool = [];
         this.point = new Vector3();
-        this.reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+        this.reducedMotion = createMotionPreference();
     }
 
     reconcile(entities, hovered, reveal, target, now = performance.now()) {

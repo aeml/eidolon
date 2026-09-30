@@ -18,3 +18,17 @@
         border: 1px solid CanvasText;
     }
 }
+
+.keyboard-bindings-list { display: grid; gap: 8px; margin: 12px 0; }
+.keyboard-binding-row { display: grid; grid-template-columns: minmax(0, 1fr) 100px; gap: 10px; align-items: center; color: #e2e9f1; font-size: 14px; }
+.keyboard-binding-row select { min-height: 44px; width: 100%; background: #101923; color: #e2e9f1; border: 1px solid #7b6a48; border-radius: 4px; padding: 6px; }
+#keyboard-bindings summary { min-height: 44px; align-content: center; cursor: pointer; color: #ecd6a4; }
+
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}

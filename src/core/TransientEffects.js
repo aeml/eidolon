@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { prefersReducedMotion } from './MotionPreference.js';
 import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts.js';
 import { createProceduralCombatFeedbackEffect } from '../art/ProceduralCombatFeedback.js';
 import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
@@ -917,9 +918,7 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         const terrain = options.terrainElevation;
         const groundHeight = terrain?.sample(position.x, position.z);
         groundPosition.y = terrain ? groundHeight + .1 : Math.max(0.1, Number(position.y) || 0);
-        const reducedMotion = options.reducedMotion ?? Boolean(
-            globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
-        );
+        const reducedMotion = Boolean(options.reducedMotion) || prefersReducedMotion();
 
         // Outer warning ring
         const ringGeo = new THREE.RingGeometry(radius * 0.92, radius, 48);

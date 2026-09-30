@@ -1439,7 +1439,7 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<label for="control-hint-level" class="support-field__label">Control Hints</label>');
         expect(html).toContain('<select id="control-hint-level" class="support-field__control">');
         expect(html).toContain('<option value="detailed">Detailed keyboard reference</option>');
-        expect(html).toContain('Detailed mode expands Help with grouped keyboard shortcuts without changing your actual bindings.');
+        expect(html.includes('Detailed mode expands Help with the default keyboard reference. Your current controls are shown in Keyboard bindings below.')).toBe(true);
         expect(html).toContain('<label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>');
         expect(html).toContain('<label for="audio-enabled" class="support-field__label">Audio Cues</label>');
         expect(html).toContain('<label for="audio-volume" class="support-field__label">Audio Volume</label>');

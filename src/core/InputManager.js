@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { KEYBOARD_ACTIONS, KEYBOARD_BINDINGS_EVENT, loadKeyboardBindings, validateKeyboardBindings } from './KeyboardBindings.js';
 
 export class InputManager {
     constructor(camera, scene, canvas = null) {
@@ -15,6 +16,13 @@ export class InputManager {
         this.groundIntersectionResolver = null;
         
         this._listeners = [];
+        this.keyboardBindings = loadKeyboardBindings();
+        this._registerListener(window, KEYBOARD_BINDINGS_EVENT, event => {
+            if (!validateKeyboardBindings(event.detail)) {
+                this.clearInputState();
+                this.keyboardBindings = { ...event.detail };
+            }
+        });
         this._onMouseMove = (e) => this.onMouseMove(e);
         this._onMouseDown = (e) => this.onMouseDown(e);
         this._onContextMenu = (e) => e.preventDefault();
@@ -304,76 +312,45 @@ export class InputManager {
 
     onKeyDown(e) {
         const activeElement = document.activeElement;
-        // Native activation must not also cast or move focus to multiplayer chat.
-        if ((e.code === 'Space' || e.key === 'Enter') && activeElement?.closest('button, [role="button"], summary, select, a[href]')) return;
-        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        // Typing, select navigation and native button activation belong to UI,
+        // regardless of the player's remapping. Escape remains a fixed exit.
+        if (activeElement?.closest('input, textarea, select, [contenteditable="true"]')) {
             if (e.key === 'Escape') {
                 activeElement.blur();
             }
             return;
         }
-
-        const key = e.key.toLowerCase();
-        if (key === 'e' && !e.repeat && !e.ctrlKey && !e.altKey && !e.metaKey &&
-            !activeElement?.closest('button, [role="button"], select, a[href], [contenteditable="true"]')) {
-            this.callbacks.onInspect.forEach(cb => cb());
+        if (activeElement?.closest('button, [role="button"], summary, a[href]')) {
+            if (e.key === 'Escape') this.callbacks.onEscape.forEach(cb => cb());
+            return;
         }
-        if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
-            this.keys[key] = true;
-        }
-        if (e.key === 'Alt') this.keys.alt = true; // Handle Alt specifically
-        if (e.key === 'Control') this.keys.control = true; // Handle Control specifically
-        if (e.key === 'Meta') this.keys.meta = true; // Handle Command/Meta specifically
-        
-        if (e.code === 'Space') {
-            this.callbacks.onSpace.forEach(cb => cb());
-        }
-
-        if (e.code === 'Escape') {
+        const key = (e.key || '').toLowerCase();
+        if (key === 'shift' || key === 'alt' || key === 'control' || key === 'meta') this.keys[key] = true;
+        if (e.key === 'Escape' || e.code === 'Escape') {
             this.callbacks.onEscape.forEach(cb => cb());
+            return;
         }
-
-        if (key === 'c') {
-            this.callbacks.onCharacter.forEach(cb => cb());
-        }
-        if (key === 'i') {
-            this.callbacks.onInventory.forEach(cb => cb());
-        }
-        if (key === 'j') {
-            this.callbacks.onQuest.forEach(cb => cb());
-        }
-        if (key === 'b') {
-            this.callbacks.onTeleport.forEach(cb => cb());
-        }
-        if (key === 'm') {
-            this.callbacks.onMap.forEach(cb => cb());
-        }
-        if (key === 'o') {
-            this.callbacks.onSocial.forEach(cb => cb());
-        }
-        if (key === 'k') {
-            this.callbacks.onSkills.forEach(cb => cb());
-        }
-        if (key === 'p') {
-            this.callbacks.onAbilities.forEach(cb => cb());
-        }
-        if (['1', '2', '3', '4'].includes(key)) {
-            const slot = parseInt(key) - 1;
-            this.callbacks.onHotbar.forEach(cb => cb(slot));
-        }
-        if (e.key === 'Enter') {
+        if (e.ctrlKey || e.altKey || e.metaKey) return; // Preserve browser/OS shortcuts.
+        if (e.key === 'Enter' && !e.repeat) {
             this.callbacks.onChat.forEach(cb => cb());
         }
-        if (e.code === 'F2') {
+        if (e.code === 'F2' && !e.repeat) {
             this.callbacks.onDebugOverlay.forEach(cb => cb());
+        }
+        for (const action of KEYBOARD_ACTIONS) {
+            if (!key || key !== this.keyboardBindings[action.id]) continue;
+            if (key === ' ' || key.startsWith('arrow')) e.preventDefault?.();
+            if (action.held) this.keys[action.held] = true;
+            else if (!e.repeat) this.callbacks[action.callback].forEach(cb => action.slot === undefined ? cb() : cb(action.slot));
         }
     }
 
     onKeyUp(e) {
-        const key = e.key.toLowerCase();
-        if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
-            this.keys[key] = false;
+        const key = (e.key || '').toLowerCase();
+        for (const action of KEYBOARD_ACTIONS) {
+            if (action.held && key === this.keyboardBindings[action.id]) this.keys[action.held] = false;
         }
+        if (key === 'shift') this.keys.shift = false;
         if (e.key === 'Alt') this.keys.alt = false;
         if (e.key === 'Control') this.keys.control = false;
         if (e.key === 'Meta') this.keys.meta = false;

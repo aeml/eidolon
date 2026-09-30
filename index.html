@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eidolon Online</title>
     <script type="module" src="./src/analytics/game.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070a10'/%3E%3Cpath d='M32 7 49 18 45 45 32 57 19 45 15 18Z' fill='%2318202d' stroke='%23c6a15b' stroke-width='3'/%3E%3Cpath d='m22 21 10-7 10 7-7 11 8 13-11 7-11-7 8-13Z' fill='%235b456f' stroke='%23b8d5dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23f0b85c'/%3E%3C/svg%3E">
@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.45.0</span>
+                    <span class="start-version-row__label">Alpha 1.46.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -479,8 +479,17 @@
                         <option value="detailed">Detailed keyboard reference</option>
                     </select>
                     <div class="support-field__hint">
-                        Detailed mode expands Help with grouped keyboard shortcuts without changing your actual bindings.
+                        Detailed mode expands Help with the default keyboard reference. Your current controls are shown in Keyboard bindings below.
                     </div>
+                </div>
+                <div class="support-field">
+                    <details id="keyboard-bindings">
+                        <summary>Keyboard bindings</summary>
+                        <p class="support-field__hint">Choose keys for camera, abilities and menus. Changes apply immediately and save only on this device. Escape, Enter, Tab, F2 and mouse/modifier controls remain fixed. Native fields and menu controls keep their own keyboard input.</p>
+                        <div class="keyboard-bindings-list"></div>
+                        <button class="menu-btn" type="button" data-reset-bindings>Restore default bindings</button>
+                        <p class="support-field__hint" role="status" aria-live="polite"></p>
+                    </details>
                 </div>
                 <div class="support-field">
                     <div class="support-field__row">
@@ -557,6 +566,14 @@
                     <div class="support-field__hint">
                         Applies after you enter the world, persists between sessions, and stays off on the login screen.
                     </div>
+                </div>
+                <div class="support-field">
+                    <label for="motion-preference" class="support-field__label">Motion and repeated effects</label>
+                    <select id="motion-preference" class="support-field__control">
+                        <option value="system">Follow device preference</option>
+                        <option value="reduced">Always reduced</option>
+                    </select>
+                    <p class="support-field__hint">Reduce decorative motion, animated health changes, impact recoil, casino celebrations and pulsing warnings. Camera shake is suppressed, but warning boundaries and timers stay visible. Your device’s reduced-motion request is always respected. This is not a photosensitivity safety guarantee.</p>
                 </div>
                 <div class="asset-cache-panel">
                     <div class="asset-cache-panel__header">
@@ -675,14 +692,14 @@
                     <div><strong class="help-guide__key">Shift + Left Click:</strong> Move only; ignore enemies, loot and discoveries under the cursor</div>
                     <div><strong class="help-guide__key">Right Click:</strong> Use Ability</div>
                     <div><strong class="help-guide__key">Scroll:</strong> Zoom In / Out</div>
-                    <div><strong class="help-guide__key">WASD:</strong> Pan Camera</div>
-                    <div><strong class="help-guide__key">Spacebar:</strong> Toggle Camera Lock</div>
-                    <div><strong class="help-guide__key">C:</strong> Character Sheet</div>
-                    <div><strong class="help-guide__key">I:</strong> Inventory</div>
-                    <div><strong class="help-guide__key">M:</strong> World Map</div>
-                    <div><strong class="help-guide__key">J:</strong> Journal / current quest route</div>
-                    <div><strong class="help-guide__key">E:</strong> Inspect nearby accepted Chronicle evidence, read optional roadside lore, or examine the town portal</div>
-                    <div><strong class="help-guide__key">B:</strong> Return to Lanternhold, including from a dungeon. Also available in the Escape menu.</div>
+                    <div><strong class="help-guide__key" data-camera-pan-bindings>WASD:</strong> Pan Camera</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="cameraLock">Spacebar:</strong> Toggle Camera Lock</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="character">C:</strong> Character Sheet</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="inventory">I:</strong> Inventory</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="map">M:</strong> World Map</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="journal">J:</strong> Journal / current quest route</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="inspect">E:</strong> Inspect nearby accepted Chronicle evidence, read optional roadside lore, or examine the town portal</div>
+                    <div><strong class="help-guide__key" data-keybinding-label="recall">B:</strong> Return to Lanternhold, including from a dungeon. Also available in the Escape menu.</div>
                 </div>
                 <div id="help-keyboard-reference" class="help-guide help-guide--separated help-guide--keyboard-reference" style="display: none;">
                     <div class="help-guide__title">Detailed Keyboard Reference</div>
@@ -732,6 +749,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.46.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.46.0 (controls that fit you)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Your keyboard:</strong> Remap or unbind eighteen camera, ability and menu actions in Settings. Changes apply immediately and save per device, with conflict messages and a default reset. Escape, chat, browser navigation and mouse/modifier controls remain fixed; character builds and learned skills are unchanged.</li>
+                        <li><strong>Clear hints and safe focus:</strong> Hotbar keys, primary Help labels and nearby inspection prompts reflect your choices. Native account fields, selects and buttons keep their input without also casting abilities. Rebinding clears held camera input; unavailable browser storage is explained.</li>
+                        <li><strong>Less motion, essential information:</strong> Choose Always reduced or follow your device preference. Decorative wind, portal/courtyard motion, recoil, animated health changes, effects, casino celebrations and camera punches respect reduction. Danger boundaries, labels and timers remain; device reduction is never overridden.</li>
+                        <li><strong>Readable controls:</strong> Phone Play settings include the same binding and motion controls, alongside independent menu text size. The page no longer prohibits browser zoom; canvas pinch remains separate from menu gestures. Existing audio controls and non-color warning cues remain available.</li>
+                        <li><strong>Honest limits:</strong> This is an accessibility baseline, not keyboard-only world play, universal accessibility or a photosensitivity safety guarantee. Final actors, assistive-technology feedback and the integrated quality review remain open. Full prior patch history is retained below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.45.0">
                     <h3 class="patch-note-entry__title">Alpha 1.45.0 (clearer screens, calmer combat)</h3>
                     <ul class="patch-note-entry__list">

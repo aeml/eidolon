@@ -130,6 +130,14 @@ class UIManagerSettingsMethods {
         return level === 'detailed' ? 'detailed' : 'standard';
     }
 
+    setMotionPreference(mode, { save = true } = {}) {
+        const value = mode === 'reduced' ? 'reduced' : 'system';
+        this.motionPreference = value;
+        if (save) writePreference('eidolon.motionPreference', value);
+        document.documentElement.dataset.reducedMotion = String(value === 'reduced');
+        if (this.motionPreferenceSelect) this.motionPreferenceSelect.value = value;
+    }
+
     applyControlHintLevel() {
         if (this.keyboardReferenceGuide) {
             this.keyboardReferenceGuide.style.display = this.controlHintLevel === 'detailed' ? 'block' : 'none';

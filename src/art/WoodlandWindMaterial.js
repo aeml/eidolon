@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 
 // Maximum local-space displacement, including the small leaf flutter. The
 // largest (1.4x) plant still fits its existing 2.2m clearance envelope.
@@ -26,7 +27,7 @@ vec2 woodlandBend() {
 `;
 
 export function createWoodlandWindMaterial({ now = () => performance.now() / 1000,
-    motionPreference = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') } = {}) {
+    motionPreference = createMotionPreference() } = {}) {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     const time = { value: 0 }, motion = { value: 1 };

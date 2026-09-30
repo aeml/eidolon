@@ -52,14 +52,16 @@ describe('Transient telegraph readability', () => {
         }
     );
 
-    test.each(['option', 'browser'])('reduced motion from %s retains warning timing and radius without pulsing or rotation', source => {
+    test.each(['option', 'browser', 'in-game'])('reduced motion from %s retains warning timing and radius without pulsing or rotation', source => {
         const previous = globalThis.matchMedia;
+        const previousMode = document.documentElement.dataset.reducedMotion;
+        document.documentElement.dataset.reducedMotion = String(source === 'in-game');
         globalThis.matchMedia = jest.fn(() => ({ matches: source === 'browser' }));
         try {
             const scene = new THREE.Scene();
             const effect = createTransientEffect(scene, 'telegraph', new THREE.Vector3(0, .5, 0), 0xff2200, {
                 radius: 6, telegraphDuration: 2, theme: 'molten_core', label: 'DANGER', threatTier: 'boss',
-                ...(source === 'option' ? { reducedMotion: true } : {})
+                ...(source === 'option' ? { reducedMotion: true } : source === 'in-game' ? { reducedMotion: false } : {})
             });
             const [ring, fill, motif, label] = effect.meshes;
             let opacity = 0, fillOpacity = 0;
@@ -80,6 +82,8 @@ describe('Transient telegraph readability', () => {
             expect(effect.isActive).toBe(false);
             expect(scene.children).toHaveLength(0);
         } finally {
+            if (previousMode === undefined) delete document.documentElement.dataset.reducedMotion;
+            else document.documentElement.dataset.reducedMotion = previousMode;
             if (previous === undefined) delete globalThis.matchMedia;
             else globalThis.matchMedia = previous;
         }

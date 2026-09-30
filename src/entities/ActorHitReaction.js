@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 
 const DURATION = .28;
 
@@ -14,7 +15,7 @@ export class ActorHitReaction {
         this.direction = new THREE.Vector3();
         this.axis = new THREE.Vector3();
         this.inverse = new THREE.Quaternion();
-        this.motionPreference = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+        this.motionPreference = createMotionPreference();
         if (!this.rig) return;
         this.pivot = new THREE.Group();
         this.pivot.name = 'ActorHitReactionPivot';

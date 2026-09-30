@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { prefersReducedMotion } from '../core/MotionPreference.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -247,7 +248,7 @@ export function createProceduralCombatFeedbackEffect(scene, position, options = 
         sharedGeometry: true,
         sharedMaterials: true
     });
-    root.userData.reducedMotion = Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+    root.userData.reducedMotion = prefersReducedMotion();
     const duration = buildFeedback(root, kind, definition, getMaterials(kind, definition.palette), quality, intensity);
     root.traverse((part) => {
         if (part.userData?.highQualityOnly) part.visible = quality !== 'low';
