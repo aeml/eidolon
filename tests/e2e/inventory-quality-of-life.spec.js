@@ -3,7 +3,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, exerciseCombatAndLo
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-test('bag drag-out creates recoverable ground loot and Journal tracking survives reload', async ({ page, baseURL }) => {
+test('bag drag-out creates recoverable ground loot and Journal tracking survives reload', async ({ page, baseURL }, testInfo) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
     test.setTimeout(240_000);
@@ -47,7 +47,21 @@ test('bag drag-out creates recoverable ground loot and Journal tracking survives
     await page.waitForTimeout(1200); // several normal auto-loot cycles
     expect(await page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), equipped)).toBe(false);
     await page.keyboard.press('i');
+    await expect(page.locator('#inventory-screen')).toBeHidden();
     const point = await projectEntity(page, lootId);
+    if (!point?.visible) {
+        const diagnostic = await page.evaluate(point => {
+            const canvas = window.game.renderSystem.renderer.domElement;
+            const hit = point && document.elementFromPoint(point.x, point.y);
+            return { point, viewport: [innerWidth, innerHeight],
+                canvas: { width: canvas.getBoundingClientRect().width, height: canvas.getBoundingClientRect().height },
+                blockingElement: hit && { tag: hit.tagName, id: hit.id },
+                inventoryDisplay: getComputedStyle(document.getElementById('inventory-screen')).display,
+                focus: { tag: document.activeElement?.tagName, id: document.activeElement?.id } };
+        }, point);
+        await testInfo.attach('dropped-loot-projection', { body: JSON.stringify(diagnostic), contentType: 'application/json' });
+        console.log(`[dropped-loot-projection] ${JSON.stringify(diagnostic)}`);
+    }
     expect(point?.visible).toBe(true);
     await page.mouse.click(point.x, point.y);
     await expect.poll(() => page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), equipped)).toBe(true);
