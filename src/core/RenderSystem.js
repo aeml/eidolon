@@ -79,7 +79,7 @@ export class RenderSystem {
         const maxPixelRatio = isFirefox ? 1.0 : (this.isMobile ? 1.0 : 1.5);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
         
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight, false);
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.LinearToneMapping;
         this.renderer.toneMappingExposure = 1.45;
@@ -167,6 +167,11 @@ export class RenderSystem {
 
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
+        // Fixed pixel CSS dimensions make mobile browsers shrink the layout
+        // viewport when the screen narrows. Let CSS follow the viewport while
+        // setSize updates only the drawing buffer; native page zoom stays enabled.
+        this.renderer.domElement.style.width = '100%';
+        this.renderer.domElement.style.height = '100%';
         this.renderer.domElement.style.zIndex = '1'; // Behind UI (which is 10)
         
         document.body.appendChild(this.renderer.domElement);
@@ -920,7 +925,7 @@ export class RenderSystem {
 
     onWindowResize() {
         this.updateCameraProjection();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight, false);
         if (this.composer) {
             this.composer.setSize(window.innerWidth, window.innerHeight);
         }

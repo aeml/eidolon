@@ -33,6 +33,7 @@ jest.unstable_mockModule('../src/assets/assetManifest.js', () => ({
 // transitive UI imports cannot become incompatible with a partial mock.
 
 jest.unstable_mockModule('../src/audio/AudioManager.js', () => ({
+    AUDIO_BUSES: Object.freeze(['combat', 'interface', 'ambience']),
     AudioManager: class {
         constructor() {}
         play() {}

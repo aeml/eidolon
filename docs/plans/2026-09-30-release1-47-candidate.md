@@ -4,7 +4,24 @@ Ordered candidate on prepared1.46, not deployed. Actual phone dungeon/party
 and native-keyboard feedback remain owner playtest work; this is not device
 certification, a phone FPS claim or closure of the integrated Q gate.
 
-## Shipped changes
+## Current predecessor integration — September30
+
+Merge91f15a94 carries the currently pushed1.46/d84bfabb prerequisites and
+the accepted1.45 receipt. Resolve README to source1.47/accepted1.45, with
+1.46 CI still pending. The required interface script retains all three
+first-party-font, keyboard-settings and phone-session-input files, each once.
+Runtime/package/login/CI identities remain1.47; website files equal the
+predecessor. No input, cancellation, mobile-layout or account policy is dropped.
+
+Five explicit version/publishing/font/earned-stash/FriendToast suites343checks
+pass4.886s. TouchAbilityAim17checks pass1.818s; three shipped phone input/
+interruption/keyboard-viewport Chrome cases24.6s pass on portrait/landscape.
+Evidence:/tmp/eidolon-1-47-current-prerequisite-input-0930. Earlier unchanged
+panel/recovery evidence is reused; no extra campaign, physical-phone or party
+soak. This candidate remains unpublished pending ordered1.46 acceptance and
+its own exact-head CI/live checks.
+
+## Implemented changes
 
 - A shared touch release/cancel can include both the skill and movement
   fingers. Skill capture no longer starves the joystick owner of that event.
@@ -65,6 +82,12 @@ Evidence:/tmp/eidolon-1-47-phone-panels-0930. Full lint and whitespace checks
 pass; runtime/login/build versions and cumulative notes are synchronized1.47.
 
 ## Remaining acceptance
+
+Follow-up constructor compatibility check found two isolated InputManager
+mocks without the real subscription interface used by the new interruption
+callback. Added that interface to the dungeon-room and saved-autoloot fixtures;
+no production event, assertion or behavior disabled. Both suites11checks
+pass1.384s. This is a test-only correction, not new phone behavior or live QA.
 
 Real-device combat readability, native keyboard/OS interruption quirks,
 sustained battery/thermal behavior and party/dungeon ergonomics remain human

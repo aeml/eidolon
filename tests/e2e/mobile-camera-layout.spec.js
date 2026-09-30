@@ -62,6 +62,12 @@ test('phone camera renders production silhouettes and warning edges with a stabl
     for (const [width, height] of [[360, 800], [390, 844], [430, 932], [844, 390], [800, 360]]) {
         await page.setViewportSize({ width, height });
         await page.evaluate(() => window.__phoneCamera.render.onWindowResize());
+        const viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight,
+            scale: visualViewport.scale, canvasWidth: window.__phoneCamera.render.renderer.domElement.getBoundingClientRect().width }));
+        expect(viewport.width).toBe(width);
+        expect(viewport.height).toBe(height);
+        expect(viewport.scale).toBeCloseTo(1);
+        expect(viewport.canvasWidth).toBe(width);
         const metrics = await page.evaluate(() => window.__phoneCamera.measure());
         await testInfo.attach(`camera-${width}-${height}`, { body: JSON.stringify(metrics), contentType: 'application/json' });
         expect(metrics.pixelsPerUnit).toBeCloseTo(Math.min(width, height) / 24);

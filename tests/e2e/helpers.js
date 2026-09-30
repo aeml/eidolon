@@ -60,7 +60,12 @@ export function collectBrowserFailures(page, baseURL) {
         // duplicate generic console entry that cannot itself be reconciled
         // when a later navigation successfully reloads that resource.
         if (/Failed to load resource: the server responded with a status of 5\d\d/i.test(text)) return;
-        failures.push(`console: ${text}`);
+        // Browser-generated resource errors often omit the failed URL from
+        // their text. Keep Chrome's location so DNS errors can be attributed
+        // without suppressing either first-party or third-party failures.
+        const location = message.location?.();
+        const source = location?.url ? ` [${location.url}:${location.lineNumber ?? 0}]` : '';
+        failures.push(`console: ${text}${source}`);
     });
     page.on('requestfailed', (request) => {
         const requestURL = new URL(request.url());
@@ -186,7 +191,10 @@ export async function openGame(page, options = {}) {
         await page.waitForTimeout(Math.min(1_000 * (attempt + 1), 5_000));
     }
     if (response?.status() !== 200) {
-        expect(response?.status(), 'The live game document must recover from transient edge errors').toBe(200);
+        expect(response?.status(),
+            `The live game document must recover from transient edge errors; route=${gameDocument}; ` +
+            `last error=${readinessError?.message || 'no navigation error reported'}`
+        ).toBe(200);
     }
     throw readinessError || new Error('The complete game runtime did not become ready');
 }
@@ -588,7 +596,8 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
     // covers its endpoint. No input is preferable to claiming a different jump.
     const target = await projectGroundOffset(page, deltaX, deltaZ, { allowScaling: false });
     if (!target?.canvas) throw movementFailure(
-        'A real Ctrl-click jump requires its full unobscured canvas destination', false, false);
+        'A real Ctrl-click jump requires its full unobscured canvas destination: ' +
+        JSON.stringify({ origin: { x: before.x, z: before.z }, deltaX, deltaZ, projection: target }), false, false);
 
     await page.mouse.move(target.x, target.y);
     await page.keyboard.down('Control');
@@ -637,6 +646,20 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
         throw new Error(`Real Ctrl-click jump landing check failed: ${error?.message || String(error)}; ` +
             `state: ${JSON.stringify(diagnostic)}`, { cause: error });
     }
+}
+
+// Planning may choose a visible prefix before a strict jump is requested.
+// Execution still rechecks that entire chosen destination, never silently
+// shortens a hop, and must prove directional server movement and landing.
+export async function planVisibleGroundJump(page, deltaX, deltaZ, minimumDistance = 8) {
+    const target = await projectGroundOffset(page, deltaX, deltaZ);
+    const scale = target?.scale;
+    if (!target?.canvas || !Number.isFinite(scale) || scale <= 0 || scale > 1 ||
+        Math.hypot(deltaX, deltaZ) * scale < minimumDistance) {
+        throw movementFailure('No visible full jump step available during route planning: ' +
+            JSON.stringify({ deltaX, deltaZ, minimumDistance, projection: target }), false, false);
+    }
+    return { deltaX: deltaX * scale, deltaZ: deltaZ * scale };
 }
 
 export async function exerciseMovement(page) {
@@ -1109,7 +1132,8 @@ export async function findOverworldTarget(page) {
     // rather than treating any sideways collision response as progress.
     for (let exitStep = 0; (await readPlayerState(page)).x < 115 && exitStep < 20; exitStep += 1) {
         const state = await readPlayerState(page);
-        await jumpByGroundClick(page, 30, Math.max(-8, Math.min(8, 200 - state.z)));
+        const step = await planVisibleGroundJump(page, 30, Math.max(-8, Math.min(8, 200 - state.z)));
+        await jumpByGroundClick(page, step.deltaX, step.deltaZ);
     }
     expect((await readPlayerState(page)).x, 'The character must clear the east town fence').toBeGreaterThanOrEqual(115);
 

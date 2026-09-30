@@ -5,7 +5,55 @@ baseline review, not WCAG conformance, universal accessibility, a photosensitive
 safety guarantee or final human/device acceptance. Owner actor and device
 feedback remain deferred and do not block independent implementation.
 
+## Current predecessor integration — September30
+
+1.45 exact18c56dde is now independently accepted after all ten jobs in
+CI36678276259 attempt1 and repeat public frontend/backend/document/nine
+stamped module/CSS checks. [Receipt](2026-09-30-release1-45-acceptance.md).
+This candidate retains current1.46 package/runtime/login/CI and cumulative
+patch identities, with the scoped integration and required keyboard/font
+browser evidence below. No repeated unchanged campaign/device soak. Its own
+exact-head pipeline and public checks are still required before1.46 acceptance.
+
+Merge92415dfe carries corrected1.45/18c56dde, including accepted1.44 receipt,
+first-party font assets and current audio/input/earned-stash fixture fixes.
+Resolve README to source1.46/accepted1.44 while1.45 CI is still pending; retain
+both required first-party font and keyboard-settings suites in the interface
+script. All1.46 runtime/package/login/CI identities remain unchanged; website
+files equal the predecessor. No gate or saved input/build state is discarded.
+
+Five explicit version/publishing/font/earned-stash/FriendToast suites343checks
+pass4.269s. Five System Chrome cases30.9s pass desktop/phone-size native account
+input, remapping/persistence and typography with external font DNS blocked.
+Evidence:/tmp/eidolon-1-46-predecessor-input-0930. Earlier unchanged remapping/
+motion/interface evidence below is reused. Own exact-head CI/live checks still
+required after ordered1.45 acceptance; candidate not pushed or accepted.
+
 ## Changes
+
+### Phone resize correction after candidate CI
+
+The first candidate d84bfabb failed the unchanged required phone-camera case
+in CI36682165953, Browser Smoke1/3 job109779799980. Local System Chrome
+reproduced a real regression: after390x844 shrank to360x800, the canvas's
+inline390px width caused native shrink-to-fit, leaving innerWidth390 and
+visualViewport.scale0.9230769. This was not an early projection assertion.
+
+The world canvas now uses percentage CSS dimensions; renderer.setSize updates
+only its drawing buffer. Browser zoom remains permitted. The original five
+portrait/landscape camera, silhouette and warning-edge checks remain unchanged;
+new assertions also require the canvas and layout to follow the screen without
+unrequested browser scaling. One System Chrome case passes12.6s, evidence
+/tmp/eidolon-1-46-camera-fit-0930. Five desktop/phone keyboard/account and
+canvas/menu pinch cases pass32.0s, /tmp/eidolon-1-46-canvas-input-0930.
+This is browser evidence, not owner physical-phone performance approval.
+
+An initial unit command included a nonexistent GraphicsQuality.test.js path;
+its18 passing camera checks did not make that command successful. The corrected
+explicit graphics-resource/scene-group/camera selection is recorded below.
+The corrected three-suite run passes31checks1.691s; scoped ESLint and
+git diff --check pass. Own corrected-head CI and public deployment verification
+are still required; this receipt does not claim1.46 is live.
 
 -18 keyboard actions are individually remappable or unbound: camera panning/
   lock, nearby inspection, character/bag/journal/recall/map/social/skills/
