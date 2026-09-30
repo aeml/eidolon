@@ -101,6 +101,34 @@ behavioral assertions remain. The corrected selection passed with the Go race
 detector (server 3.167s, game 3.737s) and 27 JS checks across three suites in
 4.475s; changed-scope lint passed. Full CI and public acceptance remain pending.
 
+The broader browser suite also exposed procedural-only assumptions in mixed
+actor batching, casino visits, engine recovery, settings and Earth combat
+fixtures. The shared test helper now verifies positive render ownership: a
+procedural actor belongs to the rigid instancer, whereas an authored Fighter
+belongs directly to the entity group and has a visible skinned body with skin
+attributes and 53 bones. Equipment setup uses the shared dispatcher. Original
+image, draw-call, triangle, cleanup, recovery and settings assertions remain;
+town return additionally requires the casino's rigid batches to be gone.
+
+The supplied attack reaches its forward stroke at frame 14 of its 30fps clip.
+The adapter now identifies that contact time so the existing animation timing
+aligns the stroke with the unchanged 35%-of-swing impact. The Earth fixture
+compares the actual imported spine quaternion at contact instead of expecting
+a procedural chest joint. This changes presentation, not attack damage or stats.
+
+All twelve previously failing browser cases passed locally: four High/Low mixed
+actor and casino cases in 47.1s, then eight engine/recovery/settings/Earth cases
+in 2.3m. Evidence is in `/tmp/eidolon-1-54-mixed-actors-0930` and
+`/tmp/eidolon-1-54-authored-world-contracts-0930`; windup and contact screenshots
+were reviewed. Fifteen authored-model/basic-attack checks passed in 2.083s,
+and 321 version-presentation checks passed in 2.43s. Scoped lint and diff checks
+passed. The repaired exact candidate is
+`74c3404a177cf0699038f8b34b67c1941568f364`, with CI run `36789477403`.
+The superseded runs were cancelled after their failures were diagnosed and
+repairs pushed; this is not a substitute for the new candidate's complete CI
+and independent public acceptance. No rendered documentation preview was
+available.
+
 The 1.54 metadata and cumulative notes are packaged. Fetch/merge remote changes
 immediately before every normal push. Luna monitors deployment, root independently
 accepts exact public identity and changed assets. Preserve accounts, open-alpha
