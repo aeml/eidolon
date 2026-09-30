@@ -47,16 +47,28 @@ describe('manual joystick ownership', () => {
         expect(input.joystickVector.lengthSq()).toBe(0);
     });
 
-    test.each(['blur', 'reset', 'cancel'])('%s resets the knob and rejects the stale finger until a fresh gesture', kind => {
+    test.each(['blur', 'reset', 'cancel', 'pagehide', 'resize', 'orientationchange', 'typing'])('%s resets the knob and rejects the stale finger until a fresh gesture', kind => {
         touch('touchstart', [finger(1)]);
         if (kind === 'blur') window.dispatchEvent(new Event('blur'));
         if (kind === 'reset') input.clearInputState();
         if (kind === 'cancel') touch('touchcancel', [finger(1)]);
+        if (['pagehide', 'resize', 'orientationchange'].includes(kind)) window.dispatchEvent(new Event(kind));
+        if (kind === 'typing') {
+            const field = document.createElement('input'); document.body.append(field); field.focus();
+        }
         expect(input.joystickVector.lengthSq()).toBe(0);
         expect(knob.style.transform).toBe('translate(-50%, -50%)');
         touch('touchmove', [finger(1)]);
         expect(input.joystickVector.lengthSq()).toBe(0);
         touch('touchstart', [finger(2)]);
         expect(input.joystickVector.lengthSq()).toBeGreaterThan(0);
+    });
+
+    test('interruption notifies the current owner once and disposal removes the callbacks', () => {
+        const interrupted = jest.fn(); input.subscribe('onInterruption', interrupted);
+        window.dispatchEvent(new Event('pagehide'));
+        expect(interrupted).toHaveBeenCalledTimes(1);
+        input.dispose(); window.dispatchEvent(new Event('pagehide'));
+        expect(interrupted).toHaveBeenCalledTimes(1);
     });
 });

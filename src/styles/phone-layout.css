@@ -2,6 +2,27 @@
    Kept after legacy responsive overrides while the full phone redesign proceeds. */
 .chat-mobile-toggle { display: none; }
 :root { --phone-control-scale: 1; }
+
+/* Only active while a native editor has a keyboard-sized visual viewport.
+   World zoom/camera framing is not changed; closing it restores existing UI. */
+body.mobile-mode[data-phone-keyboard="true"] :is(.window, .generated-menu, #dungeon-menu) {
+    position: fixed !important;
+    top: calc(var(--phone-visible-top, 0px) + var(--phone-top)) !important;
+    left: 50% !important;
+    right: auto !important;
+    height: calc(var(--phone-visible-height) - var(--phone-top) - var(--phone-bottom) - 12px) !important;
+    max-height: calc(var(--phone-visible-height) - var(--phone-top) - var(--phone-bottom) - 12px) !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    overflow-y: auto;
+}
+.mobile-mode[data-phone-keyboard="true"] :is(#mobile-actions, #joystick-zone, #hotbar-container, #objectives-panel, #minimap-hud, #combat-intent-panel) { visibility: hidden; }
+.mobile-mode[data-phone-keyboard="true"] #chat-box:not(:focus-within) { display: none !important; }
+.mobile-mode[data-phone-keyboard="true"] #chat-box:focus-within {
+    bottom: calc(100dvh - var(--phone-visible-height) - var(--phone-visible-top, 0px) + var(--phone-bottom)) !important;
+    height: min(300px, calc(var(--phone-visible-height) - 24px)) !important;
+    max-height: calc(var(--phone-visible-height) - 24px) !important;
+}
 .phone-menu-action { display: none; }
 .mobile-mode .phone-menu-action { display: block; }
 

@@ -7,6 +7,7 @@ import { ReportUI } from './ReportUI.js';
 import { PlaytestSessionUI, appendPlaytestReportDraft } from './PlaytestSessionUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { PhoneSettingsUI } from './PhoneSettingsUI.js';
+import { ViewportLayout } from './ViewportLayout.js';
 import { KeyboardSettingsUI } from './KeyboardSettingsUI.js';
 import { PhoneMenuUI } from './PhoneMenuUI.js';
 import { TradingUI } from './TradingUI.js';
@@ -513,10 +514,7 @@ export class UIManager {
 
         if (this.social.partyPanel) this.setupWindow(this.social.partyPanel);
         this.registerWindowLayouts();
-        window.addEventListener('resize', () => this.reflowVisibleWindows());
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', () => this.reflowVisibleWindows());
-        }
+        this.viewportLayout = new ViewportLayout(this);
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');

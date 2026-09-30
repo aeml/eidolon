@@ -470,6 +470,13 @@ export class GameEngine {
         this.collisionManager = new CollisionManager();
         this.audioManager = new AudioManager();
         this.uiManager = new UIManager(this.isMobile, { audioManager: this.audioManager });
+        this.uiManager.onPhoneMenuOpen = () => {
+            this.inputManager.clearInputState();
+            this.cancelMobilePursuit();
+        };
+        this.inputManager.subscribe('onInterruption', () => {
+            if (this.isMobile) this.cancelMobilePursuit();
+        });
         this.uiManager.onCameraReset = () => {
             this.cameraLocked = true;
             this.renderSystem.resetCamera(this.player?.position);

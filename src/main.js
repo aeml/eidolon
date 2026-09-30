@@ -443,6 +443,8 @@ window.addEventListener('DOMContentLoaded', async () => {
                 };
                 window.game.network.onConnectionStateChange = (state) => {
                     if (window.game !== sessionGame) return;
+                    window.game.inputManager?.clearInputState?.();
+                    if (state !== 'connected') window.game.cancelMobilePursuit?.();
                     if (state !== 'connected') window.game?.uiManager?.casino?.slots?.stopAuto('Connection lost; auto spins stopped.');
                     window.game?.uiManager?.setConnectionState(state);
                     window.game?.uiManager?.admin?.connectionState(state);

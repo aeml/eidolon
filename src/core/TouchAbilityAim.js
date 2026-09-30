@@ -63,8 +63,9 @@ export class TouchAbilityAim {
                 if (!gesture) return;
                 const touch = Array.from(event.changedTouches).find(t => t.identifier === gesture.id);
                 if (!touch) return;
-                event.preventDefault();
-                event.stopImmediatePropagation();
+                if (event.cancelable !== false) event.preventDefault();
+                // Shared events may also release/move the joystick thumb.
+                // Default prevention blocks world taps; do not starve its owner.
                 gesture.x = touch.clientX;
                 gesture.y = touch.clientY;
                 this.update();
@@ -84,6 +85,8 @@ export class TouchAbilityAim {
 
     canCast() {
         const { player, uiManager: ui, playerJumpState } = this.engine;
+        if (this.engine.isMultiplayer && (this.engine.network?.socket?.readyState !== 1 || this.engine.network?._reconnecting)) return false;
+        if (ui?.getOpenWindowIds?.().length || document.activeElement?.closest('input, textarea, select, [contenteditable="true"]')) return false;
         return player && player.state !== 'DEAD' && player.state !== 'JUMPING' && !playerJumpState
             && !ui?.isEscMenuOpen && !ui?.isPatchNotesOpen && !ui?.isShopOpen
             && ui?.reportScreen?.style.display !== 'block';

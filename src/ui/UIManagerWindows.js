@@ -217,6 +217,8 @@ class UIManagerWindowMethods {
         if (!layout?.element) return;
         const wasOpen = this.isElementVisible(layout.element);
 
+        if (this.isMobile && !wasOpen) this.onPhoneMenuOpen?.();
+
         if (layout.group === 'primary') {
             const companionId = id === 'character'
                 ? 'inventory'
@@ -410,6 +412,7 @@ class UIManagerWindowMethods {
 
         const isHidden = !this.isElementVisible(element);
         if (isHidden) {
+            if (this.isMobile) this.onPhoneMenuOpen?.();
             this.closeManagedGroup?.('service');
             this.closeManagedGroup?.('primary');
             this.getStaticModalWindows().forEach((windowElement) => {

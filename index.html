@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Eidolon Online</title>
     <script type="module" src="./src/analytics/game.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070a10'/%3E%3Cpath d='M32 7 49 18 45 45 32 57 19 45 15 18Z' fill='%2318202d' stroke='%23c6a15b' stroke-width='3'/%3E%3Cpath d='m22 21 10-7 10 7-7 11 8 13-11 7-11-7 8-13Z' fill='%235b456f' stroke='%23b8d5dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23f0b85c'/%3E%3C/svg%3E">
@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.46.0</span>
+                    <span class="start-version-row__label">Alpha 1.47.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.47.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.47.0 (steadier phone sessions)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Two-thumb control:</strong> Releasing or cancelling a skill aim no longer blocks the movement thumb's release. Repeated movement and aiming retain separate finger ownership, with no delayed compatibility-click cast.</li>
+                        <li><strong>Clean interruptions:</strong> Backgrounding, leaving the page, rotating, resizing, typing or opening phone menus clears held movement and pending skill aims. Connection recovery clears old local intent instead of replaying it; a fresh input is needed to continue.</li>
+                        <li><strong>Keyboard room:</strong> Native phone editors adapt open panels to the keyboard-sized visible screen, preserve horizontal centering and restore the original layout afterward. Thumb controls yield while typing; browser zoom and world-camera framing remain unchanged.</li>
+                        <li><strong>Safe skill focus:</strong> A pending aim cannot commit through open panels, account/chat fields or a disconnected/resuming session. Existing ally-targeting taps and ground-range limits remain.</li>
+                        <li><strong>Device review:</strong> Portrait/landscape browser gesture and keyboard-report checks passed. Actual phone combat and native-keyboard feedback remain player-playtest work; no synthetic phone-FPS or universal-device guarantee is claimed. Earlier notes remain below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.46.0">
                     <h3 class="patch-note-entry__title">Alpha 1.46.0 (controls that fit you)</h3>
                     <ul class="patch-note-entry__list">

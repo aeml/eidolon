@@ -30,10 +30,10 @@ export class InputManager {
         this._onKeyDown = (e) => this.onKeyDown(e);
         this._onKeyUp = (e) => this.onKeyUp(e);
         this._onMouseUp = (e) => this.onMouseUp(e);
-        this._onWindowBlur = () => this.clearInputState();
+        this._onWindowBlur = () => this.interruptInput();
         this._onVisibilityChange = () => {
             if (document.visibilityState === 'hidden') {
-                this.clearInputState();
+                this.interruptInput();
             }
         };
 
@@ -59,6 +59,7 @@ export class InputManager {
             onInteract: [], // New callback for Mobile "USE" button
             onInspect: [], // Deliberate nearby Chronicle inspection (E)
             onManualMovement: [], // Joystick crosses its movement dead zone
+            onInterruption: [], // Backgrounding, page exit or changed phone layout
             onSocial: [], // New callback for Social Window
             onSkills: [], // New callback for Skill Tree
             onAbilities: [], // New callback for Abilities Menu (P)
@@ -85,6 +86,12 @@ export class InputManager {
         this._registerListener(window, 'mouseup', this._onMouseUp);
         this._registerListener(window, 'blur', this._onWindowBlur);
         this._registerListener(document, 'visibilitychange', this._onVisibilityChange);
+        this._registerListener(window, 'pagehide', () => this.interruptInput());
+        this._registerListener(window, 'resize', () => { if (this.isMobile) this.interruptInput(); });
+        this._registerListener(window, 'orientationchange', () => { if (this.isMobile) this.interruptInput(); });
+        this._registerListener(document, 'focusin', event => {
+            if (this.isMobile && event.target?.closest('input, textarea, select, [contenteditable="true"]')) this.interruptInput();
+        });
         
         this.isMouseDown = false;
         this.primaryMouseButtonDown = false;
@@ -158,7 +165,7 @@ export class InputManager {
             };
 
             const onZoneTouchEnd = (e) => {
-                e.preventDefault();
+                if (e.cancelable !== false) e.preventDefault();
                 for (let i = 0; i < e.changedTouches.length; i++) {
                     if (e.changedTouches[i].identifier === joystickTouchId) {
                         this.resetJoystick();
@@ -450,6 +457,11 @@ export class InputManager {
         Object.keys(this.keys).forEach((key) => {
             this.keys[key] = false;
         });
+    }
+
+    interruptInput() {
+        this.clearInputState();
+        this.callbacks.onInterruption.forEach(callback => callback());
     }
 
     subscribe(event, callback) {

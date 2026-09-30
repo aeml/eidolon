@@ -112,6 +112,7 @@ class GameEngineRuntimeMethods {
         this.uiManager?.social?.phoneParty?.dispose();
         this.uiManager?.inventory?.mobileDetails?.dispose();
         this.uiManager?.windowLayoutObserver?.disconnect();
+        this.uiManager?.viewportLayout?.dispose();
         this.uiManager?.chat?.sizeObserver?.disconnect();
         this.floatingTextManager?.dispose();
         this.uiManager?.clearEnemyBars?.();

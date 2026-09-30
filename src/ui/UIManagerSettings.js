@@ -7,6 +7,7 @@ class UIManagerSettingsMethods {
     toggleEscMenu() {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
         if (this.isMobile && isHidden) {
+            this.onPhoneMenuOpen?.();
             this.chat?.setMobileExpanded(false);
             window.game?.inputManager?.clearInputState?.();
         }

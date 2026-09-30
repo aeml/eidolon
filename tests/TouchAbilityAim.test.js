@@ -17,7 +17,8 @@ describe('phone skill drag aiming', () => {
         target.dispatchEvent(event);
     }
     beforeEach(() => {
-        document.body.innerHTML = '<canvas></canvas><button id="btn-mobile-ability"></button><div class="hotbar-slot"></div>';
+        document.body.innerHTML = '<canvas></canvas><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="btn-mobile-ability"></button><div class="hotbar-slot"></div>';
+        document.getElementById('joystick-zone').getBoundingClientRect = () => ({ left: 0, top: 0, width: 100, height: 100 });
         const camera = new THREE.PerspectiveCamera();
         camera.position.set(0, 10, 10); camera.lookAt(0, 0, 0);
         const scene = new THREE.Scene();
@@ -114,13 +115,41 @@ describe('phone skill drag aiming', () => {
         expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
     });
 
-    test.each(['clear', 'death', 'menu', 'reassign'])('%s cancels an active aim', reason => {
+    test.each([['touchend', true], ['touchcancel', true], ['touchcancel', false]])('a shared two-thumb %s (cancelable=%s) releases the stick as well as the skill', (type, cancelable) => {
+        const zone = document.getElementById('joystick-zone');
+        const movement = finger(80, 50, 1), skill = finger(180, 200, 7);
+        touch('touchstart', movement, zone);
+        touch('touchstart', finger(), button);
+        expect(input.joystickVector.lengthSq()).toBeGreaterThan(0);
+        const event = new Event(type, { bubbles: true, cancelable });
+        const prevent = jest.spyOn(event, 'preventDefault');
+        Object.defineProperties(event, {
+            changedTouches: { value: [movement, skill] }, touches: { value: [] }
+        });
+        zone.dispatchEvent(event);
+        expect(input.joystickVector.lengthSq()).toBe(0);
+        expect(aim.gesture).toBeNull();
+        if (!cancelable) expect(prevent).not.toHaveBeenCalled();
+        expect(engine.abilityController.performAbility).toHaveBeenCalledTimes(type === 'touchend' ? 1 : 0);
+        button.click();
+        expect(engine.abilityController.performAbility).toHaveBeenCalledTimes(type === 'touchend' ? 1 : 0);
+    });
+
+    test.each(['clear', 'death', 'menu', 'reassign', 'panel', 'offline', 'resuming', 'typing'])('%s cancels an active aim', reason => {
         touch('touchstart', finger(), button);
         touch('touchmove', finger(180));
         if (reason === 'clear') input.clearInputState();
         if (reason === 'death') engine.player.state = 'DEAD';
         if (reason === 'menu') engine.uiManager.isEscMenuOpen = true;
         if (reason === 'reassign') engine.player.abilityName = 'Ice Lance';
+        if (reason === 'panel') engine.uiManager.getOpenWindowIds = () => ['inventory'];
+        if (reason === 'offline' || reason === 'resuming') {
+            engine.isMultiplayer = true;
+            engine.network = { socket: { readyState: reason === 'offline' ? 3 : 1 }, _reconnecting: reason === 'resuming' };
+        }
+        if (reason === 'typing') {
+            const field = document.createElement('input'); document.body.append(field); field.focus();
+        }
         aim.update();
         touch('touchend', finger(180));
         expect(aim.gesture).toBeNull();
