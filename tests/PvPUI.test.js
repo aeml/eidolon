@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { PvPUI } from '../src/ui/PvPUI.js';
 
 const interfaces = [];
-afterEach(() => { interfaces.splice(0).forEach(ui => ui.dispose()); });
+afterEach(() => { interfaces.splice(0).forEach(ui => ui.dispose()); jest.useRealTimers(); });
 
 function createUI() {
     const ui = new PvPUI({ openManagedWindow: jest.fn(), closeManagedWindow: jest.fn() });
@@ -11,6 +11,99 @@ function createUI() {
 }
 
 describe('PvPUI', () => {
+    test('queue time ticks each second without adding per-second network polls or moving focus', () => {
+        jest.useFakeTimers();
+        const ui = createUI();
+        ui.onRefresh = jest.fn();
+        ui.toggle(true);
+        ui.onRefresh.mockClear();
+        ui.update({ queued: 2, queuedSeconds: 89, ratingWindow: 200, teamRating: 1250 });
+        const leave = [...ui.window.querySelectorAll('button')].find(button => button.textContent === 'Leave Queue');
+        leave.focus();
+        expect(ui.window.textContent).toContain('waiting 89s');
+        jest.advanceTimersByTime(1000);
+        expect(ui.window.textContent).toContain('waiting 90s');
+        expect(ui.onRefresh).not.toHaveBeenCalled();
+        expect(document.activeElement).toBe(leave);
+        // Do not pretend a local clock is an authoritative matchmaking update.
+        expect(ui.window.textContent).toContain('current search ±200');
+        jest.advanceTimersByTime(9000);
+        expect(ui.window.textContent).toContain('waiting 99s');
+        expect(ui.onRefresh).toHaveBeenCalledTimes(2);
+        ui.update({ queued: 2, queuedSeconds: 100, ratingWindow: 250 });
+        expect(ui.window.textContent).toContain('waiting 100s');
+        expect(ui.window.textContent).toContain('current search ±250');
+        ui.toggle(false);
+        expect(jest.getTimerCount()).toBe(0);
+        ui.update({ queued: 2, queuedSeconds: 105 });
+        expect(jest.getTimerCount()).toBe(0);
+        ui.toggle(true);
+        expect(ui.window.textContent).toContain('waiting 105s');
+        ui.dispose();
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('queue restriction counts down and prevents both ranked and practice requests until expiry', () => {
+        jest.useFakeTimers();
+        const ui = createUI();
+        ui.toggle(true);
+        ui.onQueue = jest.fn();
+        ui.update({ deserterUntil: new Date(Date.now() + 61000).toISOString() });
+        const buttons = [...ui.window.querySelectorAll('[data-arena-queue]')];
+        expect(buttons).toHaveLength(4);
+        expect(buttons.every(button => button.disabled)).toBe(true);
+        expect(ui.window.textContent).toContain('restricted for 1:01');
+        ui.requestArenaQueue(1); ui.requestArenaQueue(2, true);
+        expect(ui.onQueue).not.toHaveBeenCalled();
+        jest.advanceTimersByTime(1000);
+        expect(ui.window.textContent).toContain('restricted for 1:00');
+        jest.advanceTimersByTime(60000);
+        expect(ui.window.textContent).toContain('Queue restriction expired');
+        expect(buttons.every(button => !button.disabled)).toBe(true);
+        buttons[0].click(); buttons[3].click();
+        expect(ui.onQueue.mock.calls).toEqual([[1], [2, true]]);
+        expect(jest.getTimerCount()).toBe(0);
+        ui.update({});
+        expect(ui.window.querySelector('[data-arena-penalty]')).toBeNull();
+    });
+
+    test('match limit ticks but does not declare a result or enable another queue at expiry', () => {
+        jest.useFakeTimers();
+        const ui = createUI();
+        ui.toggle(true);
+        ui.onQueue = jest.fn();
+        const match = { mode: 'arena_1v1', status: 'active', round: 1, scoreA: 0, scoreB: 0,
+            teamA: ['a'], teamB: ['b'], endsAt: new Date(Date.now() + 2000).toISOString() };
+        ui.update({ match });
+        expect(ui.window.textContent).toContain('Match limit 0:02 remaining');
+        jest.advanceTimersByTime(1000);
+        expect(ui.window.textContent).toContain('Match limit 0:01 remaining');
+        jest.advanceTimersByTime(1000);
+        expect(ui.window.textContent).toContain('Waiting for the authoritative result');
+        expect(ui.state.match.status).toBe('active');
+        ui.requestArenaQueue(1);
+        expect(ui.onQueue).not.toHaveBeenCalled();
+        ui.update({ match: { ...match, status: 'complete', settlementPending: true } });
+        expect(ui.window.textContent).toContain('Saving the ranked result');
+        expect(ui.window.querySelector('[data-arena-match-clock]')).toBeNull();
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('detached queue buttons cannot submit after queue admission, match entry or disposal', () => {
+        const ui = createUI();
+        ui.onQueue = jest.fn();
+        const stale = [...ui.window.querySelectorAll('[data-arena-queue]')];
+        ui.update({ queued: 1, queuedSeconds: 0 });
+        stale.forEach(button => button.click());
+        ui.update({ match: { mode: 'arena_1v1', status: 'active', teamA: [], teamB: [] } });
+        stale.forEach(button => button.click());
+        ui.dispose();
+        stale.forEach(button => button.click());
+        ui.update({ queued: 2 });
+        expect(ui.onQueue).not.toHaveBeenCalled();
+        expect(ui.window.isConnected).toBe(false);
+    });
+
     test('distinguishes projected seasonal prize from settled history', () => {
         const ui = createUI();
         ui.update({ profile: { season: '2026-Q4', seasonVictories: 12,

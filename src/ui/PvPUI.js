@@ -21,6 +21,7 @@ export class PvPUI {
         this.isOpen = false;
         clearTimeout(this.queueRefresh);
         clearInterval(this.challengeClock);
+        clearInterval(this.arenaClock);
         this.window.remove();
     }
 
@@ -43,12 +44,15 @@ export class PvPUI {
         this.isOpen = opening;
         clearTimeout(this.queueRefresh);
         clearInterval(this.challengeClock);
+        clearInterval(this.arenaClock);
         if (opening) {
             if (this.openManagedWindow) this.openManagedWindow('pvp');
             else this.window.style.display = 'block';
             this.onRefresh?.();
             this.onLeaderboard?.();
             this.startChallengeClock();
+            this.startArenaClock();
+            this.scheduleArenaRefresh();
         } else if (this.closeManagedWindow) {
             this.closeManagedWindow('pvp');
         } else {
@@ -63,13 +67,14 @@ export class PvPUI {
         // the challenge/match ended, not that the previous one should survive.
         this.state = { ...this.state, queued: 0, queuePractice: false, queuedAt: null, ratingWindow: null, queuedSeconds: 0, match: null, challenge: null, deserterUntil: null,
             ...payload, opponents: Array.isArray(payload.opponents) ? payload.opponents : [] };
+        this.arenaSnapshotTime = Date.now();
         this.render();
         // A challenge must be visible to its recipient, but repeated state
         // refreshes must not reopen a deliberately closed window.
         if (this.state.challenge?.id && this.state.challenge.id !== previousChallenge && !this.isOpen) this.toggle(true);
         else this.startChallengeClock();
-        clearTimeout(this.queueRefresh);
-        if (this.isOpen && this.state.queued) this.queueRefresh = setTimeout(() => this.onRefresh?.(), 5000);
+        this.startArenaClock();
+        this.scheduleArenaRefresh();
     }
 
     updateLeaderboard(payload = {}) {
@@ -83,6 +88,60 @@ export class PvPUI {
         clearInterval(this.challengeClock);
         this.updateChallengeClock();
         if (this.isOpen && this.state.challenge?.id) this.challengeClock = setInterval(() => this.updateChallengeClock(), 1000);
+    }
+
+    scheduleArenaRefresh() {
+        clearTimeout(this.queueRefresh);
+        if (this.disposed || !this.isOpen || !this.state.queued) return;
+        // Keep refreshing even if a single response is delayed or missing.
+        // The local clock does not issue additional per-second requests.
+        this.queueRefresh = setTimeout(() => {
+            if (this.disposed || !this.isOpen || !this.state.queued) return;
+            this.onRefresh?.();
+            this.scheduleArenaRefresh();
+        }, 5000);
+    }
+
+    startArenaClock() {
+        clearInterval(this.arenaClock);
+        this.updateArenaClock();
+        if (!this.disposed && this.isOpen && (this.state.queued || this.penaltySeconds() > 0 || this.state.match?.status === 'active')) {
+            this.arenaClock = setInterval(() => this.updateArenaClock(), 1000);
+        }
+    }
+
+    penaltySeconds() {
+        const deadline = Date.parse(this.state.deserterUntil);
+        return Number.isFinite(deadline) ? Math.max(0, Math.ceil((deadline - Date.now()) / 1000)) : 0;
+    }
+
+    updateArenaClock() {
+        if (this.disposed) return;
+        const elapsed = Math.max(0, Math.floor((Date.now() - (this.arenaSnapshotTime ?? Date.now())) / 1000));
+        const snapshotSeconds = Number(this.state.queuedSeconds);
+        const seconds = (Number.isFinite(snapshotSeconds) ? Math.max(0, Math.floor(snapshotSeconds)) : 0) + elapsed;
+        const queue = this.window.querySelector('[data-arena-queue-clock]');
+        if (queue) queue.textContent = `${this.state.queuePractice ? 'Practice' : 'Ranked'} ${this.state.queued}v${this.state.queued} · waiting ${seconds}s`;
+        const penalty = this.penaltySeconds();
+        const notice = this.window.querySelector('[data-arena-penalty]');
+        if (notice) notice.textContent = penalty > 0
+            ? `Arena queue restricted for ${Math.floor(penalty / 60)}:${String(penalty % 60).padStart(2, '0')} after leaving a ranked match. Your teammate does not receive this restriction.`
+            : 'Queue restriction expired. The server rechecks eligibility when you join.';
+        this.window.querySelectorAll('[data-arena-queue]').forEach(button => { button.disabled = penalty > 0; });
+        const matchClock = this.window.querySelector('[data-arena-match-clock]');
+        if (matchClock) {
+            const remaining = Math.ceil((Date.parse(this.state.match?.endsAt) - Date.now()) / 1000);
+            matchClock.textContent = !Number.isFinite(remaining) ? '' : remaining > 0
+                ? `Match limit ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining`
+                : 'Match limit reached. Waiting for the authoritative result…';
+        }
+        if (!this.state.queued && penalty === 0 && this.state.match?.status !== 'active') clearInterval(this.arenaClock);
+    }
+
+    requestArenaQueue(size, practice = false) {
+        if (this.disposed || this.state.queued || this.state.match || this.penaltySeconds() > 0) return;
+        if (practice) this.onQueue?.(size, true);
+        else this.onQueue?.(size);
     }
 
     updateChallengeClock() {
@@ -212,13 +271,18 @@ export class PvPUI {
                     ? 'Team eliminated. The next round starts shortly.'
                     : `Standing: ${standing(match.teamA)} vs ${standing(match.teamB)}. ${match.mode === 'duel' ? 'Practice duel — no ranked rewards.' : 'Eliminate the whole opposing team to win a round. First to two rounds wins.'}${match.practice ? ' Practice: no rating, honor or season rewards.' : ''}`;
             matchCard.append(title, score, progress);
+            if (match.status === 'active') {
+                const clock = document.createElement('p');
+                clock.dataset.arenaMatchClock = '';
+                matchCard.appendChild(clock);
+            }
             if (match.status !== 'complete') {
                 matchCard.appendChild(this.button('Forfeit', () => this.onLeave?.(), 'pvp-btn--danger'));
             }
             body.appendChild(matchCard);
         } else {
             const queue = document.createElement('section');
-            queue.className = 'pvp-card';
+            queue.className = 'pvp-card pvp-card--arena';
             queue.innerHTML = '<h3>Arena · ranked or practice</h3><p>Best-of-three team elimination. Current combat rules: your level, equipment and build still matter—there is no hidden stat normalization. Player damage is reduced to 65% and each hit is capped at 35% of the target’s maximum health. Each round starts with full health and mana; leaving restores your pre-match amounts, so the arena is not a recovery service. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Ranked searches start within ±100 average team rating and widen by 50 every 30 seconds, to ±500. Both teams must allow the rating gap. Practice queues are separate, ignore rating gaps, and never award rating, honor, season points or ranked records. Practice duels also remain available through player challenges; leave your arena queue and any shared party before challenging each other.</p>';
             const rules = document.createElement('details');
             const rulesTitle = document.createElement('summary');
@@ -227,6 +291,7 @@ export class PvPUI {
             for (const paragraph of [...queue.querySelectorAll('p')]) rules.appendChild(paragraph);
             if (this.state.queued) {
                 const queued = document.createElement('strong');
+                queued.dataset.arenaQueueClock = '';
                 queued.textContent = `${this.state.queuePractice ? 'Practice' : 'Ranked'} ${this.state.queued}v${this.state.queued} · waiting ${Math.max(0, Math.floor(this.state.queuedSeconds || 0))}s`;
                 queue.append(queued, this.button('Leave Queue', () => this.onLeave?.(), 'pvp-btn--danger'));
                 const search = document.createElement('p');
@@ -234,10 +299,20 @@ export class PvPUI {
                     : `Team rating ${this.state.teamRating ?? 1000} · current search ±${this.state.ratingWindow ?? 100}. No estimated match time is promised.`;
                 queue.append(search);
             } else {
-                queue.append(this.button('Queue 1v1', () => this.onQueue?.(1), 'pvp-btn--success'));
-                queue.appendChild(this.button('Queue 2v2 Party', () => this.onQueue?.(2), ''));
-                queue.appendChild(this.button('Practice 1v1', () => this.onQueue?.(1, true), ''));
-                queue.appendChild(this.button('Practice 2v2 Party', () => this.onQueue?.(2, true), ''));
+                const controls = document.createElement('div');
+                controls.className = 'pvp-arena-actions';
+                for (const [label, size, practice] of [['Queue 1v1', 1, false], ['Queue 2v2 Party', 2, false], ['Practice 1v1', 1, true], ['Practice 2v2 Party', 2, true]]) {
+                    const button = this.button(label, () => this.requestArenaQueue(size, practice), practice ? '' : 'pvp-btn--success');
+                    button.dataset.arenaQueue = '';
+                    controls.appendChild(button);
+                }
+                queue.appendChild(controls);
+            }
+            if (this.state.deserterUntil && Number.isFinite(Date.parse(this.state.deserterUntil))) {
+                const penalty = document.createElement('p');
+                penalty.className = 'pvp-arena-penalty';
+                penalty.dataset.arenaPenalty = '';
+                queue.appendChild(penalty);
             }
             const rewardRules = document.createElement('p');
             rewardRules.textContent = 'Ranked ratings use team-strength Elo (K=32). Eligible wins award 50 Honor and 3 season points; losses award neither. Forfeits change rating but award neither team currency or season points. Only the first three meetings with each opponent per UTC day change rating or award rewards, even when teams change. Later matches still record wins and losses. Daily history is capped at 256 opponents.';
@@ -266,6 +341,7 @@ export class PvPUI {
             leaderboard.appendChild(empty);
         }
         body.appendChild(leaderboard);
+        this.updateArenaClock();
     }
 
     button(label, handler, modifier) {

@@ -52,7 +52,7 @@
 .pvp-card--match h3 { font-size: 16px; }
 .pvp-card--match p { color: #d7dbe4; }
 .pvp-card--match .pvp-score { grid-row: 2; }
-.pvp-card--match .pvp-btn { grid-column: 2; grid-row: 2; margin: 0; }
+.pvp-card--match .pvp-btn { grid-column: 2; grid-row: 2; margin: 0; min-height: 44px; }
 
 .pvp-score {
     color: #ff8794;
@@ -73,6 +73,19 @@
 
 .pvp-btn--success { border-color: #68bd78; background: #245e33; color: #edfff0; }
 .pvp-btn--danger { border-color: #d65060; background: #652632; }
+
+.pvp-arena-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.pvp-arena-actions .pvp-btn { margin: 0; min-height: 44px; }
+.pvp-card--arena > .pvp-btn { min-height: 44px; margin-bottom: 8px; }
+[data-arena-queue-clock] { display: block; margin-bottom: 8px; }
+.pvp-arena-penalty { color: #ffc990; line-height: 1.45; }
+[data-arena-queue-clock], [data-arena-match-clock] { font-variant-numeric: tabular-nums; }
 
 .pvp-leader-row {
     padding: 5px 2px;
