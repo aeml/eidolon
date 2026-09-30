@@ -111,7 +111,7 @@ Final real-Chrome4-case selection passes17.3s: three full engine constructor/
 equipped-render/destructor sessions each at High/Low, plus the desktop/phone
 UI-owner regressions. All six engine sessions retain exactly one minimap while
 live, zero HUD/tooltip nodes after retirement, cleared map ownership, aborted
-map listeners, inactive player, detached canvas, released native context and
+map listeners, inactive player, detached canvas, released WebGL context and
 an open borrowed application socket. Pre-retirement geometry/texture counts
 stay56/27 at High and55/13 at Low across the three sessions. This measures
 prepared local owners, not full world residency, a driver-memory byte census,
