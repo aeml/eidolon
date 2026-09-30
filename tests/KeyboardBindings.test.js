@@ -100,6 +100,31 @@ test('modified shortcuts and repeat do not toggle menus or re-run inspections', 
     expect(inspect).not.toHaveBeenCalled(); expect(character).not.toHaveBeenCalled();
 });
 
+test.each(['button', 'item'])('%s focus still permits Bag shortcuts without casting or moving', tag => {
+    input = new InputManager(null, null);
+    const node = document.createElement(tag === 'item' ? 'div' : tag);
+    node.tabIndex = 0; if (tag === 'item') node.setAttribute('role', 'button');
+    document.body.append(node); node.focus();
+    const bag = jest.fn(), cast = jest.fn(), recall = jest.fn(), camera = jest.fn();
+    input.subscribe('onInventory', bag); input.subscribe('onHotbar', cast);
+    input.subscribe('onTeleport', recall); input.subscribe('onSpace', camera);
+    input.onKeyDown({ key: 'i' });
+    expect(bag).toHaveBeenCalledTimes(1);
+    for (const key of ['w', '1', 'b', ' ']) input.onKeyDown({ key });
+    expect(input.keys.w).toBe(false); expect(cast).not.toHaveBeenCalled();
+    expect(recall).not.toHaveBeenCalled(); expect(camera).not.toHaveBeenCalled();
+    for (const flag of ['ctrlKey', 'altKey', 'metaKey', 'repeat']) input.onKeyDown({ key: 'i', [flag]: true });
+    expect(bag).toHaveBeenCalledTimes(1);
+    input.keyboardBindings.inventory = 'q';
+    input.onKeyDown({ key: 'i' }); input.onKeyDown({ key: 'q' });
+    expect(bag).toHaveBeenCalledTimes(2);
+    for (const key of [' ', 'arrowup']) {
+        input.keyboardBindings.inventory = key;
+        input.onKeyDown({ key });
+    }
+    expect(bag).toHaveBeenCalledTimes(2);
+});
+
 test('blocked browser storage still applies remapping for the session, with an honest message', () => {
     input = new InputManager(null, null);
     const ui = settings();

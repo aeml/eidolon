@@ -31,6 +31,34 @@ required after ordered1.45 acceptance; candidate not pushed or accepted.
 
 ## Changes
 
+### Focused bag-slot correction after authenticated predeploy
+
+Corrected camera head01cb5217 passed Go/Jest/all three browser shards in
+CI36684013979 attempt1. Predeploy109793929861 then failed the separate
+inventory-quality-of-life bag drag-out route at projected-loot visibility;
+all three authenticated.spec.js cases passed. Validation, both deployments
+and Live QA skipped. Root independently verified the terminal failure, not
+only the Luna report. No workflow rerun or bypass.
+
+One isolated inventory-only reproduction fails28.2s. Failure-only scalar
+diagnostics prove canvas1280x720 equals viewport, projected drop is on-screen,
+but Bag remains display:block and retains DIV button-role focus after drag.
+The1.46 focus guard swallowed I, rather than a bad loot position/canvas fit.
+Two new native/item-button Bag-shortcut cases fail before the fix1.154s.
+
+Permit configured menu-only shortcuts from focused buttons/items. Never
+cast, recall, inspect or pan there, and retain native Space/Enter/arrow
+activation/navigation, text/select editing, repeat and modifier protection.
+Three binding/native-control/world-tap suites57checks1.478s pass. The same
+isolated inventory route passes29.4s (31.3s browser total), with actual
+server-earned loot, drag-out, protected auto-loot exclusion, manual recovery
+and Journal persistence after reload. Add an explicit Bag-hidden assertion
+before projection; retain all original item/tracking checks. Diagnostic JSON
+contains only point/viewport/canvas and DOM tag/id/display/focus, not account
+or chat data. Artifact credential scan passes; only disposable services/data
+are removed. Scoped lint/whitespace pass. Own new-head CI/live gates remain
+required; no1.46 acceptance is inferred from this scoped route.
+
 ### Phone resize correction after candidate CI
 
 The first candidate d84bfabb failed the unchanged required phone-camera case
