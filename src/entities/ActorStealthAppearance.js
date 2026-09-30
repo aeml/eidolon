@@ -1,5 +1,6 @@
 // Procedural materials are shared. Stealth owns temporary copies and restores
 // only the meshes it changed, never making input-only geometry visible.
+import { suspendAnimatedEquipmentBatches } from '../art/AnimatedEquipmentBatches.js';
 const appearances = new WeakMap();
 
 export function restoreActorStealthAppearance(actor) {
@@ -11,10 +12,12 @@ export function restoreActorStealthAppearance(actor) {
         for (const material of entry.copies) material.dispose();
     }
     appearances.delete(actor);
+    suspendAnimatedEquipmentBatches(actor.mesh, false);
 }
 
 export function applyActorStealthAppearance(actor) {
     if (!actor.mesh) return;
+    suspendAnimatedEquipmentBatches(actor.mesh, true);
     let entries = appearances.get(actor);
     if (!entries) appearances.set(actor, entries = new Map());
     const present = new Set();

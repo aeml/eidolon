@@ -11,6 +11,7 @@ import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
+import { updateAnimatedEquipmentBatches } from '../art/AnimatedEquipmentBatches.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -1143,6 +1144,7 @@ export class RenderSystem {
     }
 
     render() {
+        updateAnimatedEquipmentBatches(this.scene, this.renderer);
         this.sceneryVisibility?.update(this.instanceEnvironmentGroup, this.camera, this.sceneryFocus, performance.now() / 1000);
         if (this.waterTexture) {
             const time = performance.now() * 0.0001;

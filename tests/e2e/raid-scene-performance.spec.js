@@ -18,6 +18,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         gallery.cleanupPresentation();
         [gallery.actor, gallery.remoteActor, gallery.targetActor].forEach((actor) => { if (actor?.mesh) actor.mesh.visible = false; });
         const render = gallery.renderSystem;
+        render.scene.userData.profileEquipmentBatches = true;
         render.applyLightingPreset('umbral_nexus', true);
         render.setZoom(22);
         render.camera.position.set(100, 100, 100);
@@ -101,7 +102,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     });
     const reports = [];
     try {
-        for (const quality of ['high', 'low']) {
+        const selectedQuality = process.env.EIDOLON_E2E_RAID_PROFILE_QUALITY;
+        if (selectedQuality) expect(['high', 'low']).toContain(selectedQuality);
+        for (const quality of selectedQuality ? [selectedQuality] : ['high', 'low']) {
             for (const phase of ['busy', 'clear', 'busy-repeat']) {
                 await page.evaluate(({ quality, phase }) => window.__raidScene.setBusy(quality, phase !== 'clear'), { quality, phase });
                 const report = await page.evaluate(() => new Promise((resolve, reject) => {
@@ -121,7 +124,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         previous = started;
                         if (warmup-- > 0) { startupCpu.push(cpu); return; }
                         const info = render.renderer.info;
-                        samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles });
+                        const equipment = render.scene.userData.equipmentBatchProfile;
+                        samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles,
+                            equipmentCpu: equipment?.cpuMs || 0, matrixUploads: equipment?.matrixUploads || 0 });
                         if (samples.length < 180) return;
                         clearTimeout(timer);
                         render.render = original;
@@ -132,6 +137,8 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                             frames: samples.length, medianMs: percentile('interval', 0.5), p95Ms: percentile('interval', 0.95),
                             p99Ms: percentile('interval', 0.99), hitchesOver50ms: samples.filter(sample => sample.interval > 50).length,
                             firstRenderCpuMs: startupCpu[0], warmupWorstCpuMs: Math.max(...startupCpu),
+                            equipmentCpuMedianMs: percentile('equipmentCpu', 0.5), equipmentCpuP95Ms: percentile('equipmentCpu', 0.95),
+                            matrixUploadsMedian: percentile('matrixUploads', 0.5),
                             renderCpuMedianMs: percentile('cpu', 0.5), renderCpuP95Ms: percentile('cpu', 0.95),
                             calls: percentile('calls', 0.5), triangles: percentile('triangles', 0.5),
                             geometries: info.memory.geometries, textures: info.memory.textures,
