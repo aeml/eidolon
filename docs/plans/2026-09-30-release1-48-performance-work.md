@@ -87,6 +87,18 @@ visibility/pose/appearance-preserving change are needed before accepting1.48.
 Actual startup/shader evidence is also still open. This is concrete progress
 and an actionable miss, not completed performance or a reason for a new soak.
 
+A read-only Node24 source probe reconstructs the same ten gallery loadouts,
+including rarity, potency, sockets, sets and unique markers, through the
+production batched class factories and existing equipped-item application.
+Each hero has117–128visible meshes, of which102–105are equipment, with56–63
+materials; Malachar has42meshes/9materials. Sources hidden by existing batching
+remain hidden (67–93perhero), not accidental duplicate draws. This identifies
+equipment as the dominant potential submission improvement, not proof that
+any new batching policy preserves poses/materials/stealth/masks or improves FPS.
+The first source probe accidentally used system Node18 and failed toReversed;
+only the explicit supported Node24 run supplies these counts. No browser/raid
+soak repeated for this attribution.
+
 ## Planted street edges — September30
 
 Submit the existing two static street-rest cells together per material with
