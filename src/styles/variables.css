@@ -5,6 +5,16 @@
    z-index layering used across all UI modules.
    ------------------------------------------------------------ */
 
+/* Keep display typography first-party: loading the game must not depend on
+   external font DNS. The bundled unmodified face includes weights400–900. */
+@font-face {
+    font-family: 'Cinzel';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('../../assets/fonts/Cinzel-Variable.ttf') format('truetype');
+}
+
 :root {
     /* ---- Color Palette ---- */
     --color-gold:           #d5bb87;

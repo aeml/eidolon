@@ -29,11 +29,16 @@ describe('soft material reflections', () => {
         const texture = system.reflectionEnvironment;
         const dispose = jest.spyOn(texture, 'dispose');
         expect(system.scene.environment).toBe(texture);
-        expect(system.scene.environmentIntensity).toBe(0.65);
+        // Initial radiance now follows the region's cross-lit ambient preset,
+        // not the constructor's temporary pre-preset0.65 value.
+        expect(system.scene.environmentIntensity).toBeCloseTo(0.325);
         system.setGraphicsQuality('low');
         expect(system.scene.environment).toBe(texture);
         system.setGraphicsQuality('high');
         expect(system.scene.environment).toBe(texture);
+        system.currentLighting.ambientIntensity = 1.9;
+        system.applyLightingState();
+        expect(system.scene.environmentIntensity).toBeCloseTo(0.65);
         system.currentLighting.ambientIntensity = 1.22;
         system.applyLightingState();
         expect(system.scene.environmentIntensity).toBeLessThan(0.45);

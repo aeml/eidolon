@@ -46,8 +46,19 @@ test('Shift-click ignores a rendered Chronicle marker while ordinary clicks stil
         scene.updateMatrixWorld(true);
         renderer.render(scene, camera);
         window.__moveOnlyFixture = { engine, records };
-        const projected = new THREE.Vector3(0, .12, 0).project(camera);
-        return { x: (projected.x + 1) * innerWidth / 2, y: (1 - projected.y) * innerHeight / 2 };
+        // The remodeled clue is a bending sapling, not the old stone disk.
+        // Click its visible trunk and verify a genuine geometry hit first.
+        const projected = new THREE.Vector3(-.08, .92, -.14).project(camera);
+        // Native MouseEvent coordinates are integer CSS pixels. Probe exactly
+        // that pixel, not a different fractional ray, for the ground assertion.
+        const x = Math.round((projected.x + 1) * innerWidth / 2);
+        const y = Math.round((1 - projected.y) * innerHeight / 2);
+        const ray = new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(x / innerWidth * 2 - 1, 1 - y / innerHeight * 2), camera);
+        if (!ray.intersectObject(site.mesh, true).some(hit => hit.object.userData.entityId === site.id)) {
+            throw new Error('The chosen visible sapling point must hit its rendered geometry');
+        }
+        const ground = ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Vector3());
+        return { x, y, ground: ground.toArray() };
     });
     await page.mouse.click(point.x, point.y);
     expect(await page.evaluate(() => window.__moveOnlyFixture.records.interactions)).toEqual(['chronicle-site-new_growth']);
@@ -63,7 +74,7 @@ test('Shift-click ignores a rendered Chronicle marker while ordinary clicks stil
         pending: null, target: null, skill: null, shift: false });
     expect(result.moves).toHaveLength(1);
     expect(result.moves[0][1]).toBeCloseTo(0);
-    expect(Math.hypot(result.moves[0][0], result.moves[0][2])).toBeLessThan(.5);
+    for (const axis of [0, 2]) expect(result.moves[0][axis]).toBeCloseTo(point.ground[axis], 2);
     await page.mouse.click(point.x, point.y);
     expect(await page.evaluate(() => window.__moveOnlyFixture.records.interactions)).toHaveLength(2);
     await page.screenshot({ path: testInfo.outputPath('move-only-chronicle-marker.png') });

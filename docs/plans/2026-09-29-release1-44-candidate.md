@@ -5,6 +5,20 @@ login/CI/default build identities and cumulative notes identify1.44.0.
 Earlier ordered release prerequisites remain open. Final listening/mix approval
 is not claimed; human observations are not a new publication permission gate.
 
+## Current upstream integration — September30
+
+Merged master132e1a844c610f0b3dc1e917d01a37544140ee4e into the prepared
+candidate. Preserve1.44 identities, its cumulative patch entry and website
+files, while carrying the accepted1.42 first-party font,1.43 dependency patches,
+current Wizard/Maelin animation fixture, strict browser diagnostics and scoped
+Pages proxy template. README conflict resolved to1.44 source/1.42 accepted live,
+not an unverified1.43 acceptance. Eleven focused audio, font, loader, publishing,
+version and browser-helper suites pass503checks6.799s with the patched toolchain;
+full lint and whitespace checks pass. Existing unchanged audio rendering/
+suspension/phone evidence remains applicable, not rerun for document changes.
+1.43 CI36668039885 is still the ordered publication prerequisite. This merge
+does not apply the staged privileged nginx configuration or deploy1.44.
+
 ## Draft patch notes
 
 - Distinct short cast cues for fourteen ability families across all four

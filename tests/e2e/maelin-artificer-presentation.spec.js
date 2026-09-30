@@ -19,10 +19,10 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             floor.receiveShadow = true;
             render.instanceEnvironmentGroup.add(floor);
             const before = new CrystalKeeper('before-mage-rig'), after = new CrystalKeeper('after-artificer');
-            // Explicit model reference: the prior actor used the ordinary
-            // Wizard mesh and has no Channel clip. No live NPC is substituted.
+            // Compare the current class rig, which now has its full Channel
+            // clip, against Maelin's distinct model. No live NPC is substituted.
             before.meshType = 'Wizard';
-            before.name = 'Previous mage rig';
+            before.name = 'Class Wizard reference';
             after.name = 'Maelin, Resonance Artificer';
             before.position.x = -2.1;
             after.position.x = 2.1;
@@ -51,6 +51,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                         render.render();
                         return { state: after.state, animation: after.currentAction?.getClip()?.name,
                             beforeAnimation: before.currentAction?.getClip()?.name,
+                            beforeMeshType: before.meshType, beforeMissing: [...before.missingAnimationClips],
+                            beforeTuningFork: Boolean(before.mesh.getObjectByName('Maelin_TuningFork')),
                             meshType: after.meshType, missing: [...after.missingAnimationClips],
                             armAngle: after.mesh.getObjectByName('Rig_UpperArmRight').rotation.x,
                             tuningFork: Boolean(after.mesh.getObjectByName('Maelin_TuningFork')) };
@@ -60,7 +62,10 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                     await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
                     expect(metrics.state).toBe(state);
                     expect(metrics.animation).toBe(state === 'CHANNELING' ? 'Channel' : 'Idle');
-                    expect(metrics.beforeAnimation).toBe('Idle');
+                    expect(metrics.beforeAnimation).toBe(state === 'CHANNELING' ? 'Channel' : 'Idle');
+                    expect(metrics.beforeMeshType).toBe('Wizard');
+                    expect(metrics.beforeMissing).toEqual([]);
+                    expect(metrics.beforeTuningFork).toBe(false);
                     expect(metrics.meshType).toBe('CrystalKeeper');
                     expect(metrics.missing).toEqual([]);
                     expect(metrics.tuningFork).toBe(true);
