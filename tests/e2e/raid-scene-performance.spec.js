@@ -1,14 +1,28 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { cpus, loadavg } from 'node:os';
+import { readFileSync } from 'node:fs';
+
+function hostSnapshot() {
+    const processors = cpus();
+    const times = processors.reduce((sum, cpu) => ({ idle: sum.idle + cpu.times.idle,
+        total: sum.total + Object.values(cpu.times).reduce((a, b) => a + b, 0) }), { idle: 0, total: 0 });
+    let pressure = null;
+    try { pressure = readFileSync('/proc/pressure/cpu', 'utf8').trim(); } catch { /* Non-Linux host. */ }
+    return { at: new Date().toISOString(), processors: processors.length, load: loadavg(), ...times, pressure };
+}
 
 // A controlled rendering workload, not a network/server raid simulation.
 test('ten equipped heroes, Malachar and overlapping fields remain stable across repeated busy scenes', async ({ page, baseURL }, testInfo) => {
     const cpuDiagnostic = process.env.EIDOLON_RAID_CPU_PROFILE === '1';
+    const instancingProbe = process.env.EIDOLON_RAID_INSTANCING_PROBE === '1';
+    const comparison = process.env.EIDOLON_RAID_INSTANCING_COMPARE === '1';
+    if (comparison && !instancingProbe) throw Error('Paired comparison requires the opt-in instance candidate');
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    await page.evaluate(async () => {
+    await page.evaluate(async ({ instancingProbe, comparison }) => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
@@ -27,7 +41,6 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         render.scene.traverse((object) => { if (object.type === 'GridHelper') object.visible = false; });
         document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach((element) => { element.style.display = 'none'; });
         const group = new THREE.Group();
-        render.scene.add(group);
         const models = [];
         const mixers = [];
         for (let index = 0; index < 11; index++) {
@@ -53,6 +66,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             mixers.push(mixer);
             models.push({ type, mesh });
         }
+        // Match runtime subtree admission. Adding actors later inside an
+        // already-attached unowned fixture group bypasses streaming events.
+        render.entityGroup.add(group);
         let fields = [];
         let warnings = [];
         let elapsed = 0;
@@ -67,6 +83,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             group.visible = active;
             render.setGraphicsQuality(quality);
             if (!active) return;
+            if (comparison) { elapsed = 0; mixers.forEach(mixer => mixer.setTime(0)); }
             for (let index = 0; index < 4; index++) {
                 const field = createProceduralAreaField(['GravityWell', 'BurningGround', 'SmokeBomb', 'InfernoCataclysm'][index], 4, { quality });
                 field.position.set(index % 2 ? 5 : -5, 0.01, index < 2 ? -4 : 4);
@@ -79,6 +96,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         };
         const update = {
             update(dt) {
+                // Same frame-by-frame animation/field workload on both sides;
+                // measured RAF intervals remain real, not a synthetic clock.
+                if (comparison) dt = 1 / 60;
                 elapsed += dt;
                 if (group.visible) mixers.forEach((mixer) => mixer.update(dt));
                 fields.forEach((field) => updateProceduralAreaField(field, elapsed, dt));
@@ -89,9 +109,13 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             }
         };
         gallery.persistentEntities.push(update);
+        if (instancingProbe) render.setActorInstancesEnabled(true);
+        const instances = render.actorInstances;
         window.__raidScene = {
             setBusy,
+            setInstances(enabled) { instances.enabled = enabled; instances.endFrame(); },
             dispose() {
+                render.setActorInstancesEnabled(false);
                 clear();
                 gallery.persistentEntities = gallery.persistentEntities.filter((entry) => entry !== update);
                 mixers.forEach((mixer, index) => { mixer.stopAllAction(); mixer.uncacheRoot(models[index].mesh); });
@@ -99,7 +123,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 group.removeFromParent();
             }
         };
-    });
+    }, { instancingProbe, comparison });
     if (cpuDiagnostic) await page.evaluate(() => {
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         const counters = {}, undo = [];
@@ -115,6 +139,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         };
         wrap(render.renderer, 'render', 'rendererTotal');
         wrap(render.renderer.shadowMap, 'render', 'shadowPass');
+        wrap(render.actorInstances, 'beginFrame', 'actorInstancePreparation');
         for (const pass of render.composer?.passes || []) wrap(pass, 'render', pass.constructor.name);
         // The newly added workload's one updater contains all eleven mixers
         // and overlapping field updates. Other gallery work stays separate.
@@ -127,8 +152,21 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     const reports = [];
     try {
         for (const quality of ['high', 'low']) {
-            for (const phase of ['busy', 'clear', 'busy-repeat']) {
-                await page.evaluate(({ quality, phase }) => window.__raidScene.setBusy(quality, phase !== 'clear'), { quality, phase });
+            if (comparison) await page.evaluate(quality => new Promise(resolve => {
+                window.__raidScene.setBusy(quality, true); window.__raidScene.setInstances(true);
+                // Warm candidate buffers/program variants before either mode
+                // is measured, so first-mode resource counts are comparable.
+                let frames = 60;
+                const tick = () => { if (--frames > 0) requestAnimationFrame(tick); else resolve(); };
+                requestAnimationFrame(tick);
+            }), quality);
+            const phases = comparison ? ['baseline', 'candidate', 'baseline-repeat', 'candidate-repeat'] : ['busy', 'clear', 'busy-repeat'];
+            for (const phase of phases) {
+                await page.evaluate(({ quality, phase, comparison }) => {
+                    if (comparison) window.__raidScene.setInstances(phase.startsWith('candidate'));
+                    window.__raidScene.setBusy(quality, phase !== 'clear');
+                }, { quality, phase, comparison });
+                const hostStart = comparison ? hostSnapshot() : null;
                 const report = await page.evaluate(() => new Promise((resolve, reject) => {
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
@@ -169,13 +207,26 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         });
                     };
                 }));
-                reports.push({ quality, phase, ...report });
+                const hostEnd = comparison ? hostSnapshot() : null;
+                reports.push({ quality, phase, ...report, ...(comparison ? { hostStart, hostEnd,
+                    hostBusyFraction: 1 - (hostEnd.idle - hostStart.idle) / (hostEnd.total - hostStart.total) } : {}) });
                 // Retain each bounded phase even if a later phase fails.
                 await testInfo.attach(`${quality}-${phase}-rendering-profile`, { body: JSON.stringify(report), contentType: 'application/json' });
                 expect(report.frames).toBe(180);
                 expect(report.calls).toBeGreaterThan(0);
                 expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
-                if (phase === 'busy') await page.screenshot({ path: testInfo.outputPath(`raid-sized-${quality}.png`) });
+                if (phase === 'busy' || phase === 'candidate') await page.screenshot({ path: testInfo.outputPath(`raid-sized-${quality}.png`) });
+            }
+            if (comparison) {
+                const rows = reports.filter(row => row.quality === quality);
+                const [baseline, candidate, baselineRepeat, candidateRepeat] = rows;
+                for (const row of rows) {
+                    expect(row.triangles).toBe(baseline.triangles);
+                    expect(row.geometries).toBe(baseline.geometries); expect(row.textures).toBe(baseline.textures);
+                }
+                expect(candidate.calls).toBeLessThan(baseline.calls); expect(candidateRepeat.calls).toBe(candidate.calls);
+                expect(baselineRepeat.calls).toBe(baseline.calls);
+                continue; // Timing/host comparability requires manual review.
             }
             const first = reports.find((entry) => entry.quality === quality && entry.phase === 'busy');
             const repeat = reports.find((entry) => entry.quality === quality && entry.phase === 'busy-repeat');

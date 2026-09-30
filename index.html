@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.47.0</span>
+                    <span class="start-version-row__label">Alpha 1.48.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.48.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.48.0 (less work, same world)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Equipped crowds:</strong> Compatible opaque character surfaces share frame-owned draw submissions. Animations, equipment, stealth, shadows and distant dungeon positions retain their appearance; unsupported surfaces keep normal rendering.</li>
+                        <li><strong>Town and woodland:</strong> Cached rigid transforms, compatible equipment surfaces, bounded scenery batches and conservative foliage culling reduce rendering work without removing visible detail or changing collisions.</li>
+                        <li><strong>Cleaner loading:</strong> The loading screen prepares two real initial-view frames, including shadows and postprocessing, before handing over controls. Removed an unconditional 1.1-second wait; cancelled entry cannot join a retired session.</li>
+                        <li><strong>Busy combat:</strong> Scene creation yields within its existing per-tick budget. Essential warnings retain FIFO delivery; compact remote feedback stays bounded while preserving local actions and healing feedback.</li>
+                        <li><strong>Measured, not promised:</strong> Controlled native-desktop equipped-scene and populated-world checks met their declared targets on High and Low. This is not a universal FPS or physical-phone guarantee. Progression, rewards and player saves are unchanged; earlier notes remain below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.47.0">
                     <h3 class="patch-note-entry__title">Alpha 1.47.0 (steadier phone sessions)</h3>
                     <ul class="patch-note-entry__list">

@@ -9,6 +9,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
+import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
@@ -128,6 +129,8 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
+        this.actorInstances = null;
+        this.setActorInstancesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the
@@ -1019,6 +1022,15 @@ export class RenderSystem {
         this.updateCamera();
     }
 
+    setActorInstancesEnabled(enabled) {
+        if (this._disposed) return;
+        if (enabled && !this.actorInstances) {
+            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup]);
+        } else if (!enabled && this.actorInstances) {
+            this.actorInstances.dispose(); this.actorInstances = null;
+        }
+    }
+
     add(mesh) {
         if (mesh) {
             this.entityGroup.add(mesh);
@@ -1048,6 +1060,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.actorInstances?.clear();
         this.actorContactShadows?.clear();
         this.clearGroupChildren(this.instanceEnvironmentGroup, { dispose: true });
         this.clearGroupChildren(this.entityGroup);
@@ -1172,6 +1185,9 @@ export class RenderSystem {
                 this.renderer.render(this.scene, this.camera);
             }
         } finally {
+            // Scene.onAfterRender is not called if a renderer/pass throws.
+            // Never let frame-only batching hide actors from subsequent input.
+            this.actorInstances?.endFrame();
             info.autoReset = autoReset;
         }
         this.updatePerfOverlay();
@@ -1223,6 +1239,7 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        this.actorInstances?.dispose(); this.actorInstances = null;
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

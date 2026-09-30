@@ -1,5 +1,219 @@
 # Alpha1.48 — client performance work
 
+## Production-default integration — locally verified, unpublished
+
+The verified candidate is now merged on the release branch and enabled by its
+RenderSystem owner. Rejected shadow-caster, surface-pivot and per-anchor texture
+experiments remain excluded. Native paired appearance now requires the actual
+constructor default, and cleanup uses that same owner. The raid fixture admits
+its prepared subtree via normal entity-group events; ordinary diagnostic runs
+no longer disable production batching. Two appearance cases join the existing
+mandatory interface CI selection, without another runner/job.
+
+Eight affected unit suites336checks pass5.489s; scoped lint/whitespace pass.
+Four native default appearance/cold-start cases pass19.3s. Prepared loading
+builds41High/24Low programs, stable through all60subsequent frames; preparation
+526.1/424.8ms, first subsequent render CPU33.8/9.4ms. This is not zero startup
+cost, end-to-end login timing or a perfect first-frame promise. Artifacts:
+`/tmp/eidolon-1-48-default-instances-0930`.
+
+Two changed-default populatedEarth/town cases pass1.3m (42.6/35.1s), including
+nine120-sample locations perquality and warm-repeat resources. All High medians
+16.7ms,p95<=16.8,draws<=298,triangles<=234568; Low390px medians16.7,p95<=16.8,
+draws<=137,triangles<=61458. Zero>50ms hitches. Trading281drawsHigh/107Low;
+the original350/200 submissions and250k/85k triangle bounds pass everywhere.
+Resource repeats remain exact315geometry/71textures/71programsHigh and303/58/51
+Low. Native RADV RENOIR desktop, not physical-phone FPS certification. Artifacts:
+`/tmp/eidolon-1-48-default-earth-profile-0930`.
+
+Browser discovery verifies226cases exactly once/no omission or duplication.
+The later149 tree has its own additional lifetime cases; this148 count is not
+that tree's234baseline. Metadata, mandatory exact-source CI and public matching
+assets still gate publication/acceptance. No player data or balance changes.
+
+## Controlled comparison result — September30
+
+### Distant-coordinate correction and changed-code confirmation
+
+Added a seventh paired pose at(50000,0,20000), with the real camera/shadow
+follow behavior. High fails the unchanged changed-pixel bound (0.001094>0.001),
+Low passes; mean error0.0450, unchanged triangles. A fractional distant-transform
+unit independently fails0.000356>0.00001. Float32 instance attributes carrying
+full world positions discard equipment/animation offsets. Use the existing
+64m-cell world origin as the batch model transform and upload cell-relative
+attributes. Ordinary source transforms, borrowed surfaces and frame visibility
+remain unchanged. No relaxed image thresholds or fixed simulated frame timings.
+
+The existing parent-transform unit now reconstructs the actual world matrix
+instead of demanding the old internal scene-relative representation. Five
+affected suites42checks pass1.720s. Two native High/Low cases9.3s pass all seven
+strict pose comparisons and the mid-render failure restoration; artifacts:
+`/tmp/eidolon-1-48-cell-origin-instances-0930`.
+
+One changed-source controlled comparison45.7s (test44.4s) reconfirms the original
+declared gate, without an unchanged replay or auto retry. High baseline/candidate
+RAF medians20.9→18.4 and22.4→18.5ms, candidate p95s23.7/24.3, render CPU
+19.8→16.9 and21.4→17.2 (14.6%/19.6% benefit). Low RAF16.7→16.7 and16.7→16.6,
+p95s18.9/20.1, CPU13.2→12.6 and12.8→12.2. All zero>50ms hitches; exact original
+2454→800/1288→461 draw totals, triangles and341/54,340/40 resources retained.
+Same-mode median repeat differences<=7.2%, paired host-busy differences<=1.7
+percentage points. Both satisfy the predeclared comparability/benefit/frame
+limits. Artifacts:`/tmp/eidolon-1-48-cell-origin-paired-0930`.
+This confirms this corrected candidate on this native desktop, not all-device
+FPS, a dungeon campaign, supported-player capacity or full148 acceptance.
+
+One declared interleaved comparison passed in46.2s (test44.5s), System Chrome
+native GPU, same11-model equipped busy scene. Artifacts:
+`/tmp/eidolon-1-48-paired-instances-0930`. Values are milliseconds; pairs share
+the same warmed browser, exact triangles and geometry/texture residency.
+
+| Quality/mode | RAF median/p95/p99 | Render CPU median | Draws | Host busy |
+| --- | --- | --- | --- | --- |
+| High baseline |21.4/26.2/28.4|20.0|2454|88.30%|
+| High candidate |17.9/25.5/28.2|16.3|800|91.45%|
+| High baseline repeat |20.7/27.1/34.4|19.5|2454|90.31%|
+| High candidate repeat |17.6/23.8/25.3|16.4|800|90.74%|
+| Low baseline |16.7/20.2/22.4|13.4|1288|88.05%|
+| Low candidate |16.7/19.0/19.8|11.9|461|87.97%|
+| Low baseline repeat |16.6/19.4/20.9|13.3|1288|87.47%|
+| Low candidate repeat |16.5/20.3/22.6|12.7|461|90.07%|
+
+All eight phases report zero>50ms hitches. High retains166327 triangles and
+341 geometries/54 textures; Low85546 and340/40. High render CPU improves18.5%
+and15.9%, meeting the predeclared10% benefit gate and actual20/33.4 frame
+target twice. Low CPU improves11.2%/4.5%; RAF is approximately display-limited,
+not a claimed FPS improvement. Same-mode RAF medians repeat within3.3%; paired
+host busy differences are at most3.15 percentage points, within the declared
+comparability limits. Nested preparation/shadow spans must not be summed.
+
+The scheduled soak remains running, without owner cancellation approval.
+These interleaved controls provide specific comparable local evidence despite
+background work, not proof of universal performance, capacity or precise causes
+of older timings. The candidate may proceed to remaining integration/scene
+coverage; it is not yet default-enabled, packaged, pushed or accepted as148.
+
+## Interleaved instance comparison — declared before measurement
+
+Use opt-in EIDOLON_RAID_INSTANCING_COMPARE=1 together with the instance probe.
+Same browser, viewport, quality, complete11-model/14-slot-equipped workload,
+four fields and four essential telegraphs. Measure baseline→candidate→baseline
+repeat→candidate repeat at each quality,180 actual RAF samples after60 warmup.
+Warm candidate programs/buffers before measuring either side. Reset the prepared
+animation/field clock and use a fixed1/60 visual step only in this comparison
+fixture, so every side presents the same frame-by-frame animation work; RAF
+timings remain measured, not synthesized. No production simulation change or
+removed detail. Disable batching in-place for the baseline, retaining warmed
+shared resources/programs. Default diagnostic behavior remains unchanged.
+
+Record host CPU totals/busy fraction, load and Linux pressure at both boundaries
+of every phase. Add optional candidate-preparation CPU attribution; nested
+renderer/shadow/composer spans are not additive. Require exact triangles and
+geometry/texture counts across modes/repeats and fewer candidate submissions.
+Native renderer guard remains mandatory. This changed comparison closes the
+unpaired-candidate measurement gap; it is not an unchanged profile replay.
+
+Before a performance conclusion, require both same-mode median repeats within
+15% and paired host busy fractions within10 percentage points. Otherwise treat
+the timings as contention-affected, not accepted. Require at least10% High
+render-CPU median improvement in both pairs, preserve High actual-frame median
+<=20ms/p95<=33.4ms for both candidate phases and the existing Low comparison
+median<=33.4ms/p95<=50ms with no>10% render-CPU regression. Report p99 and
+>50ms hitches; do not invent a passing hitch limit after observation. One bounded
+comparison, no auto retries. Timings stay recorded/manual rather than a fragile
+general CI FPS assertion. No source enables batching by default from green
+diagnostics. Own appearance/ownership and other148 gates remain independent.
+
+Current host's load has eased to15.97/16.19/18.19, CPU some pressure19.94/20.39/
+20.59, but scheduled soak109836999629/run36664933512 is verified still running.
+No cancellation approval or mutation. Interleaved controls/host samples are the
+new comparability mechanism; reject unstable evidence rather than assuming the
+machine is quiet or attributing all previous slowdowns to that soak. No result
+or performance acceptance is claimed in this pre-measurement declaration.
+
+## Opt-in render ownership integration — September30
+
+Close the candidate's previously identified integration gaps on the isolated
+actor-instance branch only. RenderSystem now owns activation, scene reset and
+disposal; normal constructors keep it disabled. Scene/entity-group child events
+register actors after model loading, remove retired actors and re-register
+streamed actors without per-frame scene discovery. Clear scene-owned instance
+buffers immediately on instance reset, preserving borrowed surfaces. Remove
+only owned hooks/listeners on disable or retirement. Retain dynamic gear,
+transparency, animation and spatial-cell compatibility checks.
+
+RenderSystem's outer frame finally restores source visibility even when a
+renderer or composer pass throws before Scene.onAfterRender. Six new integration
+cases exercise both failure paths, actual Group streaming, scene reset,
+borrowed-resource preservation, default-off/disposed guards and hook retirement.
+Five impacted suites41 checks pass2.042s; scoped lint and whitespace pass.
+
+Two changed native-Chrome cases pass10.0s with the actual RenderSystem owner
+activated before the ten equipped actors are added. Six animated poses each
+at High/Low preserve paired images, exact triangle totals, shadows and stealth;
+draw submissions remain fewer. Each quality also throws from a real floor
+onBeforeRender while original actor parts are hidden: the caught failure
+restores all original visibility and frame-stat policy, and the next render
+works. No account or economic actions. Artifacts:
+`/tmp/eidolon-1-48-integrated-instances-0930`.
+
+Read-only job109836999629/run36664933512 still in progress this turn; host
+load30.95/28.61/29.84 on16 threads, CPU some pressure44.58/44.36/44.57.
+Do not take this as a controlled FPS benchmark or precise attribution of past
+timings. Cached candidate timing stays pending comparable host conditions.
+Owner's specific soak cancellation question is unanswered; no job cancelled,
+schedule changed or unrelated process stopped. Safe release branch remains
+ca7412a0; candidate remains isolated, default-disabled, unpublished. No148
+milestone acceptance, release metadata bump, public deployment or universal
+performance claim follows from these ownership and appearance tests.
+
+## Standard actor-instance probe — pending controlled timing
+
+Isolated on work/alpha-1-48-actor-instances-probe-20260930; NOT enabled by
+default, merged to the release branch, pushed or deployed. The later opt-in
+owner integration is documented above.
+Standard InstancedMesh attributes borrow exact shared geometry/materials;
+combine compatible opaque rigid character parts inside64m spatial cells.
+Original actor visibility changes only within the synchronous render frame,
+then restores before input, gear, stealth or other game updates. Retain
+transparent/custom/skinned/morph/mirrored/unmatched normal rendering and all
+animation transforms, silhouettes, layering and shadow flags. Owned instance
+buffers are retired without disposing borrowed surfaces or replacement hooks.
+
+Initial14 unit checks pass4.348s; two native Chrome appearance cases13.8s pass
+six ten-hero pose pairs eachquality including stealth, equal triangles and
+restored visibility. High image inspected. Initial busy probe43.2s records
+High800draws166327tri341geometry54textures, Low461/85546/340/40; resources
+repeat-stable and no matrix/indirection texture increase. Yet High26.2/26.8ms
+median,44.3/42.9ms p95, Low20.4/19.2 and30.3/30.4 do not prove faster gameplay
+or meet High20/33.4. Draw reduction alone is not performance acceptance.
+
+One changed-code follow-up caches grouping rosters, refreshing on actor
+membership, material/geometry/state flags, spatial cell and gear revision.
+Forced same-signature gear refresh increments its visual revision on clear.
+Keep live visibility and unsupported-material guards and current animated
+matrices each frame. New roster unit catches nonprocedural eligibility after
+registration; fix the production guard, not its assertion. Equipment/stealth
+288checks pass in the mixed selection; corrected instance15 checks0.665s
+pass. Two cached Chrome appearance cases11.6s retain the same strict contracts.
+Scoped lint/whitespace pass. No cached timing result is claimed yet.
+
+Read-only host evidence changes the next action:16 threads, load33.24/33.07/
+29.04 and CPU pressure some avg10=40.19/avg60=51.97. Active scheduled soak
+run36664933512 exact7ee8c07b818c251800ae6eac461c39b0ceaae0db, job109836999629
+started10:03:15UTC; 100-client24h step started10:10:39. Verified server/loadtest
+working directories belong to eidolon-soak runner; observed server344% CPU,
+loadtest67.5%. Do NOT claim this proves the precise cause of previous timings.
+Defer the cached comparative timing rather than replay under known contention.
+Owner was asked to cancel only this run; no approval received or cancellation
+made. Existing authorized Luna follows this exact job read-only. Schedule and
+other processes remain unchanged. The later owner integration above closes
+frame-exception restoration and actor add/remove registration; the isolated
+candidate still needs its controlled performance gate before release.
+
+Artifacts:/tmp/eidolon-1-48-actor-instances-appearance-0930,
+/tmp/eidolon-1-48-actor-instances-busy-0930,
+/tmp/eidolon-1-48-cached-instances-appearance-0930. Safe release remainsca7412a0.
+
 ## Cached rigid local transforms — September30
 
 Keep constructor-owned rigid mesh leaves' already computed local matrices.

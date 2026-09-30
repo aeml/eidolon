@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.47.0';
+const currentVersion = '1.48.0';
+
+test('1.48.0 records measured rendering changes and preserves prior history', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.48.0"'), previous = html.indexOf('data-version="1.47.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['less work, same world', 'Equipped crowds', 'distant dungeon positions',
+        'Town and woodland', 'Cleaner loading', 'Busy combat', 'Measured, not promised',
+        'not a universal FPS or physical-phone guarantee', 'player saves are unchanged']) {
+        expect(html.slice(start, previous).includes(text)).toBe(true);
+    }
+});
 
 test('1.38.0 records party presence fixes without revoking downed kill credit', () => {
     const html = fs.readFileSync('index.html', 'utf8');
