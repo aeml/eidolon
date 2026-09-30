@@ -198,6 +198,14 @@ export class NetworkManager {
             if (this.isExpectedDisconnect || this.socket !== socket) return;
             console.error('WebSocket error:', error);
         };
+        this._captureSocketHandlers(socket, ['onmessage', 'onclose', 'onerror']);
+    }
+
+    _captureSocketHandlers(socket, names) {
+        const handlers = this._ownedSocketHandlers?.socket === socket
+            ? { ...this._ownedSocketHandlers.handlers } : {};
+        for (const name of names) handlers[name] = socket[name];
+        this._ownedSocketHandlers = { socket, handlers };
     }
 
     _decodeBinaryState(buffer) {
@@ -390,9 +398,10 @@ export class NetworkManager {
             console.warn('Reconnect socket error:', err);
             // onclose will fire next; let it drive the retry.
         };
+        this._captureSocketHandlers(newSocket, ['onopen', 'onclose', 'onerror']);
     }
 
-    dispose() {
+    dispose({ closeSocket = true } = {}) {
         this.isExpectedDisconnect = true;
         clearTimeout(this._reconnectTimer); this._reconnectTimer = null;
         this._reconnecting = false;
@@ -401,9 +410,16 @@ export class NetworkManager {
         this.onConnectionStateChange = null; this.getResumeToken = null;
         this.messageQueue.length = 0; this.latestServerTime = null;
         if (socket) {
-            socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null;
-            socket.close?.();
+            if (closeSocket) {
+                socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null;
+                socket.close?.();
+            } else if (this._ownedSocketHandlers?.socket === socket) {
+                for (const [name, handler] of Object.entries(this._ownedSocketHandlers.handlers)) {
+                    if (socket[name] === handler) socket[name] = null;
+                }
+            }
         }
+        this._ownedSocketHandlers = null;
     }
 
     // ------------------------------------------------------------------
@@ -504,12 +520,8 @@ export class NetworkManager {
     // ------------------------------------------------------------------
 
     destroy() {
-        this.isExpectedDisconnect = true;
-        clearTimeout(this._reconnectTimer);
-        if (this.socket) {
-            this.socket.onmessage = null;
-            this.socket.onclose = null;
-            this.socket.onerror = null;
-        }
+        // The authenticated socket belongs to the application and can be
+        // handed to a new engine. Detach only this manager's own handlers.
+        this.dispose({ closeSocket: false });
     }
 }

@@ -29,6 +29,7 @@ import { LootLabelPresentation } from './LootLabelPresentation.js';
 import { worldAmbienceKey } from '../audio/WorldAmbience.js';
 import { getGroundAwareDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
+import { clearEngineSceneOwnership } from './SceneOwnership.js';
 const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
@@ -89,8 +90,10 @@ class GameEngineRuntimeMethods {
     }
 
     destroy() {
+        if (this.isDestroyed) return;
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
+        this.network?.destroy?.();
         this.audioManager?.dispose?.();
         this.casino?.dispose();
         this.uiManager?.cosmeticVendor?.dispose();
@@ -116,6 +119,8 @@ class GameEngineRuntimeMethods {
         this.uiManager?.chat?.sizeObserver?.disconnect();
         this.floatingTextManager?.dispose();
         this.uiManager?.clearEnemyBars?.();
+
+        clearEngineSceneOwnership(this);
 
         if (this.renderSystem) {
             this.renderSystem.dispose();

@@ -56,6 +56,46 @@ function makeMockSocket(initialReadyState = WebSocket.OPEN) {
     return sock;
 }
 
+test('old session teardown preserves the new manager and application-owned socket handlers', () => {
+    const socket = makeMockSocket(); socket.close = jest.fn();
+    const authenticationHandler = jest.fn(); socket.onopen = authenticationHandler;
+    const old = new NetworkManager(socket); old.setupListeners();
+    const replacement = new NetworkManager(socket); replacement.setupListeners();
+    const handlers = [socket.onmessage, socket.onclose, socket.onerror];
+    old.destroy(); old.destroy();
+    expect([socket.onmessage, socket.onclose, socket.onerror]).toEqual(handlers);
+    expect(socket.onopen).toBe(authenticationHandler); expect(socket.close).not.toHaveBeenCalled();
+    socket.simulateMessage({ type: 'chat', payload: { message: 'fresh' } });
+    expect(replacement.messageQueue).toHaveLength(1); expect(old.messageQueue).toHaveLength(0);
+    replacement.destroy();
+    expect(socket.onmessage).toBeNull(); expect(socket.onclose).toBeNull(); expect(socket.onerror).toBeNull();
+    expect(socket.onopen).toBe(authenticationHandler);
+});
+
+test('session detach clears retry work and state without closing the borrowed socket', () => {
+    jest.useFakeTimers();
+    const socket = makeMockSocket(); socket.close = jest.fn();
+    const network = new NetworkManager(socket); network.setupListeners();
+    const retry = jest.fn(); network._reconnectTimer = setTimeout(retry, 1000);
+    network.messageQueue.push({ type: 'state' }); network.latestServerTime = 'old';
+    network.onResumeSuccess = jest.fn(); network.onReconnectFailed = jest.fn();
+    try {
+        network.destroy(); jest.advanceTimersByTime(2000);
+        expect(retry).not.toHaveBeenCalled(); expect(network.socket).toBeNull();
+        expect(network.messageQueue).toHaveLength(0); expect(network.latestServerTime).toBeNull();
+        expect(network.onResumeSuccess).toBeNull(); expect(network.onReconnectFailed).toBeNull();
+        expect(socket.close).not.toHaveBeenCalled();
+    } finally { jest.useRealTimers(); }
+});
+
+test('explicit disposal still closes its socket once', () => {
+    const socket = makeMockSocket(); socket.close = jest.fn();
+    const network = new NetworkManager(socket); network.setupListeners();
+    network.dispose(); network.dispose();
+    expect(socket.close).toHaveBeenCalledTimes(1);
+    expect(socket.onmessage).toBeNull(); expect(network.socket).toBeNull();
+});
+
 test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('session resume rejects a changed %s terrain profile before queuing state', profile => {
     const socket = makeMockSocket();
     const network = new NetworkManager(socket);
