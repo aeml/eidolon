@@ -13,7 +13,7 @@ import {
     PROCEDURAL_FOLIAGE_RECIPES,
     createProceduralFoliagePlacements
 } from '../art/ProceduralRealmFoliage.js';
-import { getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
+import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
 import { createEarthUnderstory } from '../art/EarthUnderstory.js';
 import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
@@ -189,12 +189,8 @@ export class WorldGenerator {
                         instance.setMatrixAt(index, TEMP_PART_MAT4);
                     });
                     instance.instanceMatrix.needsUpdate = true;
-                    instance.computeBoundingBox();
-                    // The exact aggregate box already contains all transformed
-                    // vertices. Successive sphere unions can drift far beyond
-                    // compact woodland cells and submit invisible canopies.
-                    if (recipe.renderCellSize) instance.boundingSphere = instance.boundingBox.getBoundingSphere(new THREE.Sphere());
-                    else instance.computeBoundingSphere();
+                    if (recipe.renderCellSize) computeFoliageCellBounds(instance);
+                    else { instance.computeBoundingBox(); instance.computeBoundingSphere(); }
                     group.add(instance);
                 }
             }

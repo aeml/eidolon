@@ -300,6 +300,36 @@ describe('NetworkManager — basic send / queue', () => {
         ).length).toBeLessThanOrEqual(3);
     });
 
+    test.each([5, 40])('decorative effect floods never discard danger warnings or ordered room transitions (drain %s)', limit => {
+        const nm = new NetworkManager(null);
+        const essential = [
+            { type: 'enter_instance', payload: { instanceId: 'raid-party', instanceType: 'earth_crystal_raid' } },
+            { type: 'telegraph', payload: { instanceId: 'raid-party', x: 12, z: 4, radius: 18, duration: 2 } },
+            { type: 'dungeon_room_state', payload: { currentRoomIndex: 1, rooms: [{ cleared: true }] } },
+            { type: 'telegraph', payload: { instanceId: 'raid-party', x: 20, z: 6, radius: 9, duration: 3 } },
+            { type: 'dungeon_room_state', payload: { currentRoomIndex: 2, rooms: [{ cleared: true }, { cleared: true }] } }
+        ];
+        const warnings = [];
+        essential.forEach((message, index) => {
+            nm._enqueueMessage(message);
+            if (message.type === 'telegraph') warnings.push(message);
+            for (let i = 0; i < 80; i++) {
+                nm._enqueueMessage({ type: 'damage', payload: { targetId: `enemy-${index}`, amount: i } });
+                nm._enqueueMessage({ type: 'delta', payload: { u: { player: { x: index * 80 + i } }, r: [] } });
+            }
+        });
+        const drained = [];
+        while (nm.messageQueue.length) {
+            const frame = nm.drainMessages(limit);
+            expect(frame.length).toBeLessThanOrEqual(limit);
+            expect(frame.length).toBeGreaterThan(0);
+            drained.push(...frame);
+        }
+        expect(drained.filter(message => essential.includes(message))).toEqual(essential);
+        expect(drained.filter(message => message.type === 'telegraph')).toEqual(warnings);
+        expect(drained.some(message => message.payload?.u?.player?.x === 399)).toBe(true);
+    });
+
     test('requests ordered ArrayBuffer delivery for binary state frames', () => {
         const sock = makeMockSocket();
         const nm = new NetworkManager(sock);

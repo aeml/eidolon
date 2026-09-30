@@ -1,6 +1,60 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('queued boss warnings survive cosmetic message floods at High and Low', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
+    // The presentation gallery does not need the network runtime normally.
+    // Load the same pinned script used by index.html for this receive seam.
+    await page.addScriptTag({ url: '/vendor/protobuf/protobuf.min.js' });
+    for (const quality of ['high', 'low']) {
+        const result = await page.evaluate(async quality => {
+            const THREE = await import('three');
+            const { NetworkManager } = await import('/src/core/NetworkManager.js');
+            const { GameEngine } = await import('/src/core/GameEngine.js');
+            const render = window.__eidolonAnimationGalleryController.renderSystem;
+            render.setGraphicsQuality(quality);
+            render.setZoom(15); render.setCameraTarget(new THREE.Vector3());
+            const engine = Object.assign(Object.create(GameEngine.prototype), {
+                effects: [], renderSystem: render, currentInstanceId: 'warning-review',
+                player: { position: new THREE.Vector3() }, terrainElevation: null,
+                uiManager: { getGraphicsQuality: () => quality, showCombatCallout() {} }, playAudioCue() {}
+            });
+            const network = new NetworkManager(null);
+            for (const x of [-12, 0, 12]) {
+                network._enqueueMessage({ type: 'telegraph', payload: {
+                    instanceId: 'warning-review', x, z: 0, radius: 6, duration: 2,
+                    theme: 'molten_core', label: 'FURNACE RUPTURE', silent: true
+                } });
+                for (let i = 0; i < 100; i++) {
+                    network._enqueueMessage({ type: 'damage', payload: { amount: i } });
+                    network._enqueueMessage({ type: 'delta', payload: { u: { player: { x: i } }, r: [] } });
+                }
+            }
+            while (network.messageQueue.length) for (const message of network.drainMessages(20)) {
+                if (message.type === 'telegraph') engine.handleServerMessage(message);
+            }
+            const warnings = engine.effects.map(effect => {
+                effect.update(.25);
+                const ring = effect.meshes[0];
+                return { radius: ring.userData.gameplayRadius, x: ring.position.x,
+                    duration: effect.duration, visible: ring.visible, parent: Boolean(ring.parent) };
+            });
+            render.render(); window.__queuedWarnings = engine.effects;
+            network.dispose();
+            return warnings;
+        }, quality);
+        expect(result).toEqual([-12, 0, 12].map(x => ({ radius: 6, x, duration: 2, visible: true, parent: true })));
+        await page.screenshot({ path: testInfo.outputPath(`queued-warnings-${quality}.png`) });
+        await page.evaluate(() => { window.__queuedWarnings.forEach(effect => effect.dispose()); window.__queuedWarnings = []; });
+    }
+    // Prepared receive/drain/render seam, not server damage or earned raid QA.
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 test('body-level periodic feedback remains visible beside equipped classes', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

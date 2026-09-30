@@ -1,4 +1,4 @@
-import { Matrix4 } from 'three';
+import { Matrix4, Sphere } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
@@ -6,6 +6,26 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
+
+// Constructor/quality-change work only. A rotated tree's aggregate box sphere
+// contains empty corners far beyond its actual crown. Bound the same vertices
+// by their cached source spheres too; choose the tighter conservative radius.
+// This is O(instances), not a per-frame vertex scan or a different tree LOD.
+export function computeFoliageCellBounds(mesh) {
+    mesh.computeBoundingBox();
+    mesh.boundingSphere ??= new Sphere();
+    mesh.boundingBox.getBoundingSphere(mesh.boundingSphere);
+    if (!mesh.count) return;
+    if (!mesh.geometry.boundingSphere) mesh.geometry.computeBoundingSphere();
+    const matrix = new Matrix4(), sphere = new Sphere();
+    let radius = 0;
+    for (let i = 0; i < mesh.count; i++) {
+        mesh.getMatrixAt(i, matrix);
+        sphere.copy(mesh.geometry.boundingSphere).applyMatrix4(matrix);
+        radius = Math.max(radius, sphere.center.distanceTo(mesh.boundingSphere.center) + sphere.radius);
+    }
+    mesh.boundingSphere.radius = Math.min(mesh.boundingSphere.radius, radius + .000001);
+}
 
 // Bake each static tree's same-material parts together once. Spatial instancing
 // still owns world placement/culling; previews retain their named source parts.
@@ -56,8 +76,7 @@ export function updateFoliageRenderQuality(root, quality) {
             const part = parts.get(mesh.name);
             if (!part || mesh.geometry === part.geometry) continue;
             mesh.geometry = part.geometry;
-            mesh.computeBoundingBox();
-            mesh.boundingBox.getBoundingSphere(mesh.boundingSphere);
+            computeFoliageCellBounds(mesh);
         }
         group.userData.foliageQuality = level;
     });

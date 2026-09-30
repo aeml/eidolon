@@ -11,10 +11,11 @@ const TRANSIENT_MESSAGE_TYPES = new Set([
     'ability',
     'attack',
     'damage',
-    'heal',
-    'telegraph',
-    'dungeon_room_state'
+    'heal'
 ]);
+// Telegraphs and room transitions are gameplay information, not disposable
+// decoration. Keep them in the ordered, lossless control stream alongside
+// enter_instance, so a burst of damage/attack VFX cannot erase danger or doors.
 
 export class NetworkManager {
     /**

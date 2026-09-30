@@ -166,3 +166,45 @@ their buffers/data textures, removing traversal-order dependence. Both child
 orders across instance clear and idempotent renderer teardown are now explicit
 tests. Final six suites37checks pass6.495s; scoped lint/whitespace pass. This
 changes only resource release, not any rendered profile or scene budget.
+
+## Crown bounds without changing foliage
+
+Spatial cell box spheres include empty corners around rotated crowns. Retain
+the same center and choose the smaller conservative radius from the aggregate
+box and transformed cached geometry spheres. This is constructor/quality-swap
+O(instances) work, not per-frame vertex scans, new cells, removed trees or lower
+High detail. High/Low tests inspect every transformed vertex at large coordinates
+for one/multiple rotated/scaled instances; source buffers and boxes unchanged.
+Four placement/grounding/render suites32checks pass19.546s, including391 saved
+tree colliders/escape paths and empty cells. Scoped lint/whitespace pass.
+
+High/Low real-browser static image-and-shadow equivalence passes9.8s under the
+unchanged0.1% tolerance. Hardware High9site profile43.9s still correctly fails
+trading392calls, but woodland254680→247120triangles/312→310calls now meets its
+original250k target. Grove226770→220626; junction189997→177237; turn170946→164802.
+No residency change:331geometries/59textures/68programs, stable on repeat.
+Named samples stay capped16.7median/16.7–16.8p95; well has one>50ms interval
+and trading p9933.3ms. CPU time is recorded, not presented as a measured FPS gain.
+Added the previously omitted trading-view draw breakdown to opt-in diagnostics.
+Evidence:/tmp/eidolon-1-48-crown-bounds-appearance-0930 and
+/tmp/eidolon-1-48-crown-bounds-profile-0930. Trading and runtime budgets remain.
+
+## Preserve gameplay information under network VFX load
+
+Reproduced two failing receive/drain checks: damage/attack bursts discarded both
+telegraphs and room transitions from the16-entry cosmetic tail. These messages
+are now in the existing ordered lossless control stream with enter_instance;
+current state still receives its reserved drain slot and decorative effects
+remain bounded/supersedable. No expiry clock, damage, instance or reconnect
+protocol changed. Lossless control traffic is not claimed universally bounded.
+
+Seven queue/room/warning/HUD suites116checks pass3.202s. Two constructor mocks
+were missing InputManager.subscribe after1.47; corrected fixture interfaces
+without changing gameplay assertions, also recorded in the1.47 candidate.
+One actual Chrome case passes6.1s: three queued circles survive600 interleaved
+cosmetic/state messages and retain their radius6/duration2/attached geometry
+at High and Low. Inspected Low capture. The gallery initially lacked the pinned
+protobuf script required by network imports; fixture now loads exactly the
+index.html runtime. This is prepared receive/drain/render seam evidence, not an
+earned raid, server damage or real network latency result. Evidence:
+/tmp/eidolon-1-48-warning-queue-final-0930. Scoped lint/whitespace pass.

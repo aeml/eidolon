@@ -348,7 +348,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // Capture before the later prepared combat actors are added;
                 // otherwise their shadows contaminate a town-only diagnosis.
                 if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_DIAGNOSE === '1'
-                    && ['lanternhold-common-well', 'lanternhold-service-court', 'returning-scar', 'first-grove-arch', 'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'].includes(id)) {
+                    && ['lanternhold-common-well', 'lanternhold-trading-roof', 'lanternhold-service-court', 'returning-scar', 'first-grove-arch', 'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'].includes(id)) {
                     breakdown.push({ id, draws: await page.evaluate(() => window.__populatedWorld.diagnoseDraws()) });
                 }
                 await page.screenshot({ path: testInfo.outputPath(`${id}.png`) });
