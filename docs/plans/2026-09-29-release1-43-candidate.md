@@ -110,3 +110,18 @@ representative performance/capacity gates remain open. No additional campaign
 soak, real-phone claim, save wipe, production terrain activation or beta access
 change. The candidate is ready for ordered CI publication after predecessors
 pass, not yet a live or fully accepted Q/CB release.
+
+## Publication integration update
+
+Merged current origin/master0dcb1fd3 into this prepared candidate after a fresh
+fetch. Retained all1.42 required-fixture and explicit visible-jump corrections,
+the accepted1.40/1.41 receipts, and the website agent's unchanged files. The
+single README conflict retains1.43 source identity and the newer accepted1.41
+baseline instead of rolling either back.1.42 CI36657023723 is still pending;
+this merge does not authorize publication before its public acceptance.
+
+Six changed-seam/version suites pass355 checks in2.879s. Scoped lint and
+whitespace pass, and website diff against current master is empty. The
+prepared combat gallery evidence above is unchanged and reused; no campaign
+or encounter replay is claimed. Fetch/merge again immediately before pushing,
+then require this exact candidate's own CI and public release checks.
