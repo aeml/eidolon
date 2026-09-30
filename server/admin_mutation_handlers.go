@@ -113,6 +113,10 @@ func handleAdminMutation(c *Client, msg Message) {
 					pendingFailure("Existing administration changes await recovery; no new operation admitted.")
 					return
 				}
+				if err := recoverAccountGuildBankOperationsLocked(account); err != nil {
+					pendingFailure("Existing guild bank funds await recovery; no new operation admitted.")
+					return
+				}
 				if err := recoverAccountBlackjackLocked(account); err != nil {
 					pendingFailure("Existing casino funds await recovery; no new operation admitted.")
 					return

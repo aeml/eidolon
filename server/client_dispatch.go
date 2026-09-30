@@ -56,6 +56,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
 			return
 		}
+		if err := recoverAccountGuildBankOperationsLocked(payload.Username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if c.username == "" {
 			c.username = payload.Username
 		}
@@ -125,6 +129,10 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
 			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(c.username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
 			return
 		}
 		if err := recoverAccountBlackjackLocked(c.username); err != nil {
@@ -822,6 +830,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		// Clear the disconnected flag; this also returns the live entity pointer.
 		if err := recoverAccountAdminOperationsLocked(username); err != nil {
 			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
 			return
 		}
 		if err := recoverAccountBlackjackLocked(username); err != nil {

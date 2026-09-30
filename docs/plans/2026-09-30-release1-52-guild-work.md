@@ -40,6 +40,21 @@ intents can release their own hold, and retries cannot clear a later transfer's
 reservation. An indexed recovery query also finds terminal holds left behind
 by a stop between completion and release.
 
+The settlement coordinator now reads the durable first plan, reserves the
+guild, journals the complete character effect, applies the guild effect, freezes
+the terminal outcome and releases only that operation's hold. It rejects only
+after confirming neither side changed. Unknown acknowledgements and partial
+effects remain pending; no financial rollback or compensating refund is used.
+Permanent terminal requests remain harmless after later transfers replace the
+bounded character/guild markers.
+
+Startup drains pending intents and terminal holds. Runtime recovery processes
+at most 50 identities per pass, including ambiguous insertions and lost replies,
+and stops at the first outage. An account-local cache avoids Mongo queries for
+ordinary unrelated movement. Login, join, resume, normal dispatch and admin
+actor/target admission now use that recovery gate. These are local candidate
+hooks; ordinary bank handlers still use the legacy request path.
+
 ## Scoped verification
 
 - Game escrow/application/copy race checks passed in 4.256 seconds, including
@@ -66,6 +81,20 @@ by a stop between completion and release.
 - Character recovery and affected persistence/administration checks were
   repeated after the storage changes and passed in 6.224 seconds, including
   the four disposable real-Mongo save-failure cases.
+- The two-sided real-Mongo matrix covers all ten before/after durability
+  boundaries for Gold deposits, plus character/guild acknowledgement loss for
+  the other three transfer actions. Reopening repository and filesystem journal
+  preserves full saved state, exact items, one audit and terminal replay. Further
+  cases cover unapplied rejection, partial-effect recovery, account identity and
+  old-request replay after newer transfers. The combined settlement/scheduler
+  race selection passed in 25.423 seconds, including startup discovery from an
+  empty process cache for pending character effects and terminal guild holds.
+- Scheduler race checks passed in 1.466 seconds: 73 holds drain at startup,
+  runtime stops at 50, uncertain insertion results reconcile, missing confirmed
+  records stay blocked, and busy/conflicting requests cannot block unrelated
+  accounts. Production dispatch blocks movement and administrator target grants
+  until hold release, then readmits movement. The existing affected admin,
+  protocol, login, join and resume selection passed in 18.585 seconds.
 
 The private loopback Mongo container was stopped; its disposable data was removed.
 No production accounts, economy rates or privileged infrastructure changed.
@@ -73,13 +102,13 @@ These durations describe test execution, not runtime performance or capacity.
 
 ## Required before release
 
-Wire the reservation into immutable intent lookup, both-side settlement,
-account admission/recovery, request identifiers,
-acknowledgements and UI retries. Verify failure boundaries through the normal
+Wire ordinary bank handlers into immutable intent lookup, request identifiers,
+the implemented two-sided settlement, acknowledgements and UI retries. Verify
+failure boundaries through the normal
 production handlers, without compensating writes that can silently fail.
 
 Finish the rank/permission, invitation, succession, calendar, audit and
 destructive-confirmation review. Then package the version and cumulative notes,
 fetch/merge remote changes and use ordered CI/public acceptance after 1.50 and
-1.51. Do not infer complete settlement, live rollout or beta readiness from these
-component checks.
+1.51. Component settlement and admission proof are not evidence that the legacy
+bank UI uses them, or that 1.52 is deployed or beta-ready.
