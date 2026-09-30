@@ -1,5 +1,37 @@
 # Alpha1.49 session-lifetime work
 
+## Integration with148 production-default batching — September30
+
+Merged148candidatea3edf4e7 into149 as98203fb9, resolving the single interface
+script conflict by retaining all UI-owner, engine/casino-lifetime and actor
+appearance cases. This is local preparation, not permission to publish149
+before148's own exact CI/public acceptance. Runtime currently1.48;149metadata
+and mandatory deployment gates remain separate.
+
+Nine impacted owner/network/instance/render/casino/skill suites114checks pass
+5.180s. Add native assertions specifically for newly enabled batching: player
+root remains registered through each instance/recovery, real buffers exist at
+full-venue views and their warm-repeat counts match; final owned helper releases
+all roots/buffers/group and clears the RenderSystem link. Prior resource and
+game-interface assertions remain intact. No changed rendering threshold,
+economic action, campaign rerun or new soak.
+
+Eight High/Low native cases pass50.8s, artifacts:
+`/tmp/eidolon-1-49-batched-lifetime-0930`. All warm geometry/texture values match
+the previous declared lifetime receipts. Full casino50instance batches on each
+floor and16on town return, unchanged on warm repeats. Entire92-station/232-seat
+catalog, four visible guests perfloor,30interface activations perquality and
+active50-spin queues retain their original retirement checks. Final helper/
+owned context/furniture/panel retire, while application-owned transport stays
+open. Reconnect69/28High and64/14Low remains exactly stable for all three
+recoveries. Player is chunk-tracked, scene-attached and batching-registered;
+borrowed callbacks/retry timers retire. Scoped lint/whitespace pass.
+
+This closes the changed-default integration gap without extending these local
+fixtures into proof of authenticated saves, handset FPS, driver/heap byte usage,
+casino settlement/fairness or universal leak freedom. Metadata/history, own
+mandatory exact-source CI and public source matching remain release gates.
+
 ## Full casino catalog and active-interface lifetime — September30
 
 Replace shell-only venue coverage with a bounded native-Chrome check of the

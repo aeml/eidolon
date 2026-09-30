@@ -35,7 +35,7 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
             engine.renderSystem.add(engine.player.mesh);
             engine.renderSystem.setCameraTarget(engine.player.position);
             engine.renderSystem.render();
-            const render = engine.renderSystem, context = render.renderer.getContext();
+            const render = engine.renderSystem, context = render.renderer.getContext(), instances = render.actorInstances;
             const before = { ...render.renderer.info.memory };
             const minimaps = document.querySelectorAll('#minimap-hud').length;
             engine.destroy(); engine.destroy();
@@ -46,13 +46,16 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
                 mapListenersAborted: engine.worldMap.listeners.signal.aborted,
                 playerInactive: !engine.player.isActive,
                 canvasDetached: !render.renderer.domElement.isConnected,
-                contextLost: context.isContextLost(), socketOpen: socket.readyState === WebSocket.OPEN });
+                contextLost: context.isContextLost(), socketOpen: socket.readyState === WebSocket.OPEN,
+                instancesRetired: !render.actorInstances && instances.disposed && instances.roots.size === 0 &&
+                    instances.batches.size === 0 && !instances.group.parent });
         }
         return reports;
     }, quality);
     await testInfo.attach('engine-retirement', { body: JSON.stringify(result), contentType: 'application/json' });
     console.log('[engine-retirement]', JSON.stringify(result));
     for (const report of result) {
+        expect(report.instancesRetired).toBe(true);
         expect(report.before.geometries).toBeGreaterThan(0);
         expect(report.minimaps).toBe(1); expect(report.retiredMinimaps).toBe(0); expect(report.retiredTooltips).toBe(0);
         expect(report.mapOwnerCleared).toBe(true); expect(report.mapListenersAborted).toBe(true);
@@ -94,6 +97,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
             engine.renderSystem.render();
             const hitbox = player.mesh.getObjectByName('ActorInteractionHitbox');
             return { label, ...engine.renderSystem.renderer.info.memory,
+                playerInstanceRegistered: engine.renderSystem.actorInstances.roots.has(player.mesh),
                 chunks: engine.chunkManager.chunks.size, activeActors: engine.chunkManager.getActiveEntities().length,
                 playerTracked: engine.chunkManager.chunks.get(player._chunkKey)?.has(player) === true,
                 playerAttached: player.mesh.parent === engine.renderSystem.entityGroup,
@@ -133,6 +137,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     for (const report of reports) {
         expect(report.geometries).toBeGreaterThan(0); expect(report.playerTracked).toBe(true);
         expect(report.playerAttached).toBe(true); expect(report.hiddenHitbox).toBe(true);
+        expect(report.playerInstanceRegistered).toBe(true);
         expect(report.chunks).toBe(1);
     }
     for (const label of ['town-death', 'dungeon', 'casino-public', 'casino-vip']) {
@@ -221,6 +226,7 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
                 engine.player.die(); engine.player.respawn(0, 0); engine.player.render(1);
                 engine.renderSystem.setCameraTarget(engine.player.position); engine.renderSystem.render();
                 f.reports.push({ cycle, ...engine.renderSystem.renderer.info.memory,
+                    playerInstanceRegistered: engine.renderSystem.actorInstances.roots.has(engine.player.mesh),
                     instance: engine.currentInstanceId, playerTracked: engine.chunkManager.chunks.get(engine.player._chunkKey)?.has(engine.player),
                     playerAttached: engine.player.mesh.parent === engine.renderSystem.entityGroup,
                     connected: engine.network.socket.readyState === WebSocket.OPEN && !engine.network._reconnecting,
@@ -244,7 +250,7 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
         expect(result.states).toEqual(['reconnecting', 'connected', 'reconnecting', 'connected', 'reconnecting', 'connected']);
         for (const report of result.reports) {
             expect(report.geometries).toBeGreaterThan(0); expect(report.instance).toBe(`lifetime-arena-${report.cycle + 1}`);
-            for (const key of ['playerTracked', 'playerAttached', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
+            for (const key of ['playerTracked', 'playerAttached', 'playerInstanceRegistered', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
         }
         expect(result.reports[2].geometries).toBe(result.reports[1].geometries);
         expect(result.reports[2].textures).toBe(result.reports[1].textures);

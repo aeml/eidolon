@@ -44,6 +44,8 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
             entities.forEach(entity => entity.render(1)); casino.beforeUpdate(0); casino.render(entities); render.render();
         };
         const memory = label => ({ label, ...render.renderer.info.memory,
+            instanceBatches: render.actorInstances.batches.size,
+            playerInstanceRegistered: render.actorInstances.roots.has(player.mesh),
             intervals: ownedIntervals(), seats: casino.furniture.userData.seats.length,
             furnitureRoots: render.scene.children.filter(child => child.name === 'casino-furniture').length });
         const machine = { theme: 'earth', lore: 'Orun remembers.', mechanic: 'Sticky middle-reel wilds.', freeSpins: 5,
@@ -122,9 +124,11 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
                 reports.push({ cycle, ...memory('town-return'), retiredGuests: guests.every(guest => !guest.isActive && !guest.mesh),
                     poses: casino.poses.size, cutaways: casino.cutawayActors.size, cachedVenueHidden: !casino.furniture.visible });
             }
-            const context = render.renderer.getContext(); engine.destroy();
+            const context = render.renderer.getContext(), instances = render.actorInstances; engine.destroy();
             await new Promise(resolve => requestAnimationFrame(resolve));
             final = { contextLost: context.isContextLost(), intervals: ownedIntervals(),
+                instancesRetired: !render.actorInstances && instances.disposed && instances.roots.size === 0 &&
+                    instances.batches.size === 0 && !instances.group.parent,
                 furnitureDetached: !casino.furniture.parent, panelDetached: !casino.panel.isConnected };
         } finally { engine.destroy(); }
         return { reports, games, final };
@@ -135,6 +139,8 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
     for (const report of result.reports) {
         expect(report.geometries).toBeGreaterThan(0); expect(report.intervals).toBe(0);
         expect(report.seats).toBe(232); expect(report.furnitureRoots).toBe(1);
+        expect(report.playerInstanceRegistered).toBe(true);
+        expect(report.instanceBatches).toBeGreaterThan(0);
         if (report.label === 'overview') expect(report.visibleGuests).toBe(4);
         else { expect(report.retiredGuests).toBe(true); expect(report.poses).toBe(0); expect(report.cutaways).toBe(0); expect(report.cachedVenueHidden).toBe(true); }
     }
@@ -147,7 +153,8 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
         const repeat = result.reports.find(row => row.cycle === 2 && row.label === label && row.floor === floor);
         expect(repeat.geometries, `${label}/${floor} geometry`).toBe(warm.geometries);
         expect(repeat.textures, `${label}/${floor} textures`).toBe(warm.textures);
+        expect(repeat.instanceBatches).toBe(warm.instanceBatches);
     }
-    expect(result.games).toHaveLength(30); expect(result.final).toEqual({ contextLost: true, intervals: 0, furnitureDetached: true, panelDetached: true });
+    expect(result.games).toHaveLength(30); expect(result.final).toEqual({ contextLost: true, intervals: 0, furnitureDetached: true, panelDetached: true, instancesRetired: true });
     expect(failures, failures.join('\n')).toEqual([]);
 });
