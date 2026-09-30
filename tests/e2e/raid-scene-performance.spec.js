@@ -3,6 +3,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 // A controlled rendering workload, not a network/server raid simulation.
 test('ten equipped heroes, Malachar and overlapping fields remain stable across repeated busy scenes', async ({ page, baseURL }, testInfo) => {
+    const cpuDiagnostic = process.env.EIDOLON_RAID_CPU_PROFILE === '1';
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
@@ -99,6 +100,30 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             }
         };
     });
+    if (cpuDiagnostic) await page.evaluate(() => {
+        const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
+        const counters = {}, undo = [];
+        const wrap = (owner, key, label) => {
+            const original = owner?.[key];
+            if (!original) return;
+            owner[key] = function (...args) {
+                const start = performance.now();
+                try { return original.apply(this, args); }
+                finally { counters[label] = (counters[label] || 0) + performance.now() - start; }
+            };
+            undo.push(() => { owner[key] = original; });
+        };
+        wrap(render.renderer, 'render', 'rendererTotal');
+        wrap(render.renderer.shadowMap, 'render', 'shadowPass');
+        for (const pass of render.composer?.passes || []) wrap(pass, 'render', pass.constructor.name);
+        // The newly added workload's one updater contains all eleven mixers
+        // and overlapping field updates. Other gallery work stays separate.
+        wrap(gallery.persistentEntities.at(-1), 'update', 'raidAnimationAndFields');
+        window.__raidCpuDiagnostic = {
+            take() { const snapshot = { ...counters }; for (const key of Object.keys(counters)) counters[key] = 0; return snapshot; },
+            dispose() { undo.reverse().forEach(restore => restore()); }
+        };
+    });
     const reports = [];
     try {
         for (const quality of ['high', 'low']) {
@@ -119,9 +144,10 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         const cpu = performance.now() - started;
                         const interval = previous === undefined ? 0 : started - previous;
                         previous = started;
+                        const attribution = window.__raidCpuDiagnostic?.take();
                         if (warmup-- > 0) { startupCpu.push(cpu); return; }
                         const info = render.renderer.info;
-                        samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles });
+                        samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles, attribution });
                         if (samples.length < 180) return;
                         clearTimeout(timer);
                         render.render = original;
@@ -135,7 +161,11 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                             renderCpuMedianMs: percentile('cpu', 0.5), renderCpuP95Ms: percentile('cpu', 0.95),
                             calls: percentile('calls', 0.5), triangles: percentile('triangles', 0.5),
                             geometries: info.memory.geometries, textures: info.memory.textures,
-                            renderer: extension ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER)
+                            renderer: extension ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER),
+                            ...(attribution ? { cpuAttribution: Object.fromEntries(Object.keys(attribution).map(key => {
+                                const values = samples.map(sample => sample.attribution?.[key] || 0).sort((a, b) => a - b);
+                                return [key, { medianMs: values[89], p95Ms: values[170] }];
+                            })) } : {})
                         });
                     };
                 }));
@@ -158,7 +188,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         console.log(`Raid-sized visual workload: ${JSON.stringify(reports)}`);
         await testInfo.attach('raid-sized-rendering-profile', { body: JSON.stringify(reports, null, 2), contentType: 'application/json' });
     } finally {
-        await page.evaluate(() => window.__raidScene.dispose());
+        await page.evaluate(() => { window.__raidCpuDiagnostic?.dispose(); window.__raidScene.dispose(); });
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });

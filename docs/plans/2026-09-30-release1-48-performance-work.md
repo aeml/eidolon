@@ -1,5 +1,51 @@
 # Alpha1.48 — client performance work
 
+## Shadow probe outcome — September30
+
+Rigid shadow-caster experiment archived locally on
+work/alpha-1-48-shadow-casters-probe-20260930 at360d612b, not merged, pushed
+or deployed. Its46 focused and394 equipment/loader/preview checks pass;
+eight Chrome cases45.9s retain21 equipped poses each quality, equal triangles,
+exact stealth and visually intact Fighter shadow. High maxmean0.000342857/
+maxchanged0.000003175, Low0.000439683/0.000006349. Functional/image correctness
+does not override measured gameplay performance.
+
+One changed-code busy workload51.8s keeps resource counts stable across repeat
+but High busy/repeat38.2/30.2ms median,66.9/42.8ms p95 and Low24.7/23.2ms,
+36.2/36.4ms do not improve the safe implementation. Initial High overlaps the
+unit command, so no precise initial slowdown attribution. Later phases also
+miss improvement. High1725 draws/166327 triangles/524 geometry/54 textures;
+Low1423/85546/523/40. Three0.181.2 does not early-return for zero drawCount;
+shadow-only proxies add135 Low colour submissions/program setups despite
+zero visible vertices. Do not ship the resource increase or weaken20/33.4ms
+and4096 High settings. Safe72fc0db2 source restored, no unchanged replay.
+Evidence:/tmp/eidolon-1-48-shadow-appearance-0930,
+/tmp/eidolon-1-48-shadow-busy-0930. Full probe reasoning remains archived.
+
+## Busy render attribution — September30
+
+A new opt-in `EIDOLON_RAID_CPU_PROFILE=1` records renderer/shadow/composer
+pass CPU spans and the eleven-actor animation/field updater. It changes no
+model, visibility, target, rendering setting or resource assertion. One
+bounded native-Chrome diagnostic passes39.2s on RADV RENOIR. High busy/repeat
+frame medians24.0/26.1ms, p9535.5/45.5ms still miss20/33.4; unchanged2454
+draws/166327 triangles and341/54 geometry/textures. Render CPU22.2/24.2ms,
+shadow span7.0/7.7ms, bloom0.3ms and raid animation/fields0.2ms median.
+Low busy/repeat19.3/18.3ms, p9530.8/27.4,1288 draws/85546 triangles and340/40
+resources. Overlapping spans are attribution, not additive independent costs
+or a precise driver diagnosis. Initial sample included warmup counters;
+median/p95 exclude that single outlier, and final instrumentation drains
+counters on every warmup frame as well. No claim of improved code timing.
+Evidence:/tmp/eidolon-1-48-busy-cpu-attribution-0930.
+
+Tested changed-code approach (rejected above): ordinary geometry batches for compatible rigid
+opaque shadow casters beneath authored animation barriers. Preserve visible
+rendering, alpha-tested/translucent/custom-depth exclusions, animation pivots,
+shadow silhouettes and source-resource ownership. Do not downgrade4096 High
+shadows, remove equipment or reenable rejected GPU matrix/surface-color
+experiments. Validate functional and image/shadow equivalence before a single
+changed-code busy measurement; this is not full1.48 acceptance.
+
 ## Rejected additional cross-surface extension
 
 Keep the plain6faff8d1 pivot implementation. Its additional nested-mesh/
