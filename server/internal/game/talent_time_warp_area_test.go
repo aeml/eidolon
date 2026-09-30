@@ -98,8 +98,9 @@ func TestTimeWarpAreaPreservesZoneSetAndRelationships(t *testing.T) {
 				}
 				w.AddEntity(ally)
 			}
-			w.PvP.Matches["warp-pvp"] = &PvPMatch{ID: "warp-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
-			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = "warp-pvp", "warp-pvp"
+			// Active opponents must occupy the match's authoritative scene.
+			w.PvP.Matches[p.InstanceID] = &PvPMatch{ID: p.InstanceID, Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
+			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = p.InstanceID, p.InstanceID
 			if !w.PerformAbility(p.ID, p.X, p.Z, "", "Time Warp").Accepted {
 				t.Fatal("warp rejected")
 			}

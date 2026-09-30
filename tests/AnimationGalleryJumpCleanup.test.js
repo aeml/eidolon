@@ -28,6 +28,7 @@ describe('gallery jump preview lifecycle', () => {
     test.each(['presentEquipment', 'presentEquipmentLoadout'])('%s clears old effects and jump state before showing gear', method => {
         const value = gallery();
         value.actor.mesh.userData.proceduralHumanoid = true;
+        value.actor.mesh.userData.equipmentAnchors = { weapon: ['hand_r'] };
         value.actor.syncEquipmentVisuals = jest.fn();
         value.equipmentSelect = { value: '' };
         value.playActorState('Jump'); value.update(.4);

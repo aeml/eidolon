@@ -36,7 +36,7 @@ test('environment-owned fence never requests a legacy mesh; remote-only fences s
         expect(loader).not.toHaveBeenCalled();
         const outer = new Fence('realm', 1000, 112, Math.PI / 2);
         await Promise.resolve();
-        expect(loader).toHaveBeenCalledWith('Fence');
+        expect(loader).toHaveBeenCalledWith('Fence', { quality: undefined });
         expect(outer.mesh).not.toBeNull();
     } finally { loader.mockRestore(); }
 });

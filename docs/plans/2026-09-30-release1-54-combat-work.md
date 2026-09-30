@@ -91,7 +91,17 @@ and ordinary-outfit Fighter gallery routes also passed. Cloth and equipment
 remain baseline code-owned forms, not final modern-art approval.
 The source upload and adapter have not replaced the live procedural hero.
 
-Package 1.54 metadata and cumulative notes after integration; fetch/merge remote changes
-immediately before a normal push. Luna monitors deployment, root independently
+The first candidate's CI found outdated fixtures in the broader suites. The
+scene-entry test now responds with the issued challenge ID, and six ability
+fixtures place their synthetic matches in the actors' actual scenes. Production
+consent and scene-isolation checks are unchanged. The friend-toast test uses the
+real pure asset manifest, the equipment-gallery fixture exposes its attachment
+contract, and the fence test checks the new quality argument. All original
+behavioral assertions remain. The corrected selection passed with the Go race
+detector (server 3.167s, game 3.737s) and 27 JS checks across three suites in
+4.475s; changed-scope lint passed. Full CI and public acceptance remain pending.
+
+The 1.54 metadata and cumulative notes are packaged. Fetch/merge remote changes
+immediately before every normal push. Luna monitors deployment, root independently
 accepts exact public identity and changed assets. Preserve accounts, open-alpha
 access and the user's existing PvP/economy policies.

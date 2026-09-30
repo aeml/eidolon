@@ -102,8 +102,9 @@ func TestPurifyingWaveProtectsHostilesDeadActorsAndOtherInstances(t *testing.T) 
 	opponent := newTestPlayer("wave-opponent", "Rogue")
 	opponent.InstanceID, opponent.Bleeding = p.InstanceID, true
 	w.AddEntity(opponent)
-	w.PvP.Matches["wave-pvp"] = &PvPMatch{ID: "wave-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{opponent.ID}}
-	w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer[opponent.ID] = "wave-pvp", "wave-pvp"
+	// Active opponents must occupy the match's authoritative scene.
+	w.PvP.Matches[p.InstanceID] = &PvPMatch{ID: p.InstanceID, Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{opponent.ID}}
+	w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer[opponent.ID] = p.InstanceID, p.InstanceID
 	if !w.PerformAbility(p.ID, 0, 0, "", "Purifying Wave").Accepted {
 		t.Fatal("cast rejected")
 	}

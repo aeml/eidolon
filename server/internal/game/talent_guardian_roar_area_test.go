@@ -129,8 +129,9 @@ func TestGuardianRoarTrainedAreaRetainsWallsAndRelationships(t *testing.T) {
 				}
 				w.AddEntity(ally)
 			}
-			w.PvP.Matches["roar-pvp"] = &PvPMatch{ID: "roar-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
-			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = "roar-pvp", "roar-pvp"
+			// Active opponents must occupy the match's authoritative scene.
+			w.PvP.Matches[p.InstanceID] = &PvPMatch{ID: p.InstanceID, Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
+			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = p.InstanceID, p.InstanceID
 			if !w.PerformAbility(p.ID, p.X, p.Z, "", "Guardian Roar").Accepted {
 				t.Fatal("roar rejected")
 			}

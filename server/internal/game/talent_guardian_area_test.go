@@ -102,8 +102,9 @@ func TestGuardianEmbraceTickProtectsHostilesDeadAndOtherInstances(t *testing.T) 
 		e.Type, e.State, e.InstanceID, e.X, e.Health = tc.kind, tc.state, tc.instance, 12.2, 100
 		w.AddEntity(e)
 	}
-	w.PvP.Matches["guardian-pvp"] = &PvPMatch{ID: "guardian-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
-	w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = "guardian-pvp", "guardian-pvp"
+	// Active opponents must occupy the match's authoritative scene.
+	w.PvP.Matches[p.InstanceID] = &PvPMatch{ID: p.InstanceID, Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
+	w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = p.InstanceID, p.InstanceID
 	if !w.PerformAbility(p.ID, 0, 0, "", "Guardian Embrace").Accepted {
 		t.Fatal("cast rejected")
 	}

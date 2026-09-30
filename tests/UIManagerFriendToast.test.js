@@ -23,11 +23,7 @@ jest.unstable_mockModule('../src/assets/AssetCacheManager.js', () => ({
     AssetCacheManager: class { constructor() {} },
 }));
 
-jest.unstable_mockModule('../src/assets/assetManifest.js', () => ({
-    DEFAULT_ASSET_VERSION: '1',
-    getAssetPackEstimateMb: () => 0,
-    getRecommendedAssetPackNames: () => [],
-}));
+// Keep the real pure asset manifest: preview loaders use its resolver too.
 
 // Dungeon progression is a pure data/helper module. Use its real exports so
 // transitive UI imports cannot become incompatible with a partial mock.

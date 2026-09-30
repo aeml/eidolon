@@ -103,8 +103,9 @@ func TestClericImmediateAreasPreserveRelationshipsAndImmunity(t *testing.T) {
 				}
 				w.AddEntity(e)
 			}
-			w.PvP.Matches["area-pvp"] = &PvPMatch{ID: "area-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
-			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = "area-pvp", "area-pvp"
+			// Active opponents must occupy the match's authoritative scene.
+			w.PvP.Matches[p.InstanceID] = &PvPMatch{ID: p.InstanceID, Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
+			w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = p.InstanceID, p.InstanceID
 			if !w.PerformAbility(p.ID, 0, 0, "", skill).Accepted {
 				t.Fatal("cast rejected")
 			}

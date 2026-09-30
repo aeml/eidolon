@@ -28,10 +28,11 @@ func TestDuelSceneEntryAndReturnUseAuthoritativePositions(t *testing.T) {
 		player.X, player.Z = 10+float64(i)*2, 205
 		world.AddEntity(player)
 	}
-	if _, err := world.RequestDuel(first.playerID, second.playerID); err != nil {
+	challenge, err := world.RequestDuel(first.playerID, second.playerID)
+	if err != nil {
 		t.Fatal(err)
 	}
-	payload, _ := json.Marshal(map[string]interface{}{"requesterId": first.playerID, "accept": true})
+	payload, _ := json.Marshal(DuelRespondPayload{RequesterID: first.playerID, ChallengeID: challenge.ID, Accept: true})
 	handleMsgDuelRespond(second, Message{Payload: payload})
 	for _, client := range []*Client{first, second} {
 		assertPvPScene(t, client, "pvp_arena")
