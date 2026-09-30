@@ -305,7 +305,8 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 const profiles = [];
                 const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
-                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'lanternhold-trading-roof', 'foresters-yard', 'returning-scar', 'first-grove-arch'];
+                        ['lanternhold-common-well', 'lanternhold-menders-yard', 'lanternhold-trading-roof', 'foresters-yard', 'returning-scar', 'first-grove-arch',
+                            'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'];
                 for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;
@@ -317,7 +318,9 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                         previous = now;
                     }
                     const percentile = (values, p) => values.sort((a, b) => a - b)[Math.floor((values.length - 1) * p)];
-                    profiles.push({ id, median: percentile(frameTimes, .5), p95: percentile(frameTimes, .95),
+                    profiles.push({ id, samples: frameTimes.length, median: percentile(frameTimes, .5), p95: percentile(frameTimes, .95),
+                        p99: percentile(frameTimes, .99), hitchesOver50ms: frameTimes.filter(ms => ms > 50).length,
+                        cpuMedian: percentile(cpuTimes, .5),
                         cpuP95: percentile(cpuTimes, .95), calls: render.renderer.info.render.calls,
                         triangles: render.renderer.info.render.triangles });
                 }
@@ -345,7 +348,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // Capture before the later prepared combat actors are added;
                 // otherwise their shadows contaminate a town-only diagnosis.
                 if (elemental === 'earth' && process.env.EIDOLON_E2E_POPULATION_DIAGNOSE === '1'
-                    && ['lanternhold-common-well', 'lanternhold-service-court', 'returning-scar', 'first-grove-arch'].includes(id)) {
+                    && ['lanternhold-common-well', 'lanternhold-service-court', 'returning-scar', 'first-grove-arch', 'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'].includes(id)) {
                     breakdown.push({ id, draws: await page.evaluate(() => window.__populatedWorld.diagnoseDraws()) });
                 }
                 await page.screenshot({ path: testInfo.outputPath(`${id}.png`) });
