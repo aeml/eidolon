@@ -12,18 +12,56 @@ test('planted street edges keep matching High/Low solids and bounded owned batch
     for (const group of [high, low]) {
         const meshes = [];
         group.traverse(part => { if (part.isMesh) meshes.push(part); expect(part.isLight).not.toBe(true); });
-        expect(meshes).toHaveLength(12);
+        expect(meshes).toHaveLength(6);
+        expect(meshes.every(mesh => mesh.isBatchedMesh && mesh.perObjectFrustumCulled)).toBe(true);
         expect(meshes.every(mesh => mesh.geometry.attributes.position.array.every(Number.isFinite))).toBe(true);
         const bounds = new THREE.Box3().setFromObject(group);
         expect(bounds.min.y).toBeGreaterThanOrEqual(-1e-6);
         expect(bounds.max.y).toBeLessThan(6);
         for (const side of [-1, 1]) {
-            const leafBounds = new THREE.Box3().setFromObject(group.getObjectByName(`street-rest-edge:${side}:leaves`));
+            const leaves = group.getObjectByName('street-rest-edges:leaves');
+            const cell = leaves.userData.streetCells.find(cell => cell.name === `street-rest-edge:${side}:leaves`);
+            const leafBounds = leaves.getBoundingBoxAt(cell.geometryId, new THREE.Box3())
+                .applyMatrix4(leaves.getMatrixAt(cell.instanceId, new THREE.Matrix4()));
             expect(leafBounds.min.x).toBeGreaterThan(side * 19 - 1.1);
             expect(leafBounds.max.x).toBeLessThan(side * 19 + 1.1);
         }
         RenderSystem.prototype.disposeObjectResources.call({}, group);
     }
+});
+
+test.each(['high', 'low'])('%s street cells retain source geometry, transforms, materials and shadow flags', quality => {
+    const options = { quality, cx: 37, cz: -40 };
+    const source = createLanternholdStreetFurniture({ ...options, multiDraw: false });
+    const batched = createLanternholdStreetFurniture(options);
+    source.updateMatrixWorld(true); batched.updateMatrixWorld(true);
+    let cells = 0, error = 0;
+    for (const mesh of batched.children.filter(child => child.isBatchedMesh)) {
+        expect(mesh.sortObjects).toBe(false); expect(mesh.perObjectFrustumCulled).toBe(true);
+        for (const cell of mesh.userData.streetCells) {
+            cells++;
+            const original = source.getObjectByName(cell.name), geometry = original.geometry;
+            const matrix = mesh.getMatrixAt(cell.instanceId, new THREE.Matrix4());
+            // Instance matrices use the renderer's Float32 texture storage.
+            for (let i = 0; i < 16; i++) expect(Math.abs(matrix.elements[i] - original.matrixWorld.elements[i])).toBeLessThan(1e-7);
+            expect(mesh.castShadow).toBe(original.castShadow); expect(mesh.receiveShadow).toBe(original.receiveShadow);
+            expect(mesh.material.toJSON()).toEqual({ ...original.material.toJSON(), uuid: mesh.material.uuid });
+            const range = mesh.getGeometryRangeAt(cell.geometryId, {});
+            expect(range.vertexCount).toBe(geometry.attributes.position.count);
+            for (const [name, attribute] of Object.entries(geometry.attributes)) {
+                const actual = mesh.geometry.attributes[name];
+                for (let i = 0; i < attribute.array.length; i++) {
+                    error = Math.max(error, Math.abs(actual.array[range.vertexStart * attribute.itemSize + i] - attribute.array[i]));
+                }
+            }
+            const bounds = mesh.getBoundingBoxAt(cell.geometryId, new THREE.Box3());
+            geometry.computeBoundingBox(); expect(bounds.equals(geometry.boundingBox)).toBe(true);
+        }
+    }
+    expect(cells).toBe(12); expect(error).toBe(0);
+    expect(batched.userData.walkFootprints).toEqual(source.userData.walkFootprints);
+    RenderSystem.prototype.disposeObjectResources.call({}, source);
+    RenderSystem.prototype.disposeObjectResources.call({}, batched);
 });
 
 test('production town attaches solid furniture while preserving central service approaches', async () => {

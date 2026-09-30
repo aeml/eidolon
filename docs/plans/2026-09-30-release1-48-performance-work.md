@@ -1,5 +1,46 @@
 # Alpha1.48 — client performance work
 
+## Planted street edges — September30
+
+Submit the existing two static street-rest cells together per material with
+Three's BatchedMesh, retaining independent camera/shadow culling, exact source
+geometry and placement, procedural surface shaders and all four collision
+footprints. No actor animation, equipment, interaction or gameplay changes.
+Ordinary per-cell submissions remain the actual extension-free fallback;
+do not substitute a broad merged bound that draws an off-camera planter.
+
+Two geometry/layout and four render-resource checks plus the two expanded
+street equivalence checks pass8checks14.574s; lint/whitespace pass. Instance
+matrix assertions account for actual Float32 storage, not bit equality with
+the source's double-precision sin(pi). Two System Chrome comparisons with
+native extensions and the extension explicitly absent pass13.9s. Three views
+(both edges and each close edge), including sun shadows, retain zero changed
+pixels and identical triangle counts. Native both-edge color+shadow draws
+25→13, close-edge19→13; fallback retains25/19. Initial raw renderer counters
+reset before color, so final comparison explicitly resets once before rendering
+and includes both shadow and color passes. Twelve batch-owned textures release;
+zero geometry remains after scene cleanup. Inspectable images/metrics:
+/tmp/eidolon-1-48-street-cell-render-counted-0930 (earlier images inspected in
+/tmp/eidolon-1-48-street-cell-render-final-0930).
+
+One bounded nine-site High profile59.5s records trading374→367calls and
+menders278→272, with unchanged triangles at every site. Geometries321→315;
+the matrix/indirection buffers add12 small textures (59→71), shader programs
+68→71; all315/71/71 remain stable across revisiting. This is a submission/
+resource tradeoff, not free memory savings or a universal throughput claim.
+Source-vs-batch controlled pixels are equal; the full trading PNG is not
+byte-identical to the prior capture, so no whole-scene byte-equivalence claim.
+
+Performance remains FAILED. Trading367>350. First assertion again sees
+33.400000000001455ms p95 above33.4; junction also has a genuine66.6ms p95,
+83.3ms p99 and8>50ms hitches. Medians remain16.7ms. A short render comparison
+overlapped this profile and live CI was active; these timings are not a clean
+comparative FPS experiment, and contention is not proven as the cause of the
+junction miss. No threshold relaxation, automatic downgrade or repeated soak.
+Evidence:/tmp/eidolon-1-48-street-cell-profile-0930. Next work must address the
+remaining measured submissions/hitches and broader shader/startup/device scope.
+Runtime still1.47; no1.48 release/acceptance claim.
+
 ## Retire hidden town-casino interior — September30
 
 Production town casino already uses a clicked door and separate shared scene,

@@ -6,7 +6,7 @@ import { createEarthGroundCoverTuft } from './EarthGroundCover.js';
 // Two planted rest edges frame the southern service court without filling its
 // centre or changing service locations. Solids are exported to the ordinary
 // client collider builder and generated server landing geometry together.
-export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz = 200 } = {}) {
+export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz = 200, multiDraw = true } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold planted street edges';
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x696658, roughness: .93 }), 'stone'),
@@ -16,7 +16,7 @@ export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz 
         leaves: new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, roughness: .96 }),
         amber: new THREE.MeshStandardMaterial({ color: 0xd9ad61, emissive: 0xd79b41, emissiveIntensity: .7, roughness: .55 })
     };
-    const footprints = [];
+    const footprints = [], cells = new Map();
     for (const side of [-1, 1]) {
         const root = new THREE.Group(); root.name = `street-rest-edge:${side}`;
         root.position.set(cx + side * 19, 0, cz + 6.5);
@@ -74,15 +74,37 @@ export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz 
         cylinder('iron', 0, 5.82, lampZ, .02, .09, .28);
         for (const [key, geometries] of batches) {
             const geometry = mergeGeometries(geometries, false); geometries.forEach(value => value.dispose());
-            const mesh = new THREE.Mesh(geometry, materials[key]); mesh.name = `${root.name}:${key}`;
-            mesh.castShadow = !['amber', 'earth'].includes(key); mesh.receiveShadow = true;
-            root.add(mesh);
+            if (multiDraw) {
+                if (!cells.has(key)) cells.set(key, []);
+                root.updateMatrix();
+                cells.get(key).push({ geometry, matrix: root.matrix.clone(), name: `${root.name}:${key}` });
+            } else {
+                const mesh = new THREE.Mesh(geometry, materials[key]); mesh.name = `${root.name}:${key}`;
+                mesh.castShadow = !['amber', 'earth'].includes(key); mesh.receiveShadow = true;
+                root.add(mesh);
+            }
         }
         // Planter includes the lamp; bench is separate, so no invisible solid
         // rectangle spans the whole assembly or neighbouring walking routes.
         footprints.push({ x: root.position.x, y: 3, z: root.position.z, width: 1.8, height: 6, depth: 6.4 },
             { x: root.position.x - side * 1.38, y: .85, z: root.position.z, width: .9, height: 1.7, depth: 3.55 });
         group.add(root);
+    }
+    // Keep both original spatial cells rather than merging a broad town-sized
+    // bound. The renderer independently culls each cell for camera and shadows,
+    // with ordinary per-cell submissions when multi-draw is unavailable.
+    for (const [key, entries] of cells) {
+        const vertices = entries.reduce((sum, cell) => sum + cell.geometry.attributes.position.count, 0);
+        const mesh = new THREE.BatchedMesh(entries.length, vertices, 0, materials[key]);
+        mesh.name = `street-rest-edges:${key}`; mesh.sortObjects = false;
+        mesh.userData.streetCells = entries.map(cell => {
+            const geometryId = mesh.addGeometry(cell.geometry), instanceId = mesh.addInstance(geometryId);
+            mesh.setMatrixAt(instanceId, cell.matrix); cell.geometry.dispose();
+            return { geometryId, instanceId, name: cell.name };
+        });
+        mesh.computeBoundingBox(); mesh.computeBoundingSphere();
+        mesh.castShadow = !['amber', 'earth'].includes(key); mesh.receiveShadow = true;
+        group.add(mesh);
     }
     group.userData.walkFootprints = footprints;
     return group;
