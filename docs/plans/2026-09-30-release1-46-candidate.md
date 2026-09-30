@@ -31,6 +31,30 @@ required after ordered1.45 acceptance; candidate not pushed or accepted.
 
 ## Changes
 
+### Phone resize correction after candidate CI
+
+The first candidate d84bfabb failed the unchanged required phone-camera case
+in CI36682165953, Browser Smoke1/3 job109779799980. Local System Chrome
+reproduced a real regression: after390x844 shrank to360x800, the canvas's
+inline390px width caused native shrink-to-fit, leaving innerWidth390 and
+visualViewport.scale0.9230769. This was not an early projection assertion.
+
+The world canvas now uses percentage CSS dimensions; renderer.setSize updates
+only its drawing buffer. Browser zoom remains permitted. The original five
+portrait/landscape camera, silhouette and warning-edge checks remain unchanged;
+new assertions also require the canvas and layout to follow the screen without
+unrequested browser scaling. One System Chrome case passes12.6s, evidence
+/tmp/eidolon-1-46-camera-fit-0930. Five desktop/phone keyboard/account and
+canvas/menu pinch cases pass32.0s, /tmp/eidolon-1-46-canvas-input-0930.
+This is browser evidence, not owner physical-phone performance approval.
+
+An initial unit command included a nonexistent GraphicsQuality.test.js path;
+its18 passing camera checks did not make that command successful. The corrected
+explicit graphics-resource/scene-group/camera selection is recorded below.
+The corrected three-suite run passes31checks1.691s; scoped ESLint and
+git diff --check pass. Own corrected-head CI and public deployment verification
+are still required; this receipt does not claim1.46 is live.
+
 -18 keyboard actions are individually remappable or unbound: camera panning/
   lock, nearby inspection, character/bag/journal/recall/map/social/skills/
   abilities and four hotbar slots. Preferences are device-local, applied to

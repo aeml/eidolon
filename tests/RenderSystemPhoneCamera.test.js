@@ -48,6 +48,22 @@ describe('phone camera composition', () => {
     beforeEach(() => localStorage.clear());
     afterEach(() => { viewport(1024, 768); document.body.innerHTML = ''; });
 
+    test('canvas follows the viewport without resize reintroducing fixed CSS dimensions', () => {
+        viewport(390, 844);
+        const render = new RenderSystem(true);
+        try {
+            const canvas = render.renderer.domElement;
+            expect(canvas.style.width).toBe('100%');
+            expect(canvas.style.height).toBe('100%');
+            const resize = jest.spyOn(render.renderer, 'setSize');
+            viewport(360, 800);
+            render.onWindowResize();
+            expect(resize).toHaveBeenLastCalledWith(360, 800, false);
+            expect(canvas.style.width).toBe('100%');
+            expect(canvas.style.height).toBe('100%');
+        } finally { render.dispose(); }
+    });
+
     test('observes layout changes and releases both layout and viewport listeners on disposal', () => {
         viewport(390, 844);
         document.body.innerHTML = '<div id="phone-encounter-region"></div>';
