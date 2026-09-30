@@ -38,6 +38,8 @@ Same RADV RENOIR desktop host, not phone hardware. Evidence:
 The current accepted1.45,146 camera correction and prepared147 have been
 merged into this branch (3093caee), preserving startup preparation and native
 browser zoom. Runtime remains1.47 pending ordered predecessor acceptance.
+Follow-up explicit loader/moving-cast/hit-reaction suites142checks4.005s pass;
+the pooled-model cleanup retains the existing animation/reaction seams.
 
 ## Rejected animated multi-draw approach — September30
 
