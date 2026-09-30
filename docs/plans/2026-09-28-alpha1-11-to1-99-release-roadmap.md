@@ -233,6 +233,11 @@ even if their comprehensive review is scheduled in a later band.
 | 1.49 | Session/resource lifetime: repeated zone changes, equipment changes, dungeon exits, casino floors, death and reconnect; stalls and leak recovery. | Bounded memory/resource trends on supported profiles; fix confirmed leaks, retain diagnostics and avoid indefinite soak polling. |
 | 1.50 | Integrated presentation candidate: town → overworld → group encounter → social/casino, with coherent settings and transitions. | **Q** checklist; review changed integration seams, reuse accepted scene reviews and publish remaining limitations. |
 
+The [1.50 presentation review](2026-09-30-release1-50-presentation-review.md)
+records local integration evidence, retained scene/performance/lifetime checks
+and remaining art/device limitations. It is not live acceptance, final modern
+art approval or a closed-beta transition. Keep those distinctions when closing Q.
+
 ### 1.51–1.60 — community, competition and long-term play
 
 | Version | Delivery scope | Exit evidence / dependency |

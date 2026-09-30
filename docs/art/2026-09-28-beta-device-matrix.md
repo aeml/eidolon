@@ -1,8 +1,10 @@
-# Alpha 1.18 device and rendering acceptance
+# Eidolon device and rendering evidence
 
-Local work in progress, not release or closed-beta approval. The owner has not
-selected a formal supported hardware/OS list. Keep that decision explicit at
-1.19; do not convert browser emulation into a real-phone certification.
+The 1.18 measurements below are historical workload evidence, not closed-beta
+approval or a current universal support promise. The owner has not selected a
+formal supported hardware/OS list. Do not convert browser emulation into a
+real-phone certification. Later qualified performance and lifetime results are
+linked from the [1.50 integration review](../plans/2026-09-30-release1-50-presentation-review.md).
 
 ## Evidence matrix
 

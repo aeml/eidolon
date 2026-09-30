@@ -4,6 +4,12 @@ Audit date: September 3, 2026
 
 Cutover release: `Alpha 0.41.0.33`
 
+Historical migration evidence, not current modern-art approval. The September
+28 [modern ARPG visual contract](2026-09-28-modern-arpg-closed-beta.md) supersedes
+the faceted finish as the final quality target. See the
+[Alpha 1.50 presentation review](../plans/2026-09-30-release1-50-presentation-review.md)
+for current integration evidence and remaining limitations.
+
 This is the closure ledger for the procedural redesign defined in `goal.md`. It records the production scope, the evidence that guards it, and the release conditions that must all pass on the same Git commit. A future content addition is incomplete until it extends the relevant manifest and passes the same gates.
 
 ## Final production scope
@@ -21,7 +27,7 @@ This is the closure ledger for the procedural redesign defined in `goal.md`. It 
 
 ## Art and readability contract
 
-`DARK_FANTASY_ART_BIBLE.md` is the visual source of truth. The final runtime uses one restrained faceted language while keeping regional identity explicit:
+`DARK_FANTASY_ART_BIBLE.md` is the visual source of truth. At this historical cutover, the runtime used one restrained faceted language while keeping regional identity explicit:
 
 - Gloamwood: grave-loam, root scars, cairns, moss, sickly gravewind, ossuary silhouettes.
 - Lanternhold: vigil cobbles, oath-iron, amber lanterns, reliquaries, readable service symbols and safe paths.

@@ -90,17 +90,19 @@ export class PhonePartyUI {
             present.add(member.id);
             let row = this.rows.get(member.id);
             if (!row) {
-                row = {root:node('article','','phone-party-member'),name:node('h3'),health:node('p'),role:node('p')};
+                row = {root:node('article','','phone-party-member'),name:node('h3'),health:node('p'),role:node('p'),
+                    combatRole:node('span','','party-member-role')};
                 row.select = this.button('Select ally',() => { this.selectedId = member.id;this.update(this.social.partyData);this.close(); });
                 row.select.dataset.partyTarget = member.id;
                 row.promote = this.button('Make leader',() => this.social.onPartyPromote?.(member.id));
                 row.kick = this.button('Remove from party',() => this.social.onPartyKick?.(member.id));
-                row.root.append(row.name,row.health,row.role,row.select,row.promote,row.kick);
+                row.root.append(row.name,row.health,row.role,row.combatRole,row.select,row.promote,row.kick);
                 this.rows.set(member.id,row);this.memberList.append(row.root);
             }
             text(row.name,member.name || 'Adventurer');
             text(row.health,`${Math.max(0,Number(member.hp)||0)} / ${Math.max(0,Number(member.maxHp)||0)} HP`);
             text(row.role,`${member.class || member.subType || 'Adventurer'} · Level ${member.level || 1}${member.ready ? ' · Ready' : ''}`);
+            text(row.combatRole,`${member.role || 'damage'}${member.id === data.leaderId ? ' • Leader' : member.id === myId ? ' • You' : ''}`);
             row.select.disabled = Number(member.hp) <= 0;
             row.select.setAttribute('aria-label',`Select ${member.name} for healing`);
             row.select.setAttribute('aria-pressed',String(this.selectedId === member.id));

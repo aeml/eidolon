@@ -26,6 +26,16 @@ test('party snapshots never automatically open a roster over the world',()=>{
     ui.launcher.click();expect(ui.root.hidden).toBe(false);
     expect(social.ctx.closePrimaryHudMenus).toHaveBeenCalledTimes(1);
 });
+test('authoritative combat roles remain visible without guessing roles from class',()=>{
+    social.partyData.members[0].role='healer';social.partyData.members[1].role='tank';ui.update(social.partyData);
+    expect(ui.rows.get('self').combatRole.textContent).toBe('healer • Leader');
+    const allyRole=ui.rows.get('ally').combatRole;
+    expect(allyRole.textContent).toBe('tank');
+    social.partyData.members[1].role='damage';ui.update(social.partyData);
+    expect(ui.rows.get('ally').combatRole).toBe(allyRole);expect(allyRole.textContent).toBe('damage');
+    delete social.partyData.members[0].role;ui.update(social.partyData);
+    expect(ui.rows.get('self').combatRole.textContent).toBe('damage • Leader');
+});
 test('health updates retain focused target buttons and scroll position',()=>{
     ui.open();const select=ui.rows.get('ally').select;select.focus();ui.body.scrollTop=180;
     social.partyData.members[1].hp=50;ui.update(social.partyData);
