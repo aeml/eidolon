@@ -1,5 +1,20 @@
 # Alpha1.48 — client performance work
 
+## Rejected additional cross-surface extension
+
+Keep the plain6faff8d1 pivot implementation. Its additional nested-mesh/
+cross-surface color folding experiment preserves all21pose pairs eachquality,
+equal triangles and exact stealth;301checks5.339s and twoChrome15.1s pass.
+However its actual busy High/Low timing regresses despite38/19 fewer draws.
+One shared-material changed-code follow-up24checks2.177s and50.4s workload
+still fails to outperform the plain-pivot result. No precise driver/material/
+host-load cause is proved. Full source/tests/failed receipt archived locally
+on work/alpha-1-48-surface-pivot-probe-20260930 f4d35740, not pushed/deployed.
+Release branch returned clean to63168425; no extension remains enabled.
+Evidence:/tmp/eidolon-1-48-rigid-surface-appearance-0930,
+/tmp/eidolon-1-48-rigid-surface-busy-0930,
+/tmp/eidolon-1-48-rigid-surface-shared-busy-0930. No unchanged replay needed.
+
 ## Rigid common-pivot equipment — September30
 
 Replace the rejected dynamic-matrix approach with ordinary immutable merged
