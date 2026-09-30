@@ -11,6 +11,27 @@ See [receipt](2026-09-30-release1-42-acceptance.md). Earlier investigation notes
 below describe the initial failure, not the current terminal state.143 remains
 unreleased pending its own exact deployment and verification.
 
+## Compatible dependency-security correction before release
+
+Pushed be0d2605 after freshfetch/merge and unchanged website verification.
+CI36666914512 caught a high-severity brace-expansion audit failure in the client
+job before deployment. Local npm audit reproduces the same four transitive
+development nodes. Published [quadratic expansion advisory](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
+[nested-brace advisory](https://github.com/advisories/GHSA-qhr7-859c-m2p7) and
+[comma-parser advisory](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p)
+identify the compatible patched1.x/2.x lines. npm audit fix --package-lock-only
+--ignore-scripts changes only four lock entries: three1.1.18→1.1.21 nodes and
+one2.1.4→2.1.7, plus their integrity/license metadata. Direct dependencies,
+production protobuf/Three versions and package constraints unchanged; no
+force update, audit suppression or broader dependency migration. Result reports
+zero vulnerabilities.1.42 remains the independently accepted public build
+until corrected143passes its own CI/deployment/live checks.
+Fresh isolated npm ci --ignore-scripts installs443packages in8s and reports
+zero vulnerabilities; separate npm audit --audit-level=high also passes.
+Focused suites333checks pass3.083s and scoped ESLint passes with that fresh
+toolchain, not the shared old node_modules symlink. Whitespace clean. No
+unbounded adversarial payload or campaign replay.
+
 ## Public-access investigation and scoped proxy correction — September30
 
 Owner confirmed access recovered after reporting the page failed to load.
