@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { existsSync } from 'node:fs';
-import { acquireLootPointer, acquireCombatLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
+import { acquireLootPointer, acquireCombatLootPointer, clickLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
 
 // Input/geometry only: no rendered game or GPU contention with live QA.
@@ -87,6 +87,32 @@ test('a covered loot center keeps enemy priority while exposed loot edges remain
     const point = await acquireLootPointer(page, 'loot', 2000);
     expect(point.visible).toBe(true);
     expect(await page.evaluate(() => window.game.hoveredEntity?.id)).toBe('loot');
+});
+
+test('manual pickup re-aims after camera movement instead of clicking an old hover position', async ({ page }) => {
+    await page.evaluate(() => {
+        const game = window.game;
+        game.activeEntitiesCache = [game.remotePlayers.get('loot')];
+        window.__lootPointerClicks = [];
+        game.inputManager.subscribe('onClick', () => {
+            game.performRaycast();
+            window.__lootPointerClicks.push(game.hoveredEntity?.id ?? null);
+        });
+    });
+    const oldPoint = await acquireLootPointer(page, 'loot', 2000);
+    await page.evaluate(() => {
+        // Geometry-only fixture: simulate camera follow changing during the
+        // inventory reads between hover acquisition and a real mouse click.
+        const camera = window.game.renderSystem.camera;
+        camera.position.x += 6;
+        camera.lookAt(6, 0, 0);
+        camera.updateMatrixWorld(true);
+    });
+    await page.mouse.click(oldPoint.x, oldPoint.y);
+    expect(await page.evaluate(() => window.__lootPointerClicks)).toEqual([null]);
+    await clickLootPointer(page, 'loot', 2000);
+    expect(await page.evaluate(() => window.__lootPointerClicks)).toEqual([null, 'loot']);
+    expect(await page.evaluate(() => window.game.remotePlayers.get('loot').isActive)).toBe(true);
 });
 
 test('combat loot recovery clicks a fully covering hostile before reacquiring the earned drop', async ({page}) => {
