@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { BASE_ITEMS } from '../src/core/ItemSystem.js';
 import {
     createProceduralFighter,
@@ -51,6 +52,17 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test('cached rigid leaves follow a moving item root without recomposing each local matrix', () => {
+        const root = createProceduralEquipmentVisual(item('Iron Sword', 'mainHand'), { batch: true });
+        const leaves = root.children.filter(part => part.isMesh && !part.material.transparent);
+        expect(leaves.length).toBeGreaterThan(0);
+        expect(leaves.every(part => !part.matrixAutoUpdate)).toBe(true);
+        const before = leaves.map(part => part.getWorldPosition(new THREE.Vector3()).x);
+        const spies = leaves.map(part => jest.spyOn(part, 'updateMatrix'));
+        root.position.x = 5; root.updateMatrixWorld(true);
+        leaves.forEach((part, index) => expect(part.getWorldPosition(new THREE.Vector3()).x).toBeCloseTo(before[index] + 5));
+        spies.forEach(spy => { expect(spy).not.toHaveBeenCalled(); spy.mockRestore(); });
+    });
     test('an iron blade and guard share their equal surface state without losing their different colors', () => {
         const root = createProceduralEquipmentVisual(item('Iron Sword', 'mainHand'), { batch: true });
         const batch = root.children.find(part => part.userData.equipmentBatchSources?.includes('Gear_Blade') &&

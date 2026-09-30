@@ -1,5 +1,40 @@
 # Alpha1.48 — client performance work
 
+## Cached rigid local transforms — September30
+
+Keep constructor-owned rigid mesh leaves' already computed local matrices.
+Actor roots, pivots, all named animation targets and skinned parts stay dynamic;
+parent world transforms still propagate normally. Batched equipment similarly
+caches unmerged opaque rigid leaves, preserving translucent behavior and all
+visible geometry/materials. Rest-pose reset refreshes cached matrices explicitly.
+No added render pass, buffer, shader, texture, dropped detail or balance change.
+
+An unrelated pre-existing surface test demanded geometry identity for newly
+owned per-loadout pivot buffers. Four cases fail on unchanged6188da41 baseline
+in2.072s. The corrected comparator retains shared-source identity checks but
+compares every attribute, item size, normalization, index and world transform
+for owned buffers. A deliberately corrupted vertex proves it still rejects
+changed geometry. Four suites315 checks pass8.555s; two added corruption/reset
+checks pass1.077s. Explicit guards show cached leaves do not recompose each
+frame, animated meshes do, and moving parents and pool reset remain correct.
+Scoped lint/whitespace pass. An initial new fixture picked an item without a
+common-pivot batch; use the real full-slot catalog, retaining the existence and
+corruption assertions rather than skipping either.
+
+Six System Chrome appearance cases27.9s pass: equipped21 poses eachquality,
+independent unbatched equipment reference/equal triangles/exact stealth,
+four-class body poses and Skeleton poses at High/Low. High Fighter image
+inspected. Evidence:/tmp/eidolon-1-48-static-transforms-appearance-0930.
+
+One changed-code native raid workload38.4s: High busy/repeat median23.4/26.0ms,
+p9531.4/35.7ms, zero>50ms hitches,2454 calls/166327 triangles/341geometry/
+54textures. Low17.7/17.9ms median,23.7/26.7ms p95, zero hitches,1288 calls/
+85546triangles/340geometry/40textures. Residency is repeat-stable. No concurrent
+test command during this measurement. This is a safe local composition saving
+with no measured resource or appearance regression, not a controlled percentage
+FPS claim. High still misses20/33.4ms; do NOT declare1.48 complete. Evidence:
+/tmp/eidolon-1-48-static-transforms-busy-0930. Do not replay unchanged workload.
+
 ## Shadow probe outcome — September30
 
 Rigid shadow-caster experiment archived locally on
