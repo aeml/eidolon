@@ -254,3 +254,21 @@ still has visibly procedural actors and broad quiet ground. Do not promote
 these facts to Q/CB acceptance. No QA-only raised-terrain profile is enabled
 in production: main's default flag is false and explicit activation requires
 a configured QA allowlist. No schema/save/access reset or beta transition.
+
+## CI integration correction
+
+CI36651506461 atc9388afe failed Browser Smoke2/3 on the rendered Chronicle
+move-only fixture. The identical local case reproduced the failure. Its click
+was at the retired stone disk's ground-level center;1.42 replaces that disk
+with a bending sapling. The fixture now clicks the visible trunk and first
+asserts that the exact native CSS pixel hits its real rendered geometry.
+Ordinary clicks must still interact twice; Shift-click must still clear pending
+interaction/ability state and move once, without jumping. The ground assertion
+now compares the actual ray-plane point for that same integer pixel rather
+than the retired disk's origin. No production picking/collision rules or test
+retry policy were weakened. The corrected case passes3.7s; scoped lint and
+whitespace pass. Evidence:/tmp/eidolon-1-42-marker-pixel-0930.
+
+This is a changed-condition publication, not a blind retry of the failed run.
+1.41 remains independently accepted;1.42 still requires its corrected CI and
+exact public release verification before any later candidate is published.
