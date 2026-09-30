@@ -17,6 +17,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { LootDrop } = await import('../src/entities/LootDrop.js');
 const { AUDIO_CUES } = await import('../src/audio/AudioManager.js');
+const { clearEngineSceneOwnership } = await import('../src/core/SceneOwnership.js');
 
 function createItem(name = 'Iron Sword', rarityName = 'Rare', color = '#66ccff') {
     return {
@@ -195,6 +196,41 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.remotePlayers.has(loot.id)).toBe(true);
         expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
         expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
+    });
+
+    test('retired pickup deadline cannot delete a replacement scene request for the same ID', () => {
+        const engine = createEngineHarness(), loot = createLootEntity({ id: 'reused-loot' });
+        engine.remotePlayers.set(loot.id, loot); engine.pickupLoot(loot.id);
+        jest.advanceTimersByTime(5000);
+        clearEngineSceneOwnership(engine, { preservePlayer: true });
+        const replacement = createLootEntity({ id: loot.id });
+        engine.remotePlayers.set(replacement.id, replacement); engine.pickupLoot(replacement.id);
+        const pending = engine.pendingLootPickups.get(loot.id);
+        jest.advanceTimersByTime(5000);
+        expect(engine.pendingLootPickups.get(loot.id)).toBe(pending);
+        jest.advanceTimersByTime(5000); expect(engine.pendingLootPickups.size).toBe(0);
+    });
+
+    test('confirmed pickup retires its deadline but preserves the five-second phantom suppression', () => {
+        const engine = createEngineHarness(), loot = createLootEntity();
+        engine.remotePlayers.set(loot.id, loot); engine.pickupLoot(loot.id);
+        engine.confirmPendingLootPickups([loot.item]);
+        expect(jest.getTimerCount()).toBe(1);
+        clearEngineSceneOwnership(engine, { preservePlayer: true });
+        jest.advanceTimersByTime(4999); expect(engine.recentlyPickedUpLoot.has(loot.id)).toBe(true);
+        jest.advanceTimersByTime(1); expect(engine.recentlyPickedUpLoot.size).toBe(0);
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('terminal scene retirement cancels pending and confirmed-loot callbacks immediately', () => {
+        const engine = createEngineHarness(), confirmed = createLootEntity({ id: 'confirmed' });
+        engine.remotePlayers.set(confirmed.id, confirmed); engine.pickupLoot(confirmed.id);
+        engine.confirmPendingLootPickups([confirmed.item]);
+        const pending = createLootEntity({ id: 'pending', item: createItem('Unconfirmed Gem') });
+        engine.remotePlayers.set(pending.id, pending); engine.pickupLoot(pending.id);
+        clearEngineSceneOwnership(engine);
+        expect(jest.getTimerCount()).toBe(0);
+        expect(engine.recentlyPickedUpLoot.size).toBe(0); expect(engine.pendingLootPickups.size).toBe(0);
     });
 
     test('pickupLoot detaches fallback loot meshes from their current parent after reparenting', () => {

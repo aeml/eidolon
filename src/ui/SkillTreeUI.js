@@ -1,4 +1,4 @@
-import { ownedEvent } from './OwnedEvents.js';
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MobileSkillTree } from './MobileSkillTree.js';
 import { DesktopTalentConfirmation } from './DesktopTalentConfirmation.js';
@@ -18,6 +18,7 @@ export class SkillTreeUI {
      */
     constructor(ctx) {
         this.ctx = ctx;
+        this.comboNotifications = new Map();
 
         // --- DOM refs ---
         this.skillTreeWindow = document.getElementById('skill-tree-window');
@@ -47,6 +48,18 @@ export class SkillTreeUI {
     // ================================================================
     // PUBLIC API
     // ================================================================
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        for (const [notification, timers] of this.comboNotifications) {
+            timers.forEach(clearTimeout); notification.remove();
+        }
+        this.comboNotifications.clear();
+        this.closeRespecMenu?.();
+        this.closeRespecMenu = null;
+    }
 
     /** Whether the skill tree window is currently visible. */
     get isOpen() {
@@ -910,6 +923,7 @@ export class SkillTreeUI {
     // ================================================================
 
     showComboNotification(comboName, comboId) {
+        if (this.disposed) return;
         const notification = document.createElement('div');
         notification.className = 'combo-notification';
         notification.style.pointerEvents = 'none';
@@ -963,14 +977,18 @@ export class SkillTreeUI {
             document.head.appendChild(style);
         }
 
-        setTimeout(() => {
+        const timers = [];
+        this.comboNotifications.set(notification, timers);
+        timers.push(setTimeout(() => {
+            if (this.disposed) return;
             notification.style.animation = 'comboNotificationFadeOut 0.3s ease-out forwards';
-            setTimeout(() => {
+            timers.push(setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
-            }, 300);
-        }, 1500);
+                this.comboNotifications.delete(notification);
+            }, 300));
+        }, 1500));
     }
 
     // ================================================================
@@ -978,6 +996,7 @@ export class SkillTreeUI {
     // ================================================================
 
     showRespecMenu() {
+        if (this.disposed) return;
         const existingBackdrop = document.getElementById('respec-menu-backdrop');
         if (existingBackdrop && typeof existingBackdrop.__closeMenu === 'function') {
             existingBackdrop.__closeMenu();
@@ -998,11 +1017,13 @@ export class SkillTreeUI {
                 return;
             }
             isMenuClosed = true;
+            if (this.closeRespecMenu === removeMenu) this.closeRespecMenu = null;
             window.removeEventListener('keydown', handleMenuEscape);
             delete backdrop.__closeMenu;
             menu.remove();
             backdrop.remove();
         };
+        this.closeRespecMenu = removeMenu;
 
         const backdrop = document.createElement('div');
         backdrop.id = 'respec-menu-backdrop';

@@ -369,11 +369,17 @@ class GameEngineEntitySyncMethods {
         for (const [lootId, pending] of this.pendingLootPickups) {
             if ((quantityByName.get(pending.itemName) || 0) <= pending.quantityBefore) continue;
 
+            clearTimeout(pending.expiryTimer);
             this.pendingLootPickups.delete(lootId);
             this.recentlyPickedUpLoot.add(lootId);
-            setTimeout(() => {
+            const expiryTimers = this.recentLootExpiryTimers ||= new Map();
+            clearTimeout(expiryTimers.get(lootId));
+            const timer = setTimeout(() => {
+                if (expiryTimers.get(lootId) !== timer) return;
+                expiryTimers.delete(lootId);
                 this.recentlyPickedUpLoot.delete(lootId);
             }, this.recentlyPickedUpLootTimeout);
+            expiryTimers.set(lootId, timer);
             this.showLootPickupFeedback(pending.entity, 'picked_up');
             this.removeRemoteEntity(lootId);
         }
@@ -555,14 +561,15 @@ class GameEngineEntitySyncMethods {
                 total + (inventoryItem?.id && inventoryItem.name === item.name
                     ? (inventoryItem.stack || 1)
                     : 0), 0);
-            this.pendingLootPickups.set(lootId, {
+            const pending = {
                 entity,
                 itemName: item.name,
                 quantityBefore
-            });
-            setTimeout(() => {
-                this.pendingLootPickups.delete(lootId);
+            };
+            pending.expiryTimer = setTimeout(() => {
+                if (this.pendingLootPickups.get(lootId) === pending) this.pendingLootPickups.delete(lootId);
             }, this.pendingLootPickupTimeout);
+            this.pendingLootPickups.set(lootId, pending);
         }
 
         // Keep the item and inventory unchanged until the server's inventory

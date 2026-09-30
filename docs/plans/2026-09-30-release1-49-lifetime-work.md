@@ -1,5 +1,50 @@
 # Alpha1.49 session-lifetime work
 
+## Final timer-owner audit follow-up — September30
+
+Source audit of core/UI/audio timers confirms two further real retirement gaps.
+Three loot cases fail before changes1.275s: an old pending deadline deletes a
+new request sharing its ID after a scene change; confirmation leaves the old
+deadline scheduled; and terminal retirement leaves three callbacks alive.
+
+Pending pickup deadlines now belong to their exact request records. Cancel on
+confirmation or scene retirement and compare record identity before expiration,
+so an old callback cannot erase a replacement. Track confirmed-loot suppression
+timers separately as session owners, releasing them at terminal teardown.
+Preserve the existing10-second request deadline, retryability, five-second
+phantom suppression across zone transitions and inventory-confirmation authority.
+No loot rewards, drops, actual inventory or server behavior changes. Five
+loot/auto-loot/entity/instance/teardown suites43 checks pass4.384s.
+
+Three skill-window cases fail before changes0.74s: transient combo feedback and
+its second timer stage survive retirement; the respec overlay/Escape listener
+remains installed; and retired callbacks can reopen them. SkillTreeUI now has an
+idempotent session disposer invoked by the existing UIManager child teardown.
+Own only transient notification timers/nodes and the exact respec close callback;
+retire persistent owned events, preserve shared skill-window markup and the
+single cached stylesheet, and never close a replacement owner's menu. Late
+notification/respec callbacks cannot publish after retirement. Keep normal
+1500ms display plus300ms fade, combo text, menu content and authoritative respec
+pricing unchanged. Five affected skill/menu/mobile/respec/combo suites128 checks
+pass5.872s. Scoped lint and whitespace pass for both changes.
+
+Other reviewed owner paths retain their existing retirement contracts: startup
+yield callbacks check isDestroyed; scenery generations invalidate asynchronous
+rebuilds; initial-view RAF work is cancelled by renderer retirement; network
+retry and deferred binary decoding reject retired transports; SocialUI stops
+GroupFinder refresh, playtest/report/admin/trading timers have owner disposers,
+card-table/slots/celebration timers clear on table/controller retirement, and
+audio/context/map owners retire with the engine. This is source ownership review,
+not new runtime evidence for every feature or a proof that no bug can exist.
+
+The bounded native zone/reconnect evidence above is retained, not replayed for
+unchanged scenes. Casino-floor resource evidence so far covers shells, not the
+full table/machine catalog and active game UI; that remaining representative
+venue path needs a bounded lifetime check before the broad1.49 gate closes.
+Runtime remains1.47,149 unpublished behind148. Own synchronized metadata,
+normal CI and exact live acceptance are still required; no new soak/deployment,
+FPS claim or roadmap completion follows from these timer checks.
+
 ## Reconnect transport and borrowed casino-pose retirement — September30
 
 Two pre-fix network cases fail0.513s: replacing a transport retains the old

@@ -38,7 +38,16 @@ export function clearEngineSceneOwnership(engine, { preservePlayer = false, adva
     for (const object of owned) object.isActive = false;
 
     engine.remotePlayers?.clear(); engine.hazards?.clear();
-    engine.pendingEntityIds?.clear(); engine.pendingLootPickups?.clear();
+    engine.pendingEntityIds?.clear();
+    for (const pending of engine.pendingLootPickups?.values() || []) clearTimeout(pending.expiryTimer);
+    engine.pendingLootPickups?.clear();
+    // Recent-pickup suppression belongs to the session, not one instance.
+    // Keep its existing five-second lifetime across zone transitions, but
+    // release all suppression callbacks immediately at terminal teardown.
+    if (!preservePlayer) {
+        for (const timer of engine.recentLootExpiryTimers?.values() || []) clearTimeout(timer);
+        engine.recentLootExpiryTimers?.clear(); engine.recentlyPickedUpLoot?.clear();
+    }
     if (offlineResidents.size) {
         for (const [key, chunk] of engine.chunkManager?.chunks || []) {
             for (const entity of chunk) if (!offlineResidents.has(entity)) chunk.delete(entity);

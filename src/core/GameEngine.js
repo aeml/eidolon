@@ -590,6 +590,7 @@ export class GameEngine {
 
         // Track recently picked up loot IDs to prevent phantom item recreation
         this.recentlyPickedUpLoot = new Set();
+        this.recentLootExpiryTimers = new Map();
         this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
         // A pickup is not real until the server's inventory packet confirms it.
         // Keeping pending loot retryable prevents rejected requests from
