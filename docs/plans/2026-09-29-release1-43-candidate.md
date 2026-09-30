@@ -5,6 +5,12 @@ login/CI/default build identities and cumulative notes now identify1.43.0.
 Ordered publication waits for preceding accepted deployments. Human campaign/
 phone observations remain playtest-owned; they are not a new permission gate.
 
+September30 update:1427ee8c07b is now independently accepted following CI
+36660471426 attempt2 success and matching public runtime/font evidence.
+See [receipt](2026-09-30-release1-42-acceptance.md). Earlier investigation notes
+below describe the initial failure, not the current terminal state.143 remains
+unreleased pending its own exact deployment and verification.
+
 ## Public-access investigation and scoped proxy correction — September30
 
 Owner confirmed access recovered after reporting the page failed to load.
