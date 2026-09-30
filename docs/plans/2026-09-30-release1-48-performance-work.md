@@ -237,3 +237,25 @@ Scoped lint and whitespace pass. These are prepared render/admission checks,
 not an earned multiplayer encounter, appearance acceptance or frame-rate proof.
 Town trading392draws and the broader representative startup/entity/device
 performance work remain open. Runtime still1.47; candidate not published.
+
+## Bound every entity-creation dequeue
+
+The intended five-entry tick limit counted only ordinary actor creation.
+Hazards, duplicate entries and discarded loot bypassed the counter. New actual
+GameEngine.update tests reproduced both High/Low hazard bursts creating seven
+entities at once and a stale twelve-loot burst draining in one update.
+
+Count immediately after each dequeue, including failures and discard paths.
+Keep the existing five-entry limit, FIFO, pending-ID tracking and hazard state,
+position, radius and boundary attachment; remaining entries resume next tick.
+Boss-warning message admission is unchanged. This bounds entries processed,
+not the time to create any one entity or all queue/network residency.
+
+Five movement/hazard/containment/loot/jump suites104checks pass2.625s. High/Low
+tests construct real environmental hazard meshes and verify all seven retain
+their boundaries after two updates. Duplicate, stale-loot and creation-failure
+paths also yield after five entries. The plain player fixture reuses the
+already accepted1.42 Actor grounding method/engine-owner correction; no
+production grounding change or gameplay assertion was removed. Scoped lint
+and whitespace pass. No new long encounter replay; broader performance and
+the trading-view draw target remain open, runtime still1.47, unpublished.

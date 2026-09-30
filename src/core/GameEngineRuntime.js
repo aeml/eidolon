@@ -246,11 +246,13 @@ class GameEngineRuntimeMethods {
             }
         }
 
-        // Process Entity Creation Queue (Throttle to 5 per frame)
+        // Bound dequeues, not just the ordinary-actor success path. Hazards,
+        // duplicate entries and discarded loot must yield to the next tick too.
         const creationLimit = 5;
-        let createdCount = 0;
-        while (this.entityCreationQueue.length > 0 && createdCount < creationLimit) {
+        let processedCount = 0;
+        while (this.entityCreationQueue.length > 0 && processedCount < creationLimit) {
             const pData = this.entityCreationQueue.shift();
+            processedCount++;
             this.pendingEntityIds.delete(pData.id);
 
             // Double check if it was already created (race condition)
@@ -380,7 +382,6 @@ class GameEngineRuntimeMethods {
             } catch (e) {
                 console.error("Error creating entity:", pData.id, e);
             }
-            createdCount++;
         }
 
         // Remote Entity Corpse Cleanup

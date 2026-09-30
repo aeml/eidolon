@@ -120,12 +120,88 @@ function createEngineHarness() {
         playAnimation: jest.fn(),
         getAttackHitDelay: jest.fn(() => 0),
         render: jest.fn(),
+        groundToTerrain: Actor.prototype.groundToTerrain,
         move: jest.fn()
     };
+    engine.player.gameEngine = engine;
     return engine;
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test.each(['high', 'low'])('hazard creation respects the five-entry tick budget and retains all %s boundaries', quality => {
+        const engine = createEngineHarness();
+        engine.renderSystem.graphicsQuality = quality;
+        engine.renderSystem.instanceEnvironmentGroup = new THREE.Group();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const payloads = Array.from({ length: 7 }, (_, index) => ({
+            id: `queued-hazard-${index}`, type: 'Hazard', subType: 'wind_gust',
+            x: 20 + index * 15, z: 0, scale: 6 + index, state: index % 2 ? 'CALMED' : 'IDLE'
+        }));
+        payloads.forEach(payload => engine.queueEntityCreation(payload));
+        try {
+            engine.update(1 / 60);
+            expect(engine.hazards.size).toBe(5);
+            expect(engine.entityCreationQueue.map(payload => payload.id)).toEqual(payloads.slice(5).map(payload => payload.id));
+            expect(engine.pendingEntityIds).toEqual(new Set(payloads.slice(5).map(payload => payload.id)));
+            engine.update(1 / 60);
+            expect(engine.hazards.size).toBe(7);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.pendingEntityIds.size).toBe(0);
+            for (const payload of payloads) {
+                const hazard = engine.hazards.get(payload.id);
+                expect(hazard.position.toArray()).toEqual([payload.x, 0, payload.z]);
+                expect(hazard.radius).toBe(payload.scale);
+                expect(hazard.boundaryMesh.parent).toBe(engine.renderSystem.instanceEnvironmentGroup);
+                expect(hazard.state).toBe(payload.state);
+            }
+        } finally { engine.hazards.forEach(hazard => hazard.dispose()); }
+    });
+
+    test('discarded loot also yields after five dequeues instead of scanning an unlimited stale burst', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const discarded = Array.from({ length: 12 }, (_, index) => ({ id: `picked-${index}`, type: 'Loot' }));
+        engine.entityCreationQueue = [...discarded];
+        engine.pendingEntityIds = new Set(discarded.map(payload => payload.id));
+        discarded.forEach(payload => engine.recentlyPickedUpLoot.add(payload.id));
+        const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toHaveLength(7);
+            expect(engine.pendingEntityIds.size).toBe(7);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toHaveLength(2);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.remotePlayers.size).toBe(0);
+            expect(engine.pendingEntityIds.size).toBe(0);
+        } finally { log.mockRestore(); }
+    });
+
+    test.each(['duplicate', 'failure'])('%s creation entries consume the same bounded tick allowance', mode => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const payloads = Array.from({ length: 7 }, (_, index) => ({ id: `queued-${index}`, type: 'Enemy' }));
+        engine.entityCreationQueue = [...payloads];
+        engine.pendingEntityIds = new Set(payloads.map(payload => payload.id));
+        if (mode === 'duplicate') payloads.forEach(payload => engine.remotePlayers.set(payload.id, { state: 'IDLE' }));
+        else engine.createRemotePlayer = jest.fn(() => { throw new Error('Fixture creation failure'); });
+        const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual(payloads.slice(5));
+            expect(engine.pendingEntityIds.size).toBe(2);
+            if (mode === 'failure') expect(engine.createRemotePlayer).toHaveBeenCalledTimes(5);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.pendingEntityIds.size).toBe(0);
+            if (mode === 'failure') expect(errors).toHaveBeenCalledTimes(7);
+        } finally { errors.mockRestore(); }
+    });
+
     test.each([['', true], ['dungeon_floor', false]])('held basic attack respects terrain ownership in %s', (instanceId, attacks) => {
         const engine = createEngineHarness();
         engine.terrainElevation = field;
