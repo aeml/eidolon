@@ -133,3 +133,11 @@ interface coverage, not choosing one side. Six font/version/asset/grounding/
 resource suites349checks pass4.866s; whitespace passes and website diff remains
 empty.1.42 CI36660471426 is pending; this prepared merge is unpublished and
 still requires exact1.42 public acceptance before ordered1.43 publication.
+
+Additional loader-seam review reproduced four stale catalog assertions: the
+procedural player factories now include Cast/Channel/Guard/Shout/Bless, not
+only the prior five basic states. Require the exact ten animation names for
+all four classes; keep the emergency fallback and enemy expectations unchanged.
+No production animation is removed and no subset assertion replaces the full
+list. Loader and actual ability-clip suites122checks pass3.634s; whitespace
+passes. This catches a known publication mismatch before1.43's required CI.
