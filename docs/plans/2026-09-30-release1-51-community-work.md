@@ -2,8 +2,8 @@
 
 This local candidate packages Alpha1.51.0 version metadata, login and cumulative
 patch notes with the scoped community fixes below. It is not a deployed release
-or full multiplayer certification. Publish only after ordered1.49/1.50
-acceptance and its own normal CI/public checks.
+or full multiplayer certification. Ordered 1.49/1.50 acceptance is complete;
+its own normal CI/public checks remain required.
 
 ## Confirmed fixes
 
