@@ -32,12 +32,8 @@ func (db *DB) SetGuildMOTD(actorID, motd string) (*Guild, error) {
 	guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now, ActorID: actorID, Action: "motd_changed"})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID, "version": guild.Version - 1}, guild)
-	if err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
 		return nil, err
-	}
-	if result.ModifiedCount == 0 {
-		return nil, errors.New("guild changed; refresh and try again")
 	}
 	return guild, nil
 }
@@ -54,12 +50,14 @@ func (db *DB) DisbandGuild(actorID string) (string, error) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.guilds.DeleteOne(ctx, bson.M{"id": guild.ID, "leader_id": actorID, "version": guild.Version})
+	filter := unreservedGuildFilter(guild.ID, guild.Version)
+	filter["leader_id"] = actorID
+	result, err := db.guilds.DeleteOne(ctx, filter)
 	if err != nil {
 		return "", err
 	}
 	if result.DeletedCount == 0 {
-		return "", errors.New("guild changed; refresh and try again")
+		return "", db.guildMutationConflict(guild.ID)
 	}
 	_, _ = db.guildInvites.DeleteMany(ctx, bson.M{"guild_id": guild.ID})
 	return guild.ID, nil
@@ -91,12 +89,8 @@ func (db *DB) ClaimInactiveGuildLeadership(actorID string, now time.Time) (*Guil
 	guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now.UTC(), ActorID: actorID, Action: "inactive_leadership_claimed", TargetID: oldLeaderID})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID, "version": guild.Version - 1, "leader_id": oldLeaderID}, guild)
-	if err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
 		return nil, err
-	}
-	if result.ModifiedCount == 0 {
-		return nil, errors.New("guild changed; refresh and try again")
 	}
 	return guild, nil
 }

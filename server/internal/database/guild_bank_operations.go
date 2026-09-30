@@ -115,6 +115,14 @@ func applyGuildBankOperationIndexes(ctx context.Context, db *DB) error {
 		{Keys: bson.D{{Key: "state", Value: 1}, {Key: "_id", Value: 1}}, Options: options.Index().SetName("guild_bank_recovery")},
 		{Keys: bson.D{{Key: "guild_id", Value: 1}, {Key: "state", Value: 1}}, Options: options.Index().SetName("guild_bank_pending_guild")},
 	})
+	if err != nil {
+		return err
+	}
+	_, err = db.guilds.Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bson.D{{Key: "pending_bank_operation_id", Value: 1}},
+		Options: options.Index().SetName("guild_bank_reserved").
+			SetPartialFilterExpression(bson.M{"pending_bank_operation_id": bson.M{"$type": "string"}}),
+	})
 	return err
 }
 

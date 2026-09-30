@@ -32,6 +32,11 @@ func savedGuildBankFixture(t *testing.T, action string, item *Item) (*DB, GuildB
 		op.Gold, op.ItemPayload = 0, string(payload)
 	}
 	op.Fingerprint = GuildBankOperationFingerprint(op)
+	t.Cleanup(func() {
+		_, _ = db.guildBankOperations.DeleteMany(context.Background(), bson.M{"guild_id": op.GuildID})
+		_, _ = db.guildInvites.DeleteMany(context.Background(), bson.M{"guild_id": op.GuildID})
+		_, _ = db.guilds.DeleteOne(context.Background(), bson.M{"id": op.GuildID})
+	})
 	return db, op
 }
 
@@ -132,6 +137,13 @@ func TestGuildBankApplyItemRoundTripRetainsFullPayloadAndNoDuplicates(t *testing
 	if _, err := db.FinishGuildBankOperation(deposit.ID, deposit.Fingerprint, GuildBankComplete); err != nil {
 		t.Fatal(err)
 	}
+	if err := db.ReleaseGuildBankOperation(deposit.ID, deposit.Fingerprint); err != nil {
+		t.Fatal(err)
+	}
+	guild, err = db.GetGuildByID(deposit.GuildID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	withdraw := deposit
 	withdraw.RequestID, withdraw.Action, withdraw.GuildVersion = "request_1234567891", GuildBankWithdrawItem, guild.Version
 	withdraw.ID = GuildBankOperationID(withdraw.Username, withdraw.RequestID)
@@ -207,6 +219,9 @@ func TestGuildBankApplyPreservesPresenceAndBoundedAudit(t *testing.T) {
 	}
 	prepareBankFixture(t, db, op)
 	at := time.Now().UTC().Truncate(time.Millisecond)
+	if _, err := db.ReserveGuildBankOperation(op.ID, op.Fingerprint); err != nil {
+		t.Fatal(err)
+	}
 	var group sync.WaitGroup
 	group.Add(1)
 	go func() {

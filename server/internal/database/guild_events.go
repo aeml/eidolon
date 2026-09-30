@@ -8,8 +8,6 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type GuildEventRSVP struct {
@@ -203,12 +201,8 @@ func (db *DB) ChangeGuildEvent(actorID string, request GuildEventRequest, now ti
 	guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now.UTC(), ActorID: actorID, Action: "event_" + request.Action, TargetID: request.EventID})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID, "version": previousVersion}, guild)
-	if err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, previousVersion); err != nil {
 		return nil, err
-	}
-	if result.ModifiedCount == 0 {
-		return nil, errors.New("guild changed; refresh and try again")
 	}
 	return guild, nil
 }

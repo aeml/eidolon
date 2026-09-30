@@ -62,6 +62,8 @@ type GuildAuditEntry struct {
 }
 
 type Guild struct {
+	PendingBankOperationID       string            `bson:"pending_bank_operation_id,omitempty" json:"-"`
+	PendingBankFingerprint       string            `bson:"pending_bank_operation_fingerprint,omitempty" json:"-"`
 	LastBankOperationID          string            `bson:"last_bank_operation_id,omitempty" json:"-"`
 	LastBankOperationFingerprint string            `bson:"last_bank_operation_fingerprint,omitempty" json:"-"`
 	ID                           string            `bson:"id" json:"id"`
@@ -301,7 +303,9 @@ func (db *DB) RespondGuildInvite(targetID, guildID, targetUsername string, accep
 		"$set":      bson.M{"updated_at": now},
 		"$inc":      bson.M{"version": 1},
 	}
-	result, err := db.guilds.UpdateOne(ctx, bson.M{"id": guildID, "members.player_id": bson.M{"$ne": targetID}}, update)
+	filter := unreservedGuildFilter(guildID, guild.Version)
+	filter["members.player_id"] = bson.M{"$ne": targetID}
+	result, err := db.guilds.UpdateOne(ctx, filter, update)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
 			return nil, errors.New("player is already in a guild")
@@ -309,7 +313,7 @@ func (db *DB) RespondGuildInvite(targetID, guildID, targetUsername string, accep
 		return nil, err
 	}
 	if result.ModifiedCount == 0 {
-		return nil, errors.New("guild membership changed; refresh and try again")
+		return nil, db.guildMutationConflict(guildID)
 	}
 	_, _ = db.guildInvites.DeleteMany(ctx, bson.M{"target_id": targetID})
 	return db.GetGuildByID(guildID)
@@ -325,11 +329,15 @@ func (db *DB) LeaveGuild(playerID string) (*Guild, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if len(guild.Members) == 1 {
-		_, err := db.guilds.DeleteOne(ctx, bson.M{"id": guild.ID})
-		if err == nil {
-			_, _ = db.guildInvites.DeleteMany(ctx, bson.M{"guild_id": guild.ID})
+		result, err := db.guilds.DeleteOne(ctx, unreservedGuildFilter(guild.ID, guild.Version))
+		if err != nil {
+			return nil, false, err
 		}
-		return nil, true, err
+		if result.DeletedCount == 0 {
+			return nil, false, db.guildMutationConflict(guild.ID)
+		}
+		_, _ = db.guildInvites.DeleteMany(ctx, bson.M{"guild_id": guild.ID})
+		return nil, true, nil
 	}
 	now := time.Now().UTC()
 	oldLeaderID := guild.LeaderID
@@ -369,8 +377,10 @@ func (db *DB) LeaveGuild(playerID string) (*Guild, bool, error) {
 	if newLeaderID != oldLeaderID {
 		guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now, ActorID: playerID, Action: "leadership_transferred", TargetID: newLeaderID})
 	}
-	_, err = db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID}, guild)
-	return guild, false, err
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
+		return nil, false, err
+	}
+	return guild, false, nil
 }
 
 func appendBoundedGuildAudit(entries []GuildAuditEntry, entry GuildAuditEntry) []GuildAuditEntry {
@@ -449,7 +459,7 @@ func (db *DB) mutateGuildMembers(actorID, targetID, action string, mutate func(*
 	guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now, ActorID: actorID, Action: action, TargetID: targetID})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if _, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID}, guild); err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
 		return nil, err
 	}
 	return guild, nil
@@ -495,7 +505,7 @@ func (db *DB) updateGuildBankGold(guildID, playerID string, delta int, requireWi
 	guild.Version++
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if _, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID}, guild); err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
 		return nil, err
 	}
 	return guild, nil
@@ -526,8 +536,10 @@ func (db *DB) DepositGuildItem(guildID, playerID string, item Item) (*Guild, err
 	guild.Version++
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err = db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID}, guild)
-	return guild, err
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
+		return nil, err
+	}
+	return guild, nil
 }
 
 func (db *DB) WithdrawGuildItem(guildID, playerID, itemID string) (*Guild, *Item, error) {
@@ -558,7 +570,7 @@ func (db *DB) WithdrawGuildItem(guildID, playerID, itemID string) (*Guild, *Item
 	guild.Version++
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if _, err := db.guilds.ReplaceOne(ctx, bson.M{"id": guild.ID}, guild); err != nil {
+	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {
 		return nil, nil, err
 	}
 	return guild, &item, nil
@@ -570,8 +582,21 @@ func (db *DB) TouchGuildMember(playerID string, at time.Time) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.guilds.UpdateOne(ctx, bson.M{"members.player_id": playerID}, bson.M{
-		"$set": bson.M{"members.$.last_online": at.UTC(), "updated_at": at.UTC()},
+	// Ordinary presence invalidates stale full-guild replacement snapshots.
+	// During a bank hold it must not invalidate the frozen transfer version;
+	// release advances that version before other writers can proceed.
+	result, err := db.guilds.UpdateOne(ctx, bson.M{"members.player_id": playerID}, mongo.Pipeline{
+		bson.D{{Key: "$set", Value: bson.M{
+			"members": bson.M{"$map": bson.M{"input": "$members", "as": "member", "in": bson.M{"$cond": bson.A{
+				bson.M{"$eq": bson.A{"$$member.player_id", bson.M{"$literal": playerID}}},
+				bson.M{"$mergeObjects": bson.A{"$$member", bson.M{"last_online": at.UTC()}}}, "$$member",
+			}}}},
+			"updated_at": at.UTC(),
+			"version": bson.M{"$cond": bson.A{
+				bson.M{"$eq": bson.A{bson.M{"$ifNull": bson.A{"$pending_bank_operation_id", ""}}, ""}},
+				bson.M{"$add": bson.A{bson.M{"$ifNull": bson.A{"$version", 0}}, 1}}, "$version",
+			}},
+		}}},
 	})
 	if err != nil {
 		return err

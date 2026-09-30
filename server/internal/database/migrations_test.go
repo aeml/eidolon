@@ -103,6 +103,7 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 			"name_key_1":          true,
 			"tag_1":               true,
 			"members.player_id_1": true,
+			"guild_bank_reserved": true,
 		},
 		"guild_invites": {
 			"guild_id_1_target_id_1":   true,

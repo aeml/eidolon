@@ -15,7 +15,7 @@ import (
 // character side and its durable save are still required before completion.
 // A single pending operation per guild keeps the last receipt sufficient for
 // recovery; immutable versions fence delayed executors after newer transfers.
-// Do not use legacy bank writers concurrently with this protocol.
+// Other bank and governance writers are fenced by the durable reservation.
 func (db *DB) ApplyGuildBankOperation(id, fingerprint string) (*Guild, error) {
 	op, err := db.GetGuildBankOperation(id)
 	if err != nil {
@@ -48,6 +48,19 @@ func (db *DB) ApplyGuildBankOperation(id, fingerprint string) (*Guild, error) {
 		}
 		return guild, nil
 	}
+	guild, err = db.ReserveGuildBankOperation(id, fingerprint)
+	if err != nil {
+		return nil, err
+	}
+	// A concurrent executor can finish the guild effect between our first
+	// read and reservation recovery. Its exact durable receipt is success,
+	// not a stale version and never permission to apply the effect again.
+	if guild.LastBankOperationID == op.ID {
+		if guild.LastBankOperationFingerprint != op.Fingerprint {
+			return nil, ErrGuildBankOperationConflict
+		}
+		return guild, nil
+	}
 	if guild.Version != op.GuildVersion {
 		return nil, ErrGuildBankOperationStale
 	}
@@ -66,6 +79,8 @@ func (db *DB) ApplyGuildBankOperation(id, fingerprint string) (*Guild, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	filter := bson.M{"id": guild.ID, "version": op.GuildVersion}
+	filter["pending_bank_operation_id"] = id
+	filter["pending_bank_operation_fingerprint"] = fingerprint
 	if op.GuildVersion == 0 {
 		delete(filter, "version")
 		filter["$or"] = bson.A{bson.M{"version": 0}, bson.M{"version": bson.M{"$exists": false}}}

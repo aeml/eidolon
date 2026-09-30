@@ -29,6 +29,17 @@ Schema 16 adds the bank-intent indexes and fences older writers that would erase
 the new receipts. It does not backfill balances or grant items. This schema is
 local candidate code, not a production migration.
 
+A durable guild reservation now validates the saved bank version, membership,
+withdrawal permission and bank capacity before any character effect. All guild
+replacement/deletion writers and membership acceptance use the same version and
+unreserved predicate. Rank, leadership, departure, calendar, message and legacy
+bank operations therefore cannot invalidate an unsettled transfer. Presence
+still updates during the hold; ordinary presence and terminal release advance
+the version so stale full-guild snapshots cannot overwrite it. Only terminal
+intents can release their own hold, and retries cannot clear a later transfer's
+reservation. An indexed recovery query also finds terminal holds left behind
+by a stop between completion and release.
+
 ## Scoped verification
 
 - Game escrow/application/copy race checks passed in 4.256 seconds, including
@@ -44,6 +55,17 @@ local candidate code, not a production migration.
 - Migration/catalog and guild intent/application race checks passed in
   2.925 seconds. Schema 16 is idempotent; both account and guild serialization
   indexes are unique and restricted to pending intents.
+- The expanded reservation/guild/calendar/migration race selection passed in
+  2.696 seconds. It covers 13 fenced mutation paths, last-member deletion,
+  reservation versus governance through separate repositories, 20 identical
+  reservation executors, repository reopen, terminal-hold discovery, bounded
+  release replay, later-hold isolation and presence preservation. A first
+  acquisition/apply run exposed a concurrent receipt timing gap; recheck the
+  exact receipt after reservation recovery rather than returning a false stale
+  error. No assertion or permission requirement was weakened.
+- Character recovery and affected persistence/administration checks were
+  repeated after the storage changes and passed in 6.224 seconds, including
+  the four disposable real-Mongo save-failure cases.
 
 The private loopback Mongo container was stopped; its disposable data was removed.
 No production accounts, economy rates or privileged infrastructure changed.
@@ -51,9 +73,8 @@ These durations describe test execution, not runtime performance or capacity.
 
 ## Required before release
 
-Reserve and fence the guild before applying character effects; guard governance
-and all legacy bank writers against unresolved transfers. Wire immutable intent
-lookup, both-side settlement, account admission/recovery, request identifiers,
+Wire the reservation into immutable intent lookup, both-side settlement,
+account admission/recovery, request identifiers,
 acknowledgements and UI retries. Verify failure boundaries through the normal
 production handlers, without compensating writes that can silently fail.
 
