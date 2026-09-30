@@ -1,4 +1,4 @@
-// Generated from server/internal/game/content/cosmetics.json. Do not edit by hand.
+// Generated from server/internal/game/content/cosmetics.json and season-cosmetics.json. Do not edit by hand.
 export const COSMETIC_CATALOGUE = [
     {
         "id": "grovekeeper-plate-v1",
@@ -119,5 +119,31 @@ export const COSMETIC_CATALOGUE = [
         "primary": 2186862,
         "secondary": 10869990,
         "description": "A lagoon-colored cover bound with silver threads, with space for names still to come."
+    }
+];
+export const SEASON_COSMETIC_CATALOGUE = [
+    {
+        "id": "arena-bronze-medallion-v1",
+        "name": "Bronze Arena Medallion",
+        "medal": "Bronze",
+        "base": "Pendant",
+        "primary": 11959370,
+        "secondary": 15908487
+    },
+    {
+        "id": "arena-silver-medallion-v1",
+        "name": "Silver Arena Medallion",
+        "medal": "Silver",
+        "base": "Pendant",
+        "primary": 10464959,
+        "secondary": 14739439
+    },
+    {
+        "id": "arena-gold-medallion-v1",
+        "name": "Gold Arena Medallion",
+        "medal": "Gold",
+        "base": "Pendant",
+        "primary": 13345862,
+        "secondary": 16768899
     }
 ];

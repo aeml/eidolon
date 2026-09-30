@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { COSMETIC_CATALOGUE } from '../src/data/cosmetics.generated.js';
+import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../src/data/cosmetics.generated.js';
 import { resolveEquipmentVisualDescriptor, createProceduralEquipmentVisual } from '../src/art/ProceduralEquipment.js';
 import { CosmeticVendorUI } from '../src/ui/CosmeticVendorUI.js';
 import { CosmeticVendor } from '../src/entities/CosmeticVendor.js';
@@ -31,6 +31,19 @@ test('cosmetics are generated from the server catalogue and all resolve to rende
         expect(look.slot).toBe(original.slot); expect(look.family).toBe(original.family);
         expect(look.primary).toBe(offer.primary); expect(look.primary).not.toBe(original.primary);
         expect(createProceduralEquipmentVisual({ id: offer.id, name: offer.name, slot: look.slot, rarity: 'Common' }, { slot: look.slot })).toBeTruthy();
+    }
+});
+
+test('settled-season styles resolve as cosmetic-only pendants and are not EP offers', () => {
+    expect(SEASON_COSMETIC_CATALOGUE).toEqual(JSON.parse(fs.readFileSync('server/internal/game/content/season-cosmetics.json', 'utf8')));
+    expect(SEASON_COSMETIC_CATALOGUE.map(offer => offer.medal)).toEqual(['Bronze', 'Silver', 'Gold']);
+    for (const offer of SEASON_COSMETIC_CATALOGUE) {
+        expect(COSMETIC_CATALOGUE.some(sold => sold.id === offer.id || sold.name === offer.name)).toBe(false);
+        expect(offer.priceEP).toBeUndefined();
+        const look = resolveEquipmentVisualDescriptor({ name: offer.name });
+        expect(look.slot).toBe('neck'); expect(look.family).toBe('neckwear');
+        expect(look.primary).toBe(offer.primary); expect(look.secondary).toBe(offer.secondary);
+        expect(createProceduralEquipmentVisual({ id: offer.id, name: offer.name, slot: 'neck', rarity: 'Common' }, { slot: 'neck' })).toBeTruthy();
     }
 });
 

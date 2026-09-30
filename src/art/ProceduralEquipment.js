@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeometry, createDrapedSkirtGeometry, createWristCuffGeometry, createFittedBootGeometry, fittedBootFrontDepth, createClothMantleGeometry, createLegSectionGeometry } from './ProceduralGarmentGeometry.js';
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
-import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
+import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 import { batchRigidEquipmentPivots, clearRigidEquipmentPivots } from './RigidEquipmentPivots.js';
 
@@ -120,7 +120,7 @@ export const EQUIPMENT_VISUAL_DESCRIPTORS = Object.freeze({
 // Cosmetic render descriptors are NOT entries in the equippable item manifest.
 const RENDER_VISUAL_DESCRIPTORS = Object.freeze({
     ...EQUIPMENT_VISUAL_DESCRIPTORS,
-    ...Object.fromEntries(COSMETIC_CATALOGUE.map(look => [look.name, Object.freeze({
+    ...Object.fromEntries([...COSMETIC_CATALOGUE, ...SEASON_COSMETIC_CATALOGUE].map(look => [look.name, Object.freeze({
         ...EQUIPMENT_VISUAL_DESCRIPTORS[look.base], primary: look.primary, secondary: look.secondary
     })]))
 });
