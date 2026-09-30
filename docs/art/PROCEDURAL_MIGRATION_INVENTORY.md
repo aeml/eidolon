@@ -2,6 +2,11 @@
 
 Audit date: September 3, 2026
 
+September 30 delivery note: the user-requested rigged character export is staged at
+`assets/archetypes/Fighter/fighter.glb`. It is a specific exception to the asset-tree
+model count below, not a runtime dependency. The game still uses its procedural
+Fighter; the runtime-reference guard remains unchanged pending character integration.
+
 Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
