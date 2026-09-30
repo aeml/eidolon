@@ -32,6 +32,18 @@ Focused suites333checks pass3.083s and scoped ESLint passes with that fresh
 toolchain, not the shared old node_modules symlink. Whitespace clean. No
 unbounded adversarial payload or campaign replay.
 
+The same initial CI's shard2 also exposed Maelin's stale visual-reference
+assertion: it treated the current Wizard as an old rig with no Channel even
+though143adds the full class kit. Update the explicitly non-live reference to
+the current Wizard with exact Idle/Channel/Idle expectations, no missing clips,
+Wizard type and no Maelin tuning fork. Preserve the distinct CrystalKeeper
+type/fork, own channel pose and recovery assertions on High/Low at both screen
+sizes. Two actual Chrome cases pass13.1s; scoped lint/whitespace pass. No game
+animation changed or failure suppressed. Attempt to use the isolated dependency
+prefix's Playwright hit duplicate test instances from the project symlink,
+before tests ran; use the project-local runner for this source-render check.
+Fresh-toolchain dependency/Jest/ESLint evidence above remains separate.
+
 ## Public-access investigation and scoped proxy correction — September30
 
 Owner confirmed access recovered after reporting the page failed to load.
