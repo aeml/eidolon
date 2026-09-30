@@ -162,6 +162,15 @@ export class Minimap {
         this.lastBuffListSignature = '';
     }
 
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        this.phoneStatus?.dispose();
+        this.wrapper.remove();
+        this.buffTooltip.remove();
+        this.gameEngine = null;
+    }
+
     update(player, entities) {
         if (!player) return;
         if (!entities) entities = [];

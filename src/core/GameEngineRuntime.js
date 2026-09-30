@@ -124,6 +124,8 @@ class GameEngineRuntimeMethods {
             this.uiManager?.clearEnemyBars?.();
         }
         this.floatingTextManager?.dispose();
+        this.worldMap?.dispose();
+        this.minimap?.dispose();
 
         clearEngineSceneOwnership(this);
 

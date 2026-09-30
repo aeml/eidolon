@@ -1,5 +1,7 @@
 import { jest } from '@jest/globals';
 import { CharacterPreview } from '../src/ui/CharacterPreview.js';
+import { BASE_ITEMS, RARITY } from '../src/core/ItemSystem.js';
+import { EQUIPMENT_RENDER_SLOTS } from '../src/art/ProceduralEquipment.js';
 
 function fixture() {
     document.body.innerHTML = `<div id="preview">
@@ -92,4 +94,32 @@ test('falls back to equipment slots when another WebGL context is unavailable', 
     expect(preview.createRenderer).toHaveBeenCalledTimes(1);
     expect(host.textContent).toContain('Preview unavailable');
     preview.dispose();
+});
+
+test('class replacement and final disposal release owned loadout geometry, not shared sources', () => {
+    const { preview, player } = fixture();
+    player.equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
+        const base = BASE_ITEMS.find(item => item.slot === slot.replace(/[12]$/, ''));
+        return [slot, { ...base, id: `preview-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
+    }));
+    const disposers = root => {
+        const owned = [], shared = [];
+        root.traverse(node => {
+            if (!node.geometry) return;
+            (node.userData.rigidEquipmentPivot ? owned : shared).push(jest.spyOn(node.geometry, 'dispose'));
+        });
+        expect(owned.length).toBeGreaterThan(0);
+        return { owned, shared };
+    };
+    try {
+        preview.update(player);
+        const first = disposers(preview.model);
+        preview.update({ ...player, subType: 'Rogue' });
+        first.owned.forEach(spy => expect(spy).toHaveBeenCalledTimes(1));
+        first.shared.forEach(spy => expect(spy).not.toHaveBeenCalled());
+        const second = disposers(preview.model);
+        preview.dispose(); preview.dispose();
+        second.owned.forEach(spy => expect(spy).toHaveBeenCalledTimes(1));
+        second.shared.forEach(spy => expect(spy).not.toHaveBeenCalled());
+    } finally { preview.dispose(); jest.restoreAllMocks(); }
 });

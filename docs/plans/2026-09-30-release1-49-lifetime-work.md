@@ -78,3 +78,49 @@ deployment or milestone completion is claimed. Representative browser
 resource trends across world/dungeon/casino/death/reconnect and the remaining
 callback/lifetime audit are still required, as are ordered publication and
 this version's own release gates.
+
+## Map, context and preview teardown follow-up
+
+The next audit found GameEngine never invoked the existing WorldMap disposer,
+and Minimap had no disposal path for its owned wrapper, buff tooltip or phone
+status panel. A new engine teardown test fails before the fix1.773s, with both
+map disposal calls absent. Engine retirement now disposes both map owners;
+WorldMap disposal is idempotent, aborts listeners/observers and clears only its
+own container-owner link. Minimap retires its own status panel and removes only
+its owned HUD/tooltip, releasing its engine reference. Three scoped map/engine
+suites34checks pass2.309s.
+
+A real Chrome three-engine fixture then shows another explicit lifetime gap:
+all three removed game canvases still have live WebGL contexts (4.7s failing
+case), although fixed maps/listeners/panels are retired correctly. Each engine
+creates its own renderer and does not reuse it after destruction. RenderSystem
+now releases its own context after owned resource/renderer cleanup, using the
+supported context-loss API when available; does not force loss on a borrowed
+renderer or a global cache. A unit check preserves idempotence and disposal
+order. This is terminal cleanup, not a mid-session graphics fallback.
+
+Preview audit also reproduces undisposed per-loadout rigid geometry on class
+replacement (1.224s failing test). CharacterPreview already releases its owned
+context; it now clears owned procedural equipment before replacement and
+retirement, preserving shared body/equipment geometry, materials and caches.
+The new full14-slot test checks both replacement and final cleanup and keeps
+shared-source non-disposal assertions.
+
+Final map/engine/renderer/preview selection6suites57checks passes4.602s.
+Final real-Chrome4-case selection passes17.3s: three full engine constructor/
+equipped-render/destructor sessions each at High/Low, plus the desktop/phone
+UI-owner regressions. All six engine sessions retain exactly one minimap while
+live, zero HUD/tooltip nodes after retirement, cleared map ownership, aborted
+map listeners, inactive player, detached canvas, released native context and
+an open borrowed application socket. Pre-retirement geometry/texture counts
+stay56/27 at High and55/13 at Low across the three sessions. This measures
+prepared local owners, not full world residency, a driver-memory byte census,
+authenticated reconnect or actual-phone performance. No accounts or network
+actions are used. Scoped lint/whitespace pass. Artifacts:
+`/tmp/eidolon-1-49-engine-ui-final-0930`. The bounded engine fixture joins the
+existing interface CI stage, not an extra deployment job.
+
+Remaining1.49 evidence is unchanged: actual repeated populated-zone,
+dungeon/casino-floor, gear/death and connected-recovery resource trends and
+remaining callback audit, followed by synchronized metadata and own CI/live
+gates. It is not complete or deployed from these teardown checks.

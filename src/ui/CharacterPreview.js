@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../art/ProceduralHumanoid.js';
-import { applyProceduralEquipment, equipmentVisualSignature } from '../art/ProceduralEquipment.js';
+import { applyProceduralEquipment, clearProceduralEquipment, equipmentVisualSignature } from '../art/ProceduralEquipment.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 
@@ -72,6 +72,7 @@ export class CharacterPreview {
         if (signature === this.signature) return;
         this.signature = signature;
         if (type !== this.type) {
+            clearProceduralEquipment(this.model);
             this.model?.removeFromParent();
             // A fresh hierarchy: cloning a live actor copies rest-pose closures.
             this.model = FACTORIES[type]();
@@ -109,6 +110,7 @@ export class CharacterPreview {
         this.disposed = true;
         this.observer?.disconnect();
         this.host.removeEventListener('click', this.onClick);
+        clearProceduralEquipment(this.model);
         this.model?.removeFromParent();
         // Humanoids/equipment borrow cached geometry and materials also used by
         // live players. Only the preview's own texture and renderer are owned.

@@ -1260,6 +1260,10 @@ export class RenderSystem {
 
         if (this.renderer) {
             this.renderer.dispose();
+            // This session creates its own renderer/context and never reuses
+            // it. Release that context after owned resources, rather than
+            // leaving removed canvases alive until browser garbage collection.
+            this.renderer.forceContextLoss?.();
             if (this.renderer.domElement && this.renderer.domElement.parentNode) {
                 this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
             }

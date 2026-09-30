@@ -219,10 +219,13 @@ export class WorldMap {
     }
 
     dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
         if (this.resizeFrame) cancelAnimationFrame(this.resizeFrame);
         this.listeners.abort();
         this.resizeObserver?.disconnect();
         this.cartography?.dispose();
+        if (this.container.__eidolonWorldMap === this) delete this.container.__eidolonWorldMap;
     }
 
     setupInteraction() {

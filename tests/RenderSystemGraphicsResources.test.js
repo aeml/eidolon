@@ -61,3 +61,12 @@ test('switching back from Low recreates postprocessing without enabling it on ph
         } finally { render.dispose(); }
     }
 });
+test('terminal disposal releases the owned context once after renderer cleanup', () => {
+    const render = new RenderSystem(false);
+    render.renderer.forceContextLoss = jest.fn();
+    const dispose = jest.spyOn(render.renderer, 'dispose');
+    render.dispose(); render.dispose();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    expect(render.renderer.forceContextLoss).toHaveBeenCalledTimes(1);
+    expect(render.renderer.forceContextLoss.mock.invocationCallOrder[0]).toBeGreaterThan(dispose.mock.invocationCallOrder[0]);
+});

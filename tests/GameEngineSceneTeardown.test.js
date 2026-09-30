@@ -91,3 +91,11 @@ test('uses the UI session disposer once rather than disposing its children again
     expect(child.dispose).not.toHaveBeenCalled();
     expect(engine.renderSystem.dispose).toHaveBeenCalledTimes(1);
 });
+
+test('retires map observers/listeners and the instance-owned minimap with the engine', () => {
+    const engine = harness();
+    engine.worldMap = { dispose: jest.fn() }; engine.minimap = { dispose: jest.fn() };
+    engine.destroy(); engine.destroy();
+    expect(engine.worldMap.dispose).toHaveBeenCalledTimes(1);
+    expect(engine.minimap.dispose).toHaveBeenCalledTimes(1);
+});
