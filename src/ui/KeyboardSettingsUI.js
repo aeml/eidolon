@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 import { ALLOWED_BINDING_KEYS, DEFAULT_KEYBOARD_BINDINGS, KEYBOARD_ACTIONS, KEYBOARD_BINDINGS_EVENT,
     bindingLabel, loadKeyboardBindings, saveKeyboardBindings, validateKeyboardBindings } from '../core/KeyboardBindings.js';
 
@@ -21,11 +22,11 @@ export class KeyboardSettingsUI {
                 option.value = key; option.textContent = bindingLabel(key);
                 select.append(option);
             }
-            select.addEventListener('change', () => this.apply({ ...this.bindings, [action.id]: select.value }));
+            ownedEvent(this, select, 'change', () => this.apply({ ...this.bindings, [action.id]: select.value }));
             label.append(name, select); list.append(label);
             this.controls.set(action.id, select);
         }
-        root.querySelector('[data-reset-bindings]').onclick = () => this.apply({ ...DEFAULT_KEYBOARD_BINDINGS });
+        ownedEvent(this, root.querySelector('[data-reset-bindings]'), 'click', () => this.apply({ ...DEFAULT_KEYBOARD_BINDINGS }));
         this.render();
     }
 

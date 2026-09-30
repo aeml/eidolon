@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 export class PvPUI {
     constructor({ openManagedWindow, closeManagedWindow }) {
         this.openManagedWindow = openManagedWindow;
@@ -14,6 +15,13 @@ export class PvPUI {
         this.render();
     }
 
+    dispose() {
+        disposeOwnedEvents(this);
+        this.isOpen = false;
+        clearTimeout(this.queueRefresh);
+        this.window.remove();
+    }
+
     createWindow() {
         const windowElement = document.createElement('div');
         windowElement.id = 'pvp-window';
@@ -22,7 +30,7 @@ export class PvPUI {
         windowElement.innerHTML = `
             <div class="window-header"><span>DUELS & ARENA</span><button class="close-btn" type="button" aria-label="Close PvP window">×</button></div>
             <div class="pvp-window__body" data-pvp-body></div>`;
-        windowElement.querySelector('.close-btn')?.addEventListener('click', () => this.toggle(false));
+        ownedEvent(this, windowElement.querySelector('.close-btn'), 'click', () => this.toggle(false));
         document.body.appendChild(windowElement);
         return windowElement;
     }

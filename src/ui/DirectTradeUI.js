@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 export class DirectTradeUI {
     constructor({ getLastPlayer, addGameMessage }) {
         this.getLastPlayer = getLastPlayer;
@@ -18,14 +19,14 @@ export class DirectTradeUI {
         this.onConfirm = null;
         this.onCancel = null;
 
-        this.offerButton?.addEventListener('click', () => {
+        ownedEvent(this, this.offerButton, 'click', () => {
             if (!this.trade) return;
             const itemIds = Array.from(this.ownItems?.querySelectorAll('input:checked') || []).map((input) => input.value);
             this.onOffer?.(this.trade.id, itemIds, Math.max(0, Math.min(100000, Number(this.gold?.value) || 0)));
         });
-        this.confirmButton?.addEventListener('click', () => this.trade && this.onConfirm?.(this.trade.id));
-        this.cancelButton?.addEventListener('click', () => this.trade && this.onCancel?.(this.trade.id));
-        this.closeButton?.addEventListener('click', () => this.trade && this.onCancel?.(this.trade.id));
+        ownedEvent(this, this.confirmButton, 'click', () => this.trade && this.onConfirm?.(this.trade.id));
+        ownedEvent(this, this.cancelButton, 'click', () => this.trade && this.onCancel?.(this.trade.id));
+        ownedEvent(this, this.closeButton, 'click', () => this.trade && this.onCancel?.(this.trade.id));
     }
 
     update(payload, terminalState = '') {

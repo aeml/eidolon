@@ -46,4 +46,14 @@ describe('phone menu composition', () => {
         expect(menu.querySelectorAll('.phone-navigation')).toHaveLength(1);
         expect(document.querySelectorAll('#btn-resume')).toHaveLength(1);
     });
+    test('retired navigation no longer closes menus and a new owner rebinds existing buttons', () => {
+        const previous = new PhoneMenuUI(menu, close);
+        previous.dispose(); previous.dispose();
+        document.getElementById('btn-mobile-inv').click();
+        expect(close).not.toHaveBeenCalled();
+        const next = jest.fn(); new PhoneMenuUI(menu, next);
+        previous.dispose();
+        document.getElementById('btn-mobile-inv').click();
+        expect(next).toHaveBeenCalledTimes(1);
+    });
 });

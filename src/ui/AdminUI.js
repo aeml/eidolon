@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { AdminOperations } from './AdminOperations.js';
 
 // Visibility is only presentation. Every read and operation must be
@@ -60,14 +61,14 @@ export class AdminUI {
             this.refreshView('');
             this.refresh.focus();
         };
-        launcher?.addEventListener('click', this.open);
-        this.root.querySelector('.close-btn').addEventListener('click', () => {
+        ownedEvent(this, launcher, 'click', this.open);
+        ownedEvent(this, this.root.querySelector('.close-btn'), 'click', () => {
             this.closeWindow(this.root);
             if (!this.launcher?.hidden) this.launcher?.focus();
         });
-        this.refresh.addEventListener('click', () => this.refreshView(''));
-        this.next.addEventListener('click', () => this.refreshView(this.cursor));
-        for (const button of this.views) button.addEventListener('click', () => {
+        ownedEvent(this, this.refresh, 'click', () => this.refreshView(''));
+        ownedEvent(this, this.next, 'click', () => this.refreshView(this.cursor));
+        for (const button of this.views) ownedEvent(this, button, 'click', () => {
             if (this.pending || !this.authorized) return;
             this.view = button.dataset.view;
             this.filters.hidden = this.view !== 'history';
@@ -77,7 +78,7 @@ export class AdminUI {
             for (const view of this.views) view.setAttribute('aria-pressed', String(view === button));
             this.refreshView('');
         });
-        for (const filter of [this.actor, this.action, this.reportStatus]) filter.addEventListener('input', () => {
+        for (const filter of [this.actor, this.action, this.reportStatus]) ownedEvent(this, filter, 'input', () => {
             // Never combine a previous query's cursor with changed filters.
             this.cursor = '';
             this.next.hidden = true;
@@ -244,6 +245,7 @@ export class AdminUI {
     }
 
     dispose() {
+        disposeOwnedEvents(this);
         this.connectionState('closed');
         this.launcher?.removeEventListener('click', this.open);
         this.root.remove();

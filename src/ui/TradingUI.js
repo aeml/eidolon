@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 /**
  * Trading House UI module — handles auction browsing, listing, bidding,
  * buying out, and collecting/cancelling auctions.
@@ -72,13 +73,13 @@ export class TradingUI {
 
         // --- Event listeners ---
         if (this.btnCloseTradingHouse) {
-            this.btnCloseTradingHouse.addEventListener('click', () => this.toggle());
+            ownedEvent(this, this.btnCloseTradingHouse, 'click', () => this.toggle());
         }
-        if (this.tabTradingBid) this.tabTradingBid.addEventListener('click', () => this.switchTab('bid'));
-        if (this.tabTradingList) this.tabTradingList.addEventListener('click', () => this.switchTab('list'));
-        if (this.tabTradingMy) this.tabTradingMy.addEventListener('click', () => this.switchTab('my'));
-        if (this.btnTradingSearch) this.btnTradingSearch.addEventListener('click', () => this.handleSearch());
-        if (this.btnTradingCreate) this.btnTradingCreate.addEventListener('click', () => this.handleCreate());
+        if (this.tabTradingBid) ownedEvent(this, this.tabTradingBid, 'click', () => this.switchTab('bid'));
+        if (this.tabTradingList) ownedEvent(this, this.tabTradingList, 'click', () => this.switchTab('list'));
+        if (this.tabTradingMy) ownedEvent(this, this.tabTradingMy, 'click', () => this.switchTab('my'));
+        if (this.btnTradingSearch) ownedEvent(this, this.btnTradingSearch, 'click', () => this.handleSearch());
+        if (this.btnTradingCreate) ownedEvent(this, this.btnTradingCreate, 'click', () => this.handleCreate());
     }
 
     clearElement(element) {
@@ -271,6 +272,11 @@ export class TradingUI {
             status.textContent = message;
             status.hidden = !message;
         }
+    }
+
+    dispose() {
+        disposeOwnedEvents(this);
+        this.clearPendingReads();
     }
 
     clearPendingReads() {

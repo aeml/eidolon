@@ -1,5 +1,8 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 // This wallet never submits Gold casino wagers or grants VIP access.
 export class EPWalletUI {
+    dispose() { disposeOwnedEvents(this); this.root.remove(); }
+
     constructor({ host, getPlayer, send }) {
         this.getPlayer = getPlayer;
         this.send = send;
@@ -21,14 +24,14 @@ export class EPWalletUI {
         this.confirmation = this.root.querySelector('[data-confirmation]');
         this.retry = this.root.querySelector('[data-retry]');
         this.status = this.root.querySelector('[role="status"]');
-        this.root.addEventListener('toggle', () => {
+        ownedEvent(this, this.root, 'toggle', () => {
             if (!this.root.open) return;
             this.refreshPlayer();
             this.send('get_vip_status', {});
             this.send('get_ep_wallet', {});
         });
-        this.amount.addEventListener('input', () => { this.confirmation.hidden = true; });
-        this.review.addEventListener('click', () => {
+        ownedEvent(this, this.amount, 'input', () => { this.confirmation.hidden = true; });
+        ownedEvent(this, this.review, 'click', () => {
             if (!this.refreshPlayer() || this.pending || !this.ready) return;
             const amount = Number(this.amount.value), cost = amount * this.rate;
             if (!Number.isSafeInteger(amount) || amount < 1 || !Number.isSafeInteger(cost) || cost > this.gold) {
@@ -39,14 +42,14 @@ export class EPWalletUI {
             this.root.querySelector('[data-cost]').textContent = `Permanently spend ${cost.toLocaleString()} Gold to receive ${amount.toLocaleString()} EP? There is no exchange back to Gold.`;
             this.confirmation.hidden = false;
         });
-        this.root.querySelector('[data-cancel]').addEventListener('click', () => { this.confirmation.hidden = true; });
-        this.root.querySelector('[data-confirm]').addEventListener('click', () => {
+        ownedEvent(this, this.root.querySelector('[data-cancel]'), 'click', () => { this.confirmation.hidden = true; });
+        ownedEvent(this, this.root.querySelector('[data-confirm]'), 'click', () => {
             if (!this.refreshPlayer() || this.pending || this.confirmation.hidden) return;
             this.pending = { id: crypto.randomUUID(), amount: this.reviewedAmount, confirmed: true };
             this.storePending();
             this.submitPending();
         });
-        this.retry.addEventListener('click', () => { if (this.refreshPlayer()) this.submitPending(); });
+        ownedEvent(this, this.retry, 'click', () => { if (this.refreshPlayer()) this.submitPending(); });
     }
 
     refreshPlayer() {

@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
 import { MobileItemDetails } from './MobileItemDetails.js';
 import { PhoneStashUI } from './PhoneStashUI.js';
@@ -91,6 +92,17 @@ export class InventoryUI {
         this.stashBrowser = !this.isMobile && this.stashScreen ? new StashBrowserUI(this) : null;
 
         this.setupShop();
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        clearTimeout(this.tooltipButtonTimer);
+        this.mobileDetails?.dispose();
+        this.loadouts?.dispose();
+        this.phoneStash?.root.remove();
+        this.stashBrowser?.root.remove();
     }
 
     // ---- helpers that reach back to UIManager via ctx ----
@@ -407,17 +419,17 @@ export class InventoryUI {
     // ---- constructor helpers ----
 
     _bindSplitEvents() {
-        if (this.btnCloseSplit) this.btnCloseSplit.addEventListener('click', () => this.hideSplitWindow());
-        if (this.btnCancelSplit) this.btnCancelSplit.addEventListener('click', () => this.hideSplitWindow());
-        if (this.btnConfirmSplit) this.btnConfirmSplit.addEventListener('click', () => this.confirmSplit());
+        if (this.btnCloseSplit) ownedEvent(this, this.btnCloseSplit, 'click', () => this.hideSplitWindow());
+        if (this.btnCancelSplit) ownedEvent(this, this.btnCancelSplit, 'click', () => this.hideSplitWindow());
+        if (this.btnConfirmSplit) ownedEvent(this, this.btnConfirmSplit, 'click', () => this.confirmSplit());
 
         if (this.splitAmountRange) {
-            this.splitAmountRange.addEventListener('input', (e) => {
+            ownedEvent(this, this.splitAmountRange, 'input', (e) => {
                 if (this.splitAmountInput) this.splitAmountInput.value = e.target.value;
             });
         }
         if (this.splitAmountInput) {
-            this.splitAmountInput.addEventListener('input', (e) => {
+            ownedEvent(this, this.splitAmountInput, 'input', (e) => {
                 if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
             });
         }
@@ -428,12 +440,12 @@ export class InventoryUI {
         // onto another window, outside the browser, or pressing Escape cancels.
         const isWorldDrop = (event) => event.target instanceof Element && event.target.tagName === 'CANVAS' &&
             event.target === window.game?.renderSystem?.renderer?.domElement;
-        document.addEventListener('dragover', event => {
+        ownedEvent(this, document, 'dragover', event => {
             if (!this.draggedBagItem || !isWorldDrop(event)) return;
             event.preventDefault();
             if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
         });
-        document.addEventListener('drop', event => {
+        ownedEvent(this, document, 'drop', event => {
             if (!this.draggedBagItem || !isWorldDrop(event)) return;
             event.preventDefault();
             event.stopPropagation();
@@ -452,43 +464,43 @@ export class InventoryUI {
             if (window.game?.dropInventoryItem(source.index, source.itemId)) this.hideTooltips();
         });
         if (this.btnSortInventory) {
-            this.btnSortInventory.addEventListener('click', () => this.handleSortInventory());
+            ownedEvent(this, this.btnSortInventory, 'click', () => this.handleSortInventory());
         }
         if (this.btnCloseInventory) {
-            this.btnCloseInventory.addEventListener('click', () => this.toggleInventory());
+            ownedEvent(this, this.btnCloseInventory, 'click', () => this.toggleInventory());
         }
     }
 
     _bindShopEvents() {
         if (this.tabShopMain) {
-            this.tabShopMain.addEventListener('click', () => this.switchShopTab('main'));
+            ownedEvent(this, this.tabShopMain, 'click', () => this.switchShopTab('main'));
         }
         if (this.tabShopBuyback) {
-            this.tabShopBuyback.addEventListener('click', () => this.switchShopTab('buyback'));
+            ownedEvent(this, this.tabShopBuyback, 'click', () => this.switchShopTab('buyback'));
         }
         if (this.btnCloseShop) {
-            this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+            ownedEvent(this, this.btnCloseShop, 'click', () => this.toggleShop());
         }
         if (this.btnCloseShopHeader) {
-            this.btnCloseShopHeader.addEventListener('click', () => this.toggleShop());
+            ownedEvent(this, this.btnCloseShopHeader, 'click', () => this.toggleShop());
         }
         if (this.btnCloseStash) {
-            this.btnCloseStash.addEventListener('click', () => this.toggleStash());
+            ownedEvent(this, this.btnCloseStash, 'click', () => this.toggleStash());
         }
         if (this.btnSellCommon) {
-            this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
+            ownedEvent(this, this.btnSellCommon, 'click', () => this.handleSellAll('Common'));
         }
         if (this.btnSellUncommon) {
-            this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
+            ownedEvent(this, this.btnSellUncommon, 'click', () => this.handleSellAll('Uncommon'));
         }
         if (this.btnSellRare) {
-            this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
+            ownedEvent(this, this.btnSellRare, 'click', () => this.handleSellAll('Rare'));
         }
     }
 
     _bindTooltipEvents() {
         // Inventory Grid Tooltips
-        this.inventoryGrid.addEventListener('mousemove', (e) => {
+        ownedEvent(this, this.inventoryGrid, 'mousemove', (e) => {
             if (this.isMobile) return;
             if (this.selectedSlot !== -1) return;
             const slot = e.target.closest('.inv-slot');
@@ -498,14 +510,14 @@ export class InventoryUI {
                 this.hideTooltips();
             }
         });
-        this.inventoryGrid.addEventListener('mouseleave', () => {
+        ownedEvent(this, this.inventoryGrid, 'mouseleave', () => {
             if (this.selectedSlot === -1) this.hideTooltips();
         });
 
         // Equipment Tooltips
         const equipContainer = document.querySelector('#character-sheet .equipment-slots');
         if (equipContainer) {
-            equipContainer.addEventListener('mousemove', (e) => {
+            ownedEvent(this, equipContainer, 'mousemove', (e) => {
                 if (this.isMobile) return;
                 const slot = e.target.closest('.equip-slot');
                 if (slot && slot._item) {
@@ -514,11 +526,11 @@ export class InventoryUI {
                     this.hideTooltips();
                 }
             });
-            equipContainer.addEventListener('mouseleave', () => this.hideTooltips());
+            ownedEvent(this, equipContainer, 'mouseleave', () => this.hideTooltips());
         }
 
         // Close tooltip/selection when clicking outside
-        window.addEventListener('click', (e) => {
+        ownedEvent(this, window, 'click', (e) => {
             if (this.selectedSlot !== -1 && !e.target.closest('#phone-item-details') && !e.target.closest('#stat-tooltip') && !e.target.closest('.inv-slot')) {
                 this.selectedSlot = -1;
                 this.hideTooltips();
@@ -527,7 +539,7 @@ export class InventoryUI {
     }
 
     _bindCompareMode() {
-        window.addEventListener('keydown', (e) => {
+        ownedEvent(this, window, 'keydown', (e) => {
             if (e.key === 'Shift') {
                 this.compareMode = true;
                 if (this.hoveredItem) {
@@ -535,7 +547,7 @@ export class InventoryUI {
                 }
             }
         });
-        window.addEventListener('keyup', (e) => {
+        ownedEvent(this, window, 'keyup', (e) => {
             if (e.key === 'Shift') {
                 this.compareMode = false;
                 if (this.hoveredItem) {
@@ -1384,7 +1396,9 @@ export class InventoryUI {
         this.statTooltipDesc.innerHTML = desc;
 
         // Bind Button Events
-        setTimeout(() => {
+        clearTimeout(this.tooltipButtonTimer);
+        this.tooltipButtonTimer = setTimeout(() => {
+            if (this.disposed) return;
             const btnSell = document.getElementById('btn-tooltip-sell');
             if (btnSell) {
                 btnSell.onclick = (e) => {
@@ -1490,6 +1504,7 @@ export class InventoryUI {
     }
 
     hideTooltips() {
+        clearTimeout(this.tooltipButtonTimer);
         this.statTooltip.style.display = 'none';
         this.compareTooltip.style.display = 'none';
         this.hoveredItem = null;

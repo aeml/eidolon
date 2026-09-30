@@ -1,4 +1,5 @@
 import { AUDIO_CUES } from '../audio/AudioManager.js';
+import { ownedEvent } from './OwnedEvents.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { EnemyHealthBars } from './EnemyHealthBars.js';
 
@@ -124,7 +125,7 @@ class UIManagerWindowMethods {
     setupAudioInteractionCues() {
         if (this.audioInteractionCuesSetup) return;
         this.audioInteractionCuesSetup = true;
-        document.addEventListener('click', (event) => {
+        ownedEvent(this, document, 'click', (event) => {
             const target = event.target;
             if (!target?.closest) return;
             const interactive = target.closest('button, .hud-menu-btn, .class-btn, .auth-btn, .start-version-row__link, input, select, textarea');
@@ -352,6 +353,7 @@ class UIManagerWindowMethods {
     ensureStaticModalBackdrop() {
         let backdrop = document.getElementById('ui-static-modal-backdrop');
         if (backdrop) {
+            this.staticModalBackdrop = backdrop;
             return backdrop;
         }
 
@@ -359,6 +361,7 @@ class UIManagerWindowMethods {
         backdrop.id = 'ui-static-modal-backdrop';
         backdrop.addEventListener('click', () => this.closeOpenStaticModal());
         (this.uiLayer || document.getElementById('ui-layer') || document.body).appendChild(backdrop);
+        this.staticModalBackdrop = backdrop;
         return backdrop;
     }
 

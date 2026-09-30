@@ -81,3 +81,13 @@ test('late model completion after session destruction returns to pool without re
         expect(entity.isActive).toBe(false); expect(entity.isMeshLoading).toBe(false);
     } finally { create.mockRestore(); release.mockRestore(); }
 });
+
+test('uses the UI session disposer once rather than disposing its children again', () => {
+    const engine = harness();
+    const child = { dispose: jest.fn() };
+    engine.uiManager = { dispose: jest.fn(), characterPreview: child, admin: child, playtest: child };
+    engine.destroy(); engine.destroy();
+    expect(engine.uiManager.dispose).toHaveBeenCalledTimes(1);
+    expect(child.dispose).not.toHaveBeenCalled();
+    expect(engine.renderSystem.dispose).toHaveBeenCalledTimes(1);
+});

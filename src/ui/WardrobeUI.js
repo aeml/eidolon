@@ -1,6 +1,9 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { EQUIPMENT_SLOT_KEYS, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 export class WardrobeUI {
+    dispose() { disposeOwnedEvents(this); this.root.remove(); }
+
     constructor({ host, getPlayer, send }) {
         this.getPlayer = getPlayer;
         this.send = send;
@@ -26,19 +29,19 @@ export class WardrobeUI {
             option.textContent = slot.replace(/([A-Z])/g, ' $1').replace(/(\d)/g, ' $1').replace(/^./, c => c.toUpperCase());
             this.slot.append(option);
         }
-        this.root.addEventListener('toggle', () => {
+        ownedEvent(this, this.root, 'toggle', () => {
             if (!this.root.open) return;
             this.refreshPlayer();
             this.apply.disabled = true;
             this.status.textContent = 'Loading your wardrobe…';
             this.send('get_wardrobe', {});
         });
-        this.slot.addEventListener('change', () => this.renderLooks());
-        this.learn.addEventListener('click', () => {
+        ownedEvent(this, this.slot, 'change', () => this.renderLooks());
+        ownedEvent(this, this.learn, 'click', () => {
             this.status.textContent = 'Learning owned looks…';
             this.send('collect_appearances', {});
         });
-        this.apply.addEventListener('click', () => {
+        ownedEvent(this, this.apply, 'click', () => {
             this.status.textContent = 'Applying appearance…';
             this.send('select_appearance', { slot: this.slot.value, key: this.look.value });
         });

@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { CharacterPreview } from './CharacterPreview.js';
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
 
@@ -44,8 +45,8 @@ export class CosmeticVendorUI {
         body.append(this.list, details);
         this.root.append(header, this.balance, intro, body, this.status);
         document.body.append(this.root);
-        this.root.addEventListener('keydown', event => event.stopPropagation());
-        this.root.addEventListener('close', () => { this.preview?.dispose(); this.preview = null; });
+        ownedEvent(this, this.root, 'keydown', event => event.stopPropagation());
+        ownedEvent(this, this.root, 'close', () => { this.preview?.dispose(); this.preview = null; });
     }
 
     button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
@@ -141,5 +142,5 @@ export class CosmeticVendorUI {
     }
 
     handleAppearanceResult(result) { if (this.root.open) { this.status.textContent = result?.message || 'Appearance updated.'; this.renderPreview(); } }
-    dispose() { this.close(); this.preview?.dispose(); this.root.remove(); }
+    dispose() { disposeOwnedEvents(this); this.close(); this.preview?.dispose(); this.root.remove(); }
 }

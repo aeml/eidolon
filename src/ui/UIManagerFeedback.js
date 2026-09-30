@@ -508,6 +508,7 @@ class UIManagerFeedbackMethods {
      * @param {string} text
      */
     _renderFriendToast(text) {
+        if (this.disposed) return;
         const toast = document.createElement('div');
         toast.className = 'friend-toast';
         toast.setAttribute('role', 'status');
@@ -521,10 +522,16 @@ class UIManagerFeedbackMethods {
 
         const DISMISS_MS = 4000;
         const FADE_MS = 400;
-        setTimeout(() => {
+        this.friendToasts ||= new Map();
+        const timers = [];
+        this.friendToasts.set(toast, timers);
+        timers.push(setTimeout(() => {
             toast.classList.remove('friend-toast--visible');
-            setTimeout(() => toast.remove(), FADE_MS);
-        }, DISMISS_MS);
+            timers.push(setTimeout(() => {
+                toast.remove();
+                this.friendToasts.delete(toast);
+            }, FADE_MS));
+        }, DISMISS_MS));
     }
 
     updateCombatIntent(intent) {

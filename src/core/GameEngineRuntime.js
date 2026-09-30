@@ -96,10 +96,6 @@ class GameEngineRuntimeMethods {
         this.network?.destroy?.();
         this.audioManager?.dispose?.();
         this.casino?.dispose();
-        this.uiManager?.cosmeticVendor?.dispose();
-        this.uiManager?.admin?.dispose();
-        this.uiManager?.playtest?.dispose();
-        this.uiManager?.clearEidolonPhaseNotice?.();
         this.publicEvents?.dispose();
         this.clearCombatIntentState();
         if (this.animationFrameId) {
@@ -111,14 +107,23 @@ class GameEngineRuntimeMethods {
             this.inputManager.dispose();
         }
 
-        this.uiManager?.characterPreview?.dispose();
-        this.uiManager?.social?.phoneParty?.dispose();
-        this.uiManager?.inventory?.mobileDetails?.dispose();
-        this.uiManager?.windowLayoutObserver?.disconnect();
-        this.uiManager?.viewportLayout?.dispose();
-        this.uiManager?.chat?.sizeObserver?.disconnect();
+        if (this.uiManager?.dispose) {
+            this.uiManager.dispose();
+        } else {
+            // Lightweight headless/test hosts may provide only these owners.
+            this.uiManager?.cosmeticVendor?.dispose();
+            this.uiManager?.admin?.dispose();
+            this.uiManager?.playtest?.dispose();
+            this.uiManager?.clearEidolonPhaseNotice?.();
+            this.uiManager?.characterPreview?.dispose();
+            this.uiManager?.social?.phoneParty?.dispose();
+            this.uiManager?.inventory?.mobileDetails?.dispose();
+            this.uiManager?.windowLayoutObserver?.disconnect();
+            this.uiManager?.viewportLayout?.dispose();
+            this.uiManager?.chat?.sizeObserver?.disconnect();
+            this.uiManager?.clearEnemyBars?.();
+        }
         this.floatingTextManager?.dispose();
-        this.uiManager?.clearEnemyBars?.();
 
         clearEngineSceneOwnership(this);
 

@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 
 const MAX_TEXT = 3200;
@@ -67,10 +68,10 @@ export class ReportUI {
             if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
             else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
         };
-        this.button.addEventListener('click', this.submitListener);
-        this.optIn.addEventListener('change', this.contextListener);
-        this.text.addEventListener('input', this.inputListener);
-        this.root.addEventListener('keydown', this.keyListener);
+        ownedEvent(this, this.button, 'click', this.submitListener);
+        ownedEvent(this, this.optIn, 'change', this.contextListener);
+        ownedEvent(this, this.text, 'input', this.inputListener);
+        ownedEvent(this, this.root, 'keydown', this.keyListener);
         this.updateCount();
         this.setStatus('Reports go to the game operator. Do not include passwords or payment details.');
     }
@@ -145,6 +146,7 @@ export class ReportUI {
     }
 
     dispose() {
+        disposeOwnedEvents(this);
         clearTimeout(this.timer);
         this.pending = null;
         this.button?.removeEventListener('click', this.submitListener);

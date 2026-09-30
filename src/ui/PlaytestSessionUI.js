@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { PlaytestSession, PLAYTEST_ACTIVITIES } from './PlaytestSession.js';
 
 export class PlaytestSessionUI {
@@ -27,7 +28,7 @@ export class PlaytestSessionUI {
         this.clear = query('[data-clear]'); this.attach = query('[data-attach]');
         this.lastInput = this.now();
         this.noteInput = () => { this.lastInput = this.now(); };
-        for (const type of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) document.addEventListener(type, this.noteInput, { passive: true });
+        for (const type of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) ownedEvent(this, document, type, this.noteInput, { passive: true });
         this.start.onclick = () => {
             this.lastInput = this.now();
             this.session.activity = this.activity.value; this.session.assisted = this.assisted.checked;
@@ -82,6 +83,7 @@ export class PlaytestSessionUI {
     }
 
     dispose() {
+        disposeOwnedEvents(this);
         clearInterval(this.timer);
         for (const type of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) document.removeEventListener(type, this.noteInput);
         this.session?.clear(); this.root?.remove();

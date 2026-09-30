@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { GuildUI } from './GuildUI.js';
 import { GroupFinderUI } from './GroupFinderUI.js';
 import { socialSafetyActions, socialSafetySettings } from './SocialSafetyUI.js';
@@ -12,6 +13,12 @@ import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidanc
  * The parent UIManager passes shared helpers via the `ctx` object.
  */
 export class SocialUI {
+    dispose() {
+        disposeOwnedEvents(this);
+        this.groupFinder?.setActive(false);
+        this.phoneParty?.dispose();
+    }
+
     /**
      * @param {Object} ctx
      * @param {Function} ctx.getLastPlayer  – returns current player ref
@@ -75,14 +82,14 @@ export class SocialUI {
         this.btnDeclineParty = document.getElementById('btn-decline-party');
 
         // --- Party event listeners ---
-        if (this.btnInviteParty) this.btnInviteParty.addEventListener('click', () => {
+        if (this.btnInviteParty) ownedEvent(this, this.btnInviteParty, 'click', () => {
             const name = this.partyInviteInput.value.trim();
             if (name && this.onPartyInvite) {
                 this.onPartyInvite(name);
                 this.partyInviteInput.value = '';
             }
         });
-		this.btnTradePlayer?.addEventListener('click', () => {
+		ownedEvent(this, this.btnTradePlayer, 'click', () => {
 			const name = this.partyInviteInput?.value.trim();
 			if (name) {
 				this.onTradeRequest?.(name);
@@ -90,25 +97,25 @@ export class SocialUI {
 			}
 		});
 
-        if (this.btnLeaveParty) this.btnLeaveParty.addEventListener('click', () => {
+        if (this.btnLeaveParty) ownedEvent(this, this.btnLeaveParty, 'click', () => {
             if (this.onPartyLeave) this.onPartyLeave();
         });
 
-		this.btnPartyReadyCheck?.addEventListener('click', () => this.onPartyReadyCheck?.());
-		this.btnPartyReady?.addEventListener('click', () => {
+		ownedEvent(this, this.btnPartyReadyCheck, 'click', () => this.onPartyReadyCheck?.());
+		ownedEvent(this, this.btnPartyReady, 'click', () => {
 			const ready = this.btnPartyReady.dataset.ready !== 'true';
 			this.onPartyReady?.(ready);
 		});
-		this.partyLootRule?.addEventListener('change', () => {
+		ownedEvent(this, this.partyLootRule, 'change', () => {
 			this.onPartyLootRule?.(this.partyLootRule.value);
 		});
 
-        if (this.btnAcceptParty) this.btnAcceptParty.addEventListener('click', () => {
+        if (this.btnAcceptParty) ownedEvent(this, this.btnAcceptParty, 'click', () => {
             if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true);
             this.hidePartyRequest();
         });
 
-        if (this.btnDeclineParty) this.btnDeclineParty.addEventListener('click', () => {
+        if (this.btnDeclineParty) ownedEvent(this, this.btnDeclineParty, 'click', () => {
             if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false);
             this.hidePartyRequest();
         });
@@ -117,7 +124,7 @@ export class SocialUI {
         if (ctx.isMobile) this.phoneParty = new PhonePartyUI(this);
         if (this.socialStatusSelect) {
             this.socialStatusSelect.value = this.currentSocialStatus;
-            this.socialStatusSelect.addEventListener('change', () => {
+            ownedEvent(this, this.socialStatusSelect, 'change', () => {
                 this.setSocialStatus(this.socialStatusSelect.value, { notify: true });
             });
         }
@@ -667,16 +674,16 @@ export class SocialUI {
             document.body.appendChild(div);
         }
 
-        div.querySelector('#close-social')?.addEventListener('click', () => this.toggleSocial(false));
+        ownedEvent(this, div.querySelector('#close-social'), 'click', () => this.toggleSocial(false));
 
         // Tab switching
-        div.querySelector('#tab-btn-online')?.addEventListener('click', () => this._switchTab('online'));
-        div.querySelector('#tab-btn-friends')?.addEventListener('click', () => {
+        ownedEvent(this, div.querySelector('#tab-btn-online'), 'click', () => this._switchTab('online'));
+        ownedEvent(this, div.querySelector('#tab-btn-friends'), 'click', () => {
             this._switchTab('friends');
             this._renderFriendsPanel();
         });
-        div.querySelector('#tab-btn-guild')?.addEventListener('click', () => this._switchTab('guild'));
-        div.querySelector('#tab-btn-groups')?.addEventListener('click', () => this._switchTab('groups'));
+        ownedEvent(this, div.querySelector('#tab-btn-guild'), 'click', () => this._switchTab('guild'));
+        ownedEvent(this, div.querySelector('#tab-btn-groups'), 'click', () => this._switchTab('groups'));
 
         // Add friend button
         const addBtn = div.querySelector('#btn-add-friend');
@@ -689,8 +696,8 @@ export class SocialUI {
                     addInput.value = '';
                 }
             };
-            addBtn.addEventListener('click', submit);
-            addInput.addEventListener('keydown', (e) => {
+            ownedEvent(this, addBtn, 'click', submit);
+            ownedEvent(this, addInput, 'keydown', (e) => {
                 if (e.key === 'Enter') submit();
             });
         }

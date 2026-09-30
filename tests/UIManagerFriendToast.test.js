@@ -38,6 +38,7 @@ jest.unstable_mockModule('../src/audio/AudioManager.js', () => ({
         constructor() {}
         play() {}
         getSettings() { return { enabled: true, volume: 1.0, detailLevel: 'full' }; }
+        dispose = jest.fn();
     },
     AUDIO_CUES: {},
 }));
@@ -137,6 +138,7 @@ describe('UIManager.showFriendToast', () => {
     });
 
     afterEach(() => {
+        uiManager.dispose();
         // Remove any toast elements left in the DOM.
         document.querySelectorAll('.friend-toast').forEach(el => el.remove());
     });
@@ -264,6 +266,7 @@ describe('UIManager._renderFriendToast', () => {
     });
 
     afterEach(() => {
+        uiManager.dispose();
         document.querySelectorAll('.friend-toast').forEach(el => el.remove());
     });
 
@@ -283,5 +286,46 @@ describe('UIManager._renderFriendToast', () => {
         uiManager._renderFriendToast('visible?');
         const toast = document.querySelector('.friend-toast');
         expect(toast.classList.contains('friend-toast--visible')).toBe(true);
+    });
+});
+
+describe('UIManager disposal ownership', () => {
+    test('retires children and observers once without disposing borrowed audio or shared markup', () => {
+        const ui = createUIManager();
+        const borrowedAudio = ui.audioManager.dispose = jest.fn();
+        const preview = ui.characterPreview = { dispose: jest.fn() };
+        const observer = ui.windowLayoutObserver = { disconnect: jest.fn() };
+        const originalInventory = document.createElement('section'); originalInventory.id = 'inventory-screen';
+        document.body.append(originalInventory);
+        ui.dispose(); ui.dispose();
+        expect(preview.dispose).toHaveBeenCalledTimes(1);
+        expect(observer.disconnect).toHaveBeenCalledTimes(1);
+        expect(borrowedAudio).not.toHaveBeenCalled();
+        expect(originalInventory.isConnected).toBe(true);
+        expect(ui.pvp.window.isConnected).toBe(false);
+        originalInventory.remove();
+    });
+
+    test('standalone UI disposes its own audio manager', () => {
+        setupMinimalDOM();
+        const ui = new UIManager(false);
+        ui.dispose(); ui.dispose();
+        expect(ui.audioManager.dispose).toHaveBeenCalledTimes(1);
+    });
+
+    test('clears toast nodes and both dismissal stages on session retirement', () => {
+        jest.useFakeTimers();
+        const ui = createUIManager();
+        try {
+            ui._renderFriendToast('before fade'); ui._renderFriendToast('during fade');
+            jest.advanceTimersByTime(4000);
+            expect(document.querySelectorAll('.friend-toast')).toHaveLength(2);
+            ui.dispose();
+            expect(document.querySelectorAll('.friend-toast')).toHaveLength(0);
+            expect(ui.friendToasts.size).toBe(0);
+            jest.runOnlyPendingTimers();
+            ui._renderFriendToast('late callback');
+            expect(document.querySelectorAll('.friend-toast')).toHaveLength(0);
+        } finally { ui.dispose(); jest.useRealTimers(); }
     });
 });

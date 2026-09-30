@@ -1,6 +1,8 @@
 // Presets are server-owned item references. This panel never moves local items
 // or applies skill choices until the server confirms an actual swap.
 export class EquipmentLoadoutUI {
+    dispose() { this.root.remove(); }
+
     constructor({ host, getPlayer, send }) {
         this.getPlayer = getPlayer;
         this.send = send;

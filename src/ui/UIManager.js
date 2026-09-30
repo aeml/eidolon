@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { RARITY } from '../core/ItemSystem.js';
 import { readPreference } from './PreferenceStorage.js';
 import { getAbilityManaCost } from '../core/AbilityEconomy.js';
@@ -35,6 +36,7 @@ import { resourceBarPresentation } from './resourceBarPresentation.js';
 export class UIManager {
     constructor(isMobile = false, options = {}) {
         this.isMobile = isMobile;
+        this.ownsAudioManager = !options.audioManager;
         this.audioManager = options.audioManager || new AudioManager();
         this.hud = document.getElementById('player-hud');
         this.hpBar = document.getElementById('player-hp-bar');
@@ -128,7 +130,7 @@ export class UIManager {
         this.abilitiesMenu = document.getElementById('abilities-menu');
         this.abilitiesContent = document.getElementById('abilities-content');
         this.btnCloseAbilities = document.getElementById('btn-close-abilities');
-        if (this.btnCloseAbilities) this.btnCloseAbilities.addEventListener('click', () => this.toggleAbilitiesMenu());
+        if (this.btnCloseAbilities) ownedEvent(this, this.btnCloseAbilities, 'click', () => this.toggleAbilitiesMenu());
 
         // Hotbar UI
         this.hotbarContainer = document.getElementById('hotbar-container');
@@ -183,36 +185,36 @@ export class UIManager {
         this.assetPackEnvironmentSize = document.getElementById('asset-pack-environment-size');
         this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
 
-        if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        if (this.btnResume) ownedEvent(this, this.btnResume, 'click', () => this.toggleEscMenu());
         if (this.isMobile && this.escMenu) {
             this.phoneMenu = new PhoneMenuUI(this.escMenu, () => {
                 if (this.isEscMenuOpen) this.toggleEscMenu();
             });
         }
-        document.getElementById('btn-mobile-target-clear')?.addEventListener('click', () => this.onMobileTargetClear?.());
+        ownedEvent(this, document.getElementById('btn-mobile-target-clear'), 'click', () => this.onMobileTargetClear?.());
         for (const [id, open] of [
             ['btn-phone-skills', () => this.toggleSkillTree()],
             ['btn-phone-abilities', () => this.toggleAbilitiesMenu()],
             ['btn-phone-camera', () => this.onCameraReset?.()]
         ]) {
-            document.getElementById(id)?.addEventListener('click', () => {
+            ownedEvent(this, document.getElementById(id), 'click', () => {
                 if (this.escMenu?.style.display !== 'none') this.toggleEscMenu();
                 open();
             });
         }
-        if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
-        if (this.btnSettings) this.btnSettings.addEventListener('click', () => this.toggleSettings());
-        if (this.btnPatchNotes) this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
-        if (this.btnReport) this.btnReport.addEventListener('click', () => this.toggleReport());
-        if (this.btnMenu) this.btnMenu.addEventListener('click', () => location.reload());
-        if (this.btnCloseHelp) this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
-        if (this.btnCloseHelpHeader) this.btnCloseHelpHeader.addEventListener('click', () => this.toggleHelp());
-        if (this.btnCloseSettings) this.btnCloseSettings.addEventListener('click', () => this.toggleSettings());
-        if (this.btnCloseSettingsHeader) this.btnCloseSettingsHeader.addEventListener('click', () => this.toggleSettings());
-        if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', () => this.togglePatchNotes());
-        if (this.btnClosePatchNotesHeader) this.btnClosePatchNotesHeader.addEventListener('click', () => this.togglePatchNotes());
-        if (this.btnCloseReportHeader) this.btnCloseReportHeader.addEventListener('click', () => this.toggleReport());
-        if (this.btnCloseCharacter) this.btnCloseCharacter.addEventListener('click', () => this.toggleCharacterSheet());
+        if (this.btnHelp) ownedEvent(this, this.btnHelp, 'click', () => this.toggleHelp());
+        if (this.btnSettings) ownedEvent(this, this.btnSettings, 'click', () => this.toggleSettings());
+        if (this.btnPatchNotes) ownedEvent(this, this.btnPatchNotes, 'click', () => this.togglePatchNotes());
+        if (this.btnReport) ownedEvent(this, this.btnReport, 'click', () => this.toggleReport());
+        if (this.btnMenu) ownedEvent(this, this.btnMenu, 'click', () => location.reload());
+        if (this.btnCloseHelp) ownedEvent(this, this.btnCloseHelp, 'click', () => this.toggleHelp());
+        if (this.btnCloseHelpHeader) ownedEvent(this, this.btnCloseHelpHeader, 'click', () => this.toggleHelp());
+        if (this.btnCloseSettings) ownedEvent(this, this.btnCloseSettings, 'click', () => this.toggleSettings());
+        if (this.btnCloseSettingsHeader) ownedEvent(this, this.btnCloseSettingsHeader, 'click', () => this.toggleSettings());
+        if (this.btnClosePatchNotes) ownedEvent(this, this.btnClosePatchNotes, 'click', () => this.togglePatchNotes());
+        if (this.btnClosePatchNotesHeader) ownedEvent(this, this.btnClosePatchNotesHeader, 'click', () => this.togglePatchNotes());
+        if (this.btnCloseReportHeader) ownedEvent(this, this.btnCloseReportHeader, 'click', () => this.toggleReport());
+        if (this.btnCloseCharacter) ownedEvent(this, this.btnCloseCharacter, 'click', () => this.toggleCharacterSheet());
 
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
@@ -238,7 +240,7 @@ export class UIManager {
         this.graphicsQuality = readPreference('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
-            this.graphicsQualitySelect.addEventListener('change', () => {
+            ownedEvent(this, this.graphicsQualitySelect, 'change', () => {
                 const nextQuality = this.graphicsQualitySelect.value;
                 this.setGraphicsQuality(nextQuality);
             });
@@ -250,7 +252,7 @@ export class UIManager {
             ? Math.max(0, Math.min(100, storedBrightness)) : 50;
         if (this.graphicsBrightnessSlider) {
             this.graphicsBrightnessSlider.value = String(this.graphicsBrightness);
-            this.graphicsBrightnessSlider.addEventListener('input', () => {
+            ownedEvent(this, this.graphicsBrightnessSlider, 'input', () => {
                 this.setBrightnessLevel(Number(this.graphicsBrightnessSlider.value));
             });
         }
@@ -264,7 +266,7 @@ export class UIManager {
         if (this.uiScaleSlider) {
             this.uiScaleSlider.min = this.isMobile ? '100' : '85';
             this.uiScaleSlider.value = String(this.uiScale);
-            this.uiScaleSlider.addEventListener('input', () => {
+            ownedEvent(this, this.uiScaleSlider, 'input', () => {
                 this.setUiScale(Number(this.uiScaleSlider.value));
             });
         }
@@ -275,7 +277,7 @@ export class UIManager {
         if (keyboardSettings) this.keyboardSettings = new KeyboardSettingsUI(keyboardSettings);
         this.motionPreferenceSelect = document.getElementById('motion-preference');
         this.setMotionPreference(readPreference('eidolon.motionPreference'), { save: false });
-        this.motionPreferenceSelect?.addEventListener('change', () => this.setMotionPreference(this.motionPreferenceSelect.value));
+        ownedEvent(this, this.motionPreferenceSelect, 'change', () => this.setMotionPreference(this.motionPreferenceSelect.value));
         if (this.isMobile && this.settingsScreen?.querySelector('.support-window__body--settings')) {
             this.phoneSettings = new PhoneSettingsUI(this.settingsScreen);
         }
@@ -283,7 +285,7 @@ export class UIManager {
         this.controlHintLevel = this.normalizeControlHintLevel(readPreference('eidolon.controlHintLevel'));
         if (this.controlHintLevelSelect) {
             this.controlHintLevelSelect.value = this.controlHintLevel;
-            this.controlHintLevelSelect.addEventListener('change', () => {
+            ownedEvent(this, this.controlHintLevelSelect, 'change', () => {
                 this.setControlHintLevel(this.controlHintLevelSelect.value);
             });
         }
@@ -293,7 +295,7 @@ export class UIManager {
         this.autoLootEnabled = storedAutoLoot === null ? false : storedAutoLoot === 'true';
         if (this.autoLootToggle) {
             this.autoLootToggle.checked = this.autoLootEnabled;
-            this.autoLootToggle.addEventListener('change', () => {
+            ownedEvent(this, this.autoLootToggle, 'change', () => {
                 this.setAutoLootEnabled(this.autoLootToggle.checked);
             });
         }
@@ -304,19 +306,19 @@ export class UIManager {
         this.audioDetailLevel = audioSettings.detailLevel || 'full';
         if (this.audioEnabledToggle) {
             this.audioEnabledToggle.checked = this.audioEnabled;
-            this.audioEnabledToggle.addEventListener('change', () => {
+            ownedEvent(this, this.audioEnabledToggle, 'change', () => {
                 this.setAudioEnabled(this.audioEnabledToggle.checked);
             });
         }
         if (this.audioVolumeSlider) {
             this.audioVolumeSlider.value = String(this.audioVolume);
-            this.audioVolumeSlider.addEventListener('input', () => {
+            ownedEvent(this, this.audioVolumeSlider, 'input', () => {
                 this.setAudioVolume(Number(this.audioVolumeSlider.value));
             });
         }
         if (this.audioDetailSelect) {
             this.audioDetailSelect.value = this.audioDetailLevel;
-            this.audioDetailSelect.addEventListener('change', () => {
+            ownedEvent(this, this.audioDetailSelect, 'change', () => {
                 this.setAudioDetailLevel(this.audioDetailSelect.value);
             });
         }
@@ -330,7 +332,7 @@ export class UIManager {
             };
             slider.value = String(Math.round((this.audioManager.getBusVolumes?.()[bus] ?? 1) * 100));
             updateLabel();
-            slider.addEventListener('input', () => {
+            ownedEvent(this, slider, 'input', () => {
                 this.audioManager.setBusVolume?.(bus, Number(slider.value) / 100);
                 updateLabel();
             });
@@ -340,7 +342,7 @@ export class UIManager {
         this.cameraShakeEnabled = storedCameraShake === null ? false : storedCameraShake === 'true';
         if (this.cameraShakeToggle) {
             this.cameraShakeToggle.checked = this.cameraShakeEnabled;
-            this.cameraShakeToggle.addEventListener('change', () => {
+            ownedEvent(this, this.cameraShakeToggle, 'change', () => {
                 this.setCameraShakeEnabled(this.cameraShakeToggle.checked);
             });
         }
@@ -350,7 +352,7 @@ export class UIManager {
         let storedCameraStrength = null;
         storedCameraStrength = readPreference('eidolon.cameraShakeStrength');
         this.setCameraShakeStrength(storedCameraStrength === null ? 50 : Number(storedCameraStrength));
-        this.cameraShakeStrengthSlider?.addEventListener('input', () => {
+        ownedEvent(this, this.cameraShakeStrengthSlider, 'input', () => {
             this.setCameraShakeStrength(Number(this.cameraShakeStrengthSlider.value));
         });
 
@@ -363,7 +365,7 @@ export class UIManager {
         this.fullscreenEnabled = storedFullscreen === null ? false : storedFullscreen === 'true';
         if (this.fullscreenToggle) {
             this.fullscreenToggle.checked = this.fullscreenEnabled;
-            this.fullscreenToggle.addEventListener('change', () => {
+            ownedEvent(this, this.fullscreenToggle, 'change', () => {
                 this.setFullscreenEnabled(this.fullscreenToggle.checked);
             });
         }
@@ -384,17 +386,17 @@ export class UIManager {
             this.btnDownloadRecommendedAssets.textContent = 'All Art Built In';
         }
         if (this.btnRefreshOutdatedAssets) {
-            this.btnRefreshOutdatedAssets.addEventListener('click', () => {
+            ownedEvent(this, this.btnRefreshOutdatedAssets, 'click', () => {
                 void this.refreshOutdatedAssets();
             });
         }
         if (this.btnUpdateCachedAssets) {
-            this.btnUpdateCachedAssets.addEventListener('click', () => {
+            ownedEvent(this, this.btnUpdateCachedAssets, 'click', () => {
                 void this.updateCachedAssets();
             });
         }
         if (this.btnClearCachedAssets) {
-            this.btnClearCachedAssets.addEventListener('click', () => {
+            ownedEvent(this, this.btnClearCachedAssets, 'click', () => {
                 void this.clearCachedAssets();
             });
         }
@@ -459,18 +461,18 @@ export class UIManager {
             trading: this.trading,
         });
 
-        if (this.btnRecall) this.btnRecall.addEventListener('click', () => {
+        if (this.btnRecall) ownedEvent(this, this.btnRecall, 'click', () => {
             this.onRecall?.();
             this.toggleEscMenu();
         });
-        if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
+        if (this.btnRespawn) ownedEvent(this, this.btnRespawn, 'click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
             }
             this.toggleEscMenu();
         });
 
-        if (this.btnCancelReport) this.btnCancelReport.addEventListener('click', () => this.toggleReport());
+        if (this.btnCancelReport) ownedEvent(this, this.btnCancelReport, 'click', () => this.toggleReport());
         if (this.reportScreen?.querySelector('#report-diagnostics')) this.report = new ReportUI(this);
         this.playtest = new PlaytestSessionUI(this.helpScreen?.querySelector('.support-window__body'), {
             sample: () => this.getPlaytestContext?.() || {},
@@ -526,10 +528,10 @@ export class UIManager {
         this.abilityCost = document.getElementById('ability-cost');
 
         // Tooltip Events
-        this.abilityContainer.addEventListener('mouseenter', () => {
+        ownedEvent(this, this.abilityContainer, 'mouseenter', () => {
             this.abilityTooltip.style.display = 'block';
         });
-        this.abilityContainer.addEventListener('mouseleave', () => {
+        ownedEvent(this, this.abilityContainer, 'mouseleave', () => {
             this.abilityTooltip.style.display = 'none';
         });
 
@@ -553,19 +555,19 @@ export class UIManager {
         this.btnMenuQuest = document.getElementById('btn-menu-quest');
         this.btnMenuSkills = document.getElementById('btn-menu-skills');
 
-        if (this.btnMenuMap) this.btnMenuMap.addEventListener('click', () => this.toggleWorldMap());
-        if (this.btnMenuSocial) this.btnMenuSocial.addEventListener('click', () => this.toggleSocial());
-        if (this.btnMenuPvP) this.btnMenuPvP.addEventListener('click', () => this.pvp.toggle());
-        if (this.btnMenuInventory) this.btnMenuInventory.addEventListener('click', () => this.toggleInventory());
-        if (this.btnMenuCharacter) this.btnMenuCharacter.addEventListener('click', () => this.toggleCharacterSheet());
-        if (this.btnMenuQuest) this.btnMenuQuest.addEventListener('click', () => this.toggleJournal());
-        if (this.btnMenuSkills) this.btnMenuSkills.addEventListener('click', () => this.toggleSkillTree());
+        if (this.btnMenuMap) ownedEvent(this, this.btnMenuMap, 'click', () => this.toggleWorldMap());
+        if (this.btnMenuSocial) ownedEvent(this, this.btnMenuSocial, 'click', () => this.toggleSocial());
+        if (this.btnMenuPvP) ownedEvent(this, this.btnMenuPvP, 'click', () => this.pvp.toggle());
+        if (this.btnMenuInventory) ownedEvent(this, this.btnMenuInventory, 'click', () => this.toggleInventory());
+        if (this.btnMenuCharacter) ownedEvent(this, this.btnMenuCharacter, 'click', () => this.toggleCharacterSheet());
+        if (this.btnMenuQuest) ownedEvent(this, this.btnMenuQuest, 'click', () => this.toggleJournal());
+        if (this.btnMenuSkills) ownedEvent(this, this.btnMenuSkills, 'click', () => this.toggleSkillTree());
         const btnCloseWorldMap = document.getElementById('btn-close-world-map');
-        if (btnCloseWorldMap) btnCloseWorldMap.addEventListener('click', () => this.toggleWorldMap());
+        if (btnCloseWorldMap) ownedEvent(this, btnCloseWorldMap, 'click', () => this.toggleWorldMap());
         this.setupAudioInteractionCues();
 
         // Event Delegation for Stat Buttons & Tooltips
-        this.statsContent.addEventListener('click', (e) => {
+        ownedEvent(this, this.statsContent, 'click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
                 const stat = e.target.dataset.stat;
                 if (this.onStatUpgrade) {
@@ -578,7 +580,7 @@ export class UIManager {
 			}
         });
 
-        this.statsContent.addEventListener('mousemove', (e) => {
+        ownedEvent(this, this.statsContent, 'mousemove', (e) => {
             const row = e.target.closest('.stat-row');
             if (row && row.dataset.statName) {
                 this.showStatTooltip(row.dataset.statName, e.clientX, e.clientY);
@@ -587,7 +589,7 @@ export class UIManager {
             }
         });
 
-        this.statsContent.addEventListener('mouseleave', () => {
+        ownedEvent(this, this.statsContent, 'mouseleave', () => {
             this.statTooltip.style.display = 'none';
         });
 
@@ -608,7 +610,7 @@ export class UIManager {
         this.chatInput = this.chat.input;
 
         // Global Enter to open chat
-        window.addEventListener('keydown', (e) => {
+        ownedEvent(this, window, 'keydown', (e) => {
             if (e.key === 'Enter') {
                 // Let native controls handle activation/submission before the
                 // gameplay shortcut. Otherwise Enter steals focus from menus.
@@ -628,6 +630,34 @@ export class UIManager {
         this.onRecall = null;
         this.onChatSend = null;
         this.onReportSubmit = null;
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        for (const name of ['quest', 'skillTree', 'phoneMenu', 'keyboardSettings', 'phoneSettings',
+            'forge', 'trading', 'directTrade', 'wardrobe', 'epWallet', 'cosmeticVendor', 'admin',
+            'inventory', 'report', 'playtest', 'social', 'pvp', 'chat']) {
+            const child = this[name];
+            if (!child) continue;
+            disposeOwnedEvents(child);
+            child.dispose?.();
+        }
+        this.characterPreview?.dispose();
+        this.windowLayoutObserver?.disconnect();
+        this.viewportLayout?.dispose();
+        clearTimeout(this.combatCalloutTimer);
+        this.clearEidolonPhaseNotice?.();
+        this.clearEnemyBars();
+        this.staticModalBackdrop?.remove();
+        this.staticModalBackdrop = null;
+        for (const [toast, timers] of this.friendToasts || []) {
+            timers.forEach(clearTimeout);
+            toast.remove();
+        }
+        this.friendToasts?.clear();
+        if (this.ownsAudioManager) this.audioManager?.dispose?.();
     }
 
     resolveAssetUrl(path) {
@@ -909,17 +939,17 @@ export class UIManager {
 
     setupDragAndDrop() {
         this.hotbarSlots.forEach((slot, index) => {
-            slot.addEventListener('dragover', (e) => {
+            ownedEvent(this, slot, 'dragover', (e) => {
                 e.preventDefault(); // Allow drop
                 e.dataTransfer.dropEffect = 'copy';
                 slot.style.borderColor = '#fff';
             });
 
-            slot.addEventListener('dragleave', (e) => {
+            ownedEvent(this, slot, 'dragleave', (e) => {
                 slot.style.borderColor = '#444';
             });
 
-            slot.addEventListener('drop', (e) => {
+            ownedEvent(this, slot, 'drop', (e) => {
                 e.preventDefault();
                 slot.style.borderColor = '#444';
                 const skillName = e.dataTransfer.getData('text/plain');
@@ -930,14 +960,14 @@ export class UIManager {
             });
             
             // Disable context menu (Right Click)
-            slot.addEventListener('contextmenu', (e) => {
+            ownedEvent(this, slot, 'contextmenu', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 // Do nothing
             });
 
             // Desktop: hotbar is keyboard-triggered. Mobile: hotbar is tap-to-cast.
-            slot.addEventListener('click', (e) => {
+            ownedEvent(this, slot, 'click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if (this.isMobile) {
@@ -947,7 +977,7 @@ export class UIManager {
                 }
             });
 
-            slot.addEventListener('touchstart', (e) => {
+            ownedEvent(this, slot, 'touchstart', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if (this.isMobile) {
@@ -958,7 +988,7 @@ export class UIManager {
             }, { passive: false });
 
             // Tooltip
-            slot.addEventListener('mouseenter', (e) => {
+            ownedEvent(this, slot, 'mouseenter', (e) => {
                 const icon = slot.querySelector('.hotbar-icon');
                 if (icon && icon.dataset.skill) {
                     const rect = slot.getBoundingClientRect();
@@ -966,7 +996,7 @@ export class UIManager {
                 }
             });
 
-            slot.addEventListener('mouseleave', () => {
+            ownedEvent(this, slot, 'mouseleave', () => {
                 this.hideTooltips();
             });
         });

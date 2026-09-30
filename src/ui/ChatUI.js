@@ -1,3 +1,4 @@
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 const CHAT_SIZE_STORAGE_KEY = 'eidolon.chatSize';
 const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
 
@@ -6,6 +7,8 @@ const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
  * character-specific rewards and progression stay in the Game stream.
  */
 export class ChatUI {
+    dispose() { disposeOwnedEvents(this); this.sizeObserver?.disconnect(); }
+
     constructor({ onSend = null, onMobileExpanded = null } = {}) {
         this.onSend = onSend;
         this.onMobileExpanded = onMobileExpanded;
@@ -29,12 +32,12 @@ export class ChatUI {
     }
 
     bindEvents() {
-        this.mobileToggle?.addEventListener('click', () => this.setMobileExpanded(!this.mobileExpanded));
+        ownedEvent(this, this.mobileToggle, 'click', () => this.setMobileExpanded(!this.mobileExpanded));
         this.tabs.forEach((tab, index) => {
-            tab.addEventListener('click', () => {
+            ownedEvent(this, tab, 'click', () => {
                 this.setActiveStream(tab.dataset.chatTab, { focusInput: tab.dataset.chatTab === 'chat' });
             });
-            tab.addEventListener('keydown', (event) => {
+            ownedEvent(this, tab, 'keydown', (event) => {
                 if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
                 event.preventDefault();
                 const next = event.key === 'Home' ? 0 : event.key === 'End' ? this.tabs.length - 1
@@ -44,7 +47,7 @@ export class ChatUI {
             });
         });
 
-        this.input?.addEventListener('keydown', (event) => {
+        ownedEvent(this, this.input, 'keydown', (event) => {
             if (event.key === 'Escape') {
                 event.preventDefault();
                 event.stopPropagation();

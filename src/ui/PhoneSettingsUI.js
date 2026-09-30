@@ -1,5 +1,7 @@
 // Reparent existing controls so their settings bindings and native input
 // behavior remain intact. Phone routes only change composition and copy.
+import { ownedEvent } from './OwnedEvents.js';
+
 export class PhoneSettingsUI {
     constructor(root) {
         this.root = root;
@@ -33,7 +35,7 @@ export class PhoneSettingsUI {
             this.body.append(section); this.sections.set(key, section);
             const button = document.createElement('button');
             button.type = 'button'; button.textContent = label; button.dataset.settingsRoute = key;
-            button.onclick = () => this.show(key);
+            ownedEvent(this, button, 'click', () => this.show(key));
             this.tabs.append(button);
         }
         oldSections.forEach(section => section.remove());
@@ -77,7 +79,7 @@ export class PhoneSettingsUI {
                 writePreference('eidolon.phoneControlSize', size.value);
             }
         };
-        hand.onchange = () => apply(true);
+        ownedEvent(this, hand, 'change', () => apply(true));
         size.oninput = () => apply(true);
         apply();
     }

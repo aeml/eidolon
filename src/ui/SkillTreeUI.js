@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MobileSkillTree } from './MobileSkillTree.js';
 import { DesktopTalentConfirmation } from './DesktopTalentConfirmation.js';
@@ -39,7 +40,7 @@ export class SkillTreeUI {
 
         // --- Event listeners ---
         if (this.btnCloseSkillTree) {
-            this.btnCloseSkillTree.addEventListener('click', () => this.toggle());
+            ownedEvent(this, this.btnCloseSkillTree, 'click', () => this.toggle());
         }
     }
 

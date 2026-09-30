@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
 import { forgeUpgradeCost, forgePotencyCost } from '../core/ForgeProgression.js';
 import { renderForgeDecision, renderForgeLimit } from './ForgeDecisionPreview.js';
@@ -123,25 +124,25 @@ export class ForgeUI {
         this.onForgeRemoveGem = null;
 
         // --- Event listeners ---
-        if (this.btnCloseForge) this.btnCloseForge.addEventListener('click', () => this.toggle());
-        if (this.btnForgeUpgrade) this.btnForgeUpgrade.addEventListener('click', () => this.handleForgeUpgrade(1));
-        if (this.btnForgeUpgrade1) this.btnForgeUpgrade1.addEventListener('click', () => this.handleForgeUpgrade(1));
-        if (this.btnForgeUpgrade10) this.btnForgeUpgrade10.addEventListener('click', () => this.handleForgeUpgrade(10));
-        if (this.btnForgePotency) this.btnForgePotency.addEventListener('click', () => this.handleForgePotency());
-        if (this.btnForgeSocket) this.btnForgeSocket.addEventListener('click', () => this.handleForgeSocket());
-        if (this.btnForgeInsertGem) this.btnForgeInsertGem.addEventListener('click', () => this.handleForgeInsertGem());
-        if (this.btnForgeCombineGem) this.btnForgeCombineGem.addEventListener('click', () => this.handleForgeCombineGem());
-        if (this.btnForgeRemoveGem) this.btnForgeRemoveGem.addEventListener('click', () => this.handleForgeRemoveGem());
-        if (this.btnOpenRespecFromForge) this.btnOpenRespecFromForge.addEventListener('click', () => this.handleOpenRespec());
+        if (this.btnCloseForge) ownedEvent(this, this.btnCloseForge, 'click', () => this.toggle());
+        if (this.btnForgeUpgrade) ownedEvent(this, this.btnForgeUpgrade, 'click', () => this.handleForgeUpgrade(1));
+        if (this.btnForgeUpgrade1) ownedEvent(this, this.btnForgeUpgrade1, 'click', () => this.handleForgeUpgrade(1));
+        if (this.btnForgeUpgrade10) ownedEvent(this, this.btnForgeUpgrade10, 'click', () => this.handleForgeUpgrade(10));
+        if (this.btnForgePotency) ownedEvent(this, this.btnForgePotency, 'click', () => this.handleForgePotency());
+        if (this.btnForgeSocket) ownedEvent(this, this.btnForgeSocket, 'click', () => this.handleForgeSocket());
+        if (this.btnForgeInsertGem) ownedEvent(this, this.btnForgeInsertGem, 'click', () => this.handleForgeInsertGem());
+        if (this.btnForgeCombineGem) ownedEvent(this, this.btnForgeCombineGem, 'click', () => this.handleForgeCombineGem());
+        if (this.btnForgeRemoveGem) ownedEvent(this, this.btnForgeRemoveGem, 'click', () => this.handleForgeRemoveGem());
+        if (this.btnOpenRespecFromForge) ownedEvent(this, this.btnOpenRespecFromForge, 'click', () => this.handleOpenRespec());
 
-        if (this.tabForgeUpgrade) this.tabForgeUpgrade.addEventListener('click', () => this.switchForgeTab('upgrade'));
-        if (this.tabForgePotency) this.tabForgePotency.addEventListener('click', () => this.switchForgeTab('potency'));
-        if (this.tabForgeSocket) this.tabForgeSocket.addEventListener('click', () => this.switchForgeTab('socket'));
-        if (this.tabForgeGems) this.tabForgeGems.addEventListener('click', () => this.switchForgeTab('gems'));
+        if (this.tabForgeUpgrade) ownedEvent(this, this.tabForgeUpgrade, 'click', () => this.switchForgeTab('upgrade'));
+        if (this.tabForgePotency) ownedEvent(this, this.tabForgePotency, 'click', () => this.switchForgeTab('potency'));
+        if (this.tabForgeSocket) ownedEvent(this, this.tabForgeSocket, 'click', () => this.switchForgeTab('socket'));
+        if (this.tabForgeGems) ownedEvent(this, this.tabForgeGems, 'click', () => this.switchForgeTab('gems'));
 
-        if (this.tabGemInsert) this.tabGemInsert.addEventListener('click', () => this.switchGemSubTab('insert'));
-        if (this.tabGemCombine) this.tabGemCombine.addEventListener('click', () => this.switchGemSubTab('combine'));
-        if (this.tabGemRemove) this.tabGemRemove.addEventListener('click', () => this.switchGemSubTab('remove'));
+        if (this.tabGemInsert) ownedEvent(this, this.tabGemInsert, 'click', () => this.switchGemSubTab('insert'));
+        if (this.tabGemCombine) ownedEvent(this, this.tabGemCombine, 'click', () => this.switchGemSubTab('combine'));
+        if (this.tabGemRemove) ownedEvent(this, this.tabGemRemove, 'click', () => this.switchGemSubTab('remove'));
     }
 
     /** @returns {boolean} */

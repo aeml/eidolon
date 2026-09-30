@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 import { renderQuestConversation } from './QuestConversation.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
 import { appendChronicleRecap } from './ChronicleRecap.js';
@@ -46,7 +47,7 @@ export class QuestUI {
             this.objectivesList.tabIndex = 0;
             this.objectivesList.setAttribute('role', 'region');
             this.objectivesList.setAttribute('aria-label', 'Tracked quests');
-            this.objectivesList.addEventListener('keydown', event => {
+            ownedEvent(this, this.objectivesList, 'keydown', event => {
                 // Keep native scrolling, without bubbling Space to the game's
                 // cast shortcut. Journal and other non-scroll shortcuts still work.
                 if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
@@ -69,8 +70,8 @@ export class QuestUI {
         this.onRequestQuests = null;
 
         // --- Event listeners ---
-        if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
-        if (this.btnCloseJournal) this.btnCloseJournal.addEventListener('click', () => this.toggleJournal());
+        if (this.btnCloseQuest) ownedEvent(this, this.btnCloseQuest, 'click', () => this.toggleQuestWindow());
+        if (this.btnCloseJournal) ownedEvent(this, this.btnCloseJournal, 'click', () => this.toggleJournal());
     }
 
     // ================================================================

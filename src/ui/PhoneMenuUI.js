@@ -1,8 +1,17 @@
 // Compose existing phone navigation controls; their input callbacks and
 // authoritative actions stay owned by InputManager and UIManager.
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+
 export class PhoneMenuUI {
     constructor(menu, closeMenu) {
-        menu._phoneCloseMenu = closeMenu;
+        menu.__eidolonPhoneMenu?.dispose();
+        this.menu = menu;
+        menu.__eidolonPhoneMenu = this;
+        for (const id of ['btn-mobile-inv', 'btn-mobile-char', 'btn-mobile-quest', 'btn-mobile-map', 'btn-mobile-social']) {
+            for (const event of ['touchstart', 'click']) {
+                ownedEvent(this, document.getElementById(id), event, closeMenu, { capture: true });
+            }
+        }
         if (menu.querySelector('.phone-navigation')) return;
         const header = menu.querySelector('.window-header');
         const actions = menu.querySelector('.pause-menu__actions');
@@ -27,11 +36,12 @@ export class PhoneMenuUI {
             if (!button) continue;
             button.textContent = label;
             navigation.append(button);
-            // Close before the existing control callback opens its destination.
-            for (const event of ['touchstart', 'click']) {
-                button.addEventListener(event, () => menu._phoneCloseMenu?.(), { capture: true });
-            }
         }
         actions.prepend(navigation);
+    }
+
+    dispose() {
+        disposeOwnedEvents(this);
+        if (this.menu.__eidolonPhoneMenu === this) delete this.menu.__eidolonPhoneMenu;
     }
 }
