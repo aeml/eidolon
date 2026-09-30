@@ -40,6 +40,32 @@ test('rigid leaves skip local matrix composition but retain moving-parent and di
     jest.restoreAllMocks();
 });
 
+test('a pooled rest-pose reset refreshes a cached rigid local matrix', () => {
+    const root = createProceduralFighter({ batch: true });
+    const part = visibleMeshes(root).find(mesh => !mesh.matrixAutoUpdate);
+    expect(part).toBeDefined();
+    const rest = part.matrix.clone();
+    part.position.x += 10; part.updateMatrix();
+    root.userData.resetPose();
+    expect(part.matrix.elements).toEqual(rest.elements);
+});
+
+test('owned equipment surface comparison rejects a changed vertex, not just shared geometry', () => {
+    const source = createProceduralFighter(), batched = createProceduralFighter({ batch: true });
+    const equipment = Object.fromEntries(Object.keys(HUMANOID_EQUIPMENT_ANCHORS).map(slot => {
+        const baseName = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).find(name => EQUIPMENT_VISUAL_DESCRIPTORS[name].slot === slot.replace(/[12]$/, ''));
+        return [slot, { id: `reference-${slot}`, baseName, name: baseName, slot, rarity: 'Rare' }];
+    }));
+    applyProceduralEquipment(source, equipment); applyProceduralEquipment(batched, equipment);
+    checkSurfaces(source, batched);
+    const part = visibleMeshes(batched).find(mesh => mesh.userData.rigidEquipmentPivot);
+    expect(part).toBeDefined();
+    const positions = part.geometry.attributes.position;
+    positions.setX(0, positions.getX(0) + 1);
+    expect(() => checkSurfaces(source, batched)).toThrow();
+    clearProceduralEquipment(source); clearProceduralEquipment(batched);
+});
+
 // Compare actual triangle vertices, normals and UVs under animated world
 // transforms against the unbatched source, not a second merge implementation.
 function checkSurfaces(source, batched) {
@@ -82,7 +108,19 @@ function checkSurfaces(source, batched) {
         if (mesh.name.startsWith('Gear_')) continue;
         const counterpart = batched.getObjectByName(mesh.name);
         expect(counterpart?.visible).toBe(true);
-        expect(counterpart.geometry).toBe(mesh.geometry);
+        if (mesh.userData.rigidEquipmentPivot) {
+            // Per-loadout pivot buffers are intentionally owned, not shared.
+            // Compare every attribute/index instead of demanding identity.
+            expect(counterpart.userData.rigidEquipmentPivot).toBe(true);
+            expect(Object.keys(counterpart.geometry.attributes)).toEqual(Object.keys(mesh.geometry.attributes));
+            expect(counterpart.geometry.index?.array).toEqual(mesh.geometry.index?.array);
+            for (const [name, attribute] of Object.entries(mesh.geometry.attributes)) {
+                const other = counterpart.geometry.attributes[name];
+                expect(other.itemSize).toBe(attribute.itemSize);
+                expect(other.normalized).toBe(attribute.normalized);
+                expect(other.array).toEqual(attribute.array);
+            }
+        } else expect(counterpart.geometry).toBe(mesh.geometry);
         expect(counterpart.matrixWorld.elements).toEqual(mesh.matrixWorld.elements);
     }
 }
