@@ -4,6 +4,9 @@ import { MeshCatalog } from '../src/utils/MeshCatalog.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { jest } from '@jest/globals';
 
+const PROCEDURAL_PLAYER_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death',
+    'Cast', 'Channel', 'Guard', 'Shout', 'Bless'];
+
 describe('MeshFactory.loadModel', () => {
     const originalCache = MeshFactory.cache;
     const originalInflight = MeshFactory.inflight;
@@ -233,7 +236,7 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralHumanoid).toBe(true);
             expect(mesh.userData.proceduralClass).toBe('Fighter');
             expect(mesh.userData.animations.map((entry) => entry.name))
-                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
             expect(loadSpy).not.toHaveBeenCalled();
         } finally {
             MeshFactory.pool = previousPool;
@@ -252,7 +255,7 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralClass).toBe('Rogue');
             expect(mesh.userData.artStyle).toBe('Gloamreach shadeblade');
             expect(mesh.userData.animations.map((entry) => entry.name))
-                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
             expect(loadSpy).not.toHaveBeenCalled();
         } finally {
             MeshFactory.pool = previousPool;
@@ -271,7 +274,7 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralClass).toBe('Wizard');
             expect(mesh.userData.artStyle).toBe('Stormcrown hexweaver');
             expect(mesh.userData.animations.map((entry) => entry.name))
-                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
             expect(loadSpy).not.toHaveBeenCalled();
         } finally {
             MeshFactory.pool = previousPool;
@@ -290,7 +293,7 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralClass).toBe('Cleric');
             expect(mesh.userData.artStyle).toBe('Lanternhold dawnwarden');
             expect(mesh.userData.animations.map((entry) => entry.name))
-                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
             expect(loadSpy).not.toHaveBeenCalled();
         } finally {
             MeshFactory.pool = previousPool;

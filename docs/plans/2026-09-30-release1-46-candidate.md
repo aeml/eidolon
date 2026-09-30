@@ -5,6 +5,30 @@ baseline review, not WCAG conformance, universal accessibility, a photosensitive
 safety guarantee or final human/device acceptance. Owner actor and device
 feedback remain deferred and do not block independent implementation.
 
+## Current predecessor integration — September30
+
+1.45 exact18c56dde is now independently accepted after all ten jobs in
+CI36678276259 attempt1 and repeat public frontend/backend/document/nine
+stamped module/CSS checks. [Receipt](2026-09-30-release1-45-acceptance.md).
+This candidate retains current1.46 package/runtime/login/CI and cumulative
+patch identities, with the scoped integration and required keyboard/font
+browser evidence below. No repeated unchanged campaign/device soak. Its own
+exact-head pipeline and public checks are still required before1.46 acceptance.
+
+Merge92415dfe carries corrected1.45/18c56dde, including accepted1.44 receipt,
+first-party font assets and current audio/input/earned-stash fixture fixes.
+Resolve README to source1.46/accepted1.44 while1.45 CI is still pending; retain
+both required first-party font and keyboard-settings suites in the interface
+script. All1.46 runtime/package/login/CI identities remain unchanged; website
+files equal the predecessor. No gate or saved input/build state is discarded.
+
+Five explicit version/publishing/font/earned-stash/FriendToast suites343checks
+pass4.269s. Five System Chrome cases30.9s pass desktop/phone-size native account
+input, remapping/persistence and typography with external font DNS blocked.
+Evidence:/tmp/eidolon-1-46-predecessor-input-0930. Earlier unchanged remapping/
+motion/interface evidence below is reused. Own exact-head CI/live checks still
+required after ordered1.45 acceptance; candidate not pushed or accepted.
+
 ## Changes
 
 -18 keyboard actions are individually remappable or unbound: camera panning/

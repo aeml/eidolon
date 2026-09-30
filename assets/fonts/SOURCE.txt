@@ -1,0 +1,11 @@
+Cinzel-Variable.ttf is an unmodified copy of Cinzel[wght].ttf.
+Family: Cinzel
+Designer: Natanael Gama
+Copyright: Copyright 2020 The Cinzel Project Authors (https://github.com/NDISCOVER/Cinzel)
+License: SIL Open Font License 1.1; see OFL.txt alongside this file.
+Source: https://github.com/google/fonts/tree/3dd78844021e948ceb633d1dcee3f7885561b5d9/ofl/cinzel
+Download: https://raw.githubusercontent.com/google/fonts/3dd78844021e948ceb633d1dcee3f7885561b5d9/ofl/cinzel/Cinzel%5Bwght%5D.ttf
+SHA-256: f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34
+Bundled: 2026-09-30
+Variable weight range: 400–900
+No outlines, font names, metrics or glyphs were modified.

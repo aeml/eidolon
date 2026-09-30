@@ -169,6 +169,14 @@ func TestElevatedStaticWorldAnchorsRetainFlatFoundations(t *testing.T) {
 func TestElevatedSeraphSpawnAndFollow(t *testing.T) {
 	w, p := elevationMovementWorld(t)
 	t.Cleanup(w.StopBackground)
+	// Follow/grounding is the subject, not combat acquisition. NewWorld seeds
+	// random enemies; a nearby one correctly makes the seraph smite instead
+	// of following and used to make this fixture depend on the spawn seed.
+	for id, e := range w.Entities {
+		if e.Type == TypeEnemy {
+			w.RemoveEntity(id)
+		}
+	}
 	p.SubType, p.Level, p.Mana, p.MaxMana = "Cleric", 100, 10000, 10000
 	p.UnlockedSkills = []string{"Avenging Seraph"}
 	if result := w.PerformAbility(p.ID, p.X, p.Z, "", "Avenging Seraph"); !result.Accepted {
@@ -184,14 +192,14 @@ func TestElevatedSeraphSpawnAndFollow(t *testing.T) {
 		t.Fatal("no summon")
 	}
 	assertActorOnElevation(t, w, summon)
-	startX := summon.X
 	p.X += 15
 	w.groundActorLocked(p)
+	startDistance := math.Hypot(p.X-summon.X, p.Z-summon.Z)
 	for step := 0; step < 5; step++ {
 		w.updateEntity(summon, .1, nil, &deferredActions{})
 		assertActorOnElevation(t, w, summon)
 	}
-	if summon.X == startX {
-		t.Fatal("summon did not follow")
+	if distance := math.Hypot(p.X-summon.X, p.Z-summon.Z); distance >= startDistance {
+		t.Fatalf("summon did not approach owner: before=%f after=%f", startDistance, distance)
 	}
 }
