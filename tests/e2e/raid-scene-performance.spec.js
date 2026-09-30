@@ -4,17 +4,19 @@ import { collectBrowserFailures } from './helpers.js';
 // A controlled rendering workload, not a network/server raid simulation.
 test('ten equipped heroes, Malachar and overlapping fields remain stable across repeated busy scenes', async ({ page, baseURL }, testInfo) => {
     const cpuDiagnostic = process.env.EIDOLON_RAID_CPU_PROFILE === '1';
+    const instancingProbe = process.env.EIDOLON_RAID_INSTANCING_PROBE === '1';
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    await page.evaluate(async () => {
+    await page.evaluate(async instancingProbe => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
         const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { createTransientEffect } = await import('/src/core/TransientEffects.js');
         const { createProceduralAreaField, updateProceduralAreaField, releaseProceduralAreaField } = await import('/src/art/ProceduralAreaFields.js');
+        const { ActorInstanceBatches } = await import('/src/art/ActorInstanceBatches.js');
         const gallery = window.__eidolonAnimationGalleryController;
         gallery.cleanupPresentation();
         [gallery.actor, gallery.remoteActor, gallery.targetActor].forEach((actor) => { if (actor?.mesh) actor.mesh.visible = false; });
@@ -89,9 +91,11 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             }
         };
         gallery.persistentEntities.push(update);
+        const instances = instancingProbe ? new ActorInstanceBatches(render.scene) : null;
         window.__raidScene = {
             setBusy,
             dispose() {
+                instances?.dispose();
                 clear();
                 gallery.persistentEntities = gallery.persistentEntities.filter((entry) => entry !== update);
                 mixers.forEach((mixer, index) => { mixer.stopAllAction(); mixer.uncacheRoot(models[index].mesh); });
@@ -99,7 +103,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 group.removeFromParent();
             }
         };
-    });
+    }, instancingProbe);
     if (cpuDiagnostic) await page.evaluate(() => {
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         const counters = {}, undo = [];

@@ -1,5 +1,52 @@
 # Alpha1.48 — client performance work
 
+## Standard actor-instance probe — pending controlled timing
+
+Isolated on work/alpha-1-48-actor-instances-probe-20260930; NOT enabled in the
+production RenderSystem, merged to the release branch, pushed or deployed.
+Standard InstancedMesh attributes borrow exact shared geometry/materials;
+combine compatible opaque rigid character parts inside64m spatial cells.
+Original actor visibility changes only within the synchronous render frame,
+then restores before input, gear, stealth or other game updates. Retain
+transparent/custom/skinned/morph/mirrored/unmatched normal rendering and all
+animation transforms, silhouettes, layering and shadow flags. Owned instance
+buffers are retired without disposing borrowed surfaces or replacement hooks.
+
+Initial14 unit checks pass4.348s; two native Chrome appearance cases13.8s pass
+six ten-hero pose pairs eachquality including stealth, equal triangles and
+restored visibility. High image inspected. Initial busy probe43.2s records
+High800draws166327tri341geometry54textures, Low461/85546/340/40; resources
+repeat-stable and no matrix/indirection texture increase. Yet High26.2/26.8ms
+median,44.3/42.9ms p95, Low20.4/19.2 and30.3/30.4 do not prove faster gameplay
+or meet High20/33.4. Draw reduction alone is not performance acceptance.
+
+One changed-code follow-up caches grouping rosters, refreshing on actor
+membership, material/geometry/state flags, spatial cell and gear revision.
+Forced same-signature gear refresh increments its visual revision on clear.
+Keep live visibility and unsupported-material guards and current animated
+matrices each frame. New roster unit catches nonprocedural eligibility after
+registration; fix the production guard, not its assertion. Equipment/stealth
+288checks pass in the mixed selection; corrected instance15 checks0.665s
+pass. Two cached Chrome appearance cases11.6s retain the same strict contracts.
+Scoped lint/whitespace pass. No cached timing result is claimed yet.
+
+Read-only host evidence changes the next action:16 threads, load33.24/33.07/
+29.04 and CPU pressure some avg10=40.19/avg60=51.97. Active scheduled soak
+run36664933512 exact7ee8c07b818c251800ae6eac461c39b0ceaae0db, job109836999629
+started10:03:15UTC; 100-client24h step started10:10:39. Verified server/loadtest
+working directories belong to eidolon-soak runner; observed server344% CPU,
+loadtest67.5%. Do NOT claim this proves the precise cause of previous timings.
+Defer the cached comparative timing rather than replay under known contention.
+Owner was asked to cancel only this run; no approval received or cancellation
+made. Existing authorized Luna follows this exact job read-only. Schedule and
+other processes remain unchanged. Production integration would additionally
+need guaranteed frame-exception restoration and actor add/remove registration;
+the isolated helper is not a finished release feature.
+
+Artifacts:/tmp/eidolon-1-48-actor-instances-appearance-0930,
+/tmp/eidolon-1-48-actor-instances-busy-0930,
+/tmp/eidolon-1-48-cached-instances-appearance-0930. Safe release remainsca7412a0.
+
 ## Cached rigid local transforms — September30
 
 Keep constructor-owned rigid mesh leaves' already computed local matrices.

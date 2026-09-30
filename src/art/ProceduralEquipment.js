@@ -898,6 +898,7 @@ function forEachEquipmentAnchor(root, callback) {
 
 export function clearProceduralEquipment(root) {
     if (!root?.userData?.proceduralHumanoid) return false;
+    root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
     clearRigidEquipmentPivots(root);
     forEachEquipmentAnchor(root, (anchor) => {
         [...anchor.children].forEach((child) => {
