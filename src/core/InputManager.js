@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { KEYBOARD_ACTIONS, KEYBOARD_BINDINGS_EVENT, loadKeyboardBindings, validateKeyboardBindings } from './KeyboardBindings.js';
 
+const MENU_CALLBACKS = new Set(['onCharacter', 'onInventory', 'onQuest', 'onMap',
+    'onSocial', 'onSkills', 'onAbilities']);
+
 export class InputManager {
     constructor(camera, scene, canvas = null) {
         this.camera = camera;
@@ -322,6 +325,15 @@ export class InputManager {
         }
         if (activeElement?.closest('button, [role="button"], summary, a[href]')) {
             if (e.key === 'Escape') this.callbacks.onEscape.forEach(cb => cb());
+            // Item slots retain button-role focus after pointer/drag actions.
+            // Keep non-activating menu shortcuts usable (e.g. I to close Bag),
+            // but never cast, recall, pan, or steal native activation/navigation.
+            const key = (e.key || '').toLowerCase();
+            if (!e.repeat && !e.ctrlKey && !e.altKey && !e.metaKey && key !== ' ' && !key.startsWith('arrow')) {
+                const action = KEYBOARD_ACTIONS.find(action => key && key === this.keyboardBindings[action.id]
+                    && MENU_CALLBACKS.has(action.callback));
+                if (action) this.callbacks[action.callback].forEach(cb => cb());
+            }
             return;
         }
         const key = (e.key || '').toLowerCase();
