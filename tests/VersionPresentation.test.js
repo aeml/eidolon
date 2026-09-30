@@ -3,7 +3,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.54.0';
+const currentVersion = '1.55.0';
+
+test('1.55.0 records arena quality without changing competition or progression', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.55.0"'), previous = html.indexOf('data-version="1.54.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['follow every arena round', 'without extra per-second network requests',
+        "server's actual value", 'authoritative result', 'ranked-leaver restriction', 'Teammates are not penalized',
+        'Standing, Eliminated or Finished', 'expanded rules, scroll position and keyboard focus',
+        'never inherit focused consent', 'separate practice/ranked queues', 'durable results',
+        'No combat-stat, rating, reward', 'physical-phone certification', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.54.0 records rigged Fighter integration and current duel consent without progression changes', () => {
     const html = fs.readFileSync('index.html', 'utf8');

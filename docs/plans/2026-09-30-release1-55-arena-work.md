@@ -2,9 +2,9 @@
 
 September 30, 2026. Arena interface changes are implemented and locally verified
 on a separate, unpublished branch while the preceding 1.54 candidate completes
-CI. This is not a deployed or accepted milestone. Version packaging, cumulative
-patch notes, exact-source CI and independent public acceptance remain required
-after 1.54 is accepted.
+CI. The source is locally packaged as Alpha 1.55.0 with cumulative patch notes;
+it is not pushed, deployed or accepted. Exact-source CI and independent public
+acceptance remain required after 1.54 is accepted.
 
 ## Scope and retained behavior
 
@@ -37,7 +37,15 @@ queue controls cannot submit after admission, match entry or disposal. Active
 matches show their remaining time limit without declaring a winner or returning
 the player when the client clock expires. Pending durable settlement stays
 explicit. Queue, leave and forfeit controls have 44px minimum targets; ranked and
-practice entry uses a readable two-column layout.
+practice entry uses a readable two-column layout. Compact team rosters display
+the authoritative Standing, Eliminated or Finished status for each participant,
+with safe text names, full hover labels and bounded long names on narrow screens.
+
+Authoritative and leaderboard snapshots preserve expanded or closed rules,
+scroll position and focus on the same available action or disclosure summary.
+Focus is not stolen from outside the body, restored to removed/disabled controls
+or inherited by a replacement challenge's consent. This completes refresh
+stability beyond the earlier local-clock-only focus checks.
 
 ## Focused verification
 
@@ -60,11 +68,29 @@ browser fixtures, not actual phone certification or a new ranked combat run.
 Mandatory browser discovery assigns all 251 cases exactly once to existing
 stages, including the two additions to the existing interface file.
 
+After the refresh and roster additions, all 20 UI checks passed (0.859s).
+The two desktop/390px routes and existing elimination-feedback route passed
+three native cases in 17.8s, with exact-second active-match timing, retained
+disclosures/focus, eliminated-player state and bounded roster width. Desktop
+and narrow roster screenshots were visually reviewed. Latest artifacts:
+`/tmp/eidolon-1-55-arena-roster-0930`. Scoped lint and diff checks passed;
+combat/settlement behavior and the browser-case partition are unchanged.
+
+Packaging passed 329 version/publisher checks in 2.534s, scoped lint, shell
+syntax and diff checks. The first login-surface run exposed missing generated
+vendor files in this isolated worktree; `npm run prepare:client` restored the
+normal install output without changing tracked generated content. The two
+unchanged anonymous desktop/mobile login and release-surface cases then passed
+in 7.9s. Login identity agrees with the local manifest, the latest notes are
+1.55, prior history remains below, and the patch-notes screenshot was reviewed.
+Artifacts: `/tmp/eidolon-1-55-login-notes-ready-0930`. This is local packaging
+evidence, not public acceptance or a production server check.
+
 ## Release requirements
 
 Accept the exact 1.54 predecessor first. Merge any newer master changes without
-discarding website or owner work, align every version identity, add accurate
-1.55 patch notes and push normally after a fresh fetch/merge. Luna monitors the
+discarding website or owner work, verify the aligned version identities and
+1.55 patch notes, then push normally after a fresh fetch/merge. Luna monitors the
 run; root verifies exact public frontend/backend identity, database readiness
 and changed assets before recording acceptance. Saves, open-alpha access,
 economy, rating and disconnect policies remain unchanged. Source documentation

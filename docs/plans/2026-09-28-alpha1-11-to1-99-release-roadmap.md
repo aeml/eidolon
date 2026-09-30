@@ -7,6 +7,9 @@ CI36770739226. CI/live QA and independent public IPv4 checks passed for both
 identities, database readiness, login/history and all seven changed runtime
 files. See its [acceptance record](2026-09-30-release1-53-acceptance.md).
 Alpha1.54 is the isolated release candidate; packaging is not public acceptance.
+Alpha1.55 arena quality is locally packaged on an unpublished branch, with
+scoped checks recorded in its [work record](2026-09-30-release1-55-arena-work.md).
+It will not be pushed before the exact 1.54 predecessor is accepted.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
