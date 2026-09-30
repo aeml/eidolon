@@ -1,5 +1,33 @@
 # Alpha1.48 — client performance work
 
+## Rejected animated multi-draw approach — September30
+
+Do not publish the attempted cross-anchor animated BatchedMesh optimization.
+It preserves the21pose comparisons perquality, including exact stealth, and
+reduces the actual busy workload2592→1572High/1357→847Low submissions, with
+all triangles/warnings/equipment retained. However frame times regress:
+High57.4median/114.1p95ms, repeat58.3/97.7;Low39.8/73.6, repeat37.7/67.7.
+Both miss original targets. Per-material actor matrix/indirection buffers
+raise repeat-stable residency High301/54→475geometries/520textures and
+Low300/40→474/506. Functional312checks/7.368s and twoChrome pose cases15.0s
+do not override the observed regression. One unchanged-transform cache/
+attribution follow-up46.7s still missesHigh53.5/99.9,repeat58.7/101.4;
+743matrixwrites/frame, updater3.3/3.2ms median, renderer51.0/56.3ms median.
+This does not prove the precise driver/upload/shader cause.
+
+The whole experimental implementation,14finalhelper cases1.334s and detailed
+receipt are preserved locally on work/alpha-1-48-equipment-multidraw-probe-
+20260930 at998115b4 (docs/plans/2026-09-30-rejected-equipment-multidraw-probe.md).
+Release branch returned to safe d1da7467, with no prototype import/hook left
+enabled. Artifacts:/tmp/eidolon-1-48-animated-equipment-0930,
+/tmp/eidolon-1-48-animated-gear-busy-0930,
+/tmp/eidolon-1-48-animated-gear-upload-cost-0930. No remote experimental push,
+production deployment or further unchanged busy replay. Next approach must
+avoid hundreds of per-material dynamic GPU textures (shared actor skeletal
+transforms or folding only genuinely rigid common pivots are candidates),
+retain original visibility/appearance/lifetime requirements, and demonstrate
+actual frame-time benefit before integration.1.48 remains incomplete.
+
 ## Actual first-view preparation — September30
 
 New opt-in cold-town probe creates the production renderer, procedural
