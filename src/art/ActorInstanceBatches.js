@@ -21,7 +21,7 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 // update/input/gear/stealth logic can run. Geometry/materials remain borrowed.
 // Standard instance attributes, never per-piece GPU matrix/indirection textures.
 export class ActorInstanceBatches {
-    constructor(scene) {
+    constructor(scene, watchedGroups = [scene]) {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
@@ -29,6 +29,17 @@ export class ActorInstanceBatches {
         this.enabled = true;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
+        this.watchedGroups = [...new Set(watchedGroups)];
+        this.onAdded = event => event.child.traverse(root => this.register(root));
+        this.onRemoved = event => {
+            for (const root of this.roots.keys()) if (inside(root, event.child)) {
+                this.roots.delete(root); this.dirty = true;
+            }
+        };
+        for (const group of this.watchedGroups) {
+            group.addEventListener('childadded', this.onAdded);
+            group.addEventListener('childremoved', this.onRemoved);
+        }
         this.before = scene.onBeforeRender; this.after = scene.onAfterRender;
         this.beforeHook = (...args) => { this.before.apply(scene, args); this.beginFrame(); };
         this.afterHook = (...args) => { this.endFrame(); this.after.apply(scene, args); };
@@ -109,12 +120,22 @@ export class ActorInstanceBatches {
         this.group.visible = false;
     }
 
+    clear() {
+        this.endFrame();
+        for (const batch of this.batches.values()) { batch.removeFromParent(); batch.dispose(); }
+        this.batches.clear(); this.buckets.clear(); this.roots.clear(); this.roster = []; this.dirty = true;
+    }
+
     dispose() {
         if (this.disposed) return;
         this.disposed = true; this.endFrame();
         if (this.scene.onBeforeRender === this.beforeHook) this.scene.onBeforeRender = this.before;
         if (this.scene.onAfterRender === this.afterHook) this.scene.onAfterRender = this.after;
-        for (const batch of this.batches.values()) batch.dispose();
-        this.batches.clear(); this.buckets.clear(); this.roots.clear(); this.roster = []; this.group.removeFromParent();
+        for (const group of this.watchedGroups) {
+            group.removeEventListener('childadded', this.onAdded);
+            group.removeEventListener('childremoved', this.onRemoved);
+        }
+        this.watchedGroups.length = 0;
+        this.clear(); this.group.removeFromParent();
     }
 }

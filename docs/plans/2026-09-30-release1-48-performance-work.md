@@ -1,9 +1,46 @@
 # Alpha1.48 — client performance work
 
+## Opt-in render ownership integration — September30
+
+Close the candidate's previously identified integration gaps on the isolated
+actor-instance branch only. RenderSystem now owns activation, scene reset and
+disposal; normal constructors keep it disabled. Scene/entity-group child events
+register actors after model loading, remove retired actors and re-register
+streamed actors without per-frame scene discovery. Clear scene-owned instance
+buffers immediately on instance reset, preserving borrowed surfaces. Remove
+only owned hooks/listeners on disable or retirement. Retain dynamic gear,
+transparency, animation and spatial-cell compatibility checks.
+
+RenderSystem's outer frame finally restores source visibility even when a
+renderer or composer pass throws before Scene.onAfterRender. Six new integration
+cases exercise both failure paths, actual Group streaming, scene reset,
+borrowed-resource preservation, default-off/disposed guards and hook retirement.
+Five impacted suites41 checks pass2.042s; scoped lint and whitespace pass.
+
+Two changed native-Chrome cases pass10.0s with the actual RenderSystem owner
+activated before the ten equipped actors are added. Six animated poses each
+at High/Low preserve paired images, exact triangle totals, shadows and stealth;
+draw submissions remain fewer. Each quality also throws from a real floor
+onBeforeRender while original actor parts are hidden: the caught failure
+restores all original visibility and frame-stat policy, and the next render
+works. No account or economic actions. Artifacts:
+`/tmp/eidolon-1-48-integrated-instances-0930`.
+
+Read-only job109836999629/run36664933512 still in progress this turn; host
+load30.95/28.61/29.84 on16 threads, CPU some pressure44.58/44.36/44.57.
+Do not take this as a controlled FPS benchmark or precise attribution of past
+timings. Cached candidate timing stays pending comparable host conditions.
+Owner's specific soak cancellation question is unanswered; no job cancelled,
+schedule changed or unrelated process stopped. Safe release branch remains
+ca7412a0; candidate remains isolated, default-disabled, unpublished. No148
+milestone acceptance, release metadata bump, public deployment or universal
+performance claim follows from these ownership and appearance tests.
+
 ## Standard actor-instance probe — pending controlled timing
 
-Isolated on work/alpha-1-48-actor-instances-probe-20260930; NOT enabled in the
-production RenderSystem, merged to the release branch, pushed or deployed.
+Isolated on work/alpha-1-48-actor-instances-probe-20260930; NOT enabled by
+default, merged to the release branch, pushed or deployed. The later opt-in
+owner integration is documented above.
 Standard InstancedMesh attributes borrow exact shared geometry/materials;
 combine compatible opaque rigid character parts inside64m spatial cells.
 Original actor visibility changes only within the synchronous render frame,
@@ -39,9 +76,9 @@ loadtest67.5%. Do NOT claim this proves the precise cause of previous timings.
 Defer the cached comparative timing rather than replay under known contention.
 Owner was asked to cancel only this run; no approval received or cancellation
 made. Existing authorized Luna follows this exact job read-only. Schedule and
-other processes remain unchanged. Production integration would additionally
-need guaranteed frame-exception restoration and actor add/remove registration;
-the isolated helper is not a finished release feature.
+other processes remain unchanged. The later owner integration above closes
+frame-exception restoration and actor add/remove registration; the isolated
+candidate still needs its controlled performance gate before release.
 
 Artifacts:/tmp/eidolon-1-48-actor-instances-appearance-0930,
 /tmp/eidolon-1-48-actor-instances-busy-0930,

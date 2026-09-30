@@ -16,7 +16,6 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { createTransientEffect } = await import('/src/core/TransientEffects.js');
         const { createProceduralAreaField, updateProceduralAreaField, releaseProceduralAreaField } = await import('/src/art/ProceduralAreaFields.js');
-        const { ActorInstanceBatches } = await import('/src/art/ActorInstanceBatches.js');
         const gallery = window.__eidolonAnimationGalleryController;
         gallery.cleanupPresentation();
         [gallery.actor, gallery.remoteActor, gallery.targetActor].forEach((actor) => { if (actor?.mesh) actor.mesh.visible = false; });
@@ -91,7 +90,8 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             }
         };
         gallery.persistentEntities.push(update);
-        const instances = instancingProbe ? new ActorInstanceBatches(render.scene) : null;
+        render.setActorInstancesEnabled(instancingProbe);
+        const instances = render.actorInstances;
         window.__raidScene = {
             setBusy,
             dispose() {

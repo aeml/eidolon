@@ -13,10 +13,10 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
         const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
-        const { ActorInstanceBatches } = await import('/src/art/ActorInstanceBatches.js');
         const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
+        render.setActorInstancesEnabled(true);
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x4a4842, roughness: 1 }));
         floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; render.scene.add(floor);
         const models = [];
@@ -35,7 +35,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         }
         render.setZoom(18); render.setCameraTarget(new THREE.Vector3(0, 1, 0));
         render.applyLightingPreset('town', true); render.updateEnvironmentLighting(new THREE.Vector3(), 0);
-        const instances = new ActorInstanceBatches(render.scene);
+        const instances = render.actorInstances;
         const canvas = render.renderer.domElement, copy = document.createElement('canvas');
         copy.width = canvas.width; copy.height = canvas.height;
         const context = copy.getContext('2d', { willReadFrequently: true }), reports = [];
@@ -45,7 +45,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
                 calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
         };
         capture(false); capture(true);
-        let image;
+        let image, failureRestored = false;
         try {
             for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth']) {
                 const mixers = models.map(({ mesh }) => {
@@ -69,12 +69,25 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
                 models.forEach(({ mesh, position }) => { mesh.userData.resetPose(); mesh.position.copy(position); });
             }
+            const visibility = new Map();
+            models.forEach(({ mesh }) => mesh.traverse(part => visibility.set(part, part.visible)));
+            const originalHook = floor.onBeforeRender, failure = new Error('Prepared mid-frame failure');
+            let hiddenDuringFailure = false, observedFailure = false;
+            floor.onBeforeRender = () => { hiddenDuringFailure = instances.hidden.length > 0; throw failure; };
+            try { render.render(); } catch (error) {
+                if (error !== failure) throw error;
+                observedFailure = true;
+            } finally { floor.onBeforeRender = originalHook; }
+            failureRestored = observedFailure && hiddenDuringFailure && !instances.group.visible &&
+                [...visibility].every(([part, visible]) => part.visible === visible) && render.renderer.info.autoReset;
+            // The next ordinary render remains usable after the caught failure.
+            capture(true);
         } finally {
             instances.dispose();
             models.forEach(({ type, mesh }) => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
-        return { reports, image };
+        return { reports, image, failureRestored };
     }, quality);
     await testInfo.attach('instance-comparison', { body: JSON.stringify(result.reports), contentType: 'application/json' });
     await writeFile(testInfo.outputPath('actor-instances.png'), Buffer.from(result.image.split(',')[1], 'base64'));
@@ -84,5 +97,6 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
         expect(row.visibilityRestored).toBe(true);
     }
+    expect(result.failureRestored).toBe(true);
     expect(failures, failures.join('\n')).toEqual([]);
 });
