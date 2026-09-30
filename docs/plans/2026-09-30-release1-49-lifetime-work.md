@@ -1,5 +1,41 @@
 # Alpha1.49 session-lifetime work
 
+## Manual pickup gate and fresh click coordinates
+
+Corrected CI 36731289969 at 67b95816 passed Go, Jest and all three browser
+shards. Predeploy job 109964055636 failed manual loot pickup; all deployment
+jobs were skipped. Its final diagnostic showed the drop still present and the
+player idle 5.83m away, but did not record the native click's selected target.
+That evidence cannot distinguish a missed click from failed approach movement.
+
+Read-only post-click observations on the isolated authenticated route recorded
+the runtime's actual hover, pending interaction, player/camera positions and hit
+stack. One route passed in 40.0s; three bounded repeats passed in 48.5s, 36.9s
+and 37.3s, total 2.1 minutes. Every repeat selected the intended loot, registered
+its interaction and increased that item's quantity from zero to one, including
+one overlapping stackable pile. Dungeon entry/exit and persistence also passed.
+These passes alone do not establish the cause of the original CI failure.
+
+The helper nevertheless had a reproducible stale-coordinate gap: it acquired
+hover, awaited item/inventory reads and then clicked the old screen position.
+A geometry/input test moves the camera during that preparation, proves the old
+native click misses, then proves reacquisition hits the same real loot hitbox.
+The helper now reacquires the selected drop immediately before the ordinary
+mouse click and requires the actual click to select it and register its pending
+interaction. Item-specific quantity increase and saved inventory assertions
+remain unchanged. No direct pickup, assigned hover, forced raycast in the
+authenticated route, auto-loot fallback, increased timeout or retry is added.
+No production targeting or movement code is changed by this correction.
+
+All five native loot-pointer cases passed in 22.2s; ten read-only observation
+unit checks passed in 0.843s. Scoped lint and whitespace checks passed. The
+mandatory browser union now contains 237 cases exactly once. The final corrected
+authenticated route passed in 40.5s, total 42.7s, including the new native click
+assertions and unchanged dungeon/persistence checks. Its credential scan passed
+and temporary containers/data were cleaned up. Normal exact-source CI/public
+acceptance remain pending; Alpha 1.48 is still the accepted live version.
+The unused private guild-test database was removed; no production data changed.
+
 ## Mandatory CI correction for owner lifecycle assertions
 
 Initial 1.49 run36729869596 at35e67dcc, Jest109936314985, passed604suites/
