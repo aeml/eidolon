@@ -1,10 +1,17 @@
 # Alpha1.47 — phone session quality candidate
 
-Ordered candidate on prepared1.46, not deployed. Actual phone dungeon/party
+Ordered candidate on accepted1.46, not deployed. Actual phone dungeon/party
 and native-keyboard feedback remain owner playtest work; this is not device
 certification, a phone FPS claim or closure of the integrated Q gate.
 
 ## Current predecessor integration — September30
+
+Final prerequisite81c0dd52 carries accepted1.46 exact319bd831, including the
+canvas fit and focused inventory-menu fixes. All ten1.46 CI jobs passed and
+root verified matching public frontend/backend identities and changed runtime
+bytes; see the1.46 acceptance receipt. This candidate remains1.47 and has not
+yet passed its own CI/live gates. Earlier evidence below is retained with its
+original predecessor/date context; no147 feature or assertion is removed.
 
 Merge91f15a94 carries the currently pushed1.46/d84bfabb prerequisites and
 the accepted1.45 receipt. Resolve README to source1.47/accepted1.45, with
