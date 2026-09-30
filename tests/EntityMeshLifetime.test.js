@@ -73,7 +73,7 @@ test('ordinary concurrent ensures still share one load and preserve the accepted
     item.position.set(12, 0, 24); item.setScale(1.5);
     const create = jest.spyOn(MeshFactory, 'createMeshForType').mockReturnValue(load.promise);
     const task = item.ensureMesh(); await item.ensureMesh();
-    expect(create).toHaveBeenCalledTimes(1); expect(create).toHaveBeenCalledWith('Fighter');
+    expect(create).toHaveBeenCalledTimes(1); expect(create).toHaveBeenCalledWith('Fighter', { quality: undefined });
     load.resolve(mesh); await task;
     expect(item.mesh).toBe(mesh); expect(mesh.userData.entityId).toBe(item.id);
     item.render(1); // Entity applies accepted transforms in its render step.
@@ -118,6 +118,6 @@ test('a model-type change returns a late result to the captured old pool, not th
     const task = item.ensureMesh(); item.meshType = 'Rogue'; await task;
     expect(item.mesh).toBeNull(); expect(item.isMeshLoading).toBe(false);
     expect(MeshFactory.releaseMesh).toHaveBeenCalledWith('Fighter', oldMesh);
-    await item.ensureMesh(); expect(create).toHaveBeenLastCalledWith('Rogue');
+    await item.ensureMesh(); expect(create).toHaveBeenLastCalledWith('Rogue', { quality: undefined });
     expect(item.mesh).toBe(currentMesh); item.dispose();
 });

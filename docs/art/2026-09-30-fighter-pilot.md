@@ -3,8 +3,8 @@
 September 30, 2026. The owner delivered a rigged, underclothes-only Fighter in
 commit `da02a2a5b35e70b8b890873d36adcf2804433281`. It was preserved by the fresh
 remote merge before the 1.53 push. The asset is available for integration; the
-current runtime still uses the procedural Fighter. Runtime candidates and an
-independent-skeleton adapter are now implemented and tested locally. This is
+live runtime still uses the procedural Fighter. The unpublished normal factory
+and character preview now select derived, independent rigs on demand. This is
 partial integration evidence, not completed visual or performance acceptance.
 
 ## Verified delivery
@@ -54,8 +54,8 @@ Structural validation alone does not establish final appearance.
 
 `AuthoredFighter.js` clones the complete skeleton/skin hierarchy, shares immutable
 geometry and textures, normalizes to the existing 4.5-world-unit height above the
-feet, retains authored motion and keeps a resettable per-instance pose. It does
-not yet replace the default class factory. Five runtime skill clips now cover
+feet, retains authored motion and keeps a resettable per-instance pose. It now
+feeds the unpublished default Fighter factory. Five runtime skill clips cover
 Cast, Channel, Guard, Shout and Bless: gestures convert world-space rotations
 through the delivered bones rather than copying procedural Euler tracks;
 Guard retains the supplied Block animation. The original 12 clips remain.
@@ -98,8 +98,8 @@ initialization, not assumed to exist before a hit.
 
 The shared equipment dispatcher now supports authored and procedural bodies.
 Ordinary Actor refresh/disposal, MeshFactory release and CharacterPreview
-equipment calls use that dispatcher; the factories still create the procedural
-Fighter by default. This is not default-model or character-sheet acceptance.
+equipment calls use that dispatcher. The normal Fighter factory now selects
+High/Low derived exports with a fully equipped procedural fallback on failure.
 
 Six clothing slots use shaped pieces fitted in neutral bind space and weighted
 to the delivered skeleton. Eight rigid slots use calibrated sockets or finger
@@ -129,12 +129,41 @@ equipment/metrics JSON and screenshots. Six focused authored-model checks passed
 in 1.973s, including interleaved accessors and shared/owned geometry disposal;
 changed-scope lint passed. Earlier consumer regression checks passed 433 tests.
 
-Review exposed remaining presentation work: shields turn too flat in the
-supplied locomotion/block poses, rigid equipment still uses the existing simple
-forms, and cloth needs full movement/clipping review. Default asynchronous
-activation, failure fallback, pooled-pose lifecycle, matching character preview,
-actual gameplay camera and equipped multi-actor frame/memory measurements remain
-open. This fixture does not certify those requirements or Diablo/PoE art quality.
+Shield grip now follows the hand while its face follows the torso instead of
+turning edge-on with the supplied unarmed wrist poses. Reviewed Run/Guard renders
+show the intended orientation. Tome poses retain their original mount behavior.
+The normal Actor mixer and static character-preview render apply this adjustment
+without changing authoritative transforms.
+
+The normal asynchronous entity path now chooses quality-specific pools, resets
+rest poses on reuse, and falls back on missing/invalid/slow exports. A timed-out
+observation retains the actual in-flight download instead of duplicating it.
+Temporary fallback Fighters are not pooled as permanent replacements. The two
+derived asset URLs use their content hashes for cache invalidation. Discarded
+instances and preview disposal release owned skeleton textures without disposing
+shared source geometry/materials. A late preview result cannot replace another
+class or a disposed preview, and installation uses the newest equipment snapshot.
+
+Nine targeted JS suites passed 196 checks in 11.992s; changed-scope lint passed.
+Four native browser cases passed in 43.7s: the pilot now loads all four Actors
+through ordinary ensureMesh/factory calls, creates independent High/Low static
+CharacterPreview instances with matching 14-slot equipment signatures, and
+checks character-sheet controls at 1280/900/390px. Reviewed High/Low preview,
+isometric and Guard screenshots are in
+`/tmp/eidolon-1-54-fighter-integrated-0930`, with durable metrics JSON.
+
+A 60-frame four-equipped-actor sample using the game's isometric view direction
+recorded CPU animation/render submission p50 10.4ms and p95 15.1ms on RADV RENOIR,
+285 draws, 165,536 rendered triangles, 221 renderer-tracked geometries and
+85 textures. Local combined loading/setup was 1.665s. These are fixture counts
+and CPU submission timings, not GPU memory bytes, guaranteed FPS, internet load,
+physical-phone performance, full-world gameplay or 100-player capacity evidence.
+
+One newly identified activation gap remains: CasinoController still seats only
+procedural Rig_* bones. The authored Fighter needs a real seated pose and exit
+restoration before deployment. Full clip-duration/clipping review and the normal
+RenderSystem/gallery consumer path also remain; rigid equipment uses the existing
+simple forms. This work does not certify final Diablo/PoE art quality.
 
 ## Remaining integration alongside combat readability
 
@@ -148,9 +177,9 @@ open. This fixture does not certify those requirements or Diablo/PoE art quality
    actor controller. Retain authored motion, smooth transitions and current
    gameplay authority; fill any class-skill presentation gaps without silently
    dropping animation coverage.
-4. Finish the generated-equipment adaptation above: correct weapon/shield motion,
-   inspect full clip durations and clipping, and verify the character preview
-   matches the world actor. The owner supplies bodies—not an equipment or
+4. Finish the remaining generated-equipment review above: inspect full clip
+   durations and clipping, adapt casino seating/restoration, and check the normal
+   gallery/RenderSystem consumers. The owner supplies bodies—not an equipment or
    environment catalog.
 5. Compare the actual gameplay camera and character sheet, High/Low settings and
    a shared multi-actor workload. Review appearance and readable combat, not just
@@ -160,4 +189,7 @@ Other class/NPC/monster deliveries and full modern-art acceptance remain
 separate requirements. Default Fighter activation still requires generated
 equipment motion/fit acceptance, integrated skill/controller acceptance, fallback/cache/pool
 lifecycle, current gameplay camera and character-sheet review, and measured
-High/Low multi-actor performance. No new owner model request is needed.
+High/Low full-world performance. The first independent preview and equipped
+four-actor fixture checks pass; they do not close all those requirements.
+No new owner model request is needed. Markdown was source-reviewed; no rendered
+documentation preview was available.

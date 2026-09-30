@@ -67,8 +67,17 @@ cosmetic appearances. The final four-Actor High/Low equipped native route passed
 in 20.4s, with restoration/disposal checks; six authored-model unit checks passed
 in 1.973s and changed-scope lint passed. The pilot record preserves implementation
 details, screenshots, interleaved-skin and missing-waist corrections and limits.
-Weapon/shield motion, full equipped-controller acceptance, matching preview,
-cache/pool/fallback activation and final visual/performance acceptance remain.
+The subsequent normal factory/ensureMesh path selects the derived quality and
+uses separate resettable pools plus procedural fallback. Preview requests are
+identity-fenced, apply the latest equipment and dispose owned skeletons. Shield
+face orientation now follows the torso through unarmed wrist poses. Nine scoped
+JS suites passed 196 tests in 11.992s; the integrated native pilot and three
+character-sheet sizes passed four cases in 43.7s, with reviewed independent
+High/Low previews and a short isometric CPU-render sample. The pilot record
+qualifies those metrics; they are not final GPU/FPS/capacity evidence.
+Casino seating still targets the old Rig_* bones and must be adapted before
+deployment. Full clip/clipping and normal gallery/RenderSystem consumer review
+also remain. Final modern equipment art is not claimed complete by this pilot.
 The source upload and adapter have not replaced the live procedural hero.
 
 Package 1.54 metadata and cumulative notes after integration; fetch/merge remote changes

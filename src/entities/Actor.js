@@ -783,6 +783,7 @@ export class Actor extends Entity {
         this.movingCastGait?.restore();
         this.mixer.update(dt);
         this.movingCastGait?.apply(dt);
+        this.mesh?.userData.updateEquipmentPose?.();
     }
 
     clearBlockedMovementTarget() {

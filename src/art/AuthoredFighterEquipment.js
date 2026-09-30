@@ -302,7 +302,27 @@ export function prepareAuthoredFighterEquipment(root) {
     add('trinket2', socket('socket_belt'), new THREE.Vector3(.21, 1.02, .12));
     const group = new THREE.Group(); group.name = 'AuthoredFighterGarments'; body.parent.add(group);
     const hands = new Map([-1, 1].map(side => [side, point(root.getObjectByName(side < 0 ? 'hand_r' : 'hand_l') || socket(side > 0 ? 'socket_offHand' : 'socket_mainHand'))]));
-    states.set(root, { body, original: body.geometry, cache: cacheFor(body), mounts, group, hands, hair: root.getObjectByName('Fighter_Hair'), shorts: root.getObjectByName('Fighter_Undershorts'), seams: root.getObjectByName('Fighter_ClothSeams') });
+    const torso = root.getObjectByName('spine_03');
+    const state = { body, original: body.geometry, cache: cacheFor(body), mounts, group, hands, torso,
+        torsoRestInverse: torso.getWorldQuaternion(new THREE.Quaternion()).invert(),
+        shieldRest: mounts.get('offHand').getWorldQuaternion(new THREE.Quaternion()),
+        offHandRest: mounts.get('offHand').quaternion.clone(),
+        parentRotation: new THREE.Quaternion(), targetRotation: new THREE.Quaternion(), shield: false,
+        hair: root.getObjectByName('Fighter_Hair'), shorts: root.getObjectByName('Fighter_Undershorts'), seams: root.getObjectByName('Fighter_ClothSeams') };
+    states.set(root, state);
+    // The supplied hand poses are unarmed. Keep the shield facing with the
+    // torso while its grip follows the hand, rather than presenting its edge
+    // when that wrist turns during Run/Block. Authority transforms are untouched.
+    root.userData.updateEquipmentPose = () => {
+        if (!state.shield) return;
+        const mount = mounts.get('offHand');
+        torso.updateWorldMatrix(true, false);
+        mount.parent.updateWorldMatrix(true, false);
+        torso.getWorldQuaternion(state.targetRotation).multiply(state.torsoRestInverse).multiply(state.shieldRest);
+        mount.parent.getWorldQuaternion(state.parentRotation).invert();
+        mount.quaternion.copy(state.parentRotation).multiply(state.targetRotation);
+        mount.updateMatrixWorld(true);
+    };
 }
 
 export function clearAuthoredFighterEquipment(root) {
@@ -315,6 +335,8 @@ export function clearAuthoredFighterEquipment(root) {
         }
     }
     state.body.geometry = state.original;
+    state.shield = false;
+    state.mounts.get('offHand').quaternion.copy(state.offHandRest);
     for (const part of [state.hair, state.shorts, state.seams]) if (part) part.visible = true;
     root.userData.equipmentVisualSignature = '';
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
@@ -343,6 +365,7 @@ export function applyAuthoredFighterEquipment(root, equipment = {}, { force = fa
             if (!(slot === 'feet' && descriptor.variant === 'sandals')) mask |= 1 << SKIN_SLOTS.indexOf(slot);
         } else {
             state.mounts.get(slot).add(source);
+            if (slot === 'offHand') state.shield = descriptor.variant === 'shield';
             if (slot === 'head' && state.hair) state.hair.visible = false;
         }
         items++;
@@ -351,5 +374,6 @@ export function applyAuthoredFighterEquipment(root, equipment = {}, { force = fa
     if (mask & 16) for (const part of [state.shorts, state.seams]) if (part) part.visible = false;
     for (const owner of [state.group, ...state.mounts.values()]) owner.traverse(part => { if (part.isMesh && part.visible && !part.userData.equipmentBatchSource) parts++; });
     root.userData.equipmentVisualSignature = signature; root.userData.equipmentVisualItemCount = items; root.userData.equipmentVisualPartCount = parts;
+    root.userData.updateEquipmentPose();
     return { supported: true, changed: true, items, parts, missing };
 }

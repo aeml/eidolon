@@ -5,6 +5,7 @@ import { createAuthoredFighterInstance, fighterRuntimePath, FIGHTER_AUTHORED_CLI
 import { FIGHTER_SKILL_CLIPS } from '../src/art/AuthoredFighterAbilityClips.js';
 import { applyEquipmentVisuals, clearEquipmentVisuals } from '../src/art/EquipmentVisuals.js';
 import { jest } from '@jest/globals';
+import { MeshFactory } from '../src/utils/MeshFactory.js';
 
 function fixture() {
     const scene = new THREE.Group();
@@ -140,5 +141,50 @@ describe('delivered Fighter runtime candidates', () => {
         expect(() => createAuthoredFighterInstance(noSocket)).toThrow('Missing authored Fighter attachment');
         const badSkin = fixture(); badSkin.scene.getObjectByName('Fighter_Body').skeleton.bones.pop();
         expect(() => createAuthoredFighterInstance(badSkin)).toThrow('Invalid Fighter skin');
+    });
+
+    test('normal factory selects quality, preserves independent rigs and resets quality-specific pooled poses', async () => {
+        const originalPool = MeshFactory.pool, source = fixture(); MeshFactory.pool = {};
+        const load = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockResolvedValue(source);
+        try {
+            const first = await MeshFactory.createMeshForType('Fighter', { quality: 'high' });
+            const second = await MeshFactory.createMeshForType('Fighter', { quality: 'high' });
+            expect(first.userData.authoredClass).toBe('Fighter');
+            expect(first.getObjectByName('Root')).not.toBe(second.getObjectByName('Root'));
+            first.getObjectByName('Root').position.x = 20;
+            applyEquipmentVisuals(first, { head: { id: 'helm', name: 'Iron Helm' } });
+            MeshFactory.releaseMesh('Fighter', first);
+            const low = await MeshFactory.createMeshForType('Fighter', { quality: 'low' });
+            expect(low).not.toBe(first); expect(low.userData.authoredQuality).toBe('low');
+            expect(load).toHaveBeenLastCalledWith(fighterRuntimePath('low'), 8000);
+            const reused = await MeshFactory.createMeshForType('Fighter', { quality: 'high' });
+            expect(reused).toBe(first); expect(first.getObjectByName('Root').position.x).toBe(0);
+            expect(first.getObjectByName('AuthoredMount_head').children).toHaveLength(0);
+            expect(first.visible).toBe(true); expect(source.scene.getObjectByName('Root').position.x).toBe(0);
+            expect(load).toHaveBeenCalledTimes(3);
+        } finally { MeshFactory.pool = originalPool; load.mockRestore(); }
+    });
+
+    test('shield face follows torso rather than unarmed wrist twist and clears before a tome', () => {
+        const root = createAuthoredFighterInstance(fixture());
+        const mount = root.getObjectByName('AuthoredMount_offHand'), neutral = mount.quaternion.clone();
+        applyEquipmentVisuals(root, { offHand: { id: 'shield', name: 'Wooden Shield' } });
+        const facing = mount.getWorldQuaternion(new THREE.Quaternion());
+        root.getObjectByName('socket_offHand').rotation.x = Math.PI / 2;
+        root.userData.updateEquipmentPose();
+        expect(mount.getWorldQuaternion(new THREE.Quaternion()).angleTo(facing)).toBeLessThan(1e-6);
+        applyEquipmentVisuals(root, { offHand: { id: 'tome', name: 'Spell Tome' } });
+        expect(mount.quaternion.angleTo(neutral)).toBeLessThan(1e-6);
+        clearEquipmentVisuals(root);
+    });
+
+    test('discard disposes owned skeletons once, never shared body geometry or a sibling rig', () => {
+        const source = fixture(), first = createAuthoredFighterInstance(source), sibling = createAuthoredFighterInstance(source);
+        const body = first.getObjectByName('Fighter_Body'), twin = sibling.getObjectByName('Fighter_Body');
+        const own = jest.spyOn(body.skeleton, 'dispose'), other = jest.spyOn(twin.skeleton, 'dispose');
+        const shared = jest.spyOn(body.geometry, 'dispose');
+        first.userData.disposeInstance(); first.userData.disposeInstance();
+        expect(own).toHaveBeenCalledTimes(1); expect(other).not.toHaveBeenCalled(); expect(shared).not.toHaveBeenCalled();
+        jest.restoreAllMocks();
     });
 });

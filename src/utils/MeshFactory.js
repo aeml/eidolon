@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import { clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
+import { createAuthoredFighterInstance, fighterRuntimePath } from '../art/AuthoredFighter.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
@@ -112,7 +113,6 @@ export class MeshFactory {
                 this.loadModel(path),
                 new Promise((_, reject) => {
                     timeoutId = setTimeout(() => {
-                        delete this.inflight[path];
                         reject(new Error(`Timed out after ${timeoutMs}ms: ${path}`));
                     }, timeoutMs);
                 })
@@ -600,17 +600,25 @@ export class MeshFactory {
     static releaseMesh(type, mesh) {
         if (!mesh) return;
         clearEquipmentVisuals(mesh);
-        if (!this.pool[type]) this.pool[type] = [];
+        const poolKey = mesh.userData.meshPoolKey || type;
+        if (!this.pool[poolKey]) this.pool[poolKey] = [];
         
         mesh.visible = false;
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
         if (mesh.parent) mesh.parent.remove(mesh);
         
-        if (this.pool[type].length < 50) {
-            this.pool[type].push(mesh);
+        // A temporary failed-load Fighter must not permanently replace a
+        // subsequently available authored export through the pool.
+        if (type === 'Fighter' && mesh.userData.assetFallback) return;
+        if (this.pool[poolKey].length < 50) {
+            this.pool[poolKey].push(mesh);
         } else {
             // Pool is full, dispose of the mesh resources.
+            if (mesh.userData.disposeInstance) {
+                mesh.userData.disposeInstance();
+                return;
+            }
             // Procedural enemies now use shared/cached geometries and materials —
             // do NOT dispose them (they are singletons). Only dispose non-cached
             // GLTF materials whose geometry is also shared.
@@ -714,7 +722,30 @@ export class MeshFactory {
         return this.inflight[path];
     }
 
-    static async createMeshForType(type) {
+    static getFighterQuality(quality) {
+        if (quality) return quality === 'low' ? 'low' : 'high';
+        const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(globalThis.navigator?.userAgent || '') || globalThis.innerWidth <= 800;
+        return mobile ? 'low' : 'high';
+    }
+
+    static async createMeshForType(type, { quality } = {}) {
+        if (type === 'Fighter') {
+            const detail = this.getFighterQuality(quality), poolKey = `Fighter:${detail}`;
+            const reused = this.getPooledMesh(poolKey);
+            if (reused) return reused;
+            try {
+                const input = await this.loadModelWithTimeout(fighterRuntimePath(detail), 8000);
+                const fighter = createAuthoredFighterInstance(input, { quality: detail });
+                fighter.userData.meshPoolKey = poolKey;
+                return fighter;
+            } catch (error) {
+                console.warn('MeshFactory: authored Fighter unavailable; using equipped procedural fallback', error);
+                const fallback = createProceduralFighter({ batch: true });
+                fallback.userData.assetFallback = true;
+                fallback.userData.fallbackType = 'Fighter';
+                return fallback;
+            }
+        }
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
 
@@ -732,10 +763,6 @@ export class MeshFactory {
         let mesh;
         
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
-
-        if (type === 'Fighter') {
-            return createProceduralFighter({ batch: true });
-        }
 
         if (type === 'Rogue') {
             return createProceduralRogue({ batch: true });

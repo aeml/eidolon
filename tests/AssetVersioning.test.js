@@ -30,7 +30,10 @@ describe('asset URL versioning', () => {
     });
 
     test('retired dungeon models no longer need a special cache-version override', () => {
-        expect(ASSET_VERSION_OVERRIDES).toEqual({});
+        expect(Object.keys(ASSET_VERSION_OVERRIDES).sort()).toEqual([
+            './assets/archetypes/Fighter/fighter-runtime-high.glb',
+            './assets/archetypes/Fighter/fighter-runtime-low.glb'
+        ]);
         expect(resolveAssetPath('./assets/buildings/dungeons/the_verdant_bastion.glb')).toBe(
             `./assets/buildings/dungeons/the_verdant_bastion.glb?v=${DEFAULT_ASSET_VERSION}`
         );

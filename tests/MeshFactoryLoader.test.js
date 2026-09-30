@@ -55,6 +55,18 @@ describe('MeshFactory.loadModel', () => {
         loadSpy.mockRestore();
     });
 
+    test('an observation timeout retains a running request instead of starting a duplicate download', async () => {
+        let resolve;
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((_path, onLoad) => { resolve = onLoad; });
+        try {
+            await expect(MeshFactory.loadModelWithTimeout('./assets/slow.glb', 5)).rejects.toThrow('Timed out');
+            const pending = MeshFactory.loadModel('./assets/slow.glb');
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            const gltf = { scene: {}, animations: [] }; resolve(gltf);
+            expect(await pending).toBe(gltf);
+        } finally { loadSpy.mockRestore(); }
+    });
+
     test('clears inflight entry after non-retriable error so next call can retry', async () => {
         const expectedError = new Error('404 not found');
         const fakeGltf = { scene: { name: 'retry' }, animations: [] };
@@ -226,9 +238,9 @@ describe('MeshFactory catalog integration', () => {
         expect(mesh.getObjectByName('ProceduralPart0')).not.toBeNull();
     });
 
-    test('Fighter uses the procedural humanoid without requesting a GLB', async () => {
+    test('unavailable Fighter export falls back to the fully equipped procedural humanoid', async () => {
         const previousPool = MeshFactory.pool;
-        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('404 not found'));
         MeshFactory.pool = {};
 
         try {
@@ -237,7 +249,10 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralClass).toBe('Fighter');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(PROCEDURAL_PLAYER_CLIPS);
-            expect(loadSpy).not.toHaveBeenCalled();
+            expect(loadSpy).toHaveBeenCalledWith('./assets/archetypes/Fighter/fighter-runtime-high.glb', 8000);
+            expect(mesh.userData.assetFallback).toBe(true);
+            MeshFactory.releaseMesh('Fighter', mesh);
+            expect(MeshFactory.pool.Fighter).toEqual([]);
         } finally {
             MeshFactory.pool = previousPool;
             loadSpy.mockRestore();

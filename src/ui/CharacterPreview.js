@@ -4,15 +4,19 @@ import { equipmentVisualSignature } from '../art/ProceduralEquipment.js';
 import { applyEquipmentVisuals, clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
+import { MeshFactory } from '../utils/MeshFactory.js';
 
 const FACTORIES = Object.freeze({ Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric });
 const INITIAL_YAW = -0.28;
 
 /** A lazy, on-demand dressing room. Never animates alongside the game loop. */
 export class CharacterPreview {
-    constructor(host, { createRenderer = (options) => new THREE.WebGLRenderer(options) } = {}) {
+    constructor(host, { createRenderer = (options) => new THREE.WebGLRenderer(options),
+        loadFighter = (quality) => MeshFactory.createMeshForType('Fighter', { quality }) } = {}) {
         this.host = host;
         this.createRenderer = createRenderer;
+        this.loadFighter = loadFighter;
+        this.modelRequest = 0;
         this.yaw = INITIAL_YAW;
         this.signature = '';
         this.disposed = false;
@@ -68,18 +72,49 @@ export class CharacterPreview {
         this.initialize();
         if (!this.renderer) return;
         const equipment = equipmentWithAppearances(player.equipment, player.appearances);
-        const signature = `${type}|${equipmentVisualSignature(equipment)}`;
+        const quality = MeshFactory.getFighterQuality(player.mesh?.userData.authoredQuality ||
+            (player.gameEngine?.renderSystem?.isMobile ? 'low' : player.gameEngine?.renderSystem?.graphicsQuality));
+        const modelKey = type === 'Fighter' ? `${type}:${quality}` : type;
+        const signature = `${modelKey}|${equipmentVisualSignature(equipment)}`;
+        this.pendingEquipment = equipment;
         this.host.querySelector('.character-preview-label').textContent = `${type} · Level ${player.level}`;
         if (signature === this.signature) return;
         this.signature = signature;
-        if (type !== this.type) {
+        if (modelKey !== this.modelKey) {
+            const request = ++this.modelRequest;
+            this.previewMixer?.stopAllAction();
+            this.previewMixer?.uncacheRoot(this.model);
+            this.previewMixer = null;
             clearEquipmentVisuals(this.model);
+            this.model?.userData.disposeInstance?.();
             this.model?.removeFromParent();
             // A fresh hierarchy: cloning a live actor copies rest-pose closures.
             this.model = FACTORIES[type]();
             this.scene.add(this.model);
             this.type = type;
+            this.modelKey = modelKey;
             this.yaw = INITIAL_YAW;
+            if (type === 'Fighter') {
+                this.host.querySelector('.character-preview-status').textContent = 'Loading Fighter model…';
+                Promise.resolve().then(() => this.loadFighter(quality)).then(model => {
+                    if (this.disposed || request !== this.modelRequest) {
+                        MeshFactory.releaseMesh('Fighter', model);
+                        return;
+                    }
+                    clearEquipmentVisuals(this.model); this.model.removeFromParent();
+                    this.model = model; this.scene.add(model);
+                    const idle = model.userData.animations?.find(clip => clip.name === 'Idle');
+                    if (idle) {
+                        this.previewMixer = new THREE.AnimationMixer(model);
+                        this.previewMixer.clipAction(idle).play(); this.previewMixer.update(.25);
+                    }
+                    applyEquipmentVisuals(model, this.pendingEquipment);
+                    this.host.querySelector('.character-preview-status').textContent = model.userData.assetFallback ? 'Using fallback Fighter model.' : '';
+                    this.render();
+                }).catch(() => {
+                    if (!this.disposed && request === this.modelRequest) this.host.querySelector('.character-preview-status').textContent = 'Using fallback Fighter model.';
+                });
+            } else this.host.querySelector('.character-preview-status').textContent = '';
         }
         applyEquipmentVisuals(this.model, equipment);
         this.render();
@@ -89,6 +124,7 @@ export class CharacterPreview {
         const stage = this.host.querySelector('.character-preview-stage');
         if (this.disposed || !this.renderer || !this.model || !stage?.clientWidth || !stage.clientHeight) return;
         this.model.rotation.y = this.yaw;
+        this.model.userData.updateEquipmentPose?.();
         this.model.updateMatrixWorld(true);
         const bounds = new THREE.Box3().setFromObject(this.model);
         const center = bounds.getCenter(new THREE.Vector3());
@@ -109,12 +145,16 @@ export class CharacterPreview {
     dispose() {
         if (this.disposed) return;
         this.disposed = true;
+        this.modelRequest++;
+        this.previewMixer?.stopAllAction();
+        this.previewMixer?.uncacheRoot(this.model);
         this.observer?.disconnect();
         this.host.removeEventListener('click', this.onClick);
         clearEquipmentVisuals(this.model);
+        this.model?.userData.disposeInstance?.();
         this.model?.removeFromParent();
         // Humanoids/equipment borrow cached geometry and materials also used by
-        // live players. Only the preview's own texture and renderer are owned.
+        // live players. Its cloned skeletons, environment and renderer are owned.
         if (this.scene) this.scene.environment = null;
         this.environment?.dispose();
         this.renderer?.domElement.removeEventListener('webglcontextrestored', this.onContextRestored);

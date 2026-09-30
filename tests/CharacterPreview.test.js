@@ -15,9 +15,10 @@ function fixture() {
     const renderer = Object.fromEntries(['setPixelRatio', 'setClearColor', 'setSize', 'render', 'dispose', 'forceContextLoss'].map((key) => [key, jest.fn()]));
     renderer.domElement = document.createElement('canvas');
     const createRenderer = jest.fn(() => renderer);
-    const preview = new CharacterPreview(host, { createRenderer });
+    const loadFighter = jest.fn(() => new Promise(() => {}));
+    const preview = new CharacterPreview(host, { createRenderer, loadFighter });
     const player = { subType: 'Fighter', level: 7, equipment: { head: { id: 'helm', name: 'Iron Helm', rarity: 'COMMON' } } };
-    return { host, stage, renderer, createRenderer, preview, player };
+    return { host, stage, renderer, createRenderer, preview, player, loadFighter };
 }
 
 test('creates graphics lazily and redraws gear changes, not health or XP ticks', () => {
@@ -40,6 +41,40 @@ test('creates graphics lazily and redraws gear changes, not health or XP ticks',
     expect(preview.model.userData.equipmentVisualItemCount).toBe(0);
     expect(renderer.render).toHaveBeenCalledTimes(3);
     preview.dispose();
+});
+
+test('a late Fighter result cannot replace another class or revive a disposed preview', async () => {
+    const { preview, player } = fixture();
+    let resolve;
+    preview.loadFighter = () => new Promise(done => { resolve = done; });
+    const release = jest.spyOn((await import('../src/utils/MeshFactory.js')).MeshFactory, 'releaseMesh').mockImplementation(() => {});
+    try {
+        preview.update(player); await Promise.resolve();
+        preview.update({ ...player, subType: 'Rogue' });
+        const rogue = preview.model, late = rogue.clone();
+        resolve(late); await new Promise(done => setTimeout(done, 0));
+        expect(preview.model).toBe(rogue); expect(release).toHaveBeenCalledWith('Fighter', late);
+        preview.update(player); await Promise.resolve(); preview.dispose();
+        const afterDispose = rogue.clone(); resolve(afterDispose);
+        await new Promise(done => setTimeout(done, 0));
+        expect(release).toHaveBeenCalledWith('Fighter', afterDispose);
+    } finally { preview.dispose(); release.mockRestore(); }
+});
+
+test('pending Fighter install uses the latest gear without an animation loop', async () => {
+    const { preview, player, renderer } = fixture();
+    const { createProceduralFighter } = await import('../src/art/ProceduralHumanoid.js');
+    let resolve;
+    preview.loadFighter = () => new Promise(done => { resolve = done; });
+    preview.update(player); await Promise.resolve();
+    player.equipment.head.potency = 4; preview.update(player);
+    const loaded = createProceduralFighter(); resolve(loaded);
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    expect(preview.model).toBe(loaded);
+    expect(loaded.userData.equipmentVisualSignature).toContain('4');
+    const renders = renderer.render.mock.calls.length;
+    preview.update({ ...player, xp: 50 }); expect(renderer.render).toHaveBeenCalledTimes(renders);
+    expect(preview.previewMixer).toBeDefined(); preview.dispose();
 });
 
 test('rotates on controls, fits finite bounds and skips hidden or disposed rendering', () => {

@@ -32,7 +32,9 @@ export class Entity {
         this.isMeshLoading = true;
         try {
             // console.log(`Entity ${this.id} loading mesh type ${this.meshType}...`);
-            const mesh = await MeshFactory.createMeshForType(meshType);
+            const renderer = this.gameEngine?.renderSystem;
+            const quality = renderer?.isMobile ? 'low' : renderer?.graphicsQuality;
+            const mesh = await MeshFactory.createMeshForType(meshType, { quality });
             if (mesh) {
                 if (!this.isActive || generation !== (this._meshLoadGeneration || 0) || meshType !== this.meshType) {
                     // Disposal can unload a still-live entity for chunk reentry.

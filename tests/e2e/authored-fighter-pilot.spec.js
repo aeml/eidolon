@@ -38,20 +38,25 @@ test('derived Fighter assets render and animate with independent player skeleton
         key.shadow.normalBias = .05;
         const camera = new THREE.PerspectiveCamera(35, 1280 / 900, .1, 80);
         camera.position.set(0, 4.2, 16); camera.lookAt(0, 2, 0);
-        const actors = inputs.flatMap((input, index) => Array.from({ length: 2 }, (_, seat) => {
-            const root = createAuthoredFighterInstance(input, { quality: index === 0 ? 'high' : 'low' });
-            root.position.x = (index * 2 + seat - 1.5) * 3;
+        const actors = await Promise.all(inputs.flatMap((input, index) => Array.from({ length: 2 }, async (_, seat) => {
             const entity = new Actor(`equipped-fighter-pilot-${index}-${seat}`, {});
-            entity.meshType = 'Fighter'; entity.position.copy(root.position); entity.setMesh(root);
+            entity.meshType = 'Fighter';
+            entity.gameEngine = { renderSystem: { graphicsQuality: index === 0 ? 'high' : 'low', isMobile: false } };
+            entity.position.x = (index * 2 + seat - 1.5) * 3;
+            await entity.ensureMesh();
+            const root = entity.mesh;
+            if (root?.userData.authoredClass !== 'Fighter') throw new Error('Normal Fighter load did not select the authored model');
+            entity.render(1);
             scene.add(root);
             return { root, mixer: entity.mixer, entity };
-        }));
+        })));
         const renderPose = (clipName, yaw = 0, time = .25) => {
             for (const actor of actors) {
                 actor.mixer.stopAllAction(); actor.root.userData.resetRestPose();
                 const clip = actor.root.userData.animations.find(clip => clip.name === clipName);
                 actor.mixer.clipAction(clip).reset().play(); actor.mixer.setTime(time);
                 actor.root.rotation.y = yaw;
+                actor.root.userData.updateEquipmentPose?.();
             }
             renderer.render(scene, camera);
         };
@@ -175,6 +180,50 @@ test('derived Fighter assets render and animate with independent player skeleton
     for (const clip of ['Idle', 'Run', 'Attack', 'Guard', 'Shout', 'Death']) {
         await page.evaluate(clip => window.fighterPilot.renderPose(clip, 0, .45), clip);
         await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath(`Equipped-${clip}.png`) });
+    }
+    const workload = await page.evaluate(async () => {
+        const { actors, renderer, scene, THREE, renderPose } = window.fighterPilot;
+        const camera = new THREE.OrthographicCamera(-10, 10, 7, -7, .1, 500);
+        camera.position.set(100, 100, 100); camera.lookAt(0, 2, 0);
+        renderPose('Run');
+        const samples = [];
+        for (let frame = 0; frame < 60; frame++) {
+            await new Promise(requestAnimationFrame);
+            const started = performance.now();
+            actors.forEach(({ entity }) => entity.updateAnimationMixer(1 / 60));
+            renderer.render(scene, camera); samples.push(performance.now() - started);
+        }
+        samples.sort((a, b) => a - b);
+        return { renderCpuMsP50: samples[30], renderCpuMsP95: samples[57], frames: samples.length,
+            calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+            geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures };
+    });
+    await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-Isometric.png') });
+    intake.workload = workload;
+    expect(workload.frames).toBe(60); expect(Number.isFinite(workload.renderCpuMsP95)).toBe(true);
+    for (const index of [0, 2]) {
+        await page.evaluate(async index => {
+            const { actors, renderer } = window.fighterPilot;
+            const { CharacterPreview } = await import('/src/ui/CharacterPreview.js');
+            renderer.domElement.style.display = 'none';
+            const host = document.createElement('div'); host.id = 'fighter-preview-review';
+            host.style.cssText = 'position:fixed;inset:0;z-index:10001;background:#171b23;display:grid;place-content:center;color:white';
+            host.innerHTML = '<div class="character-preview-label"></div><div class="character-preview-stage" style="width:360px;height:480px"><span class="character-preview-status"></span></div>';
+            document.body.appendChild(host);
+            const preview = new CharacterPreview(host), { entity } = actors[index];
+            entity.subType = 'Fighter'; entity.level = 60;
+            preview.update(entity); window.fighterPreviewReview = { preview, host, entity };
+        }, index);
+        await page.waitForFunction(() => window.fighterPreviewReview.preview.model?.userData.authoredClass === 'Fighter');
+        const preview = await page.evaluate(() => {
+            const { preview, entity } = window.fighterPreviewReview;
+            return { quality: preview.model.userData.authoredQuality, slots: preview.model.userData.equipmentVisualItemCount,
+                independent: preview.model.getObjectByName('Fighter_Body').skeleton.bones[0] !== entity.mesh.getObjectByName('Fighter_Body').skeleton.bones[0],
+                signature: preview.model.userData.equipmentVisualSignature === entity.mesh.userData.equipmentVisualSignature };
+        });
+        expect(preview).toEqual({ quality: index === 0 ? 'high' : 'low', slots: 14, independent: true, signature: true });
+        await page.locator('#fighter-preview-review').screenshot({ path: testInfo.outputPath(`CharacterPreview-${preview.quality}.png`) });
+        await page.evaluate(() => { window.fighterPreviewReview.preview.dispose(); window.fighterPreviewReview.host.remove(); window.fighterPilot.renderer.domElement.style.display = ''; });
     }
     const restored = await page.evaluate(async () => {
         const { actors, renderPose } = window.fighterPilot;

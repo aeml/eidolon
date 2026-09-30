@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createAuthoredFighterAbilityClips } from './AuthoredFighterAbilityClips.js';
-import { prepareAuthoredFighterEquipment } from './AuthoredFighterEquipment.js';
+import { prepareAuthoredFighterEquipment, clearAuthoredFighterEquipment } from './AuthoredFighterEquipment.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
-// a boot dependency. Default class-factory activation follows equipment and
-// skill-motion acceptance; creating a pilot here does not opt the game into it.
+// a boot dependency. MeshFactory loads the selected candidate on demand with
+// a procedural fallback; this unpublished integration still needs final review.
 export const FIGHTER_RUNTIME_PATHS = Object.freeze({
     high: './assets/archetypes/Fighter/fighter-runtime-high.glb',
     low: './assets/archetypes/Fighter/fighter-runtime-low.glb'
@@ -84,7 +84,21 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
         }
         root.updateMatrixWorld(true);
     };
+    root.userData.resetPose = root.userData.resetRestPose;
     root.updateMatrixWorld(true);
     prepareAuthoredFighterEquipment(root);
+    let disposed = false;
+    root.userData.disposeInstance = () => {
+        if (disposed) return;
+        disposed = true;
+        clearAuthoredFighterEquipment(root);
+        // SkeletonUtils clones each skeleton; only geometry/material/texture
+        // resources are shared with other actors or the cached source.
+        const skeletons = new Set();
+        scene.traverse(part => { if (part.isSkinnedMesh) skeletons.add(part.skeleton); });
+        for (const skeleton of skeletons) skeleton.dispose();
+        const hitbox = root.getObjectByName('ActorInteractionHitbox');
+        hitbox?.geometry.dispose(); hitbox?.material.dispose();
+    };
     return root;
 }

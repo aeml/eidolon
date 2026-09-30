@@ -162,7 +162,9 @@ test.each(cases)('%s equipment masking, clearing and pooled reset retain body an
     checkSurfaces(source, batched);
 });
 
-test.each(cases)('%s factory uses shared batches with per-actor stealth', async (type, factory) => {
+test.each(cases)('%s procedural factory or failed-load fallback uses shared batches with per-actor stealth', async (type, factory) => {
+    const load = type === 'Fighter' ? jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('404')) : null;
+    try {
     const first = await MeshFactory.createMeshForType(type), metrics = getProceduralHumanoidCacheMetrics();
     const second = factory({ batch: true });
     expect(getProceduralHumanoidCacheMetrics()).toEqual(metrics);
@@ -183,6 +185,7 @@ test.each(cases)('%s factory uses shared batches with per-actor stealth', async 
     actor.dispose();
     expect(dispose).not.toHaveBeenCalled();
     dispose.mockRestore();
+    } finally { load?.mockRestore(); }
 });
 
 test('a directly animated leaf is not absorbed into a rigid batch', () => {
