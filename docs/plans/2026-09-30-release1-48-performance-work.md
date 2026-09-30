@@ -1,5 +1,29 @@
 # Alpha1.48 — client performance work
 
+## Busy render attribution — September30
+
+A new opt-in `EIDOLON_RAID_CPU_PROFILE=1` records renderer/shadow/composer
+pass CPU spans and the eleven-actor animation/field updater. It changes no
+model, visibility, target, rendering setting or resource assertion. One
+bounded native-Chrome diagnostic passes39.2s on RADV RENOIR. High busy/repeat
+frame medians24.0/26.1ms, p9535.5/45.5ms still miss20/33.4; unchanged2454
+draws/166327 triangles and341/54 geometry/textures. Render CPU22.2/24.2ms,
+shadow span7.0/7.7ms, bloom0.3ms and raid animation/fields0.2ms median.
+Low busy/repeat19.3/18.3ms, p9530.8/27.4,1288 draws/85546 triangles and340/40
+resources. Overlapping spans are attribution, not additive independent costs
+or a precise driver diagnosis. Initial sample included warmup counters;
+median/p95 exclude that single outlier, and final instrumentation drains
+counters on every warmup frame as well. No claim of improved code timing.
+Evidence:/tmp/eidolon-1-48-busy-cpu-attribution-0930.
+
+Next changed-code approach: ordinary geometry batches for compatible rigid
+opaque shadow casters beneath authored animation barriers. Preserve visible
+rendering, alpha-tested/translucent/custom-depth exclusions, animation pivots,
+shadow silhouettes and source-resource ownership. Do not downgrade4096 High
+shadows, remove equipment or reenable rejected GPU matrix/surface-color
+experiments. Validate functional and image/shadow equivalence before a single
+changed-code busy measurement; this is not full1.48 acceptance.
+
 ## Rejected additional cross-surface extension
 
 Keep the plain6faff8d1 pivot implementation. Its additional nested-mesh/
