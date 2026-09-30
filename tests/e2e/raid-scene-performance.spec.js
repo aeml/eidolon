@@ -41,7 +41,6 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         render.scene.traverse((object) => { if (object.type === 'GridHelper') object.visible = false; });
         document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach((element) => { element.style.display = 'none'; });
         const group = new THREE.Group();
-        render.scene.add(group);
         const models = [];
         const mixers = [];
         for (let index = 0; index < 11; index++) {
@@ -67,6 +66,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             mixers.push(mixer);
             models.push({ type, mesh });
         }
+        // Match runtime subtree admission. Adding actors later inside an
+        // already-attached unowned fixture group bypasses streaming events.
+        render.entityGroup.add(group);
         let fields = [];
         let warnings = [];
         let elapsed = 0;
@@ -107,7 +109,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             }
         };
         gallery.persistentEntities.push(update);
-        render.setActorInstancesEnabled(instancingProbe);
+        if (instancingProbe) render.setActorInstancesEnabled(true);
         const instances = render.actorInstances;
         window.__raidScene = {
             setBusy,

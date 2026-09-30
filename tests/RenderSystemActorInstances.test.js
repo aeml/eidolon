@@ -15,9 +15,10 @@ function fixture() {
     return { render, geometry, material, roots, begin };
 }
 
-test('candidate is disabled by default and cannot be reactivated after retirement', () => {
+test('verified batching is enabled by default and cannot be reactivated after retirement', () => {
     const render = new RenderSystem(false);
-    expect(render.actorInstances).toBeNull(); render.dispose();
+    expect(render.actorInstances).not.toBeNull(); expect(render.actorInstances.enabled).toBe(true);
+    render.dispose();
     render.setActorInstancesEnabled(true); expect(render.actorInstances).toBeNull();
 });
 

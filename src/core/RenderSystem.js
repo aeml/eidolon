@@ -129,8 +129,8 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
-        // Candidate stays opt-in until its controlled frame-time gate passes.
         this.actorInstances = null;
+        this.setActorInstancesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the

@@ -16,7 +16,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
-        render.setActorInstancesEnabled(true);
+        if (!render.actorInstances?.enabled) throw Error('Production actor batching was not enabled');
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x4a4842, roughness: 1 }));
         floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; render.scene.add(floor);
         const models = [];
@@ -93,7 +93,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
             // The next ordinary render remains usable after the caught failure.
             capture(true);
         } finally {
-            instances.dispose();
+            render.setActorInstancesEnabled(false);
             models.forEach(({ type, mesh }) => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }

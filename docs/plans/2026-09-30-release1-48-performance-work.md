@@ -1,5 +1,36 @@
 # Alpha1.48 — client performance work
 
+## Production-default integration — locally verified, unpublished
+
+The verified candidate is now merged on the release branch and enabled by its
+RenderSystem owner. Rejected shadow-caster, surface-pivot and per-anchor texture
+experiments remain excluded. Native paired appearance now requires the actual
+constructor default, and cleanup uses that same owner. The raid fixture admits
+its prepared subtree via normal entity-group events; ordinary diagnostic runs
+no longer disable production batching. Two appearance cases join the existing
+mandatory interface CI selection, without another runner/job.
+
+Eight affected unit suites336checks pass5.489s; scoped lint/whitespace pass.
+Four native default appearance/cold-start cases pass19.3s. Prepared loading
+builds41High/24Low programs, stable through all60subsequent frames; preparation
+526.1/424.8ms, first subsequent render CPU33.8/9.4ms. This is not zero startup
+cost, end-to-end login timing or a perfect first-frame promise. Artifacts:
+`/tmp/eidolon-1-48-default-instances-0930`.
+
+Two changed-default populatedEarth/town cases pass1.3m (42.6/35.1s), including
+nine120-sample locations perquality and warm-repeat resources. All High medians
+16.7ms,p95<=16.8,draws<=298,triangles<=234568; Low390px medians16.7,p95<=16.8,
+draws<=137,triangles<=61458. Zero>50ms hitches. Trading281drawsHigh/107Low;
+the original350/200 submissions and250k/85k triangle bounds pass everywhere.
+Resource repeats remain exact315geometry/71textures/71programsHigh and303/58/51
+Low. Native RADV RENOIR desktop, not physical-phone FPS certification. Artifacts:
+`/tmp/eidolon-1-48-default-earth-profile-0930`.
+
+Browser discovery verifies226cases exactly once/no omission or duplication.
+The later149 tree has its own additional lifetime cases; this148 count is not
+that tree's234baseline. Metadata, mandatory exact-source CI and public matching
+assets still gate publication/acceptance. No player data or balance changes.
+
 ## Controlled comparison result — September30
 
 ### Distant-coordinate correction and changed-code confirmation
