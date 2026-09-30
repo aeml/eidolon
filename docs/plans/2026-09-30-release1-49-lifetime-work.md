@@ -1,5 +1,18 @@
 # Alpha1.49 session-lifetime work
 
+## Current safe predecessor integration — September30
+
+Merged safe148 ca7412a0 through b3edeecf, including cached rigid local matrices
+and the independently accepted147 receipt. Rejected shadow, cross-surface and
+GPU matrix-texture experiments remain excluded. Runtime is still1.47;
+148 High busy budget and149 remaining real transition/resource evidence are
+open. No milestone or deployment acceptance follows from this merge.
+
+Impacted body/pool/preview selection135 checks passes5.665s on the actual149
+merged tree. Includes all four-class animation surfaces, corrupted-owned-vertex
+rejection, cached rest-pose recovery, model-pool cleanup and preview-owned
+geometry disposal. Earlier unchanged UI/context browsers are not replayed.
+
 Prepared on the safe1.48 performance branch63168425; runtime still1.47,
 unpackaged and unpublished. This is not full lifetime or milestone acceptance.
 
