@@ -272,3 +272,26 @@ whitespace pass. Evidence:/tmp/eidolon-1-42-marker-pixel-0930.
 This is a changed-condition publication, not a blind retry of the failed run.
 1.41 remains independently accepted;1.42 still requires its corrected CI and
 exact public release verification before any later candidate is published.
+
+Subsequent completed-job logs exposed three client fixture mismatches, all
+reproduced locally: a plain player harness lacked the real Actor grounding
+method now invoked after phone movement; the initial reflection assertion
+preceded the regional cross-light preset; and the old225-degree walking
+endpoint is exposed by the lower Bastion silhouette. The harness now uses
+Actor.prototype.groundToTerrain with its real engine owner, reflection tests
+assert the initial regional value and1.9-ambient normalization, and the seven
+collision-clear walking waypoints end at210 degrees behind the west tower.
+A direct geometry probe confirms real occlusion there; the collision and
+occlusion assertions remain. Four relevant suites31checks pass2.18s; scoped
+lint and whitespace pass. No production behavior was rolled back for tests.
+
+Go CI also reported TestElevatedSeraphSpawnAndFollow. A local isolated trial
+passed, revealing a seed-dependent fixture: the full populated world can
+place a hostile within the summon's15m aggro range, legitimately switching
+it from follow to smite. The follow/grounding fixture now removes random
+hostiles before the summon is created, retaining cast success, spawn height,
+five grounded AI steps and a stronger decreasing owner-distance assertion.
+Combat acquisition behavior remains unchanged and separately covered.
+The follow, root/slow/lifetime, ordered elevation movement and jump-grounding
+selection passes five iterations in1.543s. This bounded repeat checks the
+identified spawn-seed seam; it is not a dungeon/raid soak or production change.
