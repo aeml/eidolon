@@ -1,12 +1,33 @@
 # Alpha1.49 session-lifetime work
 
+## Mandatory CI correction for owner lifecycle assertions
+
+Initial 1.49 run36729869596 at35e67dcc, Jest109936314985, passed604suites/
+8746checks and failed two containment assertions. Focused local reproduction
+failed the same two checks in2.538s. They assumed the old render.remove and
+hazard.removeFromScene call paths, rather than the new owner-disposal contract.
+
+Replace bare fake records with real Entity and EnvironmentalHazard owners.
+Require exactly one actor disposal before scene rebuilding, inactive owner,
+null/detached mesh, cleared remote map, removed real health-bar node, detached
+hazard meshes and exactly one disposal of every geometry/material. Mount the
+hazard in the persistent environment group, which the scene helper does not
+clear; a missing owner disposal cannot pass accidentally through helper cleanup.
+Keep all collision, player preservation, pending work and scene-group assertions.
+
+Three changed containment/lifetime suites45checks pass4.306s, lint/whitespace
+clean. Production cleanup code is unchanged; prior native lifetime evidence is
+retained rather than rerun. No dropped tests, new skips or relaxed thresholds.
+Corrected-source normal CI/public acceptance remain required. 148 is accepted
+live; this failure cannot be treated as 149 acceptance.
+
 ## Integration with148 production-default batching — September30
 
 Merged148candidatea3edf4e7 into149 as98203fb9, resolving the single interface
 script conflict by retaining all UI-owner, engine/casino-lifetime and actor
-appearance cases. This is local preparation, not permission to publish149
-before148's own exact CI/public acceptance. Runtime currently1.48;149metadata
-and mandatory deployment gates remain separate.
+appearance cases. This section records the earlier local preparation, before
+148's independent acceptance. The candidate now has1.49 metadata and the
+accepted148 source/receipt; its own deployment gates remain separate.
 
 Nine impacted owner/network/instance/render/casino/skill suites114checks pass
 5.180s. Add native assertions specifically for newly enabled batching: player

@@ -357,17 +357,26 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.renderSystem.scene.children).not.toContain(engine.player.mesh);
     });
 
-    test('enterInstance removes remote player meshes through render-system ownership helpers', async () => {
+    test('enterInstance retires the real remote owner before rebuilding the scene', async () => {
         const engine = createEngineHarness();
-        const remoteMesh = { id: 'remote-player-mesh', parent: null };
-        const healthBar = { remove: jest.fn() };
+        const remoteMesh = new THREE.Group();
+        const healthBar = document.createElement('div');
+        document.body.append(healthBar);
+        const removeHealthBar = jest.spyOn(healthBar, 'remove');
+        const remote = new Entity('remote-1'); remote.mesh = remoteMesh; remote.healthBar = healthBar;
+        const dispose = jest.spyOn(remote, 'dispose');
         engine.renderSystem.entityGroup.add(remoteMesh);
-        engine.remotePlayers.set('remote-1', { mesh: remoteMesh, healthBar });
+        engine.remotePlayers.set(remote.id, remote);
 
         await engine.enterInstance('instance-4', 'overworld', null);
 
-        expect(engine.renderSystem.remove).toHaveBeenCalledWith(remoteMesh);
-        expect(healthBar.remove).toHaveBeenCalled();
+        expect(dispose).toHaveBeenCalledTimes(1);
+        expect(dispose.mock.invocationCallOrder[0]).toBeLessThan(engine.renderSystem.clearInstanceScene.mock.invocationCallOrder[0]);
+        expect(remote.isActive).toBe(false); expect(remote.mesh).toBeNull();
+        expect(remoteMesh.parent).toBeNull();
+        expect(engine.renderSystem.entityGroup.children).not.toContain(remoteMesh);
+        expect(engine.remotePlayers.size).toBe(0);
+        expect(removeHealthBar).toHaveBeenCalledTimes(1); expect(healthBar.isConnected).toBe(false);
     });
 
     test('removeRemoteEntity detaches fallback meshes from their current parent after reparenting', () => {
@@ -418,7 +427,12 @@ describe('GameEngine dungeon containment wiring', () => {
     test('enterInstance clears stale transient combat/runtime state before rebuilding the next scene', async () => {
         const engine = createEngineHarness();
         const effect = { isActive: true, dispose: jest.fn() };
-        const hazard = { removeFromScene: jest.fn(), dispose: jest.fn() };
+        const hazard = new EnvironmentalHazard('hazard-1', 'generic', { x: 0, y: 0, z: 0 }, { radius: 2 });
+        const hazardDispose = jest.spyOn(hazard, 'dispose');
+        const hazardMeshes = [...hazard.meshes];
+        const geometryDisposals = hazardMeshes.map(mesh => jest.spyOn(mesh.geometry, 'dispose'));
+        const materialDisposals = hazardMeshes.map(mesh => jest.spyOn(mesh.material, 'dispose'));
+        hazard.addToScene(engine.renderSystem.environmentGroup);
         const pendingLoot = { id: 'pending-loot' };
         const targetRing = { parent: engine.renderSystem.effectGroup, visible: true };
         engine.renderSystem.effectGroup.add(targetRing);
@@ -434,8 +448,15 @@ describe('GameEngine dungeon containment wiring', () => {
 
         expect(effect.dispose).toHaveBeenCalledTimes(1);
         expect(engine.effects).toEqual([]);
-        expect(hazard.removeFromScene).toHaveBeenCalledWith(engine.renderSystem.environmentGroup);
-        expect(hazard.dispose).toHaveBeenCalledTimes(1);
+        expect(hazardDispose).toHaveBeenCalledTimes(1);
+        expect(hazardMeshes.length).toBeGreaterThan(0);
+        expect(hazard.isActive).toBe(false); expect(hazard.meshes).toEqual([]);
+        for (const mesh of hazardMeshes) {
+            expect(mesh.parent).toBeNull();
+            expect(engine.renderSystem.environmentGroup.children).not.toContain(mesh);
+        }
+        geometryDisposals.forEach(dispose => expect(dispose).toHaveBeenCalledTimes(1));
+        materialDisposals.forEach(dispose => expect(dispose).toHaveBeenCalledTimes(1));
         expect(engine.hazards.size).toBe(0);
         expect(engine.entityCreationQueue).toEqual([]);
         expect(engine.pendingEntityIds.size).toBe(0);
