@@ -38,6 +38,15 @@ integration remain implementation work. Follow the visual contract's ownership
 table; do not convert this into a request that the user produce a world asset
 pack. Code-owned world/material work proceeds before actor imports are available.
 
+September 30 actor follow-up: the rigged Fighter GLB is now delivered with clips,
+attachment sockets and provenance. Resume its code-owned integration alongside
+1.54 combat readability; [pilot scope and intake evidence](../art/2026-09-30-fighter-pilot.md)
+cover runtime-sized assets, independent skeleton instances, generated equipment
+fit, animation coverage, actual-camera review and measured performance before
+default enablement. It is no longer an unavailable input; remaining actors and
+the final modern-art gate remain open. The owner need not supply equipment or
+environment assets.
+
 World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)
 is mandatory. Fill the actual world with purposeful places, routes, ambient life,
 discoveries and activities, and rebuild world-map/minimap presentation around

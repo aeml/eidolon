@@ -9,6 +9,14 @@ materials, lighting and optional authored-model evaluation. The historical
 completion below does not certify the new target; do not postpone this work
 until after the closed-beta opening.
 
+September 30: the owner's rigged Fighter pilot is delivered with animation
+clips, equipment sockets and provenance, and preserved in the 1.53 source.
+Resume its code-owned integration alongside 1.54 combat readability using the
+[Fighter pilot record](2026-09-30-fighter-pilot.md). Delivery is not runtime or
+visual acceptance: generated equipment fit, animation/controller integration,
+actual-camera review and measured loading/performance are still required. The
+remaining actor catalog must not postpone integration of this available pilot.
+
 Status: completed locally on September 4, 2026. All six implementation passes
 and the final acceptance checks are complete for the Alpha 1.0.1 candidate.
 The implementation was committed and pushed September 5; production release
