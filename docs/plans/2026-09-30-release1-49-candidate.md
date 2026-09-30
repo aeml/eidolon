@@ -1,8 +1,8 @@
 # Alpha1.49 — session/resource-lifetime candidate
 
-Prepared September30,2026. Do not publish until148 is independently accepted
-and its final source/corrections are merged. Metadata, login and cumulative
-history target1.49.0; own mandatory CI and exact public artifact checks remain.
+Prepared September30,2026. Corrected148 is independently accepted and its final
+source and acceptance receipt are merged. Metadata, login and cumulative history
+target1.49.0; this release's mandatory CI and exact public checks remain required.
 
 ## Scoped fixes
 
