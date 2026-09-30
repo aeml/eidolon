@@ -80,7 +80,8 @@ test('stash fallback uses real storage clicks and checks complete item conservat
     expect(stash).toContain('earnedStashFreeSlots(initial.stash, capacity)');
     expect(stash).not.toContain('capacity - initial.stash.length');
     expect(stash).toContain("await expect(page.locator('#shop-screen')).toBeHidden()");
-    expect(stash).toContain("nth(index).click({ button: 'right' })");
+    expect(stash).toContain('`.stash-browser-item[data-source="inventory"][data-slot-index="${index}"]`');
+    expect(stash).toContain(".click({ button: 'right' })");
     expect(stash).toContain('expectedEarnedStashDeposit(before.stash, item)');
     expect(stash).toContain('.stash.filter(entry => entry?.id)).toEqual(expectedStash)');
     expect(stash).toContain('expect(after.gold).toBe(before.gold)');

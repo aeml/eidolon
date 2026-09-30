@@ -7,6 +7,16 @@ required. This is not final modern-art, accessibility or closed-beta acceptance.
 
 ## Accepted predecessor and publication readiness — September30
 
+The first1.45 CI36676816343/46eb5038 had one terminal Jest failure:
+EarnedInventoryRoute still expected the old bag-grid nth right-click. The
+ordinary earned-stash route now uses the visible desktop storage row's real
+inventory source/slot index and right-click handler. Correct only that stale
+source-contract assertion; retain all capacity, item conservation, Gold,
+equipment, quest and no-grant checks. Production controls are unchanged.
+Four stash/earned-inventory/version suites360checks pass8.906s, scoped lint
+and whitespace pass. This correction still requires its own exact-head CI;
+the failed head is not accepted or deployed.
+
 1.44 exactb24eda6d is independently accepted after CI36673117387attempt1/all
 ten jobs and public frontend/backend/document/eight stamped modules/font
 verification. [Receipt](2026-09-30-release1-44-acceptance.md). This candidate
