@@ -315,7 +315,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.53.0` (local release candidate; not pushed or accepted live)
+- Current source version: `Alpha 1.53.0` (release candidate; not yet accepted live)
 - Last independently verified live release: `Alpha 1.52.0`, exact e948bfd36dd2ed240fc0af450863a412fde7e378, successful CI36763948189 attempt1 (all ten jobs, including live110069009852). Public IPv4 frontend/backend, database, complete login/history document and all changed runtime JavaScript match the exact release. [Acceptance receipt](docs/plans/2026-09-30-release1-52-acceptance.md). DNS/IPv6 remain owner-managed.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active delivery line: `Alpha 1.53` recruitment and preparation, following the [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). The [group work record](docs/plans/2026-09-30-release1-53-group-work.md) covers current listing/application/invitation consent, bounded start plans, canonical meeting places, class-role/readiness information and usable invite controls. Ordered 1.52 acceptance is complete; this candidate still requires its own exact-source CI and independent public checks. Final modern art, owner actor pilot and actual-phone dungeon/party observations remain open. Open-alpha access is unchanged, raised Earth remains QA-only, and human campaign pacing remains playtest-owned.

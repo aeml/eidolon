@@ -1,8 +1,9 @@
 # Alpha 1.53 recruitment and group preparation
 
 September 30, 2026. Alpha 1.53.0 is implemented and packaged locally, starting
-from the pushed 1.52 candidate. It is not pushed or accepted live. Ordered 1.52
-CI/public acceptance must finish before this successor is deployed.
+from Alpha 1.52, now independently accepted live. Its receipt is merged into this
+candidate. Alpha 1.53 is not yet accepted live; its own exact-source CI and
+independent public checks remain required.
 
 ## Retained foundations
 
@@ -86,6 +87,10 @@ not bypassed.
   used a binary without the harness-required build-commit marker: the server
   started normally but the exact health identity check correctly refused it.
   The corrected build was verified without weakening that gate.
+  After the final departure/listing fence changes, the same narrow real-socket
+  route passed against the final candidate code in 10.04 seconds (11.123 seconds
+  including the wrapper). Version metadata and complete history checks passed
+  after the predecessor receipt merge: 319 checks in 2.459 seconds.
 - Native System Chrome passed both desktop and phone-policy cases in 16.8
   seconds after the layering fix. Planning controls, current listing payloads,
   a stale detached button and the normal invite Accept button were exercised
@@ -103,8 +108,7 @@ source; no rendered-document preview is claimed.
 
 ## Remaining release gates
 
-After exact 1.52 acceptance, merge its receipt and fetch/merge remote website
-changes immediately before a normal
-push, and require exact CI plus
+The exact 1.52 acceptance receipt is merged. Fetch/merge remote website changes
+immediately before a normal push, and require exact CI plus
 independent public identity/document/changed-asset acceptance. Preserve open-alpha
 access, account saves, economy and current dungeon/raid entry requirements.
