@@ -1062,11 +1062,10 @@ export class RenderSystem {
         }
     }
 
-    disposeObjectResources(object) {
+    disposeObjectResources(object, disposedTextures = new Set()) {
         if (!object) return;
         const disposedGeometries = new Set();
         const disposedMaterials = new Set();
-        const disposedTextures = new Set();
         const disposeMaterial = (material) => {
             if (!material || disposedMaterials.has(material)) return;
             disposedMaterials.add(material);
@@ -1081,7 +1080,10 @@ export class RenderSystem {
         object.traverse?.((child) => {
             if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
                 disposedGeometries.add(child.geometry);
-                child.geometry.dispose();
+                // BatchedMesh owns geometry AND its matrix/indirection textures.
+                // Its dispose releases all three; do not dispose geometry twice.
+                if (child.isBatchedMesh) child.dispose();
+                else child.geometry.dispose();
             }
             if (Array.isArray(child.material)) {
                 child.material.forEach(disposeMaterial);
@@ -1170,6 +1172,8 @@ export class RenderSystem {
 
 
     dispose() {
+        if (this._disposed) return;
+        this._disposed = true;
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();
@@ -1203,16 +1207,7 @@ export class RenderSystem {
         if (this.scene.background?.isTexture) this.scene.background = new THREE.Color(0x080b11);
 
         // Traverse scene BEFORE renderer.dispose() so GPU resources are freed while context exists
-        this.scene.traverse((object) => {
-            if (object.geometry) object.geometry.dispose();
-            if (object.material) {
-                if (Array.isArray(object.material)) {
-                    object.material.forEach(material => material.dispose());
-                } else {
-                    object.material.dispose();
-                }
-            }
-        });
+        this.disposeObjectResources(this.scene, ownedTextures);
 
         if (this.renderer) {
             this.renderer.dispose();

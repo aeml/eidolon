@@ -38,20 +38,24 @@ function triangles(group) {
         if (!mesh.isMesh) return;
         const geometry = mesh.geometry, positions = geometry.attributes.position;
         const normals = geometry.attributes.normal, uv = geometry.attributes.uv;
-        const normalMatrix = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
-        const count = geometry.index?.count ?? positions.count;
-        for (let i = 0; i < count; i += 3) {
-            const vertices = [];
-            for (let j = 0; j < 3; j++) {
-                const index = geometry.index ? geometry.index.getX(i + j) : i + j;
-                point.fromBufferAttribute(positions, index).applyMatrix4(mesh.matrixWorld);
-                normal.fromBufferAttribute(normals, index).applyNormalMatrix(normalMatrix);
-                const color = geometry.attributes.color;
-                vertices.push([...point, ...normal, uv.getX(index), uv.getY(index),
-                    color?.getX(index) ?? 1, color?.getY(index) ?? 1, color?.getZ(index) ?? 1]
-                    .map(value => Math.round(value * 10000) / 10000));
+        const cells = mesh.isBatchedMesh ? mesh.userData.perimeterCells : [null];
+        for (const cell of cells) {
+            const matrix = cell ? mesh.matrixWorld.clone().multiply(mesh.getMatrixAt(cell.instanceId, new THREE.Matrix4())) : mesh.matrixWorld;
+            const normalMatrix = new THREE.Matrix3().getNormalMatrix(matrix);
+            const range = cell ? mesh.getGeometryRangeAt(cell.geometryId) : { start: 0, count: geometry.index?.count ?? positions.count };
+            for (let i = range.start; i < range.start + range.count; i += 3) {
+                const vertices = [];
+                for (let j = 0; j < 3; j++) {
+                    const index = geometry.index ? geometry.index.getX(i + j) : i + j;
+                    point.fromBufferAttribute(positions, index).applyMatrix4(matrix);
+                    normal.fromBufferAttribute(normals, index).applyNormalMatrix(normalMatrix);
+                    const color = geometry.attributes.color;
+                    vertices.push([...point, ...normal, uv.getX(index), uv.getY(index),
+                        color?.getX(index) ?? 1, color?.getY(index) ?? 1, color?.getZ(index) ?? 1]
+                        .map(value => Math.round(value * 10000) / 10000));
+                }
+                result.push(JSON.stringify([mesh.material.name, vertices]));
             }
-            result.push(JSON.stringify([mesh.material.name, vertices]));
         }
     });
     return result.sort();
@@ -68,12 +72,19 @@ test.each([[0, 200, 200, 200], [11, -19, 24, 36], [20000.25, 20000.5, 60, 80]])(
         expect(actual.children.length).toBeLessThan(unbatched.children.length / 4);
         expect(new Set(actual.children.map(mesh => mesh.material)).size).toBe(3);
         for (const mesh of actual.children) {
-            expect(mesh.geometry.boundingSphere).not.toBeNull();
-            const size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
-            expect(size.x).toBeLessThanOrEqual(36.01);
-            expect(size.z).toBeLessThanOrEqual(36.01);
+            expect(mesh.isBatchedMesh).toBe(true);
+            expect(mesh.boundingSphere).not.toBeNull();
+            expect(mesh.perObjectFrustumCulled).toBe(true);
+            expect(mesh.instanceCount).toBe(mesh.userData.perimeterCells.length);
+            for (const { geometryId } of mesh.userData.perimeterCells) {
+                const size = mesh.getBoundingBoxAt(geometryId, new THREE.Box3()).getSize(new THREE.Vector3());
+                expect(size.x).toBeLessThanOrEqual(36.01);
+                expect(size.z).toBeLessThanOrEqual(36.01);
+            }
             expect(mesh.castShadow && mesh.receiveShadow).toBe(true);
         }
+        const cellReference = createLanternholdPerimeter(cx, cz, width, depth, { multiDraw: false });
+        expect(triangles(actual)).toEqual(triangles(cellReference));
     });
 
 test('town fence keeps four open gate corridors and greatly reduces renderable objects', () => {

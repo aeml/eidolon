@@ -103,4 +103,25 @@ describe('RenderSystem scene groups', () => {
         expect(materialDispose).toHaveBeenCalledTimes(1);
         expect(textureDispose).toHaveBeenCalledTimes(1);
     });
+
+    test.each(['instance clear', 'renderer teardown'])('%s releases batch data textures and geometry once, with shared materials deduplicated', path => {
+        const renderSystem = new RenderSystem(false);
+        const material = new THREE.MeshBasicMaterial();
+        const source = new THREE.BoxGeometry();
+        const batch = new THREE.BatchedMesh(1, source.attributes.position.count, source.index.count, material);
+        batch.addInstance(batch.addGeometry(source));
+        source.dispose();
+        const batchDispose = jest.spyOn(batch, 'dispose');
+        const geometryDispose = jest.spyOn(batch.geometry, 'dispose');
+        const matrixDispose = jest.spyOn(batch._matricesTexture, 'dispose');
+        const indirectDispose = jest.spyOn(batch._indirectTexture, 'dispose');
+        const materialDispose = jest.spyOn(material, 'dispose');
+        renderSystem.instanceEnvironmentGroup.add(batch, new THREE.Mesh(batch.geometry, material));
+        const clear = () => path === 'instance clear' ?
+            renderSystem.clearGroupChildren(renderSystem.instanceEnvironmentGroup, { dispose: true }) : renderSystem.dispose();
+        clear(); clear();
+        for (const dispose of [batchDispose, geometryDispose, matrixDispose, indirectDispose, materialDispose]) {
+            expect(dispose).toHaveBeenCalledTimes(1);
+        }
+    });
 });

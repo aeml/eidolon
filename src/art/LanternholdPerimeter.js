@@ -13,7 +13,7 @@ export function ownsPerimeterFence(root, data) {
 
 // Weathered timber and iron, inside the existing fence collision envelope.
 // Unbatched construction is a rendering reference, not the runtime path.
-export function createLanternholdPerimeter(cx, cz, width, depth, { batched = true } = {}) {
+export function createLanternholdPerimeter(cx, cz, width, depth, { batched = true, multiDraw = true } = {}) {
     const root = new THREE.Group(); root.name = 'TownFence';
     root.userData.fenceSegments = [];
     const materials = {
@@ -105,11 +105,35 @@ export function createLanternholdPerimeter(cx, cz, width, depth, { batched = tru
             segment(x, z, Math.PI / 2, offset < 14, Math.round((z - cz + depth / 2) / 4));
         }
     }
+    const cells = new Map();
     for (const bucket of buckets.values()) {
         const geometry = mergeGeometries(bucket.parts, false); bucket.parts.forEach(value => value.dispose());
         geometry.computeBoundingBox(); geometry.computeBoundingSphere();
-        const mesh = new THREE.Mesh(geometry, materials[bucket.material]);
-        mesh.name = `perimeter:${bucket.material}`; mesh.position.set(bucket.x, 0, bucket.z);
+        if (multiDraw) {
+            if (!cells.has(bucket.material)) cells.set(bucket.material, []);
+            cells.get(bucket.material).push({ geometry, x: bucket.x, z: bucket.z });
+        } else {
+            const mesh = new THREE.Mesh(geometry, materials[bucket.material]);
+            mesh.name = `perimeter:${bucket.material}`; mesh.position.set(bucket.x, 0, bucket.z);
+            mesh.castShadow = mesh.receiveShadow = true; root.add(mesh);
+        }
+    }
+    // Keep the original cell bounds and independent camera/shadow culling,
+    // but submit visible cells together where WEBGL_multi_draw is available.
+    // Three retains ordinary per-cell draws on browsers without that extension.
+    for (const [material, entries] of cells) {
+        const vertices = entries.reduce((sum, cell) => sum + cell.geometry.attributes.position.count, 0);
+        const mesh = new THREE.BatchedMesh(entries.length, vertices, 0, materials[material]);
+        mesh.name = `perimeter:${material}`;
+        mesh.sortObjects = false; // Opaque disjoint cells need no per-frame sorting.
+        mesh.userData.perimeterCells = entries.map(cell => {
+            const geometryId = mesh.addGeometry(cell.geometry);
+            const instanceId = mesh.addInstance(geometryId);
+            mesh.setMatrixAt(instanceId, new THREE.Matrix4().makeTranslation(cell.x, 0, cell.z));
+            cell.geometry.dispose();
+            return { geometryId, instanceId };
+        });
+        mesh.computeBoundingBox(); mesh.computeBoundingSphere();
         mesh.castShadow = mesh.receiveShadow = true; root.add(mesh);
     }
     Object.values(geometries).forEach(geometry => geometry.dispose());
