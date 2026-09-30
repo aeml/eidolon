@@ -1,8 +1,21 @@
 # Alpha 1.44 — audio integration candidate
 
+## Accepted predecessor — September30
+
+Public1.43frontend release.json and backend healthz now agree on exact
+132e1a844c610f0b3dc1e917d01a37544140ee4e/Alpha1.43.0, database ready. Root
+independent normal-DNS IPv4 checks verify cache-bypassed login version/latest
+patch entry/main release key, exact stamped main/Actor/ability clips/gait
+grounding/enemy-death grounding/corpse/combat-feedback modules and first-party
+font bytes against the exact1.43checkout, using the real publishing transform.
+CI36668039885attempt1 completed success with all ten jobs, including
+live109745012948. Root independently revalidated terminal SHA/attempt/jobs
+and repeated public frontend/backend/database checks. [Acceptance receipt](2026-09-30-release1-43-acceptance.md).
+1.44 still requires its own exact-source CI and live acceptance.
+
 Unreleased integrated candidate on the prepared1.43 branch. Runtime/package/
 login/CI/default build identities and cumulative notes identify1.44.0.
-Earlier ordered release prerequisites remain open. Final listening/mix approval
+Ordered1.43 publication is accepted. Final listening/mix approval
 is not claimed; human observations are not a new publication permission gate.
 
 ## Confirmed impact identity — September30
@@ -32,7 +45,7 @@ voice-budget/suspension checks also pass. Artifacts:
 /tmp/eidolon-1-44-typed-impacts-final-0930; failed trace retained in
 /tmp/eidolon-1-44-typed-impacts-0930. Signal evidence is not human listening/mix
 approval. Patch history records this contact improvement in1.44, not a separate
-version. Ordered1.43 live acceptance still precedes publishing this candidate.
+version. Ordered1.43 live acceptance now permits publishing this candidate.
 
 ## Current upstream integration — September30
 
@@ -45,7 +58,7 @@ not an unverified1.43 acceptance. Eleven focused audio, font, loader, publishing
 version and browser-helper suites pass503checks6.799s with the patched toolchain;
 full lint and whitespace checks pass. Existing unchanged audio rendering/
 suspension/phone evidence remains applicable, not rerun for document changes.
-1.43 CI36668039885 is still the ordered publication prerequisite. This merge
+1.43 CI36668039885 subsequently passed its ordered publication prerequisite. This merge
 does not apply the staged privileged nginx configuration or deploy1.44.
 
 ## Draft patch notes
