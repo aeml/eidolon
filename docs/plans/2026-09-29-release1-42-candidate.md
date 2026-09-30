@@ -295,3 +295,29 @@ Combat acquisition behavior remains unchanged and separately covered.
 The follow, root/slow/lifetime, ordered elevation movement and jump-grounding
 selection passes five iterations in1.543s. This bounded repeat checks the
 identified spawn-seed seam; it is not a dungeon/raid soak or production change.
+
+## Predeploy navigation correction
+
+CI36653110719 at e7bb7df8 passed Go, Jest and all three browser shards, but
+failed the disposable predeploy combat/loot case before deployment. Its
+town-exit helper demanded a full30m Ctrl-click endpoint that was not available
+as an unobscured canvas destination. The failure lacked numeric projection
+diagnostics. An unchanged local route with diagnostic-only additions passed;
+the precise CI view/seed condition therefore remains unproven, not conclusively
+attributed to a game regression or a fixed root cause.
+
+Route planning now explicitly chooses a visible prefix of at least8m before
+requesting a jump. Execution still reprojects that entire chosen destination
+with scaling disabled, sends a real native Ctrl-click, and requires directional
+server movement and a completed landing. The20-step bound and actual east
+fence clearance remain. Covered, invalid or tiny planning results send no
+movement. Failure diagnostics expose only coordinates and projection data.
+
+The final planner-enabled disposable release-smoke run142smoke0930c passes
+all four existing cases in1.5m: login/UI/reconnect, earned overworld kill/loot
+with dungeon/persistence, portal entry/exit, and recoverable bag drop plus
+Journal tracking. The combat case completes31.6s. Credential artifact scan
+passes with zero sanitizations; the wrapper cleans its run-owned containers
+and data. This verifies the changed native-input seam, not campaign pacing,
+an entire dungeon clear, or absence of every possible CI navigation failure.
+The strict helper/projection/failure unit checks and new CI remain required.
