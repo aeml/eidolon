@@ -94,6 +94,48 @@ comparison used angular distance on slightly non-unit Float32 source rotations;
 it now compares components directly. Recoil is checked after its normal lazy
 initialization, not assumed to exist before a hit.
 
+## Equipped Fighter adaptation
+
+The shared equipment dispatcher now supports authored and procedural bodies.
+Ordinary Actor refresh/disposal, MeshFactory release and CharacterPreview
+equipment calls use that dispatcher; the factories still create the procedural
+Fighter by default. This is not default-model or character-sheet acceptance.
+
+Six clothing slots use shaped pieces fitted in neutral bind space and weighted
+to the delivered skeleton. Eight rigid slots use calibrated sockets or finger
+mounts. Existing item variants, rarity, potency, gems, set/unique markers and
+cosmetic descriptors remain available. Fitted geometry and conservative body
+masks are shared without item-ID cache keys; copied ornaments are disposed on
+unequip without disposing shared body/garment geometry. Original source geometry
+and the supplied GLB remain unchanged.
+
+The delivered body has no waist faces beneath its shorts. Equipped pants retain
+that fitted coverage as an underlayer instead of exposing a hole when hiding
+the original shorts. Body masking stays inside covered regions to avoid jagged
+collar/upper-arm gaps, and robe/skirt layers use distinct dimensions. GLTFLoader's
+interleaved skin attributes are copied through component accessors rather than
+raw-array slicing, which initially corrupted joint indices in the native test.
+
+The final native Chrome route passed in 20.4s with ordinary Actors: two High and
+two Low instances wear four complete 14-slot loadouts covering plate, leather,
+cloth, sword, dagger, mace, staff, shield and tome. All clothing pieces use their
+actor's skeleton; no slot is missing. The route samples equipped Idle, Run,
+Attack, Guard, Shout and Death, then checks restoration and ordinary disposal.
+Idle, Run, Guard and early Death renders were reviewed across the recent runs.
+The current render removes collar holes and separates cloth layers. This is
+baseline fitting, not final modern armor art or complete clip-duration review.
+Evidence is in `/tmp/eidolon-1-54-fighter-fit-reviewed-0930`, including durable
+equipment/metrics JSON and screenshots. Six focused authored-model checks passed
+in 1.973s, including interleaved accessors and shared/owned geometry disposal;
+changed-scope lint passed. Earlier consumer regression checks passed 433 tests.
+
+Review exposed remaining presentation work: shields turn too flat in the
+supplied locomotion/block poses, rigid equipment still uses the existing simple
+forms, and cloth needs full movement/clipping review. Default asynchronous
+activation, failure fallback, pooled-pose lifecycle, matching character preview,
+actual gameplay camera and equipped multi-actor frame/memory measurements remain
+open. This fixture does not certify those requirements or Diablo/PoE art quality.
+
 ## Remaining integration alongside combat readability
 
 1. Derive and validate runtime-sized geometry/textures as needed, retaining the
@@ -106,16 +148,16 @@ initialization, not assumed to exist before a hit.
    actor controller. Retain authored motion, smooth transitions and current
    gameplay authority; fill any class-skill presentation gaps without silently
    dropping animation coverage.
-4. Fit generated weapons, shields, armor, boots, gloves, helmets, shoulders and
-   cosmetics to this rig. Check grip/orientation, joint motion, skin clipping,
-   equip/unequip restoration and the preview matching the world actor. The owner
-   supplies bodies—not an equipment or environment catalog.
+4. Finish the generated-equipment adaptation above: correct weapon/shield motion,
+   inspect full clip durations and clipping, and verify the character preview
+   matches the world actor. The owner supplies bodies—not an equipment or
+   environment catalog.
 5. Compare the actual gameplay camera and character sheet, High/Low settings and
    a shared multi-actor workload. Review appearance and readable combat, not just
    finite transforms or mesh counts, before enabling the model by default.
 
 Other class/NPC/monster deliveries and full modern-art acceptance remain
 separate requirements. Default Fighter activation still requires generated
-equipment fit, integrated skill/controller acceptance, fallback/cache/pool
+equipment motion/fit acceptance, integrated skill/controller acceptance, fallback/cache/pool
 lifecycle, current gameplay camera and character-sheet review, and measured
 High/Low multi-actor performance. No new owner model request is needed.

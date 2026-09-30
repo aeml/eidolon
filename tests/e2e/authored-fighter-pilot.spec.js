@@ -9,6 +9,7 @@ test('derived Fighter assets render and animate with independent player skeleton
     const intake = await page.evaluate(async () => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        const { Actor } = await import('/src/entities/Actor.js');
         const { createAuthoredFighterInstance, fighterRuntimePath } = await import('/src/art/AuthoredFighter.js');
         document.getElementById('start-screen').style.display = 'none';
         const started = performance.now();
@@ -40,8 +41,10 @@ test('derived Fighter assets render and animate with independent player skeleton
         const actors = inputs.flatMap((input, index) => Array.from({ length: 2 }, (_, seat) => {
             const root = createAuthoredFighterInstance(input, { quality: index === 0 ? 'high' : 'low' });
             root.position.x = (index * 2 + seat - 1.5) * 3;
+            const entity = new Actor(`equipped-fighter-pilot-${index}-${seat}`, {});
+            entity.meshType = 'Fighter'; entity.position.copy(root.position); entity.setMesh(root);
             scene.add(root);
-            return { root, mixer: new THREE.AnimationMixer(root) };
+            return { root, mixer: entity.mixer, entity };
         }));
         const renderPose = (clipName, yaw = 0, time = .25) => {
             for (const actor of actors) {
@@ -131,12 +134,70 @@ test('derived Fighter assets render and animate with independent player skeleton
         expect(result.recoilRig).toBe('FighterVisualRig');
     }
     intake.movingCast = movingCast;
+    const equipped = await page.evaluate(async () => {
+        const { actors, renderPose, renderer } = window.fighterPilot;
+        const kits = [
+            ['Iron Helm', 'Steel Pauldrons', 'Plate Mail', 'Iron Gauntlets', 'Plated Girdle', 'Plate Greaves', 'Iron Boots', 'Iron Sword', 'Wooden Shield'],
+            ['Leather Cap', 'Reinforced Spaulders', 'Leather Tunic', 'Leather Gloves', 'Studded Belt', 'Leather Pants', 'Leather Boots', 'Steel Dagger', 'Wooden Shield'],
+            ['Iron Helm', 'Steel Pauldrons', 'Plate Mail', 'Iron Gauntlets', 'Plated Girdle', 'Plate Greaves', 'Iron Boots', 'Cleric Mace', 'Wooden Shield'],
+            ['Silk Hood', 'Velvet Mantle', 'Robes', 'Silk Gloves', 'Silk Sash', 'Silk Skirt', 'Sandals', 'Wooden Staff', 'Spell Tome']
+        ];
+        const slots = ['head', 'shoulders', 'chest', 'gloves', 'belt', 'legs', 'feet', 'mainHand', 'offHand'];
+        const results = actors.map(({ entity, root }, index) => {
+            const names = Object.fromEntries(slots.map((slot, i) => [slot, kits[index][i]]));
+            Object.assign(names, { neck: 'Pendant', ring1: 'Gold Ring', ring2: 'Ruby Ring', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' });
+            const equipment = Object.fromEntries(Object.entries(names).map(([slot, name]) => [slot, { id: `pilot-${index}-${slot}`, name, baseName: name,
+                slot: slot.startsWith('ring') ? 'ring' : slot.startsWith('trinket') ? 'trinket' : slot,
+                level: 60, rarity: index === 1 ? 'Uncommon' : 'Rare', potency: 4,
+                sockets: ['chest', 'mainHand'].includes(slot) ? 2 : 0, gems: ['chest', 'mainHand'].includes(slot) ? [{ type: 'Ruby' }, { type: 'Sapphire' }] : [],
+                setId: slot === 'chest' ? 'bulwark_ages' : '', uniqueEffect: slot === 'mainHand' ? 'guardian' : '' }]));
+            const original = root.getObjectByName('Fighter_Body').geometry;
+            const result = entity.syncEquipmentVisuals(equipment);
+            const garments = root.getObjectByName('AuthoredFighterGarments');
+            const skins = [];
+            garments.traverse(part => { if (part.isSkinnedMesh) skins.push({ name: part.name, triangles: part.geometry.index?.count / 3 || part.geometry.attributes.position.count / 3,
+                sameSkeleton: part.skeleton === root.getObjectByName('Fighter_Body').skeleton }); });
+            entity.userDataPilotEquipment = equipment;
+            return { ...result, skins, masked: root.getObjectByName('Fighter_Body').geometry !== original,
+                hairHidden: !root.getObjectByName('Fighter_Hair').visible, shortsHidden: !root.getObjectByName('Fighter_Undershorts').visible };
+        });
+        renderPose('Idle');
+        return { actors: results, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+    });
+    await writeFile(testInfo.outputPath('equipment-intake.json'), JSON.stringify(equipped, null, 2));
+    await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-Idle.png') });
+    for (const actor of equipped.actors) {
+        expect(actor.supported).toBe(true); expect(actor.items).toBe(14); expect(actor.missing).toEqual([]);
+        expect(actor.masked && actor.hairHidden && actor.shortsHidden).toBe(true);
+        expect(actor.skins.filter(skin => skin.name.startsWith('AuthoredGear_'))).toHaveLength(6);
+        expect(actor.skins.filter(skin => !(skin.triangles > 0 && skin.sameSkeleton))).toEqual([]);
+    }
+    for (const clip of ['Idle', 'Run', 'Attack', 'Guard', 'Shout', 'Death']) {
+        await page.evaluate(clip => window.fighterPilot.renderPose(clip, 0, .45), clip);
+        await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath(`Equipped-${clip}.png`) });
+    }
+    const restored = await page.evaluate(async () => {
+        const { actors, renderPose } = window.fighterPilot;
+        const { clearEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const result = actors.map(({ root }) => {
+            clearEquipmentVisuals(root);
+            return { hair: root.getObjectByName('Fighter_Hair').visible, shorts: root.getObjectByName('Fighter_Undershorts').visible,
+                garmentChildren: root.getObjectByName('AuthoredFighterGarments').children.length,
+                rigidChildren: ['head', 'mainHand', 'offHand', 'neck', 'ring1', 'ring2', 'trinket1', 'trinket2'].map(slot => root.getObjectByName(`AuthoredMount_${slot}`).children.length) };
+        });
+        renderPose('Idle'); return result;
+    });
+    for (const actor of restored) {
+        expect(actor.hair && actor.shorts).toBe(true); expect(actor.garmentChildren).toBe(0);
+        expect(actor.rigidChildren).toEqual(Array(8).fill(0));
+    }
+    intake.equipped = equipped; intake.restored = restored;
     await testInfo.attach('fighter-pilot-metrics', { body: JSON.stringify(intake, null, 2), contentType: 'application/json' });
     await writeFile(testInfo.outputPath('metrics.json'), JSON.stringify(intake, null, 2));
     expect(failures, failures.join('\n')).toEqual([]);
     await page.evaluate(() => {
         const { actors, renderer } = window.fighterPilot;
-        actors.forEach(actor => { actor.mixer.stopAllAction(); actor.mixer.uncacheRoot(actor.root); });
+        actors.forEach(actor => actor.entity.dispose());
         renderer.dispose(); renderer.domElement.remove();
     });
 });

@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import * as THREE from 'three';
 import { createAuthoredFighterInstance, fighterRuntimePath, FIGHTER_AUTHORED_CLIPS, FIGHTER_AUTHORED_SOCKETS } from '../src/art/AuthoredFighter.js';
 import { FIGHTER_SKILL_CLIPS } from '../src/art/AuthoredFighterAbilityClips.js';
+import { applyEquipmentVisuals, clearEquipmentVisuals } from '../src/art/EquipmentVisuals.js';
+import { jest } from '@jest/globals';
 
 function fixture() {
     const scene = new THREE.Group();
@@ -93,6 +95,42 @@ describe('delivered Fighter runtime candidates', () => {
         mixer.stopAllAction(); mixer.uncacheRoot(actor); actor.userData.resetRestPose();
         expect(arm.quaternion.toArray()).toEqual(rest.toArray());
         expect(clips.find(clip => clip.name === 'Guard').tracks).not.toBe(source.animations.find(clip => clip.name === 'Block').tracks);
+    });
+
+    test('fits interleaved skins without corrupting weights or changing shared source geometry', () => {
+        const source = fixture(), original = source.scene.getObjectByName('Fighter_Body').geometry;
+        const count = original.attributes.position.count, data = new Float32Array(count * 12), joints = new Uint16Array(count * 6);
+        for (let i = 0; i < count; i++) {
+            for (const [name, offset] of [['position', 0], ['normal', 3], ['uv', 6], ['skinWeight', 8]]) {
+                const attribute = original.attributes[name];
+                for (let channel = 0; channel < attribute.itemSize; channel++) data[i * 12 + offset + channel] = attribute.getComponent(i, channel);
+            }
+            joints[i * 6] = joints[i * 6 + 1] = 65535; joints[i * 6 + 2] = 5; // spine_03, not interleaved padding
+        }
+        const buffer = new THREE.InterleavedBuffer(data, 12);
+        for (const [name, size, offset] of [['position', 3, 0], ['normal', 3, 3], ['uv', 2, 6], ['skinWeight', 4, 8]]) original.setAttribute(name, new THREE.InterleavedBufferAttribute(buffer, size, offset));
+        original.setAttribute('skinIndex', new THREE.InterleavedBufferAttribute(new THREE.InterleavedBuffer(joints, 6), 4, 2));
+        const before = original.index.array.slice(), actor = createAuthoredFighterInstance(source);
+        const loadout = { chest: { id: 'mail', name: 'Plate Mail', rarity: 'Rare', potency: 4, sockets: 2, gems: [{ type: 'Ruby' }, { type: 'Sapphire' }] } };
+        expect(applyEquipmentVisuals(actor, loadout).items).toBe(1);
+        const shell = actor.getObjectByName('AuthoredGear_chest');
+        expect(shell.geometry.index.count).toBeGreaterThan(0);
+        for (let i = 0; i < shell.geometry.attributes.position.count; i++) {
+            expect(shell.geometry.attributes.skinIndex.getX(i)).toBe(5);
+            expect(shell.geometry.attributes.skinWeight.getX(i)).toBe(1);
+        }
+        expect(original.index.array).toEqual(before);
+        expect(actor.getObjectByName('Fighter_Body').geometry).not.toBe(original);
+        expect(applyEquipmentVisuals(actor, loadout).changed).toBe(false);
+        const sharedDispose = jest.spyOn(shell.geometry, 'dispose'), owned = [];
+        actor.traverse(part => { if (part.userData.authoredOwnedGeometry) owned.push(jest.spyOn(part.geometry, 'dispose')); });
+        expect(owned.length).toBeGreaterThan(0);
+        expect(clearEquipmentVisuals(actor)).toBe(true);
+        owned.forEach(dispose => expect(dispose).toHaveBeenCalledTimes(1));
+        expect(sharedDispose).not.toHaveBeenCalled();
+        expect(actor.getObjectByName('Fighter_Body').geometry).toBe(original);
+        expect(actor.getObjectByName('AuthoredFighterGarments').children).toHaveLength(0);
+        jest.restoreAllMocks();
     });
 
     test('rejects incomplete deliveries rather than returning a broken class mesh', () => {

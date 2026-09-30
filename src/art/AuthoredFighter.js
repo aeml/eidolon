@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createAuthoredFighterAbilityClips } from './AuthoredFighterAbilityClips.js';
+import { prepareAuthoredFighterEquipment } from './AuthoredFighterEquipment.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
 // a boot dependency. Default class-factory activation follows equipment and
@@ -84,5 +85,6 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
         root.updateMatrixWorld(true);
     };
     root.updateMatrixWorld(true);
+    prepareAuthoredFighterEquipment(root);
     return root;
 }

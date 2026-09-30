@@ -34,7 +34,7 @@ import { clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/Abilit
 import { getWhirlwindCastDuration } from '../skills/whirlwindPresentation.js';
 import { spawnEarthshakerPresentation } from '../skills/earthshakerPresentation.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
-import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
+import { applyEquipmentVisuals, clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
 import { ActorMovingCastGait } from './ActorMovingCastGait.js';
@@ -1003,7 +1003,7 @@ export class Actor extends Entity {
 
     syncEquipmentVisuals(equipment = this.equipment, options = {}) {
         if (equipment && equipment !== this.equipment) this.equipment = equipment;
-        return applyProceduralEquipment(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
+        return applyEquipmentVisuals(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
     }
 
     playHitReaction(sourcePosition, amount) {
@@ -2187,7 +2187,7 @@ export class Actor extends Entity {
         this.pendingRemoteAbilityAnimation = null;
         this.animations = {};
         this.mixer = null;
-        clearProceduralEquipment(this.mesh);
+        clearEquipmentVisuals(this.mesh);
         super.dispose();
     }
 }

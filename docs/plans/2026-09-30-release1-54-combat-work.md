@@ -2,8 +2,9 @@
 
 September 30, 2026. Duel fixes and Fighter runtime preparation are locally
 implemented and tested. This worktree still reports Alpha 1.53.0; it has not
-been packaged, pushed or accepted as 1.54. Require exact predecessor acceptance
-before deploying this milestone, and finish the remaining Fighter integration.
+been packaged, pushed or accepted as 1.54. The
+[exact 1.53 predecessor is publicly accepted](2026-09-30-release1-53-acceptance.md).
+Finish the remaining Fighter integration before deploying this milestone.
 
 The roadmap scope is opt-in duels/open-world PvP, safe-zone protection,
 surrender/defeat and readable combat without unintended PvE loss or griefing.
@@ -60,7 +61,13 @@ exports, skeleton adapter, five skill clips, quaternion moving-cast mask and
 common-wrapper recoil are implemented. Revised body-only simplification keeps
 fitted secondary meshes intact, data maps use lossless encoding, and the native
 fixture matches the game's shadow-bias policy. Reviewed skin/scalp/shorts renders
-are now clean. Generated-equipment fit, full equipped-controller acceptance,
+are now clean. A shared equipment dispatcher and first 14-slot adaptation now
+fit shaped clothing to the rig and calibrate rigid mounts, retaining item/gem/
+cosmetic appearances. The final four-Actor High/Low equipped native route passed
+in 20.4s, with restoration/disposal checks; six authored-model unit checks passed
+in 1.973s and changed-scope lint passed. The pilot record preserves implementation
+details, screenshots, interleaved-skin and missing-waist corrections and limits.
+Weapon/shield motion, full equipped-controller acceptance, matching preview,
 cache/pool/fallback activation and final visual/performance acceptance remain.
 The source upload and adapter have not replaced the live procedural hero.
 

@@ -193,7 +193,7 @@ function addMesh(parent, name, geometryValue, materialValue, {
     return mesh;
 }
 
-function createMaterials(item, visual) {
+export function createEquipmentVisualMaterials(item, visual) {
     const rarityName = getRarityName(item);
     const rarityColor = RARITY_COLORS[rarityName] || RARITY_COLORS.Common;
     const materialDefaults = visual.material === 'metal'
@@ -787,7 +787,7 @@ export function createProceduralEquipmentVisual(item, {
     group.userData.statScaleVersion = Math.max(0, Number(item.statScaleVersion) || 0);
     group.userData.fitScale = Math.max(0.5, Math.min(1.25, Number(fitScale) || 1));
     group.userData.fitLength = Math.max(0.5, Math.min(1.25, Number(fitLength) || 1));
-    const mats = createMaterials(item, visual);
+    const mats = createEquipmentVisualMaterials(item, visual);
     if (visual.family === 'legArmor' && segment === 'shin') {
         buildShinArmor(group, visual, mats);
     } else {
