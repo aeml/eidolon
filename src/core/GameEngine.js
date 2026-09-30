@@ -1085,10 +1085,12 @@ export class GameEngine {
     }
 
     async loadGame(onProgress) {
+        if (this.isDestroyed) return;
         console.log(`Initializing GameEngine with player type: ${this.playerType}`);
 
         if (onProgress) onProgress(10, "Creating Player...");
         await new Promise(r => setTimeout(r, 50));
+        if (this.isDestroyed) return;
 
         const playerId = this.isMultiplayer && this.username ? `player-${this.username}` : (this.isMultiplayer ? `player-${Math.floor(Math.random() * 1000000)}` : 'player-1');
 
@@ -1164,14 +1166,16 @@ export class GameEngine {
 
         if (onProgress) onProgress(30, "Initializing UI...");
         await new Promise(r => setTimeout(r, 50));
+        if (this.isDestroyed) return;
 
         if (onProgress) onProgress(40, "Loading environment...");
         await this.renderSystem.preloadEnvironment((p, text) => {
-            if (!onProgress) return;
+            if (this.isDestroyed || !onProgress) return;
             // Map 0..100 -> 40..55
             const mapped = 40 + Math.round((p / 100) * 15);
             onProgress(mapped, text);
         });
+        if (this.isDestroyed) return;
 
         if (onProgress) onProgress(55, "Preloading models...");
         await MeshFactory.preloadAllModels({
@@ -1184,15 +1188,17 @@ export class GameEngine {
             timeoutMs: 30000,
             failFast: false,
             onProgress: (p, text) => {
-                if (!onProgress) return;
+                if (this.isDestroyed || !onProgress) return;
                 // Map 0..100 -> 55..75
                 const mapped = 55 + Math.round((p / 100) * 20);
                 onProgress(mapped, text);
             }
         });
+        if (this.isDestroyed) return;
 
         if (onProgress) onProgress(75, "Generating World...");
         await new Promise(r => setTimeout(r, 50));
+        if (this.isDestroyed) return;
 
         console.log("GameEngine: Forcing initial chunk update");
         this.chunkManager.update(this.player, 0, this.collisionManager);
@@ -1201,19 +1207,24 @@ export class GameEngine {
         // Town Center: (0, 200), Radius: 100
         if (typeof this.worldGenerator.createTownBase === 'function') {
             await this.worldGenerator.createTownBase(0, 200, 100);
+            if (this.isDestroyed) return;
             void this.startDeferredOverworldScenery();
         } else {
             // Preserve compatibility with lightweight/custom generators.
             await this.worldGenerator.createTown(0, 200, 100);
+            if (this.isDestroyed) return;
             await this.worldGenerator.createOverworldStructures();
+            if (this.isDestroyed) return;
         }
         // this.spawnTownEntities();
 
         if (onProgress) onProgress(90, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
+        if (this.isDestroyed) return;
 
         if (onProgress) onProgress(95, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
+        if (this.isDestroyed) return;
 
         this.inputManager.subscribe('onClick', (event) => {
             this.handlePrimaryClick(event);
@@ -1312,11 +1323,10 @@ export class GameEngine {
             this.uiManager?.addGameMessage?.('Debug', `Dungeon debug overlay ${enabled ? 'enabled' : 'disabled'}.`);
         });
 
-        if (onProgress) onProgress(95, "Waiting for silicon...");
-        await new Promise(r => setTimeout(r, 1000));
-
+        // Entry follows actual startup work, not a guessed GPU readiness delay.
+        // This does not claim deferred assets or future shaders are all warmed.
         if (onProgress) onProgress(100, "Ready!");
-        await new Promise(r => setTimeout(r, 100));
+        if (this.isDestroyed) return;
 
         this.connectToServer();
 

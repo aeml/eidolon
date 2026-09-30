@@ -259,3 +259,31 @@ already accepted1.42 Actor grounding method/engine-owner correction; no
 production grounding change or gameplay assertion was removed. Scoped lint
 and whitespace pass. No new long encounter replay; broader performance and
 the trading-view draw target remain open, runtime still1.47, unpublished.
+
+## Startup follows actual work and respects cancelled sessions
+
+Removed the fabricated1000ms silicon-readiness wait and trailing100ms delay.
+The five existing50ms progress-paint yields remain, along with selected actor/
+nearby Skeleton preloads, timeout policy, town generation, deferred scenery,
+controls and the normal server join. This removes1100ms of unconditional entry
+latency; it is not a measured total login-time or shader-warmup claim.
+
+After each awaited startup stage, stop if the engine was destroyed. Reject an
+already cancelled entry and suppress late asset progress callbacks. A ready
+callback that cancels the session cannot send a stale join or start a loop.
+Existing loader requests are not aborted by these checks; shared inflight
+assets and further session/resource-lifetime validation remain separate work.
+The current createTownBase attaches synchronously before returning its promise.
+
+Six initial regressions fail before this change1.637s, including fabricated
+1350ms total fixed wait and continuation after cancelled environment/models/
+town/controls. Final coverage includes the compatible generator awaits and
+ready callback. Five startup/loader/boot/recovery/ability suites146checks pass
+5.305s. Four old loader assertions assumed only five clips although1.43 added
+Cast/Channel/Guard/Shout/Bless. They now require the exact ten clips; emergency
+fallback models retain their five-clip expectation. The same fixture correction
+is included in prepared1.43 (two suites122checks3.634s), avoiding a known later
+CI failure without rolling back new animation or weakening coverage. Scoped
+ESLint and whitespace pass. Mandatory eventual CI will validate actual login;
+no extra campaign soak. Trading draw target and shader/device workloads remain
+open; runtime still1.47, candidate unpublished.
