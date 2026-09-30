@@ -15,6 +15,7 @@ import (
 )
 
 type DB struct {
+	guildBankOperations        *mongo.Collection
 	adminOperations            *mongo.Collection
 	adminActivity              *mongo.Collection
 	adminActivityRetentionDays int
@@ -311,6 +312,7 @@ func New(uri string) (*DB, error) {
 
 	db := client.Database("eidolon")
 	database := &DB{
+		guildBankOperations:        db.Collection("guild_bank_operations"),
 		adminOperations:            db.Collection("admin_operations"),
 		adminActivity:              db.Collection("admin_activity"),
 		adminActivityRetentionDays: retentionDays,

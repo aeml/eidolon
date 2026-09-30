@@ -52,28 +52,31 @@ type GuildBank struct {
 }
 
 type GuildAuditEntry struct {
-	At       time.Time `bson:"at" json:"at"`
-	ActorID  string    `bson:"actor_id" json:"actorId"`
-	Action   string    `bson:"action" json:"action"`
-	TargetID string    `bson:"target_id,omitempty" json:"targetId,omitempty"`
-	Amount   int       `bson:"amount,omitempty" json:"amount,omitempty"`
-	ItemName string    `bson:"item_name,omitempty" json:"itemName,omitempty"`
+	OperationID string    `bson:"operation_id,omitempty" json:"operationId,omitempty"`
+	At          time.Time `bson:"at" json:"at"`
+	ActorID     string    `bson:"actor_id" json:"actorId"`
+	Action      string    `bson:"action" json:"action"`
+	TargetID    string    `bson:"target_id,omitempty" json:"targetId,omitempty"`
+	Amount      int       `bson:"amount,omitempty" json:"amount,omitempty"`
+	ItemName    string    `bson:"item_name,omitempty" json:"itemName,omitempty"`
 }
 
 type Guild struct {
-	ID        string            `bson:"id" json:"id"`
-	Name      string            `bson:"name" json:"name"`
-	NameKey   string            `bson:"name_key" json:"-"`
-	Tag       string            `bson:"tag" json:"tag"`
-	MOTD      string            `bson:"motd,omitempty" json:"motd,omitempty"`
-	LeaderID  string            `bson:"leader_id" json:"leaderId"`
-	Members   []GuildMember     `bson:"members" json:"members"`
-	Bank      GuildBank         `bson:"bank" json:"bank"`
-	Audit     []GuildAuditEntry `bson:"audit" json:"audit"`
-	Events    []GuildEvent      `bson:"events,omitempty" json:"events"`
-	CreatedAt time.Time         `bson:"created_at" json:"createdAt"`
-	UpdatedAt time.Time         `bson:"updated_at" json:"updatedAt"`
-	Version   int               `bson:"version" json:"-"`
+	LastBankOperationID          string            `bson:"last_bank_operation_id,omitempty" json:"-"`
+	LastBankOperationFingerprint string            `bson:"last_bank_operation_fingerprint,omitempty" json:"-"`
+	ID                           string            `bson:"id" json:"id"`
+	Name                         string            `bson:"name" json:"name"`
+	NameKey                      string            `bson:"name_key" json:"-"`
+	Tag                          string            `bson:"tag" json:"tag"`
+	MOTD                         string            `bson:"motd,omitempty" json:"motd,omitempty"`
+	LeaderID                     string            `bson:"leader_id" json:"leaderId"`
+	Members                      []GuildMember     `bson:"members" json:"members"`
+	Bank                         GuildBank         `bson:"bank" json:"bank"`
+	Audit                        []GuildAuditEntry `bson:"audit" json:"audit"`
+	Events                       []GuildEvent      `bson:"events,omitempty" json:"events"`
+	CreatedAt                    time.Time         `bson:"created_at" json:"createdAt"`
+	UpdatedAt                    time.Time         `bson:"updated_at" json:"updatedAt"`
+	Version                      int               `bson:"version" json:"-"`
 }
 
 type GuildInvite struct {
