@@ -768,7 +768,7 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.playAudioCue).not.toHaveBeenCalled();
     });
 
-    test('damage against the local player can still refresh remote attacker presentation when no explicit action start was seen', () => {
+    test.each([undefined, 'physical', 'fire', 'arcane', 'holy', 'cold'])('local %s damage preserves its impact type and refreshes the remote attacker without an explicit action start', kind => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {
             id: 'remote-2',
@@ -794,12 +794,13 @@ describe('GameEngine encounter callouts', () => {
             payload: {
                 sourceId: 'remote-2',
                 targetId: 'player-1',
-                amount: 31
+                amount: 31,
+                kind
             }
         });
 
         expect(remotePlayer.setAttackingState).toHaveBeenCalledWith(true);
-        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatHit, { impact: 31 / 80 });
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatHit, { impact: 31 / 80, ...(kind ? { kind } : {}) });
     });
 
     test('does not show remote readability text for faraway remote-player actions', () => {

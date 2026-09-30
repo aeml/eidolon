@@ -1,5 +1,6 @@
 import { WorldAmbience } from './WorldAmbience.js';
 import { ABILITY_CAST_PROFILES, getAbilityCastProfile } from './AbilityCastProfiles.js';
+import { createCombatImpactCue } from './CombatImpactProfiles.js';
 
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
@@ -51,6 +52,17 @@ export function playLocalAbilityCue(engine, actor, skillName) {
     if (!actor || actor !== engine?.player) return false;
     const cue = CLASS_CAST_CUES[actor.meshType || actor.subType || actor.constructor.name];
     return cue ? engine.playAudioCue?.(cue, { skillName }) || false : false;
+}
+
+export function playLocalDamageCue(engine, damage) {
+    const playerId = engine?.player?.id, amount = Number(damage?.amount);
+    if (!playerId || !Number.isFinite(amount) || amount <= 0 ||
+        (damage.sourceId !== playerId && damage.targetId !== playerId)) return false;
+    const options = { impact: Math.min(1, amount / 80) };
+    if (damage.kind) options.kind = damage.kind;
+    if (['bleed', 'poison'].includes(damage.sourceId) || damage.sourceId?.startsWith('hazard-') ||
+        ['bleed', 'poison', 'burn', 'periodic'].includes(damage.kind)) options.periodic = true;
+    return engine.playAudioCue?.(AUDIO_CUES.combatHit, options) || false;
 }
 
 export const AUDIO_CUE_ASSETS = Object.freeze({
@@ -295,13 +307,16 @@ export class AudioManager {
         if (options.gain === 0) return false;
         if (this.volume === 0 || this.busVolumes[bus] === 0) return false;
         if (!this.canPlay(cueName)) return false;
-        if (this.playAuthoredCue(cueName)) {
+        // A generic contact recording must not erase confirmed damage type.
+        // Calls without recognized metadata retain their existing asset fallback.
+        const impactCue = cueName === AUDIO_CUES.combatHit ? createCombatImpactCue(options) : null;
+        if (!impactCue && this.playAuthoredCue(cueName)) {
             this.lastCueTimes.set(cueName, this.now());
             return true;
         }
 
         const context = this.ensureContext();
-        const cue = this.createCue(cueName, options);
+        const cue = impactCue || this.createCue(cueName, options);
         if (!context || !cue || context.state === 'closed') return false;
         // A suspended live context must not accumulate effects for a later
         // gesture. OfflineAudioContext deliberately schedules before rendering.
@@ -394,6 +409,10 @@ export class AudioManager {
     }
 
     createCue(cueName, options = {}) {
+        if (cueName === AUDIO_CUES.combatHit) {
+            const impactCue = createCombatImpactCue(options);
+            if (impactCue) return impactCue;
+        }
         const className = Object.keys(CLASS_CAST_CUES).find(key => CLASS_CAST_CUES[key] === cueName);
         const profile = className && options.skillName ? getAbilityCastProfile(className, options.skillName) : null;
         if (profile) return ABILITY_CAST_PROFILES[profile];

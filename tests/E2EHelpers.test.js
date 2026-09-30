@@ -11,7 +11,7 @@ import {
 
 const playwrightExpect = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
-const { collectBrowserFailures, returnToTown, jumpByGroundClick, settlePointerRaycast } = await import('./e2e/helpers.js');
+const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast } = await import('./e2e/helpers.js');
 
 describe('pointer raycast settling', () => {
     test('waits for actual completion with a bounded frame recovery window', async () => {
@@ -173,6 +173,47 @@ describe('browser failure collection', () => {
 });
 
 describe('live browser failure reconciliation', () => {
+    test('resource console errors retain the failed source without hiding DNS failures', () => {
+        const page = new EventEmitter();
+        const failures = collectBrowserFailures(page, 'https://eidolon.example');
+        page.emit('console', {
+            type: () => 'error',
+            text: () => 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED',
+            location: () => ({ url: 'https://external.example/collect', lineNumber: 0 })
+        });
+        expect(failures).toEqual([
+            'console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED [https://external.example/collect:0]'
+        ]);
+    });
+
+    test('console failures without a source are still retained', () => {
+        const page = new EventEmitter();
+        const failures = collectBrowserFailures(page, 'https://eidolon.example');
+        page.emit('console', { type: () => 'error', text: () => 'Unexpected runtime failure' });
+        expect(failures).toEqual(['console: Unexpected runtime failure']);
+    });
+
+    test('exhausted navigation reports the underlying DNS error and attempted release route', async () => {
+        const previousCommit = process.env.EIDOLON_EXPECTED_COMMIT;
+        process.env.EIDOLON_EXPECTED_COMMIT = 'exact-release';
+        const cause = new Error('page.goto: net::ERR_NAME_NOT_RESOLVED at https://eidolon.example/');
+        const assertion = jest.fn(() => { throw new Error('document assertion failed'); });
+        playwrightExpect.mockReturnValue({ toBe: assertion });
+        const page = { goto: jest.fn().mockRejectedValue(cause), waitForTimeout: jest.fn() };
+        try {
+            await expect(openGame(page, { attempts: 1 })).rejects.toThrow('document assertion failed');
+            expect(page.goto).toHaveBeenCalledTimes(1);
+            expect(page.waitForTimeout).not.toHaveBeenCalled();
+            expect(playwrightExpect).toHaveBeenCalledWith(undefined,
+                expect.stringContaining(`route=/?release=exact-release; last error=${cause.message}`));
+            expect(assertion).toHaveBeenCalledWith(200);
+        } finally {
+            if (previousCommit === undefined) delete process.env.EIDOLON_EXPECTED_COMMIT;
+            else process.env.EIDOLON_EXPECTED_COMMIT = previousCommit;
+            playwrightExpect.mockReset();
+        }
+    });
+
     test('a successful retry clears an earlier failed document request for the same route', () => {
         const page = new EventEmitter();
         const failures = collectBrowserFailures(page, 'https://eidolon.example');

@@ -5,6 +5,25 @@ login/CI/default build identities and cumulative notes identify1.45.0.
 Ordered predecessor publication and this candidate's own CI/live checks remain
 required. This is not final modern-art, accessibility or closed-beta acceptance.
 
+## Current predecessor integration — September30
+
+Merged prepared1.44a10a8b72, including current1.43prerequisites and typed
+impact audio, into this candidate. Resolve README conflict to1.45 source and
+accepted1.42baseline (1.43 final live QA still pending). Browser-script conflict
+retains BOTH first-party font coverage and all five1.45 interface suites; no
+gate or future UI feature is dropped. Runtime/package/history remain1.45 and
+website files are identical to the predecessor. Network dispatch merge contains
+only the confirmed-impact helper change, preserving1.45 loot/UI updates.
+
+Four integration profile/dispatch/font/version suites pass401checks4.853s;
+full lint and whitespace pass. The initial auction-suite name did not exist
+and matched no tests; the actual TradingSelection suite was then explicitly
+run by path:18checks1.954s, including offline/slow retry, managed closure,
+selection safety and server null-list responses. Do not count a nonexistent
+suite as evidence. Existing unchanged UI browser evidence remains applicable;
+no campaign/phone soak repeated for this prerequisite merge. This candidate
+stays unpublished until1.43 and1.44 are individually accepted in order.
+
 ## Draft patch notes
 
 - Ground loot has zoom-readable, rarity-accented labels that separate crowded
