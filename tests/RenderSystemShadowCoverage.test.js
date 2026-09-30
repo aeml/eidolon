@@ -24,6 +24,10 @@ describe('RenderSystem shadow coverage', () => {
         expect(Math.abs(renderSystem.keyLight.target.position.z + 1400)).toBeLessThanOrEqual(texelSize / 2);
         expect(renderSystem.keyLight.shadow.camera.left).toBe(renderSystem.shadowViewBounds.left);
         expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
+        expect(renderSystem.keyLight.shadow.camera.far).toBe(renderSystem.shadowViewBounds.far);
+        expect(renderSystem.keyLight.shadow.camera.near).toBe(1);
+        expect(renderSystem.keyLight.shadow.camera.far).toBeLessThan(1000);
+        expect(renderSystem.keyLight.shadow.bias * (renderSystem.keyLight.shadow.camera.far - 1)).toBeCloseTo(-0.00014 * 1399, 8);
         expect(renderSystem.shadowCoverageRadius).toBeLessThan(280);
     });
 
@@ -80,9 +84,11 @@ describe('RenderSystem shadow coverage', () => {
         const renderSystem = new RenderSystem(false);
         renderSystem.setZoom(5);
         const near = renderSystem.shadowCoverageRadius;
+        const closeFar = renderSystem.keyLight.shadow.camera.far;
         renderSystem.setZoom(30);
         expect(renderSystem.shadowCoverageRadius).toBeGreaterThan(near);
         expect(renderSystem.keyLight.shadow.camera.right).toBe(renderSystem.shadowViewBounds.right);
+        expect(renderSystem.keyLight.shadow.camera.far).toBeGreaterThan(closeFar);
         expect(renderSystem.getShadowWorldTexelSize()).toBe(renderSystem.shadowCoverageRadius * 2 / 4096);
         renderSystem.dispose();
     });

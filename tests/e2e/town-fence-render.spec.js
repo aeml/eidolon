@@ -2,6 +2,82 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { openGame } from './helpers.js';
 
+test('fitted sun depth preserves visible contact and off-screen tall caster shadows', async ({ page }, testInfo) => {
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1280, height: 844 });
+    await openGame(page);
+    const result = await page.evaluate(async () => {
+        const THREE = await import('three');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        const render = new RenderSystem(false), renderer = render.renderer;
+        render.environmentGroup.visible = false;
+        const focus = new THREE.Vector3(2100, 0, -1400);
+        const owned = new THREE.Group(); owned.position.copy(focus); render.scene.add(owned);
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(180, 180), new THREE.MeshStandardMaterial({ color: 0x53614c }));
+        floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; owned.add(floor);
+        const stone = new THREE.MeshStandardMaterial({ color: 0x8b9299 });
+        for (const [size, position] of [[[4, 6, 4], [2, 3, -2]], [[10, 1, 8], [2, 6.5, -2]]]) {
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), stone);
+            mesh.position.set(...position); mesh.castShadow = true; mesh.receiveShadow = true; owned.add(mesh);
+        }
+        // A tall off-screen caster on a ray to visible ground must survive.
+        const tall = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), stone);
+        tall.position.copy(render.shadowFollowOffset).normalize().multiplyScalar(60).add(new THREE.Vector3(-7, 0, 4));
+        tall.castShadow = true; owned.add(tall);
+        // Actual many-part enemy behind the receiver volume: shadow-only work.
+        const enemy = await MeshFactory.createMeshForType('Skeleton');
+        enemy.position.set(70, 0, -60); owned.add(enemy);
+        const target = new THREE.WebGLRenderTarget(640, 422), previousTarget = renderer.getRenderTarget();
+        renderer.setRenderTarget(target); renderer.info.autoReset = false;
+        const capture = (far, bias) => {
+            render.keyLight.shadow.camera.far = far;
+            render.keyLight.shadow.bias = bias;
+            render.keyLight.shadow.camera.updateProjectionMatrix();
+            renderer.info.reset(); renderer.render(render.scene, render.camera);
+            const pixels = new Uint8Array(640 * 422 * 4);
+            renderer.readRenderTargetPixels(target, 0, 0, 640, 422, pixels);
+            return { pixels, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+        };
+        const changedPixels = (a, b) => {
+            let changed = 0;
+            for (let i = 0; i < a.length; i += 4) if ([0, 1, 2].some(c => Math.abs(a[i + c] - b[i + c]) > 3)) changed++;
+            return changed;
+        };
+        const samples = [];
+        for (const quality of ['high', 'low']) for (const zoom of [5, 15, 30]) {
+            render.setGraphicsQuality(quality); render.setZoom(zoom);
+            render.setCameraTarget(focus); render.updateShadowFocus(focus);
+            const far = render.keyLight.shadow.camera.far, bias = render.keyLight.shadow.bias;
+            const before = capture(1400, quality === 'high' ? -0.00014 : -0.00012);
+            const after = capture(far, bias);
+            tall.visible = false; const withoutTall = capture(far, bias); tall.visible = true;
+            samples.push({ quality, zoom, far, beforeCalls: before.calls, afterCalls: after.calls,
+                beforeTriangles: before.triangles, afterTriangles: after.triangles,
+                changed: changedPixels(before.pixels, after.pixels), tallShadowPixels: changedPixels(after.pixels, withoutTall.pixels) });
+        }
+        renderer.setRenderTarget(previousTarget); renderer.info.autoReset = true;
+        render.setGraphicsQuality('high'); render.setZoom(15); render.updateShadowFocus(focus);
+        renderer.render(render.scene, render.camera); const picture = renderer.domElement.toDataURL('image/png');
+        enemy.removeFromParent(); MeshFactory.releaseMesh('Skeleton', enemy);
+        owned.removeFromParent(); render.disposeObjectResources(owned); target.dispose(); render.dispose();
+        return { samples, picture };
+    });
+    await writeFile(testInfo.outputPath('shadow-depth-comparison.json'), JSON.stringify(result.samples, null, 2));
+    await testInfo.attach('shadow-depth-comparison', { body: JSON.stringify(result.samples), contentType: 'application/json' });
+    const png = Buffer.from(result.picture.split(',')[1], 'base64');
+    await writeFile(testInfo.outputPath('fitted-shadow-depth.png'), png);
+    await testInfo.attach('fitted-shadow-depth', { body: png, contentType: 'image/png' });
+    for (const sample of result.samples) {
+        expect(sample.changed, JSON.stringify(sample)).toBeLessThan(640 * 422 * .001);
+        expect(sample.afterCalls).toBeLessThanOrEqual(sample.beforeCalls);
+        if (sample.quality === 'high') expect(sample.tallShadowPixels).toBeGreaterThan(20);
+    }
+    const ordinary = result.samples.find(s => s.quality === 'high' && s.zoom === 15);
+    expect(ordinary.afterCalls).toBeLessThan(ordinary.beforeCalls);
+    expect(ordinary.afterTriangles).toBeLessThan(ordinary.beforeTriangles);
+});
+
 for (const fallback of [false, true]) test(`planted street cells preserve both edges and shadows (${fallback ? 'extension fallback' : 'native extensions'})`, async ({ page }, testInfo) => {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await openGame(page);

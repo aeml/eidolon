@@ -1,5 +1,45 @@
 # Alpha1.48 — client performance work
 
+## Receiver-fitted sun depth — September30
+
+The remaining measured High town cost included enemies behind every visible
+receiver still submitted into the sun shadow map. Fit far to the same existing
+camera-corner/height[-8,64] receiver volume, with12units padding and16unit
+quantization. Near remains1: off-screen roofs/trees toward the sun remain
+eligible. Horizontal/unsupported camera and vertical-sun fallback keep the
+legacy1400 depth. This is not arbitrary actor-distance or shadow-quality culling.
+Scale normalized depth bias to preserve the original world-space contact bias
+at each quality setting. Camera lag, zoom and viewport fit remain dynamic.
+
+Eleven new/expanded coverage cases failed before implementation. Final three
+shadow/graphics suites27checks pass1.558s, scoped lint/whitespace pass. The
+existing procedural-environment suite also passed in the initial four-suite
+31check run75.056s; it is not repeated for the subsequent bias/test assertions.
+One System Chrome case4.5s compares legacy/fitted rendering at zoom5/15/30,
+High and Low, including a real many-part Skeleton and a deliberately off-screen
+tall caster whose shadow reaches visible ground. All six comparisons have
+zero changed pixels; High retains16777/4066/1025 tall-caster shadow pixels.
+At normal zoom, total shadow+color submissions36→6 and triangles1271→62;
+Low remains3draws/26triangles, unchanged. Inspectable fixture image reviewed.
+Evidence:/tmp/eidolon-1-48-shadow-depth-0930.
+
+One bounded populated High9site profile passes49.8s on the same Chrome149/
+RADV RENOIR/1280x844 device, with all original targets retained. Town well
+335→261calls, menders272→241, trading367→305; woodland310→292. Trading has
+114633triangles,16.7ms median/33.3ms p95; all other p95 values16.7–16.8ms.
+All sites report zero>50ms hitches in these120sample windows. This single new
+window does not prove the cause of the prior junction hitch or sustained FPS.
+Repeated residency is stable315geometries/71textures/70programs. Real town
+capture inspected; controlled fixture pixel equality is not a whole-world
+appearance or campaign acceptance claim. No target relaxation or extra soak.
+Evidence:/tmp/eidolon-1-48-shadow-depth-profile-0930. Runtime remains1.47;
+Low/device, representative busy/network/shader/startup work and ordered
+predecessor publication still remain before1.48 can be accepted.
+
+Planned patch note: camera-fitted sun depth avoids shadow submissions that
+cannot reach the view, preserving visible contact and off-screen roof/tree
+shadows rather than reducing scene detail.
+
 ## Planted street edges — September30
 
 Submit the existing two static street-rest cells together per material with

@@ -613,6 +613,10 @@ export class RenderSystem {
         if (!light?.shadow?.camera) return;
         const bounds = this.shadowViewBounds || { left: -280, right: 280, top: 280, bottom: -280 };
         Object.assign(light.shadow.camera, bounds);
+        // Preserve the existing world-space depth bias when fitting far. A
+        // constant normalized bias would otherwise change shadow contact.
+        const baseBias = this.graphicsQuality === 'high' ? -0.00014 : -0.00012;
+        light.shadow.bias = baseBias * 1399 / (light.shadow.camera.far - light.shadow.camera.near);
         light.shadow.camera.updateProjectionMatrix();
         light.shadow.needsUpdate = true;
     }
