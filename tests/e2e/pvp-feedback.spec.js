@@ -113,6 +113,19 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
         await page.evaluate(() => window.arenaClockFixture.ui.toggle(false));
         await page.clock.runFor(10000);
         expect(await page.evaluate(() => window.arenaClockFixture.refreshes)).toBe(1);
+        await page.evaluate(() => window.arenaClockFixture.ui.update({ match: { mode: 'arena_2v2', status: 'active', round: 1,
+            scoreA: 0, scoreB: 0, teamA: ['player-Alice', 'player-AveryVeryLongFighterName'],
+            teamB: ['player-Bob', 'player-Cara'], eliminated: ['player-Bob'], endsAt: new Date(Date.now() + 30000).toISOString() } }));
+        await page.evaluate(() => window.arenaClockFixture.ui.toggle(true));
+        await panel.locator('.pvp-card--season summary').click();
+        const roster = panel.locator('.pvp-match-roster');
+        await expect(roster).toContainText('Alice');
+        await expect(roster.locator('li').filter({ hasText: 'Bob' })).toContainText('Eliminated');
+        expect(await roster.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+        await expect(panel).toContainText('Match limit 0:30 remaining');
+        await page.clock.runFor(1000);
+        await expect(panel).toContainText('Match limit 0:29 remaining');
+        await panel.screenshot({ path: testInfo.outputPath('arena-team-roster.png') });
         await page.evaluate(() => window.arenaClockFixture.ui.dispose());
     });
 }

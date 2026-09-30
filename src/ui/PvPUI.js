@@ -279,6 +279,29 @@ export class PvPUI {
                     ? 'Team eliminated. The next round starts shortly.'
                     : `Standing: ${standing(match.teamA)} vs ${standing(match.teamB)}. ${match.mode === 'duel' ? 'Practice duel — no ranked rewards.' : 'Eliminate the whole opposing team to win a round. First to two rounds wins.'}${match.practice ? ' Practice: no rating, honor or season rewards.' : ''}`;
             matchCard.append(title, score, progress);
+            const roster = document.createElement('div');
+            roster.className = 'pvp-match-roster';
+            for (const [label, players] of [['Team A', match.teamA], ['Team B', match.teamB]]) {
+                const team = document.createElement('section');
+                const heading = document.createElement('h4');
+                heading.textContent = label;
+                const list = document.createElement('ul');
+                for (const id of players || []) {
+                    const row = document.createElement('li');
+                    row.className = eliminated.has(id) ? 'pvp-match-player pvp-match-player--eliminated' : 'pvp-match-player';
+                    const name = document.createElement('span');
+                    name.textContent = String(id).replace(/^player-/, '');
+                    name.title = name.textContent;
+                    const status = document.createElement('span');
+                    status.textContent = match.status === 'complete' ? 'Finished' : eliminated.has(id) ? 'Eliminated' : 'Standing';
+                    status.className = 'pvp-match-player__status';
+                    row.append(name, status);
+                    list.appendChild(row);
+                }
+                team.append(heading, list);
+                roster.appendChild(team);
+            }
+            matchCard.appendChild(roster);
             if (match.status === 'active') {
                 const clock = document.createElement('p');
                 clock.dataset.arenaMatchClock = '';

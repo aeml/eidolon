@@ -54,6 +54,21 @@
 .pvp-card--match .pvp-score { grid-row: 2; }
 .pvp-card--match .pvp-btn { grid-column: 2; grid-row: 2; margin: 0; min-height: 44px; }
 
+.pvp-match-roster {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pvp-match-roster section { min-width: 0; padding: 8px; border: 1px solid rgba(255, 135, 148, .2); border-radius: 6px; }
+.pvp-match-roster h4 { margin: 0 0 6px; font-size: 13px; color: #ffb8c0; }
+.pvp-match-roster ul { margin: 0; padding: 0; list-style: none; }
+.pvp-match-player { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; color: #edf2fa; }
+.pvp-match-player > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pvp-match-player__status { font-size: 12px; color: #95d8b2; }
+.pvp-match-player--eliminated .pvp-match-player__status { color: #ffb8c0; }
+
 .pvp-score {
     color: #ff8794;
     font-size: 22px;
