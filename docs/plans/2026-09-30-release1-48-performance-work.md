@@ -1,5 +1,38 @@
 # Alpha1.48 — client performance work
 
+## Mandatory CI correction — conservative sheared foliage bounds
+
+Exact initial CI36720351298/a3edf4e7, Jest109903566296, fails one canonical
+foliage assertion;600suites/8705checks otherwise pass. Deployment is not accepted.
+Locally reproduce5.573414>5.449277 (focused failure2.249s). The old oracle
+requires the entire aggregate AABB's empty corners inside a deliberately tighter
+crown sphere. Correct it to independently transform EVERY actual geometry
+vertex at every instance placement, requiring containment by BOTH the sphere
+and box at the same1e-6 tolerance. Retain all placement/material/count/collision
+assertions; this is not permission to clip actual foliage.
+
+That stronger oracle exposes a genuine source defect: crooked mourning willow
+trunk's actual radius4.670694 exceeds4.668199 (focused reproduction5.298s).
+Composed nonuniform scales and rotations introduce shear; Sphere.applyMatrix4
+uses largest column length, which underbounds sheared spheres. An independent
+shear fixture also fails by0.202950 before the source fix0.650s.
+
+Use a conservative upper singular-value bound from the row sums of A^T A,
+including absolute off-diagonal terms, for transformed source spheres. Ordinary
+orthogonal transforms retain their tight scale; the existing aggregate-box
+radius remains the other conservative cap. Constructor/quality-change work
+only, no per-frame vertex scan, changed geometry, palette, placement or collider.
+
+Four foliage/canonical/visibility suites63checks pass24.765s, scoped lint and
+whitespace pass. Three changed-source native cases1.5m (9.2/43.6/34.3s) pass
+High/Low source-vs-spatial pixel checks and original nine-site world budgets:
+medians16.7/p95<=16.8,Highdraws<=298/tri<=234568;Low<=137/61458. High0sampled
+>50ms hitches, Low1 (reported, not hidden or a new invented passing limit).
+Resource repeats remain exact315/71/71High and303/58/51Low. Artifacts:
+`/tmp/eidolon-1-48-shear-bounds-0930`. No unchanged busy-raid/campaign/soak
+replay; those actor/performance receipts remain retained. Normal corrected
+source CI and public acceptance are still required;147 remains accepted live.
+
 ## Production-default integration — locally verified, unpublished
 
 The verified candidate is now merged on the release branch and enabled by its

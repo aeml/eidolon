@@ -7,6 +7,20 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
 
+// Gershgorin bound on A^T A: largest column length alone is unsafe when
+// composed nonuniform scales and rotations introduce shear. This upper
+// singular-value bound retains ordinary orthogonal transforms' tight scale.
+function conservativeSphereScale(matrix) {
+    const e = matrix.elements;
+    const xx = e[0] ** 2 + e[1] ** 2 + e[2] ** 2;
+    const yy = e[4] ** 2 + e[5] ** 2 + e[6] ** 2;
+    const zz = e[8] ** 2 + e[9] ** 2 + e[10] ** 2;
+    const xy = Math.abs(e[0] * e[4] + e[1] * e[5] + e[2] * e[6]);
+    const xz = Math.abs(e[0] * e[8] + e[1] * e[9] + e[2] * e[10]);
+    const yz = Math.abs(e[4] * e[8] + e[5] * e[9] + e[6] * e[10]);
+    return Math.sqrt(Math.max(xx + xy + xz, yy + xy + yz, zz + xz + yz));
+}
+
 // Constructor/quality-change work only. A rotated tree's aggregate box sphere
 // contains empty corners far beyond its actual crown. Bound the same vertices
 // by their cached source spheres too; choose the tighter conservative radius.
@@ -21,7 +35,9 @@ export function computeFoliageCellBounds(mesh) {
     let radius = 0;
     for (let i = 0; i < mesh.count; i++) {
         mesh.getMatrixAt(i, matrix);
-        sphere.copy(mesh.geometry.boundingSphere).applyMatrix4(matrix);
+        sphere.copy(mesh.geometry.boundingSphere);
+        sphere.center.applyMatrix4(matrix);
+        sphere.radius *= conservativeSphereScale(matrix);
         radius = Math.max(radius, sphere.center.distanceTo(mesh.boundingSphere.center) + sphere.radius);
     }
     mesh.boundingSphere.radius = Math.min(mesh.boundingSphere.radius, radius + .000001);

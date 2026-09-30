@@ -373,12 +373,26 @@ describe('WorldGenerator shadow setup', () => {
                 expect(new Set(group.children.map(mesh => mesh.userData.foliageCell)).size).toBeGreaterThan(1);
                 expect(Math.max(...group.children.map(mesh => mesh.count))).toBeLessThan(recipe.count / 3);
                 for (const mesh of group.children) {
-                    // The frustum sphere must contain the complete aggregate
-                    // box, including crowns beyond the cell's placement edge.
+                    // Tighter spheres need to contain real crowns, not empty
+                    // corners of the aggregate box. Independently transform
+                    // every vertex, including crowns beyond placement edges.
                     const box = mesh.boundingBox, sphere = mesh.boundingSphere;
-                    for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z]) {
-                        expect(sphere.center.distanceTo(new THREE.Vector3(x, y, z))).toBeLessThanOrEqual(sphere.radius + 1e-6);
+                    const position = mesh.geometry.attributes.position, matrix = new THREE.Matrix4(), point = new THREE.Vector3();
+                    let maxDistance = 0, maxBoxEscape = 0;
+                    for (let index = 0; index < mesh.count; index++) {
+                        mesh.getMatrixAt(index, matrix);
+                        for (let vertex = 0; vertex < position.count; vertex++) {
+                            point.fromBufferAttribute(position, vertex).applyMatrix4(matrix);
+                            maxDistance = Math.max(maxDistance, sphere.center.distanceTo(point));
+                            maxBoxEscape = Math.max(maxBoxEscape, box.distanceToPoint(point));
+                        }
                     }
+                    expect(maxDistance).toBeGreaterThan(0);
+                    if (maxDistance > sphere.radius + 1e-6) {
+                        throw new Error(`${recipe.id}/${mesh.name}: actual crown radius ${maxDistance} exceeds ${sphere.radius}`);
+                    }
+                    expect(maxDistance).toBeLessThanOrEqual(sphere.radius + 1e-6);
+                    expect(maxBoxEscape).toBeLessThanOrEqual(1e-6);
                 }
             }
         }
