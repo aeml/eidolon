@@ -208,3 +208,32 @@ protobuf script required by network imports; fixture now loads exactly the
 index.html runtime. This is prepared receive/drain/render seam evidence, not an
 earned raid, server damage or real network latency result. Evidence:
 /tmp/eidolon-1-48-warning-queue-final-0930. Scoped lint/whitespace pass.
+
+## Bound decorative remote contact feedback
+
+Compact remote contact cues now retain at most64 simultaneous effects at High,
+32 at Low. The next compact contact retires the oldest eligible contact effects
+and removes them from the engine's active array. Their existing disposal path
+releases the scene roots while retaining shared art resources. Ordinary counts
+are unchanged; changing quality applies the smaller budget on the next compact
+contact rather than changing any gameplay event or timer.
+
+The explicit contact-kind allowlist excludes healing/restoration, periodic and
+hazard feedback, future unknown kinds, local source/target involvement, full
+feedback, ability/projectile presentations and authoritative/radius shapes.
+Boss warnings, casts, actor visibility, damage, HP and combat logs never enter
+this quota. Essential admissions also skip the decorative array scan. This
+is not a universal cap on essential effects, nor a claim that all scene draw
+targets or100-player capacity are achieved.
+
+Six relevant feedback/telegraph/network suites176checks pass4.202s. Two actual
+Chrome admission/render checks pass14.2s at High/Low: repeated200-contact bursts
+retain the latest64/32 compact cues and every interleaved warning/local contact/
+healing/Fireball radius effect; both warnings retain radius6. Active roots and
+renderer geometry/texture residency are stable on repeat. The previously fixed
+receive/drain warning-flood seam still passes. Evidence:
+/tmp/eidolon-1-48-compact-feedback-final-0930, including compact-contact-budget.json.
+Scoped lint and whitespace pass. These are prepared render/admission checks,
+not an earned multiplayer encounter, appearance acceptance or frame-rate proof.
+Town trading392draws and the broader representative startup/entity/device
+performance work remain open. Runtime still1.47; candidate not published.

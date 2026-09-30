@@ -412,6 +412,7 @@ import { MaelstromWarden } from '../entities/MaelstromWarden.js';
 import { Thalorath } from '../entities/Thalorath.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { createTransientEffect } from './TransientEffects.js';
+import { isCompactCombatFeedback, limitCompactCombatFeedback } from './CompactCombatFeedbackBudget.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel as getSharedDungeonBeatLabel,
@@ -1077,7 +1078,9 @@ export class GameEngine {
         const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;
         attachAbilityShapeMetadata(effect, effectPosition, options);
+        effect.isCompactCombatFeedback = isCompactCombatFeedback(type, options, this.player?.id);
         this.effects.push(effect);
+        if (effect.isCompactCombatFeedback) limitCompactCombatFeedback(this.effects, mergedOptions.quality);
         return true;
     }
 

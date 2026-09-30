@@ -1,5 +1,68 @@
 import { expect, test } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
+
+test('remote contact bursts are bounded without retiring warnings, local hits or healing', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const reports = await page.evaluate(async () => {
+        const THREE = await import('three');
+        const { GameEngine } = await import('/src/core/GameEngine.js');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { COMPACT_COMBAT_FEEDBACK_LIMITS } = await import('/src/core/CompactCombatFeedbackBudget.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const render = new RenderSystem(false), reports = [];
+        render.setZoom(15); render.setCameraTarget(new THREE.Vector3());
+        for (const quality of ['high', 'low']) {
+            render.setGraphicsQuality(quality);
+            const engine = Object.assign(Object.create(GameEngine.prototype), {
+                effects: [], renderSystem: render, player: { id: 'local' }, terrainElevation: null,
+                uiManager: { getGraphicsQuality: () => quality }
+            });
+            for (const x of [-9, 9]) engine.spawnTransientEffect('telegraph', new THREE.Vector3(x, 0, 0), 0xff3300,
+                { radius: 6, telegraphDuration: 2, reducedMotion: true, label: 'DANGER', threatTier: 'boss' });
+            engine.spawnTransientEffect('combat_feedback', new THREE.Vector3(0, 1.5, 0), 0xffffff,
+                { feedbackKind: 'fighter_strike', feedbackDensity: 'compact', sourceId: 'local', targetId: 'enemy' });
+            engine.spawnTransientEffect('combat_feedback', new THREE.Vector3(0, 1.5, 3), 0xffffff,
+                { feedbackKind: 'restoration_tick', feedbackDensity: 'compact', sourceId: 'remote', targetId: 'friend' });
+            engine.spawnTransientEffect('projectile_impact', new THREE.Vector3(0, 0, -5), 0xffffff,
+                { projectileType: 'Fireball', radius: 6 });
+            const protectedEffects = [...engine.effects];
+            const burst = () => {
+                for (let index = 0; index < 200; index++) engine.spawnTransientEffect('combat_feedback',
+                    new THREE.Vector3((index % 8 - 3.5) * 1.5, 1.5, (Math.floor(index / 8) % 5 - 2) * 2), 0xffffff,
+                    { feedbackKind: 'fighter_strike', feedbackDensity: 'compact', sourceId: 'remote', targetId: `enemy-${index}` });
+                engine.effects.forEach(effect => { effect.elapsed = .08; effect.update(0); });
+                render.render(); render.render();
+                return { effects: engine.effects.length,
+                    compact: engine.effects.filter(effect => effect.isCompactCombatFeedback).length,
+                    roots: render.effectGroup.children.length,
+                    geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures };
+            };
+            const first = burst(), repeat = burst();
+            reports.push({ quality, limit: COMPACT_COMBAT_FEEDBACK_LIMITS[quality], first, repeat,
+                protectedActive: protectedEffects.every(effect => engine.effects.includes(effect) && effect.isActive &&
+                    effect.meshes.every(root => root.parent === render.effectGroup)),
+                warningRadii: protectedEffects.slice(0, 2).map(effect => effect.meshes[0].userData.gameplayRadius) });
+            engine.effects.forEach(effect => effect.dispose());
+        }
+        render.dispose();
+        return reports;
+    });
+    await testInfo.attach('compact-contact-budget', { body: JSON.stringify(reports), contentType: 'application/json' });
+    await writeFile(testInfo.outputPath('compact-contact-budget.json'), JSON.stringify(reports, null, 2));
+    for (const report of reports) {
+        expect(report.first.compact).toBe(report.limit);
+        expect(report.first.effects).toBe(report.limit + 5);
+        expect(report.repeat).toEqual(report.first);
+        expect(report.protectedActive).toBe(true);
+        expect(report.warningRadii).toEqual([6, 6]);
+    }
+    // Bounded prepared render/admission seam, not real-player raid capacity.
+    expect(failures, failures.join('\n')).toEqual([]);
+});
 
 test('queued boss warnings survive cosmetic message floods at High and Low', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
