@@ -73,6 +73,9 @@ export class SocialPresenceController {
             case 'guild_update':
                 this.uiManager.social?.guild?.update?.(msg.payload);
                 return true;
+            case 'guild_bank_result':
+                this.uiManager.social?.guild?.handleBankResult?.(msg.payload);
+                return true;
             case 'guild_leaderboard':
                 this.uiManager.social?.guild?.updateLeaderboard?.(msg.payload);
                 return true;

@@ -52,13 +52,15 @@ type GuildBank struct {
 }
 
 type GuildAuditEntry struct {
-	OperationID string    `bson:"operation_id,omitempty" json:"operationId,omitempty"`
-	At          time.Time `bson:"at" json:"at"`
-	ActorID     string    `bson:"actor_id" json:"actorId"`
-	Action      string    `bson:"action" json:"action"`
-	TargetID    string    `bson:"target_id,omitempty" json:"targetId,omitempty"`
-	Amount      int       `bson:"amount,omitempty" json:"amount,omitempty"`
-	ItemName    string    `bson:"item_name,omitempty" json:"itemName,omitempty"`
+	OperationID  string    `bson:"operation_id,omitempty" json:"operationId,omitempty"`
+	At           time.Time `bson:"at" json:"at"`
+	ActorID      string    `bson:"actor_id" json:"actorId"`
+	Action       string    `bson:"action" json:"action"`
+	TargetID     string    `bson:"target_id,omitempty" json:"targetId,omitempty"`
+	Amount       int       `bson:"amount,omitempty" json:"amount,omitempty"`
+	ItemName     string    `bson:"item_name,omitempty" json:"itemName,omitempty"`
+	PreviousRank string    `bson:"previous_rank,omitempty" json:"previousRank,omitempty"`
+	Rank         string    `bson:"rank,omitempty" json:"rank,omitempty"`
 }
 
 type Guild struct {
@@ -450,13 +452,18 @@ func (db *DB) mutateGuildMembers(actorID, targetID, action string, mutate func(*
 	if actor == nil || target == nil {
 		return nil, errors.New("guild member not found")
 	}
+	previousRank := target.Rank
 	if err := mutate(guild, actor, target); err != nil {
 		return nil, err
 	}
 	now := time.Now().UTC()
 	guild.UpdatedAt = now
 	guild.Version++
-	guild.Audit = appendBoundedGuildAudit(guild.Audit, GuildAuditEntry{At: now, ActorID: actorID, Action: action, TargetID: targetID})
+	entry := GuildAuditEntry{At: now, ActorID: actorID, Action: action, TargetID: targetID}
+	if action == "rank_changed" {
+		entry.PreviousRank, entry.Rank = previousRank, target.Rank
+	}
+	guild.Audit = appendBoundedGuildAudit(guild.Audit, entry)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := db.saveUnreservedGuild(ctx, guild, guild.Version-1); err != nil {

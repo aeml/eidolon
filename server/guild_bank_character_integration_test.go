@@ -12,6 +12,9 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type bankCharacterMongoCommitter struct {
@@ -66,6 +69,18 @@ func TestGuildBankCharacterMongoRecoveryKeepsExactSnapshotAndReceipt(t *testing.
 				}
 				op.ID = database.GuildBankOperationID(username, op.RequestID)
 				op.Fingerprint = database.GuildBankOperationFingerprint(op)
+				cleanup, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() {
+					// This deliberately character-only fixture has no guild side.
+					// Keep its pending assertion below, then remove ONLY its exact
+					// disposable records so full startup tests see recoverable data.
+					_, _ = cleanup.Database("eidolon").Collection("guild_bank_operations").DeleteOne(context.Background(), bson.M{"_id": op.ID, "username": username})
+					_, _ = cleanup.Database("eidolon").Collection("users").DeleteOne(context.Background(), bson.M{"username": username})
+					_ = cleanup.Disconnect(context.Background())
+				})
 				if err := store.CreateUser(username, "", "disposable-fixture-password"); err != nil {
 					t.Fatal(err)
 				}

@@ -7,6 +7,10 @@ export class GuildUI {
         this.getLastPlayer = getLastPlayer;
         this.addChatMessage = addChatMessage;
         this.state = { guild: null, invites: [] };
+        this.pendingBank = null;
+        this.bankAccount = '';
+        this.bankMessage = '';
+        this.confirmation = null;
 
         this.onCreate = null;
         this.onInvite = null;
@@ -29,6 +33,7 @@ export class GuildUI {
     }
 
     update(payload = {}) {
+        this.confirmation = null; // A fresh roster invalidates captured actions.
         this.state = {
             guild: payload.guild || null,
             invites: Array.isArray(payload.invites) ? payload.invites : [],
@@ -46,7 +51,10 @@ export class GuildUI {
 
     render() {
         if (!this.container) return;
+        this.restoreBankRequest();
         this.container.replaceChildren();
+        this.renderBankStatus();
+        this.renderConfirmation();
         if (!this.state.guild) {
             this.renderEnrollment();
             return;
@@ -105,12 +113,16 @@ export class GuildUI {
         motd.className = 'guild-motd';
         motd.textContent = guild.motd || 'No guild message has been set.';
         header.appendChild(motd);
-        header.appendChild(this.button('Leave Guild', 'guild-btn--danger', () => this.onLeave?.()));
+        header.appendChild(this.button('Leave Guild', 'guild-btn--danger', () => this.confirmAction('Leave Guild',
+            guild.members?.length === 1 ? `Leaving ${guild.name} deletes the guild and its shared bank. This cannot be undone.`
+                : `Leave ${guild.name}? If you are leader, leadership passes to another member. Your bank contributions stay with the guild.`, () => this.onLeave?.())));
 		if (guild.permissions?.disband) {
-			header.appendChild(this.button('Disband Guild', 'guild-btn--danger', () => this.onDisband?.()));
+			header.appendChild(this.button('Disband Guild', 'guild-btn--danger', () => this.confirmAction('Disband Guild',
+                `Delete ${guild.name}, its shared bank and membership for everyone? This cannot be undone.`, () => this.onDisband?.())));
 		}
 		if (guild.permissions?.claim_leadership) {
-			header.appendChild(this.button('Claim Inactive Leadership', '', () => this.onClaimLeadership?.()));
+			header.appendChild(this.button('Claim Inactive Leadership', '', () => this.confirmAction('Claim Inactive Leadership',
+                `Become leader of ${guild.name}? The inactive leader becomes an officer. The server rechecks the inactivity period.`, () => this.onClaimLeadership?.())));
 		}
         this.container.appendChild(header);
 
@@ -167,11 +179,14 @@ export class GuildUI {
             actions.append(summary);
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.set_rank) {
                 const nextRank = member.rank === 'officer' ? 'member' : 'officer';
-                actions.appendChild(this.button(nextRank === 'officer' ? 'Promote' : 'Demote', '', () => this.onSetRank?.(member.playerId, nextRank)));
-                actions.appendChild(this.button('Transfer', '', () => this.onTransfer?.(member.playerId)));
+                actions.appendChild(this.button(nextRank === 'officer' ? 'Promote' : 'Demote', '', () => this.confirmAction('Change Rank',
+                    `Make ${member.username} ${nextRank === 'officer' ? 'an officer' : 'a member'}? Officers can withdraw shared bank funds and manage guild activities.`, () => this.onSetRank?.(member.playerId, nextRank))));
+                actions.appendChild(this.button('Transfer', '', () => this.confirmAction('Transfer Leadership',
+                    `Make ${member.username} leader of ${guild.name}? You become an officer and lose leader-only controls.`, () => this.onTransfer?.(member.playerId))));
             }
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.kick) {
-                actions.appendChild(this.button('Kick', 'guild-btn--danger', () => this.onKick?.(member.username)));
+                actions.appendChild(this.button('Kick', 'guild-btn--danger', () => this.confirmAction('Kick Member',
+                    `Remove ${member.username} from ${guild.name}? They lose guild and shared bank access.`, () => this.onKick?.(member.username))));
             }
             if (!isSelf) actions.append(socialSafetyActions(member.username, `Guild roster: ${guild.name} (${guild.id})`, (...args) => this.onSafety?.(...args)));
             if (actions.children.length > 1) row.append(actions);
@@ -242,10 +257,10 @@ export class GuildUI {
         const goldRow = document.createElement('div');
         goldRow.className = 'guild-form-row';
         goldRow.innerHTML = '<input data-guild-gold type="number" min="1" step="1" placeholder="Gold amount" aria-label="Guild bank gold amount">';
-        const amount = () => Number.parseInt(goldRow.querySelector('[data-guild-gold]')?.value, 10) || 0;
-        goldRow.appendChild(this.button('Deposit', 'guild-btn--success', () => this.onBankDeposit?.({ gold: amount() })));
+        const amount = () => Number(goldRow.querySelector('[data-guild-gold]')?.value) || 0;
+        goldRow.appendChild(this.button('Deposit', 'guild-btn--success', () => this.beginBankRequest('deposit', { gold: amount() })));
         if (guild.permissions?.withdraw_bank) {
-            goldRow.appendChild(this.button('Withdraw', '', () => this.onBankWithdraw?.({ gold: amount() })));
+            goldRow.appendChild(this.button('Withdraw', '', () => this.beginBankRequest('withdraw', { gold: amount() })));
         }
         bank.appendChild(goldRow);
 
@@ -261,7 +276,7 @@ export class GuildUI {
                 option.textContent = `${item.name}${item.stack > 1 ? ` ×${item.stack}` : ''}`;
                 select.appendChild(option);
             }
-            depositRow.append(select, this.button('Deposit Item', 'guild-btn--success', () => this.onBankDeposit?.({ itemId: select.value })));
+            depositRow.append(select, this.button('Deposit Item', 'guild-btn--success', () => this.beginBankRequest('deposit', { itemId: select.value })));
             bank.appendChild(depositRow);
         }
 
@@ -274,13 +289,121 @@ export class GuildUI {
             label.textContent = `${item.name}${item.stack > 1 ? ` ×${item.stack}` : ''}`;
             row.appendChild(label);
             if (guild.permissions?.withdraw_bank) {
-                row.appendChild(this.button('Withdraw', '', () => this.onBankWithdraw?.({ itemId: item.id })));
+                row.appendChild(this.button('Withdraw', '', () => this.beginBankRequest('withdraw', { itemId: item.id })));
             }
             items.appendChild(row);
         }
         if (!items.children.length) items.appendChild(this.empty('No items deposited.'));
         bank.appendChild(items);
+        for (const control of bank.querySelectorAll('button, input, select')) control.disabled = Boolean(this.pendingBank);
         this.container.appendChild(bank);
+    }
+
+    bankStorageKey() {
+        return `eidolon.guild-bank.pending.${this.bankAccount}`;
+    }
+
+    restoreBankRequest() {
+        const account = this.getLastPlayer?.()?.name || '';
+        if (!account || account === this.bankAccount) return;
+        this.bankAccount = account;
+        this.pendingBank = null;
+        this.bankMessage = '';
+        try {
+            const stored = JSON.parse(sessionStorage.getItem(this.bankStorageKey()) || 'null');
+            if (stored && /^(deposit|withdraw)$/.test(stored.action) &&
+                /^[A-Za-z0-9_-]{16,64}$/.test(stored.payload?.requestId || '') &&
+                (Number.isSafeInteger(stored.payload.gold) && stored.payload.gold > 0) !==
+                (typeof stored.payload.itemId === 'string' && stored.payload.itemId.length > 0)) {
+                this.pendingBank = stored;
+            }
+        } catch { /* The in-memory identity still survives menu close/reopen. */ }
+    }
+
+    saveBankRequest() {
+        try {
+            if (this.pendingBank) sessionStorage.setItem(this.bankStorageKey(), JSON.stringify(this.pendingBank));
+            else sessionStorage.removeItem(this.bankStorageKey());
+        } catch { /* Storage can be disabled; do not invent a replacement request. */ }
+    }
+
+    beginBankRequest(action, payload) {
+        this.restoreBankRequest();
+        if (!this.bankAccount || this.getLastPlayer?.()?.name !== this.bankAccount) return;
+        if (this.pendingBank) return;
+        if (!(Number.isSafeInteger(payload.gold) && payload.gold > 0) && !payload.itemId) {
+            this.bankMessage = 'Enter a positive whole Gold amount or select an item.';
+            this.render();
+            return;
+        }
+        const requestId = crypto.randomUUID();
+        this.pendingBank = { action, payload: { ...payload, requestId } };
+        this.bankMessage = '';
+        this.saveBankRequest();
+        this.render();
+        this.retryBankRequest();
+    }
+
+    retryBankRequest() {
+        if (!this.pendingBank || this.getLastPlayer?.()?.name !== this.bankAccount) return;
+        const { action, payload } = this.pendingBank;
+        // Pass a fresh copy; callbacks cannot change the retained retry plan.
+        if (action === 'deposit') this.onBankDeposit?.({ ...payload });
+        else this.onBankWithdraw?.({ ...payload });
+    }
+
+    handleBankResult(result = {}) {
+        if (!this.pendingBank || result.requestId !== this.pendingBank.payload.requestId) return;
+        this.bankMessage = result.message || '';
+        if (['complete', 'rejected', 'invalid'].includes(result.status)) {
+            this.pendingBank = null;
+            this.saveBankRequest();
+        }
+        this.render();
+    }
+
+    renderBankStatus() {
+        if (!this.pendingBank && !this.bankMessage) return;
+        const status = document.createElement('section');
+        status.className = 'guild-card';
+        status.setAttribute('role', 'status');
+        const text = document.createElement('p');
+        text.textContent = this.pendingBank
+            ? `${this.bankMessage || 'Guild bank transfer awaiting confirmation.'} Retry the same transfer; no new transfer will be sent.`
+            : this.bankMessage;
+        status.append(text);
+        if (this.pendingBank) status.append(this.button('Retry Transfer', '', () => this.retryBankRequest()));
+        this.container.append(status);
+    }
+
+    confirmAction(label, warning, handler) {
+        this.confirmation = { label, warning, handler };
+        this.render();
+    }
+
+    renderConfirmation() {
+        const action = this.confirmation;
+        if (!action) return;
+        const panel = document.createElement('section');
+        panel.className = 'guild-card guild-confirmation';
+        panel.setAttribute('role', 'alertdialog');
+        panel.setAttribute('aria-label', action.label);
+        const heading = document.createElement('h3');
+        heading.textContent = action.label;
+        const text = document.createElement('p');
+        text.textContent = action.warning;
+        const confirm = this.button(`Confirm ${action.label}`, 'guild-btn--danger', () => {
+            if (this.confirmation !== action) return;
+            this.confirmation = null;
+            this.render();
+            action.handler();
+        });
+        panel.append(heading, text, confirm, this.button('Cancel', '', () => {
+            this.confirmation = null;
+            this.render();
+        }));
+        this.container.append(panel);
+        confirm.focus({ preventScroll: false });
     }
 
     renderAudit(guild) {
@@ -291,7 +414,12 @@ export class GuildUI {
         for (const entry of guild.audit.slice(-10).reverse()) {
             const row = document.createElement('div');
             row.className = 'guild-audit-row';
-            row.textContent = `${entry.action.replaceAll('_', ' ')}${entry.itemName ? ` · ${entry.itemName}` : ''}${entry.amount ? ` · ${Math.abs(entry.amount)} gold` : ''}`;
+            const name = id => guild.members?.find(member => member.playerId === id)?.username ||
+                (typeof id === 'string' && id.startsWith('player-') ? id.slice(7) : id || 'Unknown member');
+            const date = new Date(entry.at);
+            const when = Number.isFinite(date.getTime()) ? `${date.toLocaleString()} · ` : '';
+            row.textContent = `${when}${name(entry.actorId)} · ${(entry.action || 'guild change').replaceAll('_', ' ')}${entry.targetId ? ` · ${name(entry.targetId)}` : ''}` +
+                `${entry.previousRank && entry.rank ? ` · ${entry.previousRank} → ${entry.rank}` : ''}${entry.itemName ? ` · ${entry.itemName}` : ''}${entry.amount ? ` · ${Math.abs(entry.amount)} Gold` : ''}`;
             audit.appendChild(row);
         }
         this.container.appendChild(audit);

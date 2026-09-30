@@ -1,9 +1,10 @@
 # Alpha 1.52 guild transfer work
 
-September 30, 2026. Guild-bank recovery foundations are implemented and verified
-locally. Alpha 1.52 is not packaged or deployed; this worktree still reports
-Alpha 1.51.0. Existing bank handlers have not been switched to the new protocol.
-The milestone remains incomplete.
+September 30, 2026. Alpha 1.51 is independently accepted; its receipt is merged
+into this candidate. Alpha 1.52.0 is packaged locally with cumulative login patch
+notes. Ordinary bank handlers now use the durable transfer protocol below. The
+candidate is not yet pushed or accepted live; final verification and the normal
+CI/public acceptance gates remain.
 
 ## Completed foundations
 
@@ -53,7 +54,32 @@ at most 50 identities per pass, including ambiguous insertions and lost replies,
 and stops at the first outage. An account-local cache avoids Mongo queries for
 ordinary unrelated movement. Login, join, resume, normal dispatch and admin
 actor/target admission now use that recovery gate. These are local candidate
-hooks; ordinary bank handlers still use the legacy request path.
+hooks, now also used by the ordinary bank handlers.
+
+## Normal bank and guild interface
+
+Deposit and withdrawal handlers look up the immutable request before planning
+against current balances, membership or bag contents. A new request saves the
+complete live baseline before recording its intent. They then use the two-sided
+coordinator, never compensating refunds or unconfirmed queued saves. Structured
+results distinguish pending, complete, rejected and invalid requests. Recovery
+also notifies the active client and refreshes inventory and guild state only
+after durable settlement.
+
+The bank generates one nonce per transfer, retains the exact action/payload in
+account-scoped session storage, disables new transfers while pending and offers
+an explicit same-request retry. Reloads restore it; unrelated state pushes and
+stale acknowledgements cannot clear it. Invalid input is rejected locally and
+rechecked by the server. Existing clients without request identifiers must
+refresh rather than silently using the old financial path.
+
+Leave, disband, kick, rank changes, leadership transfer and inactive-leader claims
+now have named consequence confirmations. Fresh roster state invalidates a
+captured confirmation, including stale DOM callbacks. Existing server authority,
+invitation consent/block checks, calendar versioning and RSVP controls remain.
+Audit entries show actors, targets, time and actual previous/new ranks without
+interpreting player text as HTML. No economy rates, EP rules, progression,
+equipment stats, saves or public-access policy are changed.
 
 ## Scoped verification
 
@@ -96,19 +122,51 @@ hooks; ordinary bank handlers still use the legacy request path.
   until hold release, then readmits movement. The existing affected admin,
   protocol, login, join and resume selection passed in 18.585 seconds.
 
-The private loopback Mongo container was stopped; its disposable data was removed.
-No production accounts, economy rates or privileged infrastructure changed.
-These durations describe test execution, not runtime performance or capacity.
+- The normal-handler matrix passed in 9.294 seconds through actual message
+  admission, baseline saves, first intent insertion and settlement for all four
+  actions. Lost acknowledgements at insertion, character save, guild application,
+  terminal completion and reservation release recover after repository/journal
+  reopen and empty process caches. Exact items, one audit, conserved funds and
+  unchanged unrelated gameplay state are checked. Normal full saves intentionally
+  compact empty bag slots and update the logout clock; the separate offline
+  recovery tests retain their exact-slot/time assertions.
+- Request/scheduler race checks passed in 1.834 seconds. Guild permission,
+  ownership, inactive succession, departure and reservation checks passed in
+  2.389 seconds, including denied operations leaving bank/audit/version intact.
+  Persistence comparisons use authoritative database reads to account for BSON
+  millisecond timestamp precision, while separately asserting actual new ranks.
+- Seven scoped JavaScript suites passed 366 checks in 5.749 seconds. Native
+  System Chrome passed the two desktop/phone-policy bank cases in 34.4 seconds:
+  pending controls, same-payload retry, actual reload restoration, terminal
+  acknowledgement and destructive-action cancel/confirm. The phone-policy
+  confirmation screenshot was visually reviewed for readable controls and no
+  horizontal clipping. These prepared UI fixtures are not authenticated
+  multiplayer or physical-phone playtests.
+- Mandatory browser discovery assigns all 243 cases exactly once. Scoped lint
+  passed. A new mandatory Go CI step runs the disposable real-Mongo bank recovery
+  selection before other fixtures, using the job-owned loopback Mongo service.
+  No unchanged campaign or soak was added.
+- Final version, mandatory financial-CI-step and browser-plan/coverage/sharding
+  checks passed: four suites, 343 checks, 3.028 seconds. All changed runtime and
+  deployment metadata report Alpha 1.52.0; cumulative earlier notes remain.
+
+The combined bank selection exposed deliberately incomplete character-only test
+records leaking into startup-recovery tests. Their pending-state assertion is
+preserved; cleanup now removes only each exact disposable fixture after its test.
+Production startup still fails closed for unconfirmed partial effects. The full
+bank, inbound-message and registered-handler race selection then passed against
+a fresh disposable Mongo database in 43.193 seconds, including the original
+character-only pending assertions and complete startup/normal-handler recovery.
+
+The private Mongo containers, including the final loopback verification lab,
+were stopped and their disposable data removed.
+No production accounts or privileged infrastructure changed. These durations
+describe test execution, not runtime performance or capacity. Markdown evidence
+was inspected as source; no rendered-document preview is claimed.
 
 ## Required before release
 
-Wire ordinary bank handlers into immutable intent lookup, request identifiers,
-the implemented two-sided settlement, acknowledgements and UI retries. Verify
-failure boundaries through the normal
-production handlers, without compensating writes that can silently fail.
-
-Finish the rank/permission, invitation, succession, calendar, audit and
-destructive-confirmation review. Then package the version and cumulative notes,
-fetch/merge remote changes and use ordered CI/public acceptance after 1.50 and
-1.51. Component settlement and admission proof are not evidence that the legacy
-bank UI uses them, or that 1.52 is deployed or beta-ready.
+Commit explicit candidate files, fetch/merge remote website changes immediately before
+a normal push, then require exact CI and independent public version/backend/
+document/changed-asset acceptance. Local checks are not evidence that 1.52 is
+deployed, beta-ready or validated by real players.

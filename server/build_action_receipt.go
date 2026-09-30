@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"eidolon-server/internal/database"
+	"encoding/json"
+)
 
 // Admission failures must finish the same deliberate UI action as dispatcher
 // failures. Otherwise a valid rejected purchase leaves touch controls pending
@@ -17,6 +20,14 @@ func (c *Client) sendInboundRejection(msg Message, reason string) {
 		}
 	}
 	switch msg.Type {
+	case MsgGuildBankDeposit, MsgGuildBankWithdraw:
+		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
+			var request GuildBankPayload
+			if json.Unmarshal(msg.Payload, &request) == nil && database.ValidGuildBankRequestID(request.RequestID) {
+				c.sendGuildBankResult(guildBankResult{RequestID: request.RequestID, Status: "pending", Message: reason})
+				return // Admission cannot decide an earlier identical request's outcome.
+			}
+		}
 	case MsgSelectBranch, MsgUnlockTalent, MsgResetTalents, MsgSelectRune:
 		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
 			var request struct {

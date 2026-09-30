@@ -267,6 +267,7 @@ const (
 	MsgGuildClaimLeader  = "guild_claim_leader"
 	MsgGuildBankDeposit  = "guild_bank_deposit"
 	MsgGuildBankWithdraw = "guild_bank_withdraw"
+	MsgGuildBankResult   = "guild_bank_result"
 	MsgGuildUpdate       = "guild_update"
 	MsgGuildLeaderboard  = "guild_leaderboard"
 
@@ -386,8 +387,9 @@ type GuildRankPayload struct {
 }
 
 type GuildBankPayload struct {
-	Gold   int    `json:"gold,omitempty"`
-	ItemID string `json:"itemId,omitempty"`
+	RequestID string `json:"requestId"`
+	Gold      int    `json:"gold,omitempty"`
+	ItemID    string `json:"itemId,omitempty"`
 }
 
 type GuildMOTDPayload struct {

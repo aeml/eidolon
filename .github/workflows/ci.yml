@@ -91,6 +91,16 @@ jobs:
           go-version: '1.24.5'
           cache-dependency-path: server/go.sum
 
+      # Run first against the fresh job-owned Mongo service. Other repository
+      # tests intentionally leave partial fixture records, not recoverable live
+      # characters. The explicit label/loopback URI prevents live-database use.
+      - name: Verify disposable guild bank settlement and recovery
+        working-directory: server
+        env:
+          MONGO_URI: mongodb://127.0.0.1:27017/eidolon
+          EIDOLON_GUILD_DISPOSABLE_DATABASE: '1'
+        run: go test -race . -run '^TestGuildBank' -count=1
+
       - name: Run Go tests with coverage
         working-directory: server
         run: |
@@ -507,7 +517,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.51.0" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.52.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

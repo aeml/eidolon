@@ -63,6 +63,10 @@ func GuildBankOperationID(username, requestID string) string {
 	return "guildbank:" + hex.EncodeToString(digest[:])
 }
 
+func ValidGuildBankRequestID(requestID string) bool {
+	return guildBankRequestIDPattern.MatchString(requestID)
+}
+
 func GuildBankOperationFingerprint(op GuildBankOperation) string {
 	// Do not include mutable settlement state or the caller's retry timestamp.
 	value, _ := json.Marshal(struct {

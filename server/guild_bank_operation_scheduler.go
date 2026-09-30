@@ -122,6 +122,10 @@ func recoverCachedGuildBankOperationLocked(entry pendingGuildBankOperation) erro
 		return errors.New("guild bank recovery remains pending")
 	}
 	forgetGuildBankOperation(*completed)
+	if client := getClientByPlayerID(completed.PlayerID); client != nil {
+		client.sendGuildBankResult(guildBankSettlementResult(*completed))
+	}
+	refreshGuildBankSettlement(*completed)
 	return nil
 }
 

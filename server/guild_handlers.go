@@ -4,14 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
-	"sync"
 	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
-
-var guildBankTransferMu sync.Mutex
 
 type guildMemberView struct {
 	PlayerID   string    `json:"playerId"`
@@ -324,91 +321,11 @@ func handleMsgGuildClaimLeader(client *Client, _ Message) {
 }
 
 func handleMsgGuildBankDeposit(client *Client, message Message) {
-	var payload GuildBankPayload
-	if err := json.Unmarshal(message.Payload, &payload); err != nil || (payload.Gold <= 0 && payload.ItemID == "") {
-		client.sendError("invalid guild bank deposit")
-		return
-	}
-	guildBankTransferMu.Lock()
-	defer guildBankTransferMu.Unlock()
-	guild, err := db.GetGuildForPlayer(client.playerID)
-	if err != nil || guild == nil {
-		client.sendError("you are not in a guild")
-		return
-	}
-	if payload.Gold > 0 {
-		if err := world.DebitPlayerGold(client.playerID, payload.Gold); err != nil {
-			client.sendError(err.Error())
-			return
-		}
-		updated, err := db.DepositGuildGold(guild.ID, client.playerID, payload.Gold)
-		if err != nil {
-			_ = world.CreditPlayerGold(client.playerID, payload.Gold)
-			client.sendError(err.Error())
-			return
-		}
-		guild = updated
-	} else {
-		item, err := world.DebitPlayerItem(client.playerID, payload.ItemID)
-		if err != nil {
-			client.sendError(err.Error())
-			return
-		}
-		updated, err := db.DepositGuildItem(guild.ID, client.playerID, databaseItem(item))
-		if err != nil {
-			_ = world.CreditPlayerItem(client.playerID, item)
-			client.sendError(err.Error())
-			return
-		}
-		guild = updated
-		sendInventoryForPlayer(client.playerID)
-	}
-	savePlayer(client)
-	broadcastGuildUpdate(guild.ID)
+	handleGuildBankRequest(client, message)
 }
 
 func handleMsgGuildBankWithdraw(client *Client, message Message) {
-	var payload GuildBankPayload
-	if err := json.Unmarshal(message.Payload, &payload); err != nil || (payload.Gold <= 0 && payload.ItemID == "") {
-		client.sendError("invalid guild bank withdrawal")
-		return
-	}
-	guildBankTransferMu.Lock()
-	defer guildBankTransferMu.Unlock()
-	guild, err := db.GetGuildForPlayer(client.playerID)
-	if err != nil || guild == nil {
-		client.sendError("you are not in a guild")
-		return
-	}
-	if payload.Gold > 0 {
-		updated, err := db.WithdrawGuildGold(guild.ID, client.playerID, payload.Gold)
-		if err != nil {
-			client.sendError(err.Error())
-			return
-		}
-		if err := world.CreditPlayerGold(client.playerID, payload.Gold); err != nil {
-			_, _ = db.DepositGuildGold(guild.ID, client.playerID, payload.Gold)
-			client.sendError(err.Error())
-			return
-		}
-		guild = updated
-	} else {
-		updated, stored, err := db.WithdrawGuildItem(guild.ID, client.playerID, payload.ItemID)
-		if err != nil {
-			client.sendError(err.Error())
-			return
-		}
-		item := gameItemFromDatabase(*stored)
-		if err := world.CreditPlayerItem(client.playerID, item); err != nil {
-			_, _ = db.DepositGuildItem(guild.ID, client.playerID, *stored)
-			client.sendError(err.Error())
-			return
-		}
-		guild = updated
-		sendInventoryForPlayer(client.playerID)
-	}
-	savePlayer(client)
-	broadcastGuildUpdate(guild.ID)
+	handleGuildBankRequest(client, message)
 }
 
 func sendGuildState(client *Client) {

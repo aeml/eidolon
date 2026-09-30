@@ -18,6 +18,7 @@ type guildBankOperationStore interface {
 	ReservedGuildBankOperationIDs(int) ([]string, error)
 	GetCharacter(string, string) (*database.Character, error)
 	GetGuildByID(string) (*database.Guild, error)
+	GetGuildForPlayer(string) (*database.Guild, error)
 }
 
 var guildBankOperations guildBankOperationStore

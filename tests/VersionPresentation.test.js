@@ -3,7 +3,29 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.51.0';
+const currentVersion = '1.52.0';
+
+test('1.52.0 records durable guild operations without claiming beta or balance changes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.52.0"'), previous = html.indexOf('data-version="1.51.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['guilds you can trust', 'Durable guild-bank transfers', 'lost replies recover',
+        'stats, potency, sockets and gems stay intact', 'Retry Transfer', 'same request', 'page reload',
+        'Unrelated players keep playing', 'Fresh roster updates cancel stale confirmations',
+        'previous and new rank', 'No balance, reward-rate, EP-economy or closed-beta access changes',
+        'Saved progress is preserved', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('guild settlement is mandatory once against the fresh job-owned disposable database', () => {
+    const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
+    const start = workflow.indexOf('- name: Verify disposable guild bank settlement and recovery');
+    const next = workflow.indexOf('- name: Run Go tests with coverage');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(next);
+    for (const text of ['mongodb://127.0.0.1:27017/eidolon', "EIDOLON_GUILD_DISPOSABLE_DATABASE: '1'", "go test -race . -run '^TestGuildBank' -count=1"]) {
+        expect(workflow.slice(start, next)).toContain(text);
+    }
+    expect(workflow.split('Verify disposable guild bank settlement and recovery')).toHaveLength(2);
+});
 
 test('1.51.0 records friend and chat usability while retaining consent and history', () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.51.0</span>
+                    <span class="start-version-row__label">Alpha 1.52.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.52.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.52.0 (guilds you can trust)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Durable guild-bank transfers:</strong> Gold and complete item stacks use one saved transfer identity. Interrupted saves and lost replies recover without duplicate deposits, withdrawals or compensating refunds. Earned item stats, potency, sockets and gems stay intact; story items remain personal.</li>
+                        <li><strong>Clear confirmation and retries:</strong> The bank explains pending, complete and rejected transfers. Retry Transfer sends the same request, including after a page reload; uncertain transfers disable new bank actions until their outcome is confirmed.</li>
+                        <li><strong>Recovery before play:</strong> Login, reconnect and affected character actions wait for unsettled bank work. Unrelated players keep playing. Guild membership and permissions cannot change underneath a reserved transfer.</li>
+                        <li><strong>Deliberate guild decisions:</strong> Leaving, disbanding, kicking, rank changes, leadership transfer and inactive-leader claims show named consequences and require confirmation. Fresh roster updates cancel stale confirmations. Invitations and calendar sign-ups still require player consent.</li>
+                        <li><strong>Useful officer audit:</strong> Entries identify the actor, target, time and transfer amount or item; new rank changes record the previous and new rank. Existing rank permissions, succession rules, scheduling and moderation/report controls remain authoritative.</li>
+                        <li><strong>Unchanged progression:</strong> No balance, reward-rate, EP-economy or closed-beta access changes. Saved progress is preserved. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.51.0">
                     <h3 class="patch-note-entry__title">Alpha 1.51.0 (friends and private conversations)</h3>
                     <ul class="patch-note-entry__list">
