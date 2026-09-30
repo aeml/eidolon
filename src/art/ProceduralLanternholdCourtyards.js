@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createProceduralTownResident } from './ProceduralTownActors.js';
+import { batchPosedTownResident } from './PosedTownResidentBatches.js';
 
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
@@ -111,6 +112,7 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
         const forearm = resident.getObjectByName('Rig_ForearmRight');
         arm.rotation.x = well ? -1.05 : -.6; forearm.rotation.x = -.8;
         const head = resident.getObjectByName('Rig_Head'); head.rotation.x = .15;
+        batchPosedTownResident(resident, [forearm, head]);
         root.add(resident);
         motions.push({ site, mesh: forearm, head, rest: -.8, kind: 'resident', phase: well ? 0 : 1 });
         for (const [key, geometries] of batches) {

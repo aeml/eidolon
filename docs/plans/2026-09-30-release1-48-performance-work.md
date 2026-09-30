@@ -95,3 +95,27 @@ scene/instance objects and draws:1179 Earth batches. Do not present this as a
 complete performance pass or universal FPS win. Evidence:
 /tmp/eidolon-1-48-tighter-woodland-0930. Further bounded optimization and town/
 runtime-entity work remain; do not iterate unmeasured quality downgrades.
+
+## Posed courtyard residents
+
+The two scenery-owned adult residents now each render9 rather than23 meshes.
+This is constructor-time baking of their fixed working pose, not frozen player/
+service/NPC animation. Moving forearm and head remain separate pivot boundaries;
+each batch preserves material, shadow, attributes, render order and layers.
+Original fixed rig nodes remain, but unused owned geometry clones are disposed
+once. No persistent merged cache is introduced. Scene teardown owns the retained
+and new geometry; imported/player/service rigs are explicitly rejected.
+
+Exact world position/normal/UV/material/shadow comparisons at three motion
+states, unchanged courtyard collision/reachability/motion and owned-resource
+disposal pass5checks9.996s. Scoped lint and whitespace pass. The same High
+renderer profile42.9s preserves triangle counts and changes only submission
+cost: well385→357, menders yard357→315, trading roof449→421 draws. Inspected
+the well capture: resident/well materials, working pose, ground contact and
+cast shadows remain. Evidence:/tmp/eidolon-1-48-courtyard-batches-0930.
+
+Residency becomes377 geometries (from391), still53 textures/63 programs and
+stable on repeat. Named capped frame samples remain16.7ms median/16.7–16.8ms
+p95. The test still fails the well's unchanged350-call target; the trading
+view and woodland triangle target also remain unmet. This is concrete resource
+and submission progress, not complete1.48 acceptance or an FPS guarantee.
