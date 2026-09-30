@@ -30,7 +30,7 @@ missing decline refresh. After the fix, all17 selected friend/structured-chat
 checks ran with the real disposable database in1.107s, then race detection
 passed in3.873s. The container and its disposable data were removed; no
 production database/account was touched. Additional closed-destination
-assertions for `/party` and `/guild` passed in the six structured-chat checks
+assertions for `/party` and `/guild` passed in the structured-chat subset
 (0.360s), proving rejected sends produce no fallback chat.
 
 Three channel-focus cases independently failed before the client fix in0.825s.
