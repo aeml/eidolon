@@ -1,9 +1,9 @@
 # Alpha 1.51 community work
 
-This local candidate packages Alpha1.51.0 version metadata, login and cumulative
-patch notes with the scoped community fixes below. It is not a deployed release
-or full multiplayer certification. Ordered 1.49/1.50 acceptance is complete;
-its own normal CI/public checks remain required.
+Alpha 1.51.0 is accepted live after ordered predecessor acceptance, exact-source
+CI and independent public checks. The
+[acceptance receipt](2026-09-30-release1-51-acceptance.md) records those gates.
+The scoped community evidence below is not full multiplayer certification.
 
 ## Confirmed fixes
 
@@ -96,6 +96,7 @@ packaging does not require replaying the unchanged gameplay fixture.
 Presence ownership, nonexistent targets, normal friend contact controls and
 contact consent now have scoped evidence. Version/login/cumulative patch notes
 are packaged; retain ordered1.49/1.50 acceptance. Its own CI and public deployment checks
-are still required; no local result substitutes for that gate.
+passed as recorded in the acceptance receipt; no local result substitutes for
+that deployment gate.
 This work does not certify guild operations (1.52), recruitment (1.53), final
 modern art, actual-phone performance, campaign pacing or beta capacity.
