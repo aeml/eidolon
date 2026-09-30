@@ -72,6 +72,20 @@ test('an empty foliage cell retains empty bounds without inventing a visible tre
     expect(mesh.boundingSphere.isEmpty()).toBe(true);
     mesh.dispose();
 });
+
+test('compound sheared transforms cannot clip actual foliage vertices', () => {
+    const geometry = new THREE.SphereGeometry(1, 32, 16), material = new THREE.MeshStandardMaterial();
+    const mesh = new THREE.InstancedMesh(geometry, material, 1), matrix = new THREE.Matrix4().makeShear(1, 0, 0, 0, 0, 0);
+    try {
+        mesh.setMatrixAt(0, matrix); computeFoliageCellBounds(mesh);
+        const point = new THREE.Vector3(); let escape = -Infinity;
+        for (let i = 0; i < geometry.attributes.position.count; i++) {
+            point.fromBufferAttribute(geometry.attributes.position, i).applyMatrix4(matrix);
+            escape = Math.max(escape, point.distanceTo(mesh.boundingSphere.center) - mesh.boundingSphere.radius);
+        }
+        expect(escape).toBeLessThanOrEqual(.000001);
+    } finally { mesh.dispose(); geometry.dispose(); material.dispose(); }
+});
 test.each(['ossuary_birch', 'grave_pine', 'mourning_willow'])('%s Low retains complete crowns and trunks with cheaper leaf surfaces', id => {
     const high = getFoliageRenderBatches(id), low = getFoliageRenderBatches(id, 'low');
     expect(getFoliageRenderBatches(id, 'medium')).toBe(high);

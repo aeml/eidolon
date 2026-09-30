@@ -24,8 +24,13 @@ campaigns or soaks.
   offsets. Unsupported or unmatched surfaces retain their ordinary path.
 - Populated town/Earth nine sites eachquality: original median/p95/draw/triangle
   budgets pass, zero sampled>50ms hitches; warm resources exactly repeat. Low
- 390px uses the same desktop GPU, not a real handset. Earlier unaffected realm,
+  390px uses the same desktop GPU, not a real handset. Earlier unaffected realm,
   scenery, placement, collision and source-vs-batch appearance evidence retained.
+  Initial mandatory CI exposed a stale box-corner oracle; replacing it with
+  every transformed vertex also caught real willow shear underbounds. The source
+  correction and independent shear regression retain1e-6 containment. Latest
+  changed-source world profile passes all original budgets with0High/1Low sampled
+  >50ms hitches and identical warm resources; details in the work receipt.
 - Actual initial-view preparation moves shader/upload/shadow/composer work under
   loading;41High/24Low programs stable across60following frames. Not zero startup
   cost: first following render CPU33.8/9.4ms. Loader concurrency/timeout and
