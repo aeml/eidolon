@@ -4,6 +4,7 @@ import { createTailoredTorsoGeometry, createOpenHoodGeometry, createPauldronGeom
 import { socketGemAppearanceName } from './SocketGemAppearance.js';
 import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
+import { batchRigidEquipmentPivots, clearRigidEquipmentPivots } from './RigidEquipmentPivots.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -890,6 +891,7 @@ function forEachEquipmentAnchor(root, callback) {
 
 export function clearProceduralEquipment(root) {
     if (!root?.userData?.proceduralHumanoid) return false;
+    clearRigidEquipmentPivots(root);
     forEachEquipmentAnchor(root, (anchor) => {
         [...anchor.children].forEach((child) => {
             if (child.userData?.equipmentVisual) anchor.remove(child);
@@ -955,6 +957,7 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
         if (rendered) items++;
     }
 
+    batchRigidEquipmentPivots(root);
     root.userData.equipmentVisualSignature = signature;
     root.userData.equipmentVisualItemCount = items;
     root.userData.equipmentVisualPartCount = parts;

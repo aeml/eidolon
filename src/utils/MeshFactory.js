@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
+import { clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
@@ -598,6 +599,7 @@ export class MeshFactory {
 
     static releaseMesh(type, mesh) {
         if (!mesh) return;
+        clearProceduralEquipment(mesh);
         if (!this.pool[type]) this.pool[type] = [];
         
         mesh.visible = false;

@@ -1,5 +1,44 @@
 # Alpha1.48 — client performance work
 
+## Rigid common-pivot equipment — September30
+
+Replace the rejected dynamic-matrix approach with ordinary immutable merged
+geometry only beneath the nearest authored animation target. All clips define
+barriers, including equipment foot rotations; static item/anchor fit transforms
+are baked below that pivot. Material identity, geometry attributes, shadow,
+layers, render order, transparency, morph/skinning and mirrored transforms
+remain barriers. Named sources stay attached for inspection and transparent
+stealth. Suspension reuses geometry, restores source-piece alpha ordering and
+resumes the opaque batches on restoration. Gear clear/refresh and model-pool
+return dispose only the owned merged geometry, never source cache resources.
+
+Four existing equipment/refresh/replication/stealth suites301checks14.240s
+pass. Twelve new pivot/fit/barrier/suspension/ownership/pool checks join the
+equipment/stealth suites:299checks5.990s. Scoped ESLint/whitespace pass.
+Two System Chrome cases18.9s retain all21 four-class poses perquality and the
+independent unbatched constructor reference; equal triangles in every pose.
+High maxmean0.000346032/maxchanged0.000003175, Low0.000439683/0.000006349;
+stealth pixel-identical with equal submissions. High idle source→optimized
+Fighter468→228/Rogue478→216/Wizard442→214/Cleric478→246, Low227→107/
+232→101/214→100/232→116. Fighter screenshot inspected. Evidence:
+/tmp/eidolon-1-48-rigid-pivot-appearance-0930.
+
+One bounded unchanged-content busy/repeat test45.1s retains all ten equipped
+heroes, Malachar, four fields/warnings and original resource assertions.
+High2454calls/166327triangles (previous2592), median/p9529.1/45.9ms and
+repeat29.7/45.2;3/5hitches>50ms. Low1288calls/85546triangles (previous1357),
+20.8/33.7 and repeat18.7/30.0;zero>50ms hitches. Residency repeat-stable
+High341geometries/54textures, Low340/40; extra merged geometry is owned and
+released on gear/pool clear. No dynamic GPU matrix/indirection textures.
+Observed timings improve relative to the prior bounded color-packed result,
+but High still misses20/33.4ms; this is not universal FPS or1.48 acceptance.
+Same RADV RENOIR desktop host, not phone hardware. Evidence:
+/tmp/eidolon-1-48-rigid-pivot-busy-0930. No unchanged repeat soak needed.
+
+The current accepted1.45,146 camera correction and prepared147 have been
+merged into this branch (3093caee), preserving startup preparation and native
+browser zoom. Runtime remains1.47 pending ordered predecessor acceptance.
+
 ## Rejected animated multi-draw approach — September30
 
 Do not publish the attempted cross-anchor animated BatchedMesh optimization.
