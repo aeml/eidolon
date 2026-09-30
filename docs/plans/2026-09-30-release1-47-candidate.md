@@ -66,6 +66,12 @@ pass; runtime/login/build versions and cumulative notes are synchronized1.47.
 
 ## Remaining acceptance
 
+Follow-up constructor compatibility check found two isolated InputManager
+mocks without the real subscription interface used by the new interruption
+callback. Added that interface to the dungeon-room and saved-autoloot fixtures;
+no production event, assertion or behavior disabled. Both suites11checks
+pass1.384s. This is a test-only correction, not new phone behavior or live QA.
+
 Real-device combat readability, native keyboard/OS interruption quirks,
 sustained battery/thermal behavior and party/dungeon ergonomics remain human
 playtest-owned. No supported-device restriction is introduced without owner

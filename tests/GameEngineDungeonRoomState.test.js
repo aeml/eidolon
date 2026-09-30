@@ -59,6 +59,7 @@ jest.unstable_mockModule('../src/core/InputManager.js', () => ({
         constructor() {
             this.keys = {};
         }
+        subscribe() {}
     }
 }));
 
