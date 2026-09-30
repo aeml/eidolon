@@ -1,5 +1,17 @@
 # Alpha 1.44 — audio integration candidate
 
+## Public predecessor checks — September30 (final CI still pending)
+
+Public1.43frontend release.json and backend healthz now agree on exact
+132e1a844c610f0b3dc1e917d01a37544140ee4e/Alpha1.43.0, database ready. Root
+independent normal-DNS IPv4 checks verify cache-bypassed login version/latest
+patch entry/main release key, exact stamped main/Actor/ability clips/gait
+grounding/enemy-death grounding/corpse/combat-feedback modules and first-party
+font bytes against the exact1.43checkout, using the real publishing transform.
+CI36668039885attempt1 has nine successful jobs; live109745012948 still runs.
+Published identity is verified, but final release acceptance is not claimed.
+Wait for that same run's terminal conclusion before1.44publication.
+
 Unreleased integrated candidate on the prepared1.43 branch. Runtime/package/
 login/CI/default build identities and cumulative notes identify1.44.0.
 Earlier ordered release prerequisites remain open. Final listening/mix approval
