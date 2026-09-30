@@ -64,6 +64,13 @@ export function batchHumanoidRenderParts(root) {
             saved += parts.length - 1;
         }
     }
+    // Constructor-owned rigid leaves never change their local pose. Keep all
+    // animation targets, pivots and the actor root dynamic; parent world
+    // matrices still propagate normally to these cached local matrices.
+    root.traverse(part => {
+        if (!part.isMesh || part.isSkinnedMesh || part.children.length || animated.has(part.name)) return;
+        part.updateMatrix();
+        part.matrixAutoUpdate = false;
+    });
     root.userData.humanoidRenderBatches = Object.freeze({ sourceMeshes, drawMeshes: sourceMeshes - saved });
 }
-

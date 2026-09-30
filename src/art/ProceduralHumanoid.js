@@ -1144,6 +1144,7 @@ function installRestPoseReset(root) {
             object.quaternion.copy(quaternion);
             object.scale.copy(scale);
             object.visible = visible;
+            if (!object.matrixAutoUpdate) object.updateMatrix();
         });
         root.updateMatrixWorld(true);
     };

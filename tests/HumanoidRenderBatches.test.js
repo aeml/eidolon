@@ -19,6 +19,27 @@ const visibleMeshes = root => {
     return meshes;
 };
 
+test('rigid leaves skip local matrix composition but retain moving-parent and directly animated transforms', () => {
+    const root = new THREE.Group(), pivot = new THREE.Group();
+    const rigid = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());
+    const animated = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());
+    rigid.name = 'Rigid'; animated.name = 'Animated'; rigid.position.x = 2;
+    root.userData.animations = [new THREE.AnimationClip('Move', 1,
+        [new THREE.NumberKeyframeTrack('Animated.position[x]', [0, 1], [0, 4])])];
+    root.add(pivot); pivot.add(rigid, animated);
+    batchHumanoidRenderParts(root);
+    expect(rigid.matrixAutoUpdate).toBe(false); expect(animated.matrixAutoUpdate).toBe(true);
+    expect(root.matrixAutoUpdate).toBe(true); expect(pivot.matrixAutoUpdate).toBe(true);
+    const compose = jest.spyOn(rigid, 'updateMatrix');
+    pivot.position.x = 3;
+    const mixer = new THREE.AnimationMixer(root); mixer.clipAction(root.userData.animations[0]).play(); mixer.update(.5);
+    root.updateMatrixWorld(true); root.updateMatrixWorld(true);
+    expect(compose).not.toHaveBeenCalled();
+    expect(rigid.getWorldPosition(new THREE.Vector3()).x).toBe(5);
+    expect(animated.getWorldPosition(new THREE.Vector3()).x).toBe(5);
+    jest.restoreAllMocks();
+});
+
 // Compare actual triangle vertices, normals and UVs under animated world
 // transforms against the unbatched source, not a second merge implementation.
 function checkSurfaces(source, batched) {

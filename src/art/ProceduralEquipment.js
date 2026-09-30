@@ -864,6 +864,13 @@ function batchRigidEquipmentParts(group) {
             part.userData.equipmentBatchSource = true;
         });
     }
+    // Unmerged opaque leaves are rigid too. Cache their local transform once;
+    // the item root and animated equipment mount remain fully dynamic.
+    for (const part of group.children) {
+        if (!part.isMesh || part.isSkinnedMesh || part.children.length || Array.isArray(part.material) || part.material.transparent) continue;
+        part.updateMatrix();
+        part.matrixAutoUpdate = false;
+    }
 }
 
 export function equipmentVisualSignature(equipment = {}) {
