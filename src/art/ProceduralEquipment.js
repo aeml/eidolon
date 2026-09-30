@@ -5,6 +5,7 @@ import { socketGemAppearanceName } from './SocketGemAppearance.js';
 import { COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { getEquipmentSurfaceMaps } from './EquipmentSurfaceMaps.js';
 import { batchRigidEquipmentPivots, clearRigidEquipmentPivots } from './RigidEquipmentPivots.js';
+import { batchRigidShadowCasters, clearRigidShadowBatches } from './RigidShadowBatches.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -891,6 +892,7 @@ function forEachEquipmentAnchor(root, callback) {
 
 export function clearProceduralEquipment(root) {
     if (!root?.userData?.proceduralHumanoid) return false;
+    clearRigidShadowBatches(root);
     clearRigidEquipmentPivots(root);
     forEachEquipmentAnchor(root, (anchor) => {
         [...anchor.children].forEach((child) => {
@@ -958,6 +960,7 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
     }
 
     batchRigidEquipmentPivots(root);
+    batchRigidShadowCasters(root);
     root.userData.equipmentVisualSignature = signature;
     root.userData.equipmentVisualItemCount = items;
     root.userData.equipmentVisualPartCount = parts;

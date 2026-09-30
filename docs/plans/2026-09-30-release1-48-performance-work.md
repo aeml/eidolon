@@ -1,5 +1,34 @@
 # Alpha1.48 — client performance work
 
+## Rejected rigid shadow-caster probe — September30
+
+Experimental branch work/alpha-1-48-shadow-casters-probe-20260930 keeps the
+source, hooks and tests; do not enable it on the release branch. It combines
+compatible opaque depth casters under authored animation pivots, retaining
+colour meshes/materials, shadow silhouettes, transparency/custom-depth
+barriers, stealth suspension and owned-only disposal. Public shadow hooks
+and zero colour draw ranges avoid a private renderer patch.
+
+46 shadow/pivot/stealth checks pass1.832s;394 equipment/loader/preview checks
+pass25.939s. Scoped ESLint passes. Eight native Chrome appearance cases
+pass45.9s, including all21 equipped poses per quality, equal triangles and
+exact stealth. High Fighter image inspected with intact visible equipment
+and floor shadow. Evidence:/tmp/eidolon-1-48-shadow-appearance-0930.
+
+One changed-code ten-hero/boss/four-field workload passes resource stability
+in51.8s but NOT the performance acceptance target. High busy/repeat38.2/30.2ms
+median,66.9/42.8ms p95,1725 draws/166327 triangles,524 geometry/54 textures.
+Low24.7/23.2ms median,36.2/36.4ms p95,1423 draws/85546 triangles,523/40.
+The unit command overlapped the first High phase; do not attribute that
+initial slowdown precisely. The later repeat and Low phases also fail to
+improve the safe implementation; no unchanged rerun is justified.
+Three0.181.2 renderBufferDirect does not early-return for zero drawCount,
+so zero-vertex proxies still cause colour submissions/program setup: Low
+gains135 submissions instead of staying at1288. Fewer High shadow draws do
+not establish faster gameplay. Keep the original20/33.4ms target and4096
+High shadows; do not accept resource increases on appearance tests alone.
+Evidence:/tmp/eidolon-1-48-shadow-busy-0930. No account/game balance changes.
+
 ## Busy render attribution — September30
 
 A new opt-in `EIDOLON_RAID_CPU_PROFILE=1` records renderer/shadow/composer

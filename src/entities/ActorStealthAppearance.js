@@ -1,6 +1,7 @@
 // Procedural materials are shared. Stealth owns temporary copies and restores
 // only the meshes it changed, never making input-only geometry visible.
 import { suspendRigidEquipmentPivots } from '../art/RigidEquipmentPivots.js';
+import { suspendRigidShadowBatches } from '../art/RigidShadowBatches.js';
 const appearances = new WeakMap();
 
 export function restoreActorStealthAppearance(actor) {
@@ -13,10 +14,12 @@ export function restoreActorStealthAppearance(actor) {
     }
     appearances.delete(actor);
     suspendRigidEquipmentPivots(actor.mesh, false);
+    suspendRigidShadowBatches(actor.mesh, false);
 }
 
 export function applyActorStealthAppearance(actor) {
     if (!actor.mesh) return;
+    suspendRigidShadowBatches(actor.mesh, true);
     suspendRigidEquipmentPivots(actor.mesh, true);
     let entries = appearances.get(actor);
     if (!entries) appearances.set(actor, entries = new Map());

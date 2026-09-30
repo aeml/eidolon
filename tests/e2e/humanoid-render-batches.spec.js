@@ -15,6 +15,7 @@ for (const quality of ['high', 'low']) test(`equipped color batches preserve fou
         const { applyProceduralEquipment, createProceduralEquipmentVisual, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
         const { clearRigidEquipmentPivots } = await import('/src/art/RigidEquipmentPivots.js');
+        const { clearRigidShadowBatches } = await import('/src/art/RigidShadowBatches.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
         render.renderer.domElement.dataset.equipmentColorReview = 'true';
@@ -41,6 +42,7 @@ for (const quality of ['high', 'low']) test(`equipped color batches preserve fou
             }
             // Independent unbatched constructor reference, not the new packed
             // geometry or a changed palette copied to both sides.
+            clearRigidShadowBatches(original);
             clearRigidEquipmentPivots(original);
             const sourceGroups = [];
             original.traverse(part => { if (part.userData.equipmentVisual) sourceGroups.push(part); });
