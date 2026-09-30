@@ -23,20 +23,7 @@ var adminOperations adminOperationStore
 // Only unresolved saves need replay. In particular an already-saved operation
 // whose audit reply was lost must not cause another full-character save.
 func reconcileAdminCharacterLocked(username string) error {
-	if characterSaveJournal == nil || characterSaveCommitter == nil {
-		return errors.New("administration character persistence unavailable")
-	}
-	pending, err := characterSaveJournal.Read(username)
-	if err != nil {
-		return err
-	}
-	failedCharacterSaves.Lock()
-	failed := failedCharacterSaves.users[username]
-	failedCharacterSaves.Unlock()
-	if pending != nil || failed {
-		return retryPendingCharacterSaveLocked(username)
-	}
-	return nil
+	return reconcilePendingCharacterSaveLocked(username)
 }
 
 // Caller holds the target work lock. Admission/recovery wiring prevents target

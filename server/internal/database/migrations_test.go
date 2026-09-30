@@ -48,6 +48,12 @@ func TestWeeklyRaidReceiptsRequireNewWriterSchema(t *testing.T) {
 	}
 }
 
+func TestGuildBankReceiptsRequireNewWriterSchema(t *testing.T) {
+	if CurrentSchemaVersion < 16 || len(schemaMigrations) < 16 || schemaMigrations[15].Name != "durable_guild_bank_transfers" {
+		t.Fatal("guild bank receipts could be erased by an older character/guild writer")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
@@ -115,6 +121,12 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 			"season_1_dungeon_1_difficulty_1_level_1_guild_1":     true,
 			"season_1_dungeon_1_difficulty_1_level_-1_duration_1": true,
 		},
+		"guild_bank_operations": {
+			"one_pending_bank_transfer_per_account": true,
+			"one_pending_bank_transfer_per_guild":   true,
+			"guild_bank_recovery":                   true,
+			"guild_bank_pending_guild":              true,
+		},
 	}
 	for collectionName, names := range wantIndexes {
 		cursor, err := db.client.Database("eidolon").Collection(collectionName).Indexes().List(ctx)
@@ -128,6 +140,13 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 		for _, document := range documents {
 			name, _ := document["name"].(string)
 			delete(names, name)
+			if collectionName == "guild_bank_operations" &&
+				(name == "one_pending_bank_transfer_per_account" || name == "one_pending_bank_transfer_per_guild") {
+				partial, ok := document["partialFilterExpression"].(bson.M)
+				if document["unique"] != true || !ok || partial["state"] != GuildBankPending {
+					t.Errorf("%s must serialize only pending intents: %v", name, document)
+				}
+			}
 		}
 		if len(names) != 0 {
 			t.Errorf("%s missing indexes: %v", collectionName, names)

@@ -69,6 +69,9 @@ type Auction struct {
 }
 
 type Character struct {
+	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
+	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`
+	GuildBankOpFingerprint   string                         `bson:"last_guild_bank_operation_fingerprint,omitempty"`
 	AdminOperationReceipts   map[string]string              `bson:"admin_operation_receipts,omitempty"`
 	WeeklyRaidRewardReceipts map[string]bool                `bson:"weekly_raid_reward_receipts,omitempty"`
 	WeeklyRaidCompletions    map[string]time.Time           `bson:"weekly_raid_completions,omitempty"`

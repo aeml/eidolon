@@ -29,19 +29,22 @@ func TestCharacterSnapshotPreservesPersistentGameplayState(t *testing.T) {
 		StatScaleVersion: game.ItemStatScaleVersion,
 	}
 	entity := &game.Entity{
-		SubType:        "Fighter",
-		Level:          25,
-		Experience:     456,
-		Gold:           789,
-		X:              10,
-		Y:              2,
-		Z:              -4,
-		InstanceID:     "dungeon-1",
-		BaseStats:      game.Stats{Strength: 20, Dexterity: 11, Intelligence: 9, Wisdom: 8, Vitality: 18},
-		SkillPoints:    3,
-		SelectedBranch: "Vanguard",
-		UnlockedSkills: []string{"Charge"},
-		SkillRunes:     map[string]string{"Charge": "Fighter_Charge_Rune_A"},
+		GuildBankRevision:      7,
+		GuildBankOpID:          "guildbank:latest-operation",
+		GuildBankOpFingerprint: "saved-guild-bank-fingerprint",
+		SubType:                "Fighter",
+		Level:                  25,
+		Experience:             456,
+		Gold:                   789,
+		X:                      10,
+		Y:                      2,
+		Z:                      -4,
+		InstanceID:             "dungeon-1",
+		BaseStats:              game.Stats{Strength: 20, Dexterity: 11, Intelligence: 9, Wisdom: 8, Vitality: 18},
+		SkillPoints:            3,
+		SelectedBranch:         "Vanguard",
+		UnlockedSkills:         []string{"Charge"},
+		SkillRunes:             map[string]string{"Charge": "Fighter_Charge_Rune_A"},
 		TalentRanks: map[string]int{
 			"FTR_1":  2,
 			"FTR_02": 99,
@@ -61,6 +64,9 @@ func TestCharacterSnapshotPreservesPersistentGameplayState(t *testing.T) {
 	}
 
 	character := characterSnapshot("snapshot-user", entity, savedAt)
+	if character.GuildBankRevision != 7 || character.GuildBankOpID != entity.GuildBankOpID || character.GuildBankOpFingerprint != entity.GuildBankOpFingerprint {
+		t.Fatal("full character snapshot lost the guild bank replay fence")
+	}
 	if character.Name != "snapshot-user" || character.Class != "Fighter" || !character.LastLogout.Equal(savedAt) {
 		t.Fatalf("identity snapshot mismatch: %+v", character)
 	}
