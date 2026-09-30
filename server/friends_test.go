@@ -290,6 +290,9 @@ func TestMsgFriendRequest_NotifiesOnlyRecipientAndRefreshesSender(t *testing.T) 
 
 	userA := "fr-a-" + randomSuffix()
 	userB := "fr-b-" + randomSuffix()
+	if err := d.CreateUser(userB, userB+"@example.invalid", "local-friend-test-password"); err != nil {
+		t.Fatal(err)
+	}
 	pidA := usernameToPlayerID(userA)
 	pidB := usernameToPlayerID(userB)
 
@@ -348,6 +351,100 @@ func TestMsgFriendRequest_NotifiesOnlyRecipientAndRefreshesSender(t *testing.T) 
 	if f.Status != database.FriendshipPending {
 		t.Errorf("expected status pending, got %q", f.Status)
 	}
+}
+
+func TestMsgFriendRequest_RejectsMissingAccountWithoutSaving(t *testing.T) {
+	d := newFriendTestDB(t)
+	origDB := db
+	db = d
+	defer func() { db = origDB }()
+	username := "missing-friend-" + randomSuffix()
+	client := newSocialBroadcastClient("player-requester-" + randomSuffix())
+	client.username = playerIDToUsername(client.playerID)
+	payload, _ := json.Marshal(FriendUsernamePayload{Username: username})
+	handleMsgFriendRequest(client, Message{Type: MsgFriendRequest, Payload: payload})
+	f, err := d.GetFriendship(client.playerID, usernameToPlayerID(username))
+	if err != nil || f != nil {
+		t.Fatalf("nonexistent account must not receive a persisted request: %+v / %v", f, err)
+	}
+	messages := drainSentMessages(client.send)
+	if len(messages) != 1 || messages[0].Type != MsgError {
+		t.Fatalf("expected an actionable error, not success: %+v", messages)
+	}
+}
+
+func TestMsgFriendRequest_OfflineAccountReceivesPersistentPendingRequest(t *testing.T) {
+	d := newFriendTestDB(t)
+	origDB, origWorld, origSessions := db, world, activeSessions
+	db, world = d, game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+	defer func() { db, world, activeSessions = origDB, origWorld, origSessions }()
+	username := "offline-friend-" + randomSuffix()
+	if err := d.CreateUser(username, username+"@example.invalid", "local-friend-test-password"); err != nil {
+		t.Fatal(err)
+	}
+	client := newSocialBroadcastClient("player-requester-" + randomSuffix())
+	client.username = playerIDToUsername(client.playerID)
+	payload, _ := json.Marshal(FriendUsernamePayload{Username: " " + username + " "})
+	handleMsgFriendRequest(client, Message{Type: MsgFriendRequest, Payload: payload})
+	pending := buildFriendListPayload(usernameToPlayerID(username))
+	if len(pending.Pending) != 1 || pending.Pending[0] != client.username {
+		t.Fatalf("valid offline account lost its incoming request: %+v", pending)
+	}
+	messages := drainSentMessages(client.send)
+	if len(messages) != 1 || messages[0].Type != MsgFriendList {
+		t.Fatalf("expected authoritative sender acknowledgement: %+v", messages)
+	}
+}
+
+func TestNotifyFriendsPresence_ReconcilesDelayedConnectionEvents(t *testing.T) {
+	d := newFriendTestDB(t)
+	origDB, origWorld, origSessions := db, world, activeSessions
+	db, world = d, game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+	defer func() { db, world, activeSessions = origDB, origWorld, origSessions }()
+	username, observerName := "presence-"+randomSuffix(), "observer-"+randomSuffix()
+	playerID, observerID := usernameToPlayerID(username), usernameToPlayerID(observerName)
+	if err := d.SendFriendRequest(playerID, observerID); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.AcceptFriendRequest(playerID, observerID); err != nil {
+		t.Fatal(err)
+	}
+	observer := newSocialBroadcastClient(observerID)
+	observer.username = observerName
+	activeSessions[observerName] = observer
+	replacement := newSocialBroadcastClient(playerID)
+	replacement.username = username
+	activeSessions[username] = replacement
+	world.AddEntity(newSocialBroadcastPlayer(playerID, username, "Fighter", "looking_party"))
+	// Old socket's queued logout executes after its replacement is online.
+	notifyFriendsPresence(username)
+	assertPresence := func(wantOnline bool) {
+		t.Helper()
+		messages := drainSentMessages(observer.send)
+		if len(messages) != 1 || messages[0].Type != MsgFriendPresence {
+			t.Fatalf("expected presence: %+v", messages)
+		}
+		var presence FriendPresencePayload
+		if err := json.Unmarshal(messages[0].Payload, &presence); err != nil {
+			t.Fatal(err)
+		}
+		if presence.Username != username || presence.Online != wantOnline {
+			t.Fatalf("delayed trigger overrode current session: %+v; want online=%v", presence, wantOnline)
+		}
+		if wantOnline && presence.SocialStatus != "looking_party" {
+			t.Fatalf("reconnect lost current friend status: %+v", presence)
+		}
+		if !wantOnline && presence.SocialStatus != "" {
+			t.Fatalf("offline presence retained status: %+v", presence)
+		}
+	}
+	assertPresence(true)
+	// Conversely, a delayed login must not announce a now-disconnected player.
+	delete(activeSessions, username)
+	notifyFriendsPresence(username)
+	assertPresence(false)
 }
 
 // ---------------------------------------------------------------------------

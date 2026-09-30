@@ -422,6 +422,19 @@
     transform: translateY(-1px);
 }
 
+.friends-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+    transform: none;
+}
+
+.friends-btn--invite,
+.friends-btn--whisper {
+    color: #e6d9bb;
+    background: rgba(202, 168, 98, 0.12);
+    border-color: rgba(202, 168, 98, 0.22);
+}
+
 .friends-btn--accept {
     background: linear-gradient(180deg, rgba(61, 124, 74, 0.95) 0%, rgba(34, 90, 47, 0.95) 100%);
     border-color: rgba(84, 184, 109, 0.55);

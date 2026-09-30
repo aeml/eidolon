@@ -21,6 +21,19 @@ packaging and its own normal CI/public checks. Current runtime metadata is1.50.
   requests, blocks/removals and reconnect state rather than relying only on the
   initial login snapshot. No relationship permissions or chat visibility rules
   are relaxed.
+- Requests now check that the target account exists before saving a pending
+  relationship. Valid offline accounts still receive persistent requests, and
+  surrounding whitespace is trimmed.
+- Login/logout notifications now read current session ownership while serialized
+  with character handoff, rather than trusting a delayed event's old state.
+  A replacement connection stays online; an already-disconnected account stays
+  offline. Online notifications include current social status, and broadcasts
+  update the status shown in an already-open Friends tab.
+- Friends have Invite and Whisper buttons, disabled when offline. Whisper opens
+  the private composer with a named recipient that remains selected even if an
+  unrelated player whispers meanwhile. Switching to All still sends publicly;
+  explicit commands retain their existing behavior. Existing invitation
+  permissions and block/ignore consent checks remain authoritative.
 
 ## Evidence
 
@@ -46,12 +59,37 @@ readable channel labels/transcript and reachable composer. These use prepared
 callbacks, not authenticated players or phone hardware. Mandatory browser
 discovery includes all240cases exactly once, without omission/duplication.
 
+## Additional presence and contact validation
+
+The nonexistent-account and delayed-logout cases independently failed against
+a second disposable MongoDB before their fixes (1.158s). With the corrections,
+the selected friend/chat checks passed; the expanded set including valid offline
+requests passed race detection in6.927s. The database was bound only to loopback
+and removed afterward, including its temporary data. No production account or
+save changed.
+
+Five impacted JS suites now pass89checks in3.278s. The expanded desktop and
+phone-sized browser cases pass20.4s and cover reachable Invite/Whisper buttons,
+disabled offline contact, closing the overlay, focusing a named private
+composer and retaining that target after another incoming whisper. Reviewed
+phone screenshot: `/tmp/eidolon-1-51-community-contact-final-0930`, including
+`friends-contact.png` and `community-chat.png`. These remain real shipped UI
+with prepared callbacks, not authenticated multiplayer or physical-phone proof.
+Scoped lint and whitespace checks remain clean.
+
+Existing party/chat handler checks plus four new directional block/ignore
+cases pass race detection in4.378s. Both party invitations and friend requests
+are rejected before creating a party or reaching persistence, with no packet
+to the restricted recipient. Previously covered world/party/whisper routing,
+replay visibility and no-public-fallback behavior remain intact. Existing
+SocialSafetyUI tests cover report drafts and ignore/block controls; no report
+permission or automatic moderation behavior changed.
+
 ## Remaining milestone checks
 
-Continue the presence/reconnect and invitation identity audit, including delayed
-disconnect notifications versus replacement sessions and nonexistent friend
-targets. Confirm current friend status and contact actions are understandable
-without relying on developer commands. Retain prior report/ignore permissions
-and group-channel visibility evidence; add only coverage for changed behavior.
+Presence ownership, nonexistent targets, normal friend contact controls and
+contact consent now have scoped evidence. Package1.51 with cumulative patch
+notes after ordered1.49/1.50 acceptance. Its own CI and public deployment checks
+are still required; no local result substitutes for that gate.
 This work does not certify guild operations (1.52), recruitment (1.53), final
 modern art, actual-phone performance, campaign pacing or beta capacity.

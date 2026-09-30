@@ -361,8 +361,9 @@ type FriendListPayload struct {
 
 // FriendPresencePayload is sent S→C when a friend comes online or goes offline.
 type FriendPresencePayload struct {
-	Username string `json:"username"`
-	Online   bool   `json:"online"`
+	Username     string `json:"username"`
+	Online       bool   `json:"online"`
+	SocialStatus string `json:"socialStatus,omitempty"`
 }
 
 type GuildCreatePayload struct {

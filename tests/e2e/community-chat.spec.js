@@ -45,6 +45,26 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: channel
             '/party meet at the gate', '/guild meet at the gate', '/r meet at the gate',
             '/w Ayla explicit private route', 'hello current world'
         ]);
+        await page.evaluate(() => {
+            const { ui, sent } = window.__community;
+            ui.social.onPartyInvite = username => sent.push(`invite:${username}`);
+            ui.social.onFriendWhisper = username => { ui.social.toggleSocial(false); ui.chat.beginWhisper(username); };
+            ui.social.updateFriendList({ friends: [{ username: 'Ayla', online: true, socialStatus: 'looking_party' },
+                { username: 'Borin', online: false, socialStatus: '' }], pending: [] });
+            ui.social.toggleSocial(true); ui.social._switchTab('friends'); ui.social._renderFriendsPanel();
+        });
+        await expect(page.getByRole('button', { name: 'Invite Borin to party', exact: true })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Whisper Borin', exact: true })).toBeDisabled();
+        await page.getByRole('button', { name: 'Invite Ayla to party', exact: true }).click();
+        expect(await page.evaluate(() => window.__community.sent.at(-1))).toBe('invite:Ayla');
+        await page.screenshot({ path: testInfo.outputPath('friends-contact.png') });
+        await page.getByRole('button', { name: 'Whisper Ayla', exact: true }).click();
+        await expect(page.locator('#social-window')).not.toBeVisible();
+        await expect(page.locator('#chat-input')).toBeFocused();
+        await expect(page.locator('#chat-input')).toHaveAttribute('placeholder', 'Whisper to Ayla…');
+        await page.evaluate(() => window.__community.ui.chat.addMessage('Selen', 'Unrelated private conversation', { channel: 'whisper' }));
+        await page.locator('#chat-input').fill('meet near Ilyra'); await page.locator('#chat-input').press('Enter');
+        expect(await page.evaluate(() => window.__community.sent.at(-1))).toBe('/w Ayla meet near Ilyra');
         await page.screenshot({ path: testInfo.outputPath('community-chat.png') });
         expect(failures, failures.join('\n')).toEqual([]);
     } finally { await page.evaluate(() => { window.__community?.ui.dispose(); delete window.__community; }); }

@@ -49,6 +49,46 @@ func sendPartyInvite(c *Client, targetName string) {
 	c.handleMessage(Message{Type: MsgPartyInvite, Payload: payload})
 }
 
+func TestPartyInvite_RespectsBlockAndIgnoreInBothDirections(t *testing.T) {
+	for _, direction := range []string{"recipient-block", "sender-block", "recipient-ignore", "sender-ignore"} {
+		t.Run(direction, func(t *testing.T) {
+			restore := installChatTestState(t)
+			defer restore()
+			alice := addChatTestClient("alice", "")
+			bob := addChatTestClient("bob", "")
+			owner, other := "bob", "alice"
+			if strings.HasPrefix(direction, "sender") {
+				owner, other = other, owner
+			}
+			if strings.HasSuffix(direction, "block") {
+				chatService.SetBlocked(owner, other, true)
+			} else {
+				chatService.SetIgnored(owner, other, true)
+			}
+			sendPartyInvite(alice, "bob")
+			messages := drainSentMessages(alice.send)
+			if len(messages) != 1 || messages[0].Type != MsgError {
+				t.Fatalf("restricted contact did not reject: %+v", messages)
+			}
+			if messages := drainSentMessages(bob.send); len(messages) != 0 {
+				t.Fatalf("restricted recipient received invitation: %+v", messages)
+			}
+			if world.GetEntityCopy(alice.playerID).PartyID != "" {
+				t.Fatal("rejected contact still created a party")
+			}
+			request, _ := json.Marshal(FriendUsernamePayload{Username: "bob"})
+			alice.handleMessage(Message{Type: MsgFriendRequest, Payload: request})
+			messages = drainSentMessages(alice.send)
+			if len(messages) != 1 || messages[0].Type != MsgError {
+				t.Fatalf("restricted friend contact did not reject before persistence: %+v", messages)
+			}
+			if messages := drainSentMessages(bob.send); len(messages) != 0 {
+				t.Fatalf("restricted recipient received friend request: %+v", messages)
+			}
+		})
+	}
+}
+
 func TestClientSendSafePrefersPriorityChannel(t *testing.T) {
 	c := &Client{
 		send:         make(chan []byte, 1),

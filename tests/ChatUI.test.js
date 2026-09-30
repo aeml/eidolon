@@ -26,6 +26,26 @@ function buildChatDom() {
 }
 
 describe('ChatUI', () => {
+    test('friend whispers keep their selected recipient across unrelated incoming messages', () => {
+        buildChatDom();
+        const onSend = jest.fn();
+        const chat = new ChatUI({ onSend });
+        expect(chat.beginWhisper('Ayla')).toBe(true);
+        expect(chat.input.placeholder).toBe('Whisper to Ayla…');
+        expect(document.activeElement).toBe(chat.input);
+        chat.addMessage('Borin', 'Another private conversation', { channel: 'whisper' });
+        for (const message of ['meet at the gate', 'ready now']) {
+            chat.input.value = message;
+            chat.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        }
+        expect(onSend.mock.calls).toEqual([['/w Ayla meet at the gate'], ['/w Ayla ready now']]);
+        chat.setActiveStream('chat');
+        chat.input.value = 'hello everyone';
+        chat.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        expect(onSend).toHaveBeenLastCalledWith('hello everyone');
+        expect(chat.beginWhisper('Ayla /world')).toBe(false);
+        chat.dispose();
+    });
     test('phone chat remains visible as a compact unread strip and expands deliberately', () => {
         buildChatDom();
         document.body.classList.add('mobile-mode');

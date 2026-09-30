@@ -142,7 +142,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			refreshChatBlocks(c.username)
 			existing = world.GetEntityCopy(c.playerID)
 			sendInitialPlayerState(c, existing, existing.InstanceID)
-			go notifyFriendsPresence(c.username, true)
+			go notifyFriendsPresence(c.username)
 			return
 		}
 
@@ -623,7 +623,7 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		sendInitialPlayerState(c, entity, instanceID)
 		// Notify online friends that this player has come online (0.38.1).
-		go notifyFriendsPresence(c.username, true)
+		go notifyFriendsPresence(c.username)
 
 	case MsgEnterDungeon:
 		if c.playerID == "" {

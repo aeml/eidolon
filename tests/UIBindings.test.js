@@ -2,6 +2,15 @@ import { jest } from '@jest/globals';
 import { UIBindings } from '../src/core/UIBindings.js';
 
 describe('UIBindings', () => {
+    test('friend whisper closes the social overlay and focuses the selected private recipient', () => {
+        const engine = createEngine();
+        engine.uiManager.chat = { beginWhisper: jest.fn() };
+        engine.uiManager.social.toggleSocial = jest.fn();
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.uiManager.social.onFriendWhisper('Ayla');
+        expect(engine.uiManager.social.toggleSocial).toHaveBeenCalledWith(false);
+        expect(engine.uiManager.chat.beginWhisper).toHaveBeenCalledWith('Ayla');
+    });
     test('saved graphics preference and subsequent changes reach current and future world builders', () => {
         const engine = createEngine();
         engine.worldGenerator = { graphicsQuality: 'high' };

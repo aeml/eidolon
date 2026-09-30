@@ -219,6 +219,14 @@ describe('SocialUI.updateFriendList', () => {
 // ---------------------------------------------------------------------------
 
 describe('SocialUI.onFriendPresence', () => {
+    test('restores current social status with reconnect presence', () => {
+        const { ui } = createSocialUI();
+        ui._activeTab = 'friends';
+        ui.friendEntries = [{ username: 'alice', online: false, socialStatus: '' }];
+        ui.onFriendPresence({ username: 'alice', online: true, socialStatus: 'looking_party' });
+        expect(ui.friendEntries[0]).toEqual({ username: 'alice', online: true, socialStatus: 'looking_party' });
+        expect(ui._friendsList.querySelector('.friends-status--looking_party').textContent).toBe(ui.getSocialStatusLabel('looking_party'));
+    });
     test('updates entry.online to true', () => {
         const { ui } = createSocialUI();
         ui.friendEntries = [{ username: 'alice', online: false, socialStatus: '' }];
@@ -325,6 +333,34 @@ describe('SocialUI._switchTab', () => {
 // ---------------------------------------------------------------------------
 
 describe('SocialUI._renderFriendsPanel', () => {
+    test('online friends offer named party invitations and private composition; offline actions are disabled', () => {
+        const { ui } = createSocialUI();
+        ui.onPartyInvite = jest.fn();
+        ui.onFriendWhisper = jest.fn();
+        ui.friendEntries = [{ username: 'Ayla', online: true, socialStatus: 'available' },
+            { username: 'Borin', online: false, socialStatus: '' }];
+        ui._renderFriendsPanel();
+        const rows = ui._friendsList.querySelectorAll('.friends-row');
+        rows[0].querySelector('.friends-btn--invite').click();
+        rows[0].querySelector('.friends-btn--whisper').click();
+        expect(ui.onPartyInvite).toHaveBeenCalledWith('Ayla');
+        expect(ui.onFriendWhisper).toHaveBeenCalledWith('Ayla');
+        for (const kind of ['invite', 'whisper']) {
+            expect(rows[1].querySelector(`.friends-btn--${kind}`).disabled).toBe(true);
+            rows[1].querySelector(`.friends-btn--${kind}`).click();
+        }
+        expect(ui.onPartyInvite).toHaveBeenCalledTimes(1);
+        expect(ui.onFriendWhisper).toHaveBeenCalledTimes(1);
+    });
+
+    test('social status broadcasts update an already-open friends tab', () => {
+        const { ui } = createSocialUI();
+        ui._activeTab = 'friends';
+        ui.friendEntries = [{ username: 'Ayla', online: true, socialStatus: 'available' }];
+        ui.updateSocialList([{ name: 'Ayla', class: 'Cleric', level: 35, socialStatus: 'in_run' }]);
+        expect(ui.friendEntries[0].socialStatus).toBe('in_run');
+        expect(ui._friendsList.querySelector('.friends-status--in_run')).not.toBeNull();
+    });
     test('shows empty-state message when no friends', () => {
         const { ui } = createSocialUI();
         ui.friendEntries = [];

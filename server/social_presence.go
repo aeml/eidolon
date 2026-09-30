@@ -135,8 +135,12 @@ func buildFriendListPayload(playerID string) FriendListPayload {
 }
 
 // notifyFriendsPresence pushes a MsgFriendPresence packet to every online friend of username.
-// Called on login (online=true) and disconnect (online=false).
-func notifyFriendsPresence(username string, online bool) {
+// Login and disconnect are triggers, not trusted snapshots. Serialize with
+// character handoff and derive current presence after DB IO so delayed events
+// cannot override a replacement connection's actual state.
+func notifyFriendsPresence(username string) {
+	unlock := lockCharacterWork(username)
+	defer unlock()
 	playerID := usernameToPlayerID(username)
 	friends, err := db.GetFriends(playerID)
 	if err != nil {
@@ -144,7 +148,16 @@ func notifyFriendsPresence(username string, online bool) {
 		return
 	}
 
-	payload, _ := json.Marshal(FriendPresencePayload{Username: username, Online: online})
+	sessionsMu.Lock()
+	current := activeSessions[username]
+	sessionsMu.Unlock()
+	presence := FriendPresencePayload{Username: username, Online: current != nil && !current.retired.Load() && current.playerID != ""}
+	if presence.Online {
+		if entity := world.GetEntityCopy(current.playerID); entity != nil {
+			presence.SocialStatus = game.NormalizeSocialStatus(entity.SocialStatus)
+		}
+	}
+	payload, _ := json.Marshal(presence)
 	msg := createMessage(MsgFriendPresence, payload)
 
 	for _, f := range friends {
@@ -157,7 +170,7 @@ func notifyFriendsPresence(username string, online bool) {
 		sessionsMu.Lock()
 		otherClient, ok := activeSessions[otherUsername]
 		sessionsMu.Unlock()
-		if ok {
+		if ok && !chatService.shouldFilter(otherUsername, username) {
 			otherClient.sendSafe(msg)
 		}
 	}

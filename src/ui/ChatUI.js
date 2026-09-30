@@ -18,6 +18,7 @@ export class ChatUI {
         this.composer = document.getElementById('chat-composer') || this.input;
         this.tabs = Array.from(document.querySelectorAll('[data-chat-tab]'));
         this.activeStream = 'chat';
+        this.whisperTarget = '';
         this.unread = { chat: 0, party: 0, guild: 0, whisper: 0, game: 0 };
         this.maxMessages = 250;
         this.mobileToggle = document.getElementById('chat-mobile-toggle');
@@ -66,7 +67,8 @@ export class ChatUI {
                 // Tabs are also the composition destination. Use existing
                 // server-authoritative commands so failed private/group sends
                 // never fall back to public chat. Explicit commands still win.
-                const prefix = { party: '/party ', guild: '/guild ', whisper: '/r ' }[this.activeStream] || '';
+                const prefix = { party: '/party ', guild: '/guild ',
+                    whisper: this.whisperTarget ? `/w ${this.whisperTarget} ` : '/r ' }[this.activeStream] || '';
                 this.onSend?.(message.startsWith('/') ? message : `${prefix}${message}`);
                 this.input.value = '';
             }
@@ -113,7 +115,7 @@ export class ChatUI {
         }
         if (this.input) {
             const destination = { party: 'Message your party…', guild: 'Message your guild…',
-                whisper: 'Reply to last whisper… or /w player message' }[nextStream] || 'Message the current world…';
+                whisper: this.whisperTarget ? `Whisper to ${this.whisperTarget}…` : 'Reply to last whisper… or /w player message' }[nextStream] || 'Message the current world…';
             this.input.placeholder = destination;
             this.input.setAttribute('aria-label', destination);
         }
@@ -236,6 +238,15 @@ export class ChatUI {
         if (document.body.classList.contains('mobile-mode')) this.setMobileExpanded(true);
         this.setActiveStream(this.activeStream === 'game' ? 'chat' : this.activeStream);
         this.input?.focus();
+    }
+
+    beginWhisper(username) {
+        // A username is one command token, never arbitrary command text.
+        if (typeof username !== 'string' || !username || /[\s/]/.test(username)) return false;
+        this.whisperTarget = username;
+        this.setActiveStream('whisper');
+        this.focusChatInput();
+        return true;
     }
 
     restoreSize() {

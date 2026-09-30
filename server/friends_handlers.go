@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strings"
+)
 
 // handleMsgFriendList sends the caller's current friend list.
 func handleMsgFriendList(c *Client, msg Message) {
@@ -22,12 +25,17 @@ func handleMsgFriendRequest(c *Client, msg Message) {
 		c.sendError("invalid friend request payload")
 		return
 	}
+	req.Username = strings.TrimSpace(req.Username)
 	if req.Username == c.username {
 		c.sendError("cannot send friend request to yourself")
 		return
 	}
 	if chatService.shouldFilter(req.Username, c.username) || chatService.shouldFilter(c.username, req.Username) {
 		c.sendError("player is not available for friend requests")
+		return
+	}
+	if _, err := db.GetUser(req.Username); err != nil {
+		c.sendError("player is not available for friend requests; check the username")
 		return
 	}
 	requesterID := c.playerID

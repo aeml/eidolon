@@ -61,6 +61,7 @@ export class SocialUI {
         this.onFriendAccept  = null;   // (username) → accept pending
         this.onFriendDecline = null;   // (username) → decline pending
         this.onFriendRemove  = null;   // (username) → remove friend
+        this.onFriendWhisper = null;   // (username) → compose private message
 
         // --- Create the social window DOM element ---
         this._createSocialWindow();
@@ -200,6 +201,12 @@ export class SocialUI {
     // ================================================================
 
     updateSocialList(players) {
+        // Status broadcasts also keep an already-open Friends tab current.
+        for (const entry of this.friendEntries) {
+            const player = players.find(p => p.name === entry.username);
+            if (player) entry.socialStatus = this.normalizeSocialStatus(player.socialStatus);
+        }
+        if (this._activeTab === 'friends') this._renderFriendsPanel();
         this.socialList.innerHTML = '';
         const player = this.ctx.getLastPlayer();
 
@@ -317,13 +324,14 @@ export class SocialUI {
     /**
      * Called when a `friend_presence` message is received.
      * Updates the relevant entry and refreshes the panel if visible.
-     * @param {{ username: string, online: boolean }} data
+     * @param {{ username: string, online: boolean, socialStatus?: string }} data
      */
     onFriendPresence(data) {
         const entry = this.friendEntries.find(e => e.username === data.username);
         if (entry) {
             entry.online = data.online;
             if (!data.online) entry.socialStatus = '';
+            else if (data.socialStatus) entry.socialStatus = this.normalizeSocialStatus(data.socialStatus);
         }
         if (this._activeTab === 'friends') {
             this._renderFriendsPanel();
@@ -850,6 +858,19 @@ export class SocialUI {
                 row.appendChild(offlineEl);
             }
 
+            const actions = document.createElement('div');
+            actions.className = 'friends-actions';
+            for (const [label, callback] of [['Invite', () => this.onPartyInvite?.(entry.username)],
+                ['Whisper', () => this.onFriendWhisper?.(entry.username)]]) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `friends-btn friends-btn--${label.toLowerCase()}`;
+                button.textContent = label;
+                button.disabled = !entry.online;
+                button.setAttribute('aria-label', `${label} ${entry.username}${label === 'Invite' ? ' to party' : ''}`);
+                button.addEventListener('click', callback);
+                actions.appendChild(button);
+            }
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.className = 'friends-btn friends-btn--remove';
@@ -859,7 +880,8 @@ export class SocialUI {
             removeBtn.addEventListener('click', () => {
                 this.onFriendRemove?.(entry.username);
             });
-            row.appendChild(removeBtn);
+            actions.appendChild(removeBtn);
+            row.appendChild(actions);
 
             this._friendsList.appendChild(row);
         });

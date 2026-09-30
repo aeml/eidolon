@@ -230,7 +230,7 @@ func cleanupClientLocked(client *Client) {
 
 	// 5. Notify online friends that this player has gone offline (0.38.1).
 	if client.username != "" {
-		scheduleCharacterWork(func() { notifyFriendsPresence(client.username, false) })
+		scheduleCharacterWork(func() { notifyFriendsPresence(client.username) })
 		scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
 	}
 
