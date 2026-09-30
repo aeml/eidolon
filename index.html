@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.48.0</span>
+                    <span class="start-version-row__label">Alpha 1.49.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.49.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.49.0 (sessions that leave cleanly)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Fresh scene ownership:</strong> Leaving an instance retires dormant actors, effects and old model requests while preserving the player. Returning at the same coordinates keeps the player tracked; pooled casino poses restore before a model is reused.</li>
+                        <li><strong>Menus retire once:</strong> Session-owned menu listeners, map/HUD owners, observers, previews, audio and temporary skill/respec overlays release cleanly. Shared markup and replacement owners are preserved instead of accumulating callbacks.</li>
+                        <li><strong>Full casino sessions:</strong> Repeated public/VIP visits cover the complete 92-station venue, visible guests and all five game interfaces. Leaving a table cancels owned clocks, active reels and queued spins; cached furniture remains hidden between visits and releases at session end.</li>
+                        <li><strong>Recovery stays owned:</strong> Replaced transports release only their own callbacks. Delayed attacks and loot deadlines cannot mutate a retired or replacement owner; confirmed loot retains its normal protection window.</li>
+                        <li><strong>Stable repeats:</strong> Bounded High/Low transition and reconnect checks retained stable warmed geometry/texture counts and released owned GPU contexts and batching buffers. This is no universal no-leak or device-capacity promise. Combat rules, rewards, currencies and saved progress are unchanged.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.48.0">
                     <h3 class="patch-note-entry__title">Alpha 1.48.0 (less work, same world)</h3>
                     <ul class="patch-note-entry__list">

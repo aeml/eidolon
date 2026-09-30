@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.48.0';
+const currentVersion = '1.49.0';
+
+test('1.49.0 records session ownership fixes and retains measured performance notes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.49.0"'), previous = html.indexOf('data-version="1.48.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['sessions that leave cleanly', 'Fresh scene ownership', 'Menus retire once',
+        'Full casino sessions', 'Recovery stays owned', 'Stable repeats', 'no universal no-leak',
+        'saved progress are unchanged']) expect(html.slice(start, previous).includes(text)).toBe(true);
+});
 
 test('1.48.0 records measured rendering changes and preserves prior history', () => {
     const html = fs.readFileSync('index.html', 'utf8');
