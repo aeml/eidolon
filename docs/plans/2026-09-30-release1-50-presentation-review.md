@@ -1,8 +1,8 @@
 # Alpha 1.50 integrated presentation review
 
 September 30, 2026. This is local candidate evidence, not live acceptance or
-closed-beta approval. Alpha 1.48 and 1.49 must pass their ordered deployment
-gates before this candidate is published. Version metadata, login and cumulative
+closed-beta approval. Alpha 1.48 and [1.49](2026-09-30-release1-49-acceptance.md)
+have passed their ordered deployment gates. Version metadata, login and cumulative
 patch notes are now packaged as Alpha 1.50.0; exact-source CI and independent
 public verification remain required.
 
@@ -35,6 +35,9 @@ The integration fixture joins the mandatory interface selection; discovery
 verified all 238 browser cases exactly once, without omissions or duplicates.
 After version packaging, five version/browser-plan suites passed 358 checks in
 7.686 seconds, with scoped lint and whitespace checks clean.
+After merging the accepted 1.49 receipts and its native-pointer regression,
+two scoped version/pointer suites passed 325 checks in 2.553 seconds. The
+updated mandatory browser partition covers all 239 cases exactly once.
 Screenshots and route reports are under
 `/tmp/eidolon-1-50-integrated-roles-final-0930`. These timings describe test
 duration, not frame performance. Earlier fixture failures were missing prepared
@@ -54,11 +57,13 @@ unchanged campaigns, encounters or indefinite soaks:
   [phone input interruptions](2026-09-30-release1-47-acceptance.md).
 - [Performance comparison and unchanged appearance](2026-09-30-release1-48-performance-work.md):
   qualified desktop GPU results, exact source/candidate geometry, distant
-  coordinates, scene budgets and separately reported hitches. Live acceptance
-  remains required for the corrected candidate.
+  coordinates, scene budgets and separately reported hitches. Its corrected
+  release is [accepted live](2026-09-30-release1-48-acceptance.md).
 - [Session ownership](2026-09-30-release1-49-lifetime-work.md): bounded repeat
   transitions, all casino games on both floors, gear/death/reconnect, real
-  borrowed transports and teardown. Local evidence is not a universal no-leak claim.
+  borrowed transports and teardown. The exact release is
+  [accepted live](2026-09-30-release1-49-acceptance.md); local evidence is not a
+  universal no-leak claim.
 
 ## Remaining limitations
 
