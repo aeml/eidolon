@@ -5,6 +5,19 @@ login/CI/default build identities and cumulative notes identify1.45.0.
 Ordered predecessor publication and this candidate's own CI/live checks remain
 required. This is not final modern-art, accessibility or closed-beta acceptance.
 
+## Accepted predecessor and publication readiness — September30
+
+1.44 exactb24eda6d is independently accepted after CI36673117387attempt1/all
+ten jobs and public frontend/backend/document/eight stamped modules/font
+verification. [Receipt](2026-09-30-release1-44-acceptance.md). This candidate
+already merges current143fixes and144 audio/FriendToast correction, preserving
+all1.45 identities and cumulative patch history. Three version/publishing/
+FriendToast suites335checks pass3.348s; whitespace passes. Existing unchanged
+UI rendering, auction and focused integration evidence below is reused, not
+replayed as a new campaign soak. Standard exact-head CI/live QA still applies;
+freshfetch/merge immediately before publication preserves concurrent website
+work. No1.45 live acceptance from a predecessor's success.
+
 ## Current predecessor integration — September30
 
 Merged prepared1.44a10a8b72, including current1.43prerequisites and typed
