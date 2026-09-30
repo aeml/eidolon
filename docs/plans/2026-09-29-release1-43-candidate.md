@@ -125,3 +125,11 @@ whitespace pass, and website diff against current master is empty. The
 prepared combat gallery evidence above is unchanged and reused; no campaign
 or encounter replay is claimed. Fetch/merge again immediately before pushing,
 then require this exact candidate's own CI and public release checks.
+
+Latest integration retains1.42 first-party Cinzel correction7ee8c07b and the
+full license/source notice. The sole package-script conflict is resolved by
+retaining both local-fonts and enemy-health-feedback exactly once in required
+interface coverage, not choosing one side. Six font/version/asset/grounding/
+resource suites349checks pass4.866s; whitespace passes and website diff remains
+empty.1.42 CI36660471426 is pending; this prepared merge is unpublished and
+still requires exact1.42 public acceptance before ordered1.43 publication.
