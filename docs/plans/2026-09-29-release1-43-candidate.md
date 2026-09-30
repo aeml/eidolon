@@ -5,6 +5,47 @@ login/CI/default build identities and cumulative notes now identify1.43.0.
 Ordered publication waits for preceding accepted deployments. Human campaign/
 phone observations remain playtest-owned; they are not a new permission gate.
 
+## Public-access investigation and scoped proxy correction — September30
+
+Owner confirmed access recovered after reporting the page failed to load.
+Both normal-hostname IPv4 endpoints returned200 with deployed1427ee8c07b;
+backend database ready. No restart, rollback or DNS edit was performed.
+Live142CI36660471426 nevertheless failed its live job after seven checks
+passed: Verdant completed its two-boss route but the final collector contained
+generic ERR_NAME_NOT_RESOLVED messages. Retry navigation had no HTTP response.
+Sanitized artifacts omit the raw traces; they do not identify failed URLs.
+Do not claim the error came from gameplay or that its exact cause is proven.
+
+Read-only nginx logs establish a separate actionable issue: requests for the
+document and versioned game modules attempt GitHub Pages IPv6 upstreams,
+which fail with Network is unreachable on this host. Actual server has no
+public IPv6 address or default route. This is upstream routing, separate from
+the advertised DDNS AAAA previously deferred by the owner. The template now
+uses the local systemd-resolved stub with ipv6=off and a fixed-host variable,
+preserving full request URI/query, Pages Host routing and TLS SNI. Backend
+loopback/WebSocket configuration, public DNS and other virtual hosts unchanged.
+See [nginx resolver](https://nginx.org/en/docs/http/ngx_http_core_module.html#resolver)
+and [variable proxy_pass](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass).
+
+An isolated unprivileged nginx1.24 instance on127.0.0.1:18443 passed syntax,
+returned200 for exact142 release.json, document and versioned main.js, and
+served the local font with the expected f4d83d34...a4e0f34 SHA256. Probe stopped
+cleanly. This validates routing, not active production configuration or TLS
+certificate-file access. Staged /tmp/eidolon-pages-ipv4-20260930.conf preserves
+the actual Certbot blocks; diff changes only the frontend proxy and final
+newline. /tmp/eidolon-fix-pages-ipv4-20260930.sh requires owner sudo, guards the
+inspected active hash, preserves a backup, tests before reload and restores on
+failure. It has not been run in production. No143push until142acceptance.
+
+Browser QA now retains Chrome console source URLs for generic resource errors
+and includes the original navigation error in exhausted document assertions.
+No new suppression, larger retry budget or weakened acceptance. Three focused
+diagnostic regression cases pass alongside all existing helper checks;18total
+in0.768s. Scoped lint passes. Additional source-config invariants retain fixed
+upstream, request URI/query, Host/SNI and backend upgrade behavior.
+Combined helper/config/version suites333checks pass2.912s; scoped ESLint and
+git diff --check pass. No long encounter replay, public bypass or143push.
+
 ## Draft patch notes
 
 - Retained supporting1.42 contact shadows for phones and Low graphics, grounding

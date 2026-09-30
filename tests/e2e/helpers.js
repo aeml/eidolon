@@ -60,7 +60,12 @@ export function collectBrowserFailures(page, baseURL) {
         // duplicate generic console entry that cannot itself be reconciled
         // when a later navigation successfully reloads that resource.
         if (/Failed to load resource: the server responded with a status of 5\d\d/i.test(text)) return;
-        failures.push(`console: ${text}`);
+        // Browser-generated resource errors often omit the failed URL from
+        // their text. Keep Chrome's location so DNS errors can be attributed
+        // without suppressing either first-party or third-party failures.
+        const location = message.location?.();
+        const source = location?.url ? ` [${location.url}:${location.lineNumber ?? 0}]` : '';
+        failures.push(`console: ${text}${source}`);
     });
     page.on('requestfailed', (request) => {
         const requestURL = new URL(request.url());
@@ -186,7 +191,10 @@ export async function openGame(page, options = {}) {
         await page.waitForTimeout(Math.min(1_000 * (attempt + 1), 5_000));
     }
     if (response?.status() !== 200) {
-        expect(response?.status(), 'The live game document must recover from transient edge errors').toBe(200);
+        expect(response?.status(),
+            `The live game document must recover from transient edge errors; route=${gameDocument}; ` +
+            `last error=${readinessError?.message || 'no navigation error reported'}`
+        ).toBe(200);
     }
     throw readinessError || new Error('The complete game runtime did not become ready');
 }
