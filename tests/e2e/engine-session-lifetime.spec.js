@@ -74,6 +74,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     await page.goto('/', { waitUntil: 'networkidle' });
     expect(dungeonFixture).toBeDefined();
     const reports = await page.evaluate(async ({ quality, layout }) => {
+        const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         const { GameEngine } = await import('/src/core/GameEngine.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { BASE_ITEMS, RARITY } = await import('/src/core/ItemSystem.js');
@@ -97,7 +98,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
             engine.renderSystem.render();
             const hitbox = player.mesh.getObjectByName('ActorInteractionHitbox');
             return { label, ...engine.renderSystem.renderer.info.memory,
-                playerInstanceRegistered: engine.renderSystem.actorInstances.roots.has(player.mesh),
+                playerRenderOwned: actorRenderingIsOwned(engine.renderSystem, player.mesh),
                 chunks: engine.chunkManager.chunks.size, activeActors: engine.chunkManager.getActiveEntities().length,
                 playerTracked: engine.chunkManager.chunks.get(player._chunkKey)?.has(player) === true,
                 playerAttached: player.mesh.parent === engine.renderSystem.entityGroup,
@@ -137,7 +138,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     for (const report of reports) {
         expect(report.geometries).toBeGreaterThan(0); expect(report.playerTracked).toBe(true);
         expect(report.playerAttached).toBe(true); expect(report.hiddenHitbox).toBe(true);
-        expect(report.playerInstanceRegistered).toBe(true);
+        expect(report.playerRenderOwned).toBe(true);
         expect(report.chunks).toBe(1);
     }
     for (const label of ['town-death', 'dungeon', 'casino-public', 'casino-vip']) {
@@ -220,13 +221,14 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
                 return f.token === `fixture-token-${count}` && f.engine.network.messageQueue.some(message => message.type === 'enter_instance');
             }, cycle + 1);
             await page.evaluate(async cycle => {
+                const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
                 const f = window.__lifetimeRecovery, engine = f.engine;
                 for (const message of engine.network.drainMessages()) engine.handleServerMessage(message);
                 await f.entryPromise;
                 engine.player.die(); engine.player.respawn(0, 0); engine.player.render(1);
                 engine.renderSystem.setCameraTarget(engine.player.position); engine.renderSystem.render();
                 f.reports.push({ cycle, ...engine.renderSystem.renderer.info.memory,
-                    playerInstanceRegistered: engine.renderSystem.actorInstances.roots.has(engine.player.mesh),
+                    playerRenderOwned: actorRenderingIsOwned(engine.renderSystem, engine.player.mesh),
                     instance: engine.currentInstanceId, playerTracked: engine.chunkManager.chunks.get(engine.player._chunkKey)?.has(engine.player),
                     playerAttached: engine.player.mesh.parent === engine.renderSystem.entityGroup,
                     connected: engine.network.socket.readyState === WebSocket.OPEN && !engine.network._reconnecting,
@@ -250,7 +252,7 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
         expect(result.states).toEqual(['reconnecting', 'connected', 'reconnecting', 'connected', 'reconnecting', 'connected']);
         for (const report of result.reports) {
             expect(report.geometries).toBeGreaterThan(0); expect(report.instance).toBe(`lifetime-arena-${report.cycle + 1}`);
-            for (const key of ['playerTracked', 'playerAttached', 'playerInstanceRegistered', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
+            for (const key of ['playerTracked', 'playerAttached', 'playerRenderOwned', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
         }
         expect(result.reports[2].geometries).toBe(result.reports[1].geometries);
         expect(result.reports[2].textures).toBe(result.reports[1].textures);

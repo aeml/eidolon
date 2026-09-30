@@ -233,7 +233,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                         contactFeedback.update(elapsed); impactActor.hitReaction?.update(elapsed);
                     }
                     render.render();
-                    return { chestYaw: attackActor.mesh.getObjectByName('Rig_Chest').rotation.y,
+                    const chest = attackActor.mesh.getObjectByName('spine_02');
+                    const track = attackActor.animations.Attack.getClip().tracks.find(track => track.name === 'spine_02.quaternion');
+                    return { authoredClass: attackActor.mesh.userData.authoredClass,
+                        chestQuaternion: chest.quaternion.toArray(),
+                        contactQuaternion: [...track.createInterpolant().evaluate(attackActor.mesh.userData.basicAttackContactTime)],
                         stationaryRoot: attackActor.position.equals(engine.player.position),
                         feedbackActive: Boolean(contactFeedback?.isActive),
                         impactSeconds: attackActor.mesh.userData.basicAttackContactTime /
@@ -375,7 +379,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     const result = await page.evaluate(fraction => window.__populatedWorld.reviewBasicAttack(fraction), fraction);
                     expect(result.stationaryRoot).toBe(true);
                     expect(result.impactSeconds).toBeCloseTo(1.8 * .35, 5);
-                    if (phase === 'contact') expect(result.chestYaw).toBeCloseTo(.65, 4);
+                    expect(result.authoredClass).toBe('Fighter');
+                    if (phase === 'contact') {
+                        const dot = Math.abs(result.chestQuaternion.reduce((sum, value, i) => sum + value * result.contactQuaternion[i], 0));
+                        expect(2 * Math.acos(Math.min(1, dot))).toBeLessThan(.005);
+                    }
                     expect(result.feedbackActive).toBe(['contact', 'impact'].includes(phase));
                     await page.screenshot({ path: testInfo.outputPath(`earth-basic-${phase}.png`) });
                 }
