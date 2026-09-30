@@ -14,14 +14,16 @@ function fixture() {
     return { scene, geometry, material, actors, instances, begin };
 }
 
-test('borrows exact surfaces and uses instance attributes with parent-relative world transforms', () => {
+test('borrows exact surfaces and retains parent-transformed world positions', () => {
     const f = fixture(); f.scene.position.x = 10; f.begin();
     expect(f.instances.batches.size).toBe(1);
     const batch = [...f.instances.batches.values()][0], matrix = new THREE.Matrix4();
     expect(batch.geometry).toBe(f.geometry); expect(batch.material).toBe(f.material);
     expect(batch.count).toBe(2); expect(batch.castShadow).toBe(true); expect(batch.morphTexture).toBeNull();
-    batch.getMatrixAt(0, matrix); expect(matrix.elements[12]).toBe(2);
-    batch.getMatrixAt(1, matrix); expect(matrix.elements[12]).toBe(6);
+    f.actors.forEach(({ mesh }, index) => {
+        batch.getMatrixAt(index, matrix); matrix.premultiply(batch.matrixWorld);
+        expect(matrix.elements).toEqual(mesh.matrixWorld.elements);
+    });
     f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(false));
     f.instances.endFrame(); f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(true));
     expect(f.instances.group.visible).toBe(false); f.instances.dispose();
@@ -60,6 +62,24 @@ test('disposing during a frame restores sources and never erases a replacement h
     const f = fixture(); f.begin(); const replacement = () => {}; f.scene.onBeforeRender = replacement;
     f.instances.dispose(); expect(f.scene.onBeforeRender).toBe(replacement);
     f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(true));
+});
+
+test('distant instance positions retain fractional equipment transforms', () => {
+    const f = fixture();
+    try {
+        f.actors.forEach(({ root, mesh }, index) => {
+            root.position.set(50000.123 + index * 4, 0, 20000.456);
+            mesh.position.set(2.12345, .45678, .98765);
+        });
+        f.begin();
+        const batch = [...f.instances.batches.values()][0], local = new THREE.Matrix4(), world = new THREE.Matrix4();
+        f.actors.forEach(({ mesh }, index) => {
+            batch.getMatrixAt(index, local); world.multiplyMatrices(batch.matrixWorld, local);
+            for (let element = 0; element < 16; element++) {
+                expect(Math.abs(world.elements[element] - mesh.matrixWorld.elements[element])).toBeLessThan(.00001);
+            }
+        });
+    } finally { f.instances.dispose(); }
 });
 
 test('reuses unchanged roster and detects material, geometry, revision, cell and actor membership changes', () => {

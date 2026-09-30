@@ -47,9 +47,16 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         capture(false); capture(true);
         let image, failureRestored = false;
         try {
-            for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth']) {
+            for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth', 'FarRealmIdle']) {
+                // Real instance coordinates are far from town. Compare both
+                // paths there too, without masking position precision errors.
+                const offset = state === 'FarRealmIdle' ? new THREE.Vector3(50000, 0, 20000) : new THREE.Vector3();
+                models.forEach(({ mesh, position }) => mesh.position.copy(position).add(offset));
+                floor.position.copy(offset);
+                render.setCameraTarget(offset.clone().add(new THREE.Vector3(0, 1, 0)));
+                render.updateEnvironmentLighting(offset, 0);
                 const mixers = models.map(({ mesh }) => {
-                    const mixer = new THREE.AnimationMixer(mesh), clip = mesh.userData.animations.find(clip => clip.name === (state === 'Stealth' ? 'Idle' : state));
+                    const mixer = new THREE.AnimationMixer(mesh), clip = mesh.userData.animations.find(clip => clip.name === (['Stealth', 'FarRealmIdle'].includes(state) ? 'Idle' : state));
                     mixer.clipAction(clip).play(); mixer.update(.37); return mixer;
                 });
                 const rogues = models.filter(model => model.type === 'Rogue');
@@ -69,6 +76,9 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
                 models.forEach(({ mesh, position }) => { mesh.userData.resetPose(); mesh.position.copy(position); });
             }
+            floor.position.set(0, 0, 0);
+            render.setCameraTarget(new THREE.Vector3(0, 1, 0));
+            render.updateEnvironmentLighting(new THREE.Vector3(), 0);
             const visibility = new Map();
             models.forEach(({ mesh }) => mesh.traverse(part => visibility.set(part, part.visible)));
             const originalHook = floor.onBeforeRender, failure = new Error('Prepared mid-frame failure');
@@ -90,6 +100,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         return { reports, image, failureRestored };
     }, quality);
     await testInfo.attach('instance-comparison', { body: JSON.stringify(result.reports), contentType: 'application/json' });
+    await writeFile(testInfo.outputPath('instance-comparison.json'), JSON.stringify(result.reports, null, 2));
     await writeFile(testInfo.outputPath('actor-instances.png'), Buffer.from(result.image.split(',')[1], 'base64'));
     for (const row of result.reports) {
         expect(row.afterCalls).toBeLessThan(row.beforeCalls);

@@ -1,5 +1,104 @@
 # Alpha1.48 — client performance work
 
+## Controlled comparison result — September30
+
+### Distant-coordinate correction and changed-code confirmation
+
+Added a seventh paired pose at(50000,0,20000), with the real camera/shadow
+follow behavior. High fails the unchanged changed-pixel bound (0.001094>0.001),
+Low passes; mean error0.0450, unchanged triangles. A fractional distant-transform
+unit independently fails0.000356>0.00001. Float32 instance attributes carrying
+full world positions discard equipment/animation offsets. Use the existing
+64m-cell world origin as the batch model transform and upload cell-relative
+attributes. Ordinary source transforms, borrowed surfaces and frame visibility
+remain unchanged. No relaxed image thresholds or fixed simulated frame timings.
+
+The existing parent-transform unit now reconstructs the actual world matrix
+instead of demanding the old internal scene-relative representation. Five
+affected suites42checks pass1.720s. Two native High/Low cases9.3s pass all seven
+strict pose comparisons and the mid-render failure restoration; artifacts:
+`/tmp/eidolon-1-48-cell-origin-instances-0930`.
+
+One changed-source controlled comparison45.7s (test44.4s) reconfirms the original
+declared gate, without an unchanged replay or auto retry. High baseline/candidate
+RAF medians20.9→18.4 and22.4→18.5ms, candidate p95s23.7/24.3, render CPU
+19.8→16.9 and21.4→17.2 (14.6%/19.6% benefit). Low RAF16.7→16.7 and16.7→16.6,
+p95s18.9/20.1, CPU13.2→12.6 and12.8→12.2. All zero>50ms hitches; exact original
+2454→800/1288→461 draw totals, triangles and341/54,340/40 resources retained.
+Same-mode median repeat differences<=7.2%, paired host-busy differences<=1.7
+percentage points. Both satisfy the predeclared comparability/benefit/frame
+limits. Artifacts:`/tmp/eidolon-1-48-cell-origin-paired-0930`.
+This confirms this corrected candidate on this native desktop, not all-device
+FPS, a dungeon campaign, supported-player capacity or full148 acceptance.
+
+One declared interleaved comparison passed in46.2s (test44.5s), System Chrome
+native GPU, same11-model equipped busy scene. Artifacts:
+`/tmp/eidolon-1-48-paired-instances-0930`. Values are milliseconds; pairs share
+the same warmed browser, exact triangles and geometry/texture residency.
+
+| Quality/mode | RAF median/p95/p99 | Render CPU median | Draws | Host busy |
+| --- | --- | --- | --- | --- |
+| High baseline |21.4/26.2/28.4|20.0|2454|88.30%|
+| High candidate |17.9/25.5/28.2|16.3|800|91.45%|
+| High baseline repeat |20.7/27.1/34.4|19.5|2454|90.31%|
+| High candidate repeat |17.6/23.8/25.3|16.4|800|90.74%|
+| Low baseline |16.7/20.2/22.4|13.4|1288|88.05%|
+| Low candidate |16.7/19.0/19.8|11.9|461|87.97%|
+| Low baseline repeat |16.6/19.4/20.9|13.3|1288|87.47%|
+| Low candidate repeat |16.5/20.3/22.6|12.7|461|90.07%|
+
+All eight phases report zero>50ms hitches. High retains166327 triangles and
+341 geometries/54 textures; Low85546 and340/40. High render CPU improves18.5%
+and15.9%, meeting the predeclared10% benefit gate and actual20/33.4 frame
+target twice. Low CPU improves11.2%/4.5%; RAF is approximately display-limited,
+not a claimed FPS improvement. Same-mode RAF medians repeat within3.3%; paired
+host busy differences are at most3.15 percentage points, within the declared
+comparability limits. Nested preparation/shadow spans must not be summed.
+
+The scheduled soak remains running, without owner cancellation approval.
+These interleaved controls provide specific comparable local evidence despite
+background work, not proof of universal performance, capacity or precise causes
+of older timings. The candidate may proceed to remaining integration/scene
+coverage; it is not yet default-enabled, packaged, pushed or accepted as148.
+
+## Interleaved instance comparison — declared before measurement
+
+Use opt-in EIDOLON_RAID_INSTANCING_COMPARE=1 together with the instance probe.
+Same browser, viewport, quality, complete11-model/14-slot-equipped workload,
+four fields and four essential telegraphs. Measure baseline→candidate→baseline
+repeat→candidate repeat at each quality,180 actual RAF samples after60 warmup.
+Warm candidate programs/buffers before measuring either side. Reset the prepared
+animation/field clock and use a fixed1/60 visual step only in this comparison
+fixture, so every side presents the same frame-by-frame animation work; RAF
+timings remain measured, not synthesized. No production simulation change or
+removed detail. Disable batching in-place for the baseline, retaining warmed
+shared resources/programs. Default diagnostic behavior remains unchanged.
+
+Record host CPU totals/busy fraction, load and Linux pressure at both boundaries
+of every phase. Add optional candidate-preparation CPU attribution; nested
+renderer/shadow/composer spans are not additive. Require exact triangles and
+geometry/texture counts across modes/repeats and fewer candidate submissions.
+Native renderer guard remains mandatory. This changed comparison closes the
+unpaired-candidate measurement gap; it is not an unchanged profile replay.
+
+Before a performance conclusion, require both same-mode median repeats within
+15% and paired host busy fractions within10 percentage points. Otherwise treat
+the timings as contention-affected, not accepted. Require at least10% High
+render-CPU median improvement in both pairs, preserve High actual-frame median
+<=20ms/p95<=33.4ms for both candidate phases and the existing Low comparison
+median<=33.4ms/p95<=50ms with no>10% render-CPU regression. Report p99 and
+>50ms hitches; do not invent a passing hitch limit after observation. One bounded
+comparison, no auto retries. Timings stay recorded/manual rather than a fragile
+general CI FPS assertion. No source enables batching by default from green
+diagnostics. Own appearance/ownership and other148 gates remain independent.
+
+Current host's load has eased to15.97/16.19/18.19, CPU some pressure19.94/20.39/
+20.59, but scheduled soak109836999629/run36664933512 is verified still running.
+No cancellation approval or mutation. Interleaved controls/host samples are the
+new comparability mechanism; reject unstable evidence rather than assuming the
+machine is quiet or attributing all previous slowdowns to that soak. No result
+or performance acceptance is claimed in this pre-measurement declaration.
+
 ## Opt-in render ownership integration — September30
 
 Close the candidate's previously identified integration gaps on the isolated

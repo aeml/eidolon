@@ -84,7 +84,6 @@ export class ActorInstanceBatches {
         if (this.disposed || !this.enabled) return;
         this.refreshRoster();
         const used = new Set();
-        this.inverse.copy(this.scene.matrixWorld).invert();
         this.group.matrixWorld.copy(this.scene.matrixWorld);
         try {
             for (const [key, entries] of this.buckets) {
@@ -103,7 +102,13 @@ export class ActorInstanceBatches {
                     this.batches.set(key, batch); this.group.add(batch);
                 }
                 used.add(key); batch.visible = true; batch.count = parts.length;
-                batch.matrixWorld.copy(this.scene.matrixWorld);
+                // Store small cell-relative float32 attributes. Full dungeon
+                // coordinates here discard fractional gear/animation offsets;
+                // the double-precision model-view transform owns the origin.
+                const sourceWorld = parts[0].matrixWorld.elements;
+                batch.matrixWorld.makeTranslation(Math.floor((sourceWorld[12] + 32) / 64) * 64, 0,
+                    Math.floor((sourceWorld[14] + 32) / 64) * 64);
+                this.inverse.copy(batch.matrixWorld).invert();
                 parts.forEach((part, index) => batch.setMatrixAt(index, this.matrix.multiplyMatrices(this.inverse, part.matrixWorld)));
                 batch.instanceMatrix.needsUpdate = true; batch.computeBoundingSphere();
                 for (const part of parts) { this.hidden.push(part); part.visible = false; }
