@@ -16,9 +16,11 @@ export class PvPUI {
     }
 
     dispose() {
+        this.disposed = true;
         disposeOwnedEvents(this);
         this.isOpen = false;
         clearTimeout(this.queueRefresh);
+        clearInterval(this.challengeClock);
         this.window.remove();
     }
 
@@ -36,14 +38,17 @@ export class PvPUI {
     }
 
     toggle(show) {
+        if (this.disposed) return;
         const opening = show ?? this.window.style.display === 'none';
         this.isOpen = opening;
         clearTimeout(this.queueRefresh);
+        clearInterval(this.challengeClock);
         if (opening) {
             if (this.openManagedWindow) this.openManagedWindow('pvp');
             else this.window.style.display = 'block';
             this.onRefresh?.();
             this.onLeaderboard?.();
+            this.startChallengeClock();
         } else if (this.closeManagedWindow) {
             this.closeManagedWindow('pvp');
         } else {
@@ -52,19 +57,51 @@ export class PvPUI {
     }
 
     update(payload = {}) {
+        if (this.disposed) return;
+        const previousChallenge = this.state.challenge?.id;
         // Server updates are complete snapshots; absent transient fields mean
         // the challenge/match ended, not that the previous one should survive.
         this.state = { ...this.state, queued: 0, queuePractice: false, queuedAt: null, ratingWindow: null, queuedSeconds: 0, match: null, challenge: null, deserterUntil: null,
             ...payload, opponents: Array.isArray(payload.opponents) ? payload.opponents : [] };
         this.render();
+        // A challenge must be visible to its recipient, but repeated state
+        // refreshes must not reopen a deliberately closed window.
+        if (this.state.challenge?.id && this.state.challenge.id !== previousChallenge && !this.isOpen) this.toggle(true);
+        else this.startChallengeClock();
         clearTimeout(this.queueRefresh);
         if (this.isOpen && this.state.queued) this.queueRefresh = setTimeout(() => this.onRefresh?.(), 5000);
     }
 
     updateLeaderboard(payload = {}) {
+        if (this.disposed) return;
         this.leaderboard = Array.isArray(payload.profiles) ? payload.profiles : [];
         this.season = payload.season || '';
         this.render();
+    }
+
+    startChallengeClock() {
+        clearInterval(this.challengeClock);
+        this.updateChallengeClock();
+        if (this.isOpen && this.state.challenge?.id) this.challengeClock = setInterval(() => this.updateChallengeClock(), 1000);
+    }
+
+    updateChallengeClock() {
+        const challenge = this.state.challenge;
+        const remaining = Math.max(0, Math.ceil((Date.parse(challenge?.expiresAt) - Date.now()) / 1000));
+        const usable = Boolean(challenge?.id) && Number.isFinite(remaining) && remaining > 0;
+        const clock = this.window.querySelector('[data-duel-clock]');
+        if (clock) clock.textContent = usable ? `Respond within ${remaining}s · practice, no ranked rewards or PvE losses.` : 'Challenge expired. Request a new duel.';
+        this.window.querySelectorAll('[data-duel-response]').forEach(button => { button.disabled = !usable; });
+        if (!usable) clearInterval(this.challengeClock);
+    }
+
+    respondToChallenge(challenge, accepted) {
+        if (this.disposed) return;
+        if (!challenge?.id || this.state.challenge?.id !== challenge.id || !Number.isFinite(Date.parse(challenge.expiresAt)) || Date.now() >= Date.parse(challenge.expiresAt)) {
+            this.onRefresh?.();
+            return;
+        }
+        this.onDuelRespond?.(challenge.requesterId, challenge.id, accepted);
     }
 
     render() {
@@ -127,6 +164,7 @@ export class PvPUI {
 		const flagButton = this.button(flagged ? 'Disable World PvP' : 'Enable World PvP', () => this.onFlag?.(!flagged));
 		if (flagged && !this.state.inSafeZone) {
 			flagButton.title = 'Return to the town safe zone to disable World PvP.';
+			flagButton.disabled = true;
 		}
 		flagRow.appendChild(flagButton);
 		const safe = document.createElement('span');
@@ -137,12 +175,20 @@ export class PvPUI {
         if (this.state.challenge) {
             const challenge = document.createElement('section');
             challenge.className = 'pvp-card pvp-card--challenge';
-            const requester = String(this.state.challenge.requesterId || '').replace(/^player-/, '');
+            const currentChallenge = this.state.challenge;
+            const requester = String(currentChallenge.requesterId || '').replace(/^player-/, '');
             const label = document.createElement('strong');
             label.textContent = `${requester} challenges you to a duel.`;
-            challenge.append(label, this.button('Accept', () => this.onDuelRespond?.(this.state.challenge.requesterId, true), 'pvp-btn--success'));
-            challenge.appendChild(this.button('Decline', () => this.onDuelRespond?.(this.state.challenge.requesterId, false), 'pvp-btn--danger'));
+            const clock = document.createElement('p');
+            clock.dataset.duelClock = '';
+            challenge.append(label, clock);
+            for (const [text, accepted, modifier] of [['Accept', true, 'pvp-btn--success'], ['Decline', false, 'pvp-btn--danger']]) {
+                const response = this.button(text, () => this.respondToChallenge(currentChallenge, accepted), modifier);
+                response.dataset.duelResponse = '';
+                challenge.appendChild(response);
+            }
             body.appendChild(challenge);
+            this.updateChallengeClock();
         }
 
         const match = this.state.match;

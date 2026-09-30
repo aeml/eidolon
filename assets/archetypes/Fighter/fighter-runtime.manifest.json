@@ -1,0 +1,170 @@
+{
+  "source": {
+    "bytes": 40335020,
+    "sha256": "453bfdc9c775db7283fd2cf0ecbdde2c443e62181324b1fd25403eb4e7505703",
+    "triangles": 120480,
+    "joints": [
+      53
+    ],
+    "animations": [
+      "Attack",
+      "Block",
+      "CombatIdle",
+      "Death",
+      "Hit",
+      "Idle",
+      "Jump",
+      "JumpLand",
+      "JumpLoop",
+      "JumpStart",
+      "Run",
+      "Walk"
+    ],
+    "sockets": [
+      "socket_back",
+      "socket_belt",
+      "socket_chest",
+      "socket_footL",
+      "socket_footR",
+      "socket_head",
+      "socket_mainHand",
+      "socket_offHand",
+      "socket_shoulderL",
+      "socket_shoulderR"
+    ],
+    "skinnedMeshes": [
+      "Fighter_Body",
+      "Fighter_Brows",
+      "Fighter_ClothSeams",
+      "Fighter_Eye_l",
+      "Fighter_Eye_r",
+      "Fighter_Hair",
+      "Fighter_Iris_l",
+      "Fighter_Iris_r",
+      "Fighter_Pupil_l",
+      "Fighter_Pupil_r",
+      "Fighter_Undershorts"
+    ],
+    "morphTargets": [
+      "Blink_L",
+      "Blink_R"
+    ],
+    "images": 11,
+    "externalDependencies": []
+  },
+  "tool": "@gltf-transform/cli@4.5.1",
+  "variants": {
+    "high": {
+      "bytes": 4987852,
+      "sha256": "9d30c873e532543fcbdaac1682daecc2ca26fd7b96049da95cf977822c4712ae",
+      "triangles": 56226,
+      "joints": [
+        53
+      ],
+      "animations": [
+        "Attack",
+        "Block",
+        "CombatIdle",
+        "Death",
+        "Hit",
+        "Idle",
+        "Jump",
+        "JumpLand",
+        "JumpLoop",
+        "JumpStart",
+        "Run",
+        "Walk"
+      ],
+      "sockets": [
+        "socket_back",
+        "socket_belt",
+        "socket_chest",
+        "socket_footL",
+        "socket_footR",
+        "socket_head",
+        "socket_mainHand",
+        "socket_offHand",
+        "socket_shoulderL",
+        "socket_shoulderR"
+      ],
+      "skinnedMeshes": [
+        "Fighter_Body",
+        "Fighter_Brows",
+        "Fighter_ClothSeams",
+        "Fighter_Eye_l",
+        "Fighter_Eye_r",
+        "Fighter_Hair",
+        "Fighter_Iris_l",
+        "Fighter_Iris_r",
+        "Fighter_Pupil_l",
+        "Fighter_Pupil_r",
+        "Fighter_Undershorts"
+      ],
+      "morphTargets": [
+        "Blink_L",
+        "Blink_R"
+      ],
+      "images": 11,
+      "externalDependencies": [],
+      "maximumTextureSize": 1024,
+      "ratio": 0.45,
+      "maximumSimplificationError": 0.002
+    },
+    "low": {
+      "bytes": 2670240,
+      "sha256": "616e82ee5540959a835928f68e68e29ec578ad848c5728b01eb88be546bb3d50",
+      "triangles": 23918,
+      "joints": [
+        53
+      ],
+      "animations": [
+        "Attack",
+        "Block",
+        "CombatIdle",
+        "Death",
+        "Hit",
+        "Idle",
+        "Jump",
+        "JumpLand",
+        "JumpLoop",
+        "JumpStart",
+        "Run",
+        "Walk"
+      ],
+      "sockets": [
+        "socket_back",
+        "socket_belt",
+        "socket_chest",
+        "socket_footL",
+        "socket_footR",
+        "socket_head",
+        "socket_mainHand",
+        "socket_offHand",
+        "socket_shoulderL",
+        "socket_shoulderR"
+      ],
+      "skinnedMeshes": [
+        "Fighter_Body",
+        "Fighter_Brows",
+        "Fighter_ClothSeams",
+        "Fighter_Eye_l",
+        "Fighter_Eye_r",
+        "Fighter_Hair",
+        "Fighter_Iris_l",
+        "Fighter_Iris_r",
+        "Fighter_Pupil_l",
+        "Fighter_Pupil_r",
+        "Fighter_Undershorts"
+      ],
+      "morphTargets": [
+        "Blink_L",
+        "Blink_R"
+      ],
+      "images": 11,
+      "externalDependencies": [],
+      "maximumTextureSize": 512,
+      "ratio": 0.18,
+      "maximumSimplificationError": 0.006
+    }
+  }
+}

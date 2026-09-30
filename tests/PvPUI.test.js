@@ -1,8 +1,12 @@
 import { jest } from '@jest/globals';
 import { PvPUI } from '../src/ui/PvPUI.js';
 
+const interfaces = [];
+afterEach(() => { interfaces.splice(0).forEach(ui => ui.dispose()); });
+
 function createUI() {
     const ui = new PvPUI({ openManagedWindow: jest.fn(), closeManagedWindow: jest.fn() });
+    interfaces.push(ui);
     return ui;
 }
 
@@ -29,13 +33,80 @@ describe('PvPUI', () => {
         expect(card.textContent).toContain('Rating 1000 → 1016 (+16) · +0 Honor · +0 season points');
         expect(card.textContent).toContain('Forfeit: no Honor');
     });
-    test('renders duel challenge and responds with canonical requester ID', () => {
+    test('opens new duel challenge and responds with exact consent identity', () => {
         const ui = createUI();
         ui.onDuelRespond = jest.fn();
-        ui.update({ challenge: { requesterId: 'player-Alice' } });
+        ui.update({ challenge: { id: 'challenge-1', requesterId: 'player-Alice', expiresAt: new Date(Date.now() + 30000).toISOString() } });
         expect(ui.window.textContent).toContain('Alice challenges you');
         Array.from(ui.window.querySelectorAll('button')).find(button => button.textContent === 'Accept').click();
-        expect(ui.onDuelRespond).toHaveBeenCalledWith('player-Alice', true);
+        expect(ui.onDuelRespond).toHaveBeenCalledWith('player-Alice', 'challenge-1', true);
+        expect(ui.openManagedWindow).toHaveBeenCalledWith('pvp');
+    });
+
+    test('detached old response cannot accept or decline replacement consent', () => {
+        const ui = createUI();
+        ui.onDuelRespond = jest.fn();
+        ui.onRefresh = jest.fn();
+        const challenge = { id: 'first', requesterId: 'player-Alice', expiresAt: new Date(Date.now() + 30000).toISOString() };
+        ui.update({ challenge });
+        const oldButtons = [...ui.window.querySelectorAll('[data-duel-response]')];
+        ui.update({ challenge: { ...challenge, id: 'replacement' } });
+        oldButtons.forEach(button => button.click());
+        expect(ui.onDuelRespond).not.toHaveBeenCalled();
+        expect(ui.state.challenge.id).toBe('replacement');
+        expect(ui.onRefresh).toHaveBeenCalledTimes(3);
+    });
+
+    test('challenge clock ticks locally, expires exactly, and stops when closed', () => {
+        jest.useFakeTimers();
+        const ui = createUI();
+        const challenge = { id: 'clock', requesterId: 'player-Alice', expiresAt: new Date(Date.now() + 30000).toISOString() };
+        ui.update({ challenge });
+        expect(ui.window.textContent).toContain('Respond within 30s');
+        jest.advanceTimersByTime(1000);
+        expect(ui.window.textContent).toContain('Respond within 29s');
+        jest.advanceTimersByTime(29000);
+        expect(ui.window.textContent).toContain('Challenge expired');
+        expect([...ui.window.querySelectorAll('[data-duel-response]')].every(button => button.disabled)).toBe(true);
+        ui.update({ challenge: { ...challenge, id: 'next', expiresAt: new Date(Date.now() + 30000).toISOString() } });
+        ui.toggle(false);
+        expect(jest.getTimerCount()).toBe(0);
+        ui.update({ challenge: ui.state.challenge });
+        expect(ui.isOpen).toBe(false);
+        expect(jest.getTimerCount()).toBe(0);
+        ui.dispose();
+        jest.useRealTimers();
+    });
+
+    test('flag disable is unavailable until safe-zone recovery', () => {
+        const ui = createUI();
+        ui.onFlag = jest.fn();
+        ui.update({ openWorldFlagged: true, inSafeZone: false });
+        let disable = [...ui.window.querySelectorAll('button')].find(button => button.textContent === 'Disable World PvP');
+        expect(disable.disabled).toBe(true);
+        disable.click();
+        expect(ui.onFlag).not.toHaveBeenCalled();
+        ui.update({ openWorldFlagged: true, inSafeZone: true });
+        disable = [...ui.window.querySelectorAll('button')].find(button => button.textContent === 'Disable World PvP');
+        disable.click();
+        expect(ui.onFlag).toHaveBeenCalledWith(false);
+    });
+
+    test('late snapshots and detached consent cannot resurrect a disposed session', () => {
+        const ui = createUI();
+        const challenge = { id: 'old-session', requesterId: 'player-Alice', expiresAt: new Date(Date.now() + 30000).toISOString() };
+        ui.update({ challenge });
+        const oldButton = ui.window.querySelector('[data-duel-response]');
+        ui.onRefresh = jest.fn(); ui.onDuelRespond = jest.fn();
+        ui.openManagedWindow.mockClear();
+        ui.dispose();
+        oldButton.click();
+        ui.update({ challenge: { ...challenge, id: 'late' } });
+        ui.toggle(true);
+        expect(ui.onDuelRespond).not.toHaveBeenCalled();
+        expect(ui.onRefresh).not.toHaveBeenCalled();
+        expect(ui.openManagedWindow).not.toHaveBeenCalled();
+        expect(ui.window.isConnected).toBe(false);
     });
 
     test('queues both supported arena sizes', () => {

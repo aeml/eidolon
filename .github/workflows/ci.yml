@@ -91,7 +91,17 @@ jobs:
           go-version: '1.24.5'
           cache-dependency-path: server/go.sum
 
-      # Run first against the fresh job-owned Mongo service. Other repository
+      - name: Verify ordinary duel socket consent and surrender
+        working-directory: server
+        env:
+          EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
+          EIDOLON_RESOURCE_MONGO_URI: mongodb://127.0.0.1:27017
+        run: |
+          duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
+          go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
+
+      # Run before the broad suite against the job-owned Mongo service. Other repository
       # tests intentionally leave partial fixture records, not recoverable live
       # characters. The explicit label/loopback URI prevents live-database use.
       - name: Verify disposable guild bank settlement and recovery

@@ -12,10 +12,12 @@ const nonAuthoredMigrationBridges = new Set([
     'assets/plants/pine.glb',
     'assets/plants/willow.glb'
 ]);
-// User-requested character delivery, staged for integration on September 30.
-// Runtime GLB dependencies remain prohibited by the separate reference guard.
+// The owner-delivered Fighter and its two audited runtime candidates are the
+// only character-export exceptions. Retired actor/environment assets stay banned.
 const stagedCharacterExports = new Set([
-    'assets/archetypes/Fighter/fighter.glb'
+    'assets/archetypes/Fighter/fighter.glb',
+    'assets/archetypes/Fighter/fighter-runtime-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-low.glb'
 ]);
 const currentLegacyReferenceFiles = new Set([
     'scripts/serve-static.mjs'
@@ -26,6 +28,10 @@ const INITIAL_LEGACY_MODEL_BYTES = 814551864;
 const MAX_LEGACY_MODEL_COUNT = 0;
 const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
+const fighterReferenceAllowlist = new Map([
+    ['src/art/AuthoredFighter.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
+    ['scripts/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'welded.glb', 'resampled.glb', '${quality}-geometry.glb', '${quality}-textures.glb', 'fighter-runtime-${quality}.glb'])]
+]);
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -56,13 +62,19 @@ describe('procedural art migration guard', () => {
         expect(totalBytes).toBe(MAX_LEGACY_MODEL_BYTES);
     });
 
-    test('new runtime modules cannot introduce authored GLB dependencies', () => {
+    test('only audited Fighter modules may refer to character exports', () => {
         const sourceFiles = [
             ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
             ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
         ].filter((filePath) => /\.(?:html|js|json|mjs)$/i.test(filePath));
 
-        const references = sourceFiles.map((filePath) => ({
+        for (const [file, allowed] of fighterReferenceAllowlist) {
+            const source = fs.readFileSync(path.join(repoRoot, file), 'utf8');
+            const paths = [...source.matchAll(/['"`]([^'"`\n]*\.glb)['"`]/g)].map(match => match[1]);
+            expect(paths.sort()).toEqual([...allowed].sort());
+            expect(source.match(/\.glb\b/gi)?.length || 0).toBe(allowed.size);
+        }
+        const references = sourceFiles.filter(file => !fighterReferenceAllowlist.has(relative(file))).map((filePath) => ({
             file: relative(filePath),
             count: fs.readFileSync(filePath, 'utf8').match(/\.glb\b/gi)?.length || 0
         })).filter(({ count }) => count > 0);

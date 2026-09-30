@@ -1,5 +1,52 @@
 import { expect, test } from '@playwright/test';
 
+for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+    test(`duel consent stays current and counts down each second at ${viewport.width}px`, async ({ page }, testInfo) => {
+        await page.setViewportSize(viewport);
+        await page.clock.install({ time: new Date('2026-09-30T21:00:00Z') });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async () => {
+            const { PvPUI } = await import('/src/ui/PvPUI.js');
+            document.querySelectorAll('#pvp-window').forEach(element => element.remove());
+            document.getElementById('start-screen').style.display = 'none';
+            const ui = new PvPUI({});
+            const fixture = { ui, responses: [], refreshes: 0 };
+            ui.onRefresh = () => fixture.refreshes++;
+            ui.onDuelRespond = (...response) => fixture.responses.push(response);
+            const challenge = { id: 'original', requesterId: 'player-Alice', expiresAt: new Date(Date.now() + 30000).toISOString() };
+            ui.update({ challenge });
+            fixture.oldButtons = [...ui.window.querySelectorAll('[data-duel-response]')];
+            ui.update({ challenge: { ...challenge, id: 'current', expiresAt: new Date(Date.now() + 30000).toISOString() } });
+            window.duelConsentFixture = fixture;
+        });
+        const panel = page.locator('#pvp-window');
+        await expect(panel).toBeVisible();
+        await expect(panel).toContainText('Alice challenges you');
+        const layout = await panel.locator('.pvp-card--challenge').evaluate(element => {
+            const rect = element.getBoundingClientRect();
+            return { cardWidth: rect.width, overflow: element.scrollWidth > element.clientWidth,
+                labelWidth: element.querySelector('strong').getBoundingClientRect().width,
+                targets: [...element.querySelectorAll('button')].map(button => button.getBoundingClientRect().height) };
+        });
+        expect(layout.overflow).toBe(false);
+        expect(layout.labelWidth).toBeGreaterThan(layout.cardWidth * .8);
+        expect(layout.targets.every(height => height >= 44)).toBe(true);
+        await expect(panel).toContainText('Respond within 30s');
+        await page.clock.runFor(1000);
+        await expect(panel).toContainText('Respond within 29s');
+        await panel.getByRole('button', { name: 'Accept', exact: true }).click();
+        expect(await page.evaluate(() => window.duelConsentFixture.responses)).toEqual([['player-Alice', 'current', true]]);
+        await page.evaluate(() => window.duelConsentFixture.oldButtons.forEach(button => button.click()));
+        expect(await page.evaluate(() => window.duelConsentFixture.responses)).toHaveLength(1);
+        await panel.screenshot({ path: testInfo.outputPath('duel-consent.png') });
+        await page.clock.runFor(29000);
+        await expect(panel).toContainText('Challenge expired');
+        await expect(panel.getByRole('button', { name: 'Accept', exact: true })).toBeDisabled();
+        await expect(panel.getByRole('button', { name: 'Decline', exact: true })).toBeDisabled();
+        await page.evaluate(() => window.duelConsentFixture.ui.dispose());
+    });
+}
+
 test('arena elimination, waiting and completed states have clear actionable feedback', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto('/', { waitUntil: 'networkidle' });

@@ -5,6 +5,19 @@ import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 const repoRoot = path.resolve(process.cwd());
 const currentVersion = '1.53.0';
 
+test('ordinary duel consent is verified once through a disposable normal server socket route', () => {
+    const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
+    const start = workflow.indexOf('- name: Verify ordinary duel socket consent and surrender');
+    const next = workflow.indexOf('- name: Verify disposable guild bank settlement and recovery');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(next);
+    for (const text of ["EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'", 'mongodb://127.0.0.1:27017',
+        'go build -race', 'main.buildCommit=server', 'EIDOLON_RESOURCE_BINARY=',
+        "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1"]) {
+        expect(workflow.slice(start, next)).toContain(text);
+    }
+    expect(workflow.split('Verify ordinary duel socket consent and surrender')).toHaveLength(2);
+});
+
 test('1.53.0 records group planning, current consent and unchanged progression', () => {
     const html = fs.readFileSync('index.html', 'utf8');
     const start = html.indexOf('data-version="1.53.0"'), previous = html.indexOf('data-version="1.52.0"');

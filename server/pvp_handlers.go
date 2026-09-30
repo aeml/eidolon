@@ -36,13 +36,26 @@ func handleMsgDuelRequest(client *Client, message Message) {
 
 func handleMsgDuelRespond(client *Client, message Message) {
 	var payload DuelRespondPayload
-	if err := json.Unmarshal(message.Payload, &payload); err != nil || payload.RequesterID == "" {
+	if err := json.Unmarshal(message.Payload, &payload); err != nil || payload.RequesterID == "" || payload.ChallengeID == "" {
 		client.sendError("invalid duel response")
+		sendPvPState(client)
 		return
 	}
-	match, err := world.RespondDuel(client.playerID, payload.RequesterID, payload.Accept)
+	if payload.Accept {
+		requester := getClientByPlayerID(payload.RequesterID)
+		if requester == nil || chatService.shouldFilter(client.username, requester.username) || chatService.shouldFilter(requester.username, client.username) {
+			// Decline only the exact prompt. An old response must not consume a
+			// newer invitation, even if the requester has since been blocked.
+			world.RespondDuel(client.playerID, payload.RequesterID, payload.ChallengeID, false)
+			client.sendError("duel player is unavailable")
+			sendPvPState(client)
+			return
+		}
+	}
+	match, err := world.RespondDuel(client.playerID, payload.RequesterID, payload.ChallengeID, payload.Accept)
 	if err != nil {
 		client.sendError(err.Error())
+		sendPvPState(client)
 		return
 	}
 	if match == nil {

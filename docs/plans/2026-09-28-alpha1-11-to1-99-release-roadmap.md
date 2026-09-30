@@ -45,7 +45,9 @@ cover runtime-sized assets, independent skeleton instances, generated equipment
 fit, animation coverage, actual-camera review and measured performance before
 default enablement. It is no longer an unavailable input; remaining actors and
 the final modern-art gate remain open. The owner need not supply equipment or
-environment assets.
+environment assets. The pilot now has two smaller validated exports and tested
+independent skeleton instances. Equipment/skill integration and visual fixes
+remain; it is not yet the default in-game Fighter.
 
 World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)
 is mandatory. Fill the actual world with purposeful places, routes, ambient life,

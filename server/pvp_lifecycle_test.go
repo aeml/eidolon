@@ -19,11 +19,11 @@ func TestPvPRecoveryDispatchRejectsTownSceneTransition(t *testing.T) {
 	second.MaxHealth, second.Health = 100, 100
 	world.AddEntity(first)
 	world.AddEntity(second)
-	_, err := world.RequestDuel(first.ID, second.ID)
+	challenge, err := world.RequestDuel(first.ID, second.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	match, err := world.RespondDuel(second.ID, first.ID, true)
+	match, err := world.RespondDuel(second.ID, first.ID, challenge.ID, true)
 	if err != nil {
 		t.Fatal(err)
 	}

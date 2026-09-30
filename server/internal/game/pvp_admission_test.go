@@ -37,7 +37,8 @@ func TestDuelRevalidatesPlayersOnAcceptance(t *testing.T) {
 		t.Run(change, func(t *testing.T) {
 			a, b := &Entity{ID: "a", Type: TypePlayer}, &Entity{ID: "b", Type: TypePlayer}
 			w := newPvPTestWorld(a, b)
-			if _, err := w.RequestDuel(a.ID, b.ID); err != nil {
+			challenge, err := w.RequestDuel(a.ID, b.ID)
+			if err != nil {
 				t.Fatal(err)
 			}
 			switch change {
@@ -56,7 +57,7 @@ func TestDuelRevalidatesPlayersOnAcceptance(t *testing.T) {
 			case "instance":
 				b.InstanceID = "dungeon"
 			}
-			if _, err := w.RespondDuel(b.ID, a.ID, true); err == nil {
+			if _, err := w.RespondDuel(b.ID, a.ID, challenge.ID, true); err == nil {
 				t.Fatal("accepted a now-invalid challenge")
 			}
 			if _, err := w.RequestDuel(a.ID, b.ID); err == nil {

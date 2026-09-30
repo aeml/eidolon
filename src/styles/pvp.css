@@ -23,12 +23,17 @@
 .pvp-card p { margin: 0 0 8px; }
 
 .pvp-card--challenge {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
     gap: 8px;
 }
 
-.pvp-card--challenge strong { flex: 1; }
+.pvp-card--challenge strong,
+.pvp-card--challenge p { grid-column: 1 / -1; }
+.pvp-card--challenge p { line-height: 1.45; color: #d7dbe4; }
+.pvp-card--challenge .pvp-btn { margin: 0; min-height: 44px; }
+.pvp-btn:disabled { opacity: .55; cursor: not-allowed; }
 
 .pvp-card--match {
     display: grid;

@@ -8,6 +8,8 @@ import (
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -30,9 +32,12 @@ const (
 )
 
 type DuelChallenge struct {
+	ID          string    `json:"id"`
 	RequesterID string    `json:"requesterId"`
 	TargetID    string    `json:"targetId"`
 	ExpiresAt   time.Time `json:"expiresAt"`
+	requester   *Entity
+	target      *Entity
 }
 
 type PvPOrigin struct {
@@ -147,7 +152,7 @@ func (w *World) CombatRelationship(source, target *Entity) CombatRelationship {
 		if source.PartyID != "" && source.PartyID == target.PartyID {
 			return RelationshipAlly
 		}
-		if w.PvP != nil && w.PvP.areOpponents(source.ID, target.ID) {
+		if w.PvP != nil && w.PvP.areOpponents(source, target) {
 			return RelationshipHostile
 		}
 		if w.PvP != nil && !w.inSafeZone(source) && !w.inSafeZone(target) && w.PvP.areOpenWorldOpponents(source, target) {
@@ -198,13 +203,18 @@ func (system *PvPSystem) areOpenWorldOpponents(first, second *Entity) bool {
 
 func (w *World) SetOpenWorldPvP(playerID string, enabled bool) error {
 	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 	player := w.Entities[playerID]
-	if player == nil || player.Type != TypePlayer || player.Disconnected || player.State == "DEAD" || player.InstanceID != "" {
-		w.Mu.RUnlock()
+	if player == nil || w.PvP == nil {
+		return errors.New("player is unavailable")
+	}
+	player.Mu.RLock()
+	available := player.Type == TypePlayer && !player.Disconnected && player.State != "DEAD" && player.Health > 0 && player.InstanceID == ""
+	inSafeZone := w.inSafeZone(player)
+	player.Mu.RUnlock()
+	if !available {
 		return errors.New("open-world PvP can only be changed while alive in the overworld")
 	}
-	inSafeZone := w.inSafeZone(player)
-	w.Mu.RUnlock()
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	if w.PvP.MatchByPlayer[playerID] != "" || w.PvP.playerQueuedLocked(playerID) {
@@ -217,17 +227,17 @@ func (w *World) SetOpenWorldPvP(playerID string, enabled bool) error {
 	return nil
 }
 
-func (system *PvPSystem) areOpponents(first, second string) bool {
+func (system *PvPSystem) areOpponents(first, second *Entity) bool {
 	system.mu.RLock()
 	defer system.mu.RUnlock()
-	matchID := system.MatchByPlayer[first]
-	if matchID == "" || system.MatchByPlayer[second] != matchID {
+	matchID := system.MatchByPlayer[first.ID]
+	if matchID == "" || system.MatchByPlayer[second.ID] != matchID || first.InstanceID != matchID || second.InstanceID != matchID {
 		return false
 	}
 	match := system.Matches[matchID]
 	return match != nil && match.Status == PvPMatchActive && !match.RoundPending &&
-		!containsPlayer(match.Eliminated, first) && !containsPlayer(match.Eliminated, second) &&
-		playersOnOpposingTeams(match, first, second)
+		!containsPlayer(match.Eliminated, first.ID) && !containsPlayer(match.Eliminated, second.ID) &&
+		playersOnOpposingTeams(match, first.ID, second.ID)
 }
 
 func playersOnOpposingTeams(match *PvPMatch, first, second string) bool {
@@ -257,12 +267,20 @@ func (w *World) RequestDuel(requesterID, targetID string) (DuelChallenge, error)
 	if w.PvP.playerQueuedLocked(requesterID) || w.PvP.playerQueuedLocked(targetID) {
 		return DuelChallenge{}, errors.New("leave the arena queue before starting a duel")
 	}
-	challenge := DuelChallenge{RequesterID: requesterID, TargetID: targetID, ExpiresAt: w.PvP.now().Add(30 * time.Second)}
+	if pending, exists := w.PvP.Challenges[targetID]; exists && w.PvP.now().Before(pending.ExpiresAt) && pending.target == w.Entities[targetID] && pending.requester == w.Entities[pending.RequesterID] {
+		if pending.RequesterID == requesterID {
+			// Retries neither replace consent nor extend the recipient's timer.
+			return pending, nil
+		}
+		return DuelChallenge{}, errors.New("that player already has a pending duel challenge")
+	}
+	challenge := DuelChallenge{ID: uuid.NewString(), RequesterID: requesterID, TargetID: targetID,
+		ExpiresAt: w.PvP.now().Add(30 * time.Second), requester: w.Entities[requesterID], target: w.Entities[targetID]}
 	w.PvP.Challenges[targetID] = challenge
 	return challenge, nil
 }
 
-func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMatch, error) {
+func (w *World) RespondDuel(targetID, requesterID, challengeID string, accepted bool) (*PvPMatch, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	// Read actors before acquiring PvP.mu, following combat's lock order.
@@ -273,7 +291,7 @@ func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMa
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	challenge, ok := w.PvP.Challenges[targetID]
-	if !ok || challenge.RequesterID != requesterID || w.PvP.now().After(challenge.ExpiresAt) {
+	if !ok || challengeID == "" || challenge.ID != challengeID || challenge.RequesterID != requesterID || !w.PvP.now().Before(challenge.ExpiresAt) {
 		return nil, errors.New("duel challenge not found or expired")
 	}
 	delete(w.PvP.Challenges, targetID)
@@ -282,6 +300,9 @@ func (w *World) RespondDuel(targetID, requesterID string, accepted bool) (*PvPMa
 	}
 	if actorError != nil {
 		return nil, actorError
+	}
+	if challenge.requester != w.Entities[requesterID] || challenge.target != w.Entities[targetID] {
+		return nil, errors.New("duel player session changed; request a new challenge")
 	}
 	for _, playerID := range []string{requesterID, targetID} {
 		if w.PvP.MatchByPlayer[playerID] != "" || w.PvP.playerQueuedLocked(playerID) {
@@ -722,7 +743,7 @@ func (w *World) UpdatePvP(now time.Time) {
 	}
 	w.PvP.mu.Lock()
 	for targetID, challenge := range w.PvP.Challenges {
-		if now.After(challenge.ExpiresAt) {
+		if !now.Before(challenge.ExpiresAt) {
 			delete(w.PvP.Challenges, targetID)
 		}
 	}
@@ -769,7 +790,7 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 	if playerSnapshot != nil {
 		status["inSafeZone"] = w.inSafeZone(playerSnapshot)
 	}
-	if challenge, ok := w.PvP.Challenges[playerID]; ok {
+	if challenge, ok := w.PvP.Challenges[playerID]; ok && w.PvP.now().Before(challenge.ExpiresAt) {
 		status["challenge"] = challenge
 	}
 	if match := w.PvP.Matches[w.PvP.MatchByPlayer[playerID]]; match != nil {

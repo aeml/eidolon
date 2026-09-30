@@ -16,10 +16,11 @@ func TestPvPSaveSnapshotPreservesEntryResourcesAndPositionWithoutLiveLookup(t *t
 	b := &game.Entity{ID: "save-b", Type: game.TypePlayer, MaxHealth: 100, Health: 100, X: 14, Z: 200}
 	w.AddEntity(a)
 	w.AddEntity(b)
-	if _, err := w.RequestDuel(a.ID, b.ID); err != nil {
+	challenge, err := w.RequestDuel(a.ID, b.ID)
+	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := w.RespondDuel(b.ID, a.ID, true); err != nil {
+	if _, err := w.RespondDuel(b.ID, a.ID, challenge.ID, true); err != nil {
 		t.Fatal(err)
 	}
 	a.Health, a.Mana, a.State = 0, 0, "DEAD"

@@ -3,8 +3,9 @@
 September 30, 2026. The owner delivered a rigged, underclothes-only Fighter in
 commit `da02a2a5b35e70b8b890873d36adcf2804433281`. It was preserved by the fresh
 remote merge before the 1.53 push. The asset is available for integration; the
-current runtime still uses the procedural Fighter. This is intake evidence and
-implementation scope, not visual or performance acceptance.
+current runtime still uses the procedural Fighter. Runtime candidates and an
+independent-skeleton adapter are now implemented and tested locally. This is
+partial integration evidence, not completed visual or performance acceptance.
 
 ## Verified delivery
 
@@ -30,7 +31,42 @@ The README references a lower-detail export and Blender sources under
 workspace. The delivered full-detail GLB is sufficient to proceed with code-owned
 integration and derivation rather than asking the owner to produce more assets.
 
-## Integration alongside the next combat-readability milestone
+## Verified runtime preparation
+
+The reproducible `scripts/derive-fighter-runtime.mjs` uses pinned glTF Transform
+4.5.1 commands to weld, resample, simplify, resize and encode WebP textures.
+The source hash is pinned, its original export/notices remain untouched, and
+attachment leaves are never pruned. Commands follow the
+[upstream optimization documentation](https://gltf-transform.dev/).
+
+The generated manifest records High at 4,987,852 bytes and 56,226 triangles,
+with textures capped at 1024px; Low is 2,670,240 bytes and 23,918 triangles,
+with textures capped at 512px. Both retain 53 joints, all 12 clips, ten sockets,
+11 skinned meshes and both blink targets, with no external dependencies. Fresh
+validator runs found zero errors/warnings and the same three unused-tangent
+informational notices. This proves structural retention, not final appearance.
+
+`AuthoredFighter.js` clones the complete skeleton/skin hierarchy, shares immutable
+geometry and textures, normalizes to the existing 4.5-world-unit height above the
+feet, retains authored motion and keeps a resettable per-instance pose. It does
+not yet replace the default class factory or claim full class-skill coverage.
+The migration guard now allows exactly these two derived exports, their adapter
+references and the pinned derivation script; retired assets remain prohibited.
+
+The native Chrome pilot rendered two independent actors for each quality, all
+11 skinned meshes per actor and decoded bounded textures. Idle, Run, Attack,
+Block, Death and Jump samples were finite; the run passed in 10.0s. Screenshots
+were reviewed for Idle, Attack and early Death. The desktop pilot is not an
+equipped gameplay-camera/character-sheet test or a final GPU/memory benchmark.
+
+Review found visibly noisy skin microdetail and Low scalp/shorts artifacts.
+Investigate material detail and simplification before accepting those surfaces;
+the validator and finite transforms do not qualify them as modern finished art.
+Artifacts are in `/tmp/eidolon-1-54-fighter-pilot-0930`. One synthetic clone test
+initially distinguished JavaScript negative zero from zero; the numerical
+assertion now tolerates signed zero while retaining independent-skeleton checks.
+
+## Remaining integration alongside combat readability
 
 1. Derive and validate runtime-sized geometry/textures as needed, retaining the
    supplied source and provenance. Measure loading/memory rather than making the
@@ -50,8 +86,8 @@ integration and derivation rather than asking the owner to produce more assets.
    a shared multi-actor workload. Review appearance and readable combat, not just
    finite transforms or mesh counts, before enabling the model by default.
 
-The procedural-migration guard currently treats this as a staged asset and
-prohibits runtime imports. Integration must replace that restriction with a
-narrow validated Fighter allowlist, preserving bans on retired legacy assets;
-do not broadly disable the guard merely to pass tests. Other class/NPC/monster
-deliveries and full modern-art acceptance remain separate requirements.
+Other class/NPC/monster deliveries and full modern-art acceptance remain
+separate requirements. Default Fighter activation still requires generated
+equipment fit, class-skill gestures and moving casts, fallback/cache/pool
+lifecycle, current gameplay camera and character-sheet review, and measured
+High/Low multi-actor performance. No new owner model request is needed.

@@ -42,7 +42,7 @@ func TestCombatRelationshipRequiresConsentForPlayerDamage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := world.RespondDuel(second.ID, challenge.RequesterID, true); err != nil {
+	if _, err := world.RespondDuel(second.ID, challenge.RequesterID, challenge.ID, true); err != nil {
 		t.Fatal(err)
 	}
 	if got := world.CombatRelationship(first, second); got != RelationshipHostile {
@@ -69,8 +69,8 @@ func TestDuelCompletionRestoresPlayersWithoutRankedRewards(t *testing.T) {
 	var result PvPMatchResult
 	world.OnPvPMatchComplete = func(value PvPMatchResult) { result = value }
 	world.SetPvPProfile(before)
-	_, _ = world.RequestDuel(first.ID, second.ID)
-	match, err := world.RespondDuel(second.ID, first.ID, true)
+	challenge, _ := world.RequestDuel(first.ID, second.ID)
+	match, err := world.RespondDuel(second.ID, first.ID, challenge.ID, true)
 	if err != nil {
 		t.Fatal(err)
 	}

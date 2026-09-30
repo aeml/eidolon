@@ -398,6 +398,7 @@ type GuildMOTDPayload struct {
 
 type DuelRespondPayload struct {
 	RequesterID string `json:"requesterId"`
+	ChallengeID string `json:"challengeId"`
 	Accept      bool   `json:"accept"`
 }
 

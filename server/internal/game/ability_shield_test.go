@@ -37,7 +37,7 @@ func TestPaidHostileAbilitiesRespectArcaneShield(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if _, err := w.RespondDuel(defender.ID, challenge.RequesterID, true); err != nil {
+				if _, err := w.RespondDuel(defender.ID, challenge.RequesterID, challenge.ID, true); err != nil {
 					t.Fatal(err)
 				}
 				// Move within ordinary cast range after setup, and expire only the
