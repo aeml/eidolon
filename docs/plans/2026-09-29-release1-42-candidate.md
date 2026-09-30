@@ -321,3 +321,35 @@ passes with zero sanitizations; the wrapper cleans its run-owned containers
 and data. This verifies the changed native-input seam, not campaign pacing,
 an entire dungeon clear, or absence of every possible CI navigation failure.
 The strict helper/projection/failure unit checks and new CI remain required.
+
+## First-party login font correction
+
+CI36657023723 at0dcb1fd3 is terminal failure: Go, Jest and all three browser
+shards passed, but login/reconnect captured console ERR_NAME_NOT_RESOLVED.
+The other three disposable smoke cases passed. Deployment was skipped and
+accepted production remains1.41. The CI console message does not identify its
+request URL, so the exact failed CI request is not conclusively attributed.
+
+The only external font stylesheet was Google Fonts Cinzel. An anonymous Chrome
+regression blocking that service's DNS reproduced the identical console error
+before the change. Bundle the unchanged pinned Cinzel variable font locally,
+preload it, serve its correct MIME type, retain the complete OFL/source notice,
+and keep the existing typography weights. No browser-error filters, retries,
+navigation assertions or website files are changed. The125468-byte asset's
+SHA256 isf4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34.
+
+Four font/version/asset-boot suites332checks pass2.644s. The browser regression
+is registered once in the existing required interface suite and demands both
+400/700 loaded faces, same-origin successful font responses, zero external font
+requests and a completely empty strict error collector. Its pre-change failure
+and fixed result are retained at /tmp/eidolon-1-42-font-dns-before-0930 and
+/tmp/eidolon-1-42-local-fonts-0930. Final browser/lint results follow below.
+This removes the reproduced external-service failure dependency, not proof
+that every transient CI or network error has been eliminated. Fresh remote
+integration, new CI and independent exact public acceptance remain required.
+
+Final System Chrome regression passes4.0s (6.2s total) with both actual faces
+loaded and strict collector empty. Evidence:
+/tmp/eidolon-1-42-local-fonts-final-0930. Scoped ESLint and whitespace pass.
+Reuse the prior earned four-case smoke evidence for unchanged gameplay;
+required CI will run the assembled smoke before any production deployment.
