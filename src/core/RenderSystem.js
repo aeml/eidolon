@@ -1065,6 +1065,7 @@ export class RenderSystem {
     disposeObjectResources(object, disposedTextures = new Set()) {
         if (!object) return;
         const disposedGeometries = new Set();
+        const pendingGeometries = new Set();
         const disposedMaterials = new Set();
         const disposeMaterial = (material) => {
             if (!material || disposedMaterials.has(material)) return;
@@ -1079,11 +1080,15 @@ export class RenderSystem {
         };
         object.traverse?.((child) => {
             if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
-                disposedGeometries.add(child.geometry);
                 // BatchedMesh owns geometry AND its matrix/indirection textures.
                 // Its dispose releases all three; do not dispose geometry twice.
-                if (child.isBatchedMesh) child.dispose();
-                else child.geometry.dispose();
+                if (child.isBatchedMesh) {
+                    disposedGeometries.add(child.geometry);
+                    pendingGeometries.delete(child.geometry);
+                    child.dispose();
+                } else {
+                    pendingGeometries.add(child.geometry);
+                }
             }
             if (Array.isArray(child.material)) {
                 child.material.forEach(disposeMaterial);
@@ -1091,6 +1096,10 @@ export class RenderSystem {
                 disposeMaterial(child.material);
             }
         });
+        // A mesh referencing a batch geometry may precede its owner in the
+        // group. Defer ordinary geometries so child order cannot leak textures
+        // or double-dispose an owner's buffer.
+        pendingGeometries.forEach(geometry => geometry.dispose());
     }
 
     updateActorContactShadows(entities, options) {

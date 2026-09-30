@@ -159,3 +159,10 @@ programs. Inspected trading exterior capture; no appearance acceptance inferred
 from the prepared character's fixture position. Evidence:
 /tmp/eidolon-1-48-perimeter-profile-0930. Runtime stays1.47, not deployed or
 performance-complete; trading/woodland and broader runtime workload gaps remain.
+
+Follow-up teardown review: shared geometry references can precede their batch
+owner in a scene. Defer ordinary geometry disposal until owners have released
+their buffers/data textures, removing traversal-order dependence. Both child
+orders across instance clear and idempotent renderer teardown are now explicit
+tests. Final six suites37checks pass6.495s; scoped lint/whitespace pass. This
+changes only resource release, not any rendered profile or scene budget.
