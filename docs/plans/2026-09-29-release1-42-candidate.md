@@ -254,3 +254,70 @@ still has visibly procedural actors and broad quiet ground. Do not promote
 these facts to Q/CB acceptance. No QA-only raised-terrain profile is enabled
 in production: main's default flag is false and explicit activation requires
 a configured QA allowlist. No schema/save/access reset or beta transition.
+
+## CI integration correction
+
+CI36651506461 atc9388afe failed Browser Smoke2/3 on the rendered Chronicle
+move-only fixture. The identical local case reproduced the failure. Its click
+was at the retired stone disk's ground-level center;1.42 replaces that disk
+with a bending sapling. The fixture now clicks the visible trunk and first
+asserts that the exact native CSS pixel hits its real rendered geometry.
+Ordinary clicks must still interact twice; Shift-click must still clear pending
+interaction/ability state and move once, without jumping. The ground assertion
+now compares the actual ray-plane point for that same integer pixel rather
+than the retired disk's origin. No production picking/collision rules or test
+retry policy were weakened. The corrected case passes3.7s; scoped lint and
+whitespace pass. Evidence:/tmp/eidolon-1-42-marker-pixel-0930.
+
+This is a changed-condition publication, not a blind retry of the failed run.
+1.41 remains independently accepted;1.42 still requires its corrected CI and
+exact public release verification before any later candidate is published.
+
+Subsequent completed-job logs exposed three client fixture mismatches, all
+reproduced locally: a plain player harness lacked the real Actor grounding
+method now invoked after phone movement; the initial reflection assertion
+preceded the regional cross-light preset; and the old225-degree walking
+endpoint is exposed by the lower Bastion silhouette. The harness now uses
+Actor.prototype.groundToTerrain with its real engine owner, reflection tests
+assert the initial regional value and1.9-ambient normalization, and the seven
+collision-clear walking waypoints end at210 degrees behind the west tower.
+A direct geometry probe confirms real occlusion there; the collision and
+occlusion assertions remain. Four relevant suites31checks pass2.18s; scoped
+lint and whitespace pass. No production behavior was rolled back for tests.
+
+Go CI also reported TestElevatedSeraphSpawnAndFollow. A local isolated trial
+passed, revealing a seed-dependent fixture: the full populated world can
+place a hostile within the summon's15m aggro range, legitimately switching
+it from follow to smite. The follow/grounding fixture now removes random
+hostiles before the summon is created, retaining cast success, spawn height,
+five grounded AI steps and a stronger decreasing owner-distance assertion.
+Combat acquisition behavior remains unchanged and separately covered.
+The follow, root/slow/lifetime, ordered elevation movement and jump-grounding
+selection passes five iterations in1.543s. This bounded repeat checks the
+identified spawn-seed seam; it is not a dungeon/raid soak or production change.
+
+## Predeploy navigation correction
+
+CI36653110719 at e7bb7df8 passed Go, Jest and all three browser shards, but
+failed the disposable predeploy combat/loot case before deployment. Its
+town-exit helper demanded a full30m Ctrl-click endpoint that was not available
+as an unobscured canvas destination. The failure lacked numeric projection
+diagnostics. An unchanged local route with diagnostic-only additions passed;
+the precise CI view/seed condition therefore remains unproven, not conclusively
+attributed to a game regression or a fixed root cause.
+
+Route planning now explicitly chooses a visible prefix of at least8m before
+requesting a jump. Execution still reprojects that entire chosen destination
+with scaling disabled, sends a real native Ctrl-click, and requires directional
+server movement and a completed landing. The20-step bound and actual east
+fence clearance remain. Covered, invalid or tiny planning results send no
+movement. Failure diagnostics expose only coordinates and projection data.
+
+The final planner-enabled disposable release-smoke run142smoke0930c passes
+all four existing cases in1.5m: login/UI/reconnect, earned overworld kill/loot
+with dungeon/persistence, portal entry/exit, and recoverable bag drop plus
+Journal tracking. The combat case completes31.6s. Credential artifact scan
+passes with zero sanitizations; the wrapper cleans its run-owned containers
+and data. This verifies the changed native-input seam, not campaign pacing,
+an entire dungeon clear, or absence of every possible CI navigation failure.
+The strict helper/projection/failure unit checks and new CI remain required.

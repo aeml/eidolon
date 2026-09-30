@@ -120,8 +120,10 @@ function createEngineHarness() {
         playAnimation: jest.fn(),
         getAttackHitDelay: jest.fn(() => 0),
         render: jest.fn(),
+        groundToTerrain: Actor.prototype.groundToTerrain,
         move: jest.fn()
     };
+    engine.player.gameEngine = engine;
     return engine;
 }
 

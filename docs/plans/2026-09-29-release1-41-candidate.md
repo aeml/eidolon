@@ -2,7 +2,8 @@
 
 This is a code-owned integration candidate, not a published version. It builds
 on the prepared1.40 branch with only the three scoped equipment/batching commits;
-ordered1.40 live publication remains pending.
+preceding1.40 live publication has been independently accepted. This candidate
+still requires its own ordered CI/deployment/live checks.
 Human pacing/readiness observations remain assigned to player playtesting;
 they are not a new code-publication permission requirement. Runtime metadata,
 login and cumulative notes identify1.41.0 on this release branch. Do not deploy
@@ -54,7 +55,7 @@ and equipment-family reviews rather than repeating unchanged galleries.
 
 These captures still show visibly procedural actors. Successful attachment,
 rendering and lifecycle checks do not certify final modern-ARPG appearance.
-Publication waits for preceding1.40 acceptance. Before any push, fetch current
+Preceding1.40 acceptance is recorded below. Before any push, fetch current
 master and merge any concurrent website work into this clean release branch;
 resolve overlaps and verify affected integration seams. Never force-push or
 replace the owner's dirty development worktree.
