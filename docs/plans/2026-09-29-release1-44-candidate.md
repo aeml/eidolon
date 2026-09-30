@@ -1,15 +1,86 @@
 # Alpha 1.44 — audio integration candidate
 
+## Accepted predecessor — September30
+
+Public1.43frontend release.json and backend healthz now agree on exact
+132e1a844c610f0b3dc1e917d01a37544140ee4e/Alpha1.43.0, database ready. Root
+independent normal-DNS IPv4 checks verify cache-bypassed login version/latest
+patch entry/main release key, exact stamped main/Actor/ability clips/gait
+grounding/enemy-death grounding/corpse/combat-feedback modules and first-party
+font bytes against the exact1.43checkout, using the real publishing transform.
+CI36668039885attempt1 completed success with all ten jobs, including
+live109745012948. Root independently revalidated terminal SHA/attempt/jobs
+and repeated public frontend/backend/database checks. [Acceptance receipt](2026-09-30-release1-43-acceptance.md).
+1.44 still requires its own exact-source CI and live acceptance.
+
 Unreleased integrated candidate on the prepared1.43 branch. Runtime/package/
 login/CI/default build identities and cumulative notes identify1.44.0.
-Earlier ordered release prerequisites remain open. Final listening/mix approval
+Ordered1.43 publication is accepted. Final listening/mix approval
 is not claimed; human observations are not a new publication permission gate.
+
+## Confirmed impact identity — September30
+
+Close the remaining all-hits-use-one-cue gap: authoritative damage kind now
+selects distinct physical/fire/cold/lightning/arcane/holy/shadow contact accents.
+These are original short synthesized sounds, not cast announcements, external
+recordings or claims of finished weapon foley. Local bleed/poison/hazard ticks
+use one much quieter voice. Only positive finite confirmed damage involving
+the local player sounds; unrelated remote fights and zero/invalid events do not.
+Existing floating text, damage, action presentation and combat timing remain.
+Legacy/unknown kinds keep their previous generic fallback; generic authored
+media cannot override recognized typed impacts. Combat bus, cooldown, voice
+budget, danger reservation, mute and suspension/lifetime behavior are retained.
+
+Five focused profile/audio, real damage-dispatch, cast and version suites pass
+434checks6.155s. Dispatch covers legacy and five typed local damage packets,
+preserving the remote attacker refresh. Scoped lint/whitespace pass. First
+Chrome trial failed two import requests with net::ERR_NETWORK_CHANGED even
+on loopback; trace response confirms the actual network failure rather than
+a missing module. No test suppression or source fix is attributed to it.
+One bounded rerun with stable source passes3cases15.7s, including actual eight
+distinct OfflineAudioContext sample hashes, finite bounded peaks, silent tails
+after0.25s, periodic RMS less than one third of every ordinary impact and
+complete combat-bus mute. Existing fourteen cast-family and live-context
+voice-budget/suspension checks also pass. Artifacts:
+/tmp/eidolon-1-44-typed-impacts-final-0930; failed trace retained in
+/tmp/eidolon-1-44-typed-impacts-0930. Signal evidence is not human listening/mix
+approval. Patch history records this contact improvement in1.44, not a separate
+version. Ordered1.43 live acceptance now permits publishing this candidate.
+
+## Current upstream integration — September30
+
+### CI fixture correction — September30
+
+Candidate89d3baf8 CI36671909093 failed one Jest suite before loading its tests:
+the friend-toast fixture's partial AudioManager mock omitted the new public
+AUDIO_BUSES export used by UIManager. Production exports and channel controls
+remain intact; the mock now supplies the same frozen combat/interface/ambience
+list. No tests or deployment gates were removed. The corrected friend-toast,
+AudioManager, typed-impact, UI settings and phone settings suites pass89checks
+in3.9s, with scoped lint and whitespace passing. An initial local command named
+a nonexistent UIManagerAudioSettings suite; that command failed and is not
+counted as passing evidence. The explicit existing-suite command is the receipt.
+The corrected source still requires a new exact-head CI/live acceptance.
+
+Merged master132e1a844c610f0b3dc1e917d01a37544140ee4e into the prepared
+candidate. Preserve1.44 identities, its cumulative patch entry and website
+files, while carrying the accepted1.42 first-party font,1.43 dependency patches,
+current Wizard/Maelin animation fixture, strict browser diagnostics and scoped
+Pages proxy template. README conflict resolved to1.44 source/1.42 accepted live,
+not an unverified1.43 acceptance. Eleven focused audio, font, loader, publishing,
+version and browser-helper suites pass503checks6.799s with the patched toolchain;
+full lint and whitespace checks pass. Existing unchanged audio rendering/
+suspension/phone evidence remains applicable, not rerun for document changes.
+1.43 CI36668039885 subsequently passed its ordered publication prerequisite. This merge
+does not apply the staged privileged nginx configuration or deploy1.44.
 
 ## Draft patch notes
 
 - Distinct short cast cues for fourteen ability families across all four
   classes, including fire, arcane, gravity and time magic. Existing local-only
   playback, combat volume controls and danger priority are preserved.
+- Short typed impact signatures with quieter periodic contact; zero/invalid
+  damage and unrelated remote fights do not add local hit sounds.
 
 - Independent combat, interface and ambience volume controls, saved per device
   and available in desktop and phone settings.

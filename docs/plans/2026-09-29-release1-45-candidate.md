@@ -5,6 +5,48 @@ login/CI/default build identities and cumulative notes identify1.45.0.
 Ordered predecessor publication and this candidate's own CI/live checks remain
 required. This is not final modern-art, accessibility or closed-beta acceptance.
 
+## Accepted predecessor and publication readiness — September30
+
+The first1.45 CI36676816343/46eb5038 had one terminal Jest failure:
+EarnedInventoryRoute still expected the old bag-grid nth right-click. The
+ordinary earned-stash route now uses the visible desktop storage row's real
+inventory source/slot index and right-click handler. Correct only that stale
+source-contract assertion; retain all capacity, item conservation, Gold,
+equipment, quest and no-grant checks. Production controls are unchanged.
+Four stash/earned-inventory/version suites360checks pass8.906s, scoped lint
+and whitespace pass. This correction still requires its own exact-head CI;
+the failed head is not accepted or deployed.
+
+1.44 exactb24eda6d is independently accepted after CI36673117387attempt1/all
+ten jobs and public frontend/backend/document/eight stamped modules/font
+verification. [Receipt](2026-09-30-release1-44-acceptance.md). This candidate
+already merges current143fixes and144 audio/FriendToast correction, preserving
+all1.45 identities and cumulative patch history. Three version/publishing/
+FriendToast suites335checks pass3.348s; whitespace passes. Existing unchanged
+UI rendering, auction and focused integration evidence below is reused, not
+replayed as a new campaign soak. Standard exact-head CI/live QA still applies;
+freshfetch/merge immediately before publication preserves concurrent website
+work. No1.45 live acceptance from a predecessor's success.
+
+## Current predecessor integration — September30
+
+Merged prepared1.44a10a8b72, including current1.43prerequisites and typed
+impact audio, into this candidate. Resolve README conflict to1.45 source and
+accepted1.42baseline (1.43 final live QA still pending). Browser-script conflict
+retains BOTH first-party font coverage and all five1.45 interface suites; no
+gate or future UI feature is dropped. Runtime/package/history remain1.45 and
+website files are identical to the predecessor. Network dispatch merge contains
+only the confirmed-impact helper change, preserving1.45 loot/UI updates.
+
+Four integration profile/dispatch/font/version suites pass401checks4.853s;
+full lint and whitespace pass. The initial auction-suite name did not exist
+and matched no tests; the actual TradingSelection suite was then explicitly
+run by path:18checks1.954s, including offline/slow retry, managed closure,
+selection safety and server null-list responses. Do not count a nonexistent
+suite as evidence. Existing unchanged UI browser evidence remains applicable;
+no campaign/phone soak repeated for this prerequisite merge. This candidate
+stays unpublished until1.43 and1.44 are individually accepted in order.
+
 ## Draft patch notes
 
 - Ground loot has zoom-readable, rarity-accented labels that separate crowded
