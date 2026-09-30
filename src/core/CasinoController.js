@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createCasinoFurniture, createCasinoFurnitureColliders, disposeCasinoObject, updateCasinoCutaway } from '../art/ProceduralCasino.js';
+import { createCasinoFurniture, createCasinoFurnitureColliders, disposeCasinoObject } from '../art/ProceduralCasino.js';
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 import { SlotMachineUI } from '../ui/SlotMachineUI.js';
 import { PokerTableUI } from '../ui/PokerTableUI.js';
@@ -293,8 +293,6 @@ export class CasinoController {
                 else for (const box of this.furnitureColliders || []) if (!colliders.includes(box)) engine.collisionManager.addCollider(box);
             }
         }
-        const shell = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell');
-        updateCasinoCutaway(shell, null);
         const floors = engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior')?.userData.floors;
         if (floors) { floors.public.visible = !upstairs; floors.vip.visible = upstairs; }
         if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = upstairs;

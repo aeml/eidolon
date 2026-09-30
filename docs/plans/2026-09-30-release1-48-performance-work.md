@@ -1,5 +1,50 @@
 # Alpha1.48 — client performance work
 
+## Retire hidden town-casino interior — September30
+
+Production town casino already uses a clicked door and separate shared scene,
+but its exterior still constructed/drew the retired walk-in stairs, small VIP
+lounge, carpets, floor inlays and stair markers. Remove only those unused
+town-shell surfaces and the controller's per-tick legacy cutaway lookup.
+Preserve all exterior masonry/window/roof geometry, Lanternhold Casino plaque,
+isolated hovered door, physical wall/door collision data and the actual two
+full-sized shared gaming floors. Do not change wagers, EP, seats or VIP access.
+Retain the cloned door material because the exterior cornice also uses wood;
+new reference-identity assertions catch accidental shared hover tint. Do not
+construct the removed lounge's unused velvet material.
+Final reference-identity check caught a draft that shared door/cornice wood;
+restore the isolated clone before committing. All29checks pass2.914s after
+that correction. Compare references rather than deep Three.js object equality
+(the latter triggered an unavailable VideoFrame getter in the test runner).
+
+Retired six-unit town-stair fixture replaced by real shared0/8-unit floor
+boundaries and a production-sized blocked town door with approach clearance.
+Existing window/roof/door-picking tests retained. Chrome seating fixture now
+renders actual shared interior, not old town shell. Its initial run exposed
+old fixture occupants lacking required playerId; server CasinoOccupant contract
+requires it, so restore IDs rather than changing production settlement/UI.
+Final controller/navigation/map suites29checks pass5.164s; three Chrome seating/
+phone/desktop-VIP checks pass28.2s. Uncredentialed casino-zone route is skipped;
+do not count this as an earned multiplayer/wagering campaign. Scoped lint and
+whitespace pass. An initial wrong-case benchmark grep found no tests; corrected
+exact benchmark name, no waiting on that stopped handle.
+
+Same High9-site120-sample workload records town trading392→374calls, casino
+19color+21shadow→11+11, GPU geometries331→321 with59textures/68programs stable
+across revisit. Menders288→278calls; woodland and other unaffected sites retain
+their prior draw/triangle counts. Trading screenshot PNG is byte-for-byte equal
+to preceding crown-bounds baseline; both images visually inspected. Hidden
+interior cost removed without an exterior appearance tradeoff.
+
+Benchmark remains FAILED: trading374>350 draw target. It first fails a p95
+boundary33.400000000001455 versus33.4; thresholds have not changed. Concurrent
+live CI may affect timing, so no clean comparative FPS claim: medians16.7ms,
+p95 range16.8–33.4ms and one junction>50ms hitch recorded. Artifacts:
+/tmp/eidolon-1-48-casino-exterior-profile-0930 and
+/tmp/eidolon-1-48-casino-facade-final-0930.
+Not a completed performance milestone. Runtime still1.47; package/patch-history
+publication awaits remaining performance work and ordered earlier acceptance.
+
 Implementing on prepared1.47; runtime remains1.47 until a complete candidate
 is packaged. Not a deployment, Q closure or physical-phone performance result.
 

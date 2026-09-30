@@ -62,10 +62,10 @@ export function createCasinoInterior(scene, collision) {
 
 const colors = { stone: 0x394453, dark: 0x17212d, gold: 0xb99a58, wood: 0x30231f, felt: 0x155453, velvet: 0x623647, light: 0xffcf78 };
 
-function materials() {
-    return Object.fromEntries(Object.entries(colors).map(([key, color]) => [key, new THREE.MeshStandardMaterial({ color,
+function materials(keys = Object.keys(colors)) {
+    return Object.fromEntries(keys.map(key => [key, new THREE.MeshStandardMaterial({ color: colors[key],
         roughness: key === 'gold' ? 0.35 : 0.78, metalness: key === 'gold' ? 0.7 : 0,
-        emissive: key === 'light' ? color : 0, emissiveIntensity: key === 'light' ? 0.65 : 0 })]));
+        emissive: key === 'light' ? colors[key] : 0, emissiveIntensity: key === 'light' ? 0.65 : 0 })]));
 }
 
 function box(parent, name, material, size, position) {
@@ -103,25 +103,17 @@ function batchMeshes(root) {
 
 export function createCasinoShell(x = 0, z = 170) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-shell'; root.position.set(x, 0, z);
-    const m = materials();
+    const m = materials(['stone', 'dark', 'gold', 'wood', 'felt', 'light']);
     // Match the surrounding town's masonry and slate without changing the
     // wall footprint, door target or shared casino rooms.
     applyWorldSurfaceDetail(m.stone, 'stone');
     applyWorldSurfaceDetail(m.dark, 'slate');
-    const cutaway = new THREE.Group(); cutaway.name = 'casino-cutaway'; root.add(cutaway);
-    const upstairs = new THREE.Group(); upstairs.name = 'casino-vip-lounge'; root.add(upstairs);
+    const facade = new THREE.Group(); facade.name = 'casino-exterior'; root.add(facade);
+    // The town shell is only an exterior. Both full-sized gaming floors live
+    // in the separate shared casino scene entered through this door.
     box(root, 'casino-floor', m.dark, [26, 0.2, 16], [0, -0.1, 0]);
-    for (let ix = -6; ix <= 6; ix++) for (let iz = -3; iz <= 3; iz++) {
-        box(root, 'casino-floor-inlay', (ix + iz) % 2 ? m.stone : m.wood, [1.88, 0.015, 1.88], [ix * 2, 0.008, iz * 2]);
-    }
-    cylinder(root, 'fourfold-floor-medallion', m.gold, 1.3, 0.025, [0, 0.026, 3]);
-    cylinder(root, 'fourfold-floor-center', m.dark, 1.14, 0.03, [0, 0.042, 3]);
-    for (let i = 0; i < 4; i++) {
-        const sigil = box(root, 'elemental-inlay', m.gold, [0.24, 0.035, 1.55], [0, 0.064, 3]);
-        sigil.rotation.y = i * Math.PI / 4;
-    }
-    // Front opening is five units wide. These are wall segments, never a full
-    // building bounding box: entering the room must remain physically possible.
+    // Preserve existing walls and the five-unit door interaction opening.
+    // WorldGenerator supplies its separate physical door collider.
     const walls = [
         { size: [0.5, 10.8, 16.5], position: [-13, 5.4, 0] },
         { size: [0.5, 10.8, 16.5], position: [13, 5.4, 0] },
@@ -131,55 +123,26 @@ export function createCasinoShell(x = 0, z = 170) {
     ];
     root.userData.casinoWalls = walls;
     for (const [i, wall] of walls.entries()) {
-        box(cutaway, `casino-wall-${i}`, m.stone, wall.size, wall.position);
+        box(facade, `casino-wall-${i}`, m.stone, wall.size, wall.position);
         box(root, `casino-wall-base-${i}`, m.dark, [wall.size[0], 0.65, wall.size[2]], [wall.position[0], 0.325, wall.position[2]]);
     }
-    addCasinoFacade(cutaway, m);
+    addCasinoFacade(facade, m);
     for (const px of [-3.25, 3.25]) {
-        box(cutaway, 'casino-lantern-cage', m.dark, [0.65, 1.25, 0.55], [px, 3.4, 8.6]);
-        box(cutaway, 'casino-lantern', m.light, [0.38, 0.8, 0.6], [px, 3.4, 8.64]);
+        box(facade, 'casino-lantern-cage', m.dark, [0.65, 1.25, 0.55], [px, 3.4, 8.6]);
+        box(facade, 'casino-lantern', m.light, [0.38, 0.8, 0.6], [px, 3.4, 8.64]);
     }
-    // Actual second floor leaves a stairwell along the east side. Navigation
-    // follows the same six-unit rise and north/south landings, not a teleport.
-    box(upstairs, 'vip-floor', m.dark, [21.5, .2, 15.5], [-2.25, 5.9, 0]);
-    box(upstairs, 'vip-north-landing', m.dark, [4.5, .2, 2], [10.75, 5.9, -7]);
-    box(upstairs, 'vip-velvet-carpet', m.velvet, [16, .025, 11], [-2.25, 6.02, 0]);
-    for (const px of [-10.4, 5.9]) box(upstairs, 'vip-carpet-border', m.gold, [.12, .03, 11.3], [px, 6.04, 0]);
-    for (const pz of [-5.6, 5.6]) box(upstairs, 'vip-carpet-border', m.gold, [16.4, .03, .12], [-2.25, 6.04, pz]);
-    for (const pz of [-4, 0, 4]) {
-        box(upstairs, 'vip-lounge-sofa', m.velvet, [1.5, .65, 2.5], [-10.7, 6.45, pz]);
-        box(upstairs, 'vip-lounge-back', m.wood, [.3, 1.3, 2.6], [-11.4, 6.8, pz]);
-        cylinder(upstairs, 'vip-side-table', m.gold, .55, .75, [-8.6, 6.375, pz]);
-        cylinder(upstairs, 'vip-candle', m.light, .09, .4, [-8.6, 6.95, pz]);
-    }
-    for (let step = 0; step < 24; step++) {
-        const rise = (step + 1) * .25;
-        box(root, 'casino-stair-tread', step % 2 ? m.stone : m.dark, [2.6, rise, .5], [10.5, rise / 2, 5.75 - step * .5]);
-        box(root, 'casino-stair-nosing', m.gold, [2.6, .03, .07], [10.5, rise + .01, 5.98 - step * .5]);
-    }
-    box(upstairs, 'vip-stairwell-rail', m.gold, [.12, .12, 12.5], [8.7, 7.05, .25]);
-    for (let pz = -5.5; pz <= 6; pz += 1.5) box(upstairs, 'vip-stairwell-baluster', m.gold, [.1, 1.05, .1], [8.7, 6.525, pz]);
     const roof = new THREE.Mesh(createCasinoHippedRoof(), m.dark);
     roof.name = 'casino-roof'; roof.position.y = 12.55;
-    roof.castShadow = true; cutaway.add(roof);
-    root.userData.casinoCutaway = cutaway;
-    root.userData.casinoUpstairs = upstairs;
-    // Batch the opaque exterior separately so its interior cutaway remains cheap.
-    cutaway.removeFromParent(); upstairs.removeFromParent();
+    roof.castShadow = true; facade.add(roof);
+    root.userData.casinoFacade = facade;
+    // Keep the exterior separate for its own bounds and isolated door picking.
+    facade.removeFromParent();
     root.userData.structureId = 'casino';
-    root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(cutaway) + batchMeshes(upstairs);
-    root.add(cutaway, upstairs);
-    const stairMarkers = [];
-    for (const [floor, y, markerZ] of [['public', .08, 6.4], ['vip', 6.08, -6.5]]) {
-        const marker = new THREE.Mesh(new THREE.CircleGeometry(1.05, 24), new THREE.MeshBasicMaterial({ color: 0xe8c980,
-            transparent: true, opacity: .65, side: THREE.DoubleSide, depthWrite: false }));
-        marker.name = `casino-stairs-${floor}`; marker.rotation.x = -Math.PI / 2;
-        marker.position.set(10.5, y, markerZ); marker.userData.casinoStairFloor = floor;
-        root.add(marker); stairMarkers.push(marker);
-    }
-    root.userData.casinoStairMarkers = stairMarkers;
+    root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(facade);
+    root.add(facade);
     const door = box(root, 'casino-town-door', m.wood, [4.8, 4.8, .3], [0, 2.4, 8.35]);
-    door.material = door.material.clone(); // Hover tint belongs only to the door.
+    // The cornice also uses wood. Hover tint must belong only to the door.
+    door.material = door.material.clone();
     door.material.emissiveIntensity = .7;
     box(door, 'casino-door-handle', m.gold, [.15, .7, .2], [.7, 0, .3]);
     root.userData.casinoDoor = door;
@@ -200,14 +163,6 @@ export function createCasinoShell(x = 0, z = 170) {
         root.add(sign);
     }
     return root;
-}
-
-export function updateCasinoCutaway(shell, position) {
-    if (!shell?.userData.casinoCutaway) return;
-    const inside = position && Math.abs(position.x - shell.position.x) < 14 && Math.abs(position.z - shell.position.z) < 9;
-    shell.userData.casinoCutaway.visible = !inside;
-    shell.userData.casinoUpstairs.visible = !inside || position.y >= 3;
-    for (const marker of shell.userData.casinoStairMarkers || []) marker.visible = inside && (marker.userData.casinoStairFloor === 'vip' ? position.y >= 3 : position.y < 3);
 }
 
 export function createCasinoFurnitureColliders(tables) {

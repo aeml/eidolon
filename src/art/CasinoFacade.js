@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { createLanternholdArchFrame, createLanternholdArchPanel } from './LanternholdFacadeGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
-// Applied to the exterior cutaway before its ordinary material batching.
+// Applied to the town exterior before its ordinary material batching.
 // Window relief sits outside the opaque wall, not behind it. Ground-level
 // supports stay within the legacy pilaster envelope and doorway clearance.
 export function addCasinoFacade(parent, palette) {

@@ -5,7 +5,7 @@ import { GameEngine } from '../src/core/GameEngine.js';
 import { AttachedStatusEffect } from '../src/entities/AttachedStatusEffect.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { ChunkManager } from '../src/core/ChunkManager.js';
-import { createCasinoShell, createCasinoFurniture, updateCasinoCutaway, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
+import { createCasinoShell, createCasinoFurniture, disposeCasinoObject } from '../src/art/ProceduralCasino.js';
 
 const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'blackjack', x: -4.3, z: 171,
     seats: [{ x: -4.3, z: 173.2, rotation: Math.PI, exitX: -4.3, exitZ: 174.4 }], minimumPlayers: 1 };
@@ -238,14 +238,14 @@ test('mixed slot gems and table furniture share valid triangle batches', () => {
     } finally { disposeCasinoObject(furniture); report.mockRestore(); }
 });
 
-test('walkable shell retains walls, opens a real doorway and batches the cutaway/furniture', () => {
+test('town facade retains wall openings and batches exterior/furniture separately', () => {
     const shell = createCasinoShell(); const collision = new CollisionManager();
     for (const wall of shell.userData.casinoWalls) collision.addCollider(new THREE.Box3().setFromCenterAndSize(
         new THREE.Vector3(wall.position[0], wall.position[1], 170 + wall.position[2]), new THREE.Vector3(...wall.size)));
     expect(collision.checkCollision(new THREE.Vector3(0, 0, 178), 1.25, new THREE.Vector3(0, 0, 180))).toBeNull();
     expect(collision.checkCollision(new THREE.Vector3(6, 0, 178), 1.25, new THREE.Vector3(6, 0, 180))).not.toBeNull();
-    updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 170)); expect(shell.userData.casinoCutaway.visible).toBe(false);
-    updateCasinoCutaway(shell, new THREE.Vector3(0, 0, 190)); expect(shell.userData.casinoCutaway.visible).toBe(true);
+    expect(shell.userData.casinoFacade.visible).toBe(true);
+    expect(shell.userData.casinoUpstairs).toBeUndefined();
     expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(18);
     const furniture = createCasinoFurniture([table]); let visibleMeshes = 0;
     furniture.traverse(mesh => { if (mesh.isMesh && mesh.material.visible) visibleMeshes++; });
@@ -257,7 +257,7 @@ test('walkable shell retains walls, opens a real doorway and batches the cutaway
 test('casino roof is one axis-aligned canopy covering the upper cornice', () => {
     const shell = createCasinoShell(); shell.updateMatrixWorld(true);
     const bounds = new THREE.Box3();
-    shell.userData.casinoCutaway.traverse(mesh => {
+    shell.userData.casinoFacade.traverse(mesh => {
         if (!mesh.isMesh) return;
         const vertices = mesh.geometry.getAttribute('position');
         for (let i = 0; i < vertices.count; i++) {
@@ -274,11 +274,15 @@ test('casino roof is one axis-aligned canopy covering the upper cornice', () => 
 test('town facade uses masonry and slate while its door remains an isolated interaction material', () => {
     const shell = createCasinoShell();
     const surfaces = new Set();
-    shell.userData.casinoCutaway.traverse(mesh => {
+    shell.userData.casinoFacade.traverse(mesh => {
         if (mesh.material?.userData.worldSurfaceDetail) surfaces.add(mesh.material.userData.worldSurfaceDetail);
     });
     expect([...surfaces].sort()).toEqual(['slate', 'stone']);
     expect(shell.userData.casinoDoor.material.userData.worldSurfaceDetail).toBeUndefined();
+    const doorMaterialUsers = [];
+    shell.traverse(mesh => { if (mesh.material === shell.userData.casinoDoor.material) doorMaterialUsers.push(mesh); });
+    expect(doorMaterialUsers).toHaveLength(1);
+    expect(doorMaterialUsers[0]).toBe(shell.userData.casinoDoor);
     expect(shell.userData.drawMeshCount).toBeLessThanOrEqual(18);
     disposeCasinoObject(shell);
 });
@@ -310,7 +314,7 @@ test('all facade windows are visible in front of opaque walls after material bat
     const ray = new THREE.Raycaster();
     const seeGlass = (origin, direction) => {
         ray.set(new THREE.Vector3(...origin), new THREE.Vector3(...direction));
-        const hit = ray.intersectObject(shell.userData.casinoCutaway, true)[0];
+        const hit = ray.intersectObject(shell.userData.casinoFacade, true)[0];
         expect(hit?.object.material.userData.casinoExteriorGlass).toBe(true);
     };
     for (const x of [-10.3, -6.6, 6.6, 10.3]) for (const y of [3.1, 8.25]) {
@@ -321,15 +325,15 @@ test('all facade windows are visible in front of opaque walls after material bat
     }
     for (const x of [-4.5, 4.5, -2.8, 2.8]) {
         ray.set(new THREE.Vector3(x, 3.75, 184), new THREE.Vector3(0, 0, -1));
-        expect(ray.intersectObject(shell.userData.casinoCutaway, true)[0]?.object.material.name).toBe('casino-carved-limestone');
+        expect(ray.intersectObject(shell.userData.casinoFacade, true)[0]?.object.material.name).toBe('casino-carved-limestone');
     }
     // The area above the door must not reveal the obsolete shell VIP carpet.
     ray.set(new THREE.Vector3(1.8, 9, 184), new THREE.Vector3(0, 0, -1));
-    const overdoor = ray.intersectObject(shell.userData.casinoCutaway, true)[0];
+    const overdoor = ray.intersectObject(shell.userData.casinoFacade, true)[0];
     expect(overdoor.point.z).toBeCloseTo(178.25);
     // Every roof triangle faces outward/up, with a long ridge at the same cap.
     const roofVertices = [];
-    shell.userData.casinoCutaway.traverse(mesh => {
+    shell.userData.casinoFacade.traverse(mesh => {
         if (!mesh.isMesh || mesh.material.userData.worldSurfaceDetail !== 'slate') return;
         const position = mesh.geometry.attributes.position, normal = mesh.geometry.attributes.normal;
         for (let i = 0; i < position.count; i++) if (position.getY(i) > 10.8) {

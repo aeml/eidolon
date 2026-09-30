@@ -8,7 +8,8 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     await page.evaluate(async () => {
         const THREE = await import('three');
         const { CasinoController } = await import('/src/core/CasinoController.js');
-        const { createCasinoShell } = await import('/src/art/ProceduralCasino.js');
+        const { createCasinoInterior } = await import('/src/art/ProceduralCasino.js');
+        const { CollisionManager } = await import('/src/core/CollisionManager.js');
         const { createProceduralFighter, createProceduralWizard } = await import('/src/art/ProceduralHumanoid.js');
         document.getElementById('start-screen').style.display = 'none';
         document.querySelectorAll('canvas').forEach(canvas => { canvas.hidden = true; });
@@ -20,7 +21,8 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
         const light = new THREE.DirectionalLight(0xffdb9a, 3); light.position.set(8, 18, 185); scene.add(light);
         const camera = new THREE.OrthographicCamera(-12, 12, 9, -9, .1, 500);
         camera.position.set(12, 18, 189); camera.lookAt(0, 0, 171);
-        scene.add(createCasinoShell());
+        const collisionManager = new CollisionManager();
+        createCasinoInterior(scene, collisionManager);
         const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'blackjack', floor: 'public', x: -4.3, z: 171,
             seats: Array.from({ length: 6 }, (_, index) => { const angle = index * Math.PI / 3; return { x: -4.3 + Math.sin(angle) * 2.2, z: 171 + Math.cos(angle) * 2.2, rotation: angle + Math.PI, exitX: -4.3 + Math.sin(angle) * 3.4, exitZ: 171 + Math.cos(angle) * 3.4 }; }) };
         const mesh = createProceduralFighter(); scene.add(mesh);
@@ -28,11 +30,11 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
         const player = { id: 'fighter', mesh, position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', move(point) { this.position.copy(point); } };
         const other = { mesh: otherMesh, state: 'SEATED' };
         const sent = [];
-        const engine = { currentInstanceId: 'lanternhold-casino', player, cameraLocked: true, network: { send(type, payload) { sent.push({ type, payload }); } },
+        const engine = { currentInstanceId: 'lanternhold-casino', player, collisionManager, cameraLocked: true, network: { send(type, payload) { sent.push({ type, payload }); } },
             renderSystem: { renderer, scene, camera, cameraTarget: new THREE.Vector3(0, 0, 171), setCameraTarget(target) { camera.lookAt(target); } },
             inputManager: { clearInputState() {} }, uiManager: { addChatMessage() {} } };
         const controller = new CasinoController(engine);
-        controller.updateState({ tables: [table], occupants: [{ tableId: table.id, seat: 3, name: 'Wizard', connected: true }] });
+        controller.updateState({ tables: [table], occupants: [{ playerId: 'wizard', tableId: table.id, seat: 3, name: 'Wizard', connected: true }] });
         controller.beforeUpdate(.1); scene.updateMatrixWorld(true); camera.updateMatrixWorld(true);
         renderer.domElement.addEventListener('pointerdown', event => controller.handlePrimaryClick(event));
         const loop = () => {
@@ -52,7 +54,7 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     await expect.poll(() => page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'sit'))).toBe(true);
     await page.evaluate(() => {
         const { controller, table } = window.__casino;
-        controller.updateState({ tables: [table], occupants: [{ tableId: table.id, seat: 0, name: 'Fighter', connected: true }, { tableId: table.id, seat: 3, name: 'Wizard', connected: true }],
+        controller.updateState({ tables: [table], occupants: [{ playerId: 'fighter', tableId: table.id, seat: 0, name: 'Fighter', connected: true }, { playerId: 'wizard', tableId: table.id, seat: 3, name: 'Wizard', connected: true }],
             blackjack: { available: true, roundId: 'round-fixture', phase: 'betting', gold: 1000, players: [] },
             yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 } });
     });
