@@ -1,10 +1,10 @@
 # Alpha 1.50 integrated presentation review
 
-September 30, 2026. This is local candidate evidence, not live acceptance or
-closed-beta approval. Alpha 1.48 and [1.49](2026-09-30-release1-49-acceptance.md)
-have passed their ordered deployment gates. Version metadata, login and cumulative
-patch notes are now packaged as Alpha 1.50.0; exact-source CI and independent
-public verification remain required.
+September 30, 2026. Alpha 1.50.0 has passed exact-source CI and independent
+public checks after accepted predecessors 1.48 and 1.49. Its
+[public acceptance receipt](2026-09-30-release1-50-acceptance.md) records those
+deployment gates. The local presentation evidence below remains qualified by
+its fixture, art and device limitations; this is not closed-beta approval.
 
 ## Changed integration checks
 
