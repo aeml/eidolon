@@ -3,8 +3,9 @@
 September 30, 2026. Alpha 1.51 is independently accepted; its receipt is merged
 into this candidate. Alpha 1.52.0 is packaged locally with cumulative login patch
 notes. Ordinary bank handlers now use the durable transfer protocol below. The
-candidate is not yet pushed or accepted live; final verification and the normal
-CI/public acceptance gates remain.
+candidate was normally pushed and is independently accepted live. Exact CI,
+public identity and changed-asset evidence are in the
+[acceptance receipt](2026-09-30-release1-52-acceptance.md).
 
 ## Completed foundations
 
@@ -164,9 +165,9 @@ No production accounts or privileged infrastructure changed. These durations
 describe test execution, not runtime performance or capacity. Markdown evidence
 was inspected as source; no rendered-document preview is claimed.
 
-## Required before release
+## Release acceptance
 
-Commit explicit candidate files, fetch/merge remote website changes immediately before
-a normal push, then require exact CI and independent public version/backend/
-document/changed-asset acceptance. Local checks are not evidence that 1.52 is
-deployed, beta-ready or validated by real players.
+Candidate files were explicitly committed; a fresh fetch/merge immediately
+before the normal push preserved remote changes. Exact CI and independent
+public frontend/backend/document/changed-asset checks passed. This milestone's
+accepted deployment does not establish beta readiness or real-player validation.
