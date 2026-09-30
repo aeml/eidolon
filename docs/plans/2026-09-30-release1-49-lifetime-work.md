@@ -1,5 +1,27 @@
 # Alpha1.49 session-lifetime work
 
+## Delayed attack callback retirement — September30
+
+Callback audit finds the ground-attack timeout unowned and reading whichever
+player/model/instance happens to be current when it runs. Three pre-fix
+cases reproduce damage after player replacement, model replacement and an
+instance change. The initial destruction fixture lacked CollisionManager.clear;
+correct that fixture, not production collision handling or its assertions.
+
+Timers now belong to the engine, delete themselves on completion and are
+cancelled immediately on engine destruction. Delayed hits capture player,
+model and instance identity and reject retired/dead/inactive or changed owners.
+The existing500ms timing, damage formula, animation, targeting/range and
+server-versus-local authority remain unchanged. No combat balance or saved
+character mutation. This fixes the confirmed callback path, not every callback
+or the complete transition/resource gate.
+
+Final ctrl-click/intent/scene-teardown selection36 checks passes2.195s; scoped
+lint and whitespace pass. New cases check four owner transitions, immediate
+timer retirement and a valid local strike at500ms with unchanged damage.
+No long browser, campaign or production account test was needed for this
+specific timer path. Remaining full1.49 gates below stay open.
+
 ## Current safe predecessor integration — September30
 
 Merged safe148 ca7412a0 through b3edeecf, including cached rigid local matrices

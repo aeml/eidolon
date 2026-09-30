@@ -93,6 +93,8 @@ class GameEngineRuntimeMethods {
         if (this.isDestroyed) return;
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
+        for (const timer of this.pendingAttackTimers || []) clearTimeout(timer);
+        this.pendingAttackTimers?.clear();
         this.network?.destroy?.();
         this.audioManager?.dispose?.();
         this.casino?.dispose();
@@ -476,8 +478,12 @@ class GameEngineRuntimeMethods {
 
                             const hitDelay = this.player.getAttackHitDelay();
 
-                            setTimeout(() => {
-                                if (this.player.state === 'DEAD') return;
+                            const player = this.player, mesh = player.mesh, instanceId = this.currentInstanceId;
+                            const timer = setTimeout(() => {
+                                this.pendingAttackTimers?.delete(timer);
+                                if (this.isDestroyed || this.player !== player || player.isActive === false ||
+                                    player.state === 'DEAD' || !mesh || player.mesh !== mesh ||
+                                    this.currentInstanceId !== instanceId) return;
 
                                 const attackRange = 6.0;
                                 const attackAngle = Math.PI / 3;
@@ -509,6 +515,7 @@ class GameEngineRuntimeMethods {
                                     }
                                 });
                             }, 500);
+                            (this.pendingAttackTimers ??= new Set()).add(timer);
                         }
                     }
                 } else if (this.inputManager.keys.shift) {

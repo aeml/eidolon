@@ -128,6 +128,50 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test.each(['destroyed', 'replaced-player', 'replaced-mesh', 'changed-instance'])('a delayed ground attack cannot affect a %s session owner', reason => {
+        jest.useFakeTimers({ now: 50_000 });
+        const engine = createEngineHarness();
+        const target = { position: new THREE.Vector3(0, 0, 2), isActive: true, state: 'IDLE',
+            stats: { hp: 100 }, takeDamage: jest.fn() };
+        try {
+            engine.update(1 / 60);
+            expect(jest.getTimerCount()).toBe(1);
+            engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, target]);
+            engine.isMultiplayer = false;
+            if (reason === 'destroyed') {
+                engine.network.destroy = jest.fn(); engine.renderSystem.dispose = jest.fn();
+                engine.collisionManager.clear = jest.fn();
+                engine.inputManager.dispose = jest.fn(); engine.floatingTextManager.dispose = jest.fn();
+                engine.worldMap.dispose = jest.fn(); engine.minimap.dispose = jest.fn();
+                engine.player.dispose = jest.fn(() => { engine.player.mesh = null; });
+                engine.destroy();
+                expect(jest.getTimerCount()).toBe(0);
+            } else if (reason === 'replaced-player') engine.player = { ...engine.player };
+            else if (reason === 'replaced-mesh') engine.player.mesh = { ...engine.player.mesh };
+            else engine.currentInstanceId = 'next-dungeon';
+            expect(() => jest.advanceTimersByTime(500)).not.toThrow();
+            expect(target.takeDamage).not.toHaveBeenCalled();
+        } finally { jest.clearAllTimers(); jest.useRealTimers(); }
+    });
+
+    test('a valid delayed local ground attack retains its existing timing and damage', () => {
+        jest.useFakeTimers({ now: 50_000 });
+        const engine = createEngineHarness();
+        const target = { position: new THREE.Vector3(0, 0, 2), isActive: true, state: 'IDLE',
+            stats: { hp: 100 }, takeDamage: jest.fn() };
+        const random = jest.spyOn(Math, 'random').mockReturnValue(.5);
+        try {
+            engine.inputManager.getGroundIntersection.mockReturnValue(new THREE.Vector3(0, 0, 10));
+            engine.update(1 / 60);
+            engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, target]);
+            // The local damage path is tested independently of server authority.
+            engine.isMultiplayer = false;
+            jest.advanceTimersByTime(499); expect(target.takeDamage).not.toHaveBeenCalled();
+            jest.advanceTimersByTime(1); expect(target.takeDamage).toHaveBeenCalledWith(10);
+            expect(engine.pendingAttackTimers?.size ?? 0).toBe(0);
+        } finally { random.mockRestore(); jest.clearAllTimers(); jest.useRealTimers(); }
+    });
+
     test.each(['high', 'low'])('hazard creation respects the five-entry tick budget and retains all %s boundaries', quality => {
         const engine = createEngineHarness();
         engine.renderSystem.graphicsQuality = quality;
