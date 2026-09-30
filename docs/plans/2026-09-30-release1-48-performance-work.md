@@ -36,9 +36,56 @@ Evidence:/tmp/eidolon-1-48-shadow-depth-profile-0930. Runtime remains1.47;
 Low/device, representative busy/network/shader/startup work and ordered
 predecessor publication still remain before1.48 can be accepted.
 
+The subsequent bounded Low/390x844 nine-site Earth/town check passes40.6s on
+the same desktop GPU. Every120sample window has16.7ms median,16.7–16.8ms p95,
+zero>50ms hitches,85–149calls and20565–61458triangles, within the original
+33.4/50ms/200calls/85000triangle targets. Repeat residency stays303geometries/
+58textures/50programs. This earns a phone-sized rendering/quality-fallback
+comparison, not actual-phone FPS or owner dungeon/party playtest. Evidence:
+/tmp/eidolon-1-48-low-earth-profile-0930. No repeated campaign/soak run.
+
 Planned patch note: camera-fitted sun depth avoids shadow submissions that
 cannot reach the view, preserving visible contact and off-screen roof/tree
 shadows rather than reducing scene detail.
+
+## Next bounded busy-scene check
+
+Reuse the existing ten fully equipped heroes/Malachar/four fields/four essential
+warnings fixture rather than a campaign soak. Record each180sample busy/clear/
+repeat phase separately, including first-frame/warmup CPU cost and p99/>50ms
+hitches previously omitted. Retain60frame warmup and unchanged resource checks.
+Before observing results, use the same named desktop's High median20ms/p9533.4
+and Low median33.4ms/p9550ms as comparison targets. This larger scene has no
+predeclared350/200draw cap; report actual submissions, not a retroactive cap.
+The1440x1000 Low-quality window is desktop hardware, not phone hardware proof.
+Shared CI keeps resource/assertion gates; local timing is an opt-in review,
+not a universal machine-dependent CI rejection. Misses require a concrete
+follow-up and do not make1.48 ready or justify hiding equipment/warnings.
+
+### Observed busy-scene result
+
+The bounded Chrome check passes its unchanged repeat/resource assertions40.5s,
+but **High misses the predeclared timing comparison**: busy28.1ms median/
+41.1ms p95 and repeat26.9/38.0ms, versus20/33.4. High submits2758draws/
+166327triangles, with4/1>50ms hitches across the two180sample windows. Clear
+falls to22draws and16.6ms median. First reported render CPU24.4/37.9ms,
+warmup maxima41.2/39.4ms. These callbacks start after the fixture is constructed
+and after the gallery already renders; they are not cold-login or shader-
+compilation latency receipts. Do not attribute those costs to compilation.
+
+Low busy19.0/25.7ms and repeat17.8/25.1ms meet33.4/50;1440draws/85546triangles,
+0/2>50ms hitches. High repeats307geometries/54textures; Low306/40, matching
+their first busy phase exactly. No universal sustained/phone performance claim.
+Per-phase reports and screenshots:/tmp/eidolon-1-48-busy-scene-profile-0930.
+All10heroes retain14equipped slots; four fields/four essential warnings and
+the actual animated Malachar remain. No workload hidden to manufacture a pass.
+
+Next measured issue is the much larger animated actor/equipment submission
+workload. Existing rigid humanoid and per-item batching already apply; do not
+claim a new fix by enabling those twice. More detailed attribution and a safe
+visibility/pose/appearance-preserving change are needed before accepting1.48.
+Actual startup/shader evidence is also still open. This is concrete progress
+and an actionable miss, not completed performance or a reason for a new soak.
 
 ## Planted street edges — September30
 

@@ -108,6 +108,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
                     const samples = [];
+                    const startupCpu = [];
                     let warmup = 60;
                     let previous;
                     const timer = setTimeout(() => { render.render = original; reject(new Error('Busy scene profile timed out')); }, 30000);
@@ -118,7 +119,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         const cpu = performance.now() - started;
                         const interval = previous === undefined ? 0 : started - previous;
                         previous = started;
-                        if (warmup-- > 0) return;
+                        if (warmup-- > 0) { startupCpu.push(cpu); return; }
                         const info = render.renderer.info;
                         samples.push({ interval, cpu, calls: info.render.calls, triangles: info.render.triangles });
                         if (samples.length < 180) return;
@@ -129,6 +130,8 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         const extension = context.getExtension('WEBGL_debug_renderer_info');
                         resolve({
                             frames: samples.length, medianMs: percentile('interval', 0.5), p95Ms: percentile('interval', 0.95),
+                            p99Ms: percentile('interval', 0.99), hitchesOver50ms: samples.filter(sample => sample.interval > 50).length,
+                            firstRenderCpuMs: startupCpu[0], warmupWorstCpuMs: Math.max(...startupCpu),
                             renderCpuMedianMs: percentile('cpu', 0.5), renderCpuP95Ms: percentile('cpu', 0.95),
                             calls: percentile('calls', 0.5), triangles: percentile('triangles', 0.5),
                             geometries: info.memory.geometries, textures: info.memory.textures,
@@ -137,6 +140,8 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                     };
                 }));
                 reports.push({ quality, phase, ...report });
+                // Retain each bounded phase even if a later phase fails.
+                await testInfo.attach(`${quality}-${phase}-rendering-profile`, { body: JSON.stringify(report), contentType: 'application/json' });
                 expect(report.frames).toBe(180);
                 expect(report.calls).toBeGreaterThan(0);
                 expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
