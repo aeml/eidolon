@@ -127,6 +127,25 @@ describe('ChatUI', () => {
         expect(input.value).toBe('');
     });
 
+    test.each([['party', '/party regroup'], ['guild', '/guild regroup'], ['whisper', '/r regroup']])(
+        '%s composer cannot silently send plain text to the public world', (view, expected) => {
+            const onSend = jest.fn();
+            const chat = new ChatUI({ onSend });
+            chat.setActiveStream(view); chat.focusChatInput();
+            expect(chat.activeStream).toBe(view);
+            chat.input.value = ' regroup ';
+            chat.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+            expect(onSend).toHaveBeenCalledWith(expected);
+        }
+    );
+
+    test.each(['party', 'guild', 'whisper'])('%s composer preserves explicit commands', view => {
+        const onSend = jest.fn(); const chat = new ChatUI({ onSend });
+        chat.setActiveStream(view); chat.input.value = '/w Ayla private';
+        chat.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        expect(onSend).toHaveBeenCalledWith('/w Ayla private');
+    });
+
     test('filters party and whisper channels and Escape returns to All', () => {
         const chat = new ChatUI();
         chat.addMessage('Ayla', 'world route', { channel: 'world' });

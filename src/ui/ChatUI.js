@@ -63,7 +63,11 @@ export class ChatUI {
             event.stopPropagation();
             const message = this.input.value.trim();
             if (message) {
-                this.onSend?.(message);
+                // Tabs are also the composition destination. Use existing
+                // server-authoritative commands so failed private/group sends
+                // never fall back to public chat. Explicit commands still win.
+                const prefix = { party: '/party ', guild: '/guild ', whisper: '/r ' }[this.activeStream] || '';
+                this.onSend?.(message.startsWith('/') ? message : `${prefix}${message}`);
                 this.input.value = '';
             }
             this.input.blur();
@@ -106,6 +110,12 @@ export class ChatUI {
 
         if (this.composer) {
             this.composer.hidden = nextStream === 'game';
+        }
+        if (this.input) {
+            const destination = { party: 'Message your party…', guild: 'Message your guild…',
+                whisper: 'Reply to last whisper… or /w player message' }[nextStream] || 'Message the current world…';
+            this.input.placeholder = destination;
+            this.input.setAttribute('aria-label', destination);
         }
 
         this.clearUnread(nextStream);
@@ -224,7 +234,7 @@ export class ChatUI {
     focusChatInput() {
         this.show(true);
         if (document.body.classList.contains('mobile-mode')) this.setMobileExpanded(true);
-        this.setActiveStream('chat');
+        this.setActiveStream(this.activeStream === 'game' ? 'chat' : this.activeStream);
         this.input?.focus();
     }
 

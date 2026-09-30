@@ -104,6 +104,8 @@ func TestStructuredChatRejectsInvalidDestinationsAndMessages(t *testing.T) {
 
 	for _, input := range []ChatPayload{
 		{Message: "/p no party"},
+		{Message: "/party no party"},
+		{Message: "/guild no guild"},
 		{Message: "/w offline hello"},
 		{Message: "/r hello"},
 		{Message: strings.Repeat("x", maximumChatCharacters+1)},
@@ -111,6 +113,7 @@ func TestStructuredChatRejectsInvalidDestinationsAndMessages(t *testing.T) {
 		if err := chatService.Send(alice, input); err == nil {
 			t.Fatalf("expected rejection for %+v", input)
 		}
+		assertNoChat(t, alice)
 	}
 }
 

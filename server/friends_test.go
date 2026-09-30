@@ -271,7 +271,7 @@ func TestMsgFriendList_ReturnsPayload(t *testing.T) {
 // MsgFriendRequest handler
 // ---------------------------------------------------------------------------
 
-func TestMsgFriendRequest_SendsRequestAndEchoes(t *testing.T) {
+func TestMsgFriendRequest_NotifiesOnlyRecipientAndRefreshesSender(t *testing.T) {
 	d := newFriendTestDB(t)
 
 	origDB := db
@@ -320,6 +320,24 @@ func TestMsgFriendRequest_SendsRequestAndEchoes(t *testing.T) {
 	}
 	if !foundNotify {
 		t.Errorf("expected B to receive a %s notification, got %+v", MsgFriendRequest, msgsB)
+	}
+	// Outgoing acknowledgement must not look like an incoming request. The
+	// client treats every friend_request as a new pending request to accept.
+	foundSenderList := false
+	for _, m := range drainSentMessages(clientA.send) {
+		if m.Type == MsgFriendRequest {
+			t.Error("sender received a false incoming request notification")
+		}
+		if m.Type == MsgFriendList {
+			foundSenderList = true
+			var list FriendListPayload
+			if err := json.Unmarshal(m.Payload, &list); err != nil || len(list.Pending) != 0 {
+				t.Errorf("outgoing request entered sender pending list: %+v / %v", list, err)
+			}
+		}
+	}
+	if !foundSenderList {
+		t.Error("sender did not receive an authoritative friend list acknowledgement")
 	}
 
 	// DB should have a pending relationship.
@@ -441,6 +459,20 @@ func TestMsgFriendDecline_RemovesPendingRequest(t *testing.T) {
 	}
 	if f != nil {
 		t.Fatal("expected friendship to be removed after decline, got document")
+	}
+	foundList := false
+	for _, m := range drainSentMessages(clientB.send) {
+		if m.Type != MsgFriendList {
+			continue
+		}
+		foundList = true
+		var list FriendListPayload
+		if err := json.Unmarshal(m.Payload, &list); err != nil || len(list.Pending) != 0 {
+			t.Errorf("declined request remains in authoritative list: %+v / %v", list, err)
+		}
+	}
+	if !foundList {
+		t.Error("decline did not refresh the recipient's pending list")
 	}
 }
 

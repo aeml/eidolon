@@ -36,9 +36,11 @@ func handleMsgFriendRequest(c *Client, msg Message) {
 		c.sendError(err.Error())
 		return
 	}
-	// Ack to sender.
-	ackP, _ := json.Marshal(FriendUsernamePayload{Username: req.Username})
-	c.sendSafe(createMessage(MsgFriendRequest, ackP))
+	// friend_request means an INCOMING request to the client. Acknowledge
+	// outgoing success with the authoritative list, not a false request from
+	// the addressee that the sender could try to accept.
+	listP, _ := json.Marshal(buildFriendListPayload(c.playerID))
+	c.sendSafe(createMessage(MsgFriendList, listP))
 	// Notify addressee if online so their pending list updates immediately.
 	sessionsMu.Lock()
 	addrClient, addrOnline := activeSessions[req.Username]
@@ -98,6 +100,10 @@ func handleMsgFriendDecline(c *Client, msg Message) {
 	// Ack to decliner.
 	ackP, _ := json.Marshal(FriendUsernamePayload{Username: req.Username})
 	c.sendSafe(createMessage(MsgFriendDecline, ackP))
+	// The client waits for authoritative state rather than optimistically
+	// removing a row; retire the pending card and badge after successful decline.
+	listP, _ := json.Marshal(buildFriendListPayload(c.playerID))
+	c.sendSafe(createMessage(MsgFriendList, listP))
 }
 
 // handleMsgFriendRemove removes an accepted friend from both sides.

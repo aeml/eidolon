@@ -69,6 +69,9 @@ export class UIBindings {
 
         ui.social.onSocialOpen = () => {
             engine.network.send('social', {});
+            // Login snapshots are not enough after offline requests, blocks or
+            // reconnects. Opening the panel reconciles persisted relationships.
+            engine.network.send('friend_list', {});
         };
         ui.social.onGroupFinder = payload => engine.network.send('group_finder', payload);
         ui.social.onSocialStatusChange = (status) => {

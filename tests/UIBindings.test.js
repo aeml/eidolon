@@ -261,4 +261,10 @@ describe('UIBindings', () => {
         expect(engine.chunkManager.update).toHaveBeenCalledWith(engine.player, 0, engine.collisionManager);
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
     });
+
+    test('opening Social refreshes persisted friends as well as online presence', () => {
+        const engine = createEngine(); new UIBindings(engine).bindConstructorCallbacks();
+        engine.network.send.mockClear(); engine.uiManager.social.onSocialOpen();
+        expect(engine.network.send.mock.calls).toEqual([['social', {}], ['friend_list', {}]]);
+    });
 });
