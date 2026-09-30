@@ -1222,6 +1222,12 @@ export class GameEngine {
         await new Promise(r => setTimeout(r, 50));
         if (this.isDestroyed) return;
 
+        if (this.renderSystem.prepareInitialView) {
+            if (onProgress) onProgress(92, 'Preparing first view...');
+            const prepared = await this.renderSystem.prepareInitialView({ shouldContinue: () => !this.isDestroyed });
+            if (!prepared || this.isDestroyed) return;
+        }
+
         if (onProgress) onProgress(95, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
         if (this.isDestroyed) return;

@@ -1112,6 +1112,36 @@ export class RenderSystem {
         this.actorContactShadows?.update(entities, { ...options, enabled });
     }
 
+    prepareInitialView({ shouldContinue = () => true } = {}) {
+        if (this._disposed || !shouldContinue()) return Promise.resolve(false);
+        if (this._initialViewPreparation) return this._initialViewPreparation.promise;
+        const preparation = { frames: 0, request: null };
+        preparation.promise = new Promise((resolve, reject) => {
+            preparation.finish = (ready, error) => {
+                if (this._initialViewPreparation !== preparation) return;
+                if (preparation.request !== null) cancelAnimationFrame(preparation.request);
+                this._initialViewPreparation = null;
+                if (error) reject(error); else resolve(ready);
+            };
+        });
+        this._initialViewPreparation = preparation;
+        const frame = () => {
+            preparation.request = null;
+            if (this._disposed || !shouldContinue()) { preparation.finish(false); return; }
+            try {
+                // Real rendering also prepares shadow, texture uploads and
+                // composer passes that compileAsync(scene) alone omits.
+                this.render();
+            } catch (error) { preparation.finish(false, error); return; }
+            if (this._initialViewPreparation !== preparation) return;
+            // Shadow receiving programs may first appear on the second frame.
+            if (++preparation.frames === 2) preparation.finish(true);
+            else preparation.request = requestAnimationFrame(frame);
+        };
+        preparation.request = requestAnimationFrame(frame);
+        return preparation.promise;
+    }
+
     render() {
         this.sceneryVisibility?.update(this.instanceEnvironmentGroup, this.camera, this.sceneryFocus, performance.now() / 1000);
         if (this.waterTexture) {
@@ -1187,6 +1217,7 @@ export class RenderSystem {
     dispose() {
         if (this._disposed) return;
         this._disposed = true;
+        this._initialViewPreparation?.finish(false);
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

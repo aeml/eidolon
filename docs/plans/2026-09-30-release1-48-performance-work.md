@@ -1,5 +1,52 @@
 # Alpha1.48 — client performance work
 
+## Actual first-view preparation — September30
+
+New opt-in cold-town probe creates the production renderer, procedural
+environment, startup models, town base and nine normal service/player models
+in a fresh page with no gallery loop or prior rendered world frame. Record
+all first60frames rather than throwing away a warmup. No accounts, network
+outcomes or progression are manufactured. This is controlled renderer entry,
+not end-to-end authenticated login or future instance-shader readiness.
+
+Two System Chrome baseline cases13.9s start at frame0/programs0. High's first
+render costs529.1ms, second39.3ms, programs33→35; Low437.4ms then10.7ms,
+programs20. Environment generation costs1938.8/635.1ms before these frames.
+KHR_parallel_shader_compile is absent; native multi-draw present. Device
+remains RADV RENOIR at1280x844. Evidence:/tmp/eidolon-1-48-cold-town-baseline-0930.
+
+Prepare two real current-view frames while loading, before binding controls,
+Ready, server join and loop entry. Yield through requestAnimationFrame so the
+loading text can paint. Actual rendering also prepares texture uploads,
+shadow and composer passes; scene compileAsync alone omits those. No fixed
+GPU-ready delay, visibility/quality reduction or all-future-assets guarantee.
+Deduplicate in-flight preparation; dispose cancels and resolves it even when
+the browser stops delivering frames. Failure rejects the entry normally;
+cancelled sessions cannot bind controls or join. Disposal during rendering
+cannot enqueue a later frame.
+
+Eight new startup/preparation cases fail before implementation1.796s. Final
+five startup/preparation/graphics/boot/recovery suites36checks pass2.473s,
+scoped lint/whitespace pass. An intermediate command named nonexistent
+BootRecovery and failed; it is not claimed as successful verification. Use the
+actual MainAssetBoot and SessionRecovery paths in the final explicit run.
+
+Two prepared Chrome cases17.1s complete the same35High/20Low programs under
+loading. First subsequent render14.0/25.4ms, with no newly compiled programs
+through60frames. Preparation wall time656.6/514.8ms includes the work moved
+under loading, not total load-time savings. Subsequent interval median/p95
+High20.4/39.7ms (still misses20/33.4), Low16.9/27.6ms;2/1hitches>50ms.
+No universal FPS, sustained gain, GPU execution-time or phone-hardware claim.
+Town capture inspected; evidence:/tmp/eidolon-1-48-cold-town-prepared-0930.
+Production prepares its currently built view; later server-replicated actors,
+equipment and zone/effect shaders can still introduce work. Mandatory eventual
+authenticated CI remains required. Busy timing/network rendering and ordered
+predecessor publication remain open; runtime still1.47, unpublished.
+
+Planned patch note: the loading screen prepares the initial rendered view,
+including shadows and postprocessing, before handing over controls; leaving
+during preparation cancels its callbacks cleanly.
+
 ## Compatible equipment colors and transparent ordering — September30
 
 Combine diffuse-color variants only when constructor-owned surfaces have
