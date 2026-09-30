@@ -159,13 +159,27 @@ recorded CPU animation/render submission p50 10.4ms and p95 15.1ms on RADV RENOI
 and CPU submission timings, not GPU memory bytes, guaranteed FPS, internet load,
 physical-phone performance, full-world gameplay or 100-player capacity evidence.
 
-One newly identified activation gap remains: CasinoController still seats only
-procedural Rig_* bones. The authored Fighter needs a real seated pose and exit
-restoration before deployment. Full clip-duration/clipping review and the normal
-RenderSystem/gallery consumer path also remain; rigid equipment uses the existing
-simple forms. This work does not certify final Diablo/PoE art quality.
+The casino activation gap is corrected: the authored pose bends thighs/calves,
+lowers the pelvis through its actual exported parent axes, and compensates for
+Idle root bob to keep hips at chair height. Ordinary CasinoController reapplies
+the pose after animation and restores the exact preceding transforms on exit,
+mesh replacement or teardown. Other classes keep their existing seating path.
+Fixed clothing/rigid mounts expose all fourteen item slots to existing consumers.
 
-## Remaining integration alongside combat readability
+Five scoped suites passed 57 checks in 5.451s, including seating restoration.
+The production gallery now supports authored equipment rather than requiring a
+procedural flag. All class/state/quality and local/remote equipment-family routes
+passed with the pilot, three native cases in 1.0m. The updated pilot additionally
+checks the end of the full Death clip; it and the physical chair/phone/clean-exit
+route passed two cases in 28.3s. Seated, fallen Death-end and normal gameplay-scale
+renders were reviewed. Evidence: `/tmp/eidolon-1-54-fighter-seated-final-0930`
+and `/tmp/eidolon-1-54-fighter-motion-final-0930`. The separate fixed front/side/back
+and ordinary-outfit Fighter gallery routes passed too. This closes the scoped
+alpha activation checks, not all clip/presentation permutations, full-world
+performance or final Diablo/PoE art quality. Later cloth, rigid-equipment and
+remaining actor art work stay on the full roadmap.
+
+## Further visual qualification
 
 1. Derive and validate runtime-sized geometry/textures as needed, retaining the
    supplied source and provenance. Measure loading/memory rather than making the
@@ -177,19 +191,19 @@ simple forms. This work does not certify final Diablo/PoE art quality.
    actor controller. Retain authored motion, smooth transitions and current
    gameplay authority; fill any class-skill presentation gaps without silently
    dropping animation coverage.
-4. Finish the remaining generated-equipment review above: inspect full clip
-   durations and clipping, adapt casino seating/restoration, and check the normal
-   gallery/RenderSystem consumers. The owner supplies bodies—not an equipment or
-   environment catalog.
+4. Refine the existing generated-equipment adaptation: inspect additional clip
+   and loadout permutations, improve cloth/rigid forms and surfaces, and retain
+   seating/restoration and normal gallery/RenderSystem coverage. The owner
+   supplies bodies—not an equipment or environment catalog.
 5. Compare the actual gameplay camera and character sheet, High/Low settings and
    a shared multi-actor workload. Review appearance and readable combat, not just
-   finite transforms or mesh counts, before enabling the model by default.
+   finite transforms or mesh counts, as later visual milestones refine this
+   scoped alpha integration.
 
 Other class/NPC/monster deliveries and full modern-art acceptance remain
-separate requirements. Default Fighter activation still requires generated
-equipment motion/fit acceptance, integrated skill/controller acceptance, fallback/cache/pool
-lifecycle, current gameplay camera and character-sheet review, and measured
-High/Low full-world performance. The first independent preview and equipped
-four-actor fixture checks pass; they do not close all those requirements.
+separate requirements. The packaged 1.54 candidate enables the Fighter through
+the normal factory after the scoped checks above. Exact-source CI/public
+acceptance remains necessary before declaring it live. Four-actor fixture
+counts/timings are not full-world performance or final art qualification.
 No new owner model request is needed. Markdown was source-reviewed; no rendered
 documentation preview was available.

@@ -181,6 +181,38 @@ test('derived Fighter assets render and animate with independent player skeleton
         await page.evaluate(clip => window.fighterPilot.renderPose(clip, 0, .45), clip);
         await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath(`Equipped-${clip}.png`) });
     }
+    const seated = await page.evaluate(async () => {
+        const { actors, renderPose, renderer, scene, camera, THREE } = window.fighterPilot;
+        const { CasinoController } = await import('/src/core/CasinoController.js');
+        renderPose('Idle');
+        const controller = Object.assign(Object.create(CasinoController.prototype), {
+            engine: { player: actors[0].entity, currentInstanceId: '' }, poses: new Map(), cutawayActors: new Map(), active: false
+        });
+        const previous = actors.map(({ root }) => root.getObjectByName('thigh_l').quaternion.toArray());
+        actors.forEach(({ entity, root }) => { entity.state = 'SEATED'; root.rotation.y = Math.PI / 6; });
+        controller.render(actors.map(actor => actor.entity)); renderer.render(scene, camera);
+        window.fighterPilot.clearSeated = () => {
+            actors.forEach(({ entity }) => { entity.state = 'IDLE'; });
+            controller.render(actors.map(actor => actor.entity));
+            return actors.every(({ root }, i) => root.getObjectByName('thigh_l').quaternion.toArray().every((value, j) => value === previous[i][j]));
+        };
+        return actors.map(({ root, entity }) => ({ hipHeight: root.getObjectByName('pelvis').getWorldPosition(new THREE.Vector3()).y,
+            slots: root.userData.equipmentVisualItemCount, position: entity.position.toArray() }));
+    });
+    seated.forEach(actor => { expect(actor.hipHeight).toBeCloseTo(1.12, 4); expect(actor.slots).toBe(14); expect(actor.position[1]).toBe(0); });
+    await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-Seated.png') });
+    expect(await page.evaluate(() => window.fighterPilot.clearSeated())).toBe(true);
+    intake.seated = seated;
+    const death = await page.evaluate(() => {
+        const { actors, renderPose, THREE } = window.fighterPilot;
+        const duration = actors[0].root.userData.animations.find(clip => clip.name === 'Death').duration;
+        renderPose('Death', 0, duration * .98);
+        return actors.map(({ root, entity }) => ({ headHeight: root.getObjectByName('head').getWorldPosition(new THREE.Vector3()).y,
+            position: entity.position.toArray() }));
+    });
+    await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-DeathEnd.png') });
+    death.forEach(actor => { expect(actor.headHeight).toBeLessThan(1.8); expect(actor.position[1]).toBe(0); });
+    intake.death = death;
     const workload = await page.evaluate(async () => {
         const { actors, renderer, scene, THREE, renderPose } = window.fighterPilot;
         const camera = new THREE.OrthographicCamera(-10, 10, 7, -7, .1, 500);
@@ -231,7 +263,7 @@ test('derived Fighter assets render and animate with independent player skeleton
         const result = actors.map(({ root }) => {
             clearEquipmentVisuals(root);
             return { hair: root.getObjectByName('Fighter_Hair').visible, shorts: root.getObjectByName('Fighter_Undershorts').visible,
-                garmentChildren: root.getObjectByName('AuthoredFighterGarments').children.length,
+                garmentChildren: root.getObjectByName('AuthoredFighterGarments').children.reduce((sum, mount) => sum + mount.children.length, 0),
                 rigidChildren: ['head', 'mainHand', 'offHand', 'neck', 'ring1', 'ring2', 'trinket1', 'trinket2'].map(slot => root.getObjectByName(`AuthoredMount_${slot}`).children.length) };
         });
         renderPose('Idle'); return result;

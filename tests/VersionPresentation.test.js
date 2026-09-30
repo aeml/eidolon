@@ -3,7 +3,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.53.0';
+const currentVersion = '1.54.0';
+
+test('1.54.0 records rigged Fighter integration and current duel consent without progression changes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.54.0"'), previous = html.indexOf('data-version="1.53.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['a rigged Fighter and clearer duel consent', 'Independent skeletons', 'All 14 equipment slots',
+        'casino seating', '7.33MB and 3.64MB', 'procedural fallback', 'another challenger cannot replace',
+        'Blocking is rechecked', 'count down each second', 'old match records', 'No combat-stat',
+        'not final modern-art approval', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('ordinary duel consent is verified once through a disposable normal server socket route', () => {
     const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');

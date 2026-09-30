@@ -165,16 +165,17 @@ test.describe('deterministic production animation gallery', () => {
             await page.locator('#gallery-actor').selectOption(actorType);
             await waitForActor(page, actorType);
             let metrics = await galleryMetrics(page);
-            expect(metrics.proceduralHumanoid).toBe(true);
-            expect(metrics.proceduralClass).toBe(actorType);
+            expect(metrics.proceduralHumanoid).toBe(actorType !== 'Fighter');
+            expect(metrics.proceduralClass).toBe(actorType === 'Fighter' ? null : actorType);
+            expect(metrics.authoredClass).toBe(actorType === 'Fighter' ? 'Fighter' : null);
             expect(metrics.genderPresentation).toBe(
                 actorType === 'Rogue' || actorType === 'Cleric' ? 'female' : null
             );
             expect(metrics.remoteGenderPresentation).toBe(
                 actorType === 'Rogue' || actorType === 'Cleric' ? 'female' : null
             );
-            expect(metrics.equipmentAnchorCount).toBe(20);
-            expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(40);
+            expect(metrics.equipmentAnchorCount).toBe(actorType === 'Fighter' ? 14 : 20);
+            expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(actorType === 'Fighter' ? 11 : 40);
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
                 await page.locator('#gallery-state').selectOption(state);
@@ -224,17 +225,21 @@ test.describe('deterministic production animation gallery', () => {
 
         let metrics = await galleryMetrics(page);
         expect(metrics.actorType).toBe('Fighter');
-        expect(metrics.proceduralHumanoid).toBe(true);
+        expect(metrics.authoredClass).toBe('Fighter');
+        expect(metrics.proceduralHumanoid).toBe(false);
         expect(metrics.equipmentAuditPassed).toBe(equipmentFamilyCount);
         expect(metrics.phase).toBe('equipment:full-loadout');
         expect(metrics.equipmentLocalItems).toBe(14);
         expect(metrics.equipmentRemoteItems).toBe(14);
         expect(metrics.equipmentLocalParts).toBeGreaterThanOrEqual(45);
         expect(metrics.equipmentRemoteParts).toBe(metrics.equipmentLocalParts);
-        expect(metrics.equipmentLocalSetRegions).toBe(10);
-        expect(metrics.equipmentRemoteSetRegions).toBe(10);
-        expect(metrics.equipmentLocalUniqueRegions).toBe(18);
-        expect(metrics.equipmentRemoteUniqueRegions).toBe(18);
+        // Paired authored garments share one slot owner; procedural arms/legs
+        // have distinct per-side owners. Count actual item identities, not the
+        // old procedural hierarchy's number of regions.
+        expect(metrics.equipmentLocalSetRegions).toBe(6);
+        expect(metrics.equipmentRemoteSetRegions).toBe(6);
+        expect(metrics.equipmentLocalUniqueRegions).toBe(14);
+        expect(metrics.equipmentRemoteUniqueRegions).toBe(14);
         expect(metrics.nonFiniteTransforms).toBe(0);
 
         for (const quality of ['high', 'low']) {

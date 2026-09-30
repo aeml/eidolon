@@ -589,7 +589,7 @@ export class AnimationGallery {
     }
 
     async ensureProceduralEquipmentActors() {
-        if (this.actor?.mesh?.userData?.proceduralHumanoid) return true;
+        if (this.actor?.mesh?.userData?.equipmentAnchors) return true;
         this.currentActorType = 'Fighter';
         this.actorSelect.value = 'Fighter';
         return this.loadActors('Fighter');
@@ -967,7 +967,7 @@ export class AnimationGallery {
     }
 
     presentEquipment(baseName = this.currentEquipmentName) {
-        if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
+        if (!this.actor?.mesh?.userData?.equipmentAnchors) return false;
         const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === baseName);
         if (!baseItem) return false;
         this.cleanupPresentation();
@@ -988,7 +988,7 @@ export class AnimationGallery {
     }
 
     presentEquipmentLoadout() {
-        if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
+        if (!this.actor?.mesh?.userData?.equipmentAnchors) return false;
         this.cleanupPresentation();
         const equipment = {};
         const showcase = PROCEDURAL_SHOWCASE_LOADOUTS[this.currentActorType] ||
@@ -1394,6 +1394,8 @@ export class AnimationGallery {
             lastStatePlayback: this.lastStatePlayback ? { ...this.lastStatePlayback } : null,
             proceduralHumanoid: Boolean(this.actor?.mesh?.userData?.proceduralHumanoid),
             proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
+            authoredClass: this.actor?.mesh?.userData?.authoredClass || null,
+            authoredQuality: this.actor?.mesh?.userData?.authoredQuality || null,
             genderPresentation: this.actor?.mesh?.userData?.genderPresentation || null,
             remoteGenderPresentation: this.remoteActor?.mesh?.userData?.genderPresentation || null,
             proceduralTownActor: Boolean(this.actor?.mesh?.userData?.proceduralTownActor),

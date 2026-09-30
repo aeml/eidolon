@@ -1,10 +1,11 @@
 # Alpha 1.54 duel and combat presentation work
 
 September 30, 2026. Duel fixes and Fighter runtime preparation are locally
-implemented and tested. This worktree still reports Alpha 1.53.0; it has not
-been packaged, pushed or accepted as 1.54. The
+implemented and tested. Alpha 1.54.0 is packaged as a release candidate, pending
+exact-source CI and independent public acceptance. The
 [exact 1.53 predecessor is publicly accepted](2026-09-30-release1-53-acceptance.md).
-Finish the remaining Fighter integration before deploying this milestone.
+Scoped Fighter integration checks now pass; final modern-art approval remains
+separate from this alpha pilot.
 
 The roadmap scope is opt-in duels/open-world PvP, safe-zone protection,
 surrender/defeat and readable combat without unintended PvE loss or griefing.
@@ -75,9 +76,19 @@ JS suites passed 196 tests in 11.992s; the integrated native pilot and three
 character-sheet sizes passed four cases in 43.7s, with reviewed independent
 High/Low previews and a short isometric CPU-render sample. The pilot record
 qualifies those metrics; they are not final GPU/FPS/capacity evidence.
-Casino seating still targets the old Rig_* bones and must be adapted before
-deployment. Full clip/clipping and normal gallery/RenderSystem consumer review
-also remain. Final modern equipment art is not claimed complete by this pilot.
+Casino seating now converts through the exported pelvis/parent axes and applies
+its pose after ordinary animation, preserving authoritative position and exact
+exit restoration. Fourteen fixed item-slot mounts expose proper attachment
+ownership to existing gallery consumers. Five changed-scope JS suites passed
+57 checks in 5.451s. The ordinary local/remote gallery now accepts authored
+equipment without relying on a procedural-only guard; all class/state/quality
+and all equipment-family routes passed with the pilot, three cases in 1.0m.
+The subsequent full death-end and physical-chair/phone-panel routes passed two
+cases in 28.3s. Seated, death-end and normal gameplay-scale renders were reviewed;
+evidence is in `/tmp/eidolon-1-54-fighter-seated-final-0930` and
+`/tmp/eidolon-1-54-fighter-motion-final-0930`. The separate fixed front/side/back
+and ordinary-outfit Fighter gallery routes also passed. Cloth and equipment
+remain baseline code-owned forms, not final modern-art approval.
 The source upload and adapter have not replaced the live procedural hero.
 
 Package 1.54 metadata and cumulative notes after integration; fetch/merge remote changes

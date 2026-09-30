@@ -2,11 +2,11 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.33.0, exact3f07f6ed, CI36504220731. The expanded all-spec
-release passed CI/live QA and independent public IPv4 checks of both identities,
-database readiness, login/history and six exact changed assets. See its
-[release record](2026-09-28-release1-33.md). Alpha1.34 is the next isolated
-candidate; later local Forge/economy/reward changes are not included.
+baseline is Alpha1.53.0, exactbf723c17751cd04a9d3f6b8d95102840ca9286dd,
+CI36770739226. CI/live QA and independent public IPv4 checks passed for both
+identities, database readiness, login/history and all seven changed runtime
+files. See its [acceptance record](2026-09-30-release1-53-acceptance.md).
+Alpha1.54 is the isolated release candidate; packaging is not public acceptance.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
@@ -46,8 +46,11 @@ fit, animation coverage, actual-camera review and measured performance before
 default enablement. It is no longer an unavailable input; remaining actors and
 the final modern-art gate remain open. The owner need not supply equipment or
 environment assets. The pilot now has two smaller validated exports and tested
-independent skeleton instances. Equipment/skill integration and visual fixes
-remain; it is not yet the default in-game Fighter.
+independent skeleton instances, fitted equipment, skill/controller coverage,
+seating and static previews in the unpublished 1.54 candidate. Normal factory
+loading, fallback and quality-specific pooling are locally tested. CI/public
+acceptance is still required before calling it the live default Fighter;
+final modern art for the entire actor catalog remains open.
 
 World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)
 is mandatory. Fill the actual world with purposeful places, routes, ambient life,

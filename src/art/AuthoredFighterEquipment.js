@@ -261,7 +261,7 @@ function decorateGarment(state, group, source, slot, scale) {
             }
             geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(joints, 4));
             geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
-            const ornament = skinMesh(body, geometry, part.material, `${part.name}_${side}`);
+            const ornament = skinMesh(body, geometry, part.material, part.name);
             ornament.userData.authoredOwnedGeometry = true;
             group.add(ornament);
         });
@@ -301,9 +301,14 @@ export function prepareAuthoredFighterEquipment(root) {
     add('trinket1', socket('socket_belt'), new THREE.Vector3(-.21, 1.02, .12));
     add('trinket2', socket('socket_belt'), new THREE.Vector3(.21, 1.02, .12));
     const group = new THREE.Group(); group.name = 'AuthoredFighterGarments'; body.parent.add(group);
+    const clothingMounts = new Map(SKIN_SLOTS.map(slot => {
+        const mount = new THREE.Group(); mount.name = `AuthoredMount_${slot}`;
+        group.add(mount); return [slot, mount];
+    }));
+    root.userData.equipmentAnchors = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => [slot, [`AuthoredMount_${slot}`]]));
     const hands = new Map([-1, 1].map(side => [side, point(root.getObjectByName(side < 0 ? 'hand_r' : 'hand_l') || socket(side > 0 ? 'socket_offHand' : 'socket_mainHand'))]));
     const torso = root.getObjectByName('spine_03');
-    const state = { body, original: body.geometry, cache: cacheFor(body), mounts, group, hands, torso,
+    const state = { body, original: body.geometry, cache: cacheFor(body), mounts, clothingMounts, group, hands, torso,
         torsoRestInverse: torso.getWorldQuaternion(new THREE.Quaternion()).invert(),
         shieldRest: mounts.get('offHand').getWorldQuaternion(new THREE.Quaternion()),
         offHandRest: mounts.get('offHand').quaternion.clone(),
@@ -328,7 +333,7 @@ export function prepareAuthoredFighterEquipment(root) {
 export function clearAuthoredFighterEquipment(root) {
     const state = states.get(root);
     if (!state) return false;
-    for (const owner of [state.group, ...state.mounts.values()]) {
+    for (const owner of [...state.clothingMounts.values(), ...state.mounts.values()]) {
         for (const part of [...owner.children]) {
             part.traverse(child => { if (child.userData.authoredOwnedGeometry) child.geometry.dispose(); });
             part.removeFromParent();
@@ -361,7 +366,7 @@ export function applyAuthoredFighterEquipment(root, equipment = {}, { force = fa
             const group = new THREE.Group(); group.name = source.name; group.userData = { ...source.userData, authoredEquipment: true };
             fitPieces(state, root, group, item, slot, descriptor, source);
             decorateGarment(state, group, source, slot, root.userData.authoredScale);
-            state.group.add(group);
+            state.clothingMounts.get(slot).add(group);
             if (!(slot === 'feet' && descriptor.variant === 'sandals')) mask |= 1 << SKIN_SLOTS.indexOf(slot);
         } else {
             state.mounts.get(slot).add(source);

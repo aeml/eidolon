@@ -11,6 +11,21 @@ const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'bl
     seats: [{ x: -4.3, z: 173.2, rotation: Math.PI, exitX: -4.3, exitZ: 174.4 }], minimumPlayers: 1 };
 const seat = { tableId: table.id, seat: 0, sessionId: 'private-token', exitX: -4.3, exitZ: 174.4, ready: false };
 
+test('authored seating is reapplied after animation and restored on exit or mesh replacement', () => {
+    const { engine, controller } = setup();
+    const make = () => {
+        const pose = { apply: jest.fn(), restore: jest.fn() }, mesh = new THREE.Group();
+        mesh.userData.createSeatedPose = jest.fn(() => pose); return { pose, mesh };
+    };
+    const first = make(), second = make(), actor = { mesh: first.mesh, state: 'SEATED', position: new THREE.Vector3() };
+    engine.currentInstanceId = '';
+    controller.render([actor]); controller.render([actor]);
+    expect(first.mesh.userData.createSeatedPose).toHaveBeenCalledTimes(1); expect(first.pose.apply).toHaveBeenCalledTimes(2);
+    actor.mesh = second.mesh; controller.render([actor]); expect(first.pose.restore).toHaveBeenCalledTimes(1);
+    actor.state = 'IDLE'; controller.render([actor]); expect(second.pose.restore).toHaveBeenCalledTimes(1);
+    expect(controller.poses.size).toBe(0); controller.dispose();
+});
+
 function setup() {
     const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 500);
     camera.position.set(10, 15, 190);

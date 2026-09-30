@@ -9,7 +9,7 @@ import { MeshFactory } from '../src/utils/MeshFactory.js';
 
 function fixture() {
     const scene = new THREE.Group();
-    const names = ['Root', 'upperarm_l', 'upperarm_r', 'lowerarm_l', 'lowerarm_r', 'spine_03', 'head'];
+    const names = ['Root', 'upperarm_l', 'upperarm_r', 'lowerarm_l', 'lowerarm_r', 'spine_03', 'head', 'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r'];
     const bones = Array.from({ length: 53 }, (_, i) => Object.assign(new THREE.Bone(), { name: names[i] || `Bone${i}` }));
     for (let i = 1; i < bones.length; i++) bones[0].add(bones[i]);
     scene.add(bones[0]);
@@ -130,7 +130,8 @@ describe('delivered Fighter runtime candidates', () => {
         owned.forEach(dispose => expect(dispose).toHaveBeenCalledTimes(1));
         expect(sharedDispose).not.toHaveBeenCalled();
         expect(actor.getObjectByName('Fighter_Body').geometry).toBe(original);
-        expect(actor.getObjectByName('AuthoredFighterGarments').children).toHaveLength(0);
+        expect(actor.getObjectByName('AuthoredFighterGarments').children).toHaveLength(6);
+        expect(actor.getObjectByName('AuthoredFighterGarments').children.every(mount => mount.children.length === 0)).toBe(true);
         jest.restoreAllMocks();
     });
 
@@ -186,5 +187,19 @@ describe('delivered Fighter runtime candidates', () => {
         first.userData.disposeInstance(); first.userData.disposeInstance();
         expect(own).toHaveBeenCalledTimes(1); expect(other).not.toHaveBeenCalled(); expect(shared).not.toHaveBeenCalled();
         jest.restoreAllMocks();
+    });
+
+    test('seating changes the rig, not authority, and restores the exact prior pose', () => {
+        const source = fixture(), root = createAuthoredFighterInstance(source);
+        const pelvis = root.getObjectByName('pelvis'), thigh = root.getObjectByName('thigh_l');
+        const oldPosition = pelvis.position.clone(), oldRotation = thigh.quaternion.clone();
+        const pose = root.userData.createSeatedPose(); pose.apply();
+        expect(pelvis.getWorldPosition(new THREE.Vector3()).y).toBeCloseTo(1.12, 5);
+        expect(thigh.quaternion.angleTo(oldRotation)).toBeGreaterThan(1);
+        expect(root.position.toArray()).toEqual([0, 0, 0]);
+        expect(source.scene.getObjectByName('thigh_l').quaternion.toArray()).toEqual([0, 0, 0, 1]);
+        pose.restore();
+        expect(pelvis.position.toArray()).toEqual(oldPosition.toArray());
+        expect(thigh.quaternion.toArray()).toEqual(oldRotation.toArray());
     });
 });

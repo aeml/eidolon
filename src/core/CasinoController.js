@@ -372,10 +372,11 @@ export class CasinoController {
             if (pose && pose.mesh !== entity.mesh) { this.restorePose(pose); this.poses.delete(entity); pose = null; }
             if (seated && !pose) {
                 const names = ['Rig_Hips', ...['Left', 'Right'].flatMap(side => ['Thigh', 'Shin', 'UpperArm', 'Forearm'].map(part => `Rig_${part}${side}`))];
-                pose = { mesh: entity.mesh, bones: names.map(name => entity.mesh.getObjectByName(name)).filter(Boolean).map(bone => ({ bone, x: bone.rotation.x, y: bone.position.y })) };
+                pose = { mesh: entity.mesh, authored: entity.mesh.userData.createSeatedPose?.(), bones: names.map(name => entity.mesh.getObjectByName(name)).filter(Boolean).map(bone => ({ bone, x: bone.rotation.x, y: bone.position.y })) };
                 this.poses.set(entity, pose);
             }
             if (seated && pose) {
+                pose.authored?.apply();
                 for (const { bone } of pose.bones) {
                     if (bone.name === 'Rig_Hips') bone.position.y = 1.12;
                     else if (bone.name.includes('Thigh')) bone.rotation.x = -Math.PI / 2;
@@ -400,7 +401,10 @@ export class CasinoController {
         camera.updateProjectionMatrix();
     }
 
-    restorePose(pose) { for (const { bone, x, y } of pose.bones) { bone.rotation.x = x; bone.position.y = y; } }
+    restorePose(pose) {
+        pose.authored?.restore();
+        for (const { bone, x, y } of pose.bones) { bone.rotation.x = x; bone.position.y = y; }
+    }
 
     clearActorPresentation() {
         this.restoreCutawayActors();

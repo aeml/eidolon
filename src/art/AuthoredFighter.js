@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createAuthoredFighterAbilityClips } from './AuthoredFighterAbilityClips.js';
 import { prepareAuthoredFighterEquipment, clearAuthoredFighterEquipment } from './AuthoredFighterEquipment.js';
+import { installAuthoredFighterSeatedPose } from './AuthoredFighterSeatedPose.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
 // a boot dependency. MeshFactory loads the selected candidate on demand with
@@ -87,6 +88,7 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     root.userData.resetPose = root.userData.resetRestPose;
     root.updateMatrixWorld(true);
     prepareAuthoredFighterEquipment(root);
+    installAuthoredFighterSeatedPose(root, gltf.animations);
     let disposed = false;
     root.userData.disposeInstance = () => {
         if (disposed) return;
