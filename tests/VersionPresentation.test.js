@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.50.0';
+const currentVersion = '1.51.0';
+
+test('1.51.0 records friend and chat usability while retaining consent and history', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.51.0"'), previous = html.indexOf('data-version="1.50.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['friends and private conversations', 'false incoming request', 'Unknown usernames are rejected',
+        'Delayed connection notifications', 'Invite and Whisper', 'another incoming whisper cannot redirect',
+        'Tabs choose destinations', 'Escape returns to All without closing chat', 'Block/ignore restrictions',
+        'never fall back to public chat', 'saved progress are unchanged', 'does not open closed beta',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.50.0 records integration and phone party roles without overstating approval', () => {
     const html = fs.readFileSync('index.html', 'utf8');

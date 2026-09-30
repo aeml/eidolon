@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.50.0</span>
+                    <span class="start-version-row__label">Alpha 1.51.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.51.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.51.0 (friends and private conversations)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Friend requests:</strong> Sending a request no longer adds a false incoming request to your own pending list. Declining refreshes the card and badge. Unknown usernames are rejected; valid offline friends still receive requests.</li>
+                        <li><strong>Reliable presence:</strong> Delayed connection notifications use the current session, so reconnecting friends are not marked offline by their old socket. Current social status returns with them and stays updated while Friends is open.</li>
+                        <li><strong>Contact friends directly:</strong> Online friend rows now have Invite and Whisper buttons. Whisper focuses a private composer with the selected recipient; another incoming whisper cannot redirect your message. Offline contact buttons are disabled.</li>
+                        <li><strong>Tabs choose destinations:</strong> Plain text in Party, Guild and Whispers goes to that channel, including after the Enter shortcut. Clear composer labels show the destination. Explicit commands still work, and Escape returns to All without closing chat.</li>
+                        <li><strong>Saved relationships and consent:</strong> Opening Social refreshes saved friendships and pending requests. Block/ignore restrictions still prevent unwanted friend requests and party invitations; failed private/group sends never fall back to public chat.</li>
+                        <li><strong>Unchanged progression:</strong> Combat, rewards, currencies, guild permissions and saved progress are unchanged. This release does not open closed beta. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.50.0">
                     <h3 class="patch-note-entry__title">Alpha 1.50.0 (presentation that stays together)</h3>
                     <ul class="patch-note-entry__list">

@@ -1,8 +1,9 @@
 # Alpha 1.51 community work
 
-Local work in progress, not a deployed release or a completed community audit.
-Publish only after ordered 1.49 and 1.50 acceptance, remaining 1.51 work, version
-packaging and its own normal CI/public checks. Current runtime metadata is1.50.
+This local candidate packages Alpha1.51.0 version metadata, login and cumulative
+patch notes with the scoped community fixes below. It is not a deployed release
+or full multiplayer certification. Publish only after ordered1.49/1.50
+acceptance and its own normal CI/public checks.
 
 ## Confirmed fixes
 
@@ -87,9 +88,14 @@ permission or automatic moderation behavior changed.
 
 ## Remaining milestone checks
 
+The five version/browser-selection suites pass359checks in6.674s after
+packaging. They require aligned package/lock/login/backend/deployment versions,
+the new cumulative note and unchanged mandatory browser coverage. Metadata-only
+packaging does not require replaying the unchanged gameplay fixture.
+
 Presence ownership, nonexistent targets, normal friend contact controls and
-contact consent now have scoped evidence. Package1.51 with cumulative patch
-notes after ordered1.49/1.50 acceptance. Its own CI and public deployment checks
+contact consent now have scoped evidence. Version/login/cumulative patch notes
+are packaged; retain ordered1.49/1.50 acceptance. Its own CI and public deployment checks
 are still required; no local result substitutes for that gate.
 This work does not certify guild operations (1.52), recruitment (1.53), final
 modern art, actual-phone performance, campaign pacing or beta capacity.
