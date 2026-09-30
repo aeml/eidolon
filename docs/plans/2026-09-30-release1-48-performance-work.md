@@ -68,3 +68,30 @@ trees, hiding enemies/warnings, reducing shader quality automatically or
 altering collision. Any shadow/culling change must retain visible shadow
 pixels; prepared-scene off-camera entities do not by themselves prove a
 production streaming bug. Entity-budget review still needs the runtime path.
+
+## First rendering change:16m tree cells
+
+Reduced only Earth's static tree batch cells32→16m, retaining every material,
+leaf/trunk surface, instance transform, tree count and walking collider. No
+per-frame rebatching or reduced High crown detail. Four placement/render/
+saved-position suites26checks pass23.464s, including all original placements,
+391 colliders and1564 escape directions. High/Low spatial appearance comparison
+passes9.2s with the existing less-than0.1% altered-pixel criterion, including
+tree shadows. No appearance tolerance was weakened.
+
+The same High9-site hardware profile completes43.8s and still correctly
+fails the unchanged town draw limit. Tree cells do not affect town draws.
+
+| View | Draws32m→16m | Triangles32m→16m |
+| --- | ---: | ---: |
+| Woodland |284→312|261372→254680 |
+| Junction |249→253|221729→189997 |
+| Turn |230→250|180974→170946 |
+| Grove arch |298→324|236314→226770 |
+
+All samples remain capped16.7ms median/16.7–16.8ms p95, but High woodland
+is still4680 triangles over target. More precise static bounds cost additional
+scene/instance objects and draws:1179 Earth batches. Do not present this as a
+complete performance pass or universal FPS win. Evidence:
+/tmp/eidolon-1-48-tighter-woodland-0930. Further bounded optimization and town/
+runtime-entity work remain; do not iterate unmeasured quality downgrades.
