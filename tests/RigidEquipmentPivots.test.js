@@ -62,6 +62,49 @@ test('every clip target is a boundary, including equipment-anchor rotations', ()
     clearRigidEquipmentPivots(root);
 });
 
+test('nested rigid shield-like groups keep their item-local transforms', () => {
+    const { root, sources } = fixture();
+    for (const source of sources) {
+        const parent = source.parent, shield = new THREE.Group();
+        shield.position.set(.2, .1, .4); shield.rotation.y = .3;
+        parent.add(shield); shield.add(source);
+    }
+    const before = worldVertices(root);
+    batchRigidEquipmentPivots(root);
+    expect(sources.every(mesh => !mesh.visible)).toBe(true);
+    expect(worldVertices(root)).toEqual(before);
+    clearRigidEquipmentPivots(root);
+});
+
+test('known surfaces fold linear diffuse colors without modifying source attributes or materials', () => {
+    const { root, pivot, sources, material } = fixture();
+    material.userData.equipmentSurfaceKey = 'known-constructor-surface';
+    sources[1].material = material.clone(); sources[1].material.color.set('blue');
+    sources[1].material.vertexColors = true;
+    const colors = new Float32Array(sources[1].geometry.attributes.position.count * 3).fill(.5);
+    const original = new THREE.BufferAttribute(colors, 3); sources[1].geometry.setAttribute('color', original);
+    batchRigidEquipmentPivots(root);
+    const mesh = pivot.children.find(mesh => mesh.userData.rigidEquipmentPivot);
+    expect(mesh).toBeDefined(); expect(mesh.material.color.getHex()).toBe(0xffffff);
+    expect(mesh.material.vertexColors).toBe(true);
+    const offset = sources[0].geometry.index.count;
+    for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+        const expected = i < offset ? material.color : sources[1].material.color.clone().multiplyScalar(.5);
+        expect(mesh.geometry.attributes.color.getX(i)).toBeCloseTo(expected.r);
+        expect(mesh.geometry.attributes.color.getY(i)).toBeCloseTo(expected.g);
+        expect(mesh.geometry.attributes.color.getZ(i)).toBeCloseTo(expected.b);
+    }
+    expect(sources[1].geometry.attributes.color).toBe(original);
+    expect(material.vertexColors).toBe(false);
+    const dispose = jest.spyOn(mesh.material, 'dispose');
+    clearRigidEquipmentPivots(root); clearRigidEquipmentPivots(root);
+    expect(dispose).not.toHaveBeenCalled();
+    batchRigidEquipmentPivots(root);
+    const second = pivot.children.find(mesh => mesh.userData.rigidEquipmentPivot);
+    expect(second.material).toBe(mesh.material);
+    clearRigidEquipmentPivots(root);
+});
+
 test.each(['transparent', 'material', 'shadow', 'layer', 'order', 'reflection', 'animated', 'attributes'])('%s boundary retains source meshes', mode => {
     const { root, sources } = fixture();
     if (mode === 'transparent') sources[0].material.transparent = true;
