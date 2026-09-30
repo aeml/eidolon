@@ -7,6 +7,7 @@ export function restoreActorStealthAppearance(actor) {
     if (!entries) return;
     for (const [mesh, entry] of entries) {
         if (mesh.material === entry.applied) mesh.material = entry.original;
+        if (entry.originalVisible !== undefined) mesh.visible = entry.originalVisible;
         for (const material of entry.copies) material.dispose();
     }
     appearances.delete(actor);
@@ -24,6 +25,12 @@ export function applyActorStealthAppearance(actor) {
         if (prior?.applied === mesh.material) return;
         if (prior) for (const material of prior.copies) material.dispose();
         const original = mesh.material;
+        // Transparent fragments need the original piece-level ordering. The
+        // rigid opaque batches keep named sources expressly for this path.
+        const isEquipment = mesh.parent?.userData?.equipmentVisual;
+        const originalVisible = prior?.originalVisible ?? (isEquipment && (mesh.userData.equipmentBatchSource || mesh.userData.equipmentBatchSources)
+            ? mesh.visible : undefined);
+        if (originalVisible !== undefined) mesh.visible = Boolean(mesh.userData.equipmentBatchSource);
         const copies = [];
         const fade = material => {
             if (material.opacity === 0 || !material.visible) return material;
@@ -35,12 +42,13 @@ export function applyActorStealthAppearance(actor) {
         };
         const applied = Array.isArray(original) ? original.map(fade) : fade(original);
         mesh.material = applied;
-        entries.set(mesh, { original, applied, copies });
+        entries.set(mesh, { original, applied, copies, originalVisible });
     });
     // Retire detached equipment, including meshes returned to a model pool.
     for (const [mesh, entry] of entries) {
         if (present.has(mesh)) continue;
         if (mesh.material === entry.applied) mesh.material = entry.original;
+        if (entry.originalVisible !== undefined) mesh.visible = entry.originalVisible;
         for (const material of entry.copies) material.dispose();
         entries.delete(mesh);
     }

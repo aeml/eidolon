@@ -1,5 +1,46 @@
 # Alpha1.48 — client performance work
 
+## Compatible equipment colors and transparent ordering — September30
+
+Combine diffuse-color variants only when constructor-owned surfaces have
+identical remaining PBR/shadow/order/layer state. Bake original linear colors
+into immutable vertex attributes, keeping the exact geometry, UVs, normals,
+maps, emission, roughness, metalness, fit and skeletal anchor. Unknown material
+instances retain UUID isolation. Shared cache materials remain unchanged.
+
+The new Iron Sword regression fails before implementation; five equipment/
+loader/replication/surface suites418checks pass8.503s. An independent unbatched
+constructor reference compares all four classes, fourteen equipped slots,
+five animated poses and both High/Low quality. The initial opaque comparison
+passes14.0s with equal triangles and negligible pixel changes.
+
+Adding Rogue stealth exposes alpha-order differences in merged fragments;
+do not remove that pose or loosen pixel thresholds. During stealth, reveal the
+retained named source pieces and hide rigid batches; restore original visibility
+and materials on expiry, removal and disposal. Repeated updates retain one
+owned appearance; replacing materials retains original visibility ownership.
+Input-only hitboxes and shared material/geometry caches remain unchanged.
+
+Final two equipment/stealth suites287checks pass4.695s, scoped lint passes.
+Two System Chrome cases14.1s compare21 pose pairs per quality: max mean error
+High0.000338095/Low0.000428571, max changed fraction0.0000031746/0.0000063492.
+Stealth is pixel-identical with exactly equal calls/triangles; every opaque
+pose has fewer calls and equal triangles. Fighter capture inspected. Evidence:
+/tmp/eidolon-1-48-equipment-alpha-order-0930. The prior final attempt failed
+only its inappropriate universal draw-saving assertion after alpha equality
+was restored; the final contract requires equal submissions for stealth.
+
+One bounded busy-scene check47.7s preserves ten equipped actors, Malachar,
+all four fields/warnings and unchanged lifetime assertions. Opaque High calls
+2758→2592, triangles166327 unchanged; Low1440→1357, triangles85546 unchanged.
+Repeated residency High301geometries/54textures, Low300/40 remains stable.
+However High still misses20/33.4ms:31.6/56.0ms and repeat33.1/53.7ms, with
+14/13 hitches over50ms. Low23.4/34.5 and24.5/38.8 meets33.4/50 with0/1hitches.
+These observed High timings are worse, not an FPS improvement or evidence
+of a particular cause. Busy screenshot inspected; no unchanged soak replay.
+Evidence:/tmp/eidolon-1-48-color-packed-busy-0930. Busy performance and actual
+cold startup/shader/network evidence remain open; runtime1.47, unpublished.
+
 ## Receiver-fitted sun depth — September30
 
 The remaining measured High town cost included enemies behind every visible

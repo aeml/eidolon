@@ -51,6 +51,27 @@ function visualGroups(root) {
 }
 
 describe('rigid equipment batching', () => {
+    test('an iron blade and guard share their equal surface state without losing their different colors', () => {
+        const root = createProceduralEquipmentVisual(item('Iron Sword', 'mainHand'), { batch: true });
+        const batch = root.children.find(part => part.userData.equipmentBatchSources?.includes('Gear_Blade') &&
+            part.userData.equipmentBatchSources.includes('Gear_Guard'));
+        expect(batch).toBeDefined();
+        expect(batch.material.vertexColors).toBe(true);
+        expect(batch.material.color.getHex()).toBe(0xffffff);
+        let offset = 0;
+        for (const name of batch.userData.equipmentBatchSources) {
+            const source = root.getObjectByName(name), count = source.geometry.index?.count ?? source.geometry.attributes.position.count;
+            expect(source.material.color.equals(batch.material.color)).toBe(false);
+            for (let i = 0; i < count; i++) {
+                expect(batch.geometry.attributes.color.getX(offset + i)).toBeCloseTo(source.material.color.r, 7);
+                expect(batch.geometry.attributes.color.getY(offset + i)).toBeCloseTo(source.material.color.g, 7);
+                expect(batch.geometry.attributes.color.getZ(offset + i)).toBeCloseTo(source.material.color.b, 7);
+            }
+            offset += count;
+        }
+        expect(offset).toBe(batch.geometry.attributes.color.count);
+    });
+
     test.each(['Iron Sword', 'Steel Dagger', 'Wooden Staff', 'Cleric Mace', 'Wooden Shield', 'Spell Tome', 'Leather Gloves', 'Iron Gauntlets', 'Silk Gloves'])(
         '%s fits sockets and both identity markers to its actual support', baseName => {
             const visual = EQUIPMENT_VISUAL_DESCRIPTORS[baseName];
@@ -518,10 +539,23 @@ describe('rigid equipment batching', () => {
                 const source = batch.userData.equipmentBatchSources.map((name) => root.getObjectByName(name));
                 const geometries = source.map((part) => {
                     expect(part.visible).toBe(false);
-                    expect(part.material).toBe(batch.material);
+                    for (const property of ['roughness', 'metalness', 'side', 'flatShading', 'emissiveIntensity',
+                        'map', 'roughnessMap', 'bumpMap', 'bumpScale', 'metalnessMap', 'normalMap', 'alphaMap',
+                        'shadowSide', 'opacity', 'blending', 'depthWrite', 'depthTest', 'alphaTest']) {
+                        expect(batch.material[property]).toBe(part.material[property]);
+                    }
+                    expect(batch.material.emissive.equals(part.material.emissive)).toBe(true);
+                    if (!batch.material.vertexColors) expect(part.material).toBe(batch.material);
                     expect(part.castShadow).toBe(batch.castShadow);
                     expect(part.receiveShadow).toBe(batch.receiveShadow);
-                    return (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix);
+                    const geometry = (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix);
+                    if (batch.material.vertexColors) {
+                        expect(batch.material.color.getHex()).toBe(0xffffff);
+                        const colors = new Float32Array(geometry.attributes.position.count * 3);
+                        for (let i = 0; i < colors.length; i += 3) part.material.color.toArray(colors, i);
+                        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                    }
+                    return geometry;
                 });
                 for (const attribute of Object.keys(batch.geometry.attributes)) {
                     expect([...batch.geometry.attributes[attribute].array]).toEqual(geometries.flatMap((geometry) => [...geometry.attributes[attribute].array]));

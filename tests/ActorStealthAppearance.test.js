@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { Rogue } from '../src/entities/Rogue.js';
+import { createProceduralEquipmentVisual } from '../src/art/ProceduralEquipment.js';
 
 function fixture() {
     const actor = new Rogue('respawn-appearance');
@@ -81,5 +82,40 @@ test('invisible interaction volume remains raycastable after repeated respawns',
         expect(ray.intersectObject(hitbox).length).toBeGreaterThan(0);
         expect(hitbox.material.opacity).toBe(0);
         expect(hitbox.material.colorWrite).toBe(false);
+    } finally { actor.dispose(); }
+});
+
+test.each(['refresh', 'expiry'])('packed equipment preserves alpha ordering and restores immutable buffers after %s', mode => {
+    const { actor } = fixture();
+    const item = { id: 'stealth-color-probe', baseName: 'Iron Sword', name: 'Iron Sword', slot: 'mainHand', rarity: 'Rare' };
+    const equipped = createProceduralEquipmentVisual(item, { batch: true }); actor.mesh.add(equipped);
+    const batch = equipped.children.find(part => part.material?.vertexColors);
+    expect(batch).toBeDefined();
+    const original = batch.material, colors = batch.geometry.attributes.color;
+    const values = [...colors.array];
+    const parts = equipped.children.filter(part => part.userData.equipmentBatchSource);
+    const batches = equipped.children.filter(part => part.userData.equipmentBatchSources);
+    expect(parts.length).toBeGreaterThan(0);
+    expect(parts.every(part => !part.visible)).toBe(true);
+    expect(batches.every(part => part.visible)).toBe(true);
+    try {
+        actor.stealthTimer = 10; actor.update(.1, null, null, null);
+        const copy = batch.material;
+        expect(copy).not.toBe(original); expect(copy.vertexColors).toBe(true);
+        expect(copy.color.equals(original.color)).toBe(true);
+        expect(copy.opacity).toBeCloseTo(.3); expect(original.opacity).toBe(1);
+        expect(batch.geometry.attributes.color).toBe(colors);
+        expect(parts.every(part => part.visible)).toBe(true);
+        expect(batches.every(part => !part.visible)).toBe(true);
+        actor.update(.1, null, null, null);
+        expect(batch.material).toBe(copy);
+        const dispose = jest.spyOn(copy, 'dispose');
+        if (mode === 'refresh') actor.mesh.remove(equipped);
+        else actor.stealthTimer = .01;
+        actor.update(.1, null, null, null);
+        expect(batch.material).toBe(original); expect(dispose).toHaveBeenCalledTimes(1);
+        expect(parts.every(part => !part.visible)).toBe(true);
+        expect(batches.every(part => part.visible)).toBe(true);
+        expect([...colors.array]).toEqual(values);
     } finally { actor.dispose(); }
 });

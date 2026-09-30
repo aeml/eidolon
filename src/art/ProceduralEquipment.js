@@ -151,7 +151,7 @@ function material(key, color, options = {}) {
         options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide,
         options.flatShading ?? true, options.surface || ''].join(':');
     if (!MATERIALS.has(cacheKey)) {
-        MATERIALS.set(cacheKey, new THREE.MeshStandardMaterial({
+        const result = new THREE.MeshStandardMaterial({
             ...(options.surface ? getEquipmentSurfaceMaps(options.surface) : {}),
             color,
             roughness: options.roughness ?? 0.62,
@@ -160,7 +160,13 @@ function material(key, color, options = {}) {
             emissiveIntensity: options.emissiveIntensity ?? 0,
             flatShading: options.flatShading ?? true,
             side: options.side ?? THREE.FrontSide
-        }));
+        });
+        // These constructor-owned surfaces differ only by diffuse color when
+        // this key matches. Never infer compatibility for arbitrary materials.
+        result.userData.equipmentSurfaceKey = [options.emissive || 0, options.emissiveIntensity || 0,
+            options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide,
+            options.flatShading ?? true, options.surface || ''].join(':');
+        MATERIALS.set(cacheKey, result);
     }
     return MATERIALS.get(cacheKey);
 }
@@ -796,7 +802,7 @@ export function createProceduralEquipmentVisual(item, {
 }
 
 // Equipment parts are rigid within their skeletal anchor. Combine only opaque
-// sibling meshes with identical material/shadow state; the actor's bones and
+// sibling meshes with identical surface/shadow state; the actor's bones and
 // the item root still own animation and class-specific fit. Keep named sources
 // hidden for inspection, bounds and asset tooling, never as extra draw calls.
 function batchRigidEquipmentParts(group) {
@@ -804,16 +810,27 @@ function batchRigidEquipmentParts(group) {
     for (const part of group.children) {
         if (!part.isMesh || !part.visible || Array.isArray(part.material) || part.material.transparent) continue;
         part.updateMatrix();
-        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
+        const key = [part.material.userData.equipmentSurfaceKey || part.material.uuid,
+            part.material.shadowSide, part.castShadow, part.receiveShadow, part.renderOrder, part.layers.mask].join(':');
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);
     }
-    for (const parts of buckets.values()) {
+    for (const [surfaceKey, parts] of buckets) {
         if (parts.length < 2) continue;
-        const key = parts.map((part) => `${part.geometry.uuid}:${part.matrix.elements.join(',')}`).join('|');
+        const colored = parts.some(part => part.material !== parts[0].material);
+        const key = parts.map(part => [part.geometry.uuid, part.matrix.elements.join(','),
+            colored ? part.material.color.toArray().join(',') : ''].join(':')).join('|');
         let merged = BATCH_GEOMETRIES.get(key);
         if (!merged) {
-            const baked = parts.map((part) => (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix));
+            const baked = parts.map(part => {
+                const geometry = (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix);
+                if (colored) {
+                    const colors = new Float32Array(geometry.attributes.position.count * 3);
+                    for (let i = 0; i < colors.length; i += 3) part.material.color.toArray(colors, i);
+                    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                }
+                return geometry;
+            });
             merged = mergeGeometries(baked, false);
             baked.forEach((entry) => entry.dispose());
             if (!merged) throw new Error(`Unable to batch equipment ${group.userData.baseName}`);
@@ -821,10 +838,22 @@ function batchRigidEquipmentParts(group) {
             merged.computeBoundingSphere();
             BATCH_GEOMETRIES.set(key, merged);
         }
-        const combined = new THREE.Mesh(merged, parts[0].material);
+        let batchMaterial = parts[0].material;
+        if (colored) {
+            const materialKey = `equipment-color-batch:${surfaceKey}`;
+            if (!MATERIALS.has(materialKey)) {
+                const material = batchMaterial.clone();
+                material.color.setRGB(1, 1, 1); material.vertexColors = true;
+                MATERIALS.set(materialKey, material);
+            }
+            batchMaterial = MATERIALS.get(materialKey);
+        }
+        const combined = new THREE.Mesh(merged, batchMaterial);
         combined.name = `Gear_Batch_${parts[0].name}`;
         combined.castShadow = parts[0].castShadow;
         combined.receiveShadow = parts[0].receiveShadow;
+        combined.renderOrder = parts[0].renderOrder;
+        combined.layers.mask = parts[0].layers.mask;
         combined.userData.equipmentBatchSources = parts.map((part) => part.name);
         combined.matrixAutoUpdate = false;
         group.add(combined);
