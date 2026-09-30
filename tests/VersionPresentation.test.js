@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.49.0';
+const currentVersion = '1.50.0';
+
+test('1.50.0 records integration and phone party roles without overstating approval', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.50.0"'), previous = html.indexOf('data-version="1.49.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['presentation that stays together', 'Party roles on phones', 'Consistent transitions',
+        'Warnings stay essential', 'Settings travel with you', 'not final modern-art approval',
+        'physical-phone certification', 'saved progress are unchanged', 'Full prior patch history']) {
+        expect(html.slice(start, previous).includes(text)).toBe(true);
+    }
+});
 
 test('1.49.0 records session ownership fixes and retains measured performance notes', () => {
     const html = fs.readFileSync('index.html', 'utf8');

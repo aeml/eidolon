@@ -2,8 +2,9 @@
 
 September 30, 2026. This is local candidate evidence, not live acceptance or
 closed-beta approval. Alpha 1.48 and 1.49 must pass their ordered deployment
-gates before this candidate is published. The current worktree still presents
-1.49 until the 1.50 release is packaged.
+gates before this candidate is published. Version metadata, login and cumulative
+patch notes are now packaged as Alpha 1.50.0; exact-source CI and independent
+public verification remain required.
 
 ## Changed integration checks
 
@@ -32,6 +33,8 @@ Ten PhonePartyUI unit checks passed in 0.830 seconds. The final two native
 route cases passed in 39.1 seconds. Scoped lint and whitespace checks passed.
 The integration fixture joins the mandatory interface selection; discovery
 verified all 238 browser cases exactly once, without omissions or duplicates.
+After version packaging, five version/browser-plan suites passed 358 checks in
+7.686 seconds, with scoped lint and whitespace checks clean.
 Screenshots and route reports are under
 `/tmp/eidolon-1-50-integrated-roles-final-0930`. These timings describe test
 duration, not frame performance. Earlier fixture failures were missing prepared
