@@ -96,6 +96,19 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
         await page.clock.runFor(4000);
         await expect(panel).toContainText('waiting 25s');
         expect(await page.evaluate(() => window.arenaClockFixture.refreshes)).toBe(1);
+        await page.evaluate(() => {
+            const { ui } = window.arenaClockFixture;
+            ui.window.querySelectorAll('details').forEach(element => { element.open = true; });
+            ui.update({ queued: 1, queuedSeconds: 25, ratingWindow: 150, teamRating: 1000 });
+            ui.updateLeaderboard({ profiles: [{ playerId: 'player-A', rating: 1100 }] });
+        });
+        await expect(leave).toBeFocused();
+        expect(await panel.locator('details').evaluateAll(elements => elements.every(element => element.open))).toBe(true);
+        await expect(panel).toContainText('current search ±150');
+        const rulesSummary = panel.locator('summary[data-pvp-action="arena-rules"]');
+        await rulesSummary.focus();
+        await page.evaluate(() => window.arenaClockFixture.ui.update({ queued: 1, queuedSeconds: 25, ratingWindow: 150, teamRating: 1000 }));
+        await expect(rulesSummary).toBeFocused();
         await panel.screenshot({ path: testInfo.outputPath('arena-queue-wait.png') });
         await page.evaluate(() => window.arenaClockFixture.ui.toggle(false));
         await page.clock.runFor(10000);

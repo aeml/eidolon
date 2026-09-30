@@ -166,6 +166,10 @@ export class PvPUI {
     render() {
         const body = this.window.querySelector('[data-pvp-body]');
         if (!body) return;
+        const focusedAction = body.contains(document.activeElement) ? document.activeElement.dataset.pvpAction : null;
+        const disclosures = new Map([...body.querySelectorAll('details[data-pvp-disclosure]')]
+            .map(element => [element.dataset.pvpDisclosure, element.open]));
+        const scrollTop = body.scrollTop;
         body.replaceChildren();
         const profile = this.state.profile || {};
         const stats = document.createElement('div');
@@ -175,7 +179,9 @@ export class PvPUI {
 
         const season = document.createElement('details');
         season.className = 'pvp-card pvp-card--season';
+        season.dataset.pvpDisclosure = 'season';
         const seasonTitle = document.createElement('summary');
+        seasonTitle.dataset.pvpAction = 'season-rules';
         seasonTitle.textContent = `${profile.season || 'Current season'} · ${profile.seasonVictories || 0} eligible ranked wins`;
         const seasonRules = document.createElement('p');
         seasonRules.textContent = 'Season-end medals: Bronze requires 10 eligible wins (250 Honor); Silver requires 25 wins and 1200 finishing rating (600 Honor); Gold requires 50 wins and 1500 rating (1200 Honor). Only the highest earned tier pays. Forfeits and repeated-opponent restricted matches do not qualify. Rewards settle once when you next open or join the arena after the UTC quarter ends; your rating resets to 1000 and earned Honor stays. Eligible-win tracking starts with Alpha 1.7; older W/L records are preserved but do not grant retroactive qualification.';
@@ -244,6 +250,8 @@ export class PvPUI {
             for (const [text, accepted, modifier] of [['Accept', true, 'pvp-btn--success'], ['Decline', false, 'pvp-btn--danger']]) {
                 const response = this.button(text, () => this.respondToChallenge(currentChallenge, accepted), modifier);
                 response.dataset.duelResponse = '';
+                // A replacement challenge must not inherit focused consent.
+                response.dataset.pvpAction = `${text}:${currentChallenge.id}`;
                 challenge.appendChild(response);
             }
             body.appendChild(challenge);
@@ -285,7 +293,9 @@ export class PvPUI {
             queue.className = 'pvp-card pvp-card--arena';
             queue.innerHTML = '<h3>Arena · ranked or practice</h3><p>Best-of-three team elimination. Current combat rules: your level, equipment and build still matter—there is no hidden stat normalization. Player damage is reduced to 65% and each hit is capped at 35% of the target’s maximum health. Each round starts with full health and mana; leaving restores your pre-match amounts, so the arena is not a recovery service. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Ranked searches start within ±100 average team rating and widen by 50 every 30 seconds, to ±500. Both teams must allow the rating gap. Practice queues are separate, ignore rating gaps, and never award rating, honor, season points or ranked records. Practice duels also remain available through player challenges; leave your arena queue and any shared party before challenging each other.</p>';
             const rules = document.createElement('details');
+            rules.dataset.pvpDisclosure = 'arena-rules';
             const rulesTitle = document.createElement('summary');
+            rulesTitle.dataset.pvpAction = 'arena-rules';
             rulesTitle.textContent = 'Combat, matchmaking and reward rules';
             rules.appendChild(rulesTitle);
             for (const paragraph of [...queue.querySelectorAll('p')]) rules.appendChild(paragraph);
@@ -342,6 +352,14 @@ export class PvPUI {
         }
         body.appendChild(leaderboard);
         this.updateArenaClock();
+        body.querySelectorAll('details[data-pvp-disclosure]').forEach(element => {
+            element.open = disclosures.get(element.dataset.pvpDisclosure) ?? false;
+        });
+        if (focusedAction) {
+            [...body.querySelectorAll('[data-pvp-action]')]
+                .find(element => element.dataset.pvpAction === focusedAction && !element.disabled)?.focus({ preventScroll: true });
+        }
+        body.scrollTop = scrollTop;
     }
 
     button(label, handler, modifier) {
@@ -349,6 +367,7 @@ export class PvPUI {
         button.type = 'button';
         button.className = `pvp-btn ${modifier}`.trim();
         button.textContent = label;
+        button.dataset.pvpAction = label;
         button.addEventListener('click', handler);
         return button;
     }

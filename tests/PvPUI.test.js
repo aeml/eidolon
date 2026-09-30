@@ -11,6 +11,54 @@ function createUI() {
 }
 
 describe('PvPUI', () => {
+    test('authoritative and leaderboard refreshes preserve disclosures, scroll and the same action focus', () => {
+        const ui = createUI();
+        ui.update({ queued: 1, queuedSeconds: 20, ratingWindow: 100 });
+        const body = ui.window.querySelector('[data-pvp-body]');
+        body.querySelectorAll('details').forEach(element => { element.open = true; });
+        body.scrollTop = 120;
+        body.querySelector('[data-pvp-action="Leave Queue"]').focus();
+        ui.update({ queued: 1, queuedSeconds: 25, ratingWindow: 150 });
+        expect(document.activeElement.dataset.pvpAction).toBe('Leave Queue');
+        expect([...body.querySelectorAll('details')].every(element => element.open)).toBe(true);
+        expect(body.scrollTop).toBe(120);
+        ui.updateLeaderboard({ profiles: [{ playerId: 'player-A', rating: 1100 }] });
+        expect(document.activeElement.dataset.pvpAction).toBe('Leave Queue');
+        expect([...body.querySelectorAll('details')].every(element => element.open)).toBe(true);
+        expect(body.scrollTop).toBe(120);
+        body.querySelector('[data-pvp-disclosure="arena-rules"]').open = false;
+        body.querySelector('[data-pvp-action="arena-rules"]').focus();
+        ui.update({ queued: 1, queuedSeconds: 30 });
+        expect(body.querySelector('[data-pvp-disclosure="arena-rules"]').open).toBe(false);
+        expect(document.activeElement.dataset.pvpAction).toBe('arena-rules');
+    });
+
+    test('refreshes do not steal external focus or focus removed and disabled actions', () => {
+        const ui = createUI();
+        const close = ui.window.querySelector('.close-btn');
+        close.focus();
+        ui.update({ queued: 1 });
+        expect(document.activeElement).toBe(close);
+        ui.window.querySelector('[data-pvp-action="Leave Queue"]').focus();
+        ui.update({ match: { mode: 'arena_1v1', status: 'active', teamA: [], teamB: [] } });
+        expect(document.activeElement.dataset.pvpAction).not.toBe('Forfeit');
+        ui.update({});
+        ui.window.querySelector('[data-pvp-action="Queue 1v1"]').focus();
+        ui.update({ deserterUntil: new Date(Date.now() + 60000).toISOString() });
+        expect(document.activeElement.dataset.pvpAction).not.toBe('Queue 1v1');
+    });
+
+    test('consent focus survives only the same challenge identity', () => {
+        const ui = createUI();
+        const challenge = { id: 'first', requesterId: 'player-A', expiresAt: new Date(Date.now() + 30000).toISOString() };
+        ui.update({ challenge });
+        ui.window.querySelector('[data-pvp-action="Accept:first"]').focus();
+        ui.update({ challenge });
+        expect(document.activeElement.dataset.pvpAction).toBe('Accept:first');
+        ui.update({ challenge: { ...challenge, id: 'replacement' } });
+        expect(document.activeElement.dataset.pvpAction).not.toBe('Accept:replacement');
+    });
+
     test('queue time ticks each second without adding per-second network polls or moving focus', () => {
         jest.useFakeTimers();
         const ui = createUI();
