@@ -33,7 +33,8 @@ mandatory browser union now contains 237 cases exactly once. The final corrected
 authenticated route passed in 40.5s, total 42.7s, including the new native click
 assertions and unchanged dungeon/persistence checks. Its credential scan passed
 and temporary containers/data were cleaned up. Normal exact-source CI/public
-acceptance remain pending; Alpha 1.48 is still the accepted live version.
+acceptance passed for 93a0ae37, CI 36740957725 attempt 1. Alpha 1.49 is now
+accepted live; see the [public receipt](2026-09-30-release1-49-acceptance.md).
 The unused private guild-test database was removed; no production data changed.
 
 ## Mandatory CI correction for owner lifecycle assertions
