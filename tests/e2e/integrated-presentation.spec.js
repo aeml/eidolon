@@ -15,6 +15,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
     await page.setViewportSize({ width: phone ? 390 : 1280, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async ({ phone, layout, tables }) => {
+        const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         const THREE = await import('three');
         const { GameEngine } = await import('/src/core/GameEngine.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
@@ -76,7 +77,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
                 brightness: render.brightnessLevel, uiBrightness: ui.getBrightnessLevel(), scale: ui.getUiScale(),
                 muted: !audio.enabled, motion: document.documentElement.dataset.reducedMotion,
                 shake: render.cameraShakeEnabled, shadows: render.renderer.shadowMap.enabled,
-                ambience: engine.audioManager.ambience.key, playerRegistered: render.actorInstances.roots.has(engine.player.mesh),
+                ambience: engine.audioManager.ambience.key, playerRenderOwned: actorRenderingIsOwned(render, engine.player.mesh),
                 level: engine.player.level, hotbar: [...engine.player.hotbar],
                 staticVisible: render.staticEnvironmentGroup.visible, ...render.renderer.info.memory };
             reports.push(row); return row;
@@ -160,7 +161,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
             expect(row.rendererQuality).toBe(row.uiQuality); expect(row.generatorQuality).toBe(row.uiQuality);
             expect(row.brightness).toBe(65); expect(row.uiBrightness).toBe(65); expect(row.scale).toBe(1.25);
             expect(row.muted).toBe(true); expect(row.motion).toBe('true'); expect(row.shake).toBe(false);
-            expect(row.shadows).toBe(!phone && row.uiQuality !== 'low'); expect(row.playerRegistered).toBe(true);
+            expect(row.shadows).toBe(!phone && row.uiQuality !== 'low'); expect(row.playerRenderOwned).toBe(true);
             expect(row.level).toBe(75); expect(row.hotbar).toEqual(['Whirlwind', 'Shield Slam', 'Iron Fortress', 'Guardian Roar']);
             expect(row.staticVisible).toBe(!['casino', 'vip'].includes(row.label));
         }

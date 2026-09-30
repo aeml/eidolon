@@ -78,6 +78,7 @@ describe('delivered Fighter runtime candidates', () => {
         expect(bounds.max.y).toBeCloseTo(4.5);
         expect(actor.scale.y).toBe(1);
         expect(actor.userData.authoredQuality).toBe('low');
+        expect(actor.userData.basicAttackContactTime).toBeCloseTo(14 / 30, 8);
         actor.getObjectByName('Root').position.x = 4;
         actor.userData.resetRestPose();
         expect(actor.getObjectByName('Root').position.x).toBe(0);

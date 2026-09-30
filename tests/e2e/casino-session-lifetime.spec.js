@@ -22,7 +22,9 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { Entity } = await import('/src/entities/Entity.js');
         const { BASE_ITEMS, RARITY } = await import('/src/core/ItemSystem.js');
-        const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         document.getElementById('start-screen').style.display = 'none';
         const socket = { readyState: WebSocket.OPEN, send() {}, close() { throw Error('Borrowed socket closed'); } };
         // The page-owned analytics sampler persists independently of games.
@@ -45,7 +47,7 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
         };
         const memory = label => ({ label, ...render.renderer.info.memory,
             instanceBatches: render.actorInstances.batches.size,
-            playerInstanceRegistered: render.actorInstances.roots.has(player.mesh),
+            playerRenderOwned: actorRenderingIsOwned(render, player.mesh),
             intervals: ownedIntervals(), seats: casino.furniture.userData.seats.length,
             furnitureRoots: render.scene.children.filter(child => child.name === 'casino-furniture').length });
         const machine = { theme: 'earth', lore: 'Orun remembers.', mechanic: 'Sticky middle-reel wilds.', freeSpins: 5,
@@ -83,7 +85,7 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
                     const table = tables.find(table => table.floor === floor && table.game === 'poker'), seat = table.seats[index + 1];
                     const guest = new Entity(`lifetime-${floor}-${type}`); guest.meshType = type; guest.gameEngine = engine;
                     await guest.ensureMesh();
-                    if (applyProceduralEquipment(guest.mesh, gear).items !== 14) throw Error('Incomplete guest gear');
+                    if (applyEquipmentVisuals(guest.mesh, gear).items !== 14) throw Error('Incomplete guest gear');
                     guest.position.set(seat.x, seat.y, seat.z); guest.state = 'SEATED'; guest.resetTransformInterpolation();
                     engine.addEntity(guest); engine.remotePlayers.set(guest.id, guest); guests.push(guest);
                 }
@@ -139,10 +141,9 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
     for (const report of result.reports) {
         expect(report.geometries).toBeGreaterThan(0); expect(report.intervals).toBe(0);
         expect(report.seats).toBe(232); expect(report.furnitureRoots).toBe(1);
-        expect(report.playerInstanceRegistered).toBe(true);
-        expect(report.instanceBatches).toBeGreaterThan(0);
-        if (report.label === 'overview') expect(report.visibleGuests).toBe(4);
-        else { expect(report.retiredGuests).toBe(true); expect(report.poses).toBe(0); expect(report.cutaways).toBe(0); expect(report.cachedVenueHidden).toBe(true); }
+        expect(report.playerRenderOwned).toBe(true);
+        if (report.label === 'overview') { expect(report.visibleGuests).toBe(4); expect(report.instanceBatches).toBeGreaterThan(0); }
+        else { expect(report.instanceBatches).toBe(0); expect(report.retiredGuests).toBe(true); expect(report.poses).toBe(0); expect(report.cutaways).toBe(0); expect(report.cachedVenueHidden).toBe(true); }
     }
     for (const game of result.games) {
         expect(game.active, `${game.floor}/${game.game}`).toBe(true); expect(game.retired).toBe(true); expect(game.slotsRetired).toBe(true);

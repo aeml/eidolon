@@ -12,7 +12,9 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
-        const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
@@ -22,16 +24,17 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const models = [];
         for (let index = 0; index < 10; index++) {
             const type = ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
-            const mesh = await MeshFactory.createMeshForType(type);
+            const mesh = await MeshFactory.createMeshForType(type, { quality });
             const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
                 const candidates = BASE_ITEMS.filter(item => item.slot === slot.replace(/[12]$/, ''));
                 const item = candidates[index % candidates.length];
                 return [slot, { ...item, id: `instance-${index}-${slot}`, baseName: item.name, rarity: 'Rare', level: 75 }];
             }));
-            const fit = applyProceduralEquipment(mesh, equipment);
+            const fit = applyEquipmentVisuals(mesh, equipment);
             if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete instance fixture');
             mesh.position.set((index % 5 - 2) * 4, 0, index < 5 ? -3 : 3);
             render.entityGroup.add(mesh); models.push({ type, mesh, position: mesh.position.clone() });
+            if (!actorRenderingIsOwned(render, mesh)) throw Error('Missing actor render ownership');
         }
         render.setZoom(18); render.setCameraTarget(new THREE.Vector3(0, 1, 0));
         render.applyLightingPreset('town', true); render.updateEnvironmentLighting(new THREE.Vector3(), 0);
