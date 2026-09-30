@@ -287,3 +287,27 @@ CI failure without rolling back new animation or weakening coverage. Scoped
 ESLint and whitespace pass. Mandatory eventual CI will validate actual login;
 no extra campaign soak. Trading draw target and shader/device workloads remain
 open; runtime still1.47, candidate unpublished.
+
+## Asset-load ownership across chunk disposal and reentry
+
+Entity.dispose is intentionally used to unload render resources from still-live
+entities; setting isActive=false there would incorrectly prevent normal chunk
+reentry. Instead, invalidate a model-load generation and clear its load guard.
+Capture generation/type when ensureMesh starts. A stale result returns to its
+captured type's pool without attaching, and an old finally block cannot clear
+the guard for a newer request. Inactive entities start no work; ordinary
+concurrent calls retain their existing single-request behavior. Existing shared
+factory fetches are not aborted or globally discarded.
+
+Six genuine pre-change lifetime failures were reproduced, including actual
+ChunkManager unload/reentry attaching an old result after the newer model.
+The first draft's unrelated transform expectation was corrected to call the
+real Entity.render step, which already owns transform application; production
+transform behavior is unchanged. Final nine lifetime cases cover late success/
+failure, current request ownership, inactive/removal paths, type changes and
+normal transforms. Five lifetime/chunk/loader/batched-rig/startup suites150checks
+pass8.116s; scoped ESLint and whitespace pass. The actual chunk callback keeps
+exactly one current scene child after out-of-order completion. No browser art
+or global session-leak/FPS acceptance is inferred from these focused checks.
+Further1.49 lifecycle and representative1.48 shader/device/draw work remain;
+runtime still1.47, candidate not published.

@@ -18,30 +18,34 @@ export class Entity {
         this.nameTag = null;
         this.meshType = null;
         this.isMeshLoading = false;
+        this._meshLoadGeneration = 0;
         this.scale = 1.0;
         this.guildId = '';
         this.guildTag = '';
     }
 
     async ensureMesh() {
-        if (this.mesh || this.isMeshLoading || !this.meshType) return;
-        
+        if (!this.isActive || this.mesh || this.isMeshLoading || !this.meshType) return;
+
+        const generation = this._meshLoadGeneration || 0;
+        const meshType = this.meshType;
         this.isMeshLoading = true;
         try {
             // console.log(`Entity ${this.id} loading mesh type ${this.meshType}...`);
-            const mesh = await MeshFactory.createMeshForType(this.meshType);
+            const mesh = await MeshFactory.createMeshForType(meshType);
             if (mesh) {
-                if (!this.isActive) {
-                    // Entity died/removed while loading
-                    MeshFactory.releaseMesh(this.meshType, mesh);
+                if (!this.isActive || generation !== (this._meshLoadGeneration || 0) || meshType !== this.meshType) {
+                    // Disposal can unload a still-live entity for chunk reentry.
+                    // An older request must not replace a newer model or owner.
+                    MeshFactory.releaseMesh(meshType, mesh);
                     return;
                 }
                 this.setMesh(mesh);
             }
         } catch (e) {
-            console.error(`Entity ${this.id} failed to load mesh ${this.meshType}`, e);
+            console.error(`Entity ${this.id} failed to load mesh ${meshType}`, e);
         } finally {
-            this.isMeshLoading = false;
+            if (generation === (this._meshLoadGeneration || 0)) this.isMeshLoading = false;
         }
     }
 
@@ -286,6 +290,8 @@ export class Entity {
     }
 
     dispose() {
+        this._meshLoadGeneration = (this._meshLoadGeneration || 0) + 1;
+        this.isMeshLoading = false;
         this.nameTag = null;
         this.clearWalkCollider?.();
         this.clearWalkCollider = null;
