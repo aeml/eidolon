@@ -1,5 +1,68 @@
 # Alpha1.49 session-lifetime work
 
+## Full casino catalog and active-interface lifetime — September30
+
+Replace shell-only venue coverage with a bounded native-Chrome check of the
+canonical92-station,232-seat catalog: each floor has4 blackjack,4 poker,
+2 roulette,4 baccarat and32 slots. Snapshot exported directly from CasinoTables;
+an always-on Go parity check compares every JSON value with the current server
+catalog. Frontend jobs read the checked-in snapshot rather than compiling Go.
+Go parity passes0.015s. Existing opt-in export was initially skipped without
+its explicit flag, then rerun with the flag to obtain the real catalog; the
+skip is not counted as catalog evidence.
+
+Two final native-Chrome cases pass15.2s at High/Low. Each performs three full
+casino→town visits, replacing the complete catalog on ordering changes,
+rendering both full-hall overviews, and retiring eight equipped four-class
+prepared patrons per visit. Four guests remain visible on the selected floor;
+the opposite four stay cut away. All92 stations/232 seats remain represented
+with exactly one cached furniture root, including on town return. The cached
+venue is intentionally retained but hidden between visits, then detached at
+controller retirement; do not claim zero venue residency outside the casino.
+
+Each quality exercises30 interface activations: blackjack, poker, roulette,
+baccarat and slots on both floors across three visits. Cards use active round
+data and running UI clocks. Slots start a50-spin queue and receive an immutable
+prepared outcome, activating reel/landing work; leaving cancels that queue,
+pending/animation work and game-owned intervals. No real wagers, accounts,
+VIP entitlement changes, saves or economic writes. This proves local scene/UI
+ownership, not multiplayer settlement, casino odds, all machine bonuses,
+audio correctness, real-player crowd capacity or device-FPS behavior.
+
+An initial fixture exposed two fixture errors rather than production defects:
+it counted the page-owned analytics sampler as a leaked game interval, and
+mutated a previously delivered slot view so revision comparison could not
+observe the new outcome. Scope interval tracking to exact IDs installed after
+engine creation, preserving the verified pre-existing application owner; send
+a new immutable outcome as real WebSocket JSON does. Keep strict zero-owned-
+interval, real animation/queued-spin and resource assertions, not numeric
+allowances or disabled animation. Correct the prepared VIP exit height too.
+
+After warm-up, cycles1 and2 exactly match:
+
+| Scene | High geometry/texture | Low geometry/texture |
+| --- | --- | --- |
+| Public full-hall overview |273/44|272/30|
+| VIP full-hall overview |414/44|413/30|
+| Town return, cached venue hidden |456/67|445/53|
+
+First visit warms additional resources; no growth on the measured repeated
+visits. All game-owned intervals retire after each interface and at teardown;
+patrons/models/borrowed seated poses and cutaway references retire on exit.
+Final owned context, furniture and panel are released. No browser failures.
+Artifacts: `/tmp/eidolon-1-49-full-casino-lifetime-final-0930`. Scoped lint and
+whitespace pass. Fixture joins the existing interface CI selection, not a new
+job; partition validation discovers234 cases exactly once, no omissions or
+duplicates. No unchanged campaign, native FPS benchmark or soak was replayed.
+
+Local bounded client-lifetime evidence now covers named1.49 zone/equipment/
+dungeon/casino-floor/death/reconnect/session paths alongside the source owner
+audit and reproduced fixes below. This remains representative High/Low Chrome
+resource evidence, not a heap/driver-byte census, production authentication,
+actual-phone or universal no-leak promise. The code candidate stays runtime1.47,
+unpublished behind148's controlled frame gate. Ordered metadata/patch notes,
+normal own CI and exact live acceptance are still required before1.49 release.
+
 ## Final timer-owner audit follow-up — September30
 
 Source audit of core/UI/audio timers confirms two further real retirement gaps.
