@@ -43,7 +43,8 @@ func TestGroupFinderRequestsArePrivateDetachedAndNeverJoinAutomatically(t *testi
 	if err := w.PostGroupListing("owner", "recruit", "world", "healer", "", 1, now); err != nil {
 		t.Fatal(err)
 	}
-	if err := w.RequestGroupListing("applicant", "owner", "healer", now); err != nil {
+	listingID := w.GroupFinderListings("applicant", now)[0].ID
+	if err := w.RequestGroupListing("applicant", "owner", listingID, "healer", now); err != nil {
 		t.Fatal(err)
 	}
 	if w.Entities["applicant"].PartyID != "" || w.Entities["owner"].PartyID != "" {
@@ -63,7 +64,9 @@ func TestGroupFinderRequestsArePrivateDetachedAndNeverJoinAutomatically(t *testi
 	if w.GroupFinderListings("owner", now)[0].Applicants[0].Name != "Applicant" {
 		t.Fatal("snapshot aliased authority")
 	}
-	w.CancelGroupRequest("owner", "applicant")
+	if err := w.CancelGroupRequest("owner", "applicant", listingID, owned[0].Applicants[0].ID); err != nil {
+		t.Fatal(err)
+	}
 	if w.GroupFinderListings("applicant", now)[0].Requested {
 		t.Fatal("request cancellation did not clear pending state")
 	}
@@ -105,10 +108,11 @@ func TestGroupFinderRequestsExpireAndCannotBypassMinLevel(t *testing.T) {
 	if err := w.PostGroupListing("owner", "recruit", "umbral_nexus", "damage", "", 100, now); err != nil {
 		t.Fatal(err)
 	}
-	if err := w.RequestGroupListing("applicant", "owner", "damage", now); err == nil {
+	listingID := w.GroupFinderListings("applicant", now)[0].ID
+	if err := w.RequestGroupListing("applicant", "owner", listingID, "damage", now); err == nil {
 		t.Fatal("underlevel application accepted")
 	}
-	if err := w.RequestGroupListing("observer", "owner", "damage", now); err != nil {
+	if err := w.RequestGroupListing("observer", "owner", listingID, "damage", now); err != nil {
 		t.Fatal(err)
 	}
 	if len(w.GroupFinderListings("owner", now.Add(5*time.Minute))[0].Applicants) != 0 {

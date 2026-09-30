@@ -264,7 +264,14 @@ func TestPublicEventActualPartyFullClear(t *testing.T) {
 			defer p.mu.Unlock()
 			return strings.Contains(p.invite, names[0])
 		})
-		resourceSend(t, conns[i], MsgPartyResponse, PartyResponsePayload{InviterName: names[0], Accepted: true})
+		probes[i].mu.Lock()
+		invitePayload := probes[i].invite
+		probes[i].mu.Unlock()
+		var invite PartyRequestPayload
+		if err := json.Unmarshal([]byte(invitePayload), &invite); err != nil {
+			t.Fatal(err)
+		}
+		resourceSend(t, conns[i], MsgPartyResponse, PartyResponsePayload{InviterName: names[0], InvitationID: invite.InvitationID, Accepted: true})
 		arenaAwait(t, 10*time.Second, func() bool {
 			p := probes[0]
 			p.mu.Lock()

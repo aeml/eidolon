@@ -1320,7 +1320,7 @@ export class UIManager {
         this.social.updateParty(partyData);
         this.dungeonPreparationRefresh?.(partyData);
     }
-    showPartyRequest(inviterName) { this.social.showPartyRequest(inviterName); }
+    showPartyRequest(inviterName, invitationId, context) { this.social.showPartyRequest(inviterName, invitationId, context); }
     hidePartyRequest() { this.social.hidePartyRequest(); }
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) { this.inventory.setupItemDragAndDrop(element, type, indexOrSlot, item); }

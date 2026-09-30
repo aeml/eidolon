@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
@@ -105,7 +106,11 @@ func TestGroupFinderActualSocketsConsentPrivacyAndReady(t *testing.T) {
 	}
 	send(1, map[string]any{"action": "list"})
 	readGroupSocketBoard(t, connections[1], func(b groupSocketBoard) bool { return len(b.Listings) == 1 && b.Listings[0].Role == "healer" })
-	send(1, map[string]any{"action": "request", "ownerId": ids[0], "role": "healer"})
+	listingID := board.Listings[0].ID
+	if listingID == "" || board.Listings[0].Plan.MeetingPointID != "dungeon-guide" {
+		t.Fatal("missing current listing identity or public meeting plan")
+	}
+	send(1, map[string]any{"action": "request", "ownerId": ids[0], "listingId": listingID, "role": "healer"})
 	board = readGroupSocketBoard(t, connections[0], func(b groupSocketBoard) bool { return len(b.Listings) == 1 && len(b.Listings[0].Applicants) == 1 })
 	applicant := board.Listings[0].Applicants[0]
 	if applicant.PlayerID != ids[1] || applicant.Class != "Cleric" || applicant.Role != "healer" || board.Listings[0].Members != 1 {
@@ -120,9 +125,13 @@ func TestGroupFinderActualSocketsConsentPrivacyAndReady(t *testing.T) {
 	if board.Listings[0].Requested || len(board.Listings[0].Applicants) != 0 {
 		t.Fatal("bystander received private request data")
 	}
-	resourceSend(t, connections[0], MsgPartyInvite, PartyInvitePayload{TargetName: names[1]})
-	resourceReadMessage(t, connections[1], MsgPartyRequest, nil)
-	resourceSend(t, connections[1], MsgPartyResponse, PartyResponsePayload{InviterName: names[0], Accepted: true})
+	send(0, map[string]any{"action": "invite", "ownerId": ids[0], "listingId": listingID, "applicantId": ids[1], "applicationId": applicant.ID})
+	var invitation PartyRequestPayload
+	resourceReadMessage(t, connections[1], MsgPartyRequest, &invitation)
+	if invitation.InvitationID == "" || !strings.Contains(invitation.Context, "Dungeon Guide") {
+		t.Fatal("missing invitation identity/meeting context")
+	}
+	resourceSend(t, connections[1], MsgPartyResponse, PartyResponsePayload{InviterName: names[0], InvitationID: invitation.InvitationID, Accepted: true})
 	party := readGroupSocketParty(t, connections[0], func(p groupSocketParty) bool { return len(p.Members) == 2 })
 	if party.LeaderID != ids[0] || party.Members[0].Role != "tank" || party.Members[1].ID != ids[1] || party.Members[1].Role != "support" {
 		t.Fatal("accepted party lost leader or class roles", party)
@@ -164,7 +173,7 @@ func TestGroupFinderActualSocketsConsentPrivacyAndReady(t *testing.T) {
 	readGroupSocketParty(t, connections[1], func(p groupSocketParty) bool { return p.ID == "" && len(p.Members) == 0 })
 	send(0, map[string]any{"action": "list"})
 	readGroupSocketBoard(t, connections[0], func(b groupSocketBoard) bool { return len(b.Listings) == 1 && b.Listings[0].Members == 1 })
-	send(0, map[string]any{"action": "remove"})
+	send(0, map[string]any{"action": "remove", "listingId": listingID})
 	readGroupSocketBoard(t, connections[0], func(b groupSocketBoard) bool { return len(b.Listings) == 0 })
 	send(2, map[string]any{"action": "list"})
 	readGroupSocketBoard(t, connections[2], func(b groupSocketBoard) bool { return len(b.Listings) == 0 })

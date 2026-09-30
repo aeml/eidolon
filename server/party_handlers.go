@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"time"
+
+	"eidolon-server/internal/game"
 )
 
 // handleMsgPartyInvite invites a player to the caller's party, creating one if needed.
@@ -77,23 +79,29 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 	}
 
 	// Send invite to target
-	if _, err := world.IssuePartyInvitation(c.playerID, targetClient.playerID, time.Now()); err != nil {
+	invite, err := world.IssuePartyInvitation(c.playerID, targetClient.playerID, time.Now())
+	if err != nil {
 		c.sendError(err.Error())
 		return
 	}
+	deliverPartyInvitation(c, targetClient, invite, "")
+}
+
+func deliverPartyInvitation(c, targetClient *Client, invite game.PartyInvitation, context string) {
 	reqPayload := PartyRequestPayload{
-		TargetName: c.username, // The name of the person inviting
+		TargetName:   c.username, // The name of the person inviting
+		InvitationID: invite.ID, Context: context,
 	}
 	reqBytes, _ := json.Marshal(reqPayload)
 	if !targetClient.sendSafe(createMessage(MsgPartyRequest, reqBytes)) {
-		_, _ = world.RespondPartyInvitation(targetClient.playerID, c.playerID, false, time.Now())
+		_, _ = world.RespondPartyInvitation(targetClient.playerID, c.playerID, invite.ID, false, time.Now())
 		c.sendError("Invitation could not be delivered; try again when the player reconnects")
 		return
 	}
 	// A successfully delivered invite is informational, not a protocol error.
 	// Keep it in the existing system-chat surface so the player still receives
 	// visible confirmation without emitting a false console error in browsers.
-	c.sendSystemChat("Invite sent to " + payload.TargetName)
+	c.sendSystemChat("Invite sent to " + targetClient.username)
 }
 
 // handleMsgPartyResponse handles acceptance or rejection of a party invite.
@@ -117,7 +125,7 @@ func handleMsgPartyResponse(c *Client, msg Message) {
 		return
 	}
 
-	party, err := world.RespondPartyInvitation(c.playerID, inviterClient.playerID, payload.Accepted, time.Now())
+	party, err := world.RespondPartyInvitation(c.playerID, inviterClient.playerID, payload.InvitationID, payload.Accepted, time.Now())
 	if err != nil {
 		c.sendError("Failed to join party: " + err.Error())
 		return

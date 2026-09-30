@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.52.0';
+const currentVersion = '1.53.0';
+
+test('1.53.0 records group planning, current consent and unchanged progression', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.53.0"'), previous = html.indexOf('data-version="1.52.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['plan your next adventure', 'public Lanternhold meeting point', 'next 20 minutes',
+        'local time', 'never teleport', 'Dark King raid', 'fresh check', 'replacement plan',
+        'old prompt cannot accept', 'above Social', 'Applicant details remain private',
+        'No currency, progression, saved-account or open-alpha access changes', 'Full previous patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.52.0 records durable guild operations without claiming beta or balance changes', () => {
     const html = fs.readFileSync('index.html', 'utf8');

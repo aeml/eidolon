@@ -200,7 +200,7 @@ func resourceFormParty(t *testing.T, leader, member *websocket.Conn, leaderName,
 	if invite.TargetName != leaderName {
 		t.Fatal("party invitation came from the wrong player")
 	}
-	resourceSend(t, member, MsgPartyResponse, PartyResponsePayload{InviterName: leaderName, Accepted: true})
+	resourceSend(t, member, MsgPartyResponse, PartyResponsePayload{InviterName: leaderName, InvitationID: invite.InvitationID, Accepted: true})
 	for _, connection := range []*websocket.Conn{leader, member} {
 		deadline := time.Now().Add(10 * time.Second)
 		joined := false

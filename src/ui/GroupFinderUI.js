@@ -1,15 +1,15 @@
 import { socialSafetyActions } from './SocialSafetyUI.js';
 
 export class GroupFinderUI {
-    constructor(container, { action, invite, safety }) {
+    constructor(container, { action, safety, meeting }) {
         this.container = container;
         this.action = action;
-        this.invite = invite;
+        this.meeting = meeting;
         this.safety = safety;
-        this.data = { activities: [], listings: [] };
+        this.data = { activities: [], listings: [], meetingPoints: [] };
         container.classList.add('group-finder');
         const guidance = document.createElement('p');
-        guidance.textContent = 'Find companions, then use the normal invitation and ready check. Listings last 20 minutes while online and available; requests last 5 minutes. Listings do not bypass dungeon levels, story gates, raid conversion or entry rules.';
+        guidance.textContent = 'Find companions, agree on a public meeting place, then invite and run a fresh ready check. Listings last 20 minutes while online and available; requests last 5 minutes. A changed listing needs a new application. Plans never teleport you, reserve a seat or bypass entry rules. Use the guild calendar for events more than 20 minutes away.';
         this.toolbar = document.createElement('div');
         this.toolbar.className = 'group-finder__controls';
         this.filter = this.select('Activity filter', [['', 'All activities']], this.toolbar);
@@ -34,14 +34,23 @@ export class GroupFinderUI {
         this.note = document.createElement('input');
         this.note.maxLength = 160; this.note.placeholder = 'What are you planning?';
         this.label('Short note', this.note, form);
+        this.meetingPoint = this.select('Meet in Lanternhold', [], form);
+        this.start = document.createElement('input'); this.start.type = 'datetime-local'; this.start.step = '60';
+        this.label('Planned start (local time, optional)', this.start, form);
         this.activity.onchange = () => { this.minimum.value = String(this.data.activities.find(a => a.id === this.activity.value)?.minLevel || 1); };
         const post = this.button('Publish for 20 minutes', () => {});
         post.type = 'submit';
         form.append(post);
         form.onsubmit = event => {
             event.preventDefault();
+            const plan = { meetingPointId: this.meetingPoint.value };
+            if (this.start.value) {
+                const start = new Date(this.start.value);
+                if (!Number.isFinite(start.getTime())) return;
+                plan.startsAt = start.toISOString();
+            }
             action({ action: 'post', mode: this.mode.value, activity: this.activity.value, role: this.role.value,
-                minLevel: Number(this.minimum.value), note: this.note.value.trim() });
+                minLevel: Number(this.minimum.value), note: this.note.value.trim(), plan });
         };
         editor.append(summary, form);
         this.list = document.createElement('div');
@@ -103,7 +112,14 @@ export class GroupFinderUI {
 
     update(data) {
         const catalogChanged = JSON.stringify(data.activities) !== JSON.stringify(this.data.activities);
-        this.data = { activities: [], listings: [], ...data };
+        const pointsChanged = JSON.stringify(data.meetingPoints) !== JSON.stringify(this.data.meetingPoints);
+        this.data = { activities: [], listings: [], meetingPoints: [], ...data };
+        if (pointsChanged) {
+            const selected = this.meetingPoint.value || 'dungeon-guide';
+            this.meetingPoint.replaceChildren();
+            for (const point of this.data.meetingPoints) this.meetingPoint.add(new Option(point.name, point.id));
+            if ([...this.meetingPoint.options].some(option => option.value === selected)) this.meetingPoint.value = selected;
+        }
         if (catalogChanged) {
             for (const select of [this.filter, this.activity]) {
                 const selected = select.value;
@@ -137,21 +153,30 @@ export class GroupFinderUI {
             const note = document.createElement('p'); note.textContent = listing.note;
             const deadline = document.createElement('small');
             deadline.textContent = `Expires ${new Date(listing.expiresAt).toLocaleTimeString()}`;
-            card.append(title, details, note, deadline);
+            const plan = document.createElement('p');
+            const point = this.data.meetingPoints.find(point => point.id === listing.plan?.meetingPointId);
+            const start = listing.plan?.startsAt ? new Date(listing.plan.startsAt).toLocaleTimeString() : 'When everyone is ready';
+            plan.textContent = `Start: ${start} · Meet: ${point ? `${point.name}, Lanternhold (${point.x}, ${point.z})` : 'Refresh for the current meeting point'}. This is a plan, not instance entry.`;
+            const readiness = document.createElement('p');
+            const roles = listing.roles || {};
+            readiness.textContent = `Class roles: ${roles.tank || 0} tank · ${roles.healer || 0} healer · ${roles.damage || 0} damage · ${roles.flexible || 0} flexible. ${listing.ready || 0}/${listing.members} ready${listing.checking ? ' · Check active' : ''}. Offered roles are player preferences, not guarantees about their build.`;
+            card.append(title, details, plan, readiness, note, deadline);
+            if (point && this.meeting) card.append(this.button('View meeting point on map', () => this.meeting(point.id)));
             if (listing.ownerId === this.data.viewerId) {
-                card.append(this.button('Remove my listing', () => this.action({ action: 'remove' })));
+                card.append(this.button('Remove my listing', () => this.actOnListing(listing, { action: 'remove' })));
                 for (const applicant of listing.applicants || []) {
                     const row = document.createElement('div');
                     row.textContent = `${applicant.name} · ${applicant.class} ${applicant.level} · ${applicant.role} `;
-                    row.append(this.button(`Invite ${applicant.name}`, () => this.invite(applicant.name)));
-                    row.append(this.button(`Decline ${applicant.name}`, () => this.action({ action: 'decline', applicantId: applicant.playerId })));
+                    row.append(this.button(`Invite ${applicant.name}`, () => this.actOnListing(listing, { action: 'invite', applicantId: applicant.playerId, applicationId: applicant.id })));
+                    row.append(this.button(`Decline ${applicant.name}`, () => this.actOnListing(listing, { action: 'decline', applicantId: applicant.playerId, applicationId: applicant.id })));
                     row.append(socialSafetyActions(applicant.name, `Group application: ${listing.activity}`, (...args) => this.safety?.(...args)));
                     card.append(row);
                 }
             } else if (listing.mode === 'looking') {
-                card.append(this.button(`Invite ${listing.name}`, () => this.invite(listing.name)));
+                card.append(this.button(`Invite ${listing.name}`, () => this.actOnListing(listing, { action: 'invite', applicantId: listing.ownerId })));
             } else {
-                const request = this.button(listing.requested ? 'Cancel join request' : 'Ask to join', () => this.action({ action: listing.requested ? 'cancel' : 'request', ownerId: listing.ownerId, role: this.joinRole.value }));
+                const request = this.button(listing.requested ? 'Cancel join request' : 'Ask to join', () => this.actOnListing(listing,
+                    listing.requested ? { action: 'cancel', applicationId: listing.requestId } : { action: 'request', role: this.joinRole.value }));
                 card.append(request);
             }
             if (listing.ownerId !== this.data.viewerId) card.append(socialSafetyActions(listing.name,
@@ -169,5 +194,19 @@ export class GroupFinderUI {
             });
             this.list.append(empty, post);
         }
+    }
+
+    actOnListing(listing, payload) {
+        const current = this.data.listings.find(entry => entry.id === listing.id && entry.ownerId === listing.ownerId);
+        const applicationCurrent = !payload.applicationId || (payload.action === 'cancel'
+            ? current?.requestId === payload.applicationId
+            : current?.applicants?.some(entry => entry.id === payload.applicationId && entry.playerId === payload.applicantId));
+        if (!current || !listing.id || !applicationCurrent) {
+            this.context.hidden = false;
+            this.context.textContent = 'That plan or application changed. Refreshing Groups; please review the current listing.';
+            this.action({ action: 'list' });
+            return;
+        }
+        this.action({ ...payload, ownerId: listing.ownerId, listingId: listing.id });
     }
 }

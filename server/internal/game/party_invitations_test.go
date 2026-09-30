@@ -13,20 +13,21 @@ func invitationFixture() (*World, *Party, time.Time) {
 
 func TestPartyInvitationRequiresConsentAndCanOnlyBeUsedOnce(t *testing.T) {
 	w, party, now := invitationFixture()
-	if _, err := w.RespondPartyInvitation("target", "leader", true, now); err == nil {
+	if _, err := w.RespondPartyInvitation("target", "leader", "forged", true, now); err == nil {
 		t.Fatal("forged response joined without an invitation")
 	}
-	if _, err := w.IssuePartyInvitation("leader", "target", now); err != nil {
+	invite, err := w.IssuePartyInvitation("leader", "target", now)
+	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := w.RespondPartyInvitation("target", "other", true, now); err == nil {
+	if _, err := w.RespondPartyInvitation("target", "other", invite.ID, true, now); err == nil {
 		t.Fatal("wrong inviter consumed consent")
 	}
-	joined, err := w.RespondPartyInvitation("target", "leader", true, now)
+	joined, err := w.RespondPartyInvitation("target", "leader", invite.ID, true, now)
 	if err != nil || joined != party || w.Entities["target"].PartyID != party.ID {
 		t.Fatal("valid acceptance failed", err)
 	}
-	if _, err := w.RespondPartyInvitation("target", "leader", true, now); err == nil {
+	if _, err := w.RespondPartyInvitation("target", "leader", invite.ID, true, now); err == nil {
 		t.Fatal("replayed invitation was accepted")
 	}
 }
@@ -35,14 +36,15 @@ func TestPartyInvitationRechecksExpiryPartyIdentityLeadershipAndAvailability(t *
 	for _, change := range []string{"expired", "declined", "replaced-party", "leader", "busy", "offline", "full", "already-grouped"} {
 		t.Run(change, func(t *testing.T) {
 			w, party, now := invitationFixture()
-			if _, err := w.IssuePartyInvitation("leader", "target", now); err != nil {
+			invite, err := w.IssuePartyInvitation("leader", "target", now)
+			if err != nil {
 				t.Fatal(err)
 			}
 			switch change {
 			case "expired":
 				now = now.Add(time.Minute)
 			case "declined":
-				if _, err := w.RespondPartyInvitation("target", "leader", false, now); err != nil {
+				if _, err := w.RespondPartyInvitation("target", "leader", invite.ID, false, now); err != nil {
 					t.Fatal(err)
 				}
 			case "replaced-party":
@@ -58,7 +60,7 @@ func TestPartyInvitationRechecksExpiryPartyIdentityLeadershipAndAvailability(t *
 			case "already-grouped":
 				w.CreateParty("target")
 			}
-			if _, err := w.RespondPartyInvitation("target", "leader", true, now); err == nil {
+			if _, err := w.RespondPartyInvitation("target", "leader", invite.ID, true, now); err == nil {
 				t.Fatal("invalidated invitation was accepted")
 			}
 			if w.Entities["target"].PartyID == party.ID {
@@ -71,17 +73,20 @@ func TestPartyInvitationRechecksExpiryPartyIdentityLeadershipAndAvailability(t *
 func TestConcurrentPartyInvitationAcceptancesCannotOverfill(t *testing.T) {
 	w, party, now := invitationFixture()
 	party.MaxSize = 2
+	invitations := map[string]string{}
 	for _, target := range []string{"target", "other"} {
-		if _, err := w.IssuePartyInvitation("leader", target, now); err != nil {
+		invite, err := w.IssuePartyInvitation("leader", target, now)
+		if err != nil {
 			t.Fatal(err)
 		}
+		invitations[target] = invite.ID
 	}
 	var group sync.WaitGroup
 	for _, target := range []string{"target", "other"} {
 		group.Add(1)
 		go func(target string) {
 			defer group.Done()
-			_, _ = w.RespondPartyInvitation(target, "leader", true, now)
+			_, _ = w.RespondPartyInvitation(target, "leader", invitations[target], true, now)
 		}(target)
 	}
 	group.Wait()
@@ -93,11 +98,12 @@ func TestConcurrentPartyInvitationAcceptancesCannotOverfill(t *testing.T) {
 
 func TestPartyInvitationsCannotChangeAlliancesDuringAnArenaMatch(t *testing.T) {
 	w, _, now := invitationFixture()
-	if _, err := w.IssuePartyInvitation("leader", "target", now); err != nil {
+	invite, err := w.IssuePartyInvitation("leader", "target", now)
+	if err != nil {
 		t.Fatal(err)
 	}
 	startTestPvPMatch(w, PvPModeDuel, []string{"leader"}, []string{"target"})
-	if _, err := w.RespondPartyInvitation("target", "leader", true, now); err == nil {
+	if _, err := w.RespondPartyInvitation("target", "leader", invite.ID, true, now); err == nil {
 		t.Fatal("pending invite changed arena opponents into allies")
 	}
 	if _, err := w.IssuePartyInvitation("leader", "target", now); err == nil {

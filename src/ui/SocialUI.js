@@ -15,6 +15,7 @@ import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidanc
 export class SocialUI {
     dispose() {
         disposeOwnedEvents(this);
+        this.hidePartyRequest();
         this.groupFinder?.setActive(false);
         this.phoneParty?.dispose();
     }
@@ -112,12 +113,12 @@ export class SocialUI {
 		});
 
         if (this.btnAcceptParty) ownedEvent(this, this.btnAcceptParty, 'click', () => {
-            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true);
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true, this.currentInvitationId);
             this.hidePartyRequest();
         });
 
         if (this.btnDeclineParty) ownedEvent(this, this.btnDeclineParty, 'click', () => {
-            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false);
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false, this.currentInvitationId);
             this.hidePartyRequest();
         });
 
@@ -581,13 +582,17 @@ export class SocialUI {
         }
     }
 
-    showPartyRequest(inviterName) {
+    showPartyRequest(inviterName, invitationId, context = '') {
         if (!this.partyRequestModal) return;
+        // Static HUD stacking contexts cannot cover this consent surface.
+        // Keep it at the same root/layer as dynamically created windows.
+        document.body.appendChild(this.partyRequestModal);
         this.currentInviter = inviterName;
+        this.currentInvitationId = invitationId;
         if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
         const benefits = document.getElementById('party-request-benefits');
         if (benefits) {
-            benefits.textContent = 'Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry. Invitations expire after 60 seconds and must still belong to the same party and leader.';
+            benefits.textContent = `${context ? `${context} ` : ''}Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry. Invitations expire after 60 seconds and must still belong to the same party, leader and recruitment plan.`;
             benefits.title = PARTY_REWARD_DETAILS;
         }
         this.partyRequestModal.style.display = 'block';
@@ -598,6 +603,7 @@ export class SocialUI {
         if (!this.partyRequestModal) return;
         this.partyRequestModal.style.display = 'none';
         this.currentInviter = null;
+        this.currentInvitationId = null;
     }
 
     // ================================================================
@@ -713,7 +719,7 @@ export class SocialUI {
         this.socialWindow = div;
         div.append(socialSafetySettings((...args) => this.onSafety?.(...args)));
         this.groupFinder = new GroupFinderUI(div.querySelector('#tab-panel-groups'), {
-            action: payload => this.onGroupFinder?.(payload), invite: name => this.onPartyInvite?.(name),
+            action: payload => this.onGroupFinder?.(payload), meeting: id => this.onGroupMeetingPoint?.(id),
             safety: (...args) => this.onSafety?.(...args)
         });
         this.socialList = div.querySelector('#social-list');

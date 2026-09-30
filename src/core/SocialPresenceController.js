@@ -46,7 +46,7 @@ export class SocialPresenceController {
                 this.uiManager.updateParty(msg.payload);
                 return true;
             case 'party_request':
-                this.uiManager.showPartyRequest(msg.payload.targetName);
+                this.uiManager.showPartyRequest(msg.payload.targetName, msg.payload.invitationId, msg.payload.context);
                 return true;
             case 'social_status':
                 this.uiManager.social?.setSocialStatus?.(msg.payload?.status, { notify: false });

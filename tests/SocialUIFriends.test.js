@@ -44,6 +44,21 @@ function createSocialUI() {
     return { ui, ctx };
 }
 
+test('party modal responds to the currently displayed invitation, never a superseded token', () => {
+    const { ui } = createSocialUI();
+    ui.onPartyResponse = jest.fn();
+    ui.showPartyRequest('Ayla', 'old-invite');
+    ui.showPartyRequest('Ayla', 'current-invite', 'Meet at Archmage Ilyra.');
+    expect(ui.partyRequestModal.parentElement).toBe(document.body);
+    document.getElementById('btn-accept-party').click();
+    expect(ui.onPartyResponse).toHaveBeenCalledWith('Ayla', true, 'current-invite');
+    expect(ui.currentInvitationId).toBeNull();
+    ui.showPartyRequest('Ayla', 'later-invite');
+    ui.dispose();
+    expect(ui.partyRequestModal.style.display).toBe('none');
+    expect(ui.currentInvitationId).toBeNull();
+});
+
 // ---------------------------------------------------------------------------
 // updateFriendList
 // ---------------------------------------------------------------------------

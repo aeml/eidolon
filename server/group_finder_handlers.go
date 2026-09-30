@@ -9,14 +9,17 @@ import (
 
 func handleMsgGroupFinder(c *Client, message Message) {
 	var payload struct {
-		Action      string `json:"action"`
-		Mode        string `json:"mode"`
-		Activity    string `json:"activity"`
-		Role        string `json:"role"`
-		Note        string `json:"note"`
-		MinLevel    int    `json:"minLevel"`
-		OwnerID     string `json:"ownerId"`
-		ApplicantID string `json:"applicantId"`
+		Action        string         `json:"action"`
+		Mode          string         `json:"mode"`
+		Activity      string         `json:"activity"`
+		Role          string         `json:"role"`
+		Note          string         `json:"note"`
+		MinLevel      int            `json:"minLevel"`
+		OwnerID       string         `json:"ownerId"`
+		ApplicantID   string         `json:"applicantId"`
+		ListingID     string         `json:"listingId"`
+		ApplicationID string         `json:"applicationId"`
+		Plan          game.GroupPlan `json:"plan"`
 	}
 	if err := json.Unmarshal(message.Payload, &payload); err != nil {
 		c.sendError("invalid group finder request")
@@ -26,23 +29,38 @@ func handleMsgGroupFinder(c *Client, message Message) {
 	switch payload.Action {
 	case "", "list":
 	case "post":
-		err = world.PostGroupListing(c.playerID, payload.Mode, payload.Activity, payload.Role, payload.Note, payload.MinLevel, time.Now())
+		err = world.PostGroupListing(c.playerID, payload.Mode, payload.Activity, payload.Role, payload.Note, payload.MinLevel, time.Now(), payload.Plan)
 	case "remove":
-		world.RemoveGroupListing(c.playerID)
+		err = world.RemoveGroupListing(c.playerID, payload.ListingID)
 	case "decline":
-		world.CancelGroupRequest(c.playerID, payload.ApplicantID)
+		err = world.CancelGroupRequest(c.playerID, payload.ApplicantID, payload.ListingID, payload.ApplicationID)
 	case "cancel":
-		world.CancelGroupRequest(payload.OwnerID, c.playerID)
+		err = world.CancelGroupRequest(payload.OwnerID, c.playerID, payload.ListingID, payload.ApplicationID)
 	case "request":
 		owner := getClientByPlayerID(payload.OwnerID)
 		if owner == nil || chatService.shouldFilter(owner.username, c.username) || chatService.shouldFilter(c.username, owner.username) {
 			c.sendError("that recruitment listing is unavailable")
 			return
 		}
-		err = world.RequestGroupListing(c.playerID, payload.OwnerID, payload.Role, time.Now())
+		err = world.RequestGroupListing(c.playerID, payload.OwnerID, payload.ListingID, payload.Role, time.Now())
 		if err == nil {
 			c.sendSystemChat("Request sent. The group leader can invite you from the Groups tab; you still choose whether to accept.")
 			sendGroupFinder(owner)
+		}
+	case "invite":
+		target := getClientByPlayerID(payload.ApplicantID)
+		if target == nil || chatService.shouldFilter(target.username, c.username) || chatService.shouldFilter(c.username, target.username) {
+			c.sendError("player is unavailable for recruitment invitations")
+			sendGroupFinder(c)
+			return
+		}
+		var invite game.PartyInvitation
+		invite, err = world.IssueGroupListingInvitation(c.playerID, payload.OwnerID, target.playerID, payload.ListingID, payload.ApplicationID, time.Now())
+		if err == nil {
+			deliverPartyInvitation(c, target, invite, invite.Context)
+			if actor := world.GetEntityCopy(c.playerID); actor != nil {
+				broadcastPartyUpdate(world.GetParty(actor.PartyID))
+			}
 		}
 	default:
 		c.sendError("unknown group finder action")
@@ -50,6 +68,7 @@ func handleMsgGroupFinder(c *Client, message Message) {
 	}
 	if err != nil {
 		c.sendError(err.Error())
+		sendGroupFinder(c)
 		return
 	}
 	sendGroupFinder(c)
@@ -71,6 +90,6 @@ func sendGroupFinder(c *Client) {
 		listing.Applicants = requests
 		visible = append(visible, listing)
 	}
-	bytes, _ := json.Marshal(map[string]interface{}{"viewerId": c.playerID, "listings": visible, "activities": game.GroupActivities()})
+	bytes, _ := json.Marshal(map[string]interface{}{"viewerId": c.playerID, "listings": visible, "activities": game.GroupActivities(), "meetingPoints": game.GroupMeetingPoints()})
 	c.sendSafe(createMessage("group_finder_update", bytes))
 }

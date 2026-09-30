@@ -7,6 +7,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/google/uuid"
 )
 
 type GroupActivity struct {
@@ -25,10 +27,12 @@ func GroupActivities() []GroupActivity {
 		definition, _ := ElementalRaidDefinitionForType(id)
 		activities = append(activities, GroupActivity{id, definition.Name, definition.RequiredLevel})
 	}
+	activities = append(activities, GroupActivity{"weekly_raid", "Dark King · Citadel of the Eclipse", MaxPlayerLevel})
 	return activities
 }
 
 type GroupApplicant struct {
+	ID        string    `json:"id"`
 	PlayerID  string    `json:"playerId"`
 	Name      string    `json:"name"`
 	Class     string    `json:"class"`
@@ -38,6 +42,7 @@ type GroupApplicant struct {
 }
 
 type GroupListing struct {
+	ID         string           `json:"id"`
 	OwnerID    string           `json:"ownerId"`
 	Name       string           `json:"name"`
 	Mode       string           `json:"mode"`
@@ -51,8 +56,49 @@ type GroupListing struct {
 	Capacity   int              `json:"capacity"`
 	ExpiresAt  time.Time        `json:"expiresAt"`
 	Requested  bool             `json:"requested"`
+	RequestID  string           `json:"requestId,omitempty"`
 	Applicants []GroupApplicant `json:"applicants,omitempty"`
+	Plan       GroupPlan        `json:"plan"`
+	Roles      map[string]int   `json:"roles"`
+	Ready      int              `json:"ready"`
+	Checking   bool             `json:"checking"`
 	requests   map[string]GroupApplicant
+	party      *Party
+}
+
+// Public board plans are short-lived, not calendar reservations or entry rights.
+type GroupPlan struct {
+	StartsAt       *time.Time `json:"startsAt,omitempty"`
+	MeetingPointID string     `json:"meetingPointId"`
+}
+
+func GroupMeetingPoints() []WorldLocation {
+	points := []WorldLocation{}
+	for _, point := range worldLocations {
+		if point.InstanceID == "" {
+			points = append(points, point)
+		}
+	}
+	sort.Slice(points, func(i, j int) bool { return points[i].ID < points[j].ID })
+	return points
+}
+
+func validateGroupPlan(plan GroupPlan, now time.Time) (GroupPlan, error) {
+	if plan.MeetingPointID == "" {
+		plan.MeetingPointID = "dungeon-guide"
+	}
+	point, ok := worldLocations[plan.MeetingPointID]
+	if !ok || point.InstanceID != "" {
+		return plan, fmt.Errorf("choose a public Lanternhold meeting point")
+	}
+	if plan.StartsAt != nil {
+		start := plan.StartsAt.UTC()
+		if start.Before(now) || !start.Before(now.Add(20*time.Minute)) {
+			return plan, fmt.Errorf("choose a start within the next 20 minutes; use the guild calendar for later events")
+		}
+		plan.StartsAt = &start
+	}
+	return plan, nil
 }
 
 type groupActor struct {
@@ -83,17 +129,32 @@ func (w *World) refreshGroupListingLocked(listing *GroupListing, now time.Time) 
 	}
 	listing.Name, listing.Class, listing.Level = actor.name, actor.class, actor.level
 	listing.Members, listing.Capacity = 1, 5
+	listing.Roles = map[string]int{groupRoleForClass(actor.class): 1}
+	listing.Ready, listing.Checking = 0, false
+	if listing.party != nil && actor.partyID == "" {
+		return false // Departing the advertised party retires its plan.
+	}
 	if actor.partyID != "" {
 		if listing.Mode == "looking" {
 			return false
 		}
 		party := w.Parties[actor.partyID]
-		if party == nil {
+		if party == nil || (listing.party != nil && listing.party != party) {
 			return false
 		}
+		listing.party = party
 		party.Mu.RLock()
 		leader := party.LeaderID
 		listing.Members, listing.Capacity = len(party.Members), party.MaxSize
+		listing.Roles = map[string]int{}
+		for _, id := range party.Members {
+			member := w.groupActorLocked(id)
+			listing.Roles[groupRoleForClass(member.class)]++
+			if party.Ready[id] && member.available {
+				listing.Ready++
+			}
+		}
+		listing.Checking = party.ReadyCheckActive
 		party.Mu.RUnlock()
 		if leader != listing.OwnerID || listing.Members >= listing.Capacity {
 			return false
@@ -101,11 +162,19 @@ func (w *World) refreshGroupListingLocked(listing *GroupListing, now time.Time) 
 	}
 	for id, request := range listing.requests {
 		applicant := w.groupActorLocked(id)
-		if !applicant.available || applicant.partyID != "" || !now.Before(request.ExpiresAt) {
+		if !applicant.available || applicant.partyID != "" || applicant.level < listing.MinLevel || w.HasPvPMatch(id) || !now.Before(request.ExpiresAt) {
 			delete(listing.requests, id)
 		}
 	}
 	return true
+}
+
+func groupRoleForClass(class string) string {
+	role := PartyRoleForClass(class)
+	if role == "support" {
+		return "healer"
+	}
+	return role
 }
 
 func (w *World) pruneGroupListingsLocked(now time.Time) {
@@ -116,7 +185,7 @@ func (w *World) pruneGroupListingsLocked(now time.Time) {
 	}
 }
 
-func (w *World) PostGroupListing(id, mode, activity, role, note string, minimum int, now time.Time) error {
+func (w *World) PostGroupListing(id, mode, activity, role, note string, minimum int, now time.Time, plans ...GroupPlan) error {
 	if (mode != "looking" && mode != "recruit") || !validGroupRole(role) {
 		return fmt.Errorf("choose a listing type and a valid role")
 	}
@@ -133,6 +202,14 @@ func (w *World) PostGroupListing(id, mode, activity, role, note string, minimum 
 	if floor == 0 || minimum < floor || minimum > MaxPlayerLevel {
 		return fmt.Errorf("choose a supported activity and minimum level matching its entry floor")
 	}
+	plan := GroupPlan{}
+	if len(plans) > 0 {
+		plan = plans[0]
+	}
+	plan, err := validateGroupPlan(plan, now)
+	if err != nil {
+		return err
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	w.pruneGroupListingsLocked(now)
@@ -140,16 +217,13 @@ func (w *World) PostGroupListing(id, mode, activity, role, note string, minimum 
 	if !actor.available || actor.level < minimum {
 		return fmt.Errorf("you must be available and meet your listing's level")
 	}
-	listing := &GroupListing{OwnerID: id, Mode: mode, Activity: activity, Role: role, Note: note,
+	listing := &GroupListing{ID: uuid.NewString(), OwnerID: id, Mode: mode, Activity: activity, Role: role, Note: note, Plan: plan,
 		MinLevel: minimum, ExpiresAt: now.Add(20 * time.Minute), requests: make(map[string]GroupApplicant)}
 	if !w.refreshGroupListingLocked(listing, now) {
 		return fmt.Errorf("recruit as a party leader, or look for a group while ungrouped")
 	}
 	if w.groupListings == nil {
 		w.groupListings = make(map[string]*GroupListing)
-	}
-	if previous := w.groupListings[id]; previous != nil && previous.Mode == mode && previous.Activity == activity && previous.MinLevel == minimum {
-		listing.requests = previous.requests
 	}
 	if w.groupListings[id] == nil && len(w.groupListings) >= 250 {
 		return fmt.Errorf("recruitment board is full; try again shortly")
@@ -158,21 +232,28 @@ func (w *World) PostGroupListing(id, mode, activity, role, note string, minimum 
 	return nil
 }
 
-func (w *World) RemoveGroupListing(id string) {
+func (w *World) RemoveGroupListing(id, listingID string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
-	delete(w.groupListings, id)
-}
-
-func (w *World) CancelGroupRequest(ownerID, applicantID string) {
-	w.Mu.Lock()
-	defer w.Mu.Unlock()
-	if listing := w.groupListings[ownerID]; listing != nil {
-		delete(listing.requests, applicantID)
+	if listing := w.groupListings[id]; listing == nil || listing.ID != listingID {
+		return fmt.Errorf("listing changed or expired; refresh Groups")
 	}
+	delete(w.groupListings, id)
+	return nil
 }
 
-func (w *World) RequestGroupListing(applicantID, ownerID, role string, now time.Time) error {
+func (w *World) CancelGroupRequest(ownerID, applicantID, listingID, applicationID string) error {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	listing := w.groupListings[ownerID]
+	if listing == nil || listing.ID != listingID || listing.requests[applicantID].ID != applicationID || applicationID == "" {
+		return fmt.Errorf("application changed or expired; refresh Groups")
+	}
+	delete(listing.requests, applicantID)
+	return nil
+}
+
+func (w *World) RequestGroupListing(applicantID, ownerID, listingID, role string, now time.Time) error {
 	if applicantID == ownerID || !validGroupRole(role) {
 		return fmt.Errorf("choose another group and your role")
 	}
@@ -181,7 +262,7 @@ func (w *World) RequestGroupListing(applicantID, ownerID, role string, now time.
 	w.pruneGroupListingsLocked(now)
 	listing := w.groupListings[ownerID]
 	actor := w.groupActorLocked(applicantID)
-	if listing == nil || listing.Mode != "recruit" {
+	if listing == nil || listing.ID != listingID || listing.Mode != "recruit" {
 		return fmt.Errorf("recruitment listing is no longer available")
 	}
 	if !actor.available || w.HasPvPMatch(applicantID) || actor.partyID != "" || actor.level < listing.MinLevel {
@@ -190,7 +271,7 @@ func (w *World) RequestGroupListing(applicantID, ownerID, role string, now time.
 	if len(listing.requests) >= 20 && listing.requests[applicantID].PlayerID == "" {
 		return fmt.Errorf("this group has enough pending requests")
 	}
-	listing.requests[applicantID] = GroupApplicant{applicantID, actor.name, actor.class, actor.level, role, now.Add(5 * time.Minute)}
+	listing.requests[applicantID] = GroupApplicant{uuid.NewString(), applicantID, actor.name, actor.class, actor.level, role, now.Add(5 * time.Minute)}
 	return nil
 }
 
@@ -202,7 +283,19 @@ func (w *World) GroupFinderListings(viewerID string, now time.Time) []GroupListi
 	for _, listing := range w.groupListings {
 		copy := *listing
 		copy.requests = nil
+		copy.party = nil
+		copy.Roles = make(map[string]int, len(listing.Roles))
+		for role, count := range listing.Roles {
+			copy.Roles[role] = count
+		}
+		if copy.Plan.StartsAt != nil {
+			start := *copy.Plan.StartsAt
+			copy.Plan.StartsAt = &start
+		}
 		copy.Requested = listing.requests[viewerID].PlayerID != ""
+		if copy.Requested {
+			copy.RequestID = listing.requests[viewerID].ID
+		}
 		if viewerID == listing.OwnerID {
 			for _, request := range listing.requests {
 				copy.Applicants = append(copy.Applicants, request)

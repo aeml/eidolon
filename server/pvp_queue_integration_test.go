@@ -79,8 +79,9 @@ func TestArenaActualDisconnectPenaltySurvivesResumeAndRestart(t *testing.T) {
 	}
 	for _, leader := range []int{0, 2} {
 		resourceSend(t, connections[leader], MsgPartyInvite, PartyInvitePayload{TargetName: names[leader+1]})
-		resourceReadMessage(t, connections[leader+1], MsgPartyRequest, nil)
-		resourceSend(t, connections[leader+1], MsgPartyResponse, PartyResponsePayload{InviterName: names[leader], Accepted: true})
+		var invite PartyRequestPayload
+		resourceReadMessage(t, connections[leader+1], MsgPartyRequest, &invite)
+		resourceSend(t, connections[leader+1], MsgPartyResponse, PartyResponsePayload{InviterName: names[leader], InvitationID: invite.InvitationID, Accepted: true})
 		for {
 			var payload json.RawMessage
 			resourceReadMessage(t, connections[leader], MsgPartyUpdate, &payload)
@@ -356,8 +357,9 @@ func TestArenaActualSocketsTeamRoundsAndSavedResults(t *testing.T) {
 	}
 	for _, leader := range []int{0, 2} {
 		resourceSend(t, connections[leader], MsgPartyInvite, PartyInvitePayload{TargetName: names[leader+1]})
-		resourceReadMessage(t, connections[leader+1], MsgPartyRequest, nil)
-		resourceSend(t, connections[leader+1], MsgPartyResponse, PartyResponsePayload{InviterName: names[leader], Accepted: true})
+		var invite PartyRequestPayload
+		resourceReadMessage(t, connections[leader+1], MsgPartyRequest, &invite)
+		resourceSend(t, connections[leader+1], MsgPartyResponse, PartyResponsePayload{InviterName: names[leader], InvitationID: invite.InvitationID, Accepted: true})
 		for {
 			var payload json.RawMessage
 			resourceReadMessage(t, connections[leader], MsgPartyUpdate, &payload)

@@ -2,6 +2,23 @@ import { jest } from '@jest/globals';
 import { UIBindings } from '../src/core/UIBindings.js';
 
 describe('UIBindings', () => {
+    test('party consent carries the current invitation identity and meeting maps never teleport', () => {
+        const engine = createEngine();
+        engine.uiManager.social.toggleSocial = jest.fn();
+        engine.worldMap.isVisible = jest.fn(() => false);
+        engine.worldMap.navigation = { refresh: jest.fn(), select: jest.fn() };
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.uiManager.social.onPartyResponse('Ayla', true, 'invite-current');
+        expect(engine.socialController.sendPartyMessage).toHaveBeenCalledWith('party_response', {
+            inviterName: 'Ayla', accepted: true, invitationId: 'invite-current' });
+        engine.uiManager.social.onGroupMeetingPoint('dungeon-guide');
+        expect(engine.worldMap.toggle).toHaveBeenCalledTimes(1);
+        expect(engine.worldMap.navigation.select).toHaveBeenCalledWith('dungeon-guide');
+        engine.currentInstanceId = 'another-party-dungeon';
+        engine.uiManager.social.onGroupMeetingPoint('story-wizard');
+        expect(engine.worldMap.toggle).toHaveBeenCalledTimes(1);
+        expect(engine.worldMap.navigation.select).toHaveBeenCalledTimes(1);
+    });
     test('friend whisper closes the social overlay and focuses the selected private recipient', () => {
         const engine = createEngine();
         engine.uiManager.chat = { beginWhisper: jest.fn() };

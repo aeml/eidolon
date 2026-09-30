@@ -281,12 +281,13 @@
 .party-btn--large {
     padding: 5px 15px;
     font-size: 14px;
+    min-height: 44px;
 }
 
 .party-request-modal {
     display: none;
     position: fixed;
-    top: 20%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
@@ -301,7 +302,7 @@
     color: white;
     text-align: center;
     pointer-events: auto;
-    z-index: 2000;
+    z-index: var(--z-modal);
     user-select: none;
     -webkit-user-select: none;
 }

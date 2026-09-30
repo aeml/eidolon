@@ -30,6 +30,10 @@ func setPartyMembershipLocked(player *Entity, partyID string) {
 func (w *World) CreateParty(leaderID string) *Party {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	return w.createPartyLocked(leaderID)
+}
+
+func (w *World) createPartyLocked(leaderID string) *Party {
 
 	leader, exists := w.Entities[leaderID]
 	if !exists {
@@ -54,6 +58,16 @@ func (w *World) CreateParty(leaderID string) *Party {
 	w.Parties[partyID] = party
 	setPartyMembershipLocked(leader, partyID)
 	return party
+}
+
+// Membership/leadership changes invalidate consent from the old roster.
+// Caller owns Party.Mu (and World.Mu for roster mutations).
+func (p *Party) resetReadinessLocked() {
+	p.Ready = make(map[string]bool, len(p.Members))
+	for _, id := range p.Members {
+		p.Ready[id] = false
+	}
+	p.ReadyCheckActive = false
 }
 
 func (w *World) JoinParty(partyID, playerID string) error {
@@ -85,10 +99,7 @@ func (w *World) joinPartyLocked(partyID, playerID string) error {
 	}
 
 	party.Members = append(party.Members, playerID)
-	if party.Ready == nil {
-		party.Ready = make(map[string]bool)
-	}
-	party.Ready[playerID] = false
+	party.resetReadinessLocked()
 	setPartyMembershipLocked(player, partyID)
 	return nil
 }
@@ -123,7 +134,7 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 		}
 	}
 	party.Members = newMembers
-	delete(party.Ready, playerID)
+	party.resetReadinessLocked()
 	setPartyMembershipLocked(player, "")
 
 	if len(party.Members) == 0 {
@@ -142,6 +153,9 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 }
 
 func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
+	if leaderID == targetID {
+		return nil, fmt.Errorf("use Leave Party to depart and transfer leadership")
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -178,7 +192,7 @@ func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
 		}
 	}
 	party.Members = newMembers
-	delete(party.Ready, targetID)
+	party.resetReadinessLocked()
 	if party.MasterLooterID == targetID {
 		party.MasterLooterID = party.LeaderID
 	}
@@ -218,6 +232,7 @@ func (w *World) PromotePartyMember(leaderID, targetID string) (*Party, error) {
 	defer party.Mu.Unlock()
 
 	party.LeaderID = targetID
+	party.resetReadinessLocked()
 	return party, nil
 }
 
@@ -258,6 +273,7 @@ func (w *World) RejoinParty(playerID, partyID string) error {
 	}
 
 	party.Members = append(party.Members, playerID)
+	party.resetReadinessLocked()
 	setPartyMembershipLocked(player, partyID)
 	return nil
 }
@@ -300,7 +316,7 @@ func (w *World) RejoinOrRestoreParty(playerID, partyID string) error {
 		return fmt.Errorf("party is full")
 	}
 	party.Members = append(party.Members, playerID)
-	party.Ready[playerID] = false
+	party.resetReadinessLocked()
 	setPartyMembershipLocked(player, partyID)
 	return nil
 }
@@ -327,7 +343,7 @@ func (w *World) RemoveExpiredMemberFromParty(playerID, partyID string) {
 		}
 	}
 	party.Members = newMembers
-	delete(party.Ready, playerID)
+	party.resetReadinessLocked()
 
 	if len(party.Members) == 0 {
 		delete(w.Parties, partyID)

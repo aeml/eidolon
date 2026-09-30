@@ -137,8 +137,8 @@ export class UIBindings {
         ui.social.onPartyLeave = () => {
             engine.socialController.sendPartyMessage('party_leave', {});
         };
-        ui.social.onPartyResponse = (inviterName, accepted) => {
-            engine.socialController.sendPartyMessage('party_response', { inviterName, accepted });
+        ui.social.onPartyResponse = (inviterName, accepted, invitationId) => {
+            engine.socialController.sendPartyMessage('party_response', { inviterName, accepted, invitationId });
         };
         ui.social.onPartyKick = (targetId) => {
             engine.socialController.kickPartyMember(targetId);
@@ -264,6 +264,16 @@ export class UIBindings {
         };
 
         ui.onMapToggle = () => engine.worldMap.toggle();
+        ui.social.onGroupMeetingPoint = id => {
+            if (engine.currentInstanceId) {
+                ui.addChatMessage?.('System', 'Leave your current instance to view the Lanternhold meeting point on the world map.');
+                return;
+            }
+            ui.social.toggleSocial(false);
+            if (!engine.worldMap.isVisible?.()) engine.worldMap.toggle();
+            engine.worldMap.navigation?.refresh(true);
+            engine.worldMap.navigation?.select(id);
+        };
     }
 
     bindSessionCallbacks() {

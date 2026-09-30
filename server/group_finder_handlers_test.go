@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/game"
 )
@@ -24,7 +25,8 @@ func TestGroupFinderHandlerUsesCallerOwnershipAndRespectsBlocks(t *testing.T) {
 		handleMsgGroupFinder(clients[name], Message{Payload: bytes})
 	}
 	send("owner", map[string]interface{}{"action": "post", "mode": "recruit", "activity": "world", "role": "healer", "minLevel": 1, "ownerId": "observer"})
-	send("applicant", map[string]interface{}{"action": "request", "ownerId": "owner", "role": "healer"})
+	listingID := world.GroupFinderListings("owner", time.Now())[0].ID
+	send("applicant", map[string]interface{}{"action": "request", "ownerId": "owner", "listingId": listingID, "role": "healer"})
 	sendGroupFinder(clients["observer"])
 	var board struct {
 		Listings []game.GroupListing `json:"listings"`
@@ -44,7 +46,7 @@ func TestGroupFinderHandlerUsesCallerOwnershipAndRespectsBlocks(t *testing.T) {
 	}
 	chatService.SetBlocked("owner", "applicant", true)
 	drainSentMessages(clients["applicant"].send)
-	send("applicant", map[string]interface{}{"action": "request", "ownerId": "owner", "role": "healer"})
+	send("applicant", map[string]interface{}{"action": "request", "ownerId": "owner", "listingId": listingID, "role": "healer"})
 	blocked := false
 	for _, message := range drainSentMessages(clients["applicant"].send) {
 		blocked = blocked || message.Type == MsgError

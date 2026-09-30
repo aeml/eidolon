@@ -3,14 +3,19 @@ package game
 import (
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type PartyInvitation struct {
-	InviterID string
-	TargetID  string
-	PartyID   string
-	ExpiresAt time.Time
-	party     *Party // Party IDs may be reused after disband; this invitation may not.
+	ID                                       string
+	Context                                  string
+	InviterID                                string
+	TargetID                                 string
+	PartyID                                  string
+	ExpiresAt                                time.Time
+	party                                    *Party // Party IDs may be reused after disband; this invitation may not.
+	listingOwnerID, listingID, applicationID string
 }
 
 // One outstanding modal per target, matching the current UI. Invitations are
@@ -18,6 +23,10 @@ type PartyInvitation struct {
 func (w *World) IssuePartyInvitation(inviterID, targetID string, now time.Time) (PartyInvitation, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	return w.issuePartyInvitationLocked(inviterID, targetID, now)
+}
+
+func (w *World) issuePartyInvitationLocked(inviterID, targetID string, now time.Time) (PartyInvitation, error) {
 	inviter, target := w.Entities[inviterID], w.Entities[targetID]
 	if inviter == nil || target == nil || inviterID == targetID {
 		return PartyInvitation{}, fmt.Errorf("party invitation requires two available players")
@@ -49,18 +58,18 @@ func (w *World) IssuePartyInvitation(inviterID, targetID string, now time.Time) 
 			delete(w.partyInvitations, id)
 		}
 	}
-	invite := PartyInvitation{InviterID: inviterID, TargetID: targetID, PartyID: partyID, ExpiresAt: now.Add(time.Minute), party: party}
+	invite := PartyInvitation{ID: uuid.NewString(), InviterID: inviterID, TargetID: targetID, PartyID: partyID, ExpiresAt: now.Add(time.Minute), party: party}
 	w.partyInvitations[targetID] = invite
 	return invite, nil
 }
 
 // Validation and joining share World.Mu, so capacity, leadership or membership
 // cannot change between checking the invitation and using it.
-func (w *World) RespondPartyInvitation(targetID, inviterID string, accepted bool, now time.Time) (*Party, error) {
+func (w *World) RespondPartyInvitation(targetID, inviterID, invitationID string, accepted bool, now time.Time) (*Party, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	invite, exists := w.partyInvitations[targetID]
-	if !exists || invite.InviterID != inviterID {
+	if !exists || invitationID == "" || invite.ID != invitationID || invite.InviterID != inviterID {
 		return nil, fmt.Errorf("party invitation not found")
 	}
 	delete(w.partyInvitations, targetID)
@@ -69,6 +78,14 @@ func (w *World) RespondPartyInvitation(targetID, inviterID string, accepted bool
 	}
 	if !accepted {
 		return nil, nil
+	}
+	if invite.listingID != "" {
+		w.pruneGroupListingsLocked(now)
+		listing := w.groupListings[invite.listingOwnerID]
+		if listing == nil || listing.ID != invite.listingID ||
+			(invite.applicationID != "" && listing.requests[targetID].ID != invite.applicationID) {
+			return nil, fmt.Errorf("recruitment plan or application changed; request a fresh invitation")
+		}
 	}
 	inviter, target := w.Entities[inviterID], w.Entities[targetID]
 	party := w.Parties[invite.PartyID]

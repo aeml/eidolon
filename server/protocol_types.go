@@ -715,12 +715,15 @@ type PartyInvitePayload struct {
 }
 
 type PartyResponsePayload struct {
-	InviterName string `json:"inviterName"`
-	Accepted    bool   `json:"accepted"`
+	InviterName  string `json:"inviterName"`
+	InvitationID string `json:"invitationId"`
+	Accepted     bool   `json:"accepted"`
 }
 
 type PartyRequestPayload struct {
-	TargetName string `json:"targetName"`
+	TargetName   string `json:"targetName"`
+	InvitationID string `json:"invitationId"`
+	Context      string `json:"context,omitempty"`
 }
 
 type PartyJoinRespPayload struct {
