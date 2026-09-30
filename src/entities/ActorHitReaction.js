@@ -9,7 +9,8 @@ export class ActorHitReaction {
     constructor(actor) {
         this.actor = actor;
         const mesh = actor.mesh;
-        this.rig = mesh?.children.find(child => /^(RigRoot|Rig_.*Body)$/.test(child.name));
+        const rigName = mesh?.userData.hitReactionRig;
+        this.rig = mesh?.children.find(child => rigName ? child.name === rigName : /^(RigRoot|Rig_.*Body)$/.test(child.name));
         this.pivot = null;
         this.elapsed = DURATION;
         this.direction = new THREE.Vector3();

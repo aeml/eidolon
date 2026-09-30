@@ -460,7 +460,7 @@ export class Actor extends Entity {
             mesh.userData.animations.forEach(clip => {
                 this.animations[clip.name] = this.mixer.clipAction(clip);
             });
-            if (mesh.userData.proceduralClass) this.movingCastGait = new ActorMovingCastGait(this);
+            if (mesh.userData.proceduralClass || mesh.userData.lowerBodyAnimationTracks) this.movingCastGait = new ActorMovingCastGait(this);
 
             // Initial Animation State
             if (this.state === 'DEAD') {

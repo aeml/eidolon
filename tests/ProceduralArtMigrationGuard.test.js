@@ -30,7 +30,7 @@ const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const fighterReferenceAllowlist = new Map([
     ['src/art/AuthoredFighter.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
-    ['scripts/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'welded.glb', 'resampled.glb', '${quality}-geometry.glb', '${quality}-textures.glb', 'fighter-runtime-${quality}.glb'])]
+    ['scripts/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'fighter-runtime-${quality}.glb'])]
 ]);
 
 function walkFiles(root) {

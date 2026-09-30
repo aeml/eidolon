@@ -34,37 +34,65 @@ integration and derivation rather than asking the owner to produce more assets.
 ## Verified runtime preparation
 
 The reproducible `scripts/derive-fighter-runtime.mjs` uses pinned glTF Transform
-4.5.1 commands to weld, resample, simplify, resize and encode WebP textures.
+4.5.1 SDK functions to weld, resample, selectively simplify, resize and encode
+WebP textures, followed by CLI validation. Its development dependencies are
+locked in the repository rather than loaded through another worktree.
 The source hash is pinned, its original export/notices remain untouched, and
 attachment leaves are never pruned. Commands follow the
 [upstream optimization documentation](https://gltf-transform.dev/).
 
-The generated manifest records High at 4,987,852 bytes and 56,226 triangles,
-with textures capped at 1024px; Low is 2,670,240 bytes and 23,918 triangles,
+The revised manifest records High at 7,333,168 bytes and 64,150 triangles,
+with textures capped at 1024px; Low is 3,641,656 bytes and 36,498 triangles,
 with textures capped at 512px. Both retain 53 joints, all 12 clips, ten sockets,
 11 skinned meshes and both blink targets, with no external dependencies. Fresh
 validator runs found zero errors/warnings and the same three unused-tangent
-informational notices. This proves structural retention, not final appearance.
+informational notices. Only the body is simplified; hair, shorts, seams and
+layered eyes preserve their original triangle counts. Normal and packed
+material maps use lossless encoding. The larger revised budgets preserve fit
+and data quality while retaining substantial savings over the 40.34MB source.
+Structural validation alone does not establish final appearance.
 
 `AuthoredFighter.js` clones the complete skeleton/skin hierarchy, shares immutable
 geometry and textures, normalizes to the existing 4.5-world-unit height above the
 feet, retains authored motion and keeps a resettable per-instance pose. It does
-not yet replace the default class factory or claim full class-skill coverage.
+not yet replace the default class factory. Five runtime skill clips now cover
+Cast, Channel, Guard, Shout and Bless: gestures convert world-space rotations
+through the delivered bones rather than copying procedural Euler tracks;
+Guard retains the supplied Block animation. The original 12 clips remain.
+An explicit quaternion/vector mask supports moving casts without blending Run
+into the skill's upper body. Recoil moves the common skin/skeleton wrapper.
 The migration guard now allows exactly these two derived exports, their adapter
 references and the pinned derivation script; retired assets remain prohibited.
 
-The native Chrome pilot rendered two independent actors for each quality, all
-11 skinned meshes per actor and decoded bounded textures. Idle, Run, Attack,
-Block, Death and Jump samples were finite; the run passed in 10.0s. Screenshots
-were reviewed for Idle, Attack and early Death. The desktop pilot is not an
-equipped gameplay-camera/character-sheet test or a final GPU/memory benchmark.
+The native Chrome pilot renders two independent actors for each quality, all
+11 skinned meshes per actor and decoded bounded textures. Revised Idle and
+Attack screenshots show intact scalp/shorts and clean skin. The studio fixture
+now uses the game's existing shadow bias instead of a zero-bias light, which
+can produce self-shadow acne. Geometry, map encoding and fixture lighting
+changed together; this is not an isolated measurement of each cause.
 
-Review found visibly noisy skin microdetail and Low scalp/shorts artifacts.
-Investigate material detail and simplification before accepting those surfaces;
-the validator and finite transforms do not qualify them as modern finished art.
-Artifacts are in `/tmp/eidolon-1-54-fighter-pilot-0930`. One synthetic clone test
-initially distinguished JavaScript negative zero from zero; the numerical
-assertion now tolerates signed zero while retaining independent-skeleton checks.
+The corrected six-pose route passed in 8.7s; adding five skill samples passed
+in 10.8s. Idle, Attack, Shout and Channel screenshots were reviewed. Four focused
+JS suites passed 41 checks in 3.191s, including quaternion gait isolation,
+source-pose preservation and common-wrapper recoil. Artifacts are in
+`/tmp/eidolon-1-54-fighter-skills-0930`; metrics are saved as JSON, not merely an
+ephemeral reporter attachment. The four-actor studio measured 49 draw calls
+and 202,066 rendered triangles including the floor, with a 1.596s combined
+local loading/setup sample from the earlier corrected run on RADV RENOIR.
+These are local fixture measurements, not internet-load, frame-rate or final
+GPU/memory qualification. Equipped gameplay-camera/character-sheet tests remain.
+
+The expanded native route then passed in 10.4s using ordinary `Actor` instances
+for both quality levels. Guardian Roar retained its Shout action while the
+thighs moved; the compared upper-arm, forearm and spine quaternion components
+matched a control with its gait layer disabled, and authoritative positions
+remained unchanged. A normal hit request selected the common visual wrapper;
+disposing the temporary actors completed without browser errors. This checks
+the current adapter/controller path, not default-factory or equipment activation.
+Evidence is in `/tmp/eidolon-1-54-fighter-controller-accepted-0930`. The first
+comparison used angular distance on slightly non-unit Float32 source rotations;
+it now compares components directly. Recoil is checked after its normal lazy
+initialization, not assumed to exist before a hit.
 
 ## Remaining integration alongside combat readability
 
@@ -88,6 +116,6 @@ assertion now tolerates signed zero while retaining independent-skeleton checks.
 
 Other class/NPC/monster deliveries and full modern-art acceptance remain
 separate requirements. Default Fighter activation still requires generated
-equipment fit, class-skill gestures and moving casts, fallback/cache/pool
+equipment fit, integrated skill/controller acceptance, fallback/cache/pool
 lifecycle, current gameplay camera and character-sheet review, and measured
 High/Low multi-actor performance. No new owner model request is needed.

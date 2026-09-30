@@ -56,9 +56,12 @@ The route is required in CI before the broad Go suite leaves partial fixtures.
 
 The newly delivered [Fighter pilot](../art/2026-09-30-fighter-pilot.md) reopens the
 authored-character integration work alongside combat readability. Its derived
-exports, skeleton adapter and native pilot are implemented; generated-equipment
-fit, full skill motion and final visual/performance acceptance remain. Correct
-the review's skin microdetail and Low scalp/shorts artifacts before default use.
+exports, skeleton adapter, five skill clips, quaternion moving-cast mask and
+common-wrapper recoil are implemented. Revised body-only simplification keeps
+fitted secondary meshes intact, data maps use lossless encoding, and the native
+fixture matches the game's shadow-bias policy. Reviewed skin/scalp/shorts renders
+are now clean. Generated-equipment fit, full equipped-controller acceptance,
+cache/pool/fallback activation and final visual/performance acceptance remain.
 The source upload and adapter have not replaced the live procedural hero.
 
 Package 1.54 metadata and cumulative notes after integration; fetch/merge remote changes

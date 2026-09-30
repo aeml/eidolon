@@ -15,6 +15,25 @@ function fixture(factory = createProceduralSkeleton) {
 }
 
 describe('directional body impact presentation', () => {
+    test('authored rigs recoil as a whole without separating skeleton and skin siblings', () => {
+        const mesh = new THREE.Group(), visual = new THREE.Group(), rig = new THREE.Group(), skin = new THREE.Group();
+        visual.name = 'FighterVisualRig';
+        visual.add(rig, skin); mesh.add(visual);
+        mesh.userData.hitReactionRig = visual.name;
+        mesh.userData.bounds = { height: 4.5 };
+        const actor = { mesh, position: new THREE.Vector3(), rotation: new THREE.Quaternion(), stats: { hp: 100, maxHp: 100 }, state: 'IDLE' };
+        const reaction = new ActorHitReaction(actor);
+        expect(reaction.rig).toBe(visual);
+        expect(reaction.play(new THREE.Vector3(-5, 0, 0), 25)).toBe(true);
+        reaction.update(.045);
+        expect(visual.parent).toBe(reaction.pivot);
+        expect(rig.parent).toBe(visual); expect(skin.parent).toBe(visual);
+        expect(mesh.quaternion.toArray()).toEqual([0, 0, 0, 1]);
+        reaction.dispose();
+        expect(visual.parent).toBe(mesh);
+        expect(mesh.getObjectByName('ActorHitReactionPivot')).toBeUndefined();
+    });
+
     test.each([createProceduralSkeleton, createProceduralFighter])('composes with animation without moving gameplay bounds (%p)', factory => {
         const { actor, reaction, source } = fixture(factory);
         const box = actor.mesh.getObjectByName('ActorInteractionHitbox');

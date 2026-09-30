@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 // A presentation-only lower-body mask for the known procedural rig. Restore
 // the mixer's pose before its next update, then sample just legs/ankles and
-// pelvis height. This avoids diluting the cast's arms, weapon or torso by
-// blending an entire Run action into it. Imported rigs retain their fallback.
+// pelvis height. Authored rigs opt in with an explicit quaternion/vector mask;
+// never guess imported bone names or blend Run into the skill's upper body.
 const LOWER_TRACK = /^(Rig_(?:Thigh|Shin)(?:Left|Right)|Equipment_Foot(?:Left|Right))\.rotation\[x\]$|^(Rig_Hips)\.position\[y\]$/;
 
 export class ActorMovingCastGait {
@@ -17,7 +17,10 @@ export class ActorMovingCastGait {
     }
 
     restore() {
-        for (const entry of this.saved) entry.target[entry.axis] = entry.value;
+        for (const entry of this.saved) {
+            if (entry.axis) entry.target[entry.axis] = entry.value;
+            else entry.target.copy(entry.value);
+        }
         this.saved.length = 0;
     }
 
@@ -37,6 +40,12 @@ export class ActorMovingCastGait {
         if (!clip || !['Run', 'Walk'].includes(name)) return;
         if (!this.cache.has(clip)) {
             const tracks = clip.tracks.flatMap(track => {
+                if (actor.mesh.userData.lowerBodyAnimationTracks?.includes(track.name)) {
+                    const [name, property] = track.name.split('.');
+                    const target = actor.mesh.getObjectByName(name)?.[property];
+                    if (!target || !['quaternion', 'position'].includes(property)) return [];
+                    return [{ target, property, value: target.clone(), sample: target.clone(), interpolant: track.createInterpolant() }];
+                }
                 const match = LOWER_TRACK.exec(track.name);
                 if (!match) return [];
                 const object = actor.mesh.getObjectByName(match[1] || match[2]);
@@ -57,6 +66,13 @@ export class ActorMovingCastGait {
         if (!starting) this.time = (this.time + step * (actor.scaleAnimSpeed ? actor.getMovementAnimationTimeScale() : 1)) % clip.duration;
         this.blend = Math.min(1, this.blend + step / .06);
         for (const track of this.cache.get(clip)) {
+            if (track.property) {
+                track.value.copy(track.target); this.saved.push(track);
+                track.sample.fromArray(track.interpolant.evaluate(this.time));
+                if (track.property === 'quaternion') track.target.slerp(track.sample, this.blend);
+                else track.target.lerp(track.sample, this.blend);
+                continue;
+            }
             const value = track.target[track.axis];
             track.value = value; this.saved.push(track);
             track.target[track.axis] = THREE.MathUtils.lerp(value, track.interpolant.evaluate(this.time)[0], this.blend);

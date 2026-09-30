@@ -2,10 +2,12 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import * as THREE from 'three';
 import { createAuthoredFighterInstance, fighterRuntimePath, FIGHTER_AUTHORED_CLIPS, FIGHTER_AUTHORED_SOCKETS } from '../src/art/AuthoredFighter.js';
+import { FIGHTER_SKILL_CLIPS } from '../src/art/AuthoredFighterAbilityClips.js';
 
 function fixture() {
     const scene = new THREE.Group();
-    const bones = Array.from({ length: 53 }, (_, i) => Object.assign(new THREE.Bone(), { name: i === 0 ? 'Root' : `Bone${i}` }));
+    const names = ['Root', 'upperarm_l', 'upperarm_r', 'lowerarm_l', 'lowerarm_r', 'spine_03', 'head'];
+    const bones = Array.from({ length: 53 }, (_, i) => Object.assign(new THREE.Bone(), { name: names[i] || `Bone${i}` }));
     for (let i = 1; i < bones.length; i++) bones[0].add(bones[i]);
     scene.add(bones[0]);
     for (const name of FIGHTER_AUTHORED_SOCKETS) {
@@ -36,12 +38,17 @@ describe('delivered Fighter runtime candidates', () => {
             const result = manifest.variants[quality];
             expect(file.readUInt32LE(8)).toBe(file.length);
             expect(createHash('sha256').update(file).digest('hex')).toBe(result.sha256);
-            expect(file.length).toBeLessThan(quality === 'high' ? 5_100_000 : 2_800_000);
+            // Preserve the fitted secondary meshes and lossless data maps:
+            // 7.33/3.64 MB versus the immutable 40.34 MB source.
+            expect(file.length).toBeLessThan(quality === 'high' ? 7_400_000 : 3_700_000);
             expect(json.skins.map(skin => skin.joints.length)).toEqual([53]);
             expect(json.animations.map(clip => clip.name).sort()).toEqual([...FIGHTER_AUTHORED_CLIPS].sort());
             expect(json.nodes.filter(node => node.name?.startsWith('socket_')).map(node => node.name).sort()).toEqual([...FIGHTER_AUTHORED_SOCKETS].sort());
             expect(result.morphTargets).toEqual(['Blink_L', 'Blink_R']);
-            expect(result.triangles).toBeLessThan(quality === 'high' ? 57_000 : 25_000);
+            expect(result.triangles).toBeLessThan(quality === 'high' ? 65_000 : 37_000);
+            for (const [name, triangles] of Object.entries(manifest.source.meshTriangles)) {
+                if (name !== 'Fighter_Body') expect(result.meshTriangles[name]).toBe(triangles);
+            }
             expect(result.externalDependencies).toEqual([]);
         }
         expect(fighterRuntimePath('unknown')).toBe(fighterRuntimePath('high'));
@@ -72,6 +79,20 @@ describe('delivered Fighter runtime candidates', () => {
         actor.userData.resetRestPose();
         expect(actor.getObjectByName('Root').position.x).toBe(0);
         expect(actor.userData.proceduralHumanoid).toBeUndefined();
+    });
+
+    test('provides distinct class skill gestures without altering the source or rest pose', () => {
+        const source = fixture(), actor = createAuthoredFighterInstance(source);
+        const clips = actor.userData.animations;
+        for (const name of FIGHTER_SKILL_CLIPS) expect(clips.some(clip => clip.name === name)).toBe(true);
+        const mixer = new THREE.AnimationMixer(actor);
+        const arm = actor.getObjectByName('upperarm_r'), rest = arm.quaternion.clone();
+        mixer.clipAction(clips.find(clip => clip.name === 'Shout')).play(); mixer.setTime(.4);
+        expect(arm.quaternion.angleTo(rest)).toBeGreaterThan(1);
+        expect(source.scene.getObjectByName('upperarm_r').quaternion.toArray()).toEqual([0, 0, 0, 1]);
+        mixer.stopAllAction(); mixer.uncacheRoot(actor); actor.userData.resetRestPose();
+        expect(arm.quaternion.toArray()).toEqual(rest.toArray());
+        expect(clips.find(clip => clip.name === 'Guard').tracks).not.toBe(source.animations.find(clip => clip.name === 'Block').tracks);
     });
 
     test('rejects incomplete deliveries rather than returning a broken class mesh', () => {

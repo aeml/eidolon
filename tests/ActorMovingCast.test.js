@@ -89,3 +89,34 @@ test('remote moving casts use the same stride layer without changing authoritati
     expect(Math.max(...angles) - Math.min(...angles)).toBeGreaterThan(.5);
     actor.dispose();
 });
+
+test('authored quaternion masks preserve skill arms and restore the mixer pose on disposal', () => {
+    function authoredFixture() {
+        const root = new THREE.Group();
+        const thigh = new THREE.Bone(), arm = new THREE.Bone(), pelvis = new THREE.Bone();
+        thigh.name = 'thigh_r'; arm.name = 'upperarm_r'; pelvis.name = 'pelvis';
+        root.add(thigh, arm, pelvis);
+        const quaternions = angles => angles.flatMap(angle => new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle).toArray());
+        root.userData.lowerBodyAnimationTracks = ['thigh_r.quaternion', 'pelvis.position'];
+        root.userData.animations = [new THREE.AnimationClip('Idle', 1, []),
+            new THREE.AnimationClip('Run', 1, [new THREE.QuaternionKeyframeTrack('thigh_r.quaternion', [0, .25, .5, .75, 1], quaternions([0, .8, 0, -.8, 0])),
+                new THREE.VectorKeyframeTrack('pelvis.position', [0, .5, 1], [0, 0, 0, 0, 0, .1, 0, 0, 0])]),
+            new THREE.AnimationClip('Shout', 1, [new THREE.QuaternionKeyframeTrack('upperarm_r.quaternion', [0, .5, 1], quaternions([0, -1.5, 0]))])];
+        return root;
+    }
+    const actor = make('Fighter', authoredFixture), baseline = make('Fighter', authoredFixture);
+    baseline.movingCastGait.dispose(); baseline.movingCastGait = null;
+    actor.isRemote = true; baseline.isRemote = true;
+    actor.playAbilityAnimation('Guardian Roar', { duration: 1 }); baseline.playAbilityAnimation('Guardian Roar', { duration: 1 });
+    const initial = actor.position.clone(), values = [];
+    for (let i = 0; i < 35; i++) {
+        actor.updateAnimationMixer(1 / 60); baseline.updateAnimationMixer(1 / 60);
+        values.push(actor.mesh.getObjectByName('thigh_r').quaternion.x);
+        expect(actor.mesh.getObjectByName('upperarm_r').quaternion.toArray()).toEqual(baseline.mesh.getObjectByName('upperarm_r').quaternion.toArray());
+    }
+    expect(Math.max(...values) - Math.min(...values)).toBeGreaterThan(.3);
+    expect(actor.position.toArray()).toEqual(initial.toArray());
+    actor.movingCastGait.restore();
+    expect(actor.movingCastGait.saved).toHaveLength(0);
+    actor.dispose(); baseline.dispose();
+});

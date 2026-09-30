@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+import { createAuthoredFighterAbilityClips } from './AuthoredFighterAbilityClips.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
 // a boot dependency. Default class-factory activation follows equipment and
@@ -15,6 +16,10 @@ export const FIGHTER_AUTHORED_CLIPS = Object.freeze([
 export const FIGHTER_AUTHORED_SOCKETS = Object.freeze([
     'socket_back', 'socket_belt', 'socket_chest', 'socket_footL', 'socket_footR',
     'socket_head', 'socket_mainHand', 'socket_offHand', 'socket_shoulderL', 'socket_shoulderR'
+]);
+const LOWER_BODY_TRACKS = Object.freeze([
+    'pelvis.position', 'thigh_l.quaternion', 'calf_l.quaternion', 'foot_l.quaternion', 'ball_l.quaternion',
+    'thigh_r.quaternion', 'calf_r.quaternion', 'foot_r.quaternion', 'ball_r.quaternion'
 ]);
 
 export function fighterRuntimePath(quality = 'high') {
@@ -63,7 +68,8 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     root.userData.authoredQuality = quality === 'low' ? 'low' : 'high';
     root.userData.sharedGeometry = true;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
-    root.userData.animations = gltf.animations.map(clip => clip.clone());
+    root.userData.animations = [...gltf.animations.map(clip => clip.clone()), ...createAuthoredFighterAbilityClips(scene, gltf.animations)];
+    root.userData.lowerBodyAnimationTracks = LOWER_BODY_TRACKS;
     root.userData.authoredScale = scale;
     root.userData.hitReactionRig = visual.name;
     const pose = [];
