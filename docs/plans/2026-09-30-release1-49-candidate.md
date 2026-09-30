@@ -2,7 +2,9 @@
 
 Prepared September30,2026. Corrected148 is independently accepted and its final
 source and acceptance receipt are merged. Metadata, login and cumulative history
-target1.49.0; this release's mandatory CI and exact public checks remain required.
+target1.49.0. Corrected source is now independently accepted live; the
+[public acceptance receipt](2026-09-30-release1-49-acceptance.md) records its
+exact CI, identity, document and changed-asset checks.
 
 ## Scoped fixes
 
