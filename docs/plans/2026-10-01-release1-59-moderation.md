@@ -1,8 +1,8 @@
 # Alpha 1.59 moderation preparation
 
 October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
-locally but unpublished. The worktree includes accepted Alpha 1.58.2 and the
-published Alpha 1.58.3 graphics candidate; no 1.59 package or milestone completion
+locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
+accepted live Alpha 1.58.3 graphics; no 1.59 package or milestone completion
 is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
 
@@ -61,12 +61,19 @@ request. Refresh, revocation, disconnect and disposal retire old forms.
 
 ## Local evidence
 
-The prepared worktree now merges accepted 1.58.2 and the published 1.58.3
-candidate, retaining the report safety routes alongside equipment batching,
+The prepared worktree now merges accepted 1.58.2 and accepted live 1.58.3,
+retaining the report safety routes alongside equipment batching,
 optional body-detail reload and whole-file CI distribution. Four focused
 report/review/lookup/settings suites passed 66 checks in 2.702 seconds after
 the merge. No moderation code or policy was published by this merge; 1.59
 still requires the remaining scope and owner decisions below.
+
+The graphics release passed all ten jobs in CI36927158308 on exact commit
+e593fc213cbd9f0a8513fe325305c5dd5589a27b, including live release and character
+QA. Its independent public identities, database readiness, 19 runtime hashes
+and 12 critical model hashes are retained in the
+[accepted release receipt](2026-10-01-release1-58-3-public.json).
+No 1.59 feature was included in that deployment.
 
 Focused Go race checks passed for the handler/protocol package in 2.554 seconds
 and pure database checks in 1.068 seconds. They cover strict parsing, durable role revocation, replaced

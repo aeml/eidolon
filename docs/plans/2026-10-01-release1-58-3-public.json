@@ -1,9 +1,13 @@
 {
   "schema": 1,
-  "status": "public-files-verified-live-QA-pending",
+  "status": "accepted",
   "version": "Alpha 1.58.3",
   "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
   "ciRun": 36927158308,
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "acceptanceVerifiedAt": "2026-10-01T21:57:04Z",
   "at": "2026-10-01T21:43:07.024Z",
   "frontend": {
     "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
@@ -209,6 +213,6 @@
   "limits": [
     "Source GLBs unchanged; fresh critical checks cover all eight class qualities and four motion banks, not all264routes. Earlier32representative full hashes retained.",
     "Ordinary public IPv4 DNS/TLS, no origin override.",
-    "Live CI QA, final art/performance and deferred owner playtests remain distinct."
+    "All ten exact-source CI jobs, including live release and character QA, passed. Final art/performance and deferred owner playtests remain distinct."
   ]
 }

@@ -2,12 +2,14 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.58.2, exactff303dc2bbe221533f6c07fd53a77a13f522c48c,
-CI36920070557. All ten CI jobs and independent public IPv4 checks passed for
-identities, database readiness, 16 exact publisher-runtime files and 32
-representative model hashes, not every model route. Live character and town
-recovery/Well Rested QA passed. See its
-[acceptance receipt](2026-10-01-release1-58-2-public.json).
+baseline is Alpha 1.58.3, exact e593fc213cbd9f0a8513fe325305c5dd5589a27b,
+CI36927158308. All ten CI jobs, including live release and character QA,
+passed. Independent public IPv4 checks verified identities, database readiness,
+19 exact publisher-runtime files and 12 critical model hashes covering all eight
+class qualities and four motion banks. The preceding 1.58.2 receipt retains 32
+representative model hashes and live town recovery/Well Rested QA; neither
+receipt claims every model route. See the current
+[acceptance receipt](2026-10-01-release1-58-3-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -33,11 +35,11 @@ browser failures prevented its deployment; the corrected candidate passed CI
 and independent public acceptance. Final modern-art approval, crowd performance
 and human-playtest gates stay open. The next minor milestone remains the complete
 1.59 moderation workflow; no later milestone is declared shipped. The separate
-[prepared 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
+[accepted 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
 packages the rendering and body-detail settings work below without including
 unpublished moderation code. Version defaults and cumulative notes are aligned;
-the preceding candidate is accepted, and the follow-up still requires its own
-CI/public checks. It is not live or a replacement for the complete 1.59 milestone.
+its own complete CI and independent public checks passed. It is live, not a
+replacement for the complete 1.59 milestone.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.
@@ -57,8 +59,8 @@ busy; this is not a device-FPS promise. A subsequent default-on integration
 passed 38 focused checks and two native cases in 43.7 seconds, including actual
 Rogue stealth restoration, equipped previews and Fighter pose/seating lifecycle.
 Its all-eight-class and Rogue-preview renders were inspected. The default is
-included in the published 1.58.3 candidate, whose CI/public acceptance is pending;
-production remains accepted 1.58.2. Explicit false retains the original path
+included in accepted live 1.58.3 after its CI/public acceptance passed.
+Explicit false retains the original path
 for comparisons.
 Transparent, textured, custom-shader, differently bound or transformed pieces
 remain separate, and stealth restores original sorting surfaces. Broader

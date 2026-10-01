@@ -1,7 +1,9 @@
 {
   "schema": 1,
   "version": "Alpha 1.58.3",
-  "status": "prepared-not-published",
+  "status": "accepted",
+  "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+  "acceptanceReceipt": "2026-10-01-release1-58-3-public.json",
   "parentCandidate": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
   "scope": [
     "Default opaque fitted-equipment batching with source-preserving animated surfaces and independent actor skeletons.",
@@ -31,8 +33,8 @@
   },
   "publicationGates": [
     "Preceding 1.58.2 accepted: CI36920070557 all ten jobs passed; independent public identities, DB readiness, 16 runtime and 32 representative model hashes verified in 2026-10-01-release1-58-2-public.json.",
-    "Fresh remote fetch and merge before push, preserving other agents' work.",
-    "Exact-source CI and independent served-artifact acceptance for this follow-up."
+    "Fresh remote fetch and merge before push preserved other agents' work.",
+    "CI36927158308 passed all ten jobs on e593fc213cbd9f0a8513fe325305c5dd5589a27b, including live release and character QA. Independent public IPv4 checks verified frontend/backend identities, database readiness, 19 exact publisher-runtime files and 12 critical model routes. This closes release acceptance, not broader device/performance or owner art approval."
   ],
   "remaining": [
     "Broader comparable-device crowd performance, physical-phone feedback and final owner art approval.",
