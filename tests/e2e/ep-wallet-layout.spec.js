@@ -22,7 +22,7 @@ for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${wid
         const ui = new EPWalletUI({ host, getPlayer: () => ({ id: 'ep-layout-player' }), send: (type, payload) => {
             window.__epRequests.push({ type, payload });
             if (type === 'get_vip_status') ui.handleVIPStatus({ playerID: 'ep-layout-player', success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
-                awardedEP: 0, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+                asOf: '2026-10-01T00:00:00Z', awardedEP: 0, ep: 8, gold: 3000000, goldPerEP: 1000000 });
             else if (type === 'get_ep_wallet') ui.handleResult({ playerID: 'ep-layout-player', success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
             else ui.handleResult({ playerID: 'ep-layout-player', id: payload.id, success: true, pending: false, ep: 10, gold: 1000000, goldPerEP: 1000000, message: 'Exchange saved.' });
         } });
@@ -31,6 +31,11 @@ for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${wid
     const wallet = page.locator('.ep-wallet-panel');
     await expect(wallet.locator('[data-balance]')).toContainText('8 EP');
     await expect(wallet.locator('[data-vip-status]')).toContainText('100 EP per membership month');
+    await expect(wallet).toContainText('Administrator VIP follows the current account role');
+    const refresh = wallet.getByRole('button', { name: 'Refresh VIP status', exact: true });
+    await refresh.click();
+    expect((await refresh.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    expect(await page.evaluate(() => window.__epRequests.filter(r => r.type === 'get_vip_status').length)).toBe(2);
     await wallet.getByLabel('EP to receive').fill('2');
     await wallet.getByRole('button', { name: 'Review exchange' }).click();
     await expect(wallet.locator('[data-confirmation]')).toContainText('2,000,000 Gold');
