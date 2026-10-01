@@ -15,6 +15,16 @@
     { "type": "lint and formatting", "result": "Changed JS source/test files pass ESLint; changed Go files formatted with gofmt; git diff --check passes." }
   ],
   "unchanged": "Catalogue prices/content, Gold/EP exchange rules, wallets, combat stats, item ownership, VIP entitlements, character saves and open-alpha access.",
+  "networkBoundaryFollowup": {
+    "finding": "Menu guards alone did not protect the engine: wardrobe_result mutated player.appearances and vip_status mutated player.vip before ownership was checked. Cosmetic replies also fanned out to the generic wardrobe.",
+    "fix": "The installed GameEngine message handler filters EP wallet, VIP status, cosmetic-vendor and wardrobe replies by the current character ID before any mutation or UI fan-out. Retired engines also reject messages. Normal owned snapshots still follow the existing replication/preview path.",
+    "checks": [
+      { "type": "before implementation", "passed": 4, "failed": 5, "seconds": 1.349, "scope": "Missing/previous-owner reply rejection for all four private message types and retired-engine wardrobe mutation reproduce against the prior handler." },
+      { "type": "after implementation", "suites": 5, "passed": 46, "seconds": 3.607, "scope": "PrivateCharacterResultOwnership, EPWalletUI, CosmeticVendor, CharacterPreview and Wardrobe; current owned snapshots still update their intended UI/appearance/VIP state." },
+      { "type": "lint and whitespace", "result": "Changed message handler and new regression tests pass ESLint; git diff --check passes." }
+    ],
+    "limits": "Direct tests execute the production-installed message handler, not a new authenticated socket/reconnect test. The change does not assert that every same-owner out-of-order result has a request-generation fence."
+  },
   "remaining": [
     "Complete the full 1.67 wardrobe/preview/local-and-remote fit/provenance review; this ownership/lifecycle fix alone does not establish all twelve offers on every class.",
     "Integrate and verify the user's new actor/item exports when their paths or commit are available; this slice does not claim new Rogue/Cleric/Wizard model swaps.",
