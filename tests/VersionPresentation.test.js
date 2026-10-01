@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.57.0';
+const currentVersion = '1.58.0';
+
+test('1.58.0 records optional endgame direction without new reward grants or EP power', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.58.0"'), previous = html.indexOf('data-version="1.57.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['choose your next adventure', 'Endgame tab', 'optional choices', 'personally claimed Dark King quest',
+        'unavailable eligibility', 'Monday UTC reset', 'resetting a run cannot reset the reward limit',
+        '+20 potency remains a long-term endgame goal', 'EP cannot buy combat gear or trait points',
+        'without starting a run or spending resources', 'eligibility snapshot', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.57.0 records event discovery without extra currencies or premature activation', () => {
     const html = fs.readFileSync('index.html', 'utf8');

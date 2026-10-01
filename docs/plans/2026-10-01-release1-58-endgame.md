@@ -2,9 +2,10 @@
 
 The Dungeon Guide now has an Endgame tab at level 100, bringing post-story
 direction and the existing repeat-run systems into one readable overview.
-This is isolated, unpublished implementation on the local 1.57 package, not a
-live 1.58 release. Its version and cumulative release notes still need packaging
-after preceding releases are accepted.
+This is locally packaged as Alpha 1.58.0 but unpublished, not a live release.
+The preceding 1.55 is accepted; 1.56 is pushed at
+`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692, and 1.57 remains
+locally packaged. Preserve ordered acceptance before publishing this candidate.
 
 ## Player choices and authority
 
@@ -58,8 +59,15 @@ or production account mutation was used.
 
 ## Remaining release work
 
-Keep publication ordered after 1.55, 1.56 and 1.57 acceptance. Align the login,
-client/server/build versions and cumulative notes before publishing. Fresh-fetch
+Local packaging passed 336 version/publisher checks in 2.467 seconds and both
+unchanged anonymous login/release routes in 7.5 seconds. Scoped lint, shell syntax
+and whitespace checks passed. The login version matches the local manifest;
+new 1.58 notes precede the complete prior history. The notes screenshot was
+reviewed in `/tmp/eidolon-1-58-login-notes-1001`. These checks establish local
+packaging, not public backend readiness or deployment acceptance.
+
+Keep publication ordered after 1.56 and 1.57 acceptance. Login,
+client/server/build versions and cumulative notes are aligned at 1.58.0. Fresh-fetch
 and merge master immediately before a normal push to preserve website work.
 Luna monitors CI; independent public identity, database readiness and exact
 changed-runtime checks remain required. Source documentation was reviewed;

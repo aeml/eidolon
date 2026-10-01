@@ -17,6 +17,10 @@ The subsequent [1.57 event work](2026-10-01-release1-57-events.md) is isolated,
 unpublished preparation: upcoming server windows, atlas waypoints, reward clarity
 and bounded realm/cohort checks. Human event balance and ordered publication
 remain distinct from those prepared mechanical fixtures.
+The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is locally
+implemented and packaged but unpublished: actual story/cache status, optional
+repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and
+human pacing limits are preserved; ordered release acceptance remains required.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
