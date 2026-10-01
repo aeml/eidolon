@@ -27,6 +27,9 @@ type structuredChatService struct {
 	limit   int
 	history chatHistory
 	now     func() time.Time
+	// Set once during service construction when the moderation policy is enabled.
+	// Preparation leaves this unset; no live sanction policy is activated here.
+	authorizeSend func(*Client) error
 }
 
 var chatService = newStructuredChatService(50)
@@ -57,6 +60,11 @@ func (service *structuredChatService) Send(sender *Client, input ChatPayload) er
 	}
 	if !utf8.ValidString(message) || utf8.RuneCountInString(message) > maximumChatCharacters {
 		return errors.New("chat message is too long")
+	}
+	if service.authorizeSend != nil {
+		if err := service.authorizeSend(sender); err != nil {
+			return err
+		}
 	}
 
 	payload := ChatPayload{

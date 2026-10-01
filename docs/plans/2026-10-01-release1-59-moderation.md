@@ -240,6 +240,23 @@ physical-phone check or complete moderation acceptance. No mutation handler or
 live chat enforcement is enabled; full policy, action UI and connected
 sanction-to-appeal acceptance remain required.
 
+The chat service now supports an authorization check before any message is
+recorded or delivered. The prepared temporary-mute guard reads authoritative
+owner notices without a session cache, denies sends on unavailable or malformed
+state, and rechecks the connection after the read. Denials contain only the
+public reference, expiry and appeal instructions, not reasons or staff receipts.
+Service startup does not install this guard yet; publication and activation
+remain dependent on the approved policy and complete staff-action path.
+
+Three new tests cover 13 channel and command routes, no delivery/history on
+denial, incoming chat and unchanged character presence, immediate reversal and
+exact expiry, unavailable authority, malformed state, retired/replaced sessions,
+owner changes and the owner's notice route after denial. They passed with the
+existing structured-chat and notice checks under the race detector in 3.148
+seconds. No new CI job, browser run, campaign or production action was needed.
+This is not proof of an activated sanction-to-appeal flow or a complete mute
+mutation handler.
+
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is
 invented or activated. Staff coverage and final evidence-retention policy also
