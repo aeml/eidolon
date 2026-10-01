@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-test('phone slot controls explain wagers, retain free stakes and show lore bonus choices', async ({ page }) => {
+// Prepared presentation snapshots, not connected wagers or a physical-phone check.
+test.use({ launchOptions: { args: ['--disable-gpu'] } });
+test('phone slot controls explain wagers, retain free stakes and pause queued spins for bonus choices', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
+    await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async () => {
@@ -31,7 +35,7 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     await expect(page.getByRole('button', { name: 'Read the stone tablet', exact: true })).toBeEnabled();
     expect(await page.locator('.slot-grid img').count()).toBe(15);
     expect(await page.locator('.casino-session').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
-    await page.screenshot({ path: '/tmp/eidolon-slot-phone-20260913.png' });
+    await page.screenshot({ path: testInfo.outputPath('slots-bonus-phone.png') });
     await page.getByRole('button', { name: 'Read the stone tablet', exact: true }).click();
     expect(await page.evaluate(() => window.__slotQA.sent[1])).toEqual({ action: 'slot_bonus', choice: 1, roundRevision: 2 });
     await page.evaluate(() => {
@@ -44,12 +48,47 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     await page.getByRole('button', { name: '100', exact: true }).click();
     await page.getByRole('button', { name: 'Start 100 auto spins', exact: true }).click();
     await expect(page.locator('.slot-auto-status')).toContainText('99 spins left');
-    await page.getByRole('button', { name: 'Stop auto spins', exact: true }).click();
-    await expect(page.locator('.slot-auto-status')).toContainText('stopped');
-    await page.screenshot({ path: '/tmp/eidolon-casino-roomy-phone.png' });
     await page.evaluate(() => {
         const { ui, view } = window.__slotQA;
-        ui.update({ ...view, session: { ...view.session, revision: 4 } });
+        const grid = [[7, 0, 1], [2, 7, 3], [6, 4, 7], [1, 0, 2], [3, 5, 4]];
+        ui.update({ ...view, session: { ...view.session, revision: 4, freeSpins: 9, bonus: true,
+            last: { landed: grid, payout: 0, free: true, freeAwarded: 5, bonusPicked: -1, stages: [{ grid, wins: [], payout: 0 }] } } });
+    });
+    await expect(page.getByRole('button', { name: 'Read the stone tablet', exact: true })).toBeEnabled();
+    await expect(page.locator('.slot-auto-status')).toContainText('paused for your bonus choice');
+    await expect(page.locator('.slot-auto-status')).toContainText('99 spins left');
+    await expect(page.getByRole('button', { name: 'Stop auto spins', exact: true })).toBeEnabled();
+    // Starting auto spins scrolls the controls into view. A new bonus must bring
+    // the required choice back into the visible phone area without user scrolling.
+    await expect.poll(async () => {
+        const bonus = await page.locator('.slot-bonus').boundingBox();
+        const panel = await page.locator('.casino-session').boundingBox();
+        return bonus.y >= panel.y && bonus.y + bonus.height <= panel.y + panel.height;
+    }).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath('slots-auto-bonus-paused-phone.png') });
+    await page.getByRole('button', { name: 'Read the stone tablet', exact: true }).click();
+    expect(await page.evaluate(() => window.__slotQA.sent.at(-1))).toEqual({ action: 'slot_bonus', choice: 1, roundRevision: 4 });
+    const beforeReveal = await page.evaluate(() => window.__slotQA.sent.length);
+    await page.evaluate(() => {
+        const { ui } = window.__slotQA;
+        const picked = { ...ui.view, session: { ...ui.view.session, revision: 5, bonus: false,
+            last: { ...ui.view.session.last, bonusPicked: 1, bonusPayout: 40 } } };
+        window.__slotQA.picked = picked; ui.update({ ...picked, processing: true });
+    });
+    await expect(page.locator('.slot-game > .slot-sidebar')).toContainText('Saving settlement');
+    expect(await page.evaluate(() => window.__slotQA.sent.length)).toBe(beforeReveal);
+    await page.evaluate(() => window.__slotQA.ui.update(window.__slotQA.picked));
+    await expect(page.locator('.slot-stage .casino-celebration')).toContainText('BONUS REVEALED');
+    expect(await page.evaluate(() => window.__slotQA.sent.length)).toBe(beforeReveal);
+    await expect.poll(() => page.evaluate(() => window.__slotQA.sent.length)).toBe(beforeReveal + 1);
+    expect(await page.evaluate(() => window.__slotQA.sent.at(-1))).toEqual({ action: 'slot_spin', bet: 20, roundRevision: 5 });
+    await expect(page.locator('.slot-auto-status')).toContainText('98 spins left');
+    await page.getByRole('button', { name: 'Stop auto spins', exact: true }).click();
+    await expect(page.locator('.slot-auto-status')).toContainText('stopped');
+    await page.screenshot({ path: testInfo.outputPath('slots-auto-stopped-phone.png') });
+    await page.evaluate(() => {
+        const { ui, view } = window.__slotQA;
+        ui.update({ ...view, session: { ...view.session, revision: 6 } });
     });
     await page.getByRole('button', { name: 'Manual', exact: true }).click();
     await expect(page.locator('.slot-auto-controls')).toBeHidden();
@@ -57,8 +96,8 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     await page.getByRole('button', { name: '2×', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Spin · 200 Gold', exact: true })).toBeEnabled();
     await page.getByRole('button', { name: 'Spin · 200 Gold', exact: true }).click();
-    expect(await page.evaluate(() => window.__slotQA.sent.at(-1))).toEqual({ action: 'slot_spin', bet: 200, roundRevision: 4 });
-    await page.evaluate(() => { const { ui, view } = window.__slotQA; ui.update({ ...view, session: { ...view.session, bet: 200, revision: 5 } }); });
+    expect(await page.evaluate(() => window.__slotQA.sent.at(-1))).toEqual({ action: 'slot_spin', bet: 200, roundRevision: 6 });
+    await page.evaluate(() => { const { ui, view } = window.__slotQA; ui.update({ ...view, session: { ...view.session, bet: 200, revision: 7 } }); });
     await page.setViewportSize({ width: 1440, height: 1000 });
     const panel = page.locator('.casino-session');
     expect((await panel.boundingBox()).width).toBeGreaterThan(1000);
@@ -66,17 +105,17 @@ test('phone slot controls explain wagers, retain free stakes and show lore bonus
     expect(stage.x).toBeGreaterThan(sidebar.x + sidebar.width);
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     await panel.evaluate(node => { node.scrollTop = 0; });
-    await page.screenshot({ path: '/tmp/eidolon-casino-roomy-desktop.png' });
+    await page.screenshot({ path: testInfo.outputPath('slots-manual-desktop.png') });
     await page.evaluate(() => {
         const { ui, view } = window.__slotQA;
         const grid = Array.from({ length: 5 }, () => [5,5,5]);
-        ui.update({ ...view, session: { ...view.session, bet: 200, revision: 6,
+        ui.update({ ...view, session: { ...view.session, bet: 200, revision: 8,
             last: { landed: grid, payout: 20000, bonusPicked: -1, stages: [{ grid, wins: [], payout: 20000, jackpot: true }] } } });
     });
     await expect(page.locator('.slot-stage .casino-celebration')).toContainText('GIGANTIC WIN');
     await expect(page.locator('.slot-stage .casino-celebration')).toHaveCSS('opacity', '1');
     await expect(page.getByRole('button', { name: 'Spin · 200 Gold', exact: true })).toBeDisabled();
-    await page.screenshot({ path: '/tmp/eidolon-slot-gigantic-win.png' });
+    await page.screenshot({ path: testInfo.outputPath('slots-gigantic-win-desktop.png') });
     await page.getByRole('button', { name: 'Leave machine', exact: true }).click();
     await expect(page.locator('.slot-game')).toBeHidden();
 });
