@@ -1,0 +1,721 @@
+{
+  "schema": 1,
+  "status": "prepared-opt-in-not-published",
+  "baselineRuntimeCommit": "7d5fdf6de171ce3e2f1dd66a86ec3a013787ac24",
+  "codeAndFixture": "FittedEquipmentBatches.js and retained fixtures alongside this receipt",
+  "commands": {
+    "paired": "EIDOLON_RAID_FITTED_BATCHES=1 EIDOLON_RAID_FITTED_COMPARE=1 playwright test tests/e2e/raid-scene-performance.spec.js tests/e2e/authored-class-equipment.spec.js",
+    "unit": "jest tests/FittedEquipmentBatches.test.js tests/HumanoidRenderBatches.test.js"
+  },
+  "results": {
+    "nativeCasesPassed": 2,
+    "nativeMinutes": 2.3,
+    "unitCasesPassed": 35,
+    "unitSeconds": 5.848,
+    "lint": "passed",
+    "sourceGLBs": "unchanged"
+  },
+  "diagnostic": [
+    {
+      "quality": "high",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "busy",
+      "frames": 180,
+      "medianMs": 41.10000038146973,
+      "p95Ms": 68,
+      "p99Ms": 105.7999997138977,
+      "hitchesOver50ms": 48,
+      "firstRenderCpuMs": 86.69999980926514,
+      "warmupWorstCpuMs": 106.90000009536743,
+      "renderCpuMedianMs": 38.59999990463257,
+      "renderCpuP95Ms": 61.80000019073486,
+      "calls": 1324,
+      "triangles": 2908127,
+      "geometries": 457,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0.5999999046325684,
+          "p95Ms": 1.5
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 15.800000190734863,
+          "p95Ms": 29.40000009536743
+        },
+        "rendererTotal": {
+          "medianMs": 38.5,
+          "p95Ms": 61.50000047683716
+        },
+        "RenderPass": {
+          "medianMs": 38.19999980926514,
+          "p95Ms": 61.09999990463257
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0.3000001907348633,
+          "p95Ms": 1.700000286102295
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0.10000038146972656
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0.10000038146972656
+        }
+      }
+    },
+    {
+      "quality": "high",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "clear",
+      "frames": 180,
+      "medianMs": 16.699999809265137,
+      "p95Ms": 22.300000190734863,
+      "p99Ms": 29.09999990463257,
+      "hitchesOver50ms": 0,
+      "firstRenderCpuMs": 2.0999999046325684,
+      "warmupWorstCpuMs": 21.799999713897705,
+      "renderCpuMedianMs": 3.700000286102295,
+      "renderCpuP95Ms": 12.5,
+      "calls": 22,
+      "triangles": 45,
+      "geometries": 412,
+      "textures": 530,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 0.09999990463256836,
+          "p95Ms": 0.20000028610229492
+        },
+        "rendererTotal": {
+          "medianMs": 3.3000001907348633,
+          "p95Ms": 10.799999713897705
+        },
+        "RenderPass": {
+          "medianMs": 2.799999713897705,
+          "p95Ms": 10.299999713897705
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0.3000001907348633,
+          "p95Ms": 2.6999998092651367
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0.10000038146972656
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0.10000038146972656
+        }
+      }
+    },
+    {
+      "quality": "high",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "busy-repeat",
+      "frames": 180,
+      "medianMs": 44.09999990463257,
+      "p95Ms": 68.90000009536743,
+      "p99Ms": 84.19999980926514,
+      "hitchesOver50ms": 54,
+      "firstRenderCpuMs": 38.69999980926514,
+      "warmupWorstCpuMs": 91.09999990463257,
+      "renderCpuMedianMs": 41.40000009536743,
+      "renderCpuP95Ms": 66.5,
+      "calls": 1324,
+      "triangles": 2908127,
+      "geometries": 457,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0.5999999046325684,
+          "p95Ms": 1.5
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 16.59999990463257,
+          "p95Ms": 31.799999713897705
+        },
+        "rendererTotal": {
+          "medianMs": 41.09999990463257,
+          "p95Ms": 66.2000002861023
+        },
+        "RenderPass": {
+          "medianMs": 40.799999713897705,
+          "p95Ms": 65.7999997138977
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0.3000001907348633,
+          "p95Ms": 1.3999996185302734
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "busy",
+      "frames": 180,
+      "medianMs": 33.10000038146973,
+      "p95Ms": 63.10000038146973,
+      "p99Ms": 75,
+      "hitchesOver50ms": 25,
+      "firstRenderCpuMs": 21.59999990463257,
+      "warmupWorstCpuMs": 75.90000009536743,
+      "renderCpuMedianMs": 29.5,
+      "renderCpuP95Ms": 56.40000009536743,
+      "calls": 728,
+      "triangles": 1457406,
+      "geometries": 456,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0.6000003814697266,
+          "p95Ms": 1.5999999046325684
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "rendererTotal": {
+          "medianMs": 29.5,
+          "p95Ms": 56.40000009536743
+        },
+        "RenderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "clear",
+      "frames": 180,
+      "medianMs": 16.700000286102295,
+      "p95Ms": 23.40000009536743,
+      "p99Ms": 26.5,
+      "hitchesOver50ms": 0,
+      "firstRenderCpuMs": 2.4000000953674316,
+      "warmupWorstCpuMs": 25,
+      "renderCpuMedianMs": 2.9000000953674316,
+      "renderCpuP95Ms": 10.300000190734863,
+      "calls": 7,
+      "triangles": 30,
+      "geometries": 411,
+      "textures": 516,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "rendererTotal": {
+          "medianMs": 2.8000001907348633,
+          "p95Ms": 10.300000190734863
+        },
+        "RenderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "busy-repeat",
+      "frames": 180,
+      "medianMs": 34,
+      "p95Ms": 82.90000009536743,
+      "p99Ms": 106.39999961853027,
+      "hitchesOver50ms": 33,
+      "firstRenderCpuMs": 118.09999990463257,
+      "warmupWorstCpuMs": 121.5,
+      "renderCpuMedianMs": 29.200000286102295,
+      "renderCpuP95Ms": 73.09999990463257,
+      "calls": 728,
+      "triangles": 1457406,
+      "geometries": 456,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "cpuAttribution": {
+        "raidAnimationAndFields": {
+          "medianMs": 0.5999999046325684,
+          "p95Ms": 1.799999713897705
+        },
+        "actorInstancePreparation": {
+          "medianMs": 0,
+          "p95Ms": 0.09999990463256836
+        },
+        "shadowPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "rendererTotal": {
+          "medianMs": 29.09999990463257,
+          "p95Ms": 73.09999990463257
+        },
+        "RenderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "UnrealBloomPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "ShaderPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        },
+        "OutputPass": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    }
+  ],
+  "paired": [
+    {
+      "quality": "high",
+      "fittedBatching": false,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "baseline",
+      "frames": 180,
+      "medianMs": 50.69999980926514,
+      "p95Ms": 96.09999990463257,
+      "p99Ms": 142.60000038146973,
+      "hitchesOver50ms": 92,
+      "firstRenderCpuMs": 30.09999990463257,
+      "warmupWorstCpuMs": 95.39999961853027,
+      "renderCpuMedianMs": 46.5,
+      "renderCpuP95Ms": 90.59999990463257,
+      "calls": 1324,
+      "triangles": 2908127,
+      "geometries": 521,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:58:09.130Z",
+        "processors": 16,
+        "load": [
+          68.84,
+          58.65,
+          50.37
+        ],
+        "idle": 8255742260,
+        "total": 36010757810,
+        "pressure": "some avg10=69.39 avg60=67.39 avg300=65.37 total=847391347775\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:58:22.248Z",
+        "processors": 16,
+        "load": [
+          71.02,
+          59.63,
+          50.82
+        ],
+        "idle": 8255744680,
+        "total": 36010957530,
+        "pressure": "some avg10=69.41 avg60=67.82 avg300=65.55 total=847400457163\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.987883036250751
+    },
+    {
+      "quality": "high",
+      "fittedBatching": true,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "candidate",
+      "frames": 180,
+      "medianMs": 43.19999980926514,
+      "p95Ms": 78,
+      "p99Ms": 98.2999997138977,
+      "hitchesOver50ms": 66,
+      "firstRenderCpuMs": 37.89999961853027,
+      "warmupWorstCpuMs": 89.30000019073486,
+      "renderCpuMedianMs": 39.09999990463257,
+      "renderCpuP95Ms": 73.40000009536743,
+      "calls": 1064,
+      "triangles": 2908127,
+      "geometries": 521,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:58:22.395Z",
+        "processors": 16,
+        "load": [
+          71.02,
+          59.63,
+          50.82
+        ],
+        "idle": 8255744730,
+        "total": 36010959760,
+        "pressure": "some avg10=69.41 avg60=67.82 avg300=65.55 total=847400555396\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:58:33.537Z",
+        "processors": 16,
+        "load": [
+          71.53,
+          60.11,
+          51.07
+        ],
+        "idle": 8255747360,
+        "total": 36011128770,
+        "pressure": "some avg10=69.40 avg60=67.98 avg300=65.67 total=847408381232\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9844387906041062
+    },
+    {
+      "quality": "high",
+      "fittedBatching": false,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "baseline-repeat",
+      "frames": 180,
+      "medianMs": 48.60000038146973,
+      "p95Ms": 88.5,
+      "p99Ms": 97.30000019073486,
+      "hitchesOver50ms": 85,
+      "firstRenderCpuMs": 54.19999980926514,
+      "warmupWorstCpuMs": 133.59999990463257,
+      "renderCpuMedianMs": 46.09999990463257,
+      "renderCpuP95Ms": 84,
+      "calls": 1324,
+      "triangles": 2908127,
+      "geometries": 521,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:58:34.916Z",
+        "processors": 16,
+        "load": [
+          71.53,
+          60.11,
+          51.07
+        ],
+        "idle": 8255747610,
+        "total": 36011150060,
+        "pressure": "some avg10=69.87 avg60=68.11 avg300=65.71 total=847409411871\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:58:48.151Z",
+        "processors": 16,
+        "load": [
+          74.18,
+          61.24,
+          51.58
+        ],
+        "idle": 8255751240,
+        "total": 36011352130,
+        "pressure": "some avg10=70.96 avg60=68.74 avg300=65.95 total=847418943270\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9820359281437125
+    },
+    {
+      "quality": "high",
+      "fittedBatching": true,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "candidate-repeat",
+      "frames": 180,
+      "medianMs": 39.90000009536743,
+      "p95Ms": 69.69999980926514,
+      "p99Ms": 85.2999997138977,
+      "hitchesOver50ms": 57,
+      "firstRenderCpuMs": 67.40000009536743,
+      "warmupWorstCpuMs": 113.2000002861023,
+      "renderCpuMedianMs": 36.200000286102295,
+      "renderCpuP95Ms": 67.2999997138977,
+      "calls": 1064,
+      "triangles": 2908127,
+      "geometries": 521,
+      "textures": 534,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:58:48.378Z",
+        "processors": 16,
+        "load": [
+          74.18,
+          61.24,
+          51.58
+        ],
+        "idle": 8255751280,
+        "total": 36011355610,
+        "pressure": "some avg10=70.96 avg60=68.74 avg300=65.95 total=847419109697\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:58:59.359Z",
+        "processors": 16,
+        "load": [
+          70.75,
+          60.93,
+          51.59
+        ],
+        "idle": 8255753930,
+        "total": 36011522590,
+        "pressure": "some avg10=71.42 avg60=69.27 avg300=66.19 total=847426953144\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.984129835908492
+    },
+    {
+      "quality": "low",
+      "fittedBatching": false,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "baseline",
+      "frames": 180,
+      "medianMs": 28.799999713897705,
+      "p95Ms": 45.80000019073486,
+      "p99Ms": 58.19999980926514,
+      "hitchesOver50ms": 6,
+      "firstRenderCpuMs": 31,
+      "warmupWorstCpuMs": 163.59999990463257,
+      "renderCpuMedianMs": 25.600000381469727,
+      "renderCpuP95Ms": 42.90000009536743,
+      "calls": 728,
+      "triangles": 1457406,
+      "geometries": 520,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:59:04.161Z",
+        "processors": 16,
+        "load": [
+          68.44,
+          60.62,
+          51.54
+        ],
+        "idle": 8255755550,
+        "total": 36011595220,
+        "pressure": "some avg10=69.07 avg60=68.93 avg300=66.16 total=847430033343\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:59:11.777Z",
+        "processors": 16,
+        "load": [
+          66.69,
+          60.5,
+          51.6
+        ],
+        "idle": 8255758390,
+        "total": 36011709910,
+        "pressure": "some avg10=64.38 avg60=67.88 avg300=66.00 total=847434628552\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9752375970006103
+    },
+    {
+      "quality": "low",
+      "fittedBatching": true,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "candidate",
+      "frames": 180,
+      "medianMs": 26.59999990463257,
+      "p95Ms": 43.5,
+      "p99Ms": 57.09999990463257,
+      "hitchesOver50ms": 5,
+      "firstRenderCpuMs": 29.899999618530273,
+      "warmupWorstCpuMs": 54.39999961853027,
+      "renderCpuMedianMs": 23.700000286102295,
+      "renderCpuP95Ms": 39.90000009536743,
+      "calls": 598,
+      "triangles": 1457406,
+      "geometries": 520,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:59:12.006Z",
+        "processors": 16,
+        "load": [
+          66.69,
+          60.5,
+          51.6
+        ],
+        "idle": 8255758430,
+        "total": 36011713420,
+        "pressure": "some avg10=64.38 avg60=67.88 avg300=66.00 total=847434800143\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:59:19.373Z",
+        "processors": 16,
+        "load": [
+          67.28,
+          60.72,
+          51.72
+        ],
+        "idle": 8255759910,
+        "total": 36011824800,
+        "pressure": "some avg10=67.31 avg60=68.06 avg300=66.09 total=847440018654\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9867121565810738
+    },
+    {
+      "quality": "low",
+      "fittedBatching": false,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "baseline-repeat",
+      "frames": 180,
+      "medianMs": 30.5,
+      "p95Ms": 56.30000019073486,
+      "p99Ms": 73.19999980926514,
+      "hitchesOver50ms": 19,
+      "firstRenderCpuMs": 41.09999990463257,
+      "warmupWorstCpuMs": 63,
+      "renderCpuMedianMs": 25.90000009536743,
+      "renderCpuP95Ms": 53.69999980926514,
+      "calls": 728,
+      "triangles": 1457406,
+      "geometries": 520,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:59:20.537Z",
+        "processors": 16,
+        "load": [
+          66.77,
+          60.73,
+          51.77
+        ],
+        "idle": 8255760220,
+        "total": 36011842510,
+        "pressure": "some avg10=67.31 avg60=68.06 avg300=66.09 total=847440800832\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:59:28.976Z",
+        "processors": 16,
+        "load": [
+          65.59,
+          60.58,
+          51.77
+        ],
+        "idle": 8255762830,
+        "total": 36011970880,
+        "pressure": "some avg10=68.84 avg60=68.28 avg300=66.20 total=847446748666\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9796681467632624
+    },
+    {
+      "quality": "low",
+      "fittedBatching": true,
+      "actorQuality": "high",
+      "actorSource": "delivered authored class bodies and fitted equipment",
+      "phase": "candidate-repeat",
+      "frames": 180,
+      "medianMs": 28.199999809265137,
+      "p95Ms": 56.09999990463257,
+      "p99Ms": 65.59999990463257,
+      "hitchesOver50ms": 16,
+      "firstRenderCpuMs": 17.5,
+      "warmupWorstCpuMs": 65.40000009536743,
+      "renderCpuMedianMs": 23.59999990463257,
+      "renderCpuP95Ms": 50.80000019073486,
+      "calls": 598,
+      "triangles": 1457406,
+      "geometries": 520,
+      "textures": 520,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "hostStart": {
+        "at": "2026-10-01T19:59:29.157Z",
+        "processors": 16,
+        "load": [
+          65.59,
+          60.58,
+          51.77
+        ],
+        "idle": 8255762860,
+        "total": 36011973660,
+        "pressure": "some avg10=68.84 avg60=68.28 avg300=66.20 total=847446879395\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostEnd": {
+        "at": "2026-10-01T19:59:36.793Z",
+        "processors": 16,
+        "load": [
+          65.29,
+          60.69,
+          51.9
+        ],
+        "idle": 8255765300,
+        "total": 36012089480,
+        "pressure": "some avg10=68.70 avg60=68.33 avg300=66.27 total=847452158531\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+      },
+      "hostBusyFraction": 0.9789328268002072
+    }
+  ],
+  "limits": [
+    "Opt-in only; production default is unchanged.",
+    "Paired host CPU busy fraction was 97.5–98.8%, with high load on 16 logical processors; timing is not an idle-device claim.",
+    "Both renderer tiers use High-detail bodies.",
+    "Same triangles and stable warmed resource counts verified; actual campaign/network gameplay and phone feedback are separate.",
+    "Full private moderation milestone and final visual/performance acceptance remain open."
+  ]
+}

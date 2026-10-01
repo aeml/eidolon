@@ -3,8 +3,10 @@ import { AUTHORED_ASSETS } from '../assets/authoredEquipment.generated.js';
 import { resolveEquipmentVisualDescriptor, equipmentVisualSignature } from './ProceduralEquipment.js';
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
+import { batchFittedEquipment } from './FittedEquipmentBatches.js';
 
 const owners = new WeakMap();
+const ownedMaterials = new WeakMap();
 const cosmetics = [...COSMETIC_CATALOGUE, ...SEASON_COSMETIC_CATALOGUE];
 const swapSide = name => name.replace(/_([lr])$/, (_, side) => side === 'l' ? '_r' : '_l');
 const disposeParts = parts => {
@@ -12,6 +14,8 @@ const disposeParts = parts => {
     for (const part of parts) {
         part.removeFromParent();
         part.traverse(mesh => {
+            for (const material of ownedMaterials.get(mesh) || []) materials.add(material);
+            ownedMaterials.delete(mesh);
             if (mesh.userData.fittedOwnedGeometry) mesh.geometry.dispose();
             if (mesh.isSkinnedMesh) skeletons.add(mesh.skeleton);
             if (mesh.isMesh) for (const material of [].concat(mesh.material)) materials.add(material);
@@ -102,6 +106,9 @@ function instanceMaterials(part, item, look) {
         };
         mesh.material = Array.isArray(mesh.material) ? mesh.material.map(clone) : clone(mesh.material);
     });
+    // Temporary stealth/highlight materials must not hide the actual owned
+    // clones from equip-generation cleanup. Shared asset textures stay cached.
+    ownedMaterials.set(part, [...owned.values()]);
 }
 
 function bindParts(state, gltf, slot, item, catalog, look) {
@@ -175,20 +182,25 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         catch (error) { return { ...request, error }; }
     })).then(results => {
         if (state.epoch !== epoch) return; // Released/reused actor or superseded equip.
-        const staged = [], selection = {}, missing = [];
+        let staged = [];
+        const selection = {}, missing = [];
         try {
             for (const result of results) {
                 if (result.error) { missing.push(result.slot); continue; }
                 staged.push(...bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look));
                 selection[result.slot] = result.catalog.id;
             }
+            for (const part of staged) {
+                if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
+            }
+            // Opt-in until exact surface and native render comparisons pass.
+            if (root.userData.fittedEquipmentBatching === true) staged = batchFittedEquipment(staged);
         } catch (error) {
             disposeParts(staged); root.userData.equipmentVisualSignature = ''; throw error;
         }
         disposeParts(state.parts); restoreCoverage(state); state.parts = staged;
         for (const part of staged) {
             part.userData.fittedParent.add(part); delete part.userData.fittedParent;
-            if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
         }
         applyCoverage(state, selection);
         root.userData.equipmentVisualItemCount = Object.keys(selection).length;

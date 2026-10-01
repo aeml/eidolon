@@ -17,12 +17,16 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     const cpuDiagnostic = process.env.EIDOLON_RAID_CPU_PROFILE === '1';
     const instancingProbe = process.env.EIDOLON_RAID_INSTANCING_PROBE === '1';
     const comparison = process.env.EIDOLON_RAID_INSTANCING_COMPARE === '1';
+    const fittedBatching = process.env.EIDOLON_RAID_FITTED_BATCHES === '1';
+    const fittedComparison = process.env.EIDOLON_RAID_FITTED_COMPARE === '1';
+    const paired = comparison || fittedComparison;
     if (comparison && !instancingProbe) throw Error('Paired comparison requires the opt-in instance candidate');
+    if (fittedComparison && (!fittedBatching || comparison)) throw Error('Fitted comparison requires only the fitted-batch candidate');
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    await page.evaluate(async ({ instancingProbe, comparison }) => {
+    await page.evaluate(async ({ instancingProbe, paired, fittedBatching }) => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
@@ -49,6 +53,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             const type = index === 10 ? 'UmbraPrime' : ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
             const mesh = await MeshFactory.createMeshForType(type, { quality: 'high' });
             if (index < 10) {
+                mesh.userData.fittedEquipmentBatching = fittedBatching;
                 if (mesh.userData.authoredClass !== type) throw new Error(`Missing authored ${type} crowd model`);
                 const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, slotIndex) => {
                     const candidates = BASE_ITEMS.filter((item) => canEquipItem(type, item, slot));
@@ -92,7 +97,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             group.visible = active;
             render.setGraphicsQuality(quality);
             if (!active) return;
-            if (comparison) { elapsed = 0; mixers.forEach(mixer => mixer.setTime(0)); }
+            if (paired) { elapsed = 0; mixers.forEach(mixer => mixer.setTime(0)); }
             for (let index = 0; index < 4; index++) {
                 const field = createProceduralAreaField(['GravityWell', 'BurningGround', 'SmokeBomb', 'InfernoCataclysm'][index], 4, { quality });
                 field.position.set(index % 2 ? 5 : -5, 0.01, index < 2 ? -4 : 4);
@@ -107,7 +112,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
             update(dt) {
                 // Same frame-by-frame animation/field workload on both sides;
                 // measured RAF intervals remain real, not a synthetic clock.
-                if (comparison) dt = 1 / 60;
+                if (paired) dt = 1 / 60;
                 elapsed += dt;
                 if (group.visible) mixers.forEach((mixer) => mixer.update(dt));
                 fields.forEach((field) => updateProceduralAreaField(field, elapsed, dt));
@@ -123,6 +128,12 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         window.__raidScene = {
             setBusy,
             setInstances(enabled) { instances.enabled = enabled; instances.endFrame(); },
+            setFittedBatches(enabled) {
+                for (const {mesh} of models) mesh.traverse(part => {
+                    if (part.userData.fittedBatchSource) part.visible = !enabled;
+                    if (part.userData.fittedBatchSources) part.visible = enabled;
+                });
+            },
             dispose() {
                 render.setActorInstancesEnabled(false);
                 clear();
@@ -132,7 +143,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 group.removeFromParent();
             }
         };
-    }, { instancingProbe, comparison });
+    }, { instancingProbe, paired, fittedBatching });
     if (cpuDiagnostic) await page.evaluate(() => {
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         const counters = {}, undo = [];
@@ -161,21 +172,27 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     const reports = [];
     try {
         for (const quality of ['high', 'low']) {
-            if (comparison) await page.evaluate(quality => new Promise(resolve => {
-                window.__raidScene.setBusy(quality, true); window.__raidScene.setInstances(true);
+            if (paired) await page.evaluate(({quality, fittedComparison}) => new Promise(resolve => {
+                window.__raidScene.setBusy(quality, true);
+                if (!fittedComparison) window.__raidScene.setInstances(true);
                 // Warm candidate buffers/program variants before either mode
                 // is measured, so first-mode resource counts are comparable.
-                let frames = 60;
-                const tick = () => { if (--frames > 0) requestAnimationFrame(tick); else resolve(); };
+                let frames = fittedComparison ? 120 : 60;
+                if (fittedComparison) window.__raidScene.setFittedBatches(false);
+                const tick = () => {
+                    if (fittedComparison && frames === 60) window.__raidScene.setFittedBatches(true);
+                    if (--frames > 0) requestAnimationFrame(tick); else resolve();
+                };
                 requestAnimationFrame(tick);
-            }), quality);
-            const phases = comparison ? ['baseline', 'candidate', 'baseline-repeat', 'candidate-repeat'] : ['busy', 'clear', 'busy-repeat'];
+            }), {quality, fittedComparison});
+            const phases = paired ? ['baseline', 'candidate', 'baseline-repeat', 'candidate-repeat'] : ['busy', 'clear', 'busy-repeat'];
             for (const phase of phases) {
-                await page.evaluate(({ quality, phase, comparison }) => {
+                await page.evaluate(({ quality, phase, comparison, fittedComparison }) => {
                     if (comparison) window.__raidScene.setInstances(phase.startsWith('candidate'));
+                    if (fittedComparison) window.__raidScene.setFittedBatches(phase.startsWith('candidate'));
                     window.__raidScene.setBusy(quality, phase !== 'clear');
-                }, { quality, phase, comparison });
-                const hostStart = comparison ? hostSnapshot() : null;
+                }, { quality, phase, comparison, fittedComparison });
+                const hostStart = paired ? hostSnapshot() : null;
                 const report = await page.evaluate(() => new Promise((resolve, reject) => {
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
@@ -216,8 +233,8 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         });
                     };
                 }));
-                const hostEnd = comparison ? hostSnapshot() : null;
-                reports.push({ quality, actorQuality: 'high', actorSource: 'delivered authored class bodies and fitted equipment', phase, ...report, ...(comparison ? { hostStart, hostEnd,
+                const hostEnd = paired ? hostSnapshot() : null;
+                reports.push({ quality, fittedBatching: fittedBatching && (!fittedComparison || phase.startsWith('candidate')), actorQuality: 'high', actorSource: 'delivered authored class bodies and fitted equipment', phase, ...report, ...(paired ? { hostStart, hostEnd,
                     hostBusyFraction: 1 - (hostEnd.idle - hostStart.idle) / (hostEnd.total - hostStart.total) } : {}) });
                 // Retain each bounded phase even if a later phase fails.
                 await testInfo.attach(`${quality}-${phase}-rendering-profile`, { body: JSON.stringify(report), contentType: 'application/json' });
@@ -226,7 +243,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
                 if (phase === 'busy' || phase === 'candidate') await page.screenshot({ path: testInfo.outputPath(`raid-sized-${quality}.png`) });
             }
-            if (comparison) {
+            if (paired) {
                 const rows = reports.filter(row => row.quality === quality);
                 const [baseline, candidate, baselineRepeat, candidateRepeat] = rows;
                 for (const row of rows) {

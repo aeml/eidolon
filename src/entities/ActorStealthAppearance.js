@@ -31,9 +31,10 @@ export function applyActorStealthAppearance(actor) {
         // Transparent fragments need the original piece-level ordering. The
         // rigid opaque batches keep named sources expressly for this path.
         const isEquipment = mesh.parent?.userData?.equipmentVisual;
-        const originalVisible = prior?.originalVisible ?? (isEquipment && (mesh.userData.equipmentBatchSource || mesh.userData.equipmentBatchSources)
+        const fittedBatch = mesh.userData.fittedBatchSource || mesh.userData.fittedBatchSources;
+        const originalVisible = prior?.originalVisible ?? (fittedBatch || isEquipment && (mesh.userData.equipmentBatchSource || mesh.userData.equipmentBatchSources)
             ? mesh.visible : undefined);
-        if (originalVisible !== undefined) mesh.visible = Boolean(mesh.userData.equipmentBatchSource);
+        if (originalVisible !== undefined) mesh.visible = Boolean(mesh.userData.equipmentBatchSource || mesh.userData.fittedBatchSource);
         const copies = [];
         const fade = material => {
             if (material.opacity === 0 || !material.visible) return material;
