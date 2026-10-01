@@ -1,0 +1,229 @@
+{
+  "class": "Wizard",
+  "meshes": {
+    "Wizard_Body": {
+      "vertices": 51801,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Undershorts": {
+      "vertices": 3830,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Hair": {
+      "vertices": 1755,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Brows": {
+      "vertices": 124,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Scalp": {
+      "vertices": 1197,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Undershorts_Seams": {
+      "vertices": 2016,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Eye_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Iris_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Pupil_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Eye_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Iris_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Wizard_Pupil_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    }
+  },
+  "clips": {
+    "Attack": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0008655230049043894,
+      "maximum_z": 1.8374193906784058,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Block": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0008655888959765434,
+      "maximum_z": 1.8151443004608154,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Cast": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0008655230049043894,
+      "maximum_z": 1.8374193906784058,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Channel": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.000865714333485812,
+      "maximum_z": 1.81514573097229,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "CombatIdle": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.000865714333485812,
+      "maximum_z": 1.81514573097229,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Death": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0014985245652496815,
+      "maximum_z": 1.844018816947937,
+      "endpoint_delta_m": 2.5244760045759294,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Hit": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.00086574925808236,
+      "maximum_z": 1.8145766258239746,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Idle": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0008656650898046792,
+      "maximum_z": 1.840276837348938,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Jump": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0014985245652496815,
+      "maximum_z": 2.2455241680145264,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpLand": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": -1.4995981473475695e-05,
+      "maximum_z": 1.8387871980667114,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpLoop": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.14806586503982544,
+      "maximum_z": 1.9191662073135376,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpStart": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.00014877307694405317,
+      "maximum_z": 1.8387871980667114,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Run": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0011960528790950775,
+      "maximum_z": 1.8105002641677856,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Walk": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": -0.0002656340366229415,
+      "maximum_z": 1.8297981023788452,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    }
+  },
+  "blink": {
+    "Blink_L": {
+      "affected_vertices": 759,
+      "max_delta_m": 0.010033989483349565
+    },
+    "Blink_R": {
+      "affected_vertices": 757,
+      "max_delta_m": 0.010034108910220444
+    }
+  }
+}

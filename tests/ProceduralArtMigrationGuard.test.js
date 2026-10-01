@@ -12,12 +12,43 @@ const nonAuthoredMigrationBridges = new Set([
     'assets/plants/pine.glb',
     'assets/plants/willow.glb'
 ]);
-// The owner-delivered Fighter and its two audited runtime candidates are the
-// only character-export exceptions. Retired actor/environment assets stay banned.
+// Owner-requested character deliveries and their runtime candidates are explicit
+// exceptions. Only Fighter is integrated; retired actor/environment assets stay banned.
 const stagedCharacterExports = new Set([
     'assets/archetypes/Fighter/fighter.glb',
     'assets/archetypes/Fighter/fighter-runtime-high.glb',
-    'assets/archetypes/Fighter/fighter-runtime-low.glb'
+    'assets/archetypes/Fighter/fighter-runtime-low.glb',
+    'assets/archetypes/Wizard/wizard.glb',
+    'assets/archetypes/Wizard/wizard-runtime-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-low.glb',
+    'assets/archetypes/Cleric/cleric.glb',
+    'assets/archetypes/Cleric/cleric-runtime-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-low.glb',
+    'assets/archetypes/Rogue/rogue.glb',
+    'assets/archetypes/Rogue/rogue-runtime-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-low.glb'
+]);
+// Owner-requested equipment delivery: exact catalog names, tiers and character
+// fits. This exception stages files only and does not permit runtime references.
+const equipmentTiers = ['standard', 'legendary'];
+const fittedEquipmentIds = [
+    'leather-cap', 'iron-helm', 'silk-hood',
+    'leather-tunic', 'plate-mail', 'robes',
+    'leather-pants', 'plate-greaves', 'silk-skirt',
+    'leather-boots', 'iron-boots', 'sandals',
+    'leather-gloves', 'iron-gauntlets', 'silk-gloves',
+    'reinforced-spaulders', 'steel-pauldrons', 'velvet-mantle',
+    'studded-belt', 'plated-girdle', 'silk-sash',
+    'gold-ring', 'silver-ring', 'ruby-ring',
+    'pendant', 'choker', 'necklace',
+    'amulet-of-power', 'talisman-of-speed', 'orb-of-mana'
+];
+const stagedEquipmentExports = new Set([
+    ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].map(character => `assets/equipment/authored/motions/${character}.glb`),
+    ...['iron-sword', 'steel-dagger', 'wooden-staff', 'cleric-mace', 'wooden-shield', 'spell-tome']
+        .flatMap(id => equipmentTiers.map(tier => `assets/equipment/authored/weapons/${id}-${tier}.glb`)),
+    ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].flatMap(character => fittedEquipmentIds
+        .flatMap(id => equipmentTiers.map(tier => `assets/equipment/authored/fits/${character}/${id}-${tier}.glb`)))
 ]);
 const currentLegacyReferenceFiles = new Set([
     'scripts/serve-static.mjs'
@@ -52,7 +83,8 @@ describe('procedural art migration guard', () => {
         const modelFiles = walkFiles(assetsRoot).filter((filePath) => (
             legacyModelExtensions.has(path.extname(filePath).toLowerCase()) &&
             !nonAuthoredMigrationBridges.has(relative(filePath)) &&
-            !stagedCharacterExports.has(relative(filePath))
+            !stagedCharacterExports.has(relative(filePath)) &&
+            !stagedEquipmentExports.has(relative(filePath))
         ));
         const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
 

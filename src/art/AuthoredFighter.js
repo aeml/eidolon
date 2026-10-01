@@ -71,9 +71,8 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
     root.userData.animations = [...gltf.animations.map(clip => clip.clone()), ...createAuthoredFighterAbilityClips(scene, gltf.animations)];
-    // The supplied overhead stroke reaches forward at source frame 14 (30fps).
-    // Map this reviewed contact pose to the existing 35% gameplay impact,
-    // rather than timing the hit from the entire 28-frame recovery clip.
+    // The blade-led diagonal cut reaches its contact pose at 14/30 seconds.
+    // Keep that reviewed pose aligned with the existing 35% gameplay impact.
     root.userData.basicAttackContactTime = 14 / 30;
     root.userData.lowerBodyAnimationTracks = LOWER_BODY_TRACKS;
     root.userData.authoredScale = scale;

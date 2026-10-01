@@ -23,3 +23,7 @@ server/backups/
 Caddyfile
 server/.env
 coverage/
+
+# Local experiments, backups, downloaded authoring tools and QA scratch files.
+# The final Blender sources, equipment scripts and reviewer are explicitly tracked.
+output/

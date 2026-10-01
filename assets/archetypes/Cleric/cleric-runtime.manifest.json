@@ -1,0 +1,141 @@
+{
+  "class": "Cleric",
+  "source": {
+    "bytes": 22659880,
+    "sha256": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f",
+    "triangles": 134214,
+    "bones": [
+      53
+    ],
+    "animations": [
+      "Attack",
+      "Block",
+      "Cast",
+      "CombatIdle",
+      "Death",
+      "Heal",
+      "Hit",
+      "Idle",
+      "Jump",
+      "JumpLand",
+      "JumpLoop",
+      "JumpStart",
+      "Run",
+      "Walk"
+    ],
+    "sockets": [
+      "socket_back",
+      "socket_belt",
+      "socket_chest",
+      "socket_footL",
+      "socket_footR",
+      "socket_head",
+      "socket_mainHand",
+      "socket_offHand",
+      "socket_shoulderL",
+      "socket_shoulderR"
+    ],
+    "morphs": [
+      "Blink_L",
+      "Blink_R"
+    ],
+    "images": 9,
+    "externalDependencies": [],
+    "errors": 0,
+    "warnings": 0
+  },
+  "policy": "Body-only simplification; fitted meshes retained; lossless data textures.",
+  "variants": {
+    "high": {
+      "bytes": 6244932,
+      "sha256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea",
+      "triangles": 79134,
+      "bones": [
+        53
+      ],
+      "animations": [
+        "Attack",
+        "Block",
+        "Cast",
+        "CombatIdle",
+        "Death",
+        "Heal",
+        "Hit",
+        "Idle",
+        "Jump",
+        "JumpLand",
+        "JumpLoop",
+        "JumpStart",
+        "Run",
+        "Walk"
+      ],
+      "sockets": [
+        "socket_back",
+        "socket_belt",
+        "socket_chest",
+        "socket_footL",
+        "socket_footR",
+        "socket_head",
+        "socket_mainHand",
+        "socket_offHand",
+        "socket_shoulderL",
+        "socket_shoulderR"
+      ],
+      "morphs": [
+        "Blink_L",
+        "Blink_R"
+      ],
+      "images": 9,
+      "externalDependencies": [],
+      "maximumTextureSize": 1024,
+      "errors": 0,
+      "warnings": 0
+    },
+    "low": {
+      "bytes": 4061680,
+      "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+      "triangles": 52094,
+      "bones": [
+        53
+      ],
+      "animations": [
+        "Attack",
+        "Block",
+        "Cast",
+        "CombatIdle",
+        "Death",
+        "Heal",
+        "Hit",
+        "Idle",
+        "Jump",
+        "JumpLand",
+        "JumpLoop",
+        "JumpStart",
+        "Run",
+        "Walk"
+      ],
+      "sockets": [
+        "socket_back",
+        "socket_belt",
+        "socket_chest",
+        "socket_footL",
+        "socket_footR",
+        "socket_head",
+        "socket_mainHand",
+        "socket_offHand",
+        "socket_shoulderL",
+        "socket_shoulderR"
+      ],
+      "morphs": [
+        "Blink_L",
+        "Blink_R"
+      ],
+      "images": 9,
+      "externalDependencies": [],
+      "maximumTextureSize": 512,
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "motionRevision": 2
+}

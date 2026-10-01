@@ -1,0 +1,266 @@
+[
+  {
+    "name": "Attack",
+    "maximumAdjacentDegrees": 45.39830482871059,
+    "worstBone": "hand_r",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Block",
+    "maximumAdjacentDegrees": 1.5396922463723133,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Cast",
+    "maximumAdjacentDegrees": 45.39830482871059,
+    "worstBone": "hand_r",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "CombatIdle",
+    "maximumAdjacentDegrees": 1.0274460373249408,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Dagger_Attack",
+    "maximumAdjacentDegrees": 45.39830482871059,
+    "worstBone": "hand_r",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Dagger_Block",
+    "maximumAdjacentDegrees": 1.5396922463723133,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Dagger_CombatIdle",
+    "maximumAdjacentDegrees": 1.0274460373249408,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Dagger_Idle",
+    "maximumAdjacentDegrees": 0.7815057492802205,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.042783081504237645
+  },
+  {
+    "name": "Dagger_Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04497879539280897
+  },
+  {
+    "name": "Dagger_Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04323046165191232
+  },
+  {
+    "name": "Death",
+    "maximumAdjacentDegrees": 3.194513079354335,
+    "worstBone": "Root",
+    "loopEndpointDegrees": 90.00001931869294
+  },
+  {
+    "name": "Hit",
+    "maximumAdjacentDegrees": 5.906826601646484,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.04954797193572937
+  },
+  {
+    "name": "Idle",
+    "maximumAdjacentDegrees": 0.7815057492802205,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.042783081504237645
+  },
+  {
+    "name": "Jump",
+    "maximumAdjacentDegrees": 21.82410622872076,
+    "worstBone": "lowerarm_r",
+    "loopEndpointDegrees": 0.04928956087625277
+  },
+  {
+    "name": "JumpLand",
+    "maximumAdjacentDegrees": 11.787047876542237,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04928956087625277
+  },
+  {
+    "name": "JumpLoop",
+    "maximumAdjacentDegrees": 2.5270799057660622,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.044141490948979914
+  },
+  {
+    "name": "JumpStart",
+    "maximumAdjacentDegrees": 11.787047876542237,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04928956087625277
+  },
+  {
+    "name": "Mace_Attack",
+    "maximumAdjacentDegrees": 37.163310897426896,
+    "worstBone": "hand_r",
+    "loopEndpointDegrees": 0.04266800653079659
+  },
+  {
+    "name": "Mace_Block",
+    "maximumAdjacentDegrees": 0.045104736905764574,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.045104736905764574
+  },
+  {
+    "name": "Mace_CombatIdle",
+    "maximumAdjacentDegrees": 0.038532886149521856,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.038532886149521856
+  },
+  {
+    "name": "Mace_Idle",
+    "maximumAdjacentDegrees": 0.08357075649593186,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490328913538969
+  },
+  {
+    "name": "Mace_Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04499724707936214
+  },
+  {
+    "name": "Mace_Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490510109446652
+  },
+  {
+    "name": "Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04497879539280897
+  },
+  {
+    "name": "Staff_Attack",
+    "maximumAdjacentDegrees": 10.446480015161699,
+    "worstBone": "upperarm_r",
+    "loopEndpointDegrees": 0.039547794938768394
+  },
+  {
+    "name": "Staff_Block",
+    "maximumAdjacentDegrees": 0.04511378473135026,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.04511378473135026
+  },
+  {
+    "name": "Staff_CombatIdle",
+    "maximumAdjacentDegrees": 0.038532886149521856,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.038532886149521856
+  },
+  {
+    "name": "Staff_Idle",
+    "maximumAdjacentDegrees": 0.08357075649593186,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490328913538969
+  },
+  {
+    "name": "Staff_Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04499724707936214
+  },
+  {
+    "name": "Staff_Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490510109446652
+  },
+  {
+    "name": "StealthIdle",
+    "maximumAdjacentDegrees": 1.0274460373249408,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.03568065312598842
+  },
+  {
+    "name": "Sword_Attack",
+    "maximumAdjacentDegrees": 41.93961419809016,
+    "worstBone": "lowerarm_r",
+    "loopEndpointDegrees": 0.04266800653079659
+  },
+  {
+    "name": "Sword_Block",
+    "maximumAdjacentDegrees": 0.045104736905764574,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.045104736905764574
+  },
+  {
+    "name": "Sword_CombatIdle",
+    "maximumAdjacentDegrees": 0.038532886149521856,
+    "worstBone": "index_03_l",
+    "loopEndpointDegrees": 0.038532886149521856
+  },
+  {
+    "name": "Sword_Idle",
+    "maximumAdjacentDegrees": 0.08357075649593186,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490328913538969
+  },
+  {
+    "name": "Sword_Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04499724707936214
+  },
+  {
+    "name": "Sword_Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04490510109446652
+  },
+  {
+    "name": "Unarmed_Attack",
+    "maximumAdjacentDegrees": 8.153406052495876,
+    "worstBone": "upperarm_l",
+    "loopEndpointDegrees": 0.034023474972062095
+  },
+  {
+    "name": "Unarmed_Block",
+    "maximumAdjacentDegrees": 0.034023474972062095,
+    "worstBone": "head",
+    "loopEndpointDegrees": 0.034023474972062095
+  },
+  {
+    "name": "Unarmed_CombatIdle",
+    "maximumAdjacentDegrees": 0.034023474972062095,
+    "worstBone": "head",
+    "loopEndpointDegrees": 0.034023474972062095
+  },
+  {
+    "name": "Unarmed_Idle",
+    "maximumAdjacentDegrees": 0.08357075649593186,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.03907438188457006
+  },
+  {
+    "name": "Unarmed_Run",
+    "maximumAdjacentDegrees": 39.6924118335832,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.03554684374730432
+  },
+  {
+    "name": "Unarmed_Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04323046165191232
+  },
+  {
+    "name": "Walk",
+    "maximumAdjacentDegrees": 18.982037421922573,
+    "worstBone": "calf_l",
+    "loopEndpointDegrees": 0.04323046165191232
+  }
+]

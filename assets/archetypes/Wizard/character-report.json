@@ -1,0 +1,119 @@
+{
+  "class": "Wizard",
+  "height_m": 1.84,
+  "bones": 53,
+  "actions": [
+    "Attack",
+    "Block",
+    "Cast",
+    "Channel",
+    "CombatIdle",
+    "Death",
+    "Hit",
+    "Idle",
+    "Jump",
+    "JumpLand",
+    "JumpLoop",
+    "JumpStart",
+    "Run",
+    "Walk"
+  ],
+  "sockets": [
+    "socket_mainHand",
+    "socket_offHand",
+    "socket_head",
+    "socket_chest",
+    "socket_belt",
+    "socket_shoulderL",
+    "socket_shoulderR",
+    "socket_footL",
+    "socket_footR",
+    "socket_back"
+  ],
+  "meshes": [
+    {
+      "name": "Wizard_Body",
+      "vertices": 51801,
+      "triangles": 103400,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.842877388000488e-08
+    },
+    {
+      "name": "Wizard_Undershorts",
+      "vertices": 3830,
+      "triangles": 7664,
+      "maximum_influences": 4,
+      "maximum_weight_error": 5.029141902923584e-08
+    },
+    {
+      "name": "Wizard_Hair",
+      "vertices": 1755,
+      "triangles": 3344,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Brows",
+      "vertices": 124,
+      "triangles": 192,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Scalp",
+      "vertices": 1197,
+      "triangles": 2248,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Undershorts_Seams",
+      "vertices": 2016,
+      "triangles": 2016,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.842877388000488e-08
+    },
+    {
+      "name": "Wizard_Eye_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Iris_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Pupil_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Eye_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Iris_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Wizard_Pupil_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    }
+  ]
+}

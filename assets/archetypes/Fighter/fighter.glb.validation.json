@@ -1,286 +1,203 @@
 {
-  "file": "../../../assets/archetypes/Fighter/fighter.glb",
-  "bytes": 40335020,
-  "validator": {
-    "uri": "../../../assets/archetypes/Fighter/fighter.glb",
-    "mimeType": "model/gltf-binary",
-    "validatorVersion": "2.0.0-dev.3.10",
-    "validatedAt": "2026-09-30T17:38:00.385Z",
-    "issues": {
-      "numErrors": 0,
-      "numWarnings": 0,
-      "numInfos": 3,
-      "numHints": 0,
-      "messages": [
-        {
-          "code": "UNUSED_MESH_TANGENT",
-          "message": "Tangents are not used because the material has no normal texture.",
-          "severity": 2,
-          "pointer": "/meshes/1/primitives/0/attributes/TANGENT"
-        },
-        {
-          "code": "UNUSED_MESH_TANGENT",
-          "message": "Tangents are not used because the material has no normal texture.",
-          "severity": 2,
-          "pointer": "/meshes/6/primitives/0/attributes/TANGENT"
-        },
-        {
-          "code": "UNUSED_MESH_TANGENT",
-          "message": "Tangents are not used because the material has no normal texture.",
-          "severity": 2,
-          "pointer": "/meshes/7/primitives/0/attributes/TANGENT"
-        }
-      ],
-      "truncated": false
-    },
-    "info": {
-      "version": "2.0",
-      "generator": "Khronos glTF Blender I/O v5.2.39",
-      "extensionsUsed": [
-        "KHR_materials_specular"
-      ],
-      "resources": [
-        {
-          "pointer": "/buffers/0",
-          "mimeType": "application/gltf-buffer",
-          "storage": "glb",
-          "byteLength": 39972348
-        },
-        {
-          "pointer": "/images/0",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 4096,
-            "height": 4096,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/1",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/2",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/3",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 512,
-            "height": 512,
-            "format": "rgba",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/4",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/5",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 1024,
-            "height": 1024,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/6",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 1024,
-            "height": 1024,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/7",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 512,
-            "height": 512,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/8",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/9",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        },
-        {
-          "pointer": "/images/10",
-          "mimeType": "image/png",
-          "storage": "buffer-view",
-          "image": {
-            "width": 2048,
-            "height": 2048,
-            "format": "rgb",
-            "primaries": "srgb",
-            "transfer": "srgb",
-            "bits": 8
-          }
-        }
-      ],
-      "animationCount": 12,
-      "materialCount": 8,
-      "hasMorphTargets": true,
-      "hasSkins": true,
-      "hasTextures": true,
-      "hasDefaultScene": true,
-      "drawCallCount": 11,
-      "totalVertexCount": 88441,
-      "totalTriangleCount": 120480,
-      "maxUVs": 1,
-      "maxInfluences": 4,
-      "maxAttributes": 6
-    }
+  "uri": "fighter.glb",
+  "mimeType": "model/gltf-binary",
+  "validatorVersion": "2.0.0-dev.3.10",
+  "validatedAt": "2026-10-01T16:04:29.191Z",
+  "issues": {
+    "numErrors": 0,
+    "numWarnings": 0,
+    "numInfos": 3,
+    "numHints": 0,
+    "messages": [
+      {
+        "code": "UNUSED_MESH_TANGENT",
+        "message": "Tangents are not used because the material has no normal texture.",
+        "severity": 2,
+        "pointer": "/meshes/1/primitives/0/attributes/TANGENT"
+      },
+      {
+        "code": "UNUSED_MESH_TANGENT",
+        "message": "Tangents are not used because the material has no normal texture.",
+        "severity": 2,
+        "pointer": "/meshes/6/primitives/0/attributes/TANGENT"
+      },
+      {
+        "code": "UNUSED_MESH_TANGENT",
+        "message": "Tangents are not used because the material has no normal texture.",
+        "severity": 2,
+        "pointer": "/meshes/7/primitives/0/attributes/TANGENT"
+      }
+    ],
+    "truncated": false
   },
-  "meshes": 11,
-  "skins": [
-    53
-  ],
-  "animations": [
-    {
-      "name": "Attack",
-      "channels": 159
-    },
-    {
-      "name": "Block",
-      "channels": 159
-    },
-    {
-      "name": "CombatIdle",
-      "channels": 159
-    },
-    {
-      "name": "Death",
-      "channels": 159
-    },
-    {
-      "name": "Hit",
-      "channels": 159
-    },
-    {
-      "name": "Idle",
-      "channels": 159
-    },
-    {
-      "name": "Jump",
-      "channels": 159
-    },
-    {
-      "name": "JumpLand",
-      "channels": 159
-    },
-    {
-      "name": "JumpLoop",
-      "channels": 159
-    },
-    {
-      "name": "JumpStart",
-      "channels": 159
-    },
-    {
-      "name": "Run",
-      "channels": 159
-    },
-    {
-      "name": "Walk",
-      "channels": 159
-    }
-  ],
-  "morphs": [
-    {
-      "name": "Fighter_Body.002",
-      "targets": [
-        "Blink_L",
-        "Blink_R"
-      ],
-      "weights": [
-        0,
-        0
-      ]
-    }
-  ],
-  "sockets": [
-    "socket_offHand",
-    "socket_shoulderL",
-    "socket_mainHand",
-    "socket_shoulderR",
-    "socket_head",
-    "socket_back",
-    "socket_chest",
-    "socket_footL",
-    "socket_footR",
-    "socket_belt"
-  ]
+  "info": {
+    "version": "2.0",
+    "generator": "glTF-Transform v4.5.1",
+    "extensionsUsed": [
+      "KHR_materials_specular"
+    ],
+    "resources": [
+      {
+        "pointer": "/buffers/0",
+        "mimeType": "application/gltf-buffer",
+        "storage": "glb",
+        "byteLength": 39945112
+      },
+      {
+        "pointer": "/images/0",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 4096,
+          "height": 4096,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/1",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/2",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/3",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 512,
+          "height": 512,
+          "format": "rgba",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/4",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/5",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 1024,
+          "height": 1024,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/6",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 1024,
+          "height": 1024,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/7",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 512,
+          "height": 512,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/8",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/9",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      },
+      {
+        "pointer": "/images/10",
+        "mimeType": "image/png",
+        "storage": "buffer-view",
+        "image": {
+          "width": 2048,
+          "height": 2048,
+          "format": "rgb",
+          "primaries": "srgb",
+          "transfer": "srgb",
+          "bits": 8
+        }
+      }
+    ],
+    "animationCount": 12,
+    "materialCount": 8,
+    "hasMorphTargets": true,
+    "hasSkins": true,
+    "hasTextures": true,
+    "hasDefaultScene": true,
+    "drawCallCount": 11,
+    "totalVertexCount": 88441,
+    "totalTriangleCount": 120480,
+    "maxUVs": 1,
+    "maxInfluences": 4,
+    "maxAttributes": 6
+  }
 }

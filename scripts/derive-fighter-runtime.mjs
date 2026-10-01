@@ -16,7 +16,7 @@ const directory = path.join(root, 'assets/archetypes/Fighter');
 const source = path.join(directory, 'fighter.glb');
 const tool = '@gltf-transform/cli@4.5.1';
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
-const expectedSourceHash = '453bfdc9c775db7283fd2cf0ecbdde2c443e62181324b1fd25403eb4e7505703';
+const expectedSourceHash = 'dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a';
 
 function inspect(file) {
     const bytes = readFileSync(file);

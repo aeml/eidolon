@@ -1,0 +1,241 @@
+{
+  "class": "Rogue",
+  "meshes": {
+    "Rogue_Body": {
+      "vertices": 50305,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Undershorts": {
+      "vertices": 3542,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Undertop": {
+      "vertices": 5428,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Brows": {
+      "vertices": 124,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Scalp": {
+      "vertices": 709,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Undershorts_Seams": {
+      "vertices": 2016,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Undertop_Seams": {
+      "vertices": 2928,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Eye_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Iris_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Pupil_l": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Eye_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Iris_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Pupil_r": {
+      "vertices": 266,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    },
+    "Rogue_Hair": {
+      "vertices": 3718,
+      "wire_edges": 0,
+      "zero_area_faces": 0,
+      "unweighted": 0
+    }
+  },
+  "clips": {
+    "Attack": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627533727325499,
+      "maximum_z": 1.6301051378250122,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Block": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627533727325499,
+      "maximum_z": 1.6301051378250122,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Cast": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627533727325499,
+      "maximum_z": 1.6301051378250122,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "CombatIdle": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627533727325499,
+      "maximum_z": 1.6301051378250122,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Death": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0010089940624311566,
+      "maximum_z": 1.6820855140686035,
+      "endpoint_delta_m": 2.3044559073980553,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Hit": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009626789251342416,
+      "maximum_z": 1.6565269231796265,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Idle": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627076797187328,
+      "maximum_z": 1.6802523136138916,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Jump": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0010089940624311566,
+      "maximum_z": 2.0500006675720215,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpLand": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.00014541757991537452,
+      "maximum_z": 1.678632140159607,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpLoop": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.13536271452903748,
+      "maximum_z": 1.7520216703414917,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "JumpStart": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.00028800388099625707,
+      "maximum_z": 1.678632140159607,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Run": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 2.8936192393302917e-06,
+      "maximum_z": 1.6543678045272827,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "StealthIdle": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 0.0009627533727325499,
+      "maximum_z": 1.6301051378250122,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    },
+    "Walk": {
+      "samples": 9,
+      "finite": true,
+      "minimum_z": 4.251650534570217e-05,
+      "maximum_z": 1.6709946393966675,
+      "endpoint_delta_m": 0.0,
+      "hidden_boundary_penetrations_over_1mm": 0,
+      "maximum_hidden_boundary_penetration_m": 0,
+      "penetration_details": []
+    }
+  },
+  "blink": {
+    "Blink_L": {
+      "affected_vertices": 758,
+      "max_delta_m": 0.0102004258485575
+    },
+    "Blink_R": {
+      "affected_vertices": 759,
+      "max_delta_m": 0.010200426080595305
+    }
+  }
+}

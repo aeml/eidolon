@@ -3,8 +3,8 @@ import { MeshCatalog } from '../utils/MeshCatalog.js';
 const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 
 const ASSET_VERSION_OVERRIDES = {
-    './assets/archetypes/Fighter/fighter-runtime-high.glb': '4d36c969a91ce91c',
-    './assets/archetypes/Fighter/fighter-runtime-low.glb': 'b0acd7983eb1c4eb'
+    './assets/archetypes/Fighter/fighter-runtime-high.glb': 'fda495c5e7fe60dc2',
+    './assets/archetypes/Fighter/fighter-runtime-low.glb': '357284df9e9f22f9'
 };
 
 const ASSET_PACKS = {

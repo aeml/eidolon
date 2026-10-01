@@ -1,0 +1,133 @@
+{
+  "class": "Cleric",
+  "height_m": 1.73,
+  "bones": 53,
+  "actions": [
+    "Attack",
+    "Block",
+    "Cast",
+    "CombatIdle",
+    "Death",
+    "Heal",
+    "Hit",
+    "Idle",
+    "Jump",
+    "JumpLand",
+    "JumpLoop",
+    "JumpStart",
+    "Run",
+    "Walk"
+  ],
+  "sockets": [
+    "socket_mainHand",
+    "socket_offHand",
+    "socket_head",
+    "socket_chest",
+    "socket_belt",
+    "socket_shoulderL",
+    "socket_shoulderR",
+    "socket_footL",
+    "socket_footR",
+    "socket_back"
+  ],
+  "meshes": [
+    {
+      "name": "Cleric_Body",
+      "vertices": 50319,
+      "triangles": 100144,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.842877388000488e-08
+    },
+    {
+      "name": "Cleric_Undershorts",
+      "vertices": 3502,
+      "triangles": 7008,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.842877388000488e-08
+    },
+    {
+      "name": "Cleric_Undertop",
+      "vertices": 5428,
+      "triangles": 10864,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Cleric_Hair",
+      "vertices": 4493,
+      "triangles": 5518,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Cleric_Brows",
+      "vertices": 124,
+      "triangles": 192,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Scalp",
+      "vertices": 1115,
+      "triangles": 2088,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Undershorts_Seams",
+      "vertices": 2112,
+      "triangles": 2112,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Cleric_Undertop_Seams",
+      "vertices": 3120,
+      "triangles": 3120,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.4869921111967415e-08
+    },
+    {
+      "name": "Cleric_Eye_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Iris_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Pupil_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Eye_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Iris_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Cleric_Pupil_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    }
+  ]
+}

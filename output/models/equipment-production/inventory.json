@@ -1,0 +1,599 @@
+{
+  "version": 1,
+  "rarityModels": {
+    "Common": "standard",
+    "Uncommon": "standard",
+    "Rare": "standard",
+    "Legendary": "legendary"
+  },
+  "characters": [
+    "Fighter",
+    "Wizard",
+    "Cleric",
+    "Rogue"
+  ],
+  "items": [
+    {
+      "name": "Iron Sword",
+      "id": "iron-sword",
+      "slot": "mainHand",
+      "type": "WEAPON",
+      "family": "blade",
+      "variant": "longsword",
+      "primary": 8884376,
+      "secondary": 4860702,
+      "material": "metal"
+    },
+    {
+      "name": "Steel Dagger",
+      "id": "steel-dagger",
+      "slot": "mainHand",
+      "type": "WEAPON",
+      "family": "blade",
+      "variant": "dagger",
+      "primary": 11450557,
+      "secondary": 3744028,
+      "material": "metal"
+    },
+    {
+      "name": "Wooden Staff",
+      "id": "wooden-staff",
+      "slot": "mainHand",
+      "type": "WEAPON",
+      "family": "focusWeapon",
+      "variant": "staff",
+      "primary": 5584417,
+      "secondary": 7901609,
+      "material": "wood"
+    },
+    {
+      "name": "Cleric Mace",
+      "id": "cleric-mace",
+      "slot": "mainHand",
+      "type": "WEAPON",
+      "family": "focusWeapon",
+      "variant": "mace",
+      "primary": 7896448,
+      "secondary": 11830845,
+      "material": "metal"
+    },
+    {
+      "name": "Wooden Shield",
+      "id": "wooden-shield",
+      "slot": "offHand",
+      "type": "ARMOR",
+      "family": "offhand",
+      "variant": "shield",
+      "primary": 5913124,
+      "secondary": 8749176,
+      "material": "wood"
+    },
+    {
+      "name": "Spell Tome",
+      "id": "spell-tome",
+      "slot": "offHand",
+      "type": "ARMOR",
+      "family": "offhand",
+      "variant": "tome",
+      "primary": 4465205,
+      "secondary": 12884818,
+      "material": "cloth"
+    },
+    {
+      "name": "Leather Cap",
+      "id": "leather-cap",
+      "slot": "head",
+      "type": "ARMOR",
+      "family": "headwear",
+      "variant": "cap",
+      "primary": 4993059,
+      "secondary": 9135428,
+      "material": "leather"
+    },
+    {
+      "name": "Iron Helm",
+      "id": "iron-helm",
+      "slot": "head",
+      "type": "ARMOR",
+      "family": "headwear",
+      "variant": "helm",
+      "primary": 5002333,
+      "secondary": 10265248,
+      "material": "metal"
+    },
+    {
+      "name": "Silk Hood",
+      "id": "silk-hood",
+      "slot": "head",
+      "type": "ARMOR",
+      "family": "headwear",
+      "variant": "hood",
+      "primary": 3745348,
+      "secondary": 7753830,
+      "material": "cloth"
+    },
+    {
+      "name": "Leather Tunic",
+      "id": "leather-tunic",
+      "slot": "chest",
+      "type": "ARMOR",
+      "family": "bodyArmor",
+      "variant": "tunic",
+      "primary": 4860960,
+      "secondary": 7754042,
+      "material": "leather"
+    },
+    {
+      "name": "Plate Mail",
+      "id": "plate-mail",
+      "slot": "chest",
+      "type": "ARMOR",
+      "family": "bodyArmor",
+      "variant": "plate",
+      "primary": 4804954,
+      "secondary": 9870488,
+      "material": "metal"
+    },
+    {
+      "name": "Robes",
+      "id": "robes",
+      "slot": "chest",
+      "type": "ARMOR",
+      "family": "bodyArmor",
+      "variant": "robes",
+      "primary": 3155007,
+      "secondary": 7161958,
+      "material": "cloth"
+    },
+    {
+      "name": "Leather Pants",
+      "id": "leather-pants",
+      "slot": "legs",
+      "type": "ARMOR",
+      "family": "legArmor",
+      "variant": "leather",
+      "primary": 4467233,
+      "secondary": 7754042,
+      "material": "leather"
+    },
+    {
+      "name": "Plate Greaves",
+      "id": "plate-greaves",
+      "slot": "legs",
+      "type": "ARMOR",
+      "family": "legArmor",
+      "variant": "plate",
+      "primary": 5068126,
+      "secondary": 10199454,
+      "material": "metal"
+    },
+    {
+      "name": "Silk Skirt",
+      "id": "silk-skirt",
+      "slot": "legs",
+      "type": "ARMOR",
+      "family": "legArmor",
+      "variant": "skirt",
+      "primary": 3547969,
+      "secondary": 7753835,
+      "material": "cloth"
+    },
+    {
+      "name": "Leather Boots",
+      "id": "leather-boots",
+      "slot": "feet",
+      "type": "ARMOR",
+      "family": "footwear",
+      "variant": "leather",
+      "primary": 4204318,
+      "secondary": 7754042,
+      "material": "leather"
+    },
+    {
+      "name": "Iron Boots",
+      "id": "iron-boots",
+      "slot": "feet",
+      "type": "ARMOR",
+      "family": "footwear",
+      "variant": "plate",
+      "primary": 4936539,
+      "secondary": 9607575,
+      "material": "metal"
+    },
+    {
+      "name": "Sandals",
+      "id": "sandals",
+      "slot": "feet",
+      "type": "ARMOR",
+      "family": "footwear",
+      "variant": "sandals",
+      "primary": 7491898,
+      "secondary": 12029534,
+      "material": "leather"
+    },
+    {
+      "name": "Leather Gloves",
+      "id": "leather-gloves",
+      "slot": "gloves",
+      "type": "GLOVES",
+      "family": "handwear",
+      "variant": "leather",
+      "primary": 4466975,
+      "secondary": 7951162,
+      "material": "leather"
+    },
+    {
+      "name": "Iron Gauntlets",
+      "id": "iron-gauntlets",
+      "slot": "gloves",
+      "type": "GLOVES",
+      "family": "handwear",
+      "variant": "plate",
+      "primary": 5068126,
+      "secondary": 10265247,
+      "material": "metal"
+    },
+    {
+      "name": "Silk Gloves",
+      "id": "silk-gloves",
+      "slot": "gloves",
+      "type": "GLOVES",
+      "family": "handwear",
+      "variant": "silk",
+      "primary": 3745091,
+      "secondary": 8082286,
+      "material": "cloth"
+    },
+    {
+      "name": "Reinforced Spaulders",
+      "id": "reinforced-spaulders",
+      "slot": "shoulders",
+      "type": "ARMOR",
+      "family": "shoulderArmor",
+      "variant": "reinforced",
+      "primary": 5521976,
+      "secondary": 8619907,
+      "material": "leather"
+    },
+    {
+      "name": "Steel Pauldrons",
+      "id": "steel-pauldrons",
+      "slot": "shoulders",
+      "type": "ARMOR",
+      "family": "shoulderArmor",
+      "variant": "plate",
+      "primary": 5265505,
+      "secondary": 10660005,
+      "material": "metal"
+    },
+    {
+      "name": "Velvet Mantle",
+      "id": "velvet-mantle",
+      "slot": "shoulders",
+      "type": "ARMOR",
+      "family": "shoulderArmor",
+      "variant": "mantle",
+      "primary": 4923705,
+      "secondary": 8999278,
+      "material": "cloth"
+    },
+    {
+      "name": "Studded Belt",
+      "id": "studded-belt",
+      "slot": "belt",
+      "type": "ARMOR",
+      "family": "waist",
+      "variant": "studded",
+      "primary": 4400925,
+      "secondary": 11043915,
+      "material": "leather"
+    },
+    {
+      "name": "Plated Girdle",
+      "id": "plated-girdle",
+      "slot": "belt",
+      "type": "ARMOR",
+      "family": "waist",
+      "variant": "plate",
+      "primary": 5133661,
+      "secondary": 10527902,
+      "material": "metal"
+    },
+    {
+      "name": "Silk Sash",
+      "id": "silk-sash",
+      "slot": "belt",
+      "type": "ARMOR",
+      "family": "waist",
+      "variant": "sash",
+      "primary": 5382974,
+      "secondary": 11562371,
+      "material": "cloth"
+    },
+    {
+      "name": "Gold Ring",
+      "id": "gold-ring",
+      "slot": "ring",
+      "type": "ACCESSORY",
+      "family": "ring",
+      "variant": "gold",
+      "primary": 12161858,
+      "secondary": 15781491,
+      "material": "metal"
+    },
+    {
+      "name": "Silver Ring",
+      "id": "silver-ring",
+      "slot": "ring",
+      "type": "ACCESSORY",
+      "family": "ring",
+      "variant": "silver",
+      "primary": 10857904,
+      "secondary": 14738652,
+      "material": "metal"
+    },
+    {
+      "name": "Ruby Ring",
+      "id": "ruby-ring",
+      "slot": "ring",
+      "type": "ACCESSORY",
+      "family": "ring",
+      "variant": "ruby",
+      "primary": 12096840,
+      "secondary": 12987961,
+      "material": "metal"
+    },
+    {
+      "name": "Pendant",
+      "id": "pendant",
+      "slot": "neck",
+      "type": "NECK",
+      "family": "neckwear",
+      "variant": "pendant",
+      "primary": 10123329,
+      "secondary": 13809771,
+      "material": "metal"
+    },
+    {
+      "name": "Choker",
+      "id": "choker",
+      "slot": "neck",
+      "type": "NECK",
+      "family": "neckwear",
+      "variant": "choker",
+      "primary": 3351597,
+      "secondary": 10179952,
+      "material": "cloth"
+    },
+    {
+      "name": "Necklace",
+      "id": "necklace",
+      "slot": "neck",
+      "type": "NECK",
+      "family": "neckwear",
+      "variant": "necklace",
+      "primary": 10594474,
+      "secondary": 6728143,
+      "material": "metal"
+    },
+    {
+      "name": "Amulet of Power",
+      "id": "amulet-of-power",
+      "slot": "trinket",
+      "type": "ACCESSORY",
+      "family": "trinket",
+      "variant": "amulet",
+      "primary": 9136184,
+      "secondary": 12071736,
+      "material": "metal"
+    },
+    {
+      "name": "Talisman of Speed",
+      "id": "talisman-of-speed",
+      "slot": "trinket",
+      "type": "ACCESSORY",
+      "family": "trinket",
+      "variant": "talisman",
+      "primary": 6647915,
+      "secondary": 5422994,
+      "material": "metal"
+    },
+    {
+      "name": "Orb of Mana",
+      "id": "orb-of-mana",
+      "slot": "trinket",
+      "type": "ACCESSORY",
+      "family": "trinket",
+      "variant": "orb",
+      "primary": 3885942,
+      "secondary": 6721506,
+      "material": "metal"
+    }
+  ],
+  "sets": {
+    "warlord_fury": {
+      "id": "warlord_fury",
+      "name": "Warlord's Fury",
+      "class": "Fighter",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "armor": 15
+      },
+      "bonus4": {
+        "chargeReset": 1
+      },
+      "bonus6": {
+        "ironFortressDamage": 100
+      },
+      "description": "The armor of ancient warlords who knew no defeat."
+    },
+    "bulwark_ages": {
+      "id": "bulwark_ages",
+      "name": "Bulwark of Ages",
+      "class": "Fighter",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "maxHealth": 20
+      },
+      "bonus4": {
+        "damageReflect": 5
+      },
+      "bonus6": {
+        "bossTaunt": 1
+      },
+      "description": "Forged in an age when titans walked the earth."
+    },
+    "shadow_embrace": {
+      "id": "shadow_embrace",
+      "name": "Shadow's Embrace",
+      "class": "Rogue",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "critChance": 15
+      },
+      "bonus4": {
+        "backstabAnyAngle": 1
+      },
+      "bonus6": {
+        "phantomVolleyDouble": 1
+      },
+      "description": "Worn by assassins who became one with darkness."
+    },
+    "venom_lord": {
+      "id": "venom_lord",
+      "name": "Venom Lord",
+      "class": "Rogue",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "poisonDamage": 20
+      },
+      "bonus4": {
+        "poisonSpread": 1
+      },
+      "bonus6": {
+        "deathSpiralConsume": 1
+      },
+      "description": "The regalia of those who mastered venom."
+    },
+    "inferno_heart": {
+      "id": "inferno_heart",
+      "name": "Inferno's Heart",
+      "class": "Wizard",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "fireDamage": 15
+      },
+      "bonus4": {
+        "fireballPierce": 1
+      },
+      "bonus6": {
+        "meteorReset": 1
+      },
+      "description": "Contains the fury of a dying star."
+    },
+    "temporal_weave": {
+      "id": "temporal_weave",
+      "name": "Temporal Weave",
+      "class": "Wizard",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "cdr": 15
+      },
+      "bonus4": {
+        "teleportCharges": 2
+      },
+      "bonus6": {
+        "timeWarpZone": 1
+      },
+      "description": "Threads of time woven into fabric."
+    },
+    "divine_light": {
+      "id": "divine_light",
+      "name": "Divine Light",
+      "class": "Cleric",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "healingDone": 15
+      },
+      "bonus4": {
+        "spiritGuardiansHeal": 1
+      },
+      "bonus6": {
+        "divineInterventionCD": 60
+      },
+      "description": "Blessed by celestial beings of pure light."
+    },
+    "crusader_zeal": {
+      "id": "crusader_zeal",
+      "name": "Crusader's Zeal",
+      "class": "Cleric",
+      "slots": [
+        "head",
+        "chest",
+        "legs",
+        "feet",
+        "gloves",
+        "shoulders"
+      ],
+      "bonus2": {
+        "holyDamage": 15
+      },
+      "bonus4": {
+        "radiantStrikeLifesteal": 100
+      },
+      "bonus6": {
+        "permanentSeraph": 1
+      },
+      "description": "The armor of holy warriors who smite evil."
+    }
+  }
+}

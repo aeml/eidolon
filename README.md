@@ -152,6 +152,108 @@ docker compose up -d
 
 For Linux host deployment, see `server/deploy/README_LINUX.md`.
 
+## Character and equipment assets: integration guide
+
+The authored collection includes the Fighter, male Wizard, female Cleric and
+female Rogue bases, **252 fitted equipment/weapon models**, and four weapon-motion
+banks. Common, Uncommon and Rare share standard models; Legendary has separate
+geometry and emissive details. All 24 chest fits cover the chest, upper back,
+collar area and shoulders beneath separate pauldrons.
+
+**Current integration:** Fighter already uses its High/Low character GLBs and
+the revised default animations. Wizard, Cleric, Rogue, the new equipment GLBs
+and weapon-profile selection are delivered assets awaiting runtime integration.
+The existing game equipment renderer is still active.
+
+### Inspect the delivery
+
+Run `npm ci` and `npm run serve`, then open
+<http://127.0.0.1:4173/output/models/equipment-production/viewer.html>.
+The viewer loads the actual exported models and demonstrates skin binding,
+coverage masks, weapon grips and animation selection. Rotate the character and
+compare Walk, Run, Attack and Block with different equipment.
+
+- [Character exports](assets/archetypes/): each class has a full-detail source
+  GLB and `*-runtime-high.glb` / `*-runtime-low.glb` gameplay candidates.
+- [Equipment manifest](assets/equipment/authored/manifest.json): item IDs,
+  class fits, rarity mapping, file hashes, budgets and layering rules.
+- [Motion profiles](assets/equipment/authored/motion-profiles.json) and
+  [grip transforms](assets/equipment/authored/grip-transforms.json).
+- [Detailed equipment contract](docs/art/EQUIPMENT_ASSETS.md) and
+  [character delivery notes](docs/art/UNEQUIPPED_CLASS_BASES.md).
+
+Editable `.blend` sources are tracked with **Git LFS**. Install Git LFS and run
+`git lfs install` followed by `git lfs pull` to open them. Character sources are
+`output/models/{fighter,wizard,cleric,rogue}-production/{class}.blend` (lowercase
+class names). Equipment sources, the lineup scene and all four
+`revision-v2/{class}-animation-review.blend` motion libraries are under
+`output/models/equipment-production/`. Textures are packed. Runtime GLBs are
+ordinary Git files and do not require LFS at runtime.
+
+### Connect the assets to gameplay
+
+1. **Load the class and chosen quality on demand.** Extend the authored path in
+   [`MeshFactory`](src/utils/MeshFactory.js), using
+   [`AuthoredFighter`](src/art/AuthoredFighter.js) as the existing adapter example.
+   Preserve the imported scene hierarchy and use `SkeletonUtils.clone` for each
+   actor. Each class has its own proportions and inverse bind matrices; share
+   geometry/textures, never live bones or mixers. Scale the complete visual root
+   to the game's existing actor height and keep gameplay collision dimensions.
+   Retain the procedural fallback and avoid preloading full-detail source GLBs.
+2. **Resolve equipment from the catalog.** Look up the base item in `manifest.items`,
+   map rarity through `manifest.rarityModels`, then select
+   `item.models[tier][className]` for wearables or `["universal"]` for weapons and
+   offhands. IDs represent base items, not an inventory instance's generated ID.
+   Extend [`EquipmentVisuals`](src/art/EquipmentVisuals.js) to use this adapter;
+   the existing Fighter adapter currently builds procedural gear.
+3. **Bind armor to the actor's skeleton.** Match each imported skin joint by bone
+   name to that actor's bones, retain the item's supplied inverse bind matrices
+   and bind matrix, and add the skinned mesh beside the character meshes under
+   their common scene root. Discard the item's duplicate rig. Do not socket-parent
+   skinned armor or reuse the Fighter's inverse bind matrices for another class.
+   [`viewer.js`](output/models/equipment-production/viewer.js) implements this in
+   `loadEquipment`.
+4. **Apply coverage and layering.** Follow `manifest.coverage` and `layeringRules`,
+   using the viewer's `updateCoverage` as the reference. Headwear hides hair/scalp;
+   armor hides covered skin and the appropriate underclothes; robes suppress the
+   nested Silk Skirt. Compute masks separately for each body LOD. Mirror second
+   ring/trinket slots using the documented vertex, winding and joint remapping.
+5. **Attach weapons at the calibrated grip.** Parent the rigid GLB scene to
+   `socket_mainHand` or `socket_offHand`, then decompose that class/slot's
+   `grip-transforms.json` column-major `localMatrix` into local position, rotation
+   and scale. The matrix already includes fit scale. Preserve it while the hand
+   animation carries the weapon; do not add a second procedural weapon offset.
+6. **Select the weapon's motion bank.** Load `motions/{Class}.glb` once per class
+   and play its clips on the existing actor hierarchy. Resolve
+   `${profile}_${state}` for Idle, CombatIdle, Walk, Run, Attack and Block; fall
+   back to the supplied default class clips for other states. Use Sword for Iron
+   Sword, Dagger for Steel Dagger, Staff for Wooden Staff, Mace for Cleric Mace,
+   and Unarmed for an empty main hand. The viewer's `resolvedClip` also demonstrates
+   the supported left arm for dagger plus offhand; `setMotion` uses 180 ms fades.
+   Preserve attack contact at **14/30 seconds**, mapped to the existing gameplay
+   impact timing in [`Actor`](src/entities/Actor.js). Register class ability clips
+   and moving-cast leg masks before enabling the other authored class adapters.
+7. **Version, render and validate.** Add content-hash cache versions in
+   [`assetManifest.js`](src/assets/assetManifest.js), keep model loading lazy and
+   pool-safe, and support the supplied WebP textures and emissive-strength material
+   extension. Legendary halos require bloom. Exercise preview and gameplay,
+   equipment swaps during motion, mixed outfits, High/Low quality, independent
+   actors, moving casts and disposal. Adjust the explicit migration guard allowlist
+   when adding runtime routes; do not remove the guard. Equipment currently has
+   one authored LOD and no simulated cloth, so profile draw calls and memory before
+   expanding it to crowds or phones.
+
+Useful checks from the repository root:
+
+```bash
+node output/models/equipment-production/validate_equipment.mjs
+npm test -- --runInBand --roots tests --runTestsByPath tests/AuthoredFighter.test.js tests/ProceduralArtMigrationGuard.test.js tests/AssetVersioning.test.js
+npx playwright test tests/e2e/authored-fighter-pilot.spec.js
+```
+
+These instructions describe the remaining integration work; publishing the asset
+files alone does not switch the other classes or equipment renderer over.
+
 ## Testing/Building
 
 Client validation from the repo root:
