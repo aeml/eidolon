@@ -121,7 +121,8 @@ export const EQUIPMENT_VISUAL_DESCRIPTORS = Object.freeze({
 const RENDER_VISUAL_DESCRIPTORS = Object.freeze({
     ...EQUIPMENT_VISUAL_DESCRIPTORS,
     ...Object.fromEntries([...COSMETIC_CATALOGUE, ...SEASON_COSMETIC_CATALOGUE].map(look => [look.name, Object.freeze({
-        ...EQUIPMENT_VISUAL_DESCRIPTORS[look.base], primary: look.primary, secondary: look.secondary
+        ...EQUIPMENT_VISUAL_DESCRIPTORS[look.base], primary: look.primary, secondary: look.secondary,
+        variant: look.medal ? 'arena-medallion' : EQUIPMENT_VISUAL_DESCRIPTORS[look.base].variant
     })]))
 });
 
@@ -521,6 +522,18 @@ function buildNeckwear(group, visual, mats) {
             [.28, .01, .25], [.2, -.045, .50]
         ].map(point => new THREE.Vector3(...point)), true, 'centripetal'), 40, .018, 6, true
     )), mats.primary);
+    if (visual.variant === 'arena-medallion') {
+        addMesh(group, 'Gear_MedallionDisc', geometry('gear-arena-medallion-disc', () => new THREE.CylinderGeometry(.13, .13, .035, 20)), mats.primary, {
+            position: [0, -.18, .62], rotation: [Math.PI / 2, 0, 0]
+        });
+        addMesh(group, 'Gear_MedallionRim', geometry('gear-arena-medallion-rim', () => new THREE.TorusGeometry(.115, .012, 5, 20)), mats.secondary, {
+            position: [0, -.18, .642]
+        });
+        addMesh(group, 'Gear_MedallionCrest', geometry('gear-arena-medallion-crest', () => new THREE.OctahedronGeometry(.075, 0)), mats.secondary, {
+            position: [0, -.18, .646], scale: [.65, 1, .18]
+        });
+        return;
+    }
     addMesh(group, 'Gear_NeckFocus', geometry(`gear-neck-${visual.variant}`, () =>
         visual.variant === 'pendant' ? new THREE.OctahedronGeometry(0.13, 0) : new THREE.TorusGeometry(0.12, 0.035, 5, 8)
     ), visual.variant === 'pendant' ? mats.secondary : mats.accent, {

@@ -11,7 +11,7 @@ export class WardrobeUI {
         this.root = document.createElement('details');
         this.root.className = 'equipment-loadouts wardrobe-panel';
         this.root.innerHTML = `<summary>Wardrobe</summary><div class="equipment-loadouts-body">
-            <p>Keep the looks you discover. Learn styles and rarity colours from gear in your bag, stash and equipment. Items are not consumed, and combat stats never change.</p>
+            <p>Keep the looks you discover. Learn styles and rarity colours from gear in your bag, stash and equipment, and claim medallions from settled arena seasons. Current projections are not earned looks. Items are not consumed, and combat stats never change.</p>
             <button type="button" data-action="learn">Learn owned looks</button>
             <label>Equipment slot<select aria-label="Appearance slot"></select></label>
             <label>Collected look<select aria-label="Collected appearance"></select></label>
@@ -38,7 +38,7 @@ export class WardrobeUI {
         });
         ownedEvent(this, this.slot, 'change', () => this.renderLooks());
         ownedEvent(this, this.learn, 'click', () => {
-            this.status.textContent = 'Learning owned looks…';
+            this.status.textContent = 'Learning owned looks and checking settled season rewards…';
             this.send('collect_appearances', {});
         });
         ownedEvent(this, this.apply, 'click', () => {

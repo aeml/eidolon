@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"reflect"
 	"testing"
 	"time"
@@ -11,11 +12,45 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+func TestWardrobeClaimRejectsUnverifiedSeasonHistory(t *testing.T) {
+	c, committer, _ := epWalletFixture(t)
+	oldDB := db
+	db = nil
+	t.Cleanup(func() { db = oldDB })
+	p := world.Entities[c.playerID]
+	p.Equipment = map[string]game.Item{"neck": {ID: "owned-pendant", Name: "Pendant", Slot: "neck", Type: game.ItemNeck}}
+	before := world.GetEntityCopy(c.playerID)
+	c.handleWardrobe(Message{Type: MsgCollectAppearances, Payload: json.RawMessage(`{"medal":"Gold","season":"2026-Q3","settledAt":123,"rating":9999}`)})
+	var message Message
+	var result struct {
+		Success bool   `json:"success"`
+		Message string `json:"message"`
+	}
+	select {
+	case data := <-c.send:
+		if err := json.Unmarshal(data, &message); err != nil || message.Type != MsgWardrobeResult {
+			t.Fatal("missing wardrobe result", err)
+		}
+		if err := json.Unmarshal(message.Payload, &result); err != nil || result.Success || result.Message != "arena profile service unavailable" {
+			t.Fatal("unverified claim acknowledged", result, err)
+		}
+	default:
+		t.Fatal("missing claim failure")
+	}
+	if !reflect.DeepEqual(before, world.GetEntityCopy(c.playerID)) || committer.saved != nil {
+		t.Fatal("failed history verification changed or saved a character")
+	}
+}
+
 func TestWardrobePersistsAndReplicatesSeparateFromEquipment(t *testing.T) {
 	look := game.EquipmentAppearance{BaseName: "Silk Hood", Rarity: game.RarityRare, Slot: "head"}
+	medallion := game.SeasonCosmeticCatalogue()[2].Appearance
 	p := &game.Entity{ID: "wardrobe-hero", Type: game.TypePlayer, Appearances: map[string]game.EquipmentAppearance{"head": look},
 		AppearanceCollection: map[string]game.EquipmentAppearance{game.AppearanceKey(look): look},
 		Equipment:            map[string]game.Item{"head": {ID: "combat-helm", Name: "Iron Helm", Stats: map[string]int{"defense": 99}}}}
+	p.Appearances["neck"] = medallion
+	p.AppearanceCollection[game.AppearanceKey(medallion)] = medallion
+	p.Equipment["neck"] = game.Item{ID: "real-pendant", Name: "Pendant", Stats: map[string]int{"vitality": 7}}
 	snapshot := characterSnapshot("hero", p, time.Now())
 	stored, err := bson.Marshal(snapshot)
 	if err != nil {
@@ -37,6 +72,9 @@ func TestWardrobePersistsAndReplicatesSeparateFromEquipment(t *testing.T) {
 	}
 	if decoded.Appearances["head"].BaseName != "Silk Hood" || decoded.Equipment["head"].Name != "Iron Helm" || decoded.Equipment["head"].Stats["defense"] != 99 {
 		t.Fatal("wire merged cosmetics into combat item")
+	}
+	if decoded.Appearances["neck"].BaseName != medallion.BaseName || decoded.Equipment["neck"].Name != "Pendant" || decoded.Equipment["neck"].Stats["vitality"] != 7 {
+		t.Fatal("earned medallion lost its selection or changed the combat item")
 	}
 	before := entityToSnapshot(p)
 	p.Appearances = map[string]game.EquipmentAppearance{}

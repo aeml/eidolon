@@ -36,6 +36,7 @@ test('wardrobe offers owned compatible looks, requests server changes, and clear
     const send = jest.fn();
     const ui = new WardrobeUI({ host: document.getElementById('host'), getPlayer: () => player, send });
     ui.handleResult({ collection: { 'Silk Hood|Rare': look, 'Robes|Rare': { baseName: 'Robes', rarity: 'Rare', slot: 'chest' } } });
+    expect(ui.root.textContent).toContain('settled arena seasons');
     expect([...ui.look.options].map(o => o.value)).toEqual(['', 'Silk Hood|Rare']);
     ui.look.value = 'Silk Hood|Rare';
     ui.apply.click();
@@ -43,6 +44,7 @@ test('wardrobe offers owned compatible looks, requests server changes, and clear
     expect(player.appearances).toEqual({});
     ui.learn.click();
     expect(send).toHaveBeenCalledWith('collect_appearances', {});
+    expect(ui.status.textContent).toContain('checking settled season rewards');
     player = { equipment: {}, appearances: {} };
     ui.refreshPlayer();
     expect(ui.look.options).toHaveLength(1);

@@ -1,4 +1,67 @@
 import { expect, test } from '@playwright/test';
+import { collectBrowserFailures } from './helpers.js';
+
+test('earned season medallions fit the rigged Fighter and remain separate from real gear', async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(45_000);
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    // Native production UI/rendering with supplied server-result fixtures. The
+    // game/handler/storage tests establish entitlement; this cannot award it.
+    await page.evaluate(async () => {
+        const { UIManager } = await import('/src/ui/UIManager.js');
+        const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
+        const { SEASON_COSMETIC_CATALOGUE } = await import('/src/data/cosmetics.generated.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const item = BASE_ITEMS.find(item => item.name === 'Pendant');
+        const player = { id: 'earned-medallion-review', subType: 'Fighter', level: 70,
+            stats: { hp: 350, maxHp: 420, mana: 80, maxMana: 100, strength: 40, dexterity: 20, intelligence: 12, vitality: 32, wisdom: 16, damage: 72, defense: 48 },
+            baseStats: { strength: 35, dexterity: 20, intelligence: 12, vitality: 30, wisdom: 16 },
+            equipment: { neck: { ...item, id: 'real-pendant', rarity: 'Rare', stats: { vitality: 7 } } },
+            inventory: [], appearances: {}, gold: 250, ep: 10 };
+        const collection = Object.fromEntries(SEASON_COSMETIC_CATALOGUE.map(offer => [`${offer.name}|Common`, { baseName: offer.name, rarity: 'Common', slot: 'neck' }]));
+        const ui = new UIManager(false), requests = [], original = JSON.stringify(player.equipment);
+        ui.lastPlayerRef = player;
+        ui.onWardrobeRequest = (type, payload) => {
+            requests.push({ type, payload });
+            if (type === 'select_appearance') {
+                if (payload.key) player.appearances.neck = collection[payload.key];
+                else delete player.appearances.neck;
+                ui.updateCharacterSheet(player);
+            }
+            ui.wardrobe.handleResult({ success: true, message: 'Appearance updated. Combat stats are unchanged.', collection });
+        };
+        ui.showHUD(); ui.toggleCharacterSheet();
+        window.__seasonCosmetic = { ui, player, collection, original, requests };
+    });
+    const sheet = page.locator('#character-sheet');
+    const wardrobe = sheet.locator('.wardrobe-panel');
+    await expect.poll(() => page.evaluate(() => window.__seasonCosmetic.ui.characterPreview.model.userData.authoredClass)).toBe('Fighter');
+    await wardrobe.locator('summary').click();
+    await wardrobe.getByLabel('Appearance slot', { exact: true }).selectOption('neck');
+    await expect(wardrobe).toContainText('Current projections are not earned looks');
+    for (const medal of ['Bronze', 'Silver', 'Gold']) {
+        await wardrobe.getByLabel('Collected appearance', { exact: true }).selectOption(`${medal} Arena Medallion|Common`);
+        await wardrobe.getByRole('button', { name: 'Apply appearance', exact: true }).click();
+        expect(await page.evaluate(() => window.__seasonCosmetic.ui.characterPreview.model.userData.equipmentVisualSignature)).toContain(`${medal} Arena Medallion`);
+        expect(await page.evaluate(() => {
+            const f = window.__seasonCosmetic;
+            return JSON.stringify(f.player.equipment) === f.original && f.player.gold === 250 && f.player.ep === 10;
+        })).toBe(true);
+        await sheet.locator('.character-preview-stage').scrollIntoViewIfNeeded();
+        await sheet.screenshot({ path: testInfo.outputPath(`earned-${medal.toLowerCase()}-medallion.png`) });
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await wardrobe.scrollIntoViewIfNeeded();
+    expect(await wardrobe.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await sheet.screenshot({ path: testInfo.outputPath('earned-medallion-mobile-controls.png') });
+    await wardrobe.getByLabel('Collected appearance', { exact: true }).selectOption('');
+    await wardrobe.getByRole('button', { name: 'Apply appearance', exact: true }).click();
+    expect(await page.evaluate(() => window.__seasonCosmetic.player.appearances)).toEqual({});
+    await page.evaluate(() => window.__seasonCosmetic.ui.characterPreview.dispose());
+    expect(failures, failures.join('\n')).toEqual([]);
+});
 
 for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and applies without changing gear at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });

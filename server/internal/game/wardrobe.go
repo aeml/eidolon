@@ -53,6 +53,9 @@ func AppearanceKey(look EquipmentAppearance) string { return look.BaseName + "|"
 // Explicitly learn from owned gear, never from client-provided style descriptors.
 // The item remains intact; the earned cosmetic survives later sale or disposal.
 func (w *World) CollectOwnedAppearances(playerID string) (int, error) {
+	// Snapshot settled entitlements before actor locks; do not nest PvP and
+	// World ownership or accept client-provided records/style descriptors.
+	earned := w.seasonCosmeticAppearances(playerID)
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	p := w.Entities[playerID]
@@ -86,6 +89,13 @@ func (w *World) CollectOwnedAppearances(playerID string) (int, error) {
 	}
 	for _, item := range p.Equipment {
 		learn(item)
+	}
+	for _, look := range earned {
+		key := AppearanceKey(look)
+		if _, known := collection[key]; !known {
+			collection[key] = look
+			count++
+		}
 	}
 	p.AppearanceCollection = collection
 	return count, nil

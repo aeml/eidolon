@@ -15,7 +15,12 @@ func (c *Client) handleWardrobe(msg Message) {
 	switch msg.Type {
 	case MsgCollectAppearances:
 		var count int
-		count, err = world.CollectOwnedAppearances(c.playerID)
+		// Only durable server history can unlock season styles. Profile recovery
+		// or pending results must finish before collecting; never trust a client
+		// medal, rating, balance or the current season's projected prize.
+		if err = hydratePvPProfile(c.playerID); err == nil {
+			count, err = world.CollectOwnedAppearances(c.playerID)
+		}
 		message = fmt.Sprintf("Learned %d new looks. Your gear is unchanged.", count)
 	case MsgSelectAppearance:
 		var request struct {

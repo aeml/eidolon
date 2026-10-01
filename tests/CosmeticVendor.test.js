@@ -42,8 +42,12 @@ test('settled-season styles resolve as cosmetic-only pendants and are not EP off
         expect(offer.priceEP).toBeUndefined();
         const look = resolveEquipmentVisualDescriptor({ name: offer.name });
         expect(look.slot).toBe('neck'); expect(look.family).toBe('neckwear');
+        expect(look.variant).toBe('arena-medallion');
         expect(look.primary).toBe(offer.primary); expect(look.secondary).toBe(offer.secondary);
-        expect(createProceduralEquipmentVisual({ id: offer.id, name: offer.name, slot: 'neck', rarity: 'Common' }, { slot: 'neck' })).toBeTruthy();
+        const model = createProceduralEquipmentVisual({ id: offer.id, name: offer.name, slot: 'neck', rarity: 'Common' }, { slot: 'neck' });
+        expect(model.getObjectByName('Gear_MedallionDisc').geometry.type).toBe('CylinderGeometry');
+        expect(model.getObjectByName('Gear_MedallionRim')).toBeTruthy();
+        expect(model.getObjectByName('Gear_MedallionCrest')).toBeTruthy();
     }
 });
 

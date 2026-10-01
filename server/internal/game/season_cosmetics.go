@@ -68,3 +68,12 @@ func SeasonCosmeticAppearances(history []arena.SeasonRecord) []EquipmentAppearan
 	}
 	return looks
 }
+
+func (w *World) seasonCosmeticAppearances(playerID string) []EquipmentAppearance {
+	if w.PvP == nil {
+		return nil
+	}
+	w.PvP.mu.RLock()
+	defer w.PvP.mu.RUnlock()
+	return SeasonCosmeticAppearances(w.PvP.Profiles[playerID].SeasonHistory)
+}

@@ -11,7 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Settle lazily when a player next opens/joins the arena. History, the Honor
+// Settle lazily when a player next opens/joins the arena or claims wardrobe
+// looks. History, the Honor
 // award, and the new ladder are one atomic profile write. Concurrent readers
 // compute the same revision and reread the winner; they never add Honor twice.
 func (db *DB) getPvPProfileAt(playerID string, now time.Time) (*PvPProfile, error) {

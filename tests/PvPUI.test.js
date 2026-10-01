@@ -162,6 +162,10 @@ describe('PvPUI', () => {
         expect(text).toContain('Bronze · 250 Honor (not awarded yet)');
         expect(text).toContain('2027-01-01 at 00:00 UTC');
         expect(text).toContain('2026-Q3 · Silver · rating 1250 · 30W/10L · 25 eligible wins · 600 Honor settled');
+        expect(text).toContain('ending at 00:00 UTC');
+        expect(text).toContain('Character → Wardrobe → Learn owned looks');
+        expect(text).toContain('current projections cannot unlock a look');
+        expect(text).toContain('Medallions are not sold for EP and have no combat stats');
     });
     test('shows durable personal and team outcome with exact withheld rewards', () => {
         const ui = createUI();
