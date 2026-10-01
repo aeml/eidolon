@@ -340,6 +340,11 @@ test('adventure tabs keep keyboard focus and send the selected dungeon or raid a
     await page.keyboard.press('Home');
     await expect(dungeons).toBeFocused();
     await page.keyboard.press('End');
+    const endgame = page.getByRole('tab', { name: 'Endgame', exact: true });
+    await expect(endgame).toBeFocused();
+    await expect(endgame).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#dungeon-party-state-box')).toBeHidden();
+    await page.keyboard.press('ArrowLeft');
     await expect(raids).toBeFocused();
     const earth = page.locator('[data-raid-type="earth_crystal_raid"]');
     await page.keyboard.press('Tab');
