@@ -30,7 +30,7 @@
     ]
   },
   "publicationGates": [
-    "Current 1.58.2 CI and independent public acceptance first; this patch does not cancel or supersede the running deployment.",
+    "Preceding 1.58.2 accepted: CI36920070557 all ten jobs passed; independent public identities, DB readiness, 16 runtime and 32 representative model hashes verified in 2026-10-01-release1-58-2-public.json.",
     "Fresh remote fetch and merge before push, preserving other agents' work.",
     "Exact-source CI and independent served-artifact acceptance for this follow-up."
   ],

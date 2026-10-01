@@ -306,14 +306,15 @@
     }
   ],
   "limit": "32 representative model routes, not all264publicroutes; ordinary public IPv4 DNS/TLS, no origin override.",
-  "status": "public-files-verified-live-QA-pending",
+  "status": "accepted-exact-source-CI-and-public-files",
   "ci": {
     "run": 36920070557,
-    "status": "live QA pending at source record creation",
+    "status": "completed-success",
+    "verifiedAt": "2026-10-01T21:10:02Z",
+    "successfulJobs": ["Client Tests (Jest)", "Browser Smoke (Playwright 1/3)", "Browser Smoke (Playwright 2/3)", "Browser Smoke (Playwright 3/3)", "Server Tests (Go)", "Predeploy Character QA (System Chrome)", "Validate Production QA Inputs", "Deploy to GitHub Pages", "Deploy Server (SSH)", "Live Release and Character QA"],
     "url": "https://github.com/aeml/eidolon/actions/runs/36920070557"
   },
   "remaining": [
-    "Terminal live CI QA",
     "Final modern-art approval, broader crowd performance and owner-deferred physical-phone/campaign playtests"
   ]
 }
