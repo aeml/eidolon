@@ -61,6 +61,13 @@ request. Refresh, revocation, disconnect and disposal retire old forms.
 
 ## Local evidence
 
+The prepared worktree now merges accepted 1.58.2 and the published 1.58.3
+candidate, retaining the report safety routes alongside equipment batching,
+optional body-detail reload and whole-file CI distribution. Four focused
+report/review/lookup/settings suites passed 66 checks in 2.702 seconds after
+the merge. No moderation code or policy was published by this merge; 1.59
+still requires the remaining scope and owner decisions below.
+
 Focused Go race checks passed for the handler/protocol package in 2.554 seconds
 and pure database checks in 1.068 seconds. They cover strict parsing, durable role revocation, replaced
 connections, audit failure, conflicts, ambiguous outcomes, receipt validation,
