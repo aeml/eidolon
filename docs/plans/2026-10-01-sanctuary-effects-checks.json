@@ -20,9 +20,22 @@
     "observedFiles": "Fresh master fetch still contains only the Fighter archetype GLBs and three plant GLBs. Rogue/Cleric/Wizard GLB history found in all local refs is old, predating this request; those old exports were not substituted for the user's new models.",
     "swapped": []
   },
+  "releaseCandidate": {
+    "version": "Alpha 1.58.1",
+    "preparedAtUTC": "2026-10-01T05:15:07Z",
+    "status": "packaged locally; push, terminal CI and independent public acceptance remain required",
+    "checks": [
+      { "type": "focused Jest packaging and effect regressions", "suites": 7, "passed": 364, "seconds": 5.149 },
+      { "type": "native prepared five-actor WebGL reference", "passed": 1, "seconds": 34.5, "artifacts": "/tmp/eidolon-1-58-1-populated-1001", "scope": "Corrected expanded-reference material clones retain their analytic shader callbacks. Six high/low phase comparisons have zero or one-pixel difference. High aura draws fall from 94/95 to 24/25; Low from 50 to 20. Fixed-pose frame profiles are not real gameplay FPS or server-capacity evidence." },
+      { "type": "native anonymous login and patch notes", "passed": 2, "seconds": 9.8, "artifacts": "/tmp/eidolon-1-58-1-login-1001", "scope": "Matching login/manifest/latest notes, desktop/phone-sized login credit, runtime dependencies and cumulative notes. Root reviewed the rendered patch-notes screenshot." },
+      { "type": "lint and script syntax", "result": "All eleven changed JS source/test files pass ESLint; versioned shell scripts pass bash -n; git diff --check passes." }
+    ],
+    "baseline": "Ordinary-DNS IPv4 public checks still report the accepted f7518623 / Alpha 1.58.0 frontend and ready backend. An exact GitHub run lookup confirms CI36808962117 success; fresh Git and API master refs agree on f7518623.",
+    "verificationPolicy": "One new short celebration fixture runs in existing System Chrome predeploy QA; existing full stabilization and user-deferred campaign/phone gates remain unchanged. Luna will observe the exact pushed SHA rather than an unfiltered latest-run listing."
+  },
   "limitations": [
     "Prepared visual fixtures are not an earned-level, authenticated Well Rested, physical-phone, full-world composition or multiplayer-capacity proof.",
     "The user-supplied Rogue, Cleric and Wizard rigs/materials/animation clips and equipment fit cannot be inspected or integrated until their new files are available.",
-    "This is a local visual slice, not a versioned release or final modern-art approval."
+    "This is a versioned local visual candidate, not an accepted deployment or final modern-art approval."
   ]
 }

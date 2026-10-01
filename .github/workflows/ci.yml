@@ -228,6 +228,11 @@ jobs:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
         run: sg render -c 'npm run test:e2e:rest-render'
 
+      - name: Run focused level-up and sanctuary presentation
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+        run: sg render -c 'npm run test:e2e:celebration'
+
       - name: Run disposable full-character gameplay
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
         env:
@@ -527,7 +532,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.58.0" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.58.1" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

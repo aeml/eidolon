@@ -33,6 +33,8 @@ test.each([['high', 19], ['low', 10]])('%s GPU reference preserves visible geome
                     if (part.instanceColor) { const tint = new THREE.Color(); part.getColorAt(slot, tint); color.multiply(tint); }
                     expect(copy.material.color.equals(color)).toBe(true);
                     expect(copy.material.opacity).toBe(part.material.opacity);
+                    expect(copy.material.onBeforeCompile).toBe(part.material.onBeforeCompile);
+                    expect(copy.material.customProgramCacheKey()).toBe(part.material.customProgramCacheKey());
                     expect(copy.geometry).toBe(part.geometry);
                 }
             }

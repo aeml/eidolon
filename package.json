@@ -1,6 +1,6 @@
 {
   "name": "eidolon-tests",
-  "version": "1.58.0",
+  "version": "1.58.1",
   "description": "Eidolon browser game client, validation, and release tooling",
   "type": "module",
   "engines": {
@@ -24,6 +24,7 @@
     "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
     "test:e2e:isolated": "bash scripts/run-isolated-character-qa.sh",
     "test:e2e:rest-render": "bash scripts/run-rest-render-qa.sh",
+    "test:e2e:celebration": "playwright test tests/e2e/actor-celebration-effects.spec.js",
     "test:e2e:live-animations": "bash scripts/run-live-animation-qa.sh",
     "test:e2e:movement": "playwright test tests/e2e/movement-smoothness.spec.js",
     "test:e2e:visual-load": "playwright test tests/e2e/raid-scene-performance.spec.js",

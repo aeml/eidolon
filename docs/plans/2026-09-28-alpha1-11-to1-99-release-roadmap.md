@@ -2,10 +2,10 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.57.0, exact3632e2d57a33df8f7c4f6c18ea0d3563edc83d21,
-CI36802997921 attempt1. All ten CI jobs and independent public IPv4 checks
-passed for identities, database readiness and all six changed runtime files.
-See its [acceptance record](2026-10-01-release1-57-acceptance.md).
+baseline is Alpha1.58.0, exactf7518623bb5924625a918c8acdfe7ad890b0363a,
+CI36808962117 attempt1. All ten CI jobs and independent public IPv4 checks
+passed for identities, database readiness and all four changed runtime files.
+See its [acceptance receipt](2026-10-01-release1-58-assets.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -16,12 +16,18 @@ The accepted [1.57 event work](2026-10-01-release1-57-events.md) provides
 upcoming server windows, atlas waypoints, reward clarity and bounded realm/cohort
 checks. Human event balance remains distinct from those prepared mechanical
 fixtures and the verified deployment.
-The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is
-implemented, packaged and pushed, but not accepted: its initial CI failed an
-outdated keyboard expectation before deployment. The corrected route passed
-locally. Its features include actual story/cache status, optional
-repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and
-human pacing limits are preserved; ordered release acceptance remains required.
+The [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is accepted
+after correcting an outdated keyboard expectation. It provides actual story/cache
+status, optional repeat-run goals, Resonance, Forge and collection guidance.
+Existing rewards and human pacing limits are preserved.
+The next patch candidate, Alpha1.58.1, improves the level-up celebration and
+Well Rested aura without changing gameplay rules. [Focused visual checks](2026-10-01-sanctuary-effects-checks.json)
+retain the local evidence and its limits; publication, CI and public acceptance
+remain required. It does not include new Rogue, Cleric or Wizard models: the
+freshly fetched master still contains only the Fighter archetype exports, and
+the new model paths or commit have been requested. Their integration and the
+remaining modern-art requirements stay open. The next minor milestone remains
+the complete 1.59 moderation workflow; no later milestone is declared shipped.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
@@ -52,6 +58,13 @@ generated textures/PBR maps, lighting, shaders, weather/VFX, icons and actor
 integration remain implementation work. Follow the visual contract's ownership
 table; do not convert this into a request that the user produce a world asset
 pack. Code-owned world/material work proceeds before actor imports are available.
+
+October 1 equipment-art update: the owner also intends to supply GLBs for every
+item to display on characters. Code-owned equipment remains the fallback until
+each export is available and its scale, rig attachments, fit, materials and
+runtime cost are validated. Item GLBs do not change authoritative item IDs,
+stats, inventories or cosmetic ownership. Actor/equipment integration remains
+implementation work; do not treat the promised exports as already imported.
 
 September 30 actor follow-up: the rigged Fighter GLB is now delivered with clips,
 attachment sockets and provenance. Resume its code-owned integration alongside

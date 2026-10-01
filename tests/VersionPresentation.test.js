@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.58.0';
+const currentVersion = '1.58.1';
+
+test('1.58.1 records presentation polish without claiming unavailable model swaps or gameplay changes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.58.1"'), previous = html.indexOf('data-version="1.58.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['brighter celebrations and sanctuary light', 'gold and elemental sparks',
+        'follows your character', 'golden filigree', 'drawing-buffer size', 'reduced motion',
+        'after three seconds', 'power and duration', 'does not include new Rogue, Cleric or Wizard models',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+    expect(fs.readFileSync('.github/workflows/ci.yml', 'utf8')).toContain("sg render -c 'npm run test:e2e:celebration'");
+});
 
 test('1.58.0 records optional endgame direction without new reward grants or EP power', () => {
     const html = fs.readFileSync('index.html', 'utf8');

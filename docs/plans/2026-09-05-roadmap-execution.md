@@ -6,7 +6,20 @@ now owns future scope, gates and execution receipts through full-release
 readiness. This ledger preserves prior delivery evidence; individual hotfixes
 do not close the whole goal or restart historical queues.
 
-## Current checkpoint — September 28
+## Current checkpoint — October 1
+
+Alpha1.58.0 is accepted live atf7518623bb5924625a918c8acdfe7ad890b0363a,
+CI36808962117 attempt1, with all ten jobs successful. Independent public IPv4
+checks verified both identities, database readiness and all four changed
+runtime assets; the [exact receipt](2026-10-01-release1-58-assets.json) supersedes
+the older checkpoints below. Alpha1.58.1 is a locally verified visual patch for
+level-ups and Well Rested, not yet an accepted deployment. The next minor
+milestone remains1.59 moderation. The new Rogue/Cleric/Wizard exports have not
+been found in fetched master and are not claimed imported. Open alpha, saves,
+the full forward roadmap and owner-deferred human pacing/phone checks remain
+unchanged.
+
+## Historical checkpoint — September 28
 
 Superseding checkpoint: [Alpha 1.29.0](2026-09-28-release1-29.md) is accepted
 live at1462293e080b12234a93b6f85a06dc4efd50b5e8, CI36484850397 successful
