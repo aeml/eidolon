@@ -18,6 +18,10 @@ test('authoritative event renders exact rings and optional nearby objective with
     expect(controller.marker.position.x).toBe(-1250);
     expect(controller.ring.scale.x).toBe(22); expect(controller.inner.scale.x).toBe(12);
     expect(controller.progress.value).toBe(11);
+    expect(controller.rewards.textContent).toContain('no extra Gold purse or reward claim');
+    expect(controller.rewards.textContent).toContain('More adventurers do not speed up');
+    controller.updateState({ ...event, upcoming: [{ startsAt: '2026-10-01T00:11:00Z', site: { title: 'The Unmoored Chorus' } }] });
+    expect(controller.next.textContent).toContain('Next: The Unmoored Chorus · 2026-10-01 00:11 UTC');
     controller.root.open = true; controller.updateState({ ...event, charge: 12 });
     expect(controller.root.open).toBe(true);
     engine.currentInstanceId = 'dungeon'; controller.update(.016);

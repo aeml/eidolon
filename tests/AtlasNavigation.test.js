@@ -4,8 +4,48 @@ import { AtlasNavigation, getAtlasLocations, getAtlasWorldLocations, getWaypoint
 import { WORLD_READINGS } from '../src/data/worldPopulation.js';
 import { DUNGEON_ENTRY_LEVELS } from '../src/data/dungeonProgression.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
+import { getPublicEventLocations, publicEventTime } from '../src/ui/PublicEventDiscovery.js';
 
 const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } }, currentInstanceId: '', currentInstanceType: '' });
+
+test('atlas publishes authoritative event windows with objectives and stable occurrence waypoints', () => {
+    const ge = engine();
+    const current = { id: 'disturbance-1', phase: 'defending', site: { title: 'Root ward', realm: 'earth', x: -750, z: 200, level: 35, objective: 'Hold the center.', lore: '<b>Old road</b>' },
+        startsAt: '2026-10-01T00:01:00Z', endsAt: '2026-10-01T00:08:00Z',
+        upcoming: [{ id: 'disturbance-2', site: { title: 'Tide ward', realm: 'water', x: 0, z: -900, level: 55, objective: 'Follow the rune.' }, startsAt: '2026-10-01T00:11:00Z', endsAt: '2026-10-01T00:18:00Z' }] };
+    ge.publicEvents = { data: current };
+    const events = getAtlasLocations(ge).filter(p => p.category === 'events');
+    expect(events).toHaveLength(2);
+    expect(events[0].availability).toContain('Defend the ward');
+    expect(events[0].purpose).toContain('Hold the center.');
+    expect(events[0].purpose).toContain('no Gold purse or reward claim');
+    expect(events[1]).toMatchObject({ id: 'public-event-disturbance-2', x: 0, z: -900, symbol: '◷' });
+    expect(events[1].availability).toContain('Scheduled · water realm · recommended level 55');
+    expect(events[1].availability).toContain('2026-10-01 00:11 UTC');
+    document.body.innerHTML = '<div id="map"><canvas></canvas></div>';
+    const map = { gameEngine: ge, container: document.getElementById('map'), canvas: document.querySelector('canvas'), _redrawIfVisible: jest.fn(), updateZoomLabel: jest.fn() };
+    const navigation = new AtlasNavigation(map);
+    navigation.select(events[1].id); navigation.detail.querySelector('button').click();
+    expect(navigation.waypoint).toMatchObject({ id: events[1].id, x: 0, z: -900 });
+    ge.publicEvents.data = { ...current.upcoming[0], phase: 'announced', upcoming: [] };
+    navigation.refresh();
+    expect(navigation.selectedId).toBe(events[1].id);
+    expect(navigation.detail.textContent).toContain('Gather at the ward');
+    expect(navigation.waypoint).toMatchObject({ x: 0, z: -900 });
+    ge.currentInstanceId = 'private';
+    expect(getAtlasLocations(ge).filter(p => p.category === 'events')).toEqual([]);
+});
+
+test('event discovery is bounded and does not promote expired local windows to active encounters', () => {
+    const valid = { id: 'future', site: { x: 0, z: 0 }, startsAt: '2020-01-01T00:00:00Z' };
+    const result = getPublicEventLocations({ id: 'expired', phase: 'expired', site: { x: 0, z: 0 }, upcoming: [valid, valid, { id: 'bad', site: { x: NaN, z: 0 } }, valid] });
+    expect(result).toHaveLength(1);
+    expect(result[0].availability).toContain('Scheduled');
+    expect(result[0].availability).toContain('Time unavailable');
+    expect(getPublicEventLocations(null)).toEqual([]);
+    expect(publicEventTime('invalid')).toBe('Time unavailable');
+    expect(publicEventTime(null)).toBe('Time unavailable');
+});
 
 test('public realm places use physical approaches and lore anchors without exposing story text or saved ticks', () => {
     const ge = engine(), sites = getAtlasWorldLocations(ge);

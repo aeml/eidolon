@@ -33,22 +33,42 @@ func PublicEventSites() []PublicEventSite {
 }
 
 type PublicEventView struct {
-	ID           string          `json:"id"`
-	Site         PublicEventSite `json:"site"`
-	Phase        string          `json:"phase"`
-	StartsAt     time.Time       `json:"startsAt"`
-	EndsAt       time.Time       `json:"endsAt"`
-	NextAt       time.Time       `json:"nextAt"`
-	Wave         int             `json:"wave"`
-	Remaining    int             `json:"remaining"`
-	Charge       float64         `json:"charge"`
-	ChargeNeeded float64         `json:"chargeNeeded"`
-	RuneX        float64         `json:"runeX"`
-	RuneZ        float64         `json:"runeZ"`
-	Radius       float64         `json:"radius"`
-	InnerRadius  float64         `json:"innerRadius"`
-	Participants int             `json:"participants"`
-	CalmedUntil  time.Time       `json:"calmedUntil"`
+	ID           string              `json:"id"`
+	Site         PublicEventSite     `json:"site"`
+	Phase        string              `json:"phase"`
+	StartsAt     time.Time           `json:"startsAt"`
+	EndsAt       time.Time           `json:"endsAt"`
+	NextAt       time.Time           `json:"nextAt"`
+	Wave         int                 `json:"wave"`
+	Remaining    int                 `json:"remaining"`
+	Charge       float64             `json:"charge"`
+	ChargeNeeded float64             `json:"chargeNeeded"`
+	RuneX        float64             `json:"runeX"`
+	RuneZ        float64             `json:"runeZ"`
+	Radius       float64             `json:"radius"`
+	InnerRadius  float64             `json:"innerRadius"`
+	Participants int                 `json:"participants"`
+	CalmedUntil  time.Time           `json:"calmedUntil"`
+	Upcoming     []PublicEventWindow `json:"upcoming"`
+}
+
+// Announced windows are server-owned discovery, not reservations or claims.
+// The next three windows expose the other realms without spawning enemies.
+type PublicEventWindow struct {
+	ID       string          `json:"id"`
+	Site     PublicEventSite `json:"site"`
+	StartsAt time.Time       `json:"startsAt"`
+	EndsAt   time.Time       `json:"endsAt"`
+}
+
+func upcomingPublicEvents(now time.Time) []PublicEventWindow {
+	windows := make([]PublicEventWindow, 0, 3)
+	for offset := 1; offset <= 3; offset++ {
+		slot, site, start := publicEventSchedule(now.Add(time.Duration(offset) * PublicEventPeriod))
+		windows = append(windows, PublicEventWindow{ID: fmt.Sprintf("disturbance-%d", slot), Site: site,
+			StartsAt: start.Add(time.Minute), EndsAt: start.Add(8 * time.Minute)})
+	}
+	return windows
 }
 
 type publicEventState struct {
@@ -75,6 +95,7 @@ func (w *World) PublicEventSnapshot() *PublicEventView {
 		return nil
 	}
 	copy := w.publicEvent.PublicEventView
+	copy.Upcoming = append([]PublicEventWindow(nil), copy.Upcoming...)
 	return &copy
 }
 
@@ -145,7 +166,7 @@ func (w *World) UpdatePublicEvent(now time.Time) {
 		if w.publicEvent != nil {
 			w.clearPublicEventEnemiesLocked(w.publicEvent)
 		}
-		w.publicEvent = &publicEventState{PublicEventView: PublicEventView{ID: fmt.Sprintf("disturbance-%d", slot), Site: site, Phase: "announced", StartsAt: start.Add(time.Minute), EndsAt: start.Add(8 * time.Minute), NextAt: start.Add(PublicEventPeriod), ChargeNeeded: 20}, slot: slot, lastTick: now, previousPositions: map[string][2]float64{}}
+		w.publicEvent = &publicEventState{PublicEventView: PublicEventView{ID: fmt.Sprintf("disturbance-%d", slot), Site: site, Phase: "announced", StartsAt: start.Add(time.Minute), EndsAt: start.Add(8 * time.Minute), NextAt: start.Add(PublicEventPeriod), ChargeNeeded: 20, Upcoming: upcomingPublicEvents(now)}, slot: slot, lastTick: now, previousPositions: map[string][2]float64{}}
 	}
 	e := w.publicEvent
 	dt := math.Min(2, math.Max(0, now.Sub(e.lastTick).Seconds()))

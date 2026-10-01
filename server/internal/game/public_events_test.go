@@ -1,9 +1,136 @@
 package game
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
+
+func TestPublicEventPublishedScheduleMatchesNextOccurrencesAndIsDetached(t *testing.T) {
+	w, _, now := publicEventFixture(0)
+	view := w.PublicEventSnapshot()
+	if len(view.Upcoming) != 3 {
+		t.Fatal("missing other-realm schedule", view)
+	}
+	for index, next := range view.Upcoming {
+		at := now.Add(time.Duration(index+1) * PublicEventPeriod)
+		slot, site, start := publicEventSchedule(at)
+		if next.ID != fmt.Sprintf("disturbance-%d", slot) || next.Site != site || next.StartsAt != start.Add(time.Minute) || next.EndsAt != start.Add(8*time.Minute) {
+			t.Fatal("published window disagrees with server activation", next)
+		}
+	}
+	view.Upcoming[0].Site.Title = "caller mutation"
+	if w.PublicEventSnapshot().Upcoming[0].Site.Title == "caller mutation" {
+		t.Fatal("snapshot exposes mutable shared schedule")
+	}
+	w.UpdatePublicEvent(now.Add(PublicEventPeriod))
+	if w.PublicEventSnapshot().ID != view.Upcoming[0].ID || w.PublicEventSnapshot().Site.ID != view.Upcoming[0].Site.ID {
+		t.Fatal("next occurrence did not preserve published identity")
+	}
+}
+
+// Prepared deaths isolate objective/presence/scaling rules. This is not an
+// earned combat clear, a population capacity test or all-realm balance proof.
+func TestPublicEventRealmObjectivesForEmptySmallAndCrowdedCohorts(t *testing.T) {
+	for realm, site := range PublicEventSites() {
+		for _, size := range []int{0, 1, 4, 16} {
+			t.Run(fmt.Sprintf("%s/%d", site.ID, size), func(t *testing.T) {
+				now := time.Unix(1800000000, 0).Truncate(4 * PublicEventPeriod).Add(time.Duration(realm)*PublicEventPeriod + time.Minute)
+				w := &World{Entities: map[string]*Entity{}, Grid: NewSpatialMap(50), Hazards: map[string]*Hazard{}, PlayerHazardTicks: map[string]map[string]float64{}}
+				var players []*Entity
+				for index := 0; index < size; index++ {
+					p := &Entity{ID: fmt.Sprintf("adventurer-%d", index), Type: TypePlayer, State: "IDLE", Level: site.Level, Health: 100, MaxHealth: 100, X: site.X, Z: site.Z, Gold: 100}
+					w.AddEntity(p)
+					players = append(players, p)
+				}
+				for _, p := range []*Entity{
+					{ID: "dead", Type: TypePlayer, State: "DEAD", Health: 0},
+					{ID: "offline", Type: TypePlayer, Health: 100, Disconnected: true},
+					{ID: "other-scene", Type: TypePlayer, Health: 100, InstanceID: "private-run"},
+				} {
+					p.X, p.Z = site.X, site.Z
+					w.AddEntity(p)
+				}
+				w.UpdatePublicEvent(now)
+				if view := w.PublicEventSnapshot(); view.Participants != size {
+					t.Fatal("inactive players inflated participants", view)
+				}
+				if size == 0 {
+					w.UpdatePublicEvent(now.Add(6 * time.Minute))
+					if w.PublicEventSnapshot().Phase != "announced" || len(w.publicEvent.enemies) != 0 {
+						t.Fatal("empty event spawned a wave")
+					}
+					w.UpdatePublicEvent(now.Add(7 * time.Minute))
+					if w.PublicEventSnapshot().Phase != "expired" {
+						t.Fatal("empty event did not expire")
+					}
+					return
+				}
+				moveToObjective := func(at time.Time) {
+					for index, p := range players {
+						p.X, p.Z = site.X, site.Z
+						switch site.ID {
+						case "tide":
+							p.X += -10 + 20*float64((at.Unix()/12)%2)
+						case "ember":
+							p.X += 17
+						case "gale":
+							p.X += float64(at.Unix()%2) + float64(index%2)
+						}
+					}
+				}
+				for wave := 1; wave <= 3; wave++ {
+					if w.publicEvent.Wave != wave || w.publicEvent.Remaining != 4+2*min(size, 4) {
+						t.Fatal("wave skipped or crowd scaling exceeded cap", w.PublicEventSnapshot())
+					}
+					for _, enemy := range w.publicEvent.enemies {
+						enemy.Health, enemy.State = 0, "DEAD"
+						w.RemoveEntity(enemy.ID)
+						// Killing alone cannot complete the ward objective.
+					}
+					for _, p := range players {
+						p.X = site.X + 60
+					}
+					now = now.Add(time.Second)
+					w.UpdatePublicEvent(now)
+					if w.publicEvent.Wave != wave || w.publicEvent.Charge != 0 {
+						t.Fatal("wave advanced without holding its objective")
+					}
+					for second := 1; second <= 20; second++ {
+						now = now.Add(time.Second)
+						moveToObjective(now)
+						w.UpdatePublicEvent(now)
+						if second < 20 && w.publicEvent.Charge != float64(second) {
+							t.Fatal("ward failed its realm rule or charged faster with a crowd", w.PublicEventSnapshot())
+						}
+					}
+				}
+				if w.publicEvent.Phase != "champion" || w.publicEvent.Remaining != 1 {
+					t.Fatal("full defense did not reach champion")
+				}
+				champion := w.publicEvent.enemies[0]
+				baseline := newOverworldEnemy("baseline", site.Champion, site.X, site.Z, site.Level)
+				if champion.MaxHealth != (baseline.MaxHealth*(3+min(size, 4)))/10*10 {
+					t.Fatal("champion crowd scaling disagrees with published cap")
+				}
+				hazard := &Hazard{ID: "nearby-road", X: site.X, Z: site.Z}
+				far := &Hazard{ID: "distant-road", X: site.X + 401, Z: site.Z}
+				w.Hazards[hazard.ID], w.Hazards[far.ID] = hazard, far
+				champion.Health, champion.State = 0, "DEAD"
+				now = now.Add(time.Second)
+				w.UpdatePublicEvent(now)
+				if w.publicEvent.Phase != "complete" || len(w.publicEvent.enemies) != 0 || hazard.SuppressedUntil != now.Add(5*time.Minute) || !far.SuppressedUntil.IsZero() {
+					t.Fatal("event consequences escaped the intended road", w.PublicEventSnapshot())
+				}
+				for _, p := range players {
+					if p.Gold != 100 {
+						t.Fatal("completion created a repeatable purse")
+					}
+				}
+			})
+		}
+	}
+}
 
 func TestPublicEventChampionHealthSurvivesStatRecalculation(t *testing.T) {
 	w, _, _ := publicEventFixture(0)

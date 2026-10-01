@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { publicEventTime } from '../ui/PublicEventDiscovery.js';
 
 const COLORS = { earth: 0xa5db83, water: 0x76d7ff, fire: 0xffac62, air: 0xc3b2ff };
 
@@ -13,8 +14,11 @@ export class PublicEventController {
         this.progress = document.createElement('progress'); this.progress.max = 20;
         this.progress.setAttribute('aria-label', 'Ward charge');
         this.status = document.createElement('p');
+        this.rewards = document.createElement('p'); this.rewards.className = 'public-event-rewards';
+        this.rewards.textContent = 'Normal enemy loot and nearby party XP. Completion calms nearby hazards; no extra Gold purse or reward claim. More adventurers do not speed up ward charging.';
+        this.next = document.createElement('p'); this.next.className = 'public-event-next';
         this.lore = document.createElement('p'); this.lore.className = 'public-event-lore';
-        this.root.append(this.summary, this.objective, this.progress, this.status, this.lore);
+        this.root.append(this.summary, this.objective, this.progress, this.status, this.rewards, this.lore, this.next);
         for (const name of ['pointerdown', 'pointerup', 'click', 'wheel']) this.root.addEventListener(name, e => e.stopPropagation());
         document.body.append(this.root);
         this.marker = new THREE.Group(); this.marker.name = 'public-event-ward';
@@ -37,6 +41,8 @@ export class PublicEventController {
         this.summary.textContent = `${e.site.title} · ${phase}`;
         this.objective.textContent = e.phase === 'champion' ? 'Defeat the Fracturekeeper to calm the nearby roads.' : e.site.objective;
         this.lore.textContent = e.site.lore;
+        const next = Array.isArray(e.upcoming) ? e.upcoming[0] : null;
+        this.next.textContent = next?.site ? `Next: ${next.site.title} · ${publicEventTime(next.startsAt)}. Find current and upcoming events in the world atlas and set a personal waypoint.` : 'Find the current event in the world atlas and set a personal waypoint.';
         this.progress.max = e.chargeNeeded || 20; this.progress.value = e.charge || 0;
         this.progress.hidden = e.phase !== 'defending';
         const color = e.phase === 'complete' ? 0xd5ffe5 : (COLORS[e.site.realm] || COLORS.earth);

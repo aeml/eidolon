@@ -12,6 +12,7 @@
 .public-event p { margin: 8px 0; }
 .public-event progress { width: 100%; accent-color: #a5db83; }
 .public-event-lore { color: #bed0ca; font-style: italic; }
+.public-event-rewards, .public-event-next { color: #d2d9bc; }
 @media (min-width: 1024px) and (min-height: 600px) {
     /* Keep expanded instructions out of the central aiming/telegraph area.
        The right rail starts below the desktop minimap and ends above controls. */

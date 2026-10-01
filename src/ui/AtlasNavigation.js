@@ -8,6 +8,7 @@ import { isCasinoMapGuestVisible } from './CasinoMap.js';
 import { getAtlasQuestLocations, getAtlasQuestGiverState } from './AtlasQuestMarkers.js';
 import { EARTH_LOCATIONS, WORLD_READINGS, LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } from '../data/elementalPopulation.js';
+import { getPublicEventLocations } from './PublicEventDiscovery.js';
 
 export const ATLAS_CATEGORIES = Object.freeze({
     services: { name: 'Services', symbol: '■', color: '#9bd5cb' },
@@ -90,12 +91,7 @@ export function getAtlasLocations(engine) {
             z: vertical ? middle : (wall.side === 'north' ? r.minZ : r.maxZ),
             purpose: `Walkable opening toward ${destination}.`, availability: 'Open passage · combat territory beyond town' });
     }
-    const event = engine?.publicEvents?.data;
-    if (event && event.phase !== 'expired' && Number.isFinite(event.site?.x) && Number.isFinite(event.site?.z)) {
-        result.push({ id: 'public-event', name: event.site.title || 'World event', category: 'events', instanceId: '',
-            x: event.site.x, z: event.site.z, purpose: 'Current public world event.',
-            availability: event.phase === 'complete' ? 'Event complete' : 'Event active' });
-    }
+    result.push(...getPublicEventLocations(engine?.publicEvents?.data));
     return [...result, ...getAtlasQuestLocations(engine), ...getAtlasWorldLocations(engine)];
 }
 
@@ -139,7 +135,7 @@ export class AtlasNavigation {
         map.container.querySelector('.atlas-navigation')?.remove();
         this.root = document.createElement('section'); this.root.className = 'atlas-navigation';
         this.root.setAttribute('aria-label', 'Atlas destinations');
-        this.root.innerHTML = `<div class="atlas-search-row"><label>Find a known location<input type="search" maxlength="80" placeholder="Town, dungeon, gate…" aria-label="Find a known location"></label>
+        this.root.innerHTML = `<div class="atlas-search-row"><label>Find a known location<input type="search" maxlength="80" placeholder="Town, dungeon, event…" aria-label="Find a known location"></label>
             <button type="button" data-atlas-overview>World overview</button></div>
             <details class="atlas-directory"><summary>Locations & legend</summary>
             <div class="atlas-filters" role="group" aria-label="Location filters"></div>

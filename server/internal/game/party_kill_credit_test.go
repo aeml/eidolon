@@ -65,6 +65,12 @@ func TestPartyKillCreditOnlyRecognizesActualDungeonAndRaidTypes(t *testing.T) {
 }
 
 func TestOverworldDeathPipelineSharesXPAndQuestCreditOnlyWithinTwoScreens(t *testing.T) {
+	t.Run("ordinary", func(t *testing.T) { testOverworldPartyKillPipeline(t, "") })
+	t.Run("public-event", func(t *testing.T) { testOverworldPartyKillPipeline(t, "disturbance-party-credit") })
+}
+
+func testOverworldPartyKillPipeline(t *testing.T, eventID string) {
+	t.Helper()
 	w := newTestWorld()
 	defer w.StopBackground()
 	var members []*Entity
@@ -87,7 +93,7 @@ func TestOverworldDeathPipelineSharesXPAndQuestCreditOnlyWithinTwoScreens(t *tes
 	members[2].X = OverworldPartyRewardRadius + .01
 	members[3].InstanceID = "other-world"
 	enemy := &Entity{ID: "overworld-credit-imp", Type: TypeEnemy, SubType: "Imp", Level: 30,
-		Health: 1, MaxHealth: 1, State: "IDLE"}
+		Health: 1, MaxHealth: 1, State: "IDLE", WorldEventID: eventID}
 	w.AddEntity(enemy)
 	enemy.Mu.Lock()
 	w.handleDeath(enemy, members[0], nil)

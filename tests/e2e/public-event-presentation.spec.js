@@ -1,4 +1,60 @@
 import { expect, test } from '@playwright/test';
+import { collectBrowserFailures } from './helpers.js';
+
+for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+test(`atlas discovers scheduled realm events and preserves the waypoint at ${viewport.width}px`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(45_000);
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.setViewportSize(viewport);
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async () => {
+        const { WorldMap } = await import('/src/ui/WorldMap.js');
+        document.getElementById('start-screen').style.display = 'none';
+        document.body.classList.toggle('mobile-mode', innerWidth < 600);
+        const engine = { isMobile: innerWidth < 600, currentInstanceId: '', currentInstanceType: '',
+            player: { id: 'local', level: 30, position: { x: 0, z: 200 }, rotation: { x: 0, y: 0, z: 0, w: 1 } },
+            uiManager: { partyData: { members: [] } }, chunkManager: { getActiveEntities: () => [] },
+            inputManager: { clearInputState() {} }, publicEvents: { data: { id: 'disturbance-1', phase: 'defending',
+                site: { title: 'The Road That Remembers', realm: 'earth', x: -750, z: 200, level: 35, objective: 'Keep the central stone clear and stand within its ward.' },
+                startsAt: '2026-10-01T00:01:00Z', endsAt: '2026-10-01T00:08:00Z',
+                upcoming: [
+                    { id: 'disturbance-2', site: { title: 'The Unmoored Chorus', realm: 'water', x: 0, z: -900, level: 55,
+                        objective: 'Follow the active tide rune as it alternates between the river-stones.', lore: 'Fragments of Tidestar’s memory drift between two river-stones.' }, startsAt: '2026-10-01T00:11:00Z', endsAt: '2026-10-01T00:18:00Z' },
+                    { id: 'disturbance-3', site: { title: 'Ashes Without a Hearth', realm: 'fire', x: -1250, z: 200, level: 72 }, startsAt: '2026-10-01T00:21:00Z', endsAt: '2026-10-01T00:28:00Z' },
+                    { id: 'disturbance-4', site: { title: 'The Stolen Horizon', realm: 'air', x: 1250, z: 200, level: 72 }, startsAt: '2026-10-01T00:31:00Z', endsAt: '2026-10-01T00:38:00Z' }
+                ] } } };
+        const map = new WorldMap(engine); engine.worldMap = map;
+        window.__eventAtlas = { engine, map }; map.toggle();
+    });
+    const dialog = page.getByRole('dialog', { name: 'World atlas' });
+    const search = dialog.getByRole('searchbox', { name: 'Find a known location' });
+    await search.fill('Unmoored');
+    await dialog.getByRole('button', { name: '◷ The Unmoored Chorus', exact: true }).click();
+    const detail = dialog.getByRole('region', { name: 'Selected destination' });
+    await expect(detail).toContainText('Scheduled · water realm · recommended level 55');
+    await expect(detail).toContainText('2026-10-01 00:11 UTC');
+    await expect(detail).toContainText('Follow the active tide rune');
+    await expect(detail).toContainText('no Gold purse or reward claim');
+    await detail.getByRole('button', { name: 'Set personal waypoint' }).click();
+    await expect(dialog.getByLabel('Waypoint guidance')).toContainText('1100m N');
+    await detail.getByRole('button', { name: 'Set personal waypoint' }).scrollIntoViewIfNeeded();
+    await expect(detail.getByRole('button', { name: 'Set personal waypoint' })).toBeInViewport();
+    expect(await detail.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    expect(await dialog.locator('#world-map-canvas').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(100);
+    await dialog.screenshot({ path: testInfo.outputPath('event-atlas.png') });
+    await page.evaluate(() => {
+        const { engine, map } = window.__eventAtlas;
+        engine.publicEvents.data = { ...engine.publicEvents.data.upcoming[0], phase: 'announced', upcoming: [] };
+        map.update(engine.player);
+    });
+    await expect(detail).toContainText('Gather at the ward');
+    expect(await page.evaluate(() => window.__eventAtlas.map.navigation.waypoint)).toMatchObject({ id: 'public-event-disturbance-2', x: 0, z: -900 });
+    await page.evaluate(() => { const { engine, map } = window.__eventAtlas; engine.currentInstanceId = 'dungeon-private'; map.update(engine.player); });
+    await expect(detail).toBeHidden();
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+}
 
 // Prepared rendered encounter view; not evidence of an earned combat clear.
 for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 720 }]) {
