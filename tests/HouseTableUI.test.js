@@ -74,3 +74,85 @@ test('unavailable-first load recovers full betting options and leaving clears pe
         ui.update(null); expect(ui.table.interval).toBeNull(); expect(ui.root.hidden).toBe(true);
     } finally { ui.dispose(); }
 });
+
+test('disposed house controls cannot wager or restart clocks, including stale updates', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new HouseTableUI(send);
+    try {
+        const state = view(); ui.update(state, 'hero');
+        const oldBet = ui.spotButtons[0]; ui.dispose();
+        oldBet.click(); ui.choose('red'); ui.placeWagers([{ spot: 'red', amount: 20 }]);
+        ui.update({ ...state, roundId: 'late-update' }, 'hero'); oldBet.click();
+        expect(send).not.toHaveBeenCalled(); expect(ui.view).toBeNull();
+        expect(ui.table.interval).toBeNull(); expect(jest.getTimerCount()).toBe(0);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('retired roulette controls cannot become baccarat bets after changing games', () => {
+    const send = jest.fn(), ui = new HouseTableUI(send);
+    try {
+        ui.update(view(), 'hero'); const oldNumber = ui.spotButtons[0], oldCombo = ui.combinationBet;
+        ui.update(view('baccarat'), 'hero');
+        oldNumber.click(); oldCombo.click(); expect(send).not.toHaveBeenCalled();
+        ui.spotButtons[0].click();
+        expect(send).toHaveBeenCalledWith({ action: 'house_bet', roundId: 'round-a', wagers: [{ spot: 'player', amount: 20 }] });
+    } finally { ui.dispose(); }
+});
+
+test('processing results say saving payouts, not saving a new wager', () => {
+    const ui = new HouseTableUI(jest.fn());
+    try {
+        ui.update({ ...view(), phase: 'settling', processing: true }, 'hero');
+        expect(ui.summary.textContent).toContain('Saving payouts');
+        expect(ui.summary.textContent).not.toContain('Saving wager');
+    } finally { ui.dispose(); }
+});
+
+test('close and re-open retire the old board but leave current one-click bets working', () => {
+    const send = jest.fn(), ui = new HouseTableUI(send), state = view();
+    try {
+        ui.update(state, 'hero'); const oldBet = ui.spotButtons[0];
+        ui.update(null); ui.update(state, 'hero');
+        oldBet.click(); expect(send).not.toHaveBeenCalled();
+        ui.spotButtons[0].click(); expect(send).toHaveBeenCalledTimes(1);
+    } finally { ui.dispose(); }
+});
+
+test('same-length catalog replacement retires old combinations without resetting the round clock', () => {
+    const send = jest.fn(), ui = new HouseTableUI(send), state = view();
+    try {
+        ui.update(state, 'hero'); const oldCombo = ui.combinationBet, expires = ui.table.expires;
+        ui.update({ ...state, spots: [{ id: 'red', label: 'Red', multiplier: 2 }, { id: 'split:2-3', label: 'Split 2/3', multiplier: 18 }] }, 'hero');
+        expect(ui.combination.options[0].textContent).toContain('Split 2/3'); expect(ui.table.expires).toBe(expires);
+        oldCombo.click(); expect(send).not.toHaveBeenCalled();
+        ui.combinationBet.click();
+        expect(send).toHaveBeenCalledWith({ action: 'house_bet', roundId: 'round-a', wagers: [{ spot: 'split:2-3', amount: 20 }] });
+    } finally { ui.dispose(); }
+});
+
+test('confirmed slips show saved totals and selected spots, not an unconfirmed draft', () => {
+    const send = jest.fn(), ui = new HouseTableUI(send), state = view();
+    try {
+        ui.update(state, 'hero'); ui.builder.checked = true; ui.builder.onchange();
+        ui.choose('number:1'); ui.choose('red'); ui.confirm.click();
+        const own = { playerId: 'hero', seat: 0, wagers: [{ spot: 'number:1', amount: 20 }, { spot: 'red', amount: 20 }] };
+        ui.update({ ...state, players: [own] }, 'hero');
+        expect(ui.draft.size).toBe(0); expect(ui.slip.textContent).toContain('40 Gold confirmed');
+        expect(ui.slip.textContent).not.toContain('not yet wagered');
+        expect(ui.spotButtons.filter(b => b.classList.contains('selected')).map(b => b.dataset.spot)).toEqual(['number:1', 'red']);
+        ui.confirm.click(); expect(send).toHaveBeenCalledTimes(1);
+        ui.update({ ...state, roundId: 'next-round' }, 'hero');
+        expect(ui.spotButtons.some(b => b.classList.contains('selected'))).toBe(false);
+        expect(ui.slip.textContent).toContain('not yet wagered');
+    } finally { ui.dispose(); }
+});
+
+test('catalog changes retire only the unconfirmed slip with a visible explanation', () => {
+    const send = jest.fn(), ui = new HouseTableUI(send), state = view();
+    try {
+        ui.update(state, 'hero'); ui.builder.checked = true; ui.builder.onchange(); ui.choose('red');
+        ui.update({ ...state, spots: [{ id: 'black', label: 'Black', multiplier: 2 }] }, 'hero');
+        expect(ui.draft.size).toBe(0); expect(ui.confirm.disabled).toBe(true);
+        expect(ui.summary.textContent).toContain('Unconfirmed slip cleared');
+        ui.confirm.click(); expect(send).not.toHaveBeenCalled();
+    } finally { ui.dispose(); }
+});

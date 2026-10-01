@@ -43,8 +43,12 @@ export class HouseTableUI {
     canBet() { return this.view?.available && !this.view.processing && this.view.phase === 'betting' && !this.pending && !this.own && !this.table.expired; }
 
     update(view, playerID, presence = {}) {
+        if (this.disposed) return;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.pending = false; this.roundId = null; this.draft.clear(); this.table.clear(); this.celebration.clear(); return; }
+        if (!view) {
+            this.pending = false; this.roundId = null; this.boardKey = null; this.boardEpoch = null;
+            this.draft.clear(); this.table.clear(); this.celebration.clear(); return;
+        }
         const currency = view.currency === 'ep' ? 'EP' : 'Gold';
         const changedGame = this.kind !== view.game || this.currency !== currency;
         if (changedGame || this.roundId !== view.roundId) {
@@ -55,15 +59,18 @@ export class HouseTableUI {
         if (changedGame || !Number.isFinite(Number(this.stake.value))) this.stake.value = this.stake.min;
         this.stakeLabel.firstChild.nodeValue = `Wager (${currency}) `;
         this.own = view.players?.find(p => p.playerId === playerID);
+        if (this.own) this.draft.clear();
         if (this.own || view.phase !== 'betting') this.pending = false;
         this.table.root.setAttribute('aria-label', `${this.kind === 'roulette' ? 'Roulette' : 'Baccarat'} table and seats`);
         this.table.update(view, playerID, presence);
-        const boardKey = `${view.game}:${currency}:${view.spots?.length || 0}`;
-        if (this.boardKey !== boardKey) { this.buildBoard(view); this.boardKey = boardKey; }
+        const boardKey = JSON.stringify([view.game, currency, view.spots]);
+        const replacedDraft = Boolean(this.boardKey && this.boardKey !== boardKey && this.draft.size);
+        if (this.boardKey !== boardKey) { this.draft.clear(); this.buildBoard(view); this.boardKey = boardKey; }
         this.summary.textContent = !view.available ? 'Table unavailable. Confirmed wagers remain saved.' :
-            `${goldText(view.balance)} ${currency} available · ${view.processing || this.pending ? 'Saving wager…' : this.own && view.phase === 'betting' ? 'Wager confirmed.' :
+            `${goldText(view.balance)} ${currency} available · ${view.processing || this.pending ? view.phase === 'betting' ? 'Saving wager…' : 'Saving payouts…' : this.own && view.phase === 'betting' ? 'Wager confirmed.' :
                 view.phase === 'betting' ? 'Click a betting spot to place your wager.' : view.phase === 'revealing' ? 'Bets closed. Watch the table!' :
                     view.phase === 'settling' ? 'Saving payouts…' : 'Payouts saved. Next round starts automatically.'}`;
+        if (replacedDraft) this.summary.textContent += ' Unconfirmed slip cleared: betting options changed.';
         this.rulesText.textContent = (this.kind === 'roulette' ? 'Single zero. Straight pays 35:1 profit; split 17:1; street/trio 11:1; corner/first four 8:1; six-line 5:1; dozen/column 2:1; other outside bets 1:1. Zero loses outside bets.' :
             'Eight decks reshuffled each round. Player pays 1:1; Banker pays 1:1 less 5% commission; Tie pays 8:1. Ties return Player/Banker stakes. Natural 8/9 stops the deal; other draws are automatic.') +
             ` Total bets: ${view.minBet}–${goldText(view.maxBet)} ${currency}, in steps of ${view.betStep}. Confirmed slips cannot change until next round. Leaving or disconnecting does not cancel a confirmed bet.`;
@@ -84,8 +91,11 @@ export class HouseTableUI {
 
     buildBoard(view) {
         this.board.replaceChildren(); this.spotButtons = [];
+        const epoch = Symbol('house-board'); this.boardEpoch = epoch;
+        this.combination = null; this.combinationBet = null;
+        const choose = spot => { if (this.boardEpoch === epoch) this.choose(spot); };
         const add = (parent, id, label, color = '') => {
-            const b = this.button(label, () => this.choose(id)); b.dataset.spot = id; b.className = color;
+            const b = this.button(label, () => choose(id)); b.dataset.spot = id; b.className = color;
             b.setAttribute('aria-label', `Bet on ${label}`); this.spotButtons.push(b); parent.append(b);
         };
         if (view.game === 'baccarat') {
@@ -102,7 +112,8 @@ export class HouseTableUI {
             for (const spot of view.spots || []) if (spot.id.includes(':') && !spot.id.startsWith('number:')) {
                 const option = node('option', `${spot.label} · ${spot.multiplier - 1}:1`); option.value = spot.id; this.combination.append(option);
             }
-            this.combinationBet = this.button('Bet combination', () => this.choose(this.combination.value));
+            const combination = this.combination;
+            this.combinationBet = this.button('Bet combination', () => choose(combination.value));
             advanced.append(this.combination, this.combinationBet); this.board.append(numbers, outside, advanced);
         }
     }
@@ -130,12 +141,16 @@ export class HouseTableUI {
 
     refreshControls() {
         const allowed = this.canBet();
-        this.spotButtons?.forEach(b => { b.disabled = !allowed; b.classList.toggle('selected', this.draft.has(b.dataset.spot)); });
+        this.spotButtons?.forEach(b => {
+            b.disabled = !allowed;
+            b.classList.toggle('selected', this.draft.has(b.dataset.spot) || Boolean(this.own?.wagers?.some(w => w.spot === b.dataset.spot)));
+        });
         if (this.combinationBet) this.combinationBet.disabled = !allowed;
         this.confirm.hidden = this.clear.hidden = !this.builder.checked;
         this.confirm.disabled = !allowed || !this.draft.size; this.clear.disabled = !allowed;
-        this.slip.hidden = !this.builder.checked;
-        this.slip.textContent = `${this.draft.size} betting spots · ${goldText(sum(this.draftWagers()))} ${this.currency} total (not yet wagered)`;
+        this.slip.hidden = !this.builder.checked && !this.own;
+        this.slip.textContent = this.own ? `${this.own.wagers.length} betting spots · ${goldText(sum(this.own.wagers))} ${this.currency} confirmed for this round` :
+            `${this.draft.size} betting spots · ${goldText(sum(this.draftWagers()))} ${this.currency} total (not yet wagered)`;
         this.stake.disabled = this.builder.disabled = Boolean(this.pending);
     }
 
@@ -168,5 +183,5 @@ export class HouseTableUI {
         }
     }
 
-    dispose() { this.table.clear(); this.celebration.clear(); this.root.remove(); }
+    dispose() { this.update(null); this.disposed = true; this.root.remove(); }
 }

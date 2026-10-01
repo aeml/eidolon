@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 // GPU acceleration, independently of the native-rendered venue acceptance.
 test.use({ launchOptions: { args: ['--disable-gpu'] } });
 for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat']) {
-    test(`${kind} shared table layout at ${width}px`, async ({ page }) => {
+    test(`${kind} shared table layout at ${width}px`, async ({ page }, testInfo) => {
         await page.setViewportSize({ width, height: width === 390 ? 844 : width === 844 ? 390 : 1000 });
         await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
         await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
@@ -45,9 +45,21 @@ for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat'
         const result = await panel.locator('.house-result').boundingBox();
         const clock = await panel.locator('.card-table-clock').boundingBox();
         expect(result.y + result.height).toBeLessThanOrEqual(clock.y);
-        await page.screenshot({ path: `/tmp/eidolon-${kind}-betting-${width}.png` });
-        await panel.getByRole('button', { name: kind === 'roulette' ? 'Bet on 0' : 'Bet on Player · 1:1', exact: true }).click();
+        await page.screenshot({ path: testInfo.outputPath(`${kind}-betting-${width}.png`) });
+        await panel.getByRole('button', { name: kind === 'roulette' ? 'Bet on 0' : 'Bet on Banker · 0.95:1', exact: true }).click();
         expect(await page.evaluate(() => window.__houseLayout.sent.length)).toBe(1);
+        await page.evaluate(() => {
+            const f = window.__houseLayout;
+            const own = { playerId: 'hero', name: 'You', seat: 0, paid: false,
+                wagers: [{ spot: f.view.game === 'roulette' ? 'number:0' : 'banker', amount: 20 }] };
+            f.ui.update({ ...f.view, players: [own] }, 'hero', f.presence);
+        });
+        await expect(panel.locator('.house-bet-slip')).toContainText(`20 ${kind === 'roulette' ? 'Gold' : 'EP'} confirmed for this round`);
+        await expect(panel.locator('.house-bet-slip')).not.toContainText('not yet wagered');
+        await expect(panel.locator('.house-betting-board button.selected')).toHaveCount(1);
+        await expect(panel.locator('.house-betting-board button.selected')).toBeDisabled();
+        await expect(panel.locator('.house-betting-board button.selected')).toHaveCSS('opacity', '1');
+        await page.screenshot({ path: testInfo.outputPath(`${kind}-confirmed-${width}.png`) });
         await page.evaluate(() => {
             const f = window.__houseLayout;
             f.ui.update({ ...f.view, phase: 'revealing', revealAt: new Date(Date.now() + 6000).toISOString() }, 'hero', f.presence);
@@ -63,6 +75,6 @@ for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat'
         });
         await expect(panel.getByText('YOU WON', { exact: true })).toBeVisible();
         await expect(panel.locator('.card-table-clock')).toContainText('Next betting window');
-        await page.screenshot({ path: `/tmp/eidolon-${kind}-result-${width}.png` });
+        await page.screenshot({ path: testInfo.outputPath(`${kind}-result-${width}.png`) });
     });
 }
