@@ -37,5 +37,18 @@
     "Prepared visual fixtures are not an earned-level, authenticated Well Rested, physical-phone, full-world composition or multiplayer-capacity proof.",
     "The user-supplied Rogue, Cleric and Wizard rigs/materials/animation clips and equipment fit cannot be inspected or integrated until their new files are available.",
     "This is a versioned local visual candidate, not an accepted deployment or final modern-art approval."
-  ]
+  ],
+  "ciCorrection": {
+    "initialCommit": "50cd0dee08f3165b82485c051c6e6b72c6f2030d",
+    "initialRun": 36819004120,
+    "observedFailure": "Client Tests / Run tests with coverage: AttachedStatusEffect requires the Well Rested full-circle seal opacity to exceed 0.8; the new material was 0.65. No deployment acceptance is claimed.",
+    "fix": "The feathered filigree material now uses 0.86 opacity. The existing test requirement is unchanged; shader details, resource ownership, draw counts and gameplay rules remain intact.",
+    "checks": [
+      { "type": "focused Jest", "suites": 4, "passed": 43, "seconds": 4.192, "scope": "AttachedStatusEffect, SanctuaryEffects, WellRestedBatching and ExpandedRestAura" },
+      { "type": "native WebGL", "passed": 2, "seconds": 14.9, "artifacts": "/tmp/eidolon-1-58-1-seal-brightness-1001", "scope": "Celebration and six aura reference comparisons pass; zero pixel difference in all six samples; High uses four/five draws against eighteen/nineteen expanded, Low four against ten." },
+      { "type": "visual inspection", "scope": "Root reviewed the corrected High aura and 390x844 Low celebration screenshots. The stronger seal stays open, feathered and readable, without a solid body enclosure." },
+      { "type": "lint", "result": "Changed status-effect source passes ESLint." }
+    ],
+    "remaining": "Wait for the original CI run to finish, fresh-fetch/merge before a normal corrected push, observe the corrected run through Luna, then independently verify public identities/readiness and all six exact publisher assets."
+  }
 }

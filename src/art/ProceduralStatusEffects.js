@@ -266,7 +266,7 @@ function buildStatus(root, statusKey, def, materials) {
     const radius = def.radius;
     if (statusKey === 'well_rested') {
         const key = 'well_rested:filigree-seal';
-        if (!materialCache.has(key)) materialCache.set(key, createSanctuaryMaterial(def.palette.accent, { opacity: .65, motif: 'seal' }));
+        if (!materialCache.has(key)) materialCache.set(key, createSanctuaryMaterial(def.palette.accent, { opacity: .86, motif: 'seal' }));
         const light = materialCache.get(key);
         ring(root, statusKey, 'OuterSeal', radius, light, { thickness: .22, segments: 64 });
         ring(root, statusKey, 'InnerSeal', radius * .64, light,
