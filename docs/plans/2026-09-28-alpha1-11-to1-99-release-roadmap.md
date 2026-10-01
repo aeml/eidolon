@@ -2,14 +2,14 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.53.0, exactbf723c17751cd04a9d3f6b8d95102840ca9286dd,
-CI36770739226. CI/live QA and independent public IPv4 checks passed for both
-identities, database readiness, login/history and all seven changed runtime
-files. See its [acceptance record](2026-09-30-release1-53-acceptance.md).
-Alpha1.54 is the isolated release candidate; packaging is not public acceptance.
-Alpha1.55 arena quality is locally packaged on an unpublished branch, with
-scoped checks recorded in its [work record](2026-09-30-release1-55-arena-work.md).
-It will not be pushed before the exact 1.54 predecessor is accepted.
+baseline is Alpha1.54.0, exact74c3404a177cf0699038f8b34b67c1941568f364,
+CI36789477403 attempt1. All ten CI jobs and independent public IPv4 checks
+passed for identities, database readiness and all 22 changed runtime files,
+including login/history and both optimized Fighter assets. See its
+[acceptance record](2026-09-30-release1-54-acceptance.md).
+Alpha1.55 arena quality is the next packaged release candidate, with scoped
+checks recorded in its [work record](2026-09-30-release1-55-arena-work.md).
+Its own exact-source CI and public acceptance remain required.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
@@ -50,9 +50,9 @@ default enablement. It is no longer an unavailable input; remaining actors and
 the final modern-art gate remain open. The owner need not supply equipment or
 environment assets. The pilot now has two smaller validated exports and tested
 independent skeleton instances, fitted equipment, skill/controller coverage,
-seating and static previews in the unpublished 1.54 candidate. Normal factory
-loading, fallback and quality-specific pooling are locally tested. CI/public
-acceptance is still required before calling it the live default Fighter;
+seating and static previews in the accepted 1.54 release. Normal factory
+loading, fallback and quality-specific pooling have scoped checks and exact
+CI/public acceptance; the supplied model is now the live default Fighter.
 final modern art for the entire actor catalog remains open.
 
 World-population follow-up: the [world population and atlas contract](2026-09-28-world-population-and-atlas.md)

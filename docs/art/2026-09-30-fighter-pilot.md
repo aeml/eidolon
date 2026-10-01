@@ -2,10 +2,11 @@
 
 September 30, 2026. The owner delivered a rigged, underclothes-only Fighter in
 commit `da02a2a5b35e70b8b890873d36adcf2804433281`. It was preserved by the fresh
-remote merge before the 1.53 push. The asset is available for integration; the
-live runtime still uses the procedural Fighter. The unpublished normal factory
-and character preview now select derived, independent rigs on demand. This is
-partial integration evidence, not completed visual or performance acceptance.
+remote merge before the 1.53 push. The normal factory and character preview now
+select derived, independent rigs on demand in the
+[accepted Alpha 1.54 release](../plans/2026-09-30-release1-54-acceptance.md).
+This is scoped integration acceptance, not final modern-art or full-world
+performance approval.
 
 ## Verified delivery
 
@@ -201,9 +202,9 @@ remaining actor art work stay on the full roadmap.
    scoped alpha integration.
 
 Other class/NPC/monster deliveries and full modern-art acceptance remain
-separate requirements. The packaged 1.54 candidate enables the Fighter through
-the normal factory after the scoped checks above. Exact-source CI/public
-acceptance remains necessary before declaring it live. Four-actor fixture
+separate requirements. Exact-source CI and independent public acceptance now
+confirm the normal Fighter factory and both optimized exports in Alpha 1.54.
+Four-actor fixture
 counts/timings are not full-world performance or final art qualification.
 No new owner model request is needed. Markdown was source-reviewed; no rendered
 documentation preview was available.
