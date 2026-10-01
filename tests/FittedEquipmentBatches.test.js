@@ -69,6 +69,8 @@ test.each([
     ['texture', part => { part.material.map = new THREE.Texture(); }],
     ['custom shader', part => { part.material.onBeforeCompile = () => {}; }],
     ['custom render callback', part => { part.onBeforeRender = () => {}; }],
+    ['custom post-render callback', part => { part.onAfterRender = () => {}; }],
+    ['custom shadow callback', part => { part.onBeforeShadow = () => {}; }],
     ['body instead of equipment', part => { part.userData.authoredEquipment = false; }],
     ['transform', part => { part.position.x = 1; }],
     ['bind matrix', part => { part.bindMatrix.makeTranslation(1, 0, 0); }],
@@ -125,4 +127,32 @@ test('clearing stealth equipment disposes owned original and temporary materials
     expect(sourceDispose).not.toHaveBeenCalled(); expect(textureDispose).not.toHaveBeenCalled();
     expect(root.userData.equipmentVisualItemCount).toBe(0);
     restoreActorStealthAppearance(actor);
+});
+
+test('normal fitted equipment batches by default; explicit false retains the separate-piece comparison path', async () => {
+    const {root: scene, parts, bones} = fixture();
+    bones[0].name = 'pelvis'; bones[1].name = 'spine_01';
+    parts[0].name = 'Fighter_Body'; parts[0].userData = {}; parts[1].userData = {};
+    const sourceScene = new THREE.Group();
+    sourceScene.add(parts[1], parts[1].clone(false));
+    for (const name of ['upperarm_l', 'lowerarm_l', 'upperarm_r', 'lowerarm_r', 'neck_01']) {
+        const bone = new THREE.Bone(); bone.name = name; bone.position.y = name.startsWith('lower') ? 2 : 1; scene.add(bone);
+    }
+    const root = new THREE.Group(); root.userData.authoredClass = 'Fighter'; root.add(scene);
+    prepareFittedEquipment(root, scene, async () => ({scene: sourceScene}));
+    const equipment = {chest: {id: 'mail', name: 'Plate Mail', baseName: 'Plate Mail', slot: 'chest', type: 'ARMOR', rarity: 'Rare'}};
+    for (const enabled of [undefined, false]) {
+        root.userData.fittedEquipmentBatching = enabled;
+        applyFittedEquipment(root, equipment); await root.userData.equipmentReady;
+        const batches = [], sources = [];
+        root.traverse(mesh => {
+            if (mesh.userData.fittedBatchSources) batches.push(mesh);
+            if (mesh.userData.fittedBatchSource) sources.push(mesh);
+        });
+        expect(batches).toHaveLength(enabled === false ? 0 : 1);
+        expect(sources).toHaveLength(enabled === false ? 0 : 2);
+        expect(sources.every(mesh => !mesh.visible)).toBe(true);
+        expect(root.userData.equipmentVisualItemCount).toBe(1);
+        clearFittedEquipment(root);
+    }
 });

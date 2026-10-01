@@ -193,8 +193,9 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             for (const part of staged) {
                 if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
             }
-            // Opt-in until exact surface and native render comparisons pass.
-            if (root.userData.fittedEquipmentBatching === true) staged = batchFittedEquipment(staged);
+            // Exact surfaces and native comparisons pass for compatible opaque
+            // pieces. False retains the original path for diagnostic comparisons.
+            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
         } catch (error) {
             disposeParts(staged); root.userData.equipmentVisualSignature = ''; throw error;
         }

@@ -14,6 +14,9 @@ function keyFor(mesh) {
         material.onBeforeRender !== THREE.Material.prototype.onBeforeRender ||
         material.customProgramCacheKey !== THREE.Material.prototype.customProgramCacheKey ||
         mesh.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender ||
+        mesh.onAfterRender !== THREE.Object3D.prototype.onAfterRender ||
+        mesh.onBeforeShadow !== THREE.Object3D.prototype.onBeforeShadow ||
+        mesh.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow ||
         material.clippingPlanes || Object.values(material).some(value => value?.isTexture) ||
         mesh.customDepthMaterial || mesh.customDistanceMaterial ||
         Object.keys(geometry.morphAttributes).length || geometry.groups.length ||

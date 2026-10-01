@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "prepared-opt-in-not-published",
+  "status": "prepared-default-enabled-not-published",
   "rootVisualReview": "Paired native all-eight-class CombatIdle render inspected after the comparison: fitted armor, both Rogue weapons, Wizard staff/tome and mixed Cleric outfit remain visible; no final art approval claimed.",
   "baselineRuntimeCommit": "7d5fdf6de171ce3e2f1dd66a86ec3a013787ac24",
   "codeAndFixture": "FittedEquipmentBatches.js and retained fixtures alongside this receipt",
@@ -15,6 +15,17 @@
     "unitSeconds": 5.848,
     "lint": "passed",
     "sourceGLBs": "unchanged"
+  },
+  "defaultIntegration": {
+    "unitCasesPassed": 38,
+    "unitSeconds": 6.086,
+    "nativeCasesPassed": 2,
+    "nativeSeconds": 43.7,
+    "artifacts": "/tmp/eidolon-fitted-batch-default-20261001",
+    "coverage": "Default-on fitting for all eight class/quality models, three equipped previews, both Rogue qualities through stealth restoration, and Fighter poses, seating and independent lifecycle; explicit false retains the original comparison path.",
+    "rootVisualReview": "Default all-eight-class CombatIdle and equipped Rogue preview inspected: fitted armor, both Rogue weapons and class equipment remain visible. Final art approval and phone acceptance are not claimed.",
+    "sourceGLBs": "unchanged",
+    "production": "Unchanged until a later accepted release publishes this prepared code."
   },
   "diagnostic": [
     {
@@ -713,7 +724,7 @@
     }
   ],
   "limits": [
-    "Opt-in only; production default is unchanged.",
+    "Default enabled only in the prepared worktree; production is unchanged until this code is published and independently accepted.",
     "Paired host CPU busy fraction was 97.5–98.8%, with high load on 16 logical processors; timing is not an idle-device claim.",
     "Both renderer tiers use High-detail bodies.",
     "Same triangles and stable warmed resource counts verified; actual campaign/network gameplay and phone feedback are separate.",
