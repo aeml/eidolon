@@ -1,7 +1,7 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 // This wallet never submits Gold casino wagers or grants VIP access.
 export class EPWalletUI {
-    dispose() { disposeOwnedEvents(this); this.root.remove(); }
+    dispose() { this.disposed = true; disposeOwnedEvents(this); this.root.remove(); }
 
     constructor({ host, getPlayer, send }) {
         this.getPlayer = getPlayer;
@@ -11,7 +11,7 @@ export class EPWalletUI {
         this.root.innerHTML = `<summary>Eidolon Points · EP</summary><div class="equipment-loadouts-body">
             <p data-balance>Open to load your balance.</p>
             <p data-vip-status>VIP membership months grant 100 EP each. Payment integration is not available.</p>
-            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance. EP-only casino games are still being built; owning EP does not grant VIP access.</p>
+            <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance or wager it in VIP casino games, where winnings are EP only. Owning EP does not grant VIP access.</p>
             <label>EP to receive<input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="EP to receive"></label>
             <button type="button" data-review disabled>Review exchange</button>
             <div data-confirmation hidden><p data-cost></p><button type="button" data-confirm>Confirm permanent exchange</button> <button type="button" data-cancel>Cancel</button></div>
@@ -53,6 +53,7 @@ export class EPWalletUI {
     }
 
     refreshPlayer() {
+        if (this.disposed) return false;
         const id = this.getPlayer()?.id;
         if (id === this.playerID) return Boolean(id);
         this.playerID = id;
@@ -80,7 +81,7 @@ export class EPWalletUI {
     }
 
     submitPending() {
-        if (!this.pending) return;
+        if (this.disposed || !this.pending) return;
         this.confirmation.hidden = true;
         this.review.disabled = true;
         this.retry.hidden = false;
@@ -89,25 +90,27 @@ export class EPWalletUI {
     }
 
     handleResult(result) {
-        if (!this.refreshPlayer() || !result) return;
-        if (Number.isSafeInteger(result.ep) && result.ep >= 0 && Number.isSafeInteger(result.gold) &&
-            result.gold >= 0 && result.goldPerEP === 1000000) {
+        if (!this.refreshPlayer() || !result || result.playerID !== this.playerID) return false;
+        const validBalances = Number.isSafeInteger(result.ep) && result.ep >= 0 && Number.isSafeInteger(result.gold) &&
+            result.gold >= 0 && result.goldPerEP === 1000000;
+        if (validBalances) {
             this.gold = result.gold;
             this.rate = result.goldPerEP;
             this.ready = true;
             this.root.querySelector('[data-balance]').textContent = `${result.ep.toLocaleString()} EP · ${result.gold.toLocaleString()} Gold`;
         }
-        if (this.pending && result.id === this.pending.id && !result.pending) {
+        if (this.pending && result.id === this.pending.id && result.pending === false && typeof result.success === 'boolean' && validBalances) {
             this.pending = null;
             this.storePending();
         }
         this.review.disabled = !this.ready || Boolean(this.pending);
         this.retry.hidden = !this.pending;
         this.status.textContent = result.message || 'Wallet updated.';
+        return true;
     }
 
     handleVIPStatus(result) {
-        this.handleResult(result);
+        if (!this.handleResult(result)) return;
         const until = result?.active ? new Date(result.until) : null;
         const date = until && Number.isFinite(until.getTime()) ? until.toLocaleDateString() : '';
         this.root.querySelector('[data-vip-status]').textContent = result?.success

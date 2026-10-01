@@ -38,7 +38,8 @@ func (c *Client) handleEPWallet(msg Message) {
 		return
 	}
 	payload, _ := json.Marshal(map[string]interface{}{
-		"success": success, "pending": pending, "message": message, "id": request.ID,
+		"playerID": snapshot.ID,
+		"success":  success, "pending": pending, "message": message, "id": request.ID,
 		"ep": snapshot.EP, "gold": snapshot.Gold, "goldPerEP": database.GoldPerEP,
 	})
 	c.sendSafe(createMessage(MsgEPWalletResult, payload))

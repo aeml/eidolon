@@ -1,0 +1,110 @@
+package game
+
+import (
+	"reflect"
+	"testing"
+)
+
+// Exercise the real item movement paths, not invented cosmetic inventory items.
+// EP buys an account-owned appearance; the underlying earned sword alone moves.
+func TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear(t *testing.T) {
+	var offer CosmeticOffer
+	for _, candidate := range CosmeticCatalogue() {
+		if candidate.ID == "grovekeeper-blade-v1" {
+			offer = candidate
+		}
+	}
+	if offer.ID == "" {
+		t.Fatal("missing sword cosmetic")
+	}
+	for _, path := range []string{"vendor", "auction", "direct-trade", "guild-bank"} {
+		t.Run(path, func(t *testing.T) {
+			w, p := loadoutFixture()
+			p.X, p.Z, p.Gold, p.EP = 12, 185, 50, 100
+			item := Item{ID: "earned-sword", Name: offer.Base, Type: ItemWeapon, Slot: "mainHand",
+				Stack: 1, MaxStack: 1, Value: 17, Rarity: RarityCommon,
+				Stats: map[string]int{"strength": 3}, StatScaleVersion: ItemStatScaleVersion}
+			p.Inventory = make([]Item, MaxInventorySize)
+			p.Equipment["mainHand"] = item
+			p.RecalculateStats()
+			before := w.GetEntityCopy(p.ID)
+			if bought, err := w.BuyCosmetic(p.ID, offer.ID, offer.PriceEP); err != nil || !bought {
+				t.Fatal("cannot buy appearance", err)
+			}
+			key := AppearanceKey(offer.Appearance)
+			if err := w.SelectAppearance(p.ID, "mainHand", key); err != nil {
+				t.Fatal(err)
+			}
+			p.RecalculateStats()
+			if p.Gold != before.Gold || p.Stats != before.Stats || p.Experience != before.Experience ||
+				p.ResonanceXP != before.ResonanceXP || !reflect.DeepEqual(p.Equipment, before.Equipment) {
+				t.Fatal("applying purchased look created power, currency or a replacement item")
+			}
+			if _, sold := w.PerformSell(p.ID, offer.ID); sold {
+				t.Fatal("appearance sold as an inventory item")
+			}
+			if _, ok := w.PerformUnequip(p.ID, "mainHand", item.ID); !ok || !reflect.DeepEqual(p.Inventory[0], item) {
+				t.Fatal("unequip attached a purchased look to transferable gear")
+			}
+			recipient := &Entity{ID: "player-recipient", Name: "Recipient", Type: TypePlayer, SubType: "Fighter",
+				Level: 30, Health: 25, State: "IDLE", X: 13, Z: 185, Gold: 100, EP: 5, Inventory: make([]Item, MaxInventorySize)}
+			w.AddEntity(recipient)
+			expectedGold := 50
+			switch path {
+			case "vendor":
+				if _, ok := w.PerformSell(p.ID, item.ID); !ok {
+					t.Fatal("ordinary earned gear cannot be sold")
+				}
+				expectedGold += item.Value
+			case "auction":
+				if err := p.ApplyAuctionListing("owned-gear-listing", auctionDeliveryPayload(t, item), 25); err != nil {
+					t.Fatal("cannot escrow ordinary earned gear", err)
+				}
+				expectedGold -= 25
+			case "direct-trade":
+				trade, err := w.StartDirectTrade(p.ID, recipient.ID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err = w.SetDirectTradeOffer(p.ID, trade.ID, []string{item.ID}, 0); err != nil {
+					t.Fatal(err)
+				}
+				if _, err = w.SetDirectTradeOffer(recipient.ID, trade.ID, nil, 23); err != nil {
+					t.Fatal(err)
+				}
+				if _, _, err = w.ConfirmDirectTrade(p.ID, trade.ID); err != nil {
+					t.Fatal(err)
+				}
+				if _, done, err := w.ConfirmDirectTrade(recipient.ID, trade.ID); err != nil || !done {
+					t.Fatal("ordinary trade failed", err)
+				}
+				expectedGold += 23
+			case "guild-bank":
+				escrow, err := w.DebitPlayerItem(p.ID, item.ID)
+				if err != nil || !reflect.DeepEqual(escrow, item) {
+					t.Fatal("bank escrow changed item identity", err)
+				}
+				if err = w.CreditPlayerItem(recipient.ID, escrow); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if p.EP != 100-offer.PriceEP || p.Gold != expectedGold || recipient.EP != 5 || p.AppearanceCollection[key] != offer.Appearance {
+				t.Fatal("item movement converted EP or lost the owner's permanent appearance")
+			}
+			if path == "direct-trade" || path == "guild-bank" {
+				if !reflect.DeepEqual(recipient.Inventory[0], item) {
+					t.Fatal("recipient received a changed or cosmetic-priced item")
+				}
+				if _, err := w.CollectOwnedAppearances(recipient.ID); err != nil {
+					t.Fatal(err)
+				}
+				if _, owned := recipient.AppearanceCollection[key]; owned {
+					t.Fatal("recipient inherited an EP unlock from transferred ordinary gear")
+				}
+				if err := w.SelectAppearance(recipient.ID, "mainHand", key); err == nil {
+					t.Fatal("recipient could use another account's paid appearance")
+				}
+			}
+		})
+	}
+}

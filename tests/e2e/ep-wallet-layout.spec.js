@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${width}px`, async ({ page }) => {
+// Prepared wallet replies, not actual currency settlement or physical-phone QA.
+test.use({ launchOptions: { args: ['--disable-gpu'] } });
+for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+    await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async (mobile) => {
@@ -17,10 +21,10 @@ for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${wid
         window.__epRequests = [];
         const ui = new EPWalletUI({ host, getPlayer: () => ({ id: 'ep-layout-player' }), send: (type, payload) => {
             window.__epRequests.push({ type, payload });
-            if (type === 'get_vip_status') ui.handleVIPStatus({ success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
+            if (type === 'get_vip_status') ui.handleVIPStatus({ playerID: 'ep-layout-player', success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
                 awardedEP: 0, ep: 8, gold: 3000000, goldPerEP: 1000000 });
-            else if (type === 'get_ep_wallet') ui.handleResult({ success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
-            else ui.handleResult({ id: payload.id, success: true, ep: 10, gold: 1000000, goldPerEP: 1000000, message: 'Exchange saved.' });
+            else if (type === 'get_ep_wallet') ui.handleResult({ playerID: 'ep-layout-player', success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+            else ui.handleResult({ playerID: 'ep-layout-player', id: payload.id, success: true, pending: false, ep: 10, gold: 1000000, goldPerEP: 1000000, message: 'Exchange saved.' });
         } });
         ui.root.open = true;
     }, width === 390);
@@ -36,7 +40,7 @@ for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${wid
     expect((await confirm.boundingBox()).height).toBeGreaterThanOrEqual(44);
     expect((await wallet.boundingBox()).width).toBeGreaterThan(280);
     expect(await wallet.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
-    await page.screenshot({ path: `/tmp/eidolon-ep-confirmation-${width}.png` });
+    await page.screenshot({ path: testInfo.outputPath(`ep-confirmation-${width}.png`) });
     await confirm.click();
     await expect(wallet.locator('[role="status"]')).toHaveText('Exchange saved.');
     await expect(wallet.locator('[data-balance]')).toContainText('10 EP');

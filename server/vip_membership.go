@@ -93,7 +93,8 @@ func sendVIPStatus(c *Client) {
 		message = "VIP membership could not be refreshed. No new allowance is confirmed; please try again."
 	}
 	payload, _ := json.Marshal(map[string]interface{}{
-		"success": err == nil, "message": message, "active": err == nil && now.Before(p.VIPUntil),
+		"playerID": p.ID,
+		"success":  err == nil, "message": message, "active": err == nil && now.Before(p.VIPUntil),
 		"until": p.VIPUntil, "monthlyEP": database.VIPMonthlyEP, "awardedEP": awarded,
 		"ep": p.EP, "gold": p.Gold, "goldPerEP": database.GoldPerEP,
 	})
