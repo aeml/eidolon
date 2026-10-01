@@ -2,10 +2,15 @@
 
 The four existing elemental event families now have server-published upcoming
 windows, clearer atlas guidance and explicit reward instructions. This is locally
-packaged as Alpha 1.57.0 but unpublished after 1.56, not a deployed release.
-The preceding 1.55 is accepted; 1.56 is pushed at
-`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692, awaiting its own
-acceptance. The season calendar/operator question remains open for organizing
+packaged and pushed as Alpha 1.57.0 at
+`3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`,
+[CI36802997921](https://github.com/aeml/eidolon/actions/runs/36802997921).
+Its own pipeline and independent public acceptance remain pending; push is not
+a live claim.
+The preceding [1.56 is accepted](2026-10-01-release1-56-acceptance.md) at
+`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692. All ten jobs and
+independent public identities, readiness and five changed assets passed.
+The season calendar/operator question remains open for organizing
 a new competition, not for this unchanged event calendar. Preserve ordered
 publication, current saves and the existing event economy.
 
@@ -91,6 +96,14 @@ remain human playtest observations; do not manufacture those results from the
 prepared mechanical cohorts.
 
 ## Remaining release work
+
+After the preceding release was accepted, a final version/publisher check passed
+331 checks in 2.523 seconds. The outgoing diff was inspected and a fresh fetch
+and normal merge retained current master, including the supplied Fighter model
+and website changes. This is preparation for publication, not this release's
+CI or live acceptance. Normal publication followed the accepted 1.56 receipt;
+the final fresh fetch/merge was up to date and the push fast-forwarded master.
+Luna monitors the new run; independent public acceptance remains required.
 
 Local packaging passed 335 version/publisher checks in 3.088 seconds and both
 unchanged anonymous login/release routes in 9.5 seconds. Scoped lint, shell syntax

@@ -3,9 +3,10 @@
 The Dungeon Guide now has an Endgame tab at level 100, bringing post-story
 direction and the existing repeat-run systems into one readable overview.
 This is locally packaged as Alpha 1.58.0 but unpublished, not a live release.
-The preceding 1.55 is accepted; 1.56 is pushed at
-`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692, and 1.57 remains
-locally packaged. Preserve ordered acceptance before publishing this candidate.
+The preceding [1.56 is accepted](2026-10-01-release1-56-acceptance.md) at
+`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692. The 1.57 package is
+pushed at `3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`, CI36802997921, awaiting
+its own acceptance. Preserve ordered acceptance before publishing this candidate.
 
 ## Player choices and authority
 

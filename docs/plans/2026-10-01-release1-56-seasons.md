@@ -5,7 +5,7 @@ settled Bronze, Silver and Gold medals usable as permanent wardrobe looks. It is
 packaged and pushed as Alpha 1.56.0 at
 `b22975c8f22b72ff72a591ff40c3ca8133d4dd88`,
 [CI36798699692](https://github.com/aeml/eidolon/actions/runs/36798699692).
-Its own CI and public acceptance remain pending; push is not a live claim. The owner's
+Its [CI and public acceptance](2026-10-01-release1-56-acceptance.md) are complete. The owner's
 calendar/operator question remains unanswered. This package documents the
 quarterly behavior already running since Alpha 1.7; it does not activate a new
 competition or authorize a manual reset, profile edit or calendar change.
@@ -119,8 +119,8 @@ not answer the owner's question, assign an operator or invite a new competition;
 that operational decision remains open before an organized season launch.
 
 Publication followed accepted 1.55 and a fresh fetch/merge of master, then a
-normal push on October 1. Luna monitors CI; independent public identity,
-readiness and changed-file checks remain required. Source
+normal push on October 1. Luna monitored the successful run; independent public
+identity, readiness and all five changed-file checks passed. Source
 documentation was reviewed; a rendered documentation preview is unavailable.
 
 The preceding [1.55 acceptance](2026-10-01-release1-55-acceptance.md) is complete:
