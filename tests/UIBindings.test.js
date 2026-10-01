@@ -43,6 +43,33 @@ describe('UIBindings', () => {
         expect(engine.activeWorldGenerator.graphicsQuality).toBe('medium');
     });
 
+    test.each([
+        ['desktop High to Low', false, 'high', 'low', true],
+        ['desktop Low to High', false, 'low', 'high', true],
+        ['desktop Medium retains High', false, 'high', 'medium', false],
+        ['desktop Low retains Low', false, 'low', 'low', false],
+        ['mobile High retains Low', true, 'low', 'high', false]
+    ])('%s preserves owned actors and requests reload only for a body-detail mismatch', (_, isMobile, authoredQuality, quality, reloadRequired) => {
+        const engine = createEngine();
+        const part = { userData: { authoredClass: 'Fighter', authoredQuality } };
+        engine.renderSystem.isMobile = isMobile;
+        engine.renderSystem.entityGroup = { traverse: visitor => visitor(part) };
+        engine.renderSystem.setGraphicsQuality.mockReturnValue({ changed: true, reloadRequired: false });
+        new UIBindings(engine).bindConstructorCallbacks();
+        expect(engine.uiManager.onGraphicsQualityChange(quality)).toEqual({ changed: true, reloadRequired });
+        expect(part.userData.authoredQuality).toBe(authoredQuality);
+    });
+
+    test('procedural actors do not request a body reload or suppress an existing renderer reload', () => {
+        const engine = createEngine();
+        engine.renderSystem.entityGroup = { traverse: visitor => visitor({ userData: {} }) };
+        engine.renderSystem.setGraphicsQuality.mockReturnValue({ changed: true, reloadRequired: false });
+        new UIBindings(engine).bindConstructorCallbacks();
+        expect(engine.uiManager.onGraphicsQualityChange('low')).toEqual({ changed: true, reloadRequired: false });
+        engine.renderSystem.setGraphicsQuality.mockReturnValue({ changed: true, reloadRequired: true });
+        expect(engine.uiManager.onGraphicsQualityChange('high')).toEqual({ changed: true, reloadRequired: true });
+    });
+
     function createEngine() {
         return {
             player: {

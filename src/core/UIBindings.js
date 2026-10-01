@@ -28,7 +28,16 @@ export class UIBindings {
             const normalized = ['low', 'medium', 'high'].includes(quality) ? quality : 'high';
             if (engine.worldGenerator) engine.worldGenerator.graphicsQuality = normalized;
             if (engine.activeWorldGenerator) engine.activeWorldGenerator.graphicsQuality = normalized;
-            return result;
+            // Lighting/effects change immediately, but existing authored actors
+            // retain their owned skeleton/mesh until reloaded. Use the existing
+            // optional reload prompt rather than silently leaving High bodies
+            // active under Low or replacing a combat actor in flight.
+            const actorQuality = engine.renderSystem.isMobile || normalized === 'low' ? 'low' : 'high';
+            let actorReloadRequired = false;
+            engine.renderSystem.entityGroup?.traverse(part => {
+                if (part.userData?.authoredClass && part.userData.authoredQuality !== actorQuality) actorReloadRequired = true;
+            });
+            return actorReloadRequired ? { ...result, reloadRequired: true } : result;
         };
         ui.onBrightnessChange = (level) => {
             engine.renderSystem.setBrightnessLevel(level);

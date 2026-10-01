@@ -23,10 +23,15 @@
     "lowRendererTriangles": { "highBodies": 1457406, "lowBodies": 1304267 },
     "interpretation": "About 10.5% fewer triangles in this equipped workload. Gear uses the same delivered detail; calls remain unchanged. Timings are from separate runs with different host load, not a paired speed comparison."
   },
+  "qualitySettingsFollowup": {
+    "preparedChange": "Graphics settings now return reloadRequired when a loaded authored body differs from the requested actor detail. The existing optional prompt runs only after saving; actors are not replaced during combat. Medium retains High on desktop, mobile retains Low, procedural actors do not request a body reload, and an existing renderer reload requirement is preserved.",
+    "checks": "38 checks across UIBindings, EntityMeshLifetime and PhoneSettingsUI passed in 1.285 seconds; six new binding regressions; scoped lint and whitespace passed.",
+    "limit": "No native end-to-end settings reload or physical-phone session verified; this is prepared local code, not production acceptance."
+  },
   "limits": [
     "Only a local prepared rendering fixture; no production accounts, server combat, campaign or physical phone exercised.",
     "Host CPU was 94.2–97.5% busy on 16 logical processors; no idle-device FPS promise.",
-    "Entity loading honors saved desktop detail and forces Low on mobile; this fixture does not prove live switching of existing actor meshes.",
+    "Entity loading honors saved desktop detail and forces Low on mobile. Settings request an optional reload for mismatched existing bodies; live actor replacement is not implemented or claimed.",
     "Source GLBs, gameplay visibility and collision dimensions are unchanged.",
     "Broader crowd performance, idle/comparable-device benchmarks, owner art approval and human playtest gates remain open."
   ]

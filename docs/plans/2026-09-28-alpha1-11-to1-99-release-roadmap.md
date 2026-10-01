@@ -60,8 +60,11 @@ counts and inspected threat visibility. Delivered Low bodies reduced triangles
 by about 10.5%, but equipped items still share the same detail. Six added entity
 loading cases verify renderer-selected desktop detail and forced Low on mobile.
 Busy Low-render medians were 23.8–25.6 ms on a heavily loaded host, not a paired
-speed comparison or phone-performance acceptance. Comparable-device profiling
-and existing-actor quality-switch coverage remain open.
+speed comparison or phone-performance acceptance. The prepared settings binding
+now requests the existing optional reload for mismatched loaded actor detail,
+rather than silently retaining High bodies under Low; six regression cases
+passed within 38 scoped settings/lifetime checks. Comparable-device profiling,
+native settings-reload acceptance and physical-phone feedback remain open.
 
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin
