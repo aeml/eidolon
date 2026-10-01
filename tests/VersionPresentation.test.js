@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.55.0';
+const currentVersion = '1.56.0';
+
+test('1.56.0 records cosmetic season claims without power or a new calendar', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.56.0"'), previous = html.indexOf('data-version="1.55.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['earned arena looks', 'Settled Bronze, Silver and Gold', 'Current projections cannot unlock',
+        'not sold for EP', 'Repeat claims do not grant extra copies or currency', 'existing UTC-quarter calendar',
+        'pending results and unavailable profiles', 'No new calendar, manual reset or prize-rate change',
+        'human balance review remain separate gates', 'open-alpha access are unchanged', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.55.0 records arena quality without changing competition or progression', () => {
     const html = fs.readFileSync('index.html', 'utf8');

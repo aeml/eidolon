@@ -2,7 +2,7 @@
 
 This milestone publishes the existing arena calendar and reward rules and makes
 settled Bronze, Silver and Gold medals usable as permanent wardrobe looks. It is
-unpublished preparation, not a live release. The operator and continued use of
+locally packaged as Alpha 1.56.0 but unpublished, not a live release. The operator and continued use of
 the quarterly calendar still await the owner's answer; no manual season reset,
 production profile edit or new calendar activation is authorized by this record.
 
@@ -101,8 +101,15 @@ with no missing or duplicate cases. No separate broad test matrix was added.
 Browser fixtures supply server-shaped results and cannot establish earned
 qualification or complete a real season. They make no physical-phone claim.
 
+Packaging passed 330 version/publisher checks in 2.382 seconds, scoped lint,
+shell syntax and diff checks. Both unchanged anonymous login/release routes
+passed in 9.1 seconds, with login version matching the local manifest and new
+1.56 notes preceding the complete prior history. The notes screenshot was
+reviewed. Artifacts: `/tmp/eidolon-1-56-login-notes-1001`. This establishes local
+packaging, not public server readiness or release acceptance.
+
 Before publication: receive the calendar/operator decision,
-accept the preceding 1.55 release, align version and cumulative patch notes,
+accept the preceding 1.55 release,
 fresh-fetch and merge master, then push normally. Luna monitors CI; independent
 public identity, readiness and changed-file checks remain required. Source
 documentation was reviewed; a rendered documentation preview is unavailable.
