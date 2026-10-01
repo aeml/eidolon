@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.59",
+  "status": "prepared-unpublished",
+  "parentCommit": "6f450939",
+  "scope": [
+    "Explicit staff account selection, separate from the conduct report author.",
+    "Bounded preview of immutable account ID, account name, revision and active public mute notice; no credentials, saves or private receipts.",
+    "Database role checks around the projected read; handler session/role checks around the read and admission audit.",
+    "Fail closed on unavailable authority, malformed or mismatched target, audit failure, role revocation and session replacement.",
+    "Prepared target-preview protocol remains absent from both registration and admission maps."
+  ],
+  "checks": {
+    "handler": "Three new target-handler tests include 12 invalid payloads and eight retirement cases during read or audit. Scoped handler/action/guard/protocol race checks passed in 5.336 seconds.",
+    "database": "Two new projection tests cover public-only JSON, defensive notice copying, exact expiry, legacy empty state, six invalid projections and unavailable stores. Scoped projection/activity race checks passed in 1.303 seconds.",
+    "whitespace": "Passed."
+  },
+  "remaining": [
+    "Exercise the new projected Mongo read in the final disposable moderation flow; pure projections do not prove database permissions or query behavior.",
+    "Connect target preview and confirmed staff-action UI, then approved policy and protocol/enforcement activation.",
+    "Complete sanction-to-appeal acceptance and remaining name-abuse/sanction/staff/retention scope before publishing 1.59."
+  ],
+  "excluded": [
+    "No publication, production account action, new policy, retention change or browser/campaign run."
+  ]
+}
