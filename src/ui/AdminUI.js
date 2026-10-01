@@ -1,5 +1,6 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { AdminOperations } from './AdminOperations.js';
+import { AdminReportReview } from './AdminReportReview.js';
 
 // Visibility is only presentation. Every read and operation must be
 // independently authorized by the server against the current durable role.
@@ -8,6 +9,7 @@ export class AdminUI {
         Object.assign(this, { launcher, send, openWindow, closeWindow });
         this.authorized = false;
         this.view = 'players';
+        this.reportReviews = [];
         this.root = document.createElement('section');
         this.root.id = 'administration-screen';
         this.root.className = 'window support-window administration-window';
@@ -26,7 +28,7 @@ export class AdminUI {
                     <label>Exact account<input data-actor maxlength="71" autocomplete="off" placeholder="All accounts"></label>
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
-                        <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="login">Login</option>
+                        <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
                         <option value="admin_teleport">Teleports</option></select></label>
@@ -93,7 +95,9 @@ export class AdminUI {
         this.refresh.disabled = !this.authorized;
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
+        for (const review of this.reportReviews) review.setState(Boolean(this.pending));
         if (!this.authorized) {
+            this.clearReportReviews();
             this.list.replaceChildren();
             this.next.hidden = true;
             this.cursor = '';
@@ -110,6 +114,7 @@ export class AdminUI {
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
+        for (const review of this.reportReviews) review.setState(true);
         this.timeout = setTimeout(() => {
             this.pending = null;
             this.root.setAttribute('aria-busy', 'false');
@@ -127,14 +132,14 @@ export class AdminUI {
 
     requestPlayers(after) {
         if (!this.connected || !this.authorized || this.pending) return;
-        this.list.replaceChildren();
+        this.clearReportReviews(); this.list.replaceChildren();
         this.request('admin_players', { after });
     }
 
     refreshView(cursor) {
         if (this.view === 'players') { this.requestPlayers(cursor); return; }
         if (!this.connected || !this.authorized || this.pending) return;
-        this.list.replaceChildren();
+        this.clearReportReviews(); this.list.replaceChildren();
         if (this.view === 'reports') {
             this.request('admin_reports', { before: cursor, status: this.reportStatus.value });
             return;
@@ -149,13 +154,19 @@ export class AdminUI {
         this.root.setAttribute('aria-busy', 'false');
         this.actor.disabled = this.action.disabled = this.reportStatus.disabled = false;
         const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
-        this.setAuthorized(result.authorized === true && (mutation || result.success === true));
+        const reviewResult = type === 'admin_report_review_result';
+        this.setAuthorized(result.authorized === true && (mutation || reviewResult || result.success === true));
         if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
             this.status.textContent = result.message || 'Administrator access is unavailable.';
             return;
         }
         this.status.textContent = result.message || 'Access verified.';
+        if (reviewResult) {
+            for (const review of this.reportReviews) review.handleResult(result);
+            if (result.success === true) { this.reviewNotice = result.message; this.refreshView(''); }
+            return;
+        }
         if (type === 'admin_status_result') {
             this.operations.setState({ authorized: this.authorized, busy: false, account: result.account, items: result.items });
         }
@@ -191,6 +202,7 @@ export class AdminUI {
     }
 
     renderReports(page) {
+        this.clearReportReviews();
         const reports = Array.isArray(page?.reports) ? page.reports.slice(0, 10) : [];
         for (const report of reports) {
             const row = document.createElement('li');
@@ -205,12 +217,17 @@ export class AdminUI {
             json.className = 'administration-report-json';
             json.textContent = JSON.stringify(report, null, 2);
             details.append(summary, json); row.append(title, author, details); this.list.append(row);
+            const review = new AdminReportReview(row, report, this);
+            this.reportReviews.push(review);
         }
         this.cursor = typeof page?.next === 'string' ? page.next : '';
         this.next.hidden = !this.cursor; this.next.disabled = false;
         this.note.textContent = 'Private administrator view · up to 10 reports per page, newest IDs first. Viewing JSON does not resolve reports or punish players. Redact personal information before sharing.';
-        this.status.textContent = reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} on this page.` : 'No reports match this status.';
+        this.status.textContent = `${this.reviewNotice ? this.reviewNotice + ' ' : ''}${reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} on this page.` : 'No reports match this status.'}`;
+        this.reviewNotice = '';
     }
+
+    clearReportReviews() { for (const review of this.reportReviews) review.dispose(); this.reportReviews = []; }
 
     renderHistory(history) {
         const entries = Array.isArray(history?.entries) ? history.entries.slice(0, 50) : [];

@@ -91,6 +91,7 @@ func boundedActivityText(value string, max int, required bool) bool {
 func validAdminActivityAction(action string) bool {
 	switch action {
 	case "login", "resume", "disconnect", "admin_status", "admin_players", "admin_history", "admin_reports",
+		"admin_report_review",
 		"admin_grant_gold", "admin_grant_item", "admin_teleport":
 		return true
 	}

@@ -111,6 +111,13 @@ jobs:
           EIDOLON_GUILD_DISPOSABLE_DATABASE: '1'
         run: go test -race . -run '^TestGuildBank' -count=1
 
+      - name: Verify disposable report review resolution and retry
+        working-directory: server
+        env:
+          EIDOLON_REPORT_TEST_MONGO_URI: mongodb://127.0.0.1:27017/eidolon
+          EIDOLON_REPORT_DISPOSABLE_DATABASE: '1'
+        run: go test -race ./internal/database -run '^TestReportReviewMongo' -count=1 -v
+
       - name: Run Go tests with coverage
         working-directory: server
         run: |

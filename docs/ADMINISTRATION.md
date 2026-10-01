@@ -27,7 +27,7 @@ Expand **Inspect report JSON** to see the submitted record, including its ID,
 author, type, text and status. Pages contain at most ten reports, newest IDs
 first; **Next page** continues that filter and Refresh starts again.
 
-This is private, read-only triage: viewing does not resolve a report, delete it,
+Browsing is private and read-only: viewing does not resolve a report, delete it,
 or punish a player. Each request rechecks the durable administrator role and
 requires an audit entry; report bodies are not copied into activity history.
 JSON is displayed as text, and the results clear on disconnect or lost access.
@@ -39,7 +39,31 @@ Local 1.59 preparation adds **Moderation Appeal** to the player's existing repor
 form. Players can include a notice/report reference and their explanation; it
 enters this same private queue as an open report. Submission requests review,
 not automatic sanction reversal, and reveals no staff notes or other reports.
-This route is not yet a deployed sanction or report-resolution workflow.
+Neither the appeal route nor the following review controls are deployed yet.
+
+Local 1.59 preparation also adds **Review and resolve report** to each case.
+Enter a private one-line reason, choose **Mark resolved** or **Reopen report**,
+then confirm the displayed report ID and revision. **Keep unchanged** cancels
+without sending a review. Resolving is a case-status decision, not a player
+sanction, and does not grant items or modify an account. A changed case requires
+a fresh read and a new decision; an old confirmation cannot overwrite it.
+
+An uncertain reply offers **Retry same review**, preserving the exact request
+and confirmed values. It never retries automatically. After a timeout or page
+reload, reopen the case and inspect `lastReview` before deciding again. A
+successful historical retry reports its original revision, not proof that a
+later reviewer has left that status unchanged. Success refreshes the queue.
+
+Status, revision and the private actor/time/reason receipt commit together on
+the case. Activity history records admission as **Report review requests** and
+explicitly directs staff to the case receipt for the outcome; it does not copy
+allegations or private reasons. Rejected authenticated attempts are audited with
+fixed descriptions. Failure to store the admission audit prevents the change.
+Private receipts remain with their case and are bounded to 256 reviews; only
+the latest receipt is exposed in report JSON. The existing report collection
+has no automatic expiration; this work introduces no purge or new retention
+policy. Staff coverage, final evidence retention and the initial sanction scope
+still require owner decisions. See the [local review evidence](plans/2026-10-01-release1-59-moderation.md).
 
 Under **Character operations**, select an exact account or **Use my account**:
 
