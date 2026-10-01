@@ -30,6 +30,44 @@ async function setupMenu(page, isMobile = false) {
 for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
     test.describe(`family level choices ${width}x${height}`, () => {
         test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('optional endgame goals stay readable and route without wagering or starting a run', async ({ page, baseURL }, testInfo) => {
+            const failures = collectBrowserFailures(page, baseURL);
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => window.__raidMenuFixture.ui.showDungeonMenu({
+                playerLevel: 100, isLeader: true, darkKingDefeated: true,
+                darkRealmExpedition: true, darkRealmOpen: true,
+                weeklyRaidReward: { status: 'claimed', resetsAt: '2026-10-05T00:00:00Z' }
+            }));
+            const menu = page.locator('#dungeon-menu');
+            await menu.getByRole('tab', { name: 'Endgame', exact: true }).click();
+            const goals = menu.locator('#adventure-endgame');
+            await expect(goals).toContainText('A Letter Without a Throne');
+            await expect(goals).toContainText('Claimed this week');
+            await expect(goals).toContainText('+20 potency is a long-term endgame goal');
+            await expect(menu.locator('#dungeon-party-state-box')).toBeHidden();
+            await expect(menu.locator('.dark-realm-expedition')).toBeHidden();
+            await expect(menu.locator('.phone-adventure-actions')).not.toBeVisible();
+            for (const card of await goals.locator('.endgame-goal').all()) {
+                await card.scrollIntoViewIfNeeded();
+                await expect(card).toBeInViewport();
+                expect(await card.evaluate(n => n.scrollWidth <= n.clientWidth)).toBe(true);
+                for (const button of await card.locator('button').all()) {
+                    await button.scrollIntoViewIfNeeded();
+                    expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
+                }
+            }
+            await goals.locator('.endgame-goals-intro').scrollIntoViewIfNeeded();
+            await menu.screenshot({ path: testInfo.outputPath('endgame-goals.png') });
+            await goals.getByRole('button', { name: 'Prepare or help a raid' }).click();
+            await expect(menu.getByRole('tab', { name: 'Raids', exact: true })).toHaveAttribute('aria-selected', 'true');
+            await menu.getByRole('tab', { name: 'Endgame', exact: true }).click();
+            await goals.getByRole('button', { name: 'Open Character', exact: true }).click();
+            await expect(menu).toHaveCount(0);
+            await expect(page.locator('#character-sheet')).toBeVisible();
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent)).toEqual([]);
+            await page.evaluate(() => window.__raidMenuFixture.ui.characterPreview.dispose());
+            expect(failures, failures.join('\n')).toEqual([]);
+        });
         test('finale briefing explains roles and personal epilogue without entering the raid', async ({ page, baseURL }, testInfo) => {
             const failures = collectBrowserFailures(page, baseURL);
             await setupMenu(page, isMobile);

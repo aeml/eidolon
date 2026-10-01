@@ -10,6 +10,7 @@ import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
 import { appendDungeonPreparation, partyPreparationText, weeklyRaidRewardText, NEXUS_PREPARATION } from './DungeonPreparation.js';
 import { appendElementalRaidBriefing } from './ElementalRaidBriefing.js';
 import { appendFinaleBriefing } from './FinaleGuidance.js';
+import { appendEndgameGoals } from './EndgameGoals.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -101,7 +102,8 @@ class UIManagerDungeonMethods {
 
         let phoneMenu = null;
         let activeTab = 0;
-        const tabScroll = [0, 0];
+        const tabScroll = [0, 0, 0];
+        let expeditionPanel = null;
         const tabs = document.createElement('div');
         tabs.className = 'adventure-tabs';
         tabs.setAttribute('role', 'tablist');
@@ -113,16 +115,20 @@ class UIManagerDungeonMethods {
         const dungeonPanel = document.createElement('div');
         const raidPanel = document.createElement('div');
         raidPanel.className = 'adventure-raids';
-        const panels = [dungeonPanel, raidPanel];
+        const goalsPanel = Number(data.playerLevel) >= 100 ? document.createElement('div') : null;
+        if (goalsPanel) goalsPanel.className = 'endgame-goals';
+        const panels = [dungeonPanel, raidPanel, ...(goalsPanel ? [goalsPanel] : [])];
+        const tabNames = ['Dungeons', 'Raids', 'Endgame'];
+        const panelIds = ['adventure-dungeons', 'adventure-raids', 'adventure-endgame'];
         const tabButtons = panels.map((panel, index) => {
-            panel.id = index === 0 ? 'adventure-dungeons' : 'adventure-raids';
+            panel.id = panelIds[index];
             panel.setAttribute('role', 'tabpanel');
             panel.hidden = index !== 0;
             const tab = document.createElement('button');
             tab.type = 'button';
             tab.id = `${panel.id}-tab`;
             tab.className = 'menu-btn adventure-tab';
-            tab.textContent = index === 0 ? 'Dungeons' : 'Raids';
+            tab.textContent = tabNames[index];
             tab.setAttribute('role', 'tab');
             tab.setAttribute('aria-controls', panel.id);
             tab.setAttribute('aria-selected', String(index === 0));
@@ -132,7 +138,8 @@ class UIManagerDungeonMethods {
             tab.onkeydown = (event) => {
                 if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
                     event.preventDefault();
-                    const next = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - index;
+                    const next = event.key === 'Home' ? 0 : event.key === 'End' ? panels.length - 1
+                        : (index + (event.key === 'ArrowRight' ? 1 : -1) + panels.length) % panels.length;
                     selectTab(next);
                     tabButtons[next].focus();
                 }
@@ -148,6 +155,10 @@ class UIManagerDungeonMethods {
                 tabButtons[position].tabIndex = position === index ? 0 : -1;
             });
             activeTab = index;
+            partyStateBox.hidden = index === 2;
+            const foldedParty = partyStateBox.closest('.phone-adventure-details');
+            if (foldedParty) foldedParty.hidden = index === 2;
+            if (expeditionPanel) expeditionPanel.hidden = index === 2;
             phoneMenu?.showTab(index);
             scroll.scrollTop = this.isMobile ? tabScroll[index] : 0;
         };
@@ -188,7 +199,25 @@ class UIManagerDungeonMethods {
             checkpointHint.style.cssText = 'color: #d7dfef; margin-top: 8px; line-height: 1.5;';
             partyStateBox.appendChild(checkpointHint);
         }
-        scroll.append(partyStateBox, dungeonPanel, raidPanel);
+        scroll.append(partyStateBox, ...panels);
+        if (goalsPanel) {
+            appendEndgameGoals(goalsPanel, data, this.lastPlayerRef, {
+                dungeons: () => { selectTab(0); tabButtons[0].focus(); },
+                raids: () => { selectTab(1); tabButtons[1].focus(); },
+                character: typeof this.toggleCharacterSheet === 'function' ? () => {
+                    if (isMenuClosed) return;
+                    removeMenu();
+                    if (!this.characterSheet || !this.isElementVisible?.(this.characterSheet)) this.toggleCharacterSheet();
+                    this.btnCloseCharacter?.focus();
+                } : undefined,
+                map: typeof this.toggleWorldMap === 'function' ? () => {
+                    if (isMenuClosed) return;
+                    removeMenu();
+                    const map = document.getElementById('world-map');
+                    if (!map || !this.isElementVisible?.(map)) this.toggleWorldMap();
+                } : undefined
+            });
+        }
         const sharedPreparation = appendDungeonPreparation(partyStateBox);
         const partySnapshot = document.createElement('p');
         partySnapshot.id = 'dungeon-party-readiness';
@@ -219,6 +248,7 @@ class UIManagerDungeonMethods {
 
         if (data.darkRealmExpedition) {
             const expedition = document.createElement('section');
+            expeditionPanel = expedition;
             expedition.className = 'dark-realm-expedition';
             expedition.style.cssText = 'padding: 14px; margin-bottom: 12px; border: 1px solid #8265b0; border-radius: 8px; background: #211c31;';
             const heading = document.createElement('h3');
