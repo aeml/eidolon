@@ -2,9 +2,12 @@
 
 The four existing elemental event families now have server-published upcoming
 windows, clearer atlas guidance and explicit reward instructions. This is locally
-packaged as Alpha 1.57.0 but unpublished after 1.56, not a deployed release. The preceding 1.55
-CI is still active; the 1.56 calendar/operator decision remains open. Preserve
-ordered publication, current saves and the existing event economy.
+packaged as Alpha 1.57.0 but unpublished after 1.56, not a deployed release.
+The preceding 1.55 is accepted; 1.56 is pushed at
+`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692, awaiting its own
+acceptance. The season calendar/operator question remains open for organizing
+a new competition, not for this unchanged event calendar. Preserve ordered
+publication, current saves and the existing event economy.
 
 ## Event behavior and discovery
 
@@ -98,8 +101,8 @@ or backend readiness. Fighter source documentation now reflects the already
 accepted rigged integration rather than calling it an unintegrated export;
 the original GLB and licensing notices remain unchanged.
 
-Keep this branch unpublished until 1.55 is accepted and the necessary 1.56 policy
-decision and release are complete. Review any event issues reported by players
+Keep this branch unpublished until the preceding 1.56 release is accepted.
+Review any event issues reported by players
 without adding speculative queue splits or personal reward systems. Fresh-fetch
 and merge master immediately before publishing the aligned 1.57 package, then push
 normally. Luna monitors CI; independent exact public frontend/backend identity,

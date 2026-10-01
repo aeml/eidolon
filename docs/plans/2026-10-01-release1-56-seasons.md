@@ -2,9 +2,10 @@
 
 This milestone publishes the existing arena calendar and reward rules and makes
 settled Bronze, Silver and Gold medals usable as permanent wardrobe looks. It is
-locally packaged as Alpha 1.56.0 but unpublished, not a live release. The operator and continued use of
-the quarterly calendar still await the owner's answer; no manual season reset,
-production profile edit or new calendar activation is authorized by this record.
+locally packaged as Alpha 1.56.0 but unpublished, not a live release. The owner's
+calendar/operator question remains unanswered. This package documents the
+quarterly behavior already running since Alpha 1.7; it does not activate a new
+competition or authorize a manual reset, profile edit or calendar change.
 
 ## Player rules
 
@@ -108,8 +109,17 @@ passed in 9.1 seconds, with login version matching the local manifest and new
 reviewed. Artifacts: `/tmp/eidolon-1-56-login-notes-1001`. This establishes local
 packaging, not public server readiness or release acceptance.
 
-Before publication: receive the calendar/operator decision,
-accept the preceding 1.55 release,
-fresh-fetch and merge master, then push normally. Luna monitors CI; independent
+The roadmap requires agreed dates/operator procedure before activating a real
+season, not before publishing cosmetics for already-settled history. The earlier
+publication hold was broader than that requirement. Publishing this package does
+not answer the owner's question, assign an operator or invite a new competition;
+that operational decision remains open before an organized season launch.
+
+Before publication, accept the preceding 1.55 release, fresh-fetch and merge
+master, then push normally. Luna monitors CI; independent
 public identity, readiness and changed-file checks remain required. Source
 documentation was reviewed; a rendered documentation preview is unavailable.
+
+The preceding [1.55 acceptance](2026-10-01-release1-55-acceptance.md) is complete:
+all ten CI jobs and independent public identities, readiness and exact changed
+assets passed. This package may now follow it in the normal ordered rollout.

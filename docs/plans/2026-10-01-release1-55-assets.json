@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-01T00:45:44.911Z",
+  "commit": "480a47b28137783c0f9db623a87ee8e6cd581d5a",
+  "version": "Alpha 1.55.0",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 721819,
+      "sha256": "8c8611686b73335ab01f7e83d3067ca0821e53f4f58ea938f432218975dc1c83",
+      "actualBytes": 721819,
+      "actualSha256": "8c8611686b73335ab01f7e83d3067ca0821e53f4f58ea938f432218975dc1c83",
+      "matches": true
+    },
+    {
+      "file": "src/styles/pvp.css",
+      "bytes": 3036,
+      "sha256": "ff412644a354545a81472961f860504b3ea64ee90a09d5871049796f310b585c",
+      "actualBytes": 3036,
+      "actualSha256": "ff412644a354545a81472961f860504b3ea64ee90a09d5871049796f310b585c",
+      "matches": true
+    },
+    {
+      "file": "src/ui/PvPUI.js",
+      "bytes": 23663,
+      "sha256": "2f3d05d39fdb3b21f47d93c12b57f9eebaec0b4ee7f4be3ba1e518fa3723785e",
+      "actualBytes": 23663,
+      "actualSha256": "2f3d05d39fdb3b21f47d93c12b57f9eebaec0b4ee7f4be3ba1e518fa3723785e",
+      "matches": true
+    }
+  ],
+  "ok": true
+}
