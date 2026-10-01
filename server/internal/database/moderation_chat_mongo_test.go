@@ -2,10 +2,12 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/url"
 	"os"
 	"reflect"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -36,7 +38,7 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	account, request, _ := chatModerationFixture()
 	ctx := context.Background()
 	_, err = db.users.InsertMany(ctx, []interface{}{
-		bson.M{"_id": account, "username": "disposable-target", "characters": bson.A{bson.M{"name": "Saved hero", "level": 45}}},
+		bson.M{"_id": account, "username": "disposable-target", "email": "private-fixture@example.invalid", "password_hash": "private-fixture-hash", "characters": bson.A{bson.M{"name": "Saved hero", "level": 45}}},
 		bson.M{"_id": primitive.NewObjectID(), "username": "operator", "roles": bson.M{"admin": AccountRoleAssignment{GrantedAt: time.Now(), GrantedBy: "isolated-fixture", Source: "test"}}},
 		bson.M{"_id": primitive.NewObjectID(), "username": "ordinary-account"},
 	})
@@ -104,6 +106,22 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	if _, err := db.OwnChatMuteNotice("missing-account"); err == nil {
 		t.Fatal("unknown owner reported as a clean account")
 	}
+	preview, err := db.ReadChatModerationTarget("operator", "disposable-target")
+	if err != nil || preview.AccountID != account || preview.Revision != 1 || preview.Notice == nil || preview.Notice.ID != issued.Notice.ID {
+		t.Fatal("projected target read lost authoritative state", preview, err)
+	}
+	encoded, _ := json.Marshal(preview)
+	for _, private := range []string{"private-fixture@example.invalid", "private-fixture-hash", "Saved hero", request.PrivateReason, request.ReportID} {
+		if strings.Contains(string(encoded), private) {
+			t.Fatal("projected database read leaked private data", string(encoded))
+		}
+	}
+	if _, err := db.ReadChatModerationTarget("ordinary-account", "disposable-target"); err == nil {
+		t.Fatal("ordinary account read target state")
+	}
+	if _, err := db.ReadChatModerationTarget("operator", "missing-account"); err == nil {
+		t.Fatal("missing account invented a target")
+	}
 	revoke := request
 	revoke.ID, revoke.ExpectedRevision, revoke.Action = "chat-revoke-request-001", 1, ChatModerationRevoke
 	revoke.NoticeID, revoke.DurationSeconds, revoke.PublicReason = issued.Notice.ID, 0, ""
@@ -117,6 +135,9 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	}
 	if own, err := db.OwnChatMuteNotice("disposable-target"); err != nil || own != nil {
 		t.Fatal("reversal still visible as active", own, err)
+	}
+	if preview, err := db.ReadChatModerationTarget("operator", "disposable-target"); err != nil || preview.Revision != 2 || preview.Notice != nil {
+		t.Fatal("target preview missed reversal", preview, err)
 	}
 	retry, err := db.ApplyChatModeration("operator", account, request)
 	if err != nil || !reflect.DeepEqual(retry, issued) {
@@ -163,6 +184,12 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	if err != nil || !reflect.DeepEqual(renamed, state) {
 		t.Fatal("account rename bypassed moderation", renamed, err)
 	}
+	if preview, err := db.ReadChatModerationTarget("operator", "changed-display-name"); err != nil || preview.AccountID != account || preview.Revision != 3 {
+		t.Fatal("renamed target changed account identity", preview, err)
+	}
+	if _, err := db.ReadChatModerationTarget("operator", "disposable-target"); err == nil {
+		t.Fatal("old display name still selected renamed account")
+	}
 	var target struct {
 		Characters []struct {
 			Name  string `bson:"name"`
@@ -179,6 +206,9 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	}
 	if _, err := db.ApplyChatModeration("operator", account, request); err == nil {
 		t.Fatal("revoked staff replayed private receipt")
+	}
+	if _, err := db.ReadChatModerationTarget("operator", "changed-display-name"); err == nil {
+		t.Fatal("revoked staff read moderation target")
 	}
 	// A broken saved state is an explicit store error, not an invented clean
 	// account response that a future enforcement handler could fail open on.

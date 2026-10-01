@@ -117,7 +117,9 @@ jobs:
         env:
           EIDOLON_REPORT_TEST_MONGO_URI: mongodb://127.0.0.1:27017/eidolon
           EIDOLON_REPORT_DISPOSABLE_DATABASE: '1'
-        run: go test -race ./internal/database -run '^TestReportReviewMongo' -count=1 -v
+        run: |
+          go test -race ./internal/database -run '^TestReportReviewMongo' -count=1 -v
+          go test -race . -run '^TestReportReviewMongoPreparedChatModerationFlow$' -count=1 -v
 
       - name: Run Go tests with coverage
         working-directory: server

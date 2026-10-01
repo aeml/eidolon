@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.59",
+  "status": "prepared-unpublished",
+  "parentCommit": "a0aad325",
+  "scope": [
+    "Prepared routes temporarily registered only inside the test process, behind actual authenticated admission, character-work locks and durable database role checks.",
+    "Separate reporter and explicitly selected subject; bounded account preview and ordinary-account denials.",
+    "Confirmed atomic mute, identical retry without a second receipt or timer extension, and no muted-chat delivery/history.",
+    "Owner-only public notice and manual Moderation Appeal submission while muted.",
+    "Appeal-linked reversal, historical replay without re-muting, immediate chat recovery and unchanged saved characters/case status.",
+    "Admission audits exclude private evidence; a new database connection reads the same durable account state.",
+    "Extended projected database reads cover ordinary/revoked roles, missing accounts, reversal, isolated rename and seeded private-data boundaries."
+  ],
+  "checks": {
+    "dispatcher": {"test":"TestReportReviewMongoPreparedChatModerationFlow","race":true,"testSeconds":2.04,"totalSeconds":3.134,"result":"passed"},
+    "database": {"test":"TestReportReviewMongoChatModerationAtomicRetryReversalAndRole","race":true,"testSeconds":1.05,"totalSeconds":2.082,"result":"passed"},
+    "ci": "The existing disposable report-review step now runs the prepared dispatcher test too; no new job or long campaign/browser run was added.",
+    "setup": "Compile/skip check without explicit Mongo settings was not counted as the disposable exercise. Actual runs used explicitly disposable loopback Mongo, not production MONGO_URI.",
+    "cleanup": "Task-labeled eidolon-moderation-flow-20261001-2330 container and its anonymous test volumes removed after checking its exact identity. Production accounts/data untouched."
+  },
+  "limits": [
+    "An in-process dispatcher/database exercise is not physical WebSocket authentication or a full server restart.",
+    "Temporary test registration does not activate production protocols, the dormant UI or live chat enforcement.",
+    "This covers temporary mutes and reversal, not required name changes, account suspensions, final policy/staff/retention decisions or the complete 1.59 milestone."
+  ]
+}

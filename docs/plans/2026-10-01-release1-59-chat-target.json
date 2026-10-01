@@ -15,13 +15,15 @@
   "checks": {
     "handler": "Three new target-handler tests include 12 invalid payloads and eight retirement cases during read or audit. Scoped handler/action/guard/protocol race checks passed in 5.336 seconds.",
     "database": "Two new projection tests cover public-only JSON, defensive notice copying, exact expiry, legacy empty state, six invalid projections and unavailable stores. Scoped projection/activity race checks passed in 1.303 seconds.",
+    "mongo": "The extended disposable database exercise passed in 1.05 seconds (2.082 total with race checks). Actual projected reads preserve account identity and mute revisions across reversal and isolated rename, exclude seeded email/password/character data and private evidence, and deny ordinary/revoked staff and missing accounts.",
+    "dispatchFlow": "The new disposable admission/handler/Mongo flow passed in 2.04 seconds (3.134 total under race checks): explicit subject distinct from reporter, ordinary-account denials, atomic mute/exact retry, blocked chat without delivery/history, owner notice/appeal, appeal-linked reversal, historical replay without re-muting, chat recovery without relog, unchanged saved character/cases, private audit boundaries and durable state through a new database connection.",
     "client": "46 checks passed across new staff UI, existing admin/report-review and binding suites in 1.937 seconds. Initial newline-control fixture was corrected because text inputs strip newlines; a retained control character verifies rejection.",
     "native": "Existing 390x844 administration layout case passed in 12.8 seconds (14.3 total), with quote/confirmation, touch sizing, safe wrapping, explicit target selection and unchanged synthetic case status. Screenshot inspected. The first fixture incorrectly appended a second report page; resetting the list like normal refreshView fixed that setup without changing the assertion.",
     "nativeArtifacts": "/tmp/eidolon-1-59-chat-mute-ui-final-20261001",
     "lint": "Scoped ESLint and whitespace passed."
   },
   "remaining": [
-    "Exercise the new projected Mongo read in the final disposable moderation flow; pure projections do not prove database permissions or query behavior.",
+    "Actual WebSocket login/server restart and complete approved policy activation remain distinct from the prepared in-process dispatcher exercise.",
     "Approved policy, protocol/enforcement activation and complete connected staff-action/appeal acceptance; the prepared UI is hidden by default.",
     "Complete sanction-to-appeal acceptance and remaining name-abuse/sanction/staff/retention scope before publishing 1.59."
   ],
