@@ -1009,7 +1009,8 @@ export class GameEngine {
     handleLevelUpFeedback(previousLevel, nextLevel) {
         if (!this.player || previousLevel >= nextLevel) return;
 
-        const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
+        const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position,
+            { owner: this.player, quality: this.renderSystem.graphicsQuality });
         this.effects.push(effect);
 
         this.floatingTextManager.spawn(

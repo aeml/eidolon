@@ -1,0 +1,28 @@
+{
+  "checkedAtUTC": "2026-10-01T05:05:21Z",
+  "status": "local implementation and focused verification; not deployed",
+  "baseCommit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+  "scope": {
+    "levelUp": "Three-second owner-following gold and elemental spark celebration, soft vertical light, filigree seal and expanding pulse. Four render objects, 96 high-quality or 48 low-quality GPU-driven sparks. Drawing-buffer-aware point sizing handles orthographic gameplay cameras, perspective projection, resize and DPI. Reduced motion removes orbital movement, expanding waves and animated beams. Owned resources dispose once.",
+    "wellRested": "Analytic, feathered stars and interlaced gold filigree with four elemental echoes. Preserves the existing 16 high-quality or 8 low-quality mote trajectories, independent instance buffers, shared resource cache, terrain conformance and five/four visible-part budgets.",
+    "unchanged": "Gameplay authority, safe-zone healing, buff accrual/duration/power, experience, character stats, equipment, currency and reward rules. No external bitmap or texture downloads added."
+  },
+  "checks": [
+    { "type": "Jest", "suites": 5, "passed": 65, "seconds": 5.409, "scope": "SanctuaryEffects, WellRestedBatching, WellRestedPresentation, CombatCalloutLifetime, StatusGalleryCoverage" },
+    { "type": "native Chrome WebGL", "passed": 2, "seconds": 18.5, "artifacts": "/tmp/eidolon-resonance-effects-fixed-1001", "scope": "Expanded-reference aura comparison at three phases on each quality setting plus prepared actor effect presentation. Six aura samples have zero pixel error, with four/five batched draw calls rather than ten/nineteen expanded calls." },
+    { "type": "final native Chrome WebGL level-up", "passed": 1, "seconds": 13.8, "artifacts": "/tmp/eidolon-level-final-1001", "scope": "Final point-size correction with actual drawing-buffer assertion; 1280x900 high/low/reduced-motion samples and 390x844 low-quality sample, followed by expiry and cleanup. Source vertex buffers remain GPU driven." },
+    { "type": "visual inspection", "artifacts": "/tmp/eidolon-level-spark-scale-1001", "scope": "Root reviewed the high-quality early pulse, rising spark spiral and phone-sized low-quality presentation after correcting orthographic point sizing. Aura screenshots were separately reviewed." },
+    { "type": "lint and whitespace", "result": "ESLint passes for all eight changed JS source/test files; git diff --check passes." }
+  ],
+  "modelSwap": {
+    "status": "awaiting the user's new model paths or commit",
+    "observedMasterCommit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+    "observedFiles": "Fresh master fetch still contains only the Fighter archetype GLBs and three plant GLBs. Rogue/Cleric/Wizard GLB history found in all local refs is old, predating this request; those old exports were not substituted for the user's new models.",
+    "swapped": []
+  },
+  "limitations": [
+    "Prepared visual fixtures are not an earned-level, authenticated Well Rested, physical-phone, full-world composition or multiplayer-capacity proof.",
+    "The user-supplied Rogue, Cleric and Wizard rigs/materials/animation clips and equipment fit cannot be inspected or integrated until their new files are available.",
+    "This is a local visual slice, not a versioned release or final modern-art approval."
+  ]
+}
