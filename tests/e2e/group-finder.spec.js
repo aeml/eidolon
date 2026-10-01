@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups plans preserve listing and invitation consent`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(60_000); page.setDefaultTimeout(10_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: phone ? 390 : 1280, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -24,6 +25,25 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups p
         window.__groupFinder.data = data;
         ui.social.groupFinder.update(data);
     }, phone);
+    await page.evaluate(() => {
+        const {ui} = window.__groupFinder;
+        ui.social.guild.update({guild: {id: 'integration-calendar', name: 'Wardens', tag: 'W',
+            permissions: {}, members: [], activities: [{id: 'world', name: 'Exploration'}],
+            events: [{id: 'event-1', revision: 1, title: 'Private guild plan', activity: 'world',
+                startsAt: new Date(Date.now() + 3600000).toISOString(), durationMinutes: 120, capacity: 4, rsvps: []}]}});
+    });
+    await page.getByRole('tab', {name: 'Guild', exact: true}).click();
+    const calendar = page.locator('.guild-events');
+    const find = calendar.getByRole('button', {name: 'Find companions', exact: true});
+    expect((await find.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    await find.click();
+    await expect(page.locator('#tab-panel-groups')).toBeVisible();
+    expect(await page.locator('#social-window').evaluate(element => element.scrollTop)).toBe(0);
+    await expect(page.locator('#tab-panel-groups').getByLabel('Activity filter')).toHaveValue('world');
+    expect(await page.evaluate(() => window.__groupFinder.ui.social.groupFinder.note.value)).toBe('');
+    expect(await page.evaluate(() => window.__groupFinder.ui.social.groupFinder.start.value)).toBe('');
+    expect(await page.evaluate(() => window.__groupFinder.sent.every(payload => payload.action === 'list'))).toBe(true);
+    await page.screenshot({path: testInfo.outputPath('calendar-recruitment-handoff.png')});
     await page.getByRole('tab', { name: 'Groups', exact: true }).click();
     const panel = page.locator('#tab-panel-groups');
     await expect(panel).toBeVisible();

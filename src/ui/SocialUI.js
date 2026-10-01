@@ -17,6 +17,7 @@ export class SocialUI {
         disposeOwnedEvents(this);
         this.hidePartyRequest();
         this.groupFinder?.setActive(false);
+        this.guild?.events?.dispose();
         this.phoneParty?.dispose();
     }
 
@@ -152,6 +153,9 @@ export class SocialUI {
         this._activeTab = 'groups';
         this.toggleSocial(true);
         this._switchTab('groups');
+        // A calendar/guide handoff must not inherit the previous tab's scroll
+        // offset and hide recruitment guidance behind the sticky header.
+        this.socialWindow.scrollTop = 0;
         this.groupFinder.focusActivity(activityId);
     }
 
@@ -734,6 +738,7 @@ export class SocialUI {
             addChatMessage: this.ctx.addChatMessage,
         });
         this.guild.onSafety = (...args) => this.onSafety?.(...args);
+        this.guild.onFindCompanions = activity => this.openGroupFinder(activity);
     }
 
     /** Switch between 'online' and 'friends' tabs. */

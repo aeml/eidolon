@@ -1,12 +1,13 @@
 export class GuildEventsUI {
-    constructor({ action, invite, ready, getPlayer }) {
+    constructor({ action, invite, ready, getPlayer, findGroup }) {
         this.action = action;
         this.invite = invite;
         this.ready = ready;
         this.getPlayer = getPlayer;
+        this.findGroup = findGroup;
         this.element = document.createElement('section');
         this.element.className = 'guild-card guild-events';
-        this.element.innerHTML = '<h3>Guild calendar</h3><p>Times are shown in your local time zone. Sign-ups are plans, not party membership or entry permission. Invite companions, then run a party ready check. Tentative sign-ups do not reserve a seat. Editing an event makes all sign-ups tentative again.</p>';
+        this.element.innerHTML = '<h3>Guild calendar</h3><p>Times are shown in your local time zone. Sign-ups are plans, not party membership or entry permission. Invite companions, then run a party ready check. Tentative sign-ups do not reserve a seat. Editing an event makes all sign-ups tentative again.</p><p>Find companions opens Groups for the event’s activity only. Calendar titles, dates and sign-ups stay private; no listing is posted automatically. For an event more than 20 minutes away, return near its start to recruit.</p>';
         this.editor = document.createElement('details');
         const summary = document.createElement('summary');
         summary.textContent = 'Schedule an event';
@@ -87,6 +88,8 @@ export class GuildEventsUI {
     }
 
     update(guild) {
+        const epoch = Symbol('calendar view');
+        this.epoch = epoch;
         if (this.guildID !== guild.id) { this.resetEditor(); this.guildID = guild.id; }
         if (this.pending) {
             const pending = this.pending;
@@ -117,21 +120,27 @@ export class GuildEventsUI {
             info.textContent = `${activity?.name || event.activity} · ${new Date(event.startsAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })} · ${event.durationMinutes} min · ${going}/${event.capacity} confirmed${event.cancelled ? ' · CANCELLED' : finished ? ' · Finished' : ''}`;
             card.append(heading, info);
             const active = !event.cancelled && !finished;
+            const eventButton = (label, callback) => this.button(label, () => {
+                if (this.epoch !== epoch || event.cancelled
+                    || Date.now() >= new Date(event.startsAt).getTime() + event.durationMinutes * 60000) return;
+                callback();
+            });
             const controls = document.createElement('div'); controls.className = 'guild-events__controls';
             if (active) {
+                if (this.findGroup) controls.append(eventButton('Find companions', () => this.findGroup(event.activity)));
                 const mine = (event.rsvps || []).find(rsvp => rsvp.playerId === self?.playerId);
                 const role = this.select('My role', ['tank', 'healer', 'damage', 'flexible'].map(role => [role, role]), controls);
                 role.value = mine?.role || 'flexible';
                 for (const [status, title] of [['going', 'Going'], ['tentative', 'Tentative']]) {
-                    const button = this.button(title, () => this.action({ action: 'rsvp', eventId: event.id, revision: event.revision, role: role.value, status }));
+                    const button = eventButton(title, () => this.action({ action: 'rsvp', eventId: event.id, revision: event.revision, role: role.value, status }));
                     button.setAttribute('aria-pressed', String(mine?.status === status));
                     controls.append(button);
                 }
-                if (mine) controls.append(this.button('Withdraw', () => this.action({ action: 'withdraw', eventId: event.id })));
+                if (mine) controls.append(eventButton('Withdraw', () => this.action({ action: 'withdraw', eventId: event.id })));
                 if (guild.permissions?.manage_events) {
-                    controls.append(this.button('Edit event', () => this.edit(event)));
-                    const cancel = this.button('Cancel event', () => {
-                        cancel.replaceWith(this.button('Confirm cancellation', () => this.action({ action: 'cancel', eventId: event.id, revision: event.revision })));
+                    controls.append(eventButton('Edit event', () => this.edit(event)));
+                    const cancel = eventButton('Cancel event', () => {
+                        cancel.replaceWith(eventButton('Confirm cancellation', () => this.action({ action: 'cancel', eventId: event.id, revision: event.revision })));
                     });
                     controls.append(cancel);
                 }
@@ -146,10 +155,12 @@ export class GuildEventsUI {
                 const row = document.createElement('div'); row.className = 'guild-events__controls';
                 const text = document.createElement('span'); text.textContent = `${member.username} · ${rsvp.role} · ${rsvp.status} · ${member.online ? `${member.class || 'Adventurer'} ${member.level || ''} · Online` : 'Offline'}`;
                 row.append(text);
-                if (active && member.online && member.playerId !== self?.playerId) row.append(this.button('Invite to party', () => this.invite(member.username)));
+                if (active && member.online && member.playerId !== self?.playerId) row.append(eventButton('Invite to party', () => this.invite(member.username)));
                 roster.append(row);
             }
             card.append(roster); this.list.append(card);
         }
     }
+
+    dispose() { this.epoch = null; }
 }

@@ -35,6 +35,11 @@ resolution receipt; it is included in the existing CI socket step.
 This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
 final staff boundaries and evidence-retention decisions remain. The initial
 sanction policy question is open; no live account was punished or case resolved.
+Local [1.60 integration preparation](2026-10-01-release1-60-integration.md)
+connects guild calendar activities to the existing finder without publishing
+private plans or posting automatically. Retired calendar actions are fenced;
+the inherited-scroll handoff is corrected. This is not S closure, release
+packaging or permission to skip 1.59's outstanding moderation requirements.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

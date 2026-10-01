@@ -27,7 +27,8 @@ export class GuildUI {
         this.onLeaderboard = null;
         this.leaderboard = { season: '', runs: [] };
 		this.events = new GuildEventsUI({ action: payload => this.onEvent?.(payload),
-			invite: name => this.onPartyInvite?.(name), ready: () => this.onPartyReadyCheck?.(), getPlayer: getLastPlayer });
+			invite: name => this.onPartyInvite?.(name), ready: () => this.onPartyReadyCheck?.(),
+            findGroup: activity => this.onFindCompanions?.(activity), getPlayer: getLastPlayer });
 
         this.render();
     }
@@ -38,6 +39,7 @@ export class GuildUI {
             guild: payload.guild || null,
             invites: Array.isArray(payload.invites) ? payload.invites : [],
         };
+        if (!this.state.guild) this.events.dispose();
         this.render();
     }
 
