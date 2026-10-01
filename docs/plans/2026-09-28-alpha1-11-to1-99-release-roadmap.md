@@ -19,12 +19,17 @@ fixtures and the verified deployment.
 The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is
 implemented, packaged and pushed, but not accepted: its initial CI failed an
 outdated keyboard expectation before deployment. The corrected route passed
-locally. Its features include actual story/cache status, optional
+locally and is now pushed at f7518623bb5924625a918c8acdfe7ad890b0363a,
+CI36808962117, awaiting its own acceptance. Its features include actual
+story/cache status, optional
 repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and
 human pacing limits are preserved; ordered release acceptance remains required.
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin
 resolution/reopening to the private queue.
+Staff can now combine status and category to find player-conduct cases or
+appeals without unrelated bugs; filtered keyset pages and role revocation are
+checked. Current review boundaries are documented, not a new sanction policy.
 Chat safety opens from a selected sender, preserves block/ignore confirmation
 and drafts only the explicitly selected message for review before submission.
 Strict permission checks, stale-case protection, private receipts, manual exact
@@ -34,7 +39,7 @@ restricted owner responses. The real two-account socket/restart check covers
 submission, private staff review, denied ordinary-account review and one durable
 resolution receipt; it is included in the existing CI socket step.
 This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
-final staff boundaries and evidence-retention decisions remain. The initial
+staff assignments/coverage and evidence-retention decisions remain. The initial
 sanction policy question is open; no live account was punished or case resolved.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.

@@ -2,10 +2,13 @@
 
 The Dungeon Guide now has an Endgame tab at level 100, bringing post-story
 direction and the existing repeat-run systems into one readable overview.
-This is packaged as Alpha 1.58.0 and pushed at
-`4824a2fdb3cd6a6a50731321b7a29cd8126387fc`,
-[CI36807934445](https://github.com/aeml/eidolon/actions/runs/36807934445).
-It is not accepted live: browser shard 2 failed before deployment.
+The corrected Alpha 1.58.0 candidate is pushed at
+`f7518623bb5924625a918c8acdfe7ad890b0363a`,
+[CI36808962117](https://github.com/aeml/eidolon/actions/runs/36808962117).
+It awaits its own terminal CI and independent public acceptance.
+The initial candidate at `4824a2fdb3cd6a6a50731321b7a29cd8126387fc`,
+[CI36807934445](https://github.com/aeml/eidolon/actions/runs/36807934445),
+finished with failure in browser shard 2; all deployment jobs were skipped.
 The preceding [1.57 is accepted](2026-10-01-release1-57-acceptance.md) at
 `3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`, CI36802997921. All ten jobs and
 independent public identities, database readiness and six changed runtime files
@@ -69,8 +72,9 @@ last tab, Endgame. The corrected route verifies Endgame focus/selection, hidden
 party preparation and ArrowLeft back to Raids, then retains the existing run
 actions and under-level behavior. It passed in native Chrome in 26.7 seconds.
 Gameplay behavior and the Alpha 1.58.0 version are unchanged. The corrected
-candidate still requires normal publication, terminal CI and independent live
-acceptance; a local pass is not deployment success.
+candidate was published after the first run finished, with a fresh fetch and
+normal merge preserving master. Its new terminal CI and independent live
+acceptance remain required; a local pass is not deployment success.
 
 Local packaging passed 336 version/publisher checks in 2.467 seconds and both
 unchanged anonymous login/release routes in 7.5 seconds. Scoped lint, shell syntax
