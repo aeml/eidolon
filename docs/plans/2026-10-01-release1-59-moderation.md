@@ -177,6 +177,34 @@ whitespace checks passed. The
 uniquely named, task-labeled disposable Mongo container was stopped and
 removed; production data was untouched.
 
+The temporary-chat-mute persistence foundation is now implemented and tested
+without connecting a live command or enforcement route. It stores account state
+and a private staff receipt atomically against the immutable Mongo account ID,
+not a display name. A confirmed request names a conduct case or appeal, an
+explicit duration, a public explanation and a separate private reason. The store
+checks the durable admin role; it does not resolve the case or claim that future
+session fencing and activity admission are already implemented.
+
+Exact retries retain the original expiry even after reversal. Reversal targets
+the quoted notice, and competing decisions use an account revision check.
+Expiry is read-time only, with no history purge. Private receipts are excluded
+from JSON player responses. Broken saved state returns a store error, rather
+than being treated as an account with no restrictions. The 30-day duration
+ceiling and 256-receipt bound are storage safeguards, not approved punishment
+defaults or a retention policy; the final slot remains available for reversal.
+Long-term receipt handling still needs the final retention decision.
+
+Five focused unit tests, including 32 validation/corruption subcases, and one
+explicitly disposable Mongo test passed under the race detector in 1.348 seconds.
+The database exercise checked eight simultaneous identical requests, competing
+decisions, reversal, historical replay, role revocation, missing accounts/cases,
+preserved character fields and unchanged moderation after an isolated username
+field change. It uses unique test collections and the existing report-review CI
+step; no extra job or campaign/browser run was added. The task-labeled disposable
+container and its anonymous test volumes were removed; production data was
+untouched. These checks do not prove connected chat enforcement, rename handling,
+account suspensions or the complete sanction-to-appeal flow.
+
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is
 invented or activated. Staff coverage and final evidence-retention policy also

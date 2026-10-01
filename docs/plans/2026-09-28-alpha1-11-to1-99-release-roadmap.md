@@ -97,6 +97,13 @@ resolution receipt; it is included in the existing CI socket step.
 This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
 staff assignments/coverage and evidence-retention decisions remain. The initial
 sanction policy question is open; no live account was punished or case resolved.
+The prepared chat-mute store now has atomic account state and private receipts,
+exact expiry/reversal, immutable account IDs and durable role checks. Five scoped
+unit tests and one disposable Mongo test passed under the race detector in
+1.348 seconds, including concurrent retries and competing decisions. No live
+command or chat enforcement is connected; this foundation does not complete
+1.59 or decide its sanction/retention policy. Details and limitations are retained
+in the preparation record above.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
