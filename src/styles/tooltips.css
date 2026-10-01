@@ -17,3 +17,7 @@
     z-index: var(--z-tooltip);
     max-width: 200px;
 }
+#stat-tooltip .item-equipment-type, #compare-tooltip .item-equipment-type,
+#phone-item-details .item-equipment-type { color: #d7dfeb; margin: 0 0 8px; line-height: 1.4; }
+#stat-tooltip .item-equipment-type--restricted, #compare-tooltip .item-equipment-type--restricted,
+#phone-item-details .item-equipment-type--restricted { color: #ff6b6b; }

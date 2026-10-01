@@ -1,7 +1,23 @@
-import { canEquipItem, isActiveEquipment, isDualWieldingRogue } from '../src/core/EquipmentSlots.js';
+import { canEquipItem, isActiveEquipment, isDualWieldingRogue, getEquipmentTypeLabel } from '../src/core/EquipmentSlots.js';
 import { Rogue } from '../src/entities/Rogue.js';
 
 const item = (name, slot = 'chest', type = 'ARMOR') => ({ id: name, name: `Rare ${name} of Might`, slot, type, level: 1, stats: {} });
+test.each([
+    ['Silk Hood', 'head', 'Cloth'], ['Robes', 'chest', 'Cloth'], ['Silk Skirt', 'legs', 'Cloth'],
+    ['Sandals', 'feet', 'Cloth'], ['Silk Gloves', 'gloves', 'Cloth'], ['Velvet Mantle', 'shoulders', 'Cloth'], ['Silk Sash', 'belt', 'Cloth'],
+    ['Leather Cap', 'head', 'Leather'], ['Leather Tunic', 'chest', 'Leather'], ['Leather Pants', 'legs', 'Leather'],
+    ['Leather Boots', 'feet', 'Leather'], ['Leather Gloves', 'gloves', 'Leather'], ['Reinforced Spaulders', 'shoulders', 'Leather'], ['Studded Belt', 'belt', 'Leather'],
+    ['Iron Helm', 'head', 'Plate'], ['Plate Mail', 'chest', 'Plate'], ['Plate Greaves', 'legs', 'Plate'],
+    ['Iron Boots', 'feet', 'Plate'], ['Iron Gauntlets', 'gloves', 'Plate'], ['Steel Pauldrons', 'shoulders', 'Plate'], ['Plated Girdle', 'belt', 'Plate']
+])('equipment type labels %s as %s', (name, slot, label) => expect(getEquipmentTypeLabel(item(name, slot))).toBe(label));
+test.each([['Iron Sword', 'Sword'], ['Steel Dagger', 'Dagger'], ['Cleric Mace', 'Mace'], ['Wooden Staff', 'Staff']])('weapon type: %s', (name, label) => {
+    expect(getEquipmentTypeLabel(item(name, 'mainHand', 'WEAPON'))).toBe(label);
+    expect(getEquipmentTypeLabel({ ...item('Renamed weapon', 'mainHand', 'WEAPON'), equipmentBaseName: name })).toBe(label);
+});
+test('unknown legacy types stay generic and quest items do not acquire invented equipment labels', () => {
+    expect(getEquipmentTypeLabel(item('Old heirloom'))).toBe('Armor');
+    expect(getEquipmentTypeLabel({ name: 'Quest diary', type: 'QUEST', slot: 'quest' })).toBe('');
+});
 test.each([
     ['Wizard', 'Robes', true], ['Wizard', 'Leather Tunic', false], ['Wizard', 'Plate Mail', false],
     ['Rogue', 'Robes', true], ['Rogue', 'Leather Tunic', true], ['Rogue', 'Plate Mail', false],

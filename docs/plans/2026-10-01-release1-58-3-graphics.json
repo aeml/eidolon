@@ -1,7 +1,10 @@
 {
   "schema": 1,
   "version": "Alpha 1.58.3",
-  "status": "prepared-not-published",
+  "status": "accepted",
+  "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+  "ciRun": 36927158308,
+  "acceptanceReceipt": "2026-10-01-release1-58-3-public.json",
   "parentCandidate": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
   "scope": [
     "Default opaque fitted-equipment batching with source-preserving animated surfaces and independent actor skeletons.",

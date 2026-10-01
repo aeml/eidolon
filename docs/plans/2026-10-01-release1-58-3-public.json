@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "status": "accepted",
+  "version": "Alpha 1.58.3",
+  "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+  "ciRun": 36927158308,
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "acceptanceVerifiedAt": "2026-10-01T21:57:04Z",
+  "at": "2026-10-01T21:43:07.024Z",
+  "frontend": {
+    "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+    "version": "Alpha 1.58.3"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+    "version": "Alpha 1.58.3"
+  },
+  "runtimePassed": 19,
+  "criticalModelsPassed": 12,
+  "results": [
+    {
+      "kind": "runtime",
+      "path": "src/assets/authoredEquipment.generated.js",
+      "bytes": 47149,
+      "sha256": "b3161c97227e0c698dd2ba4ddef626e58ba10d4458b4219feb60070ce79cacb1"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/assets/assetManifest.js",
+      "bytes": 2641,
+      "sha256": "00a59b3e46e4eb84c1c69f65aa5bf2079f532e00bb23e184fb38a738b8bff2f1"
+    },
+    {
+      "kind": "runtime",
+      "path": "index.html",
+      "bytes": 733005,
+      "sha256": "9c303d48e6bf1a9f9cdeee3f8a5735349a14d81887d11037b8aff3d73ed6575b"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/utils/MeshFactory.js",
+      "bytes": 37150,
+      "sha256": "d64526542db14662b46d804f23ecc83b8c58c4b60ee546d6afc95c56743edf84"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/FittedEquipment.js",
+      "bytes": 13303,
+      "sha256": "1f18f542d4bf504111b0684e48f86337c242ee9cf6e29bfeef51cb929ef36fb7"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredCharacters.js",
+      "bytes": 1016,
+      "sha256": "0a08539a9b1e7a36ceaaae2c42691b401907e6598720cb8e6ff75fb012533dc7"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredWeaponMotions.js",
+      "bytes": 4680,
+      "sha256": "0e7d6aaec861ae502b3e314a4463c7ba05420943d4d685324794bb5b73cdd840"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredFighter.js",
+      "bytes": 6485,
+      "sha256": "13fb7b0b8834d4f47f067a41da5eff3f8cdfad8380dcc7e822f076941a349d75"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/EquipmentSlots.js",
+      "bytes": 3056,
+      "sha256": "0f419ba20177096e1e8c81c6a1233f47e28f3b490d7c3dbb43925e38e58995cd"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/EquipmentAppearance.js",
+      "bytes": 909,
+      "sha256": "326dfc8fa1abef6f40b8fed9b25dd2a5491e90ecb5e9302e893898150d93ae74"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/GameEngine.js",
+      "bytes": 111129,
+      "sha256": "e62b1efcd4db99b6d09f2cfaed2c3fb81258d12ef21469e986cbcb1b87dee619"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/EquipmentVisuals.js",
+      "bytes": 1047,
+      "sha256": "b3a90de1706730714dcde25c3cdeb24202b86bd214d2836ea4bc7b431dc8d994"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/entities/Actor.js",
+      "bytes": 95574,
+      "sha256": "d0bd0ee1e4ea559f549ace481834d0d53bccfb8645d0af8c313656d9a11d58fc"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/CharacterPreview.js",
+      "bytes": 9885,
+      "sha256": "d0d7b5f41dca36bca8d04ffdc7462a59d2cc5b7ec53b9a057736fd7935afac42"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/InventoryUI.js",
+      "bytes": 72254,
+      "sha256": "7342b6d9feb72d210f345314dd0b8055c1b7f8648ad6bce07efd976c454cc322"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/MobileItemDetails.js",
+      "bytes": 14737,
+      "sha256": "b9534538decab119079a35a3ffffcdc60fa682b1257e2936f4d99a5942f81716"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/entities/ActorStealthAppearance.js",
+      "bytes": 3069,
+      "sha256": "5915c8aa956fa41c85f48a810fd1af697b99e03de5a45c06393fa9183fc69727"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/FittedEquipmentBatches.js",
+      "bytes": 4125,
+      "sha256": "084b70867f459a991e6757836424ec3935f24ef7392ae272fd10fde05042e4ac"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/UIBindings.js",
+      "bytes": 16632,
+      "sha256": "8498cc2e95052f5a4230bfb5725a373cbd3c71900af52dcbf990adee20b770f1"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+      "bytes": 3215076,
+      "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Fighter.glb",
+      "bytes": 1052308,
+      "sha256": "8e5db5ff63e1124d198a337c8490d5d13dea0bdd62fc70747abb75aac973bfd4"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+      "bytes": 3680212,
+      "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+      "bytes": 7371724,
+      "sha256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Cleric.glb",
+      "bytes": 1089460,
+      "sha256": "0aea84dc222750d824bf3e24f5ed6e43a3cce746ce554375d53e36df15288981"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+      "bytes": 4061680,
+      "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Wizard.glb",
+      "bytes": 1089644,
+      "sha256": "949e5d2ecd1afc76042cb081f553fc4f263d4d7b76e1ae58add1c09ba79bd6ce"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+      "bytes": 5318200,
+      "sha256": "facb882f8a68ab69c715113cf45cab03611e59cc8ec1b6854dfaf1188bc2f5aa"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+      "bytes": 4017940,
+      "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Rogue.glb",
+      "bytes": 1090584,
+      "sha256": "e1176f6c8b0251442b51b0654a22718159a6fa31997b8415c8471e13e5991e85"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+      "bytes": 6244932,
+      "sha256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+      "bytes": 6244472,
+      "sha256": "1da90eb1906730046be0cb3a03beac1881d92fd0cee33805a78b85ea37a5c9ef"
+    }
+  ],
+  "earlierModelReceipt": "2026-10-01-release1-58-2-public.json",
+  "limits": [
+    "Source GLBs unchanged; fresh critical checks cover all eight class qualities and four motion banks, not all264routes. Earlier32representative full hashes retained.",
+    "Ordinary public IPv4 DNS/TLS, no origin override.",
+    "All ten exact-source CI jobs, including live release and character QA, passed. Final art/performance and deferred owner playtests remain distinct."
+  ]
+}
