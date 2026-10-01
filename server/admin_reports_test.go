@@ -67,3 +67,31 @@ func TestAdminReportRequestSchema(t *testing.T) {
 		t.Fatal(request, err)
 	}
 }
+
+func TestAdminReportCategoryFilterIsStrictAndReachesAuthorizedStore(t *testing.T) {
+	c, _ := adminReadFixture(t)
+	sessionActivityFixture(t)
+	previous := adminReports
+	store := &fakeAdminReports{}
+	adminReports = store
+	t.Cleanup(func() { adminReports = previous })
+	for _, category := range []string{"", "Bug Report", "Feature Request", "Player Report", "Moderation Appeal"} {
+		payload, _ := json.Marshal(map[string]string{"id": "report-read-000001", "reportType": category, "status": "open"})
+		handleAdminRead(c, Message{Type: MsgAdminReports, Payload: payload})
+		messages := drainSentMessages(c.send)
+		var result adminReadResult
+		if len(messages) != 1 || json.Unmarshal(messages[0].Payload, &result) != nil || !result.Success || store.query.ReportType != category || store.query.Status != "open" {
+			t.Fatal("category lost between authorization and repository", category, result, store.query)
+		}
+	}
+	for _, fields := range []string{`,"reportType":"$ne"`, `,"reportType":"moderation appeal"`, `,"reportType":null`, `,"reportType":{"$ne":""}`, `,"reportType":"Bug Report","reportType":"Player Report"`} {
+		if _, err := decodeAdminRead(Message{Type: MsgAdminReports, Payload: json.RawMessage(`{"id":"report-read-000001"` + fields + `}`)}); err == nil {
+			t.Fatal("accepted invalid category", fields)
+		}
+	}
+	for _, kind := range []string{MsgAdminPlayers, MsgAdminHistory, MsgAdminStatus} {
+		if _, err := decodeAdminRead(Message{Type: kind, Payload: json.RawMessage(`{"id":"report-read-000001","reportType":"Player Report"}`)}); err == nil {
+			t.Fatal("report category escaped its schema", kind)
+		}
+	}
+}

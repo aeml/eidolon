@@ -36,6 +36,9 @@ export class AdminUI {
                 <div class="administration-filters" data-report-filters hidden>
                     <label>Report status<select data-report-status><option value="open">Open</option>
                         <option value="resolved">Resolved</option><option value="">All reports</option></select></label>
+                    <label>Report category<select data-report-type><option value="">All categories</option>
+                        <option value="Player Report">Player conduct</option><option value="Moderation Appeal">Moderation appeals</option>
+                        <option value="Bug Report">Bug reports</option><option value="Feature Request">Feature requests</option></select></label>
                 </div>
                 <div class="administration-actions"><button type="button" data-refresh>Refresh players</button>
                     <button type="button" data-next hidden>Next page</button></div>
@@ -52,6 +55,7 @@ export class AdminUI {
         this.filters = this.root.querySelector('.administration-filters');
         this.reportFilters = this.root.querySelector('[data-report-filters]');
         this.reportStatus = this.root.querySelector('[data-report-status]');
+        this.reportType = this.root.querySelector('[data-report-type]');
         this.actor = this.root.querySelector('[data-actor]');
         this.action = this.root.querySelector('[data-action]');
         this.views = [...this.root.querySelectorAll('[data-view]')];
@@ -80,10 +84,11 @@ export class AdminUI {
             for (const view of this.views) view.setAttribute('aria-pressed', String(view === button));
             this.refreshView('');
         });
-        for (const filter of [this.actor, this.action, this.reportStatus]) ownedEvent(this, filter, 'input', () => {
+        for (const filter of [this.actor, this.action, this.reportStatus, this.reportType]) ownedEvent(this, filter, 'input', () => {
             // Never combine a previous query's cursor with changed filters.
             this.cursor = '';
             this.next.hidden = true;
+            if (this.view === 'reports') this.status.textContent = 'Filters changed. Refresh reports to load this selection.';
         });
         this.setAuthorized(false);
     }
@@ -93,6 +98,7 @@ export class AdminUI {
         if (this.launcher) this.launcher.hidden = !this.authorized;
         this.role.textContent = this.authorized ? 'Administrator · verified by server' : 'Administrator access is unavailable.';
         this.refresh.disabled = !this.authorized;
+        this.reportStatus.disabled = this.reportType.disabled = !this.authorized || Boolean(this.pending);
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
@@ -110,7 +116,7 @@ export class AdminUI {
         this.refresh.disabled = true;
         this.next.disabled = true;
         for (const view of this.views) view.disabled = true;
-        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = true;
+        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = this.reportType.disabled = true;
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
@@ -141,7 +147,8 @@ export class AdminUI {
         if (!this.connected || !this.authorized || this.pending) return;
         this.clearReportReviews(); this.list.replaceChildren();
         if (this.view === 'reports') {
-            this.request('admin_reports', { before: cursor, status: this.reportStatus.value });
+            this.request('admin_reports', { before: cursor, status: this.reportStatus.value,
+                ...(this.reportType.value ? { reportType: this.reportType.value } : {}) });
             return;
         }
         this.request('admin_history', { before: cursor, actor: this.actor.value, action: this.action.value });
@@ -152,7 +159,7 @@ export class AdminUI {
         this.pending = null;
         clearTimeout(this.timeout);
         this.root.setAttribute('aria-busy', 'false');
-        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = false;
+        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = this.reportType.disabled = false;
         const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
         const reviewResult = type === 'admin_report_review_result';
         this.setAuthorized(result.authorized === true && (mutation || reviewResult || result.success === true));
@@ -223,7 +230,7 @@ export class AdminUI {
         this.cursor = typeof page?.next === 'string' ? page.next : '';
         this.next.hidden = !this.cursor; this.next.disabled = false;
         this.note.textContent = 'Private administrator view · up to 10 reports per page, newest IDs first. Viewing JSON does not resolve reports or punish players. Redact personal information before sharing.';
-        this.status.textContent = `${this.reviewNotice ? this.reviewNotice + ' ' : ''}${reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} on this page.` : 'No reports match this status.'}`;
+        this.status.textContent = `${this.reviewNotice ? this.reviewNotice + ' ' : ''}${reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} on this page.` : 'No reports match these filters.'}`;
         this.reviewNotice = '';
     }
 

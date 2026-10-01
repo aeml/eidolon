@@ -19,8 +19,9 @@ const (
 )
 
 type ReportQuery struct {
-	Before string `json:"before"`
-	Status string `json:"status"`
+	Before     string `json:"before"`
+	Status     string `json:"status"`
+	ReportType string `json:"reportType,omitempty"`
 }
 
 type ReportPage struct {
@@ -51,7 +52,7 @@ func (db *DB) OwnReportStatus(username, reference string) (ReportStatusView, err
 	if err != nil {
 		return ReportStatusView{}, err
 	}
-	if !supportedReportType(view.ReportType) || view.Status != ReportStatusOpen && view.Status != ReportStatusResolved {
+	if !SupportedReportType(view.ReportType) || view.Status != ReportStatusOpen && view.Status != ReportStatusResolved {
 		return ReportStatusView{}, errors.New("report status unavailable")
 	}
 	return view, nil
@@ -64,6 +65,12 @@ func reportPageFilter(query ReportQuery) (bson.M, error) {
 	}
 	if query.Status != "" {
 		filter["status"] = query.Status
+	}
+	if query.ReportType != "" {
+		if !SupportedReportType(query.ReportType) {
+			return nil, errors.New("invalid report type")
+		}
+		filter["report_type"] = query.ReportType
 	}
 	if query.Before != "" {
 		id, err := primitive.ObjectIDFromHex(query.Before)
@@ -120,7 +127,7 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 	if username == "" {
 		return Report{}, errors.New("report username is required")
 	}
-	if !supportedReportType(reportType) {
+	if !SupportedReportType(reportType) {
 		return Report{}, errors.New("unsupported report type")
 	}
 	if text == "" {
@@ -138,7 +145,8 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 	}, nil
 }
 
-func supportedReportType(value string) bool {
+// SupportedReportType is shared by submission and strict staff queue filters.
+func SupportedReportType(value string) bool {
 	return value == "Bug Report" || value == "Feature Request" || value == "Player Report" || value == "Moderation Appeal"
 }
 

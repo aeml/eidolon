@@ -10,7 +10,10 @@
 .administration-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-block: 8px; }
 .administration-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
 .administration-filters label { display: grid; gap: 6px; min-width: 0; flex: 1 1 180px; }
-.administration-filters input, .administration-filters select { min-height: 44px; width: 100%; box-sizing: border-box; font: inherit; }
+.administration-filters input, .administration-filters select {
+    min-height: 44px; width: 100%; box-sizing: border-box; font: inherit;
+    color: #f0dfb8; background: #18212b; border: 1px solid #857047; border-radius: 4px; padding: 8px;
+}
 .administration-actions + .administration-actions { margin-top: 12px; }
 .administration-actions button[aria-pressed="true"] { border-color: #e7c77f; background: #3a3427; }
 .administration-actions button {

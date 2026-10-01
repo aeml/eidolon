@@ -55,6 +55,30 @@ test('report view fails closed after revocation or storage error', () => {
     expect(ui.status.textContent).toContain('unavailable');
 });
 
+test('category triage resets cursors, combines status and retires access on disconnect', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
+    ui.root.querySelector('[data-view="reports"]').click();
+    expect(ui.reportType.disabled).toBe(true);
+    reply({ reports: { reports: [], next: '0123456789abcdef01234567' } });
+    ui.reportType.value = 'Moderation Appeal'; ui.reportType.dispatchEvent(new Event('input'));
+    expect(ui.cursor).toBe(''); expect(ui.next.hidden).toBe(true);
+    expect(ui.status.textContent).toContain('Refresh reports');
+    ui.refresh.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '', status: 'open', reportType: 'Moderation Appeal' });
+    reply({ reports: { reports: [], next: '0123456789abcdef01234567' } });
+    ui.next.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '0123456789abcdef01234567', status: 'open', reportType: 'Moderation Appeal' });
+    reply({ reports: { reports: [] } });
+    ui.reportStatus.value = 'resolved'; ui.reportStatus.dispatchEvent(new Event('input'));
+    ui.refresh.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '', status: 'resolved', reportType: 'Moderation Appeal' });
+    reply({ reports: { reports: [] } });
+    ui.reportType.value = ''; ui.reportType.dispatchEvent(new Event('input')); ui.refresh.click();
+    expect(send).toHaveBeenLastCalledWith('admin_reports', { id: ui.pending.id, before: '', status: 'resolved' });
+    ui.connectionState('disconnected');
+    expect(ui.reportType.disabled).toBe(true); expect(ui.reportStatus.disabled).toBe(true);
+});
+
 test('launcher stays hidden until an authenticated server response verifies the role', () => {
     expect(ui.launcher.hidden).toBe(true);
     ui.launcher.click();

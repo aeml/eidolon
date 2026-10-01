@@ -90,6 +90,21 @@ func TestReportPageFilterIsBoundedAndStrict(t *testing.T) {
 	}
 }
 
+func TestReportCategoryFilterUsesLiteralTypeAndPreservesStatusCursor(t *testing.T) {
+	id := primitive.NewObjectID()
+	for _, category := range []string{"Bug Report", "Feature Request", "Player Report", "Moderation Appeal"} {
+		filter, err := reportPageFilter(ReportQuery{ReportType: category, Status: ReportStatusResolved, Before: id.Hex()})
+		if err != nil || len(filter) != 3 || filter["report_type"] != category || filter["status"] != ReportStatusResolved || filter["_id"].(bson.M)["$lt"] != id {
+			t.Fatal("invalid combined filter", filter, err)
+		}
+	}
+	for _, category := range []string{"$ne", "moderation appeal", "Player Report ", strings.Repeat("x", 4000)} {
+		if _, err := reportPageFilter(ReportQuery{ReportType: category}); err == nil {
+			t.Fatal("accepted invalid report category", category)
+		}
+	}
+}
+
 func TestNewReportValidatesAndNormalizesInput(t *testing.T) {
 	now := time.Unix(1_700_000_000, 0)
 	report, err := NewReport(" player ", "Bug Report", "  collision failed  ", now)

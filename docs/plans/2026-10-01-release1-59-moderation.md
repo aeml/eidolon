@@ -37,6 +37,14 @@ Every action rechecks the durable role on the current authenticated connection.
 Strict fields, bounded payloads and admission rate limits apply; account roles,
 report authors and arbitrary target changes cannot be supplied in the payload.
 
+The queue now combines status with literal category filters, so conduct reports
+and appeals can be triaged separately from bug reports and feature requests.
+Changing either selection clears pagination and requests an explicit refresh;
+both filters survive subsequent keyset pages. This is a read-only staff view,
+not an automated priority judgment or a new private-data collection. Filter
+controls retire when authorization is lost. Staff review boundaries are now
+documented in the administrator guide; staffing and sanction policy remain open.
+
 The database atomically stores status, revision and a private receipt containing
 the actor, time and reason. A stale decision fails instead of overwriting another
 review. Exact retries return the original receipt even after a later reopening;
@@ -120,6 +128,26 @@ These are prepared presentation routes, not production reports or sanction
 acceptance. Existing Go evidence covers the unchanged block/ignore authority.
 
 ## Remaining milestone scope
+
+The category slice passed 31 client checks in 2.434 seconds, focused handler
+race checks in 2.451 seconds and pure database checks in 1.058 seconds. The
+existing explicitly disposable Mongo exercise passed in 2.379 seconds: 13
+appeals interleaved with 12 unrelated bug reports paginate into 10 and 3
+without mixing categories, duplicating cases or changing review receipts.
+Combined status/category filters, invalid and duplicate fields, and schemas
+that must not accept report categories are covered. No new CI job was added.
+
+The existing portrait administration route passed in 28.6 seconds after its
+new selector was corrected to use the actual combobox role. Its screenshot
+was inspected; the bright default filters were then restyled to match the
+dark administration theme. The final portrait route passed again in 21.2
+seconds; its inspected render retains readable status/category controls and
+case review in the scrollable panel. Artifacts:
+`/tmp/eidolon-1-59-report-triage-dark-1001`. This is presentation evidence, not
+full moderation acceptance or a physical-phone certification. Scoped lint and
+whitespace checks passed. The
+uniquely named, task-labeled disposable Mongo container was stopped and
+removed; production data was untouched.
 
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is
