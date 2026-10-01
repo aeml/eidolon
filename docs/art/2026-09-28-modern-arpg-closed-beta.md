@@ -17,7 +17,7 @@ open-alpha foundation gates; final approved modern presentation is required
 for Q and the near-completion CB gate, targeted at1.90 subject to readiness.
 This changes beta timing, not the requested visual scope or quality bar.
 
-## Art ownership — user supplies actors, implementation supplies the world
+## Art ownership for actor and item models
 
 ### September 29 owner priority — player experience over milestone count
 
@@ -47,10 +47,11 @@ ARPG presentation. Review scene composition and material frequencies next to
 the remaining audio integration; retain clear enemy warnings and usable Low
 settings. A faster renderer alone does not close these visual gaps.
 
-Latest user direction: do as much environment, texture, lighting and shader work
-as possible in code so the user's external asset work is limited to **player
-class models, monsters, bosses and NPCs**. This is the production division of
-work, not merely an optional way to divide a larger outsourced asset list.
+The user wants environment, texture, lighting and shader work handled in code.
+Their original external-model scope covered player classes, monsters, bosses
+and NPCs. On October 1 they also volunteered GLBs for every item to display on
+characters. This updates item-art ownership, not the environment workstream or
+the requirement to integrate and fit each asset properly.
 
 | User-provided model scope | Code/integration work owned by implementation |
 | --- | --- |
@@ -59,9 +60,9 @@ work, not merely an optional way to divide a larger outsourced asset list.
 | Town/story/service NPCs | NPC material/animation integration, placement, interaction bounds, names, quest markers and dialogue presentation |
 | No requested environment asset production | Terrain, buildings/interiors, dungeon/raid rooms, props, foliage, rocks, roads, water, sky, portals, crystals and casino furniture/machines |
 | No requested environment texture/shader production | Code-generated surface textures and PBR maps, terrain blending, lighting, reflection/atmosphere, shadows, weather, VFX, UI/item icons and quality/performance controls |
-| No requested per-item armor/weapon modeling campaign | Procedural equipment families, fitted modular layers, weapons/shields/accessories, cosmetics and adaptation to approved actor rigs |
+| Item GLBs supplied by the user as they become available | Item-ID/slot mapping, import/provenance validation, fitted armor and rigid weapon/shield/accessory attachments, materials, body masking, cosmetic variants, High/Low budgets, previews and local/remote replication; procedural equipment remains the fallback |
 
-Actor geometry remains the user's creative contribution. Prefer neutral-pose
+Actor and item geometry are the user's creative contribution. Prefer neutral-pose
 models and keep source files; supply a rig/UVs if available. The implementation
 owns the engine integration and generated material work. The preferred technical
 handoff below is a compatibility checklist, not a demand that the user author
@@ -142,31 +143,39 @@ Existing tests remain valuable for regressions but do not judge visual appeal.
 
 ## Optional authored-model pilot and artist handoff
 
-Owner update: the first Fighter model is not available yet. The owner plans to
-provide one neutral-pose GLB body with source/licensing information, rig and UVs
-when ready. Do not repeat the request or ask for the whole actor catalog now.
-Continue code-owned environment and equipment improvements meanwhile. This
-defers the handoff, not the eventual model-integration or visual-approval checks.
+The delivered rigged Fighter is already integrated in accepted Alpha1.54:
+independent High/Low rigs, animation, previews, all fourteen equipment slots
+and a procedural fallback. The [integration record](2026-09-30-fighter-pilot.md)
+retains its actual evidence and remaining visual limits. Do not request that
+pilot again or treat its delivery as final modern-art approval.
+
+On October 1 the owner reported new Rogue, Cleric and Wizard exports. The
+freshly fetched master did not yet contain those new GLBs, so their paths or
+commit have been requested. Inspect their actual skeletons, clips, UVs and
+provenance before adapting the actor/equipment/preview loaders; do not substitute
+historical exports or assume their rigs match the Fighter. Environment, materials
+and effects work continues while those files are located.
 
 The user may supply models made in Meshy or another tool. This is an option to
 evaluate, not a claim that an external generator produces game-ready assets or
 that importing a single mesh finishes equipment/animation integration. No paid
 tool use, bulk asset purchase or production loader migration is authorized here.
 
-Before commissioning/generating a whole set, use **one user-supplied Fighter body**
-as the pilot. Implementation supplies and fits its procedural armor set; the user
-is not being asked to model equipment, environments or texture packs. Agree the
-visual silhouette in neutral front, side and rear views first. The game
-integration needs:
+The first user-supplied Fighter body established the import pilot; its equipment
+integration currently uses fitted procedural pieces. New actor and volunteered
+item exports still need inspection, not a blind catalogue-wide replacement.
+The user is not being asked for environment assets or texture packs. Agree the
+visual silhouette in neutral front, side and rear views. Integration needs:
 
 - Editable source plus a proposed glTF/GLB handoff, with recorded provenance and
   redistribution rights appropriate for this open-source project. Validate the
   actual tool/export/license rather than assuming all generated assets qualify.
 - Consistent scale, axes, grounded origin and neutral bind pose, aligned to a
-  supplied reference rig. Current rigs are rigid procedural hierarchies, not a
-  ready-made guarantee of compatibility with an arbitrary skinned character.
+  supplied reference rig. Fighter now has an authored skinned rig; the other
+  classes still use procedural hierarchies pending their new imports. Neither
+  guarantees compatibility with an arbitrary skinned character or item export.
 - A body that can accept swappable equipment, not a fully armored inseparable
-  character mesh. Implementation supplies equipment and body masking/layering
+  character mesh. Implementation fits the available equipment and body masking/layering
   for covered skin, hair, helmets, gloves, boots and long cloth. Prefer a neutral
   pose; a rig and UVs are useful if available, not a requirement for the user to
   solve the engine integration before submitting the pilot.
@@ -191,6 +200,15 @@ camera, fits the equipment system, loads within the approved budget and has
 clear provenance. If suitable, add a specific authored-asset integration task
 and update procedural-only production checks intentionally. Do not secretly
 restore the old large asset library or delete the current fallback beforehand.
+
+For item GLBs, preserve canonical server item IDs and equipment slots; add a
+render mapping rather than replacing saved gear or inferring stats from the
+asset name. Inspect scale, axes, origin, grip/attachment placement and covered
+body regions against the actual class rig. Rigid weapons/shields and fitted
+armor require different attachment/deformation work. Preserve source and
+licensing information, verify preview and equipped local/remote appearance,
+and measure loading/resource cleanup before replacing a fallback. Item art
+must not change combat stats or transfer cosmetic ownership with the gear.
 
 ## Closed-beta acceptance additions
 
