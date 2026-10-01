@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Focused rendered interaction fixture, not a multiplayer/wagering campaign.
-test('physical chair picking, seated equipment pose, phone panel and clean exit', async ({ page }) => {
+test('physical chair picking, seated equipment pose, phone panel and clean exit', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -63,20 +63,32 @@ test('physical chair picking, seated equipment pose, phone panel and clean exit'
     expect(await page.evaluate(() => window.__casino.sent.some(message => message.payload.action === 'bet' && message.payload.bet === 100 && message.payload.sessionId === 'fixture-seat'))).toBe(true);
     await page.evaluate(() => {
         const { controller, table } = window.__casino;
-        controller.updateState({ tables: [table], yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 },
+        controller.updateState({ tables: [table], occupants: controller.data.occupants, yourSeat: { tableId: table.id, seat: 0, sessionId: 'fixture-seat', exitX: -4.3, exitZ: 174.4 },
             blackjack: { available: true, roundId: 'round-fixture', phase: 'playing', gold: 900,
                 players: [{ playerId: 'fighter', name: 'Fighter', seat: 0, bet: 100 }, { playerId: 'wizard', name: 'Wizard', seat: 3, bet: 100 }],
                 round: { revision: 1, dealer: [9], dealerHidden: true, turnPlayerId: 'fighter', turnHand: 0, deadline: new Date(Date.now() + 30000).toISOString(), actions: ['hit', 'stand', 'double', 'split'],
                     players: [{ playerId: 'fighter', seat: 0, hands: [{ cards: [7, 20], bet: 100 }] }, { playerId: 'wizard', seat: 3, hands: [{ cards: [9, 5], bet: 100 }] }] } } });
     });
     await expect(page.getByLabel('Dealer hidden card', { exact: true })).toBeVisible();
+    await expect(page.locator('.card-table-seat.own .card-table-seat-name')).toHaveText('Fighter · You');
+    await expect(page.locator('.card-table-seat-name').filter({ hasText: 'Wizard' })).toBeVisible();
+    await expect(page.getByLabel('Next wager (Gold)', { exact: false })).toBeVisible();
+    await page.getByRole('button', { name: '2×', exact: true }).click();
+    await expect(page.getByLabel('Next wager (Gold)', { exact: false })).toHaveValue('200');
+    await expect(page.getByRole('button', { name: 'Bet · 200 Gold', exact: true })).toBeDisabled();
+    expect(await page.evaluate(() => window.__casino.sent.filter(message => message.payload.action === 'bet').length)).toBe(1);
     await expect.poll(() => page.evaluate(() => window.__casino.controller.blend)).toBe(1);
-    await page.screenshot({ path: '/tmp/eidolon-casino-seat-view-20260913.png' });
+    await page.screenshot({ path: testInfo.outputPath('blackjack-next-wager-desktop.png') });
     await page.setViewportSize({ width: 390, height: 844 });
     const panel = page.getByRole('region', { name: 'Casino table' });
     await expect(panel).toBeVisible();
     expect(await panel.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
     expect((await page.getByRole('button', { name: 'Leave table', exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(44);
+    await panel.locator('.blackjack-game .card-table-controls').evaluate(element => { element.scrollTop = 0; });
+    await expect(page.getByRole('button', { name: 'Hit', exact: true })).toBeInViewport();
+    await expect(page.getByRole('button', { name: 'Stand', exact: true })).toBeInViewport();
+    await expect(page.getByLabel('Next wager (Gold)', { exact: false })).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath('blackjack-next-wager-phone.png') });
     await page.getByRole('button', { name: 'Split · +100 Gold', exact: true }).click();
     expect(await page.evaluate(() => window.__casino.sent.filter(message => message.payload.action === 'play').map(message => message.payload))).toEqual([
         { action: 'play', gameAction: 'split', roundId: 'round-fixture', roundRevision: 1, sessionId: 'fixture-seat' }
