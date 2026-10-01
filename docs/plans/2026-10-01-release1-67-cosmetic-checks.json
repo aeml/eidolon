@@ -1,0 +1,24 @@
+{
+  "status": "local bounded cosmetic-vendor slice; no version package, push or completed-milestone claim",
+  "baseCommit": "bcec1711",
+  "scope": [
+    "Private cosmetic-vendor and wardrobe replies identify the snapshot's owning character. The vendor ignores missing/wrong owners, invalid balances, ambiguous acknowledgements, closed screens and disposed instances.",
+    "Opening the vendor clears the old catalogue, collection, selection, balance and preview while loading. Changing characters also discards the former character's pending unlock context.",
+    "Fresh catalogues invalidate retired buttons and price confirmations. Purchases use the explicitly reviewed offer, price and catalogue generation; pending retries keep the same unique unlock and price.",
+    "Disposal is idempotent: retained buttons or delayed results cannot send purchases, reopen the dialog or recreate its renderer. Preview equipment remains presentation-only and actual combat gear is unchanged."
+  ],
+  "checks": [
+    { "type": "before implementation", "passed": 5, "failed": 5, "seconds": 1.591, "scope": "All five new character-switch, owner/acknowledgement, retired-button, disposal and appearance-owner regressions reproduced against the prior source." },
+    { "type": "Jest after implementation", "suites": 3, "passed": 21, "seconds": 3.286, "scope": "CosmeticVendor, Wardrobe and CharacterPreview" },
+    { "type": "Go race", "package": "eidolon-server", "seconds": 2.144, "scope": "Focused cosmetic handler durable unlock/replay/save recovery, wardrobe failure-owner and separate BSON/protobuf appearance regressions. Handler fixtures are not new Mongo/socket process-restart evidence." },
+    { "type": "native Chrome prepared UI", "passed": 2, "seconds": 17.0, "artifacts": "/tmp/eidolon-1-67-vendor-1001", "scope": "390px and 1440px server-shaped private replies: twelve offers, preview/compare, explicit EP confirmation, owned application, unchanged actual gear, readable layout and preview disposal. Root reviewed the phone-sized screenshot." },
+    { "type": "lint and formatting", "result": "Changed JS source/test files pass ESLint; changed Go files formatted with gofmt; git diff --check passes." }
+  ],
+  "unchanged": "Catalogue prices/content, Gold/EP exchange rules, wallets, combat stats, item ownership, VIP entitlements, character saves and open-alpha access.",
+  "remaining": [
+    "Complete the full 1.67 wardrobe/preview/local-and-remote fit/provenance review; this ownership/lifecycle fix alone does not establish all twelve offers on every class.",
+    "Integrate and verify the user's new actor/item exports when their paths or commit are available; this slice does not claim new Rogue/Cleric/Wizard model swaps.",
+    "Retain existing durable purchase, saved-unlock and replication receipts at their actual scope; do not substitute prepared DOM checks for live settlement.",
+    "Publish in roadmap order only after prior milestones are complete, with matching version/login/notes, terminal CI and independent public acceptance."
+  ]
+}

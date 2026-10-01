@@ -46,6 +46,6 @@ func (c *Client) handleWardrobe(msg Message) {
 			success, message = false, "Wardrobe changed in this session; durable save is pending. Please stay connected."
 		}
 	}
-	payload, _ := json.Marshal(map[string]interface{}{"success": success, "message": message, "collection": snapshot.AppearanceCollection, "appearances": snapshot.Appearances})
+	payload, _ := json.Marshal(map[string]interface{}{"playerID": snapshot.ID, "success": success, "message": message, "collection": snapshot.AppearanceCollection, "appearances": snapshot.Appearances})
 	c.sendSafe(createMessage(MsgWardrobeResult, payload))
 }

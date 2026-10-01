@@ -12,6 +12,7 @@ const node = (tag, text, className) => {
 export class CosmeticVendorUI {
     constructor({ getPlayer, send, createPreview = host => new CharacterPreview(host) }) {
         this.getPlayer = getPlayer; this.send = send; this.createPreview = createPreview;
+        this.disposed = false; this.ready = false; this.catalogueEpoch = 0;
         this.catalogue = []; this.collection = {};
         this.root = node('dialog', '', 'casino-entry-dialogue cosmetic-vendor');
         this.root.setAttribute('aria-label', 'Veyra’s cosmetic wardrobe');
@@ -26,10 +27,10 @@ export class CosmeticVendorUI {
         this.title = node('h3'); this.description = node('p');
         this.previewHost = node('div', '', 'character-preview cosmetic-preview');
         this.previewHost.innerHTML = `<div class="character-preview-label"></div><div class="character-preview-stage"><span class="character-preview-status" role="status">Select a look to preview.</span></div><div class="character-preview-controls"><button type="button" data-preview-turn="-0.785398" aria-label="Rotate preview left">↶</button><button type="button" data-preview-turn="reset">Front</button><button type="button" data-preview-turn="0.785398" aria-label="Rotate preview right">↷</button></div>`;
-        this.compare = this.button('Show equipped look', () => { this.showOriginal = !this.showOriginal; this.renderPreview(); });
+        this.compare = this.button('Show equipped look', () => { if (!this.canAct()) return; this.showOriginal = !this.showOriginal; this.renderPreview(); });
         this.buy = this.button('Unlock cosmetic', () => this.reviewPurchase());
         this.apply = this.button('Apply owned look', () => {
-            if (!this.selected || this.apply.disabled) return;
+            if (!this.canAct() || !this.selected || this.apply.disabled) return;
             this.status.textContent = 'Applying your owned appearance…';
             this.send('select_appearance', { slot: this.selected.appearance.slot, key: this.lookKey(this.selected) });
         });
@@ -38,7 +39,7 @@ export class CosmeticVendorUI {
         this.confirmation.append(this.cost, this.button('Confirm EP purchase', () => this.confirmPurchase()),
             this.button('Cancel', () => { this.confirmation.hidden = true; }));
         this.retry = this.button('Retry pending unlock', () => {
-            if (this.pendingID) this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
+            if (this.canAct() && this.pendingID) this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
         }); this.retry.hidden = true;
         this.status = node('p', '', 'cosmetic-status'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
         details.append(this.title, this.description, this.previewHost, this.compare, this.buy, this.apply, this.confirmation, this.retry);
@@ -46,17 +47,24 @@ export class CosmeticVendorUI {
         this.root.append(header, this.balance, intro, body, this.status);
         document.body.append(this.root);
         ownedEvent(this, this.root, 'keydown', event => event.stopPropagation());
-        ownedEvent(this, this.root, 'close', () => { this.preview?.dispose(); this.preview = null; });
+        ownedEvent(this, this.root, 'close', () => { this.ready = false; this.preview?.dispose(); this.preview = null; });
     }
 
     button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
     lookKey(offer) { return `${offer.appearance.baseName}|${offer.appearance.rarity}`; }
+    hasCurrentOwner() { return !this.disposed && Boolean(this.playerID) && this.getPlayer()?.id === this.playerID; }
+    canAct() { return this.root.open && this.ready && this.hasCurrentOwner(); }
 
     open() {
         const player = this.getPlayer();
-        if (!player?.id) return false;
-        if (this.playerID !== player.id) { this.pendingID = null; this.selected = null; }
+        if (this.disposed || !player?.id) return false;
+        if (this.playerID !== player.id) { this.pendingID = null; this.pendingPrice = null; }
         this.playerID = player.id;
+        this.ready = false; this.catalogueEpoch++;
+        this.catalogue = []; this.collection = {}; this.selected = null; this.reviewedOffer = null; this.ep = null;
+        this.preview?.dispose(); this.preview = null;
+        this.balance.textContent = 'Loading your EP balance…'; this.title.textContent = 'Select a cosmetic'; this.description.textContent = '';
+        this.compare.disabled = true; this.retry.hidden = true;
         this.confirmation.hidden = true;
         this.list.replaceChildren(); this.buy.disabled = true; this.apply.disabled = true;
         this.status.textContent = 'Opening Veyra’s wardrobe…';
@@ -68,25 +76,32 @@ export class CosmeticVendorUI {
     close() { if (this.root.open) this.root.close(); }
 
     refreshPlayer() {
-        if (!this.root.open) return;
+        if (this.disposed || !this.root.open) return;
         const player = this.getPlayer(), p = player?.position;
         if (player?.id !== this.playerID || player?.state === 'DEAD' || player?.instanceId ||
             (p && (!Number.isFinite(p.x) || !Number.isFinite(p.z) || Math.hypot(p.x - 12, p.z - 185) > 7))) this.close();
     }
 
     handleResult(result) {
-        if (this.getPlayer()?.id !== this.playerID) { this.close(); return; }
-        this.catalogue = Array.isArray(result?.catalogue) ? result.catalogue : [];
+        if (this.disposed || !this.root.open) return false;
+        if (!this.hasCurrentOwner()) { this.close(); return false; }
+        if (result?.playerID !== this.playerID || !Array.isArray(result.catalogue) ||
+            !Number.isSafeInteger(result.ep) || result.ep < 0 || typeof result.success !== 'boolean' || typeof result.pending !== 'boolean') return false;
+        this.ready = true;
+        const epoch = ++this.catalogueEpoch;
+        this.catalogue = result.catalogue;
         this.collection = result?.collection || {};
-        this.ep = Number.isSafeInteger(result?.ep) ? result.ep : 0;
+        this.ep = result.ep;
         this.balance.textContent = `${this.ep.toLocaleString()} EP · Permanent cosmetic unlocks`;
-        if (result?.id === this.pendingID && !result.pending) this.pendingID = null;
+        if (result.id === this.pendingID && result.pending === false) this.pendingID = null;
         this.retry.hidden = !this.pendingID;
         this.status.textContent = result?.message || 'Choose a look to preview.';
         this.list.replaceChildren();
         for (const offer of this.catalogue) {
             const owned = Boolean(this.collection[this.lookKey(offer)]);
-            const button = this.button(`${offer.name} · ${owned ? 'Owned' : `${offer.priceEP} EP`}`, () => this.select(offer));
+            const button = this.button(`${offer.name} · ${owned ? 'Owned' : `${offer.priceEP} EP`}`, () => {
+                if (this.canAct() && epoch === this.catalogueEpoch) this.select(offer);
+            });
             button.dataset.offerId = offer.id;
             const swatch = node('span', offer.realm, 'cosmetic-swatch');
             swatch.style.borderColor = `#${Number(offer.primary).toString(16).padStart(6, '0')}`;
@@ -94,10 +109,14 @@ export class CosmeticVendorUI {
         }
         this.select(this.catalogue.find(offer => offer.id === this.selected?.id) || this.catalogue[0]);
         if (!result?.success) this.buy.disabled = true;
+        return true;
     }
 
     select(offer) {
-        this.selected = offer; this.showOriginal = false; this.confirmation.hidden = true;
+        if (!this.canAct()) return;
+        offer = this.catalogue.find(current => current.id === offer?.id);
+        this.selected = offer; this.showOriginal = false; this.confirmation.hidden = true; this.reviewedOffer = null;
+        this.compare.disabled = !offer;
         if (!offer) { this.buy.disabled = true; this.apply.disabled = true; return; }
         this.title.textContent = offer.name;
         this.description.textContent = offer.description;
@@ -112,7 +131,7 @@ export class CosmeticVendorUI {
     }
 
     renderPreview() {
-        if (!this.root.open || !this.selected) return;
+        if (!this.canAct() || !this.selected) return;
         this.preview ||= this.createPreview(this.previewHost);
         const player = this.getPlayer(), look = this.selected.appearance, slot = look.slot;
         // Preview-only data, never placed in a bag or sent as a combat item.
@@ -127,13 +146,15 @@ export class CosmeticVendorUI {
     }
 
     reviewPurchase() {
-        if (!this.selected || this.buy.disabled) return;
+        if (!this.canAct() || !this.selected || this.buy.disabled) return;
+        this.reviewedOffer = { id: this.selected.id, priceEP: this.selected.priceEP, epoch: this.catalogueEpoch };
         this.cost.textContent = `Permanently unlock ${this.selected.name} for ${this.selected.priceEP} EP? This grants an appearance only, with no Gold resale or stat bonuses.`;
         this.confirmation.hidden = false;
     }
 
     confirmPurchase() {
-        if (this.confirmation.hidden || this.buy.disabled || !this.selected || this.getPlayer()?.id !== this.playerID) return;
+        if (!this.canAct() || this.confirmation.hidden || this.buy.disabled || !this.selected ||
+            this.reviewedOffer?.id !== this.selected.id || this.reviewedOffer.priceEP !== this.selected.priceEP || this.reviewedOffer.epoch !== this.catalogueEpoch) return;
         this.pendingID = this.selected.id; this.confirmation.hidden = true;
         this.pendingPrice = this.selected.priceEP;
         this.buy.disabled = true; this.retry.hidden = false;
@@ -141,6 +162,13 @@ export class CosmeticVendorUI {
         this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
     }
 
-    handleAppearanceResult(result) { if (this.root.open) { this.status.textContent = result?.message || 'Appearance updated.'; this.renderPreview(); } }
-    dispose() { disposeOwnedEvents(this); this.close(); this.preview?.dispose(); this.root.remove(); }
+    handleAppearanceResult(result) {
+        if (!this.canAct() || result?.playerID !== this.playerID) return false;
+        this.status.textContent = result?.message || 'Appearance updated.'; this.renderPreview(); return true;
+    }
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true; this.ready = false; this.catalogueEpoch++;
+        disposeOwnedEvents(this); this.close(); this.preview?.dispose(); this.preview = null; this.root.remove();
+    }
 }
