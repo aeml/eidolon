@@ -26,12 +26,14 @@ func cosmeticHandlerPlayer(t *testing.T) (*Client, *testCharacterCommitter, stri
 func cosmeticResponse(t *testing.T, c *Client) struct {
 	Success, Pending bool
 	EP               int
+	PlayerID         string
 } {
 	t.Helper()
 	var msg Message
 	var result struct {
 		Success, Pending bool
 		EP               int
+		PlayerID         string
 	}
 	select {
 	case data := <-c.send:
@@ -52,7 +54,7 @@ func TestCosmeticVendorHandlerCommitsEPAndUnlockBeforeSuccess(t *testing.T) {
 	offer := game.CosmeticCatalogue()[0]
 	c.handleCosmeticVendor(cosmeticRequest(offer))
 	response := cosmeticResponse(t, c)
-	if !response.Success || response.Pending || response.EP != 75 || committer.saved.EP != 75 || committer.saved.Gold != 3_000_000 || committer.saved.AppearanceCollection[game.AppearanceKey(offer.Appearance)].BaseName != offer.Name {
+	if response.PlayerID != c.playerID || !response.Success || response.Pending || response.EP != 75 || committer.saved.EP != 75 || committer.saved.Gold != 3_000_000 || committer.saved.AppearanceCollection[game.AppearanceKey(offer.Appearance)].BaseName != offer.Name {
 		t.Fatal("cosmetic acknowledgement without durable debit/unlock", response)
 	}
 	c.handleCosmeticVendor(cosmeticRequest(offer))

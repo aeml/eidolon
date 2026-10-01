@@ -86,8 +86,8 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
             }
             if (type === 'select_appearance') {
                 player.appearances[payload.slot] = collection[payload.key];
-                ui.handleAppearanceResult({ success: true, message: 'Appearance updated. Combat stats are unchanged.' });
-            } else ui.handleResult({ success: true, pending: false, id: payload.id, ep, collection, catalogue });
+                ui.handleAppearanceResult({ playerID: player.id, success: true, message: 'Appearance updated. Combat stats are unchanged.' });
+            } else ui.handleResult({ playerID: player.id, success: true, pending: false, id: payload.id, ep, collection, catalogue });
         } });
         window.__cosmeticFixture = { ui, player, original, requests };
         ui.open();

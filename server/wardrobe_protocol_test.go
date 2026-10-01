@@ -23,15 +23,16 @@ func TestWardrobeClaimRejectsUnverifiedSeasonHistory(t *testing.T) {
 	c.handleWardrobe(Message{Type: MsgCollectAppearances, Payload: json.RawMessage(`{"medal":"Gold","season":"2026-Q3","settledAt":123,"rating":9999}`)})
 	var message Message
 	var result struct {
-		Success bool   `json:"success"`
-		Message string `json:"message"`
+		Success  bool   `json:"success"`
+		Message  string `json:"message"`
+		PlayerID string `json:"playerID"`
 	}
 	select {
 	case data := <-c.send:
 		if err := json.Unmarshal(data, &message); err != nil || message.Type != MsgWardrobeResult {
 			t.Fatal("missing wardrobe result", err)
 		}
-		if err := json.Unmarshal(message.Payload, &result); err != nil || result.Success || result.Message != "arena profile service unavailable" {
+		if err := json.Unmarshal(message.Payload, &result); err != nil || result.PlayerID != c.playerID || result.Success || result.Message != "arena profile service unavailable" {
 			t.Fatal("unverified claim acknowledged", result, err)
 		}
 	default:

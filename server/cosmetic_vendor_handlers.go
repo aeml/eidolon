@@ -37,7 +37,8 @@ func (c *Client) handleCosmeticVendor(msg Message) {
 		return
 	}
 	payload, _ := json.Marshal(map[string]interface{}{
-		"success": success, "pending": pending, "message": message, "id": request.ID,
+		"playerID": snapshot.ID,
+		"success":  success, "pending": pending, "message": message, "id": request.ID,
 		"catalogue": game.CosmeticCatalogue(), "ep": snapshot.EP,
 		"collection": snapshot.AppearanceCollection, "appearances": snapshot.Appearances,
 	})

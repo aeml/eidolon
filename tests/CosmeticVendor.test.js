@@ -18,7 +18,7 @@ function fixture() {
     ui.root.showModal = () => ui.root.setAttribute('open', '');
     ui.root.close = () => { ui.root.removeAttribute('open'); ui.root.dispatchEvent(new Event('close')); };
     ui.open();
-    ui.handleResult({ success: true, ep: 100, catalogue: offers(), collection: {} });
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 100, catalogue: offers(), collection: {} });
     return { ui, send, preview, player, changePlayer: id => { player = { ...player, id }; } };
 }
 
@@ -62,7 +62,7 @@ test('preview and cost confirmation never change actual gear, and duplicate purc
     expect(send.mock.calls[1]).toEqual(['buy_cosmetic', { id: offers()[0].id, priceEP: 25, confirmed: true }]);
     expect(JSON.stringify(player)).toBe(original);
     expect(preview.update.mock.calls[0][0].equipment.chest.id).toBe('cosmetic-preview');
-    ui.handleResult({ success: true, id: offers()[0].id, ep: 75, catalogue: offers(), collection: { [ui.lookKey(offers()[0])]: offers()[0].appearance } });
+    ui.handleResult({ playerID: player.id, success: true, pending: false, id: offers()[0].id, ep: 75, catalogue: offers(), collection: { [ui.lookKey(offers()[0])]: offers()[0].appearance } });
     expect(ui.buy.disabled).toBe(true);
     expect(ui.apply.disabled).toBe(false);
     ui.apply.click();
@@ -76,7 +76,7 @@ test('pending purchase retries the same offer and quoted price, and changing sel
     expect(send).toHaveBeenCalledTimes(1);
     ui.reviewPurchase(); ui.confirmPurchase();
     const purchase = send.mock.calls[1];
-    ui.handleResult({ success: false, pending: true, id: offers()[1].id, ep: 75, catalogue: offers(), collection: {} });
+    ui.handleResult({ playerID: 'player-hero', success: false, pending: true, id: offers()[1].id, ep: 75, catalogue: offers(), collection: {} });
     ui.retry.click();
     expect(send.mock.calls[2]).toEqual(purchase);
     expect(ui.buy.disabled).toBe(true);
@@ -91,4 +91,67 @@ test('vendor is a neutral physical NPC, and the window closes on character chang
     changePlayer('someone-else'); ui.refreshPlayer();
     expect(ui.root.open).toBe(false); expect(preview.dispose).toHaveBeenCalledTimes(1);
     ui.dispose();
+});
+
+test('reopening for another character clears old balances, collection, selection and preview before any result', () => {
+    const { ui, changePlayer, preview } = fixture();
+    const oldID = ui.playerID;
+    ui.collection[ui.lookKey(offers()[0])] = offers()[0].appearance;
+    ui.reviewPurchase(); ui.confirmPurchase();
+    changePlayer('new-hero'); ui.open();
+    expect(ui.collection).toEqual({}); expect(ui.catalogue).toEqual([]);
+    expect(ui.selected).toBeNull(); expect(ui.pendingID).toBeNull();
+    expect(ui.balance.textContent).not.toContain('100 EP'); expect(preview.dispose).toHaveBeenCalledTimes(1);
+    const before = ui.root.textContent;
+    ui.handleResult({ playerID: oldID, success: true, pending: false, ep: 999, catalogue: offers(), collection: {} });
+    expect(ui.root.textContent).toBe(before); expect(ui.list.children).toHaveLength(0);
+    ui.dispose();
+});
+
+test('missing-owner and malformed final replies cannot clear a pending unlock or replace the balance', () => {
+    const { ui, player } = fixture(); ui.reviewPurchase(); ui.confirmPurchase();
+    const id = ui.pendingID;
+    const reply = { playerID: player.id, success: true, pending: false, id, ep: 75, catalogue: offers(), collection: {} };
+    for (const invalid of [{ ...reply, playerID: undefined }, { ...reply, playerID: 'other' },
+        { ...reply, ep: -1 }, { ...reply, ep: 2.5 }, { ...reply, pending: undefined }]) {
+        ui.handleResult(invalid);
+        expect(ui.pendingID).toBe(id); expect(ui.ep).toBe(100);
+    }
+    ui.handleResult(reply); expect(ui.pendingID).toBeNull(); expect(ui.ep).toBe(75); ui.dispose();
+});
+
+test('retired catalogue buttons and a stale cost confirmation cannot submit another purchase', () => {
+    const { ui, send, player } = fixture();
+    const stale = ui.list.querySelector('button');
+    ui.reviewPurchase();
+    const newer = offers().map(offer => ({ ...offer, priceEP: offer.priceEP + 1 }));
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 100, catalogue: newer, collection: {} });
+    ui.confirmPurchase(); expect(send).toHaveBeenCalledTimes(1);
+    ui.select(newer[1]); stale.click(); expect(ui.selected.id).toBe(newer[1].id);
+    ui.reviewPurchase(); ui.confirmPurchase();
+    expect(send).toHaveBeenLastCalledWith('buy_cosmetic', { id: newer[1].id, priceEP: newer[1].priceEP, confirmed: true });
+    ui.dispose();
+});
+
+test('disposed wardrobe UI cannot reopen, send retained button actions, accept late results or recreate its preview', () => {
+    const { ui, send, preview, player } = fixture();
+    ui.reviewPurchase(); ui.confirmPurchase();
+    const calls = send.mock.calls.length, previews = preview.update.mock.calls.length;
+    ui.dispose(); ui.dispose();
+    expect(ui.open()).toBe(false);
+    ui.retry.click(); ui.compare.click(); ui.apply.click(); ui.reviewPurchase(); ui.confirmPurchase();
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, id: ui.pendingID, catalogue: offers(), collection: {} });
+    ui.handleAppearanceResult({ playerID: player.id, success: true, message: 'late appearance' });
+    expect(send).toHaveBeenCalledTimes(calls); expect(preview.update).toHaveBeenCalledTimes(previews);
+    expect(preview.dispose).toHaveBeenCalledTimes(1); expect(ui.root.isConnected).toBe(false);
+});
+
+test('appearance replies are restricted to the current owner and an open vendor', () => {
+    const { ui, player } = fixture(), original = ui.status.textContent;
+    ui.handleAppearanceResult({ playerID: 'other', message: 'wrong appearance' });
+    expect(ui.status.textContent).toBe(original);
+    ui.handleAppearanceResult({ playerID: player.id, message: 'Current appearance saved.' });
+    expect(ui.status.textContent).toBe('Current appearance saved.');
+    ui.close(); ui.handleAppearanceResult({ playerID: player.id, message: 'closed appearance' });
+    expect(ui.status.textContent).toBe('Current appearance saved.'); ui.dispose();
 });
