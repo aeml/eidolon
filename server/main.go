@@ -66,7 +66,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.58.2"
+	buildVersion = "Alpha 1.58.3"
 	qaUsernames  = map[string]struct{}{}
 )
 

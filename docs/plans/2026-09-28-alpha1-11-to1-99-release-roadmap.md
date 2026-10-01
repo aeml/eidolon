@@ -30,7 +30,12 @@ retain the evidence and failed-candidate history. The previous candidate's
 browser failures prevented deployment; corrected-candidate CI and independent
 public acceptance remain required. Final modern-art approval, crowd performance
 and human-playtest gates stay open. The next minor milestone remains the complete
-1.59 moderation workflow; no later milestone is declared shipped.
+1.59 moderation workflow; no later milestone is declared shipped. The separate
+[prepared 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
+packages the rendering and body-detail settings work below without including
+unpublished moderation code. Version defaults and cumulative notes are aligned;
+publication waits for the current candidate's acceptance and its own CI/public
+checks. It is not live or a replacement for the complete 1.59 milestone.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.58.3",
+  "status": "prepared-not-published",
+  "parentCandidate": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
+  "scope": [
+    "Default opaque fitted-equipment batching with source-preserving animated surfaces and independent actor skeletons.",
+    "Original piece-level transparency during Rogue stealth, restored opaque batches afterward, and owned-material cleanup.",
+    "Optional reload request when saved graphics detail differs from a currently loaded authored body.",
+    "Version alignment across login, package, release identity, server, container, deploy, isolated QA and CI, with cumulative patch history."
+  ],
+  "excluded": [
+    "All unpublished 1.59 moderation code and policy changes.",
+    "Model rewrites, combat changes, rewards, account resets, access changes and production account mutations."
+  ],
+  "localChecks": {
+    "focusedUnits": "76 scope checks passed within the initial combined run; after correcting the release and isolated-QA defaults, 335 version/publisher checks passed in 3.204 seconds. All 411 selected checks have passed; no mechanical assertion was weakened.",
+    "lint": "Passed for changed JavaScript and focused/native fixtures.",
+    "native": "Fresh isolated graphics worktree: all-eight class/quality equipped bodies, alternating Rogue hands, actual Rogue stealth and equipped previews passed in 23.6 seconds. CombatIdle render inspected.",
+    "artifactRoot": "/tmp/eidolon-1-58-3-integrated-prepared-20261001",
+    "setupFailure": "Initial fresh-worktree browser attempt lacked generated vendor/ dependencies. Standard npm run prepare:client supplied them; the subsequent case passed. This was not a runtime model or equipment failure.",
+    "earlierEvidence": [
+      "2026-10-01-fitted-equipment-batch-checks.json",
+      "2026-10-01-authored-low-crowd-checks.json"
+    ]
+  },
+  "publicationGates": [
+    "Current 1.58.2 CI and independent public acceptance first; this patch does not cancel or supersede the running deployment.",
+    "Fresh remote fetch and merge before push, preserving other agents' work.",
+    "Exact-source CI and independent served-artifact acceptance for this follow-up."
+  ],
+  "remaining": [
+    "Broader comparable-device crowd performance, native settings-reload acceptance, physical-phone feedback and final owner art approval.",
+    "Complete 1.59 moderation milestone and all subsequent roadmap versions; this patch is not a substitute for those requirements."
+  ]
+}

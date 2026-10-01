@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.58.2</span>
+                    <span class="start-version-row__label">Alpha 1.58.3</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -749,6 +749,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.58.3">
+                    <h3 class="patch-note-entry__title">Alpha 1.58.3 (lighter equipped heroes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Less rendering work:</strong> Compatible opaque fitted armor shares draw calls while preserving the supplied models, materials, animated surfaces and independent skeletons. The controlled equipped crowd used about 18–20% fewer draw calls; this is not a universal FPS promise.</li>
+                        <li><strong>Stealth stays clear:</strong> Rogues temporarily use the original individual transparent pieces during stealth, then restore the opaque batches. Textured, transparent and custom-shader pieces stay separate.</li>
+                        <li><strong>Honest Low detail:</strong> Saved Low graphics and mobile actor loading use the delivered Low bodies. Changing detail offers an optional reload when existing bodies do not match; lighting and effects still change immediately. Medium retains High bodies on desktop.</li>
+                        <li><strong>Existing progress preserved:</strong> No account reset, combat, class rules, reward or currency changes. Broad performance and physical-phone checks remain separate. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.58.2">
                     <h3 class="patch-note-entry__title">Alpha 1.58.2 (fitted heroes and dual-wield Rogues)</h3>
                     <ul class="patch-note-entry__list">

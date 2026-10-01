@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.58.2';
+const currentVersion = '1.58.3';
+
+test('1.58.3 records source-preserving equipment batching and honest quality changes', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.58.3"'), previous = html.indexOf('data-version="1.58.2"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['lighter equipped heroes', 'independent skeletons', '18–20%', 'not a universal FPS promise',
+        'during stealth', 'Textured, transparent and custom-shader', 'optional reload', 'Medium retains High',
+        'No account reset', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.58.2 records the delivered character integration and class rules without granting power through cosmetics', () => {
     const html = fs.readFileSync('index.html', 'utf8');
