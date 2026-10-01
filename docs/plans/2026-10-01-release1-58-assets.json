@@ -1,0 +1,106 @@
+{
+  "acceptedAt": "2026-10-01T04:01:02.097Z",
+  "commit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+  "version": "Alpha 1.58.0",
+  "ci": {
+    "run": 36808962117,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 110199502316,
+        "name": "Browser Smoke (Playwright 1/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110199502571,
+        "name": "Browser Smoke (Playwright 2/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110199502580,
+        "name": "Client Tests (Jest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110199502724,
+        "name": "Server Tests (Go)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110199502735,
+        "name": "Browser Smoke (Playwright 3/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110207732996,
+        "name": "Predeploy Character QA (System Chrome)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110208650466,
+        "name": "Validate Production QA Inputs",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110208677286,
+        "name": "Deploy to GitHub Pages",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110208677316,
+        "name": "Deploy Server (SSH)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110209020689,
+        "name": "Live Release and Character QA",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 727568,
+      "sha256": "97b7e29f2a5cbe303434cf995565bd17d4974f96274f7c14f2eed94876406d7c"
+    },
+    {
+      "file": "src/styles/endgame.css",
+      "bytes": 5063,
+      "sha256": "083caae209621269b4ae254058207024ea6ddb4cba5231a25f029463fe2f897f"
+    },
+    {
+      "file": "src/ui/EndgameGoals.js",
+      "bytes": 5654,
+      "sha256": "047e480f1592ad3d082d62af9e5a307d871f5b89068b2b407dfc5e829f046e40"
+    },
+    {
+      "file": "src/ui/UIManagerDungeon.js",
+      "bytes": 46106,
+      "sha256": "e2429252159307ac9387e8d0da546f8ebbc2791aeb0c0caecd849027ebd4eb94"
+    }
+  ],
+  "frontend": {
+    "commit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+    "version": "Alpha 1.58.0"
+  },
+  "backend": {
+    "commit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+    "version": "Alpha 1.58.0",
+    "status": "ok",
+    "database": "ready"
+  },
+  "network": "ordinary public DNS, IPv4 HTTPS"
+}
