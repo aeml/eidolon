@@ -33,6 +33,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         const actors = [];
         for (const [i, type] of classes.entries()) for (const quality of ['high', 'low']) {
             const root = await MeshFactory.createMeshForType(type, { quality });
+            root.userData.fittedEquipmentBatching = true;
             if (root.userData.authoredClass !== type) throw new Error(`Authored ${type} failed (${quality})`);
             const actor = new Actor(`asset-${type}-${quality}`, {}); actor.meshType = type; actor.setMesh(root);
             root.position.set((i - 1.5) * 5.3, 0, quality === 'high' ? 0 : -8); scene.add(root);
@@ -48,6 +49,8 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
                 attached++; if (!part.skeleton.bones.every(bone => body.skeleton.bones.includes(bone))) wrongBones++;
             } });
             actor.playAnimation('CombatIdle', true, true); actor.updateAnimationMixer(.2);
+            const batches = []; root.traverse(part => { if (part.userData.fittedBatchSources) batches.push(part); });
+            if (!batches.length) throw new Error(`No fitted batch for ${type}/${quality}`);
             actors.push({ actor, root, type, quality, attached, wrongBones, items: root.userData.equipmentVisualItemCount, gear });
         }
         const sample = (state, time = .3, yaw = 0) => {
