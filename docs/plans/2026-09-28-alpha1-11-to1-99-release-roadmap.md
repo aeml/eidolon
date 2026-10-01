@@ -31,6 +31,14 @@ rendering and eligibility evidence; terminal CI and independent public acceptanc
 remain required. Final art approval, crowd performance and human-playtest gates
 remain open. The next minor milestone is the complete 1.59 moderation workflow.
 
+A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
+completed with ten fully equipped heroes, Malachar and four overlapping fields.
+Repeated busy phases retained stable geometry/texture counts, but busy frame
+medians were 44.8–48.1 ms with High rendering and 32.9–33.5 ms with Low rendering
+on the test host. Both renderer tiers used High-detail bodies, and host load was
+not captured. These timings leave crowd optimization and true Low actor-LOD
+profiling open; they are not smooth-gameplay, phone or actual-raid acceptance.
+
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin
 resolution/reopening to the private queue.

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "runtimeCommit": "7d5fdf6de171ce3e2f1dd66a86ec3a013787ac24",
+  "fixture": "tests/e2e/raid-scene-performance.spec.js with the class-eligible fitted-equipment update retained alongside this receipt",
+  "status": "local-render-workload-not-performance-acceptance",
+  "artifactRoot": "/tmp/eidolon-authored-crowd-20261001",
+  "command": "playwright test tests/e2e/raid-scene-performance.spec.js",
+  "result": "1 passed in 1.3 minutes",
+  "workload": { "actors": 10, "equippedItemsPerActor": 14, "boss": "Malachar", "overlappingFields": 4, "framesPerPhase": 180 },
+  "rootVisualReview": "High-render screenshot inspected; all authored actors and overlapping warnings are visible",
+  "repeatGeometryAndTextureCountsStable": true,
+  "renderer": "ANGLE AMD Radeon Graphics RADV RENOIR Vulkan 1.4.318",
+  "profiles": [
+    { "renderQuality": "high", "actorQuality": "high", "phase": "busy", "medianMs": 48.1, "p95Ms": 96.1, "p99Ms": 109.3, "hitchesOver50ms": 76, "calls": 1324, "triangles": 2908127, "geometries": 457, "textures": 534 },
+    { "renderQuality": "high", "actorQuality": "high", "phase": "clear", "medianMs": 16.7, "p95Ms": 21.8, "p99Ms": 23.1, "hitchesOver50ms": 0, "calls": 22, "triangles": 45, "geometries": 412, "textures": 530 },
+    { "renderQuality": "high", "actorQuality": "high", "phase": "busy-repeat", "medianMs": 44.8, "p95Ms": 86.7, "p99Ms": 104, "hitchesOver50ms": 66, "calls": 1324, "triangles": 2908127, "geometries": 457, "textures": 534 },
+    { "renderQuality": "low", "actorQuality": "high", "phase": "busy", "medianMs": 33.5, "p95Ms": 74.8, "p99Ms": 84.2, "hitchesOver50ms": 36, "calls": 728, "triangles": 1457406, "geometries": 456, "textures": 520 },
+    { "renderQuality": "low", "actorQuality": "high", "phase": "clear", "medianMs": 16.7, "p95Ms": 22.1, "p99Ms": 26.5, "hitchesOver50ms": 0, "calls": 7, "triangles": 30, "geometries": 411, "textures": 516 },
+    { "renderQuality": "low", "actorQuality": "high", "phase": "busy-repeat", "medianMs": 32.9, "p95Ms": 68.5, "p99Ms": 84.4, "hitchesOver50ms": 39, "calls": 728, "triangles": 1457406, "geometries": 456, "textures": 520 }
+  ],
+  "limits": [
+    "Both renderer tiers use High-detail class bodies; this is not Low actor-LOD evidence.",
+    "No production accounts or network combat are exercised.",
+    "Host load was not captured; CI and other host work may affect timing.",
+    "The measured busy medians and tails do not establish smooth modern-ARPG performance.",
+    "Physical-phone, actual-raid and broader crowd measurements, optimization and owner art approval remain open."
+  ]
+}
