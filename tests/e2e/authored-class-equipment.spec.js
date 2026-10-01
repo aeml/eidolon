@@ -103,5 +103,31 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         return { ownRestored, otherUnchanged, releasedEmpty: first.root.userData.equipmentVisualItemCount === 0 };
     });
     expect(ownership).toEqual({ ownRestored: true, otherUnchanged: true, releasedEmpty: true });
+    await page.evaluate(async () => {
+        const { CharacterPreview } = await import('/src/ui/CharacterPreview.js');
+        const host = document.createElement('div');
+        Object.assign(host.style, { position: 'fixed', left: '0', top: '0', width: '430px', height: '720px', background: '#151a21', zIndex: '10001' });
+        host.innerHTML = '<div class="character-preview-label"></div><div class="character-preview-stage" style="width:420px;height:680px"><span class="character-preview-status"></span></div>';
+        document.body.append(host);
+        window.__classGear.previewHost = host;
+        window.__classGear.CharacterPreview = CharacterPreview;
+    });
+    for (const type of ['Rogue', 'Wizard', 'Cleric']) {
+        const preview = await page.evaluate(async type => {
+            const qa = window.__classGear;
+            qa.preview?.dispose();
+            qa.preview = new qa.CharacterPreview(qa.previewHost);
+            const actor = qa.actors.find(actor => actor.type === type && actor.quality === 'low');
+            qa.preview.update({ subType: type, level: 70, equipment: actor.gear, mesh: { userData: { authoredQuality: 'low' } } });
+            await qa.preview.modelReady; await qa.preview.model.userData.equipmentReady; qa.preview.render();
+            const shown = qa.preview.model;
+            return { type: shown.userData.authoredClass, quality: shown.userData.authoredQuality, items: shown.userData.equipmentVisualItemCount,
+                independent: shown.getObjectByName(`${type}_Body`).skeleton.bones[0] !== actor.root.getObjectByName(`${type}_Body`).skeleton.bones[0],
+                idle: shown.userData.resolveAnimationName('Idle') };
+        }, type);
+        expect(preview).toEqual({ type, quality: 'low', items: 14, independent: true, idle: { Rogue: 'Dagger_Idle_Dual', Wizard: 'Staff_Idle', Cleric: 'Mace_Idle' }[type] });
+        await page.locator('.character-preview-stage canvas').screenshot({ path: testInfo.outputPath(`${type}-equipped-preview.png`) });
+    }
+    await page.evaluate(() => { window.__classGear.preview.dispose(); window.__classGear.previewHost.remove(); });
     expect(failures, failures.join('\n')).toEqual([]);
 });

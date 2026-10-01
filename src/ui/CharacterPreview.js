@@ -12,10 +12,12 @@ const INITIAL_YAW = -0.28;
 /** A lazy, on-demand dressing room. Never animates alongside the game loop. */
 export class CharacterPreview {
     constructor(host, { createRenderer = (options) => new THREE.WebGLRenderer(options),
-        loadFighter = (quality) => MeshFactory.createMeshForType('Fighter', { quality }) } = {}) {
+        loadFighter = (quality) => MeshFactory.createMeshForType('Fighter', { quality }),
+        loadCharacter = (type, quality) => MeshFactory.createMeshForType(type, { quality }) } = {}) {
         this.host = host;
         this.createRenderer = createRenderer;
         this.loadFighter = loadFighter;
+        this.loadCharacter = loadCharacter;
         this.modelRequest = 0;
         this.yaw = INITIAL_YAW;
         this.signature = '';
@@ -74,7 +76,7 @@ export class CharacterPreview {
         const equipment = equipmentWithAppearances(player.equipment, player.appearances);
         const quality = MeshFactory.getFighterQuality(player.mesh?.userData.authoredQuality ||
             (player.gameEngine?.renderSystem?.isMobile ? 'low' : player.gameEngine?.renderSystem?.graphicsQuality));
-        const modelKey = type === 'Fighter' ? `${type}:${quality}` : type;
+        const modelKey = `${type}:${quality}`;
         const signature = `${modelKey}|${equipmentVisualSignature(equipment)}`;
         this.pendingEquipment = equipment;
         this.host.querySelector('.character-preview-label').textContent = `${type} · Level ${player.level}`;
@@ -94,30 +96,48 @@ export class CharacterPreview {
             this.type = type;
             this.modelKey = modelKey;
             this.yaw = INITIAL_YAW;
-            if (type === 'Fighter') {
-                this.host.querySelector('.character-preview-status').textContent = 'Loading Fighter model…';
-                Promise.resolve().then(() => this.loadFighter(quality)).then(model => {
+            {
+                this.host.querySelector('.character-preview-status').textContent = `Loading ${type} model…`;
+                this.modelReady = Promise.resolve().then(() => type === 'Fighter' ? this.loadFighter(quality) : this.loadCharacter(type, quality)).then(model => {
                     if (this.disposed || request !== this.modelRequest) {
-                        MeshFactory.releaseMesh('Fighter', model);
+                        MeshFactory.releaseMesh(type, model);
                         return;
                     }
                     clearEquipmentVisuals(this.model); this.model.removeFromParent();
                     this.model = model; this.scene.add(model);
-                    const idle = model.userData.animations?.find(clip => clip.name === 'Idle');
-                    if (idle) {
-                        this.previewMixer = new THREE.AnimationMixer(model);
-                        this.previewMixer.clipAction(idle).play(); this.previewMixer.update(.25);
-                    }
+                    this.previewMixer = new THREE.AnimationMixer(model);
                     applyEquipmentVisuals(model, this.pendingEquipment);
-                    this.host.querySelector('.character-preview-status').textContent = model.userData.assetFallback ? 'Using fallback Fighter model.' : '';
+                    this.syncWeaponPose();
+                    this.renderAfterEquipment(model, request);
+                    this.host.querySelector('.character-preview-status').textContent = model.userData.assetFallback ? `Using fallback ${type} model.` : '';
                     this.render();
                 }).catch(() => {
-                    if (!this.disposed && request === this.modelRequest) this.host.querySelector('.character-preview-status').textContent = 'Using fallback Fighter model.';
+                    if (!this.disposed && request === this.modelRequest) this.host.querySelector('.character-preview-status').textContent = `Using fallback ${type} model.`;
                 });
-            } else this.host.querySelector('.character-preview-status').textContent = '';
+            }
         }
         applyEquipmentVisuals(this.model, equipment);
+        this.syncWeaponPose();
+        this.renderAfterEquipment(this.model, this.modelRequest);
         this.render();
+    }
+
+    syncWeaponPose() {
+        if (!this.previewMixer) return;
+        const name = this.model.userData.resolveAnimationName?.('Idle') || 'Idle';
+        const idle = this.model.userData.animations?.find(clip => clip.name === name);
+        if (!idle) return;
+        this.previewMixer.stopAllAction(); this.model.userData.resetRestPose?.();
+        this.previewMixer.clipAction(idle).reset().play(); this.previewMixer.setTime(.25);
+    }
+
+    renderAfterEquipment(model, request) {
+        if (!model?.userData.equipmentReady) return;
+        model.userData.equipmentReady.then(() => {
+            if (!this.disposed && request === this.modelRequest && model === this.model) {
+                this.syncWeaponPose(); this.render();
+            }
+        });
     }
 
     render() {

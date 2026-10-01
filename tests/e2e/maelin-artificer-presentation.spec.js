@@ -62,7 +62,7 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                     await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
                     expect(metrics.state).toBe(state);
                     expect(metrics.animation).toBe(state === 'CHANNELING' ? 'Channel' : 'Idle');
-                    expect(metrics.beforeAnimation).toBe(state === 'CHANNELING' ? 'Channel' : 'Idle');
+                    expect(metrics.beforeAnimation).toBe(state === 'CHANNELING' ? 'Channel' : 'Unarmed_Idle');
                     expect(metrics.beforeMeshType).toBe('Wizard');
                     expect(metrics.beforeMissing).toEqual([]);
                     expect(metrics.beforeTuningFork).toBe(false);

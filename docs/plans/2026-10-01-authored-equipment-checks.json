@@ -4,6 +4,16 @@
   "deliveredAssetCommit": "a7c7da134c5e2303778cd9f4c7668949f13a4391",
   "scope": ["four class High/Low models", "252 fitted and rigid equipment models", "four weapon motion banks", "class equipment restrictions", "Rogue dual wield cadence and alternating strikes", "explicit offhand inspection action"],
   "sourcePreservation": "Delivered GLBs and Blender sources were not rewritten. The generated runtime catalog verifies all 264 runtime asset hashes against the delivery manifests.",
+  "followup": {
+    "preview": "All four class previews load their selected authored quality and redraw after asynchronous equipment fitting. Idle poses use the equipped weapon profile without a background animation loop.",
+    "previewAndAssetVersionTests": {"passed": 14, "seconds": 2.103},
+    "previewAndVersionPresentationTests": {"passed": 337, "seconds": 9.302},
+    "nativeClassEquipmentAndThreePreviews": {"passed": 1, "seconds": 29.1, "artifactRoot": "/tmp/eidolon-equipped-preview-20261001"},
+    "nativeFighterPoseEquipmentSeatingAndPreview": {"passed": 1, "seconds": 22.0, "artifactRoot": "/tmp/eidolon-fitted-fighter-20261001"},
+    "nativeMaelinDesktopAndPhone": "2 passed after updating the class reference's resolved Unarmed_Idle expectation; Maelin's distinct NPC remains unchanged.",
+    "historicalWizardAudit": "Passed with current-rule HP 960/985 at levels31/32 and unchanged Mana 670/685. The original JSON capture remains immutable. Plate Mail, Leather Cap, Leather Gloves and Reinforced Spaulders remain owned but inactive, removing 18 Vitality. This is not a new native campaign receipt.",
+    "supersededCandidate": {"sha": "e3874fb1f7a4da2f6efbdaf8a2d3d98b8e854fa0", "run": 36911659494, "failedJobs": ["Server Tests (Go)", "Client Tests (Jest)", "Browser Smoke (Playwright 2/3)"], "note": "Historical non-cloth Wizard baseline, two-path cache-override expectation and old unarmed clip-name expectation were corrected. The candidate did not deploy. Other Jest results were 609 suites and 8856 tests passed."}
+  },
   "client": {
     "focusedEquipmentAndVersionChecks": {"suites": 8, "passed": 411, "seconds": 49.777},
     "animationAndMigrationChecks": {"suites": 3, "passed": 41, "seconds": 2.508},
