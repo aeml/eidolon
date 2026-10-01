@@ -257,6 +257,32 @@ seconds. No new CI job, browser run, campaign or production action was needed.
 This is not proof of an activated sanction-to-appeal flow or a complete mute
 mutation handler.
 
+The prepared staff mutation handler now accepts an explicitly confirmed mute
+or reversal for an immutable account ID, with a conduct-case reference, expected
+revision, public explanation and separate private evidence. Its closed schema
+rejects duplicate or unknown fields, actor overrides, missing confirmation and
+non-integer durations/revisions. Durable staff authorization and the current
+connection are checked before admission and again after the activity write;
+the existing database mutation independently checks the durable role.
+
+The admission audit records account/case references without either explanation.
+Audit-storage failure prevents mutation. Conflicts require a refresh; an uncertain
+write is not acknowledged as success and permits only an explicit identical
+retry. Account state and its private receipt remain one atomic database write;
+neither applying nor reversing a mute resolves the case automatically. This
+handler is deliberately absent from both the protocol registry and admission
+map. Target preview, confirmation UI, approved policy and activation remain open.
+
+Five new tests, including 19 invalid payloads and four authority changes during
+admission, passed with existing report-review, chat-guard and protocol checks
+under the race detector in 3.387 seconds. The initial run caught a missing audit
+action allowlist entry; adding that specific action fixed the handler without
+weakening audit validation. Existing pure activity and moderation database
+checks passed in 1.125 seconds. No Mongo/browser/campaign run or production
+sanction was performed; the preceding disposable database receipt remains the
+evidence for atomic retries and reversal. This is handler preparation, not full
+staff-to-player sanction or appeal acceptance.
+
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is
 invented or activated. Staff coverage and final evidence-retention policy also
