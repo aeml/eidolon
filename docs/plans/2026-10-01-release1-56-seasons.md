@@ -119,3 +119,7 @@ Before publication, accept the preceding 1.55 release, fresh-fetch and merge
 master, then push normally. Luna monitors CI; independent
 public identity, readiness and changed-file checks remain required. Source
 documentation was reviewed; a rendered documentation preview is unavailable.
+
+The preceding [1.55 acceptance](2026-10-01-release1-55-acceptance.md) is complete:
+all ten CI jobs and independent public identities, readiness and exact changed
+assets passed. This package may now follow it in the normal ordered rollout.

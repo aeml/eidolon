@@ -4,8 +4,9 @@ Arena interface changes are implemented and locally verified. After
 [full 1.54 acceptance](2026-09-30-release1-54-acceptance.md), Alpha 1.55.0 with
 cumulative patch notes was pushed normally on October 1 at exact
 `480a47b28137783c0f9db623a87ee8e6cd581d5a` after a fresh fetch/merge. Its CI run
-is `36794385683`; final CI and independent public acceptance remain required.
-Publication alone is not a live acceptance claim.
+is `36794385683`; all ten jobs completed successfully, and independent public
+identity, database and exact-asset checks passed. See the
+[October 1 acceptance](2026-10-01-release1-55-acceptance.md).
 
 ## Scope and retained behavior
 
