@@ -88,7 +88,7 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 	if username == "" {
 		return Report{}, errors.New("report username is required")
 	}
-	if reportType != "Bug Report" && reportType != "Feature Request" && reportType != "Player Report" {
+	if reportType != "Bug Report" && reportType != "Feature Request" && reportType != "Player Report" && reportType != "Moderation Appeal" {
 		return Report{}, errors.New("unsupported report type")
 	}
 	if text == "" {

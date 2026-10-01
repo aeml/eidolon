@@ -35,6 +35,12 @@ Redact usernames and personal details before sharing a reproduction publicly.
 Use the existing operator report tool for resolution; see the
 [operations handoff](BETA_OPERATIONS.md) for its migration and privacy cautions.
 
+Local 1.59 preparation adds **Moderation Appeal** to the player's existing report
+form. Players can include a notice/report reference and their explanation; it
+enters this same private queue as an open report. Submission requests review,
+not automatic sanction reversal, and reveals no staff notes or other reports.
+This route is not yet a deployed sanction or report-resolution workflow.
+
 Under **Character operations**, select an exact account or **Use my account**:
 
 - **Grant Gold:** positive whole amounts, up to100,000,000 per request.

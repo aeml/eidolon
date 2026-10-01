@@ -2,7 +2,7 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 
 const MAX_TEXT = 3200;
-const REPORT_TYPES = new Set(['Bug Report', 'Player Report', 'Feature Request']);
+const REPORT_TYPES = new Set(['Bug Report', 'Player Report', 'Moderation Appeal', 'Feature Request']);
 const SAFE_TAG = /^[a-zA-Z0-9 ._-]{1,80}$/;
 const tag = value => typeof value === 'string' && SAFE_TAG.test(value) ? value : 'unknown';
 
@@ -52,12 +52,14 @@ export class ReportUI {
         this.preview = this.root.querySelector('#report-context');
         this.status = this.root.querySelector('#report-status');
         this.count = this.root.querySelector('#report-count');
+        this.guidance = this.root.querySelector('#report-guidance');
         // A new character/session must not inherit another player's draft.
         this.text.value = '';
         this.optIn.checked = false;
         this.submitListener = () => this.submit();
         this.contextListener = () => this.refreshContext();
         this.inputListener = () => this.updateCount();
+        this.typeListener = () => this.updateGuidance();
         this.keyListener = event => {
             event.stopPropagation();
             if (event.key === 'Escape') { event.preventDefault(); this.ui.toggleReport?.(); }
@@ -71,12 +73,20 @@ export class ReportUI {
         ownedEvent(this, this.button, 'click', this.submitListener);
         ownedEvent(this, this.optIn, 'change', this.contextListener);
         ownedEvent(this, this.text, 'input', this.inputListener);
+        ownedEvent(this, this.type, 'change', this.typeListener);
         ownedEvent(this, this.root, 'keydown', this.keyListener);
         this.updateCount();
+        this.updateGuidance();
         this.setStatus('Reports go to the game operator. Do not include passwords or payment details.');
     }
 
     setStatus(message) { this.status.textContent = message; }
+    updateGuidance() {
+        if (!this.guidance) return;
+        this.guidance.textContent = this.type.value === 'Moderation Appeal'
+            ? 'Include the moderation notice or report reference, why you think the decision was wrong, and relevant facts. An appeal requests review; it does not automatically cancel a sanction. Do not include passwords or payment details.'
+            : 'Describe what happened and what you expected. Reports go to the game operator; do not include passwords or payment details.';
+    }
     updateCount() { this.count.textContent = `${[...this.text.value].length} / ${MAX_TEXT} characters`; }
 
     focusOnOpen() { this.opener = document.activeElement; this.text.focus(); }

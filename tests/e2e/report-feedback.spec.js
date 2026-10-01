@@ -58,6 +58,12 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         const text = page.getByLabel('What happened, what you expected, and steps to reproduce');
         await expect(dialog).toBeVisible(); await expect(text).toBeFocused();
         await text.fill('The casino doorway is blocked when approaching from the east.');
+        await page.getByLabel('Report type').selectOption('Moderation Appeal');
+        await expect(page.locator('#report-guidance')).toContainText('moderation notice or report reference');
+        await expect(page.locator('#report-guidance')).toContainText('does not automatically cancel a sanction');
+        await expect(text).toHaveValue('The casino doorway is blocked when approaching from the east.');
+        await dialog.screenshot({ path: testInfo.outputPath('appeal-guidance.png') });
+        await page.getByLabel('Report type').selectOption('Bug Report');
         await expect(page.locator('#report-diagnostics')).not.toBeChecked();
         await page.locator('.report-context-preview summary').click();
         await expect(page.locator('#report-context')).toContainText('area: Lanternhold');

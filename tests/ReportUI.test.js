@@ -4,7 +4,7 @@ import { GameEngine } from '../src/core/GameEngine.js';
 
 function setup() {
     document.body.innerHTML = `<span class="start-version-row__label">Alpha test</span><div id="report-screen">
-        <select id="report-type"><option>Bug Report</option></select><textarea id="report-text"></textarea>
+        <select id="report-type"><option>Bug Report</option><option>Moderation Appeal</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
         <button id="btn-submit-report">Submit</button><input id="report-diagnostics" type="checkbox">
         <pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output></div>`;
     const ui = { reportScreen: document.querySelector('#report-screen'), reportText: document.querySelector('#report-text'),
@@ -36,6 +36,35 @@ describe('report save confirmation and privacy', () => {
         expect(ui.reportText.value).toBe('');
         expect(ui.btnSubmitReport.disabled).toBe(false);
         expect(ui.report.status.textContent).toContain('0123456789abcdef01234567');
+    });
+
+    test('appeals use the private report route without implying a sanction reversal', () => {
+        const ui = setup();
+        ui.reportType.value = 'Moderation Appeal';
+        ui.reportType.dispatchEvent(new Event('change'));
+        expect(ui.report.guidance.textContent).toContain('moderation notice or report reference');
+        expect(ui.report.guidance.textContent).toContain('does not automatically cancel a sanction');
+        expect(ui.reportText.value).toBe('A detailed bug report');
+        expect(ui.report.optIn.checked).toBe(false);
+        ui.reportText.value = 'Please review notice 0123456789abcdef01234567: the context was misunderstood.';
+        ui.report.submit();
+        expect(ui.onReportSubmit).toHaveBeenCalledWith('Moderation Appeal', expect.stringContaining('Please review notice'), 'test-request-id');
+        expect(ui.reportText.value).toContain('Please review');
+        ui.report.handleResult({ requestId: 'test-request-id', success: true, reportId: 'abcdef0123456789abcdef01' });
+        expect(ui.report.status.textContent).toContain('operator review');
+        expect(ui.report.status.textContent).not.toContain('cancelled');
+        expect(ui.reportText.value).toBe('');
+    });
+
+    test('changing report type preserves save status and disposal removes type listeners', () => {
+        const ui = setup();
+        ui.report.setStatus('Previous save remains unconfirmed.');
+        ui.reportType.value = 'Moderation Appeal'; ui.reportType.dispatchEvent(new Event('change'));
+        expect(ui.report.status.textContent).toBe('Previous save remains unconfirmed.');
+        ui.report.dispose();
+        const text = ui.report.guidance.textContent;
+        ui.reportType.value = 'Bug Report'; ui.reportType.dispatchEvent(new Event('change'));
+        expect(ui.report.guidance.textContent).toBe(text);
     });
 
     test.each(['offline', 'throw', 'failure', 'timeout'])('%s retains draft without an automatic retry', mode => {

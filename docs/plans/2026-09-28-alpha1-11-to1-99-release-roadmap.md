@@ -21,6 +21,12 @@ The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is loca
 implemented and packaged but unpublished: actual story/cache status, optional
 repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and
 human pacing limits are preserved; ordered release acceptance remains required.
+Local 1.59 preparation adds an in-game Moderation Appeal to the existing private
+report queue. Client/privacy, backend validation and prepared form layouts pass;
+this is not a complete moderation milestone. Actionable admin triage, sanctions,
+review boundaries, retention and a disposable report-to-resolution exercise
+remain required. The initial sanction policy question is open; no live account
+was punished or report resolved in these checks.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

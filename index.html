@@ -648,10 +648,12 @@
                 <select id="report-type" class="support-field__control">
                     <option value="Bug Report">Bug Report</option>
                     <option value="Player Report">Player Report</option>
+                    <option value="Moderation Appeal">Moderation Appeal</option>
                     <option value="Feature Request">Feature Request</option>
                 </select>
                 <label for="report-text">What happened, what you expected, and steps to reproduce</label>
-                <textarea id="report-text" class="support-field__control support-field__textarea" rows="6" maxlength="3200" aria-describedby="report-count report-status" placeholder="Describe your issue or idea..."></textarea>
+                <p id="report-guidance">Describe what happened and what you expected. Reports go to the game operator; do not include passwords or payment details.</p>
+                <textarea id="report-text" class="support-field__control support-field__textarea" rows="6" maxlength="3200" aria-describedby="report-guidance report-count report-status" placeholder="Describe your issue or idea..."></textarea>
                 <output id="report-count" for="report-text">0 / 3200 characters</output>
                 <label class="report-diagnostics-option"><input id="report-diagnostics" type="checkbox"> Include optional diagnostics (quality, viewport, controls and rounded position)</label>
                 <details class="report-context-preview"><summary>Context included with this report</summary><p>Build and area are included. Optional diagnostics are off by default. No automatic chat, logs, account or inventory dumps.</p><pre id="report-context"></pre></details>

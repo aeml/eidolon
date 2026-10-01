@@ -9,6 +9,22 @@ import (
 	"time"
 )
 
+func TestModerationAppealKeepsOrdinaryReportValidationAndOpenReviewStatus(t *testing.T) {
+	now := time.Date(2026, 10, 1, 1, 0, 0, 0, time.UTC)
+	report, err := NewReport("reporter", "Moderation Appeal", "Please review notice 0123456789abcdef01234567.", now)
+	if err != nil || report.Username != "reporter" || report.ReportType != "Moderation Appeal" || report.Status != ReportStatusOpen || report.ResolvedAt != nil {
+		t.Fatal("appeal bypassed ordinary private review", report, err)
+	}
+	for _, text := range []string{"", strings.Repeat("x", maximumReportLength+1)} {
+		if _, err := NewReport("reporter", "Moderation Appeal", text, now); err == nil {
+			t.Fatal("appeal bypassed text validation")
+		}
+	}
+	if _, err := NewReport("", "Moderation Appeal", "Please review", now); err == nil {
+		t.Fatal("appeal missing a reporter")
+	}
+}
+
 func TestReportQueueKeysetPagesAreStableAndReadOnly(t *testing.T) {
 	db := newFriendshipDB(t)
 	// A uniquely named disposable collection, never existing player reports.
