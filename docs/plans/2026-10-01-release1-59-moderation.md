@@ -21,6 +21,15 @@ produce the same unavailable response, even when the requester is an admin.
 There is no background polling or persistent local reference catalog. Resolved
 means review finished, not a promised fix or automatic sanction reversal.
 
+Player safety is now reachable from a selected chat sender as well as the
+existing social controls. Block and Ignore reuse the confirmed, persisted
+commands. Report opens an editable draft containing only the selected message,
+explicitly labeled client-reported and unverified; no conversation is collected
+in the background or submitted automatically. Chat/name conduct guidance asks
+for the player and approximate time. Pending submissions and drafts that would
+overflow the length limit remain unchanged. Only one safety menu is open, it
+names its target, and detached controls cannot act after replacement or disposal.
+
 Admins open **Administration → Player reports**, inspect a case, enter a private
 reason and explicitly confirm resolution or reopening. Cancelling does not send
 a mutation. The request includes its displayed case ID, status and revision.
@@ -97,6 +106,18 @@ shows the full status explanation within the report body. Artifacts:
 `/tmp/eidolon-1-59-owner-status-readable-1001`. Final auto-scroll visibility was
 verified in portrait, not re-certified at all sizes. The temporary Mongo
 container was stopped and removed; production accounts and cases were untouched.
+
+Chat safety and draft protection passed 64 checks across five client suites in
+4.316 seconds. The existing community-chat fixture passed desktop and portrait
+cases in 35.1 seconds, retaining private channel composition and checking an
+explicit selected-message draft without copying an unrelated whisper. Both
+safety renders were inspected. After including the target name in the menu
+heading and protecting detached actions, the desktop case passed again in
+23.7 seconds; its final render was inspected. Artifacts:
+`/tmp/eidolon-1-59-chat-safety-1001` and
+`/tmp/eidolon-1-59-chat-safety-named-1001`. Scoped lint and whitespace checks passed.
+These are prepared presentation routes, not production reports or sanction
+acceptance. Existing Go evidence covers the unchanged block/ignore authority.
 
 ## Remaining milestone scope
 

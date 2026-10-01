@@ -42,6 +42,15 @@ not automatic sanction reversal, and reveals no staff notes or other reports.
 Neither the appeal route, owner status lookup nor the following review controls
 are deployed yet.
 
+The same local preparation lets players select a sender in world, party, guild
+or whisper chat and open **Player safety**. Block and Ignore retain the existing
+explicit confirmation and server-saved commands. **Report player** opens an
+editable draft with only that selected message; the full conversation is not
+copied. The draft labels this as client-reported context, not verified evidence,
+and nothing is submitted until the player clicks **Submit**. Chat/name reports
+ask for the player, approximate time and conduct. A pending submission cannot be
+rewritten, and a draft that would exceed the length limit is left unchanged.
+
 Players can use **Check a report I submitted** in the report form to enter a
 saved reference and check its status. The server matches both the reference and
 the authenticated submitting account, including for administrators using this

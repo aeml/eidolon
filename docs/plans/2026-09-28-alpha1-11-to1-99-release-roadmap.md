@@ -24,13 +24,15 @@ human pacing limits are preserved; ordered release acceptance remains required.
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin
 resolution/reopening to the private queue.
+Chat safety opens from a selected sender, preserves block/ignore confirmation
+and drafts only the explicitly selected message for review before submission.
 Strict permission checks, stale-case protection, private receipts, manual exact
 retry and responsive controls are implemented. A disposable Mongo exercise
 checks resolution, reopening, competing reviewers, concurrent retries and
 restricted owner responses. The real two-account socket/restart check covers
 submission, private staff review, denied ordinary-account review and one durable
 resolution receipt; it is included in the existing CI socket step.
-This is not a complete moderation milestone: chat/name abuse response, sanctions,
+This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
 final staff boundaries and evidence-retention decisions remain. The initial
 sanction policy question is open; no live account was punished or case resolved.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final

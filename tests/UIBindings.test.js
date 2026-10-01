@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { UIBindings } from '../src/core/UIBindings.js';
+import { ReportUI } from '../src/ui/ReportUI.js';
 
 describe('UIBindings', () => {
     test('party consent carries the current invitation identity and meeting maps never teleport', () => {
@@ -239,10 +240,13 @@ describe('UIBindings', () => {
     test('social safety uses persisted commands and reports require explicit submission', () => {
         const engine = createEngine();
         const ui = engine.uiManager;
-        ui.reportText = document.createElement('textarea');
+        ui.reportScreen = document.createElement('div');
+        ui.reportScreen.innerHTML = '<textarea></textarea><select><option>Player Report</option></select><button>Submit</button><input id="report-diagnostics" type="checkbox"><p id="report-guidance"></p><pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output>';
+        ui.reportText = ui.reportScreen.querySelector('textarea');
+        ui.reportType = ui.reportScreen.querySelector('select');
+        ui.btnSubmitReport = ui.reportScreen.querySelector('button');
+        ui.report = new ReportUI(ui);
         ui.reportText.value = 'Existing draft';
-        ui.reportType = document.createElement('select');
-        ui.reportType.add(new Option('Player Report', 'Player Report'));
         ui.toggleReport = jest.fn();
         new UIBindings(engine).bindConstructorCallbacks();
         engine.network.send.mockClear();
@@ -258,6 +262,7 @@ describe('UIBindings', () => {
         expect(ui.toggleReport).toHaveBeenCalledTimes(1);
         ui.onReportSubmit(ui.reportType.value, ui.reportText.value);
         expect(engine.network.send).toHaveBeenCalledWith('report', expect.objectContaining({ reportType: 'Player Report' }));
+        ui.report.dispose();
     });
 
     test('bindSessionCallbacks wires chat, respawn, and hotbar actions', () => {

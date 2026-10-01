@@ -4,7 +4,7 @@ import { GameEngine } from '../src/core/GameEngine.js';
 
 function setup() {
     document.body.innerHTML = `<span class="start-version-row__label">Alpha test</span><div id="report-screen">
-        <select id="report-type"><option>Bug Report</option><option>Moderation Appeal</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
+        <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
         <button id="btn-submit-report">Submit</button><input id="report-diagnostics" type="checkbox">
         <pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output></div>`;
     const ui = { reportScreen: document.querySelector('#report-screen'), reportText: document.querySelector('#report-text'),
@@ -54,6 +54,31 @@ describe('report save confirmation and privacy', () => {
         expect(ui.report.status.textContent).toContain('operator review');
         expect(ui.report.status.textContent).not.toContain('cancelled');
         expect(ui.reportText.value).toBe('');
+    });
+
+    test('selected player context is an editable draft, never an automatic report', () => {
+        const ui = setup();
+        expect(ui.report.startPlayerReport('Ayla', 'party chat; selected message: Meet by the gate')).toBe(true);
+        expect(ui.reportText.value).toContain('A detailed bug report');
+        expect(ui.reportText.value).toContain('Player: Ayla');
+        expect(ui.reportType.value).toBe('Player Report');
+        expect(ui.report.guidance.textContent).toContain('not verified evidence');
+        expect(ui.report.count.textContent).toBe(`${[...ui.reportText.value].length} / 3200 characters`);
+        expect(ui.onReportSubmit).not.toHaveBeenCalled();
+    });
+
+    test('contextual reports cannot rewrite a pending submission or overflow an existing draft', () => {
+        const ui = setup();
+        ui.report.submit();
+        expect(ui.report.startPlayerReport('Ayla', 'selected message')).toBe(false);
+        expect(ui.reportText.value).toBe('A detailed bug report');
+        expect(ui.reportType.value).toBe('Bug Report');
+        ui.report.handleResult({requestId: 'test-request-id', success: false});
+        ui.reportText.value = 'x'.repeat(3190);
+        expect(ui.report.startPlayerReport('Ayla', 'selected message')).toBe(false);
+        expect(ui.reportText.value).toBe('x'.repeat(3190));
+        expect(ui.reportType.value).toBe('Bug Report');
+        expect(ui.onReportSubmit).toHaveBeenCalledTimes(1);
     });
 
     test('changing report type preserves save status and disposal removes type listeners', () => {

@@ -118,13 +118,12 @@ export class UIBindings {
         ui.social.onSafety = (action, username, context = '') => {
             if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;
             if (action === 'report') {
-                if (!ui.reportText || !ui.reportType) return;
-                const contextText = `Player: ${username}\nContext: ${context}\nWhat happened (include approximate time):\n`;
-                // Preserve an unfinished report; contextual actions must not erase a draft.
-                ui.reportText.value = ui.reportText.value.trim() ? `${ui.reportText.value}\n\n${contextText}` : contextText;
-                ui.reportType.value = 'Player Report';
+                if (!ui.report?.startPlayerReport) return;
+                // The report owns pending/draft bounds; no contextual action
+                // may rewrite a submitted report while its reply is outstanding.
+                ui.report.startPlayerReport(username, context);
                 if (!ui.isElementVisible?.(ui.reportScreen)) ui.toggleReport?.();
-                ui.reportText.focus();
+                ui.reportText?.focus();
                 return;
             }
             if (['block', 'ignore', 'unblock', 'unignore'].includes(action)) {

@@ -4,6 +4,8 @@ import { collectBrowserFailures } from './helpers.js';
 // Real UIManager/ChatUI/styles and callbacks; authoritative routing and friend
 // persistence are checked separately against a disposable MongoDB in Go.
 for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: channel composition remains private and chat stays available`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(60_000);
+    page.setDefaultTimeout(10_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: phone ? 390 : 1280, height: 844 });
@@ -14,6 +16,13 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: channel
         document.getElementById('start-screen').style.display = 'none';
         const ui = new UIManager(phone), sent = [];
         ui.onChatSend = message => sent.push(message);
+        ui.social.onSafety = (action, username, context) => {
+            if (action === 'report') {
+                ui.report.startPlayerReport(username, context);
+                if (!ui.isElementVisible(ui.reportScreen)) ui.toggleReport();
+                ui.reportText.focus();
+            } else sent.push(`${action}:${username}`);
+        };
         ui.showHUD(); ui.toggleChat(true);
         ui.chat.addMessage('Ayla', 'Regroup near Ilyra', { channel: 'party' });
         ui.chat.addMessage('Borin', 'The next expedition is ready', { channel: 'guild' });
@@ -45,6 +54,22 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: channel
             '/party meet at the gate', '/guild meet at the gate', '/r meet at the gate',
             '/w Ayla explicit private route', 'hello current world'
         ]);
+        await page.getByRole('button', {name: 'Player safety for Ayla', exact: true}).click();
+        const safety = page.locator('#chat-messages .social-safety');
+        await expect(safety).toBeVisible();
+        await expect(safety.locator('summary')).toContainText('Ayla');
+        const report = safety.getByRole('button', {name: 'Report player', exact: true});
+        expect((await report.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        await page.screenshot({path: testInfo.outputPath('chat-player-safety.png')});
+        await report.click();
+        await expect(page.locator('#report-screen')).toBeVisible();
+        await expect(page.locator('#report-text')).toHaveValue(/Player: Ayla/);
+        await expect(page.locator('#report-text')).toHaveValue(/Regroup near Ilyra/);
+        await expect(page.locator('#report-text')).not.toHaveValue(/Private meeting details/);
+        await expect(page.locator('#report-type')).toHaveValue('Player Report');
+        await expect(page.locator('#report-guidance')).toContainText('not verified evidence');
+        expect(await page.evaluate(() => window.__community.sent.length)).toBe(5);
+        await page.getByRole('button', {name: 'Close report form', exact: true}).click();
         await page.evaluate(() => {
             const { ui, sent } = window.__community;
             ui.social.onPartyInvite = username => sent.push(`invite:${username}`);

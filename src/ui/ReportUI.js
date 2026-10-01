@@ -97,12 +97,31 @@ export class ReportUI {
         if (!this.guidance) return;
         this.guidance.textContent = this.type.value === 'Moderation Appeal'
             ? 'Include the moderation notice or report reference, why you think the decision was wrong, and relevant facts. An appeal requests review; it does not automatically cancel a sanction. Do not include passwords or payment details.'
+            : this.type.value === 'Player Report'
+                ? 'Include the player name, approximate time and whether the issue is chat, a name or other conduct. Review any selected message before submitting; it is client-reported, not verified evidence. You can block contact or ignore chat in Player safety. Reports do not automatically punish anyone.'
             : 'Describe what happened and what you expected. Reports go to the game operator; do not include passwords or payment details.';
     }
     updateCount() { this.count.textContent = `${[...this.text.value].length} / ${MAX_TEXT} characters`; }
 
     focusOnOpen() { this.opener = document.activeElement; this.text.focus(); }
     restoreFocus() { if (this.opener?.isConnected) this.opener.focus(); }
+
+    startPlayerReport(username, context = '') {
+        if (this.pending) {
+            this.setStatus('Your report is still saving. Wait for confirmation before adding another player.');
+            return false;
+        }
+        const selected = `Player: ${username}\nContext: ${String(context).slice(0, 1200)}\nWhat happened (include approximate time):\n`;
+        const draft = this.text.value.trim() ? `${this.text.value}\n\n${selected}` : selected;
+        if ([...draft].length > MAX_TEXT) {
+            this.setStatus('Your existing draft is too long to add this selection. Finish or shorten it first; nothing was replaced.');
+            return false;
+        }
+        this.text.value = draft; this.type.value = 'Player Report';
+        this.updateCount(); this.updateGuidance();
+        this.setStatus('Review the selected player and context, add your explanation, then Submit. Nothing has been sent.');
+        return true;
+    }
 
     refreshContext() {
         if (this.pending) return;

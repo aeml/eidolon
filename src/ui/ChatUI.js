@@ -1,4 +1,5 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { socialSafetyActions } from './SocialSafetyUI.js';
 const CHAT_SIZE_STORAGE_KEY = 'eidolon.chatSize';
 const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
 
@@ -7,10 +8,11 @@ const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
  * character-specific rewards and progression stay in the Game stream.
  */
 export class ChatUI {
-    dispose() { disposeOwnedEvents(this); this.sizeObserver?.disconnect(); }
+    dispose() { this.closePlayerSafety(); disposeOwnedEvents(this); this.sizeObserver?.disconnect(); }
 
-    constructor({ onSend = null, onMobileExpanded = null } = {}) {
+    constructor({ onSend = null, onMobileExpanded = null, onSafety = null } = {}) {
         this.onSend = onSend;
+        this.onSafety = onSafety;
         this.onMobileExpanded = onMobileExpanded;
         this.chatBox = document.getElementById('chat-box');
         this.messages = document.getElementById('chat-messages');
@@ -33,6 +35,38 @@ export class ChatUI {
     }
 
     bindEvents() {
+        ownedEvent(this, this.messages, 'click', event => {
+            const sender = event.target.closest?.('button[data-chat-player]');
+            if (!sender || !this.messages.contains(sender)) return;
+            event.stopPropagation();
+            if (this.safetySender === sender) { this.closePlayerSafety(true); return; }
+            this.closePlayerSafety();
+            const entry = sender.closest('.chat-message');
+            const quote = entry.querySelector('.chat-message__text').textContent.trim().slice(0, 1000);
+            const context = `${entry.dataset.chatChannel} chat; selected message (client-reported, not verified evidence): ${quote}`;
+            this.safetySender = sender;
+            sender.setAttribute('aria-expanded', 'true');
+            const panel = socialSafetyActions(sender.dataset.chatPlayer, context, (action, username, selected) => {
+                if (this.safetyPanel !== panel) return;
+                this.closePlayerSafety(action !== 'report');
+                this.onSafety?.(action, username, selected);
+            });
+            this.safetyPanel = panel;
+            panel.open = true;
+            panel.querySelector('summary').textContent = `${sender.dataset.chatPlayer} · Player safety`;
+            const close = document.createElement('button');
+            close.type = 'button'; close.textContent = 'Close player safety';
+            close.onclick = () => { if (this.safetyPanel === panel) this.closePlayerSafety(true); };
+            this.safetyPanel.append(close);
+            entry.append(this.safetyPanel);
+            this.safetyPanel.querySelector('summary').focus();
+            this.safetyPanel.scrollIntoView?.({block: 'nearest'});
+        });
+        ownedEvent(this, this.messages, 'keydown', event => {
+            if (event.key === 'Escape' && this.safetyPanel) {
+                event.preventDefault(); event.stopPropagation(); this.closePlayerSafety(true);
+            }
+        });
         ownedEvent(this, this.mobileToggle, 'click', () => this.setMobileExpanded(!this.mobileExpanded));
         this.tabs.forEach((tab, index) => {
             ownedEvent(this, tab, 'click', () => {
@@ -92,6 +126,7 @@ export class ChatUI {
     }
 
     setActiveStream(stream, { focusInput = false } = {}) {
+        this.closePlayerSafety();
         const nextStream = this.normalizeStream(stream);
         this.activeStream = nextStream;
 
@@ -147,9 +182,17 @@ export class ChatUI {
             entry.appendChild(channelEl);
         }
 
-        const senderEl = document.createElement('strong');
+        const playerSender = typeof this.onSafety === 'function' && normalizedStream === 'chat'
+            && ['world', 'global', 'party', 'guild', 'whisper'].includes(channel)
+            && typeof sender === 'string' && sender !== 'System' && sender.length <= 32 && !/[\s/]/.test(sender) && sender;
+        const senderEl = document.createElement(playerSender ? 'button' : 'strong');
         senderEl.className = 'chat-message__sender';
         senderEl.textContent = `${sender || (normalizedStream === 'game' ? 'Game' : 'System')}:`;
+        if (playerSender) {
+            senderEl.type = 'button'; senderEl.dataset.chatPlayer = sender;
+            senderEl.setAttribute('aria-label', `Player safety for ${sender}`);
+            senderEl.setAttribute('aria-expanded', 'false');
+        }
 
         const messageEl = document.createElement('span');
         messageEl.className = 'chat-message__text';
@@ -183,8 +226,16 @@ export class ChatUI {
 
     trimMessages() {
         while (this.messages && this.messages.children.length > this.maxMessages) {
+            if (this.messages.firstElementChild?.contains(this.safetyPanel)) this.closePlayerSafety();
             this.messages.firstElementChild?.remove();
         }
+    }
+
+    closePlayerSafety(restoreFocus = false) {
+        const sender = this.safetySender;
+        this.safetyPanel?.remove(); this.safetyPanel = null; this.safetySender = null;
+        sender?.setAttribute('aria-expanded', 'false');
+        if (restoreFocus && sender?.isConnected) sender.focus();
     }
 
     incrementUnread(stream) {

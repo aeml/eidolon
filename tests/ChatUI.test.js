@@ -26,6 +26,51 @@ function buildChatDom() {
 }
 
 describe('ChatUI', () => {
+    test('only selected player messages offer safety actions and reporting does not send chat', () => {
+        const onSafety = jest.fn(), onSend = jest.fn();
+        const chat = new ChatUI({onSafety, onSend});
+        chat.addMessage('Ayla', '<img src=x> selected words', {channel: 'party'});
+        chat.addMessage('Borin', 'unrelated private text', {channel: 'whisper'});
+        chat.addMessage('System', 'server notice', {channel: 'server'});
+        chat.addMessage('Quest', 'reward', {stream: 'game'});
+        expect(chat.messages.querySelectorAll('button[data-chat-player]')).toHaveLength(2);
+        const sender = chat.messages.querySelector('button[data-chat-player="Ayla"]');
+        sender.click();
+        expect(sender.getAttribute('aria-expanded')).toBe('true');
+        expect(chat.safetyPanel.querySelector('summary').textContent).toContain('Ayla');
+        expect(chat.messages.querySelectorAll('.social-safety')).toHaveLength(1);
+        chat.safetyPanel.querySelectorAll('button')[2].click();
+        expect(onSafety).toHaveBeenCalledWith('report', 'Ayla', expect.stringContaining('selected words'));
+        expect(onSafety.mock.calls[0][2]).not.toContain('unrelated private text');
+        expect(onSend).not.toHaveBeenCalled();
+        expect(chat.safetyPanel).toBeNull();
+        expect(document.querySelector('img')).toBeNull();
+        chat.dispose();
+    });
+
+    test('chat safety confirms block/ignore and retires menus on tab changes, pruning and disposal', () => {
+        const onSafety = jest.fn();
+        const chat = new ChatUI({onSafety});
+        chat.addMessage('Ayla', 'selected', {channel: 'world'});
+        const sender = chat.messages.querySelector('button');
+        sender.click();
+        const block = chat.safetyPanel.querySelector('button');
+        block.click(); expect(onSafety).not.toHaveBeenCalled();
+        block.click(); expect(onSafety).toHaveBeenCalledWith('block', 'Ayla', expect.any(String));
+        expect(document.activeElement).toBe(sender);
+        block.click(); block.click(); expect(onSafety).toHaveBeenCalledTimes(1);
+        sender.click();
+        const escape = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true});
+        chat.safetyPanel.querySelector('summary').dispatchEvent(escape);
+        expect(escape.defaultPrevented).toBe(true); expect(chat.safetyPanel).toBeNull();
+        sender.click(); chat.setActiveStream('game'); expect(chat.safetyPanel).toBeNull();
+        chat.setActiveStream('chat'); sender.click(); chat.maxMessages = 1;
+        chat.addMessage('Borin', 'new', {channel: 'world'}); expect(chat.safetyPanel).toBeNull();
+        const current = chat.messages.querySelector('button'); current.click();
+        const oldReport = chat.safetyPanel.querySelectorAll('button')[2];
+        chat.dispose(); oldReport.click(); expect(onSafety).toHaveBeenCalledTimes(1);
+        current.click(); expect(chat.safetyPanel).toBeNull();
+    });
     test('friend whispers keep their selected recipient across unrelated incoming messages', () => {
         buildChatDom();
         const onSend = jest.fn();

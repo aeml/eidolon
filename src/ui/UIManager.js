@@ -596,6 +596,7 @@ export class UIManager {
         // Chat UI
         this.chat = new ChatUI({
             onSend: (message) => this.onChatSend?.(message),
+            onSafety: (action, username, context) => this.social.onSafety?.(action, username, context),
             onMobileExpanded: (expanded) => {
                 if (this.isMobile && expanded) this.phoneDungeonMenuClose?.();
                 if (this.isMobile && expanded && this.isEscMenuOpen) this.toggleEscMenu();
