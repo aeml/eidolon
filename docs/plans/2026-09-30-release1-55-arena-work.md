@@ -1,10 +1,9 @@
 # Alpha 1.55 arena quality work
 
 September 30, 2026. Arena interface changes are implemented and locally verified
-on a separate, unpublished branch while the preceding 1.54 candidate completes
-CI. The source is locally packaged as Alpha 1.55.0 with cumulative patch notes;
-it is not pushed, deployed or accepted. Exact-source CI and independent public
-acceptance remain required after 1.54 is accepted.
+on a separate branch. The [exact 1.54 predecessor is accepted](2026-09-30-release1-54-acceptance.md).
+The source is packaged as Alpha 1.55.0 with cumulative patch notes; its own
+exact-source CI and independent public acceptance remain required.
 
 ## Scope and retained behavior
 
@@ -88,7 +87,8 @@ evidence, not public acceptance or a production server check.
 
 ## Release requirements
 
-Accept the exact 1.54 predecessor first. Merge any newer master changes without
+The exact 1.54 predecessor passed all ten CI jobs and independent public checks.
+Merge any newer master changes without
 discarding website or owner work, verify the aligned version identities and
 1.55 patch notes, then push normally after a fresh fetch/merge. Luna monitors the
 run; root verifies exact public frontend/backend identity, database readiness

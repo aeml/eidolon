@@ -1,0 +1,127 @@
+{
+  "verifiedAt": "2026-09-30T23:50:25.417Z",
+  "baselineCommit": "bf723c17751cd04a9d3f6b8d95102840ca9286dd",
+  "transport": "Ordinary public DNS and HTTPS over IPv4; no origin override or IPv6 assurance",
+  "frontend": {
+    "commit": "74c3404a177cf0699038f8b34b67c1941568f364",
+    "version": "Alpha 1.54.0"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "74c3404a177cf0699038f8b34b67c1941568f364",
+    "version": "Alpha 1.54.0"
+  },
+  "files": [
+    {
+      "file": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+      "bytes": 7333168,
+      "sha256": "4d36c969a91ce91c46b576556b8bd68f31fa3c3b0623357911dce6898225b4d7"
+    },
+    {
+      "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+      "bytes": 3641656,
+      "sha256": "b0acd7983eb1c4ebbfbd289ac22dca694f6dc15bcb0ae163d9a408eaabb8a068"
+    },
+    {
+      "file": "assets/archetypes/Fighter/fighter-runtime.manifest.json",
+      "bytes": 4846,
+      "sha256": "57774be2c32cba62dc2efab2fe56c971a17f93171f515cee16b87857ab71d181"
+    },
+    {
+      "file": "index.html",
+      "bytes": 719938,
+      "sha256": "b2d9dafebb1031aa8ac058ea57d5bb7c0398280e92e7ff522a107171dd33b22e"
+    },
+    {
+      "file": "src/animationGallery.js",
+      "bytes": 74269,
+      "sha256": "1cb0127cf6f7c6c128afe6b597c24fda8d988a64b7a799d41b31d522db82821a"
+    },
+    {
+      "file": "src/art/AuthoredFighter.js",
+      "bytes": 5920,
+      "sha256": "dbe8354b078551056b58ae94f8428528da5dd387d816741bc7b7beaba75c4aed"
+    },
+    {
+      "file": "src/art/AuthoredFighterAbilityClips.js",
+      "bytes": 3338,
+      "sha256": "50e697e44216c11c43bfd340e37cb46d4a76924806efe80937d0fa67b23c7676"
+    },
+    {
+      "file": "src/art/AuthoredFighterEquipment.js",
+      "bytes": 24695,
+      "sha256": "c4ca7a5700373f25f2bd2d1398a6f789f105140fa15a1833459047d6dcb84d9a"
+    },
+    {
+      "file": "src/art/AuthoredFighterSeatedPose.js",
+      "bytes": 3667,
+      "sha256": "eda59d5fcfdc9a8781438670d20c9124c9f4c9c13102af69f7a0401b3b50704d"
+    },
+    {
+      "file": "src/art/EquipmentVisuals.js",
+      "bytes": 745,
+      "sha256": "7d4877f2fcc1e195c699f5224bcbb4d4f89a3b021d2a89b22e509a89e4a9b56f"
+    },
+    {
+      "file": "src/art/ProceduralEquipment.js",
+      "bytes": 49739,
+      "sha256": "45ccff0aef8d7232efc56467da0c150a92641d8ee1833c2d5f340cd5d1492f6b"
+    },
+    {
+      "file": "src/assets/assetManifest.js",
+      "bytes": 2654,
+      "sha256": "462473cd1d4ffc2d1179ac2cfcd07780e96f07147efe628449f4a004669c48aa"
+    },
+    {
+      "file": "src/core/CasinoController.js",
+      "bytes": 29050,
+      "sha256": "82ddfee35f0ab376e40bc5e6dc13d1f706c4906373e585c544f6f9036e20740d"
+    },
+    {
+      "file": "src/core/UIBindings.js",
+      "bytes": 15903,
+      "sha256": "dc9e52fc767b9c623328b9e1e89f71971951a63ba8f8426eb466dc319d78eda8"
+    },
+    {
+      "file": "src/entities/Actor.js",
+      "bytes": 94999,
+      "sha256": "c6e5a9e04dc02ec1dd7c7560eaac154864a9577c74492a6e80996e595fccee6d"
+    },
+    {
+      "file": "src/entities/ActorHitReaction.js",
+      "bytes": 3273,
+      "sha256": "42409cd0ed4f111df48c86dd89a0736b67814b9c898b0b9fe55d75c4c63831d3"
+    },
+    {
+      "file": "src/entities/ActorMovingCastGait.js",
+      "bytes": 4051,
+      "sha256": "db8305a42d26d0d944bc66103c27ccab1c6f88e3d0968ef3b0211f7cfcd9f1a3"
+    },
+    {
+      "file": "src/entities/Entity.js",
+      "bytes": 12421,
+      "sha256": "7a15fa396f0a8df692de8d0e7435b66df86307972862a4602b16aac92c8fee62"
+    },
+    {
+      "file": "src/styles/pvp.css",
+      "bytes": 1796,
+      "sha256": "e800d95339d8fdfb57a874ed2641961d99db103f196b3588e535b923603282d6"
+    },
+    {
+      "file": "src/ui/CharacterPreview.js",
+      "bytes": 9090,
+      "sha256": "d0f7e3931e53a5a60fc1f60ab67ca7aef3bf5d55550d386ea545231ad3a6be34"
+    },
+    {
+      "file": "src/ui/PvPUI.js",
+      "bytes": 17042,
+      "sha256": "bea3ddc17e632a85567f55f87eed5362c0a896b3477e67792d662872f4f0e1e4"
+    },
+    {
+      "file": "src/utils/MeshFactory.js",
+      "bytes": 37072,
+      "sha256": "10e96171656422f8eaacbff80ec350ddeb563b9b607f1ce4624c404a46669c7d"
+    }
+  ]
+}

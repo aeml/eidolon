@@ -1,8 +1,8 @@
 # Alpha 1.54 duel and combat presentation work
 
 September 30, 2026. Duel fixes and Fighter runtime preparation are locally
-implemented and tested. Alpha 1.54.0 is packaged as a release candidate, pending
-exact-source CI and independent public acceptance. The
+implemented and tested. Alpha 1.54.0 passed exact-source CI and independent
+public acceptance; see the [release receipt](2026-09-30-release1-54-acceptance.md). The
 [exact 1.53 predecessor is publicly accepted](2026-09-30-release1-53-acceptance.md).
 Scoped Fighter integration checks now pass; final modern-art approval remains
 separate from this alpha pilot.
@@ -89,7 +89,7 @@ evidence is in `/tmp/eidolon-1-54-fighter-seated-final-0930` and
 `/tmp/eidolon-1-54-fighter-motion-final-0930`. The separate fixed front/side/back
 and ordinary-outfit Fighter gallery routes also passed. Cloth and equipment
 remain baseline code-owned forms, not final modern-art approval.
-The source upload and adapter have not replaced the live procedural hero.
+The accepted release now uses the supplied rigged Fighter in normal gameplay.
 
 The first candidate's CI found outdated fixtures in the broader suites. The
 scene-entry test now responds with the issued challenge ID, and six ability
@@ -99,7 +99,8 @@ real pure asset manifest, the equipment-gallery fixture exposes its attachment
 contract, and the fence test checks the new quality argument. All original
 behavioral assertions remain. The corrected selection passed with the Go race
 detector (server 3.167s, game 3.737s) and 27 JS checks across three suites in
-4.475s; changed-scope lint passed. Full CI and public acceptance remain pending.
+4.475s; changed-scope lint passed. Those fixture checks alone did not establish
+full CI or public acceptance; the final exact receipt above does.
 
 The broader browser suite also exposed procedural-only assumptions in mixed
 actor batching, casino visits, engine recovery, settings and Earth combat
@@ -126,7 +127,8 @@ passed. The repaired exact candidate is
 `74c3404a177cf0699038f8b34b67c1941568f364`, with CI run `36789477403`.
 The superseded runs were cancelled after their failures were diagnosed and
 repairs pushed; this is not a substitute for the new candidate's complete CI
-and independent public acceptance. No rendered documentation preview was
+and independent public acceptance, subsequently recorded in the final receipt.
+No rendered documentation preview was
 available.
 
 The 1.54 metadata and cumulative notes are packaged. Fetch/merge remote changes
