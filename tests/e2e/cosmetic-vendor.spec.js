@@ -30,7 +30,7 @@ test('earned season medallions fit the rigged Fighter and remain separate from r
                 else delete player.appearances.neck;
                 ui.updateCharacterSheet(player);
             }
-            ui.wardrobe.handleResult({ success: true, message: 'Appearance updated. Combat stats are unchanged.', collection });
+            ui.wardrobe.handleResult({ playerID: player.id, success: true, message: 'Appearance updated. Combat stats are unchanged.', collection });
         };
         ui.showHUD(); ui.toggleCharacterSheet();
         window.__seasonCosmetic = { ui, player, collection, original, requests };

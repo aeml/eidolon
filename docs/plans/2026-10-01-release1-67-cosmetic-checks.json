@@ -25,6 +25,17 @@
     ],
     "limits": "Direct tests execute the production-installed message handler, not a new authenticated socket/reconnect test. The change does not assert that every same-owner out-of-order result has a request-generation fence."
   },
+  "wardrobeLifecycleFollowup": {
+    "finding": "The generic wardrobe retained an old character's selected look until the periodic refresh, accepted direct replies after disposal, and allowed repeated appearance/collection actions while awaiting the server. The engine owner guard did not retire the component's own controls.",
+    "fix": "Controls require the current character, an open wardrobe and a valid owned snapshot. An action waits for the owner reply before becoming available again; Original gear still sends the explicit empty-key reset. Missing/foreign/malformed replies and disposed components cannot activate controls. Same-character actor refreshes preserve the collection; untouched characters' legitimate null Go-map collections remain usable.",
+    "checks": [
+      { "type": "before implementation", "passed": 4, "failed": 4, "seconds": 0.854, "scope": "The four new owner, delayed-refresh, pending-action and collapsed/disposed regressions fail against the prior component. The pre-fix process then also hit a jsdom queued-toggle teardown error; no successful exit is claimed." },
+      { "type": "after implementation", "suites": 5, "passed": 51, "seconds": 3.981, "scope": "Wardrobe, CosmeticVendor, PrivateCharacterResultOwnership, EPWalletUI and CharacterPreview; includes the additional legitimate null-collection and same-character refresh regression." },
+      { "type": "native Chrome prepared presentation", "passed": 1, "seconds": 12.2, "artifacts": "/tmp/eidolon-1-67-wardrobe-1001", "scope": "Three earned-season medallion selections on the rigged Fighter, unchanged combat equipment/Gold/EP, 390px wardrobe bounds and explicit Original gear reset. Root reviewed the Gold medallion and portrait controls renders. Synthetic private replies do not prove entitlement or a new authenticated replication/restart flow." },
+      { "type": "lint and whitespace", "result": "Changed wardrobe source and both tests pass ESLint; git diff --check passes." }
+    ],
+    "unchanged": "Learned item/season entitlement rules, catalogue content/prices, character statistics, rewards, Gold/EP balances and persistence authority. This does not claim a same-owner request-generation fence for every reply."
+  },
   "remaining": [
     "Complete the full 1.67 wardrobe/preview/local-and-remote fit/provenance review; this ownership/lifecycle fix alone does not establish all twelve offers on every class.",
     "Integrate and verify the user's new actor/item exports when their paths or commit are available; this slice does not claim new Rogue/Cleric/Wizard model swaps.",
