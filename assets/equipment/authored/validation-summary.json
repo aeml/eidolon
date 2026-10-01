@@ -1,0 +1,18 @@
+{
+  "baseItems": 36,
+  "designs": 72,
+  "rigidExports": 12,
+  "fittedExports": 240,
+  "modelGLBs": 252,
+  "motionBanks": 4,
+  "totalGLBs": 256,
+  "modelBytes": 116623948,
+  "motionBytes": 4321996,
+  "triangleRange": [
+    104,
+    55189
+  ],
+  "largestModelBytes": 2347700,
+  "errors": 0,
+  "warnings": 0
+}

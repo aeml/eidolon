@@ -163,7 +163,7 @@ test.each(cases)('%s equipment masking, clearing and pooled reset retain body an
 });
 
 test.each(cases)('%s procedural factory or failed-load fallback uses shared batches with per-actor stealth', async (type, factory) => {
-    const load = type === 'Fighter' ? jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('404')) : null;
+    const load = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('404'));
     try {
     const first = await MeshFactory.createMeshForType(type), metrics = getProceduralHumanoidCacheMetrics();
     const second = factory({ batch: true });

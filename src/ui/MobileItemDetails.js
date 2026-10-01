@@ -1,6 +1,6 @@
 import { SET_DEFINITIONS, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
-import { isActiveEquipment } from '../core/EquipmentSlots.js';
+import { isActiveEquipment, canEquipItem, classAllowsEquipment } from '../core/EquipmentSlots.js';
 
 // Shared deliberate inspection route: touch on phones, right-click on desktop.
 // Item identity is revalidated at every action;
@@ -21,6 +21,7 @@ export class MobileItemDetails {
             <footer class="phone-item-footer"><p id="phone-item-status" role="status"></p><div class="phone-item-actions">
                 <button type="button" id="phone-item-compare">Compare equipped</button>
                 <button type="button" id="phone-item-equip">Equip</button>
+                <button type="button" id="phone-item-equip-offhand">Equip offhand</button>
                 <button type="button" id="phone-item-unequip">Unequip</button>
                 <button type="button" id="phone-item-sell">Sell</button>
                 <button type="button" id="phone-item-stash">Store in stash</button>
@@ -29,7 +30,7 @@ export class MobileItemDetails {
             </div></footer>`;
         document.body.append(this.dialog);
         this.get('back').onclick = () => this.close();
-        for (const action of ['compare', 'equip', 'unequip', 'sell', 'stash', 'withdraw', 'drop']) {
+        for (const action of ['compare', 'equip', 'equip-offhand', 'unequip', 'sell', 'stash', 'withdraw', 'drop']) {
             this.get(action).onclick = () => this.act(action);
         }
         // Escape dismisses this route, not another menu underneath it.
@@ -88,6 +89,8 @@ export class MobileItemDetails {
         const storage = source.context === 'stash';
         const equippable = this.inventory._isEquippableItem(item);
         this.get('equip').hidden = storage || !bag || !equippable;
+        const player = this.inventory._getLastPlayer();
+        this.get('equip-offhand').hidden = storage || !bag || item.type !== 'WEAPON' || !canEquipItem(player.constructor.name, item, 'offHand');
         this.get('unequip').hidden = source.type !== 'equipment';
         this.get('compare').hidden = storage || !bag || !equippable;
         this.get('drop').hidden = storage || !bag || item.id.startsWith('chronicle-item-');
@@ -95,8 +98,10 @@ export class MobileItemDetails {
         this.get('stash').hidden = !bag || !this.inventory.isStashOpen || item.id.startsWith('chronicle-item-');
         this.get('withdraw').hidden = source.type !== 'stash' || !this.inventory.isStashOpen;
         for (const button of this.dialog.querySelectorAll('.phone-item-actions button')) button.disabled = false;
-        this.get('equip').disabled = Number(item.level || 0) > this.inventory._getLastPlayer().level;
+        this.get('equip').disabled = Number(item.level || 0) > player.level || !classAllowsEquipment(player.constructor.name, item);
+        this.get('equip-offhand').disabled = Number(item.level || 0) > player.level;
         if (this.get('equip').disabled && !this.get('equip').hidden) this.get('status').textContent = `Requires level ${item.level}.`;
+        if (!classAllowsEquipment(player.constructor.name, item) && !this.get('equip').hidden) this.get('status').textContent = 'Your class cannot equip this item.';
         this.get('drop').textContent = 'Drop stack';
         this.dialog.querySelector('.phone-item-scroll').scrollTop = 0;
         this.lastPresentation = this.presentationSignature();
@@ -200,9 +205,13 @@ export class MobileItemDetails {
                 this.get('status').textContent = 'Cannot drop now. Check your connection and try again.';
                 return;
             }
-        } else if (action === 'equip' && bag && ui._isEquippableItem(item) && player.level >= Number(item.level || 0)) {
+        } else if (['equip', 'equip-offhand'].includes(action) && bag && ui._isEquippableItem(item) && player.level >= Number(item.level || 0)) {
+            const targetSlot = action === 'equip-offhand' ? 'offHand' : undefined;
+            if (targetSlot && !canEquipItem(player.constructor.name, item, targetSlot) || !classAllowsEquipment(player.constructor.name, item)) {
+                this.get('status').textContent = 'Your class cannot equip this item in that slot.'; return;
+            }
             if (!player.isMultiplayer) player.inventory[this.source.index] = null;
-            if (!player.equipItem(item)) {
+            if (!(targetSlot ? player.equipItem(item, targetSlot) : player.equipItem(item))) {
                 if (!player.isMultiplayer) player.inventory[this.source.index] = item;
                 this.get('status').textContent = 'This item cannot be equipped right now.';
                 return;

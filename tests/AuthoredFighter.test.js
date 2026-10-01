@@ -9,7 +9,7 @@ import { MeshFactory } from '../src/utils/MeshFactory.js';
 
 function fixture() {
     const scene = new THREE.Group();
-    const names = ['Root', 'upperarm_l', 'upperarm_r', 'lowerarm_l', 'lowerarm_r', 'spine_03', 'head', 'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r'];
+    const names = ['Root', 'upperarm_l', 'upperarm_r', 'lowerarm_l', 'lowerarm_r', 'spine_03', 'head', 'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r', 'neck_01'];
     const bones = Array.from({ length: 53 }, (_, i) => Object.assign(new THREE.Bone(), { name: names[i] || `Bone${i}` }));
     for (let i = 1; i < bones.length; i++) bones[0].add(bones[i]);
     scene.add(bones[0]);
@@ -158,12 +158,12 @@ describe('delivered Fighter runtime candidates', () => {
             MeshFactory.releaseMesh('Fighter', first);
             const low = await MeshFactory.createMeshForType('Fighter', { quality: 'low' });
             expect(low).not.toBe(first); expect(low.userData.authoredQuality).toBe('low');
-            expect(load).toHaveBeenLastCalledWith(fighterRuntimePath('low'), 8000);
+            expect(load).toHaveBeenNthCalledWith(6, fighterRuntimePath('low'), 8000);
             const reused = await MeshFactory.createMeshForType('Fighter', { quality: 'high' });
             expect(reused).toBe(first); expect(first.getObjectByName('Root').position.x).toBe(0);
-            expect(first.getObjectByName('AuthoredMount_head').children).toHaveLength(0);
+            expect(first.userData.equipmentVisualItemCount).toBe(0);
             expect(first.visible).toBe(true); expect(source.scene.getObjectByName('Root').position.x).toBe(0);
-            expect(load).toHaveBeenCalledTimes(3);
+            expect(load).toHaveBeenCalledTimes(7);
         } finally { MeshFactory.pool = originalPool; load.mockRestore(); }
     });
 

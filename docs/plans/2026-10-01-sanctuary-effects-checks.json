@@ -1,0 +1,54 @@
+{
+  "checkedAtUTC": "2026-10-01T05:05:21Z",
+  "status": "local implementation and focused verification; not deployed",
+  "baseCommit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+  "scope": {
+    "levelUp": "Three-second owner-following gold and elemental spark celebration, soft vertical light, filigree seal and expanding pulse. Four render objects, 96 high-quality or 48 low-quality GPU-driven sparks. Drawing-buffer-aware point sizing handles orthographic gameplay cameras, perspective projection, resize and DPI. Reduced motion removes orbital movement, expanding waves and animated beams. Owned resources dispose once.",
+    "wellRested": "Analytic, feathered stars and interlaced gold filigree with four elemental echoes. Preserves the existing 16 high-quality or 8 low-quality mote trajectories, independent instance buffers, shared resource cache, terrain conformance and five/four visible-part budgets.",
+    "unchanged": "Gameplay authority, safe-zone healing, buff accrual/duration/power, experience, character stats, equipment, currency and reward rules. No external bitmap or texture downloads added."
+  },
+  "checks": [
+    { "type": "Jest", "suites": 5, "passed": 65, "seconds": 5.409, "scope": "SanctuaryEffects, WellRestedBatching, WellRestedPresentation, CombatCalloutLifetime, StatusGalleryCoverage" },
+    { "type": "native Chrome WebGL", "passed": 2, "seconds": 18.5, "artifacts": "/tmp/eidolon-resonance-effects-fixed-1001", "scope": "Expanded-reference aura comparison at three phases on each quality setting plus prepared actor effect presentation. Six aura samples have zero pixel error, with four/five batched draw calls rather than ten/nineteen expanded calls." },
+    { "type": "final native Chrome WebGL level-up", "passed": 1, "seconds": 13.8, "artifacts": "/tmp/eidolon-level-final-1001", "scope": "Final point-size correction with actual drawing-buffer assertion; 1280x900 high/low/reduced-motion samples and 390x844 low-quality sample, followed by expiry and cleanup. Source vertex buffers remain GPU driven." },
+    { "type": "visual inspection", "artifacts": "/tmp/eidolon-level-spark-scale-1001", "scope": "Root reviewed the high-quality early pulse, rising spark spiral and phone-sized low-quality presentation after correcting orthographic point sizing. Aura screenshots were separately reviewed." },
+    { "type": "lint and whitespace", "result": "ESLint passes for all eight changed JS source/test files; git diff --check passes." }
+  ],
+  "modelSwap": {
+    "status": "awaiting the user's new model paths or commit",
+    "observedMasterCommit": "f7518623bb5924625a918c8acdfe7ad890b0363a",
+    "observedFiles": "Fresh master fetch still contains only the Fighter archetype GLBs and three plant GLBs. Rogue/Cleric/Wizard GLB history found in all local refs is old, predating this request; those old exports were not substituted for the user's new models.",
+    "swapped": []
+  },
+  "releaseCandidate": {
+    "version": "Alpha 1.58.1",
+    "preparedAtUTC": "2026-10-01T05:15:07Z",
+    "status": "packaged locally; push, terminal CI and independent public acceptance remain required",
+    "checks": [
+      { "type": "focused Jest packaging and effect regressions", "suites": 7, "passed": 364, "seconds": 5.149 },
+      { "type": "native prepared five-actor WebGL reference", "passed": 1, "seconds": 34.5, "artifacts": "/tmp/eidolon-1-58-1-populated-1001", "scope": "Corrected expanded-reference material clones retain their analytic shader callbacks. Six high/low phase comparisons have zero or one-pixel difference. High aura draws fall from 94/95 to 24/25; Low from 50 to 20. Fixed-pose frame profiles are not real gameplay FPS or server-capacity evidence." },
+      { "type": "native anonymous login and patch notes", "passed": 2, "seconds": 9.8, "artifacts": "/tmp/eidolon-1-58-1-login-1001", "scope": "Matching login/manifest/latest notes, desktop/phone-sized login credit, runtime dependencies and cumulative notes. Root reviewed the rendered patch-notes screenshot." },
+      { "type": "lint and script syntax", "result": "All eleven changed JS source/test files pass ESLint; versioned shell scripts pass bash -n; git diff --check passes." }
+    ],
+    "baseline": "Ordinary-DNS IPv4 public checks still report the accepted f7518623 / Alpha 1.58.0 frontend and ready backend. An exact GitHub run lookup confirms CI36808962117 success; fresh Git and API master refs agree on f7518623.",
+    "verificationPolicy": "One new short celebration fixture runs in existing System Chrome predeploy QA; existing full stabilization and user-deferred campaign/phone gates remain unchanged. Luna will observe the exact pushed SHA rather than an unfiltered latest-run listing."
+  },
+  "limitations": [
+    "Prepared visual fixtures are not an earned-level, authenticated Well Rested, physical-phone, full-world composition or multiplayer-capacity proof.",
+    "The user-supplied Rogue, Cleric and Wizard rigs/materials/animation clips and equipment fit cannot be inspected or integrated until their new files are available.",
+    "This is a versioned local visual candidate, not an accepted deployment or final modern-art approval."
+  ],
+  "ciCorrection": {
+    "initialCommit": "50cd0dee08f3165b82485c051c6e6b72c6f2030d",
+    "initialRun": 36819004120,
+    "observedFailure": "Client Tests / Run tests with coverage: AttachedStatusEffect requires the Well Rested full-circle seal opacity to exceed 0.8; the new material was 0.65. No deployment acceptance is claimed.",
+    "fix": "The feathered filigree material now uses 0.86 opacity. The existing test requirement is unchanged; shader details, resource ownership, draw counts and gameplay rules remain intact.",
+    "checks": [
+      { "type": "focused Jest", "suites": 4, "passed": 43, "seconds": 4.192, "scope": "AttachedStatusEffect, SanctuaryEffects, WellRestedBatching and ExpandedRestAura" },
+      { "type": "native WebGL", "passed": 2, "seconds": 14.9, "artifacts": "/tmp/eidolon-1-58-1-seal-brightness-1001", "scope": "Celebration and six aura reference comparisons pass; zero pixel difference in all six samples; High uses four/five draws against eighteen/nineteen expanded, Low four against ten." },
+      { "type": "visual inspection", "scope": "Root reviewed the corrected High aura and 390x844 Low celebration screenshots. The stronger seal stays open, feathered and readable, without a solid body enclosure." },
+      { "type": "lint", "result": "Changed status-effect source passes ESLint." }
+    ],
+    "remaining": "Wait for the original CI run to finish, fresh-fetch/merge before a normal corrected push, observe the corrected run through Luna, then independently verify public identities/readiness and all six exact publisher assets."
+  }
+}

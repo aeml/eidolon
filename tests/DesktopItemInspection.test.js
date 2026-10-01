@@ -40,6 +40,29 @@ test('merchant and stash right-click shortcuts remain unchanged', () => {
     expect(ui.onStashDeposit).toHaveBeenCalledWith('blade');
     expect(ui.mobileDetails.dialog.open).toBe(false);
 });
+
+test('weapon inspection offers an explicit offhand request without removing a multiplayer bag item', () => {
+    rightClick(ui.inventoryGrid.children[0]);
+    expect(ui.mobileDetails.get('equip-offhand').hidden).toBe(false);
+    ui.mobileDetails.get('equip-offhand').click();
+    expect(player.equipItem).toHaveBeenCalledWith(player.inventory[0], 'offHand');
+    expect(player.inventory[0].id).toBe('blade');
+});
+
+test('Rogue inspection rejects a staff and never offers a shield offhand', () => {
+    class Rogue {}
+    Object.setPrototypeOf(player, Rogue.prototype);
+    player.inventory[0] = { ...player.inventory[0], name: 'Wooden Staff' };
+    ui.updateInventory(player); rightClick(ui.inventoryGrid.children[0]);
+    expect(ui.mobileDetails.get('equip').disabled).toBe(true);
+    expect(ui.mobileDetails.get('equip-offhand').hidden).toBe(true);
+    expect(ui.mobileDetails.get('status').textContent).toContain('class');
+    ui.mobileDetails.act('equip'); expect(player.equipItem).not.toHaveBeenCalled();
+    player.inventory[0] = { ...player.inventory[0], name: 'Wooden Shield', type: 'ARMOR', slot: 'offHand' };
+    ui.mobileDetails.open({ type: 'inventory', index: 0 });
+    expect(ui.mobileDetails.get('equip').disabled).toBe(true);
+    expect(ui.mobileDetails.get('equip-offhand').hidden).toBe(true);
+});
 test('set details exclude inactive legacy equipment in both inspection and hover', () => {
     const setId = Object.keys(SET_DEFINITIONS)[0];
     player.inventory[0].setId = setId;

@@ -1,0 +1,133 @@
+{
+  "class": "Rogue",
+  "height_m": 1.68,
+  "bones": 53,
+  "actions": [
+    "Attack",
+    "Block",
+    "Cast",
+    "CombatIdle",
+    "Death",
+    "Hit",
+    "Idle",
+    "Jump",
+    "JumpLand",
+    "JumpLoop",
+    "JumpStart",
+    "Run",
+    "StealthIdle",
+    "Walk"
+  ],
+  "sockets": [
+    "socket_mainHand",
+    "socket_offHand",
+    "socket_head",
+    "socket_chest",
+    "socket_belt",
+    "socket_shoulderL",
+    "socket_shoulderR",
+    "socket_footL",
+    "socket_footR",
+    "socket_back"
+  ],
+  "meshes": [
+    {
+      "name": "Rogue_Body",
+      "vertices": 50305,
+      "triangles": 100136,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.842877388000488e-08
+    },
+    {
+      "name": "Rogue_Undershorts",
+      "vertices": 3542,
+      "triangles": 7088,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Rogue_Undertop",
+      "vertices": 5428,
+      "triangles": 10864,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Rogue_Brows",
+      "vertices": 124,
+      "triangles": 192,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Scalp",
+      "vertices": 709,
+      "triangles": 1300,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Undershorts_Seams",
+      "vertices": 2016,
+      "triangles": 2016,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.0978193283081055e-08
+    },
+    {
+      "name": "Rogue_Undertop_Seams",
+      "vertices": 2928,
+      "triangles": 2928,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    },
+    {
+      "name": "Rogue_Eye_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Iris_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Pupil_l",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Eye_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Iris_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Pupil_r",
+      "vertices": 266,
+      "triangles": 528,
+      "maximum_influences": 1,
+      "maximum_weight_error": 0.0
+    },
+    {
+      "name": "Rogue_Hair",
+      "vertices": 3718,
+      "triangles": 5352,
+      "maximum_influences": 4,
+      "maximum_weight_error": 4.470348358154297e-08
+    }
+  ]
+}

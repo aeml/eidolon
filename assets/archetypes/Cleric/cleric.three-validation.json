@@ -1,0 +1,79 @@
+{
+  "file": "cleric.glb",
+  "loader": "Three.js 0.181.2 GLTFLoader",
+  "skinnedMeshes": 14,
+  "independentSkeletonClones": true,
+  "clips": {
+    "Attack": {
+      "minimumY": 0.0009159410184253781,
+      "maximumY": 1.7412355453418473,
+      "maximumWidth": 0.7137142913686293
+    },
+    "Block": {
+      "minimumY": 0.0009248706083694702,
+      "maximumY": 1.7201406259411776,
+      "maximumWidth": 0.6263355084763982
+    },
+    "Cast": {
+      "minimumY": 0.0009159410184253781,
+      "maximumY": 1.7412355453418473,
+      "maximumWidth": 0.7137142913686293
+    },
+    "CombatIdle": {
+      "minimumY": 0.0009248706083694702,
+      "maximumY": 1.720124586850489,
+      "maximumWidth": 0.6420769031798228
+    },
+    "Death": {
+      "minimumY": -0.006316288122810729,
+      "maximumY": 1.7465481598420742,
+      "maximumWidth": 0.8767325444920104
+    },
+    "Heal": {
+      "minimumY": 0.0009248706083694702,
+      "maximumY": 1.720124586850489,
+      "maximumWidth": 0.6263489665118848
+    },
+    "Hit": {
+      "minimumY": 0.0009162347020602838,
+      "maximumY": 1.7195543235600455,
+      "maximumWidth": 0.6223088814797759
+    },
+    "Idle": {
+      "minimumY": 0.0009250977295066327,
+      "maximumY": 1.7437321590393,
+      "maximumWidth": 0.4983088784258096
+    },
+    "Jump": {
+      "minimumY": 0.0009796450818474745,
+      "maximumY": 2.0456094481464744,
+      "maximumWidth": 0.5165134097016643
+    },
+    "JumpLand": {
+      "minimumY": 0.0005803596314180476,
+      "maximumY": 1.7423176159991043,
+      "maximumWidth": 0.5462676241338061
+    },
+    "JumpLoop": {
+      "minimumY": 0.13975449109020893,
+      "maximumY": 1.817730023181605,
+      "maximumWidth": 0.49926196777853493
+    },
+    "JumpStart": {
+      "minimumY": 0.0006314449521619063,
+      "maximumY": 1.7423176159991043,
+      "maximumWidth": 0.5406304550972797
+    },
+    "Run": {
+      "minimumY": -0.0015081807628299997,
+      "maximumY": 1.715398662023504,
+      "maximumWidth": 0.6149165038408002
+    },
+    "Walk": {
+      "minimumY": 0.000555579124923517,
+      "maximumY": 1.7340933005182888,
+      "maximumWidth": 0.5013839491848875
+    }
+  },
+  "scope": "Decoded texture integrity, bone contract, skinning bounds at four samples per clip. Rendering and gameplay are separate checks."
+}

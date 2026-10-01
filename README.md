@@ -152,6 +152,111 @@ docker compose up -d
 
 For Linux host deployment, see `server/deploy/README_LINUX.md`.
 
+## Character and equipment assets: integration guide
+
+The authored collection includes the Fighter, male Wizard, female Cleric and
+female Rogue bases, **252 fitted equipment/weapon models**, and four weapon-motion
+banks. Common, Uncommon and Rare share standard models; Legendary has separate
+geometry and emissive details. All 24 chest fits cover the chest, upper back,
+collar area and shoulders beneath separate pauldrons.
+
+**Current integration:** All four classes select their High/Low character GLBs
+on demand. Fitted equipment binds to the actor's existing skeleton, rigid weapons
+use the supplied grip transforms, and movement selects the equipped weapon's
+motion profile. Dual-wield Rogues alternate weapons. Procedural actors remain a
+load-failure fallback. Source Blender files and delivered exports are unchanged.
+
+### Inspect the delivery
+
+Run `npm ci` and `npm run serve`, then open
+<http://127.0.0.1:4173/output/models/equipment-production/viewer.html>.
+The viewer loads the actual exported models and demonstrates skin binding,
+coverage masks, weapon grips and animation selection. Rotate the character and
+compare Walk, Run, Attack and Block with different equipment.
+
+- [Character exports](assets/archetypes/): each class has a full-detail source
+  GLB and `*-runtime-high.glb` / `*-runtime-low.glb` gameplay candidates.
+- [Equipment manifest](assets/equipment/authored/manifest.json): item IDs,
+  class fits, rarity mapping, file hashes, budgets and layering rules.
+- [Motion profiles](assets/equipment/authored/motion-profiles.json) and
+  [grip transforms](assets/equipment/authored/grip-transforms.json).
+- [Detailed equipment contract](docs/art/EQUIPMENT_ASSETS.md) and
+  [character delivery notes](docs/art/UNEQUIPPED_CLASS_BASES.md).
+
+Editable `.blend` sources are tracked with **Git LFS**. Install Git LFS and run
+`git lfs install` followed by `git lfs pull` to open them. Character sources are
+`output/models/{fighter,wizard,cleric,rogue}-production/{class}.blend` (lowercase
+class names). Equipment sources, the lineup scene and all four
+`revision-v2/{class}-animation-review.blend` motion libraries are under
+`output/models/equipment-production/`. Textures are packed. Runtime GLBs are
+ordinary Git files and do not require LFS at runtime.
+
+### Connect the assets to gameplay
+
+1. **Load the class and chosen quality on demand.** The authored path in
+   [`MeshFactory`](src/utils/MeshFactory.js) uses
+   [`AuthoredCharacters`](src/art/AuthoredCharacters.js) and the shared adapter in
+   [`AuthoredFighter`](src/art/AuthoredFighter.js).
+   Preserve the imported scene hierarchy and use `SkeletonUtils.clone` for each
+   actor. Each class has its own proportions and inverse bind matrices; share
+   geometry/textures, never live bones or mixers. Scale the complete visual root
+   to the game's existing actor height and keep gameplay collision dimensions.
+   Retain the procedural fallback and avoid preloading full-detail source GLBs.
+2. **Resolve equipment from the catalog.** Look up the base item in `manifest.items`,
+   map rarity through `manifest.rarityModels`, then select
+   `item.models[tier][className]` for wearables or `["universal"]` for weapons and
+   offhands. IDs represent base items, not an inventory instance's generated ID.
+   [`EquipmentVisuals`](src/art/EquipmentVisuals.js) routes authored actors to
+   [`FittedEquipment`](src/art/FittedEquipment.js). The older procedural Fighter
+   equipment adapter is retained for fallback and compatibility checks.
+3. **Bind armor to the actor's skeleton.** Match each imported skin joint by bone
+   name to that actor's bones, retain the item's supplied inverse bind matrices
+   and bind matrix, and add the skinned mesh beside the character meshes under
+   their common scene root. Discard the item's duplicate rig. Do not socket-parent
+   skinned armor or reuse the Fighter's inverse bind matrices for another class.
+   [`viewer.js`](output/models/equipment-production/viewer.js) implements this in
+   `loadEquipment`.
+4. **Apply coverage and layering.** Follow `manifest.coverage` and `layeringRules`,
+   using the viewer's `updateCoverage` as the reference. Headwear hides hair/scalp;
+   armor hides covered skin and the appropriate underclothes; robes suppress the
+   nested Silk Skirt. Compute masks separately for each body LOD. Mirror second
+   ring/trinket slots using the documented vertex, winding and joint remapping.
+5. **Attach weapons at the calibrated grip.** Parent the rigid GLB scene to
+   `socket_mainHand` or `socket_offHand`, then decompose that class/slot's
+   `grip-transforms.json` column-major `localMatrix` into local position, rotation
+   and scale. The matrix already includes fit scale. Preserve it while the hand
+   animation carries the weapon; do not add a second procedural weapon offset.
+6. **Select the weapon's motion bank.** Load `motions/{Class}.glb` once per class
+   and play its clips on the existing actor hierarchy. Resolve
+   `${profile}_${state}` for Idle, CombatIdle, Walk, Run, Attack and Block; fall
+   back to the supplied default class clips for other states. Use Sword for Iron
+   Sword, Dagger for Steel Dagger, Staff for Wooden Staff, Mace for Cleric Mace,
+   and Unarmed for an empty main hand. The viewer's `resolvedClip` also demonstrates
+   the supported left arm for dagger plus offhand; `setMotion` uses 180 ms fades.
+   Preserve attack contact at **14/30 seconds**, mapped to the existing gameplay
+   impact timing in [`Actor`](src/entities/Actor.js). Register class ability clips
+   and moving-cast leg masks before enabling the other authored class adapters.
+7. **Version, render and validate.** Add content-hash cache versions in
+   [`assetManifest.js`](src/assets/assetManifest.js), keep model loading lazy and
+   pool-safe, and support the supplied WebP textures and emissive-strength material
+   extension. Legendary halos require bloom. Exercise preview and gameplay,
+   equipment swaps during motion, mixed outfits, High/Low quality, independent
+   actors, moving casts and disposal. Adjust the explicit migration guard allowlist
+   when adding runtime routes; do not remove the guard. Equipment currently has
+   one authored LOD and no simulated cloth, so profile draw calls and memory before
+   expanding it to crowds or phones.
+
+Useful checks from the repository root:
+
+```bash
+node output/models/equipment-production/validate_equipment.mjs
+npm test -- --runInBand --roots tests --runTestsByPath tests/AuthoredFighter.test.js tests/ProceduralArtMigrationGuard.test.js tests/AssetVersioning.test.js
+npx playwright test tests/e2e/authored-fighter-pilot.spec.js
+```
+
+These instructions describe the remaining integration work; publishing the asset
+files alone does not switch the other classes or equipment renderer over.
+
 ## Testing/Building
 
 Client validation from the repo root:
@@ -315,13 +420,13 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.58.0` (published candidate; its own CI and public acceptance remain required)
-- Last independently verified live release: `Alpha 1.57.0`, exact 3632e2d57a33df8f7c4f6c18ea0d3563edc83d21, successful CI36802997921 attempt1 (all ten jobs). Public IPv4 frontend/backend identities and database readiness pass; all six changed runtime files match their exact publisher output. [Acceptance receipt](docs/plans/2026-10-01-release1-57-acceptance.md). Live rigged Fighter integration remains recorded in the accepted 1.54 release. DNS/IPv6 remain owner-managed.
+- Current source version: `Alpha 1.58.2` (asset integration candidate; publication, CI and public acceptance remain required)
+- Last independently verified live release: `Alpha 1.58.0`, exact f7518623bb5924625a918c8acdfe7ad890b0363a, successful CI36808962117 attempt1 (all ten jobs). Public IPv4 frontend/backend identities and database readiness pass; all four changed runtime files match their exact publisher output. [Acceptance receipt](docs/plans/2026-10-01-release1-58-assets.json). Live rigged Fighter integration remains recorded in the accepted 1.54 release. DNS/IPv6 remain owner-managed.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.58` optional endgame goals, following accepted 1.57. The arena [work record](docs/plans/2026-09-30-release1-55-arena-work.md) covers live smooth clocks, queue eligibility, stable refreshes and team rosters. The [combat work record](docs/plans/2026-09-30-release1-54-combat-work.md) preserves the live rigged Fighter scope and evidence. Final modern art, remaining actor models and actual-phone dungeon/party observations remain open. Open-alpha access is unchanged, raised Earth remains QA-only, and human campaign pacing remains playtest-owned.
+- Active delivery line: `Alpha 1.58.2` integrates the delivered four-class bodies, fitted gear and weapon motions, following the 1.58.1 celebration polish and before the unchanged 1.59 moderation scope. Class armor restrictions and Rogue weapon-only offhands are server-enforced; dual-wield Rogues use two-thirds of the normal basic-attack interval without adding a second damage event. [Focused visual checks](docs/plans/2026-10-01-sanctuary-effects-checks.json) retain the earlier aura evidence. Final modern-art approval, crowd performance and actual-phone dungeon/party observations remain open. Open-alpha access is unchanged, raised Earth remains QA-only, and human campaign pacing remains playtest-owned.
 - Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
 - Accepted milestone: [1.57 event discovery](docs/plans/2026-10-01-release1-57-events.md) is live with its own complete CI and independent public acceptance.
-- Published candidate: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is pushed at f7518623bb5924625a918c8acdfe7ad890b0363a, CI36808962117. The initial run finished with an outdated two-tab keyboard-test failure and skipped deployment. The corrected route passed locally; the corrected candidate's own CI and public acceptance remain required.
+- Accepted milestone: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is live at f7518623bb5924625a918c8acdfe7ad890b0363a after the outdated keyboard expectation was corrected. Its complete CI and independent public acceptance passed. The 1.58.1 visual patch is a separate candidate, not another endgame balance change.
 - Forward plan: [Alpha 1.11–1.99 — playable beta to full-release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor milestone, completion gates, policy decisions and proportionate verification. This is planned scope, not a new deployment or a claim that beta is complete.
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.

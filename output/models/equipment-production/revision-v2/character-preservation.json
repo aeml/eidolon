@@ -1,0 +1,62 @@
+[
+  {
+    "file": "assets/archetypes/Fighter/fighter.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0.0000041000813153502236
+  },
+  {
+    "file": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Wizard/wizard.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0.0000033791293683194112
+  },
+  {
+    "file": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Cleric/cleric.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 3.903945703376266e-7
+  },
+  {
+    "file": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Rogue/rogue.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 3.4854747354984283e-7
+  },
+  {
+    "file": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  },
+  {
+    "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+    "geometrySkinBindMaterialsTexturesUnchanged": true,
+    "maximumNodeTransformError": 0
+  }
+]

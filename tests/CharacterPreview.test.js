@@ -16,9 +16,10 @@ function fixture() {
     renderer.domElement = document.createElement('canvas');
     const createRenderer = jest.fn(() => renderer);
     const loadFighter = jest.fn(() => new Promise(() => {}));
-    const preview = new CharacterPreview(host, { createRenderer, loadFighter });
+    const loadCharacter = jest.fn(() => new Promise(() => {}));
+    const preview = new CharacterPreview(host, { createRenderer, loadFighter, loadCharacter });
     const player = { subType: 'Fighter', level: 7, equipment: { head: { id: 'helm', name: 'Iron Helm', rarity: 'COMMON' } } };
-    return { host, stage, renderer, createRenderer, preview, player, loadFighter };
+    return { host, stage, renderer, createRenderer, preview, player, loadFighter, loadCharacter };
 }
 
 test('creates graphics lazily and redraws gear changes, not health or XP ticks', () => {
@@ -75,6 +76,20 @@ test('pending Fighter install uses the latest gear without an animation loop', a
     const renders = renderer.render.mock.calls.length;
     preview.update({ ...player, xp: 50 }); expect(renderer.render).toHaveBeenCalledTimes(renders);
     expect(preview.previewMixer).toBeDefined(); preview.dispose();
+});
+
+test.each(['Rogue', 'Wizard', 'Cleric'])('%s preview uses the selected class/quality loader', async type => {
+    const { preview, player, loadCharacter } = fixture();
+    const { createProceduralRogue } = await import('../src/art/ProceduralHumanoid.js');
+    let resolve;
+    loadCharacter.mockImplementation(() => new Promise(done => { resolve = done; }));
+    preview.update({ ...player, subType: type, mesh: { userData: { authoredQuality: 'low' } } });
+    await Promise.resolve();
+    expect(loadCharacter).toHaveBeenCalledWith(type, 'low');
+    const model = createProceduralRogue();
+    resolve(model); await preview.modelReady;
+    expect(preview.model).toBe(model); expect(preview.previewMixer).toBeDefined();
+    preview.dispose();
 });
 
 test('rotates on controls, fits finite bounds and skips hidden or disposed rendering', () => {

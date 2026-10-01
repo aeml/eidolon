@@ -41,30 +41,30 @@ describe('actor animation manifest', () => {
         }
     });
 
-    test('classifies Fighter as the shared procedural humanoid vertical slice', () => {
+    test('classifies Fighter as the delivered authored rig with a procedural fallback', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Fighter).toEqual(expect.objectContaining({
-            source: 'shared procedural humanoid rig',
+            source: 'delivered 53-joint Fighter rig with procedural load-failure fallback',
             states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
-    test('classifies Rogue as a class-specific shared procedural humanoid', () => {
+    test('classifies Rogue as the delivered authored rig with a procedural fallback', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Rogue).toEqual(expect.objectContaining({
-            source: 'shared procedural humanoid rig',
+            source: 'delivered 53-joint Rogue rig with procedural load-failure fallback',
             states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
-    test('classifies Wizard as a class-specific shared procedural humanoid', () => {
+    test('classifies Wizard as the delivered authored rig with a procedural fallback', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Wizard).toEqual(expect.objectContaining({
-            source: 'shared procedural humanoid rig',
+            source: 'delivered 53-joint Wizard rig with procedural load-failure fallback',
             states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });
 
-    test('classifies Cleric as a class-specific shared procedural humanoid', () => {
+    test('classifies Cleric as the delivered authored rig with a procedural fallback', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Cleric).toEqual(expect.objectContaining({
-            source: 'shared procedural humanoid rig',
+            source: 'delivered 53-joint Cleric rig with procedural load-failure fallback',
             states: ['Idle', 'Walk', 'Run', 'Attack', 'Death', ...HUMANOID_ABILITY_CLIPS]
         }));
     });

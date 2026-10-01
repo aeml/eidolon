@@ -2,17 +2,14 @@
 
 The Dungeon Guide now has an Endgame tab at level 100, bringing post-story
 direction and the existing repeat-run systems into one readable overview.
-The corrected Alpha 1.58.0 candidate is pushed at
+Alpha 1.58.0 is accepted live at
 `f7518623bb5924625a918c8acdfe7ad890b0363a`,
 [CI36808962117](https://github.com/aeml/eidolon/actions/runs/36808962117).
-It awaits its own terminal CI and independent public acceptance.
-The initial candidate at `4824a2fdb3cd6a6a50731321b7a29cd8126387fc`,
-[CI36807934445](https://github.com/aeml/eidolon/actions/runs/36807934445),
-finished with failure in browser shard 2; all deployment jobs were skipped.
-The preceding [1.57 is accepted](2026-10-01-release1-57-acceptance.md) at
-`3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`, CI36802997921. All ten jobs and
-independent public identities, database readiness and six changed runtime files
-passed. This candidate still requires its own CI and independent acceptance.
+All ten jobs passed. Independent public IPv4 verification confirmed exact
+frontend/backend identities, database readiness and all four changed runtime
+files. The [acceptance receipt](2026-10-01-release1-58-assets.json) records the
+results. The first candidate failed an outdated keyboard expectation before
+deployment; the corrected candidate is the accepted release.
 
 ## Player choices and authority
 
@@ -64,17 +61,16 @@ server-shaped fixtures are not earned clears, physical-phone certification,
 campaign pacing measurements or final endgame balance approval. No long soak
 or production account mutation was used.
 
-## Remaining release work
+## Release history and acceptance
 
 The initial CI failure exposed an existing keyboard fixture that still assumed
 two adventure tabs: its End-key assertion expected Raids rather than the new
 last tab, Endgame. The corrected route verifies Endgame focus/selection, hidden
 party preparation and ArrowLeft back to Raids, then retains the existing run
 actions and under-level behavior. It passed in native Chrome in 26.7 seconds.
-Gameplay behavior and the Alpha 1.58.0 version are unchanged. The corrected
-candidate was published after the first run finished, with a fresh fetch and
-normal merge preserving master. Its new terminal CI and independent live
-acceptance remain required; a local pass is not deployment success.
+Gameplay behavior and the Alpha 1.58.0 version were unchanged by that correction.
+The corrected candidate subsequently passed its full CI and independent live
+acceptance; the earlier local pass alone did not establish deployment success.
 
 Local packaging passed 336 version/publisher checks in 2.467 seconds and both
 unchanged anonymous login/release routes in 7.5 seconds. Scoped lint, shell syntax
@@ -87,9 +83,9 @@ After 1.57 acceptance, 349 focused endgame, version and publisher checks passed
 in 4.395 seconds. The outgoing runtime diff was reviewed; no later moderation
 or calendar feature is included in this release.
 
-Keep publication ordered after 1.56 and 1.57 acceptance. Login,
-client/server/build versions and cumulative notes are aligned at 1.58.0. Fresh-fetch
-and merge master immediately before a normal push to preserve website work.
-Luna monitors CI; independent public identity, database readiness and exact
-changed-runtime checks remain required. Source documentation was reviewed;
-rendered documentation preview was unavailable.
+Publication and acceptance followed the accepted 1.56 and 1.57 releases. Login,
+client/server/build versions and cumulative notes were aligned at 1.58.0.
+Luna observed terminal CI success, and independent public identity, database
+readiness and exact changed-runtime checks passed. The separate Alpha1.58.1
+visual patch does not retune these endgame systems. Source documentation was
+reviewed; rendered documentation preview was unavailable.

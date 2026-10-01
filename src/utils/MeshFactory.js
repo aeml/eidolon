@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import { clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
-import { createAuthoredFighterInstance, fighterRuntimePath } from '../art/AuthoredFighter.js';
+import { createAuthoredCharacter, isAuthoredPlayerClass } from '../art/AuthoredCharacters.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
@@ -610,7 +610,7 @@ export class MeshFactory {
         
         // A temporary failed-load Fighter must not permanently replace a
         // subsequently available authored export through the pool.
-        if (type === 'Fighter' && mesh.userData.assetFallback) return;
+        if (isAuthoredPlayerClass(type) && mesh.userData.assetFallback) return;
         if (this.pool[poolKey].length < 50) {
             this.pool[poolKey].push(mesh);
         } else {
@@ -729,20 +729,19 @@ export class MeshFactory {
     }
 
     static async createMeshForType(type, { quality } = {}) {
-        if (type === 'Fighter') {
-            const detail = this.getFighterQuality(quality), poolKey = `Fighter:${detail}`;
+        if (isAuthoredPlayerClass(type)) {
+            const detail = this.getFighterQuality(quality), poolKey = `${type}:${detail}`;
             const reused = this.getPooledMesh(poolKey);
             if (reused) return reused;
             try {
-                const input = await this.loadModelWithTimeout(fighterRuntimePath(detail), 8000);
-                const fighter = createAuthoredFighterInstance(input, { quality: detail });
+                const fighter = await createAuthoredCharacter(type, detail, (path, timeout) => this.loadModelWithTimeout(path, timeout));
                 fighter.userData.meshPoolKey = poolKey;
                 return fighter;
             } catch (error) {
-                console.warn('MeshFactory: authored Fighter unavailable; using equipped procedural fallback', error);
-                const fallback = createProceduralFighter({ batch: true });
+                console.warn(`MeshFactory: authored ${type} unavailable; using equipped procedural fallback`, error);
+                const fallback = ({ Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric })[type]({ batch: true });
                 fallback.userData.assetFallback = true;
-                fallback.userData.fallbackType = 'Fighter';
+                fallback.userData.fallbackType = type;
                 return fallback;
             }
         }

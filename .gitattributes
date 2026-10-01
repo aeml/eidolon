@@ -1,0 +1,2 @@
+# Editable sources use LFS; runtime GLBs remain normal Git files.
+output/models/**/*.blend filter=lfs diff=lfs merge=lfs -text

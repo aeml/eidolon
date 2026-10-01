@@ -1,7 +1,7 @@
 {
   "source": {
-    "bytes": 40335020,
-    "sha256": "453bfdc9c775db7283fd2cf0ecbdde2c443e62181324b1fd25403eb4e7505703",
+    "bytes": 40322316,
+    "sha256": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a",
     "triangles": 120480,
     "meshTriangles": {
       "Fighter_Body": 102416,
@@ -63,14 +63,16 @@
       "Blink_R"
     ],
     "images": 11,
-    "externalDependencies": []
+    "externalDependencies": [],
+    "errors": 0,
+    "warnings": 0
   },
   "tool": "@gltf-transform/cli@4.5.1",
   "policy": "body-only simplification; fitted meshes preserved; lossless normal/ORM maps",
   "variants": {
     "high": {
-      "bytes": 7333168,
-      "sha256": "4d36c969a91ce91c46b576556b8bd68f31fa3c3b0623357911dce6898225b4d7",
+      "bytes": 7371724,
+      "sha256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5",
       "triangles": 64150,
       "meshTriangles": {
         "Fighter_Body": 46086,
@@ -135,11 +137,13 @@
       "externalDependencies": [],
       "maximumTextureSize": 1024,
       "ratio": 0.45,
-      "maximumSimplificationError": 0.002
+      "maximumSimplificationError": 0.002,
+      "errors": 0,
+      "warnings": 0
     },
     "low": {
-      "bytes": 3641656,
-      "sha256": "b0acd7983eb1c4ebbfbd289ac22dca694f6dc15bcb0ae163d9a408eaabb8a068",
+      "bytes": 3680212,
+      "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
       "triangles": 36498,
       "meshTriangles": {
         "Fighter_Body": 18434,
@@ -204,7 +208,10 @@
       "externalDependencies": [],
       "maximumTextureSize": 512,
       "ratio": 0.18,
-      "maximumSimplificationError": 0.006
+      "maximumSimplificationError": 0.006,
+      "errors": 0,
+      "warnings": 0
     }
-  }
+  },
+  "motionRevision": 2
 }

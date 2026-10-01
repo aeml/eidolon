@@ -2,10 +2,10 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.57.0, exact3632e2d57a33df8f7c4f6c18ea0d3563edc83d21,
-CI36802997921 attempt1. All ten CI jobs and independent public IPv4 checks
-passed for identities, database readiness and all six changed runtime files.
-See its [acceptance record](2026-10-01-release1-57-acceptance.md).
+baseline is Alpha1.58.0, exactf7518623bb5924625a918c8acdfe7ad890b0363a,
+CI36808962117 attempt1. All ten CI jobs and independent public IPv4 checks
+passed for identities, database readiness and all four changed runtime files.
+See its [acceptance receipt](2026-10-01-release1-58-assets.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -16,14 +16,21 @@ The accepted [1.57 event work](2026-10-01-release1-57-events.md) provides
 upcoming server windows, atlas waypoints, reward clarity and bounded realm/cohort
 checks. Human event balance remains distinct from those prepared mechanical
 fixtures and the verified deployment.
-The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is
-implemented, packaged and pushed, but not accepted: its initial CI failed an
-outdated keyboard expectation before deployment. The corrected route passed
-locally and is now pushed at f7518623bb5924625a918c8acdfe7ad890b0363a,
-CI36808962117, awaiting its own acceptance. Its features include actual
-story/cache status, optional
-repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and
-human pacing limits are preserved; ordered release acceptance remains required.
+The [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is accepted
+after correcting an outdated keyboard expectation. It provides actual story/cache
+status, optional repeat-run goals, Resonance, Forge and collection guidance.
+Existing rewards and human pacing limits are preserved.
+
+Alpha 1.58.2 is the published asset-integration candidate. It integrates the
+delivered Fighter, Rogue, Cleric and Wizard bodies, fitted equipment and weapon
+motions, following the level-up and Well Rested effects from 1.58.1.
+Class equipment restrictions are server-enforced, and dual-wield Rogues alternate
+weapons at two-thirds of their normal attack interval without duplicate damage.
+[Focused asset checks](2026-10-01-authored-equipment-checks.json) retain native
+rendering and eligibility evidence; terminal CI and independent public acceptance
+remain required. Final art approval, crowd performance and human-playtest gates
+remain open. The next minor milestone is the complete 1.59 moderation workflow.
+
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin
 resolution/reopening to the private queue.
@@ -41,7 +48,7 @@ resolution receipt; it is included in the existing CI socket step.
 This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
 staff assignments/coverage and evidence-retention decisions remain. The initial
 sanction policy question is open; no live account was punished or case resolved.
-[the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
+The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
 **Owner timing/policy update:** closed beta must wait until the entire game is
@@ -71,6 +78,13 @@ generated textures/PBR maps, lighting, shaders, weather/VFX, icons and actor
 integration remain implementation work. Follow the visual contract's ownership
 table; do not convert this into a request that the user produce a world asset
 pack. Code-owned world/material work proceeds before actor imports are available.
+
+October 1 equipment-art update: the owner also intends to supply GLBs for every
+item to display on characters. Code-owned equipment remains the fallback until
+each export is available and its scale, rig attachments, fit, materials and
+runtime cost are validated. Item GLBs do not change authoritative item IDs,
+stats, inventories or cosmetic ownership. Actor/equipment integration remains
+implementation work; do not treat the promised exports as already imported.
 
 September 30 actor follow-up: the rigged Fighter GLB is now delivered with clips,
 attachment sockets and provenance. Resume its code-owned integration alongside

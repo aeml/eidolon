@@ -1,0 +1,77 @@
+[
+  {
+    "file": "output/models/equipment-production/weapons.blend",
+    "packedImages": 0,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/legendary-lineup.blend",
+    "packedImages": 41,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/fighter-production/fighter.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/fighter-equipment.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/revision-v2/fighter-animation-review.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/wizard-production/wizard.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/wizard-equipment.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/revision-v2/wizard-animation-review.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/cleric-production/cleric.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/cleric-equipment.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/revision-v2/cleric-animation-review.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/rogue-production/rogue.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/rogue-equipment.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/equipment-production/revision-v2/rogue-animation-review.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "output/models/class-bases/character-roster.blend",
+    "packedImages": 42,
+    "externalImageDependencies": 0
+  }
+]

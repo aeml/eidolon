@@ -290,9 +290,28 @@ export function prepareAuthoredFighterEquipment(root) {
         mounts.set(slot, rigidMount(root, body, parent, `AuthoredMount_${slot}`, position, rotation, new THREE.Vector3(...fit)));
     };
     root.updateMatrixWorld(true);
+    // Match the authored motion's fist center and handle axis, measured from
+    // the unchanged bind-pose fingers rather than an arbitrary world rotation.
+    const measuredGrip = side => {
+        const names = ['hand', 'index_01', 'pinky_01', 'middle_01', 'ring_01'];
+        const parts = names.map(name => root.getObjectByName(`${name}_${side}`));
+        if (parts.some(part => !part)) return null;
+        const [hand, index, pinky, middle, ring] = parts.map(point);
+        const across = index.clone().sub(pinky).normalize();
+        const along = middle.clone().sub(hand);
+        along.addScaledVector(across, -along.dot(across)).normalize();
+        const normal = across.clone().cross(along).normalize();
+        body.geometry.computeBoundingBox();
+        const size = body.geometry.boundingBox.max.y / 1.9;
+        const position = middle.add(ring).multiplyScalar(.5).addScaledVector(normal, .020 * size);
+        const basis = new THREE.Matrix4().makeBasis(along, across, normal.clone().negate());
+        if (side === 'l') basis.multiply(new THREE.Matrix4().makeRotationY(Math.PI / 2));
+        return { position, rotation: new THREE.Quaternion().setFromRotationMatrix(basis) };
+    };
+    const mainGrip = measuredGrip('r'), offGrip = measuredGrip('l');
     add('head', socket('socket_head'), new THREE.Vector3(0, 1.67, .035));
-    add('mainHand', socket('socket_mainHand'), point(socket('socket_mainHand')), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 1.85));
-    add('offHand', socket('socket_offHand'), point(socket('socket_offHand')), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), .35));
+    add('mainHand', socket('socket_mainHand'), mainGrip?.position || point(socket('socket_mainHand')), mainGrip?.rotation || new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 1.85));
+    add('offHand', socket('socket_offHand'), offGrip?.position || point(socket('socket_offHand')), offGrip?.rotation || new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), .35));
     add('neck', socket('socket_chest'), new THREE.Vector3(0, 1.52, .015), new THREE.Quaternion(), [scale * .85, scale, scale * .65]);
     for (const [slot, side] of [['ring1', 1], ['ring2', -1]]) {
         const finger = root.getObjectByName(side > 0 ? 'ring_01_l' : 'ring_01_r') || socket(side > 0 ? 'socket_offHand' : 'socket_mainHand');
@@ -315,11 +334,10 @@ export function prepareAuthoredFighterEquipment(root) {
         parentRotation: new THREE.Quaternion(), targetRotation: new THREE.Quaternion(), shield: false,
         hair: root.getObjectByName('Fighter_Hair'), shorts: root.getObjectByName('Fighter_Undershorts'), seams: root.getObjectByName('Fighter_ClothSeams') };
     states.set(root, state);
-    // The supplied hand poses are unarmed. Keep the shield facing with the
-    // torso while its grip follows the hand, rather than presenting its edge
-    // when that wrist turns during Run/Block. Authority transforms are untouched.
+    // Revision 2 carries the shield through the authored wrist itself. Retain
+    // the older correction only for incomplete legacy/fixture skeletons.
     root.userData.updateEquipmentPose = () => {
-        if (!state.shield) return;
+        if (!state.shield || offGrip) return;
         const mount = mounts.get('offHand');
         torso.updateWorldMatrix(true, false);
         mount.parent.updateWorldMatrix(true, false);

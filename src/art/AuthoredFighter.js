@@ -3,6 +3,8 @@ import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createAuthoredFighterAbilityClips } from './AuthoredFighterAbilityClips.js';
 import { prepareAuthoredFighterEquipment, clearAuthoredFighterEquipment } from './AuthoredFighterEquipment.js';
 import { installAuthoredFighterSeatedPose } from './AuthoredFighterSeatedPose.js';
+import { prepareFittedEquipment, clearFittedEquipment } from './FittedEquipment.js';
+import { prepareWeaponMotions } from './AuthoredWeaponMotions.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
 // a boot dependency. MeshFactory loads the selected candidate on demand with
@@ -28,7 +30,7 @@ export function fighterRuntimePath(quality = 'high') {
     return FIGHTER_RUNTIME_PATHS[quality === 'low' ? 'low' : 'high'];
 }
 
-export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
+export function createAuthoredFighterInstance(gltf, { quality = 'high', actorClass = 'Fighter', equipmentLoader, motionAnimations } = {}) {
     if (!gltf?.scene || !Array.isArray(gltf.animations)) throw new Error('Fighter scene and animation clips are required');
     const clips = new Set(gltf.animations.map(clip => clip.name));
     for (const name of FIGHTER_AUTHORED_CLIPS) {
@@ -56,9 +58,9 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     if (!Number.isFinite(size.y) || size.y <= 0 || !Number.isFinite(bounds.min.y)) throw new Error('Fighter has invalid model bounds');
 
     const root = new THREE.Group();
-    root.name = 'AuthoredFighter';
+    root.name = `Authored${actorClass}`;
     const visual = new THREE.Group();
-    visual.name = 'FighterVisualRig';
+    visual.name = `${actorClass}VisualRig`;
     const scale = 4.5 / size.y;
     visual.scale.setScalar(scale);
     visual.position.y = -bounds.min.y * scale;
@@ -66,14 +68,14 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     // lives above all mesh/skeleton siblings, not on one skinned mesh alone.
     visual.add(scene);
     root.add(visual);
-    root.userData.authoredClass = 'Fighter';
+    root.userData.authoredClass = actorClass;
     root.userData.authoredQuality = quality === 'low' ? 'low' : 'high';
     root.userData.sharedGeometry = true;
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
-    root.userData.animations = [...gltf.animations.map(clip => clip.clone()), ...createAuthoredFighterAbilityClips(scene, gltf.animations)];
-    // The supplied overhead stroke reaches forward at source frame 14 (30fps).
-    // Map this reviewed contact pose to the existing 35% gameplay impact,
-    // rather than timing the hit from the entire 28-frame recovery clip.
+    const animations = motionAnimations || gltf.animations;
+    root.userData.animations = [...animations.map(clip => clip.clone()), ...createAuthoredFighterAbilityClips(scene, animations).filter(clip => !animations.some(existing => existing.name === clip.name))];
+    // The blade-led diagonal cut reaches its contact pose at 14/30 seconds.
+    // Keep that reviewed pose aligned with the existing 35% gameplay impact.
     root.userData.basicAttackContactTime = 14 / 30;
     root.userData.lowerBodyAnimationTracks = LOWER_BODY_TRACKS;
     root.userData.authoredScale = scale;
@@ -91,13 +93,16 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high' } = {}) {
     };
     root.userData.resetPose = root.userData.resetRestPose;
     root.updateMatrixWorld(true);
-    prepareAuthoredFighterEquipment(root);
+    if (equipmentLoader) {
+        prepareFittedEquipment(root, scene, equipmentLoader);
+        prepareWeaponMotions(root, scene);
+    } else prepareAuthoredFighterEquipment(root);
     installAuthoredFighterSeatedPose(root, gltf.animations);
     let disposed = false;
     root.userData.disposeInstance = () => {
         if (disposed) return;
         disposed = true;
-        clearAuthoredFighterEquipment(root);
+        if (equipmentLoader) clearFittedEquipment(root); else clearAuthoredFighterEquipment(root);
         // SkeletonUtils clones each skeleton; only geometry/material/texture
         // resources are shared with other actors or the cached source.
         const skeletons = new Set();

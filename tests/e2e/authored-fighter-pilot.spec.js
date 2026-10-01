@@ -148,7 +148,7 @@ test('derived Fighter assets render and animate with independent player skeleton
             ['Silk Hood', 'Velvet Mantle', 'Robes', 'Silk Gloves', 'Silk Sash', 'Silk Skirt', 'Sandals', 'Wooden Staff', 'Spell Tome']
         ];
         const slots = ['head', 'shoulders', 'chest', 'gloves', 'belt', 'legs', 'feet', 'mainHand', 'offHand'];
-        const results = actors.map(({ entity, root }, index) => {
+        const results = await Promise.all(actors.map(async ({ entity, root }, index) => {
             const names = Object.fromEntries(slots.map((slot, i) => [slot, kits[index][i]]));
             Object.assign(names, { neck: 'Pendant', ring1: 'Gold Ring', ring2: 'Ruby Ring', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' });
             const equipment = Object.fromEntries(Object.entries(names).map(([slot, name]) => [slot, { id: `pilot-${index}-${slot}`, name, baseName: name,
@@ -158,23 +158,27 @@ test('derived Fighter assets render and animate with independent player skeleton
                 setId: slot === 'chest' ? 'bulwark_ages' : '', uniqueEffect: slot === 'mainHand' ? 'guardian' : '' }]));
             const original = root.getObjectByName('Fighter_Body').geometry;
             const result = entity.syncEquipmentVisuals(equipment);
-            const garments = root.getObjectByName('AuthoredFighterGarments');
+            await root.userData.equipmentReady;
             const skins = [];
-            garments.traverse(part => { if (part.isSkinnedMesh) skins.push({ name: part.name, triangles: part.geometry.index?.count / 3 || part.geometry.attributes.position.count / 3,
-                sameSkeleton: part.skeleton === root.getObjectByName('Fighter_Body').skeleton }); });
+            root.traverse(part => { if (part.isSkinnedMesh && part.userData.authoredEquipment) skins.push({ name: part.name, slot: part.userData.slot,
+                triangles: part.geometry.index?.count / 3 || part.geometry.attributes.position.count / 3,
+                sameSkeleton: part.skeleton.bones.every(bone => root.getObjectByName('Fighter_Body').skeleton.bones.includes(bone)) }); });
             entity.userDataPilotEquipment = equipment;
-            return { ...result, skins, masked: root.getObjectByName('Fighter_Body').geometry !== original,
+            return { ...result, items: root.userData.equipmentVisualItemCount, missing: root.userData.equipmentVisualMissing, skins, masked: root.getObjectByName('Fighter_Body').geometry !== original,
                 hairHidden: !root.getObjectByName('Fighter_Hair').visible, shortsHidden: !root.getObjectByName('Fighter_Undershorts').visible };
-        });
+        }));
         renderPose('Idle');
         return { actors: results, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
     });
     await writeFile(testInfo.outputPath('equipment-intake.json'), JSON.stringify(equipped, null, 2));
     await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-Idle.png') });
-    for (const actor of equipped.actors) {
+    for (const [index, actor] of equipped.actors.entries()) {
         expect(actor.supported).toBe(true); expect(actor.items).toBe(14); expect(actor.missing).toEqual([]);
-        expect(actor.masked && actor.hairHidden && actor.shortsHidden).toBe(true);
-        expect(actor.skins.filter(skin => skin.name.startsWith('AuthoredGear_'))).toHaveLength(6);
+        expect(actor.masked && actor.hairHidden).toBe(true);
+        // The supplied cloth skirt deliberately retains modest underclothes.
+        expect(actor.shortsHidden).toBe(index !== 3);
+        expect([...new Set(actor.skins.map(skin => skin.slot))].sort()).toEqual(['belt', 'chest', 'feet', 'gloves', 'head', 'legs', 'neck', 'ring1', 'ring2', 'shoulders', 'trinket1', 'trinket2']);
+        expect(actor.skins.every(skin => skin.sameSkeleton)).toBe(true);
         expect(actor.skins.filter(skin => !(skin.triangles > 0 && skin.sameSkeleton))).toEqual([]);
     }
     for (const clip of ['Idle', 'Run', 'Attack', 'Guard', 'Shout', 'Death']) {
@@ -247,8 +251,9 @@ test('derived Fighter assets render and animate with independent player skeleton
             preview.update(entity); window.fighterPreviewReview = { preview, host, entity };
         }, index);
         await page.waitForFunction(() => window.fighterPreviewReview.preview.model?.userData.authoredClass === 'Fighter');
-        const preview = await page.evaluate(() => {
+        const preview = await page.evaluate(async () => {
             const { preview, entity } = window.fighterPreviewReview;
+            await preview.model.userData.equipmentReady;
             return { quality: preview.model.userData.authoredQuality, slots: preview.model.userData.equipmentVisualItemCount,
                 independent: preview.model.getObjectByName('Fighter_Body').skeleton.bones[0] !== entity.mesh.getObjectByName('Fighter_Body').skeleton.bones[0],
                 signature: preview.model.userData.equipmentVisualSignature === entity.mesh.userData.equipmentVisualSignature };
@@ -263,14 +268,14 @@ test('derived Fighter assets render and animate with independent player skeleton
         const result = actors.map(({ root }) => {
             clearEquipmentVisuals(root);
             return { hair: root.getObjectByName('Fighter_Hair').visible, shorts: root.getObjectByName('Fighter_Undershorts').visible,
-                garmentChildren: root.getObjectByName('AuthoredFighterGarments').children.reduce((sum, mount) => sum + mount.children.length, 0),
-                rigidChildren: ['head', 'mainHand', 'offHand', 'neck', 'ring1', 'ring2', 'trinket1', 'trinket2'].map(slot => root.getObjectByName(`AuthoredMount_${slot}`).children.length) };
+                garmentChildren: root.children.reduce((sum, child) => { child.traverse(part => { if (part.userData.authoredEquipment) sum++; }); return sum; }, 0),
+                rigidChildren: ['socket_mainHand', 'socket_offHand'].map(socket => root.getObjectByName(socket).children.filter(part => part.userData.authoredEquipment).length) };
         });
         renderPose('Idle'); return result;
     });
     for (const actor of restored) {
         expect(actor.hair && actor.shorts).toBe(true); expect(actor.garmentChildren).toBe(0);
-        expect(actor.rigidChildren).toEqual(Array(8).fill(0));
+        expect(actor.rigidChildren).toEqual([0, 0]);
     }
     intake.equipped = equipped; intake.restored = restored;
     await testInfo.attach('fighter-pilot-metrics', { body: JSON.stringify(intake, null, 2), contentType: 'application/json' });

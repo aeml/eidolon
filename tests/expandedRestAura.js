@@ -16,6 +16,9 @@ export function expandedRestAura(THREE, batch, materialCache) {
                 const key = `${material.uuid}:${tint.toArray().join(',')}`;
                 if (!materialCache.has(key)) {
                     const colored = material.clone(); colored.color.multiply(tint);
+                    // Material.clone omits custom shader callbacks used by the runtime light.
+                    colored.onBeforeCompile = material.onBeforeCompile;
+                    colored.customProgramCacheKey = material.customProgramCacheKey;
                     materialCache.set(key, colored);
                 }
                 material = materialCache.get(key);

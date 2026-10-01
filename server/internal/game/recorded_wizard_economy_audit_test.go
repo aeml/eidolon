@@ -73,9 +73,15 @@ func TestRecordedWizardEconomyAudit(t *testing.T) {
 			}
 			p.RecalculateStats()
 			p.Health, p.Mana = p.MaxHealth, p.MaxMana
-			wantHP, wantMana := 1140+(level-31)*25, 670+(level-31)*15
+			// Keep the historical capture immutable. It includes leather that
+			// predates the cloth-only Wizard rule: Plate Mail, Leather Cap,
+			// Leather Gloves and Reinforced Spaulders remain recoverable but
+			// no longer grant their combined 18 Vitality or other stats.
+			// These are current-rule expectations, not a new native playtest
+			// receipt or a rebalance of the recorded campaign.
+			wantHP, wantMana := 960+(level-31)*25, 670+(level-31)*15
 			if p.MaxHealth != wantHP || p.MaxMana != wantMana || p.Damage != 22 {
-				t.Fatalf("fixture differs from native profile: hp=%d mana=%d damage=%d", p.MaxHealth, p.MaxMana, p.Damage)
+				t.Fatalf("historical fixture under current cloth-only rules: hp=%d mana=%d damage=%d", p.MaxHealth, p.MaxMana, p.Damage)
 			}
 			if variant.forge {
 				// Explicit counterfactual: quote normal level upgrades and supply

@@ -5,7 +5,7 @@ import { PhoneStashUI } from './PhoneStashUI.js';
 import { StashBrowserUI } from './StashBrowserUI.js';
 import { EquipmentLoadoutUI } from './EquipmentLoadoutUI.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
-import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
+import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot, canEquipItem } from '../core/EquipmentSlots.js';
 
 /**
  * InventoryUI — handles inventory grid, equipment slots, shop/gamble,
@@ -250,7 +250,7 @@ export class InventoryUI {
         }
 
         const stored = player?.equipment?.[slotKey] || null;
-        const active = isActiveEquipment(slotKey, stored);
+        const active = isActiveEquipment(slotKey, stored, player?.constructor.name);
         return {
             slotKey,
             slotLabel: this._formatEquipmentSlotLabel(slotKey),
@@ -798,7 +798,7 @@ export class InventoryUI {
         const panel = document.getElementById('inventory-recovery');
         if (!panel) return;
         const entries = Object.entries(player.equipment || {}).filter(([slot, item]) =>
-            item?.id && !isActiveEquipment(slot, item)).sort(([a], [b]) => a.localeCompare(b));
+            item?.id && !isActiveEquipment(slot, item, player.constructor.name)).sort(([a], [b]) => a.localeCompare(b));
         const signature = JSON.stringify(entries.map(([slot, item]) => [slot, item.id, item.name, item.stack]));
         if (panel.dataset.items === signature) return;
         const hadFocus = panel.contains(document.activeElement);
@@ -820,7 +820,7 @@ export class InventoryUI {
             button.onclick = event => {
                 event.stopPropagation();
                 const current = this._getLastPlayer()?.equipment?.[slot];
-                if (current?.id !== id || current.stack !== stack || isActiveEquipment(slot, current)) {
+                if (current?.id !== id || current.stack !== stack || isActiveEquipment(slot, current, this._getLastPlayer()?.constructor.name)) {
                     status.textContent = 'This item changed. Reopen the bag to refresh.';
                     return;
                 }
@@ -1573,7 +1573,7 @@ export class InventoryUI {
         // Inventory -> Equipment (Equip)
         else if (source.type === 'inventory' && target.type === 'equipment') {
             const item = player.inventory[source.id];
-            if (itemFitsEquipmentSlot(item, target.id) && window.game) {
+            if (canEquipItem(player.constructor.name, item, target.id) && window.game) {
                 window.game.sendEquipMessage(item, target.id);
             }
         }

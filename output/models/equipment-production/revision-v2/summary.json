@@ -1,0 +1,88 @@
+{
+  "chestFits": 24,
+  "characterWeaponCombinations": 20,
+  "poseSamples": 1860,
+  "runtimeGrips": [
+    {
+      "slot": "mainHand",
+      "positionError": 8.737418321246711e-08,
+      "angleError": 0
+    },
+    {
+      "slot": "offHand",
+      "positionError": 8.444043569717445e-08,
+      "angleError": 0
+    }
+  ],
+  "footContacts": {
+    "Fighter": {
+      "Walk": {
+        "minimumSoleHeight": 0.002635004429380113,
+        "maximumLowerFootHeight": 0.003021357262521493
+      },
+      "Run": {
+        "minimumSoleHeight": -0.0005722682057961695,
+        "maximumLowerFootHeight": 0.019115578540678732
+      }
+    },
+    "Wizard": {
+      "Walk": {
+        "minimumSoleHeight": 0.0021907528533223635,
+        "maximumLowerFootHeight": 0.002925791869636172
+      },
+      "Run": {
+        "minimumSoleHeight": -0.0013360377066657394,
+        "maximumLowerFootHeight": 0.017177841619265194
+      }
+    },
+    "Cleric": {
+      "Walk": {
+        "minimumSoleHeight": 0.0020942896818587032,
+        "maximumLowerFootHeight": 0.0027292578361057087
+      },
+      "Run": {
+        "minimumSoleHeight": -0.001950335843602241,
+        "maximumLowerFootHeight": 0.027299841215647984
+      }
+    },
+    "Rogue": {
+      "Walk": {
+        "minimumSoleHeight": 0.002034020514007249,
+        "maximumLowerFootHeight": 0.0026502213233240285
+      },
+      "Run": {
+        "minimumSoleHeight": -0.0018872720821327313,
+        "maximumLowerFootHeight": 0.026588223303914513
+      }
+    }
+  },
+  "continuity": {
+    "Fighter": {
+      "clips": 42,
+      "maximumAdjacentDegrees": 47.40232516792795,
+      "maximumLoopEndpointDegrees": 0.05214689851173311
+    },
+    "Wizard": {
+      "clips": 44,
+      "maximumAdjacentDegrees": 51.860519382046235,
+      "maximumLoopEndpointDegrees": 0.04916903710708083
+    },
+    "Cleric": {
+      "clips": 44,
+      "maximumAdjacentDegrees": 45.19618651665164,
+      "maximumLoopEndpointDegrees": 0.04859124442291571
+    },
+    "Rogue": {
+      "clips": 44,
+      "maximumAdjacentDegrees": 45.39830482871059,
+      "maximumLoopEndpointDegrees": 0.04511378473135026
+    }
+  },
+  "outfitCombinations": 24,
+  "accessoryCombinations": 24,
+  "outfitPoseSamples": 576,
+  "glTFErrors": 0,
+  "glTFWarnings": 0,
+  "unitTestsPassed": 15,
+  "fighterBrowserTestPassed": true
+}

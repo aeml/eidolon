@@ -105,7 +105,7 @@ func (w *World) SaveEquipmentLoadout(playerID string, index int, name string, ho
 		if item.ID == "" || !isEquipmentSlot(slot) {
 			continue
 		}
-		if !activeEquipmentItem(slot, item) || item.Stack > 1 || seen[item.ID] {
+		if !activeEquipmentItem(slot, item) || !classAllowsEquipment(player.SubType, item, slot) || item.Stack > 1 || seen[item.ID] {
 			return errors.New("Recover invalid or stacked equipped items before saving a loadout")
 		}
 		seen[item.ID] = true
@@ -189,7 +189,7 @@ func (w *World) ApplyEquipmentLoadout(playerID string, index int, confirmedGold 
 		if found != 1 {
 			return EquipmentLoadout{}, errors.New("A loadout item is missing or ambiguous; retrieve it from your stash or save a new loadout")
 		}
-		if item.Level > player.Level || item.Stack > 1 || !(itemFitsEquipmentSlot(item, slot) || currentSlot == slot && activeEquipmentItem(slot, item)) {
+		if item.Level > player.Level || item.Stack > 1 || !classAllowsEquipment(player.SubType, item, slot) || !(itemFitsEquipmentSlot(item, slot) || currentSlot == slot && activeEquipmentItem(slot, item)) {
 			return EquipmentLoadout{}, errors.New("A loadout item no longer fits its slot or level requirement")
 		}
 		selected[id] = true

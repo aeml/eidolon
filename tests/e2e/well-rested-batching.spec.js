@@ -8,6 +8,8 @@ import { compareAuraPixels } from '../auraPixelComparison.js';
 test('batched sanctuary sparks retain rendered detail with fewer draw calls', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.addInitScript({ content: `window.__compareAuraPixels = (${compareAuraPixels.toString()});` });
+    await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     const renderer = await page.evaluate(async () => {
@@ -18,6 +20,7 @@ test('batched sanctuary sparks retain rendered detail with fewer draw calls', as
             releaseProceduralStatusEffect } = await import('/src/art/ProceduralStatusEffects.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(false);
+        Object.assign(render.renderer.domElement.style, { position: 'fixed', inset: '0', zIndex: '10000' });
         document.body.appendChild(render.renderer.domElement);
         const hero = new Wizard('aura-comparison');
         hero.name = 'Prepared aura comparison';
@@ -51,6 +54,10 @@ test('batched sanctuary sparks retain rendered detail with fewer draw calls', as
                 if (!part.isInstancedMesh) { expanded.add(part.clone()); continue; }
                 for (let slot = 0; slot < part.count; slot++) {
                     const material = part.material.clone(); qa.materials.push(material);
+                    // Material.clone does not copy custom shader callbacks.
+                    // The expanded reference must use the same analytic light.
+                    material.onBeforeCompile = part.material.onBeforeCompile;
+                    material.customProgramCacheKey = part.material.customProgramCacheKey;
                     if (part.instanceColor) {
                         const tint = new THREE.Color(); part.getColorAt(slot, tint); material.color.multiply(tint);
                     }
@@ -75,6 +82,7 @@ test('batched sanctuary sparks retain rendered detail with fewer draw calls', as
                 const { pixels, calls } = await page.evaluate(({ quality, elapsed }) =>
                     window.__restBatchComparison.compare(quality, elapsed), { quality, elapsed });
                 console.log('[rest-aura-render]', JSON.stringify({ renderer, quality, elapsed, pixels, calls }));
+                expect(failures, failures.join('\n')).toEqual([]);
                 expect(pixels.referenceSignal, 'the aura must contribute visible pixels').toBeGreaterThan(1000);
                 expect(pixels.relativeError, 'instancing must preserve the rendered aura, not remove detail').toBeLessThan(.03);
                 expect(calls.batched).toBeGreaterThan(0);

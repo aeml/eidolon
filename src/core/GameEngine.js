@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { canEquipItem } from './EquipmentSlots.js';
 import { syncWellRested } from './WellRested.js';
 import { getTrackedActorBuffs } from './TrackedActorBuffs.js';
 import { RenderSystem } from './RenderSystem.js';
@@ -1009,7 +1010,8 @@ export class GameEngine {
     handleLevelUpFeedback(previousLevel, nextLevel) {
         if (!this.player || previousLevel >= nextLevel) return;
 
-        const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
+        const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position,
+            { owner: this.player, quality: this.renderSystem.graphicsQuality });
         this.effects.push(effect);
 
         this.floatingTextManager.spawn(
@@ -1127,8 +1129,8 @@ export class GameEngine {
 
         // Hook equipItem for multiplayer
         // Completely override equipItem to only send message
-        this.player.equipItem = (item) => {
-            let targetSlot = item.slot;
+        this.player.equipItem = (item, requestedSlot) => {
+            let targetSlot = requestedSlot || item.slot;
 
             const getWeakerSlot = (slot1, slot2) => {
                 const item1 = this.player.equipment[slot1];
@@ -1159,6 +1161,7 @@ export class GameEngine {
                 targetSlot = getWeakerSlot('trinket1', 'trinket2');
             }
 
+            if (!canEquipItem(this.player.constructor.name, item, targetSlot) || this.player.level < Number(item.level || 0)) return false;
             this.sendEquipMessage(item, targetSlot);
             return true; // Assume success, server will correct if not
         };

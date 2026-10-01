@@ -1,213 +1,112 @@
 import * as THREE from 'three';
+import { prefersReducedMotion } from '../core/MotionPreference.js';
+import { createCrossedGlowGeometry, createSanctuaryMaterial } from '../art/SanctuaryMaterials.js';
+
+const vertex = `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
 
 export class LevelUpEffect {
-    constructor(scene, position) {
-        this.scene = scene;
-        this.position = position.clone();
-        this.isActive = true;
-        this.time = 0;
-        this.duration = 3.0; // Total duration
-
+    constructor(scene, position, options = {}) {
+        this.scene = scene; this.position = position.clone(); this.owner = options.owner;
+        this.isActive = true; this.time = 0; this.duration = 3;
+        this.reducedMotion = options.reducedMotion ?? prefersReducedMotion();
+        this.group = new THREE.Group(); this.group.name = 'LevelUpResonance';
+        this.group.position.copy(this.position); scene.add(this.group);
         this.meshes = [];
-
-        // 1. Pillar of Light
-        const pillarGeo = new THREE.CylinderGeometry(1, 1, 20, 16, 1, true);
-        const pillarMat = new THREE.MeshBasicMaterial({
-            color: 0xffd700, // Gold
-            transparent: true,
-            opacity: 0,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
-        this.pillar = new THREE.Mesh(pillarGeo, pillarMat);
-        this.pillar.position.copy(this.position);
-        this.pillar.position.y += 10; // Center it
-        this.scene.add(this.pillar);
-        this.meshes.push(this.pillar);
-
-        // 2. Shockwave Ring
-        const ringGeo = new THREE.RingGeometry(0.5, 1.0, 32);
-        const ringMat = new THREE.MeshBasicMaterial({
-            color: 0xffaa00,
-            transparent: true,
-            opacity: 0,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
-        this.ring = new THREE.Mesh(ringGeo, ringMat);
-        this.ring.position.copy(this.position);
-        this.ring.position.y += 0.1; // Just above ground
-        this.ring.rotation.x = -Math.PI / 2;
-        this.scene.add(this.ring);
-        this.meshes.push(this.ring);
-
-        // 3. Particles
-        const particleCount = 50;
-        const particleGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const speeds = new Float32Array(particleCount);
-        const offsets = new Float32Array(particleCount); // Random starting offsets
-
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = this.position.x + (Math.random() - 0.5) * 2;
-            positions[i * 3 + 1] = this.position.y + Math.random() * 2;
-            positions[i * 3 + 2] = this.position.z + (Math.random() - 0.5) * 2;
-            
-            speeds[i] = 2.0 + Math.random() * 3.0; // Upward speed
-            offsets[i] = Math.random() * Math.PI * 2; // Rotation offset
+        this.seal = this.add(new THREE.Mesh(new THREE.RingGeometry(.78, 1, 64),
+            createSanctuaryMaterial(0xffd990, { opacity: 0, motif: 'seal' })));
+        this.seal.rotation.x = -Math.PI / 2; this.seal.position.y = .18;
+        this.ring = this.add(new THREE.Mesh(new THREE.RingGeometry(.78, 1, 64),
+            createSanctuaryMaterial(0xffe4af, { opacity: 0, motif: 'seal' })));
+        this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = .19;
+        this.pillar = this.add(new THREE.Mesh(createCrossedGlowGeometry(2), new THREE.ShaderMaterial({
+            uniforms: { uTime: { value: 0 }, uOpacity: { value: 0 } }, vertexShader: vertex,
+            fragmentShader: `varying vec2 vUv; uniform float uTime; uniform float uOpacity;
+                void main() {
+                    float core = pow(max(0.0, 1.0 - abs(vUv.x - .5) * 2.0), 8.0);
+                    float thread = exp(-pow((vUv.x - .5 - sin(vUv.y * 13.0 - uTime * 3.0) * .08) * 28.0, 2.0));
+                    float ends = smoothstep(0.0, .12, vUv.y) * (1.0 - smoothstep(.5, 1.0, vUv.y));
+                    gl_FragColor = vec4(mix(vec3(1.0, .65, .25), vec3(1.0, .94, .75), core),
+                        (core * .22 + thread * .12) * ends * uOpacity);
+                    #include <colorspace_fragment>
+                }`, transparent: true, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false, toneMapped: false
+        })));
+        this.pillar.material.forceSinglePass = true;
+        this.pillar.position.y = 3.25; this.pillar.scale.set(1.6, 3.25, 1.6);
+        const count = options.quality === 'low' ? 48 : 96;
+        const geo = new THREE.BufferGeometry(), phases = [], seeds = [], colors = [], color = new THREE.Color();
+        const elements = [0x93d58b, 0xc8efff, 0xff985c, 0x72caff];
+        for (let i = 0; i < count; i++) {
+            phases.push((i * .61803398875) % 1); seeds.push((i * .38196601125) % 1);
+            color.setHex(i % 4 ? 0xffda86 : elements[Math.floor(i / 4) % 4]); colors.push(color.r, color.g, color.b);
         }
-
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        
-        const particleMat = new THREE.PointsMaterial({
-            color: 0xffff00,
-            size: 0.3,
-            transparent: true,
-            opacity: 0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-        });
-
-        this.particles = new THREE.Points(particleGeo, particleMat);
-        this.particles.userData = { speeds, offsets, initialY: this.position.y };
-        this.scene.add(this.particles);
-        this.meshes.push(this.particles);
-
-        // 4. Fire Whirl (Red/Orange Particles)
-        const fireCount = 100;
-        const fireGeo = new THREE.BufferGeometry();
-        const firePos = new Float32Array(fireCount * 3);
-        const fireSpeeds = new Float32Array(fireCount);
-        const fireOffsets = new Float32Array(fireCount);
-
-        for (let i = 0; i < fireCount; i++) {
-            const r = 1.5 + Math.random(); // Wider radius
-            const theta = Math.random() * Math.PI * 2;
-            firePos[i * 3] = this.position.x + Math.cos(theta) * r;
-            firePos[i * 3 + 1] = this.position.y + Math.random() * 3;
-            firePos[i * 3 + 2] = this.position.z + Math.sin(theta) * r;
-            
-            fireSpeeds[i] = 3.0 + Math.random() * 4.0; // Faster
-            fireOffsets[i] = theta;
-        }
-        fireGeo.setAttribute('position', new THREE.BufferAttribute(firePos, 3));
-        const fireMat = new THREE.PointsMaterial({
-            color: 0xff4500, // OrangeRed
-            size: 0.4,
-            transparent: true,
-            opacity: 0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-        });
-        this.fireParticles = new THREE.Points(fireGeo, fireMat);
-        this.fireParticles.userData = { speeds: fireSpeeds, offsets: fireOffsets, initialY: this.position.y };
-        this.scene.add(this.fireParticles);
-        this.meshes.push(this.fireParticles);
-
-        // 5. Wind Whirl (Rotating Cylinder)
-        const windGeo = new THREE.CylinderGeometry(2.5, 0.5, 15, 16, 1, true);
-        const windMat = new THREE.MeshBasicMaterial({
-            color: 0xccffff, // Cyan/White
-            transparent: true,
-            opacity: 0,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-            wireframe: true // Wireframe looks like wind streaks
-        });
-        this.wind = new THREE.Mesh(windGeo, windMat);
-        this.wind.position.copy(this.position);
-        this.wind.position.y += 7.5;
-        this.scene.add(this.wind);
-        this.meshes.push(this.wind);
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(count * 3), 3));
+        geo.setAttribute('aPhase', new THREE.Float32BufferAttribute(phases, 1));
+        geo.setAttribute('aSeed', new THREE.Float32BufferAttribute(seeds, 1));
+        geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 3, 0), 5);
+        this.particles = this.add(new THREE.Points(geo, new THREE.ShaderMaterial({
+            uniforms: { uTime: { value: 0 }, uOpacity: { value: 0 }, uMotion: { value: this.reducedMotion ? 0 : 1 }, uViewportHeight: { value: 1 } },
+            vertexShader: `attribute float aPhase; attribute float aSeed; attribute vec3 color;
+                uniform float uTime; uniform float uOpacity; uniform float uMotion; uniform float uViewportHeight;
+                varying vec3 vColor; varying float vAlpha;
+                void main() {
+                    float age = max(0.0, uTime - aPhase * .7), life = clamp(age / 2.3, 0.0, 1.0);
+                    float angle = aSeed * 6.2831853 + age * .8 * uMotion;
+                    float radius = .65 + life * (1.0 + aPhase) * uMotion;
+                    vec3 p = vec3(cos(angle) * radius, .2 + life * mix(1.5, 4.8, uMotion), sin(angle) * radius);
+                    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+                    gl_Position = projectionMatrix * mv;
+                    // Orthographic gameplay cameras do not shrink light with camera distance.
+                    // Drawing-buffer height also keeps sparks consistent through zoom, DPI and resize.
+                    float perspectiveDivisor = projectionMatrix[3][3] == 0.0 ? max(.01, -mv.z) : 1.0;
+                    float worldSize = (.14 + aSeed * .12) * (.7 + sin(life * 3.14159265) * .5);
+                    gl_PointSize = clamp(worldSize * .5 * uViewportHeight * projectionMatrix[1][1] / perspectiveDivisor, 1.0, 24.0);
+                    vColor = color; vAlpha = sin(life * 3.14159265) * uOpacity;
+                }`,
+            fragmentShader: `varying vec3 vColor; varying float vAlpha; void main() {
+                vec2 p = gl_PointCoord * 2.0 - 1.0; float r = length(p);
+                float core = exp(-dot(p, p) * 55.0), halo = exp(-dot(p, p) * 5.0) * .22;
+                float rays = pow(max(0.0, 1.0 - abs(p.x) * 3.0), 8.0) * exp(-p.y * p.y * 7.0)
+                           + pow(max(0.0, 1.0 - abs(p.y) * 3.0), 8.0) * exp(-p.x * p.x * 7.0);
+                gl_FragColor = vec4(mix(vColor, vec3(1.0, .96, .8), core * .65),
+                    min(1.0, core + halo + rays * .42) * (1.0 - smoothstep(.75, 1.0, r)) * vAlpha);
+                #include <colorspace_fragment>
+            }`, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+        })));
+        const drawingBufferSize = new THREE.Vector2();
+        this.particles.onBeforeRender = renderer => {
+            renderer.getDrawingBufferSize(drawingBufferSize);
+            this.particles.material.uniforms.uViewportHeight.value = drawingBufferSize.y;
+        };
+        this.update(0);
     }
+
+    add(part) { part.castShadow = false; part.receiveShadow = false; this.group.add(part); this.meshes.push(part); return part; }
 
     update(dt) {
-        this.time += dt;
-        if (this.time >= this.duration) {
-            this.isActive = false;
-            this.dispose();
-            return;
-        }
-
-        const t = this.time / this.duration;
-
-        // Animate Pillar
-        // Fade in quickly (0.2s), fade out slowly
-        if (this.time < 0.2) {
-            this.pillar.material.opacity = this.time / 0.2 * 0.6;
-        } else {
-            this.pillar.material.opacity = (1 - (this.time - 0.2) / (this.duration - 0.2)) * 0.6;
-        }
-        this.pillar.scale.setScalar(1 + Math.sin(this.time * 10) * 0.1); // Pulse width
-        this.pillar.rotation.y += dt * 2;
-
-        // Animate Ring (Shockwave)
-        // Expands quickly and fades
-        if (this.time < 1.0) {
-            const ringT = this.time / 1.0;
-            this.ring.scale.setScalar(1 + ringT * 10); // Expand to 10x size
-            this.ring.material.opacity = (1 - ringT) * 0.8;
-        } else {
-            this.ring.visible = false;
-        }
-
-        // Animate Wind
-        if (this.time < 0.5) {
-            this.wind.material.opacity = (this.time / 0.5) * 0.3;
-        } else {
-            this.wind.material.opacity = (1 - (this.time - 0.5) / (this.duration - 0.5)) * 0.3;
-        }
-        this.wind.rotation.y -= dt * 15; // Spin fast
-        this.wind.scale.setScalar(1 + t * 0.5); // Expand slightly
-
-        // Animate Gold Particles
-        this.updateParticles(this.particles, dt, 2.0);
-
-        // Animate Fire Particles
-        this.updateParticles(this.fireParticles, dt, 5.0); // Faster spiral
-    }
-
-    updateParticles(system, dt, spiralSpeed) {
-        const positions = system.geometry.attributes.position.array;
-        const speeds = system.userData.speeds;
-        const offsets = system.userData.offsets;
-        const initialY = system.userData.initialY;
-
-        // Fade particles in/out
-        if (this.time < 0.5) {
-            system.material.opacity = this.time / 0.5;
-        } else {
-            system.material.opacity = 1 - (this.time - 0.5) / (this.duration - 0.5);
-        }
-
-        for (let i = 0; i < speeds.length; i++) {
-            // Move Up
-            positions[i * 3 + 1] += speeds[i] * dt;
-            
-            // Spiral
-            const angle = this.time * spiralSpeed + offsets[i];
-            const radius = 1.0 + (positions[i * 3 + 1] - initialY) * 0.2; // Widen as they go up
-            
-            positions[i * 3] = this.position.x + Math.cos(angle) * radius;
-            positions[i * 3 + 2] = this.position.z + Math.sin(angle) * radius;
-
-            // Reset if too high (looping effect within the duration)
-            if (positions[i * 3 + 1] > initialY + 10) {
-                positions[i * 3 + 1] = initialY;
-            }
-        }
-        system.geometry.attributes.position.needsUpdate = true;
+        if (!this.isActive) return;
+        this.time += Number.isFinite(dt) ? Math.max(0, dt) : 0;
+        if (this.time >= this.duration) { this.dispose(); return; }
+        const position = this.owner?.mesh?.position || this.owner?.position;
+        if (position) this.group.position.copy(position);
+        const fadeIn = Math.min(1, this.time / .18), fadeOut = Math.min(1, (this.duration - this.time) / .9);
+        const opacity = fadeIn * fadeOut;
+        this.seal.scale.setScalar(1.75 + (this.reducedMotion ? 0 : Math.sin(this.time * 2) * .06));
+        this.seal.material.opacity = opacity * .9;
+        this.seal.rotation.z = this.reducedMotion ? 0 : this.time * .2;
+        const burst = Math.min(1, this.time / .9);
+        this.ring.scale.setScalar(this.reducedMotion ? 2 : 1.5 + burst * 2.2);
+        this.ring.material.opacity = this.reducedMotion ? opacity * .3 : Math.max(0, 1 - burst) * fadeIn * .65;
+        this.pillar.material.uniforms.uTime.value = this.reducedMotion ? 0 : this.time;
+        this.pillar.material.uniforms.uOpacity.value = opacity;
+        this.particles.material.uniforms.uTime.value = this.time;
+        this.particles.material.uniforms.uOpacity.value = opacity;
     }
 
     dispose() {
-        this.meshes.forEach(mesh => {
-            if (mesh.geometry) mesh.geometry.dispose();
-            if (mesh.material) mesh.material.dispose();
-            this.scene.remove(mesh);
-        });
-        this.meshes = [];
+        if (!this.isActive) return;
+        this.isActive = false; this.group.removeFromParent();
+        for (const part of this.meshes) { part.geometry.dispose(); part.material.dispose(); }
+        this.group.clear(); this.meshes = [];
     }
 }

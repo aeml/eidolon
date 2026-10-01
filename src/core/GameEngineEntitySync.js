@@ -300,7 +300,8 @@ class GameEngineEntitySyncMethods {
                     remoteEntity.hasSyncedLevel = true;
                 } else if (remoteEntity.level < pData.level) {
                     remoteEntity.level = pData.level;
-                    const effect = new LevelUpEffect(this.renderSystem.effectGroup, remoteEntity.position);
+                    const effect = new LevelUpEffect(this.renderSystem.effectGroup, remoteEntity.position,
+                        { owner: remoteEntity, quality: this.renderSystem.graphicsQuality });
                     this.effects.push(effect);
                 }
             }

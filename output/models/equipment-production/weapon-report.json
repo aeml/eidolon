@@ -1,0 +1,134 @@
+[
+  {
+    "file": "assets/equipment/authored/weapons/iron-sword-standard.glb",
+    "vertices": 1564,
+    "triangles": 2952,
+    "bytes": 109376,
+    "materials": 3,
+    "id": "iron-sword",
+    "tier": "standard",
+    "name": "Iron Sword",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/iron-sword-legendary.glb",
+    "vertices": 1878,
+    "triangles": 3528,
+    "bytes": 141676,
+    "materials": 5,
+    "id": "iron-sword",
+    "tier": "legendary",
+    "name": "Iron Sword",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/steel-dagger-standard.glb",
+    "vertices": 1564,
+    "triangles": 2952,
+    "bytes": 109400,
+    "materials": 3,
+    "id": "steel-dagger",
+    "tier": "standard",
+    "name": "Steel Dagger",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/steel-dagger-legendary.glb",
+    "vertices": 1794,
+    "triangles": 3372,
+    "bytes": 134576,
+    "materials": 5,
+    "id": "steel-dagger",
+    "tier": "legendary",
+    "name": "Steel Dagger",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/wooden-staff-standard.glb",
+    "vertices": 3306,
+    "triangles": 6344,
+    "bytes": 220788,
+    "materials": 5,
+    "id": "wooden-staff",
+    "tier": "standard",
+    "name": "Wooden Staff",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/wooden-staff-legendary.glb",
+    "vertices": 4520,
+    "triangles": 8704,
+    "bytes": 298688,
+    "materials": 6,
+    "id": "wooden-staff",
+    "tier": "legendary",
+    "name": "Wooden Staff",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/cleric-mace-standard.glb",
+    "vertices": 2160,
+    "triangles": 4088,
+    "bytes": 141752,
+    "materials": 4,
+    "id": "cleric-mace",
+    "tier": "standard",
+    "name": "Cleric Mace",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/cleric-mace-legendary.glb",
+    "vertices": 2600,
+    "triangles": 4904,
+    "bytes": 178444,
+    "materials": 4,
+    "id": "cleric-mace",
+    "tier": "legendary",
+    "name": "Cleric Mace",
+    "slot": "mainHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/wooden-shield-standard.glb",
+    "vertices": 988,
+    "triangles": 1900,
+    "bytes": 74516,
+    "materials": 5,
+    "id": "wooden-shield",
+    "tier": "standard",
+    "name": "Wooden Shield",
+    "slot": "offHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/wooden-shield-legendary.glb",
+    "vertices": 1268,
+    "triangles": 2428,
+    "bytes": 104772,
+    "materials": 6,
+    "id": "wooden-shield",
+    "tier": "legendary",
+    "name": "Wooden Shield",
+    "slot": "offHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/spell-tome-standard.glb",
+    "vertices": 734,
+    "triangles": 1308,
+    "bytes": 66984,
+    "materials": 4,
+    "id": "spell-tome",
+    "tier": "standard",
+    "name": "Spell Tome",
+    "slot": "offHand"
+  },
+  {
+    "file": "assets/equipment/authored/weapons/spell-tome-legendary.glb",
+    "vertices": 1392,
+    "triangles": 2556,
+    "bytes": 121372,
+    "materials": 6,
+    "id": "spell-tome",
+    "tier": "legendary",
+    "name": "Spell Tome",
+    "slot": "offHand"
+  }
+]

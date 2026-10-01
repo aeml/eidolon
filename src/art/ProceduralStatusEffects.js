@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createPersistentAuraMaterial } from './PersistentAuraMaterial.js';
+import { createCrossedGlowGeometry, createSanctuaryMaterial } from './SanctuaryMaterials.js';
 
 const geometryCache = new Map();
 const materialCache = new Map();
@@ -16,7 +17,7 @@ const definition = (family, polarity, motif, artStyle, radius, palette) => Objec
 export const PROCEDURAL_STATUS_EFFECT_DEFINITIONS = Object.freeze({
     invulnerable: definition('protection', 'buff', 'phase-veil', 'silver-blue orbiting shards and a thin protective seal', 1.7,
         { dark: 0x153342, base: 0x579ab3, accent: 0x93ddff, pale: 0xe0f8ff }),
-    well_rested: definition('sanctuary', 'buff', 'lantern-resonance', 'golden sanctuary motes carrying four elemental echoes', 1.55,
+    well_rested: definition('sanctuary', 'buff', 'lantern-resonance', 'soft golden star motes and interlaced sanctuary filigree carrying four elemental echoes', 1.55,
         { dark: 0x51340c, base: 0xc99435, accent: 0xffcf68, pale: 0xffedbd }),
     iron_fortress: definition('fighter', 'buff', 'bastion-cage', 'riveted oathsteel bastion cage', 1.75,
         { dark: 0x17212b, base: 0x617889, accent: 0xa8d8ff, pale: 0xf0f7ff }),
@@ -204,8 +205,10 @@ function addRestingMotes(root, statusKey, materials) {
     // Additive sparks need no per-instance depth sorting or material mutation.
     for (const elemental of [false, true]) {
         const indices = visible.filter(index => (index % 4 === 0) === elemental);
-        const mat = elemental ? material(statusKey, 'element-batch', 0xffffff, { opacity: 0.72 }) : materials.accent;
-        const batch = new THREE.InstancedMesh(shapeGeometry('crystal'), mat, indices.length);
+        const key = `${statusKey}:soft-motes:${elemental ? 'elements' : 'gold'}`;
+        if (!materialCache.has(key)) materialCache.set(key, createSanctuaryMaterial(elemental ? 0xffffff : materials.accent.color,
+            { opacity: elemental ? .72 : .86 }));
+        const batch = new THREE.InstancedMesh(geometry('sanctuary-soft-stars', () => createCrossedGlowGeometry()), materialCache.get(key), indices.length);
         batch.name = `${statusKey}:SanctuaryMotes:${elemental ? 'elements' : 'gold'}`;
         batch.castShadow = false;
         batch.receiveShadow = false;
@@ -261,31 +264,34 @@ function radialMarks(parent, statusKey, count, radius, materials, options = {}) 
 
 function buildStatus(root, statusKey, def, materials) {
     const radius = def.radius;
+    if (statusKey === 'well_rested') {
+        const key = 'well_rested:filigree-seal';
+        if (!materialCache.has(key)) materialCache.set(key, createSanctuaryMaterial(def.palette.accent, { opacity: .86, motif: 'seal' }));
+        const light = materialCache.get(key);
+        ring(root, statusKey, 'OuterSeal', radius, light, { thickness: .22, segments: 64 });
+        ring(root, statusKey, 'InnerSeal', radius * .64, light,
+            { thickness: .22, segments: 48, motion: 'counter-seal', highQualityOnly: true });
+        addRestingMotes(root, statusKey, materials);
+        ring(root, statusKey, 'SanctuaryThread', radius * .82, light, { thickness: .22, segments: 48, y: .165, motion: 'counter-seal' });
+        return;
+    }
     // Personal buff seals are decoration, not area-of-effect boundaries.
     // Broken, quieter arcs leave feet/weapon motion visible under stacked buffs.
-    // Keep debuff indicators and the requested Well Rested aura recognizable.
-    const quiet = def.polarity === 'buff' && statusKey !== 'well_rested';
+    // Keep debuff indicators recognizable.
+    const quiet = def.polarity === 'buff';
     ring(root, statusKey, 'OuterSeal', radius, quiet ? materials.ground : materials.accent, {
-        segments: 28, thickness: statusKey === 'well_rested' ? .018 : quiet ? .028 : .075,
+        segments: 28, thickness: quiet ? .028 : .075,
         arc: quiet ? Math.PI * 1.55 : Math.PI * 2
     });
     ring(root, statusKey, 'InnerSeal', radius * 0.64, quiet ? materials.ground : materials.base, {
         segments: 16,
-        thickness: statusKey === 'well_rested' ? .025 : quiet ? .035 : .12,
+        thickness: quiet ? .035 : .12,
         arc: quiet ? Math.PI * 1.15 : Math.PI * 2,
         motion: 'counter-seal',
         highQualityOnly: true
     });
 
     switch (def.motif) {
-        case 'lantern-resonance': {
-            // A clear silhouette: thin ground light and small rising sparks,
-            // never a body shell, solid enclosure, or interaction mesh.
-            addRestingMotes(root, statusKey, materials);
-            ring(root, statusKey, 'SanctuaryThread', radius * 0.74, materials.accent,
-                { thickness: 0.018, y: 0.165, motion: 'counter-seal' });
-            break;
-        }
         case 'phase-veil':
             orbit(root, statusKey, 'PhaseShard', 'crystal', 6, radius * 0.72, 1.2, materials,
                 { speed: 1.5, scale: [0.38, 0.8, 0.38], optionalEvery: 2 });
