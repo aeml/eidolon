@@ -1649,7 +1649,8 @@ export class Actor extends Entity {
         // and ability clips retain their existing playback.
         // Server and offline basic damage both land at 35% of the interval.
         // Match the visible contact, not the entire clip's arbitrary duration.
-        if (clip?.name === 'Attack' && Number.isFinite(contact) && contact > 0 && contact <= duration) {
+        const reviewedBasic = clip?.name === 'Attack' || this.mesh?.userData.basicAttackContactClipNames?.includes(clip?.name);
+        if (reviewedBasic && Number.isFinite(contact) && contact > 0 && contact <= duration) {
             return contact / (interval * .35);
         }
         return duration / (interval * fallbackDurationFactor);

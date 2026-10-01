@@ -4,6 +4,18 @@
   "deliveredAssetCommit": "a7c7da134c5e2303778cd9f4c7668949f13a4391",
   "scope": ["four class High/Low models", "252 fitted and rigid equipment models", "four weapon motion banks", "class equipment restrictions", "Rogue dual wield cadence and alternating strikes", "explicit offhand inspection action"],
   "sourcePreservation": "Delivered GLBs and Blender sources were not rewritten. The generated runtime catalog verifies all 264 runtime asset hashes against the delivery manifests.",
+  "browserCompatibilityCorrection": {
+    "supersededCandidate": "7d5fdf6de171ce3e2f1dd66a86ec3a013787ac24",
+    "ciRun": 36913592809,
+    "status": "terminal failure; all deployment jobs skipped",
+    "successfulJobs": ["Server Tests (Go)", "Client Tests (Jest)", "Browser Smoke (Playwright 1/3)", "Browser Smoke (Playwright 3/3)"],
+    "failedShard": {"failed": 15, "passed": 98, "minutes": 25.7},
+    "changes": ["lifetime and venue fixtures await actual fitted equipment", "all class fixtures use eligible equipment", "rigid-instance checks explicitly exercise the procedural fallback", "all four authored classes have positive skeleton/render ownership checks", "the full cold Fighter pilot has a bounded 180-second allowance", "world attack checks read the active weapon action, not the inactive fallback", "reviewed weapon-profile and mirrored attacks use unchanged 35-percent damage contact timing"],
+    "focusedClient": {"suites": 3, "passed": 47, "seconds": 4.301},
+    "focusedBrowser": {"firstPass": "13 passed; 2 casino cases exposed the obsolete rigid-instance expectation", "finalCasinoPass": {"passed": 2, "seconds": 26.6}, "coveredPreviouslyFailedCases": 15, "artifactRoots": ["/tmp/eidolon-58-2-corrected-browser-20261001", "/tmp/eidolon-58-2-casino-corrected-20261001"]},
+    "lintAndWhitespace": "passed",
+    "limits": "Native prepared fixtures and focused tests do not establish public deployment, real-player campaign pacing or final visual/performance approval. Documentation was source-reviewed; rendered documentation preview was unavailable."
+  },
   "followup": {
     "preview": "All four class previews load their selected authored quality and redraw after asynchronous equipment fitting. Idle poses use the equipped weapon profile without a background animation loop.",
     "previewAndAssetVersionTests": {"passed": 14, "seconds": 2.103},

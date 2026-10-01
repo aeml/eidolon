@@ -20,16 +20,17 @@ The [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is accepted
 after correcting an outdated keyboard expectation. It provides actual story/cache
 status, optional repeat-run goals, Resonance, Forge and collection guidance.
 Existing rewards and human pacing limits are preserved.
-
-Alpha 1.58.2 is the published asset-integration candidate. It integrates the
-delivered Fighter, Rogue, Cleric and Wizard bodies, fitted equipment and weapon
-motions, following the level-up and Well Rested effects from 1.58.1.
-Class equipment restrictions are server-enforced, and dual-wield Rogues alternate
-weapons at two-thirds of their normal attack interval without duplicate damage.
-[Focused asset checks](2026-10-01-authored-equipment-checks.json) retain native
-rendering and eligibility evidence; terminal CI and independent public acceptance
-remain required. Final art approval, crowd performance and human-playtest gates
-remain open. The next minor milestone is the complete 1.59 moderation workflow.
+The corrected Alpha 1.58.2 candidate integrates the delivered Fighter, Rogue,
+Cleric and Wizard bodies, fitted equipment and weapon motions, following the
+1.58.1 level-up and Well Rested effects. Class equipment restrictions are
+server-enforced; dual-wield Rogues alternate weapons at two-thirds of their
+normal interval without duplicate damage. Reviewed weapon contact remains
+aligned with the existing damage timing. [Focused asset checks](2026-10-01-authored-equipment-checks.json)
+retain the evidence and failed-candidate history. The previous candidate's
+browser failures prevented deployment; corrected-candidate CI and independent
+public acceptance remain required. Final modern-art approval, crowd performance
+and human-playtest gates stay open. The next minor milestone remains the complete
+1.59 moderation workflow; no later milestone is declared shipped.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.
@@ -38,6 +39,17 @@ medians were 44.8–48.1 ms with High rendering and 32.9–33.5 ms with Low rend
 on the test host. Both renderer tiers used High-detail bodies, and host load was
 not captured. These timings leave crowd optimization and true Low actor-LOD
 profiling open; they are not smooth-gameplay, phone or actual-raid acceptance.
+
+The following [opaque fitted-equipment batching preparation](2026-10-01-fitted-equipment-batch-checks.json)
+preserves the GLBs and exact animated surfaces while grouping compatible PBR
+skins. It passed 35 focused checks and two native cases, covering all eight
+class/quality instances and paired crowd rendering. High draw calls fell from
+1324 to 1064, and Low from 728 to 598, without changing triangles. Paired frame
+medians also improved on this heavily loaded host, whose CPU was 97.5–98.8%
+busy; this is not a device-FPS promise. The candidate remains local and opt-in.
+Transparent, textured, custom-shader, differently bound or transformed pieces
+remain separate, and stealth restores original sorting surfaces. Broader
+performance and actual Low actor-LOD profiling remain open.
 
 Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
 Appeal reporting, owner-only case-status lookup and confirmed admin

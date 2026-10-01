@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor instances preserve animated surfaces, shadows and stealth`, async ({ page, baseURL }, testInfo) => {
+for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural fallback instances preserve animated surfaces, shadows and stealth`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: 1100, height: 844 });
@@ -11,6 +11,9 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        const { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } = await import('/src/art/ProceduralHumanoid.js');
+        const constructors = {Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric};
+        const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
         const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
@@ -24,9 +27,11 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped actor inst
         const models = [];
         for (let index = 0; index < 10; index++) {
             const type = ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
-            const mesh = await MeshFactory.createMeshForType(type, { quality });
+            // Rigid instance batching applies to the real procedural fallback,
+            // not imported skins. Authored-class fitting has its own native route.
+            const mesh = constructors[type]({batch: true});
             const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
-                const candidates = BASE_ITEMS.filter(item => item.slot === slot.replace(/[12]$/, ''));
+                const candidates = BASE_ITEMS.filter(item => canEquipItem(type, item, slot));
                 const item = candidates[index % candidates.length];
                 return [slot, { ...item, id: `instance-${index}-${slot}`, baseName: item.name, rarity: 'Rare', level: 75 }];
             }));
