@@ -7,9 +7,13 @@ CI36789477403 attempt1. All ten CI jobs and independent public IPv4 checks
 passed for identities, database readiness and all 22 changed runtime files,
 including login/history and both optimized Fighter assets. See its
 [acceptance record](2026-09-30-release1-54-acceptance.md).
-Alpha1.55 arena quality is the next packaged release candidate, with scoped
+Alpha1.55 arena quality is pushed at480a47b28137783c0f9db623a87ee8e6cd581d5a,
+CI36794385683, with scoped
 checks recorded in its [work record](2026-09-30-release1-55-arena-work.md).
 Its own exact-source CI and public acceptance remain required.
+The next [1.56 season milestone](2026-10-01-release1-56-seasons.md) is locally
+implemented and packaged but unpublished; dates/operator approval and ordered
+release acceptance remain open. No new calendar or manual reset was activated.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
