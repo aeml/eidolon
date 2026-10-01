@@ -20,6 +20,36 @@ beforeEach(() => {
 afterEach(() => { ui.mobileDetails.dispose(); delete window.game; });
 const rightClick = el => el.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
 
+test.each([
+    ['Wizard', 'Plate Mail', 'ARMOR', 'chest', 'Plate', true],
+    ['Wizard', 'Robes', 'ARMOR', 'chest', 'Cloth', false],
+    ['Rogue', 'Leather Tunic', 'ARMOR', 'chest', 'Leather', false],
+    ['Rogue', 'Plate Mail', 'ARMOR', 'chest', 'Plate', true],
+    ['Rogue', 'Wooden Staff', 'WEAPON', 'mainHand', 'Staff', true],
+    ['Rogue', 'Steel Dagger', 'WEAPON', 'mainHand', 'Dagger', false],
+    ['Cleric', 'Cleric Mace', 'WEAPON', 'mainHand', 'Mace', false],
+    ['Fighter', 'Iron Sword', 'WEAPON', 'mainHand', 'Sword', false]
+])('%s sees %s type and class restriction in hover, comparison and inspection', (actorClass, name, type, slot, label, restricted) => {
+    Object.defineProperty(player, 'constructor', { value: { name: actorClass }, configurable: true });
+    const item = { ...player.inventory[0], name, type, slot };
+    player.inventory[0] = item; player.equipment = { [slot]: { ...item, id: 'worn' } };
+    ui.compareMode = true; ui.updateInventory(player); ui.showItemTooltip(item, 0, 0);
+    // Forbidden saved pieces are not active comparison targets. Preserve that
+    // existing safety rule, while eligible comparisons still show their type.
+    for (const root of restricted ? [ui.statTooltipDesc] : [ui.statTooltipDesc, ui.compareTooltipDesc]) {
+        const row = root.querySelector('.item-equipment-type');
+        expect(row.textContent).toContain(`Item type: ${label}`);
+        expect(row.classList.contains('item-equipment-type--restricted')).toBe(restricted);
+    }
+    if (restricted) expect(ui.compareTooltip.style.display).toBe('none');
+    rightClick(ui.inventoryGrid.children[0]);
+    const row = ui.mobileDetails.get('description').querySelector('.item-equipment-type');
+    expect(row.textContent).toContain(`Item type: ${label}`);
+    expect(row.classList.contains('item-equipment-type--restricted')).toBe(restricted);
+    expect(ui.getItemTooltipText(item)).toContain(`Item type: ${label}`);
+    expect(ui.getItemTooltipText(item).includes('cannot equip')).toBe(restricted);
+});
+
 test('right-click inspects without equipping; deliberate equip retains server ownership', () => {
     rightClick(ui.inventoryGrid.children[0]);
     expect(ui.mobileDetails.dialog.open).toBe(true);

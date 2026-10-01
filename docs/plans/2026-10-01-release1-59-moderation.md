@@ -2,7 +2,8 @@
 
 October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
 locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
-accepted live Alpha 1.58.3 graphics; no 1.59 package or milestone completion
+accepted live Alpha 1.58.3 graphics and the pushed Alpha 1.58.4 tooltip candidate;
+1.58.4 exact-source CI/public acceptance is still pending. No 1.59 package or milestone completion
 is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
 
@@ -74,6 +75,15 @@ QA. Its independent public identities, database readiness, 19 runtime hashes
 and 12 critical model hashes are retained in the
 [accepted release receipt](2026-10-01-release1-58-3-public.json).
 No 1.59 feature was included in that deployment.
+
+The subsequent 1.58.4 merge preserves readable equipment-type labels, red
+class-restriction warnings and cumulative notes alongside the unpublished
+moderation preparation. Its pushed source is
+d3086750869f0515f50661e12bde7d6f84e1e204, CI36937032122; a running workflow is
+not release acceptance. No unpublished moderation code is included in that patch.
+After resolving documentation-only overlaps, five focused equipment/inspection,
+report, notice and binding suites passed all 111 checks in 21.635 seconds on the
+busy host. No full campaign or native browser run was repeated for this merge.
 
 Focused Go race checks passed for the handler/protocol package in 2.554 seconds
 and pure database checks in 1.068 seconds. They cover strict parsing, durable role revocation, replaced

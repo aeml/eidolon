@@ -1,6 +1,6 @@
 import { SET_DEFINITIONS, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
-import { isActiveEquipment, canEquipItem, classAllowsEquipment } from '../core/EquipmentSlots.js';
+import { isActiveEquipment, canEquipItem, classAllowsEquipment, getEquipmentTypeLabel } from '../core/EquipmentSlots.js';
 
 // Shared deliberate inspection route: touch on phones, right-click on desktop.
 // Item identity is revalidated at every action;
@@ -117,6 +117,10 @@ export class MobileItemDetails {
         const icon = document.createElement('img');
         icon.src = this.inventory._getItemIconPath(item); icon.alt = ''; icon.className = 'phone-item-icon'; container.append(icon);
         line(`${this.inventory._getItemRarityName(item)} · ${this.inventory._formatEquipmentSlotLabel(item.slot)} · Level ${item.level || 1}`, 'phone-item-meta');
+        const itemType = getEquipmentTypeLabel(item);
+        const restricted = !classAllowsEquipment(this.inventory._getLastPlayer()?.constructor?.name, item);
+        if (itemType) line(`Item type: ${itemType}${restricted ? ' — Your class cannot equip this item.' : ''}`,
+            `item-equipment-type${restricted ? ' item-equipment-type--restricted' : ''}`);
         if (item.description) line(item.description);
         if (item.stack > 1) line(`Stack: ${item.stack} / ${item.maxStack || 1000}`);
         if (item.potency > 0) line(`Potency +${item.potency}`);

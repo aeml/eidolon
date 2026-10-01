@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.58.4",
+  "status": "prepared",
+  "parentCommit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
+  "scope": [
+    "Canonical Cloth, Leather and Plate armor labels; Sword, Dagger, Mace, Staff, Shield and Tome labels.",
+    "Class-ineligible equipment types are red with an explicit warning, using existing class eligibility.",
+    "Hover, eligible equipped comparisons, plain tooltip text and shared desktop/phone inspection; unknown legacy equipment stays generic.",
+    "Aligned release defaults, login label and cumulative patch notes."
+  ],
+  "checks": {
+    "eligibilityAndInspection": "55 class/type/inspection checks passed; the initial fixture incorrectly expected forbidden saved equipment to be an active comparison. Corrected fixtures preserve exclusion of inactive equipment.",
+    "mobileInventory": "12 existing mobile-inventory checks passed in the initial scoped run.",
+    "version": "329 checks passed in 2.355 seconds after completing README and Compose version alignment.",
+    "native": "One native Chrome case covers desktop 1440 and phone-sized 390 layouts, verifies actual red and normal computed colors and inspected renders. Passed in 7.7 seconds after adding the required item ID to the prepared inspection source.",
+    "nativeArtifacts": "/tmp/eidolon-item-types-native-final-20261001",
+    "lint": "Scoped ESLint passed; whitespace checked."
+  },
+  "excluded": [
+    "No equipment eligibility, combat, stats, rewards, currencies or supplied model file changes.",
+    "No unpublished 1.59 moderation code or policy changes."
+  ],
+  "remaining": [
+    "Exact-source CI and independent public release/artifact acceptance.",
+    "Full 1.59 moderation and subsequent roadmap milestones; owner art, physical-phone and pacing gates remain separate."
+  ]
+}

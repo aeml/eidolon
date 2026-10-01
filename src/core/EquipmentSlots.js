@@ -24,6 +24,21 @@ const armorFamilies = {
 };
 const armorSlots = new Set(['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt']);
 const hasBase = (item, base) => (item?.equipmentBaseName || item?.baseName || item?.name || '').includes(base);
+// Use the same canonical families as class eligibility, including decorated
+// names and explicit base names. Never guess a material for unknown legacy gear.
+export function getEquipmentTypeLabel(item) {
+    if (!isEquippableItem(item)) return '';
+    if (armorSlots.has(item.slot)) {
+        for (const [family, bases] of Object.entries(armorFamilies)) {
+            if (bases.some(base => hasBase(item, base))) return family[0].toUpperCase() + family.slice(1);
+        }
+    }
+    for (const [base, label] of [['Iron Sword', 'Sword'], ['Steel Dagger', 'Dagger'],
+        ['Cleric Mace', 'Mace'], ['Wooden Staff', 'Staff'], ['Wooden Shield', 'Shield'], ['Spell Tome', 'Tome']]) {
+        if (hasBase(item, base)) return label;
+    }
+    return ({ WEAPON: 'Weapon', ARMOR: 'Armor', GLOVES: 'Armor', ACCESSORY: 'Accessory', NECK: 'Accessory' })[item.type] || 'Equipment';
+}
 export function classAllowsEquipment(actorClass, item, slot = item?.slot) {
     if (!item || !['Fighter', 'Cleric', 'Wizard', 'Rogue'].includes(actorClass)) return true;
     if (actorClass === 'Rogue' && slot === 'offHand' && item.type !== 'WEAPON') return false;

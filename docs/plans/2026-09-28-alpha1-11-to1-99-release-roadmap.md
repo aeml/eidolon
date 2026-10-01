@@ -38,8 +38,12 @@ and human-playtest gates stay open. The next minor milestone remains the complet
 [accepted 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
 packages the rendering and body-detail settings work below without including
 unpublished moderation code. Version defaults and cumulative notes are aligned;
-its own complete CI and independent public checks passed. It is live, not a
-replacement for the complete 1.59 milestone.
+its complete CI and independent public checks passed. It is live, not a
+replacement for the complete 1.59 milestone. The separate
+[prepared 1.58.4 equipment-type patch](2026-10-01-release1-58-4-item-types.json)
+adds readable armor/weapon types and red class-restriction warnings across
+inspection routes. It changes no gameplay or GLBs and requires its own exact-source
+CI/public acceptance. No unpublished moderation code is included.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.
@@ -59,9 +63,8 @@ busy; this is not a device-FPS promise. A subsequent default-on integration
 passed 38 focused checks and two native cases in 43.7 seconds, including actual
 Rogue stealth restoration, equipped previews and Fighter pose/seating lifecycle.
 Its all-eight-class and Rogue-preview renders were inspected. The default is
-included in accepted live 1.58.3 after its CI/public acceptance passed.
-Explicit false retains the original path
-for comparisons.
+included in accepted live 1.58.3 after CI/public acceptance passed.
+Explicit false retains the original path for comparisons.
 Transparent, textured, custom-shader, differently bound or transformed pieces
 remain separate, and stealth restores original sorting surfaces. Broader
 performance remains open. A subsequent [actual Low actor-detail check](2026-10-01-authored-low-crowd-checks.json)

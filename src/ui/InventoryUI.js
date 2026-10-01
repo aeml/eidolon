@@ -5,7 +5,7 @@ import { PhoneStashUI } from './PhoneStashUI.js';
 import { StashBrowserUI } from './StashBrowserUI.js';
 import { EquipmentLoadoutUI } from './EquipmentLoadoutUI.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
-import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot, canEquipItem } from '../core/EquipmentSlots.js';
+import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot, canEquipItem, getEquipmentTypeLabel, classAllowsEquipment } from '../core/EquipmentSlots.js';
 
 /**
  * InventoryUI — handles inventory grid, equipment slots, shop/gamble,
@@ -1228,12 +1228,23 @@ export class InventoryUI {
 
     getItemTooltipText(item) {
         let text = `${item.name}\n${item.rarity.name} ${item.type}\nLevel ${item.level}\n\n`;
+        const itemType = getEquipmentTypeLabel(item);
+        const actorClass = this._getLastPlayer()?.constructor?.name;
+        if (itemType) text += `Item type: ${itemType}${classAllowsEquipment(actorClass, item) ? '' : ' — Your class cannot equip this item.'}\n`;
         if (item.stats) {
             for (const stat of this.getOrderedItemStatKeys(item.stats)) {
                 text += `+${item.stats[stat]} ${this._formatStatName(stat)}\n`;
             }
         }
         return text;
+    }
+
+    _equipmentTypeTooltip(item, player) {
+        const label = getEquipmentTypeLabel(item);
+        if (!label) return '';
+        const restricted = !classAllowsEquipment(player?.constructor?.name, item);
+        // Labels are fixed canonical values, never item-supplied HTML.
+        return `<div class="item-equipment-type${restricted ? ' item-equipment-type--restricted' : ''}">Item type: ${label}${restricted ? ' — Your class cannot equip this item.' : ''}</div>`;
     }
 
     formatSetBonus(bonus) {
@@ -1294,6 +1305,7 @@ export class InventoryUI {
         }
 
         let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
+        desc += this._equipmentTypeTooltip(item, player);
         if (isGemItem) desc += this._getGemTooltipHeader(item);
 
         if (item.stack > 1) {
@@ -1452,6 +1464,7 @@ export class InventoryUI {
                 this.compareTooltipTitle.style.color = compareGemQuality?.color || equippedItem.rarity.color;
 
                 let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
+                compDesc += this._equipmentTypeTooltip(equippedItem, player);
                 if (this._isGemItem(equippedItem)) compDesc += this._getGemTooltipHeader(equippedItem);
 
                 if (equippedItem.stats) {

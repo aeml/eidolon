@@ -1,6 +1,43 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('equipment types and forbidden-class red styling render on desktop and phone inspection', async ({ page }, testInfo) => {
+    await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async () => {
+            const { InventoryUI } = await import('/src/ui/InventoryUI.js');
+            document.body.classList.toggle('mobile-mode', innerWidth < 600);
+            document.getElementById('start-screen').style.display = 'none';
+            class Wizard {}
+            const player = Object.assign(new Wizard(), { level: 100, gold: 0, inventory: [], equipment: {} });
+            const item = { id: 'type-review', name: 'Rare Plate Mail', type: 'ARMOR', slot: 'chest', level: 1,
+                rarity: { name: 'Rare', color: '#55aaff' }, stats: { defense: 5 } };
+            player.inventory = [item];
+            const inventory = new InventoryUI({ isMobile: innerWidth < 600, getLastPlayer: () => player,
+                getItemIconPath: () => '', formatStatName: key => key, getRarityColor: () => '#fff', updateCharacterSheet() {} });
+            inventory.updateInventory(player);
+            inventory.mobileDetails.open({ type: 'inventory', index: 0, itemId: item.id });
+            window.__typeReview = { inventory, player };
+        });
+        const row = page.locator('#phone-item-description .item-equipment-type');
+        await expect(row).toContainText('Item type: Plate');
+        await expect(row).toContainText('Your class cannot equip');
+        await expect(row).toHaveCSS('color', 'rgb(255, 107, 107)');
+        await page.screenshot({ path: testInfo.outputPath(`equipment-type-${width}.png`) });
+        await page.evaluate(() => {
+            const { inventory, player } = window.__typeReview;
+            player.inventory[0] = { ...player.inventory[0], name: 'Rare Robes' };
+            inventory.mobileDetails.open({ type: 'inventory', index: 0, itemId: player.inventory[0].id });
+        });
+        await expect(row).toContainText('Item type: Cloth');
+        await expect(row).not.toContainText('cannot equip');
+        await expect(row).toHaveCSS('color', 'rgb(215, 223, 235)');
+        await page.evaluate(() => window.__typeReview.inventory.dispose());
+    }
+});
+
 for (const [width, height] of [[1440, 900], [1024, 600]]) {
     test(`desktop ${width}: item inspection compares and scrolls without accidental equip`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
