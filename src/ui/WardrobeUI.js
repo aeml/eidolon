@@ -2,11 +2,17 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { EQUIPMENT_SLOT_KEYS, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 export class WardrobeUI {
-    dispose() { disposeOwnedEvents(this); this.root.remove(); }
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true; this.ready = false;
+        disposeOwnedEvents(this); this.root.remove();
+    }
 
     constructor({ host, getPlayer, send }) {
         this.getPlayer = getPlayer;
         this.send = send;
+        this.disposed = false;
+        this.ready = false;
         this.collection = {};
         this.root = document.createElement('details');
         this.root.className = 'equipment-loadouts wardrobe-panel';
@@ -30,30 +36,41 @@ export class WardrobeUI {
             this.slot.append(option);
         }
         ownedEvent(this, this.root, 'toggle', () => {
-            if (!this.root.open) return;
+            if (this.disposed || !this.root.open) return;
             this.refreshPlayer();
-            this.apply.disabled = true;
+            if (!this.playerID) return;
+            this.setReady(false);
             this.status.textContent = 'Loading your wardrobe…';
             this.send('get_wardrobe', {});
         });
-        ownedEvent(this, this.slot, 'change', () => this.renderLooks());
+        ownedEvent(this, this.slot, 'change', () => { if (this.canAct()) this.renderLooks(); });
         ownedEvent(this, this.learn, 'click', () => {
+            if (!this.canAct()) return;
+            this.setReady(false);
             this.status.textContent = 'Learning owned looks and checking settled season rewards…';
             this.send('collect_appearances', {});
         });
         ownedEvent(this, this.apply, 'click', () => {
+            if (!this.canAct() || this.apply.disabled) return;
+            this.setReady(false);
             this.status.textContent = 'Applying appearance…';
             this.send('select_appearance', { slot: this.slot.value, key: this.look.value });
         });
-        this.renderLooks();
+        this.refreshPlayer();
+        this.setReady(false);
     }
 
+    canAct() { return !this.disposed && this.root.open && this.ready && Boolean(this.playerID) && this.getPlayer()?.id === this.playerID; }
+
+    setReady(ready) { this.ready = ready; this.apply.disabled = !ready; this.learn.disabled = !ready; }
+
     refreshPlayer() {
+        if (this.disposed) return;
         const player = this.getPlayer();
-        if (player === this.player) return;
-        this.player = player;
+        if (player?.id === this.playerID) return;
+        this.playerID = player?.id;
         this.collection = {};
-        this.apply.disabled = true;
+        this.setReady(false);
         this.root.querySelector('summary').textContent = 'Wardrobe';
         this.renderLooks();
     }
@@ -78,12 +95,18 @@ export class WardrobeUI {
     }
 
     handleResult(result) {
+        if (this.disposed) return false;
         this.refreshPlayer();
-        this.collection = result?.collection || {};
+        if (!this.playerID || result?.playerID !== this.playerID || typeof result.success !== 'boolean' ||
+            !Object.hasOwn(result, 'collection') || (result.collection !== null && typeof result.collection !== 'object') ||
+            Array.isArray(result.collection)) return false;
+        // An untouched character's nil Go map is legitimately encoded as null.
+        this.collection = result.collection || {};
         const count = Object.keys(this.collection).length;
         this.root.querySelector('summary').textContent = `Wardrobe · ${count} ${count === 1 ? 'look' : 'looks'}`;
-        this.apply.disabled = false;
+        this.setReady(true);
         this.renderLooks();
         this.status.textContent = result?.message || 'Wardrobe ready.';
+        return true;
     }
 }

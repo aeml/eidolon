@@ -32,21 +32,98 @@ test('multiplayer packets carry looks separately and an empty map resets them', 
 
 test('wardrobe offers owned compatible looks, requests server changes, and clears on character switch', () => {
     document.body.innerHTML = '<div id="host"></div>';
-    let player = { equipment: { head: gear }, appearances: {} };
+    let player = { id: 'first', equipment: { head: gear }, appearances: {} };
     const send = jest.fn();
     const ui = new WardrobeUI({ host: document.getElementById('host'), getPlayer: () => player, send });
-    ui.handleResult({ collection: { 'Silk Hood|Rare': look, 'Robes|Rare': { baseName: 'Robes', rarity: 'Rare', slot: 'chest' } } });
+    ui.root.open = true;
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look, 'Robes|Rare': { baseName: 'Robes', rarity: 'Rare', slot: 'chest' } } });
     expect(ui.root.textContent).toContain('settled arena seasons');
     expect([...ui.look.options].map(o => o.value)).toEqual(['', 'Silk Hood|Rare']);
     ui.look.value = 'Silk Hood|Rare';
     ui.apply.click();
     expect(send).toHaveBeenCalledWith('select_appearance', { slot: 'head', key: 'Silk Hood|Rare' });
     expect(player.appearances).toEqual({});
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look } });
     ui.learn.click();
     expect(send).toHaveBeenCalledWith('collect_appearances', {});
     expect(ui.status.textContent).toContain('checking settled season rewards');
-    player = { equipment: {}, appearances: {} };
+    player = { id: 'second', equipment: {}, appearances: {} };
     ui.refreshPlayer();
     expect(ui.look.options).toHaveLength(1);
     expect(ui.apply.disabled).toBe(true);
+    ui.dispose();
+});
+
+function wardrobeFixture() {
+    document.body.innerHTML = '<div id="host"></div>';
+    let player = { id: 'first', equipment: { head: gear }, appearances: {} };
+    const send = jest.fn();
+    const ui = new WardrobeUI({ host: document.getElementById('host'), getPlayer: () => player, send });
+    ui.root.open = true;
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look } });
+    return { ui, send, switchPlayer: next => { player = next; } };
+}
+
+test('wardrobe ignores missing, foreign and malformed private replies without enabling controls', () => {
+    const { ui, send, switchPlayer } = wardrobeFixture();
+    switchPlayer({ id: 'second', equipment: { head: gear }, appearances: {} });
+    ui.refreshPlayer();
+    for (const reply of [
+        { success: true, collection: { 'Silk Hood|Rare': look } },
+        { playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look } },
+        { playerID: 'second', success: true, collection: [] }
+    ]) {
+        expect(ui.handleResult(reply)).toBe(false);
+        expect(ui.look.options).toHaveLength(1);
+        expect(ui.apply.disabled).toBe(true);
+    }
+    send.mockClear(); ui.apply.click(); ui.learn.click();
+    expect(send).not.toHaveBeenCalled();
+    ui.dispose();
+});
+
+test('switching characters retires the selected look before the periodic refresh', () => {
+    const { ui, send, switchPlayer } = wardrobeFixture();
+    ui.look.value = 'Silk Hood|Rare';
+    switchPlayer({ id: 'second', equipment: { head: gear }, appearances: {} });
+    ui.apply.click(); ui.learn.click();
+    expect(send).not.toHaveBeenCalled();
+    ui.dispose();
+});
+
+test('wardrobe actions wait for the current owner reply and Original gear sends an explicit reset', () => {
+    const { ui, send } = wardrobeFixture();
+    ui.look.value = 'Silk Hood|Rare';
+    ui.apply.click(); ui.apply.click(); ui.learn.click();
+    expect(send.mock.calls).toEqual([['select_appearance', { slot: 'head', key: 'Silk Hood|Rare' }]]);
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look } });
+    ui.look.value = ''; ui.apply.click();
+    expect(send).toHaveBeenLastCalledWith('select_appearance', { slot: 'head', key: '' });
+    ui.dispose();
+});
+
+test('an untouched character can learn looks from the server null collection and a refreshed actor reference', () => {
+    const { ui, send, switchPlayer } = wardrobeFixture();
+    switchPlayer({ id: 'first', equipment: { head: gear }, appearances: {} });
+    ui.refreshPlayer();
+    expect(ui.look.options).toHaveLength(2);
+    expect(ui.handleResult({ playerID: 'first', success: true, collection: null })).toBe(true);
+    expect(ui.look.options).toHaveLength(1);
+    expect(ui.learn.disabled).toBe(false);
+    ui.learn.click();
+    expect(send).toHaveBeenCalledWith('collect_appearances', {});
+    ui.dispose();
+});
+
+test('collapsed and disposed wardrobe controls cannot send or accept retired results', () => {
+    const { ui, send } = wardrobeFixture();
+    ui.root.open = false;
+    ui.apply.click(); ui.learn.click();
+    expect(send).not.toHaveBeenCalled();
+    ui.dispose(); ui.dispose();
+    const prior = ui.root.textContent;
+    expect(ui.handleResult({ playerID: 'first', success: true, message: 'Stale update', collection: {} })).toBe(false);
+    ui.refreshPlayer();
+    expect(ui.root.textContent).toBe(prior);
+    expect(ui.root.isConnected).toBe(false);
 });
