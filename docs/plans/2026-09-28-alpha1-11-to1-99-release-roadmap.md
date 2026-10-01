@@ -12,8 +12,10 @@ CI36794385683, with scoped
 checks recorded in its [work record](2026-09-30-release1-55-arena-work.md).
 Its own exact-source CI and public acceptance remain required.
 The next [1.56 season milestone](2026-10-01-release1-56-seasons.md) is locally
-implemented and packaged but unpublished; dates/operator approval and ordered
-release acceptance remain open. No new calendar or manual reset was activated.
+implemented and packaged but unpublished; ordered release acceptance remains
+open. Dates/operator agreement remains a gate for organizing a new competition,
+not a claim made by publishing the existing rules and earned looks. No new
+calendar or manual reset was activated.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
