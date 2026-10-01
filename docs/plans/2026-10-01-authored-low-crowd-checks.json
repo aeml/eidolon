@@ -26,7 +26,8 @@
   "qualitySettingsFollowup": {
     "preparedChange": "Graphics settings now return reloadRequired when a loaded authored body differs from the requested actor detail. The existing optional prompt runs only after saving; actors are not replaced during combat. Medium retains High on desktop, mobile retains Low, procedural actors do not request a body reload, and an existing renderer reload requirement is preserved.",
     "checks": "38 checks across UIBindings, EntityMeshLifetime and PhoneSettingsUI passed in 1.285 seconds; six new binding regressions; scoped lint and whitespace passed.",
-    "limit": "No native end-to-end settings reload or physical-phone session verified; this is prepared local code, not production acceptance."
+    "nativeFollowup": "Actual settings/UI binding, renderer and supplied Fighter models passed decline, Medium-without-prompt and accepted browser reload to saved Low in 12.0 seconds. Artifact: /tmp/eidolon-1-58-3-settings-reload-20261001.",
+    "limit": "Anonymous prepared presentation, not production acceptance, a physical-phone session or live replacement of an actor during combat."
   },
   "limits": [
     "Only a local prepared rendering fixture; no production accounts, server combat, campaign or physical phone exercised.",

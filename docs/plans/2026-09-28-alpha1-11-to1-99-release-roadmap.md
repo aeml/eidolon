@@ -68,8 +68,12 @@ Busy Low-render medians were 23.8–25.6 ms on a heavily loaded host, not a pair
 speed comparison or phone-performance acceptance. The prepared settings binding
 now requests the existing optional reload for mismatched loaded actor detail,
 rather than silently retaining High bodies under Low; six regression cases
-passed within 38 scoped settings/lifetime checks. Comparable-device profiling,
-native settings-reload acceptance and physical-phone feedback remain open.
+passed within 38 scoped settings/lifetime checks. A subsequent 12-second native
+check exercised the real settings, renderer and Fighter loading: declining
+preserves the current body, Medium avoids an unnecessary prompt, and accepting
+reload loads the saved Low body. It uses anonymous prepared presentation, not
+network combat or a phone. Comparable-device profiling and physical-phone
+feedback remain open.
 
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
