@@ -197,4 +197,31 @@ describe('report save confirmation and privacy', () => {
         expect(ui.onReportSubmit).toHaveBeenCalledTimes(2);
         expect(jest.getTimerCount()).toBe(1);
     });
+
+    test('retained callbacks and repeated disposal cannot alter the replacement session', () => {
+        const ui = setup(); const old = ui.report;
+        ui.report = new ReportUI(ui);
+        ui.reportText.value = 'Current session private draft';
+        ui.report.setStatus('Current session status');
+        expect(old.startPlayerReport('Ayla', 'old selection')).toBe(false);
+        old.submit(); old.refreshContext(); old.dispose();
+        expect(ui.onReportSubmit).not.toHaveBeenCalled();
+        expect(ui.reportText.value).toBe('Current session private draft');
+        expect(ui.reportType.value).toBe('Bug Report');
+        expect(ui.report.status.textContent).toBe('Current session status');
+        ui.report.submit();
+        old.dispose();
+        expect(ui.btnSubmitReport.disabled).toBe(true);
+        expect(ui.reportText.readOnly).toBe(true);
+        expect(jest.getTimerCount()).toBe(1);
+    });
+
+    test('retirement during submission cannot install an old-session timeout', () => {
+        const ui = setup(); const old = ui.report;
+        ui.onReportSubmit.mockImplementation(() => { ui.report = new ReportUI(ui); return true; });
+        old.submit();
+        expect(jest.getTimerCount()).toBe(0);
+        expect(ui.reportText.value).toBe('');
+        expect(ui.btnSubmitReport.disabled).toBe(false);
+    });
 });

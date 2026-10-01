@@ -76,3 +76,26 @@ test('a synchronous test response cannot leave a timeout that overwrites confirm
     lookup.remember(reference); lookup.button.click(); jest.advanceTimersByTime(11000);
     expect(lookup.status.textContent).toContain('Awaiting operator review');
 });
+
+test('retired lookup cannot erase or remember references in its replacement', () => {
+    const old = lookup;
+    old.dispose(); lookup = new ReportLookupUI(ui);
+    lookup.remember(reference); lookup.button.click();
+    old.remember('abcdef0123456789abcdef01'); old.dispose();
+    expect(lookup.reference.value).toBe(reference);
+    expect(lookup.reference.readOnly).toBe(true);
+    expect(lookup.button.disabled).toBe(true);
+    expect(lookup.status.textContent).toBe('Checking your report…');
+    expect(jest.getTimerCount()).toBe(1);
+});
+
+test('failed send after retirement cannot overwrite the replacement status', () => {
+    const old = lookup;
+    ui.onReportLookup.mockImplementation(() => {
+        old.dispose(); lookup = new ReportLookupUI(ui);
+        lookup.status.textContent = 'Current session status'; return false;
+    });
+    old.remember(reference); old.lookup();
+    expect(lookup.status.textContent).toBe('Current session status');
+    expect(jest.getTimerCount()).toBe(0);
+});

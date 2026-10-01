@@ -19,7 +19,7 @@ export class ReportLookupUI {
         ownedEvent(this, this.button, 'click', () => this.lookup());
     }
 
-    remember(reference) { if (this.reference && validReference(reference) && !this.pending) this.reference.value = reference; }
+    remember(reference) { if (!this.disposed && this.reference && validReference(reference) && !this.pending) this.reference.value = reference; }
     setPending(value) { this.button.disabled = value; this.reference.readOnly = value; this.button.textContent = value ? 'Checking…' : 'Check status'; }
     lookup() {
         if (this.disposed || this.pending || !this.reference || !this.reference.isConnected) return;
@@ -31,6 +31,7 @@ export class ReportLookupUI {
         try {
             if (this.ui.onReportLookup?.(this.pending.reportId, this.pending.requestId) !== true) throw new Error('offline');
         } catch {
+            if (this.disposed || this.pending !== pending) return;
             this.pending = null; this.setPending(false); this.status.textContent = 'Not connected. Reconnect before checking your report.'; return;
         }
         if (this.disposed || this.pending !== pending) return;
@@ -55,6 +56,7 @@ export class ReportLookupUI {
     }
 
     dispose() {
+        if (this.disposed) return;
         this.disposed = true; disposeOwnedEvents(this); clearTimeout(this.timer); this.pending = null;
         if (this.button && this.reference && this.status) { this.setPending(false); this.reference.value = ''; this.status.textContent = ''; }
     }

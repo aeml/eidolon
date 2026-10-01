@@ -1,8 +1,8 @@
 # Alpha 1.59 moderation preparation
 
 October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
-locally but unpublished. The worktree still carries the preceding Alpha 1.58
-version; no 1.59 package or milestone completion is claimed. The full milestone
+locally but unpublished. The worktree includes the Alpha 1.58.2 asset-integration
+candidate; no 1.59 package or milestone completion is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
 
 ## Player and staff workflow
@@ -128,6 +128,19 @@ These are prepared presentation routes, not production reports or sanction
 acceptance. Existing Go evidence covers the unchanged block/ignore authority.
 
 ## Remaining milestone scope
+
+After merging the current asset candidate, focused lifecycle checks reproduced
+three report-form failures: retained callbacks could append to a replacement
+session's draft, repeated disposal could clear its reference or unlock a pending
+form, and retirement during send could install an old timeout. Retired form and
+lookup callbacks now stop before accessing shared controls; disposal is
+idempotent. These changes do not submit reports automatically or change staff
+authority, policy, retention or collection. The targeted regression checks
+cover replacement while pending and transport failure after replacement.
+Three focused suites passed 49 checks in 2.314 seconds, including four new
+lifecycle regressions. Scoped lint and whitespace checks passed. This is local
+prepared code, not a deployed moderation milestone; source documentation was
+reviewed, but no rendered documentation preview was available.
 
 The category slice passed 31 client checks in 2.434 seconds, focused handler
 race checks in 2.451 seconds and pure database checks in 1.058 seconds. The

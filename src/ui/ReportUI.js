@@ -92,21 +92,22 @@ export class ReportUI {
         this.setStatus('Reports go to the game operator. Do not include passwords or payment details.');
     }
 
-    setStatus(message) { this.status.textContent = message; }
+    setStatus(message) { if (!this.disposed) this.status.textContent = message; }
     updateGuidance() {
-        if (!this.guidance) return;
+        if (this.disposed || !this.guidance) return;
         this.guidance.textContent = this.type.value === 'Moderation Appeal'
             ? 'Include the moderation notice or report reference, why you think the decision was wrong, and relevant facts. An appeal requests review; it does not automatically cancel a sanction. Do not include passwords or payment details.'
             : this.type.value === 'Player Report'
                 ? 'Include the player name, approximate time and whether the issue is chat, a name or other conduct. Review any selected message before submitting; it is client-reported, not verified evidence. You can block contact or ignore chat in Player safety. Reports do not automatically punish anyone.'
             : 'Describe what happened and what you expected. Reports go to the game operator; do not include passwords or payment details.';
     }
-    updateCount() { this.count.textContent = `${[...this.text.value].length} / ${MAX_TEXT} characters`; }
+    updateCount() { if (!this.disposed) this.count.textContent = `${[...this.text.value].length} / ${MAX_TEXT} characters`; }
 
-    focusOnOpen() { this.opener = document.activeElement; this.text.focus(); }
-    restoreFocus() { if (this.opener?.isConnected) this.opener.focus(); }
+    focusOnOpen() { if (!this.disposed) { this.opener = document.activeElement; this.text.focus(); } }
+    restoreFocus() { if (!this.disposed && this.opener?.isConnected) this.opener.focus(); }
 
     startPlayerReport(username, context = '') {
+        if (this.disposed) return false;
         if (this.pending) {
             this.setStatus('Your report is still saving. Wait for confirmation before adding another player.');
             return false;
@@ -124,7 +125,7 @@ export class ReportUI {
     }
 
     refreshContext() {
-        if (this.pending) return;
+        if (this.disposed || this.pending) return;
         this.context = formatReportContext(this.ui.getReportContext?.(this.optIn.checked));
         this.preview.textContent = this.context || 'Build and area unavailable.';
     }
@@ -138,7 +139,7 @@ export class ReportUI {
     }
 
     submit() {
-        if (this.pending) return;
+        if (this.disposed || this.pending) return;
         const text = this.text.value.trim();
         if (!text || [...text].length > MAX_TEXT || !REPORT_TYPES.has(this.type.value)) {
             this.setStatus(`Choose a report type and enter 1–${MAX_TEXT} characters.`);
@@ -157,11 +158,13 @@ export class ReportUI {
                 throw new Error('offline');
             }
         } catch {
+            if (this.disposed || this.pending !== pending) return;
             this.pending = null;
             this.setPending(false);
             this.setStatus('Not connected. Your draft is still here; reconnect before submitting.');
             return;
         }
+        if (this.disposed || this.pending !== pending) return;
         this.timer = setTimeout(() => {
             if (this.pending !== pending) return;
             this.pending = null;
@@ -171,7 +174,7 @@ export class ReportUI {
     }
 
     handleResult(result) {
-        if (!this.pending || result?.requestId !== this.pending.requestId) return;
+        if (this.disposed || !this.pending || result?.requestId !== this.pending.requestId) return;
         const submitted = this.pending;
         clearTimeout(this.timer);
         this.pending = null;
@@ -188,6 +191,8 @@ export class ReportUI {
     }
 
     dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
         this.lookup?.dispose();
         disposeOwnedEvents(this);
         clearTimeout(this.timer);
