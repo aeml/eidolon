@@ -93,6 +93,47 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if !foundReport {
 		t.Fatal("admin did not receive submitted report JSON", reports)
 	}
+	lookupStatus := func(conn *websocket.Conn, requestID string) *database.ReportStatusView {
+		t.Helper()
+		resourceSend(t, conn, MsgReportStatus, map[string]string{"requestId": requestID, "reportId": saved.ReportID})
+		var result struct {
+			Success bool                       `json:"success"`
+			Report  *database.ReportStatusView `json:"report"`
+		}
+		resourceReadMessage(t, conn, MsgReportStatus+"_result", &result)
+		if !result.Success {
+			return nil
+		}
+		return result.Report
+	}
+	if view := lookupStatus(b, "report-status-000001"); view == nil || view.Status != "open" {
+		t.Fatal("report owner could not check saved case", view)
+	}
+	if view := lookupStatus(a, "report-status-000002"); view != nil {
+		t.Fatal("owner lookup exposed another account's case")
+	}
+	reviewRequest := database.ReportReviewRequest{ID: "review-socket-000001", ReportID: saved.ReportID,
+		ExpectedStatus: "open", Status: "resolved", Reason: "Private staff review reason", Confirmed: true}
+	resourceSend(t, b, MsgAdminReportReview, reviewRequest)
+	var reviewResult adminMutationResult
+	resourceReadMessage(t, b, MsgAdminReportReview+"_result", &reviewResult)
+	if reviewResult.Success || reviewResult.Authorized {
+		t.Fatal("ordinary account resolved a case", reviewResult)
+	}
+	resourceSend(t, a, MsgAdminReportReview, reviewRequest)
+	resourceReadMessage(t, a, MsgAdminReportReview+"_result", &reviewResult)
+	if !reviewResult.Success || !reviewResult.Authorized || !reviewResult.Final {
+		t.Fatal("confirmed staff resolution failed", reviewResult)
+	}
+	if view := lookupStatus(b, "report-status-000003"); view == nil || view.Status != "resolved" || view.ResolvedAt == nil {
+		t.Fatal("owner did not see completed review", view)
+	}
+	// The same confirmed request is replayable without a second case revision.
+	resourceSend(t, a, MsgAdminReportReview, reviewRequest)
+	resourceReadMessage(t, a, MsgAdminReportReview+"_result", &reviewResult)
+	if !reviewResult.Success {
+		t.Fatal("exact retry failed", reviewResult)
+	}
 	resourceCloseAndWait(t, repo, b, member)
 	resumed, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
 	if err != nil {
@@ -114,11 +155,28 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if strings.Contains(string(encoded), "Private collision report") {
 		t.Fatal("private report text copied into activity history")
 	}
+	if strings.Contains(string(encoded), "Private staff review reason") {
+		t.Fatal("private staff note copied into history")
+	}
 	resourceCloseAndWait(t, repo, a, operator)
 	stop()
 	// Startup replays any last disconnect still queued when the server stopped.
 	_, stopRestart := compatStartServer(t, binary, uri, 202, "-save-journal-dir", journal)
 	defer stopRestart()
+	cases, err := repo.ReadReportPage(database.ReportQuery{Status: "resolved"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	durableReview := false
+	for _, report := range cases.Reports {
+		if report.ID.Hex() == saved.ReportID && report.ReviewRevision == 1 && len(report.ReviewReceipts) == 1 &&
+			report.LastReview != nil && report.LastReview.Actor == operator && report.LastReview.Reason == reviewRequest.Reason {
+			durableReview = true
+		}
+	}
+	if !durableReview {
+		t.Fatal("resolved case or single private receipt did not survive restart")
+	}
 	page, err := repo.ReadAdminActivity(database.AdminActivityQuery{Actor: member})
 	if err != nil {
 		t.Fatal(err)
@@ -135,5 +193,5 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if counts["login"] != 1 || counts["resume"] != 1 || counts["disconnect"] != 2 || counts[MsgAdminStatus] != 1 || counts[MsgAdminPlayers] != 1 || counts[MsgAdminReports] != 1 {
 		t.Fatal("wrong saved session history", counts)
 	}
-	t.Log("two actual accounts: submitted report/admin JSON/denied member, administrator reads, login, token resume, disconnects and restart-persisted history passed")
+	t.Log("two actual accounts: report/admin JSON, denied resolution, owner-only status, confirmed resolution/replay/private receipt, login/resume/disconnect and restart-persisted case/history passed")
 }

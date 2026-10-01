@@ -151,6 +151,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgRespawn:          policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgRecall:           policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	MsgReport:           policy(accessCharacter, 16<<10, 2, time.Minute),
+	MsgReportStatus:     policy(accessAuthenticated, 512, 5, 10*time.Second),
 	MsgRequestQuests:    policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgAcceptQuest:      policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgCompleteQuest:    policy(accessCharacter, 2<<10, 10, 10*time.Second),

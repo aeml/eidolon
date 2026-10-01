@@ -2,14 +2,18 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/url"
 	"os"
 	"reflect"
+	"strings"
 	"sync"
 	"testing"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Never use the ordinary MONGO_URI here: this exercise changes only cases in
@@ -136,5 +140,19 @@ func TestReportReviewMongoResolveReplayReopenAndConcurrentReview(t *testing.T) {
 	}
 	if err != nil || !found {
 		t.Fatal(page, err)
+	}
+	ownerView, err := db.OwnReportStatus("disposable-reporter", report.ID.Hex())
+	if err != nil || ownerView.ID != report.ID || ownerView.Status != "open" || ownerView.ReportType != "Moderation Appeal" {
+		t.Fatal("owner status view missing", ownerView, err)
+	}
+	encoded, err := json.Marshal(ownerView)
+	if err != nil || strings.Contains(string(encoded), "review") || strings.Contains(string(encoded), "reason") ||
+		strings.Contains(string(encoded), "disposable-reporter") || strings.Contains(string(encoded), "Please review") {
+		t.Fatal("staff or report data leaked in owner view", string(encoded), err)
+	}
+	_, wrongOwner := db.OwnReportStatus("other-account", report.ID.Hex())
+	_, absent := db.OwnReportStatus("disposable-reporter", primitive.NewObjectID().Hex())
+	if !errors.Is(wrongOwner, mongo.ErrNoDocuments) || !errors.Is(absent, mongo.ErrNoDocuments) {
+		t.Fatal("ownership query differs from missing case", wrongOwner, absent)
 	}
 }

@@ -88,6 +88,31 @@ describe('report save confirmation and privacy', () => {
         expect(ui.report.status.textContent).toContain('Report saved');
     });
 
+    test('actual engine message route sends owner-status replies only to the owned lookup', () => {
+        const ui = setup();
+        ui.report.lookup.handleResult = jest.fn();
+        const payload = {requestId: 'lookup-request-000001', success: false};
+        GameEngine.prototype.handleServerMessage.call({player: {id: 'reporter'}, uiManager: ui},
+            {type: 'report_status_result', payload});
+        expect(ui.report.lookup.handleResult).toHaveBeenCalledWith(payload);
+        expect(ui.reportText.value).toBe('A detailed bug report');
+    });
+
+    test('keyboard focus skips collapsed disclosure contents even when the browser retains rectangles', () => {
+        const ui = setup();
+        const details = document.createElement('details');
+        details.innerHTML = '<summary tabindex="0">Check my report</summary><input><button>Check status</button>';
+        ui.reportScreen.append(details);
+        for (const element of ui.reportScreen.querySelectorAll('button, input, select, textarea, summary')) {
+            element.getClientRects = () => [{width: 100, height: 44}];
+        }
+        const summary = details.querySelector('summary'); summary.focus();
+        summary.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab', bubbles: true}));
+        expect(document.activeElement).toBe(ui.reportType);
+        ui.reportType.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab', shiftKey: true, bubbles: true}));
+        expect(document.activeElement).toBe(summary);
+    });
+
     test('does not erase a newer draft or accept an acknowledgement after timeout', () => {
         const ui = setup(); ui.report.submit();
         ui.reportText.value = 'Newer draft';

@@ -12,6 +12,7 @@ var messageHandlers = map[string]messageHandler{
 	MsgAdminHistory:      handleAdminRead,
 	MsgAdminReports:      handleAdminRead,
 	MsgAdminReportReview: handleAdminReportReview,
+	MsgReportStatus:      handleOwnReportStatus,
 	MsgAdminGrantGold:    handleAdminMutation,
 	MsgAdminGrantItem:    handleAdminMutation,
 	MsgAdminTeleport:     handleAdminMutation,

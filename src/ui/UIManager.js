@@ -630,6 +630,7 @@ export class UIManager {
         this.onRecall = null;
         this.onChatSend = null;
         this.onReportSubmit = null;
+        this.onReportLookup = null;
     }
 
     dispose() {

@@ -110,6 +110,11 @@ export class UIBindings {
             engine.network.send('report', { reportType: type, text, requestId });
             return true;
         };
+        ui.onReportLookup = (reportId, requestId) => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('report_status', { reportId, requestId });
+            return true;
+        };
         ui.social.onSafety = (action, username, context = '') => {
             if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;
             if (action === 'report') {

@@ -662,6 +662,16 @@
                     <button id="btn-cancel-report" class="menu-btn support-window__button--half">Cancel</button>
                     <button id="btn-submit-report" class="menu-btn support-window__button--half support-window__button--success">Submit</button>
                 </div>
+                <details class="report-context-preview report-lookup">
+                    <summary>Check a report I submitted</summary>
+                    <p>Use the reference returned when your report was saved. Only reports submitted by this account are visible here. Resolved means review finished, not a promised fix or sanction reversal.</p>
+                    <label for="report-reference">My report reference</label>
+                    <div class="report-lookup-controls">
+                        <input id="report-reference" class="support-field__control" maxlength="24" autocomplete="off" spellcheck="false" placeholder="24-character report reference">
+                        <button id="btn-check-report" class="menu-btn" type="button">Check status</button>
+                    </div>
+                    <p id="report-lookup-status" role="status" aria-live="polite"></p>
+                </details>
             </div>
         </div>
 

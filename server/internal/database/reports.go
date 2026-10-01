@@ -28,6 +28,35 @@ type ReportPage struct {
 	Next    string   `json:"next,omitempty"`
 }
 
+// An owner's status view deliberately excludes allegations, account identifiers,
+// staff reasons and all review receipts, including the latest private review.
+type ReportStatusView struct {
+	ID         primitive.ObjectID `bson:"_id" json:"id"`
+	ReportType string             `bson:"report_type" json:"reportType"`
+	Status     string             `bson:"status" json:"status"`
+	CreatedAt  time.Time          `bson:"created_at" json:"createdAt"`
+	ResolvedAt *time.Time         `bson:"resolved_at,omitempty" json:"resolvedAt,omitempty"`
+}
+
+func (db *DB) OwnReportStatus(username, reference string) (ReportStatusView, error) {
+	id, err := primitive.ObjectIDFromHex(reference)
+	if err != nil || id.IsZero() || id.Hex() != reference || username == "" || db == nil || db.reports == nil {
+		return ReportStatusView{}, errors.New("report status unavailable")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var view ReportStatusView
+	err = db.reports.FindOne(ctx, bson.M{"_id": id, "username": username}, options.FindOne().SetProjection(
+		bson.M{"report_type": 1, "status": 1, "created_at": 1, "resolved_at": 1})).Decode(&view)
+	if err != nil {
+		return ReportStatusView{}, err
+	}
+	if !supportedReportType(view.ReportType) || view.Status != ReportStatusOpen && view.Status != ReportStatusResolved {
+		return ReportStatusView{}, errors.New("report status unavailable")
+	}
+	return view, nil
+}
+
 func reportPageFilter(query ReportQuery) (bson.M, error) {
 	filter := bson.M{}
 	if query.Status != "" && query.Status != ReportStatusOpen && query.Status != ReportStatusResolved {
@@ -91,7 +120,7 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 	if username == "" {
 		return Report{}, errors.New("report username is required")
 	}
-	if reportType != "Bug Report" && reportType != "Feature Request" && reportType != "Player Report" && reportType != "Moderation Appeal" {
+	if !supportedReportType(reportType) {
 		return Report{}, errors.New("unsupported report type")
 	}
 	if text == "" {
@@ -107,6 +136,10 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 		Status:     ReportStatusOpen,
 		CreatedAt:  now.UTC(),
 	}, nil
+}
+
+func supportedReportType(value string) bool {
+	return value == "Bug Report" || value == "Feature Request" || value == "Player Report" || value == "Moderation Appeal"
 }
 
 func (db *DB) CreateReport(username, reportType, text string) (*Report, error) {

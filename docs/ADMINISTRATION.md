@@ -39,7 +39,18 @@ Local 1.59 preparation adds **Moderation Appeal** to the player's existing repor
 form. Players can include a notice/report reference and their explanation; it
 enters this same private queue as an open report. Submission requests review,
 not automatic sanction reversal, and reveals no staff notes or other reports.
-Neither the appeal route nor the following review controls are deployed yet.
+Neither the appeal route, owner status lookup nor the following review controls
+are deployed yet.
+
+Players can use **Check a report I submitted** in the report form to enter a
+saved reference and check its status. The server matches both the reference and
+the authenticated submitting account, including for administrators using this
+player-facing lookup. The response contains only type, open/resolved status and
+submission/review dates; it excludes report text, account details and staff
+notes. Missing cases and cases belonging to another account have the same
+unavailable response. Checking is explicit, with no background polling or
+persistent local reference list. Resolved means the review finished, not a
+promised bug fix or sanction reversal.
 
 Local 1.59 preparation also adds **Review and resolve report** to each case.
 Enter a private one-line reason, choose **Mark resolved** or **Reopen report**,

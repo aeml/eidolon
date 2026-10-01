@@ -91,7 +91,7 @@ jobs:
           go-version: '1.24.5'
           cache-dependency-path: server/go.sum
 
-      - name: Verify ordinary duel socket consent and surrender
+      - name: Verify ordinary duel and administration sockets
         working-directory: server
         env:
           EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
@@ -100,6 +100,7 @@ jobs:
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdminConsoleActualSessionsAndHistoryRestart$' -count=1
 
       # Run before the broad suite against the job-owned Mongo service. Other repository
       # tests intentionally leave partial fixture records, not recoverable live

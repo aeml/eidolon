@@ -1,4 +1,5 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { ReportLookupUI } from './ReportLookupUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 
 const MAX_TEXT = 3200;
@@ -53,6 +54,7 @@ export class ReportUI {
         this.status = this.root.querySelector('#report-status');
         this.count = this.root.querySelector('#report-count');
         this.guidance = this.root.querySelector('#report-guidance');
+        this.lookup = new ReportLookupUI(ui);
         // A new character/session must not inherit another player's draft.
         this.text.value = '';
         this.optIn.checked = false;
@@ -65,7 +67,17 @@ export class ReportUI {
             if (event.key === 'Escape') { event.preventDefault(); this.ui.toggleReport?.(); }
             if (event.key !== 'Tab') return;
             const controls = [...this.root.querySelectorAll('button, input, select, textarea, summary')]
-                .filter(element => !element.disabled && element.getClientRects().length);
+                .filter(element => {
+                    if (element.disabled || element.tabIndex < 0 || !element.getClientRects().length) return false;
+                    for (let ancestor = element.parentElement; ancestor && ancestor !== this.root; ancestor = ancestor.parentElement) {
+                        if (ancestor.hidden) return false;
+                        // Chromium can retain layout rectangles for children of
+                        // a collapsed disclosure. Those are not keyboard targets.
+                        if (ancestor.tagName === 'DETAILS' && !ancestor.open
+                            && !ancestor.querySelector(':scope > summary')?.contains(element)) return false;
+                    }
+                    return true;
+                });
             const first = controls[0], last = controls.at(-1);
             if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
             else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
@@ -148,6 +160,7 @@ export class ReportUI {
         if (result.success === true) {
             if (this.text.value === submitted.draft && this.type.value === submitted.type) this.text.value = '';
             const id = typeof result.reportId === 'string' && /^[a-f0-9]{24}$/.test(result.reportId) ? result.reportId : '';
+            this.lookup.remember(id);
             this.setStatus(`Report saved for operator review.${id ? ` Reference: ${id}.` : ''}`);
         } else {
             this.setStatus('The report could not be saved. Your draft is retained. Please try again later.');
@@ -156,6 +169,7 @@ export class ReportUI {
     }
 
     dispose() {
+        this.lookup?.dispose();
         disposeOwnedEvents(this);
         clearTimeout(this.timer);
         this.pending = null;

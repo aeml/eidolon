@@ -3,6 +3,8 @@ import { collectBrowserFailures } from './helpers.js';
 
 for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
     test(`report form preserves drafts and previews consent at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
+        test.setTimeout(45_000);
+        page.setDefaultTimeout(10_000);
         const failures = collectBrowserFailures(page, baseURL);
         await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
         await page.setViewportSize({ width, height });
@@ -22,6 +24,8 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
                 reportType: document.getElementById('report-type'), btnSubmitReport: document.getElementById('btn-submit-report'),
                 requests: [], getReportContext: include => collectReportContext({ isMobile: innerWidth < 600, player: { position: { x: 4, z: 200 } }, renderSystem: { graphicsQuality: 'high' } }, include) });
             ui.onReportSubmit = (type, text, requestId) => { ui.requests.push({ type, text, requestId }); return true; };
+            ui.lookups = [];
+            ui.onReportLookup = (reportId, requestId) => { ui.lookups.push({reportId, requestId}); return true; };
             ui.report = new ReportUI(ui);
             ui.registerWindowLayouts();
             document.getElementById('btn-close-report-header').onclick = () => ui.toggleReport();
@@ -65,7 +69,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await dialog.screenshot({ path: testInfo.outputPath('appeal-guidance.png') });
         await page.getByLabel('Report type').selectOption('Bug Report');
         await expect(page.locator('#report-diagnostics')).not.toBeChecked();
-        await page.locator('.report-context-preview summary').click();
+        await dialog.getByText('Context included with this report', {exact: true}).click();
         await expect(page.locator('#report-context')).toContainText('area: Lanternhold');
         await expect(page.locator('#report-context')).not.toContainText('position:');
         await page.locator('#report-diagnostics').check();
@@ -86,6 +90,26 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         });
         await expect(text).toHaveValue('');
         await expect(page.locator('#report-status')).toContainText('operator review');
+        await dialog.getByText('Check a report I submitted', {exact: true}).click();
+        await expect(dialog.getByLabel('My report reference', {exact: true})).toHaveValue('0123456789abcdef01234567');
+        const check = dialog.getByRole('button', {name: 'Check status', exact: true});
+        await check.scrollIntoViewIfNeeded();
+        expect((await check.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        await check.click();
+        await page.evaluate(() => {
+            const ui = window.__reportFixture, request = ui.lookups.at(-1);
+            ui.report.lookup.handleResult({requestId: request.requestId, success: true,
+                report: {id: request.reportId, reportType: 'Bug Report', status: 'resolved',
+                    createdAt: '2026-10-01T12:00:00Z', resolvedAt: '2026-10-01T13:00:00Z'}});
+        });
+        await expect(page.locator('#report-lookup-status')).toContainText('Review finished');
+        await expect(page.locator('#report-lookup-status')).toContainText('not a promised fix');
+        const statusBounds = await page.locator('#report-lookup-status').boundingBox();
+        const reportBody = await dialog.locator('.support-window__body').boundingBox();
+        expect(statusBounds.y + statusBounds.height).toBeLessThanOrEqual(reportBody.y + reportBody.height + 1);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        await page.screenshot({path: testInfo.outputPath('own-report-status.png')});
+        await dialog.getByText('Check a report I submitted', {exact: true}).click();
         const bounds = await dialog.boundingBox();
         expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.y).toBeGreaterThanOrEqual(0);
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
@@ -93,6 +117,8 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await page.screenshot({ path: testInfo.outputPath('report-context-confirmation.png') });
         const submit = page.getByRole('button', { name: 'Submit', exact: true });
         await submit.focus(); await page.keyboard.press('Tab');
+        await expect(dialog.getByText('Check a report I submitted', {exact: true})).toBeFocused();
+        await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Close report form' })).toBeFocused();
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
         expect(await page.evaluate(() => window.__reportFixture.requests.length)).toBe(2);

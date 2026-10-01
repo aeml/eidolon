@@ -172,6 +172,7 @@ const (
 	MsgRespawn            = "respawn"
 	MsgRecall             = "recall"
 	MsgReport             = "report"
+	MsgReportStatus       = "report_status"
 	MsgStashDeposit       = "stash_deposit"
 	MsgStashWithdraw      = "stash_withdraw"
 	MsgStash              = "stash"

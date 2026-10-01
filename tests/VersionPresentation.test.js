@@ -64,17 +64,18 @@ test('1.54.0 records rigged Fighter integration and current duel consent without
         'not final modern-art approval', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
-test('ordinary duel consent is verified once through a disposable normal server socket route', () => {
+test('duel consent and private report reviews reuse one disposable normal server socket build', () => {
     const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
-    const start = workflow.indexOf('- name: Verify ordinary duel socket consent and surrender');
+    const start = workflow.indexOf('- name: Verify ordinary duel and administration sockets');
     const next = workflow.indexOf('- name: Verify disposable guild bank settlement and recovery');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(next);
     for (const text of ["EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'", 'mongodb://127.0.0.1:27017',
         'go build -race', 'main.buildCommit=server', 'EIDOLON_RESOURCE_BINARY=',
-        "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1"]) {
+        "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1",
+        "go test -race . -run '^TestAdminConsoleActualSessionsAndHistoryRestart$' -count=1"]) {
         expect(workflow.slice(start, next)).toContain(text);
     }
-    expect(workflow.split('Verify ordinary duel socket consent and surrender')).toHaveLength(2);
+    expect(workflow.split('Verify ordinary duel and administration sockets')).toHaveLength(2);
 });
 
 test('1.53.0 records group planning, current consent and unchanged progression', () => {

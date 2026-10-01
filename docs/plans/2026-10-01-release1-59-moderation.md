@@ -1,6 +1,6 @@
 # Alpha 1.59 moderation preparation
 
-October 1, 2026. The appeal route and actionable report review are implemented
+October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
 locally but unpublished. The worktree still carries the preceding Alpha 1.58
 version; no 1.59 package or milestone completion is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
@@ -12,6 +12,14 @@ notice reference, explanation and relevant facts. The authenticated account
 creates an open report in the same private admin queue. Submission does not
 reverse sanctions or disclose staff notes. Existing length limits and
 acknowledgement-before-clearing behavior remain.
+
+The same form lets players explicitly check a saved report reference. Database
+queries match the authenticated submitting account and return only case type,
+status and dates. Staff notes, report bodies, account identifiers and private
+review receipts are excluded. Another account's reference and a missing case
+produce the same unavailable response, even when the requester is an admin.
+There is no background polling or persistent local reference catalog. Resolved
+means review finished, not a promised fix or automatic sanction reversal.
 
 Admins open **Administration → Player reports**, inspect a case, enter a private
 reason and explicitly confirm resolution or reopening. Cancelling does not send
@@ -61,6 +69,34 @@ passed again in 12.4 seconds and its render was reviewed. Artifacts:
 `/tmp/eidolon-1-59-review-phone-1001`. These use synthetic replies to test the real
 components; server/database authorization is established separately, not by
 this presentation fixture. No production case or player account was changed.
+
+The owner-lookup slice passed focused handler/protocol race checks in 2.899
+seconds and database checks in 1.119 seconds. The extended disposable Mongo
+exercise passed in 5.489 seconds, also checking ownership and the restricted
+status projection. Six client suites passed 389 checks in 6.421 seconds:
+64 UI/binding/moderation checks and 325 existing version checks, not 389 new
+moderation cases. Scoped lint and whitespace checks passed.
+
+A race-built production server and two disposable accounts exercised real
+WebSocket report submission, private admin JSON, owner-only lookup, denial of
+ordinary-account resolution, confirmed admin resolution and exact retry. After
+restart, the case remained resolved at revision one with one private receipt;
+the staff reason remained on the case and out of activity history. The check
+passed in 11.966 seconds and now runs in the existing CI socket step, sharing
+its binary and job-owned database rather than adding another job. This uses an
+ordinary bug report; it does not prove the still-unimplemented sanction-to-appeal
+flow. The separate Mongo exercise covers appeal creation and status lookup.
+
+The report form passed desktop and narrow-screen bounds/focus checks at
+1280×800, 390×844 and 844×390. These checks exposed and fixed a keyboard trap
+including hidden controls inside collapsed disclosures. A final portrait check
+passed in 15.9 seconds after adding result auto-scroll; its inspected render
+shows the full status explanation within the report body. Artifacts:
+`/tmp/eidolon-1-59-owner-status-desktop-1001`,
+`/tmp/eidolon-1-59-owner-status-phone-1001` and
+`/tmp/eidolon-1-59-owner-status-readable-1001`. Final auto-scroll visibility was
+verified in portrait, not re-certified at all sizes. The temporary Mongo
+container was stopped and removed; production accounts and cases were untouched.
 
 ## Remaining milestone scope
 
