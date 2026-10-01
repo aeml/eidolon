@@ -54,7 +54,14 @@ ready as the prepared default, but remains local and unpublished; production is
 unchanged. Explicit false retains the original path for comparisons.
 Transparent, textured, custom-shader, differently bound or transformed pieces
 remain separate, and stealth restores original sorting surfaces. Broader
-performance and actual Low actor-LOD profiling remain open.
+performance remains open. A subsequent [actual Low actor-detail check](2026-10-01-authored-low-crowd-checks.json)
+passed a ten-equipped-hero workload in 56 seconds with stable repeated resource
+counts and inspected threat visibility. Delivered Low bodies reduced triangles
+by about 10.5%, but equipped items still share the same detail. Six added entity
+loading cases verify renderer-selected desktop detail and forced Low on mobile.
+Busy Low-render medians were 23.8–25.6 ms on a heavily loaded host, not a paired
+speed comparison or phone-performance acceptance. Comparable-device profiling
+and existing-actor quality-switch coverage remain open.
 
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.

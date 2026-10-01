@@ -68,6 +68,24 @@ test('an inactive entity starts no model request', async () => {
     await item.ensureMesh(); expect(create).not.toHaveBeenCalled();
 });
 
+test.each([
+    ['desktop Low', false, 'low', 'low'],
+    ['desktop Medium', false, 'medium', 'medium'],
+    ['desktop High', false, 'high', 'high'],
+    ['mobile Low', true, 'low', 'low'],
+    ['mobile Medium', true, 'medium', 'low'],
+    ['mobile High', true, 'high', 'low']
+])('%s loads the renderer-selected actor detail without changing model ownership', async (_, isMobile, graphicsQuality, expected) => {
+    const item = entity(), mesh = new THREE.Group();
+    item.gameEngine = { renderSystem: { isMobile, graphicsQuality } };
+    const create = jest.spyOn(MeshFactory, 'createMeshForType').mockResolvedValue(mesh);
+    await item.ensureMesh();
+    expect(create).toHaveBeenCalledWith('Fighter', { quality: expected });
+    expect(item.mesh).toBe(mesh);
+    item.dispose();
+    expect(MeshFactory.releaseMesh).toHaveBeenCalledWith('Fighter', mesh);
+});
+
 test('ordinary concurrent ensures still share one load and preserve the accepted transform', async () => {
     const item = entity(), load = pending(), mesh = new THREE.Group();
     item.position.set(12, 0, 24); item.setScale(1.5);

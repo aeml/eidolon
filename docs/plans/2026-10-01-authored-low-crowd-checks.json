@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "local-render-workload-not-performance-acceptance",
+  "preparedRuntimeCommit": "2e25a5f9",
+  "fixture": "tests/e2e/raid-scene-performance.spec.js with actor-quality selection retained alongside this receipt",
+  "command": "EIDOLON_RAID_ACTOR_QUALITY=low playwright test tests/e2e/raid-scene-performance.spec.js",
+  "artifactRoot": "/tmp/eidolon-authored-low-crowd-20261001",
+  "result": "1 passed in 56.0 seconds; 15 EntityMeshLifetime checks passed in 1.541 seconds; scoped lint and whitespace checks passed",
+  "workload": { "actors": 10, "equippedItemsPerActor": 14, "actorQuality": "low", "fittedBatching": true, "boss": "Malachar", "overlappingFields": 4, "framesPerPhase": 180 },
+  "rootVisualReview": "Low-render screenshot inspected: equipped heroes, Malachar, field boundaries and threat labels remain visible. This is not final art approval or a phone check.",
+  "repeatGeometryAndTextureCountsStable": true,
+  "profiles": [
+    { "renderQuality": "high", "phase": "busy", "medianMs": 36.1, "p95Ms": 63.4, "calls": 1064, "triangles": 2601849, "geometries": 367, "textures": 408, "hostBusyFraction": 0.9753, "hostLoad": [41.25, 38.58, 38.08] },
+    { "renderQuality": "high", "phase": "clear", "medianMs": 16.5, "p95Ms": 20.9, "calls": 22, "triangles": 45, "geometries": 322, "textures": 404, "hostBusyFraction": 0.9422, "hostLoad": [41.34, 38.73, 38.14] },
+    { "renderQuality": "high", "phase": "busy-repeat", "medianMs": 34.0, "p95Ms": 53.9, "calls": 1064, "triangles": 2601849, "geometries": 367, "textures": 408, "hostBusyFraction": 0.9700, "hostLoad": [41.34, 38.73, 38.14] },
+    { "renderQuality": "low", "phase": "busy", "medianMs": 25.6, "p95Ms": 50.3, "calls": 598, "triangles": 1304267, "geometries": 366, "textures": 394, "hostBusyFraction": 0.9704, "hostLoad": [40.31, 38.59, 38.10] },
+    { "renderQuality": "low", "phase": "clear", "medianMs": 16.8, "p95Ms": 19.4, "calls": 7, "triangles": 30, "geometries": 321, "textures": 390, "hostBusyFraction": 0.9470, "hostLoad": [41.04, 38.79, 38.16] },
+    { "renderQuality": "low", "phase": "busy-repeat", "medianMs": 23.8, "p95Ms": 35.3, "calls": 598, "triangles": 1304267, "geometries": 366, "textures": 394, "hostBusyFraction": 0.9636, "hostLoad": [42.48, 39.12, 38.28] }
+  ],
+  "comparison": {
+    "previousHighBodies": "2026-10-01-fitted-equipment-batch-checks.json, batched candidate",
+    "highRendererTriangles": { "highBodies": 2908127, "lowBodies": 2601849 },
+    "lowRendererTriangles": { "highBodies": 1457406, "lowBodies": 1304267 },
+    "interpretation": "About 10.5% fewer triangles in this equipped workload. Gear uses the same delivered detail; calls remain unchanged. Timings are from separate runs with different host load, not a paired speed comparison."
+  },
+  "limits": [
+    "Only a local prepared rendering fixture; no production accounts, server combat, campaign or physical phone exercised.",
+    "Host CPU was 94.2–97.5% busy on 16 logical processors; no idle-device FPS promise.",
+    "Entity loading honors saved desktop detail and forces Low on mobile; this fixture does not prove live switching of existing actor meshes.",
+    "Source GLBs, gameplay visibility and collision dimensions are unchanged.",
+    "Broader crowd performance, idle/comparable-device benchmarks, owner art approval and human playtest gates remain open."
+  ]
+}

@@ -17,7 +17,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     const cpuDiagnostic = process.env.EIDOLON_RAID_CPU_PROFILE === '1';
     const instancingProbe = process.env.EIDOLON_RAID_INSTANCING_PROBE === '1';
     const comparison = process.env.EIDOLON_RAID_INSTANCING_COMPARE === '1';
-    const fittedBatching = process.env.EIDOLON_RAID_FITTED_BATCHES === '1';
+    const fittedBatching = process.env.EIDOLON_RAID_FITTED_BATCHES !== '0';
+    const actorQuality = process.env.EIDOLON_RAID_ACTOR_QUALITY || 'high';
+    if (!['high', 'low'].includes(actorQuality)) throw Error('Actor quality must be high or low');
     const fittedComparison = process.env.EIDOLON_RAID_FITTED_COMPARE === '1';
     const paired = comparison || fittedComparison;
     if (comparison && !instancingProbe) throw Error('Paired comparison requires the opt-in instance candidate');
@@ -26,7 +28,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    await page.evaluate(async ({ instancingProbe, paired, fittedBatching }) => {
+    await page.evaluate(async ({ instancingProbe, paired, fittedBatching, actorQuality }) => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
@@ -51,10 +53,11 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         const mixers = [];
         for (let index = 0; index < 11; index++) {
             const type = index === 10 ? 'UmbraPrime' : ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
-            const mesh = await MeshFactory.createMeshForType(type, { quality: 'high' });
+            const mesh = await MeshFactory.createMeshForType(type, { quality: actorQuality });
             if (index < 10) {
                 mesh.userData.fittedEquipmentBatching = fittedBatching;
                 if (mesh.userData.authoredClass !== type) throw new Error(`Missing authored ${type} crowd model`);
+                if (mesh.userData.authoredQuality !== actorQuality) throw new Error(`Wrong ${type} crowd detail`);
                 const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, slotIndex) => {
                     const candidates = BASE_ITEMS.filter((item) => canEquipItem(type, item, slot));
                     if (!candidates.length) throw new Error(`No valid ${type} ${slot} fixture item`);
@@ -143,7 +146,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 group.removeFromParent();
             }
         };
-    }, { instancingProbe, paired, fittedBatching });
+    }, { instancingProbe, paired, fittedBatching, actorQuality });
     if (cpuDiagnostic) await page.evaluate(() => {
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         const counters = {}, undo = [];
@@ -192,7 +195,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                     if (fittedComparison) window.__raidScene.setFittedBatches(phase.startsWith('candidate'));
                     window.__raidScene.setBusy(quality, phase !== 'clear');
                 }, { quality, phase, comparison, fittedComparison });
-                const hostStart = paired ? hostSnapshot() : null;
+                const hostStart = hostSnapshot();
                 const report = await page.evaluate(() => new Promise((resolve, reject) => {
                     const render = window.__eidolonAnimationGalleryController.renderSystem;
                     const original = render.render;
@@ -233,9 +236,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                         });
                     };
                 }));
-                const hostEnd = paired ? hostSnapshot() : null;
-                reports.push({ quality, fittedBatching: fittedBatching && (!fittedComparison || phase.startsWith('candidate')), actorQuality: 'high', actorSource: 'delivered authored class bodies and fitted equipment', phase, ...report, ...(paired ? { hostStart, hostEnd,
-                    hostBusyFraction: 1 - (hostEnd.idle - hostStart.idle) / (hostEnd.total - hostStart.total) } : {}) });
+                const hostEnd = hostSnapshot();
+                reports.push({ quality, fittedBatching: fittedBatching && (!fittedComparison || phase.startsWith('candidate')), actorQuality, actorSource: 'delivered authored class bodies and fitted equipment', phase, ...report, hostStart, hostEnd,
+                    hostBusyFraction: 1 - (hostEnd.idle - hostStart.idle) / (hostEnd.total - hostStart.total) });
                 // Retain each bounded phase even if a later phase fails.
                 await testInfo.attach(`${quality}-${phase}-rendering-profile`, { body: JSON.stringify(report), contentType: 'application/json' });
                 expect(report.frames).toBe(180);
