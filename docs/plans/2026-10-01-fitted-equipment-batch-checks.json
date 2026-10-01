@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "status": "prepared-opt-in-not-published",
+  "rootVisualReview": "Paired native all-eight-class CombatIdle render inspected after the comparison: fitted armor, both Rogue weapons, Wizard staff/tome and mixed Cleric outfit remain visible; no final art approval claimed.",
   "baselineRuntimeCommit": "7d5fdf6de171ce3e2f1dd66a86ec3a013787ac24",
   "codeAndFixture": "FittedEquipmentBatches.js and retained fixtures alongside this receipt",
   "commands": {
