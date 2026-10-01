@@ -1,0 +1,112 @@
+{
+  "at": "2026-10-01T01:45:22.316Z",
+  "commit": "b22975c8f22b72ff72a591ff40c3ca8133d4dd88",
+  "version": "Alpha 1.56.0",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 723801,
+      "sha256": "2f612caf1230b1b343766b2b856a410046f97a30aae85e2e92c1e66e0d7ae2dc"
+    },
+    {
+      "file": "src/art/ProceduralEquipment.js",
+      "bytes": 50625,
+      "sha256": "b04860bb328c0289932c99c5e9fe60a3e8fff12724e9715992f58f6380de2a8f"
+    },
+    {
+      "file": "src/data/cosmetics.generated.js",
+      "bytes": 4797,
+      "sha256": "976f4cb0c399887c7056f5ae8c323fc4a5cf686745b35080b08bbf8f99d334d5"
+    },
+    {
+      "file": "src/ui/PvPUI.js",
+      "bytes": 24111,
+      "sha256": "1359577a459614444ef059256b3372de8f33b2e727ecee1b844731fa6bcb1cf9"
+    },
+    {
+      "file": "src/ui/WardrobeUI.js",
+      "bytes": 4598,
+      "sha256": "c2bf157a36aa5e3a224562dbdc4d2eeea57adc5537745e63871f3353eaa3de6f"
+    }
+  ],
+  "acceptedAt": "2026-10-01T01:48:21.122Z",
+  "ci": {
+    "run": 36798699692,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 110167941904,
+        "name": "Client Tests (Jest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110167942097,
+        "name": "Server Tests (Go)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110167942115,
+        "name": "Browser Smoke (Playwright 1/3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110167942137,
+        "name": "Browser Smoke (Playwright 3/3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110167942184,
+        "name": "Browser Smoke (Playwright 2/3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110176974185,
+        "name": "Predeploy Character QA (System Chrome)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110177579847,
+        "name": "Validate Production QA Inputs",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110177601116,
+        "name": "Deploy Server (SSH)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110177601172,
+        "name": "Deploy to GitHub Pages",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 110177888118,
+        "name": "Live Release and Character QA",
+        "status": "completed"
+      }
+    ]
+  },
+  "frontend": {
+    "commit": "b22975c8f22b72ff72a591ff40c3ca8133d4dd88",
+    "version": "Alpha 1.56.0"
+  },
+  "backend": {
+    "commit": "b22975c8f22b72ff72a591ff40c3ca8133d4dd88",
+    "version": "Alpha 1.56.0",
+    "status": "ok",
+    "database": "ready"
+  },
+  "network": "ordinary public DNS, IPv4 HTTPS"
+}

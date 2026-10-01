@@ -2,15 +2,14 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.55.0, exact480a47b28137783c0f9db623a87ee8e6cd581d5a,
-CI36794385683 attempt1. All ten CI jobs and independent public IPv4 checks
-passed for identities, database readiness and all three changed runtime files.
-See its [acceptance record](2026-10-01-release1-55-acceptance.md).
+baseline is Alpha1.56.0, exactb22975c8f22b72ff72a591ff40c3ca8133d4dd88,
+CI36798699692 attempt1. All ten CI jobs and independent public IPv4 checks
+passed for identities, database readiness and all five changed runtime files.
+See its [acceptance record](2026-10-01-release1-56-acceptance.md).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
-The next [1.56 season milestone](2026-10-01-release1-56-seasons.md) is pushed at
-b22975c8f22b72ff72a591ff40c3ca8133d4dd88, CI36798699692. Its own ordered CI and
-public acceptance remain open. Dates/operator agreement remains a gate for
+The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
+existing rules and earned cosmetic looks. Dates/operator agreement remains a gate for
 organizing a new competition, not a claim made by publishing existing rules
 and earned looks. No new calendar or manual reset was activated.
 The subsequent [1.57 event work](2026-10-01-release1-57-events.md) is isolated,
