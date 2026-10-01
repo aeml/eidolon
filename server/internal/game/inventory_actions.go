@@ -148,7 +148,7 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	}
 
 	// Prevent equipping non-equippable items
-	if !itemFitsEquipmentSlot(*itemToEquip, slot) {
+	if !itemFitsEquipmentSlot(*itemToEquip, slot) || !classAllowsEquipment(player.SubType, *itemToEquip, slot) {
 		return nil, false
 	}
 

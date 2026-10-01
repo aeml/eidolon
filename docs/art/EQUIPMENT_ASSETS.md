@@ -1,7 +1,8 @@
 # Fitted equipment collection
 
-This owner-requested delivery stages equipment assets for review. The game still
-uses its existing equipment renderer. The assets, sources and integration
+This owner-requested delivery provides fitted equipment for all four classes.
+Alpha 1.58.2 integrates the character fits, weapon grips and motion banks in the
+game renderer. The assets, sources and integration
 instructions are published together; publishing them does not enable the new
 equipment renderer. See the root README for the integration sequence.
 

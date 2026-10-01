@@ -61,7 +61,10 @@ const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const fighterReferenceAllowlist = new Map([
     ['src/art/AuthoredFighter.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
-    ['src/assets/assetManifest.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
+    ['src/assets/authoredEquipment.generated.js', new Set([
+        ...[...stagedCharacterExports].filter(file => file.includes('-runtime-')).map(file => `./${file}`),
+        ...[...stagedEquipmentExports].map(file => `./${file}`)
+    ])],
     ['scripts/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'fighter-runtime-${quality}.glb'])]
 ]);
 

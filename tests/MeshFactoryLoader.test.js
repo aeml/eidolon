@@ -259,9 +259,9 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
-    test('Rogue uses the procedural shadeblade without requesting a GLB', async () => {
+    test('Rogue retains the fully animated shadeblade when authored assets fail', async () => {
         const previousPool = MeshFactory.pool;
-        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
         MeshFactory.pool = {};
 
         try {
@@ -271,16 +271,17 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.artStyle).toBe('Gloamreach shadeblade');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(PROCEDURAL_PLAYER_CLIPS);
-            expect(loadSpy).not.toHaveBeenCalled();
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
         } finally {
             MeshFactory.pool = previousPool;
             loadSpy.mockRestore();
         }
     });
 
-    test('Wizard uses the procedural hexweaver without requesting a GLB', async () => {
+    test('Wizard retains the fully animated hexweaver when authored assets fail', async () => {
         const previousPool = MeshFactory.pool;
-        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
         MeshFactory.pool = {};
 
         try {
@@ -290,16 +291,17 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.artStyle).toBe('Stormcrown hexweaver');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(PROCEDURAL_PLAYER_CLIPS);
-            expect(loadSpy).not.toHaveBeenCalled();
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
         } finally {
             MeshFactory.pool = previousPool;
             loadSpy.mockRestore();
         }
     });
 
-    test('Cleric uses the procedural dawnwarden without requesting a GLB', async () => {
+    test('Cleric retains the fully animated dawnwarden when authored assets fail', async () => {
         const previousPool = MeshFactory.pool;
-        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
         MeshFactory.pool = {};
 
         try {
@@ -309,7 +311,8 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.artStyle).toBe('Lanternhold dawnwarden');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(PROCEDURAL_PLAYER_CLIPS);
-            expect(loadSpy).not.toHaveBeenCalled();
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
         } finally {
             MeshFactory.pool = previousPool;
             loadSpy.mockRestore();
@@ -661,6 +664,7 @@ describe('MeshFactory catalog integration', () => {
 
     test('a full Rogue pool never disposes shared procedural render resources', async () => {
         const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
         MeshFactory.pool = {};
         const mesh = await MeshFactory.createMeshForType('Rogue');
         MeshFactory.pool.Rogue = Array.from({ length: 50 }, () => new THREE.Group());
@@ -673,6 +677,7 @@ describe('MeshFactory catalog integration', () => {
             expect(MeshFactory.pool.Rogue).toHaveLength(50);
         } finally {
             disposeSpy.mockRestore();
+            loadSpy.mockRestore();
             MeshFactory.pool = previousPool;
         }
     });

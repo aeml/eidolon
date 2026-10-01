@@ -121,7 +121,11 @@ func (w *World) SelectAppearance(playerID, slot, key string) error {
 		if !owned || AppearanceKey(look) != key {
 			return errors.New("Unlock this look in your wardrobe first")
 		}
-		if !itemFitsEquipmentSlot(Item{Slot: look.Slot, Type: ItemArmor}, slot) {
+		kind := ItemArmor
+		if look.Slot == "mainHand" {
+			kind = ItemWeapon
+		}
+		if !itemFitsEquipmentSlot(Item{Slot: look.Slot, Type: kind}, slot) {
 			return errors.New("That appearance does not fit this equipment slot")
 		}
 		item := p.Equipment[slot]

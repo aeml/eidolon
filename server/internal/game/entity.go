@@ -606,7 +606,7 @@ func (e *Entity) RecalculateStats() {
 	}
 
 	// Add Equipment Stats
-	activeEquipment := activeEquipmentItems(e.Equipment)
+	activeEquipment := activeEquipmentItems(e.Equipment, e.SubType)
 	for _, item := range activeEquipment {
 		applyItemStats(item.Stats)
 		for _, gem := range item.Gems {
@@ -807,6 +807,9 @@ func (e *Entity) RecalculateStats() {
 	}
 	if e.Type == TypePlayer {
 		cooldown = playerBasicAttackInterval(totalDex)
+		if dualWieldingRogue(e.SubType, activeEquipment) {
+			cooldown *= 2.0 / 3.0
+		}
 	}
 	e.AttackSpeed = cooldown
 	e.AttackCooldown = time.Duration(cooldown * float64(time.Second))

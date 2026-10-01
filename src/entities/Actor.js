@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
-import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
+import { isEquippableItem, isActiveEquipment, canEquipItem, isDualWieldingRogue } from '../core/EquipmentSlots.js';
 import { advanceFighterDamageBuffs, applyOfflineFighterDamageBuffStats, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { advanceClericUtilityBuffs, applyOfflineClericUtilityStats } from '../skills/clericUtilityPower.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
@@ -673,7 +673,8 @@ export class Actor extends Entity {
             if (force) this.currentAbilityAnimation = null;
         }
 
-        const action = this.animations[name];
+        const resolvedName = this.mesh?.userData.resolveAnimationName?.(name, { restart: force, currentName: this.currentAnimationName }) || name;
+        const action = this.animations[resolvedName] || this.animations[name];
         if (!force && this.currentAction === action) return true;
 
         if (this.currentAction !== action) {
@@ -1907,7 +1908,7 @@ export class Actor extends Entity {
         totalStats.defense = 0;
 
         // Add Equipment Stats
-        const activeEquipment = Object.fromEntries(Object.entries(this.equipment).filter(([slot, item]) => isActiveEquipment(slot, item)));
+        const activeEquipment = Object.fromEntries(Object.entries(this.equipment).filter(([slot, item]) => isActiveEquipment(slot, item, this.constructor.name)));
         for (const slot in activeEquipment) {
             const item = activeEquipment[slot];
             if (item) {
@@ -2054,6 +2055,7 @@ export class Actor extends Entity {
         // Hero fallback cadence matches the authoritative player formula;
         // enemy recalculation retains its existing five-second base curve.
         this.stats.attackSpeed = basicAttackInterval(totalStats.dexterity, this.constructor.name);
+        if (isDualWieldingRogue(this.constructor.name, activeEquipment)) this.stats.attackSpeed *= 2 / 3;
 
         // Wisdom: Mana regen and cast speed
         this.stats.manaRegen = totalStats.wisdom * PASSIVE_REGEN_PER_STAT;
@@ -2080,7 +2082,7 @@ export class Actor extends Entity {
         if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
     }
 
-    equipItem(item) {
+    equipItem(item, requestedSlot) {
         if (!isEquippableItem(item)) return false;
         
         if (this.level < item.level) {
@@ -2088,7 +2090,7 @@ export class Actor extends Entity {
             return false;
         }
 
-        let targetSlot = item.slot;
+        let targetSlot = requestedSlot || item.slot;
         if (item.slot === 'ring') {
              if (!this.equipment.ring1) targetSlot = 'ring1';
              else if (!this.equipment.ring2) targetSlot = 'ring2';
@@ -2098,6 +2100,8 @@ export class Actor extends Entity {
              else if (!this.equipment.trinket2) targetSlot = 'trinket2';
              else targetSlot = 'trinket1';
         }
+
+        if (!canEquipItem(this.constructor.name, item, targetSlot)) return false;
 
         // Unequip current item in slot if exists
         const currentItem = this.equipment[targetSlot];

@@ -8,7 +8,7 @@ const SEATED_ROTATIONS = {
 };
 
 export function installAuthoredFighterSeatedPose(root, animations) {
-    const scene = root.getObjectByName('Fighter_Body').parent;
+    const scene = root.getObjectByName(`${root.userData.authoredClass}_Body`).parent;
     const saved = [];
     scene.traverse(part => saved.push({ part, position: part.position.clone(), quaternion: part.quaternion.clone(), morphs: part.morphTargetInfluences?.slice() }));
     const mixer = new THREE.AnimationMixer(scene), targets = [];
@@ -27,7 +27,7 @@ export function installAuthoredFighterSeatedPose(root, animations) {
         // The exported pelvis's local height lies on Z, not Y. Convert through
         // its actual parent rather than treating Blender coordinates as Y-up.
         const point = pelvis.getWorldPosition(new THREE.Vector3()).applyMatrix4(scene.matrixWorld.clone().invert());
-        point.y = (1.12 - root.getObjectByName('FighterVisualRig').position.y) / root.userData.authoredScale;
+        point.y = (1.12 - root.getObjectByName(root.userData.hitReactionRig).position.y) / root.userData.authoredScale;
         targets.push({ bone: pelvis, rawPosition: point });
     } finally {
         mixer.stopAllAction(); mixer.uncacheRoot(scene);

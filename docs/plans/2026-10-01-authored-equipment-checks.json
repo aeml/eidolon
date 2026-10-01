@@ -1,0 +1,31 @@
+{
+  "release": "Alpha 1.58.2",
+  "status": "local-candidate-not-public-acceptance",
+  "deliveredAssetCommit": "a7c7da134c5e2303778cd9f4c7668949f13a4391",
+  "scope": ["four class High/Low models", "252 fitted and rigid equipment models", "four weapon motion banks", "class equipment restrictions", "Rogue dual wield cadence and alternating strikes", "explicit offhand inspection action"],
+  "sourcePreservation": "Delivered GLBs and Blender sources were not rewritten. The generated runtime catalog verifies all 264 runtime asset hashes against the delivery manifests.",
+  "client": {
+    "focusedEquipmentAndVersionChecks": {"suites": 8, "passed": 411, "seconds": 49.777},
+    "animationAndMigrationChecks": {"suites": 3, "passed": 41, "seconds": 2.508},
+    "wardrobeStealthAndCadenceChecks": {"suites": 3, "passed": 30, "seconds": 3.239},
+    "deliveredCatalogHashesAndFits": {"suites": 1, "passed": 2, "seconds": 3.265},
+    "lint": "passed",
+    "fullLocalSuite": "Interrupted to avoid duplicating the immutable CI full-suite run. Three obsolete procedural-loader expectations were found and corrected; their focused suite passed. This is not recorded as a full-suite pass."
+  },
+  "server": {
+    "command": "go test -race ./internal/game -run 'Test(ClassEquipment|RogueDual|ForbiddenSaved|ClassRestriction|Loadout|Wardrobe|PlayerBasic)' -count=1",
+    "status": "passed",
+    "seconds": 24.419,
+    "checks": ["atomic equip rejection", "loadout cannot bypass class rules", "forbidden saved armor inactive and retained", "offhand weapon recovery", "two-thirds interval without compounding", "wardrobe and player baseline cadence"]
+  },
+  "browser": {
+    "command": "playwright test tests/e2e/authored-class-equipment.spec.js tests/e2e/actor-celebration-effects.spec.js",
+    "browser": "system Chrome with hardware WebGL launch policy",
+    "status": "2 passed",
+    "seconds": 49.9,
+    "artifactRoot": "/tmp/eidolon-class-equipment-final-20261001",
+    "checks": ["eight class/quality instances", "14 equipped items per actor", "armor uses only owning actor bones", "independent class skeletons", "mixed Cleric outfit", "paired ring and trinket binding", "finite sampled skins in motion", "Rogue Dagger/Sword left/right strikes", "reconciliation does not flip hands", "clear restores original body", "another actor mask unchanged", "release prevents late equipment reattachment", "existing level-up and Well Rested effects", "phone-sized Low aura"],
+    "rootVisualReview": ["CombatIdle", "both alternating Attack poses", "phone-sized Low sanctuary effect"]
+  },
+  "remainingGates": ["immutable candidate CI", "matching public frontend/backend release identities", "exact public runtime and model hashes", "real-world crowded-scene profiling", "owner art approval", "physical-phone dungeon/party feedback"]
+}

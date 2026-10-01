@@ -160,10 +160,11 @@ banks. Common, Uncommon and Rare share standard models; Legendary has separate
 geometry and emissive details. All 24 chest fits cover the chest, upper back,
 collar area and shoulders beneath separate pauldrons.
 
-**Current integration:** Fighter already uses its High/Low character GLBs and
-the revised default animations. Wizard, Cleric, Rogue, the new equipment GLBs
-and weapon-profile selection are delivered assets awaiting runtime integration.
-The existing game equipment renderer is still active.
+**Current integration:** All four classes select their High/Low character GLBs
+on demand. Fitted equipment binds to the actor's existing skeleton, rigid weapons
+use the supplied grip transforms, and movement selects the equipped weapon's
+motion profile. Dual-wield Rogues alternate weapons. Procedural actors remain a
+load-failure fallback. Source Blender files and delivered exports are unchanged.
 
 ### Inspect the delivery
 
@@ -192,9 +193,10 @@ ordinary Git files and do not require LFS at runtime.
 
 ### Connect the assets to gameplay
 
-1. **Load the class and chosen quality on demand.** Extend the authored path in
-   [`MeshFactory`](src/utils/MeshFactory.js), using
-   [`AuthoredFighter`](src/art/AuthoredFighter.js) as the existing adapter example.
+1. **Load the class and chosen quality on demand.** The authored path in
+   [`MeshFactory`](src/utils/MeshFactory.js) uses
+   [`AuthoredCharacters`](src/art/AuthoredCharacters.js) and the shared adapter in
+   [`AuthoredFighter`](src/art/AuthoredFighter.js).
    Preserve the imported scene hierarchy and use `SkeletonUtils.clone` for each
    actor. Each class has its own proportions and inverse bind matrices; share
    geometry/textures, never live bones or mixers. Scale the complete visual root
@@ -204,8 +206,9 @@ ordinary Git files and do not require LFS at runtime.
    map rarity through `manifest.rarityModels`, then select
    `item.models[tier][className]` for wearables or `["universal"]` for weapons and
    offhands. IDs represent base items, not an inventory instance's generated ID.
-   Extend [`EquipmentVisuals`](src/art/EquipmentVisuals.js) to use this adapter;
-   the existing Fighter adapter currently builds procedural gear.
+   [`EquipmentVisuals`](src/art/EquipmentVisuals.js) routes authored actors to
+   [`FittedEquipment`](src/art/FittedEquipment.js). The older procedural Fighter
+   equipment adapter is retained for fallback and compatibility checks.
 3. **Bind armor to the actor's skeleton.** Match each imported skin joint by bone
    name to that actor's bones, retain the item's supplied inverse bind matrices
    and bind matrix, and add the skinned mesh beside the character meshes under
@@ -417,10 +420,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.58.1` (visual patch candidate; publication, CI and public acceptance remain required)
+- Current source version: `Alpha 1.58.2` (asset integration candidate; publication, CI and public acceptance remain required)
 - Last independently verified live release: `Alpha 1.58.0`, exact f7518623bb5924625a918c8acdfe7ad890b0363a, successful CI36808962117 attempt1 (all ten jobs). Public IPv4 frontend/backend identities and database readiness pass; all four changed runtime files match their exact publisher output. [Acceptance receipt](docs/plans/2026-10-01-release1-58-assets.json). Live rigged Fighter integration remains recorded in the accepted 1.54 release. DNS/IPv6 remain owner-managed.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.58.1` level-up and Well Rested visual polish, followed by the unchanged 1.59 moderation scope. [Focused visual checks](docs/plans/2026-10-01-sanctuary-effects-checks.json) retain low-quality, reduced-motion, rendering and lifecycle evidence. New Rogue, Cleric and Wizard swaps await the supplied model paths or commit; this patch does not claim them. The [combat work record](docs/plans/2026-09-30-release1-54-combat-work.md) preserves live rigged Fighter scope. Final modern art and actual-phone dungeon/party observations remain open. Open-alpha access is unchanged, raised Earth remains QA-only, and human campaign pacing remains playtest-owned.
+- Active delivery line: `Alpha 1.58.2` integrates the delivered four-class bodies, fitted gear and weapon motions, following the 1.58.1 celebration polish and before the unchanged 1.59 moderation scope. Class armor restrictions and Rogue weapon-only offhands are server-enforced; dual-wield Rogues use two-thirds of the normal basic-attack interval without adding a second damage event. [Focused visual checks](docs/plans/2026-10-01-sanctuary-effects-checks.json) retain the earlier aura evidence. Final modern-art approval, crowd performance and actual-phone dungeon/party observations remain open. Open-alpha access is unchanged, raised Earth remains QA-only, and human campaign pacing remains playtest-owned.
 - Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
 - Accepted milestone: [1.57 event discovery](docs/plans/2026-10-01-release1-57-events.md) is live with its own complete CI and independent public acceptance.
 - Accepted milestone: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is live at f7518623bb5924625a918c8acdfe7ad890b0363a after the outdated keyboard expectation was corrected. Its complete CI and independent public acceptance passed. The 1.58.1 visual patch is a separate candidate, not another endgame balance change.

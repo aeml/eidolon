@@ -7,8 +7,8 @@ export function equipmentWithAppearances(equipment = {}, appearances = {}) {
     for (const [slot, look] of Object.entries(appearances || {})) {
         const item = equipment?.[slot];
         if (!item?.id || !isActiveEquipment(slot, item) || !look?.baseName ||
-            !itemFitsEquipmentSlot({ slot: look.slot, type: 'ARMOR' }, slot)) continue;
-        rendered[slot] = { ...item, baseName: look.baseName, name: look.baseName, rarity: look.rarity || 'Common' };
+            !itemFitsEquipmentSlot({ slot: look.slot, type: look.slot === 'mainHand' ? 'WEAPON' : 'ARMOR' }, slot)) continue;
+        rendered[slot] = { ...item, equipmentBaseName: item.baseName || item.name, baseName: look.baseName, name: look.baseName, rarity: look.rarity || 'Common' };
     }
     return rendered;
 }

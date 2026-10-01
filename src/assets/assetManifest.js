@@ -1,11 +1,9 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
+import { AUTHORED_ASSET_VERSIONS } from './authoredEquipment.generated.js';
 
 const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 
-const ASSET_VERSION_OVERRIDES = {
-    './assets/archetypes/Fighter/fighter-runtime-high.glb': 'fda495c5e7fe60dc2',
-    './assets/archetypes/Fighter/fighter-runtime-low.glb': '357284df9e9f22f9'
-};
+const ASSET_VERSION_OVERRIDES = AUTHORED_ASSET_VERSIONS;
 
 const ASSET_PACKS = {
     'core-models': MeshCatalog.getStartupPreloadModelPaths(),
