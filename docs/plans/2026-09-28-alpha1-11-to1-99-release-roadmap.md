@@ -104,6 +104,11 @@ unit tests and one disposable Mongo test passed under the race detector in
 command or chat enforcement is connected; this foundation does not complete
 1.59 or decide its sanction/retention policy. Details and limitations are retained
 in the preparation record above.
+The prepared owner-only notice route and report-form appeal drafting now pass
+67 scoped client checks, focused server/database race checks and the 390×844
+native presentation route. No background polling, automatic appeals, live
+punishment command or chat enforcement was introduced. Full sanction policy and
+connected moderation acceptance remain open; these preparations are not shipped.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

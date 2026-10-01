@@ -123,6 +123,16 @@ describe('report save confirmation and privacy', () => {
         expect(ui.reportText.value).toBe('A detailed bug report');
     });
 
+    test('actual engine message route sends moderation notice replies to the owned form', () => {
+        const ui = setup();
+        ui.report.notice.handleResult = jest.fn();
+        const payload = { requestId: 'notice-request-000001', success: false };
+        GameEngine.prototype.handleServerMessage.call({ player: { id: 'reporter' }, uiManager: ui },
+            { type: 'moderation_notice_result', payload });
+        expect(ui.report.notice.handleResult).toHaveBeenCalledWith(payload);
+        expect(ui.reportText.value).toBe('A detailed bug report');
+    });
+
     test('keyboard focus skips collapsed disclosure contents even when the browser retains rectangles', () => {
         const ui = setup();
         const details = document.createElement('details');

@@ -93,6 +93,17 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	if err != nil || count != 8 || state.Revision != 1 || len(state.Receipts) != 1 || state.ActiveNotice(time.Now()) == nil {
 		t.Fatal(count, state, err)
 	}
+	owned, err := db.OwnChatMuteNotice("disposable-target")
+	if err != nil || owned == nil || owned.ID != issued.Notice.ID || owned.Reason != request.PublicReason {
+		t.Fatal("owner lost public notice", owned, err)
+	}
+	other, err := db.OwnChatMuteNotice("ordinary-account")
+	if err != nil || other != nil {
+		t.Fatal("another account received the target notice", other, err)
+	}
+	if _, err := db.OwnChatMuteNotice("missing-account"); err == nil {
+		t.Fatal("unknown owner reported as a clean account")
+	}
 	revoke := request
 	revoke.ID, revoke.ExpectedRevision, revoke.Action = "chat-revoke-request-001", 1, ChatModerationRevoke
 	revoke.NoticeID, revoke.DurationSeconds, revoke.PublicReason = issued.Notice.ID, 0, ""
@@ -103,6 +114,9 @@ func TestReportReviewMongoChatModerationAtomicRetryReversalAndRole(t *testing.T)
 	state, err = db.ReadAccountChatModeration(account)
 	if err != nil || state.Mute != nil || state.Revision != 2 || len(state.Receipts) != 2 {
 		t.Fatal(state, err)
+	}
+	if own, err := db.OwnChatMuteNotice("disposable-target"); err != nil || own != nil {
+		t.Fatal("reversal still visible as active", own, err)
 	}
 	retry, err := db.ApplyChatModeration("operator", account, request)
 	if err != nil || !reflect.DeepEqual(retry, issued) {

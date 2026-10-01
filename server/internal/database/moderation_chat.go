@@ -24,8 +24,8 @@ const (
 
 var ErrChatModerationConflict = errors.New("chat moderation changed or request identity reused")
 
-// Prepared persistence only: no socket handler or live enforcement calls this
-// store. Policy, confirmation UI, session fencing and enforcement remain gates.
+// Prepared persistence: no socket handler calls the mutation store. The owner
+// notice route is read-only. Policy, confirmation UI and enforcement remain gates.
 // Account _id is immutable; display-name changes cannot bypass this state.
 type ChatModerationRequest struct {
 	ID               string `json:"id"`
@@ -44,6 +44,12 @@ type ChatMuteNotice struct {
 	StartedAt time.Time `bson:"started_at" json:"startedAt"`
 	ExpiresAt time.Time `bson:"expires_at" json:"expiresAt"`
 	Reason    string    `bson:"reason" json:"reason"`
+}
+
+func (n ChatMuteNotice) Valid() bool {
+	return validChatNoticeID(n.ID) && !n.StartedAt.IsZero() && n.ExpiresAt.After(n.StartedAt) &&
+		n.ExpiresAt.Sub(n.StartedAt) <= time.Duration(MaximumChatMuteSeconds)*time.Second &&
+		strings.TrimSpace(n.Reason) != "" && boundedActivityText(n.Reason, 600, true)
 }
 
 // Never marshal private staff receipts as an account or player response.
@@ -189,6 +195,26 @@ func (s AccountChatModeration) validate() error {
 		}
 	}
 	return nil
+}
+
+// The authenticated owner is supplied by the server, never a request payload.
+// Project only moderation, not credentials, email, roles or character saves.
+func (db *DB) OwnChatMuteNotice(username string) (*ChatMuteNotice, error) {
+	if db == nil || db.users == nil || username == "" {
+		return nil, errors.New("chat moderation store unavailable")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var record struct {
+		State AccountChatModeration `bson:"chat_moderation"`
+	}
+	if err := db.users.FindOne(ctx, bson.M{"username": username}, options.FindOne().SetProjection(bson.M{"chat_moderation": 1})).Decode(&record); err != nil {
+		return nil, err
+	}
+	if err := record.State.validate(); err != nil {
+		return nil, err
+	}
+	return record.State.ActiveNotice(time.Now()), nil
 }
 
 func chatModerationFilter(accountID primitive.ObjectID, revision int64) bson.M {

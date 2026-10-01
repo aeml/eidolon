@@ -1,5 +1,6 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { ReportLookupUI } from './ReportLookupUI.js';
+import { ModerationNoticeUI } from './ModerationNoticeUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 
 const MAX_TEXT = 3200;
@@ -55,6 +56,7 @@ export class ReportUI {
         this.count = this.root.querySelector('#report-count');
         this.guidance = this.root.querySelector('#report-guidance');
         this.lookup = new ReportLookupUI(ui);
+        this.notice = new ModerationNoticeUI(ui, this);
         // A new character/session must not inherit another player's draft.
         this.text.value = '';
         this.optIn.checked = false;
@@ -121,6 +123,23 @@ export class ReportUI {
         this.text.value = draft; this.type.value = 'Player Report';
         this.updateCount(); this.updateGuidance();
         this.setStatus('Review the selected player and context, add your explanation, then Submit. Nothing has been sent.');
+        return true;
+    }
+
+    startModerationAppeal(noticeId) {
+        if (this.disposed || typeof noticeId !== 'string' || !/^[a-f0-9]{64}$/.test(noticeId)) return false;
+        if (this.pending) {
+            this.setStatus('Your report is still saving. Wait for confirmation before starting an appeal.'); return false;
+        }
+        const selected = `Moderation notice: ${noticeId}\nWhy I request a review and relevant facts:\n`;
+        const draft = this.text.value.trim() ? `${this.text.value}\n\n${selected}` : selected;
+        if ([...draft].length > MAX_TEXT) {
+            this.setStatus('Your existing draft is too long to add this notice. Finish or shorten it first; nothing was replaced.'); return false;
+        }
+        this.text.value = draft; this.type.value = 'Moderation Appeal';
+        this.updateCount(); this.updateGuidance();
+        this.setStatus('Appeal draft started. Add your explanation and review it before Submit. Nothing has been sent.');
+        this.text.focus();
         return true;
     }
 
@@ -194,6 +213,7 @@ export class ReportUI {
         if (this.disposed) return;
         this.disposed = true;
         this.lookup?.dispose();
+        this.notice?.dispose();
         disposeOwnedEvents(this);
         clearTimeout(this.timer);
         this.pending = null;

@@ -178,7 +178,7 @@ uniquely named, task-labeled disposable Mongo container was stopped and
 removed; production data was untouched.
 
 The temporary-chat-mute persistence foundation is now implemented and tested
-without connecting a live command or enforcement route. It stores account state
+without connecting a mutating command or enforcement route. It stores account state
 and a private staff receipt atomically against the immutable Mongo account ID,
 not a display name. A confirmed request names a conduct case or appeal, an
 explicit duration, a public explanation and a separate private reason. The store
@@ -204,6 +204,31 @@ step; no extra job or campaign/browser run was added. The task-labeled disposabl
 container and its anonymous test volumes were removed; production data was
 untouched. These checks do not prove connected chat enforcement, rename handling,
 account suspensions or the complete sanction-to-appeal flow.
+
+The prepared report form now has an explicit owner-only chat-mute notice check
+and a Start appeal draft action. The authenticated connection supplies the owner;
+the strict, rate-limited request accepts only a correlation ID. Database reads
+project moderation fields only, and session replacement or an owner change
+during the read prevents disclosure. Public responses contain only the notice
+reference, explanation and dates, not staff reasons, cases or account IDs.
+The UI checks only when clicked, retains no local notice catalog and starts an
+editable appeal without submitting or reversing anything. Pending submissions,
+oversized drafts and retired sessions remain protected.
+
+Four client suites passed 67 checks in 2.853 seconds. Focused handler and database
+race checks passed in 1.705 and 2.283 seconds, respectively; the disposable Mongo
+exercise now also checks owner separation and reversal visibility. Initial
+handler fixtures mistook permitted correlation IDs for invalid IDs and exceeded
+the real rate limit; corrected fixtures preserve both validation and throttling.
+The final 390×844 native Chrome report route passed in 15.1 seconds, including
+wrapped notices, touch-sized buttons, focus, draft-only appeals and no extra
+submission. Its render was inspected at
+`/tmp/eidolon-1-59-owner-notice-final-20261001`. Scoped lint and whitespace checks
+passed. The task-labeled Mongo container and anonymous test volumes were removed.
+This is unpublished prepared code and portrait presentation evidence, not a
+physical-phone check or complete moderation acceptance. No mutation handler or
+live chat enforcement is enabled; full policy, action UI and connected
+sanction-to-appeal acceptance remain required.
 
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is

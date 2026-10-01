@@ -590,7 +590,7 @@
 .report-lookup-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .report-lookup-controls input { flex: 1 1 200px; min-width: 0; }
 .report-lookup-controls button { min-height: 44px; flex: 0 1 auto; }
-#report-lookup-status { overflow-wrap: anywhere; line-height: 1.5; }
+#report-lookup-status, #moderation-notice-status { overflow-wrap: anywhere; line-height: 1.5; }
 #report-status { line-height: 1.5; overflow-wrap: anywhere; }
 #report-count { color: var(--color-text-muted); font-size: 13px; }
 .mobile-mode #report-screen { font-size: 16px; max-height: calc(100dvh - 24px); }

@@ -289,6 +289,12 @@ describe('UIBindings', () => {
         expect(ui.toggleReport).toHaveBeenCalledTimes(1);
         ui.onReportSubmit(ui.reportType.value, ui.reportText.value);
         expect(engine.network.send).toHaveBeenCalledWith('report', expect.objectContaining({ reportType: 'Player Report' }));
+        engine.network.send.mockClear();
+        expect(ui.onModerationNoticeLookup('notice-request-000001')).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledWith('moderation_notice', { requestId: 'notice-request-000001' });
+        engine.network.send.mockClear(); engine.isMultiplayer = false;
+        expect(ui.onModerationNoticeLookup('notice-request-000002')).toBe(false);
+        expect(engine.network.send).not.toHaveBeenCalled();
         ui.report.dispose();
     });
 

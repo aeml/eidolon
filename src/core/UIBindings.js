@@ -124,6 +124,11 @@ export class UIBindings {
             engine.network.send('report_status', { reportId, requestId });
             return true;
         };
+        ui.onModerationNoticeLookup = requestId => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('moderation_notice', { requestId });
+            return true;
+        };
         ui.social.onSafety = (action, username, context = '') => {
             if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;
             if (action === 'report') {

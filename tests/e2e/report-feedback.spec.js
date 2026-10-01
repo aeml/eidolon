@@ -26,6 +26,8 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
             ui.onReportSubmit = (type, text, requestId) => { ui.requests.push({ type, text, requestId }); return true; };
             ui.lookups = [];
             ui.onReportLookup = (reportId, requestId) => { ui.lookups.push({reportId, requestId}); return true; };
+            ui.noticeLookups = [];
+            ui.onModerationNoticeLookup = requestId => { ui.noticeLookups.push({ requestId }); return true; };
             ui.report = new ReportUI(ui);
             ui.registerWindowLayouts();
             document.getElementById('btn-close-report-header').onclick = () => ui.toggleReport();
@@ -111,6 +113,34 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await page.screenshot({path: testInfo.outputPath('own-report-status.png')});
         await dialog.getByText('Check a report I submitted', {exact: true}).click();
         const bounds = await dialog.boundingBox();
+        if (width === 390) {
+            const disclosure = dialog.getByText('My chat-mute notice and appeal', { exact: true });
+            await disclosure.click();
+            const checkNotice = dialog.getByRole('button', { name: 'Check my chat-mute notice', exact: true });
+            await checkNotice.scrollIntoViewIfNeeded();
+            expect((await checkNotice.boundingBox()).height).toBeGreaterThanOrEqual(44);
+            await checkNotice.click();
+            await page.evaluate(() => {
+                const ui = window.__reportFixture;
+                ui.noticeReportCount = ui.requests.length;
+                ui.report.notice.handleResult({ requestId: ui.noticeLookups.at(-1).requestId, success: true,
+                    notice: { id: 'a'.repeat(64), reason: 'Temporary chat restriction. You may request a review.',
+                        startedAt: new Date(Date.now()-60000).toISOString(), expiresAt: new Date(Date.now()+540000).toISOString() } });
+            });
+            const noticeStatus = page.locator('#moderation-notice-status');
+            await expect(noticeStatus).toContainText('Temporary chat restriction');
+            await expect(noticeStatus).toContainText('does not automatically reverse');
+            expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+            await page.screenshot({ path: testInfo.outputPath('own-moderation-notice.png') });
+            await dialog.getByRole('button', { name: 'Start appeal draft', exact: true }).click();
+            await expect(page.getByLabel('Report type')).toHaveValue('Moderation Appeal');
+            await expect(text).toHaveValue(/Moderation notice: a{64}/);
+            await expect(text).toBeFocused();
+            expect(await page.evaluate(() => window.__reportFixture.requests.length - window.__reportFixture.noticeReportCount)).toBe(0);
+            await text.fill('');
+            await page.getByLabel('Report type').selectOption('Bug Report');
+            await disclosure.click();
+        }
         expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.y).toBeGreaterThanOrEqual(0);
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(height + 1);
@@ -118,6 +148,8 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         const submit = page.getByRole('button', { name: 'Submit', exact: true });
         await submit.focus(); await page.keyboard.press('Tab');
         await expect(dialog.getByText('Check a report I submitted', {exact: true})).toBeFocused();
+        await page.keyboard.press('Tab');
+        await expect(dialog.getByText('My chat-mute notice and appeal', {exact: true})).toBeFocused();
         await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Close report form' })).toBeFocused();
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
