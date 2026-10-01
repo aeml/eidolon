@@ -1,8 +1,8 @@
 # Alpha 1.57 world event discovery and cohort checks
 
 The four existing elemental event families now have server-published upcoming
-windows, clearer atlas guidance and explicit reward instructions. This is local,
-unpublished preparation after 1.56, not a deployed release. The preceding 1.55
+windows, clearer atlas guidance and explicit reward instructions. This is locally
+packaged as Alpha 1.57.0 but unpublished after 1.56, not a deployed release. The preceding 1.55
 CI is still active; the 1.56 calendar/operator decision remains open. Preserve
 ordered publication, current saves and the existing event economy.
 
@@ -89,10 +89,19 @@ prepared mechanical cohorts.
 
 ## Remaining release work
 
+Local packaging passed 335 version/publisher checks in 3.088 seconds and both
+unchanged anonymous login/release routes in 9.5 seconds. Scoped lint, shell syntax
+and diff checks passed. Login version agrees with the local manifest; new 1.57
+notes precede the complete prior history. The notes screenshot was reviewed in
+`/tmp/eidolon-1-57-login-notes-1001`. This does not establish public deployment
+or backend readiness. Fighter source documentation now reflects the already
+accepted rigged integration rather than calling it an unintegrated export;
+the original GLB and licensing notices remain unchanged.
+
 Keep this branch unpublished until 1.55 is accepted and the necessary 1.56 policy
 decision and release are complete. Review any event issues reported by players
-without adding speculative queue splits or personal reward systems. Align the
-1.57 version and cumulative patch notes, fresh-fetch and merge master, then push
+without adding speculative queue splits or personal reward systems. Fresh-fetch
+and merge master immediately before publishing the aligned 1.57 package, then push
 normally. Luna monitors CI; independent exact public frontend/backend identity,
 database readiness and changed-asset verification remain required. Source
 documentation was reviewed; rendered documentation preview was unavailable.

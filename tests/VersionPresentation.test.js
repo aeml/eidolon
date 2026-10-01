@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.56.0';
+const currentVersion = '1.57.0';
+
+test('1.57.0 records event discovery without extra currencies or premature activation', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.57.0"'), previous = html.indexOf('data-version="1.56.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['discover the next world event', 'next three server-scheduled events', 'UTC windows',
+        'personal waypoints', 'do not spawn enemies early', 'Root, Tide, Ember and Gale', 'normal loot and nearby party XP',
+        'no extra completion purse or reward to claim', 'expire without spawning waves', 'cannot speed up the ward',
+        'not proof of final human cohort balance', 'Gold/EP separation', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.56.0 records cosmetic season claims without power or a new calendar', () => {
     const html = fs.readFileSync('index.html', 'utf8');
