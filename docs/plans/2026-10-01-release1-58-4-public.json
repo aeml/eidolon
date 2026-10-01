@@ -3,7 +3,11 @@
   "version": "Alpha 1.58.4",
   "commit": "d3086750869f0515f50661e12bde7d6f84e1e204",
   "ciRun": 36937032122,
-  "status": "public-verified-awaiting-final-CI",
+  "status": "accepted",
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "acceptanceVerifiedAt": "2026-10-01T23:22:42Z",
   "verifiedAt": "2026-10-01T23:10:58.348Z",
   "transport": "Ordinary public DNS, IPv4 and verified HTTPS; no origin override.",
   "frontend": {
@@ -24,7 +28,7 @@
     {"path":"src/styles/tooltips.css","bytes":952,"sha256":"7915771c85ef50ed80ff1ddd3a749dd8c6d7b5906a89ad7206a3d5381e22c3b3","matchesExactPublisherOutput":true}
   ],
   "limits": [
-    "Nine CI jobs had passed; final live release and character QA was still running when these public checks completed.",
+    "Public hashes were checked before the final QA job completed; all ten exact-source jobs then passed and public identities/database readiness were rechecked before acceptance.",
     "This receipt checks five changed publisher artifacts, not every runtime file or model route.",
     "No unpublished 1.59 moderation code is included in the tooltip release; phone, art and pacing acceptance remain separate."
   ]

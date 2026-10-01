@@ -1,7 +1,10 @@
 {
   "schema": 1,
   "version": "Alpha 1.58.4",
-  "status": "prepared",
+  "status": "accepted",
+  "commit": "d3086750869f0515f50661e12bde7d6f84e1e204",
+  "ciRun": 36937032122,
+  "acceptanceReceipt": "2026-10-01-release1-58-4-public.json",
   "parentCommit": "e593fc213cbd9f0a8513fe325305c5dd5589a27b",
   "scope": [
     "Canonical Cloth, Leather and Plate armor labels; Sword, Dagger, Mace, Staff, Shield and Tome labels.",
@@ -22,7 +25,6 @@
     "No unpublished 1.59 moderation code or policy changes."
   ],
   "remaining": [
-    "Exact-source CI and independent public release/artifact acceptance.",
     "Full 1.59 moderation and subsequent roadmap milestones; owner art, physical-phone and pacing gates remain separate."
   ]
 }

@@ -2,8 +2,8 @@
 
 October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
 locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
-accepted live Alpha 1.58.3 graphics and the pushed Alpha 1.58.4 tooltip candidate;
-1.58.4 exact-source CI/public acceptance is still pending. No 1.59 package or milestone completion
+accepted live Alpha 1.58.3 graphics and accepted live Alpha 1.58.4 tooltips.
+No 1.59 package or milestone completion
 is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
 
@@ -79,8 +79,10 @@ No 1.59 feature was included in that deployment.
 The subsequent 1.58.4 merge preserves readable equipment-type labels, red
 class-restriction warnings and cumulative notes alongside the unpublished
 moderation preparation. Its pushed source is
-d3086750869f0515f50661e12bde7d6f84e1e204, CI36937032122; a running workflow is
-not release acceptance. No unpublished moderation code is included in that patch.
+d3086750869f0515f50661e12bde7d6f84e1e204, CI36937032122. All ten exact-source
+jobs passed; public identities, database readiness and five changed publisher
+artifacts are verified in the [acceptance receipt](2026-10-01-release1-58-4-public.json).
+No unpublished moderation code is included in that patch.
 After resolving documentation-only overlaps, five focused equipment/inspection,
 report, notice and binding suites passed all 111 checks in 21.635 seconds on the
 busy host. No full campaign or native browser run was repeated for this merge.
@@ -271,7 +273,8 @@ write is not acknowledged as success and permits only an explicit identical
 retry. Account state and its private receipt remain one atomic database write;
 neither applying nor reversing a mute resolves the case automatically. This
 handler is deliberately absent from both the protocol registry and admission
-map. Target preview, confirmation UI, approved policy and activation remain open.
+map. Target-preview and confirmation presentation are now prepared below;
+approved policy, activation and connected acceptance remain open.
 
 Five new tests, including 19 invalid payloads and four authority changes during
 admission, passed with existing report-review, chat-guard and protocol checks
@@ -282,6 +285,36 @@ checks passed in 1.125 seconds. No Mongo/browser/campaign run or production
 sanction was performed; the preceding disposable database receipt remains the
 evidence for atomic retries and reversal. This is handler preparation, not full
 staff-to-player sanction or appeal acceptance.
+
+The [prepared target and staff UI record](2026-10-01-release1-59-chat-target.json)
+now includes a bounded account preview and dormant confirmation controls. The
+target is chosen explicitly rather than inferred from the report author. Only
+the account ID, name, revision and active public notice are returned; private
+receipts, saves and credentials are excluded. Role/session and audit failures
+prevent disclosure. Pure projection and handler checks passed; the new Mongo
+read remains part of the final disposable integration exercise, not a claimed
+database proof from these unit fixtures.
+
+The staff UI quotes case/account/revision, duration and both explanations before
+a separate confirmation. Cancellation sends no change, and success or conflict
+requires another account read before a new decision. Uncertain replies and
+timeouts retain the exact confirmed nonce and values for manual retry only;
+each server request still independently checks permissions. The UI never claims
+a timeout refreshed its last-known role. The default remains hidden and the
+server action/read protocols and chat enforcement remain inactive.
+
+Four client suites passed 46 checks in 1.937 seconds. An initial control-text
+fixture used a newline that the browser removes from text inputs; a retained
+control character now verifies rejection. The existing 390×844 native admin
+case passed in 12.8 seconds, covering explicit target selection, readable wrapped
+quotes, touch-sized confirmation and unchanged synthetic case status. Its first
+setup appended a second report page instead of matching normal refreshView;
+resetting the list corrected that fixture without weakening its assertion. The
+final screenshot was inspected in
+`/tmp/eidolon-1-59-chat-mute-ui-final-20261001`. Scoped lint and whitespace passed.
+This is prepared portrait UI, not a real phone or connected sanction flow. No
+new CI job, campaign, production action or policy was introduced. Documentation
+was source-reviewed; a rendered documentation preview was unavailable.
 
 The owner question about initial temporary chat mutes and required name changes
 versus account suspensions remains unanswered. No live sanction policy is

@@ -1,6 +1,7 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { AdminOperations } from './AdminOperations.js';
 import { AdminReportReview } from './AdminReportReview.js';
+import { AdminChatModeration } from './AdminChatModeration.js';
 
 // Visibility is only presentation. Every read and operation must be
 // independently authorized by the server against the current durable role.
@@ -10,6 +11,8 @@ export class AdminUI {
         this.authorized = false;
         this.view = 'players';
         this.reportReviews = [];
+        this.reportModerations = [];
+        this.chatModerationEnabled = false; // Prepared only; server policy/activation is still pending.
         this.root = document.createElement('section');
         this.root.id = 'administration-screen';
         this.root.className = 'window support-window administration-window';
@@ -102,6 +105,7 @@ export class AdminUI {
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
+        for (const moderation of this.reportModerations) moderation.setState(Boolean(this.pending));
         if (!this.authorized) {
             this.clearReportReviews();
             this.list.replaceChildren();
@@ -121,9 +125,19 @@ export class AdminUI {
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
         for (const review of this.reportReviews) review.setState(true);
+        for (const moderation of this.reportModerations) moderation.setState(true);
         this.timeout = setTimeout(() => {
+            const request = this.pending;
             this.pending = null;
             this.root.setAttribute('aria-busy', 'false');
+            if (request && ['admin_chat_moderation', 'admin_chat_moderation_target'].includes(request.type)) {
+                this.actor.disabled = this.action.disabled = this.next.disabled = false;
+                const message = 'No reply was received. Chat decisions are unconfirmed; retry only the exact same decision or check the account again. Server permissions are rechecked on every request.';
+                for (const moderation of this.reportModerations) moderation.handleResult(`${request.type}_result`,
+                    { id: request.id, pending: request.type === 'admin_chat_moderation', message });
+                this.setAuthorized(this.authorized); this.status.textContent = message;
+                return;
+            }
             this.setAuthorized(false);
             this.status.textContent = 'Administration did not respond. Reopen the game menu to verify access again.';
         }, 10_000);
@@ -162,13 +176,18 @@ export class AdminUI {
         this.actor.disabled = this.action.disabled = this.reportStatus.disabled = this.reportType.disabled = false;
         const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
         const reviewResult = type === 'admin_report_review_result';
-        this.setAuthorized(result.authorized === true && (mutation || reviewResult || result.success === true));
+        const moderationResult = ['admin_chat_moderation_result', 'admin_chat_moderation_target_result'].includes(type);
+        this.setAuthorized(result.authorized === true && (mutation || reviewResult || moderationResult || result.success === true));
         if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
             this.status.textContent = result.message || 'Administrator access is unavailable.';
             return;
         }
         this.status.textContent = result.message || 'Access verified.';
+        if (moderationResult) {
+            for (const moderation of this.reportModerations) moderation.handleResult(type, result);
+            return;
+        }
         if (reviewResult) {
             for (const review of this.reportReviews) review.handleResult(result);
             if (result.success === true) { this.reviewNotice = result.message; this.refreshView(''); }
@@ -226,6 +245,9 @@ export class AdminUI {
             details.append(summary, json); row.append(title, author, details); this.list.append(row);
             const review = new AdminReportReview(row, report, this);
             this.reportReviews.push(review);
+            if (this.chatModerationEnabled && ['Player Report', 'Moderation Appeal'].includes(report.reportType)) {
+                this.reportModerations.push(new AdminChatModeration(row, report, this));
+            }
         }
         this.cursor = typeof page?.next === 'string' ? page.next : '';
         this.next.hidden = !this.cursor; this.next.disabled = false;
@@ -234,7 +256,10 @@ export class AdminUI {
         this.reviewNotice = '';
     }
 
-    clearReportReviews() { for (const review of this.reportReviews) review.dispose(); this.reportReviews = []; }
+    clearReportReviews() {
+        for (const review of this.reportReviews) review.dispose(); this.reportReviews = [];
+        for (const moderation of this.reportModerations) moderation.dispose(); this.reportModerations = [];
+    }
 
     renderHistory(history) {
         const entries = Array.isArray(history?.entries) ? history.entries.slice(0, 50) : [];

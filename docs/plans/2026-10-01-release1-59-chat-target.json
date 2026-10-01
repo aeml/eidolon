@@ -8,19 +8,24 @@
     "Bounded preview of immutable account ID, account name, revision and active public mute notice; no credentials, saves or private receipts.",
     "Database role checks around the projected read; handler session/role checks around the read and admission audit.",
     "Fail closed on unavailable authority, malformed or mismatched target, audit failure, role revocation and session replacement.",
-    "Prepared target-preview protocol remains absent from both registration and admission maps."
+    "Prepared target-preview protocol remains absent from both registration and admission maps.",
+    "Dormant staff UI requires an explicit target preview, quoted case/account/revision/duration/reasons and separate confirmation; cancelling sends no action.",
+    "Manual exact retries survive uncertain replies and timeouts without automatic writes; refreshed, revoked or disposed rows retire their controls."
   ],
   "checks": {
     "handler": "Three new target-handler tests include 12 invalid payloads and eight retirement cases during read or audit. Scoped handler/action/guard/protocol race checks passed in 5.336 seconds.",
     "database": "Two new projection tests cover public-only JSON, defensive notice copying, exact expiry, legacy empty state, six invalid projections and unavailable stores. Scoped projection/activity race checks passed in 1.303 seconds.",
-    "whitespace": "Passed."
+    "client": "46 checks passed across new staff UI, existing admin/report-review and binding suites in 1.937 seconds. Initial newline-control fixture was corrected because text inputs strip newlines; a retained control character verifies rejection.",
+    "native": "Existing 390x844 administration layout case passed in 12.8 seconds (14.3 total), with quote/confirmation, touch sizing, safe wrapping, explicit target selection and unchanged synthetic case status. Screenshot inspected. The first fixture incorrectly appended a second report page; resetting the list like normal refreshView fixed that setup without changing the assertion.",
+    "nativeArtifacts": "/tmp/eidolon-1-59-chat-mute-ui-final-20261001",
+    "lint": "Scoped ESLint and whitespace passed."
   },
   "remaining": [
     "Exercise the new projected Mongo read in the final disposable moderation flow; pure projections do not prove database permissions or query behavior.",
-    "Connect target preview and confirmed staff-action UI, then approved policy and protocol/enforcement activation.",
+    "Approved policy, protocol/enforcement activation and complete connected staff-action/appeal acceptance; the prepared UI is hidden by default.",
     "Complete sanction-to-appeal acceptance and remaining name-abuse/sanction/staff/retention scope before publishing 1.59."
   ],
   "excluded": [
-    "No publication, production account action, new policy, retention change or browser/campaign run."
+    "No publication, production account action, new policy, retention change or campaign run; native evidence is synthetic portrait UI, not physical-phone or production permission certification."
   ]
 }

@@ -32,6 +32,11 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     ...(['admin_grant_gold', 'admin_grant_item', 'admin_teleport'].includes(type) ? {
                         final: true, message: 'Synthetic presentation result: change saved.'
                     } : {}),
+                    ...(type === 'admin_chat_moderation_target' ? { target: {
+                        accountId: 'abcdef012345678901234567', account: payload.target, revision: 2
+                    } } : {}),
+                    ...(type === 'admin_chat_moderation' ? { final: true,
+                        message: 'Synthetic presentation result: chat decision recorded; case unchanged.' } : {}),
                     ...(type === 'admin_players' ? { players: Array.from({ length: 50 }, (_, index) => ({
                         account: `realm-warden-${index}`, name: `Lanternhold Defender ${index}`, class: 'Fighter', level: 70
                     })), next: 'realm-warden-49' } : {}),
@@ -111,6 +116,35 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         expect((await dialog.getByRole('combobox', { name: 'Report category', exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(44);
         expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('administration-report-triage.png') });
+        if (viewport.width === 390) {
+            await page.evaluate(() => {
+                const admin = window.__adminLayout.admin;
+                admin.chatModerationEnabled = true; // Prepared UI only; no live policy or account action.
+                admin.list.replaceChildren(); // Match the normal refreshView replacement, not an appended second page.
+                admin.renderReports({ reports: [{ id: '0123456789abcdef01234567', username: 'fixture-reporter',
+                    reportType: 'Player Report', status: 'open', reviewRevision: 0, text: 'Synthetic conduct case.' }] });
+            });
+            const moderation = dialog.locator('.administration-review').filter({ has: page.locator('summary', { hasText: 'Temporary chat mute or reversal' }) });
+            await moderation.locator('summary').click();
+            await expect(moderation.getByLabel('Exact account to review')).toHaveValue('');
+            await moderation.getByLabel('Exact account to review').fill('realm-warden-0');
+            await moderation.getByRole('button', { name: 'Check this account', exact: true }).click();
+            await expect(moderation).toContainText('revision 2');
+            await moderation.getByLabel('Mute duration in minutes').fill('10');
+            await moderation.getByLabel('Public explanation shown to the player').fill('Review of repeated abusive chat. You may appeal.');
+            await moderation.getByLabel('Private staff evidence or reversal reason').fill('Reviewed the selected synthetic conduct case.');
+            await moderation.getByRole('button', { name: 'Review temporary mute', exact: true }).click();
+            await expect(moderation.getByRole('button', { name: 'Keep unchanged', exact: true })).toBeFocused();
+            const confirmMute = moderation.getByRole('button', { name: 'Confirm decision', exact: true });
+            await confirmMute.scrollIntoViewIfNeeded();
+            expect((await confirmMute.boundingBox()).height).toBeGreaterThanOrEqual(44);
+            expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+            await page.screenshot({ path: testInfo.outputPath('administration-chat-mute-confirmation.png') });
+            await confirmMute.click();
+            await expect(moderation.getByRole('status')).toContainText('case unchanged');
+            await expect(dialog.locator('li strong').first()).toHaveText('Player Report · open');
+            await expect(moderation.getByRole('button', { name: 'Review temporary mute', exact: true })).toBeDisabled();
+        }
         const operations = dialog.locator('.administration-operations');
         await operations.locator('summary').click();
         await operations.getByLabel('Target account', { exact: true }).fill('realm-warden-0');
