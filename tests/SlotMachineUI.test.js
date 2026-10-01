@@ -74,6 +74,86 @@ test('bonus overlay waits for reels and wins, then exposes themed choices once',
     } finally { ui.dispose(); jest.useRealTimers(); }
 });
 
+test.each(['gold', 'ep'])('auto queue pauses for bonus choice and saved reveal, then resumes without counting the choice as a spin: %s', currency => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update({ ...view, currency }); ui.count.value = '3'; ui.auto.click();
+        const triggered = resultView(2, { currency, session: { bonus: true, freeSpins: 5 } });
+        triggered.session.last.freeAwarded = 5;
+        ui.update(triggered); jest.advanceTimersByTime(4200);
+        expect(ui.autoRemaining).toBe(2); expect(ui.autoStatus.textContent).toContain('paused');
+        expect(ui.bonus.hidden).toBe(false); expect(ui.stop.disabled).toBe(false);
+        ui.bonus.querySelector('button').click();
+        expect(send).toHaveBeenLastCalledWith({ action: 'slot_bonus', choice: 0, roundRevision: 2 });
+        expect(ui.autoRemaining).toBe(2);
+        const picked = { ...triggered, session: { ...triggered.session, revision: 3, bonus: false,
+            last: { ...triggered.session.last, bonusPicked: 0, bonusPayout: 40 } } };
+        ui.update({ ...picked, processing: true }); jest.advanceTimersByTime(5000);
+        expect(send).toHaveBeenCalledTimes(2); expect(ui.celebration.active).toBe(false);
+        ui.update(picked); expect(ui.celebration.title.textContent).toBe('BONUS REVEALED');
+        jest.advanceTimersByTime(2999); expect(send).toHaveBeenCalledTimes(2);
+        jest.advanceTimersByTime(1);
+        expect(send).toHaveBeenLastCalledWith({ action: 'slot_spin', bet: 20, roundRevision: 3 });
+        expect(ui.autoRemaining).toBe(1);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('old revisions and bonus/spin actions for the wrong state cannot be sent', () => {
+    const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view);
+        ui.act({ action: 'slot_spin', bet: 20, roundRevision: 0 });
+        ui.act({ action: 'slot_bonus', choice: 0, roundRevision: 1 });
+        expect(send).not.toHaveBeenCalled(); expect(ui.pending).toBeFalsy();
+        ui.update({ ...view, session: { ...view.session, revision: 2, bonus: true, freeSpins: 5 } });
+        ui.act({ action: 'slot_spin', bet: 20, roundRevision: 2 });
+        ui.act({ action: 'slot_bonus', choice: 0, roundRevision: 1 });
+        expect(send).not.toHaveBeenCalled(); expect(ui.pending).toBeFalsy();
+        ui.bonus.querySelector('button').click(); expect(send).toHaveBeenCalledTimes(1);
+    } finally { ui.dispose(); }
+});
+
+test('synchronizing cancels an in-flight reel presentation and does not replay it on recovery', () => {
+    jest.useFakeTimers(); const sound = jest.fn(), ui = new SlotMachineUI(jest.fn(), sound);
+    try {
+        ui.update(view); const next = resultView(2); next.session.last.payout = 200;
+        ui.update(next); jest.advanceTimersByTime(90); expect(ui.animating).toBe(true);
+        ui.update({ ...next, available: false }); jest.advanceTimersByTime(6000);
+        expect(ui.animating).toBe(false); expect(ui.celebration.active).toBe(false); expect(sound).not.toHaveBeenCalled();
+        ui.update(next); jest.advanceTimersByTime(6000);
+        expect(ui.result.textContent).toContain('200 Gold returned');
+        expect(ui.animating).toBe(false); expect(ui.celebration.active).toBe(false); expect(sound).not.toHaveBeenCalled();
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('new win and bonus reveals bring the stage into view without scrolling on unchanged polls', () => {
+    jest.useFakeTimers(); const ui = new SlotMachineUI(jest.fn()); ui.stage.scrollIntoView = jest.fn();
+    try {
+        ui.update(view);
+        const triggered = resultView(2, { session: { bonus: true, freeSpins: 5 } });
+        triggered.session.last.freeAwarded = 5;
+        ui.update(triggered); jest.advanceTimersByTime(1700);
+        expect(ui.stage.scrollIntoView).toHaveBeenCalledTimes(1);
+        ui.update(triggered); expect(ui.stage.scrollIntoView).toHaveBeenCalledTimes(1);
+        jest.advanceTimersByTime(2500); expect(ui.stage.scrollIntoView).toHaveBeenCalledTimes(2);
+        ui.update(triggered); expect(ui.stage.scrollIntoView).toHaveBeenCalledTimes(2);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('Stop during a bonus pause cancels future spins but leaves the saved choice usable', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        ui.update(view); ui.count.value = '3'; ui.auto.click();
+        const triggered = resultView(2, { session: { bonus: true, freeSpins: 5 } });
+        triggered.session.last.freeAwarded = 5;
+        ui.update(triggered); jest.advanceTimersByTime(4200);
+        expect(ui.autoRemaining).toBe(2); ui.stop.click(); expect(ui.autoRemaining).toBe(0);
+        ui.bonus.querySelector('button').click(); expect(send).toHaveBeenCalledTimes(2);
+        ui.update({ ...triggered, session: { ...triggered.session, revision: 3, bonus: false } });
+        jest.advanceTimersByTime(6000); expect(send).toHaveBeenCalledTimes(2);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
 test('a pending payout waits for saved settlement before celebrating', () => {
     jest.useFakeTimers(); const ui = new SlotMachineUI(jest.fn());
     try {
@@ -101,7 +181,7 @@ test('queued spins wait for settlement and animation, use fresh revisions and en
     } finally { ui.dispose(); jest.useRealTimers(); }
 });
 
-test.each(['stop', 'leave', 'unavailable', 'bonus', 'funds', 'hidden', 'timeout'])('auto spins stop safely on %s', reason => {
+test.each(['stop', 'leave', 'unavailable', 'funds', 'hidden', 'timeout'])('auto spins stop safely on %s', reason => {
     jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
     try {
         ui.update(view); ui.count.value = '50'; ui.auto.click();
@@ -113,10 +193,58 @@ test.each(['stop', 'leave', 'unavailable', 'bonus', 'funds', 'hidden', 'timeout'
             document.dispatchEvent(new Event('visibilitychange'));
         }
         if (reason === 'timeout') jest.advanceTimersByTime(10000);
-        if (reason !== 'leave') ui.update(resultView(2, { gold: reason === 'funds' ? 0 : 300, session: { bonus: reason === 'bonus' } }));
+        if (reason !== 'leave') ui.update(resultView(2, { gold: reason === 'funds' ? 0 : 300 }));
         jest.advanceTimersByTime(6000);
         expect(send).toHaveBeenCalledTimes(1); expect(ui.autoRemaining).toBe(0);
     } finally { ui.dispose(); jest.restoreAllMocks(); jest.useRealTimers(); }
+});
+
+test.each(['theme', 'currency'])('retired bonus choices cannot act on a replacement machine with the same revision: %s', change => {
+    const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        const bonus = { ...view, session: { ...view.session, bonus: true, freeSpins: 5 } };
+        ui.update(bonus); const oldChoice = ui.bonus.querySelector('button');
+        const replacement = change === 'theme' ? { ...bonus, machine: { ...machine, theme: 'fire' } } : { ...bonus, currency: 'ep' };
+        ui.update(replacement); oldChoice.click();
+        expect(send).not.toHaveBeenCalled();
+        ui.bonus.querySelector('button').click();
+        expect(send).toHaveBeenCalledTimes(1);
+        expect(send).toHaveBeenLastCalledWith({ action: 'slot_bonus', choice: 0, roundRevision: 1 });
+    } finally { ui.dispose(); }
+});
+
+test('synchronizing retires bonus controls; same-revision recovery renders current choices without autoplay or replay', () => {
+    jest.useFakeTimers(); const send = jest.fn(), sound = jest.fn(), ui = new SlotMachineUI(send, sound);
+    try {
+        ui.update(view); ui.count.value = '3'; ui.auto.click();
+        const triggered = resultView(2, { session: { bonus: true, freeSpins: 5 } });
+        triggered.session.last.freeAwarded = 5;
+        ui.update(triggered); jest.advanceTimersByTime(4200);
+        const oldChoice = ui.bonus.querySelector('button');
+        const replacement = { ...triggered, machine: { ...machine, theme: 'water', bonusChoices: ['Read the tide', 'Open the shell'] } };
+        ui.update({ ...replacement, available: false });
+        expect(ui.autoRemaining).toBe(0); expect(ui.celebration.active).toBe(false);
+        ui.update(replacement); oldChoice.click();
+        expect(send).toHaveBeenCalledTimes(1);
+        expect(ui.bonus.querySelector('button').textContent).toBe('Read the tide');
+        expect(ui.animating).toBe(false); expect(ui.celebration.active).toBe(false);
+        jest.advanceTimersByTime(6000); expect(send).toHaveBeenCalledTimes(1);
+        ui.bonus.querySelector('button').click(); expect(send).toHaveBeenCalledTimes(2);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('leaving retires bonus choices and disposal cannot be revived by late snapshots', () => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
+    try {
+        const bonus = { ...view, session: { ...view.session, bonus: true, freeSpins: 5 } };
+        ui.update(bonus); const oldChoice = ui.bonus.querySelector('button');
+        ui.update(null); ui.update(bonus); oldChoice.click(); expect(send).not.toHaveBeenCalled();
+        ui.bonus.querySelector('button').click(); expect(send).toHaveBeenCalledTimes(1);
+        ui.dispose(); ui.update(view); ui.count.value = '50'; ui.startAuto(); ui.spinOnce();
+        jest.advanceTimersByTime(20000);
+        expect(ui.root.hidden).toBe(true); expect(ui.view).toBeNull();
+        expect(send).toHaveBeenCalledTimes(1); expect(jest.getTimerCount()).toBe(0);
+    } finally { ui.dispose(); jest.useRealTimers(); }
 });
 
 test('queue rejects invalid counts and consumes saved free spins without changing their stake', () => {

@@ -1,0 +1,64 @@
+{
+  "milestone": "1.65",
+  "status": "local_changes_verified_not_packaged_or_deployed",
+  "sourceVersion": "Alpha 1.58.0",
+  "baseCommit": "794f2c16109211fbbcf6ca579b3ded47309a5c2f",
+  "worktree": "/tmp/eidolon-1-65-slots-Vluwhy",
+  "changes": [
+    "Auto-spin queues pause for bonus choices, durable settlement and the reveal, then resume with the current revision; bonus choices do not consume the queue.",
+    "Stop remains usable during a bonus pause; leaving, hiding, synchronization, connection trouble and insufficient funds still cancel unstarted spins.",
+    "Retired bonus widgets cannot act on another theme/currency or reopened session; disposed UIs cannot restart from late snapshots.",
+    "Recovery refreshes same-revision presentation without replaying outcomes or restarting auto spins.",
+    "New win and bonus reveals bring the stage into view; unchanged polls do not repeatedly scroll.",
+    "Published in-game queue rules describe pause/resume versus cancellation."
+  ],
+  "initialRegressionRun": {
+    "suite": "tests/SlotMachineUI.test.js",
+    "failed": 6,
+    "passed": 19,
+    "seconds": 1.726,
+    "failures": ["bonus_queue_cancelled", "stop_during_bonus", "retired_theme_choice", "retired_currency_choice", "same_revision_recovery", "disposed_ui_revived"]
+  },
+  "finalChecks": {
+    "client": {
+      "suites": ["tests/SlotMachineUI.test.js", "tests/CasinoCelebration.test.js", "tests/CasinoController.test.js", "tests/MotionPreference.test.js"],
+      "passed": 70,
+      "seconds": 5.058,
+      "scope": "Prepared server views and fake clocks; both Gold and EP queues, saved-reveal gating, fresh revisions, safe cancellation, stale widgets, recovery, disposal and reveal scrolling. Not funded socket sessions."
+    },
+    "server": {
+      "command": "go test -race ./internal/game -run '^TestSlot' -count=1",
+      "result": "passed",
+      "packageSeconds": 1.104,
+      "scope": "Retained slot rule, maximum-stake, payout, elemental mechanic, bonus persistence/redaction and RNG failure checks. No server rules changed; no fresh economy sampling."
+    },
+    "browser": {
+      "file": "tests/e2e/slot-machine-presentation.spec.js",
+      "passed": 1,
+      "seconds": 28.9,
+      "viewportSizes": [[390, 844], [1440, 1000]],
+      "outputDirectory": "/tmp/eidolon-1-65-slots-readable-1001",
+      "reviewedFinalImage": "slot-machine-presentation--962c9-ued-spins-for-bonus-choices/slots-auto-bonus-paused-phone.png",
+      "scope": "System Chrome with GPU disabled, DOM/CSS fixture and prepared outcomes. Visible bonus choices after scrolling auto controls, 100-spin preset pause/reveal/resume, Stop, manual next stake, desktop layout and gigantic-win overlay. Not connected wallets, physical seating, 3D rendering or an actual phone."
+    },
+    "eslintChangedFiles": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "retainedEvidence": [
+    {
+      "file": "docs/plans/2026-09-14-connected-slots-acceptance.md",
+      "scope": "Earlier real Gold/EP sockets, paid spins and prepared bonus/free-spin entitlements, duplicate rejection, seat/resume/leave and actual process restart. Does not prove the changed auto-spin presentation."
+    },
+    {
+      "file": "docs/plans/2026-09-13-elemental-slots.md",
+      "scope": "Four variants, exact symbol weights/paytables/features, current legal stakes and conservative payout bounds. Historical sampled returns retain uncertainty; not exact RTP or a fresh sample."
+    }
+  ],
+  "unchanged": ["server_rng", "paytables", "symbol_weights", "wagers_and_payouts", "wallet_isolation", "saved_entitlements", "stake_caps"],
+  "remaining": [
+    "Resolve the pending 1.59 moderation policy and finish earlier milestone release gates in order.",
+    "Package this milestone with its version/login number and patch notes when reached in the publication sequence.",
+    "Fetch and merge fresh master before normal push, then verify exact-source CI and public deployment.",
+    "Keep physical-phone, full-world performance and human casino feedback distinct from these prepared UI checks."
+  ]
+}
