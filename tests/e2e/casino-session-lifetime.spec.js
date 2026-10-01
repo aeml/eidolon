@@ -24,6 +24,7 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
         const { BASE_ITEMS, RARITY } = await import('/src/core/ItemSystem.js');
         const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
         const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
         const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         document.getElementById('start-screen').style.display = 'none';
         const socket = { readyState: WebSocket.OPEN, send() {}, close() { throw Error('Borrowed socket closed'); } };
@@ -39,7 +40,8 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
             const base = BASE_ITEMS.find(item => item.slot === slot.replace(/[12]$/, ''));
             return [slot, { ...base, id: `casino-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
         }));
-        if (player.syncEquipmentVisuals(gear).items !== 14) throw Error('Incomplete player gear');
+        player.syncEquipmentVisuals(gear); await player.mesh.userData.equipmentReady;
+        if (player.mesh.userData.equipmentVisualItemCount !== 14 || player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete player gear');
         const casino = engine.casino, render = engine.renderSystem, reports = [], games = [];
         const renderFrame = () => {
             const entities = engine.chunkManager.getActiveEntities();
@@ -85,7 +87,12 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
                     const table = tables.find(table => table.floor === floor && table.game === 'poker'), seat = table.seats[index + 1];
                     const guest = new Entity(`lifetime-${floor}-${type}`); guest.meshType = type; guest.gameEngine = engine;
                     await guest.ensureMesh();
-                    if (applyEquipmentVisuals(guest.mesh, gear).items !== 14) throw Error('Incomplete guest gear');
+                    const guestGear = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
+                        const base = BASE_ITEMS.find(item => canEquipItem(type, item, slot));
+                        return [slot, {...base, id: `guest-${type}-${slot}`, baseName: base.name, rarity: RARITY.RARE}];
+                    }));
+                    applyEquipmentVisuals(guest.mesh, guestGear); await guest.mesh.userData.equipmentReady;
+                    if (guest.mesh.userData.equipmentVisualItemCount !== 14 || guest.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete guest gear');
                     guest.position.set(seat.x, seat.y, seat.z); guest.state = 'SEATED'; guest.resetTransformInterpolation();
                     engine.addEntity(guest); engine.remotePlayers.set(guest.id, guest); guests.push(guest);
                 }
@@ -97,7 +104,10 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
                     render.camera.top = 58; render.camera.bottom = -58; render.camera.zoom = 1;
                     render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85)); render.camera.lookAt(focus); render.camera.updateProjectionMatrix();
                     renderFrame();
-                    reports.push({ cycle, floor, ...memory('overview'), visibleGuests: guests.filter(guest => guest.mesh.visible).length });
+                    const visible = guests.filter(guest => guest.mesh.visible);
+                    reports.push({ cycle, floor, ...memory('overview'), visibleGuests: visible.length,
+                        guestOwnership: visible.map(guest => ({class: guest.meshType, authoredClass: guest.mesh.userData.authoredClass,
+                            owned: actorRenderingIsOwned(render, guest.mesh), items: guest.mesh.userData.equipmentVisualItemCount})) });
                     for (const game of ['blackjack', 'poker', 'roulette', 'baccarat', 'slots']) {
                         const table = tables.find(table => table.floor === floor && table.game === game), physical = table.seats[0];
                         player.position.set(physical.x, physical.y, physical.z); player.resetTransformInterpolation(); player.state = 'SEATED';
@@ -142,7 +152,13 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
         expect(report.geometries).toBeGreaterThan(0); expect(report.intervals).toBe(0);
         expect(report.seats).toBe(232); expect(report.furnitureRoots).toBe(1);
         expect(report.playerRenderOwned).toBe(true);
-        if (report.label === 'overview') { expect(report.visibleGuests).toBe(4); expect(report.instanceBatches).toBeGreaterThan(0); }
+        if (report.label === 'overview') {
+            expect(report.visibleGuests).toBe(4); expect(report.instanceBatches).toBe(0);
+            expect(report.guestOwnership.map(guest => guest.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+            for (const guest of report.guestOwnership) {
+                expect(guest.owned).toBe(true); expect(guest.authoredClass).toBe(guest.class); expect(guest.items).toBe(14);
+            }
+        }
         else { expect(report.instanceBatches).toBe(0); expect(report.retiredGuests).toBe(true); expect(report.poses).toBe(0); expect(report.cutaways).toBe(0); expect(report.cachedVenueHidden).toBe(true); }
     }
     for (const game of result.games) {

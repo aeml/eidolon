@@ -39,17 +39,19 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
             actor.unlockedSkills = [actor.abilityName, ...[2, 3, 4, 5].map(tier => branch[`Tier${tier}`].name)];
             actor.baseStats[primaryStats[type]] = 120; actor.baseStats.vitality = 90;
             await actor.ensureMesh();
+            const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
             const gear = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, index) => {
-                const candidates = BASE_ITEMS.filter(item => item.slot === slot.replace(/[12]$/, ''));
+                const candidates = BASE_ITEMS.filter(item => canEquipItem(type, item, slot));
                 const armorVariant = type === 'Fighter' ? 1 : type === 'Rogue' ? 0 : 2;
                 const base = slot === 'mainHand' ? candidates.find(item => item.scaling === primaryStats[type])
-                    : slot === 'offHand' ? candidates[type === 'Wizard' || type === 'Cleric' ? 1 : 0]
+                    : slot === 'offHand' ? candidates[Math.min(type === 'Wizard' || type === 'Cleric' ? 1 : 0, candidates.length - 1)]
                         : candidates[Math.min(armorVariant, candidates.length - 1)];
                 return [slot, { ...base, id: `${id}-${slot}`, baseName: base.name, level: 75,
                     rarity: index % 2 ? RARITY.UNCOMMON : RARITY.RARE,
                     stats: { [primaryStats[type]]: 12, vitality: 8, [base.baseStat]: base.baseValue } }];
             }));
-            if (actor.syncEquipmentVisuals(gear).items !== 14) throw Error(`Incomplete ${type} equipment`);
+            actor.syncEquipmentVisuals(gear); await actor.mesh.userData.equipmentReady;
+            if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length) throw Error(`Incomplete ${type} equipment`);
             actor.recalculateStats(); actor.stats.hp = actor.stats.maxHp; actor.stats.mana = actor.stats.maxMana;
             return actor;
         };

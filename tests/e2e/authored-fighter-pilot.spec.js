@@ -3,6 +3,9 @@ import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
 test('derived Fighter assets render and animate with independent player skeletons', async ({ page, baseURL }, testInfo) => {
+    // Full High/Low gear, pose renders and two previews compile new PBR/skin
+    // programs on cold hosted Chrome as well as the faster native GPU route.
+    test.setTimeout(180_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/', { waitUntil: 'networkidle' });

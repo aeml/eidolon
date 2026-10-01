@@ -20,15 +20,18 @@ The [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is accepted
 after correcting an outdated keyboard expectation. It provides actual story/cache
 status, optional repeat-run goals, Resonance, Forge and collection guidance.
 Existing rewards and human pacing limits are preserved.
-The next patch candidate, Alpha1.58.1, improves the level-up celebration and
-Well Rested aura without changing gameplay rules. [Focused visual checks](2026-10-01-sanctuary-effects-checks.json)
-retain the local evidence and its limits; publication, CI and public acceptance
-remain required. It does not include new Rogue, Cleric or Wizard models: the
-freshly fetched master still contains only the Fighter archetype exports, and
-the new model paths or commit have been requested. Their integration and the
-remaining modern-art requirements stay open. The next minor milestone remains
-the complete 1.59 moderation workflow; no later milestone is declared shipped.
-[the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
+The corrected Alpha 1.58.2 candidate integrates the delivered Fighter, Rogue,
+Cleric and Wizard bodies, fitted equipment and weapon motions, following the
+1.58.1 level-up and Well Rested effects. Class equipment restrictions are
+server-enforced; dual-wield Rogues alternate weapons at two-thirds of their
+normal interval without duplicate damage. Reviewed weapon contact remains
+aligned with the existing damage timing. [Focused asset checks](2026-10-01-authored-equipment-checks.json)
+retain the evidence and failed-candidate history. The previous candidate's
+browser failures prevented deployment; corrected-candidate CI and independent
+public acceptance remain required. Final modern-art approval, crowd performance
+and human-playtest gates stay open. The next minor milestone remains the complete
+1.59 moderation workflow; no later milestone is declared shipped.
+The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
 **Owner timing/policy update:** closed beta must wait until the entire game is

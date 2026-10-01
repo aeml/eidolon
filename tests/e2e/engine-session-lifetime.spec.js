@@ -30,8 +30,9 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
                 const base = BASE_ITEMS.find(item => item.slot === slot.replace(/[12]$/, ''));
                 return [slot, { ...base, id: `fixture-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
             }));
-            const fit = engine.player.syncEquipmentVisuals(equipment);
-            if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete lifetime fixture equipment');
+            engine.player.syncEquipmentVisuals(equipment);
+            await engine.player.mesh.userData.equipmentReady;
+            if (engine.player.mesh.userData.equipmentVisualItemCount !== 14 || engine.player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete lifetime fixture equipment');
             engine.renderSystem.add(engine.player.mesh);
             engine.renderSystem.setCameraTarget(engine.player.position);
             engine.renderSystem.render();
@@ -108,8 +109,9 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
             for (let cycle = 0; cycle < 3; cycle++) {
                 await engine.enterInstance('', 'overworld', null, null, { x: -1.25, y: .5, z: 200 });
                 for (const equipment of [gear[0], gear[1], gear[0]]) {
-                    const fit = player.syncEquipmentVisuals(equipment);
-                    if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete transition gear');
+                    player.syncEquipmentVisuals(equipment);
+                    await player.mesh.userData.equipmentReady;
+                    if (player.mesh.userData.equipmentVisualItemCount !== 14 || player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete transition gear');
                     capture('gear');
                 }
                 player.die(); player.respawn(-1.25, 200); reports.push({ cycle, ...capture('town-death') });
@@ -119,7 +121,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
                 // in a dormant chunk. Transition must release it, not retain a
                 // model merely because it is absent from the remote map.
                 const actor = new Fighter('transition-remote'); actor.gameEngine = engine;
-                await actor.ensureMesh(); actor.syncEquipmentVisuals(gear[0]);
+                await actor.ensureMesh(); actor.syncEquipmentVisuals(gear[0]); await actor.mesh.userData.equipmentReady;
                 actor.position.copy(player.position); engine.addEntity(actor); actor.render(1); capture('remote');
                 engine.chunkManager.chunks.get(actor._chunkKey).delete(actor);
                 actor.position.set(9000, 0, 9000); actor._chunkKey = engine.chunkManager.getChunkKey(9000, 9000);
@@ -193,8 +195,9 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
             const base = BASE_ITEMS.find(item => item.slot === slot.replace(/[12]$/, ''));
             return [slot, { ...base, id: `recovery-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
         }));
-        const fit = engine.player.syncEquipmentVisuals(gear);
-        if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete recovery gear');
+        engine.player.syncEquipmentVisuals(gear);
+        await engine.player.mesh.userData.equipmentReady;
+        if (engine.player.mesh.userData.equipmentVisualItemCount !== 14 || engine.player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete recovery gear');
         const fixture = { engine, states: [], token: 'fixture-token-0', priorSockets: [], reports: [] };
         window.__lifetimeRecovery = fixture;
         // Observe the promise from the normal queued enter_instance handler;

@@ -47,6 +47,10 @@ export function prepareWeaponMotions(root, scene) {
             clips.push(dual); byName.set(dual.name, dual);
         }
     }
+    // Only the delivered basic-attack profiles share the reviewed contact
+    // frame. Skill clips and unrelated imported names keep their own timing.
+    root.userData.basicAttackContactClipNames = Object.freeze([...byName.keys()].filter(name =>
+        /^(?:Sword|Dagger|Staff|Mace|Unarmed)_Attack(?:_Left)?$/.test(name)));
     let nextLeft = false, selectedAttack;
     root.userData.updateWeaponProfile = equipment => {
         root.userData.weaponProfile = profiles[resolveEquipmentVisualDescriptor(equipment.mainHand)?.variant] || 'Unarmed';
