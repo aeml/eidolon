@@ -55,12 +55,13 @@ func setPokerCache(id string, r *database.BlackjackTableRecord, available bool, 
 }
 
 type pokerParticipant struct {
-	PlayerID  string `json:"playerId"`
-	Name      string `json:"name"`
-	Seat      int    `json:"seat"`
-	SessionID string `json:"sessionId"` // Private seat identity; never in public view.
-	BuyIn     int    `json:"buyIn"`
-	Paid      bool   `json:"paid"`
+	PlayerID         string `json:"playerId"`
+	Name             string `json:"name"`
+	Seat             int    `json:"seat"`
+	SessionID        string `json:"sessionId"` // Private seat identity; never in public view.
+	BuyIn            int    `json:"buyIn"`
+	Paid             bool   `json:"paid"`
+	TimeoutSeatToken string `json:"timeoutSeatToken,omitempty"` // Private saved chair-release fence.
 }
 type pokerTableState struct {
 	RoundID    string             `json:"roundId"`
@@ -99,6 +100,12 @@ func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, 
 			return bad()
 		}
 		ids[p.PlayerID], seats[p.Seat] = true, true
+		if p.TimeoutSeatToken != "" {
+			token, err := hex.DecodeString(p.TimeoutSeatToken)
+			if err != nil || len(token) != 16 || s.Phase == "betting" {
+				return bad()
+			}
+		}
 	}
 	switch s.Phase {
 	case "betting":
@@ -587,8 +594,20 @@ func tickPoker(now time.Time, ids ...string) error {
 				}
 			}
 			if !changed && !now.Before(s.Round.Deadline) {
+				playerID := s.Round.Players[s.Round.Turn].PlayerID
+				// A legitimate post-restart rejoin has a new live token. Capture
+				// that exact current chair, not the dead process's accepted token.
+				player := world.GetEntityCopy(playerID)
 				s.Round, err = s.Round.Timeout(now)
 				changed = err == nil
+				if changed && player != nil && player.CasinoSeat != nil {
+					for i, participant := range s.Players {
+						seat := player.CasinoSeat
+						if participant.PlayerID == playerID && seat.TableID == id && seat.Seat == participant.Seat {
+							s.Players[i].TimeoutSeatToken = seat.SessionID
+						}
+					}
+				}
 			}
 			if changed {
 				if s.Round.Phase == "complete" {
@@ -614,6 +633,15 @@ func tickPoker(now time.Time, ids ...string) error {
 		}
 	}
 	pokerMu.Unlock()
+	if err == nil {
+		// Never discard committed chips or release a chair before the round is
+		// saved. Retained markers make retries safe across missed world updates.
+		for _, participant := range s.Players {
+			if participant.TimeoutSeatToken != "" {
+				world.ReleaseTimedOutCasinoSeat(participant.PlayerID, id, participant.Seat, participant.TimeoutSeatToken)
+			}
+		}
+	}
 	if err != nil || owner == "" {
 		return err
 	}
