@@ -40,12 +40,14 @@ func readEPResult(t *testing.T, c *Client) struct {
 	Success, Pending bool
 	EP, Gold         int
 	ID               string
+	PlayerID         string
 } {
 	t.Helper()
 	var result struct {
 		Success, Pending bool
 		EP, Gold         int
 		ID               string
+		PlayerID         string
 	}
 	select {
 	case data := <-c.send:
@@ -70,7 +72,7 @@ func TestEPWalletSavesDebitCreditAndReceiptTogether(t *testing.T) {
 	c, committer, _ := epWalletFixture(t)
 	c.handleEPWallet(epRequest())
 	result := readEPResult(t, c)
-	if !result.Success || result.Pending || result.EP != 2 || result.Gold != 1_000_000 || result.ID != epHandlerID {
+	if !result.Success || result.Pending || result.EP != 2 || result.Gold != 1_000_000 || result.ID != epHandlerID || result.PlayerID != c.playerID {
 		t.Fatal("wrong exchange acknowledgement", result)
 	}
 	if committer.saved == nil || committer.saved.Gold != result.Gold || committer.saved.EP != result.EP || committer.saved.EPExchangeReceipts[epHandlerID] != 2 {
@@ -90,7 +92,7 @@ func TestEPWalletSavesDebitCreditAndReceiptTogether(t *testing.T) {
 		t.Fatal("retry charged again or lost acknowledgement", replay)
 	}
 	c.handleEPWallet(Message{Type: MsgGetEPWallet})
-	if read := readEPResult(t, c); read.EP != 2 || read.Gold != 1_000_000 {
+	if read := readEPResult(t, c); read.EP != 2 || read.Gold != 1_000_000 || read.PlayerID != c.playerID {
 		t.Fatal("wallet read omitted balances", read)
 	}
 }

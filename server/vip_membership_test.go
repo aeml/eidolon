@@ -28,6 +28,34 @@ func vipMembershipFixture(t *testing.T) (*Client, *testCharacterCommitter, []dat
 	return c, committer, periods
 }
 
+func TestVIPStatusBindsPrivateWalletToCurrentCharacter(t *testing.T) {
+	c, _, _ := vipMembershipFixture(t)
+	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{}}, "")
+	sendVIPStatus(c)
+	var msg Message
+	var result struct {
+		PlayerID string `json:"playerID"`
+		Success  bool   `json:"success"`
+		EP       int    `json:"ep"`
+		Gold     int    `json:"gold"`
+	}
+	select {
+	case data := <-c.send:
+		if err := json.Unmarshal(data, &msg); err != nil || msg.Type != MsgVIPStatus {
+			t.Fatal("missing VIP result", err)
+		}
+		if err := json.Unmarshal(msg.Payload, &result); err != nil {
+			t.Fatal(err)
+		}
+	default:
+		t.Fatal("VIP result was not sent")
+	}
+	p := world.GetEntityCopy(c.playerID)
+	if result.PlayerID != c.playerID || !result.Success || result.EP != p.EP || result.Gold != p.Gold {
+		t.Fatal("private VIP wallet is not bound to its character", result)
+	}
+}
+
 func TestVIPMembershipSavesOnlyNewMonthlyAllowanceAndNeverGoldOrPower(t *testing.T) {
 	c, committer, periods := vipMembershipFixture(t)
 	before := world.GetEntityCopy(c.playerID)

@@ -1,0 +1,24 @@
+{
+  "checkedAtUTC": "2026-10-01T05:05:21Z",
+  "status": "local bounded wallet slice; not packaged, pushed or accepted as a completed milestone",
+  "baseCommit": "1757c9691f64423020b9310e4168765a270382ce",
+  "changes": [
+    "Private EP wallet and VIP status results identify their owning character. Delayed, missing-owner or disposed-screen results cannot overwrite another character's balances or clear its pending exchange receipt.",
+    "Pending Gold-to-EP receipts clear only on matching request ID, explicit final success/failure, valid nonnegative integer balances and the authoritative fixed exchange rate.",
+    "UI disposal preserves unresolved session receipts, rejects late results and cannot resend exchanges. Casino instructions describe existing EP-only winnings rather than obsolete future availability.",
+    "Prepared pure-world regression cases show EP cosmetic unlocks remain with their owner while the original unmodified gear is sold, auction-listed, directly traded or guild-bank debited/credited. No reverse exchange or EP-to-power route was added."
+  ],
+  "checks": [
+    { "type": "client regression", "suites": 3, "passed": 49, "seconds": 2.592, "scope": "EPWalletUI, SlotMachineUI, VIPCasinoUI; six new EP UI ownership/lifecycle regressions were confirmed failing before the implementation." },
+    { "type": "prepared native DOM layout", "passed": 2, "seconds": 13.8, "artifacts": "/tmp/eidolon-1-66-wallets-1001", "scope": "390px and 1440px private-owner response fixtures; not production wallet settlement evidence." },
+    { "type": "Go race", "package": "eidolon-server", "seconds": 4.948, "scope": "TestEPWallet*, TestVIPStatusBinds*, TestVIPMembership*, TestAdministratorVIP*" },
+    { "type": "Go race", "package": "eidolon-server/internal/game", "seconds": 8.687, "scope": "TestEPCosmetic*, TestCosmeticVendor*, TestEPExchange*, TestEPCasino*, TestCasinoEPRecord*, TestWardrobe*" },
+    { "type": "Go race", "package": "eidolon-server/internal/database", "seconds": 1.034, "scope": "Focused matching wallet predicates; no new disposable database socket settlement was performed for this slice." },
+    { "type": "lint and whitespace", "result": "Changed client/test ESLint and git diff --check pass; changed Go files formatted with gofmt." }
+  ],
+  "limitations": [
+    "The new vendor, auction, trade and bank regression fixtures use actual pure-world operations; they do not prove Mongo/socket settlement, auction payout or process restart recovery.",
+    "Prepared DOM tests are not physical-phone certification or real VIP account acceptance.",
+    "Full transfer-path closure, publication ordering, version/patch notes, CI and independent public acceptance remain required before marking milestone 1.66 complete."
+  ]
+}
