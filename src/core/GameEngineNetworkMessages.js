@@ -18,6 +18,8 @@ import { createCasinoInterior } from '../art/ProceduralCasino.js';
 import { createDarkRealmScene } from '../art/ProceduralDarkRealm.js';
 import { clearEngineSceneOwnership } from './SceneOwnership.js';
 
+const PRIVATE_CHARACTER_RESULTS = new Set(['ep_wallet_result', 'vip_status', 'cosmetic_vendor_result', 'wardrobe_result']);
+
 class GameEngineNetworkMessageMethods {
     async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
         if (this.isDestroyed) return;
@@ -441,7 +443,10 @@ class GameEngineNetworkMessageMethods {
     }
 
     handleServerMessage(msg) {
-        if (!this.player) return; // Safety check
+        if (this.isDestroyed || !this.player) return; // Safety check
+        // Filter before any entity mutation or UI fan-out. Menu-level guards
+        // alone cannot stop a delayed reply overwriting a new character's look.
+        if (PRIVATE_CHARACTER_RESULTS.has(msg.type) && (!this.player.id || msg.payload?.playerID !== this.player.id)) return;
 
         // A private wallet reply may arrive after changing characters. Filter
         // it before VIP state mutation or UI fan-out, not just inside the menu.
