@@ -7,6 +7,7 @@
     "Default opaque fitted-equipment batching with source-preserving animated surfaces and independent actor skeletons.",
     "Original piece-level transparency during Rogue stealth, restored opaque batches afterward, and owned-material cleanup.",
     "Optional reload request when saved graphics detail differs from a currently loaded authored body.",
+    "Distribute whole interface-test files across the existing three hosted CI jobs without dropping or duplicating cases.",
     "Version alignment across login, package, release identity, server, container, deploy, isolated QA and CI, with cumulative patch history."
   ],
   "excluded": [
@@ -21,6 +22,7 @@
     "nativeSettings": "Actual UIManager, UIBindings, RenderSystem and Entity with supplied Fighter GLBs: declining reload preserves the High body with saved Low settings; Medium retains High without an unnecessary prompt; accepting the subsequent prompt reloads the page and loads the saved Low body. Passed in 12.0 seconds. Anonymous prepared presentation, no server/account mutations or physical phone.",
     "settingsCommand": "playwright test tests/e2e/keyboard-settings.spec.js --grep 'graphics detail'",
     "settingsArtifactRoot": "/tmp/eidolon-1-58-3-settings-reload-20261001",
+    "ciDistribution": "35 interface files now split 12/12/11 across the existing three hosted jobs, keeping each file suite intact. Actual Playwright collection preserves all 114 cases exactly once: 44/45/25 cases. No browser run was repeated for this collection check. 374 planner/runner/sharding/coverage/version checks passed in 10.258 seconds; scoped lint and whitespace passed. CI wall-time improvement remains unmeasured until publication.",
     "setupFailure": "Initial fresh-worktree browser attempt lacked generated vendor/ dependencies. Standard npm run prepare:client supplied them; the subsequent case passed. This was not a runtime model or equipment failure.",
     "earlierEvidence": [
       "2026-10-01-fitted-equipment-batch-checks.json",

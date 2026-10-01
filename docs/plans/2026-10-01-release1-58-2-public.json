@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "commit": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
+  "version": "Alpha 1.58.2",
+  "at": "2026-10-01T21:04:07.762Z",
+  "frontend": {
+    "commit": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
+    "version": "Alpha 1.58.2"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
+    "version": "Alpha 1.58.2"
+  },
+  "runtimePassed": 16,
+  "representativeModelsPassed": 32,
+  "results": [
+    {
+      "kind": "runtime",
+      "path": "src/assets/authoredEquipment.generated.js",
+      "bytes": 47149,
+      "sha256": "b3161c97227e0c698dd2ba4ddef626e58ba10d4458b4219feb60070ce79cacb1"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/utils/MeshFactory.js",
+      "bytes": 37150,
+      "sha256": "7b85cc79b8e856a034df0c8decae4ff82eb5aa1a763e2f27edfb9557af40cf02"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/assets/assetManifest.js",
+      "bytes": 2641,
+      "sha256": "abc3d7819787a9755225e42ac712004d47911e21c16b5b4c2899e5fc1ba9e7d4"
+    },
+    {
+      "kind": "runtime",
+      "path": "index.html",
+      "bytes": 731349,
+      "sha256": "44a2139b1a5312ee9809bae7114c5c2d739440c81fd0e735bb8b6231567707cd"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredCharacters.js",
+      "bytes": 1016,
+      "sha256": "f56b3d537375719e853d1dec5ab1f181af0d3ae45c5b5e039afb33addc6bcd81"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/FittedEquipment.js",
+      "bytes": 12470,
+      "sha256": "76dfb240020a22b0ef3c4653c8f7f26ffd398a977c76f429e9640f945740a67b"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredFighter.js",
+      "bytes": 6485,
+      "sha256": "1ffbda7f5ca70a914db0ce48741f1591055e03dcf0f944ca49c52e5e70ad240d"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/AuthoredWeaponMotions.js",
+      "bytes": 4680,
+      "sha256": "9c22bd3daa3489d5827f90868a25d61b3f0185e5515cd51facd4dbcfd1871d17"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/EquipmentAppearance.js",
+      "bytes": 909,
+      "sha256": "0cb3bdae0e169cffc599de539b0c0d8bdf0edc7bb681450f0bfc492a9daf51c6"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/art/EquipmentVisuals.js",
+      "bytes": 1047,
+      "sha256": "4db4a1459974348df34bb80b0145ac3d3fe5e8b8bc3f8b68df81a69cf04c359d"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/GameEngine.js",
+      "bytes": 111129,
+      "sha256": "2f5e72a9991c1553aac70d5ae189bcaec2a12f3e3680cda716c33e4e79fd4402"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/core/EquipmentSlots.js",
+      "bytes": 3056,
+      "sha256": "0f419ba20177096e1e8c81c6a1233f47e28f3b490d7c3dbb43925e38e58995cd"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/entities/Actor.js",
+      "bytes": 95574,
+      "sha256": "cf5293549548bccec28a53422d69c1c0add53a11102a9f7b5736f594caa8ac09"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/CharacterPreview.js",
+      "bytes": 9885,
+      "sha256": "a1dfcba6df2875c3fb39d204f6b76b20c4fb50f82db7c552f3bfa8e36626a970"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/MobileItemDetails.js",
+      "bytes": 14737,
+      "sha256": "7f8d1c0ceaf6e972f1ca3ad31869b637e1e64500437322ccef61e251ea2d6dae"
+    },
+    {
+      "kind": "runtime",
+      "path": "src/ui/InventoryUI.js",
+      "bytes": 72254,
+      "sha256": "68980c45312d010ad91371b7a0b419d215b8e165d39b8bc2bdaabccf297b47bd"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Fighter.glb",
+      "bytes": 1052308,
+      "sha256": "8e5db5ff63e1124d198a337c8490d5d13dea0bdd62fc70747abb75aac973bfd4"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Fighter/plate-mail-legendary.glb",
+      "bytes": 1995032,
+      "sha256": "b758dbf0eedf3b4deabca54810b1f972855c5609929eb683970e5a24bbf368c9"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+      "bytes": 3680212,
+      "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+      "bytes": 7371724,
+      "sha256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Fighter/ruby-ring-standard.glb",
+      "bytes": 62488,
+      "sha256": "a26afacf90e8a1b47f6c72c6ac0cb720783c6ae4966222505567393414d873e8"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Fighter/ruby-ring-legendary.glb",
+      "bytes": 83232,
+      "sha256": "c1c5386aa1105ee2fcd1ce41e3b9cf38e93794700920cce051a4c2181830cd25"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+      "bytes": 3215076,
+      "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+      "bytes": 5318200,
+      "sha256": "facb882f8a68ab69c715113cf45cab03611e59cc8ec1b6854dfaf1188bc2f5aa"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Wizard/ruby-ring-standard.glb",
+      "bytes": 62288,
+      "sha256": "55dc9157639ca147a6b69e654ee80351bab416249a76e32c0b2f38c1c9b01a0f"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Wizard/ruby-ring-legendary.glb",
+      "bytes": 83032,
+      "sha256": "805000c0d25c1e78ff1315c675320aeb2e5f7d7c33a2a0ba4e619174232fbcf8"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Wizard.glb",
+      "bytes": 1089644,
+      "sha256": "949e5d2ecd1afc76042cb081f553fc4f263d4d7b76e1ae58add1c09ba79bd6ce"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Wizard/robes-legendary.glb",
+      "bytes": 2099080,
+      "sha256": "55de6656ac20a26c6c766ed255e40133020417223ae1db66fea3ef8a365c9f5b"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+      "bytes": 4061680,
+      "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Cleric.glb",
+      "bytes": 1089460,
+      "sha256": "0aea84dc222750d824bf3e24f5ed6e43a3cce746ce554375d53e36df15288981"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Cleric/plate-mail-standard.glb",
+      "bytes": 1790256,
+      "sha256": "8413120e75ec95b1df45e10701417150253118f113f42d6a51f61cd0bbedc6f4"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+      "bytes": 6244932,
+      "sha256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Cleric/ruby-ring-legendary.glb",
+      "bytes": 82492,
+      "sha256": "5a89eb9e25aeb36be8877ca6b3d267bfc51d1fb2f1f8800593a04d7572acd0a9"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Cleric/ruby-ring-standard.glb",
+      "bytes": 61748,
+      "sha256": "e7cb413793afbb4a29c7d58a76ac8b48dfc7874a2eb07351e48285fdda12296c"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+      "bytes": 6244472,
+      "sha256": "1da90eb1906730046be0cb3a03beac1881d92fd0cee33805a78b85ea37a5c9ef"
+    },
+    {
+      "kind": "model",
+      "path": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+      "bytes": 4017940,
+      "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Rogue/ruby-ring-standard.glb",
+      "bytes": 61836,
+      "sha256": "42162e6d4384e03cc3df15b20a01fdc0ae1b0067bdc580dd3922dbb86f7dd0b1"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Rogue/ruby-ring-legendary.glb",
+      "bytes": 82580,
+      "sha256": "f8f5191a4105f76a02e8c949283ca1ebc5bb4c2fde4bdfb3cb9f22803237a775"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/motions/Rogue.glb",
+      "bytes": 1090584,
+      "sha256": "e1176f6c8b0251442b51b0654a22718159a6fa31997b8415c8471e13e5991e85"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/fits/Rogue/robes-standard.glb",
+      "bytes": 1876548,
+      "sha256": "0962fd16e49dd95260a0cd15e176049e47fb9269c468b9b0e0b0413b4cdfcd22"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/iron-sword-legendary.glb",
+      "bytes": 141676,
+      "sha256": "d4b7c3022017367ca81dee52f580b304c877e2555e60d38db62f4f077edbcb54"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/steel-dagger-legendary.glb",
+      "bytes": 134576,
+      "sha256": "0133b5c2842f0fcfb10c39d27bc07df248bbce7b334cedd2c7b7a3ae4299648d"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/steel-dagger-standard.glb",
+      "bytes": 109400,
+      "sha256": "91e39e470df82ca10d6deb0b55e62c588a81220dd6ddc7232063c06f633dbf5b"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/iron-sword-standard.glb",
+      "bytes": 109376,
+      "sha256": "8c3647850e028394cfb72ccd7a6194243f6dd1f51f46b668b962d9433409f561"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/wooden-staff-standard.glb",
+      "bytes": 220788,
+      "sha256": "358c81308ccd564768e021d1b7d8a05f55ba22c02d206c659793b38a88c56901"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/wooden-staff-legendary.glb",
+      "bytes": 298688,
+      "sha256": "e62abffeb51aac25b8766fc2031fc16e7b95dcdf485d7909a04462c13254d112"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/cleric-mace-standard.glb",
+      "bytes": 141752,
+      "sha256": "bb184cbfecf40265570163932665e59704f52af9b715b391e101432a5743360a"
+    },
+    {
+      "kind": "model",
+      "path": "assets/equipment/authored/weapons/cleric-mace-legendary.glb",
+      "bytes": 178444,
+      "sha256": "6d1b97034ef1f08d1c5df39568296e3a61a6abddfa546ac6582478445e5bc598"
+    }
+  ],
+  "limit": "32 representative model routes, not all264publicroutes; ordinary public IPv4 DNS/TLS, no origin override.",
+  "status": "public-files-verified-live-QA-pending",
+  "ci": {
+    "run": 36920070557,
+    "status": "live QA pending at source record creation",
+    "url": "https://github.com/aeml/eidolon/actions/runs/36920070557"
+  },
+  "remaining": [
+    "Terminal live CI QA",
+    "Final modern-art approval, broader crowd performance and owner-deferred physical-phone/campaign playtests"
+  ]
+}

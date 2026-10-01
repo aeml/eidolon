@@ -752,6 +752,7 @@
                 <div class="patch-note-entry" data-version="1.58.3">
                     <h3 class="patch-note-entry__title">Alpha 1.58.3 (lighter equipped heroes)</h3>
                     <ul class="patch-note-entry__list">
+                        <li><strong>Balanced release checks:</strong> Interface checks now share the existing three GitHub-hosted CI jobs, with whole-file suites preserved and every case scheduled exactly once. No test coverage or release gate was removed.</li>
                         <li><strong>Less rendering work:</strong> Compatible opaque fitted armor shares draw calls while preserving the supplied models, materials, animated surfaces and independent skeletons. The controlled equipped crowd used about 18–20% fewer draw calls; this is not a universal FPS promise.</li>
                         <li><strong>Stealth stays clear:</strong> Rogues temporarily use the original individual transparent pieces during stealth, then restore the opaque batches. Textured, transparent and custom-shader pieces stay separate.</li>
                         <li><strong>Honest Low detail:</strong> Saved Low graphics and mobile actor loading use the delivered Low bodies. Changing detail offers an optional reload when existing bodies do not match; lighting and effects still change immediately. Medium retains High bodies on desktop.</li>

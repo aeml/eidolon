@@ -19,7 +19,7 @@ function supplemental(manifest) {
         { name: 'nameplates', shard: 1, files: scriptFiles(manifest, 'nameplates') },
         { name: 'resource-hud', shard: 1, files: scriptFiles(manifest, 'resource-hud') },
         { name: 'crystal-art', shard: 2, files: scriptFiles(manifest, 'crystal-art') },
-        { name: 'interface', shard: 2, files: scriptFiles(manifest, 'interface') }
+        { name: 'interface', partitionFiles: true, files: scriptFiles(manifest, 'interface') }
     ];
 }
 
@@ -46,7 +46,12 @@ export function buildBrowserSmokePlan(manifest, shard) {
         // exactly once; artifact paths retain the owning workflow job number.
         { name: 'entrances', files: entrances, testShard: shard % 3 + 1, independent: true },
         { name: 'effects', files: effects, testShard: (shard + 1) % 3 + 1, independent: true },
-        ...supplemental(manifest).filter(stage => stage.shard === shard)
+        // The growing interface family used to run wholly on job2. Partition
+        // whole files across the existing jobs: no duplicated suite setup or
+        // splitting of serial/shared-state cases, and no coverage is removed.
+        ...supplemental(manifest).filter(stage => stage.partitionFiles || stage.shard === shard)
+            .map(stage => ({ ...stage, files: stage.partitionFiles
+                ? stage.files.filter((_, index) => index % 3 === shard - 1) : stage.files }))
     ];
     return groups.map(group => {
         if (!group.files.length) throw new Error(`Empty browser group: ${group.name}`);

@@ -11,7 +11,7 @@ test('1.58.3 records source-preserving equipment batching and honest quality cha
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['lighter equipped heroes', 'independent skeletons', '18–20%', 'not a universal FPS promise',
         'during stealth', 'Textured, transparent and custom-shader', 'optional reload', 'Medium retains High',
-        'No account reset', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+        'whole-file suites preserved', 'every case scheduled exactly once', 'No account reset', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
 test('1.58.2 records the delivered character integration and class rules without granting power through cosmetics', () => {
@@ -266,6 +266,7 @@ const migrationInventory = fs.readFileSync(path.join(repoRoot, 'docs/art/PROCEDU
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release.json'), 'utf8'));
 const browserStages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(
     JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')), shard));
+const browserInterfaceFiles = browserStages.filter(stage => stage.name === 'interface').flatMap(stage => stage.files);
 const versionedRuntimeFiles = [
     '.github/workflows/ci.yml',
     'server/main.go',
@@ -329,7 +330,7 @@ describe('version presentation', () => {
             'not a measured claim', 'does not open closed beta', 'Full prior patch history']) {
             expect(indexHtml.slice(start, previous)).toContain(text);
         }
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/atlas-interiors.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/atlas-interiors.spec.js');
     });
     test('1.26.0 explains the full Vigil and personal claims without altering earned progress', () => {
         const start = indexHtml.indexOf('data-version="1.26.0"'), previous = indexHtml.indexOf('data-version="1.25.0"');
@@ -339,7 +340,7 @@ describe('version presentation', () => {
             'does not open closed beta', 'Full prior patch history']) {
             expect(indexHtml.slice(start, previous)).toContain(text);
         }
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
     });
     test('1.25.0 records Air navigation, instrument art and bounded projectile evidence', () => {
         const start = indexHtml.indexOf('data-version="1.25.0"'), previous = indexHtml.indexOf('data-version="1.24.0"');
@@ -382,7 +383,7 @@ describe('version presentation', () => {
             'time with the page closed', 'remain for player testing', 'Full prior patch history']) {
             expect(indexHtml.slice(start, previous)).toContain(text);
         }
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/playtest-session.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/playtest-session.spec.js');
     });
     test('1.20.0 records scoped integration and keeps final art and beta explicitly open', () => {
         const start = indexHtml.indexOf('data-version="1.20.0"'), previous = indexHtml.indexOf('data-version="1.19.0"');
@@ -421,7 +422,7 @@ describe('version presentation', () => {
             'Failed session recovery', '15-minute logout rule', 'not final art or completed beta readiness']) {
             expect(indexHtml.slice(start, previous)).toContain(text);
         }
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/session-recovery-login.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/session-recovery-login.spec.js');
     });
     test('1.15.0 describes implemented population and guidance without promising final art or new rewards', () => {
         const start = indexHtml.indexOf('data-version="1.15.0"'), previous = indexHtml.indexOf('data-version="1.14.0"');
@@ -439,7 +440,7 @@ describe('version presentation', () => {
             expect(indexHtml.slice(start, previous)).toContain(text);
         }
         for (const file of ['atlas-navigation', 'atlas-interiors', 'report-feedback']) {
-            expect(browserStages.find(stage => stage.name === 'interface').files).toContain(`tests/e2e/${file}.spec.js`);
+            expect(browserInterfaceFiles).toContain(`tests/e2e/${file}.spec.js`);
         }
     });
     test('1.13.0 documents hidden-floor work without reducing the casino or promising universal FPS', () => {
@@ -453,7 +454,7 @@ describe('version presentation', () => {
         }
     });
     test('1.12.0 documents the physical personal-gated portal and retains previous history', () => {
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/resonance-portal.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/resonance-portal.spec.js');
         const start = indexHtml.indexOf('data-version="1.12.0"');
         const previous = indexHtml.indexOf('data-version="1.11.0"');
         expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
@@ -627,7 +628,7 @@ describe('version presentation', () => {
         const entry = indexHtml.split('data-version="1.9.17"')[1].split('data-version="1.9.16"')[0];
         for (const text of ['durable administrator role', 'explicit confirmation', 'saved audit', 'same request',
             'Private-instance and VIP entry restrictions', '15-minute dungeon logout rule', '1.10 roadmap remains in progress']) expect(entry).toContain(text);
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/admin-console-layout.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/admin-console-layout.spec.js');
     });
     test('1.9.16 doubles only the Fighter base right-click Charge impact', () => {
         expect(indexHtml.match(/data-version="1\.9\.16"/g)).toHaveLength(1);
@@ -665,7 +666,7 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.9.11"')).toBeLessThan(indexHtml.indexOf('data-version="1.9.10"'));
         const entry = indexHtml.split('data-version="1.9.11"')[1].split('data-version="1.9.10"')[0];
         for (const text of ['no longer hides your tracked quests', 'healing controls', 'Rows snap', 'Keyboard scrolling', 'phone navigation are unchanged']) expect(entry).toContain(text);
-        expect(browserStages.find(stage => stage.name === 'interface').files).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
+        expect(browserInterfaceFiles).toContain('tests/e2e/party-quest-tracker-layout.spec.js');
     });
     test('1.9.10 explains current quest guidance and preserves performance history', () => {
         expect(indexHtml.match(/data-version="1\.9\.10"/g)).toHaveLength(1);
@@ -868,8 +869,8 @@ describe('version presentation', () => {
             'tests/e2e/desktop-action-readability.spec.js'
         ]));
         expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs');
-        expect(browserStages.filter(stage => stage.name === 'interface').map(stage => stage.files))
-            .toEqual([scripts['test:e2e:interface'].split(/\s+/).slice(2)]);
+        expect(browserInterfaceFiles.slice().sort())
+            .toEqual(scripts['test:e2e:interface'].split(/\s+/).slice(2).sort());
     });
     test('adds standalone town recovery notes while preserving the prior persistence release', () => {
         expect(indexHtml).toContain('Alpha 1.0.58 (a reason to come home)');
