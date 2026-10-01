@@ -5,8 +5,9 @@ windows, clearer atlas guidance and explicit reward instructions. This is locall
 packaged and pushed as Alpha 1.57.0 at
 `3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`,
 [CI36802997921](https://github.com/aeml/eidolon/actions/runs/36802997921).
-Its own pipeline and independent public acceptance remain pending; push is not
-a live claim.
+All ten jobs and independent public identities, database readiness and six
+changed runtime files passed. See the
+[verified acceptance](2026-10-01-release1-57-acceptance.md).
 The preceding [1.56 is accepted](2026-10-01-release1-56-acceptance.md) at
 `b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692. All ten jobs and
 independent public identities, readiness and five changed assets passed.
@@ -103,7 +104,8 @@ and normal merge retained current master, including the supplied Fighter model
 and website changes. This is preparation for publication, not this release's
 CI or live acceptance. Normal publication followed the accepted 1.56 receipt;
 the final fresh fetch/merge was up to date and the push fast-forwarded master.
-Luna monitors the new run; independent public acceptance remains required.
+Luna reported terminal CI success; independent public acceptance subsequently
+passed and is recorded in the linked release receipt.
 
 Local packaging passed 335 version/publisher checks in 3.088 seconds and both
 unchanged anonymous login/release routes in 9.5 seconds. Scoped lint, shell syntax
