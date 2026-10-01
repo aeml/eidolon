@@ -179,6 +179,7 @@ body .casino-session .card-table-center .poker-board .blackjack-card { flex: 0 1
 .roulette-number-board .black, .roulette-pocket.black { background: #14202e; }
 .roulette-outside-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin-block: 6px; }
 .house-betting-board button.selected { outline: 2px solid #ffe1a0; outline-offset: -3px; }
+.casino-session .house-betting-board button.selected:disabled { opacity: 1; color: #fff1cc; }
 .baccarat-bets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
 .house-game .card-table-center { top: 44%; height: 34%; container-type: size; }
 .house-game .card-table-clock { top: 68%; }
