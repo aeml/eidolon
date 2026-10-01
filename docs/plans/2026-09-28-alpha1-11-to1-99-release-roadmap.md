@@ -46,7 +46,12 @@ skins. It passed 35 focused checks and two native cases, covering all eight
 class/quality instances and paired crowd rendering. High draw calls fell from
 1324 to 1064, and Low from 728 to 598, without changing triangles. Paired frame
 medians also improved on this heavily loaded host, whose CPU was 97.5–98.8%
-busy; this is not a device-FPS promise. The candidate remains local and opt-in.
+busy; this is not a device-FPS promise. A subsequent default-on integration
+passed 38 focused checks and two native cases in 43.7 seconds, including actual
+Rogue stealth restoration, equipped previews and Fighter pose/seating lifecycle.
+Its all-eight-class and Rogue-preview renders were inspected. The candidate is
+ready as the prepared default, but remains local and unpublished; production is
+unchanged. Explicit false retains the original path for comparisons.
 Transparent, textured, custom-shader, differently bound or transformed pieces
 remain separate, and stealth restores original sorting surfaces. Broader
 performance and actual Low actor-LOD profiling remain open.

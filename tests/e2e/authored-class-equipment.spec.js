@@ -33,7 +33,6 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         const actors = [];
         for (const [i, type] of classes.entries()) for (const quality of ['high', 'low']) {
             const root = await MeshFactory.createMeshForType(type, { quality });
-            root.userData.fittedEquipmentBatching = true;
             if (root.userData.authoredClass !== type) throw new Error(`Authored ${type} failed (${quality})`);
             const actor = new Actor(`asset-${type}-${quality}`, {}); actor.meshType = type; actor.setMesh(root);
             root.position.set((i - 1.5) * 5.3, 0, quality === 'high' ? 0 : -8); scene.add(root);
@@ -94,6 +93,24 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         expect(await page.evaluate(({ state, time, yaw }) => window.__classGear.sample(state, time, yaw), { state, time, yaw })).toBe(0);
         await page.locator('#class-equipment-qa').screenshot({ path: testInfo.outputPath(`${poseIndex++}-${state}.png`) });
     }
+    expect(await page.evaluate(async () => {
+        const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
+        const qa = window.__classGear, rogues = qa.actors.filter(entry => entry.type === 'Rogue');
+        const check = hidden => rogues.every(({root}) => {
+            let sources = 0, batches = 0, valid = true;
+            root.traverse(mesh => {
+                if (mesh.userData.fittedBatchSource) {
+                    sources++; valid &&= mesh.visible === hidden && (!hidden || mesh.material.transparent && mesh.material.opacity === .3);
+                }
+                if (mesh.userData.fittedBatchSources) { batches++; valid &&= mesh.visible !== hidden; }
+            });
+            return valid && sources > 0 && batches > 0;
+        });
+        rogues.forEach(({actor}) => applyActorStealthAppearance(actor));
+        const faded = check(true); qa.sample('CombatIdle');
+        rogues.forEach(({actor}) => restoreActorStealthAppearance(actor));
+        return faded && check(false) && qa.sample('CombatIdle') === 0;
+    })).toBe(true);
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
         const first = actors[0], second = actors[1];
@@ -124,11 +141,12 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             qa.preview.update({ subType: type, level: 70, equipment: actor.gear, mesh: { userData: { authoredQuality: 'low' } } });
             await qa.preview.modelReady; await qa.preview.model.userData.equipmentReady; qa.preview.render();
             const shown = qa.preview.model;
+            let batched = false; shown.traverse(mesh => { batched ||= Boolean(mesh.userData.fittedBatchSources); });
             return { type: shown.userData.authoredClass, quality: shown.userData.authoredQuality, items: shown.userData.equipmentVisualItemCount,
                 independent: shown.getObjectByName(`${type}_Body`).skeleton.bones[0] !== actor.root.getObjectByName(`${type}_Body`).skeleton.bones[0],
-                idle: shown.userData.resolveAnimationName('Idle') };
+                idle: shown.userData.resolveAnimationName('Idle'), batched };
         }, type);
-        expect(preview).toEqual({ type, quality: 'low', items: 14, independent: true, idle: { Rogue: 'Dagger_Idle_Dual', Wizard: 'Staff_Idle', Cleric: 'Mace_Idle' }[type] });
+        expect(preview).toEqual({ type, quality: 'low', items: 14, independent: true, idle: { Rogue: 'Dagger_Idle_Dual', Wizard: 'Staff_Idle', Cleric: 'Mace_Idle' }[type], batched: true });
         await page.locator('.character-preview-stage canvas').screenshot({ path: testInfo.outputPath(`${type}-equipped-preview.png`) });
     }
     await page.evaluate(() => { window.__classGear.preview.dispose(); window.__classGear.previewHost.remove(); });
