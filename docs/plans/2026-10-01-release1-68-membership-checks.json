@@ -17,9 +17,26 @@
     { "type": "fixture correction", "scope": "The first presentation run measured clientHeight, which omits the button's two-pixel border, and failed at 42px. The final test measures the same actual bounding-box height as the existing confirmation test, retaining the 44px minimum. No CSS target-size reduction was made." },
     { "type": "lint and whitespace", "result": "Changed wallet source and tests pass ESLint; Go files are gofmt formatted; git diff --check passes." }
   ],
+  "retainedEvidence": {
+    "comparisonCommit": "d1e707e3",
+    "sourceComparison": "git diff --exit-code succeeds for the four files below against the independently accepted Alpha 1.9.24 source. In vip_membership.go, the only differences are the private owner ID and UTC snapshot timestamp in the outgoing status payload; the grant/save/role-refresh logic is unchanged.",
+    "unchangedSources": [
+      { "file": "server/internal/database/vip.go", "sha256": "29725ad0ca62747d96bada982e0643dd09d0f885501e8aa4af5845adc7af9729" },
+      { "file": "server/internal/game/vip.go", "sha256": "a4c7c2aee7081261020cd84024df706617377d08ef0280c827f40736489b6e72" },
+      { "file": "server/casino_vip_sessions_test.go", "sha256": "8e2f616999dae60d0c5547dffada002bd86af5b791ee9b224e4fe22111c82413" },
+      { "file": "server/internal/database/vip_mongo_test.go", "sha256": "d91daa1cade270564b92af2fa5fe1ad5a2baef7628198b385587447497b51a40" }
+    ],
+    "receipts": [
+      { "record": "docs/plans/2026-09-14-vip-membership.md", "scope": "Eight concurrent disposable Mongo provisions produce one month; overlap rejection, adjacent renewal, durable revocation and provisioning replay protection. Historical focused/monthly journal evidence, not a new invocation or payments." },
+      { "record": "docs/plans/2026-09-20-admin-vip-allowance.md", "scope": "Trusted administrator access plus current UTC-month allowance, no historical-role inference or normal/admin stacking. Connected two-socket house suite includes an admin with no paid period, a normal VIP, guarded entry, EP wager and fresh-process reconnect without another allowance." },
+      { "record": "docs/plans/2026-09-20-casino-expansion.md", "scope": "The retained 133.479-second connected suite records the actual admin/normal allowance and restart path. It is not repeated for two new status-payload fields. Later casino/seat changes still need their own evidence; this does not assert unchanged whole-game code or new populated-floor capacity." },
+      { "record": "docs/plans/2026-09-14-vip-poker-connected-recovery.md", "scope": "Connected VIP poker funded-hand process restart and re-seat retain the same hand, private cards, monthly receipt and EP-only wallets. This is historical EP recovery evidence, not a new 1.68 rendered or live run." },
+      { "record": "docs/plans/2026-09-14-connected-vip-blackjack-acceptance.md", "scope": "Connected shared VIP blackjack EP settlement and saved process-restart wallet. Mid-hand restart, physical-phone play and unrelated games are explicitly not covered." }
+    ]
+  },
   "unchanged": "Membership provisioning, expiration authority, 100 EP/month, trusted administrator roles, durable receipt identities, Gold/EP rates and separation, combat power, saves, existing open-alpha access and the absence of payment integration.",
   "remaining": [
-    "Reconcile and retain existing membership/expiry/allowance Mongo, connected-session and restart receipts at their real scope before closing the full milestone.",
+    "Review the retained source/receipt mapping with the ordered integration build; no fresh full-game or production acceptance is claimed here.",
     "The display is informational, not an authoritative access decision, and this slice does not add a request-generation fence for all same-owner out-of-order replies.",
     "Prior roadmap milestones still require completion and acceptance in order. No 1.68 release or broader security/commercial readiness is implied by these focused checks."
   ]
