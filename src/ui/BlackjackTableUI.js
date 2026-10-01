@@ -19,7 +19,7 @@ export class BlackjackTableUI {
         this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes'));
         this.rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
         this.stakeRules = node('p'); this.rules.append(this.stakeRules);
-        this.rules.append(node('p', 'You have 30 seconds per decision. Timeouts stand. Confirmed wagers continue if you leave or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
+        this.rules.append(node('p', 'You have 30 seconds per decision. A timeout stands your hand and releases your chair. Your confirmed wagers still finish, and payouts are saved automatically, even if you leave or disconnect. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
         this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
         this.betBox = node('div', '', 'blackjack-bet');
         const label = node('label', 'Wager (Gold) '); this.stakeLabel = label;

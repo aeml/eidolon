@@ -274,6 +274,28 @@ func (w *World) releaseCasinoSeatLocked(player *Entity) {
 	}
 }
 
+// A saved game timeout may only release the exact chair session that funded
+// that hand. Delayed/replayed timeouts must not evict a later seat claim.
+func (w *World) ReleaseTimedOutCasinoSeat(playerID, tableID string, seatIndex int, sessionID string) bool {
+	if sessionID == "" {
+		return false
+	}
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	player := w.Entities[playerID]
+	if player == nil {
+		return false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	seat := player.CasinoSeat
+	if seat == nil || seat.TableID != tableID || seat.Seat != seatIndex || seat.SessionID != sessionID {
+		return false
+	}
+	w.releaseCasinoSeatLocked(player)
+	return true
+}
+
 func (w *World) pruneCasinoSeatsLocked(now time.Time) {
 	for _, player := range w.Entities {
 		if player.Type != TypePlayer {

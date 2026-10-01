@@ -61,6 +61,9 @@ type blackjackTableState struct {
 	DealAt     time.Time              `json:"dealAt"`
 	FinishedAt time.Time              `json:"finishedAt"`
 	Round      *game.BlackjackRound   `json:"round,omitempty"`
+	// Private durable ownership fences; never included in blackjackTableView.
+	SeatSessions map[string]string `json:"seatSessions,omitempty"`
+	TimedOut     map[string]bool   `json:"timedOut,omitempty"`
 }
 
 func newBlackjackLobby() (*blackjackTableState, error) {
@@ -89,6 +92,17 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 			return nil, errors.New("invalid funded blackjack participant")
 		}
 		players[p.PlayerID], seats[p.Seat] = true, true
+	}
+	for playerID, session := range state.SeatSessions {
+		decoded, err := hex.DecodeString(session)
+		if !players[playerID] || err != nil || len(decoded) != 16 {
+			return nil, errors.New("invalid blackjack seat ownership")
+		}
+	}
+	for playerID, timedOut := range state.TimedOut {
+		if !timedOut || state.SeatSessions[playerID] == "" || state.Phase == "betting" {
+			return nil, errors.New("invalid blackjack timeout ownership")
+		}
 	}
 	switch state.Phase {
 	case "betting":
@@ -276,6 +290,10 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 		return err
 	}
 	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, Bet: bet})
+	if state.SeatSessions == nil {
+		state.SeatSessions = map[string]string{}
+	}
+	state.SeatSessions[client.playerID] = sessionID
 	if state.DealAt.IsZero() {
 		state.DealAt = now.Add(casinoBettingWindow)
 	}
@@ -370,8 +388,15 @@ func tickBlackjack(now time.Time, ids ...string) error {
 			}
 		case "playing":
 			if !now.Before(state.Round.Deadline) {
+				owner := state.Round.Players[state.Round.TurnPlayer].PlayerID
 				state.Round, err = state.Round.Timeout(now)
 				if err == nil {
+					if state.SeatSessions[owner] != "" {
+						if state.TimedOut == nil {
+							state.TimedOut = map[string]bool{}
+						}
+						state.TimedOut[owner] = true
+					}
 					if state.Round.Phase == "complete" {
 						state.Phase = "settling"
 					}
@@ -396,6 +421,15 @@ func tickBlackjack(now time.Time, ids ...string) error {
 		}
 	}
 	blackjackMu.Unlock()
+	if err == nil {
+		// Ownership release follows the durable transition, outside the table
+		// mutex. Persisted markers safely retry after a missed release/restart.
+		for _, participant := range state.Players {
+			if state.TimedOut[participant.PlayerID] {
+				world.ReleaseTimedOutCasinoSeat(participant.PlayerID, id, participant.Seat, state.SeatSessions[participant.PlayerID])
+			}
+		}
+	}
 	if err != nil || recipient == "" {
 		return err
 	}

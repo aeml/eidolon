@@ -81,6 +81,45 @@ func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	}
 }
 
+func TestCasinoTimeoutReleaseFencesChairSession(t *testing.T) {
+	w, a, b, table := casinoSeatWorld()
+	now := time.Now()
+	seat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, token := range []string{"", "stale"} {
+		if w.ReleaseTimedOutCasinoSeat(a.ID, table.ID, 0, token) {
+			t.Fatal("unowned timeout released chair")
+		}
+	}
+	if w.ReleaseTimedOutCasinoSeat(a.ID, "other-table", 0, seat.SessionID) || w.ReleaseTimedOutCasinoSeat(a.ID, table.ID, 1, seat.SessionID) {
+		t.Fatal("timeout crossed table/seat boundary")
+	}
+	if !w.ReleaseTimedOutCasinoSeat(a.ID, table.ID, 0, seat.SessionID) {
+		t.Fatal("owned timeout failed to release chair")
+	}
+	if a.CasinoSeat != nil || a.State != "IDLE" || a.X != seat.ExitX || a.Z != seat.ExitZ || a.Gold != 0 {
+		t.Fatal("timeout did not restore controls without changing wallet")
+	}
+	if _, err := w.TakeCasinoSeat(b.ID, table.ID, 0, now); err != nil {
+		t.Fatal("released chair not available", err)
+	}
+	if w.ReleaseTimedOutCasinoSeat(a.ID, table.ID, 0, seat.SessionID) || b.CasinoSeat == nil {
+		t.Fatal("replayed timeout affected replacement patron")
+	}
+	if err := w.ChangeCasinoSeat(b.ID, b.CasinoSeat.SessionID, "leave", false, now, ""); err != nil {
+		t.Fatal(err)
+	}
+	newSeat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if newSeat.SessionID == seat.SessionID || w.ReleaseTimedOutCasinoSeat(a.ID, table.ID, 0, seat.SessionID) || a.CasinoSeat == nil {
+		t.Fatal("late timeout evicted a newer chair session")
+	}
+}
+
 func TestCasinoPreparationRosterConsentAndRealPlayerMinimum(t *testing.T) {
 	for _, table := range CasinoTables()[:2] {
 		t.Run(table.Game, func(t *testing.T) {
