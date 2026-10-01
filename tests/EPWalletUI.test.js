@@ -115,3 +115,54 @@ test('disposing the wallet retains an unresolved receipt but cannot submit or ac
     expect(send).toHaveBeenCalledTimes(1); expect(sessionStorage.getItem(ui.storageKey())).toBe(stored);
     expect(ui.pending).toEqual(request);
 });
+
+test('VIP expiry uses the server snapshot time, marks status for refresh and never grants or polls', () => {
+    const clock = jest.spyOn(performance, 'now').mockReturnValue(1000);
+    try {
+        const { ui, send } = fixture();
+        ui.handleVIPStatus({ playerID: 'player-hero', success: true, active: true,
+            asOf: '2026-10-01T23:59:58Z', until: '2026-10-02T00:00:00Z', monthlyEP: 100,
+            awardedEP: 0, ep: 3, gold: 3000000, goldPerEP: 1000000 });
+        expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('VIP active');
+        clock.mockReturnValue(2999); ui.refreshPlayer();
+        expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('VIP active');
+        clock.mockReturnValue(3000); ui.refreshPlayer();
+        expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('Refresh VIP status');
+        expect(ui.root.querySelector('[data-vip-status]').textContent).not.toContain('VIP active');
+        expect(send).not.toHaveBeenCalled();
+        expect(ui.root.querySelector('[data-balance]').textContent).toContain('3 EP');
+        ui.dispose();
+    } finally { clock.mockRestore(); }
+});
+
+test('explicit membership refresh clears a prior badge but cannot consume a pending exchange receipt', () => {
+    const { ui, send } = fixture();
+    ui.review.click(); ui.root.querySelector('[data-confirm]').click();
+    const request = send.mock.calls[0][1], stored = sessionStorage.getItem(ui.storageKey());
+    const refresh = ui.root.querySelector('[data-vip-refresh]');
+    expect(refresh).not.toBeNull();
+    refresh.click();
+    expect(send.mock.calls.at(-1)).toEqual(['get_vip_status', {}]);
+    expect(ui.root.querySelector('[data-vip-status]').textContent).toContain('Loading VIP');
+    ui.handleVIPStatus({ playerID: 'player-hero', success: true, active: false, awardedEP: 0,
+        ep: 3, gold: 3000000, goldPerEP: 1000000 });
+    expect(ui.pending).toEqual(request);
+    expect(sessionStorage.getItem(ui.storageKey())).toBe(stored);
+    expect(send.mock.calls.filter(([type]) => type === 'exchange_gold_for_ep')).toHaveLength(1);
+    ui.dispose(); refresh.click();
+    expect(send.mock.calls.at(-1)).toEqual(['get_vip_status', {}]);
+});
+
+test.each(['bad-date', 'bad-allowance', 'non-boolean-active'])('invalid membership metadata cannot overwrite valid balances or claim active VIP: %s', kind => {
+    const { ui } = fixture();
+    const reply = { playerID: 'player-hero', success: true, active: true, monthlyEP: 100,
+        awardedEP: 100, ep: 999, gold: 9999999, goldPerEP: 1000000, until: '2026-12-01T00:00:00Z' };
+    if (kind === 'bad-date') reply.until = 'not-a-date';
+    if (kind === 'bad-allowance') reply.monthlyEP = 999;
+    if (kind === 'non-boolean-active') reply.active = 'true';
+    const balance = ui.root.querySelector('[data-balance]').textContent;
+    expect(ui.handleVIPStatus(reply)).toBe(false);
+    expect(ui.root.querySelector('[data-balance]').textContent).toBe(balance);
+    expect(ui.root.querySelector('[data-vip-status]').textContent).not.toContain('VIP active');
+    ui.dispose();
+});

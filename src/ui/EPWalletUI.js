@@ -11,6 +11,8 @@ export class EPWalletUI {
         this.root.innerHTML = `<summary>Eidolon Points · EP</summary><div class="equipment-loadouts-body">
             <p data-balance>Open to load your balance.</p>
             <p data-vip-status>VIP membership months grant 100 EP each. Payment integration is not available.</p>
+            <button type="button" data-vip-refresh>Refresh VIP status</button>
+            <p>Administrator VIP follows the current account role and grants 100 EP per UTC calendar month. A membership allowance and administrator allowance for the same month do not stack. Expiry does not remove your existing EP or cosmetic unlocks.</p>
             <p>1 EP costs 1,000,000 Gold. This exchange is permanent: EP cannot become Gold, items, stats or progression. Spend EP on cosmetic appearances at Veyra’s VIP Outfitter beside the casino entrance or wager it in VIP casino games, where winnings are EP only. Owning EP does not grant VIP access.</p>
             <label>EP to receive<input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="EP to receive"></label>
             <button type="button" data-review disabled>Review exchange</button>
@@ -24,10 +26,12 @@ export class EPWalletUI {
         this.confirmation = this.root.querySelector('[data-confirmation]');
         this.retry = this.root.querySelector('[data-retry]');
         this.status = this.root.querySelector('[role="status"]');
+        this.vipRefresh = this.root.querySelector('[data-vip-refresh]');
+        ownedEvent(this, this.vipRefresh, 'click', () => this.requestVIPStatus());
         ownedEvent(this, this.root, 'toggle', () => {
             if (!this.root.open) return;
-            this.refreshPlayer();
-            this.send('get_vip_status', {});
+            if (!this.refreshPlayer()) return;
+            this.requestVIPStatus();
             this.send('get_ep_wallet', {});
         });
         ownedEvent(this, this.amount, 'input', () => { this.confirmation.hidden = true; });
@@ -55,8 +59,15 @@ export class EPWalletUI {
     refreshPlayer() {
         if (this.disposed) return false;
         const id = this.getPlayer()?.id;
-        if (id === this.playerID) return Boolean(id);
+        if (id === this.playerID) {
+            if (this.vipDeadline !== null && this.vipDeadline !== undefined && performance.now() >= this.vipDeadline) {
+                this.vipDeadline = null;
+                this.root.querySelector('[data-vip-status]').textContent = 'The last verified VIP period has ended. Refresh VIP status to check current access and any new monthly allowance. Existing EP and cosmetic unlocks remain yours.';
+            }
+            return Boolean(id);
+        }
         this.playerID = id;
+        this.vipDeadline = null;
         this.ready = false;
         this.review.disabled = true;
         this.confirmation.hidden = true;
@@ -69,6 +80,14 @@ export class EPWalletUI {
         } catch { /* Wallet balance always comes from the server. */ }
         this.retry.hidden = !this.pending;
         return Boolean(id);
+    }
+
+    requestVIPStatus() {
+        if (!this.refreshPlayer()) return false;
+        this.vipDeadline = null;
+        this.root.querySelector('[data-vip-status]').textContent = 'Loading VIP membership status…';
+        this.send('get_vip_status', {});
+        return true;
     }
 
     storageKey() { return `eidolon-ep-exchange:${this.playerID}`; }
@@ -110,12 +129,22 @@ export class EPWalletUI {
     }
 
     handleVIPStatus(result) {
-        if (!this.handleResult(result)) return;
+        if (!this.refreshPlayer() || result?.playerID !== this.playerID || typeof result.success !== 'boolean' ||
+            typeof result.active !== 'boolean') return false;
         const until = result?.active ? new Date(result.until) : null;
-        const date = until && Number.isFinite(until.getTime()) ? until.toLocaleDateString() : '';
+        const asOf = result.asOf ? new Date(result.asOf).getTime() : Date.now();
+        if (result.success && result.active && (!Number.isFinite(until.getTime()) || !Number.isFinite(asOf) ||
+            result.monthlyEP !== 100 || !Number.isSafeInteger(result.awardedEP) || result.awardedEP < 0 ||
+            !Number.isSafeInteger(result.ep) || result.ep < 0 || !Number.isSafeInteger(result.gold) ||
+            result.gold < 0 || result.goldPerEP !== 1000000)) return false;
+        if (!this.handleResult(result)) return false;
+        this.vipDeadline = result.success && result.active ? performance.now() + Math.max(0, until.getTime() - asOf) : null;
+        const date = until && Number.isFinite(until.getTime()) ? until.toLocaleString() : '';
         this.root.querySelector('[data-vip-status]').textContent = result?.success
             ? result.active ? `VIP active${date ? ` until ${date}` : ''} · 100 EP per membership month${result.awardedEP ? ` · ${result.awardedEP} EP just credited` : ''}.`
                 : 'No active VIP membership. Existing EP and cosmetic unlocks remain yours.'
             : result?.message || 'VIP status is unavailable. Please refresh.';
+        this.refreshPlayer();
+        return true;
     }
 }

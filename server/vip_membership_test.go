@@ -31,13 +31,15 @@ func vipMembershipFixture(t *testing.T) (*Client, *testCharacterCommitter, []dat
 func TestVIPStatusBindsPrivateWalletToCurrentCharacter(t *testing.T) {
 	c, _, _ := vipMembershipFixture(t)
 	setAdminRoleTestState(t, &fakeAdminRoleStore{roles: map[string]bool{}}, "")
+	before := time.Now()
 	sendVIPStatus(c)
 	var msg Message
 	var result struct {
-		PlayerID string `json:"playerID"`
-		Success  bool   `json:"success"`
-		EP       int    `json:"ep"`
-		Gold     int    `json:"gold"`
+		PlayerID string    `json:"playerID"`
+		Success  bool      `json:"success"`
+		EP       int       `json:"ep"`
+		Gold     int       `json:"gold"`
+		AsOf     time.Time `json:"asOf"`
 	}
 	select {
 	case data := <-c.send:
@@ -53,6 +55,9 @@ func TestVIPStatusBindsPrivateWalletToCurrentCharacter(t *testing.T) {
 	p := world.GetEntityCopy(c.playerID)
 	if result.PlayerID != c.playerID || !result.Success || result.EP != p.EP || result.Gold != p.Gold {
 		t.Fatal("private VIP wallet is not bound to its character", result)
+	}
+	if result.AsOf.Before(before) || result.AsOf.After(time.Now()) || result.AsOf.Location() != time.UTC {
+		t.Fatal("VIP status lacks the trusted UTC snapshot time", result.AsOf)
 	}
 }
 

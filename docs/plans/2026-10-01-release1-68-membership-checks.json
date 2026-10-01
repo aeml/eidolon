@@ -1,0 +1,26 @@
+{
+  "status": "local membership-status slice; no version package, push, accepted deployment or completed-milestone claim",
+  "baseCommit": "649066768cd572ba637d657ed9cb9d6da87f00a6",
+  "scope": [
+    "The server-owned private VIP status includes the UTC time used to evaluate its snapshot. No additional role lookup, entitlement change or new message type is introduced.",
+    "The wallet offers an explicit Refresh VIP status action, clears the old badge while loading, and displays the full localized expiry date and time.",
+    "The UI uses elapsed monotonic time and the server snapshot's remaining period to mark an expired display as needing confirmation. It does not poll, renew, grant access, award EP or alter casino funding authority.",
+    "Malformed active-membership metadata cannot replace valid balances or claim an active membership. Character ownership and disposal guards remain in force.",
+    "Refreshing membership cannot discard an unresolved Gold-to-EP receipt or resubmit its exchange. The visible explanation describes existing administrator UTC-month allowances, non-stacking and retained EP/cosmetics after expiry."
+  ],
+  "checks": [
+    { "type": "before implementation", "passed": 16, "failed": 5, "seconds": 0.841, "scope": "The new expiry, explicit refresh and three malformed-metadata regressions reproduce against the previous wallet." },
+    { "type": "focused Jest", "suites": 3, "passed": 39, "seconds": 1.968, "scope": "EPWalletUI, Wardrobe and PrivateCharacterResultOwnership. A controlled monotonic clock proves the exact display-expiry boundary without granting/polling or relying on the workstation date." },
+    { "type": "Go race", "package": "eidolon-server", "seconds": 3.073, "scope": "VIP status private owner and UTC snapshot, saved monthly receipts, repeat refresh, trusted-role revocation, normal/admin non-stacking, receipt-only saves, pending journal recovery and repository failure. These use existing handler fixtures, not a newly restarted Mongo/socket service." },
+    { "type": "Go race", "package": "eidolon-server/internal/database", "seconds": 1.038, "scope": "Existing pure VIP period and allowance rules. Explicitly gated Mongo checks are not enabled by this command and are not claimed as new database acceptance." },
+    { "type": "prepared Chrome presentation", "passed": 2, "seconds": 10.0, "artifacts": "/tmp/eidolon-1-68-membership-ui-final-1001", "scope": "390px and 1440px wallet bounds, explicit membership refresh, actual 44px button bounds, one confirmed exchange, permanent-exchange explanation and unchanged receipt request shape. Root reviewed the portrait confirmation screenshot. Rendering is GPU-disabled prepared DOM, not authenticated settlement or physical-phone evidence." },
+    { "type": "fixture correction", "scope": "The first presentation run measured clientHeight, which omits the button's two-pixel border, and failed at 42px. The final test measures the same actual bounding-box height as the existing confirmation test, retaining the 44px minimum. No CSS target-size reduction was made." },
+    { "type": "lint and whitespace", "result": "Changed wallet source and tests pass ESLint; Go files are gofmt formatted; git diff --check passes." }
+  ],
+  "unchanged": "Membership provisioning, expiration authority, 100 EP/month, trusted administrator roles, durable receipt identities, Gold/EP rates and separation, combat power, saves, existing open-alpha access and the absence of payment integration.",
+  "remaining": [
+    "Reconcile and retain existing membership/expiry/allowance Mongo, connected-session and restart receipts at their real scope before closing the full milestone.",
+    "The display is informational, not an authoritative access decision, and this slice does not add a request-generation fence for all same-owner out-of-order replies.",
+    "Prior roadmap milestones still require completion and acceptance in order. No 1.68 release or broader security/commercial readiness is implied by these focused checks."
+  ]
+}

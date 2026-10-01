@@ -94,6 +94,7 @@ func sendVIPStatus(c *Client) {
 	}
 	payload, _ := json.Marshal(map[string]interface{}{
 		"playerID": p.ID,
+		"asOf":     now.UTC(),
 		"success":  err == nil, "message": message, "active": err == nil && now.Before(p.VIPUntil),
 		"until": p.VIPUntil, "monthlyEP": database.VIPMonthlyEP, "awardedEP": awarded,
 		"ep": p.EP, "gold": p.Gold, "goldPerEP": database.GoldPerEP,
