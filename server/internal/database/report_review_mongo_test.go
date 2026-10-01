@@ -33,6 +33,8 @@ func TestReportReviewMongoResolveReplayReopenAndConcurrentReview(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = db.Close(context.Background()) })
+	db.reports = db.reports.Database().Collection(uniqueID("report-review-triage"))
+	t.Cleanup(func() { _ = db.reports.Drop(context.Background()) })
 	report, err := db.CreateReport("disposable-reporter", "Moderation Appeal", "Please review this isolated notice.")
 	if err != nil {
 		t.Fatal(err)
@@ -154,5 +156,37 @@ func TestReportReviewMongoResolveReplayReopenAndConcurrentReview(t *testing.T) {
 	_, absent := db.OwnReportStatus("disposable-reporter", primitive.NewObjectID().Hex())
 	if !errors.Is(wrongOwner, mongo.ErrNoDocuments) || !errors.Is(absent, mongo.ErrNoDocuments) {
 		t.Fatal("ownership query differs from missing case", wrongOwner, absent)
+	}
+	// Interleaved unrelated submissions must not displace appeals across pages.
+	for i := 0; i < 12; i++ {
+		if _, err := db.CreateReport("disposable-reporter", "Moderation Appeal", "Isolated appeal."); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.CreateReport("disposable-reporter", "Bug Report", "Unrelated isolated bug."); err != nil {
+			t.Fatal(err)
+		}
+	}
+	firstPage, err := db.ReadReportPage(ReportQuery{Status: "open", ReportType: "Moderation Appeal"})
+	if err != nil || len(firstPage.Reports) != 10 || firstPage.Next == "" {
+		t.Fatal("filtered first page", firstPage, err)
+	}
+	nextPage, err := db.ReadReportPage(ReportQuery{Status: "open", ReportType: "Moderation Appeal", Before: firstPage.Next})
+	if err != nil || len(nextPage.Reports) != 3 || nextPage.Next != "" {
+		t.Fatal("filtered next page", nextPage, err)
+	}
+	seen := map[primitive.ObjectID]bool{}
+	for _, entry := range append(firstPage.Reports, nextPage.Reports...) {
+		if seen[entry.ID] || entry.ReportType != "Moderation Appeal" || entry.Status != "open" {
+			t.Fatal("mixed or duplicated filtered page", entry)
+		}
+		seen[entry.ID] = true
+	}
+	resolvedPage, err := db.ReadReportPage(ReportQuery{Status: "resolved", ReportType: "Moderation Appeal"})
+	if err != nil || len(resolvedPage.Reports) != 0 {
+		t.Fatal("status filter lost", resolvedPage, err)
+	}
+	read()
+	if saved.ReviewRevision != 4 || len(saved.ReviewReceipts) != 4 {
+		t.Fatal("triage read changed review state", saved)
 	}
 }

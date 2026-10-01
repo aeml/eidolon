@@ -3,10 +3,10 @@
 The Dungeon Guide now has an Endgame tab at level 100, bringing post-story
 direction and the existing repeat-run systems into one readable overview.
 This is locally packaged as Alpha 1.58.0 but unpublished, not a live release.
-The preceding [1.56 is accepted](2026-10-01-release1-56-acceptance.md) at
-`b22975c8f22b72ff72a591ff40c3ca8133d4dd88`, CI36798699692. The 1.57 package is
-pushed at `3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`, CI36802997921, awaiting
-its own acceptance. Preserve ordered acceptance before publishing this candidate.
+The preceding [1.57 is accepted](2026-10-01-release1-57-acceptance.md) at
+`3632e2d57a33df8f7c4f6c18ea0d3563edc83d21`, CI36802997921. All ten jobs and
+independent public identities, database readiness and six changed runtime files
+passed. This candidate still requires its own CI and independent acceptance.
 
 ## Player choices and authority
 
@@ -66,6 +66,10 @@ and whitespace checks passed. The login version matches the local manifest;
 new 1.58 notes precede the complete prior history. The notes screenshot was
 reviewed in `/tmp/eidolon-1-58-login-notes-1001`. These checks establish local
 packaging, not public backend readiness or deployment acceptance.
+
+After 1.57 acceptance, 349 focused endgame, version and publisher checks passed
+in 4.395 seconds. The outgoing runtime diff was reviewed; no later moderation
+or calendar feature is included in this release.
 
 Keep publication ordered after 1.56 and 1.57 acceptance. Login,
 client/server/build versions and cumulative notes are aligned at 1.58.0. Fresh-fetch

@@ -2,21 +2,20 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha1.56.0, exactb22975c8f22b72ff72a591ff40c3ca8133d4dd88,
-CI36798699692 attempt1. All ten CI jobs and independent public IPv4 checks
-passed for identities, database readiness and all five changed runtime files.
-See its [acceptance record](2026-10-01-release1-56-acceptance.md).
+baseline is Alpha1.57.0, exact3632e2d57a33df8f7c4f6c18ea0d3563edc83d21,
+CI36802997921 attempt1. All ten CI jobs and independent public IPv4 checks
+passed for identities, database readiness and all six changed runtime files.
+See its [acceptance record](2026-10-01-release1-57-acceptance.md).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
 existing rules and earned cosmetic looks. Dates/operator agreement remains a gate for
 organizing a new competition, not a claim made by publishing existing rules
 and earned looks. No new calendar or manual reset was activated.
-The subsequent [1.57 event work](2026-10-01-release1-57-events.md) is pushed at
-3632e2d57a33df8f7c4f6c18ea0d3563edc83d21, CI36802997921, awaiting its own
-acceptance: upcoming server windows, atlas waypoints, reward clarity
-and bounded realm/cohort checks. Human event balance and ordered publication
-remain distinct from those prepared mechanical fixtures.
+The accepted [1.57 event work](2026-10-01-release1-57-events.md) provides
+upcoming server windows, atlas waypoints, reward clarity and bounded realm/cohort
+checks. Human event balance remains distinct from those prepared mechanical
+fixtures and the verified deployment.
 The following [1.58 endgame overview](2026-10-01-release1-58-endgame.md) is locally
 implemented and packaged but unpublished: actual story/cache status, optional
 repeat-run goals, Resonance, Forge and collection guidance. Existing rewards and

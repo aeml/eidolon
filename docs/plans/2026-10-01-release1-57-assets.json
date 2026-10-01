@@ -1,0 +1,116 @@
+{
+  "acceptedAt": "2026-10-01T02:47:01.026Z",
+  "commit": "3632e2d57a33df8f7c4f6c18ea0d3563edc83d21",
+  "version": "Alpha 1.57.0",
+  "ci": {
+    "run": 36802997921,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 110181247785,
+        "name": "Client Tests (Jest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110181247948,
+        "name": "Browser Smoke (Playwright 1/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110181247992,
+        "name": "Server Tests (Go)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110181248006,
+        "name": "Browser Smoke (Playwright 3/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110181248105,
+        "name": "Browser Smoke (Playwright 2/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110190008722,
+        "name": "Predeploy Character QA (System Chrome)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110191049937,
+        "name": "Validate Production QA Inputs",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110191079516,
+        "name": "Deploy Server (SSH)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110191079576,
+        "name": "Deploy to GitHub Pages",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 110191338709,
+        "name": "Live Release and Character QA",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "files": [
+    {
+      "file": "assets/archetypes/Fighter/README.md",
+      "bytes": 1667,
+      "sha256": "49d7815674ee7e1204dee88ef443eb391511155d64f1930951baa94734a19d08"
+    },
+    {
+      "file": "index.html",
+      "bytes": 725598,
+      "sha256": "5e9b53c9b29a416b168542864334e95b5549c2d3acfbc43eb029d0c31d5eef40"
+    },
+    {
+      "file": "src/core/PublicEventController.js",
+      "bytes": 5578,
+      "sha256": "048a6c3f501a03101e3b1f40131ddb639ec1e3f6d5c27fb1b252ba0297b3ee38"
+    },
+    {
+      "file": "src/styles/public-events.css",
+      "bytes": 1520,
+      "sha256": "473484a69f382e54cb639393d487490e0744d4369709abb9ba045c33992e8858"
+    },
+    {
+      "file": "src/ui/AtlasNavigation.js",
+      "bytes": 17143,
+      "sha256": "4949618c46dd4cee20cb5a24d007aacc36b719a655801fa4514d3e1391a6bb5f"
+    },
+    {
+      "file": "src/ui/PublicEventDiscovery.js",
+      "bytes": 2000,
+      "sha256": "52bc2d2431bc85ef5a51bba52d653eda5af663d6b4c8fb5f593e042ad2502b46"
+    }
+  ],
+  "frontend": {
+    "commit": "3632e2d57a33df8f7c4f6c18ea0d3563edc83d21",
+    "version": "Alpha 1.57.0"
+  },
+  "backend": {
+    "commit": "3632e2d57a33df8f7c4f6c18ea0d3563edc83d21",
+    "version": "Alpha 1.57.0",
+    "status": "ok",
+    "database": "ready"
+  },
+  "network": "ordinary public DNS, IPv4 HTTPS"
+}

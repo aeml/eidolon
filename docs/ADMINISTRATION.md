@@ -61,6 +61,14 @@ unavailable response. Checking is explicit, with no background polling or
 persistent local reference list. Resolved means the review finished, not a
 promised bug fix or sanction reversal.
 
+Local 1.59 preparation adds a **Report category** filter alongside status:
+Player conduct, Moderation appeals, Bug reports and Feature requests. Changing
+a filter clears the old pagination cursor; click **Refresh reports** to load
+the new selection. Pages retain both filters. The server accepts only these
+literal categories and rechecks the current durable admin role for each read.
+Reading or filtering cannot change case status, punish a player or reveal data
+to another player's report-status lookup.
+
 Local 1.59 preparation also adds **Review and resolve report** to each case.
 Enter a private one-line reason, choose **Mark resolved** or **Reopen report**,
 then confirm the displayed report ID and revision. **Keep unchanged** cancels
@@ -84,6 +92,29 @@ the latest receipt is exposed in report JSON. The existing report collection
 has no automatic expiration; this work introduces no purge or new retention
 policy. Staff coverage, final evidence retention and the initial sanction scope
 still require owner decisions. See the [local review evidence](plans/2026-10-01-release1-59-moderation.md).
+
+### Staff review boundaries
+
+The current staff capability is a durable administrator role, not a new junior
+moderator role or a grant of access to every conversation. The report queue
+contains explicitly submitted text and contextual snapshots; selected chat
+messages remain client-reported, unverified evidence. It is not an independent
+server transcript, and an accusation is not a finding. Inspect only the relevant
+case; do not copy its allegations or personal information into public chat,
+patch notes or public issue trackers.
+
+Use the private review reason to explain the case-status decision. Resolving a
+case means that review is finished; it is neither proof that an alleged bug was
+fixed nor a ban, mute, forced rename or automatic appeal reversal. Reopening
+preserves previous receipts. Concurrent reviewers must refresh a conflicting
+case rather than overwrite a newer decision. A player can see only their own
+submitted case's type, status and dates, not staff reasons or another case.
+
+Do not use item grants, Gold grants, teleports or role changes as substitutes
+for the still-pending sanction workflow. Staff assignment, operating coverage,
+sanction options and final retention remain owner decisions. These boundaries
+describe current code and safe review handling, not approved punishment policy
+or a promise of a staffed response deadline.
 
 Under **Character operations**, select an exact account or **Use my account**:
 

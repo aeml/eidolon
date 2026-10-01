@@ -46,12 +46,13 @@ type adminReportStore interface {
 var adminReports adminReportStore
 
 type adminReadRequest struct {
-	ID     string `json:"id"`
-	After  string `json:"after,omitempty"`
-	Before string `json:"before,omitempty"`
-	Actor  string `json:"actor,omitempty"`
-	Action string `json:"action,omitempty"`
-	Status string `json:"status,omitempty"`
+	ID         string `json:"id"`
+	After      string `json:"after,omitempty"`
+	Before     string `json:"before,omitempty"`
+	Actor      string `json:"actor,omitempty"`
+	Action     string `json:"action,omitempty"`
+	Status     string `json:"status,omitempty"`
+	ReportType string `json:"reportType,omitempty"`
 }
 
 type adminOnlinePlayer struct {
@@ -111,6 +112,11 @@ func decodeAdminRead(msg Message) (adminReadRequest, error) {
 				return request, errors.New("invalid report status")
 			}
 			request.Status = text
+		case "reportType":
+			if msg.Type != MsgAdminReports || (text != "" && !database.SupportedReportType(text)) {
+				return request, errors.New("invalid report type")
+			}
+			request.ReportType = text
 		case "before":
 			if msg.Type != MsgAdminHistory && msg.Type != MsgAdminReports {
 				return request, errors.New("invalid field")
@@ -234,7 +240,7 @@ func handleAdminRead(c *Client, msg Message) {
 			result.Authorized = false
 			return
 		}
-		page, err := store.ReadReportPage(database.ReportQuery{Before: request.Before, Status: request.Status})
+		page, err := store.ReadReportPage(database.ReportQuery{Before: request.Before, Status: request.Status, ReportType: request.ReportType})
 		if err != nil {
 			result.Authorized = false
 			result.Message = "Report queue unavailable or filter invalid. Refresh with valid filters."

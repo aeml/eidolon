@@ -41,7 +41,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     })), next: 'history-cursor', retentionDays: 90 } } : {}),
                     ...(type === 'admin_reports' ? { reports: { reports: Array.from({ length: 10 }, (_, index) => ({
                         id: String(index + (payload.before ? 10 : 0)).padStart(24, '0'), username: 'fixture-reporter',
-                        reportType: 'Bug Report', status: payload.status || 'open', createdAt: '2026-09-28T12:00:00Z',
+                        reportType: payload.reportType || 'Bug Report', status: payload.status || 'open', createdAt: '2026-09-28T12:00:00Z',
                         text: '<img src=x onerror=alert(1)>\n' + 'long-text'.repeat(400)
                     })), next: payload.before ? '' : '000000000000000000000009' } } : {})
                 }), 0),
@@ -102,6 +102,15 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await dialog.getByLabel('Report status').selectOption('resolved');
         await dialog.getByRole('button', {name: 'Refresh reports', exact: true}).click();
         await expect(dialog.locator('li strong').first()).toContainText('resolved');
+        await dialog.getByRole('combobox', { name: 'Report category', exact: true }).selectOption('Moderation Appeal');
+        await expect(dialog.getByRole('button', { name: 'Next page', exact: true })).toBeHidden();
+        await expect(dialog.getByRole('status')).toContainText('Filters changed');
+        await dialog.getByRole('button', { name: 'Refresh reports', exact: true }).click();
+        await expect(dialog.locator('li strong').first()).toHaveText('Moderation Appeal · resolved');
+        await dialog.getByRole('combobox', { name: 'Report category', exact: true }).scrollIntoViewIfNeeded();
+        expect((await dialog.getByRole('combobox', { name: 'Report category', exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(44);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('administration-report-triage.png') });
         const operations = dialog.locator('.administration-operations');
         await operations.locator('summary').click();
         await operations.getByLabel('Target account', { exact: true }).fill('realm-warden-0');
