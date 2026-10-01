@@ -31,6 +31,15 @@ browser failures prevented deployment; corrected-candidate CI and independent
 public acceptance remain required. Final modern-art approval, crowd performance
 and human-playtest gates stay open. The next minor milestone remains the complete
 1.59 moderation workflow; no later milestone is declared shipped.
+
+A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
+completed with ten fully equipped heroes, Malachar and four overlapping fields.
+Repeated busy phases retained stable geometry/texture counts, but busy frame
+medians were 44.8–48.1 ms with High rendering and 32.9–33.5 ms with Low rendering
+on the test host. Both renderer tiers used High-detail bodies, and host load was
+not captured. These timings leave crowd optimization and true Low actor-LOD
+profiling open; they are not smooth-gameplay, phone or actual-raid acceptance.
+
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

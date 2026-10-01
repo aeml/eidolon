@@ -26,7 +26,9 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
-        const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
         const { createTransientEffect } = await import('/src/core/TransientEffects.js');
         const { createProceduralAreaField, updateProceduralAreaField, releaseProceduralAreaField } = await import('/src/art/ProceduralAreaFields.js');
         const gallery = window.__eidolonAnimationGalleryController;
@@ -45,21 +47,28 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
         const mixers = [];
         for (let index = 0; index < 11; index++) {
             const type = index === 10 ? 'UmbraPrime' : ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
-            const mesh = await MeshFactory.createMeshForType(type);
+            const mesh = await MeshFactory.createMeshForType(type, { quality: 'high' });
             if (index < 10) {
+                if (mesh.userData.authoredClass !== type) throw new Error(`Missing authored ${type} crowd model`);
                 const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, slotIndex) => {
-                    const candidates = BASE_ITEMS.filter((item) => item.slot === slot.replace(/[12]$/, ''));
+                    const candidates = BASE_ITEMS.filter((item) => canEquipItem(type, item, slot));
+                    if (!candidates.length) throw new Error(`No valid ${type} ${slot} fixture item`);
                     const base = candidates[index % candidates.length];
                     return [slot, gallery.createGalleryEquipmentItem(base, slot, slotIndex + 1)];
                 }));
-                const fit = applyProceduralEquipment(mesh, equipment);
-                if (fit.items !== 14 || fit.missing.length) throw new Error(`Incomplete ${type} raid fixture loadout`);
+                applyEquipmentVisuals(mesh, equipment);
+                await mesh.userData.equipmentReady;
+                if (mesh.userData.equipmentVisualItemCount !== 14 || mesh.userData.equipmentVisualMissing?.length) {
+                    throw new Error(`Incomplete ${type} raid fixture loadout`);
+                }
                 const angle = index / 10 * Math.PI * 2;
                 mesh.position.set(Math.cos(angle) * 8, 0, Math.sin(angle) * 8);
                 mesh.rotation.y = -angle - Math.PI / 2;
             }
             const mixer = new THREE.AnimationMixer(mesh);
-            const clip = mesh.userData.animations.find((clip) => clip.name === (index % 2 ? 'Run' : 'Attack'));
+            const state = index % 2 ? 'Run' : 'Attack';
+            const resolved = mesh.userData.resolveAnimationName?.(state, true) || state;
+            const clip = mesh.userData.animations.find((clip) => clip.name === resolved);
             if (!clip) throw new Error(`Missing raid fixture animation for ${type}`);
             mixer.clipAction(clip).play();
             group.add(mesh);
@@ -208,7 +217,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                     };
                 }));
                 const hostEnd = comparison ? hostSnapshot() : null;
-                reports.push({ quality, phase, ...report, ...(comparison ? { hostStart, hostEnd,
+                reports.push({ quality, actorQuality: 'high', actorSource: 'delivered authored class bodies and fitted equipment', phase, ...report, ...(comparison ? { hostStart, hostEnd,
                     hostBusyFraction: 1 - (hostEnd.idle - hostStart.idle) / (hostEnd.total - hostStart.total) } : {}) });
                 // Retain each bounded phase even if a later phase fails.
                 await testInfo.attach(`${quality}-${phase}-rendering-profile`, { body: JSON.stringify(report), contentType: 'application/json' });
