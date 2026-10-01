@@ -41,6 +41,10 @@ connects guild calendar activities to the existing finder without publishing
 private plans or posting automatically. Retired calendar actions are fenced;
 the inherited-scroll handoff is corrected. This is not S closure, release
 packaging or permission to skip 1.59's outstanding moderation requirements.
+Local [1.61 venue preparation](2026-10-01-release1-61-venue.md) fixes stale
+entrance/guard/exit dialogues across zone, floor and session changes, with
+accessible names and disabled non-VIP access. Existing full-floor geometry and
+92 stations remain; this is not publication or E-gate completion.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

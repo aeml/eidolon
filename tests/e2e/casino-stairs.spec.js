@@ -5,7 +5,7 @@ if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
 }
 
 // Real Actor locomotion/collisions in a prepared venue; not a connected wager.
-test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
+test('VIP guard dialogue and blocked stairs on a phone', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -44,8 +44,10 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     await expect(guard).toBeVisible();
     expect((await guard.boundingBox()).height).toBeGreaterThanOrEqual(44);
     await guard.click();
-    await expect(page.locator('.casino-entry-dialogue')).toContainText('You must be a VIP to enter');
-    await page.screenshot({ path: '/tmp/eidolon-casino-vip-guard-phone-20260913.png' });
+    const dialogue = page.getByRole('dialog', { name: 'VIP Guard', exact: true });
+    await expect(dialogue).toContainText('You must be a VIP to enter');
+    await expect(dialogue.getByRole('button', { name: 'Enter VIP lounge', exact: true })).toBeDisabled();
+    await page.screenshot({ path: testInfo.outputPath('casino-vip-guard-phone.png') });
     await page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Close', exact: true }).click();
     await page.evaluate(() => {
         const { player } = window.__stairsQA;
@@ -54,4 +56,8 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     await expect.poll(() => page.evaluate(() => window.__stairsQA.player.position.z)).toBeLessThan(103);
     expect(await page.evaluate(() => window.__stairsQA.player.position.z)).toBeGreaterThanOrEqual(101.8);
     expect(await page.evaluate(() => window.__stairsQA.player.position.y)).toBe(0);
+    await guard.click();
+    await expect(dialogue).toBeVisible();
+    await page.evaluate(() => { window.__stairsQA.controller.engine.currentInstanceId = 'prepared-dungeon'; });
+    await expect(dialogue).toBeHidden();
 });

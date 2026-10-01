@@ -52,6 +52,7 @@
     font: inherit;
 }
 .casino-entry-dialogue button:focus-visible { outline: 3px solid #f8d481; outline-offset: 3px; }
+.casino-entry-dialogue button:disabled { color: #a1acb6; background: #1e2731; border-color: #58606a; cursor: not-allowed; }
 
 /* Seated games are a primary activity, with a persistent exit and room to play. */
 body .casino-session:is(.has-slots, .has-blackjack, .has-poker) {

@@ -37,6 +37,72 @@ function setup() {
     return { engine, controller };
 }
 
+function mockDoorDialogue(controller) {
+    controller.dialogue.showModal = () => { controller.dialogue.open = true; };
+    controller.dialogue.close = () => { controller.dialogue.open = false; };
+}
+
+test('entrance dialogue retires on a zone change and old buttons cannot enter from another scene', () => {
+    const { engine, controller } = setup(); mockDoorDialogue(controller);
+    engine.currentInstanceId = ''; engine.player.position.set(0, 0, 181);
+    controller.showDoorDialogue('entry');
+    const enter = [...controller.dialogue.querySelectorAll('button')].find(button => button.textContent === 'Enter Casino');
+    expect(controller.dialogue.open).toBe(true);
+    engine.currentInstanceId = 'dungeon-run';
+    controller.beforeUpdate(.1);
+    expect(controller.dialogue.open).toBe(false);
+    enter.click();
+    expect(engine.network.send).not.toHaveBeenCalled();
+    controller.dispose();
+});
+
+test.each(['entry', 'guard', 'downstairs', 'exit'])('%s dialogue has one current action and detached controls cannot affect a replacement', kind => {
+    const { engine, controller } = setup(); mockDoorDialogue(controller);
+    engine.currentInstanceId = kind === 'entry' ? '' : 'lanternhold-casino';
+    engine.requestTownRecall = jest.fn(); controller.vipActive = true;
+    controller.floor = kind === 'downstairs' ? 'vip' : 'public';
+    controller.showDoorDialogue(kind);
+    const old = [...controller.dialogue.querySelectorAll('button')];
+    controller.showDoorDialogue(kind);
+    old.forEach(button => button.click());
+    expect(controller.dialogue.open).toBe(true);
+    expect(engine.network.send).not.toHaveBeenCalled(); expect(engine.requestTownRecall).not.toHaveBeenCalled();
+    controller.dialogue.querySelector('button').click();
+    expect(controller.dialogue.open).toBe(false);
+    if (kind === 'exit') expect(engine.requestTownRecall).toHaveBeenCalledTimes(1);
+    else expect(engine.network.send).toHaveBeenCalledWith('casino', expect.objectContaining({ action: {entry: 'enter', guard: 'vip', downstairs: 'downstairs'}[kind] }));
+    controller.dialogue.querySelector('button').click();
+    expect(engine.network.send.mock.calls.length + engine.requestTownRecall.mock.calls.length).toBe(1);
+    controller.dispose();
+});
+
+test.each(['floor', 'disconnect', 'death', 'player', 'vip', 'dispose'])('guard dialogue retires on %s without issuing a floor transfer', change => {
+    const { engine, controller } = setup(); mockDoorDialogue(controller);
+    engine.network.socket = { readyState: WebSocket.OPEN }; controller.vipActive = true;
+    controller.showDoorDialogue('guard');
+    const access = controller.dialogue.querySelector('button');
+    if (change === 'floor') controller.floor = 'vip';
+    if (change === 'disconnect') engine.network.socket.readyState = WebSocket.CLOSED;
+    if (change === 'death') engine.player.state = 'DEAD';
+    if (change === 'player') engine.player = null;
+    if (change === 'vip') controller.vipActive = false;
+    if (change === 'dispose') controller.dispose();
+    else controller.beforeUpdate(.1);
+    expect(controller.dialogue.open).toBe(false); access.click();
+    expect(engine.network.send.mock.calls.filter(([, payload]) => payload.action !== 'get')).toEqual([]);
+    if (change !== 'dispose') controller.dispose();
+});
+
+test('non-VIP guard remains informative with disabled access and a labeled closable dialogue', () => {
+    const { engine, controller } = setup(); mockDoorDialogue(controller);
+    controller.showDoorDialogue('guard');
+    expect(controller.dialogue.getAttribute('aria-label')).toBe('VIP Guard');
+    expect(controller.dialogue.textContent).toContain('You must be a VIP to enter');
+    const [access, close] = controller.dialogue.querySelectorAll('button');
+    expect(access.disabled).toBe(true); access.click(); expect(engine.network.send).not.toHaveBeenCalled();
+    close.click(); expect(controller.dialogue.open).toBe(false); controller.dispose();
+});
+
 test('only the current floor and its patrons are visible, without revealing already hidden actors', () => {
     const { engine, controller } = setup();
     const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';

@@ -170,27 +170,59 @@ export class CasinoController {
         this.savedView = null;
     }
 
+    isDoorDialogueCurrent(context) {
+        const engine = this.engine;
+        return Boolean(context && context === this.dialogueContext && this.dialogue.open
+            && !this.disposed && !this.active && engine.player === context.player
+            && engine.player?.state !== 'DEAD' && engine.currentInstanceId === context.instanceId
+            && (this.floor || 'public') === context.floor
+            && (!engine.network.socket || engine.network.socket.readyState === WebSocket.OPEN)
+            && (context.kind !== 'guard' || this.vipActive === context.vip));
+    }
+
+    closeDoorDialogue() {
+        this.dialogueContext = null;
+        if (this.dialogue.open) this.dialogue.close();
+    }
+
     showDoorDialogue(kind) {
+        const inside = this.engine.currentInstanceId === CASINO_INSTANCE;
+        const floor = this.floor || 'public';
+        if (this.disposed || this.active || !this.engine.player || this.engine.player.state === 'DEAD'
+            || !(kind === 'entry' ? !this.engine.currentInstanceId
+                : inside && (kind === 'downstairs' ? floor === 'vip'
+                    : ['guard', 'exit'].includes(kind) && floor === 'public'))) return;
+        const context = { kind, player: this.engine.player, instanceId: this.engine.currentInstanceId, floor, vip: this.vipActive };
+        this.dialogueContext = context;
         const guard = kind === 'guard', exit = kind === 'exit', downstairs = kind === 'downstairs';
         this.engine.clearCombatIntentState?.();
         this.engine.inputManager?.clearInputState?.();
         if (this.engine.player) this.engine.player.targetPosition = null;
         const heading = document.createElement('h2'); heading.textContent = guard ? 'VIP Guard' : 'Lanternhold Casino';
+        this.dialogue.setAttribute('aria-label', heading.textContent);
         const copy = document.createElement('p');
         copy.textContent = guard ? (this.vipActive ? 'Welcome to the Sovereign Lounge. Upstairs games wager and return only EP, usable for cosmetics—not Gold or combat power.' : 'You must be a VIP to enter')
             : downstairs ? 'Return to the main Gold gaming floor? Your saved outcomes and bonus features remain yours.'
             : exit ? 'Return to Lanternhold? Your saved casino outcomes remain yours.'
                 : 'Step into Lanternhold’s grand gaming hall. Meet other adventurers at Gold tables and elemental machines. The upstairs lounge is reserved for VIP guests.';
         this.dialogue.replaceChildren(heading, copy);
-        if (guard || downstairs) this.dialogue.append(this.button(downstairs ? 'Return downstairs' : 'Enter VIP lounge', () => {
-            this.dialogue.close(); this.pendingDoor = null; this.send({ action: downstairs ? 'downstairs' : 'vip' });
-        }));
+        if (guard || downstairs) {
+            const access = this.button(downstairs ? 'Return downstairs' : 'Enter VIP lounge', () => {
+                if (!this.isDoorDialogueCurrent(context) || guard && !this.vipActive) return;
+                this.closeDoorDialogue(); this.pendingDoor = null; this.send({ action: downstairs ? 'downstairs' : 'vip' });
+            });
+            access.disabled = guard && !this.vipActive;
+            this.dialogue.append(access);
+        }
         if (!guard && !downstairs) this.dialogue.append(this.button(exit ? 'Return to Lanternhold' : 'Enter Casino', () => {
-            this.dialogue.close(); this.pendingDoor = null;
+            if (!this.isDoorDialogueCurrent(context)) return;
+            this.closeDoorDialogue(); this.pendingDoor = null;
             if (exit) this.engine.requestTownRecall();
             else this.send({ action: 'enter' });
         }));
-        this.dialogue.append(this.button('Close', () => this.dialogue.close()));
+        this.dialogue.append(this.button('Close', () => {
+            if (this.dialogueContext === context) this.closeDoorDialogue();
+        }));
         if (!this.dialogue.open) this.dialogue.showModal();
     }
 
@@ -265,6 +297,7 @@ export class CasinoController {
 
     beforeUpdate(dt) {
         const engine = this.engine, player = engine.player;
+        if (this.dialogueContext && !this.isDoorDialogueCurrent(this.dialogueContext)) this.closeDoorDialogue();
         if (engine.network.socket?.readyState !== WebSocket.OPEN && this.slots.autoRemaining) this.slots.stopAuto('Connection lost; auto spins stopped.');
         if (!player) return;
         if (engine.currentInstanceId !== CASINO_INSTANCE && this.active) { this.data.yourSeat = null; this.exitView(); }
@@ -421,6 +454,8 @@ export class CasinoController {
     }
 
     dispose() {
+        this.disposed = true;
+        this.closeDoorDialogue();
         if (this.active) this.exitView();
         this.clearActorPresentation();
         disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
