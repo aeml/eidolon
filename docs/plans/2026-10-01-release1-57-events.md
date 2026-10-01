@@ -35,6 +35,8 @@ loot and nearby party XP, five-minute suppression of hazards within 400 units,
 and the absence of a repeatable completion purse or reward claim. Additional
 adventurers do not accelerate ward charge. A next-event line links discovery to
 the atlas without adding another quest-tracker entry or mandatory daily chore.
+Once the displayed calm deadline passes, the panel no longer calls the hazards
+calmed; it says that the calm window ended without changing encounter authority.
 
 Wave size remains `4 + 2 × min(nearby adventurers, 4)`, bounded at 12 enemies.
 The champion retains its existing health multiplier, bounded at seven times
@@ -73,6 +75,9 @@ public-event presentation file now belongs to the interface stage; no new
 parallel matrix or authenticated route was added. Forty-three browser-plan
 checks passed in 4.487 seconds. Scoped lint and diff checks passed. No new soak,
 campaign replay, production account write or infrastructure change was made.
+The focused main-package socket probe also passed under the race detector in
+1.168 seconds, retaining initial movement context through normal JSON/protobuf
+messages. It is compatibility evidence, not a newly connected full encounter.
 
 Retain the naturally scheduled earned Root clear in
 [the earned continuation record](2026-09-20-earned-continuation.md): three waves,

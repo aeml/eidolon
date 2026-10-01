@@ -66,7 +66,7 @@ export class PublicEventController {
         this.ring.material.opacity = .65 + .1 * Math.sin(this.time * 2);
         const seconds = Math.max(0, Math.ceil((Date.parse(e.phase === 'complete' ? e.calmedUntil : e.phase === 'announced' ? e.startsAt : e.endsAt) - Date.now()) / 1000));
         const clock = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-        this.status.textContent = e.phase === 'complete' ? `Nearby hazards calmed · ${clock}. Normal enemy loot and shared XP; no reward to claim.`
+        this.status.textContent = e.phase === 'complete' ? `${seconds ? `Nearby hazards calmed · ${clock}.` : 'The road’s calm window has ended.'} Normal enemy loot and shared XP; no reward to claim.`
             : e.phase === 'announced' ? `${seconds ? `Begins in ${clock}` : 'Waiting for nearby adventurers'} · recommended level ${e.site.level}. Anyone may help.`
                 : `${e.remaining} enemies · ${e.participants} adventurers · ${clock} remaining. ${e.phase === 'defending' ? `Ward ${Math.floor(e.charge)}/${e.chargeNeeded}: hold it clear of attackers.` : ''}`;
     }

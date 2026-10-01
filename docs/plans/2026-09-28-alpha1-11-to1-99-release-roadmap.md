@@ -14,6 +14,10 @@ Its own exact-source CI and public acceptance remain required.
 The next [1.56 season milestone](2026-10-01-release1-56-seasons.md) is locally
 implemented and packaged but unpublished; dates/operator approval and ordered
 release acceptance remain open. No new calendar or manual reset was activated.
+The subsequent [1.57 event work](2026-10-01-release1-57-events.md) is isolated,
+unpublished preparation: upcoming server windows, atlas waypoints, reward clarity
+and bounded realm/cohort checks. Human event balance and ordered publication
+remain distinct from those prepared mechanical fixtures.
 [the A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

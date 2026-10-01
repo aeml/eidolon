@@ -38,6 +38,9 @@ test('completion has no claim button; expired and cleared snapshots hide both UI
     expect(controller.status.textContent).toContain('no reward to claim');
     expect(controller.progress.hidden).toBe(true);
     expect(controller.root.querySelector('button')).toBeNull();
+    controller.updateState({ ...event, phase: 'complete', calmedUntil: new Date(Date.now() - 1000).toISOString() });
+    expect(controller.status.textContent).toContain('calm window has ended');
+    expect(controller.status.textContent).not.toContain('Nearby hazards calmed');
     controller.updateState({ ...event, phase: 'expired' });
     expect(controller.root.hidden).toBe(true); expect(controller.marker.visible).toBe(false);
     controller.updateState(null); expect(controller.data).toBeNull();
