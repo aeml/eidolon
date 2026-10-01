@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.58.3",
+  "status": "prepared-not-published",
+  "parentCandidate": "ff303dc2bbe221533f6c07fd53a77a13f522c48c",
+  "scope": [
+    "Default opaque fitted-equipment batching with source-preserving animated surfaces and independent actor skeletons.",
+    "Original piece-level transparency during Rogue stealth, restored opaque batches afterward, and owned-material cleanup.",
+    "Optional reload request when saved graphics detail differs from a currently loaded authored body.",
+    "Distribute whole interface-test files across the existing three hosted CI jobs without dropping or duplicating cases.",
+    "Version alignment across login, package, release identity, server, container, deploy, isolated QA and CI, with cumulative patch history."
+  ],
+  "excluded": [
+    "All unpublished 1.59 moderation code and policy changes.",
+    "Model rewrites, combat changes, rewards, account resets, access changes and production account mutations."
+  ],
+  "localChecks": {
+    "focusedUnits": "76 scope checks passed within the initial combined run; after correcting the release and isolated-QA defaults, 335 version/publisher checks passed in 3.204 seconds. All 411 selected checks have passed; no mechanical assertion was weakened.",
+    "lint": "Passed for changed JavaScript and focused/native fixtures.",
+    "native": "Fresh isolated graphics worktree: all-eight class/quality equipped bodies, alternating Rogue hands, actual Rogue stealth and equipped previews passed in 23.6 seconds. CombatIdle render inspected.",
+    "artifactRoot": "/tmp/eidolon-1-58-3-integrated-prepared-20261001",
+    "nativeSettings": "Actual UIManager, UIBindings, RenderSystem and Entity with supplied Fighter GLBs: declining reload preserves the High body with saved Low settings; Medium retains High without an unnecessary prompt; accepting the subsequent prompt reloads the page and loads the saved Low body. Passed in 12.0 seconds. Anonymous prepared presentation, no server/account mutations or physical phone.",
+    "settingsCommand": "playwright test tests/e2e/keyboard-settings.spec.js --grep 'graphics detail'",
+    "settingsArtifactRoot": "/tmp/eidolon-1-58-3-settings-reload-20261001",
+    "ciDistribution": "35 interface files now split 12/12/11 across the existing three hosted jobs, keeping each file suite intact. Actual Playwright collection preserves all 114 cases exactly once: 44/45/25 cases. No browser run was repeated for this collection check. 374 planner/runner/sharding/coverage/version checks passed in 10.258 seconds; scoped lint and whitespace passed. CI wall-time improvement remains unmeasured until publication.",
+    "setupFailure": "Initial fresh-worktree browser attempt lacked generated vendor/ dependencies. Standard npm run prepare:client supplied them; the subsequent case passed. This was not a runtime model or equipment failure.",
+    "earlierEvidence": [
+      "2026-10-01-fitted-equipment-batch-checks.json",
+      "2026-10-01-authored-low-crowd-checks.json"
+    ]
+  },
+  "publicationGates": [
+    "Preceding 1.58.2 accepted: CI36920070557 all ten jobs passed; independent public identities, DB readiness, 16 runtime and 32 representative model hashes verified in 2026-10-01-release1-58-2-public.json.",
+    "Fresh remote fetch and merge before push, preserving other agents' work.",
+    "Exact-source CI and independent served-artifact acceptance for this follow-up."
+  ],
+  "remaining": [
+    "Broader comparable-device crowd performance, physical-phone feedback and final owner art approval.",
+    "Complete 1.59 moderation milestone and all subsequent roadmap versions; this patch is not a substitute for those requirements."
+  ]
+}

@@ -1,8 +1,9 @@
 # Alpha 1.59 moderation preparation
 
 October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
-locally but unpublished. The worktree includes the Alpha 1.58.2 asset-integration
-candidate; no 1.59 package or milestone completion is claimed. The full milestone
+locally but unpublished. The worktree includes accepted Alpha 1.58.2 and the
+published Alpha 1.58.3 graphics candidate; no 1.59 package or milestone completion
+is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
 
 ## Player and staff workflow

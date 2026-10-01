@@ -1,6 +1,55 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('graphics detail offers an optional reload and the saved Low body loads after acceptance', async ({ page, baseURL }) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(() => localStorage.removeItem('eidolon.graphicsQuality'));
+    const boot = () => page.evaluate(async () => {
+        const { UIManager } = await import('/src/ui/UIManager.js');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { UIBindings } = await import('/src/core/UIBindings.js');
+        const { Entity } = await import('/src/entities/Entity.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const ui = new UIManager(false), render = new RenderSystem(false);
+        const entity = new Entity('detail-review'); entity.meshType = 'Fighter';
+        const engine = { uiManager: ui, renderSystem: render, player: entity, network: { send() { throw Error('Unexpected network write'); } } };
+        entity.gameEngine = engine;
+        new UIBindings(engine).bindConstructorCallbacks();
+        await entity.ensureMesh(); render.entityGroup.add(entity.mesh); render.render();
+        ui.showHUD(); ui.toggleSettings();
+        window.__detailReview = { ui, render, entity };
+        return { body: entity.mesh.userData.authoredQuality, quality: render.graphicsQuality };
+    });
+    const state = () => page.evaluate(() => ({ body: window.__detailReview.entity.mesh.userData.authoredQuality,
+        quality: window.__detailReview.render.graphicsQuality, saved: localStorage.getItem('eidolon.graphicsQuality') }));
+    expect(await boot()).toEqual({ body: 'high', quality: 'high' });
+    const dialogs = []; let acceptReload = false;
+    page.on('dialog', async dialog => {
+        dialogs.push({ type: dialog.type(), message: dialog.message() });
+        if (acceptReload) await dialog.accept(); else await dialog.dismiss();
+    });
+    const quality = page.locator('#graphics-quality');
+    await quality.selectOption('low');
+    expect(dialogs).toHaveLength(1); expect(dialogs[0].type).toBe('confirm');
+    expect(dialogs[0].message).toContain('Reload now?');
+    expect(await state()).toEqual({ body: 'high', quality: 'low', saved: 'low' });
+    await quality.selectOption('medium');
+    expect(dialogs).toHaveLength(1);
+    expect(await state()).toEqual({ body: 'high', quality: 'medium', saved: 'medium' });
+    acceptReload = true;
+    const reload = page.waitForEvent('load');
+    await quality.selectOption('low'); await reload;
+    await page.waitForLoadState('networkidle');
+    expect(dialogs).toHaveLength(2);
+    expect(await boot()).toEqual({ body: 'low', quality: 'low' });
+    expect(await state()).toEqual({ body: 'low', quality: 'low', saved: 'low' });
+    await page.evaluate(() => { const { ui, render, entity } = window.__detailReview; ui.dispose(); entity.dispose(); render.dispose(); });
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 // Actual input/settings and shipped styles; prepared callbacks, no economy writes.
 for (const [width, height] of [[1280, 800], [390, 844]]) {
     test(`${width}: account fields remain named and keyboard navigable without disabling browser zoom`, async ({ page, baseURL }) => {

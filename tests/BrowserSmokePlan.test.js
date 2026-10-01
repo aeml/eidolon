@@ -41,13 +41,27 @@ test('file families partition the unchanged local anonymous command exactly once
     expect(new Set(actual).size).toBe(actual.length);
 });
 
-test('all supplemental coverage stays in exactly one required job', () => {
+test('each supplemental file stays in exactly one required job', () => {
     const extras = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard).slice(3));
-    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'crystal-art', 'interface']);
+    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'interface', 'crystal-art', 'interface', 'interface']);
     const supplementalFiles = extras.flatMap(stage => stage.files);
     expect(new Set(supplementalFiles).size).toBe(supplementalFiles.length);
     for (const stage of extras) expect(stage.args.some(arg => arg.startsWith('--shard='))).toBe(false);
     expect(browserSmokeBaselineFiles(manifest).length).toBe(new Set(browserSmokeBaselineFiles(manifest)).size);
+});
+
+test('the interface family balances whole files across all existing jobs without omissions or test-level splitting', () => {
+    const stages = [1, 2, 3].map(shard => buildBrowserSmokePlan(manifest, shard).find(stage => stage.name === 'interface'));
+    const original = manifest.scripts['test:e2e:interface'].split(/\s+/).slice(2);
+    const actual = stages.flatMap(stage => stage.files);
+    expect(actual.slice().sort()).toEqual(original.slice().sort());
+    expect(new Set(actual).size).toBe(actual.length);
+    expect(Math.max(...stages.map(stage => stage.files.length)) - Math.min(...stages.map(stage => stage.files.length))).toBeLessThanOrEqual(1);
+    for (const stage of stages) {
+        expect(stage.files.length).toBeGreaterThan(0);
+        expect(stage.args).not.toContain('--fully-parallel');
+        expect(stage.args.some(arg => arg.startsWith('--shard='))).toBe(false);
+    }
 });
 
 test('integrated desktop presentation checks run once in the existing interface stage', () => {
