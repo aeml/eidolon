@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.60.0';
+const currentVersion = '1.61.0';
+
+test('1.61.0 preserves the casino world and explains explicit current-session door interactions', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.61.0"'), previous = html.indexOf('data-version="1.60.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['seamless Lanternhold Casino visit', 'confirm Enter Casino', 'automatic entry',
+        'now disabled', 'server remains responsible', '46 stations each', '32 slot machines',
+        'stash clearance', 'normal camera and movement', 'cannot return to Gold', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.60.0 records connected recruitment and actual completion/reward receipts without automatic actions', () => {
     const html = fs.readFileSync('index.html', 'utf8');

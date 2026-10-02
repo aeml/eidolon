@@ -68,7 +68,7 @@ export class CasinoController {
     }
 
     setFloor(payload = {}) {
-        if (this.engine.currentInstanceId !== CASINO_INSTANCE || !this.engine.player
+        if (this.disposed || this.engine.isDestroyed || this.engine.currentInstanceId !== CASINO_INSTANCE || !this.engine.player
             || ![payload.x, payload.y, payload.z].every(Number.isFinite)) return;
         this.floor = payload.upstairs ? 'vip' : 'public';
         this.engine.collisionManager.casinoVIPFloor = payload.upstairs === true;
@@ -81,6 +81,7 @@ export class CasinoController {
     }
 
     updateState(payload = {}) {
+        if (this.disposed || this.engine.isDestroyed) return;
         this.floor = payload.floor || 'public'; this.vipActive = payload.vip === true;
         if (this.engine.collisionManager) this.engine.collisionManager.casinoVIPFloor = this.floor === 'vip';
         if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) { this.slots.update(null); this.house.update(null); }
@@ -258,6 +259,7 @@ export class CasinoController {
     }
 
     handlePrimaryClick(event) {
+        if (this.disposed || this.engine.isDestroyed) return false;
         if (this.active || this.dialogue.open) return true;
         if (!event || event.button > 0 || !Number.isFinite(event.clientX)) return false;
         const engine = this.engine;
@@ -309,7 +311,7 @@ export class CasinoController {
     }
 
     beforeUpdate(dt) {
-        if (this.disposed) return;
+        if (this.disposed || this.engine.isDestroyed) return;
         const engine = this.engine, player = engine.player;
         if (this.dialogueContext && !this.isDoorContextCurrent(this.dialogueContext)) this.closeDoorDialogue();
         if (engine.network.socket?.readyState !== WebSocket.OPEN && this.slots.autoRemaining) this.slots.stopAuto('Connection lost; auto spins stopped.');
@@ -406,6 +408,7 @@ export class CasinoController {
     }
 
     render(entities) {
+        if (this.disposed || this.engine.isDestroyed) return;
         this.restoreCutawayActors(entities, true);
         for (const entity of entities) {
             if (!entity.mesh) continue;
@@ -471,6 +474,7 @@ export class CasinoController {
     }
 
     dispose() {
+        if (this.disposed) return;
         this.disposed = true;
         this.closeDoorDialogue();
         if (this.active) this.exitView();

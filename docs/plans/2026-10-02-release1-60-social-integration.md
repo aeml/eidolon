@@ -2,9 +2,15 @@
 
 This milestone connects the existing guild calendar, recruitment, party
 preparation and reward guidance. Changes may be prepared while 1.59 runs through
-CI; publication follows its accepted deployment. The integration preserves player
+CI; publication follows its accepted deployment. Alpha 1.59 is now accepted at
+a58ec61512cc8be22e1b197208eb5ec992dd7bd0 after all ten CI jobs and independent
+public identity, database and changed-runtime checks passed. Its
+[public receipt](2026-10-02-release1-59-public.json) records the exact source.
+The integration preserves player
 consent and existing server entry, settlement and moderation checks; it does not
-add another queue. The prepared code is not a published milestone.
+add another queue. Candidate 15df739e6f15e631d0ccff576947ae2d99237296 is pushed
+in CI36981917813. Luna monitors terminal results; full deployment acceptance
+remains pending, so the milestone is not yet accepted live.
 
 ## Confirmed gaps
 

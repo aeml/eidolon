@@ -1,6 +1,6 @@
 # Alpha 1.59 moderation release
 
-October 1, 2026, updated October 2. Alpha 1.59.0 is a release candidate with the
+October 1, 2026, updated October 2. Alpha 1.59.0 is accepted live with the
 owner-approved reversible mute, required public-name correction and temporary
 suspension workflows connected. Real production-binary sockets exercised
 online retirement, join and token-resume denial, login-only help, correction,
@@ -14,6 +14,15 @@ Final staffing coverage and retention policy remain owner decisions, not
 fabricated defaults. No production test sanctions are authorized.
 
 ## Current acceptance
+
+All ten CI jobs passed for a58ec61512cc8be22e1b197208eb5ec992dd7bd0 in
+run 36978415990, including predeploy and live character QA and both deployments.
+Independent public IPv4 checks verified frontend/backend versions, exact commit,
+database readiness and all 26 changed deployed client runtime files against the
+publisher output. The [public receipt](2026-10-02-release1-59-public.json) records
+those checks and their limits. The failed preceding candidates were not deployed;
+their fixture corrections remain recorded in the
+[release evidence](2026-10-02-release1-59-three-responses.json).
 
 The registered authenticated controls and startup guards are implemented.
 Public-name lookup now covers typed invitations and quoted whispers, with stable
