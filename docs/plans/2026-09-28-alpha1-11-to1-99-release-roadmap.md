@@ -323,6 +323,15 @@ season. Reader-only compatibility is also backported and checked in the staged
 1.71 predecessor so ordered rollback can preserve the new outbox. Local-write
 failure is reported, not called durable; total disk growth, mirror transactionality
 and final connected/public acceptance remain separate. No live promotion.
+The [arena admission follow-up](2026-10-02-release1-72-arena-capacity-checks.json)
+limits one live journal owner's pending result files to4096, preserves identical
+retries and imported larger backlogs, and reconstructs its count on restart.
+Burst/restart/acknowledgement checks and a real one-slot journal in the game
+settlement hook pass: capacity holds the frozen result until it can be recorded
+and applied once. This is not a cross-process or overall disk quota, nor crash
+durability before recording. Account recovery remains an owner choice; a
+dependency-free one-time recovery-code option has been proposed, not approved
+or implemented. Ordered publication and broader release gates remain open.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

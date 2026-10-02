@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; arena outbox admission limit implemented",
+  "preparedParent": "0cc913bf9ee9ae8e19c2cc0083f09597e09b955b",
+  "checkedAt": "2026-10-02T20:13:06Z",
+  "scope": [
+    "The normal arena journal owner admits at most4096 pending result files; each new encoded receipt already has the1MiB recovery limit. This is a result-file admission bound, not a filesystem quota or player-capacity claim.",
+    "Opening the journal reconstructs only a file count in64-entry directory chunks. A preexisting backlog above the selected limit is preserved and replayable, not trimmed. The smaller constructor limit is used by isolated fixtures; normal server initialization retains4096.",
+    "Full admission returns a typed error without replacing or acknowledging existing results. Identical already-recorded retries remain possible at capacity; conflicting writes retain their conflict error.",
+    "Rename/removal update the owner's count before uncertain directory-sync acknowledgements. Repeated acknowledgement never releases another slot. Restart recounts the actual retained files.",
+    "The existing durable-before-release game path freezes an unrecorded decided outcome until capacity is recovered, then retries the exact outcome and releases/applies it once. No rating/reward arithmetic, token, class, wallet or scene policy changed."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database ./internal/game -run '^Test(ArenaResultJournal|ArenaActualJournalCapacity|ArenaResultMustBeDurable|ArenaReplayBatch|ArenaSyncWork|GuildClear|WeeklySyncWork|CharacterAndArenaJournals)' -count=1 -timeout=30s",
+    "passed": true,
+    "serverPackageSeconds": 3.813,
+    "databasePackageSeconds": 4.691,
+    "gamePackageSeconds": 1.108,
+    "newGroups": 3,
+    "evidence": "Full/identical/conflicting writes; reopened counts; duplicate acknowledgement; lowering capacity preserves the larger backlog.64 concurrent writers into8 slots produce exactly8 durable records and56 typed rejections. The actual game settlement hook writes to a real one-slot disk journal: a full journal preserves the earlier receipt and leaves the new match/profiles unreleased; freeing the slot permits the frozen result to record and settle once. Existing checksum/batch/synchronization/guild/weekly/shared-volume regressions pass.",
+    "diffCheck": "passed",
+    "sourceHashes": {
+      "server/internal/database/pvp_result_journal.go": "3e3205fce06902475057d1870f5a001eb198ed3e390908c4a5563f00431fee4c",
+      "server/internal/database/pvp_result_journal_test.go": "bfd2cfa8b25bc348a71dae64ec206eb099ca519e6d2c57f48fb4aeaec0ceca4f",
+      "server/internal/game/pvp_result_record_test.go": "efd06cabfd20a9100fd3721f2a8ac5826fb5ed6830f4f7373a7c67048bd06a94"
+    }
+  },
+  "limits": [
+    "One live server/journal object owns writes and acknowledgements. This is not cross-process coordination, an external-editor quota or concurrent-backup/restore safety; pause writers before manipulating the volume and restart to recount after a restore.",
+    "The admission bound covers owned result files, not crash-temporary files, imported over-limit backlogs, all journals, database growth or other disk users. Operator disk monitoring/retention/recovery remain required.",
+    "A decided result held because its first journal write cannot succeed is still in memory, not crash durable. Holding players/profiles does not certify recovery through process loss before recording.",
+    "In-process race tests with actual disk receipts, not a latest connected binary, fresh Mongo outage, production/load check or complete1.72 security acceptance. Earlier direct Mongo/connected receipts retain their source scope; no unnecessary duplicate consumer/database run performed.",
+    "Account recovery remains an owner decision. A dependency-free one-time recovery-code option was proposed through the user question; no answer or implementation is assumed. Ordered1.71/1.72 publication remains open; accepted live is still1.70.0."
+  ]
+}

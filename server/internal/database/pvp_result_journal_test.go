@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -177,6 +178,103 @@ func TestArenaResultJournalRejectsSymlinkAndOversizedRetryFile(t *testing.T) {
 				t.Fatal("error silently removed the pending evidence", err)
 			}
 		})
+	}
+}
+
+func TestArenaResultJournalCapacityPreservesReceiptsRetriesAndRestartCount(t *testing.T) {
+	dir := t.TempDir()
+	for _, limit := range []int{0, -1, DefaultMaxPendingPvPResults + 1} {
+		if _, err := OpenPvPResultJournalWithLimit(dir, limit); err == nil {
+			t.Fatal("invalid journal capacity accepted", limit)
+		}
+	}
+	j, err := OpenPvPResultJournalWithLimit(dir, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, second, third := arenaReceiptFixture("capacity", 1), arenaReceiptFixture("capacity", 2), arenaReceiptFixture("capacity", 3)
+	for _, receipt := range []PvPResultReceipt{first, second} {
+		if err := j.Write(receipt); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := j.Write(third); !errors.Is(err, ErrPvPResultJournalFull) {
+		t.Fatal("full outbox accepted new result", err)
+	}
+	if err := j.Write(first); err != nil {
+		t.Fatal("full outbox rejected identical durable retry", err)
+	}
+	first.Profiles[0].Honor++
+	if err := j.Write(first); err == nil || errors.Is(err, ErrPvPResultJournalFull) {
+		t.Fatal("full outbox hid a conflicting result as capacity failure", err)
+	}
+	j, err = OpenPvPResultJournalWithLimit(dir, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := j.Write(third); !errors.Is(err, ErrPvPResultJournalFull) {
+		t.Fatal("restart lost backlog reservations", err)
+	}
+	if entries, err := j.Pending(100); err != nil || len(entries) != 2 {
+		t.Fatal("capacity failure removed owed results", err)
+	}
+	if err := j.Acknowledge(second.MatchID); err != nil {
+		t.Fatal(err)
+	}
+	if err := j.Acknowledge(second.MatchID); err != nil {
+		t.Fatal("duplicate acknowledgement failed", err)
+	}
+	if err := j.Write(third); err != nil {
+		t.Fatal("confirmed acknowledgement did not release capacity", err)
+	}
+	fourth := arenaReceiptFixture("capacity", 4)
+	if err := j.Write(fourth); !errors.Is(err, ErrPvPResultJournalFull) {
+		t.Fatal("duplicate acknowledgement released another slot", err)
+	}
+	// Lowering an operator limit preserves an already larger backlog.
+	j, err = OpenPvPResultJournalWithLimit(dir, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if entries, err := j.Pending(100); err != nil || len(entries) != 2 {
+		t.Fatal("lower capacity trimmed previous decided results", err)
+	}
+	if err := j.Write(fourth); !errors.Is(err, ErrPvPResultJournalFull) {
+		t.Fatal("over-limit legacy backlog admitted new receipt", err)
+	}
+}
+
+func TestArenaResultJournalConcurrentWritersCannotOverrunCapacity(t *testing.T) {
+	j, err := OpenPvPResultJournalWithLimit(t.TempDir(), 8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	results := make(chan error, 64)
+	var producers sync.WaitGroup
+	for revision := range 64 {
+		producers.Add(1)
+		go func(revision int) {
+			defer producers.Done()
+			results <- j.Write(arenaReceiptFixture("burst", int64(revision+1)))
+		}(revision)
+	}
+	producers.Wait()
+	close(results)
+	accepted, rejected := 0, 0
+	for err := range results {
+		if err == nil {
+			accepted++
+		} else if errors.Is(err, ErrPvPResultJournalFull) {
+			rejected++
+		} else {
+			t.Fatal(err)
+		}
+	}
+	if accepted != 8 || rejected != 56 {
+		t.Fatal("concurrent admission exceeded/lost bounded slots", accepted, rejected)
+	}
+	if entries, err := j.Pending(100); err != nil || len(entries) != 8 {
+		t.Fatal("durable count differs from admission", err)
 	}
 }
 

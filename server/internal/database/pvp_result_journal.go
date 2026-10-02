@@ -21,8 +21,10 @@ type PvPResultReceipt struct {
 }
 
 type PvPResultJournal struct {
-	dir string
-	mu  sync.Mutex
+	dir        string
+	mu         sync.Mutex
+	pending    int // Single journal owner's files; rebuilt from disk on open.
+	maxPending int
 }
 
 type arenaJournalEnvelope struct {
@@ -31,6 +33,10 @@ type arenaJournalEnvelope struct {
 }
 
 const maxArenaReceiptBytes = 1 << 20
+
+const DefaultMaxPendingPvPResults = 4096
+
+var ErrPvPResultJournalFull = errors.New("arena pending result limit reached")
 
 func (j *PvPResultJournal) syncDirectory() error {
 	dir, err := os.Open(j.dir)
@@ -42,13 +48,43 @@ func (j *PvPResultJournal) syncDirectory() error {
 }
 
 func OpenPvPResultJournal(dir string) (*PvPResultJournal, error) {
+	return OpenPvPResultJournalWithLimit(dir, DefaultMaxPendingPvPResults)
+}
+
+// One live server owns this outbox, just as it owns decided match revisions.
+// Rebuild only a count in bounded directory chunks, not receipt payloads. A
+// legacy backlog above the limit is preserved and replayable, never trimmed.
+func OpenPvPResultJournalWithLimit(dir string, limit int) (*PvPResultJournal, error) {
 	if dir == "" {
 		return nil, errors.New("arena journal directory required")
+	}
+	if limit < 1 || limit > DefaultMaxPendingPvPResults {
+		return nil, errors.New("arena pending result limit must be between 1 and 4096")
 	}
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return nil, err
 	}
-	return &PvPResultJournal{dir: dir}, nil
+	journal := &PvPResultJournal{dir: dir, maxPending: limit}
+	reader, err := os.Open(dir)
+	if err != nil {
+		return nil, err
+	}
+	defer reader.Close()
+	for {
+		entries, err := reader.ReadDir(64)
+		if err != nil && len(entries) == 0 {
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			return nil, err
+		}
+		for _, entry := range entries {
+			if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
+				journal.pending++
+			}
+		}
+	}
+	return journal, nil
 }
 
 func (j *PvPResultJournal) filename(id string) string {
@@ -97,6 +133,9 @@ func (j *PvPResultJournal) Write(receipt PvPResultReceipt) error {
 	} else if !os.IsNotExist(err) {
 		return err
 	}
+	if j.pending >= j.maxPending {
+		return ErrPvPResultJournalFull // Existing decided receipts are untouched.
+	}
 	f, err := os.CreateTemp(j.dir, ".arena-pending-")
 	if err != nil {
 		return err
@@ -115,6 +154,9 @@ func (j *PvPResultJournal) Write(receipt PvPResultReceipt) error {
 	if err = os.Rename(f.Name(), name); err != nil {
 		return err
 	}
+	// Count immediately after rename, even if directory sync fails. An identical
+	// retry confirms the existing file instead of consuming another reservation.
+	j.pending++
 	return j.syncDirectory()
 }
 
@@ -206,8 +248,14 @@ func (j *PvPResultJournal) Pending(limit int) ([]PvPResultReceipt, error) {
 func (j *PvPResultJournal) Acknowledge(matchID string) error {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	if err := os.Remove(j.filename(matchID)); err != nil && !os.IsNotExist(err) {
-		return err
+	if err := os.Remove(j.filename(matchID)); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+	} else if j.pending > 0 {
+		// Removal happened even if its directory sync will fail; repeated ack
+		// never releases a second reservation. Restart recounts physical files.
+		j.pending--
 	}
 	return j.syncDirectory()
 }

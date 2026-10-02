@@ -159,7 +159,15 @@ admission pending; periodic recovery retries. Startup drains healthy backlogs in
 bounded batches before logins, and still refuses real storage/replay failures.
 [Arena backlog checks](plans/2026-10-02-release1-72-arena-batch-checks.json)
 include actual disposable-Mongo newer-before-older replay. These limits do not
-bound total retained disk receipts or all IO time.
+bound all IO time. The [arena result admission limit](plans/2026-10-02-release1-72-arena-capacity-checks.json)
+now caps one live journal owner's new pending result files at4096. At capacity,
+already-recorded identical retries remain valid and newly unrecorded settlements
+stay frozen until space is freed. Opening the journal reconstructs its count;
+existing over-limit backlogs remain readable, not trimmed. This is not a physical
+disk quota or multiple-writer coordination. Pause writers before manipulating
+the volume and restart to recount after restore; monitor other journals, crash
+temporary files and database/storage growth separately. No result is crash durable
+before its first journal write succeeds.
 The [guild-clear capture layer](plans/2026-10-02-release1-72-guild-clear-capture-checks.json)
 now retains original completion time/season and the server-owned identities of
 unique reward recipients; repeat repair clears count without advancing a story
