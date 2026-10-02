@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol/gameplay abuse",
+  "status": "partial prepared implementation; not published or versioned as 1.72",
+  "finding": "Gorilla processes ping/pong inside ReadMessage, so accounting only returned data messages leaves control traffic outside the shared read-pump budget.",
+  "changes": [
+    "Charge incoming ping and pong against the same connection-local300-initial,200/second budget as data messages, before executing their handlers.",
+    "Keep normal default ping echo and the existing pong read-deadline renewal. Excess sends close1008 and terminates the reader without logging untrusted control payloads or creating an account/IP ban.",
+    "Suppress the expected local frame-limit error from general read-error logging; individual message authorization and malformed-message limits remain separate."
+  ],
+  "checks": {
+    "focusedRace": {"go": "go1.27.1", "seconds": 1.390, "passed": true, "command": "go test -race . -run '^Test(InboundFrameGuard|DecodeInbound|Suspicious|Credential|Registration|Resume|Bootstrap|Origin)' -count=1"},
+    "negativeSockets": "Two actual loopback WebSocket cases consume300 data messages then verify the next ping or pong receives1008 and ends the read with the local policy error. A fixed clock isolates shared-budget behavior from scheduler/refill timing.",
+    "positiveSocket": "Actual ping echo, custom pong deadline handler and subsequent ordinary data response remain functional, and all three consume the shared budget.",
+    "retainedUnitChecks": "Initial burst, refill, rewind rejection, malformed isolation and deterministic ordinary mixed traffic remain passing.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "sourceSha256": {
+    "server/inbound_frame_guard.go": "82b784a6b16316707520248a760a19ac6924cfb186b06478306c66b36879ff96",
+    "server/network.go": "e2d08e25c1c1e467e0189e46ec4dbc7ae4c36877707ab59ee3dcf171d0f7f156",
+    "server/inbound_frame_guard_socket_test.go": "d58453e11211117f7d2c44ab2566a36c1090c84a89a9ed7d488aae60ec79e51c"
+  },
+  "limits": [
+    "Loopback handler tests are not a new production-binary/database/session acceptance, real-player load, high-latency simulation or edge/global connection protection.",
+    "The earlier dependency-frame receipt retains its own binary hash and test scope; it does not implicitly cover this follow-up source.",
+    "Movement/cast authority, private-state boundaries, broader secret/dependency exposure and connection admission still require completion before1.72 closes."
+  ]
+}

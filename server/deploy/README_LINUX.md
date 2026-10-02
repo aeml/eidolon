@@ -86,14 +86,18 @@ in the server's compiled imports. Do not introduce that package; select a
 maintained alternative and rescan if such a feature is ever authorized. This
 does not certify that every library, container, runtime path or secret is safe.
 
-The prepared WebSocket read-pump guard admits an initial300 data frames and
+The prepared WebSocket read-pump guard admits an initial300 data messages or
+ping/pong frames combined and
 refills200/second, before JSON parsing. A separate initial8 malformed frames
 refills over10seconds; excess closes that transport with policy code1008.
 Individual message authentication, payload and rate rules still apply. A single
 malformed frame does not ban an account, consume another connection's budget
 or replace the normal login/reconnect flow. Raw malformed bodies/errors are
-no longer copied into the general server log. These are connection-local data
-frame limits, not a control-frame/global-connection flood solution; ping/pong,
+no longer copied into the general server log. Ping/pong handlers charge that
+same budget before responding or renewing a deadline; ordinary echo responses
+and the existing pong deadline handler are preserved. Focused loopback socket
+checks cover exhaustion after data traffic and ordinary keepalives. These are
+connection-local limits, not a global-connection or network flood solution;
 edge protection and realistic high-latency/capacity validation remain separate
 unfinished protocol/operations checks.
 

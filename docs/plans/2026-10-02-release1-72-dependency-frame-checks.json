@@ -47,7 +47,7 @@
   },
   "cleanup": "Removed only exact task-labelled disposable container7171d6f6025f421f04d8873508c2cffdfbe6f60727b05d7379ac149a66c6aedc and its anonymous config volume after label/mount inspection. Its synthetic tmpfs accounts are gone. No production account, data volume, currency, role, log, private environment or global build cache changed.",
   "remaining": [
-    "Broader movement/cast authority, visibility leaks, secret exposure review and control-frame/global connection floods remain unfinished before closing1.72. This is not a security certification or a complete container/dependency inventory.",
+    "Broader movement/cast authority, visibility leaks, secret exposure review and global connection floods remain unfinished before closing1.72. Connection-local ping/pong accounting is covered by the separate2026-10-02-release1-72-control-frame-checks.json follow-up, not this earlier binary receipt. This is not a security certification or a complete container/dependency inventory.",
     "Recovery delivery/verified ownership still requires the owner's explicit decision before1.71 completion. Ordered publication must first accept corrected1.64.1, then the prepared1.65–1.70 milestones individually.",
     "Future exact-source CI, production-build/container path and independent public acceptance are still required. Current live acceptance remains separate from these local prepared checks."
   ]

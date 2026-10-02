@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -290,11 +291,12 @@ func (c *Client) readPump() {
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	guard := newInboundFrameGuard(time.Now())
+	guard.installControlHandlers(c.conn, time.Now)
 
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+			if !errors.Is(err, errInboundFrameLimit) && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
 			}
 			break
@@ -302,7 +304,7 @@ func (c *Client) readPump() {
 
 		now := time.Now()
 		if !guard.acceptFrame(now) {
-			c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Incoming message limit exceeded"), now.Add(writeWait))
+			_ = guard.rejectFrame(c.conn, now)
 			return
 		}
 		msg, err := decodeInboundMessage(message)
