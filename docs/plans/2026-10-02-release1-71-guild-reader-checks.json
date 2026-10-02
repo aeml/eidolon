@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "milestone": "1.71",
+  "status": "prepared reader-only compatibility; not published",
+  "sourceCommit": "e79b8da1c012e88571aecbd9a3e2607b275cff3e",
+  "scope": "Delegate only a real future guild-clears child directory to its dedicated reader. Reject file/symlink impostors. No journal writer, new protocol dependency or auth change. This must ship before1.72 creates the directory so rollback to1.71 preserves it without blocking character recovery.",
+  "command": "GOTOOLCHAIN=go1.24.5 go test -race ./internal/database -run '^TestCharacter(JournalDelegatesGuildClearDirectoryButRejectsImpostors|AndArenaJournalsShareVolumeAcrossRestart|JournalRejectsImpostorArenaEntries)$' -count=1 -timeout=20s",
+  "passed": true,
+  "packageSeconds": 1.055,
+  "sourceHashes": {
+    "server/internal/database/character_journal.go": "fc78380ce88732965f8b6159631c79a46e538341af376051c0507a768940a33f",
+    "server/internal/database/character_journal_test.go": "21cc0dde2d7ed3e1bc0551bdaf057f11a9e66de3450c28ccb5b391ca486d0149"
+  },
+  "limits": "Targeted compatibility proof, not a1.71 deployment or complete security milestone. Account-recovery delivery/ownership, implementation and exact-source publication remain open. No rollback, production data or external account change performed."
+}
