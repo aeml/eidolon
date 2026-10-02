@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.66.0",
+  "status": "accepted",
+  "commit": "aa7d00ae9191b690d1f034b4b61ef2b7776bb88a",
+  "ciRun": 37014297988,
+  "publicVerifiedAt": "2026-10-02T14:16:28.535Z",
+  "frontend": {
+    "commit": "aa7d00ae9191b690d1f034b4b61ef2b7776bb88a",
+    "version": "Alpha 1.66.0"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "aa7d00ae9191b690d1f034b4b61ef2b7776bb88a",
+    "version": "Alpha 1.66.0"
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 753274,
+      "sha256": "8ec2b07dd155a3cbb8c6931052367658aab64c70bf17d6426da26a9f5da06db9",
+      "exactPublisher": true
+    },
+    {
+      "path": "src/core/GameEngineNetworkMessages.js",
+      "bytes": 97841,
+      "sha256": "c07d455cb612b6b5b5f80ece735e939c4df2cb8e86336d00a27ff64629dfabd5",
+      "exactPublisher": true
+    },
+    {
+      "path": "src/ui/EPWalletUI.js",
+      "bytes": 7164,
+      "sha256": "d49c1d575ef2167e1fd13e0584cf359b7ae468182fbed47dd63337d748e8143d",
+      "exactPublisher": true
+    }
+  ],
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "verifiedAt": "2026-10-02T14:19:17.452Z",
+  "limits": [
+    "Ordinary-DNS public HTTPS verified over IPv4; owner-deferred IPv6 reachability remains separate.",
+    "All three changed client runtime files match full exact publisher output; unchanged assets retain predecessor evidence, not a new inventory check.",
+    "Technical acceptance is not a new human-pacing, physical-phone, legal, art or capacity signoff."
+  ]
+}
