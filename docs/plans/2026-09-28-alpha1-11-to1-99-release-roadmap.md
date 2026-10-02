@@ -196,6 +196,13 @@ and byte-exhausted ping/pong checks close with1008 while normal mixed input and
 keepalives remain passing. No ban, payment or reward policy changed. Incomplete
 fragmentation, raw/upstream traffic, other worker bounds and connected
 production/load evidence remain separate; this is prepared source, not1.72 live.
+The [fragment-assembly follow-up](2026-10-02-release1-72-fragment-assembly-checks.json)
+now gives each started data message a fixed ten-second assembly window that
+Pongs cannot extend, while retaining ordinary idle liveness and the8KiB limit.
+Actual fragmented completion/size-limit checks and the production read pump
+under unfinished empty fragments plus regular Pongs passed with race checking.
+This closes that indefinite assembly path, not raw-frame/transport accounting,
+other worker admission, latest-source connected/load evidence or the1.72 milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
