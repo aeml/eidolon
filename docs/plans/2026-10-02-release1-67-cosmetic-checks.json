@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.67",
+  "sourceVersion": "Alpha 1.62.0",
+  "status": "prepared, unpublished",
+  "originalPreparedCommits": ["a17dbf1f", "eb0cd532", "64906676"],
+  "reconciledCommits": ["38bee560", "ca23d78b", "1ec82077"],
+  "changes": [
+    "Cosmetic vendor and wardrobe replies are bound to the current character before engine appearance mutation and UI fan-out.",
+    "Changed catalogues retire prior price confirmations and offer buttons; closed/disposed screens cannot buy, apply or recreate previews.",
+    "Wardrobe controls wait for valid owned replies, preserve legitimate null collections and retain the explicit Original gear reset.",
+    "Every EP and earned-season cosmetic references delivered fitted base artwork and finite palette colors. Original equipment identity still controls class eligibility and combat values.",
+    "Asset documentation now reflects the already-integrated four-class delivery, without editing preserved source GLBs or delivery manifests."
+  ],
+  "checks": {
+    "ownershipAndLifecycle": {"suites": 4, "tests": 32, "seconds": 1.836, "passed": true},
+    "assetCataloguePreviewAndClassRules": {"suites": 3, "tests": 52, "seconds": 1.620, "passed": true},
+    "handlerAndWardrobeRace": {"seconds": 1.832, "passed": true},
+    "nativePresentation": {"cases": 3, "seconds": 15.9, "passed": true, "widths": [390, 1440], "vendorAndGoldMedallionRendersInspected": true, "artifacts": "/tmp/eidolon-167-reconciled-cosmetics-20261002"},
+    "lint": "passed",
+    "whitespace": "passed"
+  },
+  "fixtureCorrection": "The first added catalogue check incorrectly required a description field on earned-season medallions. Those use their existing name and season rule copy, unlike vendor offers. Corrected only that schema assumption; required artwork, hashes, palettes and vendor descriptions remain checked. No runtime or generated catalogue changed.",
+  "retainedEvidence": ["2026-10-01-release1-67-cosmetic-checks.json", "2026-10-01-authored-equipment-checks.json", "2026-09-14-connected-cosmetic-vendor-acceptance.md", "../art/EQUIPMENT_ASSETS.md"],
+  "limits": "Native preview checks use synthetic private replies, not new authenticated purchase/restart settlement. Structural catalogue coverage is not a new render of every cosmetic on every class. Earlier all-class rigged gear, replication and durable-unlock receipts retain their own scope; final visual and physical-phone approval remain open. Source defaults, notes, CI and public acceptance must be aligned at sequential publication. No catalogue price, wallet, combat stat, entitlement or purchase method changed."
+}

@@ -448,11 +448,6 @@ class GameEngineNetworkMessageMethods {
         // alone cannot stop a delayed reply overwriting a new character's look.
         if (PRIVATE_CHARACTER_RESULTS.has(msg.type) && (!this.player.id || msg.payload?.playerID !== this.player.id)) return;
 
-        // A private wallet reply may arrive after changing characters. Filter
-        // it before VIP state mutation or UI fan-out, not just inside the menu.
-        if (['ep_wallet_result', 'vip_status'].includes(msg.type) &&
-            (this.isDestroyed || !this.player.id || msg.payload?.playerID !== this.player.id)) return;
-
         // Queue compaction prioritizes control messages, so enter_instance can
         // precede a snapshot captured in the old scene. Reject that whole batch
         // before it can restore an old instance ID, health or remote entities.

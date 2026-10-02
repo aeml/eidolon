@@ -2,16 +2,18 @@
 
 This owner-requested delivery provides fitted equipment for all four classes.
 Alpha 1.58.2 integrates the character fits, weapon grips and motion banks in the
-game renderer. The assets, sources and integration
-instructions are published together; publishing them does not enable the new
-equipment renderer. See the root README for the integration sequence.
+game renderer. The assets, sources and integration instructions are published
+together; all four delivered class bodies, fitted items and weapon motions are
+now integrated. See the root README for runtime paths and the integration contract.
 
 Revision 2 (2026-10-01) replaces all 24 chest fits with full crew-neck coverage,
 continuous shoulder yokes and short sleeves under the separate pauldrons. Robe
 gores now also measure the pelvis envelope, including the female fits.
 The four character sources and all twelve character GLBs have revised default
 animations; the existing Fighter runtime therefore receives its revised sword
-motion. New equipment and the other classes remain staged for integration.
+motion. The other class bodies and new equipment are also integrated in
+Alpha 1.58.2 and later. The preserved delivery manifest's `gameIntegration: false`
+describes its export-stage status, not the current game runtime.
 
 The collection covers all 36 equippable base items in `BASE_ITEMS`: four weapons,
 two offhands, 21 armor pieces, three rings, three necklaces, and three trinkets.
