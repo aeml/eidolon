@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.61.0</span>
+                    <span class="start-version-row__label">Alpha 1.62.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="View account moderation notices and submit an appeal">Account help</button>
             </div>
@@ -771,6 +771,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.62.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.62.0 (clearer blackjack hands and next wagers)</h3>
+                    <p class="patch-note-entry__summary">Prepare your next stake while watching a shared hand, with clear saved payouts and reliable chair turnover.</p>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Prepare the next wager:</strong> wager controls remain visible while the hand plays. Changing Next wager never changes your confirmed stake or automatically places another bet; the next betting window still requires your click. Hit, Stand, Split and Double stay ahead of those controls on phones.</li>
+                        <li><strong>Reliable timeout seating:</strong> a 30-second decision timeout stands the current hand and releases its current funded chair only after saving the transition. Reconnected players in that chair remain its owners; a different seat or later patron cannot be ejected by an old timeout. Saved release retries preserve accepted wagers and ordinary settlement.</li>
+                        <li><strong>Know your result:</strong> natural blackjack remains 3:2 profit, an ordinary win 1:1, and a push returns the stake. Results show pending return until payout is saved. A departed participant's earlier hand is labeled separately from a new chair occupant; the dealer's hidden card stays private.</li>
+                        <li><strong>Keep your currency:</strong> public tables wager and return Gold; VIP tables wager and return only EP. Limits remain 100,000 Gold or 100 EP. No odds, payout amounts, account reset, automatic wagers or Gold/EP conversion changes. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.61.0">
                     <h3 class="patch-note-entry__title">Alpha 1.61.0 (a seamless Lanternhold Casino visit)</h3>
                     <p class="patch-note-entry__summary">More reliable door and floor interactions in the shared casino, with explicit entry and clear VIP access.</p>

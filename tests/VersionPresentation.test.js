@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.61.0';
+const currentVersion = '1.62.0';
+
+test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack returns', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.62.0"'), previous = html.indexOf('data-version="1.61.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Next wager', 'never changes your confirmed stake', 'requires your click',
+        '30-second decision timeout', 'only after saving', 'later patron', '3:2 profit',
+        'pending return', '100,000 Gold or 100 EP', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.61.0 preserves the casino world and explains explicit current-session door interactions', () => {
     const html = fs.readFileSync('index.html', 'utf8');

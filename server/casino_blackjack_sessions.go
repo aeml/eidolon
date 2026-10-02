@@ -61,6 +61,8 @@ type blackjackTableState struct {
 	DealAt     time.Time              `json:"dealAt"`
 	FinishedAt time.Time              `json:"finishedAt"`
 	Round      *game.BlackjackRound   `json:"round,omitempty"`
+	// Private saved release fences; table views intentionally omit these.
+	TimedOutSeats map[string]string `json:"timedOutSeats,omitempty"`
 }
 
 func newBlackjackLobby() (*blackjackTableState, error) {
@@ -89,6 +91,12 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 			return nil, errors.New("invalid funded blackjack participant")
 		}
 		players[p.PlayerID], seats[p.Seat] = true, true
+	}
+	for playerID, token := range state.TimedOutSeats {
+		decoded, err := hex.DecodeString(token)
+		if !players[playerID] || err != nil || len(decoded) != 16 || state.Phase == "betting" {
+			return nil, errors.New("invalid blackjack timeout ownership")
+		}
 	}
 	switch state.Phase {
 	case "betting":
@@ -350,8 +358,6 @@ func tickBlackjack(now time.Time, ids ...string) error {
 		return err
 	}
 	recipient := ""
-	var timedOutSeat *game.CasinoSeatSession
-	timedOutPlayer := ""
 	if r.Pending != nil {
 		recipient = r.Pending.PlayerID
 	} else {
@@ -382,12 +388,19 @@ func tickBlackjack(now time.Time, ids ...string) error {
 		case "playing":
 			if !now.Before(state.Round.Deadline) {
 				turn := state.Round.Players[state.Round.TurnPlayer]
+				timedOutToken := ""
 				if p := world.GetEntityCopy(turn.PlayerID); p != nil && p.CasinoSeat != nil &&
 					p.CasinoSeat.TableID == id && p.CasinoSeat.Seat == turn.Seat {
-					timedOutSeat, timedOutPlayer = p.CasinoSeat, turn.PlayerID
+					timedOutToken = p.CasinoSeat.SessionID
 				}
 				state.Round, err = state.Round.Timeout(now)
 				if err == nil {
+					if timedOutToken != "" {
+						if state.TimedOutSeats == nil {
+							state.TimedOutSeats = map[string]string{}
+						}
+						state.TimedOutSeats[turn.PlayerID] = timedOutToken
+					}
 					if state.Round.Phase == "complete" {
 						state.Phase = "settling"
 					}
@@ -412,8 +425,12 @@ func tickBlackjack(now time.Time, ids ...string) error {
 		}
 	}
 	blackjackMu.Unlock()
-	if err == nil && timedOutSeat != nil {
-		world.ReleaseCasinoSeatForSession(timedOutPlayer, id, timedOutSeat.SessionID)
+	if err == nil {
+		// Retry saved releases after a missed update without evicting a newer
+		// session. Never take the world lock before saving or under the table lock.
+		for playerID, token := range state.TimedOutSeats {
+			world.ReleaseCasinoSeatForSession(playerID, id, token)
+		}
 	}
 	if err != nil || recipient == "" {
 		return err
