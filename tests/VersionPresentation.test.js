@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.68.0';
+const currentVersion = '1.68.1';
+
+test('1.68.1 records QA corrections without weakening movement or exact-item requirements', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.68.1"'), previous = html.indexOf('data-version="1.68.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['actual Idle animation', 'before clicking', 'never a retry', 'pre-input position',
+        'thresholds remain unchanged', 'exact saved item', 'missing item still fails',
+        'permanent Blender-authored wizard outfit', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.68.0 documents VIP-membership without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');

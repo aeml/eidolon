@@ -2066,10 +2066,17 @@ export async function verifyPersistenceAfterFreshLogin(page, credentials, receip
     await loginAndEnterWorld(page, credentials);
     const restored = await readPlayerState(page);
     expect(restored.level).toBeGreaterThanOrEqual(100);
-    const inventory = await page.evaluate(() => window.game.player.inventory);
-    expect(inventoryQuantity(inventory, receipt.item),
-        'The exact picked-up equipment or merged stack quantity must survive login')
-        .toBeGreaterThanOrEqual(receipt.quantity);
+    await waitForPersistedPickup(page, receipt);
+}
+
+export async function waitForPersistedPickup(page, receipt) {
+    // World readiness and private inventory delivery are separate messages.
+    // Keep the exact receipt and a finite deadline: an absent saved item fails.
+    await expect.poll(async () => inventoryQuantity(
+        await page.evaluate(() => window.game.player.inventory), receipt.item
+    ), { timeout: 10_000,
+        message: 'The exact picked-up equipment or merged stack quantity must survive login'
+    }).toBeGreaterThanOrEqual(receipt.quantity);
 }
 
 export async function exerciseCombat(page) {

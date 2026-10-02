@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.68.1",
+  "status": "prepared; new CI and independent public acceptance required",
+  "failedParentCommit": "1edde7ba786d0a8526db99ed19ba081c590d1cd4",
+  "failedParentRun": 37024557601,
+  "failedParentReceipt": "2026-10-02-release1-68-live-failure.json",
+  "scope": [
+    "Observe actual Idle animation as well as logical arrival before the no-movement metric baseline.",
+    "Reselect a newly blocked outside-town ground ray at most six times, before any mouse-down; never retry a failed physical movement.",
+    "Begin frame sampling after preconditions, capture its pre-input baseline immediately, and release held input on failure.",
+    "Poll the same exact equipment ID or server-rule merged stack quantity for at most ten seconds after fresh login; missing items still fail.",
+    "Align login, manifest, package, server, container and deploy defaults and append cumulative patch notes."
+  ],
+  "checks": {
+    "focusedRegressions": {"suites": 6, "tests": 78, "seconds": 2.692, "passed": true},
+    "versionAndPublisher": {"suites": 2, "tests": 350, "seconds": 2.414, "passed": true, "initialAlignmentFailure": "Remaining manifest/container/script defaults were corrected before the passing run."},
+    "nativeMovement": {
+      "cases": 1,
+      "testSeconds": 27.5,
+      "runnerSeconds": 30.6,
+      "passed": true,
+      "renderer": "System Chrome ANGLE AMD Vulkan RADV RENOIR; not software WebGL",
+      "speed": 31.68000030517578,
+      "source": "1edde7ba786d0a8526db99ed19ba081c590d1cd4-dirty, corrected 1.68.1 working tree",
+      "artifacts": "/tmp/eidolon-1681-movement-wJNgdY",
+      "townSustained": {"logicalTravel": 10.63348695751127, "renderTravel": 10.63348695751127, "maxSimulationTicks": 2, "backtracking": 0, "maxCameraError": 0, "maxRenderLogicalGap": 0, "correctionFrames": 0},
+      "outsideTown": "All original travel, render, backtrack, camera, acknowledgement, arrival and correction assertions passed without test retry.",
+      "isolation": "New disposable QA API/Mongo only; exact temporary resources cleaned automatically. Credential artifact scan passed."
+    },
+    "lint": "Focused ESLint passed without warnings.",
+    "shellSyntax": "Isolated-QA and deployment scripts passed bash -n.",
+    "whitespace": "git diff --check passed."
+  },
+  "limits": [
+    "No movement/combat/reward/membership/EP/payment/account-save behavior changed; this corrects test preconditions and snapshot observation.",
+    "The precise cause of the earlier flaky persistence observation remains unproven. Bounded exact-item polling is not proof of a persistence fix and cannot accept a missing item.",
+    "Native check uses an isolated, max-level QA character and dirty candidate tree, not campaign pacing, a production login or physical-phone certification.",
+    "Failed 1.68.0 is not relabeled successful. Roadmap work, human art approval and owner-deferred checks remain open."
+  ]
+}
