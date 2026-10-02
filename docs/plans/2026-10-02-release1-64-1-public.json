@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.64.1",
+  "status": "accepted",
+  "commit": "35d8b52a0b38c1d785b3edeb6a90255e63f6a052",
+  "ciRun": 37005356236,
+  "verifiedAt": "2026-10-02T12:55:01.528Z",
+  "frontend": {"commit": "35d8b52a0b38c1d785b3edeb6a90255e63f6a052", "version": "Alpha 1.64.1"},
+  "backend": {"status": "ok", "database": "ready", "commit": "35d8b52a0b38c1d785b3edeb6a90255e63f6a052", "version": "Alpha 1.64.1"},
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {"path": "index.html", "bytes": 750611, "sha256": "3601fba9890b53f5ee8a10663df154e2071e11de335b52a928997c64f4cf2af5", "exactPublisher": true},
+    {"path": "src/styles/casino.css", "bytes": 22374, "sha256": "95ffbe70f43a1cef862b163aa449bb970feaabf925402780a1525f6cf8f5569e", "exactPublisher": true},
+    {"path": "src/ui/CardTableScene.js", "bytes": 6794, "sha256": "ae05ea32787c165d2dad4f7ae3e8869bcc410ecb199042c1a1bb0237c3136079", "exactPublisher": true},
+    {"path": "src/ui/HouseTableUI.js", "bytes": 14520, "sha256": "8b67b14cdabd69f81d080f1740b47a098a52e5c60af09fe047eb971676337501", "exactPublisher": true}
+  ],
+  "ilyra": {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "exactSource": true},
+  "limits": [
+    "Ordinary-DNS public HTTPS checked over IPv4; owner-deferred IPv6 reachability is not certified.",
+    "All four changed client files match the exact publisher output in full. Unchanged assets are not asserted as a new full inventory; Ilyra was rechecked separately.",
+    "Technical deployment acceptance is not physical-phone, campaign-pacing, art, legal or capacity signoff."
+  ]
+}
