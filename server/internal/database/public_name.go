@@ -21,6 +21,55 @@ const ModerationCorrectName = "correct_name"
 var publicNamePattern = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9 _'-]{2,23}$`)
 var ErrPublicNameUnavailable = errors.New("public name unavailable or unchanged")
 
+// Target lookup projects only the stable account key. Exact account keys win
+// so retained social buttons cannot be redirected by somebody's new alias.
+func (db *DB) ResolvePublicPlayerName(input string) (string, error) {
+	input = strings.TrimSpace(input)
+	if db == nil || db.users == nil || input == "" || len(input) > 256 || strings.ContainsRune(input, 0) {
+		return "", ErrPublicNameUnavailable
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var exact struct {
+		Username string `bson:"username"`
+	}
+	err := db.users.FindOne(ctx, bson.M{"username": input}, options.FindOne().SetProjection(bson.M{"_id": 0, "username": 1})).Decode(&exact)
+	if err == nil {
+		return exact.Username, nil
+	}
+	if !errors.Is(err, mongo.ErrNoDocuments) {
+		return "", err
+	}
+	cursor, err := db.users.Find(ctx, bson.M{"$or": bson.A{
+		bson.M{"public_name_key": strings.ToLower(input)},
+		bson.M{"username": primitive.Regex{Pattern: "^" + regexp.QuoteMeta(input) + "$", Options: "i"}},
+	}}, options.Find().SetLimit(2).SetProjection(bson.M{"_id": 0, "username": 1}))
+	if err != nil {
+		return "", err
+	}
+	defer cursor.Close(ctx)
+	account := ""
+	for cursor.Next(ctx) {
+		var row struct {
+			Username string `bson:"username"`
+		}
+		if err := cursor.Decode(&row); err != nil {
+			return "", err
+		}
+		if account != "" {
+			return "", ErrPublicNameUnavailable
+		}
+		account = row.Username
+	}
+	if err := cursor.Err(); err != nil {
+		return "", err
+	}
+	if account == "" {
+		return "", ErrPublicNameUnavailable
+	}
+	return account, nil
+}
+
 // The authenticated owner supplies neither an account ID nor staff authority.
 // Only a quoted required-name-change notice can authorize this correction.
 type PublicNameCorrectionRequest struct {

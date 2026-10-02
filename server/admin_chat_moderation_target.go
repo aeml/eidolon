@@ -11,7 +11,7 @@ import (
 	"eidolon-server/internal/database"
 )
 
-// Prepared alongside the unpublished mutation; no protocol registration yet.
+// Preview is independently authenticated and audited before any confirmation.
 const MsgAdminChatModerationTarget = "admin_chat_moderation_target"
 
 type adminChatModerationTargetStore interface {
@@ -61,7 +61,7 @@ func decodeAdminChatModerationTarget(payload []byte) (adminMutationRequest, erro
 	return request, nil
 }
 
-// Future normal dispatch holds the actor's character-work lock throughout.
+// Normal dispatch holds the actor's character-work lock throughout.
 func handleAdminChatModerationTarget(c *Client, msg Message) {
 	if c == nil {
 		return

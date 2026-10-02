@@ -9,6 +9,14 @@ import (
 // failures. Otherwise a valid rejected purchase leaves touch controls pending
 // indefinitely. Never parse oversized payloads or reflect malformed IDs.
 func (c *Client) sendInboundRejection(msg Message, reason string) {
+	if msg.Type == MsgAdminChatModeration && len(msg.Payload) <= 12288 {
+		request, err := decodeAdminChatModeration(msg.Payload)
+		if err == nil {
+			payload, _ := json.Marshal(adminMutationResult{ID: request.Change.ID, Pending: true, Message: reason})
+			c.sendSafe(createMessage(msg.Type+"_result", payload))
+			return
+		}
+	}
 	if isAdminMutation(msg.Type) && len(msg.Payload) <= adminMutationPayloadLimit {
 		request, err := decodeAdminMutation(msg)
 		if err == nil {

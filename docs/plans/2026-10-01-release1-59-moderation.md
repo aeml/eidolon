@@ -1,11 +1,56 @@
-# Alpha 1.59 moderation preparation
+# Alpha 1.59 moderation release
 
-October 1, 2026, updated October 2. The appeal route, owner status lookup and actionable report review are implemented
-locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
-accepted live Alpha 1.58.3 graphics, Alpha 1.58.4 tooltips and Alpha 1.58.5 Ilyra.
-No 1.59 package or milestone completion
-is claimed. The full milestone
-also requires abuse response, sanctions, staff boundaries and retention decisions.
+October 1, 2026, updated October 2. Alpha 1.59.0 is a release candidate with the
+owner-approved reversible mute, required public-name correction and temporary
+suspension workflows connected. Real production-binary sockets exercised
+online retirement, join and token-resume denial, login-only help, correction,
+appeal, restart and independent reversal. Progression, original account identity,
+Gold and EP were preserved. The accepted Ilyra outfit is unchanged.
+
+The earlier preparation records below remain historical evidence, not current
+activation status. [Administration](../ADMINISTRATION.md) documents the current
+staff boundaries, confirmation requirements and unchanged evidence retention.
+Final staffing coverage and retention policy remain owner decisions, not
+fabricated defaults. No production test sanctions are authorized.
+
+## Current acceptance
+
+The registered authenticated controls and startup guards are implemented.
+Public-name lookup now covers typed invitations and quoted whispers, with stable
+account keys for responses, blocks and ownership. Auction and PvP views project
+current labels without rewriting settlement data. Entry and resume check the
+current restriction state, and online retirement uses ordered actor/target locks
+and the existing escrow-returning disconnect path. No permission query was added
+to movement or simulation ticks.
+
+The connected socket test passed in 13.73 seconds, with its race package at
+14.814 seconds. The existing administration/history/review/restart exercise
+passed in 12.483 seconds. Disposable Mongo report, restriction and public-name
+tests passed in 7.802 seconds. Fourteen relevant client suites passed all 259
+checks in 7.371 seconds. These are scoped mechanical checks, not human balance,
+physical-phone or production account-action acceptance. The first new socket
+fixture supplied a public reason on a reversal, which the strict protocol
+correctly rejected; the fixture was corrected without weakening validation.
+
+The final production-binary moderation socket/restart check passed at 15.313
+race-package seconds after restoring unauthenticated socket state on failed
+resume. The existing audit-failure regression caught that partial binding;
+validation was fixed, not weakened. The broader server package then passed all
+642 test/subtest records in 19.094 seconds. Current-state retirement checks also
+cover expiry, withdrawal, mute-only play and unknown reads. The first unit
+retirement fixture attempted database-backed presence notification without a
+database; its isolated background admission was corrected, with real presence
+handling retained in the socket exercise.
+
+All 331 version/patch-history checks and full JavaScript lint passed. The
+390×844 administration presentation passed in 28.6 seconds, with its name-change
+confirmation render inspected; this synthetic UI fixture does not grant staff
+permissions or apply real sanctions. Its capability now comes through the
+normal status response. Test-only GPU disabling remains explicit.
+
+Version defaults, login label and cumulative patch notes now target 1.59.0.
+Fresh remote integration, CI and independent public acceptance remain before
+the milestone can be called delivered or work advances to 1.60.
 
 ## Player and staff workflow
 

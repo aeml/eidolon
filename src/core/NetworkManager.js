@@ -173,6 +173,13 @@ export class NetworkManager {
                     }
                     if (this.onConnectionStateChange) this.onConnectionStateChange('connected');
                     this._enqueueMessage(msg);
+                } else if (msg.type === 'world_access_denied') {
+                    const fail = this.onReconnectFailed;
+                    this._reconnecting = false;
+                    this.onConnectionStateChange?.('lost');
+                    this.dispose();
+                    fail?.({ kind: 'moderation', message: typeof msg.payload?.message === 'string'
+                        ? msg.payload.message.slice(0, 2048) : 'World access is restricted. Log in and open Account help.' });
                 } else if (msg.type === 'error' && this._reconnecting) {
                     // Server rejected the resume token.
                     this._reconnecting = false;

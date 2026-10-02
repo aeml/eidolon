@@ -1,6 +1,6 @@
 {
-  "version": "Alpha 1.59 preparation",
-  "status": "prepared-unpublished",
+  "version": "Alpha 1.59.0",
+  "status": "connected-release-candidate-unpublished",
   "ownerApproval": {
     "date": "2026-10-02",
     "responses": ["temporary chat mutes", "required public name changes", "temporary account suspensions"],
@@ -12,16 +12,19 @@
     "Exact retries retain original receipt and expiry, including after withdrawal.",
     "Explicit one-notice reversal preserves the other restrictions and reserves capacity for all remaining withdrawals.",
     "Timed mutes/suspensions and non-expiring name-correction requirements; no default duration.",
-    "Dormant staff target preview and separately confirmed decision/reversal controls for all three response types.",
+    "Registered authenticated staff target preview and separately confirmed decision/reversal controls for all three response types.",
     "Owner-only active public notices and selected-reference appeal drafting without automatic submission.",
     "Mute-only guard rejects other restriction kinds returned through its narrow store interface.",
     "Authenticated login-screen Account help reuses the private report form before world entry; only explicit notice reads and appeal submissions.",
     "Authenticated appeal protocol works without a character; other report categories retain the active-character requirement.",
-    "Prepared, unwired world-entry/resume restriction classifier preserves independent restrictions, original expiry and session fencing without per-tick database queries.",
+    "Startup-installed world-entry/resume and chat guards; immediate online retirement under ordered actor/target locks, with independent restrictions and no per-tick database queries.",
     "Authenticated confirmed public-name correction: separate review/confirmation, original receipt on manual exact retry, atomic public-label and quoted-notice completion, preserved login/save/social/currency keys and independent restrictions.",
-    "Prepared schema17 unique partial alias reservation index and new registration writer, with no legacy rename or backfill.",
+    "Schema17 unique partial alias reservation index and new registration writer, with no legacy rename or backfill.",
     "Separate world public labels, stationary-name deltas and local/remote tag updates; stable selected chat/social targeting, recruitment requests and guild-bank retry identities.",
-    "Bounded offline social/history label projections and current-label refresh after historical correction retries."
+    "Bounded offline social/history label projections and current-label refresh after historical correction retries.",
+    "Public-name lookup for typed social actions and quoted whispers; auction and PvP projections preserve canonical settlement and account IDs.",
+    "Server-advertised moderation capability, correlated transport denial, session disposal and usable login recovery.",
+    "Documented private-case/staff boundaries and unchanged evidence retention; version defaults and cumulative notes aligned."
   ],
   "checks": {
     "goRace": "Focused server handler, notice and chat guard tests passed in 4.496 seconds; database moderation tests passed in 1.090 seconds.",
@@ -79,12 +82,25 @@
     "whitespace": "passed"
   },
   "remaining": [
-    "Finish typed public-name target lookup and auction/PvP display projections; world tags and selected social actions are prepared and regression tested with stable ownership keys.",
-    "Suspension enforcement for joining, resuming and already-online play; authenticated outside-world notice/appeal access is prepared and independently exercised.",
-    "Full server registry and client control activation; real authenticated WebSocket and game-server restart acceptance.",
-    "Staff/review boundaries and existing retention documentation; no new purge or staffing promise.",
-    "Complete milestone versions and cumulative patch notes, fresh remote integration, CI, publishing and independent public acceptance."
+    "Finish final release checks, fresh remote integration, CI, publishing and independent public acceptance."
   ],
+  "connectedAcceptance": {
+    "date": "2026-10-02",
+    "actualProductionBinarySocketSeconds": 13.73,
+    "actualProductionBinaryRacePackageSeconds": 14.814,
+    "finalActualProductionBinaryRacePackageSeconds": 15.313,
+    "finalServerPackage": { "passedTestAndSubtestRecords": 642, "seconds": 19.094, "result": "passed" },
+    "versionHistory": { "tests": 331, "result": "passed" },
+    "administrationPresentation": { "viewport": "390x844", "seconds": 28.6, "result": "passed", "nameConfirmationRenderInspected": true, "gpuDisabled": true, "limits": "Synthetic UI responses, not a physical phone or permission grant." },
+    "lint": "passed",
+    "disposableMongo": { "container": "eidolon-159-moderation-qa-20261002", "label": "eidolon.disposable-task=alpha-159-moderation-20261002", "binding": "127.0.0.1:32823", "productionTouched": false },
+    "existingAdminHistoryReviewRestartRaceSeconds": 12.483,
+    "disposableMongoReportModerationAndPublicNameRaceSeconds": 7.802,
+    "client": { "suites": 14, "tests": 259, "seconds": 7.371, "result": "passed" },
+    "preserved": ["original login and character identity", "class and level", "Gold", "EP", "independent restrictions", "private staff evidence"],
+    "limits": "Disposable accounts only. No production sanctions, uninterrupted campaign, physical-phone certification or human pacing claim.",
+    "failedFixture": "Strict reversal protocol rejected a public reason; fixture corrected without weakening validation. Unit retirement fixture isolated database-backed notifications. A failed audit-resume partial binding was fixed and the existing regression retained. Failed attempts are not acceptance."
+  },
   "releaseClaims": {
     "milestoneComplete": false,
     "published": false,

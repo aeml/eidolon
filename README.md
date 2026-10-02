@@ -420,7 +420,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.58.5` (accepted live Ilyra outfit patch; this worktree also contains unpublished 1.59 preparation)
+- Current source version: `Alpha 1.59.0` (connected moderation release candidate; CI and public acceptance pending)
 - Last independently verified live release: `Alpha 1.58.5`, exact 397bd41d0a8209eb466204aa9b8ccf64024a933e, successful CI36957349513 (all ten jobs, including live release and character QA). Public IPv4 frontend/backend identities and database readiness pass; seven runtime files and two binary models match the exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-58-5-public.json). Earlier receipts retain distinct runtime and model checks, not a claim every route was sampled. DNS/IPv6 remain owner-managed; final art/device/pacing approval remains separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. The complete 1.59 moderation milestone stays next; none of its unpublished code is included. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
@@ -431,6 +431,13 @@ Notes:
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
 - Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
+
+The 1.59 candidate connects approved reversible moderation, private appeals and
+public-name correction without changing login/save ownership or progression.
+Disposable production-binary socket and restart checks passed; the current
+[moderation record](docs/plans/2026-10-01-release1-59-moderation.md) separates those
+checks from still-pending CI/public deployment acceptance. Staff boundaries and
+unchanged evidence retention are documented in [Administration](docs/ADMINISTRATION.md).
 
 Verification state as of September 29, 2026:
 

@@ -66,7 +66,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.58.5"
+	buildVersion = "Alpha 1.59.0"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -410,6 +410,8 @@ func main() {
 		log.Fatal(err)
 	}
 	adminRoles = db
+	worldEntryModeration = newWorldModerationGate(db, time.Now)
+	chatService.authorizeSend = newTemporaryChatMuteGuard(db, time.Now)
 	adminActivities = db
 	adminOperations = db
 	guildBankOperations = db

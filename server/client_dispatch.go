@@ -137,6 +137,9 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Your public name could not be restored. Please reconnect.")
 			return
 		}
+		if !worldAdmissionAllowed(c) {
+			return
+		}
 
 		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
 			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
@@ -859,11 +862,24 @@ func (c *Client) dispatchMessage(msg Message) {
 		playerID := "player-" + username
 		// Token validation authenticates the account, not an alternate display
 		// name. Restore its current label before reconnecting the live entity.
+		previousUsername, previousLabel := c.username, c.publicName.Load()
+		resumeAccepted := false
+		defer func() {
+			if !resumeAccepted {
+				// Hydration/permission/audit failure must not leave a partially
+				// authenticated resume on this transport.
+				c.username = previousUsername
+				c.publicName.Store(previousLabel)
+			}
+		}()
 		if c.username == "" {
 			c.username = username
 		}
 		if err := hydrateClientPublicName(c); err != nil {
 			c.sendError("Your public name could not be restored. Please log in again.")
+			return
+		}
+		if !worldAdmissionAllowed(c) {
 			return
 		}
 		// Public character copies intentionally omit connection metadata.
@@ -895,6 +911,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		c.bindPlayerID(playerID)
 		c.retired.Store(false)
+		resumeAccepted = true
 
 		sessionsMu.Lock()
 		// Kick any stale session for this username (shouldn't exist, but be safe).

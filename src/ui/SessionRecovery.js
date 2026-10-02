@@ -1,6 +1,6 @@
 // Restore the real login view, not merely a panel inside its hidden parent.
 // Character state remains server-owned; this only retires the failed session UI.
-export function showSessionRecoveryLogin() {
+export function showSessionRecoveryLogin({ message } = {}) {
     document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close?.());
     const start = document.getElementById('start-screen');
     start?.classList.remove('hidden');
@@ -13,7 +13,7 @@ export function showSessionRecoveryLogin() {
     if (login) login.style.display = '';
     const status = document.getElementById('auth-status');
     if (status) {
-        status.textContent = 'Connection could not be restored. Please log in again to continue your saved character.';
+        status.textContent = message || 'Connection could not be restored. Please log in again to continue your saved character.';
         status.style.color = '#ff7777';
         status.setAttribute('role', 'status');
     }

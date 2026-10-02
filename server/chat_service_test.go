@@ -76,6 +76,41 @@ func TestStructuredChatPublicLabelDoesNotChangeRoutingOrBlocks(t *testing.T) {
 	}
 }
 
+func TestStructuredChatQuotedPublicNameWhispersKeepCanonicalReplyAndBlock(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	alice := addChatTestClient("alice", "")
+	bob := addChatTestClient("bob", "")
+	setClientPublicName(bob, "Moon Keeper")
+	if err := chatService.Send(alice, ChatPayload{Message: `/w "Moon Keeper" hello`}); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []*Client{alice, bob} {
+		payload := readChat(t, c)
+		if payload.Recipient != "bob" || payload.Message != "hello" {
+			t.Fatal(payload)
+		}
+	}
+	if err := chatService.Send(bob, ChatPayload{Message: "/r hello back"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []*Client{alice, bob} {
+		if readChat(t, c).Recipient != "alice" {
+			t.Fatal("reply used public alias")
+		}
+	}
+	chatService.SetBlocked("alice", "bob", true)
+	if err := chatService.Send(alice, ChatPayload{Message: `/w "Moon Keeper" blocked`}); err == nil {
+		t.Fatal("quoted name bypassed block")
+	}
+	assertNoChat(t, bob)
+	for _, raw := range []string{`"Moon Keeper`, `"Moon Keeper"`, `"Moon Keeper"hello`, `"" hello`, "bob", ""} {
+		if _, _, err := whisperCommandTarget(raw); err == nil {
+			t.Fatal("ambiguous whisper admitted", raw)
+		}
+	}
+}
+
 func TestStructuredChatReplaysBoundedRelevantHistory(t *testing.T) {
 	restore := installChatTestState(t)
 	defer restore()

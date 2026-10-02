@@ -26,16 +26,18 @@ func handleMsgFriendRequest(c *Client, msg Message) {
 		return
 	}
 	req.Username = strings.TrimSpace(req.Username)
+	account, err := db.ResolvePublicPlayerName(req.Username)
+	if err != nil {
+		c.sendError("player is not available for friend requests; check the name")
+		return
+	}
+	req.Username = account
 	if req.Username == c.username {
 		c.sendError("cannot send friend request to yourself")
 		return
 	}
 	if chatService.shouldFilter(req.Username, c.username) || chatService.shouldFilter(c.username, req.Username) {
 		c.sendError("player is not available for friend requests")
-		return
-	}
-	if _, err := db.GetUser(req.Username); err != nil {
-		c.sendError("player is not available for friend requests; check the username")
 		return
 	}
 	requesterID := c.playerID

@@ -461,7 +461,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                 };
-                window.game.network.onReconnectFailed = () => {
+                window.game.network.onReconnectFailed = reason => {
                     if (window.game !== sessionGame) return;
                     sessionResumeToken = null;
                     try { localStorage.removeItem('eidolon_resume_token'); } catch (_) { /* Storage may be unavailable. */ }
@@ -472,7 +472,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     previousAuthSocket?.close?.();
                     sessionGame.destroy();
                     window.game = null;
-                    showSessionRecoveryLogin();
+                    showSessionRecoveryLogin({ message: reason?.kind === 'moderation' ? reason.message : undefined });
                 };
             }
             if (window.game?.uiManager) {

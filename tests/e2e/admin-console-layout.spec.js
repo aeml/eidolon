@@ -25,7 +25,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
             ui.admin = new AdminUI({ host: ui.uiLayer, launcher: document.getElementById('btn-administration'),
                 send: (type, payload) => setTimeout(() => ui.admin.handleResult(`${type}_result`, {
                     id: payload.id, success: true, authorized: true,
-                    ...(type === 'admin_status' ? { account: 'realm-operator', items: [
+                    ...(type === 'admin_status' ? { moderationEnabled: true, account: 'realm-operator', items: [
                         { id: 'iron-sword', name: 'Iron Sword', material: false },
                         { id: 'eidolic-shard', name: 'Eidolic Shard', material: true }
                     ] } : {}),
@@ -119,7 +119,8 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         if (viewport.width === 390) {
             await page.evaluate(() => {
                 const admin = window.__adminLayout.admin;
-                admin.chatModerationEnabled = true; // Prepared UI only; no live policy or account action.
+                // Capability came from the synthetic authenticated status response.
+                // This layout fixture never applies a real account action.
                 admin.list.replaceChildren(); // Match the normal refreshView replacement, not an appended second page.
                 admin.renderReports({ reports: [{ id: '0123456789abcdef01234567', username: 'fixture-reporter',
                     reportType: 'Player Report', status: 'open', reviewRevision: 0, text: 'Synthetic conduct case.' }] });

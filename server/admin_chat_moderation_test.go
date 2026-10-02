@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,6 +19,19 @@ type fakeAdminChatModerationStore struct {
 	accountID primitive.ObjectID
 	request   database.ChatModerationRequest
 	err       error
+	notices   []database.ChatMuteNotice
+	account   string
+}
+
+func (s *fakeAdminChatModerationStore) ModerationAccountUsername(string, primitive.ObjectID) (string, error) {
+	if s.account != "" {
+		return s.account, nil
+	}
+	return "alice", nil
+}
+
+func (s *fakeAdminChatModerationStore) OwnModerationNotices(string) ([]database.ChatMuteNotice, error) {
+	return s.notices, nil
 }
 
 func (s *fakeAdminChatModerationStore) ApplyChatModeration(actor string, accountID primitive.ObjectID, request database.ChatModerationRequest) (database.ChatModerationReceipt, error) {
@@ -178,14 +192,12 @@ func TestAdminChatModerationRechecksSessionAndRoleAfterAudit(t *testing.T) {
 	}
 }
 
-func TestPreparedChatModerationIsNotActivated(t *testing.T) {
-	if _, ok := inboundMessagePolicies[MsgAdminChatModeration]; ok {
-		t.Fatal("incomplete moderation action admitted before full activation")
+func TestApprovedChatModerationRegisteredWithAuthenticatedAdmission(t *testing.T) {
+	p, ok := inboundMessagePolicies[MsgAdminChatModeration]
+	if !ok || p.access != accessAuthenticated || p.maxPayloadBytes != 12288 || messageHandlers[MsgAdminChatModeration] == nil || !isAdminMutation(MsgAdminChatModeration) {
+		t.Fatal("moderation admission/ordered dispatch missing")
 	}
-	if _, ok := messageHandlers[MsgAdminChatModeration]; ok {
-		t.Fatal("incomplete moderation action registered before full activation")
-	}
-	if newStructuredChatService(50).authorizeSend != nil {
-		t.Fatal("partial moderation enforcement installed before full activation")
+	if (&Client{}).acceptInboundMessage(Message{Type: MsgAdminChatModeration, Payload: []byte(validAdminChatMutePayload)}, time.Now()) == nil {
+		t.Fatal("anonymous moderation admitted")
 	}
 }

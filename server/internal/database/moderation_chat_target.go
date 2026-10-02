@@ -85,3 +85,28 @@ func (db *DB) ReadChatModerationTarget(actor, username string) (ChatModerationTa
 	}
 	return projectChatModerationTarget(record.ID, record.Username, record.State, time.Now())
 }
+
+// Staff mutation resolves the immutable quoted account before taking ordered
+// character locks. No save, credentials or private receipt is read here.
+func (db *DB) ModerationAccountUsername(actor string, accountID primitive.ObjectID) (string, error) {
+	unavailable := errors.New("moderation account unavailable")
+	if db == nil || db.users == nil || accountID.IsZero() {
+		return "", unavailable
+	}
+	allowed, err := db.HasAdminRole(actor)
+	if err != nil || !allowed {
+		return "", unavailable
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var account struct {
+		Username string `bson:"username"`
+	}
+	if err := db.users.FindOne(ctx, bson.M{"_id": accountID}, options.FindOne().SetProjection(bson.M{"_id": 0, "username": 1})).Decode(&account); err != nil {
+		return "", unavailable
+	}
+	if account.Username == "" || !boundedActivityText(account.Username, 256, true) {
+		return "", unavailable
+	}
+	return account.Username, nil
+}

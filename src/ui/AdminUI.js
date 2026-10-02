@@ -12,7 +12,7 @@ export class AdminUI {
         this.view = 'players';
         this.reportReviews = [];
         this.reportModerations = [];
-        this.chatModerationEnabled = false; // Prepared only; server policy/activation is still pending.
+        this.chatModerationEnabled = false; // Enable only after the server verifies the capability.
         this.root = document.createElement('section');
         this.root.id = 'administration-screen';
         this.root.className = 'window support-window administration-window';
@@ -107,6 +107,7 @@ export class AdminUI {
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
         for (const moderation of this.reportModerations) moderation.setState(Boolean(this.pending));
         if (!this.authorized) {
+            this.chatModerationEnabled = false;
             this.clearReportReviews();
             this.list.replaceChildren();
             this.next.hidden = true;
@@ -194,6 +195,7 @@ export class AdminUI {
             return;
         }
         if (type === 'admin_status_result') {
+            this.chatModerationEnabled = result.moderationEnabled === true;
             this.operations.setState({ authorized: this.authorized, busy: false, account: result.account, items: result.items });
         }
         if (type === 'admin_history_result') {

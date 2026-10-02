@@ -23,6 +23,21 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
 
 const { NetworkManager } = await import('../src/core/NetworkManager.js');
 
+test.each([false, true])('world denial retires normal or resuming transport without queued state (resuming=%s)', resuming => {
+    const socket = makeMockSocket(); socket.close = jest.fn();
+    const network = new NetworkManager(socket); network.setupListeners();
+    network._reconnecting = resuming;
+    network.messageQueue.push({ type: 'state', payload: {} });
+    const failed = jest.fn(), resumed = jest.fn();
+    network.onReconnectFailed = failed; network.onResumeSuccess = resumed;
+    socket.simulateMessage({ type: 'world_access_denied', payload: { message: 'Log in and open Account help.' } });
+    expect(failed).toHaveBeenCalledWith({ kind: 'moderation', message: 'Log in and open Account help.' });
+    expect(resumed).not.toHaveBeenCalled();
+    expect(network.socket).toBeNull(); expect(network.messageQueue).toEqual([]);
+    expect(socket.close).toHaveBeenCalledTimes(1);
+    expect(network._reconnectTimer).toBeNull();
+});
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------

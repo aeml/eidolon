@@ -17,7 +17,7 @@ func handleMsgDuelRequest(client *Client, message Message) {
 		client.sendError("invalid duel request")
 		return
 	}
-	target := activeClientByUsername(strings.TrimSpace(payload.Username))
+	target := activeClientByPublicName(payload.Username)
 	if target == nil || target.playerID == "" {
 		client.sendError("duel player is offline")
 		return
@@ -30,7 +30,7 @@ func handleMsgDuelRequest(client *Client, message Message) {
 		client.sendError(err.Error())
 		return
 	}
-	client.sendSystemChat("Duel challenge sent to " + target.username + ".")
+	client.sendSystemChat("Duel challenge sent to " + clientPublicName(target) + ".")
 	sendPvPState(target)
 }
 
@@ -127,7 +127,7 @@ func handleMsgPvPLeaderboard(client *Client, _ Message) {
 		client.sendError("failed to load arena leaderboard")
 		return
 	}
-	payload, _ := json.Marshal(map[string]interface{}{"profiles": profiles, "season": database.CurrentArenaSeason(worldTime())})
+	payload, _ := json.Marshal(map[string]interface{}{"profiles": publicPvPProfiles(profiles), "season": database.CurrentArenaSeason(worldTime())})
 	client.sendSafe(createMessage(MsgPvPLeaderboard, payload))
 }
 
@@ -185,7 +185,25 @@ func sendPvPState(client *Client) {
 	if client == nil || client.playerID == "" {
 		return
 	}
-	payload, _ := json.Marshal(world.PvPStatus(client.playerID))
+	status := world.PvPStatus(client.playerID)
+	names := map[string]string{}
+	addName := func(id string) {
+		if entity := world.GetEntityCopy(id); entity != nil {
+			names[id] = entity.DisplayName()
+		} else {
+			names[id] = "Adventurer"
+		}
+	}
+	if challenge, ok := status["challenge"].(game.DuelChallenge); ok {
+		addName(challenge.RequesterID)
+	}
+	if match, ok := status["match"].(*game.PvPMatch); ok {
+		for _, id := range append(append([]string(nil), match.TeamA...), match.TeamB...) {
+			addName(id)
+		}
+	}
+	status["playerNames"] = names
+	payload, _ := json.Marshal(status)
 	client.sendSafe(createMessage(MsgPvPUpdate, payload))
 }
 

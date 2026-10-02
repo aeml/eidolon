@@ -346,7 +346,15 @@ func (c *Client) writePump() {
 			_ = w.Close()
 			return err
 		}
-		return w.Close()
+		if err := w.Close(); err != nil {
+			return err
+		}
+		// Flush the denial before ending this game transport. Older clients
+		// also lose world control and must pass the new entry/resume gate.
+		if bytes.HasPrefix(message, []byte(`{"type":"world_access_denied",`)) {
+			return fmt.Errorf("world access denial delivered")
+		}
+		return nil
 	}
 
 	for {

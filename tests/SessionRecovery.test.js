@@ -18,4 +18,7 @@ test('failed session restores the login ancestor, hides stale character controls
     expect(document.activeElement.id).toBe('auth-username');
     expect(document.activeElement.value).toBe('traveler');
     expect(localStorage.getItem('unrelated-preference')).toBe('keep');
+    showSessionRecoveryLogin({ message: 'Name correction required. Open Account help. <script>not markup</script>' });
+    expect(document.getElementById('auth-status').textContent).toContain('Name correction required. Open Account help.');
+    expect(document.getElementById('auth-status').querySelector('script')).toBeNull();
 });

@@ -1,19 +1,55 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"eidolon-server/internal/database"
 )
 
-// Prepared gate for world entry/resume. Do not install
-// until login-screen notices/appeals, public-name correction and immediate
-// retirement of already-online restricted characters are connected as well.
+// World entry/resume gate, installed alongside login notices/appeals,
+// public-name correction and immediate online-character retirement.
 // Authentication itself must remain available for notices and appeal drafts.
 // Retire online targets under their character-work lock when a response is
 // applied; never add a Mongo query to every movement or snapshot tick.
 type worldModerationGate func(*Client) (*database.ChatMuteNotice, error)
+
+// Installed at production startup; isolated protocol fixtures can inject a
+// store without querying a live database. No simulation-tick reads are added.
+var worldEntryModeration worldModerationGate
+
+func worldAdmissionAllowed(c *Client) bool {
+	if worldEntryModeration == nil {
+		return true
+	}
+	notice, err := worldEntryModeration(c)
+	if err == nil && notice == nil {
+		return true
+	}
+	sendWorldAccessDenied(c, notice, err)
+	return false
+}
+
+func sendWorldAccessDenied(c *Client, notice *database.ChatMuteNotice, err error) {
+	message := "World access could not be checked. Log in again and open Account help to check your notices."
+	payload := map[string]any{"message": message}
+	if err == nil && notice != nil {
+		kind := "Required public name correction"
+		if notice.Kind == database.ModerationSuspend {
+			kind = "Temporary suspension"
+		}
+		message = fmt.Sprintf("%s: %s. Log in and open Account help to view the notice, correct your name when required, or start an appeal. Reference: %s", kind, notice.Reason, notice.ID)
+		if !notice.ExpiresAt.IsZero() {
+			message += " Ends " + notice.ExpiresAt.UTC().Format(time.RFC3339) + "."
+		}
+		payload["kind"], payload["noticeId"] = notice.Kind, notice.ID
+	}
+	payload["message"] = message
+	encoded, _ := json.Marshal(payload)
+	c.sendSafe(createMessage("world_access_denied", encoded))
+}
 
 func newWorldModerationGate(store ownAccountModerationNoticeStore, clock func() time.Time) worldModerationGate {
 	return func(client *Client) (*database.ChatMuteNotice, error) {

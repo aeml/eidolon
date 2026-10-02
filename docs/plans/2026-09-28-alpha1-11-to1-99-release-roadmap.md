@@ -84,49 +84,23 @@ reload loads the saved Low body. It uses anonymous prepared presentation, not
 network combat or a phone. Comparable-device profiling and physical-phone
 feedback remain open.
 
-Local [1.59 preparation](2026-10-01-release1-59-moderation.md) adds Moderation
-Appeal reporting, owner-only case-status lookup and confirmed admin
-resolution/reopening to the private queue.
-Staff can now combine status and category to find player-conduct cases or
-appeals without unrelated bugs; filtered keyset pages and role revocation are
-checked. Current review boundaries are documented, not a new sanction policy.
-Chat safety opens from a selected sender, preserves block/ignore confirmation
-and drafts only the explicitly selected message for review before submission.
-Strict permission checks, stale-case protection, private receipts, manual exact
-retry and responsive controls are implemented. A disposable Mongo exercise
-checks resolution, reopening, competing reviewers, concurrent retries and
-restricted owner responses. The real two-account socket/restart check covers
-submission, private staff review, denied ordinary-account review and one durable
-resolution receipt; it is included in the existing CI socket step.
-This is not a complete moderation milestone: connected abuse response and
-sanction enforcement, staff assignments/coverage and evidence-retention decisions
-remain. On October 2 the owner approved temporary chat mutes, required public
-name changes and temporary account suspensions, with audited reversible actions.
-No production account was punished or case resolved for testing.
-The prepared chat-mute store now has atomic account state and private receipts,
-exact expiry/reversal, immutable account IDs and durable role checks. Five scoped
-unit tests and one disposable Mongo test passed under the race detector in
-1.348 seconds, including concurrent retries and competing decisions. No live
-command or chat enforcement is connected; this foundation does not complete
-1.59 or decide its evidence-retention policy. Details and limitations are retained
-in the preparation record above.
-The prepared owner-only notice route and report-form appeal drafting now pass
-67 scoped client checks, focused server/database race checks and the 390×844
-native presentation route. No background polling, automatic appeals, live
-punishment command or chat enforcement was introduced. The response scope is now
-approved; full enforcement and connected moderation acceptance remain open.
-These preparations are not shipped.
-The login-only account-help route now supports confirmed public-name correction
-and appeals before world entry. A real three-account server/socket/restart check
-preserved the original login, one correction receipt, no created character and
-separate mute/suspension notices. A disposable database exercise also checked
-eight exact retries, competing alias reservations and unchanged protected data.
-Schema17 reserves aliases without a legacy-name backfill and fences older
-registration writers; production was not migrated. Consistent public-label
-presentation, stable targeting, join/resume/online enforcement and complete
-staff activation remain unfinished 1.59 work, followed by its own CI and public
-acceptance. The [preparation receipt](2026-10-02-release1-59-three-responses.json)
-records scoped checks and presentation limits.
+The [1.59 release candidate](2026-10-01-release1-59-moderation.md) connects the
+owner-approved temporary mute, public-name requirement and temporary suspension
+workflows, with explicit confirmation, private receipts and independent reversal.
+Players can draft selected-message reports, check their own case status and use
+login-only help, correction and appeals. Administrators can filter and review
+cases without automatically punishing anyone or reversing an appeal.
+
+Production-binary socket/restart checks exercise mute-only play, immediate online
+retirement, join/resume denial and independent reversal while preserving original
+identity, progression, Gold and EP. Public-name lookup and world/social/auction/PvP
+labels preserve stable ownership and blocks. Schema17 reserves aliases without
+legacy renaming or backfill and fences older registration writers. No production
+sanctions were used for testing. Existing evidence retention and staff boundaries
+are documented; staffing coverage and final retention remain owner decisions.
+CI and public deployment acceptance remain before advancing to1.60. The
+[candidate receipt](2026-10-02-release1-59-three-responses.json) preserves historical
+preparation evidence, scoped checks and presentation limits.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

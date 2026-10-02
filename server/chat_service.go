@@ -120,7 +120,7 @@ func (service *structuredChatService) Send(sender *Client, input ChatPayload) er
 			}
 		}
 	case "whisper":
-		recipientClient := activeClientByUsername(recipient)
+		recipientClient := activeClientByPublicName(recipient)
 		if recipientClient == nil || recipientClient.playerID == "" {
 			return errors.New("whisper recipient is offline")
 		}
@@ -261,6 +261,7 @@ func (service *structuredChatService) shouldFilter(viewer, sender string) bool {
 }
 
 func (service *structuredChatService) HandleModerationCommand(client *Client, raw string) (bool, error) {
+	raw = strings.TrimSpace(raw)
 	fields := strings.Fields(raw)
 	if len(fields) == 0 {
 		return false, nil
@@ -269,25 +270,33 @@ func (service *structuredChatService) HandleModerationCommand(client *Client, ra
 	if command != "/block" && command != "/ignore" && command != "/unblock" && command != "/unignore" {
 		return false, nil
 	}
-	if len(fields) != 2 {
+	if len(fields) < 2 {
 		return true, errors.New("usage: /block|/unblock|/ignore|/unignore <player>")
 	}
 	if db == nil {
 		return true, errors.New("relationship service unavailable")
 	}
-	target, err := db.GetUser(fields[1])
+	account, err := db.ResolvePublicPlayerName(strings.TrimSpace(strings.TrimPrefix(raw, fields[0])))
+	if err != nil {
+		return true, errors.New("player not found")
+	}
+	target, err := db.GetUser(account)
 	if err != nil || target == nil {
 		return true, errors.New("player not found")
 	}
 	if strings.EqualFold(client.username, target.Username) {
 		return true, errors.New("cannot block yourself")
 	}
+	label := target.PublicName
+	if label == "" {
+		label = target.Username
+	}
 	if command == "/unblock" {
 		if err := db.UnblockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
 			return true, err
 		}
 		service.SetBlocked(client.username, target.Username, false)
-		client.sendSystemChat("Unblocked " + target.Username + ".")
+		client.sendSystemChat("Unblocked " + label + ".")
 		return true, nil
 	}
 	if command == "/unignore" {
@@ -295,7 +304,7 @@ func (service *structuredChatService) HandleModerationCommand(client *Client, ra
 			return true, err
 		}
 		service.SetIgnored(client.username, target.Username, false)
-		client.sendSystemChat("Unignored " + target.Username + ".")
+		client.sendSystemChat("Unignored " + label + ".")
 		return true, nil
 	}
 	if command == "/ignore" {
@@ -303,15 +312,39 @@ func (service *structuredChatService) HandleModerationCommand(client *Client, ra
 			return true, err
 		}
 		service.SetIgnored(client.username, target.Username, true)
-		client.sendSystemChat("Ignored " + target.Username + ".")
+		client.sendSystemChat("Ignored " + label + ".")
 		return true, nil
 	}
 	if err := db.BlockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
 		return true, err
 	}
 	service.SetBlocked(client.username, target.Username, true)
-	client.sendSystemChat("Blocked " + target.Username + ".")
+	client.sendSystemChat("Blocked " + label + ".")
 	return true, nil
+}
+
+func whisperCommandTarget(raw string) (string, string, error) {
+	usage := errors.New("usage: /w <player> <message>; quote names with spaces: /w \"player name\" message")
+	if strings.HasPrefix(raw, "\"") {
+		end := strings.Index(raw[1:], "\"")
+		if end < 0 {
+			return "", "", usage
+		}
+		end++
+		if end+1 >= len(raw) || (raw[end+1] != ' ' && raw[end+1] != '\t') {
+			return "", "", usage
+		}
+		target, message := strings.TrimSpace(raw[1:end]), strings.TrimSpace(raw[end+1:])
+		if target == "" || message == "" {
+			return "", "", usage
+		}
+		return target, message, nil
+	}
+	fields := strings.Fields(raw)
+	if len(fields) < 2 {
+		return "", "", usage
+	}
+	return fields[0], strings.Join(fields[1:], " "), nil
 }
 
 func refreshChatBlocks(username string) {
@@ -361,12 +394,12 @@ func (service *structuredChatService) resolveInput(sender string, input ChatPayl
 			channel = "guild"
 			message = strings.TrimSpace(strings.TrimPrefix(message, fields[0]))
 		case "/w", "/whisper":
-			if len(fields) < 3 {
-				return "", "", "", errors.New("usage: /w <player> <message>")
-			}
 			channel = "whisper"
-			recipient = fields[1]
-			message = strings.TrimSpace(strings.Join(fields[2:], " "))
+			var err error
+			recipient, message, err = whisperCommandTarget(strings.TrimSpace(strings.TrimPrefix(message, fields[0])))
+			if err != nil {
+				return "", "", "", err
+			}
 		case "/r":
 			if len(fields) < 2 {
 				return "", "", "", errors.New("usage: /r <message>")

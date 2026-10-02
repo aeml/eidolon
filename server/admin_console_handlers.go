@@ -65,16 +65,17 @@ type adminOnlinePlayer struct {
 }
 
 type adminReadResult struct {
-	ID         string                      `json:"id"`
-	Success    bool                        `json:"success"`
-	Authorized bool                        `json:"authorized"`
-	Message    string                      `json:"message"`
-	Players    []adminOnlinePlayer         `json:"players,omitempty"`
-	Next       string                      `json:"next,omitempty"`
-	History    *database.AdminActivityPage `json:"history,omitempty"`
-	Reports    *database.ReportPage        `json:"reports,omitempty"`
-	Account    string                      `json:"account,omitempty"`
-	Items      []game.AdminItemDefinition  `json:"items,omitempty"`
+	ID                string                      `json:"id"`
+	Success           bool                        `json:"success"`
+	Authorized        bool                        `json:"authorized"`
+	ModerationEnabled bool                        `json:"moderationEnabled"`
+	Message           string                      `json:"message"`
+	Players           []adminOnlinePlayer         `json:"players,omitempty"`
+	Next              string                      `json:"next,omitempty"`
+	History           *database.AdminActivityPage `json:"history,omitempty"`
+	Reports           *database.ReportPage        `json:"reports,omitempty"`
+	Account           string                      `json:"account,omitempty"`
+	Items             []game.AdminItemDefinition  `json:"items,omitempty"`
 }
 
 // Read requests have a deliberately small, closed schema. In particular actor,
@@ -228,6 +229,7 @@ func handleAdminRead(c *Client, msg Message) {
 	}
 	if msg.Type == MsgAdminStatus {
 		result.Success, result.Message = true, "Administrator access verified."
+		result.ModerationEnabled = worldEntryModeration != nil && chatService.authorizeSend != nil
 		result.Account, result.Items = c.username, game.AdminItemCatalog()
 		return
 	}
@@ -298,7 +300,7 @@ func adminOnlinePage(after string) ([]adminOnlinePlayer, string) {
 		}
 		entity.Mu.RLock()
 		entry := adminOnlinePlayer{Account: bound.account, PlayerID: entity.ID,
-			Name: entity.Name, Class: entity.SubType, Level: entity.Level}
+			Name: entity.DisplayName(), Class: entity.SubType, Level: entity.Level}
 		if bound.key != bound.account {
 			entry.AuditAccount = bound.key
 		}

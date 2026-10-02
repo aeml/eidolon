@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.58.5';
+const currentVersion = '1.59.0';
+
+test('1.59.0 explains reversible moderation, account help and stable public names', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.59.0"'), previous = html.indexOf('data-version="1.58.5"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['player safety and accountable moderation', 'Temporary chat mutes', 'required public name corrections',
+        'temporary suspensions', 'Account help', 'appeal', 'Gold and EP', 'Block and Ignore',
+        'private staff evidence', 'No account reset', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.58.5 gives Ilyra permanent NPC clothing without changing player equipment or gameplay', () => {
     const html = fs.readFileSync('index.html', 'utf8');
@@ -119,7 +128,7 @@ test('duel consent and private report reviews reuse one disposable normal server
     for (const text of ["EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'", 'mongodb://127.0.0.1:27017',
         'go build -race', 'main.buildCommit=server', 'EIDOLON_RESOURCE_BINARY=',
         "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1",
-        "go test -race . -run '^TestAdminConsoleActualSessionsAndHistoryRestart$' -count=1"]) {
+        "go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1"]) {
         expect(workflow.slice(start, next)).toContain(text);
     }
     expect(workflow.split('Verify ordinary duel and administration sockets')).toHaveLength(2);

@@ -126,6 +126,19 @@ func TestReportReviewMongoPublicNameCorrectionPreservesAccountAndIndependentRest
 	if name, err := db.OwnPublicName("LegacyOwner"); err != nil || name != "LegacyOwner" {
 		t.Fatal("legacy label not preserved", name, err)
 	}
+	for _, input := range []string{owner, "Arcanis Dawn", "arcanis dawn", " Arcanis Dawn "} {
+		if resolved, err := db.ResolvePublicPlayerName(input); err != nil || resolved != owner {
+			t.Fatal("alias lost stable account key", input, resolved, err)
+		}
+	}
+	if resolved, err := db.ResolvePublicPlayerName("LEGACYOWNER"); err != nil || resolved != "LegacyOwner" {
+		t.Fatal(resolved, err)
+	}
+	for _, input := range []string{"", "missing-owner", "Legacy.*", strings.Repeat("x", 257), "a\x00b"} {
+		if _, err := db.ResolvePublicPlayerName(input); err == nil {
+			t.Fatal("invalid target resolved", input)
+		}
+	}
 	labels, err := db.PublicPlayerNames([]string{owner, "LegacyOwner", "missing-owner", owner})
 	if err != nil || len(labels) != 3 || labels[owner] != "Arcanis Dawn" || labels["LegacyOwner"] != "LegacyOwner" || labels["missing-owner"] != "Adventurer" {
 		t.Fatal("bounded public projection changed identities or lost labels", labels, err)

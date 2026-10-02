@@ -6,18 +6,18 @@ now owns future scope, gates and execution receipts through full-release
 readiness. This ledger preserves prior delivery evidence; individual hotfixes
 do not close the whole goal or restart historical queues.
 
-## Current checkpoint — October 1
+## Current checkpoint October 2
 
-Alpha1.58.0 is accepted live atf7518623bb5924625a918c8acdfe7ad890b0363a,
-CI36808962117 attempt1, with all ten jobs successful. Independent public IPv4
-checks verified both identities, database readiness and all four changed
-runtime assets; the [exact receipt](2026-10-01-release1-58-assets.json) supersedes
-the older checkpoints below. Alpha1.58.1 is a locally verified visual patch for
-level-ups and Well Rested, not yet an accepted deployment. The next minor
-milestone remains1.59 moderation. The new Rogue/Cleric/Wizard exports have not
-been found in fetched master and are not claimed imported. Open alpha, saves,
-the full forward roadmap and owner-deferred human pacing/phone checks remain
-unchanged.
+Alpha1.58.5 is accepted live at397bd41d0a8209eb466204aa9b8ccf64024a933e,
+CI36957349513, with all ten jobs successful. Independent public IPv4 checks
+verified both identities, database readiness and exact runtime/model hashes;
+the [exact receipt](2026-10-02-release1-58-5-public.json) supersedes older
+checkpoints below. Four-class models, fitted gear, effects, equipment-type
+tooltips and Ilyra's permanent outfit are delivered. The connected1.59.0
+moderation candidate has scoped disposable socket/restart acceptance; CI and
+independent public acceptance are still pending before1.60. See its
+[release record](2026-10-01-release1-59-moderation.md). Open alpha, saves and
+owner-deferred human pacing/phone checks remain unchanged.
 
 ## Historical checkpoint — September 28
 

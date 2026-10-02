@@ -6,8 +6,7 @@ import (
 	"time"
 )
 
-// Prepared for the approved policy's startup wiring. No command creates mutes
-// and no live service installs this guard yet. A failed read cannot become an
+// Installed at startup for the approved policy. A failed read cannot become an
 // unrestricted account, and no per-session cache outlives a reversal or expiry.
 func newTemporaryChatMuteGuard(store ownChatMuteNoticeStore, now func() time.Time) func(*Client) error {
 	return func(c *Client) error {

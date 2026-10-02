@@ -17,7 +17,7 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 		return
 	}
 
-	targetClient := getClientByUsername(payload.TargetName)
+	targetClient := activeClientByPublicName(payload.TargetName)
 	if targetClient == nil {
 		c.sendError("Player not found or offline")
 		return
@@ -42,7 +42,7 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 	if ok, reason := world.CanReceivePartyInvite(targetClient.playerID); !ok {
 		switch reason {
 		case "busy":
-			c.sendError(payload.TargetName + " is busy and cannot receive party invites")
+			c.sendError(clientPublicName(targetClient) + " is busy and cannot receive party invites")
 		default:
 			c.sendError("Player not available")
 		}

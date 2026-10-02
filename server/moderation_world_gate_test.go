@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/lifecycle"
 )
 
 type fakeWorldModerationStore struct {
@@ -139,5 +140,55 @@ func TestWorldModerationGateDoesNotTreatFutureSuspensionAsActive(t *testing.T) {
 	now = now.Add(time.Minute)
 	if notice, err := gate(client); notice == nil || err != nil {
 		t.Fatal("start boundary not honored", notice, err)
+	}
+}
+
+func TestWorldModerationOnlineRetirementUsesCurrentStateAndFailsClosed(t *testing.T) {
+	for _, state := range []string{"suspension", "mute", "withdrawn", "expired", "unknown"} {
+		t.Run(state, func(t *testing.T) {
+			restore := installChatTestState(t)
+			defer restore()
+			sessionActivityFixture(t)
+			oldDB, oldBackground := db, backgroundCharacterWork
+			db, backgroundCharacterWork = nil, &lifecycle.Group{}
+			// This unit fixture has no presence database; real socket acceptance
+			// covers the asynchronous disconnect notifications separately.
+			backgroundCharacterWork.CloseAndWait()
+			defer func() { backgroundCharacterWork.CloseAndWait(); db, backgroundCharacterWork = oldDB, oldBackground }()
+			client := addChatTestClient("alice", "party-1")
+			store := &fakeWorldModerationStore{}
+			notice := database.ChatMuteNotice{Kind: database.ModerationSuspend, ID: strings.Repeat("a", 64),
+				StartedAt: time.Now().Add(-time.Minute), ExpiresAt: time.Now().Add(time.Minute), Reason: "Public explanation"}
+			switch state {
+			case "suspension":
+				store.notices = []database.ChatMuteNotice{notice}
+			case "mute":
+				notice.Kind = database.ChatModerationMute
+				store.notices = []database.ChatMuteNotice{notice}
+			case "expired":
+				notice.ExpiresAt = time.Now().Add(-time.Second)
+				store.notices = []database.ChatMuteNotice{notice}
+			case "unknown":
+				store.err = errors.New("private database diagnostic")
+			}
+			unlock := lockCharacterWork(client.username)
+			retireModeratedWorldSession(store, client.username)
+			unlock()
+			wantRetired := state == "suspension" || state == "unknown"
+			entity := world.GetEntity(client.playerID) // No tick runs in this isolated fixture.
+			if client.retired.Load() != wantRetired || entity == nil || entity.Disconnected != wantRetired || entity.Name != "alice" || entity.PartyID != "party-1" {
+				t.Fatal("current restrictions or disconnect fence not honored", state, entity)
+			}
+			messages := drainSentMessages(client.send)
+			if !wantRetired {
+				if len(messages) != 0 || getClientByUsername("alice") != client {
+					t.Fatal("mute/reversal/expiry retired gameplay", state)
+				}
+				return
+			}
+			if getClientByUsername("alice") != nil || len(messages) != 1 || messages[0].Type != "world_access_denied" || strings.Contains(string(messages[0].Payload), "private database") {
+				t.Fatal("retirement or public privacy boundary failed", messages)
+			}
+		})
 	}
 }

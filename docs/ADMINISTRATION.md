@@ -32,17 +32,15 @@ or punish a player. Each request rechecks the durable administrator role and
 requires an audit entry; report bodies are not copied into activity history.
 JSON is displayed as text, and the results clear on disconnect or lost access.
 Redact usernames and personal details before sharing a reproduction publicly.
-Use the existing operator report tool for resolution; see the
-[operations handoff](BETA_OPERATIONS.md) for its migration and privacy cautions.
+Use the confirmed report-review controls for resolution; see the
+[operations handoff](BETA_OPERATIONS.md) for migration and privacy cautions.
 
-Local 1.59 preparation adds **Moderation Appeal** to the player's existing report
+Alpha 1.59 adds **Moderation Appeal** to the player's existing report
 form. Players can include a notice/report reference and their explanation; it
 enters this same private queue as an open report. Submission requests review,
 not automatic sanction reversal, and reveals no staff notes or other reports.
-Neither the appeal route, owner status lookup nor the following review controls
-are deployed yet.
 
-The same local preparation lets players select a sender in world, party, guild
+The same release lets players select a sender in world, party, guild
 or whisper chat and open **Player safety**. Block and Ignore retain the existing
 explicit confirmation and server-saved commands. **Report player** opens an
 editable draft with only that selected message; the full conversation is not
@@ -61,7 +59,7 @@ unavailable response. Checking is explicit, with no background polling or
 persistent local reference list. Resolved means the review finished, not a
 promised bug fix or sanction reversal.
 
-Local 1.59 preparation adds a **Report category** filter alongside status:
+Alpha 1.59 adds a **Report category** filter alongside status:
 Player conduct, Moderation appeals, Bug reports and Feature requests. Changing
 a filter clears the old pagination cursor; click **Refresh reports** to load
 the new selection. Pages retain both filters. The server accepts only these
@@ -69,7 +67,7 @@ literal categories and rechecks the current durable admin role for each read.
 Reading or filtering cannot change case status, punish a player or reveal data
 to another player's report-status lookup.
 
-Local 1.59 preparation also adds **Review and resolve report** to each case.
+Alpha 1.59 also adds **Review and resolve report** to each case.
 Enter a private one-line reason, choose **Mark resolved** or **Reopen report**,
 then confirm the displayed report ID and revision. **Keep unchanged** cancels
 without sending a review. Resolving is a case-status decision, not a player
@@ -92,11 +90,12 @@ the latest receipt is exposed in report JSON. The existing report collection
 has no automatic expiration; this work introduces no purge or new retention
 policy. The owner approved temporary chat mutes, required public name changes
 and temporary account suspensions on October 2, with audited, reversible actions.
-Full enforcement is still unpublished; production test sanctions are not
-authorized. Staff coverage and final evidence retention still require owner
-decisions. See the [local review evidence](plans/2026-10-01-release1-59-moderation.md).
+Production test sanctions are not authorized. Staff coverage and final evidence
+retention still require owner decisions. See the
+[release evidence](plans/2026-10-01-release1-59-moderation.md) for candidate and
+deployment status; documentation alone is not proof of publication.
 
-The prepared login screen provides **Account help** after authentication,
+The login screen provides **Account help** after authentication,
 without requiring a character or entry into the world. Players explicitly
 check their public notices or submit an appeal. A required-name-change notice
 also offers **Review name correction**, followed by a separate confirmation
@@ -105,8 +104,42 @@ retains the confirmed request for manual exact retry, never an automatic retry.
 The stored correction changes only the public label, resolves that requirement
 and saves a private receipt. Login, character/save keys, currencies and social
 ownership remain unchanged. Mutes and suspensions are independent. Current
-world/chat/social presentation and suspension enforcement still need integration
-before this becomes a complete deployed workflow.
+public labels update across world tags, social views, auction names and PvP
+displays without changing account keys. Invitations and whispers accept public
+names; quote names containing spaces, for example `/w "Moon Keeper" hello`.
+Existing blocks remain attached to the same account after a correction.
+
+### Moderation decisions and reversals
+
+For a conduct case or appeal, expand **Moderation decision or reversal**.
+Enter the exact original account, then **Check this account**. A report's author
+is not automatically its accused player. Inspect the quoted account, revision
+and notices before choosing a response. The server resolves the immutable
+account ID and rechecks the durable administrator role for every action.
+
+Temporary mutes and suspensions require an explicit duration, at most 30 days.
+A name requirement ends through accepted correction or explicit withdrawal.
+Supply a public explanation and private staff evidence, review the decision,
+then separately confirm. **Keep unchanged** sends nothing. Withdraw only the
+selected notice with a private reason; other restrictions remain in force.
+There are no automatic penalties, permanent bans, new staff roles or role grants.
+
+A mute restricts chat, not gameplay. A suspension or name requirement stops an
+online world session and blocks joining and token resume; normal disconnect
+handling preserves character progress and returns direct-trade escrow. Login
+remains available for notices, correction and appeals. Correcting a name does
+not lift an independent suspension. A failed permission read does not silently
+allow restricted play or expose private diagnostics.
+
+Each decision and reversal stores its state and private receipt atomically.
+An uncertain reply offers manual exact retry; it is not a new decision and does
+not restart an expiry or reinstate a withdrawn restriction. Refresh after a
+conflicting revision. Account receipts are bounded to 256 entries, reserving
+space to withdraw remaining restrictions. No new receipt purge or retention
+policy is introduced. Activity history records admission without allegations;
+the private receipt is the authority for the outcome. A moderation decision
+never automatically resolves its report, and resolving an appeal never
+automatically withdraws a restriction.
 
 ### Staff review boundaries
 
@@ -126,10 +159,10 @@ case rather than overwrite a newer decision. A player can see only their own
 submitted case's type, status and dates, not staff reasons or another case.
 
 Do not use item grants, Gold grants, teleports or role changes as substitutes
-for the still-pending sanction workflow. Staff assignment, operating coverage
+for the confirmed moderation workflow. Staff assignment, operating coverage
 and final retention remain owner decisions. These boundaries
-describe current code and safe review handling, not approved punishment policy
-or a promise of a staffed response deadline.
+describe the approved reversible responses and safe review handling, not a
+promise of a staffed response deadline or an escalation policy for every case.
 
 Under **Character operations**, select an exact account or **Use my account**:
 

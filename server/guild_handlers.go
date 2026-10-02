@@ -169,7 +169,12 @@ func handleMsgGuildInvite(client *Client, message Message) {
 		client.sendError("invalid guild invite payload")
 		return
 	}
-	targetUser, err := db.GetUser(strings.TrimSpace(payload.Username))
+	account, err := db.ResolvePublicPlayerName(payload.Username)
+	if err != nil {
+		client.sendError("player not found")
+		return
+	}
+	targetUser, err := db.GetUser(account)
 	if err != nil || targetUser == nil {
 		client.sendError("player not found")
 		return
@@ -187,7 +192,11 @@ func handleMsgGuildInvite(client *Client, message Message) {
 		client.sendError(err.Error())
 		return
 	}
-	client.sendSystemChat("Guild invite sent to " + targetUser.Username + ".")
+	label := targetUser.PublicName
+	if label == "" {
+		label = targetUser.Username
+	}
+	client.sendSystemChat("Guild invite sent to " + label + ".")
 	if target := activeClientByUsername(targetUser.Username); target != nil {
 		sendGuildState(target)
 	}

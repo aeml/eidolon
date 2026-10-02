@@ -49,7 +49,7 @@ func previewModerationTarget(t *testing.T, c *Client, payload string) string {
 	return string(messages[0].Payload)
 }
 
-func TestAdminChatModerationTargetClosedSchemaAndInactiveProtocol(t *testing.T) {
+func TestAdminChatModerationTargetClosedSchemaAndAuthenticatedProtocol(t *testing.T) {
 	request, err := decodeAdminChatModerationTarget([]byte(validModerationTargetPayload))
 	if err != nil || request.Target != "alice" {
 		t.Fatal(request, err)
@@ -65,11 +65,9 @@ func TestAdminChatModerationTargetClosedSchemaAndInactiveProtocol(t *testing.T) 
 			t.Fatal("invalid target admitted", payload)
 		}
 	}
-	if _, ok := inboundMessagePolicies[MsgAdminChatModerationTarget]; ok {
-		t.Fatal("unapproved target protocol admitted")
-	}
-	if _, ok := messageHandlers[MsgAdminChatModerationTarget]; ok {
-		t.Fatal("unapproved target protocol registered")
+	p, ok := inboundMessagePolicies[MsgAdminChatModerationTarget]
+	if !ok || p.access != accessAuthenticated || p.maxPayloadBytes != 3072 || messageHandlers[MsgAdminChatModerationTarget] == nil {
+		t.Fatal("target preview admission missing")
 	}
 }
 

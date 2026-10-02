@@ -18,6 +18,20 @@ beforeEach(() => {
 });
 afterEach(() => { ui.dispose(); jest.useRealTimers(); });
 
+test('moderation capability requires a current verified status response and resets on disconnect', () => {
+    ui.connectionState('connected');
+    reply({ moderationEnabled: true });
+    expect(ui.chatModerationEnabled).toBe(true);
+    ui.connectionState('disconnected');
+    expect(ui.chatModerationEnabled).toBe(false);
+    ui.connectionState('connected');
+    reply();
+    expect(ui.chatModerationEnabled).toBe(false);
+    ui.refreshAccess();
+    reply({ authorized: false, moderationEnabled: true });
+    expect(ui.chatModerationEnabled).toBe(false);
+});
+
 test('report JSON is private text, paginated, filter-safe and cleared on disconnect', () => {
     ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
     ui.root.querySelector('[data-view="reports"]').click();

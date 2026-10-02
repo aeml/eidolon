@@ -11,6 +11,20 @@ function createUI() {
 }
 
 describe('PvPUI', () => {
+    test('public PvP labels do not change quoted duel consent or ranked identity', () => {
+        const ui = createUI();
+        ui.onDuelRespond = jest.fn();
+        ui.update({ playerNames: { 'player-A': 'Arcanis Dawn' }, challenge: {
+            id: 'challenge-original', requesterId: 'player-A', expiresAt: new Date(Date.now() + 30000).toISOString() } });
+        expect(ui.window.textContent).toContain('Arcanis Dawn challenges you');
+        ui.window.querySelector('[data-pvp-action="Accept:challenge-original"]').click();
+        expect(ui.onDuelRespond).toHaveBeenCalledWith('player-A', 'challenge-original', true);
+        ui.update({ playerNames: { 'player-A': 'Arcanis Dawn' }, match: {
+            mode: 'duel', status: 'active', round: 1, teamA: ['player-A'], teamB: [] } });
+        expect(ui.window.querySelector('.pvp-match-player').textContent).toContain('Arcanis Dawn');
+        ui.updateLeaderboard({ profiles: [{ playerId: 'player-A', name: 'Moon Keeper', rating: 1100 }] });
+        expect(ui.window.textContent).toContain('Moon Keeper · 1100');
+    });
     test('authoritative and leaderboard refreshes preserve disclosures, scroll and the same action focus', () => {
         const ui = createUI();
         ui.update({ queued: 1, queuedSeconds: 20, ratingWindow: 100 });

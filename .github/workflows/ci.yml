@@ -100,7 +100,7 @@ jobs:
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
-          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdminConsoleActualSessionsAndHistoryRestart$' -count=1
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
 
       # Run before the broad suite against the job-owned Mongo service. Other repository
       # tests intentionally leave partial fixture records, not recoverable live
@@ -547,7 +547,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.58.5" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.59.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

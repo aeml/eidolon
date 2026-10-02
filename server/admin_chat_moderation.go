@@ -14,12 +14,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Prepared, deliberately absent from the protocol registry and admission map.
-// Activate only with the approved sanction policy, target preview and action UI.
+// Approved reversible sanctions; admission, preview, owner support and live
+// session retirement are all registered together for this milestone.
 const MsgAdminChatModeration = "admin_chat_moderation"
 
 type adminChatModerationStore interface {
 	ApplyChatModeration(string, primitive.ObjectID, database.ChatModerationRequest) (database.ChatModerationReceipt, error)
+	ModerationAccountUsername(string, primitive.ObjectID) (string, error)
+	OwnModerationNotices(string) ([]database.ChatMuteNotice, error)
 }
 
 var adminChatModerations adminChatModerationStore
@@ -110,11 +112,17 @@ func decodeAdminChatModeration(payload []byte) (adminChatModerationRequest, erro
 	return request, request.Change.Validate()
 }
 
-// The future dispatcher must hold the authenticated actor's character-work
-// lock, as for report review. Do not call from an unfenced background worker.
+// Own ordered actor/target locks, rather than nesting below the actor-only
+// dispatcher. Never call from an unfenced background worker.
 func handleAdminChatModeration(c *Client, msg Message) {
 	result := adminMutationResult{Message: "Moderation is unavailable. Nothing was acknowledged."}
 	if c == nil {
+		return
+	}
+	// This cross-account handler owns its ordered locks, like other admin
+	// mutations. It must never run below the dispatcher's actor-only lock.
+	if err := c.acceptInboundMessage(msg, time.Now()); err != nil {
+		c.rejectAdminAdmission(msg, err.Error())
 		return
 	}
 	defer func() {
@@ -158,6 +166,30 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	if store == nil {
 		return
 	}
+	target, err := store.ModerationAccountUsername(actor, request.AccountID)
+	if err != nil || target == "" || !current() {
+		return
+	}
+	unlock := lockCharactersWork(actor, target)
+	defer unlock()
+	if !authorize() {
+		result.Authorized = false
+		return
+	}
+	for _, account := range []string{actor, target} {
+		if err := recoverAccountAdminOperationsLocked(account); err != nil {
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(account); err != nil {
+			return
+		}
+		if err := recoverAccountBlackjackLocked(account); err != nil {
+			return
+		}
+		if err := recoverAccountAuctionBidsLocked(account); err != nil {
+			return
+		}
+	}
 	// Admission is not a final sanction. The authoritative account write stores
 	// its state and private receipt atomically; history retains no allegations.
 	summary := fmt.Sprintf("Moderation %s requested for account %s, case %s, revision %d; consult the private account receipt for the outcome.",
@@ -177,6 +209,9 @@ func handleAdminChatModeration(c *Client, msg Message) {
 		return
 	}
 	receipt, err := store.ApplyChatModeration(actor, request.AccountID, request.Change)
+	// An uncertain write may have committed. Enforce current state before any
+	// reply; a failed read safely retires world play without declaring a ban.
+	retireModeratedWorldSession(store, target)
 	if errors.Is(err, database.ErrChatModerationConflict) {
 		result.Final = true
 		result.Message = "Moderation changed or the request conflicts with an earlier decision. Refresh before deciding again."
@@ -189,4 +224,17 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	}
 	result.Success, result.Final = true, true
 	result.Message = fmt.Sprintf("Moderation recorded at revision %d. Refresh the account to check its current notices; the case was not automatically resolved.", receipt.Revision)
+}
+
+// Caller holds the target's character-work lock. Read current restrictions,
+// not the historic action in an exact-retry receipt. Login-only support stays
+// available; only an active world session needs escrow-returning retirement.
+func retireModeratedWorldSession(store ownAccountModerationNoticeStore, target string) {
+	if c := getClientByUsername(target); c != nil && c.playerID != "" && currentCharacterConnection(c) {
+		notice, err := newWorldModerationGate(store, time.Now)(c)
+		if notice != nil || err != nil {
+			sendWorldAccessDenied(c, notice, err)
+			cleanupClientLocked(c)
+		}
+	}
 }

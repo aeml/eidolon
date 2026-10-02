@@ -20,7 +20,7 @@ func handleMsgTradingSearch(c *Client, msg Message) {
 		MinLevel: payload.MinLevel, MaxLevel: payload.MaxLevel,
 	})
 
-	resPayload, _ := json.Marshal(results)
+	resPayload, _ := json.Marshal(publicAuctionViews(results))
 	resp := Message{
 		Type:    "trading_list",
 		Payload: resPayload,
@@ -36,7 +36,7 @@ func handleMsgTradingMyAuctions(c *Client, msg Message) {
 	}
 	results := world.Trading.GetPlayerAuctions(c.playerID)
 
-	resPayload, _ := json.Marshal(results)
+	resPayload, _ := json.Marshal(publicAuctionViews(results))
 	resp := Message{
 		Type:    "trading_my_list",
 		Payload: resPayload,
@@ -121,7 +121,7 @@ func handleMsgTradingCreate(c *Client, msg Message) {
 	c.sendSafe(b)
 
 	results := world.Trading.GetPlayerAuctions(c.playerID)
-	resPayload, _ := json.Marshal(results)
+	resPayload, _ := json.Marshal(publicAuctionViews(results))
 	resp2 := Message{
 		Type:    "trading_my_list",
 		Payload: resPayload,
@@ -361,7 +361,7 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 	c.sendSafe(b)
 
 	results := world.Trading.GetPlayerAuctions(c.playerID)
-	resPayload, _ := json.Marshal(results)
+	resPayload, _ := json.Marshal(publicAuctionViews(results))
 	resp2 := Message{
 		Type:    "trading_my_list",
 		Payload: resPayload,
@@ -417,7 +417,7 @@ func handleMsgTradingCancel(c *Client, msg Message) {
 
 	// Refresh My Auctions
 	results := world.Trading.GetPlayerAuctions(c.playerID)
-	resPayload, _ := json.Marshal(results)
+	resPayload, _ := json.Marshal(publicAuctionViews(results))
 	resp2 := Message{
 		Type:    "trading_my_list",
 		Payload: resPayload,

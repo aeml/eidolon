@@ -39,26 +39,28 @@ func policy(access messageAccess, maxPayloadBytes, burst int, window time.Durati
 // unreachable by design, so authentication, payload size, and rate limits
 // cannot be accidentally omitted.
 var inboundMessagePolicies = map[string]messagePolicy{
-	MsgAdminStatus:        policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
-	MsgAdminPlayers:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
-	MsgAdminHistory:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
-	MsgAdminReports:       policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
-	MsgAdminReportReview:  policy(accessAuthenticated, 4<<10, 5, 10*time.Second),
-	MsgAdminGrantGold:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
-	MsgAdminGrantItem:     policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
-	MsgAdminTeleport:      policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
-	MsgGetWardrobe:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgGetEPWallet:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgGetVIPStatus:       policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgGetCosmeticVendor:  policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgBuyCosmetic:        policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgExchangeGoldForEP:  policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgCollectAppearances: policy(accessCharacter, 1<<10, 3, 10*time.Second),
-	MsgSelectAppearance:   policy(accessCharacter, 1<<10, 10, 10*time.Second),
-	MsgRegister:           policy(accessPublic, 8<<10, 5, time.Minute),
-	MsgLogin:              policy(accessPublic, 8<<10, 5, time.Minute),
-	MsgResumeSession:      policy(accessPublic, 4<<10, 10, time.Minute),
-	MsgJoin:               policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
+	MsgAdminChatModeration:       policy(accessAuthenticated, 12288, 5, 10*time.Second),
+	MsgAdminChatModerationTarget: policy(accessAuthenticated, 3072, 5, 10*time.Second),
+	MsgAdminStatus:               policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminPlayers:              policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminHistory:              policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminReports:              policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
+	MsgAdminReportReview:         policy(accessAuthenticated, 4<<10, 5, 10*time.Second),
+	MsgAdminGrantGold:            policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
+	MsgAdminGrantItem:            policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
+	MsgAdminTeleport:             policy(accessAuthenticated, adminMutationPayloadLimit, 5, 10*time.Second),
+	MsgGetWardrobe:               policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgGetEPWallet:               policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgGetVIPStatus:              policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgGetCosmeticVendor:         policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgBuyCosmetic:               policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgExchangeGoldForEP:         policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgCollectAppearances:        policy(accessCharacter, 1<<10, 3, 10*time.Second),
+	MsgSelectAppearance:          policy(accessCharacter, 1<<10, 10, 10*time.Second),
+	MsgRegister:                  policy(accessPublic, 8<<10, 5, time.Minute),
+	MsgLogin:                     policy(accessPublic, 8<<10, 5, time.Minute),
+	MsgResumeSession:             policy(accessPublic, 4<<10, 10, time.Minute),
+	MsgJoin:                      policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
 
 	MsgMove:    policy(accessCharacter, 2<<10, 90, time.Second),
 	MsgJump:    policy(accessCharacter, 2<<10, 12, time.Second),
@@ -181,8 +183,8 @@ func (c *Client) handleMessage(msg Message) {
 	}
 	// Cross-account operations must acquire all work locks in global order,
 	// never nest another account beneath the ordinary actor-only lock.
-	if isAdminMutation(msg.Type) {
-		messageHandlers[msg.Type](c, msg)
+	if handler := messageHandlers[msg.Type]; isAdminMutation(msg.Type) && handler != nil {
+		handler(c, msg)
 		return
 	}
 	// Login/resume acquire the authenticated account's lock after credentials

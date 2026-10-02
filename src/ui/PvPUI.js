@@ -241,7 +241,7 @@ export class PvPUI {
             const challenge = document.createElement('section');
             challenge.className = 'pvp-card pvp-card--challenge';
             const currentChallenge = this.state.challenge;
-            const requester = String(currentChallenge.requesterId || '').replace(/^player-/, '');
+            const requester = this.state.playerNames?.[currentChallenge.requesterId] || String(currentChallenge.requesterId || '').replace(/^player-/, '');
             const label = document.createElement('strong');
             label.textContent = `${requester} challenges you to a duel.`;
             const clock = document.createElement('p');
@@ -290,7 +290,7 @@ export class PvPUI {
                     const row = document.createElement('li');
                     row.className = eliminated.has(id) ? 'pvp-match-player pvp-match-player--eliminated' : 'pvp-match-player';
                     const name = document.createElement('span');
-                    name.textContent = String(id).replace(/^player-/, '');
+                    name.textContent = this.state.playerNames?.[id] || String(id).replace(/^player-/, '');
                     name.title = name.textContent;
                     const status = document.createElement('span');
                     status.textContent = match.status === 'complete' ? 'Finished' : eliminated.has(id) ? 'Eliminated' : 'Standing';
@@ -365,7 +365,7 @@ export class PvPUI {
         for (const [index, entry] of this.leaderboard.entries()) {
             const row = document.createElement('div');
             row.className = 'pvp-leader-row';
-            row.textContent = `${index + 1}. ${String(entry.playerId || '').replace(/^player-/, '')} · ${entry.rating}`;
+            row.textContent = `${index + 1}. ${entry.name || String(entry.playerId || '').replace(/^player-/, '')} · ${entry.rating}`;
             leaderboard.appendChild(row);
         }
         if (!this.leaderboard.length) {

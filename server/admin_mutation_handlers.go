@@ -21,7 +21,7 @@ type adminMutationResult struct {
 }
 
 func isAdminMutation(action string) bool {
-	return action == MsgAdminGrantGold || action == MsgAdminGrantItem || action == MsgAdminTeleport
+	return action == MsgAdminGrantGold || action == MsgAdminGrantItem || action == MsgAdminTeleport || action == MsgAdminChatModeration
 }
 
 // Mutation admission owns the ordered actor/recipient/destination locks itself.
@@ -236,7 +236,10 @@ func (c *Client) rejectAdminAdmission(msg Message, reason string) {
 	}()
 	if c.username != "" {
 		request := adminMutationRequest{}
-		if len(msg.Payload) <= adminMutationPayloadLimit {
+		if msg.Type == MsgAdminChatModeration && len(msg.Payload) <= 12288 {
+			moderation, _ := decodeAdminChatModeration(msg.Payload)
+			request.ID = moderation.Change.ID
+		} else if len(msg.Payload) <= adminMutationPayloadLimit {
 			request, _ = decodeAdminMutation(msg)
 		}
 		if !auditAdminRejectedRequest(c, msg.Type, request, "denied", "Administration admission rejected: "+reason+". Connection closed; no new operation admitted.") {
