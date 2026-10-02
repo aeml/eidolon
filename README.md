@@ -420,18 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.0` (accepted casino closeout interaction pass
-  and isolated QA-artifact privacy correction). The E gate remains open for
-  owner/commercial decisions and human findings; no capacity promise, payment
-  launch or closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.70.0`, exact
-  ee6872c9727fbea97177b833da835dfe79d8dda0, successful CI37043750113 (all ten jobs,
+- Current source version: `Alpha 1.70.1` (accepted direct-trade escrow-edit hotfix, exact `fa414f0b`; all ten CI jobs and independent public checks passed). [Acceptance](docs/plans/2026-10-02-release1-70-1-trade-checks.json) records the release. Offer edits retain selected escrow identity and reject overflow before mutation; this does not certify crash-durable two-account settlement. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Last independently verified live release: `Alpha 1.70.1`, exact
+  fa414f0b288e8ee014d5ce72f7affdca485e1c7f, successful CI37068064995 (all ten jobs,
   including predeploy and live character QA). Public IPv4 frontend/backend
-  identities and database readiness pass; both changed client runtime files
-  match exact publisher output, and the dressed Ilyra GLB matches source.
-  [Acceptance receipt](docs/plans/2026-10-02-release1-70-public.json). Earlier
-  runtime/model receipts retain their scopes; DNS/IPv6, commercial decisions
-  and final art/device/pacing approval remain separate.
+  identities, database readiness, login version, cumulative notes and the
+  dressed Ilyra GLB match the release. Prepared1.71 source remains unpublished.
+  Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
+  decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear
   and weapon motions; accepted `1.58.3` improves batching and body-detail settings,

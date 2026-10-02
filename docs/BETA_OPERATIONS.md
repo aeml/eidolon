@@ -36,8 +36,21 @@ blocked browser storage. [UI checks](plans/2026-10-02-release1-71-password-ui-ch
 use scoped mocked browser sockets; the earlier backend receipt records actual
 disposable Mongo/fresh-process proof separately.
 Forgotten-password recovery still needs an approved ownership/delivery method;
-this form does not provide it. Production remains Alpha 1.70.0.
+this form does not provide it. Production is accepted Alpha 1.70.1.
 Administrators gain no arbitrary reset, ownership or password-reading action.
+
+## Direct-trade escrow-edit hotfix
+
+Accepted1.70.1 plans offer edits before mutating live items or Gold. Keeping
+an offered item needs no empty slot; swaps free the new offer's slot first.
+Removing escrow with no room is rejected rather than silently spilling it during
+an edit. Cancel retains its existing single-return overflow behavior. Ambiguous
+existing item IDs are preserved and rejected, not automatically deleted.
+[Scoped checks](plans/2026-10-02-release1-70-1-trade-checks.json) distinguish this
+offer-edit fix from the still-open crash-durable two-account settlement work
+at1.73. Do not infer historical duplicate counts or purge inventories from it.
+All ten exact-source CI jobs and independent public identity/readiness checks
+passed for fa414f0b/run37068064995. This hotfix is live; full1.73 is not.
 
 ## Player reports and private triage
 
