@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "milestone": "1.72 partial protocol-security review",
+  "status": "prepared, not deployed",
+  "scope": [
+    "Actual read pump uses NextReader plus bounded assembly rather than leaving an incomplete ReadMessage under indefinitely renewable Pong liveness.",
+    "Each started logical message has a fixed ten-second assembly window. An earlier idle deadline still takes precedence; admitted Pongs renew only idle liveness.",
+    "After a complete message, restore the existing idle/Pong deadline rather than granting a fresh idle window for every data message.",
+    "Retain Gorilla's 8192-byte logical-message limit, shared Ping/Pong count/byte budgets, default Ping replies, parsing/permissions and transport-retirement handoff."
+  ],
+  "checks": {
+    "newTestGroups": 4,
+    "deadlineSelection": "Idle-only, fixed assembly and earlier-idle precedence checked.",
+    "actualFragmentedCompletion": "Masked text/continuation frames with an empty continuation and interleaved Ping/Pong preserve the exact payload, default Pong response and next idle read beyond the prior assembly window.",
+    "actualFragmentedSizeLimit": "A payload split across 125-byte wire fragments is rejected by the existing 8192-byte logical-message limit.",
+    "actualReadPumpIncompleteMessage": "An unfinished empty data frame plus empty continuation/Pong pairs every100ms closes after the actual ten-second production assembly window, without exceeding count or byte budgets. Transport-closed state and unregister handoff verified.",
+    "raceCommand": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(Inbound|Protocol|DecodeInbound|MessagePolicy|ClientQueue|Websocket)' -count=1 -timeout=30s",
+    "rootSeconds": 11.746,
+    "passed": true,
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/inbound_message_reader.go": "099d93b06dfcf35049eb3e6fba3859fa0ea6aa828c2d833f6b370a244ed57532",
+    "server/inbound_message_reader_test.go": "4c670492a9b909b9883b23f8968015c2e287c631e2c5e871eeea92c3e31c95fa",
+    "server/network.go": "62cf0fa2e0f2daae84d839a5a26be65fbde13996d6201ede4c8b60a46a187d12"
+  },
+  "limits": [
+    "New actual loopback read-pump/fragment tests, not a new authenticated production-binary/database/session deployment acceptance.",
+    "Fixed assembly duration does not account for each raw continuation frame or provide raw-transport/compression-overhead, HTTP or upstream/global denial-of-service protection.",
+    "Ordinary idle behavior remains governed by the existing Pong policy. No account ban, IP household penalty, currency, gameplay or reward change.",
+    "Worker admission, jump policy, latest-source connected route/load evidence and other roadmap gates remain open. This does not complete milestone1.72."
+  ]
+}

@@ -288,14 +288,12 @@ func (c *Client) readPump() {
 		}
 	}()
 
-	c.conn.SetReadLimit(maxMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	reader := newInboundMessageReader(c.conn, time.Now, pongWait, inboundMessageAssemblyWait)
 	guard := newInboundFrameGuard(time.Now())
 	guard.installControlHandlers(c.conn, time.Now)
 
 	for {
-		_, message, err := c.conn.ReadMessage()
+		_, message, err := reader.readMessage()
 		if err != nil {
 			if !errors.Is(err, errInboundFrameLimit) && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				logWebsocketReadError(err, time.Now())
