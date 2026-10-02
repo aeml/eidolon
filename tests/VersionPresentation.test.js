@@ -7,9 +7,18 @@ const currentVersion = '1.69.0';
 
 test("1.69.0 documents casino-trust without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');
-    const start = html.indexOf('data-version="1.69.0"'), previous = html.indexOf('data-version="1.68.0"');
+    const start = html.indexOf('data-version="1.69.0"'), previous = html.indexOf('data-version="1.68.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["voluntary browser controls","not an account lock","does not reset the timer","never restarts a queue","Saved free spins","first hand's total","not celebrated as a win","Payment integration remains excluded","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.68.1 records QA corrections without weakening movement or exact-item requirements', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.68.1"'), previous = html.indexOf('data-version="1.68.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['actual Idle animation', 'before clicking', 'never a retry', 'pre-input position',
+        'thresholds remain unchanged', 'exact saved item', 'missing item still fails',
+        'permanent Blender-authored wizard outfit', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.68.0 documents VIP-membership without new awards or automatic actions", () => {

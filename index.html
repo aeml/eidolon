@@ -781,6 +781,15 @@
                         <li>No wager rules, odds, RNG, currencies, rewards or account resets change. EP cannot return to Gold or buy player power. Payment integration remains excluded; launch audience/region and commercial review decisions are not approved by this patch. Full prior patch history is preserved below.</li>
                     </ul>
                 </div>
+                <div class="patch-note-entry" data-version="1.68.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.68.1 (reliable movement and saved-item QA)</h3>
+                    <ul>
+                        <li>Movement QA waits for the actual Idle animation before recording a no-movement baseline. A roaming enemy blocking a planned ground ray can trigger bounded target reselection before clicking, never a retry of a failed movement.</li>
+                        <li>Frame sampling starts with the pre-input position and only after the ground-ray checks pass. All movement, camera, acknowledgement and correction thresholds remain unchanged.</li>
+                        <li>Fresh-login loot QA waits up to ten seconds for the exact saved item or stack quantity, because private inventory delivery and world readiness are separate messages. A genuinely missing item still fails.</li>
+                        <li>No movement-speed, combat, reward, membership, EP, payment or account-reset changes. Ilyra retains his permanent Blender-authored wizard outfit. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.68.0">
                     <h3 class="patch-note-entry__title">Alpha 1.68.0 (clear VIP status without replaying exchanges)</h3>
                     <ul>
