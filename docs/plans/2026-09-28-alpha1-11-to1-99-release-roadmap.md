@@ -291,6 +291,11 @@ A short actual four-socket disconnect/forfeit/resume/restart check also passes
 on the race-enabled4ff1d1bd binary and disposable Mongo. Other completion
 workers, outbox-size bounds and wider combat/load evidence remain separate;
 this is not a completed or published security milestone.
+The same arena receipt records a snapshot follow-up: match-update callbacks
+coalesce per connection, defer world reads outside combat locks and recheck
+ownership before presenting fresh private state. Burst, stale-match, takeover
+and closed-admission race checks pass. The earlier actual-match binary retains
+its earlier scope; final connected callback/release acceptance remains separate.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

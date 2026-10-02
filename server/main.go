@@ -840,7 +840,7 @@ func main() {
 	}
 	world.OnPvPResultRecord = recordPvPResult
 	world.OnPvPMatchUpdate = func(match *game.PvPMatch) {
-		go sendPvPMatchState(match)
+		queuePvPMatchState(match)
 	}
 	world.OnPvPMatchStart = func(match *game.PvPMatch) {
 		sendPvPEntry(match)

@@ -41,9 +41,19 @@
     "evidenceDirectories": ["/tmp/eidolon-compat-session-2179281077", "/tmp/eidolon-compat-session-1634368706"],
     "cleanup": "Stopped and removed only the exact inspected task container after completion. Synthetic tmpfs accounts are gone; binary/process-log artifacts retained. No production account/data/service or global Docker cache changed."
   },
+  "snapshotFollowUp": {
+    "preparedParent": "689fc4d2",
+    "scope": "Match-update callbacks request one connection-owned snapshot worker and one pending bit instead of a goroutine per update. Snapshots acquire the existing character-work lock, recheck current ownership and read fresh canonical PvP state, not the callback's old match. Initial admission and completion-result presentation remain separate.",
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(PvPStateWork|ArenaSyncWork|ArenaResultPresentation|PracticeResult|PvPRecovery|ConnectionWork|WebsocketAdmission|CoalescedSave|ShutdownFinal)' -count=1 -timeout=25s",
+    "passed": true,
+    "packageSeconds": 2.363,
+    "newGroups": 3,
+    "evidence": "512 callbacks return with combat/world/character/snapshot locks held, then produce at most two fresh private updates reflecting the latest profile and cleared match. Replacement owner receives its state while the retired connection gets nothing. Missing/closed/unbound recipients and sealed work admission do not execute snapshots.",
+    "limits": "In-process snapshot/lock/ownership proof only. The4ff1d1bd connected match receipt predates this follow-up and is not relabeled as latest-binary callback evidence. No change to earned results or journals."
+  },
   "limits": [
     "One bounded real-match disconnect/resume/restart fixture, not exhaustive PvP, campaign, load, public-proxy or production deployment acceptance. Earlier account/resource receipts retain their source scopes.",
-    "This bounds arena synchronization passes, not total journal size, per-match UI update workers, guild completion or weekly-raid delivery work. Those boundaries remain separate.",
+    "This bounds arena synchronization passes and per-connection update workers, not total journal size, guild completion or weekly-raid delivery work. Those boundaries remain separate.",
     "No 1.72 version promotion, CI publication, player-capacity certification or campaign/pacing acceptance."
   ]
 }

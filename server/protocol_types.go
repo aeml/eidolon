@@ -140,6 +140,9 @@ type Client struct {
 	saveMu            sync.Mutex // Only coordinates requests; never held during character/world/IO work.
 	saveRunning       bool
 	savePending       bool // Another latest-state capture is needed, not a stored snapshot or job queue.
+	pvpStateMu        sync.Mutex
+	pvpStateRunning   bool
+	pvpStatePending   bool // Fresh presentation only; never a reward/persistence queue.
 
 	connectionWorkMu       sync.Mutex
 	connectionWorkUsers    int
