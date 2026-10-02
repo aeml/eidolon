@@ -52,12 +52,21 @@ client award is invented.
   hand counts, hidden dealer card, win presentation and no horizontal overflow.
   The blackjack render was inspected. This is synthetic table state, not an
   actual phone or a connected wager.
+- The ordinary current server binary completed the existing two-player shared
+  Gold round, legal turns, saved payouts and restart exercise in 44.80 seconds
+  (race-package total 45.858 seconds). Both sockets saw the same public cards and
+  dealer; private funding session tokens were absent. This uses real random
+  dealing and normal timers, not the prepared timeout shoe. The first attempt
+  failed the harness identity check because the build commit did not match the
+  executable basename; rebuilding with the required identity fixed the fixture
+  without weakening readiness. The task-owned database container and anonymous
+  volume were removed after both attempts. Production was untouched.
 
 ## Remaining publication checks
 
 Retain the [existing blackjack rules and connected acceptance](2026-09-13-casino-blackjack-rules.md)
 as historical evidence, not proof that the new timeout path was already live.
-Before publication, retain an ordinary connected shared-round exercise, align
-version defaults and cumulative login patch notes, then require exact-source CI
+The ordinary connected shared-round exercise is retained above. Before
+publication, align version defaults and cumulative login patch notes, then require exact-source CI
 and independent public frontend/backend acceptance. Hold'em timeout handling
 belongs to 1.63, not this prepared blackjack change.

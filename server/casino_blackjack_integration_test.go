@@ -177,6 +177,10 @@ func testBlackjackActualSocketsWagersRoundAndPayout(t *testing.T, vip bool) {
 		resourceSend(t, conn, MsgCasino, map[string]any{"action": "bet", "sessionId": sessions[i], "roundId": initial.RoundID, "bet": 100})
 	}
 	accepted := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool { return len(v.Players) == 2 })
+	publicAccepted, _ := json.Marshal(accepted)
+	if strings.Contains(string(publicAccepted), `"seatSession"`) || strings.Contains(string(publicAccepted), sessions[0]) || strings.Contains(string(publicAccepted), sessions[1]) {
+		t.Fatal("private seat session exposed in the funded table")
+	}
 	if vip {
 		if accepted.Gold != 1000 || accepted.Balance != 0 || accepted.Currency != "ep" {
 			t.Fatal("VIP wager changed Gold or did not debit EP exactly once")
@@ -187,11 +191,9 @@ func testBlackjackActualSocketsWagersRoundAndPayout(t *testing.T, vip bool) {
 	// Replay an accepted bet before the real betting deadline: no second debit.
 	resourceSend(t, connections[0], MsgCasino, map[string]any{"action": "bet", "sessionId": sessions[0], "roundId": initial.RoundID, "bet": 100})
 	view := queryBlackjackUntil(t, probes[0], func(v blackjackTableView) bool { return v.Round != nil })
-	if vip {
-		other := queryBlackjackUntil(t, probes[1], func(v blackjackTableView) bool { return v.Round != nil && v.Round.ID == view.Round.ID })
-		if !reflect.DeepEqual(view.Round.Players, other.Round.Players) || !reflect.DeepEqual(view.Round.Dealer, other.Round.Dealer) {
-			t.Fatal("two VIP players did not see the same public cards/dealer")
-		}
+	other := queryBlackjackUntil(t, probes[1], func(v blackjackTableView) bool { return v.Round != nil && v.Round.ID == view.Round.ID })
+	if !reflect.DeepEqual(view.Round.Players, other.Round.Players) || !reflect.DeepEqual(view.Round.Dealer, other.Round.Dealer) {
+		t.Fatal("two players did not see the same public cards/dealer")
 	}
 	if view.Round.Phase == "playing" && (!view.Round.DealerHidden || len(view.Round.Dealer) != 1) {
 		t.Fatal("dealer hole card exposed")
