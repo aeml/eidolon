@@ -3,7 +3,14 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.65.0';
+const currentVersion = '1.66.0';
+
+test("1.66.0 documents EP-wallet without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.66.0"'), previous = html.indexOf('data-version="1.65.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["1,000,000 Gold for 1 EP","never Gold or player power","identify their character","another character","saved request","Cosmetic ownership stays","purchase method","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.65.0 documents slots without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');
