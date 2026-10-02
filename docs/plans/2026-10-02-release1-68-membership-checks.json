@@ -5,6 +5,7 @@
   "originalPreparedSourceVersion": "Alpha 1.62.0",
   "status": "1.68.0 deployed but live gate failed; not accepted",
   "failedPublication": "2026-10-02-release1-68-live-failure.json",
+  "correctedPublication": "2026-10-02-release1-68-1-public.json",
   "originalPreparedCommits": ["69e3b4ef", "bfbead1e"],
   "reconciledCommits": ["6fcf8ed3", "3056cfe7"],
   "scope": [

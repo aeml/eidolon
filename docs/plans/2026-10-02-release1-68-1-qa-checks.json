@@ -1,7 +1,10 @@
 {
   "schema": 1,
   "version": "Alpha 1.68.1",
-  "status": "prepared; new CI and independent public acceptance required",
+  "status": "accepted live",
+  "commit": "53bd461972f6f99ec46e36ccea83f0d7c010c89b",
+  "ciRun": 37031968011,
+  "publicAcceptance": "2026-10-02-release1-68-1-public.json",
   "failedParentCommit": "1edde7ba786d0a8526db99ed19ba081c590d1cd4",
   "failedParentRun": 37024557601,
   "failedParentReceipt": "2026-10-02-release1-68-live-failure.json",
