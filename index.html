@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.70.0</span>
+                    <span class="start-version-row__label">Alpha 1.70.1</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -771,6 +771,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.70.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.70.1 (safe direct-trade offer edits)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Editing an offered stack keeps its exact escrow identity instead of merging it into your bag and accidentally returning items or Gold twice.</li>
+                        <li>Keeping an offered item does not require an empty bag slot. Swapping offers frees the replacement item's slot before returning the old item.</li>
+                        <li>If removing an offered item would overflow your bag, the edit is rejected before changing your items, Gold or confirmations. Make room first; cancelling still returns each escrowed item once through the existing overflow behavior.</li>
+                        <li>Concurrent reward updates are preserved. Ambiguous existing item IDs are rejected without deleting items. No currency, trade limit, reward-rate or account-reset change.</li>
+                        <li>This hotfix does not introduce forgotten-password recovery or claim crash-durable two-account trade settlement. The broader account-security and valuable-operation milestones remain unfinished. Ilyra's permanent outfit and Full prior patch history remain included.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.70.0">
                     <h3 class="patch-note-entry__title">Alpha 1.70.0 (reliable casino controls and complete-floor review)</h3>
                     <p class="patch-note-entry__summary">Finish the venue's interaction pass without silently queuing disconnected clicks or changing the economy.</p>

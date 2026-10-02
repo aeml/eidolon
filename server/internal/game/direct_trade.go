@@ -42,7 +42,12 @@ func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, er
 	}
 	requester := w.Entities[requesterID]
 	target := w.Entities[targetID]
-	if requester == nil || target == nil || requester.Type != TypePlayer || target.Type != TypePlayer || requester.Disconnected || target.Disconnected {
+	if requester == nil || target == nil {
+		return nil, fmt.Errorf("trade player is unavailable")
+	}
+	unlock := lockDirectTradePlayers(requester, target)
+	defer unlock()
+	if requester.Type != TypePlayer || target.Type != TypePlayer || requester.Disconnected || target.Disconnected {
 		return nil, fmt.Errorf("trade player is unavailable")
 	}
 	if requester.InstanceID != target.InstanceID {
@@ -77,6 +82,11 @@ func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 	if err != nil {
 		return nil, err
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if offer.Gold < 0 || player.Gold < 0 || player.Gold > int(^uint(0)>>1)-offer.Gold {
+		return nil, fmt.Errorf("trade funds are unavailable")
+	}
 	if gold < 0 || gold > MaxDirectTradeGold || gold > player.Gold+offer.Gold {
 		return nil, fmt.Errorf("invalid trade gold")
 	}
@@ -87,14 +97,17 @@ func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 	seen := make(map[string]bool, len(itemIDs))
 	items := make([]Item, 0, len(itemIDs))
 	available := make(map[string]Item, len(player.Inventory)+len(offer.Items))
+	sources := make(map[string]int, len(player.Inventory)+len(offer.Items))
 	for _, item := range player.Inventory {
 		if item.ID != "" {
 			available[item.ID] = item
+			sources[item.ID]++
 		}
 	}
 	for _, item := range offer.Items {
 		if item.ID != "" {
 			available[item.ID] = item
+			sources[item.ID]++
 		}
 	}
 	for _, itemID := range itemIDs {
@@ -106,37 +119,33 @@ func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 		if !found {
 			return nil, fmt.Errorf("trade item not found")
 		}
+		if sources[itemID] != 1 {
+			return nil, fmt.Errorf("trade item identity is ambiguous; no items were moved")
+		}
 		if IsChronicleQuestItem(item) {
 			return nil, fmt.Errorf("Chronicle artifacts are soulbound")
 		}
 		items = append(items, cloneItem(item))
 	}
 
-	// Editing an offer first returns its previous escrow, then atomically moves
-	// the validated replacement into server-owned storage.
-	w.returnTradeOfferLocked(player, *offer)
-	if gold > player.Gold {
-		return nil, fmt.Errorf("trade gold changed while editing offer")
-	}
-	// Re-resolve item indices because returning the old offer can fill slots.
-	for i, item := range items {
-		index := -1
-		for slot := range player.Inventory {
-			if player.Inventory[slot].ID == item.ID {
-				index = slot
-				break
-			}
+	// Plan on a private bag. Selected escrow stays in escrow, preserving its ID
+	// even if returning it would merge into another stack. Remove selected bag
+	// items before returning deselected escrow so a full-bag swap can fit.
+	candidate := &Entity{Inventory: cloneItems(player.Inventory)}
+	for slot, item := range candidate.Inventory {
+		if seen[item.ID] {
+			candidate.Inventory[slot] = Item{}
 		}
-		if index < 0 {
-			// Roll back any replacement items already removed.
-			for _, removed := range items[:i] {
-				_ = player.AddItemToInventory(removed)
-			}
-			return nil, fmt.Errorf("trade item changed while editing offer")
-		}
-		player.Inventory[index] = Item{}
 	}
-	player.Gold -= gold
+	for _, item := range offer.Items {
+		if !seen[item.ID] && candidate.AddItemToInventory(cloneItem(item)) != 0 {
+			return nil, fmt.Errorf("make room in your bag before removing offered items")
+		}
+	}
+	// No refund, world loot, confirmation or live inventory mutation preceded
+	// validation. Commit the complete replacement under the actor/world locks.
+	player.Inventory = candidate.Inventory
+	player.Gold = player.Gold + offer.Gold - gold
 	*offer = DirectTradeOffer{Items: items, Gold: gold}
 	trade.ConfirmedA = false
 	trade.ConfirmedB = false
@@ -164,6 +173,8 @@ func (w *World) ConfirmDirectTrade(playerID, tradeID string) (*DirectTrade, bool
 	}
 	playerA := w.Entities[trade.PlayerAID]
 	playerB := w.Entities[trade.PlayerBID]
+	unlock := lockDirectTradePlayers(playerA, playerB)
+	defer unlock()
 	if playerA == nil || playerB == nil || !canReceiveTradeItems(playerA.Inventory, trade.OfferB.Items) || !canReceiveTradeItems(playerB.Inventory, trade.OfferA.Items) {
 		trade.ConfirmedA, trade.ConfirmedB = false, false
 		return trade.copy(), false, fmt.Errorf("recipient inventory is full")
@@ -189,6 +200,8 @@ func (w *World) CancelDirectTrade(playerID, tradeID string) (*DirectTrade, error
 		return nil, err
 	}
 	snapshot := trade.copy()
+	unlock := lockDirectTradePlayers(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID])
+	defer unlock()
 	w.cancelTradeLocked(trade)
 	return snapshot, nil
 }
@@ -201,8 +214,36 @@ func (w *World) CancelDirectTradesForPlayer(playerID string) *DirectTrade {
 		return nil
 	}
 	snapshot := trade.copy()
+	unlock := lockDirectTradePlayers(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID])
+	defer unlock()
 	w.cancelTradeLocked(trade)
 	return snapshot
+}
+
+// World.Mu owns trade membership; actor locks also protect bag/Gold against
+// asynchronous combat rewards and other actor-only work. Consistent ordering
+// avoids opposite participant order between confirm/cancel/disconnect paths.
+func lockDirectTradePlayers(first, second *Entity) func() {
+	if first == second {
+		second = nil
+	}
+	if first == nil || (second != nil && second.ID < first.ID) {
+		first, second = second, first
+	}
+	if first != nil {
+		first.Mu.Lock()
+	}
+	if second != nil {
+		second.Mu.Lock()
+	}
+	return func() {
+		if second != nil {
+			second.Mu.Unlock()
+		}
+		if first != nil {
+			first.Mu.Unlock()
+		}
+	}
 }
 
 func (w *World) tradeParticipantLocked(playerID, tradeID string) (*DirectTrade, *DirectTradeOffer, *Entity, error) {

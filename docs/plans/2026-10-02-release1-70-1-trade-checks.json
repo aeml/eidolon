@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.70.1",
+  "status": "accepted live; exact-source CI and independent public identity checks passed",
+  "releaseCommit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+  "ci": {
+    "run": 37068064995,
+    "url": "https://github.com/aeml/eidolon/actions/runs/37068064995",
+    "status": "completed",
+    "conclusion": "success",
+    "allTenJobsSucceeded": true,
+    "includes": "Client lint/tests/audit, server tests/race, three browser shards, native predeploy QA, QA input validation, Pages deploy, server deploy and live release/character QA. Luna monitored; root independently re-read terminal status and exact head SHA."
+  },
+  "publicAcceptance": {
+    "verifiedAtUTC": "2026-10-02T22:19:32Z",
+    "backend": "Public IPv4 HTTPS healthz reports exact releaseCommit, Alpha1.70.1 and database ready.",
+    "frontend": "Public IPv4 HTTPS release.json reports the same commit/version. Public login label and cumulative1.70.1 safe-direct-trade entry match the release source; checked at22:11:24UTC after deployment.",
+    "ilyra": "Public permanent NPC GLB SHA256 remains010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7. Asset and client runtime were not changed by this hotfix.",
+    "scope": "Exact-source full CI plus independent release/health/login/note/model identity checks. Not a new production trade manipulation, historical dupe cleanup, full crash-durable economy or beta acceptance."
+  },
+  "acceptedBaseline": {
+    "commit": "ee6872c9727fbea97177b833da835dfe79d8dda0",
+    "version": "Alpha 1.70.0",
+    "ciRun": 37043750113,
+    "recheck": "Public IPv4 health reports the exact accepted commit/version and database ready; GitHub reports the baseline run completed successfully."
+  },
+  "sourceFix": "cbf1e03822b4f5550f218da30df401a2db10cd26",
+  "isolatedBackport": "3ed8024a0620e7efc938a0f5c36d693b77017d0f",
+  "changes": [
+    "Plan direct-trade offer edits on an owned bag copy, preserving exact selected escrow identity; only commit bag, Gold and replacement offer after all checks pass.",
+    "Remove replacement bag items before returning deselected escrow. Retained offers need no bag slot; valid full-bag swaps use the freed slot. Rejected overflow creates no loot/refund or confirmation mutation.",
+    "Actor locks cover offer, start, confirm and cancel/disconnect operations, including both actors in stable order, so actor-only rewards cannot race or be overwritten.",
+    "Ambiguous existing item IDs are rejected without deleting items; overflow-prone existing trade funds fail before mutation. No inferred historical dupe cleanup or production-data rewrite.",
+    "Align all client/server/container/deploy/QA version defaults and login label, retaining cumulative patch history. No unfinished1.71/1.72 protocol/account code is included."
+  ],
+  "checks": {
+    "baselineReproduction": "Four new edge-case groups failed on the old runtime: editing escrow beside a mergeable stack, keeping escrow after ordinary pickups fill the bag, rejecting overflow before mutation, and swapping offers without spilling the old item. The mergeable-stack path returned escrow before failing identity lookup, leaving it eligible for a second return.",
+    "fixtureCorrection": "The first post-fix rejection-state assertion compared a copied empty slice with the registry's nil slice. Corrected to compare equivalent owned trade copies; resource, inventory, confirmation and world-loot assertions remain unchanged.",
+    "candidate": "Go1.27.1 direct-trade race groups passed, package2.750s, on the successor candidate before isolated backport.",
+    "backport": "Go1.24.5 go test -race ./internal/game -run '^TestDirectTrade' -count=1 -timeout=30s passed, package3.235s:12 groups including6 new edge/concurrency groups. The concurrency check exchanges the same item30 times while500 actor-only Gold/metadata updates run; exact conservation holds.",
+    "clientRelease": "357 checks across VersionPresentation, AssetVersioning and PagesRuntimeVersioning passed in4.165s. Counts do not certify gameplay or add to earlier overlapping release evidence.",
+    "lint": "Full npm run lint, gofmt and git diff --check passed."
+  },
+  "sourceHashes": {
+    "server/internal/game/direct_trade.go": "b818b7cbdc61f95f0e987908970411304bc745104867821321a65b5455edad42",
+    "server/internal/game/direct_trade_offer_atomic_test.go": "151064b16b80a1a4ff377a7fe818cb6c6a1aa7ec10f6e13f342b7359b8c61e3e"
+  },
+  "limits": [
+    "This closes the in-process offer-edit duplication path; direct-trade escrow/settlement is not yet a crash-durable two-account journal. That full1.73 work remains open.",
+    "No balance, trade limit, quest reward, EP, access, account wipe, payment integration or asset change. Existing ambiguous items are preserved, not silently removed.",
+    "No new live account was created and no production Gold/items were granted or removed during these checks. Connected full-release gates still apply.",
+    "Original user-dirty workspace preserved. The fix was cherry-picked onto the accepted live source rather than deploying the prepared future milestone tree."
+  ]
+}
