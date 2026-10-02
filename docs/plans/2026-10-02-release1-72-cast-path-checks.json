@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 ability input and network path authority",
+  "status": "partial prepared implementation; not versioned or published as 1.72",
+  "baselineEvidence": [
+    "Before the admission check, the isolated Wizard/Fireball/nan-x test failed: the invalid cast was accepted, reduced mana from 200 to 170 and started a 2-second cooldown.",
+    "Before whole-segment network walking admission, the isolated origin-0/doorway-false test failed: the character reached x=30 through a solid gap instead of stopping at x=10. Both endpoints were on valid canonical floors."
+  ],
+  "implementation": [
+    "PerformAbility rejects nonfinite or float32-overflowing coordinates with the existing ability_result channel and reason invalid_target before mana, cooldowns, combo state or effects can change. Finite JSON numbers such as 1e39 are included.",
+    "Network walking through instances uses the existing canonical whole-segment movement guard before metering speed. Internal server position helpers keep their previous endpoint-placement behavior; overworld rock sliding and PvP point constraints remain in place.",
+    "Walls clip and acknowledge the accepted canonical position. Real doorway overlaps remain traversable, including layouts in large offset coordinates."
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1, race detector",
+    "gameCommand": "go test -race ./internal/game -run '^Test(AbilityAdmissionRejectsInvalidCoordinatesBeforeCommit|NetworkWalkingClipsWallCrossingButKeepsRealDoorways|NetworkMovementBudget|NetworkWalkingCannotSetAirborneHeight|MovementBudget|UpdatePlayerMovement|SelectableAbilitiesPreserveDungeonCoordinateContext|SelectableAbility|RockMovement|WoodlandSavedPosition|DungeonSegment)' -count=1",
+    "gameSeconds": 13.087,
+    "negativeAbilityCases": "All 52 selectable skills across all four classes, eight invalid coordinate variants each: 416 isolated cases. Rejections preserve mana, health, cooldowns, cast/combo history, positions, entity count and emitted-event count.",
+    "positiveAbilityCases": "All 52 selectable skills retain committing handler behavior in registered offset dungeon coordinates. This is a coordinate/admission contract, not full encounter, rune or VFX certification.",
+    "networkPaths": "Four origin/doorway combinations prove solid-gap clipping and real-doorway passage at origins 0 and 30000, with ordered acknowledgement.",
+    "retainedMovement": "Prior walking-budget, finite-input, airborne-height, canonical-clamp, rock and 391 saved woodland-position escape checks passed on the combined source.",
+    "dispatchCommand": "go test -race . -run '^Test(AbilityDispatchRejectsFiniteJSONCoordinateOverflow|MoveDispatchRejectsSpeed|TownRecoveryContext|RecoveryContext|DarkRealmReentry|ChronicleInspection)' -count=1",
+    "dispatchSeconds": 3.057,
+    "dispatchCases": "Eight actual JSON/production-dispatch cases cover overflow on both coordinate axes for each class's base ability. Each returns one truthful ability rejection and unchanged mana, cooldowns and entity count. Town recovery, expedition context reset, Chronicle inspection and movement-speed dispatch checks also passed."
+  },
+  "sourceSha256": {
+    "server/internal/game/ability_dispatch.go": "b882a19ea4d770d1efff3199b8e9ba6cc62a8905d4206d2c074ff2a0267bf02d",
+    "server/internal/game/ability_input_authority_test.go": "14fd5e3f0c5a01522beefef416a7d2516d3ac2414608959fe20508446a203231",
+    "server/internal/game/network_walk_path_test.go": "9b5f25689b038b3344dd99779d8cf438987de66e0809b71923259e1c7373d7c1",
+    "server/internal/game/world.go": "b6afded59f99a132ae350ff5fd500707601b4fa3da3642a7a914539263c85b20",
+    "server/ability_input_dispatch_test.go": "a1112af403a1373ca65790d1b4cf5014345153f8725f77efc911b7975b9e6160"
+  },
+  "limits": [
+    "This follow-up closes the endpoint-only canonical walking gap recorded in the earlier walking receipt; that earlier receipt remains historical evidence for its exact source hashes.",
+    "It does not finish jump range/height authority, certify every ability's target/range semantics, or replace connected lag/haste/dungeon route validation. Existing teleporting QA helpers must be made legitimate before publication.",
+    "No live characters, saved stats, host settings, credentials or production services were changed. No new production binary, full campaign, capacity soak, 1.72 deployment or security certification is claimed."
+  ]
+}

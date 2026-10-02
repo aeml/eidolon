@@ -37,6 +37,13 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		return AbilityResult{SkillName: skillName, Reason: "player_not_found"}
 	}
 	result := AbilityResult{SkillName: skillName, Mana: player.Mana}
+	// Coordinates are caller intent, not trusted world state. Reject values
+	// that cannot be replicated before mana, cooldowns, combo state or effects
+	// can change, including finite JSON numbers which overflow the wire's float32.
+	if !replicableMovementNumber(targetX) || !replicableMovementNumber(targetZ) {
+		result.Reason = "invalid_target"
+		return result
+	}
 	if player.State == "DEAD" {
 		result.Reason = "dead"
 		return result

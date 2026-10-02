@@ -144,6 +144,11 @@ cover packet bursts, ordinary/delayed movement, context continuity, invalid
 numbers, geometry fixtures and the client correction contract. This is prepared
 source only: jump/cast authority and connected-route compatibility remain open,
 and none of these isolated checks closes the full security milestone.
+The [cast/path follow-up](2026-10-02-release1-72-cast-path-checks.json) additionally
+rejects invalid ability coordinates before commitment and closes endpoint-only
+network walking through canonical walls, retaining real doorways. All 52 skills'
+invalid-input and offset-dungeon coordinate contracts passed scoped race checks;
+full jump/ability authority and connected release gates are still unfinished.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

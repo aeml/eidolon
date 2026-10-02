@@ -1406,9 +1406,14 @@ func (w *World) updatePlayerMovementAt(id string, x, y, z, rotation float64, sta
 			point := moveAroundRockSolids(w.rockSolids, rockPoint{e.X, e.Z}, rockPoint{x, z}, e.ReplicatedBodyRadius())
 			x, z = point.X, point.Z
 		}
-		if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
-			x = constrainedX
-			z = constrainedZ
+		if context != nil && e.InstanceID != "" {
+			// Endpoint-only admission allows a delayed/forged sample to tunnel
+			// into another room. Use the existing canonical whole-segment guard.
+			if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(e, x, z); ok {
+				x, z = constrainedX, constrainedZ
+			}
+		} else if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
+			x, z = constrainedX, constrainedZ
 		}
 		if constrainedX, constrainedZ, ok := w.constrainPvPPoint(e.InstanceID, x, z); ok {
 			x = constrainedX

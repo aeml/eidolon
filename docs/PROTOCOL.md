@@ -68,6 +68,18 @@ locks are still rejected before changing the acknowledgement or allowance.
 This is a walking guard, not a claim that jump/cast/PvP authority is finished;
 those boundaries and connected route compatibility remain release requirements.
 
+The partial source also checks a network walk's whole canonical dungeon/expedition
+segment using the existing wall guard: another room's valid endpoint cannot grant
+passage through a wall, while real doorway overlaps remain traversable. Internal
+server position helpers retain their previous endpoint-placement contract.
+
+Ability admission rejects nonfinite or float32-overflowing target coordinates
+before spending mana, setting cooldowns, changing combos or emitting effects.
+The existing `ability_result` reply reports `accepted: false` and
+`reason: "invalid_target"`. This also covers finite JSON values such as `1e39`;
+it is input validation, not evidence that every ability's range/target authority
+or an entire encounter has passed connected QA.
+
 ## Build-action receipts
 
 Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on
