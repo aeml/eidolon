@@ -8,10 +8,10 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint October 2
 
-Alpha1.59.0 is accepted live ata58ec61512cc8be22e1b197208eb5ec992dd7bd0,
-CI36978415990, with all ten jobs successful. Independent public IPv4 checks
-verified both identities, database readiness and all 26 changed deployed runtime files;
-the [exact receipt](2026-10-02-release1-59-public.json) supersedes older
+Alpha1.60.0 is accepted live at15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813, with all ten jobs successful. Independent public IPv4 checks
+verified both identities, database readiness, five changed runtime files and Ilyra's retained model/loader;
+the [exact receipt](2026-10-02-release1-60-public.json) supersedes older
 checkpoints below. Four-class models, fitted gear, effects, equipment-type
 tooltips and Ilyra's permanent outfit are delivered. Connected1.59.0
 moderation has scoped disposable socket/restart acceptance and completed CI and
@@ -19,16 +19,14 @@ independent public acceptance. See its
 [release record](2026-10-01-release1-59-moderation.md). Open alpha, saves and
 owner-deferred human pacing/phone checks remain unchanged.
 
-The [prepared 1.60 integration](2026-10-02-release1-60-social-integration.md)
+The [accepted 1.60 integration](2026-10-02-release1-60-social-integration.md)
 adds calendar recruitment navigation, explicit final-boss completion guidance
 and intact XP/Resonance reward receipts. Its local client, race, ordinary-socket
 and desktop/phone-sized browser checks passed. Version defaults and cumulative
-notes are prepared; publication can now follow exact-source 1.59 acceptance. This
+notes are published and public acceptance passed. This
 does not pass population, physical-phone or human-pacing observations.
 
-Alpha1.60.0 is pushed at15df739e6f15e631d0ccff576947ae2d99237296,
-CI36981917813, with Luna monitoring terminal results. It is not accepted until
-the complete CI and independent public checks pass. The
+Alpha1.60.0 completed CI and independent public acceptance. The
 [prepared 1.61 casino world](2026-10-02-release1-61-casino-world.md) passed focused
 client, native seating/guard and server floor/session checks, with cumulative
 notes and version defaults assembled. It must not publish before accepted1.60.
