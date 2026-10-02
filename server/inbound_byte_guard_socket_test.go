@@ -35,7 +35,7 @@ func TestInboundByteGuardActualReadPumpClosesPaddedDataFlood(t *testing.T) {
 	peer.SetReadDeadline(time.Now().Add(5 * time.Second))
 	peer.SetWriteDeadline(time.Now().Add(5 * time.Second))
 	base := `{"type":"unknown_byte_probe","payload":{}}`
-	frame := []byte(base + strings.Repeat(" ", maxMessageSize-len(base)))
+	frame := []byte(base + strings.Repeat(" ", inboundByteTestChunk-len(base)))
 	writerDone := make(chan struct{})
 	go func() {
 		defer close(writerDone)

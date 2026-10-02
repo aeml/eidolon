@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared transport compatibility fix; not published",
+  "parentCommit": "a17961ec04ae6b04ba9659cb041d5727f9ddabc4",
+  "scope": [
+    "Bounded 33KiB complete JSON envelope accommodates every declared payload policy plus envelope overhead.",
+    "32KiB report payload allowance accommodates standard UTF-8 and JSON-escaped control-character reports while preserving the 4000-character server text limit and existing UI limit.",
+    "Other message-specific caps, authentication and rates remain unchanged; byte budgets remain 256KiB burst and 64KiB/second.",
+    "Original 8KiB byte-refill and padded-flood fixtures remain independent of the new envelope ceiling."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(InboundEnvelope|InboundByteGuard|InboundFrameGuard|InboundMessageActualFragmentedSizeLimit|InboundMessageActualFragmentsKeepalivesAndNextIdleRead|InboundMessagePolicies|InboundMessagePolicy|DecodeInbound)' -count=1 -timeout=30s",
+    "result": "Passed with race detector in1.556 seconds, including the added largest-envelope byte-budget fixture.",
+    "policyCoverage": "Each declared policy's exact payload boundary fits a decoded envelope and is admitted with appropriate session state; one extra payload byte is rejected.",
+    "actualSocket": "4000 emoji characters, 4000 JSON-escaped control characters, exact casino/moderation payload boundaries, rejected oversized casino payload followed by another accepted report on the same connection.",
+    "retainedLimits": "Oversized fragmented logical messages still hit the read limit; actual padded data and ping/pong budget floods still close with policy violation. Completed fragmented messages restore idle deadlines.",
+    "workspace": "Isolated task worktree; no production saves, wallets, service, user worktree or Blender scene mutated.",
+    "ilyraPublicRecheck": "Read-only public IPv4 fetch serves the dressed GLB with SHA256 010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7. Public /healthz reports database ready and exact accepted1.70 commit. Blender MCP scene query confirms Ilyra_Fourfold_Archmage.002 with the costume mesh; no regeneration needed."
+  },
+  "sourceHashes": {
+    "server/main.go": "d6d3cb5cee032f838415795fa07b12f6f983adb4933bc88ed44445bba64395dd",
+    "server/protocol_policy.go": "ff86d2345e6a6d60fa581fca6145a88806961286c81ef992816cb41014efccb4",
+    "server/inbound_envelope_size_test.go": "8d5f52d4a4952325f86271f1fbc9bec646a226916402dcb96694ec451fc55e0d",
+    "server/inbound_byte_guard_socket_test.go": "c3aebc6bedc4ae85ed3885422ac5d420d4169b3394865a0d4fe5b3f21b932cac",
+    "server/inbound_frame_guard_socket_test.go": "c89486efa42c666029d28565dc16231a403fe85f1295ad9c6bff29931c05deb8"
+  },
+  "limits": [
+    "Socket fixture uses the production reader/guard/decoder/policy and report validator, not dispatch handlers, Mongo persistence, roulette wager execution or full administration authorization.",
+    "Finite encoded-byte caps remain deliberate: arbitrarily padded JSON or alternate encodings may still exceed them despite a short decoded string. This is not an unlimited report-size guarantee.",
+    "Unchanged ten-second unfinished-message deadline evidence is retained from its earlier receipt rather than repeated.",
+    "Fetched origin/master remains accepted Alpha1.70.0 ee6872c9727fbea97177b833da835dfe79d8dda0. Account recovery, ordered1.71/1.72 assembly and public acceptance remain open; full roadmap goal stays active."
+  ]
+}

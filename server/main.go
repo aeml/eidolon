@@ -39,8 +39,11 @@ const (
 	// Send pings to peer with this period. Must be less than pongWait.
 	pingPeriod = (pongWait * 9) / 10
 
-	// Maximum message size allowed from peer.
-	maxMessageSize = 8192 // Increased for larger payloads
+	// Bound the full JSON envelope, not just its message-specific payload.
+	// Reports can contain 4000 Unicode characters (up to 24KiB when JSON
+	// escapes control characters); every policy must fit below this ceiling.
+	maxInboundPayloadSize = 32 * 1024
+	maxMessageSize        = maxInboundPayloadSize + 1024
 
 	// How long a disconnected player entity lingers in the world for session resume.
 	resumeWindow = 5 * time.Minute

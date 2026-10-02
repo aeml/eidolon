@@ -17,7 +17,7 @@ func TestInboundFrameGuardActualControlFramesShareDataBudget(t *testing.T) {
 			t.Run(exhausted+"/"+map[int]string{websocket.PingMessage: "ping", websocket.PongMessage: "pong"}[control], func(t *testing.T) {
 				count, frame := 300, []byte("{}")
 				if exhausted == "bytes" {
-					count, frame = inboundByteBurst/maxMessageSize, []byte(strings.Repeat("x", maxMessageSize))
+					count, frame = inboundByteBurst/inboundByteTestChunk, []byte(strings.Repeat("x", inboundByteTestChunk))
 				}
 				done := make(chan error, 1)
 				server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

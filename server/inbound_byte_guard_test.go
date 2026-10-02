@@ -5,11 +5,28 @@ import (
 	"time"
 )
 
-func TestInboundByteGuardBoundsLargeFramesBeforeFrameCount(t *testing.T) {
+// Keep the original 8KiB traffic/refill fixture independent of the maximum
+// legal envelope. A larger individual message must not increase byte budgets.
+const inboundByteTestChunk = 8192
+
+func TestInboundByteGuardLargestEnvelopesKeepOriginalBudget(t *testing.T) {
 	now := time.Unix(1000, 0)
 	guard := newInboundFrameGuard(now)
 	for i := 0; i < inboundByteBurst/maxMessageSize; i++ {
 		if !guard.acceptPayload(maxMessageSize, now) {
+			t.Fatal("legal envelope rejected before its byte budget was spent")
+		}
+	}
+	if !guard.acceptPayload(inboundByteBurst%maxMessageSize, now) || guard.acceptPayload(1, now) {
+		t.Fatal("larger envelopes changed the total byte burst")
+	}
+}
+
+func TestInboundByteGuardBoundsLargeFramesBeforeFrameCount(t *testing.T) {
+	now := time.Unix(1000, 0)
+	guard := newInboundFrameGuard(now)
+	for i := 0; i < inboundByteBurst/inboundByteTestChunk; i++ {
+		if !guard.acceptPayload(inboundByteTestChunk, now) {
 			t.Fatal("declared byte burst rejected")
 		}
 	}
@@ -19,11 +36,11 @@ func TestInboundByteGuardBoundsLargeFramesBeforeFrameCount(t *testing.T) {
 	if guard.frames.tokens <= 200 {
 		t.Fatal("test must exhaust bytes, not the old frame-count limit")
 	}
-	if !guard.acceptPayload(maxMessageSize, now.Add(125*time.Millisecond)) || guard.acceptPayload(1, now.Add(125*time.Millisecond)) {
+	if !guard.acceptPayload(inboundByteTestChunk, now.Add(125*time.Millisecond)) || guard.acceptPayload(1, now.Add(125*time.Millisecond)) {
 		t.Fatal("byte refill changed from64KiB/second")
 	}
-	for i := 0; i < inboundByteBurst/maxMessageSize; i++ {
-		if !guard.acceptPayload(maxMessageSize, now.Add(time.Hour)) {
+	for i := 0; i < inboundByteBurst/inboundByteTestChunk; i++ {
+		if !guard.acceptPayload(inboundByteTestChunk, now.Add(time.Hour)) {
 			t.Fatal("long-idle burst did not refill")
 		}
 	}
@@ -37,8 +54,8 @@ func TestInboundByteGuardPreservesMixedTrafficAndConnectionIsolation(t *testing.
 	guard := newInboundFrameGuard(now)
 	//90 movement samples at256B plus60 other actions at512B per second:
 	//53,760B/s, below the sustained budget, including100 seconds after burst.
-	for i := 0; i < inboundByteBurst/maxMessageSize; i++ {
-		if !guard.acceptPayload(maxMessageSize, now) {
+	for i := 0; i < inboundByteBurst/inboundByteTestChunk; i++ {
+		if !guard.acceptPayload(inboundByteTestChunk, now) {
 			t.Fatal("initial heavy request burst rejected")
 		}
 	}
@@ -52,8 +69,8 @@ func TestInboundByteGuardPreservesMixedTrafficAndConnectionIsolation(t *testing.
 		}
 	}
 	other := newInboundFrameGuard(now)
-	for i := 0; i < inboundByteBurst/maxMessageSize; i++ {
-		if !other.acceptPayload(maxMessageSize, now) {
+	for i := 0; i < inboundByteBurst/inboundByteTestChunk; i++ {
+		if !other.acceptPayload(inboundByteTestChunk, now) {
 			t.Fatal("one connection spent another's budget")
 		}
 	}

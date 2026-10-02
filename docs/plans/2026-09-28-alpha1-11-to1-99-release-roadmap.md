@@ -332,6 +332,13 @@ and applied once. This is not a cross-process or overall disk quota, nor crash
 durability before recording. Account recovery remains an owner choice; a
 dependency-free one-time recovery-code option has been proposed, not approved
 or implemented. Ordered publication and broader release gates remain open.
+The [envelope follow-up](2026-10-02-release1-72-envelope-checks.json) resolves
+the former8KiB transport ceiling conflicting with larger report, casino and
+moderation payload policies. The bounded33KiB envelope now fits every declared
+payload, including4000-character Unicode/escaped reports, without relaxing other
+message-specific limits or overall flood budgets. Actual socket validation and
+retained oversize-fragment/flood rejection pass; persistence/game execution and
+final release acceptance remain separate. No live promotion.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

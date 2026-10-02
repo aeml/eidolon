@@ -154,7 +154,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgRecall:  policy(accessCharacter, 1<<10, 5, 10*time.Second),
 	// An authenticated account outside the world may submit only an appeal;
 	// handleReport keeps other categories behind an active character binding.
-	MsgReport:               policy(accessAuthenticated, 16<<10, 2, time.Minute),
+	MsgReport:               policy(accessAuthenticated, maxInboundPayloadSize, 2, time.Minute),
 	MsgReportStatus:         policy(accessAuthenticated, 512, 5, 10*time.Second),
 	MsgModerationNotice:     policy(accessAuthenticated, 256, 5, 10*time.Second),
 	MsgPublicNameCorrection: policy(accessAuthenticated, 1024, 3, time.Minute),

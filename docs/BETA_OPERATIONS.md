@@ -129,6 +129,15 @@ owned; no acceptance is inferred from their deferral.
 
 ## Prepared 1.72 connection-pressure controls — not live yet
 
+The candidate aligns the bounded WebSocket envelope (33KiB) with its largest
+declared payload (32KiB for reports). Unicode/JSON-escaped reports no longer hit
+the former8KiB transport ceiling before their per-message validation. Report text
+still caps at4000 characters server-side and3200 in the UI; authentication,
+message-specific caps/rates,256KiB byte burst and64KiB/s sustained allowance are
+unchanged. [Envelope checks](plans/2026-10-02-release1-72-envelope-checks.json)
+cover real socket reading/validation and retained fragmentation/flood rejection,
+not database persistence, casino wager execution or public acceptance.
+
 The security candidate adds `-http-max-connections` (default1024, range1–8192).
 It caps accepted HTTP/TLS transports, including hijacked WebSockets, before
 creating their HTTP connection workers. Saturation waits in the kernel backlog;
