@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "accepted hotfix retained in unpublished successors",
+  "acceptedRelease": {
+    "commit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+    "version": "Alpha 1.70.1",
+    "ciRun": 37068064995,
+    "acceptanceMetadata": "fb0b8767",
+    "receipt": "2026-10-02-release1-70-1-trade-checks.json"
+  },
+  "mergeHeads": {
+    "prepared1_71": "816ad5c5097ac8e671792618c5b577a5b0756784",
+    "prepared1_72": "94dc1f2d790a5afa6cb7914a0ffd9d3517f22f73",
+    "prepared1_73": "cad4773d41f1d91785204bc878c6572f3016c02c"
+  },
+  "checks": {
+    "ancestry": "git merge-base --is-ancestor confirms exact accepted release source in all three successor heads.",
+    "conflicts": "Manually reconciled README, operations and roadmap conflicts on1.71, preserving the accepted1.70 receipt,1.70.1 acceptance and staged password/recovery limitations.1.72 and1.73 merged cleanly; staged protocol, PvP and vendor work was retained.",
+    "versions": "Release/client/server/container/deploy/QA defaults advance from1.70.0 to1.70.1. Prepared1.72/1.73 keep Go1.27.1; no deployment of those future features.",
+    "sourceIdentity": "Compared to the tested vendor-persistence source f074b446, successor merge changes no src runtime and only four server version-default lines: main, Dockerfile, compose and Linux deploy. Direct-trade and vendor runtime/test hashes still match their focused receipts. Unchanged game, password, protocol, Mongo and native checks were not needlessly repeated.",
+    "clientRelease": "Node24.18.0 release/asset/publisher-version Jest suites passed after merge: VersionPresentation, AssetVersioning and PagesRuntimeVersioning;357 tests,3 suites,3.261s.",
+    "format": "git diff --check passed; all merge markers resolved and worktree clean."
+  },
+  "limits": [
+    "Acceptance metadata is retained locally to carry with the next feature milestone; it is not pushed alone to trigger another unchanged full deployment.",
+    "No future milestone is accepted merely by carrying this hotfix.1.71 recovery,1.72 jump policy and ordered latest-binary/CI/publication gates remain open;1.73 full trade and other valuable-operation recovery remains unfinished.",
+    "Live production is exact fa414f0b/Alpha1.70.1, not any merge or metadata head. Original user-dirty workspace and production accounts/wallets were not edited."
+  ]
+}
