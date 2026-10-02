@@ -1,10 +1,12 @@
 # Alpha 1.61 casino world integration
 
 The casino world milestone preserves the shared Lanternhold venue, separate
-full-size floors, physical seating and normal world return. The prepared change
-closes door-dialogue lifecycle gaps. This is the next publishing candidate after
-accepted 1.59 and 1.60 releases; its own exact-source deployment acceptance is
-still pending.
+full-size floors, physical seating and normal world return. The accepted change
+closes door-dialogue lifecycle gaps. Exact source
+a9792c92d8e06d4734c14a87cd323df27efdd026 passed all ten jobs in CI36985885791.
+Independent public IPv4 HTTPS checks verified both release identities, database
+readiness and both changed client files against exact publisher output.
+The [public receipt](2026-10-02-release1-61-public.json) records technical acceptance.
 
 ## Door and guard improvements
 
@@ -62,6 +64,5 @@ remains the separate source of model and equipment checks.
 
 Blackjack and Hold'em edge cases, slot content, cosmetics and economy trust
 remain the following 1.62 through 1.70 milestones. Physical-phone party comfort
-and campaign pacing remain owner playtest observations. Release defaults,
-cumulative notes, exact CI source and independent public acceptance must be
-recorded when this milestone is published.
+and campaign pacing remain owner playtest observations. Release defaults and
+cumulative notes are published; their acceptance does not close those observations.
