@@ -3,7 +3,8 @@
   "milestone": "1.65",
   "sourceVersion": "Alpha 1.65.0",
   "originalPreparedSourceVersion": "Alpha 1.62.0",
-  "status": "prepared, unpublished",
+  "status": "accepted; all ten exact-source CI jobs and independent public acceptance passed",
+  "publicAcceptance": "2026-10-02-release1-65-public.json",
   "originalPreparedCommit": "1757c9691f64423020b9310e4168765a270382ce",
   "reconciledCommit": "6c282055",
   "changes": [
