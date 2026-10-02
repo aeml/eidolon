@@ -79,6 +79,23 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 	address, stop := compatStartServer(t, binary, uri, 171,
 		"-save-journal-dir", t.TempDir(), "-auth-max-concurrent", "1",
 		"-admin-bootstrap-usernames", bootstrapName)
+	malformed := credentialSocket(t, address)
+	for attempt := 0; attempt < 9; attempt++ {
+		if err := malformed.WriteMessage(websocket.TextMessage, []byte("{")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	malformed.SetReadDeadline(time.Now().Add(5 * time.Second))
+	for {
+		_, _, err := malformed.ReadMessage()
+		if err == nil {
+			continue
+		}
+		if !websocket.IsCloseError(err, websocket.ClosePolicyViolation) {
+			t.Fatal("malformed transport did not receive its policy close", err)
+		}
+		break
+	}
 	for _, reserved := range []string{bootstrapName, strings.ToUpper(bootstrapName)} {
 		conn := credentialSocket(t, address)
 		resourceSend(t, conn, MsgRegister, AuthPayload{Username: reserved, Password: newPassword})
@@ -89,6 +106,9 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 		resourceSend(t, conn, MsgLogin, AuthPayload{Username: username, Password: password})
 	}
 	original := credentialSocket(t, address)
+	if err := original.WriteMessage(websocket.TextMessage, []byte("{")); err != nil {
+		t.Fatal(err)
+	}
 	login(original, name, legacyPassword)
 	oldToken := credentialExpectLogin(t, original)
 	login(original, name+"-different", "not-checked")

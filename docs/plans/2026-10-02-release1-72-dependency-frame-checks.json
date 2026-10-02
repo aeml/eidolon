@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol/gameplay and dependency security",
+  "status": "partial prepared implementation; not versioned, published or accepted as 1.72",
+  "finding": "Official govulncheck1.8.0 symbol-level source scan with Go1.24.5 reported94 called findings spanning31 advisory IDs. These are static call-path findings, not94 distinct vulnerabilities or proof of production exploitation. Advisory prerequisites differ; the WebSocket advisory is marked unreviewed and Mongo's cited finding concerns GSSAPI, not proof that the configured SCRAM connection is exploitable.",
+  "scope": [
+    "Align the module/CI/container/isolated-QA toolchain on Go1.27.1. Patch WebSocket to1.5.3 and retain Mongo's1.x API at1.17.7 rather than introducing a v2 rewrite.",
+    "Patch x/crypto0.56.0, x/text0.41.0 and compress1.18.7, with Go-managed transitive module/checksum updates. The old explicitly required x/net package drops from direct import requirements; resolved crypto transitives retain x/net0.57.0.",
+    "Add module verification and pinned source govulncheck to the existing server CI job, not a new queue or long campaign test.",
+    "Apply a connection-local data-frame budget before JSON parsing:300 initial,200/second refill. Separately budget8 malformed frames over10seconds; excess receives WebSocket policy close1008. Do not log raw invalid frame errors/bodies, ban accounts or key this limit by a forwarding/proxy IP.",
+    "Extend the existing disposable credential fixture to check real malformed-transport closure and ordinary login after one malformed frame. Add fixed public legacy bcrypt vectors, not merely new hashes produced by the upgraded library."
+  ],
+  "dependencyEvidence": {
+    "scanner": "govulncheck v1.8.0",
+    "database": "https://vuln.go.dev",
+    "databaseModified": "2026-10-01T20:24:15Z",
+    "baselineReport": "/tmp/eidolon-1-72-security-tools-Mo7Vpj/go-baseline.json",
+    "finalReport": "/tmp/eidolon-1-72-security-tools-Mo7Vpj/go-final.json",
+    "finalGo": "go1.27.1",
+    "finalCalledFindings": 0,
+    "remainingModuleOnly": "GO-2026-5932: unmaintained golang.org/x/crypto/openpgp has no safe version. It is absent from the compiled server dependency graph. Keep it excluded; use a maintained reviewed alternative if a future authorized feature needs OpenPGP, then rescan. No exclusion hides a reachable finding.",
+    "moduleIntegrity": "go mod verify passed",
+    "npmAudit": {"info": 0, "low": 0, "moderate": 0, "high": 0, "critical": 0, "total": 0},
+    "primaryReferences": [
+      "https://go.dev/doc/security/vuln/",
+      "https://go.dev/dl/?mode=json",
+      "https://pkg.go.dev/vuln/GO-2026-6278",
+      "https://pkg.go.dev/vuln/GO-2026-5327",
+      "https://pkg.go.dev/vuln/GO-2026-5970"
+    ]
+  },
+  "checks": {
+    "frameAndAccountRace": "Three new frame-budget groups plus focused inbound/framing, diagnostic, credential, registration, token, bootstrap/admin-role and real origin-handshake tests passed under Go1.27.1 in1.608seconds. Deterministic1500-frame mixed-stream check is not real-player capacity or latency evidence.",
+    "databasePureRace": "Fixed legacy bcrypt positive/wrong-password/cost vectors and focused schema, wallet/VIP bounds passed in3.737seconds.",
+    "databaseActualRace": "Actual owned Mongo CreateUser, duplicate rejection and correct/wrong/missing-account authentication passed in3.972seconds.",
+    "connectedRace": {
+      "tests": ["TestCredentialActualFreshConnectionsAndTakeover", "TestAdminConsoleActualSessionsAndHistoryRestart"],
+      "seconds": 19.398,
+      "credentialSeconds": 10.19,
+      "administratorSeconds": 8.16,
+      "passed": true,
+      "evidenceDirectories": ["/tmp/eidolon-compat-session-3125807929", "/tmp/eidolon-compat-session-2112189580", "/tmp/eidolon-compat-session-2236423411"]
+    },
+    "binary": {"path": "/tmp/eidolon-1-72-security-tools-Mo7Vpj/server", "sha256": "e97b1b385f3b78937932fcc66904eee199805426811ec0c811001d65f7104efb", "build": "Go1.27.1 race-enabled production binary with exact harness commit=server"},
+    "clientContracts": "351 version and exact-runtime-publisher checks passed in2.403seconds. This prepared tree still correctly inherits1.70 source defaults and cumulative history; no1.72 release label is claimed.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "cleanup": "Removed only exact task-labelled disposable container7171d6f6025f421f04d8873508c2cffdfbe6f60727b05d7379ac149a66c6aedc and its anonymous config volume after label/mount inspection. Its synthetic tmpfs accounts are gone. No production account, data volume, currency, role, log, private environment or global build cache changed.",
+  "remaining": [
+    "Broader movement/cast authority, visibility leaks, secret exposure review and control-frame/global connection floods remain unfinished before closing1.72. This is not a security certification or a complete container/dependency inventory.",
+    "Recovery delivery/verified ownership still requires the owner's explicit decision before1.71 completion. Ordered publication must first accept corrected1.64.1, then the prepared1.65–1.70 milestones individually.",
+    "Future exact-source CI, production-build/container path and independent public acceptance are still required. Current live acceptance remains separate from these local prepared checks."
+  ]
+}

@@ -76,6 +76,27 @@ or replace edge protection; retention and hosting work remain later gates.
 No deployed configuration or old log file is changed by preparation. This is
 not live until the ordered1.72 release and acceptance pass.
 
+The prepared1.72 dependency patch aligns module, hosted CI, container and
+isolated-QA builds on Go1.27.1. It keeps Mongo's existing1.x API, with driver1.17.7,
+WebSocket1.5.3, x/crypto0.56.0, x/text0.41.0 and compress1.18.7 plus their resolved
+transitives. `go mod verify` and pinned govulncheck1.8.0 run inside the existing
+server CI job. The final source scan reported no called vulnerable functions;
+the remaining module-only OpenPGP advisory concerns an unmaintained package not
+in the server's compiled imports. Do not introduce that package; select a
+maintained alternative and rescan if such a feature is ever authorized. This
+does not certify that every library, container, runtime path or secret is safe.
+
+The prepared WebSocket read-pump guard admits an initial300 data frames and
+refills200/second, before JSON parsing. A separate initial8 malformed frames
+refills over10seconds; excess closes that transport with policy code1008.
+Individual message authentication, payload and rate rules still apply. A single
+malformed frame does not ban an account, consume another connection's budget
+or replace the normal login/reconnect flow. Raw malformed bodies/errors are
+no longer copied into the general server log. These are connection-local data
+frame limits, not a control-frame/global-connection flood solution; ping/pong,
+edge protection and realistic high-latency/capacity validation remain separate
+unfinished protocol/operations checks.
+
 Structured administration history is stored separately from server logs. Session
 events are journaled under `logs/character-saves/admin-activity/` before normal
 login/resume acknowledgement and synced to Mongo in batches every5seconds.

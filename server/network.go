@@ -289,6 +289,7 @@ func (c *Client) readPump() {
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	guard := newInboundFrameGuard(time.Now())
 
 	for {
 		_, message, err := c.conn.ReadMessage()
@@ -299,9 +300,19 @@ func (c *Client) readPump() {
 			break
 		}
 
+		now := time.Now()
+		if !guard.acceptFrame(now) {
+			c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Incoming message limit exceeded"), now.Add(writeWait))
+			return
+		}
 		msg, err := decodeInboundMessage(message)
 		if err != nil {
-			log.Println("invalid inbound frame:", err)
+			// Do not write raw decode errors/body fragments to the general log.
+			// Repeated malformed frames have their own transport budget.
+			if !guard.acceptMalformed(now) {
+				c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Malformed message limit exceeded"), now.Add(writeWait))
+				return
+			}
 			continue
 		}
 

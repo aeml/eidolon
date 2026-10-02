@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.24.5
+ARG GO_VERSION=1.27.1
 FROM golang:${GO_VERSION}-alpine AS builder
 
 WORKDIR /src
