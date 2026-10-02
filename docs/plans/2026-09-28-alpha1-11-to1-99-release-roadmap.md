@@ -165,6 +165,13 @@ identities/readiness, both changed runtime publisher files and Ilyra's outfit.
 Casino connection feedback and the isolated QA-artifact privacy backport are
 live; owner/commercial and human E-gate findings remain separate.
 1.71 account-security work is partial, not a completed milestone.
+The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
+adds current-password proof, shared hash/rate bounds, compare-and-set credential
+replacement and resume-token rotation for the authenticated owner only. Login
+proof and resume consumption are serialized against credential changes. Actual
+disposable-Mongo concurrency/data-preservation and fresh connected-process
+checks pass. The player-facing form, safe recovery-method decision/workflow and
+ordered version/notes/publication remain unfinished; this is not live.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

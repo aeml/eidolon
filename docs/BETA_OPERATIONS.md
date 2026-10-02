@@ -16,10 +16,24 @@ payment integration or new infrastructure purchase.
 | Report retention, backup retention and recovery objectives | Await explicit decisions. Existing technical defaults are not a published policy. |
 | Beta channel label and announcement | Keep open Alpha until the near-completion CB go/no-go. |
 
+## Prepared 1.71 password-change backend — not live yet
+
+The candidate accepts a current-password-proved change only for its authenticated
+connection's account, with the same new-password limits as registration and
+shared per-account/concurrency bounds. Its conditional Mongo update replaces
+only the observed password hash. Success rotates the resume token; uncertain
+database acknowledgement disables resume until another login rather than
+promising rollback or replaying credentials. Login/resume handoffs are serialized
+with the change. [Backend checks](plans/2026-10-02-release1-71-password-checks.json)
+include actual disposable-Mongo data preservation and fresh-process sockets.
+There is not yet a player-facing form or approved account-recovery workflow.
+Administrators gain no arbitrary reset, ownership or password-reading action.
+
 ## Player reports and private triage
 
 Players can open **Report Bug / Feature** in the game menu, select Bug Report,
-Feature Request or Player Report, then submit up to4000 characters. Confirmation
+Feature Request or Player Report, then type up to3200 characters; the server caps
+the complete text, including optional context, at4000 characters. Confirmation
 and a report ID follow successful server persistence; a failed submission is not
 a queued ticket. A Player Report does not automatically punish its subject.
 Include the displayed version, approximate time, realm and reproduction steps.

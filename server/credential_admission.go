@@ -48,7 +48,7 @@ func newCredentialWorkGate(concurrency int) *credentialWorkGate {
 // does not consume the account's retry allowance. Admission is RAM-only and
 // preserves exact-case usernames and the existing five-per-minute policies.
 func (g *credentialWorkGate) begin(kind, username string, now time.Time) (func(), error) {
-	if kind != MsgLogin && kind != MsgRegister {
+	if kind != MsgLogin && kind != MsgRegister && kind != MsgChangePassword {
 		return nil, errCredentialsBusy
 	}
 	select {

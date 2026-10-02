@@ -142,6 +142,7 @@ const (
 	MsgJoin               = "join"
 	MsgLogin              = "login"
 	MsgRegister           = "register"
+	MsgChangePassword     = "change_password"
 	MsgMove               = "move"
 	MsgJump               = "jump"
 	MsgQAAnimationReady   = "qa_animation_ready"

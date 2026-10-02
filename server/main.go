@@ -262,6 +262,13 @@ func issueResumeToken(username string, owner *Client) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	installResumeToken(username, owner, token)
+	return token, nil
+}
+
+// Internal only: callers validate the owner and generate a fresh CSPRNG token
+// before any credential mutation. No client-provided token is installed here.
+func installResumeToken(username string, owner *Client, token string) {
 	resumeTokensMu.Lock()
 	defer resumeTokensMu.Unlock()
 	// Revoke old token
@@ -274,11 +281,30 @@ func issueResumeToken(username string, owner *Client) (string, error) {
 	}
 	resumeTokens[token] = entry
 	resumeByUser[username] = token
-	return token, nil
 }
 
-// validateAndConsumeResumeToken validates the token and, if valid, removes it
-// and returns the associated username. Returns ("", false) on any failure.
+func revokeAccountResumeToken(username string) {
+	resumeTokensMu.Lock()
+	defer resumeTokensMu.Unlock()
+	if old := resumeByUser[username]; old != "" {
+		delete(resumeTokens, old)
+		delete(resumeByUser, username)
+	}
+}
+
+// Resolve the account without consuming first; dispatch revalidates/consumes
+// only under that account's handoff lock, against password changes and rotation.
+func resumeTokenAccount(token, authenticatedUsername string) (string, bool) {
+	resumeTokensMu.Lock()
+	defer resumeTokensMu.Unlock()
+	entry := resumeTokens[token]
+	if entry == nil || (authenticatedUsername != "" && entry.username != authenticatedUsername) || resumeTokenExpired(entry, time.Now()) {
+		return "", false
+	}
+	return entry.username, true
+}
+
+// validateAndConsumeResumeToken validates and consumes a single-use token.
 func validateAndConsumeResumeToken(token, authenticatedUsername string) (string, bool) {
 	return validateAndConsumeResumeTokenFor(token, authenticatedUsername, time.Now())
 }

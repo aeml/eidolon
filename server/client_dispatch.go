@@ -60,6 +60,13 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		defer done()
+		// Verify under the account handoff lock: an old-password comparison
+		// must not finish before a password change and acquire ownership after it.
+		unlockCharacter := lockCharacterWork(payload.Username)
+		defer unlockCharacter()
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
 		success, err := db.Authenticate(payload.Username, payload.Password)
 		done() // Hydration, activity storage and takeover do not occupy hash slots.
 		if err != nil {
@@ -70,8 +77,6 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Invalid credentials")
 			return
 		}
-		unlockCharacter := lockCharacterWork(payload.Username)
-		defer unlockCharacter()
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
@@ -848,7 +853,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		username, ok := validateAndConsumeResumeToken(payload.Token, c.username)
+		username, ok := resumeTokenAccount(payload.Token, c.username)
 		if !ok {
 			c.sendError("Session token invalid or expired. Please log in again.")
 			return
@@ -860,6 +865,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		unlockCharacter := lockCharacterWork(username)
 		defer unlockCharacter()
 		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		if _, ok := validateAndConsumeResumeToken(payload.Token, c.username); !ok {
+			c.sendError("Session token invalid or expired. Please log in again.")
 			return
 		}
 		sessionsMu.Lock()
