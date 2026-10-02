@@ -158,7 +158,12 @@ Alpha1.69.0 is independently accepted at
 Its [public receipt](2026-10-02-release1-69-public.json) records matching
 identities/readiness, all six changed runtime publisher files and Ilyra's outfit.
 Voluntary browser limits are not account exclusion or commercial approval.
-Prepared1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
+Alpha1.70.0 is independently accepted at
+ee6872c9727fbea97177b833da835dfe79d8dda0, CI37043750113 (all ten jobs).
+Its [public receipt](2026-10-02-release1-70-public.json) records matching
+identities/readiness, both changed runtime publisher files and Ilyra's outfit.
+Casino connection feedback and the isolated QA-artifact privacy backport are
+live; owner/commercial and human E-gate findings remain separate.
 1.71 account-security work is partial, not a completed milestone.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
 time, bounds retained lag credit, acknowledges denied predictions, and keeps

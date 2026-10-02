@@ -1,9 +1,12 @@
 {
   "version": "Alpha 1.70.0",
-  "status": "prepared; unpublished, E gate not declared complete",
+  "status": "accepted release; E gate not declared complete",
+  "commit": "ee6872c9727fbea97177b833da835dfe79d8dda0",
+  "ciRun": 37043750113,
+  "publicAcceptance": "2026-10-02-release1-70-public.json",
   "preparedPredecessor": "40499c5f",
   "originalLiveBaseline": "Alpha 1.61.0; see 2026-10-02-release1-61-public.json. The installed 1.62.0 failed its final live gate; 1.62.1 replacement must pass before any subsequent version publishes.",
-  "lastAcceptedLive": "Alpha 1.69.0, exact5f62945c1d3c8a977b8d179d91252d8739906f4b, CI37037866734; see 2026-10-02-release1-69-public.json. Earlier failed gates retain their original records.",
+  "lastAcceptedLive": "Alpha 1.70.0, exactee6872c9727fbea97177b833da835dfe79d8dda0, CI37043750113; see 2026-10-02-release1-70-public.json. Earlier failed gates retain their original records.",
   "changes": [
     "Isolated QA-artifact privacy correction from staged security: suppress automatic credentialed recordings, sanitize bounded compressed HTML report data and fail closed on unsupported archives/video. Full protocol/account-security work is excluded.",
     "All casino sends require an open socket and respect a NetworkManager refusal, rather than silently leaving blackjack/poker UI pending after an unsent click.",
@@ -48,7 +51,7 @@
     "publication": "Accepted 1.69 predecessor first; new exact-source CI and independent public verification required. E owner/commercial and human gates remain separate."
   },
   "openExitEvidence": [
-    "Publish and independently accept every ordered 1.62.1–1.70 exact-source release. Prepared versions are not live accepted milestones.",
+    "Ordered 1.62.1–1.70 releases are independently accepted; preserve their exact-source evidence and failed-gate history without treating unshipped future milestones as live.",
     "Record owner launch audience/regions and commerce direction. No payment code, new alpha access policy, legal conclusion or provider approval is assumed.",
     "Keep actual capacity evidence, prepared-avatar rendering and human enjoyment/pacing/phone findings separate. Deferred owner playtests remain deferred.",
     "The roadmap's E checklist stays unchecked until these remaining dependencies are resolved. No new long campaign or crowded connected run was started."
