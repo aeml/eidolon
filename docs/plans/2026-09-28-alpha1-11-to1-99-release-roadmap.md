@@ -314,8 +314,15 @@ records original completion time/season and unique recipients' server-owned
 guild identities instead of querying later membership. Repeat crystal repairs
 no longer require story-quest advancement to count as guild clears. Focused
 death/repair handoff tests and actual Mongo quarter/replay checks pass. The
-durable completion journal and shared bounded consumer remain the next task;
-this capture layer alone does not fix dropped writes or worker admission.
+capture layer alone did not fix dropped writes or worker admission.
+The subsequent [guild-clear replay follow-up](2026-10-02-release1-72-guild-clear-replay-checks.json)
+adds a private immutable disk outbox before replay and one shared bounded worker,
+with partial-group/lost-acknowledgement recovery and startup/shared-volume checks.
+Actual disposable-Mongo reopen/retry evidence passes without changed counts or
+season. Reader-only compatibility is also backported and checked in the staged
+1.71 predecessor so ordered rollback can preserve the new outbox. Local-write
+failure is reported, not called durable; total disk growth, mirror transactionality
+and final connected/public acceptance remain separate. No live promotion.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

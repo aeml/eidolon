@@ -159,13 +159,23 @@ admission pending; periodic recovery retries. Startup drains healthy backlogs in
 bounded batches before logins, and still refuses real storage/replay failures.
 [Arena backlog checks](plans/2026-10-02-release1-72-arena-batch-checks.json)
 include actual disposable-Mongo newer-before-older replay. These limits do not
-bound total retained disk receipts or all IO time. Guild leaderboard completion
-handoff remains unbounded/unretried and must not be described as covered here.
+bound total retained disk receipts or all IO time.
 The [guild-clear capture layer](plans/2026-10-02-release1-72-guild-clear-capture-checks.json)
 now retains original completion time/season and the server-owned identities of
 unique reward recipients; repeat repair clears count without advancing a story
-quest. It is not yet a durable handoff, bounded consumer or transactional proof
-of database membership at the exact kill time.
+quest. It is not a transactional proof of database membership at the exact kill time.
+The [guild-clear replay layer](plans/2026-10-02-release1-72-guild-clear-replay-checks.json)
+records qualifying clear receipts under `save-journal-dir/guild-clears` before
+requesting one shared consumer. Replay processes at most8 receipts/5 guild groups
+each per pass; partial commits and acknowledgement failures retain the immutable
+receipt. Startup retries one batch, then periodic recovery; lagging leaderboards
+do not block character logins. Corruption stays for operator review, not deletion.
+The staged1.71 predecessor carries reader-only directory compatibility and must
+be accepted before1.72 creates this folder. Do not use1.70 as a direct rollback
+target for that newer journal layout. Preserve the private outbox in the durable
+volume/backup. Before a successful local write, the clear is not crash durable;
+write failure is explicitly reported. Overall disk growth and operator repair/
+retention remain separate from this bounded decoder/consumer.
 
 The candidate also bounds ordinary headers, body reads, writes and idle
 keepalives, and upgrade-handshake writes. Active game sockets retain their own

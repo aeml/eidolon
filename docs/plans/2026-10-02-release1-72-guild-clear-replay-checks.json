@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared and unpublished; guild completion disk handoff and bounded replay implemented",
+  "captureParent": "cdaecf83",
+  "runtimeSourceCommit": "a9c922b83cf3423610597bbc00c2a96704e92a9e",
+  "mergedSourceCommit": "a05a755ff0578c8bf303a5e433d048ca22da0278",
+  "checkedAt": "2026-10-02T19:57:43Z",
+  "scope": [
+    "Qualifying server-produced clears write one immutable checksummed private receipt per instance before requesting replay. Each bounded receipt preserves captured guilds/counts, original time/season, difficulty, level and duration; no wallets, auth payloads or later membership lookup.",
+    "New journal files are0600 and new directories0700 on the existing durable save volume; existing directory permissions are not silently changed. Hashed filenames, atomic temporary-write/fsync/rename/directory-sync, identical retries and conflict rejection preserve original results. Decoding is limited to32KiB per regular file and an explicit1–100 receipt batch; directory reads use32-entry chunks.",
+    "Completion and periodic recovery share one worker and one pending bit. A pass reads at most9 receipts and commits at most8, retaining an honest pending marker; rejected admission or failed/partial writes/acknowledgements leave receipts for later recovery.",
+    "Startup makes one bounded leaderboard pass and leaves stale leaderboard records for periodic/operator recovery without granting stale characters, wallets or permissions. Corruption is not deleted or hidden to force successful replay.",
+    "Removed post-clear guild-state broadcasts, which carried no leaderboard data and repeatedly queried members. The actual leaderboard still refreshes through its existing requested server snapshot.",
+    "Filesystem recording failure is returned/logged and privately reported to actual run participants, without claiming secured tracking. Gameplay rewards remain on their separate existing persistence path."
+  ],
+  "checks": {
+    "focusedRace": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database ./internal/game -run '^Test(GuildClear|CharacterJournalDelegatesGuild|CharacterAndArenaJournals|CharacterJournalRejectsImpostor|DungeonGuildSnapshot|CrystalGuildClear|GuildClearCapture|WeeklySyncWork|ArenaSyncWork)' -count=1 -timeout=30s",
+      "passed": true,
+      "serverPackageSeconds": 5.665,
+      "databasePackageSeconds": 6.830,
+      "gamePackageSeconds": 1.555,
+      "scope": "Restart/private-file/immutable-conflict checks;43 receipts drained in batches of3; checksum/identity/size/symlink/unknown-entry failure retains evidence; invalid/duplicate/inconsistent groups rejected; simulated consumer failure, partial group and lost acknowledgement replay;512 requests produce one active consumer plus one follow-up; actual disk receipt remains through sealed admission while world/entity/account locks are held; failed recording does not request/acknowledge; shared-volume recovery and prior capture/weekly/arena regressions."
+    },
+    "disposableMongoRace": {
+      "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_ARENA_TEST_MONGO_URI=mongodb://127.0.0.1:32857 GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(GuildClearActualMongoReopenPartialCommitAndAckRetry|GuildClearActualMongoRetainsOriginalSeasonAndEarliestClear)$' -count=1 -timeout=40s",
+      "passed": true,
+      "serverPackageSeconds": 1.497,
+      "databasePackageSeconds": 1.336,
+      "scope": "Actual first-guild commit followed by an injected second-guild failure; reopen the disk journal, commit both through production replay, inject lost acknowledgement, retry. Both original counts/duration/time/Q3 season remain and the confirmed receipt is removed. The low-level quarter/earliest/fastest/mismatched-season regression also passes.",
+      "container": "4840c4c203d4b3a2e04dd065f3c240ffdbc4ed65f182b878a63483b255d63a25",
+      "isolation": "Verified eidolon.qa.scope=guild-clear-replay-20261002, Mounts=[], loopback-only port32857,512MiB/32MiB tmpfs,1GiB memory and oneCPU. Ping confirmed before testing.",
+      "cleanup": "Stopped and removed the exact inspected test container. Synthetic tmpfs records are gone; production data/services and global Docker cache untouched."
+    },
+    "orderedPredecessorCompatibility": {
+      "compatibilityCommit": "37eaba6e8d40542c1cfb4e7b49ece3a441413624",
+      "backportedToPrepared171": "e79b8da1c012e88571aecbd9a3e2607b275cff3e",
+      "command": "GOTOOLCHAIN=go1.24.5 go test -race ./internal/database -run '^TestCharacter(JournalDelegatesGuildClearDirectoryButRejectsImpostors|AndArenaJournalsShareVolumeAcrossRestart|JournalRejectsImpostorArenaEntries)$' -count=1 -timeout=20s",
+      "passed": true,
+      "packageSeconds": 1.055,
+      "scope": "Reader-only delegation ships in the staged1.71 predecessor before1.72 creates guild-clears. Actual directories are accepted, file/symlink impostors rejected; old character/arena volume behavior retained. No guild journal writer, newer dependencies or auth behavior was copied into1.71. No publication/rollback operation performed.",
+      "predecessorReaderSha256": "fc78380ce88732965f8b6159631c79a46e538341af376051c0507a768940a33f",
+      "predecessorTestSha256": "21cc0dde2d7ed3e1bc0551bdaf057f11a9e66de3450c28ccb5b391ca486d0149",
+      "merge": "Merged staged1.71 compatibility ancestry into1.72; git diff a9c922b8 HEAD -- server is empty. Reused runtime evidence rather than repeating unchanged tests."
+    },
+    "diffCheck": "passed",
+    "sourceHashes": {
+      "server/main.go": "83e92e3f81f1d560fdd645e8fc136997ee842d726df354be7f084fb7abd4ab4d",
+      "server/guild_handlers.go": "5870599fa9a2440d36cc80db1a913021a4b40a6786f7c7f25fb91f8a24cb078b",
+      "server/guild_clear_sync.go": "a1dab2c4eb658646c70d9745c7e8e7301d45e704e429cb1a237f52eaa98582a7",
+      "server/guild_clear_sync_test.go": "72861ac0b9ed95fe1ed21534a434abfc3a5f8fc8da3985cf451bfe446427c90c",
+      "server/internal/database/guild_clear_journal.go": "6ace7e9d44a6571812ae8853ae6a048a5052ca53b6e8b4d1993d865ed91e8340",
+      "server/internal/database/guild_clear_journal_test.go": "d64471bce087d2176166c65605bb84832855282e3c875adf040bf259d129524b",
+      "server/internal/database/guild_clear_volume_test.go": "700ef26c83698feb7db032500466fcbb3aa3fc41a02860bfbd0df70a4ccb5742",
+      "server/internal/database/character_journal.go": "fc78380ce88732965f8b6159631c79a46e538341af376051c0507a768940a33f",
+      "server/internal/database/character_journal_test.go": "79a728402f71a29a4de78b19d898028cadefc665aeec5172475270cbd71bd4d5"
+    }
+  },
+  "limits": [
+    "The initial completion is not crash durable before its filesystem write succeeds. A failed local write is reported but not called secured or silently added to an unbounded RAM queue. Total journal disk growth and operator repair/retention remain broader persistence work.",
+    "Membership remains the recorded server-owned world mirror at reward/repair credit, not a cross-store exact-kill transaction. Earlier capture receipt retains that limitation.",
+    "Direct journal/database recovery, not a latest connected application binary, full four-player dungeon clear, production outage or capacity certificate. Latest integrated/release checks and ordered publication remain required.",
+    "The reader compatibility must be deployed in1.71 before1.72 writes this child directory. Earlier1.70 does not support that new directory; it is not claimed as a direct rollback target. Preserve the outbox with the durable volume/backup, not an ephemeral image directory.",
+    "Account-recovery choice, remaining protocol/resource boundaries and complete1.71/1.72 assembly/CI/public acceptance remain open. Production stays accepted Alpha1.70.0; the full roadmap goal remains active."
+  ]
+}
