@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.59.0, exact a58ec61512cc8be22e1b197208eb5ec992dd7bd0,
-CI36978415990. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness and all 26
-changed deployed client runtime files. Earlier receipts retain distinct runtime and model
+baseline is Alpha 1.60.0, exact 15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness, all five
+changed client runtime files and Ilyra's retained model/loader. Earlier receipts retain distinct runtime and model
 checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-59-public.json).
+[acceptance receipt](2026-10-02-release1-60-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -32,7 +32,7 @@ retain the evidence and failed-candidate history. The previous candidate's
 browser failures prevented its deployment; the corrected candidate passed CI
 and independent public acceptance. Final modern-art approval, crowd performance
 and human-playtest gates stay open. The subsequent 1.59 moderation workflow is
-now accepted; 1.60 is prepared, not declared shipped. The separate
+now accepted; 1.60 also passed complete CI and public acceptance. The separate
 [accepted 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
 packages the rendering and body-detail settings work below without including
 unpublished moderation code. Version defaults and cumulative notes are aligned;
@@ -101,14 +101,14 @@ are documented; staffing coverage and final retention remain owner decisions.
 All ten CI jobs and independent public deployment acceptance passed, allowing
 publication of 1.60. The [release receipt](2026-10-02-release1-59-three-responses.json) preserves historical
 preparation evidence, scoped checks and presentation limits.
-The [prepared 1.60 closeout](2026-10-02-release1-60-social-integration.md)
+The [accepted 1.60 closeout](2026-10-02-release1-60-social-integration.md)
 connects the existing calendar, recruitment and reward guidance without automatic
 party consent, new payouts or another queue. Local client, race, ordinary-socket
-and desktop/phone-sized browser checks passed. Version and notes are prepared;
-it is not published. The S gate's real-player population and cadence observations
+and desktop/phone-sized browser checks passed. Version and notes are published.
+The S gate's real-player population and cadence observations
 remain open for stabilization; publishing this code cannot certify them.
-The 1.60 candidate is pushed at15df739e6f15e631d0ccff576947ae2d99237296,
-CI36981917813; deployment acceptance remains pending. The
+Alpha 1.60 is accepted at15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813. The
 [prepared 1.61 casino world](2026-10-02-release1-61-casino-world.md) closes stale
 door/session actions and clarifies locked VIP entry, preserving the complete
 shared venue and physical seating. Focused local checks passed; publication

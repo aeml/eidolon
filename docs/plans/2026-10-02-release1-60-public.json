@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.60.0",
+  "commit": "15df739e6f15e631d0ccff576947ae2d99237296",
+  "ciRun": 36981917813,
+  "status": "accepted",
+  "verifiedAt": "2026-10-02T08:42:44.937Z",
+  "transport": "Ordinary public DNS, IPv4 and verified HTTPS; no origin override.",
+  "frontend": {"commit": "15df739e6f15e631d0ccff576947ae2d99237296", "version": "Alpha 1.60.0"},
+  "backend": {"status": "ok", "database": "ready", "commit": "15df739e6f15e631d0ccff576947ae2d99237296", "version": "Alpha 1.60.0"},
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {"path": "index.html", "bytes": 742202, "sha256": "c80aa05141e4a4a39b8101b275a63aa029080e6f7268faaaad4b6ac8d7394d02", "matchesExactPublisherOutput": true},
+    {"path": "src/ui/GuildEventsUI.js", "bytes": 11159, "sha256": "65fbdf460634c1447eea58f438b453092591c398abdcc8a742d2d55001f6d3af", "matchesExactPublisherOutput": true},
+    {"path": "src/ui/GuildUI.js", "bytes": 23015, "sha256": "049de0d5dc48c104678e3107dc7c185b99a32935c54492e472c52235fd1650ea", "matchesExactPublisherOutput": true},
+    {"path": "src/ui/SocialUI.js", "bytes": 42621, "sha256": "5f9e709b70bd0d8d592c5f1d1f9e3760f1819f23f2a32fbd5d9565e0d278337b", "matchesExactPublisherOutput": true},
+    {"path": "src/ui/UIManagerFeedback.js", "bytes": 28179, "sha256": "eaf820e18002e3ffd1f4d091f51e3ad8f768b6a0ece37c66968aed5a3d2e0555", "matchesExactPublisherOutput": true},
+    {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "matchesExactPublisherOutput": true},
+    {"path": "src/art/AuthoredIlyra.js", "bytes": 2887, "sha256": "b862ad4f1e812bd80ac7c0ab78b5a576a520bf73e87d5037ce57afdfed107646", "matchesExactPublisherOutput": true}
+  ],
+  "limits": "Technical release acceptance only; final art approval, real-phone party comfort, population observations and campaign pacing remain open."
+}

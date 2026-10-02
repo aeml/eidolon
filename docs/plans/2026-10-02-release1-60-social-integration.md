@@ -8,9 +8,12 @@ public identity, database and changed-runtime checks passed. Its
 [public receipt](2026-10-02-release1-59-public.json) records the exact source.
 The integration preserves player
 consent and existing server entry, settlement and moderation checks; it does not
-add another queue. Candidate 15df739e6f15e631d0ccff576947ae2d99237296 is pushed
-in CI36981917813. Luna monitors terminal results; full deployment acceptance
-remains pending, so the milestone is not yet accepted live.
+add another queue. Alpha 1.60 is accepted live at
+15df739e6f15e631d0ccff576947ae2d99237296: all ten jobs of CI36981917813
+passed. Independent public HTTPS checks verified both identities, the ready
+database, all five changed client runtime files and Ilyra's retained model and
+loader. The [public receipt](2026-10-02-release1-60-public.json) records exact
+publisher-output hashes. This does not close the human observations below.
 
 ## Confirmed gaps
 
