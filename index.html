@@ -835,6 +835,15 @@
                         <li>Limits remain 100,000 Gold or 100 EP. EP winnings stay EP and cannot return to Gold or buy player power. No dealing, pot, payout, account-reset or payment changes. Full prior patch history is preserved below.</li>
                     </ul>
                 </div>
+                <div class="patch-note-entry" data-version="1.62.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.62.1 (more resilient character downloads)</h3>
+                    <p class="patch-note-entry__summary">Browser asset caching should help your character load, not stop an available model from reaching you.</p>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Keep available models loading:</strong> unavailable browser cache reads fall back to the normal download. Cache quota or write failures no longer produce unhandled errors after a successful asset download.</li>
+                        <li><strong>Recover brief network interruptions:</strong> a rejected asset GET receives one bounded retry inside the worker before failing. Persistent network failures and HTTP errors remain visible; cancelled requests and non-GET actions are never replayed.</li>
+                        <li><strong>Keep your character:</strong> authored bodies, fitted gear, Ilyra's permanent wizard outfit and all gameplay rules are unchanged. No account reset, wager or currency changes. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.62.0">
                     <h3 class="patch-note-entry__title">Alpha 1.62.0 (clearer blackjack hands and next wagers)</h3>
                     <p class="patch-note-entry__summary">Prepare your next stake while watching a shared hand, with clear saved payouts and reliable chair turnover.</p>

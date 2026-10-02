@@ -67,17 +67,38 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
-    if (!requestUrl.pathname.includes('/assets/')) {
+    if (event.request.method !== 'GET' || !requestUrl.pathname.includes('/assets/')) {
         return;
     }
 
     event.respondWith((async () => {
-        const cache = await caches.open(DEFAULT_CACHE_NAME);
-        const cached = await cache.match(event.request);
-        if (cached) return cached;
-        const response = await fetch(event.request);
-        if (response && response.ok) {
-            cache.put(event.request, response.clone());
+        // Storage is an optimization, not a prerequisite for displaying a
+        // character. Denied/evicted storage must still allow an ordinary GET.
+        let cache;
+        try {
+            cache = await caches.open(DEFAULT_CACHE_NAME);
+            const cached = await cache.match(event.request);
+            if (cached) return cached;
+        } catch {
+            cache = null;
+        }
+        let response;
+        try {
+            response = await fetch(event.request);
+        } catch (error) {
+            // One bounded retry for a rejected network GET, before returning
+            // anything to the page. Never replay writes, cancellation or HTTP
+            // errors; a second failure remains a real browser/loader failure.
+            if (error?.name !== 'TypeError' || event.request.signal?.aborted) throw error;
+            await new Promise(resolve => setTimeout(resolve, 120));
+            if (event.request.signal?.aborted) throw error;
+            response = await fetch(event.request);
+        }
+        if (cache && response?.ok) {
+            // Keep the worker alive for the write, and absorb storage-only
+            // quota/eviction failures without rejecting an available asset.
+            const write = Promise.resolve().then(() => cache.put(event.request, response.clone())).catch(() => {});
+            event.waitUntil(write);
         }
         return response;
     })());
