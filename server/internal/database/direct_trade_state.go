@@ -34,8 +34,11 @@ var (
 // preserves exact Stats/Gems/ForgeBasis and future item metadata; database
 // recovery must not normalize, rescale or silently reconstruct those items.
 type DirectTradeEscrowState struct {
-	TradeID      string `bson:"trade_id"`
-	OfferPayload string `bson:"offer_payload"`
+	TradeID           string `bson:"trade_id"`
+	OfferPayload      string `bson:"offer_payload"`
+	PeerUsername      string `bson:"peer_username,omitempty"`
+	PeerPlayerID      string `bson:"peer_player_id,omitempty"`
+	PeerCharacterName string `bson:"peer_character_name,omitempty"`
 }
 
 type DirectTradeDeliveryState struct {
@@ -83,10 +86,17 @@ func DirectTradeOperationID(tradeID string) string {
 
 func DirectTradeOperationFingerprint(op DirectTradeOperation) (string, error) {
 	// Mutable recovery state and the retry's timestamp are not an economic plan.
+	// Either account may reconstruct an orphan cancellation after restart.
+	// Participant array order is not custody: bind each offer/revision to its
+	// account and sort only the fingerprint projection, not the stored record.
+	participants := op.Participants
+	if participants[0].Username > participants[1].Username {
+		participants[0], participants[1] = participants[1], participants[0]
+	}
 	encoded, err := json.Marshal(struct {
 		TradeID, Decision string
 		Participants      [2]DirectTradeParticipant
-	}{op.TradeID, op.Decision, op.Participants})
+	}{op.TradeID, op.Decision, participants})
 	if err != nil {
 		return "", err
 	}
@@ -201,7 +211,7 @@ func DecodeDirectTradeState(raw bson.Raw) (*DirectTradeCharacterState, error) {
 	if err := directTradeKnownFields(raw, "version", "revision", "escrow", "delivery", "last_operation_id", "last_operation_fingerprint", "last_operation_revision"); err != nil {
 		return nil, err
 	}
-	for key, fields := range map[string][]string{"escrow": {"trade_id", "offer_payload"}, "delivery": {"operation_id", "offer_payload"}} {
+	for key, fields := range map[string][]string{"escrow": {"trade_id", "offer_payload", "peer_username", "peer_player_id", "peer_character_name"}, "delivery": {"operation_id", "offer_payload"}} {
 		if value, err := raw.LookupErr(key); err == nil {
 			nested, ok := value.DocumentOK()
 			if !ok {
@@ -239,6 +249,16 @@ func (state DirectTradeCharacterState) Validate() error {
 		}
 		if _, err := parseDirectTradeOffer(state.Escrow.OfferPayload); err != nil {
 			return err
+		}
+		// Earlier prepared model fixtures have no peer. Readers retain them, but
+		// orphan recovery must not guess their recipient. The runtime producer
+		// always supplies all three bindings before acknowledging an offer.
+		peer := state.Escrow
+		if peer.PeerUsername != "" || peer.PeerPlayerID != "" || peer.PeerCharacterName != "" {
+			if !boundedActivityText(peer.PeerUsername, 256, true) || peer.PeerPlayerID != "player-"+peer.PeerUsername ||
+				!boundedActivityText(peer.PeerCharacterName, 256, true) {
+				return ErrDirectTradeConflict
+			}
 		}
 	}
 	if state.Delivery != nil {
@@ -307,6 +327,11 @@ func ApplyDirectTradeCharacterDecision(username string, character *Character, op
 		}
 	} else if state.Escrow.TradeID != op.TradeID || state.Escrow.OfferPayload != participant.OfferPayload {
 		return false, ErrDirectTradeConflict
+	} else if state.Escrow.PeerUsername != "" {
+		peer := op.Participants[1-index]
+		if state.Escrow.PeerUsername != peer.Username || state.Escrow.PeerPlayerID != peer.PlayerID || state.Escrow.PeerCharacterName != peer.CharacterName {
+			return false, ErrDirectTradeConflict
+		}
 	}
 	payload := participant.OfferPayload
 	if op.Decision == DirectTradeSettle {

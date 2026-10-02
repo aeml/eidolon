@@ -52,6 +52,20 @@ func cloneTradeCharacter(t *testing.T, original *Character) *Character {
 	return &copy
 }
 
+func TestDirectTradeFingerprintBindsAccountCustodyNotParticipantArrayOrder(t *testing.T) {
+	op, _ := directTradeFixture(t, DirectTradeCancel)
+	reversed := op
+	reversed.Participants[0], reversed.Participants[1] = reversed.Participants[1], reversed.Participants[0]
+	if err := reversed.Validate(); err != nil {
+		t.Fatal("the same account-bound plan reconstructed by the peer conflicted", err)
+	}
+	// Sorting identities must not detach their offers or expected revisions.
+	reversed.Participants[0].OfferPayload, reversed.Participants[1].OfferPayload = reversed.Participants[1].OfferPayload, reversed.Participants[0].OfferPayload
+	if err := reversed.Validate(); err == nil {
+		t.Fatal("participant ordering normalization reassigned offered custody")
+	}
+}
+
 func TestDirectTradeDecisionPartialParticipantSaveReplayAndExactMetadata(t *testing.T) {
 	for _, decision := range []string{DirectTradeSettle, DirectTradeCancel} {
 		t.Run(decision, func(t *testing.T) {

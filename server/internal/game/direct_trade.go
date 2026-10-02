@@ -50,6 +50,9 @@ func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, er
 	if requester.Type != TypePlayer || target.Type != TypePlayer || requester.Disconnected || target.Disconnected {
 		return nil, fmt.Errorf("trade player is unavailable")
 	}
+	if err := directTradeReadyForNewOffer(requester, target); err != nil {
+		return nil, err
+	}
 	if requester.InstanceID != target.InstanceID {
 		return nil, fmt.Errorf("trade players must be in the same instance")
 	}
@@ -76,14 +79,39 @@ func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, er
 }
 
 func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, gold int) (*DirectTrade, error) {
+	return w.setDirectTradeOffer(playerID, tradeID, itemIDs, gold, false)
+}
+
+// Caller must journal/confirm the complete character post-image before sending
+// an offer acknowledgement or permitting a decision. This method does no IO;
+// bag, Gold and private escrow change together under world/actor ownership.
+func (w *World) SetDurableDirectTradeOffer(playerID, tradeID string, itemIDs []string, gold int) (*DirectTrade, error) {
+	return w.setDirectTradeOffer(playerID, tradeID, itemIDs, gold, true)
+}
+
+func (w *World) setDirectTradeOffer(playerID, tradeID string, itemIDs []string, gold int, durable bool) (*DirectTrade, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	trade, offer, player, err := w.tradeParticipantLocked(playerID, tradeID)
 	if err != nil {
 		return nil, err
 	}
-	player.Mu.Lock()
-	defer player.Mu.Unlock()
+	peerID := trade.PlayerAID
+	if peerID == playerID {
+		peerID = trade.PlayerBID
+	}
+	peer := w.Entities[peerID]
+	unlock := lockDirectTradePlayers(player, peer)
+	defer unlock()
+	if durable && (peer == nil || player.Type != TypePlayer || peer.Type != TypePlayer || player.ID != "player-"+player.Name || peer.ID != "player-"+peer.Name || player.Name == peer.Name) {
+		return nil, fmt.Errorf("durable trade participant binding is unavailable")
+	}
+	if durable && (player.Disconnected || peer.Disconnected || player.InstanceID != peer.InstanceID || player.CasinoSeat != nil || peer.CasinoSeat != nil || math.Hypot(player.X-peer.X, player.Z-peer.Z) > 8) {
+		return nil, fmt.Errorf("trade players are no longer available in the same nearby scene")
+	}
+	if !durable && directTradeUsesPrivateState(player, peer) {
+		return nil, fmt.Errorf("private trade state requires durable trade recovery")
+	}
 	if offer.Gold < 0 || player.Gold < 0 || player.Gold > int(^uint(0)>>1)-offer.Gold {
 		return nil, fmt.Errorf("trade funds are unavailable")
 	}
@@ -108,6 +136,25 @@ func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 		if item.ID != "" {
 			available[item.ID] = item
 			sources[item.ID]++
+		}
+	}
+	if durable {
+		for _, slots := range [][]Item{player.Stash, player.Buyback} {
+			for _, item := range slots {
+				if item.ID != "" {
+					sources[item.ID]++
+				}
+			}
+		}
+		for _, item := range player.Equipment {
+			if item.ID != "" {
+				sources[item.ID]++
+			}
+		}
+		for _, item := range offer.Items {
+			if item.ID == "" || sources[item.ID] != 1 {
+				return nil, fmt.Errorf("saved trade escrow has ambiguous item custody")
+			}
 		}
 	}
 	for _, itemID := range itemIDs {
@@ -137,16 +184,43 @@ func (w *World) SetDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 			candidate.Inventory[slot] = Item{}
 		}
 	}
+	var returned []Item
 	for _, item := range offer.Items {
-		if !seen[item.ID] && candidate.AddItemToInventory(cloneItem(item)) != 0 {
-			return nil, fmt.Errorf("make room in your bag before removing offered items")
+		if !seen[item.ID] {
+			if durable {
+				returned = append(returned, item)
+			} else if candidate.AddItemToInventory(cloneItem(item)) != 0 {
+				return nil, fmt.Errorf("make room in your bag before removing offered items")
+			}
+		}
+	}
+	if durable {
+		candidate.Inventory, err = placeDirectTradeItemsExactly(candidate.Inventory, returned)
+		if err != nil {
+			return nil, err
+		}
+	}
+	nextOffer := DirectTradeOffer{Items: items, Gold: gold}
+	var nextState []byte
+	if durable {
+		var unchanged bool
+		nextState, unchanged, err = prepareDirectTradeEscrow(player, peer, trade.ID, *offer, nextOffer)
+		if err != nil {
+			return nil, err
+		}
+		if unchanged {
+			return trade.copy(), nil
 		}
 	}
 	// No refund, world loot, confirmation or live inventory mutation preceded
 	// validation. Commit the complete replacement under the actor/world locks.
 	player.Inventory = candidate.Inventory
 	player.Gold = player.Gold + offer.Gold - gold
-	*offer = DirectTradeOffer{Items: items, Gold: gold}
+	if durable {
+		player.DirectTradeState = nextState
+		player.UnjournaledSave = true
+	}
+	*offer = nextOffer
 	trade.ConfirmedA = false
 	trade.ConfirmedB = false
 	return trade.copy(), nil
@@ -158,6 +232,13 @@ func (w *World) ConfirmDirectTrade(playerID, tradeID string) (*DirectTrade, bool
 	trade, _, _, err := w.tradeParticipantLocked(playerID, tradeID)
 	if err != nil {
 		return nil, false, err
+	}
+	playerA := w.Entities[trade.PlayerAID]
+	playerB := w.Entities[trade.PlayerBID]
+	unlock := lockDirectTradePlayers(playerA, playerB)
+	defer unlock()
+	if directTradeUsesPrivateState(playerA, playerB) {
+		return nil, false, fmt.Errorf("private trade state requires durable trade recovery")
 	}
 	if playerID == trade.PlayerAID {
 		trade.ConfirmedA = true
@@ -171,10 +252,6 @@ func (w *World) ConfirmDirectTrade(playerID, tradeID string) (*DirectTrade, bool
 		trade.ConfirmedA, trade.ConfirmedB = false, false
 		return trade.copy(), false, fmt.Errorf("gold-only direct trades are not allowed")
 	}
-	playerA := w.Entities[trade.PlayerAID]
-	playerB := w.Entities[trade.PlayerBID]
-	unlock := lockDirectTradePlayers(playerA, playerB)
-	defer unlock()
 	if playerA == nil || playerB == nil || !canReceiveTradeItems(playerA.Inventory, trade.OfferB.Items) || !canReceiveTradeItems(playerB.Inventory, trade.OfferA.Items) {
 		trade.ConfirmedA, trade.ConfirmedB = false, false
 		return trade.copy(), false, fmt.Errorf("recipient inventory is full")
@@ -202,6 +279,9 @@ func (w *World) CancelDirectTrade(playerID, tradeID string) (*DirectTrade, error
 	snapshot := trade.copy()
 	unlock := lockDirectTradePlayers(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID])
 	defer unlock()
+	if directTradeUsesPrivateState(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID]) {
+		return nil, fmt.Errorf("private trade state requires durable trade recovery")
+	}
 	w.cancelTradeLocked(trade)
 	return snapshot, nil
 }
@@ -216,6 +296,9 @@ func (w *World) CancelDirectTradesForPlayer(playerID string) *DirectTrade {
 	snapshot := trade.copy()
 	unlock := lockDirectTradePlayers(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID])
 	defer unlock()
+	if directTradeUsesPrivateState(w.Entities[trade.PlayerAID], w.Entities[trade.PlayerBID]) {
+		return nil // Never refund persisted escrow through the RAM-only path.
+	}
 	w.cancelTradeLocked(trade)
 	return snapshot
 }
