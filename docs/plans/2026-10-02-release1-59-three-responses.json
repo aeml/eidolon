@@ -1,9 +1,21 @@
 {
   "version": "Alpha 1.59.0",
-  "status": "corrected-candidate-ci-pending",
-  "candidateCommit": "fac534bd9949b5b2f027f4a4b795c1b36865f2d7",
-  "ciRun": 36974236568,
+  "status": "native-loot-click-corrected-candidate-ci-running",
+  "candidateCommit": "a58ec61512cc8be22e1b197208eb5ec992dd7bd0",
+  "ciRun": 36978415990,
   "deploymentMonitor": "Luna; completion/failure only, no automated mutation or retry",
+  "nativePredeployFailure": {
+    "run": 36974236568,
+    "commit": "fac534bd9949b5b2f027f4a4b795c1b36865f2d7",
+    "passed": ["Client Tests", "Server Tests", "Browser Smoke 1/3", "Browser Smoke 2/3", "Browser Smoke 3/3"],
+    "failedJob": "Predeploy Character QA (System Chrome)",
+    "failedCase": "bag drag-out creates recoverable ground loot and Journal tracking survives reload",
+    "diagnostic": "Native click selected a front LootDrop while the previously acquired target was second in the same ray hit stack.",
+    "correction": "Read-only native-click observation binds the actual selected front item and pending interaction to the same intended pile. Exact item quantity and persistence checks remain; no runtime priority, rewards, pickup controls or enemy state changed.",
+    "focusedChecks": { "unitTests": 22, "seconds": 0.597, "nativeGeometryCases": 6, "nativeSeconds": 19.3, "fullLint": "passed" },
+    "isolatedInventory": { "caseSeconds": 22.9, "suiteSeconds": 24.1, "result": "passed", "source": "fac534bd plus this uncommitted QA correction", "scope": "Actual disposable server/browser combat loot, bag drag-out, manual pickup, saved inventory and Journal tracking after reload. Credential artifact scan passed. Geometry fixture separately covers changed front-item ordering.", "log": "/tmp/eidolon-159-inventory-correction-20261002.log", "cleanup": "Task-owned API/Mongo containers, anonymous data volume and temporary image removed by the wrapper; production untouched." },
+    "deployment": "Blocked by the native gate; no failed candidate was deployed."
+  },
   "failedCI": {
     "run": 36973309760,
     "commit": "7bf21905ebabed51615b122a0ad8ffeabf1c0d66",

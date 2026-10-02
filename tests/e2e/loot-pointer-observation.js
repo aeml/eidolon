@@ -1,4 +1,34 @@
 // Read the real pointer result; never assign hover or send a pickup request.
+export async function armManualLootClickObservation(page, aimedId) {
+    await page.evaluate(aimedId => {
+        const game = window.game;
+        window.__qaManualLootClick = null;
+        const observe = () => {
+            const selected = game.hoveredEntity, hits = game.raycastHitEntities || [];
+            const isLoot = entity => entity?.isActive && entity.item?.id && entity.constructor?.name === 'LootDrop';
+            const selectedId = isLoot(selected) ? selected.id : null;
+            window.__qaManualLootClick = {
+                aimedId, selectedId, selectedItem: selectedId ? { ...selected.item } : null,
+                sameLootPile: Boolean(selectedId && game.needsRaycast === false &&
+                    game.inputManager.pointerOverCanvas === true && hits[0] === selected &&
+                    (selectedId === aimedId || isLoot(hits.find(entity => entity.id === aimedId)))),
+                selectedPending: Boolean(selectedId && game.pendingInteraction?.id === selectedId),
+                hoveredType: selected?.constructor?.name, pendingType: game.pendingInteraction?.constructor?.name,
+                playerPosition: game.player.position?.toArray(), playerState: game.player.state,
+                targetPosition: game.player.targetPosition?.toArray(),
+                dropPosition: selected?.position?.toArray(),
+                cameraPosition: game.renderSystem.camera.position.toArray(),
+                hits: hits.map(entity => ({ type: entity.constructor?.name, aimed: entity.id === aimedId,
+                    selected: entity.id === selectedId }))
+            };
+            const callbacks = game.inputManager.callbacks.onClick;
+            const index = callbacks.indexOf(observe);
+            if (index >= 0) callbacks.splice(index, 1);
+        };
+        game.inputManager.callbacks.onClick.push(observe);
+    }, aimedId);
+}
+
 export async function readLootBlockingHostile(page, id) {
     return page.evaluate(id => {
         const game = window.game, hovered = game?.hoveredEntity;
