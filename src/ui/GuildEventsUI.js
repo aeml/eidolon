@@ -1,8 +1,9 @@
 export class GuildEventsUI {
-    constructor({ action, invite, ready, getPlayer }) {
+    constructor({ action, invite, ready, findGroup, getPlayer }) {
         this.action = action;
         this.invite = invite;
         this.ready = ready;
+        this.findGroup = findGroup;
         this.getPlayer = getPlayer;
         this.element = document.createElement('section');
         this.element.className = 'guild-card guild-events';
@@ -87,6 +88,7 @@ export class GuildEventsUI {
     }
 
     update(guild) {
+        this.currentGuild = guild;
         if (this.guildID !== guild.id) { this.resetEditor(); this.guildID = guild.id; }
         if (this.pending) {
             const pending = this.pending;
@@ -121,6 +123,20 @@ export class GuildEventsUI {
             const active = !event.cancelled && !finished;
             const controls = document.createElement('div'); controls.className = 'guild-events__controls';
             if (active) {
+                if (activity && typeof this.findGroup === 'function') {
+                    const guildID = guild.id, eventID = event.id, revision = event.revision;
+                    controls.append(this.button('Find companions for this activity', () => {
+                        const current = this.currentGuild?.events?.find(entry => entry.id === eventID);
+                        if (this.disposed || this.currentGuild?.id !== guildID || !current ||
+                            current.revision !== revision || current.cancelled ||
+                            Date.now() >= new Date(current.startsAt).getTime() + current.durationMinutes * 60000 ||
+                            !this.currentGuild.activities?.some(entry => entry.id === current.activity)) return;
+                        this.findGroup(current.activity);
+                    }));
+                    const guidance = document.createElement('p');
+                    guidance.textContent = 'Browse current groups for this activity. Nothing is posted or joined automatically. Listings last 20 minutes; keep longer-term plans in this calendar.';
+                    controls.append(guidance);
+                }
                 const mine = (event.rsvps || []).find(rsvp => rsvp.playerId === self?.playerId);
                 const role = this.select('My role', ['tank', 'healer', 'damage', 'flexible'].map(role => [role, role]), controls);
                 role.value = mine?.role || 'flexible';
@@ -153,5 +169,14 @@ export class GuildEventsUI {
             }
             card.append(roster); this.list.append(card);
         }
+    }
+
+    clear() {
+        this.currentGuild = null;
+    }
+
+    dispose() {
+        this.disposed = true;
+        this.clear();
     }
 }

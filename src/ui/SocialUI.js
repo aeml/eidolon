@@ -14,10 +14,12 @@ import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidanc
  */
 export class SocialUI {
     dispose() {
+        this.disposed = true;
         disposeOwnedEvents(this);
         this.hidePartyRequest();
         this.groupFinder?.setActive(false);
         this.phoneParty?.dispose();
+        this.guild?.dispose();
     }
 
     /**
@@ -149,6 +151,7 @@ export class SocialUI {
     }
 
     openGroupFinder(activityId) {
+        if (this.disposed) return;
         this._activeTab = 'groups';
         this.toggleSocial(true);
         this._switchTab('groups');
@@ -739,6 +742,7 @@ export class SocialUI {
             addChatMessage: this.ctx.addChatMessage,
         });
         this.guild.onSafety = (...args) => this.onSafety?.(...args);
+        this.guild.onFindGroup = activity => this.openGroupFinder(activity);
     }
 
     /** Switch between 'online' and 'friends' tabs. */

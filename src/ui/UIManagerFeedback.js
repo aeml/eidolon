@@ -276,8 +276,11 @@ class UIManagerFeedbackMethods {
         if (summary.eliteRoomsCleared || summary.totalEliteRooms) {
             parts.push(`${summary.eliteRoomsCleared || 0} / ${summary.totalEliteRooms || 0} elite rooms`);
         }
-        if (parts.length === 0) return '';
-        return `Dungeon complete • ${parts.join(' • ')}`;
+        if (summary.runComplete === true) {
+            const label = String(summary.instanceType || '').includes('raid') ? 'Raid complete' : 'Dungeon complete';
+            return [label, ...parts].join(' • ');
+        }
+        return parts.length ? `Run progress • ${parts.join(' • ')}` : '';
     }
 
     showRewardSummary(summary = {}) {

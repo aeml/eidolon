@@ -1,8 +1,8 @@
 {
   "version": "Alpha 1.59.0",
-  "status": "corrected-client-fixtures-ready-to-republish",
-  "candidateCommit": "7bf21905ebabed51615b122a0ad8ffeabf1c0d66",
-  "ciRun": 36973309760,
+  "status": "corrected-candidate-ci-pending",
+  "candidateCommit": "fac534bd9949b5b2f027f4a4b795c1b36865f2d7",
+  "ciRun": 36974236568,
   "deploymentMonitor": "Luna; completion/failure only, no automated mutation or retry",
   "failedCI": {
     "run": 36973309760,

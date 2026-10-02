@@ -772,26 +772,7 @@ func main() {
 			if !ok {
 				return
 			}
-			payload := RewardSummaryPayload{
-				PlayerID:          evt.PlayerID,
-				Title:             evt.Title,
-				Subtitle:          evt.Subtitle,
-				Gold:              evt.Gold,
-				XP:                evt.XP,
-				ItemCount:         evt.ItemCount,
-				GemCount:          evt.GemCount,
-				HeartCount:        evt.HeartCount,
-				BossName:          evt.BossName,
-				InstanceType:      evt.InstanceType,
-				Difficulty:        evt.Difficulty,
-				RunLevel:          evt.RunLevel,
-				RoomsCleared:      evt.RoomsCleared,
-				TotalRooms:        evt.TotalRooms,
-				EliteRoomsCleared: evt.EliteRoomsCleared,
-				TotalEliteRooms:   evt.TotalEliteRooms,
-				DifficultyNote:    evt.DifficultyNote,
-				ExitHint:          evt.ExitHint,
-			}
+			payload := RewardSummaryPayload(evt)
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
 				Type:    MsgRewardSummary,
@@ -818,28 +799,7 @@ func main() {
 			if !ok {
 				return
 			}
-			payload := RoomClearRewardPayload{
-				PlayerID:            evt.PlayerID,
-				Title:               evt.Title,
-				Subtitle:            evt.Subtitle,
-				Gold:                evt.Gold,
-				XP:                  evt.XP,
-				ItemCount:           evt.ItemCount,
-				GemCount:            evt.GemCount,
-				HeartCount:          evt.HeartCount,
-				Hint:                evt.Hint,
-				RoomIndex:           evt.RoomIndex,
-				ObjectiveRoomIndex:  evt.ObjectiveRoomIndex,
-				RoomType:            evt.RoomType,
-				RoomHook:            evt.RoomHook,
-				InstanceType:        evt.InstanceType,
-				Difficulty:          evt.Difficulty,
-				HealthRestored:      evt.HealthRestored,
-				ManaRestored:        evt.ManaRestored,
-				BuffName:            evt.BuffName,
-				BuffDurationSeconds: evt.BuffDurationSeconds,
-				DamageReductionPct:  evt.DamageReductionPct,
-			}
+			payload := RoomClearRewardPayload(evt)
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
 				Type:    MsgRoomClearReward,

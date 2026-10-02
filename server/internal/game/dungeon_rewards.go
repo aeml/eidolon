@@ -30,6 +30,7 @@ func isFinalDungeonBoss(subType string) bool {
 }
 
 type RewardSummaryEvent struct {
+	RunComplete       bool                     `json:"runComplete,omitempty"`
 	Progression       *ExperienceRewardReceipt `json:"progression,omitempty"`
 	PlayerID          string                   `json:"playerId"`
 	Title             string                   `json:"title"`
@@ -129,7 +130,9 @@ func countRewardDrops(items []*Item) (itemCount, gemCount int) {
 
 func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty DungeonDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, gold, xp, heartCount int, lootItems []*Item) RewardSummaryEvent {
 	itemCount, gemCount := countRewardDrops(lootItems)
+	complete, hint := bossRunGuidance(instanceType, bossName)
 	return RewardSummaryEvent{
+		RunComplete:       complete,
 		PlayerID:          playerID,
 		Title:             fmt.Sprintf("Boss Defeated: %s", bossName),
 		Subtitle:          fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
@@ -147,8 +150,28 @@ func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty 
 		EliteRoomsCleared: eliteRoomsCleared,
 		TotalEliteRooms:   totalEliteRooms,
 		DifficultyNote:    difficultyRewardNote(difficulty),
-		ExitHint:          "Return to the entrance to leave the dungeon.",
+		ExitHint:          hint,
 	}
+}
+
+// A boss reward is not necessarily a completed run. Match the actual activity
+// and final guardian; room counters do not establish completion or quest claims.
+func bossRunGuidance(instanceType, bossName string) (bool, string) {
+	if IsElementalRaidBoss(instanceType, bossName) {
+		return false, "The guardian is defeated, but the crystal is not restored. Protect Maelin through all three Vigil waves; then return to Ilyra and personally complete your ready chapter."
+	}
+	final := map[string]string{
+		"verdant_bastion_catacombs": "HollowSentinel", "molten_core": "LordInfernax",
+		"tempest_spire": "Zephyrion", "abyssal_well": "Thalorath",
+		"umbral_nexus": "EidolonDevourer", "weekly_raid": "UmbraPrime",
+	}
+	if final[instanceType] == bossName && bossName != "" {
+		if instanceType == "weekly_raid" {
+			return true, "Malachar is defeated. Your personal weekly cache settles separately; a repeated clear does not grant another cache. Return to Ilyra to personally claim a ready story finale. For your next optional goal, visit the Dungeon Guide."
+		}
+		return true, "Return to the entrance to leave the dungeon. Personally complete any ready story chapter with Ilyra; boss loot alone does not claim it. Visit the Dungeon Guide to prepare the next activity or help another group."
+	}
+	return false, "Continue along the dungeon route with your party; this boss reward is not a completed run. Return to the entrance if you need town recovery, then Continue at the Guide to use your latest cleared boss checkpoint."
 }
 
 func difficultyRewardNote(difficulty DungeonDifficulty) string {

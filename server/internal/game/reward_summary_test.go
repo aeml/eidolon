@@ -1,6 +1,46 @@
 package game
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
+
+func TestBossRunGuidanceRequiresActualActivityFinale(t *testing.T) {
+	cases := []struct {
+		activity, boss string
+		complete       bool
+		hint           string
+	}{
+		{"verdant_bastion_catacombs", "RootboundWarden", false, "Continue along"},
+		{"verdant_bastion_catacombs", "HollowSentinel", true, "Personally complete"},
+		{"molten_core", "ForgemasterPyrax", false, "Continue along"},
+		{"molten_core", "LordInfernax", true, "Dungeon Guide"},
+		{"tempest_spire", "Windshear", false, "Continue along"},
+		{"tempest_spire", "Zephyrion", true, "Personally complete"},
+		{"abyssal_well", "TiderendLeviathan", false, "Continue along"},
+		{"abyssal_well", "Thalorath", true, "Dungeon Guide"},
+		{"umbral_nexus", "NullArchitect", false, "Continue along"},
+		{"umbral_nexus", "EidolonDevourer", true, "boss loot alone does not claim"},
+		{"weekly_raid", "UmbraPrime", true, "weekly cache settles separately"},
+		{"tempest_spire", "HollowSentinel", false, "Continue along"},
+		{"", "", false, "Continue along"},
+		{"earth_crystal_raid", "GravenColossus", false, "all three Vigil waves"},
+		{"water_crystal_raid", "TideboundTyrant", false, "all three Vigil waves"},
+		{"fire_crystal_raid", "AshenImperator", false, "all three Vigil waves"},
+		{"air_crystal_raid", "TempestSovereign", false, "all three Vigil waves"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.activity+"/"+tc.boss, func(t *testing.T) {
+			summary := buildBossRewardSummary("player", tc.boss, tc.activity, DifficultyNormal, 100, 1, 0, 1, 0, 42, 10, 0, nil)
+			if summary.RunComplete != tc.complete || !strings.Contains(summary.ExitHint, tc.hint) {
+				t.Fatalf("wrong completion guidance: %+v", summary)
+			}
+			if summary.Gold != 42 || summary.XP != 10 || summary.PlayerID != "player" {
+				t.Fatal("guidance altered actual recipient or rewards")
+			}
+		})
+	}
+}
 
 func TestCountRewardDropsSeparatesItemsAndGems(t *testing.T) {
 	itemCount, gemCount := countRewardDrops([]*Item{

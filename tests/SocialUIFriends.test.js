@@ -59,6 +59,32 @@ test('party modal responds to the currently displayed invitation, never a supers
     expect(ui.currentInvitationId).toBeNull();
 });
 
+test('guild calendar navigates to the existing activity board with reads only and retires on disposal', () => {
+    const { ui } = createSocialUI();
+    ui.onGroupFinder = jest.fn(); ui.onPartyInvite = jest.fn();
+    ui.guild.onEvent = jest.fn();
+    const activity = { id: 'tempest_spire', name: 'Tempest Spire', minLevel: 70 };
+    ui.groupFinder.update({ activities: [activity], listings: [], meetingPoints: [] });
+    ui.guild.update({ guild: { id: 'guild', members: [], activities: [activity],
+        events: [{ id: 'event', revision: 1, title: 'Spire expedition', activity: activity.id,
+            startsAt: '2099-01-01T00:00:00Z', durationMinutes: 120, capacity: 4, rsvps: [] }] } });
+    const button = [...ui.guild.events.list.querySelectorAll('button')].find(control => control.textContent === 'Find companions for this activity');
+    button.click();
+    expect(ui._activeTab).toBe('groups');
+    expect(ui.groupFinder.filter.value).toBe(activity.id);
+    expect(ui.groupFinder.activity.value).toBe(activity.id);
+    expect(ui.onGroupFinder).toHaveBeenCalledWith({ action: 'list' });
+    expect(ui.onGroupFinder.mock.calls.every(([payload]) => payload.action === 'list')).toBe(true);
+    expect(ui.onPartyInvite).not.toHaveBeenCalled();
+    expect(ui.guild.onEvent).not.toHaveBeenCalled();
+    ui.dispose();
+    ui.onGroupFinder.mockClear();
+    button.click();
+    ui.openGroupFinder(activity.id);
+    expect(ui.onGroupFinder).not.toHaveBeenCalled();
+    expect(ui.groupFinder.active).toBe(false);
+});
+
 // ---------------------------------------------------------------------------
 // updateFriendList
 // ---------------------------------------------------------------------------

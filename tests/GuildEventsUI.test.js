@@ -5,6 +5,7 @@ function setup() {
     const container = document.createElement('div');
     const ui = new GuildUI({ container, getLastPlayer: () => ({ name: 'Alice' }) });
     ui.onEvent = jest.fn(); ui.onPartyInvite = jest.fn(); ui.onPartyReadyCheck = jest.fn();
+    ui.onFindGroup = jest.fn();
     const guild = { id: 'g', name: 'Wardens', tag: 'W', permissions: { manage_events: true },
         activities: [{ id: 'world', name: 'World exploration' }],
         members: [{ playerId: 'a', username: 'Alice' }, { playerId: 'b', username: 'Bob', online: true, class: 'Fighter', level: 70 }],
@@ -15,6 +16,42 @@ function setup() {
 }
 
 const click = (element, text) => [...element.querySelectorAll('button')].find(button => button.textContent === text).click();
+
+test('calendar recruitment opens only its activity, without posting, RSVP or party consent', () => {
+    const { ui, panel } = setup();
+    click(panel.list, 'Find companions for this activity');
+    expect(ui.onFindGroup).toHaveBeenCalledWith('world');
+    expect(ui.onEvent).not.toHaveBeenCalled();
+    expect(ui.onPartyInvite).not.toHaveBeenCalled();
+    expect(ui.onPartyReadyCheck).not.toHaveBeenCalled();
+    expect(panel.list.textContent).toContain('Listings last 20 minutes');
+});
+
+test.each(['revision', 'cancelled', 'finished', 'unsupported', 'other-guild', 'left', 'disposed'])(
+    'calendar rejects a stale recruitment handoff after %s', change => {
+        const { ui, guild, panel } = setup();
+        const captured = [...panel.list.querySelectorAll('button')].find(button => button.textContent === 'Find companions for this activity');
+        const next = { ...guild, events: [{ ...guild.events[0] }] };
+        if (change === 'revision') next.events[0].revision++;
+        if (change === 'cancelled') next.events[0].cancelled = true;
+        if (change === 'finished') next.events[0].startsAt = '2000-01-01T00:00:00Z';
+        if (change === 'unsupported') next.activities = [];
+        if (change === 'other-guild') next.id = 'different';
+        if (change === 'disposed') ui.dispose();
+        else ui.update({ guild: change === 'left' ? null : next });
+        captured.click();
+        expect(ui.onFindGroup).not.toHaveBeenCalled();
+    }
+);
+
+test('calendar handoff expires even without a subsequent server push', () => {
+    const { ui, guild, panel } = setup();
+    const now = jest.spyOn(Date, 'now').mockReturnValue(new Date(guild.events[0].startsAt).getTime() + 120 * 60000);
+    try {
+        click(panel.list, 'Find companions for this activity');
+        expect(ui.onFindGroup).not.toHaveBeenCalled();
+    } finally { now.mockRestore(); }
+});
 
 test('calendar public names keep own sign-ups and invitation account targets stable', () => {
     const { ui, guild, panel } = setup();

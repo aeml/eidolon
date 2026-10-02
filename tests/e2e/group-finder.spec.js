@@ -23,10 +23,26 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups p
                 members: 2, capacity: 5, class: 'Fighter', level: 70, note: 'Exploring together', expiresAt: new Date(Date.now() + 600000).toISOString() }] };
         window.__groupFinder.data = data;
         ui.social.groupFinder.update(data);
+        ui.social.guild.onEvent = payload => sent.push({ unexpectedCalendarWrite: payload });
+        ui.social.guild.update({ guild: { id: 'guild', name: 'Lantern Wardens', tag: 'LW', members: [], activities: data.activities,
+            events: [{ id: 'event', revision: 1, title: 'Evening exploration', activity: 'world',
+                startsAt: new Date(Date.now() + 1800000).toISOString(), durationMinutes: 120, capacity: 4, rsvps: [] }] } });
     }, phone);
-    await page.getByRole('tab', { name: 'Groups', exact: true }).click();
+    await page.getByRole('tab', { name: 'Guild', exact: true }).click();
+    const calendar = page.locator('#tab-panel-guild');
+    const handoff = calendar.getByRole('button', { name: 'Find companions for this activity' });
+    await expect(handoff).toBeVisible();
+    await handoff.scrollIntoViewIfNeeded();
+    await expect(handoff).toBeInViewport();
+    await expect(calendar).toContainText('Listings last 20 minutes');
+    expect((await handoff.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    expect(await calendar.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: testInfo.outputPath('calendar-recruitment.png') });
+    await handoff.click();
+    expect(await page.evaluate(() => window.__groupFinder.sent.every(payload => payload.action === 'list'))).toBe(true);
     const panel = page.locator('#tab-panel-groups');
     await expect(panel).toBeVisible();
+    await expect(panel.getByLabel('Activity filter')).toHaveValue('world');
     await panel.getByLabel('Join as').selectOption('healer');
     await panel.getByRole('button', { name: 'Ask to join' }).click();
     expect(await page.evaluate(() => window.__groupFinder.sent.at(-1))).toEqual({ action: 'request', ownerId: 'owner', listingId: 'listing-current', role: 'healer' });

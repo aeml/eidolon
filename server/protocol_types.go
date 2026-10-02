@@ -654,49 +654,11 @@ type ComboPayload struct {
 // intact across the wire rather than maintaining a lossy second field list.
 type TelegraphPayload = game.TelegraphEvent
 
-type RewardSummaryPayload struct {
-	PlayerID          string `json:"playerId"`
-	Title             string `json:"title"`
-	Subtitle          string `json:"subtitle,omitempty"`
-	Gold              int    `json:"gold"`
-	XP                int    `json:"xp"`
-	ItemCount         int    `json:"itemCount"`
-	GemCount          int    `json:"gemCount"`
-	HeartCount        int    `json:"heartCount"`
-	BossName          string `json:"bossName,omitempty"`
-	InstanceType      string `json:"instanceType,omitempty"`
-	Difficulty        string `json:"difficulty,omitempty"`
-	RunLevel          int    `json:"runLevel,omitempty"`
-	RoomsCleared      int    `json:"roomsCleared,omitempty"`
-	TotalRooms        int    `json:"totalRooms,omitempty"`
-	EliteRoomsCleared int    `json:"eliteRoomsCleared,omitempty"`
-	TotalEliteRooms   int    `json:"totalEliteRooms,omitempty"`
-	DifficultyNote    string `json:"difficultyNote,omitempty"`
-	ExitHint          string `json:"exitHint,omitempty"`
-}
+// Keep the wire summaries identical to their server-owned reward receipts,
+// including XP converted to Resonance. Explicit copies had dropped progression.
+type RewardSummaryPayload game.RewardSummaryEvent
 
-type RoomClearRewardPayload struct {
-	PlayerID            string `json:"playerId"`
-	Title               string `json:"title"`
-	Subtitle            string `json:"subtitle,omitempty"`
-	Gold                int    `json:"gold"`
-	XP                  int    `json:"xp"`
-	ItemCount           int    `json:"itemCount,omitempty"`
-	GemCount            int    `json:"gemCount,omitempty"`
-	HeartCount          int    `json:"heartCount,omitempty"`
-	Hint                string `json:"hint,omitempty"`
-	RoomIndex           int    `json:"roomIndex"`
-	ObjectiveRoomIndex  int    `json:"objectiveRoomIndex"`
-	RoomType            string `json:"roomType,omitempty"`
-	RoomHook            string `json:"roomHook,omitempty"`
-	InstanceType        string `json:"instanceType,omitempty"`
-	Difficulty          string `json:"difficulty,omitempty"`
-	HealthRestored      int    `json:"healthRestored,omitempty"`
-	ManaRestored        int    `json:"manaRestored,omitempty"`
-	BuffName            string `json:"buffName,omitempty"`
-	BuffDurationSeconds int    `json:"buffDurationSeconds,omitempty"`
-	DamageReductionPct  int    `json:"damageReductionPct,omitempty"`
-}
+type RoomClearRewardPayload game.DungeonRoomClearRewardEvent
 
 type ChatPayload struct {
 	PublicName  string `json:"publicName,omitempty"`

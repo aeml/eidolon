@@ -27,7 +27,8 @@ export class GuildUI {
         this.onLeaderboard = null;
         this.leaderboard = { season: '', runs: [] };
 		this.events = new GuildEventsUI({ action: payload => this.onEvent?.(payload),
-			invite: name => this.onPartyInvite?.(name), ready: () => this.onPartyReadyCheck?.(), getPlayer: getLastPlayer });
+			invite: name => this.onPartyInvite?.(name), ready: () => this.onPartyReadyCheck?.(),
+            findGroup: activity => this.onFindGroup?.(activity), getPlayer: getLastPlayer });
 
         this.render();
     }
@@ -56,10 +57,15 @@ export class GuildUI {
         this.renderBankStatus();
         this.renderConfirmation();
         if (!this.state.guild) {
+            this.events.clear();
             this.renderEnrollment();
             return;
         }
         this.renderGuild(this.state.guild);
+    }
+
+    dispose() {
+        this.events.dispose();
     }
 
     renderEnrollment() {

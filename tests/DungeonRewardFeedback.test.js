@@ -155,6 +155,7 @@ function buildDom() {
 
 function createRewardSummary(overrides = {}) {
     return {
+        runComplete: true,
         playerId: 'player-1',
         title: 'Boss Defeated: Zephyrion',
         subtitle: 'Tempest Spire • Heroic',
@@ -195,6 +196,40 @@ function createEngineHarness() {
 }
 
 describe('Dungeon reward feedback', () => {
+    test.each([
+        [{ xp: 100, resonanceXP: 0 }, ['+100 XP']],
+        [{ xp: 0, resonanceXP: 100 }, ['+100 Resonance XP']],
+        [{ xp: 40, resonanceXP: 60 }, ['+40 XP', '+60 Resonance XP']]
+    ])('boss and room text preserve the earned XP split independent of current level', (progression, expected) => {
+        buildDom();
+        const ui = new UIManager(false);
+        const summary = createRewardSummary({ xp: 100, gold: 0, progression });
+        expect(ui.formatRewardSummary(summary).currencyLine).toBe(expected.join(', '));
+        ui.showRoomClearReward({ ...summary, title: 'Room cleared', itemCount: 0, gemCount: 0, heartCount: 0 });
+        expect(document.getElementById('combat-intent-status').textContent).toContain(expected.join(' • '));
+        if (progression.xp === 0) expect(document.getElementById('combat-intent-status').textContent).not.toContain('+100 XP');
+        ui.dispose();
+    });
+
+    test.each([false, undefined, 'true'])(
+        'room counters cannot claim a completed run without an explicit server flag (%s)', runComplete => {
+            buildDom();
+            const ui = new UIManager(false);
+            const summary = createRewardSummary({ runComplete });
+            expect(ui.formatRewardSummaryCompletion(summary)).toContain('Run progress');
+            expect(ui.formatRewardSummaryCompletion(summary)).not.toContain('Dungeon complete');
+            ui.dispose();
+        }
+    );
+
+    test('a confirmed raid clear remains separate from its personal story and weekly claims', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        expect(ui.formatRewardSummaryCompletion({ runComplete: true, instanceType: 'weekly_raid' })).toBe('Raid complete');
+        expect(ui.formatRewardSummaryCompletion({ instanceType: 'earth_crystal_raid', roomsCleared: 1, totalRooms: 1 })).toBe('Run progress • 1 / 1 rooms');
+        ui.dispose();
+    });
+
     test('UIManager.showRewardSummary emits a stronger dungeon completion summary', () => {
         buildDom();
         const ui = new UIManager(false);
