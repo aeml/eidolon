@@ -114,7 +114,7 @@ func (w *World) groupActorLocked(id string) groupActor {
 	}
 	player.Mu.RLock()
 	defer player.Mu.RUnlock()
-	return groupActor{player.Name, player.SubType, player.PartyID, player.Level,
+	return groupActor{player.DisplayName(), player.SubType, player.PartyID, player.Level,
 		player.Type == TypePlayer && !player.Disconnected && player.SocialStatus != "busy"}
 }
 
@@ -298,6 +298,7 @@ func (w *World) GroupFinderListings(viewerID string, now time.Time) []GroupListi
 		}
 		if viewerID == listing.OwnerID {
 			for _, request := range listing.requests {
+				request.Name = w.groupActorLocked(request.PlayerID).name
 				copy.Applicants = append(copy.Applicants, request)
 			}
 			sort.Slice(copy.Applicants, func(i, j int) bool { return copy.Applicants[i].Name < copy.Applicants[j].Name })

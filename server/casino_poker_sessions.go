@@ -355,7 +355,7 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 	if err := requireCasinoFundingLocked(client, currency, amount, now); err != nil {
 		return err
 	}
-	s.Players = append(s.Players, pokerParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, SessionID: sessionID, BuyIn: amount})
+	s.Players = append(s.Players, pokerParticipant{PlayerID: client.playerID, Name: player.DisplayName(), Seat: player.CasinoSeat.Seat, SessionID: sessionID, BuyIn: amount})
 	if s.DealAt.IsZero() {
 		s.DealAt = now.Add(casinoBettingWindow)
 	}

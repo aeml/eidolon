@@ -89,6 +89,7 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 
 func deliverPartyInvitation(c, targetClient *Client, invite game.PartyInvitation, context string) {
 	reqPayload := PartyRequestPayload{
+		DisplayName:  clientPublicName(c),
 		TargetName:   c.username, // The name of the person inviting
 		InvitationID: invite.ID, Context: context,
 	}
@@ -101,7 +102,7 @@ func deliverPartyInvitation(c, targetClient *Client, invite game.PartyInvitation
 	// A successfully delivered invite is informational, not a protocol error.
 	// Keep it in the existing system-chat surface so the player still receives
 	// visible confirmation without emitting a false console error in browsers.
-	c.sendSystemChat("Invite sent to " + targetClient.username)
+	c.sendSystemChat("Invite sent to " + clientPublicName(targetClient))
 }
 
 // handleMsgPartyResponse handles acceptance or rejection of a party invite.

@@ -16,6 +16,22 @@ function setup() {
 
 const click = (element, text) => [...element.querySelectorAll('button')].find(button => button.textContent === text).click();
 
+test('calendar public names keep own sign-ups and invitation account targets stable', () => {
+    const { ui, guild, panel } = setup();
+    panel.getPlayer = () => ({ id: 'a', name: 'Arcanis Dawn' });
+    ui.update({ guild: { ...guild,
+        members: guild.members.map(member => ({ ...member, displayName: member.playerId === 'a' ? 'Arcanis Dawn' : 'Moon Keeper' })),
+        events: [{ ...guild.events[0], rsvps: [...guild.events[0].rsvps, { playerId: 'a', role: 'healer', status: 'going' }] }] } });
+    expect(panel.list.textContent).toContain('Arcanis Dawn');
+    expect(panel.list.textContent).toContain('Moon Keeper');
+    expect(panel.list.querySelector('select').value).toBe('healer');
+    expect([...panel.list.querySelectorAll('button')].filter(button => button.textContent === 'Invite to party')).toHaveLength(1);
+    click(panel.list, 'Invite to party');
+    expect(ui.onPartyInvite).toHaveBeenCalledWith('Bob');
+    click(panel.list, 'Withdraw');
+    expect(ui.onEvent).toHaveBeenCalledWith({ action: 'withdraw', eventId: 'e' });
+});
+
 test('calendar sends versioned own consent and explicit party actions, rendering plain text', () => {
     const { ui, panel } = setup();
     expect(panel.list.querySelector('b')).toBeNull();

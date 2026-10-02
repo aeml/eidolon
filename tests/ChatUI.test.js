@@ -26,6 +26,25 @@ function buildChatDom() {
 }
 
 describe('ChatUI', () => {
+    test('public labels with spaces retain canonical safety and whisper targets', () => {
+        buildChatDom();
+        const onSafety = jest.fn(), onSend = jest.fn();
+        const chat = new ChatUI({ onSafety, onSend });
+        chat.addMessage('Arcanis Dawn', 'meet at the gate', { channel: 'world', senderAccount: 'Ayla' });
+        const sender = chat.messages.querySelector('button[data-chat-player="Ayla"]');
+        expect(sender.textContent).toBe('Arcanis Dawn:');
+        sender.click();
+        expect(chat.safetyPanel.querySelector('summary').textContent).toContain('Arcanis Dawn');
+        const block = chat.safetyPanel.querySelector('button');
+        block.click(); block.click();
+        expect(onSafety).toHaveBeenCalledWith('block', 'Ayla', expect.any(String));
+        expect(chat.beginWhisper('Ayla', 'Arcanis Dawn')).toBe(true);
+        expect(chat.input.placeholder).toBe('Whisper to Arcanis Dawn…');
+        chat.input.value = 'hello';
+        chat.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        expect(onSend).toHaveBeenCalledWith('/w Ayla hello');
+        chat.dispose();
+    });
     test('only selected player messages offer safety actions and reporting does not send chat', () => {
         const onSafety = jest.fn(), onSend = jest.fn();
         const chat = new ChatUI({onSafety, onSend});

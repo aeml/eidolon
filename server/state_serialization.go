@@ -250,6 +250,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		whirlwindRadius = e.WhirlwindAreaRadius()
 	}
 	snap := &EntitySnapshot{
+		PublicName:                 e.DisplayName(),
 		WhirlwindActive:            whirlwindDuration > 0,
 		WhirlwindDuration:          whirlwindDuration,
 		WhirlwindRadius:            whirlwindRadius,
@@ -350,6 +351,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	// Snapshot current values under lock to avoid races (TalentRanks is a map).
 	current.Mu.RLock()
+	cpublicName := current.DisplayName()
 	cx := current.X
 	cz := current.Z
 	cy := current.Y
@@ -610,6 +612,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cguildTag := current.GuildTag
 	cequipmentRevision := current.EquipmentRevision
 	current.Mu.RUnlock()
+	if cpublicName != last.PublicName {
+		return true
+	}
 
 	if cscale != last.Scale || cbodyRadius != last.BodyRadius || cimpactRadius != last.ImpactRadius {
 		return true
@@ -1226,7 +1231,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		WhirlwindRadius:            float32(whirlwindRadius),
 		Id:                         e.ID,
 		InstanceId:                 e.InstanceID,
-		Name:                       e.Name,
+		Name:                       e.DisplayName(),
 		Type:                       string(e.Type),
 		SubType:                    e.SubType,
 		X:                          float32(e.X),

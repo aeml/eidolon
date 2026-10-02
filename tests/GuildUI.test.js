@@ -11,6 +11,28 @@ function createUI(player = { name: 'Alice', inventory: [{ id: 'blade', name: 'Bl
 
 describe('GuildUI', () => {
     beforeEach(() => { sessionStorage.clear(); document.body.replaceChildren(); });
+    test('corrected display names preserve pending bank identity and protect self roster actions', () => {
+        const player = { id: 'player-Alice', name: 'Arcanis Dawn', inventory: [] };
+        const { ui, container } = createUI(player);
+        const guild = { id: 'g1', name: 'Wardens', tag: 'WARD', permissions: { kick: true },
+            members: [{ playerId: 'player-Alice', username: 'Alice', displayName: 'Arcanis Dawn', rank: 'leader' }], bank: { gold: 100, items: [] } };
+        ui.onBankDeposit = jest.fn();
+        ui.update({ guild });
+        expect(container.textContent).toContain('Arcanis Dawn');
+        expect(container.querySelector('.guild-member-actions')).toBeNull();
+        ui.beginBankRequest('deposit', { gold: 10 });
+        const original = ui.pendingBank;
+        expect(sessionStorage.getItem('eidolon.guild-bank.pending.Alice')).not.toBeNull();
+        expect(sessionStorage.getItem('eidolon.guild-bank.pending.Arcanis Dawn')).toBeNull();
+        player.name = 'Moon Keeper';
+        ui.update({ guild });
+        expect(ui.pendingBank).toBe(original);
+        const reloaded = createUI(player);
+        expect(reloaded.ui.pendingBank).toEqual(original);
+        ui.handleBankResult({ requestId: original.payload.requestId, status: 'complete', message: 'Complete.' });
+        expect(ui.pendingBank).toBeNull();
+        expect(sessionStorage.getItem('eidolon.guild-bank.pending.Alice')).toBeNull();
+    });
     test('creates a guild from validated form inputs', () => {
         const { ui, container } = createUI();
         ui.onCreate = jest.fn();

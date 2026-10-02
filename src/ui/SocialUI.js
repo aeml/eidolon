@@ -204,8 +204,8 @@ export class SocialUI {
     updateSocialList(players) {
         // Status broadcasts also keep an already-open Friends tab current.
         for (const entry of this.friendEntries) {
-            const player = players.find(p => p.name === entry.username);
-            if (player) entry.socialStatus = this.normalizeSocialStatus(player.socialStatus);
+            const player = players.find(p => (p.username || p.name) === entry.username);
+            if (player) { entry.socialStatus = this.normalizeSocialStatus(player.socialStatus); entry.displayName = player.name; }
         }
         if (this._activeTab === 'friends') this._renderFriendsPanel();
         this.socialList.innerHTML = '';
@@ -215,7 +215,8 @@ export class SocialUI {
             const row = document.createElement('div');
             row.className = 'social-window__row';
 
-            const isSelf = player && player.name === p.name;
+            const account = p.username || p.name;
+            const isSelf = player && (p.playerId ? player.id === p.playerId : player.name === p.name);
 
             const name = document.createElement('span');
             name.className = `social-window__cell social-window__name${isSelf ? ' social-window__name--self' : ''}`;
@@ -243,14 +244,14 @@ export class SocialUI {
                 const inviteButton = document.createElement('button');
                 inviteButton.className = 'social-window__invite-btn';
                 inviteButton.type = 'button';
-                inviteButton.dataset.name = p.name;
+                inviteButton.dataset.name = account;
                 inviteButton.textContent = 'Invite';
                 inviteButton.setAttribute('aria-label', `Invite ${p.name} to party`);
                 inviteButton.addEventListener('click', (e) => {
                     const nameToInvite = e.currentTarget?.getAttribute('data-name');
                     if (nameToInvite && this.onPartyInvite) {
                         this.onPartyInvite(nameToInvite);
-                        if (this.ctx.addChatMessage) this.ctx.addChatMessage('System', `Invited ${nameToInvite} to party.`);
+                        if (this.ctx.addChatMessage) this.ctx.addChatMessage('System', `Invited ${p.name} to party.`);
                     }
                 });
                 action.appendChild(inviteButton);
@@ -259,9 +260,9 @@ export class SocialUI {
                 duelButton.type = 'button';
                 duelButton.textContent = 'Duel';
                 duelButton.setAttribute('aria-label', `Challenge ${p.name} to a duel`);
-                duelButton.addEventListener('click', () => this.onDuelRequest?.(p.name));
+                duelButton.addEventListener('click', () => this.onDuelRequest?.(account));
                 action.appendChild(duelButton);
-                action.appendChild(socialSafetyActions(p.name, 'Online player list', (...args) => this.onSafety?.(...args)));
+                action.appendChild(socialSafetyActions(account, 'Online player list', (...args) => this.onSafety?.(...args), p.name));
             } else {
                 const selfBadge = document.createElement('span');
                 selfBadge.className = 'social-window__self-badge';
@@ -316,6 +317,7 @@ export class SocialUI {
     updateFriendList(payload) {
         this.friendEntries = Array.isArray(payload.friends) ? payload.friends : [];
         this.pendingUsernames = Array.isArray(payload.pending) ? payload.pending : [];
+        this.pendingNames = payload.pendingNames || {};
         if (this._activeTab === 'friends') {
             this._renderFriendsPanel();
         }
@@ -330,6 +332,7 @@ export class SocialUI {
     onFriendPresence(data) {
         const entry = this.friendEntries.find(e => e.username === data.username);
         if (entry) {
+            if (data.displayName) entry.displayName = data.displayName;
             entry.online = data.online;
             if (!data.online) entry.socialStatus = '';
             else if (data.socialStatus) entry.socialStatus = this.normalizeSocialStatus(data.socialStatus);
@@ -345,6 +348,8 @@ export class SocialUI {
      * @param {{ username: string }} data
      */
     onIncomingFriendRequest(data) {
+        this.pendingNames ||= {};
+        if (data.displayName) this.pendingNames[data.username] = data.displayName;
         if (!this.pendingUsernames.includes(data.username)) {
             this.pendingUsernames.push(data.username);
         }
@@ -582,14 +587,14 @@ export class SocialUI {
         }
     }
 
-    showPartyRequest(inviterName, invitationId, context = '') {
+    showPartyRequest(inviterName, invitationId, context = '', displayName = inviterName) {
         if (!this.partyRequestModal) return;
         // Static HUD stacking contexts cannot cover this consent surface.
         // Keep it at the same root/layer as dynamically created windows.
         document.body.appendChild(this.partyRequestModal);
         this.currentInviter = inviterName;
         this.currentInvitationId = invitationId;
-        if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
+        if (this.partyInviterName) this.partyInviterName.textContent = displayName;
         const benefits = document.getElementById('party-request-benefits');
         if (benefits) {
             benefits.textContent = `${context ? `${context} ` : ''}Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry. Invitations expire after 60 seconds and must still belong to the same party, leader and recruitment plan.`;
@@ -789,7 +794,7 @@ export class SocialUI {
 
                     const nameEl = document.createElement('span');
                     nameEl.className = 'friends-name';
-                    nameEl.textContent = username;
+                    nameEl.textContent = this.pendingNames?.[username] || username;
                     row.appendChild(nameEl);
 
                     const actions = document.createElement('div');
@@ -849,7 +854,8 @@ export class SocialUI {
 
             const nameEl = document.createElement('span');
             nameEl.className = 'friends-name';
-            nameEl.textContent = entry.username;
+            const displayName = entry.displayName || entry.username;
+            nameEl.textContent = displayName;
             row.appendChild(nameEl);
 
             if (entry.online && entry.socialStatus) {
@@ -867,22 +873,24 @@ export class SocialUI {
             const actions = document.createElement('div');
             actions.className = 'friends-actions';
             for (const [label, callback] of [['Invite', () => this.onPartyInvite?.(entry.username)],
-                ['Whisper', () => this.onFriendWhisper?.(entry.username)]]) {
+                ['Whisper', () => displayName === entry.username
+                    ? this.onFriendWhisper?.(entry.username)
+                    : this.onFriendWhisper?.(entry.username, displayName)]]) {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = `friends-btn friends-btn--${label.toLowerCase()}`;
                 button.textContent = label;
                 button.disabled = !entry.online;
-                button.setAttribute('aria-label', `${label} ${entry.username}${label === 'Invite' ? ' to party' : ''}`);
+                button.setAttribute('aria-label', `${label} ${displayName}${label === 'Invite' ? ' to party' : ''}`);
                 button.addEventListener('click', callback);
                 actions.appendChild(button);
             }
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.className = 'friends-btn friends-btn--remove';
-            removeBtn.title = `Remove ${entry.username}`;
+            removeBtn.title = `Remove ${displayName}`;
             removeBtn.textContent = '✕';
-            removeBtn.setAttribute('aria-label', `Remove ${entry.username} from friends`);
+            removeBtn.setAttribute('aria-label', `Remove ${displayName} from friends`);
             removeBtn.addEventListener('click', () => {
                 this.onFriendRemove?.(entry.username);
             });

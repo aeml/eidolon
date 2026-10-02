@@ -348,6 +348,25 @@ describe('SocialUI._switchTab', () => {
 // ---------------------------------------------------------------------------
 
 describe('SocialUI._renderFriendsPanel', () => {
+    test('corrected friend names remain labels while actions use the account key', () => {
+        const { ui } = createSocialUI();
+        ui._activeTab = 'friends';
+        ui.onPartyInvite = jest.fn();
+        ui.onFriendWhisper = jest.fn();
+        ui.onFriendRemove = jest.fn();
+        ui.friendEntries = [{ username: 'Ayla', displayName: 'Arcanis Dawn', online: true }];
+        ui._renderFriendsPanel();
+        const row = ui._friendsList.querySelector('.friends-row');
+        expect(row.textContent).toContain('Arcanis Dawn');
+        row.querySelector('.friends-btn--invite').click();
+        row.querySelector('.friends-btn--whisper').click();
+        expect(ui.onPartyInvite).toHaveBeenCalledWith('Ayla');
+        expect(ui.onFriendWhisper).toHaveBeenCalledWith('Ayla', 'Arcanis Dawn');
+        ui.onFriendPresence({ username: 'Ayla', displayName: 'Moon Keeper', online: true });
+        expect(ui._friendsList.textContent).toContain('Moon Keeper');
+        expect(ui.friendEntries[0].username).toBe('Ayla');
+    });
+
     test('online friends offer named party invitations and private composition; offline actions are disabled', () => {
         const { ui } = createSocialUI();
         ui.onPartyInvite = jest.fn();

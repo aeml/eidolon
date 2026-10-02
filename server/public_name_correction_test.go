@@ -13,11 +13,42 @@ import (
 const validPublicNamePayload = `{"id":"name-correction-0001","noticeId":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","publicName":"Arcanis Dawn","confirmed":true}`
 
 type fakePublicNameCorrections struct {
-	owner   string
-	calls   int
-	request database.PublicNameCorrectionRequest
-	err     error
-	after   func()
+	owner       string
+	calls       int
+	request     database.PublicNameCorrectionRequest
+	err         error
+	after       func()
+	currentName string
+	nameErr     error
+}
+
+func (s *fakePublicNameCorrections) OwnPublicName(string) (string, error) {
+	if s.currentName != "" || s.nameErr != nil {
+		return s.currentName, s.nameErr
+	}
+	return s.request.PublicName, nil
+}
+
+func TestPublicNameCorrectionHistoricalRetryRefreshesCurrentLabel(t *testing.T) {
+	previous := publicNameCorrections
+	t.Cleanup(func() { publicNameCorrections = previous })
+	c, _ := adminReadFixture(t)
+	store := &fakePublicNameCorrections{currentName: "Moon Keeper"}
+	publicNameCorrections = store
+	handlePublicNameCorrection(c, Message{Type: MsgPublicNameCorrection, Payload: []byte(validPublicNamePayload)})
+	if name := clientPublicName(c); name != "Moon Keeper" || c.username == name {
+		t.Fatal("historical receipt replaced current public name or login identity", name, c.username)
+	}
+	store.nameErr = errors.New("private refresh diagnostic")
+	handlePublicNameCorrection(c, Message{Type: MsgPublicNameCorrection, Payload: []byte(validPublicNamePayload)})
+	messages := drainSentMessages(c.send)
+	var result map[string]any
+	if len(messages) != 2 || json.Unmarshal(messages[1].Payload, &result) != nil || result["pending"] != true || result["success"] != false {
+		t.Fatal("uncertain label refresh acknowledged", messages, result)
+	}
+	if clientPublicName(c) != "Moon Keeper" {
+		t.Fatal("failed refresh changed cached public name")
+	}
 }
 
 func (s *fakePublicNameCorrections) CorrectPublicName(owner string, request database.PublicNameCorrectionRequest) (database.ChatModerationReceipt, error) {

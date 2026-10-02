@@ -50,6 +50,32 @@ func TestStructuredChatRoutesWorldPartyWhisperAndReply(t *testing.T) {
 	assertChat(t, bob, "whisper", "acknowledged", "alice")
 }
 
+func TestStructuredChatPublicLabelDoesNotChangeRoutingOrBlocks(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	alice := addChatTestClient("alice", "")
+	bob := addChatTestClient("bob", "")
+	setClientPublicName(alice, "Arcanis Dawn")
+	if err := chatService.Send(alice, ChatPayload{Message: "/w bob hello"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, client := range []*Client{alice, bob} {
+		message := readChat(t, client)
+		if message.Sender != "alice" || message.PublicName != "Arcanis Dawn" || message.Recipient != "bob" {
+			t.Fatal("public label changed delivery identity", message)
+		}
+	}
+	chatService.SetBlocked("bob", "alice", true)
+	setClientPublicName(alice, "Moon Keeper")
+	if err := chatService.Send(alice, ChatPayload{Message: "/w bob should not arrive"}); err == nil {
+		t.Fatal("correcting public name bypassed block")
+	}
+	assertNoChat(t, bob)
+	if alice.username != "alice" || world.GetEntityCopy(alice.playerID).Name != "alice" {
+		t.Fatal("public label replaced canonical ownership")
+	}
+}
+
 func TestStructuredChatReplaysBoundedRelevantHistory(t *testing.T) {
 	restore := installChatTestState(t)
 	defer restore()

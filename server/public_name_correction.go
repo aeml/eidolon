@@ -14,6 +14,7 @@ const MsgPublicNameCorrection = "public_name_correction"
 
 type publicNameCorrectionStore interface {
 	CorrectPublicName(string, database.PublicNameCorrectionRequest) (database.ChatModerationReceipt, error)
+	OwnPublicName(string) (string, error)
 }
 
 var publicNameCorrections publicNameCorrectionStore
@@ -131,6 +132,13 @@ func handlePublicNameCorrection(c *Client, msg Message) {
 		result.Message = "The correction could not be confirmed. Check your notices or retry the exact confirmed request; do not assume it changed."
 		return
 	}
+	name, err := store.OwnPublicName(owner)
+	if err != nil || name == "" || !current() {
+		result.Pending = true
+		result.Message = "The stored correction needs a public-label refresh. Retry this exact request; do not submit a different one."
+		return
+	}
+	setClientPublicName(c, name)
 	result.Success, result.Final = true, true
 	result.Message = "Your confirmed name correction was recorded. Login and saved progress are unchanged. Check your notices; other restrictions are not cleared."
 }

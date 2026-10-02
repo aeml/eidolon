@@ -41,12 +41,14 @@ func buildSocialListFor(viewerUsername string) []SocialEntry {
 			continue
 		}
 		entity.Mu.RLock()
-		if viewerUsername != "" && chatService.shouldFilter(viewerUsername, entity.Name) {
+		if viewerUsername != "" && chatService.shouldFilter(viewerUsername, playerIDToUsername(entity.ID)) {
 			entity.Mu.RUnlock()
 			continue
 		}
 		entry := SocialEntry{
-			Name:         entity.Name,
+			Username:     playerIDToUsername(entity.ID),
+			PlayerID:     entity.ID,
+			Name:         entity.DisplayName(),
 			Class:        entity.SubType,
 			Level:        entity.Level,
 			SocialStatus: game.NormalizeSocialStatus(entity.SocialStatus),
@@ -130,8 +132,19 @@ func buildFriendListPayload(playerID string) FriendListPayload {
 	for _, p := range pendingDocs {
 		pendingUsernames = append(pendingUsernames, playerIDToUsername(p.RequesterID))
 	}
-
-	return FriendListPayload{Friends: entries, Pending: pendingUsernames}
+	accounts := append([]string(nil), pendingUsernames...)
+	for _, entry := range entries {
+		accounts = append(accounts, entry.Username)
+	}
+	names := publicPlayerNames(accounts)
+	for i := range entries {
+		entries[i].DisplayName = names[entries[i].Username]
+	}
+	pendingNames := make(map[string]string, len(pendingUsernames))
+	for _, account := range pendingUsernames {
+		pendingNames[account] = names[account]
+	}
+	return FriendListPayload{Friends: entries, Pending: pendingUsernames, PendingNames: pendingNames}
 }
 
 // notifyFriendsPresence pushes a MsgFriendPresence packet to every online friend of username.
@@ -152,6 +165,11 @@ func notifyFriendsPresence(username string) {
 	current := activeSessions[username]
 	sessionsMu.Unlock()
 	presence := FriendPresencePayload{Username: username, Online: current != nil && !current.retired.Load() && current.playerID != ""}
+	if current != nil {
+		presence.DisplayName = clientPublicName(current)
+	} else {
+		presence.DisplayName = publicPlayerNames([]string{username})[username]
+	}
 	if presence.Online {
 		if entity := world.GetEntityCopy(current.playerID); entity != nil {
 			presence.SocialStatus = game.NormalizeSocialStatus(entity.SocialStatus)

@@ -74,6 +74,9 @@ func (service *structuredChatService) Send(sender *Client, input ChatPayload) er
 		Recipient:   recipient,
 		TimestampMs: service.now().UnixMilli(),
 	}
+	if name := clientPublicName(sender); name != sender.username {
+		payload.PublicName = name
+	}
 
 	switch channel {
 	case "world":
@@ -165,11 +168,20 @@ func (service *structuredChatService) Replay(client *Client, partyID string) {
 	sort.SliceStable(history, func(left, right int) bool {
 		return history[left].TimestampMs < history[right].TimestampMs
 	})
+	accounts := make([]string, 0, len(history))
+	for _, payload := range history {
+		accounts = append(accounts, payload.Sender)
+	}
+	names := publicPlayerNames(accounts)
 	for _, payload := range history {
 		if service.shouldFilter(client.username, payload.Sender) {
 			continue
 		}
 		payload.History = true
+		payload.PublicName = ""
+		if names[payload.Sender] != payload.Sender {
+			payload.PublicName = names[payload.Sender]
+		}
 		sendChatPayload(client, payload)
 	}
 }

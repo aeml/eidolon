@@ -26,6 +26,8 @@ func TestGroupFinderHandlerUsesCallerOwnershipAndRespectsBlocks(t *testing.T) {
 	}
 	send("owner", map[string]interface{}{"action": "post", "mode": "recruit", "activity": "world", "role": "healer", "minLevel": 1, "ownerId": "observer"})
 	listingID := world.GroupFinderListings("owner", time.Now())[0].ID
+	world.SetPlayerPublicName("owner", "Arcanis Dawn")
+	world.SetPlayerPublicName("applicant", "Moon Keeper")
 	send("applicant", map[string]interface{}{"action": "request", "ownerId": "owner", "listingId": listingID, "role": "healer"})
 	sendGroupFinder(clients["observer"])
 	var board struct {
@@ -38,7 +40,7 @@ func TestGroupFinderHandlerUsesCallerOwnershipAndRespectsBlocks(t *testing.T) {
 			}
 		}
 	}
-	if len(board.Listings) != 1 || board.Listings[0].OwnerID != "owner" || len(board.Listings[0].Applicants) != 0 {
+	if len(board.Listings) != 1 || board.Listings[0].OwnerID != "owner" || board.Listings[0].Name != "Arcanis Dawn" || len(board.Listings[0].Applicants) != 0 {
 		t.Fatal("spoofed ownership or private request leak", board)
 	}
 	if world.GetEntityCopy("applicant").PartyID != "" {

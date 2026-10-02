@@ -150,19 +150,20 @@ export class GuildUI {
         const roster = document.createElement('section');
         roster.className = 'guild-card';
         roster.innerHTML = '<h3>Roster</h3>';
-        const selfName = this.getLastPlayer?.()?.name;
+        const self = this.getLastPlayer?.();
         const sortedMembers = [...(guild.members || [])].sort((a, b) => {
             const order = { leader: 0, officer: 1, member: 2 };
             return (order[a.rank] ?? 3) - (order[b.rank] ?? 3) || a.username.localeCompare(b.username);
         });
         for (const member of sortedMembers) {
+            const displayName = member.displayName || member.username;
             const row = document.createElement('div');
             row.className = 'guild-row guild-roster-row';
             const dot = document.createElement('span');
             dot.className = `guild-presence guild-presence--${member.online ? 'online' : 'offline'}`;
             const details = document.createElement('span');
             details.className = 'guild-member-name';
-            details.textContent = member.username;
+            details.textContent = displayName;
             const combat = document.createElement('span');
             combat.className = 'guild-member-combat';
             combat.textContent = member.online ? `${member.class || 'Adventurer'} · ${member.level || 1}` : 'Offline';
@@ -170,25 +171,25 @@ export class GuildUI {
             rank.className = 'guild-rank';
             rank.textContent = member.rank;
             row.append(dot, details, combat, rank);
-            const isSelf = member.username === selfName;
+            const isSelf = member.playerId && self?.id ? member.playerId === self.id : displayName === self?.name;
             const actions = document.createElement('details');
             actions.className = 'guild-member-actions';
             const summary = document.createElement('summary');
             summary.textContent = 'Manage';
-            summary.setAttribute('aria-label', `Manage ${member.username}`);
+            summary.setAttribute('aria-label', `Manage ${displayName}`);
             actions.append(summary);
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.set_rank) {
                 const nextRank = member.rank === 'officer' ? 'member' : 'officer';
                 actions.appendChild(this.button(nextRank === 'officer' ? 'Promote' : 'Demote', '', () => this.confirmAction('Change Rank',
-                    `Make ${member.username} ${nextRank === 'officer' ? 'an officer' : 'a member'}? Officers can withdraw shared bank funds and manage guild activities.`, () => this.onSetRank?.(member.playerId, nextRank))));
+                    `Make ${displayName} ${nextRank === 'officer' ? 'an officer' : 'a member'}? Officers can withdraw shared bank funds and manage guild activities.`, () => this.onSetRank?.(member.playerId, nextRank))));
                 actions.appendChild(this.button('Transfer', '', () => this.confirmAction('Transfer Leadership',
-                    `Make ${member.username} leader of ${guild.name}? You become an officer and lose leader-only controls.`, () => this.onTransfer?.(member.playerId))));
+                    `Make ${displayName} leader of ${guild.name}? You become an officer and lose leader-only controls.`, () => this.onTransfer?.(member.playerId))));
             }
             if (!isSelf && member.rank !== 'leader' && guild.permissions?.kick) {
                 actions.appendChild(this.button('Kick', 'guild-btn--danger', () => this.confirmAction('Kick Member',
-                    `Remove ${member.username} from ${guild.name}? They lose guild and shared bank access.`, () => this.onKick?.(member.username))));
+                    `Remove ${displayName} from ${guild.name}? They lose guild and shared bank access.`, () => this.onKick?.(member.username))));
             }
-            if (!isSelf) actions.append(socialSafetyActions(member.username, `Guild roster: ${guild.name} (${guild.id})`, (...args) => this.onSafety?.(...args)));
+            if (!isSelf) actions.append(socialSafetyActions(member.username, `Guild roster: ${guild.name} (${guild.id})`, (...args) => this.onSafety?.(...args), displayName));
             if (actions.children.length > 1) row.append(actions);
             roster.appendChild(row);
         }
@@ -303,8 +304,13 @@ export class GuildUI {
         return `eidolon.guild-bank.pending.${this.bankAccount}`;
     }
 
+    bankAccountIdentity() {
+        const player = this.getLastPlayer?.();
+        return player?.id?.startsWith('player-') ? player.id.slice(7) : player?.name || '';
+    }
+
     restoreBankRequest() {
-        const account = this.getLastPlayer?.()?.name || '';
+        const account = this.bankAccountIdentity();
         if (!account || account === this.bankAccount) return;
         this.bankAccount = account;
         this.pendingBank = null;
@@ -329,7 +335,7 @@ export class GuildUI {
 
     beginBankRequest(action, payload) {
         this.restoreBankRequest();
-        if (!this.bankAccount || this.getLastPlayer?.()?.name !== this.bankAccount) return;
+        if (!this.bankAccount || this.bankAccountIdentity() !== this.bankAccount) return;
         if (this.pendingBank) return;
         if (!(Number.isSafeInteger(payload.gold) && payload.gold > 0) && !payload.itemId) {
             this.bankMessage = 'Enter a positive whole Gold amount or select an item.';
@@ -345,7 +351,7 @@ export class GuildUI {
     }
 
     retryBankRequest() {
-        if (!this.pendingBank || this.getLastPlayer?.()?.name !== this.bankAccount) return;
+        if (!this.pendingBank || this.bankAccountIdentity() !== this.bankAccount) return;
         const { action, payload } = this.pendingBank;
         // Pass a fresh copy; callbacks cannot change the retained retry plan.
         if (action === 'deposit') this.onBankDeposit?.({ ...payload });

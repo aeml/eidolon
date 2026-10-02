@@ -169,7 +169,7 @@ export class GroupFinderUI {
                     row.textContent = `${applicant.name} · ${applicant.class} ${applicant.level} · ${applicant.role} `;
                     row.append(this.button(`Invite ${applicant.name}`, () => this.actOnListing(listing, { action: 'invite', applicantId: applicant.playerId, applicationId: applicant.id })));
                     row.append(this.button(`Decline ${applicant.name}`, () => this.actOnListing(listing, { action: 'decline', applicantId: applicant.playerId, applicationId: applicant.id })));
-                    row.append(socialSafetyActions(applicant.name, `Group application: ${listing.activity}`, (...args) => this.safety?.(...args)));
+                    row.append(socialSafetyActions(applicant.playerId?.startsWith('player-') ? applicant.playerId.slice(7) : applicant.name, `Group application: ${listing.activity}`, (...args) => this.safety?.(...args), applicant.name));
                     card.append(row);
                 }
             } else if (listing.mode === 'looking') {
@@ -179,8 +179,8 @@ export class GroupFinderUI {
                     listing.requested ? { action: 'cancel', applicationId: listing.requestId } : { action: 'request', role: this.joinRole.value }));
                 card.append(request);
             }
-            if (listing.ownerId !== this.data.viewerId) card.append(socialSafetyActions(listing.name,
-                `Group listing (${listing.ownerId}): ${listing.activity}\nListing note: ${listing.note || ''}`, (...args) => this.safety?.(...args)));
+            if (listing.ownerId !== this.data.viewerId) card.append(socialSafetyActions(listing.ownerId?.startsWith('player-') ? listing.ownerId.slice(7) : listing.name,
+                `Group listing (${listing.ownerId}): ${listing.activity}\nListing note: ${listing.note || ''}`, (...args) => this.safety?.(...args), listing.name));
             this.list.append(card);
         }
         if (!this.list.children.length) {

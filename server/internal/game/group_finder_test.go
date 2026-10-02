@@ -38,6 +38,27 @@ func TestGroupFinderValidatesLevelsAndListingOwnership(t *testing.T) {
 	}
 }
 
+func TestGroupFinderPublicLabelsRefreshWithoutChangingRequestIdentity(t *testing.T) {
+	w, now := groupFinderFixture()
+	if err := w.PostGroupListing("owner", "recruit", "world", "healer", "", 1, now); err != nil {
+		t.Fatal(err)
+	}
+	listingID := w.GroupFinderListings("applicant", now)[0].ID
+	if err := w.RequestGroupListing("applicant", "owner", listingID, "healer", now); err != nil {
+		t.Fatal(err)
+	}
+	requestID := w.GroupFinderListings("owner", now)[0].Applicants[0].ID
+	w.SetPlayerPublicName("owner", "Arcanis Dawn")
+	w.SetPlayerPublicName("applicant", "Moon Keeper")
+	listing := w.GroupFinderListings("owner", now)[0]
+	if listing.Name != "Arcanis Dawn" || listing.OwnerID != "owner" || listing.ID != listingID || listing.Applicants[0].Name != "Moon Keeper" || listing.Applicants[0].PlayerID != "applicant" || listing.Applicants[0].ID != requestID {
+		t.Fatal("public labels failed to refresh or changed request authority", listing)
+	}
+	if err := w.CancelGroupRequest("owner", "applicant", listingID, requestID); err != nil {
+		t.Fatal("corrected label invalidated existing request", err)
+	}
+}
+
 func TestGroupFinderRequestsArePrivateDetachedAndNeverJoinAutomatically(t *testing.T) {
 	w, now := groupFinderFixture()
 	if err := w.PostGroupListing("owner", "recruit", "world", "healer", "", 1, now); err != nil {

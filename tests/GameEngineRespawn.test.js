@@ -16,6 +16,28 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
+test.each(['state', 'delta'])('public-name %s changes the name tag, not local account identity', type => {
+    const engine = createEngineHarness();
+    engine.username = 'original';
+    engine.player.name = 'original';
+    engine.player.setName = jest.fn(name => { engine.player.name = name; });
+    engine.currentInstanceId = ''; engine.currentInstanceType = 'overworld';
+    const send = (name, instanceId = '') => {
+        const actor = { id: 'player-1', instanceId, name, state: 'IDLE', health: 100 };
+        engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+            : { u: { 'player-1': actor }, r: [] } });
+    };
+    send('Arcanis Dawn'); send('Arcanis Dawn');
+    expect(engine.player.setName).toHaveBeenCalledTimes(1);
+    expect(engine.player.name).toBe('Arcanis Dawn');
+    expect(engine.username).toBe('original');
+    expect(engine.player.id).toBe('player-1');
+    send('Stale Label', 'old-dungeon');
+    expect(engine.player.name).toBe('Arcanis Dawn');
+    send('Moon Keeper');
+    expect(engine.player.name).toBe('Moon Keeper');
+});
+
 test.each(['state', 'delta'])('a late dungeon %s cannot undo authoritative town recall', type => {
     const engine = createEngineHarness();
     engine.currentInstanceId = ''; engine.currentInstanceType = 'overworld';

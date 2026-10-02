@@ -90,6 +90,13 @@ func (c *Client) dispatchMessage(msg Message) {
 			hasCharacter = true
 			characterType = user.Characters[0].Class
 		}
+		if err == nil {
+			name := user.PublicName
+			if name == "" {
+				name = c.username
+			}
+			setClientPublicName(c, name)
+		}
 
 		// Issue session-resume token
 		resumeToken, err := issueResumeToken(c.username)
@@ -124,6 +131,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		var payload JoinPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			log.Printf("MsgJoin failed: Invalid payload from %s", c.username)
+			return
+		}
+		if err := hydrateClientPublicName(c); err != nil {
+			c.sendError("Your public name could not be restored. Please reconnect.")
 			return
 		}
 
@@ -251,6 +262,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		entity := &game.Entity{
+			PublicName:               clientPublicName(c),
 			ID:                       playerID,
 			Name:                     c.username,
 			Type:                     game.TypePlayer,
@@ -845,6 +857,15 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		playerID := "player-" + username
+		// Token validation authenticates the account, not an alternate display
+		// name. Restore its current label before reconnecting the live entity.
+		if c.username == "" {
+			c.username = username
+		}
+		if err := hydrateClientPublicName(c); err != nil {
+			c.sendError("Your public name could not be restored. Please log in again.")
+			return
+		}
 		// Public character copies intentionally omit connection metadata.
 		var previousDisconnectedAt time.Time
 		if previous := world.GetEntity(playerID); previous != nil {

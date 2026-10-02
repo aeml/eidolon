@@ -493,12 +493,48 @@ The uniquely named, task-labeled Mongo container and anonymous volume were
 removed; production accounts, database and deployment were untouched.
 
 This correction route is registered only in unpublished preparation. Public
-labels still need consistent world/chat/social presentation while retaining
-stable targeting and ownership; all entry/resume/online restriction enforcement
-and full staff activation remain required. Complete all-three-response acceptance,
-version/notes alignment, fresh remote integration and CI/public acceptance are
-still release gates. Documentation was source-reviewed; no rendered documentation
-preview was available.
+labels now reach world snapshots and selected social actions as described below.
+Entry/resume/online restriction enforcement and full staff activation remain
+required. Complete all-three-response acceptance, version/notes alignment, fresh
+remote integration and CI/public acceptance are still release gates.
+
+## Public names and stable social actions
+
+The prepared player entity now carries a separate public label. Its original
+name and player ID remain the account, character-save and financial ownership
+keys. Login, join and resume restore the label; stationary label changes trigger
+state deltas. Both local and remote character name tags use the public label.
+Historical correction retries read the current label rather than restoring the
+name from an old receipt. An uncertain refresh is not acknowledged as success.
+
+Chat, party, friend and guild views, recruitment and newly seated casino
+participants use public labels for presentation. Invitations, whispers,
+block/ignore filters, roster actions and sign-ups retain stable account or player
+keys, including when the public label contains spaces. Recruitment applicants
+refresh their label without changing their existing request reference. Guild
+bank retry storage also uses the stable account key: a display correction must
+not discard a pending transfer or invent another request. Offline social lists
+and chat history use bounded label projections, not database queries per frame.
+A failed projection presents a neutral label instead of reviving the old name.
+
+Ten focused client suites passed 198 checks in 9.448 seconds, including existing
+Ilyra, session, social and bank regressions. Focused server, game and database
+race checks passed in 6.927, 9.523 and 1.061 seconds. The final renamed-player
+chat/block and recruitment checks passed in 1.861 seconds. The existing
+disposable Mongo correction exercise, extended with batch label projection,
+passed under the race detector in 6.742 seconds. Scoped lint and whitespace
+checks passed. Earlier candidates exposed a legacy whisper callback mismatch
+and two fixture assumptions; they were corrected before these passing checks.
+The exact task-labeled temporary database and anonymous volume were removed;
+production accounts and saves were untouched.
+
+This is still unpublished preparation. Typed public-name lookup, auction/PvP
+display projections and complete moderation enforcement remain to finish.
+These tests do not establish a new full socket/restart or browser acceptance
+for this slice. The previously published Ilyra asset was inspected through
+Blender MCP, and its live GLB hash and matching frontend/backend Alpha 1.58.5
+identities were rechecked. No art regeneration or deployment was needed.
+Documentation was source-reviewed; no rendered documentation preview was available.
 
 Finish the approved abuse-response and sanction paths, document staff/review
 boundaries and retention, exercise the complete disposable moderation flow,

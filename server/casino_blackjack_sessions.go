@@ -275,7 +275,7 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	if err := requireCasinoFundingLocked(client, currency, bet, now); err != nil {
 		return err
 	}
-	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.Name, Seat: player.CasinoSeat.Seat, Bet: bet})
+	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.DisplayName(), Seat: player.CasinoSeat.Seat, Bet: bet})
 	if state.DealAt.IsZero() {
 		state.DealAt = now.Add(casinoBettingWindow)
 	}

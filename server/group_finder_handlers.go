@@ -78,12 +78,14 @@ func sendGroupFinder(c *Client) {
 	listings := world.GroupFinderListings(c.playerID, time.Now())
 	visible := make([]game.GroupListing, 0, len(listings))
 	for _, listing := range listings {
-		if chatService.shouldFilter(c.username, listing.Name) || chatService.shouldFilter(listing.Name, c.username) {
+		owner := playerIDToUsername(listing.OwnerID)
+		if chatService.shouldFilter(c.username, owner) || chatService.shouldFilter(owner, c.username) {
 			continue
 		}
 		requests := listing.Applicants[:0]
 		for _, request := range listing.Applicants {
-			if !chatService.shouldFilter(c.username, request.Name) && !chatService.shouldFilter(request.Name, c.username) {
+			account := playerIDToUsername(request.PlayerID)
+			if !chatService.shouldFilter(c.username, account) && !chatService.shouldFilter(account, c.username) {
 				requests = append(requests, request)
 			}
 		}

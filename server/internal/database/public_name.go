@@ -121,6 +121,43 @@ func (db *DB) OwnPublicName(owner string) (string, error) {
 	return record.Username, nil
 }
 
+// Only public labels, keyed by existing stable usernames. Bounded explicit
+// friend/guild/history reads do not disclose credentials, saves or sanctions.
+func (db *DB) PublicPlayerNames(accounts []string) (map[string]string, error) {
+	if db == nil || db.users == nil || len(accounts) > 256 {
+		return nil, errors.New("public labels unavailable")
+	}
+	names := make(map[string]string, len(accounts))
+	for _, account := range accounts {
+		names[account] = "Adventurer"
+	}
+	if len(accounts) == 0 {
+		return names, nil
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cursor, err := db.users.Find(ctx, bson.M{"username": bson.M{"$in": accounts}}, options.Find().SetProjection(bson.M{"_id": 0, "username": 1, "public_name": 1}))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+		var row struct {
+			Username   string `bson:"username"`
+			PublicName string `bson:"public_name"`
+		}
+		if err := cursor.Decode(&row); err != nil {
+			return nil, err
+		}
+		if row.PublicName != "" {
+			names[row.Username] = row.PublicName
+		} else {
+			names[row.Username] = row.Username
+		}
+	}
+	return names, cursor.Err()
+}
+
 // One CAS changes the label and resolves its quoted restriction, with the
 // private receipt. Ambiguous writes are not success; identical manual retries
 // recover the durable receipt without reinstating, renaming or clearing anew.

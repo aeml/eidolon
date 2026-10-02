@@ -11,14 +11,15 @@ import (
 )
 
 type guildMemberView struct {
-	PlayerID   string    `json:"playerId"`
-	Username   string    `json:"username"`
-	Rank       string    `json:"rank"`
-	Online     bool      `json:"online"`
-	Class      string    `json:"class,omitempty"`
-	Level      int       `json:"level,omitempty"`
-	JoinedAt   time.Time `json:"joinedAt"`
-	LastOnline time.Time `json:"lastOnline"`
+	DisplayName string    `json:"displayName,omitempty"`
+	PlayerID    string    `json:"playerId"`
+	Username    string    `json:"username"`
+	Rank        string    `json:"rank"`
+	Online      bool      `json:"online"`
+	Class       string    `json:"class,omitempty"`
+	Level       int       `json:"level,omitempty"`
+	JoinedAt    time.Time `json:"joinedAt"`
+	LastOnline  time.Time `json:"lastOnline"`
 }
 
 type guildView struct {
@@ -362,8 +363,14 @@ func buildGuildView(guild *database.Guild, viewerID string) *guildView {
 		Events: database.VisibleGuildEvents(guild, time.Now().UTC()), Activities: game.GroupActivities(),
 	}
 	viewerRank := database.GuildRankMember
+	accounts := make([]string, 0, len(guild.Members))
+	for _, member := range guild.Members {
+		accounts = append(accounts, member.Username)
+	}
+	names := publicPlayerNames(accounts)
 	for _, member := range guild.Members {
 		memberView := guildMemberView{PlayerID: member.PlayerID, Username: member.Username, Rank: member.Rank, JoinedAt: member.JoinedAt, LastOnline: member.LastOnline}
+		memberView.DisplayName = names[member.Username]
 		if member.PlayerID == viewerID {
 			viewerRank = member.Rank
 		}

@@ -54,7 +54,7 @@ func handleMsgFriendRequest(c *Client, msg Message) {
 	addrClient, addrOnline := activeSessions[req.Username]
 	sessionsMu.Unlock()
 	if addrOnline {
-		notifP, _ := json.Marshal(FriendUsernamePayload{Username: c.username})
+		notifP, _ := json.Marshal(FriendUsernamePayload{Username: c.username, DisplayName: clientPublicName(c)})
 		addrClient.sendSafe(createMessage(MsgFriendRequest, notifP))
 	}
 }

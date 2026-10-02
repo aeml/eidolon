@@ -148,9 +148,10 @@ export class UIBindings {
         ui.social.onPartyInvite = (targetName) => {
             engine.socialController.sendPartyMessage('party_invite', { targetName });
         };
-        ui.social.onFriendWhisper = username => {
+        ui.social.onFriendWhisper = (username, displayName) => {
             ui.social.toggleSocial(false);
-            ui.chat?.beginWhisper(username);
+            if (displayName === undefined) ui.chat?.beginWhisper(username);
+            else ui.chat?.beginWhisper(username, displayName);
         };
         ui.social.onPartyLeave = () => {
             engine.socialController.sendPartyMessage('party_leave', {});

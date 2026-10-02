@@ -1,10 +1,10 @@
 // Shared actions use the existing persisted block/ignore commands and report form.
-export function socialSafetyActions(username, context, action) {
+export function socialSafetyActions(username, context, action, displayName = username) {
     const panel = document.createElement('details');
     panel.className = 'social-safety';
     const summary = document.createElement('summary');
     summary.textContent = 'Player safety';
-    summary.setAttribute('aria-label', `Player safety for ${username}`);
+    summary.setAttribute('aria-label', `Player safety for ${displayName}`);
     panel.append(summary);
     for (const [kind, label] of [['block', 'Block player'], ['ignore', 'Ignore chat'], ['report', 'Report player']]) {
         const button = document.createElement('button');

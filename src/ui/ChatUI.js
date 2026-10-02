@@ -50,10 +50,10 @@ export class ChatUI {
                 if (this.safetyPanel !== panel) return;
                 this.closePlayerSafety(action !== 'report');
                 this.onSafety?.(action, username, selected);
-            });
+            }, sender.dataset.chatLabel || sender.dataset.chatPlayer);
             this.safetyPanel = panel;
             panel.open = true;
-            panel.querySelector('summary').textContent = `${sender.dataset.chatPlayer} · Player safety`;
+            panel.querySelector('summary').textContent = `${sender.dataset.chatLabel || sender.dataset.chatPlayer} · Player safety`;
             const close = document.createElement('button');
             close.type = 'button'; close.textContent = 'Close player safety';
             close.onclick = () => { if (this.safetyPanel === panel) this.closePlayerSafety(true); };
@@ -150,7 +150,7 @@ export class ChatUI {
         }
         if (this.input) {
             const destination = { party: 'Message your party…', guild: 'Message your guild…',
-                whisper: this.whisperTarget ? `Whisper to ${this.whisperTarget}…` : 'Reply to last whisper… or /w player message' }[nextStream] || 'Message the current world…';
+                whisper: this.whisperTarget ? `Whisper to ${this.whisperLabel || this.whisperTarget}…` : 'Reply to last whisper… or /w player message' }[nextStream] || 'Message the current world…';
             this.input.placeholder = destination;
             this.input.setAttribute('aria-label', destination);
         }
@@ -161,7 +161,7 @@ export class ChatUI {
         }
     }
 
-    addMessage(sender, message, { stream = 'chat', channel = '' } = {}) {
+    addMessage(sender, message, { stream = 'chat', channel = '', senderAccount = sender } = {}) {
         if (!this.chatBox || !this.messages || message === undefined || message === null) return;
         if (document.body.classList.contains('mobile-mode') && !this.mobileExpanded) {
             this.mobileUnread = Math.min(999, this.mobileUnread + 1);
@@ -184,12 +184,12 @@ export class ChatUI {
 
         const playerSender = typeof this.onSafety === 'function' && normalizedStream === 'chat'
             && ['world', 'global', 'party', 'guild', 'whisper'].includes(channel)
-            && typeof sender === 'string' && sender !== 'System' && sender.length <= 32 && !/[\s/]/.test(sender) && sender;
+            && typeof senderAccount === 'string' && senderAccount !== 'System' && senderAccount.length <= 256 && !/[\s/]/.test(senderAccount) && senderAccount;
         const senderEl = document.createElement(playerSender ? 'button' : 'strong');
         senderEl.className = 'chat-message__sender';
         senderEl.textContent = `${sender || (normalizedStream === 'game' ? 'Game' : 'System')}:`;
         if (playerSender) {
-            senderEl.type = 'button'; senderEl.dataset.chatPlayer = sender;
+            senderEl.type = 'button'; senderEl.dataset.chatPlayer = senderAccount; senderEl.dataset.chatLabel = sender;
             senderEl.setAttribute('aria-label', `Player safety for ${sender}`);
             senderEl.setAttribute('aria-expanded', 'false');
         }
@@ -291,10 +291,11 @@ export class ChatUI {
         this.input?.focus();
     }
 
-    beginWhisper(username) {
+    beginWhisper(username, displayName = username) {
         // A username is one command token, never arbitrary command text.
         if (typeof username !== 'string' || !username || /[\s/]/.test(username)) return false;
         this.whisperTarget = username;
+        this.whisperLabel = displayName;
         this.setActiveStream('whisper');
         this.focusChatInput();
         return true;

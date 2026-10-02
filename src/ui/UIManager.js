@@ -1322,7 +1322,7 @@ export class UIManager {
         this.social.updateParty(partyData);
         this.dungeonPreparationRefresh?.(partyData);
     }
-    showPartyRequest(inviterName, invitationId, context) { this.social.showPartyRequest(inviterName, invitationId, context); }
+    showPartyRequest(inviterName, invitationId, context, displayName) { this.social.showPartyRequest(inviterName, invitationId, context, displayName); }
     hidePartyRequest() { this.social.hidePartyRequest(); }
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) { this.inventory.setupItemDragAndDrop(element, type, indexOrSlot, item); }

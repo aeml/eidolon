@@ -76,6 +76,7 @@ type Entity struct {
 	CasinoSeat               *CasinoSeatSession   `json:"-"` // Session-local; saves project its safe exit.
 	WorldEventID             string               `json:"-"` // Temporary event enemies never become normal respawns.
 	Name                     string               `json:"name"`
+	PublicName               string               `json:"-"` // Presentation only; Name remains the immutable save/ownership key.
 	Type                     EntityType           `json:"type"`
 	SubType                  string               `json:"subType"` // e.g., "Fighter", "Skeleton"
 	X                        float64              `json:"x"`
@@ -919,6 +920,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		PvPReturn:                clonePvPOrigin(e.PvPReturn),
 		CasinoSeat:               cloneCasinoSeat(e.CasinoSeat),
 		Name:                     e.Name,
+		PublicName:               e.PublicName,
 		PartyID:                  e.PartyID,
 		SocialStatus:             e.SocialStatus,
 		GuildID:                  e.GuildID,

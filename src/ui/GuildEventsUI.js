@@ -103,7 +103,9 @@ export class GuildEventsUI {
         for (const activity of guild.activities || []) this.activity.add(new Option(activity.name, activity.id));
         if ([...this.activity.options].some(option => option.value === selection)) this.activity.value = selection;
         this.list.replaceChildren();
-        const self = (guild.members || []).find(member => member.username === this.getPlayer?.()?.name);
+        const player = this.getPlayer?.();
+        const self = (guild.members || []).find(member => player?.id
+            ? member.playerId === player.id : member.username === player?.name);
         if (!guild.events?.length) {
             const empty = document.createElement('p'); empty.textContent = 'No scheduled events yet.'; this.list.append(empty);
         }
@@ -144,7 +146,7 @@ export class GuildEventsUI {
                 const member = (guild.members || []).find(member => member.playerId === rsvp.playerId);
                 if (!member) continue;
                 const row = document.createElement('div'); row.className = 'guild-events__controls';
-                const text = document.createElement('span'); text.textContent = `${member.username} · ${rsvp.role} · ${rsvp.status} · ${member.online ? `${member.class || 'Adventurer'} ${member.level || ''} · Online` : 'Offline'}`;
+                const text = document.createElement('span'); text.textContent = `${member.displayName || member.username} · ${rsvp.role} · ${rsvp.status} · ${member.online ? `${member.class || 'Adventurer'} ${member.level || ''} · Online` : 'Offline'}`;
                 row.append(text);
                 if (active && member.online && member.playerId !== self?.playerId) row.append(this.button('Invite to party', () => this.invite(member.username)));
                 roster.append(row);

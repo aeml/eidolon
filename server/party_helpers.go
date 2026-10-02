@@ -61,7 +61,7 @@ func broadcastPartyUpdate(party *game.Party) {
 		if entity != nil {
 			membersData = append(membersData, map[string]interface{}{
 				"id":         entity.ID,
-				"name":       entity.Name,
+				"name":       entity.DisplayName(),
 				"class":      entity.SubType,
 				"level":      entity.Level,
 				"hp":         entity.Health,

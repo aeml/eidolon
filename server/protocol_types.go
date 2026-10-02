@@ -22,6 +22,7 @@ const (
 // EntitySnapshot stores minimal state for delta comparison
 // We only track fields that change frequently
 type EntitySnapshot struct {
+	PublicName                 string
 	X                          float64
 	Z                          float64
 	Y                          float64
@@ -115,6 +116,7 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
+	publicName      atomic.Pointer[string]
 	retired         atomic.Bool
 	transportClosed atomic.Bool
 	sendMu          sync.RWMutex
@@ -333,6 +335,8 @@ type InventoryDropPayload struct {
 }
 
 type SocialEntry struct {
+	Username     string `json:"username,omitempty"`
+	PlayerID     string `json:"playerId,omitempty"`
 	Name         string `json:"name"`
 	Class        string `json:"class"`
 	Level        int    `json:"level"`
@@ -346,11 +350,13 @@ type SocialStatusPayload struct {
 // FriendUsernamePayload is used for friend_request / friend_accept / friend_decline / friend_remove.
 // Username is the other player's username (not playerID).
 type FriendUsernamePayload struct {
-	Username string `json:"username"`
+	Username    string `json:"username"`
+	DisplayName string `json:"displayName,omitempty"`
 }
 
 // FriendEntry is one row in the friend list sent to the client.
 type FriendEntry struct {
+	DisplayName  string `json:"displayName,omitempty"`
 	Username     string `json:"username"`
 	Online       bool   `json:"online"`
 	SocialStatus string `json:"socialStatus,omitempty"`
@@ -358,12 +364,14 @@ type FriendEntry struct {
 
 // FriendListPayload is the full S→C friend_list payload.
 type FriendListPayload struct {
-	Friends []FriendEntry `json:"friends"`
-	Pending []string      `json:"pending"` // usernames of players who sent *this* player a pending request
+	PendingNames map[string]string `json:"pendingNames,omitempty"`
+	Friends      []FriendEntry     `json:"friends"`
+	Pending      []string          `json:"pending"` // usernames of players who sent *this* player a pending request
 }
 
 // FriendPresencePayload is sent S→C when a friend comes online or goes offline.
 type FriendPresencePayload struct {
+	DisplayName  string `json:"displayName,omitempty"`
 	Username     string `json:"username"`
 	Online       bool   `json:"online"`
 	SocialStatus string `json:"socialStatus,omitempty"`
@@ -691,6 +699,7 @@ type RoomClearRewardPayload struct {
 }
 
 type ChatPayload struct {
+	PublicName  string `json:"publicName,omitempty"`
 	Message     string `json:"message"`
 	Sender      string `json:"sender"`
 	Channel     string `json:"channel,omitempty"`
@@ -724,6 +733,7 @@ type PartyResponsePayload struct {
 }
 
 type PartyRequestPayload struct {
+	DisplayName  string `json:"displayName,omitempty"`
 	TargetName   string `json:"targetName"`
 	InvitationID string `json:"invitationId"`
 	Context      string `json:"context,omitempty"`

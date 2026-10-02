@@ -19,7 +19,9 @@
     "Authenticated appeal protocol works without a character; other report categories retain the active-character requirement.",
     "Prepared, unwired world-entry/resume restriction classifier preserves independent restrictions, original expiry and session fencing without per-tick database queries.",
     "Authenticated confirmed public-name correction: separate review/confirmation, original receipt on manual exact retry, atomic public-label and quoted-notice completion, preserved login/save/social/currency keys and independent restrictions.",
-    "Prepared schema17 unique partial alias reservation index and new registration writer, with no legacy rename or backfill."
+    "Prepared schema17 unique partial alias reservation index and new registration writer, with no legacy rename or backfill.",
+    "Separate world public labels, stationary-name deltas and local/remote tag updates; stable selected chat/social targeting, recruitment requests and guild-bank retry identities.",
+    "Bounded offline social/history label projections and current-label refresh after historical correction retries."
   ],
   "checks": {
     "goRace": "Focused server handler, notice and chat guard tests passed in 4.496 seconds; database moderation tests passed in 1.090 seconds.",
@@ -66,11 +68,18 @@
       "schema": "Prepared schema17; real disposable startup migration passed. Production remains on the published source, not migrated by this work.",
       "limits": "Public identity presentation, all-three restriction enforcement and complete milestone activation remain unfinished."
     },
+    "publicNamePresentation": {
+      "client": { "suites": 10, "tests": 198, "seconds": 9.448, "result": "passed", "limits": "Focused new public-label regressions plus existing NPC, session, social, banking and notice checks; not 198 new cases." },
+      "goRace": "Focused server 6.927, game 9.523 and database 1.061 seconds; final named-player chat/block and recruitment checks 1.861 seconds.",
+      "mongo": "Existing disposable correction exercise extended with bounded label projections passed under race in 6.742 seconds; authentication, protected data and independent restrictions still checked.",
+      "cleanup": "Exact eidolon-public-label-20261002, label eidolon.task=public-label-20261002, loopback 127.0.0.1:32821 removed with its anonymous volume. Production untouched.",
+      "limits": "Prepared only; typed aliases, auction/PvP labels and full restriction enforcement remain. No new browser or socket/restart acceptance for this slice."
+    },
     "scopedLint": "passed",
     "whitespace": "passed"
   },
   "remaining": [
-    "Consistent corrected-public-name presentation across world/chat/social surfaces while preserving stable targeting and ownership keys; stored correction and owner login UI are implemented and socket/restart tested.",
+    "Finish typed public-name target lookup and auction/PvP display projections; world tags and selected social actions are prepared and regression tested with stable ownership keys.",
     "Suspension enforcement for joining, resuming and already-online play; authenticated outside-world notice/appeal access is prepared and independently exercised.",
     "Full server registry and client control activation; real authenticated WebSocket and game-server restart acceptance.",
     "Staff/review boundaries and existing retention documentation; no new purge or staffing promise.",

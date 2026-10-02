@@ -456,7 +456,7 @@ class GameEngineNetworkMessageMethods {
         if (msg.type === 'chat') {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
-            this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+            this.uiManager.addChatMessage(chatData.publicName || chatData.sender, chatData.message, { channel, senderAccount: chatData.sender });
         } else if (msg.type === 'report_result') {
             this.uiManager?.report?.handleResult(msg.payload);
         } else if (msg.type === 'report_status_result') {
@@ -1017,6 +1017,8 @@ class GameEngineNetworkMessageMethods {
 
                         let justRespawned = false;
 
+                        if (pData.name && this.player.name !== pData.name) this.player.setName?.(pData.name);
+
                         // Sync State
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
@@ -1308,6 +1310,7 @@ class GameEngineNetworkMessageMethods {
 
                 // Skip self - local player updates come through full state messages
                 if (pData.id === this.player.id) {
+                    if (pData.name && this.player.name !== pData.name) this.player.setName?.(pData.name);
                     // Still update critical player state from delta
                     if (this.player && this.player.stats) {
                         const previousX = this.player.position?.x;

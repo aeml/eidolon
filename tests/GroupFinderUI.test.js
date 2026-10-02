@@ -14,6 +14,18 @@ function setup() {
     return {ui, action, invite};
 }
 
+test('corrected recruitment labels do not become safety account targets', () => {
+    const { ui } = setup();
+    ui.safety = jest.fn();
+    ui.update({ viewerId: 'self', activities, meetingPoints,
+        listings: [{ ...listing, ownerId: 'player-Alice', name: 'Arcanis Dawn' }] });
+    const safety = ui.list.querySelector('.social-safety');
+    expect(safety.querySelector('summary').getAttribute('aria-label')).toContain('Arcanis Dawn');
+    const block = safety.querySelector('button');
+    block.click(); block.click();
+    expect(ui.safety).toHaveBeenCalledWith('block', 'Alice', expect.any(String));
+});
+
 test('shows safe listing text and sends a request, never an automatic invitation', () => {
     const {ui,action,invite}=setup();
     expect(ui.container.querySelector('img,script')).toBeNull();

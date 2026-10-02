@@ -412,7 +412,7 @@ func (w *World) CasinoPresenceFor(playerID string, now time.Time) CasinoPresence
 		}
 		player.Mu.RLock()
 		if seat := player.CasinoSeat; seat != nil {
-			occupant := CasinoOccupant{PlayerID: player.ID, Name: player.Name, TableID: seat.TableID, Seat: seat.Seat, Connected: !player.Disconnected, Ready: seat.Ready}
+			occupant := CasinoOccupant{PlayerID: player.ID, Name: player.DisplayName(), TableID: seat.TableID, Seat: seat.Seat, Connected: !player.Disconnected, Ready: seat.Ready}
 			if player.Disconnected {
 				occupant.ReservedUntil = player.DisconnectedAt.Add(CasinoReconnectGrace)
 			}

@@ -360,7 +360,7 @@ func handleHouseBet(c *Client, sessionID, roundID string, wagers []game.CasinoWa
 	if err := requireCasinoFundingLocked(c, table.Currency, amount, now); err != nil {
 		return err
 	}
-	s.Players = append(s.Players, houseParticipant{PlayerID: c.playerID, Name: p.Name, Seat: p.CasinoSeat.Seat, SessionID: sessionID, Wagers: append([]game.CasinoWager(nil), wagers...)})
+	s.Players = append(s.Players, houseParticipant{PlayerID: c.playerID, Name: p.DisplayName(), Seat: p.CasinoSeat.Seat, SessionID: sessionID, Wagers: append([]game.CasinoWager(nil), wagers...)})
 	return transferHouseLocked(r, s, c.playerID, -amount, "wager")
 }
 

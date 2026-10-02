@@ -126,6 +126,16 @@ func TestReportReviewMongoPublicNameCorrectionPreservesAccountAndIndependentRest
 	if name, err := db.OwnPublicName("LegacyOwner"); err != nil || name != "LegacyOwner" {
 		t.Fatal("legacy label not preserved", name, err)
 	}
+	labels, err := db.PublicPlayerNames([]string{owner, "LegacyOwner", "missing-owner", owner})
+	if err != nil || len(labels) != 3 || labels[owner] != "Arcanis Dawn" || labels["LegacyOwner"] != "LegacyOwner" || labels["missing-owner"] != "Adventurer" {
+		t.Fatal("bounded public projection changed identities or lost labels", labels, err)
+	}
+	if labels, err := db.PublicPlayerNames(nil); err != nil || len(labels) != 0 {
+		t.Fatal("empty label projection failed", labels, err)
+	}
+	if _, err := db.PublicPlayerNames(make([]string, 257)); err == nil {
+		t.Fatal("unbounded public projection accepted")
+	}
 	state, err = db.ReadAccountChatModeration(account)
 	if err != nil || state.NameChange != nil || state.Mute == nil || state.Suspension == nil || state.Revision != 4 || len(state.Receipts) != 4 {
 		t.Fatal("correction erased restriction or duplicated receipt", state, err)
