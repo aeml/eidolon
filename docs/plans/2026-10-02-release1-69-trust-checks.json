@@ -39,6 +39,15 @@
     "First native fixture used nonexistent fields on the existing array-valued browser-failure collector; corrected the fixture to assert the complete retained failure array.",
     "Rendered inspection showed clipped totals. The stronger visible-hand-area assertion initially failed at 390px; compact controls and blackjack-specific mobile geometry fixed it. Final two-width route passed."
   ],
+  "versionAssembly": {
+    "sourceVersion": "Alpha 1.69.0",
+    "status": "prepared, unpublished",
+    "alignedDefaultsAndCumulativeNotes": true,
+    "client": {"suites": 9, "tests": 484, "seconds": 6.299, "passed": true},
+    "lint": "passed",
+    "whitespace": "passed",
+    "limits": "Counts overlap the earlier 1.68-default check. No new browser run or runtime change is claimed by version alignment. Predecessor deployment, policy decisions, exact-source CI and public acceptance remain required."
+  },
   "policy": {
     "paymentIntegration": "Excluded by owner; not implemented or enabled.",
     "futureCommerceIntent": "Retained owner plan for VIP monthly EP and potential paid EP, with EP-only wagering/appearance use, no Gold conversion or player power.",

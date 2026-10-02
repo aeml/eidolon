@@ -3,7 +3,14 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.68.0';
+const currentVersion = '1.69.0';
+
+test("1.69.0 documents casino-trust without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.69.0"'), previous = html.indexOf('data-version="1.68.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["voluntary browser controls","not an account lock","does not reset the timer","never restarts a queue","Saved free spins","first hand's total","not celebrated as a win","Payment integration remains excluded","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.68.0 documents VIP-membership without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');
