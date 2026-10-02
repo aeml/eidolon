@@ -24,9 +24,10 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `EIDOLON_QA_USERNAMES` (optional; dedicated QA usernames only)
 - `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact usernames allowed to persist the administrator role with `/relevel`; currently only `donveetz`)
 - `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` (optional, defaults to90; whole days7–365)
+- `EIDOLON_AUTH_MAX_CONCURRENT` (prepared1.71; optional, defaults to4; whole number1–32)
 
 The prepared 1.71 account-security candidate adds `-auth-max-concurrent`
-(default4, accepted range1–32) to bound simultaneous login/registration database
+(default4, accepted range1–32; Compose reads `EIDOLON_AUTH_MAX_CONCURRENT`) to bound simultaneous login/registration database
 queries and password hashes. Busy requests receive retry feedback immediately;
 there is no unbounded authentication queue, and gameplay does not take this
 credential-work lock. The slot is released before character hydration, audit
