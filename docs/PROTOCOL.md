@@ -80,6 +80,13 @@ The existing `ability_result` reply reports `accepted: false` and
 it is input validation, not evidence that every ability's range/target authority
 or an entire encounter has passed connected QA.
 
+Network jump admission also rejects invalid/non-replicable coordinates and an
+attempt to restart or redirect an actor already in `JUMPING`. Its landing height
+comes from the server-owned floor or destination terrain, not client Y. Existing
+geometry, crowd-control, recovery-context and casino walking-only rules remain.
+Jump distance/flight-speed policy is still unfinished; these checks do not make
+arbitrarily long jumps safe or constitute a full movement-authority closeout.
+
 ## Build-action receipts
 
 Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on

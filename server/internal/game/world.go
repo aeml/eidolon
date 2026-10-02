@@ -1480,8 +1480,14 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	}
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
-	if context != nil && (*context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second)) {
-		return false
+	if context != nil {
+		if *context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second) ||
+			e.State == "JUMPING" || !replicableMovementNumber(x) || !replicableMovementNumber(y) || !replicableMovementNumber(z) {
+			return false
+		}
+		// A jump chooses a horizontal destination, never an airborne floor.
+		// Overworld grounding below resolves authored terrain at that destination.
+		y = e.Y
 	}
 	if e.CasinoSeat != nil || e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false

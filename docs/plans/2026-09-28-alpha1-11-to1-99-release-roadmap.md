@@ -149,6 +149,10 @@ rejects invalid ability coordinates before commitment and closes endpoint-only
 network walking through canonical walls, retaining real doorways. All 52 skills'
 invalid-input and offset-dungeon coordinate contracts passed scoped race checks;
 full jump/ability authority and connected release gates are still unfinished.
+[Jump input/floor checks](2026-10-02-release1-72-jump-input-checks.json) now reject
+invalid coordinates and mid-flight restarts and keep landing height server-owned.
+The quick-jump range versus distance-scaled flight policy still needs resolution;
+neither this partial work nor its isolated tests is a 1.72 release acceptance.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 network jump input and floor authority",
+  "status": "partial prepared implementation; not versioned or published as 1.72",
+  "baselineEvidence": "The isolated dungeon_jump-input test failed on the preceding source: a network jump used client targetY=999 as its airborne landing height.",
+  "implementation": [
+    "Reject nonfinite and float32-overflowing X/Y/Z before changing network jump state, including finite JSON-representable overflow values.",
+    "Reject network restart/redirection while the actor is already jumping. The server's current flight progress and target remain unchanged.",
+    "Keep landing height on the server-owned floor or resolve overworld destination terrain. Existing casino, geometry, recovery context, movement-lock and crowd-control rules remain.",
+    "Trusted internal jump helpers retain their previous admission behavior; no arbitrary distance cap or changed flight duration was silently added."
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1, race detector",
+    "command": "go test -race ./internal/game . -run '^Test(NetworkJump|StartPlayerJump|WorldUpdate.*Jump|NetworkMovementBudget|NetworkWalking|RockMovement|World.*Ground|TownRecoveryContext|RecoveryContext|DarkRealmReentry)' -count=1",
+    "gameSeconds": 8.484,
+    "serverSeconds": 2.537,
+    "newCases": "Seven invalid-coordinate cases preserve idle/flight state; overworld, canonical dungeon and shared Dark Realm cases accept ordinary horizontal jumps while ignoring client targetY=999, then reject mid-flight restart without changing progress, destination or duration.",
+    "retainedCases": "Existing canonical jump destination, server-tick flight/landing and dead-jump checks; all six WorldGrounding groups; network walking allowance/path/height checks; rock sequencing/grounding; town recovery and shared expedition context reset passed."
+  },
+  "sourceSha256": {
+    "server/internal/game/world.go": "22c8bbc200c628ad7a57442212ae3d1cbb8867957482badd005560f0934eaa3b",
+    "server/internal/game/jump_input_authority_test.go": "d6f2d09f7a8db2230b1d2ff3bdca41aace87af0736d9f9ca549c4a877f64380d"
+  },
+  "limits": [
+    "Arbitrary-distance jumps still use the prior capped flight time. Owner choice between quick range-limited jumps and distance-scaled flight was requested; the full jump movement trust boundary is not closed.",
+    "These checks do not constitute a connected browser/socket jump route, campaign, PvP anti-cheat certification, capacity soak, production binary or deployment. Existing source receipts remain historical for their recorded hashes.",
+    "No live characters, saved stats, production services, host settings or credentials were changed. Ordered predecessor releases and the remaining 1.71/1.72 requirements remain open."
+  ]
+}

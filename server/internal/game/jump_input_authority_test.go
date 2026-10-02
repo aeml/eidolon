@@ -1,0 +1,60 @@
+package game
+
+import (
+	"math"
+	"testing"
+)
+
+func TestNetworkJumpRejectsInvalidCoordinatesWithoutStartingFlight(t *testing.T) {
+	for _, input := range []struct {
+		name    string
+		x, y, z float64
+	}{
+		{"nan-x", math.NaN(), 0, 0},
+		{"nan-y", 1, math.NaN(), 0},
+		{"nan-z", 1, 0, math.NaN()},
+		{"infinite", math.Inf(1), 0, 0},
+		{"overflow-x", 1e39, 0, 0},
+		{"overflow-y", 1, 1e39, 0},
+		{"overflow-z", 1, 0, -1e39},
+	} {
+		t.Run(input.name, func(t *testing.T) {
+			p := newTestPlayer("invalid-jumper", "Fighter")
+			w := newPvPTestWorld(p)
+			if w.StartPlayerJumpWithContext(p.ID, input.x, input.y, input.z, "") {
+				t.Fatal("invalid jump started")
+			}
+			if p.State != "IDLE" || p.JumpDuration != 0 || p.JumpTargetX != 0 || p.JumpTargetY != 0 || p.JumpTargetZ != 0 {
+				t.Fatal("invalid jump changed flight state")
+			}
+		})
+	}
+}
+
+func TestNetworkJumpKeepsServerLandingHeightAndCannotRestartMidFlight(t *testing.T) {
+	for _, instance := range []string{"", "dungeon_jump-input", DarkRealmInstanceID} {
+		t.Run(instance, func(t *testing.T) {
+			p := newTestPlayer("guarded-jumper", "Fighter")
+			p.InstanceID = instance
+			if instance == DarkRealmInstanceID {
+				p.X, p.Z = 40000, 40800
+			}
+			w := newPvPTestWorld(p)
+			if instance == "dungeon_jump-input" {
+				w.InstanceLayouts = map[string]*DungeonInstance{instance: {Layout: singleRoomDungeonLayout()}}
+			}
+			if !w.StartPlayerJumpWithContext(p.ID, p.X+12, 999, p.Z, "") {
+				t.Fatal("ordinary jump rejected")
+			}
+			if p.JumpTargetY != 0 || p.JumpStartY != 0 || p.State != "JUMPING" {
+				t.Fatalf("client controls airborne landing height: start=%v target=%v state=%v", p.JumpStartY, p.JumpTargetY, p.State)
+			}
+			p.JumpElapsed = .2
+			previousX, previousZ, previousDuration := p.JumpTargetX, p.JumpTargetZ, p.JumpDuration
+			if w.StartPlayerJumpWithContext(p.ID, p.X+15, 0, p.Z, "") || p.JumpElapsed != .2 ||
+				p.JumpTargetX != previousX || p.JumpTargetZ != previousZ || p.JumpDuration != previousDuration {
+				t.Fatal("network request restarted or redirected an active jump")
+			}
+		})
+	}
+}
