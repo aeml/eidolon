@@ -35,11 +35,20 @@ test("1.64.0 documents house-table without new awards or automatic actions", () 
 
 test('1.63.0 explains shared Hold’em, private cards and saved current-chair cash-outs', () => {
     const html = fs.readFileSync('index.html', 'utf8');
-    const start = html.indexOf('data-version="1.63.0"'), previous = html.indexOf('data-version="1.62.0"');
+    const start = html.indexOf('data-version="1.63.0"'), previous = html.indexOf('data-version="1.62.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['real-player-only', 'current best hand', 'hidden opponent cards stay private',
         'checks when free or folds to a bet', 'only after saving', 'later patron', 'all-in eligibility',
         'pending return', '100,000 Gold or 100 EP', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.62.1 records bounded asset recovery without hiding persistent failures or changing gameplay', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.62.1"'), previous = html.indexOf('data-version="1.62.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['unavailable browser cache reads', 'one bounded retry', 'Persistent network failures',
+        'HTTP errors remain visible', 'never replayed', "Ilyra's permanent wizard outfit", 'No account reset',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
 test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack returns', () => {
