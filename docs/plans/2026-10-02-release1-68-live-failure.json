@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.68.0",
+  "status": "deployed but not accepted",
+  "commit": "1edde7ba786d0a8526db99ed19ba081c590d1cd4",
+  "ciRun": 37024557601,
+  "terminalResult": "failure",
+  "receiptRecordedAt": "2026-10-02T16:06:55Z",
+  "rootIndependentlyChecked": true,
+  "jobs": "First nine jobs passed, including predeploy character QA and both deployments. Live Release and Character QA failed.",
+  "observations": [
+    "First movement attempt passed town sustained-movement assertions, then failed its unobstructed ground-ray precondition outside town: Skeleton-lanternhold-1 occupied the pointer ray before clicking.",
+    "Its sampler had already started before the failed precondition, causing a secondary Test ended evaluation error.",
+    "Retry passed the exact-click displacement and accepted-input assertions, but counted one animation transition against the required zero; prior arrival readiness checked logical idle without checking the actual Idle animation.",
+    "Authenticated persistence first attempt observed zero for the exact picked-up item at its immediate fresh-login read. Retry passed. This does not establish whether private inventory arrival or another persistence race caused that observation."
+  ],
+  "publicRecheck": "In this correction turn, frontend/backend returned the exact 1.68.0 SHA and database ready. Ilyra's GLB still hashes to 010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7. This is not a CI acceptance or new render check.",
+  "limits": "Serving exact bytes and successful deploy jobs do not override a failed gate. No run cancellation, automatic rerun, gameplay weakening, account grant or production data change was used."
+}

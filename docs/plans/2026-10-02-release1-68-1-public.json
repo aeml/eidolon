@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.68.1",
+  "status": "accepted",
+  "commit": "53bd461972f6f99ec46e36ccea83f0d7c010c89b",
+  "ciRun": 37031968011,
+  "publicVerifiedAt": "2026-10-02T16:51:07.134Z",
+  "frontend": {
+    "commit": "53bd461972f6f99ec46e36ccea83f0d7c010c89b",
+    "version": "Alpha 1.68.1"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "53bd461972f6f99ec46e36ccea83f0d7c010c89b",
+    "version": "Alpha 1.68.1"
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 756865,
+      "sha256": "56a65c66b06449116c60c45d980e170e5855f7c7da21240fde921baee487304f",
+      "exactPublisher": true
+    },
+    {
+      "path": "src/ui/EPWalletUI.js",
+      "bytes": 9243,
+      "sha256": "4210646bb2019b218baa31cdf6727b843c3977b3c94f67ddb97304771f694c83",
+      "exactPublisher": true
+    }
+  ],
+  "recheckedAsset": {
+    "path": "assets/npcs/ilyra/ilyra-archmage.glb",
+    "bytes": 1548340,
+    "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+    "exactSource": true
+  },
+  "ciRootIndependentlyVerified": true,
+  "limits": [
+    "Public HTTPS verified over IPv4 using ordinary DNS; owner-deferred IPv6 reachability remains separate.",
+    "Both client runtime files changed since accepted1.67 match full publisher output. Ilyra model rechecked separately; no new human art approval, full catalog render or physical-phone certification.",
+    "Exact-source CI passed all ten jobs, including predeploy and live character QA. Earlier local native/settlement receipts retain their stated scope; campaign pacing, legal, commerce and capacity gates are not inferred."
+  ]
+}
