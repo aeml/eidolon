@@ -254,8 +254,12 @@ limits repeated saves to one worker and one fresh-capture request per connection
 preserving canonical ownership checks, durable journals and final shutdown saves.
 Concurrent bursts, replacement owners, failed-write recovery, independent
 accounts and late-reward shutdown regressions pass under the race detector.
-Global completion/cleanup admission and latest-source connected evidence remain
-open; this does not certify capacity or publish the 1.72 milestone.
+The [latest connected save check](2026-10-02-release1-72-save-connected-checks.json)
+also passes three short actual-server fixtures for credentials, administrator
+history/restart and ordinary casting/resources/equipment through session handoff
+and final save, using a race-enabled e1d84ac0 binary and disposable Mongo.
+Global completion/cleanup admission and broader gameplay/load evidence remain
+open; these checks do not certify capacity or publish the 1.72 milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

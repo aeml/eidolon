@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial security work",
+  "sourceCommit": "e1d84ac0706e7c7b5c71ca917c9e4074a709a3c8",
+  "binary": {
+    "path": "/tmp/eidolon-1-72-save-account-ZjxELM/server",
+    "sha256": "596fdad326b956d1f37c062bc5ed7de9760144132a24727827372090c573d200",
+    "go": "go1.27.1",
+    "raceEnabled": true,
+    "harnessBuildCommit": "server",
+    "versionScope": "Inherited Alpha 1.70.0 defaults, not a 1.72 deployment. Existing fixture requires the binary basename as health identity; tested source is recorded separately."
+  },
+  "checks": {
+    "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32850 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-1-72-save-account-ZjxELM/server GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(CredentialActualFreshConnectionsAndTakeover|AdminConsoleActualSessionsAndHistoryRestart|ResourceActualLiveHandoff)$' -count=1 -timeout=60s",
+    "passed": true,
+    "packageSeconds": 32.456,
+    "tests": 3,
+    "scope": [
+      "Real legacy-password login, malformed-input closure, reserved names, fresh-connection account budgets, takeover rotation and single-use disconnected resume.",
+      "Real administrator/non-administrator sessions, account support and activity-history persistence across a fresh-process restart.",
+      "Ordinary Fireball cast, repeated joins, overlapping login, late old-socket cleanup, replacement-owner command and final durable resource/equipment/Gold save.",
+      "Latest server includes staged HTTP/connection/input/private-feedback bounds and the newly coalesced character-save path."
+    ]
+  },
+  "disposableDatabase": {
+    "container": "9acb1387a90e90440c4b08e999625326ba26e62554206a686e9443076c6bac3a",
+    "label": "eidolon.qa.scope=save-coalesce-e1d84ac0",
+    "image": "mongo:7.0.16",
+    "port": "127.0.0.1:32850",
+    "storage": "Dedicated /data/db tmpfs bounded to 512 MiB and /data/configdb to 32 MiB; inspected Mounts=[] and memory/CPU caps. No production or persistent mount.",
+    "cleanup": "Stopped and removed only this exact inspected task container after completion. Its synthetic accounts were ephemeral; binary/process-log artifacts remain. No production accounts, data, services or global Docker caches changed."
+  },
+  "limits": [
+    "Three short isolated fixtures, not a campaign run, connected-load/capacity test, exhaustive protocol review or public deployment acceptance.",
+    "Save-burst bounds and journal-failure injection retain their separate focused proof. These connected tests do not inject database failure or simulate 100 players.",
+    "Global completion/cleanup admission, jump-range policy, recovery delivery, complete security review and ordered release acceptance remain open."
+  ]
+}
