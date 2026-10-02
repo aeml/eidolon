@@ -178,6 +178,14 @@ Go1.27.1 source checks passed. This is not connected to live trading: the shared
 durable decision store, two-account coordinator, escrow saves, delivery claims
 and startup/login recovery remain required. Ship compatible readers before the
 new writer; retention alone is not recovery or unrestricted rollback.
+The [shared decision-store follow-up](2026-10-02-release1-73-trade-store-checks.json)
+now freezes the first settlement/cancellation plan and verifies both actual
+saved character receipts before completion. Focused driver-mock/race checks
+pass; actual index/repository-restart checks are prepared for existing isolated
+Mongo CI, not claimed locally successful. Prepared schema18 reserves both pending
+accounts and fences older reader-only binaries without any value backfill.
+Escrow production, sorted two-account coordination, delivery claims and
+startup/login recovery are still unfinished; no1.73 release is published.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

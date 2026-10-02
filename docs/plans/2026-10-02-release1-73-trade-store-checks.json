@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 durable shared direct-trade decision storage",
+  "status": "prepared, not published or connected to the trade coordinator",
+  "sourceCommit": "e29e80466c8709d04a8815106dfe6ef76105fcc6",
+  "readerCompatibilityMerges": {"72": "7a495387", "73": "9d4d8bcd"},
+  "changes": [
+    "Store one immutable server-authored settlement-or-cancellation decision per stable trade ID. Duplicate preparation retains the first exact plan, timestamp and terminal outcome; changed plans conflict and another pending participant reservation reports busy.",
+    "Force primary majority reads and journaled majority writes independently of URI preferences. Unknown insert/completion acknowledgements remain unknown and require the same-ID read; no compensating grant or cancellation is performed.",
+    "Require actual durable character receipts for BOTH participants before the compare-and-set completion. Caller-provided snapshots or boolean save flags cannot acknowledge a decision. Terminal replay does not rewrite participants.",
+    "Schema18 creates a unique partial multikey index reserving both pending accounts, plus a bounded recovery index. Reader-only older binaries refuse startup on this schema because byte preservation alone is not coordinated trade recovery. No character/currency/item backfill or terminal-ID expiry.",
+    "Add an isolated-Mongo CI fixture for actual two-account index reservation, partial-save rejection, receipt verification after a new repository/client, immutable terminal replay and both participants' pending queries."
+  ],
+  "checks": {
+    "driverMockRace": "Go1.27.1 focused database race checks passed in1.181s. Six preparation outcomes, nine completion outcomes and three recovery/index groups exercise production driver commands, unknown acknowledgements, unproven receipts, frozen-plan CAS and journal/read concerns.",
+    "relatedRace": "Go1.27.1 go test -race ./internal/database . -run '^(TestDirectTrade|TestSchemaMigrationCatalogIsContiguous|TestValidateSupportedSchema|TestVendor|TestCharacterPersistence)' -count=1 -timeout=45s passed: database1.177s, server3.789s. Test selection also retains the journal reader and vendor save-barrier regressions.",
+    "actualMongo": "Explicit -v run confirms TestDirectTradeMongoReservationReceiptsAndRepositoryRestart and TestRunMigrationsIsIdempotentAndBuildsQueryIndexes SKIPPED because MONGO_URI is absent. These are prepared CI checks, not local proof of actual index enforcement, persistence or failover.",
+    "format": "gofmt and git diff --check passed. go mod tidy adds only the existing-checksummed indirect go-spew dependency used by Mongo's test mock package; no runtime dependency upgrade."
+  },
+  "sourceHashes": {
+    "server/internal/database/direct_trade_operations.go": "19bdbc94f3b6306306cc66c268a163987a192fe806d9b877c96bf62b096b4b67",
+    "server/internal/database/direct_trade_operations_test.go": "4620ac268844cba1b9561046bf70c0084a5496a7a9a1bf5cd17b4f75c50fce09",
+    "server/internal/database/direct_trade_operations_mongo_test.go": "f4e5075350dacf2157f897db8b089d145377a53ed6edcf8243380e4ff9f1b5d7",
+    "server/internal/database/migrations.go": "c781252e3138f97bd1061d53a5a9785007581691d3609f836fc267d123deee55",
+    "server/internal/database/migrations_test.go": "fd794d4d84a06351be07789554d16578db49c21e6782e892abf35bb27b7eaf71",
+    "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7"
+  },
+  "references": {
+    "uniquePartialMultikey": "https://www.mongodb.com/docs/manual/core/index-unique/",
+    "journalAcknowledgement": "https://www.mongodb.com/docs/manual/reference/write-concern/"
+  },
+  "limits": [
+    "No new local Mongo process, native browser, sockets, long soak, production-data mutation, push or deployment. Live remains accepted Alpha1.70.1 fa414f0b288e8ee014d5ce72f7affdca485e1c7f.",
+    "This storage API does not persist current RAM escrow, coordinate the two live account locks, apply/claim deliveries, fence startup/login or retire old cleanup behavior. Those integrations remain required before publishing1.73.",
+    "Completion relies on the coordinator holding BOTH sorted account work locks and fencing later saves throughout both durable receipt reads. The storage API alone is not cross-account transactional runtime safety.",
+    "Schema18 is prepared only. Do not remove its marker to start an older server or claim rollback by byte preservation. Future downgrade requires a compatible recovery writer or an explicit proven recovery strategy.",
+    "The full valuable-operation ledger, recovery growth/retention and exact-source release/public checks remain open. No whole-economy, capacity or milestone-completion claim."
+  ]
+}
