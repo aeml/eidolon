@@ -70,12 +70,20 @@ unverified forwarding-header claim; it cannot set authority or throttle keys.
 The existing stdout cooldown now samples actual transport peers, with at most
 4096 bounded keys and periodic expired-key reclamation. Behind a reverse proxy,
 stdout may sample the proxy as one peer; this is diagnostic sampling, never a
-player/login restriction. File records retain their separate global budget.
+player/login restriction. File records stay within the same shared process
+budget independently of that peer stdout sampling.
 Disabling the peer cooldown does not disable that shared budget. These limits
 do not rotate existing logs, impose a disk quota, bound other logger categories
 or replace edge protection; retention and hosting work remain later gates.
 No deployed configuration or old log file is changed by preparation. This is
 not live until the ordered1.72 release and acceptance pass.
+
+Unexpected WebSocket read errors also use this same noisy-diagnostic budget.
+They record only error type, close code, timeout classification and suppression
+count. Close reasons and error text are omitted, so peer-controlled text cannot
+forge lines or copy secrets into that route. Useful error categories remain;
+ordinary application errors and durable account/admin audit are not sampled by
+this helper. It is not a disk quota or a review of every logging category.
 
 The prepared1.72 dependency patch aligns module, hosted CI, container and
 isolated-QA builds on Go1.27.1. It keeps Mongo's existing1.x API, with driver1.17.7,

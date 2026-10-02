@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol diagnostics",
+  "status": "partial prepared implementation; not published or versioned as 1.72",
+  "finding": "The read pump formatted unexpected WebSocket errors with %v. Close-error text is supplied by peers and can contain line breaks or sensitive-looking content, outside the suspicious HTTP diagnostic budget.",
+  "changes": [
+    "Unexpected read diagnostics retain only error type, close code, timeout classification and suppression count; no close reason, error text or raw frame body is printed.",
+    "Share the existing suspicious HTTP/WebSocket process budget:20 initial records,1/second refill. Alternating diagnostic routes cannot obtain separate allowances.",
+    "Do not sample durable account/administrator audit, change chat or alter ordinary application-error logging. Existing logs remain untouched."
+  ],
+  "checks": {
+    "focusedRace": {"go": "go1.27.1", "seconds": 1.092, "passed": true, "command": "go test -race . -run '^Test(WebsocketReadDiagnostics|WebsocketAdmission|InboundFrameGuard|Suspicious)' -count=1"},
+    "redactionAndBudget": "30 wrapped1008 close errors with multiline/credential-looking/large text emit only20 bounded category records and no peer text. The shared HTTP budget has no spare token. One-second refill emits one safe timeout record with the exact11 suppressed count; nil errors emit nothing.",
+    "retainedBoundaries": "Actual connection admission/retirement, data/control limits, normal keepalives and suspicious HTTP diagnostic checks remain passing.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "sourceSha256": {
+    "server/websocket_logging.go": "2058bf77caeb79ed9acaace871bc6f8864ff198887e8c7daf9bcab608fed8789",
+    "server/websocket_logging_test.go": "b8d49fb8a1131755eb69c038966ea39982a2a3de58e75b7aa0d8db1b97427af9",
+    "server/network.go": "1bc406085b0c5b9d0bf489f45a52132430dadf2574d214ae69e877fca1d36ee2"
+  },
+  "limits": "Direct error/helper fixtures are not a new production-binary/session acceptance or a review of every log category. They do not rotate old logs, impose a filesystem quota, certify secrets absent from all sources or replace edge protection. Other protocol/operations and exact-source release gates remain unfinished."
+}
