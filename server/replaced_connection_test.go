@@ -96,6 +96,7 @@ func TestReplacedConnectionCloseIsOwnedAndScheduledOnce(t *testing.T) {
 		t.Fatal("duplicate observations multiplied replacement notifications")
 	}
 	client.finishConnectionWork() // reader
+	client.finishConnectionWork() // writer (not launched by this fixture)
 	client.finishConnectionWork() // retirement
 	if free, admitted := gate.begin(); admitted {
 		free()
@@ -134,9 +135,10 @@ func TestReplacedConnectionSealedWorkStillClosesWithoutLeaseLeak(t *testing.T) {
 	client.connectionWorkMu.Lock()
 	users := client.connectionWorkUsers
 	client.connectionWorkMu.Unlock()
-	if users != 2 || len(client.prioritySend) != 0 {
+	if users != 3 || len(client.prioritySend) != 0 {
 		t.Fatal("sealed work retained a lease or executed notification")
 	}
+	client.finishConnectionWork()
 	client.finishConnectionWork()
 	client.finishConnectionWork()
 	if free, admitted := gate.begin(); !admitted {

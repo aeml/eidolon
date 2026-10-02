@@ -2,12 +2,12 @@ package main
 
 import "time"
 
-// A transport reservation covers its reader, retirement and connection-owned
+// A transport reservation covers its reader, writer, retirement and connection-owned
 // background work. TCP closure alone cannot admit another socket while these
 // workers still retain the old connection/character. Initialize before publish.
 func (c *Client) initializeConnectionWork(release func()) {
 	c.releaseSocketSlot = release
-	c.connectionWorkUsers = 2 // reader + exactly-once retirement
+	c.connectionWorkUsers = 3 // reader + writer + exactly-once retirement
 }
 
 func (c *Client) beginConnectionWork() bool {

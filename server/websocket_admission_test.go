@@ -79,7 +79,7 @@ func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 	}
 	response.Body.Close()
 	for cycle := 0; cycle < 2; cycle++ {
-		// Admission is restored only after the previous reader, retirement and
+		// Admission is restored only after the previous reader/writer, retirement and
 		// connection-owned background work have all finished.
 		deadline := time.Now().Add(3 * time.Second)
 		var conn *websocket.Conn

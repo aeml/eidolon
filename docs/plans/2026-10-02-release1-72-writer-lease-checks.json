@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared admission lifetime fix; not published",
+  "parentCommit": "8d57c673",
+  "scope": [
+    "WebSocket base reservation now covers three owners: reader, outgoing writer and exactly-once retirement, plus existing tracked child tasks.",
+    "The production write pump completes its owner only after stopping its ticker and closing the socket. Queue-close, write failure and ping failure share that deferred completion path.",
+    "Existing in-process fixtures account explicitly for writers they do not launch; real serveWs clients launch both pumps as before. No changed message, wallet, persistence or account authority."
+  ],
+  "checks": {
+    "baselineCommand": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^TestConnectionWorkLeaseIncludesActualWriterExit$' -count=1 -timeout=10s",
+    "baselineResult": "Failed as intended on the previous runtime in0.078 seconds: reader/retirement released capacity while the actual writer remained.",
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(ConnectionWork|ReplacedConnection|Websocket|WebSocket|InboundEnvelope|SendSafe|Shutdown)' -count=1 -timeout=30s",
+    "result": "Passed with race detector in2.232 seconds.",
+    "writer": "Actual production writePump on an upgraded socket, queue closed and final socket Close held at a fixture barrier: reader/retirement completion cannot admit another connection; writer completion restores capacity.",
+    "regressions": "Concurrent/nested owned tasks, duplicate completion, sealed worker admission, replacement closes, actual one-slot upgrades/disconnects, envelope bounds, saturated send queues and shutdown fixtures passed.",
+    "review": "All initializeConnectionWork call sites and base-reference fixture expectations checked; whitespace checked. No previous-source evidence relabeled as latest binary acceptance."
+  },
+  "limits": [
+    "The writer is counted by transport admission, not added to the separate completion-work shutdown group. This does not claim that group joins every outgoing writer or certify shutdown under all operating-system faults.",
+    "A controlled actual socket fixture is not a freshly built connected production binary, full credential flow, load soak or certified player capacity. Those assembly gates remain separate.",
+    "Production stays accepted Alpha1.70.0. Account recovery choice, ordered1.71/1.72 publication and full roadmap completion remain open; no version, notes or live milestone promotion performed."
+  ]
+}

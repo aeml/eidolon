@@ -345,6 +345,12 @@ at most one tracked notification/close; shutdown rejection closes immediately,
 and reservation release waits for the owned close to finish. Real-socket barrier,
 duplicate-observer and sealed-admission race checks pass. Latest assembled-binary
 credential acceptance remains part of the ordered release gate.
+The [writer ownership follow-up](2026-10-02-release1-72-writer-lease-checks.json)
+also keeps the outgoing writer within the WebSocket reservation until its queue
+loop and socket cleanup finish. The real-writer barrier test reproduced premature
+admission before the fix; focused writer/reader/cleanup, takeover, reconnect,
+envelope and shutdown race checks now pass. This does not certify global writer
+shutdown joining, player capacity or the entire security milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

@@ -5,7 +5,7 @@ import "sync"
 const defaultWebsocketConnections = 512
 const maxWebsocketConnections = 4096
 
-// Count upgrades, readers, retirement and connection-owned background work,
+// Count upgrades, readers/writers, retirement and connection-owned background work,
 // not only the HTTP handler/TCP lifetime. No IP/forwarding claim or account
 // role bypasses this process bound.
 type websocketConnectionGate struct {

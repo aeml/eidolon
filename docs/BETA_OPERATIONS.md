@@ -145,7 +145,7 @@ it does not evict an existing player or return an application-level503.
 Use a value above your chosen `-ws-max-connections` cap (default512) to leave
 ordinary HTTP headroom. The separate WebSocket gate can return503 after HTTP
 admission. These are protection limits, not measured player capacity.
-The WebSocket reservation also covers reader retirement, exactly-once cleanup
+The WebSocket reservation also covers reader/writer termination, exactly-once cleanup
 and connection-owned saves/presence work. A closed TCP socket may therefore
 continue to consume a slot while that work drains; overload still returns503
 with a retry hint. This prevents repeated reconnects from accumulating retired
@@ -158,6 +158,13 @@ mutex. Sealed worker admission closes the stale socket immediately without an
 untracked fallback. [Replacement-close checks](plans/2026-10-02-release1-72-replacement-close-checks.json)
 cover a real socket with a controlled close barrier and duplicate observers,
 not a new connected-binary credential acceptance run.
+The [writer ownership follow-up](plans/2026-10-02-release1-72-writer-lease-checks.json)
+adds the outgoing writer to the base reservation. Its slot is released only after
+the writer's queue loop and socket cleanup finish, alongside the reader,
+retirement and owned child tasks. The regression failed on the previous source
+and passes with the actual writer held at a controlled socket-close barrier.
+This is an admission-lifetime guarantee, not a guarantee that shutdown awaits
+every writer through the separate background completion group.
 
 Weekly raid completion and periodic retry also share one recovery worker in the
 candidate. It discovers recorded live completions even after socket disconnect,

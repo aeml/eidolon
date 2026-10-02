@@ -344,6 +344,7 @@ func (c *Client) writePump() {
 	defer func() {
 		ticker.Stop()
 		c.conn.Close()
+		c.finishConnectionWork()
 	}()
 
 	writeMessage := func(message []byte) error {

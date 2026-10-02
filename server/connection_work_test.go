@@ -8,6 +8,40 @@ import (
 	"eidolon-server/internal/lifecycle"
 )
 
+func TestConnectionWorkLeaseIncludesActualWriterExit(t *testing.T) {
+	peer, barrier, unblock := replacementSocketFixture(t)
+	gate := &websocketConnectionGate{limit: 1}
+	release, _ := gate.begin()
+	client := &Client{conn: peer, prioritySend: make(chan []byte)}
+	client.initializeConnectionWork(release)
+	close(client.prioritySend)
+	done := make(chan struct{})
+	go func() { defer close(done); client.writePump() }()
+	// The actual writer exits its queue loop and is held only in socket Close.
+	select {
+	case <-barrier.entered:
+	case <-time.After(time.Second):
+		t.Fatal("writer did not enter its transport cleanup")
+	}
+	client.finishConnectionWork() // reader
+	client.finishConnectionWork() // retirement
+	if free, admitted := gate.begin(); admitted {
+		free()
+		t.Fatal("reader/retirement released capacity while the actual writer remained")
+	}
+	unblock()
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("writer did not finish after close completed")
+	}
+	if free, admitted := gate.begin(); !admitted {
+		t.Fatal("completed writer retained its reservation")
+	} else {
+		free()
+	}
+}
+
 func TestConnectionWorkLeaseWaitsForReaderCleanupAndConcurrentWorkers(t *testing.T) {
 	gate := &websocketConnectionGate{limit: 1}
 	release, ok := gate.begin()
@@ -28,6 +62,7 @@ func TestConnectionWorkLeaseWaitsForReaderCleanupAndConcurrentWorkers(t *testing
 	}
 	producers.Wait()
 	client.finishConnectionWork() // reader
+	client.finishConnectionWork() // writer (not launched by this fixture)
 	client.finishConnectionWork() // retirement
 	if free, admitted := gate.begin(); admitted {
 		free()
@@ -80,6 +115,7 @@ func TestConnectionWorkNestedTasksExtendCleanupLease(t *testing.T) {
 		t.Fatal("nested work did not start")
 	}
 	client.finishConnectionWork() // reader
+	client.finishConnectionWork() // writer (not launched by this fixture)
 	// The blank in-process account exits cleanup without database/world work.
 	scheduleClientCleanup(client)
 	scheduleClientCleanup(client) // Must not finish the retirement lease twice.
@@ -111,9 +147,10 @@ func TestConnectionWorkRejectedAdmissionDoesNotLeakOwnedReference(t *testing.T) 
 	client.connectionWorkMu.Lock()
 	users := client.connectionWorkUsers
 	client.connectionWorkMu.Unlock()
-	if users != 2 {
+	if users != 3 {
 		t.Fatal("rejected work retained an owned reference")
 	}
+	client.finishConnectionWork()
 	client.finishConnectionWork()
 	client.finishConnectionWork()
 	if free, admitted := gate.begin(); !admitted {
