@@ -237,6 +237,13 @@ activity-history/restart fixtures using a race-enabled binary of afed008d and
 an isolated disposable Mongo. It retains the inherited version and explicit
 harness health identity rather than claiming a 1.72 release. Worker bounds,
 gameplay/capacity evidence and remaining owner decisions are still separate.
+The [artifact-privacy review](2026-10-02-release1-72-artifact-privacy-checks.json)
+adds bounded, decoded HTML-report credential redaction and disables automatic
+credentialed recordings. Fourteen synthetic/configuration cases pass, including
+valid rebuilt archives and fail-closed unsupported evidence; anonymous
+recordings remain available. The filename-only current-tree inventory and
+ignore-rule improvements do not certify Git history, operator secrets, bearer
+tokens or screenshot pixels. This work remains staged and is not a live claim.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

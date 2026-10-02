@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; scoped credential/artifact review",
+  "preparedParent": "b4b9157c69400366d90067ad48b921fb0a8849ec",
+  "finding": "The previous sanitizer searched compressed HTML report bytes without opening the embedded ZIP. A synthetic compressed/JSON-escaped password produces no outer raw match and therefore demonstrates a false-negative boundary. No real secret value or historical public artifact was read by this check; it does not establish an actual credential leak.",
+  "scope": [
+    "Any configured primary/secondary QA username or password disables automatic screenshots, traces, video and failure input-context snapshots. Anonymous recording behavior remains unchanged; explicit post-login visual attachments retain their separate scope.",
+    "Read the pinned Playwright HTML reporter's base64 ZIP serially, sanitize raw and nested JSON-escaped credential spellings, then rebuild a valid archive instead of overwriting compressed bytes/checksums.",
+    "Bound report metadata to 4096 JSON entries, 16 MiB per entry and 64 MiB total/compressed archive. Refuse malformed encoding, unsafe/unreadable/unsupported entries and unexpected standalone credentialed archives/video so the existing upload gate fails closed.",
+    "Retain current raw-text redaction and nested-root traversal; re-check decoded report data before success. Anonymous archives remain byte-for-byte unchanged.",
+    "Extend ignore rules for local environment variants and common private-key containers, while retaining reviewable example/sample/template files. No tracked file or user credential is deleted."
+  ],
+  "primaryImplementation": "Installed Playwright1.61.1 lib/runner/index.js _writeReportData/_addDataFile: base64 ZIP template and JSON entries; existing playwright-core/lib/utilsBundle exports yauzl/yazl. No new dependency or network download. This contract must be rechecked with future Playwright upgrades.",
+  "checks": {
+    "privacySuite": {"tests": 14, "seconds": 11.261, "passed": true},
+    "evidence": [
+      "Configured quote/backslash-containing synthetic password is removed from compressed JSON; status stays failed, the report ZIP decodes successfully and a second pass preserves exact bytes.",
+      "Standalone escaped JSON, missing roots, unexpected trace/video, malformed encoding, non-JSON archive entries and oversized compressed metadata cases.",
+      "Rejected evidence remains unedited/undeleted; anonymous ZIP bytes remain unchanged.",
+      "Each of the four credential environment variables individually suppresses recordings/input context; anonymous configuration retains all diagnostic recordings."
+    ],
+    "retainedWrapperChecks": {"suites": 4, "tests": 87, "passed": true, "scope": "Live animation/recovery, rest-release gate and stage-timing wrappers passed in the earlier invocation; not a new production browser or a combined final five-suite run."},
+    "fixtureHistory": "Initial archive utilities could not import in jsdom because native Request was absent; a node-environment override conflicted with the game's shared canvas setup. Final fixtures use ordinary Node subprocesses, as the CLI does. No shared setup or privacy assertions were weakened.",
+    "lint": "Focused ESLint and git diff --check passed.",
+    "ignoreRules": "Eight absent local-env/private-key example paths are ignored with --no-index; tracked server/.env.example remains allowed."
+  },
+  "trackedTreeInventory": {
+    "source": "b4b9157c69400366d90067ad48b921fb0a8849ec",
+    "sensitiveFilenameMatches": ["server/.env.example"],
+    "privateKeyHeaderGithubTokenAwsAccessIdFileMatches": [],
+    "method": "Filename-only git ls-files and tracked-file rg -l checks; no secret values printed. Configured CI secret references remain references, not literal values.",
+    "limits": "Narrow current tracked-tree inventory, not a comprehensive entropy scanner, Git history, provider settings, private deployed configuration or secret rotation audit."
+  },
+  "sourceHashes": {
+    ".gitignore": "099501f5f7fcf37d2d0f8a8284e19f36fd2b4b499d092a297539162917992ea6",
+    "playwright.config.js": "8fdf43e280a56ffac740ab83e81d69b3e3b1a5c1257abffa9a781d84adb47ae5",
+    "scripts/sanitize-playwright-artifacts.mjs": "d1d665dcf32edc4a6323ebf230ff677f29586512e8e8cf95a87349bc4665a692",
+    "tests/PlaywrightArtifactPrivacy.test.js": "e9104d5c71dd4f31e76e1bb0aaf0708f19ce9f236149333783a8dcb26cc05b97"
+  },
+  "limits": [
+    "Configured literal/JSON-escaped credential spellings are covered; this is not arbitrary encoded-secret, bearer-token or image-pixel redaction. Automatic credentialed recordings are disabled rather than claiming that text scanning makes their contents safe.",
+    "Explicit screenshots and other operator attachments still need their own privacy review. Unsupported credentialed archive/video evidence blocks publication and is retained for private diagnosis.",
+    "No production credential, account, role, currency, access policy, game runtime or historical artifact changed. No newly signed-in real browser run is claimed.",
+    "Full security milestone, ordered version assembly/CI/public acceptance and owner decisions remain open."
+  ]
+}

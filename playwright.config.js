@@ -24,12 +24,16 @@ const browserGraphicsArgs = useSystemChrome
     ? hardwareWebGLBrowserArgs()
     : ['--enable-webgl', '--ignore-gpu-blocklist'];
 const hasCredentialedRoute = Boolean(
-    process.env.EIDOLON_E2E_USERNAME || process.env.EIDOLON_E2E_USERNAME_SECONDARY
+    process.env.EIDOLON_E2E_USERNAME || process.env.EIDOLON_E2E_PASSWORD ||
+    process.env.EIDOLON_E2E_USERNAME_SECONDARY || process.env.EIDOLON_E2E_PASSWORD_SECONDARY
 );
 
 // Playwright's automatic failure-context ARIA snapshot includes current input
 // values. Suppress that snapshot whenever credentials are present; anonymous
-// runs keep the richer context and all recording types.
+// runs keep the richer context and all recording types. Credentialed routes
+// also disable automatic recordings: traces can retain login/session traffic,
+// and binary/video pixels cannot be safely redacted by a text scanner. Explicit
+// post-login game screenshots remain a separately reviewed visual artifact.
 if (hasCredentialedRoute) process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 
 export default defineConfig({
@@ -57,9 +61,9 @@ export default defineConfig({
                 ...backendResolverArgs
             ]
         },
-        screenshot: 'only-on-failure',
-        trace: 'retain-on-failure',
-        video: 'retain-on-failure'
+        screenshot: hasCredentialedRoute ? 'off' : 'only-on-failure',
+        trace: hasCredentialedRoute ? 'off' : 'retain-on-failure',
+        video: hasCredentialedRoute ? 'off' : 'retain-on-failure'
     },
     webServer: useLocalServer ? {
         command: 'npm run serve',
