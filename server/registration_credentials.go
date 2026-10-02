@@ -52,14 +52,20 @@ func validateRegistrationCredentials(payload AuthPayload) error {
 	if isReservedBootstrapRegistrationName(payload.Username) {
 		return errors.New("This account name is reserved. Choose another name or contact the game operator.")
 	}
-	if !utf8.ValidString(payload.Password) || utf8.RuneCountInString(payload.Password) < registrationPasswordMinChars {
-		return errors.New("New accounts need a password with at least 15 characters. Use a unique passphrase or password manager.")
+	return validateNewPassword(payload.Username, payload.Password)
+}
+
+// Shared by new registration and an authenticated password change. This does
+// not revalidate or reserve an existing account name, nor alter legacy login.
+func validateNewPassword(username, password string) error {
+	if !utf8.ValidString(password) || utf8.RuneCountInString(password) < registrationPasswordMinChars {
+		return errors.New("New passwords need at least 15 characters. Use a unique passphrase or password manager.")
 	}
-	if len(payload.Password) > registrationPasswordMaxBytes {
+	if len(password) > registrationPasswordMaxBytes {
 		return errors.New("Password exceeds 72 UTF-8 bytes. Use a shorter unique passphrase or password-manager password; it will not be truncated.")
 	}
-	_, blocked := registrationBlockedPasswords[strings.ToLower(payload.Password)]
-	if blocked || strings.EqualFold(payload.Password, payload.Username) {
+	_, blocked := registrationBlockedPasswords[strings.ToLower(password)]
+	if blocked || strings.EqualFold(password, username) {
 		return errors.New("Choose a unique password, not a common password, the game address or your username. Use a password manager or a unique passphrase.")
 	}
 	return nil

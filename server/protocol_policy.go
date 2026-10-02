@@ -59,6 +59,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgSelectAppearance:          policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgRegister:                  policy(accessPublic, 8<<10, 5, time.Minute),
 	MsgLogin:                     policy(accessPublic, 8<<10, 5, time.Minute),
+	MsgChangePassword:            policy(accessAuthenticated, 1<<10, 5, time.Minute),
 	MsgResumeSession:             policy(accessPublic, 4<<10, 10, time.Minute),
 	MsgJoin:                      policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
 

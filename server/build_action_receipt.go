@@ -28,6 +28,16 @@ func (c *Client) sendInboundRejection(msg Message, reason string) {
 		}
 	}
 	switch msg.Type {
+	case MsgChangePassword:
+		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
+			var request struct {
+				RequestID string `json:"requestId"`
+			}
+			if json.Unmarshal(msg.Payload, &request) == nil && reportRequestIDPattern.MatchString(request.RequestID) {
+				c.sendPasswordChangeResult(request.RequestID, false, reason, "")
+				return
+			}
+		}
 	case MsgGuildBankDeposit, MsgGuildBankWithdraw:
 		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
 			var request GuildBankPayload
