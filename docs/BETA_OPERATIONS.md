@@ -136,6 +136,13 @@ it does not evict an existing player or return an application-level503.
 Use a value above your chosen `-ws-max-connections` cap (default512) to leave
 ordinary HTTP headroom. The separate WebSocket gate can return503 after HTTP
 admission. These are protection limits, not measured player capacity.
+The WebSocket reservation also covers reader retirement, exactly-once cleanup
+and connection-owned saves/presence work. A closed TCP socket may therefore
+continue to consume a slot while that work drains; overload still returns503
+with a retry hint. This prevents repeated reconnects from accumulating retired
+connection cohorts outside the gate. It is not a global completion-worker cap.
+[Work-lease checks](plans/2026-10-02-release1-72-work-lease-checks.json) record
+actual small-pool reconnect and focused race evidence, not live acceptance.
 
 The candidate also bounds ordinary headers, body reads, writes and idle
 keepalives, and upgrade-handshake writes. Active game sockets retain their own

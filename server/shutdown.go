@@ -119,8 +119,7 @@ func drainServer(loops *serverLoops) {
 	response := make(chan []*Client)
 	hubQuiesce <- response
 	for _, client := range <-response {
-		client := client
-		scheduleCharacterWork(func() { cleanupClient(client) })
+		scheduleClientCleanup(client)
 	}
 	backgroundCharacterWork.SealWhenIdle()
 	for {

@@ -63,7 +63,7 @@ func savePlayer(client *Client) {
 		return
 	}
 	client.saveRunning = true
-	if !scheduleCharacterWork(client.runPendingSaves) {
+	if !scheduleClientCharacterWork(client, client.runPendingSaves) {
 		// Shutdown performs its independent final journal-all pass. Preserve
 		// the pending bit/failure signal rather than falsely reporting a save
 		// or leaving the connection stuck behind a worker that never started.

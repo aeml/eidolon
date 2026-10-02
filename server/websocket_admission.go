@@ -5,8 +5,9 @@ import "sync"
 const defaultWebsocketConnections = 512
 const maxWebsocketConnections = 4096
 
-// Count upgrades and their complete transport lifetime, not only the HTTP
-// handler. No IP/forwarding claim or account role bypasses this process bound.
+// Count upgrades, readers, retirement and connection-owned background work,
+// not only the HTTP handler/TCP lifetime. No IP/forwarding claim or account
+// role bypasses this process bound.
 type websocketConnectionGate struct {
 	mu     sync.Mutex
 	limit  int

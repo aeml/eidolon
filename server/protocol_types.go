@@ -125,7 +125,7 @@ type Client struct {
 	sendClosed        bool
 	stateMu           sync.Mutex
 	conn              *websocket.Conn
-	releaseSocketSlot func() // Immutable after transport creation; released by its reader.
+	releaseSocketSlot func() // Immutable before publish; reader/cleanup/owned work share the reservation.
 	send              chan []byte
 	prioritySend      chan []byte
 	playerID          string
@@ -140,6 +140,11 @@ type Client struct {
 	saveMu            sync.Mutex // Only coordinates requests; never held during character/world/IO work.
 	saveRunning       bool
 	savePending       bool // Another latest-state capture is needed, not a stored snapshot or job queue.
+
+	connectionWorkMu       sync.Mutex
+	connectionWorkUsers    int
+	connectionWorkReleased bool
+	cleanupOnce            sync.Once
 }
 
 // Message types

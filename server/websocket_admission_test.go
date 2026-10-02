@@ -53,12 +53,16 @@ func TestWebsocketAdmissionConcurrentBoundAndIdempotentRelease(t *testing.T) {
 
 func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 	oldGate, oldLifecycle, oldRegister, oldUnregister := websocketAdmission, serverAdmission, register, unregister
+	oldWork := backgroundCharacterWork
 	websocketAdmission = &websocketConnectionGate{limit: 1}
 	serverAdmission = &lifecycle.Group{}
+	backgroundCharacterWork = &lifecycle.Group{}
 	register, unregister = make(chan *Client, 4), make(chan *Client)
 	server := httptest.NewServer(http.HandlerFunc(serveWs))
 	t.Cleanup(func() {
 		server.Close()
+		backgroundCharacterWork.SealWhenIdle()
+		backgroundCharacterWork = oldWork
 		websocketAdmission, serverAdmission, register, unregister = oldGate, oldLifecycle, oldRegister, oldUnregister
 	})
 	address := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -75,8 +79,8 @@ func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 	}
 	response.Body.Close()
 	for cycle := 0; cycle < 2; cycle++ {
-		// Receiving the old transport's retirement does not join its final
-		// release instruction; allow bounded ordinary retries, not a fake free.
+		// Admission is restored only after the previous reader, retirement and
+		// connection-owned background work have all finished.
 		deadline := time.Now().Add(3 * time.Second)
 		var conn *websocket.Conn
 		for {
@@ -104,7 +108,8 @@ func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 			client.closeSendQueues()
 			if !retired {
 				select {
-				case <-unregister:
+				case closed := <-unregister:
+					scheduleClientCleanup(closed)
 				case <-time.After(3 * time.Second):
 					t.Error("failed assertion left a transport reader running")
 				}
@@ -118,6 +123,16 @@ func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 			t.Fatal("active transport did not hold its slot after the HTTP handler returned", err)
 		}
 		denial.Body.Close()
+		blocked, entered := make(chan struct{}), make(chan struct{}, 1)
+		var unblock sync.Once
+		t.Cleanup(func() { unblock.Do(func() { close(blocked) }) })
+		if !scheduleClientCharacterWork(client, func() {
+			entered <- struct{}{}
+			<-blocked
+		}) {
+			t.Fatal("fixture background work was not admitted")
+		}
+		<-entered
 		conn.Close()
 		deadline = time.Now().Add(3 * time.Second)
 		for !client.transportClosed.Load() && time.Now().Before(deadline) {
@@ -143,8 +158,18 @@ func TestWebsocketAdmissionActualUpgradeAndDisconnect(t *testing.T) {
 				t.Fatal("wrong transport retired")
 			}
 			closed.closeSendQueues()
+			scheduleClientCleanup(closed)
 		case <-time.After(3 * time.Second):
-			t.Fatal("closed reader did not retire and release its slot")
+			t.Fatal("closed reader did not hand off retirement")
 		}
+		extra, denial, err = dial("https://play.eidolonrealms.com")
+		if extra != nil {
+			extra.Close()
+		}
+		if err == nil || denial == nil || denial.StatusCode != http.StatusServiceUnavailable {
+			t.Fatal("closed reader freed admission while owned work remained")
+		}
+		denial.Body.Close()
+		unblock.Do(func() { close(blocked) })
 	}
 }

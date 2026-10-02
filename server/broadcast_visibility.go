@@ -91,7 +91,7 @@ func deliverBroadcast(message BroadcastMessage) {
 			client.sendState(message.Data)
 		} else if !client.sendSafe(message.Data) {
 			client.markTransportClosed()
-			scheduleCharacterWork(func() { cleanupClient(client) })
+			scheduleClientCleanup(client)
 			delete(clients, client)
 			client.closeSendQueues()
 		}

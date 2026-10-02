@@ -34,7 +34,7 @@ func runHub() {
 		case client := <-unregister:
 			if _, ok := clients[client]; ok {
 				client.markTransportClosed()
-				scheduleCharacterWork(func() { cleanupClient(client) })
+				scheduleClientCleanup(client)
 				delete(clients, client)
 				client.closeSendQueues()
 			}
@@ -146,7 +146,7 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	sendPvPState(c)
 	sendEndgameState(c)
 	sendVIPStatus(c)
-	scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(c.playerID, time.Now()) })
+	scheduleClientCharacterWork(c, func() { touchAndBroadcastGuildPresence(c.playerID, time.Now()) })
 }
 
 // Recovery state survives a transport reconnect but is not persisted across a
@@ -217,8 +217,8 @@ func cleanupClientLocked(client *Client) {
 
 	// 5. Notify online friends that this player has gone offline (0.38.1).
 	if client.username != "" {
-		scheduleCharacterWork(func() { notifyFriendsPresence(client.username) })
-		scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
+		scheduleClientCharacterWork(client, func() { notifyFriendsPresence(client.username) })
+		scheduleClientCharacterWork(client, func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
 	}
 
 	// 6. Save before releasing character ownership. This function runs outside
@@ -262,13 +262,13 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{
-		conn:              c,
-		releaseSocketSlot: release,
-		send:              make(chan []byte, 256), // State traffic is lossy under pressure.
-		prioritySend:      make(chan []byte, 64),  // Control/UI messages must not starve behind state.
-		lastState:         make(map[string]*EntitySnapshot),
-		seenIDs:           make(map[string]bool),
+		conn:         c,
+		send:         make(chan []byte, 256), // State traffic is lossy under pressure.
+		prioritySend: make(chan []byte, 64),  // Control/UI messages must not starve behind state.
+		lastState:    make(map[string]*EntitySnapshot),
+		seenIDs:      make(map[string]bool),
 	}
+	client.initializeConnectionWork(release)
 	register <- client
 
 	readerOwnsSlot = true
@@ -283,9 +283,7 @@ func (c *Client) readPump() {
 		// Keep the slot while waiting for hub retirement too: reconnect floods
 		// must not accumulate unbounded readers holding their send queues.
 		unregister <- c
-		if c.releaseSocketSlot != nil {
-			c.releaseSocketSlot()
-		}
+		c.finishConnectionWork()
 	}()
 
 	reader := newInboundMessageReader(c.conn, time.Now, pongWait, inboundMessageAssemblyWait)

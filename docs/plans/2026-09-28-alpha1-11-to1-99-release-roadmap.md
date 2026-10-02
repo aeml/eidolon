@@ -266,6 +266,12 @@ requests the coalesced save even when presentation fails. Lock, failed-delivery,
 completed-quest persistence and short manual-turn-in/story-order regressions
 pass. Other critical completion and cleanup work remains separate; no new
 campaign, capacity or latest-binary callback acceptance is inferred.
+The [connection-work lease follow-up](2026-10-02-release1-72-work-lease-checks.json)
+keeps WebSocket admission reserved through reader retirement, exactly-once
+cleanup and connection-owned saves/presence tasks. Actual one-slot reconnect,
+nested-work and race checks pass; retired cohorts cannot simply outlive the
+socket cap. Independent completion jobs and per-live-connection task production
+remain separate, and latest-binary/public acceptance is not inferred.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
