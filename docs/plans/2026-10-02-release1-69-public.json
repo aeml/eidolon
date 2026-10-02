@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.69.0",
+  "status": "accepted",
+  "commit": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
+  "ciRun": 37037866734,
+  "publicVerifiedAt": "2026-10-02T17:43:54.458Z",
+  "frontend": {"commit": "5f62945c1d3c8a977b8d179d91252d8739906f4b", "version": "Alpha 1.69.0"},
+  "backend": {"status": "ok", "database": "ready", "commit": "5f62945c1d3c8a977b8d179d91252d8739906f4b", "version": "Alpha 1.69.0"},
+  "files": [
+    {"path": "index.html", "bytes": 758514, "sha256": "a354a5d8bee9cbd484720d006140e886b51b5ae1a6e501a35b7135d806509ccc", "exactPublisher": true},
+    {"path": "src/core/CasinoController.js", "bytes": 33086, "sha256": "f013bbc25d7fb30a3fa91d7f839b06e1f7ec3a4b9b676b4d0e63650e27a70f36", "exactPublisher": true},
+    {"path": "src/styles/casino.css", "bytes": 23671, "sha256": "8d3cc3f585ae71c1f0daaac5252f0b6de2ff3d93b535a9225e4cb4a40a22af84", "exactPublisher": true},
+    {"path": "src/ui/CasinoPlayControls.js", "bytes": 4563, "sha256": "3cc682b038507d3bbea9b7d422c9a6566fb021601e1194381936977e5f8934f2", "exactPublisher": true},
+    {"path": "src/ui/HouseTableUI.js", "bytes": 14536, "sha256": "6a5fbff35372dab47d4e02d23eee3cd280ae451bc7bd5291f74e40f46b2914df", "exactPublisher": true},
+    {"path": "src/ui/SlotMachineUI.js", "bytes": 23050, "sha256": "063fb0edb1716d976b97924434ede37431468846dcf548613ad2dfe1771dc88f", "exactPublisher": true}
+  ],
+  "recheckedAsset": {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "exactSource": true},
+  "ciRootIndependentlyVerified": true,
+  "limits": [
+    "Ordinary-DNS HTTPS over IPv4; deferred IPv6 readiness remains separate.",
+    "All six client runtime files changed since accepted1.68.1 match full exact publisher output. Ilyra binary rechecked separately; this is not new human art/device approval or full-catalog rendering.",
+    "All ten exact-source CI jobs passed, including predeploy and live character QA. Earlier native/wager/settlement evidence retains its source and scope; casino commercial decisions, account-level exclusion, human enjoyment/pacing and capacity gates are not inferred."
+  ]
+}

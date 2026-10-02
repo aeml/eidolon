@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "1.72",
-  "status": "prepared, unpublished; scoped credential/artifact review",
+  "status": "prepared security evidence; isolated QA-artifact backport prepared for 1.70",
   "preparedParent": "b4b9157c69400366d90067ad48b921fb0a8849ec",
   "finding": "The previous sanitizer searched compressed HTML report bytes without opening the embedded ZIP. A synthetic compressed/JSON-escaped password produces no outer raw match and therefore demonstrates a false-negative boundary. No real secret value or historical public artifact was read by this check; it does not establish an actual credential leak.",
   "scope": [
@@ -37,6 +37,13 @@
     "playwright.config.js": "8fdf43e280a56ffac740ab83e81d69b3e3b1a5c1257abffa9a781d84adb47ae5",
     "scripts/sanitize-playwright-artifacts.mjs": "d1d665dcf32edc4a6323ebf230ff677f29586512e8e8cf95a87349bc4665a692",
     "tests/PlaywrightArtifactPrivacy.test.js": "e9104d5c71dd4f31e76e1bb0aaf0708f19ce9f236149333783a8dcb26cc05b97"
+  },
+  "publicationBackport": {
+    "version": "Alpha 1.70.0",
+    "source": "a5069779",
+    "scope": "Only ignore rules, credentialed recording suppression, compressed artifact sanitization and its focused tests/receipt. No other partial 1.71/1.72 authentication, dependency, movement, worker or transport work is included.",
+    "status": "Prepared; new exact-source CI and independent public acceptance required.",
+    "finalAssembly": {"suites": 6, "tests": 446, "seconds": 15.124, "passed": true, "scope": "Merged privacy, release wrapper and version regressions; overlapping earlier evidence. Full lint and whitespace passed."}
   },
   "limits": [
     "Configured literal/JSON-escaped credential spellings are covered; this is not arbitrary encoded-secret, bearer-token or image-pixel redaction. Automatic credentialed recordings are disabled rather than claiming that text scanning makes their contents safe.",

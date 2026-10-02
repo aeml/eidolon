@@ -153,7 +153,12 @@ It is independently accepted at53bd461972f6f99ec46e36ccea83f0d7c010c89b,
 CI37031968011 (all ten jobs). Its [public receipt](2026-10-02-release1-68-1-public.json)
 records matching identities/readiness, both changed runtime publisher files and
 the dressed Ilyra GLB. The failed1.68.0 history remains retained.
-Prepared 1.68–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
+Alpha1.69.0 is independently accepted at
+5f62945c1d3c8a977b8d179d91252d8739906f4b, CI37037866734 (all ten jobs).
+Its [public receipt](2026-10-02-release1-69-public.json) records matching
+identities/readiness, all six changed runtime publisher files and Ilyra's outfit.
+Voluntary browser limits are not account exclusion or commercial approval.
+Prepared1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
 1.71 account-security work is partial, not a completed milestone.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
 time, bounds retained lag credit, acknowledges denied predictions, and keeps

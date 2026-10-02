@@ -11,7 +11,9 @@ test('1.70.0 distinguishes reliable venue controls from capacity and commercial 
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['every casino action checks the connection', 'never automatically replays', '232 chairs',
         'not a 232-player capacity promise', 'existing server timers', 'EP buys appearance only',
-        'Ilyra stays dressed', 'commercial approval', 'closed beta', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+        'Ilyra stays dressed', 'commercial approval', 'closed beta', 'Full prior patch history',
+        'credentialed checks disable automatic recordings', 'compressed HTML report data',
+        'Unsupported recordings block evidence upload']) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.69.0 documents casino-trust without new awards or automatic actions", () => {
