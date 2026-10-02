@@ -1,7 +1,23 @@
 {
   "schema": 1,
   "version": "Alpha 1.70.1",
-  "status": "prepared; exact-source CI and independent public acceptance required",
+  "status": "accepted live; exact-source CI and independent public identity checks passed",
+  "releaseCommit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+  "ci": {
+    "run": 37068064995,
+    "url": "https://github.com/aeml/eidolon/actions/runs/37068064995",
+    "status": "completed",
+    "conclusion": "success",
+    "allTenJobsSucceeded": true,
+    "includes": "Client lint/tests/audit, server tests/race, three browser shards, native predeploy QA, QA input validation, Pages deploy, server deploy and live release/character QA. Luna monitored; root independently re-read terminal status and exact head SHA."
+  },
+  "publicAcceptance": {
+    "verifiedAtUTC": "2026-10-02T22:19:32Z",
+    "backend": "Public IPv4 HTTPS healthz reports exact releaseCommit, Alpha1.70.1 and database ready.",
+    "frontend": "Public IPv4 HTTPS release.json reports the same commit/version. Public login label and cumulative1.70.1 safe-direct-trade entry match the release source; checked at22:11:24UTC after deployment.",
+    "ilyra": "Public permanent NPC GLB SHA256 remains010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7. Asset and client runtime were not changed by this hotfix.",
+    "scope": "Exact-source full CI plus independent release/health/login/note/model identity checks. Not a new production trade manipulation, historical dupe cleanup, full crash-durable economy or beta acceptance."
+  },
   "acceptedBaseline": {
     "commit": "ee6872c9727fbea97177b833da835dfe79d8dda0",
     "version": "Alpha 1.70.0",

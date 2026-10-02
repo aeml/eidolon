@@ -2,12 +2,13 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.67.0, exact 8cbf0c1c757260aac5d4279c58c0c841d86c45d5,
-CI37019416225. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness, all four
-changed client runtime files and the dressed Ilyra GLB. Earlier receipts retain distinct runtime and model
-checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-67-public.json).
+baseline is Alpha 1.70.1, exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f,
+CI37068064995. All ten CI jobs, including both deploys and live character QA, passed.
+Independent public IPv4 checks verified backend/frontend identities, database
+readiness, login version, cumulative hotfix notes and the retained dressed Ilyra
+GLB. Earlier receipts retain distinct runtime and model checks; no claim that
+every route or economy operation was sampled. See the current
+[acceptance receipt](2026-10-02-release1-70-1-trade-checks.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -158,8 +159,8 @@ Alpha1.69.0 is independently accepted at
 Its [public receipt](2026-10-02-release1-69-public.json) records matching
 identities/readiness, all six changed runtime publisher files and Ilyra's outfit.
 Voluntary browser limits are not account exclusion or commercial approval.
-Alpha1.70.0 is accepted live at ee6872c9727fbea97177b833da835dfe79d8dda0;
-the prepared [1.70.1 direct-trade hotfix](2026-10-02-release1-70-1-trade-checks.json)
+Alpha1.70.0 was accepted at ee6872c9727fbea97177b833da835dfe79d8dda0;
+the accepted [1.70.1 direct-trade hotfix](2026-10-02-release1-70-1-trade-checks.json)
 closes offer-edit item/Gold duplication without publishing unfinished1.71/1.72
 work. It requires exact-source CI and independent public acceptance before being
 called live. Crash-durable two-account trade settlement remains part of1.73.
