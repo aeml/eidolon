@@ -43,9 +43,15 @@ and materials while cloning bones and animation clips per NPC.
 
 ## Validation and publication
 
-This prepared asset is 1,548,340 bytes, has 53 joints, 11 meshes, 20 material
+The asset is 1,548,340 bytes, has 53 joints, 11 meshes, 20 material
 primitives and embedded images. Structural validation found zero errors and
 12 warnings: the retained normal-mapped skin uses runtime-generated tangent
 space, and skinned meshes retain the imported rig hierarchy. Browser rendering
 is checked separately rather than treating structural validation as visual
-acceptance. It is not yet published to the live game.
+acceptance. It is published in Alpha 1.58.5, exact source
+`397bd41d0a8209eb466204aa9b8ccf64024a933e`. All ten CI jobs passed,
+including native predeployment and live character QA. The public NPC GLB hash
+matches this file; the player Wizard source hash remains unchanged. See the
+[public acceptance receipt](../../../docs/plans/2026-10-02-release1-58-5-public.json).
+The checked-in generator and existing source notices make subsequent outfit
+changes reproducible without altering player bodies or unrelated Blender scenes.

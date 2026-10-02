@@ -1,7 +1,10 @@
 {
   "schema": 1,
   "version": "Alpha 1.58.5",
-  "status": "prepared",
+  "status": "accepted",
+  "commit": "397bd41d0a8209eb466204aa9b8ccf64024a933e",
+  "ciRun": 36957349513,
+  "publicAcceptance": "2026-10-02-release1-58-5-public.json",
   "parentCommit": "d3086750869f0515f50661e12bde7d6f84e1e204",
   "scope": [
     "Dedicated permanent Blender-authored outfit for Archmage Ilyra and his story projections.",
@@ -20,7 +23,7 @@
   "limits": [
     "No gameplay, progression, account, class-rule, reward or currency change.",
     "Controlled native model scene is not a production login or a physical-phone test.",
-    "Exact-source CI and independent public acceptance remain required.",
+    "All ten exact-source CI jobs passed, including live release and character QA. Independent public frontend/backend identities, database readiness, seven runtime hashes and two binary model hashes passed; the linked receipt records sampling limits.",
     "Full 1.59 moderation and subsequent roadmap milestones remain unfinished."
   ]
 }

@@ -2,7 +2,7 @@
 
 October 1, 2026, updated October 2. The appeal route, owner status lookup and actionable report review are implemented
 locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
-accepted live Alpha 1.58.3 graphics and accepted live Alpha 1.58.4 tooltips.
+accepted live Alpha 1.58.3 graphics, Alpha 1.58.4 tooltips and Alpha 1.58.5 Ilyra.
 No 1.59 package or milestone completion
 is claimed. The full milestone
 also requires abuse response, sanctions, staff boundaries and retention decisions.
@@ -428,6 +428,19 @@ hardware rendering, a real phone, or an actual suspended-account flow.
 Public-name correction, online/join/resume enforcement, complete protocol
 activation and the all-three-response socket/restart exercise remain required.
 The appeal-only restart exercise does not establish those missing paths.
+
+Published Ilyra source was fetched and merged into this preparation only after
+committing the login-support slice. Four overlapping documentation/art-test
+conflicts were resolved without discarding the approved moderation scope or
+the release's stronger hash/Idle-motion checks. Seven focused client suites
+passed 404 checks in 5.466 seconds on the merged tree; these include existing
+version tests and are not 404 new moderation cases. The isolated Ilyra patch
+passed all ten CI jobs at exact 397bd41d0a8209eb466204aa9b8ccf64024a933e,
+CI36957349513. Public release identities and database readiness were rechecked
+after terminal success; seven runtime artifacts and both NPC/player model hashes
+match. The [accepted receipt](2026-10-02-release1-58-5-public.json) is retained
+here for the next milestone, avoiding another deployment just to publish proof.
+No 1.59 code shipped in 1.58.5.
 
 Finish the approved abuse-response and sanction paths, document staff/review
 boundaries and retention, exercise the complete disposable moderation flow,

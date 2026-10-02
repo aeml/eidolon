@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.58.5",
+  "commit": "397bd41d0a8209eb466204aa9b8ccf64024a933e",
+  "ciRun": 36957349513,
+  "status": "accepted",
+  "verifiedAt": "2026-10-02T03:18:03.628Z",
+  "transport": "Ordinary public DNS, IPv4 and verified HTTPS; no origin override.",
+  "frontend": {
+    "commit": "397bd41d0a8209eb466204aa9b8ccf64024a933e",
+    "version": "Alpha 1.58.5"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "397bd41d0a8209eb466204aa9b8ccf64024a933e",
+    "version": "Alpha 1.58.5"
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 735265,
+      "sha256": "abd54da2aebbf611551499136e2b84e3781675e535387ccabbd64afb0b766ba0",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/art/AuthoredIlyra.js",
+      "bytes": 2887,
+      "sha256": "b862ad4f1e812bd80ac7c0ab78b5a576a520bf73e87d5037ce57afdfed107646",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/utils/MeshFactory.js",
+      "bytes": 37867,
+      "sha256": "443dffe288940966faf8d1e91eae9f0320e260d8b8b7f8b73c7acc7cf80b8510",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/utils/MeshCatalog.js",
+      "bytes": 10485,
+      "sha256": "60fee4e5ed02eaada997c36264b396fc107fabea675d976d34b8af012904ae43",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/entities/QuestNPC.js",
+      "bytes": 4062,
+      "sha256": "687ae3ab2cab14bc4161243f7f3cadabc0eaa45bc57c2c6e094cb8828dcfb6ad",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/entities/actorAnimationManifest.js",
+      "bytes": 13154,
+      "sha256": "8f858bac4f704d842e842d3577b452e4b7c3b7603b3fda9ba6e9295cdb97fcb0",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/assets/assetManifest.js",
+      "bytes": 2805,
+      "sha256": "3ef31ebaa5f6c2269e2ca5147dba6b8dfb12b7a27571a0e02bf21099501b912b",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "assets/npcs/ilyra/ilyra-archmage.glb",
+      "bytes": 1548340,
+      "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+      "bytes": 3215076,
+      "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+      "matchesExactPublisherOutput": true
+    }
+  ],
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "acceptanceVerifiedAt": "2026-10-02T03:29:53Z",
+  "limits": [
+    "Nine selected runtime/model hashes were checked before the final live QA job completed; all ten exact-source jobs then passed, and public frontend/backend identities and database readiness were rechecked before acceptance.",
+    "First final recheck used the nonexistent /health route and received 404; the documented /healthz route passed. No failed check counted as acceptance.",
+    "Seven publisher-rewritten runtime files and two exact binary models are sampled, not every asset or game route.",
+    "No unpublished 1.59 moderation code is included; modern-art, physical-phone and human pacing acceptance remain separate."
+  ]
+}
