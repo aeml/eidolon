@@ -1357,13 +1357,18 @@ func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state
 	return w.updatePlayerMovement(id, x, y, z, rotation, state, sequence, nil)
 }
 
-// Network movement adds atomic context, handoff and discontinuity admission.
+// Network movement adds atomic context, handoff and speed/discontinuity admission.
 // Internal callers retain the existing ordered/clamped movement helper.
 func (w *World) UpdatePlayerMovementWithContext(id string, x, y, z, rotation float64, state string, sequence uint64, context string) bool {
 	return w.updatePlayerMovement(id, x, y, z, rotation, state, sequence, &context)
 }
 
 func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state string, sequence uint64, context *string) bool {
+	return w.updatePlayerMovementAt(id, x, y, z, rotation, state, sequence, context, time.Now())
+}
+
+// The clock is injected only by package-local tests, never by a client message.
+func (w *World) updatePlayerMovementAt(id string, x, y, z, rotation float64, state string, sequence uint64, context *string, now time.Time) bool {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -1374,19 +1379,22 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
 	if context != nil {
-		if *context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second) {
+		if *context != e.MovementContext || (!e.RecoveryContextReady && now.Sub(e.LastRespawnTime) < time.Second) {
 			return false
 		}
-		dx, dz := x-e.X, z-e.Z
-		if dx*dx+dz*dz > 100*100 {
+		if !replicableMovementNumber(x) || !replicableMovementNumber(y) || !replicableMovementNumber(z) || !replicableMovementNumber(rotation) {
 			return false
 		}
 	}
-	if e.CasinoSeat != nil || e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
+	if e.CasinoSeat != nil || e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || now.Before(e.MoveLockUntil) {
 		return false
 	}
 
 	if sequence > 0 && sequence <= e.LastMoveSequence {
+		return false
+	}
+	if context != nil && math.Hypot(x-e.X, z-e.Z) > 100 {
+		acknowledgeDeniedMovement(e, sequence)
 		return false
 	}
 
@@ -1417,6 +1425,17 @@ func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state
 			x, z = constrainCasinoInterior(x, z)
 			y = 0
 		}
+	}
+	// Charge the canonical displacement after collision/floor clamps. The budget
+	// lives on the entity, so reconnecting or changing context cannot mint credit.
+	if context != nil && !e.networkMovement.allow(math.Hypot(x-e.X, z-e.Z), e.Speed, now) {
+		acknowledgeDeniedMovement(e, sequence)
+		return false
+	}
+	if context != nil && e.InstanceID != CasinoInstanceID {
+		// Walking cannot supply an airborne height. Overworld grounding below
+		// resolves the local terrain; instance floors retain server-owned height.
+		y = e.Y
 	}
 	e.X = x
 	e.Y = y

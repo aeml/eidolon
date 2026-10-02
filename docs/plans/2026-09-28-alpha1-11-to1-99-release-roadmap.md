@@ -137,6 +137,13 @@ Prepared 1.66 includes the isolated urgent recipient-private state fix from the
 partial protocol review, without backporting its dependency/account/frame work.
 Prepared 1.66–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
 1.71 account-security work is partial, not a completed milestone.
+Partial 1.72 now meters network walking against server-derived speed and elapsed
+time, bounds retained lag credit, acknowledges denied predictions, and keeps
+walking height server-owned. [Scoped walking checks](2026-10-02-release1-72-walking-checks.json)
+cover packet bursts, ordinary/delayed movement, context continuity, invalid
+numbers, geometry fixtures and the client correction contract. This is prepared
+source only: jump/cast authority and connected-route compatibility remain open,
+and none of these isolated checks closes the full security milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

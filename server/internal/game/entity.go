@@ -177,9 +177,11 @@ type Entity struct {
 	SpawnZ          float64 `json:"-"`
 	State           string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 	// LastMoveSequence acknowledges the newest ordered client movement sample
-	// accepted by the server. It is replicated to the owning client so normal
-	// network delay is never mistaken for an authoritative correction.
+	// processed by the server, including speed/discontinuity rejections. Returning
+	// the unchanged position with that acknowledgement corrects denied predictions
+	// without replaying them. Stale/context-mismatched samples never advance it.
 	LastMoveSequence uint64 `json:"-"`
+	networkMovement  movementBudget
 	// Recovery context separates fresh post-recall movement from packets sent
 	// before recovery. It is session state, not a secret or persisted build choice.
 	MovementContext      string `json:"-"`

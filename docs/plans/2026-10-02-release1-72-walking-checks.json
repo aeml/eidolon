@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 network walking authority",
+  "status": "partial prepared implementation; not versioned or published as 1.72",
+  "finding": "The existing 100-unit per-packet discontinuity check did not bound total travel over time. Network samples could also supply airborne walking heights in instances.",
+  "implementation": [
+    "Entity-local, transient walking allowance meters canonical horizontal distance divided by current server-derived speed against elapsed server time; at most two seconds of travel credit are retained, including initial credit.",
+    "Packet rate and legacy sequence zero cannot bypass the allowance. Recovery-context changes and trusted server repositioning neither reset nor spend it; a transport reconnect retains the same entity state.",
+    "Collision and casino-floor clamps precede charging actual displacement. Speed/discontinuity denials acknowledge fresh matching-context sequences with unchanged authoritative position; stale/context-invalid samples do not advance acknowledgements.",
+    "Finite float32-replicable coordinates/rotation are required before network geometry work. Walking preserves server-owned height or resolves overworld terrain rather than taking airborne height from client input.",
+    "Trusted internal movement retains its prior geometry/sequencing behavior. No production users, positions, saved stats, credentials or host settings were changed."
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1, race detector",
+    "finalScopedCommand": "go test -race ./internal/game . -run '^Test.*(NetworkMovementBudget|NetworkWalkingCannot|MovementBudget|UpdatePlayerMovement|RockMovement|WoodlandSavedPosition|MoveDispatchRejectsSpeed|TownRecoveryContext|RecoveryContext|HandleMessageQAWaypointRejectsQueuedMovement|DarkRealmReentry|ChronicleInspection)' -count=1",
+    "gamePackageSeconds": 3.455,
+    "serverPackageSeconds": 2.941,
+    "client": "GameEngineMovementSmoothness: 17 tests passed in 0.865 seconds, including unchanged-position speed rejection, pending-prediction retirement, duplicate acknowledgements and the next ordinary sample.",
+    "lint": "Repository ESLint passed with zero warnings.",
+    "negativeCases": "180 same-clock samples cannot exceed the initial allowance, both ordered and legacy-zero variants; no travel with invalid speed; no clock-backward credit; stale/departed/nonfinite/non-replicable inputs preserve position/budget/ack; context changes and trusted repositioning do not mint credit; airborne walking height is ignored.",
+    "positiveCases": "200 ordinary 100ms walking samples; two-second coalesced movement after long idle; server-derived haste and slow; stationary rotation; rock clipping, 391 saved tree-position escapes, approved town recovery, QA-waypoint handoff and Dark Realm movement-context reset.",
+    "fixtureCorrections": "Woodland and chat-only expedition fixtures now provide ordinary speed; the rock test starts within a valid walking allowance. Town recovery tests walk a small valid distance and use separate trusted setup for quest proximity. Client correction waits one ordinary 30Hz send interval; dispatch acknowledgements inspect the live entity rather than a detached copy that omits the field."
+  },
+  "sourceSha256": {
+    "server/internal/game/movement_budget.go": "d3f771af3241741653c776d24b5e1c69700d9dbc21b5a06c393eec46dd611a3e",
+    "server/internal/game/movement_budget_test.go": "fb1ee1fad2bf66bf6a0fb6412f810ca861ae40b31a60c05277ef8930bf020522",
+    "server/internal/game/world.go": "226322f6b4a45a462a07a8a9c871361f0c4caeb6bc32ae9f77d66950defd2369",
+    "server/internal/game/entity.go": "c4eb8fd00c52aaf6ac820dcbf0d5b59fc3f616dde6ebb9af77d676241d21c2da",
+    "server/movement_authority_test.go": "f0260821d846f0823cfd996215bca12f5d3bf47166cbee18b62567b02c2abcbb",
+    "tests/GameEngineMovementSmoothness.test.js": "c00cff9853a17aeb5a3552d8a1ff0c0e96551a23ba25882c1f8ab9830d9af98e"
+  },
+  "limits": [
+    "Two seconds of lag credit permits a bounded burst; it is not frame-perfect movement or a PvP anti-cheat certification. Actual network reconnect/lag/haste routes still require connected verification.",
+    "Jump travel/range, jump height and cast authority remain separate unfinished boundaries. Dungeon wall-crossing geometry also requires review; endpoint clamping alone does not prove an entire path is walkable.",
+    "Existing connected QA helpers that rapidly send large movement waypoints must be updated to real walking or already-authorized fixture setup before publication; do not weaken the guard to preserve teleporting tests.",
+    "No new full campaign, capacity soak, production binary or deployment is claimed by this receipt. Ordered predecessors and the account-recovery ownership/delivery choice still precede 1.72 publication."
+  ]
+}

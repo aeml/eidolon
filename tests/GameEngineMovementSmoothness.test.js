@@ -124,6 +124,28 @@ describe('GameEngine ordered movement transport', () => {
         }));
     });
 
+    test('an acknowledged speed rejection corrects to the unchanged position and retires the prediction', () => {
+        const engine = movementHarness();
+        engine.player.position.set(30, 0, 0);
+        engine.sendPlayerMovementIfNeeded(1 / 60);
+        const authoritativePosition = new THREE.Vector3(0, 0, 0);
+
+        expect(engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'IDLE' }, authoritativePosition, 30
+        )).toBe('acknowledged server adjustment');
+        expect(engine.ensureMovementNetworkState().sentHistory.size).toBe(0);
+        expect(engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'IDLE' }, authoritativePosition, 30
+        )).toBeNull();
+
+        engine.player.position.copy(authoritativePosition);
+        engine.player.state = 'IDLE';
+        engine.sendPlayerMovementIfNeeded(1 / 30);
+        expect(engine.network.send.mock.lastCall[1]).toEqual(expect.objectContaining({
+            sequence: 2, x: 0, z: 0
+        }));
+    });
+
     test('an authoritative resume counter rebases a freshly constructed client sequence', () => {
         const engine = movementHarness();
 

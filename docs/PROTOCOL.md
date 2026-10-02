@@ -48,6 +48,26 @@ movement merely because an earlier recall supplied a context. This additive JSON
 extension does not change EDPB version 2. The identifier is not a secret or an
 anti-cheat credential, and this change is not a redesign of movement authority.
 
+### Prepared network walking authority (not yet published)
+
+The partial 1.72 source additionally meters canonical horizontal walking using
+the entity's server-derived speed and elapsed server time. A character can retain
+at most two seconds of travel credit to accommodate coalesced/delayed samples;
+idle time, packet frequency, sequence zero, reconnects, and recovery contexts do
+not grant an unlimited travel burst. Collision/floor clamps run before charging
+the actual displacement. Internal server repositioning remains trusted and does
+not reset this transient, non-persisted allowance.
+
+Fresh, matching-context speed/discontinuity rejections acknowledge the processed
+`sequence` with the unchanged authoritative position. Updated clients discard
+that prediction and reconcile instead of continually replaying a denied move.
+Walking retains server-owned height (or resolves the overworld terrain height),
+rather than accepting an airborne Y coordinate from a client. Stale sequences,
+departed contexts, invalid/non-replicable numbers, and movement
+locks are still rejected before changing the acknowledgement or allowance.
+This is a walking guard, not a claim that jump/cast/PvP authority is finished;
+those boundaries and connected route compatibility remain release requirements.
+
 ## Build-action receipts
 
 Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on

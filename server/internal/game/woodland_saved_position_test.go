@@ -13,7 +13,7 @@ func TestWoodlandSavedPositionEscapeIsAcceptedByMovementContext(t *testing.T) {
 			continue
 		}
 		player := &Entity{ID: "saved-" + trunk.SiteID, Type: TypePlayer, State: "IDLE",
-			X: trunk.X, Z: trunk.Z, MovementContext: "woodland-return", RecoveryContextReady: true}
+			X: trunk.X, Z: trunk.Z, Speed: 5, MovementContext: "woodland-return", RecoveryContextReady: true}
 		w.AddEntity(player)
 		// The client's normal inside-box resolution steps just beyond the trunk
 		// and hero radius, rather than rewriting a save or teleporting to town.

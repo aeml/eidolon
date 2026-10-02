@@ -32,10 +32,13 @@ func TestTownRecoveryContextAdmitsFreshMovementAndRejectsDepartedPackets(t *test
 			if got := world.GetEntityCopy(player.ID); got.X != -1.25 || got.Z != 200 {
 				t.Fatal("departed-context movement displaced the returned player")
 			}
-			client.handleMessage(Message{Type: MsgMove, Payload: json.RawMessage(`{"x":17,"z":215,"state":"IDLE","sequence":21,"movementContext":"new-recovery"}`)})
-			if got := world.GetEntityCopy(player.ID); got.X != 17 || got.Z != 215 {
+			client.handleMessage(Message{Type: MsgMove, Payload: json.RawMessage(`{"x":2,"z":200,"state":"IDLE","sequence":21,"movementContext":"new-recovery"}`)})
+			if got := world.GetEntityCopy(player.ID); got.X != 2 || got.Z != 200 {
 				t.Fatalf("fresh movement was rejected after approved %s: (%v,%v)", action, got.X, got.Z)
 			}
+			// Quest proximity is a separate fixture setup, not an instantaneous
+			// network teleport from the recall point across town.
+			world.UpdatePlayerMovement(player.ID, 17, 0, 215, 0, "IDLE", 0)
 			client.handleMessage(Message{Type: MsgCompleteQuest, Payload: json.RawMessage(`{"questId":"chronicle_01_bell_below"}`)})
 			if !game.HasCompletedChronicleQuest(player, "chronicle_01_bell_below") {
 				t.Fatal("Ilyra rejected a ready quest after accepted town movement")
@@ -112,7 +115,7 @@ func TestRecoveryContextRejectsInvalidRequestsAndRestoresTransportContext(t *tes
 
 func TestRecoveryContextPreservesLegacyAndSubsequentMovementGuards(t *testing.T) {
 	w := game.NewWorld(nil)
-	p := &game.Entity{ID: "recovery-guards", Type: game.TypePlayer, Health: 100, MaxHealth: 100, State: "IDLE"}
+	p := &game.Entity{ID: "recovery-guards", Type: game.TypePlayer, Health: 100, MaxHealth: 100, State: "IDLE", Speed: 5}
 	w.AddEntity(p)
 	if err := w.PerformRecall(p.ID); err != nil {
 		t.Fatal(err)
@@ -142,10 +145,10 @@ func TestRecoveryContextPreservesLegacyAndSubsequentMovementGuards(t *testing.T)
 	if w.UpdatePlayerMovementWithContext(p.ID, 200, 0, 200, 0, "MOVING", 2, "fresh") {
 		t.Fatal("recovery bypassed the network discontinuity bound")
 	}
-	if !w.UpdatePlayerMovementWithContext(p.ID, 2, 0, 200, 0, "MOVING", 2, "fresh") {
+	if !w.UpdatePlayerMovementWithContext(p.ID, 2, 0, 200, 0, "MOVING", 3, "fresh") {
 		t.Fatal("valid movement rejected")
 	}
-	if w.UpdatePlayerMovementWithContext(p.ID, 3, 0, 200, 0, "MOVING", 2, "fresh") {
+	if w.UpdatePlayerMovementWithContext(p.ID, 3, 0, 200, 0, "MOVING", 3, "fresh") {
 		t.Fatal("stale sequence accepted")
 	}
 	if err := w.PerformRecall(p.ID, "fresh"); err == nil {

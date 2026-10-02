@@ -76,6 +76,7 @@ func TestDarkRealmReentryPublishesFreshMovementContext(t *testing.T) {
 	client := addChatTestClient("realm-returner", "")
 	p := world.Entities[client.playerID]
 	p.Level, p.Health, p.State = 100, 100, "IDLE"
+	p.Speed = 5 // The chat-only fixture otherwise has no derived movement stats.
 	for _, id := range []string{game.ChronicleEarthRestoredID, game.ChronicleWaterRestoredID, game.ChronicleFireRestoredID, game.ChronicleAirRestoredID} {
 		p.Quests = append(p.Quests, game.Quest{ID: id, Completed: true})
 	}

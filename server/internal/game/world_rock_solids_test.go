@@ -149,7 +149,7 @@ func TestRockMovementKeepsSequencingSceneOwnershipAndGrounding(t *testing.T) {
 	}
 	w.rockSolids = rockSolidsForTest(t)
 	p := newTestPlayer("rock-movement", "Fighter")
-	p.X, p.Z, p.MovementContext, p.RecoveryContextReady = -102, -345, "rock-test", true
+	p.X, p.Z, p.MovementContext, p.RecoveryContextReady = -102, -335, "rock-test", true
 	w.AddEntity(p)
 	if !w.UpdatePlayerMovementWithContext(p.ID, -102, 999, -290, .5, "MOVING", 9, "rock-test") {
 		t.Fatal("movement rejected instead of acknowledged/clipped")
