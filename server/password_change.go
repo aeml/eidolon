@@ -16,13 +16,18 @@ type passwordChangeStore interface {
 }
 
 func (c *Client) sendPasswordChangeResult(id string, success bool, message, token string) {
+	c.sendPasswordChangeResultState(id, success, message, token, false)
+}
+
+func (c *Client) sendPasswordChangeResultState(id string, success bool, message, token string, invalidated bool) {
 	// Never echo either credential, storage errors or a different account's data.
 	payload, _ := json.Marshal(struct {
-		RequestID   string `json:"requestId"`
-		Success     bool   `json:"success"`
-		Message     string `json:"message"`
-		ResumeToken string `json:"resumeToken,omitempty"`
-	}{id, success, message, token})
+		RequestID         string `json:"requestId"`
+		Success           bool   `json:"success"`
+		Message           string `json:"message"`
+		ResumeToken       string `json:"resumeToken,omitempty"`
+		ResumeInvalidated bool   `json:"resumeInvalidated,omitempty"`
+	}{id, success, message, token, invalidated})
 	frame, _ := json.Marshal(Message{Type: "password_change_result", Payload: payload})
 	c.sendSafe(frame)
 }
@@ -78,7 +83,7 @@ func handlePasswordChangeWithStore(c *Client, msg Message, store passwordChangeS
 		// A lost database acknowledgement may follow a committed write. Do not
 		// promise rollback or automatically resend old credentials.
 		revokeAccountResumeToken(c.username)
-		fail("Password change was not confirmed. Try signing in with the new password before retrying; the server may have saved it. Session resume is disabled until you sign in again.")
+		c.sendPasswordChangeResultState(payload.RequestID, false, "Password change was not confirmed. Try signing in with the new password before retrying; the server may have saved it. Session resume is disabled until you sign in again.", "", true)
 		return
 	}
 	if !changed {

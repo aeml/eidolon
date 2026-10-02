@@ -16,7 +16,7 @@ payment integration or new infrastructure purchase.
 | Report retention, backup retention and recovery objectives | Await explicit decisions. Existing technical defaults are not a published policy. |
 | Beta channel label and announcement | Keep open Alpha until the near-completion CB go/no-go. |
 
-## Prepared 1.71 password-change backend — not live yet
+## Prepared 1.71 password change — not live yet
 
 The candidate accepts a current-password-proved change only for its authenticated
 connection's account, with the same new-password limits as registration and
@@ -26,7 +26,17 @@ database acknowledgement disables resume until another login rather than
 promising rollback or replaying credentials. Login/resume handoffs are serialized
 with the change. [Backend checks](plans/2026-10-02-release1-71-password-checks.json)
 include actual disposable-Mongo data preservation and fresh-process sockets.
-There is not yet a player-facing form or approved account-recovery workflow.
+The prepared form appears in authenticated **Account help** before world entry
+and in online **Settings** (phone: **Device**). It requires the current password,
+preserves spaces/case, and clears fields on submission, closure, category change
+or disconnect. It never automatically retries an uncertain change. Closing a
+form does not cancel a submitted request. Its current transport consumes token
+rotation independently of the form, including a late world-entry handoff or
+blocked browser storage. [UI checks](plans/2026-10-02-release1-71-password-ui-checks.json)
+use scoped mocked browser sockets; the earlier backend receipt records actual
+disposable Mongo/fresh-process proof separately.
+Forgotten-password recovery still needs an approved ownership/delivery method;
+this form does not provide it. Production remains Alpha 1.70.0.
 Administrators gain no arbitrary reset, ownership or password-reading action.
 
 ## Player reports and private triage

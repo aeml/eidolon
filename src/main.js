@@ -4,6 +4,7 @@ import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
 import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
 import { LoginModerationUI } from './ui/LoginModerationUI.js';
+import { credentialTokenChange } from './core/CredentialToken.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -139,6 +140,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     let authReconnectTimer = null;
     let authReconnectAttempts = 0;
     let sessionResumeToken = null;
+    const updateCredentialToken = token => {
+        sessionResumeToken = token;
+        try {
+            if (token) localStorage.setItem('eidolon_resume_token', token);
+            else localStorage.removeItem('eidolon_resume_token');
+        } catch { /* Storage may be unavailable; the session still owns its RAM token. */ }
+    };
 
     const classSelectionContainer = document.getElementById('class-selection-container');
     const playContainer = document.getElementById('play-container');
@@ -302,6 +310,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         authSocket.onmessage = (event) => {
             if (socket !== authSocket) return;
             const msg = JSON.parse(event.data);
+            if (msg.type === 'password_change_result') {
+                const token = credentialTokenChange(msg.payload);
+                if (token !== undefined) updateCredentialToken(token);
+                delete msg.payload?.resumeToken;
+            }
             if (loginModeration?.handleMessage(msg)) return;
             if (msg.type === 'error') {
                 finishAuthRequest();
@@ -452,6 +465,9 @@ window.addEventListener('DOMContentLoaded', async () => {
                     sessionResumeToken = newToken;
                     try { localStorage.setItem('eidolon_resume_token', newToken); } catch (_) { /* Storage may be unavailable. */ }
                 };
+                window.game.network.onCredentialTokenChange = token => {
+                    if (window.game === sessionGame) updateCredentialToken(token);
+                };
                 window.game.network.onConnectionStateChange = (state) => {
                     if (window.game !== sessionGame) return;
                     window.game.inputManager?.clearInputState?.();
@@ -460,6 +476,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     window.game?.uiManager?.setConnectionState(state);
                     window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
+                    window.game?.uiManager?.passwordChange?.connectionState(state);
                 };
                 window.game.network.onReconnectFailed = reason => {
                     if (window.game !== sessionGame) return;

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { PhoneSettingsUI } from '../src/ui/PhoneSettingsUI.js';
+import { PasswordChangeUI } from '../src/ui/PasswordChangeUI.js';
 
 describe('phone settings routes', () => {
     let root, body, input, ui;
@@ -42,6 +43,18 @@ describe('phone settings routes', () => {
         expect(body.scrollTop).toBe(0); body.scrollTop = 65;
         root.querySelector('[data-settings-route="screen"]').click(); expect(body.scrollTop).toBe(180);
         root.querySelector('[data-settings-route="sound"]').click(); expect(body.scrollTop).toBe(65);
+    });
+    test('leaving Device clears typed credentials but preserves a pending receipt', () => {
+        const password = new PasswordChangeUI({ parent: ui.sections.get('device'), send: () => true, isCurrent: () => true });
+        try {
+            ui.show('device'); password.current.value = 'unsent-secret';
+            ui.show('screen'); expect(password.current.value).toBe('');
+            ui.show('device'); password.current.value = 'oldpass';
+            password.next.value = password.confirm.value = 'A unique updated phrase'; password.submit();
+            const pending = password.pending;
+            ui.show('sound'); expect(password.pending).toBe(pending);
+            expect(password.current.value).toBe('');
+        } finally { password.dispose(); }
     });
     test('phone copy describes menu text without implying camera zoom changes', () => {
         expect(root.querySelector('label[for="ui-scale"]').textContent).toBe('Menu text size');

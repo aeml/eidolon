@@ -17,6 +17,24 @@ beforeEach(() => {
 });
 afterEach(() => { support?.dispose(); jest.restoreAllMocks(); jest.useRealTimers(); });
 const sent = () => socket.send.mock.calls.map(([value]) => JSON.parse(value));
+test('authenticated account help owns password submission, receipt and close clearing', () => {
+    button.click(); const password = support.passwordChange;
+    password.current.value = 'oldpass'; password.next.value = password.confirm.value = 'A unique updated phrase';
+    password.submit();
+    expect(sent()).toEqual([{ type: 'change_password', payload: {
+        requestId: 'login-appeal-request-001', currentPassword: 'oldpass', newPassword: 'A unique updated phrase'
+    } }]);
+    expect(password.current.value).toBe('');
+    root.querySelector('#btn-close-report-header').click();
+    expect(password.pending).not.toBeNull();
+    expect(support.handleMessage({ type: 'password_change_result', payload: {
+        requestId: 'login-appeal-request-001', success: true, message: 'Password changed.'
+    } })).toBe(true);
+    expect(password.status.textContent).toBe('Password changed.');
+    button.click(); password.current.value = 'unsent-secret';
+    root.querySelector('#btn-cancel-report').click(); expect(password.current.value).toBe('');
+    current = false; password.submit(); expect(socket.send).toHaveBeenCalledTimes(1);
+});
 const nameNotice = { ...notice, kind: 'require_name_change', expiresAt: '0001-01-01T00:00:00Z' };
 const readNameNotice = () => {
     root.querySelector('#btn-check-moderation').click();

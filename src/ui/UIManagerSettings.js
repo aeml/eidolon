@@ -31,11 +31,14 @@ class UIManagerSettingsMethods {
     }
 
     toggleSettings() {
+        const opening = !this.isElementVisible(this.settingsScreen);
         if (this.isMobile && !this.isElementVisible(this.settingsScreen)) {
             this.chat?.setMobileExpanded(false);
             if (this.isEscMenuOpen) this.toggleEscMenu();
         }
         this.toggleStaticModal(this.settingsScreen, this.isMobile ? 'flex' : 'block');
+        if (opening) this.passwordChange?.refresh();
+        else this.passwordChange?.clearFields();
     }
 
     togglePatchNotes() {

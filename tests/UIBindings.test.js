@@ -3,6 +3,30 @@ import { UIBindings } from '../src/core/UIBindings.js';
 import { ReportUI } from '../src/ui/ReportUI.js';
 
 describe('UIBindings', () => {
+    test.each([false, true])('password Settings binds only the current online engine (phone=%s)', phone => {
+        document.body.innerHTML = '<section class="support-window__body--settings"></section>';
+        const engine = createEngine(); engine.isMultiplayer = true; window.game = engine;
+        const parent = document.querySelector('section');
+        engine.uiManager.settingsScreen = document.body;
+        if (phone) engine.uiManager.phoneSettings = { sections: new Map([['device', parent]]) };
+        engine.network.send.mockReturnValue(true);
+        new UIBindings(engine).bindConstructorCallbacks();
+        const password = engine.uiManager.passwordChange;
+        try {
+            expect(password.parent).toBe(parent);
+            password.current.value = 'oldpass'; password.next.value = password.confirm.value = 'A unique updated phrase';
+            password.submit(); expect(engine.network.send).toHaveBeenCalledWith('change_password', expect.any(Object));
+            expect(password.pending).not.toBeNull();
+            window.game = {}; password.handleResult({ requestId: password.pending.requestId, success: true });
+            expect(password.pending).not.toBeNull();
+            password.dispose();
+            window.game = engine; engine.isMultiplayer = false;
+            new UIBindings(engine).bindConstructorCallbacks();
+            const offline = engine.uiManager.passwordChange;
+            expect(offline.button.disabled).toBe(true); offline.submit();
+            expect(engine.network.send).toHaveBeenCalledTimes(1); offline.dispose();
+        } finally { password.dispose(); delete window.game; }
+    });
     test('party consent carries the current invitation identity and meeting maps never teleport', () => {
         const engine = createEngine();
         engine.uiManager.social.toggleSocial = jest.fn();

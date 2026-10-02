@@ -462,6 +462,8 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.publicName || chatData.sender, chatData.message, { channel, senderAccount: chatData.sender });
+        } else if (msg.type === 'password_change_result') {
+            this.uiManager?.passwordChange?.handleResult(msg.payload);
         } else if (msg.type === 'report_result') {
             this.uiManager?.report?.handleResult(msg.payload);
         } else if (msg.type === 'report_status_result') {

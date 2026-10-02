@@ -86,6 +86,7 @@ export class PhoneSettingsUI {
 
     show(key) {
         if (!this.sections.has(key)) return;
+        if (key !== 'device') this.sections.get('device')?.__eidolonPasswordChange?.clearFields();
         this.scroll.set(this.current, this.body.scrollTop);
         this.current = key;
         for (const [id, section] of this.sections) section.hidden = id !== key;
