@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared and unpublished; guild completion capture implemented, durable handoff still pending",
+  "preparedParent": "5c8805f0",
+  "scope": [
+    "Completion events carry original trusted kill/repair time and detached qualifying guild runs. Capture each unique actual recipient's server-owned guild identity under its existing reward lock, without replay-time membership queries.",
+    "Keep a server-only guild display-name cache alongside existing public ID/tag. Refresh it from normal database-owned guild state; no new client authority, permission, registration or reward endpoint.",
+    "Repeat crystal-repair completions count active in-instance participants independently of whether their story quest advances. Departed/disconnected players remain excluded by existing repair eligibility. Duplicate player identities cannot qualify a guild alone.",
+    "Run duration uses original completion time. Mongo derives an omitted season from the recorded clear date, rejects an explicitly mismatched recorded season, preserves the fastest duration/largest member count and records the earliest clear through replay-safe min updates. Legacy callers without a recorded date retain their existing time default."
+  ],
+  "checks": {
+    "focusedRace": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game ./internal/database -run '^Test(DungeonGuildSnapshot|CrystalGuildClear|GuildClearCapture|SetPlayerGuildIdentity|GuildDungeonSeason|Weekly|CrystalRepairResume|CrystalVigilReadiness)' -count=1 -timeout=30s",
+      "passed": true,
+      "serverPackageSeconds": 7.614,
+      "gamePackageSeconds": 3.749,
+      "databasePackageSeconds": 1.035
+    },
+    "finalGameRace": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^Test(DungeonGuildSnapshot|CrystalGuildClear|GuildClearCapture|SetPlayerGuildIdentity|CrystalRepairResume|CrystalVigilReadiness)' -count=1 -timeout=20s",
+      "passed": true,
+      "packageSeconds": 2.253,
+      "scope": "Final name-refresh/clear and single-emission assertions; snapshot duplicate/nonplayer/solo exclusion, detached captured membership and quarter-boundary times; actual four-player final-boss death handoff; repair completion with no active story quests; no internal names/runs in actor/event JSON. Direct handoff fixtures, not a full combat clear or wave-defense balance run."
+    },
+    "disposableMongoRace": {
+      "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_ARENA_TEST_MONGO_URI=mongodb://127.0.0.1:32856 GOTOOLCHAIN=go1.27.1 go test -race ./internal/database -run '^TestGuildClearActualMongoRetainsOriginalSeasonAndEarliestClear$' -count=1 -timeout=30s",
+      "passed": true,
+      "packageSeconds": 1.228,
+      "scope": "Actual low-level leaderboard writes, identical replay, older slower clear, separate next-quarter clear and mismatched explicit season. Not a connected guild-membership or full dungeon session.",
+      "container": "42aedd7dd51f431de6e4268e0ae91ed06b1e9ada7f75a7cf7a35d574a7062aea",
+      "isolation": "Verified eidolon.qa.scope=guild-clear-capture-20261002, Mounts=[], loopback-only port32856,512MiB/32MiB tmpfs,1GiB memory and oneCPU. Ping confirmed before testing.",
+      "cleanup": "Stopped and removed only the exact inspected test container. Synthetic tmpfs leaderboard records are gone; production data/services and global Docker cache untouched."
+    },
+    "diffCheck": "passed",
+    "sourceHashes": {
+      "server/guild_handlers.go": "5e8591deff00854f8acb41df2ab4e8d044c78cca3014d097fee762685b2a8dc4",
+      "server/internal/game/entity.go": "750e3c51f58af164b0e8935f729eb24f0d434d61073c373e0fbcb56d95640f5b",
+      "server/internal/game/guild_identity.go": "c1cf7410db0f39aac25005e4de7262f9d8c9dd911f3f60d9c41a5b8333af5ebe",
+      "server/internal/game/guild_identity_test.go": "1bd98657bc8a8bdd0f8cb5b54d898ac64809deb3df1ae3b52c887d825b46ca9b",
+      "server/internal/game/dungeon_rewards.go": "dafc3d4abd74155109a338b9f923a75a196fd5c03cc19e07edd35dab8a2b398f",
+      "server/internal/game/combat_death.go": "89372eb13821e94e3ec0cac41f5b507640c62cba35004c56b36a74902841e93a",
+      "server/internal/game/crystal_repair.go": "354f47ecbecbc19f3def4d9c44a7ab78c1a65ca019198566f9a708c039657586",
+      "server/internal/database/guild_leaderboard.go": "ec64d44d7bc28574cd91111303cef6e36e2c522ef5d432cd85bb04309c096437",
+      "server/internal/game/guild_clear_snapshot_test.go": "7d179810c6c44edbe945b4348f427b6291e18e30d460b6e24e075ea4a70eec90",
+      "server/internal/database/guild_clear_season_test.go": "911f3684bd730229e136948e64b92bab4b4c8910498066492bbb8a8d3add03fc"
+    }
+  },
+  "remaining": [
+    "Dungeon completion still schedules one database worker per event and lacks durable replay. This capture layer alone is not crash durability or a completion-worker bound. Next implement a typed private completion journal and one bounded replay consumer, with startup/shared-volume compatibility and failed-write/restart/acknowledgement checks.",
+    "Membership is captured from the server-owned world mirror when rewards/repair completion are credited; this is not a cross-store atomic proof against concurrent membership changes or delayed mirror updates. Review that boundary rather than claiming database membership-at-the-exact-kill transactionality.",
+    "Total journal disk limits, wider adversarial integration, account-recovery choice and ordered1.71/1.72 publication remain open. No deployment or full milestone acceptance is claimed; accepted live remains Alpha1.70.0."
+  ]
+}

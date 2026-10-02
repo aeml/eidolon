@@ -42,8 +42,14 @@ func (db *DB) RecordGuildDungeonRun(run GuildDungeonRun) error {
 		return errors.New("invalid guild dungeon run")
 	}
 	now := time.Now().UTC()
+	firstClearAt := run.FirstClearAt.UTC()
+	if firstClearAt.IsZero() {
+		firstClearAt = now // Compatibility for legacy server-side callers.
+	}
 	if run.Season == "" {
-		run.Season = CurrentGuildDungeonSeason(now)
+		run.Season = CurrentGuildDungeonSeason(firstClearAt)
+	} else if !run.FirstClearAt.IsZero() && run.Season != CurrentGuildDungeonSeason(firstClearAt) {
+		return errors.New("guild clear season does not match completion time")
 	}
 	filter := bson.M{
 		"guild_id": run.GuildID, "season": run.Season, "dungeon_type": run.DungeonType,
@@ -52,10 +58,10 @@ func (db *DB) RecordGuildDungeonRun(run GuildDungeonRun) error {
 	update := bson.M{
 		"$setOnInsert": bson.M{
 			"guild_id": run.GuildID, "season": run.Season, "dungeon_type": run.DungeonType,
-			"difficulty": run.Difficulty, "run_level": run.RunLevel, "first_clear_at": now,
+			"difficulty": run.Difficulty, "run_level": run.RunLevel,
 		},
 		"$set": bson.M{"guild_name": run.GuildName, "guild_tag": run.GuildTag, "updated_at": now},
-		"$min": bson.M{"duration_ms": run.DurationMS},
+		"$min": bson.M{"duration_ms": run.DurationMS, "first_clear_at": firstClearAt},
 		"$max": bson.M{"member_count": run.MemberCount},
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

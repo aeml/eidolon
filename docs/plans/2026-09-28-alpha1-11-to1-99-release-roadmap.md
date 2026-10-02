@@ -309,6 +309,13 @@ ordinary pass, retains honest pending admission and drains startup in batches.
 Focused race checks and actual disposable-Mongo replay of69 results retain the
 newest reward despite newer-before-older commits. Total disk-backlog limits,
 guild completion handoff and final integration remain open; no live promotion.
+The [guild-clear capture follow-up](2026-10-02-release1-72-guild-clear-capture-checks.json)
+records original completion time/season and unique recipients' server-owned
+guild identities instead of querying later membership. Repeat crystal repairs
+no longer require story-quest advancement to count as guild clears. Focused
+death/repair handoff tests and actual Mongo quarter/replay checks pass. The
+durable completion journal and shared bounded consumer remain the next task;
+this capture layer alone does not fix dropped writes or worker admission.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

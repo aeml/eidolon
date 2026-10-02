@@ -1,7 +1,9 @@
 package game
 
 import (
+	"eidolon-server/internal/database"
 	"fmt"
+	"slices"
 	"time"
 )
 
@@ -12,12 +14,61 @@ type WeeklyRaidCompletionEvent struct {
 }
 
 type DungeonCompletionEvent struct {
-	InstanceID   string            `json:"instanceId"`
-	DungeonType  string            `json:"dungeonType"`
-	Difficulty   DungeonDifficulty `json:"difficulty"`
-	RunLevel     int               `json:"runLevel"`
-	Duration     time.Duration     `json:"duration"`
-	Participants []string          `json:"participants"`
+	InstanceID   string                     `json:"instanceId"`
+	DungeonType  string                     `json:"dungeonType"`
+	Difficulty   DungeonDifficulty          `json:"difficulty"`
+	RunLevel     int                        `json:"runLevel"`
+	Duration     time.Duration              `json:"duration"`
+	Participants []string                   `json:"participants"`
+	CompletedAt  time.Time                  `json:"completedAt"`
+	GuildRuns    []database.GuildDungeonRun `json:"-"` // Internal immutable clear snapshots, not a client request.
+}
+
+// Capture the server-owned identity while each real recipient is credited,
+// without DB lookups in combat or replay-time membership/season attribution.
+type dungeonGuildClearSnapshot struct {
+	seen map[string]bool
+	runs map[string]database.GuildDungeonRun
+}
+
+// Caller owns player.Mu. Each player contributes at most once.
+func (snapshot *dungeonGuildClearSnapshot) addLocked(player *Entity) {
+	if player.Type != TypePlayer || player.GuildID == "" {
+		return
+	}
+	if snapshot.seen == nil {
+		snapshot.seen = make(map[string]bool)
+		snapshot.runs = make(map[string]database.GuildDungeonRun)
+	}
+	if snapshot.seen[player.ID] {
+		return
+	}
+	snapshot.seen[player.ID] = true
+	run := snapshot.runs[player.GuildID]
+	if run.GuildID == "" {
+		run.GuildID, run.GuildName, run.GuildTag = player.GuildID, player.GuildName, player.GuildTag
+	}
+	run.MemberCount++
+	snapshot.runs[player.GuildID] = run
+}
+
+func (snapshot *dungeonGuildClearSnapshot) finish(event *DungeonCompletionEvent) {
+	keys := make([]string, 0, len(snapshot.runs))
+	for id := range snapshot.runs {
+		keys = append(keys, id)
+	}
+	slices.Sort(keys)
+	for _, id := range keys {
+		run := snapshot.runs[id]
+		if run.MemberCount < 2 {
+			continue
+		}
+		run.Season = database.CurrentGuildDungeonSeason(event.CompletedAt)
+		run.FirstClearAt = event.CompletedAt.UTC()
+		run.DungeonType, run.Difficulty, run.RunLevel = event.DungeonType, string(event.Difficulty), event.RunLevel
+		run.DurationMS = event.Duration.Milliseconds()
+		event.GuildRuns = append(event.GuildRuns, run)
+	}
 }
 
 func isFinalDungeonBoss(subType string) bool {

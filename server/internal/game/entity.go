@@ -326,6 +326,7 @@ type Entity struct {
 	SocialStatus string `json:"socialStatus,omitempty"`
 	GuildID      string `json:"guildId,omitempty"`
 	GuildTag     string `json:"guildTag,omitempty"`
+	GuildName    string `json:"-"` // Server-owned display snapshot for recorded guild clears.
 
 	// Reconnect / session resume
 	Disconnected    bool      `json:"-"`
@@ -927,6 +928,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		SocialStatus:             e.SocialStatus,
 		GuildID:                  e.GuildID,
 		GuildTag:                 e.GuildTag,
+		GuildName:                e.GuildName,
 		Type:                     e.Type,
 		SubType:                  e.SubType,
 		X:                        e.X,

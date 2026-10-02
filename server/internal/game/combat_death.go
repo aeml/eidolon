@@ -286,6 +286,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 			}
 
 			// Use kill-time recipients, never a later position/party lookup.
+			var guildClear dungeonGuildClearSnapshot
 			if len(partyMembers) > 0 {
 				// Calculate Bonus
 				bonusMultiplier := 1.0 + (float64(len(partyMembers)) * 0.10)
@@ -297,6 +298,9 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 
 				for _, member := range partyMembers {
 					member.Mu.Lock()
+					if finalDungeonBoss {
+						guildClear.addLocked(member)
+					}
 					rewardMultiplier := resonanceRewardMultiplier(member)
 					memberXP := wellRestedKillXP(member, int(float64(xpPerMember)*rewardMultiplier))
 					memberGold := int(float64(goldPerMember) * rewardMultiplier)
@@ -521,10 +525,12 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				}
 			}
 			if finalDungeonBoss && w.OnEvent != nil && !instanceCreatedAt.IsZero() {
-				w.OnEvent("dungeon_complete", DungeonCompletionEvent{
+				event := DungeonCompletionEvent{
 					InstanceID: tInstanceID, DungeonType: instanceType, Difficulty: instanceDifficulty,
-					RunLevel: runLevel, Duration: max(time.Millisecond, time.Since(instanceCreatedAt)), Participants: participants,
-				})
+					RunLevel: runLevel, Duration: max(time.Millisecond, killedAt.Sub(instanceCreatedAt)), Participants: participants, CompletedAt: killedAt,
+				}
+				guildClear.finish(&event)
+				w.OnEvent("dungeon_complete", event)
 			}
 
 			if len(lootItems) > 0 || len(participants) > 0 {

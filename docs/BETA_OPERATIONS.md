@@ -161,6 +161,11 @@ bounded batches before logins, and still refuses real storage/replay failures.
 include actual disposable-Mongo newer-before-older replay. These limits do not
 bound total retained disk receipts or all IO time. Guild leaderboard completion
 handoff remains unbounded/unretried and must not be described as covered here.
+The [guild-clear capture layer](plans/2026-10-02-release1-72-guild-clear-capture-checks.json)
+now retains original completion time/season and the server-owned identities of
+unique reward recipients; repeat repair clears count without advancing a story
+quest. It is not yet a durable handoff, bounded consumer or transactional proof
+of database membership at the exact kill time.
 
 The candidate also bounds ordinary headers, body reads, writes and idle
 keepalives, and upgrade-handshake writes. Active game sockets retain their own

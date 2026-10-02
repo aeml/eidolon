@@ -289,6 +289,7 @@ func (w *World) completeCrystalRepair(state *CrystalRepairState) {
 	}
 	state.Completed = true
 	w.RepairMu.Unlock()
+	completedAt := time.Now().UTC()
 
 	if artificer := w.GetEntity(state.NPCID); artificer != nil {
 		artificer.Mu.Lock()
@@ -297,6 +298,7 @@ func (w *World) completeCrystalRepair(state *CrystalRepairState) {
 		artificer.Mu.Unlock()
 	}
 	credited := make([]string, 0, len(state.Participants))
+	var guildClear dungeonGuildClearSnapshot
 	for _, playerID := range state.Participants {
 		player := w.GetEntity(playerID)
 		if player == nil {
@@ -304,8 +306,12 @@ func (w *World) completeCrystalRepair(state *CrystalRepairState) {
 		}
 		player.Mu.Lock()
 		stillParticipating := player.InstanceID == state.InstanceID && !player.Disconnected
-		if stillParticipating && w.UpdateChronicleEventProgress(player, "REPAIR", state.RepairTarget) {
+		if stillParticipating {
+			// Repeat clears still count even when the story quest was already
+			// completed. Quest progress remains independently conditional.
+			w.UpdateChronicleEventProgress(player, "REPAIR", state.RepairTarget)
 			credited = append(credited, player.ID)
+			guildClear.addLocked(player)
 		}
 		player.Mu.Unlock()
 	}
@@ -317,9 +323,10 @@ func (w *World) completeCrystalRepair(state *CrystalRepairState) {
 		instance.Mu.RLock()
 		event := DungeonCompletionEvent{
 			InstanceID: state.InstanceID, DungeonType: state.RaidType, Difficulty: instance.Difficulty,
-			RunLevel: instance.RunLevel, Duration: max(time.Millisecond, time.Since(instance.CreatedAt)), Participants: credited,
+			RunLevel: instance.RunLevel, Duration: max(time.Millisecond, completedAt.Sub(instance.CreatedAt)), Participants: credited, CompletedAt: completedAt,
 		}
 		instance.Mu.RUnlock()
+		guildClear.finish(&event)
 		w.OnEvent("dungeon_complete", event)
 	}
 }

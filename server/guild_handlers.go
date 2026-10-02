@@ -114,37 +114,15 @@ func handleMsgGuildLeaderboard(client *Client, message Message) {
 }
 
 func recordGuildDungeonCompletion(event game.DungeonCompletionEvent) {
-	type guildGroup struct {
-		guild *database.Guild
-		count int
-	}
-	groups := make(map[string]*guildGroup)
-	for _, playerID := range event.Participants {
-		guild, err := db.GetGuildForPlayer(playerID)
-		if err != nil || guild == nil {
-			continue
-		}
-		group := groups[guild.ID]
-		if group == nil {
-			group = &guildGroup{guild: guild}
-			groups[guild.ID] = group
-		}
-		group.count++
-	}
-	for _, group := range groups {
-		if group.count < 2 {
-			continue
-		}
-		err := db.RecordGuildDungeonRun(database.GuildDungeonRun{
-			GuildID: group.guild.ID, GuildName: group.guild.Name, GuildTag: group.guild.Tag,
-			DungeonType: event.DungeonType, Difficulty: string(event.Difficulty), RunLevel: event.RunLevel,
-			DurationMS: event.Duration.Milliseconds(), MemberCount: group.count,
-		})
+	// Membership and season were captured while actual recipients were
+	// credited. Never reattribute a delayed clear to their later guild.
+	for _, run := range event.GuildRuns {
+		err := db.RecordGuildDungeonRun(run)
 		if err != nil {
-			log.Printf("record guild dungeon run %s: %v", group.guild.ID, err)
+			log.Printf("record guild dungeon run %s: %v", run.GuildID, err)
 			continue
 		}
-		broadcastGuildUpdate(group.guild.ID)
+		broadcastGuildUpdate(run.GuildID)
 	}
 }
 
@@ -355,10 +333,10 @@ func sendGuildState(client *Client) {
 	}
 	payload := guildStatePayload{Invites: invites}
 	if guild != nil {
-		world.SetPlayerGuildIdentity(client.playerID, guild.ID, guild.Tag)
+		world.SetPlayerGuildIdentity(client.playerID, guild.ID, guild.Tag, guild.Name)
 		payload.Guild = buildGuildView(guild, client.playerID)
 	} else {
-		world.SetPlayerGuildIdentity(client.playerID, "", "")
+		world.SetPlayerGuildIdentity(client.playerID, "", "", "")
 	}
 	encoded, _ := json.Marshal(payload)
 	client.sendSafe(createMessage(MsgGuildUpdate, encoded))
