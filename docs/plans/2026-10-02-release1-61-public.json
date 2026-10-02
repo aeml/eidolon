@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.61.0",
+  "commit": "a9792c92d8e06d4734c14a87cd323df27efdd026",
+  "ciRun": 36985885791,
+  "status": "accepted",
+  "verifiedAt": "2026-10-02T09:24:43.735Z",
+  "transport": "Ordinary public DNS, IPv4 and verified HTTPS; no origin override.",
+  "frontend": {
+    "commit": "a9792c92d8e06d4734c14a87cd323df27efdd026",
+    "version": "Alpha 1.61.0"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "a9792c92d8e06d4734c14a87cd323df27efdd026",
+    "version": "Alpha 1.61.0"
+  },
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 744173,
+      "sha256": "8d340cbceeb806a47a25c40a27367581e77b083432454603de21521eea3b36df",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/core/CasinoController.js",
+      "bytes": 31928,
+      "sha256": "e37aefa62ea9ad93e2615b00efe20da186cfab889737f1e29f350d142bb40ae2",
+      "matchesExactPublisherOutput": true
+    }
+  ],
+  "limits": "Technical release acceptance only; final art approval, real-phone party comfort, population observations and campaign pacing remain open."
+}
