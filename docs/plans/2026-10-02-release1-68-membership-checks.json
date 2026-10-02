@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "1.68",
+  "sourceVersion": "Alpha 1.62.0",
+  "status": "prepared, unpublished",
+  "originalPreparedCommits": ["69e3b4ef", "bfbead1e"],
+  "reconciledCommits": ["6fcf8ed3", "3056cfe7"],
+  "scope": [
+    "Explicit VIP refresh and full expiry timestamp without replaying an unresolved Gold-to-EP exchange.",
+    "Server snapshot time and monotonic elapsed time retire expired membership display; the UI cannot renew, grant access or award EP.",
+    "Current-character ownership, metadata validation, administrator/monthly non-stacking and retained EP/cosmetics explanation."
+  ],
+  "checks": {
+    "client": {"suites": 4, "tests": 38, "seconds": 1.816, "passed": true},
+    "membershipAndAdministratorRace": {"seconds": 2.558, "passed": true},
+    "presentation": {"cases": 2, "seconds": 7.3, "passed": true, "widths": [390, 1440], "phoneSizedConfirmationInspected": true, "artifacts": "/tmp/eidolon-168-reconciled-membership-20261002"},
+    "lint": "passed",
+    "whitespace": "passed"
+  },
+  "retainedSourceComparison": {
+    "commit": "d1e707e3",
+    "unchanged": ["server/internal/database/vip.go", "server/internal/game/vip.go", "server/casino_vip_sessions_test.go", "server/internal/database/vip_mongo_test.go"],
+    "membershipHandlerDifference": "Only playerID and UTC asOf fields in the outgoing private status snapshot; allowance/save/role logic unchanged."
+  },
+  "retainedEvidence": ["2026-10-01-release1-68-membership-checks.json", "2026-09-14-vip-membership.md", "2026-09-20-admin-vip-allowance.md", "2026-09-20-casino-expansion.md"],
+  "limits": "Prepared handlers and DOM fixtures, not new authenticated allowance/restart evidence or physical-phone certification. Same-owner out-of-order status replies do not gain a new request-generation fence. Membership provisioning, trusted-role checks, 100 EP allowance, durable receipts, wallets and absence of payment integration remain unchanged. Sequential defaults/notes, CI and public acceptance remain required."
+}
