@@ -543,6 +543,8 @@ func tickPoker(now time.Time, ids ...string) error {
 		return err
 	}
 	owner := ""
+	var timedOutSeat *game.CasinoSeatSession
+	timedOutPlayer := ""
 	if r.Pending != nil {
 		owner = r.Pending.PlayerID
 	} else {
@@ -587,8 +589,17 @@ func tickPoker(now time.Time, ids ...string) error {
 				}
 			}
 			if !changed && !now.Before(s.Round.Deadline) {
-				s.Round, err = s.Round.Timeout(now)
-				changed = err == nil
+				turn := s.Round.Players[s.Round.Turn]
+				if p := world.GetEntityCopy(turn.PlayerID); p != nil && p.CasinoSeat != nil &&
+					p.CasinoSeat.TableID == id && p.CasinoSeat.Seat == turn.Seat {
+					timedOutSeat, timedOutPlayer = p.CasinoSeat, turn.PlayerID
+				}
+				// Losing the chair follows the existing leave rule: fold a live
+				// stack, retain committed chips and settle unspent funds normally.
+				s.Round, changed = s.Round.Withdraw(turn.PlayerID, now)
+				if !changed {
+					err = errors.New("timed-out poker hand could not be retired")
+				}
 			}
 			if changed {
 				if s.Round.Phase == "complete" {
@@ -614,6 +625,9 @@ func tickPoker(now time.Time, ids ...string) error {
 		}
 	}
 	pokerMu.Unlock()
+	if err == nil && timedOutSeat != nil {
+		world.ReleaseCasinoSeatForSession(timedOutPlayer, id, timedOutSeat.SessionID)
+	}
 	if err != nil || owner == "" {
 		return err
 	}

@@ -77,3 +77,33 @@ test('matching rejection releases controls without rebuying; stale errors do not
     ui.rejectAction({ action: 'poker_buy_in', roundId: 'hand-1', roundRevision: 0, error: 'Not enough Gold' });
     expect(ui.buy.disabled).toBe(false); expect(send).toHaveBeenCalledTimes(1); ui.dispose();
 });
+
+test('a reused chair identifies its earlier hand without revealing hidden opponent cards', () => {
+    const ui = new PokerTableUI(jest.fn());
+    ui.update(playing(), 'A', { yourSeat: { seat: 0 }, occupants: [
+        { playerId: 'A', seat: 0, name: 'Alice', connected: true },
+        { playerId: 'new-patron', seat: 1, name: 'New patron', connected: true }
+    ] });
+    expect(ui.table.seats[1].name.textContent).toBe('New patron');
+    expect(ui.table.seats[1].hands.textContent).toContain('Beryl’s earlier hand');
+    expect(ui.table.seats[1].hands.querySelectorAll('[aria-label="Hidden card"]')).toHaveLength(2);
+    expect(ui.table.seats[1].status.textContent).toBe('Waiting for next hand');
+    ui.dispose();
+});
+
+test('poker hand returns remain pending until all cash-outs are saved', () => {
+    jest.useFakeTimers(); const ui = new PokerTableUI(jest.fn());
+    try {
+        const v = playing(); v.phase = 'settling'; v.round.phase = 'complete';
+        v.round.players[0].payout = 200; v.round.pots[0].winners = ['A'];
+        ui.update(v, 'A');
+        expect(ui.table.seats[0].hands.textContent).toContain('200 Gold pending return');
+        expect(ui.celebration.active).toBe(false);
+        ui.update({ ...v, phase: 'complete', processing: true }, 'A');
+        expect(ui.table.seats[0].hands.textContent).toContain('200 Gold pending return');
+        ui.update({ ...v, phase: 'complete' }, 'A');
+        expect(ui.table.seats[0].hands.textContent).toContain('200 Gold returned');
+        expect(ui.table.seats[0].hands.textContent).not.toContain('pending return');
+        expect(ui.celebration.active).toBe(true);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
