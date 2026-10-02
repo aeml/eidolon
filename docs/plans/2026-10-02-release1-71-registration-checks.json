@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "partial implementation, local checks passed; not versioned or published as 1.71",
+  "scope": [
+    "Public registration rejects blank, oversized or control-character usernames and invalid/short/oversized passwords before query/hash admission. Usernames retain exact case, Unicode and meaningful spaces within 128 UTF-8 bytes.",
+    "New passwords require 15 Unicode code points and fit the existing bcrypt 72-byte limit; reject excess rather than truncating or normalizing hash input.",
+    "A small wholly local whole-value baseline rejects listed common/context passwords and the username. Distinct phrases containing a listed substring are not rejected; no third-party credential lookup is performed.",
+    "Existing login and hash data, trusted legacy fixture/import creation, paste/autofill and optional-email behavior are unchanged. Registration messages and the shared login hint distinguish new-account requirements from existing credentials."
+  ],
+  "basis": {
+    "passwordMinimum": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+    "encoderLimit": "Pinned golang.org/x/crypto v0.14.0 bcrypt.GenerateFromPassword rejects inputs longer than 72 bytes before hashing.",
+    "qualification": "The policy adopts the current single-factor length baseline, not the entirety of NIST's verifier requirements or a standards certification."
+  },
+  "checks": {
+    "newCases": "Six exact-input positive boundary cases (ASCII/Unicode minimum and byte maximum, meaningful spaces/case, optional email, username maximum), fifteen actual dispatcher negative cases with no database/work admission, and one whole-value-vs-substring blocklist case.",
+    "focusedRace": "Registration, credential admission, auth dispatch, resume tokens, first-closure clock, queues, character ownership, session activity, protected-admin admission and inbound policy tests passed under Go race detector: 2.598 seconds.",
+    "client": "Main asset/auth boot, menu presentation and version presentation suites passed: 428 overlapping focused checks in 4.95 seconds; simulated server components, not a new connected registration proof.",
+    "retainedConnectedEvidence": "The earlier bounded credential socket receipt proves real legacy short-password login and the new-account fixture uses a password meeting this policy. It predates this validation change; final exact-source connected acceptance remains required before publishing 1.71.",
+    "formatting": "gofmt applied; whitespace checked."
+  },
+  "limits": [
+    "The small blocklist is not a complete compromised-password corpus. Broader corpus and Unicode-normalization/hash-migration choices remain named work.",
+    "No saved password is migrated or made invalid by the new minimum, and no SMTP/reset bypass, ownership grant or production database mutation was introduced.",
+    "Recovery delivery/ownership and full protected-administrator threat review remain unfinished; this is not complete 1.71 acceptance.",
+    "No claim of actual-phone comfort, simultaneous100-player login capacity or complete denial-of-service prevention."
+  ]
+}

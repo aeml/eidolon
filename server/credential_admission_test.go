@@ -221,7 +221,7 @@ func TestCredentialDispatchRejectsBeforeDatabaseWork(t *testing.T) {
 					}
 				}
 				client := &Client{send: make(chan []byte, 4)}
-				payload, _ := json.Marshal(AuthPayload{Username: "owner", Password: "not-checked", Email: "test@example.invalid"})
+				payload, _ := json.Marshal(AuthPayload{Username: "owner", Password: "not-checked-prepared-password", Email: "test@example.invalid"})
 				client.dispatchMessage(Message{Type: kind, Payload: payload})
 				messages := drainSentMessages(client.send)
 				if len(messages) != 1 || messages[0].Type != MsgError || string(messages[0].Payload) != fmt.Sprintf("%q", expected.Error()) || client.username != "" {

@@ -44,6 +44,21 @@ of an account, or replace edge/proxy flood protection. Forwarding headers and
 household/proxy IPs are not used as authentication authority or budget keys.
 This candidate is not live until its ordered release and acceptance complete.
 
+Prepared1.71 validates only **new public registrations** before credential work:
+an exact, nonblank username of at most128 UTF-8 bytes without control characters,
+and a password of at least15 Unicode code points and at most72 UTF-8 bytes.
+The fifteen-character single-factor baseline follows the
+[NIST password-verifier guidance](https://pages.nist.gov/800-63-4/sp800-63b.html).
+The byte ceiling is the existing bcrypt encoder's limit, not a new truncation
+scheme. Spaces/case are retained, paste/autofill remain available, and existing
+login/hash data is not normalized, reset or given a new minimum. A small local
+whole-value blocklist rejects obvious common/context passwords and the exact
+username without making a network request or storing candidate passwords.
+It is not a comprehensive compromised-password corpus or a claim of NIST
+compliance: legacy credential migration, corpus/normalization strategy,
+verified recovery delivery and protected-admin hardening remain named work.
+The login hint distinguishes new-account requirements from existing passwords.
+
 Structured administration history is stored separately from server logs. Session
 events are journaled under `logs/character-saves/admin-activity/` before normal
 login/resume acknowledgement and synced to Mongo in batches every5seconds.
