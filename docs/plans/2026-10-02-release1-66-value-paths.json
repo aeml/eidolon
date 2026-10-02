@@ -46,10 +46,21 @@
         "server/internal/game/direct_trade.go",
         "server/internal/game/guild_bank_character.go"
       ],
-      "finding": "Ordinary item and Gold offer/operation types; no EP or appearance collection effects. Retained world transfer assertion keeps buyer/recipient EP separate and rejects inherited cosmetic use."
+      "finding": "Ordinary item and Gold offer/operation types, including gifts with no return offer; no EP or appearance collection effects. Retained world transfer assertion keeps buyer/recipient EP separate and rejects inherited cosmetic use."
+    },
+    {
+      "path": "Administration grants",
+      "implementation": ["server/admin_mutation_handlers.go", "server/internal/database/admin_operations.go", "server/internal/game/admin_grants.go"],
+      "finding": "Current connection, fresh trusted role and durable operation/audit identity precede admitted grants. Canonical Gold/item plans have no EP field or supported EP-grant action. New pure fixtures verify both legitimate effects and their replays leave EP, exchange/casino/allowance receipts and owned/equipped appearances unchanged; unsupported EP grants are rejected. Ordinary staff-authorized Gold/items are not purchased EP rewards."
     }
   ],
   "checks": {
+    "administrationAndItemTransferIsolationRace": {
+      "command": "go test -race ./internal/game -run '^Test(EPCosmeticCannotTravel|AdministrationGrantsDoNotConvert)' -count=1",
+      "seconds": 2.086,
+      "passed": true,
+      "limits": "In-memory world/entity effects, not a new authenticated staff grant or production operation."
+    },
     "auctionBuyerAndTransferIsolationRace": {
       "command": "go test -race ./internal/game -run '^TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear$' -count=1",
       "seconds": 1.602,

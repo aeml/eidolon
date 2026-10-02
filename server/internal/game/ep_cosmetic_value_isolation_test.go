@@ -1,7 +1,9 @@
 package game
 
 import (
+	"maps"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -111,6 +113,53 @@ func TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear(t *testing.
 				if err := w.SelectAppearance(recipient.ID, "mainHand", key); err == nil {
 					t.Fatal("recipient could use another account's paid appearance")
 				}
+			}
+		})
+	}
+}
+
+func TestAdministrationGrantsDoNotConvertEPOrTransferCosmeticOwnership(t *testing.T) {
+	for _, action := range []string{"admin_grant_gold", "admin_grant_item", "admin_grant_ep"} {
+		t.Run(action, func(t *testing.T) {
+			_, p := loadoutFixture()
+			p.Gold, p.EP, p.Inventory = 50, 100, make([]Item, MaxInventorySize)
+			offer := CosmeticCatalogue()[0]
+			key := AppearanceKey(offer.Appearance)
+			p.AppearanceCollection = map[string]EquipmentAppearance{key: offer.Appearance}
+			p.Appearances = map[string]EquipmentAppearance{offer.Appearance.Slot: offer.Appearance}
+			p.EPExchangeReceipts = map[string]int{"earlier-exchange": 3}
+			p.EPCasinoReceipts = map[string]int{"casino:earlier-return": 20}
+			p.VIPAllowanceReceipts = map[string]int{"vip-admin-2026-10": 100}
+			collection, appearances := maps.Clone(p.AppearanceCollection), maps.Clone(p.Appearances)
+			exchanges, casino, allowance := maps.Clone(p.EPExchangeReceipts), maps.Clone(p.EPCasinoReceipts), maps.Clone(p.VIPAllowanceReceipts)
+			grant := AdminGrant{Action: action, Amount: 23}
+			if action == "admin_grant_item" {
+				items, err := GenerateAdminItems(AdminItemSpec{Item: "iron-sword", Rarity: RarityRare, Level: 30, Quantity: 1})
+				if err != nil {
+					t.Fatal(err)
+				}
+				grant.Amount, grant.Items = 0, items
+			}
+			id, fingerprint := "admin:"+strings.Repeat("a", 64), strings.Repeat("b", 64)
+			changed, err := p.ApplyAdminGrant(id, fingerprint, grant)
+			if action == "admin_grant_ep" {
+				if changed || err == nil || len(p.AdminOperationReceipts) != 0 || p.Gold != 50 {
+					t.Fatal("unsupported EP grant altered the character")
+				}
+			} else {
+				if !changed || err != nil {
+					t.Fatal("valid trusted grant failed", err)
+				}
+				if replay, err := p.ApplyAdminGrant(id, fingerprint, grant); replay || err != nil {
+					t.Fatal("grant replay changed value", err)
+				}
+				if action == "admin_grant_gold" && p.Gold != 73 || action == "admin_grant_item" && (p.Gold != 50 || p.Inventory[0].ID != grant.Items[0].ID) {
+					t.Fatal("ordinary grant effect or exactly-once receipt differs")
+				}
+			}
+			if p.EP != 100 || !reflect.DeepEqual(exchanges, p.EPExchangeReceipts) || !reflect.DeepEqual(casino, p.EPCasinoReceipts) ||
+				!reflect.DeepEqual(allowance, p.VIPAllowanceReceipts) || !reflect.DeepEqual(collection, p.AppearanceCollection) || !reflect.DeepEqual(appearances, p.Appearances) {
+				t.Fatal("ordinary administration converted EP, changed EP receipts or moved owned appearances")
 			}
 		})
 	}
