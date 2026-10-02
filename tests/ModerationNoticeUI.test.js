@@ -97,3 +97,28 @@ test('retirement during send does not overwrite replacement controls or install 
     expect(notice.status.textContent).toBe(''); expect(notice.button.disabled).toBe(false);
     expect(jest.getTimerCount()).toBe(0);
 });
+
+test('all three public notices remain private and the selected notice starts only an appeal draft', () => {
+    const suspension = { ...publicNotice, id: 'b'.repeat(64), kind: 'suspend', privateReason: 'Staff secret' };
+    const requiredName = { ...publicNotice, id: 'c'.repeat(64), kind: 'require_name_change', expiresAt: '0001-01-01T00:00:00Z' };
+    notice.button.click(); notice.handleResult({ requestId: 'notice-request-000001', success: true,
+        notices: [publicNotice, suspension, requiredName] });
+    expect(notice.status.textContent).toContain('Temporary account suspension');
+    expect(notice.status.textContent).toContain('login and saved progress stay unchanged');
+    expect(notice.status.textContent).not.toContain('Staff secret');
+    expect(notice.selection.hidden).toBe(false); expect(notice.selection.options).toHaveLength(3);
+    notice.selection.value = requiredName.id; notice.selection.dispatchEvent(new Event('change')); notice.appeal.click();
+    expect(ui.reportText.value).toContain(requiredName.id); expect(ui.reportText.value).not.toContain(suspension.id);
+    expect(ui.onReportSubmit).not.toHaveBeenCalled();
+    notice.dispose(); expect(document.querySelector('[aria-label="Notice to appeal"]')).toBeNull();
+});
+
+test.each(['unknown-kind', 'duplicate-kind', 'timed-name-change', 'oversized-reason'])('%s notice list fails closed', mode => {
+    const invalid = mode === 'unknown-kind' ? [{ ...publicNotice, kind: 'ban' }]
+        : mode === 'duplicate-kind' ? [publicNotice, { ...publicNotice, id: 'b'.repeat(64) }]
+            : mode === 'timed-name-change' ? [{ ...publicNotice, kind: 'require_name_change' }]
+                : [{ ...publicNotice, reason: '😀'.repeat(151) }];
+    notice.button.click(); notice.handleResult({ requestId: 'notice-request-000001', success: true, notices: invalid });
+    expect(notice.status.textContent).toContain('unavailable'); expect(notice.notice).toBeNull();
+    expect(notice.appeal.disabled).toBe(true); expect(ui.onReportSubmit).not.toHaveBeenCalled();
+});

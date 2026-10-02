@@ -17,6 +17,8 @@ import (
 const (
 	ChatModerationMute            = "mute"
 	ChatModerationRevoke          = "revoke"
+	ModerationSuspend             = "suspend"
+	ModerationRequireNameChange   = "require_name_change"
 	MaximumChatModerationReceipts = 256
 	// Storage safety ceiling, not a default punishment or approved staff policy.
 	MaximumChatMuteSeconds int64 = 30 * 24 * 60 * 60
@@ -24,8 +26,8 @@ const (
 
 var ErrChatModerationConflict = errors.New("chat moderation changed or request identity reused")
 
-// Prepared persistence: no socket handler calls the mutation store. The owner
-// notice route is read-only. Policy, confirmation UI and enforcement remain gates.
+// All three response types have owner approval. Full enforcement and connected
+// acceptance remain deployment gates; persistence alone does not activate them.
 // Account _id is immutable; display-name changes cannot bypass this state.
 type ChatModerationRequest struct {
 	ID               string `json:"id"`
@@ -40,6 +42,7 @@ type ChatModerationRequest struct {
 }
 
 type ChatMuteNotice struct {
+	Kind      string    `bson:"kind,omitempty" json:"kind,omitempty"`
 	ID        string    `bson:"id" json:"id"`
 	StartedAt time.Time `bson:"started_at" json:"startedAt"`
 	ExpiresAt time.Time `bson:"expires_at" json:"expiresAt"`
@@ -47,9 +50,19 @@ type ChatMuteNotice struct {
 }
 
 func (n ChatMuteNotice) Valid() bool {
-	return validChatNoticeID(n.ID) && !n.StartedAt.IsZero() && n.ExpiresAt.After(n.StartedAt) &&
-		n.ExpiresAt.Sub(n.StartedAt) <= time.Duration(MaximumChatMuteSeconds)*time.Second &&
-		strings.TrimSpace(n.Reason) != "" && boundedActivityText(n.Reason, 600, true)
+	if !validChatNoticeID(n.ID) || n.StartedAt.IsZero() || strings.TrimSpace(n.Reason) == "" || !boundedActivityText(n.Reason, 600, true) {
+		return false
+	}
+	if n.Kind == ModerationRequireNameChange {
+		return n.ExpiresAt.IsZero() // Ends through an accepted name change or an explicit reversal, never silent expiry.
+	}
+	return (n.Kind == "" || n.Kind == ChatModerationMute || n.Kind == ModerationSuspend) &&
+		n.ExpiresAt.After(n.StartedAt) && n.ExpiresAt.Sub(n.StartedAt) <= time.Duration(MaximumChatMuteSeconds)*time.Second
+}
+
+func (n ChatMuteNotice) Active(now time.Time) bool {
+	return n.Valid() && !now.IsZero() && !now.Before(n.StartedAt) &&
+		(n.Kind == ModerationRequireNameChange || now.Before(n.ExpiresAt))
 }
 
 // Never marshal private staff receipts as an account or player response.
@@ -66,9 +79,11 @@ type ChatModerationReceipt struct {
 }
 
 type AccountChatModeration struct {
-	Revision int64                            `bson:"revision" json:"-"`
-	Mute     *ChatMuteNotice                  `bson:"mute,omitempty" json:"-"`
-	Receipts map[string]ChatModerationReceipt `bson:"receipts,omitempty" json:"-"`
+	Revision   int64                            `bson:"revision" json:"-"`
+	Mute       *ChatMuteNotice                  `bson:"mute,omitempty" json:"-"`
+	Suspension *ChatMuteNotice                  `bson:"suspension,omitempty" json:"-"`
+	NameChange *ChatMuteNotice                  `bson:"name_change,omitempty" json:"-"`
+	Receipts   map[string]ChatModerationReceipt `bson:"receipts,omitempty" json:"-"`
 }
 
 func (r ChatModerationRequest) Validate() error {
@@ -83,11 +98,15 @@ func (r ChatModerationRequest) Validate() error {
 		return errors.New("invalid chat moderation request")
 	}
 	switch r.Action {
-	case ChatModerationMute:
-		// Reserve the last receipt for reversing the most recent notice. A
-		// storage ceiling must never make an active mute impossible to revoke.
+	case ChatModerationMute, ModerationSuspend:
+		// Reserve at least one reversal here; preparation also reserves one
+		// for every other restriction using the current account state.
 		if r.ExpectedRevision >= MaximumChatModerationReceipts-1 || r.NoticeID != "" || r.DurationSeconds < 1 || r.DurationSeconds > MaximumChatMuteSeconds || !text(r.PublicReason, 600) {
 			return errors.New("invalid chat mute")
+		}
+	case ModerationRequireNameChange:
+		if r.ExpectedRevision >= MaximumChatModerationReceipts-1 || r.NoticeID != "" || r.DurationSeconds != 0 || !text(r.PublicReason, 600) {
+			return errors.New("invalid required name change")
 		}
 	case ChatModerationRevoke:
 		if !validChatNoticeID(r.NoticeID) || r.DurationSeconds != 0 || r.PublicReason != "" {
@@ -121,9 +140,17 @@ func (r ChatModerationReceipt) matches(actor string, accountID primitive.ObjectI
 		r.Revision != request.ExpectedRevision+1 || r.Action != request.Action || r.PrivateReason != request.PrivateReason {
 		return false
 	}
-	if request.Action == ChatModerationMute {
-		return r.Notice.ID == identity && r.Notice.StartedAt.Equal(r.At) &&
-			r.Notice.ExpiresAt.Equal(r.At.Add(time.Duration(request.DurationSeconds)*time.Second)) && r.Notice.Reason == request.PublicReason
+	if request.Action != ChatModerationRevoke {
+		kind := r.Notice.Kind
+		if kind == "" {
+			kind = ChatModerationMute
+		}
+		expires := r.At.Add(time.Duration(request.DurationSeconds) * time.Second)
+		if request.Action == ModerationRequireNameChange {
+			expires = time.Time{}
+		}
+		return kind == request.Action && r.Notice.Valid() && r.Notice.ID == identity && r.Notice.StartedAt.Equal(r.At) &&
+			r.Notice.ExpiresAt.Equal(expires) && r.Notice.Reason == request.PublicReason
 	}
 	return r.Notice.ID == request.NoticeID && r.Notice.StartedAt.IsZero() && r.Notice.ExpiresAt.IsZero() && r.Notice.Reason == ""
 }
@@ -147,24 +174,56 @@ func PrepareChatModeration(state AccountChatModeration, actor string, accountID 
 		return state, receipt, true, nil
 	}
 	if state.Revision != request.ExpectedRevision || len(state.Receipts) >= MaximumChatModerationReceipts ||
-		(request.Action == ChatModerationRevoke && (state.Mute == nil || state.Mute.ID != request.NoticeID)) {
+		(request.Action == ChatModerationRevoke && state.noticeByID(request.NoticeID) == nil) {
 		return state, ChatModerationReceipt{}, false, ErrChatModerationConflict
 	}
 	at := now.UTC().Truncate(time.Millisecond)
 	receipt := ChatModerationReceipt{RequestID: request.ID, Fingerprint: fingerprint,
 		Actor: AdminActivityAccountKey(actor), ReportID: request.ReportID, At: at,
 		Revision: request.ExpectedRevision + 1, Action: request.Action, PrivateReason: request.PrivateReason}
-	next := AccountChatModeration{Revision: receipt.Revision, Receipts: make(map[string]ChatModerationReceipt, len(state.Receipts)+1)}
+	next := state
+	next.Revision = receipt.Revision
+	next.Receipts = make(map[string]ChatModerationReceipt, len(state.Receipts)+1)
 	for key, value := range state.Receipts {
 		next.Receipts[key] = value
 	}
-	if request.Action == ChatModerationMute {
-		receipt.Notice = ChatMuteNotice{ID: identity, StartedAt: at,
+	if request.Action != ChatModerationRevoke {
+		receipt.Notice = ChatMuteNotice{Kind: request.Action, ID: identity, StartedAt: at,
 			ExpiresAt: at.Add(time.Duration(request.DurationSeconds) * time.Second), Reason: request.PublicReason}
+		if request.Action == ModerationRequireNameChange {
+			receipt.Notice.ExpiresAt = time.Time{}
+		}
 		notice := receipt.Notice
-		next.Mute = &notice
+		switch request.Action {
+		case ChatModerationMute:
+			next.Mute = &notice
+		case ModerationSuspend:
+			next.Suspension = &notice
+		case ModerationRequireNameChange:
+			next.NameChange = &notice
+		}
 	} else {
 		receipt.Notice.ID = request.NoticeID
+		if next.Mute != nil && next.Mute.ID == request.NoticeID {
+			next.Mute = nil
+		}
+		if next.Suspension != nil && next.Suspension.ID == request.NoticeID {
+			next.Suspension = nil
+		}
+		if next.NameChange != nil && next.NameChange.ID == request.NoticeID {
+			next.NameChange = nil
+		}
+	}
+	// Reserve one durable reversal (or name completion) for each remaining notice.
+	// Include expired notices: staff can still explicitly withdraw their record.
+	remaining := 0
+	for _, notice := range []*ChatMuteNotice{next.Mute, next.Suspension, next.NameChange} {
+		if notice != nil {
+			remaining++
+		}
+	}
+	if next.Revision+int64(remaining) > MaximumChatModerationReceipts {
+		return state, ChatModerationReceipt{}, false, ErrChatModerationConflict
 	}
 	next.Receipts[identity] = receipt
 	return next, receipt, false, nil
@@ -173,26 +232,58 @@ func PrepareChatModeration(state AccountChatModeration, actor string, accountID 
 // Public projection never exposes the case ID, staff account or private reason.
 // Expiry is read-time only: no sweep, account write or history deletion needed.
 func (s AccountChatModeration) ActiveNotice(now time.Time) *ChatMuteNotice {
-	if s.validate() != nil || s.Mute == nil || now.IsZero() || !validChatNoticeID(s.Mute.ID) ||
-		!s.Mute.ExpiresAt.After(s.Mute.StartedAt) || now.Before(s.Mute.StartedAt) || !now.Before(s.Mute.ExpiresAt) {
+	if s.validate() != nil || s.Mute == nil || !s.Mute.Active(now) {
 		return nil
 	}
 	notice := *s.Mute
 	return &notice
 }
 
+func (s AccountChatModeration) noticeByID(id string) *ChatMuteNotice {
+	for _, notice := range []*ChatMuteNotice{s.Mute, s.Suspension, s.NameChange} {
+		if notice != nil && notice.ID == id {
+			return notice
+		}
+	}
+	return nil
+}
+
+// Independent copies in a stable order; never expose private staff receipts.
+func (s AccountChatModeration) ActiveNotices(now time.Time) []ChatMuteNotice {
+	if s.validate() != nil {
+		return nil
+	}
+	var notices []ChatMuteNotice
+	for _, notice := range []*ChatMuteNotice{s.Mute, s.Suspension, s.NameChange} {
+		if notice != nil && notice.Active(now) {
+			notices = append(notices, *notice)
+		}
+	}
+	return notices
+}
+
 func (s AccountChatModeration) validate() error {
 	if s.Revision < 0 || s.Revision > MaximumChatModerationReceipts || int64(len(s.Receipts)) != s.Revision {
 		return ErrChatModerationConflict
 	}
-	if s.Mute != nil {
-		receipt, found := s.Receipts[s.Mute.ID]
-		if !found || receipt.Action != ChatModerationMute || receipt.Notice.ID != s.Mute.ID ||
-			!validChatNoticeID(s.Mute.ID) || s.Mute.StartedAt.IsZero() || !s.Mute.StartedAt.Equal(receipt.At) ||
-			!s.Mute.ExpiresAt.After(s.Mute.StartedAt) || !s.Mute.ExpiresAt.Equal(receipt.Notice.ExpiresAt) ||
-			s.Mute.Reason != receipt.Notice.Reason || strings.TrimSpace(s.Mute.Reason) == "" || !boundedActivityText(s.Mute.Reason, 600, true) {
+	remaining := 0
+	for kind, notice := range map[string]*ChatMuteNotice{ChatModerationMute: s.Mute, ModerationSuspend: s.Suspension, ModerationRequireNameChange: s.NameChange} {
+		if notice == nil {
+			continue
+		}
+		remaining++
+		receipt, found := s.Receipts[notice.ID]
+		noticeKind := notice.Kind
+		if noticeKind == "" {
+			noticeKind = ChatModerationMute
+		}
+		if !found || receipt.Action != kind || noticeKind != kind || !notice.Valid() ||
+			receipt.Notice != *notice || !notice.StartedAt.Equal(receipt.At) {
 			return ErrChatModerationConflict
 		}
+	}
+	if s.Revision+int64(remaining) > MaximumChatModerationReceipts {
+		return ErrChatModerationConflict
 	}
 	return nil
 }
@@ -215,6 +306,26 @@ func (db *DB) OwnChatMuteNotice(username string) (*ChatMuteNotice, error) {
 		return nil, err
 	}
 	return record.State.ActiveNotice(time.Now()), nil
+}
+
+// Authentication supplies username; clients cannot request another account.
+// Suspension enforcement and private appeal presentation share this projection.
+func (db *DB) OwnModerationNotices(username string) ([]ChatMuteNotice, error) {
+	if db == nil || db.users == nil || username == "" {
+		return nil, errors.New("moderation store unavailable")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var record struct {
+		State AccountChatModeration `bson:"chat_moderation"`
+	}
+	if err := db.users.FindOne(ctx, bson.M{"username": username}, options.FindOne().SetProjection(bson.M{"chat_moderation": 1})).Decode(&record); err != nil {
+		return nil, err
+	}
+	if err := record.State.validate(); err != nil {
+		return nil, err
+	}
+	return record.State.ActiveNotices(time.Now()), nil
 }
 
 func chatModerationFilter(accountID primitive.ObjectID, revision int64) bson.M {

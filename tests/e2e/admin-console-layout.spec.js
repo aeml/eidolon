@@ -124,13 +124,13 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                 admin.renderReports({ reports: [{ id: '0123456789abcdef01234567', username: 'fixture-reporter',
                     reportType: 'Player Report', status: 'open', reviewRevision: 0, text: 'Synthetic conduct case.' }] });
             });
-            const moderation = dialog.locator('.administration-review').filter({ has: page.locator('summary', { hasText: 'Temporary chat mute or reversal' }) });
+            const moderation = dialog.locator('.administration-review').filter({ has: page.locator('summary', { hasText: 'Moderation decision or reversal' }) });
             await moderation.locator('summary').click();
             await expect(moderation.getByLabel('Exact account to review')).toHaveValue('');
             await moderation.getByLabel('Exact account to review').fill('realm-warden-0');
             await moderation.getByRole('button', { name: 'Check this account', exact: true }).click();
             await expect(moderation).toContainText('revision 2');
-            await moderation.getByLabel('Mute duration in minutes').fill('10');
+            await moderation.getByLabel('Mute or suspension duration in minutes').fill('10');
             await moderation.getByLabel('Public explanation shown to the player').fill('Review of repeated abusive chat. You may appeal.');
             await moderation.getByLabel('Private staff evidence or reversal reason').fill('Reviewed the selected synthetic conduct case.');
             await moderation.getByRole('button', { name: 'Review temporary mute', exact: true }).click();
@@ -144,6 +144,23 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
             await expect(moderation.getByRole('status')).toContainText('case unchanged');
             await expect(dialog.locator('li strong').first()).toHaveText('Player Report · open');
             await expect(moderation.getByRole('button', { name: 'Review temporary mute', exact: true })).toBeDisabled();
+            for (const [action, effect, screenshot] of [
+                ['Review temporary suspension', 'private notice and appeal access remain available', 'administration-suspension-confirmation.png'],
+                ['Review required name change', 'login identity and saved progress remain unchanged', 'administration-name-confirmation.png']
+            ]) {
+                await moderation.getByRole('button', { name: 'Check this account', exact: true }).click();
+                await expect(moderation).toContainText('revision 2');
+                await moderation.getByRole('button', { name: action, exact: true }).click();
+                await expect(moderation).toContainText(effect);
+                const confirmation = moderation.getByRole('button', { name: 'Confirm decision', exact: true });
+                await confirmation.scrollIntoViewIfNeeded();
+                expect((await confirmation.boundingBox()).height).toBeGreaterThanOrEqual(44);
+                expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+                await page.screenshot({ path: testInfo.outputPath(screenshot) });
+                await confirmation.click();
+                await expect(moderation.getByRole('status')).toContainText('case unchanged');
+                await expect(dialog.locator('li strong').first()).toHaveText('Player Report · open');
+            }
         }
         const operations = dialog.locator('.administration-operations');
         await operations.locator('summary').click();

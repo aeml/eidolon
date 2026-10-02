@@ -92,6 +92,17 @@ func TestTemporaryChatMuteGuardFailsClosedWithoutPrivateErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 	store.err = nil
+	for _, kind := range []string{database.ModerationSuspend, database.ModerationRequireNameChange} {
+		notice := &database.ChatMuteNotice{Kind: kind, ID: strings.Repeat("d", 64), StartedAt: clock.Add(-time.Minute),
+			ExpiresAt: clock.Add(time.Minute), Reason: "Public explanation"}
+		if kind == database.ModerationRequireNameChange {
+			notice.ExpiresAt = time.Time{}
+		}
+		store.notices["alice"] = notice
+		if err := guard(c); err == nil {
+			t.Fatal("non-mute returned through mute-only store admitted chat", kind)
+		}
+	}
 	store.notices["alice"] = &database.ChatMuteNotice{ID: "malformed", Reason: "private malformed state"}
 	if err := guard(c); err == nil || strings.Contains(err.Error(), "malformed") {
 		t.Fatal(err)

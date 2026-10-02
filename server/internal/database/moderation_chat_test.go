@@ -115,7 +115,7 @@ func TestChatModerationValidationIdentityAndCorruptReceipts(t *testing.T) {
 		"unsafe ID":              func(r *ChatModerationRequest) { r.ID = "unsafe.$id" },
 		"missing case":           func(r *ChatModerationRequest) { r.ReportID = "" },
 		"zero case":              func(r *ChatModerationRequest) { r.ReportID = strings.Repeat("0", 24) },
-		"unknown action":         func(r *ChatModerationRequest) { r.Action = "suspend" },
+		"unknown action":         func(r *ChatModerationRequest) { r.Action = "permanent_ban" },
 		"zero duration":          func(r *ChatModerationRequest) { r.DurationSeconds = 0 },
 		"negative duration":      func(r *ChatModerationRequest) { r.DurationSeconds = -1 },
 		"huge duration":          func(r *ChatModerationRequest) { r.DurationSeconds = MaximumChatMuteSeconds + 1 },

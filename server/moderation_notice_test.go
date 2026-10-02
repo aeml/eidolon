@@ -29,6 +29,61 @@ func (s *fakeOwnModerationNotice) OwnChatMuteNotice(username string) (*database.
 	return s.notice, s.err
 }
 
+type fakeOwnAccountModerationNotices struct {
+	*fakeOwnModerationNotice
+	notices []database.ChatMuteNotice
+}
+
+func (s *fakeOwnAccountModerationNotices) OwnModerationNotices(username string) ([]database.ChatMuteNotice, error) {
+	s.calls++
+	s.username = username
+	if s.afterRead != nil {
+		s.afterRead()
+	}
+	return s.notices, s.err
+}
+
+func TestModerationNoticeAllThreeOwnerProjectionAndRetirement(t *testing.T) {
+	c, roles := adminReadFixture(t)
+	roles.roles[c.username] = false
+	start := time.Now().Add(-time.Minute)
+	store := &fakeOwnAccountModerationNotices{fakeOwnModerationNotice: &fakeOwnModerationNotice{}, notices: []database.ChatMuteNotice{
+		{Kind: database.ChatModerationMute, ID: strings.Repeat("a", 64), StartedAt: start, ExpiresAt: start.Add(time.Hour), Reason: "Public mute explanation."},
+		{Kind: database.ModerationSuspend, ID: strings.Repeat("b", 64), StartedAt: start, ExpiresAt: start.Add(time.Hour), Reason: "Public suspension explanation."},
+		{Kind: database.ModerationRequireNameChange, ID: strings.Repeat("c", 64), StartedAt: start, Reason: "Public name explanation."},
+	}}
+	previous := moderationNotices
+	moderationNotices = store
+	t.Cleanup(func() { moderationNotices = previous })
+	lookup := func() struct {
+		Success bool                      `json:"success"`
+		Notices []database.ChatMuteNotice `json:"notices"`
+	} { t.Helper(); handleOwnModerationNotice(c, Message{Type: MsgModerationNotice, Payload: json.RawMessage(moderationNoticePayload)}); messages := drainSentMessages(c.send); if len(messages) != 1 {
+		t.Fatal(messages)
+	}; var result struct {
+		Success bool                      `json:"success"`
+		Notices []database.ChatMuteNotice `json:"notices"`
+	}; if err := json.Unmarshal(messages[0].Payload, &result); err != nil {
+		t.Fatal(err)
+	}; return result }
+	if result := lookup(); !result.Success || len(result.Notices) != 3 || store.username != c.username {
+		t.Fatal(result)
+	}
+	store.notices[1].ExpiresAt = start.Add(time.Second)
+	if result := lookup(); !result.Success || len(result.Notices) != 2 {
+		t.Fatal("expired restriction shown as active", result)
+	}
+	store.notices[2].Kind = "permanent_ban"
+	if result := lookup(); result.Success || len(result.Notices) != 0 {
+		t.Fatal("unsupported restriction disclosed", result)
+	}
+	store.notices[2].Kind = database.ModerationRequireNameChange
+	store.afterRead = func() { activeSessions[c.username] = &Client{username: c.username} }
+	if result := lookup(); result.Success || len(result.Notices) != 0 {
+		t.Fatal("retired session received account notices", result)
+	}
+}
+
 func TestModerationNoticeStrictOwnerOnlySchema(t *testing.T) {
 	id, err := decodeModerationNoticeRequest([]byte(moderationNoticePayload))
 	if err != nil || id != "notice-request-000001" {

@@ -15,6 +15,10 @@ type ownChatMuteNoticeStore interface {
 	OwnChatMuteNotice(string) (*database.ChatMuteNotice, error)
 }
 
+type ownAccountModerationNoticeStore interface {
+	OwnModerationNotices(string) ([]database.ChatMuteNotice, error)
+}
+
 var moderationNotices ownChatMuteNoticeStore
 
 // A single correlation ID: no target, account override, notice lookup or staff
@@ -47,11 +51,12 @@ func decodeModerationNoticeRequest(payload []byte) (string, error) {
 
 func handleOwnModerationNotice(c *Client, msg Message) {
 	result := struct {
-		RequestID string                   `json:"requestId"`
-		Success   bool                     `json:"success"`
-		Notice    *database.ChatMuteNotice `json:"notice,omitempty"`
-		Message   string                   `json:"message"`
-	}{Message: "Your chat-mute notice is unavailable. Reconnect and try again."}
+		RequestID string                    `json:"requestId"`
+		Success   bool                      `json:"success"`
+		Notice    *database.ChatMuteNotice  `json:"notice,omitempty"`
+		Notices   []database.ChatMuteNotice `json:"notices"`
+		Message   string                    `json:"message"`
+	}{Message: "Your moderation notices are unavailable. Reconnect and try again."}
 	defer func() {
 		payload, _ := json.Marshal(result)
 		c.sendSafe(createMessage(MsgModerationNotice+"_result", payload))
@@ -71,9 +76,31 @@ func handleOwnModerationNotice(c *Client, msg Message) {
 		return
 	}
 	owner := c.username
-	notice, err := store.OwnChatMuteNotice(owner)
-	if err != nil || (notice != nil && !notice.Valid()) {
+	var notices []database.ChatMuteNotice
+	if accountStore, ok := store.(ownAccountModerationNoticeStore); ok {
+		notices, err = accountStore.OwnModerationNotices(owner)
+	} else {
+		// Preserve the isolated mute fixtures while the complete account store
+		// serves all three restriction types. Production DB implements both.
+		var notice *database.ChatMuteNotice
+		notice, err = store.OwnChatMuteNotice(owner)
+		if notice != nil {
+			notices = append(notices, *notice)
+		}
+	}
+	if err != nil || len(notices) > 3 {
 		return
+	}
+	seen := make(map[string]bool)
+	for _, notice := range notices {
+		kind := notice.Kind
+		if kind == "" {
+			kind = database.ChatModerationMute
+		}
+		if !notice.Valid() || seen[kind] {
+			return
+		}
+		seen[kind] = true
 	}
 	// A replacement session may arrive during the database read. Do not send
 	// the previous owner's notice through retired character/session controls.
@@ -81,12 +108,20 @@ func handleOwnModerationNotice(c *Client, msg Message) {
 		return
 	}
 	now := time.Now()
-	if notice != nil && (now.Before(notice.StartedAt) || !now.Before(notice.ExpiresAt)) {
-		notice = nil
+	result.Notices = []database.ChatMuteNotice{}
+	for _, notice := range notices {
+		if !notice.Active(now) {
+			continue
+		}
+		result.Notices = append(result.Notices, notice)
+		if notice.Kind == "" || notice.Kind == database.ChatModerationMute {
+			copy := notice
+			result.Notice = &copy
+		}
 	}
-	result.Success, result.Notice = true, notice
-	result.Message = "No active temporary chat-mute notice for this account."
-	if notice != nil {
-		result.Message = "Your active chat-mute notice. An appeal requests review; it does not automatically reverse a decision."
+	result.Success = true
+	result.Message = "No active moderation notices for this account."
+	if len(result.Notices) != 0 {
+		result.Message = "Your active moderation notices. An appeal requests review; it does not automatically reverse a decision."
 	}
 }

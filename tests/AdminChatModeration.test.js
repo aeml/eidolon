@@ -103,3 +103,45 @@ test('production defaults and unrelated report types do not expose chat sanction
     ui.chatModerationEnabled = false; ui.renderReports({ reports: [report] }); expect(ui.reportModerations).toHaveLength(0);
     ui.chatModerationEnabled = true; ui.renderReports({ reports: [{ ...report, reportType: 'Bug Report' }] }); expect(ui.reportModerations).toHaveLength(0);
 });
+
+test.each(['suspend', 'require_name_change'])('%s quotes the approved effect and preserves explicit confirmation', action => {
+    lookup(); row().duration.value = action === 'suspend' ? '15' : '';
+    row().publicReason.value = 'Explanation for the player'; row().privateReason.value = 'Reviewed case evidence';
+    const count = send.mock.calls.length;
+    (action === 'suspend' ? row().suspend : row().rename).click();
+    expect(send).toHaveBeenCalledTimes(count);
+    expect(row().quote).toMatchObject({ action, durationSeconds: action === 'suspend' ? 900 : 0, noticeId: '',
+        confirmed: true, accountId: target.accountId, publicReason: 'Explanation for the player' });
+    expect(row().quoteText.textContent).toContain(action === 'suspend' ? 'private notice and appeal access' : 'login identity and saved progress');
+    row().confirm.click(); expect(send).toHaveBeenLastCalledWith('admin_chat_moderation', row().quote);
+});
+
+test('reversal selection withdraws only the selected restriction and freezes before sending', () => {
+    const suspension = { ...notice, id: 'c'.repeat(64), kind: 'suspend' };
+    const requiredName = { ...notice, id: 'd'.repeat(64), kind: 'require_name_change', expiresAt: '0001-01-01T00:00:00Z' };
+    lookup({ ...target, notices: [notice, suspension, requiredName] });
+    expect(row().reversalNotice.options).toHaveLength(3);
+    expect(row().preview.textContent).toContain('until corrected or reversed');
+    row().reversalNotice.value = requiredName.id; row().privateReason.value = 'Appeal upheld'; row().revoke.click();
+    expect(row().quote.noticeId).toBe(requiredName.id); expect(row().reversalNotice.disabled).toBe(true);
+    expect(row().quoteText.textContent).toContain('other restrictions remain unchanged');
+    row().reversalNotice.value = suspension.id; row().confirm.click();
+    expect(send.mock.calls.at(-1)[1].noticeId).toBe(requiredName.id);
+});
+
+test('capacity preserves a reversal for every restriction, not only the most recent mute', () => {
+    const suspension = { ...notice, id: 'c'.repeat(64), kind: 'suspend' };
+    lookup({ ...target, revision: 254, notices: [notice] });
+    expect(row().mute.disabled).toBe(false); expect(row().suspend.disabled).toBe(true); expect(row().rename.disabled).toBe(true);
+    expect(row().revoke.disabled).toBe(false);
+    lookup({ ...target, revision: 254, notices: [notice, suspension] });
+    expect(row().mute.disabled).toBe(true); expect(row().suspend.disabled).toBe(true); expect(row().revoke.disabled).toBe(false);
+});
+
+test('unknown kinds, duplicated kinds and expiring name requirements cannot enable decisions', () => {
+    for (const notices of [[{ ...notice, kind: 'permanent_ban' }], [notice, { ...notice, id: 'c'.repeat(64) }],
+        [{ ...notice, kind: 'require_name_change' }]]) {
+        lookup({ ...target, notices }); expect(row().target).toBeNull();
+        expect(row().suspend.disabled).toBe(true); expect(row().rename.disabled).toBe(true);
+    }
+});

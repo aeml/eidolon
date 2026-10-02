@@ -1,0 +1,58 @@
+{
+  "version": "Alpha 1.59 preparation",
+  "status": "prepared-unpublished",
+  "ownerApproval": {
+    "date": "2026-10-02",
+    "responses": ["temporary chat mutes", "required public name changes", "temporary account suspensions"],
+    "conditions": ["audited actions", "reversible actions"],
+    "productionTestSanctionsAuthorized": false
+  },
+  "implemented": [
+    "One existing revisioned account store with independent restriction notices and atomic private receipts.",
+    "Exact retries retain original receipt and expiry, including after withdrawal.",
+    "Explicit one-notice reversal preserves the other restrictions and reserves capacity for all remaining withdrawals.",
+    "Timed mutes/suspensions and non-expiring name-correction requirements; no default duration.",
+    "Dormant staff target preview and separately confirmed decision/reversal controls for all three response types.",
+    "Owner-only active public notices and selected-reference appeal drafting without automatic submission.",
+    "Mute-only guard rejects other restriction kinds returned through its narrow store interface."
+  ],
+  "checks": {
+    "goRace": "Focused server handler, notice and chat guard tests passed in 4.496 seconds; database moderation tests passed in 1.090 seconds.",
+    "client": { "suites": 4, "tests": 68, "seconds": 4.74, "result": "passed" },
+    "disposableMongo": {
+      "allExistingReportReviewTests": "3 passed; race package total 2.348 seconds",
+      "allThreeRestrictions": "1.09 seconds; simultaneous notices, exact retries, independent withdrawals, ordinary-role denial, privacy and unchanged login/saves/currencies/friend references",
+      "newConnection": "A second Mongo client uses its own collection handles and reads the original names; not a full game-server restart.",
+      "preparedMuteDispatcher": "Existing authenticated in-process mute-to-appeal-to-reversal exercise passed; race total 3.052 seconds",
+      "container": "eidolon-moderation-three-20261002",
+      "label": "eidolon.task=moderation-three-20261002",
+      "binding": "127.0.0.1:32813",
+      "cleanup": "Stopped and removed exact task container with anonymous volumes; production database untouched."
+    },
+    "nativePresentation": {
+      "viewport": "390x844",
+      "cases": 2,
+      "seconds": 31.6,
+      "result": "passed",
+      "output": "/tmp/eidolon-1-59-three-moderation-final-20261002",
+      "screenshotsInspected": ["administration-name-confirmation.png", "own-moderation-notice.png"],
+      "limits": "Real components with synthetic responses; not a physical phone or production permission check."
+    },
+    "scopedLint": "passed",
+    "whitespace": "passed"
+  },
+  "remaining": [
+    "Public-name correction completion and consistent identity use without changing authentication/save/social ownership keys.",
+    "Suspension enforcement for joining, resuming and already-online play, with notice/appeal access outside the world.",
+    "Full server registry and client control activation; real authenticated WebSocket and game-server restart acceptance.",
+    "Staff/review boundaries and existing retention documentation; no new purge or staffing promise.",
+    "Complete milestone versions and cumulative patch notes, fresh remote integration, CI, publishing and independent public acceptance."
+  ],
+  "releaseClaims": {
+    "milestoneComplete": false,
+    "published": false,
+    "productionAccountActions": false,
+    "retentionChanged": false,
+    "longCampaignRun": false
+  }
+}

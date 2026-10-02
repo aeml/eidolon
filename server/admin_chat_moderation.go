@@ -113,7 +113,7 @@ func decodeAdminChatModeration(payload []byte) (adminChatModerationRequest, erro
 // The future dispatcher must hold the authenticated actor's character-work
 // lock, as for report review. Do not call from an unfenced background worker.
 func handleAdminChatModeration(c *Client, msg Message) {
-	result := adminMutationResult{Message: "Chat moderation is unavailable. Nothing was acknowledged."}
+	result := adminMutationResult{Message: "Moderation is unavailable. Nothing was acknowledged."}
 	if c == nil {
 		return
 	}
@@ -135,7 +135,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 		}
 	}
 	if err != nil {
-		result.Message = "Invalid or unconfirmed chat moderation request. Nothing changed."
+		result.Message = "Invalid or unconfirmed moderation request. Nothing changed."
 		rejected("denied", result.Message)
 		return
 	}
@@ -148,7 +148,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 		return result.Authorized
 	}
 	if !authorize() {
-		rejected("denied", "Administrator access was not verified; no chat moderation admitted.")
+		rejected("denied", "Administrator access was not verified; no moderation admitted.")
 		return
 	}
 	var store adminChatModerationStore = adminChatModerations
@@ -160,8 +160,8 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	}
 	// Admission is not a final sanction. The authoritative account write stores
 	// its state and private receipt atomically; history retains no allegations.
-	summary := fmt.Sprintf("Chat moderation requested for account %s, case %s, revision %d; consult the private account receipt for the outcome.",
-		request.AccountID.Hex(), request.Change.ReportID, request.Change.ExpectedRevision)
+	summary := fmt.Sprintf("Moderation %s requested for account %s, case %s, revision %d; consult the private account receipt for the outcome.",
+		request.Change.Action, request.AccountID.Hex(), request.Change.ReportID, request.Change.ExpectedRevision)
 	event, err := database.NewAdminActivity(actor, request.AccountID.Hex(), MsgAdminChatModeration, request.Change.ID,
 		"success", summary, time.Now(), adminActivities.AdminActivityRetentionDays())
 	if err != nil {
@@ -169,7 +169,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	}
 	if err := adminActivities.AppendAdminActivity(event); err != nil {
 		retainFailedAdminActivity(c, event)
-		result.Message = "Administration activity storage is unavailable. No chat moderation was applied."
+		result.Message = "Administration activity storage is unavailable. No moderation was applied."
 		return
 	}
 	if !current() || !authorize() {
@@ -179,14 +179,14 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	receipt, err := store.ApplyChatModeration(actor, request.AccountID, request.Change)
 	if errors.Is(err, database.ErrChatModerationConflict) {
 		result.Final = true
-		result.Message = "Chat moderation changed or the request conflicts with an earlier decision. Refresh before deciding again."
+		result.Message = "Moderation changed or the request conflicts with an earlier decision. Refresh before deciding again."
 		return
 	}
 	if err != nil {
 		result.Pending = true
-		result.Message = "The outcome could not be confirmed. Check the account or retry this exact request; do not assume a mute or reversal succeeded."
+		result.Message = "The outcome could not be confirmed. Check the account or retry this exact request; do not assume the decision or reversal succeeded."
 		return
 	}
 	result.Success, result.Final = true, true
-	result.Message = fmt.Sprintf("Chat moderation recorded at revision %d. Refresh the account to check its current notice; the case was not automatically resolved.", receipt.Revision)
+	result.Message = fmt.Sprintf("Moderation recorded at revision %d. Refresh the account to check its current notices; the case was not automatically resolved.", receipt.Revision)
 }

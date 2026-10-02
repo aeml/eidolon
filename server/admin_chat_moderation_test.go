@@ -72,6 +72,15 @@ func TestAdminChatModerationClosedSchemaAndExplicitReversal(t *testing.T) {
 	if request, err := decodeAdminChatModeration([]byte(reversal)); err != nil || request.Change.Action != database.ChatModerationRevoke {
 		t.Fatal(request, err)
 	}
+	for _, kind := range []string{database.ModerationSuspend, database.ModerationRequireNameChange} {
+		payload := strings.Replace(validAdminChatMutePayload, `"action":"mute"`, `"action":"`+kind+`"`, 1)
+		if kind == database.ModerationRequireNameChange {
+			payload = strings.Replace(payload, `"durationSeconds":600`, `"durationSeconds":0`, 1)
+		}
+		if request, err := decodeAdminChatModeration([]byte(payload)); err != nil || request.Change.Action != kind {
+			t.Fatal("approved action failed strict decoding", kind, request, err)
+		}
+	}
 	invalid := []string{
 		`null`, `[]`, `{}`, validAdminChatMutePayload + `{}`, strings.Repeat(" ", 12289), string([]byte{255}),
 		strings.Replace(validAdminChatMutePayload, `"confirmed":true`, `"confirmed":false`, 1),
@@ -86,7 +95,7 @@ func TestAdminChatModerationClosedSchemaAndExplicitReversal(t *testing.T) {
 		strings.Replace(validAdminChatMutePayload, `"accountId":"abcdef012345678901234567"`, `"accountId":"ABCDEF012345678901234567"`, 1),
 		strings.Replace(validAdminChatMutePayload, `"accountId":"abcdef012345678901234567"`, `"accountId":"000000000000000000000000"`, 1),
 		strings.Replace(validAdminChatMutePayload, `"publicReason":"Public explanation"`, `"publicReason":{}`, 1),
-		strings.Replace(validAdminChatMutePayload, `"action":"mute"`, `"action":"suspend"`, 1),
+		strings.Replace(validAdminChatMutePayload, `"action":"mute"`, `"action":"permanent_ban"`, 1),
 	}
 	for _, payload := range invalid {
 		if _, err := decodeAdminChatModeration([]byte(payload)); err == nil {

@@ -1,6 +1,6 @@
 # Alpha 1.59 moderation preparation
 
-October 1, 2026. The appeal route, owner status lookup and actionable report review are implemented
+October 1, 2026, updated October 2. The appeal route, owner status lookup and actionable report review are implemented
 locally but unpublished. The worktree includes accepted Alpha 1.58.2 and
 accepted live Alpha 1.58.3 graphics and accepted live Alpha 1.58.4 tooltips.
 No 1.59 package or milestone completion
@@ -316,11 +316,68 @@ This is prepared portrait UI, not a real phone or connected sanction flow. No
 new CI job, campaign, production action or policy was introduced. Documentation
 was source-reviewed; a rendered documentation preview was unavailable.
 
-The owner question about initial temporary chat mutes and required name changes
-versus account suspensions remains unanswered. No live sanction policy is
-invented or activated. Staff coverage and final evidence-retention policy also
-remain unresolved. Existing history retention defaults to 90 days; existing
-cases have no automatic expiry. No report purge is introduced here.
+On October 2, the owner approved all three response types: temporary chat mutes,
+required public name changes and temporary account suspensions, with audited,
+reversible actions. This removes the sanction-scope blocker; it does not authorize
+sanctions against production accounts for testing. The complete implementation
+and disposable-account acceptance are still required before activation.
+
+Public name changes will preserve the login identity, account ID, saved progress
+and existing ownership references. Affected players must retain private notice
+and appeal access, including while suspended. Each staff decision requires an
+explicit subject, conduct-case or appeal reference, public explanation, private
+evidence and separate confirmation. Timed restrictions need an explicit duration;
+there is no default punishment. Reversal must target the quoted notice and must
+not remove a newer decision or another restriction. Exact retries must not
+restart timers. Storage limits must reserve capacity to reverse every remaining
+restriction, including a pending required name change.
+
+Staff coverage and final evidence-retention policy remain unresolved. Existing
+history retention defaults to 90 days; existing cases have no automatic expiry.
+No report purge or new staffing promise is introduced here.
+
+## Approved response types prepared on October 2
+
+The existing account moderation store now supports all three approved response
+types without introducing a second mutation queue. Mutes and suspensions have
+an explicit duration; required public name changes end through correction or
+staff reversal, not silent expiry. Independent notices coexist, and each reversal
+quotes exactly one reference. Capacity reserves a durable withdrawal for every
+remaining restriction, including expired records available in the staff preview.
+Private evidence remains in atomic staff receipts, never player notice payloads.
+
+Dormant staff controls now quote each response's specific effect before separate
+confirmation. The staff preview and explicit owner-only notice read show the
+three public notice types. Players select which reference to attach to an
+editable appeal draft; nothing is submitted automatically. The new notice
+projection preserves legacy mute fixtures while production database reads use
+the complete account projection. Protocol activation and enforcement remain
+unpublished gates, not implied by successful persistence or presentation tests.
+
+The [three response types preparation record](2026-10-02-release1-59-three-responses.json)
+retains scoped unit, disposable database and native presentation evidence.
+The real database exercise verifies simultaneous restrictions, exact retries,
+independent withdrawals, ordinary-account denial and unchanged login, saved
+character, currencies and friend references. A genuinely new database client
+reads the same collection names; it does not reuse the first client's collection
+handles. This proves connection-level persistence, not a production server
+restart or complete suspension/name-change enforcement.
+
+Four client suites passed 68 checks. Two existing native cases passed at 390×844
+in 31.6 seconds, covering staff confirmation for all three responses and player
+selection of a name-change notice for an appeal draft. Screenshot review caught
+cramped staff buttons; a two-column action layout corrected the presentation.
+Final screenshots were inspected. A new mute-guard test initially referenced
+the wrong clock variable; it was corrected before the final race checks.
+
+The next integration work is the non-destructive public-name correction flow,
+suspension enforcement for join/resume and already-online play, private notice
+and appeal access outside the world, and full protocol activation. Complete
+authenticated socket/restart acceptance, versions, patch notes, publishing and
+independent public deployment acceptance remain required. No production account
+was sanctioned, no retention changed, and the disposable test container and its
+anonymous volumes were removed. Documentation was source-reviewed; a rendered
+documentation preview was unavailable.
 
 Finish the approved abuse-response and sanction paths, document staff/review
 boundaries and retention, exercise the complete disposable moderation flow,

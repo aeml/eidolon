@@ -45,12 +45,13 @@
 .administration-review { border-top: 1px solid var(--border-default); padding-top: 8px; min-width: 0; }
 .administration-review summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--color-gold); }
 .administration-review label { display: grid; gap: 6px; }
-.administration-review input {
+.administration-review input, .administration-review select {
     min-width: 0; width: 100%; box-sizing: border-box; min-height: 44px; font: inherit;
     color: #f0dfb8; background: #18212b; border: 1px solid #857047; border-radius: 4px; padding: 8px;
 }
-.administration-review input:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
+.administration-review input:focus-visible, .administration-review select:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
 .administration-review p { overflow-wrap: anywhere; line-height: 1.5; }
 .administration-review button { min-height: 44px; white-space: normal; }
 .administration-review-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .administration-review-actions button { flex: 1; }
+.administration-moderation-actions button { flex: 1 1 calc(50% - 8px); min-width: 0; }

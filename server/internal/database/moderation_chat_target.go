@@ -18,12 +18,27 @@ type ChatModerationTarget struct {
 	Account   string             `json:"account"`
 	Revision  int64              `json:"revision"`
 	Notice    *ChatMuteNotice    `json:"notice,omitempty"`
+	Notices   []ChatMuteNotice   `json:"notices,omitempty"`
 }
 
 func (target ChatModerationTarget) Valid() bool {
+	seen := make(map[string]bool)
+	if len(target.Notices) > 3 {
+		return false
+	}
+	for _, notice := range target.Notices {
+		kind := notice.Kind
+		if kind == "" {
+			kind = ChatModerationMute
+		}
+		if !notice.Valid() || seen[kind] {
+			return false
+		}
+		seen[kind] = true
+	}
 	return !target.AccountID.IsZero() && strings.TrimSpace(target.Account) != "" &&
 		boundedActivityText(target.Account, 256, true) && target.Revision >= 0 && target.Revision <= MaximumChatModerationReceipts &&
-		(target.Notice == nil || target.Notice.Valid())
+		(target.Notice == nil || target.Notice.Valid() && (target.Notice.Kind == "" || target.Notice.Kind == ChatModerationMute))
 }
 
 func projectChatModerationTarget(accountID primitive.ObjectID, username string, state AccountChatModeration, now time.Time) (ChatModerationTarget, error) {
@@ -31,6 +46,13 @@ func projectChatModerationTarget(accountID primitive.ObjectID, username string, 
 		return ChatModerationTarget{}, err
 	}
 	target := ChatModerationTarget{AccountID: accountID, Account: username, Revision: state.Revision, Notice: state.ActiveNotice(now)}
+	// Staff may withdraw an expired restriction as well. Keeping its public
+	// reference available prevents storage capacity from stranding reversals.
+	for _, notice := range []*ChatMuteNotice{state.Mute, state.Suspension, state.NameChange} {
+		if notice != nil {
+			target.Notices = append(target.Notices, *notice)
+		}
+	}
 	if now.IsZero() || !target.Valid() {
 		return ChatModerationTarget{}, errors.New("invalid moderation target")
 	}

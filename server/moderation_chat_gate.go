@@ -17,7 +17,7 @@ func newTemporaryChatMuteGuard(store ownChatMuteNoticeStore, now func() time.Tim
 		}
 		owner := c.username
 		notice, err := store.OwnChatMuteNotice(owner)
-		if err != nil || (notice != nil && !notice.Valid()) {
+		if err != nil || (notice != nil && (!notice.Valid() || notice.Kind != "" && notice.Kind != "mute")) {
 			return unavailable
 		}
 		if c.username != owner || c.transportClosed.Load() || !currentCharacterConnection(c) {

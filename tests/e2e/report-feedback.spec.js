@@ -114,9 +114,9 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await dialog.getByText('Check a report I submitted', {exact: true}).click();
         const bounds = await dialog.boundingBox();
         if (width === 390) {
-            const disclosure = dialog.getByText('My chat-mute notice and appeal', { exact: true });
+            const disclosure = dialog.getByText('My moderation notices and appeals', { exact: true });
             await disclosure.click();
-            const checkNotice = dialog.getByRole('button', { name: 'Check my chat-mute notice', exact: true });
+            const checkNotice = dialog.getByRole('button', { name: 'Check my moderation notices', exact: true });
             await checkNotice.scrollIntoViewIfNeeded();
             expect((await checkNotice.boundingBox()).height).toBeGreaterThanOrEqual(44);
             await checkNotice.click();
@@ -124,17 +124,25 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
                 const ui = window.__reportFixture;
                 ui.noticeReportCount = ui.requests.length;
                 ui.report.notice.handleResult({ requestId: ui.noticeLookups.at(-1).requestId, success: true,
-                    notice: { id: 'a'.repeat(64), reason: 'Temporary chat restriction. You may request a review.',
-                        startedAt: new Date(Date.now()-60000).toISOString(), expiresAt: new Date(Date.now()+540000).toISOString() } });
+                    notices: [{ id: 'a'.repeat(64), reason: 'Temporary chat restriction. You may request a review.',
+                        startedAt: new Date(Date.now()-60000).toISOString(), expiresAt: new Date(Date.now()+540000).toISOString() },
+                    { id: 'b'.repeat(64), kind: 'suspend', reason: 'Temporary suspension. You may request a review.',
+                        startedAt: new Date(Date.now()-60000).toISOString(), expiresAt: new Date(Date.now()+540000).toISOString() },
+                    { id: 'c'.repeat(64), kind: 'require_name_change', reason: 'Please choose a corrected public name.',
+                        startedAt: new Date(Date.now()-60000).toISOString(), expiresAt: '0001-01-01T00:00:00Z' }] });
             });
             const noticeStatus = page.locator('#moderation-notice-status');
             await expect(noticeStatus).toContainText('Temporary chat restriction');
             await expect(noticeStatus).toContainText('does not automatically reverse');
+            const selection = dialog.getByRole('combobox', { name: 'Notice to appeal', exact: true });
+            await selection.selectOption('c'.repeat(64));
+            await selection.scrollIntoViewIfNeeded();
+            expect((await selection.boundingBox()).height).toBeGreaterThanOrEqual(44);
             expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
             await page.screenshot({ path: testInfo.outputPath('own-moderation-notice.png') });
             await dialog.getByRole('button', { name: 'Start appeal draft', exact: true }).click();
             await expect(page.getByLabel('Report type')).toHaveValue('Moderation Appeal');
-            await expect(text).toHaveValue(/Moderation notice: a{64}/);
+            await expect(text).toHaveValue(/Moderation notice: c{64}/);
             await expect(text).toBeFocused();
             expect(await page.evaluate(() => window.__reportFixture.requests.length - window.__reportFixture.noticeReportCount)).toBe(0);
             await text.fill('');
@@ -149,7 +157,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await submit.focus(); await page.keyboard.press('Tab');
         await expect(dialog.getByText('Check a report I submitted', {exact: true})).toBeFocused();
         await page.keyboard.press('Tab');
-        await expect(dialog.getByText('My chat-mute notice and appeal', {exact: true})).toBeFocused();
+        await expect(dialog.getByText('My moderation notices and appeals', {exact: true})).toBeFocused();
         await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Close report form' })).toBeFocused();
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();

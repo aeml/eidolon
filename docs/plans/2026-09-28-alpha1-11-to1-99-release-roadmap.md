@@ -97,21 +97,24 @@ checks resolution, reopening, competing reviewers, concurrent retries and
 restricted owner responses. The real two-account socket/restart check covers
 submission, private staff review, denied ordinary-account review and one durable
 resolution receipt; it is included in the existing CI socket step.
-This is not a complete moderation milestone: staff chat/name abuse response, sanctions,
-staff assignments/coverage and evidence-retention decisions remain. The initial
-sanction policy question is open; no live account was punished or case resolved.
+This is not a complete moderation milestone: connected abuse response and
+sanction enforcement, staff assignments/coverage and evidence-retention decisions
+remain. On October 2 the owner approved temporary chat mutes, required public
+name changes and temporary account suspensions, with audited reversible actions.
+No production account was punished or case resolved for testing.
 The prepared chat-mute store now has atomic account state and private receipts,
 exact expiry/reversal, immutable account IDs and durable role checks. Five scoped
 unit tests and one disposable Mongo test passed under the race detector in
 1.348 seconds, including concurrent retries and competing decisions. No live
 command or chat enforcement is connected; this foundation does not complete
-1.59 or decide its sanction/retention policy. Details and limitations are retained
+1.59 or decide its evidence-retention policy. Details and limitations are retained
 in the preparation record above.
 The prepared owner-only notice route and report-form appeal drafting now pass
 67 scoped client checks, focused server/database race checks and the 390×844
 native presentation route. No background polling, automatic appeals, live
-punishment command or chat enforcement was introduced. Full sanction policy and
-connected moderation acceptance remain open; these preparations are not shipped.
+punishment command or chat enforcement was introduced. The response scope is now
+approved; full enforcement and connected moderation acceptance remain open.
+These preparations are not shipped.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
