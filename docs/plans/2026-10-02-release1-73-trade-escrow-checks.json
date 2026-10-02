@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 exact escrow producer, owned delivery and offer save barrier",
+  "status": "prepared primitives; ordinary trade handlers and recovery admission not connected",
+  "sourceCommit": "259002879877d7ce315245eb842c755d500c37a0",
+  "changes": [
+    "Plan offered items, Gold debit and private escrow together under ordered actor/world ownership. Reject inconsistent escrow, ambiguous custody across bag/stash/buyback/equipment, unsupported state, oversized payloads, invalid stacks and revision overflow before mutation. Identical offer retries retain revision and confirmations.",
+    "Persist the other participant's stable account/player/character binding in every produced escrow, so an orphan offer does not depend on the lost RAM table to identify its peer. Refuse a mismatched peer, unavailable player, distant/different scene or casino seating.",
+    "Fingerprint account-bound participant plans independently of array order, preserving each account's own offer/revision. Either player can reconstruct the same economic cancellation after restart without redefining the first frozen decision.",
+    "Apply an exact participant decision into owned private delivery plus receipt without changing visible bag or Gold. Claim the whole delivery on detached storage, preserving affixes, Forge basis and gems; only exact metadata can stack. Full bags, partial-fit failures, wallet limits, duplicate custody and future unsupported item fields retain the original outbox without world loot or sender compensation.",
+    "A prepared server offer-save primitive reconciles previous saves, produces the escrow/debit post-image, and confirms the existing character journal/committer before returning success. Unknown commit results retain the journal; real local write failure pins the only actor copy against expiry. No ordinary message handler uses this primitive yet.",
+    "Legacy RAM edit, confirm, cancel and disconnect-refund paths fail closed for either participant's private state. Remove an ephemeral table without financial effects only with a trusted complete shared decision. These guards are not a replacement for the coordinator integration."
+  ],
+  "checks": {
+    "finalFocusedRace": "Go1.27.1 go test -race ./internal/database ./internal/game . -run '^(TestDirectTrade|TestVendor|TestCharacterPersistence)' -count=1 -timeout=45s passed: database1.111s, game7.661s, server4.499s.",
+    "game": "Actual world APIs cover exact offer/debit ownership, repeated edits, full-bag swap/rejected return, nine invalid private/custody cases, all legacy fallback guards including the unoffered peer, gift recipients, settlement/cancellation with reversed participant order, repeated post-claim decisions/claims, seven all-or-none delivery failures, exact versus mismatched stack metadata, peer rebinding and five unavailable-peer cases.",
+    "journal": "Actual character snapshot and BSON filesystem journal cover confirmed/repeated offer saves; database rejection and committed-but-lost acknowledgement drop all live offers/entities and reopen the journal. The injected atomic-receipt model preserves later Gold credit on lost-ACK replay. Missing journal/committer, prior pending save and wrong account binding deny new mutation. A renamed journal directory produces real IO failure; actual disconnected expiry retains the only escrow copy and later reconciliation persists it.",
+    "fixtureCorrections": "Initial game fixtures lacked health required for ordinary pickup and compared a live nil slice against an owned empty-slice snapshot. Corrected live-player setup and consistent table copies. The internal expiry pin intentionally is not in detached entity copies; test the actual expiry operation instead. Corrected a nonexistent CasinoSeat test type to CasinoSeatSession. No resource, save or fail-closed assertion was weakened.",
+    "format": "gofmt and git diff --check passed. No broad unchanged campaign, soak, database launch or native-browser rerun."
+  },
+  "sourceHashes": {
+    "server/internal/database/direct_trade_state.go": "3877fbe59019134b2bfbc3f06fe7cf4c9f4ea519f0daeba8a8f5ca85cbdf377d",
+    "server/internal/database/direct_trade_state_test.go": "d5c320f5d04dbac92b051700e280508db192af9faddbbdf7958cf2925c5df917",
+    "server/internal/game/direct_trade.go": "0e8b3642030787ab30ba2efdfd2fafd454d5614d0fe63dc8859b4be4dddad36c",
+    "server/internal/game/direct_trade_escrow.go": "6cfb01470371b7a50e2e212d1e053a9492128fa140c21b1877ddadf3eef97f60",
+    "server/internal/game/direct_trade_delivery.go": "5e4fb10ac8736cda55c8258092466d594812407e0e9d57dd59f323e1441c64f5",
+    "server/internal/game/direct_trade_durable_test.go": "d1639fac880323aa3c37747e0390dee67cd31cb1f60f5c8e4bcd9a66eb6bace7",
+    "server/direct_trade_offer_persistence.go": "b40fb3f8b6dcabc480ec1a4b34de04e418f194ab02459f915b8f739f5e693fd4",
+    "server/direct_trade_offer_persistence_test.go": "1e2c75ce70de15db02e516ea4badeb996a5330186c5de7b40d0f271d9bae2441"
+  },
+  "limits": [
+    "No live protocol, actual Mongo execution, assembled fresh-process socket, native-browser, push or deployment acceptance. Store index/repository tests remain for isolated CI. The accepted live baseline remains Alpha1.70.1 fa414f0b288e8ee014d5ce72f7affdca485e1c7f.",
+    "Still required: both-account message/cleanup/recovery work-lock ownership, frozen-intent confirmation/cancellation, online/offline apply-and-save coordination, durable completion, startup/login orphan and pending-intent recovery, admission fencing and owned-delivery feedback/retry integration. Current ordinary handlers remain RAM-based for characters without private state.",
+    "The game-layer test supplies a complete record only to exercise nonfinancial table retirement; it does not simulate proving both database receipts. The production coordinator must obtain that complete record from the durable store.",
+    "Earlier prepared model fixtures without a peer remain readable, but orphan recovery must fail closed rather than guess one. Every runtime-produced escrow now supplies the full peer binding. No such escrow has been produced in production.",
+    "Writer schema18 still fences older readers; opaque byte retention is not an unrestricted rollback/recovery strategy. Valuable-operation ledger, final integrated gates and ordered version/notes/publication remain open. No complete1.73 or whole-economy crash-safety claim."
+  ]
+}

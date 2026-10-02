@@ -186,6 +186,15 @@ Mongo CI, not claimed locally successful. Prepared schema18 reserves both pendin
 accounts and fences older reader-only binaries without any value backfill.
 Escrow production, sorted two-account coordination, delivery claims and
 startup/login recovery are still unfinished; no1.73 release is published.
+The [escrow/delivery follow-up](2026-10-02-release1-73-trade-escrow-checks.json)
+implements exact game-owned escrow production, persistent peer bindings,
+participant-order-independent economic fingerprints, all-or-none owned delivery
+claims and the server offer-save barrier. Full bags, wallet limits, different
+affixes and unknown item formats retain owned custody; legacy RAM refunds cannot
+consume private state. Focused race and actual filesystem-journal/expiry checks
+pass. These primitives are not connected to ordinary trade handlers yet:
+two-account command/cleanup ownership, online/offline settlement, startup/login
+recovery, admission fencing and delivery feedback remain before publication.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
