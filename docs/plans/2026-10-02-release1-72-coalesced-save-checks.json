@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial protocol milestone",
+  "preparedParent": "0755b3072d31d08f66d21ffeed1ff7c9e54b3264",
+  "scope": [
+    "Repeated save requests retain at most one active worker and one pending-capture bit per connection, rather than one queued worker per request.",
+    "Each admitted capture takes the existing account lock, rechecks current connection ownership and captures fresh canonical state; no detached stale snapshot queue.",
+    "Request coordination never holds its mutex during character/world locking or journal/database IO. Other accounts remain independent.",
+    "Existing durable journal, retry behavior and independent final shutdown save remain authoritative. Sealed admission preserves pending state and signals failure instead of pretending to save.",
+    "Earned-completion jobs and their reward journals are unchanged."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(CoalescedSave|CharacterPersistence|CharacterWork|CharactersWork|StaleCleanup|ShutdownFinal)' -count=1 -timeout=20s",
+    "passed": true,
+    "packageSeconds": 4.426,
+    "newGroups": 5,
+    "evidence": [
+      "Eight concurrent producers issue 512 requests during a blocked commit; a fresh second capture and a late third mutation produce exactly three distinct receipts, retaining latest Gold, XP, health, mana and equipped item.",
+      "A blocked account does not block a different account's save.",
+      "A replaced/retired connection cannot save over the replacement owner.",
+      "Failed commits retain the latest actual disk journal, and retry commits that latest state.",
+      "Closed work admission creates no worker or fake successful commit; the independent final save persists the latest state.",
+      "Existing character persistence, account-work serialization, stale cleanup and late-reward shutdown regression tests also pass."
+    ],
+    "fixture": "Actual disposable disk journal with injected commit barriers/failures; no Mongo, production account or network mutation."
+  },
+  "sourceHashes": {
+    "server/character_work.go": "d5ca47101773ff3f13e26a4a0c0b2dcf94b5d4a817e275b3c185d48cdfd21b2c",
+    "server/persistence.go": "99525b96fac122d537fe54a3dc4cbbffea9cf8f19394cb9954a0fef447809b16",
+    "server/protocol_types.go": "6a1995ac8a75f53a1b5cb1c2c92246b10965b94265736387be787ce436e03496",
+    "server/coalesced_character_save_test.go": "fce8f562f1df8003d311c8aefd77395d015f0f0511a07ed8254551df1ea7835f"
+  },
+  "limits": [
+    "Per-connection save coalescing does not bound all persistence, cleanup or earned-completion work across repeated connections. It does not close the complete worker-admission gate or certify 100-player capacity.",
+    "A pending-capture bit is not a durability acknowledgement. Existing journal/database errors remain failed saves, with recovery handled by the retained journal/retry/final-save paths.",
+    "The earlier afed008d connected-account binary check predates this change and is not relabeled as latest-source coverage.",
+    "No 1.72 version promotion, CI publication or public acceptance is claimed."
+  ]
+}

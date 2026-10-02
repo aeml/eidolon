@@ -249,6 +249,13 @@ valid rebuilt archives and fail-closed unsupported evidence; anonymous
 recordings remain available. The filename-only current-tree inventory and
 ignore-rule improvements do not certify Git history, operator secrets, bearer
 tokens or screenshot pixels. This work remains staged and is not a live claim.
+The [save-coalescing follow-up](2026-10-02-release1-72-coalesced-save-checks.json)
+limits repeated saves to one worker and one fresh-capture request per connection,
+preserving canonical ownership checks, durable journals and final shutdown saves.
+Concurrent bursts, replacement owners, failed-write recovery, independent
+accounts and late-reward shutdown regressions pass under the race detector.
+Global completion/cleanup admission and latest-source connected evidence remain
+open; this does not certify capacity or publish the 1.72 milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

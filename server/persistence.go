@@ -50,11 +50,42 @@ func saveAllPlayers() {
 
 func savePlayer(client *Client) {
 	// Command handlers may hold this character's work lock. Capture only once
-	// this queued save owns that lock, never enqueue an already-stale snapshot.
+	// the worker owns that lock, never enqueue an already-stale snapshot. One
+	// connection has at most one worker and one pending-capture bit, regardless
+	// of how many save requests arrive while a write is waiting.
 	if db == nil || world == nil || client == nil || client.username == "" {
 		return
 	}
-	scheduleCharacterWork(func() { savePlayerNow(client) })
+	client.saveMu.Lock()
+	defer client.saveMu.Unlock()
+	client.savePending = true
+	if client.saveRunning {
+		return
+	}
+	client.saveRunning = true
+	if !scheduleCharacterWork(client.runPendingSaves) {
+		// Shutdown performs its independent final journal-all pass. Preserve
+		// the pending bit/failure signal rather than falsely reporting a save
+		// or leaving the connection stuck behind a worker that never started.
+		client.saveRunning = false
+		noteCharacterSaveFailure(client.username, true)
+	}
+}
+
+func (client *Client) runPendingSaves() {
+	for {
+		client.saveMu.Lock()
+		if !client.savePending {
+			client.saveRunning = false
+			client.saveMu.Unlock()
+			return
+		}
+		client.savePending = false
+		client.saveMu.Unlock()
+		// New requests during capture/commit set savePending again. The next
+		// iteration takes a fresh canonical snapshot and rechecks ownership.
+		savePlayerNow(client)
+	}
 }
 
 func savePlayerNow(client *Client) {

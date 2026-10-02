@@ -61,8 +61,8 @@ func lockCharacterWork(username string) func() {
 	}
 }
 
-func scheduleCharacterWork(work func()) {
-	backgroundCharacterWork.Go(work)
+func scheduleCharacterWork(work func()) bool {
+	return backgroundCharacterWork.Go(work)
 }
 
 // Caller holds character work lock. A stale socket may neither issue commands

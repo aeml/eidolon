@@ -137,6 +137,9 @@ type Client struct {
 	qaDisconnect      func()                     // Optional test hook for the allowlisted reconnect fault.
 	policyMu          sync.Mutex
 	messageRates      map[string]*messageRateBucket
+	saveMu            sync.Mutex // Only coordinates requests; never held during character/world/IO work.
+	saveRunning       bool
+	savePending       bool // Another latest-state capture is needed, not a stored snapshot or job queue.
 }
 
 // Message types
