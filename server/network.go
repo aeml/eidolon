@@ -261,6 +261,18 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	release, admitted := websocketAdmission.begin()
+	if !admitted {
+		w.Header().Set("Retry-After", "1")
+		http.Error(w, "server connection limit reached; please retry", http.StatusServiceUnavailable)
+		return
+	}
+	readerOwnsSlot := false
+	defer func() {
+		if !readerOwnsSlot {
+			release()
+		}
+	}()
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logSuspicious(r, "websocket upgrade failed", err)
@@ -268,14 +280,16 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{
-		conn:         c,
-		send:         make(chan []byte, 256), // State traffic is lossy under pressure.
-		prioritySend: make(chan []byte, 64),  // Control/UI messages must not starve behind state.
-		lastState:    make(map[string]*EntitySnapshot),
-		seenIDs:      make(map[string]bool),
+		conn:              c,
+		releaseSocketSlot: release,
+		send:              make(chan []byte, 256), // State traffic is lossy under pressure.
+		prioritySend:      make(chan []byte, 64),  // Control/UI messages must not starve behind state.
+		lastState:         make(map[string]*EntitySnapshot),
+		seenIDs:           make(map[string]bool),
 	}
 	register <- client
 
+	readerOwnsSlot = true
 	go client.writePump()
 	go client.readPump()
 }
@@ -283,8 +297,13 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 func (c *Client) readPump() {
 	defer func() {
 		c.markTransportClosed()
-		unregister <- c
 		c.conn.Close()
+		// Keep the slot while waiting for hub retirement too: reconnect floods
+		// must not accumulate unbounded readers holding their send queues.
+		unregister <- c
+		if c.releaseSocketSlot != nil {
+			c.releaseSocketSlot()
+		}
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)

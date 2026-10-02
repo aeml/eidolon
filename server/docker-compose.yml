@@ -41,6 +41,7 @@ services:
     command:
       - --addr=:8080
       - --auth-max-concurrent=${EIDOLON_AUTH_MAX_CONCURRENT:-4}
+      - --ws-max-connections=${EIDOLON_WS_MAX_CONNECTIONS:-512}
       - --mongo-uri=${MONGO_URI}
       - --log-file=${LOG_FILE:-logs/server.log}
       - --log-stdout=${LOG_STDOUT:-true}

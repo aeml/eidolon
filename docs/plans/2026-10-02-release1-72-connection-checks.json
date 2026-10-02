@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol admission",
+  "status": "partial prepared implementation; not published or versioned as 1.72",
+  "finding": "Shutdown admission counts an HTTP upgrade handler only until it returns. It did not impose a bound on complete WebSocket transport lifetimes or readers queued for retirement.",
+  "changes": [
+    "Add a per-process connection gate before WebSocket upgrade. Default512; operator flag ws-max-connections accepts1–4096, with matching Compose environment and sample configuration. No live private environment was changed.",
+    "Include in-progress upgrades, anonymous/owned transports and closed readers awaiting the hub retirement handoff. Release failed upgrades immediately and retired readers exactly once.",
+    "At capacity refuse the new HTTP upgrade with503 and Retry-After:1, without creating queues, replacing existing owners or banning accounts/IPs. No role or forwarding claim bypasses this gate."
+  ],
+  "checks": {
+    "focusedRace": {"go": "go1.27.1", "seconds": 1.112, "passed": true, "command": "go test -race . -run '^Test(WebsocketAdmission|InboundFrameGuard|ShutdownAdmission|MigrationOrigins)' -count=1"},
+    "concurrent": "128 concurrent attempts at a limit16 admit exactly16, remain held through all attempts, restore zero active slots on release and do not double-release. A zero-limit gate refuses admission.",
+    "actualTransport": "Production serveWs/readPump/writePump with loopback WebSockets and synthetic registration channels: failed origin reservation restores access; a successful upgrade holds the only slot after HTTP returns; a second upgrade gets503/Retry-After; closing TCP still retains its slot while the unbuffered retirement handoff waits; completing retirement restores ordinary upgrade. Two complete cycles pass.",
+    "retainedBoundaries": "Ping/pong/data shared budget, normal keepalives, shutdown refusal and real origin checks remain passing.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "sourceSha256": {
+    "server/websocket_admission.go": "49fa25332bd2d104da59f45a3f625d607e4e44cb2cb0f581aefa99c7c667da7c",
+    "server/websocket_admission_test.go": "d625de56771fe6b785779a1c88f776e637396da0f201c63648a8b3ad7ee73f1e",
+    "server/network.go": "a5d9820c60bc8cb36a68c607bf2cd4a2dff89e3ef8cf7ec66cf8c420fb534891",
+    "server/protocol_types.go": "032c5acecd1c7bcc79ac32974c6c4b2336c59e0267ce6b564dceaefe3a6a2c1e",
+    "server/main.go": "7e59e4d2ccf505c1960e0213e9cca6c32809161f032f4a6c2a3319d2659769e9"
+  },
+  "limits": [
+    "512 is a resource ceiling, not a measured player-capacity or beta promise. Unit concurrency is not a128-real-player workload.",
+    "Synthetic registration channels isolate real transport admission, not authenticated Mongo/session/save/graceful-restart behavior; later exact-source integration and CI/public acceptance remain required.",
+    "Pre-header TCP sockets, connection attempts per second, upstream bandwidth, global network attacks and malicious occupation of available slots still need edge/workload review. No IP-ban policy or production nginx/firewall change is implied.",
+    "Broader movement/cast, private-message/event visibility, secret exposure and recovery decisions remain separate unfinished milestone work."
+  ]
+}

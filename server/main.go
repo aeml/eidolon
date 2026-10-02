@@ -50,6 +50,7 @@ var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB co
 var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves", "Persistent private pending-character journal directory")
 var checkSchema = flag.Bool("check-schema", false, "Read-only database compatibility check; exit without logging files, migrations or admission")
 var credentialConcurrencyFlag = flag.Int("auth-max-concurrent", defaultCredentialConcurrency, "Maximum simultaneous credential queries/hashes (1-32); excess requests receive retry feedback")
+var websocketConnectionsFlag = flag.Int("ws-max-connections", defaultWebsocketConnections, "Maximum simultaneous WebSocket upgrades/transports (1-4096); excess upgrades receive HTTP503")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
@@ -384,6 +385,11 @@ func main() {
 		os.Exit(2)
 	}
 	credentialAdmission = newCredentialWorkGate(*credentialConcurrencyFlag)
+	if *websocketConnectionsFlag < 1 || *websocketConnectionsFlag > maxWebsocketConnections {
+		fmt.Fprintf(os.Stderr, "ws-max-connections must be between 1 and %d\n", maxWebsocketConnections)
+		os.Exit(2)
+	}
+	websocketAdmission = &websocketConnectionGate{limit: *websocketConnectionsFlag}
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
 	adminBootstrapUsernames = parseAdminBootstrapUsernames(*adminBootstrapUsernamesFlag)
 	closers, err := setupLogging()

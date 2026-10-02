@@ -25,6 +25,7 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact verified existing usernames temporarily allowed to persist the administrator role with `/relevel`; prepared1.71 defaults to empty and preserves existing durable roles)
 - `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` (optional, defaults to90; whole days7–365)
 - `EIDOLON_AUTH_MAX_CONCURRENT` (prepared1.71; optional, defaults to4; whole number1–32)
+- `EIDOLON_WS_MAX_CONNECTIONS` (prepared1.72; optional, defaults to512; whole number1–4096)
 
 The prepared 1.71 account-security candidate adds `-auth-max-concurrent`
 (default4, accepted range1–32; Compose reads `EIDOLON_AUTH_MAX_CONCURRENT`) to bound simultaneous login/registration database
@@ -100,6 +101,21 @@ checks cover exhaustion after data traffic and ordinary keepalives. These are
 connection-local limits, not a global-connection or network flood solution;
 edge protection and realistic high-latency/capacity validation remain separate
 unfinished protocol/operations checks.
+
+Prepared1.72 also adds `-ws-max-connections` (Compose reads
+`EIDOLON_WS_MAX_CONNECTIONS`) to bound simultaneous upgrades plus complete
+WebSocket transport lifetimes. Failed upgrades release their slot; successful
+ones hold it until the reader closes the connection and hands retirement to the
+hub, including anonymous sockets. Readers waiting on retirement retain their
+slot, preventing reconnect traffic accumulating unbounded queued readers.
+At the limit, new upgrades receive HTTP503 with `Retry-After: 1`, not an account
+ban. The default512 is a process resource ceiling, not a measured512-player
+capacity or beta admission promise. No role, IP or forwarding claim bypasses it.
+Closing a socket restores its slot exactly once. Do not raise the limit without
+measured memory/tick/database/network headroom. It does not bound pre-header TCP
+connections, handshake attempts per second, upstream bandwidth or prevent an
+attacker occupying the available slots; edge protection and workload validation
+remain separate.
 
 Structured administration history is stored separately from server logs. Session
 events are journaled under `logs/character-saves/admin-activity/` before normal

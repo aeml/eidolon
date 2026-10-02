@@ -125,6 +125,7 @@ type Client struct {
 	sendClosed        bool
 	stateMu           sync.Mutex
 	conn              *websocket.Conn
+	releaseSocketSlot func() // Immutable after transport creation; released by its reader.
 	send              chan []byte
 	prioritySend      chan []byte
 	playerID          string
