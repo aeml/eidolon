@@ -22,7 +22,15 @@ func (c *Client) dispatchMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
-		if err := db.CreateUser(payload.Username, payload.Email, payload.Password); err != nil {
+		done, err := credentialAdmission.begin(msg.Type, payload.Username, time.Now())
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		defer done()
+		err = db.CreateUser(payload.Username, payload.Email, payload.Password)
+		done()
+		if err != nil {
 			c.sendError("Registration failed: " + err.Error())
 			return
 		}
@@ -42,7 +50,14 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Use a new connection to switch accounts.")
 			return
 		}
+		done, err := credentialAdmission.begin(msg.Type, payload.Username, time.Now())
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		defer done()
 		success, err := db.Authenticate(payload.Username, payload.Password)
+		done() // Hydration, activity storage and takeover do not occupy hash slots.
 		if err != nil {
 			c.sendError("Login error")
 			return

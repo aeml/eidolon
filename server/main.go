@@ -50,6 +50,7 @@ var addr = flag.String("addr", ":8080", "http service address")
 var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB connection URI")
 var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves", "Persistent private pending-character journal directory")
 var checkSchema = flag.Bool("check-schema", false, "Read-only database compatibility check; exit without logging files, migrations or admission")
+var credentialConcurrencyFlag = flag.Int("auth-max-concurrent", defaultCredentialConcurrency, "Maximum simultaneous credential queries/hashes (1-32); excess requests receive retry feedback")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
@@ -439,6 +440,11 @@ func main() {
 		fmt.Printf("Schema preflight passed: database=%d supported=%d commit=%s\n", version, database.CurrentSchemaVersion, buildCommit)
 		return
 	}
+	if *credentialConcurrencyFlag < 1 || *credentialConcurrencyFlag > maxCredentialConcurrency {
+		fmt.Fprintf(os.Stderr, "auth-max-concurrent must be between 1 and %d\n", maxCredentialConcurrency)
+		os.Exit(2)
+	}
+	credentialAdmission = newCredentialWorkGate(*credentialConcurrencyFlag)
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
 	adminBootstrapUsernames = parseAdminBootstrapUsernames(*adminBootstrapUsernamesFlag)
 	closers, err := setupLogging()

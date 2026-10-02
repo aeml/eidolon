@@ -105,6 +105,7 @@ jobs:
         run: |
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroupFinderActualSocketsConsentPrivacyAndReady$' -count=1

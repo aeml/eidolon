@@ -25,6 +25,24 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact usernames allowed to persist the administrator role with `/relevel`; currently only `donveetz`)
 - `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` (optional, defaults to90; whole days7–365)
 
+The prepared 1.71 account-security candidate adds `-auth-max-concurrent`
+(default4, accepted range1–32) to bound simultaneous login/registration database
+queries and password hashes. Busy requests receive retry feedback immediately;
+there is no unbounded authentication queue, and gameplay does not take this
+credential-work lock. The slot is released before character hydration, audit
+storage or session takeover. Do not raise it without measuring headroom.
+Login and registration each retain five attempts/minute per exact-case account
+across connections, in addition to the existing per-connection policies. Tokens
+refill gradually; there is no persistent account-disable flag. The RAM-only map
+holds at most4096 fixed-size hashed account keys per server process and prunes
+fully refilled entries at most once/minute on incoming credential requests.
+At capacity, new keys are refused with retry feedback; a busy refusal does not
+spend an account retry. A restart resets these ephemeral budgets. This does not
+prove a simultaneous100-player login burst, prevent targeted temporary denial
+of an account, or replace edge/proxy flood protection. Forwarding headers and
+household/proxy IPs are not used as authentication authority or budget keys.
+This candidate is not live until its ordered release and acceptance complete.
+
 Structured administration history is stored separately from server logs. Session
 events are journaled under `logs/character-saves/admin-activity/` before normal
 login/resume acknowledgement and synced to Mongo in batches every5seconds.
@@ -47,8 +65,9 @@ Mongo/journal restore workflow. Startup drains pending operations before becomin
 ready; runtime retries process at most50 durable operations per5second pass and
 stop on the first storage failure. Affected character commands/reconnects wait
 for recovery, without adding Mongo queries to unaffected movement packets.
-This batch is still local work in progress; new grant/teleport request handlers
-and panel controls are not enabled yet.
+Role-gated grant/teleport handlers and panel controls are now enabled; use the
+confirmed, audited procedures in [the administration guide](../../docs/ADMINISTRATION.md).
+They do not confer password-reset or arbitrary account-ownership authority.
 
 Retention is applied when records are created. Reads also enforce the current
 retention cutoff, so reducing it immediately hides older records; physical

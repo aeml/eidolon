@@ -258,7 +258,12 @@ func (c *Client) consumeMessageRate(messageType string, p messagePolicy, now tim
 		bucket = &messageRateBucket{tokens: float64(p.burst), updated: now}
 		c.messageRates[messageType] = bucket
 	}
+	return consumeRateBucket(bucket, p, now)
+}
 
+// Caller owns the bucket lock. Connection and cross-connection credential
+// budgets use the same refill rule, including protection against clock rewind.
+func consumeRateBucket(bucket *messageRateBucket, p messagePolicy, now time.Time) bool {
 	if now.After(bucket.updated) {
 		refill := now.Sub(bucket.updated).Seconds() * float64(p.burst) / p.window.Seconds()
 		bucket.tokens = min(float64(p.burst), bucket.tokens+refill)
