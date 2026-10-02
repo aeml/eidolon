@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.65.0",
+  "status": "accepted",
+  "commit": "0bd252f260a285c0c3f46b26663801c99a3d2b0a",
+  "ciRun": 37009799985,
+  "publicVerifiedAt": "2026-10-02T13:35:48.510Z",
+  "frontend": {
+    "commit": "0bd252f260a285c0c3f46b26663801c99a3d2b0a",
+    "version": "Alpha 1.65.0"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "0bd252f260a285c0c3f46b26663801c99a3d2b0a",
+    "version": "Alpha 1.65.0"
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 751869,
+      "sha256": "7cb9d7cef708a6ea261b641010f502728d4e3dade7ef14d7432fe9263d741fa3",
+      "exactPublisher": true
+    },
+    {
+      "path": "src/ui/SlotMachineUI.js",
+      "bytes": 22195,
+      "sha256": "70b4d2fcaf0a627c05422de479d0fcdc80fd6c3bbc0fa9bf5e6e75e5272d0260",
+      "exactPublisher": true
+    }
+  ],
+  "limits": [
+    "Ordinary-DNS public HTTPS verified over IPv4; owner-deferred IPv6 reachability remains separate.",
+    "Both changed client runtime files match full exact publisher output; unchanged assets retain predecessor evidence, not a new inventory check.",
+    "Technical acceptance is not a new human-pacing, physical-phone, legal, art or capacity signoff."
+  ],
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "verifiedAt": "2026-10-02T13:37:03.256Z"
+}
