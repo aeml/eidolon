@@ -148,6 +148,7 @@ type Client struct {
 	connectionWorkUsers    int
 	connectionWorkReleased bool
 	cleanupOnce            sync.Once
+	replacementCloseOnce   sync.Once
 }
 
 // Message types

@@ -152,6 +152,12 @@ with a retry hint. This prevents repeated reconnects from accumulating retired
 connection cohorts outside the gate. It is not a global completion-worker cap.
 [Work-lease checks](plans/2026-10-02-release1-72-work-lease-checks.json) record
 actual small-pool reconnect and focused race evidence, not live acceptance.
+Login/resume replacement closes now share that ownership tracking too: at most
+one brief notification/close task per old connection, outside the global session
+mutex. Sealed worker admission closes the stale socket immediately without an
+untracked fallback. [Replacement-close checks](plans/2026-10-02-release1-72-replacement-close-checks.json)
+cover a real socket with a controlled close barrier and duplicate observers,
+not a new connected-binary credential acceptance run.
 
 Weekly raid completion and periodic retry also share one recovery worker in the
 candidate. It discovers recorded live completions even after socket disconnect,

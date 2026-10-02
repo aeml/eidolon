@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared connection lifecycle fix; not published",
+  "parentCommit": "c4ec572a",
+  "checkedAt": "2026-10-02T20:31:25Z",
+  "scope": [
+    "Login and resume replacement closes use the existing tracked lifecycle group and the old connection's admission reservation rather than raw untracked goroutines.",
+    "One notification/close task per old connection despite repeated observations; existing resume notification flush opportunity retained, also applied to ordinary login replacement.",
+    "Global session mutex is released before scheduling the close. No extra character/session lifetime, ownership reset, persistence or token rule introduced.",
+    "Rejected shutdown/released-reservation admission closes immediately without an untracked fallback or leaked work reference; nil/connectionless clients remain safe."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(ReplacedConnection|ConnectionWork|ResumeToken|ResumeActivity|SessionActivity|CredentialAdmission|InboundEnvelope)' -count=1 -timeout=30s",
+    "result": "Passed with race detector in2.524 seconds.",
+    "socketOwnership": "Actual upgraded socket with its Close deliberately held at a test barrier: 64 duplicate observers queue one notification; reader/retirement lease completion cannot release the reserved slot until the close finishes.",
+    "shutdown": "Sealed lifecycle group still closes the real socket, leaves only the original two base references and permits normal slot release. Nil and connectionless replacement checks pass.",
+    "retainedRegressionScope": "Existing connection-work, resume-token, session-activity, credential-admission and envelope fixtures pass; no fresh production-binary/Mongo takeover run performed for this task.",
+    "review": "Both replacement call sites use the shared helper; no raw takeover goroutine remains in client_dispatch.go. Whitespace checked."
+  },
+  "limits": [
+    "The 100ms flush opportunity does not guarantee delivery of the old-session notification. A full lossless queue may already close that socket as before.",
+    "The socket fixture verifies close ownership/shutdown, not full database authentication or user-visible browser reconnection. Earlier connected-binary receipts keep their original tested-source scope.",
+    "Prepared defaults still inherit Alpha1.70.0. Account recovery choice and final ordered1.71/1.72 assembly, CI and public acceptance remain open. Full roadmap goal remains active."
+  ]
+}

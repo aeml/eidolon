@@ -96,12 +96,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		sessionsMu.Unlock()
 		if previous != nil && previous != c {
 			cleanupClientLocked(previous)
-			go func() {
-				previous.sendError("Logged in from another location")
-				if previous.conn != nil {
-					previous.conn.Close()
-				}
-			}()
+			closeReplacedClient(previous)
 		}
 
 		// Enforce single session
@@ -946,16 +941,12 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		sessionsMu.Lock()
 		// Kick any stale session for this username (shouldn't exist, but be safe).
-		if old, exists := activeSessions[username]; exists && old != c {
-			go func(old *Client) {
-				defer func() { recover() }()
-				old.sendError("Logged in from another location")
-				time.Sleep(100 * time.Millisecond)
-				old.conn.Close()
-			}(old)
-		}
+		old := activeSessions[username]
 		activeSessions[username] = c
 		sessionsMu.Unlock()
+		if old != c {
+			closeReplacedClient(old)
+		}
 
 		// Issue a fresh resume token for the next disconnect.
 		newToken, err := issueResumeToken(username, c)

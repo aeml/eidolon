@@ -339,6 +339,12 @@ payload, including4000-character Unicode/escaped reports, without relaxing other
 message-specific limits or overall flood budgets. Actual socket validation and
 retained oversize-fragment/flood rejection pass; persistence/game execution and
 final release acceptance remain separate. No live promotion.
+The [replacement-close follow-up](2026-10-02-release1-72-replacement-close-checks.json)
+removes untracked login/resume takeover close workers. Each old connection owns
+at most one tracked notification/close; shutdown rejection closes immediately,
+and reservation release waits for the owned close to finish. Real-socket barrier,
+duplicate-observer and sealed-admission race checks pass. Latest assembled-binary
+credential acceptance remains part of the ordered release gate.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
