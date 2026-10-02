@@ -52,6 +52,45 @@ The first XP split assertion incorrectly expected the boss currency formatter to
 use the room callout's separator. The fixture now checks each existing format;
 the failed attempt is not counted as acceptance.
 
+The assembled 1.60 defaults, login label and cumulative patch notes passed 417
+version/history, boot and menu checks in 4.239 seconds; full lint passed again.
+These suites overlap the earlier checks, so their counts are not added as unique
+coverage. The first assembly check caught the previous CI step-name assertion
+and README source-version pointer before both were updated. All existing
+history and the single reused server-build requirement remain checked.
+
+## Existing integration evidence and open S checks
+
+The [1.51 community acceptance](2026-09-30-release1-51-acceptance.md),
+[1.52 guild acceptance](2026-09-30-release1-52-acceptance.md) and
+[1.53 recruitment work](2026-09-30-release1-53-group-work.md) retain the earlier
+social ownership, private applications and consent checks. This candidate reruns
+the ordinary recruitment/ready/resume flow against the current server rather
+than claiming those histories alone prove the changed handoff.
+
+[1.54 duel acceptance](2026-09-30-release1-54-acceptance.md) and
+[1.55 arena acceptance](2026-10-01-release1-55-acceptance.md) retain their consent
+and settlement scopes. [1.56 season rules](2026-10-01-release1-56-seasons.md),
+[1.57 event discovery](2026-10-01-release1-57-events.md) and
+[1.58 optional endgame goals](2026-10-01-release1-58-endgame.md) remain the existing
+loops, not newly activated systems. Entry and reward eligibility still belong
+to the server. The [1.40 review](2026-09-29-1-40-readiness.md) records the limits
+of prepared-party activity evidence and the user-deferred campaign observations.
+
+The [1.59 moderation record](2026-10-01-release1-59-moderation.md) includes
+independent chat/world restrictions, login support and reversal exercises. Its
+successful deployment is still a prerequisite for publishing this closeout.
+No production sanction or private report was used as test data here.
+
+The technical S integration is prepared, not a claim that the complete S gate has
+passed. There is no validated real-player population/wait-time study in these
+checks. Sparse-group behavior therefore retains existing short-lived listings,
+optional exploration and preparation while waiting, solo normal-dungeon access
+and explicit raid minimums. Do not add new queues to solve an unobserved shortage.
+Season operator agreement, actual content cadence and human multiplayer feedback
+remain open before the stabilization and beta-readiness decisions. The overall
+roadmap is not complete and no closed-beta transition is authorized.
+
 ## Integration checks
 
 - Exercise calendar navigation through the actual Social UI, including cancelled,

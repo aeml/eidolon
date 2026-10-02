@@ -19,6 +19,13 @@ independent public acceptance are still pending before1.60. See its
 [release record](2026-10-01-release1-59-moderation.md). Open alpha, saves and
 owner-deferred human pacing/phone checks remain unchanged.
 
+The [prepared 1.60 integration](2026-10-02-release1-60-social-integration.md)
+adds calendar recruitment navigation, explicit final-boss completion guidance
+and intact XP/Resonance reward receipts. Its local client, race, ordinary-socket
+and desktop/phone-sized browser checks passed. Version defaults and cumulative
+notes are prepared; publication must follow exact-source 1.59 acceptance. This
+does not pass population, physical-phone or human-pacing observations.
+
 ## Historical checkpoint — September 28
 
 Superseding checkpoint: [Alpha 1.29.0](2026-09-28-release1-29.md) is accepted

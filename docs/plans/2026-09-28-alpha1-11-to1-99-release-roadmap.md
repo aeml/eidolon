@@ -98,9 +98,15 @@ labels preserve stable ownership and blocks. Schema17 reserves aliases without
 legacy renaming or backfill and fences older registration writers. No production
 sanctions were used for testing. Existing evidence retention and staff boundaries
 are documented; staffing coverage and final retention remain owner decisions.
-CI and public deployment acceptance remain before advancing to1.60. The
+CI and public deployment acceptance remain before publishing1.60. The
 [candidate receipt](2026-10-02-release1-59-three-responses.json) preserves historical
 preparation evidence, scoped checks and presentation limits.
+The [prepared 1.60 closeout](2026-10-02-release1-60-social-integration.md)
+connects the existing calendar, recruitment and reward guidance without automatic
+party consent, new payouts or another queue. Local client, race, ordinary-socket
+and desktop/phone-sized browser checks passed. Version and notes are prepared;
+it is not published. The S gate's real-player population and cadence observations
+remain open for stabilization; publishing this code cannot certify them.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

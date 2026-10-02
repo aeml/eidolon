@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.59.0';
+const currentVersion = '1.60.0';
+
+test('1.60.0 records connected recruitment and actual completion/reward receipts without automatic actions', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.60.0"'), previous = html.indexOf('data-version="1.59.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['companions, clear rewards and your next adventure', 'No listing', 'Listings last 20 minutes',
+        'intermediate boss', 'server-confirmed', 'all three crystal-repair Vigil waves', 'XP/Resonance receipt',
+        'no reward amount', 'Weekly cache settlement is separate', 'No account reset', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.59.0 explains reversible moderation, account help and stable public names', () => {
     const html = fs.readFileSync('index.html', 'utf8');
@@ -120,18 +131,20 @@ test('1.54.0 records rigged Fighter integration and current duel consent without
         'not final modern-art approval', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
-test('duel consent and private report reviews reuse one disposable normal server socket build', () => {
+test('social consent, duels and private report reviews reuse one disposable normal server socket build', () => {
     const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
-    const start = workflow.indexOf('- name: Verify ordinary duel and administration sockets');
+    const start = workflow.indexOf('- name: Verify ordinary social, duel and administration sockets');
     const next = workflow.indexOf('- name: Verify disposable guild bank settlement and recovery');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(next);
     for (const text of ["EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'", 'mongodb://127.0.0.1:27017',
         'go build -race', 'main.buildCommit=server', 'EIDOLON_RESOURCE_BINARY=',
         "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1",
-        "go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1"]) {
+        "go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1",
+        "go test -race . -run '^TestGroupFinderActualSocketsConsentPrivacyAndReady$' -count=1"]) {
         expect(workflow.slice(start, next)).toContain(text);
     }
-    expect(workflow.split('Verify ordinary duel and administration sockets')).toHaveLength(2);
+    expect(workflow.split('Verify ordinary social, duel and administration sockets')).toHaveLength(2);
+    expect(workflow.slice(start, next).match(/go build -race/g)).toHaveLength(1);
 });
 
 test('1.53.0 records group planning, current consent and unchanged progression', () => {
