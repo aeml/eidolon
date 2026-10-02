@@ -11,7 +11,6 @@ import (
 	"io"
 	"log"
 	"math/rand"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -58,7 +57,7 @@ var logFilePath = flag.String("log-file", "server.log", "Path to server log file
 var logStdout = flag.Bool("log-stdout", true, "Also write logs to stdout")
 var logHTTPErrors = flag.Bool("log-http-errors", false, "Log noisy HTTP/TLS handshake errors (can be very noisy on public servers)")
 var suspiciousStdout = flag.Bool("suspicious-stdout", true, "Print suspicious/non-client connections to stdout")
-var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "Minimum time between suspicious logs per IP")
+var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "Minimum time between suspicious stdout logs per transport peer (diagnostics only)")
 var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", "Path to log suspicious/non-client connections (empty disables file logging)")
 var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_metrics.jsonl", "Hourly gold source/sink metrics path (empty disables)")
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
@@ -202,46 +201,7 @@ var httpErrLogger *log.Logger
 var suspiciousStdoutLogger *log.Logger
 var suspiciousFileLogger *log.Logger
 var suspiciousLogThrottle = newIPThrottle()
-
-type ipThrottle struct {
-	mu   sync.Mutex
-	last map[string]time.Time
-}
-
-func newIPThrottle() *ipThrottle {
-	return &ipThrottle{last: make(map[string]time.Time)}
-}
-
-func (t *ipThrottle) allow(ip string, cooldown time.Duration) bool {
-	if cooldown <= 0 {
-		return true
-	}
-	now := time.Now()
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if last, ok := t.last[ip]; ok && now.Sub(last) < cooldown {
-		return false
-	}
-	t.last[ip] = now
-	return true
-}
-
-func requestIP(r *http.Request) string {
-	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
-		parts := strings.Split(xff, ",")
-		if len(parts) > 0 {
-			return strings.TrimSpace(parts[0])
-		}
-	}
-	if xr := r.Header.Get("X-Real-IP"); xr != "" {
-		return strings.TrimSpace(xr)
-	}
-	host, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err == nil {
-		return host
-	}
-	return r.RemoteAddr
-}
+var suspiciousLogBudget = newSuspiciousTrafficBudget()
 
 // generateResumeToken returns a cryptographically random 32-byte hex token.
 func generateResumeToken() (string, error) {
@@ -340,32 +300,11 @@ func pruneResumeTokens(now time.Time) {
 	}
 }
 
-func logSuspicious(r *http.Request, reason string, err error) {
-	ip := requestIP(r)
-	ua := r.UserAgent()
-	// Always write suspicious traffic to the dedicated junk log (if configured).
-	if suspiciousFileLogger != nil {
-		if err != nil {
-			suspiciousFileLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
-		} else {
-			suspiciousFileLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
-		}
-	}
-
-	// Optionally print suspicious traffic to stdout, throttle-controlled.
-	if suspiciousStdoutLogger != nil && *suspiciousStdout && suspiciousLogThrottle.allow(ip, *suspiciousCooldown) {
-		if err != nil {
-			suspiciousStdoutLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
-		} else {
-			suspiciousStdoutLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
-		}
-	}
-}
-
 func setupLogging() ([]io.Closer, error) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	// Suspicious loggers: file is always-on (if configured); stdout is optional + throttle-controlled.
+	// Diagnostic junk traffic is bounded at both sinks. Durable structured
+	// account/administrator activity uses its separate unsampled journal.
 	suspiciousStdoutLogger = log.New(os.Stdout, "SUSPICIOUS ", log.LstdFlags)
 	var closers []io.Closer
 	if *suspiciousLogFilePath != "" {

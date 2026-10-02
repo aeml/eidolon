@@ -59,6 +59,23 @@ compliance: legacy credential migration, corpus/normalization strategy,
 verified recovery delivery and protected-admin hardening remain named work.
 The login hint distinguishes new-account requirements from existing passwords.
 
+Prepared1.72 bounds **suspicious HTTP/WebSocket diagnostic logging** separately
+from durable account/administrator audit. Both junk-file and optional stdout
+records share a twenty-line initial burst and one-line/second refill; the next
+emitted record includes the number suppressed. All untrusted fields are quoted
+and byte-bounded; query strings, authorization headers and cookies are excluded.
+`peer_ip` is the canonical transport peer. `reported_ip` is only a validated,
+unverified forwarding-header claim; it cannot set authority or throttle keys.
+The existing stdout cooldown now samples actual transport peers, with at most
+4096 bounded keys and periodic expired-key reclamation. Behind a reverse proxy,
+stdout may sample the proxy as one peer; this is diagnostic sampling, never a
+player/login restriction. File records retain their separate global budget.
+Disabling the peer cooldown does not disable that shared budget. These limits
+do not rotate existing logs, impose a disk quota, bound other logger categories
+or replace edge protection; retention and hosting work remain later gates.
+No deployed configuration or old log file is changed by preparation. This is
+not live until the ordered1.72 release and acceptance pass.
+
 Structured administration history is stored separately from server logs. Session
 events are journaled under `logs/character-saves/admin-activity/` before normal
 login/resume acknowledgement and synced to Mongo in batches every5seconds.

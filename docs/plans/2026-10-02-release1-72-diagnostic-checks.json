@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol and resource abuse",
+  "status": "partial prepared implementation; not versioned or published as 1.72",
+  "sourceParent": "02117a2bba0ca69503c076a19bc08c98d79b4fdf",
+  "sourceSha256": {
+    "server/main.go": "fc9f69e1655e5bbbf3cfa8c46c6097cf8817d5eefb2c43a92de899d2c11b3c14",
+    "server/suspicious_logging.go": "21d60aea8181cfe8e5a7951a4707b6f2d46069067759e7ae928ea92d67965013",
+    "server/suspicious_logging_test.go": "94edbc94ee495ddfa9e6aeefa6915a1de2dc3b82b45b8fc814e2bcc8a75c1c28"
+  },
+  "findings": [
+    "Previous suspicious diagnostic logging wrote raw path/method/address/error values. A valid percent-encoded newline in an HTTP path could become a forged extra log line.",
+    "Forwarded-header-derived stdout sampling retained a growing map of arbitrary keys; junk-file logging had no shared rate bound. Spoofing forwarding headers could bypass stdout sampling and grow memory."
+  ],
+  "scope": [
+    "Quote and byte-bound all untrusted diagnostic fields, excluding query strings, Authorization and Cookie headers.",
+    "Canonicalize actual transport peer and display forwarding claims separately as reported_ip, without trusting them as authority or throttle keys.",
+    "Bound stdout peer-map cardinality to 4096 with bounded keys and periodic expired-entry reclamation. A disabled per-peer cooldown retains no new keys.",
+    "Both diagnostic sinks share twenty initial records and one record/second refill. Count suppression on the next record; no new line or allocation retained per suppressed request.",
+    "Leave durable session/administrator journals, gameplay and credential admission untouched. Document diagnostic sampling and the remaining retention/proxy limits."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.24.5 go test -race . -run '^Test(Suspicious|Credential|Registration|ResumeToken|Bootstrap|AdminConsoleDurable|AdminConsoleRejects|Relevel|CheckOrigin|Inbound|DecodeInbound)' -count=1",
+    "seconds": 1.639,
+    "passed": true,
+    "newTestGroups": 7,
+    "coverage": "Canonical IPv4/IPv6 and malformed forwarding claims; peer-map cap/expiry/rewind/large-key bounds; disabled cooldown; 100 concurrent contenders with exactly20 initial admissions and80 counted suppressions; saturated counter; escaped size-bounded fields and excluded credential/query headers; 100 spoofed forwarding claims cannot grow the peer map or bypass file limits; real loopback HTTP encoded-newline request cannot forge another log line.",
+    "retained": "Focused registration, credential work, token ownership, bootstrap/admin-role, origin and inbound-policy checks pass. Opt-in disposable Mongo integration fixtures are skipped in this invocation; the previous final connected 1.71 receipt retains its own scope.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "limits": [
+    "No production configuration, DNS, proxy, log file, account, role or currency was mutated.",
+    "This is diagnostic sampling, not a player IP limiter. Behind a proxy the stdout cooldown can group that transport peer; no account admission is denied by this sampler.",
+    "The shared rate bound is not a disk quota or log rotation. Other log categories, malformed WebSocket floods, broader gameplay trust boundaries, dependency/secret review and infrastructure budgets remain unfinished.",
+    "No 1.72 publication or security certification. Predecessor1.71 still requires the owner recovery delivery/ownership decision and its ordered release. Prepared1.65–1.70 must first pass individual CI and public acceptance after corrected1.64.1."
+  ]
+}
