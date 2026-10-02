@@ -70,6 +70,15 @@ func TestPokerMongoDecisionTimeoutReleasesChairAndConservesFunds(t *testing.T) {
 			if world.GetEntityCopy(clients[turn].playerID).CasinoSeat != nil || world.GetEntityCopy(clients[1-turn].playerID).CasinoSeat == nil {
 				t.Fatal("timeout did not release only the current player's chair")
 			}
+			if scenario == "free-check" {
+				checked := pokerViewFor(clients[1-turn].playerID)
+				if checked.Phase != "playing" || checked.Round == nil || checked.Round.Players[turn].Folded {
+					t.Fatal("free decision timeout did not retain the normal check")
+				}
+				if err := tickPoker(deadline); err != nil {
+					t.Fatal(err)
+				}
+			}
 			if err := validatePokerSeatClaim("player-waiting-visitor", turn); err != nil {
 				t.Fatal("folded hand still reserves its released chair", err)
 			}

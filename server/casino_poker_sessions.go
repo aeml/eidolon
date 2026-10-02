@@ -55,12 +55,13 @@ func setPokerCache(id string, r *database.BlackjackTableRecord, available bool, 
 }
 
 type pokerParticipant struct {
-	PlayerID  string `json:"playerId"`
-	Name      string `json:"name"`
-	Seat      int    `json:"seat"`
-	SessionID string `json:"sessionId"` // Private seat identity; never in public view.
-	BuyIn     int    `json:"buyIn"`
-	Paid      bool   `json:"paid"`
+	PlayerID         string `json:"playerId"`
+	Name             string `json:"name"`
+	Seat             int    `json:"seat"`
+	SessionID        string `json:"sessionId"` // Private seat identity; never in public view.
+	BuyIn            int    `json:"buyIn"`
+	Paid             bool   `json:"paid"`
+	TimeoutSeatToken string `json:"timeoutSeatToken,omitempty"` // Private saved chair-release fence.
 }
 type pokerTableState struct {
 	RoundID    string             `json:"roundId"`
@@ -99,6 +100,12 @@ func decodePokerState(record *database.BlackjackTableRecord) (*pokerTableState, 
 			return bad()
 		}
 		ids[p.PlayerID], seats[p.Seat] = true, true
+		if p.TimeoutSeatToken != "" {
+			token, err := hex.DecodeString(p.TimeoutSeatToken)
+			if err != nil || len(token) != 16 || s.Phase == "betting" {
+				return bad()
+			}
+		}
 	}
 	switch s.Phase {
 	case "betting":
@@ -543,8 +550,6 @@ func tickPoker(now time.Time, ids ...string) error {
 		return err
 	}
 	owner := ""
-	var timedOutSeat *game.CasinoSeatSession
-	timedOutPlayer := ""
 	if r.Pending != nil {
 		owner = r.Pending.PlayerID
 	} else {
@@ -590,15 +595,18 @@ func tickPoker(now time.Time, ids ...string) error {
 			}
 			if !changed && !now.Before(s.Round.Deadline) {
 				turn := s.Round.Players[s.Round.Turn]
-				if p := world.GetEntityCopy(turn.PlayerID); p != nil && p.CasinoSeat != nil &&
-					p.CasinoSeat.TableID == id && p.CasinoSeat.Seat == turn.Seat {
-					timedOutSeat, timedOutPlayer = p.CasinoSeat, turn.PlayerID
-				}
-				// Losing the chair follows the existing leave rule: fold a live
-				// stack, retain committed chips and settle unspent funds normally.
-				s.Round, changed = s.Round.Withdraw(turn.PlayerID, now)
-				if !changed {
-					err = errors.New("timed-out poker hand could not be retired")
+				player := world.GetEntityCopy(turn.PlayerID)
+				// Preserve the documented check-for-free/fold-to-bet rule. Chair
+				// departure follows that saved decision through normal withdrawal.
+				s.Round, err = s.Round.Timeout(now)
+				changed = err == nil
+				if changed && player != nil && player.CasinoSeat != nil {
+					for i, participant := range s.Players {
+						seat := player.CasinoSeat
+						if participant.PlayerID == turn.PlayerID && seat.TableID == id && seat.Seat == participant.Seat {
+							s.Players[i].TimeoutSeatToken = seat.SessionID
+						}
+					}
 				}
 			}
 			if changed {
@@ -625,8 +633,14 @@ func tickPoker(now time.Time, ids ...string) error {
 		}
 	}
 	pokerMu.Unlock()
-	if err == nil && timedOutSeat != nil {
-		world.ReleaseCasinoSeatForSession(timedOutPlayer, id, timedOutSeat.SessionID)
+	if err == nil {
+		// Saved markers retry missed releases, outside the table lock and only
+		// for the captured session; later occupants retain their chairs.
+		for _, participant := range s.Players {
+			if participant.TimeoutSeatToken != "" {
+				world.ReleaseCasinoSeatForSession(participant.PlayerID, id, participant.TimeoutSeatToken)
+			}
+		}
 	}
 	if err != nil || owner == "" {
 		return err

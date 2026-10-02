@@ -37,7 +37,7 @@ export class PokerTableUI {
         this.stakeRules = element('p'); rules.append(this.stakeRules);
         rules.append(element('p', 'No-limit Texas Hold’em: two private cards, five community cards, best five-card hand wins. The dealer button rotates between funded seats. Heads-up, the button posts the small blind and acts first before the flop, last afterward.'));
         rules.append(element('p', 'Raise to means your total bet on this street, not extra funds from your wallet. The minimum raise increases the current bet by at least the last full raise. A smaller all-in is allowed; it only reopens earlier players’ raises when the combined increase reaches their required full raise. A short call remains eligible only for its covered pots.'));
-        rules.append(element('p', 'Turns last 30 seconds. A decision timeout folds your remaining stack and releases your chair, just like leaving. Committed chips stay in their pots and unspent funds return when the hand settles. An all-in hand stays eligible. Disconnections reserve the seat for up to 60 seconds, but the turn timer keeps running. No bots take over.'));
+        rules.append(element('p', 'Turns last 30 seconds. A timeout checks for free or folds to a bet, then releases your chair. A remaining live stack folds after leaving; committed chips stay in their pots and unspent funds return when the hand settles. An all-in hand stays eligible. Disconnections reserve the seat for up to 60 seconds, but the turn timer keeps running. No bots take over.'));
         rules.append(element('p', 'Main and side pots settle separately. Uncalled stakes return to their owner. Ties split each pot; odd units go clockwise from the seat left of the dealer. All unspent stack and winnings return to your table-currency balance after the hand, even if you leave or disconnect. Folded cards remain private.'));
         this.controls = element('div', '', 'card-table-controls');
         this.controls.append(this.summary, this.lobby, this.actions, rules);
@@ -108,7 +108,7 @@ export class PokerTableUI {
                     }
                     const cards = element('div'); for (const value of p.cards || []) cards.append(this.card(value)); row.append(cards);
                     if (p.bestHand || p.hand) row.append(element('strong', p.bestHand || p.hand, 'casino-hand-value'));
-                    const saved = view.phase === 'complete' && !view.processing;
+                    const saved = view.available && view.phase === 'complete' && !view.processing;
                     row.append(element('small', round.phase === 'complete' ? `${goldText(p.payout)} ${this.currency} ${saved ? 'returned' : 'pending return'}` : `${p.streetBet} bet · ${p.committed} total`));
                     this.table.seats[p.seat]?.hands.append(row);
                 }
