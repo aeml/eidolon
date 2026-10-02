@@ -1,0 +1,51 @@
+{
+  "version": "Alpha 1.62.1",
+  "status": "prepared; not independently accepted live",
+  "predecessor": {
+    "commit": "b1aa15e23ac4315de6416ce0ecf89e59229df96c",
+    "run": "https://github.com/aeml/eidolon/actions/runs/36989812879",
+    "installedVersion": "Alpha 1.62.0",
+    "conclusion": "failure; nine jobs succeeded, final live recovery job failed",
+    "failure": "Ally browser recorded net::ERR_FAILED for low-detail Fighter GLB. Aura, party, movement and layout assertions passed but accumulated browser failures did not.",
+    "acceptance": "Not accepted. No CI retry, cancellation or failure-filter relaxation.",
+    "assetCheck": {
+      "route": "https://play.eidolonrealms.com/assets/archetypes/Fighter/fighter-runtime-low.glb?v=357284df9e9f22f9",
+      "method": "Normal public IPv4 HTTPS full GET compared with exact deployed git source",
+      "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+      "result": "Exact bytes match now. This does not establish the failed request's cause."
+    }
+  },
+  "implementation": [
+    "Asset GET cache-open or cache-read failure falls back to network.",
+    "Successful response is not blocked by asynchronous or synchronous cache write failures; worker lifetime covers the caught write promise.",
+    "A network TypeError before a response receives one 120ms bounded retry. A second failure propagates. HTTP errors and aborted requests are not retried.",
+    "Non-GET requests are not intercepted. No wager, payment, account, equipment or model changes."
+  ],
+  "limits": [
+    "Incident cause is unconfirmed. The patch addresses independently identified storage fragility and transient rejected GETs, not a proven explanation of the production incident.",
+    "A retry cannot repair persistent connectivity, invalid content, or a response body failure after delivery.",
+    "Authored-model fallback does not count as authored acceptance; strict browser failure collection is unchanged.",
+    "No production credentialed replay or broad campaign run was performed locally."
+  ],
+  "nativeBrowser": {
+    "browser": "System Chrome",
+    "result": "3 passed in 4.3 seconds",
+    "spec": "tests/e2e/asset-cache-resilience.spec.js",
+    "artifacts": "/tmp/eidolon-1621-asset-resilience-final-20261002",
+    "scope": "Anonymous local-only worker fault fixture imports the real worker and loads the real low-detail Fighter GLB through MeshFactory. Independent contexts exercise denied cache open, failed cache read, and quota plus one transient network rejection.",
+    "assertions": "All cases parsed the authored Fighter, Low quality, 11 real skinned meshes, no procedural fallback, positive draw calls and no collected browser errors. Expected model attempts: 1, 1, 2.",
+    "fixtureHistory": [
+      "Initial server port was occupied; left it untouched and selected an unused task port.",
+      "Fixture document-relative asset path returned 404; added a root base and explicit worker registration path.",
+      "Default favicon caused a strict collected 404; supplied a fixture data favicon. No error suppression."
+    ]
+  },
+  "unitChecks": {
+    "workerCases": "Cache hit/open/read failures, synchronous/asynchronous failed write, one recovered GET, two propagated network failures, abort/cancel/non-network failures, HTTP 404 and POST non-interception.",
+    "preVersionAlignment": "132 tests in five suites passed in 2.395 seconds; lint passed after fixture self.importScripts correction.",
+    "versionHistory": "First aligned run caught two missed workflow/isolated-QA version defaults; corrected both instead of weakening the version test.",
+    "aligned": "Seven suites passed 474 checks in 3.577 seconds, plus full lint and clean diff. Counts overlap with the earlier suites and are not additive.",
+    "final": "After adding cancellation-during-retry coverage, six worker/version/browser-partition suites passed 394 checks in 6.389 seconds. Full lint and clean diff passed. The manifest includes all three local fault cases in the existing browser partition, without changing or skipping the live recovery gate."
+  },
+  "publication": "Requires a new exact-source release gate and independent live frontend/backend and asset-byte acceptance. Last accepted release remains Alpha 1.61.0."
+}
