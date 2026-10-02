@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.65.0, exact 0bd252f260a285c0c3f46b26663801c99a3d2b0a,
-CI37009799985. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness and both
+baseline is Alpha 1.66.0, exact aa7d00ae9191b690d1f034b4b61ef2b7776bb88a,
+CI37014297988. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness and all three
 changed client runtime files. Earlier receipts retain distinct runtime and model
 checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-65-public.json).
+[acceptance receipt](2026-10-02-release1-66-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -133,9 +133,13 @@ Alpha 1.65.0 slots are independently accepted at
 0bd252f260a285c0c3f46b26663801c99a3d2b0a, CI37009799985 (all ten jobs).
 Its [public receipt](2026-10-02-release1-65-public.json) retains both full-file
 publisher comparisons and matching frontend/backend identities/readiness.
-Prepared 1.66 includes the isolated urgent recipient-private state fix from the
-partial protocol review, without backporting its dependency/account/frame work.
-Prepared 1.66–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
+Alpha 1.66.0 wallets/privacy are independently accepted at
+aa7d00ae9191b690d1f034b4b61ef2b7776bb88a, CI37014297988 (all ten jobs).
+Its [public receipt](2026-10-02-release1-66-public.json) retains all three full-file
+publisher comparisons and matching frontend/backend identities/readiness.
+The isolated urgent recipient-private state fix comes from the partial protocol
+review, without backporting its dependency/account/frame work.
+Prepared 1.67–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
 1.71 account-security work is partial, not a completed milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.

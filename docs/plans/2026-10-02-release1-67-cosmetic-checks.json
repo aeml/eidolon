@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "milestone": "1.67",
-  "sourceVersion": "Alpha 1.62.0",
+  "sourceVersion": "Alpha 1.67.0",
+  "originalPreparedSourceVersion": "Alpha 1.62.0",
   "status": "prepared, unpublished",
   "originalPreparedCommits": ["a17dbf1f", "eb0cd532", "64906676"],
   "reconciledCommits": ["38bee560", "ca23d78b", "1ec82077"],
@@ -13,6 +14,7 @@
     "Asset documentation now reflects the already-integrated four-class delivery, without editing preserved source GLBs or delivery manifests."
   ],
   "checks": {
+    "publicationVersionAndPublisher": {"suites": 2, "tests": 348, "seconds": 3.397, "passed": true, "scope": "Aligned1.67 source defaults/login and cumulative notes, exact-runtime publisher after accepted1.66 merge. No unrelated runtime code changed."},
     "ownershipAndLifecycle": {"suites": 4, "tests": 32, "seconds": 1.836, "passed": true},
     "assetCataloguePreviewAndClassRules": {"suites": 3, "tests": 52, "seconds": 1.620, "passed": true},
     "handlerAndWardrobeRace": {"seconds": 1.832, "passed": true},
