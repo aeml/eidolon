@@ -57,8 +57,15 @@ func TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear(t *testing.
 				}
 				expectedGold += item.Value
 			case "auction":
-				if err := p.ApplyAuctionListing("owned-gear-listing", auctionDeliveryPayload(t, item), 25); err != nil {
+				payload := auctionDeliveryPayload(t, item)
+				if err := p.ApplyAuctionListing("owned-gear-listing", payload, 25); err != nil {
 					t.Fatal("cannot escrow ordinary earned gear", err)
+				}
+				if err := recipient.ApplyAuctionPurchase("owned-gear-purchase", payload, 23); err != nil {
+					t.Fatal("cannot deliver purchased ordinary gear", err)
+				}
+				if recipient.Gold != 77 {
+					t.Fatal("ordinary auction purchase did not debit its Gold price")
 				}
 				expectedGold -= 25
 			case "direct-trade":
@@ -91,7 +98,7 @@ func TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear(t *testing.
 			if p.EP != 100-offer.PriceEP || p.Gold != expectedGold || recipient.EP != 5 || p.AppearanceCollection[key] != offer.Appearance {
 				t.Fatal("item movement converted EP or lost the owner's permanent appearance")
 			}
-			if path == "direct-trade" || path == "guild-bank" {
+			if path == "auction" || path == "direct-trade" || path == "guild-bank" {
 				if !reflect.DeepEqual(recipient.Inventory[0], item) {
 					t.Fatal("recipient received a changed or cosmetic-priced item")
 				}
