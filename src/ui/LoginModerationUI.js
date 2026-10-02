@@ -1,4 +1,5 @@
 import { ReportUI } from './ReportUI.js';
+import { PublicNameCorrectionUI } from './PublicNameCorrectionUI.js';
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 
 // Reuse the ordinary private report form on the authenticated login socket.
@@ -23,6 +24,8 @@ export class LoginModerationUI {
         this.report = new ReportUI(ui); type.value = 'Moderation Appeal'; this.report.updateGuidance();
         root.classList.add('support-window--login-report');
         root.__eidolonLoginSupport = this;
+        this.nameCorrection = new PublicNameCorrectionUI({ parent: root.querySelector('#moderation-notice-status'),
+            send: (type, payload) => this.send(type, payload), isCurrent: () => this.current() });
         button.hidden = false;
         ownedEvent(this, button, 'click', () => this.open());
         // Disabling Submit during persistence can move focus to the document.
@@ -61,7 +64,13 @@ export class LoginModerationUI {
         switch (message?.type) {
             case 'report_result': this.report.handleResult(message.payload); return true;
             case 'report_status_result': this.report.lookup.handleResult(message.payload); return true;
-            case 'moderation_notice_result': this.report.notice.handleResult(message.payload); return true;
+            case 'moderation_notice_result': {
+                const matched = Boolean(this.report.notice.pending && this.report.notice.pending.requestId === message.payload?.requestId);
+                this.report.notice.handleResult(message.payload);
+                if (matched) this.nameCorrection.setNotice(this.report.notice.notices?.find(notice => notice.kind === 'require_name_change'));
+                return true;
+            }
+            case 'public_name_correction_result': this.nameCorrection.handleResult(message.payload); return true;
             default: return false;
         }
     }
@@ -69,6 +78,7 @@ export class LoginModerationUI {
     dispose() {
         if (this.disposed) return;
         this.disposed = true; disposeOwnedEvents(this);
+        this.nameCorrection?.dispose();
         if (this.root.__eidolonLoginSupport === this) delete this.root.__eidolonLoginSupport;
         // Do not reset another UI's live fields if it already took ownership.
         if (this.root.__eidolonReportUI === this.report) {

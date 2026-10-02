@@ -17,7 +17,9 @@
     "Mute-only guard rejects other restriction kinds returned through its narrow store interface.",
     "Authenticated login-screen Account help reuses the private report form before world entry; only explicit notice reads and appeal submissions.",
     "Authenticated appeal protocol works without a character; other report categories retain the active-character requirement.",
-    "Prepared, unwired world-entry/resume restriction classifier preserves independent restrictions, original expiry and session fencing without per-tick database queries."
+    "Prepared, unwired world-entry/resume restriction classifier preserves independent restrictions, original expiry and session fencing without per-tick database queries.",
+    "Authenticated confirmed public-name correction: separate review/confirmation, original receipt on manual exact retry, atomic public-label and quoted-notice completion, preserved login/save/social/currency keys and independent restrictions.",
+    "Prepared schema17 unique partial alias reservation index and new registration writer, with no legacy rename or backfill."
   ],
   "checks": {
     "goRace": "Focused server handler, notice and chat guard tests passed in 4.496 seconds; database moderation tests passed in 1.090 seconds.",
@@ -51,11 +53,24 @@
       "artifacts": "/tmp/eidolon-login-appeal-css-polished-20261002",
       "limits": "Not an actual sanctioned-account flow, all-three enforcement acceptance, hardware render or physical-phone check."
     },
+    "publicNameCorrection": {
+      "pureDatabaseRaceSeconds": 1.136,
+      "serverRaceSeconds": 2.838,
+      "client": { "suites": 4, "tests": 70, "seconds": 4.191, "limits": "Five new login-correction cases plus existing report, lookup and notice checks." },
+      "mongo": "Passed 5.92 seconds, race package 6.971: eight identical requests, one contested-alias winner, preserved loser notice, reserved legacy labels, original authentication, fresh connection receipt and unchanged protected account data.",
+      "failedCandidate": "First database fixture used a request ID shorter than the existing 16-character minimum; corrected before acceptance, validation unchanged.",
+      "productionServerSocketRestart": "Passed 11.34 seconds, race package 12.440. Disposable restrictions seeded before startup; authenticated login-only correction/retry, separate notices retained, appeal saved and correction receipt/name preserved after restart without character creation. Not active staff-to-online enforcement.",
+      "presentation": "1280x800 and 390x844 passed in 25.0 seconds, both renders inspected. Scoped dark-theme correction then passed portrait in 10.4 seconds with inspected render; final desktop color was not re-rendered. GPU disabled explicitly.",
+      "artifacts": "/tmp/eidolon-public-name-css-dark-20261002",
+      "disposableMongo": "Exact eidolon-public-name-20261002 container, label eidolon.task=public-name-20261002, loopback 127.0.0.1:32819; stopped and removed with anonymous volume. Production untouched.",
+      "schema": "Prepared schema17; real disposable startup migration passed. Production remains on the published source, not migrated by this work.",
+      "limits": "Public identity presentation, all-three restriction enforcement and complete milestone activation remain unfinished."
+    },
     "scopedLint": "passed",
     "whitespace": "passed"
   },
   "remaining": [
-    "Public-name correction completion and consistent identity use without changing authentication/save/social ownership keys.",
+    "Consistent corrected-public-name presentation across world/chat/social surfaces while preserving stable targeting and ownership keys; stored correction and owner login UI are implemented and socket/restart tested.",
     "Suspension enforcement for joining, resuming and already-online play; authenticated outside-world notice/appeal access is prepared and independently exercised.",
     "Full server registry and client control activation; real authenticated WebSocket and game-server restart acceptance.",
     "Staff/review boundaries and existing retention documentation; no new purge or staffing promise.",

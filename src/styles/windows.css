@@ -389,6 +389,18 @@
 .support-window--login-report > .window-header { flex: 0 0 auto; }
 .support-window--login-report > .support-window__body { flex: 1 1 auto; }
 
+.public-name-correction { margin-top: 20px; padding-top: 12px; border-top: 1px solid #526176; }
+.public-name-correction[hidden], .public-name-correction__confirmation[hidden] { display: none; }
+.public-name-correction input { min-height: 44px; }
+.public-name-correction button {
+    min-height: 44px; margin: 4px 4px 4px 0; padding: 10px 14px;
+    background: #172231; color: #e7ecf2; border: 1px solid #607187; border-radius: 4px;
+}
+.public-name-correction button:disabled { opacity: .6; cursor: default; }
+.public-name-correction button:focus-visible { outline: 2px solid #d5b46a; outline-offset: 2px; }
+.public-name-correction__confirmation > button:first-of-type { background: #2c4437; border-color: #789b82; }
+.public-name-correction__quote, .public-name-correction__status { overflow-wrap: anywhere; }
+
 .support-window--help {
     width: min(460px, calc(100vw - 24px));
     z-index: 101;

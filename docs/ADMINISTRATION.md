@@ -90,8 +90,23 @@ fixed descriptions. Failure to store the admission audit prevents the change.
 Private receipts remain with their case and are bounded to 256 reviews; only
 the latest receipt is exposed in report JSON. The existing report collection
 has no automatic expiration; this work introduces no purge or new retention
-policy. Staff coverage, final evidence retention and the initial sanction scope
-still require owner decisions. See the [local review evidence](plans/2026-10-01-release1-59-moderation.md).
+policy. The owner approved temporary chat mutes, required public name changes
+and temporary account suspensions on October 2, with audited, reversible actions.
+Full enforcement is still unpublished; production test sanctions are not
+authorized. Staff coverage and final evidence retention still require owner
+decisions. See the [local review evidence](plans/2026-10-01-release1-59-moderation.md).
+
+The prepared login screen provides **Account help** after authentication,
+without requiring a character or entry into the world. Players explicitly
+check their public notices or submit an appeal. A required-name-change notice
+also offers **Review name correction**, followed by a separate confirmation
+quoting the new name and exact notice. Cancelling sends nothing. A timeout
+retains the confirmed request for manual exact retry, never an automatic retry.
+The stored correction changes only the public label, resolves that requirement
+and saves a private receipt. Login, character/save keys, currencies and social
+ownership remain unchanged. Mutes and suspensions are independent. Current
+world/chat/social presentation and suspension enforcement still need integration
+before this becomes a complete deployed workflow.
 
 ### Staff review boundaries
 
@@ -111,8 +126,8 @@ case rather than overwrite a newer decision. A player can see only their own
 submitted case's type, status and dates, not staff reasons or another case.
 
 Do not use item grants, Gold grants, teleports or role changes as substitutes
-for the still-pending sanction workflow. Staff assignment, operating coverage,
-sanction options and final retention remain owner decisions. These boundaries
+for the still-pending sanction workflow. Staff assignment, operating coverage
+and final retention remain owner decisions. These boundaries
 describe current code and safe review handling, not approved punishment policy
 or a promise of a staffed response deadline.
 

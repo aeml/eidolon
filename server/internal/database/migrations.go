@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 16
+const CurrentSchemaVersion = 17
 
 type schemaMigration struct {
 	Version int
@@ -84,6 +84,10 @@ var schemaMigrations = []schemaMigration{
 	// Older full-character/guild writers erase bounded bank receipts. Fence
 	// them before the first durable bank operation; no balance or item backfill.
 	{Version: 16, Name: "durable_guild_bank_transfers", Apply: applyGuildBankOperationIndexes},
+	// Reserve public names for new accounts/corrections without renaming or
+	// backfilling legacy login/save keys. Fence registration writers that do not
+	// reserve names, otherwise an old binary could duplicate a corrected name.
+	{Version: 17, Name: "account_public_names", Apply: applyPublicNameIndex},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

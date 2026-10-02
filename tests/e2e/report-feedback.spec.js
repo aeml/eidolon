@@ -9,7 +9,8 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             socket.onMessage(raw => {
                 const message = JSON.parse(raw); requests.push(message);
                 if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { message: 'Authenticated fixture', hasCharacter: true, characterType: 'Wizard', terrainProfile: 'flat-v1' } }));
-                if (message.type === 'moderation_notice') socket.send(JSON.stringify({ type: 'moderation_notice_result', payload: { requestId: message.payload.requestId, success: true, notices: [{ kind: 'suspend', id: 'd'.repeat(64), reason: 'Public explanation for this prepared fixture.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '2026-10-02T02:00:00Z' }] } }));
+                if (message.type === 'moderation_notice') socket.send(JSON.stringify({ type: 'moderation_notice_result', payload: { requestId: message.payload.requestId, success: true, notices: [{ kind: 'suspend', id: 'd'.repeat(64), reason: 'Public explanation for this prepared fixture.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '2026-10-02T02:00:00Z' }, { kind: 'require_name_change', id: 'c'.repeat(64), reason: 'Choose a corrected public name.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '0001-01-01T00:00:00Z' }] } }));
+                if (message.type === 'public_name_correction') socket.send(JSON.stringify({ type: 'public_name_correction_result', payload: { id: message.payload.id, success: true, final: true, message: 'Confirmed name correction recorded; other restrictions remain.' } }));
                 if (message.type === 'report') socket.send(JSON.stringify({ type: 'report_result', payload: { requestId: message.payload.requestId, success: true, reportId: 'e'.repeat(24) } }));
             });
         });
@@ -40,6 +41,19 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         expect(focusedHeader.y).toBeGreaterThanOrEqual(bounds.y);
         expect(focusedHeader.y + focusedHeader.height).toBeLessThanOrEqual(bounds.y + bounds.height);
         await page.screenshot({ path: testInfo.outputPath('login-account-notice.png') });
+        const nameInput = dialog.getByRole('textbox', { name: 'New public name', exact: true });
+        await nameInput.fill('Arcanis Dawn');
+        await dialog.getByRole('button', { name: 'Review name correction', exact: true }).click();
+        const nameQuote = dialog.locator('.public-name-correction__quote');
+        await expect(nameQuote).toContainText('Arcanis Dawn'); await expect(nameQuote).toContainText('c'.repeat(64));
+        expect(requests.some(request => request.type === 'public_name_correction')).toBe(false);
+        const confirmName = dialog.getByRole('button', { name: 'Confirm name correction', exact: true });
+        await confirmName.scrollIntoViewIfNeeded();
+        expect((await confirmName.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('login-name-correction-confirmation.png') });
+        await confirmName.click();
+        await expect(dialog.locator('.public-name-correction__status')).toContainText('other restrictions remain');
         await dialog.getByRole('button', { name: 'Start appeal draft', exact: true }).click();
         await expect(page.locator('#report-text')).toHaveValue(/Moderation notice: d{64}/);
         await page.locator('#report-text').fill('Please review this decision and my explanation.');
@@ -47,7 +61,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await dialog.getByRole('button', { name: 'Submit', exact: true }).click();
         await expect(dialog.locator('#report-status')).toContainText('Report saved for operator review');
         await expect(page.locator('#report-text')).toHaveValue('');
-        expect(requests.map(request => request.type)).toEqual(['login', 'moderation_notice', 'report']);
+        expect(requests.map(request => request.type)).toEqual(['login', 'moderation_notice', 'public_name_correction', 'report']);
         expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
         await expect(page.locator('#login-account-help')).toBeFocused();

@@ -54,6 +54,12 @@ func TestGuildBankReceiptsRequireNewWriterSchema(t *testing.T) {
 	}
 }
 
+func TestPublicNameReservationsRequireNewRegistrationWriter(t *testing.T) {
+	if CurrentSchemaVersion < 17 || len(schemaMigrations) < 17 || schemaMigrations[16].Name != "account_public_names" {
+		t.Fatal("older registration writers could duplicate corrected public names")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
@@ -80,6 +86,7 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 
 	wantIndexes := map[string]map[string]bool{
 		"users": {
+			"public_name_key_unique":   true,
 			"username_1":               true,
 			"characters.name_1":        true,
 			"characters.instance_id_1": true,

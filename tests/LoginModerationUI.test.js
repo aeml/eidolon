@@ -17,6 +17,11 @@ beforeEach(() => {
 });
 afterEach(() => { support?.dispose(); jest.restoreAllMocks(); jest.useRealTimers(); });
 const sent = () => socket.send.mock.calls.map(([value]) => JSON.parse(value));
+const nameNotice = { ...notice, kind: 'require_name_change', expiresAt: '0001-01-01T00:00:00Z' };
+const readNameNotice = () => {
+    root.querySelector('#btn-check-moderation').click();
+    support.handleMessage({ type: 'moderation_notice_result', payload: { requestId: 'login-appeal-request-001', success: true, notices: [nameNotice] } });
+};
 
 test('authenticated help opens the shared form without world entry or automatic data collection', () => {
     expect(button.hidden).toBe(false); expect(socket.send).not.toHaveBeenCalled();
@@ -89,4 +94,57 @@ test('replacement owns the shared DOM once and disposal restores the normal repo
     expect(root.classList.contains('support-window--login-report')).toBe(false);
     expect([...root.querySelector('#report-type').options].every(option => !option.disabled)).toBe(true);
     jest.advanceTimersByTime(60000); expect(nextSocket.send).toHaveBeenCalledTimes(1);
+});
+
+test('name notice enables an explicit review and separate confirmation without changing the appeal draft', () => {
+    const draft = root.querySelector('#report-text'); draft.value = 'My retained appeal draft.';
+    readNameNotice(); const name = support.nameCorrection;
+    expect(name.root.hidden).toBe(false); name.input.value = 'Arcanis Dawn'; name.review.click();
+    expect(socket.send).toHaveBeenCalledTimes(1); expect(name.quote.textContent).toContain('Arcanis Dawn');
+    expect(name.quote.textContent).toContain(nameNotice.id); expect(name.input.disabled).toBe(true);
+    name.cancel.click(); expect(socket.send).toHaveBeenCalledTimes(1); expect(name.input.disabled).toBe(false);
+    name.review.click(); name.confirm.click(); name.confirm.click();
+    expect(sent()[1]).toEqual({ type: 'public_name_correction', payload: { id: 'login-appeal-request-001', noticeId: nameNotice.id, publicName: 'Arcanis Dawn', confirmed: true } });
+    expect(socket.send).toHaveBeenCalledTimes(2); expect(draft.value).toBe('My retained appeal draft.');
+    support.handleMessage({ type: 'public_name_correction_result', payload: { id: 'wrong-owner', success: true, final: true } });
+    expect(name.input.value).toBe('Arcanis Dawn');
+    support.handleMessage({ type: 'public_name_correction_result', payload: { id: 'login-appeal-request-001', success: true, final: true, message: 'Correction recorded; other restrictions remain.' } });
+    expect(name.input.value).toBe(''); expect(name.notice).toBeNull(); expect(name.status.textContent).toContain('other restrictions remain');
+    expect(draft.value).toBe('My retained appeal draft.');
+});
+
+test('name-correction timeout retains the exact captured request and never retries automatically', () => {
+    readNameNotice(); const name = support.nameCorrection; name.input.value = 'Arcanis Dawn'; name.review.click(); name.confirm.click();
+    const first = sent()[1]; jest.advanceTimersByTime(11000);
+    expect(socket.send).toHaveBeenCalledTimes(2); expect(name.confirm.textContent).toContain('Retry exact');
+    expect(name.cancel.disabled).toBe(true); name.input.value = 'Changed after submission'; name.confirm.click();
+    expect(sent()[2]).toEqual(first);
+    support.handleMessage({ type: 'public_name_correction_result', payload: { id: first.payload.id, success: false, pending: true, message: 'Unknown outcome' } });
+    name.confirm.click(); expect(sent()[3]).toEqual(first);
+});
+
+test('unsolicited notice replies cannot retire an unsubmitted name review', () => {
+    readNameNotice(); const name = support.nameCorrection; name.input.value = 'Arcanis Dawn'; name.review.click();
+    const confirmed = name.confirmed;
+    support.handleMessage({ type: 'moderation_notice_result', payload: { success: true, notices: [] } });
+    expect(name.confirmed).toBe(confirmed); expect(name.notice.id).toBe(nameNotice.id);
+});
+
+test('name correction cannot be enabled from a mute or invalid notice and rejects unsafe labels', () => {
+    root.querySelector('#btn-check-moderation').click();
+    support.handleMessage({ type: 'moderation_notice_result', payload: { requestId: 'login-appeal-request-001', success: true, notices: [notice] } });
+    expect(support.nameCorrection.root.hidden).toBe(true);
+    readNameNotice(); const name = support.nameCorrection;
+    for (const value of ['aa', ' Arcanis', '<script>alert(1)', '2Name', 'Arcanis\u202e']) {
+        name.input.value = value; name.review.click(); expect(name.confirmed).toBeFalsy();
+    }
+    expect(sent().every(message => message.type === 'moderation_notice')).toBe(true);
+});
+
+test('retired name controls cannot send or receive and disposal leaves no duplicate controls', () => {
+    readNameNotice(); const name = support.nameCorrection; name.input.value = 'Arcanis Dawn'; name.review.click();
+    support.dispose(); const before = socket.send.mock.calls.length;
+    name.confirm.click(); name.handleResult({ id: 'login-appeal-request-001', success: true, final: true });
+    expect(socket.send).toHaveBeenCalledTimes(before); expect(root.querySelector('.public-name-correction')).toBeNull();
+    expect(name.confirmed).toBeNull();
 });

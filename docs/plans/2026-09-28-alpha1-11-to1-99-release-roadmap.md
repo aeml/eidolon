@@ -116,6 +116,17 @@ native presentation route. No background polling, automatic appeals, live
 punishment command or chat enforcement was introduced. The response scope is now
 approved; full enforcement and connected moderation acceptance remain open.
 These preparations are not shipped.
+The login-only account-help route now supports confirmed public-name correction
+and appeals before world entry. A real three-account server/socket/restart check
+preserved the original login, one correction receipt, no created character and
+separate mute/suspension notices. A disposable database exercise also checked
+eight exact retries, competing alias reservations and unchanged protected data.
+Schema17 reserves aliases without a legacy-name backfill and fences older
+registration writers; production was not migrated. Consistent public-label
+presentation, stable targeting, join/resume/online enforcement and complete
+staff activation remain unfinished 1.59 work, followed by its own CI and public
+acceptance. The [preparation receipt](2026-10-02-release1-59-three-responses.json)
+records scoped checks and presentation limits.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

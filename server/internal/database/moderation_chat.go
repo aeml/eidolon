@@ -67,6 +67,7 @@ func (n ChatMuteNotice) Active(now time.Time) bool {
 
 // Never marshal private staff receipts as an account or player response.
 type ChatModerationReceipt struct {
+	PublicName    string         `bson:"public_name,omitempty" json:"-"`
 	RequestID     string         `bson:"request_id" json:"-"`
 	Fingerprint   string         `bson:"fingerprint" json:"-"`
 	Actor         string         `bson:"actor" json:"-"`

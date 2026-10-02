@@ -425,7 +425,7 @@ corrects both and is removed on handoff. Artifacts:
 `/tmp/eidolon-login-appeal-css-polished-20261002`. This proves presentation, not
 hardware rendering, a real phone, or an actual suspended-account flow.
 
-Public-name correction, online/join/resume enforcement, complete protocol
+Consistent public-name presentation, online/join/resume enforcement, complete staff protocol
 activation and the all-three-response socket/restart exercise remain required.
 The appeal-only restart exercise does not establish those missing paths.
 
@@ -441,6 +441,64 @@ after terminal success; seven runtime artifacts and both NPC/player model hashes
 match. The [accepted receipt](2026-10-02-release1-58-5-public.json) is retained
 here for the next milestone, avoiding another deployment just to publish proof.
 No 1.59 code shipped in 1.58.5.
+
+## Confirmed public name correction
+
+The login-only account-support form now offers a public-name correction only
+after an explicit, valid owner notice read. Review captures the new label and
+exact required-name-change reference; a separate confirmation sends the write.
+Cancel sends nothing, and the appeal draft stays unchanged. Timeout or uncertain
+outcome retains the captured request for manual exact retry. Retired sessions
+cannot submit, consume replies or leave duplicate controls on the shared form.
+
+The account store commits the public label, completion of that one requirement
+and its private receipt together. It preserves authentication, saved-character
+and social keys, currencies and the separate mute/suspension notices. Exact
+retries return the original receipt without removing a later requirement.
+Names must be different and use 3–24 ASCII letters, numbers, spaces, apostrophes,
+hyphens or underscores, beginning with a letter. Other accounts' legacy login
+names remain reserved; new registrations and corrections reserve normalized
+aliases through one unique partial index. Schema 17 adds that index without
+backfilling or renaming existing accounts, and fences older registration writers
+that cannot reserve aliases. It exists only in the prepared source and disposable
+database, not production; deployment still requires the usual consistent backup
+and schema preflight. No older writer should be forced onto a schema17 database.
+
+Three pure correction tests and focused database/schema race checks passed in
+1.136 seconds; focused server handler/protocol/notice checks passed in 2.838
+seconds. Four client suites passed 70 checks in 4.191 seconds, including five new
+login-correction regressions and existing report tests. Scoped lint and whitespace
+checks passed. The disposable Mongo exercise passed in 5.92 seconds (race package
+6.971), proving eight identical retries, one winner for a contested alias, reserved
+legacy names, continued original-login authentication, a new connection's exact
+receipt read and unchanged protected account data. The first database fixture
+used an undersized request ID; it was corrected rather than relaxing validation.
+That failed attempt is not acceptance evidence.
+
+The existing real production-server socket/restart fixture passed in 11.34
+seconds (race package 12.440). Restrictions were seeded on its disposable
+login-only account before startup, not through an active staff protocol. It
+corrected a name over its authenticated socket, retried exactly, retained its
+mute and suspension, submitted an appeal and survived restart with one correction
+receipt and no created character. This proves the correction and appeal routes,
+not yet staff-to-online suspension enforcement or public-label replication.
+
+Desktop and portrait mock-login presentation checks passed in 25.0 seconds.
+Both confirmation renders were inspected. Default-looking buttons were restyled
+to the dark game theme; the final portrait case passed in 10.4 seconds and its
+render was inspected at `/tmp/eidolon-public-name-css-dark-20261002`. The desktop
+final color change was not re-rendered. GPU was explicitly disabled: these are
+CSS/interaction checks, not hardware rendering or physical-phone acceptance.
+The uniquely named, task-labeled Mongo container and anonymous volume were
+removed; production accounts, database and deployment were untouched.
+
+This correction route is registered only in unpublished preparation. Public
+labels still need consistent world/chat/social presentation while retaining
+stable targeting and ownership; all entry/resume/online restriction enforcement
+and full staff activation remain required. Complete all-three-response acceptance,
+version/notes alignment, fresh remote integration and CI/public acceptance are
+still release gates. Documentation was source-reviewed; no rendered documentation
+preview was available.
 
 Finish the approved abuse-response and sanction paths, document staff/review
 boundaries and retention, exercise the complete disposable moderation flow,

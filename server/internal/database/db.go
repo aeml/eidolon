@@ -5,6 +5,7 @@ import (
 	"eidolon-server/internal/forging"
 	"errors"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -37,13 +38,15 @@ type DB struct {
 }
 
 type User struct {
-	VIPPeriods   []VIPPeriod                      `bson:"vip_periods,omitempty"`
-	Roles        map[string]AccountRoleAssignment `bson:"roles,omitempty"`
-	Username     string                           `bson:"username"`
-	Email        string                           `bson:"email"`
-	PasswordHash string                           `bson:"password_hash"`
-	CreatedAt    time.Time                        `bson:"created_at"`
-	Characters   []*Character                     `bson:"characters"`
+	PublicName    string                           `bson:"public_name,omitempty"`
+	PublicNameKey string                           `bson:"public_name_key,omitempty"`
+	VIPPeriods    []VIPPeriod                      `bson:"vip_periods,omitempty"`
+	Roles         map[string]AccountRoleAssignment `bson:"roles,omitempty"`
+	Username      string                           `bson:"username"`
+	Email         string                           `bson:"email"`
+	PasswordHash  string                           `bson:"password_hash"`
+	CreatedAt     time.Time                        `bson:"created_at"`
+	Characters    []*Character                     `bson:"characters"`
 }
 
 type Auction struct {
@@ -364,11 +367,13 @@ func (db *DB) CreateUser(username, email, password string) error {
 	}
 
 	user := User{
-		Username:     username,
-		Email:        email,
-		PasswordHash: string(hash),
-		CreatedAt:    time.Now(),
-		Characters:   make([]*Character, 0),
+		PublicName:    username,
+		PublicNameKey: strings.ToLower(username),
+		Username:      username,
+		Email:         email,
+		PasswordHash:  string(hash),
+		CreatedAt:     time.Now(),
+		Characters:    make([]*Character, 0),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

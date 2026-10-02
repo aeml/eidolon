@@ -40,6 +40,33 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if granted, err := repo.GrantAdminRole(operator, operator, "disposable_integration_fixture"); err != nil || !granted {
 		t.Fatal(granted, err)
 	}
+	// Seed restrictions only on a disposable account before the server starts.
+	// Staff socket enforcement remains a separate complete-milestone gate.
+	conduct, err := repo.CreateReport(operator, "Player Report", "Synthetic name/conduct case for isolated acceptance.")
+	if err != nil {
+		t.Fatal(err)
+	}
+	subject, err := repo.ReadChatModerationTarget(operator, appellant)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var requiredName database.ChatMuteNotice
+	for i, kind := range []string{database.ChatModerationMute, database.ModerationSuspend, database.ModerationRequireNameChange} {
+		request := database.ChatModerationRequest{ID: "socket-fixture-" + kind, ReportID: conduct.ID.Hex(), ExpectedRevision: int64(i), Action: kind,
+			DurationSeconds: 600, PublicReason: "Public synthetic explanation.", PrivateReason: "Private synthetic evidence.", Confirmed: true}
+		if kind == database.ModerationRequireNameChange {
+			request.DurationSeconds = 0
+		}
+		receipt, err := repo.ApplyChatModeration(operator, subject.AccountID, request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if kind == database.ModerationRequireNameChange {
+			requiredName = receipt.Notice
+		}
+	}
+	correction := database.PublicNameCorrectionRequest{ID: "socket-name-correction-0001", NoticeID: requiredName.ID,
+		PublicName: fmt.Sprintf("Arcanis %012d", time.Now().UnixNano()%1_000_000_000_000), Confirmed: true}
 	journal := t.TempDir()
 	address, stop := compatStartServer(t, binary, uri, 201, "-save-journal-dir", journal)
 	defer stop()
@@ -65,8 +92,26 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 		Notices []database.ChatMuteNotice `json:"notices"`
 	}
 	resourceReadMessage(t, loginOnly, MsgModerationNotice+"_result", &ownNotices)
-	if !ownNotices.Success || len(ownNotices.Notices) != 0 {
+	if !ownNotices.Success || len(ownNotices.Notices) != 3 {
 		t.Fatal("private notice route required world entry", ownNotices)
+	}
+	for range 2 {
+		resourceSend(t, loginOnly, MsgPublicNameCorrection, correction)
+		var result adminMutationResult
+		resourceReadMessage(t, loginOnly, MsgPublicNameCorrection+"_result", &result)
+		if !result.Success || !result.Final || result.ID != correction.ID {
+			t.Fatal("confirmed correction/retry failed", result)
+		}
+	}
+	resourceSend(t, loginOnly, MsgModerationNotice, map[string]string{"requestId": "outside-notice-000002"})
+	resourceReadMessage(t, loginOnly, MsgModerationNotice+"_result", &ownNotices)
+	if !ownNotices.Success || len(ownNotices.Notices) != 2 {
+		t.Fatal("correction cleared independent restrictions", ownNotices)
+	}
+	for _, notice := range ownNotices.Notices {
+		if notice.Kind == database.ModerationRequireNameChange {
+			t.Fatal("corrected requirement still active")
+		}
 	}
 	var accountReport struct {
 		Success   bool   `json:"success"`
@@ -225,8 +270,12 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 		t.Fatal("outside-world appeal did not survive restart", view, err)
 	}
 	appellantUser, err := repo.GetUser(appellant)
-	if err != nil || len(appellantUser.Characters) != 0 {
+	if err != nil || len(appellantUser.Characters) != 0 || appellantUser.Username != appellant || appellantUser.PublicName != correction.PublicName {
 		t.Fatal("account support created or changed a saved character", err)
+	}
+	state, err := repo.ReadAccountChatModeration(subject.AccountID)
+	if err != nil || state.Revision != 4 || len(state.Receipts) != 4 || state.NameChange != nil || state.Mute == nil || state.Suspension == nil {
+		t.Fatal("correction receipt or independent restrictions lost on restart", state, err)
 	}
 	page, err := repo.ReadAdminActivity(database.AdminActivityQuery{Actor: member})
 	if err != nil {
@@ -244,5 +293,5 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if counts["login"] != 1 || counts["resume"] != 1 || counts["disconnect"] != 2 || counts[MsgAdminStatus] != 1 || counts[MsgAdminPlayers] != 1 || counts[MsgAdminReports] != 1 {
 		t.Fatal("wrong saved session history", counts)
 	}
-	t.Log("actual accounts: authenticated outside-world notices/appeal without character creation, report/admin JSON, denied resolution, owner-only status, confirmed resolution/replay/private receipt, login/resume/disconnect and restart-persisted cases/history passed")
+	t.Log("actual accounts: login-only public-name correction/retry preserving separate restrictions and saves, authenticated notices/appeal, report/admin JSON, denied resolution, owner-only status, confirmed resolution/replay/private receipt, login/resume/disconnect and restart-persisted correction/cases/history passed")
 }
