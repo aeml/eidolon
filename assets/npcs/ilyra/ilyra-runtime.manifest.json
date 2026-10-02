@@ -1,0 +1,23 @@
+{
+  "asset": "ilyra-archmage.glb",
+  "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+  "bytes": 1548340,
+  "source": {
+    "path": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+    "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+    "modification": "Imported NPC copy only; permanent Blender-authored costume, retained head and hands, original Idle motion"
+  },
+  "generator": "scripts/blender/create-ilyra-outfit.py",
+  "joints": 53,
+  "meshes": 11,
+  "primitives": 20,
+  "animations": ["Idle"],
+  "externalDependencies": [],
+  "validation": {
+    "validator": "gltf-validator 2.0.0-dev.3.10",
+    "errors": 0,
+    "warnings": 12,
+    "warningCodes": ["MESH_PRIMITIVE_GENERATED_TANGENT_SPACE", "NODE_SKINNED_MESH_NON_ROOT"]
+  },
+  "publication": "prepared-unpublished"
+}

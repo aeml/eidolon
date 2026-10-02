@@ -26,7 +26,7 @@ export class QuestNPC extends Actor {
         });
         this.type = 'QuestNPC';
         this.story = story;
-        this.meshType = story ? 'Wizard' : 'QuestNPC';
+        this.meshType = story ? 'ArchmageIlyra' : 'QuestNPC';
         this.name = story ? 'Archmage Ilyra' : 'Quest Giver';
         this.radius = 1.0;
         this.state = 'IDLE';
@@ -36,6 +36,12 @@ export class QuestNPC extends Actor {
     setMesh(mesh) {
         super.setMesh(mesh);
         this.refreshQuestMarker();
+    }
+
+    syncEquipmentVisuals(equipment, options) {
+        // Story NPC clothes are part of the appearance, not inventory items.
+        // Empty server equipment must not strip either this GLB or its fallback.
+        return this.story ? false : super.syncEquipmentVisuals(equipment, options);
     }
 
     update(dt, collisionManager, player, activeEntities) {

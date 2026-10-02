@@ -4,6 +4,11 @@ const PRELOAD_MODEL_PATHS = [];
 
 export class MeshCatalog {
     static recipes = {
+        ArchmageIlyra: {
+            type: 'npc',
+            source: 'Blender-authored Fourfold archmage with permanently fitted clothing',
+            animations: ['Idle']
+        },
         CrystalKeeper: {
             type: 'npc',
             source: 'procedural Lanternhold field artificer',
