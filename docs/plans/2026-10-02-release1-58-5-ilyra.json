@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.58.5",
+  "status": "prepared",
+  "parentCommit": "d3086750869f0515f50661e12bde7d6f84e1e204",
+  "scope": [
+    "Dedicated permanent Blender-authored outfit for Archmage Ilyra and his story projections.",
+    "NPC clothing cannot be stripped by empty equipment; dressed procedural load-failure fallback can retry.",
+    "Content-hash cache key, independent skeletons and Idle clips, shared immutable resources, retained gold quest markers.",
+    "Aligned version defaults, login label and cumulative patch notes; unfinished 1.59 code is excluded."
+  ],
+  "checks": {
+    "structure": "GLTF validator: zero errors, 12 documented warnings; 53 joints, 11 meshes, 20 primitives, no external dependencies, 1548340 bytes.",
+    "regressions": "64 focused NPC/catalog/manifest/migration/entrance checks and 131 focused loader/player/catalog checks passed (overlapping suites, not additive unique coverage).",
+    "releaseChecks": "349 version, asset-cache, browser partition, NPC and migration checks passed after updating the exact cache override fixture to include the new NPC.",
+    "native": "System Chrome on AMD Vulkan rendered two independently animated NPCs, verified nonzero Idle motion, empty equipment, floor alignment and clear gold markers; front, side, back and isometric images inspected. Prepared release tree passed in 8.6 seconds after generating its local vendor runtime; the earlier tree also passed in 8.7 seconds.",
+    "nativeArtifacts": "/tmp/eidolon-ilyra-release-native-final-20261002",
+    "lint": "Focused ESLint passed; whitespace checked."
+  },
+  "limits": [
+    "No gameplay, progression, account, class-rule, reward or currency change.",
+    "Controlled native model scene is not a production login or a physical-phone test.",
+    "Exact-source CI and independent public acceptance remain required.",
+    "Full 1.59 moderation and subsequent roadmap milestones remain unfinished."
+  ]
+}

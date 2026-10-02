@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.58.4';
+const currentVersion = '1.58.5';
+
+test('1.58.5 gives Ilyra permanent NPC clothing without changing player equipment or gameplay', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.58.5"'), previous = html.indexOf('data-version="1.58.4"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Ilyra returns in full regalia', 'indigo robes', 'four elemental stones', 'permanent NPC outfit',
+        'Player Wizards', 'dressed procedural fallback', 'gold story quest marker', 'No account reset',
+        'No unfinished moderation', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.58.4 explains equipment type labels and class restrictions without changing gameplay', () => {
     const html = fs.readFileSync('index.html', 'utf8');
