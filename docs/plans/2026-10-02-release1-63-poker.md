@@ -43,6 +43,9 @@ are preserved in local history; the earlier passing test is not final acceptance
 - Three presentation suites passed 24 checks in 0.803 seconds, including hidden
   opponent cards, prior-occupant captions, pending payout wording, countdowns,
   focus and manual action controls. Full lint and whitespace checks passed.
+- The existing 390px native presentation route passed in 4.1 seconds; the
+  rendered private cards, raise controls and safe exit were inspected. This
+  synthetic table presentation is not physical-phone or connected-play evidence.
 
 The existing CI Server Tests job adds these short fixtures to its disposable
 card-table check before ordinary socket fixtures occupy shared tables. It adds
