@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect

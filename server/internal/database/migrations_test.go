@@ -60,6 +60,12 @@ func TestPublicNameReservationsRequireNewRegistrationWriter(t *testing.T) {
 	}
 }
 
+func TestDirectTradeDecisionsRequireRecoveryAwareWriter(t *testing.T) {
+	if CurrentSchemaVersion < 18 || len(schemaMigrations) < 18 || schemaMigrations[17].Name != "durable_direct_trade_decisions" {
+		t.Fatal("older readers cannot coordinate pending two-account trade decisions")
+	}
+}
+
 func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
@@ -135,6 +141,10 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 			"guild_bank_recovery":                   true,
 			"guild_bank_pending_guild":              true,
 		},
+		"direct_trade_operations": {
+			"one_pending_direct_trade_per_account": true,
+			"direct_trade_recovery":                true,
+		},
 	}
 	for collectionName, names := range wantIndexes {
 		cursor, err := db.client.Database("eidolon").Collection(collectionName).Indexes().List(ctx)
@@ -153,6 +163,13 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 				partial, ok := document["partialFilterExpression"].(bson.M)
 				if document["unique"] != true || !ok || partial["state"] != GuildBankPending {
 					t.Errorf("%s must serialize only pending intents: %v", name, document)
+				}
+			}
+			if collectionName == "direct_trade_operations" && name == "one_pending_direct_trade_per_account" {
+				partial, ok := document["partialFilterExpression"].(bson.M)
+				key, keyOK := document["key"].(bson.M)
+				if document["unique"] != true || !ok || partial["state"] != DirectTradePending || !keyOK || key["participants.username"] != int32(1) {
+					t.Errorf("trade index must reserve both pending participants: %v", document)
 				}
 			}
 		}

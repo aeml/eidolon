@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 17
+const CurrentSchemaVersion = 18
 
 type schemaMigration struct {
 	Version int
@@ -88,6 +88,10 @@ var schemaMigrations = []schemaMigration{
 	// backfilling legacy login/save keys. Fence registration writers that do not
 	// reserve names, otherwise an old binary could duplicate a corrected name.
 	{Version: 17, Name: "account_public_names", Apply: applyPublicNameIndex},
+	// Reader-only versions preserve the private bytes but cannot coordinate a
+	// pending two-account decision. Fence them before admitting this producer;
+	// no item, currency, escrow or receipt backfill is performed.
+	{Version: 18, Name: "durable_direct_trade_decisions", Apply: applyDirectTradeOperationIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.
