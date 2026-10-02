@@ -1,9 +1,12 @@
-# Alpha 1.63 Holdem timeout and settlement preparation
+# Alpha 1.63 Holdem timeout and settlement
 
-Hold'em preparation combines earlier saved timeout ownership work with clearer
-seat and payout presentation. It is not published. Source defaults and cumulative
-login notes now identify prepared 1.63; publication follows accepted 1.62. This
-is not full casino or roadmap acceptance.
+Alpha 1.63.0 is accepted live at001fa5f6fb5a0213d28b9cd2dea91327cc5f5150,
+CI36998880642. All ten jobs passed; independent public identities/readiness and
+both changed runtime files match the exact source's publishing output. The
+[public receipt](2026-10-02-release1-63-public.json) records sampling limits.
+This release combines saved timeout ownership with clearer seat and payout
+presentation, aligned defaults and cumulative login notes. It is not full casino,
+human-enjoyment or roadmap acceptance; 1.64 follows in release order.
 
 ## Player behavior
 
