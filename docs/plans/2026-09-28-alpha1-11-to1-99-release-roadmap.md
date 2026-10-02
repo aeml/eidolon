@@ -222,6 +222,12 @@ Focused race/lock checks and actual slow-transport closure passed. Existing
 world broadcasting still synchronizes Resonance. Persistence/completion worker
 admission and latest-source authenticated checks remain open; this staged
 change does not close the security or capacity milestone.
+The [latest-source account check](2026-10-02-release1-72-latest-account-checks.json)
+now passes real credential/session takeover, ordinary resume and administrator
+activity-history/restart fixtures using a race-enabled binary of afed008d and
+an isolated disposable Mongo. It retains the inherited version and explicit
+harness health identity rather than claiming a 1.72 release. Worker bounds,
+gameplay/capacity evidence and remaining owner decisions are still separate.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

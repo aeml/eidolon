@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial security work",
+  "sourceCommit": "afed008d458653f8c910f4d05db47fe4679220c7",
+  "binary": {
+    "path": "/tmp/eidolon-1-72-latest-auth-cIgSxW/server",
+    "sha256": "b87fb609a89389d825fe1094057a17d897ba3c8a77e8da3bfe697f55de4a0bb4",
+    "go": "go1.27.1",
+    "raceEnabled": true,
+    "harnessBuildCommit": "server",
+    "versionScope": "Inherited Alpha 1.70.0 defaults, not a claimed 1.72 deployment. The existing fixture requires the binary basename as its health identity; the exact tested source is recorded separately."
+  },
+  "checks": {
+    "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32847 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-1-72-latest-auth-cIgSxW/server GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(CredentialActualFreshConnectionsAndTakeover|AdminConsoleActualSessionsAndHistoryRestart)$' -count=1 -timeout=60s",
+    "passed": true,
+    "packageSeconds": 23.431,
+    "tests": 2,
+    "evidenceDirectories": [
+      "/tmp/eidolon-compat-session-2656818596",
+      "/tmp/eidolon-compat-session-2808537146",
+      "/tmp/eidolon-compat-session-2775409988"
+    ],
+    "scope": [
+      "Actual malformed-input policy closure, ordinary legacy-password login, reserved-name registration refusal, account-switch refusal and fresh-connection account attempt budgets.",
+      "Real takeover rotates resume tokens; stale and still-live token probes reject while legitimate disconnect/resume remains usable and rotates once.",
+      "Real administrator/non-administrator session, account-support and durable activity-history paths, including the fixture's fresh-process restart.",
+      "These existing routes now pass with the staged HTTP deadline/accepted-connection bounds, fragmented-read limits, private feedback and upgraded dependencies included."
+    ]
+  },
+  "disposableDatabase": {
+    "container": "8ab0b7cd657e8c0b97ddc9086d4e80e3eb56bf24c911dfbcb74813cc4c4b1e7b",
+    "label": "eidolon.task=protocol-afed008d",
+    "image": "mongo:7.0.16",
+    "port": "127.0.0.1:32847",
+    "storage": "Dedicated bounded tmpfs for /data/db and /data/configdb; inspected Mounts=[]; no persistent or production mount.",
+    "cleanup": "Stopped and removed only the inspected exact task container after completion. Its synthetic tmpfs accounts are gone; retained binary/process-log artifacts remain. No production data, accounts, services or global Docker cache were altered."
+  },
+  "limits": [
+    "This closes the earlier latest-binary login/history gap only for these two fixtures; it is not a full protocol/campaign, connected-player load or gameplay-abuse sign-off.",
+    "Loopback sockets and disposable Mongo do not certify public proxy/TLS/IPv6 or player capacity.",
+    "The private-feedback callback helper has separate lock/priority/transport evidence; these account fixtures do not drive combat-reward callbacks.",
+    "Earned-completion/persistence worker admission, jump-range policy, account-recovery delivery, version assembly, ordered CI/public acceptance and owner approval remain open."
+  ]
+}
