@@ -4,7 +4,10 @@
   "sourceVersion": "Alpha 1.69.0",
   "originalPreparedSourceVersion": "Alpha 1.68.0",
   "acceptedPredecessor": "2026-10-02-release1-68-1-public.json",
-  "status": "prepared, unpublished",
+  "status": "accepted",
+  "commit": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
+  "ciRun": 37037866734,
+  "publicAcceptance": "2026-10-02-release1-69-public.json",
   "scope": [
     "Optional 15/30/60-minute play timers and Take a break controls for this browser and casino visit; no account-lock or server-enforced exclusion claim.",
     "Manual pause or deadline cancels unstarted slot queues and blocks opening blackjack bets, poker buy-ins, roulette/baccarat wagers and paid slot spins before network send.",
@@ -66,5 +69,5 @@
     "scope": "Casino panels/controls, version/publisher and inherited QA helper regressions after the merge; counts overlap earlier receipts. Existing native two-width evidence retains its original scope.",
     "acceptance": "New exact-source CI and independent public verification required. Payment exclusion is retained; future audience/region, expert/provider and owner approvals remain open before any commercial branch."
   },
-  "limits": "Synthetic native server-view/request fixtures and simulated clock, not real wagers, account-level self-exclusion, a real 15-minute session, physical-phone certification, odds sampling or legal/commercial approval. Rules/paytables, RNG, wallets, durable settlement, entitlements and saves unchanged. Sequential defaults/notes, predecessor acceptance, exact-source CI and public acceptance still required."
+  "limits": "Original synthetic native server-view/request fixtures and simulated clock retain their scope: not real wagers, account-level self-exclusion, a real 15-minute session, physical-phone certification, odds sampling or legal/commercial approval. Rules/paytables, RNG, wallets, durable settlement, entitlements and saves unchanged. Ordered predecessor, exact-source CI and independent public acceptance are recorded separately by the linked public receipt; remaining human/commercial/capacity gates are not inferred."
 }

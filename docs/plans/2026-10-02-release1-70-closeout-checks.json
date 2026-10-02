@@ -2,8 +2,10 @@
   "version": "Alpha 1.70.0",
   "status": "prepared; unpublished, E gate not declared complete",
   "preparedPredecessor": "40499c5f",
-  "lastAcceptedLive": "Alpha 1.61.0; see 2026-10-02-release1-61-public.json. The installed 1.62.0 failed its final live gate; 1.62.1 replacement must pass before any subsequent version publishes.",
+  "originalLiveBaseline": "Alpha 1.61.0; see 2026-10-02-release1-61-public.json. The installed 1.62.0 failed its final live gate; 1.62.1 replacement must pass before any subsequent version publishes.",
+  "lastAcceptedLive": "Alpha 1.69.0, exact5f62945c1d3c8a977b8d179d91252d8739906f4b, CI37037866734; see 2026-10-02-release1-69-public.json. Earlier failed gates retain their original records.",
   "changes": [
+    "Isolated QA-artifact privacy correction from staged security: suppress automatic credentialed recordings, sanitize bounded compressed HTML report data and fail closed on unsupported archives/video. Full protocol/account-security work is excluded.",
     "All casino sends require an open socket and respect a NetworkManager refusal, rather than silently leaving blackjack/poker UI pending after an unsent click.",
     "Matched local rejection clears only the relevant pending UI. Confirmed server wagers, clocks, balances, rounds and settlement are unchanged.",
     "Reconnect does not replay requests or unstarted auto spins. Normal state review and an explicit new click are required.",
@@ -31,11 +33,19 @@
   ],
   "publicationMerge": {
     "predecessorSource": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
-    "predecessorAcceptance": "Pending CI37037866734 and independent public verification; no 1.70 push before acceptance.",
+    "predecessorAcceptance": "Accepted 1.69 exact5f62945c1d3c8a977b8d179d91252d8739906f4b, CI37037866734 (all ten jobs), with independent2026-10-02-release1-69-public.json verification before 1.70 publication.",
     "retainedCorrections": "Accepted 1.68.1 real-input and exact-item QA helpers, cumulative failed-1.68.0 history, and 1.69 controls.",
     "client": {"suites": 10, "tests": 522, "seconds": 9.383, "passed": true},
     "lint": "Full npm run lint and git diff --check passed on the merged candidate.",
     "scope": "Merged casino/version/publisher and inherited QA helper regressions. Counts overlap earlier receipts; no new native or connected wagering proof is claimed."
+  },
+  "artifactPrivacyBackport": {
+    "source": "a5069779",
+    "evidence": "2026-10-02-release1-72-artifact-privacy-checks.json",
+    "scope": "Only local-secret ignore rules, automatic credentialed recording suppression, bounded compressed-report redaction and tests. No other staged account/protocol/dependency/gameplay work included.",
+    "finalAssembly": {"suites": 6, "tests": 446, "seconds": 15.124, "passed": true},
+    "checks": "Artifact privacy, live animation/recovery wrappers, rest/stage gates and current cumulative notes. Full ESLint and whitespace passed. Counts overlap earlier receipts; native and server-chair evidence retains its earlier unchanged-runtime scope.",
+    "publication": "Accepted 1.69 predecessor first; new exact-source CI and independent public verification required. E owner/commercial and human gates remain separate."
   },
   "openExitEvidence": [
     "Publish and independently accept every ordered 1.62.1–1.70 exact-source release. Prepared versions are not live accepted milestones.",
