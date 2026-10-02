@@ -34,6 +34,7 @@
     "predecessorAcceptance": "Pending CI37037866734 and independent public verification; no 1.70 push before acceptance.",
     "retainedCorrections": "Accepted 1.68.1 real-input and exact-item QA helpers, cumulative failed-1.68.0 history, and 1.69 controls.",
     "client": {"suites": 10, "tests": 522, "seconds": 9.383, "passed": true},
+    "lint": "Full npm run lint and git diff --check passed on the merged candidate.",
     "scope": "Merged casino/version/publisher and inherited QA helper regressions. Counts overlap earlier receipts; no new native or connected wagering proof is claimed."
   },
   "openExitEvidence": [
