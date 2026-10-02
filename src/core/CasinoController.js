@@ -4,6 +4,7 @@ import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
 import { SlotMachineUI } from '../ui/SlotMachineUI.js';
 import { PokerTableUI } from '../ui/PokerTableUI.js';
 import { HouseTableUI } from '../ui/HouseTableUI.js';
+import { CasinoPlayControls } from '../ui/CasinoPlayControls.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 const CASINO_INSTANCE = 'lanternhold-casino';
 
@@ -29,7 +30,8 @@ export class CasinoController {
         this.header = document.createElement('header'); this.header.className = 'casino-session-header';
         this.header.append(this.heading, this.leave);
         this.status.className = 'casino-session-status'; this.roster.className = 'casino-session-roster';
-        this.panel.append(this.header, this.status, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.house.root);
+        this.playControls = new CasinoPlayControls(reason => this.slots.stopAuto(reason));
+        this.panel.append(this.header, this.status, this.playControls.root, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.house.root);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
         this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());
@@ -51,6 +53,13 @@ export class CasinoController {
 
     send(payload) {
         if (this.disposed || this.engine.isDestroyed) return false;
+        this.playControls.setContext(this.engine.player?.id || this.engine.player, this.engine.currentInstanceId === CASINO_INSTANCE);
+        if (!this.playControls.allows(payload, this.slots.view)) {
+            const error = { ...payload, roundRevision: payload.roundRevision || 0, local: true,
+                error: 'New play is paused. Use Start new session when you choose to continue.' };
+            this.blackjack.rejectAction(error); this.poker.rejectAction(error); this.house.rejectAction(error); this.slots.rejectAction(error);
+            this.status.textContent = error.error; return false;
+        }
         if ((payload.action.startsWith('slot_') || payload.action === 'house_bet') && this.engine.network.socket?.readyState !== WebSocket.OPEN) return false;
         this.engine.network.send('casino', { sessionId: this.data.yourSeat?.sessionId, ...payload });
     }
@@ -82,6 +91,7 @@ export class CasinoController {
 
     updateState(payload = {}) {
         if (this.disposed || this.engine.isDestroyed) return;
+        this.playControls.setContext(this.engine.player?.id || this.engine.player, this.engine.currentInstanceId === CASINO_INSTANCE);
         this.floor = payload.floor || 'public'; this.vipActive = payload.vip === true;
         if (this.engine.collisionManager) this.engine.collisionManager.casinoVIPFloor = this.floor === 'vip';
         if (this.data.yourSeat?.sessionId !== payload.yourSeat?.sessionId) { this.slots.update(null); this.house.update(null); }
@@ -313,6 +323,8 @@ export class CasinoController {
     beforeUpdate(dt) {
         if (this.disposed || this.engine.isDestroyed) return;
         const engine = this.engine, player = engine.player;
+        this.playControls.setContext(player?.id || player, engine.currentInstanceId === CASINO_INSTANCE);
+        this.playControls.tick();
         if (this.dialogueContext && !this.isDoorContextCurrent(this.dialogueContext)) this.closeDoorDialogue();
         if (engine.network.socket?.readyState !== WebSocket.OPEN && this.slots.autoRemaining) this.slots.stopAuto('Connection lost; auto spins stopped.');
         if (!player) return;
@@ -484,6 +496,7 @@ export class CasinoController {
         this.blackjack.dispose();
         this.poker.dispose();
         this.house.dispose();
+        this.playControls.dispose();
         this.stairButton.remove();
         this.removeFurnitureColliders();
         document.removeEventListener('keydown', this.keyHandler, true);

@@ -134,7 +134,7 @@ export class HouseTableUI {
         const total = sum(wagers);
         if (total > this.view.balance || total > this.view.maxBet) { this.summary.textContent = `Not enough ${this.currency} or total wager is over the table limit.`; return; }
         this.pending = true; this.refreshControls(); this.summary.textContent = 'Saving wager…';
-        if (this.send({ action: 'house_bet', roundId: this.view.roundId, wagers }) === false) {
+        if (this.send({ action: 'house_bet', roundId: this.view.roundId, wagers }) === false && this.pending) {
             this.pending = false; this.summary.textContent = 'Connection lost. No new wager is confirmed.'; this.refreshControls();
         }
     }

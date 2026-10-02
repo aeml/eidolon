@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "milestone": "1.69",
+  "sourceVersion": "Alpha 1.68.0",
+  "status": "prepared, unpublished",
+  "scope": [
+    "Optional 15/30/60-minute play timers and Take a break controls for this browser and casino visit; no account-lock or server-enforced exclusion claim.",
+    "Manual pause or deadline cancels unstarted slot queues and blocks opening blackjack bets, poker buy-ins, roulette/baccarat wagers and paid slot spins before network send.",
+    "Funded hand decisions, additional split/double wagers, reserved-stack poker raises, saved free spins and bonus choices, table exit and settlement recovery remain usable; clear disclosure explains these exceptions.",
+    "Changing seats/floors does not reset the chosen timer. Explicit Start new session resumes permission without restarting a queue or placing any wager. Leaving the venue or closing the game clears this local aid.",
+    "Rejected local requests retire their pending UI state without claiming a connection failure.",
+    "Paid slot spins show net profit/loss or break-even; partial returns and refunds no longer receive win sound/popups. Free-spin income and bonus awards retain separate valid presentation.",
+    "Compact controls and short-table portrait reduction retain visible blackjack cards and totals; phone bottom-seat geometry preserves the first hand total."
+  ],
+  "checks": {
+    "client": {
+      "suites": 9,
+      "tests": 483,
+      "seconds": 6.848,
+      "passed": true
+    },
+    "nativePresentation": {
+      "cases": 2,
+      "widths": [
+        390,
+        1440
+      ],
+      "seconds": 15,
+      "passed": true,
+      "firstHandTotalInsideVisibleHandArea": true,
+      "renderedScreensInspected": true,
+      "artifacts": "/tmp/eidolon-169-play-controls-accepted-layout-20261002"
+    },
+    "lint": "passed",
+    "whitespace": "passed"
+  },
+  "fixtureHistory": [
+    "First integration check exposed missing roundRevision=0 on locally rejected opening bets; normalized the local rejection envelope rather than weakening pending-state assertions.",
+    "First native fixture used nonexistent fields on the existing array-valued browser-failure collector; corrected the fixture to assert the complete retained failure array.",
+    "Rendered inspection showed clipped totals. The stronger visible-hand-area assertion initially failed at 390px; compact controls and blackjack-specific mobile geometry fixed it. Final two-width route passed."
+  ],
+  "policy": {
+    "paymentIntegration": "Excluded by owner; not implemented or enabled.",
+    "futureCommerceIntent": "Retained owner plan for VIP monthly EP and potential paid EP, with EP-only wagering/appearance use, no Gold conversion or player power.",
+    "launchAudienceAndRegions": "Owner decision requested asynchronously; pending.",
+    "commercialSafeguards": "Expert/provider review and audience/region safeguards remain open before any separately approved commerce branch.",
+    "currentAccess": "Existing open-alpha access unchanged.",
+    "legalConclusion": "None."
+  },
+  "limits": "Synthetic native server-view/request fixtures and simulated clock, not real wagers, account-level self-exclusion, a real 15-minute session, physical-phone certification, odds sampling or legal/commercial approval. Rules/paytables, RNG, wallets, durable settlement, entitlements and saves unchanged. Sequential defaults/notes, predecessor acceptance, exact-source CI and public acceptance still required."
+}

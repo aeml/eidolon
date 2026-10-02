@@ -51,6 +51,32 @@ test('server outcomes animate once, show winning cells, and stop cleanly when le
 const resultView = (revision, extras = {}) => ({ ...view, ...extras, session: { ...view.session, revision,
     last: { landed: grid, payout: 0, bonusPicked: -1, stages: [{ grid, wins: [], payout: 0 }] }, ...extras.session } });
 
+test.each([['gold', 8, 'Net loss: 12 Gold'], ['gold', 20, 'No net profit or loss Gold'],
+    ['ep', 8, 'Net loss: 12 EP'], ['ep', 20, 'No net profit or loss EP']])(
+    '%s return %i is not celebrated as a profitable paid spin', (currency, payout, message) => {
+        jest.useFakeTimers(); const sound = jest.fn(), ui = new SlotMachineUI(jest.fn(), sound);
+        try {
+            ui.update({ ...view, currency }); const next = resultView(2, { currency }); next.session.last.payout = payout;
+            ui.update(next); jest.advanceTimersByTime(2000);
+            expect(ui.result.textContent).toContain(message);
+            expect(ui.celebration.active).toBe(false);
+            expect(sound.mock.calls.some(([cue]) => ['win', 'jackpot'].includes(cue))).toBe(false);
+        } finally { ui.dispose(); jest.useRealTimers(); }
+    }
+);
+
+test('a saved free spin has no new stake and a bonus award is not mislabeled as paid-spin profit', () => {
+    const ui = new SlotMachineUI(jest.fn()); ui.update(view);
+    const last = { ...resultView(2).session.last, payout: 8, free: true };
+    ui.showResult(last); ui.celebrateResult(last);
+    expect(ui.result.textContent).toContain('Free spin: no stake charged');
+    expect(ui.celebration.title.textContent).toBe('WIN'); ui.celebration.clear();
+    const paid = { ...last, free: false, freeAwarded: 3 };
+    ui.showResult(paid); ui.celebrateResult(paid);
+    expect(ui.celebration.title.textContent).toBe('FREE SPINS');
+    expect(ui.celebration.detail.textContent).toContain('net loss 12 Gold'); ui.dispose();
+});
+
 test('big win celebration pauses the next automatic wager and cannot be bypassed manually', () => {
     jest.useFakeTimers(); const send = jest.fn(), ui = new SlotMachineUI(send);
     try {

@@ -209,9 +209,16 @@ export class SlotMachineUI {
 
     showResult(last) {
         this.result.textContent = `${last.stages.some(stage => stage.jackpot) ? 'JACKPOT · ' : ''}${last.payout} ${this.currency} returned${last.bonusPayout ? ` + ${last.bonusPayout} bonus ${this.currency}` : ''}${last.freeAwarded ? ` · ${last.freeAwarded} free spins awarded` : ''}. ${last.free ? 'Free spin: no stake charged.' : `Stake: ${this.view.session.bet} ${this.currency}.`}`;
+        if (!last.free && last.bonusPicked < 0) {
+            const net = (last.payout || 0) - this.view.session.bet;
+            this.result.textContent += ` ${net > 0 ? `Net profit: +${goldText(net)}` : net < 0 ? `Net loss: ${goldText(-net)}` : 'No net profit or loss'} ${this.currency} for this paid spin.`;
+        }
     }
 
-    resultSound(last) { this.sound(last.stages.some(stage => stage.jackpot) ? 'jackpot' : this.view.session.bonus ? 'bonus' : last.payout || last.bonusPayout ? 'win' : 'stop'); }
+    resultSound(last) {
+        const profitable = last.bonusPicked >= 0 ? last.bonusPayout > 0 : (last.payout || 0) > (last.free ? 0 : this.view.session.bet);
+        this.sound(this.view.session.bonus ? 'bonus' : profitable ? last.stages.some(stage => stage.jackpot) ? 'jackpot' : 'win' : 'stop');
+    }
 
     celebrateResult(last) {
         if (!this.view?.available || this.view.processing) { this.waitingCelebration = last; return; }
@@ -220,8 +227,11 @@ export class SlotMachineUI {
         const free = bonusPicked ? this.view.session.freeSpins : last.freeAwarded || 0;
         if (!payout && !free) return;
         const bet = this.view.session.bet;
-        const title = bonusPicked ? 'BONUS REVEALED' : payout ? slotWinTier(payout, bet) : 'FREE SPINS';
-        const detail = `${free ? `${free} free spins · ` : ''}${bonusPicked ? this.view.machine.bonusTitle : last.free ? 'Free spin · no stake charged' : `${goldText(bet)} ${this.currency} staked · total return, not net profit`}`;
+        const paidProfit = !bonusPicked && !last.free ? payout - bet : payout;
+        if (paidProfit <= 0 && !free && !bonusPicked) return;
+        const title = bonusPicked ? 'BONUS REVEALED' : paidProfit > 0 ? slotWinTier(payout, bet) : 'FREE SPINS';
+        const paidDetail = `${goldText(bet)} ${this.currency} staked · total return, not net profit · ${paidProfit > 0 ? `net profit +${goldText(paidProfit)}` : paidProfit < 0 ? `net loss ${goldText(-paidProfit)}` : 'no net profit or loss'} ${this.currency}`;
+        const detail = `${free ? `${free} free spins · ` : ''}${bonusPicked ? this.view.machine.bonusTitle : last.free ? 'Free spin · no stake charged' : paidDetail}`;
         this.celebration.show(title, payout ? `${goldText(payout)} ${this.currency} returned` : `${free} free spins awarded`, detail,
             () => { this.refreshControls(); this.scheduleAuto(); }, payout >= bet * 50 ? 4000 : 2500);
         this.revealStage();
@@ -235,7 +245,7 @@ export class SlotMachineUI {
         if (!Number.isInteger(bet) || bet < min || bet > max || bet % step || (!v.session.freeSpins && bet > (v.balance ?? v.gold))) { this.stopAuto(`Choose a valid stake within your ${this.currency} balance.`); this.summary.textContent = `Choose ${min}–${max} ${this.currency} in steps of ${step}, within your balance.`; return; }
         if (automatic) this.autoRemaining--;
         this.act({ action: 'slot_spin', bet, roundRevision: v.session.revision });
-        if (automatic && !this.autoRemaining) this.autoStatus.textContent = 'Final queued spin. No further spins will start.';
+        if (automatic && !this.autoRemaining && this.pending) this.autoStatus.textContent = 'Final queued spin. No further spins will start.';
     }
     act(payload) {
         if (this.disposed || !this.view?.available || this.pending || this.animating || this.celebration.active || this.view.processing || payload.roundRevision !== this.view.session.revision) return;
@@ -247,14 +257,14 @@ export class SlotMachineUI {
         this.pendingTimer = setTimeout(() => {
             this.clearAnimation(); this.stopAuto('Result not confirmed. Auto spins stopped; reconnect to synchronize.');
         }, 10000);
-        if (this.send(payload) === false) { this.clearAnimation(); this.stopAuto('Connection unavailable. Auto spins stopped.'); }
+        if (this.send(payload) === false && this.pending) { this.clearAnimation(); this.stopAuto('Connection unavailable. Auto spins stopped.'); }
     }
 
     rejectAction(error) {
         if (!this.pending || error.roundRevision !== this.pending.revision || error.action !== this.pending.action) return;
         this.pending = null; clearTimeout(this.pendingTimer); this.clearAnimation();
         this.stopAuto(`Auto spins stopped: ${error.error}`);
-        this.result.textContent = 'Result not confirmed. Synchronizing saved machine state…';
+        this.result.textContent = error.local ? error.error : 'Result not confirmed. Synchronizing saved machine state…';
     }
 
     buildRules(machine, lines) {
