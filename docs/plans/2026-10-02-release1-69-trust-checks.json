@@ -4,7 +4,10 @@
   "sourceVersion": "Alpha 1.69.0",
   "originalPreparedSourceVersion": "Alpha 1.68.0",
   "acceptedPredecessor": "2026-10-02-release1-68-1-public.json",
-  "status": "prepared, unpublished",
+  "status": "accepted",
+  "commit": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
+  "ciRun": 37037866734,
+  "publicAcceptance": "2026-10-02-release1-69-public.json",
   "scope": [
     "Optional 15/30/60-minute play timers and Take a break controls for this browser and casino visit; no account-lock or server-enforced exclusion claim.",
     "Manual pause or deadline cancels unstarted slot queues and blocks opening blackjack bets, poker buy-ins, roulette/baccarat wagers and paid slot spins before network send.",
