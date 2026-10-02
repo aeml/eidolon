@@ -19,6 +19,7 @@ type weeklyDeliveryTestStore struct {
 	finished       int
 	prepareError   error
 	discoveryError error
+	preparedAt     []time.Time
 }
 
 func (s *weeklyDeliveryTestStore) GetCharacter(_, _ string) (*database.Character, error) {
@@ -34,11 +35,70 @@ func (s *weeklyDeliveryTestStore) GetCharacter(_, _ string) (*database.Character
 	err = bson.Unmarshal(data, &result)
 	return &result, err
 }
-func (s *weeklyDeliveryTestStore) PrepareWeeklyRaidReward(string, time.Time) (*database.WeeklyRaidLockout, error) {
+func (s *weeklyDeliveryTestStore) PrepareWeeklyRaidReward(_ string, at time.Time) (*database.WeeklyRaidLockout, error) {
+	s.preparedAt = append(s.preparedAt, at)
 	if s.prepareError != nil {
 		return nil, s.prepareError
 	}
 	return &s.entry, nil
+}
+
+func TestWeeklyDeliveryDiscoversUnsavedDisconnectedCompletion(t *testing.T) {
+	s := setupWeeklyDeliveryTest(t)
+	world = game.NewWorld(nil)
+	t.Cleanup(world.StopBackground)
+	at := time.Date(2026, 9, 27, 23, 59, 59, 0, time.UTC)
+	s.entry.Week, s.entry.CompletedAt = database.CurrentRaidWeek(at), at
+	p := &game.Entity{ID: "player-hero", Type: game.TypePlayer, SubType: "Wizard", Level: 100, Gold: 99,
+		Disconnected: true, Inventory: make([]game.Item, game.MaxInventorySize),
+		WeeklyRaidCompletions: map[string]time.Time{s.entry.Week: at}}
+	world.AddEntity(p)
+	if len(s.initial.WeeklyRaidCompletions) != 0 {
+		t.Fatal("fixture already persisted the live completion")
+	}
+	if err := recoverPendingWeeklyRaidRewards(); err != nil {
+		t.Fatal(err)
+	}
+	copy := world.GetEntityCopy(p.ID)
+	if s.finished != 1 || len(s.preparedAt) != 1 || !s.preparedAt[0].Equal(at) ||
+		copy.Gold != 15099 || len(copy.WeeklyRaidCompletions) != 0 || !copy.WeeklyRaidRewardReceipts[s.entry.Week] ||
+		s.committer.saved.Gold != 15099 || !s.committer.saved.WeeklyRaidRewardReceipts[s.entry.Week] {
+		t.Fatal("unsaved disconnected outbox missed delivery, changed kill week or lost the durable receipt")
+	}
+	if err := recoverPendingWeeklyRaidRewards(); err != nil || s.finished != 1 || world.GetEntityCopy(p.ID).Gold != 15099 {
+		t.Fatal("later recovery paid the completion again", err)
+	}
+}
+
+type expiringWeeklyDeliveryStore struct {
+	*weeklyDeliveryTestStore
+}
+
+func (s *expiringWeeklyDeliveryStore) PrepareWeeklyRaidReward(playerID string, at time.Time) (*database.WeeklyRaidLockout, error) {
+	entry, err := s.weeklyDeliveryTestStore.PrepareWeeklyRaidReward(playerID, at)
+	world.RemoveEntity(playerID)
+	return entry, err
+}
+
+func TestWeeklyDeliveryExpiryDuringPreparationRecoversOffline(t *testing.T) {
+	s := setupWeeklyDeliveryTest(t)
+	weeklyRaidRewards = &expiringWeeklyDeliveryStore{s}
+	world = game.NewWorld(nil)
+	t.Cleanup(world.StopBackground)
+	at := time.Date(2026, 9, 29, 0, 0, 0, 0, time.UTC)
+	s.entry.CompletedAt = at
+	world.AddEntity(&game.Entity{ID: "player-hero", Type: game.TypePlayer, SubType: "Wizard", Level: 100, Gold: 99,
+		Inventory: make([]game.Item, game.MaxInventorySize), WeeklyRaidCompletions: map[string]time.Time{s.entry.Week: at}})
+	if err := recoverPendingWeeklyRaidRewards(); err == nil {
+		t.Fatal("expiry during live preparation was hidden")
+	}
+	if s.finished != 1 || s.committer.saved.Gold != 15099 || !s.committer.saved.WeeklyRaidRewardReceipts[s.entry.Week] {
+		t.Fatal("recorded entitlement lost offline delivery after expiry")
+	}
+	if err := recoverPendingWeeklyRaidRewards(); err != nil || s.finished != 1 || s.committer.saved.Gold != 15099 ||
+		len(s.committer.saved.WeeklyRaidCompletions) != 0 {
+		t.Fatal("offline retry lost the completion or repeated its reward", err)
+	}
 }
 func (s *weeklyDeliveryTestStore) UnpreparedWeeklyRaidRewards() ([]database.WeeklyRaidLockout, error) {
 	if s.discoveryError != nil {

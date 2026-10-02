@@ -144,6 +144,15 @@ connection cohorts outside the gate. It is not a global completion-worker cap.
 [Work-lease checks](plans/2026-10-02-release1-72-work-lease-checks.json) record
 actual small-pool reconnect and focused race evidence, not live acceptance.
 
+Weekly raid completion and periodic retry also share one recovery worker in the
+candidate. It discovers recorded live completions even after socket disconnect,
+then uses the existing character journal, entitlement and grant receipts.
+Failure retains work for a later request/tick; saturation or shutdown rejection
+does not acknowledge an earned reward. The initial completion is still in memory
+until its journal write succeeds. [Weekly reward checks](plans/2026-10-02-release1-72-weekly-sync-checks.json)
+cover burst/retry/expiry handling with isolated journals and simulated database
+writes, not a connected raid clear, overall outbox-size bound or capacity proof.
+
 The candidate also bounds ordinary headers, body reads, writes and idle
 keepalives, and upgrade-handshake writes. Active game sockets retain their own
 Pong/fragment deadlines. [Connection-pool checks](plans/2026-10-02-release1-72-http-connection-checks.json)

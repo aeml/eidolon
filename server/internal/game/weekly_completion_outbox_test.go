@@ -76,3 +76,33 @@ func TestWeeklyCompletionKeepsOriginalWeekAndSkipsRedeemedWeeks(t *testing.T) {
 		t.Fatal("redeemed week queued again")
 	}
 }
+
+func TestWeeklyPendingDiscoveryIncludesDisconnectedAndDetachedTimes(t *testing.T) {
+	w := newTestWorld()
+	t.Cleanup(w.StopBackground)
+	at := time.Date(2026, 9, 27, 23, 59, 59, 0, time.UTC)
+	p := newTestPlayer("weekly-disconnected", "Wizard")
+	p.Level, p.Disconnected = 100, true
+	p.queueWeeklyRaidCompletionLocked(at)
+	p.queueWeeklyRaidCompletionLocked(at.Add(2 * time.Second))
+	w.AddEntity(p)
+	w.AddEntity(&Entity{ID: "not-a-player", Type: TypeEnemy, WeeklyRaidCompletions: map[string]time.Time{"ignored": at}})
+	entries := w.PendingWeeklyRaidCompletions()
+	if len(entries) != 2 {
+		t.Fatal("disconnected completion excluded or nonplayer included")
+	}
+	times := make(map[time.Time]bool)
+	for _, entry := range entries {
+		if entry.PlayerID != p.ID {
+			t.Fatal("wrong recipient")
+		}
+		times[entry.CompletedAt] = true
+	}
+	if !times[at] || !times[at.Add(2*time.Second)] {
+		t.Fatal("original week-boundary kill times lost")
+	}
+	entries[0].CompletedAt = time.Time{}
+	if len(w.PendingWeeklyRaidCompletions()) != 2 || len(w.GetEntityCopy(p.ID).WeeklyRaidCompletions) != 2 {
+		t.Fatal("discovery result aliased live outbox")
+	}
+}

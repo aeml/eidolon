@@ -254,6 +254,29 @@ func (player *Entity) queueWeeklyRaidCompletionLocked(at time.Time) {
 	}
 }
 
+// PendingWeeklyRaidCompletions captures only owed completion identities/times,
+// including disconnected players. No inventory copies, sessions or IO under
+// world/entity locks. Call outside combat callbacks, which may own those locks.
+func (w *World) PendingWeeklyRaidCompletions() []WeeklyRaidCompletionEvent {
+	w.Mu.RLock()
+	players := make([]*Entity, 0, len(w.Entities))
+	for _, entity := range w.Entities {
+		players = append(players, entity)
+	}
+	w.Mu.RUnlock()
+	var completions []WeeklyRaidCompletionEvent
+	for _, player := range players {
+		player.Mu.RLock()
+		if player.Type == TypePlayer {
+			for _, at := range player.WeeklyRaidCompletions {
+				completions = append(completions, WeeklyRaidCompletionEvent{PlayerID: player.ID, CompletedAt: at})
+			}
+		}
+		player.Mu.RUnlock()
+	}
+	return completions
+}
+
 func (w *World) ClearWeeklyRaidCompletion(playerID, week string) {
 	w.Mu.RLock()
 	player := w.Entities[playerID]

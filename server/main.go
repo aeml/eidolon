@@ -769,34 +769,12 @@ func main() {
 			if !ok {
 				return
 			}
-			earnedAt := evt.CompletedAt
-			scheduleCharacterWork(func() {
-				client := getClientByPlayerID(evt.PlayerID)
-				entry, err := prepareRecordedWeeklyRaidCompletion(database.WeeklyRaidLockout{
-					PlayerID: evt.PlayerID, Week: database.CurrentRaidWeek(earnedAt), CompletedAt: earnedAt, DeliveryPending: true})
-				if err != nil {
-					log.Printf("Weekly raid entitlement not confirmed for %s at %s: %v", evt.PlayerID, earnedAt.Format(time.RFC3339), err)
-					if client != nil {
-						client.sendSystemChat("Weekly cache confirmation failed. If your cache does not arrive, submit a bug report so an administrator can review this completion.")
-					}
-					return
-				}
-				if entry == nil {
-					if client != nil {
-						client.sendSystemChat("Weekly cache already recorded; any pending delivery will retry automatically.")
-					}
-					return
-				}
-				receipt, granted, err := deliverWeeklyRaidReward(*entry)
-				if err != nil {
-					log.Printf("Weekly raid delivery remains pending for %s: %v", evt.PlayerID, err)
-					if client != nil {
-						client.sendSystemChat("Your weekly cache is secured; delivery will retry automatically.")
-					}
-					return
-				}
-				notifyWeeklyRaidReward(evt.PlayerID, receipt, granted)
-			})
+			// The combat path records the completion before this callback. Do
+			// not take world/account locks here, or queue one worker per player.
+			if client := getClientByPlayerID(evt.PlayerID); client != nil {
+				client.sendSystemChat("Weekly raid complete. Your cache is being processed; delayed delivery retries automatically.")
+			}
+			weeklyRaidSync.request()
 		case "dungeon_complete":
 			evt, ok := data.(game.DungeonCompletionEvent)
 			if !ok {
@@ -916,9 +894,7 @@ func main() {
 		}
 	})
 	loops.Every(5*time.Second, func() {
-		if err := recoverPendingWeeklyRaidRewards(); err != nil {
-			log.Printf("Weekly raid reward recovery remains pending: %v", err)
-		}
+		weeklyRaidSync.request()
 	})
 	loops.Every(game.RefundRetryInterval, func() {
 		if err := recoverPendingAuctionBids(); err != nil {

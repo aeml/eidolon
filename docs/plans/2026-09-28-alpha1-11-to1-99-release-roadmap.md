@@ -296,6 +296,13 @@ coalesce per connection, defer world reads outside combat locks and recheck
 ownership before presenting fresh private state. Burst, stale-match, takeover
 and closed-admission race checks pass. The earlier actual-match binary retains
 its earlier scope; final connected callback/release acceptance remains separate.
+The [weekly-reward sync follow-up](2026-10-02-release1-72-weekly-sync-checks.json)
+coalesces completion/periodic requests and discovers unsaved live outboxes,
+including disconnected characters, before existing journal/entitlement delivery.
+Burst, failed-journal-commit retry, sealed admission, original kill-week and
+mid-preparation expiry/offline recovery race checks pass without duplicate grants.
+This bounds recovery workers, not outbox size or crash durability before the
+first journal write. It is prepared source, not a published1.72 release.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

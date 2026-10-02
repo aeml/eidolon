@@ -33,9 +33,13 @@ func prepareRecordedWeeklyRaidCompletion(entry database.WeeklyRaidLockout) (*dat
 	unlock := lockCharacterWork(username)
 	defer unlock()
 	var character *database.Character
-	live := world != nil && world.GetEntityCopy(entry.PlayerID) != nil
+	var entity *game.Entity
+	if world != nil {
+		entity = world.GetEntityCopy(entry.PlayerID)
+	}
+	live := entity != nil
 	if live {
-		character = characterSnapshotForSave(username, world.GetEntityCopy(entry.PlayerID))
+		character = characterSnapshotForSave(username, entity)
 		if _, recorded := character.WeeklyRaidCompletions[entry.Week]; !recorded {
 			return nil, nil
 		}
@@ -65,7 +69,14 @@ func prepareRecordedWeeklyRaidCompletion(entry database.WeeklyRaidLockout) (*dat
 	}
 	if live {
 		world.ClearWeeklyRaidCompletion(entry.PlayerID, entry.Week)
-		character = characterSnapshotForSave(username, world.GetEntityCopy(entry.PlayerID))
+		entity = world.GetEntityCopy(entry.PlayerID)
+		if entity == nil {
+			// Expiry may remove the world entity independently of account IO.
+			// Its completion snapshot/entitlement is already recorded: retry
+			// through offline hydration, never persist a stale/nil live copy.
+			return nil, errors.New("weekly completion recipient expired during preparation")
+		}
+		character = characterSnapshotForSave(username, entity)
 	} else {
 		delete(character.WeeklyRaidCompletions, entry.Week)
 	}
@@ -151,10 +162,27 @@ func recoverPendingWeeklyRaidRewards() error {
 		return nil
 	}
 	var failures []error
+	// A coalesced request contains no individual event payload. Discover live
+	// outboxes first: they may not yet be in Mongo, or may belong to a player
+	// whose socket has gone away. Existing preparation journals the complete
+	// character before its first entitlement write, using the recorded kill time.
+	preparationFailed := false
+	if world != nil {
+		for _, completion := range world.PendingWeeklyRaidCompletions() {
+			if _, err := prepareRecordedWeeklyRaidCompletion(database.WeeklyRaidLockout{
+				PlayerID: completion.PlayerID, Week: database.CurrentRaidWeek(completion.CompletedAt),
+				CompletedAt: completion.CompletedAt, DeliveryPending: true,
+			}); err != nil {
+				failures = append(failures, err)
+				preparationFailed = true
+				break // Leave remaining outboxes intact; don't multiply write timeouts.
+			}
+		}
+	}
 	completions, err := weeklyRaidRewards.UnpreparedWeeklyRaidRewards()
 	if err != nil {
 		failures = append(failures, err)
-	} else {
+	} else if !preparationFailed {
 		for _, completion := range completions {
 			if _, err := prepareRecordedWeeklyRaidCompletion(completion); err != nil {
 				failures = append(failures, err)

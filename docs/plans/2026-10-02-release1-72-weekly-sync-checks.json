@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial protocol milestone",
+  "preparedParent": "4daf7ab5",
+  "scope": [
+    "Weekly raid completion and periodic recovery request one shared worker plus one pending bit, not a worker per earned completion.",
+    "Recovery discovers live character completion outboxes, including disconnected players whose completions are not yet in Mongo, before recovering saved offline outboxes and recorded entitlements.",
+    "Existing complete-character journal, trusted original kill week, account-work serialization, grant receipt and entitlement acknowledgement remain authoritative. Admission rejection and failed preparation do not consume completions.",
+    "Preparation captures one initial canonical entity copy and handles entity expiry after entitlement creation without dereferencing a missing entity or writing a stale live snapshot.",
+    "Immediate private completion copy says processing, not secured before persistence. Normal inventory/endgame reward feedback follows the existing confirmed delivery path."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(Weekly|ArenaSyncWork|ArenaResultPresentation|PvPStateWork|ConnectionWork|WebsocketAdmission|CoalescedSave|ShutdownFinal)' -count=1 -timeout=30s",
+    "passed": true,
+    "serverPackageSeconds": 8.218,
+    "gamePackageSeconds": 2.421,
+    "newGroups": 6,
+    "evidence": [
+      "Eight producers issue512 requests while a pass is held and combat/world/account locks are owned. No parallel consumer; exactly one follow-up pass.",
+      "A failed simulated database commit leaves the actual character journal with the original completion and ungranted Gold. A later request grants once and saves the receipt; no tight automatic retry loop.",
+      "Sealed worker admission leaves both pending coordination state and the live completion intact without a fake save or acknowledgement.",
+      "An unsaved disconnected recipient is discovered and paid once with the original Sunday kill week, not the recovery week. Subsequent recovery does not pay again.",
+      "Expiry during entitlement preparation returns a retryable failure while the recorded entitlement is delivered offline. Later recovery clears the remaining completion without a second grant.",
+      "Game discovery includes both Sunday/Monday completions for a disconnected player, excludes nonplayers and returns detached identity/time values.",
+      "Existing weekly journal/restart/acknowledgement/failure/recipient isolation and worker/connection/save/PvP regressions pass. git diff --check passes."
+    ]
+  },
+  "sourceHashes": {
+    "server/main.go": "06d226225ad57836956f5913a8af76a0fb0e1397f0efdbbbc29d211acebcca94",
+    "server/weekly_raid_delivery.go": "c4327ff41f70817124eeb5c548cb6c5f513c612ad2b390d7b9a214cd24ee33e8",
+    "server/weekly_raid_delivery_test.go": "6194aeb0c3ce0114885233c26b67e399b5181a930cbe99cee0067589f456ccdd",
+    "server/weekly_raid_sync_work.go": "193cd93dd6cea122020829beead21df071287d36891363e24412332452f3f24e",
+    "server/weekly_raid_sync_work_test.go": "f8fa5125c6061e375530cbef50ab2b9d28fcfceb68113603ffdbf5472f7f799c",
+    "server/internal/game/progression.go": "3cde8376e3f3e54b484fa6aa84370a5055a6b3f69a1403ed395ba6bb0ae674aa",
+    "server/internal/game/weekly_completion_outbox_test.go": "3983e2fe1bee5724405d24a966a0c9da155cb94a1175c43431f0e2519ae5496f"
+  },
+  "limits": [
+    "In-process race checks use actual local save journals and a simulated database committer/store; this is not a latest-binary connected raid clear, Mongo failover, public deployment or capacity claim.",
+    "The combat completion begins in memory until the existing journal write succeeds. This change does not claim crash durability before that write or invent an earlier secured acknowledgement.",
+    "This bounds weekly recovery workers, not total journal/outbox size, guild leaderboard completion workers or the broader resource/security milestone.",
+    "Earlier connected binaries retain their recorded source scopes. Final release integration and ordered publication after account recovery remain required. Accepted production remains Alpha1.70.0."
+  ]
+}
