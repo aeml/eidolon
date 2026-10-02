@@ -45,8 +45,9 @@ export class CardTableScene {
             slot.name.textContent = occupant ? `${occupant.name || 'Player'}${occupant.playerId === playerID && occupant.name !== 'You' ? ' · You' : ''}` : `Seat ${seat + 1}`;
             slot.name.title = slot.name.textContent;
             slot.avatar.textContent = occupant ? (occupant.name || 'You').slice(0, 1).toUpperCase() : '◇';
+            const stake = funded?.bet ?? funded?.buyIn ?? (Array.isArray(funded?.wagers) ? funded.wagers.reduce((sum, w) => sum + w.amount, 0) : null);
             slot.status.textContent = !occupant ? 'Open seat' : occupant.connected === false ? 'Reconnecting' :
-                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? `${funded.bet ?? funded.buyIn ?? funded.wagers?.reduce((sum, w) => sum + w.amount, 0)} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'In this hand' :
+                funded?.playerId === occupant.playerId ? view.phase === 'betting' ? Number.isFinite(stake) ? `${stake} ${view.currency === 'ep' ? 'EP' : 'Gold'} confirmed` : 'Wager details unavailable' : 'In this hand' :
                     view.phase === 'betting' ? 'Choosing wager' : 'Waiting for next hand';
             const handPlayer = view.round?.players?.find(p => p.playerId === occupant?.playerId);
             if (handPlayer?.stack !== undefined && occupant?.connected !== false) slot.status.textContent = handPlayer.folded ? 'Folded' :

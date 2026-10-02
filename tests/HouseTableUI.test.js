@@ -9,6 +9,27 @@ const view = (game = 'roulette', currency = 'gold') => ({
     spots: [{ id: 'red', label: 'Red', multiplier: 2 }, { id: 'split:1-2', label: 'Split 1/2', multiplier: 18 }]
 });
 
+test.each(['roulette', 'baccarat'].flatMap(game => [undefined, null, {}].map(wagers => [game, wagers])))('%s retains seats without inventing a wager or win from unavailable details (%p)', (game, wagers) => {
+    const send = jest.fn(), ui = new HouseTableUI(send), state = view(game);
+    try {
+        const own = { playerId: 'hero', name: 'Hero', seat: 0, wagers, paid: true, payout: 100 };
+        expect(() => ui.update({ ...state, players: [own] }, 'hero')).not.toThrow();
+        expect(ui.table.seats[0].hands.textContent).toBe('Wager details unavailable');
+        expect(ui.table.seats[0].status.textContent).toBe('Wager details unavailable');
+        expect(ui.slip.textContent).toContain('Refresh the table');
+        expect(ui.slip.textContent).not.toContain('confirmed');
+        expect(ui.summary.textContent).toContain('Wager details unavailable');
+        expect(ui.canBet()).toBe(false);
+        ui.spotButtons[0].click(); ui.choose(game === 'roulette' ? 'red' : 'banker');
+        expect(send).not.toHaveBeenCalled();
+        expect(() => ui.update({ ...state, phase: 'complete', players: [own] }, 'hero')).not.toThrow();
+        expect(ui.celebrated).toBeUndefined();
+        expect(ui.celebration.root.textContent).not.toContain('YOU WON');
+        ui.update({ ...state, roundId: 'round-b' }, 'hero');
+        expect(ui.canBet()).toBe(true);
+    } finally { ui.dispose(); }
+});
+
 test.each(['roulette', 'baccarat'])('%s quick bet takes one click and ignores repeated clicks pending confirmation', game => {
     const send = jest.fn(), ui = new HouseTableUI(send), state = view(game, 'ep');
     try {
