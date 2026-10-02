@@ -31,7 +31,7 @@
   ],
   "publicationMerge": {
     "predecessorSource": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
-    "predecessorAcceptance": "Pending CI37037866734 and independent public verification; no 1.70 push before acceptance.",
+    "predecessorAcceptance": "Accepted 1.69 exact5f62945c1d3c8a977b8d179d91252d8739906f4b, CI37037866734 (all ten jobs), with independent2026-10-02-release1-69-public.json verification before 1.70 publication.",
     "retainedCorrections": "Accepted 1.68.1 real-input and exact-item QA helpers, cumulative failed-1.68.0 history, and 1.69 controls.",
     "client": {"suites": 10, "tests": 522, "seconds": 9.383, "passed": true},
     "lint": "Full npm run lint and git diff --check passed on the merged candidate.",
