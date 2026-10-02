@@ -271,7 +271,13 @@ keeps WebSocket admission reserved through reader retirement, exactly-once
 cleanup and connection-owned saves/presence tasks. Actual one-slot reconnect,
 nested-work and race checks pass; retired cohorts cannot simply outlive the
 socket cap. Independent completion jobs and per-live-connection task production
-remain separate, and latest-binary/public acceptance is not inferred.
+remain separate. The same receipt records three passing short real-server
+credential/history-restart/resource-handoff checks on a d66a36fd race binary;
+broader gameplay/load and public acceptance are not inferred. The privacy
+receipt also records a read-only GitHub provider-scan/settings check: scanning
+and push protection enabled, no reported alerts, generic patterns and validity
+checks disabled. Dependabot alert visibility is unavailable; none of this
+certifies historical/operator secret absence or substitutes for local audits.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

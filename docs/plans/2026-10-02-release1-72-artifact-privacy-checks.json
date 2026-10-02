@@ -32,6 +32,18 @@
     "method": "Filename-only git ls-files and tracked-file rg -l checks; no secret values printed. Configured CI secret references remain references, not literal values.",
     "limits": "Narrow current tracked-tree inventory, not a comprehensive entropy scanner, Git history, provider settings, private deployed configuration or secret rotation audit."
   },
+  "githubProviderScanReview": {
+    "observedDate": "2026-10-02",
+    "method": "Read-only repository security settings and paginated secret-scanning alert metadata via GitHub API; secret values excluded from output.",
+    "repositoryVisibility": "public",
+    "secretScanning": "enabled",
+    "pushProtection": "enabled",
+    "allReportedSecretAlerts": 0,
+    "nonProviderPatterns": "disabled",
+    "validityChecks": "disabled",
+    "dependabot": "Automatic security updates disabled; alert-list API returned403 indicating alerts disabled. No settings, scopes, credentials or provider configuration changed.",
+    "limits": "No alerts is a current provider-scanner observation, not proof of full historical/local/operator-secret absence or safe screenshot pixels. Generic credentials and disabled patterns are not covered; local dependency audits retain separate evidence."
+  },
   "sourceHashes": {
     ".gitignore": "099501f5f7fcf37d2d0f8a8284e19f36fd2b4b499d092a297539162917992ea6",
     "playwright.config.js": "8fdf43e280a56ffac740ab83e81d69b3e3b1a5c1257abffa9a781d84adb47ae5",
