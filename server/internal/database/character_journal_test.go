@@ -120,6 +120,38 @@ func TestCharacterJournalRejectsImpostorArenaEntries(t *testing.T) {
 	}
 }
 
+// This reader-only compatibility must ship in the ordered predecessor before
+// a new server creates guild-clears; rollback can then preserve the outbox.
+func TestCharacterJournalDelegatesGuildClearDirectoryButRejectsImpostors(t *testing.T) {
+	for _, kind := range []string{"directory", "file", "symlink"} {
+		t.Run(kind, func(t *testing.T) {
+			j, err := OpenCharacterSaveJournal(t.TempDir())
+			if err != nil {
+				t.Fatal(err)
+			}
+			name := filepath.Join(j.dir, "guild-clears")
+			switch kind {
+			case "directory":
+				if err := os.Mkdir(name, 0700); err != nil {
+					t.Fatal(err)
+				}
+			case "file":
+				if err := os.WriteFile(name, []byte("impostor"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			case "symlink":
+				if err := os.Symlink(t.TempDir(), name); err != nil {
+					t.Fatal(err)
+				}
+			}
+			_, err = j.PendingUsers()
+			if (kind == "directory") != (err == nil) {
+				t.Fatal("delegated unexpected entry or rejected real directory", kind, err)
+			}
+		})
+	}
+}
+
 func TestCharacterJournalCorruptionFailsClosedWithoutRemovingEvidence(t *testing.T) {
 	for _, kind := range []string{"truncated", "checksum", "future", "identity"} {
 		t.Run(kind, func(t *testing.T) {
