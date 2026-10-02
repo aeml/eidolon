@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.62.1",
+  "status": "accepted",
+  "commit": "b238977a0698d9fd86dd83a42ba43c52c88e84f1",
+  "ciRun": 36994733944,
+  "verifiedAt": "2026-10-02T11:01:26.264Z",
+  "frontend": {"commit": "b238977a0698d9fd86dd83a42ba43c52c88e84f1", "version": "Alpha 1.62.1"},
+  "backend": {"status": "ok", "database": "ready", "commit": "b238977a0698d9fd86dd83a42ba43c52c88e84f1", "version": "Alpha 1.62.1"},
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {"path": "index.html", "bytes": 747250, "sha256": "cd15ce72182a5c63850ecd13b945529729132e74d34f17009159f66f0d6b4dc5", "exactPublisher": true},
+    {"path": "src/assets/sw-asset-cache.js", "bytes": 4187, "sha256": "16b1b1427bb75eb28f8e370834244f54ca1c6583f70c02b6ae2e1d5098cd71f4", "exactPublisher": true},
+    {"path": "src/styles/casino.css", "bytes": 22280, "sha256": "b143147a987938a885fdb6e1401ee7408ca706321c48c7a106ccf732477d8039", "exactPublisher": true},
+    {"path": "src/ui/BlackjackTableUI.js", "bytes": 13408, "sha256": "ff590e887822341e7113e1f9e01950d1d24d18634c5b60f2d0c5e8af399d2c04", "exactPublisher": true},
+    {"path": "assets/archetypes/Fighter/fighter-runtime-low.glb", "bytes": 3680212, "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b", "exactSource": true},
+    {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "exactSource": true}
+  ],
+  "limits": [
+    "Public HTTPS verified over IPv4 with normal DNS; IPv6 reachability remains owner-deferred.",
+    "Six scoped full-file byte comparisons, not a complete asset inventory or a human campaign/device/art signoff.",
+    "Failed 1.62.0 remains failed; this is independent acceptance of the new 1.62.1 source."
+  ]
+}
