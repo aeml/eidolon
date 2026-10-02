@@ -55,13 +55,24 @@ export class CasinoController {
         if (this.disposed || this.engine.isDestroyed) return false;
         this.playControls.setContext(this.engine.player?.id || this.engine.player, this.engine.currentInstanceId === CASINO_INSTANCE);
         if (!this.playControls.allows(payload, this.slots.view)) {
-            const error = { ...payload, roundRevision: payload.roundRevision || 0, local: true,
-                error: 'New play is paused. Use Start new session when you choose to continue.' };
-            this.blackjack.rejectAction(error); this.poker.rejectAction(error); this.house.rejectAction(error); this.slots.rejectAction(error);
-            this.status.textContent = error.error; return false;
+            this.rejectLocalRequest(payload, 'New play is paused. Use Start new session when you choose to continue.');
+            return false;
         }
-        if ((payload.action.startsWith('slot_') || payload.action === 'house_bet') && this.engine.network.socket?.readyState !== WebSocket.OPEN) return false;
-        this.engine.network.send('casino', { sessionId: this.data.yourSeat?.sessionId, ...payload });
+        const disconnected = () => {
+            this.slots.stopAuto('Connection unavailable; unstarted auto spins stopped.');
+            if (payload.action !== 'get') this.rejectLocalRequest(payload,
+                'Connection unavailable. No request was sent. Confirmed wagers keep their server rules; reconnect, review the table and choose again.');
+            return false;
+        };
+        if (this.engine.network.socket?.readyState !== WebSocket.OPEN) return disconnected();
+        if (this.engine.network.send('casino', { sessionId: this.data.yourSeat?.sessionId, ...payload }) === false) return disconnected();
+        return true;
+    }
+
+    rejectLocalRequest(payload, message) {
+        const error = { ...payload, roundRevision: payload.roundRevision || 0, local: true, error: message };
+        this.blackjack.rejectAction(error); this.poker.rejectAction(error); this.house.rejectAction(error); this.slots.rejectAction(error);
+        this.status.textContent = message;
     }
 
     requestLeave() {
@@ -134,7 +145,7 @@ export class CasinoController {
         const phase = { waiting_players: `Waiting for players (minimum ${preparation?.minimumPlayers || table?.minimumPlayers || 1}).`,
             waiting_reconnect: 'Waiting for a seated player to reconnect.', preparing: 'Players are preparing.',
             ready: 'Everyone is ready.' }[preparation?.phase] || 'Synchronizing table…';
-        this.status.textContent = `${phase} ${ready} ready · ${occupants.length}/${table?.seats.length || 0} seats occupied. Roster changes reset readiness. Games and wagering arrive in the next casino stage; no Gold is spent here. Reconnect reservations last 60 seconds.`;
+        this.status.textContent = `${phase} ${ready} ready · ${occupants.length}/${table?.seats.length || 0} seats occupied. Roster changes reset readiness. Waiting for saved game state; confirmed wagers are retained. Reconnect reservations last 60 seconds.`;
         this.ready.disabled = !preparation?.revision;
         this.ready.textContent = seat.ready ? 'Not ready' : 'Ready at table';
         this.ready.setAttribute('aria-pressed', String(Boolean(seat.ready)));

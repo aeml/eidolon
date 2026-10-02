@@ -61,8 +61,23 @@ for (const width of [390, 1440]) test(`${width}px: voluntary casino limit preser
     await controls.getByRole('button', { name: 'Start new session' }).click();
     await expect(controls).toContainText('15:00');
     expect(await page.evaluate(() => window.__casinoPlay.sent.length)).toBe(1);
+    await page.evaluate(() => {
+        const controller = window.__casinoPlay.controller;
+        const ui = controller.blackjack;
+        ui.update({ available: true, processing: false, phase: 'betting', roundId: 'next-fixture-round', currency: 'gold',
+            balance: 1000, minBet: 100, maxBet: 100000, betStep: 100, players: [] }, 'hero', ui.presence);
+        controller.engine.network.socket.readyState = WebSocket.CLOSED;
+    });
+    await page.getByRole('button', { name: 'Bet · 100 Gold', exact: true }).click();
+    await expect(page.locator('.blackjack-game')).toContainText('No request was sent');
+    await expect(page.getByRole('button', { name: 'Bet · 100 Gold', exact: true })).toBeEnabled();
+    expect(await page.evaluate(() => window.__casinoPlay.sent.length)).toBe(1);
+    await page.evaluate(() => { window.__casinoPlay.controller.engine.network.socket.readyState = WebSocket.OPEN; });
+    expect(await page.evaluate(() => window.__casinoPlay.sent.length)).toBe(1);
+    await page.getByRole('button', { name: 'Bet · 100 Gold', exact: true }).click();
+    expect(await page.evaluate(() => window.__casinoPlay.sent.map(message => message.payload.action))).toEqual(['play', 'bet']);
     await page.getByRole('button', { name: 'Leave table', exact: true }).click();
-    expect(await page.evaluate(() => window.__casinoPlay.sent.map(message => message.payload.action))).toEqual(['play', 'leave']);
+    expect(await page.evaluate(() => window.__casinoPlay.sent.map(message => message.payload.action))).toEqual(['play', 'bet', 'leave']);
     await page.evaluate(() => window.__casinoPlay.controller.dispose());
     expect(failures, failures.join('\n')).toEqual([]);
 });

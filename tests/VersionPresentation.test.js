@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.69.0';
+const currentVersion = '1.70.0';
+
+test('1.70.0 distinguishes reliable venue controls from capacity and commercial approval', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.70.0"'), previous = html.indexOf('data-version="1.69.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['every casino action checks the connection', 'never automatically replays', '232 chairs',
+        'not a 232-player capacity promise', 'existing server timers', 'EP buys appearance only',
+        'Ilyra stays dressed', 'commercial approval', 'closed beta', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.69.0 documents casino-trust without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -1,0 +1,38 @@
+{
+  "version": "Alpha 1.70.0",
+  "status": "prepared; unpublished, E gate not declared complete",
+  "preparedPredecessor": "40499c5f",
+  "lastAcceptedLive": "Alpha 1.61.0; see 2026-10-02-release1-61-public.json. The installed 1.62.0 failed its final live gate; 1.62.1 replacement must pass before any subsequent version publishes.",
+  "changes": [
+    "All casino sends require an open socket and respect a NetworkManager refusal, rather than silently leaving blackjack/poker UI pending after an unsent click.",
+    "Matched local rejection clears only the relevant pending UI. Confirmed server wagers, clocks, balances, rounds and settlement are unchanged.",
+    "Reconnect does not replay requests or unstarted auto spins. Normal state review and an explicit new click are required.",
+    "Missing game-state copy no longer claims games are not implemented or no Gold was spent. Saved wagers are explicitly retained.",
+    "No additional server runtime, payment, wager odds, allowance, access or model change."
+  ],
+  "focusedEvidence": {
+    "client": "Six suites passed 131 checks in 2.811 seconds after the request fix, before the final placeholder-copy refinement. Twelve newly added request/pending cases initially failed against the old implementation; retained failures motivated the fix rather than weakening assertions.",
+    "server": "GOTOOLCHAIN=go1.24.5 go test -race ./internal/game -run 'Test(EveryCasinoChair|ExpandedCasino|CasinoBrowserFixtureMatchesCatalog|CasinoSeatAtomicOwnership|CasinoServerTimeoutReleases)' -count=1 passed in 3.506 package seconds.",
+    "serverScope": "232 in-memory prepared chair subcases across the exact 92-station catalog: actual TakeCasinoSeat and ChangeCasinoSeat operations, exclusive ownership, private tokens, correct floor transform, ordinary exit, unchanged Gold/EP, replacement ownership and old-token refusal. Patrons start at canonical approach positions; not walking, capacity, connected wagers or Mongo settlement.",
+    "nativeBrowser": "Two System Chrome cases at 390 and 1440 pixels passed in 11.6 seconds. Existing voluntary-limit/funded Stand flow now additionally clicks an offline opening wager, verifies immediate no-request feedback, reconnects without replay, explicitly submits once and leaves. Synthetic UI/network state, not connected wagering, a real phone or a new art review.",
+    "artifacts": "/tmp/eidolon-170-casino-offline-input-20261002",
+    "lint": "Full ESLint and git diff --check passed before and after final copy/version alignment.",
+    "finalAssembly": "Nine suites passed 502 checks in 4.606 seconds with Alpha 1.70.0 version/defaults and retained 1.62.1 patch history aligned. Counts overlap with earlier suites and are not additive."
+  },
+  "retainedDistinctEvidence": [
+    "2026-09-20-casino-expansion.md: canonical 46 stations per floor, full-radius connected aisle geometry to each chair, actual two-socket roulette Gold/baccarat EP and persisted restart receipts. Older exact-source evidence, not repeated or relabeled as this source's live acceptance.",
+    "2026-09-27-casino-frame-profile.md: named native busy-floor fixture and limitations; prepared visible actors are not connected patrons or guaranteed server capacity.",
+    "2026-10-02-release1-61-casino-world.md and release1-61-public.json: independently accepted shared-door/floor lifecycle; explicit entry, guarded VIP, hidden floors, sign and stash clearance.",
+    "2026-10-02-release1-62-blackjack.md and release1-63-poker.md: current funded-chair timeout ownership, saved release retries, exact monetary settlement and private-card boundaries; source and timing distinctions retained.",
+    "2026-10-02-release1-64-house-checks.json and release1-65-slots-checks.json: wager lifecycle, slots/bonus/queue cancellation, clear saved results and native layout scope.",
+    "2026-10-02-release1-66-wallet-checks.json and release1-66-value-paths.json: one-way EP/cosmetic isolation including auction buyer and closed-enum audited administration grants.",
+    "2026-10-02-release1-67-cosmetic-checks.json and release1-68-membership-checks.json: owner-bound replies, actual catalog provenance, monthly/admin receipts and expiry; narrower prepared/local evidence is not commercial approval.",
+    "2026-10-02-release1-69-trust-checks.json: voluntary local timer limits, truth about net slot losses/returns and pending owner audience/region decision."
+  ],
+  "openExitEvidence": [
+    "Publish and independently accept every ordered 1.62.1–1.70 exact-source release. Prepared versions are not live accepted milestones.",
+    "Record owner launch audience/regions and commerce direction. No payment code, new alpha access policy, legal conclusion or provider approval is assumed.",
+    "Keep actual capacity evidence, prepared-avatar rendering and human enjoyment/pacing/phone findings separate. Deferred owner playtests remain deferred.",
+    "The roadmap's E checklist stays unchecked until these remaining dependencies are resolved. No new long campaign or crowded connected run was started."
+  ]
+}

@@ -29,7 +29,7 @@ test('authored seating is reapplied after animation and restored on exit or mesh
 function setup() {
     const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 500);
     camera.position.set(10, 15, 190);
-    const engine = { currentInstanceId: 'lanternhold-casino', network: { send: jest.fn() }, collisionManager: new CollisionManager(),
+    const engine = { currentInstanceId: 'lanternhold-casino', network: { send: jest.fn(), socket: { readyState: WebSocket.OPEN } }, collisionManager: new CollisionManager(),
         renderSystem: { camera, cameraTarget: new THREE.Vector3(0, 0, 185), scene: new THREE.Scene(), setCameraTarget: jest.fn() },
         inputManager: { clearInputState: jest.fn() }, cameraLocked: true,
         player: { position: new THREE.Vector3(-4.3, 0, 174.4), rotation: new THREE.Quaternion(), velocity: new THREE.Vector3(), state: 'IDLE', resetTransformInterpolation: jest.fn() } };
@@ -317,6 +317,8 @@ test('server-owned seat controls camera/input, readiness and exit without alteri
     controller.beforeUpdate(.4); controller.render([]);
     expect(controller.active).toBe(true); expect(controller.panel.hidden).toBe(false);
     expect(controller.roster.querySelector('b')).toBeNull();
+    expect(controller.status.textContent).toContain('Waiting for saved game state');
+    expect(controller.status.textContent).not.toContain('no Gold is spent');
     expect(engine.player.position.z).toBe(173.2);
     expect(engine.inputManager.clearInputState).toHaveBeenCalled();
     expect(engine.renderSystem.camera.zoom).not.toBe(zoom);
@@ -349,6 +351,7 @@ test('leave, disconnect and seat changes cancel auto spins; errors require the c
     const { engine, controller } = setup();
     controller.updateState({ tables: [table], yourSeat: seat });
     controller.slots.autoRemaining = 50; controller.requestLeave(); expect(controller.slots.autoRemaining).toBe(0);
+    engine.network.socket.readyState = WebSocket.CLOSED;
     controller.slots.autoRemaining = 50; controller.beforeUpdate(.1); expect(controller.slots.autoRemaining).toBe(0);
     controller.slots.autoRemaining = 50; controller.updateState({ tables: [table], yourSeat: { ...seat, sessionId: 'new-seat' } });
     expect(controller.slots.autoRemaining).toBe(0);

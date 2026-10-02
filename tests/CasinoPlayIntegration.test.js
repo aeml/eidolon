@@ -76,3 +76,44 @@ test('changing chair or floor cannot reset the pause; leaving the venue clears t
     expect(controller.playControls.paused).toBe(false); expect(controller.playControls.limitMinutes).toBe(0);
     controller.dispose();
 });
+
+test.each(['bet', 'play', 'poker_buy_in', 'poker_play', 'house_bet', 'slot_spin', 'slot_bonus', 'sit', 'leave', 'ready'])(
+    'a closed socket cannot silently accept a casino %s click', action => {
+        const { engine, controller } = setup();
+        engine.network.socket.readyState = WebSocket.CLOSED;
+        expect(controller.send({ action, roundId: 'round', roundRevision: 1 })).toBe(false);
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(controller.status.textContent).toContain('No request was sent');
+        controller.dispose();
+    });
+
+test.each(['blackjack', 'poker'])('offline %s submissions clear pending and do not replay at reconnect', kind => {
+    const { engine, controller } = setup();
+    const ui = kind === 'blackjack' ? controller.blackjack : controller.poker;
+    const view = { available: true, processing: false, phase: 'betting', roundId: 'round', currency: 'gold',
+        balance: 1000, gold: 1000, minBet: 100, maxBet: 100000, betStep: 100, players: [] };
+    ui.update(view, 'hero'); engine.network.socket.readyState = WebSocket.CLOSED;
+    const payload = { action: kind === 'blackjack' ? 'bet' : 'poker_buy_in', roundId: 'round', bet: 100 };
+    ui.submit(payload);
+    expect(engine.network.send).not.toHaveBeenCalled();
+    expect(kind === 'blackjack' ? ui.pendingKey : ui.pending).toBeFalsy();
+    expect(ui.summary.textContent).toContain('No request was sent');
+    engine.network.socket.readyState = WebSocket.OPEN;
+    ui.update(view, 'hero');
+    expect(engine.network.send).not.toHaveBeenCalled();
+    ui.submit(payload);
+    expect(engine.network.send).toHaveBeenCalledTimes(1);
+    controller.dispose();
+});
+
+test('a send refusal after the ready-state check clears local pending without replaying', () => {
+    const { engine, controller } = setup();
+    engine.network.send.mockReturnValue(false);
+    controller.blackjack.update({ available: true, processing: false, phase: 'betting', roundId: 'round', currency: 'gold',
+        balance: 1000, players: [] }, 'hero');
+    controller.blackjack.submit({ action: 'bet', roundId: 'round', bet: 100 });
+    expect(controller.blackjack.pendingKey).toBeNull();
+    expect(controller.blackjack.summary.textContent).toContain('No request was sent');
+    expect(engine.network.send).toHaveBeenCalledTimes(1);
+    controller.dispose();
+});
