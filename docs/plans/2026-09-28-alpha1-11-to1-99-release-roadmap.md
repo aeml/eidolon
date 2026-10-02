@@ -287,8 +287,10 @@ The [arena-sync follow-up](2026-10-02-release1-72-pvp-sync-checks.json) coalesce
 ranked completion/periodic database requests over the existing durable outbox,
 while delivering return/result feedback separately. Burst, failure/retry,
 private presentation and durable-before-return/revision/journal regressions pass.
-Latest binary match evidence, other completion workers and outbox-size bounds
-remain separate; this is not a completed or published security milestone.
+A short actual four-socket disconnect/forfeit/resume/restart check also passes
+on the race-enabled4ff1d1bd binary and disposable Mongo. Other completion
+workers, outbox-size bounds and wider combat/load evidence remain separate;
+this is not a completed or published security milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

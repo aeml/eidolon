@@ -27,8 +27,22 @@
     "server/pvp_sync_work.go": "57cf88370a194b99e0b10919d1850773a002bc65b50422b61d7b1595d9b690af",
     "server/pvp_sync_work_test.go": "e69b3203e457752229a92bc5b9de7ef01161dd65576d5ab522bb58e1cdee1532"
   },
+  "connectedBinary": {
+    "sourceCommit": "4ff1d1bdf799b06be842c46ea4db29f5134ca972",
+    "path": "/tmp/eidolon-1-72-arena-sync-oLfAUw/server",
+    "sha256": "72fef1c59717c264295b662a791345413d78eefa1e578b6b55a50a7f70806cbc",
+    "build": "Go1.27.1 with race detector and fixture health identity buildCommit=server; inherited Alpha1.70 defaults, not a1.72 deployment.",
+    "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32853 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-1-72-arena-sync-oLfAUw/server GOTOOLCHAIN=go1.27.1 go test -race . -run '^TestArenaActualDisconnectPenaltySurvivesResumeAndRestart$' -count=1 -timeout=90s",
+    "passed": true,
+    "packageSeconds": 21.760,
+    "scope": "Four actual socket participants: disconnect/forfeit ranked result, ordinary resume, saved profile/penalty and process restart. This is not a four-player dungeon clear or full combat-round balance run.",
+    "disposableContainer": "8998daa91c9315926147a8ba74a9ca0af3079512cc88b4b29f2f260b77242eec",
+    "storage": "Verified eidolon.qa.scope=arena-sync-20261002 and Mounts=[], bounded512MiB/32MiB tmpfs, memory/CPU caps and loopback-only Mongo port.",
+    "evidenceDirectories": ["/tmp/eidolon-compat-session-2179281077", "/tmp/eidolon-compat-session-1634368706"],
+    "cleanup": "Stopped and removed only the exact inspected task container after completion. Synthetic tmpfs accounts are gone; binary/process-log artifacts retained. No production account/data/service or global Docker cache changed."
+  },
   "limits": [
-    "No actual Mongo or latest production-binary match proof yet. Earlier connected account/resource fixtures predate this change.",
+    "One bounded real-match disconnect/resume/restart fixture, not exhaustive PvP, campaign, load, public-proxy or production deployment acceptance. Earlier account/resource receipts retain their source scopes.",
     "This bounds arena synchronization passes, not total journal size, per-match UI update workers, guild completion or weekly-raid delivery work. Those boundaries remain separate.",
     "No 1.72 version promotion, CI publication, player-capacity certification or campaign/pacing acceptance."
   ]
