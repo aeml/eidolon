@@ -14,9 +14,17 @@ test("1.66.0 documents EP-wallet without new awards or automatic actions", () =>
 
 test("1.65.0 documents slots without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');
-    const start = html.indexOf('data-version="1.65.0"'), previous = html.indexOf('data-version="1.64.0"');
+    const start = html.indexOf('data-version="1.65.0"'), previous = html.indexOf('data-version="1.64.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["reels animate","pauses for bonus choices","do not consume queued spins","Stop remains available","never silently restores","unchanged updates","100,000 Gold or 100 EP","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.64.1 retains truthful house wager details and records the unaccepted predecessor', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.64.1"'), previous = html.indexOf('data-version="1.64.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['wager details are unavailable', 'a confirmed wager or a win', 'Server-owned stakes',
+        'server\'s house-table wager format', 'not accepted live', 'Ilyra\'s permanent archmage outfit', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.64.0 documents house-table without new awards or automatic actions", () => {

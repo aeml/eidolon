@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.64.1",
+  "status": "corrected candidate; local checks passed, CI and public acceptance required",
+  "failedPredecessor": {
+    "commit": "5f5a7cd00cf9fc436481d260e12521098d5548f6",
+    "run": 37002763109,
+    "conclusion": "failure",
+    "gate": "Browser Smoke (Playwright 2/3): both quality cases in casino-session-lifetime.spec.js threw on this.own.wagers.length.",
+    "cause": "The lifecycle fixture reused card-game participant fields for roulette/baccarat and omitted the actual server house-participant wagers array. The new confirmed-slip display assumed that array existed.",
+    "acceptance": "Not accepted live. No failed CI job was cancelled, rerun or relabelled."
+  },
+  "scope": [
+    "Align house lifecycle participants with houseParticipantView: wagers, paid and payout; catalog spots use multiplier rather than obsolete bets.",
+    "Retain visible seats and table controls for missing, null or non-array wager details. Show unavailable details, not a fabricated zero stake or confirmation.",
+    "Keep that participant blocked from sending another wager; do not celebrate a payout without a known stake. A new authoritative round still restores ordinary betting.",
+    "Align login label, source/server/container/deploy/CI defaults and cumulative 1.64.1 notes. No settlement, odds, currency, timer, saved-account or player-asset change."
+  ],
+  "checks": {
+    "focusedClient": {"suites": 6, "checks": 411, "seconds": 3.693, "passed": true},
+    "newNegatives": "Six roulette/baccarat cases cover absent, null and non-array lists, truthful chair/slip text, blocked submission, no fabricated win, and recovery on the next round.",
+    "browser": {
+      "cases": 8,
+      "seconds": 37.5,
+      "passed": true,
+      "retries": 0,
+      "scope": "Both games at 390/844/1440 widths with unavailable-detail and confirmed-slip checks; native System Chrome High and Low complete venue lifecycle across three visits, both floors, four fitted classes and all five game UIs.",
+      "artifacts": "/tmp/eidolon-1641-final-browser-20261002"
+    },
+    "lint": "Focused ESLint passed.",
+    "whitespace": "git diff --check passed."
+  },
+  "ilyraRecheck": {
+    "verifiedOn": "2026-10-02",
+    "source": "Existing accepted Blender-authored permanent NPC outfit, introduced by Alpha 1.58.5; read-only Blender MCP scene contains the costume and rig.",
+    "publicModelSha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+    "match": "Full ordinary-DNS IPv4 public GLB response matches the local dressed model. Five focused NPC checks pass and the retained native front view was inspected.",
+    "limits": "Not a new model export or a live authenticated town screenshot. Player Wizard equipment is unchanged."
+  },
+  "limits": "Synthetic browser views are not connected financial settlement, physical-phone approval, 232-player capacity or a new payment/legal approval. Earlier accepted Ilyra and monetary-rule evidence retain their original scopes. The last accepted live release remains Alpha 1.63.0 until this candidate passes full exact-source CI and independent public acceptance."
+}
