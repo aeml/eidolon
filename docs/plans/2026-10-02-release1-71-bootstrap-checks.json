@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "partial implementation, local checks passed; not published as 1.71",
+  "finding": "The inherited Compose fallback supplied donveetz when the bootstrap environment variable was unset. Against a fresh database, public signup could create a configured bootstrap identity before the legitimate operator, after which ordinary exact-name /relevel authority could promote that authenticated account. This is a fresh-install threat identified from source, not a claim of an exploited production account.",
+  "scope": [
+    "Remove the implicit privileged Compose username and leave the sample allowlist empty; an explicitly configured nonempty allowlist is retained.",
+    "Refuse new public registration of configured bootstrap names and case variants before credential query/hash admission, including protection from the lowercase public-name index collision.",
+    "Keep actual bootstrap authorization exact and case-sensitive. Reservation cannot grant a role, and stored administrator roles remain authoritative outside the allowlist.",
+    "Document verified-existing-account enrollment, clearing the bootstrap list after a durable grant, and the separation from password recovery/account-ownership authority."
+  ],
+  "checks": {
+    "newNegativeCases": "Five actual dispatcher reservations with an intentionally absent database, plus a case-variant/disabled-list authority check. An ordinary distinct signup remains valid.",
+    "focusedRace": "Bootstrap/registration, credential work, auth dispatch, token/closure lifetime, queues, character ownership, session activity, inbound policy and protected administrator-role tests passed in 2.646 seconds. Existing role persistence/idempotency, exact-name authority, QA separation, sender spoof rejection and fail-closed role storage were retained.",
+    "clientAndContract": "357 overlapping version/boot checks passed in 2.005 seconds. The old Compose assertion was intentionally replaced by the stronger opt-in/no-implicit-account invariant; no exact-role authorization assertion was weakened.",
+    "compose": "Read-only Compose rendering with sample inputs verified unset and explicit-empty bootstrap values both produce an empty argument, while a supplied VerifiedOperator value is retained. Only those arguments were printed, not expanded database/environment secrets.",
+    "connectedFixture": "Extended the existing bounded credential socket fixture to reject exact and uppercase configured bootstrap signup using real startup flags. This extension has not yet been rerun against the final source; it joins the existing CI socket step, not a new job or campaign run."
+  },
+  "limits": [
+    "No deployed environment, role, production password, administrator grant or account ownership was mutated.",
+    "Existing explicit bootstrap configuration remains active until the operator removes it; role revocation must not leave a revoked account authorized to bootstrap itself again.",
+    "Owner recovery delivery/verification choice and final exact-source connected acceptance remain unfinished before 1.71 publication.",
+    "This scoped threat fix does not certify all account, administrator, dependency, privacy or infrastructure security."
+  ]
+}

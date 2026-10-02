@@ -22,7 +22,7 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `MONGO_INITDB_ROOT_PASSWORD`
 - `MONGO_URI` (must use `mongo:27017` and `authSource=admin`)
 - `EIDOLON_QA_USERNAMES` (optional; dedicated QA usernames only)
-- `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact usernames allowed to persist the administrator role with `/relevel`; currently only `donveetz`)
+- `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` (exact verified existing usernames temporarily allowed to persist the administrator role with `/relevel`; prepared1.71 defaults to empty and preserves existing durable roles)
 - `EIDOLON_ADMIN_AUDIT_RETENTION_DAYS` (optional, defaults to90; whole days7–365)
 - `EIDOLON_AUTH_MAX_CONCURRENT` (prepared1.71; optional, defaults to4; whole number1–32)
 

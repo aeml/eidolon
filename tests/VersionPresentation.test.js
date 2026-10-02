@@ -1792,10 +1792,13 @@ describe('version presentation', () => {
         });
     });
 
-    test('keeps the administrator bootstrap exact and explicitly disableable', () => {
+    test('keeps administrator bootstrap opt-in without an implicit privileged account', () => {
         const compose = fs.readFileSync(path.join(repoRoot, 'server/docker-compose.yml'), 'utf8');
-        expect(compose).toContain('--admin-bootstrap-usernames=${EIDOLON_ADMIN_BOOTSTRAP_USERNAMES-donveetz}');
+        const example = fs.readFileSync(path.join(repoRoot, 'server/.env.example'), 'utf8');
+        expect(compose).toContain('--admin-bootstrap-usernames=${EIDOLON_ADMIN_BOOTSTRAP_USERNAMES:-}');
+        expect(compose).not.toContain('EIDOLON_ADMIN_BOOTSTRAP_USERNAMES-donveetz');
         expect(compose).not.toContain('EIDOLON_ADMIN_BOOTSTRAP_USERNAMES:-donveetz');
+        expect(example).toMatch(/^EIDOLON_ADMIN_BOOTSTRAP_USERNAMES=$/m);
     });
 
     test('records the final cutover scope and hard production closure rule', () => {

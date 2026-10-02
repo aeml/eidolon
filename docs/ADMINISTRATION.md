@@ -4,7 +4,9 @@
 
 Administrator access is an explicit durable account role in MongoDB. It is not represented by character level, equipment, QA access, or a client-side flag. Server-side authorization must query the durable role for every privileged operation.
 
-The initial bootstrap allowlist is configured with `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` or `--admin-bootstrap-usernames`. It is exact and case-sensitive. The production Compose default contains only `donveetz`.
+The initial bootstrap allowlist is configured with `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` or `--admin-bootstrap-usernames`. Authorization is exact and case-sensitive. Prepared1.71 removes the implicit Compose username and leaves the sample allowlist empty; an explicitly configured existing allowlist is retained. This is not a revocation of durable administrator roles, and no deployed environment is edited by this preparation.
+
+For a fresh installation, create and verify your own ordinary account before configuring its exact username for bootstrap. Do not enable a guessed or unverified account, and do not grant ownership based on a claimed email/name. Once `/relevel` has durably granted the role, remove that account from the bootstrap list and restart normally; its stored role remains authoritative. An empty/unset bootstrap list enables no new promotion. Public registration refuses configured bootstrap names and case variants so a missing reserved account cannot be claimed through signup. Reservation does not authorize a case variant or change existing login credentials. Recovery and role revocation require their separate approved procedures; grant/teleport permissions do not imply password-reset authority.
 
 An allowlisted authenticated player can type `/relevel` in chat. The server consumes the command without publishing it, records the `admin` account role, and leaves character level and progression unchanged. Once granted, the durable role remains authoritative even if the account is later removed from the bootstrap list.
 

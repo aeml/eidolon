@@ -49,6 +49,9 @@ func validateRegistrationCredentials(payload AuthPayload) error {
 		strings.TrimSpace(payload.Username) == "" || strings.IndexFunc(payload.Username, unicode.IsControl) >= 0 {
 		return errors.New("Username must contain 1-128 UTF-8 bytes and no control characters.")
 	}
+	if isReservedBootstrapRegistrationName(payload.Username) {
+		return errors.New("This account name is reserved. Choose another name or contact the game operator.")
+	}
 	if !utf8.ValidString(payload.Password) || utf8.RuneCountInString(payload.Password) < registrationPasswordMinChars {
 		return errors.New("New accounts need a password with at least 15 characters. Use a unique passphrase or password manager.")
 	}

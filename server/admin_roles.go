@@ -27,3 +27,15 @@ func isAdminBootstrapUsername(username string) bool {
 	_, ok := adminBootstrapUsernames[username]
 	return ok
 }
+
+// Registration reservation is deliberately broader than role authorization:
+// case variants also collide with new accounts' public-name index. This never
+// grants a role; bootstrap authorization itself remains exact/case-sensitive.
+func isReservedBootstrapRegistrationName(username string) bool {
+	for reserved := range adminBootstrapUsernames {
+		if strings.EqualFold(username, reserved) {
+			return true
+		}
+	}
+	return false
+}

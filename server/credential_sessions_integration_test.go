@@ -71,11 +71,20 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	name := fmt.Sprintf("credential-legacy-%d", time.Now().UnixNano())
 	const legacyPassword = "oldpass" // Existing short passwords are not migrated or locked out.
+	const newPassword = "prepared-new-account-pass"
+	const bootstrapName = "reserved-owner-171"
 	if err := repo.CreateUser(name, name+"@example.invalid", legacyPassword); err != nil {
 		t.Fatal(err)
 	}
 	address, stop := compatStartServer(t, binary, uri, 171,
-		"-save-journal-dir", t.TempDir(), "-auth-max-concurrent", "1")
+		"-save-journal-dir", t.TempDir(), "-auth-max-concurrent", "1",
+		"-admin-bootstrap-usernames", bootstrapName)
+	for _, reserved := range []string{bootstrapName, strings.ToUpper(bootstrapName)} {
+		conn := credentialSocket(t, address)
+		resourceSend(t, conn, MsgRegister, AuthPayload{Username: reserved, Password: newPassword})
+		credentialExpectError(t, conn, "account name is reserved")
+		conn.Close()
+	}
 	login := func(conn *websocket.Conn, username, password string) {
 		resourceSend(t, conn, MsgLogin, AuthPayload{Username: username, Password: password})
 	}
@@ -114,7 +123,6 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 	// Registration's budget is distinct; duplicate attempts cannot reset it by
 	// changing sockets and must not alter the already registered account.
 	newName := fmt.Sprintf("credential-new-%d", time.Now().UnixNano())
-	const newPassword = "prepared-new-account-pass"
 	for attempt := 0; attempt < 6; attempt++ {
 		conn := credentialSocket(t, address)
 		resourceSend(t, conn, MsgRegister, AuthPayload{Username: newName, Email: newName + "@example.invalid", Password: newPassword})
