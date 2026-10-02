@@ -363,6 +363,16 @@ loop and socket cleanup finish. The real-writer barrier test reproduced prematur
 admission before the fix; focused writer/reader/cleanup, takeover, reconnect,
 envelope and shutdown race checks now pass. This does not certify global writer
 shutdown joining, player capacity or the entire security milestone.
+The [PvP movement-boundary follow-up](2026-10-02-release1-72-pvp-movement-checks.json)
+closes arena escapes through blinks, charges, behind-target strikes, Charge
+Shockwave and Gravity Well displacement. These paths now retain the actual
+match's existing player-center bounds without changing ordinary range, cost,
+cooldown or wound behavior. Normal dispatch reproductions failed before the fix;
+105 new leaf cases and retained arena/dungeon/realm regressions pass with race
+checking. A legacy unlocked Backstab fixture was corrected to use production
+dispatch rather than suppressing its loot/event race. This is prepared source,
+not a full combat/security certificate or publication. The jump policy and
+latest assembled-binary/public release gates remain unfinished.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

@@ -787,6 +787,7 @@ func TestRogueBackstabShadowstep_ClampsInsideDungeon(t *testing.T) {
 	p.X = 17.5
 	p.Z = 0
 	p.SkillRunes = map[string]string{"Backstab": "backstab_shadowstep"}
+	p.UnlockedSkills = []string{"Backstab"}
 	w.AddEntity(p)
 
 	enemy := &Entity{
@@ -804,8 +805,12 @@ func TestRogueBackstabShadowstep_ClampsInsideDungeon(t *testing.T) {
 	}
 	w.AddEntity(enemy)
 
-	setCooldown := func(d time.Duration) {}
-	w.performRogueAbility(p, 0, 0, "", "Backstab", setCooldown)
+	// Dispatch owns the world lock through impact/event publication. Calling
+	// this internal handler unlocked could race the asynchronous loot insertion
+	// when this strike kills its target; do not bypass the production contract.
+	if result := w.PerformAbility(p.ID, 0, 0, "", "Backstab"); !result.Accepted {
+		t.Fatalf("backstab not admitted: %+v", result)
+	}
 
 	if p.X > 20.001 || math.Abs(p.Z) > 0.001 {
 		t.Fatalf("expected shadowstep to clamp inside dungeon boundary, got (%.2f, %.2f)", p.X, p.Z)

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 ability movement and forced-displacement authority",
+  "status": "prepared, not versioned or published",
+  "parentCommit": "c3704278775ec51241a5fa02d3565c67977568c8",
+  "baseline": {
+    "ordinaryDispatch": "A real match plus normal PerformAbility reproduced Teleport's east-boundary cast/landing at x31 beyond the existing x24 center limit. Charge variants likewise published out-of-bounds destinations; Rogue behind-target movement escaped arena corners; Gravity Well displaced edge opponents beyond the existing floor.",
+    "fixtureCorrections": "Initial fixtures included opening invulnerability, expected Momentum's 8-unit aim to extend to14 rather than the actual +50%=12, and expected base Shadow Lunge to deal an immediate hit instead of a bleed. Corrected these assertions while preserving boundary checks, resource/cooldown checks, exact ordinary endpoints, and Lunge's actual wound/source contract. No runtime change to these mechanics.",
+    "raceFinding": "First broader race run exposed legacy TestRogueBackstabShadowstep_ClampsInsideDungeon calling the internal world-locked handler without its required lock. A lethal cast's asynchronous loot insertion raced cast event publication. The fixture now uses normal PerformAbility with Backstab unlocked; production dispatch already owns the world lock. No race suppression or weakening of geometry checks."
+  },
+  "changes": [
+    "Shared ability/jump displacement destination helper applies the actual PvP match's existing +/-24 X and +/-16 Z center bounds, just like network walking/jumping. A forged scene prefix does not count as a real match.",
+    "This clips Wizard Teleport, Fighter Charge/Momentum/Shattering/Juggernaut, Rogue Shadow Strike/Lunge/Shadowstep and Charge Shockwave before movement or replicated destinations can escape.",
+    "Gravity Well and Black Hole pulls independently clip the resulting opponent position to the same match bounds before grounding and spatial-grid update.",
+    "Existing actor-to-PvP combat lock order is retained; no new worker, mutable geometry cache or scene-access grant."
+  ],
+  "checks": {
+    "focused": "Go1.27.1 race checks passed, package1.414s, for five new groups plus the corrected legacy Backstab fixture.",
+    "newCases": "105 new leaf cases:70 ground-movement edge/interior cases across real duel/ranked1v1 with seven skill/rune variants;24 Rogue corner cases including Lunge extended/cripple/clone variants;8 Gravity Well/Black Hole edge pulls;2 Charge Shockwave impacts;1 forged-prefix denial. Boundary checks retain mana/cooldown, ordinary endpoint, damage or wound semantics.",
+    "retained": "Go1.27.1 race run passed in34.785s:84 top-level arena, duel, dungeon, jump, Dark Realm, teleport, shadow and gravity groups;318 named pass events including nested cases, zero failures and zero race warnings. Counts overlap the focused checks and are not additive coverage.",
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race -json ./internal/game -run '^Test(PvP|Arena|Duel|DungeonGroundMovementAbilities|DungeonJump|RogueTargetedMovement|NetworkJump|StartPlayerJump|WorldUpdateAdvancesJump|DarkRealm|Rock.*Displacement|.*Teleport.*|.*Shadow.*|.*Gravity.*)' -count=1 -timeout=60s",
+    "whitespace": "gofmt and git diff --check passed. No frontend changes, package update, new Mongo container or long soak needed for this server-only geometry follow-up."
+  },
+  "sourceHashes": {
+    "server/internal/game/dungeon_movement_constraints.go": "af513faa94bd0a1d406e8f564a01d46a5ff78b6e490d7fac5f12b58217eb9641",
+    "server/internal/game/ability_wizard.go": "69197b51a6b9853f86ac794af802d99f04f8bf7ee9e476dd09e71d3fd46f2f10",
+    "server/internal/game/pvp_movement_ability_bounds_test.go": "558941cade14fb2cfea15cd6c8d3c47cab8112e4bffce18b3d0c8cdcc590c1d0",
+    "server/internal/game/ability_handlers_test.go": "efae9399440eee5963b0b006efe3fdbd4fc4d650b62752cfea604a5ed209434a"
+  },
+  "limits": [
+    "World-dispatch and update tests, not latest assembled-binary browser acceptance, physical-phone verification, full combat balancing or player-capacity certification.",
+    "Normal quick-jump range versus distance-scaled flight remains an explicit open policy choice; arbitrary distant quick jumps are not declared safe by this arena fix.",
+    "1.71 recovery choice/workflow and ordered version, patch notes, CI and public acceptance remain open. Live remains accepted Alpha1.70.0; no deployment or production-state change initiated."
+  ]
+}

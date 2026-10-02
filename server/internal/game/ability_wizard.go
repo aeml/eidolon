@@ -160,6 +160,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					if dist > 0.5 && !target.CCImmune {
 						oldX, oldZ := target.X, target.Z
 						target.X, target.Z = w.stopRockMovement(target, target.X+dx*pullStrength, target.Z+dz*pullStrength)
+						if x, z, ok := w.constrainPvPPoint(target.InstanceID, target.X, target.Z); ok {
+							target.X, target.Z = x, z
+						}
 						// The whole pull segment was validated above. Interpolation
 						// stays on that segment without a nested instance lock.
 						w.groundActorLocked(target)

@@ -77,6 +77,14 @@ func (w *World) constrainDungeonTargetPosition(entity *Entity, x, z float64) (fl
 // position, then constrain the complete path through the canonical floors.
 // Ordinary walk target selection and AI routing retain their separate policy.
 func (w *World) constrainDungeonMovementDestination(entity *Entity, x, z float64) (float64, float64, bool) {
+	// Blinks, charges, behind-target strikes and knockbacks use the same
+	// active-match center limits as walking/jumping. Actor -> PvP is combat's
+	// established lock order; a scene-name prefix alone grants no arena access.
+	if entity != nil {
+		if px, pz, ok := w.constrainPvPPoint(entity.InstanceID, x, z); ok {
+			return px, pz, true
+		}
+	}
 	// The existing ability/jump destination entry point also owns candidate
 	// overworld cover. Ordinary AI target selection remains unconstrained here.
 	if entity != nil && entity.InstanceID == "" && len(w.rockSolids) > 0 {
