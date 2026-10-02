@@ -126,3 +126,20 @@ evidence; implement the approved transition server-side with save protection.
 Human
 campaign pacing and actual-phone dungeon/party feedback remain user-playtest
 owned; no acceptance is inferred from their deferral.
+
+## Prepared 1.72 connection-pressure controls — not live yet
+
+The security candidate adds `-http-max-connections` (default1024, range1–8192).
+It caps accepted HTTP/TLS transports, including hijacked WebSockets, before
+creating their HTTP connection workers. Saturation waits in the kernel backlog;
+it does not evict an existing player or return an application-level503.
+Use a value above your chosen `-ws-max-connections` cap (default512) to leave
+ordinary HTTP headroom. The separate WebSocket gate can return503 after HTTP
+admission. These are protection limits, not measured player capacity.
+
+The candidate also bounds ordinary headers, body reads, writes and idle
+keepalives, and upgrade-handshake writes. Active game sockets retain their own
+Pong/fragment deadlines. [Connection-pool checks](plans/2026-10-02-release1-72-http-connection-checks.json)
+and [HTTP deadline checks](plans/2026-10-02-release1-72-http-bound-checks.json)
+name the shortened/small-pool fixtures and remaining upstream/worker limits.
+Do not assume these flags or protections exist in an earlier deployed binary.

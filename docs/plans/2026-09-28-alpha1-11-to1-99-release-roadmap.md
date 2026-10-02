@@ -209,6 +209,12 @@ handshake timeout. Actual loopback oversized-header, incomplete-request, idle,
 blocked-response and upgraded-WebSocket checks passed with race checking;
 shortened fixture deadlines and remaining upstream/connection bounds are named.
 This is prepared security work, not production network/capacity acceptance.
+The [HTTP connection-pool follow-up](2026-10-02-release1-72-http-connection-checks.json)
+reserves application transport capacity before Accept and retains it across
+TLS and WebSocket hijacking until the connection closes. Saturation waits in
+the kernel backlog, not a new application worker. Real small-pool HTTP/TLS,
+hijack, reuse and shutdown checks passed; operator configuration, backlog and
+remaining worker/capacity limitations are recorded. This is not yet deployed.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -51,6 +52,7 @@ var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves"
 var checkSchema = flag.Bool("check-schema", false, "Read-only database compatibility check; exit without logging files, migrations or admission")
 var credentialConcurrencyFlag = flag.Int("auth-max-concurrent", defaultCredentialConcurrency, "Maximum simultaneous credential queries/hashes (1-32); excess requests receive retry feedback")
 var websocketConnectionsFlag = flag.Int("ws-max-connections", defaultWebsocketConnections, "Maximum simultaneous WebSocket upgrades/transports (1-4096); excess upgrades receive HTTP503")
+var httpConnectionsFlag = flag.Int("http-max-connections", defaultHTTPConnections, "Combined HTTP/TLS/WebSocket connection cap (1-8192); saturated accepts wait in the kernel backlog; allow headroom above the WebSocket cap")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
@@ -394,6 +396,10 @@ func main() {
 		os.Exit(2)
 	}
 	websocketAdmission = &websocketConnectionGate{limit: *websocketConnectionsFlag}
+	if *httpConnectionsFlag < 1 || *httpConnectionsFlag > maxHTTPConnections {
+		fmt.Fprintf(os.Stderr, "http-max-connections must be between 1 and %d\n", maxHTTPConnections)
+		os.Exit(2)
+	}
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
 	adminBootstrapUsernames = parseAdminBootstrapUsernames(*adminBootstrapUsernamesFlag)
 	closers, err := setupLogging()
@@ -995,13 +1001,24 @@ func main() {
 	}()
 
 	log.Printf("Server started on %s", *addr)
+	baseListener, err := net.Listen("tcp", srv.Addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	listener, err := newBoundedHTTPListener(baseListener, *httpConnectionsFlag)
+	if err != nil {
+		baseListener.Close()
+		log.Fatal(err)
+	}
+	defer listener.Close()
+	log.Printf("Combined HTTP/TLS/WebSocket connection cap: %d", *httpConnectionsFlag)
 	var serveErr error
 	if *certFile != "" && *keyFile != "" {
 		log.Printf("Serving with SSL/TLS")
-		serveErr = srv.ListenAndServeTLS(*certFile, *keyFile)
+		serveErr = srv.ServeTLS(listener, *certFile, *keyFile)
 	} else {
 		log.Printf("Serving without SSL (HTTP)")
-		serveErr = srv.ListenAndServe()
+		serveErr = srv.Serve(listener)
 	}
 	if !errors.Is(serveErr, http.ErrServerClosed) {
 		log.Fatal(serveErr)

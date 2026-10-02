@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "milestone": "1.72 partial protocol-security review",
+  "status": "prepared, not deployed",
+  "scope": [
+    "Reserve a bounded listener slot before TCP Accept, preventing ordinary HTTP/TLS connection goroutines from growing without an application connection-count limit.",
+    "The shared pool includes raw HTTP, TLS handshakes/connections and hijacked WebSockets until their actual transport closes. It is separate from existing WebSocket upgrade/read-pump admission.",
+    "Saturation waits in the kernel connection backlog; it creates no per-waiter application goroutine and does not evict an existing player or add account/IP bans.",
+    "One-time connection/listener closure frees capacity and wakes blocked accepts safely; main retains HTTP/TLS serving and graceful shutdown paths."
+  ],
+  "operatorConfiguration": {
+    "flag": "-http-max-connections",
+    "default": 1024,
+    "acceptedRange": [1, 8192],
+    "relationship": "Combined pool overlaps the separate -ws-max-connections pool (default512); use HTTP capacity above the chosen WS cap to leave ordinary HTTP headroom. Neither number demonstrates active-player capacity.",
+    "saturation": "Listener-level waiting, not HTTP503. Existing WS-specific overload can still return HTTP503 after HTTP admission."
+  },
+  "checks": {
+    "newTestGroups": 5,
+    "configuration": "Invalid limits rejected; minimum, default and maximum pool sizes retained.",
+    "actualHTTPPool": "Two occupied keepalive connections keep a third request pending; closing one allows the exact waiting request to succeed without increasing pool size.",
+    "actualCloseAndShutdown": "Closing a saturated listener wakes blocked Accept; duplicate closes release the admitted transport reservation exactly once.",
+    "actualHijackedSocket": "Production upgrader supports message echo; handler return does not release the active WebSocket's slot. Closing its transport admits a waiting HTTP request.",
+    "actualTLSPool": "Trusted disposable TLS fixture holds the shared single slot across a successful request; a second TLS handshake waits until transport closure, then completes its exact HTTP request.",
+    "combinedProtocolRace": {"command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(HTTP|Health|Websocket|Inbound|Protocol|DecodeInbound|MessagePolicy|ClientQueue)' -count=1 -timeout=30s", "seconds": 13.778, "passed": true, "scope": "Current production changes and first four new connection groups, before adding the TLS-only test."},
+    "finalHTTPRace": {"command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(HTTP|Health|Websocket)' -count=1 -timeout=20s", "seconds": 3.132, "passed": true, "scope": "Final source including all five new connection groups, HTTP deadlines, health and retained WS admission checks."},
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/http_connection_listener.go": "581b7859e7819c5799e7ba0758dcdd2613af34a8d2c5692e4fb0902294cec1b2",
+    "server/http_connection_listener_test.go": "8a9834a436c319720bb3ad8ad23a0aa5d03202d1cf4a39a5c65f4b9b6d9b3206",
+    "server/main.go": "29314c7c4a6c3eb8d3d5871d3b3ca84306d770f799c68afc999317af7b946704"
+  },
+  "limits": [
+    "Actual in-process loopback HTTP/TLS/hijack checks with small pools, not latest-binary authenticated database/restart, public proxy/TLS or measured player-capacity acceptance.",
+    "A waiting TCP connection can still exist in the kernel backlog. This is an accepted application-transport bound, not total raw network, kernel, proxy or upstream denial-of-service protection.",
+    "TLS uses a trusted test certificate, not public certificate/renewal or owner-deferred IPv6 proof.",
+    "Other background worker bounds, jump policy and latest-source connected/load evidence remain open; milestone1.72 is not complete."
+  ]
+}
