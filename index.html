@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.62.0</span>
+                    <span class="start-version-row__label">Alpha 1.66.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="View account moderation notices and submit an appeal">Account help</button>
             </div>
@@ -771,6 +771,42 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.66.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.66.0 (safer EP wallet and exchange receipts)</h3>
+                    <ul>
+                        <li>Gold converts to EP only at the fixed rate of 1,000,000 Gold for 1 EP. EP can fund EP casino games and cosmetic unlocks, never Gold or player power. Existing balances and monthly allowances are unchanged.</li>
+                        <li>Wallet and VIP replies identify their character before updating the menu or character badge. Retired menus and replies for another character cannot overwrite balances or finish your exchange.</li>
+                        <li>Exchange confirmations must match your saved request and contain valid final balances and the fixed rate. Pending receipts remain pending instead of inventing a successful exchange.</li>
+                        <li>Cosmetic ownership stays with its owner when normal gear is sold, auction-listed, traded or banked. No reverse conversion, new awards, account reset or purchase method. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.65.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.65.0 (keep your slot queue through the bonus)</h3>
+                    <ul>
+                        <li>Slot reels animate before the saved result appears. A queued run pauses for bonus choices and saved bonus reveals, then resumes its remaining spins. Bonus choices do not consume queued spins.</li>
+                        <li>Win celebrations finish before the next automatic spin. Stop remains available during bonuses; exiting, disconnecting, changing character or losing synchronization cancels unstarted queued spins. Reconnecting never silently restores an old queue.</li>
+                        <li>Retired bonus buttons cannot act on later results. Fresh saved revisions drive reveals; unchanged updates do not replay outcomes or repeatedly scroll the panel.</li>
+                        <li>Themed machines retain their published mechanics and rules. No random-dealing, paytable, reward, wallet, account-reset or payment changes. Limits remain 100,000 Gold or 100 EP; EP cannot return to Gold or buy player power. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.64.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.64.0 (clearer roulette and baccarat betting)</h3>
+                    <ul>
+                        <li>Roulette and baccarat retain shared rounds and server-owned countdowns. Confirmed spots and slip totals are clearer; refreshing betting options does not restart the clock.</li>
+                        <li>A changed betting catalog clears only stale unconfirmed drafts, with an explanation. Detached boards and closed panels cannot submit old wagers.</li>
+                        <li>Processing messages distinguish saving a wager from saving its return. Displayed results do not grant money; the server owns accepted stakes and payouts.</li>
+                        <li>No rules, odds, wallets, account resets or payment changes. Limits remain 100,000 Gold or 100 EP; EP cannot return to Gold or buy player power. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.63.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.63.0 (clearer shared Hold’em hands and saved cash-outs)</h3>
+                    <ul>
+                        <li>Hold’em remains real-player-only, with shared rounds, private hole cards and your current best hand. Earlier hands identify their original owners when chairs change; hidden opponent cards stay private.</li>
+                        <li>A 30-second decision timeout checks when free or folds to a bet. The server releases only the current funded chair, only after saving the decision, and cannot evict a later patron. A departing stack follows normal withdrawal; committed pots and all-in eligibility are preserved.</li>
+                        <li>Saved timeout releases can retry safely after a restart. Cash-outs show a pending return until settlement is saved; a win celebration waits for confirmed completion.</li>
+                        <li>Limits remain 100,000 Gold or 100 EP. EP winnings stay EP and cannot return to Gold or buy player power. No dealing, pot, payout, account-reset or payment changes. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.62.0">
                     <h3 class="patch-note-entry__title">Alpha 1.62.0 (clearer blackjack hands and next wagers)</h3>
                     <p class="patch-note-entry__summary">Prepare your next stake while watching a shared hand, with clear saved payouts and reliable chair turnover.</p>

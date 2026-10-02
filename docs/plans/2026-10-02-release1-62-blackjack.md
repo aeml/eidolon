@@ -1,8 +1,9 @@
 # Alpha 1.62 blackjack fairness and presentation
 
 Blackjack preparation fixes timeout chair release and makes saved hand results
-clearer without changing odds, stakes or payout amounts. It is not published;
-the accepted 1.60 and 1.61 releases must precede it.
+clearer without changing odds, stakes or payout amounts. Source defaults and
+cumulative notes identify 1.62; accepted 1.60 and 1.61 now precede it. Its own
+exact-source CI and public deployment acceptance remain pending.
 
 ## Timeout ownership
 
@@ -98,6 +99,6 @@ passed. Counts overlap earlier evidence and are not additive.
 Retain the [existing blackjack rules and connected acceptance](2026-09-13-casino-blackjack-rules.md)
 as historical evidence, not proof that the new timeout path was already live.
 The ordinary connected shared-round exercise is retained above. Before
-publication, align version defaults and cumulative login patch notes, then require exact-source CI
-and independent public frontend/backend acceptance. Hold'em timeout handling
+publication, retain the aligned version defaults and cumulative login patch notes,
+then require exact-source CI and independent public frontend/backend acceptance. Hold'em timeout handling
 belongs to 1.63, not this prepared blackjack change.
