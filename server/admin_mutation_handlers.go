@@ -214,7 +214,7 @@ func retainFailedAdminActivity(c *Client, event database.AdminActivity) bool {
 	unjournaledActivity.Lock()
 	unjournaledActivity.events[event.ID] = event
 	unjournaledActivity.Unlock()
-	c.transportClosed.Store(true)
+	c.markTransportClosed()
 	if c.conn != nil {
 		_ = c.conn.Close()
 	}

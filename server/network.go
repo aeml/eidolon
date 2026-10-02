@@ -19,7 +19,7 @@ func runHub() {
 		case reply := <-hubQuiesce:
 			closing := make([]*Client, 0, len(clients))
 			for client := range clients {
-				client.transportClosed.Store(true)
+				client.markTransportClosed()
 				if client.conn != nil {
 					client.conn.Close()
 				}
@@ -32,7 +32,7 @@ func runHub() {
 			clients[client] = true
 		case client := <-unregister:
 			if _, ok := clients[client]; ok {
-				client.transportClosed.Store(true)
+				client.markTransportClosed()
 				scheduleCharacterWork(func() { cleanupClient(client) })
 				delete(clients, client)
 				client.closeSendQueues()
@@ -55,7 +55,7 @@ func runHub() {
 					// Critical messages (Chat, Damage, etc.)
 					// Try to send, if full, we might have to disconnect or risk blocking
 					if !client.sendSafe(message.Data) {
-						client.transportClosed.Store(true)
+						client.markTransportClosed()
 						scheduleCharacterWork(func() { cleanupClient(client) })
 						delete(clients, client)
 						client.closeSendQueues()
@@ -211,7 +211,11 @@ func cleanupClientLocked(client *Client) {
 	//    The entity remains in the world during the resume window so a
 	//    reconnecting client can pick up where it left off.
 	if client.playerID != "" {
-		if !world.SetEntityDisconnected(client.playerID, time.Now()) {
+		disconnectedAt := time.Now()
+		if firstClosure := client.transportClosedAt.Load(); firstClosure != nil {
+			disconnectedAt = *firstClosure
+		}
+		if !world.SetEntityDisconnected(client.playerID, disconnectedAt) {
 			// Entity was already gone (e.g. removed by the sweep); nothing to do.
 			log.Printf("cleanupClient: entity %s not found in world", client.playerID)
 		}
@@ -277,7 +281,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 
 func (c *Client) readPump() {
 	defer func() {
-		c.transportClosed.Store(true)
+		c.markTransportClosed()
 		unregister <- c
 		c.conn.Close()
 	}()

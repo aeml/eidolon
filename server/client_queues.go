@@ -1,5 +1,16 @@
 package main
 
+import "time"
+
+// Record the first closure before publishing the closed flag. Hub, reader and
+// queue cleanup can observe the same loss without extending its resume window.
+func (c *Client) markTransportClosed() { c.markTransportClosedAt(time.Now()) }
+
+func (c *Client) markTransportClosedAt(now time.Time) {
+	c.transportClosedAt.CompareAndSwap(nil, &now)
+	c.transportClosed.Store(true)
+}
+
 // Queue closure and every producer use the same lock. Recovering from a send
 // panic is not synchronization: a concurrent close/send is still a data race.
 func (c *Client) closeSendQueues() {
@@ -9,7 +20,7 @@ func (c *Client) closeSendQueues() {
 		return
 	}
 	c.sendClosed = true
-	c.transportClosed.Store(true)
+	c.markTransportClosed()
 	if c.send != nil {
 		close(c.send)
 	}

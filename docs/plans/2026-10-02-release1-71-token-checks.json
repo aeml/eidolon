@@ -1,0 +1,28 @@
+{
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "partial implementation; not versioned or published as 1.71",
+  "sourceBaseline": "09cb3ff1 (prepared 1.70 branch plus account-security preflight)",
+  "implementation": [
+    "Each cryptographically random token is bound immutably to its authenticated Client. Production login and successful resume issue an owner-bound token; rotation still revokes the previous token.",
+    "All six production transport-closure stores now use one atomic first-closure timestamp before publishing the closed flag. Hub, read pump, queue closure and administration audit-failure closure cannot renew the five-minute grace.",
+    "Long connected play does not expire a resume-only token. Attempts against a still-open owner cannot consume it. Once transport closes, the existing five-minute resume allowance begins; the exact deadline rejects further use.",
+    "Token validation rejects an already authenticated different account before consuming the owner token. Existing newer-owner, work-lock, moderation, audit and character-recovery admission checks remain in place.",
+    "Character cleanup marks disconnection using the same first-closure clock. A 30-second sweep removes expired closed-owner tokens without pruning live-owner tokens or deleting a newer account index.",
+    "No wire token format, password hash, trusted administrator role, account data, casino money or independent fifteen-minute saved dungeon progress policy change. Tokens remain process-local and restart requires ordinary login."
+  ],
+  "tests": {
+    "finalCommand": "GOTOOLCHAIN=go1.24.5 go test -race . -run 'Test(ResumeToken|TransportClosure|ClientQueues|ClientQueue|ClientPlayerBinding|ClientSnapshot|CharacterWork|StaleCleanup|ResumeActivityFailure|SessionActivity|AdminConsoleAdmission)' -count=1",
+    "result": "Passed, eidolon-server package 2.694 seconds; clean git diff --check.",
+    "newCases": "Nine bounded in-process token/closure tests: 100-hour trusted-clock active-play probe followed by real token consumption; first-write closure; exact expiry; rotation/new owner; 32 concurrent consumers with one winner; wrong authenticated account retaining the owner token; sweeping; invalid owner/unknown closure rejection; actual cleanup using the original closure; 32 closure observers preserving first-write time.",
+    "scope": "Real CSPRNG tokens and actual in-memory token mutex/cleanup operations. Fake trusted server times avoid long sleeps. Cleanup uses a fresh local audit journal and fake store, no database, and seals fixture background work to avoid delivering presence. This is not live or connected long-session acceptance.",
+    "retainedCoverage": "Existing queue-close producer races, immutable character binding, account-work ordering, stale cleanup, audit-failure disconnection preservation and protected admin admission passed with the change.",
+    "assemblyHistory": "Initial compile caught a missing time import for the atomic timestamp; corrected it. Earlier focused race checks passed in 2.364 and 2.438 seconds before the final wrong-account fence. Counts and scopes overlap and are not additive."
+  },
+  "remaining1_71": [
+    "Authentication abuse across fresh connections and bounded credential/hash work; review actual trusted proxy identity before using an IP key.",
+    "Credential boundary review without silently locking out existing accounts.",
+    "Owner choice of email versus operator-assisted password recovery, with verified ownership requirements for legacy unverified email. No SMTP integration or administrator password-reset/grant bypass has been added.",
+    "Complete account-security threat review, targeted admission checks, own milestone version/defaults and patch notes, then ordered exact-source deployment and independent acceptance."
+  ],
+  "releaseOrder": "Alpha 1.62.1 CI36994733944 is monitored by Luna. Prepared 1.63–1.70 remain unpublished and must be accepted in order before 1.71. Full roadmap goal stays active."
+}

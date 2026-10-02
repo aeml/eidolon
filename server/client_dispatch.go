@@ -99,7 +99,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Issue session-resume token
-		resumeToken, err := issueResumeToken(c.username)
+		resumeToken, err := issueResumeToken(c.username, c)
 		if err != nil {
 			log.Printf("Failed to issue resume token for %s: %v", c.username, err)
 			resumeToken = ""
@@ -817,7 +817,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		username, ok := validateAndConsumeResumeToken(payload.Token)
+		username, ok := validateAndConsumeResumeToken(payload.Token, c.username)
 		if !ok {
 			c.sendError("Session token invalid or expired. Please log in again.")
 			return
@@ -927,7 +927,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		sessionsMu.Unlock()
 
 		// Issue a fresh resume token for the next disconnect.
-		newToken, err := issueResumeToken(username)
+		newToken, err := issueResumeToken(username, c)
 		if err != nil {
 			log.Printf("Failed to re-issue resume token for %s: %v", username, err)
 			newToken = ""

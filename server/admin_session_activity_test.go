@@ -151,7 +151,9 @@ func TestResumeActivityFailurePreservesOriginalDisconnectedTime(t *testing.T) {
 	world, activeSessions = game.NewWorld(nil), map[string]*Client{}
 	disconnectedAt := time.Now().Add(-10 * time.Minute)
 	world.AddEntity(&game.Entity{ID: "player-audit-resume", Type: game.TypePlayer, Disconnected: true, DisconnectedAt: disconnectedAt})
-	token, err := issueResumeToken("audit-resume")
+	owner := &Client{username: "audit-resume"}
+	owner.markTransportClosed()
+	token, err := issueResumeToken("audit-resume", owner)
 	if err != nil {
 		t.Fatal(err)
 	}

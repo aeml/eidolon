@@ -187,8 +187,8 @@ var unregister = make(chan *Client)
 
 // Session-resume token store (in-memory; one token per username).
 type resumeTokenEntry struct {
-	username  string
-	expiresAt time.Time
+	username string
+	owner    *Client // immutable binding; transport closure uses atomic state
 }
 
 var (
@@ -253,7 +253,10 @@ func generateResumeToken() (string, error) {
 
 // issueResumeToken creates (or replaces) a session-resume token for username.
 // The previous token for this user, if any, is revoked.
-func issueResumeToken(username string) (string, error) {
+func issueResumeToken(username string, owner *Client) (string, error) {
+	if owner == nil || username == "" || owner.username != username {
+		return "", errors.New("resume token requires its authenticated connection")
+	}
 	token, err := generateResumeToken()
 	if err != nil {
 		return "", err
@@ -265,8 +268,8 @@ func issueResumeToken(username string) (string, error) {
 		delete(resumeTokens, old)
 	}
 	entry := &resumeTokenEntry{
-		username:  username,
-		expiresAt: time.Now().Add(resumeWindow),
+		username: username,
+		owner:    owner,
 	}
 	resumeTokens[token] = entry
 	resumeByUser[username] = token
@@ -275,22 +278,65 @@ func issueResumeToken(username string) (string, error) {
 
 // validateAndConsumeResumeToken validates the token and, if valid, removes it
 // and returns the associated username. Returns ("", false) on any failure.
-func validateAndConsumeResumeToken(token string) (string, bool) {
+func validateAndConsumeResumeToken(token, authenticatedUsername string) (string, bool) {
+	return validateAndConsumeResumeTokenFor(token, authenticatedUsername, time.Now())
+}
+
+func validateAndConsumeResumeTokenAt(token string, now time.Time) (string, bool) {
+	return validateAndConsumeResumeTokenFor(token, "", now)
+}
+
+func validateAndConsumeResumeTokenFor(token, authenticatedUsername string, now time.Time) (string, bool) {
 	resumeTokensMu.Lock()
 	defer resumeTokensMu.Unlock()
 	entry, ok := resumeTokens[token]
 	if !ok {
 		return "", false
 	}
-	if time.Now().After(entry.expiresAt) {
-		delete(resumeTokens, token)
-		delete(resumeByUser, entry.username)
+	if resumeTokenExpired(entry, now) {
+		removeResumeTokenLocked(token, entry)
+		return "", false
+	}
+	if authenticatedUsername != "" && authenticatedUsername != entry.username {
+		return "", false
+	}
+	// A resume-only bearer cannot displace or burn the token of a live owner.
+	// Long active play does not spend the disconnected reconnect allowance.
+	if !entry.owner.transportClosed.Load() {
 		return "", false
 	}
 	username := entry.username
-	delete(resumeTokens, token)
-	delete(resumeByUser, username)
+	removeResumeTokenLocked(token, entry)
 	return username, true
+}
+
+func resumeTokenExpired(entry *resumeTokenEntry, now time.Time) bool {
+	if entry == nil || entry.owner == nil {
+		return true
+	}
+	if !entry.owner.transportClosed.Load() {
+		return false
+	}
+	closedAt := entry.owner.transportClosedAt.Load()
+	return closedAt == nil || !now.Before(closedAt.Add(resumeWindow))
+}
+
+// Caller holds resumeTokensMu. Never remove a newer account token's index.
+func removeResumeTokenLocked(token string, entry *resumeTokenEntry) {
+	delete(resumeTokens, token)
+	if entry != nil && resumeByUser[entry.username] == token {
+		delete(resumeByUser, entry.username)
+	}
+}
+
+func pruneResumeTokens(now time.Time) {
+	resumeTokensMu.Lock()
+	defer resumeTokensMu.Unlock()
+	for token, entry := range resumeTokens {
+		if resumeTokenExpired(entry, now) {
+			removeResumeTokenLocked(token, entry)
+		}
+	}
 }
 
 func logSuspicious(r *http.Request, reason string, err error) {
@@ -494,6 +540,7 @@ func main() {
 	// Sweep goroutine: remove disconnected player entities whose resume window
 	// has expired. Runs every 30 seconds.
 	loops.Every(30*time.Second, func() {
+		pruneResumeTokens(time.Now())
 		expired := world.CollectExpiredDisconnectedPlayers(resumeWindow)
 		for _, e := range expired {
 			log.Printf("Session resume window expired for player %s (%s); entity removed", e.Name, e.ID)
