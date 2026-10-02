@@ -382,6 +382,15 @@ Failure cases reproduced on the old runtime; world and actual dispatch race
 checks pass, including concurrent rewards and nested metadata. This is not a
 crash-durable vendor acknowledgement, full1.73 completion or live publication;
 durable trade settlement and the remaining valuable-operation ledger stay open.
+The subsequent [prepared vendor save barrier](2026-10-02-release1-73-vendor-persistence-checks.json)
+uses the existing per-account journal before ordinary sale/buyback replies,
+reconciles pending saves before another vendor effect, and reports uncertain
+results without granting twice. Real filesystem failure/reopen checks with an
+injected atomic-receipt committer cover sale and buyback, inverse-request fencing,
+later-credit preservation and live-copy pinning. Vendor use is fenced while the
+old RAM-only direct trade is active; full durable trade recovery is still required.
+Related race regressions pass. This is unpublished source, not latest-binary,
+Mongo, whole-economy or complete1.73 acceptance.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

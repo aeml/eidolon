@@ -11,6 +11,7 @@ import (
 )
 
 func TestVendorSaleDispatchRejectsEmptyMissingAndProtectedItems(t *testing.T) {
+	setupCharacterJournalTest(t)
 	previousWorld, previousDB := world, db
 	defer func() { world, db = previousWorld, previousDB }()
 	db = nil
@@ -45,6 +46,7 @@ func TestVendorSaleDispatchRejectsEmptyMissingAndProtectedItems(t *testing.T) {
 }
 
 func TestVendorDispatchRepliesSerializeWithActorRewards(t *testing.T) {
+	setupCharacterJournalTest(t)
 	previousWorld, previousDB := world, db
 	defer func() { world, db = previousWorld, previousDB }()
 	db = nil

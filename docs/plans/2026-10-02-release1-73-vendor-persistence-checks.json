@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 ordinary vendor save barrier",
+  "status": "prepared, not versioned or published",
+  "parentCommit": "543a6105",
+  "changes": [
+    "Route sale and buyback through the existing per-account character-save journal. Check persistence availability and reconcile a prior pending save before allowing another vendor mutation.",
+    "Journal and confirm the complete Gold/bag/buyback post-image before normal replies. An unknown database result reports pending, retains recovery state and never compensates or grants another effect.",
+    "A local journal-write failure pins the latest live character using the existing save recovery mechanism. Replayed unavailable item requests do not settle twice and return both current custody views.",
+    "Keep IO outside world/actor locks, refresh owned reply snapshots after IO, and preserve ordinary prices, gear metadata, capacity and admission limits.",
+    "Fence vendor use during the still RAM-only direct trade. This avoids introducing a new durable save of a bag missing that escrow; the fence is not a replacement for the separate full two-account recovery work."
+  ],
+  "checks": {
+    "focusedRace": "The initial expanded vendor checks passed with Go1.27.1 race detection, package3.585s. Existing vendor reply/reward tests also pass with the new real filesystem journal fixture.",
+    "finalRelatedRace": "Go1.27.1 go test -race . -run '^(TestVendor|TestCharacterPersistence|TestCosmeticVendorHandler|TestCosmeticVendorPending)' -count=1 -timeout=45s passed, package4.504s. The changed call site, journal recovery and neighboring existing cosmetic persistence are covered; no broad unchanged soak was repeated.",
+    "saveBarrier": "The injected committer rejects any vendor reply queued before commit. Ordinary sale and buyback confirm complete saves before both custody replies; repeated requests neither settle nor save another vendor effect.",
+    "reopen": "For both sale and buyback, database rejection and committed-but-lost replies are exercised. Every live copy is dropped and the actual BSON journal is reopened. The existing atomic-receipt contract is modeled by the injected committer; replay settles once and preserves a later independent durable Gold credit after a lost reply.",
+    "outage": "Repeated failed preflight denies an inverse vendor action without another Gold/item effect. A renamed journal directory produces a real local write failure, prevents database IO, retains the latest disconnected entity, and permits exactly-once recovery/resynchronization after reopening it.",
+    "unavailable": "Missing persistence and an active RAM direct trade each reject vendor use before any wallet/item mutation or save.",
+    "fixtureCorrections": "Used the actual ClearEntityDisconnected reconnect API after an initial nonexistent helper failed compilation. A saved empty bag is correctly asserted as zero items because existing persistence omits empty slots; it is not asserted as the live bag's blank slot. No production persistence format or protection was weakened.",
+    "format": "gofmt and git diff --check passed."
+  },
+  "sourceHashes": {
+    "server/vendor_handlers.go": "cc336e514fa94734dc451bd79e7ab6b0d509611c581ee5d5e22f0e6287c14225",
+    "server/vendor_persistence_test.go": "7bb7a0245a21a1bf2eb89382cd548d4117457a32b5346ff1590ca6057dc5f55c",
+    "server/client_dispatch.go": "8f50e3cbcd596ed4490e1a0c33f4a64bd57dd91ed335e4c7e834b5446eb1a12f",
+    "server/vendor_sale_guard_test.go": "1f50ddb50a454e3c150f5d8253e2f12fe9b7f366d775ff634d5aa0094474f284"
+  },
+  "limits": [
+    "Injected committer failures and actual local-journal reopening, not a newly assembled game binary, actual sockets, new Mongo execution, browser acceptance or production-data mutation. The unchanged CommitCharacterSave API supplies the atomic single-save receipt; live and exact-source integration gates remain for the complete milestone.",
+    "No change to current direct-trade offer or settlement persistence. Its shared frozen decision, two durable participant receipts, cancellation/full-bag recovery, startup/login and rollback compatibility remain required before1.73 release.",
+    "Forge, drops, quest/raid/event rewards and the remainder of the valuable-operation ledger remain separate work. No complete1.73, whole-economy exactly-once or capacity claim.",
+    "At22:11:24UTC, the separate Alpha1.70.1 hotfix served exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f from backend health/database-ready and frontend release/login/patch notes. Run37068064995 still needed its final live QA job. This prepared1.73 source was not pushed or deployed."
+  ]
+}

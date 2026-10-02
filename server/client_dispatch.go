@@ -1276,69 +1276,8 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
-	case MsgSell:
-		if c.playerID == "" {
-			return
-		}
-		var payload SellPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success := world.PerformSell(c.playerID, payload.ItemID)
-		if success {
-			player.Mu.RLock()
-			invPayload, _ := json.Marshal(player.Inventory)
-			buybackPayload, _ := json.Marshal(player.Buyback)
-			player.Mu.RUnlock()
-			// Send Inventory Update
-			msg := Message{
-				Type:    MsgInventory,
-				Payload: invPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-
-			// Send Buyback Update
-			msgBuyback := Message{
-				Type:    MsgBuybackList,
-				Payload: buybackPayload,
-			}
-			bBuyback, _ := json.Marshal(msgBuyback)
-			c.sendSafe(bBuyback)
-		}
-
-	case MsgBuyback:
-		if c.playerID == "" {
-			return
-		}
-		var payload BuybackPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success := world.PerformBuyback(c.playerID, payload.ItemID)
-		if success {
-			player.Mu.RLock()
-			invPayload, _ := json.Marshal(player.Inventory)
-			buybackPayload, _ := json.Marshal(player.Buyback)
-			player.Mu.RUnlock()
-			// Send Inventory Update
-			msgInv := Message{
-				Type:    MsgInventory,
-				Payload: invPayload,
-			}
-			bInv, _ := json.Marshal(msgInv)
-			c.sendSafe(bInv)
-
-			// Send Buyback Update
-			msgBuyback := Message{
-				Type:    MsgBuybackList,
-				Payload: buybackPayload,
-			}
-			bBuyback, _ := json.Marshal(msgBuyback)
-			c.sendSafe(bBuyback)
-		}
+	case MsgSell, MsgBuyback:
+		handleVendorTransaction(c, msg)
 
 	case MsgPartyInvite:
 		handleMsgPartyInvite(c, msg)
