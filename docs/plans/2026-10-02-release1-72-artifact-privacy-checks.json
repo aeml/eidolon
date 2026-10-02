@@ -42,8 +42,8 @@
     "version": "Alpha 1.70.0",
     "source": "a5069779",
     "scope": "Only ignore rules, credentialed recording suppression, compressed artifact sanitization and its focused tests/receipt. No other partial 1.71/1.72 authentication, dependency, movement, worker or transport work is included.",
-    "status": "Prepared; new exact-source CI and independent public acceptance required."
-    ,"finalAssembly": {"suites": 6, "tests": 446, "seconds": 15.124, "passed": true, "scope": "Merged privacy, release wrapper and version regressions; overlapping earlier evidence. Full lint and whitespace passed."}
+    "status": "Prepared; new exact-source CI and independent public acceptance required.",
+    "finalAssembly": {"suites": 6, "tests": 446, "seconds": 15.124, "passed": true, "scope": "Merged privacy, release wrapper and version regressions; overlapping earlier evidence. Full lint and whitespace passed."}
   },
   "limits": [
     "Configured literal/JSON-escaped credential spellings are covered; this is not arbitrary encoded-secret, bearer-token or image-pixel redaction. Automatic credentialed recordings are disabled rather than claiming that text scanning makes their contents safe.",
