@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "milestone": "1.72 partial protocol-security review",
+  "status": "prepared, not deployed",
+  "finding": "ReadHeaderTimeout alone leaves ordinary HTTP body reads, writes and idle keepalive lifetime without explicit application limits; upgraded handshake writes also need their own timeout.",
+  "scope": [
+    "Central production HTTP server configuration retains routes, address, diagnostics logger and five-second header deadline.",
+    "Add ten-second ordinary request-read/response-write and sixty-second idle-keepalive limits plus a16KiB configured MaxHeaderBytes value.",
+    "Set Gorilla's upgrade-handshake write timeout to five seconds; leave origin checks and disabled WebSocket compression unchanged.",
+    "After a successful upgrade Gorilla clears ordinary HTTP deadlines; the game's existing Pong and new fixed fragment-assembly deadlines govern that transport."
+  ],
+  "checks": {
+    "newTestGroups": 6,
+    "productionConfiguration": "Actual factory defaults, original address/routes/logger, handshake timeout and disabled compression asserted.",
+    "actualOversizedHeaders": "32KiB probe header returns HTTP431 before application handler invocation under the configured production header limit.",
+    "actualIdleExpiry": "Ordinary keepalive response succeeds, then server closes the idle connection under a shortened100ms fixture deadline.",
+    "actualIncompleteRequests": "Incomplete header cannot reach a handler; a partial request body times out. Both use shortened100ms fixture deadlines.",
+    "actualBlockedResponse": "A disposable8MiB response to an unread, small-receive-buffer loopback peer releases its blocked writer with a network timeout under a shortened200ms fixture deadline.",
+    "actualWebsocketUpgrade": "Production upgrader retains a usable loopback WebSocket after150ms, beyond the fixture's50ms ordinary HTTP read/write/idle limits, with exact message echo.",
+    "raceCommand": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(HTTPServer|Health|Websocket)' -count=1 -timeout=20s",
+    "rootSeconds": 2.795,
+    "passed": true,
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/http_server.go": "8336f4b0bfa317482030fb808b107995aedf4e4b6563c429a45a8a9d6b407072",
+    "server/http_server_test.go": "291a911fa314a55424b6fe0a1580e16547a8ba4a2389e19b087a37d73596b02f",
+    "server/main.go": "88b2b6d086ef633c3f3dcdc7f83e39d76803383215906e53daf1dd058c46a595"
+  },
+  "limits": [
+    "Shortened loopback timing exercises the actual HTTP implementation; it is not a minute-long default-idle test, production login, TLS renewal, database or proxy acceptance.",
+    "Go net/http may read bounded parser slack beyond configured MaxHeaderBytes. This is not an exact16KiB raw-wire accounting claim.",
+    "Handshake timeout value is asserted; the upgrade check proves HTTP-deadline clearance, not a malicious stalled handshake-write experiment.",
+    "No global ordinary HTTP connection/arrival cap or upstream denial-of-service protection is established by these deadlines.",
+    "Worker admission, jump policy, latest-source connected/load evidence and other roadmap gates remain open; milestone1.72 is not complete."
+  ]
+}

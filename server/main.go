@@ -169,6 +169,7 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 }
 
 var upgrader = websocket.Upgrader{
+	HandshakeTimeout: websocketUpgradeWait,
 	CheckOrigin: func(r *http.Request) bool {
 		return isAllowedWebsocketOrigin(r.Header.Get("Origin"))
 	},
@@ -978,12 +979,7 @@ func main() {
 		http.NotFound(w, r)
 	})
 
-	srv := &http.Server{
-		Addr:              *addr,
-		Handler:           mux,
-		ErrorLog:          httpErrLogger,
-		ReadHeaderTimeout: 5 * time.Second,
-	}
+	srv := newGameHTTPServer(*addr, mux, httpErrLogger)
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	defer signal.Stop(stop)
