@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.66.0, exact aa7d00ae9191b690d1f034b4b61ef2b7776bb88a,
-CI37014297988. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness and all three
-changed client runtime files. Earlier receipts retain distinct runtime and model
+baseline is Alpha 1.67.0, exact 8cbf0c1c757260aac5d4279c58c0c841d86c45d5,
+CI37019416225. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness, all four
+changed client runtime files and the dressed Ilyra GLB. Earlier receipts retain distinct runtime and model
 checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-66-public.json).
+[acceptance receipt](2026-10-02-release1-67-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -139,7 +139,12 @@ Its [public receipt](2026-10-02-release1-66-public.json) retains all three full-
 publisher comparisons and matching frontend/backend identities/readiness.
 The isolated urgent recipient-private state fix comes from the partial protocol
 review, without backporting its dependency/account/frame work.
-Prepared 1.67–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
+Alpha 1.67.0 cosmetics are independently accepted at
+8cbf0c1c757260aac5d4279c58c0c841d86c45d5, CI37019416225 (all ten jobs).
+Its [public receipt](2026-10-02-release1-67-public.json) retains four exact
+publisher comparisons, current identities/readiness and the dressed Ilyra GLB.
+Prior cosmetic render and settlement evidence retains its original scope.
+Prepared 1.68–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
 1.71 account-security work is partial, not a completed milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.

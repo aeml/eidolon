@@ -421,9 +421,9 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.69.0` (prepared casino-trust candidate; publication follows accepted 1.68.0)
-- Last independently verified live release: `Alpha 1.66.0`, exact aa7d00ae9191b690d1f034b4b61ef2b7776bb88a, successful CI37014297988 (all ten jobs, including predeploy and live character QA). Public IPv4 frontend/backend identities and database readiness pass; all three changed client runtime files match exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-66-public.json). Earlier runtime/model receipts, including the dressed Ilyra recheck, retain their scopes; DNS/IPv6 and final art/device/pacing approval remain separate.
+- Last independently verified live release: `Alpha 1.67.0`, exact 8cbf0c1c757260aac5d4279c58c0c841d86c45d5, successful CI37019416225 (all ten jobs, including predeploy and live character QA). Public IPv4 frontend/backend identities and database readiness pass; all four changed client runtime files match exact publisher output, and the dressed Ilyra GLB matches source. [Acceptance receipt](docs/plans/2026-10-02-release1-67-public.json). Earlier runtime/model receipts retain their scopes; DNS/IPv6 and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. Connected 1.59 moderation, 1.60 integration, 1.61 casino-world lifecycle, 1.62.1 blackjack/asset recovery, 1.63 Hold’em, corrected 1.64.1 house tables, 1.65 slots and 1.66 wallets/privacy are accepted live; 1.67 cosmetics is next. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
+- Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. Connected 1.59 moderation, 1.60 integration, 1.61 casino-world lifecycle, 1.62.1 blackjack/asset recovery, 1.63 Hold’em, corrected 1.64.1 house tables, 1.65 slots, 1.66 wallets/privacy and 1.67 cosmetics are accepted live; 1.68 membership is next. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
 - Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
 - Accepted milestone: [1.57 event discovery](docs/plans/2026-10-01-release1-57-events.md) is live with its own complete CI and independent public acceptance.
 - Accepted milestone: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is live at f7518623bb5924625a918c8acdfe7ad890b0363a after the outdated keyboard expectation was corrected. Its complete CI and independent public acceptance passed. The 1.58.1 visual patch is a separate candidate, not another endgame balance change.
@@ -474,6 +474,13 @@ CI jobs passed. All three changed public runtime files match exact publisher
 output, and frontend/backend identities and database readiness agree. The
 [public receipt](docs/plans/2026-10-02-release1-66-public.json) retains the checks;
 later account/dependency/frame changes remain separate prepared work.
+
+Alpha 1.67.0 cosmetics are independently accepted at
+8cbf0c1c757260aac5d4279c58c0c841d86c45d5 after all ten CI jobs passed.
+Four changed public runtime files match exact publisher output; frontend/backend
+identities, database readiness and the dressed Ilyra GLB were rechecked.
+The [public receipt](docs/plans/2026-10-02-release1-67-public.json) retains the
+scope; earlier cosmetic fit and durable-unlock evidence is not relabeled as new.
 
 Verification state as of September 29, 2026:
 
