@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "milestone": "1.66",
+  "sourceVersion": "Alpha 1.66.0",
+  "status": "prepared, unpublished",
+  "reviewedBase": "0c33e5ec",
+  "scope": [
+    {
+      "path": "Gold → EP",
+      "implementation": [
+        "server/internal/database/ep_exchange.go",
+        "server/internal/game/ep_exchange.go"
+      ],
+      "finding": "Fixed positive integer 1,000,000:1 conversion; receipt identity and overflow checks; no reverse operation; debit, credit and receipt use one character snapshot."
+    },
+    {
+      "path": "Casino wagers and settlement",
+      "implementation": [
+        "server/casino_gold.go",
+        "server/internal/database/ep_transfer.go",
+        "server/internal/game/ep_transfer.go"
+      ],
+      "finding": "Validated currency routes enter separate Gold or EP ledgers; mismatched currency rejected; retained signed EP receipts prevent replay and preserve funded returns after entitlement expiry."
+    },
+    {
+      "path": "Cosmetic purchase and equipment",
+      "implementation": [
+        "server/internal/game/cosmetic_vendor.go",
+        "server/internal/game/ep_cosmetic_value_isolation_test.go"
+      ],
+      "finding": "EP buys a private collection entry, not a transferable item. Applying it leaves original gear, Gold, XP, Resonance and stats unchanged."
+    },
+    {
+      "path": "Auctions",
+      "implementation": [
+        "server/internal/game/auction_listing.go",
+        "server/internal/game/auction_buyout.go",
+        "server/internal/game/auction_item_delivery.go",
+        "server/internal/game/auction_bids.go"
+      ],
+      "finding": "Gold and item/receipt fields only. Added buyer delivery assertion verifies actual purchased gear, its Gold debit and absence of seller-owned cosmetic unlocks."
+    },
+    {
+      "path": "Direct trade and guild bank",
+      "implementation": [
+        "server/internal/game/direct_trade.go",
+        "server/internal/game/guild_bank_character.go"
+      ],
+      "finding": "Ordinary item and Gold offer/operation types; no EP or appearance collection effects. Retained world transfer assertion keeps buyer/recipient EP separate and rejects inherited cosmetic use."
+    }
+  ],
+  "checks": {
+    "auctionBuyerAndTransferIsolationRace": {
+      "command": "go test -race ./internal/game -run '^TestEPCosmeticCannotTravelWithResoldAuctionedTradedOrBankedGear$' -count=1",
+      "seconds": 1.602,
+      "passed": true
+    },
+    "oneWayAndSeparateEPReceiptRace": {
+      "command": "go test -race ./internal/database -run '^Test(EPExchange|EPCasinoTransfer|CasinoEPRecord)' -count=1",
+      "seconds": 1.023,
+      "passed": true
+    },
+    "durableCurrencyFenceAndPendingReceiptRace": {
+      "command": "go test -race . -run '^TestCasinoEP(TransferDurableAndCurrencyFenced|PendingSaveRecoveryRetainsReceipt)$' -count=1",
+      "seconds": 1.92,
+      "passed": true
+    }
+  },
+  "limits": "Scoped code and in-memory/race review, not new Mongo/socket settlement, an exhaustive penetration audit or commercial/legal approval. Retained connected wallet/cosmetic/restart and schema-recovery receipts have separate scope. Monthly issuance is covered by the retained VIP receipt and 1.68 milestone. No live accounts, currencies or operations changed. Exact CI and public acceptance still required."
+}
