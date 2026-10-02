@@ -2,12 +2,13 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.67.0, exact 8cbf0c1c757260aac5d4279c58c0c841d86c45d5,
-CI37019416225. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness, all four
-changed client runtime files and the dressed Ilyra GLB. Earlier receipts retain distinct runtime and model
-checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-67-public.json).
+baseline is Alpha 1.70.1, exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f,
+CI37068064995. All ten CI jobs, including both deploys and live character QA, passed.
+Independent public IPv4 checks verified backend/frontend identities, database
+readiness, login version, cumulative hotfix notes and the retained dressed Ilyra
+GLB. Earlier receipts retain distinct runtime and model checks; no claim that
+every route or economy operation was sampled. See the current
+[acceptance receipt](2026-10-02-release1-70-1-trade-checks.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -164,6 +165,11 @@ Its [public receipt](2026-10-02-release1-70-public.json) records matching
 identities/readiness, both changed runtime publisher files and Ilyra's outfit.
 Casino connection feedback and the isolated QA-artifact privacy backport are
 live; owner/commercial and human E-gate findings remain separate.
+The accepted [1.70.1 direct-trade hotfix](2026-10-02-release1-70-1-trade-checks.json)
+closes offer-edit item/Gold duplication without publishing unfinished1.71/1.72
+work. All ten exact-source CI jobs and independent public checks passed for
+fa414f0b/run37068064995. Crash-durable two-account trade settlement remains
+part of1.73.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
