@@ -116,8 +116,12 @@ public acceptance passed. Alpha 1.62.1 is now independently accepted at
 b238977a0698d9fd86dd83a42ba43c52c88e84f1, CI36994733944 (all ten jobs).
 Its [public receipt](2026-10-02-release1-62-1-public.json) records exact frontend,
 backend, database readiness, four changed runtime files and two model files.
-The earlier 1.62.0 live asset gate remains failed. Prepared 1.63–1.70 code remains
-unpublished and must retain ordered milestone versions, notes and acceptance;
+The earlier 1.62.0 live asset gate remains failed. Alpha 1.63 Hold’em is accepted
+at001fa5f6fb5a0213d28b9cd2dea91327cc5f5150, CI36998880642 (all ten jobs).
+Its [public receipt](2026-10-02-release1-63-public.json) records both changed-file
+publisher comparisons and matching frontend/backend identities/readiness.
+Prepared 1.64–1.70 code remains unpublished and must retain ordered versions,
+notes and acceptance;
 1.71 account-security work is partial, not a completed milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
