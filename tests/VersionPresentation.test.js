@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.62.0';
+const currentVersion = '1.62.1';
+
+test('1.62.1 records bounded asset recovery without hiding persistent failures or changing gameplay', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.62.1"'), previous = html.indexOf('data-version="1.62.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['unavailable browser cache reads', 'one bounded retry', 'Persistent network failures',
+        'HTTP errors remain visible', 'never replayed', "Ilyra's permanent wizard outfit", 'No account reset',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack returns', () => {
     const html = fs.readFileSync('index.html', 'utf8');
