@@ -179,8 +179,16 @@ snapshot view, expanded by the captured effect radius so nearby danger remains
 visible. Source disappearance does not lose the footprint; malformed/missing
 metadata fails closed. Raid progress and private party credit remain unchanged.
 Six new focused groups, synchronous production routing and actual world-view
-comparison passed with race checking. Ability/attack/damage/heal/hazard interest,
-other worker bounds and connected load gates remain open; this is not a release.
+comparison passed with race checking; this is not a release.
+The [actor-view/resync follow-up](2026-10-02-release1-72-actor-interest-checks.json)
+adds same-scene queued-snapshot audiences for casts/attacks and damage/heal,
+including hazard damage, while preserving own events and independent party
+credit. Missing metadata and old-scene actor IDs fail closed. Failed state
+enqueue now invalidates delta/visibility history and forces a full replacement
+when pressure clears, without discarding private endgame-progress history.
+Six new focused groups and retained party-credit checks passed with race
+checking. Other worker bounds, jump range policy and latest-source connected
+route/load evidence remain open; no1.72 release or capacity claim is made.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

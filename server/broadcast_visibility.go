@@ -24,6 +24,30 @@ func finiteBroadcastCoordinate(value float64) bool {
 	return !math.IsNaN(value) && !math.IsInf(value, 0)
 }
 
+func broadcastRequiresObservedActor(message BroadcastMessage) bool {
+	switch message.Type {
+	case MsgAbility, MsgAttack, MsgDamage, MsgHeal:
+		return true
+	default:
+		return false
+	}
+}
+
+// Actor-based visuals can only refer to the recipient's same-scene snapshot
+// audience. Their own cast/hit/heal remains available before initial sync.
+// Never acquire World.Mu while holding this lock: world/view reads happen first.
+func (c *Client) observesBroadcastActor(message BroadcastMessage, playerID string) bool {
+	if message.ActorID == "" {
+		return false
+	}
+	if message.ActorID == playerID {
+		return true
+	}
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	return c.seenScene == message.InstanceID && c.seenIDs[message.ActorID]
+}
+
 // Global delivery is an explicit allowlist. Empty combat scope means overworld,
 // not all instances; unknown future event kinds inherit that safe default.
 func broadcastRequiresScene(message BroadcastMessage) bool {
@@ -50,11 +74,15 @@ func deliverBroadcast(message BroadcastMessage) {
 			if world == nil || client.transportClosed.Load() || client.retired.Load() {
 				continue
 			}
-			x, z, clientScene, joined := world.GetPlayerViewPosition(client.boundPlayerID())
+			playerID := client.boundPlayerID()
+			x, z, clientScene, joined := world.GetPlayerViewPosition(playerID)
 			if !joined || !broadcastMatchesInstance(message, clientScene) {
 				continue
 			}
 			if broadcastRequiresFootprint(message) && !broadcastFootprintVisible(message, x, z) {
+				continue
+			}
+			if broadcastRequiresObservedActor(message) && !client.observesBroadcastActor(message, playerID) {
 				continue
 			}
 		}

@@ -65,7 +65,15 @@ func (c *Client) boundPlayerID() string {
 func (c *Client) resetSnapshotHistory() {
 	c.stateMu.Lock()
 	defer c.stateMu.Unlock()
+	c.clearSnapshotVisibilityLocked()
+	c.lastEndgame = nil
+}
+
+// Caller holds stateMu. A rejected snapshot must not advance delta history;
+// clearing it forces a full replacement when the state queue is available.
+// Independently queued private endgame progress is not reset by state pressure.
+func (c *Client) clearSnapshotVisibilityLocked() {
 	c.seenIDs = make(map[string]bool)
 	c.lastState = make(map[string]*EntitySnapshot)
-	c.lastEndgame = nil
+	c.seenScene = ""
 }

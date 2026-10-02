@@ -764,6 +764,7 @@ func broadcastState() {
 			defer func() {
 				if r := recover(); r != nil {
 					// Client likely disconnected
+					c.clearSnapshotVisibilityLocked()
 				}
 			}()
 
@@ -872,6 +873,7 @@ func broadcastState() {
 
 			payload, err := proto.Marshal(env)
 			if err != nil {
+				c.clearSnapshotVisibilityLocked()
 				return
 			}
 
@@ -881,7 +883,13 @@ func broadcastState() {
 			data = append(data, stateProtoWireVersion)
 			data = append(data, payload...)
 
-			c.sendState(data)
+			if !c.sendState(data) {
+				c.clearSnapshotVisibilityLocked()
+				return
+			}
+			if self := currentState[c.playerID]; self != nil {
+				c.seenScene = self.InstanceID
+			}
 
 			if playerEntity != nil && playerEntity.InstanceID != "" {
 				if roomState, ok := world.GetDungeonRoomSummary(playerEntity.InstanceID, c.playerID); ok {

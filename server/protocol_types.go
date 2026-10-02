@@ -133,6 +133,7 @@ type Client struct {
 	lastState         map[string]*EntitySnapshot // Track last sent state per entity
 	lastEndgame       *game.EndgameProgress      // Guarded by stateMu; only successfully queued progress.
 	seenIDs           map[string]bool            // Track which entities client knows about
+	seenScene         string                     // Guarded by stateMu; scene of queued snapshot history.
 	qaDisconnect      func()                     // Optional test hook for the allowlisted reconnect fault.
 	policyMu          sync.Mutex
 	messageRates      map[string]*messageRateBucket
@@ -722,6 +723,7 @@ type BroadcastMessage struct {
 	Data       []byte
 	InstanceID string
 	Footprint  BroadcastFootprint
+	ActorID    string // Visible caster for casts/attacks, visible recipient for damage/heal.
 }
 
 // Internal, value-owned interest metadata; never part of the client payload.

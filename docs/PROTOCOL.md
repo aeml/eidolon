@@ -102,8 +102,8 @@ reject missing sources rather than inventing overworld scope. Seraph ability
 events retain their source scene as well. Existing message payloads, priority
 queues and drop/retirement policies remain, and intentionally global messages
 retain their audience. Captured-point interest and bounded staging are covered by
-the follow-ups below. Actor-based combat interest and connected route checks
-remain separate unfinished protocol work.
+the follow-ups below. Connected route checks remain separate unfinished
+protocol work.
 
 ### Prepared captured-point effect interest (not yet published)
 
@@ -116,12 +116,36 @@ still reaches a player who can see its near edge. Missing/invalid footprint or
 recipient coordinates fail closed. Source disappearance or movement cannot
 reassign an already-captured effect's position or scene.
 
-This filter applies only to telegraphs and projectile impacts; it does not yet
-close ability/attack/damage/heal/hazard actor-based interest. Raid-phase and
+This footprint filter applies only to telegraphs and projectile impacts;
+actor-based interest uses the queued-snapshot rule below. Raid-phase and
 crystal-repair notices remain instance-wide. Global announcements, private
 kill/XP/quest credit, wallet and save paths are unchanged. Synchronous production
 delivery, actual snapshot-circle comparison and race checks are not a new
 socket, full-hub, multiplayer-capacity or encounter-playtest acceptance.
+
+### Prepared actor-based combat interest and state resync (not yet published)
+
+Ability/attack routing carries the caster ID; damage/heal routing carries the
+recipient ID, including hazard damage. Apart from the player's own events,
+delivery requires that actor in the recipient's last successfully queued,
+same-scene world-snapshot audience. Missing actor metadata fails closed; old
+scene IDs cannot authorize new-scene visuals. The audience record is protected
+by the same `stateMu` used by snapshot production and reconnect reset. World
+and identity reads happen before that lock; delivery releases it before enqueue.
+
+This deliberately uses the queued actor view, not a new live-actor lookup: a
+last hit can still refer to a removed actor until the removal snapshot retires
+it. It is not a claim of transport acknowledgement or zero snapshot latency.
+Own events remain available before initial sync, but still require the current
+joined scene and connection. Private rewards/kill credit do not use this filter.
+
+If snapshot serialization fails, its state lane rejects the packet, or its
+producer recovers a panic, delta/visibility history is invalidated. Once pressure
+clears, the next snapshot is a full replacement instead of a delta assuming an
+unsent actor was delivered. Independently queued private endgame-progress
+history remains intact. Both initial/delta-drop recovery cases and production
+snapshot-to-combat routing passed scoped race checks; latest-source connected
+production-binary/load acceptance is still separate.
 
 ### Prepared bounded world-presentation staging (not yet published)
 

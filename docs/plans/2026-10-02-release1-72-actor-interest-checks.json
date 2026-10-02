@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "partial prepared source; not published",
+  "scope": [
+    "Casts/attacks require a queued-visible caster; damage/heal/hazard damage require a queued-visible recipient in the same scene, with an own-event exception after joined-scene validation.",
+    "Missing actor metadata and old-scene visible IDs fail closed; metadata and queued-snapshot cache access remain synchronized.",
+    "Initial or delta state-packet rejection invalidates snapshot/delta history; the next accepted packet fully replaces the state. Independently queued private endgame progress stays intact.",
+    "No changes to party kill/XP/quest credit, rewards, inventory, wallets, saves, raid/crystal notices or global announcement paths."
+  ],
+  "checks": {
+    "newTestGroups": 6,
+    "actorAudienceComparisons": 28,
+    "actualProductionSnapshotsAndCombatRouting": true,
+    "removedActorAudienceRetiresWithSnapshot": true,
+    "oldSceneAudienceRejected": true,
+    "ownEventAndInvalidMetadataProductionComparisons": 16,
+    "resetAndVisibilityConcurrentIterations": 1000,
+    "initialAndDeltaPressureRecovery": 2,
+    "retainedPartyKillAndExperienceChecks": true,
+    "raceCommand": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(BroadcastActorInterest|StateBroadcastQueue|BroadcastFootprint|BroadcastDelivery|CombatBroadcastScope|Telegraph|TransientBroadcast|ClientSnapshot|ClientQueue|StateBroadcast|StateBatch|BroadcastSynchronizesResonance|PartyKillCredit|PartyKillRecipients|PartyAbilityKills|PartyPeriodicAndSummon)' -count=1 -timeout=30s",
+    "rootSeconds": 3.280,
+    "gameSeconds": 4.326,
+    "passed": true,
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/broadcast_visibility.go": "a12b5eb592c6f923523b1becfd5aa9ab92b8f94acb875a12a8674a67c232699d",
+    "server/broadcast_actor_interest_test.go": "02af2322d21837f05a688b081d564e82d55a212045643d368a38da19ce974309",
+    "server/state_queue_recovery_test.go": "af6ded12c3e141961bef495a9c545939ee7c9a81fcefa74bd558516bb18a39ac",
+    "server/state_serialization.go": "542e7e8abf679237181de01f0e11662ce0182a389a3be5453a5a7a484c8169ed",
+    "server/client_queues.go": "ef50b9840ed9c99f1e5c07748b29e9810b03a62f88e3116ebd78768866c388b0",
+    "server/main.go": "313a72668624076f2ca8423cb43776c3fe9f3e2790de6067f0a8ecf49adef371"
+  },
+  "limits": [
+    "Interest uses the last successfully queued actor snapshot, not transport acknowledgements or zero-latency live positions.",
+    "Actual production snapshot/delivery functions with synthetic recipients and queues, not a running network hub or new socket deployment proof.",
+    "No latest-source production binary, full encounter,100-player capacity, human art/device/pacing or1.72 release acceptance is implied.",
+    "Remaining worker bounds, jump range policy and connected route/load evidence remain open."
+  ]
+}

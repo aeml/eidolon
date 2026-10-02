@@ -36,6 +36,9 @@ func TestBroadcastDeliveryRequiresJoinedSceneButPreservesGlobalMessages(t *testi
 		client := newAutoStatusClient(id)
 		world.AddEntity(&game.Entity{ID: id, Type: game.TypePlayer, InstanceID: scene})
 		clients[client] = true
+		// Synthetic queued snapshot audience for the actor-based event cases.
+		client.seenScene = scene
+		client.seenIDs = map[string]bool{"visible-actor": true}
 		recipients = append(recipients, recipient{client, scene, true})
 	}
 	for _, id := range []string{"", "missing-player", "enemy-binding", "disconnected-player", "retired-player", "closed-player"} {
@@ -57,7 +60,7 @@ func TestBroadcastDeliveryRequiresJoinedSceneButPreservesGlobalMessages(t *testi
 		for _, scene := range []string{"", "dungeon_party_a", "dungeon_party_b", game.CasinoInstanceID} {
 			data := createMessage(kind, []byte(`{}`))
 			deliverBroadcast(BroadcastMessage{Type: kind, InstanceID: scene, Data: data,
-				Footprint: BroadcastFootprint{Present: true}})
+				Footprint: BroadcastFootprint{Present: true}, ActorID: "visible-actor"})
 			for _, observer := range recipients {
 				messages := drainSentMessages(observer.client.send)
 				want := 0

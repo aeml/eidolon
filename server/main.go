@@ -570,7 +570,7 @@ func main() {
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAbility, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAbility, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.SourceID})
 		case "attack":
 			evt, ok := data.(game.AttackEvent)
 			if !ok {
@@ -588,7 +588,7 @@ func main() {
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAttack, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAttack, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.SourceID})
 		case "inventory_update":
 			playerID, ok := data.(string)
 			if !ok {
@@ -651,7 +651,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.TargetID})
 		case "projectile_impact":
 			evt, ok := data.(game.ProjectileImpactEvent)
 			if !ok {
@@ -680,7 +680,7 @@ func main() {
 			b, _ := json.Marshal(payload)
 			outMsg := Message{Type: MsgHeal, Payload: b}
 			dataBytes, _ := json.Marshal(outMsg)
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.TargetID})
 		case "hazard_damage":
 			evt, ok := data.(game.HazardDamageEvent)
 			if !ok {
@@ -701,7 +701,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.PlayerID})
 		case "combo":
 			evtData, ok := data.(map[string]interface{})
 			if !ok {
