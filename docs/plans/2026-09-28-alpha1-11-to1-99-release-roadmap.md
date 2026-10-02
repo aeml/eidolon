@@ -303,6 +303,12 @@ Burst, failed-journal-commit retry, sealed admission, original kill-week and
 mid-preparation expiry/offline recovery race checks pass without duplicate grants.
 This bounds recovery workers, not outbox size or crash durability before the
 first journal write. It is prepared source, not a published1.72 release.
+The [arena backlog follow-up](2026-10-02-release1-72-arena-batch-checks.json)
+bounds directory reads and receipt decoding, commits at most32 results per
+ordinary pass, retains honest pending admission and drains startup in batches.
+Focused race checks and actual disposable-Mongo replay of69 results retain the
+newest reward despite newer-before-older commits. Total disk-backlog limits,
+guild completion handoff and final integration remain open; no live promotion.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

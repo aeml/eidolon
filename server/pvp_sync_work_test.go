@@ -108,7 +108,7 @@ func TestArenaSyncWorkFailureRetainsActualJournalUntilLaterRequest(t *testing.T)
 	}}
 	work.request()
 	waitArenaSyncStopped(t, work)
-	entries, err := journal.Pending()
+	entries, err := journal.Pending(100)
 	if err != nil || len(entries) != 1 || entries[0].Profiles[0].Rating != 1032 || passes.Load() != 1 {
 		t.Fatal("failed pass lost or changed the decided durable result")
 	}
@@ -117,7 +117,7 @@ func TestArenaSyncWorkFailureRetainsActualJournalUntilLaterRequest(t *testing.T)
 		t.Fatal("later periodic request did not restart synchronization")
 	}
 	group.SealWhenIdle()
-	entries, err = journal.Pending()
+	entries, err = journal.Pending(100)
 	if err != nil || len(entries) != 0 || passes.Load() != 2 {
 		t.Fatal("later request did not consume the retained receipt exactly once")
 	}

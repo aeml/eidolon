@@ -440,7 +440,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Arena result journal unavailable: %v", err)
 	}
-	if err := retryPendingPvPResults(); err != nil {
+	if err := recoverPvPResultsAtStartup(); err != nil {
 		log.Fatalf("Cannot recover ranked results; refusing stale logins: %v", err)
 	}
 	adminActivityJournal, err = database.OpenAdminActivityJournal(filepath.Join(*characterJournalDir, "admin-activity"))

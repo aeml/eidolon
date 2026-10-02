@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -28,6 +29,8 @@ type arenaJournalEnvelope struct {
 	Payload  json.RawMessage `json:"payload"`
 	Checksum string          `json:"checksum"`
 }
+
+const maxArenaReceiptBytes = 1 << 20
 
 func (j *PvPResultJournal) syncDirectory() error {
 	dir, err := os.Open(j.dir)
@@ -80,10 +83,13 @@ func (j *PvPResultJournal) Write(receipt PvPResultReceipt) error {
 	if err != nil {
 		return err
 	}
+	if len(data) > maxArenaReceiptBytes {
+		return errors.New("oversized arena receipt")
+	}
 	j.mu.Lock()
 	defer j.mu.Unlock()
 	name := j.filename(receipt.MatchID)
-	if existing, err := os.ReadFile(name); err == nil {
+	if existing, err := readArenaReceiptFile(name); err == nil {
 		if string(existing) != string(data) {
 			return errors.New("conflicting arena receipt")
 		}
@@ -112,48 +118,83 @@ func (j *PvPResultJournal) Write(receipt PvPResultReceipt) error {
 	return j.syncDirectory()
 }
 
-func (j *PvPResultJournal) Pending() ([]PvPResultReceipt, error) {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	entries, err := os.ReadDir(j.dir)
+func readArenaReceiptFile(name string) ([]byte, error) {
+	info, err := os.Lstat(name)
 	if err != nil {
 		return nil, err
 	}
+	if !info.Mode().IsRegular() || info.Size() > maxArenaReceiptBytes {
+		return nil, errors.New("invalid arena receipt file")
+	}
+	f, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	data, readErr := io.ReadAll(io.LimitReader(f, maxArenaReceiptBytes+1))
+	closeErr := f.Close()
+	if err := errors.Join(readErr, closeErr); err != nil {
+		return nil, err
+	}
+	if len(data) > maxArenaReceiptBytes {
+		return nil, errors.New("oversized arena receipt")
+	}
+	return data, nil
+}
+
+// Pending loads at most limit immutable results. Directory reads are chunked;
+// an outage must not make every retry allocate/decode the whole disk backlog.
+// Revisions protect full-profile snapshots across batches read out of order.
+func (j *PvPResultJournal) Pending(limit int) ([]PvPResultReceipt, error) {
+	if limit < 1 || limit > 100 {
+		return nil, errors.New("arena retry batch must contain 1 to 100 results")
+	}
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	dir, err := os.Open(j.dir)
+	if err != nil {
+		return nil, err
+	}
+	defer dir.Close()
 	var receipts []PvPResultReceipt
-	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".json") {
-			continue
-		}
-		info, err := entry.Info()
-		if err != nil {
+	for len(receipts) < limit {
+		entries, err := dir.ReadDir(64)
+		if err != nil && len(entries) == 0 {
+			if errors.Is(err, io.EOF) {
+				break
+			}
 			return nil, err
 		}
-		if info.Size() > 1<<20 {
-			return nil, errors.New("oversized arena receipt")
+		for _, entry := range entries {
+			if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".json") {
+				continue
+			}
+			data, err := readArenaReceiptFile(filepath.Join(j.dir, entry.Name()))
+			if err != nil {
+				return nil, err
+			}
+			var envelope arenaJournalEnvelope
+			if err = json.Unmarshal(data, &envelope); err != nil {
+				return nil, err
+			}
+			digest := sha256.Sum256(envelope.Payload)
+			if hex.EncodeToString(digest[:]) != envelope.Checksum {
+				return nil, errors.New("arena receipt checksum mismatch")
+			}
+			var receipt PvPResultReceipt
+			if err = json.Unmarshal(envelope.Payload, &receipt); err != nil {
+				return nil, err
+			}
+			if err = validatePvPReceipt(receipt); err != nil {
+				return nil, err
+			}
+			if filepath.Base(j.filename(receipt.MatchID)) != entry.Name() {
+				return nil, errors.New("arena receipt identity mismatch")
+			}
+			receipts = append(receipts, receipt)
+			if len(receipts) == limit {
+				break
+			}
 		}
-		data, err := os.ReadFile(filepath.Join(j.dir, entry.Name()))
-		if err != nil {
-			return nil, err
-		}
-		var envelope arenaJournalEnvelope
-		if err = json.Unmarshal(data, &envelope); err != nil {
-			return nil, err
-		}
-		digest := sha256.Sum256(envelope.Payload)
-		if hex.EncodeToString(digest[:]) != envelope.Checksum {
-			return nil, errors.New("arena receipt checksum mismatch")
-		}
-		var receipt PvPResultReceipt
-		if err = json.Unmarshal(envelope.Payload, &receipt); err != nil {
-			return nil, err
-		}
-		if err = validatePvPReceipt(receipt); err != nil {
-			return nil, err
-		}
-		if filepath.Base(j.filename(receipt.MatchID)) != entry.Name() {
-			return nil, errors.New("arena receipt identity mismatch")
-		}
-		receipts = append(receipts, receipt)
 	}
 	// Full snapshots plus monotonic revisions also tolerate replay out of order.
 	sort.Slice(receipts, func(a, b int) bool {

@@ -13,6 +13,10 @@ import (
 var arenaResultJournal *database.PvPResultJournal
 var arenaReplayMu sync.Mutex
 
+const arenaReplayBatchSize = 32
+
+var errArenaReplayPending = errors.New("arena result backlog remains pending")
+
 func arenaResultReceipt(result game.PvPMatchResult) database.PvPResultReceipt {
 	receipt := database.PvPResultReceipt{MatchID: result.MatchID}
 	for _, p := range result.Profiles {
@@ -62,17 +66,43 @@ func retryPendingPvPResults() error {
 	}
 	arenaReplayMu.Lock()
 	defer arenaReplayMu.Unlock()
-	receipts, err := arenaResultJournal.Pending()
+	return replayPvPResultBatch(arenaResultJournal, db.CommitPvPReceipt)
+}
+
+// One ordinary pass commits at most32 receipts. Read one additional result as
+// an honest pending marker; never roll over/hydrate a profile while any decided
+// result could still be owed. The shared periodic coordinator requests again.
+func replayPvPResultBatch(journal *database.PvPResultJournal, commit func(database.PvPResultReceipt) error) error {
+	receipts, err := journal.Pending(arenaReplayBatchSize + 1)
 	if err != nil {
 		return err
 	}
+	more := len(receipts) > arenaReplayBatchSize
+	if more {
+		receipts = receipts[:arenaReplayBatchSize]
+	}
 	for _, receipt := range receipts {
-		if err := db.CommitPvPReceipt(receipt); err != nil {
+		if err := commit(receipt); err != nil {
 			return err
 		}
-		if err := arenaResultJournal.Acknowledge(receipt.MatchID); err != nil {
+		if err := journal.Acknowledge(receipt.MatchID); err != nil {
 			return err
 		}
 	}
+	if more {
+		return errArenaReplayPending
+	}
 	return nil
+}
+
+// Startup must finish all decided results before allowing potentially stale
+// logins, but uses the same bounded decoder/commit batches. Any real read/write
+// failure still refuses startup; a larger healthy backlog is not an outage.
+func recoverPvPResultsAtStartup() error {
+	for {
+		err := retryPendingPvPResults()
+		if !errors.Is(err, errArenaReplayPending) {
+			return err
+		}
+	}
 }

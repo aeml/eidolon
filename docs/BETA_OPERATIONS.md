@@ -153,6 +153,15 @@ until its journal write succeeds. [Weekly reward checks](plans/2026-10-02-releas
 cover burst/retry/expiry handling with isolated journals and simulated database
 writes, not a connected raid clear, overall outbox-size bound or capacity proof.
 
+Arena result recovery reads bounded journal batches and commits at most32
+receipts per ordinary pass. A remaining backlog keeps profile hydration/ranked
+admission pending; periodic recovery retries. Startup drains healthy backlogs in
+bounded batches before logins, and still refuses real storage/replay failures.
+[Arena backlog checks](plans/2026-10-02-release1-72-arena-batch-checks.json)
+include actual disposable-Mongo newer-before-older replay. These limits do not
+bound total retained disk receipts or all IO time. Guild leaderboard completion
+handoff remains unbounded/unretried and must not be described as covered here.
+
 The candidate also bounds ordinary headers, body reads, writes and idle
 keepalives, and upgrade-handshake writes. Active game sockets retain their own
 Pong/fragment deadlines. [Connection-pool checks](plans/2026-10-02-release1-72-http-connection-checks.json)

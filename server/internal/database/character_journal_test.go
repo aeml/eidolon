@@ -83,13 +83,13 @@ func TestCharacterAndArenaJournalsShareVolumeAcrossRestart(t *testing.T) {
 	if users, err := reopened.PendingUsers(); err != nil || !reflect.DeepEqual(users, []string{"hero"}) {
 		t.Fatal("character restart rejected its sibling journal", users, err)
 	}
-	if pending, err := arena.Pending(); err != nil || len(pending) != 0 {
+	if pending, err := arena.Pending(100); err != nil || len(pending) != 0 {
 		t.Fatal("arena journal did not remain independently readable", err)
 	}
 	if err := os.WriteFile(filepath.Join(dir, "arena-results", "bad.json"), []byte("corrupt"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := arena.Pending(); err == nil {
+	if _, err := arena.Pending(100); err == nil {
 		t.Fatal("delegated arena corruption was ignored")
 	}
 }

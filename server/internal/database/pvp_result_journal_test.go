@@ -52,7 +52,7 @@ func TestArenaResultJournalRetainsDetachedChecksummedReceiptAndRejectsConflicts(
 	if err != nil {
 		t.Fatal(err)
 	}
-	pending, err := reopened.Pending()
+	pending, err := reopened.Pending(100)
 	if err != nil || len(pending) != 1 || pending[0].Profiles[0].Honor != 50 {
 		t.Fatal("durable receipt aliased live state", pending, err)
 	}
@@ -67,7 +67,7 @@ func TestArenaResultJournalRetainsDetachedChecksummedReceiptAndRejectsConflicts(
 	if err = os.WriteFile(name, []byte(corrupt), 0600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err = reopened.Pending(); err == nil {
+	if _, err = reopened.Pending(100); err == nil {
 		t.Fatal("valid JSON with corrupted rewards passed checksum")
 	}
 	if err = os.WriteFile(name, data, 0600); err != nil {
@@ -76,8 +76,107 @@ func TestArenaResultJournalRetainsDetachedChecksummedReceiptAndRejectsConflicts(
 	if err = reopened.Acknowledge(receipt.MatchID); err != nil {
 		t.Fatal(err)
 	}
-	if pending, err = reopened.Pending(); err != nil || len(pending) != 0 {
+	if pending, err = reopened.Pending(100); err != nil || len(pending) != 0 {
 		t.Fatal("acknowledged receipt survived", err)
+	}
+}
+
+func TestArenaResultJournalBoundedBatchesDrainEveryReceiptOnce(t *testing.T) {
+	dir := t.TempDir()
+	j, err := OpenPvPResultJournal(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, limit := range []int{-1, 0, 101} {
+		if _, err := j.Pending(limit); err == nil {
+			t.Fatal("invalid batch accepted", limit)
+		}
+	}
+	const count = 137
+	for i := range count {
+		if err := j.Write(arenaReceiptFixture("bounded", int64(i+1))); err != nil {
+			t.Fatal(err)
+		}
+	}
+	j, err = OpenPvPResultJournal(dir) // Discovery does not rely on process memory.
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := make(map[string]bool)
+	for pass := 0; pass < count; pass++ {
+		entries, err := j.Pending(7)
+		if err != nil || len(entries) > 7 {
+			t.Fatal("read exceeded its batch or failed", len(entries), err)
+		}
+		if len(entries) == 0 {
+			break
+		}
+		for _, entry := range entries {
+			if seen[entry.MatchID] {
+				t.Fatal("acknowledged receipt rediscovered")
+			}
+			seen[entry.MatchID] = true
+			if err := j.Acknowledge(entry.MatchID); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if len(seen) != count {
+		t.Fatal("bounded reads lost receipts", len(seen))
+	}
+}
+
+func TestArenaResultJournalRejectsUnreadableWriteWithoutPoisoningOutbox(t *testing.T) {
+	j, err := OpenPvPResultJournal(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	oversized := arenaReceiptFixture("oversized", 1)
+	oversized.Profiles[0].LastResult.Reason = strings.Repeat("x", maxArenaReceiptBytes)
+	if err := j.Write(oversized); err == nil {
+		t.Fatal("write accepted an envelope the bounded reader cannot recover")
+	}
+	if entries, err := j.Pending(1); err != nil || len(entries) != 0 {
+		t.Fatal("rejected write left a poisoned outbox entry", err)
+	}
+	valid := arenaReceiptFixture("healthy", 1)
+	if err := j.Write(valid); err != nil {
+		t.Fatal(err)
+	}
+	if entries, err := j.Pending(1); err != nil || len(entries) != 1 || entries[0].MatchID != valid.MatchID {
+		t.Fatal("rejected large write blocked a healthy result", err)
+	}
+}
+
+func TestArenaResultJournalRejectsSymlinkAndOversizedRetryFile(t *testing.T) {
+	for _, kind := range []string{"symlink", "oversized"} {
+		t.Run(kind, func(t *testing.T) {
+			j, err := OpenPvPResultJournal(t.TempDir())
+			if err != nil {
+				t.Fatal(err)
+			}
+			receipt := arenaReceiptFixture("invalid-file", 1)
+			if kind == "symlink" {
+				external := filepath.Join(t.TempDir(), "external.json")
+				if err := os.WriteFile(external, []byte(`{"untouched":true}`), 0600); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.Symlink(external, j.filename(receipt.MatchID)); err != nil {
+					t.Fatal(err)
+				}
+			} else if err := os.WriteFile(j.filename(receipt.MatchID), []byte(strings.Repeat("x", maxArenaReceiptBytes+1)), 0600); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := j.Pending(1); err == nil {
+				t.Fatal("unsafe file accepted for replay")
+			}
+			if err := j.Write(receipt); err == nil {
+				t.Fatal("unsafe existing file accepted on retry")
+			}
+			if _, err := os.Lstat(j.filename(receipt.MatchID)); err != nil {
+				t.Fatal("error silently removed the pending evidence", err)
+			}
+		})
 	}
 }
 
@@ -155,7 +254,7 @@ func TestArenaReceiptMongoReplayAndOutOfOrderWrites(t *testing.T) {
 	if err = db.SavePvPProfile(receipt.Profiles[0]); err != nil {
 		t.Fatal(err)
 	}
-	pending, err := j.Pending()
+	pending, err := j.Pending(100)
 	if err != nil {
 		t.Fatal(err)
 	}

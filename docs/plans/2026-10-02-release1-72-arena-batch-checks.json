@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared and unpublished; partial security milestone",
+  "preparedParent": "82234fb3",
+  "checkedAt": "2026-10-02T19:30:50Z",
+  "scope": [
+    "Arena journal reads require an explicit1–100 receipt limit and scan directory entries in64-entry chunks instead of allocating the entire directory/backlog.",
+    "Reads and identical-write retries reject nonregular files and use a1MiB bounded read. New writes cannot persist an envelope too large for recovery.",
+    "Ordinary recovery commits at most32 results, reading one extra as a pending marker. A remaining backlog returns an explicit pending error, so profile hydration/season rollover does not proceed prematurely. Periodic coalesced recovery requests a later pass.",
+    "Startup drains healthy backlogs through bounded batches before logins; real decode/commit/acknowledgement failures still refuse stale startup. Existing checksum, immutable identity, acknowledgement and monotonic revision rules remain authoritative."
+  ],
+  "checks": {
+    "focusedRace": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(ArenaReplayBatch|ArenaResultJournal|CharacterAndArenaJournals|ArenaSyncWork|PvPRecovery|PracticeResult|PvPStateWork|WeeklySyncWork)' -count=1 -timeout=30s",
+      "passed": true,
+      "serverPackageSeconds": 7.055,
+      "databasePackageSeconds": 7.638,
+      "scope": "137 receipts reopened and drained in batches of7 with no missing/repeated acknowledgement; invalid limits; rejected oversized writes without poisoned outboxes; symlink/oversized retry files retained on error;69-result simulated consumer with32-result budget and honest pending markers; failed consumer leaves exact immutable receipts. Existing shared-volume/checksum/coalescing/private-state/weekly regressions pass."
+    },
+    "disposableMongoRace": {
+      "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_ARENA_TEST_MONGO_URI=mongodb://127.0.0.1:32855 GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(ArenaReplayBatchActualMongoAndStartupKeepNewestReceipt|ArenaReceiptMongoReplayAndOutOfOrderWrites)$' -count=1 -timeout=60s",
+      "passed": true,
+      "serverPackageSeconds": 9.523,
+      "databasePackageSeconds": 1.433,
+      "scope": "Actual Mongo commits: newest of69 receipts is deliberately committed before older batches, ordinary recovery reports remaining results and startup drains all remaining batches. Final revision/match/Honor remain the newest exact result. Existing concurrent/out-of-order/partial-participant/conflicting-revision replay check also passes.",
+      "container": "528b32a69448821f5be1aa165201a4b236084559f8390f57d28b01ab3198db54",
+      "isolation": "Verified eidolon.qa.scope=arena-batch-20261002, Mounts=[], loopback-only port32855,512MiB/32MiB tmpfs,1GiB memory and oneCPU. Ping confirmed before testing.",
+      "cleanup": "Stopped and removed the exact inspected task container. Synthetic tmpfs profiles are gone; production database/services and global Docker cache untouched."
+    },
+    "initialCompilerCorrection": "The first run found two old no-argument journal calls in shared-volume tests. Both were updated to the new explicit batch API, all remaining no-argument Pending calls searched, and final focused checks passed. This was not treated as a gameplay regression or ignored.",
+    "diffCheck": "passed",
+    "sourceHashes": {
+      "server/main.go": "e7c7a8fc0389d75a139eda743e0f6d426da7978619776468121aaf451486318f",
+      "server/pvp_persistence.go": "851a669501ad85bef612cf7894d6d19340fc72ea28d8902ffa9a9051750e95ef",
+      "server/pvp_replay_batch_test.go": "12dac61ac3117107d2164948d51545c8b96fe24dfd65efd456bbd17f196bf8a3",
+      "server/internal/database/pvp_result_journal.go": "1e42d09c3c006083caaa2cfa9a88f3c8496081639af54dd028e68699e23ee3d8",
+      "server/internal/database/pvp_result_journal_test.go": "85b13f49a78b540c73025435d3db85500f46e90443eb1e88a2f9519b2ee470f5",
+      "server/internal/database/character_journal_test.go": "ad9403a2dd495e464cfe3dd8f24554b39f4f51af5439d044ba44c4693452d7c0",
+      "server/pvp_sync_work_test.go": "b6e741459726e0673f812038e07123bea6b2ed6ceefd0bf0cb165feb62acc220"
+    }
+  },
+  "remaining": [
+    "Batch/read limits do not bound total retained disk receipts, decoded field counts, disk usage, all IO latency or production capacity. Admission/backlog limits and broader final integration remain separate.",
+    "Guild dungeon leaderboard completion still schedules one worker per event and skips failed participant guild lookups/writes without retry records. Preserve clears through a proper durable handoff before claiming bounded completion processing; capture original completion season and review membership-at-clear semantics rather than assigning replay-time credit.",
+    "This is direct journal/store integration, not a latest connected gameplay binary, full raid clear, public deployment or milestone closeout. Earlier connected receipts retain their source scopes.",
+    "Fetched origin/master remains accepted Alpha1.70.0 ee6872c9727fbea97177b833da835dfe79d8dda0. Account-recovery delivery/verification and explicit1.71 assembly still precede1.72 publication; full roadmap goal remains active."
+  ]
+}
