@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.63.0",
+  "status": "accepted",
+  "commit": "001fa5f6fb5a0213d28b9cd2dea91327cc5f5150",
+  "ciRun": 36998880642,
+  "verifiedAt": "2026-10-02T11:42:23.432Z",
+  "frontend": {"commit": "001fa5f6fb5a0213d28b9cd2dea91327cc5f5150", "version": "Alpha 1.63.0"},
+  "backend": {"status": "ok", "database": "ready", "commit": "001fa5f6fb5a0213d28b9cd2dea91327cc5f5150", "version": "Alpha 1.63.0"},
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {"path": "index.html", "bytes": 748510, "sha256": "d0102df0235cdb58b084a27867fe6072843c096b4a67996dda21122d361f48e5", "exactPublisher": true},
+    {"path": "src/ui/PokerTableUI.js", "bytes": 15261, "sha256": "c21191567de0e48e9ba5475a64a95cbd3deb3dbe3429af75e97bfedd7401c99f", "exactPublisher": true}
+  ],
+  "limits": [
+    "Public HTTPS verified over IPv4 with normal DNS; IPv6 reachability remains owner-deferred.",
+    "Both changed client files were compared in full; unchanged runtime/model evidence is retained in predecessor receipts, not asserted as a new full inventory check.",
+    "Technical deployment acceptance is not a new physical-phone, campaign, art, legal or capacity signoff."
+  ]
+}
