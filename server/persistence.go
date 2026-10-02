@@ -224,6 +224,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		GuildBankOpID:            entity.GuildBankOpID,
 		GuildBankOpFingerprint:   entity.GuildBankOpFingerprint,
 		GoldCreditReceipts:       cloneGoldCreditReceipts(entity.GoldCreditReceipts),
+		DirectTradeState:         database.CloneDirectTradeState(entity.DirectTradeState),
 		EP:                       entity.EP,
 		EPExchangeReceipts:       cloneGoldCreditReceipts(entity.EPExchangeReceipts),
 		EPCasinoReceipts:         cloneGoldCreditReceipts(entity.EPCasinoReceipts),

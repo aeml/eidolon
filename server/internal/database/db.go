@@ -72,6 +72,7 @@ type Auction struct {
 }
 
 type Character struct {
+	DirectTradeState         bson.Raw                       `bson:"direct_trade_state,omitempty"`
 	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
 	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`
 	GuildBankOpFingerprint   string                         `bson:"last_guild_bank_operation_fingerprint,omitempty"`
