@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 ordinary vendor custody and arithmetic",
+  "status": "prepared, not versioned or published",
+  "parentCommit": "cbf1e03822b4f5550f218da30df401a2db10cd26",
+  "changes": [
+    "Check stack multiplication before selling or buyback and check sale wallet addition before committing. Nonpositive legacy Value/Stack retain their existing one-Gold/single-item defaults.",
+    "Reject negative existing wallets and ambiguous selected IDs across bag and buyback without altering Gold, items, order or telemetry. No inferred data repair or historical exploit cleanup.",
+    "Serialize ordinary selling with actor-only rewards. Both sale and buyback replies read bag and buyback under the character lock before queuing messages.",
+    "Preserve normal prices, Legendary-only recovery, the twenty-item buyback history, visible bag capacity, Chronicle protection and normal per-message admission limits."
+  ],
+  "checks": {
+    "reproduction": "The old runtime failed ten of eleven invalid-state cases: positive/negative product overflow, sale wallet overflow, negative sale wallet, duplicate selected bag/buyback IDs and conflicting custody. A wrapped negative buyback price credited rather than charged Gold. The already-rejected negative-wallet buyback remains a regression case.",
+    "fixtureCorrections": "An initial fixture referenced a nonexistent Entity.Snapshot method; it now takes owned bag/buyback copies. The first server-reply stress fixture exceeded the ten-per-second admission limit; reduced its round trips to eight per message kind without bypassing or weakening production admission. World tests separately retain one hundred round trips.",
+    "worldRace": "Go1.27.1 go test -race ./internal/game -run '^(TestVendor|TestPerformSell|TestPerformBuyback|TestBuyback|TestDirectTrade|TestChronicle.*Item)' -count=1 -timeout=45s passed, package6.430s. Eleven rejected-state cases, two legacy/exact-boundary round trips, ordinary vendor and trade regressions, and one hundred vendor round trips concurrent with five hundred actor-only Gold rewards.",
+    "dispatchRace": "Go1.27.1 go test -race . -run '^TestVendor' -count=1 -timeout=45s passed, package1.563s. Normal handleMessage checks retained empty/missing/Chronicle/replay rejection; eight sale/buyback round trips returned both custody views while five hundred Gold and nested item-metadata updates ran.",
+    "format": "gofmt and git diff --check passed."
+  },
+  "sourceHashes": {
+    "server/internal/game/economy_actions.go": "468a682be0899c9d60397e641f737b58078267b00a0007f5b9aa93c3db50ca7d",
+    "server/internal/game/vendor_invariants_test.go": "7eec49f40c2417d8479eba665d6bcbeef9736ec05a287a6ff949508821109e9b",
+    "server/client_dispatch.go": "fdc850b530c608e33705ec4ea9f0572600b37fc9a3158a2f0fff82a8a50536bf",
+    "server/vendor_sale_guard_test.go": "c7b0f2be01ac91194c34885c54f620ea418d5cd13f74415c3f1632251b8ef160"
+  },
+  "limits": [
+    "This is in-process vendor arithmetic/custody safety, not a crash-durable vendor acknowledgement or complete valuable-operation ledger. Single-account save barriers and two-account direct-trade recovery remain work for1.73.",
+    "No production account or wallet mutation, Mongo container, native browser run, long soak, balance change, asset edit or deployment was needed for this follow-up.",
+    "Alpha1.70.1 trade hotfix is a separate pending live CI candidate, exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f/run37068064995. This prepared successor tree is not deployed by that hotfix."
+  ]
+}

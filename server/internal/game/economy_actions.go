@@ -512,6 +512,37 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 	}
 }
 
+// vendorStackPrice preserves legacy one-Gold/single-item defaults while refusing
+// an unrepresentable total before Gold, custody or telemetry is changed.
+func vendorStackPrice(item Item) (int, bool) {
+	value, stack := item.Value, item.Stack
+	if value <= 0 {
+		value = 1
+	}
+	if stack <= 0 {
+		stack = 1
+	}
+	if value > math.MaxInt/stack {
+		return 0, false
+	}
+	return value * stack, true
+}
+
+// Ambiguous legacy IDs must not be sold or recovered by arbitrarily choosing
+// one copy. Keep all existing data so an operator can investigate it safely.
+// The caller owns the character lock.
+func vendorHasSingleItem(player *Entity, itemID string) bool {
+	count := 0
+	for _, items := range [][]Item{player.Inventory, player.Buyback} {
+		for _, item := range items {
+			if item.ID == itemID {
+				count++
+			}
+		}
+	}
+	return count == 1
+}
+
 func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	if itemID == "" {
 		return nil, false
@@ -521,6 +552,11 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 
 	player, ok := w.Entities[playerID]
 	if !ok {
+		return nil, false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.Gold < 0 || !vendorHasSingleItem(player, itemID) {
 		return nil, false
 	}
 
@@ -541,17 +577,10 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 		return nil, false
 	}
 
-	value := itemToSell.Value
-	if value <= 0 {
-		value = 1
+	saleValue, validPrice := vendorStackPrice(*itemToSell)
+	if !validPrice || player.Gold > math.MaxInt-saleValue {
+		return nil, false
 	}
-
-	stackSize := itemToSell.Stack
-	if stackSize <= 0 {
-		stackSize = 1
-	}
-
-	saleValue := value * stackSize
 	player.Gold += saleValue
 	w.Economy.RecordSource("vendor_sales", saleValue)
 
@@ -595,6 +624,9 @@ func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
+	if player.Gold < 0 || !vendorHasSingleItem(player, itemID) {
+		return nil, false
+	}
 
 	buybackIndex := -1
 	var itemToBuy *Item
@@ -610,17 +642,8 @@ func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
 		return nil, false
 	}
 
-	cost := itemToBuy.Value
-	if cost <= 0 {
-		cost = 1
-	}
-	stackSize := itemToBuy.Stack
-	if stackSize <= 0 {
-		stackSize = 1
-	}
-	totalCost := cost * stackSize
-
-	if player.Gold < totalCost {
+	totalCost, validPrice := vendorStackPrice(*itemToBuy)
+	if !validPrice || player.Gold < totalCost {
 		return nil, false
 	}
 

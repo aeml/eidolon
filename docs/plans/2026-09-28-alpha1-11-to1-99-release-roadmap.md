@@ -373,6 +373,15 @@ checking. A legacy unlocked Backstab fixture was corrected to use production
 dispatch rather than suppressing its loot/event race. This is prepared source,
 not a full combat/security certificate or publication. The jump policy and
 latest assembled-binary/public release gates remain unfinished.
+The [prepared vendor invariant follow-up](2026-10-02-release1-73-vendor-checks.json)
+rejects overflowing stack prices, overflowing sale wallets and ambiguous selected
+bag/buyback IDs before changing custody or Gold. Selling and its reply snapshots
+now share the character lock with actor-only rewards. Ordinary prices, legacy
+one-Gold defaults, Legendary recovery and protected quest items remain unchanged.
+Failure cases reproduced on the old runtime; world and actual dispatch race
+checks pass, including concurrent rewards and nested metadata. This is not a
+crash-durable vendor acknowledgement, full1.73 completion or live publication;
+durable trade settlement and the remaining valuable-operation ledger stay open.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
