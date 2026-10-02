@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "milestone": "1.68",
-  "sourceVersion": "Alpha 1.62.0",
+  "sourceVersion": "Alpha 1.68.0",
+  "originalPreparedSourceVersion": "Alpha 1.62.0",
   "status": "prepared, unpublished",
   "originalPreparedCommits": ["69e3b4ef", "bfbead1e"],
   "reconciledCommits": ["6fcf8ed3", "3056cfe7"],
@@ -11,6 +12,7 @@
     "Current-character ownership, metadata validation, administrator/monthly non-stacking and retained EP/cosmetics explanation."
   ],
   "checks": {
+    "publicationVersionAndPublisher": {"suites": 2, "tests": 349, "seconds": 3.839, "passed": true, "scope": "Aligned1.68 defaults/login and cumulative notes after accepted1.67; publisher checks, not new membership settlement."},
     "client": {"suites": 4, "tests": 38, "seconds": 1.816, "passed": true},
     "membershipAndAdministratorRace": {"seconds": 2.558, "passed": true},
     "presentation": {"cases": 2, "seconds": 7.3, "passed": true, "widths": [390, 1440], "phoneSizedConfirmationInspected": true, "artifacts": "/tmp/eidolon-168-reconciled-membership-20261002"},
