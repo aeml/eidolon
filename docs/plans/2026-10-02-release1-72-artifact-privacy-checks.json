@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "1.72",
-  "status": "prepared security evidence; isolated QA-artifact backport prepared for 1.70",
+  "status": "prepared security evidence; isolated QA-artifact backport accepted in1.70",
   "preparedParent": "b4b9157c69400366d90067ad48b921fb0a8849ec",
   "finding": "The previous sanitizer searched compressed HTML report bytes without opening the embedded ZIP. A synthetic compressed/JSON-escaped password produces no outer raw match and therefore demonstrates a false-negative boundary. No real secret value or historical public artifact was read by this check; it does not establish an actual credential leak.",
   "scope": [
@@ -42,7 +42,7 @@
     "version": "Alpha 1.70.0",
     "source": "a5069779",
     "scope": "Only ignore rules, credentialed recording suppression, compressed artifact sanitization and its focused tests/receipt. No other partial 1.71/1.72 authentication, dependency, movement, worker or transport work is included.",
-    "status": "Prepared; new exact-source CI and independent public acceptance required."
+    "status": "Accepted in1.70 exactee6872c9727fbea97177b833da835dfe79d8dda0, successful CI37043750113 and independent2026-10-02-release1-70-public.json. Other staged security work remains unpublished."
     ,"finalAssembly": {"suites": 6, "tests": 446, "seconds": 15.124, "passed": true, "scope": "Merged privacy, release wrapper and version regressions; overlapping earlier evidence. Full lint and whitespace passed."}
   },
   "limits": [
