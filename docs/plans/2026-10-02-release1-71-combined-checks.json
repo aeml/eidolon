@@ -52,5 +52,11 @@
     "acceptedBaseline": "Alpha1.70.0; independent2026-10-02-release1-70-public.json",
     "scope": "Carries independently accepted1.69 metadata and the isolated1.70 artifact privacy backport into staged account work. No server file changes versus29d3d482; prior account checks retain their scope, without another redundant session run.",
     "remaining": "Owner recovery-delivery/verification decision and implementation, explicit1.71 version/notes and exact-source publication. Accepted1.70 predecessor is recorded; no1.71 live or milestone-completion claim."
+  },
+  "guildClearReaderCompatibility": {
+    "sourceCommit": "e79b8da1c012e88571aecbd9a3e2607b275cff3e",
+    "scope": "Reader-only delegation of the future private guild-clears directory, rejecting file/symlink impostors, so the ordered1.71 predecessor can preserve a1.72 outbox through rollback. No new guild writer, protocol dependency or auth behavior.",
+    "checks": "Go1.24.5 targeted database race checks passed in1.055s on this prepared1.71 branch. Detailed command/source hashes in2026-10-02-release1-71-guild-reader-checks.json.",
+    "publication": "Prepared only. Recovery-delivery/ownership choice and implementation, explicit version/notes and exact-source publication remain open; accepted live stays1.70.0. Earlier account-session binary checks retain their original scope."
   }
 }
