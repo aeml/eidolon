@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial protocol milestone",
+  "preparedParent": "2f7120331bbbeb20f18f664f00d30149fe3b0968",
+  "scope": [
+    "Ranked completion and periodic synchronization share one coalesced pass over the existing durable arena outbox, not a waiting worker per result.",
+    "Results still reach the journal before world profiles change or participants return. Failure stops the pass and retains receipts for the next request/startup, without a tight retry loop or fake acknowledgement.",
+    "Completion return/result presentation no longer waits for Mongo; participant-only outcome and state remain available, with conditional honest sync copy.",
+    "Practice/duel results still perform no profile writes. Startup recovery, rating/reward arithmetic, commit idempotency and character journals are unchanged."
+  ],
+  "checks": {
+    "server": {"command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(ArenaSyncWork|ArenaResultPresentation|PracticeResult|PvPRecovery|ConnectionWork|WebsocketAdmission|CoalescedSave|ShutdownFinal)' -count=1 -timeout=25s", "passed": true, "packageSeconds": 2.051, "newGroups": 4},
+    "game": {"command": "GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^TestArena(ResultMustBeDurableBeforeProfilesOrReturnAndRetryIsFrozen|HydrationCannotReplaceNewerResultRevision)$' -count=1 -timeout=20s", "passed": true, "packageSeconds": 1.071},
+    "journal": {"command": "GOTOOLCHAIN=go1.27.1 go test -race ./internal/database -run '^TestArenaResultJournalRetainsDetachedChecksummedReceiptAndRejectsConflicts$' -count=1 -timeout=20s", "passed": true, "packageSeconds": 1.154},
+    "evidence": [
+      "Eight producers make512 requests during a blocked pass: no concurrent consumer and exactly one follow-up pass, with drained pending/running state.",
+      "Injected consumer failure leaves the actual disk receipt and rating unchanged; a later request consumes it through a simulated successful consumer, not a claimed Mongo commit.",
+      "Sealed work admission retains pending state without executing or acknowledging rejected work.",
+      "Both participants receive return scene, result, private state and pending-sync copy while the consumer is blocked; a nonparticipant gets nothing. Existing practice/no-write and queue/cleanup/save regressions pass.",
+      "Existing game/journal checks preserve frozen durable-before-return results, revision precedence, detached checksummed receipts and conflict rejection."
+    ]
+  },
+  "sourceHashes": {
+    "server/main.go": "5e2963a25621549a6387727da659733673a294e618bd279c5231f190818dc2b9",
+    "server/pvp_handlers.go": "7cefbc7c47410391d0a02dc0db084103232fdf177b6f135103a10ad81e00f8dd",
+    "server/pvp_sync_work.go": "57cf88370a194b99e0b10919d1850773a002bc65b50422b61d7b1595d9b690af",
+    "server/pvp_sync_work_test.go": "e69b3203e457752229a92bc5b9de7ef01161dd65576d5ab522bb58e1cdee1532"
+  },
+  "limits": [
+    "No actual Mongo or latest production-binary match proof yet. Earlier connected account/resource fixtures predate this change.",
+    "This bounds arena synchronization passes, not total journal size, per-match UI update workers, guild completion or weekly-raid delivery work. Those boundaries remain separate.",
+    "No 1.72 version promotion, CI publication, player-capacity certification or campaign/pacing acceptance."
+  ]
+}

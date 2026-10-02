@@ -250,6 +250,10 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 	if commitErr != nil {
 		log.Printf("Arena result %s remains journaled for retry: %v", result.MatchID, commitErr)
 	}
+	notifyPvPMatchResult(result, commitErr != nil)
+}
+
+func notifyPvPMatchResult(result game.PvPMatchResult, syncPending bool) {
 	// Practice results have no profiles to persist, but every participant still
 	// needs the cleared match state and a result message.
 	for _, playerID := range append(append([]string(nil), result.WinnerIDs...), result.LoserIDs...) {
@@ -259,9 +263,10 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 			if player := world.GetEntityCopy(playerID); player != nil && player.InstanceID == "" && !world.HasPvPMatch(playerID) {
 				sendPvPScene(client, player, "overworld", nil)
 			}
-			if commitErr != nil {
-				client.sendSystemChat("Arena result recorded safely. Rating and rewards are syncing; ranked queue will reopen when synchronization finishes.")
-			} else if len(result.WinnerIDs) == 0 {
+			if syncPending {
+				client.sendSystemChat("Arena result recorded safely. Rating and rewards may still be syncing; retry the ranked queue shortly if it is unavailable.")
+			}
+			if len(result.WinnerIDs) == 0 {
 				client.sendSystemChat("PvP match cancelled. No ranked rewards or rating changes.")
 			} else if result.Mode == game.PvPModeDuel || result.Practice {
 				label := "Practice arena"

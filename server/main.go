@@ -829,7 +829,14 @@ func main() {
 		}
 	}
 	world.OnPvPMatchComplete = func(result game.PvPMatchResult) {
-		scheduleCharacterWork(func() { persistPvPMatchResult(result) })
+		// The world has released its locks and restored participants, and any
+		// ranked result is already durable through OnPvPResultRecord. Database
+		// synchronization must not delay return/result presentation or spawn a
+		// new worker for every match.
+		if len(result.Profiles) > 0 {
+			arenaResultSync.request()
+		}
+		notifyPvPMatchResult(result, len(result.Profiles) > 0)
 	}
 	world.OnPvPResultRecord = recordPvPResult
 	world.OnPvPMatchUpdate = func(match *game.PvPMatch) {
@@ -891,9 +898,7 @@ func main() {
 	// across a large outbox or queue redundant workers behind one delivery.
 	loops.Every(game.RefundRetryInterval, world.Trading.ScheduleRefundDelivery)
 	loops.Every(5*time.Second, func() {
-		if err := retryPendingPvPResults(); err != nil {
-			log.Printf("Arena result sync remains pending: %v", err)
-		}
+		arenaResultSync.request()
 	})
 	loops.Every(5*time.Second, func() {
 		if err := retryPendingAdminActivity(); err != nil {
