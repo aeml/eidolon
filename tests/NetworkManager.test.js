@@ -71,6 +71,28 @@ function makeMockSocket(initialReadyState = WebSocket.OPEN) {
     return sock;
 }
 
+test('password confirmation rotates at transport receipt even if the form is closed, without queuing its token', () => {
+    const socket = makeMockSocket(); const network = new NetworkManager(socket); network.setupListeners();
+    const changed = jest.fn(); network.onCredentialTokenChange = changed;
+    socket.simulateMessage({ type: 'password_change_result', payload: { requestId: 'late', success: true, resumeToken: 'a'.repeat(64) } });
+    expect(changed).toHaveBeenCalledWith('a'.repeat(64));
+    expect(network.messageQueue[0].payload.resumeToken).toBeUndefined();
+    expect(network.messageQueue[0].payload.requestId).toBe('late');
+    socket.simulateMessage({ type: 'password_change_result', payload: { success: false, resumeInvalidated: true } });
+    expect(changed).toHaveBeenLastCalledWith(null);
+    network.destroy();
+});
+
+test('ordinary password rejection does not discard resume access and retired sockets cannot rotate it', () => {
+    const socket = makeMockSocket(); const network = new NetworkManager(socket); network.setupListeners();
+    const changed = jest.fn(); network.onCredentialTokenChange = changed;
+    socket.simulateMessage({ type: 'password_change_result', payload: { success: false, resumeToken: 'untrusted' } });
+    expect(changed).not.toHaveBeenCalled();
+    const staleHandler = socket.onmessage; network.destroy();
+    staleHandler({ data: JSON.stringify({ type: 'password_change_result', payload: { success: true, resumeToken: 'a'.repeat(64) } }) });
+    expect(changed).not.toHaveBeenCalled();
+});
+
 test('old session teardown preserves the new manager and application-owned socket handlers', () => {
     const socket = makeMockSocket(); socket.close = jest.fn();
     const authenticationHandler = jest.fn(); socket.onopen = authenticationHandler;

@@ -139,6 +139,30 @@ func TestPasswordChangeMismatchAndLostAckKeepHonestOutcome(t *testing.T) {
 	}
 }
 
+func TestPasswordChangeReceiptExplicitlyInvalidatesUncertainResume(t *testing.T) {
+	for _, uncertain := range []bool{false, true} {
+		t.Run(map[bool]string{false: "mismatch", true: "uncertain"}[uncertain], func(t *testing.T) {
+			c, msg, store, _ := passwordChangeFixture(t)
+			store.changed = false
+			if uncertain {
+				store.err = errors.New("lost acknowledgement")
+			}
+			handlePasswordChangeWithStore(c, msg, store)
+			var frame struct {
+				Payload struct {
+					ResumeInvalidated bool `json:"resumeInvalidated"`
+				} `json:"payload"`
+			}
+			if err := json.Unmarshal(<-c.prioritySend, &frame); err != nil {
+				t.Fatal(err)
+			}
+			if frame.Payload.ResumeInvalidated != uncertain {
+				t.Fatal("client resume invalidation did not match uncertain outcome")
+			}
+		})
+	}
+}
+
 func TestPasswordChangePolicyAndSharedRateAcrossConnections(t *testing.T) {
 	c, msg, store, _ := passwordChangeFixture(t)
 	if messageHandlers[MsgChangePassword] == nil || inboundMessagePolicies[MsgChangePassword].access != accessAuthenticated {

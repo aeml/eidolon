@@ -261,6 +261,7 @@ class UIManagerWindowMethods {
         const layout = this.windowLayouts?.get(id);
         if (layout?.element) {
             const wasOpen = this.isElementVisible(layout.element);
+            if (id === 'settings') this.passwordChange?.clearFields();
             if (id === 'trading') this.trading?.close();
             layout.element.style.display = 'none';
             if (!silent && wasOpen) {
@@ -380,6 +381,7 @@ class UIManagerWindowMethods {
             return false;
         }
 
+        if (element === this.settingsScreen) this.passwordChange?.clearFields();
         element.style.display = 'none';
         this.playUICue(AUDIO_CUES.uiClose);
         this.syncStaticModalBackdrop();
@@ -387,6 +389,7 @@ class UIManagerWindowMethods {
     }
 
     closeAllStaticModals() {
+        this.passwordChange?.clearFields();
         let closedAny = false;
         this.getStaticModalWindows().forEach((windowElement) => {
             if (this.isElementVisible(windowElement)) {
@@ -414,6 +417,9 @@ class UIManagerWindowMethods {
         }
 
         const isHidden = !this.isElementVisible(element);
+        // ESC, backdrop and switching to another modal also retire typed
+        // credentials. An already submitted request keeps its receipt ID.
+        this.passwordChange?.clearFields();
         if (isHidden) {
             if (this.isMobile) this.onPhoneMenuOpen?.();
             this.closeManagedGroup?.('service');

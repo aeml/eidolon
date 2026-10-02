@@ -170,8 +170,13 @@ adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
 proof and resume consumption are serialized against credential changes. Actual
 disposable-Mongo concurrency/data-preservation and fresh connected-process
-checks pass. The player-facing form, safe recovery-method decision/workflow and
-ordered version/notes/publication remain unfinished; this is not live.
+checks pass. The [player-facing password follow-up](2026-10-02-release1-71-password-ui-checks.json)
+adds authenticated Account help and online Settings forms, clears typed secrets
+on submission/close/disconnect, and consumes token rotation at the current
+transport even after closing the form or entering the world. Scoped browser
+bootstrap checks include phone-sized blocked storage; this is not live.
+The safe recovery-method decision/workflow and ordered version/notes/publication
+remain unfinished. Password change is not forgotten-password recovery.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
 time, bounds retained lag credit, acknowledges denied predictions, and keeps
 walking height server-owned. [Scoped walking checks](2026-10-02-release1-72-walking-checks.json)

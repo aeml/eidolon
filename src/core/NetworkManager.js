@@ -3,6 +3,7 @@
 // ============================================================================
 
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
+import { credentialTokenChange } from './CredentialToken.js';
 
 const INCOMING_STATE_COMPACTION_THRESHOLD = 64;
 const INCOMING_STATE_RETAIN_LIMIT = 9;
@@ -51,6 +52,7 @@ export class NetworkManager {
 
         /** Called with the fresh token string when the server confirms a successful resume. */
         this.onResumeSuccess = null;
+        this.onCredentialTokenChange = null;
 
         /**
          * Called with one of 'reconnecting' | 'connected' | 'lost' whenever the
@@ -173,6 +175,12 @@ export class NetworkManager {
                     }
                     if (this.onConnectionStateChange) this.onConnectionStateChange('connected');
                     this._enqueueMessage(msg);
+                } else if (msg.type === 'password_change_result') {
+                    const token = credentialTokenChange(msg.payload);
+                    if (token !== undefined) this.onCredentialTokenChange?.(token);
+                    // UI/event consumers need the receipt, never the bearer token.
+                    const payload = { ...msg.payload }; delete payload.resumeToken;
+                    this._enqueueMessage({ ...msg, payload });
                 } else if (msg.type === 'world_access_denied') {
                     const fail = this.onReconnectFailed;
                     this._reconnecting = false;
@@ -424,6 +432,7 @@ export class NetworkManager {
         this._reconnecting = false;
         const socket = this.socket; this.socket = null;
         this.onReconnectFailed = null; this.onResumeSuccess = null;
+        this.onCredentialTokenChange = null;
         this.onConnectionStateChange = null; this.getResumeToken = null;
         this.messageQueue.length = 0; this.latestServerTime = null;
         // The owned transport may be the previous socket after replacement.

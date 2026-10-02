@@ -1,4 +1,5 @@
 import { collectReportContext } from '../ui/ReportUI.js';
+import { PasswordChangeUI } from '../ui/PasswordChangeUI.js';
 
 const PROTECTED_INVENTORY_TYPES = new Set(['GEM', 'MATERIAL', 'RELIC']);
 const PROTECTED_INVENTORY_SLOTS = new Set(['gem', 'material', 'relic']);
@@ -110,6 +111,13 @@ export class UIBindings {
         };
 
         ui.getReportContext = diagnostics => collectReportContext(engine, diagnostics);
+        const passwordParent = ui.phoneSettings?.sections?.get('device') || ui.settingsScreen?.querySelector('.support-window__body--settings');
+        if (passwordParent) {
+            const current = () => !ui.disposed && !engine.isDestroyed && window.game === engine && engine.isMultiplayer
+                && engine.network?.socket?.readyState === WebSocket.OPEN;
+            ui.passwordChange = new PasswordChangeUI({ parent: passwordParent, isCurrent: current,
+                send: payload => current() && engine.network.send('change_password', payload) });
+        }
         ui.getPlaytestContext = () => ({ level: engine.player?.level,
             className: engine.player?.meshType,
             partySize: ui.social?.partyData?.partyId ? ui.social.partyData.members?.length : 1,
