@@ -1,0 +1,28 @@
+{
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "read-only initial review; no 1.71 implementation or acceptance yet",
+  "preparedPredecessor": "bd85d7efbe62fbb11def55a4a1d9bac8f531698e",
+  "observations": [
+    {
+      "source": "server/main.go: issueResumeToken, validateAndConsumeResumeToken; server/client_dispatch.go: login/resume; server/network.go: cleanupClientLocked",
+      "finding": "Resume tokens are currently issued with a five-minute deadline at login/rotation, while disconnected entity expiry uses five minutes from disconnect. No token extension or rotation on disconnect was found in the initial call-site search.",
+      "next": "Add a bounded server-clock regression for a connection played longer than five minutes before losing transport. Review exact-current-owner cleanup, takeover and token consumption races before changing the lifecycle. Preserve the separate owner-approved fifteen-minute dungeon progress rule. Do not solve this with a long sleep or campaign run."
+    },
+    {
+      "source": "server/protocol_policy.go: inboundMessagePolicies, consumeMessageRate; server/protocol_types.go: Client.messageRates",
+      "finding": "Login and registration have a five-per-minute bucket owned by each Client. Fresh connections receive fresh buckets; initial review found no cross-connection authentication budget.",
+      "next": "Bound credential/hash work and cross-connection abuse without permanent account lockouts or penalizing all players behind a shared proxy. Verify actual proxy trust and deployment before relying on a source-address key."
+    },
+    {
+      "source": "server/main.go: requestIP; server/deploy/nginx/eidolonrealms-http.conf",
+      "finding": "requestIP prefers the leftmost X-Forwarded-For. The deployed template appends proxy_add_x_forwarded_for and independently sets X-Real-IP. Arbitrary client prefixes can therefore affect the reported source. Currently the examined requestIP call site is suspicious logging, not an authentication IP limiter.",
+      "next": "Review trusted proxy configuration and canonical source parsing before adding IP-based admission controls. Do not trust arbitrary forwarding headers or silently alter live networking."
+    }
+  ],
+  "retainedControls": [
+    "CSPRNG 32-byte resume tokens, one token per account, rotation revokes the previous token, single-use consumption and explicit active-session takeover checks.",
+    "bcrypt password hashes, message payload limits and per-client admission policies, character-work locking, fresh trusted role checks and reversible audited administration.",
+    "Current alpha access, saved accounts, casino policy and payment exclusion remain unchanged."
+  ],
+  "publication": "Continue ordered acceptance of prepared 1.62.1 through 1.70 first. This preflight is not a security certification or proof that every account/recovery path has been audited."
+}
