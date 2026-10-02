@@ -856,7 +856,7 @@ func broadcastState() {
 			if isFirstSync {
 				full := &statepb.StateFull{Entities: make([]*statepb.Entity, 0, len(currentState))}
 				for _, e := range currentState {
-					full.Entities = append(full.Entities, entityToProto(e))
+					full.Entities = append(full.Entities, entityToProtoForRecipient(e, c.playerID))
 				}
 				env.Payload = &statepb.StateEnvelope_Full{Full: full}
 
@@ -867,7 +867,7 @@ func broadcastState() {
 			} else {
 				delta := &statepb.StateDelta{Entities: make([]*statepb.Entity, 0, len(changedState)), RemovedIds: removed}
 				for _, e := range changedState {
-					delta.Entities = append(delta.Entities, entityToProto(e))
+					delta.Entities = append(delta.Entities, entityToProtoForRecipient(e, c.playerID))
 				}
 				env.Payload = &statepb.StateEnvelope_Delta{Delta: delta}
 			}
@@ -991,6 +991,24 @@ func questsToProto(qs []game.Quest) []*statepb.Quest {
 			ObjectiveText:      q.ObjectiveText,
 		})
 	}
+	return out
+}
+
+// World snapshots are shared within a broadcast, but progression is not public.
+// Filter the newly encoded message, never the shared actor or owner's snapshot.
+// Visible identity/spec, equipment/appearance, combat and animation remain as
+// before. Inventory, EP and account data are already outside these snapshots.
+func entityToProtoForRecipient(e *game.Entity, recipientID string) *statepb.Entity {
+	out := entityToProto(e)
+	if out == nil || out.Type != string(game.TypePlayer) || (recipientID != "" && out.Id == recipientID) {
+		return out
+	}
+	out.Gold = 0
+	out.Experience, out.MaxExperience = 0, 0
+	out.SkillPoints, out.TalentPoints = 0, 0
+	out.UnlockedSkills, out.UnlockedTalents = nil, nil
+	out.SkillRunes, out.TalentRanks = nil, nil
+	out.Quests = nil
 	return out
 }
 
