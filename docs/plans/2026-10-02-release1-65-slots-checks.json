@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.65",
+  "sourceVersion": "Alpha 1.62.0",
+  "status": "prepared, unpublished",
+  "originalPreparedCommit": "1757c9691f64423020b9310e4168765a270382ce",
+  "reconciledCommit": "6c282055",
+  "changes": [
+    "Queued spins pause for bonus choices and saved win/reward reveals, then resume at the current server revision.",
+    "Bonus choices do not consume queued spins; Stop, leaving, synchronization and connection trouble cancel unstarted spins.",
+    "Retired bonus widgets and disposed panels cannot resume spending; same-revision recovery restores presentation without replaying reveals.",
+    "New bonus and win reveals scroll into the visible stage; rules explain pause versus cancellation."
+  ],
+  "checks": {
+    "client": {"suites": 4, "tests": 80, "seconds": 1.907, "passed": true},
+    "retainedRulesRace": {"command": "go test -race ./internal/game -run '^TestSlot' -count=1", "seconds": 1.048, "passed": true},
+    "presentation": {"cases": 1, "seconds": 21.7, "passed": true, "widths": [390, 1440], "bonusAndGiganticWinRendersInspected": true, "artifacts": "/tmp/eidolon-165-reconciled-slots-20261002"},
+    "lint": "passed",
+    "whitespace": "passed"
+  },
+  "retainedEvidence": ["2026-10-01-release1-65-slots-checks.json", "2026-09-14-connected-slots-acceptance.md", "2026-09-13-elemental-slots.md"],
+  "limits": "Prepared server views and DOM/CSS checks, not new connected wallets, physical-phone, 3D seating or RTP sampling. No server RNG, paytable, weights, wager, payout, wallet or entitlement changes. Publish sequentially with its own defaults, login notes, exact-source CI and public acceptance."
+}
