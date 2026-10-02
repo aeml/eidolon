@@ -15,7 +15,7 @@ func broadcastPublicEvent() {
 	world.UpdatePublicEvent(time.Now())
 	payload, _ := json.Marshal(world.PublicEventSnapshot())
 	data, _ := json.Marshal(Message{Type: "public_event", Payload: payload})
-	broadcast <- BroadcastMessage{Type: "public_event", Data: data}
+	enqueueTransientBroadcast(BroadcastMessage{Type: "public_event", Data: data})
 }
 
 func broadcastTime() {
@@ -28,7 +28,7 @@ func broadcastTime() {
 		Payload: payload,
 	}
 	data, _ := json.Marshal(msg)
-	broadcast <- BroadcastMessage{Type: "time", Data: data}
+	enqueueTransientBroadcast(BroadcastMessage{Type: "time", Data: data})
 }
 
 func saveAllPlayers() {

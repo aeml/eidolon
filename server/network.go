@@ -40,6 +40,11 @@ func runHub() {
 			}
 		case message := <-broadcast:
 			deliverBroadcast(message)
+		case message := <-encounterBroadcast:
+			// An independent reserved lane keeps warnings/encounter updates
+			// from sitting behind a full ordinary visual backlog. The same
+			// select still services registration, retirement and shutdown.
+			deliverBroadcast(message)
 		}
 	}
 }

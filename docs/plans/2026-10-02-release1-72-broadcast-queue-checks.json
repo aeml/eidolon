@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 world-presentation resource bounds",
+  "status": "partial prepared implementation; not published or versioned as 1.72",
+  "finding": "Generic world-event callbacks created one goroutine per send to an unbuffered hub channel. A slow hub could retain arbitrarily many visual forwarding goroutines; periodic time/event loops also blocked on that channel.",
+  "implementation": [
+    "Direct non-blocking transient enqueue, ordinary capacity1024 and independently reserved encounter capacity128. Telegraph, raid-phase and crystal-repair notices do not share ordinary visual capacity.",
+    "Each staged payload is at most16KiB and scene ID256bytes; bytes are copied for immutable ownership. Unknown/private reply types, invalid sizes, stopping state and full/unavailable queues are rejected without a waiting goroutine or world-lock block.",
+    "All generic main world broadcast producers and periodic time/public-event producers use the bounded enqueue. Private quest, reward, wallet, inventory, save and combo paths remain separate.",
+    "The existing hub select services both lanes plus registration, retirement and shutdown. This is reserved encounter space, not guaranteed strict priority scheduling.",
+    "Healthz retains release/database/runtime fields and adds queue lengths/capacities plus ordinary, encounter and invalid drop counters. No message bodies, credentials or account names are logged or exposed by these counters."
+  ],
+  "verification": {
+    "toolchain": "Go1.27.1, race detector",
+    "command": "go test -race . -run '^Test(TransientBroadcast|HealthHandler|BroadcastDelivery|CombatBroadcastScope|TelegraphBroadcast|Shutdown)' -count=1 -timeout=30s",
+    "seconds": 1.849,
+    "negative": "Full ordinary and encounter queues reject immediately; unknown wallet_update, empty/oversized payload and oversized scene metadata do not enter presentation lanes. Stopping/nil queue paths do not block.",
+    "positive": "A full ordinary queue still admits a telegraph to the reserved lane with captured scene/body intact; normal enqueue recovers after drain; caller byte mutation cannot change queued data; exact size boundaries are accepted.",
+    "concurrency": "64 synthetic producers make512 attempts into an owned8-slot lane with no consumer: exactly8 are retained and504 are counted as dropped. No throughput/player capacity is inferred.",
+    "compatibility": "Actual health response matches queue metrics while retaining readiness; existing health, scene-delivery, telegraph and shutdown admission groups passed. Source call-site review found no remaining direct generic broadcast sends outside the queue helper."
+  },
+  "sourceSha256": {
+    "server/transient_broadcast.go": "058a8939d6d30b23c697c849cc6356e40065750b3cdbdd4b477f4e22c08aa7ee",
+    "server/transient_broadcast_test.go": "1885ad9c5b5a38b2e06973c34758dca6ded32463da2e508d58727cdc80c97aff",
+    "server/main.go": "21236b047590d0d28ed362c2a7cea97daf3298c0799924d873f92ea9a8201331",
+    "server/network.go": "b484086ad1b8943a0dce79b89a0ef781f8c3989c8819dd7394505c00445a0944",
+    "server/persistence.go": "9a803d3a0497dcd7cc00d1019a4c460e513d321cdd00a4685d498de3b40d40da"
+  },
+  "limits": [
+    "Queues can drop transient presentation under overload. Encounter drops can lose warnings and must be treated as failed operational readiness; reserved space does not prove sufficient real encounter/player capacity.",
+    "These are isolated enqueue, production-delivery and handler checks, not a full runHub scheduling proof, fresh production binary, real browser/socket encounter, campaign or capacity soak.",
+    "Other asynchronous private workers, same-scene visibility/interest, jump policy, connected route compatibility and remaining security/operations gates still require completion before milestone closure.",
+    "No production services, accounts, saves, wallets or host configuration were changed. Ordered predecessors and exact-source CI/public acceptance still precede1.72 publication."
+  ]
+}

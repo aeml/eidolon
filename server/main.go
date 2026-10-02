@@ -118,13 +118,14 @@ func isQAUsername(username string) bool {
 }
 
 type healthResponse struct {
-	Status         string `json:"status"`
-	Database       string `json:"database"`
-	Commit         string `json:"commit"`
-	Version        string `json:"version"`
-	Goroutines     int    `json:"goroutines"`
-	HeapAllocBytes uint64 `json:"heapAllocBytes"`
-	HeapObjects    uint64 `json:"heapObjects"`
+	Status          string                `json:"status"`
+	Database        string                `json:"database"`
+	Commit          string                `json:"commit"`
+	Version         string                `json:"version"`
+	Goroutines      int                   `json:"goroutines"`
+	HeapAllocBytes  uint64                `json:"heapAllocBytes"`
+	HeapObjects     uint64                `json:"heapObjects"`
+	BroadcastQueues broadcastQueueMetrics `json:"broadcastQueues"`
 }
 
 func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
@@ -143,7 +144,8 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 			Commit:     buildCommit,
 			Version:    buildVersion,
 			Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
-			HeapObjects: memory.HeapObjects,
+			HeapObjects:     memory.HeapObjects,
+			BroadcastQueues: transientBroadcastMetrics(),
 		}
 		statusCode := http.StatusOK
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
@@ -182,7 +184,8 @@ var (
 var clients = make(map[*Client]bool)
 var activeSessions = make(map[string]*Client)
 var sessionsMu sync.Mutex
-var broadcast = make(chan BroadcastMessage)
+var broadcast = make(chan BroadcastMessage, transientBroadcastCapacity)
+var encounterBroadcast = make(chan BroadcastMessage, encounterBroadcastCapacity)
 var register = make(chan *Client)
 var unregister = make(chan *Client)
 
@@ -527,9 +530,7 @@ func main() {
 			}
 			payload, _ := json.Marshal(evt)
 			message := createMessage("raid_phase", payload)
-			go func() {
-				broadcast <- BroadcastMessage{Type: "raid_phase", Data: message, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: "raid_phase", Data: message, InstanceID: evt.InstanceID})
 		case "crystal_repair":
 			evt, ok := data.(game.CrystalRepairEvent)
 			if !ok {
@@ -537,9 +538,7 @@ func main() {
 			}
 			payload, _ := json.Marshal(evt)
 			message := createMessage("crystal_repair", payload)
-			go func() {
-				broadcast <- BroadcastMessage{Type: "crystal_repair", Data: message, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: "crystal_repair", Data: message, InstanceID: evt.InstanceID})
 		case "elite_spawn":
 			msgText, ok := data.(string)
 			if !ok {
@@ -558,10 +557,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			// Send in goroutine to avoid deadlock if hub is busy
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgChat, Data: dataBytes})
 		case "ability":
 			evt, ok := data.(game.AbilityEvent)
 			if !ok {
@@ -574,9 +570,7 @@ func main() {
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAbility, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "attack":
 			evt, ok := data.(game.AttackEvent)
 			if !ok {
@@ -594,9 +588,7 @@ func main() {
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgAttack, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgAttack, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "inventory_update":
 			playerID, ok := data.(string)
 			if !ok {
@@ -659,9 +651,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "projectile_impact":
 			evt, ok := data.(game.ProjectileImpactEvent)
 			if !ok {
@@ -677,9 +667,7 @@ func main() {
 			b, _ := json.Marshal(payload)
 			outMsg := Message{Type: MsgProjectileImpact, Payload: b}
 			dataBytes, _ := json.Marshal(outMsg)
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgProjectileImpact, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgProjectileImpact, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "heal":
 			evt, ok := data.(game.HealEvent)
 			if !ok {
@@ -692,9 +680,7 @@ func main() {
 			b, _ := json.Marshal(payload)
 			outMsg := Message{Type: MsgHeal, Payload: b}
 			dataBytes, _ := json.Marshal(outMsg)
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "hazard_damage":
 			evt, ok := data.(game.HazardDamageEvent)
 			if !ok {
@@ -715,9 +701,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			go func() {
-				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID}
-			}()
+			enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID})
 		case "combo":
 			evtData, ok := data.(map[string]interface{})
 			if !ok {
@@ -763,9 +747,7 @@ func main() {
 			if err != nil {
 				return
 			}
-			go func() {
-				broadcast <- message
-			}()
+			enqueueTransientBroadcast(message)
 		case "reward_summary":
 			evt, ok := data.(game.RewardSummaryEvent)
 			if !ok {

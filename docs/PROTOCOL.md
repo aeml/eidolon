@@ -105,6 +105,27 @@ retain their audience. This is scene isolation only: same-scene distance/interes
 filtering, connected route checks and bounded asynchronous event staging remain
 separate unfinished protocol work.
 
+### Prepared bounded world-presentation staging (not yet published)
+
+Transient world visuals/announcements now enqueue directly without creating one
+waiting goroutine per event. The ordinary lane retains at most1,024 messages;
+telegraphs and raid/crystal-repair updates have an independent128-message lane.
+Each accepts at most16KiB of owned message bytes and a256-byte scene ID. Unknown
+private/durable reply types, invalid sizes, stopping state and full/unavailable
+queues are rejected without blocking a world lock. Time/public-event loops use
+the same bounded staging; private quest, inventory, reward, wallet and save paths
+remain independent.
+
+The hub selects both lanes alongside registration, retirement and shutdown; the
+encounter lane reserves space rather than guaranteeing strict scheduling priority.
+Health responses include `broadcastQueues` lengths/capacities and cumulative
+ordinary, encounter and invalid drop counters. No message contents enter these
+metrics. Ordinary transient overload may lose presentation while authoritative
+snapshots and private acknowledgements retain their existing paths. Encounter
+overload can still lose warnings; drops must fail readiness checks, not be called
+acceptable capacity. This closes the generic forwarding goroutine/backlog gap,
+not every asynchronous worker, same-scene interest filter or connected load gate.
+
 ## Build-action receipts
 
 Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on

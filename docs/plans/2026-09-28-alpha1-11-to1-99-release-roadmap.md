@@ -162,6 +162,12 @@ capture combat-event scene at creation and require joined, present recipients in
 that scene, including explicit overworld isolation and fail-closed future event
 types. Known global announcements remain global. Same-scene interest filtering,
 bounded asynchronous event staging and connected verification remain unfinished.
+The [transient staging follow-up](2026-10-02-release1-72-broadcast-queue-checks.json)
+replaces per-event waiting goroutines with bounded, non-blocking world queues,
+reserves an encounter lane and exposes pressure/drop counters without message
+contents. Private durable acknowledgements remain independent. Synthetic bounds
+are not player capacity; encounter drops, other worker bounds, same-scene interest
+and connected route/load evidence remain release-readiness work.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
