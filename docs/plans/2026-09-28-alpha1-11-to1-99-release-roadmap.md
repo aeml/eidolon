@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.60.0, exact 15df739e6f15e631d0ccff576947ae2d99237296,
-CI36981917813. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness, all five
-changed client runtime files and Ilyra's retained model/loader. Earlier receipts retain distinct runtime and model
+baseline is Alpha 1.61.0, exact a9792c92d8e06d4734c14a87cd323df27efdd026,
+CI36985885791. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness and both
+changed client runtime files. Earlier receipts retain distinct runtime and model
 checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-60-public.json).
+[acceptance receipt](2026-10-02-release1-61-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -107,12 +107,13 @@ party consent, new payouts or another queue. Local client, race, ordinary-socket
 and desktop/phone-sized browser checks passed. Version and notes are published.
 The S gate's real-player population and cadence observations
 remain open for stabilization; publishing this code cannot certify them.
-Alpha 1.60 is accepted at15df739e6f15e631d0ccff576947ae2d99237296,
-CI36981917813. The
-[prepared 1.61 casino world](2026-10-02-release1-61-casino-world.md) closes stale
+Alpha 1.61 is accepted at a9792c92d8e06d4734c14a87cd323df27efdd026,
+CI36985885791. The
+[accepted 1.61 casino world](2026-10-02-release1-61-casino-world.md) closes stale
 door/session actions and clarifies locked VIP entry, preserving the complete
-shared venue and physical seating. Focused local checks passed; publication
-remains ordered after accepted1.60.
+shared venue and physical seating. Focused local checks, full CI and independent
+public acceptance passed. Prepared 1.62–1.68 code remains unpublished and must
+retain ordered milestone versions, notes and acceptance.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

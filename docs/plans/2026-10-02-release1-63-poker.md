@@ -1,9 +1,9 @@
 # Alpha 1.63 Holdem timeout and settlement preparation
 
 Hold'em preparation combines earlier saved timeout ownership work with clearer
-seat and payout presentation. It is not published. Source defaults remain at
-prepared 1.62 until that predecessor is accepted; this is not full casino or
-roadmap acceptance.
+seat and payout presentation. It is not published. Source defaults and cumulative
+login notes now identify prepared 1.63; publication follows accepted 1.62. This
+is not full casino or roadmap acceptance.
 
 ## Player behavior
 
@@ -31,6 +31,9 @@ are preserved in local history; the earlier passing test is not final acceptance
 
 ## Focused evidence
 
+- Aligned 1.63 source defaults, login version and cumulative patch notes passed
+  four focused presentation suites: 359 checks in 1.797 seconds. Full lint and
+  whitespace checks passed. This is prepared-source evidence, not deployment.
 - Reconciled disposable-Mongo race checks passed in 11.176 seconds. Five scenarios
   cover Gold and EP cash-outs, a current chair, a rotated reconnect token,
   free-check and facing-bet deadlines, early-tick protection, claimable chairs,
