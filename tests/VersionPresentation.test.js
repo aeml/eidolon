@@ -3,7 +3,30 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.62.0';
+const currentVersion = '1.65.0';
+
+test("1.65.0 documents slots without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.65.0"'), previous = html.indexOf('data-version="1.64.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["reels animate","pauses for bonus choices","do not consume queued spins","Stop remains available","never silently restores","unchanged updates","100,000 Gold or 100 EP","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
+
+test("1.64.0 documents house-table without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.64.0"'), previous = html.indexOf('data-version="1.63.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["shared rounds","server-owned countdowns","unconfirmed drafts","cannot submit old wagers","server owns accepted stakes","100,000 Gold or 100 EP","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.63.0 explains shared Hold’em, private cards and saved current-chair cash-outs', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.63.0"'), previous = html.indexOf('data-version="1.62.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['real-player-only', 'current best hand', 'hidden opponent cards stay private',
+        'checks when free or folds to a bet', 'only after saving', 'later patron', 'all-in eligibility',
+        'pending return', '100,000 Gold or 100 EP', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack returns', () => {
     const html = fs.readFileSync('index.html', 'utf8');
