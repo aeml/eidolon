@@ -443,6 +443,15 @@ func main() {
 	if err := recoverPvPResultsAtStartup(); err != nil {
 		log.Fatalf("Cannot recover ranked results; refusing stale logins: %v", err)
 	}
+	guildClearJournal, err = database.OpenGuildClearJournal(filepath.Join(*characterJournalDir, "guild-clears"))
+	if err != nil {
+		log.Fatalf("Guild clear journal unavailable: %v", err)
+	}
+	if err := retryPendingGuildClears(); err != nil {
+		// Leaderboards may lag without granting stale wallets, roles or
+		// characters. Leave receipts untouched for periodic/operator recovery.
+		log.Printf("Guild leaderboard recovery remains pending at startup: %v", err)
+	}
 	adminActivityJournal, err = database.OpenAdminActivityJournal(filepath.Join(*characterJournalDir, "admin-activity"))
 	if err != nil {
 		log.Fatal("Session activity journal unavailable; refusing unaudited logins")
@@ -780,7 +789,14 @@ func main() {
 			if !ok {
 				return
 			}
-			scheduleCharacterWork(func() { recordGuildDungeonCompletion(evt) })
+			if err := recordGuildDungeonCompletion(evt); err != nil {
+				log.Printf("Guild clear recording failed: %v", err)
+				for _, playerID := range evt.Participants {
+					if client := getClientByPlayerID(playerID); client != nil {
+						client.sendSystemChat("This run's guild leaderboard record could not be saved. Gameplay rewards are separate; report this clear if it is missing.")
+					}
+				}
+			}
 		}
 	}
 
@@ -877,6 +893,9 @@ func main() {
 	loops.Every(game.RefundRetryInterval, world.Trading.ScheduleRefundDelivery)
 	loops.Every(5*time.Second, func() {
 		arenaResultSync.request()
+	})
+	loops.Every(5*time.Second, func() {
+		guildClearSync.request()
 	})
 	loops.Every(5*time.Second, func() {
 		if err := retryPendingAdminActivity(); err != nil {

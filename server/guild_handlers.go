@@ -113,19 +113,6 @@ func handleMsgGuildLeaderboard(client *Client, message Message) {
 	client.sendSafe(createMessage(MsgGuildLeaderboard, payload))
 }
 
-func recordGuildDungeonCompletion(event game.DungeonCompletionEvent) {
-	// Membership and season were captured while actual recipients were
-	// credited. Never reattribute a delayed clear to their later guild.
-	for _, run := range event.GuildRuns {
-		err := db.RecordGuildDungeonRun(run)
-		if err != nil {
-			log.Printf("record guild dungeon run %s: %v", run.GuildID, err)
-			continue
-		}
-		broadcastGuildUpdate(run.GuildID)
-	}
-}
-
 func handleMsgGuildCreate(client *Client, message Message) {
 	var payload GuildCreatePayload
 	if err := json.Unmarshal(message.Payload, &payload); err != nil {
