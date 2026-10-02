@@ -3,7 +3,14 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.66.0';
+const currentVersion = '1.67.0';
+
+test("1.67.0 documents cosmetics without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.67.0"'), previous = html.indexOf('data-version="1.66.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["previews fitted looks","before you confirm","old purchase button","valid replies","Original gear","combat stats","does not travel","before updating your character","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.66.0 documents EP-wallet without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');
