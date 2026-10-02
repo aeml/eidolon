@@ -1517,7 +1517,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if w.OnEvent != nil {
 					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage, Kind: "holy", InstanceID: e.InstanceID})
 					// Visual Beam event? Or just rely on attack animation
-					w.OnEvent("ability", AbilityEvent{SourceID: e.ID, TargetID: target.ID, SkillName: "Smite", TargetX: tx, TargetZ: tz})
+					w.OnEvent("ability", AbilityEvent{InstanceID: e.InstanceID, SourceID: e.ID, TargetID: target.ID, SkillName: "Smite", TargetX: tx, TargetZ: tz})
 				}
 
 				if isDead {

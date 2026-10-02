@@ -253,6 +253,7 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 					// Emit damage event
 					if w.OnEvent != nil {
 						w.OnEvent("hazard_damage", HazardDamageEvent{
+							InstanceID: instanceID,
 							PlayerID:   playerID,
 							HazardID:   hazardID,
 							HazardType: hazard.HazardType,

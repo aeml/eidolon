@@ -157,6 +157,11 @@ full jump/ability authority and connected release gates are still unfinished.
 invalid coordinates and mid-flight restarts and keep landing height server-owned.
 The quick-jump range versus distance-scaled flight policy still needs resolution;
 neither this partial work nor its isolated tests is a 1.72 release acceptance.
+[Broadcast scene checks](2026-10-02-release1-72-broadcast-scene-checks.json) now
+capture combat-event scene at creation and require joined, present recipients in
+that scene, including explicit overworld isolation and fail-closed future event
+types. Known global announcements remain global. Same-scene interest filtering,
+bounded asynchronous event staging and connected verification remain unfinished.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

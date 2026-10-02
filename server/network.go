@@ -39,30 +39,7 @@ func runHub() {
 				client.closeSendQueues()
 			}
 		case message := <-broadcast:
-			for client := range clients {
-				// Filter by InstanceID
-				if message.InstanceID != "" || message.Type == MsgTelegraph {
-					clientInstance := world.GetPlayerInstance(client.boundPlayerID())
-					if !broadcastMatchesInstance(message, clientInstance) {
-						continue
-					}
-				}
-
-				if message.Type == MsgState || message.Type == "time" || message.Type == "public_event" {
-					// Non-blocking send for state/time updates
-					// If channel is full, drop the message instead of disconnecting
-					client.sendState(message.Data)
-				} else {
-					// Critical messages (Chat, Damage, etc.)
-					// Try to send, if full, we might have to disconnect or risk blocking
-					if !client.sendSafe(message.Data) {
-						client.markTransportClosed()
-						scheduleCharacterWork(func() { cleanupClient(client) })
-						delete(clients, client)
-						client.closeSendQueues()
-					}
-				}
-			}
+			deliverBroadcast(message)
 		}
 	}
 }

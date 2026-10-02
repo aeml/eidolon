@@ -575,7 +575,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes}
+				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "attack":
 			evt, ok := data.(game.AttackEvent)
@@ -595,7 +595,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgAttack, Data: dataBytes}
+				broadcast <- BroadcastMessage{Type: MsgAttack, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "inventory_update":
 			playerID, ok := data.(string)
@@ -702,10 +702,11 @@ func main() {
 			}
 			// Send hazard damage as a damage event so client shows floating text
 			payload := DamagePayload{
-				TargetID: evt.PlayerID,
-				Amount:   evt.Damage,
-				SourceID: evt.HazardID, // e.g. "hazard-lava-5"
-				Kind:     string(evt.HazardType),
+				TargetID:   evt.PlayerID,
+				Amount:     evt.Damage,
+				SourceID:   evt.HazardID, // e.g. "hazard-lava-5"
+				InstanceID: evt.InstanceID,
+				Kind:       string(evt.HazardType),
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
@@ -715,7 +716,7 @@ func main() {
 			dataBytes, _ := json.Marshal(outMsg)
 
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "combo":
 			evtData, ok := data.(map[string]interface{})

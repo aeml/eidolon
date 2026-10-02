@@ -65,7 +65,7 @@ func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, 
 			event.Radius, event.Arc = shapes[0].Radius, shapes[0].Arc
 			event.ShapeResolved = true
 		}
-		w.OnEvent("ability", event)
+		w.emitAbilityEvent(event)
 	}
 }
 
@@ -84,16 +84,30 @@ func (w *World) fireTeleportEvent(sourceID, targetID string, origin AbilityOrigi
 	if radius > 0 {
 		event.Arc = 2 * math.Pi
 	}
-	w.OnEvent("ability", event)
+	w.emitAbilityEvent(event)
 }
 
 // Keep targeting and movement separate: old clients still receive the same aim
 // point, while new clients can commit even a sub-three-unit authoritative blink.
 func (w *World) fireAbilityLandingEvent(sourceID, targetID, skillName string, targetX, targetZ float64, landing AbilityLanding) {
 	if w.OnEvent != nil {
-		w.OnEvent("ability", AbilityEvent{SourceID: sourceID, TargetID: targetID, SkillName: skillName,
+		w.emitAbilityEvent(AbilityEvent{SourceID: sourceID, TargetID: targetID, SkillName: skillName,
 			TargetX: targetX, TargetZ: targetZ, Landing: &landing})
 	}
+}
+
+// Caller holds the world lock. Capture scene at creation, never by looking up
+// a moving/disappearing caster in the later asynchronous broadcast goroutine.
+func (w *World) emitAbilityEvent(event AbilityEvent) {
+	if w.OnEvent == nil {
+		return
+	}
+	source := w.Entities[event.SourceID]
+	if source == nil {
+		return // Missing source cannot grant an implicit overworld audience.
+	}
+	event.InstanceID = source.InstanceID
+	w.OnEvent("ability", event)
 }
 
 // Callers pass the live combat owner, not a damage snapshot. This helper is

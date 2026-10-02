@@ -178,6 +178,7 @@ type HealEvent struct {
 }
 
 type AbilityEvent struct {
+	InstanceID    string          `json:"instanceId,omitempty"`
 	SourceID      string          `json:"sourceId"`
 	TargetID      string          `json:"targetId"` // Optional
 	SkillName     string          `json:"skillName"`
@@ -228,10 +229,11 @@ type ProjectileImpactEvent struct {
 }
 
 type AttackEvent struct {
-	SourceID string  `json:"sourceId"`
-	TargetID string  `json:"targetId"`
-	TargetX  float64 `json:"targetX"`
-	TargetZ  float64 `json:"targetZ"`
+	InstanceID string  `json:"instanceId,omitempty"`
+	SourceID   string  `json:"sourceId"`
+	TargetID   string  `json:"targetId"`
+	TargetX    float64 `json:"targetX"`
+	TargetZ    float64 `json:"targetZ"`
 }
 
 // HazardType defines the type of environmental hazard
@@ -259,6 +261,7 @@ type Hazard struct {
 
 // HazardDamageEvent is emitted when a player takes hazard damage
 type HazardDamageEvent struct {
+	InstanceID string     `json:"instanceId,omitempty"`
 	PlayerID   string     `json:"playerId"`
 	HazardID   string     `json:"hazardId"`
 	HazardType HazardType `json:"hazardType"`
@@ -1552,4 +1555,21 @@ func (w *World) GetPlayerInstance(id string) string {
 		return e.InstanceID
 	}
 	return ""
+}
+
+// A missing/nonplayer/disconnected actor is not a joined overworld recipient.
+// Keep the legacy string-only getter separate for callers that need its fallback.
+func (w *World) GetPlayerInstanceIfPresent(id string) (string, bool) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	e, ok := w.Entities[id]
+	if !ok {
+		return "", false
+	}
+	e.Mu.RLock()
+	defer e.Mu.RUnlock()
+	if e.Type != TypePlayer || e.Disconnected {
+		return "", false
+	}
+	return e.InstanceID, true
 }

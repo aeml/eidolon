@@ -87,6 +87,24 @@ geometry, crowd-control, recovery-context and casino walking-only rules remain.
 Jump distance/flight-speed policy is still unfinished; these checks do not make
 arbitrarily long jumps safe or constitute a full movement-authority closeout.
 
+### Prepared broadcast scene isolation (not yet published)
+
+Only intentionally global chat, world time and public-event announcements use
+an empty scene as global scope. Combat, telegraph, raid/repair and unknown future
+event kinds treat empty scope as the overworld. Instance-tagged messages always
+match that exact scene. The hub requires a present, connected player binding for
+scene-scoped delivery; pre-join, missing/nonplayer, closed and retired recipients
+cannot inherit an overworld audience.
+
+Ability, basic-attack and hazard events capture scene when created, before later
+asynchronous delivery. Ordinary/teleport/landing/Earthshaker ability emitters
+reject missing sources rather than inventing overworld scope. Seraph ability
+events retain their source scene as well. Existing message payloads, priority
+queues and drop/retirement policies remain, and intentionally global messages
+retain their audience. This is scene isolation only: same-scene distance/interest
+filtering, connected route checks and bounded asynchronous event staging remain
+separate unfinished protocol work.
+
 ## Build-action receipts
 
 Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on

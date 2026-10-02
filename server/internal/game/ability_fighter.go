@@ -506,7 +506,7 @@ func (w *World) fireEarthshakerEvent(sourceID string, x, z, facingX, facingZ, ra
 	if line {
 		kind = "line"
 	}
-	w.OnEvent("ability", AbilityEvent{SourceID: sourceID, SkillName: "Earthshaker", TargetX: x + facingX, TargetZ: z + facingZ,
+	w.emitAbilityEvent(AbilityEvent{SourceID: sourceID, SkillName: "Earthshaker", TargetX: x + facingX, TargetZ: z + facingZ,
 		Origin: &AbilityOrigin{X: x, Z: z}, Radius: radius, Arc: 2 * math.Pi, ShapeResolved: true, ShapeKind: kind, Phase: phase})
 }
 

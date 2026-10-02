@@ -105,10 +105,11 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	attacker.Mu.Unlock()
 	if w.OnEvent != nil {
 		w.OnEvent("attack", AttackEvent{
-			SourceID: attackerID,
-			TargetID: targetID,
-			TargetX:  targetX,
-			TargetZ:  targetZ,
+			InstanceID: attackerInstanceID,
+			SourceID:   attackerID,
+			TargetID:   targetID,
+			TargetX:    targetX,
+			TargetZ:    targetZ,
 		})
 	}
 

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 event scene visibility",
+  "status": "partial prepared implementation; not versioned or published as 1.72",
+  "baselineEvidence": "The isolated CombatBroadcastScope test failed on the preceding source: an overworld ability event matched a dungeon_party_a recipient. Ability/basic-attack creation and hazard forwarding also lacked captured scene metadata.",
+  "implementation": [
+    "Global delivery is limited to known chat/time/public-event kinds with no explicit instance. Combat, telegraph, raid/repair and unknown future kinds treat empty scene as overworld, never all instances.",
+    "Production hub delivery requires a present connected player binding for scene-scoped events, denying pre-join, missing/nonplayer, disconnected, closed and retired recipients. Existing critical/state queue and retirement behavior is retained.",
+    "Ability helpers capture creation-time scene and suppress events from missing sources. Ordinary, Teleport, accepted landing and Earthshaker emitters use that helper; Seraph captures its own scene. Basic attacks use their already-captured admission scene and hazards use their captured player scene.",
+    "Main forwarding uses captured event metadata rather than later actor lookups. Existing attack/ability wire presentation fields remain unchanged; hazard damage payloads also retain the explicit scene."
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1, race detector",
+    "combinedCommand": "go test -race . ./internal/game -run '^Test(CombatBroadcastScope|BroadcastDelivery|TelegraphBroadcast|AbilityEventHelpersCaptureScene|BasicAttackEventCapturesAdmissionScene|SelectableAbilitiesPreserveDungeonCoordinateContext|Earthshaker|WorldHazards|Hazard)' -count=1",
+    "serverSeconds": 1.066,
+    "gameSeconds": 21.745,
+    "routing": "144 scope comparisons and 360 production-delivery recipient observations cover nine event kinds across overworld, two independent dungeon parties and the casino. Valid joined recipients receive exactly one event; unrelated scenes and six invalid binding/transport variants receive none. Twenty-four observations retain global chat/time/public-event delivery.",
+    "creationAndCompatibility": "Four creation-time helper paths retain scene after caster transition and suppress missing source; basic attack retains admission scene. Existing telegraph presentation, all52 selectable offset-dungeon coordinate contracts, Earthshaker and hazard lifecycle groups passed.",
+    "finalHazardAndSummonCommand": "go test -race ./internal/game -run '^Test(HazardEventCapturesOverworldScope|AbilityEventHelpersCaptureScene|BasicAttackEventCapturesAdmissionScene|StunnedSeraph|ElevatedSeraph|RockSeraph)' -count=1 -timeout=20s",
+    "finalHazardAndSummonSeconds": 2.560,
+    "finalHazardAndSummon": "Overworld hazard creation retains explicit empty scope and skips dungeon players; helper/attack capture and retained Seraph lifecycle/terrain/rock-follow checks passed.",
+    "fixtureCorrections": "The new minimal hazard fixture needed its tick map initialized and mistakenly locked World.Mu before calling the self-locking hazard method. Two owned local test processes were revalidated live, inspected and terminated; their stacks confirmed the fixture lock error. Removed only the redundant fixture lock, retained production locking, and bounded the corrected run with a20-second timeout. No production services or data were affected."
+  },
+  "sourceSha256": {
+    "server/broadcast_visibility.go": "5589c65b2ec92865cb183bfb9a4b5d93567c61e402e9ba344d6fccab7a923b31",
+    "server/broadcast_visibility_test.go": "9de853f09908e79a561ab53a27ec152b66cef03f010a31d8c800aafb18258273",
+    "server/internal/game/combat_event_scene_test.go": "e8dc28cddbb2f0614869cd297dfdfea3ce9b565ed1d30107f0fbb20f68ff21f1",
+    "server/internal/game/ability_helpers.go": "b17d782c037343888dc1cf526acef56380b146b062bdd5b6849d420a62664941",
+    "server/internal/game/world.go": "309dff2faf5294d7fbeec1d3356f1440bfd94eaa150d07f55fda7b2ab9c43b44",
+    "server/network.go": "5b7b20981078b9353e7ada109ee08c950e4f4c9ed55db6d92104db341c91bbd1",
+    "server/main.go": "d47d34db2c349b96171d8a375732ac3240b81f866336f873d2090bae8ec12591"
+  },
+  "limits": [
+    "Production delivery logic was exercised synchronously with synthetic clients and actual send queues, not new real browser/socket sessions or a fresh production binary.",
+    "Same-scene distance/replication interest filtering and bounded asynchronous event staging remain unfinished; scene isolation alone does not prove all visibility/resource trust boundaries.",
+    "No live users, saves, wallets, host configuration or production service were changed. This is not capacity proof, a full campaign, a 1.72 publication or security certification. Ordered predecessors, remaining jump/ability checks and recovery policy still apply."
+  ]
+}
