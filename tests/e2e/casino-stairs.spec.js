@@ -45,6 +45,7 @@ test('VIP guard dialogue and blocked stairs on a phone', async ({ page }) => {
     expect((await guard.boundingBox()).height).toBeGreaterThanOrEqual(44);
     await guard.click();
     await expect(page.locator('.casino-entry-dialogue')).toContainText('You must be a VIP to enter');
+    await expect(page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Enter VIP lounge', exact: true })).toBeDisabled();
     await page.screenshot({ path: '/tmp/eidolon-casino-vip-guard-phone-20260913.png' });
     await page.locator('.casino-entry-dialogue').getByRole('button', { name: 'Close', exact: true }).click();
     await page.evaluate(() => {

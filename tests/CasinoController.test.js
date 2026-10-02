@@ -37,6 +37,117 @@ function setup() {
     return { engine, controller };
 }
 
+function doorSetup(kind = 'entry', vip = false) {
+    const { engine, controller } = setup();
+    engine.currentInstanceId = kind === 'entry' ? '' : 'lanternhold-casino';
+    controller.floor = kind === 'downstairs' ? 'vip' : 'public'; controller.vipActive = vip;
+    engine.overworldSceneGeneration = 1;
+    engine.network.socket = { readyState: WebSocket.OPEN };
+    engine.requestTownRecall = jest.fn();
+    controller.dialogue.showModal = () => { controller.dialogue.open = true; };
+    controller.dialogue.close = () => { controller.dialogue.open = false; };
+    controller.showDoorDialogue(kind);
+    return { engine, controller, action: [...controller.dialogue.querySelectorAll('button')].find(button => button.textContent !== 'Close') };
+}
+
+test('a locked guard explains VIP access without an actionable entry request', () => {
+    const { engine, controller, action } = doorSetup('guard');
+    expect(controller.dialogue.textContent).toContain('You must be a VIP to enter');
+    expect(action.disabled).toBe(true); action.click();
+    expect(engine.network.send).not.toHaveBeenCalled();
+    controller.dispose();
+});
+
+test.each(['entry', 'guard', 'downstairs', 'exit'])('current %s dialogue uses one explicit normal action', kind => {
+    const { engine, controller, action } = doorSetup(kind, true);
+    action.click(); action.click();
+    expect(controller.dialogue.open).toBe(false);
+    if (kind === 'exit') expect(engine.requestTownRecall).toHaveBeenCalledTimes(1);
+    else expect(engine.network.send).toHaveBeenCalledWith('casino', expect.objectContaining({
+        action: { entry: 'enter', guard: 'vip', downstairs: 'downstairs' }[kind]
+    }));
+    expect(engine.network.send).toHaveBeenCalledTimes(kind === 'exit' ? 0 : 1);
+    controller.dispose();
+});
+
+test.each(['instance', 'generation', 'character', 'socket', 'disconnect', 'death', 'seated', 'closed', 'disposed'])(
+    'retired entry actions cannot send after %s', change => {
+        const { engine, controller, action } = doorSetup();
+        if (change === 'instance') engine.currentInstanceId = 'other-dungeon';
+        if (change === 'generation') engine.overworldSceneGeneration++;
+        if (change === 'character') engine.player = { ...engine.player };
+        if (change === 'socket') engine.network.socket = { readyState: WebSocket.OPEN };
+        if (change === 'disconnect') engine.network.socket.readyState = WebSocket.CLOSED;
+        if (change === 'death') engine.player.state = 'DEAD';
+        if (change === 'seated') engine.player.state = 'SEATED';
+        if (change === 'closed') controller.dialogue.close();
+        if (change === 'disposed') controller.dispose();
+        action.click();
+        expect(engine.network.send).not.toHaveBeenCalled();
+        controller.dispose();
+    }
+);
+
+test('guard entitlement and current floor are rechecked before confirming stairs', () => {
+    for (const change of ['vip', 'floor']) {
+        const { engine, controller, action } = doorSetup('guard', true);
+        if (change === 'vip') controller.vipActive = false;
+        else controller.floor = 'vip';
+        action.click(); expect(engine.network.send).not.toHaveBeenCalled();
+        controller.dispose();
+    }
+});
+
+test('a replaced dialogue cannot use a detached action from the same scene', () => {
+    const { engine, controller, action } = doorSetup('guard', true);
+    controller.showDoorDialogue('exit'); action.click();
+    expect(engine.network.send).not.toHaveBeenCalled();
+    expect(controller.dialogue.open).toBe(true);
+    controller.dispose();
+});
+
+test('scene changes close the modal and clear queued door walking before checking proximity', () => {
+    const { engine, controller } = doorSetup();
+    controller.pendingDoor = { kind: 'entry', destination: engine.player.position.clone() };
+    controller.pendingDoorContext = controller.captureDoorContext('entry');
+    engine.currentInstanceId = 'other-dungeon';
+    controller.beforeUpdate(.1);
+    expect(controller.dialogue.open).toBe(false);
+    expect(controller.pendingDoor).toBeNull();
+    expect(controller.dialogueContext).toBeNull();
+    expect(engine.network.send).not.toHaveBeenCalled();
+    controller.dispose();
+});
+
+test('arriving at a queued door still requires a fresh explicit Enter Casino click', () => {
+    const { engine, controller } = doorSetup();
+    controller.closeDoorDialogue();
+    controller.pendingDoor = { kind: 'entry', destination: engine.player.position.clone() };
+    controller.pendingDoorContext = controller.captureDoorContext('entry');
+    controller.beforeUpdate(.1);
+    expect(controller.dialogue.open).toBe(true);
+    expect(engine.network.send).not.toHaveBeenCalled();
+    controller.dispose();
+});
+
+test('initial catalogue floor metadata does not invalidate a town entrance dialogue', () => {
+    const { engine, controller, action } = doorSetup();
+    controller.floor = undefined;
+    controller.showDoorDialogue('entry');
+    const current = [...controller.dialogue.querySelectorAll('button')].find(button => button.textContent === 'Enter Casino');
+    controller.floor = 'public'; action.click(); current.click();
+    expect(engine.network.send).toHaveBeenCalledTimes(1);
+    controller.dispose();
+});
+
+test('disposal retires other detached casino buttons without sending or reactivating the view', () => {
+    const { engine, controller } = setup();
+    controller.dispose();
+    controller.ready.click(); controller.beforeUpdate(.1);
+    expect(engine.network.send).not.toHaveBeenCalled();
+    expect(controller.active).toBe(false);
+});
+
 test('only the current floor and its patrons are visible, without revealing already hidden actors', () => {
     const { engine, controller } = setup();
     const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';
