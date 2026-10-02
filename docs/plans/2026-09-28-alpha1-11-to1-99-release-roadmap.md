@@ -215,6 +215,13 @@ TLS and WebSocket hijacking until the connection closes. Saturation waits in
 the kernel backlog, not a new application worker. Real small-pool HTTP/TLS,
 hijack, reuse and shutdown checks passed; operator configuration, backlog and
 remaining worker/capacity limitations are recorded. This is not yet deployed.
+The [private-feedback follow-up](2026-10-02-release1-72-private-feedback-checks.json)
+removes per-event goroutines from combo, reward-summary and room-clear
+presentation without making private replies lossy or changing earned values.
+Focused race/lock checks and actual slow-transport closure passed. Existing
+world broadcasting still synchronizes Resonance. Persistence/completion worker
+admission and latest-source authenticated checks remain open; this staged
+change does not close the security or capacity milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

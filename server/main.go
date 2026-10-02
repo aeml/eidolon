@@ -730,21 +730,9 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			// Send to the specific player who triggered the combo
-			username := playerID
-			if strings.HasPrefix(playerID, "player-") {
-				username = strings.TrimPrefix(playerID, "player-")
-			}
-
-			go func() {
-				sessionsMu.Lock()
-				client, exists := activeSessions[username]
-				sessionsMu.Unlock()
-				if exists {
-					client.sendSafe(dataBytes)
-					sendEndgameState(client)
-				}
-			}()
+			// The next world broadcast already synchronizes authoritative
+			// Resonance changes. Do not re-enter World.Mu from this callback.
+			sendPrivateWorldFeedback(playerID, dataBytes)
 		case "telegraph":
 			evt, ok := data.(game.TelegraphEvent)
 			if !ok {
@@ -768,20 +756,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			username := evt.PlayerID
-			if strings.HasPrefix(username, "player-") {
-				username = strings.TrimPrefix(username, "player-")
-			}
-
-			go func() {
-				sessionsMu.Lock()
-				client, exists := activeSessions[username]
-				sessionsMu.Unlock()
-				if exists {
-					client.sendSafe(dataBytes)
-					sendEndgameState(client)
-				}
-			}()
+			sendPrivateWorldFeedback(evt.PlayerID, dataBytes)
 		case "room_clear_reward":
 			evt, ok := data.(game.DungeonRoomClearRewardEvent)
 			if !ok {
@@ -795,19 +770,7 @@ func main() {
 			}
 			dataBytes, _ := json.Marshal(outMsg)
 
-			username := evt.PlayerID
-			if strings.HasPrefix(username, "player-") {
-				username = strings.TrimPrefix(username, "player-")
-			}
-
-			go func() {
-				sessionsMu.Lock()
-				client, exists := activeSessions[username]
-				sessionsMu.Unlock()
-				if exists {
-					client.sendSafe(dataBytes)
-				}
-			}()
+			sendPrivateWorldFeedback(evt.PlayerID, dataBytes)
 		case "weekly_raid_complete":
 			evt, ok := data.(game.WeeklyRaidCompletionEvent)
 			if !ok {

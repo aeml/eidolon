@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial protocol milestone",
+  "preparedParent": "d3c78b56",
+  "scope": [
+    "Combo, reward-summary and room-clear presentation callbacks no longer create an untracked goroutine for every event.",
+    "Delivery looks up the current, joined recipient by immutable player ID and uses the existing bounded private priority lane; no public or lossy fallback.",
+    "Callbacks do not acquire world/entity/snapshot locks. Existing world broadcasting synchronizes authoritative Resonance changes without the redundant event-specific snapshot worker.",
+    "Priority pressure retains admitted messages and closes the slow transport through existing sendSafe behavior; normal read-pump cleanup remains responsible for retirement.",
+    "No changes to earned values, reward journals, character saves, casino settlement or weekly-raid delivery."
+  ],
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(PrivateWorldFeedback|BroadcastSynchronizesResonance|ClientQueue|CombatBroadcast|BroadcastDelivery|SendSafe)' -count=1 -timeout=20s",
+    "passed": true,
+    "packageSeconds": 2.027,
+    "newGroups": 5,
+    "evidence": [
+      "All three event payloads reach only the current recipient's priority lane; old and unrelated clients remain empty.",
+      "Delivery completes while world and recipient snapshot locks are deliberately held.",
+      "Missing, unbound, retired, transport-closed and queue-closed recipients, plus empty identifiers/messages, reject delivery.",
+      "A two-slot fixture rejects 1,000 overflow calls without creating a new queue or replacing/reordering admitted messages.",
+      "Actual loopback WebSocket upgrade: overflowing its one-slot priority lane closes the transport before the peer's fixture timeout, without spilling into lossy state traffic.",
+      "Existing race checks retain close/producer synchronization, scene-private delivery, live Resonance synchronization and unchanged-snapshot suppression."
+    ],
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/main.go": "9fedbb1f3af84472ce141edcd94f242d1c26ff1520bf9ca229a11d9147aab757",
+    "server/private_world_feedback.go": "326551b9ce1b9c708d8a7f1af2898e61561d386d3bfda2132d7a9a37b1289502",
+    "server/private_world_feedback_test.go": "a5a523ec03590a8ad9dae70f9be7079d1249a52e88118db39e8b4d2f0ff9a775",
+    "server/endgame_handlers.go": "9b88ba2a73f9b7032d0d833a74ce5a5efa3aa5ca4309ca2631de4d1152733094"
+  },
+  "limits": [
+    "In-memory recipient and lock fixtures plus a real loopback transport are not an authenticated latest-source process, Mongo restart, production TLS/proxy or capacity run.",
+    "The test-only goroutine observes lock completion; production private feedback itself creates no worker. Existing persistence/earned-completion background admission remains a separate unresolved bound and must not be solved by dropping earned work.",
+    "The main callback wiring is compiled but the entire startup callback path was not driven in an authenticated process by this focused check.",
+    "Owner-approved jump range, latest-source login/restart, ordered version assembly, successful CI and independent public acceptance remain required."
+  ]
+}
