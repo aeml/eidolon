@@ -8,14 +8,14 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint October 2
 
-Alpha1.58.5 is accepted live at397bd41d0a8209eb466204aa9b8ccf64024a933e,
-CI36957349513, with all ten jobs successful. Independent public IPv4 checks
-verified both identities, database readiness and exact runtime/model hashes;
-the [exact receipt](2026-10-02-release1-58-5-public.json) supersedes older
+Alpha1.59.0 is accepted live ata58ec61512cc8be22e1b197208eb5ec992dd7bd0,
+CI36978415990, with all ten jobs successful. Independent public IPv4 checks
+verified both identities, database readiness and all 26 changed deployed runtime files;
+the [exact receipt](2026-10-02-release1-59-public.json) supersedes older
 checkpoints below. Four-class models, fitted gear, effects, equipment-type
-tooltips and Ilyra's permanent outfit are delivered. The connected1.59.0
-moderation candidate has scoped disposable socket/restart acceptance; CI and
-independent public acceptance are still pending before1.60. See its
+tooltips and Ilyra's permanent outfit are delivered. Connected1.59.0
+moderation has scoped disposable socket/restart acceptance and completed CI and
+independent public acceptance. See its
 [release record](2026-10-01-release1-59-moderation.md). Open alpha, saves and
 owner-deferred human pacing/phone checks remain unchanged.
 
@@ -23,7 +23,7 @@ The [prepared 1.60 integration](2026-10-02-release1-60-social-integration.md)
 adds calendar recruitment navigation, explicit final-boss completion guidance
 and intact XP/Resonance reward receipts. Its local client, race, ordinary-socket
 and desktop/phone-sized browser checks passed. Version defaults and cumulative
-notes are prepared; publication must follow exact-source 1.59 acceptance. This
+notes are prepared; publication can now follow exact-source 1.59 acceptance. This
 does not pass population, physical-phone or human-pacing observations.
 
 ## Historical checkpoint — September 28

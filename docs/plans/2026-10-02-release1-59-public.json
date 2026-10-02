@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.59.0",
+  "commit": "a58ec61512cc8be22e1b197208eb5ec992dd7bd0",
+  "ciRun": 36978415990,
+  "status": "accepted",
+  "verifiedAt": "2026-10-02T07:59:13.803Z",
+  "transport": "Ordinary public DNS, IPv4 and verified HTTPS; no origin override.",
+  "frontend": {
+    "commit": "a58ec61512cc8be22e1b197208eb5ec992dd7bd0",
+    "version": "Alpha 1.59.0"
+  },
+  "backend": {
+    "status": "ok",
+    "database": "ready",
+    "commit": "a58ec61512cc8be22e1b197208eb5ec992dd7bd0",
+    "version": "Alpha 1.59.0"
+  },
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 739634,
+      "sha256": "444c8fc6ae7e58d836d2bc9b8668c3ade2889d500cd5b35cb433c91807d7d366",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/core/GameEngineNetworkMessages.js",
+      "bytes": 97508,
+      "sha256": "f0289d277e17025f042a3be225b92c8a1ebb5f840817ad14bbaf8022ce17f05e",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/core/NetworkManager.js",
+      "bytes": 22989,
+      "sha256": "374402d7cb69ffe457320de9da11d41903c3d06c4563b05cfefe17a4c8f66bb8",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/core/SocialPresenceController.js",
+      "bytes": 6854,
+      "sha256": "5bda364252e5c216c3617551123d897396d3560ed1d42d0cc0cbfd62504a6f73",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/core/UIBindings.js",
+      "bytes": 17109,
+      "sha256": "0164c136be62227cadd6f86830b90d778efa69b3889dbd658d561941dc900c8f",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/main.js",
+      "bytes": 23780,
+      "sha256": "0fce2eac22666e2d68eab5e43bcb7b6e365ec3433d4e00d134594c6caad1278e",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/styles/administration.css",
+      "bytes": 4566,
+      "sha256": "a75b8ac495ae02b066c0b7de676161790e8c4ae848da7d73f2ad031936e723aa",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/styles/chat.css",
+      "bytes": 4197,
+      "sha256": "ed695fdfa31b176e58bc77237861b1792dad9114efea5011491efc6b100e6ff2",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/styles/windows.css",
+      "bytes": 44820,
+      "sha256": "aa61a7d7f2b633e77f797baf4a1e86c9c01e2ee7a30b2c7e496a2b5ebd385ddd",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/AdminChatModeration.js",
+      "bytes": 13203,
+      "sha256": "596824d0c571e62829842695299ed3c3839b6a49f75d5e2d51340f4071edd332",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/AdminReportReview.js",
+      "bytes": 5242,
+      "sha256": "860b973647b0ef653839d18b8d8707f55bab19091f2ffa6636256b8a7b65a092",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/AdminUI.js",
+      "bytes": 18762,
+      "sha256": "cc3557fa317f1daa1fecd99a42ef85a27fd5a9f7dd24774774b6244c9860d7f3",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/ChatUI.js",
+      "bytes": 15767,
+      "sha256": "faf61fcff5270dee23a77081a1ef64ff7bd341011696d614d74455229f8c5e29",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/GroupFinderUI.js",
+      "bytes": 13600,
+      "sha256": "13d3d31b2552295c66ecc8b33736cecabc0a527479d2779eeef9e703302386c9",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/GuildEventsUI.js",
+      "bytes": 9769,
+      "sha256": "62504cc54f0f23a073ed19d334f50fece9f93cac57b3a1ececf8a0ad08e158b6",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/GuildUI.js",
+      "bytes": 22863,
+      "sha256": "8c6319df305c90868f8bf3241c4339c7fac2a88a978bdc222005ed038e9a9236",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/LoginModerationUI.js",
+      "bytes": 5426,
+      "sha256": "3ae2d19db7eb2ebfd47b14b5f3abb13016965c9490746af830d73bca3823f831",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/ModerationNoticeUI.js",
+      "bytes": 6566,
+      "sha256": "9826e6391569719e862f99ad5788340ba23cbbcf73ea8a73730fa1a83f1939f7",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/PublicNameCorrectionUI.js",
+      "bytes": 6035,
+      "sha256": "129a99565be110d519231418ea8c8d34ddb08aef8fd6f65a7cf1ab4aeecfef17",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/PvPUI.js",
+      "bytes": 24215,
+      "sha256": "0a28f83cc4eb87c19e64ce0394b4bcb6cdabb59f9079f3a1b3c6f334444e1e77",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/ReportLookupUI.js",
+      "bytes": 4090,
+      "sha256": "b553b2c7764a917737e87529d82b7fbbf7fb550df3e7ed06679cf20adb32f416",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/ReportUI.js",
+      "bytes": 12371,
+      "sha256": "6c2634f2356b1e86d34adb7f5805edb5aae0613c9a60b359d3b0405187c59f80",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/SessionRecovery.js",
+      "bytes": 1226,
+      "sha256": "dd5ebd17f25de3d8328b2787d4085e6c32daf93900ac32f30d005b20606cad1b",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/SocialSafetyUI.js",
+      "bytes": 2566,
+      "sha256": "a366dcced62224524d8c7dfa23e1440fd573a787050d2d46f5d177432c8f3032",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/SocialUI.js",
+      "bytes": 42448,
+      "sha256": "1f907261e1fdf37c5caae0f9e3d428bba24b0e0f459be9e48e8e522cd00cf574",
+      "matchesExactPublisherOutput": true
+    },
+    {
+      "path": "src/ui/UIManager.js",
+      "bytes": 64902,
+      "sha256": "5bf1e1834af53bf798ba61661e13efd9488b69db8db235b0366520a1ec5610ad",
+      "matchesExactPublisherOutput": true
+    }
+  ],
+  "limits": [
+    "All 26 changed deployed client runtime files are compared to exact-source publisher output; not every unchanged asset or gameplay route.",
+    "No production moderation actions or account changes were used for acceptance.",
+    "Physical-phone and human pacing acceptance remain separate."
+  ]
+}

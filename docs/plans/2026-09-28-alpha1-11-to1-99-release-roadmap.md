@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.58.5, exact 397bd41d0a8209eb466204aa9b8ccf64024a933e,
-CI36957349513. All ten CI jobs, including live release and character QA, passed.
-Independent public IPv4 checks verified identities, database readiness and seven
-runtime files plus two binary model hashes. Earlier receipts retain distinct runtime and model
+baseline is Alpha 1.59.0, exact a58ec61512cc8be22e1b197208eb5ec992dd7bd0,
+CI36978415990. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness and all 26
+changed deployed client runtime files. Earlier receipts retain distinct runtime and model
 checks, not a claim every route was sampled. See the current
-[acceptance receipt](2026-10-02-release1-58-5-public.json).
+[acceptance receipt](2026-10-02-release1-59-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -31,8 +31,8 @@ aligned with the existing damage timing. [Focused asset checks](2026-10-01-autho
 retain the evidence and failed-candidate history. The previous candidate's
 browser failures prevented its deployment; the corrected candidate passed CI
 and independent public acceptance. Final modern-art approval, crowd performance
-and human-playtest gates stay open. The next minor milestone remains the complete
-1.59 moderation workflow; no later milestone is declared shipped. The separate
+and human-playtest gates stay open. The subsequent 1.59 moderation workflow is
+now accepted; 1.60 is prepared, not declared shipped. The separate
 [accepted 1.58.3 graphics follow-up](2026-10-01-release1-58-3-graphics.json)
 packages the rendering and body-detail settings work below without including
 unpublished moderation code. Version defaults and cumulative notes are aligned;
@@ -44,7 +44,7 @@ inspection routes. It changes no gameplay or GLBs; its exact-source CI and
 public acceptance passed. Accepted 1.58.5 fixes Ilyra's missing outfit with a
 dedicated, permanently dressed NPC GLB. [Ilyra checks](2026-10-02-release1-58-5-ilyra.json)
 retain local rendering, regression evidence and complete CI/public acceptance.
-No unpublished moderation code is included, and complete 1.59 remains next.
+No moderation code was included in that earlier outfit patch.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.
@@ -84,7 +84,7 @@ reload loads the saved Low body. It uses anonymous prepared presentation, not
 network combat or a phone. Comparable-device profiling and physical-phone
 feedback remain open.
 
-The [1.59 release candidate](2026-10-01-release1-59-moderation.md) connects the
+The [accepted 1.59 release](2026-10-01-release1-59-moderation.md) connects the
 owner-approved temporary mute, public-name requirement and temporary suspension
 workflows, with explicit confirmation, private receipts and independent reversal.
 Players can draft selected-message reports, check their own case status and use
@@ -98,8 +98,8 @@ labels preserve stable ownership and blocks. Schema17 reserves aliases without
 legacy renaming or backfill and fences older registration writers. No production
 sanctions were used for testing. Existing evidence retention and staff boundaries
 are documented; staffing coverage and final retention remain owner decisions.
-CI and public deployment acceptance remain before publishing1.60. The
-[candidate receipt](2026-10-02-release1-59-three-responses.json) preserves historical
+All ten CI jobs and independent public deployment acceptance passed, allowing
+publication of 1.60. The [release receipt](2026-10-02-release1-59-three-responses.json) preserves historical
 preparation evidence, scoped checks and presentation limits.
 The [prepared 1.60 closeout](2026-10-02-release1-60-social-integration.md)
 connects the existing calendar, recruitment and reward guidance without automatic
