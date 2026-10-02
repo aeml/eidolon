@@ -1,5 +1,29 @@
 package main
 
+import "math"
+
+// Shared by actor snapshots and local effect interest. Keep warning/impact
+// footprints visible when their edge overlaps the actor view circle.
+const stateBroadcastRadius = 200.0
+
+func broadcastRequiresFootprint(message BroadcastMessage) bool {
+	return message.Type == MsgTelegraph || message.Type == MsgProjectileImpact
+}
+
+func broadcastFootprintVisible(message BroadcastMessage, x, z float64) bool {
+	f := message.Footprint
+	if !f.Present || !finiteBroadcastCoordinate(f.X) || !finiteBroadcastCoordinate(f.Z) ||
+		!finiteBroadcastCoordinate(f.Radius) || f.Radius < 0 ||
+		!finiteBroadcastCoordinate(x) || !finiteBroadcastCoordinate(z) {
+		return false
+	}
+	return math.Hypot(f.X-x, f.Z-z) <= stateBroadcastRadius+f.Radius
+}
+
+func finiteBroadcastCoordinate(value float64) bool {
+	return !math.IsNaN(value) && !math.IsInf(value, 0)
+}
+
 // Global delivery is an explicit allowlist. Empty combat scope means overworld,
 // not all instances; unknown future event kinds inherit that safe default.
 func broadcastRequiresScene(message BroadcastMessage) bool {
@@ -26,8 +50,11 @@ func deliverBroadcast(message BroadcastMessage) {
 			if world == nil || client.transportClosed.Load() || client.retired.Load() {
 				continue
 			}
-			clientScene, joined := world.GetPlayerInstanceIfPresent(client.boundPlayerID())
+			x, z, clientScene, joined := world.GetPlayerViewPosition(client.boundPlayerID())
 			if !joined || !broadcastMatchesInstance(message, clientScene) {
+				continue
+			}
+			if broadcastRequiresFootprint(message) && !broadcastFootprintVisible(message, x, z) {
 				continue
 			}
 		}

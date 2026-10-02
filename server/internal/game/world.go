@@ -1560,16 +1560,23 @@ func (w *World) GetPlayerInstance(id string) string {
 // A missing/nonplayer/disconnected actor is not a joined overworld recipient.
 // Keep the legacy string-only getter separate for callers that need its fallback.
 func (w *World) GetPlayerInstanceIfPresent(id string) (string, bool) {
+	_, _, instanceID, joined := w.GetPlayerViewPosition(id)
+	return instanceID, joined
+}
+
+// Read only the recipient's view origin and scene in one lock scope, without
+// copying inventory, talents or other private character state.
+func (w *World) GetPlayerViewPosition(id string) (float64, float64, string, bool) {
 	w.Mu.RLock()
 	defer w.Mu.RUnlock()
 	e, ok := w.Entities[id]
 	if !ok {
-		return "", false
+		return 0, 0, "", false
 	}
 	e.Mu.RLock()
 	defer e.Mu.RUnlock()
 	if e.Type != TypePlayer || e.Disconnected {
-		return "", false
+		return 0, 0, "", false
 	}
-	return e.InstanceID, true
+	return e.X, e.Z, e.InstanceID, true
 }

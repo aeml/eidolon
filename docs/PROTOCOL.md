@@ -101,9 +101,27 @@ asynchronous delivery. Ordinary/teleport/landing/Earthshaker ability emitters
 reject missing sources rather than inventing overworld scope. Seraph ability
 events retain their source scene as well. Existing message payloads, priority
 queues and drop/retirement policies remain, and intentionally global messages
-retain their audience. This is scene isolation only: same-scene distance/interest
-filtering, connected route checks and bounded asynchronous event staging remain
-separate unfinished protocol work.
+retain their audience. Captured-point interest and bounded staging are covered by
+the follow-ups below. Actor-based combat interest and connected route checks
+remain separate unfinished protocol work.
+
+### Prepared captured-point effect interest (not yet published)
+
+Telegraphs and projectile impacts carry internal, value-owned creation-time
+center/radius metadata, separate from their unchanged client payloads. The hub
+reads the recipient's current connected-player position and scene together,
+then requires the captured effect footprint to intersect the same200-unit view
+circle used by actor snapshots. A warning centered just outside the circle
+still reaches a player who can see its near edge. Missing/invalid footprint or
+recipient coordinates fail closed. Source disappearance or movement cannot
+reassign an already-captured effect's position or scene.
+
+This filter applies only to telegraphs and projectile impacts; it does not yet
+close ability/attack/damage/heal/hazard actor-based interest. Raid-phase and
+crystal-repair notices remain instance-wide. Global announcements, private
+kill/XP/quest credit, wallet and save paths are unchanged. Synchronous production
+delivery, actual snapshot-circle comparison and race checks are not a new
+socket, full-hub, multiplayer-capacity or encounter-playtest acceptance.
 
 ### Prepared bounded world-presentation staging (not yet published)
 

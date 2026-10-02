@@ -11,5 +11,6 @@ func telegraphBroadcast(event game.TelegraphEvent) (BroadcastMessage, error) {
 		return BroadcastMessage{}, err
 	}
 	data, err := json.Marshal(Message{Type: MsgTelegraph, Payload: payload})
-	return BroadcastMessage{Type: MsgTelegraph, Data: data, InstanceID: event.InstanceID}, err
+	return BroadcastMessage{Type: MsgTelegraph, Data: data, InstanceID: event.InstanceID,
+		Footprint: BroadcastFootprint{Present: true, X: event.X, Z: event.Z, Radius: event.Radius}}, err
 }

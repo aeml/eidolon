@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "partial prepared source; not published",
+  "scope": [
+    "Value-owned creation-time footprints for telegraphs and projectile impacts, separate from unchanged client payloads.",
+    "Current connected recipient position/scene read atomically;200-unit actor-snapshot view circle expanded by effect radius.",
+    "Missing or nonfinite/negative footprint metadata and invalid recipient origins fail closed.",
+    "Raid-phase/crystal-repair notices stay instance-wide; private party kill/XP/quest credit, wallet/save and global announcement paths unchanged."
+  ],
+  "checks": {
+    "newTestGroups": 6,
+    "circleAndEffectEdgeComparisons": 24,
+    "actualActorSnapshotComparisons": 5,
+    "productionEffectAndProgressDeliveryObservations": 72,
+    "currentRecipientTransitions": 5,
+    "valueOwnedQueuedFootprint": true,
+    "sourceGoneAndEventMutation": true,
+    "invalidAndMissingMetadata": true,
+    "raceCommand": "GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(BroadcastFootprint|BroadcastDelivery|CombatBroadcastScope|Telegraph|TransientBroadcast|HealthHandler|AbilityEventHelpersCaptureScene|BasicAttackEventCapturesAdmissionScene|HazardEventCapturesOverworldScope|StateBatch|WorldStateBatch)' -count=1 -timeout=30s",
+    "rootSeconds": 1.467,
+    "gameSeconds": 1.931,
+    "passed": true,
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/broadcast_visibility.go": "c92297179ad812f170bed135ea84cff2bd036e3be46c8c01e1f5434d73f32dfc",
+    "server/broadcast_footprint_test.go": "b14fd72314c878243d8a16d9f9cf7c56b621cd1a400be9c6a7355873c55f3ae0",
+    "server/projectile_impact_event.go": "31eb72a99814a32d8c201af9a1898b3e5a79d544a372636184ee808a80974d1c",
+    "server/telegraph_event.go": "e5f4173b6e4a8e6bb3f12152e495fb3276aded9edc399cce8e80996da4c9da93",
+    "server/internal/game/world.go": "da9126a092189180f37c593e595a342333c3073ec97c5c78fae46f6d6ae6c99c",
+    "server/main.go": "d47552148d49287f35dbc9131eec5943f7eeca2d8ade64ce4b40fab4f642a496"
+  },
+  "limits": [
+    "Interest is closed only for captured-point telegraphs/projectile impacts, not ability/attack/damage/heal/hazard actor-based events.",
+    "Synchronous actual delivery with synthetic recipients/queues, not an actual socket or running hub acceptance.",
+    "No latest-source production binary, full encounter,100-player capacity, human art/device/pacing or release acceptance is implied.",
+    "Warning queue overload and remaining worker bounds still require readiness evidence; this does not reduce private reward credit."
+  ]
+}

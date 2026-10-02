@@ -721,4 +721,12 @@ type BroadcastMessage struct {
 	Type       string
 	Data       []byte
 	InstanceID string
+	Footprint  BroadcastFootprint
+}
+
+// Internal, value-owned interest metadata; never part of the client payload.
+type BroadcastFootprint struct {
+	Present bool
+	X, Z    float64
+	Radius  float64
 }

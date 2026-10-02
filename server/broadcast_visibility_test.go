@@ -56,7 +56,8 @@ func TestBroadcastDeliveryRequiresJoinedSceneButPreservesGlobalMessages(t *testi
 		MsgTelegraph, "raid_phase", "crystal_repair", "future_scene_event"} {
 		for _, scene := range []string{"", "dungeon_party_a", "dungeon_party_b", game.CasinoInstanceID} {
 			data := createMessage(kind, []byte(`{}`))
-			deliverBroadcast(BroadcastMessage{Type: kind, InstanceID: scene, Data: data})
+			deliverBroadcast(BroadcastMessage{Type: kind, InstanceID: scene, Data: data,
+				Footprint: BroadcastFootprint{Present: true}})
 			for _, observer := range recipients {
 				messages := drainSentMessages(observer.client.send)
 				want := 0

@@ -165,14 +165,22 @@ neither this partial work nor its isolated tests is a 1.72 release acceptance.
 [Broadcast scene checks](2026-10-02-release1-72-broadcast-scene-checks.json) now
 capture combat-event scene at creation and require joined, present recipients in
 that scene, including explicit overworld isolation and fail-closed future event
-types. Known global announcements remain global. Same-scene interest filtering,
-bounded asynchronous event staging and connected verification remain unfinished.
+types. Known global announcements remain global. Interest and staging follow-ups
+are recorded below; connected verification remains unfinished.
 The [transient staging follow-up](2026-10-02-release1-72-broadcast-queue-checks.json)
 replaces per-event waiting goroutines with bounded, non-blocking world queues,
 reserves an encounter lane and exposes pressure/drop counters without message
 contents. Private durable acknowledgements remain independent. Synthetic bounds
 are not player capacity; encounter drops, other worker bounds, same-scene interest
 and connected route/load evidence remain release-readiness work.
+The [captured-point interest follow-up](2026-10-02-release1-72-effect-interest-checks.json)
+limits projectile impacts and telegraphs to the current recipient's200-unit
+snapshot view, expanded by the captured effect radius so nearby danger remains
+visible. Source disappearance does not lose the footprint; malformed/missing
+metadata fails closed. Raid progress and private party credit remain unchanged.
+Six new focused groups, synchronous production routing and actual world-view
+comparison passed with race checking. Ability/attack/damage/heal/hazard interest,
+other worker bounds and connected load gates remain open; this is not a release.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

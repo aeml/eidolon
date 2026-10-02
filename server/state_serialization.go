@@ -734,8 +734,6 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 }
 
 func broadcastState() {
-	const stateBroadcastRadius = 200.0
-
 	// 1. Copy active sessions to minimize lock time
 	sessionsMu.Lock()
 	clients := make([]*Client, 0, len(activeSessions))

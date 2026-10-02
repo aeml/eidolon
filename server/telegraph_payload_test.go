@@ -48,6 +48,9 @@ func TestTelegraphBroadcastKeepsPatternGuidanceAndInstance(t *testing.T) {
 		if err != nil || message.Type != MsgTelegraph || message.InstanceID != instanceID {
 			t.Fatalf("wrong routing: %+v %v", message, err)
 		}
+		if message.Footprint != (BroadcastFootprint{Present: true, X: event.X, Z: event.Z, Radius: event.Radius}) {
+			t.Fatal("warning lost its captured, value-owned footprint")
+		}
 		var envelope Message
 		if err := json.Unmarshal(message.Data, &envelope); err != nil {
 			t.Fatal(err)

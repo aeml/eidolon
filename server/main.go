@@ -667,7 +667,7 @@ func main() {
 			b, _ := json.Marshal(payload)
 			outMsg := Message{Type: MsgProjectileImpact, Payload: b}
 			dataBytes, _ := json.Marshal(outMsg)
-			enqueueTransientBroadcast(BroadcastMessage{Type: MsgProjectileImpact, Data: dataBytes, InstanceID: evt.InstanceID})
+			enqueueTransientBroadcast(projectileImpactBroadcast(evt, dataBytes))
 		case "heal":
 			evt, ok := data.(game.HealEvent)
 			if !ok {
