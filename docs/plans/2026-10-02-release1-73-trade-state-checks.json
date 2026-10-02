@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 private direct-trade state and participant decision primitive",
+  "status": "prepared, not published or connected to live trade handlers",
+  "sourceCommit": "91ad74832e7c9a37deee33cabf83ab790d979150",
+  "readerBackport71": "43b1141c26ce74485670be9e0f5529b09e3ce573",
+  "changes": [
+    "Preserve private opaque BSON character trade state through join hydration, detached entity copies, full character snapshots and the existing save journal, including unknown future fields/versions. The state is never part of public entity JSON.",
+    "Define a server-authored immutable settlement-or-cancellation plan bound to both accounts, characters, offer payloads and expected revisions. Both outcomes share one stable operation ID; retries cannot legitimately replace a frozen plan.",
+    "Apply one participant's validated decision into an owned delivery and durable receipt without changing visible Gold, EP or inventory. Exact opaque item payloads survive full bags and wallet limits; reapplication is idempotent.",
+    "Version-one writers reject malformed, unsupported and duplicate state fields, stale revisions, changed custody, prior unclaimed deliveries and mismatched replay fingerprints. Reader-only releases retain unknown formats without interpreting them."
+  ],
+  "checks": {
+    "source73": "Go1.27.1 go test -race ./internal/database . -run '^(TestDirectTrade|TestVendor|TestCharacterPersistence)' -count=1 -timeout=45s passed: database1.095s, server4.033s.",
+    "backport71": "Go1.24.5 go test -race ./internal/database . -run '^(TestDirectTrade|TestCharacterPersistence)' -count=1 -timeout=45s passed: database1.115s, server2.020s.",
+    "decision": "Settlement and cancellation are applied to both participants with repeated BSON-round-trip replay. Gift recipients, full inventory, maximum wallet, exact metadata, unchanged unrelated fields, eleven conflict cases and twenty invalid-plan cases are covered.",
+    "reader": "Actual entity copies, character snapshots and filesystem BSON journal reopen preserve version-one and unknown future state byte-for-byte with detached ownership. Public entity JSON omits the private state.",
+    "format": "gofmt and git diff --check passed."
+  },
+  "sourceHashes": {
+    "server/internal/database/direct_trade_state.go": "ff5fb87ef9570e6f4dbeeb9a54b727c9499f3b2bdc6fc6aeb65f98faf90a64f6",
+    "server/internal/database/direct_trade_state_test.go": "07b20e50ffb4c563cec0e6722aa12407f1900224390ccbea817b5b862fef9ffc",
+    "server/direct_trade_state_reader_test.go": "ad0cf2c3101041e41a700d36b6544d61822cb2cdc4c029d8efbb2f049c16ac8e"
+  },
+  "limits": [
+    "This is a data model, reader-compatibility preparation and participant application primitive, not a durable shared decision store, escrow producer, two-account coordinator, delivery claim UI or startup/login recovery implementation.",
+    "The caller must fence both accounts and re-read the immutable pending shared intent. Only both durably saved participant receipts can justify acknowledging that intent. The primitive alone does not provide those proofs.",
+    "The tests use actual filesystem journal round trips and an injected committer, not new Mongo execution, actual login/socket hydration, native-browser acceptance or production data mutations.",
+    "Reader compatibility must ship before any newer writer produces this private state. Older readers retain funds but cannot recover or claim newer pending trade decisions. Complete coordinated recovery before downgrading to such a reader; do not claim unrestricted rollback.",
+    "The accepted live baseline remains Alpha1.70.1 fa414f0b288e8ee014d5ce72f7affdca485e1c7f. No1.71,1.72,1.73 or whole-economy completion claim."
+  ]
+}

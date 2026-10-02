@@ -170,6 +170,14 @@ closes offer-edit item/Gold duplication without publishing unfinished1.71/1.72
 work. All ten exact-source CI jobs and independent public checks passed for
 fa414f0b/run37068064995. Crash-durable two-account trade settlement remains
 part of1.73.
+The [private trade-state foundation](2026-10-02-release1-73-trade-state-checks.json)
+preserves opaque escrow/delivery state through older prepared readers and applies
+one frozen decision idempotently to a participant receipt. Unknown future BSON
+is retained, never exposed in public entity JSON. Both Go1.24.5 reader and
+Go1.27.1 source checks passed. This is not connected to live trading: the shared
+durable decision store, two-account coordinator, escrow saves, delivery claims
+and startup/login recovery remain required. Ship compatible readers before the
+new writer; retention alone is not recovery or unrestricted rollback.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
