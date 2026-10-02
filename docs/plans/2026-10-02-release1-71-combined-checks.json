@@ -30,5 +30,20 @@
     {"boundary": "Protocol and infrastructure", "control": "Retain WebSocket origin policy, bounded inbound envelope/payload policies, trusted-role separation and existing operator controls.", "residual": "Forwarded addresses remain logging-only, not credential authority. Suspicious-log cardinality/escaping, broader protocol/dependency review and hosting/address-family readiness belong to the next planned security/operations work; not certified here."}
   ],
   "cleanup": "Removed only exact task-labelled disposable container 33d7b49ad8adcb739cd17bc7e6f88e99ece1acaad9a324a58c45b411b9a031b4 and its anonymous config volume after verifying its label and tmpfs database mount. Synthetic tmpfs accounts are gone. No production accounts, roles, currencies, data volumes or global build cache changed.",
-  "releaseOrder": "1.64 candidate CI37002763109 has a failed house-panel lifecycle browser check and is not accepted. Correct that scoped failure before proceeding with prepared 1.65–1.70. No 1.71 version or live acceptance is claimed."
+  "releaseOrder": "1.64 candidate CI37002763109 has a failed house-panel lifecycle browser check and is not accepted. Correct that scoped failure before proceeding with prepared 1.65–1.70. No 1.71 version or live acceptance is claimed.",
+  "predecessorMergeFollowUp": {
+    "commit": "1e48d5ab",
+    "preparedPredecessor": "1c885ec8",
+    "currentAcceptedBaseline": "Alpha 1.68.1, 53bd461972f6f99ec46e36ccea83f0d7c010c89b, CI37031968011",
+    "publication": "1.69 CI37037866734 is running; 1.70 is prepared and must follow its independent acceptance. This follow-up records the new state without relabeling earlier failed runs or connected evidence.",
+    "scope": "Carries accepted 1.68.1 real-input/exact-item QA helpers, full patch history and updated 1.69/1.70 ledgers into the account-security branch. No server file differs from the earlier 046ed8b6 prepared account source.",
+    "server": {
+      "command": "GOTOOLCHAIN=go1.24.5 go test -race . -run '^Test(ResumeToken|Credential(Fresh|Busy|Admission|Budget|Clock|Concurrent|Release|Dispatch)|Registration|PublicRegistration|BootstrapRegistration|AuthDispatch)' -count=1 -timeout=20s",
+      "passed": true,
+      "packageSeconds": 1.476
+    },
+    "client": {"suites": 4, "tests": 380, "seconds": 6.39, "passed": true, "scope": "Version, exact publisher and inherited QA helper regressions; overlapping earlier checks, not additional account or browser certification."},
+    "lint": "Focused inherited-helper and version ESLint, plus whitespace, passed.",
+    "remaining": "Safe account-recovery delivery/ownership decision and implementation, version assembly, ordered CI and independent public acceptance. Existing connected receipts retain their exact source/binary scope."
+  }
 }

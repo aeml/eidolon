@@ -144,6 +144,15 @@ Alpha 1.67.0 cosmetics are independently accepted at
 Its [public receipt](2026-10-02-release1-67-public.json) retains four exact
 publisher comparisons, current identities/readiness and the dressed Ilyra GLB.
 Prior cosmetic render and settlement evidence retains its original scope.
+Alpha 1.68.0 deployed at 1edde7ba786d0a8526db99ed19ba081c590d1cd4,
+but CI37024557601 failed the final live movement QA and is not accepted.
+The [failure receipt](2026-10-02-release1-68-live-failure.json) retains the
+blocked ground ray, idle-animation precondition and flaky exact-item check.
+Corrective 1.68.1 retains every movement threshold and exact-item requirement.
+It is independently accepted at53bd461972f6f99ec46e36ccea83f0d7c010c89b,
+CI37031968011 (all ten jobs). Its [public receipt](2026-10-02-release1-68-1-public.json)
+records matching identities/readiness, both changed runtime publisher files and
+the dressed Ilyra GLB. The failed1.68.0 history remains retained.
 Prepared 1.68–1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
 1.71 account-security work is partial, not a completed milestone.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
