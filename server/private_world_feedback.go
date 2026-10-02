@@ -15,3 +15,19 @@ func sendPrivateWorldFeedback(playerID string, message []byte) bool {
 	}
 	return client.sendSafe(message)
 }
+
+// Like other world callbacks, story advancement can run under world/entity
+// locks. Queue presentation directly and request a fresh coalesced save without
+// an extra event worker. UI delivery is not the authority for earned progress:
+// even a full/closed send queue must still request persistence for this owner.
+func sendChronicleAdvanceAndSave(playerID string, message []byte) {
+	if playerID == "" || len(message) == 0 {
+		return
+	}
+	client := getClientByPlayerID(playerID)
+	if client == nil || client.retired.Load() {
+		return
+	}
+	client.sendSafe(message)
+	savePlayer(client)
+}

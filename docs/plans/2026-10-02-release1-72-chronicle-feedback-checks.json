@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "prepared, unpublished; partial protocol milestone",
+  "preparedParent": "0ca10f09",
+  "scope": [
+    "Story advancement no longer creates a separate event worker merely to enqueue presentation and request persistence.",
+    "The current recipient uses the existing bounded priority queue; persistence requests use the fresh-state coalesced save path.",
+    "Full or closed presentation queues do not suppress the current owner's save request. Missing, empty or retired recipients do not queue work.",
+    "No changes to manual turn-in, quest acceptance, reward arithmetic, story ordering, earned-completion journals or save durability acknowledgement."
+  ],
+  "checks": {
+    "server": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(ChronicleFeedbackSave|PrivateWorldFeedback|CoalescedSave|CharacterPersistence|CharacterWork|CharactersWork|StaleCleanup|ShutdownFinal)' -count=1 -timeout=20s",
+      "passed": true,
+      "packageSeconds": 3.781,
+      "newGroups": 3,
+      "evidence": [
+        "Callback returns with world, entity, character-work and snapshot locks deliberately held; presentation is current-recipient only and subsequent save retains ownership.",
+        "Full and closed queues still persist completed Chronicle state, granted Gold/XP and canonical Gold, without replacing a previously queued receipt.",
+        "Empty message/identifier, missing and retired recipients cannot create presentation or saves.",
+        "Existing feedback-pressure, coalesced-save burst, journal recovery, owner serialization, stale cleanup and final shutdown regressions also pass."
+      ]
+    },
+    "game": {
+      "command": "GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^TestChronicle(RequiresManualTurnInForKillAndCollectionChapters|CanAdvanceAcrossAllFiftyFiveChaptersInOrder)$' -count=1 -timeout=20s",
+      "passed": true,
+      "packageSeconds": 2.967,
+      "scope": "Two short in-process story-order/manual-turn-in regressions, not an uninterrupted campaign or human pacing test."
+    },
+    "whitespace": "git diff --check passed."
+  },
+  "sourceHashes": {
+    "server/main.go": "5e37fd683a61eb58fa41f4dbb50a828f9b07b8d9846ff5d748bace47f74d4eec",
+    "server/private_world_feedback.go": "ed1655619ce28d834f86c2034410ae66b0aa84939e34255072a781eaf9bd6c59",
+    "server/chronicle_feedback_save_test.go": "881614992346bab7228e36e8c9f54c56c2e97c3b164ec8acbc477d86cf7c0a09"
+  },
+  "limits": [
+    "The earlier e1d84ac0 real-server account/resource receipt predates this callback change and retains that scope; it is not relabeled as proof of this callback.",
+    "Other cleanup, presence and critical completion workers remain separate admission work. This closes one redundant event-worker path, not all denial-of-service or player-capacity gates.",
+    "No 1.72 promotion, CI deployment or public acceptance is claimed."
+  ]
+}

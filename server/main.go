@@ -522,14 +522,7 @@ func main() {
 			}
 			payload, _ := json.Marshal(evt)
 			message := createMessage("chronicle_advance", payload)
-			scheduleCharacterWork(func() {
-				client := getClientByPlayerID(evt.PlayerID)
-				if client == nil {
-					return
-				}
-				client.sendSafe(message)
-				savePlayer(client)
-			})
+			sendChronicleAdvanceAndSave(evt.PlayerID, message)
 		case "raid_phase":
 			evt, ok := data.(game.RaidPhaseEvent)
 			if !ok {

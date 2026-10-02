@@ -260,6 +260,12 @@ history/restart and ordinary casting/resources/equipment through session handoff
 and final save, using a race-enabled e1d84ac0 binary and disposable Mongo.
 Global completion/cleanup admission and broader gameplay/load evidence remain
 open; these checks do not certify capacity or publish the 1.72 milestone.
+The [Chronicle callback follow-up](2026-10-02-release1-72-chronicle-feedback-checks.json)
+removes the extra story-advancement event worker, queues owner-only feedback and
+requests the coalesced save even when presentation fails. Lock, failed-delivery,
+completed-quest persistence and short manual-turn-in/story-order regressions
+pass. Other critical completion and cleanup work remains separate; no new
+campaign, capacity or latest-binary callback acceptance is inferred.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 
