@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "partial implementation, local checks passed; not versioned or published as 1.71",
+  "scope": [
+    "Reject an account switch on an already authenticated connection before consulting credential storage; retain the original rejection text and original identity.",
+    "Do not start registration/login credential work or consume a reconnect token on a closed or retired recipient.",
+    "Recheck retirement after acquiring the login/resume character-work lock before allowing authentication to revive that transport."
+  ],
+  "regression": {
+    "before": "The account-switch test reached DB.Authenticate and failed with the intentionally absent test database, proving the rejection previously came after a credential query.",
+    "newCases": "Seven negative cases: one cross-account login, closed/retired login and registration, and closed/retired resume with preservation of a valid one-use token.",
+    "after": "Focused account, token, queue, character-owner, session-activity, admin-admission and inbound-protocol checks passed under the Go race detector in 2.582 seconds.",
+    "command": "GOTOOLCHAIN=go1.24.5 go test -race . -run 'Test(AuthDispatch|ResumeToken|TransportClosure|ClientQueues|ClientQueue|ClientPlayerBinding|ClientSnapshot|CharacterWork|StaleCleanup|ResumeActivityFailure|SessionActivity|AdminConsoleAdmission|InboundMessage|RegisteredMessage)' -count=1",
+    "protocolGate": "An initial top-level guard failed the existing dispatcher AST contract. The guards were moved inside the three auth cases; the policy-coverage assertion was not weakened. Formatting and whitespace checks passed."
+  },
+  "limits": [
+    "No production account, password, session, recovery request or administrator action was performed.",
+    "Credential requirements, cross-connection authentication budgets, hash-work admission and recovery delivery remain separate unfinished work.",
+    "The pending owner recovery-delivery choice is not inferred; no SMTP or password-reset bypass was introduced.",
+    "Prepared releases 1.64 through 1.70 remain unpublished until ordered predecessor acceptance; 1.63 is currently in deployment."
+  ]
+}

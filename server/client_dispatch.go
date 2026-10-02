@@ -15,6 +15,9 @@ import (
 func (c *Client) dispatchMessage(msg Message) {
 	switch msg.Type {
 	case MsgRegister:
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
 		var payload AuthPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
@@ -26,8 +29,17 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.sendError("Registration successful! Please login.")
 
 	case MsgLogin:
+		// Login skips ordinary character-owner admission. A retired transport
+		// must not start credential work while awaiting network-hub cleanup.
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
 		var payload AuthPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if c.username != "" && c.username != payload.Username {
+			c.sendError("Use a new connection to switch accounts.")
 			return
 		}
 		success, err := db.Authenticate(payload.Username, payload.Password)
@@ -39,13 +51,9 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Invalid credentials")
 			return
 		}
-		if c.username != "" && c.username != payload.Username {
-			c.sendError("Use a new connection to switch accounts.")
-			return
-		}
 		unlockCharacter := lockCharacterWork(payload.Username)
 		defer unlockCharacter()
-		if c.transportClosed.Load() {
+		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
 		if err := recordSessionActivity(payload.Username, "login"); err != nil {
@@ -808,6 +816,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.sendSystemChat("Dungeon reset.")
 
 	case MsgResumeSession:
+		// Do not burn a single-use token on an unavailable recipient.
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
 		// Client sends: { "token": "<64-char hex>" }
 		var payload struct {
 			Token string `json:"token"`
@@ -828,7 +840,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		unlockCharacter := lockCharacterWork(username)
 		defer unlockCharacter()
-		if c.transportClosed.Load() {
+		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
 		sessionsMu.Lock()
