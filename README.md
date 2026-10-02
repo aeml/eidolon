@@ -420,8 +420,8 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.61.0` (prepared casino-world integration; publication follows accepted 1.60)
-- Last independently verified live release: `Alpha 1.59.0`, exact a58ec61512cc8be22e1b197208eb5ec992dd7bd0, successful CI36978415990 (all ten jobs, including live release and character QA). Public IPv4 frontend/backend identities and database readiness pass; all 26 changed deployed client runtime files match the exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-59-public.json). Earlier receipts retain distinct runtime and model checks, not a claim every route was sampled. DNS/IPv6 remain owner-managed; final art/device/pacing approval remains separate.
+- Current source version: `Alpha 1.62.0` (prepared blackjack candidate; publication follows accepted 1.61)
+- Last independently verified live release: `Alpha 1.60.0`, exact 15df739e6f15e631d0ccff576947ae2d99237296, successful CI36981917813 (all ten jobs, including live release and character QA). Public IPv4 frontend/backend identities and database readiness pass; all five changed client runtime files and Ilyra's retained model/loader match exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-60-public.json). Earlier receipts retain distinct runtime and model checks, not a claim every route was sampled. DNS/IPv6 remain owner-managed; final art/device/pacing approval remains separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. Connected 1.59 moderation is now accepted live; 1.60 integration is prepared for publication. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
 - Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
@@ -439,15 +439,15 @@ Disposable production-binary socket and restart checks passed; the current
 checks from the completed exact-source CI and public deployment acceptance. Staff boundaries and
 unchanged evidence retention are documented in [Administration](docs/ADMINISTRATION.md).
 
-The prepared [1.60 integration](docs/plans/2026-10-02-release1-60-social-integration.md)
+The accepted [1.60 integration](docs/plans/2026-10-02-release1-60-social-integration.md)
 connects current guild events to activity recruitment without automatic consent,
 distinguishes boss progress from actual run completion, and preserves earned
 XP/Resonance receipts in reward messages. Focused client, server, real-socket and
-desktop/phone-sized browser checks passed. These changes are not yet published;
+desktop/phone-sized browser checks passed, followed by complete CI and public acceptance;
 real-player population, pacing and physical-phone observations remain separate.
 
-The 1.60 candidate is pushed at 15df739e6f15e631d0ccff576947ae2d99237296,
-CI36981917813; final deployment acceptance is pending. The prepared
+Alpha 1.60 is accepted at 15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813. The prepared
 [1.61 casino world](docs/plans/2026-10-02-release1-61-casino-world.md) retires stale
 door actions and clearly disables non-VIP entry while preserving physical
 seating, the complete two-floor venue and server-owned access. Its local checks

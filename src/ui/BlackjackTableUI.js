@@ -25,7 +25,9 @@ export class BlackjackTableUI {
         const label = node('label', 'Wager (Gold) '); this.stakeLabel = label;
         this.stake = node('input'); this.stake.type = 'number'; this.stake.min = '20'; this.stake.max = '500'; this.stake.step = '20'; this.stake.value = '100';
         label.append(this.stake);
-        this.bet = this.button('Bet · 100 Gold', () => this.placeBet()); this.betBox.append(label, this.bet);
+        this.wagerHint = node('p', 'Next round only—never auto-bet. Your confirmed stake stays unchanged.', 'casino-wager-hint');
+        this.wagerHint.hidden = true;
+        this.bet = this.button('Bet · 100 Gold', () => this.placeBet()); this.betBox.append(label, this.wagerHint, this.bet);
         this.stake.oninput = () => { this.bet.textContent = `Bet · ${this.stake.value || '…'} ${this.currency}`; };
         this.adjustments = node('div', '', 'casino-bet-adjustments');
         for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
@@ -38,7 +40,7 @@ export class BlackjackTableUI {
         this.table.onExpire = () => this.root.querySelectorAll('button, input').forEach(control => { control.disabled = true; });
         this.actions = node('div', '', 'blackjack-actions');
         this.controls = node('div', '', 'card-table-controls');
-        this.controls.append(this.summary, this.betBox, this.actions, this.rules);
+        this.controls.append(this.summary, this.actions, this.betBox, this.rules);
         this.root.append(this.cards, this.controls);
         this.celebration = new CasinoCelebration(this.table.center);
     }
@@ -54,11 +56,16 @@ export class BlackjackTableUI {
         this.stake.min = String(view.minBet || 20); this.stake.step = String(view.betStep || 20);
         this.stake.max = String(view.maxBet || 500);
         if (changedCurrency) this.stake.value = this.stake.min;
-        this.stakeLabel.firstChild.nodeValue = `Wager (${this.currency}) `; this.stake.oninput();
+        this.stake.oninput();
         this.stakeRules.textContent = `Bet ${this.stake.min}–${goldText(this.stake.max)} ${this.currency} in steps of ${this.stake.step}. Double on two cards, including after splitting. Split equal-value pairs into at most four hands; split aces receive one card each. No insurance or surrender.`;
         if (this.celebrationRound !== view.roundId) this.celebration.clear();
         const own = view.players?.find(player => player.playerId === playerID);
         const watchingEarlierSeat = own && Number.isInteger(presence.yourSeat?.seat) && own.seat !== presence.yourSeat.seat;
+        // This is only a draft for a later manual bet; current hand funding and
+        // split/double costs continue to come from the server's own participant.
+        const nextWager = view.phase !== 'betting' || Boolean(own);
+        this.stakeLabel.firstChild.nodeValue = `${nextWager ? 'Next wager' : 'Wager'} (${this.currency}) `;
+        this.wagerHint.hidden = !nextWager;
         this.stateKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, own, playerID]);
         if (this.pendingKey !== this.stateKey) this.pendingKey = null;
         this.summary.textContent = !view.available ? 'Blackjack is temporarily unavailable; saved wagers are retained.' :
@@ -66,8 +73,9 @@ export class BlackjackTableUI {
             `${this.balance} ${this.currency} available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
                 view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' :
                     watchingEarlierSeat ? 'Watching your earlier wager; return to its seat to act.' : 'Round in progress.'}`;
-        this.betBox.hidden = view.phase !== 'betting';
-        this.bet.disabled = !this.canAct() || view.phase !== 'betting' || Boolean(own); this.stake.disabled = this.bet.disabled;
+        this.betBox.hidden = false;
+        this.bet.disabled = !this.canAct() || nextWager;
+        this.stake.disabled = !this.canAct();
         this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });
         const renderKey = JSON.stringify([this.stateKey, view.round, presence, view.available, view.processing]);
         const changed = this.renderKey !== renderKey; this.renderKey = renderKey;

@@ -2,8 +2,9 @@
 
 The casino world milestone preserves the shared Lanternhold venue, separate
 full-size floors, physical seating and normal world return. The prepared change
-closes door-dialogue lifecycle gaps. It is not deployed; publication follows
-accepted 1.59 and 1.60 releases.
+closes door-dialogue lifecycle gaps. This is the next publishing candidate after
+accepted 1.59 and 1.60 releases; its own exact-source deployment acceptance is
+still pending.
 
 ## Door and guard improvements
 

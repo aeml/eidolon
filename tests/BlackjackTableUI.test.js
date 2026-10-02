@@ -36,6 +36,58 @@ test('bet shortcuts change the next round stake, not a pending wager', () => {
     expect(send).toHaveBeenLastCalledWith({ action: 'bet', roundId: 'round-two', bet: 200 });
 });
 
+test('next wager can be prepared during a hand without changing the confirmed bet or double cost', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send);
+    try {
+        const view = playing(); ui.update(view, 'alice');
+        expect(ui.betBox.hidden).toBe(false); expect(ui.stake.disabled).toBe(false); expect(ui.bet.disabled).toBe(true);
+        ui.adjustments.querySelectorAll('button')[1].click();
+        expect(ui.stake.value).toBe('200'); expect(view.players[0].bet).toBe(100);
+        ui.bet.click(); expect(send).not.toHaveBeenCalled();
+        expect(ui.actions.textContent).toContain('Double · +100 Gold');
+        ui.choose('double'); expect(send).toHaveBeenCalledWith({ action: 'play', roundId: 'round-one', roundRevision: 1, gameAction: 'double' });
+        ui.update({ ...betting(), roundId: 'round-two' }, 'alice');
+        expect(send).toHaveBeenCalledTimes(1); expect(ui.stake.value).toBe('200');
+        ui.bet.click(); expect(send).toHaveBeenLastCalledWith({ action: 'bet', roundId: 'round-two', bet: 200 });
+    } finally { ui.dispose(); }
+});
+
+test('confirmed wagers and completed hands keep preparation visible without automatically betting', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send);
+    try {
+        const confirmed = { ...betting(), players: [{ playerId: 'alice', seat: 0, bet: 100 }] };
+        ui.update(confirmed, 'alice');
+        expect(ui.stakeLabel.textContent).toContain('Next wager (Gold)'); expect(ui.wagerHint.hidden).toBe(false);
+        ui.adjustments.querySelectorAll('button')[1].click();
+        ui.bet.click(); expect(send).not.toHaveBeenCalled();
+        expect(confirmed.players[0].bet).toBe(100); expect(ui.stake.value).toBe('200');
+        ui.update({ ...confirmed, phase: 'complete' }, 'alice');
+        expect(ui.betBox.hidden).toBe(false); expect(ui.stake.disabled).toBe(false);
+        expect(ui.bet.disabled).toBe(true); expect(ui.stake.value).toBe('200');
+        ui.update({ ...betting(), roundId: 'round-two' }, 'alice');
+        expect(ui.stakeLabel.textContent).toContain('Wager (Gold)'); expect(ui.wagerHint.hidden).toBe(true);
+        expect(send).not.toHaveBeenCalled(); ui.bet.click();
+        expect(send).toHaveBeenCalledWith({ action: 'bet', roundId: 'round-two', bet: 200 });
+    } finally { ui.dispose(); }
+});
+
+test('EP stake preparation keeps its currency and disables controls while unavailable or saving', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send);
+    try {
+        const ep = { ...playing(), currency: 'ep', balance: 100, minBet: 2, maxBet: 100, betStep: 2 };
+        ui.update(ep, 'alice'); expect(ui.stake.value).toBe('2');
+        ui.adjustments.querySelectorAll('button')[1].click(); expect(ui.stake.value).toBe('4');
+        expect(ui.stakeLabel.textContent).toContain('Next wager (EP)');
+        for (const unavailable of [{ ...ep, processing: true }, { ...ep, available: false }]) {
+            ui.update(unavailable, 'alice'); expect(ui.stake.disabled).toBe(true); expect(ui.bet.disabled).toBe(true);
+            ui.adjustments.querySelectorAll('button')[1].click(); expect(ui.stake.value).toBe('4');
+        }
+        ui.update({ ...ep, phase: 'betting', players: [], round: undefined, roundId: 'ep-next' }, 'alice');
+        expect(send).not.toHaveBeenCalled(); ui.bet.click();
+        expect(send).toHaveBeenCalledWith({ action: 'bet', roundId: 'ep-next', bet: 4 });
+    } finally { ui.dispose(); }
+});
+
 test('one-click wagers respect balance and stay locked across unchanged polls', () => {
     const send = jest.fn(), ui = new BlackjackTableUI(send);
     ui.update(betting(), 'alice'); ui.bet.click(); ui.update(betting(), 'alice'); ui.bet.click();

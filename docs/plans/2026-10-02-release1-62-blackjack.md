@@ -18,10 +18,17 @@ The release compares the captured session again, so a later occupant or newly
 acquired session cannot be ejected by a stale release. A participant in a
 different chair only watches the earlier wager: they must return to its funded
 seat to act, and its timeout cannot eject their unrelated chair. Funding records
-and public views do not acquire private session-token fields; legacy round data
-remains valid. Disconnect reservation remains 60 seconds.
+remain unchanged. A private table-level timeout marker retains the captured
+session so a later tick can retry a missed world release. Public views omit the
+marker; legacy rounds without it remain valid. Disconnect reservation remains
+60 seconds.
 
 ## Hand and payout presentation
+
+The earlier prepared next-wager controls are now reconciled with these changes.
+Wager controls remain visible during a hand, but edits only prepare the next
+manual bet. They cannot alter accepted stakes, double/split costs or cause
+automatic wagers. On phones, turn decisions precede wager preparation.
 
 When an earlier participant leaves and the physical chair is reused, their dealt
 hand explicitly identifies its original owner instead of appearing to belong to
@@ -69,7 +76,22 @@ client award is invented.
 The first prepared timeout implementation saved an original session token and
 would therefore miss a legitimately resumed chair. It was replaced before
 publication with a current-seat capture, reducing stored fields and preserving
-normal reconnect behavior. Exact-session stale-release tests remain.
+normal reconnect behavior. Reconciliation with the earlier prepared branch
+retains private saved timeout fences for release retries rather than relying
+on a single world update. Exact-session stale-release tests remain.
+
+The final reconciled disposable-Mongo checks passed in 7.626 seconds under the
+race detector, covering six timeout scenarios, Gold/EP wins, resumed and unrelated
+chairs, exact-once settlement, private projection and retries after a deliberately
+missed world release. Invalid-marker and legacy-record checks passed in the same
+run. Production records were untouched; the task container and anonymous volume
+were removed. A native desktop/390px route passed in 8.3 seconds, with both
+final screenshots inspected; it uses synthetic table state and procedural actors,
+not live multiplayer or physical-phone evidence. The aligned version/defaults,
+patch history and three blackjack presentation suites passed 365 checks in
+2.462 seconds. Full lint and whitespace checks passed. A prior client command
+used a nonexistent CardTableView test path; the corrected CardTableScene suite
+passed. Counts overlap earlier evidence and are not additive.
 
 ## Remaining publication checks
 

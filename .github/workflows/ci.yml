@@ -91,6 +91,12 @@ jobs:
           go-version: '1.24.5'
           cache-dependency-path: server/go.sum
 
+      - name: Verify blackjack timeout ownership and saved payouts
+        working-directory: server
+        env:
+          EIDOLON_CASINO_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: go test -race . -run '^TestBlackjackMongoTimeout' -count=1
+
       - name: Verify ordinary social, duel and administration sockets
         working-directory: server
         env:
@@ -548,7 +554,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.61.0" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.62.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

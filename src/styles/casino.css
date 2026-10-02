@@ -210,6 +210,7 @@ body .casino-session .card-table-center .poker-board .blackjack-card { flex: 0 1
 @media (max-width: 700px) {
     body .casino-session:is(.has-blackjack, .has-poker) { height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; bottom: max(8px, env(safe-area-inset-bottom)); padding: 8px; }
     .casino-session > :is(.blackjack-game, .poker-game):not([hidden]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 160px; gap: 8px; }
+    .casino-session > .blackjack-game:not([hidden]) { grid-template-rows: minmax(0, 1fr) min(260px, 35dvh); }
     .card-table-seat { width: 29%; height: 30%; padding: 4px; border-radius: 10px; }
     .card-table-seat-name { font-size: 11px; }
     .card-table-seat-status { font-size: 10px; }
