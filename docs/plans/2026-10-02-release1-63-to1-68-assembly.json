@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "status": "prepared source only, unpublished",
+  "acceptedPredecessor": {
+    "version": "Alpha 1.61.0",
+    "commit": "a9792c92d8e06d4734c14a87cd323df27efdd026",
+    "ciRun": 36985885791
+  },
+  "inFlight": {
+    "version": "Alpha 1.62.0",
+    "commit": "b1aa15e23ac4315de6416ce0ecf89e59229df96c",
+    "ciRun": 36989812879,
+    "acceptance": "pending"
+  },
+  "assemblies": [
+    {
+      "version": "Alpha 1.63.0",
+      "commit": "209a5c13",
+      "suites": 4,
+      "tests": 359,
+      "seconds": 1.797,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    },
+    {
+      "version": "Alpha 1.64.0",
+      "commit": "294a72c4",
+      "suites": 3,
+      "tests": 353,
+      "seconds": 1.744,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    },
+    {
+      "version": "Alpha 1.65.0",
+      "commit": "ab9d318a",
+      "suites": 3,
+      "tests": 376,
+      "seconds": 2.469,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    },
+    {
+      "version": "Alpha 1.66.0",
+      "commit": "0c33e5ec",
+      "suites": 3,
+      "tests": 358,
+      "seconds": 2.244,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    },
+    {
+      "version": "Alpha 1.67.0",
+      "commit": "78db01e3",
+      "suites": 5,
+      "tests": 370,
+      "seconds": 3.419,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    },
+    {
+      "version": "Alpha 1.68.0",
+      "commit": "4bd92751",
+      "suites": 4,
+      "tests": 374,
+      "seconds": 2.545,
+      "passed": true,
+      "scope": "Current version defaults, cumulative login patch notes and relevant focused client suites."
+    }
+  ],
+  "lint": "Full lint passed on aligned 1.63 and final 1.68 source. Later assemblies change only release defaults, notes and assertions; no game runtime is regenerated.",
+  "whitespace": "All assemblies passed git diff --check.",
+  "limits": "Overlapping focused suite counts are not additive or evidence of new full campaigns. Each successor must wait for its predecessor's exact-source CI and independent public acceptance, merge that receipt forward, fetch/merge remote updates and publish its own complete candidate. No future milestone is accepted by preparation. Retained 1.62-source checks are historical preparation receipts, not mislabeled live versions."
+}
