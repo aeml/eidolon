@@ -81,6 +81,40 @@ func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	}
 }
 
+func TestCasinoServerTimeoutReleasesOnlyTheExactSeatSession(t *testing.T) {
+	w, a, b, table := casinoSeatWorld()
+	now := time.Now()
+	seat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, identity := range [][3]string{{a.ID, table.ID, ""}, {a.ID, table.ID, "stale"}, {a.ID, "other-table", seat.SessionID}, {b.ID, table.ID, seat.SessionID}} {
+		if w.ReleaseCasinoSeatForSession(identity[0], identity[1], identity[2]) || a.CasinoSeat == nil {
+			t.Fatal("stale timeout released another session", identity)
+		}
+	}
+	a.Gold, a.EP = 123, 45
+	if !w.ReleaseCasinoSeatForSession(a.ID, table.ID, seat.SessionID) || a.CasinoSeat != nil || a.State != "IDLE" || a.X != seat.ExitX || a.Z != seat.ExitZ || a.Gold != 123 || a.EP != 45 {
+		t.Fatal("timeout failed to restore controls or changed funds")
+	}
+	if _, err := w.TakeCasinoSeat(b.ID, table.ID, 0, now); err != nil {
+		t.Fatal("released chair cannot be claimed", err)
+	}
+	if w.ReleaseCasinoSeatForSession(a.ID, table.ID, seat.SessionID) || b.CasinoSeat == nil {
+		t.Fatal("repeated timeout ejected the new occupant")
+	}
+	if err := w.ChangeCasinoSeat(b.ID, b.CasinoSeat.SessionID, "leave", false, now, ""); err != nil {
+		t.Fatal(err)
+	}
+	newSeat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if newSeat.SessionID == seat.SessionID || w.ReleaseCasinoSeatForSession(a.ID, table.ID, seat.SessionID) || a.CasinoSeat == nil {
+		t.Fatal("old hand ejected its owner from a newly acquired chair")
+	}
+}
+
 func TestCasinoPreparationRosterConsentAndRealPlayerMinimum(t *testing.T) {
 	for _, table := range CasinoTables()[:2] {
 		t.Run(table.Game, func(t *testing.T) {

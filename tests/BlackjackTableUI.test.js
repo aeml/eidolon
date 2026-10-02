@@ -70,3 +70,38 @@ test('matching rejection releases controls without rebetting; stale errors do no
     ui.rejectAction({ action: 'bet', roundId: 'round-one', roundRevision: 0, error: 'Not enough Gold' });
     expect(ui.bet.disabled).toBe(false); expect(send).toHaveBeenCalledTimes(1);
 });
+
+test('a departed dealt hand stays attributed to its owner when the chair is reused', () => {
+    const ui = new BlackjackTableUI(jest.fn());
+    const v = playing(); v.players[0].name = '<Alice>';
+    ui.update(v, 'observer', { yourSeat: { seat: 3 }, occupants: [
+        { playerId: 'new-player', seat: 0, name: 'New patron', connected: true },
+        { playerId: 'observer', seat: 3, name: 'Observer', connected: true }
+    ] });
+    expect(ui.table.seats[0].name.textContent).toBe('New patron');
+    expect(ui.table.seats[0].status.textContent).toBe('Waiting for next hand');
+    expect(ui.table.seats[0].hands.textContent).toContain('<Alice>’s earlier hand');
+    expect(ui.table.seats[0].hands.querySelector('alice')).toBeNull();
+    expect(ui.table.seats[0].root.classList.contains('current')).toBe(false);
+    expect(ui.actions.children).toHaveLength(0);
+    ui.dispose();
+});
+
+test.each([
+    ['blackjack', 250, 'Blackjack · 3:2 profit'], ['win', 200, 'Win · 1:1 profit'],
+    ['push', 100, 'Push · stake refund'], ['bust', 0, 'Bust'], ['lose', 0, 'Loss']
+])('the %s hand distinguishes a pending payout from saved currency', (outcome, payout, label) => {
+    jest.useFakeTimers(); const send = jest.fn(), ui = new BlackjackTableUI(send);
+    try {
+        const v = playing(); v.phase = 'complete';
+        v.round.players[0].hands[0] = { cards: [0, 12], bet: 100, outcome, payout };
+        ui.update({ ...v, processing: true }, 'alice');
+        expect(ui.table.seats[0].hands.textContent).toContain(`${label} · ${payout} Gold pending return`);
+        expect(ui.celebration.active).toBe(false);
+        ui.update(v, 'alice');
+        expect(ui.table.seats[0].hands.textContent).toContain(`${label} · ${payout} Gold returned`);
+        expect(ui.table.seats[0].hands.textContent).not.toContain('pending return');
+        expect(ui.celebration.active).toBe(payout > 100);
+        expect(send).not.toHaveBeenCalled();
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});

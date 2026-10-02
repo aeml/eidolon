@@ -19,7 +19,7 @@ export class BlackjackTableUI {
         this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes'));
         this.rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
         this.stakeRules = node('p'); this.rules.append(this.stakeRules);
-        this.rules.append(node('p', 'You have 30 seconds per decision. Timeouts stand. Confirmed wagers continue if you leave or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
+        this.rules.append(node('p', 'You have 30 seconds per decision. A timeout stands your current hand and releases your chair. Confirmed wagers continue if you leave, time out or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
         this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
         this.betBox = node('div', '', 'blackjack-bet');
         const label = node('label', 'Wager (Gold) '); this.stakeLabel = label;
@@ -67,7 +67,7 @@ export class BlackjackTableUI {
         this.betBox.hidden = view.phase !== 'betting';
         this.bet.disabled = !this.canAct() || view.phase !== 'betting' || Boolean(own); this.stake.disabled = this.bet.disabled;
         this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });
-        const renderKey = JSON.stringify([this.stateKey, view.round, presence]);
+        const renderKey = JSON.stringify([this.stateKey, view.round, presence, view.available, view.processing]);
         const changed = this.renderKey !== renderKey; this.renderKey = renderKey;
         if (changed) {
             this.table.dealerCards.replaceChildren();
@@ -82,9 +82,15 @@ export class BlackjackTableUI {
                     const participant = view.players.find(p => p.playerId === player.playerId);
                     for (const [index, hand] of player.hands.entries()) {
                         const active = view.phase === 'playing' && round.turnPlayerId === player.playerId && round.turnHand === index;
-                        const result = hand.outcome ? ` · ${hand.outcome} · ${hand.payout} ${this.currency} returned` : '';
                         const seat = player.seat ?? participant?.seat;
-                        this.hand(`${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${hand.bet} ${this.currency}${result}`, hand.cards, false, active, this.table.seats[seat]?.hands);
+                        const occupant = presence.occupants?.find(p => p.seat === seat);
+                        const departed = presence.occupants && occupant?.playerId !== player.playerId;
+                        const owner = departed ? `${player.playerId === playerID ? 'Your' : `${participant?.name || 'Player'}’s`} earlier hand · ` : '';
+                        const outcome = { blackjack: 'Blackjack · 3:2 profit', win: 'Win · 1:1 profit', push: 'Push · stake refund',
+                            bust: 'Bust', lose: 'Loss' }[hand.outcome] || hand.outcome;
+                        const saved = view.phase === 'complete' && view.available && !view.processing;
+                        const result = hand.outcome ? ` · ${outcome} · ${goldText(hand.payout)} ${this.currency} ${saved ? 'returned' : 'pending return'}` : '';
+                        this.hand(`${owner}${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${goldText(hand.bet)} ${this.currency} staked${result}`, hand.cards, false, active, this.table.seats[seat]?.hands);
                     }
                 }
                 if (view.phase === 'playing' && round.turnPlayerId === playerID) {

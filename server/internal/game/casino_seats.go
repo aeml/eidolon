@@ -371,6 +371,25 @@ func (w *World) TakeCasinoSeat(playerID, tableID string, seatIndex int, now time
 	return cloneCasinoSeat(session), nil
 }
 
+// ReleaseCasinoSeatForSession is a server-only timeout action. A saved hand
+// cannot eject a player who has since acquired a different chair/session.
+func (w *World) ReleaseCasinoSeatForSession(playerID, tableID, sessionID string) bool {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	defer w.casinoPreparationLocked()
+	player := w.Entities[playerID]
+	if player == nil || sessionID == "" {
+		return false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.CasinoSeat == nil || player.CasinoSeat.TableID != tableID || player.CasinoSeat.SessionID != sessionID {
+		return false
+	}
+	w.releaseCasinoSeatLocked(player)
+	return true
+}
+
 func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool, now time.Time, revision string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
