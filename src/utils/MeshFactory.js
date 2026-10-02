@@ -4,6 +4,7 @@ import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import { clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
 import { createAuthoredCharacter, isAuthoredPlayerClass } from '../art/AuthoredCharacters.js';
+import { createAuthoredIlyraInstance, ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
@@ -610,7 +611,7 @@ export class MeshFactory {
         
         // A temporary failed-load Fighter must not permanently replace a
         // subsequently available authored export through the pool.
-        if (isAuthoredPlayerClass(type) && mesh.userData.assetFallback) return;
+        if ((isAuthoredPlayerClass(type) || type === 'ArchmageIlyra') && mesh.userData.assetFallback) return;
         if (this.pool[poolKey].length < 50) {
             this.pool[poolKey].push(mesh);
         } else {
@@ -747,6 +748,18 @@ export class MeshFactory {
         }
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
+
+        if (type === 'ArchmageIlyra') {
+            try {
+                return createAuthoredIlyraInstance(await this.loadModelWithTimeout(ILYRA_MODEL_PATH, 8000));
+            } catch (error) {
+                console.warn('MeshFactory: Ilyra outfit unavailable; using dressed wizard fallback', error);
+                const fallback = createProceduralWizard({ batch: true });
+                fallback.userData.assetFallback = true;
+                fallback.userData.fallbackType = type;
+                return fallback;
+            }
+        }
 
         if (type === 'UmbraPrime') return createProceduralDarkKing();
         if (type === 'CrystalKeeper') return createProceduralCrystalKeeper();

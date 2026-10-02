@@ -8,7 +8,7 @@ import {
 } from '../src/entities/actorAnimationManifest.js';
 
 const PLAYER_TYPES = ['Fighter', 'Rogue', 'Wizard', 'Cleric'];
-const NPC_TYPES = ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC', 'AvengingSeraph'];
+const NPC_TYPES = ['DwarfSalesman', 'QuestNPC', 'ArchmageIlyra', 'DungeonNPC', 'RespecNPC', 'AvengingSeraph'];
 
 function remoteEnemyTypes() {
     const source = readFileSync('src/core/GameEngine.js', 'utf8');

@@ -15,6 +15,7 @@ const nonAuthoredMigrationBridges = new Set([
 // Owner-requested character deliveries and their runtime candidates are explicit
 // exceptions. Only Fighter is integrated; retired actor/environment assets stay banned.
 const stagedCharacterExports = new Set([
+    'assets/npcs/ilyra/ilyra-archmage.glb',
     'assets/archetypes/Fighter/fighter.glb',
     'assets/archetypes/Fighter/fighter-runtime-high.glb',
     'assets/archetypes/Fighter/fighter-runtime-low.glb',
@@ -60,6 +61,7 @@ const MAX_LEGACY_MODEL_COUNT = 0;
 const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const fighterReferenceAllowlist = new Map([
+    ['src/art/AuthoredIlyra.js', new Set(['./assets/npcs/ilyra/ilyra-archmage.glb'])],
     ['src/art/AuthoredFighter.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
     ['src/assets/authoredEquipment.generated.js', new Set([
         ...[...stagedCharacterExports].filter(file => file.includes('-runtime-')).map(file => `./${file}`),
