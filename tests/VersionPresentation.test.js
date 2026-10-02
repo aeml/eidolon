@@ -3,7 +3,15 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.64.0';
+const currentVersion = '1.64.1';
+
+test('1.64.1 retains truthful house wager details and records the unaccepted predecessor', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.64.1"'), previous = html.indexOf('data-version="1.64.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['wager details are unavailable', 'a confirmed wager or a win', 'Server-owned stakes',
+        'server\'s house-table wager format', 'not accepted live', 'Ilyra\'s permanent archmage outfit', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.64.0 documents house-table without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');

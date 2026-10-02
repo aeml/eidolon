@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.64.0</span>
+                    <span class="start-version-row__label">Alpha 1.64.1</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="View account moderation notices and submit an appeal">Account help</button>
             </div>
@@ -771,6 +771,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.64.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.64.1 (safe house-table wager details)</h3>
+                    <ul>
+                        <li>Roulette and baccarat keep seats and controls visible when wager details are unavailable, instead of crashing the table. Missing details do not become a zero stake, a confirmed wager or a win.</li>
+                        <li>The panel asks you to refresh and blocks another wager for that participant until the next authoritative round. Server-owned stakes, payouts, timers and currencies are unchanged.</li>
+                        <li>The full-casino lifecycle browser fixture now supplies the server's house-table wager format. The failed 1.64.0 candidate was not accepted live; Ilyra's permanent archmage outfit remains intact.</li>
+                        <li>Full prior patch history remains below. No new rewards, payment methods or closed-beta access changes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.64.0">
                     <h3 class="patch-note-entry__title">Alpha 1.64.0 (clearer roulette and baccarat betting)</h3>
                     <ul>

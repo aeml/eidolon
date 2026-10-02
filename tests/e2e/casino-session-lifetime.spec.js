@@ -72,7 +72,9 @@ for (const quality of ['high', 'low']) test(`${quality}: full casino catalog and
             if (table.game === 'slots') return { slots: { ...common, machine,
                 lines: Array.from({ length: 10 }, () => [1, 1, 1, 1, 1]), session: { revision: 1, bet: 20, freeSpins: 0, bonus: false } } };
             const spots = table.game === 'baccarat' ? ['player', 'banker', 'tie'] : ['red', 'black', 'odd', 'even', 'low', 'high'];
-            return { house: { ...common, game: table.game, phase: 'betting', spots: spots.map(id => ({ id, label: id, bets: [20, 100] })) } };
+            return { house: { ...common, game: table.game, phase: 'betting',
+                players: common.players.map(p => ({ ...p, wagers: [{ spot: spots[0], amount: 20 }], paid: false, payout: 0 })),
+                spots: spots.map(id => ({ id, label: id, multiplier: 2 })) } };
         };
         let final;
         try {
