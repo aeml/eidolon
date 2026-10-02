@@ -3,12 +3,10 @@
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
 baseline is Alpha 1.58.4, exact d3086750869f0515f50661e12bde7d6f84e1e204,
-CI36937032122. All ten CI jobs, including live release and character QA,
-passed. Independent public IPv4 checks verified identities, database readiness
-and five changed files against their exact publisher output. The preceding
-graphics receipt retains 19 runtime and 12 critical model hashes, and 1.58.2
-retains 32 representative model hashes and live town recovery/Well Rested QA.
-These separate checks do not claim every route was sampled. See the current
+CI36937032122. All ten CI jobs, including live release and character QA, passed.
+Independent public IPv4 checks verified identities, database readiness and five
+changed publisher artifacts. Earlier receipts retain distinct runtime and model
+checks, not a claim every route was sampled. See the current
 [acceptance receipt](2026-10-01-release1-58-4-public.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
@@ -42,8 +40,11 @@ its complete CI and independent public checks passed. It is live, not a
 replacement for the complete 1.59 milestone. The separate
 [accepted 1.58.4 equipment-type patch](2026-10-01-release1-58-4-item-types.json)
 adds readable armor/weapon types and red class-restriction warnings across
-inspection routes. It changes no gameplay or GLBs; its own complete exact-source
-CI and public acceptance passed. No unpublished moderation code is included.
+inspection routes. It changes no gameplay or GLBs; its exact-source CI and
+public acceptance passed. Prepared 1.58.5 fixes Ilyra's missing outfit with a
+dedicated, permanently dressed NPC GLB. [Ilyra checks](2026-10-02-release1-58-5-ilyra.json)
+retain local rendering and regression evidence; its own deployment gates remain.
+No unpublished moderation code is included, and complete 1.59 remains next.
 
 A short [authored crowd rendering check](2026-10-01-authored-crowd-checks.json)
 completed with ten fully equipped heroes, Malachar and four overlapping fields.

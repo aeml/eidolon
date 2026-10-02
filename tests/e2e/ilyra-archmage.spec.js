@@ -42,6 +42,10 @@ test('Ilyra is dressed, independently animated and keeps his story quest marker'
         const a = actors[0].mesh.getObjectByName('Ilyra_FourfoldCostume'), b = actors[1].mesh.getObjectByName('Ilyra_FourfoldCostume');
         const costumeSkin = costume => { let skin; costume.traverse(part => { if (part.isSkinnedMesh) skin ||= part; }); return skin; };
         const aSkin = costumeSkin(a), bSkin = costumeSkin(b);
+        const firstPose = aSkin.skeleton.bones.map(bone => bone.quaternion.toArray());
+        renderPose(0, 1.2);
+        const idleMotion = Math.max(...aSkin.skeleton.bones.flatMap((bone, i) => bone.quaternion.toArray().map((value, axis) => Math.abs(value - firstPose[i][axis]))));
+        renderPose(0, .4);
         const bounds = new THREE.Box3().setFromObject(a, true);
         const source = await MeshFactory.loadModel(ILYRA_MODEL_PATH);
         const sourceNames = []; source.scene.traverse(part => { if (part.isMesh) sourceNames.push(part.name); });
@@ -52,11 +56,12 @@ test('Ilyra is dressed, independently animated and keeps his story quest marker'
             bounds: { min: bounds.min.toArray(), max: bounds.max.toArray() },
             emptyEquipment: actors.map(actor => actor.syncEquipmentVisuals({})),
             marker: actors.map(actor => ({ symbol: actor.questMarker.userData.symbol, kind: actor.questMarker.userData.questKind, height: actor.questMarker.position.y })),
-            sourceNames, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+            sourceNames, idleMotion, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
             renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'not exposed' };
     });
     expect(intake.appearance).toEqual(['ilyra-fourfold-archmage', 'ilyra-fourfold-archmage']);
     expect(intake.independent).toBe(true); expect(intake.emptyEquipment).toEqual([false, false]);
+    expect(intake.idleMotion).toBeGreaterThan(.00001);
     expect(intake.bounds.min[1]).toBeGreaterThan(-.25);
     expect(intake.bounds.max[1]).toBeLessThan(5.4);
     for (const marker of intake.marker) { expect(marker.symbol).toBe('!'); expect(marker.kind).toBe('story'); expect(marker.height).toBeGreaterThan(intake.bounds.max[1]); }

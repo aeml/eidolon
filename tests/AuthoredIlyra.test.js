@@ -37,6 +37,9 @@ test('Ilyra GLB is a complete embedded NPC asset with its own content cache key'
     expect(json.nodes.some(node => node.name === 'Ilyra_FourfoldCostume')).toBe(true);
     expect(json.nodes.some(node => /Undershorts|Cube|Legendary/i.test(node.name))).toBe(false);
     expect([...(json.buffers || []), ...(json.images || [])].some(value => value.uri)).toBe(false);
+    const manifest = JSON.parse(fs.readFileSync('assets/npcs/ilyra/ilyra-runtime.manifest.json', 'utf8'));
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe(manifest.sha256);
+    expect(createHash('sha256').update(fs.readFileSync(manifest.source.path)).digest('hex')).toBe(manifest.source.sha256);
 });
 
 test('instances keep independent bones and clips while sharing immutable costume resources', () => {
