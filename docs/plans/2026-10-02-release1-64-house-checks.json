@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "milestone": "1.64",
+  "sourceVersion": "Alpha 1.62.0",
+  "status": "prepared, unpublished",
+  "originalPreparedCommit": "24dbbcae3272229aba94f05afce7c21ea1d64d69",
+  "reconciledCommit": "d155b701",
+  "scope": [
+    "Retire detached roulette/baccarat betting controls and disposed panels.",
+    "Refresh changed betting catalogs without restarting server-owned clocks.",
+    "Show confirmed betting spots and slip totals clearly; discard only stale unconfirmed drafts.",
+    "Distinguish saved-wager processing from payout processing without altering money rules."
+  ],
+  "checks": {
+    "client": {"suites": 3, "tests": 55, "seconds": 1.929, "passed": true},
+    "lint": "passed",
+    "whitespace": "passed",
+    "phoneSizedPresentation": {"cases": 2, "seconds": 7.8, "passed": true, "width": 390, "confirmedRendersInspected": true, "artifacts": "/tmp/eidolon-164-reconciled-house-20261002"}
+  },
+  "limits": "DOM/CSS fixtures with synthetic server views, not physical-phone play, connected settlement or new odds validation. Earlier rule and currency receipts remain separate retained evidence. No server, wagers, payouts, currencies or source defaults changed by this milestone preparation. Publish only after accepted 1.61, 1.62 and 1.63, with its own aligned version, cumulative notes, exact-source CI and public checks."
+}
