@@ -158,7 +158,11 @@ Alpha1.69.0 is independently accepted at
 Its [public receipt](2026-10-02-release1-69-public.json) records matching
 identities/readiness, all six changed runtime publisher files and Ilyra's outfit.
 Voluntary browser limits are not account exclusion or commercial approval.
-Prepared1.70 must retain ordered versions, notes, successful CI and independent public acceptance;
+Alpha1.70.0 is accepted live at ee6872c9727fbea97177b833da835dfe79d8dda0;
+the prepared [1.70.1 direct-trade hotfix](2026-10-02-release1-70-1-trade-checks.json)
+closes offer-edit item/Gold duplication without publishing unfinished1.71/1.72
+work. It requires exact-source CI and independent public acceptance before being
+called live. Crash-durable two-account trade settlement remains part of1.73.
 1.71 account-security work is partial, not a completed milestone.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.

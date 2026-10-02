@@ -16,6 +16,18 @@ payment integration or new infrastructure purchase.
 | Report retention, backup retention and recovery objectives | Await explicit decisions. Existing technical defaults are not a published policy. |
 | Beta channel label and announcement | Keep open Alpha until the near-completion CB go/no-go. |
 
+## Direct-trade escrow-edit hotfix
+
+The1.70.1 candidate plans offer edits before mutating live items or Gold. Keeping
+an offered item needs no empty slot; swaps free the new offer's slot first.
+Removing escrow with no room is rejected rather than silently spilling it during
+an edit. Cancel retains its existing single-return overflow behavior. Ambiguous
+existing item IDs are preserved and rejected, not automatically deleted.
+[Scoped checks](plans/2026-10-02-release1-70-1-trade-checks.json) distinguish this
+offer-edit fix from the still-open crash-durable two-account settlement work
+at1.73. Do not infer historical duplicate counts or purge inventories from it.
+Exact-source CI/public acceptance remains required before calling the hotfix live.
+
 ## Player reports and private triage
 
 Players can open **Report Bug / Feature** in the game menu, select Bug Report,

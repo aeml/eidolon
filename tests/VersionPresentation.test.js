@@ -3,7 +3,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.70.0';
+const currentVersion = '1.70.1';
+
+test('1.70.1 documents atomic trade edits without claiming durable settlement or account recovery', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.70.1"'), previous = html.indexOf('data-version="1.70.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['exact escrow identity', 'empty bag slot', 'edit is rejected before changing',
+        'Concurrent reward updates are preserved', 'without deleting items', 'No currency, trade limit',
+        'does not introduce forgotten-password recovery', 'crash-durable two-account trade settlement',
+        "Ilyra's permanent outfit", 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.70.0 distinguishes reliable venue controls from capacity and commercial approval', () => {
     const html = fs.readFileSync('index.html', 'utf8');
