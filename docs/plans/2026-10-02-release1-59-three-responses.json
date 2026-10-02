@@ -14,7 +14,10 @@
     "Timed mutes/suspensions and non-expiring name-correction requirements; no default duration.",
     "Dormant staff target preview and separately confirmed decision/reversal controls for all three response types.",
     "Owner-only active public notices and selected-reference appeal drafting without automatic submission.",
-    "Mute-only guard rejects other restriction kinds returned through its narrow store interface."
+    "Mute-only guard rejects other restriction kinds returned through its narrow store interface.",
+    "Authenticated login-screen Account help reuses the private report form before world entry; only explicit notice reads and appeal submissions.",
+    "Authenticated appeal protocol works without a character; other report categories retain the active-character requirement.",
+    "Prepared, unwired world-entry/resume restriction classifier preserves independent restrictions, original expiry and session fencing without per-tick database queries."
   ],
   "checks": {
     "goRace": "Focused server handler, notice and chat guard tests passed in 4.496 seconds; database moderation tests passed in 1.090 seconds.",
@@ -38,12 +41,22 @@
       "screenshotsInspected": ["administration-name-confirmation.png", "own-moderation-notice.png"],
       "limits": "Real components with synthetic responses; not a physical phone or production permission check."
     },
+    "loginSupport": {
+      "goRaceSeconds": 4.078,
+      "client": { "suites": 4, "tests": 65, "seconds": 3.27, "result": "passed", "limits": "Existing report/lookup/notice suites plus the new login wrapper; not 65 new cases. First direct Jest invocation omitted the repository ESM flag and ran no tests; the corrected invocation above passed." },
+      "productionServerSocketRestart": "Three disposable accounts, ordinary login-only notice read and appeal submission, correlated non-appeal rejection, owner status after restart, no created character; existing admin/history/retry cases retained. Socket 11.30 seconds, race package 12.383 seconds.",
+      "fixtureCorrection": "First attempt used a binary filename differing from its expected health commit; corrected before the successful exercise. No failed attempt counted as acceptance.",
+      "disposableMongo": "Exact task-labeled eidolon-moderation-appeal-20261002 container and anonymous volume removed; production untouched.",
+      "presentation": "Two actual-main.js mock-login cases at 1280x800 and 390x844 passed in 22.7 seconds; GPU disabled explicitly. Final screenshots inspected after scoped layout and Escape corrections.",
+      "artifacts": "/tmp/eidolon-login-appeal-css-polished-20261002",
+      "limits": "Not an actual sanctioned-account flow, all-three enforcement acceptance, hardware render or physical-phone check."
+    },
     "scopedLint": "passed",
     "whitespace": "passed"
   },
   "remaining": [
     "Public-name correction completion and consistent identity use without changing authentication/save/social ownership keys.",
-    "Suspension enforcement for joining, resuming and already-online play, with notice/appeal access outside the world.",
+    "Suspension enforcement for joining, resuming and already-online play; authenticated outside-world notice/appeal access is prepared and independently exercised.",
     "Full server registry and client control activation; real authenticated WebSocket and game-server restart acceptance.",
     "Staff/review boundaries and existing retention documentation; no new purge or staffing promise.",
     "Complete milestone versions and cumulative patch notes, fresh remote integration, CI, publishing and independent public acceptance."

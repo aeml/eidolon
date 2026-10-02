@@ -180,12 +180,12 @@ func TestAdminChatModerationRechecksSessionAndRoleAfterAudit(t *testing.T) {
 
 func TestPreparedChatModerationIsNotActivated(t *testing.T) {
 	if _, ok := inboundMessagePolicies[MsgAdminChatModeration]; ok {
-		t.Fatal("unapproved action admitted")
+		t.Fatal("incomplete moderation action admitted before full activation")
 	}
 	if _, ok := messageHandlers[MsgAdminChatModeration]; ok {
-		t.Fatal("unapproved action registered")
+		t.Fatal("incomplete moderation action registered before full activation")
 	}
 	if newStructuredChatService(50).authorizeSend != nil {
-		t.Fatal("unapproved enforcement installed")
+		t.Fatal("partial moderation enforcement installed before full activation")
 	}
 }

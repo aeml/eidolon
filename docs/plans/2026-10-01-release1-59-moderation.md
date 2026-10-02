@@ -379,6 +379,56 @@ was sanctioned, no retention changed, and the disposable test container and its
 anonymous volumes were removed. Documentation was source-reviewed; a rendered
 documentation preview was unavailable.
 
+## Account support before world entry
+
+Authenticated players can now open Account help on the login screen without
+creating a character or entering the world. It reuses the existing private
+report form, offers only Moderation Appeal, and reads this account's public
+notices only when requested. A selected notice creates an editable draft;
+submission still requires a separate click and persistence acknowledgement.
+Session replacement, world entry and disconnect retire the login form and
+restore the ordinary in-world report controls. Pending drafts survive closing
+the current form; Escape also works after Submit becomes disabled. This is
+prepared 1.59 code, not part of the Ilyra-only 1.58.5 deployment.
+
+The authenticated report protocol now permits appeals outside the world, with
+the same payload and admission limits. Non-appeal reports still require an
+active character. A race-built production server and three disposable accounts
+exercised the real WebSocket route: an ordinary login-only account read its own
+notices, received a correlated rejection for a bug report, saved an appeal,
+then recovered its owner-only open status after server restart. It still had no
+character. The existing staff resolution, exact retry, session and history
+checks remained in this same fixture. The successful socket exercise took
+11.30 seconds (race package total 12.383 seconds). An initial binary identity
+fixture mismatch was corrected before the successful run; that attempt is not
+counted as acceptance. The exact task-labeled disposable Mongo container and
+anonymous volume were removed; production data was untouched.
+
+A prepared world-entry/resume classifier distinguishes independent restrictions:
+a mute does not block gameplay, a suspension takes precedence over a required
+name change, and correcting a name cannot clear a suspension. It fails closed
+for unavailable or malformed stored notices and changed authenticated sessions,
+and checks expiry without refreshing the original duration. This classifier is
+not installed in production or wired into the prepared server yet. Entry/resume
+should perform the durable read; applying a restriction to an online character
+must retire it under its ordered work lock, not add a Mongo query to every
+movement or snapshot tick.
+
+Focused server race checks passed in 4.078 seconds. Final client and scoped lint
+results are retained in the three-response preparation receipt. Desktop
+(1280×800) and portrait (390×844) login checks passed in 22.7 seconds with GPU
+explicitly disabled: actual main.js, the shared form, mock authentication,
+notice/appeal correlation, header/body bounds and Escape behavior. Both final
+screenshots were inspected. Layout inspection caught side-by-side header/body
+and subsequently a clipped header; the final login-only flex-column style
+corrects both and is removed on handoff. Artifacts:
+`/tmp/eidolon-login-appeal-css-polished-20261002`. This proves presentation, not
+hardware rendering, a real phone, or an actual suspended-account flow.
+
+Public-name correction, online/join/resume enforcement, complete protocol
+activation and the all-three-response socket/restart exercise remain required.
+The appeal-only restart exercise does not establish those missing paths.
+
 Finish the approved abuse-response and sanction paths, document staff/review
 boundaries and retention, exercise the complete disposable moderation flow,
 then align versions and cumulative patch notes. Publish only after the preceding

@@ -383,6 +383,12 @@
     z-index: 102;
 }
 
+/* Login support has no gameplay window-layout controller. Keep its header
+   outside the scrolling body, including programmatic notice focus on phones. */
+.support-window--login-report { flex-direction: column; }
+.support-window--login-report > .window-header { flex: 0 0 auto; }
+.support-window--login-report > .support-window__body { flex: 1 1 auto; }
+
 .support-window--help {
     width: min(460px, calc(100vw - 24px));
     z-index: 101;

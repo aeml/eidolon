@@ -3,6 +3,7 @@ import { AssetCacheManager } from './assets/AssetCacheManager.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
 import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
+import { LoginModerationUI } from './ui/LoginModerationUI.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -131,6 +132,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     let authSocket = null;
     let isAuthenticated = false;
+    let loginModeration = null;
     let serverTerrainProfile = 'flat-v1';
     let pendingAuthRequest = null;
     let inFlightLoginRequest = null;
@@ -300,6 +302,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         authSocket.onmessage = (event) => {
             if (socket !== authSocket) return;
             const msg = JSON.parse(event.data);
+            if (loginModeration?.handleMessage(msg)) return;
             if (msg.type === 'error') {
                 finishAuthRequest();
                 authStatus.textContent = msg.payload;
@@ -307,6 +310,12 @@ window.addEventListener('DOMContentLoaded', async () => {
             } else if (msg.type === 'login_success') {
                 finishAuthRequest();
                 isAuthenticated = true;
+                if (!loginModeration?.current()) {
+                    loginModeration?.dispose();
+                    loginModeration = new LoginModerationUI({ root: document.getElementById('report-screen'),
+                        button: document.getElementById('login-account-help'), socket,
+                        isCurrent: () => socket === authSocket && isAuthenticated && !startScreen.classList.contains('hidden') });
+                }
                 
                 const data = msg.payload;
                 serverTerrainProfile = data.terrainProfile || 'flat-v1';
@@ -345,6 +354,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         };
 
         authSocket.onclose = () => {
+            if (socket === authSocket) { loginModeration?.dispose(); loginModeration = null; }
             if (socket === authSocket && !isAuthenticated) retryInterruptedLogin();
         };
     };
@@ -411,6 +421,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             console.log(`User selected: ${type}, Multiplayer: ${isMultiplayer}`);
             
+            loginModeration?.dispose(); loginModeration = null;
             startScreen.classList.add('hidden');
             loadingScreen.style.display = 'flex';
             if (getStoredFullscreenPreference()) {

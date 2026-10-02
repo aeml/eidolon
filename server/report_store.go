@@ -32,7 +32,17 @@ func (c *Client) handleReport(payloadBytes []byte) {
 		c.sendError("Invalid report request")
 		return
 	}
-	id, err := saveReport(c.username, payload)
+	if c.username == "" || c.transportClosed.Load() || !currentCharacterConnection(c) {
+		c.sendError("Please reconnect and authenticate before submitting a report.")
+		return
+	}
+	var id string
+	var err error
+	if c.playerID == "" && payload.ReportType != "Moderation Appeal" {
+		err = errors.New("active character required for non-appeal reports")
+	} else {
+		id, err = saveReport(c.username, payload)
+	}
 	result, _ := json.Marshal(struct {
 		RequestID string `json:"requestId"`
 		Success   bool   `json:"success"`

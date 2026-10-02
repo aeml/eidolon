@@ -7,9 +7,76 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 )
+
+func TestReportAppealAdmissionWithoutCharacterKeepsAuthenticationRateAndPayloadLimits(t *testing.T) {
+	now := time.Now()
+	message := Message{Type: MsgReport, Payload: json.RawMessage(`{"requestId":"appeal-login-001","reportType":"Moderation Appeal","text":"Please review my notice."}`)}
+	if err := (&Client{}).acceptInboundMessage(message, now); err == nil {
+		t.Fatal("anonymous account admitted an appeal")
+	}
+	client := &Client{username: "appellant"}
+	for i := 0; i < 2; i++ {
+		if err := client.acceptInboundMessage(message, now); err != nil {
+			t.Fatal("authenticated appeal required world entry", err)
+		}
+	}
+	if err := client.acceptInboundMessage(message, now); err == nil {
+		t.Fatal("outside-world appeal bypassed shared report rate limit")
+	}
+	message.Payload = make([]byte, 16<<10+1)
+	if err := (&Client{username: "appellant"}).acceptInboundMessage(message, now); err == nil {
+		t.Fatal("outside-world appeal bypassed size bound")
+	}
+}
+
+func TestReportWithoutCharacterRejectsNonAppealWithCorrelatedFailure(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	for _, category := range []string{"Bug Report", "Player Report", "Feature Request", "Unknown"} {
+		client := &Client{username: "appellant", send: make(chan []byte, 4)}
+		payload, _ := json.Marshal(ReportPayload{RequestID: "outside-world-001", ReportType: category, Text: "Private details must not be echoed."})
+		client.handleReport(payload)
+		messages := drainSentMessages(client.send)
+		if len(messages) != 2 || messages[0].Type != "report_result" {
+			t.Fatal("missing correlated failure", category, messages)
+		}
+		var result struct {
+			RequestID string `json:"requestId"`
+			Success   bool   `json:"success"`
+		}
+		if err := json.Unmarshal(messages[0].Payload, &result); err != nil || result.Success || result.RequestID != "outside-world-001" {
+			t.Fatal("unexpected submission", category, result, err)
+		}
+		if strings.Contains(string(messages[0].Payload), "Private") {
+			t.Fatal("report body leaked")
+		}
+	}
+}
+
+func TestReportOutsideWorldAppealStoreFailureDoesNotPretendSuccess(t *testing.T) {
+	restore := installChatTestState(t)
+	defer restore()
+	previous := db
+	db = nil
+	t.Cleanup(func() { db = previous })
+	client := &Client{username: "appellant", send: make(chan []byte, 4)}
+	client.handleMessage(Message{Type: MsgReport, Payload: json.RawMessage(`{"requestId":"appeal-login-001","reportType":"Moderation Appeal","text":"Private appeal details."}`)})
+	messages := drainSentMessages(client.send)
+	if len(messages) != 2 || messages[0].Type != "report_result" {
+		t.Fatal("missing authenticated appeal response", messages)
+	}
+	var result struct {
+		RequestID string `json:"requestId"`
+		Success   bool   `json:"success"`
+	}
+	if err := json.Unmarshal(messages[0].Payload, &result); err != nil || result.Success || result.RequestID != "appeal-login-001" {
+		t.Fatal("failure was not correlated", result, err)
+	}
+}
 
 func TestReportPersistsBeforeAcknowledgementAndReachesOperatorQueue(t *testing.T) {
 	uri := os.Getenv("EIDOLON_REPORT_TEST_MONGO_URI")

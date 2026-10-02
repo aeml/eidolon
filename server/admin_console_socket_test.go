@@ -15,7 +15,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Actual production binary and two disposable accounts. No production role or
+// Actual production binary and disposable accounts. No production role or
 // currency is modified, and fixture permissions never replace socket admission.
 func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
@@ -31,7 +31,8 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	}
 	defer repo.Close(context.Background())
 	operator, member := fmt.Sprintf("operator-%d", time.Now().UnixNano()), fmt.Sprintf("member-%d", time.Now().UnixNano())
-	for _, name := range []string{operator, member} {
+	appellant := fmt.Sprintf("appellant-%d", time.Now().UnixNano())
+	for _, name := range []string{operator, member, appellant} {
 		if err := repo.CreateUser(name, name+"@example.invalid", name+"-test-password"); err != nil {
 			t.Fatal(err)
 		}
@@ -42,6 +43,48 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	journal := t.TempDir()
 	address, stop := compatStartServer(t, binary, uri, 201, "-save-journal-dir", journal)
 	defer stop()
+	// An ordinary account authenticates but never joins/creates a character.
+	// Only its explicit appeal is accepted; other report categories remain
+	// character-bound and do not sneak through relaxed socket admission.
+	loginOnly, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer loginOnly.Close()
+	resourceSend(t, loginOnly, MsgLogin, AuthPayload{Username: appellant, Password: appellant + "-test-password"})
+	var authenticated struct {
+		HasCharacter bool `json:"hasCharacter"`
+	}
+	resourceReadMessage(t, loginOnly, "login_success", &authenticated)
+	if authenticated.HasCharacter {
+		t.Fatal("account-support login created a character")
+	}
+	resourceSend(t, loginOnly, MsgModerationNotice, map[string]string{"requestId": "outside-notice-000001"})
+	var ownNotices struct {
+		Success bool                      `json:"success"`
+		Notices []database.ChatMuteNotice `json:"notices"`
+	}
+	resourceReadMessage(t, loginOnly, MsgModerationNotice+"_result", &ownNotices)
+	if !ownNotices.Success || len(ownNotices.Notices) != 0 {
+		t.Fatal("private notice route required world entry", ownNotices)
+	}
+	var accountReport struct {
+		Success   bool   `json:"success"`
+		ReportID  string `json:"reportId"`
+		RequestID string `json:"requestId"`
+	}
+	resourceSend(t, loginOnly, MsgReport, ReportPayload{ReportType: "Bug Report", Text: "Not allowed outside the world.", RequestID: "outside-report-000001"})
+	resourceReadMessage(t, loginOnly, "report_result", &accountReport)
+	if accountReport.Success || accountReport.RequestID != "outside-report-000001" {
+		t.Fatal("non-appeal bypassed character requirement", accountReport)
+	}
+	resourceReadMessage(t, loginOnly, MsgError, nil)
+	resourceSend(t, loginOnly, MsgReport, ReportPayload{ReportType: "Moderation Appeal", Text: "Please review this account notice.", RequestID: "outside-appeal-000001"})
+	resourceReadMessage(t, loginOnly, "report_result", &accountReport)
+	if !accountReport.Success || len(accountReport.ReportID) != 24 || accountReport.RequestID != "outside-appeal-000001" {
+		t.Fatal("outside-world appeal not saved", accountReport)
+	}
+	loginOnly.Close()
 	a, _ := resourceLoginCharacter(t, address, operator, operator+"-test-password", "Fighter")
 	b, token := resourceLoginCharacter(t, address, member, member+"-test-password", "Wizard")
 	request := func(conn *websocket.Conn, kind, requestID string) adminReadResult {
@@ -177,6 +220,14 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if !durableReview {
 		t.Fatal("resolved case or single private receipt did not survive restart")
 	}
+	view, err := repo.OwnReportStatus(appellant, accountReport.ReportID)
+	if err != nil || view.ReportType != "Moderation Appeal" || view.Status != database.ReportStatusOpen {
+		t.Fatal("outside-world appeal did not survive restart", view, err)
+	}
+	appellantUser, err := repo.GetUser(appellant)
+	if err != nil || len(appellantUser.Characters) != 0 {
+		t.Fatal("account support created or changed a saved character", err)
+	}
 	page, err := repo.ReadAdminActivity(database.AdminActivityQuery{Actor: member})
 	if err != nil {
 		t.Fatal(err)
@@ -193,5 +244,5 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 	if counts["login"] != 1 || counts["resume"] != 1 || counts["disconnect"] != 2 || counts[MsgAdminStatus] != 1 || counts[MsgAdminPlayers] != 1 || counts[MsgAdminReports] != 1 {
 		t.Fatal("wrong saved session history", counts)
 	}
-	t.Log("two actual accounts: report/admin JSON, denied resolution, owner-only status, confirmed resolution/replay/private receipt, login/resume/disconnect and restart-persisted case/history passed")
+	t.Log("actual accounts: authenticated outside-world notices/appeal without character creation, report/admin JSON, denied resolution, owner-only status, confirmed resolution/replay/private receipt, login/resume/disconnect and restart-persisted cases/history passed")
 }

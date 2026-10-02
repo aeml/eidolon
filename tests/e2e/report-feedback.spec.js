@@ -1,6 +1,60 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+for (const [width, height] of [[1280, 800], [390, 844]]) {
+    test(`login account notices and appeals work before world entry at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL), requests = [];
+        await page.setViewportSize({ width, height });
+        await page.routeWebSocket(/\/ws(?:\?.*)?$/, socket => {
+            socket.onMessage(raw => {
+                const message = JSON.parse(raw); requests.push(message);
+                if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { message: 'Authenticated fixture', hasCharacter: true, characterType: 'Wizard', terrainProfile: 'flat-v1' } }));
+                if (message.type === 'moderation_notice') socket.send(JSON.stringify({ type: 'moderation_notice_result', payload: { requestId: message.payload.requestId, success: true, notices: [{ kind: 'suspend', id: 'd'.repeat(64), reason: 'Public explanation for this prepared fixture.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '2026-10-02T02:00:00Z' }] } }));
+                if (message.type === 'report') socket.send(JSON.stringify({ type: 'report_result', payload: { requestId: message.payload.requestId, success: true, reportId: 'e'.repeat(24) } }));
+            });
+        });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await expect(page.locator('#login-account-help')).toBeHidden();
+        await page.locator('#auth-username').fill('prepared-appellant');
+        await page.locator('#auth-password').fill('fixture-only-not-a-real-password');
+        await page.locator('#btn-login').click();
+        await expect(page.locator('#login-account-help')).toBeVisible();
+        expect(requests.map(request => request.type)).toEqual(['login']);
+        await page.locator('#login-account-help').click();
+        const dialog = page.locator('#report-screen');
+        await expect(dialog).toBeVisible();
+        await expect(page.locator('#report-type')).toHaveValue('Moderation Appeal');
+        const bounds = await dialog.boundingBox();
+        const header = await dialog.locator('.window-header').boundingBox();
+        const body = await dialog.locator('.support-window__body').boundingBox();
+        expect(header.width).toBeGreaterThan(bounds.width * .8);
+        expect(header.y + header.height).toBeLessThanOrEqual(body.y + 1);
+        expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.y).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+        expect(bounds.y + bounds.height).toBeLessThanOrEqual(height + 1);
+        await dialog.getByText('My moderation notices and appeals', { exact: true }).click();
+        await dialog.getByRole('button', { name: 'Check my moderation notices', exact: true }).click();
+        await expect(dialog.locator('#moderation-notice-status')).toContainText('Public explanation');
+        await expect(dialog.locator('#moderation-notice-status')).toContainText('does not automatically reverse');
+        const focusedHeader = await dialog.locator('.window-header').boundingBox();
+        expect(focusedHeader.y).toBeGreaterThanOrEqual(bounds.y);
+        expect(focusedHeader.y + focusedHeader.height).toBeLessThanOrEqual(bounds.y + bounds.height);
+        await page.screenshot({ path: testInfo.outputPath('login-account-notice.png') });
+        await dialog.getByRole('button', { name: 'Start appeal draft', exact: true }).click();
+        await expect(page.locator('#report-text')).toHaveValue(/Moderation notice: d{64}/);
+        await page.locator('#report-text').fill('Please review this decision and my explanation.');
+        expect(requests.some(request => request.type === 'report')).toBe(false);
+        await dialog.getByRole('button', { name: 'Submit', exact: true }).click();
+        await expect(dialog.locator('#report-status')).toContainText('Report saved for operator review');
+        await expect(page.locator('#report-text')).toHaveValue('');
+        expect(requests.map(request => request.type)).toEqual(['login', 'moderation_notice', 'report']);
+        expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+        await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
+        await expect(page.locator('#login-account-help')).toBeFocused();
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+}
+
 for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
     test(`report form preserves drafts and previews consent at ${width}x${height}`, async ({ page, baseURL }, testInfo) => {
         test.setTimeout(45_000);
