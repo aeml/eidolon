@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "milestone": "1.65",
-  "sourceVersion": "Alpha 1.62.0",
+  "sourceVersion": "Alpha 1.65.0",
+  "originalPreparedSourceVersion": "Alpha 1.62.0",
   "status": "prepared, unpublished",
   "originalPreparedCommit": "1757c9691f64423020b9310e4168765a270382ce",
   "reconciledCommit": "6c282055",
@@ -13,6 +14,7 @@
   ],
   "checks": {
     "client": {"suites": 4, "tests": 80, "seconds": 1.907, "passed": true},
+    "mergedReleaseChecks": {"suites": 5, "tests": 418, "seconds": 3.351, "passed": true, "scope": "Aligned version presentation, exact publisher rewriting, slot lifecycle, casino controller and permanent Ilyra clothing after merging accepted 1.64.1."},
     "retainedRulesRace": {"command": "go test -race ./internal/game -run '^TestSlot' -count=1", "seconds": 1.048, "passed": true},
     "presentation": {"cases": 1, "seconds": 21.7, "passed": true, "widths": [390, 1440], "bonusAndGiganticWinRendersInspected": true, "artifacts": "/tmp/eidolon-165-reconciled-slots-20261002"},
     "lint": "passed",
