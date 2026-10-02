@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol privacy review; urgent fix eligible for earlier publication",
+  "status": "prepared source fix; not deployed or a completed security milestone",
+  "finding": "The production full/delta world broadcast encoded each shared player snapshot identically for owner and nearby peers. A two-player regression reproduced another player's Gold, XP and skill/talent allocation fields in the actual decoded full protobuf envelope. Inventory, EP and account data were already excluded from these snapshots; quests already travel separately and were not reproduced as a current broadcast leak.",
+  "fix": "Both full and delta encoding now use the bound recipient's character ID. Remote player messages omit Gold, XP/next-level progress, unspent skill/talent points, unlocked skill/talent lists, rune/rank maps and any quest details supplied by future snapshot changes. Encoding does not mutate shared actor snapshots or the owner's message.",
+  "preserved": "Owner progression, visible identity/spec, equipment/appearance, combat/animation fields and public non-player actors/loot retain their existing behavior. No schema, currency, saves, progression, gameplay balance or private quest-update route changes.",
+  "checks": {
+    "focusedRace": {"go": "go1.27.1", "seconds": 1.473, "passed": true, "command": "go test -race . -run '^Test(StateBroadcastFullAndDeltaKeepProgressionOwnerPrivate|StateRecipientEncoding|StateBatch|Protection|EntityToProto|EntityToSnapshot|GuildIdentity|InboundMessage)' -count=1"},
+    "broadcast": "Actual production broadcastState builds and queues protobuf full and delta messages for two bound synthetic clients. Each receives its own progression and no peer progression; both retain visible equipment/health/level. An unchanged public actor ensures the second pass exercises the delta path.",
+    "encoding": "Remote and unidentified recipients receive no progression, including a supplied quest. Owner output remains protobuf-equal before and after peer encoding; nil input and public loot are preserved.",
+    "baselineFailure": "The regression failed on the unfiltered production broadcast with round0 leaked another player's progression to private-a. Initial fixture compilation/world-background/quest-route corrections are not claimed as discovered production failures.",
+    "formatting": "gofmt and git diff --check passed."
+  },
+  "sourceSha256": {
+    "server/state_serialization.go": "fc6abe02848210696c9d589360f11e93647f73bd97ec22289b8eea25886cd951",
+    "server/state_recipient_privacy_test.go": "65c0e2bc9c2e52847c0da601b97e25345340bafe6b693d01221786e1c6540bc2"
+  },
+  "limits": [
+    "Queued production-serializer checks are not authenticated socket/private-message coverage or a complete visibility/authorization review.",
+    "This fix can ship independently before the full1.72 milestone; its publication still requires aligned release defaults/notes, exact-source CI and public acceptance.",
+    "Other protocol movement/cast, admission, event and secret-exposure boundaries remain unfinished."
+  ]
+}
