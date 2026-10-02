@@ -1,6 +1,7 @@
 {
   "version": "Alpha 1.59.0",
-  "status": "native-loot-click-corrected-candidate-ci-running",
+  "status": "accepted",
+  "publicAcceptance": "2026-10-02-release1-59-public.json",
   "candidateCommit": "a58ec61512cc8be22e1b197208eb5ec992dd7bd0",
   "ciRun": 36978415990,
   "deploymentMonitor": "Luna; completion/failure only, no automated mutation or retry",
@@ -129,8 +130,8 @@
     "failedFixture": "Strict reversal protocol rejected a public reason; fixture corrected without weakening validation. Unit retirement fixture isolated database-backed notifications. A failed audit-resume partial binding was fixed and the existing regression retained. Failed attempts are not acceptance."
   },
   "releaseClaims": {
-    "milestoneComplete": false,
-    "published": false,
+    "milestoneComplete": true,
+    "published": true,
     "productionAccountActions": false,
     "retentionChanged": false,
     "longCampaignRun": false

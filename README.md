@@ -420,10 +420,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.60.0` (prepared social/endgame integration; publication waits for 1.59 CI and public acceptance)
-- Last independently verified live release: `Alpha 1.58.5`, exact 397bd41d0a8209eb466204aa9b8ccf64024a933e, successful CI36957349513 (all ten jobs, including live release and character QA). Public IPv4 frontend/backend identities and database readiness pass; seven runtime files and two binary models match the exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-58-5-public.json). Earlier receipts retain distinct runtime and model checks, not a claim every route was sampled. DNS/IPv6 remain owner-managed; final art/device/pacing approval remains separate.
+- Current source version: `Alpha 1.60.0` (social/endgame integration ready for publication after accepted 1.59)
+- Last independently verified live release: `Alpha 1.59.0`, exact a58ec61512cc8be22e1b197208eb5ec992dd7bd0, successful CI36978415990 (all ten jobs, including live release and character QA). Public IPv4 frontend/backend identities and database readiness pass; all 26 changed deployed client runtime files match the exact publisher output. [Acceptance receipt](docs/plans/2026-10-02-release1-59-public.json). Earlier receipts retain distinct runtime and model checks, not a claim every route was sampled. DNS/IPv6 remain owner-managed; final art/device/pacing approval remains separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. The connected 1.59 candidate and prepared 1.60 integration are not yet accepted live. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
+- Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear and weapon motions; accepted `1.58.3` improves batching and body-detail settings, and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5` gives Ilyra his own permanent Blender-authored outfit without changing player gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain the local evidence and public acceptance. Connected 1.59 moderation is now accepted live; 1.60 integration is prepared for publication. Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha access are unchanged. Final modern-art approval, broader crowd performance, physical-phone checks and human pacing remain separate.
 - Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
 - Accepted milestone: [1.57 event discovery](docs/plans/2026-10-01-release1-57-events.md) is live with its own complete CI and independent public acceptance.
 - Accepted milestone: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is live at f7518623bb5924625a918c8acdfe7ad890b0363a after the outdated keyboard expectation was corrected. Its complete CI and independent public acceptance passed. The 1.58.1 visual patch is a separate candidate, not another endgame balance change.
@@ -432,11 +432,11 @@ Notes:
 - Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
 - Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
 
-The 1.59 candidate connects approved reversible moderation, private appeals and
+Accepted 1.59 connects approved reversible moderation, private appeals and
 public-name correction without changing login/save ownership or progression.
 Disposable production-binary socket and restart checks passed; the current
 [moderation record](docs/plans/2026-10-01-release1-59-moderation.md) separates those
-checks from still-pending CI/public deployment acceptance. Staff boundaries and
+checks from the completed exact-source CI and public deployment acceptance. Staff boundaries and
 unchanged evidence retention are documented in [Administration](docs/ADMINISTRATION.md).
 
 The prepared [1.60 integration](docs/plans/2026-10-02-release1-60-social-integration.md)
