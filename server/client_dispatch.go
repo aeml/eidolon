@@ -314,6 +314,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			ResonanceRanks:           char.ResonanceRanks,
 			Gold:                     char.Gold,
 			GoldCreditReceipts:       cloneGoldCreditReceipts(char.GoldCreditReceipts),
+			DirectTradeState:         database.CloneDirectTradeState(char.DirectTradeState),
 			GuildBankRevision:        char.GuildBankRevision,
 			GuildBankOpID:            char.GuildBankOpID,
 			GuildBankOpFingerprint:   char.GuildBankOpFingerprint,
