@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.67.0",
+  "status": "accepted",
+  "commit": "8cbf0c1c757260aac5d4279c58c0c841d86c45d5",
+  "ciRun": 37019416225,
+  "publicVerifiedAt": "2026-10-02T14:58:51.957Z",
+  "verifiedAt": "2026-10-02T15:03:53.057Z",
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "successfulJobs": 10,
+  "frontend": {"commit": "8cbf0c1c757260aac5d4279c58c0c841d86c45d5", "version": "Alpha 1.67.0"},
+  "backend": {"status": "ok", "database": "ready", "commit": "8cbf0c1c757260aac5d4279c58c0c841d86c45d5", "version": "Alpha 1.67.0"},
+  "files": [
+    {"path": "index.html", "bytes": 754532, "sha256": "478508fab21a6e48b006a64d80705e9270fd0d543498566214c56e9b2730e4ab", "exactPublisher": true},
+    {"path": "src/core/GameEngineNetworkMessages.js", "bytes": 97938, "sha256": "86b5a5ae8d8ded0b7ebe5c5e121c18efc8ffec0a5fb5771827393ea5506f68b7", "exactPublisher": true},
+    {"path": "src/ui/CosmeticVendorUI.js", "bytes": 11343, "sha256": "97720748b3d37a08f6a099254a40c4925b85263e0f5832238eb39d5493225693", "exactPublisher": true},
+    {"path": "src/ui/WardrobeUI.js", "bytes": 5744, "sha256": "29410b5f19dc124a773ece439f174e2ab771486183a44bf77780225ad2a1c338", "exactPublisher": true}
+  ],
+  "recheckedAsset": {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "exactSource": true},
+  "limits": [
+    "Ordinary-DNS public HTTPS verified over IPv4; owner-deferred IPv6 reachability remains separate.",
+    "Four changed client runtime files match full publisher output. Dressed Ilyra GLB rechecked separately; this is not a new render or full asset inventory.",
+    "Retained cosmetic fit and settlement receipts keep their own scope; no new authenticated purchase/restart check, human art approval, physical-phone certification, pacing, legal or capacity signoff."
+  ]
+}

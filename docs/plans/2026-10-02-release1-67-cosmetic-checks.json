@@ -3,7 +3,7 @@
   "milestone": "1.67",
   "sourceVersion": "Alpha 1.67.0",
   "originalPreparedSourceVersion": "Alpha 1.62.0",
-  "status": "prepared, unpublished",
+  "status": "live technical acceptance; retained cosmetic fit and settlement scope limits",
   "originalPreparedCommits": ["a17dbf1f", "eb0cd532", "64906676"],
   "reconciledCommits": ["38bee560", "ca23d78b", "1ec82077"],
   "changes": [
