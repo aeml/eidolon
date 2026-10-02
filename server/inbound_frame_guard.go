@@ -9,23 +9,40 @@ import (
 
 var errInboundFrameLimit = errors.New("incoming message limit exceeded")
 
+const (
+	inboundByteBurst      = 256 * 1024
+	inboundBytesPerSecond = 64 * 1024
+)
+
 // Owned by one read pump, before JSON parsing. Message-specific permissions and
 // rates still apply afterward. Excess traffic closes only that connection; no
 // account ban or proxy/household IP key is created.
 type inboundFrameGuard struct {
 	frames    messageRateBucket
+	bytes     messageRateBucket
 	malformed messageRateBucket
 }
 
 func newInboundFrameGuard(now time.Time) *inboundFrameGuard {
 	return &inboundFrameGuard{
 		frames:    messageRateBucket{tokens: 300, updated: now},
+		bytes:     messageRateBucket{tokens: inboundByteBurst, updated: now},
 		malformed: messageRateBucket{tokens: 8, updated: now},
 	}
 }
 
 func (g *inboundFrameGuard) acceptFrame(now time.Time) bool {
 	return consumeRateBucket(&g.frames, messagePolicy{burst: 300, window: 1500 * time.Millisecond}, now)
+}
+
+// Charge full decoded payload bytes, including otherwise ignored JSON padding,
+// before parsing/dispatch. Control handlers share this connection-local budget.
+func (g *inboundFrameGuard) acceptPayload(size int, now time.Time) bool {
+	if size < 0 || size > maxMessageSize {
+		return false
+	}
+	return g.acceptFrame(now) && consumeRateBucketCost(&g.bytes,
+		messagePolicy{burst: inboundByteBurst, window: time.Duration(inboundByteBurst/inboundBytesPerSecond) * time.Second}, now, size)
 }
 
 func (g *inboundFrameGuard) acceptMalformed(now time.Time) bool {
@@ -49,7 +66,7 @@ func (g *inboundFrameGuard) installControlHandlers(conn *websocket.Conn, clock f
 	protect := func(next func(string) error) func(string) error {
 		return func(payload string) error {
 			now := clock()
-			if !g.acceptFrame(now) {
+			if !g.acceptPayload(len(payload), now) {
 				return g.rejectFrame(conn, now)
 			}
 			return next(payload)

@@ -189,6 +189,13 @@ when pressure clears, without discarding private endgame-progress history.
 Six new focused groups and retained party-credit checks passed with race
 checking. Other worker bounds, jump range policy and latest-source connected
 route/load evidence remain open; no1.72 release or capacity claim is made.
+The [input-byte follow-up](2026-10-02-release1-72-input-byte-checks.json)
+adds a connection-local256KiB burst/64KiB-per-second logical payload budget before
+JSON parsing, shared by data and ping/pong. A real read-pump padded-data flood
+and byte-exhausted ping/pong checks close with1008 while normal mixed input and
+keepalives remain passing. No ban, payment or reward policy changed. Incomplete
+fragmentation, raw/upstream traffic, other worker bounds and connected
+production/load evidence remain separate; this is prepared source, not1.72 live.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

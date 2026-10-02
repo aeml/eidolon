@@ -264,14 +264,21 @@ func (c *Client) consumeMessageRate(messageType string, p messagePolicy, now tim
 // Caller owns the bucket lock. Connection and cross-connection credential
 // budgets use the same refill rule, including protection against clock rewind.
 func consumeRateBucket(bucket *messageRateBucket, p messagePolicy, now time.Time) bool {
+	return consumeRateBucketCost(bucket, p, now, 1)
+}
+
+func consumeRateBucketCost(bucket *messageRateBucket, p messagePolicy, now time.Time, cost int) bool {
+	if cost < 0 {
+		return false
+	}
 	if now.After(bucket.updated) {
 		refill := now.Sub(bucket.updated).Seconds() * float64(p.burst) / p.window.Seconds()
 		bucket.tokens = min(float64(p.burst), bucket.tokens+refill)
 		bucket.updated = now
 	}
-	if bucket.tokens < 1 {
+	if bucket.tokens < float64(cost) {
 		return false
 	}
-	bucket.tokens--
+	bucket.tokens -= float64(cost)
 	return true
 }

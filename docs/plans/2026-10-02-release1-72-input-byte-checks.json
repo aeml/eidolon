@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "milestone": "1.72",
+  "status": "partial prepared source; not published",
+  "finding": "Message-count and single-message limits alone still permit repeated large padded envelopes to reach JSON parsing/dispatch.",
+  "scope": [
+    "Connection-local256KiB byte burst/cap with64KiB/second server-time refill, charged before JSON parsing and dispatch.",
+    "Data and ping/pong payloads share the byte budget; existing message-count, malformed, single-message, authentication and per-message admission policies remain independent.",
+    "Exhaustion closes only that connection with1008 and the existing generic bounded reason; no account/IP bans or peer-content logging.",
+    "The ordinary unit-cost rate helper delegates to the same cost-aware bucket arithmetic; existing message policies still consume exactly one token."
+  ],
+  "checks": {
+    "newTestGroups": 4,
+    "addedControlByteExhaustionCases": 2,
+    "boundedBurstRefillRewindAndIdleCap": true,
+    "syntheticMixedSamplesAfterInitialByteBurst": 15000,
+    "syntheticMixedSeconds": 100,
+    "syntheticMixedBytesPerSecond": 53760,
+    "connectionIsolationAndInvalidSizes": true,
+    "actualReadPumpPaddedDataFlood": {"logicalMessageBytes": 8192, "attemptedMessages": 96, "closeCode": 1008, "retirementHandoffVerified": true},
+    "actualPingPongCountAndByteExhaustion": true,
+    "normalKeepaliveHandlersAndDataReply": true,
+    "raceCommand": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(Inbound|Protocol|DecodeInbound|MessagePolicy|ClientQueue|Websocket)' -count=1 -timeout=30s",
+    "rootSeconds": 1.453,
+    "passed": true,
+    "whitespace": "passed"
+  },
+  "sourceHashes": {
+    "server/inbound_frame_guard.go": "1dcb6ae8cc6ef6173a27524a15f28b1dc150611b46b6ad2c6ba88e4d81e23a32",
+    "server/inbound_byte_guard_test.go": "2e7facd26f0c479d927dd70c7029095840342cd5fe9cf0339a7e4f19d14bca84",
+    "server/inbound_byte_guard_socket_test.go": "8929a14fbe7d7eb8925bba76ea96dabc71cd65125870f268f195f9d16510fb3c",
+    "server/inbound_frame_guard_socket_test.go": "540c733b077e4868980c727d09b7e63677edb7d333417c896c2deef5275eb0b9",
+    "server/network.go": "11b452213caa4da3998055d577258372af165a4ba9727220f45d6abdefd99c87",
+    "server/protocol_policy.go": "4a0639fe5a0706bbd70d35b60c9f00222115cfd49ac04a056ed23242da9010a6"
+  },
+  "limits": [
+    "Actual loopback read pump/control-handler tests, not a new production-binary/database/session deployment acceptance.",
+    "Logical payload-byte accounting is not raw transport, incomplete-fragmentation, compression-overhead, HTTP or upstream/global denial-of-service protection.",
+    "Synthetic mixed-input timing is not real-player100-client capacity, high-latency, physical-phone, encounter, pacing or art acceptance.",
+    "Other worker bounds, jump range policy and latest-source connected route/load evidence remain open before1.72 closes."
+  ]
+}

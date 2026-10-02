@@ -304,7 +304,7 @@ func (c *Client) readPump() {
 		}
 
 		now := time.Now()
-		if !guard.acceptFrame(now) {
+		if !guard.acceptPayload(len(message), now) {
 			_ = guard.rejectFrame(c.conn, now)
 			return
 		}

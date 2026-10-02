@@ -23,6 +23,26 @@ wire-version byte, and an envelope version inside the protobuf payload. Alpha
 - WebSocket input is capped at 8 KiB. Malformed bytes either decode to one
   valid message or return an error without mutating game state.
 
+### Prepared connection-local input-byte admission (not yet published)
+
+The partial1.72 read pump charges every completed incoming data-message payload,
+including JSON whitespace/padding, before parsing or dispatch. Ping/pong payloads
+share the same256KiB initial/capped byte burst and64KiB/second server-time refill.
+The existing300-initial/200-per-second message/control-frame budget, malformed
+allowance,8KiB single-message cap and message-specific policies remain independent.
+An exhausted byte budget closes only that connection with policy code1008 and
+the existing bounded generic reason; no account/IP ban or raw-body log is added.
+Zero-byte controls still spend message-count credit, and normal ping/pong handlers
+are retained. Clock rewind cannot refill either bucket.
+
+Actual read-pump loopback checks reject a valid padded-message flood before the
+frame-count allowance is exhausted. Actual ping/pong checks reject either count
+or byte-budget exhaustion; synthetic100-second mixed input remains within the
+declared byte allowance after spending its initial burst. These are not player
+load/latency or new production-binary acceptance. This meters logical payload
+bytes, not raw transport, incomplete fragmentation, compression wire overhead,
+HTTP admission or upstream/global denial-of-service protection.
+
 ## Town recovery movement context
 
 Starting in Alpha 1.0.19, `recall` and `respawn` accept an optional
