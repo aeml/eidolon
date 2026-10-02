@@ -58,12 +58,14 @@ export class BlackjackTableUI {
         this.stakeRules.textContent = `Bet ${this.stake.min}–${goldText(this.stake.max)} ${this.currency} in steps of ${this.stake.step}. Double on two cards, including after splitting. Split equal-value pairs into at most four hands; split aces receive one card each. No insurance or surrender.`;
         if (this.celebrationRound !== view.roundId) this.celebration.clear();
         const own = view.players?.find(player => player.playerId === playerID);
+        const watchingEarlierSeat = own && Number.isInteger(presence.yourSeat?.seat) && own.seat !== presence.yourSeat.seat;
         this.stateKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, own, playerID]);
         if (this.pendingKey !== this.stateKey) this.pendingKey = null;
         this.summary.textContent = !view.available ? 'Blackjack is temporarily unavailable; saved wagers are retained.' :
             view.processing ? `Saving table funds… · ${this.balance} ${this.currency} available` :
             `${this.balance} ${this.currency} available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
-                view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' : 'Round in progress.'}`;
+                view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' :
+                    watchingEarlierSeat ? 'Watching your earlier wager; return to its seat to act.' : 'Round in progress.'}`;
         this.betBox.hidden = view.phase !== 'betting';
         this.bet.disabled = !this.canAct() || view.phase !== 'betting' || Boolean(own); this.stake.disabled = this.bet.disabled;
         this.adjustments.querySelectorAll('button').forEach(button => { button.disabled = this.stake.disabled; });

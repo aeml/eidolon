@@ -47,12 +47,11 @@ func getBlackjackCache(id string) (*database.BlackjackTableRecord, bool) {
 }
 
 type blackjackParticipant struct {
-	PlayerID    string `json:"playerId"`
-	Name        string `json:"name"`
-	Seat        int    `json:"seat"`
-	Bet         int    `json:"bet"`
-	Paid        bool   `json:"paid"`
-	SeatSession string `json:"seatSession,omitempty"` // Saved privately; removed from all public table views.
+	PlayerID string `json:"playerId"`
+	Name     string `json:"name"`
+	Seat     int    `json:"seat"`
+	Bet      int    `json:"bet"`
+	Paid     bool   `json:"paid"`
 }
 
 type blackjackTableState struct {
@@ -86,12 +85,6 @@ func decodeBlackjackState(record *database.BlackjackTableRecord) (*blackjackTabl
 	}
 	players, seats := map[string]bool{}, map[int]bool{}
 	for _, p := range state.Players {
-		if p.SeatSession != "" {
-			decoded, err := hex.DecodeString(p.SeatSession)
-			if err != nil || len(decoded) != 16 {
-				return nil, errors.New("invalid saved blackjack seat session")
-			}
-		}
 		if !strings.HasPrefix(p.PlayerID, "player-") || len(p.PlayerID) <= 7 || players[p.PlayerID] || p.Seat < 0 || p.Seat >= 6 || seats[p.Seat] || !game.ValidCasinoBet("blackjack", currency, p.Bet) {
 			return nil, errors.New("invalid funded blackjack participant")
 		}
@@ -282,7 +275,7 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	if err := requireCasinoFundingLocked(client, currency, bet, now); err != nil {
 		return err
 	}
-	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.DisplayName(), Seat: player.CasinoSeat.Seat, Bet: bet, SeatSession: sessionID})
+	state.Players = append(state.Players, blackjackParticipant{PlayerID: client.playerID, Name: player.DisplayName(), Seat: player.CasinoSeat.Seat, Bet: bet})
 	if state.DealAt.IsZero() {
 		state.DealAt = now.Add(casinoBettingWindow)
 	}
@@ -306,6 +299,15 @@ func handleBlackjackPlay(client *Client, sessionID, roundID, action string, revi
 	}
 	if state.RoundID != roundID || state.Phase != "playing" {
 		return errors.New("blackjack round changed; review the table")
+	}
+	member := false
+	for _, p := range state.Players {
+		if p.PlayerID == client.playerID && p.Seat == player.CasinoSeat.Seat {
+			member = true
+		}
+	}
+	if !member {
+		return errors.New("return to your funded blackjack seat before playing this hand")
 	}
 	next, extra, err := state.Round.Propose(client.playerID, action, revision, now)
 	if err != nil {
@@ -348,7 +350,8 @@ func tickBlackjack(now time.Time, ids ...string) error {
 		return err
 	}
 	recipient := ""
-	var timedOutSeat *blackjackParticipant
+	var timedOutSeat *game.CasinoSeatSession
+	timedOutPlayer := ""
 	if r.Pending != nil {
 		recipient = r.Pending.PlayerID
 	} else {
@@ -378,13 +381,10 @@ func tickBlackjack(now time.Time, ids ...string) error {
 			}
 		case "playing":
 			if !now.Before(state.Round.Deadline) {
-				playerID := state.Round.Players[state.Round.TurnPlayer].PlayerID
-				for _, p := range state.Players {
-					if p.PlayerID == playerID && p.SeatSession != "" {
-						copy := p
-						timedOutSeat = &copy
-						break
-					}
+				turn := state.Round.Players[state.Round.TurnPlayer]
+				if p := world.GetEntityCopy(turn.PlayerID); p != nil && p.CasinoSeat != nil &&
+					p.CasinoSeat.TableID == id && p.CasinoSeat.Seat == turn.Seat {
+					timedOutSeat, timedOutPlayer = p.CasinoSeat, turn.PlayerID
 				}
 				state.Round, err = state.Round.Timeout(now)
 				if err == nil {
@@ -413,7 +413,7 @@ func tickBlackjack(now time.Time, ids ...string) error {
 	}
 	blackjackMu.Unlock()
 	if err == nil && timedOutSeat != nil {
-		world.ReleaseCasinoSeatForSession(timedOutSeat.PlayerID, id, timedOutSeat.SeatSession)
+		world.ReleaseCasinoSeatForSession(timedOutPlayer, id, timedOutSeat.SessionID)
 	}
 	if err != nil || recipient == "" {
 		return err
@@ -490,8 +490,9 @@ func blackjackViewFor(playerID string) blackjackTableView {
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
 	id := publicBlackjackTable
-	if p := world.GetEntityCopy(playerID); p != nil && p.CasinoSeat != nil {
-		id = p.CasinoSeat.TableID
+	player := world.GetEntityCopy(playerID)
+	if player != nil && player.CasinoSeat != nil {
+		id = player.CasinoSeat.TableID
 	}
 	blackjackCached, blackjackAvailable := getBlackjackCache(id)
 	view := blackjackTableView{ServerNow: time.Now(), Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
@@ -506,20 +507,23 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		return view
 	}
 	view.RoundID, view.Phase, view.Processing, view.Players, view.DealAt = state.RoundID, state.Phase, blackjackCached.Pending != nil, state.Players, state.DealAt
-	for i := range view.Players {
-		view.Players[i].SeatSession = ""
-	}
 	if state.Phase == "complete" {
 		view.NextRoundAt = state.FinishedAt.Add(casinoResultPause)
 	}
 	if state.Round != nil {
 		round := state.Round.View(playerID)
 		view.Round = &round
-		if view.Processing {
+		member := false
+		for _, p := range state.Round.Players {
+			if p.PlayerID == playerID && player != nil && player.CasinoSeat != nil && player.CasinoSeat.TableID == id && player.CasinoSeat.Seat == p.Seat {
+				member = true
+			}
+		}
+		if view.Processing || !member {
 			view.Round.Actions = []string{}
 		}
 	}
-	if player := world.GetEntityCopy(playerID); player != nil {
+	if player != nil {
 		view.Gold = player.Gold
 		view.Balance = casinoBalance(player, view.Currency)
 	}

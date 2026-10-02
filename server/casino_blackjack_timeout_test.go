@@ -12,16 +12,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func TestBlackjackSavedSeatBindingIsPrivateAndLegacyCompatible(t *testing.T) {
+func TestBlackjackPublicParticipantsNeedNoSavedSeatTokens(t *testing.T) {
 	oldWorld, oldCache, oldAvailable := world, blackjackCached, blackjackAvailable
 	t.Cleanup(func() { world, blackjackCached, blackjackAvailable = oldWorld, oldCache, oldAvailable })
-	world = &game.World{Entities: map[string]*game.Entity{}}
+	privateSession := strings.Repeat("ab", 16)
+	world = &game.World{Entities: map[string]*game.Entity{"player-alice": {
+		ID: "player-alice", Type: game.TypePlayer, Health: 100, InstanceID: game.CasinoInstanceID,
+		CasinoSeat: &game.CasinoSeatSession{TableID: publicBlackjackTable, Seat: 0, SessionID: privateSession},
+	}}}
 	lobby, err := newBlackjackLobby()
 	if err != nil {
 		t.Fatal(err)
 	}
-	privateSession := strings.Repeat("ab", 16)
-	lobby.Players = []blackjackParticipant{{PlayerID: "player-alice", Name: "Alice", Seat: 0, Bet: 100, SeatSession: privateSession}}
+	lobby.Players = []blackjackParticipant{{PlayerID: "player-alice", Name: "Alice", Seat: 0, Bet: 100}}
 	encode := func() *database.BlackjackTableRecord {
 		t.Helper()
 		data, err := json.Marshal(lobby)
@@ -32,28 +35,18 @@ func TestBlackjackSavedSeatBindingIsPrivateAndLegacyCompatible(t *testing.T) {
 	}
 	blackjackCached, blackjackAvailable = encode(), true
 	saved, err := decodeBlackjackState(blackjackCached)
-	if err != nil || saved.Players[0].SeatSession != privateSession {
-		t.Fatal("binding did not survive saved state", err)
+	if err != nil || len(saved.Players) != 1 || strings.Contains(string(blackjackCached.State), privateSession) {
+		t.Fatal("legacy participant data changed or acquired a private token", err)
 	}
 	view := blackjackViewFor("observer")
 	public, err := json.Marshal(view)
-	if err != nil || !view.Available || len(view.Players) != 1 || view.Players[0].SeatSession != "" || strings.Contains(string(public), "seatSession") || strings.Contains(string(public), privateSession) {
+	if err != nil || !view.Available || len(view.Players) != 1 || strings.Contains(string(public), "seatSession") || strings.Contains(string(public), privateSession) {
 		t.Fatal("private seat binding leaked to the table", string(public), err)
-	}
-	for _, invalid := range []string{"short", strings.Repeat("zz", 16), strings.Repeat("ab", 17)} {
-		lobby.Players[0].SeatSession = invalid
-		if _, err := decodeBlackjackState(encode()); err == nil {
-			t.Fatal("malformed persisted seat binding accepted")
-		}
-	}
-	lobby.Players[0].SeatSession = ""
-	if _, err := decodeBlackjackState(encode()); err != nil {
-		t.Fatal("legacy saved hand without a seat binding rejected", err)
 	}
 }
 
 func TestBlackjackMongoTimeoutReleasesChairWithoutChangingSettlement(t *testing.T) {
-	for _, scenario := range []string{"current-seat", "new-session", "legacy-hand"} {
+	for _, scenario := range []string{"current-seat", "resumed-same-seat", "other-seat"} {
 		t.Run(scenario, func(t *testing.T) {
 			_, name, _ := setupSlotMongo(t)
 			oldWorld, oldCache, oldAvailable := world, blackjackCached, blackjackAvailable
@@ -106,9 +99,6 @@ func TestBlackjackMongoTimeoutReleasesChairWithoutChangingSettlement(t *testing.
 				state.Round = &game.BlackjackRound{ID: state.RoundID, Rules: game.BlackjackRulesVersion, Currency: "gold", Revision: 1,
 					Phase: "playing", Dealer: []int{9, 6}, Deck: shoe, Deadline: now.Add(game.BlackjackTurnTime),
 					Players: []game.BlackjackPlayer{{PlayerID: p.ID, Seat: 0, Hands: []game.BlackjackHand{{Cards: []int{9, 5}, Bet: 100}}}}}
-				if scenario == "legacy-hand" {
-					state.Players[0].SeatSession = ""
-				}
 				err = state.Round.Validate()
 				if err == nil {
 					err = advanceBlackjackLocked(record, state)
@@ -118,22 +108,38 @@ func TestBlackjackMongoTimeoutReleasesChairWithoutChangingSettlement(t *testing.
 			if err != nil {
 				t.Fatal(err)
 			}
-			if scenario == "new-session" {
+			if scenario != "current-seat" {
 				if err := world.ChangeCasinoSeat(p.ID, seat.SessionID, "leave", false, now, ""); err != nil {
 					t.Fatal(err)
 				}
-				if _, err := world.TakeCasinoSeat(p.ID, table.ID, 0, now); err != nil {
+				index := 0
+				if scenario == "other-seat" {
+					index = 1
+					p.X, p.Z = table.Seats[index].ExitX, table.Seats[index].ExitZ
+				}
+				if _, err := world.TakeCasinoSeat(p.ID, table.ID, index, now); err != nil {
 					t.Fatal(err)
 				}
 			}
 			deadline := state.Round.Deadline
+			if scenario == "other-seat" {
+				view := blackjackViewFor(p.ID)
+				if view.Round == nil || len(view.Round.Actions) != 0 {
+					t.Fatal("another chair offered actions for the earlier wager")
+				}
+				if err := handleBlackjackPlay(client, p.CasinoSeat.SessionID, state.RoundID, "stand", state.Round.Revision, deadline.Add(-time.Second)); err == nil {
+					t.Fatal("another chair controlled the earlier funded hand")
+				}
+			} else if len(blackjackViewFor(p.ID).Round.Actions) == 0 {
+				t.Fatal("the current or resumed funded chair lost legal actions")
+			}
 			if err := tickBlackjack(deadline.Add(-time.Nanosecond), table.ID); err != nil || p.CasinoSeat == nil {
 				t.Fatal("early tick released the chair", err)
 			}
 			if err := tickBlackjack(deadline, table.ID); err != nil {
 				t.Fatal(err)
 			}
-			if (p.CasinoSeat == nil) != (scenario == "current-seat") {
+			if (p.CasinoSeat == nil) != (scenario != "other-seat") {
 				t.Fatal("timeout released the wrong session", scenario)
 			}
 			for i := 0; i < 3; i++ {

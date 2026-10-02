@@ -7,16 +7,19 @@ the accepted 1.60 and 1.61 releases must precede it.
 ## Timeout ownership
 
 A successful server timeout still stands the current hand, but now releases the
-exact chair session that funded it. The release happens after the round update
+current session in that player's funded chair. The server captures it when the
+deadline expires; a player back in the same chair after reconnect remains the
+hand's owner. The release happens after the round update
 is saved and outside the table lock. It does not debit, refund, cancel or reroll
 the accepted wager. Remaining funded hands continue through ordinary server
 transitions and settlement.
 
-The private funding record retains its seat-session binding; public table views
-remove it. A stale timeout cannot eject a later occupant or the same account
-after acquiring another session. Legacy saved hands lacking that binding remain
-valid and retain their prior stand-only behavior rather than guessing which
-current chair to eject. Disconnect reservation remains 60 seconds.
+The release compares the captured session again, so a later occupant or newly
+acquired session cannot be ejected by a stale release. A participant in a
+different chair only watches the earlier wager: they must return to its funded
+seat to act, and its timeout cannot eject their unrelated chair. Funding records
+and public views do not acquire private session-token fields; legacy round data
+remains valid. Disconnect reservation remains 60 seconds.
 
 ## Hand and payout presentation
 
@@ -33,26 +36,27 @@ client award is invented.
 
 ## Focused local evidence
 
-- Three client suites passed 53 checks in 1.636 seconds, including all five
+- Three client suites passed 56 checks in 1.637 seconds, including all five
   result categories, chair replacement, private dealer cards, pending actions,
   persisted seat UI and 30/29/28/27 countdown behavior without polling resets.
   Full lint passed.
 - Pure blackjack rules and exact-session chair release passed under the race
-  detector in 1.085 seconds. Three server projection, cache-separation and empty
-  betting-clock checks passed in 1.051 seconds. Separate saved-binding validation
-  passed in 1.064 seconds; counts overlap and are not additive.
+  detector in 1.100 seconds. Three server projection, cache-separation and empty
+  betting-clock checks passed in 1.067 seconds; counts overlap and are not additive.
 - A fresh task-owned Mongo instance exercised actual wager debits, persisted
   timeout transitions, settlement, saved balances and exact retries. The current
-  session was released; a newly acquired session and a legacy hand were retained.
-  The existing independent-table debit test also passed. Race-package total was
-  4.802 seconds. The deterministic prepared 16-versus-17 shoe isolates settlement
+  session and a resumed session in the same funded chair were released; an
+  unrelated chair was retained and could not issue or receive actions for the
+  earlier hand. The final reconnect/seat-action refinement passed in 4.065
+  race-package seconds. The earlier independent-table debit exercise passed
+  within its 4.802-second package. The deterministic prepared 16-versus-17 shoe isolates settlement
   and is not random gameplay or an odds benchmark. The container and anonymous
   volume were removed afterward; production was untouched.
 - One System Chrome phone-sized rendering case passed in 3.8 seconds with visible
   hand counts, hidden dealer card, win presentation and no horizontal overflow.
   The blackjack render was inspected. This is synthetic table state, not an
   actual phone or a connected wager.
-- The ordinary current server binary completed the existing two-player shared
+- Before the final reconnect refinement, the ordinary prepared server binary completed the existing two-player shared
   Gold round, legal turns, saved payouts and restart exercise in 44.80 seconds
   (race-package total 45.858 seconds). Both sockets saw the same public cards and
   dealer; private funding session tokens were absent. This uses real random
@@ -61,6 +65,11 @@ client award is invented.
   executable basename; rebuilding with the required identity fixed the fixture
   without weakening readiness. The task-owned database container and anonymous
   volume were removed after both attempts. Production was untouched.
+
+The first prepared timeout implementation saved an original session token and
+would therefore miss a legitimately resumed chair. It was replaced before
+publication with a current-seat capture, reducing stored fields and preserving
+normal reconnect behavior. Exact-session stale-release tests remain.
 
 ## Remaining publication checks
 

@@ -87,6 +87,18 @@ test('a departed dealt hand stays attributed to its owner when the chair is reus
     ui.dispose();
 });
 
+test('moving to another chair explains that the earlier wager remains at its funded seat', () => {
+    const ui = new BlackjackTableUI(jest.fn()), v = playing();
+    v.round.actions = [];
+    ui.update(v, 'alice', { yourSeat: { seat: 1 }, occupants: [
+        { playerId: 'alice', seat: 1, name: 'Alice', connected: true }
+    ] });
+    expect(ui.summary.textContent).toContain('Watching your earlier wager; return to its seat to act');
+    expect(ui.actions.children).toHaveLength(0);
+    expect(ui.table.seats[0].hands.textContent).toContain('Your earlier hand');
+    ui.dispose();
+});
+
 test.each([
     ['blackjack', 250, 'Blackjack · 3:2 profit'], ['win', 200, 'Win · 1:1 profit'],
     ['push', 100, 'Push · stake refund'], ['bust', 0, 'Bust'], ['lose', 0, 'Loss']
