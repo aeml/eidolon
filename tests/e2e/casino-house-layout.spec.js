@@ -35,6 +35,17 @@ for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat'
         const panel = page.locator('.casino-session.has-house');
         await expect(panel).toBeVisible(); await expect(panel.locator('.card-table-seat')).toHaveCount(6);
         await expect(panel.getByText('House dealer', { exact: true })).toBeVisible();
+        await page.evaluate(() => {
+            const f = window.__houseLayout;
+            f.ui.update({ ...f.view, players: [{ playerId: 'hero', name: 'You', seat: 0, wagers: null }] }, 'hero', f.presence);
+        });
+        await expect(panel.locator('.house-bet-slip')).toContainText('Wager details unavailable');
+        await expect(panel.locator('.house-bet-slip')).not.toContainText('confirmed');
+        await expect(panel.locator('.house-betting-board button').first()).toBeDisabled();
+        await expect(panel.locator('.card-table-seat')).toHaveCount(6);
+        await page.evaluate(() => {
+            const f = window.__houseLayout; f.ui.update(f.view, 'hero', f.presence);
+        });
         for (const selector of ['.casino-session.has-house', '.house-game', '.card-table-controls']) {
             expect(await page.locator(selector).evaluate(n => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(1);
         }
