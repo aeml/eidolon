@@ -1,6 +1,21 @@
 {
   "version": "Alpha 1.59.0",
-  "status": "connected-release-candidate-unpublished",
+  "status": "corrected-client-fixtures-ready-to-republish",
+  "candidateCommit": "7bf21905ebabed51615b122a0ad8ffeabf1c0d66",
+  "ciRun": 36973309760,
+  "deploymentMonitor": "Luna; completion/failure only, no automated mutation or retry",
+  "failedCI": {
+    "run": 36973309760,
+    "commit": "7bf21905ebabed51615b122a0ad8ffeabf1c0d66",
+    "job": "Client Tests (Jest)",
+    "step": "Run tests with coverage",
+    "failedTests": 9,
+    "passedTests": 9023,
+    "causes": ["Eight MainAssetBoot fixtures omitted the current Account help button and form.", "One MenuPolish assertion omitted the new accessible report-guidance reference."],
+    "correction": "Boot fixtures reuse the delivered form and verify explicit Account help notice lookup without world entry. The menu assertion retains every required accessible description. Production validation was not weakened.",
+    "correctedChecks": { "suites": 3, "tests": 100, "seconds": 7.74, "result": "passed", "fullLint": "passed" },
+    "deployment": "Blocked by CI; failed candidate not accepted live."
+  },
   "ownerApproval": {
     "date": "2026-10-02",
     "responses": ["temporary chat mutes", "required public name changes", "temporary account suspensions"],
@@ -93,7 +108,7 @@
     "versionHistory": { "tests": 331, "result": "passed" },
     "administrationPresentation": { "viewport": "390x844", "seconds": 28.6, "result": "passed", "nameConfirmationRenderInspected": true, "gpuDisabled": true, "limits": "Synthetic UI responses, not a physical phone or permission grant." },
     "lint": "passed",
-    "disposableMongo": { "container": "eidolon-159-moderation-qa-20261002", "label": "eidolon.disposable-task=alpha-159-moderation-20261002", "binding": "127.0.0.1:32823", "productionTouched": false },
+    "disposableMongo": { "container": "eidolon-159-moderation-qa-20261002", "label": "eidolon.disposable-task=alpha-159-moderation-20261002", "binding": "127.0.0.1:32823", "productionTouched": false, "cleanup": "Exact task container and anonymous volume removed after final checks." },
     "existingAdminHistoryReviewRestartRaceSeconds": 12.483,
     "disposableMongoReportModerationAndPublicNameRaceSeconds": 7.802,
     "client": { "suites": 14, "tests": 259, "seconds": 7.371, "result": "passed" },

@@ -1,4 +1,11 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
+
+// Keep account-help wiring real while these fixtures isolate asset/login boot.
+// Reuse the delivered form rather than a second incomplete copy of its fields.
+const currentMarkup = new DOMParser().parseFromString(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), 'text/html');
+const accountHelpMarkup = currentMarkup.getElementById('login-account-help').outerHTML
+    + currentMarkup.getElementById('report-screen').outerHTML;
 
 jest.unstable_mockModule('../src/assets/StylesheetBoot.js', () => ({
     ensureGameStylesReady: jest.fn(async () => true)
@@ -21,6 +28,7 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
 
 describe('asset persistence boot wiring', () => {
     const buildStartDom = () => {
+        document.getElementById('report-screen')?.__eidolonLoginSupport?.dispose();
         document.body.innerHTML = `
             <div id="debug-console"></div>
             <div id="perf-overlay"></div>
@@ -47,6 +55,7 @@ describe('asset persistence boot wiring', () => {
             <div id="start-flow-title"></div>
             <div id="start-flow-copy"></div>
             <div id="start-flow-steps"></div>
+            ${accountHelpMarkup}
         `;
     };
 
@@ -157,6 +166,13 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-copy').textContent).toContain('Enter world as Fighter');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Open quests');
         expect(document.getElementById('btn-play-character').textContent).toContain('ENTER WORLD (Fighter)');
+        const help = document.getElementById('login-account-help');
+        expect(help.hidden).toBe(false);
+        expect(sockets[0].sent.some(message => message.type === 'moderation_notice')).toBe(false);
+        help.click();
+        expect(document.getElementById('report-screen').style.display).toBe('flex');
+        document.getElementById('btn-check-moderation').click();
+        expect(sockets[0].sent.at(-1)).toMatchObject({ type: 'moderation_notice', payload: { requestId: expect.any(String) } });
     });
 
     test('shows new-player first steps guidance when login succeeds without a character', async () => {

@@ -1410,7 +1410,8 @@ describe('menu polish regressions', () => {
         expect([...reportText.classList]).toEqual(['support-field__control', 'support-field__textarea']);
         expect(reportText.rows).toBe(6);
         expect(reportText.maxLength).toBe(3200);
-        expect(reportText.getAttribute('aria-describedby')).toBe('report-count report-status');
+        expect(reportText.getAttribute('aria-describedby')).toBe('report-guidance report-count report-status');
+        expect(new DOMParser().parseFromString(html, 'text/html').getElementById('report-guidance')).not.toBeNull();
         expect(reportText.placeholder).toBe('Describe your issue or idea...');
         expect(html).not.toContain('<select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">');
         expect(html).not.toContain('<textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>');
