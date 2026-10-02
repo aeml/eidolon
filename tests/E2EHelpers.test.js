@@ -11,7 +11,35 @@ import {
 
 const playwrightExpect = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
-const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast } = await import('./e2e/helpers.js');
+const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast, waitForPersistedPickup } = await import('./e2e/helpers.js');
+
+describe('fresh-login exact pickup readiness', () => {
+    afterEach(() => { playwrightExpect.mockReset(); delete playwrightExpect.poll; });
+    test.each([false, true])('the exact %s-stackable receipt is retained while private state arrives', async stackable => {
+        const item = { id: 'earned-item', name: 'Earned item', maxStack: stackable ? 99 : 1 };
+        const receipt = { item, quantity: stackable ? 7 : 1 };
+        const page = { evaluate: jest.fn().mockResolvedValueOnce([])
+            .mockResolvedValueOnce([{ ...item, id: 'unrelated-item', name: 'Other item', stack: 99 }])
+            .mockResolvedValueOnce([{ ...item, stack: receipt.quantity }]) };
+        const compare = jest.fn(async expected => {
+            const observe = playwrightExpect.poll.mock.calls[0][0];
+            expect(await observe()).toBe(0);
+            expect(await observe()).toBe(0);
+            expect(await observe()).toBeGreaterThanOrEqual(expected);
+        });
+        playwrightExpect.poll = jest.fn(() => ({ toBeGreaterThanOrEqual: compare }));
+        await waitForPersistedPickup(page, receipt);
+        expect(compare).toHaveBeenCalledWith(receipt.quantity);
+        expect(playwrightExpect.poll.mock.calls[0][1].timeout).toBe(10000);
+    });
+    test('a missing saved item still fails; there is no grant, retry login or receipt replacement', async () => {
+        const failure = new Error('exact saved item absent');
+        playwrightExpect.poll = jest.fn(() => ({ toBeGreaterThanOrEqual: jest.fn().mockRejectedValue(failure) }));
+        const page = { evaluate: jest.fn() };
+        await expect(waitForPersistedPickup(page, { item: { id: 'missing', name: 'Missing' }, quantity: 1 }))
+            .rejects.toBe(failure);
+    });
+});
 
 describe('pointer raycast settling', () => {
     test('waits for actual completion with a bounded frame recovery window', async () => {

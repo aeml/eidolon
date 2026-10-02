@@ -29,6 +29,14 @@
     "2026-10-02-release1-67-cosmetic-checks.json and release1-68-membership-checks.json: owner-bound replies, actual catalog provenance, monthly/admin receipts and expiry; narrower prepared/local evidence is not commercial approval.",
     "2026-10-02-release1-69-trust-checks.json: voluntary local timer limits, truth about net slot losses/returns and pending owner audience/region decision."
   ],
+  "publicationMerge": {
+    "predecessorSource": "5f62945c1d3c8a977b8d179d91252d8739906f4b",
+    "predecessorAcceptance": "Pending CI37037866734 and independent public verification; no 1.70 push before acceptance.",
+    "retainedCorrections": "Accepted 1.68.1 real-input and exact-item QA helpers, cumulative failed-1.68.0 history, and 1.69 controls.",
+    "client": {"suites": 10, "tests": 522, "seconds": 9.383, "passed": true},
+    "lint": "Full npm run lint and git diff --check passed on the merged candidate.",
+    "scope": "Merged casino/version/publisher and inherited QA helper regressions. Counts overlap earlier receipts; no new native or connected wagering proof is claimed."
+  },
   "openExitEvidence": [
     "Publish and independently accept every ordered 1.62.1–1.70 exact-source release. Prepared versions are not live accepted milestones.",
     "Record owner launch audience/regions and commerce direction. No payment code, new alpha access policy, legal conclusion or provider approval is assumed.",
