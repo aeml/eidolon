@@ -26,6 +26,13 @@ and desktop/phone-sized browser checks passed. Version defaults and cumulative
 notes are prepared; publication can now follow exact-source 1.59 acceptance. This
 does not pass population, physical-phone or human-pacing observations.
 
+Alpha1.60.0 is pushed at15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813, with Luna monitoring terminal results. It is not accepted until
+the complete CI and independent public checks pass. The
+[prepared 1.61 casino world](2026-10-02-release1-61-casino-world.md) passed focused
+client, native seating/guard and server floor/session checks, with cumulative
+notes and version defaults assembled. It must not publish before accepted1.60.
+
 ## Historical checkpoint — September 28
 
 Superseding checkpoint: [Alpha 1.29.0](2026-09-28-release1-29.md) is accepted

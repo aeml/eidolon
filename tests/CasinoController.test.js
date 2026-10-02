@@ -148,6 +148,22 @@ test('disposal retires other detached casino buttons without sending or reactiva
     expect(controller.active).toBe(false);
 });
 
+test.each(['disposed', 'destroyed engine'])('a %s controller cannot apply late seat/floor state or alter another actor', state => {
+    const { engine, controller } = setup();
+    const position = engine.player.position.clone();
+    const actor = { mesh: new THREE.Group(), position: new THREE.Vector3(0, 8, 180), state: 'IDLE' };
+    if (state === 'disposed') controller.dispose();
+    else engine.isDestroyed = true;
+    controller.updateState({ tables: [table], yourSeat: seat });
+    controller.setFloor({ upstairs: true, x: 0, y: 8, z: 104 });
+    controller.beforeUpdate(.1); controller.render([actor]);
+    expect(controller.handlePrimaryClick({ button: 0, clientX: 1 })).toBe(false);
+    expect(controller.active).toBe(false); expect(controller.data.yourSeat).toBeNull();
+    expect(engine.player.position.equals(position)).toBe(true);
+    expect(actor.mesh.visible).toBe(true);
+    controller.dispose();
+});
+
 test('only the current floor and its patrons are visible, without revealing already hidden actors', () => {
     const { engine, controller } = setup();
     const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';

@@ -14,6 +14,10 @@ door is cancelled when its context changes; arrival still requires an explicit
 confirmation. Receiving initial floor metadata in town does not invalidate a
 valid entrance dialogue.
 
+Disposed controllers also reject late seat/floor updates and renderer/input
+callbacks. They cannot re-seat, reposition or hide actors after teardown, and
+repeated disposal is harmless.
+
 The public-floor guard retains the explanation that VIP access is required and
 disables the upstairs action for non-VIP visitors. These client checks do not
 grant access: the existing server still owns entry, proximity and entitlement.
@@ -36,6 +40,12 @@ No station counts, wallets, wagers, payouts or monthly EP awards change.
 
 The rendered checks retain the normal server-request shapes; no production
 character, currency or access records were modified.
+
+Aligned 1.61 defaults, login version and cumulative notes passed 389 checks in
+five suites in 3.014 seconds, including the added late-update retirement cases.
+Full lint and whitespace checks passed. The first assembly attempt found the
+still-1.60 README source pointer; it was corrected without weakening the version
+assertion. These suites overlap earlier checks, not additional unique coverage.
 
 ## Retained venue evidence and boundaries
 

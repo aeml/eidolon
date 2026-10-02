@@ -8,7 +8,9 @@ public identity, database and changed-runtime checks passed. Its
 [public receipt](2026-10-02-release1-59-public.json) records the exact source.
 The integration preserves player
 consent and existing server entry, settlement and moderation checks; it does not
-add another queue. The prepared code is not a published milestone.
+add another queue. Candidate 15df739e6f15e631d0ccff576947ae2d99237296 is pushed
+in CI36981917813. Luna monitors terminal results; full deployment acceptance
+remains pending, so the milestone is not yet accepted live.
 
 ## Confirmed gaps
 

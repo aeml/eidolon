@@ -107,6 +107,12 @@ party consent, new payouts or another queue. Local client, race, ordinary-socket
 and desktop/phone-sized browser checks passed. Version and notes are prepared;
 it is not published. The S gate's real-player population and cadence observations
 remain open for stabilization; publishing this code cannot certify them.
+The 1.60 candidate is pushed at15df739e6f15e631d0ccff576947ae2d99237296,
+CI36981917813; deployment acceptance remains pending. The
+[prepared 1.61 casino world](2026-10-02-release1-61-casino-world.md) closes stale
+door/session actions and clarifies locked VIP entry, preserving the complete
+shared venue and physical seating. Focused local checks passed; publication
+remains ordered after accepted1.60.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

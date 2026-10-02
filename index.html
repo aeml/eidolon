@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.60.0</span>
+                    <span class="start-version-row__label">Alpha 1.61.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="View account moderation notices and submit an appeal">Account help</button>
             </div>
@@ -771,6 +771,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.61.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.61.0 (a seamless Lanternhold Casino visit)</h3>
+                    <p class="patch-note-entry__summary">More reliable door and floor interactions in the shared casino, with explicit entry and clear VIP access.</p>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Enter on your terms:</strong> click the Lanternhold Casino door, walk to it and confirm Enter Casino. Arriving never sends an automatic entry request. Old door buttons and queued walks are retired when your character, connection or scene changes.</li>
+                        <li><strong>A clear VIP guard:</strong> non-VIP guests still see “You must be a VIP to enter,” but the upstairs button is now disabled. Expired access and changed floors cannot reuse an old confirmation. The server remains responsible for every entry and VIP check.</li>
+                        <li><strong>Keep the complete venue:</strong> both separate full-size floors retain 46 stations each: four blackjack, four Hold’em, two roulette, four baccarat and 32 slot machines. The shared arrival, Lanternhold Casino signage, stash clearance, visible seated patrons and physical table views remain in place.</li>
+                        <li><strong>Clean transitions:</strong> accepted floor changes close the door dialogue; retired casino controls cannot send after disposal. Leaving a table restores normal camera and movement controls. Current-session door confirmations still require one click.</li>
+                        <li><strong>Scope and continuity:</strong> No station removal, wallet conversion, wager, payout, monthly EP or account reset change. Public tables use Gold; VIP tables use EP. EP remains cosmetic-only and cannot return to Gold. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.60.0">
                     <h3 class="patch-note-entry__title">Alpha 1.60.0 (companions, clear rewards and your next adventure)</h3>
                     <p class="patch-note-entry__summary">Connect guild plans to real-player recruitment and make boss rewards explain what is complete, what remains and where to go next.</p>
