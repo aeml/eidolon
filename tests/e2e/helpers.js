@@ -6,7 +6,7 @@ import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptI
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
-import { readLootPointerTarget, readLootBlockingHostile } from './loot-pointer-observation.js';
+import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile } from './loot-pointer-observation.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -1684,41 +1684,17 @@ export async function exerciseCombatAndLoot(page) {
         // Coincident loot hitboxes can expose only the front drop. This general
         // pickup route follows the actual pointer target and proves that exact
         // item's quantity increase, not an arbitrary back drop or bag-slot count.
-        const pickedLootId = point.lootId;
-        const item = await page.evaluate(id => window.game.remotePlayers.get(id)?.item, pickedLootId);
-        expect(item?.id, 'The selected loot must expose an authoritative item').toBeTruthy();
+        const aimedLootId = point.lootId;
         const beforePickup = await page.evaluate(() => window.game.player.inventory);
         // Observe after the normal input subscriber has processed the actual
         // click. Do not assign hover, move actors or send a pickup ourselves.
-        await page.evaluate(id => {
-            const game = window.game;
-            window.__qaManualLootClick = null;
-            const observe = () => {
-                const drop = game.remotePlayers.get(id);
-                window.__qaManualLootClick = {
-                    intendedHovered: game.hoveredEntity?.id === id,
-                    hoveredType: game.hoveredEntity?.constructor?.name,
-                    intendedPending: game.pendingInteraction?.id === id,
-                    pendingType: game.pendingInteraction?.constructor?.name,
-                    playerPosition: game.player.position.toArray(),
-                    playerState: game.player.state,
-                    targetPosition: game.player.targetPosition?.toArray(),
-                    dropPosition: drop?.position?.toArray(),
-                    cameraPosition: game.renderSystem.camera.position.toArray(),
-                    hits: (game.raycastHitEntities || []).map(entity => ({
-                        type: entity.constructor?.name, intended: entity.id === id
-                    }))
-                };
-                const callbacks = game.inputManager.callbacks.onClick;
-                const index = callbacks.indexOf(observe);
-                if (index >= 0) callbacks.splice(index, 1);
-            };
-            game.inputManager.callbacks.onClick.push(observe);
-        }, pickedLootId);
-        await clickLootPointer(page, pickedLootId);
+        await armManualLootClickObservation(page, aimedLootId);
+        await clickLootPointer(page, aimedLootId);
         const click = await page.evaluate(() => window.__qaManualLootClick);
-        expect(click?.intendedHovered, `Native loot click must hit the selected item: ${JSON.stringify(click)}`).toBe(true);
-        expect(click?.intendedPending, 'Native loot click must register the selected pending interaction').toBe(true);
+        expect(click?.sameLootPile, `Native loot click must select a real front item in the aimed pile: ${JSON.stringify(click)}`).toBe(true);
+        expect(click?.selectedPending, 'Native loot click must register that exact selected pending interaction').toBe(true);
+        const pickedLootId = click.selectedId, item = click.selectedItem;
+        expect(item?.id, 'The actually clicked loot must expose an authoritative item').toBeTruthy();
         let receipt;
         try {
             await expect.poll(async () => {
@@ -1747,7 +1723,7 @@ export async function exerciseCombatAndLoot(page) {
         }
         console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: false, overlappingDrop: pickedLootId !== loot.id,
             stackable: receipt.item.maxStack > 1, before: receipt.previousQuantity, after: receipt.quantity,
-            intendedHovered: click.intendedHovered, intendedPending: click.intendedPending })}`);
+            sameLootPile: click.sameLootPile, selectedPending: click.selectedPending })}`);
         return receipt;
     }
 

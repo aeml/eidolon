@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { existsSync } from 'node:fs';
 import { acquireLootPointer, acquireCombatLootPointer, clickLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
 import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
+import { armManualLootClickObservation } from './loot-pointer-observation.js';
 
 // Input/geometry only: no rendered game or GPU contention with live QA.
 test.use({ launchOptions: {
@@ -153,4 +154,28 @@ test('a coincident loot pile exposes its real front item without changing target
         intendedStillPresent: window.game.remotePlayers.get('loot').isActive,
         stack: window.game.raycastHitEntities.map(entity => entity.id) })))
         .toEqual({ hovered: 'front', intendedStillPresent: true, stack: ['front', 'loot'] });
+});
+
+test('a fresh native click records the front pile item even when the previous hover order changes', async ({ page }) => {
+    await page.evaluate(async () => {
+        const { LootDrop } = await import('/src/entities/LootDrop.js');
+        const game = window.game, back = game.remotePlayers.get('loot');
+        const front = new LootDrop({ id: 'front-item', name: 'Front sword', slot: 'mainHand', rarity: 'Common' }, 0, 0, 'front');
+        front.mesh.updateMatrixWorld(true);
+        game.remotePlayers.set(front.id, front);
+        game.activeEntitiesCache = [back, front];
+        // Component fixture models the next input's refreshed hit stack. No
+        // pickup or actor deletion is performed; gameplay QA proves recovery.
+        game.inputManager.subscribe('onClick', () => {
+            game.activeEntitiesCache = [front, back];
+            game.performRaycast(); game.pendingInteraction = game.hoveredEntity;
+        });
+    });
+    await armManualLootClickObservation(page, 'loot');
+    await clickLootPointer(page, 'loot', 2000);
+    expect(await page.evaluate(() => window.__qaManualLootClick)).toMatchObject({
+        aimedId: 'loot', selectedId: 'front', selectedItem: { id: 'front-item' },
+        sameLootPile: true, selectedPending: true
+    });
+    expect(await page.evaluate(() => window.game.remotePlayers.get('loot').isActive)).toBe(true);
 });

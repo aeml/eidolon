@@ -1,4 +1,4 @@
-import { readLootPointerTarget, readLootBlockingHostile } from './e2e/loot-pointer-observation.js';
+import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile } from './e2e/loot-pointer-observation.js';
 
 const drop = id => ({ id, constructor: { name: 'LootDrop' }, isActive: true,
     item: { id: `item-${id}`, name: id } });
@@ -12,7 +12,48 @@ beforeEach(() => {
         hoveredEntity: intended, raycastHitEntities: [intended],
         remotePlayers: new Map([['intended', intended], ['covering', covering]]) };
 });
-afterEach(() => { window.game = previousGame; });
+afterEach(() => { window.game = previousGame; delete window.__qaManualLootClick; });
+
+function prepareClickObservation() {
+    const game = window.game;
+    game.player = { state: 'IDLE' };
+    game.renderSystem = { camera: { position: { toArray: () => [0, 20, 0] } } };
+    game.inputManager.callbacks = { onClick: [] };
+    return game;
+}
+
+test('click evidence binds to the actual front drop after hover order changes and retires itself', async () => {
+    const game = prepareClickObservation(), aimed = game.hoveredEntity;
+    await armManualLootClickObservation(page, aimed.id);
+    const front = game.remotePlayers.get('covering');
+    game.hoveredEntity = front; game.raycastHitEntities = [front, aimed];
+    game.pendingInteraction = front;
+    game.inputManager.callbacks.onClick[0]();
+    expect(window.__qaManualLootClick).toMatchObject({ aimedId: aimed.id, selectedId: front.id,
+        selectedItem: { id: 'item-covering' }, sameLootPile: true, selectedPending: true });
+    expect(game.inputManager.callbacks.onClick).toHaveLength(0);
+    expect(aimed.isActive).toBe(true); expect(front.isActive).toBe(true);
+    expect(game.hoveredEntity).toBe(front);
+});
+
+test.each(['unrelated', 'hostile', 'inactive', 'stale-ray', 'off-canvas', 'wrong-pending'])(
+    'actual-click evidence cannot accept %s as a successful selected pickup', async reason => {
+        const game = prepareClickObservation(), aimed = game.hoveredEntity;
+        const front = game.remotePlayers.get('covering');
+        game.hoveredEntity = front; game.raycastHitEntities = [front, aimed]; game.pendingInteraction = front;
+        if (reason === 'unrelated') game.raycastHitEntities = [front];
+        if (reason === 'hostile') front.constructor = { name: 'Enemy' };
+        if (reason === 'inactive') front.isActive = false;
+        if (reason === 'stale-ray') game.needsRaycast = true;
+        if (reason === 'off-canvas') game.inputManager.pointerOverCanvas = false;
+        if (reason === 'wrong-pending') game.pendingInteraction = aimed;
+        await armManualLootClickObservation(page, aimed.id);
+        game.inputManager.callbacks.onClick[0]();
+        const click = window.__qaManualLootClick;
+        expect(click.sameLootPile && click.selectedPending).toBe(false);
+        expect(game.inputManager.callbacks.onClick).toHaveLength(0);
+    }
+);
 
 test('combat clearance identifies only a live hostile sharing the intended loot ray', async () => {
     const game = window.game, loot = game.hoveredEntity;
