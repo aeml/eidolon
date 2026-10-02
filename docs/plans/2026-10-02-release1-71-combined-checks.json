@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "final prepared account-control source passed scoped connected checks; recovery decision and ordered publication remain open",
+  "sourceCommit": "3cd62410",
+  "binary": {
+    "path": "/tmp/eidolon-1-71-combined-Ct5sqT/server",
+    "sha256": "0047b5944c03cf57c5d238012fa1884fd24453523f7cbccd57f283b98a9ceb98",
+    "build": "GOTOOLCHAIN=go1.24.5 go build -race -ldflags='-X main.buildCommit=server'"
+  },
+  "checks": {
+    "command": "go test -race . -run '^(TestCredentialActualFreshConnectionsAndTakeover|TestAdminConsoleActualSessionsAndHistoryRestart)$' -count=1 -v",
+    "packageSeconds": 19.097,
+    "credentialsSeconds": 10.18,
+    "administratorSeconds": 7.86,
+    "passed": true,
+    "evidenceDirectories": [
+      "/tmp/eidolon-compat-session-1993891705",
+      "/tmp/eidolon-compat-session-3686674914",
+      "/tmp/eidolon-compat-session-1493049853"
+    ],
+    "credentials": "Real bcrypt and sockets: legacy short-password login, cross-account rejection, five-attempt shared budgets across fresh sockets, correct-password takeover, old-token invalidation, live-owner token not consumed, new registration, same-address independent account, closed-owner single-use resume and token rotation. Exact and uppercase configured bootstrap signup names are refused using real startup flags.",
+    "administrator": "Synthetic durable administrator and ordinary account: private admin JSON denied to ordinary players, owner-only report status, confirmed review and exact replay, private notes excluded from activity history, resume/disconnect history and single review receipt preserved after server restart. Login-only correction and appeal create no character and preserve independent restrictions."
+  },
+  "threatReview": [
+    {"boundary": "Public credentials", "control": "Existing bcrypt hash/compare, public-only bounded UTF-8 registration policy, whole-value local blocklist, per-client and shared account admission, bounded concurrent hash/query work.", "residual": "Local blocklist is not a comprehensive breach corpus. Existing bcrypt byte ceiling is not a complete modern Unicode/password migration. Exact-case usernames are retained. Account-targeted temporary denial, distributed attacks and 100 simultaneous logins are not disproved."},
+    {"boundary": "Session ownership", "control": "CSPRNG tokens bound to the authenticated transport, first-closure reconnect deadline, rotation and single consumer, live-owner refusal, retired-transport guards and character-work locking.", "residual": "Tokens are bearer secrets; a stolen disconnected-owner token remains sensitive. Tokens are RAM-only and restart requires password login. The separate 15-minute dungeon rule is unchanged."},
+    {"boundary": "Privileged administration", "control": "Fresh durable role reads fail closed on unavailable storage; ordinary/retired/replaced/QA-only/allowlist-only clients cannot gain console authority. Durable confirmed operations and private receipts remain authoritative. Bootstrap is opt-in and reserved signup cannot acquire it.", "residual": "An explicit old bootstrap allowlist must be removed after enrollment and during revocation. This check does not inspect private deployed configuration or prove every future admin action safe."},
+    {"boundary": "Recovery and support", "control": "Private authenticated account notices/appeals and owner-only report status. No password disclosure, arbitrary ownership grant, SMTP reset or unverified-email recovery endpoint added.", "residual": "Owner must choose recovery delivery and ownership verification. Existing unverified email is not evidence of ownership. Milestone remains incomplete until the chosen safe recovery workflow is implemented and checked."},
+    {"boundary": "Protocol and infrastructure", "control": "Retain WebSocket origin policy, bounded inbound envelope/payload policies, trusted-role separation and existing operator controls.", "residual": "Forwarded addresses remain logging-only, not credential authority. Suspicious-log cardinality/escaping, broader protocol/dependency review and hosting/address-family readiness belong to the next planned security/operations work; not certified here."}
+  ],
+  "cleanup": "Removed only exact task-labelled disposable container 33d7b49ad8adcb739cd17bc7e6f88e99ece1acaad9a324a58c45b411b9a031b4 and its anonymous config volume after verifying its label and tmpfs database mount. Synthetic tmpfs accounts are gone. No production accounts, roles, currencies, data volumes or global build cache changed.",
+  "releaseOrder": "1.64 candidate CI37002763109 has a failed house-panel lifecycle browser check and is not accepted. Correct that scoped failure before proceeding with prepared 1.65–1.70. No 1.71 version or live acceptance is claimed."
+}
