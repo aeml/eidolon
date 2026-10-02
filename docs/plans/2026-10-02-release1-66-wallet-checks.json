@@ -3,7 +3,10 @@
   "milestone": "1.66",
   "sourceVersion": "Alpha 1.66.0",
   "originalPreparedSourceVersion": "Alpha 1.62.0",
-  "status": "prepared, unpublished",
+  "status": "live technical acceptance; retained financial and presentation scope limits",
+  "acceptedCommit": "aa7d00ae9191b690d1f034b4b61ef2b7776bb88a",
+  "acceptedCiRun": 37014297988,
+  "publicAcceptance": "2026-10-02-release1-66-public.json",
   "originalPreparedCommit": "bcec17110dfb639ca86a5e9e13b7ee6dac559bf6",
   "reconciledCommit": "780fa880",
   "changes": [
@@ -24,5 +27,5 @@
     "whitespace": "passed"
   },
   "retainedEvidence": ["2026-10-01-release1-66-wallet-checks.json", "2026-09-14-ep-schema-recovery.md", "2026-09-14-connected-casino-acceptance.md", "2026-09-14-connected-cosmetic-vendor-acceptance.md"],
-  "limits": "Prepared world/handler and DOM checks, not new Mongo/socket settlement, physical-phone certification or a commerce approval. Existing schema, backup and connected wallet/casino receipts retain their own scope. Complete transfer-path review and sequential version/notes, CI and public acceptance are still required before milestone acceptance. No conversion rate, stake cap, payout, monthly allowance, power grant or purchase method changed."
+  "limits": "Retained scoped world/handler and DOM checks, not a new exhaustive Mongo/socket settlement, physical-phone certification or commerce approval. Existing schema, backup and connected wallet/casino receipts retain their own scope. Sequential version/notes, exact-source CI and public acceptance are now recorded separately; technical publication does not replace broader financial/path, human or commercial signoff. No conversion rate, stake cap, payout, monthly allowance, power grant or purchase method changed."
 }
