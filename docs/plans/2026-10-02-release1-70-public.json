@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.70.0",
+  "status": "accepted",
+  "commit": "ee6872c9727fbea97177b833da835dfe79d8dda0",
+  "ciRun": 37043750113,
+  "publicVerifiedAt": "2026-10-02T18:36:16.038Z",
+  "frontend": {"commit": "ee6872c9727fbea97177b833da835dfe79d8dda0", "version": "Alpha 1.70.0"},
+  "backend": {"status": "ok", "database": "ready", "commit": "ee6872c9727fbea97177b833da835dfe79d8dda0", "version": "Alpha 1.70.0"},
+  "files": [
+    {"path": "index.html", "bytes": 760560, "sha256": "d656fd3f81f3d9d27b847aad2586297c7195bd060b8c178ee3bcb5d3f8babb84", "exactPublisher": true},
+    {"path": "src/core/CasinoController.js", "bytes": 33542, "sha256": "3af0a6be89738d9d22dedae0b073995acefc9a180736ee7d4900f7c9a914e2bd", "exactPublisher": true}
+  ],
+  "recheckedAsset": {"path": "assets/npcs/ilyra/ilyra-archmage.glb", "bytes": 1548340, "sha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7", "exactSource": true},
+  "ciRootIndependentlyVerified": true,
+  "limits": [
+    "Ordinary-DNS HTTPS over IPv4. Deferred IPv6 readiness is not certified.",
+    "Both client runtime files changed since accepted1.69 match exact publisher output, using candidate source blobs and the unchanged publisher transformations. Release manifest also matches full publisher output; Ilyra binary matches the exact source blob.",
+    "All ten exact-source CI jobs passed, including predeploy and live character QA. Earlier chair/render/wager/settlement evidence retains its original scope; no new 100-player, uninterrupted campaign, physical-phone or human art/pacing approval is inferred.",
+    "The isolated QA-artifact privacy backport is included. Other staged account/protocol/dependency/worker work remains unpublished. Commercial decisions and the roadmap E gate remain open; no payment launch, access change or closed-beta admission."
+  ]
+}
