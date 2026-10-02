@@ -3,7 +3,14 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.67.0';
+const currentVersion = '1.68.0';
+
+test("1.68.0 documents VIP-membership without new awards or automatic actions", () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.68.0"'), previous = html.indexOf('data-version="1.67.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ["Refresh VIP status","never replays","server snapshot","cannot renew membership","100 EP monthly allowance","do not stack","owned cosmetic looks intact","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
+});
 
 test("1.67.0 documents cosmetics without new awards or automatic actions", () => {
     const html = fs.readFileSync('index.html', 'utf8');

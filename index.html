@@ -346,7 +346,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.67.0</span>
+                    <span class="start-version-row__label">Alpha 1.68.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="View account moderation notices and submit an appeal">Account help</button>
             </div>
@@ -771,6 +771,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.68.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.68.0 (clear VIP status without replaying exchanges)</h3>
+                    <ul>
+                        <li>The EP wallet has an explicit Refresh VIP status action and a full membership expiry timestamp. Refreshing status never replays a pending Gold-to-EP exchange.</li>
+                        <li>Membership display uses the server snapshot and elapsed time. After expiry it asks for a refresh instead of showing renewed access; the UI cannot renew membership, grant access or award EP.</li>
+                        <li>Administrator VIP includes the existing 100 EP monthly allowance. Administrator and normal membership allowances do not stack. Membership expiry leaves existing EP and owned cosmetic looks intact.</li>
+                        <li>No provisioning, monthly award, casino stake, combat-power, account-reset or payment changes. EP winnings remain EP; EP cannot return to Gold or buy player power. Full prior patch history is preserved below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.67.0">
                     <h3 class="patch-note-entry__title">Alpha 1.67.0 (preview your look and keep your earned gear)</h3>
                     <ul>
