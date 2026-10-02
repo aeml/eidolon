@@ -99,6 +99,7 @@ type Entity struct {
 	SafeZoneID               string               `json:"safeZoneId"`
 	restTickAt               time.Time            // Process-local monotonic clock, never persisted or replicated.
 	GoldCreditReceipts       map[string]int       `json:"-"`
+	DirectTradeState         []byte               `json:"-"` // Opaque private durable escrow/delivery/receipt; never normalized by snapshots.
 	GuildBankRevision        int64                `json:"-"`
 	GuildBankOpID            string               `json:"-"`
 	GuildBankOpFingerprint   string               `json:"-"`
@@ -949,6 +950,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ResonancePoints:          e.ResonancePoints,
 		Gold:                     e.Gold,
 		GoldCreditReceipts:       maps.Clone(e.GoldCreditReceipts),
+		DirectTradeState:         append([]byte(nil), e.DirectTradeState...),
 		GuildBankRevision:        e.GuildBankRevision,
 		GuildBankOpID:            e.GuildBankOpID,
 		GuildBankOpFingerprint:   e.GuildBankOpFingerprint,
