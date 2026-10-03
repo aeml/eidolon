@@ -317,6 +317,20 @@ not fixes inferred from weekly tests. The owned weekly fixture database/volumes
 were removed; no production data, live version or deployment changed. Ordered
 milestone packaging, patch notes and public acceptance remain required, and the
 full roadmap goal remains active.
+The [room-reward foundation/store follow-up](2026-10-03-release1-73-room-reward-foundation-checks.json)
+now freezes the original four-class eligible cohort, individual item rolls and
+reward amounts under a stable physical-room identity. Detached effects retain
+full-bag awards and refuse partial/conflicting grants; shared completion requires
+every actual saved recipient fingerprint. Primary/majority reads and
+journaled-majority writes, stable discovery and schema20 writer fencing are
+prepared without historical value backfill. Focused race checks and an actual
+disposable Mongo twelve-way conflicting preparation/repository-reopen/pagination
+check pass. This is a foundation, not ordinary room runtime acceptance: the
+legacy progression path still needs first-plan reservation, durable preparation
+before shared progress, character-save-before-feedback, pending admission,
+offline/startup delivery and connected recovery checks. Combat/event boundaries
+and ordered release packaging remain open. The owned fixture and volumes were
+removed; production schema, live version and the full goal are unchanged.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared room-reward foundation and store; runtime integration unfinished; not published",
+  "sourceCommit": "709d62a5b56e68fe9f66c5f5e11237b049a62cc7",
+  "scope": [
+    "Immutable physical-room identity retains the original eligible cohort, Gold/XP, item rolls and shrine recovery quote",
+    "Detached character effects refuse partial full-bag, identity-conflict or overflowing awards; exact saved fingerprints suppress replay",
+    "Shared primary/majority and journaled-majority store requires every actual saved recipient receipt before cohort completion",
+    "Stable pending discovery, unique physical-room index and schema20 old-writer fence; no historical reward backfill",
+    "Legacy room scaling shares the extracted helper, but ordinary room progression has NOT yet been connected to the new store"
+  ],
+  "verification": {
+    "toolchain": "Go1.27.1",
+    "focusedRace": {
+      "command": "go test -race ./internal/database ./internal/game -run '^(TestDungeonRoomReward|TestMarkDungeonRoomCleared)' -count=1 -timeout=60s",
+      "result": "pass",
+      "packageSeconds": { "database": 1.088, "game": 9.084 },
+      "coverage": "Four-class cohort capture, exact frozen rolls, full-bag atomic refusal, replay/conflict/overflow, no late shrine renewal or resurrection, hostile inherited driver concerns, unknown writes and all-recipient completion proof"
+    },
+    "actualStore": {
+      "command": "EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_ROOM_TEST_MONGO_URI=mongodb://127.0.0.1:39077/ go test -race ./internal/database -run '^TestDungeonRoomRewardStoreActualMongo$' -count=1 -timeout=45s -v",
+      "result": "pass",
+      "testSeconds": 6.16,
+      "packageSeconds": 7.202,
+      "coverage": "Twelve conflicting same-room preparations retain one outcome; actual saved recipient proofs, repository reopen, more-than-fifty pending discovery, completion and terminal replay",
+      "boundary": "Explicitly disposable standalone Mongo7.0.14 and test-owned character fixtures. No ordinary connected room gameplay, server crash recovery or replica failover proof is inferred."
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" },
+    "forgeRegression": { "command": "npm test -- --runTestsByPath tests/ForgeStatOrder.test.js tests/ForgeLiveRefresh.test.js tests/ForgeUI.test.js --runInBand", "result": "30 checks passed in 2.68 seconds; prepared fixed stat order remains intact" },
+    "correction": "An initial changed-roll mock fixture shared its participant slice with the expected stored record; copying the fixture before mutation restored the intended conflict assertion. Final focused and actual-store runs passed.",
+    "diffCheck": "pass"
+  },
+  "remaining": [
+    "Reserve and cache the first plan before uncertain IO, then wire durable preparation before shared cleared/rewarded progress",
+    "Full character-save-before-feedback, pending admission, full-bag retry, cold/offline/startup delivery and connected crash-recovery checks",
+    "Boss/combat, party quest kill credit and event-enemy acknowledgement/restart audit",
+    "Prepared predecessor gates, ordered milestone publication with patch notes and public deployment acceptance",
+    "All later full-roadmap milestones and owner-controlled beta gates"
+  ],
+  "safety": "Only the owned loopback fixture was mutated. Exact disposable container200f265779cf2b2077f95f5184801801c5ba3380426f15fb2e3ac938ce7a7c60 and its anonymous volumes were removed. Production data/schema, package version, live deployment and admission policy are unchanged. Last accepted live version remains1.70.1; the full roadmap goal remains active."
+}
