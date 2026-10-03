@@ -1,4 +1,5 @@
 import { forgePreview } from '../core/ForgeProgression.js';
+import { orderedItemStatKeys } from './ItemStatOrder.js';
 
 export function renderForgeLimit(host, item, message, formatStat) {
     if (!host) return;
@@ -8,9 +9,9 @@ export function renderForgeLimit(host, item, message, formatStat) {
     const state = document.createElement('p');
     state.textContent = `Level ${item.level || 1} · Potency +${item.potency || 0} · ${item.sockets || 0} sockets`;
     const stats = document.createElement('dl');
-    for (const [key, value] of Object.entries(item.stats || {})) {
+    for (const key of orderedItemStatKeys(item.stats)) {
         const label = document.createElement('dt'); label.textContent = formatStat(key);
-        const number = document.createElement('dd'); number.textContent = String(value);
+        const number = document.createElement('dd'); number.textContent = String(item.stats[key]);
         stats.append(label, number);
     }
     const note = document.createElement('p'); note.textContent = 'No materials will be spent. Choose another item or Forge service.';
@@ -31,7 +32,8 @@ export function renderForgeDecision(host, item, choices, formatStat, material, a
     head.append(headings); table.append(head);
     const body = document.createElement('tbody'); table.append(body);
     const previews = choices.map(choice => forgePreview(item, choice.level ?? item.level, choice.potency ?? item.potency));
-    for (const [stat, current] of Object.entries(item.stats || {})) {
+    for (const stat of orderedItemStatKeys(item.stats)) {
+        const current = item.stats[stat];
         const row = document.createElement('tr'); const label = document.createElement('th'); label.scope = 'row'; label.textContent = formatStat(stat); row.append(label);
         const now = document.createElement('td'); now.textContent = String(current); row.append(now);
         for (const preview of previews) {

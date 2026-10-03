@@ -5,6 +5,7 @@ import { PhoneStashUI } from './PhoneStashUI.js';
 import { StashBrowserUI } from './StashBrowserUI.js';
 import { EquipmentLoadoutUI } from './EquipmentLoadoutUI.js';
 import { renderEquipmentComparison } from './EquipmentComparison.js';
+import { orderedItemStatKeys } from './ItemStatOrder.js';
 import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot, canEquipItem, getEquipmentTypeLabel, classAllowsEquipment } from '../core/EquipmentSlots.js';
 
 /**
@@ -1264,21 +1265,7 @@ export class InventoryUI {
     }
 
     getOrderedItemStatKeys(stats) {
-        if (!stats) return [];
-
-        const preferredOrder = [
-            'damage', 'defense', 'strength', 'dexterity',
-            'intelligence', 'wisdom', 'vitality'
-        ];
-
-        const keys = Object.keys(stats);
-        const ordered = [];
-        for (const k of preferredOrder) {
-            if (Object.prototype.hasOwnProperty.call(stats, k)) ordered.push(k);
-        }
-        const remaining = keys.filter(k => !preferredOrder.includes(k));
-        remaining.sort((a, b) => String(a).localeCompare(String(b)));
-        return ordered.concat(remaining);
+        return orderedItemStatKeys(stats);
     }
 
     showItemTooltip(item, x, y, event) {

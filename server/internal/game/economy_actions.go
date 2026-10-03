@@ -4,6 +4,7 @@ import (
 	"eidolon-server/internal/forging"
 	"fmt"
 	"log"
+	"maps"
 	"math"
 	"strings"
 )
@@ -46,14 +47,7 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int, expected 
 	}
 
 	// Check Shards
-	shardCount := 0
-	for _, invItem := range player.Inventory {
-		if isForgeShardItem(invItem) {
-			shardCount += forgeInventoryStackCount(invItem)
-		}
-	}
-
-	if shardCount < cost {
+	if !forgeHasMaterials(player.Inventory, isForgeShardItem, cost) {
 		return nil, false, fmt.Sprintf("Not enough Shards. Need %d", cost)
 	}
 
@@ -98,6 +92,25 @@ func forgeInventoryStackCount(item Item) int {
 	return 1
 }
 
+// Stop at the required amount instead of summing untrusted saved stacks into
+// an int. Legacy implicit one-unit stacks retain their existing behavior.
+func forgeHasMaterials(inventory []Item, matches func(Item) bool, required int) bool {
+	if required <= 0 {
+		return false
+	}
+	for _, item := range inventory {
+		if !matches(item) {
+			continue
+		}
+		count := forgeInventoryStackCount(item)
+		if count >= required {
+			return true
+		}
+		required -= count
+	}
+	return false
+}
+
 func ensureForgeBasis(item *Item) {
 	if item.ForgeBasis.Valid() {
 		return
@@ -140,14 +153,7 @@ func (w *World) PerformForgePotency(playerID, slot string, expected ...*ForgeQuo
 	cost := forging.PotencyCost(item.Potency)
 
 	// Check Hearts
-	heartCount := 0
-	for _, invItem := range player.Inventory {
-		if isForgeHeartItem(invItem) {
-			heartCount += forgeInventoryStackCount(invItem)
-		}
-	}
-
-	if heartCount < cost {
+	if !forgeHasMaterials(player.Inventory, isForgeHeartItem, cost) {
 		return nil, false, fmt.Sprintf("Not enough Hearts. Need %d", cost)
 	}
 
@@ -200,7 +206,7 @@ func (w *World) PerformForgeSocket(playerID, slot string, expected ...*ForgeQuot
 		return nil, false, "No item in slot"
 	}
 
-	if item.Sockets >= 4 {
+	if item.Sockets < 0 || item.Sockets >= 4 {
 		return nil, false, "Max sockets reached"
 	}
 	if !forgeQuoteMatches(item, expected) {
@@ -209,25 +215,14 @@ func (w *World) PerformForgeSocket(playerID, slot string, expected ...*ForgeQuot
 
 	// Calculate Cost
 	// 25 Hearts + 250 Shards * (2 ^ current_sockets)
-	shardCost := 250 * int(math.Pow(2, float64(item.Sockets)))
+	shardCost := 250 << item.Sockets
 	heartCost := 25
 
 	// Check Resources
-	shardCount := 0
-	heartCount := 0
-	for _, invItem := range player.Inventory {
-		if isForgeShardItem(invItem) {
-			shardCount += forgeInventoryStackCount(invItem)
-		}
-		if isForgeHeartItem(invItem) {
-			heartCount += forgeInventoryStackCount(invItem)
-		}
-	}
-
-	if shardCount < shardCost {
+	if !forgeHasMaterials(player.Inventory, isForgeShardItem, shardCost) {
 		return nil, false, fmt.Sprintf("Not enough Shards. Need %d", shardCost)
 	}
-	if heartCount < heartCost {
+	if !forgeHasMaterials(player.Inventory, isForgeHeartItem, heartCost) {
 		return nil, false, fmt.Sprintf("Not enough Hearts. Need %d", heartCost)
 	}
 
@@ -334,7 +329,7 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	socketedGem := SocketedGem{
 		Type:    gemItem.GemType,
 		Quality: gemItem.GemQuality,
-		Stats:   gemItem.Stats,
+		Stats:   maps.Clone(gemItem.Stats),
 	}
 
 	// Add gem to equipment

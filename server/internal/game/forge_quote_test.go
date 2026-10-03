@@ -1,9 +1,73 @@
 package game
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
+
+func TestForgeLargeMaterialStacksDoNotOverflowAvailability(t *testing.T) {
+	for _, kind := range []string{"upgrade", "potency", "socket"} {
+		t.Run(kind, func(t *testing.T) {
+			w := newTestWorld()
+			t.Cleanup(w.StopBackground)
+			p := newTestPlayer("large-forge-stacks", "Wizard")
+			p.Level = 100
+			p.Equipment = map[string]Item{"mainHand": {ID: "staff", Level: 30, Stats: map[string]int{"damage": 30}}}
+			p.Inventory = []Item{{ID: "shards-a", Name: "Shard", Stack: math.MaxInt}, {ID: "shards-b", Name: "Shard", Stack: 1},
+				{ID: "hearts-a", Name: "Heart", Stack: math.MaxInt}, {ID: "hearts-b", Name: "Heart", Stack: 1}}
+			w.AddEntity(p)
+			var ok bool
+			switch kind {
+			case "upgrade":
+				_, ok, _ = w.PerformForgeUpgrade(p.ID, "mainHand", 1)
+			case "potency":
+				_, ok, _ = w.PerformForgePotency(p.ID, "mainHand")
+			case "socket":
+				_, ok, _ = w.PerformForgeSocket(p.ID, "mainHand")
+			}
+			if !ok {
+				t.Fatal("enough materials were rejected due to int overflow")
+			}
+			for _, item := range p.Inventory {
+				if item.Stack <= 0 {
+					t.Fatal("deduction overflowed a surviving material stack")
+				}
+			}
+		})
+	}
+}
+
+func TestForgeInvalidSocketCountDoesNotSpend(t *testing.T) {
+	w := newTestWorld()
+	t.Cleanup(w.StopBackground)
+	p := newTestPlayer("negative-socket", "Wizard")
+	p.Equipment = map[string]Item{"mainHand": {ID: "staff", Level: 30, Sockets: -1}}
+	p.Inventory = []Item{{ID: "shards", Name: "Shard", Stack: 1000}, {ID: "hearts", Name: "Heart", Stack: 1000}}
+	w.AddEntity(p)
+	before := cloneItems(p.Inventory)
+	if _, ok, _ := w.PerformForgeSocket(p.ID, "mainHand"); ok || !reflect.DeepEqual(before, p.Inventory) || p.Equipment["mainHand"].Sockets != -1 {
+		t.Fatal("malformed socket count spent materials or minted a socket")
+	}
+}
+
+func TestForgeInsertedGemDoesNotAliasRemainingStackStats(t *testing.T) {
+	w := newTestWorld()
+	t.Cleanup(w.StopBackground)
+	p := newTestPlayer("gem-ownership", "Wizard")
+	p.Equipment = map[string]Item{"mainHand": {ID: "staff", Level: 30, Sockets: 1}}
+	gem := GenerateGem(GemRuby, GemChipped)
+	gem.Stack = 2
+	p.Inventory = []Item{*gem}
+	w.AddEntity(p)
+	if _, ok, reason := w.PerformForgeInsertGem(p.ID, "mainHand", 0, 0); !ok {
+		t.Fatal(reason)
+	}
+	p.Equipment["mainHand"].Gems[0].Stats["ownership-check"] = 999
+	if _, leaked := p.Inventory[0].Stats["ownership-check"]; leaked {
+		t.Fatal("equipped gem stats alias the separately owned remaining bag stack")
+	}
+}
 
 func TestForgeGemCombineRejectsFullBagAndInsufficientUnits(t *testing.T) {
 	w := newTestWorld()

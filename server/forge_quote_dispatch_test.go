@@ -15,10 +15,12 @@ func TestForgeDispatchRejectsChangedQuoteWithoutSpending(t *testing.T) {
 				previousWorld, previousDB := world, db
 				defer func() { world, db = previousWorld, previousDB }()
 				db = nil
+				setupCharacterJournalTest(t)
 				world = game.NewWorld(nil)
 				t.Cleanup(world.StopBackground)
 				client := newLevelCommandClient()
 				player := newLevelCommandPlayer(client.playerID)
+				player.Name = client.username
 				player.Level, player.Health = 100, 100
 				player.Equipment = map[string]game.Item{"mainHand": {ID: "quoted-staff", Level: 30, Stats: map[string]int{"damage": 30}}}
 				player.Inventory = []game.Item{{ID: "shards", Name: "Eidolon Shard", Stack: 100}, {ID: "hearts", Name: "Eidolon Heart", Stack: 100}}
@@ -65,10 +67,12 @@ func TestForgeCraftDispatchRejectsChangedSocketsAndGems(t *testing.T) {
 			previousWorld, previousDB := world, db
 			defer func() { world, db = previousWorld, previousDB }()
 			db = nil
+			setupCharacterJournalTest(t)
 			world = game.NewWorld(nil)
 			t.Cleanup(world.StopBackground)
 			client := newLevelCommandClient()
 			player := newLevelCommandPlayer(client.playerID)
+			player.Name = client.username
 			player.Level, player.Health = 100, 100
 			item := game.Item{ID: "staff", Level: 30, Stats: map[string]int{"damage": 30}}
 			if action == MsgForgeInsertGem || action == MsgForgeRemoveGem {

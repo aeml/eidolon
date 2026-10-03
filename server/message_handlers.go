@@ -32,6 +32,12 @@ var messageHandlers = map[string]messageHandler{
 	MsgTradeOffer:                handleDirectTradeOffer,
 	MsgTradeConfirm:              handleDirectTradeConfirm,
 	MsgTradeCancel:               handleDirectTradeCancel,
+	MsgForgeUpgrade:              handleForgeTransaction,
+	MsgForgePotency:              handleForgeTransaction,
+	MsgForgeSocket:               handleForgeTransaction,
+	MsgForgeInsertGem:            handleForgeTransaction,
+	MsgForgeCombineGem:           handleForgeTransaction,
+	MsgForgeRemoveGem:            handleForgeTransaction,
 
 	MsgPartyInvite:     handleMsgPartyInvite,
 	MsgPartyResponse:   handleMsgPartyResponse,
