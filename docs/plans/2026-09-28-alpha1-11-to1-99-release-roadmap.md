@@ -355,6 +355,16 @@ kill-reward durability or replica failover proof. Combat/event/boss full-bag
 boundaries, the complete valuable-operation ledger, predecessor gates and ordered
 versioned deployment remain open. The owned fixture and anonymous volumes were
 removed; production and live1.70.1 remain unchanged. The full goal stays active.
+The same receipt now records a combat-checkpoint follow-up: a room waits for all
+concurrent enemy kill effects before clearing, including when a transient corpse
+has been removed. A full-bag player's complete earned kill image is saved before
+the checkpoint, while the separate room item remains pending. Focused race checks
+cover rejected/lost save replies and unchanged retry suppression. An updated
+34-second ordinary four-class crash test preserves all three kill credits for
+every member, including the full-bag Cleric; Luna monitored it once. Standalone
+combat/event, boss full-bag awards and recipients outside the room cohort still
+need their own review. Remote master was fetched and already contained; no live
+release or production data changed, and the full roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

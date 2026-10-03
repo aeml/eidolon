@@ -3,6 +3,38 @@
   "milestone": "1.73",
   "status": "prepared ordinary-socket room reward acceptance; not published",
   "sourceCommit": "8b37093a02a1ce501583d6e17298d4f617933948",
+  "latestSourceCommit": "16e6c5e832570c54f02653b4f88745afd3ae8754",
+  "combatCheckpointFollowup": {
+    "scope": [
+      "Enemy deaths reserve their spawn room before DEAD becomes observable; a cleared checkpoint waits for every concurrent kill's character and quest effects, including a removed transient corpse",
+      "Reservation checks return without waiting on a still-owned player mutex and hold no scene or reservation lock across room persistence",
+      "Full-bag online recipients save their complete earned kill effects and confirmed checkpoint while the separate immutable room award remains pending; unchanged retries do not repeatedly write the checkpoint",
+      "The actual ordinary party fixture now requires all three Skeleton kill credits to be saved for all four classes before and after crash, with Gold/XP preserved for the full-bag Cleric"
+    ],
+    "focusedRace": {
+      "command": "go test -race . ./internal/game -run '^Test(DungeonRoomReward|DungeonRoomCheckpoint|DungeonRoomPendingKill|PartyKill|OverworldDeathPipeline|MarkDungeonRoomCleared)' -count=1 -timeout=45s",
+      "result": "pass",
+      "packageSeconds": { "server": 8.560, "game": 13.401 },
+      "coverage": "Timed-impact/world-locked concurrent kills, retained spawn ownership after corpse removal, independent rooms/instances, full-bag whole-image rejected/lost save acknowledgement, no-prior-resume entry, journal reconciliation, unchanged retry suppression and exact later grant"
+    },
+    "actualSockets": {
+      "command": "go test -race . -run '^TestDungeonRoomRewardActualPartyClearCrashAndRecovery$' -count=1 -timeout=120s -v",
+      "binary": "/tmp/eidolon-room-order-N6gGXl/server",
+      "result": "pass",
+      "testSeconds": 33.57,
+      "packageSeconds": 34.661,
+      "monitor": "User-authorized Luna /root/watch_room_runtime_1003 ran this exact-source regression once",
+      "serverEvidence": [
+        "/tmp/eidolon-compat-session-1804432035",
+        "/tmp/eidolon-compat-session-1224306966",
+        "/tmp/eidolon-compat-session-3603670418"
+      ]
+    },
+    "compile": "go test ./... -run '^$' passed on final source",
+    "corrections": "The first concurrency check exposed a wait on an in-flight actor during scanning; an early reservation refusal now avoids that wait while the post-scan recheck closes observation races. The first full-bag assertion incorrectly expected an inventory OnEvent callback; actual bag delivery uses the direct socket helper, so the modeled check now counts its single room event and the ordinary socket test independently checks bag feedback. Socket quest assertions select the prepared accepted quest by ID, preserving the normally generated story/daily catalog.",
+    "safety": "Owned loopback Mongo fixture eeadd8e8176678e6b0ecbc6d194edff5d2eec2bbb10f8e8d807e2f6eff1f58a6 and both anonymous volumes removed; production untouched. Remote master fetched and already contained (125 ahead,0 behind). No publication or version change.",
+    "limits": "Room checkpoint ordering and prepared-room kill-effect preservation only. Standalone combat/event and boss full-bag award durability, downed/non-room-cohort recipients, generated whole-dungeon clears, campaign pacing and replica failover remain distinct open gates."
+  },
   "scope": [
     "Four consenting players resume a valid prepared dungeon layout and clear its ordinary encounter using normal attacks and accepted Fighter, Cleric, Wizard and Rogue abilities",
     "Uncommon/Rare level30 equipment is created only in disposable initial fixtures; combat cooldowns, damage and normal resource clamping are unchanged",
