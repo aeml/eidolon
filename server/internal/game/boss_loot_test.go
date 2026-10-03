@@ -6,7 +6,71 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
+
+func TestBossLootDeathSaveHookSeesCompletePartyEffectsBeforeCheckpoint(t *testing.T) {
+	w := newTestWorld()
+	defer w.StopBackground()
+	const instanceID = "boss-save-hook-run"
+	layout := DungeonLayout{Rooms: []DungeonRoom{{Type: "boss", Width: 40, Height: 40}}}
+	instance := &DungeonInstance{ID: instanceID, DungeonType: "tempest_spire", RunLevel: 30, Difficulty: DifficultyNormal,
+		Layout: layout, RoomState: NewDungeonRoomState(layout), PlayerRoomSummary: map[string]DungeonRoomSummary{}}
+	w.InstanceLayouts[instanceID] = instance
+	var players []*Entity
+	for index, class := range []string{"Fighter", "Cleric", "Wizard", "Rogue"} {
+		player := fullBossLootPlayer()
+		player.ID, player.Name, player.SubType, player.InstanceID = fmt.Sprintf("player-save-hook-%d", index), fmt.Sprintf("save-hook-%d", index), class, instanceID
+		player.Level, player.MaxExperience = 30, experienceRequiredForLevel(30)
+		player.Quests = []Quest{{ID: "boss-kill-credit", Type: "KILL", Target: "Windshear", MaxCount: 1, Accepted: true}}
+		w.AddEntity(player)
+		players = append(players, player)
+	}
+	party := w.CreateParty(players[0].ID)
+	for _, player := range players[1:] {
+		if err := w.JoinParty(party.ID, player.ID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	seen := make(chan string, 4)
+	w.OnBossReward = func(summary RewardSummaryEvent, weekly *WeeklyRaidCompletionEvent) error {
+		// These APIs acquire scene/player/instance locks. Reaching this hook
+		// while any of those locks remain owned would deadlock the test.
+		player := w.GetEntityCopy(summary.PlayerID)
+		if player == nil || player.Gold <= 0 || player.Experience <= 0 || player.Quests[0].Count != 1 || len(player.PendingBossLoot) == 0 || weekly != nil {
+			t.Error("save hook ran before all earned party effects")
+		}
+		instance.Mu.RLock()
+		cleared := instance.RoomState.Rooms[0].Cleared
+		instance.Mu.RUnlock()
+		if cleared {
+			t.Error("boss-room checkpoint preceded the whole-character save hook")
+		}
+		seen <- summary.PlayerID
+		return nil
+	}
+	w.OnEvent = func(kind string, value interface{}) {
+		if kind == "inventory_update" || kind == "reward_summary" || kind == "weekly_raid_complete" {
+			t.Error("durable hook also invoked unsaved legacy reward feedback")
+		}
+	}
+	boss := &Entity{ID: "boss-save-hook", Type: TypeEnemy, SubType: "Windshear", Level: 30, Health: 1, MaxHealth: 1, State: "IDLE", InstanceID: instanceID}
+	w.AddEntity(boss)
+	boss.Mu.Lock()
+	w.handleDeath(boss, players[0], nil)
+	boss.Mu.Unlock()
+	for range 4 {
+		select {
+		case <-seen:
+		case <-time.After(3 * time.Second):
+			t.Fatal("save hook missing a recipient or still holding a scene lock")
+		}
+	}
+	w.StopBackground()
+	if !instance.RoomState.Rooms[0].Cleared {
+		t.Fatal("successful save hooks did not permit boss checkpoint")
+	}
+}
 
 func fullBossLootPlayer() *Entity {
 	player := newTestPlayer("retained-boss-owner", "Fighter")

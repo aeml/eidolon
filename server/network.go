@@ -220,6 +220,12 @@ func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 		}
 	}
 
+	if bossLootCharacters != nil {
+		if err := recoverLiveBossLootLocked(client.username, true); err != nil {
+			log.Print("Boss loot disconnect recovery remains pending")
+		}
+	}
+
 	// 2. Mark entity as disconnected before capturing resources: a world tick
 	// between capture and marking must not grant unsaved regeneration.
 	//    The entity remains in the world during the resume window so a

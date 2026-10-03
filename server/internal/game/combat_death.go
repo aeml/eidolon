@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+type bossRewardNotification struct {
+	summary RewardSummaryEvent
+	weekly  *WeeklyRaidCompletionEvent
+}
+
 // Caller owns target.Mu, but not w.Mu or attacker.Mu. The target lock is
 // temporarily released for party lookup and chained explosions, then restored.
 func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
@@ -195,6 +200,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 
 			// Boss Check
 			isBoss := false
+			var bossRewards []bossRewardNotification
 			weeklyRaidBoss := tSubType == "UmbraPrime"
 			finalDungeonBoss := isFinalDungeonBoss(tSubType)
 			bosses := []string{
@@ -392,7 +398,13 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 
 					member.Mu.Unlock()
 
-					if isBoss && w.OnEvent != nil {
+					if isBoss && w.OnBossReward != nil && hasRewardSummary {
+						var weekly *WeeklyRaidCompletionEvent
+						if weeklyRaidBoss {
+							weekly = &WeeklyRaidCompletionEvent{PlayerID: memberID, InstanceID: tInstanceID, CompletedAt: killedAt}
+						}
+						bossRewards = append(bossRewards, bossRewardNotification{rewardSummary, weekly})
+					} else if isBoss && w.OnEvent != nil {
 						weeklyRaid := weeklyRaidBoss
 						pid, summary, sendSummary, weekly := memberID, rewardSummary, hasRewardSummary, weeklyRaid
 						w.runBackground(func() {
@@ -502,7 +514,13 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 
 				attacker.Mu.Unlock()
 
-				if isBoss && w.OnEvent != nil {
+				if isBoss && w.OnBossReward != nil && hasRewardSummary {
+					var weekly *WeeklyRaidCompletionEvent
+					if weeklyRaidBoss {
+						weekly = &WeeklyRaidCompletionEvent{PlayerID: attackerID, InstanceID: tInstanceID, CompletedAt: killedAt}
+					}
+					bossRewards = append(bossRewards, bossRewardNotification{rewardSummary, weekly})
+				} else if isBoss && w.OnEvent != nil {
 					weeklyRaid := weeklyRaidBoss
 					pid, summary, sendSummary, weekly := attackerID, rewardSummary, hasRewardSummary, weeklyRaid
 					w.runBackground(func() {
@@ -578,6 +596,13 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					w.spawnChronicleDropLocked(playerID, tSubType, tInstanceID, tX, tZ, rand.Float64())
 				}
 				w.Mu.Unlock()
+			}
+			// All earned effects, including investigation evidence and world
+			// drops, now exist. Never perform persistence with scene locks held.
+			for _, reward := range bossRewards {
+				if err := w.OnBossReward(reward.summary, reward.weekly); err != nil {
+					log.Printf("Boss reward save remains pending: %v", err)
+				}
 			}
 			// A DEAD corpse is not proof that its asynchronous Gold/XP and
 			// quest effects have finished. Release this death's reservation only

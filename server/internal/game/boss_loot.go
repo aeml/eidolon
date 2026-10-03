@@ -3,9 +3,12 @@ package game
 import (
 	"encoding/json"
 	"errors"
+	"sort"
 
 	"eidolon-server/internal/database"
 )
+
+var ErrBossLootUnsupported = errors.New("unsupported retained boss item; original payload kept")
 
 // Caller owns the player mutex. Keep the whole original roll if it cannot fit;
 // do not partially stack it and silently discard a remainder or reroll later.
@@ -53,7 +56,7 @@ func (player *Entity) CollectPendingBossLootLocked(limit int) (int, error) {
 	for _, payload := range player.PendingBossLoot[:min(limit, len(player.PendingBossLoot))] {
 		item, err := decodeGroundItem(payload)
 		if err != nil || !database.ValidAuctionItemPayload(payload) {
-			return 0, errors.New("unsupported retained boss item; original payload kept")
+			return 0, ErrBossLootUnsupported
 		}
 		if bossItemAlreadyOwned(preview, item.ID) {
 			return 0, ErrGroundItemIdentity
@@ -107,4 +110,21 @@ func (w *World) CollectPendingBossLoot(playerID string, limit int) (bool, int, e
 	}
 	count, err := player.CollectPendingBossLootLocked(limit)
 	return true, count, err
+}
+
+// A lightweight retry index; do not copy full equipment/inventory images just
+// to discover which accounts have retained rolls. IO happens after unlocking.
+func (w *World) PlayersWithPendingBossLoot() []string {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	var players []string
+	for id, player := range w.Entities {
+		player.Mu.RLock()
+		if player.Type == TypePlayer && len(player.PendingBossLoot) != 0 {
+			players = append(players, id)
+		}
+		player.Mu.RUnlock()
+	}
+	sort.Strings(players)
+	return players
 }

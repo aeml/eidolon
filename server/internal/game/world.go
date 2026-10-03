@@ -162,10 +162,13 @@ type World struct {
 	// Initialized before publication. Called without world, actor or instance
 	// locks; retains the shared first outcome before cleared progress or grants.
 	OnDungeonRoomReward func(database.DungeonRoomRewardOperation) error
-	OnQuestUpdate       func(playerID string, quests []Quest)
-	OnPvPMatchComplete  func(result PvPMatchResult)
-	OnPvPMatchUpdate    func(match *PvPMatch)
-	OnPvPMatchStart     func(match *PvPMatch)
+	// Initialized before publication; called without scene/entity locks. The
+	// production handler saves before owner feedback and the room-clear check.
+	OnBossReward       func(RewardSummaryEvent, *WeeklyRaidCompletionEvent) error
+	OnQuestUpdate      func(playerID string, quests []Quest)
+	OnPvPMatchComplete func(result PvPMatchResult)
+	OnPvPMatchUpdate   func(match *PvPMatch)
+	OnPvPMatchStart    func(match *PvPMatch)
 	// Synchronous durable record only; must not acquire world/entity/PvP locks.
 	OnPvPResultRecord func(result PvPMatchResult) error
 }

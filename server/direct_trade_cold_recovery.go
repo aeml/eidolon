@@ -12,6 +12,13 @@ import (
 // Called only after authentication, while the cold-discovered account/peer
 // work locks are held. A pending shared decision wins over orphan cancellation.
 func recoverColdAccountDirectTradeLocked(username string) error {
+	if err := recoverColdAccountDirectTradeCustodyLocked(username); err != nil {
+		return err
+	}
+	return recoverColdAccountBossLootLocked(username)
+}
+
+func recoverColdAccountDirectTradeCustodyLocked(username string) error {
 	if err := recoverColdAccountDungeonRoomRewardsLocked(username); err != nil {
 		return err
 	}
