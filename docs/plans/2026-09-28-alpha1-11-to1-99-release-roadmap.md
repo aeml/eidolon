@@ -218,6 +218,16 @@ the earlier unconnected-trade status, not the milestone status: drop/pickup,
 Forge and reward-path invariants and prepared milestone integration still need
 review before1.73 packaging/deployment. No production mutation or publication
 occurred; the full1.11–1.99 goal remains active.
+The [Forge follow-up](2026-10-03-release1-73-forge-checks.json) now gives all six
+ordinary Forge actions a quote/replay guard, pending-save reconciliation and
+complete item/material journal barrier before the ordinary inventory reply.
+Rejected/unknown saves and actual local-journal reopening/pinning checks pass;
+modeled database replies are not new Mongo-failover proof. Upgrade, potency and
+capped-item stat rows use the fixed inventory-tooltip order rather than incoming
+map order. Scoped race checks, 74 DOM checks and both desktop/phone-sized System
+Chrome presentation routes pass. This is committed prepared source, not live:
+drop/pickup cross-account custody, reward paths and ordered milestone integration
+remain open before1.73 packaging. The full roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

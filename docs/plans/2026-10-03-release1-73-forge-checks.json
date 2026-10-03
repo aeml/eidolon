@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-forge-path-verified",
+  "sourceCommit": "e0ecde994c77e998ff0e686eb74b4c6afe519a00",
+  "testFixtureCommit": "f4f004cf873214fcdfa35d3ccd6bbefa0e0bfc38",
+  "scope": [
+    "All six ordinary Forge commands require a current quote and reconcile earlier pending saves before spending or changing equipment.",
+    "Complete equipment/material post-images cross the existing BSON journal and durable character-save barrier before an ordinary inventory reply. Unknown commits report pending; local journal failure pins the live copy. No compensation or new transaction framework is introduced.",
+    "Network Forge commands reject active RAM trades and unavailable persistence. Existing internal game-only fixtures may still omit quotes.",
+    "Material availability stops at the required amount rather than overflowing a sum; negative socket counts cannot buy free sockets. Inserted gem stats no longer alias the remaining inventory stack.",
+    "Upgrade, potency and capped-item Forge displays share the existing inventory-tooltip order: damage, defense, strength, dexterity, intelligence, wisdom, vitality, then alphabetically sorted extra stats. Zero-valued stats remain visible.",
+    "A read-pump test exposed a platform-dependent ECONNRESET and failure-path cleanup race. Its fixture now joins the hijacked handler and probe writer before restoring globals, while retaining the actual ten-second deadline and transport-retirement assertions. Production socket behavior is unchanged."
+  ],
+  "checks": {
+    "serverCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game ./internal/forging -run '^(TestForge|TestVendor|TestCharacterPersistence|TestInboundMessage|TestMessageHandler)' -count=1 -timeout=90s",
+    "serverResult": "passed after the separately committed fixture repair: server 18.317 seconds, game 5.709 seconds; forging package compiled with no matching test names",
+    "persistence": "Each of six actions is checked for confirmed-save-before-reply, stale-quote replay and complete owned post-image preservation. Rejected/unknown acknowledgements recover through an actually reopened filesystem journal; modeled save receipts preserve a later independent credit. Failed prior saves block another purchase. A real local-write failure pins the latest copy until retry. Unavailable quote/journal/committer and active trade checks preserve custody.",
+    "client": "Four focused Forge DOM/progression suites passed: 41 checks in 1.262 seconds. Four inventory/equipment/phone DOM regression suites passed: 33 checks in 11.291 seconds. Focused ESLint passed.",
+    "browserCommand": "env EIDOLON_E2E_WEB_PORT=4193 EIDOLON_E2E_REUSE_SERVER=0 npx playwright test tests/e2e/forge-presentation.spec.js --reporter=line --output=/tmp/eidolon-forge-order-fixed-20261003",
+    "browserResult": "Both System Chrome routes passed in 13.6 seconds at 1280x900 and 390x844. Row order is asserted before/after shuffled maps and in upgrade, potency and socket capped views; desktop upgrade and phone potency screenshots were visually inspected.",
+    "compile": "env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed for all server packages; git diff --check passed",
+    "corrections": "The initial broad race run exposed the separate read-pump fixture cleanup problem; fixed without changing production handling. Initial browser assertions omitted the intentionally final Shards-left row; corrected to assert the complete expected list, then both routes passed."
+  },
+  "sourceSha256": {
+    "server/forge_handlers.go": "5203ed92f3e12c53070101da26e777903e10a3037d1e97c5393cc97bb8143959",
+    "src/ui/ItemStatOrder.js": "6e0c4e5105502a8e223dc178c4d76b99ac0ade7738778e89040f880d746e9e06",
+    "src/ui/ForgeDecisionPreview.js": "de8ceec8dd88dea22d03895949adbac496fd8df4de0f752f36fefb39522928b7",
+    "tests/e2e/forge-presentation.spec.js": "5267e49823fe30c451cd2640391a5ea3de029e24081636ecbe61bf194de6aad0"
+  },
+  "limits": [
+    "Prepared local source only; no 1.73 deployment, production mutation or whole-economy completion is claimed. Last accepted live version remains 1.70.1.",
+    "Database acknowledgements in these new Forge failure tests are modeled. Real character-commit Mongo proof belongs to the existing trade-runtime receipt; no new Mongo/replica-failover or full campaign claim is made.",
+    "Browser routes use controlled local UI state, not an authenticated production purchase or a physical phone.",
+    "Drop/pickup cross-account custody, reward-path invariants, milestone integration, prepared 1.71/1.72 decisions and the full 1.11–1.99 goal remain unfinished.",
+    "Remote was fetched: origin/master still fa414f0b288e8ee014d5ce72f7affdca485e1c7f. This prepared branch has not been pushed; release version and cumulative patch notes remain unchanged until actual packaging."
+  ]
+}
