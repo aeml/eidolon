@@ -114,7 +114,10 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 }
 
 type World struct {
-	groundItemPublished map[string]groundItemPublication
+	dungeonRoomRewardMu    sync.Mutex
+	dungeonRoomRewards     map[string]database.DungeonRoomRewardOperation
+	dungeonRoomRewardKnown map[string]bool
+	groundItemPublished    map[string]groundItemPublication
 	// Immutable before world publication. Remains nil until elevation's scene,
 	// effects and client movement integration is complete; tests can opt in.
 	terrainElevation   *worldElevationField
@@ -153,11 +156,14 @@ type World struct {
 	PlayerHazardTicks map[string]map[string]float64 // PlayerID -> HazardID -> time since last tick
 
 	// Event Callback
-	OnEvent            func(eventType string, data interface{})
-	OnQuestUpdate      func(playerID string, quests []Quest)
-	OnPvPMatchComplete func(result PvPMatchResult)
-	OnPvPMatchUpdate   func(match *PvPMatch)
-	OnPvPMatchStart    func(match *PvPMatch)
+	OnEvent func(eventType string, data interface{})
+	// Initialized before publication. Called without world, actor or instance
+	// locks; retains the shared first outcome before cleared progress or grants.
+	OnDungeonRoomReward func(database.DungeonRoomRewardOperation) error
+	OnQuestUpdate       func(playerID string, quests []Quest)
+	OnPvPMatchComplete  func(result PvPMatchResult)
+	OnPvPMatchUpdate    func(match *PvPMatch)
+	OnPvPMatchStart     func(match *PvPMatch)
 	// Synchronous durable record only; must not acquire world/entity/PvP locks.
 	OnPvPResultRecord func(result PvPMatchResult) error
 }

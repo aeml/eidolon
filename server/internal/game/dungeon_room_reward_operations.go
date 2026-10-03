@@ -29,7 +29,7 @@ func dungeonRoomRewardScale(room DungeonRoom) float64 {
 	return scale
 }
 
-// Pure capture for a future durable coordinator. No room flag, actor, Gold,
+// Pure capture for the durable coordinator. No room flag, actor, Gold,
 // item or XP is mutated here. The coordinator must freeze the FIRST plan before
 // changing cleared progress; callers must not reroll after an unknown result.
 func (w *World) PrepareDungeonRoomReward(instanceID string, roomIndex int) (database.DungeonRoomRewardOperation, error) {

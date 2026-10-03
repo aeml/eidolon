@@ -201,6 +201,9 @@ func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 	if err := recoverAccountGroundItemLocked(client.username); err != nil {
 		log.Print("Ground item disconnect recovery remains pending")
 	}
+	if err := recoverAccountDungeonRoomRewardsLocked(client.username); err != nil {
+		log.Print("Dungeon room disconnect recovery remains pending")
+	}
 	// Resolve an existing first decision, otherwise journal one cancellation.
 	// A recovery error does not undo custody or prevent saving the disconnect.
 	if recoverTrade && directTradeOperations != nil {

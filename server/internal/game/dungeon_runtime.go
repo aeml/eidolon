@@ -296,6 +296,25 @@ func (w *World) markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID str
 }
 
 func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
+	if w.OnDungeonRoomReward != nil {
+		inst, found := w.getDungeonInstance(instanceID)
+		if !found {
+			return
+		}
+		inst.Mu.RLock()
+		rewardable := roomIndex >= 0 && roomIndex < len(inst.Layout.Rooms) &&
+			inst.Layout.Rooms[roomIndex].Type != "start" && inst.Layout.Rooms[roomIndex].Type != "boss"
+		inst.Mu.RUnlock()
+		if rewardable {
+			op, err := w.CaptureDungeonRoomReward(instanceID, roomIndex)
+			if err == nil {
+				// All scene locks were released by capture. Unknown persistence
+				// retains this SAME plan for the independent recovery worker.
+				_ = w.OnDungeonRoomReward(op)
+			}
+			return
+		}
+	}
 	// Snapshot entities before reserving the room reward. Never hold the instance
 	// lock while acquiring an actor lock: AI reads instance walking geometry while
 	// owning its actor, so the opposite order can freeze the entire world tick.

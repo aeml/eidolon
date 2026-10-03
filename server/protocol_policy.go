@@ -246,6 +246,7 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		defer retryLiveDirectTradeDeliveryAfterBagChangeLocked(c, msg.Type)
 		defer retryGroundItemAfterBagChangeLocked(c, msg.Type)
+		defer retryDungeonRoomRewardsAfterBagChangeLocked(c, msg.Type)
 	}
 	if handler := messageHandlers[msg.Type]; handler != nil {
 		handler(c, msg)
