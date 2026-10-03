@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -184,7 +185,9 @@ func TestInboundMessageActualReadPumpTimesOutDespitePongsAndEmptyFragments(t *te
 	unregister = make(chan *Client, 1)
 	t.Cleanup(func() { unregister = previousUnregister })
 	done := make(chan *Client, 1)
+	handlerExited := make(chan struct{})
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		defer close(handlerExited)
 		conn, err := (&websocket.Upgrader{}).Upgrade(w, request, nil)
 		if err != nil {
 			t.Error(err)
@@ -201,6 +204,16 @@ func TestInboundMessageActualReadPumpTimesOutDespitePongsAndEmptyFragments(t *te
 		t.Fatal(err)
 	}
 	defer peer.Close()
+	// Hijacked WebSockets are not joined by httptest.Server.Close. Even an
+	// assertion failure must retire the read pump before restoring globals.
+	t.Cleanup(func() {
+		peer.Close()
+		select {
+		case <-handlerExited:
+		case <-time.After(2 * time.Second):
+			t.Error("read-pump fixture did not exit before global cleanup")
+		}
+	})
 	peer.SetReadDeadline(time.Now().Add(inboundMessageAssemblyWait + 3*time.Second))
 	peer.SetWriteDeadline(time.Now().Add(inboundMessageAssemblyWait + 3*time.Second))
 	if err := writeInboundTestFragment(peer.UnderlyingConn(), websocket.TextMessage, false, nil); err != nil {
@@ -218,8 +231,19 @@ func TestInboundMessageActualReadPumpTimesOutDespitePongsAndEmptyFragments(t *te
 			}
 		}
 	}()
+	t.Cleanup(func() {
+		peer.Close()
+		select {
+		case <-writerDone:
+		case <-time.After(2 * time.Second):
+			t.Error("fragment probe writer survived fixture cleanup")
+		}
+	})
 	started := time.Now()
-	if _, _, err := peer.ReadMessage(); !websocket.IsCloseError(err, websocket.CloseAbnormalClosure) {
+	// Closing a TCP socket with unread probe fragments may return ECONNRESET
+	// instead of a WebSocket abnormal-close wrapper. Both still have to occur
+	// at the exact assembly deadline and produce the retirement proof below.
+	if _, _, err := peer.ReadMessage(); !websocket.IsCloseError(err, websocket.CloseAbnormalClosure) && !errors.Is(err, syscall.ECONNRESET) {
 		t.Fatal("unfinished data with harmless-rate Pongs did not close at its assembly deadline", err)
 	}
 	if time.Since(started) < inboundMessageAssemblyWait-time.Second {
