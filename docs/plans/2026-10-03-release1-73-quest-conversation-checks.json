@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared connected quest-conversation source; not published",
+  "sourceCommit": "6b235f7be83cec34e7e76c67faa5ca1954939161",
+  "scope": [
+    "Ordinary quest acceptance persists the accepted quote before quest feedback",
+    "Ordinary manual turn-in saves collection-item consumption, Gold, XP/Resonance split, completed quest and next chapter together",
+    "Deferred story advancement prevents completion callback or conversation feedback before confirmed complete character save",
+    "Rejected/unknown saves retain the complete recovery image; no compensation or second award on retry",
+    "Gold overflow refuses completion before consuming items",
+    "Existing disposable CI socket step includes the ordinary quest crash/recovery proof"
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1",
+    "focusedRace": {
+      "command": "go test -race . ./internal/game -run '^(TestQuest|TestCollectionTurnInDispatch|TestTownRecovery|TestAcceptedReward|TestOpeningQuotedReward|TestCharacterPersistence)' -count=1 -timeout=60s",
+      "result": "pass",
+      "packageSeconds": { "server": 7.026, "game": 4.614 },
+      "coverage": [
+        "First rejected and committed-but-unacknowledged saves for daily/story acceptance and turn-in",
+        "Real filesystem journal reopening and exact cold replay through modeled atomic character store",
+        "Confirmed save precedes inventory, quest and next-chapter feedback",
+        "Missing persistence and unrepresentable Gold payout do not mutate items or rewards",
+        "Level99 overflow and level100 Resonance rewards retain their exact saved split",
+        "Collection consumption, existing earned gear, explicit quotes and unrelated EP are preserved",
+        "Town recall/respawn movement still allows nearby manual story completion with a real persistence fixture"
+      ],
+      "boundary": "Fault replies are modeled; journal BSON/filesystem IO is real. Actual Mongo and server processes are separately verified below."
+    },
+    "actualSockets": {
+      "command": "go test -race . -run '^TestQuestConversationActualRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s -v",
+      "result": "pass",
+      "testSeconds": 8.14,
+      "packageSeconds": 9.295,
+      "boundary": "Actual explicitly disposable loopback Mongo7.0.14 and ordinary race-built server; login/join/manual quest completion through real WebSockets",
+      "coverage": [
+        "Fixture-only Mongo validator rejects rewarded post-image while retaining before-image",
+        "No ordinary inventory, quest-completion or chapter feedback before pending-save error",
+        "Real retained journal contains exact eight-item consumption and quoted321Gold/1234XP reward",
+        "Owned server SIGKILL followed by a fresh process restores the exact complete receipt and earned metadata before admission",
+        "Ordinary replay and disconnect do not consume again, re-grant rewards or alter EP",
+        "Owned child logs checked for race/panic/runtime errors"
+      ],
+      "ownedServerEvidence": [
+        "/tmp/eidolon-compat-session-3764356074",
+        "/tmp/eidolon-compat-session-3967634235"
+      ]
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" },
+    "remote": {
+      "fetchedMaster": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+      "result": "No remote commits missing from the prepared branch; no push or deployment performed"
+    }
+  },
+  "remaining": [
+    "Review raid/room/public-event reward paths and the complete valuable-operation invariant ledger",
+    "Close prepared milestone dependencies and publish versions in roadmap order with patch notes",
+    "Exact-source CI/deployment and independent public acceptance",
+    "All subsequent Alpha1.11–1.99 roadmap milestones and owner-controlled beta gates"
+  ],
+  "safety": "Only owned fixture accounts, validator, child processes and disposable database were mutated. Exact test container and its anonymous volumes were removed. No production data/schema, live version or deployment changed; live acceptance remains1.70.1. The full goal remains active."
+}

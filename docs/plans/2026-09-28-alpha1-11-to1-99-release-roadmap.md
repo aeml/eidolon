@@ -277,6 +277,24 @@ fixed-stat-order request. Other reward-path invariants, prepared milestone
 integration, versioned patch notes, deployment and public acceptance remain open.
 The owned fixture database and its anonymous volumes were removed; production
 data and the live1.70.1 release were untouched. The full roadmap remains active.
+The [quest-conversation follow-up](2026-10-03-release1-73-quest-conversation-checks.json)
+now journals acceptance quotes and complete turn-in rewards before ordinary
+quest/inventory feedback. Story advancement is captured without its earlier
+pre-save callback, then announced only after the complete save is confirmed.
+Rejected or unknown commits retain the whole conversation/reward image; replay
+uses the existing completed quest and granted-amount receipt, never a second
+award. Gold overflow rejects before consuming collection items. Focused race
+checks cover acceptance, story/daily completion, rejected/lost save replies,
+real journal reopening, missing persistence and level99/100 reward splits.
+Actual disposable Mongo and two fresh server processes prove rejected ordinary
+collection turn-in, SIGKILL, cold journal recovery, exact consumption/quoted
+rewards and replay without re-granting. The test-only town-movement fixture now
+uses the real persistence boundary; its gameplay assertions remain unchanged.
+Runtime reward delivery for raid/room/event paths and the whole valuable-operation
+ledger still need review, followed by ordered packaging, patch notes, deployment
+and public acceptance. No production data or release changed. Remote master was
+fetched and is already contained in this prepared branch; the full goal remains
+active and no1.73 publication is claimed.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
