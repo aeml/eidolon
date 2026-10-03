@@ -18,6 +18,46 @@ type questAckCommitter struct {
 	client *Client
 }
 
+type questLateProgressCommitter struct {
+	store  *tradeRecoveryStore
+	player *game.Entity
+}
+
+func (committer questLateProgressCommitter) CommitCharacterSave(username string, character *database.Character, id string) error {
+	if err := committer.store.CommitCharacterSave(username, character, id); err != nil {
+		return err
+	}
+	// An independent combat effect can arrive while database IO is finishing.
+	// It is valid live state, but was not part of this conversation's save.
+	committer.player.Mu.Lock()
+	committer.player.Quests[1].Count = 1
+	committer.player.Inventory[1].Potency = 5
+	committer.player.UnjournaledSave = true
+	committer.player.Mu.Unlock()
+	return nil
+}
+
+func TestQuestConversationAcknowledgesExactSavedImageNotLaterCombat(t *testing.T) {
+	client, player, store, _ := questConversationFixture(t, false)
+	player.Quests = append(player.Quests, game.Quest{ID: "independent-kills", Type: "KILL", Target: "Skeleton", Accepted: true, MaxCount: 4})
+	characterSaveCommitter = questLateProgressCommitter{store, player}
+	client.handleMessage(Message{Type: MsgCompleteQuest, Payload: json.RawMessage(`{"questId":"daily_skeleton"}`)})
+	replies := drainSentMessages(client.send)
+	if len(replies) < 2 || replies[0].Type != MsgInventory || replies[1].Type != MsgQuestUpdate {
+		t.Fatal("saved turn-in did not produce ordered bag and quest replies", replies)
+	}
+	var bag []game.Item
+	var quests []game.Quest
+	if json.Unmarshal(replies[0].Payload, &bag) != nil || json.Unmarshal(replies[1].Payload, &quests) != nil ||
+		len(quests) != 2 || !quests[0].Completed || quests[1].Count != 0 || bag[1].Potency != 4 {
+		t.Fatal("conversation confirmed later unsaved combat/bag progress")
+	}
+	saved := store.characters[client.username]
+	if saved.Quests[1].Count != 0 || saved.Inventory[1].Potency != 4 || player.Quests[1].Count != 1 || player.Inventory[1].Potency != 5 {
+		t.Fatal("saved feedback overwrote independent later live progress")
+	}
+}
+
 func (committer questAckCommitter) CommitCharacterSave(username string, character *database.Character, id string) error {
 	if len(committer.client.send) != 0 {
 		return errors.New("quest conversation preceded saved reward")

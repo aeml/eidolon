@@ -52,10 +52,9 @@ func handleQuestConversation(client *Client, message Message) {
 	if !currentCharacterConnection(client) {
 		return
 	}
-	snapshot = world.GetEntityCopy(client.playerID)
-	if snapshot == nil {
-		return
-	}
+	// Combat may have added more quest or bag progress while IO completed.
+	// Acknowledge this exact saved image; later live effects have their own
+	// coalesced-save feedback and must not appear confirmed by this turn-in.
 	if message.Type == MsgCompleteQuest {
 		// Publish item consumption before the quest dialogue moves on.
 		bag, _ := json.Marshal(snapshot.Inventory)
