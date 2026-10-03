@@ -377,6 +377,18 @@ gate: ordinary collection/retry and save-before-feedback coordination, initial
 reward/checkpoint replay ownership and connected crash acceptance remain required
 before publication. Production and live1.70.1 are untouched; the full goal stays
 active along with ordered predecessor and later milestone gates.
+The [ordinary boss-loot delivery follow-up](2026-10-03-release1-73-boss-loot-delivery-checks.json)
+now connects retained rolls to bag-space changes, authenticated cold recovery,
+disconnect and bounded rotating retries. Failed saves fence admission without
+polling storage per movement; full/unsupported bags may still play. Boss feedback
+follows a confirmed complete character save, and its inventory reply uses the
+same captured saved image rather than newer unsaved RAM awards. Cold collection
+preserves exact equipment and the original15-minute logout/run expiry. Focused
+race, real journal reopen,23-account retry fairness and four-class game
+death-hook checks pass. Actual connected rejection/crash acceptance and stable
+initial boss outcome/cohort/checkpoint replay remain open; this is not1.73
+completion or a deployment. Remote master was fetched and contained, production
+and live1.70.1 remain unchanged, and the full goal stays active.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

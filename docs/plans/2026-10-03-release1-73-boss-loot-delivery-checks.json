@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared ordinary boss-loot delivery and saved-feedback coordinator; not published",
+  "sourceCommit": "f8eac631d7592b0705fb926482a388469e86d624",
+  "scope": [
+    "Production boss death workers synchronously invoke a whole-character save barrier after earned quest/investigation/drop effects, without retaining scene/entity locks, before boss room-clear consideration. Normal owner inventory, reward summary and existing weekly notification follow confirmed storage; game-only nil-hook fixtures retain their legacy behavior.",
+    "Retained exact rolls collect in bounded ten-item prefixes after ordinary drop, sell, stash deposit, equip, inventory move/sort, authenticated login/resume and disconnect. Active live trades and saved offline escrow prevent collection from changing the offered bag.",
+    "Five-second non-overlapping rotating passes visit at most ten accounts. Full/unsupported bags cannot starve later accounts. Idle movement/combat admission checks only a presentation/save-pending cache, with no remote or filesystem polling.",
+    "Bag credit and private queue removal share the existing complete-character filesystem journal and atomic save receipt. Failed writes retain a pending admission marker even when RAM collection emptied the queue; retries capture latest independent credits and never reroll or regrant the item.",
+    "The inventory acknowledgement uses the same captured image that crossed the save barrier, not a later RAM copy potentially containing another unsaved combat award. Cold collection preserves original logout/run age and all unrelated saved fields without equipment normalization.",
+    "Unsupported future payloads and owned-identity conflicts remain unchanged, allow ordinary play, and do not silently discard items. This does not resolve corrupt retained data automatically or replace an administrator's audited remediation workflow."
+  ],
+  "verification": {
+    "focusedRace": {
+      "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(BossLoot|DirectTrade|GroundItem|DungeonRoomReward|DungeonCombatReward)' -count=1 -timeout=60s",
+      "result": "pass; server37.954 seconds, game29.747 seconds",
+      "scope": "Production coordinator functions, modeled strong character storage and rejected/lost save acknowledgements with real filesystem journal reopen; shared trade/ground/room regressions. Opt-in disposable server tests were skipped, not counted as accepted."
+    },
+    "finalCoordinatorRace": {
+      "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^TestBossLoot' -count=1 -timeout=30s",
+      "result": "pass in3.648 seconds after final cold escrow/presentation cleanup changes",
+      "coverage": "Full bag, active trade, exact metadata, bounded rotation across23 accounts, rejected/lost save reply, real journal reopen, latest unrelated Gold, cold exact-equipment/run/logout preservation, unsupported metadata, unavailable journal, idle admission without IO, private summary/weekly save barrier, and later unsaved RAM item excluded from the earlier inventory acknowledgement"
+    },
+    "deathHookRace": {
+      "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^TestBossLootDeathSaveHook' -count=1 -timeout=15s",
+      "result": "pass in1.438 seconds",
+      "scope": "Actual game death-method four-class party fixture: complete earned Gold/XP/kill credit and original retained rolls before each hook, hook without scene/entity locks, no duplicate legacy feedback, checkpoint considered after hooks. Not an ordinary connected boss fight or durable physical-boss replay proof."
+    },
+    "compile": "Final env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed for all server packages",
+    "diffCheck": "passed",
+    "corrections": "Initial compile identified and removed an unused import. Code review moved the save hooks to after the complete earned-effect pipeline rather than saving each member before later investigation evidence. Explicit exact-image acknowledgement and cold trade-escrow guards were added before final checks."
+  },
+  "remaining": [
+    "Actual ordinary-server bag-space/rejected-write/SIGKILL/reconnect acceptance against disposable Mongo on this source",
+    "Stable physical boss outcome/original cohort ownership and initial reward/checkpoint replay audit. Save-before-feedback alone does not prove a restored boss cannot award Gold/XP/quest credit again after a partially saved party checkpoint.",
+    "Standalone combat/event rewards and non-room-cohort recipients, the complete valuable-operation failure/concurrency/replay ledger, ordered1.71/1.72 gates, versioned patch notes and verified publication",
+    "All later full-roadmap, owner-approved closed-beta and full-release requirements"
+  ],
+  "safety": "Prepared isolated worktree only; no production schema/database, live services, player currency, payment, beta admission or public version changed. No disposable Mongo/server started in this turn. Remote master fetched and contained before commit (128ahead,0behind); last accepted live version remains1.70.1. Full goal stays active."
+}
