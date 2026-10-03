@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared connected source; not published",
+  "sourceCommit": "5a28acbd5399035015a3e12a9c8bf716306eb867",
+  "scope": [
+    "Ordinary inventory-drop and pickup handlers acknowledge only confirmed complete character saves",
+    "Runtime store registration, account admission, authenticated cold login/resume, disconnect and bag-space retry hooks",
+    "Paged startup recovery and latest-generation restoration; bounded rotating background recovery with stale-snapshot revalidation",
+    "Full bags retain accepted custody without storage polling on every combat packet",
+    "Failed save after freeing bag space clears the old full-bag admission exemption",
+    "Existing job-owned CI socket step includes the real ground-transfer crash/restart test"
+  ],
+  "verification": {
+    "toolchain": "Go 1.27.1",
+    "focusedRace": {
+      "command": "go test -race ./internal/database ./internal/game . -run '^(TestGroundItem|TestInventoryDropDispatch|TestDirectTradeRuntime)' -count=1 -timeout=60s",
+      "result": "pass",
+      "packageSeconds": { "database": 1.135, "game": 6.551, "server": 13.039 }
+    },
+    "actualSockets": {
+      "command": "go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s -v",
+      "result": "pass",
+      "testSeconds": 11.50,
+      "packageSeconds": 12.584,
+      "boundary": "Actual loopback disposable Mongo 7.0.14 and race-built ordinary server binary; ordinary login/join/drop/pickup messages, not fabricated game-side operations",
+      "coverage": [
+        "Isolated source-save validator rejects the ordinary drop debit while preserving the real pending shared intent and filesystem journal",
+        "First actual protobuf scene contains the observer but no unconfirmed public loot",
+        "Owned child SIGKILL and fresh-process startup recover the debit and first public drop",
+        "Recipient receives exact frozen rare-item potency, damage and gem metadata after actual saved pickup",
+        "Pickup retains original availability and expiry; unrelated Gold and EP remain unchanged",
+        "Second owned child SIGKILL and fresh process do not resurrect consumed loot",
+        "Replayed original drop/pickup commands reject without a new operation or lifetime",
+        "Child logs checked for race, panic and runtime errors"
+      ],
+      "ownedServerEvidence": [
+        "/tmp/eidolon-compat-session-3676401193",
+        "/tmp/eidolon-compat-session-1549465508",
+        "/tmp/eidolon-compat-session-83586362"
+      ]
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" },
+    "forge": {
+      "command": "npm test -- --runInBand --runTestsByPath tests/ForgeStatOrder.test.js tests/ForgeUI.test.js tests/ForgeLiveRefresh.test.js",
+      "result": "30 tests passed",
+      "scope": "Fixed damage/defense/STR/DEX/INT/WIS/VIT order across shuffled ordinary refreshes, upgrade/potency and capped-item views; unfamiliar keys remain alphabetically ordered"
+    }
+  },
+  "remaining": [
+    "Review other reward-path invariants and prepared milestone integration",
+    "Ordered version packaging, versioned patch notes, deployment and independent public acceptance",
+    "All subsequent full-roadmap milestones and owner-controlled beta gates"
+  ],
+  "safety": "Only isolated fixture accounts, validators, child processes and the owned disposable database were mutated. The exact fixture container and its anonymous volumes were removed after verification. No production data/schema, live login version or deployment changed; current live acceptance remains 1.70.1. Full Alpha 1.11–1.99 goal remains active."
+}

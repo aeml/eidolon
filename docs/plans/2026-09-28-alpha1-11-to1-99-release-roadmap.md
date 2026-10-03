@@ -262,6 +262,21 @@ and runtime store registration remain unchanged. Startup/cold admission and
 background discovery, ordinary protocol feedback, actual connected recovery,
 reward paths and ordered milestone deployment remain required. This is prepared
 source, not live acceptance, and the complete roadmap goal remains active.
+The [ground-item runtime follow-up](2026-10-03-release1-73-ground-item-runtime-checks.json)
+now connects ordinary drop/pickup handlers, account admission, cold login/resume,
+disconnect, bag-space retries, paged startup restoration and bounded background
+recovery. Bag replies and public dropped loot follow the confirmed complete
+character save. Full bags retain accepted pickups without per-combat-packet
+storage polls; freeing space followed by a failed save restores the normal
+pending-save admission fence. Focused race checks, compile checks and actual
+disposable Mongo with three fresh server processes pass, including a rejected
+ordinary drop save, SIGKILL recovery, exact-metadata pickup, consumed-loot restart
+and native-command replay. This supersedes the unconnected-ground-runtime status,
+not the release status. Thirty focused Forge DOM tests also reconfirm the owner's
+fixed-stat-order request. Other reward-path invariants, prepared milestone
+integration, versioned patch notes, deployment and public acceptance remain open.
+The owned fixture database and its anonymous volumes were removed; production
+data and the live1.70.1 release were untouched. The full roadmap remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
