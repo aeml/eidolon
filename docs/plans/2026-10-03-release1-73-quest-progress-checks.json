@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-quest-progress-save-barrier",
+  "sourceCommit": "467a70967717738145b3d1121e597a8c5f26f87c",
+  "scope": [
+    "Combat, collection and crystal-repair quest progress requests the existing coalesced full-character save worker. Scene/entity callbacks do not perform database IO or enqueue one job per kill.",
+    "Private quest feedback contains the exact successfully saved character image. Requests arriving during capture or IO retain a later sequence; rejected saves do not confirm progress. Pending-save recovery confirms the latest full character, preserving independent bag and Gold changes.",
+    "Quest-menu reads and chronicle discoveries require their own complete saved image before quest/discovery replies. Production persistence-unavailable paths fail closed; existing game-only fixtures without any persistence wiring remain usable.",
+    "No automatic quest turn-in, reward increase, new quest entitlement ledger or change to the 15-minute dungeon expiry is introduced."
+  ],
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(QuestProgressDelivery|QuestConversation|QuestPersistence|ChronicleInspection|CoalescedSave|CharacterPersistence|Party.*Kill|CrystalRepairCompletion|PublicEventWhole)' -count=1 -timeout=60s",
+    "focusedResult": "passed: server 5.782s, game 4.055s",
+    "focusedCoverage": "Scene/account lock safety; blocked saves without premature feedback; 513 requests coalescing into two current full captures; exact earlier versus later acknowledgements; rejected save and reopened filesystem journal; independent accounts and retired owners; repair progress without turn-in rewards; menu and investigation replies gated on saved evidence.",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32873 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-quest-progress-runtime-7iAvjo/server go test -race . -run '^TestDungeonRoomRewardActualPartyClearCrashAndRecovery$' -count=1 -v -timeout=120s",
+    "actualResult": "Luna started and monitored its own session: exit 0, test 33.75s, package 34.838s. Four class-appropriate uncommon/rare level-30 builds cleared a real Skeleton room through ordinary attacks and accepted skills. Full-bag Cleric retention, actual Mongo rejection of the Rogue receipt, filesystem journal, SIGKILL, fresh startup and reconnect all passed with the production quest-progress callback installed.",
+    "independentDatabaseRead": "One dungeon_room_rewards record, zero pending records. All four saved characters have accepted room-skeleton-credit at 3/3 and Completed=false; recipient receipt counts are 1,2,1,1, including the full-bag Cleric's ordinary ground receipt.",
+    "binarySha256": "a265d7c55971cf23479e0afbb59557d914bc5669290843d3cd7b46ca8175d402",
+    "evidence": [
+      "/tmp/eidolon-compat-session-820669202/server.log",
+      "/tmp/eidolon-compat-session-1330591089/server.log",
+      "/tmp/eidolon-compat-session-2023735663/server.log"
+    ],
+    "compile": "All server packages passed go test ./... -run '^$'; gofmt and git diff --check passed. Production code was unchanged after the actual-test binary build; subsequent additions were focused unit tests only."
+  },
+  "cleanup": {
+    "ownedContainer": "0eedf40bd5cf91071dac8cc8998826e0cb103d870533226daa5102d02f401b18",
+    "label": "eidolon.qa.owner=quest-progress-20261003",
+    "removed": "Exact identity, label and mounts were revalidated before docker rm -f -v. Exact container and both anonymous-volume filters are empty; the owned game binary has no running process. Logs and compiled test binary remain. Production data and services were untouched."
+  },
+  "limits": [
+    "Prepared source only; last accepted live remains 1.70.1. No push, deployment, version bump or whole-1.73 completion is claimed.",
+    "The connected room test proves normal party combat and saved recovery with the new callback, not packet-versus-Mongo ordering for every update. Exact acknowledgement ordering is covered by focused modeled-committer barrier tests.",
+    "Crystal repair progress is tested without granting turn-in rewards. This is not a completed connected three-wave vigil, durable shared defense ledger or proof of every completion effect/guild handoff surviving interruption.",
+    "Initial personal entry snapshots and ordinary real-time gameplay state are not redefined as durable acknowledgements. Unquested ordinary kills retain existing periodic/disconnect persistence.",
+    "Remaining reward-boundary review, ordered 1.71/1.72 work, packaging, patch notes and public deployment acceptance remain in the active full roadmap."
+  ]
+}

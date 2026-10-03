@@ -446,6 +446,18 @@ guardian, public pickup from this zero-public-drop roll, or the Dark King. Owned
 test data was removed. Remaining reward-boundary review and ordered packaging,
 patch notes, deployment/public acceptance still precede1.73 publication; live
 remains1.70.1 and the full1.11–1.99 goal remains active.
+The [quest-progress save barrier](2026-10-03-release1-73-quest-progress-checks.json)
+now routes ordinary kill/collection/repair feedback through the existing coalesced
+full-character worker. Menu reads and discoveries also require saved evidence;
+failed writes retain recovery images without confirming an unsaved quest update.
+Focused race checks cover delayed writes, bursts, separate accounts, replacement
+connections and actual filesystem journal reopening. A real geared four-class
+room clear with Mongo rejection, full-bag retention, SIGKILL and fresh reconnect
+passed in33.75 seconds; Luna monitored it. All four saved kill quests remain ready
+for manual turn-in, not automatically completed. Owned test data was removed.
+This is not a complete connected crystal vigil or a new shared defense ledger.
+The Forge's fixed stat order remains included in prepared source. Reward review,
+ordered release packaging and public deployment acceptance remain open.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
