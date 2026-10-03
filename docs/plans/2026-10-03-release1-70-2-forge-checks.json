@@ -4,6 +4,20 @@
   "status": "locally-verified-awaiting-exact-source-ci-and-public-acceptance",
   "sourceCommit": "bf92f443f4d4d651e428bf16b8e5a9dc695316c4",
   "baselineCommit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+  "failedCandidate": {
+    "commit": "d46030de1e19860f036343d2cc078306b843e527",
+    "ciRun": 37111304557,
+    "outcome": "CI failed before deployment at npm audit --audit-level=low:29 high dependency findings led to braces GHSA-vfj7-8cjw-p6xm. Server tests and all three browser shards passed. Root independently re-read exact head SHA and terminal failure; this candidate was never accepted live."
+  },
+  "dependencyCorrection": {
+    "sourceCommit": "30408cf2c712802b65ee30afcb49a30961585c53",
+    "primaryAdvisory": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+    "scope": "Upgrade Jest and its matching jsdom environment from30.2.0 to30.5.2 within major30; regenerate the lockfile. The resolved test tree removes braces and micromatch entirely. Only these two direct development dependencies change resolved version; direct game-runtime packages are unchanged. No audit suppression or force upgrade.",
+    "freshInstall": "Remove only the owned candidate's node_modules symlink, preserving its shared target. Fresh npm ci succeeded in10 seconds against the corrected lockfile and prepared browser runtime dependencies.",
+    "audit": "npm audit --audit-level=low: found0 vulnerabilities; exit0.",
+    "client": "The same seven focused Forge/release suites passed using the fresh Jest30.5.2 install:399 checks in6.207 seconds. Full lint passed; movement benchmark completed one million iterations in78.972ms. The unchanged Forge source retains its earlier two accepted System Chrome checks; exact-source hosted CI must still pass.",
+    "remaining": "Corrected-candidate CI, deployment and independent public acceptance remain required; the original failed run is not overwritten or counted as success."
+  },
   "changes": [
     "Backport only the prepared client stat-order helper and its Forge/inventory consumers. Upgrade, potency and capped-item previews consistently order Damage, Defense, STR, DEX, INT, WIS, VIT, then alphabetical extra stats, retaining zero-valued rows.",
     "Add shuffled-map live-refresh and DOM regressions plus desktop/phone browser assertions. Align package, client/login, server, container, deployment and QA versions; retain all earlier patch notes.",
