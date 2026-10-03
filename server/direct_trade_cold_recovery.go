@@ -15,6 +15,9 @@ func recoverColdAccountDirectTradeLocked(username string) error {
 	if err := recoverColdAccountDirectTradeCustodyLocked(username); err != nil {
 		return err
 	}
+	if err := recoverColdAccountBossVictoriesLocked(username); err != nil {
+		return err
+	}
 	return recoverColdAccountBossLootLocked(username)
 }
 

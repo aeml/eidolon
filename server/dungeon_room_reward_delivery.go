@@ -300,6 +300,21 @@ func clearRoomRewardPending(username, id string) {
 // Never replace unrelated EP, quests, equipment, rest, locations or metadata.
 func applyOfflineDungeonRoomReward(character *database.Character, op database.DungeonRoomRewardOperation) (game.ExperienceRewardReceipt, bool, error) {
 	initialLevel := character.Level
+	entity, err := hydrateOfflineRewardCharacter(character)
+	if err != nil {
+		return game.ExperienceRewardReceipt{}, false, err
+	}
+	receipt, changed, err := entity.ApplyDungeonRoomRewardCharacterEffect(op)
+	if err != nil || !changed {
+		return receipt, changed, err
+	}
+	projectOfflineRewardCharacter(character, entity, initialLevel)
+	return receipt, true, nil
+}
+
+// Reuse ordinary progression/resource inputs for detached earned effects.
+// This never performs offline healing or updates logout/instance age.
+func hydrateOfflineRewardCharacter(character *database.Character) (*game.Entity, error) {
 	entity := &game.Entity{ID: "player-" + character.Name, Name: character.Name, Type: game.TypePlayer, SubType: character.Class,
 		Disconnected: true, State: "IDLE", Health: 1, Level: character.Level, Experience: character.XP, Gold: character.Gold,
 		BaseStats:      game.Stats{Strength: character.Stats.Strength, Dexterity: character.Stats.Dexterity, Intelligence: character.Stats.Intelligence, Wisdom: character.Stats.Wisdom, Vitality: character.Stats.Vitality},
@@ -335,20 +350,20 @@ func applyOfflineDungeonRoomReward(character *database.Character, op database.Du
 	}
 	progress, err := game.MigrateSavedProgression(character.Level, character.XP, character.ProgressionVersion)
 	if err != nil {
-		return game.ExperienceRewardReceipt{}, false, err
+		return nil, err
 	}
 	entity.ApplySavedProgression(progress)
 	if err := restoreCharacterWellRested(entity, character.WellRested); err != nil {
-		return game.ExperienceRewardReceipt{}, false, err
+		return nil, err
 	}
 	entity.RecalculateStats()
 	if err := restoreCharacterResources(entity, character.Resources); err != nil {
-		return game.ExperienceRewardReceipt{}, false, err
+		return nil, err
 	}
-	receipt, changed, err := entity.ApplyDungeonRoomRewardCharacterEffect(op)
-	if err != nil || !changed {
-		return receipt, changed, err
-	}
+	return entity, nil
+}
+
+func projectOfflineRewardCharacter(character *database.Character, entity *game.Entity, initialLevel int) {
 	character.Gold, character.Level, character.XP = entity.Gold, entity.Level, entity.Experience
 	character.ProgressionVersion = game.CurrentProgressionVersion
 	character.ResonanceLevel, character.ResonanceXP, character.ResonancePoints = entity.ResonanceLevel, entity.ResonanceXP, entity.ResonancePoints
@@ -360,5 +375,4 @@ func applyOfflineDungeonRoomReward(character *database.Character, op database.Du
 	if character.Resources != nil && entity.Level != initialLevel {
 		character.Resources = resourceSnapshot(entity)
 	}
-	return receipt, true, nil
 }

@@ -293,6 +293,31 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				lootItems = append(lootItems, gem)
 			}
 
+			// The shared-victory coordinator owns ALL grants, original public
+			// loot and finale effects for canonical instanced bosses. Never run
+			// the legacy credit/drop path after an accepted or unknown prepare.
+			// Production leaves this hook nil until those recovery gates are
+			// connected; noncanonical/open-world bosses retain their old path.
+			if isBoss && w.OnBossVictory != nil && strings.HasPrefix(tInstanceID, "dungeon_") && tID == tSubType+"-"+tInstanceID {
+				members := partyMembers
+				if attackerPartyID == "" {
+					members = []*Entity{attacker}
+				}
+				op, err := w.captureBossVictory(bossVictoryCapture{instanceID: tInstanceID, bossID: tID, bossType: tSubType,
+					partyID: attackerPartyID, spawnX: tSpawnX, spawnZ: tSpawnZ, x: tX, z: tZ,
+					baseGold: baseGold, baseXP: baseXpReward, isDungeonBoss: isDungeonBoss, killedAt: killedAt, members: members, loot: lootItems})
+				if err != nil {
+					log.Printf("Boss victory capture remains unresolved: %v", err)
+					return
+				}
+				if err := w.OnBossVictory(op); err != nil {
+					log.Printf("Boss victory remains pending: %v", err)
+					return // Reservation and original plan stay recoverable.
+				}
+				w.endDungeonCombatReward(tID)
+				return
+			}
+
 			// Use kill-time recipients, never a later position/party lookup.
 			var guildClear dungeonGuildClearSnapshot
 			if len(partyMembers) > 0 {

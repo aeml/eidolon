@@ -199,6 +199,9 @@ func prepareAndCompleteDirectTradeLocked(captured database.DirectTradeOperation)
 // Account admission calls this only after its work-lock set includes the cached
 // peer. No nesting a peer's lock beneath an already-owned single-account lock.
 func recoverAccountDirectTradesLocked(username string) error {
+	if err := recoverAccountBossVictoriesLocked(username); err != nil {
+		return err
+	}
 	if err := recoverAccountBossLootLocked(username); err != nil {
 		return err
 	}

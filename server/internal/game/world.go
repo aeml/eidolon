@@ -119,6 +119,9 @@ type World struct {
 	dungeonRoomRewardMu    sync.Mutex
 	dungeonRoomRewards     map[string]database.DungeonRoomRewardOperation
 	dungeonRoomRewardKnown map[string]bool
+	bossVictoryMu          sync.Mutex
+	bossVictoryPlans       map[string]database.BossVictoryOperation
+	bossVictoryKnown       map[string]bool
 	groundItemPublished    map[string]groundItemPublication
 	// Immutable before world publication. Remains nil until elevation's scene,
 	// effects and client movement integration is complete; tests can opt in.
@@ -164,7 +167,10 @@ type World struct {
 	OnDungeonRoomReward func(database.DungeonRoomRewardOperation) error
 	// Initialized before publication; called without scene/entity locks. The
 	// production handler saves before owner feedback and the room-clear check.
-	OnBossReward       func(RewardSummaryEvent, *WeeklyRaidCompletionEvent) error
+	OnBossReward func(RewardSummaryEvent, *WeeklyRaidCompletionEvent) error
+	// Opt-in only when shared persistence and public-drop recovery are wired.
+	// Called without scene/entity locks BEFORE any original boss credit.
+	OnBossVictory      func(database.BossVictoryOperation) error
 	OnQuestUpdate      func(playerID string, quests []Quest)
 	OnPvPMatchComplete func(result PvPMatchResult)
 	OnPvPMatchUpdate   func(match *PvPMatch)
