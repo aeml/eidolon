@@ -152,6 +152,19 @@ func roomPreparedResume(instanceID string) *database.CharacterDungeonResume {
 	return dungeonResumeToDatabase(game.DungeonResumeSnapshot{ID: instanceID, CreatedAt: time.Now().UTC().Truncate(time.Millisecond), Difficulty: game.DifficultyNormal, DungeonType: "verdant_bastion_catacombs", RunLevel: 30, Layout: layout, Rooms: make([]game.DungeonRoomProgress, 3), CurrentRoomIndexValue: 1})
 }
 
+func roomSocketHasAllKillCredit(character *database.Character) bool {
+	if character == nil {
+		return false
+	}
+	matches := 0
+	for _, quest := range character.Quests {
+		if quest.ID == "room-skeleton-credit" && quest.Accepted && !quest.Completed && quest.Count == 3 && quest.MaxCount == 3 {
+			matches++
+		}
+	}
+	return matches == 1
+}
+
 // Prepared layout/saves, real four-class consent/party, ordinary attacks/casts,
 // actual immutable room claims and saved receipts. No fabricated earned reward,
 // test-only game command, accelerated/protected combat or production account.
@@ -171,6 +184,7 @@ func TestDungeonRoomRewardActualPartyClearCrashAndRecovery(t *testing.T) {
 		fixture.Class, fixture.InstanceID, fixture.DungeonProgress = class, instanceID, resume
 		fixture.LastLogout, fixture.X, fixture.Z, fixture.EP = time.Now(), 20000+float64(index)-1.5, 19950, 43
 		fixture.SelectedBranch = "A"
+		fixture.Quests = []database.Quest{{ID: "room-skeleton-credit", Type: "KILL", Target: "Skeleton", MaxCount: 3, Accepted: true}}
 		fixture.Stats = database.Stats{Strength: 68, Vitality: 68, Dexterity: 39, Intelligence: 39, Wisdom: 39}
 		switch class {
 		case "Cleric":
@@ -330,7 +344,7 @@ func TestDungeonRoomRewardActualPartyClearCrashAndRecovery(t *testing.T) {
 	probes[2].waitMessage(t, MsgRoomClearReward, nil)
 	for _, index := range []int{0, 2} {
 		saved, err := repo.GetDirectTradeCharacter(fixtures[index].Name, fixtures[index].Name)
-		if err != nil || !database.DungeonRoomRewardCharacterReceiptMatches(saved, record.DungeonRoomRewardOperation) || saved.DungeonProgress == nil || !saved.DungeonProgress.Rooms[1].Rewarded {
+		if err != nil || !database.DungeonRoomRewardCharacterReceiptMatches(saved, record.DungeonRoomRewardOperation) || saved.DungeonProgress == nil || !saved.DungeonProgress.Rooms[1].Rewarded || !roomSocketHasAllKillCredit(saved) {
 			t.Fatal("room acknowledgement preceded saved grant and progress", err)
 		}
 	}
@@ -358,6 +372,11 @@ func TestDungeonRoomRewardActualPartyClearCrashAndRecovery(t *testing.T) {
 			t.Fatal("full/rejected recipient falsely saved award", err)
 		}
 	}
+	fullBeforeCrash, err := repo.GetDirectTradeCharacter(fixtures[1].Name, fixtures[1].Name)
+	if err != nil || fullBeforeCrash.DungeonProgress == nil || !fullBeforeCrash.DungeonProgress.Rooms[1].Cleared ||
+		fullBeforeCrash.Gold <= fixtures[1].Gold || fullBeforeCrash.XP <= fixtures[1].XP || !roomSocketHasAllKillCredit(fullBeforeCrash) {
+		t.Fatal("full-bag room checkpoint failed to save the complete earned kill effects", err)
+	}
 	crash()
 	for _, probe := range probes {
 		_ = probe.connection.Close()
@@ -376,6 +395,9 @@ func TestDungeonRoomRewardActualPartyClearCrashAndRecovery(t *testing.T) {
 		}
 		if recovered[index].EP != fixture.EP || !reflect.DeepEqual(recovered[index].Equipment, fixture.Equipment) {
 			t.Fatal("recovery changed EP or class gear")
+		}
+		if !roomSocketHasAllKillCredit(recovered[index]) {
+			t.Fatal("recovery lost one or more original party kill credits")
 		}
 	}
 	if recovered[3].Gold != planned.Gold || recovered[3].XP != planned.XP || !reflect.DeepEqual(recovered[3].Inventory, planned.Inventory) {

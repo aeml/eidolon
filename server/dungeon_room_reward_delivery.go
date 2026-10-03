@@ -169,6 +169,31 @@ func deliverDungeonRoomRewardRecipientLocked(op database.DungeonRoomRewardOperat
 	if world != nil {
 		progression, found, changed, liveEvent, err = world.ApplyDurableDungeonRoomReward(op, username)
 		if err != nil {
+			if found && errors.Is(err, game.ErrDungeonRoomRewardFull) {
+				// Keep the room award pending, but save the latest complete live
+				// image before projecting a checkpoint which removes its enemies.
+				// In particular, do not lose their already earned kill/quest effects
+				// merely because the separate room item will not fit in the bag.
+				entity := world.GetEntityCopy(participant.PlayerID)
+				if entity == nil || entity.Name != username {
+					return false, database.ErrDungeonRoomRewardConflict
+				}
+				latest := characterSnapshotForSave(username, entity)
+				if _, projectionErr := projectDungeonRoomRewardSnapshot(latest, op); projectionErr != nil {
+					return false, projectionErr
+				}
+				projected, projectionErr := projectDungeonRoomRewardSnapshot(saved, op)
+				if projectionErr != nil {
+					return false, projectionErr
+				}
+				newRun := latest.DungeonProgress != nil && latest.DungeonProgress.InstanceID == op.InstanceID &&
+					(saved.DungeonProgress == nil || saved.DungeonProgress.InstanceID != op.InstanceID)
+				if projected || newRun {
+					if saveErr := persistCharacterSnapshot(username, latest); saveErr != nil {
+						return false, saveErr
+					}
+				}
+			}
 			return false, err
 		}
 		if found {

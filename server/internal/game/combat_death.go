@@ -45,6 +45,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 		return
 	}
 
+	w.beginDungeonCombatRewardLocked(target)
 	target.Health = 0
 	target.State = "DEAD"
 	killedAt := time.Now().UTC()
@@ -62,7 +63,12 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 		if spawnX == 0 && spawnZ == 0 && (target.X != 0 || target.Z != 0) {
 			spawnX, spawnZ = target.X, target.Z
 		}
-		w.runBackground(func() { w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ) })
+		if !w.runBackground(func() {
+			w.endDungeonCombatReward(defeatedEnemyID)
+			w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ)
+		}) {
+			w.endDungeonCombatReward(defeatedEnemyID)
+		}
 	}
 
 	// === ON-KILL EFFECTS (Unique Effects & Set Bonuses) ===
@@ -152,11 +158,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 			}()
 		}
 
-		w.runBackground(func() {
-			if tInstanceID != "" {
-				w.markDungeonRoomClearedIfDefeated(tInstanceID, tID, tSpawnX, tSpawnZ)
-			}
-
+		if !w.runBackground(func() {
 			// Get difficulty multipliers and current dungeon completion state for dungeon enemies
 			instanceDifficulty := w.GetInstanceDifficulty(tInstanceID)
 			instanceType := w.GetInstanceType(tInstanceID)
@@ -565,7 +567,16 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				}
 				w.Mu.Unlock()
 			}
-		})
+			// A DEAD corpse is not proof that its asynchronous Gold/XP and
+			// quest effects have finished. Release this death's reservation only
+			// after those effects and drops exist, then consider a room checkpoint.
+			w.endDungeonCombatReward(tID)
+			if tInstanceID != "" {
+				w.markDungeonRoomClearedIfDefeated(tInstanceID, tID, tSpawnX, tSpawnZ)
+			}
+		}) {
+			w.endDungeonCombatReward(tID)
+		}
 
 	}
 }

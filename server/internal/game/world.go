@@ -114,6 +114,8 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 }
 
 type World struct {
+	dungeonCombatRewardMu  sync.Mutex
+	dungeonCombatRewards   map[string]pendingDungeonCombatReward
 	dungeonRoomRewardMu    sync.Mutex
 	dungeonRoomRewards     map[string]database.DungeonRoomRewardOperation
 	dungeonRoomRewardKnown map[string]bool

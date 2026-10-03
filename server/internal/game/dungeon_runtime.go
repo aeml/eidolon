@@ -253,6 +253,11 @@ func (w *World) markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID str
 	}
 	inst.Mu.RUnlock()
 
+	// A reward worker may still own its player mutex. Refuse promptly rather
+	// than scanning actors while a known unfinished death blocks this room.
+	if w.dungeonRoomHasPendingCombatRewards(instanceID, layout.Rooms[roomIndex]) {
+		return false
+	}
 	w.Mu.RLock()
 	candidates := make([]*Entity, 0)
 	for id, entity := range w.Entities {
@@ -291,6 +296,12 @@ func (w *World) markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID str
 		}
 	}
 
+	// Read reservations after scanning living actors: a death registers before
+	// changing its state, so observing DEAD must not bypass unfinished effects.
+	// No scene/entity/reservation lock is held across the persistence callback.
+	if w.dungeonRoomHasPendingCombatRewards(instanceID, layout.Rooms[roomIndex]) {
+		return false
+	}
 	w.MarkDungeonRoomCleared(instanceID, roomIndex)
 	return true
 }

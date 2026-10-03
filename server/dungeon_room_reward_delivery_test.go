@@ -241,6 +241,72 @@ func TestDungeonRoomRewardDeliveryFullBagDoesNotPollOrStarveParty(t *testing.T) 
 	}
 }
 
+func TestDungeonRoomRewardDeliveryFullBagSavesEarnedKillEffectsBeforeCheckpoint(t *testing.T) {
+	for _, noPriorResume := range []bool{false, true} {
+		for _, failure := range []string{"none", "before", "after"} {
+			t.Run(fmt.Sprintf("new-run=%t/%s", noPriorResume, failure), func(t *testing.T) {
+				store, instance, players, _ := roomDeliveryFixture(t)
+				player := players[0]
+				for index := range player.Inventory {
+					player.Inventory[index] = game.Item{ID: fmt.Sprintf("earned-full-%d", index), Name: "Owned", Stack: 1, MaxStack: 1}
+				}
+				player.Gold += 7
+				player.Experience = 61
+				player.Quests = []game.Quest{{ID: "earned-kills", Type: "KILL", Target: "Skeleton", Count: 3, MaxCount: 3, Accepted: true}}
+				if noPriorResume {
+					store.characters[player.Name].DungeonProgress = nil
+				}
+				if failure != "none" {
+					store.failSaveAccount, store.failSaveAfter = player.Name, failure == "after"
+				}
+				feedback := 0
+				world.OnEvent = func(kind string, data interface{}) {
+					if kind == "room_clear_reward" && data.(game.DungeonRoomClearRewardEvent).PlayerID == player.ID {
+						feedback++
+					}
+				}
+				world.MarkDungeonRoomCleared(instance.ID, 1)
+				op := world.PendingDungeonRoomRewardPlans()[0]
+				if failure != "none" {
+					pending, err := characterSaveJournal.Read(player.Name)
+					if err != nil || pending == nil {
+						t.Fatal("failed checkpoint save lost its complete journal", err)
+					}
+					image, err := pending.Character()
+					if err != nil || image.Gold != 106 || image.XP != 61 || image.Quests[0].Count != 3 ||
+						image.DungeonProgress == nil || !image.DungeonProgress.Rooms[1].Cleared || image.ItemDeliveryReceipts[op.ID] != "" {
+						t.Fatal("full-bag checkpoint journal omitted kills or partially granted the room", err)
+					}
+					if err := reconcilePendingCharacterSaveLocked(player.Name); err != nil {
+						t.Fatal(err)
+					}
+				}
+				saved := store.characters[player.Name]
+				if saved.Gold != 106 || saved.XP != 61 || len(saved.Quests) != 1 || saved.Quests[0].Count != 3 ||
+					saved.DungeonProgress == nil || !saved.DungeonProgress.Rooms[1].Cleared || !saved.DungeonProgress.Rooms[1].Rewarded ||
+					saved.ItemDeliveryReceipts[op.ID] != "" || len(saved.Inventory) != game.MaxInventorySize || feedback != 0 {
+					t.Fatal("confirmed checkpoint lost earned kills, granted a partial room award or acknowledged an undelivered award")
+				}
+				writes := store.writes[player.Name]
+				if err := recoverPendingDungeonRoomRewards(); err != nil || store.writes[player.Name] != writes {
+					t.Fatal("unchanged full-bag claim repeatedly wrote the checkpoint", err)
+				}
+				player.Inventory[0] = game.Item{}
+				if err := recoverPendingDungeonRoomRewards(); err != nil {
+					t.Fatal(err)
+				}
+				saved = store.characters[player.Name]
+				if saved.Gold != 106+op.Participants[0].Gold || saved.XP != 61+op.Participants[0].XP || saved.Quests[0].Count != 3 ||
+					!database.DungeonRoomRewardCharacterReceiptMatches(saved, op) || feedback != 1 || store.rooms[op.ID].State != database.DungeonRoomRewardComplete {
+					t.Fatalf("space retry lost original kills or repeated the retained room award: Gold=%d want=%d XP=%d want=%d credit=%d receipt=%t feedback=%d state=%s",
+						saved.Gold, 106+op.Participants[0].Gold, saved.XP, 61+op.Participants[0].XP, saved.Quests[0].Count,
+						database.DungeonRoomRewardCharacterReceiptMatches(saved, op), feedback, store.rooms[op.ID].State)
+				}
+			})
+		}
+	}
+}
+
 func TestDungeonRoomRewardDeliveryJournalReopenAndOfflineMetadata(t *testing.T) {
 	store, instance, players, dir := roomDeliveryFixture(t)
 	store.failSaveAccount = players[0].Name
