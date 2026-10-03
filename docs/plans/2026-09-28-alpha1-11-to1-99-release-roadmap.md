@@ -342,6 +342,19 @@ failure/replay checks, real filesystem journal reopen, concurrent capture and
 Mongo acknowledgements: a fresh ordinary-server/socket room-clear/crash check
 is still required before publication. Combat/event reward boundaries, ordered
 packaging and deployment acceptance remain open; no production release changed.
+The [ordinary room socket follow-up](2026-10-03-release1-73-room-reward-runtime-checks.json)
+supersedes that connected-acceptance gap: four consenting, normally equipped
+classes clear a prepared valid room with accepted ordinary abilities. Actual
+Mongo receipts precede successful feedback; a rejected recipient's complete
+journal survives SIGKILL, and a full-bag recipient retains the original claim
+until an ordinary drop frees space. Three fresh server processes preserve exact
+amounts, EP, equipment and run age without a repeated terminal award. Luna
+monitored the single34-second run; all30 focused Forge DOM checks also pass.
+This is not a generated whole-dungeon or campaign balance approval, nor ordinary
+kill-reward durability or replica failover proof. Combat/event/boss full-bag
+boundaries, the complete valuable-operation ledger, predecessor gates and ordered
+versioned deployment remain open. The owned fixture and anonymous volumes were
+removed; production and live1.70.1 remain unchanged. The full goal stays active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared ordinary-socket room reward acceptance; not published",
+  "sourceCommit": "8b37093a02a1ce501583d6e17298d4f617933948",
+  "scope": [
+    "Four consenting players resume a valid prepared dungeon layout and clear its ordinary encounter using normal attacks and accepted Fighter, Cleric, Wizard and Rogue abilities",
+    "Uncommon/Rare level30 equipment is created only in disposable initial fixtures; combat cooldowns, damage and normal resource clamping are unchanged",
+    "Room reward feedback follows actual Mongo character receipt and cleared/rewarded progress for successful recipients",
+    "A validator-rejected recipient retains the complete grant in the real filesystem journal while another recipient's full bag retains its immutable claim",
+    "SIGKILL and a fresh server recover the exact rejected post-image without changing EP or class equipment; offline full-bag projection preserves original run age",
+    "An ordinary inventory drop frees one slot and background delivery completes the original party cohort; a third server login does not repeat Gold or XP"
+  ],
+  "verification": {
+    "toolchain": "Go1.27.1; production server race-built with buildCommit=server",
+    "actualSockets": {
+      "command": "go test -race . -run '^TestDungeonRoomRewardActualPartyClearCrashAndRecovery$' -count=1 -timeout=120s -v",
+      "environment": "Explicit disposable database opt-in, Mongo7.0.14 on loopback127.0.0.1:39078 and the independently built server binary",
+      "result": "pass",
+      "testSeconds": 34.36,
+      "packageSeconds": 35.443,
+      "monitor": "User-authorized Luna agent /root/watch_room_runtime_1003 ran this acceptance once and reported completion",
+      "serverEvidence": [
+        "/tmp/eidolon-compat-session-1904255083",
+        "/tmp/eidolon-compat-session-4196484949",
+        "/tmp/eidolon-compat-session-3436438803"
+      ],
+      "limits": "Prepared layout and legitimate initial saves, not a generated whole-dungeon clear, campaign/pacing approval, ordinary kill-reward durability proof or replica-set failover test"
+    },
+    "forgeRegression": {
+      "command": "npm test -- --runTestsByPath tests/ForgeStatOrder.test.js tests/ForgeLiveRefresh.test.js tests/ForgeUI.test.js --runInBand",
+      "result": "30 passed across3 suites in3.616 seconds; fixed rows survive shuffled maps and authoritative live refresh"
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" },
+    "diffCheck": "pass",
+    "fixtureCorrection": "Initial test compilation required explicit conversions of protobuf float32 positions to float64 gameplay coordinates; corrected before the single actual acceptance run"
+  },
+  "remaining": [
+    "Ordinary combat Gold/XP, party quest kill credit, boss full-bag grants and event-enemy save/acknowledgement audit",
+    "Close prepared predecessor gates and the complete valuable-operation ledger before ordered versioned publication",
+    "Patch notes, deployment and independent public acceptance; all later roadmap and owner-controlled beta gates"
+  ],
+  "safety": "Exact labeled disposable Mongo container b1dd2eed48e98df1d351e4c54d40cca4da78bb68b76fa49fc28aa2ec15740b7c and both anonymous volumes removed after acceptance. All owned test server children ended. No production database, package/login version, deployment, payments or admission policy changed. Last accepted live1.70.1 and full roadmap goal remain unchanged."
+}
