@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-partial",
+  "sourceCommit": "b6cd9ea9a5f39c5950380477ce523d8f84cf31db",
+  "checkedAt": "2026-10-03T00:16:05Z",
+  "scope": [
+    "Capture settlement/cancellation from exact world-owned offers and private peer-bound escrow, never client item or receipt payloads.",
+    "Index both accounts before an unknown intent insertion; retain the first decision, reconcile offer saves and prove both saved escrows before freeze.",
+    "Apply and save online or offline participant receipts using existing complete-character journals; completion verifies both actual stored receipts.",
+    "Claim complete owned deliveries with bag/Gold and emptied outbox saved together; full bags, overflow and unsupported item formats retain custody.",
+    "Strengthen exact retained/claimed receipt proof and reject duplicated ordinary custody; reject nonfinite trade proximity while keeping cancellation available."
+  ],
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database ./internal/game . -run '^(TestDirectTrade|TestVendor|TestCharacterPersistence)' -count=1 -timeout=45s",
+    "result": "passed",
+    "packageSeconds": {"database": 1.153, "game": 11.506, "server": 15.823},
+    "recovery": "Modeled atomic database receipts with the real BSON filesystem journal: online/offline settlement and cancellation; rejected and lost acknowledgements for intent, first/second character save and completion; fresh journal recovery; sorted opposite-account concurrency; later unrelated Gold preservation; unknown claim saves and local journal failure pinning.",
+    "admission": "Outsiders, disconnected/distant/different-instance/seated peers, full recipients, negative/overflow wallets, missing/mispaired escrow, wrong identity, duplicate custody and changed offers cannot capture a settlement or alter resources. Cancellation capture works with disconnected/distant/seated peers and full bags.",
+    "receipt": "Changed retained payload and missing nonempty delivery without a claim revision are rejected; exact retained and properly claimed deliveries replay without a second grant.",
+    "formatting": "gofmt and git diff --check passed",
+    "correctedDuringWork": "Removed an unused math import after extracting finite proximity checks; the final focused race run passed."
+  },
+  "sourceSha256": {
+    "server/direct_trade_character_recovery.go": "392fa9e6681a8e6859ce052b85169a2b1e0687ce4215cc18420aa4a9ca1c26b1",
+    "server/direct_trade_operation_recovery.go": "0843f97a2077d3ff497f283f382d7e8ed686a32a0e60e8bfa4747f5a60e487b6",
+    "server/direct_trade_operation_recovery_test.go": "b6eba3d0f0b6005897de1456af4d77f61d86ab4f9afdbe6332bdff27ef29de9b",
+    "server/internal/database/direct_trade_operations.go": "56e70f74b0bbef506847819f5530d13cf13385dc8c54a0ba434da31a3dd9f2d0",
+    "server/internal/database/direct_trade_state.go": "cb43029abad30865e8dee162cf34c2ca9562357251782858150d30725a472d0f",
+    "server/internal/game/direct_trade_decision.go": "46c4a94c76081d1af7573f36e390c55edfe224188e946a315bb3be087856f999",
+    "server/internal/game/direct_trade_decision_test.go": "2fab065e237dba50221ba754fc343537f1f5a097c49282be871f873e181853cb",
+    "server/internal/game/direct_trade_delivery.go": "4ba75adeede5d4fd656a408de3eb45f17c9efe57de75c87edcda06b96d6cb7ab"
+  },
+  "remainingBeforeTradePublication": [
+    "Wire globally sorted both-account command, login/resume, administrator-target and disconnect ownership without nested account locks.",
+    "Initialize and drain/recover durable shared intents at startup and discover cold orphan escrow without inventing a competing refund decision.",
+    "Connect offer-save acknowledgement, confirmed decision and owned-delivery feedback/retry to actual handlers.",
+    "Run bounded integrated handler/restart checks and isolated Mongo index/receipt checks for the final wired source before release."
+  ],
+  "limits": [
+    "These tests model atomic database storage; no new actual Mongo/index, socket, native-browser or production-account test was run.",
+    "Ordinary direct-trade handlers, startup, login/resume and cleanup are not yet wired to this prepared coordinator. No Alpha 1.73 completion, live publication or whole-economy acceptance is claimed.",
+    "Last accepted live release remains Alpha 1.70.1. Metadata stays local until a real release; the persistent full roadmap goal remains active."
+  ],
+  "ilyra": {
+    "blender": "Read-only Blender MCP inspection confirmed retained Fourfold Archmage costume scenes and 53-bone rigs; no existing scene or asset was overwritten.",
+    "publicModelSha256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+    "check": "A bounded public IPv4 fetch matched the already tested/deployed dedicated NPC model. No new full live deployment acceptance is inferred from this asset check."
+  }
+}

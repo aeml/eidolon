@@ -195,6 +195,18 @@ consume private state. Focused race and actual filesystem-journal/expiry checks
 pass. These primitives are not connected to ordinary trade handlers yet:
 two-account command/cleanup ownership, online/offline settlement, startup/login
 recovery, admission fencing and delivery feedback remain before publication.
+The [prepared two-account coordinator](2026-10-03-release1-73-trade-coordinator-checks.json)
+now freezes one decision only after saved escrow proof, saves online/offline
+participant receipts and separately journals owned delivery claims. Exact
+receipt/custody checks, sorted-lock concurrency, partial saves, lost acknowledgements,
+fresh filesystem-journal recovery and unplaceable delivery checks pass under the
+race detector. Invalid proximity cannot capture new offers/settlement; cancellation
+remains recoverable outside ordinary gameplay admission. This supersedes the
+earlier "coordinator unfinished" primitive status, not the release status:
+ordinary handlers, both-account admission/cleanup, startup/cold-orphan discovery,
+login/resume and delivery feedback still need integration. Actual Mongo and
+connected runtime acceptance are not inferred from modeled storage tests; no1.73
+release is published, and the full roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
