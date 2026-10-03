@@ -362,16 +362,7 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 
 	playerRewards := make([]DungeonRoomClearRewardEvent, 0)
 	if shouldReward {
-		rewardScale := 1.0
-		if room.Type == "elite" {
-			rewardScale = 1.5
-		}
-		if room.Hook == "chest" {
-			rewardScale += 0.35
-		}
-		if room.Hook == "elite_ambush" {
-			rewardScale += 0.45
-		}
+		rewardScale := dungeonRoomRewardScale(room)
 		for _, entity := range entities {
 			if entity == nil {
 				continue

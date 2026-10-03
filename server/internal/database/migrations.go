@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 19
+const CurrentSchemaVersion = 20
 
 type schemaMigration struct {
 	Version int
@@ -95,6 +95,9 @@ var schemaMigrations = []schemaMigration{
 	// An older server ignores pending ground intents and can republish stale
 	// projections. Fence those writers; never backfill or repair player value.
 	{Version: 19, Name: "durable_ground_item_generations", Apply: applyGroundItemOperationIndexes},
+	// Older servers ignore retained room cohorts and can save cleared progress
+	// without recovering every recipient. Fence them; no reward/value backfill.
+	{Version: 20, Name: "durable_dungeon_room_reward_cohorts", Apply: applyDungeonRoomRewardIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.
