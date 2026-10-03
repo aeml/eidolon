@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared source; not published",
+  "sourceCommit": "973e4352739967c6c7d36ad1c44e8e565e3bcb06",
+  "scope": [
+    "Shared immutable ground-item plans, retained completed identities and unique loot generations",
+    "Pending account/loot reservations, primary majority reads and journaled majority writes",
+    "Actual saved private character receipt required before completing an operation",
+    "First drop publication window retained across retries; pickup generations inherit its expiry",
+    "Cursor-bounded pending recovery and active projection queries include the latest pending custody rather than freeing an older completed quantity",
+    "Canonical UTC millisecond timestamps preserve fingerprints through BSON storage",
+    "Schema 19 fences older ground-item-unaware writers without player-value backfill"
+  ],
+  "checks": [
+    {
+      "command": "go test -race ./internal/database ./internal/game . -run '^(TestGroundItem|TestSchemaMigrationCatalog|TestMigrations)' -count=1 -timeout=45s",
+      "environment": "Go 1.27.1; explicit disposable Mongo 7.0.14 at 127.0.0.1:39074, with no production connection",
+      "result": "pass",
+      "packageSeconds": { "database": 2.168, "game": 3.831, "server": 1.715 },
+      "coverage": [
+        "Driver-command acknowledgement ambiguity, unchanged first intent, saved receipt proof and read/write concern overrides",
+        "Actual Mongo pending/completed replay, repository/client reopening, partial then full pickup generations and unchanged original expiry",
+        "Two separate 12-way actual Mongo races admit exactly one account or loot claimant",
+        "Actual pending latest projection remains unavailable; partial remainder does not refill; expired projection is not restored",
+        "Actual completed identities and all three character receipts persist, with unrelated fixture Gold unchanged",
+        "Existing game and reopened filesystem-journal primitive checks"
+      ]
+    },
+    {
+      "command": "go test -race ./internal/database -run '^TestRunMigrationsIsIdempotentAndBuildsQueryIndexes$' -count=1 -timeout=45s",
+      "environment": "Same disposable loopback Mongo",
+      "result": "pass",
+      "packageSeconds": 1.1,
+      "coverage": "Actual schema 19 migration idempotence, five ground-item indexes, partial unique reservations, unique retained generations and no identity-erasing TTL"
+    },
+    { "command": "go test ./... -run '^$' -count=1", "result": "all server packages compile" },
+    {
+      "command": "npm test -- --runInBand --runTestsByPath tests/ForgeStatOrder.test.js tests/ForgeUI.test.js tests/ForgeLiveRefresh.test.js",
+      "result": "30 focused Forge checks pass; fixed stat order retained across shuffled refreshes",
+      "source": "Existing prepared Forge follow-up; this store commit does not alter Forge presentation"
+    }
+  ],
+  "ci": "Job-owned disposable Mongo step now explicitly runs TestGroundItemStoreActualMongo; no new runner queue or long soak added",
+  "safety": "Only isolated fixture collections were written. Production accounts, currency and Mongo were untouched. Temporary labeled test container and its fixture volumes removed after checks.",
+  "remaining": [
+    "Ordinary MsgInventoryDrop and MsgPickup are still legacy paths; the live publication/save gap is not claimed fixed",
+    "Coordinator and ordinary handler integration, same-ID unknown-prepare reconciliation and account admission fencing",
+    "Startup/login/offline completion and restoration of reserved or remaining ground projections",
+    "Actual production-binary socket/crash/restart acceptance, including capacity and recipient identity collision cases",
+    "Remaining reward-path invariants and ordered milestone integration before release",
+    "Real rollout, deployment and public acceptance checks"
+  ],
+  "limits": "Standalone disposable storage and repository reopening do not prove replica-set failover, connected gameplay recovery, capacity or complete 1.73 acceptance. No version bump, deployment or production schema migration occurred. Full 1.11–1.99 roadmap goal remains active."
+}

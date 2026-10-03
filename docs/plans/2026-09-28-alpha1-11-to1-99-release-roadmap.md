@@ -238,6 +238,18 @@ recovery. Shared durable loot/intents, uniqueness, strong completion proof,
 startup/login/offline recovery and ordinary-handler integration remain required.
 The existing legacy drop/save publication gap is not claimed fixed or deployed.
 Reward invariants and the full1.11–1.99 goal remain unfinished and active.
+The [shared ground-item store follow-up](2026-10-03-release1-73-ground-item-store-checks.json)
+now retains exact plans, pending account/loot reservations and unique generations,
+requires an actual saved character receipt for completion, and preserves the
+first availability/expiry across partial pickups and replay. UTC millisecond
+precision keeps BSON restart fingerprints stable; schema19 fences older writers
+without player-value backfill. Driver checks, actual disposable Mongo contention,
+repository reopening, pending/partial/expired projections and migration/index
+checks pass. This supersedes the missing shared-store status, not the runtime or
+release status: ordinary drop/pickup handlers, coordinator admission, startup,
+login/offline recovery and connected crash/restart proof remain required. Legacy
+live behavior is unchanged; no production migration or release occurred. Reward
+invariants and the full1.11–1.99 goal remain open and active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
