@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared weekly-raid durability follow-up; not published",
+  "sourceCommit": "d1daa2f3ba7921ad325f9a1568d5a199bce2c75d",
+  "scope": [
+    "Primary/majority entitlement, completion-outbox and saved-character reads override inherited connection preferences",
+    "Journaled-majority entitlement preparation, deferral, fulfillment and legacy claim writes override unacknowledged defaults",
+    "Unique-item placement and existing full-bag Gold compensation are planned before any character mutation",
+    "Unrepresentable Gold/Resonance counters retain the entitlement without partial gear/Gold/XP or consumed receipt",
+    "Existing disposable CI integration path included; schema assertion now requires database.CurrentSchemaVersion"
+  ],
+  "verification": {
+    "toolchain": "Go1.27.1",
+    "focusedRace": {
+      "command": "go test -race . ./internal/database ./internal/game -run '^(TestWeekly|TestCurrentRaidWeek|TestNextRaidWeek)' -count=1 -timeout=60s",
+      "result": "pass",
+      "packageSeconds": { "server": 5.925, "database": 1.075, "game": 6.388 },
+      "coverage": [
+        "Actual driver commands override hostile secondary/unacknowledged inherited settings",
+        "Unknown entitlement and fulfillment writes return errors, never guessed success",
+        "Exact Gold limits with free/full bag preserve existing item/compensation rules",
+        "Negative/overflow wallets and XP/rank/point overflow preserve every pre-image and receipt",
+        "Coordinator retains a refused entitlement and later delivers it once when eligible",
+        "Existing failed-save, outbox, expiry, replay and original-week recovery checks"
+      ],
+      "boundary": "Driver replies and focused coordinator stores are modeled; filesystem journal IO is real. The Single mock topology encodes configured Primary as primaryPreferred; no secondary/nearest wire mode is accepted. Not actual failover proof."
+    },
+    "actualIntegration": {
+      "command": "EIDOLON_WEEKLY_DISPOSABLE_DATABASE=1 MONGO_URI=mongodb://127.0.0.1:39076/ EIDOLON_RESOURCE_BINARY=/tmp/eidolon-ground-runtime-djyMdN/server go test -race . -run '^TestWeeklyRaid(Mongo|Production)' -count=1 -timeout=120s -v",
+      "result": "pass; run once and monitored by owner-authorized Luna",
+      "packageSeconds": 15.586,
+      "tests": [
+        { "name": "TestWeeklyRaidMongoPendingLegacyAndDeferredQueries", "seconds": 1.15 },
+        { "name": "TestWeeklyRaidMongoJournalFailureAndOfflineRecovery", "seconds": 1.02 },
+        { "name": "TestWeeklyRaidProductionStartupRuntimeAndReconnect", "seconds": 10.76 },
+        { "name": "TestWeeklyRaidMongoInitialHandoffRecoversOriginalWeek", "seconds": 1.53 }
+      ],
+      "boundary": "Actual explicitly disposable loopback Mongo7.0.14, real journal and race-built ordinary server processes; not production mutation or a replica-set failover exercise",
+      "ownedServerEvidence": [
+        "/tmp/eidolon-compat-session-4183313603",
+        "/tmp/eidolon-compat-session-4090983486"
+      ]
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" }
+  },
+  "openAuditFindings": [
+    "Dungeon rooms set shared Rewarded progress before recipient effects; an individually saved resume can outrun another party member's unsaved reward. Room feedback currently does not commit all recipient rewards.",
+    "Boss/combat Gold/XP, party quest kill credit and event-enemy reward acknowledgement/restart boundaries remain under review.",
+    "Public event completion grants temporary calm roads, not a separate Gold purse; normal enemy rewards still use the combat path."
+  ],
+  "remaining": [
+    "Resolve room/cohort reward durability and complete the valuable-operation invariant ledger",
+    "Close prepared predecessor/security gates; publish milestones in order with patch notes",
+    "Exact-source CI/deployment and independent public acceptance",
+    "Every later full-roadmap milestone and owner-controlled beta gate"
+  ],
+  "safety": "Only owned fixture database/accounts and child processes were mutated. The exact fixture container and anonymous volumes were removed. No production data/schema, live version or deployment changed; prior live acceptance remains1.70.1. Full goal remains active."
+}

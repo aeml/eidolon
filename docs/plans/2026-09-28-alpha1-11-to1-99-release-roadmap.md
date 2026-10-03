@@ -295,6 +295,28 @@ ledger still need review, followed by ordered packaging, patch notes, deployment
 and public acceptance. No production data or release changed. Remote master was
 fetched and is already contained in this prepared branch; the full goal remains
 active and no1.73 publication is claimed.
+The [weekly-raid durability follow-up](2026-10-03-release1-73-weekly-raid-checks.json)
+now requires primary/majority reads and journaled-majority writes for entitlement
+preparation, replay, discovery, deferral, fulfillment and status, plus strong
+offline character receipt reads. Unique-item placement and full-bag compensation
+are planned before touching Gold/Resonance: unrepresentable wallets/counters keep
+the entitlement and leave no partial grant. Focused driver/game/coordinator race
+checks and four actual disposable Mongo/server integration checks pass. Luna
+monitored the latter once, including startup, runtime delivery, reconnect and
+original-week handoff recovery; this is not replica-set failover proof. CI now
+includes that existing integration path and its schema assertion requires the
+current writer fence, not the obsolete version15 constant.
+The reward audit still finds an open room/cohort boundary: dungeon room progress
+sets its shared Rewarded flag before recipient effects, but room feedback does
+not itself commit every recipient. One party member's saved resume can therefore
+contain rewarded room progress while another recipient's reward remains only in
+RAM. Boss/combat Gold/XP, quest kill credit and event-enemy rewards also still need
+their acknowledged-save/restart boundaries reviewed; public-event completion
+adds calm roads, not an independent Gold purse. These are unresolved1.73 gates,
+not fixes inferred from weekly tests. The owned weekly fixture database/volumes
+were removed; no production data, live version or deployment changed. Ordered
+milestone packaging, patch notes and public acceptance remain required, and the
+full roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
