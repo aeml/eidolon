@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -340,17 +341,29 @@ func (player *Entity) grantWeeklyRaidRewardLocked(week string) (WeeklyRaidReward
 	if player.Level < MaxPlayerLevel || (week != "" && player.WeeklyRaidRewardReceipts[week]) {
 		return WeeklyRaidRewardReceipt{}, false
 	}
-	player.addResonanceExperienceLocked(1_000_000)
 	goldReward := 15_000
 	itemGranted := false
+	planned := &Entity{Inventory: cloneItems(player.Inventory)}
 	if item := GenerateGuaranteedUniqueEquipment(MaxPlayerLevel); item != nil {
-		if player.AddItemToInventory(*item) > 0 {
+		if planned.AddItemToInventory(*item) > 0 {
 			// Never burn a weekly lockout because the inventory was full.
 			goldReward += 5_000
 		} else {
 			itemGranted = true
 		}
 	}
+	// Plan placement and full-bag compensation before touching the character.
+	// Refuse unrepresentable wallets/counters without consuming the entitlement
+	// or leaving a partial unique-item grant behind.
+	if player.Gold < 0 || player.Gold > math.MaxInt-goldReward || player.ResonanceXP < 0 || player.ResonanceXP > math.MaxInt-1_000_000 {
+		return WeeklyRaidRewardReceipt{}, false
+	}
+	earned := (player.ResonanceXP + 1_000_000) / ResonanceXPPerLevel
+	if player.ResonanceLevel < 0 || player.ResonancePoints < 0 || player.ResonanceLevel > math.MaxInt-earned || player.ResonancePoints > math.MaxInt-earned {
+		return WeeklyRaidRewardReceipt{}, false
+	}
+	player.Inventory = planned.Inventory
+	player.addResonanceExperienceLocked(1_000_000)
 	player.Gold += goldReward
 	if week != "" {
 		if player.WeeklyRaidRewardReceipts == nil {

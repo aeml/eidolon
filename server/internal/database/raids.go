@@ -8,7 +8,25 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
+
+func durableWeeklyRaidCollection(collection *mongo.Collection) (*mongo.Collection, error) {
+	if collection == nil {
+		return nil, fmt.Errorf("weekly raid storage unavailable")
+	}
+	return collection.Clone(options.Collection().
+		SetReadPreference(readpref.Primary()).SetReadConcern(readconcern.Majority()).
+		SetWriteConcern(writeconcern.New(writeconcern.WMajority(), writeconcern.J(true))))
+}
+
+// Use the already shared primary/majority character boundary. An inherited
+// secondary preference must not hydrate an older, unfulfilled reward receipt.
+func (db *DB) GetWeeklyRaidCharacter(username, characterName string) (*Character, error) {
+	return db.GetDirectTradeCharacter(username, characterName)
+}
 
 type WeeklyRaidLockout struct {
 	PlayerID        string    `bson:"player_id" json:"playerId"`
@@ -38,10 +56,14 @@ func (db *DB) PrepareWeeklyRaidReward(playerID string, at time.Time) (*WeeklyRai
 	if db == nil || db.raidLockouts == nil || playerID == "" {
 		return nil, fmt.Errorf("raid reward service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return nil, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	entry := WeeklyRaidLockout{PlayerID: playerID, Week: CurrentRaidWeek(at), CompletedAt: at.UTC(), DeliveryPending: true}
-	_, err := db.raidLockouts.InsertOne(ctx, entry)
+	_, err = lockouts.InsertOne(ctx, entry)
 	if err == nil {
 		return &entry, nil
 	}
@@ -52,7 +74,7 @@ func (db *DB) PrepareWeeklyRaidReward(playerID string, at time.Time) (*WeeklyRai
 	// not the attempted pending insert, or an absent flag stays true.
 	week := entry.Week
 	entry = WeeklyRaidLockout{}
-	err = db.raidLockouts.FindOne(ctx, bson.M{"player_id": playerID, "week": week}).Decode(&entry)
+	err = lockouts.FindOne(ctx, bson.M{"player_id": playerID, "week": week}).Decode(&entry)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +88,13 @@ func (db *DB) PendingWeeklyRaidRewards() ([]WeeklyRaidLockout, error) {
 	if db == nil || db.raidLockouts == nil {
 		return nil, fmt.Errorf("raid reward service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return nil, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cursor, err := db.raidLockouts.Find(ctx, bson.M{"delivery_pending": true,
+	cursor, err := lockouts.Find(ctx, bson.M{"delivery_pending": true,
 		"$or": bson.A{bson.M{"retry_after": bson.M{"$exists": false}}, bson.M{"retry_after": bson.M{"$lte": time.Now().UTC()}}}},
 		options.Find().SetLimit(50).SetSort(bson.D{{Key: "completed_at", Value: 1}}))
 	if err != nil {
@@ -86,9 +112,13 @@ func (db *DB) DeferWeeklyRaidReward(playerID, week string, until time.Time) erro
 	if db == nil || db.raidLockouts == nil {
 		return fmt.Errorf("raid reward service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := db.raidLockouts.UpdateOne(ctx, bson.M{"player_id": playerID, "week": week, "delivery_pending": true},
+	_, err = lockouts.UpdateOne(ctx, bson.M{"player_id": playerID, "week": week, "delivery_pending": true},
 		bson.M{"$set": bson.M{"retry_after": until.UTC()}})
 	return err
 }
@@ -97,9 +127,13 @@ func (db *DB) FinishWeeklyRaidReward(playerID, week string) error {
 	if db == nil || db.raidLockouts == nil || playerID == "" || week == "" {
 		return fmt.Errorf("raid reward service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.raidLockouts.UpdateOne(ctx, bson.M{"player_id": playerID, "week": week}, bson.M{"$set": bson.M{"delivery_pending": false}})
+	result, err := lockouts.UpdateOne(ctx, bson.M{"player_id": playerID, "week": week}, bson.M{"$set": bson.M{"delivery_pending": false}})
 	if err != nil {
 		return err
 	}
@@ -120,9 +154,13 @@ func (db *DB) UnpreparedWeeklyRaidRewards() ([]WeeklyRaidLockout, error) {
 	if db == nil || db.users == nil {
 		return nil, fmt.Errorf("weekly completion store unavailable")
 	}
+	users, err := durableWeeklyRaidCollection(db.users)
+	if err != nil {
+		return nil, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cursor, err := db.users.Find(ctx, bson.M{"characters.weekly_raid_completions": bson.M{"$exists": true, "$ne": bson.M{}}},
+	cursor, err := users.Find(ctx, bson.M{"characters.weekly_raid_completions": bson.M{"$exists": true, "$ne": bson.M{}}},
 		options.Find().SetLimit(50).SetProjection(bson.M{"username": 1, "characters.name": 1, "characters.weekly_raid_completions": 1}))
 	if err != nil {
 		return nil, err
@@ -155,10 +193,14 @@ func (db *DB) ClaimWeeklyRaidReward(playerID string, at time.Time) (bool, error)
 	if db == nil || db.raidLockouts == nil || playerID == "" {
 		return false, fmt.Errorf("raid lockout service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return false, err
+	}
 	lockout := WeeklyRaidLockout{PlayerID: playerID, Week: CurrentRaidWeek(at), CompletedAt: at.UTC()}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := db.raidLockouts.InsertOne(ctx, lockout)
+	_, err = lockouts.InsertOne(ctx, lockout)
 	if mongo.IsDuplicateKeyError(err) {
 		return false, nil
 	}
@@ -169,9 +211,13 @@ func (db *DB) HasWeeklyRaidReward(playerID string, at time.Time) (bool, error) {
 	if db == nil || db.raidLockouts == nil || playerID == "" {
 		return false, fmt.Errorf("raid lockout service unavailable")
 	}
+	lockouts, err := durableWeeklyRaidCollection(db.raidLockouts)
+	if err != nil {
+		return false, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err := db.raidLockouts.FindOne(ctx, bson.M{"player_id": playerID, "week": CurrentRaidWeek(at)}).Err()
+	err = lockouts.FindOne(ctx, bson.M{"player_id": playerID, "week": CurrentRaidWeek(at)}).Err()
 	if err == mongo.ErrNoDocuments {
 		return false, nil
 	}

@@ -94,7 +94,7 @@ func TestWeeklyRaidMongoPendingLegacyAndDeferredQueries(t *testing.T) {
 		t.Fatal("legacy reward reissued", err)
 	}
 	version, err := repo.SchemaVersion(context.Background())
-	if err != nil || version != 15 {
+	if err != nil || version != database.CurrentSchemaVersion {
 		t.Fatal("weekly receipt writer fence missing", version, err)
 	}
 	if err := repo.RunMigrations(context.Background()); err != nil {

@@ -16,7 +16,7 @@ type weeklyRaidRewardStore interface {
 	PendingWeeklyRaidRewards() ([]database.WeeklyRaidLockout, error)
 	FinishWeeklyRaidReward(string, string) error
 	DeferWeeklyRaidReward(string, string, time.Time) error
-	GetCharacter(string, string) (*database.Character, error)
+	GetWeeklyRaidCharacter(string, string) (*database.Character, error)
 }
 
 var weeklyRaidRewards weeklyRaidRewardStore
@@ -51,7 +51,7 @@ func prepareRecordedWeeklyRaidCompletion(entry database.WeeklyRaidLockout) (*dat
 			return nil, err
 		}
 		var err error
-		character, err = weeklyRaidRewards.GetCharacter(username, username)
+		character, err = weeklyRaidRewards.GetWeeklyRaidCharacter(username, username)
 		if err != nil {
 			return nil, err
 		}
@@ -116,7 +116,7 @@ func deliverWeeklyRaidReward(entry database.WeeklyRaidLockout) (game.WeeklyRaidR
 	} else {
 		offline = true
 		var err error
-		character, err = weeklyRaidRewards.GetCharacter(username, username)
+		character, err = weeklyRaidRewards.GetWeeklyRaidCharacter(username, username)
 		if err != nil {
 			return receipt, false, err
 		}
@@ -136,7 +136,7 @@ func deliverWeeklyRaidReward(entry database.WeeklyRaidLockout) (game.WeeklyRaidR
 		}
 		receipt, granted = entity.ApplyWeeklyRaidRewardForWeek(entry.Week)
 		if !entity.WeeklyRaidRewardReceipts[entry.Week] {
-			return receipt, false, errors.New("weekly character below level cap")
+			return receipt, false, errors.New("weekly character cannot accept its reward yet")
 		}
 		character.Gold = entity.Gold
 		character.ResonanceLevel, character.ResonanceXP, character.ResonancePoints = entity.ResonanceLevel, entity.ResonanceXP, entity.ResonancePoints

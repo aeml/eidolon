@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"math"
 	"reflect"
 	"testing"
 	"time"
@@ -34,6 +35,10 @@ func (s *weeklyDeliveryTestStore) GetCharacter(_, _ string) (*database.Character
 	var result database.Character
 	err = bson.Unmarshal(data, &result)
 	return &result, err
+}
+
+func (s *weeklyDeliveryTestStore) GetWeeklyRaidCharacter(username, name string) (*database.Character, error) {
+	return s.GetCharacter(username, name)
 }
 func (s *weeklyDeliveryTestStore) PrepareWeeklyRaidReward(_ string, at time.Time) (*database.WeeklyRaidLockout, error) {
 	s.preparedAt = append(s.preparedAt, at)
@@ -204,6 +209,19 @@ func TestWeeklyDeliverySavesDisconnectedCharacterAndReceiptTogether(t *testing.T
 		saved.ResonanceLevel != 1 || saved.ResonancePoints != 1 || saved.ResonanceXP != 999990 ||
 		saved.EP != 42 || !reflect.DeepEqual(saved.Resources, s.initial.Resources) {
 		t.Fatal("grant/receipt lost or unrelated resources changed")
+	}
+}
+
+func TestWeeklyDeliveryOverflowRetainsEntitlementWithoutPartialReward(t *testing.T) {
+	s := setupWeeklyDeliveryTest(t)
+	s.initial.Gold = math.MaxInt - 14_999
+	before := cloneTradeRecoveryCharacter(s.initial)
+	if _, granted, err := deliverWeeklyRaidReward(s.entry); err == nil || granted || s.finished != 0 || s.committer.saved != nil || !reflect.DeepEqual(s.initial, before) {
+		t.Fatal("unrepresentable weekly payout lost entitlement or left partial saved reward", err)
+	}
+	s.initial.Gold = 99 // Fixture-only simulated room after a later normal expense.
+	if _, granted, err := deliverWeeklyRaidReward(s.entry); err != nil || !granted || s.finished != 1 || s.committer.saved.Gold != 15099 {
+		t.Fatal("retained weekly entitlement did not recover", err)
 	}
 }
 
