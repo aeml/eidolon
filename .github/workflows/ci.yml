@@ -116,6 +116,7 @@ jobs:
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestQuestConversationActualRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDungeonRoomRewardActualPartyClearCrashAndRecovery$' -count=1 -timeout=120s
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestBossLootActualBagSpaceRejectedSaveCrashAndRecovery$' -count=1 -timeout=60s
           EIDOLON_WEEKLY_DISPOSABLE_DATABASE=1 MONGO_URI=mongodb://127.0.0.1:27017 EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestWeeklyRaid(Mongo|Production)' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
