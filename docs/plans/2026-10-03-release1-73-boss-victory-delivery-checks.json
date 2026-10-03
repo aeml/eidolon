@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared combat handoff and durable original character delivery; public loot/finale integration and production activation still required; unpublished",
+  "sourceCommit": "fc09228583ae48f306a19071b8f886660eee1722",
+  "scope": [
+    "Canonical instanced boss death has an opt-in unlocked shared-victory handoff before any legacy Gold/XP/quest/private-item credit or ground publication. An unknown preparation result does not fall through to legacy grants or room clearing. Production does not assign this hook yet.",
+    "First local capture freezes the kill-time cohort including downed members, existing reward multipliers, accepted incremental kill credits, original private difficulty rolls and public drop identity/position/original one-minute lifetime. Concurrent retries reuse the same detached nested outcome rather than reroll after movement, logout or newly accepted quests.",
+    "Root character coordinator resolves the first strongly stored winner before any grant/checkpoint. Each recipient owns only its account work lock across IO; failures do not starve other recipients. It does not terminalize the victory while original public-drop recovery remains unfinished.",
+    "Whole character earned effects, fingerprint and matching boss checkpoint cross the existing real BSON filesystem journal/save barrier. RAM-only receipts do not substitute for saved proof; a failed save is an explicit hot admission fence. Original XP split is retained for deferred feedback.",
+    "Full bags keep exact original roll bytes while still crediting Gold/XP/quests. Active-trade item retention remains in the earlier pure effect. Offline delivery reuses ordinary progression/resource hydration and changes only earned fields on the original saved character, preserving logout/run age, equipment, EP and unrelated metadata.",
+    "Confirmed inventory and quest feedback uses the same captured saved image, not later autonomous unsaved awards. Recovered replies preserve live slot positions when contents match storage; a newer bag must save before its reply. Pending-item summaries count this victory's retained items, not unrelated older pending loot.",
+    "Hot recovery has no remote polling without a failed-save marker. Authenticated cold recovery drains sorted account pages before hydration; admission call sites are prepared but the new store remains unassigned. Original death reservations can retire through independent confirmed completion, not only the initial worker."
+  ],
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(BossVictory|BossLootDeath|DungeonRoomRewardDelivery|DungeonRoomRewardRuntime|DirectTradeCold)' -count=1 -timeout=45s",
+    "focusedResult": "passed: server 9.944 seconds; game 5.144 seconds. Includes the real in-process death worker, concurrent immutable capture, canonical checkpoint matching, existing recipient primitives and room/trade compatibility. Storage acknowledgements in new root tests are modeled; the save journal is actually written and reopened.",
+    "finalRootCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^TestBossVictoryDelivery' -count=1 -timeout=45s",
+    "finalRootResult": "passed in 3.796 seconds after the final compacted-bag slot-preservation correction; covers unknown prepare before/after commit, rejected/unknown character-save replies, independent later credits, full/downed/offline recipients, stored winner, stale live proof, confirmed inventory/quest feedback and recovered slot layout.",
+    "compile": "env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed for all server packages from the server directory; git diff --check passed",
+    "corrections": "Initial new fixture incorrectly called a nonexistent Entity.Copy; replaced with existing World.GetEntityCopy. An initial acknowledgement assertion indexed an empty slot in a compacted saved bag; corrected to compare owned contents and separately test live slot positions. Final targeted race checks passed. Two compile/read commands were initially issued from the wrong directory and failed without edits; corrected before source commit."
+  },
+  "sourceSha256": {
+    "server/boss_victory_delivery.go": "03975d975ac9067fc24af8ed1fc53305ae03e1099b92cb13a6cf55da6f5ee43f",
+    "server/internal/game/boss_victory_runtime.go": "287c674d50454e115b68f07d60d5ab461c9a346bd9be79ef988435831c94e903",
+    "server/internal/game/combat_death.go": "364afc0cabf80573bf0fcfbe2d771ed6f7deb1e067ffdd47e5eca0b3055a5fc1",
+    "server/boss_victory_delivery_test.go": "eafa235e6166c973e1e605cc4f80caaf116f8c9abe757e11071fb4229143d57d",
+    "server/internal/game/boss_victory_death_test.go": "e358622208efb138cc640960a510c86bdbcdd7420682d679cebb841fd93bc48d"
+  },
+  "remainingGates": [
+    "Connect original public drops to latest ground-item custody, including consumed/partial/expired projections, unchanged identity/lifetime and discovery of still-available original drops after terminal victory/restart",
+    "Preserve original final-dungeon/guild clear and elemental crystal-repair effects through the shared winning operation and recovery; do not replace these with replay-time party membership or omit legacy story effects",
+    "Finish shared terminal completion and bounded startup/background recovery; assign the store/hook in main only after complete integration, including scene resume and reservation cleanup",
+    "Actual earned four-role party boss/rejected-save/SIGKILL/partial-checkpoint/reconnect acceptance; these fixtures are not ordinary connected combat or actual Mongo crash proof",
+    "Remaining valuable-operation and ordered 1.71/1.72 gates, versioned patch notes and verified deployment, plus the full later roadmap and owner-controlled beta/full-release gates"
+  ],
+  "safety": "No game server, disposable Mongo, production migration/database/character/wallet/service/admission change, hosted CI or deployment was started in this turn. Prepared isolated source only; public version/package/login/patch notes remain 1.70.1. The full roadmap goal remains active."
+}

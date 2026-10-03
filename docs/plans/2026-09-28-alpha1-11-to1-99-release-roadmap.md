@@ -411,6 +411,18 @@ backfill; owned test data was removed. Combat capture, the complete durable
 coordinator, public ground custody and actual earned partial-party crash/replay
 acceptance remain necessary. This foundation is not a complete replay fix or
 release; production/live1.70.1 and the full roadmap goal remain unchanged.
+The [boss-victory handoff/delivery follow-up](2026-10-03-release1-73-boss-victory-delivery-checks.json)
+now captures original canonical-boss cohorts/rolls before legacy grants, resolves
+the strongly stored winner and independently journals each earned complete
+character/checkpoint before owner feedback. Full/downed/offline members retain
+their entitlement; failed saves recover without repeating credit or shifting
+live bag slots. Actual in-process death-worker, concurrent capture and targeted
+coordinator race checks pass; database acknowledgements in these new delivery
+fixtures are modeled. Production leaves the new store/hook unassigned until
+public-drop custody, original finale/guild/crystal-repair effects, shared terminal
+and startup/background recovery, and actual earned-party crash acceptance are
+connected. No1.73 release or live activation is claimed; the full goal remains
+active, with unchanged live1.70.1.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
