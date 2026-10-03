@@ -455,6 +455,7 @@ func main() {
 	groundItemOperations = db
 	dungeonRoomRewards = db
 	bossLootCharacters = db
+	bossVictories = db
 	weeklyRaidRewards = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
@@ -539,6 +540,7 @@ func main() {
 		log.Fatal("Ground item recovery failed; refusing stale character admission")
 	}
 	world.OnBossReward = persistBossRewardFeedback
+	world.OnBossVictory = prepareAndDeliverBossVictory
 	world.OnDungeonRoomReward = func(op database.DungeonRoomRewardOperation) error {
 		err := prepareAndDeliverDungeonRoomReward(op)
 		if err != nil {
@@ -548,6 +550,12 @@ func main() {
 	}
 	if err := recoverDungeonRoomRewardsOnStartup(); err != nil {
 		log.Fatal("Dungeon room reward recovery failed; refusing stale character admission")
+	}
+	if err := recoverBossVictoriesOnStartup(); err != nil {
+		log.Fatal("Boss victory recovery failed; refusing stale character admission")
+	}
+	if err := recoverBossDropsOnStartup(); err != nil {
+		log.Fatal("Boss drop recovery failed; refusing stale character admission")
 	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
@@ -975,6 +983,16 @@ func main() {
 	loops.Every(5*time.Second, func() {
 		if err := recoverPendingDungeonRoomRewards(); err != nil {
 			log.Print("Dungeon room reward recovery remains pending")
+		}
+	})
+	loops.Every(5*time.Second, func() {
+		if err := recoverPendingBossVictories(); err != nil {
+			log.Print("Boss victory recovery remains pending")
+		}
+	})
+	loops.Every(5*time.Second, func() {
+		if err := recoverAvailableBossDrops(); err != nil {
+			log.Print("Original boss drop recovery remains pending")
 		}
 	})
 	loops.Every(5*time.Second, func() {

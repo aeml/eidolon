@@ -17,19 +17,44 @@ const bossVictoryPrefix = "bossvictory:"
 // credits. Personal receipts and pending full-bag loot are saved together. This
 // record is independent of any one member's earlier dungeon checkpoint.
 type BossVictoryOperation struct {
-	Version      int                    `bson:"version"`
-	ID           string                 `bson:"_id"`
-	InstanceID   string                 `bson:"instance_id"`
-	BossID       string                 `bson:"boss_id"`
-	BossType     string                 `bson:"boss_type"`
-	DungeonType  string                 `bson:"dungeon_type"`
-	RoomIndex    int                    `bson:"room_index"`
-	Difficulty   string                 `bson:"difficulty"`
-	RunLevel     int                    `bson:"run_level"`
-	CreatedAt    time.Time              `bson:"created_at"`
-	Participants []BossVictoryRecipient `bson:"participants"`
-	Drops        []BossVictoryDrop      `bson:"drops"`
-	Fingerprint  string                 `bson:"fingerprint"`
+	Version      int                      `bson:"version"`
+	ID           string                   `bson:"_id"`
+	InstanceID   string                   `bson:"instance_id"`
+	BossID       string                   `bson:"boss_id"`
+	BossType     string                   `bson:"boss_type"`
+	DungeonType  string                   `bson:"dungeon_type"`
+	RoomIndex    int                      `bson:"room_index"`
+	Difficulty   string                   `bson:"difficulty"`
+	RunLevel     int                      `bson:"run_level"`
+	CreatedAt    time.Time                `bson:"created_at"`
+	Participants []BossVictoryRecipient   `bson:"participants"`
+	Drops        []BossVictoryDrop        `bson:"drops"`
+	DungeonClear *BossVictoryDungeonClear `bson:"dungeon_clear,omitempty" json:",omitempty"`
+	Fingerprint  string                   `bson:"fingerprint"`
+}
+
+// Ordinary final guardians end their dungeon at the ORIGINAL kill time. A
+// crystal raid is deliberately excluded: its separate three-wave defense,
+// not the guardian kill, completes that run and awards its repair objective.
+type BossVictoryDungeonClear struct {
+	DurationMS int64             `bson:"duration_ms"`
+	GuildRuns  []GuildDungeonRun `bson:"guild_runs"`
+}
+
+func BossVictoryFinishesDungeon(bossType, dungeonType string) bool {
+	switch bossType {
+	case "HollowSentinel":
+		return dungeonType == "verdant_bastion_catacombs"
+	case "LordInfernax":
+		return dungeonType == "molten_core"
+	case "Zephyrion":
+		return dungeonType == "tempest_spire"
+	case "Thalorath":
+		return dungeonType == "abyssal_well"
+	case "EidolonDevourer":
+		return dungeonType == "umbral_nexus"
+	}
+	return false
 }
 
 // Original public loot projections also belong to the first victory. Preserve
@@ -141,6 +166,31 @@ func (op BossVictoryOperation) Validate() error {
 		payloadBytes += len(drop.Item)
 		if payloadBytes > 2<<20 {
 			return errors.New("boss victory payload exceeds bound")
+		}
+	}
+	if BossVictoryFinishesDungeon(op.BossType, op.DungeonType) != (op.DungeonClear != nil) {
+		return errors.New("boss victory lost or invented a dungeon finale")
+	}
+	if clear := op.DungeonClear; clear != nil {
+		if clear.DurationMS < 1 || clear.DurationMS > math.MaxInt64/int64(time.Millisecond) {
+			return errors.New("invalid original dungeon clear duration")
+		}
+		if len(clear.GuildRuns) > 0 {
+			if err := validateGuildClear(GuildClearReceipt{InstanceID: op.InstanceID, Runs: clear.GuildRuns}); err != nil {
+				return err
+			}
+			members, previous := 0, ""
+			for _, run := range clear.GuildRuns {
+				if run.GuildID <= previous || run.DungeonType != op.DungeonType || run.Difficulty != op.Difficulty || run.RunLevel != op.RunLevel ||
+					run.DurationMS != clear.DurationMS || !run.FirstClearAt.Equal(op.CreatedAt) || !run.UpdatedAt.IsZero() {
+					return errors.New("guild clear does not match original boss victory")
+				}
+				previous = run.GuildID
+				members += run.MemberCount
+			}
+			if members > len(op.Participants) {
+				return errors.New("guild clear exceeds original boss cohort")
+			}
 		}
 	}
 	return nil

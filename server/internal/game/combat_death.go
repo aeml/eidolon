@@ -296,8 +296,8 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 			// The shared-victory coordinator owns ALL grants, original public
 			// loot and finale effects for canonical instanced bosses. Never run
 			// the legacy credit/drop path after an accepted or unknown prepare.
-			// Production leaves this hook nil until those recovery gates are
-			// connected; noncanonical/open-world bosses retain their old path.
+			// The server installs the complete durable path; game-only fixtures
+			// may omit it. Noncanonical/open-world bosses retain their old path.
 			if isBoss && w.OnBossVictory != nil && strings.HasPrefix(tInstanceID, "dungeon_") && tID == tSubType+"-"+tInstanceID {
 				members := partyMembers
 				if attackerPartyID == "" {

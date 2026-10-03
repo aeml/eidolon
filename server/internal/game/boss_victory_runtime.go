@@ -30,6 +30,11 @@ func cloneBossVictory(op database.BossVictoryOperation) database.BossVictoryOper
 		op.Participants[i].Quests = slices.Clone(op.Participants[i].Quests)
 	}
 	op.Drops = slices.Clone(op.Drops)
+	if op.DungeonClear != nil {
+		clear := *op.DungeonClear
+		clear.GuildRuns = slices.Clone(clear.GuildRuns)
+		op.DungeonClear = &clear
+	}
 	return op
 }
 
@@ -57,12 +62,20 @@ func (w *World) captureBossVictory(input bossVictoryCapture) (database.BossVicto
 	op.RoomIndex = inst.RoomState.CurrentRoomIndexForPosition(input.spawnX, input.spawnZ)
 	validRoom := op.RoomIndex >= 0 && op.RoomIndex < len(inst.Layout.Rooms) && inst.Layout.Rooms[op.RoomIndex].Type == "boss"
 	op.RunLevel, op.DungeonType, op.Difficulty = inst.RunLevel, inst.DungeonType, string(inst.Difficulty)
+	instanceCreatedAt := inst.CreatedAt
 	inst.Mu.RUnlock()
 	if !validRoom {
 		return op, ErrBossVictoryEffectConflict
 	}
 	if op.Difficulty == "" {
 		op.Difficulty = string(DifficultyNormal)
+	}
+	var guildClear dungeonGuildClearSnapshot
+	if database.BossVictoryFinishesDungeon(op.BossType, op.DungeonType) {
+		if instanceCreatedAt.IsZero() || instanceCreatedAt.After(op.CreatedAt) {
+			return op, ErrBossVictoryEffectConflict
+		}
+		op.DungeonClear = &database.BossVictoryDungeonClear{DurationMS: max(1, op.CreatedAt.Sub(instanceCreatedAt).Milliseconds())}
 	}
 	_, _, lootMultiplier, xpMultiplier := DifficultyMultipliers(DungeonDifficulty(op.Difficulty))
 	gold := int(float64(input.baseGold) * lootMultiplier)
@@ -105,6 +118,9 @@ func (w *World) captureBossVictory(input bossVictoryCapture) (database.BossVicto
 				recipient.Quests = append(recipient.Quests, database.BossVictoryKillCredit{QuestID: quest.ID, Target: quest.Target, Amount: 1, Maximum: quest.MaxCount})
 			}
 		}
+		if op.DungeonClear != nil {
+			guildClear.addLocked(member)
+		}
 		member.Mu.RUnlock()
 		if !valid {
 			return op, ErrBossVictoryEffectConflict
@@ -133,6 +149,17 @@ func (w *World) captureBossVictory(input bossVictoryCapture) (database.BossVicto
 		op.Participants = append(op.Participants, recipient)
 	}
 	slices.SortFunc(op.Participants, func(a, b database.BossVictoryRecipient) int { return strings.Compare(a.Username, b.Username) })
+	if op.DungeonClear != nil {
+		event := DungeonCompletionEvent{InstanceID: op.InstanceID, DungeonType: op.DungeonType, Difficulty: DungeonDifficulty(op.Difficulty),
+			RunLevel: op.RunLevel, Duration: time.Duration(op.DungeonClear.DurationMS) * time.Millisecond, CompletedAt: op.CreatedAt}
+		// The existing leaderboard qualifies only runs up to 24 hours.
+		// A slower saved instance still earns its boss reward and dungeon
+		// clear; leaderboard eligibility must not strand the whole victory.
+		if event.Duration <= 24*time.Hour {
+			guildClear.finish(&event)
+		}
+		op.DungeonClear.GuildRuns = event.GuildRuns
+	}
 	for _, item := range input.loot {
 		if item == nil {
 			continue

@@ -77,3 +77,53 @@ func TestBossVictoryRejectsChangedOrUnstableIdentityAndSharedRolls(t *testing.T)
 		})
 	}
 }
+
+func TestBossVictoryFinaleBSONAndValidationPreserveOriginalClear(t *testing.T) {
+	makeFinal := func() BossVictoryOperation {
+		op := bossVictoryFixture()
+		op.BossType = "HollowSentinel"
+		op.BossID = op.BossType + "-" + op.InstanceID
+		op.ID = BossVictoryID(op.InstanceID, op.BossID)
+		op.Drops[0].LootID = "loot-boss-" + strings.TrimPrefix(op.ID, bossVictoryPrefix) + "-0"
+		op.DungeonClear = &BossVictoryDungeonClear{DurationMS: 120000, GuildRuns: []GuildDungeonRun{{GuildID: "original", GuildName: "Original", GuildTag: "OLD",
+			MemberCount: 2, Season: CurrentGuildDungeonSeason(op.CreatedAt), FirstClearAt: op.CreatedAt,
+			DungeonType: op.DungeonType, Difficulty: op.Difficulty, RunLevel: op.RunLevel, DurationMS: 120000}}}
+		op.Fingerprint, _ = BossVictoryFingerprint(op)
+		return op
+	}
+	op := makeFinal()
+	encoded, err := bson.Marshal(BossVictoryRecord{BossVictoryOperation: op, State: BossVictoryPending})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var record BossVictoryRecord
+	if err := bson.Unmarshal(encoded, &record); err != nil || record.Validate() != nil || !reflect.DeepEqual(record.BossVictoryOperation, op) {
+		t.Fatal("BSON changed original dungeon finale or fingerprint", err)
+	}
+	for name, mutate := range map[string]func(*BossVictoryOperation){
+		"missing finale": func(op *BossVictoryOperation) { op.DungeonClear = nil },
+		"invented finale": func(op *BossVictoryOperation) {
+			op.BossType = "RootboundWarden"
+			op.BossID = op.BossType + "-" + op.InstanceID
+			op.ID = BossVictoryID(op.InstanceID, op.BossID)
+			op.Drops = nil
+		},
+		"later season": func(op *BossVictoryOperation) { op.DungeonClear.GuildRuns[0].Season = "later" },
+		"later time": func(op *BossVictoryOperation) {
+			op.DungeonClear.GuildRuns[0].FirstClearAt = op.CreatedAt.Add(time.Hour)
+		},
+		"changed duration": func(op *BossVictoryOperation) { op.DungeonClear.GuildRuns[0].DurationMS++ },
+		"invalid duration": func(op *BossVictoryOperation) { op.DungeonClear.DurationMS = 0 },
+		"extra members":    func(op *BossVictoryOperation) { op.DungeonClear.GuildRuns[0].MemberCount = 3 },
+		"wrong difficulty": func(op *BossVictoryOperation) { op.DungeonClear.GuildRuns[0].Difficulty = "mythic" },
+	} {
+		t.Run(name, func(t *testing.T) {
+			op := makeFinal()
+			mutate(&op)
+			op.Fingerprint, _ = BossVictoryFingerprint(op)
+			if err := op.Validate(); err == nil {
+				t.Fatal("invalid original dungeon finale accepted")
+			}
+		})
+	}
+}

@@ -220,6 +220,9 @@ func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 		}
 	}
 
+	if err := recoverAccountBossVictoriesLocked(client.username); err != nil {
+		log.Print("Boss victory disconnect recovery remains pending")
+	}
 	if bossLootCharacters != nil {
 		if err := recoverLiveBossLootLocked(client.username, true); err != nil {
 			log.Print("Boss loot disconnect recovery remains pending")

@@ -68,7 +68,7 @@ func roomSocketMonitor(t *testing.T, connection *websocket.Conn) *roomSocketProb
 					}
 				}
 				switch message.Type {
-				case MsgPartyRequest, MsgPartyUpdate, MsgRoomClearReward, MsgInventory, MsgError:
+				case MsgPartyRequest, MsgPartyUpdate, MsgRoomClearReward, MsgRewardSummary, MsgInventory, MsgError:
 				default:
 					continue
 				}
