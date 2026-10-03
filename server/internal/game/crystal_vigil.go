@@ -257,6 +257,9 @@ func (w *World) observeCrystalVigil(s *CrystalRepairState, enemyIDs []string) ([
 			}
 			enemy.Mu.RUnlock()
 		}
+		if w.enemyHasPendingCombatReward(id) {
+			allDefeated = false
+		}
 	}
 	return players, allDefeated, enemyAtWard
 }

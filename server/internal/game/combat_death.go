@@ -61,7 +61,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 		w.ResolvePvPDeath(target.ID, attacker.ID)
 	}
 
-	if target.Type == TypeEnemy && target.InstanceID != "" && (attacker == nil || attacker.Type != TypePlayer) {
+	if target.Type == TypeEnemy && (target.InstanceID != "" || target.WorldEventID != "") && (attacker == nil || attacker.Type != TypePlayer) {
 		instanceID := target.InstanceID
 		defeatedEnemyID := target.ID
 		spawnX, spawnZ := target.SpawnX, target.SpawnZ
@@ -70,7 +70,9 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 		}
 		if !w.runBackground(func() {
 			w.endDungeonCombatReward(defeatedEnemyID)
-			w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ)
+			if instanceID != "" {
+				w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ)
+			}
 		}) {
 			w.endDungeonCombatReward(defeatedEnemyID)
 		}

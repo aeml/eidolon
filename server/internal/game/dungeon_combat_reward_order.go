@@ -3,13 +3,14 @@ package game
 // These are in-flight combat effects, not durable reward claims. Register while
 // the caller owns the enemy mutex, before publishing DEAD. Keep the spawn room
 // even if the transient corpse disappears before its reward worker finishes.
+// Public events share this guard for their own physical wave enemy IDs.
 type pendingDungeonCombatReward struct {
 	instanceID string
 	x, z       float64
 }
 
 func (w *World) beginDungeonCombatRewardLocked(enemy *Entity) {
-	if enemy.Type != TypeEnemy || enemy.InstanceID == "" {
+	if enemy.Type != TypeEnemy || (enemy.InstanceID == "" && enemy.WorldEventID == "") {
 		return
 	}
 	x, z := enemy.SpawnX, enemy.SpawnZ
@@ -28,6 +29,15 @@ func (w *World) endDungeonCombatReward(enemyID string) {
 	w.dungeonCombatRewardMu.Lock()
 	delete(w.dungeonCombatRewards, enemyID)
 	w.dungeonCombatRewardMu.Unlock()
+}
+
+// Independent of entity/corpse lifetime. Call after observing the enemy's
+// state, since registration happens under that same mutex before DEAD.
+func (w *World) enemyHasPendingCombatReward(enemyID string) bool {
+	w.dungeonCombatRewardMu.Lock()
+	defer w.dungeonCombatRewardMu.Unlock()
+	_, pending := w.dungeonCombatRewards[enemyID]
+	return pending
 }
 
 func (w *World) dungeonRoomHasPendingCombatRewards(instanceID string, room DungeonRoom) bool {

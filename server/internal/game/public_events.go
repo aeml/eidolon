@@ -220,6 +220,7 @@ func (w *World) UpdatePublicEvent(now time.Time) {
 		return
 	}
 	remaining, contested := 0, false
+	effectsPending := false
 	for _, enemy := range e.enemies {
 		enemy.Mu.RLock()
 		if enemy.State != "DEAD" && enemy.Health > 0 {
@@ -230,12 +231,13 @@ func (w *World) UpdatePublicEvent(now time.Time) {
 			}
 		}
 		enemy.Mu.RUnlock()
+		effectsPending = w.enemyHasPendingCombatReward(enemy.ID) || effectsPending
 	}
 	e.Remaining = remaining
 	if e.Phase == "defending" && holders > 0 && !contested {
 		e.Charge = math.Min(e.ChargeNeeded, e.Charge+dt)
 	}
-	if remaining != 0 || (e.Phase == "defending" && e.Charge < e.ChargeNeeded) {
+	if remaining != 0 || effectsPending || (e.Phase == "defending" && e.Charge < e.ChargeNeeded) {
 		return
 	}
 	if e.Wave < 4 {
