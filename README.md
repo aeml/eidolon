@@ -420,7 +420,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.1` (accepted direct-trade escrow-edit hotfix, exact `fa414f0b`; all ten CI jobs and independent public checks passed). [Acceptance](docs/plans/2026-10-02-release1-70-1-trade-checks.json) records the release. Offer edits retain selected escrow identity and reject overflow before mutation; this does not certify crash-durable two-account settlement. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Current source version: `Alpha 1.70.2` presentation hotfix, not yet accepted live. Forge previews and bag tooltips share a fixed stat order across refreshes. This prepared successor also includes unpublished1.71–1.73 work; do not deploy the entire tree as the presentation hotfix. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
 - Last independently verified live release: `Alpha 1.70.1`, exact
   fa414f0b288e8ee014d5ce72f7affdca485e1c7f, successful CI37068064995 (all ten jobs,
   including predeploy and live character QA). Public IPv4 frontend/backend

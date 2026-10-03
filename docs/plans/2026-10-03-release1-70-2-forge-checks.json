@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.70.2",
+  "status": "locally-verified-awaiting-exact-source-ci-and-public-acceptance",
+  "sourceCommit": "bf92f443f4d4d651e428bf16b8e5a9dc695316c4",
+  "baselineCommit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
+  "changes": [
+    "Backport only the prepared client stat-order helper and its Forge/inventory consumers. Upgrade, potency and capped-item previews consistently order Damage, Defense, STR, DEX, INT, WIS, VIT, then alphabetical extra stats, retaining zero-valued rows.",
+    "Add shuffled-map live-refresh and DOM regressions plus desktop/phone browser assertions. Align package, client/login, server, container, deployment and QA versions; retain all earlier patch notes.",
+    "No prepared 1.71 account, 1.72 authority/resource or 1.73 economy writer is included in this presentation-only hotfix."
+  ],
+  "checks": {
+    "clientCommand": "npm test -- --runInBand --silent --runTestsByPath tests/ForgeStatOrder.test.js tests/ForgeLiveRefresh.test.js tests/ForgeUI.test.js tests/ForgeProgression.test.js tests/VersionPresentation.test.js tests/AssetVersioning.test.js tests/PagesRuntimeVersioning.test.js",
+    "clientResult": "399 checks in seven suites passed in4.675 seconds with Node24.18.0. Existing local installed dependencies were reused; hosted CI must install the candidate's exact lockfile.",
+    "browserCommand": "EIDOLON_E2E_WEB_PORT=4189 EIDOLON_E2E_REUSE_SERVER=0 EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome node node_modules/@playwright/test/cli.js test tests/e2e/forge-presentation.spec.js",
+    "browserResult": "Both anonymous System Chrome checks passed, desktop1280x900 and phone-width390x844, in20.5 seconds. Local prepared runtime, shuffled refreshed maps and capped previews; not a physical phone or production session.",
+    "lint": "Full npm run lint and git diff --check passed. Browser runtime preparation succeeded.",
+    "correction": "The first focused command guessed a nonexistent ForgeDecisionPreview test filename. Its six real suites passed, but the command failed; discovered the existing ForgeUI suite and reran the corrected seven-suite command successfully. No failed run is counted as acceptance."
+  },
+  "limits": [
+    "Publication and public version/commit/asset verification are still required. Do not describe this candidate as live before those gates pass.",
+    "No material cost, stat value, reward rate, persistence schema, account data, payment integration or beta access change. Existing Ilyra NPC artwork remains unchanged.",
+    "The user's dirty shared workspace is untouched. This candidate uses a separate worktree based on accepted master rather than deploying the unpublished successor tree.",
+    "The full 1.11–1.99 roadmap remains active, including ordered1.71/1.72 decisions and remaining1.73 review/packaging."
+  ]
+}
