@@ -11,7 +11,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	// --- Loot Cleanup ---
 	if e.Type == TypeLoot {
 		e.Mu.Lock()
-		if time.Since(e.LootTime) > 1*time.Minute {
+		if e.GroundItemReservation == "" && time.Since(e.LootTime) > 1*time.Minute {
 			deferred.addRemoval(e.ID)
 		}
 		e.Mu.Unlock()

@@ -114,6 +114,7 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 }
 
 type World struct {
+	groundItemPublished map[string]groundItemPublication
 	// Immutable before world publication. Remains nil until elevation's scene,
 	// effects and client movement integration is complete; tests can opt in.
 	terrainElevation   *worldElevationField

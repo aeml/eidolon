@@ -207,13 +207,18 @@ type Entity struct {
 	Threat map[string]float64 `json:"-"`
 
 	// Loot
-	LootItem       *Item         `json:"lootItem,omitempty"` // If Type == TypeLoot
-	LootTime       time.Time     `json:"-"`
-	LootPartyID    string        `json:"-"`
-	LootOwnerID    string        `json:"-"`
-	CreatedAt      time.Time     `json:"-"`
-	SummonDuration time.Duration `json:"-"`
-	RaidPhase      int           `json:"-"`
+	LootItem              *Item         `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootTime              time.Time     `json:"-"`
+	LootPartyID           string        `json:"-"`
+	LootOwnerID           string        `json:"-"`
+	GroundItemReservation string        `json:"-"`
+	GroundReservationHash string        `json:"-"`
+	GroundCompletionHash  string        `json:"-"`
+	GroundItemOrigin      string        `json:"-"`
+	GroundItemGeneration  int64         `json:"-"`
+	CreatedAt             time.Time     `json:"-"`
+	SummonDuration        time.Duration `json:"-"`
+	RaidPhase             int           `json:"-"`
 
 	// Projectile
 	OwnerID                  string          `json:"ownerId,omitempty"`
@@ -1012,6 +1017,11 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		MovementContext:          e.MovementContext,
 		RecoveryContextReady:     e.RecoveryContextReady,
 		LootItem:                 e.LootItem,
+		GroundItemReservation:    e.GroundItemReservation,
+		GroundReservationHash:    e.GroundReservationHash,
+		GroundCompletionHash:     e.GroundCompletionHash,
+		GroundItemOrigin:         e.GroundItemOrigin,
+		GroundItemGeneration:     e.GroundItemGeneration,
 		LootTime:                 e.LootTime,
 		LootPartyID:              e.LootPartyID,
 		CreatedAt:                e.CreatedAt,
@@ -1075,6 +1085,10 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		}
 	}
 
+	if e.LootItem != nil {
+		item := cloneItem(*e.LootItem)
+		newE.LootItem = &item
+	}
 	if e.Inventory != nil {
 		newE.Inventory = cloneItems(e.Inventory)
 	}

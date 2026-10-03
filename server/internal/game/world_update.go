@@ -112,6 +112,14 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 
 	for _, id := range deferred.removals {
 		if e, ok := w.Entities[id]; ok {
+			if e.Type == TypeLoot {
+				e.Mu.RLock()
+				reserved := e.GroundItemReservation != ""
+				e.Mu.RUnlock()
+				if reserved {
+					continue // Reservation may have arrived after the worker's expiry check.
+				}
+			}
 			w.Grid.Remove(e)
 			delete(w.Entities, id)
 		}

@@ -14,14 +14,22 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool, string) {
 	if !ok {
 		return nil, false, "player_not_found"
 	}
+	if player.Type != TypePlayer {
+		return nil, false, "player_unavailable"
+	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
 	loot, ok := w.Entities[lootID]
 	if !ok || loot.Type != TypeLoot {
 		return nil, false, "loot_not_found"
 	}
-	if player.Type != TypePlayer || player.State == "DEAD" || player.Health <= 0 {
+	loot.Mu.Lock()
+	defer loot.Mu.Unlock()
+	if player.Type != TypePlayer || player.State == "DEAD" || player.Health <= 0 || player.Disconnected {
 		return nil, false, "player_unavailable"
+	}
+	if loot.GroundItemReservation != "" {
+		return nil, false, "pickup_pending"
 	}
 	if player.InstanceID != loot.InstanceID {
 		return nil, false, "different_instance"
