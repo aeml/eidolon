@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared original boss-victory store and recipient effects; combat/recovery integration still required; unpublished",
+  "sourceCommit": "bac1337e402e32b1076b7e899ff09dea95403bb0",
+  "scope": [
+    "Dedicated immutable shared victory identifies the canonical instanced boss and retains the original sorted kill-time cohort, Gold/XP, incremental accepted quest credit, private original rolls and public loot identity/position/expiry. It does not derive entitlement from whichever character first restores a room.",
+    "Canonical production boss IDs are subtype plus instance, unlike random ordinary-enemy IDs. An actual canonical spawn and legacy-layout restore fixture retains the same victory key, while a separate run differs. Model refuses random replacement IDs and changed/malformed cohorts.",
+    "Primary/majority reads and majority journaled writes retain the first physical victory. Conflicting outcomes are refused. Terminal completion requires actual saved fingerprint receipts from every original recipient; bounded sorted per-account/all-account pending cursors survive a new repository instance.",
+    "Detached character item/quest planning refuses metadata, identity or numeric conflicts without partial effects. Full bags preserve exact original opaque roll bytes. Bag/queue, Gold/XP, quest credit, weekly original timestamp and once-only fingerprint are one character effect to be saved by the forthcoming coordinator.",
+    "Incremental kill credit plus the once-only receipt preserves later independent kills rather than swallowing them into an absolute progress floor. Later turn-ins are not undone, quests are not accepted/completed automatically, and accepted reward quotes remain unchanged.",
+    "World-level application retains incoming items during an active trade even when they could fit, preserving the offered bag until ordinary post-trade collection. Downed recipients remain dead; capped combat XP follows existing resonance policy.",
+    "Prepared schema22 creates only the victory collection/indexes and fences older death pipelines; no player reward backfill or production migration is performed. This schema alone is not a ready release."
+  ],
+  "verification": {
+    "focusedRace": {
+      "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database ./internal/game -run '^Test(BossVictory|BossLoot|SchemaMigrationCatalog|DungeonRoomReward)' -count=1 -timeout=45s",
+      "result": "passed; server17.894 seconds, database1.120 seconds, game12.296 seconds",
+      "scope": "Prepared primitives, full-bag/trade/replay/quest/overflow/future-payload/cap/dead fixtures, model/BSON checks and existing retained-loot/room reward regression checks. Opt-in real Mongo and connected server tests skipped in this command."
+    },
+    "canonicalSpawnRestore": {
+      "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^TestBossVictoryIdentitySurvivesCanonicalSpawnAndRestore$' -count=1 -timeout=15s",
+      "result": "passed in1.668 seconds",
+      "scope": "Actual game canonical boss factory and restore on a prepared three-room layout; not a full generated dungeon or connected boss kill."
+    },
+    "actualMongo": {
+      "command": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_BOSS_TEST_MONGO_URI=mongodb://127.0.0.1:32868 go test -race ./internal/database -run '^TestBossVictoryStoreActualMongo$' -count=1 -timeout=45s -v",
+      "monitor": "Existing Luna watcher started/monitored this single bounded test in its own tool session",
+      "result": "passed; test12.41 seconds, package13.463 seconds",
+      "scope": "Eight different first-outcome prepares: exactly one wins and seven conflict. Completion refuses absent and RAM-only recipient receipts, then accepts both actual stored receipts. Reopened repository preserves exact winning cohort/drop lifetime. Seven-record pages visit all52 pending victories and exclude unrelated/completed cohorts.",
+      "independentInspection": "Root read the owned Mongo after acceptance: schema22 durable_boss_victory_cohorts,52 pending and1 complete record, unique physical-boss index plus global/account pending recovery indexes. An initial read-only inspection expression had an extra parenthesis; corrected inspection returned the expected values."
+    },
+    "compile": "Final env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed for all server packages",
+    "diffCheck": "passed",
+    "corrections": "Initial fixture used a nonexistent quoted-Gold field; corrected to the actual accepted reward fields. Full-bag assertion exposed reserialization of the retained payload, now replaced by exact immutable record bytes. Review changed absolute quest progress to incremental receipt-protected credit before acceptance."
+  },
+  "remaining": [
+    "Capture the first original cohort/rolls before combat credits and resolve the shared winning record before any boss recipient effect or checkpoint",
+    "Wire complete character saves, partial-cohort progress, initial/failed-save admission, cold/startup/bag/background recovery and confirmed owner feedback; the current ordinary boss death path still uses the preceding save barrier, not this new victory store",
+    "Connect public drop projections to ground-item custody so restart cannot republish picked-up/expired loot or renew its lifetime",
+    "Actual earned party boss/rejected-save/SIGKILL/partial-checkpoint/reconnect acceptance; a prepared stored receipt is not earned combat proof",
+    "Remaining valuable-operation and ordered1.71/1.72 gates, versioned patch notes and verified deployment, plus all later full-roadmap and owner-controlled closed-beta/full-release gates"
+  ],
+  "safety": "No new game server or production database/schema/service/character/wallet/payment/admission change. Exact owned Mongo25c153b720fac4903e1b72419642596e994bd2847c8a52131d136ca4b447c556 and inspected anonymous test volumes removed after acceptance. Only prepared local source/CI definition changed; no hosted CI or deployment was triggered. Last accepted live remains1.70.1. Full goal stays active."
+}

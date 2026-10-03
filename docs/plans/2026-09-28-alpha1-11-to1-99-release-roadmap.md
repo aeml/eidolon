@@ -400,6 +400,17 @@ delivery of an already-earned fixture queue, not initial boss entitlement or
 partial-party checkpoint replay. Those and the other1.73/ordered release gates
 remain required; no production mutation, public version bump or deployment is
 claimed, and the full roadmap goal remains active.
+The [original boss-victory foundation](2026-10-03-release1-73-boss-victory-foundation-checks.json)
+now retains a canonical physical boss's sorted original cohort, private rolls,
+Gold/XP, incremental quest credit and exact public-drop lifetime in a dedicated
+first-outcome store. Eight conflicting actual Mongo prepares yield one winner;
+completion requires both actually saved recipient receipts. A reopened
+repository and52 pending-record cursor checks pass, as do full-bag/trade/quest
+and canonical spawn/restore race fixtures. Schema22 is prepared without reward
+backfill; owned test data was removed. Combat capture, the complete durable
+coordinator, public ground custody and actual earned partial-party crash/replay
+acceptance remain necessary. This foundation is not a complete replay fix or
+release; production/live1.70.1 and the full roadmap goal remain unchanged.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
