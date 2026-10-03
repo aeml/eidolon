@@ -67,18 +67,8 @@ func (w *World) RestoreGroundItemProjection(record database.GroundItemRecord, sa
 			return errors.New("ground item projection quantity or metadata changed")
 		}
 	}
-	if w.groundItemPublished == nil {
-		w.groundItemPublished = map[string]groundItemPublication{}
-	}
-	if _, found := w.groundItemPublished[record.LootID]; !found && len(w.groundItemPublished) >= 10000 {
-		for id, previous := range w.groundItemPublished {
-			if time.Now().After(previous.ExpiresAt) && w.Entities[id] == nil {
-				delete(w.groundItemPublished, id)
-			}
-		}
-		if len(w.groundItemPublished) >= 10000 {
-			return errors.New("ground item projection capacity unavailable")
-		}
+	if err := w.ensureGroundProjectionCapacityLocked(record.LootID); err != nil {
+		return err
 	}
 	// This process-local generation fence complements, never replaces, the
 	// durable latest-record read. It also prevents an old drop refilling a
@@ -111,6 +101,24 @@ func (w *World) RestoreGroundItemProjection(record database.GroundItemRecord, sa
 		loot.GroundItemReservation, loot.GroundReservationHash = record.ID, record.Fingerprint
 	} else {
 		loot.GroundCompletionHash = record.Fingerprint
+	}
+	return nil
+}
+
+func (w *World) ensureGroundProjectionCapacityLocked(lootID string) error {
+	if w.groundItemPublished == nil {
+		w.groundItemPublished = map[string]groundItemPublication{}
+	}
+	if _, found := w.groundItemPublished[lootID]; !found && len(w.groundItemPublished) >= 10000 {
+		now := time.Now()
+		for id, previous := range w.groundItemPublished {
+			if now.After(previous.ExpiresAt) && w.Entities[id] == nil {
+				delete(w.groundItemPublished, id)
+			}
+		}
+		if len(w.groundItemPublished) >= 10000 {
+			return errors.New("ground item projection capacity unavailable")
+		}
 	}
 	return nil
 }

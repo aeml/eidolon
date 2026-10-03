@@ -143,4 +143,24 @@ func TestBossVictoryStoreActualMongo(t *testing.T) {
 	if page, err := fresh.PendingBossVictories(characters[1].Name, "", 50); err != nil || len(page) != 0 {
 		t.Fatal("completed victory or another cohort leaked into account recovery", err)
 	}
+	// Terminal reward receipts must not hide still-available original spawns.
+	page, err := fresh.ActiveBossVictoryDropPage("", op.CreatedAt, 50)
+	if err != nil || len(page) != 1 || page[0].ID != op.ID || page[0].State != BossVictoryComplete {
+		t.Fatal("terminal first victory lost active original drops", err)
+	}
+	if page, err := fresh.ActiveBossVictoryDropPage(op.ID, op.CreatedAt, 50); err != nil || len(page) != 0 {
+		t.Fatal("active projection cursor repeated its exclusive ID bound", err)
+	}
+	if page, err := fresh.ActiveBossVictoryDropPage("", op.Drops[0].ExpiresAt, 50); err != nil || len(page) != 0 {
+		t.Fatal("expired first drop was renewed or included at its expiry", err)
+	}
+	for _, query := range []struct {
+		after string
+		now   time.Time
+		limit int
+	}{{"invalid", op.CreatedAt, 1}, {"", time.Time{}, 1}, {"", op.CreatedAt, 51}} {
+		if _, err := fresh.ActiveBossVictoryDropPage(query.after, query.now, query.limit); !errors.Is(err, ErrBossVictoryConflict) {
+			t.Fatal("unbounded or malformed active projection query was accepted", err)
+		}
+	}
 }

@@ -60,6 +60,7 @@ func applyBossVictoryIndexes(ctx context.Context, db *DB) error {
 		{Keys: bson.D{{Key: "instance_id", Value: 1}, {Key: "boss_id", Value: 1}}, Options: options.Index().SetName("unique_boss_victory").SetUnique(true)},
 		{Keys: bson.D{{Key: "state", Value: 1}, {Key: "_id", Value: 1}}, Options: options.Index().SetName("pending_boss_victory_recovery")},
 		{Keys: bson.D{{Key: "state", Value: 1}, {Key: "participants.username", Value: 1}, {Key: "_id", Value: 1}}, Options: options.Index().SetName("pending_boss_victory_account")},
+		{Keys: bson.D{{Key: "drops.expires_at", Value: 1}, {Key: "_id", Value: 1}}, Options: options.Index().SetName("active_boss_victory_drops")},
 	})
 	return err
 }
@@ -206,6 +207,43 @@ func (db *DB) PendingBossVictories(username, afterID string, limit int) ([]BossV
 	for _, record := range records {
 		_, eligible := BossVictoryRecipientFor(record.BossVictoryOperation, username)
 		if record.Validate() != nil || record.State != BossVictoryPending || record.ID <= afterID || (username != "" && !eligible) {
+			return nil, ErrBossVictoryConflict
+		}
+	}
+	return records, nil
+}
+
+// Original unclaimed drops remain recoverable after private rewards complete.
+// Never scan only pending victories or renew loot availability at restart.
+func (db *DB) ActiveBossVictoryDropPage(afterID string, now time.Time, limit int) ([]BossVictoryRecord, error) {
+	if (afterID != "" && !validBossVictoryID(afterID)) || now.IsZero() || limit < 1 || limit > 50 {
+		return nil, ErrBossVictoryConflict
+	}
+	collection, err := db.durableBossVictories()
+	if err != nil {
+		return nil, err
+	}
+	filter := bson.M{"drops.expires_at": bson.M{"$gt": now.UTC().Truncate(time.Millisecond)}}
+	if afterID != "" {
+		filter["_id"] = bson.M{"$gt": afterID}
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cursor, err := collection.Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}).SetLimit(int64(limit)))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var records []BossVictoryRecord
+	if err := cursor.All(ctx, &records); err != nil {
+		return nil, err
+	}
+	for _, record := range records {
+		active := false
+		for _, drop := range record.Drops {
+			active = active || drop.ExpiresAt.After(now.UTC().Truncate(time.Millisecond))
+		}
+		if record.Validate() != nil || record.ID <= afterID || !active {
 			return nil, ErrBossVictoryConflict
 		}
 	}

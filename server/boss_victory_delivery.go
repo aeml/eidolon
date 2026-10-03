@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"sync"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
@@ -18,6 +19,7 @@ type bossVictoryStore interface {
 	PrepareBossVictory(database.BossVictoryOperation) (*database.BossVictoryRecord, error)
 	CompleteBossVictory(string, string) (*database.BossVictoryRecord, error)
 	PendingBossVictories(string, string, int) ([]database.BossVictoryRecord, error)
+	ActiveBossVictoryDropPage(string, time.Time, int) ([]database.BossVictoryRecord, error)
 }
 
 var bossVictories bossVictoryStore

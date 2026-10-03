@@ -101,6 +101,25 @@ func (store *bossVictoryRecoveryStore) PendingBossVictories(username, after stri
 	return records[:min(limit, len(records))], nil
 }
 
+func (store *bossVictoryRecoveryStore) ActiveBossVictoryDropPage(after string, now time.Time, limit int) ([]database.BossVictoryRecord, error) {
+	store.mu.Lock()
+	defer store.mu.Unlock()
+	var records []database.BossVictoryRecord
+	for _, record := range store.victories {
+		if record.ID <= after {
+			continue
+		}
+		for _, drop := range record.Drops {
+			if drop.ExpiresAt.After(now) {
+				records = append(records, *cloneBossVictoryRecord(record))
+				break
+			}
+		}
+	}
+	slices.SortFunc(records, func(a, b database.BossVictoryRecord) int { return strings.Compare(a.ID, b.ID) })
+	return records[:min(limit, len(records))], nil
+}
+
 func bossVictoryDeliveryFixture(t *testing.T) (*bossVictoryRecoveryStore, *game.DungeonInstance, []*game.Entity, database.BossVictoryOperation, string) {
 	t.Helper()
 	roomStore, instance, players, dir := roomDeliveryFixture(t)
