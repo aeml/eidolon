@@ -458,6 +458,14 @@ for manual turn-in, not automatically completed. Owned test data was removed.
 This is not a complete connected crystal vigil or a new shared defense ledger.
 The Forge's fixed stat order remains included in prepared source. Reward review,
 ordered release packaging and public deployment acceptance remain open.
+The [encounter-order follow-up](2026-10-03-release1-73-encounter-order-checks.json)
+extends the existing kill-effect guard to public-event waves/champions and
+crystal vigils, including removed corpses. These transitions no longer overtake
+earned Gold/XP/quest mutation; unrelated encounters remain independent. An actual
+in-process death-worker check and targeted race regressions pass. Turn-in replies
+also retain their exact saved bag/quest image instead of confirming later unsaved
+combat effects. Neither change invents an event completion payout or changes the
+interrupted-vigil policy. This remains prepared, not deployed or whole1.73 accepted.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

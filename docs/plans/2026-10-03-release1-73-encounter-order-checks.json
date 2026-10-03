@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-encounter-order-follow-up",
+  "sourceCommit": "a0989be93b01e7e99cd6aae6cc4dcf84ea483bfe",
+  "encounterSourceCommit": "1d8db277e185963b77f43a03673570b07273cdbe",
+  "baselineReproduction": "New wave/champion public-event checks and a removed-corpse crystal-vigil check failed before the fix. A separate turn-in check failed because its confirmed reply included quest and bag changes made after the saved image was captured.",
+  "changes": [
+    "Public-event wave/champion transitions and crystal-vigil observations wait for their own physical enemies' existing asynchronous kill-effect reservations, including after corpse removal. Unrelated encounters do not block each other.",
+    "Public-event enemies now use the existing bounded-by-in-flight-deaths reservation map; ordinary player and nonplayer death paths release it. Expiry rules, existing rewards and hazard-calming duration are unchanged.",
+    "Turn-in bag and quest replies use the exact successfully saved character copy, not a newer unsaved live copy after IO. Independent later live progress is preserved."
+  ],
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game -run '^Test(QuestConversation|QuestProgressDelivery|PublicEvent|PublicEvents|CrystalVigil|CrystalRepair|DungeonRoom.*(Checkpoint|Pending)|BossVictoryDeath)' -count=1 -timeout=60s",
+    "result": "passed: server 6.521s, game 4.420s",
+    "coverage": "Wave and champion transition barriers; removed-corpse vigilance; unrelated encounter isolation; nonplayer cleanup; actual in-process death worker paused at difficulty lookup, then drained with earned Gold/XP and manual-turn-in kill credit; exact saved turn-in replies despite later live quest/bag effects; previous quest-progress, repair, public-event and room-checkpoint regressions.",
+    "hygiene": "gofmt and git diff --check passed. No external services, fixture containers or production data changed in this follow-up."
+  },
+  "limits": [
+    "In-flight ordering is not a new durable event/defense entitlement ledger. Unfinished crystal vigils retain the existing full-vigil restart rule; live event completion is not claimed to survive every crash.",
+    "This is targeted in-process coverage, not another connected party run, full campaign, historical economy remediation or whole-1.73 acceptance.",
+    "Prepared source remains unpublished. Origin master was fetched and contained; live remains1.70.1. Ordered security decisions, release packaging, patch notes and public deployment acceptance remain open."
+  ]
+}
