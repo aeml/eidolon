@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-source-boundary-ledger-not-release-acceptance",
+  "reviewedSourceCommit": "5a71d23916631ddc02f28abc3e250cb29746839d",
+  "domains": [
+    {
+      "name": "direct trade",
+      "invariant": "Original persisted escrow and immutable two-account settlement survive retry; recipient receipts share complete character saves. Unplaceable original items stay owed rather than rerolled or refunded twice.",
+      "evidence": "2026-10-03-release1-73-trade-runtime-checks.json",
+      "status": "prepared connected crash/recovery proof; not published"
+    },
+    {
+      "name": "auction",
+      "invariant": "EnsureBidDecision precedes debit, listing escrow, buyout, item claim or seller payout. Exact item/currency effects and replay receipts share one full character save before CompleteAuctionBid. Unknown saves retain the original decision, not financial compensation.",
+      "source": ["server/auction_bid_operations.go", "server/auction_item_operations.go", "server/auction_listing_operations.go"],
+      "tests": ["TestAuctionBidFailureRetainsDecisionAndJournaledDebitForRetry", "TestAuctionSellerPayoutFailureRetainsDecisionAndJournaledCreditForRetry", "TestAuctionListingSaveFailureRetainsEscrowAndUnpublishedDecision", "TestAuctionBuyoutSaveFailureKeepsDebitAndItemInOneJournal", "TestAuctionItemSaveFailureRetainsReceiptBeforeFinalClaim"],
+      "status": "current source reviewed and focused modeled-storage/filesystem regressions passed; no new actual Mongo claim"
+    },
+    {
+      "name": "guild bank",
+      "invariant": "Strongly reread the original operation, freeze permissions/capacity through reservation, confirm character receipt before bank effect, then confirm terminal intent before release. Never reject/refund a partially durable transfer or overwrite legacy equipment during offline recovery.",
+      "source": ["server/guild_bank_operation_recovery.go", "server/guild_bank_character_recovery.go", "server/internal/database/guild_bank_operations.go"],
+      "tests": ["TestGuildBankCharacterRecoveryPersistsVolatileReceiptBeforeAcknowledging", "TestGuildBankCharacterRecoveryReopensJournalBeforeApplyingSavedIntentAgain", "TestGuildBankRequestTerminalLookupPrecedesPlanningAndRejectsChangedReplay"],
+      "status": "current source reviewed and focused modeled-storage/filesystem regressions passed; gated actual Mongo fixtures skipped without disposable environment"
+    },
+    {
+      "name": "vendor",
+      "invariant": "Account serialization, prior pending-save reconciliation and active-trade exclusion precede sell/buyback. Exact bag, buyback and Gold post-image share the journal; failures return pending errors rather than confirmed durable success.",
+      "source": ["server/vendor_handlers.go"],
+      "evidence": "2026-10-02-release1-73-vendor-persistence-checks.json",
+      "status": "prepared; focused regressions passed on reviewed source"
+    },
+    {
+      "name": "ground drops and pickup",
+      "invariant": "First physical drop/claim custody and saved exact bag effects precede publication or completion; replay obeys latest partial/consumed/reserved quantities and original metadata/expiry.",
+      "evidence": ["2026-10-03-release1-73-ground-item-runtime-checks.json", "2026-10-03-release1-73-boss-drop-recovery-checks.json"],
+      "status": "prepared connected ordinary-drop crash/recovery and focused boss-origin lineage proof; earned boss socket test rolled zero public drops"
+    },
+    {
+      "name": "Forge",
+      "invariant": "All six network commands require current item/material quotes and complete prior-save reconciliation; full post-image saves preserve item and consumed materials together. Stale retry cannot silently purchase another rank or change another gem.",
+      "source": ["server/forge_handlers.go"],
+      "evidence": "2026-10-03-release1-73-forge-checks.json",
+      "status": "prepared economy writer; presentation-only stat-order fix separately pushed as1.70.2, not yet accepted live"
+    },
+    {
+      "name": "quest acceptance, progress and turn-in",
+      "invariant": "Accepted reward quote, actual collection consumption and manual turn-in payment share a confirmed full save before completion dialogue. Ordinary progress, menu reads and discoveries publish exact saved images, not newer unsaved counts.",
+      "source": ["server/quest_conversation_handlers.go", "server/quest_progress_delivery.go"],
+      "evidence": ["2026-10-03-release1-73-quest-conversation-checks.json", "2026-10-03-release1-73-quest-progress-checks.json", "2026-10-03-release1-73-encounter-order-checks.json"],
+      "status": "prepared connected collection-turn-in recovery plus focused save-order proof; no automatic turn-in introduced"
+    },
+    {
+      "name": "dungeon rooms, bosses and weekly raid awards",
+      "invariant": "Original physical encounter/cohort and exact private/public rolls are immutable. Complete original character receipts precede shared terminal proof; full bags retain owed items, not rerolls. Weekly completion retains its original week and refuses unrepresentable wallet/counter effects without partial grants.",
+      "evidence": ["2026-10-03-release1-73-room-reward-runtime-checks.json", "2026-10-03-release1-73-boss-finales-checks.json", "2026-10-03-release1-73-weekly-raid-checks.json"],
+      "status": "prepared real geared four-class room/first-boss crash recovery and disposable weekly runtime proof; not actual Dark King or final crystal-defense acceptance"
+    },
+    {
+      "name": "public events and crystal defenses",
+      "invariant": "Physical objective/wave completion cannot overtake its own enemy kill effects, even after corpse cleanup. Event completion grants temporary calm roads, not another purse. Actual REPAIR progress remains conditional and requires a separate saved manual turn-in for financial rewards/portal progression.",
+      "source": ["server/internal/game/public_events.go", "server/internal/game/crystal_vigil.go", "server/internal/game/crystal_repair.go"],
+      "evidence": ["2026-10-03-release1-73-encounter-order-checks.json", "2026-10-03-release1-73-quest-progress-checks.json"],
+      "status": "prepared in-flight ordering and saved quest feedback; interrupted defense keeps existing full-vigil restart policy, not a new durable wave ledger"
+    },
+    {
+      "name": "casino Gold and EP wallets",
+      "invariant": "Server-validated table intent/currency precedes account-serialized wallet receipt. Confirm full currency image before resolving the pending table transfer; unknown replies retain the same intent. Offline recovery preserves unrelated character fields. EP transfers cannot enter Gold wallet; no EP-to-Gold route is introduced.",
+      "source": ["server/casino_gold.go", "server/casino_currency.go", "server/casino_slot_sessions.go", "server/casino_house_sessions.go", "server/casino_poker_sessions.go", "server/internal/database/casino_blackjack.go"],
+      "status": "current source reviewed and focused wallet regressions passed; prior connected casino release receipts retain original scopes, not new capacity or replica-failover proof"
+    }
+  ],
+  "crossDomainCheck": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(Auction|GuildBank|CasinoGold|CasinoEP|Vendor|Forge|QuestConversation)' -count=1 -timeout=60s",
+    "result": "passed, package17.553 seconds. This regression pass checks the reviewed source after quest-save changes and merge of the corrected test-tool dependency tree. Environment-gated disposable Mongo tests did not run; no extra production/connected test was created."
+  },
+  "existingData": "No inferred historical duplication cleanup, item deletion, reward reissue, wallet conversion, stat normalization or account wipe. Ambiguous identities/conflicting receipts fail closed and preserve evidence; any identified real remediation needs exact scope and recoverable plan.",
+  "remaining": [
+    "This ledger maps the ten required domains to authoritative code/checks and stated limits. It is not a whole-milestone or full crash-safety certification.",
+    "Ordered1.71 recovery and1.72 jump decisions remain open.1.73 requires final packaging/compatibility review, version/cumulative patch notes, exact-source CI, deployment and independent public acceptance.",
+    "No completed connected crystal-vigil/Dark King, replica failover or all-history financial remediation claim. Crystal-completion/guild leaderboard local-write failures remain explicitly reported; do not infer a durable financial entitlement from transient completion visuals.",
+    "The1.70.2 corrected Forge presentation hotfix is separately in CI; live acceptance still belongs to the prior1.70.1 receipt until verified. Full1.11–1.99 roadmap remains active."
+  ]
+}

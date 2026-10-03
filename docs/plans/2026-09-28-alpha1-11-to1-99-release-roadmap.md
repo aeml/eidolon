@@ -466,6 +466,16 @@ in-process death-worker check and targeted race regressions pass. Turn-in replie
 also retain their exact saved bag/quest image instead of confirming later unsaved
 combat effects. Neither change invents an event completion payout or changes the
 interrupted-vigil policy. This remains prepared, not deployed or whole1.73 accepted.
+The [valuable-operation boundary ledger](2026-10-03-release1-73-operation-ledger.json)
+now maps all ten required domains to current source invariants, reusable evidence
+and explicit limits. A focused cross-domain race regression passes after the
+quest-save changes; environment-gated Mongo tests are not counted as new proof.
+No speculative historical item/currency cleanup is performed. Separately, the
+fixed Forge row order is backported onto accepted master as1.70.2 with cumulative
+notes. Its first CI candidate failed a newly reported development dependency
+audit; the corrected Jest30 test tree removes the vulnerable path and audits clean.
+Exact-source corrected CI/deployment and public acceptance remain open; the
+unpublished security/economy writer tree is not part of that presentation hotfix.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
