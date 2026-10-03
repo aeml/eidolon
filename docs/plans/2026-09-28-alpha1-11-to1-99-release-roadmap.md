@@ -433,6 +433,19 @@ index refinement remains prepared only, and its owned test data was removed.
 Finale/guild/crystal-repair replay, complete cohort/startup wiring and actual
 earned-party crash/reconnect acceptance remain before production activation.
 No1.73 completion or publication is claimed; the full roadmap stays active.
+The [integrated boss/finale recovery acceptance](2026-10-03-release1-73-boss-finales-checks.json)
+now connects the canonical death hook, original private/public custody, frozen
+ordinary dungeon/guild clears, crystal-vigil startup, terminal proof and bounded
+startup/background/disconnect recovery in prepared server source. A real geared
+four-class party earned its first guardian kill; actual Mongo rejection, full-bag
+retention, SIGKILL, fresh startup and reconnect preserved the same four-member
+victory and saved claims without respawning the cleared boss. Luna monitored the
+38.64-second encounter check. Finale/guild/crystal rules also pass focused race
+checks; this does not prove an actual completed repair defense, final ordinary
+guardian, public pickup from this zero-public-drop roll, or the Dark King. Owned
+test data was removed. Remaining reward-boundary review and ordered packaging,
+patch notes, deployment/public acceptance still precede1.73 publication; live
+remains1.70.1 and the full1.11–1.99 goal remains active.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

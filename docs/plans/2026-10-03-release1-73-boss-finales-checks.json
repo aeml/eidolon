@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-integrated-boss-recovery-accepted",
+  "sourceCommit": "f95997bb6a0fa92414f152edfcdec842f61a7da0",
+  "scope": [
+    "The complete canonical-boss coordinator now connects first-victory preparation, independent original-recipient saves, original public-drop custody, guild-clear handoff, crystal-vigil startup, strongly proven shared completion and reservation retirement.",
+    "Main initializes the boss store and installs the coordinator; startup drains original claims before admission, and bounded rotating background passes retry local prepares, stored pending cohorts and still-available public drops. Disconnect attempts a failed original recipient save before its final snapshot.",
+    "Ordinary final guardians retain the original clear duration, completion time, season, guild identities/member counts and original participants in the immutable victory. Failed filesystem guild handoff leaves the cohort pending; terminal replay does not recreate an acknowledged guild outbox entry.",
+    "Elemental guardian kills do not complete their raids or grant REPAIR credit. They start the existing full three-wave vigil at the physical crystal chamber for the original cohort. Duplicate startup is idempotent, already-repaired parties do not restart waves, and absent-scene recovery relies on saved guardian checkpoints and the existing re-entry vigil restart rule.",
+    "The existing 24-hour leaderboard qualification does not prevent a slower saved dungeon from earning its boss reward and ordinary clear. Its real duration is retained without inventing a qualifying leaderboard time."
+  ],
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game ./internal/database -run '^Test(BossVictory|CrystalRepairResume|RestoredRaidPreserves|GuildClearReplay)' -count=1 -timeout=60s",
+    "focusedResult": "passed: server 11.756s, game 9.303s, database 1.068s",
+    "focusedCoverage": "Original guild/time/season capture and nested-copy isolation; BSON validation; failed member versus other recipients; failed and reopened actual guild filesystem outbox; completion acknowledgements lost before/after storage; startup with absent scene and unchanged logout/run age; all four elemental guardians start defense without repair credit; original ready-but-unclaimed repair is not reset; long nonqualifying leaderboard runs still clear.",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32872 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-boss-victory-runtime-1YK7f1/server go test -race . -run '^TestBossVictoryActualPartyKillCrashAndRecovery$' -count=1 -v -timeout=120s",
+    "actualResult": "Luna started and monitored its own session: exit 0, test 38.64s, package 39.733s. Real party consent, four class-appropriate uncommon/rare level-30 builds, accepted class abilities and normal attacks killed the actual restored Rootbound Warden. No seeded earned reward, accelerated/protected combat or stat-benefit scaling was used.",
+    "actualFailureRecovery": "Actual Mongo rejected the Rogue victory image while other members saved and received summaries. A full-bag Cleric retained the original private rolls. The complete Rogue image was read from the actual filesystem journal, the server was SIGKILLed, the validator was removed, and a fresh process recovered the exact original operation and all four saved receipts. Reconnect received an actual restored scene without a living cleared boss.",
+    "independentDatabaseRead": "One complete four-member original victory, zero pending victories, exactly one delivery receipt on each of four saved recipients, two retained rolls on the full-bag Cleric, schema_migrations version22 durable_boss_victory_cohorts. This particular normal boss rolled zero public drops.",
+    "binarySha256": "54b90ae7fada977658c118a68daec4876eb1e39a22a33ff45ce49f6fcfddca07",
+    "evidence": [
+      "/tmp/eidolon-compat-session-2605307337/server.log",
+      "/tmp/eidolon-compat-session-1978857841/server.log"
+    ],
+    "compile": "env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed for all server packages; gofmt and git diff --check passed",
+    "corrections": "Initial compilation caught two fixture field-name assumptions and the modeled LastLogout value type; corrected against the actual types. First external run failed its build-identity readiness assertion because the binary used development metadata; rebuilt with -X main.buildCommit=server, then the same acceptance passed. The final long-run leaderboard-qualification guard was added after that external run and passed the final focused race checks; the four-player normal-boss path did not change."
+  },
+  "cleanup": {
+    "ownedContainer": "82367240f7dcd3e01b7ad1c89963cf8352b0bb861d5b6081627cc59d12cd6665",
+    "label": "eidolon.qa.owner=boss-victory-20261003",
+    "resources": "loopback-only Mongo7 on 32872, 512MiB and one CPU",
+    "removed": "Verified exact identity/label before docker rm -f -v; subsequent exact container and both anonymous-volume filters were empty. Both owned game processes are terminal. Logs and the disposable compiled binary remain as local evidence. Production Mongo and all production services were untouched."
+  },
+  "limits": [
+    "Prepared source only, not a 1.73 release or live deployment. Last accepted live version remains1.70.1. Public version and cumulative patch notes remain unchanged until ordered milestone packaging.",
+    "The actual connected test earned the first normal guardian, not the final ordinary dungeon boss, completed crystal defense or Dark King. Their new finale/recovery checks are in-process with modeled shared acknowledgements and actual filesystem guild receipts.",
+    "The actual encounter rolled no public drops; public partial/consumed/reserved lineage coverage remains the previous focused ground-custody proof, not a new earned-boss public-pickup socket claim.",
+    "No uninterrupted campaign, phone-party test, replica-set failover, all-history economy audit or whole-1.73 completion is claimed. Remaining ordinary combat/event/repair boundary review, ordered1.71/1.72 decisions, milestone packaging, patch notes and deployment acceptance remain in the full roadmap.",
+    "Origin was fetched before this source commit: master remains fa414f0b288e8ee014d5ce72f7affdca485e1c7f, with no remote-only commit. No push or hosted CI/deployment was started."
+  ]
+}
