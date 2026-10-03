@@ -62,7 +62,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		defer done()
 		// Verify under the account handoff lock: an old-password comparison
 		// must not finish before a password change and acquire ownership after it.
-		unlockCharacter := lockCharacterWork(payload.Username)
+		unlockCharacter, _, err := lockDirectTradeWork(true, payload.Username)
+		if err != nil {
+			c.sendError("Login recovery is unavailable. Please retry shortly.")
+			return
+		}
 		defer unlockCharacter()
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
@@ -82,6 +86,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		if err := recordSessionActivity(payload.Username, "login"); err != nil {
 			c.sendError("Login activity storage is unavailable. Please retry shortly.")
+			return
+		}
+		if err := recoverColdAccountDirectTradeLocked(payload.Username); err != nil {
+			c.sendError("Your direct trade is awaiting recovery. Please retry shortly.")
 			return
 		}
 		if err := recoverAccountAdminOperationsLocked(payload.Username); err != nil {
@@ -858,13 +866,21 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Use a new connection to switch accounts.")
 			return
 		}
-		unlockCharacter := lockCharacterWork(username)
+		unlockCharacter, _, err := lockDirectTradeWork(true, username)
+		if err != nil {
+			c.sendError("Session recovery is unavailable. Please log in again shortly.")
+			return
+		}
 		defer unlockCharacter()
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
 		if _, ok := validateAndConsumeResumeToken(payload.Token, c.username); !ok {
 			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+		if err := recoverColdAccountDirectTradeLocked(username); err != nil {
+			c.sendError("Your direct trade is awaiting recovery. Please log in again shortly.")
 			return
 		}
 		sessionsMu.Lock()

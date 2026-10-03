@@ -36,7 +36,11 @@ func handleAdminMutation(c *Client, msg Message) {
 	if parseErr == nil {
 		accounts = append(accounts, request.Target, request.DestinationPlayer)
 	}
-	unlock := lockCharactersWork(accounts...)
+	unlock, _, lockErr := lockDirectTradeWork(false, accounts...)
+	if lockErr != nil {
+		c.rejectAdminAdmission(msg, "Trade ownership is awaiting recovery; no administration change was admitted.")
+		return
+	}
 	defer unlock()
 	result := adminMutationResult{Message: "Administration is unavailable. Retry the same request after refreshing access."}
 	if adminRequestID.MatchString(request.ID) {
@@ -108,6 +112,10 @@ func handleAdminMutation(c *Client, msg Message) {
 			for _, account := range accounts {
 				if account == "" {
 					continue
+				}
+				if err := recoverAccountDirectTradesLocked(account); err != nil {
+					pendingFailure("Existing direct trade custody awaits recovery; no new operation admitted.")
+					return
 				}
 				if err := recoverAccountAdminOperationsLocked(account); err != nil {
 					pendingFailure("Existing administration changes await recovery; no new operation admitted.")

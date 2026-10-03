@@ -7,6 +7,10 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
 // CommitCharacterSave atomically stores the full character and an idempotency
@@ -21,11 +25,23 @@ func (db *DB) CommitCharacterSave(username string, character *Character, saveID 
 	if _, err := hex.DecodeString(saveID); err != nil {
 		return errors.New("invalid character save identity")
 	}
+	if db == nil || db.users == nil {
+		return errors.New("character commit storage unavailable")
+	}
+	// The local journal is acknowledged only after this durable save. Never
+	// inherit an unsafe/unacknowledged URI concern, and prove replay receipts
+	// from the primary's majority-committed state, not a stale secondary.
+	users, err := db.users.Clone(options.Collection().
+		SetReadPreference(readpref.Primary()).SetReadConcern(readconcern.Majority()).
+		SetWriteConcern(writeconcern.New(writeconcern.WMajority(), writeconcern.J(true))))
+	if err != nil {
+		return err
+	}
 	saved := *character
 	saved.LastSaveID = saveID
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := db.users.UpdateOne(ctx,
+	result, err := users.UpdateOne(ctx,
 		bson.M{"username": username, "characters": bson.M{"$elemMatch": bson.M{"name": character.Name, "last_save_id": bson.M{"$ne": saveID}}}},
 		bson.M{"$set": bson.M{"characters.$": &saved}})
 	if err != nil {
@@ -34,7 +50,7 @@ func (db *DB) CommitCharacterSave(username string, character *Character, saveID 
 	if result.MatchedCount == 1 {
 		return nil
 	}
-	existing, err := db.GetCharacter(username, character.Name)
+	existing, err := newMongoCharacterRepository(users).LoadCharacter(username, character.Name)
 	if err != nil {
 		return err
 	}

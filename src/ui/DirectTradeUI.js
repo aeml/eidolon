@@ -33,7 +33,9 @@ export class DirectTradeUI {
         const trade = payload?.trade || null;
         const state = terminalState || payload?.state || '';
         if (state === 'complete' || state === 'cancelled') {
-            this.addGameMessage?.('Trade', state === 'complete' ? 'Trade completed.' : 'Trade cancelled; escrow returned.');
+			this.addGameMessage?.('Trade', payload?.deliveryPending
+                ? 'Trade resolved; delivery is retained or its save is pending. Free bag space or retry shortly.'
+                : state === 'complete' ? 'Trade completed; delivery saved.' : 'Trade cancelled; escrow returned and saved.');
             this.close();
             return;
         }
@@ -55,11 +57,16 @@ export class DirectTradeUI {
 		if (this.partnerTitle) this.partnerTitle.textContent = `${String(partnerID || 'Partner').replace(/^player-/, '')}'s offer`;
         if (this.gold) this.gold.value = String(ownOffer?.gold || 0);
         if (this.status) {
-            this.status.textContent = state === 'rejected'
+            this.status.textContent = state === 'saving'
+                ? 'Offer save pending. Retry the same offer or cancel after recovery.'
+                : state === 'recovering'
+                ? 'Save or decision pending. Custody is retained; retry after recovery.'
+                : state === 'rejected'
                 ? 'Confirmation reset. Review capacity and offer rules.'
                 : `You: ${ownConfirmed ? 'confirmed' : 'reviewing'} • Partner: ${otherConfirmed ? 'confirmed' : 'reviewing'}`;
         }
-        if (this.confirmButton) this.confirmButton.disabled = !!ownConfirmed;
+        if (this.confirmButton) this.confirmButton.disabled = state === 'recovering' || !!ownConfirmed;
+        if (this.offerButton) this.offerButton.disabled = state === 'recovering';
 
         const selected = new Set((ownOffer?.items || []).map((item) => item.id));
         const choices = [...(ownOffer?.items || []), ...(player?.inventory || []).filter(Boolean)]

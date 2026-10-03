@@ -451,6 +451,7 @@ func main() {
 	adminActivities = db
 	adminOperations = db
 	guildBankOperations = db
+	directTradeOperations = db
 	weeklyRaidRewards = db
 	characterSaveCommitter = db
 	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
@@ -527,6 +528,9 @@ func main() {
 	}
 	if err := recoverGuildBankOperationsOnStartup(); err != nil {
 		log.Fatal("Guild bank recovery failed; refusing stale character admission")
+	}
+	if err := recoverDirectTradesOnStartup(); err != nil {
+		log.Fatal("Direct trade recovery failed; refusing stale character admission")
 	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
@@ -939,6 +943,11 @@ func main() {
 	loops.Every(5*time.Second, func() {
 		if err := recoverPendingGuildBankOperations(); err != nil {
 			log.Print("Guild bank transfer recovery remains pending")
+		}
+	})
+	loops.Every(5*time.Second, func() {
+		if err := recoverPendingDirectTrades(); err != nil {
+			log.Print("Direct trade custody recovery remains pending")
 		}
 	})
 	loops.Every(5*time.Second, func() {

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -188,10 +190,29 @@ func (c *Client) handleMessage(msg Message) {
 		handler(c, msg)
 		return
 	}
-	// Login/resume acquire the authenticated account's lock after credentials
-	// or token validation. Other messages already have a stable account binding.
+	// Login/resume discover cold ownership without writes, then validate proof
+	// under those locks before recovery. Other messages have a stable binding.
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
-		unlock := lockCharacterWork(c.username)
+		accounts := []string{c.username}
+		if msg.Type == MsgTradeRequest && len(msg.Payload) <= inboundMessagePolicies[MsgTradeRequest].maxPayloadBytes {
+			var request TradeRequestPayload
+			if json.Unmarshal(msg.Payload, &request) == nil {
+				request.TargetName = strings.TrimSpace(request.TargetName)
+				// Name search is case-insensitive, work ownership is not. Bind the
+				// request to this actual account before locking; the handler then
+				// uses exact lookup, so a later differently-cased login cannot swap it.
+				if target := activeClientByUsername(request.TargetName); target != nil {
+					request.TargetName = target.username
+				}
+				accounts = append(accounts, request.TargetName)
+				msg.Payload, _ = json.Marshal(request)
+			}
+		}
+		unlock, _, err := lockDirectTradeWork(false, accounts...)
+		if err != nil {
+			c.sendInboundRejection(msg, "Trade ownership is awaiting recovery. Please retry shortly.")
+			return
+		}
 		defer unlock()
 		if !currentCharacterConnection(c) {
 			c.sendInboundRejection(msg, "This connection has been replaced; please reconnect.")
@@ -203,6 +224,10 @@ func (c *Client) handleMessage(msg Message) {
 		return
 	}
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
+		if err := recoverAccountDirectTradesLocked(c.username); err != nil {
+			c.sendInboundRejection(msg, "Your direct trade is awaiting recovery. Please retry shortly.")
+			return
+		}
 		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
 			c.sendInboundRejection(msg, "An administration change to your character is awaiting recovery. Please retry shortly.")
 			return
@@ -219,6 +244,7 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendInboundRejection(msg, "Your pending auction bid is awaiting recovery. Please try again shortly.")
 			return
 		}
+		defer retryLiveDirectTradeDeliveryAfterBagChangeLocked(c, msg.Type)
 	}
 	if handler := messageHandlers[msg.Type]; handler != nil {
 		handler(c, msg)

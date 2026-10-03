@@ -17,9 +17,9 @@ func handleVendorTransaction(c *Client, msg Message) {
 		c.sendError("The vendor is unavailable while character persistence recovers.")
 		return
 	}
-	// The current direct-trade escrow is still RAM-only. Do not journal a bag
-	// missing that escrow through this new durable operation. Remove this fence
-	// only when the separate two-account trade recovery path is integrated.
+	// Keep vendor edits outside an active trade review. Persisted escrow itself
+	// is now retained in complete snapshots; a completed full-bag delivery does
+	// not reserve a RAM trade and must allow selling to free delivery space.
 	world.Mu.RLock()
 	trading := world.TradeByPlayer[c.playerID] != ""
 	world.Mu.RUnlock()

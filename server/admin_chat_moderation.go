@@ -170,13 +170,20 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	if err != nil || target == "" || !current() {
 		return
 	}
-	unlock := lockCharactersWork(actor, target)
+	unlock, _, err := lockDirectTradeWork(false, actor, target)
+	if err != nil {
+		result.Message = "Trade ownership awaits recovery; no moderation change was admitted."
+		return
+	}
 	defer unlock()
 	if !authorize() {
 		result.Authorized = false
 		return
 	}
 	for _, account := range []string{actor, target} {
+		if err := recoverAccountDirectTradesLocked(account); err != nil {
+			return
+		}
 		if err := recoverAccountAdminOperationsLocked(account); err != nil {
 			return
 		}
@@ -226,7 +233,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	result.Message = fmt.Sprintf("Moderation recorded at revision %d. Refresh the account to check its current notices; the case was not automatically resolved.", receipt.Revision)
 }
 
-// Caller holds the target's character-work lock. Read current restrictions,
+// Caller holds the target's discovered trade work-lock closure. Read restrictions,
 // not the historic action in an exact-retry receipt. Login-only support stays
 // available; only an active world session needs escrow-returning retirement.
 func retireModeratedWorldSession(store ownAccountModerationNoticeStore, target string) {

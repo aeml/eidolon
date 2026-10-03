@@ -33,6 +33,12 @@ func (trade *DirectTrade) copy() *DirectTrade {
 	return &copyTrade
 }
 
+func (w *World) GetActiveDirectTrade(playerID string) *DirectTrade {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	return w.DirectTrades[w.TradeByPlayer[playerID]].copy()
+}
+
 func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()

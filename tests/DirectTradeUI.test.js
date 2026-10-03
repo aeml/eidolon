@@ -59,6 +59,35 @@ describe('DirectTradeUI', () => {
         ui.update({ trade: { id: 'trade-1' }, state: 'open' });
         ui.update({ trade: { id: 'trade-1' }, state: 'cancelled' });
         expect(document.getElementById('direct-trade-window').style.display).toBe('none');
-        expect(addGameMessage).toHaveBeenCalledWith('Trade', 'Trade cancelled; escrow returned.');
+        expect(addGameMessage).toHaveBeenCalledWith('Trade', 'Trade cancelled; escrow returned and saved.');
+    });
+
+    test('pending settlement freezes edits without claiming successful delivery', () => {
+        const addGameMessage = jest.fn();
+        const ui = new DirectTradeUI({ getLastPlayer: () => ({ id: 'player-a', inventory: [] }), addGameMessage });
+        const trade = { id: 'trade-1', playerAId: 'player-a', playerBId: 'player-b', offerA: {}, offerB: {} };
+        ui.update({ trade, state: 'recovering' });
+        expect(ui.window.style.display).toBe('block');
+        expect(ui.status.textContent).toContain('Custody is retained');
+        expect(ui.offerButton.disabled).toBe(true);
+        expect(ui.confirmButton.disabled).toBe(true);
+        expect(addGameMessage).not.toHaveBeenCalled();
+        ui.update({ trade, state: 'complete', deliveryPending: true });
+        expect(ui.window.style.display).toBe('none');
+        expect(addGameMessage).toHaveBeenCalledWith('Trade', expect.stringContaining('delivery is retained'));
+        expect(addGameMessage).not.toHaveBeenCalledWith('Trade', 'Trade completed; delivery saved.');
+    });
+
+    test('pending offer save can be retried and recovery feedback clears', () => {
+        const ui = new DirectTradeUI({ getLastPlayer: () => ({ id: 'player-a', inventory: [] }) });
+        const trade = { id: 'trade-1', playerAId: 'player-a', playerBId: 'player-b', offerA: {}, offerB: {} };
+        ui.update({ trade, state: 'saving' });
+        expect(ui.status.textContent).toContain('Offer save pending');
+        expect(ui.offerButton.disabled).toBe(false);
+        ui.update({ trade, state: 'recovering' });
+        expect(ui.offerButton.disabled).toBe(true);
+        ui.update({ trade, state: 'offer' });
+        expect(ui.offerButton.disabled).toBe(false);
+        expect(ui.confirmButton.disabled).toBe(false);
     });
 });

@@ -16,8 +16,6 @@ type directTradeOperationStore interface {
 	PendingDirectTradeOperations(string, int) ([]database.DirectTradeOperation, error)
 }
 
-// Prepared coordinator: initialization/message/cleanup/startup admission are
-// connected in the next integration step, not implied by these primitives.
 var directTradeOperations directTradeOperationStore
 
 // Index BOTH accounts before an insertion whose acknowledgement can be lost.
@@ -113,6 +111,11 @@ func prepareAndCompleteDirectTradeLocked(captured database.DirectTradeOperation)
 	if captured.State != database.DirectTradePending && captured.State != database.DirectTradeComplete {
 		return nil, database.ErrDirectTradeConflict
 	}
+	for _, participant := range captured.Participants {
+		if participant.CharacterName != participant.Username {
+			return nil, database.ErrDirectTradeConflict // Current active-character identity is account-bound.
+		}
+	}
 	captured, err := trackDirectTradeOperationLocked(captured)
 	if err != nil {
 		return nil, err
@@ -200,8 +203,11 @@ func recoverAccountDirectTradesLocked(username string) error {
 	if !found {
 		return nil
 	}
-	_, err := prepareAndCompleteDirectTradeLocked(entry.op)
-	return err
+	completed, err := prepareAndCompleteDirectTradeLocked(entry.op)
+	if err != nil {
+		return err
+	}
+	return finishDirectTradeDeliveryLocked(*completed)
 }
 
 // For startup/background callers with no account work locks already held.

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 
 	"github.com/gorilla/websocket"
@@ -53,6 +54,9 @@ func runHub() {
 // and (optionally) the current dungeon instance layout to the client. It is
 // called both on a fresh MsgJoin and on a successful MsgResumeSession.
 func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
+	if state, err := database.DecodeDirectTradeState(entity.DirectTradeState); err == nil && state.Delivery != nil {
+		c.sendSystemChat("A trade delivery is safely retained. Free bag space or wallet room; it will retry after bag actions.")
+	}
 	sendMovementContext(c)
 	sendCasinoState(c)
 	eventPayload, _ := json.Marshal(world.PublicEventSnapshot())
@@ -162,13 +166,25 @@ func cleanupClient(client *Client) {
 	if client == nil || client.username == "" {
 		return
 	}
-	unlock := lockCharacterWork(client.username)
+	unlock, _, err := lockDirectTradeWork(false, client.username)
+	if err != nil {
+		// Still mark/save the transport closure. Retain persisted escrow and a
+		// pending decision rather than acquiring an unordered peer or refunding.
+		unlock = lockCharacterWork(client.username)
+		defer unlock()
+		cleanupClientWithTradeOwnershipLocked(client, false)
+		return
+	}
 	defer unlock()
 	cleanupClientLocked(client)
 }
 
-// Caller holds the per-character work lock, never the global hub/session lock.
+// Caller holds the cold/hot-discovered trade work-lock closure, never hub/session.
 func cleanupClientLocked(client *Client) {
+	cleanupClientWithTradeOwnershipLocked(client, true)
+}
+
+func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 	if !currentCharacterConnection(client) {
 		return
 	}
@@ -182,11 +198,20 @@ func cleanupClientLocked(client *Client) {
 	if !serverStopping.Load() {
 		world.ForfeitPvP(client.playerID)
 	}
-	// 1. Return any direct-trade escrow before snapshotting persistent state.
-	if trade := world.CancelDirectTradesForPlayer(client.playerID); trade != nil {
-		sendDirectTradeUpdate(trade, "cancelled")
-		sendInventoryForPlayer(trade.PlayerAID)
-		sendInventoryForPlayer(trade.PlayerBID)
+	// Resolve an existing first decision, otherwise journal one cancellation.
+	// A recovery error does not undo custody or prevent saving the disconnect.
+	if recoverTrade && directTradeOperations != nil {
+		if err := cancelDisconnectedDirectTradeLocked(client); err != nil {
+			log.Print("Direct trade disconnect recovery remains pending")
+		}
+	} else if recoverTrade && directTradeOperations == nil {
+		// Legacy no-store fixtures only. Runtime initializes the durable store
+		// before any admission; private state rejects the legacy refund path.
+		if trade := world.CancelDirectTradesForPlayer(client.playerID); trade != nil {
+			sendDirectTradeUpdate(trade, "cancelled")
+			sendInventoryForPlayer(trade.PlayerAID)
+			sendInventoryForPlayer(trade.PlayerBID)
+		}
 	}
 
 	// 2. Mark entity as disconnected before capturing resources: a world tick
@@ -224,7 +249,7 @@ func cleanupClientLocked(client *Client) {
 	// 6. Save before releasing character ownership. This function runs outside
 	// the network hub; new login waits here without blocking other accounts.
 	if entity != nil {
-		if db != nil {
+		if characterSaveJournal != nil && characterSaveCommitter != nil {
 			saveCharacterDB(client, entity)
 		}
 	}

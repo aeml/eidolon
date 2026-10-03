@@ -6,8 +6,7 @@ import (
 	"eidolon-server/internal/game"
 )
 
-// Prepared coordinator primitive; the current legacy message handlers do NOT
-// call it yet. Caller owns both sorted account work locks and has proved there
+// Caller owns both sorted account work locks and has proved there
 // is no frozen shared decision. Offer acknowledgement is allowed only on nil
 // error. Never undo an unknown save by refunding/removing its private escrow.
 func setAndSaveDirectTradeOfferLocked(username, playerID, tradeID string, itemIDs []string, gold int) (*game.DirectTrade, error) {
