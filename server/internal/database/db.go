@@ -16,6 +16,7 @@ import (
 )
 
 type DB struct {
+	groundItemOperations       *mongo.Collection
 	directTradeOperations      *mongo.Collection
 	guildBankOperations        *mongo.Collection
 	adminOperations            *mongo.Collection
@@ -320,6 +321,7 @@ func New(uri string) (*DB, error) {
 
 	db := client.Database("eidolon")
 	database := &DB{
+		groundItemOperations:       db.Collection("ground_item_operations"),
 		directTradeOperations:      db.Collection("direct_trade_operations"),
 		guildBankOperations:        db.Collection("guild_bank_operations"),
 		adminOperations:            db.Collection("admin_operations"),

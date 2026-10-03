@@ -27,6 +27,12 @@ func TestSchemaMigrationCatalogIsContiguous(t *testing.T) {
 	}
 }
 
+func TestSchemaMigrationCatalogFencesGroundItemGenerations(t *testing.T) {
+	if CurrentSchemaVersion < 19 || len(schemaMigrations) < 19 || schemaMigrations[18].Name != "durable_ground_item_generations" {
+		t.Fatal("older ground-item-unaware writers must be fenced before new intents are admitted")
+	}
+}
+
 func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
 	// writers must not be admitted after any of those values have been saved.
@@ -145,6 +151,13 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 			"one_pending_direct_trade_per_account": true,
 			"direct_trade_recovery":                true,
 		},
+		"ground_item_operations": {
+			"one_pending_ground_item_per_account": true,
+			"one_pending_ground_item_per_loot":    true,
+			"ground_item_generations":             true,
+			"ground_item_recovery":                true,
+			"ground_item_active_projection":       true,
+		},
 	}
 	for collectionName, names := range wantIndexes {
 		cursor, err := db.client.Database("eidolon").Collection(collectionName).Indexes().List(ctx)
@@ -158,6 +171,20 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 		for _, document := range documents {
 			name, _ := document["name"].(string)
 			delete(names, name)
+			if collectionName == "ground_item_operations" {
+				if _, ttl := document["expireAfterSeconds"]; ttl {
+					t.Error("ground custody/replay identities must not have a TTL", document)
+				}
+				if name == "one_pending_ground_item_per_account" || name == "one_pending_ground_item_per_loot" {
+					partial, ok := document["partialFilterExpression"].(bson.M)
+					if document["unique"] != true || !ok || partial["state"] != GroundItemPending {
+						t.Error("ground reservations must serialize only pending actors/loot", document)
+					}
+				}
+				if name == "ground_item_generations" && document["unique"] != true {
+					t.Error("completed generations must retain a unique fork fence", document)
+				}
+			}
 			if collectionName == "guild_bank_operations" &&
 				(name == "one_pending_bank_transfer_per_account" || name == "one_pending_bank_transfer_per_guild") {
 				partial, ok := document["partialFilterExpression"].(bson.M)

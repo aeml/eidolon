@@ -80,7 +80,7 @@ func freezeGroundItemPlan(player *Entity, loot *Entity, kind string, moved, rema
 	op := database.GroundItemOperation{Version: 1, ID: database.GroundItemOperationID(uuid.NewString()), Kind: kind,
 		Username: player.Name, PlayerID: player.ID, LootID: loot.ID, InstanceID: loot.InstanceID,
 		LootOwnerID: loot.LootOwnerID, LootPartyID: loot.LootPartyID, X: loot.X, Z: loot.Z,
-		LootTime: loot.LootTime, LootCreatedAt: loot.CreatedAt,
+		LootTime: loot.LootTime.UTC().Truncate(time.Millisecond), LootCreatedAt: loot.CreatedAt.UTC().Truncate(time.Millisecond),
 		CreatedAt: time.Now().UTC().Truncate(time.Millisecond)}
 	if kind == database.GroundItemPickup {
 		if loot.GroundItemGeneration == math.MaxInt64 {
@@ -205,6 +205,9 @@ func (w *World) PrepareDurableGroundPickup(playerID, lootID string) (database.Gr
 	defer player.Mu.RUnlock()
 	loot.Mu.Lock()
 	defer loot.Mu.Unlock()
+	if loot.LootTime.IsZero() || !time.Now().Before(loot.LootTime.Add(time.Minute)) {
+		return database.GroundItemOperation{}, errors.New("ground loot expired or has no availability time")
+	}
 	if player.Type != TypePlayer || player.State == "DEAD" || player.Health <= 0 || player.Disconnected ||
 		player.InstanceID != loot.InstanceID || loot.GroundItemReservation != "" ||
 		(loot.LootOwnerID != "" && loot.LootOwnerID != playerID) {

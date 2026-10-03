@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 18
+const CurrentSchemaVersion = 19
 
 type schemaMigration struct {
 	Version int
@@ -92,6 +92,9 @@ var schemaMigrations = []schemaMigration{
 	// pending two-account decision. Fence them before admitting this producer;
 	// no item, currency, escrow or receipt backfill is performed.
 	{Version: 18, Name: "durable_direct_trade_decisions", Apply: applyDirectTradeOperationIndexes},
+	// An older server ignores pending ground intents and can republish stale
+	// projections. Fence those writers; never backfill or repair player value.
+	{Version: 19, Name: "durable_ground_item_generations", Apply: applyGroundItemOperationIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

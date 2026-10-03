@@ -127,6 +127,13 @@ jobs:
           EIDOLON_GUILD_DISPOSABLE_DATABASE: '1'
         run: go test -race . -run '^TestGuildBank' -count=1
 
+      - name: Verify disposable ground-item custody and repository reopen
+        working-directory: server
+        env:
+          EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
+          EIDOLON_GROUND_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: go test -race ./internal/database -run '^TestGroundItemStoreActualMongo' -count=1 -timeout=45s
+
       - name: Verify disposable report review resolution and retry
         working-directory: server
         env:

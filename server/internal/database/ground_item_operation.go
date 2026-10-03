@@ -22,7 +22,8 @@ const (
 // reserve this identity/loot generation BEFORE applying its character effect.
 // Existing ItemDeliveryReceipts carry its fingerprint through complete saves;
 // no new character format or unbounded ground-item payload is exposed publicly.
-// This model is a primitive, not a registered command or a durable shared store.
+// The shared store retains this plan; ordinary command/recovery integration is
+// separate and must not infer durable custody from this model alone.
 type GroundItemOperation struct {
 	Version          int       `bson:"version"`
 	ID               string    `bson:"_id"`
@@ -96,6 +97,14 @@ func (op GroundItemOperation) Validate() error {
 		math.Abs(op.X) > 1e7 || math.Abs(op.Z) > 1e7 || err != nil || op.Fingerprint != fingerprint {
 		return errors.New("invalid ground item operation")
 	}
+	// BSON dates retain milliseconds in UTC. Freeze that precision before
+	// hashing, otherwise generated loot's nanoseconds break restart identity.
+	for _, stamp := range []time.Time{op.CreatedAt, op.LootTime, op.LootCreatedAt} {
+		_, offset := stamp.Zone()
+		if !stamp.IsZero() && (offset != 0 || !stamp.Equal(stamp.Truncate(time.Millisecond))) {
+			return errors.New("ground item timestamp is not canonical BSON precision")
+		}
+	}
 	before, beforeCount, err := groundItemPayload(op.BeforePayload)
 	if err != nil {
 		return err
@@ -110,7 +119,7 @@ func (op GroundItemOperation) Validate() error {
 			return errors.New("invalid ground item drop plan")
 		}
 	case GroundItemPickup:
-		if op.Generation < 1 {
+		if op.Generation < 1 || op.LootTime.IsZero() {
 			return errors.New("invalid ground item pickup generation")
 		}
 		if movedCount == beforeCount {

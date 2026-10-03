@@ -270,11 +270,14 @@ func TestGroundItemSplitStackGetsStableSeparateIdentity(t *testing.T) {
 	item := Item{ID: "same-origin", Name: "Ruby", Stack: 3, MaxStack: 5, Stats: map[string]int{"strength": 2}}
 	b.Inventory[0] = cloneItem(item)
 	b.Inventory[0].Stack = 5
-	loot := &Entity{ID: "generated-ground", Type: TypeLoot, LootItem: &item, X: b.X, Z: b.Z, InstanceID: b.InstanceID}
+	loot := &Entity{ID: "generated-ground", Type: TypeLoot, LootItem: &item, X: b.X, Z: b.Z, InstanceID: b.InstanceID, LootTime: time.Now(), CreatedAt: time.Now()}
 	w.AddEntity(loot)
 	op, err := w.PrepareDurableGroundPickup(b.ID, loot.ID)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if !op.LootTime.Equal(op.LootTime.Truncate(time.Millisecond)) || !op.LootCreatedAt.Equal(op.LootCreatedAt.Truncate(time.Millisecond)) {
+		t.Fatal("generated loot timestamps were not frozen at BSON precision")
 	}
 	if changed, err := w.ApplyDurableGroundItem(op); err != nil || !changed {
 		t.Fatal(err)

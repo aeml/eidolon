@@ -17,6 +17,8 @@ func groundOperationFixture(kind string) GroundItemOperation {
 		Username: "owner", PlayerID: "player-owner", LootID: "ground-owned", InstanceID: "dungeon_fixture",
 		BeforePayload: before, MovedPayload: before, CreatedAt: time.Unix(1790990000, 0).UTC(), X: 50000, Z: 20000}
 	if kind == GroundItemPickup {
+		op.LootTime = op.CreatedAt.Add(-10 * time.Second)
+		op.LootCreatedAt = op.LootTime
 		op.Generation = 1
 		op.MovedPayload = strings.Replace(before, `"stack":5`, `"stack":2`, 1)
 		op.RemainingPayload = strings.Replace(before, `"stack":5`, `"stack":3`, 1)
@@ -113,5 +115,30 @@ func TestGroundItemOpaqueFuturePayloadIsRetainedWithoutMetadataProjection(t *tes
 	bson.Unmarshal(encoded, &restored)
 	if restored.BeforePayload != op.BeforePayload || restored.MovedPayload != op.MovedPayload {
 		t.Fatal("frozen unknown metadata was silently rebuilt or dropped")
+	}
+}
+
+func TestGroundItemOperationRequiresCanonicalBSONTimestamps(t *testing.T) {
+	for _, field := range []string{"created", "available", "birth"} {
+		for _, invalid := range []string{"nanoseconds", "offset"} {
+			t.Run(field+"-"+invalid, func(t *testing.T) {
+				op := groundOperationFixture(GroundItemPickup)
+				stamp := &op.CreatedAt
+				if field == "available" {
+					stamp = &op.LootTime
+				} else if field == "birth" {
+					stamp = &op.LootCreatedAt
+				}
+				if invalid == "nanoseconds" {
+					*stamp = stamp.Add(time.Nanosecond)
+				} else {
+					*stamp = stamp.In(time.FixedZone("non-canonical", 3600))
+				}
+				op.Fingerprint, _ = GroundItemFingerprint(op)
+				if err := op.Validate(); err == nil {
+					t.Fatal("BSON restart would change frozen timestamp identity")
+				}
+			})
+		}
 	}
 }
