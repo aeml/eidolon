@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared ordinary retained-boss-loot crash acceptance passed; initial boss replay audit remains open; unpublished",
+  "coordinatorSourceCommit": "f8eac631d7592b0705fb926482a388469e86d624",
+  "fixtureAndCICommit": "84b55c3818915e048931822acbbf1badc007519a",
+  "verification": {
+    "command": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32867 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-boss-delivery-j6gsHn/server go test -race . -run '^TestBossLootActualBagSpaceRejectedSaveCrashAndRecovery$' -count=1 -timeout=60s -v",
+    "monitor": "Existing Luna watcher started the single corrected check in its own command session and reported terminal success; root inspected the resulting actual server logs independently. Root session handles are not accessible from the child agent's tool context, so the corrected test was started and monitored in the same agent context.",
+    "result": "passed; test9.89 seconds, package10.966 seconds",
+    "scope": [
+      "Prepared already-earned full-bag queue enters an actual town session through ordinary login/join and a real full protobuf scene; both exact opaque rolls remain retained",
+      "Ordinary item drop exposes the confirmed debit then confirmed collection inventory replies; strong actual stored character has exactly one original rare blade with unchanged potency, stats and unique metadata, and preserves the remaining exact gem payload",
+      "A real disposable Mongo users validator permits the next drop debit but rejects the character image containing the retained gem; no gem bag-success acknowledgement is consumed, actual stored queue remains and a real filesystem journal retains bag credit plus queue removal in one full image",
+      "Exact first child is intentionally SIGKILLed, validator removed, fresh production process recovers the complete journal before admission, and ordinary reconnect preserves both exact original items",
+      "The old ordinary drop request rejects its obsolete item identity; a third fresh process/reconnect still has exactly one copy of each original roll with Gold, EP and original class gear unchanged",
+      "All owned server children are joined by the existing fixture helper, which checks actual logs for data races, panic/fatal and recovered worker/update panic markers"
+    ],
+    "correction": "The first fixture run failed in14.17 seconds because it awaited a dungeon enter-instance message during a town login. Replaced the assertion with the existing actual full-scene/login reader. It was a terminal test failure, not an observation timeout; the corrected check ran once and passed. No production source changed for this correction.",
+    "CI": "The ordinary race-built-server workflow now includes this opt-in test with a60-second timeout. It uses the job-owned Mongo service, not production. No hosted workflow or deployment was triggered here."
+  },
+  "evidence": {
+    "expectedCrash": "/tmp/eidolon-compat-session-4058870032",
+    "firstFreshProcess": "/tmp/eidolon-compat-session-2595983260",
+    "secondFreshProcess": "/tmp/eidolon-compat-session-88541671",
+    "discardedFixtureFailure": "/tmp/eidolon-compat-session-3836231001",
+    "sourceSha256": {
+      "server/boss_loot_delivery.go": "d5de5b2d9f533e1886da87821d672b5a38b1cf990c35dd436a39f9b6ed104ef9",
+      "server/boss_loot_session_integration_test.go": "d881e4666a2b2a2979de2025522220da19070dda3edd6f0e744ee601c4066196"
+    },
+    "raceBuiltServerSha256": "dba6842e53cd9df541d3b440cce04f6c33449a4b4175cbf3f555df14304148ad"
+  },
+  "remaining": [
+    "Initial physical boss outcome/original cohort entitlement and partial party checkpoint replay; this prepared existing queue does not prove a boss cannot respawn and grant Gold/XP/quest effects twice",
+    "Standalone combat/event rewards, non-room-cohort recipients and complete valuable-operation invariants; ordered1.71/1.72 decisions, release notes/version packaging and verified publication",
+    "All subsequent full-roadmap closed-beta and release gates"
+  ],
+  "safety": "Exact test Mongo81142972bb7b8f1054c285c9b54fc95e7966b305479ddc6cb04fcc5c6e29cc42 and its two inspected anonymous disposable volumes were removed after acceptance. Server evidence logs retained. No production database/schema/service, account, wallet, payment, admission or public version changed. Last accepted live remains1.70.1; full roadmap goal stays active."
+}

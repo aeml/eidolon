@@ -389,6 +389,17 @@ death-hook checks pass. Actual connected rejection/crash acceptance and stable
 initial boss outcome/cohort/checkpoint replay remain open; this is not1.73
 completion or a deployment. Remote master was fetched and contained, production
 and live1.70.1 remain unchanged, and the full goal stays active.
+The [ordinary retained-boss-loot socket follow-up](2026-10-03-release1-73-boss-loot-runtime-checks.json)
+passed an actual town/drop/collection/rejected-Mongo-save/SIGKILL/two-fresh-process
+check in10 seconds, monitored by Luna. Original blade/gem metadata, private
+queue removal, full-character journal replay and no duplicate collection survive;
+Gold, EP and class gear remain unchanged. The first fixture's incorrect wait for
+a dungeon-entry message in town was corrected before the accepted run. CI now
+includes the bounded check and owned disposable data was removed. This proves
+delivery of an already-earned fixture queue, not initial boss entitlement or
+partial-party checkpoint replay. Those and the other1.73/ordered release gates
+remain required; no production mutation, public version bump or deployment is
+claimed, and the full roadmap goal remains active.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
