@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 20
+const CurrentSchemaVersion = 21
 
 type schemaMigration struct {
 	Version int
@@ -98,6 +98,9 @@ var schemaMigrations = []schemaMigration{
 	// Older servers ignore retained room cohorts and can save cleared progress
 	// without recovering every recipient. Fence them; no reward/value backfill.
 	{Version: 20, Name: "durable_dungeon_room_reward_cohorts", Apply: applyDungeonRoomRewardIndexes},
+	// Older snapshots omit deferred boss rolls and would erase them. Fence old
+	// writers without backfilling rewards or changing any historical character.
+	{Version: 21, Name: "retained_character_boss_loot", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

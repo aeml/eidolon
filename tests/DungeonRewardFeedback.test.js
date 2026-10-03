@@ -230,6 +230,14 @@ describe('Dungeon reward feedback', () => {
         ui.dispose();
     });
 
+    test('full-bag boss feedback distinguishes earned loot awaiting space', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.showRewardSummary({ ...createRewardSummary(), pendingItemCount: 3 });
+        expect(document.querySelector('#chat-messages').textContent).toContain('3 boss items awaiting bag space.');
+        ui.dispose();
+    });
+
     test('UIManager.showRewardSummary emits a stronger dungeon completion summary', () => {
         buildDom();
         const ui = new UIManager(false);

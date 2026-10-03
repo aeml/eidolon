@@ -292,7 +292,10 @@ class UIManagerFeedbackMethods {
         const difficultyNoteLine = this.formatRewardDifficultyNote(summary);
         const pulseLine = this.formatRewardPulse(summary);
         const { currencyLine, lootLine } = this.formatRewardSummary(summary);
-        const calloutSubtitle = [completionLine, difficultyNoteLine, headlineLine, pulseLine, summary.exitHint || 'Dungeon rewards ready.']
+        const pendingCount = Math.max(0, Math.floor(Number(summary.pendingItemCount) || 0));
+        const pendingLine = pendingCount > 0
+            ? `${pendingCount} boss item${pendingCount === 1 ? '' : 's'} awaiting bag space.` : '';
+        const calloutSubtitle = [completionLine, difficultyNoteLine, headlineLine, pulseLine, pendingLine, summary.exitHint || 'Dungeon rewards ready.']
             .filter(Boolean)
             .join(' • ');
 
@@ -327,6 +330,9 @@ class UIManagerFeedbackMethods {
         }
         if (lootLine) {
             this.addGameMessage('Rewards', lootLine);
+        }
+        if (pendingLine) {
+            this.addGameMessage('Rewards', pendingLine);
         }
         if (pulseLine && pulseLine !== currencyLine) {
             this.addGameMessage('Rewards', pulseLine);

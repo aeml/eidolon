@@ -337,30 +337,35 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					}
 
 					heartCount := 0
+					pendingBefore := len(member.PendingBossLoot)
 					if isBoss && !weeklyRaidBoss {
 						hearts := GenerateBossHearts()
-						heartCount = len(hearts)
 						log.Printf("Party Boss Loot: Generated %d hearts for member %s", len(hearts), member.ID)
 						for _, heart := range hearts {
-							rem := member.AddItemToInventory(*heart)
-							if rem > 0 {
-								log.Printf("Party Boss Loot: Inventory full for %s. Remaining: %d", member.ID, rem)
+							if _, err := member.AwardBossItemLocked(*heart); err != nil {
+								log.Printf("Party Boss Loot: Cannot retain roll for %s: %v", member.ID, err)
+							} else {
+								heartCount++
 							}
 						}
 
 						if instanceDifficulty == DifficultyHeroic || instanceDifficulty == DifficultyMythic {
 							if bonusGem := GenerateRandomGem(true, instanceDifficulty == DifficultyMythic); bonusGem != nil {
-								if member.AddItemToInventory(*bonusGem) == 0 {
+								if _, err := member.AwardBossItemLocked(*bonusGem); err == nil {
 									memberRewardGemCount++
 									memberRewardItems = append(memberRewardItems, bonusGem)
+								} else {
+									log.Printf("Party Boss Loot: Cannot retain bonus gem for %s: %v", member.ID, err)
 								}
 							}
 						}
 						if instanceDifficulty == DifficultyMythic {
 							if uniqueItem := GenerateGuaranteedUniqueEquipment(max(runLevel, 100)); uniqueItem != nil {
-								if member.AddItemToInventory(*uniqueItem) == 0 {
+								if _, err := member.AwardBossItemLocked(*uniqueItem); err == nil {
 									memberRewardItemCount++
 									memberRewardItems = append(memberRewardItems, uniqueItem)
+								} else {
+									log.Printf("Party Boss Loot: Cannot retain unique roll for %s: %v", member.ID, err)
 								}
 							}
 						}
@@ -375,6 +380,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 					if isBoss {
 						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, memberGold, memberXP, heartCount, memberRewardItems)
 						rewardSummary.Progression = &progression
+						rewardSummary.PendingItemCount = len(member.PendingBossLoot) - pendingBefore
 						if memberRewardItemCount > 0 {
 							rewardSummary.ItemCount = memberRewardItemCount
 						}
@@ -441,30 +447,35 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				}
 
 				heartCount := 0
+				pendingBefore := len(attacker.PendingBossLoot)
 				if isBoss && !weeklyRaidBoss {
 					hearts := GenerateBossHearts()
-					heartCount = len(hearts)
 					log.Printf("Solo Boss Loot: Generated %d hearts for %s", len(hearts), attacker.ID)
 					for _, heart := range hearts {
-						rem := attacker.AddItemToInventory(*heart)
-						if rem > 0 {
-							log.Printf("Solo Boss Loot: Inventory full for %s. Remaining: %d", attacker.ID, rem)
+						if _, err := attacker.AwardBossItemLocked(*heart); err != nil {
+							log.Printf("Solo Boss Loot: Cannot retain roll for %s: %v", attacker.ID, err)
+						} else {
+							heartCount++
 						}
 					}
 
 					if instanceDifficulty == DifficultyHeroic || instanceDifficulty == DifficultyMythic {
 						if bonusGem := GenerateRandomGem(true, instanceDifficulty == DifficultyMythic); bonusGem != nil {
-							if attacker.AddItemToInventory(*bonusGem) == 0 {
+							if _, err := attacker.AwardBossItemLocked(*bonusGem); err == nil {
 								attackerRewardGemCount++
 								attackerRewardItems = append(attackerRewardItems, bonusGem)
+							} else {
+								log.Printf("Solo Boss Loot: Cannot retain bonus gem for %s: %v", attacker.ID, err)
 							}
 						}
 					}
 					if instanceDifficulty == DifficultyMythic {
 						if uniqueItem := GenerateGuaranteedUniqueEquipment(max(runLevel, 100)); uniqueItem != nil {
-							if attacker.AddItemToInventory(*uniqueItem) == 0 {
+							if _, err := attacker.AwardBossItemLocked(*uniqueItem); err == nil {
 								attackerRewardItemCount++
 								attackerRewardItems = append(attackerRewardItems, uniqueItem)
+							} else {
+								log.Printf("Solo Boss Loot: Cannot retain unique roll for %s: %v", attacker.ID, err)
 							}
 						}
 					}
@@ -479,6 +490,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 				if isBoss {
 					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, finalGold, finalXp, heartCount, attackerRewardItems)
 					rewardSummary.Progression = &progression
+					rewardSummary.PendingItemCount = len(attacker.PendingBossLoot) - pendingBefore
 					if attackerRewardItemCount > 0 {
 						rewardSummary.ItemCount = attackerRewardItemCount
 					}

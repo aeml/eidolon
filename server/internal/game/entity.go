@@ -110,6 +110,7 @@ type Entity struct {
 	VIPUntil                 time.Time            `json:"-"` // Refreshed from trusted account membership, never client save data.
 	CasinoVIPFloor           bool                 `json:"-"` // Server-owned scene state; client height never grants access.
 	ItemDeliveryReceipts     map[string]string    `json:"-"`
+	PendingBossLoot          []string             `json:"-"` // Exact rolled payloads awaiting bag space; never public actor data.
 	AdminOperationReceipts   map[string]string    `json:"-"`
 	WeeklyRaidRewardReceipts map[string]bool      `json:"-"`
 	WeeklyRaidCompletions    map[string]time.Time `json:"-"`
@@ -966,6 +967,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		VIPUntil:                 e.VIPUntil,
 		CasinoVIPFloor:           e.CasinoVIPFloor,
 		ItemDeliveryReceipts:     maps.Clone(e.ItemDeliveryReceipts),
+		PendingBossLoot:          append([]string(nil), e.PendingBossLoot...),
 		AdminOperationReceipts:   maps.Clone(e.AdminOperationReceipts),
 		WeeklyRaidRewardReceipts: maps.Clone(e.WeeklyRaidRewardReceipts),
 		WeeklyRaidCompletions:    maps.Clone(e.WeeklyRaidCompletions),

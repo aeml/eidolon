@@ -91,6 +91,7 @@ type RewardSummaryEvent struct {
 	ItemCount         int                      `json:"itemCount"`
 	GemCount          int                      `json:"gemCount"`
 	HeartCount        int                      `json:"heartCount"`
+	PendingItemCount  int                      `json:"pendingItemCount,omitempty"`
 	BossName          string                   `json:"bossName,omitempty"`
 	InstanceType      string                   `json:"instanceType,omitempty"`
 	Difficulty        string                   `json:"difficulty,omitempty"`

@@ -33,6 +33,15 @@ func TestSchemaMigrationCatalogFencesGroundItemGenerations(t *testing.T) {
 	}
 }
 
+func TestSchemaMigrationCatalogFencesRetainedBossLootWithoutBackfill(t *testing.T) {
+	if CurrentSchemaVersion < 21 || len(schemaMigrations) < 21 || schemaMigrations[20].Name != "retained_character_boss_loot" {
+		t.Fatal("older writers must not erase a private retained boss roll")
+	}
+	if err := schemaMigrations[20].Apply(context.Background(), nil); err != nil {
+		t.Fatal("the writer fence must not query or backfill existing player value", err)
+	}
+}
+
 func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
 	// writers must not be admitted after any of those values have been saved.

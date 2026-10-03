@@ -90,6 +90,7 @@ type Character struct {
 	Appearances              map[string]EquipmentAppearance `bson:"appearances,omitempty"`
 	WellRested               *CharacterWellRested           `bson:"well_rested,omitempty"`
 	ItemDeliveryReceipts     map[string]string              `bson:"item_delivery_receipts,omitempty"`
+	PendingBossLoot          []string                       `bson:"pending_boss_loot,omitempty"`
 	GoldCreditReceipts       map[string]int                 `bson:"gold_credit_receipts,omitempty"`
 	LastSaveID               string                         `bson:"last_save_id,omitempty"`
 	Resources                *CharacterResources            `bson:"resources,omitempty"`

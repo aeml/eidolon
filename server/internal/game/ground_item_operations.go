@@ -200,10 +200,16 @@ func placeGroundItem(inventory []Item, item Item, splitID string) ([]Item, int) 
 // compatible stack metadata; never rename unique gear or silently change an
 // item whose original identity already refers to different metadata.
 func planGroundPickup(player *Entity, item Item, operationID string) ([]Item, int, error) {
+	if len(operationID) < len("grounditem:") {
+		return nil, item.Stack, ErrGroundItemIdentity
+	}
+	return planInventoryItemPlacement(player, item, "ground-stack-"+operationID[len("grounditem:"):])
+}
+
+func planInventoryItemPlacement(player *Entity, item Item, splitID string) ([]Item, int, error) {
 	if len(player.Inventory) > MaxInventorySize {
 		return nil, item.Stack, ErrGroundItemIdentity
 	}
-	splitID := "ground-stack-" + operationID[len("grounditem:"):]
 	ownedOriginal := false
 	check := func(current Item) error {
 		if current.ID == splitID {

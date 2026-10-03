@@ -261,6 +261,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		EPCasinoReceipts:         cloneGoldCreditReceipts(entity.EPCasinoReceipts),
 		VIPAllowanceReceipts:     cloneGoldCreditReceipts(entity.VIPAllowanceReceipts),
 		ItemDeliveryReceipts:     cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
+		PendingBossLoot:          append([]string(nil), entity.PendingBossLoot...),
 		AdminOperationReceipts:   cloneItemDeliveryReceipts(entity.AdminOperationReceipts),
 		WeeklyRaidRewardReceipts: maps.Clone(entity.WeeklyRaidRewardReceipts),
 		WeeklyRaidCompletions:    maps.Clone(entity.WeeklyRaidCompletions),

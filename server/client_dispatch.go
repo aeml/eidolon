@@ -331,6 +331,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			EPCasinoReceipts:         cloneGoldCreditReceipts(char.EPCasinoReceipts),
 			VIPAllowanceReceipts:     cloneGoldCreditReceipts(char.VIPAllowanceReceipts),
 			ItemDeliveryReceipts:     cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
+			PendingBossLoot:          append([]string(nil), char.PendingBossLoot...),
 			AdminOperationReceipts:   cloneItemDeliveryReceipts(char.AdminOperationReceipts),
 			WeeklyRaidRewardReceipts: maps.Clone(char.WeeklyRaidRewardReceipts),
 			WeeklyRaidCompletions:    maps.Clone(char.WeeklyRaidCompletions),
