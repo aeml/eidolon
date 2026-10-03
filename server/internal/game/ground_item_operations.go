@@ -14,10 +14,12 @@ import (
 )
 
 var ErrGroundItemFull = errors.New("free bag space to recover the pending ground item")
+var ErrGroundItemIdentity = errors.New("ground item identity conflicts with existing custody")
 
 type groundItemPublication struct {
 	OperationID string
 	ExpiresAt   time.Time
+	Generation  int64
 }
 
 func decodeGroundItem(payload string) (Item, error) {
@@ -76,8 +78,8 @@ func groundDropSourceSlot(player *Entity, moved Item) (int, error) {
 	return selected, nil
 }
 
-func freezeGroundItemPlan(player *Entity, loot *Entity, kind string, moved, remaining Item) (database.GroundItemOperation, error) {
-	op := database.GroundItemOperation{Version: 1, ID: database.GroundItemOperationID(uuid.NewString()), Kind: kind,
+func freezeGroundItemPlan(player *Entity, loot *Entity, kind string, moved, remaining Item, operationID string) (database.GroundItemOperation, error) {
+	op := database.GroundItemOperation{Version: 1, ID: operationID, Kind: kind,
 		Username: player.Name, PlayerID: player.ID, LootID: loot.ID, InstanceID: loot.InstanceID,
 		LootOwnerID: loot.LootOwnerID, LootPartyID: loot.LootPartyID, X: loot.X, Z: loot.Z,
 		LootTime: loot.LootTime.UTC().Truncate(time.Millisecond), LootCreatedAt: loot.CreatedAt.UTC().Truncate(time.Millisecond),
@@ -136,9 +138,12 @@ func (w *World) PrepareDurableInventoryDrop(playerID string, slot int, itemID st
 	if _, err := groundDropSourceSlot(player, item); err != nil {
 		return database.GroundItemOperation{}, err
 	}
-	loot := &Entity{ID: "loot-drop-" + uuid.NewString(), LootItem: &item,
-		X: player.X, Z: player.Z, InstanceID: player.InstanceID}
-	return freezeGroundItemPlan(player, loot, database.GroundItemDrop, item, Item{})
+	loot := &Entity{ID: "loot-drop-" + uuid.NewString(), Type: TypeLoot, LootItem: &item,
+		X: player.X, Y: .5, Z: player.Z, InstanceID: player.InstanceID}
+	// Resolve physical grounding before freezing coordinates. Repositioning a
+	// later publication out of a rock must not disagree with its durable ledger.
+	w.groundLootLocked(loot)
+	return freezeGroundItemPlan(player, loot, database.GroundItemDrop, item, Item{}, database.GroundItemOperationID(uuid.NewString()))
 }
 
 // Use exact metadata when merging. Same-name gems/gear with different qualities,
@@ -191,6 +196,54 @@ func placeGroundItem(inventory []Item, item Item, splitID string) ([]Item, int) 
 	return planned, remaining
 }
 
+// A previous partial stack can have moved into any owned storage. Only split
+// compatible stack metadata; never rename unique gear or silently change an
+// item whose original identity already refers to different metadata.
+func planGroundPickup(player *Entity, item Item, operationID string) ([]Item, int, error) {
+	if len(player.Inventory) > MaxInventorySize {
+		return nil, item.Stack, ErrGroundItemIdentity
+	}
+	splitID := "ground-stack-" + operationID[len("grounditem:"):]
+	ownedOriginal := false
+	check := func(current Item) error {
+		if current.ID == splitID {
+			return ErrGroundItemIdentity
+		}
+		if current.ID != item.ID {
+			return nil
+		}
+		left, right := normalizedGroundItem(current), normalizedGroundItem(item)
+		left.ID, right.ID, left.Stack, right.Stack = "", "", 0, 0
+		if item.MaxStack <= 1 || !reflect.DeepEqual(left, right) {
+			return ErrGroundItemIdentity
+		}
+		ownedOriginal = true
+		return nil
+	}
+	for _, storage := range [][]Item{player.Inventory, player.Stash, player.Buyback} {
+		for _, current := range storage {
+			if err := check(current); err != nil {
+				return nil, item.Stack, err
+			}
+		}
+	}
+	for _, current := range player.Equipment {
+		if err := check(current); err != nil {
+			return nil, item.Stack, err
+		}
+	}
+	if ownedOriginal {
+		item = cloneItem(item)
+		item.ID = splitID
+	}
+	inventory := cloneItems(player.Inventory)
+	if len(inventory) < MaxInventorySize {
+		inventory = append(inventory, make([]Item, MaxInventorySize-len(inventory))...)
+	}
+	placed, remainder := placeGroundItem(inventory, item, splitID)
+	return placed, remainder, nil
+}
+
 // Reserve the live projection before external IO. A prepare failure must only
 // release it after the shared store proves this exact intent never existed.
 // An ambiguous prepare remains reserved and does not expire or permit pickup.
@@ -226,7 +279,11 @@ func (w *World) PrepareDurableGroundPickup(playerID, lootID string) (database.Gr
 		return database.GroundItemOperation{}, errors.New("loot out of range")
 	}
 	item := normalizedGroundItem(*loot.LootItem)
-	_, remainder := placeGroundItem(player.Inventory, item, "ground-planning-only")
+	operationID := database.GroundItemOperationID(uuid.NewString())
+	_, remainder, err := planGroundPickup(player, item, operationID)
+	if err != nil {
+		return database.GroundItemOperation{}, err
+	}
 	if remainder == item.Stack {
 		return database.GroundItemOperation{}, ErrGroundItemFull
 	}
@@ -234,7 +291,7 @@ func (w *World) PrepareDurableGroundPickup(playerID, lootID string) (database.Gr
 	moved.Stack -= remainder
 	remaining := cloneItem(item)
 	remaining.Stack = remainder
-	op, err := freezeGroundItemPlan(player, loot, database.GroundItemPickup, moved, remaining)
+	op, err := freezeGroundItemPlan(player, loot, database.GroundItemPickup, moved, remaining, operationID)
 	if err != nil {
 		return op, err
 	}
@@ -250,10 +307,6 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 	if err := op.Validate(); err != nil {
 		return false, err
 	}
-	moved, err := decodeGroundItem(op.MovedPayload)
-	if err != nil {
-		return false, err
-	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	player := w.Entities[op.PlayerID]
@@ -265,11 +318,8 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 	if player.Type != TypePlayer || player.Name != op.Username {
 		return false, errors.New("ground item owner changed")
 	}
-	if previous, found := player.ItemDeliveryReceipts[op.ID]; found {
-		if previous != op.Fingerprint {
-			return false, errors.New("ground item identity reused for another effect")
-		}
-		return false, nil
+	if _, found := player.ItemDeliveryReceipts[op.ID]; found {
+		return player.ApplyGroundItemCharacterEffect(op)
 	}
 	if op.Kind == database.GroundItemPickup {
 		loot := w.Entities[op.LootID]
@@ -283,6 +333,34 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 			return false, errors.New("ground item reservation changed")
 		}
 	}
+	changed, err := player.ApplyGroundItemCharacterEffect(op)
+	if err == nil && changed && op.Kind == database.GroundItemPickup {
+		moved, _ := decodeGroundItem(op.MovedPayload) // Strictly decoded by the effect.
+		w.UpdateCollectionQuestProgress(player, moved.Name, moved.Stack)
+	}
+	return changed, err
+}
+
+// Caller owns the player mutex or an isolated offline entity, and has verified
+// the exact shared pending plan. This applies ONLY character custody; it cannot
+// authorize a pickup, prove a save, or publish/remove a world projection.
+func (player *Entity) ApplyGroundItemCharacterEffect(op database.GroundItemOperation) (bool, error) {
+	if err := op.Validate(); err != nil {
+		return false, err
+	}
+	if player == nil || player.Type != TypePlayer || player.Name != op.Username || player.ID != op.PlayerID {
+		return false, ErrGroundItemIdentity
+	}
+	if previous, found := player.ItemDeliveryReceipts[op.ID]; found {
+		if previous != op.Fingerprint {
+			return false, ErrGroundItemIdentity
+		}
+		return false, nil
+	}
+	moved, err := decodeGroundItem(op.MovedPayload)
+	if err != nil {
+		return false, err
+	}
 	inventory := cloneItems(player.Inventory)
 	if op.Kind == database.GroundItemDrop {
 		selected, err := groundDropSourceSlot(player, moved)
@@ -292,7 +370,10 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 		inventory[selected] = Item{}
 	} else {
 		var remainder int
-		inventory, remainder = placeGroundItem(inventory, moved, "ground-stack-"+op.ID[len("grounditem:"):])
+		inventory, remainder, err = planGroundPickup(player, moved, op.ID)
+		if err != nil {
+			return false, err
+		}
 		if remainder != 0 {
 			return false, ErrGroundItemFull
 		}
@@ -303,9 +384,6 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 	}
 	player.ItemDeliveryReceipts[op.ID] = op.Fingerprint
 	player.UnjournaledSave = true
-	if op.Kind == database.GroundItemPickup {
-		w.UpdateCollectionQuestProgress(player, moved.Name, moved.Stack)
-	}
 	return true, nil
 }
 
