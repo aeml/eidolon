@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-trade-path-verified",
+  "sourceCommit": "317567ca20c50099291d5adecea4d382309d99cf",
+  "scope": [
+    "Registered trade handlers journal offers, freeze one decision, save both participants and separately claim owned deliveries.",
+    "Globally sorted work-lock closure is rechecked after queuing; case-insensitive name search binds exact account ownership. Hot admission does not query Mongo.",
+    "Authenticated login/resume discover cold escrow, pending journals and shared intents; orphan cancellation never replaces a frozen settlement.",
+    "Startup drains pending records in bounded pages before admission; periodic recovery includes unknown prepares absent from a database scan.",
+    "Disconnect, administration and moderation retirement share peer ownership. Full deliveries allow bag changes and retry after relevant actions; UI distinguishes retained delivery from confirmed save.",
+    "Complete-character journal commits enforce primary/majority replay reads and majority-plus-journal writes regardless of inherited URI concerns.",
+    "The existing job-owned Mongo/built-server CI step includes the new ordinary-socket/crash recovery check before broad partial-fixture suites."
+  ],
+  "checks": {
+    "focusedRaceCommand": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database ./internal/game . -run '^(TestDirectTrade|TestVendor|TestCharacterCommit|TestCharacterPersistence|TestCharactersWork|TestCharacterWork|TestInboundMessage|TestAdmin|TestModeration|TestWorldModeration|TestSession|TestResume|TestPassword)' -count=1 -timeout=90s",
+    "focusedRaceResult": "passed",
+    "packageSeconds": {"database": 1.176, "game": 11.518, "server": 34.964},
+    "client": "Four DirectTradeUI DOM checks passed in 0.617 seconds; focused ESLint and git diff --check passed.",
+    "realMongo": "TestDirectTradeMongoReservationReceiptsAndRepositoryRestart and TestCharacterCommit passed with race instrumentation against a new explicitly owned loopback Mongo 7.0.14 in 2.108 seconds. This includes real two-account unique-index enforcement and both actual saved receipt proof; driver mocks separately check hostile inherited write/read concerns.",
+    "actualSocketsCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:39073 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-trade-1-73-checks-D8QrYm/server go test -race . -run '^TestDirectTradeActualSocketsCrashAndRecovery$' -count=1 -timeout=120s -v",
+    "actualSocketsResult": "passed: 9.74-second test / 10.790-second package",
+    "actualSockets": "Three fresh production-binary processes: ordinary authenticated offers and confirmations; exact earned metadata and Gold/EP checks; unconfirmed gift disconnect refund; SIGKILL with durable unconfirmed escrow followed by cold-login cancellation; real Mongo rejection of only the second participant's new receipt followed by SIGKILL, journal replay and startup completion of the original settlement before readiness.",
+    "startupPaging": "A modeled 51-operation/102-account fixture with actual filesystem journals proved the drain reaches later pages. This is a recovery control-flow check, not a player-capacity or performance certificate.",
+    "binarySha256": "d850a25653cd5bb69c3a25012cfeb1f96f0affd385d4060a70df7816ef5d04b6",
+    "binaryBuild": "Go 1.27.1, race-instrumented, main.buildCommit=server; runtime source unchanged between build and source commit."
+  },
+  "actualServerEvidence": [
+    "/tmp/eidolon-compat-session-837128736",
+    "/tmp/eidolon-compat-session-3395611886",
+    "/tmp/eidolon-compat-session-163450309"
+  ],
+  "sourceSha256": {
+    "server/direct_trade_admission.go": "e57fd50db16019d1d28070814fc0800a875a0654d126ecb947bb9d7824db262d",
+    "server/direct_trade_cold_recovery.go": "6df1762393e0a52e86f7a2a3fa243fc2429fb10bc85c20dd56bd67958e64ac2f",
+    "server/direct_trade_handlers.go": "0ce0d829e129c2adcf82e3c5b809a7dc818ad8436442e8baef4509288658f1f1",
+    "server/direct_trade_startup_recovery.go": "0b9ca2166d1cc97484a9d59e8ccb4a0007638eee703262cd88f9d8b3776a12ca",
+    "server/direct_trade_runtime_test.go": "4538bd11458bb32d90ffa4b9ed9a3e25518786ba793f3e40ae4650f6f1023bb6",
+    "server/direct_trade_session_integration_test.go": "4f809a0e5acbc4ad510c15560fca6ac2879955cf1ab62dbca3fd309bc1aefb35",
+    "server/internal/database/character_commit.go": "f01feb4712f8dc7a1e099a9c19d13ba5309dab63385bf61af3c11d4f42010553"
+  },
+  "correctionsDuringWork": [
+    "Canonicalized case-insensitive target search before exact-account work locking and handler lookup.",
+    "Included moderation-driven cleanup in peer ownership after reviewing all cleanupClientLocked call sites.",
+    "Isolated unrelated social background workers in the no-database disconnect fixture after its notification task panicked; production presence behavior and financial assertions were not weakened.",
+    "Converted typed game rarity explicitly for the database fixture after the initial integration-test compile failure."
+  ],
+  "cleanup": "All three owned server processes stopped. Temporary Mongo container 8d5d27a06e94622304f48c5d799506c84e24d0b67af08fd86a183672f669cbde and only its two anonymous fixture volumes were removed; binary/server logs retained. The validator was restored and no pending direct-trade record remained before cleanup. No production service, account or database changed.",
+  "limits": [
+    "No Alpha 1.73 release or complete whole-economy acceptance is claimed. Remaining drop/pickup, Forge and reward-path invariant review and prepared milestone integration still need completion before packaging/deployment.",
+    "Standalone disposable Mongo and driver-command evidence do not certify replica-set failover, a physical phone, browser appearance, load capacity or full campaign pacing.",
+    "Prepared 1.71/1.72 choices and the full 1.11-1.99 roadmap remain open; the persistent goal stays active. Last accepted live release remains Alpha 1.70.1.",
+    "Metadata remains local until a real release, avoiding a receipt-only CI/deployment run."
+  ]
+}

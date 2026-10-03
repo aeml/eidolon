@@ -207,6 +207,17 @@ ordinary handlers, both-account admission/cleanup, startup/cold-orphan discovery
 login/resume and delivery feedback still need integration. Actual Mongo and
 connected runtime acceptance are not inferred from modeled storage tests; no1.73
 release is published, and the full roadmap goal remains active.
+The subsequent [runtime integration check](2026-10-03-release1-73-trade-runtime-checks.json)
+connects ordinary handlers, sorted/rechecked peer admission, cold login/resume,
+disconnect/moderation/admin ownership, paged startup and bounded periodic
+recovery, retained delivery retries and honest UI feedback. Complete-character
+journal commits now enforce durable acknowledgements and strong replay reads.
+Focused race/DOM checks, actual disposable Mongo index/receipt checks and three
+fresh production-binary socket/crash/recovery processes pass. This supersedes
+the earlier unconnected-trade status, not the milestone status: drop/pickup,
+Forge and reward-path invariants and prepared milestone integration still need
+review before1.73 packaging/deployment. No production mutation or publication
+occurred; the full1.11–1.99 goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
