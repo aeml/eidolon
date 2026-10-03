@@ -366,6 +366,17 @@ combat/event, boss full-bag awards and recipients outside the room cohort still
 need their own review. Remote master was fetched and already contained; no live
 release or production data changed, and the full roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
+The [boss-loot retention follow-up](2026-10-03-release1-73-boss-loot-retention-checks.json)
+prepares private exact rolls for full bags instead of losing hearts, bonus gems
+or unique equipment. Character snapshots/hydration retain opaque payloads;
+bounded detached collection preserves order and refuses metadata/identity
+conflicts or active trades. Four-class difficulty fixtures, shared ground/room
+race checks, real journal reopening and17 reward UI checks pass. Schema21 fences
+queue-unaware writers without backfill. This is not a completed boss durability
+gate: ordinary collection/retry and save-before-feedback coordination, initial
+reward/checkpoint replay ownership and connected crash acceptance remain required
+before publication. Production and live1.70.1 are untouched; the full goal stays
+active along with ordered predecessor and later milestone gates.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

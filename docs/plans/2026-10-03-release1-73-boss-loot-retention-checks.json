@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared boss-loot retention and collection primitives; ordinary coordinator unfinished; not live",
+  "sourceCommit": "53cbc3d64952aba8154b0b07df2d02bc09245a05",
+  "scope": [
+    "Normal solo/party boss paths retain exact rolled hearts, heroic/mythic bonus gems and mythic unique equipment instead of discarding full-bag remainders",
+    "Private opaque payloads survive detached actor copies, complete character snapshots, BSON and login hydration; unsupported future metadata is retained rather than reconstructed",
+    "Detached bounded-prefix collection preserves item order and metadata, does not partially consume an unplaceable item, refuses duplicate storage identities and does not alter an actively traded bag",
+    "The complete collection image includes both bag credit and queue removal; actual filesystem journal reopening retains the original image across modeled rejected saves",
+    "Owner-only reward feedback distinguishes earned items still awaiting bag space; raw queued payloads are excluded from public actor JSON",
+    "Schema21 fences queue-unaware writers with no player-value backfill or additional reward collection"
+  ],
+  "verification": {
+    "focusedRace": {
+      "command": "go test -race . ./internal/game ./internal/database -run '^Test(BossLoot|GroundPlacement|GroundItem|DungeonRoomReward|RewardPayload|DungeonProgressionReceipts|BuildBossRewardSummary|CharacterSnapshot|SchemaMigrationCatalog)' -count=1 -timeout=45s",
+      "result": "pass",
+      "packageSeconds": { "server": 13.393, "game": 14.936, "database": 1.173 },
+      "coverage": "Exact unique metadata, full/partial stacks, duplicate/owned identities, future fields, bounded batch and active trade, four-class Normal/Heroic/Mythic death-pipeline fixtures, complete journal reopen and shared ground/room regressions"
+    },
+    "finalProducerRegression": { "command": "go test -race ./internal/game -run '^TestBossLootDeathPipelineRetainsEveryFullBagPartyRoll$' -count=1 -timeout=30s", "result": "pass in1.823 seconds after adding explicit producer-error logs" },
+    "dom": { "command": "npm test -- --runTestsByPath tests/DungeonRewardFeedback.test.js tests/CappedRewardFeedback.test.js --runInBand", "result": "17 passed across2 suites in3.439 seconds" },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass on final source" },
+    "lint": "Changed UI and DOM test passed ESLint with zero warnings",
+    "diffCheck": "pass",
+    "correction": "An initial collection fixture exposed the ground-specific helper's short operation-ID slice assumption. Shared detached inventory placement is now separate from ground ID parsing; malformed short ground IDs refuse without panic and existing ground/room regressions pass.",
+    "limits": "Game death-method fixtures and real BSON/filesystem journals with modeled save rejection. No new actual connected boss fight, Mongo acknowledgement/failover or ordinary server crash acceptance is claimed."
+  },
+  "remaining": [
+    "Connect ordinary bag-space/login/background collection and save-before-bag feedback using existing character ownership/journal fences",
+    "Close initial boss-reward save/acknowledgement and stable replay/checkpoint boundaries before publication; current ordinary boss feedback is not yet durable acceptance",
+    "Actual ordinary-server rejection/crash/reconnect/collection acceptance after coordinator integration",
+    "Standalone combat/event and non-room-cohort recipients, complete valuable-operation ledger, ordered predecessor gates, versioned notes and public deployment",
+    "All later roadmap and owner-controlled closed-beta/release gates"
+  ],
+  "safety": "Prepared source only. No production database/schema, live service, wallet, payment or admission change. No test Mongo or server was started this turn. Last accepted live1.70.1 and the full roadmap goal remain unchanged."
+}
