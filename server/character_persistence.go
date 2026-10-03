@@ -106,8 +106,14 @@ func retryPendingCharacterSaveLocked(username string) error {
 		return nil
 	}
 	if world != nil {
+		client := getClientByPlayerID("player-" + username)
+		questSequence := questProgressSaveSequence(client)
 		if entity := world.GetEntityCopy("player-" + username); entity != nil {
-			return saveCharacterDB(&Client{username: username, playerID: entity.ID}, entity)
+			err := saveCharacterDB(&Client{username: username, playerID: entity.ID}, entity)
+			if err == nil {
+				sendSavedQuestProgress(client, questSequence, entity.Quests)
+			}
+			return err
 		}
 	}
 	pending, err := characterSaveJournal.Read(username)

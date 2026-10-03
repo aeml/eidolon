@@ -1533,20 +1533,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.handleChronicleInspection(msg.Payload)
 
 	case MsgRequestQuests:
-		if c.playerID == "" {
-			return
-		}
-		player := world.GenerateDailyQuests(c.playerID)
-		if player != nil {
-			world.Mu.RLock()
-			player.Mu.RLock()
-			questPayload, _ := json.Marshal(player.Quests)
-			player.Mu.RUnlock()
-			world.Mu.RUnlock()
-			msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
+		c.handleQuestSnapshotRequest()
 
 	case MsgAcceptQuest, MsgCompleteQuest:
 		handleQuestConversation(c, msg)

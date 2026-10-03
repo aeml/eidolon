@@ -170,7 +170,10 @@ type World struct {
 	OnBossReward func(RewardSummaryEvent, *WeeklyRaidCompletionEvent) error
 	// Opt-in only when shared persistence and public-drop recovery are wired.
 	// Called without scene/entity locks BEFORE any original boss credit.
-	OnBossVictory      func(database.BossVictoryOperation) error
+	OnBossVictory func(database.BossVictoryOperation) error
+	// Called under actor/world locks. Production only requests a coalesced
+	// save here; the saved quest image is published outside those locks.
+	OnQuestProgress    func(playerID string)
 	OnQuestUpdate      func(playerID string, quests []Quest)
 	OnPvPMatchComplete func(result PvPMatchResult)
 	OnPvPMatchUpdate   func(match *PvPMatch)

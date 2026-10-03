@@ -98,11 +98,14 @@ func savePlayerNow(client *Client) {
 		return
 	}
 
+	questSequence := questProgressSaveSequence(client)
 	entity := world.GetEntityCopy(client.playerID)
 	if entity == nil {
 		return
 	}
-	saveCharacterDB(client, entity)
+	if err := saveCharacterDB(client, entity); err == nil {
+		sendSavedQuestProgress(client, questSequence, entity.Quests)
+	}
 }
 
 func characterSnapshotForSave(username string, entity *game.Entity) *database.Character {

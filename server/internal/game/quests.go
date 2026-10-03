@@ -557,6 +557,11 @@ func (w *World) publishQuestProgress(player *Entity, updated bool) {
 	if !updated {
 		return
 	}
+	if w.OnQuestProgress != nil {
+		player.UnjournaledSave = true
+		w.OnQuestProgress(player.ID)
+		return
+	}
 	if w.OnQuestUpdate != nil {
 		w.OnQuestUpdate(player.ID, questSnapshot(player))
 	}

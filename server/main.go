@@ -858,6 +858,7 @@ func main() {
 		}
 	}
 
+	world.OnQuestProgress = requestQuestProgressSave
 	world.OnQuestUpdate = func(playerID string, quests []game.Quest) {
 		// Find client
 		sessionsMu.Lock()

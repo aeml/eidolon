@@ -144,6 +144,9 @@ type Client struct {
 	pvpStateRunning   bool
 	pvpStatePending   bool // Fresh presentation only; never a reward/persistence queue.
 
+	questSaveRequested uint64 // Guarded by saveMu; feedback generations only, never earned value.
+	questSaveConfirmed uint64
+
 	connectionWorkMu       sync.Mutex
 	connectionWorkUsers    int
 	connectionWorkReleased bool
