@@ -228,6 +228,16 @@ map order. Scoped race checks, 74 DOM checks and both desktop/phone-sized System
 Chrome presentation routes pass. This is committed prepared source, not live:
 drop/pickup cross-account custody, reward paths and ordered milestone integration
 remain open before1.73 packaging. The full roadmap goal remains active.
+The [ground-item primitives](2026-10-03-release1-73-ground-item-primitives-checks.json)
+prepare exact drop/pickup plans and receipt-idempotent character effects using
+the existing private delivery map. Partial quantities, generation/recipient
+reservations, detached loot snapshots and reservation-aware expiry pass focused
+race checks. A real reopened character journal preserves the debit and receipt;
+the shared operation remains test-owned, so this is not crash-safe world-loot
+recovery. Shared durable loot/intents, uniqueness, strong completion proof,
+startup/login/offline recovery and ordinary-handler integration remain required.
+The existing legacy drop/save publication gap is not claimed fixed or deployed.
+Reward invariants and the full1.11–1.99 goal remain unfinished and active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

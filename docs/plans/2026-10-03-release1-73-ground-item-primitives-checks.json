@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73",
+  "status": "prepared-unpublished-ground-item-primitives-only",
+  "sourceCommit": "fd7f062078f3e70c7a21a9ec8efd558814db8833",
+  "scope": [
+    "Server-produced immutable drop/pickup descriptors bind actor, loot generation, exact metadata, transferred/remainder quantities, instance, position, loot ownership/party and original timing.",
+    "Full character effects reuse existing private ItemDeliveryReceipts; no new private character format is introduced. Receipt replay precedes capacity and item-presence checks and cannot recreate consumed gear or repeat collection progress.",
+    "Pure drop preparation does not debit/publish. Pickup preparation reserves its exact recipient/fingerprint before IO; reservations reject ordinary pickup and survive expiry, including a deferred-removal recheck.",
+    "Projection changes require a matching supplied saved-character receipt. Process-local bounded publication guards prevent source replay refilling a partial stack or republishing collected loot; these guards are explicitly not durable custody after restart.",
+    "Exact-metadata stack planning separates different same-name affixes/qualities. Newly split bag stacks have stable separate IDs; duplicated source IDs across bag/equipment/stash/buyback fail preparation. Legacy implicit single units and empty omitted metadata remain transferable.",
+    "Ground-item entity snapshots now deep-copy mutable gear metadata. Private reservation/origin/generation/hash fields stay outside public JSON."
+  ],
+  "checks": {
+    "finalCommand": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database ./internal/game . -run '^TestGroundItem' -count=1 -timeout=45s",
+    "finalResult": "passed: database 1.032 seconds, game 2.747 seconds, server 1.399 seconds",
+    "relatedRegressionCommand": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database ./internal/game . -run '^(TestGroundItem|TestInventoryDrop|TestConcurrentInventoryDrop|TestWorldPickup|TestGetEntityCopy|TestForge|TestCharacterPersistence)' -count=1 -timeout=60s",
+    "relatedRegressionResult": "passed before the final field-shortening, legacy-empty-metadata and original-loot-timestamp additions: database 1.034 seconds, game 6.307 seconds, server 5.818 seconds. Final focused checks cover the changed ground-item paths; no additive unique-test count is inferred.",
+    "filesystem": "Real temporary BSON character journal was failed, reopened without live actors and replayed. Exact item debit, Gold preservation and operation receipt survived; subsequent modeled confirmed projection retained earned potency/stats. The operation descriptor itself was test-owned, not recovered from a new shared store.",
+    "game": "Staged gear round trip; missing/foreign receipt; consumed-item replay; exact partial remainder; different-affix separation; newer generation versus stale completion; sixteen concurrent pickup preparations settle one reservation; reserved expiry; detached loot snapshots; public-JSON privacy; capacity/actor/spatial/future-item rejection; duplicate source storage; deterministic split ID; implicit legacy unit/empty-map compatibility.",
+    "databaseModel": "Frozen BSON round trip, receipt binding, bounded payloads, invalid quantities/capacities/generations, NaN/infinite coordinates, changed metadata and opaque future fields retained without rebuilding them.",
+    "compile": "All server packages compiled with go test ./... -run '^$' after the private-field rename; final focused checks compiled the subsequent ground-item-only additions. git diff --check passed.",
+    "corrections": "Initial checks exposed shared mutable LootItem data and a reservation bound only to an ID; production primitives now detach snapshots and bind the exact frozen actor/fingerprint. Added publication tombstones and generation fingerprints to reject stale projection completion; canonicalized omitted empty metadata for legacy gear."
+  },
+  "limits": [
+    "No ordinary MsgInventoryDrop or MsgPickup handler is connected to these primitives. The existing save/publish gap is NOT claimed fixed live or in the legacy dispatch path.",
+    "Shared durable ground-loot records, intent/actor/loot uniqueness, receipt-proven completion, ambiguous-prepare reconciliation, schema/writer fencing, offline effects and startup/login recovery remain required. Only then replace ordinary handlers and prove connected crash/partial-pickup behavior.",
+    "Supplied saved-character receipts in game checks are modeled. The root check proves actual filesystem journal recovery with a modeled database committer, not new Mongo durability, capacity, crash-safe world-loot restoration or replica failover.",
+    "Projection guard capacity is a fail-closed bound, not proof of support for 100 beta players. Cross-storage receiving-stack identity and expired/missing-instance restoration policy still need review with the coordinator.",
+    "Quest/raid/event reward invariants, ordered 1.71/1.72/1.73 integration and the full 1.11–1.99 roadmap remain unfinished; the goal stays active.",
+    "Remote was fetched and remains fa414f0b288e8ee014d5ce72f7affdca485e1c7f (live 1.70.1). No push, deployment, production service/database write or version/patch-note publication occurred."
+  ]
+}
