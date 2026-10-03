@@ -13,6 +13,10 @@ var ErrBossLootUnsupported = errors.New("unsupported retained boss item; origina
 // Caller owns the player mutex. Keep the whole original roll if it cannot fit;
 // do not partially stack it and silently discard a remainder or reroll later.
 func (player *Entity) AwardBossItemLocked(item Item) (bool, error) {
+	return player.awardBossItemLocked(item, false)
+}
+
+func (player *Entity) awardBossItemLocked(item Item, retainOnly bool) (bool, error) {
 	item = normalizedGroundItem(item)
 	payload, err := json.Marshal(item)
 	if err != nil {
@@ -29,6 +33,11 @@ func (player *Entity) AwardBossItemLocked(item Item) (bool, error) {
 		if json.Unmarshal([]byte(retained), &identity) == nil && identity.ID == item.ID {
 			return false, ErrGroundItemIdentity
 		}
+	}
+	if retainOnly {
+		player.PendingBossLoot = append(player.PendingBossLoot, string(payload))
+		player.UnjournaledSave = true
+		return false, nil
 	}
 	inventory, remaining, err := planInventoryItemPlacement(player, item, "boss-stack-"+item.ID)
 	if err != nil {

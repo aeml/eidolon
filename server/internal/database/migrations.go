@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 21
+const CurrentSchemaVersion = 22
 
 type schemaMigration struct {
 	Version int
@@ -101,6 +101,9 @@ var schemaMigrations = []schemaMigration{
 	// Older snapshots omit deferred boss rolls and would erase them. Fence old
 	// writers without backfilling rewards or changing any historical character.
 	{Version: 21, Name: "retained_character_boss_loot", Apply: func(context.Context, *DB) error { return nil }},
+	// No reward backfill. Older death pipelines ignore the retained original
+	// boss cohort and must not write past this first-outcome recovery boundary.
+	{Version: 22, Name: "durable_boss_victory_cohorts", Apply: applyBossVictoryIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

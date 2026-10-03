@@ -42,6 +42,12 @@ func TestSchemaMigrationCatalogFencesRetainedBossLootWithoutBackfill(t *testing.
 	}
 }
 
+func TestSchemaMigrationCatalogFencesOriginalBossVictoryCohorts(t *testing.T) {
+	if CurrentSchemaVersion < 22 || len(schemaMigrations) < 22 || schemaMigrations[21].Name != "durable_boss_victory_cohorts" {
+		t.Fatal("older death pipelines must not ignore retained original boss victories")
+	}
+}
+
 func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
 	// writers must not be admitted after any of those values have been saved.
