@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared original boss public-drop recovery verified; complete finale/cohort integration and production activation remain unfinished; unpublished",
+  "sourceCommit": "7b13f18b02933510d17af3c3dfb69909f6077ffa",
+  "scope": [
+    "The immutable first boss victory owns the original public spawn; ordinary accepted pickups remain owned by the existing latest-generation ground-item ledger. No fake player debit or new transaction collection is introduced.",
+    "A strong first-victory read and latest pickup-ledger read precede publication. An unavailable read is not treated as absence. Existing consumed, partial, reserved or expired custody is restored only through its actual latest record and saved owner receipt when complete.",
+    "Pickup lineage checks preserve the original item ID and affixes, position, party, birth, availability and expiry. Quantities may decrease but cannot inflate. Known item normalization accepts ordinary pickup serialization without stripping unknown future metadata.",
+    "Original-spawn replay is idempotent and preserves a newer local pickup reservation or generation fence if custody advanced after the earlier database read. Consumed loot is not resurrected, partial quantities are not refilled and expiry is not renewed.",
+    "A prepared schema22 active-drop index and bounded sorted primary/majority query include completed victories, not just pending private rewards. Startup drains active pages; a ten-record rotating recovery pass progresses past an unhealthy earlier prefix without scanning the full history per player action.",
+    "The existing bounded ground-projection capacity check is shared rather than replaced. Current ordinary one-minute boss loot and known payloads are supported; unsupported future payload/lifetime contracts are retained or refused, never silently rewritten."
+  ],
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game ./internal/database -run '^Test(BossVictoryDrops|BossVictoryOriginal|BossVictoryDropCustody|GroundItemRestore|BossVictoryDelivery)' -count=1 -timeout=45s",
+    "focusedResult": "passed: server 6.693 seconds, game 3.472 seconds, database 1.086 seconds. New coordinator fixtures use modeled strong storage/character acknowledgements and the real BSON filesystem journal; they call ordinary durable ground pickup and restore a fresh World, not a fresh connected game process.",
+    "covered": "Terminal-victory discovery; ordinary full and partial pickups; a second partial generation; fresh-scene consumed/remaining recovery; original age/affixes; expired originals; changed first outcome; mismatched pickup affixes/quantity/party/position/birth/expiry; unknown future payloads; newer reservations; 23-record rotation past ten failed reads; existing boss-character and ground restoration regressions.",
+    "actualMongoCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_BOSS_TEST_MONGO_URI=mongodb://127.0.0.1:32871 go test -race ./internal/database -run '^TestBossVictoryStoreActualMongo$' -count=1 -timeout=45s",
+    "actualMongoResult": "Luna started and monitored its own exact session once; exit0, package4.776 seconds. The updated actual repository test retains prior conflicting-first-winner/saved-recipient/cursor checks and verifies completed active-drop discovery, exclusive cursor, expiry boundary and malformed/unbounded-query refusal.",
+    "independentDatabaseEvidence": "Root read schema_migrations version22 durable_boss_victory_cohorts, one completed and52 pending victories, the unique physical-boss index and the new active_boss_victory_drops index, and one active completed original. The first inspection mistakenly read schema_versions and returned null; corrected against the actual schema_migrations source before accepting schema evidence.",
+    "compile": "env GOTOOLCHAIN=go1.27.1 go test ./... -run '^$' passed all server packages; gofmt and git diff --check passed"
+  },
+  "remainingGates": [
+    "Preserve original final-dungeon/guild-clear and elemental crystal-repair effects through the shared winning victory and replay, including scene resume",
+    "Integrate public restoration with private cohort delivery and terminal completion, finish startup/background recovery and assign the store/hook in main only when the complete path is ready",
+    "Actual earned four-role party boss, rejected save, SIGKILL, partial checkpoint and ordinary reconnect acceptance; fresh-World fixtures and prepared Mongo records are not that proof",
+    "Other valuable-operation and ordered1.71/1.72 gates, versioned patch notes and verified deployment, plus the full later roadmap and owner-controlled closed-beta/full-release requirements"
+  ],
+  "safety": "Only owned disposable Mongo ca212e68f7e575e581f4d0d1a4ae958b4d16b6c1ec3cb338ff99d0f521eb19e3 was created on loopback32871. Its verified task label, two inspected anonymous test volumes and container were removed after terminal acceptance; follow-up container/volume listings were empty. No game process, production migration/database/character/wallet/service/admission change, hosted CI or deployment was started. Last accepted live remains1.70.1; full roadmap goal remains active."
+}

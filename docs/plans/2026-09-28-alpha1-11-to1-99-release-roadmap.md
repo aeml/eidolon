@@ -423,6 +423,16 @@ public-drop custody, original finale/guild/crystal-repair effects, shared termin
 and startup/background recovery, and actual earned-party crash acceptance are
 connected. No1.73 release or live activation is claimed; the full goal remains
 active, with unchanged live1.70.1.
+The [original boss-drop recovery follow-up](2026-10-03-release1-73-boss-drop-recovery-checks.json)
+now checks first-victory origins against the latest ordinary ground-pickup
+custody before publication. Fresh-scene checks preserve consumed/partial
+quantities, reservations and original expiry; a bounded pass progresses past
+failed earlier reads. The updated actual Mongo query/index check discovers
+active drops from completed victories and excludes expired ones. Schema22's
+index refinement remains prepared only, and its owned test data was removed.
+Finale/guild/crystal-repair replay, complete cohort/startup wiring and actual
+earned-party crash/reconnect acceptance remain before production activation.
+No1.73 completion or publication is claimed; the full roadmap stays active.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
