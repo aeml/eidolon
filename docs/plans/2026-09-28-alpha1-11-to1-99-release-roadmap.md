@@ -331,6 +331,17 @@ before shared progress, character-save-before-feedback, pending admission,
 offline/startup delivery and connected recovery checks. Combat/event boundaries
 and ordered release packaging remain open. The owned fixture and volumes were
 removed; production schema, live version and the full goal are unchanged.
+The [room-reward coordinator follow-up](2026-10-03-release1-73-room-reward-coordinator-checks.json)
+now wires the normal room-clear callback, first-plan cache, durable preparation
+before progress, per-recipient full-save-before-feedback, failed-save admission,
+full-bag retry and cold/disconnect/startup/periodic recovery. Restored rooms adopt
+the first stored outcome; offline grants retain unrelated metadata and preserve
+run age while projecting cleared rooms, even when bags remain full. Four-class
+failure/replay checks, real filesystem journal reopen, concurrent capture and
+53-cohort recovery pagination pass under the race detector. These checks model
+Mongo acknowledgements: a fresh ordinary-server/socket room-clear/crash check
+is still required before publication. Combat/event reward boundaries, ordered
+packaging and deployment acceptance remain open; no production release changed.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential

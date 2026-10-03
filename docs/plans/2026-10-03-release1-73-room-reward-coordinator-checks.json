@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared room-runtime coordinator; connected acceptance still required; not published",
+  "sourceCommit": "07fffd8ba5c1d29e52f5edecc0d52e4b136a04c4",
+  "scope": [
+    "Ordinary room clearing captures and retains the first cohort/roll before storage IO, without retaining scene locks across writes",
+    "Strongly stored first outcome precedes cleared/rewarded progress; a restored local proposal adopts the existing authoritative outcome",
+    "Individual complete character journal/save precedes bag/reward feedback; failed saves fence admission and preserve deferred feedback",
+    "Full bags retain the whole grant while other recipients progress; bag changes, authenticated cold entry, disconnect and bounded periodic recovery are wired",
+    "Startup drains all pending pages; offline delivery preserves unrelated build, EP, quests, equipment, rest and timestamps while correctly applying level growth and XP-to-cap overflow",
+    "Offline full-bag recovery can save only confirmed cleared-room projection without consuming the reward or renewing run age",
+    "Actual saved receipt proof suppresses redundant writes/grants; missing known shared records fail closed; terminal outcomes retire stale local captures",
+    "Shrine feedback reports actual recovery and remaining protection, never a renewed expired buff"
+  ],
+  "verification": {
+    "toolchain": "Go1.27.1",
+    "focusedRace": {
+      "command": "go test -race . ./internal/game -run '^(TestDungeonRoomReward|TestMarkDungeonRoomCleared)' -count=1 -timeout=60s",
+      "result": "pass",
+      "packageSeconds": { "server": 6.612, "game": 11.632 },
+      "coverage": "Twelve concurrent captures, no aliased payloads, unlocked persistence callback, rejected/lost prepare/save acknowledgements, per-recipient feedback barrier, exact replay, full bags, first stored outcome dominance, terminal capture retirement, actual journal reopen, offline level99-to100 split, preserved metadata, no corpse revival, clear projection without reward consumption and 53-cohort startup pagination"
+    },
+    "sharedPathRegression": {
+      "command": "go test -race . -run '^(TestDungeonRoomReward|TestCharacterPersistence|TestMessageHandler|TestGroundItemRuntime|TestForge)' -count=1 -timeout=90s",
+      "result": "pass in 14.264 seconds before the final terminal-capture regression addition; subsequent exact-source focused run also passed"
+    },
+    "compile": { "command": "go test ./... -run '^$'", "result": "pass" },
+    "boundary": "Real game methods and BSON filesystem journals with modeled immutable Mongo and atomic character save acknowledgements. Prior actual shared-store proof remains in the foundation receipt; no new ordinary-socket/fresh-server crash or replica failover acceptance is claimed.",
+    "correction": "Two initial offline full-bag fixtures filled a compact empty saved bag with a zero-iteration range. Explicitly allocating all25 slots exercised the intended refusal/projection/pagination assertions; final runs passed.",
+    "diffCheck": "pass"
+  },
+  "remaining": [
+    "Fresh ordinary-server/socket room-clear and failed-save/crash recovery acceptance before publishing this runtime",
+    "Boss/combat Gold/XP, party quest kill credit and event-enemy save/acknowledgement audit",
+    "Close prepared predecessor gates, publish versions in order with patch notes and verify public deployment",
+    "All later full-roadmap milestones and owner-controlled beta gates"
+  ],
+  "safety": "Prepared local commits only. Remote was fetched and already contained; no merge was needed. No production data/schema, package/login version, deployment or admission policy was changed. Last accepted live version remains1.70.1; the full roadmap goal remains active."
+}
