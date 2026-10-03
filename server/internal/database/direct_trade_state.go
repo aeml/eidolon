@@ -312,8 +312,8 @@ func ApplyDirectTradeCharacterDecision(username string, character *Character, op
 		return false, err
 	}
 	if state.LastOperationID == op.ID {
-		if state.LastOperationFingerprint != op.Fingerprint || state.LastOperationRevision != participant.ExpectedRevision+1 {
-			return false, ErrDirectTradeConflict
+		if err := directTradeParticipantReceipt(character, participant, op); err != nil {
+			return false, err
 		}
 		return false, nil
 	}
@@ -331,6 +331,25 @@ func ApplyDirectTradeCharacterDecision(username string, character *Character, op
 		peer := op.Participants[1-index]
 		if state.Escrow.PeerUsername != peer.Username || state.Escrow.PeerPlayerID != peer.PlayerID || state.Escrow.PeerCharacterName != peer.CharacterName {
 			return false, ErrDirectTradeConflict
+		}
+	}
+	if state.Escrow != nil {
+		ownOffer, _ := parseDirectTradeOffer(participant.OfferPayload)
+		owned := make(map[string]bool, len(ownOffer.Items))
+		for _, item := range ownOffer.Items {
+			owned[item.ID] = true
+		}
+		for _, slots := range [][]Item{character.Inventory, character.Stash, character.Buyback} {
+			for _, item := range slots {
+				if owned[item.ID] {
+					return false, ErrDirectTradeConflict
+				}
+			}
+		}
+		for _, item := range character.Equipment {
+			if owned[item.ID] {
+				return false, ErrDirectTradeConflict
+			}
 		}
 	}
 	payload := participant.OfferPayload

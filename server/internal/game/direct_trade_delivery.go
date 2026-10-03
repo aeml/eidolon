@@ -20,6 +20,20 @@ func (player *Entity) ApplyDirectTradeDecision(op database.DirectTradeOperation)
 		return false, database.ErrDirectTradeConflict
 	}
 	character := &database.Character{Name: player.Name, DirectTradeState: database.CloneDirectTradeState(player.DirectTradeState)}
+	// Recovery must also reject an escrow item duplicated into ordinary live
+	// custody after capture. Only IDs are needed; no earned metadata is rescaled.
+	for _, pair := range []struct {
+		source []Item
+		target *[]database.Item
+	}{{player.Inventory, &character.Inventory}, {player.Stash, &character.Stash}, {player.Buyback, &character.Buyback}} {
+		for _, item := range pair.source {
+			*pair.target = append(*pair.target, database.Item{ID: item.ID})
+		}
+	}
+	character.Equipment = make(map[string]database.Item, len(player.Equipment))
+	for slot, item := range player.Equipment {
+		character.Equipment[slot] = database.Item{ID: item.ID}
+	}
 	changed, err := database.ApplyDirectTradeCharacterDecision(player.Name, character, op)
 	if err != nil || !changed {
 		return changed, err

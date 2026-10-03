@@ -66,6 +66,45 @@ func TestDirectTradeFingerprintBindsAccountCustodyNotParticipantArrayOrder(t *te
 	}
 }
 
+func TestDirectTradeReceiptRequiresExactRetainedOrClaimedDelivery(t *testing.T) {
+	for _, outcome := range []string{"changed payload", "missing outbox", "wrong revision", "claimed", "retained"} {
+		t.Run(outcome, func(t *testing.T) {
+			op, characters := directTradeFixture(t, DirectTradeSettle)
+			character := characters[0]
+			if _, err := ApplyDirectTradeCharacterDecision("alice", character, op); err != nil {
+				t.Fatal(err)
+			}
+			state, _ := DecodeDirectTradeState(character.DirectTradeState)
+			switch outcome {
+			case "changed payload":
+				state.Delivery.OfferPayload = tradeEmptyOffer
+			case "missing outbox":
+				state.Delivery = nil
+			case "wrong revision":
+				state.Revision++
+				state.LastOperationRevision++
+			case "claimed":
+				state.Delivery = nil
+				state.Revision++
+			}
+			var err error
+			character.DirectTradeState, err = EncodeDirectTradeState(*state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := outcome == "claimed" || outcome == "retained"
+			if matched := DirectTradeCharacterReceiptMatches("alice", character, op); matched != want {
+				t.Fatal("receipt accepted missing/changed custody or rejected a completed claim", outcome, matched)
+			}
+			before := append(bson.Raw(nil), character.DirectTradeState...)
+			changed, err := ApplyDirectTradeCharacterDecision("alice", character, op)
+			if changed || (err == nil) != want || !bytes.Equal(before, character.DirectTradeState) {
+				t.Fatal("replay concealed missing/changed custody or mutated a receipt", outcome, err)
+			}
+		})
+	}
+}
+
 func TestDirectTradeDecisionPartialParticipantSaveReplayAndExactMetadata(t *testing.T) {
 	for _, decision := range []string{DirectTradeSettle, DirectTradeCancel} {
 		t.Run(decision, func(t *testing.T) {

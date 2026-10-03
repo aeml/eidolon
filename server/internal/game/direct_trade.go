@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"math"
 	"time"
 )
 
@@ -59,8 +58,7 @@ func (w *World) StartDirectTrade(requesterID, targetID string) (*DirectTrade, er
 	if requester.CasinoSeat != nil || target.CasinoSeat != nil {
 		return nil, fmt.Errorf("leave the casino seat before trading")
 	}
-	dx, dz := requester.X-target.X, requester.Z-target.Z
-	if math.Hypot(dx, dz) > 8 {
+	if !directTradeNearby(requester, target) {
 		return nil, fmt.Errorf("trade player is too far away")
 	}
 	if w.TradeByPlayer[requesterID] != "" || w.TradeByPlayer[targetID] != "" {
@@ -106,7 +104,7 @@ func (w *World) setDirectTradeOffer(playerID, tradeID string, itemIDs []string, 
 	if durable && (peer == nil || player.Type != TypePlayer || peer.Type != TypePlayer || player.ID != "player-"+player.Name || peer.ID != "player-"+peer.Name || player.Name == peer.Name) {
 		return nil, fmt.Errorf("durable trade participant binding is unavailable")
 	}
-	if durable && (player.Disconnected || peer.Disconnected || player.InstanceID != peer.InstanceID || player.CasinoSeat != nil || peer.CasinoSeat != nil || math.Hypot(player.X-peer.X, player.Z-peer.Z) > 8) {
+	if durable && (player.Disconnected || peer.Disconnected || player.InstanceID != peer.InstanceID || player.CasinoSeat != nil || peer.CasinoSeat != nil || !directTradeNearby(player, peer)) {
 		return nil, fmt.Errorf("trade players are no longer available in the same nearby scene")
 	}
 	if !durable && directTradeUsesPrivateState(player, peer) {

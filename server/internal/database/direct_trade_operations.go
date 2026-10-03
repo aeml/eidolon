@@ -115,7 +115,55 @@ func directTradeParticipantReceipt(character *Character, participant DirectTrade
 		state.LastOperationRevision != participant.ExpectedRevision+1 || state.Revision < state.LastOperationRevision {
 		return ErrDirectTradeConflict
 	}
+	want := participant.OfferPayload
+	if op.Decision == DirectTradeSettle {
+		for _, peer := range op.Participants {
+			if peer.Username != participant.Username {
+				want = peer.OfferPayload
+			}
+		}
+	}
+	if state.Delivery != nil {
+		if state.Delivery.OfferPayload != want {
+			return ErrDirectTradeConflict
+		}
+	} else {
+		offer, err := parseDirectTradeOffer(want)
+		if err != nil || ((offer.Gold != 0 || len(offer.Items) != 0) && state.Revision == state.LastOperationRevision) {
+			return ErrDirectTradeConflict // Nonempty custody vanished without a claim revision.
+		}
+	}
 	return nil
+}
+
+func DirectTradeCharacterReceiptMatches(username string, character *Character, op DirectTradeOperation) bool {
+	if op.Validate() != nil {
+		return false
+	}
+	for _, participant := range op.Participants {
+		if participant.Username == username {
+			return directTradeParticipantReceipt(character, participant, op) == nil
+		}
+	}
+	return false
+}
+
+// Recovery must read the primary's durable character, not a possibly stale URI
+// secondary preference. No character is a legitimate result for a new account;
+// malformed lookup/storage remains an error rather than guessed empty custody.
+func (db *DB) GetDirectTradeCharacter(username, characterName string) (*Character, error) {
+	if db == nil || db.users == nil || !boundedActivityText(username, 256, true) || !boundedActivityText(characterName, 256, true) {
+		return nil, errors.New("direct trade participant storage unavailable")
+	}
+	users, err := db.users.Clone(options.Collection().SetReadPreference(readpref.Primary()).SetReadConcern(readconcern.Majority()))
+	if err != nil {
+		return nil, err
+	}
+	character, err := newMongoCharacterRepository(users).LoadCharacter(username, characterName)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return nil, nil
+	}
+	return character, err
 }
 
 // Caller owns BOTH sorted account work locks through completion and fences any
@@ -133,16 +181,8 @@ func (db *DB) CompleteDirectTradeOperation(id, fingerprint string) (*DirectTrade
 	if op.State == DirectTradeComplete {
 		return op, nil
 	}
-	if db.users == nil {
-		return nil, errors.New("direct trade participant storage unavailable")
-	}
-	users, err := db.users.Clone(options.Collection().SetReadPreference(readpref.Primary()).SetReadConcern(readconcern.Majority()))
-	if err != nil {
-		return nil, err
-	}
-	repository := newMongoCharacterRepository(users)
 	for _, participant := range op.Participants {
-		character, err := repository.LoadCharacter(participant.Username, participant.CharacterName)
+		character, err := db.GetDirectTradeCharacter(participant.Username, participant.CharacterName)
 		if err != nil {
 			return nil, err
 		}
