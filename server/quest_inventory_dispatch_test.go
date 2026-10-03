@@ -12,12 +12,14 @@ import (
 func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T) {
 	for _, seeds := range []int{6, 8, 10} {
 		t.Run(fmt.Sprintf("seeds_%d", seeds), func(t *testing.T) {
+			setupCharacterJournalTest(t)
 			previousWorld, previousDB := world, db
 			defer func() { world, db = previousWorld, previousDB }()
 			db = nil
 			world = game.NewWorld(nil)
 			client := newLevelCommandClient()
 			player := newLevelCommandPlayer(client.playerID)
+			player.Name = client.username
 			player.X, player.Z = 20, 215
 			world.AddEntity(player)
 			world.GenerateDailyQuests(player.ID)

@@ -12,11 +12,14 @@ import (
 func TestTownRecoveryContextAdmitsFreshMovementAndRejectsDepartedPackets(t *testing.T) {
 	for _, action := range []string{MsgRecall, MsgRespawn} {
 		t.Run(action, func(t *testing.T) {
+			setupCharacterJournalTest(t)
 			previousWorld := world
 			defer func() { world = previousWorld }()
 			world = game.NewWorld(nil)
 			client := newAutoStatusClient("recovery-context")
+			client.playerID = "player-" + client.username
 			player := newAutoStatusPlayer(client.playerID, "Recovery", "available")
+			player.Name = client.username
 			player.X, player.Z = 120, 200
 			player.Health, player.MaxHealth = 100, 100
 			world.AddEntity(player)

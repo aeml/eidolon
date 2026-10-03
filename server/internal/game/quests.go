@@ -427,11 +427,23 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 }
 
 func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
+	player, advance, success := w.PerformCompleteQuestDeferred(playerID, questID)
+	if success && advance != nil && w.OnEvent != nil {
+		w.OnEvent("chronicle_advance", *advance)
+	}
+	return player, success
+}
+
+// Ordinary network turn-ins use this form so the whole reward, item debit and
+// completed quest can be journaled before announcing the next chapter. The
+// existing Completed/Granted fields are the saved replay receipt; no separate
+// reward may be issued when reconciliation retries a complete character save.
+func (w *World) PerformCompleteQuestDeferred(playerID, questID string) (*Entity, *ChronicleAdvanceEvent, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	player, ok := w.Entities[playerID]
 	if !ok {
-		return nil, false
+		return nil, nil, false
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
@@ -439,7 +451,12 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 		q := &player.Quests[i]
 		if q.ID == questID {
 			if !q.Accepted || q.Completed || q.Count < q.MaxCount || !w.canDiscussQuestLocked(player, *q) {
-				return nil, false
+				return nil, nil, false
+			}
+			// Refuse an unrepresentable payout before consuming quest items or
+			// changing progression. Never wrap Gold into a negative balance.
+			if player.Gold < 0 || q.RewardGold < 0 || player.Gold > math.MaxInt-q.RewardGold {
+				return nil, nil, false
 			}
 			if q.Type == "COLLECT" {
 				available := 0
@@ -449,23 +466,21 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 					}
 				}
 				if available < q.MaxCount {
-					return nil, false
+					return nil, nil, false
 				}
 				consumeInventoryItemLocked(player, q.Target, q.MaxCount)
 			}
 			w.awardQuestRewardsLocked(player, q)
 			if q.Category == QuestCategoryChronicle {
 				event := w.advanceChronicleLocked(player, i)
-				if w.OnEvent != nil {
-					w.OnEvent("chronicle_advance", event)
-				}
+				return player, &event, true
 			} else {
 				q.Completed = true
 			}
-			return player, true
+			return player, nil, true
 		}
 	}
-	return nil, false
+	return nil, nil, false
 }
 
 // Quest actions are local conversations, not remotely callable reward claims.

@@ -1547,66 +1547,8 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
-	case MsgAcceptQuest:
-		if c.playerID == "" {
-			return
-		}
-		var payload AcceptQuestPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success := world.PerformAcceptQuest(c.playerID, payload.QuestID)
-		if !success {
-			c.sendError("Speak to the correct quest giver nearby to accept an available quest.")
-		}
-		if success {
-			// Send Quest Update
-			world.Mu.RLock()
-			player.Mu.RLock()
-			questPayload, _ := json.Marshal(player.Quests)
-			player.Mu.RUnlock()
-			world.Mu.RUnlock()
-			msg := Message{
-				Type:    MsgQuestUpdate,
-				Payload: questPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-	case MsgCompleteQuest:
-		if c.playerID == "" {
-			return
-		}
-		var payload CompleteQuestPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success := world.PerformCompleteQuest(c.playerID, payload.QuestID)
-		if !success {
-			c.sendError("Return to the correct quest giver with all objectives and required items to complete this quest.")
-		}
-		if success {
-			// Collection turn-ins consume physical items. Publish the authoritative
-			// bag before the completion UI can show the next chapter, without
-			// reading inventory or quest slices while another action mutates them.
-			world.Mu.RLock()
-			player.Mu.RLock()
-			invPayload, _ := json.Marshal(player.Inventory)
-			questPayload, _ := json.Marshal(player.Quests)
-			player.Mu.RUnlock()
-			world.Mu.RUnlock()
-			c.sendSafe(createMessage(MsgInventory, invPayload))
-			msg := Message{
-				Type:    MsgQuestUpdate,
-				Payload: questPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-			sendEndgameState(c)
-		}
+	case MsgAcceptQuest, MsgCompleteQuest:
+		handleQuestConversation(c, msg)
 
 	case MsgForgeUpgrade, MsgForgePotency, MsgForgeSocket, MsgForgeInsertGem, MsgForgeCombineGem, MsgForgeRemoveGem:
 		handleForgeTransaction(c, msg)
