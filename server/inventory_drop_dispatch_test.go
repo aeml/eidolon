@@ -8,16 +8,14 @@ import (
 )
 
 func TestInventoryDropDispatchReturnsAuthoritativeBagAndRejectsReplay(t *testing.T) {
-	previousWorld, previousDB := world, db
-	defer func() { world, db = previousWorld, previousDB }()
-	db = nil
-	world = game.NewWorld(nil)
+	store, _, _, player, _ := groundCoordinatorFixture(t)
 	client := newLevelCommandClient()
-	player := newLevelCommandPlayer(client.playerID)
+	client.username, client.playerID = player.Name, player.ID
 	player.Health = 100
 	player.Inventory = []game.Item{{ID: "drop-me", Name: "Iron Sword", Stack: 1}}
-	world.AddEntity(player)
-	payload, _ := json.Marshal(InventoryDropPayload{Index: 0, ItemID: "drop-me"})
+	store.characters[player.Name] = characterSnapshotForSave(player.Name, world.GetEntityCopy(player.ID))
+	expected := 1
+	payload, _ := json.Marshal(InventoryDropPayload{Index: 0, ItemID: "drop-me", ExpectedStack: &expected})
 	request := Message{Type: MsgInventoryDrop, Payload: payload}
 	client.handleMessage(request)
 	messages := drainSentMessages(client.send)
@@ -36,16 +34,12 @@ func TestInventoryDropDispatchReturnsAuthoritativeBagAndRejectsReplay(t *testing
 }
 
 func TestInventoryDropDispatchChecksClientQuantityBeforeMovingStack(t *testing.T) {
-	previousWorld, previousDB := world, db
-	defer func() { world, db = previousWorld, previousDB }()
-	db = nil
-	world = game.NewWorld(nil)
-	t.Cleanup(world.StopBackground)
+	store, _, _, player, _ := groundCoordinatorFixture(t)
 	client := newLevelCommandClient()
-	player := newLevelCommandPlayer(client.playerID)
+	client.username, client.playerID = player.Name, player.ID
 	player.Health = 100
-	player.Inventory = []game.Item{{ID: "changing-stack", Stack: 5}}
-	world.AddEntity(player)
+	player.Inventory = []game.Item{{ID: "changing-stack", Stack: 5, MaxStack: 10}}
+	store.characters[player.Name] = characterSnapshotForSave(player.Name, world.GetEntityCopy(player.ID))
 	expected := 2
 	payload, _ := json.Marshal(InventoryDropPayload{Index: 0, ItemID: "changing-stack", ExpectedStack: &expected})
 	client.handleMessage(Message{Type: MsgInventoryDrop, Payload: payload})

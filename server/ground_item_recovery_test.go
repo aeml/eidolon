@@ -21,11 +21,13 @@ type groundRecoveryStore struct {
 	groundRecords map[string]database.GroundItemRecord
 	prepareError  string
 	completeError bool
+	groundReads   int
 }
 
 func (store *groundRecoveryStore) GetGroundItemOperation(id string) (*database.GroundItemRecord, error) {
 	store.mu.Lock()
 	defer store.mu.Unlock()
+	store.groundReads++
 	if record, found := store.groundRecords[id]; found {
 		return &record, nil
 	}

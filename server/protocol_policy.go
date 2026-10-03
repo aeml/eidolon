@@ -225,7 +225,7 @@ func (c *Client) handleMessage(msg Message) {
 	}
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
 		if err := recoverAccountDirectTradesLocked(c.username); err != nil {
-			c.sendInboundRejection(msg, "Your direct trade is awaiting recovery. Please retry shortly.")
+			c.sendInboundRejection(msg, "Your item/trade transfer is awaiting recovery. Please retry shortly.")
 			return
 		}
 		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
@@ -245,6 +245,7 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		defer retryLiveDirectTradeDeliveryAfterBagChangeLocked(c, msg.Type)
+		defer retryGroundItemAfterBagChangeLocked(c, msg.Type)
 	}
 	if handler := messageHandlers[msg.Type]; handler != nil {
 		handler(c, msg)

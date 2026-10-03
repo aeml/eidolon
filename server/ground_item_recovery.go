@@ -26,6 +26,7 @@ type pendingGroundItem struct {
 	op        database.GroundItemOperation
 	known     bool
 	uncertain bool
+	full      bool
 }
 
 // The actor's work lock serializes effects. Register the immutable proposal
@@ -112,12 +113,26 @@ func prepareAndCompleteGroundItemLocked(captured database.GroundItemOperation) (
 		return nil, err
 	}
 	if record.State == database.GroundItemPending {
+		// A previous full-bag result only permits making room, not ignoring a
+		// later failed save after that room becomes available.
+		groundItemPending.Lock()
+		entry := groundItemPending.accounts[captured.Username]
+		entry.full = false
+		groundItemPending.accounts[captured.Username] = entry
+		groundItemPending.Unlock()
 		if world != nil {
 			if err := world.RestoreGroundItemProjection(*record, nil); err != nil {
 				return nil, err
 			}
 		}
 		if err := applyAndSaveGroundItemCharacterLocked(record.GroundItemOperation); err != nil {
+			if errors.Is(err, game.ErrGroundItemFull) {
+				groundItemPending.Lock()
+				entry := groundItemPending.accounts[captured.Username]
+				entry.full = true
+				groundItemPending.accounts[captured.Username] = entry
+				groundItemPending.Unlock()
+			}
 			return nil, err
 		}
 		record, err = groundItemOperations.CompleteGroundItemOperation(record.ID, record.Fingerprint)

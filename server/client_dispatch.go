@@ -89,7 +89,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if err := recoverColdAccountDirectTradeLocked(payload.Username); err != nil {
-			c.sendError("Your direct trade is awaiting recovery. Please retry shortly.")
+			c.sendError("Your item/trade transfer is awaiting recovery. Please retry shortly.")
 			return
 		}
 		if err := recoverAccountAdminOperationsLocked(payload.Username); err != nil {
@@ -880,7 +880,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if err := recoverColdAccountDirectTradeLocked(username); err != nil {
-			c.sendError("Your direct trade is awaiting recovery. Please log in again shortly.")
+			c.sendError("Your item/trade transfer is awaiting recovery. Please log in again shortly.")
 			return
 		}
 		sessionsMu.Lock()
@@ -1036,28 +1036,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		// Damage is now broadcast via OnEvent("damage") asynchronously
 
 	case MsgPickup:
-		if c.playerID == "" {
-			return
-		}
-		var payload PickupPayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success, reason := world.PerformPickup(c.playerID, payload.LootID)
-		if success {
-			// Send inventory update to player
-			invPayload, _ := json.Marshal(player.Inventory)
-			msg := Message{
-				Type:    MsgInventory,
-				Payload: invPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-			savePlayer(c)
-		} else if reason == "inventory_full" {
-			c.sendError("Inventory full")
-		}
+		handleGroundItemPickup(c, msg)
 
 	case MsgAbility:
 		if c.playerID == "" {
@@ -1163,23 +1142,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.sendSafe(resultBytes)
 
 	case MsgInventoryDrop:
-		var payload InventoryDropPayload
-		if c.playerID == "" || json.Unmarshal(msg.Payload, &payload) != nil {
-			return
-		}
-		var expectedStack []int
-		if payload.ExpectedStack != nil {
-			expectedStack = []int{*payload.ExpectedStack}
-		}
-		inventory, err := world.PerformInventoryDrop(c.playerID, payload.Index, payload.ItemID, expectedStack...)
-		if err != nil {
-			c.sendError(err.Error())
-			return
-		}
-		invPayload, _ := json.Marshal(inventory)
-		response, _ := json.Marshal(Message{Type: MsgInventory, Payload: invPayload})
-		c.sendSafe(response)
-		savePlayer(c)
+		handleGroundItemDrop(c, msg)
 
 	case MsgInventoryMove:
 		if c.playerID == "" {

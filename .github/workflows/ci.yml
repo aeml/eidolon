@@ -103,7 +103,7 @@ jobs:
           EIDOLON_CASINO_TEST_MONGO_URI: mongodb://127.0.0.1:27017
         run: go test -race . -run '^Test(BlackjackMongoTimeout|PokerMongo(Timeout|DecisionTimeout))' -count=1
 
-      - name: Verify ordinary social, duel and administration sockets
+      - name: Verify ordinary item, social, duel and administration sockets
         working-directory: server
         env:
           EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
@@ -113,6 +113,7 @@ jobs:
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDirectTradeActualSocketsCrashAndRecovery$' -count=1 -timeout=120s
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroupFinderActualSocketsConsentPrivacyAndReady$' -count=1
