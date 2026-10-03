@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-03",
+  "milestone": "1.73",
+  "status": "prepared coordinator source; not connected or published",
+  "sourceCommit": "fa26bc623f22058b5b9fa216dfe2c774727ab823",
+  "scope": [
+    "Account-owned frozen first-plan cache and same-ID reconciliation after unknown prepare results",
+    "Complete online/offline bag effects and existing private receipt committed through the character journal before shared completion",
+    "Actual stored receipt checks before completed projection restoration; latest generation lookup prevents old drops refilling consumed loot",
+    "Pending accepted pickups remain reserved beyond original expiry; completed remainders never renew ground lifetime",
+    "Full-bag retention, exact metadata merging and stable identities for compatible stack fragments moved into stash, buyback or equipment",
+    "Unique gear and conflicting original/split identities are rejected without partial effects",
+    "Offline recovery changes only bag, retained receipt and matching bounded collection counts, preserving unrelated saved state",
+    "Ground drop coordinates are physically grounded before their durable plan is frozen"
+  ],
+  "verification": {
+    "command": "go test -race ./internal/database ./internal/game . -run '^TestGroundItem' -count=1 -timeout=45s",
+    "toolchain": "Go 1.27.1",
+    "result": "pass",
+    "packageSeconds": { "database": 1.195, "game": 6.078, "server": 4.049 },
+    "coverage": [
+      "Unknown prepare before/after modeled commit, failed/lost save acknowledgement, lost terminal acknowledgement and same-ID recovery",
+      "Real filesystem character-journal reopening with complete debit/receipt preserved",
+      "Definitive first rejection releases only its exact claim; a later rejection never clears an earlier unknown claim",
+      "Full bags retain accepted custody and resume after freeing room",
+      "Online/offline receipt replay after consumption never re-grants items or collection credit",
+      "Cold partial projection preserves remaining quantity and original availability",
+      "Newer generations and new reservations cannot be overwritten by old restoration or release",
+      "Expired accepted pickup can finish its character effect, then leaves no resurrected ground loot",
+      "Compatible stack fragments and unique-gear conflicts across three owned storage types",
+      "Grounded coordinates agree with the durable ledger near a rock"
+    ],
+    "storageBoundary": "Coordinator commit/operation replies are modeled; filesystem journal IO is real. This turn did not run new actual-Mongo, production-binary or connected crash/restart checks. Previous shared-store actual-Mongo evidence remains separately scoped."
+  },
+  "remaining": [
+    "Wire the store during runtime initialization and replace ordinary MsgInventoryDrop/MsgPickup paths",
+    "Account admission, honest inventory/error feedback and full-bag retry integration",
+    "Paged startup discovery/restoration, cold login/resume and bounded background recovery",
+    "Actual connected production-binary drop/pickup crash/restart proof and prepared milestone integration",
+    "Other reward-path invariants and ordered version packaging, patch notes, deployment and public acceptance"
+  ],
+  "safety": "No production data, production schema, normal gameplay handlers, login version or deployment changed. The known legacy live drop/save gap is not claimed fixed. Full Alpha 1.11–1.99 roadmap goal remains active."
+}

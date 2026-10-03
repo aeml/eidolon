@@ -250,6 +250,18 @@ release status: ordinary drop/pickup handlers, coordinator admission, startup,
 login/offline recovery and connected crash/restart proof remain required. Legacy
 live behavior is unchanged; no production migration or release occurred. Reward
 invariants and the full1.11–1.99 goal remain open and active.
+The [ground-item coordinator follow-up](2026-10-03-release1-73-ground-item-coordinator-checks.json)
+adds first-plan admission caching, same-ID unknown-result reconciliation, complete
+online/offline character effects and latest-generation projection restoration.
+Accepted expired pickups stay reserved; full bags retain custody; compatible
+stash-held fragments get stable split identities without renaming unique gear.
+Physical grounding is resolved before drop coordinates are frozen. Scoped race
+checks and real filesystem-journal reopening pass; coordinator database replies
+are modeled, not new connected crash/failover proof. Normal drop/pickup handlers
+and runtime store registration remain unchanged. Startup/cold admission and
+background discovery, ordinary protocol feedback, actual connected recovery,
+reward paths and ordered milestone deployment remain required. This is prepared
+source, not live acceptance, and the complete roadmap goal remains active.
 1.71 account-security work is partial, not a completed milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
