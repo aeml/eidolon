@@ -1495,6 +1495,15 @@ preserving their BSON persistence. Reproduced synthetic serialization failures
 now pass with focused race checks; no actual provider/connected proof, privacy
 policy, export/removal endpoint or1.75 publication is inferred.
 
+October4: prepared1.75 also has an **internal owner-progression snapshot**
+serializer, with explicit nested export fields instead of raw database DTOs.
+Focused race checks preserve gear, builds, currencies, quest claims and the
+original stored character, while omitting credentials/custody/replay records.
+The [inventory](2026-10-04-release1-75-data-inventory.json) records response-budget
+and privacy limits. This is not a full personal-data export or exposed feature;
+ownership, request/delivery policy, account/shared data, bounded API/UI and
+approved notices remain required. No removal or analytics policy was changed.
+
 October4: **Alpha1.74.0 release assembly** now has its own login version and
 cumulative notes for the read-only moderation filters and reviewed permission
 boundaries.398 focused client checks pass; backend authority proof retains its
