@@ -39,7 +39,8 @@ export function renderAdminServiceDiagnostics(list, service) {
         ['casinoGold', 'Casino Gold transfer calls'], ['casinoEP', 'Casino EP transfer calls']
     ]) {
         const outcome = health.operational?.[key];
-        row(label, `Completed calls: ${count(outcome?.completed)} · Returned errors: ${count(outcome?.failed)} · ${timingText(outcome)}`);
+        const inFlight = outcome?.inFlightKnown === true ? count(outcome?.inFlight) : 'Unavailable';
+        row(label, `In flight: ${inFlight} · Completed calls: ${count(outcome?.completed)} · Returned errors: ${count(outcome?.failed)} · ${timingText(outcome)}`);
     }
     return true;
 }

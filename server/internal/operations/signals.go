@@ -6,12 +6,16 @@ package operations
 // Timing covers returned calls, including failures/retries, not in-flight work
 // or unique payouts. Zero TimedSamples means timing is unavailable. Durations
 // are monotonic elapsed microseconds; TotalMicros saturates at uint64 maximum.
+// InFlight is a current active-call gauge, not queue depth. InFlightKnown keeps
+// older/missing measurements distinct from observed idle state.
 type OutcomeCounts struct {
-	Completed    uint64 `json:"completed"`
-	Failed       uint64 `json:"failed"`
-	TimedSamples uint64 `json:"timedSamples"`
-	TotalMicros  uint64 `json:"totalMicros"`
-	MaxMicros    uint64 `json:"maxMicros"`
+	InFlight      uint64 `json:"inFlight"`
+	InFlightKnown bool   `json:"inFlightKnown"`
+	Completed     uint64 `json:"completed"`
+	Failed        uint64 `json:"failed"`
+	TimedSamples  uint64 `json:"timedSamples"`
+	TotalMicros   uint64 `json:"totalMicros"`
+	MaxMicros     uint64 `json:"maxMicros"`
 }
 
 // OperationalMetrics is fixed-size aggregate process-lifetime instrumentation.
@@ -28,6 +32,8 @@ type OperationalMetrics struct {
 type outcomeInput struct {
 	Completed, Failed                    *uint64
 	TimedSamples, TotalMicros, MaxMicros *uint64
+	InFlight                             *uint64
+	InFlightKnown                        *bool
 }
 
 type operationalInput struct {
@@ -51,6 +57,14 @@ func (input *operationalInput) metrics() (*OperationalMetrics, bool) {
 			return nil, false
 		}
 		*outputs[index] = OutcomeCounts{Completed: *counts.Completed, Failed: *counts.Failed}
+		// Legacy/partial gauges are unavailable, not a measured idle state.
+		if counts.InFlight != nil && counts.InFlightKnown != nil {
+			if !*counts.InFlightKnown && *counts.InFlight != 0 {
+				return nil, false
+			}
+			outputs[index].InFlight = *counts.InFlight
+			outputs[index].InFlightKnown = *counts.InFlightKnown
+		}
 		// Older/missing timing fields mean unavailable, not measured zero.
 		if counts.TimedSamples == nil || counts.TotalMicros == nil || counts.MaxMicros == nil {
 			continue

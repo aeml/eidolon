@@ -29,6 +29,134 @@ func resetOperationalMetricsForTest(t *testing.T) {
 	})
 }
 
+func TestOperationalSignalsInFlightAndDuplicateCompletion(t *testing.T) {
+	resetOperationalMetricsForTest(t)
+	finish := beginOperationalCall(boundaryCasinoEP)
+	before := operationalMetricsSnapshot()
+	if !before.CasinoEP.InFlightKnown || before.CasinoEP.InFlight != 1 || before.CasinoEP.Completed != 0 || before.CasinoGold.InFlight != 0 {
+		t.Fatal("active operation is missing or attributed to another boundary")
+	}
+	var workers sync.WaitGroup
+	for i := 0; i < 20; i++ {
+		workers.Add(1)
+		go func() { defer workers.Done(); finish(errors.New("private-active-marker")) }()
+	}
+	workers.Wait()
+	beginOperationalCall(operationalBoundary(255))(nil)
+	after := operationalMetricsSnapshot()
+	if after.CasinoEP.InFlight != 0 || after.CasinoEP.Completed != 1 || after.CasinoEP.Failed != 1 || after.CasinoEP.TimedSamples != 1 || after.CasinoGold.Completed != 0 {
+		t.Fatal("duplicate completion underflowed a gauge or double-counted a call")
+	}
+	encoded, _ := json.Marshal(after)
+	if strings.Contains(string(encoded), "private-active-marker") {
+		t.Fatal("private error reached active-work diagnostics")
+	}
+}
+
+func TestOperationalSignalsInFlightSnapshotIsCoherentUnderConcurrency(t *testing.T) {
+	resetOperationalMetricsForTest(t)
+	const total = 64
+	finishes := make([]func(error), total)
+	for i := range finishes {
+		finishes[i] = beginOperationalCall(boundaryCharacterCommit)
+	}
+	var workers sync.WaitGroup
+	for _, finish := range finishes {
+		workers.Add(1)
+		go func(finish func(error)) {
+			defer workers.Done()
+			finish(nil)
+			snapshot := operationalMetricsSnapshot().CharacterCommit
+			if snapshot.InFlight+snapshot.Completed != total || snapshot.TimedSamples != snapshot.Completed || snapshot.Failed != 0 {
+				t.Error("completion and active gauge were observed from different updates")
+			}
+		}(finish)
+	}
+	workers.Wait()
+	final := operationalMetricsSnapshot().CharacterCommit
+	if final.InFlight != 0 || final.Completed != total {
+		t.Fatal("concurrent completion lost active/completed calls")
+	}
+}
+
+func BenchmarkOperationalSignalsInFlight(b *testing.B) {
+	b.ReportAllocs()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			finish := beginOperationalCall(boundaryCharacterCommit)
+			finish(nil)
+		}
+	})
+}
+
+type operationalBlockedCommitter struct {
+	entered, release chan struct{}
+	next             characterCommitter
+}
+
+func (committer operationalBlockedCommitter) CommitCharacterSave(username string, character *database.Character, saveID string) error {
+	close(committer.entered)
+	<-committer.release
+	return committer.next.CommitCharacterSave(username, character, saveID)
+}
+
+func TestOperationalSignalsInFlightDuringActualJournaledCommit(t *testing.T) {
+	_, committer := setupCharacterJournalTest(t)
+	resetOperationalMetricsForTest(t)
+	entered, release := make(chan struct{}), make(chan struct{})
+	characterSaveCommitter = operationalBlockedCommitter{entered: entered, release: release, next: committer}
+	done := make(chan error, 1)
+	var unblock sync.Once
+	completed := false
+	defer func() {
+		unblock.Do(func() { close(release) })
+		if !completed {
+			select {
+			case <-done:
+			case <-time.After(2 * time.Second):
+				t.Error("owned commit did not finish after release")
+			}
+		}
+	}()
+	go func() {
+		done <- persistCharacterSnapshot("private-active-owner", &database.Character{Name: "private-active-player", Gold: 1234, EP: 83})
+	}()
+	select {
+	case <-entered:
+	case <-time.After(2 * time.Second):
+		t.Fatal("commit did not reach its owned barrier")
+	}
+	snapshot := operationalMetricsSnapshot()
+	if snapshot.CharacterJournal.Completed != 1 || snapshot.CharacterJournal.InFlight != 0 ||
+		snapshot.CharacterCommit.InFlight != 1 || snapshot.CharacterCommit.Completed != 0 || snapshot.CharacterCleanup.Completed != 0 {
+		t.Fatal("unfinished commit looked idle, completed or cleaned up")
+	}
+	recorder := httptest.NewRecorder()
+	healthHandler(func(context.Context) error { return nil })(recorder, httptest.NewRequest(http.MethodGet, "/healthz", nil))
+	var health healthResponse
+	if err := json.Unmarshal(recorder.Body.Bytes(), &health); err != nil || health.Operational.CharacterCommit.InFlight != 1 || !health.Operational.CharacterCommit.InFlightKnown {
+		t.Fatal("actual health response lost active work", err)
+	}
+	if strings.Contains(recorder.Body.String(), "private-active") {
+		t.Fatal("active work leaked an account or character label")
+	}
+	unblock.Do(func() { close(release) })
+	select {
+	case err := <-done:
+		completed = true
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("commit did not finish after release")
+	}
+	final := operationalMetricsSnapshot()
+	if final.CharacterCommit.InFlight != 0 || final.CharacterCommit.Completed != 1 || final.CharacterCleanup.InFlight != 0 || final.CharacterCleanup.Completed != 1 ||
+		committer.saved.Gold != 1234 || committer.saved.EP != 83 {
+		t.Fatal("observation changed completed persistence or currency values")
+	}
+}
+
 func TestOperationalSignalsConcurrentSnapshotsAreCoherent(t *testing.T) {
 	resetOperationalMetricsForTest(t)
 	var workers sync.WaitGroup
@@ -171,7 +299,7 @@ func TestOperationalSignalsTimingIsBoundedAndDistinguishesUntimedCalls(t *testin
 	recordOperationalResult(boundaryCharacterJournal, errors.New("private-duration-marker"), 2500*time.Microsecond)
 	recordOperationalResult(boundaryCharacterJournal, nil, -time.Microsecond)
 	counts := operationalMetricsSnapshot().CharacterJournal
-	if counts != (operations.OutcomeCounts{Completed: 3, Failed: 1, TimedSamples: 2, TotalMicros: 2500, MaxMicros: 2500}) {
+	if counts != (operations.OutcomeCounts{InFlightKnown: true, Completed: 3, Failed: 1, TimedSamples: 2, TotalMicros: 2500, MaxMicros: 2500}) {
 		t.Fatal("zero, failed or invalid duration recorded incorrectly", counts)
 	}
 	operationalResults.Lock()
