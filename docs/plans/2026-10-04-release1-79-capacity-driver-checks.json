@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "milestone": "Prepared Alpha1.79 capacity-driver evidence correction",
+  "status": "isolated unpublished successor; no multiplayer capacity or milestone acceptance",
+  "base": "0b5262aecfcbf3d2716c8e5b7f6ff5ae7c2f435d current prepared1.78, carrying exact pushed1.74/d1a9dd5c, accepted1.73/ad59bffb and prepared1.75–1.77 code through schema24",
+  "inheritedVersion": "Alpha1.74.0",
+  "schemaVersion": 24,
+  "finding": "The nightly evidence validator ignored decode_errors even though the current driver emitted it; it accepted aggregate traffic without measuring each client's own-state coverage. Driver totals could be read before the final socket reader terminated. Legacy JSON frames and several malformed-message paths were not counted consistently.",
+  "changes": {
+    "driver": "Per-reader fixed own-player frame count, first/last observation window, largest successive state gap and received payload-byte accounting before gzip expansion. Include every configured client, including zero observations, when summarizing minimum coverage. Close and join the socket reader before final totals. Count successful legacy JSON state frames and malformed protobuf/gzip/JSON/state/inventory decoding; bound WebSocket reads and gzip expansion to8MiB per message. No identities or actor history retained in coverage observations.",
+    "validator": "Require exactly one complete Load summary and State coverage line, reject duplicate/incomplete lines, missing/nonzero decode failures, partial client coverage, impossible/unsafe integer counters and non-ready/mixed-run runtime samples. Existing heap/goroutine/growth ceilings stay unchanged. Optional explicit duration/rate declaration requires the minimum frames for every client and a first-to-last window of at least90% of requested duration. Nightly runner predeclares the rate via SOAK_MIN_CLIENT_STATE_RATE, default5 using the previously accepted aggregate baseline as a stricter every-client gate; gaps and bytes are reported without a fictional SLA.",
+    "unchanged": "No gameplay/server authority, rewards, roles, schemas, account policy, currency, art, deployment or production-monitor configuration changed. Default-generated credentials remain in memory and supplied files remain read-only. Earlier accepted50/100-client receipts retain their original source/workload scopes; they are not rerun or reclassified."
+  },
+  "checks": {
+    "goCommand": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race ./cmd/loadtest -count=1 -timeout=20s",
+    "goResult": "Whole small load-driver package passed5.994s with existing credential/admission/protobuf tests, new starved-client coverage arithmetic and six real loopback WebSocket scenarios. After adding malformed-inventory handling, ran only TestLoadCoverageActualSocketFramesAndReaderShutdown: seven scenarios passed6.739s, including gzip expansion above8MiB. Actual server-side fixture sends other-player, own protobuf, gzip and legacy states; driver own coverage remains three from four total state frames, errors are final before return and clean shutdown does not create a read error. This local fixture is not the production game server, real account authentication or database admission proof.",
+    "clientCommand": "Node24.18.0 --experimental-vm-modules Jest --runInBand --runTestsByPath tests/SoakIsolation.test.js",
+    "clientResult": "Four focused policy tests passed0.728s, then passed0.479s after final strict runtime/duplicate-evidence additions. Cases reject decode omissions/errors, duplicate/incomplete summaries, missing/starved coverage, integer overflow/fractions, mixed/unready/null samples and invalid duration/rate declarations. Reused compatible dependencies, not a new install or browser/GPU/capacity test.",
+    "hygiene": "Affected script/test ESLint, gofmt and git diff --check passed. No Mongo fixture, production account, campaign, raid, provider email, service installation, DNS mutation or long soak performed."
+  },
+  "sourceHashes": {
+    "loadtest/main.go": "e3c8052ddac2243e51e611fca010ff507e31f667c10f7349fca6d8242f2ca6c9",
+    "loadtest/coverage.go": "47f998fe672e975bdd675e91d458f7912d596b3fd109f343a3a2807087300624",
+    "loadtest/coverage_test.go": "3592f15728985bfad43229a243a2cbf1fdce4dfa42c900525b79c50c8903e9bb",
+    "soak-policy.mjs": "972cef68eaee067dd89933e3ac3937c63ac815bdf7c759fc6ccfab382aa73e55",
+    "run-nightly-soak.mjs": "e7c90ecae048c62957483c7e3f7a044928f6f0edf6172b429cb9493fb824ee35",
+    "SoakIsolation.test.js": "b1912cd5078ebef3d133364e5bcce16755ee9aee20bf72f3a91f6718ddb05d8b"
+  },
+  "remaining": "Replace fixed authentication staging with measured response-driven admission before relying on fresh-account load behavior. Current mixed profile only distributes combat/town/social; implement the remaining dense casino, party/raid, event and save workloads and predeclare representative duration/headroom and tick/network/DB/client criteria. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.74–1.78 acceptance, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+}

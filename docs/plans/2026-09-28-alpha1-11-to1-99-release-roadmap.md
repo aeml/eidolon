@@ -1687,6 +1687,17 @@ No production thresholds, service, mail or capacity policy were enabled. Require
 storage/growth/error-rate signals, alert ownership, retention and budgets remain
 open; these controls do not complete or publish1.78.
 
+October4: **prepared1.79 capacity-driver correction** now measures minimum
+own-player state coverage across every configured client, state windows/gaps and
+received payload bytes. Final totals wait for socket-reader termination; gzip
+expansion is bounded and decoding failures can no longer pass the nightly
+validator. Focused race tests with seven actual loopback protocol scenarios and
+the four policy tests pass ([receipt](2026-10-04-release1-79-capacity-driver-checks.json)).
+This is not100-player admission/capacity proof: current mixed profiles omit casino,
+coordinated parties/raids and events, and fixed authentication staging must be
+replaced before a fresh-account workload is trusted. Required representative
+workload/headroom and ordered predecessor/version/deployment gates remain open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

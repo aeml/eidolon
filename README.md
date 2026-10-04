@@ -421,7 +421,7 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.74.0`. This isolated, unpublished
-  1.78 candidate integrates accepted 1.72 security and 1.73 valuable-operation
+  1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
   credential/recovery JSON exclusions and an unexposed owner-progress serializer.
@@ -439,11 +439,16 @@ Notes:
   fixed save/wallet diagnostics and an audited manual Administration view.
   Operational emails/services are not enabled; thresholds, retention,
   ownership and operating budgets remain explicit gates.
+  [Prepared capacity-driver checks](docs/plans/2026-10-04-release1-79-capacity-driver-checks.json)
+  add per-client own-state coverage, payload/gap/window measurements and strict
+  decode/evidence validation. Socket-reader termination precedes final totals;
+  targeted loopback fixtures are not a100-player capacity result. Actual mixed
+  town/casino/party/raid/event/save workloads and headroom remain required.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.
   1.73 is independently accepted; this candidate must not deploy as1.74 or
-  before1.74/1.75/1.76/1.77 acceptance.
+  before1.74/1.75/1.76/1.77/1.78 acceptance.
   Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader

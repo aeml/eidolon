@@ -151,6 +151,7 @@ func main() {
 
 	var wg sync.WaitGroup
 	stop := make(chan struct{})
+	observations := make([]loadObservation, *count)
 
 	for i := 0; i < *count; i++ {
 		wg.Add(1)
@@ -160,7 +161,7 @@ func main() {
 			if botScenario == "mixed" {
 				botScenario = []string{"combat", "town", "social"}[idx%3]
 			}
-			runBot(idx, u.String(), creds[idx], botScenario, stop)
+			runBot(idx, u.String(), creds[idx], botScenario, stop, &observations[idx])
 		}(i)
 		// Stagger connections slightly to avoid hammering the server all at once
 		time.Sleep(100 * time.Millisecond)
@@ -177,6 +178,7 @@ func main() {
 	log.Println("Stopping bots...")
 	close(stop)
 	wg.Wait()
+	coverage := summarizeStateCoverage(observations)
 	log.Printf(
 		"Load summary: connected=%d joined=%d state_frames=%d read_errors=%d write_errors=%d decode_errors=%d",
 		metrics.connected.Load(),
@@ -186,8 +188,10 @@ func main() {
 		metrics.writeErrors.Load(),
 		metrics.decodeErrors.Load(),
 	)
+	log.Printf("State coverage: clients=%d min_frames=%d min_active_ms=%d max_gap_ms=%d wire_bytes=%d",
+		coverage.clients, coverage.minFrames, coverage.minActive.Milliseconds(), coverage.maxGap.Milliseconds(), coverage.wireBytes)
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
-		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 {
+		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) {
 		os.Exit(1)
 	}
 }
@@ -202,7 +206,7 @@ func observeOwnAdmission(state map[string]Entity, playerID string, joined *bool)
 	return true
 }
 
-func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}) {
+func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}, observation *loadObservation) {
 	dialer := *websocket.DefaultDialer
 	if *insecure {
 		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -218,6 +222,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 		return
 	}
 	defer c.Close()
+	c.SetReadLimit(8 << 20) // The test driver must not allocate unbounded peer frames.
 	defer writeLocks.Delete(c)
 	metrics.connected.Add(1)
 
@@ -257,6 +262,10 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 
 	// Start reading messages to keep connection alive and handle server responses
 	done := make(chan struct{})
+	defer func() {
+		_ = c.Close()
+		<-done // Final coverage/errors are read only after the reader has stopped.
+	}()
 	go func() {
 		defer close(done)
 		joined := false
@@ -270,16 +279,19 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				}
 				return
 			}
+			observation.wireBytes += uint64(len(message)) // Payload bytes before gzip expansion, excluding WebSocket/TLS overhead.
 
 			// Check for GZIP
 			if len(message) > 2 && message[0] == 0x1f && message[1] == 0x8b {
 				r, err := gzip.NewReader(bytes.NewReader(message))
 				if err != nil {
+					metrics.decodeErrors.Add(1)
 					continue
 				}
-				decompressed, err := io.ReadAll(r)
+				decompressed, err := io.ReadAll(io.LimitReader(r, (8<<20)+1))
 				r.Close()
-				if err != nil {
+				if err != nil || len(decompressed) > 8<<20 {
+					metrics.decodeErrors.Add(1)
 					continue
 				}
 				message = decompressed
@@ -288,11 +300,12 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			if update, recognized, err := decodeStateFrame(message); recognized {
 				if err != nil {
 					metrics.decodeErrors.Add(1)
-					log.Printf("Bot %d state frame error: %v", id, err)
+					log.Printf("Bot %d state frame decoding failed.", id)
 					continue
 				}
 				stateMu.Lock()
 				applyStateUpdate(worldState, update)
+				observation.state(worldState, myID, time.Now())
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
 					log.Printf("Bot %d admitted by server.", id)
@@ -303,7 +316,8 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			}
 
 			var msg Message
-			if err := json.Unmarshal(message, &msg); err != nil {
+			if err := json.Unmarshal(message, &msg); err != nil || msg.Type == "" {
+				metrics.decodeErrors.Add(1)
 				continue
 			}
 
@@ -312,11 +326,15 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				if err := json.Unmarshal(msg.Payload, &entities); err == nil {
 					stateMu.Lock()
 					worldState = entities
+					observation.state(worldState, myID, time.Now())
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
 						log.Printf("Bot %d admitted by server.", id)
 					}
 					stateMu.Unlock()
+					metrics.stateFrames.Add(1)
+				} else {
+					metrics.decodeErrors.Add(1)
 				}
 			} else if msg.Type == "inventory" {
 				var inv []Item
@@ -376,6 +394,8 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 						isSelling = false
 					}
 					stateMu.Unlock()
+				} else {
+					metrics.decodeErrors.Add(1)
 				}
 			}
 		}
