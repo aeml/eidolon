@@ -262,6 +262,18 @@
       "sample": "User JSON excludes PasswordHash; every field of the private recovery address/challenge/account projections explicitly excludes JSON. Synthetic tests prove BSON round trips retain the same stored data. User email/roles/characters remain private: this safeguard is not an approved raw User export."
     }
   ],
+  "preparedOwnerProgressSnapshot": {
+    "sourceBase": "c43c61c0264279ed4d648059108568581a2cd0d1 with the serializer/test hashes below",
+    "sources": ["server/internal/database/owner_progress_snapshot.go", "server/internal/database/owner_progress_snapshot_test.go"],
+    "scope": "Internal, currently uncalled serializer for one detached, owner-proved character. Explicit versioned JSON and separate nested allowlists cover progression, Gold/EP, stats/resources/rested duration, positional bag slots, stash/buyback, equipment/gems, skills/builds/loadouts, cosmetic ownership and quest progress/claimed rewards. New persistence fields cannot automatically join the export. No account query, HTTP/socket endpoint, user button, delivery, ownership proof or policy is enabled.",
+    "excluded": "Account credentials/recovery challenges, staff roles/decisions, raw BSON/direct trade state, permanent operation receipts, pending private custody identifiers, save IDs, party/instance/resume identities and other accounts. This is a progression snapshot, not a full personal-data export, backup or restore image. Account/profile, relationships, owned reports and approved shared-record projections still require coordinated approved export procedures.",
+    "bounds": "Caller must supply a positive maximum serialized response length. Exact-sized output passes; insufficient/invalid budget and encoder failures return nil bytes with a generic error, never partial private data. The cap is not a total memory-allocation/work bound: reader/admission/pagination and ownership authority remain required before exposure. No arbitrary permanent account-size limit or receipt pruning was introduced.",
+    "command": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race ./internal/database -run '^Test(OwnerProgressSnapshot|AccountJSON|RecoveryAccountJSON)' -count=1 -timeout=30s",
+    "result": "Passed database1.043s. Synthetic checks prove exact gameplay preservation and original BSON non-mutation, UTC/version/deterministic JSON, empty-slot/zero-resource/death preservation, private sentinel omissions, escaped text fidelity, exact/exhausted output budgets, encoding failure and recursive refusal of persistence DTOs in the export structure. No actual Mongo/provider/owner export or privacy-compliance claim.",
+    "serializerSHA256": "1c9185f7129905198d06a0abe1a8b134d673e10d997e226eb4f7eef136cae366",
+    "testSHA256": "a7391c4c93ca7477f71e7ed036bca367710f2eab81726881c403298bf954dbeb",
+    "remaining": "Owner request/delivery/retention/analytics choices, account and approved shared-data coverage, authorized bounded reader/API/UI, no unauthorized third-party output, actual delivery/access tests and reviewed notice. All1.75 and full-goal gates remain open."
+  },
   "approvalAndImplementationRemaining": [
     "Owner chooses collected-data purposes, report/moderation evidence retention, activity retention, log/archive retention, analytics use/access and consent or opt-out policy. Do not silently change the current production policy. Include verified addresses, expired recovery challenge material and mail-provider copies in the approved retention policy.",
     "Specify authenticated export/deletion/support requests and acceptable ownership proof. An unverified submitted email, report author or administrator privilege is not arbitrary account-ownership proof.",
