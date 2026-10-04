@@ -2,6 +2,7 @@ import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { formatQuestRewards } from './questRewards.js';
 import { writePreference } from './PreferenceStorage.js';
 import { EidolonPhaseNotice } from './EidolonPhaseNotice.js';
+import { ActionErrorNotice } from './ActionErrorNotice.js';
 
 function experienceRewardParts(summary) {
     // Never infer the split from current level: a reward can cross the cap,
@@ -128,6 +129,12 @@ class UIManagerFeedbackMethods {
 
     addGameMessage(sender, message, options = {}) {
         this.chat?.addMessage(sender, message, { ...options, stream: 'game' });
+    }
+
+    showActionError(message) {
+        if (this.disposed) return;
+        this.actionErrorNotice ||= new ActionErrorNotice();
+        if (this.actionErrorNotice.show(message)) this.addGameMessage('System', message.slice(0, 500));
     }
 
     setTooltipDescription(lines, detailText = '') {

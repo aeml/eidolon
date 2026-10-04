@@ -105,9 +105,8 @@ export class NetworkManager {
         }
 
         console.error('Connection lost or not authenticated. Please refresh and login.');
-        if (typeof alert !== 'undefined') {
-            alert('Connection lost! Please refresh the page and login again.');
-        }
+        this.onConnectionStateChange?.('lost');
+        this.onReconnectFailed?.({ kind: 'connection', message: 'Connection lost. Please log in again.' });
     }
 
     // ------------------------------------------------------------------

@@ -223,6 +223,15 @@ describe('UIBindings', () => {
         });
     });
 
+    test('Sell All submits all 25 bag slots once with their original item identities', () => {
+        const engine = createEngine();
+        engine.player.inventory = Array.from({ length: 25 }, (_, index) => ({ id: `bag-${index}`, type: 'ARMOR', slot: 'head', rarity: { name: 'Common' } }));
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.uiManager.inventory.onSellAll('Common');
+        expect(engine.network.send).toHaveBeenCalledTimes(25);
+        expect(engine.network.send.mock.calls).toEqual(Array.from({ length: 25 }, (_, index) => ['sell', { itemId: `bag-${24 - index}`, slotIndex: 24 - index }]));
+    });
+
     test('sell-all only forwards merchant equipment slots of the requested rarity and skips gems/materials/relics', () => {
         const engine = createEngine();
         engine.player.inventory = [

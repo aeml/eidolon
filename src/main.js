@@ -448,7 +448,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             const username = authUsernameInput ? authUsernameInput.value : '';
 
             if (!isAuthenticated) {
-                alert("Please login first!");
+                authStatus.textContent = 'Please log in first.';
+                authStatus.style.color = '#ff4444';
                 return;
             }
 
@@ -564,7 +565,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             if (sessionGame && (window.game !== sessionGame || sessionGame.isDestroyed)) return;
             console.error("Failed to start game:", error);
-            alert("Error starting game. Check console for details.");
+            loadingScreen.style.display = 'none';
+            startScreen.classList.remove('hidden');
+            authStatus.textContent = 'The game could not start. Please try again.';
+            authStatus.style.color = '#ff4444';
         }
     };
 
@@ -581,7 +585,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             if (savedCharacterType) {
                 startGame(savedCharacterType);
             } else {
-                alert("Character type not found!");
+                authStatus.textContent = 'Character type not found. Please log in again.';
+                authStatus.style.color = '#ff4444';
             }
         });
     }

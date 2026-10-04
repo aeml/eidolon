@@ -23,6 +23,20 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
 
 const { NetworkManager } = await import('../src/core/NetworkManager.js');
 
+test('a closed connection reports recovery through in-game callbacks, never a browser alert', () => {
+    const network = new NetworkManager(null);
+    network.onConnectionStateChange = jest.fn();
+    network.onReconnectFailed = jest.fn();
+    const alert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const error = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+        network.connect('Wizard');
+        expect(network.onConnectionStateChange).toHaveBeenCalledWith('lost');
+        expect(network.onReconnectFailed).toHaveBeenCalledWith({ kind: 'connection', message: 'Connection lost. Please log in again.' });
+        expect(alert).not.toHaveBeenCalled();
+    } finally { alert.mockRestore(); error.mockRestore(); network.dispose(); }
+});
+
 test.each([false, true])('world denial retires normal or resuming transport without queued state (resuming=%s)', resuming => {
     const socket = makeMockSocket(); socket.close = jest.fn();
     const network = new NetworkManager(socket); network.setupListeners();
