@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71.1 mystery-equipment safeguard",
+  "status": "accepted live; no whole-roadmap or inbox-delivery certification",
+  "commit": "1b6f44d286b7689bd646999e1fa9c8e1859d9087",
+  "version": "Alpha 1.71.1",
+  "databaseSchema": 17,
+  "ci": {
+    "run": 37190290208,
+    "url": "https://github.com/aeml/eidolon/actions/runs/37190290208",
+    "status": "completed",
+    "conclusion": "success",
+    "liveCompletedAt": "2026-10-04T09:33:59Z",
+    "jobs": [
+      {
+        "name": "Client Tests (Jest)",
+        "id": 111400846414,
+        "conclusion": "success"
+      },
+      {
+        "name": "Server Tests (Go)",
+        "id": 111400846530,
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "id": 111400846534,
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "id": 111400846541,
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "id": 111400846589,
+        "conclusion": "success"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "id": 111404634125,
+        "conclusion": "success"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "id": 111405337377,
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "id": 111405355706,
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "id": 111405355744,
+        "conclusion": "success"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "id": 111405585778,
+        "conclusion": "success"
+      }
+    ],
+    "passedScope": "Client lint/audit/tests/benchmark, Go checks/race/bench/build and configured disposable socket/recovery checks, three anonymous-browser shards, configured predeploy presentation/body/gear/release smoke, both deploys, live anonymous/persistent-character and town recovery/Well Rested QA.",
+    "skippedScope": [
+      "Predeploy deterministic High/Low animation gallery",
+      "Predeploy Well Rested rendering/GPU lifecycle",
+      "Predeploy disposable full-character gameplay",
+      "Live four-class/remote-animation QA"
+    ]
+  },
+  "independentPublic": {
+    "checkedAt": "2026-10-04T09:36:29.752Z",
+    "frontend": {
+      "commit": "1b6f44d286b7689bd646999e1fa9c8e1859d9087",
+      "version": "Alpha 1.71.1"
+    },
+    "backend": {
+      "status": "ok",
+      "database": "ready",
+      "commit": "1b6f44d286b7689bd646999e1fa9c8e1859d9087",
+      "version": "Alpha 1.71.1"
+    },
+    "loginAndNotes": true,
+    "runtime": {
+      "src/core/RecoveryLinkBoot.js": "d98fd4214724063a4cbb94ca084d9e645932ef00dd2cbf7fe57e31afbcce9baa",
+      "src/ui/EmailRecoveryUI.js": "1bbbfa13be24b44176cde33307a2337176f0bad15c330dff2ea7d6ac02f18005",
+      "src/main.js": "0dd4f720cc36067c96a76b9c7bd1f07879957c8f3860377111ff08867d038a16",
+      "src/analytics/GoogleAnalytics.js": "570b2ebc1dc7aa3b647695ba539a48dcde7626d6e96b0d7914aa6c94437361f4"
+    },
+    "mailPresence": {
+      "POSTMARK_SERVER_TOKEN": true,
+      "POSTMARK_FROM_EMAIL": true,
+      "POSTMARK_MESSAGE_STREAM": true,
+      "ADMIN_NOTIFICATION_EMAILS": true
+    }
+  },
+  "monitor": "Owner-authorized Luna watch_deploy_shop_1004 reported terminal success and both public identities. Root independently confirmed all ten jobs and then post-terminal IPv4 HTTPS/no-cache identity/readiness/login/notes plus exact publisher-rewritten bytes of four recovery/analytics runtime files.",
+  "scope": "Equipment-only mystery loot pools and valid saved-level prices, current legitimate35 Gold/level odds/power preserved. Existing values/items and account recovery preserved; no historical deletion, reward reissue, payment/access change or activation of later schemas18–24.",
+  "limits": "Configured mail presence is not provider acceptance or inbox delivery; owner still verifies their mailbox. No real mail sent by this check; administrator addresses never receive private recovery links. IPv6/DDNS remains deferred. Narrow guard is not the prepared1.73 durable mystery-purchase handler, wire-level replay deduplication, full campaign, fresh four-class animation/GPU, capacity or all-roadmap acceptance."
+}

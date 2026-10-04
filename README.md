@@ -421,22 +421,22 @@ Notes:
 ## Project Status
 
 - Current inherited source version: `Alpha 1.71.1`. This isolated, unpublished
-  1.73 candidate integrates prepared 1.72 security and 1.73 valuable-operation
-  writers through schema22, including the narrow administrator authority fixes
-  brought forward into1.72. Later schema23–24 checkpoints, broader privacy/admin
-  review and operations-monitor work remain excluded. Do not deploy it as1.71 or before
-  1.72 acceptance. Version/notes assembly and exact-source CI/public proof
+  1.74 candidate integrates prepared 1.72 security and 1.73 valuable-operation
+  writers through schema22, plus the 1.74 permission review and read-only
+  moderation-history filters. Later schema23–24 checkpoints, broader privacy
+  and operations-monitor work remain excluded. Do not deploy it as1.71 or before
+  ordered1.72/1.73 acceptance. Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.71.0`, exact
-  4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e, successful CI37182320668 (all ten jobs).
+- Last independently verified live release: `Alpha 1.71.1`, exact
+  1b6f44d286b7689bd646999e1fa9c8e1859d9087, successful CI37190290208 (all ten jobs).
   Post-terminal public IPv4 frontend/backend identity, database readiness, login
   version, notes and four recovery/analytics runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-71-public-acceptance.json)
+  [Public acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json)
   lists passed and skipped checks; it does not claim fresh animation/GPU coverage
-  or actual inbox delivery. Earlier1.70.2 maintenance and Forge receipts remain historical.
+  or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
