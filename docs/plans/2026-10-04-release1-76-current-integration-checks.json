@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Prepared Alpha 1.76 persistence integration",
+  "status": "unpublished; not a milestone completion or production acceptance",
+  "source": "268c7c69a9af32e925e21aea03628e361c313b73 plus the exact test/CI changes recorded here",
+  "predecessors": "Current 1.72 corrections, assembled 1.73/1.74 and defensive 1.75 JSON exclusions remain integrated. Owner privacy policy and ordered predecessor release acceptance remain open.",
+  "inheritedVersion": "Alpha 1.74.0",
+  "schemaVersion": 24,
+  "changes": {
+    "migrationAssertion": "The later schema17 upgrade test still expected six ground-item indexes. The current ordered checkpoint creates seven. The assertion now requires the exact unique username/account_ordinal key and positive-ordinal partial predicate, covering pending and completed new records without imposing ordinals on legacy records. All previous raw BSON/index preservation, no-backfill, no-TTL, repeat-startup and old-writer refusal checks remain.",
+    "continuousIntegration": "Existing job-owned disposable Mongo steps explicitly enable current ground checkpoint, selected-character projection, bounded storage workload, auction paging, casino checkpoint and slot paging tests. The new opt-in fixtures no longer silently skip in this release's CI. No production URI or longer campaign soak is introduced.",
+    "privacyInventory": "The inventory distinguishes its original schema22 evidence from this unpublished schema24 integration, including private ground/casino heads. No retention, export/removal, notices or analytics policy is chosen."
+  },
+  "checks": {
+    "toolchain": "Go1.27.1, race detector, GOMAXPROCS2/p2",
+    "compile": "All server packages compiled with go test ./... -run '^$'.",
+    "focusedRace": "Current source root8.570s/game10.775s/database2.774s for journal/repository/ground/casino checkpoint/slot/auction paging/schema/privacy/recovery groups. Additional slot-cache/pending/refund/batch checks passed root1.701s/game2.196s; exact auction-load failure readiness check passed game1.074s. These runs did not enable actual Mongo/socket fixtures.",
+    "schemaUpgrade": "Current race-instrumented database test passed actual schema17-to24 upgrade in0.40s. Legacy raw account/character/roles/recovery challenge, Gold/EP/equipment/receipts, unknown BSON, auctions and indexes remained identical. Four new indexed operation collections remained empty. Repeated construction was stable. Exact historical schema17 binary refused both preflight and normal startup without writes.",
+    "projection": "Current actual Mongo selected-character reads and target-only saves passed0.44s. Ordinary and primary/majority replies retained complete selected state while reducing a synthetic1607181-byte account to146599bytes, excluding unrelated character/account fields.",
+    "groundCheckpoint": "Current actual Mongo passed0.93s: eight contenders/one winner, gap and completed-ordinal reuse refusal,100 retained operations, constant852-byte character proof, V1 compatibility and reopen. Serial99 prepare/save/complete operations took832ms on this constrained fixture.",
+    "storageWorkload": "Current bounded actual Mongo workload passed8.03s. With10000 expired and100 active records, two50-entry pages examined100/50 documents and keys, not expired history.100 sequential synthetic saves passed; exact0/1000/10000 receipt round-trips retained all entries. The last legacy-map example remained1460446bytes and took129ms; this is evidence of remaining historical receipt growth, not a player-capacity claim.",
+    "packaging": "Node24.18.0 with the project's required experimental-vm-modules flag: ToolingBaseline and VersionPresentation passed359 checks/two suites in2.731s. A first invocation without that flag executed no tests and is not attributed test coverage. Workflow YAML, both changed JSON receipts and git diff --check passed."
+  },
+  "integrity": {
+    "schemaUpgradeTestSHA256": "21fbd3406c6b29047547da05cebb7172ad2344269e668fddfcc1d678bbc596c2",
+    "migrationCatalogSHA256": "97dfcd6152a075b49002f56f4f72941fd78135f5eec2f7705e6416626dd27704",
+    "groundStoreSHA256": "e712aec7bcef240388d6dc1e90f1bd8c52fd83cb9fdcf451eedfc72f9f16176c",
+    "workflowSHA256": "e416dc4a3aa22b30e6b6d854abd82c41e1e835fa45d0590d9000f9f91f9aff0b",
+    "previousBinaryCommit": "4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e",
+    "previousBinarySHA256": "518724d3f815a92ed4639c5eb2aeb0eebfad2feac6651c360649f7961341a7b9"
+  },
+  "isolation": "Mongo7.0.14 image0032d2ca in owned container961a49421b9bb033df7272c88eb044feb22e212e3c409ca37d74b9f05b96a157, networknone/no ports,1CPU/1GiB,512MiB database and16MiB config tmpfs,0.25GiB cache. All commands executed within its loopback namespace. An initial256MiB fixture exited before testing when Mongo diagnostic storage filled; it was removed and replaced, not counted as an application failure or successful test.",
+  "cleanup": "Exact container ID and owner/task labels verified before removal. Both temporary fixtures and all synthetic data removed; filtered listing empty. Compiled test artifact retained at /tmp/eidolon-176-schema24-current-lXedyI/database.test. Production database, services, accounts, mail and provider settings untouched.",
+  "remaining": "Historical connected/socket receipts retain original sources. No new current casino/auction/socket acceptance, replica failover, supported long-lived account ceiling, full capacity, or public1.76 deployment is claimed. Other receipt families and historical map growth remain open; never prune replay identities arbitrarily. Assemble own version/notes, finish policy/prerequisites, fetch/merge remote and run exact-source CI/public acceptance before release.1.78 work is excluded."
+}

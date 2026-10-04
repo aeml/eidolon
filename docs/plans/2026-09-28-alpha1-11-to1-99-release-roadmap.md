@@ -564,6 +564,15 @@ export, coordinated removal, backup resurrection handling and notices remain
 explicit approval/implementation gates. No collection policy, production data or
 access changed; this is preparation, not1.75 completion or publication.
 The [prepared1.76 storage check](2026-10-04-release1-76-persistence-scale-checks.json)
+has a [current isolated integration follow-up](2026-10-04-release1-76-current-integration-checks.json):
+schema17-to24 preserves all legacy raw BSON/indexes and fences the exact old
+writer, including the new positive-ordinal uniqueness assertion. Current
+selected-character, ordered-ground and bounded storage-workload Mongo checks
+pass; their temporary database was removed. CI now explicitly enables the
+new opt-in checkpoint/paging fixtures. Historical connected receipts retain
+their original sources. This is unpublished preparation, not capacity or full
+receipt-growth closure; privacy decisions and ordered releases remain open.
+The original storage check
 adds a single explicitly disposable Mongo workload. Two real repository
 projection pages examine100/50 documents with10,000 expired and100 active ground
 records, rather than scanning retained history. One hundred sequential sparse

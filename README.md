@@ -427,7 +427,11 @@ Notes:
   credential/recovery JSON exclusions. Retention, owner export/removal and notices
   still need policy approval and implementation. Prepared persistence scaling
   advances to schema24 with ordered ground/casino checkpoints, paged startup
-  queries, selected-character reads and bounded journal-lock shards. Later1.78
+  queries, selected-character reads and bounded journal-lock shards.
+  [Current isolated integration checks](docs/plans/2026-10-04-release1-76-current-integration-checks.json)
+  preserve legacy BSON across schema17-to24, require the new permanent ordinal
+  index, and enable the opt-in checkpoint/paging tests in disposable CI.
+  These are storage checks, not production acceptance or player capacity. Later1.78
   operations-monitor work remains excluded. Do not deploy it as1.74 or before
   ordered1.72/1.73/1.74/1.75 acceptance. Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)

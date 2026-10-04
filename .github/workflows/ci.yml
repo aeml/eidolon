@@ -101,7 +101,9 @@ jobs:
         working-directory: server
         env:
           EIDOLON_CASINO_TEST_MONGO_URI: mongodb://127.0.0.1:27017
-        run: go test -race . -run '^Test(BlackjackMongoTimeout|PokerMongo(Timeout|DecisionTimeout))' -count=1
+        run: |
+          go test -race . -run '^Test(BlackjackMongoTimeout|PokerMongo(Timeout|DecisionTimeout))' -count=1
+          go test -race . -run '^Test(CasinoCheckpointActualMongoTableRaceSaveAndReopen|SlotMongoPagedStartupRecoversLatePayoutsWithoutHistoricalCache)$' -count=1 -timeout=60s
 
       - name: Verify ordinary item, social, duel and administration sockets
         working-directory: server
@@ -140,7 +142,10 @@ jobs:
         env:
           EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
           EIDOLON_GROUND_TEST_MONGO_URI: mongodb://127.0.0.1:27017
-        run: go test -race ./internal/database -run '^TestGroundItemStoreActualMongo' -count=1 -timeout=45s
+          EIDOLON_PERSISTENCE_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: |
+          go test -race ./internal/database -run '^Test(GroundItemStoreActualMongo|GroundItemCheckpointActualMongo|CharacterRepositoryActualMongo|PersistenceActualMongo)' -count=1 -timeout=60s
+          go test -race . -run '^TestAuctionStartupActualMongoPagesAndLateInvalidIntent$' -count=1 -timeout=45s
 
       - name: Verify disposable room-reward cohorts and repository reopen
         working-directory: server
