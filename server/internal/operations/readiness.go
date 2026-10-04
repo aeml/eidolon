@@ -18,12 +18,13 @@ var releaseCommit = regexp.MustCompile(`^[0-9a-f]{7,64}$`)
 var releaseVersion = regexp.MustCompile(`^Alpha [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`)
 
 type Sample struct {
-	Ready     bool            `json:"ready"`
-	Cause     string          `json:"cause"`
-	Commit    string          `json:"commit,omitempty"`
-	Version   string          `json:"version,omitempty"`
-	LatencyMS int64           `json:"latencyMs"`
-	Runtime   *RuntimeMetrics `json:"runtime,omitempty"`
+	Ready       bool                `json:"ready"`
+	Cause       string              `json:"cause"`
+	Commit      string              `json:"commit,omitempty"`
+	Version     string              `json:"version,omitempty"`
+	LatencyMS   int64               `json:"latencyMs"`
+	Runtime     *RuntimeMetrics     `json:"runtime,omitempty"`
+	Operational *OperationalMetrics `json:"operational,omitempty"`
 }
 
 // Fixed aggregate fields only: no account labels or arbitrary metric names.
@@ -108,6 +109,7 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 		Status, Database, Commit, Version       string
 		Goroutines, HeapAllocBytes, HeapObjects *uint64
 		BroadcastQueues                         *queueInput
+		Operational                             *operationalInput
 	}
 	if len(body) > 32<<10 || json.Unmarshal(body, &health) != nil {
 		sample.Cause = "invalid_response"
@@ -118,6 +120,12 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	}
 	if releaseVersion.MatchString(health.Version) {
 		sample.Version = health.Version
+	}
+	var validOperations bool
+	sample.Operational, validOperations = health.Operational.metrics()
+	if !validOperations {
+		sample.Cause = "invalid_response"
+		return
 	}
 	if queues := health.BroadcastQueues.metrics(); health.Goroutines != nil && health.HeapAllocBytes != nil && health.HeapObjects != nil && queues != nil {
 		if queues.Queued > queues.Capacity || queues.EncounterQueued > queues.EncounterCapacity {

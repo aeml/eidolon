@@ -65,7 +65,8 @@ func persistCharacterSnapshot(username string, character *database.Character) er
 
 // Also used for the shutdown journal-all-before-database pass. A slow database
 // must not prevent the remaining characters from reaching durable local storage.
-func journalCharacterSnapshot(username string, character *database.Character) (*database.PendingCharacterSave, error) {
+func journalCharacterSnapshot(username string, character *database.Character) (snapshot *database.PendingCharacterSave, resultErr error) {
+	defer func() { recordOperationalResult(boundaryCharacterJournal, resultErr) }()
 	if characterSaveJournal == nil || characterSaveCommitter == nil {
 		return nil, errors.New("character persistence is not initialized")
 	}
@@ -86,14 +87,18 @@ func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
 	if err != nil {
 		return err
 	}
-	if err := characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID); err != nil {
-		return err
+	commitErr := characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID)
+	recordOperationalResult(boundaryCharacterCommit, commitErr)
+	if commitErr != nil {
+		return commitErr
 	}
-	if err := characterSaveJournal.Acknowledge(pending.Username, pending.SaveID); err != nil {
+	cleanupErr := characterSaveJournal.Acknowledge(pending.Username, pending.SaveID)
+	recordOperationalResult(boundaryCharacterCleanup, cleanupErr)
+	if cleanupErr != nil {
 		// Mongo has confirmed this exact receipt. A remaining file is safe to
 		// replay idempotently; a failed directory sync after removal must not
 		// falsely classify the confirmed database state as missing forever.
-		log.Printf("Committed character journal cleanup pending for %s: %v", pending.Username, err)
+		log.Printf("Committed character journal cleanup pending for %s: %v", pending.Username, cleanupErr)
 	}
 	return nil
 }
@@ -134,7 +139,8 @@ func retryPendingCharacterSaveLocked(username string) error {
 	return err
 }
 
-func retryPendingCharacterSaves() error {
+func retryPendingCharacterSaves() (resultErr error) {
+	defer func() { recordOperationalResult(boundaryCharacterRecovery, resultErr) }()
 	if characterSaveJournal == nil {
 		return nil
 	}

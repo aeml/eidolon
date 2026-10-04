@@ -22,6 +22,19 @@ polling is silent. No URLs, arbitrary peer/error text, account records or mail
 credentials are output. SIGINT/SIGTERM stop polling; cancellation is not an
 outage. An unavailable output sink exits with a generic error.
 
+Newer servers also expose optional fixed `operational` counts for character
+journal writes, database commits, journal cleanup, whole recovery passes and
+Gold/EP casino transfer calls. The health path reads only an in-memory snapshot,
+not player records or filesystem scans. Each group counts completed calls and
+returned failures since process start; retries count again, and errors may mean
+ambiguous writes or rejected input, not lost money. Cleanup errors remain distinct
+from confirmed database commits. These are neither unique payouts, balances,
+pending-entitlement gauges nor an exactly-once/durability certificate. Missing or
+partial aggregates on older servers are omitted, not invented as zero. The probe
+filters unknown fields and rejects negative, overflowing or impossible counts.
+No automatic currency-pressure alerts, financial compensation, provider
+notifications or persistence of the counters is enabled by instrumentation.
+
 This command does **not** deliver emails, consume `ADMIN_NOTIFICATION_EMAILS`,
 install systemd, choose retention, or alter the game. Its RAM-only incident
 state resets on restart. An operator-selected delivery adapter/service,
