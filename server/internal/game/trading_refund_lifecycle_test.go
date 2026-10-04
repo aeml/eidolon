@@ -130,11 +130,11 @@ func TestRefundWorkerCoalescesConcurrentRequestsAndStopsAfterInflightSave(t *tes
 func TestAuctionLoadFailureCannotLookLikeReadyEmptyMarket(t *testing.T) {
 	ts := NewTradingSystem(nil)
 	unavailable := errors.New("auction collection unavailable")
-	ts.loadAuctionSnapshot(func() ([]*database.Auction, error) { return nil, unavailable })
+	ts.loadAuctionPages(func(string, int) ([]*database.Auction, error) { return nil, unavailable })
 	if !errors.Is(ts.ReadinessError(), unavailable) || !errors.Is(ts.RetryPendingRefunds(), unavailable) {
 		t.Fatal("failed load reported a ready empty outbox")
 	}
-	ts.loadAuctionSnapshot(func() ([]*database.Auction, error) {
+	ts.loadAuctionPages(func(string, int) ([]*database.Auction, error) {
 		return []*database.Auction{{ID: "durable", PendingRefunds: []database.AuctionRefund{{ID: "unpaid", Amount: 43}}}}, nil
 	})
 	if ts.ReadinessError() != nil || pendingRefundCount(ts) != 1 {

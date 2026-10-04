@@ -92,6 +92,8 @@ func applyAuctionBidOperationIndexes(ctx context.Context, db *DB) error {
 	return err
 }
 
+// LoadAuctionBidOperations is a complete inspection snapshot; runtime startup
+// uses LoadAuctionBidOperationsPage to avoid an additional all-intents slice.
 func (db *DB) LoadAuctionBidOperations() ([]AuctionBidOperation, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

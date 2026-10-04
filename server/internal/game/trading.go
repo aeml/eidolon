@@ -3,6 +3,7 @@ package game
 import (
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/lifecycle"
+	"errors"
 	"fmt"
 	"log"
 	"sort"
@@ -81,28 +82,44 @@ func NewTradingSystem(db *database.DB) *TradingSystem {
 }
 
 func (ts *TradingSystem) loadAuctions() {
-	ts.loadAuctionSnapshot(ts.db.LoadAuctions)
+	ts.loadAuctionPages(ts.db.LoadAuctionsPage)
 }
 
-func (ts *TradingSystem) loadAuctionSnapshot(load func() ([]*database.Auction, error)) {
-	auctions, err := load()
+// Startup-only: build complete state without publishing partial pages on error.
+// The working map must still retain every outstanding claim and refund.
+func (ts *TradingSystem) loadAuctionPages(load func(string, int) ([]*database.Auction, error)) {
+	auctions := make(map[string]*Auction)
+	after := ""
+	for {
+		page, err := load(after, database.AuctionRecoveryPageSize)
+		if err == nil && len(page) > database.AuctionRecoveryPageSize {
+			err = errors.New("oversized auction recovery page")
+		}
+		if err == nil {
+			for _, saved := range page {
+				if saved == nil || saved.ID <= after {
+					err = errors.New("invalid auction recovery page identity/order")
+					break
+				}
+				auctions[saved.ID] = ts.fromDBAuction(saved)
+				after = saved.ID
+			}
+		}
+		if err != nil {
+			ts.mu.Lock()
+			ts.loadError = err
+			ts.mu.Unlock()
+			log.Printf("Failed to load auctions: %v", err)
+			return
+		}
+		if len(page) < database.AuctionRecoveryPageSize {
+			break
+		}
+	}
 	ts.mu.Lock()
-	defer ts.mu.Unlock()
-	ts.loadError = err
-	if err != nil {
-		log.Printf("Failed to load auctions: %v", err)
-		return
-	}
-
-	count := 0
-	for _, dbAuction := range auctions {
-		auction := ts.fromDBAuction(dbAuction)
-		// Only load active auctions or those needing collection
-		// Actually load all, cleanup will handle expiration
-		ts.Auctions[auction.ID] = auction
-		count++
-	}
-	log.Printf("Loaded %d auctions from database", count)
+	ts.Auctions, ts.loadError = auctions, nil
+	ts.mu.Unlock()
+	log.Printf("Loaded %d auctions from database", len(auctions))
 }
 
 // Startup must not silently publish an empty market after losing access to its
