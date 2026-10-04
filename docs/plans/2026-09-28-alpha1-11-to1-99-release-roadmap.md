@@ -2,13 +2,13 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.70.1, exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f,
-CI37068064995. All ten CI jobs, including both deploys and live character QA, passed.
+baseline is Alpha 1.70.2, exact 526bc22953e79cbe4869580e8f628d55c39c1b1c,
+CI37137636915. All ten CI jobs, including both deploys and live character QA, passed.
 Independent public IPv4 checks verified backend/frontend identities, database
-readiness, login version, cumulative hotfix notes and the retained dressed Ilyra
-GLB. Earlier receipts retain distinct runtime and model checks; no claim that
+readiness, login version, cumulative hotfix notes and three changed Forge/bag
+runtime assets. Earlier receipts retain dressed Ilyra and distinct model checks; no claim that
 every route or economy operation was sampled. See the current
-[acceptance receipt](2026-10-02-release1-70-1-trade-checks.json).
+[acceptance receipt](2026-10-03-release1-70-2-forge-checks.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -543,6 +543,20 @@ account/name boundaries pass in1.495 seconds. Focused related store regressions
 also pass; owned temporary data was removed. No schema, authority, receipt pruning
 or new deployment occurred. Individual receipt growth and ordered release gates
 remain open; the full roadmap goal is not complete.
+The [ordered ground-delivery follow-up](2026-10-04-release1-76-ground-checkpoint-checks.json)
+stops new loot transfers from adding lifetime character-map entries. A strict
+saved checkpoint and unique permanent ledger ordinal replace only new V2 ground
+proofs; all V1 fingerprints, old maps and permanent history remain intact.
+Schema23 fences writers that could erase the new private fields. One thousand
+modeled custody effects keep saved-proof size constant, and actual Mongo selects
+one winner from eight contenders, rejects gaps and completed-ordinal reuse, and
+preserves exact legacy/currency state across100 deliveries and repository reopen.
+A13.75-second native socket check covers a rejected save, journal recovery after
+crash, exact pickup and a second restart without recreating loot. Focused race
+checks and actual index/migration repeat checks pass; the disposable fixture and
+both volumes were removed. This does not compact historical maps, solve every
+receipt domain, establish replica/rollback/capacity acceptance, or publish1.76.
+Ordered predecessor choices and the full roadmap goal remain open.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

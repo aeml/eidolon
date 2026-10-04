@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-ordered-ground-delivery-follow-up",
+  "sourceCommit": "a84d52a3a545f74f271089fc5585ffad95e05e32",
+  "sourceSHA256": {
+    "server/internal/database/ground_item_operation.go": "5eb98e87390e32da29166f16617816acfaefaaeb297e0ebe09c60bd5f4ea838c",
+    "server/internal/database/ground_item_store.go": "e712aec7bcef240388d6dc1e90f1bd8c52fd83cb9fdcf451eedfc72f9f16176c",
+    "server/internal/database/migrations.go": "25a3440272755889a6071d42b81926bb053c81b84afeaf2ef7c778714d0a1137",
+    "server/internal/database/ground_item_checkpoint_mongo_test.go": "e13507046d623d522323b8ed53ee326e2c1131ffb56bd3291ea88341c6c03e61",
+    "server/internal/game/ground_item_operations.go": "fda06276566ec69855788ba4d90aedb1d9981525de9381b7d3f23aaf71eeed1d",
+    "server/internal/game/ground_item_checkpoint_test.go": "e4fce3dee222a6243d3b86ba6292385128be7b205da7586440d7a0852aa3f578",
+    "server/ground_item_session_integration_test.go": "d474e0f0b81b8c821692b4b3ddabeeb980006941244d887b0509625692039f1a"
+  },
+  "changes": "New V2 ground drop/pickup intents extend a contiguous saved account checkpoint. Permanent username+ordinal uniqueness covers completed as well as pending records; admission strongly reads the actual saved head and refuses gaps. Character custody and the three private head scalars are journaled/saved together. Replay of an older canonical ledger record uses contiguous saved proof without recreating consumed items. Latest head checks exact identity and fingerprint. Normal hydration, snapshots, entity copies and offline recovery preserve the head. Legacy V1 plans/hashes/map receipts remain unchanged, and no receipts or ledger rows are pruned.",
+  "migration": "Schema23 ordered_ground_item_delivery_checkpoints adds the partial unique ordinal index and fences older full-character writers. No existing account/value backfill or new collection. This is not permission to run the prepared successor as the live1.70.2 hotfix or downgrade it to a schema22 writer.",
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database ./internal/game -run '^Test(GroundItem|GroundOperation|SchemaMigrationCatalog|StateBroadcastFullAndDelta)' -count=1 -timeout=45s",
+    "finalFocusedResult": "passed: root14.190s, database1.268s, game12.095s; environment-gated actual Mongo/socket tests skipped here, separately run below",
+    "unitCoverage": "Independent original field-order JSON hashing proves V1 omission compatibility; BSON V1 has no ordinal. Saved proof rejects missing/gapped/malformed/foreign/conflicting heads. New game plans require the next ordinal;1000 modeled custody effects keep proof BSON size constant and preserve all legacy entries. Replaying consumed historical transfers is a no-op. Entity copy retains the head while public entity JSON excludes it. V1 effects still save their exact old receipt and replay harmlessly.",
+    "actualMongoCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_PERSISTENCE_TEST_MONGO_URI=mongodb://127.0.0.1:32892 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 go test -race ./internal/database -run '^TestGroundItemCheckpointActualMongoContiguousSaveRaceAndReopen$' -v -count=1 -timeout=45s",
+    "actualMongoResult": "passed: test2.91s/package3.953s;8 contenders/1 winner; unsaved completion refused; skipped ordinal refused; completed ordinal reuse refused both through admission and actual unique index;100 permanent ordered deliveries; V1 prepare/completion/reopen and first frozen outcome preserved",
+    "actualMongoMeasurements": {"savedSyntheticCharacterBSONBytes": 852, "savedSizeAfter1And100DeliveriesEqual": true, "serial99PrepareSaveCompleteSeconds": 1.553528069, "goldRetained": 777, "epRetained": 43},
+    "actualSocketCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32892 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-ground-checkpoint-176-tTTmqh/server EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -v -count=1 -timeout=60s",
+    "actualSocketResult": "passed: native test13.75s/package14.812s; race-built production server with main.buildCommit=server, ordinary login/join/native drop and pickup, actual Mongo rejected save and actual BSON journal image, intentional owned child SIGKILL, fresh-process completion, precise inventory metadata/currency conservation, second restart and replay commands with no new transfer/lifetime. Both character heads saved at ordinal1 with zero new legacy-map entries.",
+    "migrationCommand": "env GOTOOLCHAIN=go1.27.1 MONGO_URI=mongodb://127.0.0.1:32892 go test -race ./internal/database -run '^TestRunMigrationsIsIdempotentAndBuildsQueryIndexes$' -v -count=1 -timeout=30s",
+    "migrationResult": "passed: actual test0.05s/package1.122s; repeated migration and existing catalog/index expectations including unique_ground_account_ordinal",
+    "correctedFailedCandidate": "The first focused implementation run failed because existing simulated saved-character helpers omitted the new head and two offline equality/map-count assertions still expected V1 effects. Helpers now carry all private scalars, complete proof is asserted, only intentional new head fields are normalized for unrelated-state comparison, and dedicated new/legacy checks strengthen coverage. Corrected focused runs and the separately built real recovery acceptance passed. These failed fixtures are not counted as passing evidence.",
+    "hygiene": "gofmt and git diff --check passed. Fresh fetch confirms remote master526bc229 is contained in this prepared branch; no remote website work overwritten. No broad campaign, party/raid soak or deployment polling was rerun."
+  },
+  "ownedFixture": {
+    "containerID": "fb5e973b2e491f85f6776ab8991576263200cabc22e03818c10dd1e41fa729e7",
+    "imageSHA256": "b6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b",
+    "environment": "Mongo7.0.40 standalone,1 CPU/512MiB, ephemeral32892 bound only to127.0.0.1; unique eidolon.fixture=ground-checkpoint-176-20261004",
+    "cleanup": "After every owned test/process completed, the exact label-validated container and anonymous volumes ec77185e76e1882d78c0cd828620cf2c8be9f5b2f6722f6f77bc3e0c550f9765/0b9ed27e6d1b5a74fc5c08c50ae900bd68690450196bc6806466aa4c5f1b4d1e were removed. Filtered container/volume listings confirm absence. Synthetic fixtures are reproducible; no production data or service was modified."
+  },
+  "proposedPatchNote": "New item drops and pickups keep a compact recovery checkpoint rather than growing your character's delivery history on every transfer. Existing items and historical recovery receipts remain intact, including recovery after an interrupted save.",
+  "limits": [
+    "Only new V2 ground deliveries stop growing character maps. Historical maps and other reward/economy receipt domains still require explicit replay-safe growth review; no arbitrary pruning or TTL was introduced.",
+    "Permanent operation history still consumes database storage. Bounded disposable checks do not establish replica failover, downgrade/rollback safety,100-player capacity or long-term storage budgets.",
+    "Older canonical operation proof depends on strict contiguous application and immutable per-account ordinal uniqueness, not a timestamp, probabilistic filter or client-supplied marker.",
+    "Prepared source is committed locally, not pushed/versioned/deployed as1.76. Latest accepted public release remains Alpha1.70.2 at526bc229. Recovery/jump/data-policy owner choices, ordered predecessor publication and the remaining full roadmap stay open."
+  ]
+}
