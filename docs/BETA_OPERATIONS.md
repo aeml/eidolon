@@ -16,9 +16,9 @@ payment integration or new infrastructure purchase.
 | Report retention, backup retention and recovery objectives | Await explicit decisions. Existing technical defaults are not a published policy. |
 | Beta channel label and announcement | Keep open Alpha until the near-completion CB go/no-go. |
 
-## Prepared 1.71 password change — not live yet
+## Live 1.71 password change and emailed recovery
 
-The candidate accepts a current-password-proved change only for its authenticated
+The accepted release permits a current-password-proved change only for its authenticated
 connection's account, with the same new-password limits as registration and
 shared per-account/concurrency bounds. Its conditional Mongo update replaces
 only the observed password hash. Success rotates the resume token; uncertain
@@ -26,7 +26,7 @@ database acknowledgement disables resume until another login rather than
 promising rollback or replaying credentials. Login/resume handoffs are serialized
 with the change. [Backend checks](plans/2026-10-02-release1-71-password-checks.json)
 include actual disposable-Mongo data preservation and fresh-process sockets.
-The prepared form appears in authenticated **Account help** before world entry
+The form appears in authenticated **Account help** before world entry
 and in online **Settings** (phone: **Device**). It requires the current password,
 preserves spaces/case, and clears fields on submission, closure, category change
 or disconnect. It never automatically retries an uncertain change. Closing a
@@ -35,7 +35,7 @@ rotation independently of the form, including a late world-entry handoff or
 blocked browser storage. [UI checks](plans/2026-10-02-release1-71-password-ui-checks.json)
 use scoped mocked browser sockets; the earlier backend receipt records actual
 disposable Mongo/fresh-process proof separately.
-The owner chose **emailed recovery links via Postmark** on October 4. The prepared
+The owner chose **emailed recovery links via Postmark** on October 4. The
 database/provider helpers require password proof and a separate mailbox
 verification before an address can recover an account; registration email alone
 does not prove ownership. Challenges store only token digests, expire, and are
@@ -46,19 +46,21 @@ no redirects and no tracking or administrator copies. Configure
 `POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` and `POSTMARK_MESSAGE_STREAM` only
 in the server environment, using a verified Postmark sender and transactional
 stream. `ADMIN_NOTIFICATION_EMAILS` is not a recovery recipient list.
-The prepared protocol now supports password-proved setup, anonymous verification
+The protocol supports password-proved setup, anonymous verification
 and reset, generic asynchronous recovery requests, bounded/shared admission and
 session invalidation only after proved credential mutation. Two bounded mail
 workers join shutdown; reset notifications contain no password. Partial mail
 delivery is not retried automatically or represented as guaranteed inbox delivery.
 Login/settings UI and the pre-analytics private-link handoff are integrated in
-the assembled1.71.0 candidate. Three native browser/bootstrap checks and a real
+the accepted1.71.0 release. Three native browser/bootstrap checks and a real
 disposable-Mongo/socket test verify the bounded explicit-action flow, including
 link durability across restart and old-session revocation. The browser sockets
 are mocked; the separate connected proof uses real game processes and a local
-TLS Postmark stand-in. Neither proves actual inbox delivery. Exact-source CI and
-independent public acceptance remain required before calling1.71 live.
-Production remains Alpha 1.70.2; maintenance acceptance is recorded separately.
+TLS Postmark stand-in. Neither proves actual inbox delivery. Exact-source CI37182320668
+and post-terminal independent public checks accepted4bc0b95c as Alpha1.71.0.
+Runtime mail configuration is present; the owner must still verify an address
+and confirm actual inbox delivery. [Public acceptance](plans/2026-10-04-release1-71-public-acceptance.json)
+records exact identity and skipped visual/full-gameplay scopes. This is not a beta announcement.
 See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
 
