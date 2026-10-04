@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 persistence compatibility",
+  "status": "prepared-unpublished-current-schema-compatibility-follow-up",
+  "sourceCommit": "2b226147c38c8445d49c507d810f31e2bda910c2",
+  "sourceSHA256": {
+    "server/internal/database/schema_compatibility_test.go": "dea16285bf34979ea8d4ece91ac59b53e4b936206cbf8fd9391fe0bb22c07f3c",
+    "server/internal/database/migrations.go": "97dfcd6152a075b49002f56f4f72941fd78135f5eec2f7705e6416626dd27704",
+    "server/internal/database/schema_preflight.go": "5335417f25a05c4020eae3be7b238a69edc26684ff8ba8eb509260837f16cbb0"
+  },
+  "changes": "Extend the existing actual future-schema/migration fixture with retained ground and casino wallet checkpoints, legacy item/currency receipts and a separate genuinely legacy-shaped account with no checkpoints. Compare raw stored BSON before/after current migrations and refused writers. Verify legacy hydration does not invent heads. Add an optional real schema17 public executable alongside retained optional schema11 coverage; both preflight and ordinary startup must refuse the actual current schema before journals, logs or admission. Production migrations, queries, schemas and gameplay are unchanged.",
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database -run '^Test(SchemaCompatibilityRejects|SchemaMigrationCatalog)' -count=1 -timeout=30s",
+    "focusedResult": "passed: database 1.044s",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_SCHEMA_DISPOSABLE_DATABASE=1 EIDOLON_SCHEMA_MONGO_URI=mongodb://127.0.0.1:32899 EIDOLON_SCHEMA_BINARY=/tmp/eidolon-schema24-proof-aWwGCs/server-current EIDOLON_SCHEMA_PRE_PUBLIC_BINARY=/tmp/eidolon-schema24-proof-aWwGCs/server-public17 go test -race ./internal/database -run '^TestSchemaCompatibilityFutureDatabaseIsNotModified$' -v -count=1 -timeout=35s",
+    "actualResult": "passed: test4.59s/package5.622s. Fresh schema0 preflight remains read-only. Current schema24 preflight and ordinary binary repeatedly refuse a synthetic future25 marker without creating migration indexes/collections or changing the saved account. After deleting only that owned injected marker, normal fresh-to24 migration and its repeat preserve both accounts byte-for-byte. Current24 preflight succeeds. Actual public17 executable refuses actual24 in both preflight and ordinary startup; its private working directories stay empty and it never admits players. Legacy gear, Gold777/EP43, zero mana and receipts stay unchanged, with zero/absent heads; existing Gold1209/EP83, current heads, allowance/exchange/cosmetics/legacy receipts and opaque metadata are likewise preserved.",
+    "scope": "The actual transition measured here is schema0-to24 plus idempotent repeat and real17-on24 writer refusal, not a historical23-to24 deployment. No campaign, dungeon, raid or repeated native casino/market matrix was run.",
+    "hygiene": "gofmt and git diff --check pass. Prepared source and the public17 build tree remain isolated from the owner's dirty main workspace. The public17 source tree remained clean after building. All turn checks passed; no production service, account, database or deployment changed."
+  },
+  "binaries": {
+    "current": {"productionSourceCommit": "3d6f9ffe", "schema": 24, "path": "/tmp/eidolon-schema24-proof-aWwGCs/server-current", "sha256": "e062350e3ab97446061367bcdad867fc5407a1d10ee5a5a4ebd4ba03b11e4773"},
+    "publicPredecessor": {"productionSourceCommit": "526bc22953e79cbe4869580e8f628d55c39c1b1c", "schema": 17, "path": "/tmp/eidolon-schema24-proof-aWwGCs/server-public17", "sha256": "a36dbe44cdeb27b4b6834e93efc7fec8dcdb8f761a79940c20c2359d64e205db"},
+    "build": "Go1.27.1 go build -race from each clean production source, with main.buildCommit set to the listed commit. The only prepared worktree change during the current build was a test file, not production code. Binaries are retained locally as owned synthetic-test artifacts, not published builds or production rollback recommendations."
+  },
+  "ownedFixture": {
+    "containerID": "d8e0de8f480ae2faec63ea4708ad8fd7b27d813e6f71b03919832e0f082467db",
+    "label": "eidolon.fixture=schema24-176-20261004",
+    "environment": "Existing mongo:7 standalone image; 1 CPU/512MiB; inspected ephemeral port32899 bound only to127.0.0.1. Ordinary refusal checks use port0 and do not open a game listener.",
+    "cleanup": "After all binary/test sessions exited, the exact label-validated container and anonymous volumes f3511553e9376e4247e18fff8fc9264c26be4818e0821355e298f0120e884f7b and 4d2f655867e65fe5a8a2ccb1df90a11fbef0b6a558e8114dc2fcb0ca07ce63bc were removed. Exact container/volume filtered listings confirm absence. Synthetic records are reproducible; no production marker was changed."
+  },
+  "limits": [
+    "Removing the injected future marker is fixture setup only, never a supported database downgrade or operator recovery procedure. Real schema24 cannot be reopened with the current public17 writer; use compatible binaries or an explicitly approved matching complete recovery set.",
+    "This is migration/read-only-preflight/early-refusal evidence for representative raw fields, not business-valid pending-operation replay, all historical migration shapes, coordinated backup restoration, majority failover, lifetime receipt storage or player-capacity acceptance. Optional schema11 executable coverage was retained but not supplied/rerun in this check.",
+    "No production code or version change, push or deployment. Accepted public release remains Alpha1.70.2; prepared source remains local. Other persistence-growth work, owner recovery/jump/data policies and ordered release gates remain open; neither 1.76 nor the full roadmap is complete."
+  ]
+}

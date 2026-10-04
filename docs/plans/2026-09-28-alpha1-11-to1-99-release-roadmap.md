@@ -625,6 +625,18 @@ and server requirements. All scoped guard/preflight checks pass; owned fixtures
 were removed. This prepares shared 1.76/1.81/1.82 recovery work, not a production
 restore, gameplay replay, global writer lock, rollback certification or completed
 recovery policy. No deployment or full-milestone acceptance is claimed.
+The [current-schema compatibility follow-up](2026-10-04-release1-76-schema24-compatibility-checks.json)
+extends the actual migration/refusal fixture with legacy gear and receipts plus
+the newer ground/casino heads. Fresh-to-24 migration and idempotent repeat
+preserve both raw accounts byte-for-byte; legacy hydration invents no heads.
+Actual current preflight remains read-only and rejects future schema25 before
+writes. A binary built from the current public schema17 source refuses both
+preflight and ordinary startup against actual24 without creating journals or
+admitting players. The check passes in 4.59 seconds, and the owned Mongo fixture
+and volumes were removed. This is not a historical23-to24 rollout, pending-value
+replay or permission to erase migration markers; incompatible rollback remains
+prohibited. Wider migration/storage/recovery gates and ordered deployment stay
+open, with no new production code or milestone completion claimed.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
