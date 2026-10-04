@@ -2,7 +2,7 @@
   "schema": 1,
   "milestone": "Alpha 1.75 privacy and data handling",
   "status": "isolated-source-inventory-and-serialization-guards-prepared-not-approved-or-published",
-  "reviewedSourceCommit": "648f8c144d555d960221b8ab6ebe498b1bf98d94",
+  "reviewedSourceCommit": "3893962bba9d0c5a4a3c10349b27b5bb607768c7",
   "scope": "Repository-defined stores and data flows in the isolated schema22 successor of prepared1.74, including accepted1.71 email recovery. No later schema23/24 or1.78 operational code imported. No production documents, logs, browser profiles or provider dashboards inspected. Not approved privacy policy, a public notice, legal signoff, export/deletion implementation or publication.",
   "mongoCollections": [
     {
@@ -278,6 +278,14 @@
     "result": "Go1.27.1: database1.053s/root1.509s passed,21pass events/0fail events. Two opt-in actual-Mongo/connected-session groups skipped; no new connected or provider delivery proof.",
     "reproduction": "Before the JSON exclusions, the account test and all three private recovery projection cases failed on synthetic marshaling. Existing persisted BSON contracts stay unchanged after the fix.",
     "limits": "No retention/delete/export/consent policy chosen, endpoint added, secret or production data accessed, mail sent, service changed or ordered release published. Historical evidence retains its original scope; this guard does not make raw User data public-safe."
+  },
+  "orderedIntegration": {
+    "source": "3893962b merges administration successor553e7b21, carrying assembled1.73/18400d3a and corrective1.72/1cf51d22. Inherited Alpha1.73.0 source defaults and schema22 are not a1.75 publication. Later schema23/24 and1.78 code remain excluded; owner policy choices remain open.",
+    "inventory": "Revalidated all19 literal registered Mongo collections with exact duplicate/missing/extra detection; all51 unique referenced sources exist on this merged source. No production rows or provider dashboard inspected.",
+    "serialization": "db.go/email_recovery.go/account_json_privacy_test.go SHA256s exactly match source648f8c14. Retain that earlier synthetic failure reproduction and BSON round-trip evidence; no later private-projection code imported.",
+    "command": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race ./internal/database . -run '^Test(AccountJSON|RecoveryAccountJSON|EmailRecoveryInputProofs|RecoveryMailer|RecoveryLink|EmailRecovery|ChatModerationTargetProjectsOnlyChosenAccountAndPublicNotice|StateBroadcastFullAndDeltaKeepProgressionOwnerPrivate|StateRecipientEncodingDoesNotMutateSharedActorOrOwner|WebsocketReadDiagnosticsExcludePeerTextAndShareBudget)' -count=1 -timeout=45s",
+    "result": "Merged-source database1.050s/root1.427s passed. Actual-Mongo/connected groups remain opt-in/unconfigured; not a new provider/inbox, production privacy or end-to-end campaign check.",
+    "policy": "Asked owner about administrator-reviewed versus self-service account requests and optional analytics opt-in. No answer or approval inferred; current collection, accounts and retention untouched. Other report/audit/backup/provider retention decisions remain explicit gates."
   },
   "historicalEvidence": {
     "inventoryValidation": "Parsed literal db.Collection registrations from server/internal/database/db.go and compared the exact sorted list, including duplicate detection, to this inventory. All19 match; all48 referenced source paths exist. git diff --check passed. This validates source coverage, not live database contents or every nested field.",
