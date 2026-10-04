@@ -527,6 +527,146 @@ Owner recovery/jump choices remain open; administration-safety preparation may
 continue without publishing out of order. The full1.11–1.99 goal remains active.
 The account-security delivery below is accepted in1.71; actual inbox delivery
 and later security/readiness gates remain separate.
+The [1.74 read-completion follow-up](2026-10-04-release1-74-admin-read-completion-checks.json)
+now revalidates durable administrator authority and connection ownership after
+query and audit IO. Late denials clear all private status/player/history/report
+data and retain correlated sanitized activity through the existing recovery path.
+Thirteen injected transition cases and an actual disk-journal reopen/exact replay
+pass, along with focused administration/session/mutation race regressions in
+9.015 seconds. No production data, grant policy or schema changed. This is
+prepared source, not a connected acceptance or1.74 deployment. Existing RAM-only
+dual-store-outage limits remain explicit; ordered release gates and the full
+roadmap goal stay open.
+The same receipt's mutation-admission follow-up covers a second confirmed gap:
+new grants now recheck authority after planning/recovery, and report updates
+recheck after their admission-audit IO. Six failing-before/passing-after boundary
+cases are retained. Focused administration/session/recovery race checks pass in
+9.619 seconds; an additional2.221-second check preserves exactly-once recovery of
+an already-approved grant after role revocation without exposing success to the
+revoked actor. No atomic cross-store permission guarantee or new connected/Mongo
+acceptance is implied. Both corrections remain prepared and unpublished.
+Moderation already refused late authority changes, but its rejection history
+could omit them. The same receipt now covers six failing-before/passing-after
+post-audit cases for sanctions and target previews. Existing authority/privacy
+checks remain intact, with focused race coverage passing in7.251 seconds.
+Authenticated actors are retained on replaced connections without attributing a
+changed username to the original requester. No production sanction was applied;
+the prepared1.74 safety work remains unpublished.
+The [prepared1.75 data inventory](2026-10-04-release1-75-data-inventory.json)
+maps all19 registered Mongo collections plus RAM session/chat, private journals,
+backups/logs, browser storage, aggregate economy summaries, third-party analytics,
+the optional local timer and QA artifacts. The collection list is checked against
+current source and all48 source references exist. Focused owner-state/target/log
+redaction race checks and25 timer/analytics mock tests pass. Existing Google
+collection is explicitly separate from the user-approved local-only timer;
+provider settings and consent are not claimed verified. Retention, bounded owner
+export, coordinated removal, backup resurrection handling and notices remain
+explicit approval/implementation gates. No collection policy, production data or
+access changed; this is preparation, not1.75 completion or publication.
+The [prepared1.76 storage check](2026-10-04-release1-76-persistence-scale-checks.json)
+adds a single explicitly disposable Mongo workload. Two real repository
+projection pages examine100/50 documents with10,000 expired and100 active ground
+records, rather than scanning retained history. One hundred sequential sparse
+character saves and exact0/1,000/10,000-receipt round-trips pass under the race
+detector in9.289 seconds; the10,000 map adds roughly1.46MB and a measured124ms
+round-trip on the constrained fixture. The strengthened empty-map assertion was
+corrected for BSON omission; no production query/save defect is invented.
+Current schema-catalog/recovery checks also pass. Embedded-account receipt growth
+still needs a replay-safe scalability solution; no arbitrary receipt pruning,
+new schema, capacity promise or1.76 release is claimed. The owned container and
+volumes were removed. Ordered predecessor decisions and the full goal remain open.
+The [character-query follow-up](2026-10-04-release1-76-character-projection-checks.json)
+fixes a confirmed unnecessary full-account fetch in ordinary and primary/majority
+recovery loads. An exact-account/name projection returns the complete selected
+character without credentials, account metadata or unrelated characters. Actual
+Mongo replies shrink from a1.61MB synthetic account to a147KB selected character;
+private opaque recovery fields, exact receipts, target-only saves and negative
+account/name boundaries pass in1.495 seconds. Focused related store regressions
+also pass; owned temporary data was removed. No schema, authority, receipt pruning
+or new deployment occurred. Individual receipt growth and ordered release gates
+remain open; the full roadmap goal is not complete.
+The [ordered ground-delivery follow-up](2026-10-04-release1-76-ground-checkpoint-checks.json)
+stops new loot transfers from adding lifetime character-map entries. A strict
+saved checkpoint and unique permanent ledger ordinal replace only new V2 ground
+proofs; all V1 fingerprints, old maps and permanent history remain intact.
+Schema23 fences writers that could erase the new private fields. One thousand
+modeled custody effects keep saved-proof size constant, and actual Mongo selects
+one winner from eight contenders, rejects gaps and completed-ordinal reuse, and
+preserves exact legacy/currency state across100 deliveries and repository reopen.
+A13.75-second native socket check covers a rejected save, journal recovery after
+crash, exact pickup and a second restart without recreating loot. Focused race
+checks and actual index/migration repeat checks pass; the disposable fixture and
+both volumes were removed. This does not compact historical maps, solve every
+receipt domain, establish replica/rollback/capacity acceptance, or publish1.76.
+Ordered predecessor choices and the full roadmap goal remain open.
+The [casino wallet-growth follow-up](2026-10-04-release1-76-casino-checkpoint-checks.json)
+now keeps one saved private head per casino record instead of one signed map
+entry per new wager or return. Durable table versions bind the exact recipient,
+currency, amount and candidate before effects; pending table changes remain
+fenced until a complete wallet/head save. The current account catalog fits37
+records beneath an explicit64-head bound. Historical maps and original pending
+intents are preserved, not pruned or reinterpreted. Schema24 blocks older writers
+from erasing the new field without backfilling player value. Two thousand modeled
+effects and200 actual signed settlements retain fixed saved size; eight actual
+contenders select one intent, repository reopening preserves money, and old
+funded intents still recover. Four failed-save/journal-reopen cases cover Gold/EP
+wagers and returns. A10.27-second native slot check retains spin result, wallet,
+resume and restart state; focused fresh-database interruption/bonus/poker checks
+also pass. Failed test-fixture overlap and obsolete assertions are retained in
+the receipt rather than counted as acceptance. Other receipt domains, lifetime
+storage/rollback/capacity evidence, predecessor choices and ordered publication
+remain open. This is prepared1.76 work, not a release or full-goal completion.
+The [slot startup/cache follow-up](2026-10-04-release1-76-slot-startup-checks.json)
+replaces the all-record startup allocation with sorted25-record keyset pages,
+validating complete private intents and settling each discovered payout before
+advancing. Presentation now follows held seats, including normal disconnected
+resume windows; periodic pruning never removes pending recovery or saved
+entitlements. Driver-boundary and concurrent reseat/prune checks pass. Actual
+Mongo scans131 records in six capped pages and pays three outcomes beyond128
+historical records once, with startup pending/cache peaks1/0. Repeated scans
+preserve exact payouts and saved free spins. A9.47-second native bonus/free-spin
+check retains money, resume, leave and restart/reseat state; actual interruption,
+seat/revision and entitlement regressions also pass. The owned fixture and
+volumes were removed. This bounds loading/presentation growth, not total lifetime
+database storage, full-history startup work or arbitrary outage queue size. Other
+receipt families and release gates remain open; no1.76 deployment is claimed.
+The [journal concurrency follow-up](2026-10-04-release1-76-journal-concurrency-checks.json)
+replaces the single filesystem mutex with 64 fixed account-hash lock groups.
+An account in another group can write, sync, read and acknowledge while one
+account's filesystem operation is blocked. Discovery selects the matching lock
+from each canonical filename; per-account ordering, full recovery snapshots and
+stale-acknowledgement protection remain intact. Race checks cover 50 competing
+old acknowledgements/new writes and 100 saves across 20 accounts with concurrent
+discovery, exact reopen and cleanup. Existing save/replay/coalescing and Gold/EP
+checkpoint checks pass. No database, journal format or schema change was needed.
+Hash collisions still serialize accounts; discovery remains a full scan, and
+this is not a disk-throughput, cross-process ownership or capacity certification.
+The change is locally committed, not deployed or accepted as the full milestone.
+The [market startup follow-up](2026-10-04-release1-76-market-startup-checks.json)
+uses indexed 50-record pages instead of unrestricted temporary auction/decision
+arrays. Each component installs its working map only after complete validation;
+later-page failure preserves prior maps and blocks readiness/refund delivery.
+Existing claims, refunds, kindless legacy bids and unpublished listing decisions
+remain recoverable. Focused race checks cover exact-page boundaries and failures.
+Actual Mongo startup twice retains 151 auctions and 152 decisions, preserves
+legacy stored gear while applying its existing in-memory normalization, and
+refuses a late invalid intent without changing its evidence. The owned fixture
+and volumes were removed. Outstanding working maps and full scan work remain
+proportional to legitimate pending activity; no capacity or lifetime-storage
+acceptance, settlement rewrite or deployment is claimed.
+The [restore-boundary follow-up](2026-10-04-release1-76-restore-boundary-checks.json)
+addresses a cross-version recovery hazard: Mongo's `--drop` leaves collections
+absent from an archive intact. The helper now refuses non-empty targets unless
+whole-`eidolon` replacement is separately explicit, and performs read-only target
+and archive preflight before mutation. A disposable, port-free real-tool check
+restores exact private fields/indexes into a fresh target, proves unchanged state
+on refusal/invalid-archive preflight, and then explicitly replaces only Eidolon,
+removing a newer ledger absent from the backup while preserving another database.
+Operator instructions explain full replacement/data loss and matching journals
+and server requirements. All scoped guard/preflight checks pass; owned fixtures
+were removed. This prepares shared 1.76/1.81/1.82 recovery work, not a production
+restore, gameplay replay, global writer lock, rollback certification or completed
+recovery policy. No deployment or full-milestone acceptance is claimed.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

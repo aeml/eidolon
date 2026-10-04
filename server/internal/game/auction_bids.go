@@ -74,20 +74,53 @@ func (ts *TradingSystem) bidWithoutDatabase(auctionID string, bidder *Entity, am
 }
 
 func (ts *TradingSystem) loadBidOperations() {
-	ops, err := ts.db.LoadAuctionBidOperations()
+	ts.loadBidOperationPages(ts.db.LoadAuctionBidOperationsPage)
+}
+
+func (ts *TradingSystem) loadBidOperationPages(load func(string, int) ([]database.AuctionBidOperation, error)) {
+	pending := make(map[string]database.AuctionBidOperation)
+	after := ""
+	for {
+		page, err := load(after, database.AuctionRecoveryPageSize)
+		if err == nil && len(page) > database.AuctionRecoveryPageSize {
+			err = errors.New("oversized auction decision recovery page")
+		}
+		if err == nil {
+			for _, op := range page {
+				if !op.Valid() || op.ID <= after {
+					err = errors.New("invalid durable auction decision page")
+					break
+				}
+				if _, exists := pending[op.AuctionID]; exists {
+					err = errors.New("multiple pending decisions for auction")
+					break
+				}
+				pending[op.AuctionID] = op
+				after = op.ID
+			}
+		}
+		if err != nil {
+			ts.mu.Lock()
+			ts.loadError = err
+			ts.mu.Unlock()
+			return
+		}
+		if len(page) < database.AuctionRecoveryPageSize {
+			break
+		}
+	}
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
-	if err != nil {
-		ts.loadError = err
+	if ts.loadError != nil {
 		return
 	}
-	for _, op := range ops {
+	for _, op := range pending {
 		if ts.Auctions[op.AuctionID] == nil && op.Kind != database.AuctionOperationListing {
 			ts.loadError = errors.New("pending bid references a missing auction")
 			return
 		}
-		ts.pendingBids[op.AuctionID] = op
 	}
+	ts.pendingBids = pending
 }
 
 func (ts *TradingSystem) PendingBidOperations(playerID string) []database.AuctionBidOperation {

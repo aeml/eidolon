@@ -245,14 +245,13 @@ func TestHouseActualSocketsSharedRoundAndReconnect(t *testing.T) {
 				if !own.Paid {
 					t.Fatal("missing saved payout")
 				}
-				wantReceipts := 1
-				if own.Payout > 0 {
-					wantReceipts++
+				if saved.CasinoWalletCheckpoints[id].Version < 2 || len(saved.CasinoWalletCheckpoints) != 1 || len(saved.GoldCreditReceipts) != 0 || len(saved.EPCasinoReceipts) != 0 {
+					t.Fatal("round settlement lost compact saved proof or grew legacy maps")
 				}
-				if tc.currency == "gold" && (saved.Gold != 480+own.Payout || saved.EP != 0 || len(saved.GoldCreditReceipts) != wantReceipts) {
+				if tc.currency == "gold" && (saved.Gold != 480+own.Payout || saved.EP != 0) {
 					t.Fatal("Gold replay/settlement mismatch", saved.Gold, own.Payout)
 				}
-				if tc.currency == "ep" && (saved.Gold != 500 || saved.EP != 80+own.Payout || len(saved.EPCasinoReceipts) != wantReceipts || len(saved.VIPAllowanceReceipts) != 1) {
+				if tc.currency == "ep" && (saved.Gold != 500 || saved.EP != 80+own.Payout || len(saved.VIPAllowanceReceipts) != 1) {
 					t.Fatal("EP/allowance mismatch", saved.EP, own.Payout, len(saved.VIPAllowanceReceipts))
 				}
 			}

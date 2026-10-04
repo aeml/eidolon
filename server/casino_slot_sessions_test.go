@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"os"
 	"regexp"
 	"testing"
@@ -91,7 +92,7 @@ func TestSlotMongoInterruptionRecovery(t *testing.T) {
 				t.Fatal(err)
 			}
 			unlock := lockCharacterWork(name)
-			if err := applyCasinoGoldTransferLocked(debit); err != nil {
+			if err := applyCasinoGoldTransferLocked(*pending.Pending); err != nil {
 				unlock()
 				t.Fatal(err)
 			}
@@ -106,11 +107,12 @@ func TestSlotMongoInterruptionRecovery(t *testing.T) {
 					paid.Owed, paid.Payment = 0, ""
 					encoded, _ = json.Marshal(paid)
 					credit := database.BlackjackTransfer{ID: "casino:" + name + ":return", PlayerID: owner, Currency: "gold", Amount: next.Owed, NextState: encoded}
-					if _, err := db.BeginBlackjackTransfer(r.TableID, r.Version, credit); err != nil {
+					creditPending, err := db.BeginBlackjackTransfer(r.TableID, r.Version, credit)
+					if err != nil {
 						unlock()
 						t.Fatal(err)
 					}
-					if err := applyCasinoGoldTransferLocked(credit); err != nil {
+					if err := applyCasinoGoldTransferLocked(*creditPending.Pending); err != nil {
 						unlock()
 						t.Fatal(err)
 					}
@@ -133,7 +135,7 @@ func TestSlotMongoInterruptionRecovery(t *testing.T) {
 				t.Fatal(err)
 			}
 			character, err := db.GetCharacter(name, name)
-			if err != nil || character.Gold != 300-20+next.Owed || len(character.GoldCreditReceipts) != 2 {
+			if err != nil || character.Gold != 300-20+next.Owed || len(character.GoldCreditReceipts) != 0 || len(character.CasinoWalletCheckpoints) != 1 || character.CasinoWalletCheckpoints[r.TableID].Version < 2 {
 				t.Fatal("lost/replayed slot Gold", character, err)
 			}
 			if len(slotsPending) != 0 {
@@ -242,7 +244,7 @@ func TestSlotMongoBonusAndFreeSpinEntitlements(t *testing.T) {
 	world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}
 	table, _ := game.CasinoTableByID("public-slots-earth")
 	point := table.Seats[0]
-	player := &game.Entity{ID: owner, Name: name, Type: game.TypePlayer, InstanceID: game.CasinoInstanceID, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 340, GoldCreditReceipts: character.GoldCreditReceipts, X: point.ExitX, Z: point.ExitZ}
+	player := &game.Entity{ID: owner, Name: name, Type: game.TypePlayer, InstanceID: game.CasinoInstanceID, SubType: "Fighter", State: "IDLE", Level: 1, Health: 100, MaxHealth: 100, Gold: 340, GoldCreditReceipts: character.GoldCreditReceipts, CasinoWalletCheckpoints: maps.Clone(character.CasinoWalletCheckpoints), X: point.ExitX, Z: point.ExitZ}
 	world.AddEntity(player)
 	seat, err := world.TakeCasinoSeat(owner, table.ID, 0, time.Now())
 	if err != nil {

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.74 administration safety",
+  "status": "prepared-unpublished-read-completion-follow-up",
+  "sourceCommit": "e46247ba7b6a2e144b066b5442c6f24f4f3f27da",
+  "baselineReproduction": "Four history-read regressions failed before correction: revocation during query, revocation during audit append, final role lookup outage and connection replacement during audit append all returned privileged success.",
+  "changes": [
+    "Successful privileged reads recheck durable administrator authority and current connection ownership after both their data query and audit append, including a connection check after the final role lookup.",
+    "Late denial clears the entire privileged result while preserving request correlation and sanitized diagnostics. Status, online players, activity history and reports use the same completion boundary.",
+    "The authenticated completed query and its separate delivery denial are audited. Audit append failure uses the existing exact-event disk/RAM recovery path and never authorizes private data. No new store, financial operation, role policy or schema is introduced."
+  ],
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminRead|AdminConsole|AdminReports|AdminReportReview|SessionActivity|AdminMutation)' -count=1 -timeout=60s",
+    "result": "passed, server package 9.015s",
+    "newCoverage": "Thirteen injected query/audit transition cases across all four privileged read kinds; actual disk journal reopen and exact denial replay, followed by a duplicate-free second drain. Existing read admission, privacy, reports, session audit and mutation regressions also pass.",
+    "correctedCheckError": "The first expanded test invocation did not compile because its audit comparison used Message instead of the existing Summary field. Corrected before the accepted run; no checks from the failed invocation count as passed.",
+    "hygiene": "gofmt and git diff --check passed. Isolated synthetic accounts and temporary journals only; no production account, wallet, service or database changes."
+  },
+  "limits": [
+    "Controlled in-process IO-boundary regressions, not a new two-account connected acceptance or a claim that a remote role lookup and network delivery are atomic. Existing retained administration acceptance remains separate.",
+    "The existing simultaneous Mongo/disk outage fallback is bounded RAM only. Readiness and clean shutdown fail closed until recovery, but forced process loss can discard RAM-only activity. No new crash durability is claimed.",
+    "Prepared source is not versioned, pushed or deployed as 1.74. Accepted live remains Alpha1.70.2 at526bc22953e79cbe4869580e8f628d55c39c1b1c. Ordered predecessor decisions and release gates, administration review and the full later roadmap remain open."
+  ],
+  "mutationAdmissionFollowUp": {
+    "sourceCommit": "04bf5e6c8498f1f726b5c481058c74e52f88dede",
+    "baselineReproduction": "Six injected role-revocation, role-outage and connection-replacement cases failed: grants after operation lookup still created intent, and report reviews after admission-audit IO still changed the case.",
+    "changes": "The shared authority check runs after detached planning/recovery and before new administrator operation intent, and after the report admission audit before its case update. Late denials are correlated and audited even on a replaced authenticated connection. Existing approved durable operations retain their independent recovery contract.",
+    "regressionCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminRead|AdminConsole|AdminReports|AdminReportReview|SessionActivity|AdminMutation|AdminRecovery)' -count=1 -timeout=60s",
+    "regressionResult": "passed, server package 9.619s",
+    "finalAddedCheckCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminMutationDurableApprovedIntent|AdminMutationRevalidates|AdminReportReviewRevalidates|AdminRecovery)' -count=1 -timeout=30s",
+    "finalAddedCheckResult": "passed, server package 2.221s; a modeled failed character save leaves approved grant intent, role revocation does not prevent background completion, a second recovery does not duplicate the grant, and the revoked actor cannot replay its privileged success",
+    "limits": "In-process synthetic stores with existing temporary disk journals; not a new connected or Mongo acceptance. Remote role lookup and intent/report storage commit are not one atomic transaction. Existing exactly-once operation storage and outage recovery remain unchanged; no current production account or data was modified."
+  },
+  "moderationAuditFollowUp": {
+    "sourceCommit": "dbfb882efbb3b048b8b6baa57d62b6eb008d306b",
+    "baselineReproduction": "All six new post-audit revocation/outage/replacement cases correctly refused sanctions and private target previews but omitted their subsequent denial from activity history.",
+    "changes": "Existing moderation and target-preview authority checks are preserved. Late denials now use the existing sanitized rejection/outbox path; authenticated actor identity is retained on replaced connections, but a changed username is never attributed to the original actor.",
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminModerationLate|AdminChatModeration|AdminRead|AdminReportReview)' -count=1 -timeout=60s",
+    "result": "passed, server package 7.251s",
+    "limits": "Focused injected in-process checks; no production sanctions, actual account writes or new connected/Mongo acceptance. Existing privacy/authority regressions remain passing. The original admission entry does not assert a sanction occurred; the case/account receipt remains authoritative."
+  },
+  "proposedPatchNote": "Administration screens discard private results if your administrator access or connection changes while a read is in progress. New grants and report reviews also recheck access after intervening storage work; already-approved operations retain safe recovery. Late read, mutation and moderation denials retain correlated audit history through the existing storage-recovery path."
+}

@@ -90,11 +90,28 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 	}
 	protected := bson.M{"username": "future-owner", "characters": bson.A{bson.M{
 		"name": "future-character", "gold": 1209, "resources": bson.M{"version": 1, "mana": 0, "health": 17},
-		"ep": 83, "vip_allowance_receipts": bson.M{"month-one": 100},
+		"ground_account_ordinal": int64(2), "ground_account_operation_id": GroundItemOperationID("schema-preserved-head"),
+		"ground_account_fingerprint": strings.Repeat("a", 64),
+		"casino_wallet_checkpoints":  bson.M{"vip-blackjack": CasinoWalletCheckpoint{Version: 3, ID: "casino:preserved-head", Fingerprint: strings.Repeat("b", 64)}},
+		"item_delivery_receipts":     bson.M{"legacy-delivery": "unchanged"},
+		"ep":                         83, "vip_allowance_receipts": bson.M{"month-one": 100},
 		"ep_exchange_receipts": bson.M{"exchange-one": 1}, "ep_casino_receipts": bson.M{"casino:bet": -18},
 		"appearance_collection": bson.M{"cosmetic:earth-armor": bson.M{"cosmetic_id": "earth-armor"}},
 		"gold_credit_receipts":  bson.M{"listing:operation": -25}, "unknown_future_field": bson.M{"preserve": true}}}}
 	if _, err := raw.Collection("users").InsertOne(ctx, protected); err != nil {
+		t.Fatal(err)
+	}
+	legacy := bson.M{"username": "legacy-owner", "characters": bson.A{bson.M{
+		"name": "legacy-character", "class": "Fighter", "level": 30, "gold": 777, "ep": 43,
+		"resources":              bson.M{"version": 1, "health": 17, "mana": 0},
+		"inventory":              bson.A{bson.M{"id": "legacy-earned", "stats": bson.M{"strength": 100}, "potency": 3}},
+		"item_delivery_receipts": bson.M{"legacy-delivery": "exact-legacy-fingerprint"},
+		"gold_credit_receipts":   bson.M{"legacy-refund": 17}, "ep_casino_receipts": bson.M{"casino:legacy": -18}}}}
+	if _, err := raw.Collection("users").InsertOne(ctx, legacy); err != nil {
+		t.Fatal(err)
+	}
+	var legacyBefore bson.Raw
+	if err := raw.Collection("users").FindOne(ctx, bson.M{"username": "legacy-owner"}).Decode(&legacyBefore); err != nil {
 		t.Fatal(err)
 	}
 	var before bson.Raw
@@ -148,12 +165,17 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 		t.Fatal("compatible repeated startup refused", err)
 	}
 	checkPreflight(CurrentSchemaVersion, true)
-	// Optional actual previously built schema11 executable: prove both operator
-	// preflight and ordinary startup refuse our REAL migrated schema12, not only
-	// a synthetic future marker. No old process is allowed to remain alive.
-	if previous := os.Getenv("EIDOLON_SCHEMA_PRE_EP_BINARY"); previous != "" {
-		if !filepath.IsAbs(previous) {
-			t.Fatal("requires absolute owned pre-EP binary path")
+	// Actual retired executables must refuse the REAL current migration state,
+	// not just our synthetic future marker. No old writer may remain alive.
+	for _, previous := range []struct {
+		path    string
+		version int
+	}{{os.Getenv("EIDOLON_SCHEMA_PRE_EP_BINARY"), 11}, {os.Getenv("EIDOLON_SCHEMA_PRE_PUBLIC_BINARY"), 17}} {
+		if previous.path == "" {
+			continue
+		}
+		if !filepath.IsAbs(previous.path) {
+			t.Fatal("requires absolute owned retired-binary path")
 		}
 		for _, preflight := range []bool{true, false} {
 			args := []string{"--mongo-uri", uri, "--addr", "127.0.0.1:0", "--log-file", "", "--suspicious-log-file", "", "--economy-metrics-file", ""}
@@ -161,20 +183,31 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 				args = append(args, "--check-schema")
 			}
 			processCtx, stop := context.WithTimeout(ctx, 5*time.Second)
-			command := exec.CommandContext(processCtx, previous, args...)
+			command := exec.CommandContext(processCtx, previous.path, args...)
 			command.Dir = t.TempDir()
 			output, runErr := command.CombinedOutput()
 			stop()
 			exitErr, exited := runErr.(*exec.ExitError)
-			if !exited || exitErr.ExitCode() != 1 || !strings.Contains(string(output), "supports (11)") ||
+			if !exited || exitErr.ExitCode() != 1 || !strings.Contains(string(output), fmt.Sprintf("supports (%d)", previous.version)) ||
 				!strings.Contains(string(output), "refusing startup before writes") {
-				t.Fatalf("pre-EP writer was not fenced: %v\n%s", runErr, output)
+				t.Fatalf("retired writer was not fenced: %v\n%s", runErr, output)
 			}
-			t.Logf("schema11 rollback refused (preflight=%t), EP state retained", preflight)
+			files, err := os.ReadDir(command.Dir)
+			if err != nil || len(files) != 0 || strings.Contains(string(output), "Server started") {
+				t.Fatal("retired writer opened journals/logs or admitted players", err)
+			}
+			t.Logf("schema%d rollback refused (preflight=%t), private recovery state retained", previous.version, preflight)
 		}
 	}
 	var retained bson.Raw
 	if err := raw.Collection("users").FindOne(ctx, bson.M{"username": "future-owner"}).Decode(&retained); err != nil || !reflect.DeepEqual(before, retained) {
 		t.Fatal("migration or refused rollback changed saved wallet/receipts/ownership", err)
+	}
+	if err := raw.Collection("users").FindOne(ctx, bson.M{"username": "legacy-owner"}).Decode(&retained); err != nil || !reflect.DeepEqual(legacyBefore, retained) {
+		t.Fatal("migration or refused rollback rewrote legacy gear, added heads or lost receipts", err)
+	}
+	character, err := db.GetCharacter("legacy-owner", "legacy-character")
+	if err != nil || character == nil || character.GroundAccountOrdinal != 0 || character.GroundAccountOperationID != "" || character.GroundAccountFingerprint != "" || len(character.CasinoWalletCheckpoints) != 0 {
+		t.Fatal("legacy hydration invented recovery checkpoints", err)
 	}
 }

@@ -277,17 +277,17 @@ func testPokerActualSocketsHandAcrossRestart(t *testing.T, vip bool) {
 		resourceSend(t, conn, MsgCasino, map[string]any{"action": "leave", "sessionId": seats[i]})
 		readPokerSocket(t, conn, func(v pokerSocketPresence) bool { return v.YourSeat == nil })
 		saved := resourceCloseAndWait(t, repo, conn, names[i])
+		if saved.CasinoWalletCheckpoints[tableID].Version < 2 || len(saved.CasinoWalletCheckpoints) != 1 || len(saved.GoldCreditReceipts) != 0 || len(saved.EPCasinoReceipts) != 0 {
+			t.Fatal("poker transfers lost compact proof or grew legacy maps")
+		}
 		if vip {
 			total += saved.EP
-			if saved.Gold != 500 || len(saved.GoldCreditReceipts) != 0 || len(saved.EPCasinoReceipts) != 2 || len(saved.VIPAllowanceReceipts) != 1 {
+			if saved.Gold != 500 || len(saved.VIPAllowanceReceipts) != 1 {
 				t.Fatal("EP poker changed Gold, lost casino receipts or repeated membership allowance")
 			}
 			continue
 		}
 		total += saved.Gold
-		if len(saved.GoldCreditReceipts) != 2 {
-			t.Fatal("buy-in/cash-out receipt count changed")
-		}
 	}
 	if total != initialTotal {
 		t.Fatal("two-player socket poker created or lost currency", currency, total)

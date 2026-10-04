@@ -35,7 +35,8 @@ func groundItemFixture(t *testing.T) (*World, *Entity, *Entity, Item) {
 // Model a strongly saved character for this primitive's receipt boundary.
 // These game tests do not certify the shared Mongo coordinator or actual IO.
 func groundSavedReceipt(player *Entity) *database.Character {
-	return &database.Character{Name: player.Name, ItemDeliveryReceipts: maps.Clone(player.ItemDeliveryReceipts)}
+	return &database.Character{Name: player.Name, ItemDeliveryReceipts: maps.Clone(player.ItemDeliveryReceipts),
+		GroundAccountOrdinal: player.GroundAccountOrdinal, GroundAccountOperationID: player.GroundAccountOperationID, GroundAccountFingerprint: player.GroundAccountFingerprint}
 }
 
 func TestGroundItemStagedRoundTripPreservesMetadataAndReplaysAfterConsumption(t *testing.T) {

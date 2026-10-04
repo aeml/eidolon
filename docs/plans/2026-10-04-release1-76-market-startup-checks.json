@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-market-startup-follow-up",
+  "sourceCommit": "752e4f26aaf8f2805b0ca147c7e3becdecf9b67f",
+  "sourceSHA256": {
+    "server/internal/database/auction_paging.go": "67407baea7076a6d119d902731572cad212168e171893c6ed7ca18354c3230de",
+    "server/internal/game/trading.go": "c7a57a7883d5449f64dbdb4b048faae083f27ecd15d5e7a8a38c3605b3038a6d",
+    "server/internal/game/auction_bids.go": "f849f4a0f5a02bb0f9fab825c149c09785ae1e1142fd12ffa1db8e39d41d3885",
+    "server/internal/database/auction_paging_test.go": "2ecd330d0ae5ae723c5576eb5b2b706ba2f75f989db02551bc7c786a92b9a722",
+    "server/internal/game/auction_startup_paging_test.go": "3017c3de7a5490479aba22e9cf69bd2f79430e2eb5ca3aaf77f53097c610471f",
+    "server/auction_startup_paging_mongo_test.go": "4b3b6daffd88d179b8981f679585e225fac35bb7c6741e3f5cadfca5d81bdb33"
+  },
+  "confirmedPriorBehavior": "Production TradingSystem startup read the complete auctions and pending-operation collections into unrestricted temporary slices before building working maps. A missing-auction error while loading operations could leave the preceding operations inserted in the unavailable working map. This is source evidence, not a production incident or RSS measurement; outstanding auction/decision populations are legitimate retained work, not assumed to be archival history.",
+  "changes": "Runtime startup now reads complete records in ascending string-id keyset pages, with matching limit and batchSize capped at 50 and five-second per-query deadlines. Existing unique id indexes suffice; no migration or value backfill. Claims, refunds, earned item metadata, kindless legacy bids and unpublished listing decisions remain intact. Each component's working map is installed only after every page succeeds and pending-decision references are checked. Failed readiness blocks refunds and normal operation admission; main already refuses startup when this error is present. Complete diagnostic list APIs remain for inspection/test helpers, with no production runtime callers. No settlement, account ordering, fee, currency or payout rules changed.",
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/game ./internal/database -run '^Test(Auction|Refund)' -count=1 -timeout=45s",
+    "focusedResult": "passed: root 4.202s, game 1.310s, database 1.094s; environment-gated native cases skipped, not claimed as rerun",
+    "newCoverage": "Driver mocks verify actual query limits, batch sizes, sort/cursor and complete private state, and reject invalid bounds before IO plus malformed returned identities/order/intents. Startup fixture with exactly 100 auctions and decisions checks two full pages plus the empty terminal page. Later IO failure, oversized/repeated pages, invalid decisions, duplicate auction reservations and missing auction references keep original maps and deny readiness/refunds.",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_PERSISTENCE_TEST_MONGO_URI=mongodb://127.0.0.1:32898 go test -race . -run '^TestAuctionStartupActualMongoPagesAndLateInvalidIntent$' -v -count=1 -timeout=35s",
+    "actualResult": "passed: test 0.28s/package 1.381s. Production TradingSystem loads 151 auctions and 152 frozen decisions, including an unpublished listing beyond three complete pages. Two startups take 50.170366ms and 56.054915ms and retain all saved claims, original operation markers, refunds and earned gear. A late stored invalid-kind decision blocks readiness without publishing preceding pending decisions or changing its evidence. Read-only startup preserves original legacy stored strength100/version0 while existing presentation normalization yields strength4 in memory on both loads.",
+    "checkCorrections": "The first new mock check used nonexistent bson.Raw.ElementsMust and was corrected to Elements before accepted tests. The initial real fixture omitted the current item-scale marker but expected unchanged strength17; existing normalization correctly altered its in-memory stats. Corrected modern fixture provenance and added deliberate legacy strength100-to4/read-only-storage coverage. Neither failed candidate is accepted evidence or claimed as a production data bug.",
+    "hygiene": "gofmt and git diff --check pass. Changes are isolated from the owner's dirty main workspace; no production data, services, DNS, player accounts or deployment changed. No repeated campaign, raid or native auction-fault matrix."
+  },
+  "ownedFixture": {
+    "containerID": "457f31df6c231b5f8ff591e2427311f43dc78aa5d54034469f60a63b45385a44",
+    "label": "eidolon.fixture=market-pages-176-20261004",
+    "environment": "Mongo7.0.40 standalone image b6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b; 1 CPU/512MiB; inspected ephemeral port32898 bound only to127.0.0.1",
+    "cleanup": "Tests remove only their exact synthetic auction/decision IDs. After all test sessions finished, the label-validated exact container and anonymous volumes 48c5bb7cdb26352d773a41b376705a54109db0a91fa91e803d455550be894316 and 07e34a91310bb11a52c33441bf2d30a13e6e329ad7d179f283d645b006d12b91 were removed; exact filtered listings verify absence. Synthetic fixture data is reproducible."
+  },
+  "proposedPatchNote": "The Trading House loads saved auctions and pending decisions in small startup batches. Incomplete or invalid recovery state leaves the market unavailable instead of exposing a partially loaded pending-decision map. Outstanding claims, refunds and original listing terms stay preserved.",
+  "limits": [
+    "Working maps still retain all legitimate outstanding auctions and decisions; total startup scan work and durable population are not bounded by pagination. No entitlement cap, queue pruning, receipt TTL or deletion was introduced. This is not a peak-memory, latency-percentile or 100-player capacity certification.",
+    "The actual check proves repository paging and TradingSystem startup together, not a new connected-player settlement, replica failover, concurrent multi-writer startup or total long-lived account storage solution. Retain compatible prior settlement proofs; remaining receipt families, rollback and policy work stay open.",
+    "Prepared source is locally committed and unpublished. Accepted public version remains Alpha1.70.2; no version promotion, deployment or whole-1.76/goal completion is claimed. Earlier recovery, jump and data-policy decisions and ordered release gates remain open."
+  ]
+}

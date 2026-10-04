@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"math"
 	"regexp"
 	"strings"
 	"time"
@@ -30,11 +31,14 @@ type BlackjackTableRecord struct {
 }
 
 type BlackjackTransfer struct {
-	ID        string `bson:"id"`
-	PlayerID  string `bson:"player_id"`
-	Currency  string `bson:"currency"`
-	Amount    int    `bson:"amount"` // Negative debit, positive inclusive payout/refund.
-	NextState []byte `bson:"next_state"`
+	TableID      string `bson:"table_id,omitempty" json:",omitempty"`
+	TableVersion int64  `bson:"table_version,omitempty" json:",omitempty"`
+	Fingerprint  string `bson:"fingerprint,omitempty" json:",omitempty"`
+	ID           string `bson:"id"`
+	PlayerID     string `bson:"player_id"`
+	Currency     string `bson:"currency"`
+	Amount       int    `bson:"amount"` // Negative debit, positive inclusive payout/refund.
+	NextState    []byte `bson:"next_state"`
 }
 
 func validBlackjackState(state []byte) bool {
@@ -42,6 +46,12 @@ func validBlackjackState(state []byte) bool {
 }
 
 func (op BlackjackTransfer) Validate() error {
+	if op.TableVersion != 0 || op.TableID != "" || op.Fingerprint != "" {
+		fingerprint, err := casinoTransferFingerprint(op)
+		if op.TableVersion < 2 || len(op.TableID) == 0 || len(op.TableID) > 96 || err != nil || op.Fingerprint != fingerprint {
+			return errors.New("invalid casino checkpoint identity")
+		}
+	}
 	maxDebit := 100000
 	maxReturn := 1600000 // Four doubled 100,000 Gold hands, each returning 2×.
 	// Receipt families have separate limits; game intent validation recomputes outcomes.
@@ -84,6 +94,9 @@ func CasinoCurrencyForRecord(tableID string) (string, error) {
 func (op BlackjackTransfer) ValidateForTable(tableID string) error {
 	if err := op.Validate(); err != nil {
 		return err
+	}
+	if op.TableVersion != 0 && op.TableID != tableID {
+		return ErrBlackjackTableConflict
 	}
 	currency, err := CasinoCurrencyForRecord(tableID)
 	if err != nil {
@@ -135,20 +148,30 @@ func (db *DB) GetBlackjackTable(tableID string) (*BlackjackTableRecord, error) {
 	if err := collection.FindOne(ctx, bson.M{"_id": tableID}).Decode(&record); err != nil {
 		return nil, err
 	}
-	if record.Version <= 0 || !validBlackjackState(record.State) {
-		return nil, errors.New("corrupt blackjack table state")
-	}
-	if record.Pending != nil {
-		if err := record.Pending.ValidateForTable(tableID); err != nil {
-			return nil, err
-		}
+	if err := record.Validate(); err != nil {
+		return nil, err
 	}
 	return &record, nil
 }
 
+func (record BlackjackTableRecord) Validate() error {
+	if record.TableID == "" || len(record.TableID) > 96 || record.Version <= 0 || !validBlackjackState(record.State) {
+		return errors.New("corrupt blackjack table state")
+	}
+	if record.Pending != nil {
+		if err := record.Pending.ValidateForTable(record.TableID); err != nil {
+			return err
+		}
+		if record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
+			return ErrBlackjackTableConflict
+		}
+	}
+	return nil
+}
+
 // A normal deal/turn update cannot cross an unresolved money operation.
 func (db *DB) AdvanceBlackjackTable(tableID string, version int64, state []byte) (*BlackjackTableRecord, error) {
-	if version <= 0 || !validBlackjackState(state) {
+	if version <= 0 || version == math.MaxInt64 || !validBlackjackState(state) {
 		return nil, errors.New("invalid blackjack advance")
 	}
 	return db.updateBlackjackTable(bson.M{"_id": tableID, "version": version, "pending": nil},
@@ -159,8 +182,14 @@ func (db *DB) BeginBlackjackTransfer(tableID string, version int64, op Blackjack
 	if err := op.ValidateForTable(tableID); err != nil {
 		return nil, err
 	}
-	if version <= 0 {
+	if version <= 0 || version >= math.MaxInt64-1 {
 		return nil, ErrBlackjackTableConflict
+	}
+	legacyInput := op.TableVersion == 0 && op.TableID == "" && op.Fingerprint == ""
+	var stampErr error
+	op, stampErr = op.WithCasinoCheckpoint(tableID, version+1)
+	if stampErr != nil {
+		return nil, stampErr
 	}
 	record, err := db.updateBlackjackTable(bson.M{"_id": tableID, "version": version, "pending": nil},
 		bson.M{"$set": bson.M{"pending": op}, "$inc": bson.M{"version": 1}})
@@ -172,7 +201,8 @@ func (db *DB) BeginBlackjackTransfer(tableID string, version int64, op Blackjack
 	current, readErr := db.GetBlackjackTable(tableID)
 	if readErr == nil && current.Version == version+1 && current.Pending != nil {
 		p := current.Pending
-		if p.ID == op.ID && p.PlayerID == op.PlayerID && p.Currency == op.Currency && p.Amount == op.Amount && bytes.Equal(p.NextState, op.NextState) {
+		checkpointMatches := p.TableVersion == op.TableVersion && p.TableID == op.TableID && p.Fingerprint == op.Fingerprint || legacyInput && p.TableVersion == 0
+		if checkpointMatches && p.ID == op.ID && p.PlayerID == op.PlayerID && p.Currency == op.Currency && p.Amount == op.Amount && bytes.Equal(p.NextState, op.NextState) {
 			return current, nil
 		}
 	}
@@ -187,6 +217,9 @@ func (db *DB) ResolveBlackjackTransfer(record BlackjackTableRecord, accepted boo
 	}
 	if err := record.Pending.ValidateForTable(record.TableID); err != nil {
 		return nil, err
+	}
+	if record.Version <= 0 || record.Version == math.MaxInt64 || record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
+		return nil, ErrBlackjackTableConflict
 	}
 	if !accepted && record.Pending.Amount > 0 {
 		return nil, errors.New("earned blackjack payout cannot be discarded")
@@ -226,16 +259,24 @@ func (db *DB) updateBlackjackTable(filter, update bson.M) (*BlackjackTableRecord
 }
 
 // The legacy-named collection is the existing private casino intent ledger.
-// Slot records are owner/theme scoped. Scan on startup (not on player movement)
-// so the debit-resolved / payout-not-yet-started gap is recoverable as well.
-func (db *DB) CasinoSlotRecords() ([]BlackjackTableRecord, error) {
+// Slot records are owner/theme scoped. Keyset pages bound startup memory while
+// still scanning every record, including debit-resolved / payout-not-yet-started
+// gaps that do not have a pending transfer. Settlements run outside query timeouts.
+func (db *DB) CasinoSlotRecordsPage(afterID string, limit int) ([]BlackjackTableRecord, error) {
+	if limit < 1 || limit > 50 || len(afterID) > 96 || afterID != "" && !strings.HasPrefix(afterID, "slots:") {
+		return nil, errors.New("invalid slot recovery page")
+	}
 	collection, err := db.blackjackCollection()
 	if err != nil {
 		return nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cursor, err := collection.Find(ctx, bson.M{"_id": bson.M{"$regex": "^slots:"}})
+	identity := bson.M{"$regex": "^slots:"}
+	if afterID != "" {
+		identity["$gt"] = afterID
+	}
+	cursor, err := collection.Find(ctx, bson.M{"_id": identity}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}).SetLimit(int64(limit)).SetBatchSize(int32(limit)))
 	if err != nil {
 		return nil, err
 	}
@@ -243,6 +284,11 @@ func (db *DB) CasinoSlotRecords() ([]BlackjackTableRecord, error) {
 	var records []BlackjackTableRecord
 	if err := cursor.All(ctx, &records); err != nil {
 		return nil, err
+	}
+	for _, record := range records {
+		if err := record.Validate(); err != nil {
+			return nil, err
+		}
 	}
 	return records, nil
 }

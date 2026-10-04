@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-journal-concurrency-follow-up",
+  "sourceCommit": "1631bc7445fefbd4eb0d29ddafc77fb419fa0fe0",
+  "sourceSHA256": {
+    "server/internal/database/character_journal.go": "d232757d314b16b260d948ba0b8e6a59f446549f7d338ab2266f12a1a5c86524",
+    "server/internal/database/character_journal_concurrency_test.go": "0d3fc3661c63fb64d628be393b0921cebd2ff8245fd8147a4c7cbc5ddb4a994a"
+  },
+  "confirmedPriorBehavior": "Source inspection confirms one journal mutex covered every account's file write, fsync, read and acknowledgement, plus complete pending-user discovery. A blocked filesystem operation therefore held the same application lock needed by unrelated accounts. This is not a production outage diagnosis or disk-throughput benchmark.",
+  "changes": "Replace the global mutex with 64 fixed account-hash filesystem lock shards. Write, read and acknowledgement for an account use the same shard; discovery derives that exact shard from each canonical hashed filename before reading. Per-account atomic rename, file and directory fsync, complete BSON snapshot, checksum, permissions and stale-save-ID protection remain unchanged. Malformed discovery filenames fail closed. No unbounded lock registry, journal format change, schema migration, new queue, receipt deletion or gameplay change.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(CharacterJournal|CharacterAndArenaJournals|CharacterPersistence|CharacterCommit|CoalescedSave|CasinoCheckpointFailedSave|SchemaMigrationCatalog)' -count=1 -timeout=45s",
+    "result": "passed: root 2.606s, database 2.561s",
+    "newCoverage": [
+      "Hold one account's filesystem shard deliberately: a different shard completes real temporary-directory write/fsync/read/ack while the first account remains blocked; releasing it lets that account finish.",
+      "1,000 account identities, including path-like usernames, select matching account and discovery shards; malformed, uppercase, nonhex and path-containing filenames are refused.",
+      "50 concurrent old-ack/new-write races preserve each newer save identity and Gold value regardless of which operation wins the lock.",
+      "20 concurrent account writers create 100 complete snapshots while pending-user discovery runs. Stale acknowledgements preserve latest saves; reopening retains exact Gold, EP, ground and casino checkpoint fields and legacy receipts. Confirmed latest acknowledgements then clear all records."
+    ],
+    "regressionCoverage": "Existing detached snapshots, restrictive file permissions, corruption/evidence preservation, delegated journal directories, failed-save recovery, newer-live-snapshot preference, unreadable-journal admission, missing-latest-save denial, per-account coalescing and Gold/EP checkpoint recovery pass. Database commit/query behavior is unchanged; no repeated native casino, dungeon, raid or campaign matrix was needed for this filesystem-lock change.",
+    "hygiene": "gofmt and git diff --check pass. Fresh master fetch remains 526bc22953e79cbe4869580e8f628d55c39c1b1c, already an ancestor of the prepared branch. No production service, account, database or deployment changed. Tests use automatically cleaned temporary directories; no new Mongo container or server fixture was started."
+  },
+  "proposedPatchNote": "Character recovery-file saves no longer share a single lock across all accounts. Saving one account can progress independently of a slow save in another lock group, while preserving durable recovery and protection against stale acknowledgements.",
+  "limits": [
+    "This is an in-process journal-lock improvement, not a measured disk/fsync throughput gain, cross-process journal lease, replica-failover proof or player-capacity certification. Hash collisions still serialize accounts in the same shard; existing full account-operation ordering remains required.",
+    "Pending-user discovery remains a full directory scan, not an atomic snapshot, and may wait on the individual account it is reading. New records arriving after enumeration are discovered on the next scan; an acknowledged record can disappear before inspection. Other account saves do not require a global discovery lock.",
+    "Prepared source is local and unpublished; accepted public release remains Alpha 1.70.2. Recovery-method, jump and data-policy decisions, remaining persistence growth and ordered release gates are still open. This does not complete Alpha 1.76 or the overall roadmap goal."
+  ]
+}

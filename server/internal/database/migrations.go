@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 22
+const CurrentSchemaVersion = 24
 
 type schemaMigration struct {
 	Version int
@@ -104,6 +104,12 @@ var schemaMigrations = []schemaMigration{
 	// No reward backfill. Older death pipelines ignore the retained original
 	// boss cohort and must not write past this first-outcome recovery boundary.
 	{Version: 22, Name: "durable_boss_victory_cohorts", Apply: applyBossVictoryIndexes},
+	// Preserve legacy receipts without backfill. Older writers erase the new
+	// contiguous ground-delivery checkpoint and cannot extend version2 custody.
+	{Version: 23, Name: "ordered_ground_item_delivery_checkpoints", Apply: applyGroundItemOperationIndexes},
+	// Existing signed receipts and pending V1 table intents remain untouched.
+	// Older full-character writers must not erase the compact casino heads.
+	{Version: 24, Name: "versioned_casino_wallet_checkpoints", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-slot-startup-and-cache-follow-up",
+  "sourceCommit": "3bbe47bd6018d6e1a1d5aa6380cb0488daf5fdc5",
+  "sourceSHA256": {
+    "server/casino_slot_sessions.go": "c09aa5657fa22bbfbbbdb8da25c051e6ec9175ea5f2d981d2c41d60cf9aee277",
+    "server/internal/database/casino_blackjack.go": "e2d99253501a888b6f9f1427b7feeb6189582f4402772b81b05d6dfa2eeb4c21",
+    "server/casino_slot_cache_test.go": "bf7cc58e236540a11257a7c34de4a219f88380ce54c7a78b05cd0cb1386bdcc4",
+    "server/casino_slot_paging_mongo_test.go": "fccd0e9e4dcd4186c70a724b15c072001782aa10aaa1fdb6a9d80709115dddcd",
+    "server/internal/database/casino_slot_paging_test.go": "cbc76547f9f16b889fa32e01b15f4378b665407e9428bdfe035554a9dc0d5c58"
+  },
+  "confirmedPriorBehavior": "Startup fetched every owner/theme slot document into an unrestricted slice, then accumulated all discovered pending owners before attempting recovery. Offline settlement created a persistent presentation cache entry, and ordinary departed-player entries were not pruned. Source inspection, not a claimed production outage or RSS benchmark, establishes these behaviors.",
+  "changes": "CasinoSlotRecordsPage uses ascending _id keysets, an explicit1..50 limit and matching batch bound; startup selects25. Five-second query deadlines exclude subsequent settlement IO. Shared record validation preserves complete current/legacy private intents and rejects corrupt saved versions. Startup settles each discovered pending or debit-resolved/return-not-started record before scanning onward, using existing account locking and fresh canonical recovery. Pending markers no longer allocate presentation entries. Settled presentation is retained only for the matching held machine, at most one cached record per owner; disconnected held seats survive normal resume. Existing one-second recovery ticks prune unseated/expired presentation under world->player->cache lock order without touching pending markers or Mongo entitlements. No record, receipt, free spin or bonus is deleted.",
+  "checks": {
+    "newBoundaryCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(CasinoSlotPaging|SlotCache)' -v -count=1 -timeout=30s",
+    "newBoundaryResult": "passed: root1.314s/database1.054s; exact first/later query bounds, sort and cursor; complete private pending intent preserved; invalid limit/family rejected before storage; corrupt page fails closed.1000 offline presentations/pending transitions retain no historical cache. Held disconnected seat remains, lost/expired seats prune, pending recovery remains.200 concurrent reseat/cache/prune transitions finish under race detection and a final same-key reseat stays visible.",
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(Casino|Slot|VIPSlot|Blackjack|SchemaMigrationCatalog)' -count=1 -timeout=45s",
+    "focusedResult": "passed: root3.154s/database1.783s; environment-gated actual checks skipped here, separately run below",
+    "actualStartupCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_CASINO_TEST_MONGO_URI=mongodb://127.0.0.1:32897 go test -race . -run '^TestSlotMongoPagedStartupRecoversLatePayoutsWithoutHistoricalCache$' -v -count=1 -timeout=30s",
+    "actualStartupResult": "passed: test6.22s/package7.323s;131 valid saved records across six sorted25-capped pages; three genuine saved-owed outcomes deliberately sort beyond128 closed historical records. Complete provider/journal delivery pays each once; second startup does not repeat them; original EP43 and five saved historical free spins remain unchanged. Real commit boundary observes peak pending1/presentation cache0.",
+    "actualMeasurements": {"records": 131, "pages": 6, "pageLimit": 25, "maximumSumOfReturnedRecordBSONBytes": 26986, "startupWithThreePayoutsMilliseconds": 250.971207, "startupPendingPeak": 1, "startupPresentationPeak": 0},
+    "nativeCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_MONGO_URI=mongodb://127.0.0.1:32897 EIDOLON_RESOURCE_BINARY=/tmp/eidolon-slot-pages-176-tTiT2v/server EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 go test -race . -run '^TestSlotsActualSocketPreparedBonusAndFreeSpin$' -v -count=1 -timeout=60s",
+    "nativeResult": "passed: test9.47s/package10.557s; production server race-built with main.buildCommit=server; actual ordinary Gold Earth machine bonus choice and free spin, hidden-offer privacy, stale choice/spin rejection, balance540, token resume, leave, restart/reseat retain revision4 and four free spins. Prepared bonus isolates recovery/presentation, not earned bonus probability or RTP.",
+    "actualRegressionCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_CASINO_TEST_MONGO_URI=mongodb://127.0.0.1:32897 go test -race . -run '^TestSlotMongo(InterruptionRecovery|SeatRevisionAndLeaving|BonusAndFreeSpinEntitlements)$' -count=1 -timeout=30s",
+    "actualRegressionResult": "passed: package7.444s; all three real save/table interruption points plus seat/revision/leave and bonus/free-spin persistence; no repeated full casino, campaign or party/raid matrix",
+    "hygiene": "All turn checks passed; gofmt and git diff --check passed. Fresh master fetch remains526bc229, already contained in the prepared branch; unrelated remote work not overwritten."
+  },
+  "ownedFixture": {
+    "containerID": "bdf8b3c4a624bf09860615bdaecd7bd1e4c175798af34cb04d7cc37e2707102e",
+    "label": "eidolon.fixture=slot-pages-176-20261004",
+    "environment": "Mongo7.0.40 standalone imageb6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b,1 CPU/512MiB, inspected ephemeral32897 bound only to127.0.0.1",
+    "cleanup": "Exact label-validated container and anonymous volumes6b20f7115fce3d2809b85d7a175b1a49d2ea2341537b5874822b1770f681e48b/3d3fff725a1bcc43dbd9c8dfff33b0955631dd0e9632d566e911bfd2db89ef03 removed after tests/owned servers ended; filtered listings confirm absence. Synthetic data is reproducible; no production data or services changed."
+  },
+  "proposedPatchNote": "Saved slot sessions now recover in small startup batches, and departed-player presentation is released from memory. Interrupted returns, bonuses and free spins remain saved and reload when you sit down again.",
+  "limits": [
+    "This removes unrestricted startup result allocation and historical presentation retention, but still scans all retained slot records. It is not a full-history query-cost, peak RSS, lifetime storage, replica failover or100-player capacity certification.",
+    "Runtime legitimate pending recovery is still retained until resolved; no arbitrary timeout, queue pruning or entitlement deletion was added. Page/IO failure leaves durable records recoverable and prevents falsely declaring startup successful.",
+    "No new schema/version/payout rule, full data-policy implementation or payment/membership change. Prepared source remains local and unpublished; accepted public release stays Alpha1.70.2 at526bc229. Owner recovery/jump/data-policy choices, other receipt growth and ordered full-roadmap release gates remain open."
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-storage-measurement-follow-up",
+  "sourceCommit": "9f93dc5c13eea2f8cc22c5d139b42c12513ed335",
+  "testSource": "server/internal/database/persistence_scale_mongo_test.go",
+  "testSourceSHA256": "1eaf6973baa24a6807fd6d52743da2603439c11c923eb40e7da7c756cc24294b",
+  "changes": "Added one explicitly disposable-loopback-only integration check for current ground-projection history costs and complete-character save/read receipt growth. Production queries, indexes, schemas, saves, receipts and policies are unchanged; the measured query is captured from the actual repository command, not a test-only replacement pipeline.",
+  "environment": {
+    "mongodbVersion": "7.0.40 standalone, existing mongo:7 image",
+    "imageSHA256": "b6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b",
+    "containerID": "7614f38e081ff1976ce83622af3dc1a6ba75b319579ff3359f44af5f12725b4d",
+    "ownedLabel": "eidolon.qa.owner=codex, eidolon.qa.task=persistence-176-20261004",
+    "limits": "1 CPU, 512MiB memory; ephemeral Mongo port32890 bound only to127.0.0.1",
+    "toolchain": "Go1.27.1 race detector",
+    "data": "Only uniquely named synthetic fixture collections. 10,000 expired/100 active valid completed ground records; 100 sparse stored characters across four class labels with1,000 opaque receipt entries each. No connected players, real campaign earnings or production records."
+  },
+  "actualMongoCheck": {
+    "command": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_PERSISTENCE_TEST_MONGO_URI=mongodb://127.0.0.1:32890 go test -race ./internal/database -run '^TestPersistenceActualMongoHistoryQueriesAndReceiptGrowth$' -count=1 -timeout=60s -v",
+    "result": "passed, test8.22s/package9.289s",
+    "groundProjection": [
+      {"after": "", "returned": 50, "documentsExamined": 100, "keysExamined": 100, "elapsedMilliseconds": 16.137596},
+      {"after": "live-00049", "returned": 50, "documentsExamined": 50, "keysExamined": 50, "elapsedMilliseconds": 14.293662}
+    ],
+    "serialSaves": {"accounts": 100, "receiptsPerCharacter": 1000, "elapsedMilliseconds": 912.615835},
+    "saveReadRoundtrips": [
+      {"receipts": 0, "characterBSONBytes": 417, "elapsedMilliseconds": 3.35475},
+      {"receipts": 1000, "characterBSONBytes": 146446, "elapsedMilliseconds": 14.829654},
+      {"receipts": 10000, "characterBSONBytes": 1460446, "elapsedMilliseconds": 123.665336}
+    ],
+    "invariants": "Pages remain capped, sorted and exclude expired/repeated loot. Every sampled saved map retains its exact keys and fingerprints; Gold12346, EP43, class and level remain unchanged by receipt growth. Empty omitted maps compare by logical contents.",
+    "checkCorrection": "A first count-only run passed. Strengthening the check with reflect.DeepEqual then failed at zero receipts because BSON omitempty hydrates an empty map as nil. Corrected the test to maps.Equal, preserving the exact-content assertion without inventing a production persistence bug. Final accepted results above are from the corrected source; the failed expanded run is not accepted evidence."
+  },
+  "focusedCompatibilityCheck": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database -run '^Test(SchemaMigrationCatalog|SchemaCompatibilityRejectsUnknownFutureWriters|GroundItemStoreRecoveryQueriesKeepPendingLatestAndBoundPages)' -count=1 -timeout=30s",
+    "result": "passed, package1.048s",
+    "scope": "Current schema22 contiguous catalog, writer fences, unsupported-future-version rejection and mocked bounded/latest-pending recovery queries. Not a new migration, CLI preflight or connected restart acceptance."
+  },
+  "growthFinding": {
+    "source": "server/internal/database/character_repository.go and server/internal/database/db.go",
+    "observed": "A sparse character with10,000 item-delivery receipts is1,460,446 BSON bytes before account metadata, inventory and other receipt families. Save/read costs grow with the full map. Source currently stores characters embedded in the users document and retains permanent item-delivery fingerprints.",
+    "externalConstraint": "MongoDB documents are limited to16MiB; the embedding account document, not each individual field, must fit.",
+    "primaryReference": "https://www.mongodb.com/docs/manual/reference/limits/#bson-documents",
+    "remainingImplementation": "Review a replay-safe scalable receipt/character storage strategy and measure its supported long-lived account shape. Preserve pending recovery, permanent operation identity, old/new writer fences, legacy metadata and restore compatibility. Arbitrary TTL/capping/deleting receipt maps is not an acceptable optimization. No oversized-account failure, lifetime receipt rate or complete solution is claimed by this bounded measurement."
+  },
+  "cleanup": {
+    "result": "Test dropped only its uniquely named fixture collections. Exact validated owned container and its two anonymous volumes were then removed; filtered container/volume listings confirm no owned fixture remains. Synthetic fixtures are reproducible from the committed test. No production database, player data, services, DNS or runner configuration changed.",
+    "removedAnonymousVolumes": ["ad4b5273c7ed4117114cd1e425b6dbab330b8e85369d62ede4dc13732faf9578", "476abacd52d8fb8269a2145ffc9feaf5890688d08e672cd55921c56254cbed56"]
+  },
+  "limits": [
+    "One bounded cold fixture and sequential saves, not latency percentiles, a concurrent100-player promise, a representative fully equipped character catalog or production hardware acceptance.",
+    "Standalone storage/read plans do not certify majority replica failover, power loss, a complete dungeon, balance/pacing or campaign progress.",
+    "No gratuitous query/index rewrite was made: the existing active-window query passed this retained-history workload. Other query families and receipt-growth implementation remain under1.76 review; compatible earlier recovery proofs should be reused.",
+    "No1.76 version/patch-note promotion, push or deployment. Accepted public version remains Alpha1.70.2 at526bc22953e79cbe4869580e8f628d55c39c1b1c. Owner recovery/jump and privacy policies, ordered predecessor publication and later full-roadmap gates remain open."
+  ]
+}

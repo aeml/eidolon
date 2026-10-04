@@ -94,6 +94,8 @@ func applyGroundItemOperationIndexes(ctx context.Context, db *DB) error {
 		return err
 	}
 	_, err = collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{Keys: bson.D{{Key: "username", Value: 1}, {Key: "account_ordinal", Value: 1}}, Options: options.Index().SetName("unique_ground_account_ordinal").SetUnique(true).
+			SetPartialFilterExpression(bson.M{"account_ordinal": bson.M{"$gt": 0}})},
 		{Keys: bson.D{{Key: "username", Value: 1}}, Options: options.Index().SetName("one_pending_ground_item_per_account").SetUnique(true).
 			SetPartialFilterExpression(bson.M{"state": GroundItemPending})},
 		{Keys: bson.D{{Key: "loot_id", Value: 1}}, Options: options.Index().SetName("one_pending_ground_item_per_loot").SetUnique(true).
@@ -160,6 +162,18 @@ func (db *DB) PrepareGroundItemOperation(op GroundItemOperation) (*GroundItemRec
 			return nil, ErrGroundItemConflict
 		}
 		return stored, nil
+	}
+	if op.Version == 2 {
+		// A new immutable decision may only extend the ACTUALLY saved head.
+		// Existing decisions above remain resolvable after an unknown reply.
+		character, err := db.GetDirectTradeCharacter(op.Username, op.Username)
+		if err != nil {
+			return nil, err
+		}
+		if character == nil || !GroundItemCheckpointValid(character.GroundAccountOrdinal, character.GroundAccountOperationID, character.GroundAccountFingerprint) ||
+			character.GroundAccountOrdinal == math.MaxInt64 || op.AccountOrdinal != character.GroundAccountOrdinal+1 {
+			return nil, ErrGroundItemConflict
+		}
 	}
 	previous, err := db.LatestGroundItemOperation(op.LootID)
 	if err != nil {

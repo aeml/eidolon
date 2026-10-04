@@ -78,53 +78,57 @@ type Auction struct {
 }
 
 type Character struct {
-	DirectTradeState         bson.Raw                       `bson:"direct_trade_state,omitempty"`
-	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
-	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`
-	GuildBankOpFingerprint   string                         `bson:"last_guild_bank_operation_fingerprint,omitempty"`
-	AdminOperationReceipts   map[string]string              `bson:"admin_operation_receipts,omitempty"`
-	WeeklyRaidRewardReceipts map[string]bool                `bson:"weekly_raid_reward_receipts,omitempty"`
-	WeeklyRaidCompletions    map[string]time.Time           `bson:"weekly_raid_completions,omitempty"`
-	VIPAllowanceReceipts     map[string]int                 `bson:"vip_allowance_receipts,omitempty"`
-	EP                       int                            `bson:"ep,omitempty"`
-	EPExchangeReceipts       map[string]int                 `bson:"ep_exchange_receipts,omitempty"`
-	EPCasinoReceipts         map[string]int                 `bson:"ep_casino_receipts,omitempty"`
-	AppearanceCollection     map[string]EquipmentAppearance `bson:"appearance_collection,omitempty"`
-	Appearances              map[string]EquipmentAppearance `bson:"appearances,omitempty"`
-	WellRested               *CharacterWellRested           `bson:"well_rested,omitempty"`
-	ItemDeliveryReceipts     map[string]string              `bson:"item_delivery_receipts,omitempty"`
-	PendingBossLoot          []string                       `bson:"pending_boss_loot,omitempty"`
-	GoldCreditReceipts       map[string]int                 `bson:"gold_credit_receipts,omitempty"`
-	LastSaveID               string                         `bson:"last_save_id,omitempty"`
-	Resources                *CharacterResources            `bson:"resources,omitempty"`
-	Name                     string                         `bson:"name"`
-	Class                    string                         `bson:"class"` // Fighter, Wizard, etc.
-	Level                    int                            `bson:"level"`
-	XP                       int                            `bson:"xp"`
-	ProgressionVersion       int                            `bson:"progression_version"`
-	ResonanceLevel           int                            `bson:"resonance_level,omitempty"`
-	ResonanceXP              int                            `bson:"resonance_xp,omitempty"`
-	ResonancePoints          int                            `bson:"resonance_points,omitempty"`
-	ResonanceRanks           map[string]int                 `bson:"resonance_ranks,omitempty"`
-	Gold                     int                            `bson:"gold"`
-	X                        float64                        `bson:"x"`
-	Y                        float64                        `bson:"y"`
-	Z                        float64                        `bson:"z"`
-	InstanceID               string                         `bson:"instance_id"`
-	LastLogout               time.Time                      `bson:"last_logout"`
-	Stats                    Stats                          `bson:"stats"`
-	Inventory                []Item                         `bson:"inventory"`
-	Stash                    []Item                         `bson:"stash"`
-	Buyback                  []Item                         `bson:"buyback"`
-	Equipment                map[string]Item                `bson:"equipment"`
-	EquipmentLoadouts        []EquipmentLoadout             `bson:"equipment_loadouts,omitempty"`
-	SavedHotbar              []string                       `bson:"saved_hotbar,omitempty"`
-	Quests                   []Quest                        `bson:"quests"`
-	LastDailyQuest           time.Time                      `bson:"last_daily_quest"`
-	SkillPoints              int                            `bson:"skill_points"`
-	SelectedBranch           string                         `bson:"selected_branch"`
-	UnlockedSkills           []string                       `bson:"unlocked_skills"`
-	SkillRunes               map[string]string              `bson:"skill_runes,omitempty"` // skill name -> rune ID
+	CasinoWalletCheckpoints  map[string]CasinoWalletCheckpoint `bson:"casino_wallet_checkpoints,omitempty"`
+	GroundAccountOrdinal     int64                             `bson:"ground_account_ordinal,omitempty"`
+	GroundAccountOperationID string                            `bson:"ground_account_operation_id,omitempty"`
+	GroundAccountFingerprint string                            `bson:"ground_account_fingerprint,omitempty"`
+	DirectTradeState         bson.Raw                          `bson:"direct_trade_state,omitempty"`
+	GuildBankRevision        int64                             `bson:"guild_bank_revision,omitempty"`
+	GuildBankOpID            string                            `bson:"last_guild_bank_operation_id,omitempty"`
+	GuildBankOpFingerprint   string                            `bson:"last_guild_bank_operation_fingerprint,omitempty"`
+	AdminOperationReceipts   map[string]string                 `bson:"admin_operation_receipts,omitempty"`
+	WeeklyRaidRewardReceipts map[string]bool                   `bson:"weekly_raid_reward_receipts,omitempty"`
+	WeeklyRaidCompletions    map[string]time.Time              `bson:"weekly_raid_completions,omitempty"`
+	VIPAllowanceReceipts     map[string]int                    `bson:"vip_allowance_receipts,omitempty"`
+	EP                       int                               `bson:"ep,omitempty"`
+	EPExchangeReceipts       map[string]int                    `bson:"ep_exchange_receipts,omitempty"`
+	EPCasinoReceipts         map[string]int                    `bson:"ep_casino_receipts,omitempty"`
+	AppearanceCollection     map[string]EquipmentAppearance    `bson:"appearance_collection,omitempty"`
+	Appearances              map[string]EquipmentAppearance    `bson:"appearances,omitempty"`
+	WellRested               *CharacterWellRested              `bson:"well_rested,omitempty"`
+	ItemDeliveryReceipts     map[string]string                 `bson:"item_delivery_receipts,omitempty"`
+	PendingBossLoot          []string                          `bson:"pending_boss_loot,omitempty"`
+	GoldCreditReceipts       map[string]int                    `bson:"gold_credit_receipts,omitempty"`
+	LastSaveID               string                            `bson:"last_save_id,omitempty"`
+	Resources                *CharacterResources               `bson:"resources,omitempty"`
+	Name                     string                            `bson:"name"`
+	Class                    string                            `bson:"class"` // Fighter, Wizard, etc.
+	Level                    int                               `bson:"level"`
+	XP                       int                               `bson:"xp"`
+	ProgressionVersion       int                               `bson:"progression_version"`
+	ResonanceLevel           int                               `bson:"resonance_level,omitempty"`
+	ResonanceXP              int                               `bson:"resonance_xp,omitempty"`
+	ResonancePoints          int                               `bson:"resonance_points,omitempty"`
+	ResonanceRanks           map[string]int                    `bson:"resonance_ranks,omitempty"`
+	Gold                     int                               `bson:"gold"`
+	X                        float64                           `bson:"x"`
+	Y                        float64                           `bson:"y"`
+	Z                        float64                           `bson:"z"`
+	InstanceID               string                            `bson:"instance_id"`
+	LastLogout               time.Time                         `bson:"last_logout"`
+	Stats                    Stats                             `bson:"stats"`
+	Inventory                []Item                            `bson:"inventory"`
+	Stash                    []Item                            `bson:"stash"`
+	Buyback                  []Item                            `bson:"buyback"`
+	Equipment                map[string]Item                   `bson:"equipment"`
+	EquipmentLoadouts        []EquipmentLoadout                `bson:"equipment_loadouts,omitempty"`
+	SavedHotbar              []string                          `bson:"saved_hotbar,omitempty"`
+	Quests                   []Quest                           `bson:"quests"`
+	LastDailyQuest           time.Time                         `bson:"last_daily_quest"`
+	SkillPoints              int                               `bson:"skill_points"`
+	SelectedBranch           string                            `bson:"selected_branch"`
+	UnlockedSkills           []string                          `bson:"unlocked_skills"`
+	SkillRunes               map[string]string                 `bson:"skill_runes,omitempty"` // skill name -> rune ID
 	// Passive talents
 	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
 	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`
@@ -506,6 +510,8 @@ func (db *DB) DeleteAuction(auctionID string) error {
 	return err
 }
 
+// LoadAuctions returns a complete inspection snapshot. Runtime startup must
+// use LoadAuctionsPage instead of accumulating this unbounded diagnostic list.
 func (db *DB) LoadAuctions() ([]*Auction, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
