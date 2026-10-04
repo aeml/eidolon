@@ -1760,6 +1760,16 @@ wait and single in-flight worker prevent a hung mount from accumulating reads.
 Existing failure/cancellation precedence and incident debounce/recovery remain.
 The path/floors, production service and real mail are not enabled; this is neither
 remote-disk capacity nor collection/log/journal growth or inode acceptance.
+
+Prepared1.79 now includes a **four-player overworld party workload** with supplied
+Fighter/Cleric/Rogue/Wizard accounts, ordinary invitation consent, per-client full
+roster confirmation, gear preservation and unlocked Cleric healing selection.
+Own positive impact deliveries, accepted/denied casts, XP updates and observed
+deaths are reported separately; no per-kill receipt or shared-credit attribution
+is invented. A four-socket fixture uses real party consent rules but synthetic
+combat outcomes, not actual-server/Mongo, healer-role, dungeon/raid or capacity
+acceptance. The default mixed/nightly profile remains unchanged; ordered release
+gates and representative combined/event/save/instance workloads remain open.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
 ## References

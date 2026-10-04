@@ -32,9 +32,11 @@ var (
 	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
 	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, or casino-poker")
+	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, casino-poker, or party-combat")
 	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
 	casinoBet        = flag.Int("casino-bet", 20, "Gold casino stake; poker requires100–100000 in steps of100, other games20–100000 in steps of20; isolated funded accounts required")
+	partyCombatX     = flag.Float64("party-combat-x", math.NaN(), "required predeclared overworld combat anchor for party-combat")
+	partyCombatZ     = flag.Float64("party-combat-z", math.NaN(), "required predeclared overworld combat anchor for party-combat")
 )
 
 type loadMetrics struct {
@@ -56,18 +58,24 @@ type Message struct {
 }
 
 type Entity struct {
-	ID           string          `json:"id"`
-	Type         string          `json:"type"`
-	X            float64         `json:"x"`
-	Y            float64         `json:"y"`
-	Z            float64         `json:"z"`
-	Speed        float64         `json:"speed"`
-	MoveSequence uint64          `json:"moveSequence"`
-	InstanceID   string          `json:"instanceId"`
-	State        string          `json:"state"`
-	Health       int             `json:"health"`
-	Level        int             `json:"level"`
-	Equipment    map[string]Item `json:"equipment"`
+	ID             string          `json:"id"`
+	Name           string          `json:"name"`
+	SubType        string          `json:"subType"`
+	PartyID        string          `json:"partyId"`
+	Type           string          `json:"type"`
+	X              float64         `json:"x"`
+	Y              float64         `json:"y"`
+	Z              float64         `json:"z"`
+	Speed          float64         `json:"speed"`
+	MoveSequence   uint64          `json:"moveSequence"`
+	InstanceID     string          `json:"instanceId"`
+	State          string          `json:"state"`
+	Health         int             `json:"health"`
+	MaxHealth      int             `json:"maxHealth"`
+	Experience     int64           `json:"experience"`
+	UnlockedSkills []string        `json:"unlockedSkills"`
+	Level          int             `json:"level"`
+	Equipment      map[string]Item `json:"equipment"`
 }
 
 type Item struct {
@@ -134,8 +142,8 @@ func main() {
 	if *townMode {
 		selectedScenario = "town"
 	}
-	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" && selectedScenario != "casino-poker" {
-		log.Fatal("-scenario must be combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, or casino-poker")
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" && selectedScenario != "casino-poker" && selectedScenario != "party-combat" {
+		log.Fatal("-scenario must be combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, casino-poker, or party-combat")
 	}
 	if selectedScenario == "casino-slots" && (*count > 32 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
 		log.Fatal("casino-slots requires1–32 public machines and a Gold bet20–100000 in steps of20")
@@ -148,6 +156,9 @@ func main() {
 	}
 	if selectedScenario == "casino-poker" && (!validPokerClientCount(*count) || !game.ValidPokerBuyIn(*casinoBet)) {
 		log.Fatal("casino-poker requires2–24 public seats (no lone final table) and Gold buy-in100–100000 in steps of100")
+	}
+	if selectedScenario == "party-combat" && (*count%4 != 0 || *count > 100 || math.IsNaN(*partyCombatX) || math.IsNaN(*partyCombatZ) || math.IsInf(*partyCombatX, 0) || math.IsInf(*partyCombatZ, 0) || math.Abs(*partyCombatX) > math.MaxFloat32 || math.Abs(*partyCombatZ) > math.MaxFloat32) {
+		log.Fatal("party-combat requires 4–100 clients in groups of four and finite predeclared combat coordinates")
 	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
@@ -164,6 +175,22 @@ func main() {
 	}
 	if (selectedScenario == "casino-slots" || selectedScenario == "casino-blackjack" || selectedScenario == "casino-house" || selectedScenario == "casino-poker") && len(creds) < *count {
 		log.Fatal("casino workloads require supplied credentials for every approved, funded test account")
+	}
+	var parties []*partyLoad
+	if selectedScenario == "party-combat" {
+		if len(creds) < *count {
+			log.Fatal("party-combat requires supplied prepared test accounts for every client")
+		}
+		seen := map[string]bool{}
+		for _, credential := range creds[:*count] {
+			if credential.Username == "" || seen[credential.Username] {
+				log.Fatal("party-combat requires distinct prepared test accounts")
+			}
+			seen[credential.Username] = true
+		}
+		for i := 0; i < *count; i += 4 {
+			parties = append(parties, newPartyLoad(creds[i:i+4], *partyCombatX, *partyCombatZ))
+		}
 	}
 	if len(creds) < *count {
 		log.Printf("Generating %d disposable in-memory bot accounts...", *count-len(creds))
@@ -188,7 +215,11 @@ func main() {
 			if botScenario == "mixed" {
 				botScenario = []string{"combat", "town", "social"}[idx%3]
 			}
-			runBot(idx, u.String(), creds[idx], botScenario, stop, &observations[idx])
+			var party *partyLoad
+			if botScenario == "party-combat" {
+				party = parties[idx/4]
+			}
+			runBot(idx, u.String(), creds[idx], botScenario, stop, &observations[idx], party)
 		}(i)
 		// Stagger connections slightly to avoid hammering the server all at once
 		time.Sleep(100 * time.Millisecond)
@@ -265,6 +296,30 @@ func main() {
 		log.Printf("%s coverage: clients=%d accepted_wagers=%d completed_rounds=%d min_completed_rounds=%d %s=%d failed=%d", label, *count, wagers, rounds, minimum, actionLabel, actions, failures)
 		casinoFailed = failures != 0 || minimum == 0
 	}
+	if selectedScenario == "party-combat" {
+		var formed, members, damage, heals, casts, denials, xp, deaths, minimum, failures uint64
+		for index, party := range parties {
+			counts := party.counts()
+			if counts.formed {
+				formed++
+			}
+			if counts.failed {
+				failures++
+			}
+			members += counts.members
+			damage += counts.damage
+			heals += counts.heals
+			casts += counts.casts
+			denials += counts.denials
+			xp += counts.xpUpdates
+			deaths += counts.deaths
+			if index == 0 || counts.minImpacts < minimum {
+				minimum = counts.minImpacts
+			}
+		}
+		log.Printf("Party coverage: groups=%d formed=%d members=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d denied_casts=%d xp_progress_updates=%d observed_deaths=%d failed=%d", len(parties), formed, members, minimum, damage, heals, casts, denials, xp, deaths, failures)
+		casinoFailed = failures != 0 || formed != uint64(len(parties)) || members != uint64(*count) || minimum == 0
+	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
 		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) || coverage.ownClients != uint64(*count) ||
 		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 || casinoFailed {
@@ -282,7 +337,7 @@ func observeOwnAdmission(state map[string]Entity, playerID string, joined *bool)
 	return true
 }
 
-func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}, observation *loadObservation) {
+func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}, observation *loadObservation, cohorts ...*partyLoad) {
 	select {
 	case <-stop:
 		return
@@ -313,6 +368,15 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	var inventory []Item
 	isSelling := false
 	myID := "player-" + cred.Username
+	var party *partyLoad
+	if len(cohorts) > 0 {
+		party = cohorts[0]
+	}
+	if botScenario == "party-combat" && party == nil {
+		metrics.admissionErrors.Add(1)
+		return
+	}
+	memberIndex := id % 4
 	movement := &botMovement{}
 	var casino *casinoLoad
 	if botScenario == "casino-slots" {
@@ -388,6 +452,9 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				applyStateUpdate(worldState, update)
 				movement.observeSequence(worldState[myID].MoveSequence)
 				observation.state(worldState, myID, time.Now(), update.entities[myID].Type == "Player")
+				if party != nil && update.entities[myID].Type == "Player" {
+					party.state(memberIndex, worldState[myID], time.Now())
+				}
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
 					admitted <- time.Now()
@@ -419,6 +486,16 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				casino.reject()
 				continue
 			}
+			if party != nil && joined && msg.Type == "error" {
+				party.reject()
+				continue
+			}
+			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal") {
+				if !party.receive(memberIndex, msg, time.Now()) {
+					metrics.decodeErrors.Add(1)
+				}
+				continue
+			}
 			if !joined {
 				if reply, recognized := decodeAdmissionReply(msg); recognized {
 					if reply.kind == "invalid_admission_response" {
@@ -440,6 +517,9 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					worldState = entities
 					movement.observeSequence(worldState[myID].MoveSequence)
 					observation.state(worldState, myID, time.Now(), entities[myID].Type == "Player")
+					if party != nil && entities[myID].Type == "Player" {
+						party.state(memberIndex, worldState[myID], time.Now())
+					}
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
 						admitted <- time.Now()
@@ -455,6 +535,10 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				if err := json.Unmarshal(msg.Payload, &inv); err == nil {
 					stateMu.Lock()
 					inventory = inv
+					if casino != nil || party != nil {
+						stateMu.Unlock()
+						continue // Prepared class gear must not be swapped/sold by another workload.
+					}
 
 					// Check for upgrades immediately
 					me, ok := worldState[myID]
@@ -560,6 +644,11 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	if authentication.characterType != "" {
 		randomArchetype = authentication.characterType // Match the existing character's kit; do not pretend it was reclassed.
 	}
+	if party != nil && authentication.characterType != partyLoadClasses[memberIndex] {
+		party.reject()
+		rejectAdmission(fmt.Errorf("party_requires_prepared_class"))
+		return
+	}
 
 	joinPayload := map[string]string{
 		"type": randomArchetype,
@@ -618,10 +707,16 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			if casino != nil {
 				casino.awaitSettled(done, *admissionTimeout)
 			}
+			if party != nil {
+				party.awaitCast(memberIndex, done, *admissionTimeout)
+			}
 			return
 		case <-done:
 			if casino != nil {
 				casino.reject()
+			}
+			if party != nil {
+				party.reject()
 			}
 			return
 		case <-ticker.C:
@@ -650,6 +745,12 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			if casino != nil {
 				casino.play(c, movement, me, time.Now(), *casinoBet, *admissionTimeout)
 				continue // No combat, sale, chat, equipment or other workloads while seated.
+			}
+			if party != nil {
+				party.step(memberIndex, me, currentState, time.Now(), *admissionTimeout,
+					func(kind string, payload interface{}) error { return send(c, kind, payload) },
+					func(x, z float64) { movement.move(c, me, x, z) })
+				continue // Preserve prepared gear: no sale, auto-equipment, pickup or unrelated actions.
 			}
 
 			// 1. Selling Logic

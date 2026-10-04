@@ -87,18 +87,24 @@ func entityFromProto(entity *statepb.Entity) Entity {
 		equipment[slot] = itemFromProto(item)
 	}
 	return Entity{
-		ID:           entity.Id,
-		Type:         entity.Type,
-		X:            float64(entity.X),
-		Y:            float64(entity.Y),
-		Z:            float64(entity.Z),
-		Speed:        float64(entity.Speed),
-		MoveSequence: entity.MoveSequence,
-		InstanceID:   entity.InstanceId,
-		State:        entity.State,
-		Health:       int(entity.Health),
-		Level:        int(entity.Level),
-		Equipment:    equipment,
+		ID:             entity.Id,
+		Name:           entity.Name,
+		SubType:        entity.SubType,
+		PartyID:        entity.PartyId,
+		Type:           entity.Type,
+		X:              float64(entity.X),
+		Y:              float64(entity.Y),
+		Z:              float64(entity.Z),
+		Speed:          float64(entity.Speed),
+		MoveSequence:   entity.MoveSequence,
+		InstanceID:     entity.InstanceId,
+		State:          entity.State,
+		Health:         int(entity.Health),
+		MaxHealth:      int(entity.MaxHealth),
+		Experience:     entity.Experience,
+		UnlockedSkills: append([]string(nil), entity.UnlockedSkills...),
+		Level:          int(entity.Level),
+		Equipment:      equipment,
 	}
 }
 

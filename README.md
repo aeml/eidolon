@@ -465,6 +465,10 @@ Notes:
   turns, with fresh paid-hand evidence and no stranded single-player table.
   Its two-controller actual-domain hand check is not actual-server/Mongo capacity
   acceptance; all casino profiles still need scoped representative integration.
+  A four-player overworld profile now preserves prepared class gear and uses
+  normal party consent, confirmed rosters and unlocked Cleric healing. Its
+  own-impact/XP/death counters do not invent shared-kill attribution; the local
+  combat stand-in is not real-server, healer, instance or capacity acceptance.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

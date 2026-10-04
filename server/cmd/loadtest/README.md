@@ -7,7 +7,7 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack`, `casino-house` and `casino-poker`. Mixed
+`casino-blackjack`, `casino-house`, `casino-poker` and `party-combat`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows; those remain
 separate required workloads before the1.79 milestone can be accepted. Registration,
@@ -196,6 +196,43 @@ through the actual poker rules with the ordinary shuffled deck and advertised
 revision-bound actions. This is domain/protocol evidence, not actual-server socket,
 wallet persistence, multiplayer capacity or restart acceptance. Representative
 combined and party/raid/event/save workloads still remain required.
+
+## Four-player overworld party workload
+
+`-scenario party-combat -n 4 -credentials-file /absolute/test-accounts.json
+-party-combat-x X -party-combat-z Z -duration 120s` uses prepared existing
+characters, ordered Fighter, Cleric, Rogue, Wizard in each group of four.
+Counts must be4–100 in multiples of four. Coordinates must explicitly identify
+an approved overworld combat site. Accounts must be distinct, outside instances
+and not already in a party. Do not use live player accounts without approval.
+This profile preserves equipped gear and inventory; it never creates/reclasses
+characters, auto-equips, sells, picks up items or grants stats/currency. Casino
+profiles now also bypass the legacy combat bot's inventory mutations.
+
+The Fighter invites the other three through normal nonce-bound consent; every
+client must receive its own full four-member roster. Followers stay near the
+Fighter, and the Cleric uses unlocked Healing Light on wounded nearby allies.
+Each member uses normal class attacks/abilities, one outstanding ability request
+at a time, with actual acceptance/denial and reported cooldowns. No forced hits,
+heals, kills, unlocks or bypassed cooldowns. Normal death/respawn behavior remains;
+this is not dungeon traversal, encounter AI or a complete recovery route.
+
+`Party coverage` separately reports confirmed groups/members, minimum own
+positive damage/heal deliveries per member, aggregate deliveries, accepted and
+denied casts, observed XP progression and observed target deaths. Success needs
+all four-member rosters and at least one own positive impact per client, alongside
+transport/admission/state coverage. Deliveries are not unique action receipts;
+the protocol exposes no per-kill party-credit receipt. XP changes and dead target
+observations are not attributed shared kills, rewards or save acceptance. A
+Cleric's damage alone can satisfy impact coverage, so success is not proof of
+healing-role viability. Shutdown bounds the final outstanding cast receipt and
+joins every reader.
+
+The local four-socket fixture uses real party creation/invitation/consent rules
+but synthetic ability results and impacts. It verifies distinct class inputs,
+healing selection, consent, inventory preservation and shutdown, not actual
+game-server combat, Mongo persistence, dungeon/raid clears or multiplayer capacity.
+Those representative workloads and a combined profile remain required.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible
