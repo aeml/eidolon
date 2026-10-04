@@ -23,6 +23,11 @@ export function validateSoakEvidence(log, samples, { durationSeconds = 0, minimu
         Number(coverage[2]) > Math.floor(Number(summary[3]) / 100) ||
         durationSeconds > 0 && (Number(coverage[2]) < Math.ceil(durationSeconds * minimumClientStateRate) ||
             Number(coverage[3]) < durationSeconds * 1000 * .9)) throw new Error('Per-client soak coverage failed');
+    const admissions = [...log.matchAll(/Admission coverage: authenticated=(\d+) failed=(\d+) max_registration_ms=(\d+) max_login_ms=(\d+) max_join_ms=(\d+)\r?$/gm)];
+    const admission = admissions[0];
+    if (admissions.length !== 1 || log.split('\n').filter(line => line.includes('Admission coverage:')).length !== 1 ||
+        !admission.slice(1).every(value => Number.isSafeInteger(Number(value))) ||
+        Number(admission[1]) !== 100 || Number(admission[2]) !== 0) throw new Error('Acknowledged soak admission failed');
     if (samples.length < 2) throw new Error('Insufficient runtime samples');
     if (samples.some(sample => sample?.status !== 'ok' || sample.database !== 'ready' ||
         typeof sample.commit !== 'string' || !sample.commit || sample.commit !== samples[0].commit ||
@@ -36,5 +41,6 @@ export function validateSoakEvidence(log, samples, { durationSeconds = 0, minimu
     if (growth > 536870912) throw new Error(`Heap growth exceeded: ${growth}`);
     return { samples: samples.length, maxGoroutines, maxHeap, growth, stateFrames: Number(summary[3]),
         minClientFrames: Number(coverage[2]), minClientActiveMS: Number(coverage[3]),
-        maxClientStateGapMS: Number(coverage[4]), receivedPayloadBytes: Number(coverage[5]) };
+        maxClientStateGapMS: Number(coverage[4]), receivedPayloadBytes: Number(coverage[5]),
+        maxRegistrationMS: Number(admission[3]), maxLoginMS: Number(admission[4]), maxJoinMS: Number(admission[5]) };
 }

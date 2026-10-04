@@ -24,23 +24,26 @@ import (
 )
 
 var (
-	addr            = flag.String("addr", "localhost:8080", "http service address")
-	scheme          = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
-	count           = flag.Int("n", 10, "number of bots")
-	townMode        = flag.Bool("town", false, "bots only roam in town")
-	insecure        = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
-	credentialsFile = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
-	duration        = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario        = flag.String("scenario", "combat", "scripted flow: combat, town, social, or mixed")
+	addr             = flag.String("addr", "localhost:8080", "http service address")
+	scheme           = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
+	count            = flag.Int("n", 10, "number of bots")
+	townMode         = flag.Bool("town", false, "bots only roam in town")
+	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
+	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
+	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
+	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, or mixed")
+	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
 )
 
 type loadMetrics struct {
-	connected    atomic.Int64
-	joined       atomic.Int64
-	stateFrames  atomic.Int64
-	readErrors   atomic.Int64
-	writeErrors  atomic.Int64
-	decodeErrors atomic.Int64
+	connected       atomic.Int64
+	joined          atomic.Int64
+	stateFrames     atomic.Int64
+	readErrors      atomic.Int64
+	writeErrors     atomic.Int64
+	decodeErrors    atomic.Int64
+	admissionErrors atomic.Int64
+	authenticated   atomic.Int64
 }
 
 var metrics loadMetrics
@@ -118,6 +121,9 @@ func main() {
 	if *count < 1 {
 		log.Fatal("-n must be at least 1")
 	}
+	if *admissionTimeout < 100*time.Millisecond || *admissionTimeout > time.Minute {
+		log.Fatal("-admission-timeout must be100ms to60s")
+	}
 	selectedScenario := *scenario
 	if *townMode {
 		selectedScenario = "town"
@@ -190,8 +196,11 @@ func main() {
 	)
 	log.Printf("State coverage: clients=%d min_frames=%d min_active_ms=%d max_gap_ms=%d wire_bytes=%d",
 		coverage.clients, coverage.minFrames, coverage.minActive.Milliseconds(), coverage.maxGap.Milliseconds(), coverage.wireBytes)
+	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
+		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
-		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) {
+		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) ||
+		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 {
 		os.Exit(1)
 	}
 }
@@ -207,6 +216,11 @@ func observeOwnAdmission(state map[string]Entity, playerID string, joined *bool)
 }
 
 func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}, observation *loadObservation) {
+	select {
+	case <-stop:
+		return
+	default:
+	}
 	dialer := *websocket.DefaultDialer
 	if *insecure {
 		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -226,28 +240,6 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	defer writeLocks.Delete(c)
 	metrics.connected.Add(1)
 
-	// 1. Register (Try to register, ignore if exists)
-	regPayload := map[string]string{
-		"username": cred.Username,
-		"email":    cred.Username + "@bot.com",
-		"password": cred.Password,
-	}
-	// We don't check error here strictly because they might already exist
-	send(c, "register", regPayload)
-
-	// Small delay to ensure registration processes
-	time.Sleep(200 * time.Millisecond)
-
-	// 2. Login
-	loginPayload := map[string]string{
-		"username": cred.Username,
-		"password": cred.Password,
-	}
-	if err := send(c, "login", loginPayload); err != nil {
-		log.Printf("Bot %d login error: %v", id, err)
-		return
-	}
-
 	// State tracking
 	var stateMu sync.RWMutex
 	worldState := make(map[string]Entity)
@@ -262,7 +254,11 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 
 	// Start reading messages to keep connection alive and handle server responses
 	done := make(chan struct{})
+	readerStopping := make(chan struct{})
+	replies := make(chan admissionReply, 1)
+	admitted := make(chan time.Time, 1)
 	defer func() {
+		close(readerStopping)
 		_ = c.Close()
 		<-done // Final coverage/errors are read only after the reader has stopped.
 	}()
@@ -274,6 +270,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			if err != nil {
 				select {
 				case <-stop:
+				case <-readerStopping:
 				default:
 					metrics.readErrors.Add(1)
 				}
@@ -308,6 +305,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				observation.state(worldState, myID, time.Now())
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
+					admitted <- time.Now()
 					log.Printf("Bot %d admitted by server.", id)
 				}
 				stateMu.Unlock()
@@ -320,6 +318,19 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				metrics.decodeErrors.Add(1)
 				continue
 			}
+			if !joined {
+				if reply, recognized := decodeAdmissionReply(msg); recognized {
+					if reply.kind == "invalid_admission_response" {
+						metrics.decodeErrors.Add(1)
+					}
+					select {
+					case replies <- reply:
+					default:
+						metrics.admissionErrors.Add(1) // Unrequested duplicate/out-of-order replies cannot silently pass.
+					}
+					continue
+				}
+			}
 
 			if msg.Type == "state" {
 				var entities map[string]Entity
@@ -329,6 +340,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					observation.state(worldState, myID, time.Now())
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
+						admitted <- time.Now()
 						log.Printf("Bot %d admitted by server.", id)
 					}
 					stateMu.Unlock()
@@ -399,22 +411,85 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				}
 			}
 		}
-	}() // Wait a bit for login to succeed
-	time.Sleep(500 * time.Millisecond)
+	}()
+
+	rejectAdmission := func(err error) {
+		if err != errLoadStopped {
+			metrics.admissionErrors.Add(1)
+			log.Printf("Bot %d startup admission failed (%s).", id, err.Error())
+		}
+	}
+	registrationStart := time.Now()
+	if send(c, "register", map[string]string{"username": cred.Username, "email": cred.Username + "@bot.com", "password": cred.Password}) != nil {
+		rejectAdmission(fmt.Errorf("admission_write_failed"))
+		return
+	}
+	if _, err := waitAdmissionReply("registered", replies, stop, done, *admissionTimeout); err != nil {
+		rejectAdmission(err)
+		return
+	}
+	observation.registrationTime = time.Since(registrationStart)
+	select {
+	case <-stop:
+		return
+	default:
+	}
+	loginStart := time.Now()
+	if send(c, "login", map[string]string{"username": cred.Username, "password": cred.Password}) != nil {
+		rejectAdmission(fmt.Errorf("admission_write_failed"))
+		return
+	}
+	authentication, err := waitAdmissionReply("authenticated", replies, stop, done, *admissionTimeout)
+	if err != nil {
+		rejectAdmission(err)
+		return
+	}
+	observation.loginTime = time.Since(loginStart)
+	metrics.authenticated.Add(1)
+	select {
+	case <-stop:
+		return
+	default:
+	}
 
 	// 3. Join Game
 	archetypes := []string{"Fighter", "Rogue", "Wizard", "Cleric"}
 	randomArchetype := archetypes[rand.Intn(len(archetypes))]
+	if authentication.characterType != "" {
+		randomArchetype = authentication.characterType // Match the existing character's kit; do not pretend it was reclassed.
+	}
 
 	joinPayload := map[string]string{
 		"type": randomArchetype,
 	}
-	if err := send(c, "join", joinPayload); err != nil {
-		log.Printf("Bot %d join error: %v", id, err)
+	joinStart := time.Now()
+	if send(c, "join", joinPayload) != nil {
+		rejectAdmission(fmt.Errorf("admission_write_failed"))
 		return
 	}
 
 	log.Printf("Bot %d requested %s admission.", id, randomArchetype)
+	joinTimer := time.NewTimer(*admissionTimeout)
+	defer joinTimer.Stop()
+	select {
+	case <-stop:
+		return
+	case <-done:
+		rejectAdmission(fmt.Errorf("admission_connection_closed"))
+		return
+	case <-joinTimer.C:
+		rejectAdmission(fmt.Errorf("admission_timeout"))
+		return
+	case <-replies:
+		rejectAdmission(fmt.Errorf("admission_rejected"))
+		return
+	case ownStateAt := <-admitted:
+		if ownStateAt.Before(joinStart) {
+			rejectAdmission(fmt.Errorf("unexpected_admission_response"))
+			return
+		}
+		observation.joinTime = ownStateAt.Sub(joinStart)
+	}
 
 	// Cooldowns
 	var abilityCooldown time.Duration
@@ -699,6 +774,10 @@ func send(c *websocket.Conn, msgType string, payload interface{}) error {
 	writeMu := lock.(*sync.Mutex)
 	writeMu.Lock()
 	defer writeMu.Unlock()
+	if err := c.SetWriteDeadline(time.Now().Add(5 * time.Second)); err != nil {
+		metrics.writeErrors.Add(1)
+		return err
+	}
 	if err := c.WriteJSON(msg); err != nil {
 		metrics.writeErrors.Add(1)
 		return err

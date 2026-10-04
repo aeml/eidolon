@@ -1694,8 +1694,11 @@ expansion is bounded and decoding failures can no longer pass the nightly
 validator. Focused race tests with seven actual loopback protocol scenarios and
 the four policy tests pass ([receipt](2026-10-04-release1-79-capacity-driver-checks.json)).
 This is not100-player admission/capacity proof: current mixed profiles omit casino,
-coordinated parties/raids and events, and fixed authentication staging must be
-replaced before a fresh-account workload is trusted. Required representative
+coordinated parties/raids and events. Follow-up replaces fixed authentication
+sleeps with measured, bounded registration/login/own-player acknowledgements and
+preserves the acknowledged existing class. Four actual loopback failure/shutdown
+fixtures and the strict admission-evidence validator pass; this is not actual-game
+database admission or burst/capacity proof. Required representative
 workload/headroom and ordered predecessor/version/deployment gates remain open.
 
 ## References

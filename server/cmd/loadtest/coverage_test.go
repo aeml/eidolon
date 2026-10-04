@@ -54,6 +54,8 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 				counter.readErrors.Store(0)
 				counter.writeErrors.Store(0)
 				counter.decodeErrors.Store(0)
+				counter.admissionErrors.Store(0)
+				counter.authenticated.Store(0)
 			}
 			upgrader := websocket.Upgrader{}
 			sent := make(chan struct{})
@@ -70,8 +72,20 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 					if connection.ReadJSON(&message) != nil {
 						return
 					}
+					if message.Type == "register" {
+						_ = connection.WriteJSON(Message{Type: "error", Payload: json.RawMessage(`"Registration successful! Please login."`)})
+						continue
+					}
+					if message.Type == "login" {
+						_ = connection.WriteJSON(Message{Type: "login_success", Payload: json.RawMessage(`{"hasCharacter":true,"characterType":"Wizard"}`)})
+						continue
+					}
 					if message.Type != "join" {
 						continue
+					}
+					var selection struct{ Type string }
+					if json.Unmarshal(message.Payload, &selection) != nil || selection.Type != "Wizard" {
+						t.Error("driver ignored the existing character class")
 					}
 					encode := func(entityID string) []byte {
 						payload, err := proto.Marshal(&statepb.StateEnvelope{Version: uint32(stateFrameVersion),
@@ -146,7 +160,8 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 			case <-time.After(time.Second):
 				t.Fatal("reader outlived stopped bot")
 			}
-			if observation.frames != 3 || observation.wireBytes == 0 || metrics.joined.Load() != 1 || metrics.readErrors.Load() != 0 || metrics.writeErrors.Load() != 0 {
+			if observation.frames != 3 || observation.wireBytes == 0 || metrics.joined.Load() != 1 || metrics.readErrors.Load() != 0 || metrics.writeErrors.Load() != 0 ||
+				metrics.authenticated.Load() != 1 || metrics.admissionErrors.Load() != 0 || observation.registrationTime <= 0 || observation.loginTime <= 0 || observation.joinTime < 0 {
 				t.Fatal("own coverage, compressed payload accounting or final shutdown metrics incorrect")
 			}
 		})

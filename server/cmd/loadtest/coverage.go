@@ -5,9 +5,10 @@ import "time"
 // Each observation is owned by one socket reader. Read it only after that
 // reader has terminated; no identities, credentials or actor data are retained.
 type loadObservation struct {
-	frames, wireBytes         uint64
-	firstStateAt, lastStateAt time.Time
-	maxGap                    time.Duration
+	frames, wireBytes                     uint64
+	firstStateAt, lastStateAt             time.Time
+	maxGap                                time.Duration
+	registrationTime, loginTime, joinTime time.Duration
 }
 
 func (observation *loadObservation) state(state map[string]Entity, playerID string, now time.Time) {
@@ -24,8 +25,9 @@ func (observation *loadObservation) state(state map[string]Entity, playerID stri
 }
 
 type stateCoverage struct {
-	clients, minFrames, wireBytes uint64
-	minActive, maxGap             time.Duration
+	clients, minFrames, wireBytes      uint64
+	minActive, maxGap                  time.Duration
+	maxRegistration, maxLogin, maxJoin time.Duration
 }
 
 func summarizeStateCoverage(observations []loadObservation) stateCoverage {
@@ -45,6 +47,15 @@ func summarizeStateCoverage(observations []loadObservation) stateCoverage {
 			result.maxGap = observation.maxGap
 		}
 		result.wireBytes += observation.wireBytes
+		if observation.registrationTime > result.maxRegistration {
+			result.maxRegistration = observation.registrationTime
+		}
+		if observation.loginTime > result.maxLogin {
+			result.maxLogin = observation.loginTime
+		}
+		if observation.joinTime > result.maxJoin {
+			result.maxJoin = observation.joinTime
+		}
 	}
 	return result
 }

@@ -441,7 +441,9 @@ Notes:
   ownership and operating budgets remain explicit gates.
   [Prepared capacity-driver checks](docs/plans/2026-10-04-release1-79-capacity-driver-checks.json)
   add per-client own-state coverage, payload/gap/window measurements and strict
-  decode/evidence validation. Socket-reader termination precedes final totals;
+  decode/evidence validation and response-driven registration/login/join admission.
+  Startup phase latencies are reported; rejected/missing acknowledgements fail
+  without limit bypass or retries. Socket-reader termination precedes final totals;
   targeted loopback fixtures are not a100-player capacity result. Actual mixed
   town/casino/party/raid/event/save workloads and headroom remain required.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)

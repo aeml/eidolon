@@ -9,13 +9,23 @@ characters through normal commands, so it is not a read-only production probe.
 `-scenario` currently supports `combat`, `town`, `social` and `mixed`. Mixed assigns
 those three profiles round-robin. It does **not** exercise seated casino wagering,
 coordinated dungeon/raid parties or all world-event flows; all of those remain
-separate required workloads before the1.79 milestone can be accepted. Registration
-and login still use fixed staging delays; this is not an admission-latency or
-credential-burst certification. Commands sent are not proof they were accepted.
+separate required workloads before the1.79 milestone can be accepted. Registration,
+login and join now wait for their actual acknowledgements, with a bounded
+`-admission-timeout` per phase (default15s, allowed100ms–60s). Existing-account
+registration refusal is followed by real login; the acknowledged existing class
+is preserved. Missing, rejected, busy, malformed and out-of-order replies fail
+rather than silently retrying or bypassing account limits. The100ms launch stagger
+still defines the launch profile; it is not a credential-burst certification.
+Commands sent are not proof they were accepted.
 
 The final `Load summary` includes connection/admission counts, aggregate decoded
 state frames, and read/write/**decode** errors. Admission requires a snapshot
 containing that client's own Player entity, not just a sent join or other actors.
+`Admission coverage` requires every configured client to authenticate without
+startup failures and reports maximum registration, login and join acknowledgement
+latencies. Operator cancellation is separate from admission failure; intentional
+local reader cleanup is not counted as a network read error. Actual unexpected
+remote closure remains a read failure. Writes have a five-second deadline.
 The additional `State coverage` line reports:
 
 - clients with at least one own-player state observation;
@@ -33,7 +43,8 @@ zero or insufficient coverage cannot be hidden by the others' aggregate traffic.
 still do not prove action acceptance, Internet latency, render FPS or gameplay.
 
 The existing isolated nightly runner now requires exactly one complete summary
-and coverage line, no read/write/decode failures, all100 clients covered, and
+and both coverage lines, no read/write/decode/admission failures, all100 clients
+authenticated and covered, and
 safe-integer, ready, same-run runtime samples. `SOAK_MIN_CLIENT_STATE_RATE`
 predeclares a positive per-client frame rate (at most60; default5 retains the
 previous accepted aggregate baseline as a stricter every-client test gate).

@@ -2,7 +2,8 @@ import { verifySoakHealth, validateSoakEvidence } from '../scripts/lib/soak-poli
 
 const health = { status: 'ok', database: 'ready', commit: 'owned-run', goroutines: 400, heapAllocBytes: 100_000_000 };
 const log = 'Load summary: connected=100 joined=100 state_frames=1000 read_errors=0 write_errors=0 decode_errors=0\n' +
-    'State coverage: clients=100 min_frames=10 min_active_ms=1000 max_gap_ms=150 wire_bytes=100000';
+    'State coverage: clients=100 min_frames=10 min_active_ms=1000 max_gap_ms=150 wire_bytes=100000\n' +
+    'Admission coverage: authenticated=100 failed=0 max_registration_ms=400 max_login_ms=300 max_join_ms=100';
 
 test('readiness requires the exact owned run and a ready database', () => {
     expect(verifySoakHealth(health, 'owned-run')).toBe(health);
@@ -34,7 +35,9 @@ test('decode failures, omitted fields and contradictory or duplicate evidence fa
         log.replace('min_frames=10', 'min_frames=1'), log.replace('min_frames=10', 'min_frames=11'),
         log.replace('min_active_ms=1000', 'min_active_ms=0'), log.replace('wire_bytes=100000', 'wire_bytes=0'),
         log.replace('state_frames=1000', 'state_frames=9007199254740992'),
-        log.replace('max_gap_ms=150', 'max_gap_ms=-1')]) {
+        log.replace('max_gap_ms=150', 'max_gap_ms=-1'), log.replace('authenticated=100', 'authenticated=99'),
+        log.replace('failed=0', 'failed=1'), log.replace('max_join_ms=100', 'max_join_ms=9007199254740992'),
+        `${log}\nAdmission coverage: incomplete`, log.split('\n').slice(0, 2).join('\n')]) {
         expect(() => validateSoakEvidence(bad, [health, health])).toThrow();
     }
 });

@@ -26,5 +26,19 @@
     "run-nightly-soak.mjs": "e7c90ecae048c62957483c7e3f7a044928f6f0edf6172b429cb9493fb824ee35",
     "SoakIsolation.test.js": "b1912cd5078ebef3d133364e5bcce16755ee9aee20bf72f3a91f6718ddb05d8b"
   },
-  "remaining": "Replace fixed authentication staging with measured response-driven admission before relying on fresh-account load behavior. Current mixed profile only distributes combat/town/social; implement the remaining dense casino, party/raid, event and save workloads and predeclare representative duration/headroom and tick/network/DB/client criteria. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.74–1.78 acceptance, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "admissionFollowUp": {
+    "changes": "Replace fixed registration/login sleeps with bounded actual acknowledgement waits. Require exact fixed registration response then login_success with explicit hasCharacter and known existing class, then own-player state after the join request. Respect existing class, reject busy/malformed/unexpected replies without limit bypass or automatic retries. Record phase maxima; final strict validator requires all100 authenticated with zero startup failures and one complete Admission coverage line. Bound writes to five seconds. Join readers before final evidence; distinguish deliberate local cleanup/operator cancellation from actual remote closure. Peer error text and resume tokens are neither retained nor echoed.",
+    "goResult": "Whole small load-driver race package passed1.961s. Pure fixed-response/privacy/order/timing tests and seven existing actual loopback state fixtures pass with acknowledged registration/login and existing Wizard class. Four additional actual WebSocket fixtures prove busy refusal, missing-ack timeout, operator cancellation and unexpected remote closure; no subsequent login/join on missing registration acknowledgement, no admitted character, and intentional-close vs real-read-error classification. Local stand-ins, not production game/database authentication or100-player proof.",
+    "clientResult": "Four SoakIsolation policy tests passed0.468s with missing/duplicate/failed/overflow admission evidence rejection; affected ESLint, gofmt and git diff --check passed.",
+    "sha256": {
+      "loadtest/main.go": "020a4d04d6414722ee0bccf4288c9365be2d9567c3c2bc6614abee6c146365ab",
+      "loadtest/admission.go": "993d3478c3a3fbda334bdd86cea7c3b4bd40d1b2f88607178e0ae32e639845ca",
+      "loadtest/admission_test.go": "91bd6f834ca638d4f076971e00c647d1a70a3d9fe9f00a0cdcb84a24218f3dca",
+      "loadtest/coverage.go": "c2ed9544fc0a8260fb2b85ef8590e280a0fd7563581f2252f548c3c0f9b13efb",
+      "loadtest/coverage_test.go": "10680731bb61048278bd4ed1777c6d6294085babbfcb427e2521b51001148bb0",
+      "soak-policy.mjs": "b5f968dc08a01d972862ae6a8a386f031b502d4a216f7269122467d3b555b937",
+      "SoakIsolation.test.js": "44a6291ca23f46a814d6667ee63796f7e146d4d1fd62edff24fce9cfcfefe2c6"
+    }
+  },
+  "remaining": "Current mixed profile only distributes combat/town/social; implement remaining dense casino, party/raid, event and save workloads and predeclare representative duration/headroom and tick/network/DB/client criteria, including launch profile rather than treating the current100ms stagger as burst proof. Perform only missing compatible disposable actual-game/database capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.74–1.78 acceptance, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }
