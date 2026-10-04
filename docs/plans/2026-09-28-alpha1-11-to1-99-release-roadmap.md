@@ -574,6 +574,20 @@ also pass. Failed test-fixture overlap and obsolete assertions are retained in
 the receipt rather than counted as acceptance. Other receipt domains, lifetime
 storage/rollback/capacity evidence, predecessor choices and ordered publication
 remain open. This is prepared1.76 work, not a release or full-goal completion.
+The [slot startup/cache follow-up](2026-10-04-release1-76-slot-startup-checks.json)
+replaces the all-record startup allocation with sorted25-record keyset pages,
+validating complete private intents and settling each discovered payout before
+advancing. Presentation now follows held seats, including normal disconnected
+resume windows; periodic pruning never removes pending recovery or saved
+entitlements. Driver-boundary and concurrent reseat/prune checks pass. Actual
+Mongo scans131 records in six capped pages and pays three outcomes beyond128
+historical records once, with startup pending/cache peaks1/0. Repeated scans
+preserve exact payouts and saved free spins. A9.47-second native bonus/free-spin
+check retains money, resume, leave and restart/reseat state; actual interruption,
+seat/revision and entitlement regressions also pass. The owned fixture and
+volumes were removed. This bounds loading/presentation growth, not total lifetime
+database storage, full-history startup work or arbitrary outage queue size. Other
+receipt families and release gates remain open; no1.76 deployment is claimed.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
