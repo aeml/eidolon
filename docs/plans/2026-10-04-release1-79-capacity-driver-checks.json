@@ -602,14 +602,39 @@
     "scope": "Corrected entry-budget/fixed diagnostic controller against same original game executable isolates the bot correction, not a claim that new admin-duration source ran in this executable. Required each-client ordered phases, real boss clear/Town exit and original durable reward/weekly/quest/character proofs remain unchanged."
   },
   "rateRejectionActionDiagnostic": {
-    "status": "PREPARED_UNIT_RACE_CHECKED_NOT_ACTUALLY_RUN_OR_PUBLISHED",
+    "status": "UNIT_AND_CLIENT_CHECKED_ACTUAL_DIAGNOSTIC_RUNNING_NOT_PUBLISHED",
     "change": "Server rate rejection retains existing JSON-string error shape but identifies the message type only after the static policy allowlist check. Never echo payload, actor/credentials or an unknown request type. No policy limit/burst/access/handler change. Driver retains closed failure enums for raid_enter/move/attack/ability/recall/respawn plus legacy generic rejection; arbitrary/private suffixed text remains generic server_rejection and is never stored or printed.",
-    "evidence": "Focused root Inbound rate/auth/access/known-type coverage passed race11.549s; driver server/failure/recovery cases passed race1.089s. Exact first-cause preservation and unknown/private suffix rejection included. No actual new-diagnostic game executable run yet; previous380.39s failure retains original generic diagnosis.",
+    "evidence": "Focused root Inbound rate/auth/access/known-type coverage passed race11.549s; driver server/failure/recovery cases passed race1.089s. Exact first-cause preservation and unknown/private suffix rejection included. Additional InGameActionErrors3 client checks passed1.352s and lint passed: both generic and action-specific string errors use existing game notification, retain quest callback/auto-spin stop and never native alert. Actual correctly labelled executable is running; previous380.39s failure retains original generic diagnosis.",
     "sha256": {
       "server/protocol_policy.go": "eacf7917f7d7333d12c56ccc9be2d6e25b8765432a0dcfc8766ae395999d4053",
       "server/cmd/loadtest/failure.go": "48a5b8ff9ae5e6225649024243d0c91c58746607ce125b35fd5ee2d783aec4d0"
     },
     "next": "Build exact prepared normal server and driver; preserve prior failed artifacts. Only a missing compatible isolated finale/action-diagnostic run is needed, not replayed dungeon/elemental raid/casino/event/full campaign or relaxed success gates."
+  },
+  "weeklyDiagnosticActualRun": {
+    "statusAtObservation": "RUNNING_NO_TERMINAL_OR_COMPLETION_CLAIM",
+    "sourceCommit": "b206083b",
+    "observedAtUTC": "2026-10-04T21:38:50Z",
+    "ownedContainer": "edffdc9264eec04db338fc172aaf91b70611c9b0e86d9c6e5ba227461b83f814",
+    "taskLabel": "weekly-179-labeled-20261004",
+    "parentSession": 11386,
+    "namespaceProcesses": {"rootPID": 79, "serverPID": 100, "driverPID": 111},
+    "isolation": "Owned Mongo7.0.14/networknone/no public ports,2CPU/2GiB/.25GiB cache,512MiB database/16MiB config tmpfs. Readonly artifacts; explicit disposable loopback fixture. Normal five-role level100/uncommon-rare initial preparation, no in-run grants/clock acceleration. Driver20m/root22m maxima, early terminal completion/failure. Luna watches PID/comm and resource counters; parent retrieves definitive result and removes exact fixture after terminal proof.",
+    "startEvidence": "Mongo ping, test header and normal compat owned-server marker printed by original parent session11386. Exact root/server/driver PID/comm verified live. The harness required healthy database and expected server identity before starting the actual driver. Mandatory each-client ordered phases, real boss clear/Town exits and independent original weekly/reward/quest/character receipts retained.",
+    "artifacts": {
+      "server": {"path": "/tmp/eidolon-179-weekly-labeled-1DgZal/server", "sha256": "c1612a2e99d25859427eb102752fddbb829637eb6b57a6475b4ed9cab616b8bd", "build": "Go1.27.1 normal build with -ldflags=-X main.buildCommit=server, matching the existing harness basename identity rule."},
+      "driver": {"path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/loadtest", "sha256": "deab26098a18adfa5af0ac2370d51a5a6c9a25adf9d3dc4f748c665d0b5a8dbf"},
+      "raceRoot": {"path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/root.test", "sha256": "b95d6007943020e631097089f7e8a233664033d0081fe6b55ef1fe67cf4badf9"}
+    },
+    "preAdmissionBuildAttempt": {
+      "status": "TERMINAL_FAIL10.93_SECONDS_FIXTURE_REMOVED",
+      "container": "691cc2f8b68ffe24be8143e5a3e3adfc2ea658083426031081cb3e73f3d26c97",
+      "taskLabel": "weekly-179-diagnostic-20261004",
+      "parentSession": 52852,
+      "finding": "Initial normal build omitted -X main.buildCommit=server while the harness requires basename server; source defaults buildCommit to development. Root reported owned build never became ready before admission/driver, not an encounter outcome. Rebuilt only normal server with required identity label; original failed binary retained, root/driver unchanged. No readiness-gate relaxation or observation-timeout restart.",
+      "artifact": {"path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/server", "sha256": "cd13866049dd6c114756fb8077f64824d4b25d7edf6bea1cffb668760f67ee5a"},
+      "cleanup": "Terminal parent failure and absent root/server/driver verified; exact owner label/network/OOMfalse/peak579903488B/all OOM events0 checked before removing owned fixture/synthetic database. No production data affected."
+    }
   },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",

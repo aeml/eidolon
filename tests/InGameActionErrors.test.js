@@ -12,17 +12,17 @@ describe('in-game server errors', () => {
     });
     afterEach(() => { nativeAlert.mockRestore(); consoleError.mockRestore(); });
 
-    test('selling rejection uses game notification, stops queued slots and still informs quest UI', () => {
+    test.each(['message rate limit exceeded', 'message rate limit exceeded: raid_enter'])('rate rejection %s uses game notification, stops queued slots and still informs quest UI', message => {
         const engine = new NetworkFixture();
         engine.uiManager = {
             showActionError: jest.fn(),
             quest: { handleQuestActionError: jest.fn() },
             casino: { slots: { autoRemaining: 50, stopAuto: jest.fn() } }
         };
-        engine.handleServerMessage({ type: 'error', payload: 'message rate limit exceeded' });
+        engine.handleServerMessage({ type: 'error', payload: message });
         expect(nativeAlert).not.toHaveBeenCalled();
-        expect(engine.uiManager.showActionError).toHaveBeenCalledWith('message rate limit exceeded');
-        expect(engine.uiManager.quest.handleQuestActionError).toHaveBeenCalledWith('message rate limit exceeded');
+        expect(engine.uiManager.showActionError).toHaveBeenCalledWith(message);
+        expect(engine.uiManager.quest.handleQuestActionError).toHaveBeenCalledWith(message);
         expect(engine.uiManager.casino.slots.stopAuto).toHaveBeenCalledTimes(1);
     });
 
