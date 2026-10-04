@@ -422,8 +422,9 @@ Notes:
 
 - Current inherited source version: `Alpha 1.71.0`. This isolated, unpublished
   1.73 candidate integrates prepared 1.72 security and 1.73 valuable-operation
-  writers through schema22, excluding later schema23–24 checkpoints, admin/privacy
-  follow-ups and operations-monitor work. Do not deploy it as 1.71 or before
+  writers through schema22, including the narrow administrator authority fixes
+  brought forward into1.72. Later schema23–24 checkpoints, broader privacy/admin
+  review and operations-monitor work remain excluded. Do not deploy it as1.71 or before
   1.71/1.72 acceptance. Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader

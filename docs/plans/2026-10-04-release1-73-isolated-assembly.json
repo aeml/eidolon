@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 valuable-operation invariants",
+  "status": "isolated successor preparation; not versioned, pushed or accepted",
+  "sourceCommit": "00caa61b6f8cc63db72948e6739a09d4f33eb690",
+  "featureBoundary": "0d3367e9408c0a2959b7b2d7150dc193abc4ca91 contains the prepared valuable-operation work through schema22 before the later privacy/projection and schema23–24 checkpoint changes. Verified7a495387 is its merge base with the prepared protocol branch. Created dedicated work/alpha-1-73-release-20261004 in/tmp/eidolon-1-73-release-JVY1Ls; original dirty workspace and full future tree preserved.",
+  "integration": "Merged current isolated1.72 preparation with1.71 recovery and both login-test corrections. Resolved only workflow and README conflicts: retained all valuable-operation socket fixtures plus the new recovery fixture, preserved latest verified1.70.2 public identity and clearly labelled inherited1.71 defaults/schema22 as unpublished1.73 preparation. Then merged the narrow known administrator authority fixes brought forward into1.72, without conflicts; later privacy, monitor and schema23–24 writers remain excluded.",
+  "checks": {
+    "recoveryProtocol": "Merged95c5d214: Go1.27.1 focused EmailRecovery Request/Setup/Reset/Protocol/Workers/Inbound, RecoveryMail and InboundMessage race regressions passed root11.751s. Recompilation includes valuable-operation hooks; environment-gated actual connected Mongo/provider fixtures not rerun.",
+    "newAuthority": "Merged00caa61b: focused new mutation/report/moderation late-authority race checks passed root3.711s. Initial regex named AdminReadRechecks rather than the actual AdminReadCompletion prefix, so the separately corrected '^TestAdminReadCompletion' run passed root3.869s. Do not attribute read coverage to the first invocation.",
+    "hygiene": "Workflow parses with existing js-yaml; git diff --check passes. Reviewed the remaining admin-file differences against1.72: discovered trade-work closure and pending direct-trade reconciliation, not an accidental later permission-policy import.",
+    "scope": "Synthetic/local component integration proof and existing exact historical domain receipts only. No new full campaign, raid, capacity, production role/value mutation, service installation or provider mail. No public1.73 acceptance inferred."
+  },
+  "domainEvidence": "2026-10-03-release1-73-operation-ledger.json retains ten domains, immutable custody/cohort/post-image invariants and exact prior failure/concurrency/replay scopes. The new integration checks do not relabel that historical evidence as a new connected binary.",
+  "remaining": [
+    "Accept1.71 exact-source CI/public release, resolve1.72 jump policy and accept its own ordered release, then merge their final code/metadata into this candidate. InheritedAlpha1.71.0 defaults are intentional until1.73 assembly.",
+    "Final schema17-to22 packaging/backup/writer compatibility review; schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
+    "Complete directly required current-source valuable-operation checks, cumulative1.73 notes/version, normal fetch/pull/push preserving concurrent remote edits, exact-source CI and independent frontend/backend/runtime public acceptance.",
+    "Broader1.74 administration review,1.75 owner privacy decisions,1.76 bounded checkpoints and later operations/launch/human gates remain required. Full1.11–1.99 goal remains active."
+  ]
+}
