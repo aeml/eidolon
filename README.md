@@ -420,13 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current inherited source version: `Alpha 1.72.0`. This isolated, unpublished
+- Current source version: `Alpha 1.73.0`. This isolated, unpublished
   1.73 candidate integrates prepared 1.72 security and 1.73 valuable-operation
   writers through schema22, including the narrow administrator authority fixes
   brought forward into1.72. Later schema23–24 checkpoints, broader privacy/admin
   review and operations-monitor work remain excluded. Do not deploy it as1.71 or before
   1.72 acceptance. Distance-scaled jump airtime now follows the predecessor's
-  declared reach-preserving default. Version/notes assembly and exact-source CI/public proof
+  declared reach-preserving default. Login version and cumulative notes are assembled;
+  exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or

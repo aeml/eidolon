@@ -17,8 +17,9 @@ roles, value and indexes exactly; created only empty indexed operation collectio
 and remained unchanged on repeated startup. The exact live schema17 executable
 refused preflight and normal startup afterward without mutation. The focused
 race-instrumented check took0.54s. Its disposable container was removed; no
-production migration, backup or release was performed. Ordered1.72 acceptance,
-its open jump policy and final1.73 domain/release gates remain required.
+production migration, backup or release was performed. Ordered1.72 acceptance
+and final1.73 domain/release gates remain required; jump airtime uses the
+predecessor's subsequently declared reach-preserving default.
 Prepared1.72 [social-worker bounds](2026-10-04-release1-72-social-work-checks.json)
 replace detached social-list and join-presence launches with tracked coalesced
 refreshes: one global list worker and one connection-owned friend worker, each
@@ -45,8 +46,8 @@ Prepared1.73 [mystery-purchase safety](2026-10-04-release1-73-mystery-purchase-c
 now saves original random gear and Gold together before inventory publication;
 recovery cannot also buy another box. The review found a forged-slot route to
 purchase Forge materials/relics, now fenced to equipment only with valid prices.
-Focused storage/journal and slot checks passed. The pool guard will be isolated
-for an urgent1.71 maintenance fix; broader schema22 work remains ordered and
+Focused storage/journal and slot checks passed. The pool guard shipped as the
+accepted1.71.1 maintenance fix; broader schema22 work remains ordered and
 unpublished, with no retrospective item/balance cleanup.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
@@ -1335,6 +1336,15 @@ release-ready. Ship corrective 1.99.x patches or explicitly revise the plan;
 never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
+
+October4: **Alpha1.73.0 assembly** merges the declared1.72 movement default and
+corrective CI assertions, with own login version and cumulative notes. Current
+valuable-operation race checks pass across root/game/database;433client checks
+pass. Existing first-boss four-class crash/recovery runs are now explicitly
+required once in the shared CI socket build. [Assembly checks](2026-10-04-release1-73-release-checks.json)
+retain earlier actual evidence and current component scopes without claiming
+production migration, live acceptance or all-history value remediation. Ordered
+1.72 CI/public acceptance is still required before publication.
 
 October4: **Alpha1.72.0 release assembly** now has its own login version and
 cumulative patch notes covering authoritative movement/combat, bounded network

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73.0 release assembly",
+  "status": "assembled unpublished successor; predecessor1.72 acceptance and exact-source CI/public checks required",
+  "integrationSource": "dba5f874b13280af47ffd3c134f4aab9f01f57a5",
+  "predecessorCandidate": "1cf51d22ee16daa62406aeb9c1ecba92b66895e0",
+  "predecessorRun": 37196079883,
+  "lastAccepted": "Alpha1.71.1/1b6f44d286b7689bd646999e1fa9c8e1859d9087/schema17",
+  "changes": [
+    "Merged85a25073 then1cf51d22 from the ordered1.72 branch. Retained valuable-operation hooks, schema22, the reach-preserving13.5units/second/.46second-minimum jump, living actor guards and predecessor CI corrections. Resolved only documentation and an overlapping TCP-reset test comment; retained successor fixture cleanup. No later schema23/24, privacy policy or operations monitor imported.",
+    "Alpha1.73.0 now matches package/lock, release metadata, login label, backend/Docker/Compose/deployment/isolatedQA defaults and CI build version. Added cumulative explicit patch notes covering all ten financial/reward domains, manual turn-in, original full-bag claims, currency separation and incompatible old-writer refusal.",
+    "Added existing real geared four-class BossVictoryActualPartyKillCrashAndRecovery to the same disposable normal-server CI build already used for trade, drop, quest, room and retained-loot socket checks. It earns the first boss without acceleration/stat scaling, rejects a saved recipient and verifies journal/SIGKILL/restart recovery. Its earlier actual proofs retain their earlier source scope; current CI must run before deployment.",
+    "The1.73 socket-step label had changed to include item checks, leaving the inherited version regression stale. Updated the exact label and asserted each required socket command appears once, retaining the single shared build and disposable environment checks."
+  ],
+  "checks": {
+    "valuableOperations": {
+      "command": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race . ./internal/game ./internal/database -run '^Test(Auction|GuildBank|CasinoGold|CasinoEP|Vendor|MysteryPurchase|Forge|QuestConversation|QuestProgress|GroundItem|DirectTrade|DungeonRoomReward|BossLoot|BossVictory|WeeklyRaid|CharacterPersistence|SchemaMigrationCatalog|Schema17|DeploySchemaPreflight|RestoreArchive|NetworkMovement|MovementDispatch|MoveDispatch|StartPlayerJump|WorldUpdate.*Jump|NetworkWalking|Living|InboundMessage|ReportAppealAdmission)' -count=1 -timeout=90s",
+      "result": "Root76.844s/game49.700s/database1.418s passed. Includes filesystem-journal reopening, modeled acknowledgement failures, concurrency/replay, all living and jump regressions and actual native TCP assembly probes. Opt-in actual Mongo/connected fixtures were not configured in this local invocation; existing domain receipts and pending exact-source CI remain separately scoped."
+    },
+    "crystalAndEventOrdering": "Focused CrystalVigil, CrystalRepairResume, RestoredRaidPreserves, PublicEvent/GuildClearReplay selector passed game4.265s. Corrected separately to exact actual DungeonRoomCheckpointWaitsForEveryConcurrentKillEffect and DungeonRoomPendingKillDoesNotBlockAnotherRoomOrInstance names: both passed game1.863s. Do not infer their coverage from the first selector's unmatched DungeonCombat prefix.",
+    "client": "Node24.18.0 Jest nine suites/433checks passed6.976s: VersionPresentation, DirectTradeUI, DungeonRewardFeedback, QuestConversation, ForgeUI, ForgeStatOrder, ForgeLiveRefresh, ToolingBaseline and CombatFeedbackProtocolCoverage. Compatible1.71 node_modules reused; not a fresh install/full client claim. First inherited step-label assertion failed; next overly broad uniqueness check also failed because environment/URI fragments legitimately repeat. Final test requires command uniqueness only, without dropping required presence assertions.",
+    "hygiene": "Affected JavaScript ESLint, deployment/isolatedQA bash-n, YAML parsing and git diff --check passed.",
+    "migrationProvenance": "CurrentSchemaVersion22; migrations.go SHA25681f20620ee46343a97f79c457136e92f63a591b0a4231d6547dd15c27c6be828. Schema17 upgrade test SHA2561df05294cfd4172e88f70b37cd2c00ee0f2bcfe6fa15af7e6e7ce350bde0ee2d matches the retained actual0.54second disposable proof. Earlier exact public schema17 executable refusal and byte-identical synthetic BSON/index preservation remain historical evidence, not a new migration or production restore."
+  },
+  "remaining": [
+    "Accept exact1.72 corrective CI and independently verify it live before publishing1.73.",
+    "Fetch/merge current master preserving other agent edits, then normal push with exact-source CI and independent post-terminal public version/commit/database/notes/runtime checks.",
+    "Real schema17-to22 deployment must retain the existing compatible backup/preflight boundary. Never treat an old image alone as rollback or delete historical values to make checks pass.",
+    "Actual inbox, phone party/dungeon, long campaign pacing, capacity, privacy policy and later roadmap owner/human gates remain separate; no whole1.11-to1.99 completion."
+  ]
+}
