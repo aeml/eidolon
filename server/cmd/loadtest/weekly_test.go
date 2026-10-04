@@ -165,6 +165,15 @@ func TestWeeklyLoadRefusesForeignMissingOrHistoricalPhases(t *testing.T) {
 			if !p.failed || p.weeklyCounts().members != 0 || p.dungeonCounts().cleared != 0 {
 				t.Fatal("unproven/contradictory phase evidence passed")
 			}
+			want := map[string]string{
+				"nil": "weekly_phase_envelope", "zero": "weekly_phase_envelope", "too-high": "weekly_phase_envelope",
+				"wrong-instance": "weekly_phase_scene", "town": "weekly_phase_scene", "unprepared": "weekly_phase_scene",
+				"wrong-eidolon": "weekly_phase_identity", "wrong-element": "weekly_phase_identity",
+				"skipped": "weekly_phase_order", "regressed": "weekly_phase_order", "dead": "weekly_phase_inactive",
+			}[scenario]
+			if want != "" && p.failureCode() != want {
+				t.Fatal("phase rejection lost its fixed safe cause", p.failureCode())
+			}
 		})
 	}
 }

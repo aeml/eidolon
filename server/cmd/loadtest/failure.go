@@ -23,6 +23,11 @@ const (
 	failureServerAbilityRateLimit
 	failureServerRecallRateLimit
 	failureServerRespawnRateLimit
+	failureWeeklyPhaseEnvelope
+	failureWeeklyPhaseScene
+	failureWeeklyPhaseInactive
+	failureWeeklyPhaseIdentity
+	failureWeeklyPhaseOrder
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -69,6 +74,16 @@ func (p *partyLoad) failureCode() string {
 		return "server_rate_limit_recall"
 	case failureServerRespawnRateLimit:
 		return "server_rate_limit_respawn"
+	case failureWeeklyPhaseEnvelope:
+		return "weekly_phase_envelope"
+	case failureWeeklyPhaseScene:
+		return "weekly_phase_scene"
+	case failureWeeklyPhaseInactive:
+		return "weekly_phase_inactive"
+	case failureWeeklyPhaseIdentity:
+		return "weekly_phase_identity"
+	case failureWeeklyPhaseOrder:
+		return "weekly_phase_order"
 	default:
 		return "unclassified"
 	}

@@ -658,6 +658,33 @@
     },
     "remaining": "Run exact100-client fixture in a separate owned normal-server/Mongo environment after the current raid terminates; capture peak/OOM and scoped runtime observations, then independent saves. Server tick/network/database/client headroom, dense raid/event overlap, complete town/social outcomes and owner deployment/cohort budgets still need evidence; this preparation is not1.79 capacity acceptance."
   },
+  "weeklyReceiveDiagnostics": {
+    "change": "Driver-only fixed failure codes distinguish weekly phase envelope/schema, scene/preparation, inactive own state, Eidolon/element identity and phase ordering. Preserve first failure; never retain actor IDs, dialogue, payload or raw errors. Existing refusal criteria and mandatory all-client phases/boss/exit/save gates unchanged. This is better diagnosis, not a fix inferred from the unclassified actual run.",
+    "checks": "Focused weekly/failure/entry race passed1.170s. Existing valid ordered phases and boss-only/partial clear refusals preserved; negative phase fixtures now assert each exact safe failure code. No new actual raid retry started.",
+    "sha256": {
+      "server/cmd/loadtest/failure.go": "9bb5950a0d898668e0367c4f43a99dae16372ed6a1e4d804e94e02883a19608b",
+      "server/cmd/loadtest/weekly.go": "f2fd2093be5f5fc3e3e37d1178c4dc9a3556338b6f41f92673ded6ced97ff4d7",
+      "server/cmd/loadtest/weekly_test.go": "54fe10910e10ec8ef422f84544b7b457c859df1c59ecd844fa6ff77172ca46a0"
+    }
+  },
+  "combined100ActualRun": {
+    "statusAtObservation": "PREPARING_OWNED_FIXTURES_NOT_ACCEPTED",
+    "startedAtUTC": "2026-10-04T22:21:01Z",
+    "sourceBase": "73de1a1a cohort test; unchanged compatible normal server and prior driver reused",
+    "ownedContainer": "3af21461ee3a3a5a995d2d3efedf171d44c9db15004768db32fe9e546135c2fe",
+    "taskLabel": "combined100-179-20261004",
+    "parentSession": 29044,
+    "namespaceRootPID": 78,
+    "artifacts": {
+      "serverPath": "/tmp/eidolon-179-weekly-labeled-1DgZal/server",
+      "serverSHA256": "c1612a2e99d25859427eb102752fddbb829637eb6b57a6475b4ed9cab616b8bd",
+      "driverPath": "/tmp/eidolon-179-weekly-cushion-6lsOWt/loadtest",
+      "driverSHA256": "78d167c558eea1020c91f8035951e0a8ad47098e4d7b4acb2c1121a3c7e7421f",
+      "rootPath": "/tmp/eidolon-179-combined100-yybMM9/root-current.test",
+      "rootSHA256": "86d20c1e5acbdadcb1432147069167126656f0788aa184721e0e5f7e93fd9925"
+    },
+    "isolation": "Only after terminal weekly run and exact owned fixture cleanup. Mongo7.0.14, network none/no published ports,2CPU/2GiB,512MiB database and16MiB config tmpfs,0.25GiB cache, read-only artifact binds. Explicit100 clients,120s driver/five-second admission,6m root bound includes preparation. Ping/owner/network/root PID verified. No production data/accounts/services used. Aggregate output only; independent every-account save checks required before passing."
+  },
   "raidEntryDeliveryCushion": {
     "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
     "reproduction": "New TestRaidEntryBudgetLeavesDeliveryTimingCushion failed0.010s on the original client budget. Declared model mirrors normal two-token/one-per30s server refill, with first request500ms dispatch delay and later100ms delay, preserving socket order. Exact client boundary admits the third request before the model's server budget refills. Model is a reproduced defect, not measurement of the actual failed request's latency.",
