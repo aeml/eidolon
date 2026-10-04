@@ -1893,6 +1893,16 @@ was removed and the failed result retained. No further blind cohort retry is
 planned before action-stage diagnosis. These changes remain unpublished and do
 not complete the outstanding finale or ordered release gates.
 
+The next focused fix removes an independently reproduced cross-game view-lock
+dependency: responses now build only the seated game's state while keeping all
+shared seats/occupants visible. The actual60-client combined comparison passes
+every player's paid result, sustained delivery, party impact and independent
+preserved-gear saves, with no errors/timeouts. Its synthetic fixture was removed.
+A separate catalogue index keeps authored geometry detached and cuts repeated
+single-table allocations in measured microbenchmarks; this optimization is not
+part of the60-client binaries or proof of100-client headroom. The target cohort,
+finale, other representative workloads and ordered publication gates stay open.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

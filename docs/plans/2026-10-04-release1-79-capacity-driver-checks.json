@@ -803,7 +803,43 @@
       "normalDriverSHA256": "b87da6e9787c9d9c889b046e8c7311e83795193203872d5ebb5033588b7a2514"
     },
     "artifactScope": "Root built before the expanded cache-view unit assertions; actual combined test source and code are unchanged between build and final focused checks. New driver includes fixed action diagnostics and waiting-healer support (unused by overworld combined). Normal server includes only production notification/view changes relative to the prior comparison, with existing policies/schema.",
-    "next": "A single60-client diagnostic comparison is running in an owned network-none Mongo fixture, using the same2CPU/2GiB budget and120s/five-second admission, every-player fresh state/paid result/impact/save criteria. Sixty is the smallest new cohort above accepted forty; no inference from it to100 or production capacity."
+    "comparison": "The single60-client diagnostic comparison below passed with the same2CPU/2GiB budget and120s/five-second admission, every-player fresh state/paid result/impact/save criteria. Sixty was the smallest new cohort above accepted forty; no inference from it to100 or production capacity."
+  },
+  "combined60OwnGameViewActualRun": {
+    "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
+    "startedAtUTC": "2026-10-04T23:19:09Z",
+    "sourceCommit": "d1b2ea0f",
+    "ownedContainer": "a85a531d8017371987d027dc398d252eebe79e6abd14a58d4926e528228c4acd",
+    "taskLabel": "combined60-own-game-view-179-20261004",
+    "parentSession": 17645,
+    "artifacts": "Same normal server/race root/normal driver recorded in casinoSeatedGameViewIsolation. Later catalogue optimization was not in these binaries; do not attribute this outcome to it.",
+    "result": "Terminal PASS176.78s; driver/shutdown/independent save interval128.038s. All60 ordinary logins, complete sustained fresh-own delivery, every casino player's paid completed result, all three parties/all-member impact/aggregate real healing, and every-account fresh durable save passed. Exact class/gear/bag/43EP preserved, casino wallet checkpoints present, positive earned party progression, unchanged town/social Gold and nonnegative balances. No final-round settlement/restart, per-group healing/kill attribution, raid/event integration or100-player capacity proof.",
+    "metrics": {
+      "connected": 60, "joined": 60, "authenticated": 60, "admissionFailures": 0,
+      "stateFrames": 166095, "minFrames": 2702, "minFreshOwnUpdates": 2702,
+      "minActiveMilliseconds": 119892, "maxStateGapMilliseconds": 286, "receivedPayloadBytes": 978207041,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 262, "maxJoinMilliseconds": 160,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 6, "acceptedWagers": 169, "paidResults": 169, "minimumPaidResults": 23, "bonuses": 8, "failed": 0 },
+      "blackjack": { "clients": 12, "acceptedWagers": 36, "paidResults": 24, "minimumPaidResults": 2, "observedActions": 12, "failed": 0 },
+      "house": { "clients": 12, "acceptedWagers": 36, "paidResults": 24, "minimumPaidResults": 2, "failed": 0 },
+      "poker": { "clients": 6, "acceptedWagers": 12, "paidResults": 6, "minimumPaidResults": 1, "observedActions": 29, "failed": 0 },
+      "parties": { "groups": 3, "formed": 3, "members": 12, "minOwnImpacts": 5, "damageEvents": 341, "healEvents": 6, "acceptedCasts": 437, "deniedCasts": 15, "xpProgressUpdates": 264, "observedDeaths": 164, "failed": 0 },
+      "memoryPeakBytes": 623661056, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "diagnostics": "All fixed casino rejection/timeout-category counters0 across all four families. No private player/socket text retained.",
+    "cleanup": "Definitive parent PASS consumed; absence of owned root/server/driver, exact owner label/network/OOM/peak checked. Stopped and removed only this fixture/synthetic database; filtered listing empty. Binaries retained, production and owner worktree untouched."
+  },
+  "casinoImmutableCatalogLookup": {
+    "finding": "CasinoTableByID and game-kind checks rebuilt both floors, themed slot descriptors and every seat for a single existing ID. Normal-compiler200ms microbenchmark: one slot lookup96639ns/78395B/605 allocations; paired poker/blackjack kind lookup168314ns/156791B/1210 allocations. Host Ryzen5700G, GOMAXPROCS2; not measured share of actual cohort CPU.",
+    "change": "Build canonical catalogue once per binary, with a private ID index. Public full/individual/recovery lookups return detached seat slices; game-kind queries read immutable metadata without allocation. Preserve original authored order/IDs, furniture counts/positions/geometry, stake currency, retired funded-blackjack recovery record and unknown-ID refusal. No settlement/cache/recovery locks or economic policy changes.",
+    "checks": "Focused catalogue/seat/presence/ready/expansion/floor race suite passed1.143s. Factory equality, per-ID rule/geometry equality, full/individual/recovery mutation isolation, rejected unknown/retired active IDs and eight concurrent copy-mutating workers covered. Same200ms benchmark after: slot87.51ns/48B/1 allocation; paired kind43.55ns/0B/0 allocations. Benchmarks establish lookup-local allocation/time reduction, not100-client capacity or production tick/DB headroom.",
+    "sha256": {
+      "server/internal/game/casino_seats.go": "4a985532aa90ab742ae2f03f3bfdea29bcb6b82d923d8db33bff6782953691ec",
+      "server/internal/game/casino_catalog_test.go": "c3dd51cfd752d7080120c8cd24410adf71133a012b488bdf3be924951e03aeb7",
+      "server/internal/game/casino_catalog_benchmark_test.go": "b07825185ecbf1e0820e8767b946295b2475541b72b5ffe8daa7e9aa3aadf9dd"
+    },
+    "next": "Prepare normal server only, reuse compatible checked root/driver from the60-client run, then check one target100-client comparison with unchanged budgets/gates and retained action diagnostics. Do not repeat40/60 or an earned campaign."
   },
   "casinoTimeoutActionDiagnostic": {
     "reason": "The retained two corrected100-client outcomes classify timeout but do not identify the outstanding command. Without this distinction, physical-entry/seating delay and money-operation delay cannot be separated; do not attribute the observed failures to a guessed cause.",
