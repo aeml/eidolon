@@ -521,6 +521,18 @@ provider settings and consent are not claimed verified. Retention, bounded owner
 export, coordinated removal, backup resurrection handling and notices remain
 explicit approval/implementation gates. No collection policy, production data or
 access changed; this is preparation, not1.75 completion or publication.
+The [prepared1.76 storage check](2026-10-04-release1-76-persistence-scale-checks.json)
+adds a single explicitly disposable Mongo workload. Two real repository
+projection pages examine100/50 documents with10,000 expired and100 active ground
+records, rather than scanning retained history. One hundred sequential sparse
+character saves and exact0/1,000/10,000-receipt round-trips pass under the race
+detector in9.289 seconds; the10,000 map adds roughly1.46MB and a measured124ms
+round-trip on the constrained fixture. The strengthened empty-map assertion was
+corrected for BSON omission; no production query/save defect is invented.
+Current schema-catalog/recovery checks also pass. Embedded-account receipt growth
+still needs a replay-safe scalability solution; no arbitrary receipt pruning,
+new schema, capacity promise or1.76 release is claimed. The owned container and
+volumes were removed. Ordered predecessor decisions and the full goal remain open.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
