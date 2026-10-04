@@ -94,6 +94,12 @@ Use the confirmed report-review controls for resolution; see the
 **Service diagnostics** is an explicitly refreshed, read-only observation of
 the connected game process: release and sample time, readiness, goroutines/heap,
 broadcast queue/drop counts and aggregate character-save/Gold/EP call outcomes.
+Each of the six existing operation groups also shows completed-call mean,
+slowest elapsed time and timed sample count. Failed calls and retries are
+included. These are process-lifetime call measurements, not player latency,
+percentiles or timing of unfinished/stalled work. Journal, database commit,
+cleanup and complete recovery-pass boundaries are measured separately; wallet
+call time includes its nested save/recovery work and must not be added to it.
 It uses the authenticated socket rather than a browser cross-origin health fetch.
 Every request has the existing role/session, size/rate and audit gates, including
 the final role/connection recheck after query and audit IO. Lost access or a
@@ -103,7 +109,10 @@ Counters reset on process restart and include retries and rejected calls. They
 are not player balances, unique payouts, pending entitlements or a durability/
 capacity certificate. Cleanup errors remain distinct from confirmed database
 commits. Missing or unsafe-precision measurements display **Unavailable**, not
-zero. Unknown fields, mail recipients/tokens, raw logs and account data are not
+zero. An older server or zero timed samples means timing is **Unavailable**;
+positive samples with zero microseconds are actual sub-microsecond measurements.
+The cumulative microsecond sum saturates rather than wraps; unsafe-precision
+totals are not rendered as an exact derived mean. Unknown fields, mail recipients/tokens, raw logs and account data are not
 rendered. The independent monitor's delivery status is not known to this game
 process; the panel does not claim alerts are enabled or delivered. A role/audit
 storage outage may prevent viewing it, so independent monitoring is still needed.

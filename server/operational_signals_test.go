@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/operations"
@@ -36,18 +37,19 @@ func TestOperationalSignalsConcurrentSnapshotsAreCoherent(t *testing.T) {
 		go func() {
 			defer workers.Done()
 			for call := 0; call < 100; call++ {
-				recordOperationalResult(boundaryCasinoEP, errors.New("private-error-marker"))
+				recordOperationalResult(boundaryCasinoEP, errors.New("private-error-marker"), time.Microsecond)
 				snapshot := operationalMetricsSnapshot()
-				if snapshot.CasinoEP.Completed != snapshot.CasinoEP.Failed {
+				if snapshot.CasinoEP.Completed != snapshot.CasinoEP.Failed || snapshot.CasinoEP.TimedSamples != snapshot.CasinoEP.Completed || snapshot.CasinoEP.TotalMicros != snapshot.CasinoEP.Completed {
 					t.Error("torn aggregate snapshot")
 				}
 			}
 		}()
 	}
 	workers.Wait()
-	recordOperationalResult(operationalBoundary(255), errors.New("private-error-marker"))
+	recordOperationalResult(operationalBoundary(255), errors.New("private-error-marker"), time.Microsecond)
 	snapshot := operationalMetricsSnapshot()
-	if snapshot.CasinoEP.Completed != 800 || snapshot.CasinoEP.Failed != 800 || snapshot.CasinoGold.Completed != 0 {
+	if snapshot.CasinoEP.Completed != 800 || snapshot.CasinoEP.Failed != 800 || snapshot.CasinoGold.Completed != 0 ||
+		snapshot.CasinoEP.TimedSamples != 800 || snapshot.CasinoEP.TotalMicros != 800 || snapshot.CasinoEP.MaxMicros != 1 {
 		t.Fatalf("unknown label or race changed counters: %+v", snapshot)
 	}
 	encoded, _ := json.Marshal(snapshot)
@@ -88,10 +90,10 @@ func TestOperationalSignalsRealJournalAndRecoveryFailureBoundaries(t *testing.T)
 		t.Fatal("instrumentation altered recovered value")
 	}
 	snapshot := operationalMetricsSnapshot()
-	if snapshot.CharacterJournal != (operations.OutcomeCounts{Completed: 2, Failed: 1}) ||
-		snapshot.CharacterCommit != (operations.OutcomeCounts{Completed: 3, Failed: 2}) ||
-		snapshot.CharacterCleanup != (operations.OutcomeCounts{Completed: 1}) ||
-		snapshot.CharacterRecovery != (operations.OutcomeCounts{Completed: 2, Failed: 1}) {
+	if !operationalCountsMatch(snapshot.CharacterJournal, 2, 1) ||
+		!operationalCountsMatch(snapshot.CharacterCommit, 3, 2) ||
+		!operationalCountsMatch(snapshot.CharacterCleanup, 1, 0) ||
+		!operationalCountsMatch(snapshot.CharacterRecovery, 2, 1) {
 		t.Fatalf("wrong storage boundary counts: %+v", snapshot)
 	}
 	recorder := httptest.NewRecorder()
@@ -127,7 +129,7 @@ func TestOperationalSignalsCleanupFailureDoesNotUndoConfirmedCommit(t *testing.T
 		t.Fatal("instrumentation changed confirmed commit into a failed/refundable operation", err)
 	}
 	snapshot := operationalMetricsSnapshot()
-	if snapshot.CharacterCommit != (operations.OutcomeCounts{Completed: 1}) || snapshot.CharacterCleanup != (operations.OutcomeCounts{Completed: 1, Failed: 1}) {
+	if !operationalCountsMatch(snapshot.CharacterCommit, 1, 0) || !operationalCountsMatch(snapshot.CharacterCleanup, 1, 1) {
 		t.Fatalf("cleanup failure disappeared or became a database failure: %+v", snapshot)
 	}
 	if err := os.Remove(dir); err != nil {
@@ -153,7 +155,55 @@ func TestOperationalSignalsSeparateCurrencyAndRecordRejectedTransfers(t *testing
 		t.Fatal("invalid EP operation accepted")
 	}
 	snapshot := operationalMetricsSnapshot()
-	if snapshot.CasinoGold != (operations.OutcomeCounts{Completed: 1, Failed: 1}) || snapshot.CasinoEP != snapshot.CasinoGold || snapshot.CharacterCommit.Completed != 0 {
+	if !operationalCountsMatch(snapshot.CasinoGold, 1, 1) || !operationalCountsMatch(snapshot.CasinoEP, 1, 1) || snapshot.CharacterCommit.Completed != 0 {
 		t.Fatalf("wallet boundaries mixed or invented a commit: %+v", snapshot)
+	}
+}
+
+func operationalCountsMatch(counts operations.OutcomeCounts, completed, failed uint64) bool {
+	return counts.Completed == completed && counts.Failed == failed &&
+		counts.TimedSamples == completed && counts.MaxMicros <= counts.TotalMicros
+}
+
+func TestOperationalSignalsTimingIsBoundedAndDistinguishesUntimedCalls(t *testing.T) {
+	resetOperationalMetricsForTest(t)
+	recordOperationalResult(boundaryCharacterJournal, nil, 0)
+	recordOperationalResult(boundaryCharacterJournal, errors.New("private-duration-marker"), 2500*time.Microsecond)
+	recordOperationalResult(boundaryCharacterJournal, nil, -time.Microsecond)
+	counts := operationalMetricsSnapshot().CharacterJournal
+	if counts != (operations.OutcomeCounts{Completed: 3, Failed: 1, TimedSamples: 2, TotalMicros: 2500, MaxMicros: 2500}) {
+		t.Fatal("zero, failed or invalid duration recorded incorrectly", counts)
+	}
+	operationalResults.Lock()
+	operationalResults.metrics.CasinoGold = operations.OutcomeCounts{Completed: 1, TimedSamples: 1, TotalMicros: ^uint64(0) - 1, MaxMicros: 2}
+	operationalResults.Unlock()
+	recordOperationalResult(boundaryCasinoGold, nil, 2*time.Microsecond)
+	counts = operationalMetricsSnapshot().CasinoGold
+	if counts.TotalMicros != ^uint64(0) || counts.MaxMicros != 2 || counts.TimedSamples != 2 {
+		t.Fatal("aggregate duration wrapped instead of saturating", counts)
+	}
+}
+
+type operationalSlowCommitter struct{ inner characterCommitter }
+
+func (committer operationalSlowCommitter) CommitCharacterSave(username string, character *database.Character, saveID string) error {
+	time.Sleep(20 * time.Millisecond)
+	return committer.inner.CommitCharacterSave(username, character, saveID)
+}
+
+func TestOperationalSignalsMeasureSlowCommitWithoutChangingSavedValue(t *testing.T) {
+	_, committer := setupCharacterJournalTest(t)
+	resetOperationalMetricsForTest(t)
+	characterSaveCommitter = operationalSlowCommitter{inner: committer}
+	character := &database.Character{Name: "private-timed-player-marker", Gold: 1234, EP: 83}
+	if err := persistCharacterSnapshot(character.Name, character); err != nil {
+		t.Fatal(err)
+	}
+	counts := operationalMetricsSnapshot().CharacterCommit
+	if !operationalCountsMatch(counts, 1, 0) || counts.TotalMicros < 5000 || counts.MaxMicros != counts.TotalMicros {
+		t.Fatal("actual delayed commit was not timed", counts)
+	}
+	if committer.saved.Gold != 1234 || committer.saved.EP != 83 {
+		t.Fatal("timing changed saved value")
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"sort"
 	"sync"
+	"time"
 
 	"eidolon-server/internal/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -83,7 +84,8 @@ func persistCharacterSnapshot(username string, character *database.Character) er
 // Also used for the shutdown journal-all-before-database pass. A slow database
 // must not prevent the remaining characters from reaching durable local storage.
 func journalCharacterSnapshot(username string, character *database.Character) (snapshot *database.PendingCharacterSave, resultErr error) {
-	defer func() { recordOperationalResult(boundaryCharacterJournal, resultErr) }()
+	started := time.Now()
+	defer func() { recordOperationalResult(boundaryCharacterJournal, resultErr, time.Since(started)) }()
 	if characterSaveJournal == nil || characterSaveCommitter == nil {
 		return nil, errors.New("character persistence is not initialized")
 	}
@@ -117,6 +119,7 @@ func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
 	if err != nil {
 		return err
 	}
+	started := time.Now()
 	if pending.Version == 2 && !pending.AccountID.IsZero() {
 		bound, ok := characterSaveCommitter.(boundCharacterCommitter)
 		if !ok {
@@ -131,12 +134,13 @@ func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
 	} else {
 		return errors.New("invalid character journal identity version")
 	}
-	recordOperationalResult(boundaryCharacterCommit, err)
+	recordOperationalResult(boundaryCharacterCommit, err, time.Since(started))
 	if err != nil {
 		return err
 	}
+	started = time.Now()
 	cleanupErr := characterSaveJournal.Acknowledge(pending.Username, pending.SaveID)
-	recordOperationalResult(boundaryCharacterCleanup, cleanupErr)
+	recordOperationalResult(boundaryCharacterCleanup, cleanupErr, time.Since(started))
 	if cleanupErr != nil {
 		// Mongo has confirmed this exact receipt. A remaining file is safe to
 		// replay idempotently; a failed directory sync after removal must not
@@ -183,7 +187,8 @@ func retryPendingCharacterSaveLocked(username string) error {
 }
 
 func retryPendingCharacterSaves() (resultErr error) {
-	defer func() { recordOperationalResult(boundaryCharacterRecovery, resultErr) }()
+	started := time.Now()
+	defer func() { recordOperationalResult(boundaryCharacterRecovery, resultErr, time.Since(started)) }()
 	if characterSaveJournal == nil {
 		return nil
 	}
