@@ -53,6 +53,47 @@ filters unknown fields and rejects negative, overflowing or impossible counts.
 No automatic currency-pressure alerts, financial compensation, provider
 notifications or persistence of the counters is enabled by instrumentation.
 
+## Optional local filesystem headroom
+
+Storage reads are **off by default**. `-storage-path` selects one absolute path
+on the filesystem to observe, and requires `-storage-timeout` (positive, at most
+10s). This observes the monitor's own mount namespace, not the machine serving
+a remote health URL. Run on the host with the intended data mount, or mount it
+explicitly into the monitor container; a container's unrelated root filesystem
+does not establish database/journal headroom.
+
+With no floors, the selected filesystem is observed without a low-space alert.
+Optional `-min-storage-free-bytes` and `-min-storage-free-percent` (1–100) trigger
+when available space is **below** either chosen floor; exact equality is allowed.
+Zero disables each floor. Floors without a path, a path without a timeout or
+invalid settings reject generically. Operators must choose the path and budgets;
+no production path or disk threshold is selected by this implementation.
+
+On Linux this makes one read-only filesystem-statistics call for that path,
+not a directory scan, file-content read or Mongo query. It uses fragment/block
+units and available space excluding the superuser reserve, following
+[Linux filesystem statistics](https://man7.org/linux/man-pages/man2/statfs.2.html)
+and [GNU filesystem usage conventions](https://github.com/coreutils/gnulib/blob/master/lib/fsusage.c).
+Only `storage.totalBytes` and `storage.availableBytes` may enter incident output
+or operator email; paths, mount IDs and kernel error text remain private. These
+numbers are mount-wide headroom, not database/collection/log/journal size, quotas,
+growth forecasts, inode availability, writable-state or storage-throughput proof.
+
+Missing, unsupported, invalid or failed measurements report `storage_unavailable`,
+not a healthy zero. A bounded wait reports `storage_timeout`; low space reports
+`storage_budget`. Both successful measurements and failures are fresh observations,
+never cached healthy results. Incidents use ordinary debounce/cooldown/recovery.
+Existing HTTP/database/identity/runtime failures retain precedence; cancellation
+stops waiting and is not an outage. Request latency remains the HTTP observation;
+the storage wait is separate and can delay polling by its explicit timeout.
+
+A kernel filesystem call cannot itself be cancelled. At most **one** read per
+probe can remain in flight; subsequent polls report unavailable without starting
+more workers until it returns. Caller cancellation does not wait for that worker,
+and its late result is discarded. This does not guarantee that an unhealthy
+kernel/mount can be interrupted or recovered without operator intervention.
+Other platforms report unavailable if this optional Linux check is enabled.
+
 ## Explicitly opt-in Postmark alerts
 
 Alerts are **off by default**; disabled runs do not read mail configuration.

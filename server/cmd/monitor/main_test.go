@@ -187,3 +187,25 @@ func TestMonitorCommandPressureConfigurationAndDefaults(t *testing.T) {
 		t.Fatal("valid optional budgets or shutdown failed", err)
 	}
 }
+
+func TestMonitorCommandStorageConfigurationAndCancelledOptIn(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	for _, extra := range [][]string{
+		{"-storage-path", "synthetic-private-relative", "-storage-timeout", "1s"},
+		{"-storage-path", "/synthetic-private"}, {"-storage-timeout", "1s"},
+		{"-min-storage-free-bytes", "1"}, {"-min-storage-free-percent", "20"},
+		{"-storage-path", "/synthetic-private", "-storage-timeout", "11s"},
+		{"-storage-path", "/synthetic-private", "-storage-timeout", "1s", "-min-storage-free-percent", "101"},
+		{"-min-storage-free-bytes", "-1"}, {"-min-storage-free-bytes", "18446744073709551616"},
+	} {
+		var output strings.Builder
+		if err := run(ctx, append(arguments("http://127.0.0.1/healthz"), extra...), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") || output.Len() != 0 {
+			t.Fatal("unsafe storage arguments or diagnostic path leak")
+		}
+	}
+	var output strings.Builder
+	if err := run(ctx, append(arguments("http://127.0.0.1/healthz"), "-storage-path", "/synthetic-private-absent", "-storage-timeout", "1s", "-min-storage-free-percent", "20"), &output); err != nil || output.Len() != 0 {
+		t.Fatal("explicit storage settings or cancelled no-IO configuration failed", err)
+	}
+}
