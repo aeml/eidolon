@@ -426,9 +426,16 @@ saved XP/gear/bag/EP, fresh town saves, and earned repair quest readiness for
 every participant **without** auto-completion or granted quest rewards. Its
 first attempt failed before formation because the solo roster preceding an
 invite exposed a conversion/acceptance ordering deadlock. That is corrected
-and included in the preparation regression. The clean corrected attempt is
-currently RUNNING with a20-minute maximum under Luna monitoring; not an accepted
-raid clear/save yet. The full driver race suite passes17.397s. Existing earned
+and included in the preparation regression. The clean corrected attempt passed
+535.31s, ending early after the full earned Earth clear, three-wave repair and
+all-five town exits. Independent saves confirm original shared boss rewards,
+earned repair readiness without auto-claiming, positive XP and preserved gear,
+bag sentinel and EP for every member. Forty healing deliveries,23 confirmed
+recoveries and18 validated unchanged-run checkpoint returns were observed.
+The whole isolated fixture peaked at578002944B with no OOM; this is not game-heap
+or capacity/headroom evidence. Luna monitored the exact process; parent retrieved
+terminal success. The fixture/synthetic data is removed; binaries retained.
+The full driver race suite passes17.397s. Existing earned
 dungeon/casino/combined receipts are not rerun or reclassified, and the default
 mixed/nightly profile is unchanged. Dark King phases/rewards, actual non-Earth
 rituals, world events and declared capacity/headroom remain separate checks.

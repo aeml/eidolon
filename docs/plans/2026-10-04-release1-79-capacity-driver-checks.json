@@ -359,7 +359,7 @@
     "limits": "One actual normal four-class Verdant earned clear/exit/save with shared original boss receipts and observed real healing/recoveries, plus focused controller and generated-floor checks. No raid/events, all regional clears, telegraph-avoidance/full healer-role balance,100-player/headroom, renderer/public-network, fresh-process replay or human-pacing claim. Whole fixture peak includes all processes and tmpfs, not server heap. Recoveries do not distinguish living Recall from death Respawn in the aggregate, and observed target deaths/XP updates are not unique per-normal-kill credit receipts. Existing completed receipts retain their original hashes/scopes. No automatic12-minute run each deployment."
   },
   "raidPreparationFollowUp": {
-    "status": "staged controller/domain preparation passed; no runnable raid-completion scenario or actual raid acceptance",
+    "status": "historical preparation-only evidence at9fc005e7; later connected earned Earth proof is in raidEncounterFollowUp, not acceptance from these preparation tests",
     "changes": "Bound party controller cohorts to4–10 members internally while retaining exact-four public party/dungeon constructors. Elemental raid preparation requires5–10 distinct prepared accounts, repeated Fighter/Cleric/Rogue/Wizard classes and the realm's minimum level. Wait for the ordinary leader-only System/server conversion response before further invitations; unrelated public/historical chat is not acknowledgement. Require every client's own full roster, active ready-check view, single affirmative request, own readiness acknowledgement and final all-ready view. Missing conversion/consent times out without retry; foreign/duplicate/changed/contradictory/revoked or unsolicited readiness fails. Preparation alone never starts combat or counts crystal restoration. No game protocol/authority, dungeon rules, CLI/nightly scenarios, currency or production behavior changed.",
     "checks": {
       "focusedCommand": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race ./cmd/loadtest -run 'TestRaidPreparation|TestRaidConversion|TestPartyLoadMembership' -count=1 -timeout=30s",
@@ -376,7 +376,7 @@
     "remaining": "Connect normal raid instance entry/recovery/routing, snapshot-bound three-wave elemental Vigil objectives, earned restoration, ordinary exit and independent per-member rewards/saves. Weekly Dark King finale needs its own access/phase/reward workload. Verify actual isolated server/driver gameplay before claiming raid participation/completion or adding it to declared combined capacity evidence. No raid clear, repair, saved reward, capacity/headroom, human balance or public deployment claim from preparation."
   },
   "raidEncounterFollowUp": {
-    "status": "candidate connected; corrected owned normal five-player Earth raid is RUNNING, no actual raid acceptance yet",
+    "status": "connected candidate and corrected normal five-player Earth earned assault/three-wave repair/exit/independent saves PASS; not raid-family or milestone capacity acceptance",
     "changes": "Explicit party-raid workload accepts one5–10-member prepared cohort and an authored elemental raid type. Normal launch ready-check/access and raid_enter, actual fresh start-room own state despite normal fresh metadata omitting spawn, unchanged-run checkpoint recovery, bounded canonical floor routing and class combat. Require every member's exact instance/realm/crystal/chamber/three-wave snapshots and restored state; assault/boss clear alone cannot exit. Normal marker movement defends Earth, carries Water, holds Fire vents and alternates Air bearers using ordinary worker-owned progress. Fresh missing/history-only/foreign/malformed/regressed/premature/partial crystal proof fails. Every client must exit alive in town; new fixed raid counters separate readiness/wave views/restoration. No production game authority, encounter profiles, rewards, clock, schema or default mixed/nightly changes.",
     "checks": {
       "focusedResult": "TestRaid/TestDungeon focused race checks passed1.695s after correcting synthetic fixture preparation order. Includes normal omitted-spawn raid metadata, all-five own entry/restoration/exit, boss/wave progress not substituting for repair, seventeen invalid proof cases, live marker movement for all elements without authored credit. Existing preparation cases use normal domain access/readiness methods; add actual solo-party broadcast before first invite to catch the real ordering failure.",
@@ -392,13 +392,53 @@
       "driverSHA256": "bce1b8851454c6210fa6dd501855908ea1b4829ad89ce84df7cbff996ade7d35"
     },
     "correctedActualAttempt": {
-      "status": "RUNNING; retrieve definitive parent session50307, do not infer pass from disappearance or monitor timeout",
+      "status": "PASS: exact parent session50307 terminal retrieved; root535.31s, driver/normal-shutdown/independent-save interval8m50.93s. All five observe full assault and three repair waves, crystal restoration and town exit; saved original shared boss credit, earned unclaimed repair readiness, positive XP and preserved gear/bag/EP independently verified for every member.",
       "test": "TestLoadRaidActualFiveClassRolesRepairExitAndSaves, root timeout23m, driver maximum20m ending early on completed exit;5 normally equipped level30 Fighter/Cleric/Rogue/Wizard/Fighter saves. Prequalified required dungeon chapter and active uncompleted repair quest are explicitly disposable fixtures; no in-run gear/health/loot/kill/progression/repair/clock/permission bypass.",
       "proofRequired": "Every-member converted/full-roster consent, full assault and all three wave views, restored crystal and ordinary town exit with checkpoint returns matching requests. After normal shutdown, independent Mongo fresh LastLogout/InstanceIDtown, exact class/gear/EP and preserved bag sentinel, positive XP, same validated original bossvictory receipt and matching durable completed operation for each. Saved REPAIR Count1/Max1/Accepted true/Completed false and zero granted quest Gold/XP/resonance for each: earned readiness, not auto-claimed rewards.",
-      "isolation": "Container2b96cfde2fc786a0914a4936667506009350395873280e6efae64196bd517dfd, taskraid-179-corrected-20261004, networknone/no ports,2CPU/2GiB,Mongo7.0.14 with512MiB database/16MiB config tmpfs and0.25GiB cache; read-only artifact binds. Root PID79/server94/driver105 confirmed live; Luna monitors labeled running/status/OOM fields and exact PID/comm only. Corrected driver/tmp/eidolon-179-raid-corrected-HQYTES; original unchanged root harness and accepted server reused. No cancellation/restart solely for monitor observation expiry.",
+      "isolation": "Owned container2b96cfde2fc786a0914a4936667506009350395873280e6efae64196bd517dfd, taskraid-179-corrected-20261004, networknone/no ports,2CPU/2GiB,Mongo7.0.14 with512MiB database/16MiB config tmpfs and0.25GiB cache; read-only artifact binds. Root PID79/server94/driver105 verified live, then Luna monitored labeled running/status/OOM and exact PID/comm only. On process end, parent retrieved definitive terminal PASS from original session50307. Exact ID/label/network/final OOM/peak were verified before removal; fixture/synthetic data removed and owned-label listing empty. Corrected driver retained/tmp/eidolon-179-raid-corrected-HQYTES; original unchanged root harness and accepted server reused. No cancellation/restart solely for monitor observation expiry.",
       "driverSHA256": "553c37411898c0225ab26b53e2db2d7c6edbddeff5052cd8cfcf70ef97a19b78",
       "rootTestSHA256": "310f677ab0c777a1d0eeae4aca644e51c1f8ad7ae1b479388ecb8158dfb39664",
-      "serverSHA256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"
+      "serverSHA256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc",
+      "metrics": {
+        "connected": 5,
+        "joined": 5,
+        "authenticated": 5,
+        "transportDecodeAdmissionErrors": 0,
+        "stateFrames": 80282,
+        "coveredClients": 5,
+        "minFramesAndFreshOwnUpdates": 16049,
+        "minActiveMS": 529570,
+        "maxGapMS": 75,
+        "wireBytes": 403336587,
+        "maxRegistrationMS": 60,
+        "maxLoginMS": 88,
+        "maxJoinMS": 64,
+        "requestedRecoveries": 23,
+        "completedRecoveries": 23,
+        "pendingAndFailedRecoveries": 0,
+        "partyGroups": 1,
+        "formedMembers": 5,
+        "minOwnImpacts": 159,
+        "damageDeliveries": 1396,
+        "healingDeliveries": 40,
+        "acceptedCasts": 658,
+        "deniedCasts": 7,
+        "observedXPUpdates": 210,
+        "observedTargetDeaths": 35,
+        "partyFailures": 0,
+        "enteredClearedExitedClients": 5,
+        "clearedAssaultRooms": 3,
+        "clearedBosses": 1,
+        "requestedReentries": 18,
+        "confirmedUnchangedRunCheckpointReturns": 18,
+        "convertedAndPrepared": true,
+        "readyMembers": 5,
+        "restoredClients": 5,
+        "minOwnWaveViews": 3,
+        "wholeFixturePeakBytes": 578002944,
+        "cgroupMaxOOMAndOOMKillEvents": 0,
+        "dockerOOMKilled": false
+      }
     },
     "sha256": {
       "loadtest/main.go": "eddf963538681766c7b5cca7107c70cca8a15681c4859626feb66ba330962f23",
@@ -409,7 +449,7 @@
       "loadtest/raid_encounter_test.go": "da9e65eba25f8f88ddbf81a4149f4d601c95b1c3b255401c8f23d7c9b3fe8207",
       "load_raid_integration_test.go": "84b78ce4522097f3d107de954edbcf64ab8ec10fe68fef123e31d8f3e289d723"
     },
-    "limits": "Candidate controllers/normal-domain and small wire fixtures, not actual raid acceptance while corrected run is pending. No all-realms/DarkKing/world-event completion, saved reward,100-client or headroom, telegraph/full healer-role balance, public Internet/rendering, restart replay or human pacing claim. Whole fixture peak includes every process/Mongo/tmpfs, not game heap. Never classify a boss-only clear as restoration or a synthetic prepared chapter as an earned campaign."
+    "limits": "One actual normal five-player Earth assault/three-wave repair/exit with independent original boss rewards and earned unclaimed quest readiness for every member, plus focused other-element marker fixtures. Not all-realms/DarkKing/world-event completion,100-client or headroom, telegraph/full healer-role balance, public Internet/rendering, restart replay or human pacing acceptance. Forty positive healing deliveries do not identify unique casts or full-role balance; target-death/XP-update counters are not unique normal-kill receipts. Recovery totals do not distinguish living Recall from death Respawn. Whole fixture peak includes every process/Mongo/tmpfs, not game heap. Prepared access chapter is a fixture, not an earned campaign; repair readiness was earned during actual play and was not auto-claimed."
   },
-  "remaining": "Default mixed still distributes only combat/town/social; explicit combined covers real concurrent party combat, public Gold games and saves at20. Normal four-class Verdant dungeon entry/routing/town recovery/checkpoint/earned clear/exit and independent reward/character saves pass. Raid preparation/controller and connected candidate pass focused checks; corrected actual five-player Earth raid/repair/exit/save is pending and must be retrieved from its exact live handle. Dark King/other actual rituals and event/save workloads remain missing. Measure acknowledged action/travel outcomes and declared cohort tick/network/DB/client criteria with owner-approved duration/headroom. No claim that20 implies100. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for authorized long raid/dungeon monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "remaining": "Default mixed still distributes only combat/town/social; explicit combined covers real concurrent party combat, public Gold games and saves at20. Normal four-class Verdant dungeon entry/routing/town recovery/checkpoint/earned clear/exit and independent reward/character saves pass. Corrected normal five-player Earth raid assault/three-wave repair/exit, original shared boss rewards and earned unclaimed repair readiness for every member now pass535.31s; fixture removed, original artifacts retained. Dark King/other actual rituals and integrated event/save workloads remain missing; reuse the previously earned naturally scheduled Root encounter only at its original single-Wizard scope. Measure acknowledged action/travel outcomes and declared cohort tick/network/DB/client criteria with owner-approved duration/headroom. No claim that20 implies100. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for authorized long raid/dungeon monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

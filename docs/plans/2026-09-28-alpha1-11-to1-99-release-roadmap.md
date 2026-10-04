@@ -1843,10 +1843,15 @@ marker-movement and compatibility checks pass; the whole load-driver race
 suite passes17.397s. The first actual Earth attempt failed10.66s before formation
 because the solo-roster-before-invite ordering deadlocked consent behind
 conversion. That ordering is now covered and fixed; the failed fixture's data
-was removed. A clean corrected normal five-player Earth raid/save check is
-RUNNING under Luna monitoring with a20-minute maximum; no actual raid acceptance
-yet. Independent saves must prove shared original boss credits and earned,
-unclaimed crystal-repair readiness for every member, not synthetic completion.
+was removed. The clean corrected normal five-player Earth raid/save check now
+passes535.31s, ending early after the earned assault, all three defense waves,
+crystal restoration and all-five town exits. Independent saves prove shared
+original boss credits, positive XP and earned unclaimed repair readiness for
+every member, with preserved class gear/bag/EP. Observed40 healing deliveries,
+23 confirmed town recoveries and18 validated unchanged-run checkpoint returns;
+whole fixture peak578002944B, no OOM. Luna monitored the exact process, parent
+retrieved definitive success, and owned synthetic data is removed. This is one
+normal five-player Earth encounter, not full raid-family/capacity acceptance.
 Dark King, actual other-ritual and world-event workloads still remain. No live
 service/database/DNS mutation, production acceptance or capacity extrapolation.
 
