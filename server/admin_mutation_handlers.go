@@ -141,6 +141,21 @@ func handleAdminMutation(c *Client, msg Message) {
 				outcome = "success"
 			}
 		}
+		if authorized {
+			// Recovery and detached planning can block after the admission role
+			// lookup. Revalidate before creating NEW intent; already-approved
+			// durable operations remain recoverable independently of this session.
+			if message := adminAuthorityDenial(c); message != "" {
+				result.Authorized = false
+				result.Message = message
+				outcome := "error"
+				if message == "Administrator access is not enabled for this account." {
+					outcome = "denied"
+				}
+				auditAdminRejectedRequest(c, msg.Type, request, outcome, message)
+				return
+			}
+		}
 		audit, err := database.NewAdminActivity(c.username, request.Target, msg.Type, request.ID, outcome, summary, time.Now(), adminActivities.AdminActivityRetentionDays())
 		if err != nil {
 			auditAdminRejectedRequest(c, msg.Type, request, "error", "Operation audit could not be prepared; no new operation admitted.")
