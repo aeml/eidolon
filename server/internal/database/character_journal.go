@@ -17,6 +17,7 @@ import (
 
 const characterJournalVersion = 1
 const maxCharacterJournalBytes = 16 << 20
+const characterJournalLockShards = 64
 
 // PendingCharacterSave is detached from the live entity. One durable file per
 // account always contains the newest attempted complete character snapshot.
@@ -43,7 +44,10 @@ func (save *PendingCharacterSave) Character() (*Character, error) {
 
 type CharacterSaveJournal struct {
 	dir string
-	mu  sync.Mutex // Filesystem operations only; never held during database IO.
+	// Fixed-size account shards serialize write/read/ack filesystem operations,
+	// never database IO. Hash collisions may serialize unrelated accounts, but
+	// a slow save no longer holds a single process-wide journal lock.
+	accountLocks [characterJournalLockShards]sync.Mutex
 }
 
 func OpenCharacterSaveJournal(dir string) (*CharacterSaveJournal, error) {
@@ -59,6 +63,26 @@ func OpenCharacterSaveJournal(dir string) (*CharacterSaveJournal, error) {
 func (journal *CharacterSaveJournal) filename(username string) string {
 	digest := sha256.Sum256([]byte(username))
 	return filepath.Join(journal.dir, hex.EncodeToString(digest[:])+".bson")
+}
+
+func (journal *CharacterSaveJournal) accountMutex(username string) *sync.Mutex {
+	digest := sha256.Sum256([]byte(username))
+	return &journal.accountLocks[int(digest[0])%characterJournalLockShards]
+}
+
+// Discovery has only the filename, not the account identity. Select exactly
+// the same shard as accountMutex before inspecting a record that can be
+// replaced or acknowledged concurrently. Malformed names still fail closed.
+func (journal *CharacterSaveJournal) pendingFileMutex(name string) (*sync.Mutex, error) {
+	encoded := strings.TrimSuffix(name, ".bson")
+	if len(encoded) != sha256.Size*2 || encoded+".bson" != name {
+		return nil, fmt.Errorf("unexpected character journal entry %q", name)
+	}
+	digest, err := hex.DecodeString(encoded)
+	if err != nil || hex.EncodeToString(digest) != encoded {
+		return nil, fmt.Errorf("unexpected character journal entry %q", name)
+	}
+	return &journal.accountLocks[int(digest[0])%characterJournalLockShards], nil
 }
 
 func (journal *CharacterSaveJournal) syncDirectory() error {
@@ -112,8 +136,9 @@ func (journal *CharacterSaveJournal) write(accountID primitive.ObjectID, usernam
 	if len(encoded) > maxCharacterJournalBytes {
 		return nil, errors.New("character journal snapshot exceeds size limit")
 	}
-	journal.mu.Lock()
-	defer journal.mu.Unlock()
+	lock := journal.accountMutex(username)
+	lock.Lock()
+	defer lock.Unlock()
 	// A newer live snapshot may replace only the same account generation's
 	// pending work. Legacy retry must not erase a bound rejection before the
 	// dispatcher can enforce the identity fence.
@@ -183,8 +208,9 @@ func (journal *CharacterSaveJournal) readFile(name string) (*PendingCharacterSav
 }
 
 func (journal *CharacterSaveJournal) Read(username string) (*PendingCharacterSave, error) {
-	journal.mu.Lock()
-	defer journal.mu.Unlock()
+	lock := journal.accountMutex(username)
+	lock.Lock()
+	defer lock.Unlock()
 	return journal.readFile(journal.filename(username))
 }
 
@@ -216,8 +242,8 @@ func (journal *CharacterSaveJournal) HasPendingAccountSave(username string) (boo
 }
 
 func (journal *CharacterSaveJournal) PendingUsers() ([]string, error) {
-	journal.mu.Lock()
-	defer journal.mu.Unlock()
+	// This is discovery, not an atomic directory snapshot. A concurrently
+	// acknowledged record may disappear; a new record is found on the next scan.
 	entries, err := os.ReadDir(journal.dir)
 	if err != nil {
 		return nil, err
@@ -236,7 +262,13 @@ func (journal *CharacterSaveJournal) PendingUsers() ([]string, error) {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".bson") {
 			return nil, fmt.Errorf("unexpected character journal entry %q", entry.Name())
 		}
+		lock, err := journal.pendingFileMutex(entry.Name())
+		if err != nil {
+			return nil, err
+		}
+		lock.Lock()
 		save, err := journal.readFile(filepath.Join(journal.dir, entry.Name()))
+		lock.Unlock()
 		if err != nil {
 			return nil, err
 		}
@@ -269,8 +301,9 @@ func (journal *CharacterSaveJournal) ValidateAccountBoundRecords() error {
 
 // A delayed acknowledgement may never remove a newer queued snapshot.
 func (journal *CharacterSaveJournal) Acknowledge(username, saveID string) error {
-	journal.mu.Lock()
-	defer journal.mu.Unlock()
+	lock := journal.accountMutex(username)
+	lock.Lock()
+	defer lock.Unlock()
 	save, err := journal.readFile(journal.filename(username))
 	if err != nil || save == nil {
 		return err
