@@ -41,28 +41,32 @@ func validActivityAccountKey(value string, required bool) bool {
 // Activity is structured and allowlisted; it never contains raw logs, sockets,
 // authentication payloads, full character snapshots or database errors.
 type AdminActivity struct {
-	ID        primitive.ObjectID `bson:"_id" json:"id"`
-	At        time.Time          `bson:"at" json:"at"`
-	ExpiresAt time.Time          `bson:"expires_at" json:"-"`
-	Actor     string             `bson:"actor" json:"actor"`
-	Target    string             `bson:"target" json:"target"`
-	Action    string             `bson:"action" json:"action"`
-	RequestID string             `bson:"request_id" json:"requestId"`
-	Result    string             `bson:"result" json:"result"`
-	Summary   string             `bson:"summary" json:"summary"`
-	Reason    string             `bson:"reason,omitempty" json:"reason,omitempty"`
+	ID               primitive.ObjectID `bson:"_id" json:"id"`
+	At               time.Time          `bson:"at" json:"at"`
+	ExpiresAt        time.Time          `bson:"expires_at" json:"-"`
+	Actor            string             `bson:"actor" json:"actor"`
+	Target           string             `bson:"target" json:"target"`
+	Action           string             `bson:"action" json:"action"`
+	RequestID        string             `bson:"request_id" json:"requestId"`
+	Result           string             `bson:"result" json:"result"`
+	Summary          string             `bson:"summary" json:"summary"`
+	Reason           string             `bson:"reason,omitempty" json:"reason,omitempty"`
+	SessionStartedAt *time.Time         `bson:"session_started_at,omitempty" json:"sessionStartedAt,omitempty"`
 }
 
 type AdminActivityQuery struct {
-	Before string `json:"before"`
-	Actor  string `json:"actor"`
-	Action string `json:"action"`
+	Before     string `json:"before"`
+	Actor      string `json:"actor"`
+	Action     string `json:"action"`
+	Population string `json:"population,omitempty"`
+	Day        string `json:"day,omitempty"`
 }
 
 type AdminActivityPage struct {
-	Entries       []AdminActivity `json:"entries"`
-	Next          string          `json:"next"`
-	RetentionDays int             `json:"retentionDays"`
+	Entries       []AdminActivity     `json:"entries"`
+	Next          string              `json:"next"`
+	RetentionDays int                 `json:"retentionDays"`
+	Daily         *AdminDailyActivity `json:"daily,omitempty"`
 }
 
 func ParseAdminActivityRetention(raw string) (int, error) {
@@ -99,6 +103,9 @@ func validAdminActivityAction(action string) bool {
 }
 
 func ValidateAdminActivity(event AdminActivity) error {
+	if event.SessionStartedAt != nil && (event.Action != "disconnect" || event.SessionStartedAt.IsZero() || event.SessionStartedAt.After(event.At)) {
+		return errors.New("invalid session duration")
+	}
 	if event.ID.IsZero() || event.At.IsZero() || !event.ExpiresAt.After(event.At) ||
 		!validActivityAccountKey(event.Actor, true) || !validActivityAccountKey(event.Target, false) ||
 		!boundedActivityText(event.RequestID, 64, true) || !boundedActivityText(event.Summary, 256, true) ||
@@ -147,7 +154,9 @@ func (db *DB) AppendAdminActivity(event AdminActivity) error {
 	}
 	if existing.ID != event.ID || !existing.At.Equal(event.At) || !existing.ExpiresAt.Equal(event.ExpiresAt) ||
 		existing.Actor != event.Actor || existing.Target != event.Target || existing.Action != event.Action ||
-		existing.RequestID != event.RequestID || existing.Result != event.Result || existing.Summary != event.Summary || existing.Reason != event.Reason {
+		existing.RequestID != event.RequestID || existing.Result != event.Result || existing.Summary != event.Summary || existing.Reason != event.Reason ||
+		(existing.SessionStartedAt == nil) != (event.SessionStartedAt == nil) ||
+		existing.SessionStartedAt != nil && !existing.SessionStartedAt.Equal(*event.SessionStartedAt) {
 		return errors.New("activity ID conflicts with immutable record")
 	}
 	return nil
@@ -168,6 +177,16 @@ func adminActivityFilter(query AdminActivityQuery, now time.Time, retentionDays 
 		return nil, errors.New("invalid activity filter")
 	}
 	filter := bson.M{"expires_at": bson.M{"$gt": now}, "at": bson.M{"$gt": now.Add(-time.Duration(retentionDays) * 24 * time.Hour)}}
+	if err := addAdminPopulationFilter(filter, query.Population); err != nil {
+		return nil, err
+	}
+	if query.Day != "" {
+		start, end, err := adminActivityDay(query.Day, now, retentionDays)
+		if err != nil {
+			return nil, err
+		}
+		filter["at"] = bson.M{"$gte": start, "$lt": end, "$gt": now.Add(-time.Duration(retentionDays) * 24 * time.Hour)}
+	}
 	if query.Actor != "" {
 		filter["actor"] = query.Actor
 	}
@@ -217,7 +236,46 @@ func (db *DB) ReadAdminActivity(query AdminActivityQuery) (AdminActivityPage, er
 		page.Entries = page.Entries[:AdminActivityPageSize]
 		page.Next = activityCursor(page.Entries[len(page.Entries)-1])
 	}
+	if query.Day != "" && query.Before == "" {
+		daily, err := db.readAdminDaily(ctx, query, time.Now().UTC())
+		if err != nil {
+			return AdminActivityPage{}, err
+		}
+		page.Daily = &daily
+	}
 	return page, nil
+}
+
+func (db *DB) readAdminDaily(ctx context.Context, query AdminActivityQuery, now time.Time) (AdminDailyActivity, error) {
+	start, end, err := adminActivityDay(query.Day, now, db.adminActivityRetentionDays)
+	if err != nil {
+		return AdminDailyActivity{}, err
+	}
+	filter := bson.M{"expires_at": bson.M{"$gt": now}, "at": bson.M{"$gte": start, "$lte": now},
+		"action": bson.M{"$in": bson.A{"login", "disconnect"}}, "result": "success"}
+	if err := addAdminPopulationFilter(filter, query.Population); err != nil {
+		return AdminDailyActivity{}, err
+	}
+	if query.Actor != "" {
+		filter["actor"] = query.Actor
+	}
+	// Include later disconnects only where a recorded session overlaps the day.
+	filter["$or"] = bson.A{bson.M{"at": bson.M{"$lt": end}}, bson.M{"session_started_at": bson.M{"$lt": end}}}
+	cursor, err := db.adminActivity.Find(ctx, filter, options.Find().SetLimit(10001).SetMaxTime(3*time.Second).
+		SetProjection(bson.M{"at": 1, "actor": 1, "action": 1, "result": 1, "session_started_at": 1}))
+	if err != nil {
+		return AdminDailyActivity{}, err
+	}
+	defer cursor.Close(ctx)
+	var events []AdminActivity
+	if err := cursor.All(ctx, &events); err != nil {
+		return AdminDailyActivity{}, err
+	}
+	complete := len(events) <= 10000
+	if !complete {
+		events = events[:10000]
+	}
+	return summarizeAdminDaily(events, query.Day, start, end, complete), nil
 }
 
 func applyAdminActivityIndexes(ctx context.Context, db *DB) error {

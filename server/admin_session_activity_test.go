@@ -71,6 +71,50 @@ func TestSessionActivityOutageAndReopenPreserveExactEvents(t *testing.T) {
 	}
 }
 
+func TestSessionActivityClientClosedDurationIsDurable(t *testing.T) {
+	dir, _ := sessionActivityFixture(t)
+	c := &Client{username: "hero"}
+	if err := recordClientSessionActivity(c, "hero", "login"); err != nil {
+		t.Fatal(err)
+	}
+	if c.sessionStartedMillis.Load() == 0 {
+		t.Fatal("authenticated start not recorded")
+	}
+	closed := time.Now().UTC().Truncate(time.Millisecond).Add(-time.Minute)
+	started := closed.Add(-2 * time.Minute)
+	c.sessionStartedMillis.Store(started.UnixMilli())
+	c.transportClosedAt.Store(&closed)
+	if err := recordClientSessionDisconnect(c); err != nil {
+		t.Fatal(err)
+	}
+	adminActivityJournal, _ = database.OpenAdminActivityJournal(dir)
+	rows, err := adminActivityJournal.Pending(50)
+	if err != nil || len(rows) != 2 {
+		t.Fatal("journal replay lost events", err)
+	}
+	found := false
+	for _, row := range rows {
+		if row.Action == "disconnect" {
+			found = true
+			if row.SessionStartedAt == nil || !row.SessionStartedAt.Equal(started) || !row.At.Equal(closed) {
+				t.Fatal("closed duration changed during replay")
+			}
+		}
+	}
+	if !found {
+		t.Fatal("missing disconnect")
+	}
+	if err := recordClientSessionDisconnect(&Client{username: "legacy"}); err != nil {
+		t.Fatal(err)
+	}
+	rows, _ = adminActivityJournal.Pending(50)
+	for _, row := range rows {
+		if row.Actor == "legacy" && row.SessionStartedAt != nil {
+			t.Fatal("invented legacy duration")
+		}
+	}
+}
+
 func TestSessionActivityStartupDrainsMoreThanOneRuntimeBatch(t *testing.T) {
 	_, store := sessionActivityFixture(t)
 	for index := 0; index < 55; index++ {

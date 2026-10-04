@@ -11,6 +11,16 @@ See [public acceptance](2026-10-04-release1-73-public-acceptance.json) for passe
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
+
+October4 maintenance follow-up: [real-player administration checks](2026-10-04-admin-real-player-checks.json)
+implement default real/test/all population filters before online/history pagination,
+UTC-day unique authenticated login counts and recorded closed-connection time.
+Test records remain available; no deletion/backfill/retention change. Legacy or
+unclosed session durations are not estimated, and this is not active-play/AFK
+measurement. Focused race, actual isolated Mongo and three browser-layout checks
+passed; exact maintenance deployment/public identity remains pending. This work
+does not assert1.79 capacity or change the separate open map-crash diagnosis.
+
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
 an API-only frontend. Eighteen pure argument cases pass; current origin TLS,
