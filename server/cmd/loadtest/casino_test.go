@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,6 +12,66 @@ import (
 	"eidolon-server/internal/game"
 	"github.com/gorilla/websocket"
 )
+
+func TestCasinoLoadSharedTablesRefreshIdleViewsWithoutMoneyRetries(t *testing.T) {
+	for _, kind := range []string{"blackjack", "house", "poker"} {
+		t.Run(kind, func(t *testing.T) {
+			var b *casinoLoad
+			var view json.RawMessage
+			switch kind {
+			case "blackjack":
+				b = newBlackjackLoad(0, "player-synthetic-refresh")
+				view = blackjackFixtureView(b, "betting", "", 1, true, false, false)
+			case "house":
+				b = newHouseLoad(0, "player-synthetic-refresh")
+				view = houseFixtureView(b, "betting", true, false)
+			case "poker":
+				b = newPokerLoad(0, "player-synthetic-refresh")
+				view = pokerFixtureView(b, "betting", true, false, nil)
+			}
+			if !b.receive(view) || b.counts().failed {
+				t.Fatal("valid funded waiting view refused")
+			}
+			me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+			now := time.Unix(100, 0)
+			requests := 0
+			query := func(payload map[string]interface{}) error {
+				requests++
+				if len(payload) != 1 || payload["action"] != "get" {
+					t.Fatal("cached funded view retried a monetary action")
+				}
+				return nil
+			}
+			move := func(float64, float64) { t.Fatal("seated bot moved") }
+			b.step(me, now, 100, time.Second, query, move)
+			b.step(me, now.Add(time.Second), 100, time.Second, query, move)
+			b.step(me, now.Add(3*time.Second), 100, time.Second, query, move)
+			if requests != 2 || b.counts().wagers != 0 || b.counts().rounds != 0 {
+				t.Fatal("idle refresh pacing or outcome evidence incorrect")
+			}
+			b.pending, b.sentAt = "poker_play", now.Add(4*time.Second)
+			b.step(me, now.Add(6*time.Second), 100, 10*time.Second, query, move)
+			if requests != 2 {
+				t.Fatal("outstanding operation duplicated a query or money request")
+			}
+			b.pending = ""
+			b.step(me, now.Add(7*time.Second), 100, time.Second, func(map[string]interface{}) error { return errors.New("synthetic write failure") }, move)
+			if !b.counts().failed {
+				t.Fatal("read-only refresh write failure hidden")
+			}
+		})
+	}
+	// The controller itself already polls an unavailable view. The shared
+	// fallback must not emit a second query on the same tick.
+	b := newPokerLoad(0, "player-synthetic-unavailable")
+	b.receive(pokerFixtureView(b, "betting", true, false, nil))
+	b.view.Poker.Available = false
+	requests := 0
+	b.step(Entity{InstanceID: game.CasinoInstanceID, Health: 100}, time.Unix(100, 0), 100, time.Second, func(map[string]interface{}) error { requests++; return nil }, func(float64, float64) { t.Fatal("seated bot moved") })
+	if requests != 1 {
+		t.Fatal("unavailable table emitted duplicate refreshes")
+	}
+}
 
 func casinoFixtureView(table, session string, revision uint64, bonus bool, balance int) json.RawMessage {
 	encoded, _ := json.Marshal(map[string]interface{}{

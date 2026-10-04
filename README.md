@@ -472,6 +472,10 @@ Notes:
   A separate bounded actual-server/Mongo party check now passes normal combat,
   Cleric healing and every member's saved XP with exact gear/bag/EP preservation;
   this four-player evidence still does not establish instance or capacity gates.
+  Actual two-bot poker now passes town entry, physical seating, shared paid play
+  and durable cash-out with conserved Gold and unchanged gear/bag/EP. That check
+  found and fixed stale-view polling in shared-table bots; two seats are not a
+  capacity result. Earlier failed instrumented/stale-view runs remain recorded.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

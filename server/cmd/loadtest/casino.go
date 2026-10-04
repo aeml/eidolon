@@ -248,14 +248,17 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 	}
 	if b.blackjack != nil {
 		b.blackjack.step(b, now, bet, request, issue)
+		b.refreshIdle(now, request)
 		return
 	}
 	if b.house != nil {
 		b.house.step(b, now, bet, request, issue)
+		b.refreshIdle(now, request)
 		return
 	}
 	if b.poker != nil {
 		b.poker.step(b, now, bet, request, issue)
+		b.refreshIdle(now, request)
 		return
 	}
 	slots := b.view.Slots
@@ -281,6 +284,21 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 	} else {
 		issue("slot_spin", map[string]interface{}{"sessionId": b.pendingSession, "roundRevision": b.pendingRevision, "bet": bet})
 	}
+}
+
+// Shared table clocks/other players advance without acknowledging this bot's
+// own request. The normal client polls these views; a cached valid view is not
+// evidence that its betting phase or advertised turn is still current.
+// Caller holds b.mu. Child controllers may have already refreshed/issued, so
+// never send a duplicate query or retry an outstanding monetary action.
+func (b *casinoLoad) refreshIdle(now time.Time, request func(map[string]interface{}) error) {
+	if b.failed || b.pending != "" || now.Before(b.nextAction) {
+		return
+	}
+	if request(map[string]interface{}{"action": "get"}) != nil {
+		b.failed = true
+	}
+	b.nextAction = now.Add(3 * time.Second)
 }
 
 func (b *casinoLoad) play(connection *websocket.Conn, movement *botMovement, me Entity, now time.Time, bet int, timeout time.Duration) {

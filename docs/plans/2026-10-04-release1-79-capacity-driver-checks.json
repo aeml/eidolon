@@ -169,5 +169,69 @@
     "isolation": "Owned container2f5464b696bf89c1c58c8fe08eacd6e0e882cdb6ad8a2e3c21f78b47ba9a8030, codex.task=party-179-20261004, networknone/no published ports,1CPU/1GiB,512MiB database/16MiB config tmpfs and0.25GiB Mongo cache. Read-only artifact bind. Exact ID/label/network verified before removal; container and synthetic database removed, filtered listing empty. Compiled artifacts retained at/tmp/eidolon-179-party-actual-tKC73v. Production services/database/mail/accounts and dirty owner worktree untouched.",
     "limits": "Four-player real combat and disconnect-save evidence, not dungeon/raid clears, full healing-role balance, per-kill unique attribution, fresh-process character reload,100-player capacity, renderer/Internet latency, runtime/DB headroom or ordered release acceptance. Admission approached the5s limit on the1CPU race fixture; no claim of authentication throughput. No redundant campaign/soak or automatic every-version long run."
   },
-  "remaining": "Mixed profile still distributes only combat/town/social; finish dungeon/raid, event/save and representative combined workloads; validate actual-server/database casino travel/settlement (including poker socket and wallet cash-out), and measure actual action/travel acceptance with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "casinoPollingFollowUp": {
+    "finding": "The first production-style actual two-bot poker run admitted/seated both and acknowledged two buy-ins, but completed no hands/turns in90s. The bots treated a cached valid betting/peer-turn view as a subscription; normal server-clock transitions require the client's read-only get polling. This was a load-driver gap, not evidence the real UI cannot play poker.",
+    "changes": "Shared blackjack/house/poker controllers now refresh idle views with get at the normal CasinoController three-second cadence. Do not query/retry while any operation is pending, duplicate a child controller's refresh, count queries as paid activity or hide query-write failures. Slots and default mixed/nightly behavior unchanged. Production gameplay/protocol/currency rules unchanged.",
+    "checks": "Focused refresh/blackjack/poker race checks passed1.086s. Final whole load-driver race package passed16.794s. Every shared type refreshes a funded waiting view twice over3s without money retries; pending requests block queries, query failures fail and unavailable child views emit only one get. Existing blackjack peer-turn and real-domain poker checks now explicitly allow only a one-field read query on peer turns while retaining exact owner-action/revision/funding/payment fences. An intermediate full run failed two fixtures because they prohibited all peer-turn requests; their assertions were updated to distinguish read-only queries from forbidden money/actions, not to relax outcome evidence.",
+    "sha256": {
+      "loadtest/casino.go": "4a16c02d814f30c33a9e82e57fb81c8f9f3359a184f1ff1ce47b870c3e38e1df",
+      "loadtest/casino_test.go": "ec951edd0ab6d9ddc7f314af38a56f11d9c4bf43b54bd41b927a95b997e38091",
+      "loadtest/blackjack_test.go": "4d7e5960a594813578f06f4dc629ff0c08788454c643d981a2b4d0c385d1de72",
+      "loadtest/poker_test.go": "3af00f9794921dff4a6cad6de791ba62b68454d9dff5b0e5dbae79c387b594f8"
+    }
+  },
+  "pokerActualServerFollowUp": {
+    "source": "8fd90574 plus the shared-controller idle-refresh correction and new load_poker_integration_test.go. Go1.27.1 production-style normal server/driver; race-instrumented root test harness. Server code unchanged from the preceding party check, so only the required driver/test artifacts were rebuilt. Inherited Alpha1.74/schema24, not a published1.79 build.",
+    "setup": "Two explicitly disposable existing Fighter saves,1234Gold and43EP each, normal prepared equipment and a bag sentinel. Start at the real town door0..1,180, enter through ordinary casino command, walk to two distinct chairs at public-poker, buy in100Gold, check/call ordinary shuffled hands. Predeclared90s/five-second admission bound. No VIP/EP access, forced cards/deals/timers, currency grants during play, direct seat edits or altered production rules.",
+    "result": "TestLoadPokerActualEntryPlayAndCashOut passed95.58s; driver/reconnect/leave/cash-out interval93.622s. Each actual bot completed one newly funded paid hand and started another funded round. After normal disconnect, ordinary reconnect and explicit leave settled/refunded remaining funds. Independent durable table/character checks show no pending transfers, paid or empty-lobby settlement, compact Version2 wallet checkpoints, no legacy receipt growth, conserved total2468Gold and unchanged class/equipment/bag/43EP per account.",
+    "metrics": {
+      "connected": 2,
+      "joined": 2,
+      "stateFrames": 5450,
+      "readErrors": 0,
+      "writeErrors": 0,
+      "decodeErrors": 0,
+      "coveredClients": 2,
+      "minViewFrames": 2723,
+      "minActiveMilliseconds": 89809,
+      "maxStateGapMilliseconds": 64,
+      "receivedPayloadBytes": 6703773,
+      "minFreshOwnUpdates": 2723,
+      "authenticated": 2,
+      "admissionFailures": 0,
+      "maxRegistrationMilliseconds": 160,
+      "maxLoginMilliseconds": 121,
+      "maxJoinMilliseconds": 87,
+      "acceptedWagers": 4,
+      "completedPaidParticipantRounds": 2,
+      "minCompletedPaidRounds": 1,
+      "observedTurns": 8,
+      "failedControllers": 0,
+      "wholeFixturePeakBytes": 557842432,
+      "oomEvents": 0,
+      "oomKills": 0
+    },
+    "failedAttempts": [
+      {
+        "scope": "Original unrefreshed controller, race-instrumented server/driver plus race harness, same1CPU/1GiB disposable fixture.",
+        "result": "Failed92.58s; two admitted bots/two wagers, zero completed rounds and two read errors after the server was killed. Cgroup memory peak1073741824bytes, oom=1/oom_kill=1, Docker OOMKilled=true. Owned log had no checked panic/race markers. This instrumented setup could not complete within its declared1GiB budget; not a passed load result or an independently diagnosed production leak.",
+        "fixture": "305fdf94d2ce64208f6f65cc91fd6d79054327f194df6b7ef1e91fd6e4f394d4; exact label/network verified and removed."
+      },
+      {
+        "scope": "Original unrefreshed controller, production-style server/driver under the same1CPU/1GiB fixture.",
+        "result": "Failed92.25s; healthy transport/admission but two wagers, zero completed rounds/turns over90s. Whole fixture peak568766464bytes, no OOM event. This isolated the cached-table polling gap; code was corrected before the final same-budget run, rather than increasing duration or lowering paid-round requirements.",
+        "fixture": "95df79aa8504c8a7771e168395b880fbf1eaead94233005d293332386f7d7c4b; exact label/network verified and removed."
+      }
+    ],
+    "sha256": {
+      "load_poker_integration_test.go": "e4d1f5b4221df0f53603e56125191bce2488dcd5a1ee8494bdf337f95c910f76",
+      "serverBinary": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc",
+      "originalDriverBinary": "1077507670a4fce1cfa3eb29f605a5b8a4042508d49eb648abf4ec69b2710920",
+      "correctedDriverBinary": "be08913bcce687bd740f3e7bb0655fbb89c10663ea5e956b50ec9f99cc07c5fd",
+      "rootTestBinary": "a096318dc12597d18486e98a1317f6ab42f0c8d2b74e13d4c80e0b6585898b35"
+    },
+    "isolation": "Owned successful containerc301e3f70d10f19ac26d7e943a00d18d6536a60b31defa45020b7cb3c7b7535a, codex.task=poker-179-refresh-20261004, Mongo7.0.14, networknone/no published ports,1CPU/1GiB,512MiB database/16MiB config tmpfs and0.25GiB cache. Exact ID/label/network verified before cleanup; container/synthetic data removed. Artifacts retained at/tmp/eidolon-179-poker-actual-eociud. No production account, database, service, mail, DNS or dirty owner-worktree mutation.",
+    "limits": "Two-player actual entry/play/cash-out evidence, not24-chair/four-table or100-player capacity, renderer/Internet latency, per-process heap, runtime/DB headroom, restart acceptance or milestone release. Whole cgroup memory includes Mongo, harness, server, driver and tmpfs. Observed turns may also advance via timeouts and are not causal action receipts. The check is opt-in, not an automatic90s run on every version."
+  },
+  "remaining": "Mixed profile still distributes only combat/town/social; finish dungeon/raid, event/save and representative combined workloads; validate remaining actual-server/database casino profiles and measure actual action/travel acceptance at the declared cohort with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

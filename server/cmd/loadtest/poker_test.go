@@ -88,6 +88,12 @@ func TestPokerLoadTwoPlayersPlayRealRuleHandThroughPaidCompletion(t *testing.T) 
 		var next *game.PokerRound
 		for _, b := range bots {
 			b.step(me, now, 100, 15*time.Second, func(payload map[string]interface{}) error {
+				if payload["action"] == "get" {
+					if len(payload) != 1 || round.View(b.poker.playerID).TurnPlayerID == b.poker.playerID {
+						t.Fatal("idle refresh duplicated money or replaced a legal own turn")
+					}
+					return nil
+				}
 				if next != nil || payload["action"] != "poker_play" || payload["sessionId"] != "synthetic-poker-seat" || payload["roundId"] != round.ID {
 					t.Fatal("peer/wrong-session action or multiple own actions")
 				}

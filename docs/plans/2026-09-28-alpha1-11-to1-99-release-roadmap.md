@@ -1778,6 +1778,15 @@ saves retain positive XP for every member plus exact gear/bag/EP. The bounded45s
 workload is not dungeon/raid completion, unique per-kill attribution, renderer or
 100-player runtime/DB headroom proof. Owned disposable Mongo was removed after
 the check; no production or campaign/soak change was made.
+
+Prepared1.79's **actual two-bot poker check** now passes normal town-door entry,
+walking/seating, shared shuffled play, paid completion for both players and
+ordinary reconnect/leave/cash-out with conserved Gold and unchanged gear/bag/EP.
+It exposed stale cached table views in the driver; blackjack/house/poker bots now
+poll idle views read-only at the normal client's three-second cadence without
+repeating money requests. An initial instrumented1GiB OOM and the subsequent
+stale-view failure remain recorded. The corrected same-budget90s production-style
+run is small-cohort integration, not100-player capacity, restart or release proof.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
 ## References

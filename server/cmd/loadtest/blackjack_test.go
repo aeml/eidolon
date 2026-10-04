@@ -155,12 +155,12 @@ func TestBlackjackLoadWaitsForOwnBetTurnAndPaidCompletion(t *testing.T) {
 	}
 	b.receive(blackjackFixtureView(b, "playing", "player-synthetic-peer", 8, true, false, false))
 	b.step(me, now.Add(3*time.Second), 20, time.Second, request, move)
-	if len(requests) != 1 {
-		t.Fatal("bot played on a peer's turn")
+	if len(requests) != 2 || len(requests[1]) != 1 || requests[1]["action"] != "get" {
+		t.Fatal("peer turn must refresh read-only, not play or retry money")
 	}
 	b.receive(blackjackFixtureView(b, "playing", b.blackjack.playerID, 8, true, false, false))
-	b.step(me, now.Add(3*time.Second), 20, time.Second, request, move)
-	if len(requests) != 2 || requests[1]["gameAction"] != "stand" || requests[1]["roundRevision"] != uint64(8) {
+	b.step(me, now.Add(6*time.Second), 20, time.Second, request, move)
+	if len(requests) != 3 || requests[2]["gameAction"] != "stand" || requests[2]["roundRevision"] != uint64(8) {
 		t.Fatal("stand lost advertised turn/revision")
 	}
 	b.receive(blackjackFixtureView(b, "playing", "player-synthetic-peer", 9, true, false, false))

@@ -105,6 +105,16 @@ At shutdown bots stop issuing actions, observe any one outstanding spin/bonus
 acknowledgement for at most the declared admission timeout, then close and join
 their reader. Missing final acknowledgement fails instead of silently passing.
 
+## Shared table polling
+
+Blackjack, roulette/baccarat and poker bots refresh an idle table view through
+read-only `get` requests at the normal client's three-second cadence. A valid
+cached lobby or peer-turn view can become stale as the server clock advances;
+it is not a continuing subscription. Refreshes neither retry a monetary action
+nor count as a wager, turn or paid result. There is no query while an action is
+outstanding, and no duplicate query when a child controller already refreshed.
+Query write failures fail the workload.
+
 ## Multiplayer blackjack workload
 
 `-scenario casino-blackjack -n 1..24 -credentials-file /absolute/test-accounts.json
@@ -196,6 +206,20 @@ through the actual poker rules with the ordinary shuffled deck and advertised
 revision-bound actions. This is domain/protocol evidence, not actual-server socket,
 wallet persistence, multiplayer capacity or restart acceptance. Representative
 combined and party/raid/event/save workloads still remain required.
+
+The separate opt-in `TestLoadPokerActualEntryPlayAndCashOut` now passes with two
+real bots, production-style server/driver and disposable Mongo: town-door entry,
+walking to distinct chairs, shared shuffled hands, newly funded paid completion
+for both, then normal reconnect/leave and durable cash-out. Total Gold remains
+2468 and gear, bags and EP are unchanged. Use the same isolated environment
+flags documented below. The90s workload is opt-in, not repeated automatically
+on every release, and does not establish24-seat/four-table or100-player capacity.
+
+An initial race-instrumented1GiB fixture hit its memory limit; a same-budget
+production-style run exposed the stale-view polling bug above. Corrected bots
+passed without increasing duration/budget or relaxing paid-round evidence. Use
+production-style binaries for representative resource measurements; race runs
+remain scoped concurrency evidence, not production-capacity measurements.
 
 ## Four-player overworld party workload
 
