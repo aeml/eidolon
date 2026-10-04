@@ -454,6 +454,10 @@ Notes:
   owner rounds and acts only on advertised turns; fresh paid-hand evidence is
   distinct from peer activity or existing history. Its focused stand-in checks
   are not actual-game/database or multiplayer capacity acceptance.
+  A shared roulette/baccarat profile now assigns36 public chairs and distinguishes
+  exact owner stake acknowledgement from reveal and paid completion. Local
+  socket checks cover both games, not actual-game settlement or capacity; poker,
+  party/raid/event/save and combined workloads remain required.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

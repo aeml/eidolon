@@ -7,7 +7,7 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack`. Mixed
+`casino-blackjack` and `casino-house`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows; those remain
 separate required workloads before the1.79 milestone can be accepted. Registration,
@@ -129,8 +129,35 @@ bound, not an entire newly funded table round; accepted ongoing wagers remain
 under normal server timer/persistence rules. This does not prove all last rounds
 settled after disconnect, payout conservation, durability or production load.
 Focused local bot/WebSocket fixtures are not actual game/Mongo acceptance.
-Poker, roulette, baccarat, coordinated parties/raids, events/save and representative
+Poker, coordinated parties/raids, events/save and representative
 combined workloads remain required before the capacity milestone is complete.
+
+## Shared roulette and baccarat workload
+
+`-scenario casino-house -n 1..36 -credentials-file /absolute/test-accounts.json
+-casino-bet 20 -duration 120s` assigns distinct public Gold chairs across four
+six-seat baccarat tables and two six-seat roulette tables. It uses the same
+funded-account, legal stake and physical entry/seating rules above. Duration must
+cover travel, ordinary betting, reveal and settlement windows;120s is only an
+example, not a capacity result. Bots wager on baccarat `player` or roulette `red`
+through the normal validated command, without rigging results or granting funds.
+
+A sent wager counts only after the exact owner's seat/round/single stake is
+acknowledged. Reveals are not payment: fresh completion requires the newly
+funded round, the owner's paid flag, nonnegative payout and a valid roulette
+number or baccarat winner. Existing history, peer wagers, unpaid results and
+duplicate views cannot satisfy coverage. Changed sessions, wrong rounds/stakes,
+EP state, rejections, insufficient funds and timeouts fail without money retries.
+
+`House coverage` reports accepted wagers, paid completed rounds, minimum fresh
+paid rounds per client and failures (`observed_stands=0` is unused for these
+games). Every configured bot needs at least one fresh paid round. Shutdown drains
+only the outstanding request acknowledgement, not every final funded round;
+ongoing rounds remain under normal server timer/persistence rules. Local socket
+fixtures verify both games through two accepted wagers and one paid round, with
+the second round still pending settlement. They do not prove actual-game/Mongo
+travel, wallet conservation, multiplayer capacity or restart durability. The
+default mixed workload and100-client nightly validator remain unchanged.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible

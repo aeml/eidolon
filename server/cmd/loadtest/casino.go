@@ -17,6 +17,7 @@ type casinoLoad struct {
 	table              game.CasinoTable
 	seat               int
 	blackjack          *blackjackLoad
+	house              *houseLoad
 	view               casinoLoadView
 	pending            string
 	pendingSession     string
@@ -36,6 +37,7 @@ type casinoLoadView struct {
 		Seat      int    `json:"seat"`
 	} `json:"yourSeat"`
 	Blackjack *blackjackLoadView `json:"blackjack"`
+	House     *houseLoadView     `json:"house"`
 	Slots     *struct {
 		Currency   string `json:"currency"`
 		Balance    int    `json:"balance"`
@@ -80,6 +82,9 @@ func (b *casinoLoad) counts() casinoLoadCounts {
 	if b.blackjack != nil {
 		counts.wagers, counts.rounds, counts.actions = b.blackjack.wagers, b.blackjack.rounds, b.blackjack.actions
 	}
+	if b.house != nil {
+		counts.wagers, counts.rounds = b.house.wagers, b.house.rounds
+	}
 	return counts
 }
 
@@ -107,6 +112,10 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 	}
 	if b.blackjack != nil {
 		b.blackjack.receive(b)
+		return true
+	}
+	if b.house != nil {
+		b.house.receive(b)
 		return true
 	}
 	if (b.pending == "slot_spin" || b.pending == "slot_bonus") && view.YourSeat != nil && view.Slots != nil && !view.Slots.Processing && view.Slots.Available {
@@ -160,7 +169,7 @@ func (b *casinoLoad) awaitSettled(readerDone <-chan struct{}, timeout time.Durat
 	defer timer.Stop()
 	for {
 		b.mu.Lock()
-		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus" || b.pending == "bet" || b.pending == "play")
+		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus" || b.pending == "bet" || b.pending == "play" || b.pending == "house_bet")
 		b.mu.Unlock()
 		if !pending {
 			return
@@ -230,6 +239,10 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 	}
 	if b.blackjack != nil {
 		b.blackjack.step(b, now, bet, request, issue)
+		return
+	}
+	if b.house != nil {
+		b.house.step(b, now, bet, request, issue)
 		return
 	}
 	slots := b.view.Slots

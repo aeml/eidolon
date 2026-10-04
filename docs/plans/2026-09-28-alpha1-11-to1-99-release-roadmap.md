@@ -1724,6 +1724,15 @@ Observed stands are not causal acceptance proof, and bounded shutdown observatio
 does not certify all last funded shared rounds settled. Other card games,
 party/raid/event/save and combined workload gates remain open.
 
+Prepared1.79 now also has a **shared roulette/baccarat Gold workload**, assigning
+36 distinct public chairs and normal validated wagers. Fresh own-round stake
+acknowledgement and paid completion are separate; reveals, existing history,
+peer wagers, unpaid results and duplicates do not count. Focused race checks
+include local bot/WebSocket flows for both games, not actual-game/Mongo or
+capacity acceptance. Shutdown observes the last request, not settlement of all
+final funded rounds. Poker, party/raid/event/save, representative combined load
+and ordered predecessor/deployment gates remain open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)
