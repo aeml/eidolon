@@ -127,5 +127,47 @@
     },
     "limits": "Not dungeon/raid traversal, pathfinding, healer viability, actual-server combat, shared-kill/XP attribution, persistence or capacity acceptance. No real accounts, production services/mail, schema, currency/role policy, deployment or long run changed. Default mixed/nightly100 still excludes this separate workload."
   },
-  "remaining": "Mixed profile still distributes only combat/town/social; finish dungeon/raid, event/save and representative combined workloads; validate the prepared overworld party profile against actual server/database combat and casino travel/settlement (including actual-server poker socket and wallet cash-out), and measure actual action/travel acceptance with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "partyActualServerFollowUp": {
+    "source": "Current7b4f0647 party driver and the added load_party_integration_test.go; Go1.27.1 race-built normal server, driver and root test binary. Inherited Alpha1.74/schema24, not a published1.79 build.",
+    "setup": "Explicitly disposable loopback Mongo7.0.14 and four level30 prepared characters with primary-class stats, legal alternating Uncommon/Rare equipment, Rogue dual daggers, normal branch-A unlocks and a prepared Fighter wound. All start outside town at400..403,600. Ordinary randomized DemonOrc enemies, no fixture-only spawns, forced damage/heals/kills, grants during play or cooldown bypass. Driver predeclared45s/5s admission timeout, four clients, combat anchor400,600.",
+    "result": "TestLoadPartyActualCombatAndSavedGear passed51.69s; driver and save-check interval47.844s. Normal invitation consent, full roster for every client, all-member own positive impacts, actual Cleric healing and accepted class casts. After normal disconnect/server shutdown, independent Mongo reads show fresh saves, positive XP progression for every character and exact equipped-gear/inventory/EP preservation.",
+    "metrics": {
+      "connected": 4,
+      "joined": 4,
+      "stateFrames": 707,
+      "readErrors": 0,
+      "writeErrors": 0,
+      "decodeErrors": 0,
+      "coveredClients": 4,
+      "minViewFrames": 176,
+      "minActiveMilliseconds": 35515,
+      "maxStateGapMilliseconds": 313,
+      "receivedPayloadBytes": 9154787,
+      "minFreshOwnUpdates": 176,
+      "authenticated": 4,
+      "admissionFailures": 0,
+      "maxRegistrationMilliseconds": 4526,
+      "maxLoginMilliseconds": 4983,
+      "maxJoinMilliseconds": 498,
+      "formedGroups": 1,
+      "confirmedMembers": 4,
+      "minOwnPositiveImpactDeliveries": 10,
+      "damageDeliveries": 72,
+      "healDeliveries": 2,
+      "acceptedCasts": 54,
+      "deniedCasts": 0,
+      "observedXPUpdates": 32,
+      "observedTargetDeaths": 8,
+      "failedGroups": 0
+    },
+    "sha256": {
+      "load_party_integration_test.go": "9ce83e395bad1817b292698d3d9cf3a1e5126156d2db323a05684d09bd43b1e0",
+      "serverBinary": "cc496a48608b9e39b69c9d604c57e9d3f979ab45848eaa0bd6529e860d432967",
+      "driverBinary": "b1f60db3a81991cc2767d371073d21f822be1f019fc0e7f079bf60b60a3d173e",
+      "rootTestBinary": "b966181f61519062c46232b01666024aa152e324ae0b323d721de3c02f554873"
+    },
+    "isolation": "Owned container2f5464b696bf89c1c58c8fe08eacd6e0e882cdb6ad8a2e3c21f78b47ba9a8030, codex.task=party-179-20261004, networknone/no published ports,1CPU/1GiB,512MiB database/16MiB config tmpfs and0.25GiB Mongo cache. Read-only artifact bind. Exact ID/label/network verified before removal; container and synthetic database removed, filtered listing empty. Compiled artifacts retained at/tmp/eidolon-179-party-actual-tKC73v. Production services/database/mail/accounts and dirty owner worktree untouched.",
+    "limits": "Four-player real combat and disconnect-save evidence, not dungeon/raid clears, full healing-role balance, per-kill unique attribution, fresh-process character reload,100-player capacity, renderer/Internet latency, runtime/DB headroom or ordered release acceptance. Admission approached the5s limit on the1CPU race fixture; no claim of authentication throughput. No redundant campaign/soak or automatic every-version long run."
+  },
+  "remaining": "Mixed profile still distributes only combat/town/social; finish dungeon/raid, event/save and representative combined workloads; validate actual-server/database casino travel/settlement (including poker socket and wallet cash-out), and measure actual action/travel acceptance with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

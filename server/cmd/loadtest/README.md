@@ -234,6 +234,17 @@ healing selection, consent, inventory preservation and shutdown, not actual
 game-server combat, Mongo persistence, dungeon/raid clears or multiplayer capacity.
 Those representative workloads and a combined profile remain required.
 
+The separate opt-in `TestLoadPartyActualCombatAndSavedGear` now verifies the
+current profile against the normal race-built server and disposable Mongo:
+four equipped level30 characters fight ordinary randomized enemies for45s,
+receive actual class impacts and Cleric healing, then save positive XP for every
+member while preserving equipment, bag and EP exactly. Enable only with
+`EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1`, an explicitly isolated loopback
+`EIDOLON_RESOURCE_MONGO_URI`, absolute `EIDOLON_RESOURCE_BINARY` and
+`EIDOLON_LOADTEST_BINARY` paths. This earned-combat/save check is not a dungeon or
+raid clear, unique per-kill receipt, fresh-process reload or100-player capacity
+result. It is opt-in, not an automatic repeated45s run on every release.
+
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible
 existing checks and run only the remaining scoped workloads, not another full

@@ -469,6 +469,9 @@ Notes:
   normal party consent, confirmed rosters and unlocked Cleric healing. Its
   own-impact/XP/death counters do not invent shared-kill attribution; the local
   combat stand-in is not real-server, healer, instance or capacity acceptance.
+  A separate bounded actual-server/Mongo party check now passes normal combat,
+  Cleric healing and every member's saved XP with exact gear/bag/EP preservation;
+  this four-player evidence still does not establish instance or capacity gates.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

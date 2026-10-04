@@ -1770,6 +1770,14 @@ is invented. A four-socket fixture uses real party consent rules but synthetic
 combat outcomes, not actual-server/Mongo, healer-role, dungeon/raid or capacity
 acceptance. The default mixed/nightly profile remains unchanged; ordered release
 gates and representative combined/event/save/instance workloads remain open.
+
+The separate current **actual-server/Mongo party check** now passes: four
+level30 Uncommon/Rare-equipped classes fight ordinary randomized overworld foes
+through normal commands, the Cleric delivers real heals, and ordinary disconnect
+saves retain positive XP for every member plus exact gear/bag/EP. The bounded45s
+workload is not dungeon/raid completion, unique per-kill attribution, renderer or
+100-player runtime/DB headroom proof. Owned disposable Mongo was removed after
+the check; no production or campaign/soak change was made.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
 ## References
