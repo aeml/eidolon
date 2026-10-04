@@ -12,7 +12,7 @@ func TestWoodlandSavedPositionEscapeIsAcceptedByMovementContext(t *testing.T) {
 		if !strings.HasPrefix(trunk.SiteID, "tree:") {
 			continue
 		}
-		player := &Entity{ID: "saved-" + trunk.SiteID, Type: TypePlayer, State: "IDLE",
+		player := &Entity{ID: "saved-" + trunk.SiteID, Type: TypePlayer, State: "IDLE", Health: 100, MaxHealth: 100,
 			X: trunk.X, Z: trunk.Z, Speed: 5, MovementContext: "woodland-return", RecoveryContextReady: true}
 		w.AddEntity(player)
 		// The client's normal inside-box resolution steps just beyond the trunk

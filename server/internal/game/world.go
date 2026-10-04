@@ -1403,7 +1403,8 @@ func (w *World) updatePlayerMovementAt(id string, x, y, z, rotation float64, sta
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
 	if context != nil {
-		if *context != e.MovementContext || (!e.RecoveryContextReady && now.Sub(e.LastRespawnTime) < time.Second) {
+		if e.Type != TypePlayer || e.Health <= 0 || e.Disconnected ||
+			*context != e.MovementContext || (!e.RecoveryContextReady && now.Sub(e.LastRespawnTime) < time.Second) {
 			return false
 		}
 		if !replicableMovementNumber(x) || !replicableMovementNumber(y) || !replicableMovementNumber(z) || !replicableMovementNumber(rotation) {
@@ -1505,7 +1506,8 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
 	if context != nil {
-		if *context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second) ||
+		if e.Health <= 0 || e.Disconnected ||
+			*context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second) ||
 			e.State == "JUMPING" || !replicableMovementNumber(x) || !replicableMovementNumber(y) || !replicableMovementNumber(z) {
 			return false
 		}
