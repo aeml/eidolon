@@ -18,11 +18,30 @@ var releaseCommit = regexp.MustCompile(`^[0-9a-f]{7,64}$`)
 var releaseVersion = regexp.MustCompile(`^Alpha [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`)
 
 type Sample struct {
-	Ready     bool   `json:"ready"`
-	Cause     string `json:"cause"`
-	Commit    string `json:"commit,omitempty"`
-	Version   string `json:"version,omitempty"`
-	LatencyMS int64  `json:"latencyMs"`
+	Ready     bool            `json:"ready"`
+	Cause     string          `json:"cause"`
+	Commit    string          `json:"commit,omitempty"`
+	Version   string          `json:"version,omitempty"`
+	LatencyMS int64           `json:"latencyMs"`
+	Runtime   *RuntimeMetrics `json:"runtime,omitempty"`
+}
+
+// Fixed aggregate fields only: no account labels or arbitrary metric names.
+type RuntimeMetrics struct {
+	Goroutines      uint64       `json:"goroutines"`
+	HeapAllocBytes  uint64       `json:"heapAllocBytes"`
+	HeapObjects     uint64       `json:"heapObjects"`
+	BroadcastQueues QueueMetrics `json:"broadcastQueues"`
+}
+
+type QueueMetrics struct {
+	Queued            uint64 `json:"queued"`
+	Capacity          uint64 `json:"capacity"`
+	EncounterQueued   uint64 `json:"encounterQueued"`
+	EncounterCapacity uint64 `json:"encounterCapacity"`
+	Dropped           uint64 `json:"dropped"`
+	EncounterDropped  uint64 `json:"encounterDropped"`
+	InvalidDropped    uint64 `json:"invalidDropped"`
 }
 
 type Probe struct {
@@ -59,10 +78,7 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	request.Header.Set("Cache-Control", "no-cache")
 	response, err := p.client.Do(request)
 	if err != nil {
-		sample.Cause = "probe_failed" // Never copy URLs, peer text or TLS diagnostics.
-		if ctx.Err() != nil {
-			sample.Cause = "cancelled"
-		}
+		sample.Cause = probeFailureCause(ctx, err)
 		return
 	}
 	defer response.Body.Close()
@@ -71,8 +87,16 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 		return
 	}
 	body, err := io.ReadAll(io.LimitReader(response.Body, (32<<10)+1))
-	var health struct{ Status, Database, Commit, Version string }
-	if err != nil || len(body) > 32<<10 || json.Unmarshal(body, &health) != nil {
+	if err != nil {
+		sample.Cause = probeFailureCause(ctx, err)
+		return
+	}
+	var health struct {
+		Status, Database, Commit, Version       string
+		Goroutines, HeapAllocBytes, HeapObjects *uint64
+		BroadcastQueues                         *QueueMetrics
+	}
+	if len(body) > 32<<10 || json.Unmarshal(body, &health) != nil {
 		sample.Cause = "invalid_response"
 		return
 	}
@@ -81,6 +105,15 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	}
 	if releaseVersion.MatchString(health.Version) {
 		sample.Version = health.Version
+	}
+	if health.Goroutines != nil && health.HeapAllocBytes != nil && health.HeapObjects != nil && health.BroadcastQueues != nil {
+		queues := *health.BroadcastQueues
+		if queues.Queued > queues.Capacity || queues.EncounterQueued > queues.EncounterCapacity {
+			sample.Cause = "invalid_response"
+			return
+		}
+		sample.Runtime = &RuntimeMetrics{Goroutines: *health.Goroutines, HeapAllocBytes: *health.HeapAllocBytes,
+			HeapObjects: *health.HeapObjects, BroadcastQueues: queues}
 	}
 	if health.Status != "ok" || health.Database != "ready" {
 		sample.Cause = "not_ready"
@@ -92,6 +125,17 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 		sample.Ready, sample.Cause = true, "ready"
 	}
 	return
+}
+
+func probeFailureCause(ctx context.Context, err error) string {
+	if ctx.Err() != nil {
+		return "cancelled"
+	}
+	var networkError net.Error
+	if errors.As(err, &networkError) && networkError.Timeout() {
+		return "probe_timeout"
+	}
+	return "probe_failed" // Never copy URLs, peer text or TLS diagnostics.
 }
 
 type Notice struct {
@@ -145,7 +189,7 @@ func (d *Detector) Observe(sample Sample, now time.Time) *Notice {
 	d.incident, d.lastNotice = true, now
 	cause := "probe_failed"
 	switch sample.Cause {
-	case "probe_failed", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch":
+	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch":
 		cause = sample.Cause
 	}
 	return &Notice{Kind: kind, Cause: cause}
