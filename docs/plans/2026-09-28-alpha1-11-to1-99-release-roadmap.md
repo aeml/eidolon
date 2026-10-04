@@ -213,6 +213,13 @@ full jump/ability authority and connected release gates are still unfinished.
 invalid coordinates and mid-flight restarts and keep landing height server-owned.
 The quick-jump range versus distance-scaled flight policy still needs resolution;
 neither this partial work nor its isolated tests is a 1.72 release acceptance.
+The [administrator authority backport](2026-10-04-release1-72-admin-authority-checks.json)
+brings prepared post-query/audit role and connection revalidation forward from
+the1.74 review so known authority races are not deliberately deferred. New
+grants/report changes recheck access before admission, private late-read results
+are discarded and late moderation denials remain audited. Scoped schema17 race
+regressions pass; no production administrator action or whole1.74 completion
+is implied. Broader operational review and ordered release gates remain open.
 [Broadcast scene checks](2026-10-02-release1-72-broadcast-scene-checks.json) now
 capture combat-event scene at creation and require joined, present recipients in
 that scene, including explicit overworld isolation and fail-closed future event
