@@ -104,3 +104,30 @@ func TestMonitorCommandConfigurationAndShutdown(t *testing.T) {
 		t.Fatalf("shutdown wrote an outage: %v", err)
 	}
 }
+
+func TestMonitorCommandPostmarkRequiresExplicitOptIn(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	t.Setenv("POSTMARK_SERVER_TOKEN", "synthetic-private-invalid\n")
+	t.Setenv("POSTMARK_FROM_EMAIL", "synthetic-private-invalid")
+	t.Setenv("POSTMARK_MESSAGE_STREAM", "synthetic-private-invalid/")
+	t.Setenv("ADMIN_NOTIFICATION_EMAILS", "synthetic-private-invalid")
+	var output strings.Builder
+	args := arguments("http://127.0.0.1/healthz")
+	if err := run(ctx, args, &output); err != nil || output.Len() != 0 {
+		t.Fatal("disabled alerts unexpectedly read/required provider configuration", err)
+	}
+	for _, extra := range [][]string{{"-mail-timeout", "1s"}, {"-mail-min-interval", "1m"}, {"-postmark-alerts"}, {"-postmark-alerts", "-mail-timeout", "1s", "-mail-min-interval", "1m"}} {
+		if err := run(ctx, append(append([]string{}, args...), extra...), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") || output.Len() != 0 {
+			t.Fatal("unsafe opt-in/configuration handling", err)
+		}
+	}
+	t.Setenv("POSTMARK_SERVER_TOKEN", "synthetic-operator-token")
+	t.Setenv("POSTMARK_FROM_EMAIL", "monitor@example.invalid")
+	t.Setenv("POSTMARK_MESSAGE_STREAM", "outbound")
+	t.Setenv("ADMIN_NOTIFICATION_EMAILS", "owner@example.invalid")
+	// A pre-cancelled run proves configuration only. No real provider request.
+	if err := run(ctx, append(args, "-postmark-alerts", "-mail-timeout", "1s", "-mail-min-interval", "1m"), &output); err != nil || output.Len() != 0 {
+		t.Fatal("valid explicit configuration or cancellation failed", err)
+	}
+}
