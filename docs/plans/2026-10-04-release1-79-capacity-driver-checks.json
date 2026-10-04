@@ -646,6 +646,18 @@
       "cleanup": "Terminal parent failure and absent root/server/driver verified; exact owner label/network/OOMfalse/peak579903488B/all OOM events0 checked before removing owned fixture/synthetic database. No production data affected."
     }
   },
+  "combinedTargetCohortPreparation": {
+    "scope": "Extend existing opt-in actual-server test from its default20-client baseline to explicit20/40/60/80/100 cohorts through EIDOLON_COMBINED_CLIENTS. No game/driver behavior changed. Repeat class fixtures and preservation checks by each twenty-client block, preserving exact original20-client workload and its historical result without replaying it.",
+    "target": "A100-client run will use five4-class-role parties,10 poker/20 blackjack/20 house/10 slot clients,10 town and10 social clients. Same120-second duration,5-second admission bound, ordinary wagers/consent/gear, all-party impacts/healing, paid result for every casino client and every-account preserved-gear/EP/bag fresh-save gates. No raid/event clear or end-to-end final casino settlement claimed by this workload.",
+    "coverage": "Predeclare minimum600 frames and600 fresh own-player updates for each client over120s, and minimum108000ms active window (90%). Exact single complete coverage lines required. Missing, duplicate, starved, incomplete, malformed, overflowing or wrong-cohort evidence cannot pass. This is a scoped sustained-delivery threshold, not a fictional Internet/rendering SLA.",
+    "checks": "Cohort selection focused race passed1.103s; final count/view-coverage race passed1.082s. Valid supported blocks and exact coverage thresholds pass, unsupported cohorts and partial/duplicate/starved/unsafe records reject. Actual100-client run has not started; preserve current weekly run and avoid concurrent benchmark interference. No campaign/20-client baseline replay.",
+    "artifacts": {
+      "sourceSHA256": "61125ac2528d26c501bbafbceff10e03e6ebff231b710078cba2779878c478fc",
+      "rootPath": "/tmp/eidolon-179-combined100-yybMM9/root-current.test",
+      "rootSHA256": "86d20c1e5acbdadcb1432147069167126656f0788aa184721e0e5f7e93fd9925"
+    },
+    "remaining": "Run exact100-client fixture in a separate owned normal-server/Mongo environment after the current raid terminates; capture peak/OOM and scoped runtime observations, then independent saves. Server tick/network/database/client headroom, dense raid/event overlap, complete town/social outcomes and owner deployment/cohort budgets still need evidence; this preparation is not1.79 capacity acceptance."
+  },
   "raidEntryDeliveryCushion": {
     "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
     "reproduction": "New TestRaidEntryBudgetLeavesDeliveryTimingCushion failed0.010s on the original client budget. Declared model mirrors normal two-token/one-per30s server refill, with first request500ms dispatch delay and later100ms delay, preserving socket order. Exact client boundary admits the third request before the model's server budget refills. Model is a reproduced defect, not measurement of the actual failed request's latency.",

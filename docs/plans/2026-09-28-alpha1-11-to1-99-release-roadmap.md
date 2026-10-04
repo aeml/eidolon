@@ -61,6 +61,14 @@ client/server refill-boundary defect; a driver-only31-second refill cushion
 passes focused and full race checks. Its actual five-role finale run is now
 running; no limits, health/damage or mandatory clear/phase/save gates relaxed.
 
+The existing actual combined-workload harness now supports explicit cohorts up
+to100 while retaining20 as its default and its original earned baseline. Per-block
+class preparation and independent save checks scale to five parties and the
+real table/machine assignments. Complete sustained per-client coverage is now
+predeclared at5 updates/sec and90% of the120s window; focused count/coverage race
+checks passed1.082s. The100-client run is not yet started, and this is not capacity
+acceptance or a reason to overlap its measurement with the current finale test.
+
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
 an API-only frontend. Eighteen pure argument cases pass; current origin TLS,
