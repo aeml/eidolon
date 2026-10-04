@@ -928,9 +928,7 @@ class GameEngineNetworkMessageMethods {
                 return;
             }
 
-            if (typeof alert !== 'undefined') {
-                alert(`Server Error: ${msg.payload}`);
-            }
+            this.uiManager?.showActionError?.(typeof msg.payload === 'string' ? msg.payload : 'The server could not complete this action. Please try again.');
             if (typeof msg.payload === 'string' && msg.payload.includes("Logged in from another location")) {
                 this.network.isExpectedDisconnect = true;
                 window.location.reload();

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"eidolon-server/internal/game"
 )
 
 type messageAccess uint8
@@ -81,17 +83,19 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgGetDungeonStatus: policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgResetDungeon:     policy(accessCharacter, 1<<10, 3, 10*time.Second),
 
-	MsgEquip:             policy(accessCharacter, 2<<10, 20, time.Second),
-	MsgGetLoadouts:       policy(accessCharacter, 1<<10, 5, 10*time.Second),
-	MsgSaveLoadout:       policy(accessCharacter, 2<<10, 3, 10*time.Second),
-	MsgApplyLoadout:      policy(accessCharacter, 1<<10, 3, 10*time.Second),
-	MsgUnequip:           policy(accessCharacter, 2<<10, 20, time.Second),
-	MsgInventoryMove:     policy(accessCharacter, 2<<10, 30, time.Second),
-	MsgInventoryDrop:     policy(accessCharacter, 2<<10, 10, time.Second),
-	MsgInventorySort:     policy(accessCharacter, 1<<10, 5, time.Second),
-	MsgSplitStack:        policy(accessCharacter, 2<<10, 20, time.Second),
-	MsgBuyGamble:         policy(accessCharacter, 2<<10, 10, time.Second),
-	MsgSell:              policy(accessCharacter, 2<<10, 10, time.Second),
+	MsgEquip:         policy(accessCharacter, 2<<10, 20, time.Second),
+	MsgGetLoadouts:   policy(accessCharacter, 1<<10, 5, 10*time.Second),
+	MsgSaveLoadout:   policy(accessCharacter, 2<<10, 3, 10*time.Second),
+	MsgApplyLoadout:  policy(accessCharacter, 1<<10, 3, 10*time.Second),
+	MsgUnequip:       policy(accessCharacter, 2<<10, 20, time.Second),
+	MsgInventoryMove: policy(accessCharacter, 2<<10, 30, time.Second),
+	MsgInventoryDrop: policy(accessCharacter, 2<<10, 10, time.Second),
+	MsgInventorySort: policy(accessCharacter, 1<<10, 5, time.Second),
+	MsgSplitStack:    policy(accessCharacter, 2<<10, 20, time.Second),
+	MsgBuyGamble:     policy(accessCharacter, 2<<10, 10, time.Second),
+	// Sell All sends one ownership-checked request per bag item. Allow two
+	// bags of burst headroom for preceding manual sales; keep a bounded budget.
+	MsgSell:              policy(accessCharacter, 2<<10, 2*game.MaxInventorySize, time.Second),
 	MsgBuyback:           policy(accessCharacter, 2<<10, 10, time.Second),
 	MsgStashDeposit:      policy(accessCharacter, 2<<10, 15, time.Second),
 	MsgStashWithdraw:     policy(accessCharacter, 2<<10, 15, time.Second),

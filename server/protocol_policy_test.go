@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"eidolon-server/internal/game"
 )
 
 func TestInboundMessagePoliciesCoverDispatcher(t *testing.T) {
@@ -171,5 +173,25 @@ func TestInboundMessageRateLimitRefillsDeterministically(t *testing.T) {
 	}
 	if err := client.acceptInboundMessage(message, now.Add(30*time.Second)); err != nil {
 		t.Fatalf("report was not admitted after one-token refill: %v", err)
+	}
+}
+
+func TestSellLimitAllowsTwoFullBagsButStillRejectsFloods(t *testing.T) {
+	now := time.Unix(1_700_000_000, 0)
+	client := &Client{username: "player", playerID: "player-player"}
+	message := Message{Type: MsgSell}
+	for index := 0; index < 2*game.MaxInventorySize; index++ {
+		if err := client.acceptInboundMessage(message, now); err != nil {
+			t.Fatalf("normal Sell All burst item%d rejected: %v", index, err)
+		}
+	}
+	if err := client.acceptInboundMessage(message, now); err == nil {
+		t.Fatal("selling flood was not bounded")
+	}
+	if err := client.acceptInboundMessage(message, now.Add(time.Second)); err != nil {
+		t.Fatal("selling budget failed to refill")
+	}
+	if err := (&Client{}).acceptInboundMessage(message, now); err == nil {
+		t.Fatal("selling no longer requires authentication/character")
 	}
 }

@@ -154,6 +154,37 @@
 .mobile-mode .eidolon-phase-notice :is(.eidolon-phase-notice__title, .eidolon-phase-notice__meta, .eidolon-phase-notice__effect) { display: none; }
 .mobile-mode .eidolon-phase-notice .eidolon-phase-notice__compact { display: block; }
 
+.action-error-notice {
+    position: fixed;
+    top: max(20px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(420px, calc(100vw - 32px));
+    box-sizing: border-box;
+    padding: 14px 52px 14px 16px;
+    z-index: calc(var(--z-world-map, 25000) + 20);
+    border: 1px solid #ce805f;
+    border-radius: var(--radius-md, 8px);
+    background: linear-gradient(180deg, #291c22, #17121b);
+    box-shadow: 0 8px 28px #0009;
+    color: #ffe2d5;
+    overflow-wrap: anywhere;
+}
+.action-error-notice p { margin: 6px 0 0; line-height: 1.45; font-size: 14px; color: #f1e8e3; }
+.action-error-notice button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #ffe2d5;
+    font-size: 24px;
+    cursor: pointer;
+}
+
 #combat-intent-panel {
     display: none;
     pointer-events: none;
