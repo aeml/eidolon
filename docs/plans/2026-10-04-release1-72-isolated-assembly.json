@@ -13,6 +13,13 @@
     "scope": "Recompile and exercise newly integrated email-recovery/provider, request correlation/policies, credentials, token lifecycle and inbound admission regressions against the prepared protocol path. Actual provider unit requests use local TLS/synthetic credentials. No actual connected-Mongo proof, capacity/campaign/raid/soak, version assembly or live acceptance is claimed here.",
     "hygiene": "git diff --check passed during merge resolution; clean isolated worktree after both merge commits. Existing source receipts keep their exact earlier source/binary scopes. Original owner-dirty workspace and broader prepared branch preserved."
   },
+  "recoveryCorrectionIntegration": {
+    "source": "30ada7138ffb0516f9be6d50a457f55f424e5448",
+    "predecessorCandidate": "85f1bccd58643f5c5fedef3391ac6518e75a5ceb / actualCI37181802120 confirmedin_progress; not accepted by this record",
+    "scope": "Merged corrected login Email/Password naming, aria-describedby guidance and six-case browser evidence without conflict. The successor retains schema17 and Alpha1.71.0 defaults until its own assembly; no out-of-order publication.",
+    "dependencyReview": "Current merged-source pinned govulncheck1.8.0 under Go1.27.1 passed:0called and0imported-package vulnerabilities,1module-only advisory not called. npm audit --audit-level=low passed with0vulnerabilities. This refresh does not repeat the historical actual-Mongo/socket or capacity matrices.",
+    "trackedSecretReview": "Current tracked-filename inventory finds server/.env.example and ordinary environment-named documentation/tests, no private-key containers. Filename-only tracked-text search found no private-key header, GitHub token or AWS access-ID pattern matches. The new mailer uses operator environment references, fixed Postmark HTTPS, no redirects and generic provider errors. Recovery handoff clears fragments before analytics and suppresses analytics on private pages. Narrow review only: not proof of historical/operator-secret absence, arbitrary encodings or comprehensive security certification."
+  },
   "remaining": [
     "Corrected1.71 exact-source CI and independent public acceptance before successor publication. Actual operator mailbox-delivery validation remains separate from synthetic proof.",
     "Owner jump-range/travel-time choice. Current network jump validates finite input/floor/context and rejects midflight restart but arbitrary distance still tops out at1.28seconds. Do not claim impossible-movement boundary closed. Follow-up question asks quick approximately17metre cap versus distance-scaled longer flight.",
