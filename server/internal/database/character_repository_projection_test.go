@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"maps"
 	"os"
+	"reflect"
 	"regexp"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -16,6 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestCharacterRepositoryQueriesOnlyRequestedCharacter(t *testing.T) {
@@ -102,7 +105,12 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 	other := &Character{Name: "unrelated-character", Class: "Fighter", Gold: 777, ItemDeliveryReceipts: persistenceReceiptMap(10000)}
 	target := &Character{Name: "requested-character", Class: "Wizard", Gold: 99, EP: 43, ItemDeliveryReceipts: persistenceReceiptMap(1000),
 		DirectTradeState: privateState, PendingBossLoot: []string{"retained-private-roll"}}
-	owner := User{Username: "projection-owner", Email: "synthetic-private@example.invalid", PasswordHash: "synthetic-private-hash",
+	password := " projection password "
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	owner := User{Username: "projection-owner", PublicName: "Original public name", Email: "synthetic-private@example.invalid", PasswordHash: string(hash),
 		Characters: []*Character{other, target}}
 	if _, err := users.InsertOne(t.Context(), owner); err != nil {
 		t.Fatal(err)
@@ -160,4 +168,70 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 	if got, err := repository.LoadCharacter(owner.Username, "missing-character"); err == nil || got != nil {
 		t.Fatal("missing character fell back to another character", got, err)
 	}
+	entryDB := &DB{users: users}
+	if valid, err := entryDB.Authenticate(owner.Username, password); err != nil || !valid {
+		t.Fatal("projected credential rejected the exact legacy password", err)
+	}
+	mu.Lock()
+	credentialReply := append(bson.Raw(nil), findReply...)
+	mu.Unlock()
+	var credentialBatch struct {
+		Cursor struct {
+			FirstBatch []bson.M `bson:"firstBatch"`
+		} `bson:"cursor"`
+	}
+	if err := bson.Unmarshal(credentialReply, &credentialBatch); err != nil || len(credentialBatch.Cursor.FirstBatch) != 1 || len(credentialBatch.Cursor.FirstBatch[0]) != 1 || credentialBatch.Cursor.FirstBatch[0]["password_hash"] != string(hash) {
+		t.Fatal("actual authentication read fetched more than the hash", err)
+	}
+	if valid, err := entryDB.Authenticate(owner.Username, strings.TrimSpace(password)); err != nil || valid {
+		t.Fatal("projected authentication normalized the password", err)
+	}
+	entry, err := entryDB.GetCharacterEntryAccount(owner.Username)
+	if err != nil || entry.PublicName != owner.PublicName || len(entry.Characters) != 1 || entry.Characters[0].Name != other.Name || !maps.Equal(entry.Characters[0].ItemDeliveryReceipts, other.ItemDeliveryReceipts) {
+		t.Fatal("actual entry projection changed first-character selection or its complete save", err)
+	}
+	mu.Lock()
+	entryReply := append(bson.Raw(nil), findReply...)
+	mu.Unlock()
+	var entryBatch struct {
+		Cursor struct {
+			FirstBatch []bson.M `bson:"firstBatch"`
+		} `bson:"cursor"`
+	}
+	if err := bson.Unmarshal(entryReply, &entryBatch); err != nil || len(entryBatch.Cursor.FirstBatch) != 1 || len(entryBatch.Cursor.FirstBatch[0]) != 2 {
+		t.Fatal("actual entry read fetched fields beyond public name and first character", err)
+	}
+	for _, sample := range []struct {
+		name       string
+		characters []*Character
+		invalid    bool
+	}{
+		{"missing", nil, false}, {"null", nil, false}, {"empty", []*Character{}, false}, {"invalid-first", []*Character{nil}, true},
+	} {
+		username := "entry-projection-" + sample.name
+		document := bson.M{"username": username}
+		if sample.name != "missing" {
+			document["characters"] = sample.characters
+		}
+		if _, err := users.InsertOne(t.Context(), document); err != nil {
+			t.Fatal(err)
+		}
+		got, err := entryDB.GetCharacterEntryAccount(username)
+		if sample.invalid {
+			if err == nil || got != nil {
+				t.Fatal("invalid first character permitted replacement")
+			}
+		} else if err != nil || !reflect.DeepEqual(got.Characters, sample.characters) {
+			t.Fatal("entry projection changed missing/null/empty initialization", sample.name, err)
+		}
+	}
+	credentialDocument, err := bson.Marshal(credentialBatch.Cursor.FirstBatch[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	entryDocument, err := bson.Marshal(entryBatch.Cursor.FirstBatch[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("entry_projection credential_bson_bytes=%d first_character_bson_bytes=%d unrelated_character_receipts=1000 first_character_receipts=10000", len(credentialDocument), len(entryDocument))
 }

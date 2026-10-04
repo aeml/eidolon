@@ -280,45 +280,41 @@ func (service *structuredChatService) HandleModerationCommand(client *Client, ra
 	if err != nil {
 		return true, errors.New("player not found")
 	}
-	target, err := db.GetUser(account)
-	if err != nil || target == nil {
+	label, err := db.OwnPublicName(account)
+	if err != nil || label == "" {
 		return true, errors.New("player not found")
 	}
-	if strings.EqualFold(client.username, target.Username) {
+	if strings.EqualFold(client.username, account) {
 		return true, errors.New("cannot block yourself")
 	}
-	label := target.PublicName
-	if label == "" {
-		label = target.Username
-	}
 	if command == "/unblock" {
-		if err := db.UnblockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
+		if err := db.UnblockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(account)); err != nil {
 			return true, err
 		}
-		service.SetBlocked(client.username, target.Username, false)
+		service.SetBlocked(client.username, account, false)
 		client.sendSystemChat("Unblocked " + label + ".")
 		return true, nil
 	}
 	if command == "/unignore" {
-		if err := db.UnignorePlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
+		if err := db.UnignorePlayer(usernameToPlayerID(client.username), usernameToPlayerID(account)); err != nil {
 			return true, err
 		}
-		service.SetIgnored(client.username, target.Username, false)
+		service.SetIgnored(client.username, account, false)
 		client.sendSystemChat("Unignored " + label + ".")
 		return true, nil
 	}
 	if command == "/ignore" {
-		if err := db.IgnorePlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
+		if err := db.IgnorePlayer(usernameToPlayerID(client.username), usernameToPlayerID(account)); err != nil {
 			return true, err
 		}
-		service.SetIgnored(client.username, target.Username, true)
+		service.SetIgnored(client.username, account, true)
 		client.sendSystemChat("Ignored " + label + ".")
 		return true, nil
 	}
-	if err := db.BlockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(target.Username)); err != nil {
+	if err := db.BlockPlayer(usernameToPlayerID(client.username), usernameToPlayerID(account)); err != nil {
 		return true, err
 	}
-	service.SetBlocked(client.username, target.Username, true)
+	service.SetBlocked(client.username, account, true)
 	client.sendSystemChat("Blocked " + label + ".")
 	return true, nil
 }
