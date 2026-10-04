@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"math"
 	"testing"
 	"time"
@@ -87,6 +88,87 @@ func TestWeeklyLoadBossClearDoesNotSubstituteForOwnPhases(t *testing.T) {
 	if p.failed || p.dungeonCounts().cleared != 0 || p.weeklyCounts().members != 0 {
 		t.Fatal("boss-only clear passed the story phase gate")
 	}
+}
+
+func TestDungeonClericCanHealWhilePartyRecoveryPausesAttacks(t *testing.T) {
+	p := raidEncounterFixture(t, "weekly_raid")
+	now := time.Unix(101, 0)
+	p.members[0].state.Health = 50
+	p.members[2].state.Health = 0 // Another participant is recovering.
+	me := p.members[1].state
+	me.UnlockedSkills = []string{"Healing Light"}
+	p.members[1].state = me
+	casts := 0
+	request := func(kind string, payload interface{}) error {
+		if kind != "ability" {
+			t.Fatal("recovery pause allowed an attack, progression or unrelated request")
+		}
+		cast := payload.(map[string]interface{})
+		if cast["skillName"] != "Healing Light" || cast["targetId"] != p.members[0].id {
+			t.Fatal("waiting cleric did not heal the wounded living party member")
+		}
+		casts++
+		return nil
+	}
+	for tick := 0; tick < 2; tick++ {
+		p.step(1, me, nil, now, time.Second, request, func(float64, float64) { t.Fatal("recovery pause moved toward combat") })
+	}
+	if p.failed || casts != 1 || p.members[1].pendingSkill != "Healing Light" || p.dungeonCounts().cleared != 0 {
+		t.Fatal("party recovery suppressed healing, repeated a pending cast or fabricated clear")
+	}
+}
+
+func TestDungeonClericWaitingHealRetainsNormalSafetyFences(t *testing.T) {
+	now := time.Unix(101, 0)
+	for _, test := range []struct {
+		name   string
+		change func(*partyLoad, *Entity)
+	}{
+		{"failed-party", func(p *partyLoad, _ *Entity) { p.failed = true }},
+		{"dead", func(_ *partyLoad, me *Entity) { me.Health = 0 }},
+		{"foreign-scene", func(_ *partyLoad, me *Entity) { me.InstanceID = "foreign" }},
+		{"foreign-identity", func(_ *partyLoad, me *Entity) { me.ID = "foreign" }},
+		{"wrong-class", func(_ *partyLoad, me *Entity) { me.SubType = "Fighter" }},
+		{"no-mana", func(_ *partyLoad, me *Entity) { me.Mana = 0 }},
+		{"locked-skill", func(_ *partyLoad, me *Entity) { me.UnlockedSkills = nil }},
+		{"pending-skill", func(p *partyLoad, _ *Entity) { p.members[1].pendingSkill = "Healing Light" }},
+		{"cooldown", func(p *partyLoad, _ *Entity) { p.members[1].readyAt["Healing Light"] = now.Add(time.Second) }},
+		{"own-recovery", func(p *partyLoad, _ *Entity) { p.dungeon.members[1].recovering = true }},
+		{"own-exit", func(p *partyLoad, _ *Entity) { p.dungeon.members[1].exitRequested = true }},
+		{"missing-route", func(p *partyLoad, _ *Entity) { p.dungeon.route = nil }},
+		{"out-of-range", func(p *partyLoad, _ *Entity) { p.members[0].state.X = 15 }},
+		{"foreign-ally", func(p *partyLoad, _ *Entity) { p.members[0].state.InstanceID = "foreign" }},
+		{"dead-ally", func(p *partyLoad, _ *Entity) { p.members[0].state.Health = 0 }},
+		{"healthy-allies", func(p *partyLoad, _ *Entity) { p.members[0].state.Health = 100 }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			p := raidEncounterFixture(t, "weekly_raid")
+			p.members[0].state.Health = 50
+			me := p.members[1].state
+			me.UnlockedSkills = []string{"Healing Light"}
+			test.change(p, &me)
+			p.mu.Lock()
+			defer p.mu.Unlock()
+			if p.healWaitingDungeon(1, me, now, func(string, interface{}) error {
+				t.Fatal("waiting heal bypassed safety fence")
+				return nil
+			}) {
+				t.Fatal("unsafe healing request accepted")
+			}
+		})
+	}
+	t.Run("request-failure", func(t *testing.T) {
+		p := raidEncounterFixture(t, "weekly_raid")
+		p.members[0].state.Health = 50
+		me := p.members[1].state
+		me.UnlockedSkills = []string{"Healing Light"}
+		p.mu.Lock()
+		defer p.mu.Unlock()
+		p.healWaitingDungeon(1, me, now, func(string, interface{}) error { return errors.New("synthetic write failure") })
+		if !p.failed || p.failureStage != failureDungeonRequest {
+			t.Fatal("failed healing write did not fail the workload")
+		}
+	})
 }
 
 func TestRaidRecoveryWaitsForNormalEntryRateBudget(t *testing.T) {

@@ -351,6 +351,9 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	}
 	if p.dungeon != nil {
 		if !p.dungeon.step(p, index, me, now, timeout, request) || p.failed {
+			if !p.failed {
+				p.healWaitingDungeon(index, me, now, request)
+			}
 			return
 		}
 		originalMove := move
@@ -464,4 +467,48 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	} else {
 		move(p.target.X, p.target.Z)
 	}
+}
+
+// Caller holds p.mu. The encounter still waits for every member; a living
+// Cleric already inside it can support present allies during that pause.
+// No attacks, movement/progression, revival, forced bars or synthetic credit.
+func (p *partyLoad) healWaitingDungeon(index int, me Entity, now time.Time, request func(string, interface{}) error) bool {
+	if p.failed || p.dungeon == nil || p.dungeon.route == nil || index < 0 || index >= len(p.members) ||
+		index%4 != 1 || me.SubType != "Cleric" || me.Type != "Player" || me.ID != p.members[index].id ||
+		me.InstanceID == "" || me.InstanceID != p.dungeon.instance || me.Health <= 0 || me.State == "DEAD" || me.Mana <= 0 {
+		return false
+	}
+	m, run := &p.members[index], &p.dungeon.members[index]
+	if !run.entered || !run.scene || run.pending != "" || run.recovering || run.dead || run.exited || run.exitRequested ||
+		m.pendingSkill != "" || now.Before(m.readyAt["Healing Light"]) {
+		return false
+	}
+	unlocked := false
+	for _, skill := range me.UnlockedSkills {
+		unlocked = unlocked || skill == "Healing Light"
+	}
+	if !unlocked {
+		return false
+	}
+	var target Entity
+	lowest := .75
+	for _, member := range p.members {
+		ally := member.state
+		if ally.Type != "Player" || ally.InstanceID != me.InstanceID || ally.Health <= 0 || ally.MaxHealth <= 0 || ally.State == "DEAD" ||
+			math.Hypot(me.X-ally.X, me.Z-ally.Z) > 14 || !p.dungeon.route.direct(dungeonPoint{me.X, me.Z}, dungeonPoint{ally.X, ally.Z}) {
+			continue
+		}
+		fraction := float64(ally.Health) / float64(ally.MaxHealth)
+		if fraction < lowest {
+			target, lowest = ally, fraction
+		}
+	}
+	if target.ID == "" {
+		return false
+	}
+	m.pendingSkill, m.abilitySent = "Healing Light", now
+	if request("ability", map[string]interface{}{"skillName": "Healing Light", "targetId": target.ID, "targetX": target.X, "targetZ": target.Z}) != nil {
+		p.failAt(failureDungeonRequest)
+	}
+	return true
 }

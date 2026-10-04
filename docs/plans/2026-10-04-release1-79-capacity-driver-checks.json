@@ -723,6 +723,42 @@
     },
     "next": "Use only the smallest40-client/two-block actual cohort to classify added shared-table participants before considering another100-client run. Same server policies, normal Gold games,120s/five-second admission and all-client sustained-state/paid-result/save gates. No public1.79 acceptance implied."
   },
+  "combined100LoginCorrectedActualRun": {
+    "statusAtObservation": "TERMINAL_FAIL_CASINO_TIMEOUTS_FIXTURE_REMOVED",
+    "startedAtUTC": "2026-10-04T22:44:51Z",
+    "sourceBase": "Same server and checked login-only/diagnostic driver/root artifacts as combined40DiagnosticActualRun",
+    "ownedContainer": "46af75b699fb5673038b46c73bfdc1bb312bd8b310f120ff98dd01f0ef8e7114",
+    "taskLabel": "combined100-corrected-179-20261004",
+    "parentSession": 5427,
+    "namespacePIDs": { "root.test": 79, "server": 94, "loadtest": 105 },
+    "result": "Terminal FAIL219.06s/exit1. All100 admitted and all five parties formed after removing redundant prepared-account registration. Casino acknowledgement timeouts and five read errors remain; no complete paid-result/sustained-state/all-account durable-save acceptance. Source fanout analysis does not prove the cause of each timeout or read closure.",
+    "metrics": {
+      "connected": 100, "joined": 100, "authenticated": 100, "admissionFailures": 0,
+      "stateFrames": 91354, "minFreshOwnUpdates": 211, "minActiveMilliseconds": 60053,
+      "maxStateGapMilliseconds": 1178, "receivedPayloadBytes": 1318479356,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 444, "maxJoinMilliseconds": 978,
+      "readErrors": 5, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 10, "acceptedWagers": 9, "paidResults": 9, "minimumPaidResults": 0, "failed": 10, "timeouts": 10 },
+      "blackjack": { "clients": 20, "acceptedWagers": 8, "paidResults": 1, "minimumPaidResults": 0, "observedActions": 0, "failed": 20, "timeouts": 18, "otherFailures": 2 },
+      "house": { "clients": 20, "acceptedWagers": 30, "paidResults": 23, "minimumPaidResults": 0, "failed": 13, "timeouts": 13 },
+      "poker": { "clients": 10, "acceptedWagers": 6, "paidResults": 0, "minimumPaidResults": 0, "observedActions": 3, "failed": 10, "timeouts": 10 },
+      "parties": { "groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 1, "damageEvents": 270, "healEvents": 9, "acceptedCasts": 527, "deniedCasts": 0, "xpProgressUpdates": 176, "observedDeaths": 169, "failed": 0 },
+      "memoryPeakBytes": 671653888, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "cleanup": "Definitive parent failure consumed; absent owned root/server/driver and exact owner label/network/OOM/peak checked. Stopped and removed only this network-none Mongo fixture and synthetic database. Artifacts retained; no production data/service or owner worktree changes."
+  },
+  "casinoTableNotificationAndWaitingHeal": {
+    "finding": "Every successful casino game action previously rebuilt and sent a personalized snapshot to every casino client, including unrelated tables/machines. This unnecessary quadratic audience work is confirmed in source, not a measured attribution of all100-client failures. Separately, the dungeon bot globally pauses attacks while any member recovers, inadvertently suppressing living Cleric support for allies still inside the encounter.",
+    "change": "Casino actor receives its response first regardless of presence in the active-session snapshot; successful wagers/game actions refresh only connected same-table peers. Physical seating/readiness/floor changes still refresh all casino clients; town players are excluded. Reuse detached safe presence for selection; no lock-order change, peer session-token exposure or changes to monetary authority, revisions, persistence, stakes, timers or payouts. Driver-only waiting Cleric support uses ordinary Healing Light, existing cooldown/pending fences, living same-scene allies below75% within14 and canonical connected floor. No attacks/progression/movement/revival/forced resources or relaxed clear/phase/save criteria.",
+    "checks": "Original waiting-healer fixture reproduced failure0.083s; initial correction passed targeted race1.171s. Final focused casino and healer race tests passed1.182s/1.162s: all game-action audiences, reserved/other-table/floor exclusion, successful physical handler with registered/unregistered actor exactly once and peers/outsiders, pending cast duplication,16 safety fences and failed write classification. Prior100 failure retained above. No earned dungeon/raid rerun.",
+    "sha256": {
+      "server/casino_handlers.go": "f5c435bf6791dae706f4e3791948475a5b7f103059b61adb4e98af5afed7c934",
+      "server/casino_notification_test.go": "df194a896dc65b258ab93318d55a92f74c5945cf76aaccb9c50cba034917bf2d",
+      "server/cmd/loadtest/party.go": "9ca8f9fd84feba2f4c611c5aabe087991a4f003a4feaea5ef9593f96d6c2821e",
+      "server/cmd/loadtest/weekly_test.go": "bd18f31bb90f1a7af24b0fa36c124a1cc1a6eaed9f73564c71f9fc2c4467f2a9"
+    },
+    "next": "One isolated100-client comparison uses new normal server ca5809150abb9b839fcaf43d8908ce445b1e2e0a36d522dd813344bf40c9e1e4 at/tmp/eidolon-179-table-audience-yY1jLv/server, unchanged checked root2409392c5b14367f5523c058a2ac3129a4ef724fc86c97ceee88d620eb11117d and login-only driver18db0d10b8d78ee4aef3c510a3d2196a7961602ee33599c12072878e05083d53. Waiting-healer changes are irrelevant to this overworld profile and deliberately not rebuilt into the driver, isolating server notification behavior. Running is not acceptance."
+  },
   "combined40DiagnosticActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
     "startedAtUTC": "2026-10-04T22:40:00Z",

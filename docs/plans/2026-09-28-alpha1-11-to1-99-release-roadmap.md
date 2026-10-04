@@ -1877,6 +1877,18 @@ client rendering and declared100-player runtime/DB headroom remain required.
 Default mixed/nightly coverage is unchanged; no milestone deployment is implied.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
+October4 follow-up: the same combined profile passed at40 clients with all
+ordinary admissions, every casino participant paid and independent preserved
+gear/bag/EP saves. At100, removing redundant registration let all100 authenticate
+and all five parties form, but casino acknowledgement timeouts and five read
+errors still failed acceptance. No100-player capacity claim is earned. The
+candidate now responds to casino actors first and restricts game-action snapshots
+to the affected table; physical seat/floor changes still reach the whole casino.
+Focused audience/handler checks pass. A separate bot-only fix permits ordinary
+Cleric healing during party recovery pauses with normal safety fences retained.
+These changes are unpublished and require their own actual workload evidence;
+they do not complete the outstanding finale or ordered release gates.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
