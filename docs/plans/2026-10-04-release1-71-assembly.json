@@ -20,5 +20,12 @@
     "sessionAndSupport": "Only proved/ambiguous writes revoke sessions; invalid token/read failure cannot kick an owner. Normal login after reset, no administrator BCC/password disclosure/ownership override. Protected durable roles and existing negative admin tests retain scope.",
     "operations": "Configured provider startup validation, eight-second no-redirect HTTP bound, sanitized diagnostics, bounded shutdown-owned RAM queue, no auto-retry. Accepted messages may not arrive; queued unsent messages may be lost on restart and users must deliberately request again after cooldown. Human mailbox delivery, sender/stream eligibility and support handling remain operator checks."
   },
-  "remaining": "Fetch/pull current master before normal push; preserve concurrent website edits. Confirm exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
+  "publicationCorrection": {
+    "firstSource": "711b82ce8c0a2167256b0c06111d6c13879bd347",
+    "firstCI": 37179739092,
+    "finding": "Browser Smoke1/3, Run anonymous real-browser smoke, job111369701198 failed anonymous.spec.js:19 because a generic .auth-session-help summary selector matched both connection help and the new recovery disclosure.43other layout checks passed. Server's new real connected recovery check passed. Failed job blocks acceptance; no1.71 public deployment claimed.",
+    "fix": "Give existing connection help a unique login-session-help ID and make its keyboard test select that panel. Keep exact focus, expand/collapse, GitHub link, outline and mobile-viewport assertions; no timeout increase, gameplay, provider or password/session change. Align previously outdated BETA_OPERATIONS recovery status.",
+    "targetedCheck": "Affected desktop/mobile anonymous keyboard route plus3synthetic recovery bootstrap cases passed4/4in18.9s. Focused ESLint/git diff --check pass. No repeated actual-Mongo/campaign/soak matrix for this ID/selector/documentation-only correction."
+  },
+  "remaining": "Fetch/pull current master before corrected normal push; preserve concurrent website edits. Confirm corrected exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
 }
