@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.78 operational latency follow-up",
+  "status": "prepared; not assembled or live",
+  "sourceCommit": "1c9f79e7a1b79a5d364081f8272831f525246f43",
+  "change": "The same six fixed journal/commit/cleanup/recovery/Gold-wallet/EP-wallet outcome groups now include timed-sample count, total and maximum elapsed microseconds. Actual boundaries use monotonic time.Since; failed and retried calls remain included. Fixed-size value snapshots stay coherent, with no identity/amount/error/path labels, IO or metric-query callbacks under the small instrumentation lock. Saturating total prevents wrap; no monetary compensation or changed save acknowledgement.",
+  "consumers": "Independent readiness probe whitelists all timing fields. Legacy/missing/partial timing remains unavailable while compatible call counts survive. Inconsistent count/maximum/mean, negative or malformed numeric observations are refused. Read-only Service diagnostics displays mean/slowest/sample count within the same16 rows; missing/unsafe-precision/invalid data is Unavailable, and unknown/private fields remain ignored.",
+  "verification": [
+    "Go1.27.1 race OperationalSignals, ReadinessProbeOperational, AdminService and CharacterPersistence: root2.064s, operations1.146s passed. Actual owned filesystem failure/cleanup recovery retains exact Gold1234/EP83;20ms delayed successful commit is timed above conservative5ms threshold without changing saved value;800 concurrent calls retain coherent outcomes and timing totals. Deterministic zero/negative/saturation cases included.",
+    "12 actual local HTTP timing cases cover valid, measured zero, legacy, partial, impossible sample/max/mean, nonzero unsampled total, bad type, negative and saturated aggregate input; unknown username marker never survives filtered sample serialization. Retained9 ordinary outcome/probe compatibility cases also pass.",
+    "Node24.18.0 Jest AdminServiceDiagnostics, QAServiceDiagnostics and AdminUI:26 checks/3 suites passed4.668s. Measured mean3ms/maximum5ms and measured0 are distinct from unavailable; malformed/impossible and unsafe integers never become times. Existing role/correlation/text/aggregate/privacy cases retained.",
+    "Focused ESLint, gofmt and git diff --check passed. Earlier intermediate timing checks also passed before final mean/maximum validation; final results above are current source. Compatible existing node_modules reused. No broad campaign, raid, provider-delivery, capacity, native GPU or physical-phone suite repeated."
+  ],
+  "sourceSHA256": {
+    "server/operational_signals.go": "7e2440986be88c5b1b7f8f9e21a3183947b1671bdb7fd4a18ac6c69d20a42c41",
+    "server/internal/operations/signals.go": "91b94a641bf5c11c69e8b4ebdd86cbb70f1afa82decac8a5b370c33cb5ecb881",
+    "src/ui/AdminServiceDiagnostics.js": "9a193dfb4eeab05e997623c2d3d196b831317664f6be1c7f4dfdfff13eb92ed9"
+  },
+  "limits": "Process-lifetime returned-call timings, not percentiles, queue/account-lock waiting, outstanding/stalled calls, unique payouts or client latency. Wallet time includes nested save work; recovery-pass time spans multiple accounts and must not be added to other groups. Restart resets counters. Totals above JavaScript exact-integer precision (including saturation) do not yield an exact displayed mean. These thresholds are test assertions, not a latency SLO or an alert policy.",
+  "safetyAndRemaining": "Broad future tree retains schema24 and is not a deployable public release; latest narrow recovery,1.71.1/1.72/1.73/1.74 changes must be integrated through isolated ordered successors later. No production account/save/service, .env, DNS, real Postmark mail, monitoring installation, wallet value or access-policy change. Other1.78 pressure/growth coverage, operator notification ownership, inbox verification, retention/budgets, ordered notes/version and exact CI/public acceptance remain. Full roadmap goal active."
+}

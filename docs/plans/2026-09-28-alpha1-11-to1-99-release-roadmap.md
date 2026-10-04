@@ -1195,8 +1195,15 @@ aggregates through the authenticated socket; late authority/session denial drops
 the payload. Role/audit failure, missing metrics and independent delivery are not
 disguised as healthy measurements. Scoped race/DOM and three native desktop/phone
 layout routes pass; this is prepared UI, not a live service installation.
-Pressure/growth/
-latency signals, service installation, actual inbox verification, alert ownership,
+The [bounded call-timing follow-up](2026-10-04-release1-78-call-timing-checks.json)
+adds monotonic elapsed-time aggregates for the six existing save/wallet groups,
+including returned failures/retries, without player/currency/error labels.
+Legacy/missing timing is unavailable, not measured zero. Coherent concurrent
+snapshots, an actual delayed save, filesystem recovery and12 local HTTP timing
+cases pass;26 focused client checks confirm readonly mean/slowest presentation.
+This is not percentiles, in-flight/player latency, a service installation or
+actual provider delivery. Pressure/growth coverage, service installation,
+actual inbox verification, alert ownership,
 retention and operating-budget decisions remain required. Public1.71 was
 separately accepted at4bc0b95c/CI37182320668; this
 broader preparation is not that binary and does not publish later schema24
