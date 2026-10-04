@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // CharacterRepository is the persistence boundary used by character
@@ -30,11 +31,19 @@ func (repository *mongoCharacterRepository) LoadCharacter(username, characterNam
 	ctx, cancel := context.WithTimeout(context.Background(), repository.timeout)
 	defer cancel()
 
-	var user User
+	// Fetch the complete requested character, not account credentials, staff
+	// metadata or unrelated characters' growing receipt maps. Keep the exact
+	// account/name filter and callers' read concerns unchanged.
+	var user struct {
+		Characters []*Character `bson:"characters"`
+	}
 	err := repository.users.FindOne(ctx, bson.M{
 		"username":        username,
 		"characters.name": characterName,
-	}).Decode(&user)
+	}, options.FindOne().SetProjection(bson.M{
+		"_id":        0,
+		"characters": bson.M{"$elemMatch": bson.M{"name": characterName}},
+	})).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
