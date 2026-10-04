@@ -18,7 +18,7 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "restore-failed", "verify-failed"} {
+	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, directory := range []string{"deploy", "bin"} {
@@ -54,11 +54,33 @@ case "$*" in
 esac
 `,
 				"bin/mongorestore": `#!/bin/bash
+case "$*" in
+  *--dryRun*)
+    printf '%s\n' "$@" > "$RESTORE_ROOT/dry-run-args"
+    cat > "$RESTORE_ROOT/dry-run-bytes"
+    case "$RESTORE_SCENARIO" in empty-dry-run-failed|replace-dry-run-failed) exit 22 ;; esac
+    exit 0 ;;
+esac
 printf '%s\n' "$@" > "$RESTORE_ROOT/restore-args"
 cat > "$RESTORE_ROOT/restored-bytes"
 if [ "$RESTORE_SCENARIO" = restore-failed ]; then exit 23; fi
 `,
 				"bin/mongosh": `#!/bin/bash
+case "$*" in
+  *getCollectionInfos*)
+    [ "$RESTORE_SCENARIO" != probe-failed ] || exit 21
+    case "$RESTORE_SCENARIO" in
+      invalid-probe) echo unknown ;;
+      nonempty-target|replace-target|replace-dry-run-failed|replace-drop-failed) echo 2 ;;
+      *) echo 0 ;;
+    esac
+    exit 0 ;;
+  *dropDatabase*)
+    touch "$RESTORE_ROOT/drop-attempted"
+    [ "$RESTORE_SCENARIO" != replace-drop-failed ] || exit 27
+    touch "$RESTORE_ROOT/dropped-eidolon"
+    exit 0 ;;
+esac
 touch "$RESTORE_ROOT/verified"
 if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 `,
@@ -92,13 +114,17 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 				args = args[:1]
 			} else if scenario == "no-confirmation" {
 				args = args[:2]
+			} else if strings.HasPrefix(scenario, "replace-") {
+				args = append(args, "--replace-eidolon-database")
+			} else if scenario == "unknown-replace-flag" {
+				args = append(args, "--replace-any-database")
 			}
 			command := exec.Command("bash", args...)
 			command.Env = append(os.Environ(), "PATH="+filepath.Join(root, "bin")+":"+os.Getenv("PATH"),
 				"RESTORE_ROOT="+root, "RESTORE_SCENARIO="+scenario,
 				"MONGO_INITDB_ROOT_USERNAME=fixture", "MONGO_INITDB_ROOT_PASSWORD=not-a-live-secret")
 			output, runErr := command.CombinedOutput()
-			success := scenario == "success" || scenario == "missing-api" || scenario == "created"
+			success := scenario == "success" || scenario == "missing-api" || scenario == "created" || scenario == "replace-target"
 			if (runErr == nil) != success {
 				t.Fatalf("unexpected result: %v\n%s", runErr, output)
 			}
@@ -106,6 +132,11 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 				if _, err := os.Stat(filepath.Join(root, forbidden)); !os.IsNotExist(err) {
 					t.Fatalf("executed untrusted file content/name: %s", forbidden)
 				}
+			}
+			_, dropErr := os.Stat(filepath.Join(root, "drop-attempted"))
+			shouldDrop := scenario == "replace-target" || scenario == "replace-drop-failed"
+			if (dropErr == nil) != shouldDrop {
+				t.Fatal("whole-database replacement bypassed explicit scope or dry-run refusal", scenario, dropErr)
 			}
 			restored, restoreErr := os.ReadFile(filepath.Join(root, "restored-bytes"))
 			shouldRestore := success || scenario == "restore-failed" || scenario == "verify-failed"
@@ -117,6 +148,10 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 			}
 			if restoreErr != nil || !bytes.Equal(restored, payload) {
 				t.Fatalf("archive stream changed: %v\n%s", restoreErr, output)
+			}
+			dryRun, err := os.ReadFile(filepath.Join(root, "dry-run-bytes"))
+			if err != nil || !bytes.Equal(dryRun, payload) {
+				t.Fatal("accepted restore skipped unchanged archive preflight", err)
 			}
 			restoreArgs, err := os.ReadFile(filepath.Join(root, "restore-args"))
 			if err != nil || !strings.Contains(string(restoreArgs), "--archive\n--nsInclude=eidolon.*\n--stopOnError\n") {
