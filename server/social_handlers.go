@@ -28,5 +28,5 @@ func handleMsgSocialStatus(c *Client, msg Message) {
 	c.sendSafe(createMessage(MsgSocialStatus, ackPayload))
 	// Proactively push a fresh social list to all connected clients so their
 	// Social windows update within one tick (0.37.3).
-	go broadcastSocialToAll()
+	scheduleSocialBroadcast()
 }
