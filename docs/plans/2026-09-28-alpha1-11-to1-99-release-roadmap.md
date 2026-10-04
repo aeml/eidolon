@@ -1185,10 +1185,14 @@ save-journal/commit/cleanup/recovery and Gold/EP casino outcome counters now add
 constant-size secret-free diagnostics without health-triggered IO or financial
 compensation. Real owned-filesystem failure and exact recovery, concurrent
 snapshot and actual HTTP filtering checks pass; counters include retries and
-rejected input, not unique payouts or balances. It is not connected to
-notification delivery or deployed; pressure/growth/latency signals, service
-installation, alert ownership, retention and operating-budget decisions remain
-required. Public1.71 was separately accepted at4bc0b95c/CI37182320668; this
+rejected input, not unique payouts or balances. An explicitly opt-in Postmark
+adapter now provides globally spaced, bounded mail attempts and sanitized
+accepted/unconfirmed/suppressed output; two actual local health-to-TLS-provider
+outage/recovery paths pass, including a rejected first delivery. Alerts remain
+off by default and no real provider or inbox delivery is claimed. Pressure/growth/
+latency signals, service installation, actual inbox verification, alert ownership,
+retention and operating-budget decisions remain required. Public1.71 was
+separately accepted at4bc0b95c/CI37182320668; this
 broader preparation is not that binary and does not publish later schema24
 writers or approve operational emails.
 
