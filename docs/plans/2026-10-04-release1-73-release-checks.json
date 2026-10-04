@@ -1,11 +1,12 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.73.0 release assembly",
-  "status": "assembled unpublished successor; predecessor1.72 acceptance and exact-source CI/public checks required",
+  "status": "assembled unpublished successor; predecessor1.72 accepted, own exact-source CI/public checks required",
   "integrationSource": "dba5f874b13280af47ffd3c134f4aab9f01f57a5",
   "predecessorCandidate": "1cf51d22ee16daa62406aeb9c1ecba92b66895e0",
   "predecessorRun": 37196079883,
-  "lastAccepted": "Alpha1.71.1/1b6f44d286b7689bd646999e1fa9c8e1859d9087/schema17",
+  "lastAccepted": "Alpha1.72.0/1cf51d22ee16daa62406aeb9c1ecba92b66895e0/schema17",
+  "prePublicationFollowup": "Current1.72 CI37196079883 passed all ten jobs. Root independently verified exact public identities/readiness/login/notes and publisher-rewritten movement/recovery modules at2026-10-04T11:29:04.784Z; see2026-10-04-release1-72-public-acceptance.json. Updated stale product/execution checkpoint pointers without changing handlers or previous proof sources. Node24 with required VM flag: VersionPresentation/ToolingBaseline passed358 checks/two suites2.240s after these documentation changes; receipt JSON and diff hygiene passed.1.73 own CI and public acceptance are still required.",
   "changes": [
     "Merged85a25073 then1cf51d22 from the ordered1.72 branch. Retained valuable-operation hooks, schema22, the reach-preserving13.5units/second/.46second-minimum jump, living actor guards and predecessor CI corrections. Resolved only documentation and an overlapping TCP-reset test comment; retained successor fixture cleanup. No later schema23/24, privacy policy or operations monitor imported.",
     "Alpha1.73.0 now matches package/lock, release metadata, login label, backend/Docker/Compose/deployment/isolatedQA defaults and CI build version. Added cumulative explicit patch notes covering all ten financial/reward domains, manual turn-in, original full-bag claims, currency separation and incompatible old-writer refusal.",
@@ -23,7 +24,6 @@
     "migrationProvenance": "CurrentSchemaVersion22; migrations.go SHA25681f20620ee46343a97f79c457136e92f63a591b0a4231d6547dd15c27c6be828. Schema17 upgrade test SHA2561df05294cfd4172e88f70b37cd2c00ee0f2bcfe6fa15af7e6e7ce350bde0ee2d matches the retained actual0.54second disposable proof. Earlier exact public schema17 executable refusal and byte-identical synthetic BSON/index preservation remain historical evidence, not a new migration or production restore."
   },
   "remaining": [
-    "Accept exact1.72 corrective CI and independently verify it live before publishing1.73.",
     "Fetch/merge current master preserving other agent edits, then normal push with exact-source CI and independent post-terminal public version/commit/database/notes/runtime checks.",
     "Real schema17-to22 deployment must retain the existing compatible backup/preflight boundary. Never treat an old image alone as rollback or delete historical values to make checks pass.",
     "Actual inbox, phone party/dungeon, long campaign pacing, capacity, privacy policy and later roadmap owner/human gates remain separate; no whole1.11-to1.99 completion."

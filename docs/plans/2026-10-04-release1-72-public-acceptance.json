@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72.0 protocol, movement and combat release",
+  "status": "accepted live; not whole-roadmap or inbox-delivery certification",
+  "checkedAt": "2026-10-04T11:29:04.784Z",
+  "commit": "1cf51d22ee16daa62406aeb9c1ecba92b66895e0",
+  "version": "Alpha 1.72.0",
+  "databaseSchema": 17,
+  "ci": {
+    "run": 37196079883,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Server Tests (Go)",
+        "id": 111420390575,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:09:46Z"
+      },
+      {
+        "name": "Client Tests (Jest)",
+        "id": 111420390674,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:01:55Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "id": 111420390693,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:09:02Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "id": 111420390698,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:10:51Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "id": 111420390808,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:12:14Z"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "id": 111423541060,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:16:18Z"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "id": 111424208885,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:16:24Z"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "id": 111424224779,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:17:40Z"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "id": 111424224790,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:17:03Z"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "id": 111424436667,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T11:27:38Z"
+      }
+    ],
+    "url": "https://github.com/aeml/eidolon/actions/runs/37196079883",
+    "passedScope": "All ten jobs passed: server/client checks, three browser shards, configured predeploy release smoke, both deployments, live anonymous/persistent-character QA and town recovery/Well Rested.",
+    "skippedScope": [
+      "Predeploy deterministic High/Low animation gallery",
+      "Predeploy Well Rested rendering/GPU lifecycle",
+      "Predeploy disposable full-character gameplay",
+      "Live four-class/remote-animation QA"
+    ]
+  },
+  "independentPublic": {
+    "frontend": {
+      "commit": "1cf51d22ee16daa62406aeb9c1ecba92b66895e0",
+      "version": "Alpha 1.72.0"
+    },
+    "backend": {
+      "commit": "1cf51d22ee16daa62406aeb9c1ecba92b66895e0",
+      "version": "Alpha 1.72.0",
+      "status": "ok",
+      "database": "ready"
+    },
+    "loginAndNotes": true,
+    "runtime": {
+      "src/core/GameEngineMovement.js": "8aafe1c8a4df387d7b9fefe7b31b1e3adf1455cb10f847e5baf005f3e28e8304",
+      "src/main.js": "75bfe28973635a88b1f88b056b04efa3067219a86af9e7013447fc0e582ecbb4",
+      "src/ui/EmailRecoveryUI.js": "ce489da4c79b923e1d7fa2470e3afdae6ccc6d7c5e258197db324bdb3a5c44ec",
+      "src/analytics/GoogleAnalytics.js": "570b2ebc1dc7aa3b647695ba539a48dcde7626d6e96b0d7914aa6c94437361f4",
+      "src/core/RecoveryLinkBoot.js": "d98fd4214724063a4cbb94ca084d9e645932ef00dd2cbf7fe57e31afbcce9baa"
+    }
+  },
+  "monitor": "Owner-authorized Luna watch_deploy_172_1004 watched only exact corrective run. Root independently confirmed terminal success, then bounded IPv4 TLS/no-cache public identities/readiness/login/cumulative notes and exact publisher-rewritten bytes for movement and four recovery/analytics modules.",
+  "scope": "Reach-preserving jump with server speed/time/canonical-path authority and bounded network walking; living combat guards with valid52-ability contracts; HTTP/WebSocket frame/envelope/logical-byte/admission/work limits and captured scene/actor broadcasts. Tracked social/save/cleanup workers and current authority remain. Existing accounts, gear, currency, recovery and open-alpha access retained. Schema17 unchanged; later18–24 writers excluded.",
+  "provenance": "Exact accepted source1cf51d22 contains test corrections for declared Go1.27.1, bounded transient broadcast, actual32KiB report frame, living QA fixture and legitimate TCP reset on unread excess fragments. Earlier run37195541214 failed Go/client checks before its remaining obsolete browser shard was cancelled; it never deployed. Corrective run retained all release gates and passed.",
+  "limits": "No actual Postmark provider/inbox delivery was tested, no real recovery mail sent. Administrator addresses are never recovery recipients. IPv6/DDNS remains owner-deferred. Skipped fresh GPU/animation scopes are not passed; no physical-phone party, human campaign timing,100-player capacity, replica failover or full1.99 acceptance is claimed."
+}

@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.71.1, exact1b6f44d286b7689bd646999e1fa9c8e1859d9087,
-CI37190290208. All ten CI jobs, including both deploys and live character/town
+baseline is Alpha 1.72.0, exact1cf51d22ee16daa62406aeb9c1ecba92b66895e0,
+CI37196079883. All ten CI jobs, including both deploys and live character/town
 recovery QA, passed. Post-terminal independent IPv4 checks verified public
 frontend/backend identities, database readiness, login version, cumulative notes
-and four recovery/analytics runtime files against publisher-rewritten source.
-See [public acceptance](2026-10-04-release1-71-1-public-acceptance.json) for passed
+and movement plus four recovery/analytics runtime files against publisher-rewritten source.
+See [public acceptance](2026-10-04-release1-72-public-acceptance.json) for passed
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
@@ -18,7 +18,7 @@ and remained unchanged on repeated startup. The exact live schema17 executable
 refused preflight and normal startup afterward without mutation. The focused
 race-instrumented check took0.54s. Its disposable container was removed; no
 production migration, backup or release was performed. Ordered1.72 acceptance
-and final1.73 domain/release gates remain required; jump airtime uses the
+is complete; final1.73 exact-source release gates remain required. Jump airtime uses the
 predecessor's subsequently declared reach-preserving default.
 Prepared1.72 [social-worker bounds](2026-10-04-release1-72-social-work-checks.json)
 replace detached social-list and join-presence launches with tracked coalesced
