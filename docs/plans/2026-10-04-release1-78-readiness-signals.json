@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.78 observability and operating budgets",
+  "status": "prepared readiness/incident foundation only; not wired or deployed",
+  "sourceCommit": "9202c8fce5b996b5850a68ab871e5c8ff45b3f8f",
+  "scope": "Independent-monitor readiness component: validated HTTPS or loopback HTTP health endpoint, no URL credentials/query/fragment, no redirects, explicitly bounded timeout up to10seconds and32KiB body. Only known status/database/release fields survive parsing; release identities have bounded syntax and optional exact expected-commit comparison. Samples expose fixed cause/release/latency fields, not arbitrary peer error text or unknown response fields. Fixed-size incident state debounces transient failure/recovery, bounds reminders by caller-supplied cooldown, ignores shutdown cancellation and prevents backwards-clock reminder amplification. Thresholds must be explicitly supplied; no new approved SLA or operational policy inferred.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/operations -count=1 -timeout=15s -v",
+    "result": "passed: package1.129s, four test groups with nine real loopback HTTP response scenarios",
+    "actualHTTP": "Ready response, unavailable database, old commit, invalid release identity, malformed/trailing/oversized JSON, HTTP503 and redirect refusal. Actual stalled response times out at configured50ms; cancelled context does not become outage evidence. Only synthetic fixtures/private marker text; filtered sample JSON contains no marker.",
+    "incidentState": "Synthetic clock advances, not wall-clock sleeps: transient failure resets, sustained failure emits one sanitized outage notice, cooldown and backwards clock suppress repeats, exact cooldown permits a reminder, two healthy samples confirm recovery, subsequent healthy samples stay quiet and shutdown cancellation leaves incident state unchanged.",
+    "hygiene": "gofmt and git diff --check pass. No Docker/production fixture, service installation, provider request, real email, account/value mutation or full campaign/soak/capacity test. Existing broader prepared tree remains isolated from public schema17 releases."
+  },
+  "remaining": [
+    "Wire an independently running bounded monitor and useful notification delivery/administrator view at the1.78 stage. This component currently emits typed notice values only; no inbox or live alert delivery is claimed.",
+    "Integrate appropriate queue/error/latency/storage/currency signals with explicitly chosen thresholds and secret-free summaries; choose alert recipients/ownership, retention and operating budget with the owner rather than inventing policy.",
+    "Disposable end-to-end failure-to-notification proof after delivery integration. Postmark ADMIN_NOTIFICATION_EMAILS remains reserved; current recovery configuration does not authorize sending operational alerts now.",
+    "Ordered1.71–1.77 acceptance,1.78 version/cumulative notes, exact-source CI and independent public verification. Current corrected1.71 candidate73585e52/CI37180182645 remains under user-authorized Luna monitoring; no out-of-order deployment or full-goal completion claimed."
+  ]
+}
