@@ -27,7 +27,12 @@ func TestReportAppealAdmissionWithoutCharacterKeepsAuthenticationRateAndPayloadL
 	if err := client.acceptInboundMessage(message, now); err == nil {
 		t.Fatal("outside-world appeal bypassed shared report rate limit")
 	}
-	message.Payload = make([]byte, 16<<10+1)
+	// Report envelopes allow JSON escaping of the unchanged 4000-character
+	// text limit; check the current explicit byte boundary, not the old 16KiB.
+	if limit := inboundMessagePolicies[MsgReport].maxPayloadBytes; limit != 32<<10 {
+		t.Fatalf("report byte limit changed: %d", limit)
+	}
+	message.Payload = make([]byte, inboundMessagePolicies[MsgReport].maxPayloadBytes+1)
 	if err := (&Client{username: "appellant"}).acceptInboundMessage(message, now); err == nil {
 		t.Fatal("outside-world appeal bypassed size bound")
 	}

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math"
 	"testing"
 )
@@ -54,6 +55,36 @@ func TestNetworkJumpKeepsServerLandingHeightAndCannotRestartMidFlight(t *testing
 			if w.StartPlayerJumpWithContext(p.ID, p.X+15, 0, p.Z, "") || p.JumpElapsed != .2 ||
 				p.JumpTargetX != previousX || p.JumpTargetZ != previousZ || p.JumpDuration != previousDuration {
 				t.Fatal("network request restarted or redirected an active jump")
+			}
+		})
+	}
+}
+
+func TestNetworkJumpTravelTimeScalesWithDistance(t *testing.T) {
+	for _, distance := range []float64{3, 17.28, 27, 54, 135} {
+		t.Run(fmt.Sprintf("distance-%g", distance), func(t *testing.T) {
+			p := newTestPlayer("distance-jumper", "Fighter")
+			// No scene geometry in this unit fixture: measure the full accepted
+			// horizontal path, not a shorter collision-constrained destination.
+			p.InstanceID = "jump-speed-test"
+			w := newPvPTestWorld(p)
+			if !w.StartPlayerJumpWithContext(p.ID, distance, 999, 0, "") {
+				t.Fatal("jump rejected")
+			}
+			if p.JumpTargetX != distance || p.JumpTargetZ != 0 {
+				t.Fatal("fixture did not exercise the requested distance")
+			}
+			wantDuration := math.Max(.46, distance/13.5)
+			if math.Abs(p.JumpDuration-wantDuration) > 1e-9 {
+				t.Fatalf("duration=%g, want=%g for distance=%g", p.JumpDuration, wantDuration, distance)
+			}
+			w.Update(.25)
+			if p.X > 13.5*.25+1e-9 || p.State != "JUMPING" {
+				t.Fatalf("jump exceeded travel speed or landed early: x=%g state=%s", p.X, p.State)
+			}
+			w.Update(wantDuration - .25)
+			if p.State != "IDLE" || p.X != distance || p.Z != 0 || p.Y != 0 || p.JumpProgress != 1 {
+				t.Fatalf("jump failed to land at the canonical destination: x=%g y=%g z=%g state=%s progress=%g", p.X, p.Y, p.Z, p.State, p.JumpProgress)
 			}
 		})
 	}

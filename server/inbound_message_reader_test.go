@@ -240,14 +240,18 @@ func TestInboundMessageActualReadPumpTimesOutDespitePongsAndEmptyFragments(t *te
 		}
 	})
 	started := time.Now()
-	// Closing a TCP socket with unread probe fragments may return ECONNRESET
-	// instead of a WebSocket abnormal-close wrapper. Both still have to occur
-	// at the exact assembly deadline and produce the retirement proof below.
+	// Closing a TCP socket with unread continuation frames may produce RST
+	// instead of EOF/1006. Neither a peer read timeout nor an early reset proves
+	// the production assembly deadline; keep the time and retirement checks.
 	if _, _, err := peer.ReadMessage(); !websocket.IsCloseError(err, websocket.CloseAbnormalClosure) && !errors.Is(err, syscall.ECONNRESET) {
 		t.Fatal("unfinished data with harmless-rate Pongs did not close at its assembly deadline", err)
 	}
-	if time.Since(started) < inboundMessageAssemblyWait-time.Second {
+	elapsed := time.Since(started)
+	if elapsed < inboundMessageAssemblyWait-time.Second {
 		t.Fatal("connection closed before its assembly window")
+	}
+	if elapsed > inboundMessageAssemblyWait+3*time.Second {
+		t.Fatal("connection outlived its assembly deadline", elapsed)
 	}
 	peer.Close()
 	select {

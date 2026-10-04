@@ -146,6 +146,8 @@ func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T)
 		ID:               "player-qa-combat",
 		Type:             TypePlayer,
 		SubType:          "Wizard",
+		Health:           100,
+		MaxHealth:        100,
 		Damage:           10,
 		AttackCooldown:   time.Millisecond,
 		Inventory:        make([]Item, MaxInventorySize),

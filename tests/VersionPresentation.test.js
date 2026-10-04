@@ -3,7 +3,29 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.71.1';
+const currentVersion = '1.73.0';
+
+test('1.73.0 explains durable valuable operations without resets or unsafe rollback promises', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.73.0"'), previous = html.indexOf('data-version="1.72.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['original items and Gold', 'before success feedback', 'full bag',
+        'original recipients', 'no rerolls', 'three-wave crystal defense', 'manual quest turn-in',
+        'EP-to-Gold', 'schema 22', 'older server image alone', 'No account wipe',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.72.0 documents authoritative gameplay and network bounds without later release claims', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.72.0"'), previous = html.indexOf('data-version="1.71.1"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['server-owned speed', 'distance-scaled airtime', '13.5 world units per second',
+        '0.46-second minimum', 'restart or redirect', 'Zero-health and disconnected', 'after wind-up',
+        'payload-byte', 'scene visibility', 'bounded, tracked work', 'verified-email recovery',
+        'not a launch-capacity certification', 'later durable trade/reward milestone', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.71.1 explains the narrow equipment-shop guard and retains recovery history', () => {
     const html = fs.readFileSync('index.html', 'utf8');
@@ -278,19 +300,26 @@ test('1.54.0 records rigged Fighter integration and current duel consent without
         'not final modern-art approval', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });
 
-test('social consent, duels and private report reviews reuse one disposable normal server socket build', () => {
+test('item custody, party rewards, social consent and administration reuse one disposable normal server socket build', () => {
     const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
-    const start = workflow.indexOf('- name: Verify ordinary social, duel and administration sockets');
+    const start = workflow.indexOf('- name: Verify ordinary item, social, duel and administration sockets');
     const next = workflow.indexOf('- name: Verify disposable guild bank settlement and recovery');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(next);
     for (const text of ["EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'", 'mongodb://127.0.0.1:27017',
         'go build -race', 'main.buildCommit=server', 'EIDOLON_RESOURCE_BINARY=',
+        "go test -race . -run '^TestDirectTradeActualSocketsCrashAndRecovery$' -count=1 -timeout=120s",
+        "go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s",
+        "go test -race . -run '^TestQuestConversationActualRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s",
+        "go test -race . -run '^TestDungeonRoomRewardActualPartyClearCrashAndRecovery$' -count=1 -timeout=120s",
+        "go test -race . -run '^TestBossLootActualBagSpaceRejectedSaveCrashAndRecovery$' -count=1 -timeout=60s",
+        "go test -race . -run '^TestBossVictoryActualPartyKillCrashAndRecovery$' -count=1 -timeout=120s",
         "go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1",
         "go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1",
         "go test -race . -run '^TestGroupFinderActualSocketsConsentPrivacyAndReady$' -count=1"]) {
         expect(workflow.slice(start, next)).toContain(text);
+        if (text.startsWith('go test -race')) expect(workflow.slice(start, next).split(text)).toHaveLength(2);
     }
-    expect(workflow.split('Verify ordinary social, duel and administration sockets')).toHaveLength(2);
+    expect(workflow.split('Verify ordinary item, social, duel and administration sockets')).toHaveLength(2);
     expect(workflow.slice(start, next).match(/go build -race/g)).toHaveLength(1);
 });
 
