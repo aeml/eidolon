@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 bounded connection-owned work",
+  "status": "prepared and locally checked; not deployed",
+  "sourceCommit": "3446388a90405fd3d80c49c6347e7a20470222f4",
+  "testSourceSHA256": "5b56ee2d3ef8a27e8df4347ee8a713eeaf5d0facaa9c8df416f11c7ba1b03f6e",
+  "change": "Allowlisted /qa-disconnect previously launched a detached delayed-close goroutine on every trigger. Its fault now uses once-per-Client admission and scheduleClientCharacterWork; the existing150ms notification grace and1s WebSocket control deadline remain. Reservation/shutdown ownership extends through actual socket Close. Sealed or released scheduling closes synchronously, without launching an untracked fallback. Optional test hook shares the once-per-connection behavior. Production command allowlisting is unchanged.",
+  "checks": {
+    "ownership": "Go1.27.1 race run '^Test(QADisconnectWork|HandleMessageQADisconnect|ReplacedConnection|ConnectionWork|SocialWork)' passed root1.372s. Three new cases use64 concurrent triggers, actual loopback WebSocket with blocked socket Close, owned-reference count4, admission refusal while close remains, successful release afterward, sealed scheduling without reference leak, hook single execution and nil/missing-socket safety. Existing two QA handler/allowlist cases plus replacement/connection/social regressions passed.",
+    "actualTransport": "Current source3446388a race run '^Test(HTTPConnection|WebsocketAdmission|InboundByteGuardActual|InboundFrameGuardActual)' passed root1.569s. Existing real local TCP pool reuse/close/hijack/TLS cases, actual WebSocket admission, padded-data/control-frame flood and keepalive handlers are exercised. These are native component sockets, not a fresh game executable/Mongo/browser capacity trial. An initial invocation from repository root had no go.mod and did not run tests; the successful invocation used server/.",
+    "directLaunchReview": "Current non-test backend launches reviewed: email recovery has2 fixed queue workers joined by server loops; economy metrics has1 worker with stop/done drain; runHub/shutdown/periodic loops are service-scoped; state fanout and world entity update workers join their WaitGroups before returning; reader/writer use transport admission; lifecycle.Group.Go is the generic tracked launcher. Simulator/loadtest launch sites are diagnostic commands, not production packet handlers. Both social/friend raw launches and the QA raw launch are now removed.",
+    "hygiene": "gofmt and git diff --check passed; no production service, environment, user data or provider request changed."
+  },
+  "limits": [
+    "A source-level direct-launch review does not prove bounds for every transitive scheduler, dynamic collection or domain callback. Keep historical coalesced completion/save receipts and remaining current-source integration checks separately scoped.",
+    "The actual Close barrier is a deterministic test stand-in around a native loopback socket. It proves ownership until Close returns, not arbitrary production kernel-close latency or100-player capacity.",
+    "A resumed transport is a new Client and may request its own QA fault. No normal user's reconnect behavior or gameplay timer is changed.",
+    "Owner jump policy, its affected client/QA compatibility, final current-source integration, cumulative1.72 notes/version, synchronized normal push, exact-source CI and independent public acceptance remain open. Production remains accepted Alpha1.71.0/schema17."
+  ]
+}
