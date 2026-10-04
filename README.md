@@ -427,18 +427,18 @@ Notes:
   credential/recovery JSON exclusions and an unexposed owner-progress serializer.
   Retention, owner export/removal and notices
   still need policy approval and implementation. Later schema23–24 checkpoints
-  and operations-monitor work remain excluded.1.73 is independently accepted;
-  this candidate must not deploy as1.74 or before1.74 acceptance.
+  and operations-monitor work remain excluded.1.74 is independently accepted;
+  this candidate must not deploy as1.74 or before1.75 policy/implementation gates.
   Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.73.0`, exact
-  ad59bffbeb0f471d27da125f7bc5c0c1b3d95619, successful CI37201238962 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.0`, exact
+  76225a2f4278be3c897af624de5c0c1b91e1e7f8, successful CI37207389001 (all ten jobs).
   Post-terminal public IPv4 frontend/backend identity, database readiness, login
-  version, cumulative notes, both changed UI modules and bootstrap/recovery runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-73-public-acceptance.json)
+  version, cumulative notes, administration UI and bootstrap/recovery runtime files match the accepted source.
+  [Public acceptance](docs/plans/2026-10-04-release1-74-public-acceptance.json)
   lists passed and skipped checks; it does not claim fresh animation/GPU coverage
   or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
@@ -457,7 +457,10 @@ Notes:
   QA-artifact privacy correction. Accepted1.71 provides account security and
   Postmark recovery; accepted1.72 provides authoritative movement/living combat
   and bounded protocol/work admission. Accepted1.73 adds durable valuable-operation
-  recovery and earned reward custody through schema22. Broader privacy and capacity work remain staged.
+  recovery and earned reward custody through schema22. Accepted1.74 adds reviewed
+  administration boundaries and read-only moderation history filters; its original
+  failed live-QA deployment and successful test-only correction remain recorded.
+  Broader privacy and capacity work remain staged.
   Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha
   access are unchanged. Modern-art approval, broader crowd performance,
   physical-phone checks, human pacing and commercial decisions remain separate.
