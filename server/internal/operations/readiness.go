@@ -44,6 +44,19 @@ type QueueMetrics struct {
 	InvalidDropped    uint64 `json:"invalidDropped"`
 }
 
+type queueInput struct {
+	Queued, Capacity, EncounterQueued, EncounterCapacity, Dropped, EncounterDropped, InvalidDropped *uint64
+}
+
+func (q *queueInput) metrics() *QueueMetrics {
+	if q == nil || q.Queued == nil || q.Capacity == nil || q.EncounterQueued == nil || q.EncounterCapacity == nil ||
+		q.Dropped == nil || q.EncounterDropped == nil || q.InvalidDropped == nil {
+		return nil // A missing counter is not a measured zero.
+	}
+	return &QueueMetrics{Queued: *q.Queued, Capacity: *q.Capacity, EncounterQueued: *q.EncounterQueued,
+		EncounterCapacity: *q.EncounterCapacity, Dropped: *q.Dropped, EncounterDropped: *q.EncounterDropped, InvalidDropped: *q.InvalidDropped}
+}
+
 type Probe struct {
 	endpoint, expectedCommit string
 	client                   *http.Client
@@ -94,7 +107,7 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	var health struct {
 		Status, Database, Commit, Version       string
 		Goroutines, HeapAllocBytes, HeapObjects *uint64
-		BroadcastQueues                         *QueueMetrics
+		BroadcastQueues                         *queueInput
 	}
 	if len(body) > 32<<10 || json.Unmarshal(body, &health) != nil {
 		sample.Cause = "invalid_response"
@@ -106,14 +119,13 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	if releaseVersion.MatchString(health.Version) {
 		sample.Version = health.Version
 	}
-	if health.Goroutines != nil && health.HeapAllocBytes != nil && health.HeapObjects != nil && health.BroadcastQueues != nil {
-		queues := *health.BroadcastQueues
+	if queues := health.BroadcastQueues.metrics(); health.Goroutines != nil && health.HeapAllocBytes != nil && health.HeapObjects != nil && queues != nil {
 		if queues.Queued > queues.Capacity || queues.EncounterQueued > queues.EncounterCapacity {
 			sample.Cause = "invalid_response"
 			return
 		}
 		sample.Runtime = &RuntimeMetrics{Goroutines: *health.Goroutines, HeapAllocBytes: *health.HeapAllocBytes,
-			HeapObjects: *health.HeapObjects, BroadcastQueues: queues}
+			HeapObjects: *health.HeapObjects, BroadcastQueues: *queues}
 	}
 	if health.Status != "ok" || health.Database != "ready" {
 		sample.Cause = "not_ready"
