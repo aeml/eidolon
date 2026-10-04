@@ -132,6 +132,10 @@ func (p *partyLoad) state(index int, me Entity, now time.Time) {
 		m.xpUpdates++ // Observed progression, not attribution to a particular kill.
 	}
 	m.state = me
+	if p.raid != nil && me.InstanceID == "" {
+		p.raid.members[index].waterReturning = false
+		p.raid.members[index].pointSince = time.Time{}
+	}
 	if p.dungeon != nil {
 		p.dungeon.observe(p, index, me)
 	}
@@ -305,7 +309,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			p.failed = true
 			return
 		}
-		if p.raid != nil && p.partyID != "" && !p.raid.convert(p, index, now, timeout, request) {
+		if p.raid != nil && index == 0 && p.inviteIndex < 0 && p.partyID != "" && !p.raid.convert(p, index, now, timeout, request) {
 			return
 		}
 		if index == 0 && p.inviteIndex < 0 {
@@ -351,7 +355,11 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return // The original overworld profile does not silently enter instances.
 	}
 	leader := p.members[0].state
-	if index != 0 && math.Hypot(me.X-leader.X, me.Z-leader.Z) > 12 {
+	vigil := p.raid != nil && p.raid.inVigil(index)
+	if vigil && p.raid.vigilMove(p, index, me, now, move) {
+		return
+	}
+	if !vigil && index != 0 && math.Hypot(me.X-leader.X, me.Z-leader.Z) > 12 {
 		move(leader.X, leader.Z)
 		return
 	}
@@ -384,7 +392,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			}
 		}
 		for _, member := range p.members {
-			if member.state.Health <= 0 || math.Hypot(member.state.X-me.X, member.state.Z-me.Z) > 15 {
+			if member.state.Health <= 0 || !vigil && math.Hypot(member.state.X-me.X, member.state.Z-me.Z) > 15 {
 				return
 			}
 		}

@@ -397,12 +397,41 @@ fail. The normal four-player party/dungeon constructors remain four-player.
 ten participants for all four elemental raid definitions using the actual game
 party conversion, ready-check and raid-access methods with synthetic protocol
 responses. This is controller/domain preparation evidence, not a production
-WebSocket/server, dungeon/raid clear, crystal repair or save check. The raid
-scenario is deliberately not exposed as a runnable completion workload until
-normal instance entry, three-wave elemental Vigil objectives, earned repair,
-exit and per-member saved rewards are connected and independently verified.
-Preparation alone sends no movement, encounter or reward actions. The current
-driver's command-line scenarios and existing nightly profile are unchanged.
+WebSocket/server, dungeon/raid clear, crystal repair or save check. Preparation
+alone sends no movement, encounter or reward actions.
+
+The following candidate now connects `-scenario party-raid -n5` (one group,
+5–10 clients) with `-raid-type earth_crystal_raid|water_crystal_raid|fire_crystal_raid|air_crystal_raid`.
+Supply distinct qualified prepared saves in repeated Fighter/Cleric/Rogue/Wizard
+order. No character creation, gear replacement, sale or pickup. Normal raid
+launch enforces dungeon-chapter access and realm entry level30/60/70/70.
+Ordinary Recall/Respawn, town recovery and same-run checkpoint return are reused.
+Fresh raid scene metadata normally omits spawn; later own state must confirm
+the server's start-room position, and reentry retains explicit checkpoint checks.
+No transform, kill, cooldown, repair or reward is fabricated by this workload.
+
+Each client must observe the instance-bound crystal and all three live waves
+before restoration can pass. Boss/assault clear alone never permits an exit.
+Marker-driven roles defend the Earth ward, carry Water memories, hold ordered
+Fire vents and alternate Air bearers, using ordinary movement and the normal
+worker's progress. Every client must observe restoration and exit alive in town.
+`Raid coverage` separates conversion/readiness, wave views and restored members
+from assault room counts. The selected duration is a maximum, not an accepted
+soak window: the driver ends on every-client completed exit or failed cohorts.
+
+`TestLoadRaidActualFiveClassRolesRepairExitAndSaves` uses the normal server,
+five level30 class roles with uncommon/rare gear, and disposable prequalified
+chapter fixtures. Independently require original shared boss reward receipts,
+saved XP/gear/bag/EP, fresh town saves, and earned repair quest readiness for
+every participant **without** auto-completion or granted quest rewards. Its
+first attempt failed before formation because the solo roster preceding an
+invite exposed a conversion/acceptance ordering deadlock. That is corrected
+and included in the preparation regression. The clean corrected attempt is
+currently RUNNING with a20-minute maximum under Luna monitoring; not an accepted
+raid clear/save yet. The full driver race suite passes17.397s. Existing earned
+dungeon/casino/combined receipts are not rerun or reclassified, and the default
+mixed/nightly profile is unchanged. Dark King phases/rewards, actual non-Earth
+rituals, world events and declared capacity/headroom remain separate checks.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible

@@ -1835,6 +1835,21 @@ earned repair, exit and independent per-member saves remain to be connected
 and checked before exposing a completion scenario. No new long run, production
 mutation, version acceptance or deployment is claimed by preparation tests.
 
+The candidate now connects5–10-member elemental raids to normal launch,
+instance-bound crystal/wave snapshots, floor-routed class combat and live
+Earth/Water/Fire/Air ritual markers, unchanged-run recovery and every-member
+restoration/town-exit gates. Boss-only clear cannot pass. Controller rejection,
+marker-movement and compatibility checks pass; the whole load-driver race
+suite passes17.397s. The first actual Earth attempt failed10.66s before formation
+because the solo-roster-before-invite ordering deadlocked consent behind
+conversion. That ordering is now covered and fixed; the failed fixture's data
+was removed. A clean corrected normal five-player Earth raid/save check is
+RUNNING under Luna monitoring with a20-minute maximum; no actual raid acceptance
+yet. Independent saves must prove shared original boss credits and earned,
+unclaimed crystal-repair readiness for every member, not synthetic completion.
+Dark King, actual other-ritual and world-event workloads still remain. No live
+service/database/DNS mutation, production acceptance or capacity extrapolation.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

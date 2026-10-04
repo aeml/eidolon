@@ -21,7 +21,7 @@ type dungeonLoad struct {
 	launched   bool
 	launchAt   time.Time
 	objective  int
-	members    [4]dungeonLoadMember
+	members    [10]dungeonLoadMember
 }
 
 type dungeonLoadMember struct {
@@ -60,7 +60,7 @@ func (d *dungeonLoad) observe(p *partyLoad, index int, me Entity) {
 			return
 		}
 		if m.scene && me.InstanceID == d.instance {
-			if m.pending == "enter" && math.Hypot(me.X-m.spawn.x, me.Z-m.spawn.z) > 3 {
+			if (!m.entered || m.pending == "enter") && math.Hypot(me.X-m.spawn.x, me.Z-m.spawn.z) > 3 {
 				p.failed = true
 				return
 			}
@@ -109,8 +109,11 @@ func (d *dungeonLoad) summaryFor(p *partyLoad, index int, summary game.DungeonRo
 		p.failed = true
 		return false
 	}
+	if p.raid != nil && !p.raid.receiveCrystal(p, index, summary.Crystal, initial && !m.entered, objective == -1) {
+		return false
+	}
 	m.summary, m.summaryKnown = summary, true
-	if m.entered && objective == -1 {
+	if m.entered && objective == -1 && (p.raid == nil || p.raid.members[index].restored) {
 		m.clear = true
 	}
 	return true
@@ -152,7 +155,7 @@ func (d *dungeonLoad) receive(p *partyLoad, index int, message Message, now time
 			m.townScene, m.scene = true, false
 			return true
 		}
-		if !d.launched || scene.Type != d.kind || !strings.HasPrefix(scene.InstanceID, "dungeon_") || len(scene.InstanceID) > 512 || scene.Layout == nil || scene.RoomState == nil || scene.Spawn == nil || d.instance != "" && d.instance != scene.InstanceID || m.scene || m.entered && m.pending != "enter" {
+		if !d.launched || scene.Type != d.kind || !strings.HasPrefix(scene.InstanceID, "dungeon_") || len(scene.InstanceID) > 512 || scene.Layout == nil || scene.RoomState == nil || scene.Spawn == nil && (p.raid == nil || m.entered) || d.instance != "" && d.instance != scene.InstanceID || m.scene || m.entered && m.pending != "enter" {
 			p.failed = true
 			return false
 		}
@@ -186,6 +189,11 @@ func (d *dungeonLoad) receive(p *partyLoad, index int, message Message, now time
 					checkpoint = room
 				}
 			}
+		}
+		if scene.Spawn == nil {
+			// Fresh raid entry normally omits spawn. The server enters at room0;
+			// validate the later own state, never invent or transmit a transform.
+			scene.Spawn = &struct{ X, Y, Z float64 }{X: checkpoint.X, Z: checkpoint.Z}
 		}
 		if math.IsNaN(scene.Spawn.X) || math.IsNaN(scene.Spawn.Y) || math.IsNaN(scene.Spawn.Z) || math.IsInf(scene.Spawn.Y, 0) || math.Hypot(scene.Spawn.X-checkpoint.X, scene.Spawn.Z-checkpoint.Z) > .01 {
 			p.failed = true
@@ -228,18 +236,22 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 	}
 	if !m.statusSent {
 		m.statusSent = true
-		issue("get_dungeon_status", "status", map[string]string{"dungeonType": d.kind})
-		return false
+		if p.raid == nil {
+			issue("get_dungeon_status", "status", map[string]string{"dungeonType": d.kind})
+			return false
+		}
+		m.statusReady = true // Normal raid readiness/access, not regional status.
 	}
 	if !d.launched {
-		for _, member := range d.members {
+		for _, member := range d.members[:len(p.members)] {
 			if !member.statusReady {
 				return false
 			}
 		}
 		if index == 0 {
 			d.launched, d.launchAt = true, now
-			issue("enter_dungeon", "enter", map[string]interface{}{"dungeonType": d.kind, "difficulty": string(d.difficulty), "runLevel": d.level})
+			kind, payload := d.entryRequest(p)
+			issue(kind, "enter", payload)
 		}
 		return false
 	}
@@ -262,11 +274,12 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 			return false
 		}
 		m.reentries++
-		issue("enter_dungeon", "enter", map[string]interface{}{"dungeonType": d.kind, "difficulty": string(d.difficulty), "runLevel": d.level})
+		kind, payload := d.entryRequest(p)
+		issue(kind, "enter", payload)
 		return false
 	}
 	allClear := true
-	for _, member := range d.members {
+	for _, member := range d.members[:len(p.members)] {
 		allClear = allClear && member.clear
 	}
 	if allClear {
@@ -279,7 +292,7 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 		issue("recall", "recover", nil)
 		return false // Living recovery preserves bars; only ordinary town ticks restore them.
 	}
-	for i, member := range d.members {
+	for i, member := range d.members[:len(p.members)] {
 		if !member.entered || !member.scene || p.members[i].state.InstanceID != d.instance || p.members[i].state.Health <= 0 {
 			return false
 		}
@@ -289,7 +302,10 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 	}
 	objective := d.members[0].summary.ObjectiveRoomIndex
 	if objective < 0 {
-		return false
+		if p.raid == nil {
+			return false
+		}
+		objective = len(d.layout.Rooms) - 1 // Assault is not the repair finale.
 	} // Wait for each other client's fresh clear view.
 	if d.objective != objective {
 		d.objective, p.target = objective, Entity{}
@@ -297,6 +313,13 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 		p.anchorX, p.anchorZ = room.X, room.Z
 	}
 	return true
+}
+
+func (d *dungeonLoad) entryRequest(p *partyLoad) (string, interface{}) {
+	if p.raid != nil {
+		return "raid_enter", map[string]string{"raidType": d.kind}
+	}
+	return "enter_dungeon", map[string]interface{}{"dungeonType": d.kind, "difficulty": string(d.difficulty), "runLevel": d.level}
 }
 
 func (p *partyLoad) dungeonCounts() dungeonLoadCounts {
@@ -307,7 +330,7 @@ func (p *partyLoad) dungeonCounts() dungeonLoadCounts {
 		return counts
 	}
 	d := p.dungeon
-	for _, member := range d.members {
+	for _, member := range d.members[:len(p.members)] {
 		if member.entered {
 			counts.entered++
 		}

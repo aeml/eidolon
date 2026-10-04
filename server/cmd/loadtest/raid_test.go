@@ -74,6 +74,7 @@ func TestRaidPreparationNormalDomainConversionAndEveryConsent(t *testing.T) {
 							case "party_invite":
 								if party == nil {
 									party = world.CreateParty(p.members[0].id)
+									broadcast() // Actual handler publishes the solo roster before the invite.
 								}
 								target := p.inviteIndex
 								if target >= 5 && !p.raid.converted {

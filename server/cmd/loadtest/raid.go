@@ -2,6 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"math"
+	"math/bits"
+	"strings"
 	"time"
 
 	"eidolon-server/internal/game"
@@ -18,6 +21,12 @@ type partyLoadView struct {
 
 type raidLoadMember struct {
 	activeSeen, readySent, readySeen, allReadySeen bool
+	crystal                                        *game.CrystalSanctumSnapshot
+	wavesSeen                                      uint8
+	restored                                       bool
+	ritualWave                                     int
+	waterReturning                                 bool
+	pointSince                                     time.Time
 }
 
 // Shares partyLoad.mu. Preparation is separate from encounter/repair proof.
@@ -38,6 +47,12 @@ func newRaidParty(credentials []BotCredentials, kind string) *partyLoad {
 		p.failed = true
 	}
 	p.raid = &raidLoad{kind: kind, level: definition.RequiredLevel, members: make([]raidLoadMember, len(p.members))}
+	return p
+}
+
+func newRaidWorkload(credentials []BotCredentials, kind string) *partyLoad {
+	p := newRaidParty(credentials, kind)
+	p.dungeon = &dungeonLoad{kind: kind, level: p.raid.level, difficulty: game.DifficultyNormal, objective: -2}
 	return p
 }
 
@@ -165,4 +180,164 @@ func (r *raidLoad) prepare(p *partyLoad, index int, now time.Time, timeout time.
 		}
 	}
 	return false
+}
+
+func (r *raidLoad) receiveCrystal(p *partyLoad, index int, crystal *game.CrystalSanctumSnapshot, initial, assaultClear bool) bool {
+	m := &r.members[index]
+	definition, _ := game.ElementalRaidDefinitionForType(r.kind)
+	chamber := p.dungeon.layout.Rooms[len(p.dungeon.layout.Rooms)-1]
+	reject := func() bool { p.failed = true; return false }
+	if crystal == nil || crystal.InstanceID != p.dungeon.instance || crystal.RaidType != r.kind || crystal.Element != definition.Element || crystal.Name != definition.Crystal || crystal.TotalWaves != 3 ||
+		math.IsNaN(crystal.X) || math.IsNaN(crystal.Z) || math.Hypot(crystal.X-chamber.X, crystal.Z-chamber.Z) > .01 ||
+		crystal.Wave < 0 || crystal.Wave > 3 || crystal.Progress < 0 || crystal.Progress > 100 ||
+		initial && crystal.Stage != "fractured" {
+		return reject()
+	}
+	if m.crystal != nil && (crystal.Wave < m.crystal.Wave || crystal.Progress < m.crystal.Progress || m.restored && crystal.Stage != "restored") {
+		return reject()
+	}
+	switch crystal.Stage {
+	case "fractured":
+		if crystal.Wave != 0 || crystal.Progress != 0 || crystal.Objective != nil || m.crystal != nil && m.crystal.Stage != "fractured" {
+			return reject()
+		}
+	case "repairing":
+		if !assaultClear || crystal.Progress > 99 || crystal.Progress < max(0, crystal.Wave-1)*33 || crystal.Progress > crystal.Wave*33 ||
+			crystal.Wave == 0 && crystal.Objective != nil || crystal.Wave > 0 && !r.validObjective(p, crystal) {
+			return reject()
+		}
+		if crystal.Wave > 0 {
+			m.wavesSeen |= 1 << (crystal.Wave - 1)
+		}
+	case "restored":
+		if !assaultClear || crystal.Wave != 3 || crystal.Progress != 100 || crystal.Objective != nil || m.wavesSeen != 7 {
+			return reject()
+		}
+		m.restored = true
+	default:
+		return reject()
+	}
+	m.crystal = crystal
+	return true
+}
+
+func (r *raidLoad) validObjective(p *partyLoad, crystal *game.CrystalSanctumSnapshot) bool {
+	objective := crystal.Objective
+	total, points := 0, 0
+	switch crystal.Element {
+	case "Earth":
+		total, points = 8, 2
+	case "Water":
+		total, points = 2, 2
+	case "Fire":
+		total, points = 3, 3
+	case "Air":
+		total, points = 4, 4
+	}
+	if objective == nil || objective.Total != total || len(objective.Points) != points || objective.Current < 0 || objective.Current > total || objective.Complete != (objective.Current == total) ||
+		math.IsNaN(objective.Channel) || math.IsInf(objective.Channel, 0) || objective.Channel < 0 || objective.Channel > 8 || len(objective.Title) > 256 || len(objective.Hint) > 1024 {
+		return false
+	}
+	for _, point := range objective.Points {
+		if math.IsNaN(point.X) || math.IsNaN(point.Z) || math.IsNaN(point.Radius) || math.IsInf(point.Radius, 0) || point.Radius <= 0 || point.Radius > 20 || len(point.Label) > 256 ||
+			math.Hypot(point.X-crystal.X, point.Z-crystal.Z) > 40 || !p.dungeon.route.direct(dungeonPoint{crystal.X, crystal.Z}, dungeonPoint{point.X, point.Z}) {
+			return false
+		}
+		switch point.State {
+		case "active", "waiting", "complete", "boundary":
+		default:
+			return false
+		}
+	}
+	return true
+}
+
+func (r *raidLoad) inVigil(index int) bool {
+	crystal := r.members[index].crystal
+	return crystal != nil && crystal.Stage == "repairing" && crystal.Wave > 0
+}
+
+// Use the live chamber markers and own positions, never an authored repair
+// command or elapsed-time award. The actual worker decides progress and waves.
+func (r *raidLoad) vigilMove(p *partyLoad, index int, me Entity, now time.Time, move func(float64, float64)) bool {
+	m := &r.members[index]
+	crystal := m.crystal
+	objective := crystal.Objective
+	if objective == nil || objective.Complete {
+		return false
+	}
+	if m.ritualWave != crystal.Wave {
+		m.ritualWave, m.waterReturning, m.pointSince = crystal.Wave, false, time.Time{}
+	}
+	switch crystal.Element {
+	case "Earth":
+		return false // Clear attackers, then ordinary idle combat returns to the ward.
+	case "Water":
+		if index != 3 {
+			return false
+		}
+		pointIndex := 0
+		if m.waterReturning {
+			pointIndex = 1
+		}
+		point := objective.Points[pointIndex]
+		if math.Hypot(me.X-point.X, me.Z-point.Z) <= point.Radius/2 {
+			if m.pointSince.IsZero() {
+				m.pointSince = now
+			}
+			if now.Sub(m.pointSince) >= 750*time.Millisecond {
+				m.waterReturning, m.pointSince = !m.waterReturning, time.Time{}
+			}
+		} else {
+			m.pointSince = time.Time{}
+			move(point.X, point.Z)
+		}
+		return true
+	case "Fire", "Air":
+		selected := 3
+		if crystal.Element == "Air" {
+			selected = 3 - objective.Current%2
+			// The normal own-player snapshot tells the previous bearer to let
+			// someone else pass. An incidental activation must not deadlock.
+			peer := r.members[selected].crystal
+			if peer != nil && peer.Objective != nil && strings.HasPrefix(peer.Objective.Hint, "You passed the wind.") {
+				selected = 5 - selected
+			}
+		}
+		if index != selected {
+			return false
+		}
+		point := objective.Points[objective.Current]
+		move(point.X, point.Z)
+		return true
+	}
+	return false
+}
+
+type raidLoadCounts struct {
+	converted, prepared                  bool
+	readyMembers, restored, minWaveViews uint64
+}
+
+func (p *partyLoad) raidCounts() raidLoadCounts {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	var counts raidLoadCounts
+	if p.raid == nil {
+		return counts
+	}
+	counts.converted, counts.prepared = p.raid.converted, p.raid.prepared()
+	for index, member := range p.raid.members {
+		if member.readySent && member.readySeen && member.allReadySeen {
+			counts.readyMembers++
+		}
+		if member.restored {
+			counts.restored++
+		}
+		waves := uint64(bits.OnesCount8(member.wavesSeen))
+		if index == 0 || waves < counts.minWaveViews {
+			counts.minWaveViews = waves
+		}
+	}
+	return counts
 }
