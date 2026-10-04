@@ -50,7 +50,7 @@ func TestCasinoEPMongoOfflineIntentRecovery(t *testing.T) {
 	}
 	unlock := lockCharacterWork(name)
 	defer unlock()
-	if err := applyCasinoTransferLocked(key, op); err != nil {
+	if err := applyCasinoTransferLocked(key, *pending.Pending); err != nil {
 		t.Fatal(err)
 	}
 	// No live entity or membership. Reopen the real repository and character
@@ -70,7 +70,7 @@ func TestCasinoEPMongoOfflineIntentRecovery(t *testing.T) {
 		t.Fatal("EP intent not resolved", err)
 	}
 	character, err = db.GetCharacter(name, name)
-	if err != nil || character.EP != 0 || character.Gold != 300 || character.EPCasinoReceipts[op.ID] != -100 {
+	if err != nil || character.EP != 0 || character.Gold != 300 || len(character.EPCasinoReceipts) != 0 || character.CasinoWalletCheckpoints[key].Fingerprint != pending.Pending.Fingerprint {
 		t.Fatal("offline debit replay changed money", err)
 	}
 	unfunded := op
@@ -90,7 +90,7 @@ func TestCasinoEPMongoOfflineIntentRecovery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := applyCasinoTransferLocked(key, win); err != nil {
+	if err := applyCasinoTransferLocked(key, *pending.Pending); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := recoverBlackjackTransferLocked(*pending); err != nil {
@@ -100,7 +100,7 @@ func TestCasinoEPMongoOfflineIntentRecovery(t *testing.T) {
 		t.Fatal("stale recovery", err)
 	}
 	character, err = db.GetCharacter(name, name)
-	if err != nil || character.EP != 20000 || character.Gold != 300 || character.EPCasinoReceipts[win.ID] != 20000 || len(character.GoldCreditReceipts) != 0 {
+	if err != nil || character.EP != 20000 || character.Gold != 300 || len(character.EPCasinoReceipts) != 0 || character.CasinoWalletCheckpoints[key].Fingerprint != pending.Pending.Fingerprint || len(character.GoldCreditReceipts) != 0 {
 		t.Fatal("offline jackpot paid twice or entered Gold wallet", err)
 	}
 }

@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 24
+const CurrentSchemaVersion = 25
 
 type schemaMigration struct {
 	Version int
@@ -110,6 +110,9 @@ var schemaMigrations = []schemaMigration{
 	// Preserve legacy receipts without backfill. Older writers erase the new
 	// contiguous ground-delivery checkpoint and cannot extend version2 custody.
 	{Version: 24, Name: "ordered_ground_item_delivery_checkpoints", Apply: applyGroundItemOperationIndexes},
+	// Existing signed receipts and pending V1 table intents remain untouched.
+	// Older full-character writers must not erase the compact casino heads.
+	{Version: 25, Name: "versioned_casino_wallet_checkpoints", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

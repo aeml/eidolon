@@ -230,6 +230,9 @@ func testSlotsActualSocketSpinResumeAndRestart(t *testing.T, vip, preparedBonus 
 	}
 	saved := resourceCloseAndWait(t, repo, conn, name)
 	saveMatches := func(saved *database.Character) bool {
+		if saved.CasinoWalletCheckpoints[slotRecordKey(owner, "earth", currency)].Version < 2 || len(saved.CasinoWalletCheckpoints) != 1 || len(saved.GoldCreditReceipts) != 0 || len(saved.EPCasinoReceipts) != 0 {
+			return false
+		}
 		if vip {
 			return saved.EP == expectedBalance && saved.Gold == 500 && len(saved.GoldCreditReceipts) == 0 && len(saved.VIPAllowanceReceipts) == 1
 		}

@@ -27,6 +27,9 @@ func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) error {
 	if op.Currency != "gold" {
 		return errors.New("non-Gold transfer cannot enter the Gold wallet")
 	}
+	if op.TableVersion != 0 {
+		return applyCasinoCheckpointTransferLocked(op)
+	}
 	username := strings.TrimPrefix(op.PlayerID, "player-")
 	if op.Amount > 0 {
 		// Reuse the existing full-save/receipt credit path, not a second wallet.
@@ -72,6 +75,9 @@ func applyCasinoEPTransferLocked(op database.BlackjackTransfer) error {
 	if op.Currency != "ep" {
 		return errors.New("non-EP transfer cannot enter the EP wallet")
 	}
+	if op.TableVersion != 0 {
+		return applyCasinoCheckpointTransferLocked(op)
+	}
 	username := strings.TrimPrefix(op.PlayerID, "player-")
 	if err := retryPendingCharacterSaveLocked(username); err != nil {
 		return err
@@ -98,6 +104,48 @@ func applyCasinoEPTransferLocked(op database.BlackjackTransfer) error {
 	}
 	if err := database.ApplyEPTransfer(&character.EP, &character.EPCasinoReceipts, op.ID, op.Amount); err != nil {
 		return err
+	}
+	return persistCharacterSnapshot(username, character)
+}
+
+func applyCasinoCheckpointTransferLocked(op database.BlackjackTransfer) error {
+	if err := op.ValidateForTable(op.TableID); err != nil {
+		return err
+	}
+	username := strings.TrimPrefix(op.PlayerID, "player-")
+	if err := retryPendingCharacterSaveLocked(username); err != nil {
+		return err
+	}
+	if world != nil {
+		live, err := world.ApplyDurableCasinoWalletCheckpoint(op)
+		if err != nil {
+			return err
+		}
+		if live {
+			entity := world.GetEntityCopy(op.PlayerID)
+			if entity == nil {
+				return errors.New("pinned casino checkpoint owner disappeared")
+			}
+			return persistCharacterSnapshot(username, characterSnapshotForSave(username, entity))
+		}
+	}
+	if db == nil {
+		return errors.New("casino checkpoint database unavailable")
+	}
+	character, err := db.GetDirectTradeCharacter(username, username)
+	if err != nil {
+		return err
+	}
+	changed, err := database.ApplyCasinoWalletCheckpoint(&character.Gold, &character.EP, character.GoldCreditReceipts, character.EPCasinoReceipts, &character.CasinoWalletCheckpoints, op)
+	if err != nil {
+		return err
+	}
+	if changed && op.Currency == "gold" && world != nil {
+		if op.Amount < 0 {
+			world.Economy.RecordSink("casino_wagers", -op.Amount)
+		} else {
+			world.Economy.RecordSource("casino_returns", op.Amount)
+		}
 	}
 	return persistCharacterSnapshot(username, character)
 }

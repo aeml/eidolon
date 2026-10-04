@@ -63,6 +63,15 @@ func TestSchemaMigrationCatalogFencesOrderedGroundCheckpoints(t *testing.T) {
 	}
 }
 
+func TestSchemaMigrationCatalogFencesCasinoWalletCheckpoints(t *testing.T) {
+	if CurrentSchemaVersion < 25 || len(schemaMigrations) < 25 || schemaMigrations[24].Name != "versioned_casino_wallet_checkpoints" {
+		t.Fatal("older full-character writers must not erase casino wallet heads")
+	}
+	if err := schemaMigrations[24].Apply(context.Background(), nil); err != nil {
+		t.Fatal("casino writer fence must not backfill player value", err)
+	}
+}
+
 func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
 	// writers must not be admitted after any of those values have been saved.

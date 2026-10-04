@@ -80,6 +80,7 @@ type Auction struct {
 }
 
 type Character struct {
+	CasinoWalletCheckpoints map[string]CasinoWalletCheckpoint `bson:"casino_wallet_checkpoints,omitempty" json:"-"`
 	// Trusted load context only; never stored inside the character or exposed.
 	AccountID                primitive.ObjectID             `bson:"-" json:"-"`
 	GroundAccountOrdinal     int64                          `bson:"ground_account_ordinal,omitempty" json:"-"`

@@ -66,7 +66,7 @@ func TestCasinoMongoTransferRecovery(t *testing.T) {
 	}
 	unlock := lockCharacterWork(name)
 	defer unlock()
-	if err := applyCasinoGoldTransferLocked(debit); err != nil {
+	if err := applyCasinoGoldTransferLocked(*pending.Pending); err != nil {
 		t.Fatal(err)
 	}
 	// Simulate interruption between character commit and table acknowledgement.
@@ -105,7 +105,7 @@ func TestCasinoMongoTransferRecovery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := applyCasinoGoldTransferLocked(payout); err != nil {
+	if err := applyCasinoGoldTransferLocked(*pending.Pending); err != nil {
 		t.Fatal(err)
 	}
 	paid, err := recoverBlackjackTransferLocked(*pending)
@@ -113,7 +113,7 @@ func TestCasinoMongoTransferRecovery(t *testing.T) {
 		t.Fatal(err)
 	}
 	character, err = db.GetCharacter(name, name)
-	if err != nil || character.Gold != 450 || character.GoldCreditReceipts[payout.ID] != 250 {
+	if err != nil || character.Gold != 450 || len(character.GoldCreditReceipts) != 0 || character.CasinoWalletCheckpoints[tableID].Fingerprint != pending.Pending.Fingerprint {
 		t.Fatal("ambiguous payout duplicated or lost", err)
 	}
 	unfunded := debit

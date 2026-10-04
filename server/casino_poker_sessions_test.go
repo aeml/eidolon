@@ -133,11 +133,12 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 	settling.Players[0].Paid = true
 	payload, _ := json.Marshal(settling)
 	op := database.BlackjackTransfer{ID: "casino:poker:" + roundID + ":interrupted-cash-out", PlayerID: first.PlayerID, Currency: "gold", Amount: amount, NextState: payload}
-	if _, err := db.BeginBlackjackTransfer(publicPokerTable, record.Version, op); err != nil {
+	pending, err := db.BeginBlackjackTransfer(publicPokerTable, record.Version, op)
+	if err != nil {
 		t.Fatal(err)
 	}
 	unlock = lockCharacterWork(strings.TrimPrefix(first.PlayerID, "player-"))
-	err = applyCasinoGoldTransferLocked(op)
+	err = applyCasinoGoldTransferLocked(*pending.Pending)
 	unlock()
 	if err != nil {
 		t.Fatal(err)
@@ -174,7 +175,7 @@ func TestPokerMongoFundedHandPrivacyAndCashOut(t *testing.T) {
 	}
 	for _, c := range clients {
 		saved, _ := db.GetCharacter(c.username, c.username)
-		if len(saved.GoldCreditReceipts) != 2 {
+		if len(saved.GoldCreditReceipts) != 0 || len(saved.CasinoWalletCheckpoints) != 1 || saved.CasinoWalletCheckpoints[publicPokerTable].Version < 2 {
 			t.Fatal("cash-out replay changed receipts")
 		}
 	}
@@ -209,11 +210,12 @@ func TestPokerMongoCancelledBuyInAndInterruptedDebit(t *testing.T) {
 	s.Players = append(s.Players, pokerParticipant{PlayerID: c.playerID, Name: c.username, Seat: 0, SessionID: tokens[0], BuyIn: 100})
 	encoded, _ := json.Marshal(s)
 	op := database.BlackjackTransfer{ID: "casino:poker:" + s.RoundID + ":interrupted", PlayerID: c.playerID, Currency: "gold", Amount: -100, NextState: encoded}
-	if _, err := db.BeginBlackjackTransfer(publicPokerTable, r.Version, op); err != nil {
+	pending, err := db.BeginBlackjackTransfer(publicPokerTable, r.Version, op)
+	if err != nil {
 		t.Fatal(err)
 	}
 	unlock := lockCharacterWork(c.username)
-	err = applyCasinoGoldTransferLocked(op)
+	err = applyCasinoGoldTransferLocked(*pending.Pending)
 	unlock()
 	if err != nil {
 		t.Fatal(err)
@@ -240,7 +242,7 @@ func TestPokerMongoCancelledBuyInAndInterruptedDebit(t *testing.T) {
 		t.Fatal(err)
 	}
 	saved, _ := db.GetCharacter(c.username, c.username)
-	if saved.Gold != 300 || len(saved.GoldCreditReceipts) != 2 {
+	if saved.Gold != 300 || len(saved.GoldCreditReceipts) != 0 || len(saved.CasinoWalletCheckpoints) != 1 || saved.CasinoWalletCheckpoints[publicPokerTable].Version < 2 {
 		t.Fatal("cancel replay altered funds")
 	}
 }

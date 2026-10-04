@@ -263,6 +263,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		EP:                       entity.EP,
 		EPExchangeReceipts:       cloneGoldCreditReceipts(entity.EPExchangeReceipts),
 		EPCasinoReceipts:         cloneGoldCreditReceipts(entity.EPCasinoReceipts),
+		CasinoWalletCheckpoints:  maps.Clone(entity.CasinoWalletCheckpoints),
 		VIPAllowanceReceipts:     cloneGoldCreditReceipts(entity.VIPAllowanceReceipts),
 		ItemDeliveryReceipts:     cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
 		GroundAccountOrdinal:     entity.GroundAccountOrdinal,

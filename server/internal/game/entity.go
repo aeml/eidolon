@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/database"
 	"maps"
 	"math"
 	"sync"
@@ -69,55 +70,56 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
-	PersistenceAccountID     [12]byte             `json:"-"` // Trusted load context; never client controlled or replicated.
-	Mu                       sync.RWMutex         // Protects concurrent access
-	ID                       string               `json:"id"`
-	InstanceID               string               `json:"instanceId"`
-	PvPReturn                *PvPOrigin           `json:"-"` // Immutable pre-match save projection.
-	CasinoSeat               *CasinoSeatSession   `json:"-"` // Session-local; saves project its safe exit.
-	WorldEventID             string               `json:"-"` // Temporary event enemies never become normal respawns.
-	Name                     string               `json:"name"`
-	PublicName               string               `json:"-"` // Presentation only; Name remains the immutable save/ownership key.
-	Type                     EntityType           `json:"type"`
-	SubType                  string               `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X                        float64              `json:"x"`
-	Y                        float64              `json:"y"`
-	Z                        float64              `json:"z"`
-	Rotation                 float64              `json:"rotation"` // Y-axis rotation in radians
-	Health                   int                  `json:"health"`
-	MaxHealth                int                  `json:"maxHealth"`
-	Mana                     int                  `json:"mana"`
-	MaxMana                  int                  `json:"maxMana"`
-	Level                    int                  `json:"level"`
-	Experience               int                  `json:"experience"`
-	MaxExperience            int                  `json:"maxExperience"`
-	ResonanceLevel           int                  `json:"resonanceLevel,omitempty"`
-	ResonanceXP              int                  `json:"resonanceXp,omitempty"`
-	ResonancePoints          int                  `json:"resonancePoints,omitempty"`
-	ResonanceRanks           map[string]int       `json:"resonanceRanks,omitempty"`
-	Gold                     int                  `json:"gold"`
-	WellRestedSeconds        float64              `json:"wellRestedSeconds"`
-	SafeZoneID               string               `json:"safeZoneId"`
-	restTickAt               time.Time            // Process-local monotonic clock, never persisted or replicated.
-	GoldCreditReceipts       map[string]int       `json:"-"`
-	DirectTradeState         []byte               `json:"-"` // Opaque private durable escrow/delivery/receipt; never normalized by snapshots.
-	GuildBankRevision        int64                `json:"-"`
-	GuildBankOpID            string               `json:"-"`
-	GuildBankOpFingerprint   string               `json:"-"`
-	EP                       int                  `json:"-"`
-	EPExchangeReceipts       map[string]int       `json:"-"`
-	EPCasinoReceipts         map[string]int       `json:"-"`
-	VIPAllowanceReceipts     map[string]int       `json:"-"`
-	VIPUntil                 time.Time            `json:"-"` // Refreshed from trusted account membership, never client save data.
-	CasinoVIPFloor           bool                 `json:"-"` // Server-owned scene state; client height never grants access.
-	ItemDeliveryReceipts     map[string]string    `json:"-"`
-	GroundAccountOrdinal     int64                `json:"-"`
-	GroundAccountOperationID string               `json:"-"`
-	GroundAccountFingerprint string               `json:"-"`
-	PendingBossLoot          []string             `json:"-"` // Exact rolled payloads awaiting bag space; never public actor data.
-	AdminOperationReceipts   map[string]string    `json:"-"`
-	WeeklyRaidRewardReceipts map[string]bool      `json:"-"`
-	WeeklyRaidCompletions    map[string]time.Time `json:"-"`
+	CasinoWalletCheckpoints  map[string]CasinoWalletCheckpoint `json:"-"`
+	PersistenceAccountID     [12]byte                          `json:"-"` // Trusted load context; never client controlled or replicated.
+	Mu                       sync.RWMutex                      // Protects concurrent access
+	ID                       string                            `json:"id"`
+	InstanceID               string                            `json:"instanceId"`
+	PvPReturn                *PvPOrigin                        `json:"-"` // Immutable pre-match save projection.
+	CasinoSeat               *CasinoSeatSession                `json:"-"` // Session-local; saves project its safe exit.
+	WorldEventID             string                            `json:"-"` // Temporary event enemies never become normal respawns.
+	Name                     string                            `json:"name"`
+	PublicName               string                            `json:"-"` // Presentation only; Name remains the immutable save/ownership key.
+	Type                     EntityType                        `json:"type"`
+	SubType                  string                            `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X                        float64                           `json:"x"`
+	Y                        float64                           `json:"y"`
+	Z                        float64                           `json:"z"`
+	Rotation                 float64                           `json:"rotation"` // Y-axis rotation in radians
+	Health                   int                               `json:"health"`
+	MaxHealth                int                               `json:"maxHealth"`
+	Mana                     int                               `json:"mana"`
+	MaxMana                  int                               `json:"maxMana"`
+	Level                    int                               `json:"level"`
+	Experience               int                               `json:"experience"`
+	MaxExperience            int                               `json:"maxExperience"`
+	ResonanceLevel           int                               `json:"resonanceLevel,omitempty"`
+	ResonanceXP              int                               `json:"resonanceXp,omitempty"`
+	ResonancePoints          int                               `json:"resonancePoints,omitempty"`
+	ResonanceRanks           map[string]int                    `json:"resonanceRanks,omitempty"`
+	Gold                     int                               `json:"gold"`
+	WellRestedSeconds        float64                           `json:"wellRestedSeconds"`
+	SafeZoneID               string                            `json:"safeZoneId"`
+	restTickAt               time.Time                         // Process-local monotonic clock, never persisted or replicated.
+	GoldCreditReceipts       map[string]int                    `json:"-"`
+	DirectTradeState         []byte                            `json:"-"` // Opaque private durable escrow/delivery/receipt; never normalized by snapshots.
+	GuildBankRevision        int64                             `json:"-"`
+	GuildBankOpID            string                            `json:"-"`
+	GuildBankOpFingerprint   string                            `json:"-"`
+	EP                       int                               `json:"-"`
+	EPExchangeReceipts       map[string]int                    `json:"-"`
+	EPCasinoReceipts         map[string]int                    `json:"-"`
+	VIPAllowanceReceipts     map[string]int                    `json:"-"`
+	VIPUntil                 time.Time                         `json:"-"` // Refreshed from trusted account membership, never client save data.
+	CasinoVIPFloor           bool                              `json:"-"` // Server-owned scene state; client height never grants access.
+	ItemDeliveryReceipts     map[string]string                 `json:"-"`
+	GroundAccountOrdinal     int64                             `json:"-"`
+	GroundAccountOperationID string                            `json:"-"`
+	GroundAccountFingerprint string                            `json:"-"`
+	PendingBossLoot          []string                          `json:"-"` // Exact rolled payloads awaiting bag space; never public actor data.
+	AdminOperationReceipts   map[string]string                 `json:"-"`
+	WeeklyRaidRewardReceipts map[string]bool                   `json:"-"`
+	WeeklyRaidCompletions    map[string]time.Time              `json:"-"`
 
 	// Inventory
 	Inventory            []Item                         `json:"-"`
@@ -969,6 +971,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		EP:                       e.EP,
 		EPExchangeReceipts:       maps.Clone(e.EPExchangeReceipts),
 		EPCasinoReceipts:         maps.Clone(e.EPCasinoReceipts),
+		CasinoWalletCheckpoints:  maps.Clone(e.CasinoWalletCheckpoints),
 		VIPAllowanceReceipts:     maps.Clone(e.VIPAllowanceReceipts),
 		VIPUntil:                 e.VIPUntil,
 		CasinoVIPFloor:           e.CasinoVIPFloor,

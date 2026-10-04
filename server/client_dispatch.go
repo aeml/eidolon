@@ -349,6 +349,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			EP:                       char.EP,
 			EPExchangeReceipts:       cloneGoldCreditReceipts(char.EPExchangeReceipts),
 			EPCasinoReceipts:         cloneGoldCreditReceipts(char.EPCasinoReceipts),
+			CasinoWalletCheckpoints:  maps.Clone(char.CasinoWalletCheckpoints),
 			VIPAllowanceReceipts:     cloneGoldCreditReceipts(char.VIPAllowanceReceipts),
 			ItemDeliveryReceipts:     cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
 			GroundAccountOrdinal:     char.GroundAccountOrdinal,
