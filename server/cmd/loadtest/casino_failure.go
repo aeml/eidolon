@@ -81,7 +81,7 @@ func classifyCasinoRejection(message Message) casinoFailureStage {
 	switch reason {
 	case "table funds are being saved; please wait", "poker funds are being saved; please wait", "poker is recovering; please wait", "slot settlement still pending":
 		return casinoFailureBusy
-	case "round changed; review the table", "blackjack round changed; review the table", "poker hand changed; review the table", "slot state changed; refresh before acting", "betting has closed for this round", "this hand is closed to new buy-ins":
+	case "round changed; review the table", "blackjack round changed; review the table", "blackjack round changed; refresh the table", "wait for your blackjack turn", "blackjack turn expired", "poker hand changed; review the table", "slot state changed; refresh before acting", "betting has closed for this round", "this hand is closed to new buy-ins":
 		return casinoFailureStale
 	case "that seat is occupied or reserved for a reconnect", "leave your current seat first", "finish your current action before sitting in the casino", "walk up to the seat first", "go to that casino floor before sitting", "approach the casino door in Lanternhold first", "sit at the table before wagering", "sit at the poker table before playing", "sit at an elemental machine before playing":
 		return casinoFailureSeat

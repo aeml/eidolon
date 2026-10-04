@@ -866,6 +866,22 @@
     "cleanup": "Definitive parent failure consumed, absent owned root/server/driver and owner label/network/OOM/peak checked. Stopped and removed only this fixture/synthetic database; filtered listing empty. Artifacts retained; production and owner worktree untouched.",
     "next": "No further target replay before identifying the remaining blackjack rejection boundary. Narrow1.74.3 maintenance assembly carries only checked production casino performance code, schema22 and own notes/version; future drivers and policy-gated milestones excluded."
   },
+  "blackjackDomainRejectionDiagnostic": {
+    "finding": "The classifier covered handler-level 'review the table' but omitted the actual domain Propose literals 'blackjack round changed; refresh the table', 'wait for your blackjack turn' and 'blackjack turn expired'. Existing source confirms these fixed messages cover revision/phase mismatch, turn owner and expired deadline respectively. No preserved receipt proves which, if any, occurred in the two target-cohort rejections.",
+    "change": "Classify these exact bounded literals as stale alongside existing clock/round mismatch cases. Rejections still fail, preserve original cause, emit no raw strings/identities and never retry wagers. No production server/UI change or retrospective reclassification of the failed actual run.",
+    "checks": "Focused rejection/timeout race passed1.065s, including generic and structured wire errors for all three literals and unchanged first-cause/no-retry fences. No new actual replay.",
+    "sha256": {
+      "server/cmd/loadtest/casino_failure.go": "f0a42a3aced3c1c3b070c3cc3d76521cbb8922805782e4837ca09d93bc963c62",
+      "server/cmd/loadtest/casino_failure_test.go": "d280b9f77b7bc415aedef78944480d1d20c6cb7ad1eb97cbb9556b4b0cb563c8"
+    }
+  },
+  "maintenance1743Publication": {
+    "status": "PUSHED_TERMINAL_CI_PUBLIC_ACCEPTANCE_PENDING",
+    "sourceCommit": "8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0",
+    "ciRun": 37244170015,
+    "scope": "Fresh origin/master maintenance worktree publishes only casino notification/view/catalogue changes and own1.74.3 cumulative notes/version, retaining schema22 and all value authority. Future prepared code excluded. Exact-source root1.280s/game1.134s race and355 VersionPresentation checks2.257s pass; unchanged38 CasinoController checks already passed. Corrected a future-only fixture helper and missed Compose version. Luna monitors only the confirmed-live exact-SHA job; root will independently verify public acceptance after terminal success.",
+    "integration": "Ordinarily merged into prepared candidate as b66f8042, resolving README conflict by keeping future scope separate and correcting last accepted live identity to1.74.2. This local merge is not a push of the candidate or full-roadmap completion."
+  },
   "casinoTimeoutActionDiagnostic": {
     "reason": "The retained two corrected100-client outcomes classify timeout but do not identify the outstanding command. Without this distinction, physical-entry/seating delay and money-operation delay cannot be separated; do not attribute the observed failures to a guessed cause.",
     "change": "Driver records only a closed enum for the original timed-out pending action: enter, sit, slot spin/bonus, blackjack bet/play, house bet, poker buy-in/play or unknown. Per-family aggregates include every failed assigned client; malformed enum normalizes to unknown, ordinary rejection is not counted as timeout, and late rejection preserves first cause. Root forwards only the new fixed aggregate line. No identities, private seat/round tokens or arbitrary input/error labels retained. No retries, longer timeout, weakened result gate or production change.",
