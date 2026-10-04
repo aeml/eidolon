@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.74.0 administration release assembly",
+  "status": "assembled, unpublished; ordered predecessor acceptance required",
+  "integratedPredecessorSource": "18400d3a assembled1.73, carrying corrective1.72/1cf51d22",
+  "permissionReviewSource": "73564b4f742f755fbe68817db62f6bbbf31a85af",
+  "version": "Alpha 1.74.0",
+  "schemaVersion": 22,
+  "scope": "Read-only Moderation decisions and Moderation target checks history filters, documented permission matrix and retained current-role/session, exact-operation, explicit-confirmation and private-audit boundaries. No new powers, policy or later writer import.",
+  "packaging": "Own login/version manifest, package/lock, server/Docker/Compose/deployment/QA/CI defaults agree. Cumulative explicit1.74 patch notes retain1.73 and all earlier history and state simultaneous database/journal outage RAM-only limitations without claiming crash durability.",
+  "checks": {
+    "clientCommand": "Node24.18.0 Jest --runInBand --runTestsByPath tests/VersionPresentation.test.js tests/AdminUI.test.js tests/AdminOperations.test.js tests/AdminReportReview.test.js tests/AdminChatModeration.test.js",
+    "clientResult": "398 checks/five suites passed5.237s, with strict version/defaults, new patch-note scope, both read filters, confirmation/retry, stale-result/session and text-rendering assertions. Compatible dependencies reused, not a fresh install or rendered/production-role proof.",
+    "serverResult": "Permission review receipt retains current integration Go1.27.1 race root20.275s. This assembly changes only backend build-version metadata, not handlers/schema. Actual Mongo/socket fixtures remain separately scoped; exact release CI still required.",
+    "hygiene": "Affected JavaScript ESLint, deployment and isolatedQA bash-n, git diff --check passed."
+  },
+  "remaining": "Accept1.72 and1.73 exact-source CI/public deployments and merge their final metadata; fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
+}

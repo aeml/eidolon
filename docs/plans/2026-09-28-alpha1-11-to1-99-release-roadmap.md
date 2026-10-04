@@ -1337,6 +1337,14 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: **Alpha1.74.0 release assembly** now has its own login version and
+cumulative notes for the read-only moderation filters and reviewed permission
+boundaries.398 focused client checks pass; backend authority proof retains its
+current integration scope. [Assembly checks](2026-10-04-release1-74-release-checks.json)
+state the RAM-only dual-storage-outage limitation and exclude new powers/policy.
+Ordered1.72/1.73 acceptance, normal publication and independent CI/live proof
+remain required.
+
 October4: an isolated **1.74 Administration** successor now documents the
 actual permission/data boundaries for eight read/effect groups and adds the two
 missing Activity-history filters for moderation decisions and target checks.
