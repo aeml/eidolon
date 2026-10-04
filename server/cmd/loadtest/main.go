@@ -213,6 +213,7 @@ func main() {
 	)
 	log.Printf("State coverage: clients=%d min_frames=%d min_active_ms=%d max_gap_ms=%d wire_bytes=%d",
 		coverage.clients, coverage.minFrames, coverage.minActive.Milliseconds(), coverage.maxGap.Milliseconds(), coverage.wireBytes)
+	log.Printf("Own state coverage: clients=%d min_updates=%d", coverage.ownClients, coverage.minOwnUpdates)
 	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
 		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
 	casinoFailed := false
@@ -257,7 +258,7 @@ func main() {
 		casinoFailed = failures != 0 || minimum == 0
 	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
-		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) ||
+		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) || coverage.ownClients != uint64(*count) ||
 		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 || casinoFailed {
 		os.Exit(1)
 	}
@@ -375,7 +376,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				stateMu.Lock()
 				applyStateUpdate(worldState, update)
 				movement.observeSequence(worldState[myID].MoveSequence)
-				observation.state(worldState, myID, time.Now())
+				observation.state(worldState, myID, time.Now(), update.entities[myID].Type == "Player")
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
 					admitted <- time.Now()
@@ -427,7 +428,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					stateMu.Lock()
 					worldState = entities
 					movement.observeSequence(worldState[myID].MoveSequence)
-					observation.state(worldState, myID, time.Now())
+					observation.state(worldState, myID, time.Now(), entities[myID].Type == "Player")
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
 						admitted <- time.Now()

@@ -3,6 +3,7 @@ import { verifySoakHealth, validateSoakEvidence } from '../scripts/lib/soak-poli
 const health = { status: 'ok', database: 'ready', commit: 'owned-run', goroutines: 400, heapAllocBytes: 100_000_000 };
 const log = 'Load summary: connected=100 joined=100 state_frames=1000 read_errors=0 write_errors=0 decode_errors=0\n' +
     'State coverage: clients=100 min_frames=10 min_active_ms=1000 max_gap_ms=150 wire_bytes=100000\n' +
+    'Own state coverage: clients=100 min_updates=1\n' +
     'Admission coverage: authenticated=100 failed=0 max_registration_ms=400 max_login_ms=300 max_join_ms=100';
 
 test('readiness requires the exact owned run and a ready database', () => {
@@ -10,6 +11,18 @@ test('readiness requires the exact owned run and a ready database', () => {
     for (const wrong of [{ ...health, commit: 'other-job' }, { ...health, status: 'error' },
         { ...health, database: 'unavailable' }, {}]) {
         expect(() => verifySoakHealth(wrong, 'owned-run')).toThrow();
+    }
+});
+
+test('fresh own updates are separate from cached view frames and required for every client', () => {
+    expect(validateSoakEvidence(log, [health, health])).toMatchObject({ minClientFrames: 10, minClientOwnUpdates: 1 });
+    for (const bad of [log.replace('Own state coverage: clients=100', 'Own state coverage: clients=99'),
+        log.replace('min_updates=1', 'min_updates=0'), log.replace('min_updates=1', 'min_updates=11'),
+        log.replace('min_updates=1', 'min_updates=9007199254740992'),
+        log.replace('min_updates=1', 'min_updates=1.5'),
+        log.replace('Own state coverage: clients=100 min_updates=1\n', ''),
+        `${log}\nOwn state coverage: clients=100 min_updates=1`, `${log}\nOwn state coverage: incomplete`]) {
+        expect(() => validateSoakEvidence(bad, [health, health])).toThrow();
     }
 });
 

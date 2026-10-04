@@ -18,13 +18,13 @@ import (
 func TestStateCoverageRequiresOwnSnapshotsAndIncludesEveryClient(t *testing.T) {
 	start := time.Unix(100, 0)
 	observations := make([]loadObservation, 2)
-	observations[0].state(map[string]Entity{"other": {Type: "Player"}, "self": {Type: "Enemy"}}, "self", start)
+	observations[0].state(map[string]Entity{"other": {Type: "Player"}, "self": {Type: "Enemy"}}, "self", start, true)
 	if observations[0].frames != 0 {
 		t.Fatal("another actor established coverage")
 	}
 	state := map[string]Entity{"self": {Type: "Player"}}
 	for _, offset := range []time.Duration{0, 100 * time.Millisecond, 400 * time.Millisecond} {
-		observations[0].state(state, "self", start.Add(offset))
+		observations[0].state(state, "self", start.Add(offset), true)
 	}
 	observations[0].wireBytes = 500
 	coverage := summarizeStateCoverage(observations)
@@ -32,7 +32,7 @@ func TestStateCoverageRequiresOwnSnapshotsAndIncludesEveryClient(t *testing.T) {
 		t.Fatal("starved client hidden by aggregate coverage", coverage)
 	}
 	for _, offset := range []time.Duration{0, 200 * time.Millisecond} {
-		observations[1].state(state, "self", start.Add(offset))
+		observations[1].state(state, "self", start.Add(offset), true)
 	}
 	observations[1].wireBytes = 250
 	coverage = summarizeStateCoverage(observations)
@@ -41,6 +41,32 @@ func TestStateCoverageRequiresOwnSnapshotsAndIncludesEveryClient(t *testing.T) {
 	}
 	if empty := summarizeStateCoverage(nil); empty != (stateCoverage{}) {
 		t.Fatal("missing clients became measured coverage")
+	}
+}
+
+func TestStateCoverageSeparatesCachedOwnEntityFromFreshUpdates(t *testing.T) {
+	start := time.Unix(100, 0)
+	state := map[string]Entity{}
+	var observation loadObservation
+	observe := func(update stateUpdate, offset time.Duration) {
+		applyStateUpdate(state, update)
+		observation.state(state, "self", start.Add(offset), update.entities["self"].Type == "Player")
+	}
+	observe(stateUpdate{full: true, entities: map[string]Entity{"self": {Type: "Player"}}}, 0)
+	observe(stateUpdate{entities: map[string]Entity{"peer": {Type: "Player"}}}, time.Second)
+	observe(stateUpdate{}, 2*time.Second) // Idle delta: view delivery, not fresh self.
+	if observation.frames != 3 || observation.ownUpdates != 1 {
+		t.Fatal("cached self inflated fresh own updates", observation.frames, observation.ownUpdates)
+	}
+	observe(stateUpdate{removedID: []string{"self"}}, 3*time.Second)
+	observe(stateUpdate{full: true, entities: map[string]Entity{"peer": {Type: "Player"}}}, 4*time.Second)
+	if observation.frames != 3 || observation.ownUpdates != 1 {
+		t.Fatal("removed self established coverage")
+	}
+	observe(stateUpdate{entities: map[string]Entity{"self": {Type: "Player"}}}, 5*time.Second)
+	coverage := summarizeStateCoverage([]loadObservation{observation, {}})
+	if observation.frames != 4 || observation.ownUpdates != 2 || coverage.ownClients != 1 || coverage.minOwnUpdates != 0 {
+		t.Fatal("fresh updates or unobserved clients counted incorrectly", coverage)
 	}
 }
 
@@ -101,7 +127,16 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 					_, _ = compressor.Write(own)
 					_ = compressor.Close()
 					legacy, _ := json.Marshal(Message{Type: "state", Payload: json.RawMessage(`{"player-synthetic-coverage":{"type":"Player","health":100}}`)})
-					frames := [][]byte{encode("other-player"), own, compressed.Bytes(), legacy}
+					delta := func(entities []*statepb.Entity) []byte {
+						payload, err := proto.Marshal(&statepb.StateEnvelope{Version: uint32(stateFrameVersion),
+							Payload: &statepb.StateEnvelope_Delta{Delta: &statepb.StateDelta{Entities: entities}}})
+						if err != nil {
+							t.Error("fixture delta encoding failed")
+						}
+						return append(append(append([]byte{}, stateFrameMagic...), stateFrameVersion), payload...)
+					}
+					frames := [][]byte{encode("other-player"), own,
+						delta([]*statepb.Entity{{Id: "other-player", Type: "Player"}}), delta(nil), compressed.Bytes(), legacy}
 					switch scenario {
 					case "bad-gzip":
 						frames = append(frames, []byte{0x1f, 0x8b, 0})
@@ -147,7 +182,7 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 			}
 			// Wait for the reader to process the fixture frames, not just the sender.
 			deadline := time.Now().Add(3 * time.Second)
-			for metrics.stateFrames.Load() != 4 || scenario != "valid" && metrics.decodeErrors.Load() != 1 {
+			for metrics.stateFrames.Load() != 6 || scenario != "valid" && metrics.decodeErrors.Load() != 1 {
 				if time.Now().After(deadline) {
 					close(stop)
 					t.Fatal("fixture frames were not processed")
@@ -160,7 +195,7 @@ func TestLoadCoverageActualSocketFramesAndReaderShutdown(t *testing.T) {
 			case <-time.After(time.Second):
 				t.Fatal("reader outlived stopped bot")
 			}
-			if observation.frames != 3 || observation.wireBytes == 0 || metrics.joined.Load() != 1 || metrics.readErrors.Load() != 0 || metrics.writeErrors.Load() != 0 ||
+			if observation.frames != 5 || observation.ownUpdates != 3 || observation.wireBytes == 0 || metrics.joined.Load() != 1 || metrics.readErrors.Load() != 0 || metrics.writeErrors.Load() != 0 ||
 				metrics.authenticated.Load() != 1 || metrics.admissionErrors.Load() != 0 || observation.registrationTime <= 0 || observation.loginTime <= 0 || observation.joinTime < 0 {
 				t.Fatal("own coverage, compressed payload accounting or final shutdown metrics incorrect")
 			}

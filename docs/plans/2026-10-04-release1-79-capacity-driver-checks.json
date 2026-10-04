@@ -90,5 +90,17 @@
     },
     "limits": "Shutdown drains last request acknowledgement, not the last newly funded shared round; second fixture rounds are accepted but not paid at disconnect. Normal server timer/persistence remains authoritative. No production accounts, schema, wallet policy, services, mail, deployment or long load run changed. Default mixed/nightly100 profile still excludes casino."
   },
+  "freshOwnStateFollowUp": {
+    "finding": "Applying a peer-only or empty protobuf delta retains the cached own entity. Previous frame/window/gap metrics therefore measured delivered views with self present, not necessarily freshly updated self. This was useful delivery evidence but its own-player wording overstated freshness.",
+    "changes": "Keep delivered-view rate/window gates, explicitly document their delta semantics and report separate Own state coverage clients/min_updates. Count fresh own Player only from the incoming full/delta/legacy snapshot, never the cache or a removal. Include every configured client; driver requires fresh coverage for all, and nightly validator rejects missing, duplicate, unsafe or impossible counts. Require at least one fresh own update, not an invented refresh rate for idle entities.",
+    "checks": "Focused Go1.27.1 race checks TestStateCoverage/TestLoadCoverage passed1.946s. Domain replay covers peer-only and empty deltas, self removal, full replacement and fresh return; seven actual local socket cases now deliver both peer-only and empty deltas after own admission and distinguish five covered view frames from three fresh updates. Five SoakIsolation Jest tests passed0.623s, including omission/duplication/overflow/fraction/minimum contradictions. No capacity run or production mutation.",
+    "sha256": {
+      "loadtest/coverage.go": "8764e9c201dcc94f980946b6a1f1174585eae0edd5fa26de86f5958791baa19a",
+      "loadtest/coverage_test.go": "5aadf4f8efd632524e31aa847c188baa4307d28a50ad69cc042fd87d2f55c494",
+      "loadtest/main.go": "81ef426558b7fa737ec321a7cc6c27163744016065ec39677e8adf61397cc3b5",
+      "soak-policy.mjs": "19d78920e0f3ebf001f1863aabb2cd0f3964a3e237af88faabb7af8a992ad371",
+      "SoakIsolation.test.js": "6ba7f3155fd9d8161f27b5e217d24cbb009b606e455171fd8960463a1a8aa26f"
+    }
+  },
   "remaining": "Mixed profile still distributes only combat/town/social; implement poker, party/raid, event/save and representative combined workloads, verify actual-game/database casino travel/settlement and measure actual action/travel acceptance with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

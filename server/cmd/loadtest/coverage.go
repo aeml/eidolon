@@ -5,14 +5,14 @@ import "time"
 // Each observation is owned by one socket reader. Read it only after that
 // reader has terminated; no identities, credentials or actor data are retained.
 type loadObservation struct {
-	frames, wireBytes                     uint64
+	frames, ownUpdates, wireBytes         uint64
 	firstStateAt, lastStateAt             time.Time
 	maxGap                                time.Duration
 	registrationTime, loginTime, joinTime time.Duration
 	casino                                casinoLoadCounts
 }
 
-func (observation *loadObservation) state(state map[string]Entity, playerID string, now time.Time) {
+func (observation *loadObservation) state(state map[string]Entity, playerID string, now time.Time, freshOwn bool) {
 	if state[playerID].Type != "Player" {
 		return // Other actors or a sent join request do not establish own coverage.
 	}
@@ -23,10 +23,14 @@ func (observation *loadObservation) state(state map[string]Entity, playerID stri
 	}
 	observation.lastStateAt = now
 	observation.frames++
+	if freshOwn {
+		observation.ownUpdates++
+	}
 }
 
 type stateCoverage struct {
 	clients, minFrames, wireBytes      uint64
+	ownClients, minOwnUpdates          uint64
 	minActive, maxGap                  time.Duration
 	maxRegistration, maxLogin, maxJoin time.Duration
 }
@@ -36,6 +40,12 @@ func summarizeStateCoverage(observations []loadObservation) stateCoverage {
 	for index, observation := range observations {
 		if observation.frames > 0 {
 			result.clients++
+		}
+		if observation.ownUpdates > 0 {
+			result.ownClients++
+		}
+		if index == 0 || observation.ownUpdates < result.minOwnUpdates {
+			result.minOwnUpdates = observation.ownUpdates
 		}
 		active := observation.lastStateAt.Sub(observation.firstStateAt)
 		if index == 0 || observation.frames < result.minFrames {

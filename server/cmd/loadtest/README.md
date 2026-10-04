@@ -35,10 +35,10 @@ This corrects post-recovery movement, but does not make sent moves proof of
 accepted travel or provide collision/pathfinding or encounter-clear evidence.
 The additional `State coverage` line reports:
 
-- clients with at least one own-player state observation;
-- minimum own-player frames and first-to-last observation window across **all**
+- clients receiving a decoded view while their own Player is present;
+- minimum delivered view frames and first-to-last observation window across **all**
   configured clients, including zero for unobserved clients;
-- maximum observed gap between successive own-player state frames;
+- maximum observed gap between successive delivered view frames;
 - total received message payload bytes before gzip expansion, excluding
   WebSocket framing, TLS/IP overhead and sent traffic.
 
@@ -48,15 +48,23 @@ legacy JSON and gzip state frames are covered; malformed messages count as decod
 failures. Reads and decompression are bounded to8MiB per message. Clients with
 zero or insufficient coverage cannot be hidden by the others' aggregate traffic. These observations
 still do not prove action acceptance, Internet latency, render FPS or gameplay.
+In delta replication, the player's own entity can be cached while only peers
+change (or an idle delta arrives). These still count as delivered view frames,
+not fresh own-state updates. A separate `Own state coverage` line reports clients
+with a freshly received own Player and minimum fresh updates across all clients.
+It counts explicit own entities in protobuf full/delta or legacy full snapshots,
+not cached entities or removals. Every client requires at least one fresh update;
+there is no invented own-update rate for unchanged idle players.
 
 The existing isolated nightly runner now requires exactly one complete summary
-and both coverage lines, no read/write/decode/admission failures, all100 clients
+and each coverage line, no read/write/decode/admission failures, all100 clients
 authenticated and covered, and
 safe-integer, ready, same-run runtime samples. `SOAK_MIN_CLIENT_STATE_RATE`
 predeclares a positive per-client frame rate (at most60; default5 retains the
 previous accepted aggregate baseline as a stricter every-client test gate).
 Every client must reach that rate over the configured duration and cover at
 least90% of the requested duration. Memory/goroutine/growth ceilings are unchanged.
+The rate/window gate measures delivered views, not fresh own-state updates.
 The maximum state gap and received bytes are reported, not given an invented SLA.
 Old accepted load receipts retain their original scopes; missing new fields do
 not retroactively invalidate those historical runs or justify replaying them.

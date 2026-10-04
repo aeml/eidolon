@@ -440,7 +440,8 @@ Notes:
   Operational emails/services are not enabled; thresholds, retention,
   ownership and operating budgets remain explicit gates.
   [Prepared capacity-driver checks](docs/plans/2026-10-04-release1-79-capacity-driver-checks.json)
-  add per-client own-state coverage, payload/gap/window measurements and strict
+  add per-client delivered-view coverage, separate fresh own-state updates,
+  payload/gap/window measurements and strict
   decode/evidence validation and response-driven registration/login/join admission.
   Startup phase latencies are reported; rejected/missing acknowledgements fail
   without limit bypass or retries. Socket-reader termination precedes final totals;

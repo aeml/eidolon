@@ -1733,6 +1733,14 @@ capacity acceptance. Shutdown observes the last request, not settlement of all
 final funded rounds. Poker, party/raid/event/save, representative combined load
 and ordered predecessor/deployment gates remain open.
 
+Prepared1.79 evidence now separates delivered view frames (which can include
+peer-only/idle deltas while self is cached) from explicitly fresh own Player
+updates. Every client must have a fresh own update; the predeclared frame-rate
+and observation-window gates remain delivery metrics, not invented own-update
+requirements for idle players. Actual socket checks include peer-only and empty
+deltas after admission; strict evidence validation rejects missing/duplicate or
+impossible fresh-update totals. No new capacity run or production change.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)
