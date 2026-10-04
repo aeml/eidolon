@@ -61,13 +61,76 @@ func TestReadinessProbeActualTimeoutAndShutdown(t *testing.T) {
 	defer server.Close()
 	probe, _ := NewProbe(server.URL+"/healthz", "", 50*time.Millisecond)
 	start := time.Now()
-	if sample := probe.Check(context.Background()); sample.Ready || sample.Cause != "probe_failed" || time.Since(start) > time.Second {
+	if sample := probe.Check(context.Background()); sample.Ready || sample.Cause != "probe_timeout" || time.Since(start) > time.Second {
 		t.Fatal("stalled actual HTTP request did not finish within bounded timeout")
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	if sample := probe.Check(ctx); sample.Cause != "cancelled" || sample.Ready {
 		t.Fatal("monitor cancellation became outage evidence")
+	}
+}
+
+func TestReadinessProbeActualAggregateMetrics(t *testing.T) {
+	for _, scenario := range []string{"valid", "missing", "partial", "negative", "over-capacity", "bad-type"} {
+		t.Run(scenario, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				body := `{"status":"ok","database":"ready","commit":"abcdef1","version":"Alpha 1.78.0","goroutines":12,"heapAllocBytes":1024,"heapObjects":50,"broadcastQueues":{"queued":3,"capacity":1024,"encounterQueued":1,"encounterCapacity":128,"dropped":8,"encounterDropped":2,"invalidDropped":5,"private":"secret-marker"},"players":[{"username":"secret-marker"}]}`
+				switch scenario {
+				case "missing":
+					body = `{"status":"ok","database":"ready","commit":"abcdef1","version":"Alpha 1.78.0"}`
+				case "partial":
+					body = strings.Replace(body, `"goroutines":12,`, "", 1)
+				case "negative":
+					body = strings.Replace(body, `"goroutines":12`, `"goroutines":-1`, 1)
+				case "over-capacity":
+					body = strings.Replace(body, `"queued":3`, `"queued":1025`, 1)
+				case "bad-type":
+					body = strings.Replace(body, `"heapObjects":50`, `"heapObjects":"secret-marker"`, 1)
+				}
+				io.WriteString(w, body)
+			}))
+			defer server.Close()
+			probe, err := NewProbe(server.URL+"/healthz", "", time.Second)
+			if err != nil {
+				t.Fatal(err)
+			}
+			sample := probe.Check(context.Background())
+			valid := scenario == "valid" || scenario == "missing" || scenario == "partial"
+			if sample.Ready != valid || (sample.Runtime != nil) != (scenario == "valid") {
+				t.Fatalf("unexpected aggregate sample: %+v", sample)
+			}
+			if scenario == "valid" && (sample.Runtime.Goroutines != 12 || sample.Runtime.HeapAllocBytes != 1024 || sample.Runtime.BroadcastQueues.Dropped != 8 || sample.Runtime.BroadcastQueues.EncounterDropped != 2) {
+				t.Fatal("aggregate counters lost")
+			}
+			encoded, _ := json.Marshal(sample)
+			if strings.Contains(string(encoded), "secret-marker") || strings.Contains(string(encoded), "username") {
+				t.Fatal("private aggregate field leaked")
+			}
+		})
+	}
+}
+
+func TestReadinessProbeActualBodyTimeoutAndCancellation(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.(http.Flusher).Flush()
+		<-r.Context().Done()
+	}))
+	defer server.Close()
+	probe, err := NewProbe(server.URL+"/healthz", "", 50*time.Millisecond)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sample := probe.Check(context.Background()); sample.Cause != "probe_timeout" || sample.Ready {
+		t.Fatalf("body timeout misclassified: %+v", sample)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
+	sample := probe.Check(ctx)
+	detector, _ := NewDetector(1, 1, time.Minute)
+	if sample.Cause != "cancelled" || detector.Observe(sample, time.Now()) != nil {
+		t.Fatal("cancelled body read became an outage")
 	}
 }
 
