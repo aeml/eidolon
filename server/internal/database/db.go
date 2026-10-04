@@ -76,6 +76,9 @@ type Auction struct {
 }
 
 type Character struct {
+	GroundAccountOrdinal     int64                          `bson:"ground_account_ordinal,omitempty"`
+	GroundAccountOperationID string                         `bson:"ground_account_operation_id,omitempty"`
+	GroundAccountFingerprint string                         `bson:"ground_account_fingerprint,omitempty"`
 	DirectTradeState         bson.Raw                       `bson:"direct_trade_state,omitempty"`
 	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
 	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`
