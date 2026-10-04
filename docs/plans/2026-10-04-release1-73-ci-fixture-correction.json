@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.73 actual boss-repository CI isolation correction",
+  "status": "targeted checks passed; corrective exact-source CI/public acceptance still required",
+  "failedSource": "20d6f1af50a7fbcfd7c0beccb84cfd658303206a",
+  "failedRun": 37199081570,
+  "failedJob": 111426857729,
+  "failure": "Server Tests (Go), Verify ordinary item, social, duel and administration sockets: TestBossVictoryStoreActualMongo line149 reported terminal first victory lost active original drops with nil repository error. The immediately preceding new real geared four-class boss/crash/recovery command passed. The repository test assumed it was the sole active victory in the shared job Mongo, but earlier connected tests intentionally retain original earned victory/drop history. No deployment began; accepted1.72 remained live.",
+  "correction": "Only the test changes. Allocate a unique owned boss-victory fixture collection, install the same actual production indexes, and bind both initial and reopened repository views to it. Deliberately retain an unrelated active victory in the shared collection and assert its exact state/operation are unchanged. Original eight-contender/one-winner, saved-cohort completion, unsaved-recipient rejection,52-entry paging, completed-drop visibility, exclusive cursor, exact expiry and invalid-query assertions remain. Cleanup deletes only the test's exact sentinel/users and private fixture collection; never wipe shared history or modify production projection rules.",
+  "checks": {
+    "focusedRace": "Go1.27.1 GOMAXPROCS2/p2 race BossVictory/SchemaMigrationCatalog passed database1.045s without actual Mongo enabled; not attributed connected coverage.",
+    "actualCommand": "Compiled current Go1.27.1 race database.test, GOMAXPROCS2, disposable marker1, EIDOLON_BOSS_TEST_MONGO_URI=mongodb://127.0.0.1:27017: -test.run '^TestBossVictoryStoreActualMongo$' -test.count=2 -test.timeout=45s -test.v",
+    "actualResult": "Both actual-Mongo runs passed2.07s and1.84s. The unique collection and unrelated-record guard prove the repository check no longer depends on an empty shared victory ledger; all original functional assertions remain.",
+    "testSourceSHA256": "8b992f29efb1fdbc72986cffaf914761461a1b49b4310d58df80482ca05de930",
+    "hygiene": "gofmt and git diff --check passed. Production handlers, migration catalog/schema22, client, version and patch notes unchanged."
+  },
+  "isolation": "Mongo7.0.14 image0032d2ca, owned container2740d73936501c19382eeeaa0e3587abd32c0a94f00a4bfdc2611cf26793674e; networknone/no ports,1CPU/1GiB,512MiB database/16MiB config tmpfs and0.25GiB cache. Test executed inside loopback namespace. Production, provider settings and mail untouched.",
+  "cleanup": "Actual fixture cleanup count checks found zero private fixture collections, synthetic boss-store users and retained sentinel victories. Exact ID/owner/task labels verified before removing the owned container and all temporary data; filtered listing empty. Compiled artifact retained at /tmp/eidolon-173-boss-store-isolation-LF9UJZ/database.test.",
+  "remaining": "Corrective normal push after current remote fetch/merge, exact-source CI and independent post-terminal public commit/version/database/notes/runtime acceptance. Historical and current geared-party proofs retain their scopes; do not rerun another manual long campaign or label first-boss proof a complete dungeon/campaign clear. Full-goal and owner/human gates remain open."
+}
