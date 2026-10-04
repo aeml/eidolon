@@ -138,7 +138,9 @@ func handleAdminChatModeration(c *Client, msg Message) {
 		return actor != "" && c.username == actor && !c.transportClosed.Load() && currentCharacterConnection(c)
 	}
 	rejected := func(outcome, summary string) {
-		if current() {
+		// Retain the submitting authenticated actor even if this connection
+		// was replaced during IO; never attribute a changed username to it.
+		if actor != "" && c.username == actor {
 			auditAdminRejectedRequest(c, MsgAdminChatModeration, adminMutationRequest{ID: result.ID}, outcome, summary)
 		}
 	}
@@ -174,6 +176,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	defer unlock()
 	if !authorize() {
 		result.Authorized = false
+		rejected("denied", "Administrator access or connection changed; no moderation admitted.")
 		return
 	}
 	for _, account := range []string{actor, target} {
@@ -206,6 +209,7 @@ func handleAdminChatModeration(c *Client, msg Message) {
 	}
 	if !current() || !authorize() {
 		result.Authorized = false
+		rejected("denied", "Administrator access or connection changed; no moderation admitted.")
 		return
 	}
 	receipt, err := store.ApplyChatModeration(actor, request.AccountID, request.Change)

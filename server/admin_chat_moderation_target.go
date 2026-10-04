@@ -85,10 +85,13 @@ func handleAdminChatModerationTarget(c *Client, msg Message) {
 	current := func() bool {
 		return actor != "" && c.username == actor && !c.transportClosed.Load() && currentCharacterConnection(c)
 	}
-	if err != nil {
-		if current() {
-			auditAdminRejectedRequest(c, MsgAdminChatModerationTarget, adminMutationRequest{ID: result.ID}, "denied", "Invalid moderation target preview request.")
+	rejected := func(summary string) {
+		if actor != "" && c.username == actor {
+			auditAdminRejectedRequest(c, MsgAdminChatModerationTarget, adminMutationRequest{ID: result.ID}, "denied", summary)
 		}
+	}
+	if err != nil {
+		rejected("Invalid moderation target preview request.")
 		return
 	}
 	if !current() || adminRoles == nil || adminActivities == nil {
@@ -100,9 +103,7 @@ func handleAdminChatModerationTarget(c *Client, msg Message) {
 		return result.Authorized
 	}
 	if !authorize() {
-		if current() {
-			auditAdminRejectedRequest(c, MsgAdminChatModerationTarget, adminMutationRequest{ID: result.ID}, "denied", "Administrator access was not verified; no target preview returned.")
-		}
+		rejected("Administrator access was not verified; no target preview returned.")
 		return
 	}
 	var store adminChatModerationTargetStore = adminChatModerationTargets
@@ -115,6 +116,7 @@ func handleAdminChatModerationTarget(c *Client, msg Message) {
 	target, err := store.ReadChatModerationTarget(actor, request.Target)
 	if !current() || !authorize() {
 		result.Authorized = false
+		rejected("Administrator access or connection changed; no target preview returned.")
 		return
 	}
 	if err != nil || !target.Valid() || target.Account != request.Target {
@@ -131,6 +133,7 @@ func handleAdminChatModerationTarget(c *Client, msg Message) {
 	}
 	if !current() || !authorize() {
 		result.Authorized = false
+		rejected("Administrator access or connection changed; no target preview returned.")
 		return
 	}
 	result.Success, result.Target = true, &target
