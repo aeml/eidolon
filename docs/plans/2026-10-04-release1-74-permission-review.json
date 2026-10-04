@@ -26,5 +26,11 @@
     "server/admin_chat_moderation.go": "1b992fc30b35a56205f7b483c9e75450bf267d5272d226310b28938c5238613a",
     "server/admin_chat_moderation_target.go": "f736fed579f602baf7f10ccf4d873c56d896b8d0662988e1d7746de4b3342c99"
   },
-  "remaining": "No1.74 version/cumulative patch-note assembly, push, CI or public acceptance claimed. Incorporate accepted ordered predecessors, run directly invalidated integration checks, publish own notes/version and verify both live identities. Later privacy retention/export/deletion and ownership policies remain separate. No production grant, role edit, moderation, provider mail, service or account change was performed. Full roadmap goal stays active."
+  "orderedIntegration": {
+    "source": "43b9fbba merges assembled1.73 source18400d3a without changing schema22 or importing later writers; inherited source defaults nowAlpha1.73.0, not a1.74 publication.",
+    "serverCommand": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race . -run '^Test(Admin|ReportReview|ChatModeration|ReadAudit)' -count=1 -timeout=60s",
+    "serverResult": "Root20.275s passed, including current role/session, late-query/audit authority, modeled grants/teleports, review, moderation and outage regressions. Opt-in actual socket/Mongo fixtures were not configured; exact-source release CI remains separate.",
+    "clientCorrection": "Four admin suites passed in the first combined invocation, but inherited version test failed because README said Current inherited source version. Corrected documentation to the strict Current source version prefix, while retaining the explicit unpublished1.74 boundary; no test relaxed."
+  },
+  "remaining": "No1.74 version/cumulative patch-note assembly, push, CI or public acceptance claimed. Ordered1.72/1.73 candidates are integrated, but accepted live predecessor metadata is still required. Publish own notes/version and verify exact-source CI and both live identities. Later privacy retention/export/deletion and ownership policies remain separate. No production grant, role edit, moderation, provider mail, service or account change was performed. Full roadmap goal stays active."
 }
