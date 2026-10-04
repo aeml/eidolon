@@ -118,7 +118,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		sessionsMu.Unlock()
 
 		// Check for characters
-		user, err := db.GetUser(c.username)
+		user, err := db.GetCharacterEntryAccount(c.username)
 		hasCharacter := false
 		characterType := ""
 		if err == nil && len(user.Characters) > 0 {
@@ -209,8 +209,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
 
-		// Load user from DB to check for existing character
-		user, err := db.GetUser(c.username)
+		// Load only the authoritative first character, not credentials or the
+		// unrelated saved characters and their growing private receipt maps.
+		user, err := db.GetCharacterEntryAccount(c.username)
 		if err != nil {
 			c.sendError("Failed to load user data")
 			return

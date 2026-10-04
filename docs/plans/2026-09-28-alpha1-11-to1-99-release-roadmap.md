@@ -1486,6 +1486,15 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: unpublished **1.76 entry reads** now avoid whole-account fetches for
+password verification, first-character login/join and social target labels.
+The [current integration receipt](2026-10-04-release1-76-current-integration-checks.json)
+records an85-byte actual credential projection, complete first-save hydration,
+legacy initialization and passed current real login/takeover/resume plus guild
+invite/calendar/restart checks. Historical receipt maps are preserved, not
+pruned; first-character growth, capacity, ordered publication and1.76 acceptance
+remain open. The owned temporary Mongo fixture was removed.
+
 October4: isolated **1.75 privacy preparation** now includes the accepted
 verified-email recovery data and Postmark/browser handoff in its
 [inventory](2026-10-04-release1-75-data-inventory.json). Link expiry is explicitly
