@@ -40,6 +40,13 @@ even before a stale state label reaches DEAD. Direct hostile targeting now also
 requires living/connected recipients. Focused race checks passed16.188s, retaining
 valid contracts for all52 selectable abilities. No balance/projectile-in-flight,
 save-format or production change was made; ordered release gates remain open.
+Prepared1.73 [mystery-purchase safety](2026-10-04-release1-73-mystery-purchase-checks.json)
+now saves original random gear and Gold together before inventory publication;
+recovery cannot also buy another box. The review found a forged-slot route to
+purchase Forge materials/relics, now fenced to equipment only with valid prices.
+Focused storage/journal and slot checks passed. The pool guard will be isolated
+for an urgent1.71 maintenance fix; broader schema22 work remains ordered and
+unpublished, with no retrospective item/balance cleanup.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes

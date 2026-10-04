@@ -26,9 +26,9 @@
     },
     {
       "name": "vendor",
-      "invariant": "Account serialization, prior pending-save reconciliation and active-trade exclusion precede sell/buyback. Exact bag, buyback and Gold post-image share the journal; failures return pending errors rather than confirmed durable success.",
+      "invariant": "Account serialization, prior pending-save reconciliation and active-trade exclusion precede sell/buyback. Exact bag, buyback and Gold post-image share the journal; failures return pending errors rather than confirmed durable success. October4 mystery-purchase follow-up saves the original random item/debit before reply and prohibits Forge material/relic pools; a command performing recovery does not also buy another box.",
       "source": ["server/vendor_handlers.go"],
-      "evidence": "2026-10-02-release1-73-vendor-persistence-checks.json",
+      "evidence": ["2026-10-02-release1-73-vendor-persistence-checks.json", "2026-10-04-release1-73-mystery-purchase-checks.json"],
       "status": "prepared; focused regressions passed on reviewed source"
     },
     {

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 vendor valuable-operation invariants",
+  "status": "prepared and locally checked; no production activation",
+  "sourceCommit": "d2278c558383bbd23561dba9779941e4a4ffcdb5",
+  "gap": "MsgBuyGamble previously mutated Gold and generated an item, then sent inventory without a durable full-character save. GenerateLootForSlot also accepts material/relic pools, although the normal mystery-shop UI offers only equipment. Forged requests could therefore buy Forge shards/hearts. Invalid saved levels could yield a zero/negative/overflowed purchase price.",
+  "change": "New account-serialized handler requires persistence availability, excludes active RAM trade, and reconciles prior saves before purchase. If this command recovers a prior uncertain post-image, it resynchronizes inventory without charging/rerolling. A normal deliberate click saves the exact original random item and Gold debit together through the existing journal/atomic save receipt before inventory publication. Failed/ambiguous commits retain that image, do not refund or publish the random outcome, and report pending. Local write failure pins the live image. Game mutation uses the entity lock, accepts only equipment slots/canonical accessory aliases, and refuses saved levels outside1..100 without normalizing existing data. Ordinary35-Gold-per-level pricing, rarity odds, item stats, class restrictions and client click interface remain unchanged.",
+  "checks": {
+    "purchaseAndCompatibility": "Focused Go1.27.1 race run for MysteryPurchase, Vendor, ForgeTransactions/Local/Missing and named journal/save groups passed root10.284s after correcting the fixture. Current helper's four actual CharacterPersistence-prefixed regressions then passed1.681s; the earlier CharacterJournal/CharacterSave regex did not cover them and is not attributed that coverage.",
+    "finalPoolGuard": "After fencing material/relic slots, current root and game '^TestMysteryPurchase' race checks passed5.354s and5.775s. Five root groups verify confirmed save before reply, modeled rejected/ambiguous Mongo replies with real journal reopen preserving original roll/debit and newer independent credit, recovery without another box, local-write pin/recovery, and10 invalid/persistence/trade/bag/level/Gold conditions. Two game groups retain all12 normal shop slots plus4 old accessory aliases and reject material/relic/gem/EP/empty/invalid-case slots.",
+    "failedFixture": "Initial broader7.934s run and diagnostic0.119s invocation failed because a reused sell fixture had a compact one-item bag with no empty slots. AddItemToInventory correctly treated that as full. Updated only the fixture to use a real fixed-size bag with the earned item preserved; did not change production inventory insertion or weaken outcome assertions.",
+    "hygiene": "gofmt and git diff --check pass. Only synthetic fixture values/local test journals used; no production mail, wallet/role/item changes, historical cleanup or service restart."
+  },
+  "hashes": {
+    "server/mystery_purchase_handlers.go": "d8a681b7e285ebab6df250dc34fce0d081487ed21bf3081658e9c8b993f78a80",
+    "server/mystery_purchase_persistence_test.go": "86f28e39ab2023cc6ce38adacf5b9e1907b637e484d55ea3fa16d29e89a41c4c",
+    "server/internal/game/mystery_purchase_slot_test.go": "3e45f2af885634dfca6b74773821522dec923cfa8174b497d53fee1ff7214284"
+  },
+  "limits": [
+    "Storage failure/ambiguous acknowledgement is modeled by the existing receipt-aware committer; journal IO/reopen is real. No new connected Mongo/game binary, campaign, casino or capacity trial was run.",
+    "A mystery-shop click is a new purchase, not a request-ID wager. Separate clicks after confirmed/background recovery remain separate paid purchases; do not claim wire replay deduplication after full confirmation. No automatic retry was introduced. Recovery-command no-new-roll behavior applies when that command actually reconciles a pending save.",
+    "A pinned RAM post-image cannot survive power loss before any successful journal write; a failure is never reported as durable success. Existing recovery/deployment backup gates still apply.",
+    "The non-equipment pool guard is suitable for a narrow urgent1.71 maintenance release, independent of the later schema22 handler. It is not yet live; full1.73 remains ordered behind1.72 and its open jump-policy/release gates. No saved items or balances are removed to undo inferred past purchases."
+  ]
+}
